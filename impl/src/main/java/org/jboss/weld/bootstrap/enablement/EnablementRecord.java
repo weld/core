@@ -14,28 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.util.collections;
+package org.jboss.weld.bootstrap.enablement;
 
-import java.util.AbstractSet;
-import java.util.Iterator;
-import java.util.List;
+abstract class EnablementRecord {
 
-/**
- * Provides a set-like read-only view on a given {@link List}. Modification of the underlying list is not supported.
- * @author Jozef Hartinger
- *
- */
-public abstract class ListToSet<T> extends AbstractSet<T> {
+    private final String location;
+    private final Class<?> enabledClass;
 
-    protected abstract List<T> delegate();
-
-    @Override
-    public Iterator<T> iterator() {
-        return delegate().iterator();
+    public EnablementRecord(String location, Class<?> enabledClass) {
+        this.location = location;
+        this.enabledClass = enabledClass;
     }
 
-    @Override
-    public int size() {
-        return delegate().size();
+    public String getLocation() {
+        return location;
+    }
+
+    public Class<?> getEnabledClass() {
+        return enabledClass;
     }
 }

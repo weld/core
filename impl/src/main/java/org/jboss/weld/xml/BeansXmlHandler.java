@@ -16,14 +16,14 @@ import java.util.Collection;
 import java.util.List;
 
 import org.jboss.weld.bootstrap.spi.BeansXml;
-import org.jboss.weld.bootstrap.spi.BeansXmlRecord;
+import org.jboss.weld.bootstrap.spi.EnabledClass;
 import org.jboss.weld.bootstrap.spi.ClassAvailableActivation;
 import org.jboss.weld.bootstrap.spi.Filter;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.bootstrap.spi.SystemPropertyActivation;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.metadata.BeansXmlImpl;
-import org.jboss.weld.metadata.BeansXmlRecordBuilder;
+import org.jboss.weld.metadata.EnabledClassBuilder;
 import org.jboss.weld.metadata.ClassAvailableActivationImpl;
 import org.jboss.weld.metadata.FilterImpl;
 import org.jboss.weld.metadata.ScanningImpl;
@@ -106,10 +106,10 @@ public class BeansXmlHandler extends DefaultHandler {
 
     private abstract class SpecContainer extends Container {
 
-        private BeansXmlRecordBuilder builder;
-        private final Collection<Metadata<BeansXmlRecord>> records;
+        private EnabledClassBuilder builder;
+        private final Collection<Metadata<EnabledClass>> records;
 
-        public SpecContainer(Collection<Metadata<BeansXmlRecord>> records, String localName, String... nestedElements) {
+        public SpecContainer(Collection<Metadata<EnabledClass>> records, String localName, String... nestedElements) {
             super(JAVAEE_URI, localName, nestedElements);
             this.records = records;
         }
@@ -127,9 +127,9 @@ public class BeansXmlHandler extends DefaultHandler {
                 return;
             }
             if (builder != null) {
-                throw new IllegalStateException(BeansXmlRecordBuilder.class.getName() + " not cleaned up");
+                throw new IllegalStateException(EnabledClassBuilder.class.getName() + " not cleaned up");
             }
-            builder = new BeansXmlRecordBuilder();
+            builder = new EnabledClassBuilder();
 
             String enabled = interpolate(trim(attributes.getValue(JAVAEE_URI, "enabled")));
             String priority = interpolate(trim(attributes.getValue(JAVAEE_URI, "priority")));
@@ -149,14 +149,14 @@ public class BeansXmlHandler extends DefaultHandler {
                 return;
             }
             if (builder == null) {
-                throw new IllegalStateException(BeansXmlRecordBuilder.class.getName() + " not set");
+                throw new IllegalStateException(EnabledClassBuilder.class.getName() + " not set");
             }
             builder.setValue(interpolate(trim(nestedText)));
             records.add(buildRecord(builder, qName));
             builder = null;
         }
 
-        protected Metadata<BeansXmlRecord> buildRecord(BeansXmlRecordBuilder builder, String qName) {
+        protected Metadata<EnabledClass> buildRecord(EnabledClassBuilder builder, String qName) {
             return new SpecXmlMetadata(qName, builder.create(), file, locator.getLineNumber());
         }
     }
@@ -172,9 +172,9 @@ public class BeansXmlHandler extends DefaultHandler {
     /*
     * Storage for parsed info
     */
-    private final List<Metadata<BeansXmlRecord>> interceptors;
-    private final List<Metadata<BeansXmlRecord>> decorators;
-    private final List<Metadata<BeansXmlRecord>> alternatives;
+    private final List<Metadata<EnabledClass>> interceptors;
+    private final List<Metadata<EnabledClass>> decorators;
+    private final List<Metadata<EnabledClass>> alternatives;
     private final List<Metadata<Filter>> includes;
     private final List<Metadata<Filter>> excludes;
     protected final URL file;
@@ -189,9 +189,9 @@ public class BeansXmlHandler extends DefaultHandler {
 
     public BeansXmlHandler(final URL file) {
         this.file = file;
-        this.interceptors = new ArrayList<Metadata<BeansXmlRecord>>();
-        this.decorators = new ArrayList<Metadata<BeansXmlRecord>>();
-        this.alternatives = new ArrayList<Metadata<BeansXmlRecord>>();
+        this.interceptors = new ArrayList<Metadata<EnabledClass>>();
+        this.decorators = new ArrayList<Metadata<EnabledClass>>();
+        this.alternatives = new ArrayList<Metadata<EnabledClass>>();
         this.includes = new ArrayList<Metadata<Filter>>();
         this.excludes = new ArrayList<Metadata<Filter>>();
         this.seenContainers = new ArrayList<Container>();

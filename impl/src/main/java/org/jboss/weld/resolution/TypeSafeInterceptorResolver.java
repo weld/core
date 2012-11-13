@@ -44,7 +44,7 @@ public class TypeSafeInterceptorResolver extends TypeSafeResolver<InterceptorRes
         return bean.intercepts(resolvable.getInterceptionType())
                 && bean.getInterceptorBindings().size() > 0
                 && Beans.containsAllInterceptionBindings(bean.getInterceptorBindings(), resolvable.getQualifiers(), getManager())
-                && manager.getEnabled().getInterceptor(bean.getBeanClass()) != null;
+                && manager.getEnabled().isInterceptorEnabled(bean.getBeanClass());
     }
 
     @Override

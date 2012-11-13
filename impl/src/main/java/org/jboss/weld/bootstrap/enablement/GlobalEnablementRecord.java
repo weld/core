@@ -14,28 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.util.collections;
-
-import java.util.AbstractSet;
-import java.util.Iterator;
-import java.util.List;
+package org.jboss.weld.bootstrap.enablement;
 
 /**
- * Provides a set-like read-only view on a given {@link List}. Modification of the underlying list is not supported.
+ * A beans.xml records with global effect. This is either a global enablement definition (enabled == true) or a global priority
+ * setter (enabled == false).
+ *
  * @author Jozef Hartinger
  *
  */
-public abstract class ListToSet<T> extends AbstractSet<T> {
+class GlobalEnablementRecord extends EnablementRecordWithPriority {
 
-    protected abstract List<T> delegate();
+    private final boolean enabled;
 
-    @Override
-    public Iterator<T> iterator() {
-        return delegate().iterator();
+    public GlobalEnablementRecord(String location, Class<?> enabledClass, int priority, boolean enabled) {
+        super(location, enabledClass, priority);
+        this.enabled = enabled;
     }
 
-    @Override
-    public int size() {
-        return delegate().size();
+    public boolean isEnabled() {
+        return enabled;
     }
+
 }

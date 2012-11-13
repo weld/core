@@ -18,23 +18,23 @@ package org.jboss.weld.xml;
 
 import java.net.URL;
 
-import org.jboss.weld.bootstrap.spi.BeansXmlRecord;
+import org.jboss.weld.bootstrap.spi.EnabledClass;
 
 /**
  * Metadata about a beans.xml entry.
  * @author Jozef Hartinger
  *
  */
-public class SpecXmlMetadata extends XmlMetadata<BeansXmlRecord> {
+public class SpecXmlMetadata extends XmlMetadata<EnabledClass> {
 
-    public SpecXmlMetadata(String qName, BeansXmlRecord record, URL file, int lineNumber) {
+    public SpecXmlMetadata(String qName, EnabledClass record, URL file, int lineNumber) {
         super(qName, record, file, lineNumber);
     }
 
     @Override
     public String getLocation() {
         StringBuilder builder = new StringBuilder();
-        BeansXmlRecord record = getValue();
+        EnabledClass record = getValue();
         if (record == null) {
             builder.append("<");
             builder.append(getQName());

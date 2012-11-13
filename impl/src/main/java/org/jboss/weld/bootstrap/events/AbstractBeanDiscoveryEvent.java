@@ -18,6 +18,7 @@ package org.jboss.weld.bootstrap.events;
 
 import org.jboss.weld.bootstrap.BeanDeployment;
 import org.jboss.weld.bootstrap.ContextHolder;
+import org.jboss.weld.bootstrap.enablement.EnablementBuilder;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -39,12 +40,14 @@ public abstract class AbstractBeanDiscoveryEvent extends AbstractDefinitionConta
     private final Map<BeanDeploymentArchive, BeanDeployment> beanDeployments;
     private final Deployment deployment;
     private final Collection<ContextHolder<? extends Context>> contexts;
+    private final EnablementBuilder enablementBuilder;
 
-    public AbstractBeanDiscoveryEvent(BeanManagerImpl beanManager, Type rawType, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, Deployment deployment, Collection<ContextHolder<? extends Context>> contexts) {
+    public AbstractBeanDiscoveryEvent(BeanManagerImpl beanManager, Type rawType, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, Deployment deployment, Collection<ContextHolder<? extends Context>> contexts, EnablementBuilder enablementBuilder) {
         super(beanManager, rawType, EMPTY_TYPES);
         this.beanDeployments = beanDeployments;
         this.deployment = deployment;
         this.contexts = contexts;
+        this.enablementBuilder = enablementBuilder;
     }
 
     /**
@@ -67,7 +70,7 @@ public abstract class AbstractBeanDiscoveryEvent extends AbstractDefinitionConta
 
 
     protected BeanDeployment getOrCreateBeanDeployment(Class<?> clazz) {
-        return DeploymentStructures.getOrCreateBeanDeployment(deployment, getBeanManager(), beanDeployments, contexts, clazz);
+        return DeploymentStructures.getOrCreateBeanDeployment(deployment, getBeanManager(), beanDeployments, contexts, clazz, enablementBuilder);
     }
 
 }

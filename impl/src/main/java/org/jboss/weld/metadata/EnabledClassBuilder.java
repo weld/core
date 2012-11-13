@@ -16,60 +16,63 @@
  */
 package org.jboss.weld.metadata;
 
-import org.jboss.weld.bootstrap.spi.BeansXmlRecord;
+import org.jboss.weld.bootstrap.spi.EnabledClass;
+import org.jboss.weld.bootstrap.spi.EnabledStereotype;
 
 /**
- * Builder for {@link BeansXmlRecord} objects. This builder is mutable. The resulting {@link BeansXmlRecord} is immutable.
+ * Builder for {@link EnabledClass} objects. This builder is mutable. The resulting {@link EnabledClass} is immutable.
  *
  * @author Jozef Hartinger
  *
  */
-public class BeansXmlRecordBuilder {
+public class EnabledClassBuilder {
 
     private Boolean enabled;
     private Integer priority;
     private String value;
     private boolean stereotype;
 
-    public BeansXmlRecordBuilder setEnabled(Boolean enabled) {
+    public EnabledClassBuilder setEnabled(Boolean enabled) {
         this.enabled = enabled;
         return this;
     }
 
-    public BeansXmlRecordBuilder setPriority(Integer priority) {
+    public EnabledClassBuilder setPriority(Integer priority) {
         this.priority = priority;
         return this;
     }
 
-    public BeansXmlRecordBuilder setValue(String value) {
+    public EnabledClassBuilder setValue(String value) {
         this.value = value;
         return this;
     }
 
-    public BeansXmlRecordBuilder setStereotype(boolean value) {
+    public EnabledClassBuilder setStereotype(boolean value) {
         this.stereotype = value;
         return this;
     }
 
-    public BeansXmlRecord create() {
+    public EnabledClass create() {
         if (value == null) {
             throw new IllegalStateException("Value must be set");
         }
-        return new BeansXmlRecordImpl(enabled, priority, value, stereotype);
+        if (stereotype) {
+            return new EnabledStereotypeImpl(enabled, priority, value);
+        } else {
+            return new EnabledClassImpl(enabled, priority, value);
+        }
     }
 
-    private static class BeansXmlRecordImpl implements BeansXmlRecord {
+    private static class EnabledClassImpl implements EnabledClass {
 
         private final Boolean enabled;
         private final Integer priority;
         private final String value;
-        private final boolean stereotype;
 
-        public BeansXmlRecordImpl(Boolean enabled, Integer priority, String value, boolean stereotype) {
+        public EnabledClassImpl(Boolean enabled, Integer priority, String value) {
             this.enabled = enabled;
             this.priority = priority;
             this.value = value;
-            this.stereotype = stereotype;
         }
 
         @Override
@@ -87,17 +90,12 @@ public class BeansXmlRecordBuilder {
             return value;
         }
 
-        public boolean isStereotype() {
-            return stereotype;
-        }
-
         @Override
         public int hashCode() {
             final int prime = 31;
             int result = 1;
             result = prime * result + ((enabled == null) ? 0 : enabled.hashCode());
             result = prime * result + ((priority == null) ? 0 : priority.hashCode());
-            result = prime * result + (stereotype ? 1231 : 1237);
             result = prime * result + ((value == null) ? 0 : value.hashCode());
             return result;
         }
@@ -110,10 +108,10 @@ public class BeansXmlRecordBuilder {
             if (obj == null) {
                 return false;
             }
-            if (!(obj instanceof BeansXmlRecordImpl)) {
+            if (!(obj instanceof EnabledClassImpl)) {
                 return false;
             }
-            BeansXmlRecordImpl other = (BeansXmlRecordImpl) obj;
+            EnabledClassImpl other = (EnabledClassImpl) obj;
             if (enabled == null) {
                 if (other.enabled != null) {
                     return false;
@@ -128,9 +126,6 @@ public class BeansXmlRecordBuilder {
             } else if (!priority.equals(other.priority)) {
                 return false;
             }
-            if (stereotype != other.stereotype) {
-                return false;
-            }
             if (value == null) {
                 if (other.value != null) {
                     return false;
@@ -143,7 +138,19 @@ public class BeansXmlRecordBuilder {
 
         @Override
         public String toString() {
-            return "BeansXmlRecordImpl [enabled=" + enabled + ", priority=" + priority + ", value=" + value + "]";
+            return "EnabledClass [enabled=" + enabled + ", priority=" + priority + ", value=" + value + "]";
+        }
+    }
+
+    private static class EnabledStereotypeImpl extends EnabledClassImpl implements EnabledStereotype {
+
+        public EnabledStereotypeImpl(Boolean enabled, Integer priority, String value) {
+            super(enabled, priority, value);
+        }
+
+        @Override
+        public String toString() {
+            return "EnabledStereotype [enabled=" + isEnabled() + ", priority=" + getPriority() + ", value=" + getValue() + "]";
         }
     }
 }

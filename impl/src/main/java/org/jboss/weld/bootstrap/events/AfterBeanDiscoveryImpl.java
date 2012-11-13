@@ -33,6 +33,7 @@ import org.jboss.weld.bean.CustomDecoratorWrapper;
 import org.jboss.weld.bean.attributes.ExternalBeanAttributesFactory;
 import org.jboss.weld.bootstrap.BeanDeployment;
 import org.jboss.weld.bootstrap.ContextHolder;
+import org.jboss.weld.bootstrap.enablement.EnablementBuilder;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -44,12 +45,12 @@ import org.jboss.weld.util.bean.WrappedBeanHolder;
 
 public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implements AfterBeanDiscovery {
 
-    public static void fire(BeanManagerImpl beanManager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, Collection<ContextHolder<? extends Context>> contexts) {
-        new AfterBeanDiscoveryImpl(beanManager, deployment, beanDeployments, contexts).fire();
+    public static void fire(BeanManagerImpl beanManager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, Collection<ContextHolder<? extends Context>> contexts, EnablementBuilder enablementBuilder) {
+        new AfterBeanDiscoveryImpl(beanManager, deployment, beanDeployments, contexts, enablementBuilder).fire();
     }
 
-    protected AfterBeanDiscoveryImpl(BeanManagerImpl beanManager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, Collection<ContextHolder<? extends Context>> contexts) {
-        super(beanManager, AfterBeanDiscovery.class, beanDeployments, deployment, contexts);
+    protected AfterBeanDiscoveryImpl(BeanManagerImpl beanManager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, Collection<ContextHolder<? extends Context>> contexts, EnablementBuilder enablementBuilder) {
+        super(beanManager, AfterBeanDiscovery.class, beanDeployments, deployment, contexts, enablementBuilder);
     }
 
     public void addDefinitionError(Throwable t) {

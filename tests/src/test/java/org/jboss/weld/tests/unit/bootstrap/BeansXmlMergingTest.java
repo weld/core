@@ -27,7 +27,7 @@ import java.util.Set;
 
 import org.jboss.weld.bootstrap.WeldBootstrap;
 import org.jboss.weld.bootstrap.spi.BeansXml;
-import org.jboss.weld.bootstrap.spi.BeansXmlRecord;
+import org.jboss.weld.bootstrap.spi.EnabledClass;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.testng.annotations.Test;
 
@@ -47,7 +47,7 @@ public class BeansXmlMergingTest {
 
         assertEquals(2, beansXml.getEnabledAlternatives().size());
         Set<String> alternativeClassNames = new HashSet<String>();
-        for (Metadata<BeansXmlRecord> record : beansXml.getEnabledAlternatives()) {
+        for (Metadata<EnabledClass> record : beansXml.getEnabledAlternatives()) {
             alternativeClassNames.add(record.getValue().getValue());
         }
         assertTrue(alternativeClassNames.contains("org.jboss.weld.tests.unit.bootstrap.xml.Stereo"));

@@ -2,7 +2,7 @@ package org.jboss.weld.tests.unit.deployment.structure.nonTransitiveResolution;
 
 import com.google.common.base.Function;
 import org.jboss.weld.bootstrap.spi.BeansXml;
-import org.jboss.weld.bootstrap.spi.BeansXmlRecord;
+import org.jboss.weld.bootstrap.spi.EnabledClass;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.bootstrap.spi.Scanning;
 import org.jboss.weld.metadata.MetadataImpl;
@@ -16,11 +16,11 @@ import static org.jboss.weld.bootstrap.spi.Scanning.EMPTY_SCANNING;
 
 public class BeansXmlImpl implements BeansXml {
 
-    private static class LegacyBeansXmlRecord implements BeansXmlRecord {
+    private static class LegacyEnabledClass implements EnabledClass {
 
         private final String value;
 
-        public LegacyBeansXmlRecord(String value) {
+        public LegacyEnabledClass(String value) {
             this.value = value;
         }
 
@@ -35,23 +35,19 @@ public class BeansXmlImpl implements BeansXml {
         public String getValue() {
             return value;
         }
-
-        public boolean isStereotype() {
-            return false;
-        }
     }
 
-    private static class AddMetadataFunction<T> implements Function<String, Metadata<BeansXmlRecord>> {
+    private static class AddMetadataFunction<T> implements Function<String, Metadata<EnabledClass>> {
 
-        public Metadata<BeansXmlRecord> apply(String from) {
-            return new MetadataImpl<BeansXmlRecord>(new LegacyBeansXmlRecord(from), "unknown");
+        public Metadata<EnabledClass> apply(String from) {
+            return new MetadataImpl<EnabledClass>(new LegacyEnabledClass(from), "unknown");
         }
 
     }
 
-    private final List<Metadata<BeansXmlRecord>> alternatives;
-    private final List<Metadata<BeansXmlRecord>> decorators;
-    private final List<Metadata<BeansXmlRecord>> interceptors;
+    private final List<Metadata<EnabledClass>> alternatives;
+    private final List<Metadata<EnabledClass>> decorators;
+    private final List<Metadata<EnabledClass>> interceptors;
     private final Scanning scanning;
 
 
@@ -74,15 +70,15 @@ public class BeansXmlImpl implements BeansXml {
         this.scanning = EMPTY_SCANNING;
     }
 
-    public List<Metadata<BeansXmlRecord>> getEnabledAlternatives() {
+    public List<Metadata<EnabledClass>> getEnabledAlternatives() {
         return alternatives;
     }
 
-    public List<Metadata<BeansXmlRecord>> getEnabledDecorators() {
+    public List<Metadata<EnabledClass>> getEnabledDecorators() {
         return decorators;
     }
 
-    public List<Metadata<BeansXmlRecord>> getEnabledInterceptors() {
+    public List<Metadata<EnabledClass>> getEnabledInterceptors() {
         return interceptors;
     }
 

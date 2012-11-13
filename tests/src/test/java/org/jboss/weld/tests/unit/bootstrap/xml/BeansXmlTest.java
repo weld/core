@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.tests.unit.bootstrap.xml;
 
+import static org.testng.Assert.assertEquals;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -25,17 +27,15 @@ import java.util.List;
 import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.TestContainer;
 import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.TestContainer.Runner;
 import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.TestContainer.Runner.Runnable;
+import org.jboss.weld.bootstrap.enablement.ModuleEnablement;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.logging.messages.XmlMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.manager.Enabled;
 import org.jboss.weld.manager.api.WeldManager;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-
-import static org.testng.Assert.assertEquals;
 
 @SuppressWarnings("unchecked")
 public class BeansXmlTest {
@@ -71,7 +71,7 @@ public class BeansXmlTest {
         createRunner("alternative.xml").run(new Runnable() {
 
             public void run(WeldManager beanManager) {
-                Enabled enabled = ((BeanManagerImpl) beanManager).getEnabled();
+                ModuleEnablement enabled = ((BeanManagerImpl) beanManager).getEnabled();
                 assertEquals(1, enabled.getAlternatives().size());
                 assertEquals(Alt.class, enabled.getAlternatives().iterator().next().getValue());
             }
@@ -84,7 +84,7 @@ public class BeansXmlTest {
         createRunner("decorator.xml").run(new Runnable() {
 
             public void run(WeldManager beanManager) {
-                Enabled enabled = ((BeanManagerImpl) beanManager).getEnabled();
+                ModuleEnablement enabled = ((BeanManagerImpl) beanManager).getEnabled();
                 assertEquals(1, enabled.getDecorators().size());
                 assertEquals(Dec.class, enabled.getDecorators().iterator().next().getValue());
 
@@ -97,7 +97,7 @@ public class BeansXmlTest {
         createRunner("interceptor.xml").run(new Runnable() {
 
             public void run(WeldManager beanManager) {
-                Enabled enabled = ((BeanManagerImpl) beanManager).getEnabled();
+                ModuleEnablement enabled = ((BeanManagerImpl) beanManager).getEnabled();
                 assertEquals(1, enabled.getInterceptors().size());
                 assertEquals(Int.class, enabled.getInterceptors().iterator().next().getValue());
             }
@@ -109,7 +109,7 @@ public class BeansXmlTest {
         createRunner("alternative.xml", "decorator.xml", "interceptor.xml").run(new Runnable() {
 
             public void run(WeldManager beanManager) {
-                Enabled enabled = ((BeanManagerImpl) beanManager).getEnabled();
+                ModuleEnablement enabled = ((BeanManagerImpl) beanManager).getEnabled();
                 Assert.assertEquals(1, enabled.getAlternatives().size());
                 Assert.assertEquals(Alt.class, enabled.getAlternatives().iterator().next().getValue());
                 Assert.assertEquals(1, enabled.getInterceptors().size());
@@ -131,7 +131,7 @@ public class BeansXmlTest {
         createRunner("namespaced.xml").run(new Runnable() {
 
             public void run(WeldManager beanManager) {
-                Enabled enabled = ((BeanManagerImpl) beanManager).getEnabled();
+                ModuleEnablement enabled = ((BeanManagerImpl) beanManager).getEnabled();
                 assertEquals(1, enabled.getAlternatives().size());
                 assertEquals(Alt.class, enabled.getAlternatives().iterator().next().getValue());
             }
@@ -144,7 +144,7 @@ public class BeansXmlTest {
         createRunner("nonDefaultNamespaced.xml").run(new Runnable() {
 
             public void run(WeldManager beanManager) {
-                Enabled enabled = ((BeanManagerImpl) beanManager).getEnabled();
+                ModuleEnablement enabled = ((BeanManagerImpl) beanManager).getEnabled();
                 assertEquals(1, enabled.getAlternatives().size());
                 assertEquals(Alt.class, enabled.getAlternatives().iterator().next().getValue());
             }
@@ -159,7 +159,7 @@ public class BeansXmlTest {
         createRunner("nonPrettyPrinted.xml").run(new Runnable() {
 
             public void run(WeldManager beanManager) {
-                Enabled enabled = ((BeanManagerImpl) beanManager).getEnabled();
+                ModuleEnablement enabled = ((BeanManagerImpl) beanManager).getEnabled();
                 assertEquals(1, enabled.getAlternatives().size());
                 assertEquals(Alt.class, enabled.getAlternatives().iterator().next().getValue());
             }

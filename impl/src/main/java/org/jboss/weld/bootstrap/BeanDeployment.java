@@ -51,6 +51,8 @@ import org.jboss.weld.bean.builtin.ee.UserTransactionBean;
 import org.jboss.weld.bootstrap.api.Environment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
+import org.jboss.weld.bootstrap.enablement.EnablementBuilder;
+import org.jboss.weld.bootstrap.enablement.ModuleEnablementBuilder;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Filter;
 import org.jboss.weld.bootstrap.spi.Metadata;
@@ -94,9 +96,9 @@ public class BeanDeployment {
     private final BeanManagerImpl beanManager;
     private final BeanDeployer beanDeployer;
     private final Collection<ContextHolder<? extends Context>> contexts;
-    private final EnabledBuilder enabledBuilder;
+    private final EnablementBuilder enablementBuilder;
 
-    public BeanDeployment(BeanDeploymentArchive beanDeploymentArchive, BeanManagerImpl deploymentManager, ServiceRegistry deploymentServices, Collection<ContextHolder<? extends Context>> contexts) {
+    public BeanDeployment(BeanDeploymentArchive beanDeploymentArchive, BeanManagerImpl deploymentManager, ServiceRegistry deploymentServices, Collection<ContextHolder<? extends Context>> contexts, EnablementBuilder enablementBuilder) {
         this.beanDeploymentArchive = beanDeploymentArchive;
         EjbDescriptors ejbDescriptors = new EjbDescriptors();
 
@@ -124,7 +126,6 @@ public class BeanDeployment {
         services.add(WSApiAbstraction.class, new WSApiAbstraction(resourceLoader));
         services.add(JtaApiAbstraction.class, new JtaApiAbstraction(resourceLoader));
         this.beanManager = BeanManagerImpl.newManager(deploymentManager, beanDeploymentArchive.getId(), services);
-        this.enabledBuilder = EnabledBuilder.of(beanDeploymentArchive.getBeansXml(), resourceLoader);
         services.add(InjectionTargetService.class, new InjectionTargetService(beanManager));
         services.add(EnumService.class, new EnumService(beanManager));
         if (beanManager.getServices().contains(EjbServices.class)) {
@@ -142,6 +143,8 @@ public class BeanDeployment {
         // Must at the Manager bean straight away, as it can be injected during startup!
         beanManager.addBean(new BeanManagerBean(beanManager));
         this.contexts = contexts;
+        this.enablementBuilder = enablementBuilder;
+        enablementBuilder.registerBeanDeployment(this);
     }
 
     public BeanManagerImpl getBeanManager() {
@@ -203,8 +206,7 @@ public class BeanDeployment {
      * Initializes Enabled after ProcessModule is fired.
      */
     public void createEnabled() {
-        beanManager.setEnabled(enabledBuilder.create());
-        enabledBuilder.clear(); // not needed anymore
+        beanManager.setEnabled(enablementBuilder.getModuleEnablementBuilder(this).create());
         log.debug(ENABLED_ALTERNATIVES, this.beanManager, beanManager.getEnabled().getAlternatives());
         log.debug(ENABLED_DECORATORS, this.beanManager, beanManager.getEnabled().getDecorators());
         log.debug(ENABLED_INTERCEPTORS, this.beanManager, beanManager.getEnabled().getInterceptors());
@@ -267,7 +269,7 @@ public class BeanDeployment {
         beanDeployer.registerCdiInterceptorsForMessageDrivenBeans();
     }
 
-    public EnabledBuilder getEnabledBuilder() {
-        return enabledBuilder;
+    public ModuleEnablementBuilder getModuleEnablementBuilder() {
+        return enablementBuilder.getModuleEnablementBuilder(this);
     }
 }

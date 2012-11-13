@@ -79,6 +79,7 @@ import org.jboss.weld.bean.InterceptorImpl;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bootstrap.SpecializationAndEnablementRegistry;
+import org.jboss.weld.bootstrap.enablement.ModuleEnablement;
 import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.ejb.spi.BusinessInterfaceDescriptor;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
@@ -95,7 +96,6 @@ import org.jboss.weld.injection.spi.ResourceInjectionServices;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
 import org.jboss.weld.interceptor.util.InterceptionTypeRegistry;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.manager.Enabled;
 import org.jboss.weld.metadata.cache.InterceptorBindingModel;
 import org.jboss.weld.metadata.cache.MergedStereotypes;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
@@ -269,13 +269,13 @@ public class Beans {
         }
     }
 
-    public static boolean isBeanEnabled(Bean<?> bean, Enabled enabled) {
+    public static boolean isBeanEnabled(Bean<?> bean, ModuleEnablement enabled) {
         if (bean.isAlternative()) {
-            if (enabled.getAlternative(bean.getBeanClass()) != null) {
+            if (enabled.isAlternativeEnabled(bean.getBeanClass())) {
                 return true;
             } else {
                 for (Class<? extends Annotation> stereotype : bean.getStereotypes()) {
-                    if (enabled.getAlternative(stereotype) != null) {
+                    if (enabled.isAlternativeEnabled(stereotype)) {
                         return true;
                     }
                 }
@@ -285,9 +285,9 @@ public class Beans {
             AbstractProducerBean<?, ?, ?> receiverBean = (AbstractProducerBean<?, ?, ?>) bean;
             return isBeanEnabled(receiverBean.getDeclaringBean(), enabled);
         } else if (bean instanceof DecoratorImpl<?>) {
-            return enabled.getDecorator(bean.getBeanClass()) != null;
+            return enabled.isDecoratorEnabled(bean.getBeanClass());
         } else if (bean instanceof InterceptorImpl<?>) {
-            return enabled.getInterceptor(bean.getBeanClass()) != null;
+            return enabled.isInterceptorEnabled(bean.getBeanClass());
         } else {
             return true;
         }

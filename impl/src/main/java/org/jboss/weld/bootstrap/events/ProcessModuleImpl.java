@@ -34,12 +34,14 @@ import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.ProcessModule;
 
 import org.jboss.weld.bootstrap.BeanDeployment;
+import org.jboss.weld.bootstrap.enablement.ModuleEnablementBuilder;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.event.ExtensionObserverMethodImpl;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.logging.messages.XmlMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.MetadataImpl;
+import org.jboss.weld.util.collections.ListToSet;
 import org.jboss.weld.util.collections.ListView;
 import org.jboss.weld.util.collections.SetView;
 import org.jboss.weld.util.collections.ViewProvider;
@@ -59,10 +61,12 @@ public class ProcessModuleImpl extends AbstractDeploymentContainerEvent implemen
 
     private final BeanDeployment deployment;
     private final ClassMetadaViewProvider viewProvider = new ClassMetadaViewProvider();
+    private final ModuleEnablementBuilder moduleEnablementBuilder;
 
     protected ProcessModuleImpl(BeanManagerImpl beanManager, BeanDeployment deployment) {
         super(beanManager, ProcessModule.class, EMPTY_TYPES);
         this.deployment = deployment;
+        this.moduleEnablementBuilder = deployment.getModuleEnablementBuilder();
     }
 
     @Override
@@ -70,7 +74,19 @@ public class ProcessModuleImpl extends AbstractDeploymentContainerEvent implemen
         return new SetView<Metadata<Class<?>>, Class<?>>() {
             @Override
             protected Set<Metadata<Class<?>>> getDelegate() {
-                return deployment.getEnabledBuilder().getAlternatives();
+                // TODO: this is a temporary workaround until ProcessModule.getAlternatives() is changed to return a List instead of a Set
+                return new ListToSet<Metadata<Class<?>>>() {
+
+                    @Override
+                    public boolean add(Metadata<Class<?>> e) {
+                        return delegate().add(e);
+                    }
+
+                    @Override
+                    protected List<Metadata<Class<?>>> delegate() {
+                        return moduleEnablementBuilder.getAlternatives();
+                    }
+                };
             }
 
             @Override
@@ -85,7 +101,7 @@ public class ProcessModuleImpl extends AbstractDeploymentContainerEvent implemen
         return new ListView<Metadata<Class<?>>, Class<?>>() {
             @Override
             protected List<Metadata<Class<?>>> getDelegate() {
-                return deployment.getEnabledBuilder().getInterceptors();
+                return moduleEnablementBuilder.getInterceptors();
             }
 
             @Override
@@ -101,7 +117,7 @@ public class ProcessModuleImpl extends AbstractDeploymentContainerEvent implemen
 
             @Override
             protected List<Metadata<Class<?>>> getDelegate() {
-                return deployment.getEnabledBuilder().getDecorators();
+                return moduleEnablementBuilder.getDecorators();
             }
 
             @Override

@@ -42,7 +42,7 @@ public class TypeSafeDecoratorResolver extends AbstractTypeSafeBeanResolver<Deco
     protected boolean matches(Resolvable resolvable, Decorator<?> bean) {
         return rules.matches(Collections.singleton(bean.getDelegateType()), resolvable.getTypes())
                 && Beans.containsAllQualifiers(QualifierInstance.qualifiers(getBeanManager(), bean.getDelegateQualifiers()), resolvable.getQualifiers())
-                && getBeanManager().getEnabled().getDecorator(bean.getBeanClass()) != null;
+                && getBeanManager().getEnabled().isDecoratorEnabled(bean.getBeanClass());
     }
 
     @Override

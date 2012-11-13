@@ -30,6 +30,7 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.builtin.ExtensionBean;
+import org.jboss.weld.bootstrap.enablement.EnablementBuilder;
 import org.jboss.weld.bootstrap.events.ContainerLifecycleEvents;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
@@ -52,14 +53,16 @@ public class ExtensionBeanDeployer {
     private final Map<BeanDeploymentArchive, BeanDeployment> beanDeployments;
     private final Collection<ContextHolder<? extends Context>> contexts;
     private final ContainerLifecycleEvents containerLifecycleEventObservers;
+    private final EnablementBuilder enablementBuilder;
 
-    public ExtensionBeanDeployer(BeanManagerImpl manager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, Collection<ContextHolder<? extends Context>> contexts) {
+    public ExtensionBeanDeployer(BeanManagerImpl manager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, Collection<ContextHolder<? extends Context>> contexts, EnablementBuilder enablementBuilder) {
         this.beanManager = manager;
         this.extensions = new HashSet<Metadata<Extension>>();
         this.deployment = deployment;
         this.beanDeployments = beanDeployments;
         this.contexts = contexts;
         this.containerLifecycleEventObservers = beanManager.getServices().get(ContainerLifecycleEvents.class);
+        this.enablementBuilder = enablementBuilder;
     }
 
     public ExtensionBeanDeployer deployBeans() {
@@ -68,7 +71,7 @@ public class ExtensionBeanDeployer {
             EnhancedAnnotatedType<Extension> clazz = cast(classTransformer.getEnhancedAnnotatedType(extension.getValue().getClass()));
 
             // Locate the BeanDeployment for this extension
-            BeanDeployment beanDeployment = DeploymentStructures.getOrCreateBeanDeployment(deployment, beanManager, beanDeployments, contexts, clazz.getJavaClass());
+            BeanDeployment beanDeployment = DeploymentStructures.getOrCreateBeanDeployment(deployment, beanManager, beanDeployments, contexts, clazz.getJavaClass(), enablementBuilder);
 
             ExtensionBean bean = new ExtensionBean(beanDeployment.getBeanManager(), clazz, extension);
             Set<ObserverInitializationContext<?, ?>> observerMethodInitializers = new HashSet<ObserverInitializationContext<?, ?>>();

@@ -61,7 +61,7 @@ public class AccessibleManagerResolutionTest {
         this.services.add(ClassTransformer.class, classTransformer);
         this.services.add(SharedObjectCache.class, new SharedObjectCache());
         this.services.add(GlobalObserverNotifierService.class, new GlobalObserverNotifierService(services));
-        this.services.add(InjectionTargetService.class, new InjectionTargetService(BeanManagerImpl.newRootManager("foo", services, EMPTY_ENABLED)));
+        this.services.add(InjectionTargetService.class, new InjectionTargetService(BeanManagerImpl.newRootManager("foo", services)));
         this.services.add(SpecializationAndEnablementRegistry.class, new SpecializationAndEnablementRegistry());
     }
 
@@ -76,9 +76,9 @@ public class AccessibleManagerResolutionTest {
 
     @Test
     public void testAccessibleDynamicallySingleLevel() {
-        BeanManagerImpl root = BeanManagerImpl.newRootManager("root", services, EMPTY_ENABLED);
+        BeanManagerImpl root = BeanManagerImpl.newRootManager("root", services);
         Container.initialize(root, services);
-        BeanManagerImpl child = BeanManagerImpl.newRootManager("child", services, EMPTY_ENABLED);
+        BeanManagerImpl child = BeanManagerImpl.newRootManager("child", services);
         addBean(root, Cow.class);
         Assert.assertEquals(1, root.getBeans(Cow.class).size());
         Assert.assertEquals(0, child.getBeans(Cow.class).size());
@@ -92,12 +92,12 @@ public class AccessibleManagerResolutionTest {
 
     @Test
     public void testAccessibleThreeLevelsWithMultiple() {
-        BeanManagerImpl root = BeanManagerImpl.newRootManager("root", services, EMPTY_ENABLED);
+        BeanManagerImpl root = BeanManagerImpl.newRootManager("root", services);
         Container.initialize(root, services);
-        BeanManagerImpl child = BeanManagerImpl.newRootManager("child", services, EMPTY_ENABLED);
-        BeanManagerImpl child1 = BeanManagerImpl.newRootManager("child1", services, EMPTY_ENABLED);
-        BeanManagerImpl grandchild = BeanManagerImpl.newRootManager("grandchild", services, EMPTY_ENABLED);
-        BeanManagerImpl greatGrandchild = BeanManagerImpl.newRootManager("greatGrandchild", services, EMPTY_ENABLED);
+        BeanManagerImpl child = BeanManagerImpl.newRootManager("child", services);
+        BeanManagerImpl child1 = BeanManagerImpl.newRootManager("child1", services);
+        BeanManagerImpl grandchild = BeanManagerImpl.newRootManager("grandchild", services);
+        BeanManagerImpl greatGrandchild = BeanManagerImpl.newRootManager("greatGrandchild", services);
         child.addAccessibleBeanManager(root);
         grandchild.addAccessibleBeanManager(child1);
         grandchild.addAccessibleBeanManager(child);
@@ -133,10 +133,10 @@ public class AccessibleManagerResolutionTest {
 
     @Test
     public void testSameManagerAddedTwice() {
-        BeanManagerImpl root = BeanManagerImpl.newRootManager("root", services, EMPTY_ENABLED);
+        BeanManagerImpl root = BeanManagerImpl.newRootManager("root", services);
         Container.initialize(root, services);
-        BeanManagerImpl child = BeanManagerImpl.newRootManager("child", services, EMPTY_ENABLED);
-        BeanManagerImpl grandchild = BeanManagerImpl.newRootManager("grandchild", services, EMPTY_ENABLED);
+        BeanManagerImpl child = BeanManagerImpl.newRootManager("child", services);
+        BeanManagerImpl grandchild = BeanManagerImpl.newRootManager("grandchild", services);
         grandchild.addAccessibleBeanManager(child);
         child.addAccessibleBeanManager(root);
         grandchild.addAccessibleBeanManager(root);
@@ -156,10 +156,10 @@ public class AccessibleManagerResolutionTest {
 
     @Test
     public void testCircular() {
-        BeanManagerImpl root = BeanManagerImpl.newRootManager("root", services, EMPTY_ENABLED);
+        BeanManagerImpl root = BeanManagerImpl.newRootManager("root", services);
         Container.initialize(root, services);
-        BeanManagerImpl child = BeanManagerImpl.newRootManager("child", services, EMPTY_ENABLED);
-        BeanManagerImpl grandchild = BeanManagerImpl.newRootManager("grandchild", services, EMPTY_ENABLED);
+        BeanManagerImpl child = BeanManagerImpl.newRootManager("child", services);
+        BeanManagerImpl grandchild = BeanManagerImpl.newRootManager("grandchild", services);
         grandchild.addAccessibleBeanManager(child);
         child.addAccessibleBeanManager(root);
         grandchild.addAccessibleBeanManager(root);

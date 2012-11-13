@@ -35,7 +35,8 @@ import java.util.Set;
 import javax.enterprise.inject.spi.ProcessModule;
 
 import org.jboss.weld.bootstrap.spi.BeansXml;
-import org.jboss.weld.bootstrap.spi.BeansXmlRecord;
+import org.jboss.weld.bootstrap.spi.EnabledClass;
+import org.jboss.weld.bootstrap.spi.EnabledStereotype;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.logging.messages.ValidatorMessage;
@@ -57,7 +58,7 @@ import com.google.common.base.Function;
  */
 public class EnabledBuilder {
 
-    private static class ClassLoader<T> implements Function<Metadata<BeansXmlRecord>, Metadata<Class<? extends T>>> {
+    private static class ClassLoader<T> implements Function<Metadata<EnabledClass>, Metadata<Class<? extends T>>> {
 
         private final ResourceLoader resourceLoader;
 
@@ -65,7 +66,7 @@ public class EnabledBuilder {
             this.resourceLoader = resourceLoader;
         }
 
-        public Metadata<Class<? extends T>> apply(Metadata<BeansXmlRecord> from) {
+        public Metadata<Class<? extends T>> apply(Metadata<EnabledClass> from) {
             String location = from.getLocation();
             MetadataImpl<Class<? extends T>> metadata = null;
             try {
@@ -76,7 +77,7 @@ public class EnabledBuilder {
             } catch (Exception e) {
                 throw new DeploymentException(ERROR_LOADING_BEANS_XML_ENTRY, e, from.getValue(), from.getLocation());
             }
-            if (from.getValue().isStereotype()) {
+            if (from.getValue() instanceof EnabledStereotype) {
                 if (!metadata.getValue().isAnnotation()) {
                     throw new DeploymentException(ALTERNATIVE_STEREOTYPE_NOT_STEREOTYPE, metadata.getValue());
                 }

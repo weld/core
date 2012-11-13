@@ -347,6 +347,10 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
         }
     }
 
+    public ResourceLoader getResourceLoader() {
+        return resourceLoader;
+    }
+
     public void cleanup() {
         getEnvironment().cleanup();
     }

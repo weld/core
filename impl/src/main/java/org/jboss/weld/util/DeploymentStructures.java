@@ -18,6 +18,7 @@ package org.jboss.weld.util;
 
 import org.jboss.weld.bootstrap.BeanDeployment;
 import org.jboss.weld.bootstrap.ContextHolder;
+import org.jboss.weld.bootstrap.enablement.EnablementBuilder;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.exceptions.IllegalStateException;
@@ -34,14 +35,14 @@ public class DeploymentStructures {
     private DeploymentStructures() {
     }
 
-    public static BeanDeployment getOrCreateBeanDeployment(Deployment deployment, BeanManagerImpl deploymentManager, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, Collection<ContextHolder<? extends Context>> contexts, Class<?> clazz) {
+    public static BeanDeployment getOrCreateBeanDeployment(Deployment deployment, BeanManagerImpl deploymentManager, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, Collection<ContextHolder<? extends Context>> contexts, Class<?> clazz, EnablementBuilder enablementBuilder) {
         BeanDeploymentArchive beanDeploymentArchive = deployment.loadBeanDeploymentArchive(clazz);
         if (beanDeploymentArchive == null) {
             throw new IllegalStateException(UNABLE_TO_FIND_BEAN_DEPLOYMENT_ARCHIVE, clazz);
         } else {
             BeanDeployment beanDeployment = beanDeployments.get(beanDeploymentArchive);
             if (beanDeployment == null) {
-                beanDeployment = new BeanDeployment(beanDeploymentArchive, deploymentManager, deployment.getServices(), contexts);
+                beanDeployment = new BeanDeployment(beanDeploymentArchive, deploymentManager, deployment.getServices(), contexts, enablementBuilder);
                 beanDeployments.put(beanDeploymentArchive, beanDeployment);
             }
             return beanDeployment;

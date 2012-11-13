@@ -35,7 +35,7 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.jboss.weld.bootstrap.spi.BeansXml;
-import org.jboss.weld.bootstrap.spi.BeansXmlRecord;
+import org.jboss.weld.bootstrap.spi.EnabledClass;
 import org.jboss.weld.bootstrap.spi.Filter;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.exceptions.IllegalStateException;
@@ -129,9 +129,9 @@ public class BeansXmlParser {
     }
 
     public BeansXml parse(Iterable<URL> urls, boolean removeDuplicates) {
-        List<Metadata<BeansXmlRecord>> alternatives = new ArrayList<Metadata<BeansXmlRecord>>();
-        List<Metadata<BeansXmlRecord>> decorators = new ArrayList<Metadata<BeansXmlRecord>>();
-        List<Metadata<BeansXmlRecord>> interceptors = new ArrayList<Metadata<BeansXmlRecord>>();
+        List<Metadata<EnabledClass>> alternatives = new ArrayList<Metadata<EnabledClass>>();
+        List<Metadata<EnabledClass>> decorators = new ArrayList<Metadata<EnabledClass>>();
+        List<Metadata<EnabledClass>> interceptors = new ArrayList<Metadata<EnabledClass>>();
         List<Metadata<Filter>> includes = new ArrayList<Metadata<Filter>>();
         List<Metadata<Filter>> excludes = new ArrayList<Metadata<Filter>>();
         URL beansXmlUrl = null;
@@ -151,10 +151,10 @@ public class BeansXmlParser {
         return new BeansXmlImpl(alternatives, decorators, interceptors, new ScanningImpl(includes, excludes), beansXmlUrl);
     }
 
-    private void addTo(List<Metadata<BeansXmlRecord>> list, List<Metadata<BeansXmlRecord>> listToAdd, boolean removeDuplicates) {
+    private void addTo(List<Metadata<EnabledClass>> list, List<Metadata<EnabledClass>> listToAdd, boolean removeDuplicates) {
         if (removeDuplicates) {
-            List<Metadata<BeansXmlRecord>> filteredListToAdd = new ArrayList<Metadata<BeansXmlRecord>>(listToAdd.size());
-            for (Metadata<BeansXmlRecord> metadata : listToAdd) {
+            List<Metadata<EnabledClass>> filteredListToAdd = new ArrayList<Metadata<EnabledClass>>(listToAdd.size());
+            for (Metadata<EnabledClass> metadata : listToAdd) {
                 if (!alreadyAdded(metadata, list)) {
                     filteredListToAdd.add(metadata);
                 }
@@ -164,8 +164,8 @@ public class BeansXmlParser {
         list.addAll(listToAdd);
     }
 
-    private boolean alreadyAdded(Metadata<BeansXmlRecord> metadata, List<Metadata<BeansXmlRecord>> list) {
-        for (Metadata<BeansXmlRecord> existing : list) {
+    private boolean alreadyAdded(Metadata<EnabledClass> metadata, List<Metadata<EnabledClass>> list) {
+        for (Metadata<EnabledClass> existing : list) {
             if (existing.getValue().equals(metadata.getValue())) {
                 return true;
             }

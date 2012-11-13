@@ -759,7 +759,7 @@ public class Validator implements Service {
 
     private static boolean isInjectionPointSatisfied(InjectionPoint ij, Set<?> resolvedBeans, BeanManagerImpl beanManager) {
         if (ij.getBean() instanceof Decorator<?>) {
-            if (beanManager.getEnabled().getDecorator(ij.getBean().getBeanClass()) != null) {
+            if (beanManager.getEnabled().isDecoratorEnabled(ij.getBean().getBeanClass())) {
                 return resolvedBeans.size() > 0;
             } else {
                 return true;

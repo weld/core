@@ -14,28 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.util.collections;
-
-import java.util.AbstractSet;
-import java.util.Iterator;
-import java.util.List;
+package org.jboss.weld.bootstrap.enablement;
 
 /**
- * Provides a set-like read-only view on a given {@link List}. Modification of the underlying list is not supported.
+ * Represents a class (interceptor/decorator/alternative) that is enabled for a bean archive as defined in CDI 1.0.
+ *
  * @author Jozef Hartinger
  *
  */
-public abstract class ListToSet<T> extends AbstractSet<T> {
+class LegacyEnablementRecord extends EnablementRecordWithPriority {
 
-    protected abstract List<T> delegate();
-
-    @Override
-    public Iterator<T> iterator() {
-        return delegate().iterator();
-    }
-
-    @Override
-    public int size() {
-        return delegate().size();
+    public LegacyEnablementRecord(String location, Class<?> enabledClass, int priority) {
+        super(location, enabledClass, priority);
     }
 }

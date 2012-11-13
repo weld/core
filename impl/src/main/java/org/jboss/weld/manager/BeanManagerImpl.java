@@ -107,6 +107,7 @@ import org.jboss.weld.bean.proxy.ClientProxyProvider;
 import org.jboss.weld.bean.proxy.DecorationHelper;
 import org.jboss.weld.bootstrap.Validator;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
+import org.jboss.weld.bootstrap.enablement.ModuleEnablement;
 import org.jboss.weld.bootstrap.events.ContainerLifecycleEvents;
 import org.jboss.weld.context.ContextNotActiveException;
 import org.jboss.weld.context.CreationalContextImpl;
@@ -220,7 +221,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     * archive accessibility, and the configuration for this bean deployment
     * archive
     */
-    private transient volatile Enabled enabled;
+    private transient volatile ModuleEnablement enabled;
     private final transient Set<CurrentActivity> currentActivities;
 
 
@@ -298,7 +299,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
      * @param serviceRegistry
      * @return
      */
-    public static BeanManagerImpl newRootManager(String id, ServiceRegistry serviceRegistry, Enabled enabled) {
+    public static BeanManagerImpl newRootManager(String id, ServiceRegistry serviceRegistry) {
         Map<Class<? extends Annotation>, List<Context>> contexts = new ConcurrentHashMap<Class<? extends Annotation>, List<Context>>();
 
         return new BeanManagerImpl(
@@ -313,7 +314,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                 new ClientProxyProvider(),
                 contexts,
                 new CopyOnWriteArraySet<CurrentActivity>(),
-                enabled,
+                ModuleEnablement.EMPTY_ENABLEMENT,
                 id,
                 new AtomicInteger());
     }
@@ -331,7 +332,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                 rootManager.getClientProxyProvider(),
                 rootManager.getContexts(),
                 new CopyOnWriteArraySet<CurrentActivity>(),
-                Enabled.EMPTY_ENABLED,
+                ModuleEnablement.EMPTY_ENABLEMENT,
                 id,
                 new AtomicInteger());
     }
@@ -382,7 +383,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
             ClientProxyProvider clientProxyProvider,
             Map<Class<? extends Annotation>, List<Context>> contexts,
             Set<CurrentActivity> currentActivities,
-            Enabled enabled,
+            ModuleEnablement enabled,
             String id,
             AtomicInteger childIds) {
         this.services = serviceRegistry;
@@ -508,11 +509,11 @@ public class BeanManagerImpl implements WeldManager, Serializable {
      *
      * @return
      */
-    public Enabled getEnabled() {
+    public ModuleEnablement getEnabled() {
         return enabled;
     }
 
-    public void setEnabled(Enabled enabled) {
+    public void setEnabled(ModuleEnablement enabled) {
         this.enabled = enabled;
     }
 
