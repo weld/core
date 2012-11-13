@@ -1,6 +1,12 @@
 package org.jboss.weld.tests.metadata.scanning;
 
+import static org.jboss.weld.tests.metadata.scanning.SystemPropertyExtension.SET_PROPERTY_1;
+import static org.jboss.weld.tests.metadata.scanning.SystemPropertyExtension.UNSET_PROPERTY_1;
+import static org.jboss.weld.tests.metadata.scanning.Utils.createBeansXml;
+import static org.junit.Assert.assertEquals;
+
 import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.Extension;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -10,43 +16,36 @@ import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.weld.tests.metadata.Qux;
 import org.jboss.weld.tests.metadata.scanning.jboss.Baz;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.jboss.weld.tests.metadata.scanning.Utils.createBeansXml;
-
 @RunWith(Arquillian.class)
-@Ignore("WELD-1059")
 public class SystemPropertyInvertedActivationTest {
 
-    public static final String TEST1_PROPERTY = SystemPropertyInvertedActivationTest.class + ".test1";
-    public static final String TEST2_PROPERTY = SystemPropertyInvertedActivationTest.class + ".test2";
-
     public static final Asset BEANS_XML = createBeansXml(
-            "<weld:scan>" +
-                    "<weld:include name=\"" + Bar.class.getName() + "\">" +
-                    "<weld:if-system-property name=\"!" + TEST1_PROPERTY + "\" />" +
-                    "</weld:include>" +
-                    "<weld:include name=\"" + Foo.class.getName() + "\">" +
-                    "<weld:if-system-property name=\"!" + TEST2_PROPERTY + "\" />" +
-                    "</weld:include>" +
-                    "</weld:scan>");
+            "<weld:scan>"
+                + "<weld:include name=\"" + Bar.class.getName() + "\">"
+                    + "<weld:if-system-property name=\"!" + SET_PROPERTY_1 + "\" />"
+                + "</weld:include>"
+                + "<weld:include name=\"" + Foo.class.getName() + "\">"
+                    + "<weld:if-system-property name=\"!" + UNSET_PROPERTY_1 + "\" />"
+                + "</weld:include>"
+            + "</weld:scan>");
 
     @Deployment
     public static Archive<?> deployment() {
-        System.setProperty(TEST1_PROPERTY, TEST1_PROPERTY);
-        return ShrinkWrap.create(JavaArchive.class).addClass(Utils.class)
+        return ShrinkWrap.create(JavaArchive.class)
                 .addClasses(Bar.class, Foo.class, Baz.class, Qux.class)
-                .addAsManifestResource(BEANS_XML, "beans.xml");
+                .addClass(Utils.class).addClasses(SystemPropertyExtension.class)
+                .addAsManifestResource(BEANS_XML, "beans.xml")
+                .addAsServiceProvider(Extension.class, SystemPropertyExtension.class);
     }
 
     @Test
     public void test(BeanManager beanManager) {
-        assert beanManager.getBeans(Bar.class).size() == 0;
-        assert beanManager.getBeans(Qux.class).size() == 0;
-        assert beanManager.getBeans(Foo.class).size() == 1;
-        assert beanManager.getBeans(Baz.class).size() == 0;
+        assertEquals(0, beanManager.getBeans(Bar.class).size());
+        assertEquals(1, beanManager.getBeans(Foo.class).size());
+        assertEquals(0, beanManager.getBeans(Qux.class).size());
+        assertEquals(0, beanManager.getBeans(Baz.class).size());
     }
-
 }
