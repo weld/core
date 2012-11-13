@@ -78,6 +78,7 @@ import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.bean.InterceptorImpl;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.SessionBean;
+import org.jboss.weld.bootstrap.SpecializationAndEnablementRegistry;
 import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.ejb.spi.BusinessInterfaceDescriptor;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
@@ -249,7 +250,7 @@ public class Beans {
      * @param beanManager the bean manager
      * @return The filtered beans
      */
-    public static <T extends Bean<?>> Set<T> removeDisabledAndSpecializedBeans(Set<T> beans, final BeanManagerImpl beanManager) {
+    public static <T extends Bean<?>> Set<T> removeDisabledAndSpecializedBeans(Set<T> beans, final BeanManagerImpl beanManager, final SpecializationAndEnablementRegistry registry) {
         if (beans.size() == 0) {
             return beans;
         } else {
@@ -258,11 +259,11 @@ public class Beans {
                 public boolean apply(T bean) {
                     if (bean instanceof AbstractProducerBean<?, ?, ?>) {
                         AbstractProducerBean<?, ?, ?> producer = cast(bean);
-                        if (beanManager.isSpecialized(producer.getDeclaringBean())) {
+                        if (registry.isSpecializedInAnyBeanDeployment(producer.getDeclaringBean())) {
                             return false;
                         }
                     }
-                    return isBeanEnabled(bean, beanManager.getEnabled()) && !beanManager.isSpecialized(bean);
+                    return isBeanEnabled(bean, beanManager.getEnabled()) && !registry.isSpecializedInAnyBeanDeployment(bean);
                 }
             });
         }

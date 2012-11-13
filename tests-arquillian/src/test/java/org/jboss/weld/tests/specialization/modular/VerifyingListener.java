@@ -20,7 +20,6 @@ import javax.inject.Inject;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
-import static org.jboss.weld.tests.util.Assert.*;
 
 @WebListener
 public class VerifyingListener implements ServletContextListener {
@@ -36,14 +35,14 @@ public class VerifyingListener implements ServletContextListener {
         assertTrue(bean1.getFactory() instanceof SpecializedFactory);
         assertTrue(bean1.getProduct().isUnsatisfied());
 
-        assertFalse(bean2.getFactory() instanceof SpecializedFactory);
-        assertFalse(bean2.getProduct().isUnsatisfied());
-        assertFalse(bean2.getProduct().isAmbiguous());
-        assertNotNull(bean2.getProduct().get());
+        assertTrue(bean2.getFactory().isUnsatisfied());
+        assertTrue(bean2.getProduct().isUnsatisfied());
     }
 
     public void assertTrue(boolean expression) {
-        
+        if (!expression) {
+            throw new IllegalStateException();
+        }
     }
 
     @Override

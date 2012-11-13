@@ -22,12 +22,12 @@ import javax.inject.Inject;
 public class InjectedBean2 {
 
     @Inject
-    private Factory factory;
+    private Instance<Factory> factory;
 
     @Inject
     private Instance<Product> product;
 
-    public Factory getFactory() {
+    public Instance<Factory> getFactory() {
         return factory;
     }
 

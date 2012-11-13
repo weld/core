@@ -25,6 +25,8 @@ import javax.enterprise.inject.spi.Bean;
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.MapMaker;
+
+import org.jboss.weld.bootstrap.SpecializationAndEnablementRegistry;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
 
@@ -39,10 +41,12 @@ public class NameBasedResolver {
 
         private final BeanManagerImpl beanManager;
         private final Iterable<? extends Bean<?>> allBeans;
+        private final SpecializationAndEnablementRegistry registry;
 
         private NameToBeanSet(BeanManagerImpl beanManager, Iterable<? extends Bean<?>> allBeans) {
             this.beanManager = beanManager;
             this.allBeans = allBeans;
+            this.registry = beanManager.getServices().get(SpecializationAndEnablementRegistry.class);
         }
 
         public Set<Bean<?>> apply(String from) {
@@ -53,7 +57,7 @@ public class NameBasedResolver {
                 }
             }
             //noinspection unchecked
-            return ImmutableSet.copyOf((Iterable) Beans.removeDisabledAndSpecializedBeans(matchedBeans, beanManager));
+            return ImmutableSet.copyOf((Iterable<Bean<?>>) Beans.removeDisabledAndSpecializedBeans(matchedBeans, beanManager, registry));
         }
 
     }

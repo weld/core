@@ -42,6 +42,7 @@ import com.google.common.collect.MapMaker;
 import com.google.common.primitives.Primitives;
 
 import org.jboss.weld.bean.AbstractProducerBean;
+import org.jboss.weld.bootstrap.SpecializationAndEnablementRegistry;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.LazyValueHolder;
@@ -58,6 +59,7 @@ public abstract class AbstractTypeSafeBeanResolver<T extends Bean<?>, C extends 
 
     private final BeanManagerImpl beanManager;
     private final ConcurrentMap<Set<Bean<?>>, Set<Bean<?>>> disambiguatedBeans;
+    private final SpecializationAndEnablementRegistry registry;
 
     private final LazyValueHolder<Map<Type, ArrayList<T>>> beansByType;
 
@@ -98,6 +100,7 @@ public abstract class AbstractTypeSafeBeanResolver<T extends Bean<?>, C extends 
     public AbstractTypeSafeBeanResolver(BeanManagerImpl beanManager, final Iterable<T> beans) {
         super(beans);
         this.beanManager = beanManager;
+        this.registry = beanManager.getServices().get(SpecializationAndEnablementRegistry.class);
         this.disambiguatedBeans = new MapMaker().makeComputingMap(new BeanDisambiguation());
         // beansByType stores a map of a type to all beans that are assignable to
         // that type. This means that it most cases we do not need to loop through
@@ -209,7 +212,7 @@ public abstract class AbstractTypeSafeBeanResolver<T extends Bean<?>, C extends 
 
     @Override
     protected Set<T> filterResult(Set<T> matched) {
-        return Beans.removeDisabledAndSpecializedBeans(matched, beanManager);
+        return Beans.removeDisabledAndSpecializedBeans(matched, beanManager, registry);
     }
 
     public <X> Set<Bean<? extends X>> resolve(Set<Bean<? extends X>> beans) {

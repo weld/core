@@ -299,6 +299,7 @@ public class WeldBootstrap implements Bootstrap {
             deploymentServices.add(CurrentInjectionPoint.class, registry.get(CurrentInjectionPoint.class));
             deploymentServices.add(GlobalObserverNotifierService.class, registry.get(GlobalObserverNotifierService.class));
             deploymentServices.add(ContainerLifecycleEvents.class, registry.get(ContainerLifecycleEvents.class));
+            deploymentServices.add(SpecializationAndEnablementRegistry.class, registry.get(SpecializationAndEnablementRegistry.class));
 
             this.environment = environment;
             this.deploymentManager = BeanManagerImpl.newRootManager("deployment", deploymentServices, EMPTY_ENABLED);
@@ -446,9 +447,6 @@ public class WeldBootstrap implements Bootstrap {
             for (Entry<BeanDeploymentArchive, BeanDeployment> entry : beanDeployments.entrySet()) {
                 entry.getValue().getBeanManager().getServices().get(InjectionTargetService.class).initialize();
                 entry.getValue().afterBeanDiscovery(environment);
-            }
-            for (BeanDeployment deployment : beanDeployments.values()) {
-                deployment.getBeanManager().initializeSpecialization();
             }
             Container.instance().putBeanDeployments(beanDeployments);
             Container.instance().setState(ContainerState.INITIALIZED);

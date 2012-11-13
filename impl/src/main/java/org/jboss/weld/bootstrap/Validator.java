@@ -556,8 +556,9 @@ public class Validator implements Service {
             accessibleNamespaces.add(namespace);
         }
 
+        SpecializationAndEnablementRegistry registry = beanManager.getServices().get(SpecializationAndEnablementRegistry.class);
         for (String name : namedAccessibleBeans.keySet()) {
-            Set<Bean<?>> resolvedBeans = beanManager.getBeanResolver().resolve(Beans.removeDisabledAndSpecializedBeans(namedAccessibleBeans.get(name), beanManager));
+            Set<Bean<?>> resolvedBeans = beanManager.getBeanResolver().resolve(Beans.removeDisabledAndSpecializedBeans(namedAccessibleBeans.get(name), beanManager, registry));
             if (resolvedBeans.size() > 1) {
                 throw new DeploymentException(AMBIGUOUS_EL_NAME, name, resolvedBeans);
             }
