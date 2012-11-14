@@ -25,7 +25,6 @@ import static org.jboss.weld.logging.messages.BootstrapMessage.JTA_UNAVAILABLE;
 import static org.jboss.weld.logging.messages.BootstrapMessage.MANAGER_NOT_INITIALIZED;
 import static org.jboss.weld.logging.messages.BootstrapMessage.UNSPECIFIED_REQUIRED_SERVICE;
 import static org.jboss.weld.logging.messages.BootstrapMessage.VALIDATING_BEANS;
-import static org.jboss.weld.manager.Enabled.EMPTY_ENABLED;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -487,6 +486,7 @@ public class WeldBootstrap implements Bootstrap {
             deploymentManager.getGlobalLenientObserverNotifier().clear();
             deploymentManager.getDecoratorResolver().clear();
             deploymentManager.getServices().cleanupAfterBoot();
+            enablementBuilder.clear();
             for (Entry<BeanDeploymentArchive, BeanDeployment> entry : beanDeployments.entrySet()) {
                 BeanManagerImpl beanManager = entry.getValue().getBeanManager();
                 beanManager.getBeanResolver().clear();
@@ -514,12 +514,12 @@ public class WeldBootstrap implements Bootstrap {
                     }
                 }
             }
+            for (BeanDeployment deployment : beanDeployments.values()) {
+                deployment.getBeanManager().getServices().get(EnumService.class).inject();
+                deployment.getBeanDeployer().cleanup();
+            }
+            return this;
         }
-        for (BeanDeployment deployment : beanDeployments.values()) {
-            deployment.getBeanManager().getServices().get(EnumService.class).inject();
-            deployment.getBeanDeployer().cleanup();
-        }
-        return this;
     }
 
     protected Collection<ContextHolder<? extends Context>> createContexts(ServiceRegistry services) {

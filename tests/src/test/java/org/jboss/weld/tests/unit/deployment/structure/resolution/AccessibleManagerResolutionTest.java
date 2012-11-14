@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.tests.unit.deployment.structure.resolution;
 
-import static org.jboss.weld.manager.Enabled.EMPTY_ENABLED;
-
 import java.util.Set;
 
 import javax.enterprise.inject.spi.Bean;

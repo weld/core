@@ -76,4 +76,12 @@ public class EnablementBuilder {
         }
         return moduleEnablementBuilders.get(deployment);
     }
+
+    public void clear() {
+        deployments.clear();
+        moduleEnablementBuilders.clear();
+        interceptors.clear();
+        decorators.clear();
+        alternatives.clear();
+    }
 }

@@ -248,4 +248,10 @@ class EnablementBuilderFragment {
             return new MetadataImpl<Class<?>>(input.getEnabledClass(), input.getLocation());
         }
     }
+
+    public void clear() {
+        globallyEnabledRecords.clear();
+        globallySetPriorities.clear();
+        localOverrides.clear();
+    }
 }
