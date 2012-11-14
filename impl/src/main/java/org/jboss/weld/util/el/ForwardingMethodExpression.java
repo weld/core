@@ -22,6 +22,7 @@ import javax.el.MethodInfo;
 
 /**
  * @author pmuir
+ * @author mluksa
  */
 public abstract class ForwardingMethodExpression extends MethodExpression {
 
@@ -51,7 +52,17 @@ public abstract class ForwardingMethodExpression extends MethodExpression {
 
     @Override
     public boolean equals(Object obj) {
-        return this == obj || delegate().equals(obj);
+        if (obj == null) {
+            return false;
+        }
+        if (obj == this) {
+            return true;
+        }
+        if (obj instanceof ForwardingMethodExpression) {
+            MethodExpression delegate = ((ForwardingMethodExpression) obj).delegate();
+            return delegate().equals(delegate);
+        }
+        return false;
     }
 
     @Override
