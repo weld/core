@@ -7,7 +7,7 @@
 	<container qualifier="weld" default="true">
 		<configuration>
 			<property name="enableConversationScope">true</property>
-		</configuration>
+        </configuration>
 	</container>
 
 	<container qualifier="jboss-as-7">
