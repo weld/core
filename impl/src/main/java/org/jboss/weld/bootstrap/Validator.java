@@ -143,6 +143,7 @@ import org.slf4j.cal10n.LocLogger;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
+import com.google.common.collect.Multiset.Entry;
 import com.google.common.collect.SetMultimap;
 
 /**
@@ -189,16 +190,6 @@ public class Validator implements Service {
     protected void validateRIBean(RIBean<?> bean, BeanManagerImpl beanManager, Collection<RIBean<?>> specializedBeans) {
         validateGeneralBean(bean, beanManager);
         if (!(bean instanceof NewManagedBean<?>) && !(bean instanceof NewSessionBean<?>)) {
-            if (bean instanceof AbstractBean<?, ?>) {
-                AbstractBean<?, ?> abstractBean = cast(bean);
-                if (abstractBean.isSpecializing()) {
-                    SpecializationAndEnablementRegistry registry = beanManager.getServices().get(SpecializationAndEnablementRegistry.class);
-                    boolean added = specializedBeans.addAll(registry.resolveSpecializedBeans(abstractBean));
-                    if (!added) {
-                        throw new InconsistentSpecializationException(BEAN_SPECIALIZED_TOO_MANY_TIMES, bean);
-                    }
-                }
-            }
             if ((bean instanceof AbstractClassBean<?>)) {
                 AbstractClassBean<?> classBean = (AbstractClassBean<?>) bean;
                 if (classBean.hasDecorators()) {
@@ -442,9 +433,19 @@ public class Validator implements Service {
         validateEnabledDecoratorClasses(manager);
         validateEnabledInterceptorClasses(manager);
         validateEnabledAlternatives(manager);
+        validateSpecialization(manager);
         validateDisposalMethods(environment);
         validateObserverMethods(environment.getObservers(), manager);
         validateBeanNames(manager);
+    }
+
+    public void validateSpecialization(BeanManagerImpl manager) {
+        SpecializationAndEnablementRegistry registry = manager.getServices().get(SpecializationAndEnablementRegistry.class);
+        for (Entry<AbstractBean<?, ?>> entry : registry.getBeansSpecializedInAnyDeploymentAsMultiset().entrySet()) {
+            if (entry.getCount() > 1) {
+                throw new InconsistentSpecializationException(BEAN_SPECIALIZED_TOO_MANY_TIMES, entry.getElement());
+            }
+        }
     }
 
     public void validateBeans(Collection<? extends Bean<?>> beans, BeanManagerImpl manager) {

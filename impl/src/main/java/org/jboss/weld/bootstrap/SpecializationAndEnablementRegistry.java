@@ -40,6 +40,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.ConcurrentHashMultiset;
 import com.google.common.collect.MapMaker;
 import com.google.common.collect.Multiset;
+import com.google.common.collect.Multisets;
 
 /**
  * Holds information about specialized beans.
@@ -190,5 +191,9 @@ public class SpecializationAndEnablementRegistry implements Service {
 
     public Set<AbstractBean<?, ?>> getBeansSpecializedInAnyDeployment() {
         return specializedBeansSet.elementSet();
+    }
+
+    public Multiset<AbstractBean<?, ?>> getBeansSpecializedInAnyDeploymentAsMultiset() {
+        return Multisets.unmodifiableMultiset(specializedBeansSet);
     }
 }
