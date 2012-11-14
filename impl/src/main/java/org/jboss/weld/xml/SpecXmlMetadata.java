@@ -33,29 +33,7 @@ public class SpecXmlMetadata extends XmlMetadata<EnabledClass> {
 
     @Override
     public String getLocation() {
-        StringBuilder builder = new StringBuilder();
-        EnabledClass record = getValue();
-        if (record == null) {
-            builder.append("<");
-            builder.append(getQName());
-            builder.append("/>");
-        } else {
-            builder.append("<");
-            builder.append(getQName());
-            if (record.isEnabled() != null) {
-                builder.append(" enabled=");
-                builder.append(record.isEnabled().toString());
-            }
-            if (record.getPriority() != null) {
-                builder.append(" priority=");
-                builder.append(record.getPriority().toString());
-            }
-            builder.append(">");
-            builder.append(record.getValue());
-            builder.append("</");
-            builder.append(getQName());
-            builder.append("<");
-        }
+        StringBuilder builder = new StringBuilder(getValue().toString());
         // location suffix
         builder.append(" in ");
         builder.append(getFile().toString());

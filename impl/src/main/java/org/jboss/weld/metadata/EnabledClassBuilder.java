@@ -138,7 +138,31 @@ public class EnabledClassBuilder {
 
         @Override
         public String toString() {
-            return "EnabledClass [enabled=" + enabled + ", priority=" + priority + ", value=" + value + "]";
+            StringBuilder builder = new StringBuilder();
+            builder.append("<");
+            builder.append(getElementName());
+            if (enabled != null) {
+                builder.append(" ");
+                builder.append("enabled=\"");
+                builder.append(enabled);
+                builder.append("\"");
+            }
+            if (priority != null) {
+                builder.append(" ");
+                builder.append("priority=\"");
+                builder.append(priority);
+                builder.append("\"");
+            }
+            builder.append(">");
+            builder.append(value);
+            builder.append("</");
+            builder.append(getElementName());
+            builder.append(">");
+            return builder.toString();
+        }
+
+        protected String getElementName() {
+            return "class";
         }
     }
 
@@ -149,8 +173,8 @@ public class EnabledClassBuilder {
         }
 
         @Override
-        public String toString() {
-            return "EnabledStereotype [enabled=" + isEnabled() + ", priority=" + getPriority() + ", value=" + getValue() + "]";
+        protected String getElementName() {
+            return "stereotype";
         }
     }
 }
