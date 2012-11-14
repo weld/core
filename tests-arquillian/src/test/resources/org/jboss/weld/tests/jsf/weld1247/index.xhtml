@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<h:head>
+    <meta charset="utf-8" />
+    <title>JSF-CDI-Project</title>
+    <f:metadata>
+        <f:event type="preRenderView" listener="#{bean.doAction}" />
+    </f:metadata>
+</h:head>
+<h:body>
+    <h:outputText value="hello World" />
+</h:body>
+</html>
