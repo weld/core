@@ -37,14 +37,14 @@ public class BeansImpl implements Beans {
         return instance.getClass().getName().indexOf("_$$_Weld") > 0;
     }
 
-    public byte[] serialize(Object instance) throws IOException {
+    public byte[] passivate(Object instance) throws IOException {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream(bytes);
         out.writeObject(instance);
         return bytes.toByteArray();
     }
 
-    public Object deserialize(byte[] bytes) throws IOException, ClassNotFoundException {
+    public Object activate(byte[] bytes) throws IOException, ClassNotFoundException {
         ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bytes));
         return in.readObject();
     }
