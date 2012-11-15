@@ -22,6 +22,8 @@ import static org.jboss.weld.logging.messages.BootstrapMessage.ERROR_LOADING_BEA
 import static org.jboss.weld.logging.messages.BootstrapMessage.PRIORITY_OUTSIDE_OF_RECOMMENDED_RANGE;
 import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_BEAN_CLASS_NOT_CLASS;
 import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_STEREOTYPE_NOT_STEREOTYPE;
+import static org.jboss.weld.logging.messages.ValidatorMessage.ENABLED_FLAG_USED_WITHOUT_PRIORITY_SET;
+import static org.jboss.weld.logging.messages.ValidatorMessage.NO_GLOBALLY_ENABLED_CLASS_MATCHING_LOCAL_DISABLE;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,6 +39,7 @@ import org.jboss.weld.bootstrap.spi.EnabledClass;
 import org.jboss.weld.bootstrap.spi.EnabledStereotype;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.exceptions.DeploymentException;
+import org.jboss.weld.logging.messages.ValidatorMessage;
 import org.jboss.weld.metadata.MetadataImpl;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
@@ -59,6 +62,9 @@ class EnablementBuilderFragment {
     private static final int LOCAL_RECORD_FIRST_ITEM_PRIORITY = 1000;
     private static final int LOCAL_RECORD_PRIORITY_STEP = 10;
 
+    private final ValidatorMessage duplicateRecordMessage;
+    private final ValidatorMessage globallyEnabledItemNotInBeanArchiveMessage;
+
     /*
      * <class priority="100">org.mycompany.myfwk.TimeStampLogger</class>
      */
@@ -71,16 +77,24 @@ class EnablementBuilderFragment {
     // classes enabled locally for a given bean archive
     private final Map<BeanDeployment, LocalOverrides> localOverrides;
 
-    EnablementBuilderFragment() {
+    EnablementBuilderFragment(ValidatorMessage duplicateRecordMessage, ValidatorMessage globallyEnabledItemNotInBeanArchiveMessage) {
+        this.duplicateRecordMessage = duplicateRecordMessage;
+        this.globallyEnabledItemNotInBeanArchiveMessage = globallyEnabledItemNotInBeanArchiveMessage;
         this.globallyEnabledRecords = new HashMap<String, GlobalEnablementRecord>();
         this.globallySetPriorities = new HashMap<String, GlobalEnablementRecord>();
         this.localOverrides = DefaultValueMap.hashMapWithDefaultValue(LocalOverrides.SUPPLIER);
     }
 
     protected void processGlobalRecords(BeanDeployment deployment, List<Metadata<EnabledClass>> records) {
-        Collection<String> classes = deployment.getBeanDeploymentArchive().getBeanClasses();
+        Map<String, Metadata<EnabledClass>> duplicateCheck = new HashMap<String, Metadata<EnabledClass>>();
+        Collection<String> beanArchiveClasses = deployment.getBeanDeploymentArchive().getBeanClasses();
+
         for (Metadata<EnabledClass> item : records) {
             EnabledClass record = item.getValue();
+            Metadata<EnabledClass> duplicateItem = duplicateCheck.put(record.getValue(), item);
+            if (duplicateItem != null) {
+                throw new DeploymentException(duplicateRecordMessage, record.getValue(), duplicateItem.getLocation());
+            }
             if (record.getPriority() != null) {
                 // load priority
                 int priority = record.getPriority();
@@ -88,8 +102,10 @@ class EnablementBuilderFragment {
                 // load class
                 Class<?> enabledClass = loadClass(item, deployment.getBeanDeployer()
                         .getResourceLoader());
-                boolean enabledClassFoundWithinArchive = classes.contains(item.getValue());
-                // TODO validate ^^^
+                boolean enabledClassFoundWithinArchive = beanArchiveClasses.contains(item.getValue());
+                if (!enabledClassFoundWithinArchive) {
+                    log.warn(globallyEnabledItemNotInBeanArchiveMessage, item.getValue(), deployment.getBeanDeploymentArchive());
+                }
                 if (record.isEnabled() == null || record.isEnabled().equals(false)) {
                     // this is a global priority setter
                     globallySetPriorities.put(record.getValue(),
@@ -114,7 +130,7 @@ class EnablementBuilderFragment {
                     LocalEnablementRecord enabler = new LocalEnablementRecord(item.getLocation(), enabledClass, true);
                     GlobalEnablementRecord disabledRecordWithPriority = globallySetPriorities.get(record.getValue());
                     if (disabledRecordWithPriority == null) {
-                        // TODO error
+                        throw new DeploymentException(ENABLED_FLAG_USED_WITHOUT_PRIORITY_SET, record.getValue(), item.getLocation());
                     }
                     localOverrides.get(deployment).locallyEnabledRecordsWithDefaultPriority.put(enabler,
                             disabledRecordWithPriority);
@@ -123,7 +139,7 @@ class EnablementBuilderFragment {
                     LocalEnablementRecord disabler = new LocalEnablementRecord(item.getLocation(), enabledClass, false);
                     GlobalEnablementRecord disabledGlobalRecord = globallyEnabledRecords.get(record.getValue());
                     if (disabledGlobalRecord == null) {
-                        // TODO WARN
+                        log.warn(NO_GLOBALLY_ENABLED_CLASS_MATCHING_LOCAL_DISABLE, record.getValue(), item.getLocation());
                         continue;
                     }
                     localOverrides.get(deployment).locallyDisabledRecords.put(disabledGlobalRecord, disabler);

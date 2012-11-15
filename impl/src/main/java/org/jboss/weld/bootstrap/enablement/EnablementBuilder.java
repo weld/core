@@ -22,6 +22,12 @@ import java.util.Map;
 import java.util.Set;
 
 import org.jboss.weld.bootstrap.BeanDeployment;
+import static org.jboss.weld.logging.messages.ValidatorMessage.GLOBALLY_ENABLED_ALTERNATIVE_NOT_IN_ARCHIVE;
+import static org.jboss.weld.logging.messages.ValidatorMessage.GLOBALLY_ENABLED_INTERCEPTOR_NOT_IN_ARCHIVE;
+import static org.jboss.weld.logging.messages.ValidatorMessage.GLOBALLY_ENABLED_DECORATOR_NOT_IN_ARCHIVE;
+import static org.jboss.weld.logging.messages.ValidatorMessage.INTERCEPTOR_SPECIFIED_TWICE;
+import static org.jboss.weld.logging.messages.ValidatorMessage.DECORATOR_SPECIFIED_TWICE;
+import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_BEAN_CLASS_SPECIFIED_MULTIPLE_TIMES;
 
 public class EnablementBuilder {
 
@@ -36,9 +42,9 @@ public class EnablementBuilder {
 
     public EnablementBuilder() {
         this.deployments = new HashSet<BeanDeployment>();
-        this.interceptors = new EnablementBuilderFragment();
-        this.decorators = new EnablementBuilderFragment();
-        this.alternatives = new EnablementBuilderFragment();
+        this.interceptors = new EnablementBuilderFragment(INTERCEPTOR_SPECIFIED_TWICE, GLOBALLY_ENABLED_INTERCEPTOR_NOT_IN_ARCHIVE);
+        this.decorators = new EnablementBuilderFragment(DECORATOR_SPECIFIED_TWICE, GLOBALLY_ENABLED_DECORATOR_NOT_IN_ARCHIVE);
+        this.alternatives = new EnablementBuilderFragment(ALTERNATIVE_BEAN_CLASS_SPECIFIED_MULTIPLE_TIMES, GLOBALLY_ENABLED_ALTERNATIVE_NOT_IN_ARCHIVE);
         this.moduleEnablementBuilders = new HashMap<BeanDeployment, ModuleEnablementBuilder>();
     }
 
