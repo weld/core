@@ -1,74 +1,103 @@
 package org.jboss.shrinkwrap.impl;
 
-import org.jboss.shrinkwrap.api.asset.Asset;
-
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.jboss.shrinkwrap.api.BeansXmlClass;
+import org.jboss.shrinkwrap.api.BeansXmlStereotype;
+import org.jboss.shrinkwrap.api.asset.Asset;
+
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
+
 public class BeansXml implements Asset {
-    private List<Class<?>> alternatives = new ArrayList<Class<?>>();
-    private List<Class<?>> interceptors = new ArrayList<Class<?>>();
-    private List<Class<?>> decorators = new ArrayList<Class<?>>();
-    private List<Class<?>> stereotypes = new ArrayList<Class<?>>();
+    private List<BeansXmlClass> alternatives = new ArrayList<BeansXmlClass>();
+    private List<BeansXmlClass> interceptors = new ArrayList<BeansXmlClass>();
+    private List<BeansXmlClass> decorators = new ArrayList<BeansXmlClass>();
 
     public BeansXml() {
-
     }
 
-    public BeansXml alternatives(Class<?>... alternatives) {
+    public BeansXml alternatives(BeansXmlClass... alternatives) {
         this.alternatives.addAll(Arrays.asList(alternatives));
         return this;
     }
 
-    public BeansXml interceptors(Class<?>... interceptors) {
+    public BeansXml alternatives(Class<?>... alternatives) {
+        this.alternatives.addAll(Lists.transform(Arrays.asList(alternatives), ClassToBeansXmlClass.INSTANCE));
+        return this;
+    }
+
+    public BeansXml interceptors(BeansXmlClass... interceptors) {
         this.interceptors.addAll(Arrays.asList(interceptors));
         return this;
     }
 
-    public BeansXml decorators(Class<?>... decorators) {
+    public BeansXml interceptors(Class<?>... interceptors) {
+        this.interceptors.addAll(Lists.transform(Arrays.asList(interceptors), ClassToBeansXmlClass.INSTANCE));
+        return this;
+    }
+
+    public BeansXml decorators(BeansXmlClass... decorators) {
         this.decorators.addAll(Arrays.asList(decorators));
         return this;
     }
 
-    public BeansXml stereotype(Class<?>... stereotypes) {
-        this.stereotypes.addAll(Arrays.asList(stereotypes));
+    public BeansXml decorators(Class<?>... decorators) {
+        this.decorators.addAll(Lists.transform(Arrays.asList(decorators), ClassToBeansXmlClass.INSTANCE));
+        return this;
+    }
+
+    public BeansXml stereotypes(Class<?>... stereotypes) {
+        this.alternatives.addAll(Lists.transform(Arrays.asList(stereotypes), ClassToBeansXmlStereotype.INSTANCE));
         return this;
     }
 
     public InputStream openStream() {
         StringBuilder xml = new StringBuilder();
         xml.append("<beans>\n");
-        appendAlternatives(alternatives, stereotypes, xml);
-        appendSection("interceptors", "class", interceptors, xml);
-        appendSection("decorators", "class", decorators, xml);
+        appendSection("alternatives", alternatives, xml);
+        appendSection("interceptors", interceptors, xml);
+        appendSection("decorators", decorators, xml);
         xml.append("</beans>");
 
         return new ByteArrayInputStream(xml.toString().getBytes());
     }
 
-    private void appendAlternatives(List<Class<?>> alternatives, List<Class<?>> stereotypes, StringBuilder xml) {
-        if (alternatives.size() > 0 || stereotypes.size() > 0) {
-            xml.append("<").append("alternatives").append(">\n");
-            appendClasses("class", alternatives, xml);
-            appendClasses("stereotype", stereotypes, xml);
-            xml.append("</").append("alternatives").append(">\n");
-        }
-    }
-
-    private void appendSection(String name, String subName, List<Class<?>> classes, StringBuilder xml) {
+    private void appendSection(String name, List<BeansXmlClass> classes, StringBuilder xml) {
         if (classes.size() > 0) {
             xml.append("<").append(name).append(">\n");
-            appendClasses(subName, classes, xml);
+            appendClasses(classes, xml);
             xml.append("</").append(name).append(">\n");
         }
     }
 
-    private void appendClasses(String name, List<Class<?>> classes, StringBuilder xml) {
-        for (Class<?> clazz : classes) {
-            xml.append("<").append(name).append(">").append(clazz.getName()).append("</").append(name).append(">\n");
+    private void appendClasses(List<BeansXmlClass> classes, StringBuilder xml) {
+        for (BeansXmlClass clazz : classes) {
+            xml.append(clazz.asXmlElement()).append("\n");
+        }
+    }
+
+    private static class ClassToBeansXmlClass implements Function<Class<?>, BeansXmlClass> {
+
+        private static final ClassToBeansXmlClass INSTANCE = new ClassToBeansXmlClass();
+
+        @Override
+        public BeansXmlClass apply(Class<?> input) {
+            return new BeansXmlClass(input);
+        }
+    }
+
+    private static class ClassToBeansXmlStereotype implements Function<Class<?>, BeansXmlStereotype> {
+
+        private static final ClassToBeansXmlStereotype INSTANCE = new ClassToBeansXmlStereotype();
+
+        @Override
+        public BeansXmlStereotype apply(Class<?> input) {
+            return new BeansXmlStereotype(input);
         }
     }
 }
