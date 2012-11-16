@@ -353,11 +353,14 @@ public class Validator implements Service {
      * Checks for deployment problems associated with a given {@link InjectionPoint}
      */
     public void validateInjectionPointForDeploymentProblems(InjectionPoint ij, Bean<?> bean, BeanManagerImpl beanManager) {
+        if (ij.isDelegate()) {
+            return; // do not validate delegate injection points as these are special
+        }
         Set<?> resolvedBeans = beanManager.getBeanResolver().resolve(beanManager.getBeans(ij));
         if (!isInjectionPointSatisfied(ij, resolvedBeans, beanManager)) {
             throw new DeploymentException(INJECTION_POINT_HAS_UNSATISFIED_DEPENDENCIES, ij, Formats.formatAnnotations(ij.getQualifiers().toArray(new Annotation[ij.getQualifiers().size()])), Formats.formatType(ij.getType()));
         }
-        if (resolvedBeans.size() > 1 && !ij.isDelegate()) {
+        if (resolvedBeans.size() > 1) {
             throw new DeploymentException(INJECTION_POINT_HAS_AMBIGUOUS_DEPENDENCIES, ij, Formats.formatAnnotations(ij.getQualifiers().toArray(new Annotation[ij.getQualifiers().size()])), Formats.formatType(ij.getType()), resolvedBeans);
         }
         // Account for the case this is disabled decorator
