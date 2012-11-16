@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.bootstrap.enablement;
 
+import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
+
 /**
  * A beans.xml records with global effect. This is either a global enablement definition (enabled == true) or a global priority
  * setter (enabled == false).
@@ -26,9 +28,12 @@ package org.jboss.weld.bootstrap.enablement;
 class GlobalEnablementRecord extends EnablementRecordWithPriority {
 
     private final boolean enabled;
+    private final BeanDeploymentArchive archive;
 
-    public GlobalEnablementRecord(String location, Class<?> enabledClass, int priority, boolean enabled) {
+    public GlobalEnablementRecord(String location, Class<?> enabledClass, int priority, boolean enabled,
+            BeanDeploymentArchive archive) {
         super(location, enabledClass, priority);
+        this.archive = archive;
         this.enabled = enabled;
     }
 
@@ -36,4 +41,12 @@ class GlobalEnablementRecord extends EnablementRecordWithPriority {
         return enabled;
     }
 
+    /**
+     * Returns the {@link BeanDeploymentArchive} which contains the beans.xml file in which this record is enabled globally.
+     *
+     * @return
+     */
+    public BeanDeploymentArchive getArchive() {
+        return archive;
+    }
 }

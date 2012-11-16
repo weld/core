@@ -29,10 +29,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.jboss.weld.bootstrap.BeanDeployment;
 import org.jboss.weld.bootstrap.spi.EnabledClass;
@@ -102,18 +100,20 @@ class EnablementBuilderFragment {
                 // load class
                 Class<?> enabledClass = loadClass(item, deployment.getBeanDeployer()
                         .getResourceLoader());
-                boolean enabledClassFoundWithinArchive = beanArchiveClasses.contains(item.getValue());
+                boolean enabledClassFoundWithinArchive = beanArchiveClasses.contains(item.getValue().getValue());
                 if (!enabledClassFoundWithinArchive) {
                     log.warn(globallyEnabledItemNotInBeanArchiveMessage, item.getValue(), deployment.getBeanDeploymentArchive());
                 }
-                if (record.isEnabled() == null || record.isEnabled().equals(false)) {
-                    // this is a global priority setter
-                    globallySetPriorities.put(record.getValue(),
-                            new GlobalEnablementRecord(item.getLocation(), enabledClass, priority, false));
-                } else {
+                if (record.isEnabled() == null || record.isEnabled().equals(true)) {
                     // this is a global enabler
+                    // TODO check for duplicates on global level
                     globallyEnabledRecords.put(record.getValue(),
-                            new GlobalEnablementRecord(item.getLocation(), enabledClass, priority, true));
+                            new GlobalEnablementRecord(item.getLocation(), enabledClass, priority, true, deployment.getBeanDeploymentArchive()));
+                } else {
+                    // this is a global priority setter
+                    // TODO check for duplicates on global level
+                    globallySetPriorities.put(record.getValue(),
+                            new GlobalEnablementRecord(item.getLocation(), enabledClass, priority, false, deployment.getBeanDeploymentArchive()));
                 }
             }
         }
@@ -149,19 +149,17 @@ class EnablementBuilderFragment {
     }
 
     public void processLegacyRecords(BeanDeployment deployment, List<Metadata<EnabledClass>> records) {
-        // TODO check for duplicates
-        Set<LegacyEnablementRecord> legacyRecords = new HashSet<LegacyEnablementRecord>();
+        Map<String, LegacyEnablementRecord> legacyRecords = localOverrides.get(deployment).legacyRecords;
         int priority = LOCAL_RECORD_FIRST_ITEM_PRIORITY;
         for (Metadata<EnabledClass> item : records) {
             EnabledClass record = item.getValue();
             if (record.getPriority() == null && record.isEnabled() == null) {
                 Class<?> enabledClass = loadClass(item, deployment.getBeanDeployer()
                         .getResourceLoader());
-                legacyRecords.add(new LegacyEnablementRecord(item.getLocation(), enabledClass, priority));
+                legacyRecords.put(enabledClass.getName(), new LegacyEnablementRecord(item.getLocation(), enabledClass, priority));
                 priority += LOCAL_RECORD_PRIORITY_STEP;
             }
         }
-        localOverrides.get(deployment).legacyRecords.addAll(legacyRecords);
     }
 
     protected void validatePriority(int priority, String location) {
@@ -199,21 +197,26 @@ class EnablementBuilderFragment {
         LocalOverrides overrides = localOverrides.get(deployment);
         List<EnablementRecordWithPriority> localRecords = new ArrayList<EnablementRecordWithPriority>();
 
-        // TODO: should legacy record override global record?
-
         // add all globally enabled records
         for (GlobalEnablementRecord globallyEnabledRecord : globallyEnabledRecords.values()) {
+            if (overrides.legacyRecords.containsKey(globallyEnabledRecord.getEnabledClass().getName())) {
+                // this globally enabled record is overridden by a legacy-style record
+                continue;
+            }
             if (overrides.locallyDisabledRecords.containsKey(globallyEnabledRecord)) {
                 // this globally enabled record is disabled in this module
                 continue;
             }
-            localRecords.add(globallyEnabledRecord);
+            if (deployment.getBeanDeploymentArchive().getBeanDeploymentArchives().contains(globallyEnabledRecord.getArchive())) {
+                // only apply this global enablement if the BDA that defines it is accessible from the current BDA
+                localRecords.add(globallyEnabledRecord);
+            }
         }
         // add locally enabled records that reference a global record that is not globally enabled but has default priority
         localRecords.addAll(overrides.locallyEnabledRecordsWithDefaultPriority.values());
 
         // add legacy enabled records
-        localRecords.addAll(overrides.legacyRecords);
+        localRecords.addAll(overrides.legacyRecords.values());
 
         Collections.sort(localRecords);
         return new ArrayList<Metadata<Class<?>>>(Lists.transform(localRecords, EnablementRecordWithPriorityToClassMetadataFunction.INSTANCE));
@@ -237,7 +240,7 @@ class EnablementBuilderFragment {
         /*
          * <class>org.mycompany.myfwk.TimeStampLogger</class>
          */
-        private final Set<LegacyEnablementRecord> legacyRecords;
+        private final Map<String, LegacyEnablementRecord> legacyRecords;
         /*
          * <class enabled="false">org.mycompany.myfwk.TimeStampLogger</class>
          */
@@ -248,7 +251,7 @@ class EnablementBuilderFragment {
         private final Map<LocalEnablementRecord, GlobalEnablementRecord> locallyEnabledRecordsWithDefaultPriority;
 
         public LocalOverrides() {
-            this.legacyRecords = new HashSet<LegacyEnablementRecord>();
+            this.legacyRecords = new HashMap<String, LegacyEnablementRecord>();
             this.locallyDisabledRecords = new HashMap<GlobalEnablementRecord, LocalEnablementRecord>();
             this.locallyEnabledRecordsWithDefaultPriority = new HashMap<LocalEnablementRecord, GlobalEnablementRecord>();
         }
