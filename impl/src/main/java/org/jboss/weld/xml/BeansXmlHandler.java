@@ -121,6 +121,18 @@ public class BeansXmlHandler extends DefaultHandler {
             return isInNamespace(uri) && getNestedElements().contains(localName);
         }
 
+        protected String getAttribute(String name, Attributes attributes) {
+            String result = attributes.getValue(JAVAEE_URI, name);
+            if (result == null) {
+                result = attributes.getValue("", name);
+            }
+            if (result == null) {
+                return result;
+            } else {
+                return interpolate(trim(result));
+            }
+        }
+
         @Override
         public void processStartChildElement(String uri, String localName, String qName, Attributes attributes) {
             if (!isAccepting(uri, localName)) {
@@ -131,8 +143,8 @@ public class BeansXmlHandler extends DefaultHandler {
             }
             builder = new EnabledClassBuilder();
 
-            String enabled = interpolate(trim(attributes.getValue(JAVAEE_URI, "enabled")));
-            String priority = interpolate(trim(attributes.getValue(JAVAEE_URI, "priority")));
+            String enabled = getAttribute("enabled", attributes);
+            String priority = getAttribute("priority", attributes);
 
             if (enabled != null) {
                 builder.setEnabled(Boolean.valueOf(enabled));
