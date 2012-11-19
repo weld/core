@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jboss.weld.bootstrap.BeanDeployment;
+import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.EnabledClass;
 import org.jboss.weld.bootstrap.spi.EnabledStereotype;
 import org.jboss.weld.bootstrap.spi.Metadata;
@@ -108,12 +109,12 @@ class EnablementBuilderFragment {
                     // this is a global enabler
                     // TODO check for duplicates on global level
                     globallyEnabledRecords.put(record.getValue(),
-                            new GlobalEnablementRecord(item.getLocation(), enabledClass, priority, true, deployment.getBeanDeploymentArchive()));
+                            new GlobalEnablementRecord(item.getLocation(), enabledClass, priority, deployment.getBeanDeploymentArchive()));
                 } else {
                     // this is a global priority setter
                     // TODO check for duplicates on global level
                     globallySetPriorities.put(record.getValue(),
-                            new GlobalEnablementRecord(item.getLocation(), enabledClass, priority, false, deployment.getBeanDeploymentArchive()));
+                            new GlobalEnablementRecord(item.getLocation(), enabledClass, priority, deployment.getBeanDeploymentArchive()));
                 }
             }
         }
@@ -127,7 +128,7 @@ class EnablementBuilderFragment {
                         .getResourceLoader());
                 if (record.isEnabled().equals(true)) {
                     // this is a local enabler of a disabled global record with priority set
-                    LocalEnablementRecord enabler = new LocalEnablementRecord(item.getLocation(), enabledClass, true);
+                    LocalEnablementRecord enabler = new LocalEnablementRecord(item.getLocation(), enabledClass);
                     GlobalEnablementRecord disabledRecordWithPriority = globallySetPriorities.get(record.getValue());
                     if (disabledRecordWithPriority == null) {
                         throw new DeploymentException(ENABLED_FLAG_USED_WITHOUT_PRIORITY_SET, record.getValue(), item.getLocation());
@@ -136,7 +137,7 @@ class EnablementBuilderFragment {
                             disabledRecordWithPriority);
                 } else {
                     // this is a local disabler of a globally enabled record
-                    LocalEnablementRecord disabler = new LocalEnablementRecord(item.getLocation(), enabledClass, false);
+                    LocalEnablementRecord disabler = new LocalEnablementRecord(item.getLocation(), enabledClass);
                     GlobalEnablementRecord disabledGlobalRecord = globallyEnabledRecords.get(record.getValue());
                     if (disabledGlobalRecord == null) {
                         log.warn(NO_GLOBALLY_ENABLED_CLASS_MATCHING_LOCAL_DISABLE, record.getValue(), item.getLocation());
@@ -272,5 +273,107 @@ class EnablementBuilderFragment {
         globallyEnabledRecords.clear();
         globallySetPriorities.clear();
         localOverrides.clear();
+    }
+
+    /*
+     * Local structures used for enablement proessing
+     */
+
+    private abstract static class EnablementRecord {
+
+        private final String location;
+        private final Class<?> enabledClass;
+
+        public EnablementRecord(String location, Class<?> enabledClass) {
+            this.location = location;
+            this.enabledClass = enabledClass;
+        }
+
+        public String getLocation() {
+            return location;
+        }
+
+        public Class<?> getEnabledClass() {
+            return enabledClass;
+        }
+    }
+
+    private abstract static class EnablementRecordWithPriority extends EnablementRecord implements Comparable<EnablementRecordWithPriority> {
+
+        private final int priority;
+
+        public EnablementRecordWithPriority(String location, Class<?> enabledClass, int priority) {
+            super(location, enabledClass);
+            this.priority = priority;
+        }
+
+        public int getPriority() {
+            return priority;
+        }
+
+        @Override
+        public int compareTo(EnablementRecordWithPriority o) {
+            if (priority == o.getPriority()) {
+                /*
+                 * The spec does not specify what happens if two records have the same priority.
+                 * Instead of giving random results, we compare the records based on their class name lexicographically.
+                 */
+                return getEnabledClass().getName().compareTo(o.getEnabledClass().getName());
+            }
+            return priority - o.priority;
+        }
+    }
+
+    /**
+     * A beans.xml records with global effect. This is either a global enablement definition (enabled == true) or a global priority
+     * setter (enabled == false).
+     *
+     * @author Jozef Hartinger
+     *
+     */
+    private static class GlobalEnablementRecord extends EnablementRecordWithPriority {
+
+        private final BeanDeploymentArchive archive;
+
+        public GlobalEnablementRecord(String location, Class<?> enabledClass, int priority, BeanDeploymentArchive archive) {
+            super(location, enabledClass, priority);
+            this.archive = archive;
+        }
+
+        /**
+         * Returns the {@link BeanDeploymentArchive} which contains the beans.xml file in which this record is enabled globally.
+         *
+         * @return
+         */
+        public BeanDeploymentArchive getArchive() {
+            return archive;
+        }
+    }
+
+    /**
+     * A beans.xml record that only affects a single bean archive. This can either be a disabler of a globally enabled record
+     * (enabled == false) or an enabler of a record that has been given a default priority.
+     *
+     * @author Jozef Hartinger
+     *
+     */
+    private static class LocalEnablementRecord extends EnablementRecord {
+
+        public LocalEnablementRecord(String location, Class<?> enabledClass) {
+            super(location, enabledClass);
+        }
+    }
+
+    /**
+     * Represents a class (interceptor/decorator/alternative) that is enabled for a bean archive as defined in CDI 1.0.
+     *
+     * @author Jozef Hartinger
+     *
+     */
+    private static class LegacyEnablementRecord extends EnablementRecordWithPriority {
+
+        public LegacyEnablementRecord(String location, Class<?> enabledClass, int priority) {
+            super(location, enabledClass, priority);
+        }
     }
 }
