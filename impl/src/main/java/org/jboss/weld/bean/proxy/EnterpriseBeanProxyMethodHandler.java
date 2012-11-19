@@ -124,6 +124,10 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
         return "toString".equals(method.getName()) && method.getParameterTypes().length == 0;
     }
 
+    private boolean isToStringMethod(Method method) {
+        return "toString".equals(method.getName()) && method.getParameterTypes().length == 0;
+    }
+
     private Class<?> getBusinessInterface(Method method) {
         Class<?> businessInterface = method.getDeclaringClass();
         if (businessInterface.equals(Object.class)) {
