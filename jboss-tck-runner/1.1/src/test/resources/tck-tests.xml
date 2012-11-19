@@ -141,7 +141,17 @@
                     <exclude name=".*"/>
                 </methods>
             </class>
-            
+             <!-- WELD-1244 -->
+            <class name="org.jboss.cdi.tck.tests.interceptors.definition.enterprise.interceptorOrder.SessionBeanInterceptorOrderTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
+            <class name="org.jboss.cdi.tck.tests.interceptors.definition.lifecycle.enterprise.order.EnterpriseLifecycleInterceptorDefinitionTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
             
             <!-- Issues in JBoss AS -->
             <!-- AS7-4232 -->
