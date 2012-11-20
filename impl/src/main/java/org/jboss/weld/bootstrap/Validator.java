@@ -113,6 +113,7 @@ import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bean.WeldDecorator;
 import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
 import org.jboss.weld.bootstrap.api.Service;
+import org.jboss.weld.bootstrap.enablement.ClassEnablement;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.DeploymentException;
@@ -577,8 +578,8 @@ public class Validator implements Service {
         for (Interceptor<?> interceptor : beanManager.getAccessibleInterceptors()) {
             interceptorBeanClasses.add(interceptor.getBeanClass());
         }
-        for (Metadata<Class<?>> enabledInterceptorClass : beanManager.getEnabled().getInterceptors()) {
-            if (!interceptorBeanClasses.contains(enabledInterceptorClass.getValue())) {
+        for (ClassEnablement enabledInterceptorClass : beanManager.getEnabled().getInterceptors()) {
+            if (!interceptorBeanClasses.contains(enabledInterceptorClass.getEnabledClass())) {
                 throw new DeploymentException(INTERCEPTOR_NOT_ANNOTATED_OR_REGISTERED, enabledInterceptorClass);
             }
         }
@@ -590,8 +591,8 @@ public class Validator implements Service {
         for (Decorator<?> bean : beanManager.getAccessibleDecorators()) {
             decoratorBeanClasses.add(bean.getBeanClass());
         }
-        for (Metadata<Class<?>> clazz : beanManager.getEnabled().getDecorators()) {
-            if (!decoratorBeanClasses.contains(clazz.getValue())) {
+        for (ClassEnablement clazz : beanManager.getEnabled().getDecorators()) {
+            if (!decoratorBeanClasses.contains(clazz.getEnabledClass())) {
                 throw new DeploymentException(DECORATOR_CLASS_NOT_BEAN_CLASS_OF_DECORATOR, clazz, decoratorBeanClasses);
             }
         }
@@ -606,21 +607,21 @@ public class Validator implements Service {
                     beansByClass.put(bean.getBeanClass(), bean);
                 }
             }
-            for (Metadata<Class<?>> clazz : beanManager.getEnabled().getAlternatives()) {
-                if (clazz.getValue().isAnnotation()) {
-                    Class<? extends Annotation> annotation = Reflections.<Metadata<Class<? extends Annotation>>>cast(clazz).getValue();
+            for (ClassEnablement clazz : beanManager.getEnabled().getAlternatives()) {
+                if (clazz.getEnabledClass().isAnnotation()) {
+                    Class<? extends Annotation> annotation = Reflections.cast(clazz.getEnabledClass());
                     if (!beanManager.isStereotype(annotation)) {
                         throw new DeploymentException(ALTERNATIVE_STEREOTYPE_NOT_STEREOTYPE, clazz);
                     }
                     if (!isAlternative(beanManager, annotation)) {
                         throw new DeploymentException(ALTERNATIVE_STEREOTYPE_NOT_ANNOTATED, clazz);
                     }
-                } else if (clazz.getValue().isInterface()) {
+                } else if (clazz.getEnabledClass().isInterface()) {
                     throw new DeploymentException(ALTERNATIVE_BEAN_CLASS_NOT_CLASS, clazz);
                 } else {
                     // check that the class is a bean class of at least one alternative
                     boolean alternativeBeanFound = false;
-                    for (Bean<?> bean : beansByClass.get(clazz.getValue())) {
+                    for (Bean<?> bean : beansByClass.get(clazz.getEnabledClass())) {
                         if (bean.isAlternative()) {
                             alternativeBeanFound = true;
                         }

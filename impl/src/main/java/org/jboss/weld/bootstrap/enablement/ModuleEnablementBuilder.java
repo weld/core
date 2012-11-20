@@ -33,26 +33,26 @@ import com.google.common.collect.ImmutableList;
  */
 public class ModuleEnablementBuilder {
 
-    private final List<Metadata<Class<?>>> interceptors;
-    private final List<Metadata<Class<?>>> decorators;
-    private final List<Metadata<Class<?>>> alternatives;
+    private final List<ClassEnablement> interceptors;
+    private final List<ClassEnablement> decorators;
+    private final List<ClassEnablement> alternatives;
 
-    public ModuleEnablementBuilder(List<Metadata<Class<?>>> interceptors, List<Metadata<Class<?>>> decorators,
-            List<Metadata<Class<?>>> alternatives) {
+    public ModuleEnablementBuilder(List<ClassEnablement> interceptors, List<ClassEnablement> decorators,
+            List<ClassEnablement> alternatives) {
         this.interceptors = interceptors;
         this.decorators = decorators;
         this.alternatives = alternatives;
     }
 
-    public List<Metadata<Class<?>>> getInterceptors() {
+    public List<ClassEnablement> getInterceptors() {
         return interceptors;
     }
 
-    public List<Metadata<Class<?>>> getDecorators() {
+    public List<ClassEnablement> getDecorators() {
         return decorators;
     }
 
-    public List<Metadata<Class<?>>> getAlternatives() {
+    public List<ClassEnablement> getAlternatives() {
         return alternatives;
     }
 

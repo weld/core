@@ -39,7 +39,6 @@ import org.jboss.weld.bootstrap.spi.EnabledStereotype;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.logging.messages.ValidatorMessage;
-import org.jboss.weld.metadata.MetadataImpl;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
 import org.jboss.weld.util.collections.DefaultValueMap;
@@ -194,7 +193,7 @@ class EnablementBuilderFragment {
      * Returns a list of classes representing total ordering in the given bean archive. The bean archive is identified
      * {@link BeanDeployment} object. The resulting list is mutable and may be modified later in the deployment.
      */
-    public List<Metadata<Class<?>>> create(BeanDeployment deployment) {
+    public List<ClassEnablement> create(BeanDeployment deployment) {
         LocalOverrides overrides = localOverrides.get(deployment);
         List<EnablementRecordWithPriority> localRecords = new ArrayList<EnablementRecordWithPriority>();
 
@@ -220,7 +219,7 @@ class EnablementBuilderFragment {
         localRecords.addAll(overrides.legacyRecords.values());
 
         Collections.sort(localRecords);
-        return new ArrayList<Metadata<Class<?>>>(Lists.transform(localRecords, EnablementRecordWithPriorityToClassMetadataFunction.INSTANCE));
+        return new ArrayList<ClassEnablement>(Lists.transform(localRecords, EnablementRecordWithPriorityToClassEnablementFunction.INSTANCE));
     }
 
     /**
@@ -258,14 +257,18 @@ class EnablementBuilderFragment {
         }
     }
 
-    private static class EnablementRecordWithPriorityToClassMetadataFunction implements
-            Function<EnablementRecordWithPriority, Metadata<Class<?>>> {
+    private static class EnablementRecordWithPriorityToClassEnablementFunction implements
+            Function<EnablementRecordWithPriority, ClassEnablement> {
 
-        private static final EnablementRecordWithPriorityToClassMetadataFunction INSTANCE = new EnablementRecordWithPriorityToClassMetadataFunction();
+        private static final EnablementRecordWithPriorityToClassEnablementFunction INSTANCE = new EnablementRecordWithPriorityToClassEnablementFunction();
 
         @Override
-        public Metadata<Class<?>> apply(EnablementRecordWithPriority input) {
-            return new MetadataImpl<Class<?>>(input.getEnabledClass(), input.getLocation());
+        public ClassEnablement apply(EnablementRecordWithPriority input) {
+            if (input instanceof LegacyEnablementRecord) {
+                return new ClassEnablement(input.getEnabledClass(), input.getLocation(), null);
+            } else {
+                return new ClassEnablement(input.getEnabledClass(), input.getLocation(), input.getPriority());
+            }
         }
     }
 

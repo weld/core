@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.resolution;
 
+import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
+import static org.jboss.weld.util.reflection.Reflections.cast;
+
 import java.io.Serializable;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
@@ -36,20 +39,18 @@ import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.Bean;
 import javax.inject.Provider;
 
-import com.google.common.base.Function;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.MapMaker;
-import com.google.common.primitives.Primitives;
-
 import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.bootstrap.SpecializationAndEnablementRegistry;
+import org.jboss.weld.bootstrap.enablement.ClassEnablement;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.LazyValueHolder;
 import org.jboss.weld.util.reflection.Reflections;
 
-import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
-import static org.jboss.weld.util.reflection.Reflections.cast;
+import com.google.common.base.Function;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.MapMaker;
+import com.google.common.primitives.Primitives;
 
 /**
  * @author pmuir
@@ -63,7 +64,7 @@ public abstract class AbstractTypeSafeBeanResolver<T extends Bean<?>, C extends 
 
     private final LazyValueHolder<Map<Type, ArrayList<T>>> beansByType;
 
-    public static class BeanDisambiguation implements Function<Set<Bean<?>>, Set<Bean<?>>> {
+    public class BeanDisambiguation implements Function<Set<Bean<?>>, Set<Bean<?>>> {
 
         private BeanDisambiguation() {
         }
@@ -88,11 +89,40 @@ public abstract class AbstractTypeSafeBeanResolver<T extends Bean<?>, C extends 
                 if (priorityBeans.isEmpty()) {
                     return immutableSet(allBeans);
                 } else {
-                    return immutableSet(priorityBeans);
+                    if (priorityBeans.size() == 1) {
+                        return Collections.<Bean<?>>singleton(priorityBeans.iterator().next());
+                    } else {
+                        return resolveAlternatives(priorityBeans);
+                    }
                 }
             } else {
                 return ImmutableSet.copyOf(from);
             }
+        }
+
+        /**
+         * If all the beans left are alternatives with a priority, then the container will select the
+         * alternative with the highest priority, and the ambiguous dependency is called resolvable.
+         */
+        public Set<Bean<?>> resolveAlternatives(Set<Bean<?>> alternatives) {
+            int highestPriority = Integer.MIN_VALUE;
+            Set<Bean<?>> selectedAlternativesWithHighestPriority = new HashSet<Bean<?>>();
+
+            for (Bean<?> bean : alternatives) {
+                ClassEnablement enablement = beanManager.getEnabled().getAlternative(bean.getBeanClass());
+                if (enablement.getPriority() == null) {
+                    // not all the beans left are alternatives with a priority - we are not able to resolve
+                    return immutableSet(alternatives);
+                }
+                if (enablement.getPriority() > highestPriority) {
+                    highestPriority = enablement.getPriority();
+                    selectedAlternativesWithHighestPriority.clear();
+                }
+                if (enablement.getPriority() == highestPriority) {
+                    selectedAlternativesWithHighestPriority.add(bean);
+                }
+            }
+            return immutableSet(selectedAlternativesWithHighestPriority);
         }
 
     }

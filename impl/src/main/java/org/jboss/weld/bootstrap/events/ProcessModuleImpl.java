@@ -34,13 +34,12 @@ import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.ProcessModule;
 
 import org.jboss.weld.bootstrap.BeanDeployment;
+import org.jboss.weld.bootstrap.enablement.ClassEnablement;
 import org.jboss.weld.bootstrap.enablement.ModuleEnablementBuilder;
-import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.event.ExtensionObserverMethodImpl;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.logging.messages.XmlMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.metadata.MetadataImpl;
 import org.jboss.weld.util.collections.ListToSet;
 import org.jboss.weld.util.collections.ListView;
 import org.jboss.weld.util.collections.SetView;
@@ -71,26 +70,26 @@ public class ProcessModuleImpl extends AbstractDeploymentContainerEvent implemen
 
     @Override
     public Set<Class<?>> getAlternatives() {
-        return new SetView<Metadata<Class<?>>, Class<?>>() {
+        return new SetView<ClassEnablement, Class<?>>() {
             @Override
-            protected Set<Metadata<Class<?>>> getDelegate() {
+            protected Set<ClassEnablement> getDelegate() {
                 // TODO: this is a temporary workaround until ProcessModule.getAlternatives() is changed to return a List instead of a Set
-                return new ListToSet<Metadata<Class<?>>>() {
+                return new ListToSet<ClassEnablement>() {
 
                     @Override
-                    public boolean add(Metadata<Class<?>> e) {
+                    public boolean add(ClassEnablement e) {
                         return delegate().add(e);
                     }
 
                     @Override
-                    protected List<Metadata<Class<?>>> delegate() {
+                    protected List<ClassEnablement> delegate() {
                         return moduleEnablementBuilder.getAlternatives();
                     }
                 };
             }
 
             @Override
-            protected ViewProvider<Metadata<Class<?>>, Class<?>> getViewProvider() {
+            protected ViewProvider<ClassEnablement, Class<?>> getViewProvider() {
                 return viewProvider;
             }
         };
@@ -98,14 +97,14 @@ public class ProcessModuleImpl extends AbstractDeploymentContainerEvent implemen
 
     @Override
     public List<Class<?>> getInterceptors() {
-        return new ListView<Metadata<Class<?>>, Class<?>>() {
+        return new ListView<ClassEnablement, Class<?>>() {
             @Override
-            protected List<Metadata<Class<?>>> getDelegate() {
+            protected List<ClassEnablement> getDelegate() {
                 return moduleEnablementBuilder.getInterceptors();
             }
 
             @Override
-            protected ViewProvider<Metadata<Class<?>>, Class<?>> getViewProvider() {
+            protected ViewProvider<ClassEnablement, Class<?>> getViewProvider() {
                 return viewProvider;
             }
         };
@@ -113,15 +112,15 @@ public class ProcessModuleImpl extends AbstractDeploymentContainerEvent implemen
 
     @Override
     public List<Class<?>> getDecorators() {
-        return new ListView<Metadata<Class<?>>, Class<?>>() {
+        return new ListView<ClassEnablement, Class<?>>() {
 
             @Override
-            protected List<Metadata<Class<?>>> getDelegate() {
+            protected List<ClassEnablement> getDelegate() {
                 return moduleEnablementBuilder.getDecorators();
             }
 
             @Override
-            protected ViewProvider<Metadata<Class<?>>, Class<?>> getViewProvider() {
+            protected ViewProvider<ClassEnablement, Class<?>> getViewProvider() {
                 return viewProvider;
             }
         };
@@ -141,15 +140,15 @@ public class ProcessModuleImpl extends AbstractDeploymentContainerEvent implemen
         }
     }
 
-    private class ClassMetadaViewProvider implements ViewProvider<Metadata<Class<?>>, Class<?>> {
+    private class ClassMetadaViewProvider implements ViewProvider<ClassEnablement, Class<?>> {
 
         @Override
-        public Class<?> toView(Metadata<Class<?>> from) {
-            return from.getValue();
+        public Class<?> toView(ClassEnablement from) {
+            return from.getEnabledClass();
         }
 
         @Override
-        public Metadata<Class<?>> fromView(Class<?> to) {
+        public ClassEnablement fromView(Class<?> to) {
             StringBuilder location = new StringBuilder();
             location.append(to.getName());
             location.append(" registered by ");
@@ -158,7 +157,7 @@ public class ProcessModuleImpl extends AbstractDeploymentContainerEvent implemen
             } else {
                 location.append("an extension.");
             }
-            return new MetadataImpl<Class<?>>(to, location.toString());
+            return new ClassEnablement(to, location.toString(), null);
         }
     }
 }

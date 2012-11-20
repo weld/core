@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.bootstrap.enablement;
 
-import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_BEAN_CLASS_SPECIFIED_MULTIPLE_TIMES;
 import static org.jboss.weld.logging.messages.ValidatorMessage.DECORATOR_SPECIFIED_TWICE;
 import static org.jboss.weld.logging.messages.ValidatorMessage.INTERCEPTOR_SPECIFIED_TWICE;
 
@@ -30,7 +29,6 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.Interceptor;
 
-import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.logging.messages.ValidatorMessage;
 
@@ -42,45 +40,53 @@ import org.jboss.weld.logging.messages.ValidatorMessage;
  */
 public class ModuleEnablement {
 
-    public static final ModuleEnablement EMPTY_ENABLEMENT = new ModuleEnablement(Collections.<Metadata<Class<?>>>emptyList(), Collections.<Metadata<Class<?>>>emptyList(), Collections.<Metadata<Class<?>>>emptyList());
+    public static final ModuleEnablement EMPTY_ENABLEMENT = new ModuleEnablement(Collections.<ClassEnablement>emptyList(), Collections.<ClassEnablement>emptyList(), Collections.<ClassEnablement>emptyList());
 
-    private final List<Metadata<Class<?>>> interceptors;
-    private final List<Metadata<Class<?>>> decorators;
-    private final List<Metadata<Class<?>>> alternatives;
+    private final List<ClassEnablement> interceptors;
+    private final List<ClassEnablement> decorators;
+    private final List<ClassEnablement> alternatives;
 
     // fast lookup structures
     private final Map<String, Integer> interceptorMap;
     private final Map<String, Integer> decoratorMap;
-    private final Map<String, Integer> alternativeMap;
+
+    private final Map<String, ClassEnablement> alternativeMap;
 
     private final Comparator<Decorator<?>> decoratorComparator;
     private final Comparator<Interceptor<?>> interceptorComparator;
-    private final Comparator<Bean<?>> alternativeComparator;
 
-    public ModuleEnablement(List<Metadata<Class<?>>> interceptors, List<Metadata<Class<?>>> decorators,
-            List<Metadata<Class<?>>> alternatives) {
+    public ModuleEnablement(List<ClassEnablement> interceptors, List<ClassEnablement> decorators,
+            List<ClassEnablement> alternatives) {
         this.interceptors = interceptors;
         this.decorators = decorators;
         this.alternatives = alternatives;
 
         this.interceptorMap = createLookupMap(interceptors, INTERCEPTOR_SPECIFIED_TWICE);
         this.decoratorMap = createLookupMap(decorators, DECORATOR_SPECIFIED_TWICE);
-        this.alternativeMap = createLookupMap(alternatives, ALTERNATIVE_BEAN_CLASS_SPECIFIED_MULTIPLE_TIMES);
+
+        if (alternatives.isEmpty()) {
+            this.alternativeMap = Collections.emptyMap();
+        } else {
+            Map<String, ClassEnablement> alternativeMap = new HashMap<String, ClassEnablement>();
+            for (ClassEnablement alternative : alternatives) {
+                alternativeMap.put(alternative.getEnabledClass().getName(), alternative);
+            }
+            this.alternativeMap = Collections.unmodifiableMap(alternativeMap);
+        }
 
         this.decoratorComparator = new EnablementComparator<Decorator<?>>(decoratorMap);
         this.interceptorComparator = new EnablementComparator<Interceptor<?>>(interceptorMap);
-        this.alternativeComparator = new EnablementComparator<Bean<?>>(alternativeMap);
     }
 
-    private static Map<String, Integer> createLookupMap(List<Metadata<Class<?>>> list, ValidatorMessage specifiedTwiceMessage) {
+    private static Map<String, Integer> createLookupMap(List<ClassEnablement> list, ValidatorMessage specifiedTwiceMessage) {
         if (list.isEmpty()) {
             return Collections.emptyMap();
         }
         Map<String, Integer> result = new HashMap<String, Integer>();
         for (int i = 0; i < list.size(); i++) {
-            Integer previousOccurence = result.put(list.get(i).getValue().getName(), i);
+            Integer previousOccurence = result.put(list.get(i).getEnabledClass().getName(), i);
             if (previousOccurence != null) {
-                throw new DeploymentException(specifiedTwiceMessage, list.get(i).getValue().getName(), list.get(i), list.get(previousOccurence));
+                throw new DeploymentException(specifiedTwiceMessage, list.get(i).getEnabledClass().getName(), list.get(i), list.get(previousOccurence));
             }
         }
         return Collections.unmodifiableMap(result);
@@ -88,6 +94,10 @@ public class ModuleEnablement {
 
     public boolean isAlternativeEnabled(Class<?> javaClass) {
         return alternativeMap.containsKey(javaClass.getName());
+    }
+
+    public ClassEnablement getAlternative(Class<?> javaClass) {
+        return alternativeMap.get(javaClass.getName());
     }
 
     public boolean isInterceptorEnabled(Class<?> javaClass) {
@@ -98,15 +108,15 @@ public class ModuleEnablement {
         return decoratorMap.containsKey(javaClass.getName());
     }
 
-    public List<Metadata<Class<?>>> getInterceptors() {
+    public List<ClassEnablement> getInterceptors() {
         return interceptors;
     }
 
-    public List<Metadata<Class<?>>> getDecorators() {
+    public List<ClassEnablement> getDecorators() {
         return decorators;
     }
 
-    public List<Metadata<Class<?>>> getAlternatives() {
+    public List<ClassEnablement> getAlternatives() {
         return alternatives;
     }
 
@@ -116,10 +126,6 @@ public class ModuleEnablement {
 
     public Comparator<Interceptor<?>> getInterceptorComparator() {
         return interceptorComparator;
-    }
-
-    public Comparator<Bean<?>> getAlternativeComparator() {
-        return alternativeComparator;
     }
 
     private static class EnablementComparator<T extends Bean<?>> implements Comparator<T> {
