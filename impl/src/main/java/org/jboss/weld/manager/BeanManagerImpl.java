@@ -91,6 +91,8 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMember;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.annotated.slim.SlimAnnotatedType;
+import org.jboss.weld.annotated.slim.SlimAnnotatedTypeStore;
 import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.bean.DisposalMethod;
 import org.jboss.weld.bean.NewBean;
@@ -164,6 +166,7 @@ import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Bindings;
 import org.jboss.weld.util.Interceptors;
+import org.jboss.weld.util.Preconditions;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.collections.IterableToIteratorFunction;
 import org.jboss.weld.util.reflection.Reflections;
@@ -1467,13 +1470,28 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         return Bindings.getInterceptorBindingHashCode(interceptorBinding, services.get(MetaAnnotationStore.class));
     }
 
+    public <T> Collection<SlimAnnotatedType<T>> getSlimAnnotatedTypes(Class<T> type) {
+        Preconditions.checkArgumentNotNull(type, "type");
+        SlimAnnotatedTypeStore store = getServices().get(SlimAnnotatedTypeStore.class);
+        return store.get(type);
+    }
+
     @Override
     public <T> AnnotatedType<T> getAnnotatedType(Class<T> type, String id) {
-        throw new org.jboss.weld.exceptions.UnsupportedOperationException();
+        Preconditions.checkArgumentNotNull(type, "type");
+        if (id == null) {
+            id = type.getName();
+        }
+        for (SlimAnnotatedType<T> annotatedType : getSlimAnnotatedTypes(type)) {
+            if (id.equals(annotatedType.getID())) {
+                return annotatedType;
+            }
+        }
+        return null;
     }
 
     @Override
     public <T> Iterable<AnnotatedType<T>> getAnnotatedTypes(Class<T> type) {
-        throw new org.jboss.weld.exceptions.UnsupportedOperationException();
+        return cast(getSlimAnnotatedTypes(type));
     }
 }

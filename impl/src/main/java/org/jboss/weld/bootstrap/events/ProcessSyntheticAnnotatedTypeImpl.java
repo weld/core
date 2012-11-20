@@ -21,10 +21,10 @@
  */
 package org.jboss.weld.bootstrap.events;
 
-import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessSyntheticAnnotatedType;
 
+import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resolution.Resolvable;
 
@@ -37,7 +37,7 @@ public class ProcessSyntheticAnnotatedTypeImpl<T> extends ProcessAnnotatedTypeIm
 
     private Extension source;
 
-    public ProcessSyntheticAnnotatedTypeImpl(BeanManagerImpl beanManager, AnnotatedType<T> annotatedType, AnnotationDiscovery discovery, Extension source) {
+    public ProcessSyntheticAnnotatedTypeImpl(BeanManagerImpl beanManager, SlimAnnotatedType<T> annotatedType, AnnotationDiscovery discovery, Extension source) {
         super(beanManager, annotatedType, ProcessSyntheticAnnotatedType.class, annotatedType.getJavaClass(), discovery);
         this.source = source;
     }

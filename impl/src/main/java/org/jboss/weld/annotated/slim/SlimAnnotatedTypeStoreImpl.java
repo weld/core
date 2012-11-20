@@ -17,22 +17,34 @@
 package org.jboss.weld.annotated.slim;
 
 
+import static org.jboss.weld.logging.messages.BootstrapMessage.DUPLICATE_ANNOTATED_TYPE_ID;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.jboss.weld.bootstrap.api.BootstrapService;
 import org.jboss.weld.exceptions.DeploymentException;
 
-import static org.jboss.weld.logging.messages.BootstrapMessage.DUPLICATE_ANNOTATED_TYPE_ID;;
+import com.google.common.base.Function;
+import com.google.common.collect.MapMaker;
 
 public class SlimAnnotatedTypeStoreImpl implements SlimAnnotatedTypeStore, BootstrapService {
 
     private final ConcurrentMap<String, SlimAnnotatedType<?>> typesById;
+    private final ConcurrentMap<Class<?>, List<SlimAnnotatedType<?>>> typesByClass;
 
     public SlimAnnotatedTypeStoreImpl() {
         this.typesById = new ConcurrentHashMap<String, SlimAnnotatedType<?>>();
+        this.typesByClass = new MapMaker().makeComputingMap(new Function<Class<?>, List<SlimAnnotatedType<?>>>() {
+            @Override
+            public List<SlimAnnotatedType<?>> apply(Class<?> input) {
+                return new ArrayList<SlimAnnotatedType<?>>(1);
+            }
+        });
     }
 
     @Override
@@ -41,16 +53,25 @@ public class SlimAnnotatedTypeStoreImpl implements SlimAnnotatedTypeStore, Boots
     }
 
     @Override
+    public <X> List<SlimAnnotatedType<X>> get(Class<X> type) {
+        return cast(Collections.unmodifiableList(typesByClass.get(type)));
+    }
+
+    @Override
     public <X> void put(SlimAnnotatedType<X> type) {
         SlimAnnotatedType<?> previous = typesById.put(type.getID(), type);
         if (previous != null) {
             throw new DeploymentException(DUPLICATE_ANNOTATED_TYPE_ID, type.getID(), type, previous);
         }
+        typesByClass.get(type.getJavaClass()).add(type);
     }
 
     @Override
     public <X> void putIfAbsent(SlimAnnotatedType<X> type) {
-        typesById.putIfAbsent(type.getID(), type);
+        Object previousValue = typesById.putIfAbsent(type.getID(), type);
+        if (previousValue == null) {
+            typesByClass.get(type.getJavaClass()).add(type);
+        }
     }
 
     @Override
@@ -63,5 +84,6 @@ public class SlimAnnotatedTypeStoreImpl implements SlimAnnotatedTypeStore, Boots
     @Override
     public void cleanup() {
         typesById.clear();
+        typesByClass.clear();
     }
 }

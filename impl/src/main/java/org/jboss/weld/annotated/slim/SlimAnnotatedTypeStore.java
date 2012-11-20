@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.annotated.slim;
 
+import java.util.Collection;
+
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.exceptions.DeploymentException;
 
@@ -35,6 +37,14 @@ public interface SlimAnnotatedTypeStore extends Service {
      * @return type identified by the identifier
      */
     <X> SlimAnnotatedType<X> get(String id);
+
+    /**
+     * Retrieves a previously stored list of {@link SlimAnnotatedType}s that match the given type.
+     *
+     * @param type the annotated type type
+     * @return
+     */
+    <X> Collection<SlimAnnotatedType<X>> get(Class<X> type);
 
     /**
      * Put a {@link SlimAnnotatedType} into the store.

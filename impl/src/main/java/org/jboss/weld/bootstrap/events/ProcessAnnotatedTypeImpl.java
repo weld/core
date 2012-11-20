@@ -17,12 +17,15 @@
 package org.jboss.weld.bootstrap.events;
 
 import static org.jboss.weld.logging.messages.BootstrapMessage.ANNOTATION_TYPE_NULL;
+import static org.jboss.weld.logging.messages.BootstrapMessage.ANNOTATED_TYPE_JAVA_CLASS_MISMATCH;
 
 import java.lang.reflect.Type;
 
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 
+import org.jboss.weld.annotated.slim.SlimAnnotatedType;
+import org.jboss.weld.annotated.slim.unbacked.UnbackedAnnotatedType;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -38,22 +41,22 @@ import org.jboss.weld.resolution.Resolvable;
 @SuppressWarnings("rawtypes")
 public class ProcessAnnotatedTypeImpl<X> extends AbstractDefinitionContainerEvent implements ProcessAnnotatedType<X> {
 
-    private AnnotatedType<X> annotatedType;
+    private SlimAnnotatedType<X> annotatedType;
     private boolean veto;
     private boolean dirty;
     private final Resolvable resolvable;
 
-    public ProcessAnnotatedTypeImpl(BeanManagerImpl beanManager, AnnotatedType<X> annotatedType, AnnotationDiscovery discovery) {
+    public ProcessAnnotatedTypeImpl(BeanManagerImpl beanManager, SlimAnnotatedType<X> annotatedType, AnnotationDiscovery discovery) {
         this(beanManager, annotatedType, ProcessAnnotatedType.class, annotatedType.getJavaClass(), discovery);
     }
 
-    protected ProcessAnnotatedTypeImpl(BeanManagerImpl beanManager, AnnotatedType<X> annotatedType, Class<? extends ProcessAnnotatedType> rawType, Class<?> typeArgument, AnnotationDiscovery discovery) {
+    protected ProcessAnnotatedTypeImpl(BeanManagerImpl beanManager, SlimAnnotatedType<X> annotatedType, Class<? extends ProcessAnnotatedType> rawType, Class<?> typeArgument, AnnotationDiscovery discovery) {
         super(beanManager, rawType, new Type[] { typeArgument });
         this.annotatedType = annotatedType;
         this.resolvable = createResolvable(typeArgument, discovery);
     }
 
-    public AnnotatedType<X> getAnnotatedType() {
+    public SlimAnnotatedType<X> getAnnotatedType() {
         return annotatedType;
     }
 
@@ -61,7 +64,10 @@ public class ProcessAnnotatedTypeImpl<X> extends AbstractDefinitionContainerEven
         if (type == null) {
             throw new IllegalArgumentException(ANNOTATION_TYPE_NULL, this);
         }
-        this.annotatedType = type;
+        if (!this.annotatedType.getJavaClass().equals(type.getJavaClass())) {
+            throw new IllegalArgumentException(ANNOTATED_TYPE_JAVA_CLASS_MISMATCH, this.annotatedType.getJavaClass(), type.getJavaClass());
+        }
+        this.annotatedType = UnbackedAnnotatedType.of(type, this.annotatedType.getID());
         this.dirty = true;
     }
 
