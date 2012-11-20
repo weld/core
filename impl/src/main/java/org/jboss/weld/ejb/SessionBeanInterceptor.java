@@ -16,12 +16,11 @@
  */
 package org.jboss.weld.ejb;
 
-import org.jboss.weld.Container;
-import org.jboss.weld.context.RequestContext;
-import org.jboss.weld.context.ejb.EjbRequestContext;
-
-import javax.interceptor.InvocationContext;
 import java.io.Serializable;
+
+import org.jboss.weld.Container;
+import org.jboss.weld.context.ejb.EjbRequestContext;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
  * Interceptor for ensuring the request context is active during requests to EJBs.
@@ -33,40 +32,27 @@ import java.io.Serializable;
  *
  * @author Pete Muir
  */
-public class SessionBeanInterceptor implements Serializable {
-    private static final long serialVersionUID = 7327757031821596782L;
+public class SessionBeanInterceptor  extends AbstractEJBRequestScopeActivationInterceptor implements Serializable {
 
-    public Object aroundInvoke(InvocationContext invocation) throws Exception {
+    private static final long serialVersionUID = 2658712435730329384L;
 
-        if (isRequestContextActive()) {
-            return invocation.proceed();
-        } else {
-            EjbRequestContext requestContext = Container.instance().deploymentManager().instance().select(EjbRequestContext.class).get();
-            try {
-                requestContext.associate(invocation);
-                requestContext.activate();
-                try {
-                    return invocation.proceed();
-                } finally {
-                    requestContext.invalidate();
-                    requestContext.deactivate();
+    private final BeanManagerImpl beanManager;
+    private final EjbRequestContext ejbRequestContext;
 
-                }
-            } finally {
-                requestContext.dissociate(invocation);
-            }
-        }
+    public SessionBeanInterceptor() {
+        this.beanManager = Container.instance().deploymentManager();
+        this.ejbRequestContext = super.getEjbRequestContext();
     }
 
-    private boolean isRequestContextActive() {
-        for (RequestContext requestContext : Container.instance().deploymentManager().instance().select(RequestContext.class)) {
-            if (requestContext.isActive()) {
-                return true;
-            }
-        }
-        return false;
+    @Override
+    protected EjbRequestContext getEjbRequestContext() {
+        return ejbRequestContext;
     }
 
+    @Override
+    protected BeanManagerImpl getBeanManager() {
+        return beanManager;
+    }
 }
 
 
