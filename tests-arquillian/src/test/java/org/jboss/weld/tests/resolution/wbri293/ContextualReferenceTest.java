@@ -47,7 +47,6 @@ public class ContextualReferenceTest {
     private BeanManagerImpl beanManager;
 
     @Test
-    @Category(Broken.class)
     public void testReferencesEqual() {
         Sheep sheep = Utils.getReference(beanManager, Sheep.class);
         sheep.setAge(10);
