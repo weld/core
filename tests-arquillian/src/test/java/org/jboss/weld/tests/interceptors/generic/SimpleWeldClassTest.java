@@ -50,7 +50,6 @@ public class SimpleWeldClassTest {
     /*
     * description = "WELD-568"
     */
-    @Category(Broken.class)
     @Test
     public void testWeldClassForGenericSuperclass() {
         WeldClass<StringProcessor> weldClass = WeldClassImpl.of(StringProcessor.class, new ClassTransformer(new TypeStore()));

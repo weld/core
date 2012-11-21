@@ -83,7 +83,6 @@ public class MultipleBeansTest {
      * Even though this is not very useful it should still be possible.
      */
     @Test
-    @Category(Broken.class)
     // WELD-406
     public void testTwoBeansExactlyTheSame() {
         Assert.assertEquals(2, beanManager.getBeans(UselessBean.class).size());

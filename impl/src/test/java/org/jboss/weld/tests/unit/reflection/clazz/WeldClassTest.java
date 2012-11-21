@@ -38,21 +38,13 @@ public class WeldClassTest {
 
     private final ClassTransformer transformer = new ClassTransformer(new TypeStore());
 
-    /*
-    * description = "WELD-216"
-    */
     @Test
-    @Ignore // Broken
     public void testMemberClassWithGenericTypes() {
         AnnotatedType<?> at = WeldClassImpl.of(new Kangaroo().procreate().getClass(), transformer);
         WeldClassImpl.of(at, transformer);
     }
 
-    /*
-    * description = "WELD-216"
-    */
     @Test
-    @Ignore
     /*
     *  Not isolated, depends on someone else initializing Containers.
     *
@@ -63,12 +55,8 @@ public class WeldClassTest {
         AnnotatedType<?> at = WeldClassImpl.of(new Koala().procreate().getClass(), transformer);
         WeldClassImpl.of(at, transformer);
     }
-
-    /*
-    * description = "WELD-216"
-    */
+    
     @Test
-    @Ignore
     /*
     *  Not isolated, depends on someone else initializing Containers.
     *
