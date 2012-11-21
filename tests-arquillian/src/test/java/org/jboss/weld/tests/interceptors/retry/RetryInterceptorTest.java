@@ -41,7 +41,7 @@ public class RetryInterceptorTest {
     }
 
     @Test
-    @Category(Broken.class) // TODO -- fix this for AS7.1
+    @Category(Broken.class) // WELD-1244
     public void testRetry(Processor processor) {
         FailingProcessor.intercepts = 0;
         RetryInterceptor.invocationCount = 0;

@@ -65,10 +65,7 @@ public class ErrorPageTest {
                 .addAsWebResource(ErrorPageTest.class.getPackage(), "storm.xhtml", "storm.xhtml")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
-
-    /*
-    * description = "WELD-29"
-    */
+    
     @Test
     public void testActionMethodExceptionDoesNotDestroyContext() throws Exception {
         WebClient client = new WebClient();

@@ -27,7 +27,6 @@ import org.jboss.weld.resources.ReflectionCacheFactory;
 import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.enterprise.inject.Stereotype;
@@ -38,7 +37,6 @@ import java.lang.reflect.Type;
 import java.util.Iterator;
 import java.util.Set;
 
-//@Artifact
 public class WeldClassTest {
 
     private final ClassTransformer transformer = new ClassTransformer(new TypeStore(), new SharedObjectCache(), ReflectionCacheFactory.newInstance());
@@ -47,7 +45,6 @@ public class WeldClassTest {
     * description = "WELD-216"
     */
     @Test
-    @Ignore // Broken
     public void testMemberClassWithGenericTypes() {
         AnnotatedType<?> at = EnhancedAnnotatedTypeImpl.of(BackedAnnotatedType.of(new Kangaroo().procreate().getClass(), transformer.getSharedObjectCache(), transformer.getReflectionCache()), transformer);
         EnhancedAnnotatedTypeImpl.of(UnbackedAnnotatedType.of(at), transformer);
@@ -57,7 +54,6 @@ public class WeldClassTest {
     * description = "WELD-216"
     */
     @Test
-    @Ignore
     /*
     *  Not isolated, depends on someone else initializing Containers.
     *
@@ -73,7 +69,6 @@ public class WeldClassTest {
     * description = "WELD-216"
     */
     @Test
-    @Ignore
     /*
     *  Not isolated, depends on someone else initializing Containers.
     *
