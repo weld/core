@@ -16,43 +16,37 @@
  */
 package org.jboss.weld.tests.unit.reflection.clazz;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.Iterator;
+import java.util.Set;
+
+import javax.enterprise.inject.Stereotype;
+import javax.enterprise.inject.spi.AnnotatedType;
+import javax.inject.Qualifier;
+
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.jlr.WeldClassImpl;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
-import javax.enterprise.inject.Stereotype;
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.inject.Qualifier;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.Iterator;
-import java.util.Set;
-
-//@Artifact
+/**
+ * @see WELD-216
+ */
 public class WeldClassTest {
 
     private final ClassTransformer transformer = new ClassTransformer(new TypeStore());
 
-    /*
-    * description = "WELD-216"
-    */
     @Test
-    @Ignore // Broken
     public void testMemberClassWithGenericTypes() {
         AnnotatedType<?> at = WeldClassImpl.of(new Kangaroo().procreate().getClass(), transformer);
         WeldClassImpl.of(at, transformer);
     }
 
-    /*
-    * description = "WELD-216"
-    */
     @Test
-    @Ignore
     /*
     *  Not isolated, depends on someone else initializing Containers.
     *
@@ -63,12 +57,8 @@ public class WeldClassTest {
         AnnotatedType<?> at = WeldClassImpl.of(new Koala().procreate().getClass(), transformer);
         WeldClassImpl.of(at, transformer);
     }
-
-    /*
-    * description = "WELD-216"
-    */
+    
     @Test
-    @Ignore
     /*
     *  Not isolated, depends on someone else initializing Containers.
     *

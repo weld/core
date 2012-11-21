@@ -49,7 +49,6 @@ public class InterceptedBeanWithFinalMethodTest {
     /*
     * description = "WELD-771"
     */
-    @Category(Broken.class)
     @Test
     public void testFinalMethodInvocationOnInterceptedBean() {
         briefing.performBriefing();
