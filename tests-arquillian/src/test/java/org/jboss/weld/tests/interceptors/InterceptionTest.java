@@ -17,20 +17,25 @@
 package org.jboss.weld.tests.interceptors;
 
 import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.ShouldThrowException;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.weld.exceptions.DeploymentException;
+import org.jboss.weld.tests.category.Broken;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static org.junit.Assert.assertTrue;
+import org.junit.experimental.categories.Category;
 
 @RunWith(Arquillian.class)
-@Ignore
+@Category(Broken.class) // WELD-1264
 public class InterceptionTest {
     @Deployment
+    @ShouldThrowException(DeploymentException.class)
     public static Archive<?> deploy() {
         return ShrinkWrap.create(BeanArchive.class)
                 .intercept(Goalkeeper.class)
@@ -38,6 +43,7 @@ public class InterceptionTest {
     }
 
     @Test
+    @Ignore // WELD-1264
     // WELD-538
     public void testInterceptors(Ball ball) throws Exception {
         ball.shoot();
