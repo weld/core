@@ -31,54 +31,40 @@ import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
-//@Artifact
-public class WeldClassTest
-{
-	
-   private final ClassTransformer transformer = new ClassTransformer("", new TypeStore());
-   
-   /*
-    * description = "WELD-216"
-    */
-   @Test
-   @Ignore // Broken
-   public void testMemberClassWithGenericTypes()
-   {
-      AnnotatedType<?> at = WeldClassImpl.of("", new Kangaroo().procreate().getClass(), transformer);
-      WeldClassImpl.of("", at, transformer);
-   }
-   
-   /*
-    * description = "WELD-216"
-    */
-   @Test
-   @Ignore 
-   /*
+/**
+ * @see WELD-216
+ */
+public class WeldClassTest {
+
+    private final ClassTransformer transformer = new ClassTransformer("", new TypeStore());
+
+    @Test
+    public void testMemberClassWithGenericTypes() {
+        AnnotatedType<?> at = WeldClassImpl.of("", new Kangaroo().procreate().getClass(), transformer);
+        WeldClassImpl.of("", at, transformer);
+    }
+
+    /*
     *  Not isolated, depends on someone else initializing Containers.
     *  
     *  getUnproxyableClassException() catch(NoSuchMethodException)
     *           InstantiatorFactory.useInstantiators() <-- Needs Containers
     */
-   public void testLocalClassWithGenericTypes()
-   {
-      AnnotatedType<?> at = WeldClassImpl.of("", new Koala().procreate().getClass(), transformer);
-      WeldClassImpl.of("", at, transformer);
-   }
-   
-   /*
-    * description = "WELD-216"
-    */
-   @Test
-   @Ignore 
-   /*
+    @Test
+    public void testLocalClassWithGenericTypes() {
+        AnnotatedType<?> at = WeldClassImpl.of("", new Koala().procreate().getClass(), transformer);
+        WeldClassImpl.of("", at, transformer);
+    }
+    
+    /*
     *  Not isolated, depends on someone else initializing Containers.
     *  
     *  getUnproxyableClassException() catch(NoSuchMethodException)
     *           InstantiatorFactory.useInstantiators() <-- Needs Containers
     */
+   @Test
    public void testAnonymousClassWithGenericTypes()
    {
       AnnotatedType<?> at = WeldClassImpl.of("", new Possum().procreate().getClass(), transformer);

@@ -53,15 +53,13 @@ public class SimpleWeldClassTest
    /*
     * description = "WELD-568"
     */
-   @Category(Broken.class)
-   @Test
-   public void testWeldClassForGenericSuperclass()
-   {
-      WeldClass<StringProcessor> weldClass = WeldClassImpl.of("STATIC_INSTANCE", StringProcessor.class, new ClassTransformer("STATIC_INSTANCE", new TypeStore()));
-      Collection<WeldMethod<?, ? super StringProcessor>> methods = weldClass.getWeldMethods();
-      //assert methods.size() == 2;
-      List<WeldMethod<?,?>> interceptableMethods = Beans.getInterceptableMethods(weldClass);
-      Assert.assertEquals(4, interceptableMethods.size());
-   }
+    @Test
+    public void testWeldClassForGenericSuperclass() {
+        WeldClass<StringProcessor> weldClass = WeldClassImpl.of("STATIC_INSTANCE", StringProcessor.class, new ClassTransformer("STATIC_INSTANCE", new TypeStore()));
+        Collection<WeldMethod<?, ? super StringProcessor>> methods = weldClass.getWeldMethods();
+        //assert methods.size() == 2;
+        List<WeldMethod<?, ?>> interceptableMethods = Beans.getInterceptableMethods(weldClass);
+        Assert.assertEquals(4, interceptableMethods.size());
+    }
 
 }
