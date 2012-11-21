@@ -38,6 +38,7 @@ public class EnterpriseBeanProxyTest {
                                 .addPackage(EnterpriseBeanProxyTest.class.getPackage())
                                 .addClass(Utils.class)
                                 .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
+                                .addClass(Utils.class)
                 );
     }
 
@@ -46,7 +47,7 @@ public class EnterpriseBeanProxyTest {
     *
     * <a href="https://jira.jboss.org/jira/browse/WBRI-109">WBRI-109</a>
     */
-    // Broken due to WELDINT-45
+    // WELDINT-45
     @Test
     public void testNoInterfaceView(Mouse mouse) throws Exception {
         Assert.assertTrue(Utils.isProxy(mouse));
