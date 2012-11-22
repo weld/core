@@ -31,6 +31,7 @@ import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
+import static org.junit.Assert.*;
 
 /**
  * Integration tests for Web Bean events.
@@ -58,9 +59,9 @@ public class TransactionalObserversTest {
     public void testTransactionalObserverNotifiedImmediatelyWhenNoTransactionInProgress() {
         dog.setCorrectContext(false);
         dog.setCorrectTransactionState(false);
-        assert dogAgent != null;
+        assertNotNull(dogAgent);
         dogAgent.sendOutsideTransaction(BigInteger.TEN);
-        assert dog.isCorrectTransactionState();
+        assertTrue(dog.isCorrectTransactionState());
     }
 
     @Test
@@ -69,7 +70,7 @@ public class TransactionalObserversTest {
         dog.setCorrectTransactionState(false);
         dogAgent.sendInTransaction("event");
         Thread.sleep(100);
-        assert dog.isCorrectTransactionState();
+        assertTrue(dog.isCorrectTransactionState());
     }
 
     @Test
@@ -78,7 +79,7 @@ public class TransactionalObserversTest {
         dog.setCorrectTransactionState(false);
         dogAgent.sendInTransaction(new Integer(4));
         Thread.sleep(100);
-        assert dog.isCorrectTransactionState();
+        assertTrue(dog.isCorrectTransactionState());
     }
 
     @Test
@@ -93,7 +94,7 @@ public class TransactionalObserversTest {
             }
         }
         Thread.sleep(100);
-        assert dog.isCorrectTransactionState();
+        assertTrue(dog.isCorrectTransactionState());
     }
 
     @Test
@@ -101,7 +102,7 @@ public class TransactionalObserversTest {
         dog.setCorrectContext(false);
         dog.setCorrectTransactionState(false);
         dogAgent.sendInTransaction(new RuntimeException("test event"));
-        assert dog.isCorrectTransactionState();
+        assertTrue(dog.isCorrectTransactionState());
     }
 
     private boolean isThrowablePresent(Exception exception) {
