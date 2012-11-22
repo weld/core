@@ -43,7 +43,6 @@ import org.junit.runner.RunWith;
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
 @RunWith(Arquillian.class)
-@Category(Broken.class)
 public class SplitInterceptorsTest {
     @Deployment
     public static Archive<?> deploy() {
