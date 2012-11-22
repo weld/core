@@ -23,11 +23,11 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.test.util.Utils;
-import org.jboss.weld.tests.category.Broken;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
+import static org.junit.Assert.*;
 
 import javax.inject.Inject;
 import java.math.BigInteger;
@@ -55,13 +55,12 @@ public class TransactionalObserversTest {
     private Agent dogAgent;
 
     @Test
-    @Category(Broken.class)
     public void testTransactionalObserverNotifiedImmediatelyWhenNoTransactionInProgress() {
         dog.setCorrectContext(false);
         dog.setCorrectTransactionState(false);
-        assert dogAgent != null;
+        assertNotNull(dogAgent);
         dogAgent.sendOutsideTransaction(BigInteger.TEN);
-        assert dog.isCorrectTransactionState();
+        assertTrue(dog.isCorrectTransactionState());
     }
 
     @Test
@@ -70,7 +69,7 @@ public class TransactionalObserversTest {
         dog.setCorrectTransactionState(false);
         dogAgent.sendInTransaction("event");
         Thread.sleep(100);
-        assert dog.isCorrectTransactionState();
+        assertTrue(dog.isCorrectTransactionState());
     }
 
     @Test
@@ -79,7 +78,7 @@ public class TransactionalObserversTest {
         dog.setCorrectTransactionState(false);
         dogAgent.sendInTransaction(new Integer(4));
         Thread.sleep(100);
-        assert dog.isCorrectTransactionState();
+        assertTrue(dog.isCorrectTransactionState());
     }
 
     @Test
@@ -94,16 +93,15 @@ public class TransactionalObserversTest {
             }
         }
         Thread.sleep(100);
-        assert dog.isCorrectTransactionState();
+        assertTrue(dog.isCorrectTransactionState());
     }
 
     @Test
-    @Category(Broken.class)
     public void testBeforeTransactionCompletionObserver() {
         dog.setCorrectContext(false);
         dog.setCorrectTransactionState(false);
         dogAgent.sendInTransaction(new RuntimeException("test event"));
-        assert dog.isCorrectTransactionState();
+        assertTrue(dog.isCorrectTransactionState());
     }
 
     private boolean isThrowablePresent(Exception exception) {
