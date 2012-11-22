@@ -77,7 +77,6 @@ public class EventCurrentActivityTest {
     private BeanManagerImpl beanManager;
 
     @Test
-    @Category(Broken.class)
     public void testEventProcessedByCurrentActivity() {
         DummyContext dummyContext = new DummyContext();
         beanManager.addContext(dummyContext);

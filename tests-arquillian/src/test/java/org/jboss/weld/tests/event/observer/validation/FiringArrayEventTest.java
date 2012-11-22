@@ -103,7 +103,7 @@ public class FiringArrayEventTest {
 
     }
 
-    @Ignore
+    @Ignore("WELD-978")
     @Test
     public void testStringListEvent() {
 

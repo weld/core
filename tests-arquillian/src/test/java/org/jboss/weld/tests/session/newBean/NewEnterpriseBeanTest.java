@@ -73,7 +73,6 @@ public class NewEnterpriseBeanTest {
     }
 
     @Test
-    @Category(Broken.class)
     public void testNewBeanHasImplementationClassOfInjectionPointType() {
         initNewBean();
         Assert.assertEquals(WrappedEnterpriseBean.class, newEnterpriseBean.getType());
