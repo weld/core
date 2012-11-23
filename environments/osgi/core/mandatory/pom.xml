@@ -132,7 +132,7 @@
                 <extensions>true</extensions>
       			<configuration>
           			<instructions>
-              			<Bundle-SymbolicName>org.weld.osgi.core.mandatory</Bundle-SymbolicName>
+              			<Bundle-SymbolicName>org.jboss.weld.osgi.core.mandatory</Bundle-SymbolicName>
              		</instructions>
       			</configuration>
             </plugin>
