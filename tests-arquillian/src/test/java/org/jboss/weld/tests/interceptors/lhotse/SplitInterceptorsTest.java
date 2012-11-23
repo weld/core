@@ -29,7 +29,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.weld.tests.category.Broken;
+import org.jboss.weld.tests.category.Integration;
 import org.jboss.weld.tests.interceptors.lhotse.fst.TDAO;
 import org.jboss.weld.tests.interceptors.lhotse.fst.TxInterceptor;
 import org.jboss.weld.tests.interceptors.lhotse.snd.CDAO;
@@ -43,6 +43,7 @@ import org.junit.runner.RunWith;
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
 @RunWith(Arquillian.class)
+@Category(Integration.class)
 public class SplitInterceptorsTest {
     @Deployment
     public static Archive<?> deploy() {
