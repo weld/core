@@ -143,4 +143,12 @@ public class ModuleEnablement {
             return p1 - p2;
         }
     }
+
+    @Override
+    public String toString() {
+        return "Enabled interceptors: " + interceptors + "\nEnabled decorators: " + decorators + "\nEnabled alternatives: "
+                + alternatives;
+    }
+
+
 }

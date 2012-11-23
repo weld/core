@@ -44,4 +44,39 @@ public class ClassEnablement {
     public Integer getPriority() {
         return explicitPriority;
     }
+
+    @Override
+    public String toString() {
+        return enabledClass.toString();
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((enabledClass == null) ? 0 : enabledClass.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof ClassEnablement)) {
+            return false;
+        }
+        ClassEnablement other = (ClassEnablement) obj;
+        if (enabledClass == null) {
+            if (other.enabledClass != null) {
+                return false;
+            }
+        } else if (!enabledClass.equals(other.enabledClass)) {
+            return false;
+        }
+        return true;
+    }
 }
