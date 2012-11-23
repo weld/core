@@ -207,7 +207,9 @@ class EnablementBuilderFragment {
                 // this globally enabled record is disabled in this module
                 continue;
             }
-            if (deployment.getBeanDeploymentArchive().getBeanDeploymentArchives().contains(globallyEnabledRecord.getArchive())) {
+            BeanDeploymentArchive deploymentArchive = deployment.getBeanDeploymentArchive();
+            BeanDeploymentArchive recordArchive = globallyEnabledRecord.getArchive();
+            if (deploymentArchive.equals(recordArchive) || deploymentArchive.getBeanDeploymentArchives().contains(recordArchive)) {
                 // only apply this global enablement if the BDA that defines it is accessible from the current BDA
                 localRecords.add(globallyEnabledRecord);
             }

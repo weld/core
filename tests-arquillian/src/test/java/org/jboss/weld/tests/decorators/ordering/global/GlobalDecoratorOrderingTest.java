@@ -96,6 +96,7 @@ public class GlobalDecoratorOrderingTest {
         expected.add(GloballyEnabledDecorator1.class.getSimpleName());
         expected.add(LegacyDecorator1.class.getSimpleName());
         expected.add(GloballyEnabledDecorator2.class.getSimpleName());
+        expected.add(WebApplicationGlobalDecorator.class.getSimpleName());
         expected.add(LegacyDecorator2.class.getSimpleName());
         expected.add(GloballyPrioritizedDecorator1.class.getSimpleName());
         expected.add(LegacyDecorator3.class.getSimpleName());
