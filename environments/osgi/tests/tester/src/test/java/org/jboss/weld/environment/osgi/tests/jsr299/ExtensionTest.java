@@ -56,11 +56,10 @@ public class ExtensionTest {
         Bundle bundle1 = null, bundleExtension = null;
         for(Bundle b : context.getBundles()) {
             Assert.assertEquals("Bundle" + b.getSymbolicName() + " is not ACTIVE", Bundle.ACTIVE, b.getState());
-            if(b.getSymbolicName().equals("org.jboss.weld.osgi.tests.weld-osgi-bundle1")) {
-                bundle1=b;
-            }
-            else if(b.getSymbolicName().equals("org.jboss.weld.osgi.weld-osgi-core-extension")) {
-                bundleExtension=b;
+            if (b.getSymbolicName().equals("org.jboss.weld.osgi.tests.weld-osgi-bundle1")) {
+                bundle1 = b;
+            } else if (b.getSymbolicName().equals("org.jboss.weld.osgi.core.extension")) {
+                bundleExtension = b;
             }
         }
         Assert.assertNotNull("The bundle1 was not retrieved", bundle1);

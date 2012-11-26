@@ -58,17 +58,17 @@ public class InfrastructureTest {
         Environment.waitForEnvironment(context);
 
         Bundle extAPI = null, intAPI = null, extImpl = null, intImpl = null, mand = null;
-        for(Bundle b : context.getBundles()) {
-            if(b.getSymbolicName().equals("org.jboss.weld.osgi.weld-osgi-core-api")) {
-                extAPI=b;
-            } else if(b.getSymbolicName().equals("org.jboss.weld.osgi.weld-osgi-core-spi")) {
-                intAPI=b;
-            } else if(b.getSymbolicName().equals("org.jboss.weld.osgi.weld-osgi-core-extension")) {
-                extImpl=b;
-            } else if(b.getSymbolicName().equals("org.jboss.weld.osgi.weld-osgi-core-integration")) {
-                intImpl=b;
-            } else if(b.getSymbolicName().equals("org.jboss.weld.osgi.weld-osgi-core-mandatory")) {
-                mand=b;
+        for (Bundle b : context.getBundles()) {
+            if (b.getSymbolicName().equals("org.jboss.weld.osgi.core.api")) {
+                extAPI = b;
+            } else if (b.getSymbolicName().equals("org.jboss.weld.osgi.core.spi")) {
+                intAPI = b;
+            } else if (b.getSymbolicName().equals("org.jboss.weld.osgi.core.extension")) {
+                extImpl = b;
+            } else if (b.getSymbolicName().equals("org.jboss.weld.osgi.core.integration")) {
+                intImpl = b;
+            } else if (b.getSymbolicName().equals("org.jboss.weld.osgi.core.mandatory")) {
+                mand = b;
             }
         }
         Assert.assertNotNull("Extension API bundle is not present", extAPI);
