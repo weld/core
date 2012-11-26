@@ -30,7 +30,6 @@ import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.weld.tests.category.Broken;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Assert;
 import org.junit.Rule;
@@ -60,7 +59,7 @@ public class JsfStressTest {
 
     protected String WIN_MSG = "Correct!";
     protected String LOSE_MSG = "No guesses left!";
-
+    
     @ArquillianResource
     private URL url;
 
@@ -71,16 +70,14 @@ public class JsfStressTest {
     public static WebArchive createDeployment() {
         return ShrinkWrap.create(WebArchive.class, "test.war")
                 .addClasses(Game.class, Generator.class, MaxNumber.class, Random.class)
-                .addAsWebResource(JsfStressTest.class.getPackage(), "web.xml", "web.xml")
-                .addAsWebResource(JsfStressTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
-                .addAsResource(JsfStressTest.class.getPackage(), "home.xhtml", "home.xhtml")
-                .addAsResource(JsfStressTest.class.getPackage(), "index.html", "index.html")
-                .addAsResource(JsfStressTest.class.getPackage(), "template.xhtml", "template.xhtml")
+                .addAsWebInfResource(JsfStressTest.class.getPackage(), "web.xml", "web.xml")
+                .addAsWebInfResource(JsfStressTest.class.getPackage(), "faces-config.xml", "faces-config.xml")
+                .addAsWebResource(JsfStressTest.class.getPackage(), "home.xhtml", "home.xhtml")
+                .addAsWebResource(JsfStressTest.class.getPackage(), "index.html", "index.html")
+                .addAsWebResource(JsfStressTest.class.getPackage(), "template.xhtml", "template.xhtml")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
-
-    // WELD-676
-    @Category(Broken.class)
+    
     @Test
     @PerfTest(invocations = 500)
     public void testJsfApp() throws Exception {
