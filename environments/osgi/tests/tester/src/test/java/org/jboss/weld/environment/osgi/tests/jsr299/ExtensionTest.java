@@ -61,7 +61,7 @@ public class ExtensionTest {
             Assert.assertEquals("Bundle" + b.getSymbolicName() + " is not ACTIVE", Bundle.ACTIVE, b.getState());
             if (b.getSymbolicName().equals("org.jboss.weld.osgi.tests.weld-osgi-bundle1")) {
                 bundle1 = b;
-            } else if (b.getSymbolicName().equals("org.jboss.weld.osgi.weld-osgi-core-extension")) {
+            } else if (b.getSymbolicName().equals("org.jboss.weld.osgi.core.extension")) {
                 bundleExtension = b;
             }
         }

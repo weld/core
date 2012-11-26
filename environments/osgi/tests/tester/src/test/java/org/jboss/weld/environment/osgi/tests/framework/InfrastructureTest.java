@@ -58,15 +58,15 @@ public class InfrastructureTest {
 
         Bundle extAPI = null, intAPI = null, extImpl = null, intImpl = null, mand = null;
         for (Bundle b : context.getBundles()) {
-            if (b.getSymbolicName().equals("org.jboss.weld.osgi.weld-osgi-core-api")) {
+            if (b.getSymbolicName().equals("org.jboss.weld.osgi.core.api")) {
                 extAPI = b;
-            } else if (b.getSymbolicName().equals("org.jboss.weld.osgi.weld-osgi-core-spi")) {
+            } else if (b.getSymbolicName().equals("org.jboss.weld.osgi.core.spi")) {
                 intAPI = b;
-            } else if (b.getSymbolicName().equals("org.jboss.weld.osgi.weld-osgi-core-extension")) {
+            } else if (b.getSymbolicName().equals("org.jboss.weld.osgi.core.extension")) {
                 extImpl = b;
-            } else if (b.getSymbolicName().equals("org.jboss.weld.osgi.weld-osgi-core-integration")) {
+            } else if (b.getSymbolicName().equals("org.jboss.weld.osgi.core.integration")) {
                 intImpl = b;
-            } else if (b.getSymbolicName().equals("org.jboss.weld.osgi.weld-osgi-core-mandatory")) {
+            } else if (b.getSymbolicName().equals("org.jboss.weld.osgi.core.mandatory")) {
                 mand = b;
             }
         }
