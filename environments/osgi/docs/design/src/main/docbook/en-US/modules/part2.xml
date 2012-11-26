@@ -392,7 +392,7 @@ public class MyServiceQualifiedImpl implements MyService {
                <title>Annotated type processing justification</title>
                <mediaobject>
                   <imageobject>
-                     <imagedata fileref="../images/AnnotatedTypeProcessingJustification.png" depth="800"/>
+                     <imagedata fileref="images/AnnotatedTypeProcessingJustification.png" depth="800"/>
                   </imageobject>
                   <caption>This figure show the need for a annotated type processing in order to remove the ambiguous
                      dependency between regular CDI and Weld-OSGi injection points.</caption>

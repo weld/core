@@ -34,7 +34,7 @@
          <title>The five bundles of Weld-OSGi</title>
          <mediaobject>
             <imageobject>
-               <imagedata align="center" format="PNG" depth="800" fileref="../images/5Bundles.png"/>
+               <imagedata align="center" format="PNG" depth="800" fileref="images/5Bundles.png"/>
             </imageobject>
             <caption>This figure shows the five bundles of Weld-OSGi and the links between them.</caption>
          </mediaobject>
@@ -188,7 +188,7 @@ END</programlisting>
          <title>Weld-OSGi framework start and stop protocol</title>
          <mediaobject>
             <imageobject>
-               <imagedata format="PNG" align="center" width="800" depth="600" fileref="../images/StartStopProtocol.png"
+               <imagedata format="PNG" align="center" width="800" depth="600" fileref="images/StartStopProtocol.png"
                />
             </imageobject>
             <caption>This figure shows the steps of the Weld-OSGi starting and stopping protocol. Between step 8 and
@@ -206,7 +206,7 @@ END</programlisting>
          <title>The bean bundle lifecycle</title>
          <mediaobject>
             <imageobject>
-               <imagedata align="center" format="PNG" depth="800" fileref="../images/BeanBundleLifeCycle.png"/>
+               <imagedata align="center" format="PNG" depth="800" fileref="images/BeanBundleLifeCycle.png"/>
             </imageobject>
             <caption>This figure shows the two new states a bean bundle can be in. These states are triggered by two new
                events and address the CDI container dependency resolution (i.e. services annotated @Required).</caption>
