@@ -549,7 +549,7 @@ public class Beans {
     public static boolean isTypeManagedBeanOrDecoratorOrInterceptor(AnnotatedType<?> annotatedType) {
         Class<?> javaClass = annotatedType.getJavaClass();
         return !javaClass.isEnum() && !Extension.class.isAssignableFrom(javaClass)
-                && !(javaClass.isAnonymousClass() || (javaClass.isMemberClass() && !Reflections.isStatic(javaClass)))
+                && (javaClass.getEnclosingClass() == null || (Reflections.isStatic(javaClass) && javaClass.isMemberClass()))
                 && !Reflections.isParamerterizedTypeWithWildcard(javaClass)
                 && hasSimpleCdiConstructor(annotatedType);
     }
