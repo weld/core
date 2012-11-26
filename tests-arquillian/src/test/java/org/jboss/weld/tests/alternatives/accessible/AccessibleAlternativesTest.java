@@ -19,7 +19,6 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-
 package org.jboss.weld.tests.alternatives.accessible;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -27,39 +26,43 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
+import org.jboss.shrinkwrap.api.asset.StringAsset;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
 @RunWith(Arquillian.class)
 public class AccessibleAlternativesTest {
+
+    private static StringAsset beansXml = new StringAsset(
+            "<beans>"
+            + " <alternatives>"
+            + "   <class>" + BUser.class.getName() + "</class>"
+            + " </alternatives>"
+            + "</beans>");
+
     @Deployment
     public static Archive<?> deploy() {
         JavaArchive lib = ShrinkWrap.create(BeanArchive.class, "test.jar")
-                .alternate(BUser.class)
                 .addClasses(IUser.class, BUser.class);
 
         return ShrinkWrap.create(WebArchive.class)
                 .addAsLibrary(lib)
-                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
+                .addAsWebInfResource(beansXml, "beans.xml")
                 .addClasses(AUser.class);
     }
-
     @Inject
     private BeanManager beanManager;
 
     @Test
-    @Ignore
     public void testAlternatives() {
         Assert.assertEquals(BUser.class, beanManager.resolve(beanManager.getBeans(IUser.class)).getBeanClass());
     }
