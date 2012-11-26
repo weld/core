@@ -193,7 +193,7 @@ public class MyServiceImpl extends AbstractClass implements MyService, OtherInte
                         generate:<programlisting>(myqualifier=*)</programlisting></para>
                   </listitem>
                   <listitem>
-                     <para>Some qualifiers follow a specific processing:<itemizedlist>
+                     <para>Some qualifiers follows a specific processing:<itemizedlist>
                            <listitem>
                               <para><code>OSGiService</code> qualifier will not generate any service property</para>
                            </listitem>
