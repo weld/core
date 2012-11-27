@@ -45,7 +45,6 @@ import org.jboss.weld.bean.InterceptorImpl;
 import org.jboss.weld.bean.interceptor.CustomInterceptorMetadata;
 import org.jboss.weld.bean.interceptor.SerializableContextualInterceptorReference;
 import org.jboss.weld.bean.interceptor.WeldInterceptorClassMetadata;
-import org.jboss.weld.context.SerializableContextualImpl;
 import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.DeploymentException;
@@ -274,7 +273,7 @@ public class InterceptionModelInitializer<T> {
 
     private InterceptorMetadata<SerializableContextual<Interceptor<?>, ?>> getInterceptorMetadata(Interceptor<?> interceptor) {
         ContextualStore store = manager.getServices().get(ContextualStore.class);
-        SerializableContextualImpl<Interceptor<?>, ?> contextual = cast(store.getSerializableContextual(interceptor));
+        SerializableContextual<Interceptor<?>, ?> contextual = cast(store.getSerializableContextual(interceptor));
         if (interceptor instanceof InterceptorImpl) {
             InterceptorImpl<?> interceptorImpl = (InterceptorImpl<?>) interceptor;
             ClassMetadata<?> classMetadata = interceptorImpl.getInterceptorMetadata().getInterceptorClass();

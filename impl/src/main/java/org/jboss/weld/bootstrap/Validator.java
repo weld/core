@@ -26,6 +26,7 @@ import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_STERE
 import static org.jboss.weld.logging.messages.ValidatorMessage.AMBIGUOUS_EL_NAME;
 import static org.jboss.weld.logging.messages.ValidatorMessage.BEAN_NAME_IS_PREFIX;
 import static org.jboss.weld.logging.messages.ValidatorMessage.BEAN_SPECIALIZED_TOO_MANY_TIMES;
+import static org.jboss.weld.logging.messages.ValidatorMessage.BEAN_WITH_PASSIVATING_SCOPE_NOT_PASSIVATION_CAPABLE;
 import static org.jboss.weld.logging.messages.ValidatorMessage.DECORATORS_CANNOT_HAVE_DISPOSER_METHODS;
 import static org.jboss.weld.logging.messages.ValidatorMessage.DECORATORS_CANNOT_HAVE_OBSERVER_METHODS;
 import static org.jboss.weld.logging.messages.ValidatorMessage.DECORATORS_CANNOT_HAVE_PRODUCER_FIELDS;
@@ -114,7 +115,6 @@ import org.jboss.weld.bean.WeldDecorator;
 import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.bootstrap.enablement.ClassEnablement;
-import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.IllegalProductException;
@@ -177,6 +177,10 @@ public class Validator implements Service {
         }
         if (!normalScoped) {
             validatePseudoScopedBean(bean, beanManager);
+        }
+
+        if (beanManager.isPassivatingScope(bean.getScope()) && !(bean instanceof PassivationCapable)) {
+            throw new DeploymentException(BEAN_WITH_PASSIVATING_SCOPE_NOT_PASSIVATION_CAPABLE, bean);
         }
     }
 

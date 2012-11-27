@@ -18,19 +18,20 @@ package org.jboss.weld.serialization;
 
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
-import org.jboss.weld.context.SerializableContextualImpl;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import javax.enterprise.context.spi.Contextual;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.PassivationCapable;
+
+import org.jboss.weld.context.SerializableContextualFactory;
 import org.jboss.weld.context.SerializableContextualInstanceImpl;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextualInstance;
 import org.jboss.weld.util.reflection.Reflections;
-
-import javax.enterprise.context.spi.Contextual;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.PassivationCapable;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Implementation of {@link org.jboss.weld.serialization.spi.ContextualStore}
@@ -112,7 +113,7 @@ public class ContextualStoreImpl implements ContextualStore {
         if (contextual instanceof SerializableContextual<?, ?>) {
             return cast(contextual);
         }
-        return new SerializableContextualImpl<C, I>(Reflections.<C>cast(contextual), this);
+        return SerializableContextualFactory.create(Reflections.<C>cast(contextual), this);
     }
 
     public <C extends Contextual<I>, I> SerializableContextualInstance<C, I> getSerializableContextualInstance(Contextual<I> contextual, I instance, CreationalContext<I> creationalContext) {
