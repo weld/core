@@ -23,7 +23,6 @@ import static org.jboss.weld.logging.messages.EventMessage.INVALID_PRODUCER;
 import static org.jboss.weld.logging.messages.EventMessage.INVALID_SCOPED_CONDITIONAL_OBSERVER;
 import static org.jboss.weld.logging.messages.EventMessage.INVALID_WITH_ANNOTATIONS;
 import static org.jboss.weld.logging.messages.EventMessage.MULTIPLE_EVENT_PARAMETERS;
-import static org.jboss.weld.logging.messages.ValidatorMessage.NON_FIELD_INJECTION_POINT_CANNOT_USE_NAMED;
 import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
 
 import java.lang.annotation.Annotation;
@@ -47,7 +46,6 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.ObserverMethod;
 import javax.enterprise.inject.spi.WithAnnotations;
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.inject.Qualifier;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
@@ -62,7 +60,7 @@ import org.jboss.weld.injection.attributes.SpecialParameterInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.util.Observers;
-import org.jboss.weld.util.reflection.TypeVariableResolver;
+import org.jboss.weld.util.reflection.HierarchyDiscovery;
 
 /**
  * <p>
@@ -107,7 +105,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
         this.declaringBean = declaringBean;
         this.observerMethod = initMethodInjectionPoint(observer, declaringBean, manager);
         EnhancedAnnotatedParameter<?, ? super X> eventParameter = observer.getEnhancedParameters(Observes.class).get(0);
-        this.eventType = TypeVariableResolver.resolveVariables(declaringBean.getBeanClass(), eventParameter.getBaseType());
+        this.eventType = new HierarchyDiscovery(declaringBean.getBeanClass()).resolveType(eventParameter.getBaseType());
         this.id = new StringBuilder().append(ID_PREFIX).append(ID_SEPARATOR)/*.append(manager.getId()).append(ID_SEPARATOR)*/.append(ObserverMethod.class.getSimpleName()).append(ID_SEPARATOR).append(declaringBean.getBeanClass().getName()).append(".").append(observer.getSignature()).toString();
         this.bindings = manager.getServices().get(SharedObjectCache.class).getSharedSet(observer.getEnhancedParameters(Observes.class).get(0).getMetaAnnotations(Qualifier.class));
         Observes observesAnnotation = observer.getEnhancedParameters(Observes.class).get(0).getAnnotation(Observes.class);

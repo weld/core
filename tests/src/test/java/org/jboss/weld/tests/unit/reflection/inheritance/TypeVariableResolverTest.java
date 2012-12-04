@@ -1,12 +1,13 @@
 package org.jboss.weld.tests.unit.reflection.inheritance;
 
-import org.jboss.weld.util.reflection.TypeVariableResolver;
-import org.testng.Assert;
-import org.testng.annotations.Test;
-
-import javax.enterprise.util.TypeLiteral;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
+
+import javax.enterprise.util.TypeLiteral;
+
+import org.jboss.weld.util.reflection.HierarchyDiscovery;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
 
 /**
@@ -84,7 +85,7 @@ public class TypeVariableResolverTest {
     }
 
     private void assertTypeEquals(Type expectedType, Class beanClass, Field field) {
-        Type type = new TypeVariableResolver(beanClass).resolveVariablesInType(field.getGenericType());
+        Type type = new HierarchyDiscovery(beanClass).resolveType(field.getGenericType());
         Assert.assertEquals(type, expectedType);
     }
 

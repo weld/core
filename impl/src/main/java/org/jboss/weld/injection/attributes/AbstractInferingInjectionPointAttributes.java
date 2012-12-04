@@ -31,8 +31,8 @@ import javax.decorator.Delegate;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.serialization.BeanHolder;
+import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.Reflections;
-import org.jboss.weld.util.reflection.TypeVariableResolver;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
@@ -118,7 +118,7 @@ public abstract class AbstractInferingInjectionPointAttributes<T, S> implements 
 
         @Override
         protected Type resolveType() {
-            return TypeVariableResolver.resolveVariables(getBean().getBeanClass(), getAnnotated().getBaseType());
+            return new HierarchyDiscovery(getBean().getBeanClass()).resolveType(getAnnotated().getBaseType());
         }
     }
 
@@ -134,7 +134,7 @@ public abstract class AbstractInferingInjectionPointAttributes<T, S> implements 
 
         @Override
         protected Type resolveType() {
-            return TypeVariableResolver.resolveVariables(componentClass, getAnnotated().getBaseType());
+            return new HierarchyDiscovery(componentClass).resolveType(getAnnotated().getBaseType());
         }
     }
 }

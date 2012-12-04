@@ -16,8 +16,13 @@
  */
 package org.jboss.weld.tests.unit.hierarchy.discovery.classes;
 
+import static org.jboss.weld.tests.unit.hierarchy.discovery.Types.newParameterizedType;
+
+import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.jboss.weld.tests.unit.hierarchy.discovery.Types;
@@ -27,14 +32,33 @@ import org.junit.Test;
 public class ClassHierarchyTest {
 
     @Test
-    public void testInterfaceTypesResolved() {
+    public void testTypesResolved() {
         Set<Type> expectedTypes = new HashSet<Type>();
         expectedTypes.add(Object.class);
         expectedTypes.add(Baz.class);
-        expectedTypes.add(Types.newParameterizedType(Bar.class, Integer.class));
-        expectedTypes.add(Types.newParameterizedType(Foo.class, Integer.class));
+        expectedTypes.add(newParameterizedType(Bar.class, Integer.class));
+        expectedTypes.add(newParameterizedType(Foo.class, Integer.class));
 
         HierarchyDiscovery discovery = new HierarchyDiscovery(Baz.class);
         Types.assertTypeSetMatches(expectedTypes, discovery.getTypeClosure());
+    }
+
+    @Test
+    public void testMassiveParameterizedType() {
+        Set<Type> expectedTypes = new HashSet<Type>();
+        expectedTypes.add(Object.class);
+        expectedTypes.add(Bravo.class);
+        expectedTypes.add(t(
+                Alpha.class,
+                t(Alpha.class,
+                        t(Alpha.class,
+                                t(Map.class, t(Alpha.class, String.class),
+                                        t(List.class, t(Set.class, t(Comparable.class, Serializable.class))))))));
+        HierarchyDiscovery discovery = new HierarchyDiscovery(Bravo.class);
+        Types.assertTypeSetMatches(expectedTypes, discovery.getTypeClosure());
+    }
+
+    private Type t(Class<?> rawType, Type... arguments) {
+        return newParameterizedType(rawType, arguments);
     }
 }
