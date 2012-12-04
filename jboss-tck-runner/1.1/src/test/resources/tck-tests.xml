@@ -129,12 +129,6 @@
                     <exclude name="testProcessAnnotatedTypeFiredForAnnotation"/>
                 </methods>
             </class>
-            <!-- WELD-1245 -->
-            <class name="org.jboss.cdi.tck.tests.decorators.builtin.instance.BuiltinInstanceDecoratorTest">
-                <methods>
-                    <exclude name="testDecoratorIsResolved"/>
-                </methods>
-            </class>
             <!-- WELD-1246 -->
             <class name="org.jboss.cdi.tck.tests.decorators.builtin.principal.BuiltinPrincipalDecoratorTest">
                 <methods>
