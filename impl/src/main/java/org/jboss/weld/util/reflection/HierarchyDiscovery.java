@@ -145,29 +145,32 @@ public class HierarchyDiscovery {
      * {@link #resolveType(TypeVariable)}.
      */
     public Type resolveType(ParameterizedType type) {
-        Type[] typeArguments = type.getActualTypeArguments();
+        Type[] unresolvedTypeArguments = type.getActualTypeArguments();
 
         /*
          * Indicates whether we managed to resolve any of type arguments. If we did not then there is no need to create a new
          * ParameterizedType with the old parameters. Instead, we return the original type.
          */
         boolean modified = false;
+        Type[] resolvedTypeArguments = new Type[unresolvedTypeArguments.length];
 
-        for (int i = 0; i < typeArguments.length; i++) {
-            Type unresolvedType = typeArguments[i];
-            if (unresolvedType instanceof TypeVariable<?>) {
-                typeArguments[i] = resolveType((TypeVariable<?>) unresolvedType);
+        for (int i = 0; i < unresolvedTypeArguments.length; i++) {
+            Type resolvedType = unresolvedTypeArguments[i];
+            if (resolvedType instanceof TypeVariable<?>) {
+                resolvedType = resolveType((TypeVariable<?>) resolvedType);
             }
-            if (unresolvedType instanceof ParameterizedType) {
-                typeArguments[i] = resolveType((ParameterizedType) unresolvedType);
+            if (resolvedType instanceof ParameterizedType) {
+                resolvedType = resolveType((ParameterizedType) resolvedType);
             }
-            if (typeArguments[i] != unresolvedType) { // This identity check is intentional. A different identity indicates that the type argument was resolved.
+            resolvedTypeArguments[i] = resolvedType;
+            // This identity check is intentional. A different identity indicates that the type argument was resolved within #resolveType().
+            if (unresolvedTypeArguments[i] != resolvedType) {
                 modified = true;
             }
         }
 
         if (modified) {
-            return new ParameterizedTypeImpl(type.getRawType(), typeArguments, type.getOwnerType());
+            return new ParameterizedTypeImpl(type.getRawType(), resolvedTypeArguments, type.getOwnerType());
         } else {
             return type;
         }

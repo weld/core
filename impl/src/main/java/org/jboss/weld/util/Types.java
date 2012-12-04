@@ -106,7 +106,7 @@ public class Types {
      */
     public static Type resolveType(Class<?> clazz) {
         if (clazz.getTypeParameters().length > 0) {
-            TypeVariable<?>[] actualTypeParameters = clazz.getTypeParameters();
+            Type[] actualTypeParameters = clazz.getTypeParameters();
             return new ParameterizedTypeImpl(clazz, actualTypeParameters, clazz.getDeclaringClass());
         }
         return clazz;
