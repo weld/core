@@ -13,8 +13,8 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -46,7 +46,7 @@ public class FiringArrayEventTest {
     private Event<List<String>> stringListEvent;
 
     @Inject
-    private Event<List<String>[]> stringListArrayEvent;
+    private Event<ArrayList<String>[]> stringListArrayEvent;
 
     @Deployment
     public static Archive<?> createTestArchive() {
@@ -111,17 +111,17 @@ public class FiringArrayEventTest {
     }
 
     @Test
-    public void testStringListArrayEvent() {
+    @SuppressWarnings({ "unchecked" })
+    public void testStringArrayListArrayEvent() {
 
-        Assert.assertFalse("should have not received update", this.stringListArrayObserverBean.isReceivedUpdate());
-        Assert.assertNull("should have not received update", this.stringListArrayObserverBean.getData());
+        stringListArrayObserverBean.reset();
 
         ArrayList<String>[] data = new ArrayList[0];
 
         this.stringListArrayEvent.fire(data);
         // should not fail, this test should behave same as test_resolver_array()
         Assert.assertTrue("should have received update", this.stringListArrayObserverBean.isReceivedUpdate());
-        Assert.assertEquals("should have received update", this.stringListArrayObserverBean.getData(), data);
+        Assert.assertArrayEquals("should have received update", this.stringListArrayObserverBean.getData(), data);
     }
 
 }

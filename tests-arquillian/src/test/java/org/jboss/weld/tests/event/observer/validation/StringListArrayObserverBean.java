@@ -2,6 +2,8 @@ package org.jboss.weld.tests.event.observer.validation;
 
 import javax.enterprise.event.Observes;
 import javax.inject.Singleton;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Singleton
@@ -10,7 +12,7 @@ public class StringListArrayObserverBean {
     private List<String>[] data;
     private boolean receivedUpdate;
 
-    public void listenForEvent(@Observes final List<String>[] data) {
+    public void listenForEvent(@Observes final ArrayList<String>[] data) {
         this.data = data;
         this.receivedUpdate = true;
     }

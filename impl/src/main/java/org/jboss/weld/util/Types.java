@@ -20,7 +20,9 @@ import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+import java.lang.reflect.WildcardType;
 
+import org.jboss.weld.util.reflection.GenericArrayTypeImpl;
 import org.jboss.weld.util.reflection.ParameterizedTypeImpl;
 import org.jboss.weld.util.reflection.RawType;
 import org.jboss.weld.util.reflection.Reflections;
@@ -75,7 +77,7 @@ public class Types {
 
     public static String getTypeId(Type type) {
         if (type instanceof Class<?>) {
-            return Reflections.<Class<?>>cast(type).getName();
+            return Reflections.<Class<?>> cast(type).getName();
         }
         if (type instanceof ParameterizedType) {
             ParameterizedType pt = (ParameterizedType) type;
@@ -100,11 +102,27 @@ public class Types {
     }
 
     /**
+     * Returns a canonical type for a given class.
      *
-     * @param clazz
+     * If the class is a raw type of a parameterized class, the matching
+     * {@link ParameterizedType} (with unresolved type variables) is resolved.
+     *
+     * If the class is an array then the component type of the array is canonicalized
+     *
+     * Otherwise, the class is returned.
+     *
      * @return
      */
-    public static Type resolveType(Class<?> clazz) {
+    public static Type getCanonicalType(Class<?> clazz) {
+        if (clazz.isArray()) {
+            Class<?> componentType = clazz.getComponentType();
+            Type resolvedComponentType = getCanonicalType(componentType);
+            if (componentType != resolvedComponentType) {
+                // identity check intentional
+                // a different identity means that we actually replaced the component Class with a ParameterizedType
+                return new GenericArrayTypeImpl(resolvedComponentType);
+            }
+        }
         if (clazz.getTypeParameters().length > 0) {
             Type[] actualTypeParameters = clazz.getTypeParameters();
             return new ParameterizedTypeImpl(clazz, actualTypeParameters, clazz.getDeclaringClass());
@@ -117,15 +135,35 @@ public class Types {
      * @param type
      * @return
      */
-    public static Type resolveType(Type type) {
+    public static Type getCanonicalType(Type type) {
         if (type instanceof Class<?>) {
             Class<?> clazz = (Class<?>) type;
-            return resolveType(clazz);
+            return getCanonicalType(clazz);
         }
         if (type instanceof RawType<?>) {
             RawType<?> rawType = (RawType<?>) type;
             return rawType.getType();
         }
         return type;
+    }
+
+    public static boolean containsUnresolvedTypeVariableOrWildcard(Type type) {
+        type = Types.getCanonicalType(type);
+        if (type instanceof TypeVariable<?> || type instanceof WildcardType) {
+            return true;
+        }
+        if (type instanceof ParameterizedType) {
+            ParameterizedType parameterizedType = (ParameterizedType) type;
+            for (Type t : parameterizedType.getActualTypeArguments()) {
+                if (containsUnresolvedTypeVariableOrWildcard(t)) {
+                    return true;
+                }
+            }
+        }
+        if (type instanceof GenericArrayType) {
+            GenericArrayType genericArrayType = (GenericArrayType) type;
+            return containsUnresolvedTypeVariableOrWildcard(genericArrayType.getGenericComponentType());
+        }
+        return false;
     }
 }

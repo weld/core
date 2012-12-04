@@ -38,10 +38,16 @@ public class HierarchyDiscovery {
 
     private final Map<Class<?>, Type> types;
     private final Map<TypeVariable<?>, Type> resolvedTypeVariables;
+    private final TypeResolver resolver;
 
     public HierarchyDiscovery(Type type) {
+        this(type, new TypeResolver(new HashMap<TypeVariable<?>, Type>()));
+    }
+
+    public HierarchyDiscovery(Type type, TypeResolver resolver) {
         this.types = new HashMap<Class<?>, Type>();
-        this.resolvedTypeVariables = new HashMap<TypeVariable<?>, Type>();
+        this.resolver = resolver;
+        this.resolvedTypeVariables = resolver.getResolvedTypeVariables();
         discoverTypes(type);
     }
 
@@ -60,7 +66,7 @@ public class HierarchyDiscovery {
             discoverFromClass(rawType.getType());
         } else if (type instanceof Class<?>) {
             Class<?> clazz = (Class<?>) type;
-            this.types.put(clazz, Types.resolveType(clazz));
+            this.types.put(clazz, Types.getCanonicalType(clazz));
             discoverFromClass(clazz);
         } else if (type instanceof GenericArrayType) {
             GenericArrayType arrayType = (GenericArrayType) type;
@@ -103,7 +109,7 @@ public class HierarchyDiscovery {
             // this is not a parameterized type, nothing to resolve
             return superclass;
         }
-        throw new RuntimeException("WTF!");
+        throw new RuntimeException("Unexpected type: " + superclass);
     }
 
     /*
@@ -119,7 +125,7 @@ public class HierarchyDiscovery {
 
     private void processTypeVariable(TypeVariable<?> variable, Type value) {
         if (value instanceof TypeVariable<?>) {
-            value = resolveType((TypeVariable<?>) value);
+            value = resolveType(value);
         }
         this.resolvedTypeVariables.put(variable, value);
     }
@@ -128,97 +134,18 @@ public class HierarchyDiscovery {
      * Resolving part. Using resolvedTypeVariables map which was prepared in the processing part.
      */
 
-    /**
-     * Resolves a given type variable. This is achieved by a lookup in the {@link #resolvedTypeVariables} map.
-     */
-    public Type resolveType(TypeVariable<?> variable) {
-        Type resolvedType = this.resolvedTypeVariables.get(variable);
-        if (resolvedType == null) {
-            return variable; // we are not able to resolve
-        }
-        return resolvedType;
-    }
-
-    /**
-     * Resolves a given parameterized type. If the parameterized type contains no type variables it is returned untouched.
-     * Otherwise, a new {@link ParameterizedType} instance is returned in which each type variable is resolved using
-     * {@link #resolveType(TypeVariable)}.
-     */
-    public Type resolveType(ParameterizedType type) {
-        Type[] unresolvedTypeArguments = type.getActualTypeArguments();
-
-        /*
-         * Indicates whether we managed to resolve any of type arguments. If we did not then there is no need to create a new
-         * ParameterizedType with the old parameters. Instead, we return the original type.
-         */
-        boolean modified = false;
-        Type[] resolvedTypeArguments = new Type[unresolvedTypeArguments.length];
-
-        for (int i = 0; i < unresolvedTypeArguments.length; i++) {
-            Type resolvedType = unresolvedTypeArguments[i];
-            if (resolvedType instanceof TypeVariable<?>) {
-                resolvedType = resolveType((TypeVariable<?>) resolvedType);
-            }
-            if (resolvedType instanceof ParameterizedType) {
-                resolvedType = resolveType((ParameterizedType) resolvedType);
-            }
-            resolvedTypeArguments[i] = resolvedType;
-            // This identity check is intentional. A different identity indicates that the type argument was resolved within #resolveType().
-            if (unresolvedTypeArguments[i] != resolvedType) {
-                modified = true;
-            }
-        }
-
-        if (modified) {
-            return new ParameterizedTypeImpl(type.getRawType(), resolvedTypeArguments, type.getOwnerType());
-        } else {
-            return type;
-        }
-    }
-
-    public Type resolveType(GenericArrayType type) {
-        Type genericComponentType = type.getGenericComponentType();
-        // try to resolve the type
-        Type resolvedType = genericComponentType;
-        if (genericComponentType instanceof TypeVariable<?>) {
-            resolvedType = resolveType((TypeVariable<?>) genericComponentType);
-        }
-        if (genericComponentType instanceof ParameterizedType) {
-            resolvedType = resolveType((ParameterizedType) genericComponentType);
-        }
-        if (genericComponentType instanceof GenericArrayType) {
-            resolvedType = resolveType((GenericArrayType) genericComponentType);
-        }
-        /*
-         * If the generic component type resolved to a class (e.g. String) we return [Ljava.lang.String; (the class representing the
-         * array) instead of GenericArrayType with String as its generic component type.
-         */
-        if (resolvedType instanceof Class<?>) {
-            Class<?> componentClass = (Class<?>) resolvedType;
-            return Array.newInstance(componentClass, 0).getClass();
-        }
-        /*
-         * This identity check is intentional. If the identity is different it indicates that we succeeded in resolving the type
-         * and a new GenericArrayType with resolved generic component type is returned. Otherwise, we were not able to resolve
-         * the type and therefore we do not create a new GenericArrayType.
-         */
-        if (resolvedType == genericComponentType) {
-            return type;
-        } else {
-            return new GenericArrayTypeImpl(resolvedType);
-        }
-    }
 
     public Type resolveType(Type type) {
-        if (type instanceof ParameterizedType) {
-            return resolveType((ParameterizedType) type);
+        if (type instanceof Class) {
+            Type resolvedType = types.get(type);
+            if (resolvedType != null) {
+                return resolvedType;
+            }
         }
-        if (type instanceof TypeVariable<?>) {
-            return resolveType((TypeVariable<?>) type);
-        }
-        if (type instanceof GenericArrayType) {
-            return resolveType((GenericArrayType) type);
-        }
-        return type;
+        return resolver.resolveType(type);
+    }
+
+    public TypeResolver getResolver() {
+        return resolver;
     }
 }

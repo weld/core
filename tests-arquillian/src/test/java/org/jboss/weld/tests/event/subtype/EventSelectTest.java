@@ -16,6 +16,11 @@
  */
 package org.jboss.weld.tests.event.subtype;
 
+import static org.junit.Assert.assertNotNull;
+
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -23,12 +28,6 @@ import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 @RunWith(Arquillian.class)
 public class EventSelectTest {
@@ -49,11 +48,11 @@ public class EventSelectTest {
 
     @Test
     public void testSelectSubType() {
-        // Check that selected subtypes are used when determining observers
+        // Check that event object types are used when determining observers
         observers.reset();
         event.select(Bar.class).fire(new FooBarImpl());
         assertNotNull(observers.getBar());
-        assertNull(observers.getFoo());
+        assertNotNull(observers.getFoo());
     }
 
     @Test
@@ -62,7 +61,7 @@ public class EventSelectTest {
         observers.reset();
         barEvent.fire(new FooBarImpl());
         assertNotNull(observers.getBar());
-        assertNull(observers.getFoo());
+        assertNotNull(observers.getFoo());
     }
 
 }

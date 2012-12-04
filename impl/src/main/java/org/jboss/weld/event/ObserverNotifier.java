@@ -21,9 +21,11 @@ import static org.jboss.weld.logging.messages.UtilMessage.TYPE_PARAMETER_NOT_ALL
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+import java.lang.reflect.WildcardType;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -33,6 +35,7 @@ import java.util.concurrent.ConcurrentMap;
 import javax.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
+import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.resolution.Resolvable;
 import org.jboss.weld.resolution.ResolvableBuilder;
@@ -40,11 +43,11 @@ import org.jboss.weld.resolution.TypeSafeObserverResolver;
 import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.transaction.spi.TransactionServices;
 import org.jboss.weld.util.Observers;
+import org.jboss.weld.util.Types;
 import org.jboss.weld.util.reflection.Reflections;
 
 import com.google.common.base.Function;
 import com.google.common.collect.MapMaker;
-import org.jboss.weld.exceptions.IllegalArgumentException;
 
 /**
  * Provides event-related operations such sa observer method resolution and event delivery.
@@ -100,14 +103,14 @@ public class ObserverNotifier {
     }
 
     public void fireEvent(Type eventType, Object event, Annotation... qualifiers) {
-        checkEventObjectType(event);
+        checkEventObjectType(eventType);
         Set<Annotation> qualifierSet = new HashSet<Annotation>(Arrays.asList(qualifiers));
         // we use the array of qualifiers for resolution so that we can catch duplicate qualifiers
         notifyObservers(event, qualifierSet, resolveObserverMethods(eventType, qualifiers));
     }
 
     public void fireEvent(Type eventType, Object event, Set<Annotation> qualifiers) {
-        checkEventObjectType(event);
+        checkEventObjectType(eventType);
         notifyObservers(event, qualifiers, resolveObserverMethods(eventType, qualifiers));
     }
 
@@ -184,33 +187,26 @@ public class ObserverNotifier {
     }
 
     private class EventTypeCheck implements Function<Type, RuntimeException> {
+
         @Override
         public RuntimeException apply(Type eventType) {
-            Type[] typeParameters;
-            final Type resolvedType = sharedObjectCache.getResolvedType(eventType);
-            if (resolvedType instanceof Class<?>) {
-                typeParameters = new Type[0];
-            } else if (resolvedType instanceof ParameterizedType) {
-                typeParameters = ((ParameterizedType) resolvedType).getActualTypeArguments();
-            } else {
-                return new IllegalArgumentException(EVENT_TYPE_NOT_ALLOWED, resolvedType);
-            }
+            Type resolvedType = Types.getCanonicalType(eventType);
+
             /*
              * If the runtime type of the event object contains a type variable, the container must throw an IllegalArgumentException.
              */
-            for (Type type : typeParameters) {
-                if (type instanceof TypeVariable<?>) {
-                    return new IllegalArgumentException(TYPE_PARAMETER_NOT_ALLOWED_IN_EVENT_TYPE, resolvedType);
-                }
+            if (Types.containsUnresolvedTypeVariableOrWildcard(resolvedType)) {
+                return new IllegalArgumentException(TYPE_PARAMETER_NOT_ALLOWED_IN_EVENT_TYPE, eventType);
             }
+
             /*
              * If the runtime type of the event object is assignable to the type of a container lifecycle event, IllegalArgumentException
              * is thrown.
              */
-            Class<?> resolvedClass = Reflections.getRawType(resolvedType);
+            Class<?> resolvedClass = Reflections.getRawType(eventType);
             for (Class<?> containerEventType : Observers.CONTAINER_LIFECYCLE_EVENT_CANONICAL_SUPERTYPES) {
                 if (containerEventType.isAssignableFrom(resolvedClass)) {
-                    return new IllegalArgumentException(EVENT_TYPE_NOT_ALLOWED, resolvedType);
+                    return new IllegalArgumentException(EVENT_TYPE_NOT_ALLOWED, eventType);
                 }
             }
             return NO_EXCEPTION_MARKER;

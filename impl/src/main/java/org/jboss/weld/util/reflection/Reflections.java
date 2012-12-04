@@ -224,7 +224,7 @@ public class Reflections {
      * @return The type arguments
      */
     public static Type[] getActualTypeArguments(Class<?> clazz) {
-        Type type = Types.resolveType(clazz);
+        Type type = Types.getCanonicalType(clazz);
         if (type instanceof ParameterizedType) {
             return ((ParameterizedType) type).getActualTypeArguments();
         } else {
@@ -239,7 +239,7 @@ public class Reflections {
      * @return The type arguments
      */
     public static Type[] getActualTypeArguments(Type type) {
-        Type resolvedType = Types.resolveType(type);
+        Type resolvedType = Types.getCanonicalType(type);
         if (resolvedType instanceof ParameterizedType) {
             return ((ParameterizedType) resolvedType).getActualTypeArguments();
         } else {

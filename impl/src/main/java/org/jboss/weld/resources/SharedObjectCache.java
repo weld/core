@@ -73,7 +73,7 @@ public class SharedObjectCache implements BootstrapService {
     private final Map<Type, Type> resolvedTypes = new MapMaker().makeComputingMap(new Function<Type, Type>() {
 
         public Type apply(Type from) {
-            return Types.resolveType(from);
+            return Types.getCanonicalType(from);
         }
     });
 

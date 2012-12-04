@@ -32,7 +32,11 @@ import org.jboss.weld.bean.builtin.AbstractFacade;
 import org.jboss.weld.bean.builtin.FacadeInjectionPoint;
 import org.jboss.weld.exceptions.InvalidObjectException;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.Types;
+import org.jboss.weld.util.reflection.EventObjectTypeResolverBuilder;
 import org.jboss.weld.util.reflection.Formats;
+import org.jboss.weld.util.reflection.HierarchyDiscovery;
+import org.jboss.weld.util.reflection.TypeResolver;
 
 /**
  * Implementation of the Event interface
@@ -50,8 +54,11 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
         return new EventImpl<E>(injectionPoint, beanManager);
     }
 
+    private final transient HierarchyDiscovery injectionPointTypeHierarchy;
+
     private EventImpl(InjectionPoint injectionPoint, BeanManagerImpl beanManager) {
         super(injectionPoint, null, beanManager);
+        this.injectionPointTypeHierarchy = new HierarchyDiscovery(getType());
     }
 
     /**
@@ -65,7 +72,7 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
     }
 
     public void fire(T event) {
-        getBeanManager().getGlobalStrictObserverNotifier().fireEvent(getType(), event, getQualifiers());
+        getBeanManager().getGlobalStrictObserverNotifier().fireEvent(getEventType(event), event, getQualifiers());
     }
 
     public Event<T> select(Annotation... qualifiers) {
@@ -82,7 +89,29 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
 
     private <U extends T> Event<U> selectEvent(Type subtype, Annotation[] newQualifiers) {
         getBeanManager().getGlobalStrictObserverNotifier().checkEventObjectType(subtype);
-        return new EventImpl<U>(new FacadeInjectionPoint(getInjectionPoint(), subtype, getQualifiers(), newQualifiers), getBeanManager());
+        return new EventImpl<U>(new FacadeInjectionPoint(getInjectionPoint(), subtype, getQualifiers(), newQualifiers),
+                getBeanManager());
+    }
+
+    protected Type getEventType(T event) {
+        Type resolvedType = event.getClass();
+        if (Types.containsUnresolvedTypeVariableOrWildcard(resolvedType)) {
+            /*
+             * If the container is unable to resolve the parameterized type of the event object, it uses the specified type to infer the parameterized type of the event types.
+             */
+            resolvedType = injectionPointTypeHierarchy.resolveType(resolvedType);
+        }
+        if (Types.containsUnresolvedTypeVariableOrWildcard(resolvedType)) {
+            /*
+             * Examining the hierarchy of the specified type did not help. This may still be one of the cases when combining the
+             * event type and the specified type reveals the actual values for type variables. Let's try that.
+             */
+            TypeResolver objectTypeResolver = new EventObjectTypeResolverBuilder(injectionPointTypeHierarchy.getResolver()
+                    .getResolvedTypeVariables(), new HierarchyDiscovery(event.getClass()).getResolver()
+                    .getResolvedTypeVariables()).build();
+            resolvedType = objectTypeResolver.resolveType(Types.getCanonicalType(event.getClass()));
+        }
+        return resolvedType;
     }
 
     // Serialization

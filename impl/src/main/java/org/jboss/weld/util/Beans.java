@@ -514,7 +514,7 @@ public class Beans {
         HierarchyDiscovery beanClassDiscovery = new HierarchyDiscovery(ejbDescriptor.getBeanClass());
         for (BusinessInterfaceDescriptor<?> businessInterfaceDescriptor : ejbDescriptor.getLocalBusinessInterfaces()) {
             // first we need to resolve the local interface
-            Type resolvedLocalInterface = beanClassDiscovery.resolveType(Types.resolveType(businessInterfaceDescriptor.getInterface()));
+            Type resolvedLocalInterface = beanClassDiscovery.resolveType(Types.getCanonicalType(businessInterfaceDescriptor.getInterface()));
             typeMap.putAll(new HierarchyDiscovery(resolvedLocalInterface).getTypeMap());
         }
         if (annotated.isAnnotationPresent(Typed.class)) {
