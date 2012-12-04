@@ -19,7 +19,10 @@ package org.jboss.weld.util;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 
+import org.jboss.weld.util.reflection.ParameterizedTypeImpl;
+import org.jboss.weld.util.reflection.RawType;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
@@ -94,5 +97,35 @@ public class Types {
             return builder.toString();
         }
         throw new IllegalArgumentException("Cannot create type id for" + type.toString());
+    }
+
+    /**
+     *
+     * @param clazz
+     * @return
+     */
+    public static Type resolveType(Class<?> clazz) {
+        if (clazz.getTypeParameters().length > 0) {
+            TypeVariable<?>[] actualTypeParameters = clazz.getTypeParameters();
+            return new ParameterizedTypeImpl(clazz, actualTypeParameters, clazz.getDeclaringClass());
+        }
+        return clazz;
+    }
+
+    /**
+     *
+     * @param type
+     * @return
+     */
+    public static Type resolveType(Type type) {
+        if (type instanceof Class<?>) {
+            Class<?> clazz = (Class<?>) type;
+            return resolveType(clazz);
+        }
+        if (type instanceof RawType<?>) {
+            RawType<?> rawType = (RawType<?>) type;
+            return rawType.getType();
+        }
+        return type;
     }
 }

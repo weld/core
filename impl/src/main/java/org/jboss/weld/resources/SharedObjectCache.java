@@ -24,6 +24,7 @@ import org.jboss.weld.annotated.enhanced.TypeClosureLazyValueHolder;
 import org.jboss.weld.bootstrap.api.BootstrapService;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.LazyValueHolder;
+import org.jboss.weld.util.Types;
 import org.jboss.weld.util.collections.ArraySetMultimap;
 import org.jboss.weld.util.collections.WeldCollections;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
@@ -72,7 +73,7 @@ public class SharedObjectCache implements BootstrapService {
     private final Map<Type, Type> resolvedTypes = new MapMaker().makeComputingMap(new Function<Type, Type>() {
 
         public Type apply(Type from) {
-            return new HierarchyDiscovery(from).getResolvedType();
+            return Types.resolveType(from);
         }
     });
 

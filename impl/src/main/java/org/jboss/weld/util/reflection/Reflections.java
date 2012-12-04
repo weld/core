@@ -42,6 +42,7 @@ import javax.inject.Qualifier;
 
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
+import org.jboss.weld.util.Types;
 import org.slf4j.cal10n.LocLogger;
 import org.slf4j.ext.XLogger;
 
@@ -223,7 +224,7 @@ public class Reflections {
      * @return The type arguments
      */
     public static Type[] getActualTypeArguments(Class<?> clazz) {
-        Type type = new HierarchyDiscovery(clazz).getResolvedType();
+        Type type = Types.resolveType(clazz);
         if (type instanceof ParameterizedType) {
             return ((ParameterizedType) type).getActualTypeArguments();
         } else {
@@ -238,7 +239,7 @@ public class Reflections {
      * @return The type arguments
      */
     public static Type[] getActualTypeArguments(Type type) {
-        Type resolvedType = new HierarchyDiscovery(type).getResolvedType();
+        Type resolvedType = Types.resolveType(type);
         if (resolvedType instanceof ParameterizedType) {
             return ((ParameterizedType) resolvedType).getActualTypeArguments();
         } else {
