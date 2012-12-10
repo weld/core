@@ -27,14 +27,14 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
 import javax.enterprise.inject.spi.ProcessInjectionPoint;
 
+import org.jboss.weld.bean.builtin.BeanManagerProxy;
 import org.jboss.weld.injection.ForwardingInjectionPoint;
-import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
  * Registers {@link Car} as a bean using {@link PassivationCapableBeanImpl}.
- * 
+ *
  * @author Jozef Hartinger
- * 
+ *
  */
 public class CarExtension implements Extension {
 
@@ -44,8 +44,8 @@ public class CarExtension implements Extension {
         AnnotatedType<Car> annotatedType = manager.createAnnotatedType(Car.class);
         final BeanAttributes<Car> attributes = manager.createBeanAttributes(annotatedType);
         this.bean = new PassivationCapableBeanImpl<Car>(Car.class, attributes);
-        BeanManagerImpl managerImpl = (BeanManagerImpl) manager;
-        final InjectionTarget<Car> injectionTarget = managerImpl.createInjectionTarget(annotatedType, this.bean);
+        BeanManagerProxy proxy = (BeanManagerProxy) manager;
+        final InjectionTarget<Car> injectionTarget = proxy.delegate().createInjectionTarget(annotatedType, this.bean);
         this.bean.setInjectionTarget(injectionTarget);
         event.addBean(bean);
     }

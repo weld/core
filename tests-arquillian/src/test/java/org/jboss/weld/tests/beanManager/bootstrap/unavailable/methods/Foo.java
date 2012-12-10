@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2008, Red Hat, Inc., and individual contributors
+ * Copyright 2012, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,35 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.util;
+package org.jboss.weld.tests.beanManager.bootstrap.unavailable.methods;
 
-/**
- * Represents a lazily computed value.
- *
- * @author Stuart Douglas
- */
-public abstract class LazyValueHolder<T> implements ValueHolder<T> {
+import javax.enterprise.inject.spi.BeanManager;
+import javax.inject.Inject;
+import javax.inject.Named;
 
-    private volatile T value;
+@Named("foo")
+public class Foo {
 
-    public T get() {
-        T valueCopy = value;
-        if (valueCopy != null) {
-            return valueCopy;
-        }
-        synchronized (this) {
-            if (value == null) {
-                value = computeValue();
-            }
-            return value;
-        }
-    }
+    @Inject
+    BeanManager beanManager;
 
-    public void clear() {
-        synchronized (this) {
-            value = null;
-        }
-    }
-
-    protected abstract T computeValue();
 }

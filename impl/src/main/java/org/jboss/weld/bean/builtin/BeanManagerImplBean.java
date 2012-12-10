@@ -20,38 +20,37 @@ import java.lang.reflect.Type;
 import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.BeanManager;
 
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.collections.Arrays2;
 
-public class BeanManagerBean extends AbstractBuiltInBean<BeanManagerProxy> {
+public class BeanManagerImplBean extends AbstractBuiltInBean<BeanManagerImpl> {
 
-    private static final Set<Type> TYPES = Arrays2.<Type>asSet(Object.class, BeanManager.class);
+    private static final Set<Type> TYPES = Arrays2.<Type>asSet(Object.class, BeanManagerImpl.class);
 
-    public BeanManagerBean(BeanManagerImpl manager) {
-        super(BeanManager.class.getSimpleName(), manager, BeanManagerProxy.class);
+    public BeanManagerImplBean(BeanManagerImpl manager) {
+        super(BeanManagerImpl.class.getSimpleName(), manager, BeanManagerImpl.class);
     }
 
-    public BeanManagerProxy create(CreationalContext<BeanManagerProxy> creationalContext) {
-        return new BeanManagerProxy(getBeanManager());
+    public BeanManagerImpl create(CreationalContext<BeanManagerImpl> creationalContext) {
+        return getBeanManager().getCurrent();
     }
 
     @Override
-    public Class<BeanManagerProxy> getType() {
-        return BeanManagerProxy.class;
+    public Class<BeanManagerImpl> getType() {
+        return BeanManagerImpl.class;
     }
 
     public Set<Type> getTypes() {
         return TYPES;
     }
 
-    public void destroy(BeanManagerProxy instance, CreationalContext<BeanManagerProxy> creationalContext) {
+    public void destroy(BeanManagerImpl instance, CreationalContext<BeanManagerImpl> creationalContext) {
         // No-op
     }
 
     @Override
     public String toString() {
-        return "Built-in Bean [javax.enterprise.inject.spi.BeanManager] with qualifiers [@Default]";
+        return "Built-in Bean [org.jboss.weld.manager.BeanManagerImpl] with qualifiers [@Default]";
     }
 }

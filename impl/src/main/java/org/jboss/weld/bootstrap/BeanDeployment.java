@@ -31,6 +31,7 @@ import java.util.Collection;
 import javax.enterprise.context.spi.Context;
 
 import org.jboss.weld.bean.builtin.BeanManagerBean;
+import org.jboss.weld.bean.builtin.BeanManagerImplBean;
 import org.jboss.weld.bean.builtin.BeanMetadataBean;
 import org.jboss.weld.bean.builtin.ContextBean;
 import org.jboss.weld.bean.builtin.ConversationBean;
@@ -142,6 +143,8 @@ public class BeanDeployment {
 
         // Must at the Manager bean straight away, as it can be injected during startup!
         beanManager.addBean(new BeanManagerBean(beanManager));
+        beanManager.addBean(new BeanManagerImplBean(beanManager));
+
         this.contexts = contexts;
         this.enablementBuilder = enablementBuilder;
         enablementBuilder.registerBeanDeployment(this);

@@ -33,6 +33,7 @@ import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.CDI;
 import javax.enterprise.util.TypeLiteral;
 
+import org.jboss.weld.bean.builtin.BeanManagerProxy;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.logging.messages.BeanManagerMessage;
@@ -49,13 +50,17 @@ import com.google.common.collect.MapMaker;
  */
 public class Weld extends CDI<Object> {
 
-    private class ClassNameToBeanManager implements Function<String, BeanManagerImpl> {
+    private class ClassNameToBeanManager implements Function<String, BeanManagerProxy> {
 
         /**
          * Determines the correct {@link BeanManagerImpl} based on a class name of the caller.
          */
         @Override
-        public BeanManagerImpl apply(String callerClassName) {
+        public BeanManagerProxy apply(String callerClassName) {
+            return new BeanManagerProxy(findBeanManager(callerClassName));
+        }
+
+        public BeanManagerImpl findBeanManager(String callerClassName) {
             if (callerClassName == null) {
                 throw new IllegalStateException(BeanManagerMessage.UNABLE_TO_IDENTIFY_BEAN_MANAGER);
             }
@@ -79,7 +84,7 @@ public class Weld extends CDI<Object> {
         }
     }
 
-    private final ConcurrentMap<String, BeanManagerImpl> beanManagers;
+    private final ConcurrentMap<String, BeanManagerProxy> beanManagers;
     // used for caller detection
     private final Set<String> subclassNames;
 
@@ -107,7 +112,7 @@ public class Weld extends CDI<Object> {
     }
 
     @Override
-    public BeanManagerImpl getBeanManager() {
+    public BeanManagerProxy getBeanManager() {
         ContainerState state = Container.instance().getState();
         if (state.equals(ContainerState.STOPPED) || state.equals(ContainerState.SHUTDOWN)) {
             throw new IllegalStateException(BeanManagerMessage.BEAN_MANAGER_NOT_AVAILABLE);
@@ -169,7 +174,7 @@ public class Weld extends CDI<Object> {
     }
 
     protected Instance<Object> getInstance() {
-        return getBeanManager().instance();
+        return getBeanManager().delegate().instance();
     }
 
     @Override

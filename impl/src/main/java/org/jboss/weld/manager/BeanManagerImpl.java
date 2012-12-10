@@ -477,7 +477,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                 enterpriseBeans.put(enterpriseBean.getEjbDescriptor(), enterpriseBean);
             }
             if (bean instanceof PassivationCapable) {
-                Container.instance().services().get(ContextualStore.class).putIfAbsent(bean);
+                getServices().get(ContextualStore.class).putIfAbsent(bean);
             }
             registerBeanNamespace(bean);
             // New beans (except for SessionBeans) and most built in beans aren't resolvable transtively

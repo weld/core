@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2008, Red Hat, Inc., and individual contributors
+ * Copyright 2012, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -17,32 +17,23 @@
 package org.jboss.weld.util;
 
 /**
- * Represents a lazily computed value.
+ * Represents an immutable value.
  *
- * @author Stuart Douglas
+ * @author Martin Kouba
+ *
+ * @param <T>
  */
-public abstract class LazyValueHolder<T> implements ValueHolder<T> {
+public class ImmutableValueHolder<T> implements ValueHolder<T> {
 
-    private volatile T value;
+    private final T value;
 
+    public ImmutableValueHolder(T value) {
+        this.value = value;
+    }
+
+    @Override
     public T get() {
-        T valueCopy = value;
-        if (valueCopy != null) {
-            return valueCopy;
-        }
-        synchronized (this) {
-            if (value == null) {
-                value = computeValue();
-            }
-            return value;
-        }
+        return value;
     }
 
-    public void clear() {
-        synchronized (this) {
-            value = null;
-        }
-    }
-
-    protected abstract T computeValue();
 }

@@ -19,6 +19,7 @@ package org.jboss.weld.tck;
 import javax.el.ELContext;
 import javax.enterprise.inject.spi.BeanManager;
 
+import org.jboss.weld.bean.builtin.BeanManagerProxy;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.test.util.el.EL;
 
@@ -39,6 +40,10 @@ public class ELImpl implements org.jboss.cdi.tck.spi.EL {
     }
 
     public ELContext createELContext(BeanManager beanManager) {
+        if (beanManager instanceof BeanManagerProxy) {
+            BeanManagerProxy proxy = (BeanManagerProxy) beanManager;
+            beanManager = proxy.delegate();
+        }
         if (beanManager instanceof BeanManagerImpl) {
             return EL.createELContext((BeanManagerImpl) beanManager);
         } else {

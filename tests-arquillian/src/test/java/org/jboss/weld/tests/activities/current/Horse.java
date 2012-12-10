@@ -16,15 +16,16 @@
  */
 package org.jboss.weld.tests.activities.current;
 
-import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
+
+import org.jboss.weld.manager.BeanManagerImpl;
 
 class Horse {
 
     @Inject
-    BeanManager beanManager;
+    BeanManagerImpl beanManager;
 
-    public BeanManager getManager() {
+    public BeanManagerImpl getManager() {
         return beanManager;
     }
 

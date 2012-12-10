@@ -27,6 +27,7 @@ import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.bean.builtin.BeanManagerProxy;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.annotated.ForwardingWeldClass;
@@ -53,6 +54,10 @@ public class CustomExtension implements Extension {
     }
 
     protected <T> EnhancedAnnotatedType<T> getEnhancedAnnotatedType(BeanManager manager, Class<T> javaClass) {
+        if (manager instanceof BeanManagerProxy) {
+            BeanManagerProxy proxy = (BeanManagerProxy) manager;
+            manager = proxy.delegate();
+        }
         if (manager instanceof BeanManagerImpl) {
             BeanManagerImpl bmi = (BeanManagerImpl) manager;
             ClassTransformer ct = bmi.getServices().get(ClassTransformer.class);

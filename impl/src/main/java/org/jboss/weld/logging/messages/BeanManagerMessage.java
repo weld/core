@@ -17,10 +17,11 @@
 
 package org.jboss.weld.logging.messages;
 
+import org.jboss.weld.logging.MessageId;
+
 import ch.qos.cal10n.BaseName;
 import ch.qos.cal10n.Locale;
 import ch.qos.cal10n.LocaleData;
-import org.jboss.weld.logging.MessageId;
 
 @BaseName("org.jboss.weld.messages.beanmanager")
 @LocaleData({
@@ -68,5 +69,6 @@ public enum BeanManagerMessage {
     @MessageId("001328")UNSATISFIED_BEAN_MANAGER,
     @MessageId("001329")UNABLE_TO_IDENTIFY_BEAN_MANAGER,
     @MessageId("001330")BEAN_MANAGER_NOT_AVAILABLE,
-    @MessageId("001331")NULL_DECLARING_BEAN;
+    @MessageId("001331")NULL_DECLARING_BEAN,
+    @MessageId("001332")METHOD_NOT_AVAILABLE_DURING_INITIALIZATION;
 }

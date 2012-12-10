@@ -52,6 +52,7 @@ import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.bean.InterceptorImpl;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.builtin.BeanManagerBean;
+import org.jboss.weld.bean.builtin.BeanManagerImplBean;
 import org.jboss.weld.bean.builtin.ContextBean;
 import org.jboss.weld.bean.proxy.util.SimpleProxyServices;
 import org.jboss.weld.bootstrap.api.Bootstrap;
@@ -390,6 +391,7 @@ public class WeldBootstrap implements Bootstrap {
 
             // Add the Deployment BeanManager Bean to the Deployment BeanManager
             deploymentManager.addBean(new BeanManagerBean(deploymentManager));
+            deploymentManager.addBean(new BeanManagerImplBean(deploymentManager));
 
             // Re-Read the deployment structure, this will be the physical
             // structure, and will add in BDAs for any extensions outside a
