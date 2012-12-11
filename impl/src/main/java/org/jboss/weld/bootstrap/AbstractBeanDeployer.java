@@ -246,13 +246,13 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
         }
     }
 
-    protected <X> void createObserverMethods(RIBean<X> declaringBean, EnhancedAnnotatedType<? super X> annotatedClass) {
+    protected <X> void createObserverMethods(AbstractClassBean<X> declaringBean, EnhancedAnnotatedType<? super X> annotatedClass) {
         for (EnhancedAnnotatedMethod<?, ? super X> method : BeanMethods.getObserverMethods(annotatedClass)) {
             createObserverMethod(declaringBean, method);
         }
     }
 
-    protected <T, X> void createObserverMethod(RIBean<X> declaringBean, EnhancedAnnotatedMethod<T, ? super X> method) {
+    protected <T, X> void createObserverMethod(AbstractClassBean<X> declaringBean, EnhancedAnnotatedMethod<T, ? super X> method) {
         ObserverMethodImpl<T, X> observer = ObserverFactory.create(method, declaringBean, manager);
         ObserverInitializationContext<T, ? super X> observerInitializer = ObserverInitializationContext.of(observer, method);
         containerLifecycleEvents.preloadProcessObserverMethod(observer.getObservedType(), declaringBean.getBeanClass());

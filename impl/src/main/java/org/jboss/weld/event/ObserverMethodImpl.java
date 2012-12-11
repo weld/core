@@ -50,6 +50,7 @@ import javax.inject.Qualifier;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
+import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.injection.InjectionPointFactory;
@@ -106,7 +107,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
         this.observerMethod = initMethodInjectionPoint(observer, declaringBean, manager);
         EnhancedAnnotatedParameter<?, ? super X> eventParameter = observer.getEnhancedParameters(Observes.class).get(0);
         this.eventType = new HierarchyDiscovery(declaringBean.getBeanClass()).resolveType(eventParameter.getBaseType());
-        this.id = new StringBuilder().append(ID_PREFIX).append(ID_SEPARATOR)/*.append(manager.getId()).append(ID_SEPARATOR)*/.append(ObserverMethod.class.getSimpleName()).append(ID_SEPARATOR).append(declaringBean.getBeanClass().getName()).append(".").append(observer.getSignature()).toString();
+        this.id = createId(observer, declaringBean);
         this.bindings = manager.getServices().get(SharedObjectCache.class).getSharedSet(observer.getEnhancedParameters(Observes.class).get(0).getMetaAnnotations(Qualifier.class));
         Observes observesAnnotation = observer.getEnhancedParameters(Observes.class).get(0).getAnnotation(Observes.class);
         this.reception = observesAnnotation.notifyObserver();
@@ -125,6 +126,17 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
         }
         this.injectionPoints = immutableSet(injectionPoints);
         this.newInjectionPoints = immutableSet(newInjectionPoints);
+    }
+
+    protected static String createId(final EnhancedAnnotatedMethod<?, ? > observer, final RIBean<?> declaringBean) {
+        String typeId = null;
+        if (declaringBean instanceof AbstractClassBean<?>) {
+            AbstractClassBean<?> classBean = (AbstractClassBean<?>) declaringBean;
+            typeId = classBean.getAnnotated().getID();
+        } else {
+            typeId = declaringBean.getBeanClass().getName();
+        }
+        return new StringBuilder().append(ID_PREFIX).append(ID_SEPARATOR).append(ObserverMethod.class.getSimpleName()).append(ID_SEPARATOR).append(typeId).append(".").append(observer.getSignature()).toString();
     }
 
     protected MethodInjectionPoint<T, ? super X> initMethodInjectionPoint(EnhancedAnnotatedMethod<T, ? super X> observer, RIBean<X> declaringBean, BeanManagerImpl manager) {

@@ -30,6 +30,7 @@ import javax.enterprise.inject.spi.InjectionTarget;
 import javax.enterprise.inject.spi.Producer;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
@@ -47,7 +48,7 @@ import org.jboss.weld.util.Beans;
 public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
 
     // The item representation
-    protected final AnnotatedType<T> annotatedType;
+    protected final SlimAnnotatedType<T> annotatedType;
     protected volatile EnhancedAnnotatedType<T> enhancedAnnotatedItem;
 
     // Injection target for the bean
@@ -109,7 +110,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
     }
 
     @Override
-    public AnnotatedType<T> getAnnotated() {
+    public SlimAnnotatedType<T> getAnnotated() {
         return annotatedType;
     }
 
