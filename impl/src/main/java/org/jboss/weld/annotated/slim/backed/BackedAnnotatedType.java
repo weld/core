@@ -85,11 +85,21 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
     }
 
     public <T extends Annotation> T getAnnotation(Class<T> annotationType) {
-        return javaClass.getAnnotation(annotationType);
+        for (Annotation annotation : getAnnotations()) {
+            if (annotation.annotationType().equals(annotationType)) {
+                return annotationType.cast(annotation);
+            }
+        }
+        return null;
     }
 
     public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
-        return javaClass.isAnnotationPresent(annotationType);
+        return getAnnotation(annotationType) != null;
+    }
+
+    @Override
+    public Set<Annotation> getAnnotations() {
+        return reflectionCache.getBackedAnnotatedTypeAnnotationSet(javaClass);
     }
 
     @Override

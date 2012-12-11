@@ -20,6 +20,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 
 import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.metadata.TypeStore;
 
 /**
  * {@link ReflectionCache} implementation that works around possible deadlocks in HotSpot:
@@ -35,7 +36,8 @@ public class HotspotReflectionCache extends DefaultReflectionCache {
 
     private final Class<?> annotationTypeLock;
 
-    public HotspotReflectionCache() {
+    public HotspotReflectionCache(TypeStore store) {
+        super(store);
         try {
             this.annotationTypeLock = Class.forName("sun.reflect.annotation.AnnotationType");
         } catch (ClassNotFoundException e) {

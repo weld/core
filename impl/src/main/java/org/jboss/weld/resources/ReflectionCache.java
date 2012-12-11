@@ -17,11 +17,13 @@
 package org.jboss.weld.resources;
 
 import java.lang.annotation.Annotation;
+import java.lang.annotation.Inherited;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.Set;
 
+import org.jboss.weld.annotated.slim.backed.BackedAnnotatedType;
 import org.jboss.weld.bootstrap.api.Service;
 
 public interface ReflectionCache extends Service {
@@ -41,5 +43,15 @@ public interface ReflectionCache extends Service {
     Annotation[] getParameterAnnotations(Method method, int parameterPosition);
 
     Set<Annotation> getParameterAnnotationSet(Method method, int parameterPosition);
+
+    /**
+     * Returns the set of annotations for a {@link BackedAnnotatedType}. This are all annotations declared directly on the
+     * {@link BackedAnnotatedType#getJavaClass()} and all {@link Inherited} annotations. In addition, scope annotation
+     * inheritance rules (as defined in section 4.1) are applied.
+     *
+     * @param javaClass
+     * @return the set of type-level annotations of a given type
+     */
+    Set<Annotation> getBackedAnnotatedTypeAnnotationSet(Class<?> javaClass);
 
 }

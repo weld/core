@@ -21,10 +21,15 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.enterprise.context.NormalScope;
+import javax.inject.Scope;
+
 import org.jboss.weld.bootstrap.api.helpers.AbstractBootstrapService;
+import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.util.collections.Arrays2;
 
 import com.google.common.base.Function;
@@ -32,6 +37,8 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.MapMaker;
 
 public class DefaultReflectionCache extends AbstractBootstrapService implements ReflectionCache {
+
+    private final TypeStore store;
 
     protected Annotation[] internalGetAnnotations(AnnotatedElement element) {
         return element.getAnnotations();
@@ -60,8 +67,11 @@ public class DefaultReflectionCache extends AbstractBootstrapService implements 
     private final Map<AnnotatedElement, Annotations> declaredAnnotations;
     private final Map<Constructor<?>, Annotation[][]> constructorParameterAnnotations;
     private final Map<Method, Annotation[][]> methodParameterAnnotations;
+    private final Map<Class<?>, Set<Annotation>> backedAnnotatedTypeAnnotations;
+    private final Map<Class<? extends Annotation>, Boolean> isScopeAnnotation;
 
-    public DefaultReflectionCache() {
+    public DefaultReflectionCache(TypeStore store) {
+        this.store = store;
         MapMaker maker = new MapMaker();
         this.annotations = maker.makeComputingMap(new Function<AnnotatedElement, Annotations>() {
             @Override
@@ -87,6 +97,8 @@ public class DefaultReflectionCache extends AbstractBootstrapService implements 
                 return input.getParameterAnnotations();
             }
         });
+        this.backedAnnotatedTypeAnnotations = maker.makeComputingMap(new BackedAnnotatedTypeAnnotationsFunction());
+        this.isScopeAnnotation = maker.makeComputingMap(new IsScopeAnnotationFunction());
     }
 
     public Annotation[] getAnnotations(AnnotatedElement element) {
@@ -113,6 +125,8 @@ public class DefaultReflectionCache extends AbstractBootstrapService implements 
         declaredAnnotations.clear();
         constructorParameterAnnotations.clear();
         methodParameterAnnotations.clear();
+        backedAnnotatedTypeAnnotations.clear();
+        isScopeAnnotation.clear();
     }
 
     @Override
@@ -133,5 +147,70 @@ public class DefaultReflectionCache extends AbstractBootstrapService implements 
     @Override
     public Set<Annotation> getParameterAnnotationSet(Method method, int parameterPosition) {
         return ImmutableSet.copyOf(getParameterAnnotations(method, parameterPosition));
+    }
+
+    @Override
+    public Set<Annotation> getBackedAnnotatedTypeAnnotationSet(Class<?> javaClass) {
+        return backedAnnotatedTypeAnnotations.get(javaClass);
+    }
+
+    private class BackedAnnotatedTypeAnnotationsFunction implements Function<Class<?>, Set<Annotation>> {
+
+        @Override
+        public Set<Annotation> apply(Class<?> javaClass) {
+            Set<Annotation> annotations = getAnnotationSet(javaClass);
+            boolean scopeFound = false;
+            for (Annotation annotation : annotations) {
+                boolean isScope = isScopeAnnotation.get(annotation.annotationType());
+                if (isScope && scopeFound) {
+                    // there are at least two scopes, we need to choose one using scope inheritance rules (4.1)
+                    return applyScopeInheritanceRules(annotations, javaClass);
+                }
+                if (isScope) {
+                    scopeFound = true;
+                }
+            }
+            return annotations;
+        }
+
+        public Set<Annotation> applyScopeInheritanceRules(Set<Annotation> annotations, Class<?> javaClass) {
+            Set<Annotation> result = new HashSet<Annotation>();
+            for (Annotation annotation : annotations) {
+                if (!isScopeAnnotation.get(annotation.annotationType())) {
+                    result.add(annotation);
+                }
+            }
+            result.addAll(findTopLevelScopeDefinitions(javaClass));
+            return ImmutableSet.copyOf(result);
+        }
+
+        public Set<Annotation> findTopLevelScopeDefinitions(Class<?> javaClass) {
+            for (Class<?> clazz = javaClass; clazz != null && clazz != Object.class; clazz = clazz.getSuperclass()) {
+                Set<Annotation> scopes = new HashSet<Annotation>();
+                for (Annotation annotation : getDeclaredAnnotations(clazz)) {
+                    if (isScopeAnnotation.get(annotation.annotationType())) {
+                        scopes.add(annotation);
+                    }
+                }
+                if (scopes.size() > 0) {
+                    return scopes;
+                }
+            }
+            throw new IllegalStateException();
+        }
+    }
+
+    private class IsScopeAnnotationFunction implements Function<Class<? extends Annotation>, Boolean> {
+
+        @Override
+        public Boolean apply(Class<? extends Annotation> input) {
+            if (input.isAnnotationPresent(NormalScope.class)) {
+                return true;
+            }
+            if (input.isAnnotationPresent(Scope.class)) {
+                return true;
+            }
+            return store.isExtraScope(input);
+        }
     }
 }

@@ -146,12 +146,6 @@
                     <exclude name=".*"/>
                 </methods>
             </class>
-            <!-- WELD-1237 -->
-            <class name="org.jboss.cdi.tck.tests.extensions.alternative.metadata.annotated.AnnotatedTypeAnnotationsTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
             
             <!-- Issues in JBoss AS -->
             <!-- AS7-4232 -->

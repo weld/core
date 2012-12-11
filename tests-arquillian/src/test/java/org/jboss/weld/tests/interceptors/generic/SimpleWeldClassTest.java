@@ -54,7 +54,8 @@ public class SimpleWeldClassTest {
     */
     @Test
     public void testWeldClassForGenericSuperclass() {
-        EnhancedAnnotatedType<StringProcessor> weldClass = new ClassTransformer(new TypeStore(), new SharedObjectCache(), ReflectionCacheFactory.newInstance()).getEnhancedAnnotatedType(StringProcessor.class);
+        TypeStore ts = new TypeStore();
+        EnhancedAnnotatedType<StringProcessor> weldClass = new ClassTransformer(ts, new SharedObjectCache(), ReflectionCacheFactory.newInstance(ts)).getEnhancedAnnotatedType(StringProcessor.class);
         Collection<EnhancedAnnotatedMethod<?, ? super StringProcessor>> methods = weldClass.getEnhancedMethods();
         //assert methods.size() == 2;
         List<AnnotatedMethod<?>> interceptableMethods = Beans.getInterceptableMethods(weldClass);

@@ -22,6 +22,9 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import javax.enterprise.context.NormalScope;
+import javax.inject.Scope;
+
 import org.jboss.weld.bootstrap.api.Service;
 
 import com.google.common.base.Supplier;
@@ -34,6 +37,7 @@ import com.google.common.collect.SetMultimap;
 public class TypeStore implements Service {
 
     private final SetMultimap<Class<? extends Annotation>, Annotation> extraAnnotations;
+    private final Set<Class<? extends Annotation>> extraScopes;
 
     public TypeStore() {
         this.extraAnnotations = Multimaps.newSetMultimap(new ConcurrentHashMap<Class<? extends Annotation>, Collection<Annotation>>(), new Supplier<Set<Annotation>>() {
@@ -43,6 +47,7 @@ public class TypeStore implements Service {
             }
 
         });
+        this.extraScopes = new CopyOnWriteArraySet<Class<? extends Annotation>>();
     }
 
     public Set<Annotation> get(Class<? extends Annotation> annotationType) {
@@ -50,11 +55,14 @@ public class TypeStore implements Service {
     }
 
     public void add(Class<? extends Annotation> annotationType, Annotation annotation) {
+        if (annotation.annotationType().equals(Scope.class) || annotation.annotationType().equals(NormalScope.class)) {
+            this.extraScopes.add(annotationType);
+        }
         this.extraAnnotations.put(annotationType, annotation);
     }
 
-    public void addAll(Class<? extends Annotation> annotationType, Set<Annotation> annotations) {
-        this.extraAnnotations.get(annotationType).addAll(annotations);
+    public boolean isExtraScope(Class<? extends Annotation> annotation) {
+        return extraScopes.contains(annotation);
     }
 
     public void cleanup() {

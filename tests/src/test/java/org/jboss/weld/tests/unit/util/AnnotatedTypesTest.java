@@ -51,7 +51,7 @@ public class AnnotatedTypesTest {
     public void testComparison() throws SecurityException, NoSuchFieldException, NoSuchMethodException {
         //check that two weld classes on the same underlying are equal
         TypeStore ts = new TypeStore();
-        ClassTransformer ct = new ClassTransformer(ts, new SharedObjectCache(), ReflectionCacheFactory.newInstance());
+        ClassTransformer ct = new ClassTransformer(ts, new SharedObjectCache(), ReflectionCacheFactory.newInstance(ts));
         EnhancedAnnotatedType<Chair> chair1 = EnhancedAnnotatedTypeImpl.of(BackedAnnotatedType.of(Chair.class, ct.getSharedObjectCache(), ct.getReflectionCache()), ct);
         EnhancedAnnotatedType<Chair> chair2 = EnhancedAnnotatedTypeImpl.of(BackedAnnotatedType.of(Chair.class, ct.getSharedObjectCache(), ct.getReflectionCache()), ct);
         Assert.assertTrue(AnnotatedTypes.compareAnnotatedTypes(chair1, chair2));

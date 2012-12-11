@@ -40,7 +40,8 @@ public class StereotypesTest {
                 .addPackage(StereotypesTest.class.getPackage());
     }
 
-    private final ClassTransformer transformer = new ClassTransformer(new TypeStore(), new SharedObjectCache(), ReflectionCacheFactory.newInstance());
+    private final TypeStore typeStore = new TypeStore();
+    private final ClassTransformer transformer = new ClassTransformer(typeStore, new SharedObjectCache(), ReflectionCacheFactory.newInstance(typeStore));
 
     @Test
     public void testAnimalStereotype() {

@@ -42,6 +42,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.resources.ReflectionCache;
 import org.jboss.weld.util.Beans;
 
 public class BeforeBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implements BeforeBeanDiscovery {
@@ -80,6 +81,7 @@ public class BeforeBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implemen
         }
         getBeanManager().getServices().get(ClassTransformer.class).clearAnnotationData(scopeType);
         getBeanManager().getServices().get(MetaAnnotationStore.class).clearAnnotationData(scopeType);
+        getBeanManager().getServices().get(ReflectionCache.class).cleanup();
     }
 
     public void addStereotype(Class<? extends Annotation> stereotype, Annotation... stereotypeDef) {

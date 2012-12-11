@@ -48,11 +48,13 @@ import org.testng.annotations.Test;
 public class AccessibleManagerResolutionTest {
 
     private ClassTransformer classTransformer;
+    private TypeStore typeStore;
     private ServiceRegistry services;
 
     @BeforeMethod
     public void beforeMethod() {
-        this.classTransformer = new ClassTransformer(new TypeStore(), new SharedObjectCache(), ReflectionCacheFactory.newInstance());
+        this.typeStore = new TypeStore();
+        this.classTransformer = new ClassTransformer(typeStore, new SharedObjectCache(), ReflectionCacheFactory.newInstance(typeStore));
         this.services = new SimpleServiceRegistry();
         this.services.add(MetaAnnotationStore.class, new MetaAnnotationStore(classTransformer));
         this.services.add(ContextualStore.class, new ContextualStoreImpl());

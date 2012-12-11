@@ -57,7 +57,8 @@ public class SimpleWeldClassTest {
     @Category(Broken.class)
     @Test
     public void testWeldClassForCovariantReturnType() {
-        EnhancedAnnotatedType<Attacker> weldClass = new ClassTransformer(new TypeStore(), new SharedObjectCache(), ReflectionCacheFactory.newInstance()).getEnhancedAnnotatedType(Attacker.class);
+        TypeStore typeStore = new TypeStore();
+        EnhancedAnnotatedType<Attacker> weldClass = new ClassTransformer(typeStore, new SharedObjectCache(), ReflectionCacheFactory.newInstance(typeStore)).getEnhancedAnnotatedType(Attacker.class);
         Collection<EnhancedAnnotatedMethod<?, ? super Attacker>> methods = weldClass.getEnhancedMethods();
         Assert.assertEquals(4, methods.size());
         List<AnnotatedMethod<?>> interceptableMethods = Beans.getInterceptableMethods(weldClass);

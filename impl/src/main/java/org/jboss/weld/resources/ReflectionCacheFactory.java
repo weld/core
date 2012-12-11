@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.resources;
 
+import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.util.reflection.Reflections;
 
 public class ReflectionCacheFactory {
@@ -25,11 +26,11 @@ public class ReflectionCacheFactory {
     private ReflectionCacheFactory() {
     }
 
-    public static ReflectionCache newInstance() {
+    public static ReflectionCache newInstance(TypeStore store) {
         if (Reflections.isClassLoadable(HOTSPOT_MARKER, WeldClassLoaderResourceLoader.INSTANCE)) {
-            return new HotspotReflectionCache();
+            return new HotspotReflectionCache(store);
         } else {
-            return new DefaultReflectionCache();
+            return new DefaultReflectionCache(store);
         }
     }
 }

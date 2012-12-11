@@ -29,7 +29,8 @@ import org.junit.Test;
 
 public class WeldMethodTest {
 
-    private final ClassTransformer transformer = new ClassTransformer(new TypeStore(), new SharedObjectCache(), ReflectionCacheFactory.newInstance());
+    private final TypeStore typeStore = new TypeStore();
+    private final ClassTransformer transformer = new ClassTransformer(typeStore, new SharedObjectCache(), ReflectionCacheFactory.newInstance(typeStore));
     private final Class<Choice<?, ?>> CHOICE_LITERAL = new TypeLiteral<Choice<?, ?>>() {
         private static final long serialVersionUID = 1672009803068800735L;
     }.getRawType();

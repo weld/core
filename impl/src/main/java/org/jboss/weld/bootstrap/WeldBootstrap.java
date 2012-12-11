@@ -270,12 +270,6 @@ public class WeldBootstrap implements Bootstrap {
                 log.info(JTA_UNAVAILABLE);
             }
 
-            if (!registry.contains(ReflectionCache.class)) {
-                registry.add(ReflectionCache.class, ReflectionCacheFactory.newInstance());
-            }
-            if (!registry.contains(AnnotationDiscovery.class)) {
-                registry.add(AnnotationDiscovery.class, new SimpleAnnotationDiscovery(registry.get(ReflectionCache.class)));
-            }
             // TODO Reinstate if we can find a good way to detect.
             // if (!deployment.getServices().contains(EjbServices.class))
             // {
@@ -304,6 +298,7 @@ public class WeldBootstrap implements Bootstrap {
             deploymentServices.add(GlobalObserverNotifierService.class, registry.get(GlobalObserverNotifierService.class));
             deploymentServices.add(ContainerLifecycleEvents.class, registry.get(ContainerLifecycleEvents.class));
             deploymentServices.add(SpecializationAndEnablementRegistry.class, registry.get(SpecializationAndEnablementRegistry.class));
+            deploymentServices.add(ReflectionCache.class, registry.get(ReflectionCache.class));
 
             this.environment = environment;
             this.deploymentManager = BeanManagerImpl.newRootManager("deployment", deploymentServices);
@@ -331,7 +326,7 @@ public class WeldBootstrap implements Bootstrap {
         services.add(TypeStore.class, typeStore);
         SharedObjectCache cache = new SharedObjectCache();
         services.add(SharedObjectCache.class, cache);
-        ReflectionCache reflectionCache = ReflectionCacheFactory.newInstance();
+        ReflectionCache reflectionCache = ReflectionCacheFactory.newInstance(typeStore);
         services.add(ReflectionCache.class, reflectionCache);
         services.add(SlimAnnotatedTypeStore.class, new SlimAnnotatedTypeStoreImpl());
         ClassTransformer classTransformer = new ClassTransformer(typeStore, cache, reflectionCache);
@@ -356,6 +351,10 @@ public class WeldBootstrap implements Bootstrap {
             if (configuration.isPreloaderEnabled()) {
                 preloader = new ContainerLifecycleEventPreloader(configuration, observerNotificationService.getGlobalLenientObserverNotifier());
             }
+        }
+
+        if (!services.contains(AnnotationDiscovery.class)) {
+            services.add(AnnotationDiscovery.class, new SimpleAnnotationDiscovery(services.get(ReflectionCache.class)));
         }
 
         services.add(ContainerLifecycleEvents.class, new ContainerLifecycleEvents(preloader, services.get(AnnotationDiscovery.class)));

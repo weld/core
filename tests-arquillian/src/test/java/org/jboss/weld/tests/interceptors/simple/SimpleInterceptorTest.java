@@ -68,8 +68,9 @@ public class SimpleInterceptorTest {
 
     @Test
     public void testInterceptorModel() {
+        TypeStore typeStore = new TypeStore();
         InterceptorBindingModel<SecondaryInterceptionBinding> interceptorBindingModel
-                = new InterceptorBindingModel<SecondaryInterceptionBinding>(new ClassTransformer(new TypeStore(), new SharedObjectCache(), ReflectionCacheFactory.newInstance()).getEnhancedAnnotation(SecondaryInterceptionBinding.class));
+                = new InterceptorBindingModel<SecondaryInterceptionBinding>(new ClassTransformer(typeStore, new SharedObjectCache(), ReflectionCacheFactory.newInstance(typeStore)).getEnhancedAnnotation(SecondaryInterceptionBinding.class));
         Set<Annotation> annotations = interceptorBindingModel.getInheritedInterceptionBindingTypes();
         assert annotations.size() != 0;
     }
