@@ -103,6 +103,7 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bean.AbstractBean;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.AbstractProducerBean;
+import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.bean.DisposalMethod;
 import org.jboss.weld.bean.InterceptorImpl;
 import org.jboss.weld.bean.NewBean;
@@ -134,6 +135,7 @@ import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.weld.util.BeanMethods;
 import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.Decorators;
 import org.jboss.weld.util.JtaApiAbstraction;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.collections.HashSetSupplier;
@@ -522,33 +524,43 @@ public class Validator implements Service {
     }
 
     protected void validateDecorator(Decorator<?> decorator, Collection<RIBean<?>> specializedBeans, BeanManagerImpl manager) {
+
         if (decorator.getDecoratedTypes().isEmpty()) {
             throw new DefinitionException(ValidatorMessage.NO_DECORATED_TYPES, decorator);
         }
-        if (decorator instanceof RIBean<?>) {
-            validateRIBean((RIBean<?>) decorator, manager, specializedBeans);
 
-            if (decorator instanceof WeldDecorator<?>) {
-                EnhancedAnnotatedType<?> annotatated = ((WeldDecorator<?>) decorator).getEnhancedAnnotated();
-                if (!BeanMethods.getObserverMethods(annotatated).isEmpty()) {
+        Decorators.checkDelegateType(decorator);
+
+        if (decorator instanceof WeldDecorator<?>) {
+
+            EnhancedAnnotatedType<?> annotated = ((WeldDecorator<?>) decorator).getEnhancedAnnotated();
+
+            if (decorator instanceof DecoratorImpl<?>) {
+                // Discovered decorator bean - abstract methods and delegate injection point are validated during bean initialization
+                validateRIBean((RIBean<?>) decorator, manager, specializedBeans);
+
+                // Following checks are not legal for custom decorator beans as we cannot rely on decorator bean class methods
+                if (!BeanMethods.getObserverMethods(annotated).isEmpty()) {
                     throw new DefinitionException(DECORATORS_CANNOT_HAVE_OBSERVER_METHODS, decorator);
                 }
-                while (annotatated != null && annotatated.getJavaClass() != Object.class) {
-                    if (!annotatated.getDeclaredEnhancedMethods(Produces.class).isEmpty()) {
+                while (annotated != null && annotated.getJavaClass() != Object.class) {
+                    if (!annotated.getDeclaredEnhancedMethods(Produces.class).isEmpty()) {
                         throw new DefinitionException(DECORATORS_CANNOT_HAVE_PRODUCER_METHODS, decorator);
                     }
-                    if (!annotatated.getDeclaredEnhancedFields(Produces.class).isEmpty()) {
+                    if (!annotated.getDeclaredEnhancedFields(Produces.class).isEmpty()) {
                         throw new DefinitionException(DECORATORS_CANNOT_HAVE_PRODUCER_FIELDS, decorator);
                     }
-                    if (!annotatated.getDeclaredEnhancedMethodsWithAnnotatedParameters(Disposes.class).isEmpty()) {
+                    if (!annotated.getDeclaredEnhancedMethodsWithAnnotatedParameters(Disposes.class).isEmpty()) {
                         throw new DefinitionException(DECORATORS_CANNOT_HAVE_DISPOSER_METHODS, decorator);
                     }
-                    annotatated = annotatated.getEnhancedSuperclass();
+                    annotated = annotated.getEnhancedSuperclass();
                 }
-            }
 
-        } else {
-            validateGeneralBean(decorator, manager);
+            } else {
+                // Custom decorator bean
+                validateGeneralBean(decorator, manager);
+                Decorators.findDelegateInjectionPoint(annotated, decorator.getInjectionPoints());
+            }
         }
     }
 

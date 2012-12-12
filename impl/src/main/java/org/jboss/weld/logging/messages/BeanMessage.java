@@ -16,10 +16,11 @@
  */
 package org.jboss.weld.logging.messages;
 
+import org.jboss.weld.logging.MessageId;
+
 import ch.qos.cal10n.BaseName;
 import ch.qos.cal10n.Locale;
 import ch.qos.cal10n.LocaleData;
-import org.jboss.weld.logging.MessageId;
 
 @BaseName("org.jboss.weld.messages.bean")
 @LocaleData({
@@ -95,7 +96,13 @@ public enum BeanMessage {
     @MessageId("000059")NO_DELEGATE_FOR_DECORATOR,
     @MessageId("000060")TOO_MANY_DELEGATES_FOR_DECORATOR,
     @MessageId("000061")DELEGATE_MUST_SUPPORT_EVERY_DECORATED_TYPE,
+    /**
+     * @deprecated Not in use
+     */
     @MessageId("000062")DECORATED_TYPE_PARAMETERIZED_DELEGATE_NOT,
+    /**
+     * @deprecated Not in use
+     */
     @MessageId("000063")DELEGATE_TYPE_PARAMETER_MISMATCH,
     @MessageId("000064")UNABLE_TO_PROCESS,
     @MessageId("000065")DISPOSE_NOT_FIRST_PARAM,

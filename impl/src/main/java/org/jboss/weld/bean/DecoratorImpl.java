@@ -16,16 +16,10 @@
  */
 package org.jboss.weld.bean;
 
-import static org.jboss.weld.logging.messages.BeanMessage.DECORATED_TYPE_PARAMETERIZED_DELEGATE_NOT;
-import static org.jboss.weld.logging.messages.BeanMessage.DELEGATE_MUST_SUPPORT_EVERY_DECORATED_TYPE;
-import static org.jboss.weld.logging.messages.BeanMessage.DELEGATE_TYPE_PARAMETER_MISMATCH;
-
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -37,13 +31,11 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.enhanced.MethodSignature;
 import org.jboss.weld.annotated.runtime.InvokableAnnotatedMethod;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
-import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.util.Decorators;
 import org.jboss.weld.util.reflection.Formats;
-import org.jboss.weld.util.reflection.Reflections;
 
 public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T> {
 
@@ -77,7 +69,6 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
         initDecoratedTypes();
         initDelegateBindings();
         initDelegateType();
-        checkDelegateType();
     }
 
     protected void initDecoratedTypes() {
@@ -102,30 +93,6 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
         this.delegateType = this.delegateInjectionPoint.getType();
         this.delegateTypes = new HashSet<Type>();
         delegateTypes.add(delegateType);
-    }
-
-    protected void checkDelegateType() {
-        Set<Type> mostSpecificDecoratedTypes = new HashSet<Type>(Arrays.asList(getEnhancedAnnotated().getJavaClass().getGenericInterfaces()));
-        mostSpecificDecoratedTypes.remove(Serializable.class);
-        for (Type decoratedType : mostSpecificDecoratedTypes) {
-            if (decoratedType instanceof Class<?>) {
-                if (!((Class<?>) decoratedType).isAssignableFrom(Reflections.getRawType(delegateInjectionPoint.getType()))) {
-                    throw new DefinitionException(DELEGATE_MUST_SUPPORT_EVERY_DECORATED_TYPE, decoratedType, this);
-                }
-            } else if (decoratedType instanceof ParameterizedType) {
-                ParameterizedType parameterizedType = (ParameterizedType) decoratedType;
-                if (!(delegateInjectionPoint.getType() instanceof ParameterizedType)) {
-                    throw new DefinitionException(DECORATED_TYPE_PARAMETERIZED_DELEGATE_NOT, delegateType, this);
-                }
-                if (!Arrays.equals(Reflections.getActualTypeArguments(delegateInjectionPoint.getType()), parameterizedType.getActualTypeArguments())) {
-                    throw new DefinitionException(DELEGATE_TYPE_PARAMETER_MISMATCH, decoratedType, this);
-                }
-                Type rawType = ((ParameterizedType) decoratedType).getRawType();
-                if (rawType instanceof Class<?> && !((Class<?>) rawType).isAssignableFrom(Reflections.getRawType(delegateInjectionPoint.getType()))) {
-                    throw new DefinitionException(DELEGATE_MUST_SUPPORT_EVERY_DECORATED_TYPE, decoratedType, this);
-                }
-            }
-        }
     }
 
     public Set<Annotation> getDelegateQualifiers() {

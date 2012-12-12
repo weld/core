@@ -17,22 +17,27 @@
 
 package org.jboss.weld.util;
 
+import static org.jboss.weld.logging.messages.BeanMessage.ABSTRACT_METHOD_MUST_MATCH_DECORATED_TYPE;
+import static org.jboss.weld.logging.messages.BeanMessage.DELEGATE_MUST_SUPPORT_EVERY_DECORATED_TYPE;
 import static org.jboss.weld.logging.messages.BeanMessage.DELEGATE_ON_NON_INITIALIZER_METHOD;
 import static org.jboss.weld.logging.messages.BeanMessage.NO_DELEGATE_FOR_DECORATOR;
 import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_FAILED;
 import static org.jboss.weld.logging.messages.BeanMessage.TOO_MANY_DELEGATES_FOR_DECORATOR;
 import static org.jboss.weld.logging.messages.BeanMessage.UNABLE_TO_PROCESS;
 
+import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
@@ -53,7 +58,10 @@ import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.serialization.spi.ContextualStore;
+import org.jboss.weld.util.reflection.HierarchyDiscovery;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * Helper class for {@link javax.enterprise.inject.spi.Decorator} inspections.
@@ -153,6 +161,56 @@ public class Decorators {
             return outerDelegate;
         } finally {
             DecorationHelper.pop();
+        }
+    }
+
+    /**
+     * Check whether the delegate type implements or extends all decorated types.
+     *
+     * @param decorator
+     * @throws DefinitionException If the delegate type doesn't implement or extend all decorated types
+     */
+    public static void checkDelegateType(Decorator<?> decorator) {
+
+        Set<Type> types = new HierarchyDiscovery(decorator.getDelegateType()).getTypeClosure();
+
+        for (Type decoratedType : decorator.getDecoratedTypes()) {
+            if(!types.contains(decoratedType)) {
+                throw new DefinitionException(DELEGATE_MUST_SUPPORT_EVERY_DECORATED_TYPE, decoratedType, decorator);
+            }
+        }
+    }
+
+    /**
+     * Check all abstract methods are declared by the decorated types.
+     *
+     * @param type
+     * @param beanManager
+     * @param delegateType
+     * @throws DefinitionException If any of the abstract methods is not declared by the decorated types
+     */
+    public static <T> void checkAbstractMethods(Set<Type> decoratedTypes, EnhancedAnnotatedType<T> type, BeanManagerImpl beanManager) {
+
+        if(decoratedTypes == null) {
+            decoratedTypes = new HashSet<Type>(type.getInterfaceClosure());
+            decoratedTypes.remove(Serializable.class);
+        }
+
+        Set<MethodSignature> signatures = new HashSet<MethodSignature>();
+
+        for (Type decoratedType : decoratedTypes) {
+            for (EnhancedAnnotatedMethod<?, ?> method : ClassTransformer.instance(beanManager).getEnhancedAnnotatedType(Reflections.getRawType(decoratedType)).getEnhancedMethods()) {
+                signatures.add(method.getSignature());
+            }
+        }
+
+        for (EnhancedAnnotatedMethod<?, ?> method : type.getEnhancedMethods()) {
+            if (Reflections.isAbstract(((AnnotatedMethod<?>) method).getJavaMember())) {
+                MethodSignature methodSignature = method.getSignature();
+                if (!signatures.contains(methodSignature)) {
+                    throw new DefinitionException(ABSTRACT_METHOD_MUST_MATCH_DECORATED_TYPE, method.getSignature(), type);
+                }
+            }
         }
     }
 }
