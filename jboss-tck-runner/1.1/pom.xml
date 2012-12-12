@@ -20,6 +20,10 @@
     </licenses>
     <url>http://www.seamframework.org/Weld</url>
 
+    <properties>
+        <xnio.api.version>3.0.7.GA</xnio.api.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>javax.enterprise</groupId>
@@ -79,8 +83,19 @@
         <dependency>
             <groupId>org.jboss.as</groupId>
             <artifactId>jboss-as-arquillian-common</artifactId>
+            <scope>test</scope>
         </dependency>
 
+        <!--
+            This is necessary for the TCK to run against AS 7.2.0.Alpha1-SNAPSHOT.
+            This can be safely removed once AS7 upgrades to remoting-jmx 1.1.0.Beta2 or better
+         -->
+        <dependency>
+            <groupId>org.jboss.xnio</groupId>
+            <artifactId>xnio-api</artifactId>
+            <version>${xnio.api.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
