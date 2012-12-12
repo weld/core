@@ -1,0 +1,18 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html">
+<head>
+<title>Test</title>
+</head>
+<body>
+
+	<h:form>
+		<h:commandButton action="#{crossroad.startGuide}" value="Begin" id="begin" />
+		<h:commandButton action="#{crossroad.goingWithGuide}" value="With Guide" id="guide"/>
+		<h:commandButton action="#{crossroad.loosingTheGuide}" value="Without Guide" id="redirect"/>
+		<h:commandButton action="#{crossroad.stopGuide}" value="End" id="end"/>
+		<h:outputText id="cid" value="#{javax.enterprise.context.conversation.id}" />
+	</h:form>
+</body>
+</html>
