@@ -16,7 +16,10 @@
  */
 package org.jboss.weld.bean;
 
+import java.util.List;
+
 import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.Decorator;
 
 /**
  * Marker interface for a {@link Bean} that can have decorators. This can be a {@link ManagedBean}, {@link SessionBean} or a
@@ -27,4 +30,8 @@ import javax.enterprise.inject.spi.Bean;
  */
 public interface DecorableBean<T> extends Bean<T> {
 
+    /**
+     * Resolves decorators for this bean.
+     */
+    List<Decorator<?>> getDecorators();
 }

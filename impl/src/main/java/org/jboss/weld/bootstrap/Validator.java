@@ -104,8 +104,8 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bean.AbstractBean;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.AbstractProducerBean;
-import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.bean.DecorableBean;
+import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.bean.DisposalMethod;
 import org.jboss.weld.bean.InterceptorImpl;
 import org.jboss.weld.bean.NewBean;
@@ -272,29 +272,25 @@ public class Validator implements Service {
     }
 
     private void validateDecorators(BeanManagerImpl beanManager, DecorableBean<?> bean) {
-        List<Decorator<?>> decorators = beanManager.resolveDecorators(bean.getTypes(), bean.getQualifiers());
+        if (!(beanManager.isPassivatingScope(bean.getScope()) || bean instanceof AbstractDecorableBuiltInBean<?>)) {
+            return;
+        }
+        List<Decorator<?>> decorators = bean.getDecorators();
         if (decorators.isEmpty()) {
             return;
         }
-        boolean passivationCapabilityCheckRequired = beanManager.isPassivatingScope(bean.getScope()) || bean instanceof AbstractDecorableBuiltInBean<?>;
         for (Decorator<?> decorator : decorators) {
-            if (passivationCapabilityCheckRequired) {
-            boolean isSerializable = (decorator instanceof WeldDecorator<?>) ? (((WeldDecorator<?>) decorator).getEnhancedAnnotated().isSerializable()) : (decorator instanceof PassivationCapable);
-                if (!isSerializable) {
-                    if (bean instanceof AbstractDecorableBuiltInBean<?>) {
-                        throw new UnserializableDependencyException(BUILTIN_BEAN_WITH_NONSERIALIZABLE_DECORATOR, decorator, bean);
-                    } else {
-                        throw new UnserializableDependencyException(PASSIVATING_BEAN_WITH_NONSERIALIZABLE_DECORATOR, bean, decorator);
-                    }
+            if (!Decorators.isPassivationCapable(decorator)) {
+                if (bean instanceof AbstractDecorableBuiltInBean<?>) {
+                    throw new UnserializableDependencyException(BUILTIN_BEAN_WITH_NONSERIALIZABLE_DECORATOR, decorator, bean);
+                } else {
+                    throw new UnserializableDependencyException(PASSIVATING_BEAN_WITH_NONSERIALIZABLE_DECORATOR, bean, decorator);
                 }
             }
             for (InjectionPoint ij : decorator.getInjectionPoints()) {
                 if (!ij.isDelegate()) {
                     Bean<?> resolvedBean = beanManager.resolve(beanManager.getBeans(ij));
-                    validateInjectionPoint(ij, beanManager);
-                    if (passivationCapabilityCheckRequired) {
-                        validateInjectionPointPassivationCapable(ij, resolvedBean, beanManager);
-                    }
+                    validateInjectionPointPassivationCapable(ij, resolvedBean, beanManager);
                 }
             }
         }
@@ -832,9 +828,9 @@ public class Validator implements Service {
                 dependencyPath.remove(injectionPoint);
             }
         }
-        if (bean instanceof AbstractClassBean) {
-            if (((AbstractClassBean) bean).hasDecorators()) {
-                final List<Decorator<?>> decorators = ((AbstractClassBean) bean).getDecorators();
+        if (bean instanceof DecorableBean<?>) {
+            final List<Decorator<?>> decorators = Reflections.<DecorableBean<?>>cast(bean).getDecorators();
+            if (!decorators.isEmpty()) {
                 for (final Decorator<?> decorator : decorators) {
                     reallyValidatePseudoScopedBean(decorator, beanManager, dependencyPath, validatedBeans);
                 }

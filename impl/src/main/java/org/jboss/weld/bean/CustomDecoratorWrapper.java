@@ -17,18 +17,18 @@
 
 package org.jboss.weld.bean;
 
-import org.jboss.weld.annotated.enhanced.MethodSignature;
+import java.lang.reflect.Method;
+import java.util.Map;
+
+import javax.enterprise.inject.spi.Decorator;
+
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
-import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
+import org.jboss.weld.annotated.enhanced.MethodSignature;
 import org.jboss.weld.annotated.runtime.InvokableAnnotatedMethod;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.Decorators;
 import org.jboss.weld.util.reflection.Reflections;
-
-import javax.enterprise.inject.spi.Decorator;
-import java.lang.reflect.Method;
-import java.util.Map;
 
 /**
  * A wrapper for a decorated instance. Allows to enhance custom decorators with metadata
@@ -53,7 +53,7 @@ public class CustomDecoratorWrapper<T> extends ForwardingDecorator<T> implements
     }
 
     @Override
-    protected Decorator<T> delegate() {
+    public Decorator<T> delegate() {
         return delegate;
     }
 

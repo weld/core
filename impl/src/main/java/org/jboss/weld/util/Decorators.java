@@ -42,6 +42,7 @@ import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.spi.PassivationCapable;
 import javax.inject.Inject;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
@@ -49,6 +50,8 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.enhanced.MethodSignature;
 import org.jboss.weld.annotated.enhanced.jlr.MethodSignatureImpl;
 import org.jboss.weld.annotated.runtime.InvokableAnnotatedMethod;
+import org.jboss.weld.bean.CustomDecoratorWrapper;
+import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.bean.WeldDecorator;
 import org.jboss.weld.bean.proxy.DecorationHelper;
 import org.jboss.weld.bean.proxy.TargetBeanInstance;
@@ -212,5 +215,21 @@ public class Decorators {
                 }
             }
         }
+    }
+
+    /**
+     * Indicates whether a {@link Decorator} is passivation capable or not.
+     * @return
+     */
+    public static boolean isPassivationCapable(Decorator<?> decorator) {
+        if (decorator instanceof CustomDecoratorWrapper<?>) {
+            // unwrap
+            decorator = Reflections.<CustomDecoratorWrapper<?>>cast(decorator).delegate();
+        }
+        if (decorator instanceof DecoratorImpl<?>) {
+            DecoratorImpl<?> weldDecorator = (DecoratorImpl<?>) decorator;
+            return weldDecorator.getEnhancedAnnotated().isSerializable();
+        }
+        return decorator instanceof PassivationCapable;
     }
 }

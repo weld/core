@@ -85,4 +85,8 @@ public abstract class AbstractDecorableBuiltInBean<T> extends AbstractBuiltInBea
         log.warn(DYNAMIC_LOOKUP_OF_BUILT_IN_NOT_ALLOWED, toString());
     }
 
+    @Override
+    public List<Decorator<?>> getDecorators() {
+        return beanManager.resolveDecorators(getTypes(), getQualifiers());
+    }
 }
