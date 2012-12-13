@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
@@ -45,7 +44,7 @@ import org.jboss.weld.util.Beans;
  * @author David Allen
  * @author Jozef Hartinger
  */
-public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
+public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> implements DecorableBean<T> {
 
     // The item representation
     protected final SlimAnnotatedType<T> annotatedType;

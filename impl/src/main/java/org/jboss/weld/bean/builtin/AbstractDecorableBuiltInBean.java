@@ -26,6 +26,7 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
 
+import org.jboss.weld.bean.DecorableBean;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Decorators;
@@ -37,7 +38,7 @@ import org.slf4j.cal10n.LocLogger;
  * @author Jozef Hartinger
  *
  */
-public abstract class AbstractDecorableBuiltInBean<T> extends AbstractBuiltInBean<T> {
+public abstract class AbstractDecorableBuiltInBean<T> extends AbstractBuiltInBean<T> implements DecorableBean<T> {
 
     private static final LocLogger log = loggerFactory().getLogger(BEAN);
 

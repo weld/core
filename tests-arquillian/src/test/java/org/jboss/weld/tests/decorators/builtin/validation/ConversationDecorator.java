@@ -14,29 +14,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.decorators.builtin.facade;
+package org.jboss.weld.tests.decorators.builtin.validation;
 
 import java.io.Serializable;
 
 import javax.decorator.Decorator;
 import javax.decorator.Delegate;
-import javax.enterprise.event.Event;
+import javax.enterprise.context.Conversation;
 import javax.inject.Inject;
 
-@Decorator
 @SuppressWarnings("serial")
-public abstract class EventDecorator<T> implements Event<T>, Serializable {
+@Decorator
+public abstract class ConversationDecorator implements Conversation, Serializable {
 
     @Inject
     @Delegate
-    private Event<T> delegate;
+    private Conversation delegate;
+
+    @SuppressWarnings("unused")
+    @Inject
+    private Foo foo;
 
     @Override
-    @SuppressWarnings("unchecked")
-    public void fire(T event) {
-        if (event instanceof String) {
-            event = (T) ("Decorated" + event.toString());
-        }
-        delegate.fire(event);
+    public void begin() {
+        delegate.begin();
     }
 }

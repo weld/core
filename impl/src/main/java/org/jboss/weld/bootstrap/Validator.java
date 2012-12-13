@@ -27,6 +27,7 @@ import static org.jboss.weld.logging.messages.ValidatorMessage.AMBIGUOUS_EL_NAME
 import static org.jboss.weld.logging.messages.ValidatorMessage.BEAN_NAME_IS_PREFIX;
 import static org.jboss.weld.logging.messages.ValidatorMessage.BEAN_SPECIALIZED_TOO_MANY_TIMES;
 import static org.jboss.weld.logging.messages.ValidatorMessage.BEAN_WITH_PASSIVATING_SCOPE_NOT_PASSIVATION_CAPABLE;
+import static org.jboss.weld.logging.messages.ValidatorMessage.BUILTIN_BEAN_WITH_NONSERIALIZABLE_DECORATOR;
 import static org.jboss.weld.logging.messages.ValidatorMessage.DECORATORS_CANNOT_HAVE_DISPOSER_METHODS;
 import static org.jboss.weld.logging.messages.ValidatorMessage.DECORATORS_CANNOT_HAVE_OBSERVER_METHODS;
 import static org.jboss.weld.logging.messages.ValidatorMessage.DECORATORS_CANNOT_HAVE_PRODUCER_FIELDS;
@@ -104,6 +105,7 @@ import org.jboss.weld.bean.AbstractBean;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.bean.DecoratorImpl;
+import org.jboss.weld.bean.DecorableBean;
 import org.jboss.weld.bean.DisposalMethod;
 import org.jboss.weld.bean.InterceptorImpl;
 import org.jboss.weld.bean.NewBean;
@@ -114,6 +116,7 @@ import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bean.WeldDecorator;
 import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
+import org.jboss.weld.bean.builtin.AbstractDecorableBuiltInBean;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.bootstrap.enablement.ClassEnablement;
 import org.jboss.weld.exceptions.DefinitionException;
@@ -196,28 +199,30 @@ public class Validator implements Service {
      */
     protected void validateRIBean(RIBean<?> bean, BeanManagerImpl beanManager, Collection<RIBean<?>> specializedBeans) {
         validateGeneralBean(bean, beanManager);
-        if (!(bean instanceof NewManagedBean<?>) && !(bean instanceof NewSessionBean<?>)) {
-            if ((bean instanceof AbstractClassBean<?>)) {
-                AbstractClassBean<?> classBean = (AbstractClassBean<?>) bean;
-                if (classBean.hasDecorators()) {
-                    validateDecorators(beanManager, classBean);
-                }
-                // validate CDI-defined interceptors
-                if (classBean.hasInterceptors()) {
-                    validateInterceptors(beanManager, classBean);
-                }
+        if (bean instanceof NewBean) {
+            return;
+        }
+        if (bean instanceof DecorableBean) {
+            validateDecorators(beanManager, (DecorableBean<?>) bean);
+        }
+        if ((bean instanceof AbstractClassBean<?>)) {
+            AbstractClassBean<?> classBean = (AbstractClassBean<?>) bean;
+            // validate CDI-defined interceptors
+            if (classBean.hasInterceptors()) {
+                validateInterceptors(beanManager, classBean);
             }
-            // for each producer bean validate its disposer method
-            if (bean instanceof AbstractProducerBean<?, ?, ?>) {
-                AbstractProducerBean<?, ?, ?> producerBean = Reflections.<AbstractProducerBean<?, ?, ?>>cast(bean);
-                if (producerBean.getProducer() instanceof AbstractMemberProducer<?, ?>) {
-                    AbstractMemberProducer<?, ?> producer = Reflections.<AbstractMemberProducer<?, ?>>cast(producerBean.getProducer());
-                    if (producer.getDisposalMethod() != null) {
-                        for (InjectionPoint ip : producer.getDisposalMethod().getInjectionPoints()) {
-                            // pass the producer bean instead of the disposal method bean
-                            validateInjectionPointForDefinitionErrors(ip, bean, beanManager);
-                            validateInjectionPointForDeploymentProblems(ip, bean, beanManager);
-                        }
+        }
+        // for each producer bean validate its disposer method
+        if (bean instanceof AbstractProducerBean<?, ?, ?>) {
+            AbstractProducerBean<?, ?, ?> producerBean = Reflections.<AbstractProducerBean<?, ?, ?>> cast(bean);
+            if (producerBean.getProducer() instanceof AbstractMemberProducer<?, ?>) {
+                AbstractMemberProducer<?, ?> producer = Reflections.<AbstractMemberProducer<?, ?>> cast(producerBean
+                        .getProducer());
+                if (producer.getDisposalMethod() != null) {
+                    for (InjectionPoint ip : producer.getDisposalMethod().getInjectionPoints()) {
+                        // pass the producer bean instead of the disposal method bean
+                        validateInjectionPointForDefinitionErrors(ip, bean, beanManager);
+                        validateInjectionPointForDeploymentProblems(ip, bean, beanManager);
                     }
                 }
             }
@@ -266,23 +271,29 @@ public class Validator implements Service {
         }
     }
 
-    private void validateDecorators(BeanManagerImpl beanManager, AbstractClassBean<?> classBean) {
-        if (classBean.getDecorators().size() > 0) {
-            boolean passivationCapabilityCheckRequired = beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(classBean.getScope()).isPassivating();
-            for (Decorator<?> decorator : classBean.getDecorators()) {
-                if (passivationCapabilityCheckRequired) {
-                    boolean isSerializable = (decorator instanceof WeldDecorator<?>) ? (((WeldDecorator<?>) decorator).getEnhancedAnnotated().isSerializable()) : (decorator instanceof PassivationCapable);
-                    if (!isSerializable) {
-                        throw new UnserializableDependencyException(PASSIVATING_BEAN_WITH_NONSERIALIZABLE_DECORATOR, classBean, decorator);
+    private void validateDecorators(BeanManagerImpl beanManager, DecorableBean<?> bean) {
+        List<Decorator<?>> decorators = beanManager.resolveDecorators(bean.getTypes(), bean.getQualifiers());
+        if (decorators.isEmpty()) {
+            return;
+        }
+        boolean passivationCapabilityCheckRequired = beanManager.isPassivatingScope(bean.getScope()) || bean instanceof AbstractDecorableBuiltInBean<?>;
+        for (Decorator<?> decorator : decorators) {
+            if (passivationCapabilityCheckRequired) {
+            boolean isSerializable = (decorator instanceof WeldDecorator<?>) ? (((WeldDecorator<?>) decorator).getEnhancedAnnotated().isSerializable()) : (decorator instanceof PassivationCapable);
+                if (!isSerializable) {
+                    if (bean instanceof AbstractDecorableBuiltInBean<?>) {
+                        throw new UnserializableDependencyException(BUILTIN_BEAN_WITH_NONSERIALIZABLE_DECORATOR, decorator, bean);
+                    } else {
+                        throw new UnserializableDependencyException(PASSIVATING_BEAN_WITH_NONSERIALIZABLE_DECORATOR, bean, decorator);
                     }
                 }
-                for (InjectionPoint ij : decorator.getInjectionPoints()) {
-                    if (!ij.isDelegate()) {
-                        Bean<?> resolvedBean = beanManager.resolve(beanManager.getBeans(ij));
-                        validateInjectionPoint(ij, beanManager);
-                        if (passivationCapabilityCheckRequired) {
-                            validateInjectionPointPassivationCapable(ij, resolvedBean, beanManager);
-                        }
+            }
+            for (InjectionPoint ij : decorator.getInjectionPoints()) {
+                if (!ij.isDelegate()) {
+                    Bean<?> resolvedBean = beanManager.resolve(beanManager.getBeans(ij));
+                    validateInjectionPoint(ij, beanManager);
+                    if (passivationCapabilityCheckRequired) {
+                        validateInjectionPointPassivationCapable(ij, resolvedBean, beanManager);
                     }
                 }
             }
