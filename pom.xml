@@ -603,7 +603,6 @@
                 </property>
             </activation>
             <modules>
-                <module>porting-package/1.0</module>
                 <module>porting-package/1.1</module>
                 <module>tests</module>
                 <module>tests-arquillian</module>
@@ -614,12 +613,12 @@
             <id>tck10</id>
             <activation>
                 <property>
-                    <name>weld.default.build.cditck10</name>
-                    <value>!false</value>
+                    <name>weld.cditck10</name>
                 </property>
             </activation>
             <modules>
                 <module>jboss-tck-runner/1.0</module>
+                <module>porting-package/1.0</module>
             </modules>
         </profile>
         <profile>
