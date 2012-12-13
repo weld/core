@@ -1049,8 +1049,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     public <T> AbstractInjectionTarget<T> internalCreateInjectionTarget(EnhancedAnnotatedType<T> type, Bean<T> bean) {
         AbstractInjectionTarget<T> injectionTarget = null;
-        if (bean instanceof DecoratorImpl<?> || type.isAnnotationPresent(javax.decorator.Decorator.class) || type.isAbstract()) {
-            // TODO if we get an abstract class, we assume that it is a decorator class - is this good?
+        if (bean instanceof DecoratorImpl<?> || type.isAnnotationPresent(javax.decorator.Decorator.class)) {
             injectionTarget = new DecoratorInjectionTarget<T>(type, bean, this);
         } else if (bean instanceof SessionBean<?>) {
             injectionTarget = new SessionBeanInjectionTarget<T>(type, (SessionBean<T>) bean, this);

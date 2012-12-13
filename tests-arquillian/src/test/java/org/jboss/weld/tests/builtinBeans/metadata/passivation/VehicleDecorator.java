@@ -27,6 +27,11 @@ import javax.enterprise.inject.spi.Decorator;
 import javax.inject.Inject;
 
 @Vetoed
+/*
+ * This annotation should not be here but we cannot do without it until CDI-268 is resolved
+ * See WELD-1283
+ */
+@javax.decorator.Decorator
 public abstract class VehicleDecorator implements Vehicle, Serializable {
 
     private static final long serialVersionUID = 3474807029047402898L;
