@@ -120,14 +120,29 @@ public abstract class AbstractWeldELResolver extends ELResolver {
             return beanManager.getReference(bean, null, beanManager.createCreationalContext(bean), false);
         } else {
             // Need to use a "special" creationalContext that can make sure that we do share dependent instances referenced by the EL Expression
-            final ELCreationalContext<?> creationalContext = getELCreationalContext(context);
-            String beanName = bean.getName();
-            Object value = creationalContext.getDependentInstanceForExpression(beanName);
-            if (value == null) {
-                value = getManager(context).getReference(bean, null, creationalContext, false);
-                creationalContext.registerDependentInstanceForExpression(beanName, value);
+            final ELCreationalContextStack stack = ELCreationalContextStack.getCreationalContextStore(context);
+            boolean release = stack.isEmpty(); // indicates whether we should cleanup after lookup or not
+            if (release) {
+                stack.push(new CreationalContextCallable());
             }
-            return value;
+            try {
+                ELCreationalContext<?> ctx = stack.peek().get();
+                String beanName = bean.getName();
+                Object value = ctx.getDependentInstanceForExpression(beanName);
+                if (value == null) {
+                    value = getManager(context).getReference(bean, null, ctx, false);
+                    ctx.registerDependentInstanceForExpression(beanName, value);
+                }
+                return value;
+            } finally {
+                if (release) {
+                    CreationalContextCallable callable = stack.pop();
+                    if (callable.exists()) {
+                        callable.get().release();
+                    }
+                }
+            }
+
         }
     }
 
@@ -139,15 +154,5 @@ public abstract class AbstractWeldELResolver extends ELResolver {
     @Override
     public void setValue(ELContext context, Object base, Object property, Object value) {
     }
-
-    private ELCreationalContext<?> getELCreationalContext(ELContext context) {
-        ELCreationalContextStack stack = ELCreationalContextStack.getCreationalContextStore(context);
-        if (!stack.isEmpty()) {
-            return stack.peek().get();
-        } else {
-            throw new IllegalStateException("No CreationalContext registered for EL evaluation, it is likely that the the expression factory has not been wrapped by the CDI BeanManager, which must be done to use the ELResolver from CDI");
-        }
-    }
-
 }
 
