@@ -16,35 +16,19 @@
  */
 package org.jboss.weld.tests.producer.method.circular;
 
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.ShouldThrowException;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.BeanArchive;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
 
-/**
- *
- * @see https://issues.jboss.org/browse/WELD-1125
- *
- */
-@RunWith(Arquillian.class)
-public class CircularInjectionTest {
+class FooProducer {
 
-    @Deployment
-    @ShouldThrowException(Exception.class)
-    public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class)
-                .addClasses(Foo.class, FooProducer.class);
+    @Inject
+    void injectFoo(Foo foo) {
     }
 
-    /*
-    * description = "WELD-310"
-    */
-    @Test
-    public void testProducerCalledOnBeanUnderConstruction() {
+    @Produces
+    Foo produceFoo() {
+        return new Foo() {
+        };
     }
 
 }

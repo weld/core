@@ -117,6 +117,7 @@ import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bean.WeldDecorator;
 import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
 import org.jboss.weld.bean.builtin.AbstractDecorableBuiltInBean;
+import org.jboss.weld.bean.builtin.ee.EEResourceProducerField;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.bootstrap.enablement.ClassEnablement;
 import org.jboss.weld.exceptions.DefinitionException;
@@ -834,6 +835,12 @@ public class Validator implements Service {
                 for (final Decorator<?> decorator : decorators) {
                     reallyValidatePseudoScopedBean(decorator, beanManager, dependencyPath, validatedBeans);
                 }
+            }
+        }
+        if (bean instanceof AbstractProducerBean<?, ?, ?> && !(bean instanceof EEResourceProducerField<?, ?>)) {
+            AbstractProducerBean<?, ?, ?> producer = (AbstractProducerBean<?, ?, ?>) bean;
+            if (!beanManager.isNormalScope(producer.getDeclaringBean().getScope()) && !producer.getAnnotated().isStatic()) {
+                reallyValidatePseudoScopedBean(producer.getDeclaringBean(), beanManager, dependencyPath, validatedBeans);
             }
         }
         validatedBeans.add(bean);

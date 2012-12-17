@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2010, Red Hat, Inc., and individual contributors
+ * Copyright 2012, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -16,8 +16,9 @@
  */
 package org.jboss.weld.tests.producer.method.circular;
 
+import javax.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.ShouldThrowException;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -31,13 +32,15 @@ import org.junit.runner.RunWith;
  *
  */
 @RunWith(Arquillian.class)
-public class CircularInjectionTest {
+public class StaticCircularInjectionTest {
+
+    @Inject
+    private Foo foo;
 
     @Deployment
-    @ShouldThrowException(Exception.class)
     public static Archive<?> deploy() {
         return ShrinkWrap.create(BeanArchive.class)
-                .addClasses(Foo.class, FooProducer.class);
+                .addClasses(Foo.class, StaticFooProducer.class);
     }
 
     /*
@@ -45,6 +48,6 @@ public class CircularInjectionTest {
     */
     @Test
     public void testProducerCalledOnBeanUnderConstruction() {
+        foo.ping();
     }
-
 }

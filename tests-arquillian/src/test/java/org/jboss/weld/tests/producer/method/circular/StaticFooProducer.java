@@ -19,14 +19,14 @@ package org.jboss.weld.tests.producer.method.circular;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
-class Bar {
+class StaticFooProducer {
 
     @Inject
     void injectFoo(Foo foo) {
     }
 
     @Produces
-    Foo produceFoo() {
+    static Foo produceFoo() {
         return new Foo() {
         };
     }
