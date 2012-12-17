@@ -4,13 +4,13 @@
     <defaultProtocol type="Servlet 3.0" />
 
     <engine>
-        <property name="maxTestClassesBeforeRestart">40</property>
+        <property name="maxTestClassesBeforeRestart">250</property>
     </engine>
 
     <container qualifier="jboss-as-7" default="true">
         <configuration>
             <property name="serverConfig">standalone-full.xml</property>
-            <property name="javaVmArguments">-Xms128m -Xmx768m -XX:MaxPermSize=256m -ea ${jacoco.agent}</property>
+            <property name="javaVmArguments">-Xms128m -Xmx1g -XX:MaxPermSize=512m -ea ${jacoco.agent}</property>
         </configuration>
         <protocol type="Servlet 3.0">
             <property name="host">127.0.0.1</property>
