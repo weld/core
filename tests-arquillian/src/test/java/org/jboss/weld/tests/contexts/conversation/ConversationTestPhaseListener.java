@@ -16,11 +16,13 @@
  */
 package org.jboss.weld.tests.contexts.conversation;
 
+import org.jboss.weld.bean.builtin.BeanManagerProxy;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.context.Conversation;
 import javax.enterprise.context.ConversationScoped;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.faces.event.PhaseEvent;
 import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;
@@ -51,7 +53,7 @@ public class ConversationTestPhaseListener implements PhaseListener {
     public void beforePhase(PhaseEvent event) {
         BeanManagerImpl beanManager;
         try {
-            beanManager = (BeanManagerImpl) new InitialContext().lookup("java:comp/BeanManager");
+            beanManager = BeanManagerProxy.unwrap( (BeanManager) new InitialContext().lookup("java:comp/BeanManager"));
         } catch (NamingException e) {
             throw new RuntimeException("Error looking up java:comp/BeanManager ", e);
         }

@@ -25,6 +25,7 @@ import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InterceptionType;
@@ -36,6 +37,7 @@ import org.jboss.weld.ContainerState;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.ForwardingBeanManager;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * Client view of {@link BeanManagerImpl}.
@@ -124,15 +126,26 @@ public class BeanManagerProxy extends ForwardingBeanManager {
     }
 
     /**
-    *
-    * @param methodName
-    * @throws IllegalStateException If the application initialization is not finished yet
-    */
-   private void checkApplicationInitializationFinished(String methodName) {
+     *
+     * @param methodName
+     * @throws IllegalStateException If the application initialization is not finished yet
+     */
+    private void checkApplicationInitializationFinished(String methodName) {
 
-       if (ContainerState.VALIDATED.equals(container.getState())) {
-           return;
-       }
-       throw new IllegalStateException(METHOD_NOT_AVAILABLE_DURING_INITIALIZATION, methodName);
-   }
+        if (ContainerState.VALIDATED.equals(container.getState())) {
+            return;
+        }
+        throw new IllegalStateException(METHOD_NOT_AVAILABLE_DURING_INITIALIZATION, methodName);
+    }
+
+    public static BeanManagerImpl unwrap(BeanManager manager) {
+        if (manager instanceof ForwardingBeanManager) {
+            manager = Reflections.<ForwardingBeanManager>cast(manager).delegate();
+        }
+        if (manager instanceof BeanManagerImpl) {
+            return (BeanManagerImpl) manager;
+        }
+        throw new IllegalArgumentException("Unknown BeanManager " + manager);
+    }
+
 }

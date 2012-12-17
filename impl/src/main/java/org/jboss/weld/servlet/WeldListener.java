@@ -44,6 +44,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSessionEvent;
 
 import org.jboss.weld.Container;
+import org.jboss.weld.bean.builtin.BeanManagerProxy;
 import org.jboss.weld.bean.builtin.ee.ServletContextBean;
 import org.jboss.weld.context.ConversationContext;
 import org.jboss.weld.context.cache.RequestScopedBeanCache;
@@ -115,7 +116,7 @@ public class WeldListener extends AbstractServletListener {
     public void contextInitialized(ServletContextEvent sce) {
         if (beanManager == null) {
             // servlet containers may not be able to inject fields in a servlet listener
-            beanManager = cast(CDI.current().getBeanManager());
+            beanManager = BeanManagerProxy.unwrap(CDI.current().getBeanManager());
         }
         beanManager.getAccessibleLenientObserverNotifier().fireEvent(sce, InitializedLiteral.APPLICATION);
     }
