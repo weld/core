@@ -4,6 +4,7 @@
     
     <listeners>
         <listener class-name="org.jboss.cdi.tck.impl.testng.SingleTestClassMethodInterceptor"/>
+        <listener class-name="org.jboss.cdi.tck.impl.testng.ProgressLoggingTestListener"/>
     </listeners>
     
     <test name="CDI TCK">
