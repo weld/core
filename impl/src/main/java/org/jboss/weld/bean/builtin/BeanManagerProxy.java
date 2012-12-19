@@ -63,61 +63,61 @@ public class BeanManagerProxy extends ForwardingBeanManager {
 
     @Override
     public Object getReference(Bean<?> bean, Type beanType, CreationalContext<?> ctx) {
-        checkApplicationInitializationFinished("getReference()");
+        checkContainerInitialized("getReference()");
         return super.getReference(bean, beanType, ctx);
     }
 
     @Override
     public Object getInjectableReference(InjectionPoint ij, CreationalContext<?> ctx) {
-        checkApplicationInitializationFinished("getInjectableReference()");
+        checkContainerInitialized("getInjectableReference()");
         return super.getInjectableReference(ij, ctx);
     }
 
     @Override
     public Set<Bean<?>> getBeans(Type beanType, Annotation... qualifiers) {
-        checkApplicationInitializationFinished("getBeans()");
+        checkContainerInitialized("getBeans()");
         return super.getBeans(beanType, qualifiers);
     }
 
     @Override
     public Set<Bean<?>> getBeans(String name) {
-        checkApplicationInitializationFinished("getBeans()");
+        checkContainerInitialized("getBeans()");
         return super.getBeans(name);
     }
 
     @Override
     public Bean<?> getPassivationCapableBean(String id) {
-        checkApplicationInitializationFinished("getPassivationCapableBean()");
+        checkContainerInitialized("getPassivationCapableBean()");
         return super.getPassivationCapableBean(id);
     }
 
     @Override
     public <X> Bean<? extends X> resolve(Set<Bean<? extends X>> beans) {
-        checkApplicationInitializationFinished("resolve()");
+        checkContainerInitialized("resolve()");
         return super.resolve(beans);
     }
 
     @Override
     public void validate(InjectionPoint injectionPoint) {
-        checkApplicationInitializationFinished("validate()");
+        checkContainerInitialized("validate()", ContainerState.VALIDATED, ContainerState.INITIALIZED);
         super.validate(injectionPoint);
     }
 
     @Override
     public <T> Set<ObserverMethod<? super T>> resolveObserverMethods(T event, Annotation... qualifiers) {
-        checkApplicationInitializationFinished("resolveObserverMethods()");
+        checkContainerInitialized("resolveObserverMethods()");
         return super.resolveObserverMethods(event, qualifiers);
     }
 
     @Override
     public List<Decorator<?>> resolveDecorators(Set<Type> types, Annotation... qualifiers) {
-        checkApplicationInitializationFinished("resolveDecorators()");
+        checkContainerInitialized("resolveDecorators()");
         return super.resolveDecorators(types, qualifiers);
     }
 
     @Override
     public List<Interceptor<?>> resolveInterceptors(InterceptionType type, Annotation... interceptorBindings) {
-        checkApplicationInitializationFinished("resolveInterceptors()");
+        checkContainerInitialized("resolveInterceptors()");
         return super.resolveInterceptors(type, interceptorBindings);
     }
 
@@ -126,21 +126,31 @@ public class BeanManagerProxy extends ForwardingBeanManager {
     }
 
     /**
+     * Verifies that the container has been initialized. If no {@link ContainerState} arguments are provided this method
+     * verifies that the container is in the INITIALIZED state. If the arguments are provided, this method verifies that the
+     * container is in one of the states. Otherwise, {@link IllegalStateException} is thrown.
      *
      * @param methodName
      * @throws IllegalStateException If the application initialization is not finished yet
      */
-    private void checkApplicationInitializationFinished(String methodName) {
-
-        if (ContainerState.VALIDATED.equals(container.getState())) {
-            return;
+    private void checkContainerInitialized(String methodName, ContainerState... allowedStates) {
+        if (allowedStates == null || allowedStates.length == 0) {
+            if (ContainerState.INITIALIZED.equals(container.getState())) {
+                return;
+            }
+        } else {
+            for (ContainerState state : allowedStates) {
+                if (container.getState().equals(state)) {
+                    return;
+                }
+            }
         }
         throw new IllegalStateException(METHOD_NOT_AVAILABLE_DURING_INITIALIZATION, methodName);
     }
 
     public static BeanManagerImpl unwrap(BeanManager manager) {
         if (manager instanceof ForwardingBeanManager) {
-            manager = Reflections.<ForwardingBeanManager>cast(manager).delegate();
+            manager = Reflections.<ForwardingBeanManager> cast(manager).delegate();
         }
         if (manager instanceof BeanManagerImpl) {
             return (BeanManagerImpl) manager;

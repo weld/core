@@ -27,6 +27,7 @@ import java.util.Set;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
+import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
@@ -35,11 +36,13 @@ import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InterceptionType;
 import javax.enterprise.inject.spi.ProcessBean;
+import javax.enterprise.inject.spi.ProcessInjectionPoint;
 import javax.enterprise.util.AnnotationLiteral;
 
 public class WrongExtension implements Extension {
 
     private Bean<Foo> fooBean;
+    private InjectionPoint injectionPoint;
 
     public void observeBeforeBeanDiscovery(@Observes BeforeBeanDiscovery event, BeanManager beanManager) {
         testUnavailableMethods(beanManager);
@@ -54,7 +57,7 @@ public class WrongExtension implements Extension {
         testUnavailableMethods(beanManager);
     }
 
-    @SuppressWarnings({ "serial", "unchecked" })
+    @SuppressWarnings({ "serial" })
     private void testUnavailableMethods(BeanManager beanManager) {
 
         if (fooBean != null) {
@@ -168,6 +171,17 @@ public class WrongExtension implements Extension {
             // Expected
         }
 
+    }
+
+    void observeInjectionPoint(@Observes ProcessInjectionPoint<?, ?> event) {
+        if (injectionPoint == null) {
+            // simply store some IP which we'll try to validate later
+            injectionPoint = event.getInjectionPoint();
+        }
+    }
+
+    void validate(@Observes AfterDeploymentValidation event, BeanManager manager) {
+        manager.validate(injectionPoint); // should pass
     }
 
 }

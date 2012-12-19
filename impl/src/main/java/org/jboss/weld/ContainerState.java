@@ -33,11 +33,15 @@ public enum ContainerState {
     /**
      * The container has started and beans have been deployed
      */
-    INITIALIZED(true),
+    DEPLOYED(true),
     /**
      * The deployment has been validated
      */
     VALIDATED(true),
+    /**
+     * The container finished initialization and is serving requests
+     */
+    INITIALIZED(true),
     /**
      * The container has been shutdown
      */

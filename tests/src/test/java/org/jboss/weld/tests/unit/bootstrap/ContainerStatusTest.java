@@ -37,10 +37,13 @@ public class ContainerStatusTest {
         Assert.assertEquals(ContainerState.STARTING, Container.instance().getState());
         container.getBootstrap().deployBeans();
         Assert.assertTrue(Container.available());
-        Assert.assertEquals(ContainerState.INITIALIZED, Container.instance().getState());
-        container.getBootstrap().validateBeans().endInitialization();
-        Assert.assertTrue(Container.available());
+        Assert.assertEquals(ContainerState.DEPLOYED, Container.instance().getState());
+        container.getBootstrap().validateBeans();
         Assert.assertEquals(ContainerState.VALIDATED, Container.instance().getState());
+        Assert.assertTrue(Container.available());
+        container.getBootstrap().endInitialization();
+        Assert.assertTrue(Container.available());
+        Assert.assertEquals(ContainerState.INITIALIZED, Container.instance().getState());
         container.stopContainer();
         Assert.assertFalse(Container.available());
     }

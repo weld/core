@@ -455,7 +455,7 @@ public class WeldBootstrap implements Bootstrap {
                 entry.getValue().afterBeanDiscovery(environment);
             }
             Container.instance().putBeanDeployments(beanDeployments);
-            Container.instance().setState(ContainerState.INITIALIZED);
+            Container.instance().setState(ContainerState.DEPLOYED);
         }
         return this;
     }
@@ -469,6 +469,7 @@ public class WeldBootstrap implements Bootstrap {
                 deployment.getServices().get(Validator.class).validateDeployment(beanManager, entry.getValue().getBeanDeployer().getEnvironment());
                 beanManager.getServices().get(InjectionTargetService.class).validate();
             }
+            Container.instance().setState(ContainerState.VALIDATED);
             AfterDeploymentValidationImpl.fire(deploymentManager);
         }
         return this;
@@ -478,7 +479,6 @@ public class WeldBootstrap implements Bootstrap {
         // TODO rebuild the manager accessibility graph if the bdas have changed
         synchronized (this) {
             // Register the managers so external requests can handle them
-            Container.instance().setState(ContainerState.VALIDATED);
             // clear the TypeSafeResolvers, so data that is only used at startup
             // is not kept around using up memory
             deploymentManager.getBeanResolver().clear();
@@ -519,6 +519,7 @@ public class WeldBootstrap implements Bootstrap {
                 deployment.getBeanManager().getServices().get(EnumService.class).inject();
                 deployment.getBeanDeployer().cleanup();
             }
+            Container.instance().setState(ContainerState.INITIALIZED);
             return this;
         }
     }
