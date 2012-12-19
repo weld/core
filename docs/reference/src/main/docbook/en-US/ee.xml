@@ -259,7 +259,7 @@ public void sendMessage(String price) {
     
    </section>
   
-   <section>
+   <section id="packaging">
       <title>Packaging and deployment</title>
     
       <para>

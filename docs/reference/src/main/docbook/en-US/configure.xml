@@ -10,12 +10,16 @@
          Weld allows you to exclude classes in your archive from scanning, having
          container lifecycle events fired, and being deployed as beans.
       </para>
-      
+
       <para>
          In this tutorial, we'll explore this feature via an example; a more formal specification can be found in the
          xsd, located at <ulink url="http://jboss.org/schema/weld/beans_1_1.xsd">http://jboss.org/schema/weld/beans_1_1.xsd</ulink>.
       </para>
+
+      <para>All the configuration is done in the <filename>beans.xml</filename> file. For more information see <xref linkend="packaging"/></para>
       
+      <example>
+        <title>beans.xml</title>
       <programlisting role="XML"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://java.sun.com/xml/ns/javaee" 
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
@@ -54,6 +58,7 @@
     </weld:scan>
     
 </beans>]]></programlisting>
+      </example>
 
       <para>
          In this example we show the most common use cases for exercising fine control over which classes
