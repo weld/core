@@ -57,7 +57,7 @@
       <note>
          <para>
             You'll need a full install of Ant 1.7.0. Some linux distributions only supply a partial installation of Ant
-            which cause the build to fail. If you encounter problems, verify that ant-nodeps.jar is on the classpath.
+            which cause the build to fail. If you encounter problems, verify that <literal>ant-nodeps.jar</literal> is on the classpath.
          </para>
       </note>
    

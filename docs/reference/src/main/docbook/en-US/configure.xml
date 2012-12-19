@@ -135,7 +135,7 @@
          </thead>
          <tbody>
             <row>
-                <entry>enableThreading</entry>
+                <entry><literal>enableThreading</literal></entry>
                 <entry>true</entry>
                 <entry>If set to false, Weld will only use the default thread for
                     bootstrap and will not try to spawn any additional threads. This
@@ -144,14 +144,14 @@
          </tbody>
          <tbody>
             <row>
-                <entry>debug</entry>
+                <entry><literal>debug</literal></entry>
                 <entry>false</entry>
                 <entry>If set to true, debug timing information is printed to the standard output.</entry>
             </row>
          </tbody>
          <tbody>
             <row>
-                <entry>deployerThreads</entry>
+                <entry><literal>deployerThreads</literal></entry>
                 <entry><function>Runtime.getRuntime().availableProcessors()</function></entry>
                 <entry>The number of threads to be used for bean loading
                     and deployment. If set to 0 the serial deployer is used instead
@@ -160,7 +160,7 @@
          </tbody>
          <tbody>
             <row>
-                <entry>preloaderThreads</entry>
+                <entry><literal>preloaderThreads</literal></entry>
                 <entry><function>Math.max(1, Runtime.getRuntime().availableProcessors() - 1)</function></entry>
                 <entry>Weld is capable of resolving observer methods for container
                     lifecycle events in advance while bean deployer threads are

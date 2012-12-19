@@ -21,7 +21,7 @@
          An unbound context is scoped to the thread in which it is activated (instances placed
          in the context in one thread are not visible in other threads), and is destroyed upon
          invalidation and deactivation. Bound contexts are attached to some external data store
-         (such as the Http Session or a manually propagated map) by <emphasis>associating</emphasis>
+         (such as the HTTP Session or a manually propagated map) by <emphasis>associating</emphasis>
          the data store with the context before calling activate, and dissociating the data store
          after calling activate.
       </para>
@@ -201,9 +201,9 @@
 
       <para>
          The bound session context works in much the same way, excepting that invalidating and deactivating the 
-         session context causes the any conversations in the session to be destroyed as well. The http session 
-         context and http request context also work similarly, and might be of use if you find yourself creating
-         threads from an http request). The http session context additionally offers a method which can immediately
+         session context causes the any conversations in the session to be destroyed as well. The HTTP session 
+         context and HTTP request context also work similarly, and might be of use if you find yourself creating
+         threads from an HTTP request). The HTTP session context additionally offers a method which can immediately
          destroy the context. 
       </para>
       

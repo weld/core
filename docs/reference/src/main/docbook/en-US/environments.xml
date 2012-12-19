@@ -339,7 +339,7 @@ public class HelloWorld
 
             <section>
 
-                <title>The ContainerInitialized Event</title>
+                <title>The <literal>ContainerInitialized</literal> Event</title>
 
                 <para>
                     Thanks to the power of CDI's typesafe event model, application developers
@@ -446,7 +446,7 @@ public class HelloWorld
             </para>
 
             <para>
-                To use the @ThreadScoped annotation you need to enable the
+                To use the <literal>@ThreadScoped</literal> annotation you need to enable the
                 <literal>RunnableDecorator</literal>
                 which 'listens' for all executions of
                 <literal>Runnable.run()</literal>
@@ -462,11 +462,11 @@ public class HelloWorld
 </beans>]]></programlisting>
 
             <note>
-                <para>It is not necessary to use @ThreadScoped in all
+                <para>It is not necessary to use <literal>@ThreadScoped</literal> in all
                     multithreaded applications. The thread context is not intended
                     as a replacement for defining your own application-specific contexts.
                     It is generally only useful in situations where you would otherwise
-                    have used ThreadLocal directly, which are typically rare.
+                    have used <literal>ThreadLocal</literal> directly, which are typically rare.
                 </para>
             </note>
 
@@ -489,7 +489,7 @@ public class HelloWorld
                 <literal>weld-core</literal>
                 jar which just contains the Weld SE classes.
                 Of course in this mode you will need to assemble the classpath yourself.
-                This mode is useful, for example, if you wish to use an alternative slf4j
+                This mode is useful, for example, if you wish to use an alternative <literal>slf4j</literal>
                 log binding.
             </para>
 
