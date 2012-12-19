@@ -646,7 +646,7 @@ class ShoppingCart implements Serializable { ... }]]></programlisting>
    <programlisting role="JAVA"><![CDATA[@ApplicationScoped
 public class RandomNumberGenerator {
    
-   private Random random = new Random(System.currentTimeMillis());
+   private java.util.Random random = new java.util.Random(System.currentTimeMillis());
        
    @Produces @Named @Random int getRandomNumber() {
       return random.nextInt(100);
