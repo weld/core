@@ -28,9 +28,6 @@ import static org.jboss.weld.logging.messages.BeanManagerMessage.NOT_INTERCEPTOR
 import static org.jboss.weld.logging.messages.BeanManagerMessage.NOT_STEREOTYPE;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.NO_DECORATOR_TYPES;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.NO_INSTANCE_OF_EXTENSION;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.NULL_BEAN_ARGUMENT;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.NULL_BEAN_TYPE_ARGUMENT;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.NULL_CREATIONAL_CONTEXT_ARGUMENT;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.NULL_DECLARING_BEAN;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.SPECIFIED_TYPE_NOT_BEAN_TYPE;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.TOO_MANY_ACTIVITIES;
@@ -714,15 +711,9 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     @Override
     public Object getReference(Bean<?> bean, Type requestedType, CreationalContext<?> creationalContext) {
-        if (bean == null) {
-            throw new IllegalArgumentException(NULL_BEAN_ARGUMENT);
-        }
-        if (requestedType == null) {
-            throw new IllegalArgumentException(NULL_BEAN_TYPE_ARGUMENT);
-        }
-        if (creationalContext == null) {
-            throw new IllegalArgumentException(NULL_CREATIONAL_CONTEXT_ARGUMENT);
-        }
+        Preconditions.checkArgumentNotNull(bean, "bean");
+        Preconditions.checkArgumentNotNull(requestedType, "requestedType");
+        Preconditions.checkArgumentNotNull(creationalContext, "creationalContext");
         if (!BeanTypeAssignabilityRules.instance().matches(requestedType, bean.getTypes())) {
             throw new IllegalArgumentException(SPECIFIED_TYPE_NOT_BEAN_TYPE, requestedType, bean);
         }
@@ -739,12 +730,9 @@ public class BeanManagerImpl implements WeldManager, Serializable {
      * @return
      */
     public Object getReference(InjectionPoint injectionPoint, Bean<?> resolvedBean, CreationalContext<?> creationalContext) {
-        if (resolvedBean == null) {
-            throw new IllegalArgumentException(NULL_BEAN_ARGUMENT);
-        }
-        if (creationalContext == null) {
-            throw new IllegalArgumentException(NULL_CREATIONAL_CONTEXT_ARGUMENT);
-        }
+        Preconditions.checkArgumentNotNull(resolvedBean, "resolvedBean");
+        Preconditions.checkArgumentNotNull(creationalContext, "creationalContext");
+
         boolean registerInjectionPoint = isRegisterableInjectionPoint(injectionPoint);
         boolean delegateInjectionPoint = injectionPoint != null && injectionPoint.isDelegate();
 

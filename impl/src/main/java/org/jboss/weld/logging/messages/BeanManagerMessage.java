@@ -60,8 +60,20 @@ public enum BeanManagerMessage {
     @MessageId("001321")MISSING_BEAN_CONSTRUCTOR_FOUND,
     @MessageId("001322")ERROR_INVOKING_POST_CONSTRUCT,
     @MessageId("001323")ERROR_INVOKING_PRE_DESTROY,
+    /**
+     * @deprecated Use {@link ValidatorMessage#ARGUMENT_NULL} instead.
+     */
+    @Deprecated
     @MessageId("001324")NULL_BEAN_ARGUMENT,
+    /**
+     * @deprecated Use {@link ValidatorMessage#ARGUMENT_NULL} instead.
+     */
+    @Deprecated
     @MessageId("001324")NULL_BEAN_TYPE_ARGUMENT,
+    /**
+     * @deprecated Use {@link ValidatorMessage#ARGUMENT_NULL} instead.
+     */
+    @Deprecated
     @MessageId("001324")NULL_CREATIONAL_CONTEXT_ARGUMENT,
     @MessageId("001325")NO_INSTANCE_OF_EXTENSION,
     @MessageId("001326")INCORRECT_PRODUCER_MEMBER,
