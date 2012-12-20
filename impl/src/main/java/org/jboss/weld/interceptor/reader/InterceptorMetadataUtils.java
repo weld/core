@@ -1,5 +1,7 @@
 package org.jboss.weld.interceptor.reader;
 
+import static org.jboss.weld.logging.Category.REFLECTION;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.util.collections.WeldCollections.immutableMap;
 
 import java.lang.reflect.Method;
@@ -21,13 +23,9 @@ import org.jboss.weld.interceptor.spi.metadata.MethodMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
 import org.jboss.weld.interceptor.util.InterceptionTypeRegistry;
 import org.jboss.weld.interceptor.util.InterceptorMetadataException;
-import org.jboss.weld.interceptor.util.ReflectionUtils;
 import org.jboss.weld.logging.messages.ValidatorMessage;
 import org.jboss.weld.util.reflection.SecureReflections;
 import org.slf4j.cal10n.LocLogger;
-
-import static org.jboss.weld.logging.Category.REFLECTION;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 
 /**
  * @author Marius Bogoevici
