@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.resolution;
 
+import static org.jboss.weld.util.reflection.Reflections.cast;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -118,7 +120,15 @@ public abstract class TypeSafeResolver<R extends Resolvable, T, C extends Collec
 
     protected abstract boolean matches(R resolvable, T t);
 
-    protected abstract C makeResultImmutable(C result);
+    protected C makeResultImmutable(C result) {
+        if (result instanceof List<?>) {
+            return cast(WeldCollections.immutableList((List<?>) result));
+        }
+        if (result instanceof Set<?>) {
+            return cast(WeldCollections.immutableSet((Set<?>) result));
+        }
+        throw new IllegalArgumentException("result");
+    }
 
     /**
      * allows subclasses to wrap a resolvable before it is resolved
@@ -142,13 +152,5 @@ public abstract class TypeSafeResolver<R extends Resolvable, T, C extends Collec
         buffer.append("Resolver\n");
         buffer.append("Resolved injection points: " + resolved.size() + "\n");
         return buffer.toString();
-    }
-
-    protected List<T> makeResultImmutable(List<T> result) {
-        return WeldCollections.immutableList(result);
-    }
-
-    protected Set<T> makeResultImmutable(Set<T> result) {
-        return WeldCollections.immutableSet(result);
     }
 }
