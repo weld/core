@@ -54,6 +54,17 @@ public class Environment {
         return result.toArray(new Option[result.size()]);
     }
 
+    public static Option[] toCDIKarafEnvironment(Option... options) {
+        List<Option> result = new ArrayList<Option>();
+        result.add(toMavenBundle("org.jboss.weld.osgi", "weld-osgi-core-mandatory"));
+        result.add(toMavenBundle("org.jboss.weld.osgi", "weld-osgi-core-api"));
+        result.add(toMavenBundle("org.jboss.weld.osgi", "weld-osgi-core-spi"));
+        result.add(toMavenBundle("org.jboss.weld.osgi", "weld-osgi-core-extension"));
+        result.add(toMavenBundle("org.jboss.weld.osgi", "weld-osgi-core-integration"));
+        Collections.addAll(result, options);
+        return result.toArray(new Option[result.size()]);
+    }
+
     public static void waitForEnvironment(BundleContext context) throws InterruptedException {
         boolean ready = false;
         while (!ready) {
