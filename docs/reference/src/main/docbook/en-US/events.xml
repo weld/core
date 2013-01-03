@@ -242,14 +242,14 @@ public @interface Role {
    <section>
       <title>Multiple event qualifiers</title>
 
-      <para>Event qualifier types may be combined, for example:</para>
+      <para>Event qualifiers may be combined, for example:</para>
 
       <programlisting role="JAVA"><![CDATA[@Inject @Blog Event<Document> blogEvent;
 ...
 if (document.isBlog()) blogEvent.select(new AnnotationLiteral<Updated>(){}).fire(document);]]></programlisting>
 
       <para>
-         Observers must completely match the final qualified type of the event. Assume the following observers in this example:
+         An observer method is only notified if all the observed qualifiers are specified when the event is fired. Assume the following observers in this example:
       </para>
 
       <programlisting role="JAVA"><![CDATA[public void afterBlogUpdate(@Observes @Updated @Blog Document document) { ... }]]></programlisting>
@@ -257,15 +257,13 @@ if (document.isBlog()) blogEvent.select(new AnnotationLiteral<Updated>(){}).fire
       <programlisting role="JAVA"><![CDATA[public void onAnyBlogEvent(@Observes @Blog Document document) { ... }]]></programlisting>
       <programlisting role="JAVA"><![CDATA[public void onAnyDocumentEvent(@Observes Document document) { ... }}}]]></programlisting>
 
-      <para>The only observer notified will be:</para>
+      <para>All of these observer methods will be notified.</para>
 
-      <programlisting role="JAVA"><![CDATA[public void afterBlogUpdate(@Observes @Updated @Blog Document document) { ... }]]></programlisting>
+      <para>However, if there were also an observer method:</para>
 
-      <para>However, if there were also an observer:</para>
+      <programlisting role="JAVA"><![CDATA[public void afterPersonalBlogUpdate(@Observes @Updated @Personal @Blog Document document) { ... }]]></programlisting>
 
-      <programlisting role="JAVA"><![CDATA[public void afterBlogUpdate(@Observes @Any Document document) { ... }]]></programlisting>
-
-      <para>It would also be notified, as <literal>@Any</literal> acts as an alias for any and all qualifiers.</para>
+      <para>It would not be notified, as <literal>@Personal</literal> is not a qualifier of the event being fired.</para>
 
    </section>
 
