@@ -10,7 +10,7 @@
       only non-transactional managed beans. This example can be run on a wide range of servers, including JBoss 
       AS, GlassFish, Apache Tomcat, Jetty, Google App Engine, and any compliant Java EE 6 container. 
       Translator is an enterprise (ear) example that contains session beans. This example
-      must be run on JBoss AS 6.0, GlassFish 3.0 or any compliant Java EE 6 container.
+      must be run on JBoss AS 7 or better, GlassFish 3 or better, or any compliant Java EE 6 container.
    </para>
    
    <para>
@@ -36,7 +36,7 @@
             <para>a supported runtime environment (minimum versions shown)</para>
             <itemizedlist>
                <listitem>
-                  <para>JBoss AS 7.0.0.Final or better,</para>
+                  <para>JBoss AS 7.0.0.Final,</para>
                </listitem>
                <listitem>
                   <para>GlassFish 3.0,</para>

@@ -12,7 +12,7 @@ tainer, for example, alternative web presentation technologies.
 
    <!-- NOTE synchronize this intro with the intro on http://seamframework.org/Weld -->
    <para>
-      The <ulink url="http://jcp.org/en/jsr/detail?id=299">JSR-299</ulink> specification (CDI) defines a set of 
+      The <ulink url="http://jcp.org/en/jsr/detail?id=299">CDI</ulink> specification defines a set of 
       complementary services that help improve the structure of application code. CDI layers an enhanced lifecycle 
       and interaction model over existing Java component types, including managed beans and Enterprise Java Beans. 
       The CDI services provide:
@@ -89,7 +89,10 @@ tainer, for example, alternative web presentation technologies.
          <para>servlets, servlet filters and servlet event listeners,</para>
       </listitem>
       <listitem>
-         <para>JAX-WS service endpoints and handlers, and</para>
+         <para>JAX-WS service endpoints and handlers,</para>
+      </listitem>
+      <listitem>
+         <para>JAX-RS resources, providers and <literal>javax.ws.rs.core.Application</literal> subclasses, and</para>
       </listitem>
       <listitem>
          <para>JSP tag handlers and tag library event listeners.</para>

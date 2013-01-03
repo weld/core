@@ -342,8 +342,7 @@ public @interface PayBy {
             Then we select one of the possible member values when applying the qualifier:
         </para>
 
-        <programlisting role="JAVA">
-            <![CDATA[private @Inject @PayBy(CHECK) PaymentProcessor checkPayment;]]></programlisting>
+        <programlisting role="JAVA"><![CDATA[private @Inject @PayBy(CHECK) PaymentProcessor checkPayment;]]></programlisting>
 
         <para>
             We can force the container to ignore a member of a qualifier type by annotating the member
@@ -367,8 +366,7 @@ public @interface PayBy {
             An injection point may specify multiple qualifiers:
         </para>
 
-        <programlisting role="JAVA">
-            <![CDATA[@Inject @Synchronous @Reliable PaymentProcessor syncPaymentProcessor;]]></programlisting>
+        <programlisting role="JAVA"><![CDATA[@Inject @Synchronous @Reliable PaymentProcessor syncPaymentProcessor;]]></programlisting>
 
         <para>
             Then only a bean which has
@@ -551,7 +549,7 @@ public class MockPaymentProcessor implements PaymentProcessor {
         </para>
 
         <para>
-            Therefore, unless a bean has the default scope<literal>@Dependent</literal>, the container must indirect all
+            Therefore, unless a bean has the default scope <literal>@Dependent</literal>, the container must indirect all
             injected references to the bean through a proxy object. This
             <emphasis>client proxy</emphasis>
             is responsible
@@ -679,8 +677,7 @@ public class MockPaymentProcessor implements PaymentProcessor {
             parameterized for the bean type, by injection:
         </para>
 
-        <programlisting role="JAVA">
-            <![CDATA[@Inject Instance<PaymentProcessor> paymentProcessorSource;]]></programlisting>
+        <programlisting role="JAVA"><![CDATA[@Inject Instance<PaymentProcessor> paymentProcessorSource;]]></programlisting>
 
         <para>
             The
@@ -715,8 +712,7 @@ public class MockPaymentProcessor implements PaymentProcessor {
             Specifying the qualifiers at the injection point is much, much easier:
         </para>
 
-        <programlisting role="JAVA">
-            <![CDATA[@Inject @Asynchronous Instance<PaymentProcessor> paymentProcessorSource;]]></programlisting>
+        <programlisting role="JAVA"><![CDATA[@Inject @Asynchronous Instance<PaymentProcessor> paymentProcessorSource;]]></programlisting>
 
         <para>
             Now, the
@@ -735,8 +731,7 @@ public class MockPaymentProcessor implements PaymentProcessor {
             .)
         </para>
 
-        <programlisting role="JAVA">
-            <![CDATA[@Inject @Any Instance<PaymentProcessor> paymentProcessorSource;]]></programlisting>
+        <programlisting role="JAVA"><![CDATA[@Inject @Any Instance<PaymentProcessor> paymentProcessorSource;]]></programlisting>
 
         <para>
             Next, we need to obtain an instance of our qualifier type. Since annotations are interfaces, we can't just
@@ -779,7 +774,7 @@ PaymentProcessor p = anyPaymentProcessor.select(qualifier).get().process(payment
             object
         </title>
 
-        <para>There are certain kinds of dependent objects (beans with scope<literal>@Dependent</literal>)
+        <para>There are certain kinds of dependent objects (beans with scope <literal>@Dependent</literal>)
             that need to know something about the object or injection point into which they are injected in order
             to be able to do what they do. For example:
         </para>

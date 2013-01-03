@@ -5,7 +5,7 @@
    <author>
       <firstname>Gavin</firstname>
       <surname>King</surname>
-      <contrib>JSR-299: Contexts and Dependency Injection Lead</contrib>
+      <contrib>JSR-299: Contexts and Dependency Injection for the Java EE platform Lead</contrib>
 <!--      <affiliation>-->
 <!--         <jobtitle>JSR-299 specification lead</jobtitle>-->
 <!--         <orgname>Red Hat, Inc.</orgname>-->
@@ -14,12 +14,17 @@
    <author>
       <firstname>Pete</firstname>
       <surname>Muir</surname>
-      <contrib>Weld (JSR-299 RI) Lead</contrib>
+      <contrib>JSR-346 (CDI 1.1) Lead, Former Weld Lead</contrib>
 <!--      <affiliation>-->
 <!--         <jobtitle>Weld (JSR-299 Reference Implementation) lead-->
 <!--         </jobtitle>-->
 <!--         <orgname>Red Hat, Inc.</orgname>-->
 <!--      </affiliation>-->
+   </author>
+   <author>
+      <firstname>Jozef</firstname>
+      <surname>Hartinger</surname>
+      <contrib>Weld Lead</contrib>
    </author>
    <author>
       <firstname>Dan</firstname>

@@ -92,20 +92,7 @@ public class SecondLevelCache { ... }]]></programlisting>
          </listitem>
       </itemizedlist>
 
-      <para>For a web application that uses CDI:</para>
-
-      <itemizedlist>
-         <listitem>
-            <para>
-               any servlet request has access to active request, session and application scopes, and, additionally
-            </para>
-        </listitem>
-        <listitem>
-            <para>any JSF request has access to an active conversation scope.</para>
-        </listitem>
-      </itemizedlist>
-
-      <para>A CDI extension can implement support for the conversation scope in other web frameworks.</para>
+      <para>For a web application that uses CDI, any servlet request has access to active request, session and application scopes. Furthermore, since CDI 1.1 the conversation context is active during every servlet request.</para>
 
       <para>The request and application scopes are also active:</para>
 
@@ -123,10 +110,10 @@ public class SecondLevelCache { ... }]]></programlisting>
             <para>during message delivery to a message-driven bean,</para>
          </listitem>
          <listitem>
-            <para>during message delivery to a <literal>MessageListener</literal>, and</para>
+            <para>during web service invocations, and</para>
          </listitem>
          <listitem>
-            <para>during web service invocations.</para>
+            <para>during <literal>@PostConstruct</literal> callback of any bean</para>
          </listitem>
       </itemizedlist>
 
@@ -162,7 +149,7 @@ public class SecondLevelCache { ... }]]></programlisting>
          </listitem>
          <listitem>
             <para>
-               holds state associated with a particular web browser tab in a JSF application (browsers tend to share
+               holds state associated with a particular web browser tab in a web application (browsers tend to share
                domain cookies, and hence the session cookie, between tabs, so this is not the case for the session scope).
             </para>
          </listitem>
@@ -175,7 +162,7 @@ public class SecondLevelCache { ... }]]></programlisting>
       </para>
   
       <para>
-         The conversation context is active during any JSF request. Most conversations are destroyed at the end of the
+         The conversation context is active during any servlet request (since CDI 1.1). Most conversations are destroyed at the end of the
          request. If a conversation should hold state across multiple requests, it must be explicitly promoted to a
          <emphasis>long-running conversation</emphasis>.
       </para>
@@ -241,7 +228,7 @@ public class OrderBuilder {
     
          <para>
             The conversation context automatically propagates with any JSF faces request (JSF form submission) or redirect. 
-            It does  not automatically propagate with non-faces requests, for example, navigation via a link.
+            It does not automatically propagate with non-faces requests, for example, navigation via a link.
          </para>
     
          <para>
@@ -273,6 +260,19 @@ public class OrderBuilder {
             automatically adds the conversation id to the redirect URL as a request parameter.
          </para>
          </tip>
+
+    <para>
+        In certain scenarios it may be desired to suppress propagation of a
+        long-running conversation. The
+        <literal>conversationPropagation</literal>
+        request parameter (introduced in CDI 1.1) may be used for this purpose. If the
+        <literal>conversationPropagation</literal>
+        request parameter has the value
+        <literal>none</literal>
+        , the container will not reassociate the existing conversation but will
+        instead associate the request with a new transient conversation even though
+        the conversation id was propagated.
+    </para>
 
       </section>
   
@@ -440,6 +440,12 @@ public class Calculator { ... }]]></programlisting>
             This feature is particularly useful with producer methods, as we'll see in
             <xref linkend="producermethods"/>.
          </para>
+
+         <warning>
+            <para>
+                The <literal>@New</literal> qualifier was deprecated in CDI 1.1. CDI applications are encouraged to inject @Dependent scoped beans instead.
+            </para>
+         </warning>
 
       </section>
 

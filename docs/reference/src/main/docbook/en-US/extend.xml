@@ -79,7 +79,7 @@
          into other beans once the initialization process is complete.
       </para>
       
-      <programlisting>@Inject 
+      <programlisting role="JAVA">@Inject 
 MyBean(MyExtension myExtension) {
    myExtension.doSomething();
 }</programlisting>
@@ -106,7 +106,12 @@ MyBean(MyExtension myExtension) {
          </listitem>
          <listitem>
             <para>
-               <literal>ProcessAnnotatedType</literal>
+               <literal>ProcessModule</literal>
+            </para>
+         </listitem>
+         <listitem>
+            <para>
+               <literal>ProcessAnnotatedType</literal> and <literal>ProcessSyntheticAnnotatedType</literal>
             </para>
          </listitem>
          <listitem>
@@ -116,7 +121,22 @@ MyBean(MyExtension myExtension) {
          </listitem>
          <listitem>
             <para>
-               <literal>ProcessBean</literal> and <literal>ProcessObserverMethod</literal>
+               <literal>ProcessInjectionPoint</literal>
+            </para>
+         </listitem>
+         <listitem>
+            <para>
+               <literal>ProcessBeanAttributes</literal>
+            </para>
+         </listitem>
+         <listitem>
+            <para>
+               <literal>ProcessBean</literal>, <literal>ProcessManagedBean</literal>, <literal>ProcessSessionBean</literal>, <literal>ProcessProducerMethod</literal> and <literal>ProcessProducerField</literal>
+            </para>
+         </listitem>
+         <listitem>
+            <para>
+               <literal>ProcessObserverMethod</literal>
             </para>
          </listitem>
          <listitem>
@@ -171,6 +191,10 @@ MyBean(MyExtension myExtension) {
 
       <programlisting role="JAVA"><![CDATA[<T> void processAnnotatedType(@Observes ProcessAnnotatedType<T> pat, BeanManager beanManager) { ... }]]></programlisting>
 
+      <para>
+        An extension observer method is not allowed to inject any other object.
+      </para>
+
    </section>
   
    <section>
@@ -203,17 +227,38 @@ MyBean(MyExtension myExtension) {
    public boolean isStereotype(Class<? extends Annotation> annotationType);
    public Set<Annotation> getInterceptorBindingDefinition(Class<? extends Annotation> bindingType);
    public Set<Annotation> getStereotypeDefinition(Class<? extends Annotation> stereotype);
+   public boolean areQualifiersEquivalent(Annotation qualifier1, Annotation qualifier2);
+   public boolean areInterceptorBindingsEquivalent(Annotation interceptorBinding1, Annotation interceptorBinding2);
+   public int getQualifierHashCode(Annotation qualifier);
+   public int getInterceptorBindingHashCode(Annotation interceptorBinding);
    public Context getContext(Class<? extends Annotation> scopeType);
    public ELResolver getELResolver();
    public ExpressionFactory wrapExpressionFactory(ExpressionFactory expressionFactory);
    public <T> AnnotatedType<T> createAnnotatedType(Class<T> type);
+   public <T> AnnotatedType<T> getAnnotatedType(Class<T> type, String id);
+   public <T> Iterable<AnnotatedType<T>> getAnnotatedTypes(Class<T> type);
    public <T> InjectionTarget<T> createInjectionTarget(AnnotatedType<T> type);
+   public <X> Producer<?> createProducer(AnnotatedField<? super X> field, Bean<X> declaringBean);
+   public <X> Producer<?> createProducer(AnnotatedMethod<? super X> method, Bean<X> declaringBean);
+   public <T> BeanAttributes<T> createBeanAttributes(AnnotatedType<T> type);
+   public BeanAttributes<?> createBeanAttributes(AnnotatedMember<?> type);
+   public <T> Bean<T> createBean(BeanAttributes<T> attributes, Class<T> beanClass, InjectionTarget<T> injectionTarget);
+   public <T> Bean<T> createBean(BeanAttributes<T> attributes, Class<?> beanClass, Producer<T> producer);
+   public InjectionPoint createInjectionPoint(AnnotatedField<?> field);
+   public InjectionPoint createInjectionPoint(AnnotatedParameter<?> parameter);
+   public <T extends Extension> T getExtension(Class<T> extensionClass);
 }]]></programlisting>
 
       <para>Any bean or other Java EE component which supports injection can obtain an instance of <literal>BeanManager</literal> 
       via injection:</para>
-    
+
       <programlisting role="JAVA">@Inject BeanManager beanManager;</programlisting>
+
+      <para>
+        Alternatively, a <literal>BeanManager</literal> reference may be obtained from CDI via a static method call.
+      </para>
+
+      <programlisting role="JAVA">CDI.current().getBeanManager()</programlisting>
 
       <para>
          Java EE components may obtain an instance of <literal>BeanManager</literal> from JNDI by looking up the name
@@ -243,8 +288,8 @@ MyBean(MyExtension myExtension) {
       </para>
       </note>
       
-      <programlisting role="JAVA"><![CDATA[//get the BeanManager from JNDI
-BeanManager beanManager = (BeanManager) new InitialContext().lookup("java:comp/BeanManager");
+      <programlisting role="JAVA"><![CDATA[//get the BeanManager
+BeanManager beanManager = CDI.current().getBeanManager();
 
 //CDI uses an AnnotatedType object to read the annotations of a class
 AnnotatedType<SomeFrameworkComponent> type = beanManager.createAnnotatedType(SomeFrameworkComponent.class);
@@ -364,7 +409,7 @@ ctx.release();  //clean up dependent objects
 
             @Override
             public Class<? extends Annotation> getScope() {
-                return SessionScoped.class;
+                return ApplicationScoped.class;
             }
 
             @Override
@@ -554,6 +599,55 @@ ctx.release();  //clean up dependent objects
    </section>
 
    <section>
+      <title>Wrapping <literal>BeanAttributes</literal></title>
+
+      <para>
+          Wrapping an <literal>AnnotatedType</literal> is a low-level approach to modifying CDI metadata by adding, removing or replacing annotations. Since version 1.1,
+          CDI provides a higher-level facility for modifying attributes of beans discovered by the CDI container.
+      </para>
+
+       <programlisting role="JAVA"><![CDATA[public interface BeanAttributes<T> {
+
+public Set<Type> getTypes();
+
+public Set<Annotation> getQualifiers();
+
+public Class<? extends Annotation> getScope();
+
+public String getName();
+
+public Set<Class<? extends Annotation>> getStereotypes();
+
+public boolean isAlternative();
+
+public boolean isNullable();]]></programlisting>
+
+      <para>
+        The <literal>BeanAttributes</literal> interface exposes attributes of a bean. The container fires a <literal>ProcessBeanAttributes</literal> event for each enabled bean, interceptor
+        and decorator before this object is registered. Similarly to the <literal>ProcessAnnotatedType</literal>, this event allows an extension to modify attributes of a bean or to veto the bean entirely.
+      </para>
+
+
+<programlisting role="JAVA"><![CDATA[public interface ProcessBeanAttributes<T> {
+
+    public Annotated getAnnotated();
+
+    public BeanAttributes<T> getBeanAttributes();
+
+    public void setBeanAttributes(BeanAttributes<T> beanAttributes);
+
+    public void addDefinitionError(Throwable t);
+
+    public void veto();]]></programlisting>
+
+      <para>The <literal>BeanManager</literal> provides two utility methods for creating the <literal>BeanAttributes</literal> object from scratch:</para>
+
+      <programlisting role="JAVA"><![CDATA[public <T> BeanAttributes<T> createBeanAttributes(AnnotatedType<T> type);
+
+public BeanAttributes<?> createBeanAttributes(AnnotatedMember<?> type);]]></programlisting>
+   </section>
+
+   <section>
       <title>Wrapping an <literal>InjectionTarget</literal></title>
       
       <para>
@@ -683,10 +777,10 @@ lastName=King</programlisting>
    </section>
    
    <section>
-      <title>The <literal>Context</literal> interface</title>
+      <title>The <literal>Context</literal> and <literal>AlterableContext</literal> interfaces</title>
     
       <para>
-         The <literal>Context</literal> interface supports addition of new scopes to CDI, or extension of the built-in
+         The <literal>Context</literal> and <literal>AlterableContext</literal> interface support addition of new scopes to CDI, or extension of the built-in
          scopes to new environments.
       </para>
     
@@ -697,10 +791,19 @@ lastName=King</programlisting>
    boolean isActive();
 }]]></programlisting>
 
+
       <para>
          For example, we might implement <literal>Context</literal> to add a business process scope to CDI, or to add
          support for the conversation scope to an application that uses Wicket.
       </para>
+
+<programlisting role="JAVA"><![CDATA[public interface AlterableContext extends Context {
+    public void destroy(Contextual<?> contextual);
+}]]></programlisting>
+
+      <para><literal>AlterableContext</literal> was introduced in CDI 1.1. The <literal>destroy</literal> method allows an application to remove instances of contextual objects from a context.</para>
+
+      <para>For more information on implementing a custom context see this <ulink url="http://in.relation.to/Bloggers/CreatingACustomScope">blog post</ulink>.</para>
     
    </section>
    

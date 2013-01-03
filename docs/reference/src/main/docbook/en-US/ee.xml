@@ -31,33 +31,24 @@
             <listitem>
                <para>
                   the default <ulink url="http://jcp.org/en/jsr/detail?id=303">Bean Validation</ulink> 
-                  <literal>ValidationFactory</literal>, and
+                  <literal>ValidationFactory</literal>,
                </para>
             </listitem>
             <listitem>
                <para>
-                  a <literal>Validator</literal> for the default <literal>ValidationFactory</literal>.
+                  a <literal>Validator</literal> for the default <literal>ValidationFactory</literal>,
+               </para>
+            </listitem>
+            <listitem>
+               <para>
+                  <literal>HttpServletRequest</literal>, <literal>HttpSession</literal> and <literal>ServletContext</literal>
                </para>
             </listitem>
          </itemizedlist>
-         
          <note>
             <para>
-               The CDI specification does not require the servlet context objects, <literal>HttpServletRequest</literal>,
-               <literal>HttpSession</literal> and <literal>ServletContext</literal> to be exposed as injectable beans. If 
-               you really want to be able to inject these objects, it's easy to create a portable extension to expose them 
-               as beans. However, we recommend that direct access to these objects be limited to servlets, servlet filters 
-               and servlet event listeners, where they may be obtained in the usual way as defined by the Java Servlets spec.
-               The <literal>FacesContext</literal> is also not injectable. You can get at it by calling 
-               <literal>FacesContext.getCurrentInstance()</literal>.
-            </para>
-         </note>
-         
-         <note>
-            <para>
-               Oh, you <emphasis>really</emphasis> want to inject the <literal>FacesContext</literal>? Alright then, try
-               this producer method:
-            </para>
+                The <literal>FacesContext</literal> is not injectable. You can get at it by calling 
+               <literal>FacesContext.getCurrentInstance()</literal>. Alternatively you may define the following producer method:</para>
             <programlisting role="JAVA"><![CDATA[class FacesContextProducer {
    @Produces @RequestScoped FacesContext getFacesContext() {
       return FacesContext.getCurrentInstance();
@@ -108,7 +99,7 @@ public class Login implements Serializable {
       <title>Calling a bean from a servlet</title>
     
       <para>
-         It's easy to use a bean from a servlet in Java EE 6. Simply inject the bean using field or initializer method
+         It's easy to use a bean from a servlet in Java EE. Simply inject the bean using field or initializer method
          injection.
       </para>
     
@@ -144,7 +135,7 @@ public class Login implements Serializable {
       <title>Calling a bean from a message-driven bean</title>
     
       <para>
-         CDI injection applies to all EJBs, even when they aren't managed beans. In particular, you can use CDI
+         CDI injection applies to all EJBs, even when they aren't CDI beans. In particular, you can use CDI
          injection in message-driven beans, which are by nature not contextual objects.
       </para>
     

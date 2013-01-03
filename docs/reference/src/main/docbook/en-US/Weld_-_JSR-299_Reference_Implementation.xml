@@ -18,15 +18,14 @@
      
       <para>
          You'll also find that some of the functionality that once existed in the specification is now missing, such as
-         defining beans in XML. These features will be available as portable extensions for CDI in the Weld project, and
-         perhaps other implementations.
+         defining beans in XML. These features will be available as portable extensions.
       </para>
 
       <para>
          Note that this reference guide was started while changes were still being made to the specification. We've done
          our best to update it for accuracy.  If you discover a conflict between what is written in this guide and the
          specification, the specification is the authority&mdash;assume it is correct. If you believe you have found an error
-         in the specification, please report it to the JSR-299 EG.
+         in the specification, please report it to the CDI EG.
       </para>
    </preface>
    

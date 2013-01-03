@@ -197,8 +197,7 @@ public @interface AuditableAction {}]]></programlisting>
       <title>Built-in stereotypes</title>
     
       <para>
-         We've already met two standard stereotypes defined by the CDI specification: <literal>@Interceptor</literal>
-         and <literal>@Decorator</literal>.
+         We've already met a standard stereotype defined by the CDI specification: <literal>@Interceptor</literal>.
       </para>
     
       <para>

@@ -7,12 +7,12 @@
         <title>Using Weld with JBoss AS</title>
 
         <para>
-            If you are using JBoss AS 6.0, no additional configuration is required to use Weld (or CDI for that matter).
-            All you need to do is make your application a bean bean archive by adding
+            If you are using JBoss AS 7.0 or better, no additional configuration is required to use Weld (or CDI for that matter).
+            All you need to do is make your application a bean archive by adding
             <literal>META-INF/beans.xml</literal>
             to the classpath or
             <literal>WEB-INF/beans.xml</literal>
-            to the web root!
+            to the web root.
         </para>
 
         <note>
@@ -32,7 +32,7 @@
         <para>
             Weld is also built into GlassFish from V3 onwards. Since GlassFish V3 is the Java EE 6 reference
             implementation, it must support all features of CDI. What better way for GlassFish to support these features
-            than to use Weld, the JSR-299 reference implementation? Just package up your CDI application and deploy.
+            than to use Weld, the CDI reference implementation? Just package up your CDI application and deploy.
         </para>
     </section>
 
@@ -40,8 +40,8 @@
         <title>Servlet containers (such as Tomcat or Jetty)</title>
 
         <para>
-            While JSR-299 does not require support for servlet environments, Weld can be used in a servlet container,
-            such as Tomcat 6.0 or Jetty 6.1.
+            While CDI does not require support for servlet environments, Weld can be used in a servlet container,
+            such as Tomcat or Jetty.
         </para>
 
         <note>
@@ -116,7 +116,7 @@
 </resource-env-ref>]]></programlisting>
 
             <para>
-                Tomcat only allows you to bind entries to<literal>java:comp/env</literal>, so the BeanManager will be
+                Tomcat only allows you to bind entries to <literal>java:comp/env</literal>, so the BeanManager will be
                 available at
                 <literal>java:comp/env/BeanManager</literal>
             </para>
@@ -359,7 +359,7 @@ public class HelloWorld
                 </para>
 
                 <programlisting role="JAVA">
-                    <![CDATA[java org.jboss.weld.environment.se.StartMain <args>]]></programlisting>
+<![CDATA[java org.jboss.weld.environment.se.StartMain <args>]]></programlisting>
 
             </section>
 
@@ -409,7 +409,7 @@ public class HelloWorld
                 <programlisting role="JAVA"><![CDATA[public static void main(String[] args) {
    Weld weld = new Weld();
    WeldContainer container = weld.initialize();
-   container.select(MyApplicationBean.class).get();
+   container.instance().select(MyApplicationBean.class).get();
    weld.shutdown();
 }]]></programlisting>
 
@@ -437,7 +437,7 @@ public class HelloWorld
 
             <para>In contrast to Java EE applications, Java SE applications place no restrictions
                 on developers regarding the creation and usage of threads.
-                Therefore Weld SE provides a custom scope annotation,<literal>@ThreadScoped</literal>,
+                Therefore Weld SE provides a custom scope annotation, <literal>@ThreadScoped</literal>,
                 and corresponding context implementation which can be used to bind bean instances
                 to the current thread. It is intended to be used in scenarios where you might otherwise
                 use<literal>ThreadLocal</literal>, and does in fact use
@@ -480,7 +480,7 @@ public class HelloWorld
                 Weld Core and all dependant classes bundled into a single jar. Therefore the
                 only Weld jar you need on the classpath, in addition to your application's
                 classes and dependant jars, is the Weld SE jar. If you are working with a pure
-                Java SE application you launch using<literal>java</literal>, this may be simpler
+                Java SE application you launch using <literal>java</literal>, this may be simpler
                 for you.
             </para>
 
@@ -495,8 +495,14 @@ public class HelloWorld
 
             <para>
                 If you work with a dependency management solution such as
-                Maven you can declare a dependency on<literal>org.jboss.weld.se:weld-se-core</literal>.
+                Maven you can declare a dependency such as:
             </para>
+
+<programlisting role="XML"><![CDATA[<dependency>
+   <groupId>org.jboss.weld.se</groupId>
+   <artifactId>weld-se</artifactId>
+</dependency>
+]]></programlisting>
 
         </section>
 

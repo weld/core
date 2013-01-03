@@ -155,6 +155,7 @@ public @interface Updated {}]]></programlisting>
          </listitem>
          <listitem>
             <para>
+            
                does not have any event qualifier <emphasis>except</emphasis> for the event qualifiers that match 
                those specified at the <literal>Event</literal> injection point. 
             </para>
@@ -193,9 +194,11 @@ public @interface Updated {}]]></programlisting>
 
       <programlisting role="JAVA"><![CDATA[public void refreshOnDocumentUpdate(@Observes(receive = IF_EXISTS) @Updated Document d) { ... }]]></programlisting> 
 
-      <para>
-         A bean with scope <literal>@Dependent</literal> cannot be a conditional observer, since it would never be called!
-      </para>
+      <note>
+        <para>
+            A bean with scope <literal>@Dependent</literal> cannot be a conditional observer, since it would never be called!
+        </para>
+      </note>
 
    </section>
 

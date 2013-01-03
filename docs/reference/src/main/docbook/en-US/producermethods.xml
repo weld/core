@@ -190,6 +190,10 @@ public PaymentStrategy getPaymentStrategy(@New CreditCardPaymentStrategy ccps,
          at the end of the session.
       </para>
 
+      <warning>
+        <para>The @New qualifier was deprecated in CDI 1.1. CDI applications are encouraged to inject @Dependent scoped beans instead.</para>
+      </warning>
+
    </section>
    
    <section>
