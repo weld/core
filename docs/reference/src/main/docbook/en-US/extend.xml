@@ -269,6 +269,22 @@ MyBean(MyExtension myExtension) {
       <para>Let's study some of the interfaces exposed by the <literal>BeanManager</literal>.</para>
     
    </section>
+
+    <section>
+        <title>The <literal>CDI</literal> class</title>
+        <para>
+            Application components which cannot obtain a <literal>BeanManager</literal> reference via injection nor JNDI lookup
+            can get the reference from the <literal>javax.enterprise.inject.spi.CDI</literal> class via a static method call:
+        </para>
+
+        <programlisting role="JAVA">BeanManager manager = CDI.current().getBeanManager();</programlisting>
+
+        <para>
+            The <literal>CDI</literal> class can be used directly to programatically lookup CDI beans as described in <xref linkend="lookup"/>
+        </para>
+
+        <programlisting role="JAVA">CDI.select(Foo.class).get()</programlisting>
+    </section>
    
    <section>
       <title>The <literal>InjectionTarget</literal> interface</title>
@@ -569,29 +585,24 @@ ctx.release();  //clean up dependent objects
       
       <programlisting role="JAVA"><![CDATA[class ServiceAlternativeExtension implements Extension {
       
-   <T> void processAnnotatedType(@Observes ProcessAnnotatedType<T> pat) {
+   <T extends Service> void processAnnotatedType(@Observes ProcessAnnotatedType<T> pat) {
    
       final AnnotatedType<T> type = pat.getAnnotatedType();
-      
-      if ( Service.class.isAssignableFrom( type.getJavaClass() ) ) {
-      
-         //if the class implements Service, make it an @Alternative
-         AnnotatedType<T> wrapped = new AnnotatedType<T>() {
+      //if the class implements Service, make it an @Alternative
+      AnnotatedType<T> wrapped = new AnnotatedType<T>() {
          
-            @Override
-            public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
-               return annotationType.equals(Alternative.class) ? 
-                  true : type.isAnnotationPresent(annotationType);
-            }
-            
-            //remaining methods of AnnotatedType
-            ...
+         @Override
+         public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
+            return annotationType.equals(Alternative.class) ? 
+               true : type.isAnnotationPresent(annotationType);
          }
-         
-         pat.setAnnotatedType(wrapped);
+            
+         //remaining methods of AnnotatedType
+         ...
       }
+         
+      pat.setAnnotatedType(wrapped);
    } 
-   
 }]]></programlisting>
 
       <para>The <literal>AnnotatedType</literal> is not the only thing that can be wrapped by an extension.</para>
@@ -599,11 +610,11 @@ ctx.release();  //clean up dependent objects
    </section>
 
    <section>
-      <title>Wrapping <literal>BeanAttributes</literal></title>
+      <title>Overriding attributes of a bean by wrapping <literal>BeanAttributes</literal></title>
 
       <para>
-          Wrapping an <literal>AnnotatedType</literal> is a low-level approach to modifying CDI metadata by adding, removing or replacing annotations. Since version 1.1,
-          CDI provides a higher-level facility for modifying attributes of beans discovered by the CDI container.
+          Wrapping an <literal>AnnotatedType</literal> is a low-level approach to overriding CDI metadata by adding, removing or replacing annotations. Since version 1.1,
+          CDI provides a higher-level facility for overriding attributes of beans discovered by the CDI container.
       </para>
 
        <programlisting role="JAVA"><![CDATA[public interface BeanAttributes<T> {
@@ -768,6 +779,30 @@ lastName=King</programlisting>
     }
     
 }]]></programlisting>
+    </section>
+
+    <section>
+        <title>Overriding <literal>InjectionPoint</literal></title>
+
+        <para>
+            CDI provides a way to override the metadata of an <literal>InjectionPoint</literal>. This works similarly to how
+            metadata of a bean may be overriden using <literal>BeanAttributes</literal>. 
+        </para>
+
+        <para>
+            For every injection point of each component supporting injection Weld fires an event of type <literal>javax.enterprise.inject.spi.ProcessInjectionPoint</literal>
+        </para>
+
+        <programlisting role="JAVA"><![CDATA[public interface ProcessInjectionPoint<T, X> {
+    public InjectionPoint getInjectionPoint();
+    public void setInjectionPoint(InjectionPoint injectionPoint);
+    public void addDefinitionError(Throwable t);
+}]]></programlisting>
+
+        <para>
+            An extension may either completely override the injection point metadata or alter it by wrapping the <literal>InjectionPoint</literal>
+            object obtained from <literal>ProcessInjectionPoint.getInjectionPoint()</literal>
+        </para>
 
       <para>
          There's a lot more to the portable extension SPI than what we've discussed here. Check out the CDI spec or
@@ -775,6 +810,29 @@ lastName=King</programlisting>
       </para>
 
    </section>
+
+    <section>
+        <title>Manipulating interceptors, decorators and alternatives enabled for a bean archive</title>
+        <para>
+            For each bean archive Weld fires an event of type <literal>javax.enterprise.inject.spi.ProcessModule</literal>.
+        </para>
+
+        <programlisting role="JAVA"><![CDATA[public interface ProcessModule {
+    public List<Class<?>> getAlternatives();
+    public List<Class<?>> getInterceptors();
+    public List<Class<?>> getDecorators();
+    public InputStream getBeansXml();
+}]]></programlisting>
+
+    <para>
+        This event exposes a list of enabled alternatives, interceptors and decorators of a given bean archive. Extensions may manipulate these collections directly
+        to add, remove or change the order of the enabled records.
+    </para>
+
+    <para>
+        In addition, the <filename>beans.xml</filename> file of the given bean archive can be read using the <literal>getBeansXml()</literal> method.
+    </para>
+    </section>
    
    <section>
       <title>The <literal>Context</literal> and <literal>AlterableContext</literal> interfaces</title>

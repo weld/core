@@ -529,7 +529,7 @@ public class MockPaymentProcessor implements PaymentProcessor {
 
         <para>
             Clients of an injected bean do not usually hold a direct reference to a bean instance, unless the bean is
-            a dependent object (scope<literal>@Dependent</literal>).
+            a dependent object (scope <literal>@Dependent</literal>).
         </para>
 
         <para>
@@ -604,7 +604,7 @@ public class MockPaymentProcessor implements PaymentProcessor {
             </listitem>
             <listitem>
                 <para>
-                    introduce an interface<literal>Y</literal>, implemented by the injected bean, and change
+                    introduce an interface <literal>Y</literal>, implemented by the injected bean, and change
                     the type of the injection point to<literal>Y</literal>, or
                 </para>
             </listitem>
@@ -673,7 +673,7 @@ public class MockPaymentProcessor implements PaymentProcessor {
         </itemizedlist>
 
         <para>
-            In these situations, the application may obtain an instance of the interface<literal>Instance</literal>,
+            In these situations, the application may obtain an instance of the interface <literal>Instance</literal>,
             parameterized for the bean type, by injection:
         </para>
 

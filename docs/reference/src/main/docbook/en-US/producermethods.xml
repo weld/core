@@ -222,7 +222,12 @@ public PaymentStrategy getPaymentStrategy(@New CreditCardPaymentStrategy ccps,
             method. If the disposer method has additional method parameters, the container will look for a bean that 
             satisfies the type and qualifiers of each parameter and pass it to the method automatically.
          </para>
-         
+
+         <para>
+            Since CDI 1.1 disposer methods may be used for destroying not only objects produced by producer methods but
+            also objects producer by <emphasis>producer fields</emphasis>. 
+         </para>
+
    </section>
 
 <!--
