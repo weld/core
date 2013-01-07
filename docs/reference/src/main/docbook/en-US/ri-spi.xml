@@ -7,6 +7,10 @@
       If you want to use Weld in another environment, you will need to provide certain information to Weld via the
       integration SPI. In this Appendix we will briefly discuss the steps needed. 
    </para>
+
+   <para>
+      If you are upgrading existing Weld integration to work with Weld 2, see this <ulink url="https://community.jboss.org/wiki/WeldIntegratorGuide-ChangesForWeld20">migration document</ulink>.
+   </para>
    
    <note>
       <title>Enterprise Services</title>
@@ -46,6 +50,25 @@
          environment is assumed, but you can adjust the environment by calling
          <literal>bootstrap.setEnvironment()</literal>.
       </para>
+
+      <para>
+         Weld uses services to communicate with its environment. A service is a java class that implements the <literal>org.jboss.weld.bootstrap.api.Service</literal>
+         interface and is explicitly registered. A service may be BDA-specific or may be shared across the entire application.
+      </para>
+
+<programlisting role="JAVA"><![CDATA[public interface Service {
+   public void cleanup();
+}]]></programlisting>
+
+      <para>
+        Certain services are only used at bootstrap and need to be cleaned up afterwards in order not to consume memory.
+        A service that implements the specialized <literal>org.jboss.weld.bootstrap.api.BootstrapService</literal> interface receives a <literal>cleanAfterBoot()</literal>
+        method invocation once Weld initialization is finished but before the deployment is put into service.
+      </para>
+
+<programlisting role="JAVA"><![CDATA[public interface BootstrapService extends Service {
+    void cleanupAfterBoot();
+}]]></programlisting>
          
       <para>
          Weld uses a generic-typed service registry to allow services to be registered. All services implement the
@@ -115,9 +138,15 @@
          <para>
             To aid container integrator, Weld provides a built-in <code>beans.xml</code> parser. To parse a 
             <code>beans.xml</code> into the data-structure required by <code>BeanDeploymentArchive</code>, the container
-            should call <code>Bootstrap.parseBeansXml(URL)</code>. Weld can also parse multiple <code>beans.xml</code>
+            should call <code>Bootstrap.parse(URL)</code>. Weld can also parse multiple <code>beans.xml</code>
             files, merging them to become a single data-structure. This can be achieved by calling 
-            <code>Bootstrap.parseBeansXml(Iterable&lt;URL&gt;)</code>.
+            <code>Bootstrap.parse(Iterable&lt;URL&gt;)</code>.
+         </para>
+
+         <para>
+            When multiple <literal>beans.xml</literal> files are merged, Weld keeps duplicate enabled entries (interceptors, decorators or alternatives).
+            This may cause validation problems when multiple physical archives which define an overlapping enabled entries are merged. A version of the <literal>Bootstrap.parse()</literal>
+            method that provides control over whether duplicate enabled entries are remove or not is provided: <literal>Bootstrap.parse(Iterable&lt;URL&gt; urls, boolean removeDuplicates)</literal>.
          </para>
          
          <para>
@@ -219,7 +248,27 @@
                the associated functionality. There is no need to implement those services you don't need!
             </para>
          </tip>
-         
+
+         <para>
+            Weld registers resource injection points with <literal>EjbInjectionServices</literal>, <literal>JpaInjectionServices</literal> and <literal>ResourceInjectionServices</literal> implementations
+            upfront (at bootstrap). This allows validation of resource injection points to be performed at boot time rather than runtime. For each resource injection point Weld obtains a <literal>ResourceReferenceFactory</literal>
+            which it then uses at runtime for creating resource references.
+         </para>
+
+         <programlisting role="JAVA"><![CDATA[public interface ResourceReferenceFactory<T> {
+    ResourceReference<T> createResource();
+}]]></programlisting>
+
+        <para>
+            A <literal>ResourceReference</literal> provides access to the resource reference to be injected. Furthermore, <literal>ResourceReference</literal> allows resource to be release once the bean that received resource
+            injection is destroyed.
+        </para>
+
+        <programlisting role="JAVA"><![CDATA[public interface ResourceReference<T> {
+    T getInstance();
+    void release();
+}]]></programlisting>
+
       </section>
          
       <section id="ejb.services">
@@ -239,10 +288,18 @@
          </para>
          
          <para id="ejb.services.resolution">
-            <literal>EJBResolutionServices.resolveEjb(InjectionPoint ij)</literal> allows the resolution of
-            <literal>@EJB</literal> (for injection into managed beans). This service is not required if the
-            implementation of <xref linkend="injection.services"/> takes care of <literal>@EJB</literal> injection.
+            <literal>EjbInjectionServices.registerEjbInjectionPoint(InjectionPoint injectionPoint)</literal>
+             registers an <literal>@EJB</literal> injection point (on a managed bean) and returns a <literal>ResourceReferenceFactory</literal> as explained above.
+            This service is not required if the implementation of <xref linkend="injection.services"/> takes care of <literal>@EJB</literal> injection.
          </para>
+
+         <note>
+            <para>
+               <literal>EJBInjectionServices.resolveEjb(InjectionPoint ij)</literal>, which allows <literal>@EJB</literal> injection point to be resolved without 
+               prior registration was deprecated in Weld 2 and should no longer be used. An injection point should be registered properly using
+               <literal>EjbInjectionServices.registerEjbInjectionPoint(InjectionPoint injectionPoint)</literal> instead.
+            </para>
+         </note>
          
       </section>
        
@@ -260,6 +317,29 @@
             is not required if the implementation of <xref linkend="injection.services"/> takes care of
             <literal>@PersistenceContext</literal> injection.
          </para>
+
+         <note>
+            <para>The following methods were deprecated in Weld 2:</para>
+            <itemizedlist>
+               <listitem>
+                 <para><literal>JpaInjectionServices.resolvePersistenceContext(InjectionPoint injectionPoint)</literal></para>
+               </listitem>
+               <listitem>
+                 <para><literal>JpaInjectionServices.resolvePersistenceUnit(InjectionPoint injectionPoint)</literal></para>
+               </listitem>
+            </itemizedlist>
+            <para>
+               An injection point should instead be registered properly using the following methods:
+            </para>
+            <itemizedlist>
+               <listitem>
+                 <para><literal>JpaInjectionServices.registerPersistenceContextInjectionPoint(InjectionPoint injectionPoint)</literal></para>
+               </listitem>
+               <listitem>
+                 <para><literal>JpaInjectionServices.registerPersistenceUnitInjectionPoint(InjectionPoint injectionPoint)</literal></para>
+               </listitem>
+            </itemizedlist>
+         </note>
          
       </section>
        
@@ -289,10 +369,33 @@
            
          <para>
             The resolution of <literal>@Resource</literal> (for injection into managed beans) is delegated to the
-            container. You must provide an implementation of <literal>ResourceServices</literal> which provides these
+            container. You must provide an implementation of <literal>ResourceInjectionServices</literal> which provides these
             operations.  This service is not required if the implementation of <xref linkend="injection.services"/>
             takes care of <literal>@Resource</literal> injection.
          </para>
+
+         <note>
+            <para>The following methods were deprecated in Weld 2:</para>
+            <itemizedlist>
+               <listitem>
+                 <para><literal>ResourceInjectionServices.resolveResource(InjectionPoint injectionPoint)</literal></para>
+               </listitem>
+               <listitem>
+                 <para><literal>ResourceInjectionServices.resolveResource(String jndiName, String mappedName)</literal></para>
+               </listitem>
+            </itemizedlist>
+            <para>
+               An injection point should instead be registered properly using the following methods:
+            </para>
+            <itemizedlist>
+               <listitem>
+                 <para><literal>ResourceInjectionServices.registerResourceInjectionPoint(InjectionPoint injectionPoint)</literal></para>
+               </listitem>
+               <listitem>
+                 <para><literal>ResourceInjectionServices.registerResourceInjectionPoint(String jndiName, String mappedName)</literal></para>
+               </listitem>
+            </itemizedlist>
+         </note>
       </section>
       
       <section id="injection.services">
@@ -382,6 +485,14 @@
             <literal>org.jboss.weld.context.api.BeanStore</literal>. You may find
             <literal>org.jboss.weld.context.api.helpers.ConcurrentHashMapBeanStore</literal> useful.
          </para>
+
+<programlisting role="JAVA"><![CDATA[public interface BeanStore {
+    <T> ContextualInstance<T> get(String id);
+    void clear();
+    Collection<String> getContextualIds();
+    <T> void put(String id, ContextualInstance<T> contextualInstance);
+}]]></programlisting>
+
       </section>
     
       <section>
@@ -403,6 +514,20 @@
             <literal>org.jboss.weld.bootstrap.WeldBeansBootstrap</literal> (which implements
             <literal>Boostrap</literal>), tell it about the services in use, and then request the container start.
          </para>
+
+<programlisting role="JAVA"><![CDATA[public interface Bootstrap {
+    public Bootstrap startContainer(Environment environment, Deployment deployment);
+    public Bootstrap startInitialization();
+    public Bootstrap deployBeans();
+    public Bootstrap validateBeans();
+    public Bootstrap endInitialization();
+    public void shutdown();
+    public WeldManager getManager(BeanDeploymentArchive beanDeploymentArchive);
+    public BeansXml parse(URL url);
+    public BeansXml parse(Iterable<URL> urls);
+    public BeansXml parse(Iterable<URL> urls, boolean removeDuplicates);
+    public Iterable<Metadata<Extension>> loadExtensions(ClassLoader classLoader);
+}]]></programlisting>
          
          <para>
             The bootstrap is split into phases, container initialization, bean deployment, bean validation and shutdown.
@@ -453,6 +578,12 @@
             <literal>org.jboss.weld.spi.ResourceLoader</literal>.
          </para>
 
+<programlisting role="JAVA"><![CDATA[public interface ResourceLoader extends Service {
+    public Class<?> classForName(String name);
+    public URL getResource(String name);
+    public Collection<URL> getResources(String name);
+}]]></programlisting>
+
        </section>
    
     </section>
@@ -465,187 +596,186 @@
          implementation of APIs.
       </para>
       
-      <variablelist>
-         <varlistentry>
-            <term>
-               Classloader isolation
-            </term>
-            <listitem>
-               <para>
-                  If you are integrating Weld into an environment that supports deployment of multiple applications, you
-                  must enable, automatically, or through user configuration, classloader isolation for each CDI
-                  application.
-               </para>
-            </listitem>
-         </varlistentry>
-         <varlistentry>
-            <term>
-               Servlet
-            </term>
-            <listitem>
-               <para>
-                  If you are integrating Weld into a Servlet environment you must register
-                  <literal>org.jboss.weld.servlet.WeldListener</literal> as a Servlet listener, either
-                  automatically, or through user configuration, for each CDI application which uses Servlet.
-               </para>
-               <para>
-                  You must ensure that <literal>WeldListener.contextInitialized()</literal> is called
-                  after beans are deployed is complete (<literal>Bootstrap.deployBeans()</literal> has been called). 
-               </para>
-            </listitem>
-         </varlistentry>
-         <varlistentry>
-            <term>
-               JSF
-            </term>
-            <listitem>
-            
-               <para>
-                  If you are integrating Weld into a JSF environment you must register
-                  <literal>org.jboss.weld.jsf.WeldPhaseListener</literal> as a phase listener.
-               </para>
+      <section>
+         <title>Classloader isolation</title>
+         <para>
+            If you are integrating Weld into an environment that supports deployment of multiple applications, you
+            must enable, automatically, or through user configuration, classloader isolation for each CDI application.
+         </para>
+      </section>
+      <section>
+         <title>Servlet</title>
+         <para>
+            If you are integrating Weld into a Servlet environment you must register
+            <literal>org.jboss.weld.servlet.WeldListener</literal> as a Servlet listener, either
+            automatically, or through user configuration, for each CDI application which uses Servlet.
+         </para>
+         <para>
+            You must ensure that <literal>WeldListener.contextInitialized()</literal> is called
+            after beans are deployed is complete (<literal>Bootstrap.deployBeans()</literal> has been called). 
+         </para>
+      </section>
+      <section>
+         <title>JSF</title>
+         <para>
+            If you are integrating Weld into a JSF environment you must register
+            <literal>org.jboss.weld.el.WeldELContextListener</literal> as an EL Context listener.
+         </para>
+
+         <para>
+            If you are integrating Weld into a JSF environment you must register
+            <literal>org.jboss.weld.jsf.ConversationAwareViewHandler</literal> as a delegating view handler.
+          </para>
+
+          <para>
+            If you are integrating Weld into a JSF environment you must obtain the bean manager for the module and
+            then call <literal>BeanManager.wrapExpressionFactory()</literal>, passing
+            <literal>Application.getExpressionFactory()</literal> as the argument. The wrapped expression factory
+            must be used in all EL expression evaluations performed by JSF in this web application. 
+          </para>
+
+          <para>
+            If you are integrating Weld into a JSF environment you must obtain the bean manager for the module and
+            then call <literal>BeanManager.getELResolver()</literal>, The returned EL resolver should be
+            registered with JSF for this web application. 
+          </para>
                
-               <para>
-                  If you are integrating Weld into a JSF environment you must register
-                  <literal>org.jboss.weld.el.WeldELContextListener</literal> as an EL Context listener.
-               </para>
+          <tip>
+            <para>
+              There are a number of ways you can obtain the bean manager for the module. You could call
+              <literal>Bootstrap.getManager()</literal>, passing in the BDA for this module. Alternatively, you
+              could use the injection into Java EE component classes, or look up the bean manager in JNDI. 
+            </para>
+          </tip>
                
-               <para>
-                  If you are integrating Weld into a JSF environment you must register
-                  <literal>org.jboss.weld.jsf.ConversationAwareViewHandler</literal> as a delegating view handler.
-               </para>
-               
-               <para>
-                  If you are integrating Weld into a JSF environment you must obtain the bean manager for the module and
-                  then call <literal>BeanManager.wrapExpressionFactory()</literal>, passing
-                  <literal>Application.getExpressionFactory()</literal> as the argument. The wrapped expression factory
-                  must be used in all EL expression evaluations performed by JSF in this web application. 
-               </para>
-                       
-               <para>
-                  If you are integrating Weld into a JSF environment you must obtain the bean manager for the module and
-                  then call <literal>BeanManager.getELResolver()</literal>, The returned EL resolver should be
-                  registered with JSF for this web application. 
-               </para>
-               
-               <tip>
-                  <para>
-                     There are a number of ways you can obtain the bean manager for the module. You could call
-                     <literal>Bootstrap.getManager()</literal>, passing in the BDA for this module. Alternatively, you
-                     could use the injection into Java EE component classes, or look up the bean manager in JNDI. 
-                  </para>
-               </tip>
-               
-               <para>
-                  If you are integrating Weld into a JSF environment you must register
-                  <literal>org.jboss.weld.servlet.ConversationPropagationFilter</literal> as a Servlet listener,
-                  either automatically, or through user configuration, for each CDI application which uses JSF.
-                  This filter can be registered for all Servlet deployment safely.
-               </para>
-               
-               <note>
-                  <para>
-                     Weld only supports JSF 1.2 and above.
-                  </para>
-               </note>
-            </listitem>
-         </varlistentry>
-         <varlistentry>
-            <term>
-               JSP
-            </term>
-            <listitem>
-               
-               <para>
-                  If you are integrating Weld into a JSP environment you must register
-                  <literal>org.jboss.weld.el.WeldELContextListener</literal> as an EL Context listener.
-               </para>
-               
-               <para>
-                  If you are integrating Weld into a JSP environment you must obtain the bean manager for the module and
-                  then call <literal>BeanManager.wrapExpressionFactory()</literal>, passing
-                  <literal>Application.getExpressionFactory()</literal> as the argument. The wrapped expression factory
-                  must be used in all EL expression evaluations performed by JSP. 
-               </para>
-               
-               <para>
-                  If you are integrating Weld into a JSP environment you must obtain the bean manager for the module and
-                  then call <literal>BeanManager.getELResolver()</literal>, The returned EL resolver should be
-                  registered with JSP for this web application. 
-               </para>
-               
-               <tip>
-                  <para>
-                     There are a number of ways you can obtain the bean manager for the module. You could call
-                     <literal>Bootstrap.getManager()</literal>, passing in the BDA for this module. Alternatively, you
-                     could use the injection into Java EE component classes, or look up the bean manager in JNDI. 
-                  </para>
-               </tip>
-               
-            </listitem>
-         </varlistentry>
-         <varlistentry>
-            <term>
-               Session Bean Interceptor
-            </term>
-            <listitem>
-               <para>
-                  If you are integrating Weld into an EJB environment you must register the <literal>aroundInvoke</literal> method of
-                  <literal>org.jboss.weld.ejb.SessionBeanInterceptor</literal> as a EJB around-invoke interceptor for all EJBs in the
-                  application, either automatically, or through user configuration, for each CDI application which
-                  uses enterprise beans. If you are running in a EJB 3.1 environment, you should register this as an around-timeout
-                  interceptor as well.
-               </para>
-               <important>
-                  <para>
-                     You must register the <literal>SessionBeanInterceptor</literal> as the inner most interceptor in
-                     the stack for all EJBs. 
-                  </para>
-               </important>
-            </listitem>
-         </varlistentry>
-         <varlistentry>
-            <term>
-               The <literal>weld-core.jar</literal>
-            </term>
-            <listitem>
-               <para>
-                  Weld can reside on an isolated classloader, or on a shared classloader. If you choose to use an
-                  isolated classloader, the default <literal>SingletonProvider</literal>,
-                  <literal>IsolatedStaticSingletonProvider</literal>, can be used. If you choose to use a shared
-                  classloader, then you will need to choose another strategy. 
-               </para>   
-               <para>
-                  You can provide your own implementation of <literal>Singleton</literal> and
-                  <literal>SingletonProvider</literal> and register it for use using
-                  <literal>SingletonProvider.initialize(SingletonProvider provider)</literal>.
-               </para>
-               <para>
-                  Weld also provides an implementation of Thread Context Classloader per application strategy, via the
-                  <literal>TCCLSingletonProvider</literal>.
-               </para>
-            </listitem>
-         </varlistentry>
-         <varlistentry>
-            <term>
-               Binding the manager in JNDI
-            </term>
-            <listitem>
-               <para>
-                  You should bind the bean manager for the bean deployment archive into JNDI at
-                  <literal>java:comp/BeanManager</literal>. The type should be
-                  <literal>javax.enterprise.inject.spi.BeanManager</literal>. To obtain the correct bean manager for the
-                  bean deployment archive, you may call
-                  <literal>bootstrap.getBeanManager(beanDeploymentArchive)</literal>  
-               </para>
-            </listitem>
-         </varlistentry>
-         <varlistentry>
-            <term>
-               Performing CDI injection on Java EE component classes
-            </term>
-            <listitem>
-               <para>
+          <para>
+            If you are integrating Weld into a JSF environment you must register
+            <literal>org.jboss.weld.servlet.ConversationPropagationFilter</literal> as a Servlet listener,
+            either automatically, or through user configuration, for each CDI application which uses JSF.
+            This filter can be registered for all Servlet deployment safely.
+          </para>
+
+          <note>
+            <para>
+              Weld only supports JSF 1.2 and above.
+            </para>
+          </note>
+
+          <note>
+            <para>
+                <literal>org.jboss.weld.jsf.WeldPhaseListener</literal> was deprecated in Weld 2 and is no longer present in Weld.
+            </para>
+          </note>
+
+          <note>
+            <para>
+                <literal>org.jboss.weld.servlet.ConversationPropagationFilter</literal> was deprecated and should no longer be used.
+            </para>
+          </note>
+        </section>
+        <section>
+            <title>JSP</title>
+            <para>
+                If you are integrating Weld into a JSP environment you must register
+                <literal>org.jboss.weld.el.WeldELContextListener</literal> as an EL Context listener.
+            </para>
+
+            <para>
+                If you are integrating Weld into a JSP environment you must obtain the bean manager for the module and
+                then call <literal>BeanManager.wrapExpressionFactory()</literal>, passing
+                <literal>Application.getExpressionFactory()</literal> as the argument. The wrapped expression factory
+                must be used in all EL expression evaluations performed by JSP. 
+            </para>
+
+            <para>
+                If you are integrating Weld into a JSP environment you must obtain the bean manager for the module and
+                then call <literal>BeanManager.getELResolver()</literal>, The returned EL resolver should be
+                registered with JSP for this web application. 
+            </para>
+
+            <tip>
+                <para>
+                    There are a number of ways you can obtain the bean manager for the module. You could call
+                    <literal>Bootstrap.getManager()</literal>, passing in the BDA for this module. Alternatively, you
+                    could use the injection into Java EE component classes, or look up the bean manager in JNDI. 
+                </para>
+            </tip>
+        </section>
+
+        <section>
+            <title>Session Bean Interceptor</title>
+            <para>
+                <literal>org.jboss.weld.ejb.SessionBeanInterceptor</literal> takes care of activating the request scope around EJB
+                method invocations in a non-servlet environment, such as message-driven bean invocation, <literal>@Asynchronous</literal> invocation
+                or <literal>@Timeout</literal>.
+
+                If you are integrating Weld into an EJB environment you must register the <literal>aroundInvoke</literal> method of
+                <literal>SessionBeanInterceptor</literal> as a EJB around-invoke interceptor for all EJBs in the
+                application, either automatically, or through user configuration, for each CDI application which
+                uses enterprise beans.
+            </para> 
+
+            <para>
+                If you are running in a EJB 3.1 environment, you should register this as an around-timeout
+                interceptor as well.
+            </para>
+
+            <para>
+                In addition, since CDI 1.1 the <literal>aroundInvoke</literal> method of <literal>SessionBeanInterceptor</literal> should be
+                invoked around <literal>@PostConstruct</literal> callbacks of EJBs.
+            </para>
+            <important>
+                <para>
+                    You must register the
+                    <literal>SessionBeanInterceptor</literal>
+                    as the inner most interceptor in the stack for all EJBs.
+                </para>
+            </important>
+        </section>
+        <section>
+            <title>The <literal>weld-core.jar</literal></title>
+            <para>
+                Weld can reside on an isolated classloader, or on a shared classloader. If you choose to use an
+                isolated classloader, the default <literal>SingletonProvider</literal>,
+                <literal>IsolatedStaticSingletonProvider</literal>, can be used. If you choose to use a shared
+                classloader, then you will need to choose another strategy. 
+            </para>   
+            <para>
+                You can provide your own implementation of <literal>Singleton</literal> and
+                <literal>SingletonProvider</literal> and register it for use using
+                <literal>SingletonProvider.initialize(SingletonProvider provider)</literal>.
+            </para>
+            <para>
+                Weld also provides an implementation of Thread Context Classloader per application strategy, via the
+                <literal>TCCLSingletonProvider</literal>.
+            </para>
+        </section>
+        <section>
+            <title>Binding the manager in JNDI</title>
+            <para>
+                You should bind the bean manager for the bean deployment archive into JNDI at
+                <literal>java:comp/BeanManager</literal>. The type should be
+                <literal>javax.enterprise.inject.spi.BeanManager</literal>. To obtain the correct bean manager for the
+                bean deployment archive, you may call
+                <literal>bootstrap.getBeanManager(beanDeploymentArchive)</literal>  
+            </para>
+        </section>
+        <section>
+            <title><literal>CDIProvider</literal></title>
+            <para>
+                CDI 1.1 provides a simplified approach to accessing the BeanManager / CDI container from components that do not support injection. 
+                This is done by the CDI class API. The integrating part can either use <literal>org.jboss.weld.Weld</literal> provided by Weld core
+                and register it using <literal>javax.enterprise.inject.spi.CDIProvider</literal> file that is visible to the CDI API classes or use the
+                <literal>CDI.setCDIProvider(CDIProvider provider)</literal> method method early in the deployment.
+            </para>
+            <para>
+                Alternatively, an integrating part may provide a specialized implementation such as the one provided by
+                <ulink url="https://github.com/weld/as7-weld-subsystem/commit/58183e0b0f5edd28f7f9bc23abc703867175f95d">AS7 integration</ulink>.
+            </para>
+        </section>
+        <section>
+            <title>Performing CDI injection on Java EE component classes</title>
+            <para>
                   The CDI specification requires the container to provide injection into non-contextual resources for
                   all Java EE component classes. Weld delegates this responsibility to the container. This can be
                   achieved using the CDI defined <literal>InjectionTarget</literal> SPI. Furthermore, you must perform
@@ -665,7 +795,7 @@
                   which returns the <literal>InjectionTarget</literal> to use.
                </para>
                
-               <programlisting><![CDATA[// Fire ProcessInjectionTarget, returning the InjectionTarget
+               <programlisting role="JAVA"><![CDATA[// Fire ProcessInjectionTarget, returning the InjectionTarget
 // to use
 InjectionTarget it = weldBeanManager.fireProcessInjectionTarget(clazz);
 
@@ -696,7 +826,7 @@ cc.release();]]></programlisting>
                   <literal>WeldManager</literal>. Furthermore, you must perform this operation on the correct bean
                   manager for the bean deployment archive containing the EJB.
                </para>
-               <programlisting><![CDATA[// Obtain the EjbDescriptor for the EJB
+               <programlisting role="JAVA"><![CDATA[// Obtain the EjbDescriptor for the EJB
 // You may choose to use this utility method to get the descriptor
 EjbDescriptor<?> ejbDescriptor = beanManager.getEjbDescriptor(ejbName);
 
@@ -724,9 +854,7 @@ it.preDestroy(instance);
 // Clean up the instance
 it.dispose();
 cc.release();]]></programlisting>
-            </listitem>
-         </varlistentry>
-      </variablelist>
+        </section>
     </section>
 
 <!--
