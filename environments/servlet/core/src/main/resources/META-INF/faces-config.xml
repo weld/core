@@ -11,9 +11,4 @@
    <application>
       <view-handler>org.jboss.weld.jsf.ConversationAwareViewHandler</view-handler>
    </application>
-   
-   <lifecycle>
-      <phase-listener>org.jboss.weld.jsf.WeldPhaseListener</phase-listener>
-   </lifecycle>
-	  
 </faces-config>
