@@ -163,6 +163,7 @@ import org.jboss.weld.resources.MemberTransformer;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Bindings;
+import org.jboss.weld.util.ForwardingBeanManager;
 import org.jboss.weld.util.Interceptors;
 import org.jboss.weld.util.Preconditions;
 import org.jboss.weld.util.Proxies;
@@ -918,6 +919,10 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     @Override
     public boolean equals(Object obj) {
+        if (obj instanceof ForwardingBeanManager) {
+            ForwardingBeanManager proxy = (ForwardingBeanManager) obj;
+            obj = proxy.delegate();
+        }
         if (obj instanceof BeanManagerImpl) {
             BeanManagerImpl that = (BeanManagerImpl) obj;
             return this.getId().equals(that.getId());

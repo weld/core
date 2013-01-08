@@ -15,11 +15,11 @@ public class ContainerLifecycleObserver implements Extension {
         processedAnnotatedTypes = new ArrayList<AnnotatedType<?>>();
     }
 
-    public void observeProcessFoo(@Observes ProcessAnnotatedType<Foo> event) {
+    public void observeProcessFoo(@Observes ProcessAnnotatedType<? extends Foo> event) {
         this.processedAnnotatedTypes.add(event.getAnnotatedType());
     }
 
-    public void observeProcessBaz(@Observes ProcessAnnotatedType<Baz> event) {
+    public void observeProcessBaz(@Observes ProcessAnnotatedType<? extends Baz> event) {
         this.processedAnnotatedTypes.add(event.getAnnotatedType());
     }
 

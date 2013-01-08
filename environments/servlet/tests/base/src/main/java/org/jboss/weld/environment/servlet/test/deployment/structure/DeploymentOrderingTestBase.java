@@ -38,7 +38,7 @@ public class DeploymentOrderingTestBase {
 
     @Test
     public void testProcessAnnotatedTypeCalledOnceOnlyPerType(ContainerLifecycleObserver containerLifecycleObserver) {
-        assertEquals(4, containerLifecycleObserver.getProcessedAnnotatedTypes().size());
+        assertEquals(containerLifecycleObserver.getProcessedAnnotatedTypes().toString(), 4, containerLifecycleObserver.getProcessedAnnotatedTypes().size());
         List<Class<?>> classes = new ArrayList<Class<?>>();
         for (AnnotatedType<?> annotatedType : containerLifecycleObserver.getProcessedAnnotatedTypes()) {
             classes.add(annotatedType.getJavaClass());
