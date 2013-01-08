@@ -7,7 +7,6 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.jboss.weld.servlet</groupId>
     <artifactId>weld-servlet-test-tomcat</artifactId>
     <packaging>jar</packaging>
     <name>Weld Servlet Integration Tests (Tomcat)</name>

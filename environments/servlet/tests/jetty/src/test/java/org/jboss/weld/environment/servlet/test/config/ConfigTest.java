@@ -40,4 +40,5 @@ public class ConfigTest extends ConfigTestBase {
         war.addAsWebInfResource(JettyDeployments.JETTY_ENV, "jetty-env.xml");
         return war;
     }
+
 }

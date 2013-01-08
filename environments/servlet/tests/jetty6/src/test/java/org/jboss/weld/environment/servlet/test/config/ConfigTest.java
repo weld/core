@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source.
- * Copyright 2010, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2011, Red Hat, Inc., and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -20,22 +20,24 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.jboss.weld.environment.servlet.test.injection;
+package org.jboss.weld.environment.servlet.test.config;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.weld.environment.servlet.test.util.JettyDeployments;
 import org.junit.runner.RunWith;
 
-import static org.jboss.weld.environment.servlet.test.util.JettyDeployments.JETTY_ENV;
-
 /**
- * @author Ales Justin
+ * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
 @RunWith(Arquillian.class)
-public class FilterInjectionTest extends FilterInjectionTestBase {
-    @Deployment(testable = false)
-    public static WebArchive deployment() {
-        return FilterInjectionTestBase.deployment().addAsWebInfResource(JETTY_ENV, "jetty-env.xml");
+public class ConfigTest extends ConfigTestBase {
+
+    @Deployment
+    public static WebArchive getDeployment() {
+        WebArchive war = baseDOSDeployment();
+        war.addAsWebInfResource(JettyDeployments.JETTY_ENV, "jetty-env.xml");
+        return war;
     }
 }
