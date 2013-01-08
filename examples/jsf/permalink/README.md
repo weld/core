@@ -1,10 +1,13 @@
-Weld Numberguess Example
-========================
+Weld Permalink Example (Servlet Environment)
+============================================
 
-This example demonstrates the use of Weld in a Servlet container (Tomcat or
-Jetty) or as a non-EJB application for a Java EE server (JBoss AS or GlassFish). No alterations are expected
-to be made to the container. All services are self-contained within the
-deployment.
+This example demonstrates the use of Weld in a both a Java EE 6 container and a
+Servlet environment (Tomcat or Jetty). Contextual state management and
+dependency injection are handled by CDI. For the purpose of demonstration,
+data is only stored in-memory.  Additional setup is required to setup
+transaction and persistence context management.  separately. No alterations are
+required to be made to the Servlet container. All services are self-contained
+within the deployment.
 
 Deploying to JBoss AS
 ---------------------
@@ -16,7 +19,7 @@ To deploy the example run:
 
    mvn jboss-as:run
 
-Now you can view the application at <http://localhost:8080/weld-numberguess>.
+Now you can view the application at <http://localhost:8080/weld-permalink>.
 
 To run functional tests execute:
    mvn verify -Darquillian=jbossas-managed-7
@@ -35,8 +38,7 @@ Finally, deploy the application using:
 
    mvn package glassfish:deploy
    
-The application becomes available at <http://localhost:7070/weld-numberguess>
-   
+The application becomes available at <http://localhost:7070/weld-permalink>
 
 Deploying to standalone Tomcat
 ------------------------------
@@ -69,7 +71,7 @@ But likely you want to run one or more build goals first before you redeploy:
     mvn war:exploded tomcat:redeploy -Ptomcat
     mvn compile war:exploded tomcat:redeploy -Ptomcat
 
-Now you can view the application at <http://localhost:8080/weld-numberguess>.
+Now you can view the application at <http://localhost:8080/weld-permalink>.
  
 To undeploy, use:
 
@@ -81,43 +83,30 @@ Deploying to embedded Jetty
 Simply run:
 
     mvn war:inplace jetty:run -Pjetty
-    
+
 The application will be running at the following local URL:
  
-   http://localhost:9090/weld-numberguess
+   http://localhost:9090/weld-permalink
 
+Importing the project into Eclipse
+----------------------------------
 
-Launching Jetty embedded from Eclipse
--------------------------------------
+The recommended way to setup a Weld example in Eclipse is to use the m2eclipse
+plugin. This plugin derives the build classpath from the dependencies listed in
+the pom.xml file. It also has direct integration with Maven build commands.
 
-First, set up the Eclipse environment:
+To get started open Eclipse and import the project by selecting "Maven
+Projects" and browsing to the project folder. You can now develop the project
+in Eclipse just like any other project.
 
-    mvn clean eclipse:clean eclipse:eclipse -Pjetty-ide
- 
-and import the project into eclipse
- 
-Next, put all the needed resources into `src/main/webapp`
+You could also prepare the Eclipse project before hand, then import the project
+into Eclipse. First, transform the pom.xml into an m2eclipse Eclipse project
+using this command:
 
-    mvn war:inplace -Pjetty-ide
- 
-Now, you are ready to run the server in Eclipse; find the Start class in
-`src/jetty/java`, and run its main method as a Java Application. The server
-will launch. Now you can view the application at <http://localhost:8080/weld-numberguess>.
+ mvn eclipse:m2eclipse
 
-
-Using Google App Engine
------------------------
-
-First, set up the Eclipse environment:
-
-    mvn clean eclipse:clean eclipse:eclipse -Pgae
- 
-Make sure you have the Google App Engine Eclipse plugin installed.
-
-Next, put all the needed resources into the src/main/webapp
-
-    mvn war:inplace -Pgae
-
-Now, in Eclipse, you can either run the app locally, or deploy it to Google App Engine.
+Now go into Eclipse an import the project by selecting "Existing projects into
+workspace" and selecting the project folder. Both approaches use the Eclipse
+project configuration defined in the pom.xml file.
 
 vim:tw=80

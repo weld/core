@@ -3,44 +3,30 @@ Weld PasteCode Example
 
 This example demonstrates the use of Weld in Java EE Environment. Contextual
 state management and dependency injection are handled by JSR-299. Transaction
-and persistence context management is handled by the EJB 3 container. No 
-alterations are required to be made to the Servlet container. All services
+and persistence context management is handled by the EJB 3 container. All services
 are self-contained within the deployment.
 
--------Weld Features Covered (the list will increase)-------
+Weld Features Covered
+---------------------
 - injecting into POJO, EJB (SFSB), Servlet
 - @ApplicationScoped, @Model, @SessionScoped annotations
 - producer named methods
 - Decorators
 
-This example uses a Maven 2 build. Execute the following command to build the
-WAR. The WAR will be located in the target directory after completion of
-the build.
+Deploying to JBoss AS
+---------------------
 
- mvn
+Make sure you have assigned the absolute path of your JBoss AS installation to the
+JBOSS_HOME environment variable.
 
-Now you are ready to deploy. A configuration is prepared for JBoss AS regarding
-access to database. If you want to run in different Java EE container you will 
-have to change configuration in persistence.xml and define your own database
-connection.  
+To deploy the example run:
 
-== Deploying to JBoss AS
+   mvn jboss-as:run
 
-If you run a normal Maven build, the artifact it produces is deployable to JBoss
-AS by default:
+Now you can view the application at <http://localhost:8080/weld-pastecode>.
 
- mvn package
-
-Just copy target/weld-pastecode.war to the JBoss AS deploy directory (since 
-JBoss 6.0.0.M2 to server/all configuration) along with weld-pastecode-ds.xml 
-datasource. 
-
-Open this local URL to access the running application:
-
- http://localhost:8080/weld-pastecode
- 
-Alternatively, run "ant restart" to have the app copied to your ${jboss.home}.
-The ant target will deploy datasource file as well.
+To run functional tests execute:
+   mvn verify -Darquillian=jbossas-managed-7
 
 = Importing the project into Eclipse
 

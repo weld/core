@@ -57,31 +57,5 @@
         </plugins>
     </build>
 
-    <profiles>
-        <profile>
-            <id>deploy</id>
-            <build>
-                <plugins>
-                    <!-- JBoss AS plugin to deploy war -->
-                    <plugin>
-                        <groupId>org.jboss.as.plugins</groupId>
-                        <artifactId>jboss-as-maven-plugin</artifactId>
-                        <version>${jboss.as7.version}</version>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>deploy</goal>
-                                </goals>
-                                <phase>package</phase>
-                            </execution>
-                        </executions>
-                        <configuration>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
-
 </project>
 

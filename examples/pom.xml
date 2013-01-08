@@ -13,7 +13,7 @@
     <name>Weld Examples</name>
 
     <description>
-        Examples for Weld, the reference implementation of JSR 299: Contexts and Dependency Injection for Java EE
+        Examples for Weld, the reference implementation of CDI
     </description>
 
     <url>http://www.seamframework.org/Weld</url>
@@ -37,6 +37,16 @@
             <email>ales.justin@jboss.org</email>
             <organization>JBoss, a division of Red Hat</organization>
             <url>http://in.relation.to/Bloggers/Ales</url>
+        </developer>
+
+        <developer>
+            <name>Jozef Hartinger</name>
+            <roles>
+                <role>Project Lead</role>
+            </roles>
+            <email>jharting@redhat.com</email>
+            <organization>JBoss, a division of Red Hat</organization>
+            <url>http://in.relation.to/Bloggers/Jozef</url>
         </developer>
 
         <developer>
@@ -99,10 +109,12 @@
         <!-- Override JSF version to 2.0 -->
         <jsf.version>2.0.2-FCS</jsf.version>
         <facelets.version>1.1.15</facelets.version>
-        <tomcat.version>6.0.26</tomcat.version>
+        <tomcat.version>6.0.36</tomcat.version>
         <jetty.version>6.1.21</jetty.version>
         <!-- Override HTMLUnit version -->
         <htmlunit.version>2.8</htmlunit.version>
+        <jboss.as7.plugin.version>7.3.Final</jboss.as7.plugin.version>
+        <glassfish.plugin.version>2.1</glassfish.plugin.version>
 
         <!-- UEL Impl -->
         <uel.version>2.2</uel.version>
@@ -139,6 +151,8 @@
         <selenium.timeout.default>30000</selenium.timeout.default>
         <selenium.timeout.gui>5000</selenium.timeout.gui>
         <selenium.timeout.model>30000</selenium.timeout.model>
+
+        <glassfish.home>${env.GLASSFISH_HOME}</glassfish.home>
     </properties>
 
     <dependencyManagement>
@@ -263,15 +277,45 @@
                         <ejbVersion>3.0</ejbVersion>
                     </configuration>
                 </plugin>
-                <!--
-                     Work around issues encountered with http://jira.codehaus.org/browse/MWAR-187
-                     during release
-                -->
+                <!-- Work around issues encountered with http://jira.codehaus.org/browse/MWAR-187 
+                    during release -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-war-plugin</artifactId>
                     <configuration>
                         <useCache>false</useCache>
+                    </configuration>
+                </plugin>
+                <!-- JBoss AS plugin to deploy war -->
+                <plugin>
+                    <groupId>org.jboss.as.plugins</groupId>
+                    <artifactId>jboss-as-maven-plugin</artifactId>
+                    <version>${jboss.as7.plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.glassfish.maven.plugin</groupId>
+                    <artifactId>maven-glassfish-plugin</artifactId>
+                    <version>${glassfish.plugin.version}</version>
+                    <configuration>
+                        <user>admin</user>
+                        <passwordFile>${project.basedir}/src/glassfish/password_file</passwordFile>
+                        <echo>true</echo>
+                        <glassfishDirectory>${glassfish.home}</glassfishDirectory>
+                        <domain>
+                            <name>${project.artifactId}</name>
+                            <adminPort>4848</adminPort>
+                            <httpPort>7070</httpPort>
+                            <httpsPort>8443</httpsPort>
+                            <iiopPort>3700</iiopPort>
+                            <jmsPort>7676</jmsPort>
+                            <reuse>false</reuse>
+                        </domain>
+                        <components>
+                            <component>
+                                <name>${project.artifactId}</name>
+                                <artifact>${project.build.directory}/${project.build.finalName}.${project.packaging}</artifact>
+                            </component>
+                        </components>
                     </configuration>
                 </plugin>
             </plugins>

@@ -329,7 +329,6 @@
                 <dependency>
                     <groupId>org.slf4j</groupId>
                     <artifactId>slf4j-jdk14</artifactId>
-                    <version>1.5.10</version>
                     <scope>runtime</scope>
                 </dependency>
 
@@ -474,14 +473,6 @@
 
         <profile>
             <id>arquillian-jbossas-remote-7</id>
-        </profile>
-
-        <profile>
-            <id>arquillian-jbossas-managed-6</id>
-        </profile>
-
-        <profile>
-            <id>arquillian-jbossas-remote-6</id>
         </profile>
 
         <profile>

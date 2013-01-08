@@ -11,19 +11,19 @@ Weld currently comes with a number of examples:
 * `se/numberguess` (the numberguess example for Java SE using Swing)
 * `se/helloworld` (a simple example for Java SE)
 
-Before running the examples, you'll need to ensure your server supports CDI (JBoss AS 6 and
+Before running the examples, you'll need to ensure your server supports CDI (JBoss AS 7 and
 GlassFish v3 both have built in support, and Weld provides support for Tomcat, Jetty and
 Google App Engine). Weld also supports Java SE. 
 
 The examples and Weld are explained in detail in the reference guide, including
-how to deploy the examples to JBoss 6.0.x, and how to deploy the examples to Tomcat. Most
+how to deploy the examples to JBoss AS 7, and how to deploy the examples to Tomcat. Most
 examples also have a README which explains how to run the example on all servers it supports. 
 
 
 Running the functional tests for the JSF examples
 ------------------------------------------------
 
-Weld's JSF examples come with "functional tests", which use Selenium to each flow a user can take
+Weld's JSF examples come with functional tests, which use Selenium to each flow a user can take
 through the GUI of the example.
 
 The functional tests can be run on an individual JSF examples or on all examples. JBoss AS 7
@@ -33,7 +33,7 @@ Make sure you have set the `JBOSS_HOME` environment property to point to your JB
 
 To run the functional tests:
 
-    mvn -Darquillian=jbossas-managed-7 -Pjboss6 clean verify
+    mvn -Darquillian=jbossas-managed-7 clean verify
 
 You can run the functional tests against all examples (from the `examples` directory`) or against
 an individual example (from it's sub-directory).
