@@ -83,18 +83,29 @@ public abstract class AbstractInjectionTarget<T> extends AbstractProducer<T> imp
         injectionPoints.addAll(InjectionPoints.flattenInjectionPoints(this.injectableFields));
         this.initializerMethods = BeanMethods.getInitializerMethods(bean, type, beanManager);
         injectionPoints.addAll(InjectionPoints.flattenParameterInjectionPoints(initializerMethods));
-        if (isInterceptor()) {
-            this.postConstructMethods = Collections.emptyList();
-            this.preDestroyMethods = Collections.emptyList();
-        } else {
-            this.postConstructMethods = BeanMethods.getPostConstructMethods(type);
-            this.preDestroyMethods = BeanMethods.getPreDestroyMethods(type);
-        }
+        this.postConstructMethods = initPostConstructMethods(type);
+        this.preDestroyMethods = initPreDestroyMethods(type);
 
         checkType(type);
         this.instantiator = initInstantiator(type, bean, beanManager, injectionPoints);
         this.injectionPoints = WeldCollections.immutableSet(injectionPoints);
         checkDelegateInjectionPoints();
+    }
+
+    protected List<AnnotatedMethod<? super T>> initPostConstructMethods(EnhancedAnnotatedType<T> type) {
+        if (isInterceptor()) {
+            return Collections.emptyList();
+        } else {
+            return BeanMethods.getPostConstructMethods(type);
+        }
+    }
+
+    protected List<AnnotatedMethod<? super T>> initPreDestroyMethods(EnhancedAnnotatedType<T> type) {
+        if (isInterceptor()) {
+            return Collections.emptyList();
+        } else {
+            return BeanMethods.getPreDestroyMethods(type);
+        }
     }
 
     protected void checkType(EnhancedAnnotatedType<T> type) {

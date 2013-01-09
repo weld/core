@@ -1296,8 +1296,14 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         return interceptorMetadataReader;
     }
 
+    @Override
     public <X> InjectionTarget<X> fireProcessInjectionTarget(AnnotatedType<X> annotatedType) {
-        return services.get(ContainerLifecycleEvents.class).fireProcessInjectionTarget(this, annotatedType, createInjectionTarget(annotatedType));
+        return fireProcessInjectionTarget(annotatedType, createInjectionTarget(annotatedType));
+    }
+
+    @Override
+    public <X> InjectionTarget<X> fireProcessInjectionTarget(AnnotatedType<X> annotatedType, InjectionTarget<X> injectionTarget) {
+        return services.get(ContainerLifecycleEvents.class).fireProcessInjectionTarget(this, annotatedType, injectionTarget);
     }
 
     public Set<QualifierInstance> extractInterceptorBindingsForQualifierInstance(Iterable<QualifierInstance> annotations) {

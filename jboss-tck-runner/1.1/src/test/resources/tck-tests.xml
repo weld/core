@@ -50,12 +50,6 @@
                     <exclude name="testDecoratorInvokesDelegateMethodOutsideOfBusinessMethodInterception" />
                 </methods>
             </class>
-            <!-- WELD-1035 -->
-            <class name="org.jboss.cdi.tck.tests.extensions.container.event.jms.ContainerEventTest">
-                <methods>
-                    <exclude name="testProcessInjectionTargetEventFiredForMessageDrivenBean" />
-                </methods>
-            </class>
             <!-- WELD-1073 -->
              <class name="org.jboss.cdi.tck.tests.deployment.packaging.interceptor.InterceptorClassNotInBeanArchiveTest">
                 <methods>
