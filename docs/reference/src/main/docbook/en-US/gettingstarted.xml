@@ -213,7 +213,7 @@ $> ./glassfish-v3-unix.sh]]></programlisting>
       </para>
 
       <para>
-        Next, make sure the <literal>GLASSFISH_HOME</literal> environment variable is set to point to the Glassfish installation.
+        Next, make sure the <literal>GLASSFISH_HOME</literal> environment variable is set to point to the GlassFish installation.
       </para>
    
       <para>

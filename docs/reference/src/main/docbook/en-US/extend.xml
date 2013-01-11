@@ -280,7 +280,7 @@ MyBean(MyExtension myExtension) {
         <programlisting role="JAVA">BeanManager manager = CDI.current().getBeanManager();</programlisting>
 
         <para>
-            The <literal>CDI</literal> class can be used directly to programatically lookup CDI beans as described in <xref linkend="lookup"/>
+            The <literal>CDI</literal> class can be used directly to programmatically lookup CDI beans as described in <xref linkend="lookup"/>
         </para>
 
         <programlisting role="JAVA">CDI.select(Foo.class).get()</programlisting>
@@ -786,7 +786,7 @@ lastName=King</programlisting>
 
         <para>
             CDI provides a way to override the metadata of an <literal>InjectionPoint</literal>. This works similarly to how
-            metadata of a bean may be overriden using <literal>BeanAttributes</literal>. 
+            metadata of a bean may be overridden using <literal>BeanAttributes</literal>. 
         </para>
 
         <para>
