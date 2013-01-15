@@ -42,6 +42,12 @@
                     <exclude name="testIsNullableCalled" />
                 </methods>
             </class>
+            <!-- CDI-52 -->
+            <class name="org.jboss.cdi.tck.tests.implementation.disposal.method.definition.injectionpoint.DisposalMethodInjectionPointTest">
+                <methods>
+                    <exclude name="test" />
+                </methods>
+            </class>
 
             <!-- Issues in Weld (the RI) -->
             <!-- WELD-430 -->
