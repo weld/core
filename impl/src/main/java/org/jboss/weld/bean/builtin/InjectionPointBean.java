@@ -48,11 +48,19 @@ public class InjectionPointBean extends AbstractStaticallyDecorableBuiltInBean<I
 
     protected InjectionPoint newInstance(InjectionPoint ip, CreationalContext<InjectionPoint> creationalContext) {
         InjectionPoint injectionPoint = currentInjectionPointService.peek();
+        if (injectionPoint instanceof SerializableForwardingInjectionPoint) {
+            return injectionPoint;
+        }
         return new SerializableForwardingInjectionPoint(injectionPoint);
     }
 
     public void destroy(InjectionPoint instance, CreationalContext<InjectionPoint> creationalContext) {
 
+    }
+
+    @Override
+    protected boolean isInjectionPointMetadataRequired() {
+        return true;
     }
 
     @Override

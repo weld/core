@@ -24,7 +24,6 @@ package org.jboss.weld.tests.builtinBeans.metadata;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 import java.lang.reflect.Type;
 import java.util.Collections;
@@ -43,6 +42,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -113,14 +113,18 @@ public class BuiltinMetadataBeanTest {
 
     @Test
     public void testIllegalInjectionDetected() {
-        assertNull(getReference(Bean.class));
-        assertNull(getReference(Interceptor.class));
-        assertNull(getReference(Decorator.class));
+        testIllegalInjection(Bean.class);
+        testIllegalInjection(Interceptor.class);
+        testIllegalInjection(Decorator.class);
     }
 
-    private Object getReference(Class<?> type) {
+    private void testIllegalInjection(Class<?> type) {
         Bean<?> bean = manager.resolve(manager.getBeans(type));
         CreationalContext<?> ctx = manager.createCreationalContext(bean);
-        return manager.getReference(bean, type, ctx);
+        try {
+            manager.getReference(bean, type, ctx);
+            Assert.fail();
+        } catch (IllegalArgumentException expected) {
+        }
     }
 }

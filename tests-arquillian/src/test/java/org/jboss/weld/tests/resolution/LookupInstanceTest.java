@@ -47,11 +47,14 @@ public class LookupInstanceTest {
 
     @Test
     public void testLookupInstance() throws Exception {
-        Assert.assertNull(
-                Utils.getReference(
-                        beanManager,
-                        new TypeLiteral<Instance<List<?>>>() {
-                        }.getRawType(), DefaultLiteral.INSTANCE));
+        try {
+            Utils.getReference(
+                    beanManager,
+                    new TypeLiteral<Instance<List<?>>>() {
+                    }.getRawType(), DefaultLiteral.INSTANCE);
+                    Assert.fail();
+        } catch (IllegalArgumentException expected) {
+        }
     }
 
 }
