@@ -89,7 +89,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
         StringBuilder sb = new StringBuilder();
         sb.append(ProducerMethod.class.getSimpleName());
         sb.append(BEAN_ID_SEPARATOR);
-        sb.append(declaringBean.getEnhancedAnnotated().getID());
+        sb.append(declaringBean.getAnnotated().getIdentifier().asString());
         if (declaringBean.getEnhancedAnnotated().isDiscovered()) {
             sb.append(method.getSignature().toString());
         } else {

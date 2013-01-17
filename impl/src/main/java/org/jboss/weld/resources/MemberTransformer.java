@@ -36,6 +36,7 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMember;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.slim.backed.BackedAnnotatedMember;
 import org.jboss.weld.annotated.slim.unbacked.UnbackedAnnotatedMember;
 import org.jboss.weld.annotated.slim.unbacked.UnbackedAnnotatedType;
@@ -48,6 +49,7 @@ import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.reflection.Reflections;
 
 import com.google.common.base.Function;
+import com.google.common.base.Objects;
 import com.google.common.collect.MapMaker;
 
 /**
@@ -60,11 +62,37 @@ import com.google.common.collect.MapMaker;
  */
 public class MemberTransformer implements BootstrapService {
 
+    private static class MemberKey<X, A extends AnnotatedMember<X>> {
+        private final EnhancedAnnotatedType<X> type;
+        private final A member;
+        private final int hashCode;
+
+        public MemberKey(EnhancedAnnotatedType<X> type, A member) {
+            this.type = type;
+            this.member = member;
+            this.hashCode = Objects.hashCode(type, member);
+        }
+
+        @Override
+        public int hashCode() {
+            return hashCode;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj instanceof MemberKey) {
+                MemberKey<?, ?> that = (MemberKey<?, ?>) obj;
+                return Objects.equal(this.type, that.type) && Objects.equal(this.member, that.member);
+            }
+            return false;
+        }
+    }
+
     private final ClassTransformer transformer;
 
     private final ConcurrentMap<UnbackedMemberIdentifier<?>, UnbackedAnnotatedMember<?>> unbackedAnnotatedMembersById;
 
-    private final ConcurrentMap<AnnotatedMember<?>, EnhancedAnnotatedMember<?, ?, ?>> enhancedMemberCache;
+    private final ConcurrentMap<MemberKey<?, ?>, EnhancedAnnotatedMember<?, ?, ?>> enhancedMemberCache;
     private final EnhancedFieldLoader enhancedFieldLoader;
     private final EnhancedMethodLoader enhancedMethodLoader;
     private final EnhancedConstructorLoader enhancedConstructorLoader;
@@ -116,32 +144,33 @@ public class MemberTransformer implements BootstrapService {
 
     // Enhanced members
 
-    public <X, A extends EnhancedAnnotatedMember<?, X, ? extends Member>> A loadEnhancedMember(AnnotatedMember<X> member) {
+    public <X, A extends EnhancedAnnotatedMember<?, X, ? extends Member>> A loadEnhancedMember(AnnotatedMember<X> member, String bdaId) {
         if (member instanceof EnhancedAnnotatedMember<?, ?, ?>) {
             return Reflections.cast(member);
         }
-        return Reflections.cast(enhancedMemberCache.get(member));
+        EnhancedAnnotatedType<X> declaringType = transformer.getEnhancedAnnotatedType(member.getDeclaringType(), bdaId);
+        return Reflections.cast(enhancedMemberCache.get(new MemberKey<X, AnnotatedMember<X>>(declaringType, member)));
     }
 
-    public <X> EnhancedAnnotatedParameter<?, X> load(AnnotatedParameter<X> parameter) {
+    public <X> EnhancedAnnotatedParameter<?, X> loadEnhancedParameter(AnnotatedParameter<X> parameter, String bdaId) {
         if (parameter instanceof EnhancedAnnotatedParameter<?, ?>) {
             return Reflections.cast(parameter);
         }
-        EnhancedAnnotatedCallable<?, X, Member> callable = loadEnhancedMember(parameter.getDeclaringCallable());
+        EnhancedAnnotatedCallable<?, X, Member> callable = loadEnhancedMember(parameter.getDeclaringCallable(), bdaId);
         return callable.getEnhancedParameters().get(parameter.getPosition());
     }
 
-    private class EnhancedMemberLoaderFunction implements Function<AnnotatedMember<?>, EnhancedAnnotatedMember<?, ?, ?>> {
+    private class EnhancedMemberLoaderFunction implements Function<MemberKey<?, ?>, EnhancedAnnotatedMember<?, ?, ?>> {
         @Override
-        public EnhancedAnnotatedMember<?, ?, ?> apply(AnnotatedMember<?> from) {
-            if (from instanceof AnnotatedField<?>) {
-                return enhancedFieldLoader.load(Reflections.<AnnotatedField<?>> cast(from));
+        public EnhancedAnnotatedMember<?, ?, ?> apply(MemberKey<?, ?> from) {
+            if (from.member instanceof AnnotatedField<?>) {
+                return enhancedFieldLoader.load(Reflections.<MemberKey<?, AnnotatedField<?>>> cast(from));
             }
-            if (from instanceof AnnotatedMethod<?>) {
-                return enhancedMethodLoader.load(Reflections.<AnnotatedMethod<?>> cast(from));
+            if (from.member instanceof AnnotatedMethod<?>) {
+                return enhancedMethodLoader.load(Reflections.<MemberKey<?, AnnotatedMethod<?>>> cast(from));
             }
-            if (from instanceof AnnotatedConstructor<?>) {
-                return enhancedConstructorLoader.load(Reflections.<AnnotatedConstructor<?>> cast(from));
+            if (from.member instanceof AnnotatedConstructor<?>) {
+                return enhancedConstructorLoader.load(Reflections.<MemberKey<?, AnnotatedConstructor<?>>> cast(from));
             }
             throw new IllegalArgumentException(INVALID_ANNOTATED_MEMBER, from);
         }
@@ -149,8 +178,8 @@ public class MemberTransformer implements BootstrapService {
 
     private abstract class AbstractEnhancedMemberLoader<A extends AnnotatedMember<?>, W extends EnhancedAnnotatedMember<?, ?, ?>> {
 
-        public W load(A source) {
-            return findMatching(getMembersOfDeclaringType(source), source);
+        public W load(MemberKey<?, A> source) {
+            return findMatching(getMembersOfDeclaringType(source), source.member);
         }
 
         public W findMatching(Collection<W> members, A source) {
@@ -164,7 +193,7 @@ public class MemberTransformer implements BootstrapService {
 
         public abstract boolean equals(W member1, A member2);
 
-        public abstract Collection<W> getMembersOfDeclaringType(A source);
+        public abstract Collection<W> getMembersOfDeclaringType(MemberKey<?, A> source);
     }
 
     private class EnhancedFieldLoader extends AbstractEnhancedMemberLoader<AnnotatedField<?>, EnhancedAnnotatedField<?, ?>> {
@@ -174,8 +203,8 @@ public class MemberTransformer implements BootstrapService {
         }
 
         @Override
-        public Collection<EnhancedAnnotatedField<?, ?>> getMembersOfDeclaringType(AnnotatedField<?> source) {
-            return Reflections.cast(transformer.getEnhancedAnnotatedType(source.getDeclaringType()).getFields());
+        public Collection<EnhancedAnnotatedField<?, ?>> getMembersOfDeclaringType(MemberKey<?, AnnotatedField<?>> source) {
+            return cast(source.type.getFields());
         }
     }
 
@@ -186,8 +215,8 @@ public class MemberTransformer implements BootstrapService {
         }
 
         @Override
-        public Collection<EnhancedAnnotatedMethod<?, ?>> getMembersOfDeclaringType(AnnotatedMethod<?> source) {
-            return Reflections.cast(transformer.getEnhancedAnnotatedType(source.getDeclaringType()).getMethods());
+        public Collection<EnhancedAnnotatedMethod<?, ?>> getMembersOfDeclaringType(MemberKey<?, AnnotatedMethod<?>> source) {
+            return cast(source.type.getMethods());
         }
     }
 
@@ -198,8 +227,8 @@ public class MemberTransformer implements BootstrapService {
         }
 
         @Override
-        public Collection<EnhancedAnnotatedConstructor<?>> getMembersOfDeclaringType(AnnotatedConstructor<?> source) {
-            return Reflections.cast(transformer.getEnhancedAnnotatedType(source.getDeclaringType()).getEnhancedConstructors());
+        public Collection<EnhancedAnnotatedConstructor<?>> getMembersOfDeclaringType(MemberKey<?, AnnotatedConstructor<?>> source) {
+            return cast(source.type.getConstructors());
         }
     }
 

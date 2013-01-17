@@ -55,8 +55,7 @@ public class CustomExtension implements Extension {
         }
         if (manager instanceof BeanManagerImpl) {
             BeanManagerImpl bmi = (BeanManagerImpl) manager;
-            ClassTransformer ct = bmi.getServices().get(ClassTransformer.class);
-            return ct.getEnhancedAnnotatedType(javaClass);
+            return ((BeanManagerImpl) manager).createEnhancedAnnotatedType(javaClass);
         } else {
             throw new IllegalStateException();
         }

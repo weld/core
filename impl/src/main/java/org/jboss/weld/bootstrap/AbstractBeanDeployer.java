@@ -268,7 +268,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
 
     protected <T> void createNewManagedBean(EnhancedAnnotatedType<T> annotatedClass) {
         // TODO resolve existing beans first
-        slimAnnotatedTypeStore.putIfAbsent(annotatedClass.slim());
+        slimAnnotatedTypeStore.put(annotatedClass.slim());
         getEnvironment().addManagedBean(NewManagedBean.of(BeanAttributesFactory.forNewManagedBean(annotatedClass, manager), annotatedClass, manager));
     }
 
@@ -285,9 +285,9 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
     }
 
     protected <T> SessionBean<T> createSessionBean(InternalEjbDescriptor<T> descriptor) {
-        EnhancedAnnotatedType<T> type = classTransformer.getEnhancedAnnotatedType(descriptor.getBeanClass());
+        EnhancedAnnotatedType<T> type = classTransformer.getEnhancedAnnotatedType(descriptor.getBeanClass(), getManager().getId());
         slimAnnotatedTypeStore.put(type.slim());
-        return createSessionBean(descriptor, classTransformer.getEnhancedAnnotatedType(descriptor.getBeanClass()));
+        return createSessionBean(descriptor, type);
     }
     protected <T> SessionBean<T> createSessionBean(InternalEjbDescriptor<T> descriptor, EnhancedAnnotatedType<T> weldClass) {
         // TODO Don't create enterprise bean if it has no local interfaces!
@@ -298,7 +298,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
     }
 
     protected <T> void createNewSessionBean(InternalEjbDescriptor<T> ejbDescriptor, BeanAttributes<?> originalAttributes, EnhancedAnnotatedType<?> type) {
-        slimAnnotatedTypeStore.putIfAbsent(type.slim());
+        slimAnnotatedTypeStore.put(type.slim());
         BeanAttributes<T> attributes = Reflections.cast(BeanAttributesFactory.forNewSessionBean(originalAttributes, type.getJavaClass()));
         getEnvironment().addSessionBean(NewSessionBean.of(attributes, ejbDescriptor, manager));
     }

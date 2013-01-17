@@ -119,18 +119,17 @@ public abstract class AbstractInjectionTarget<T> extends AbstractProducer<T> imp
             throw new DeploymentException(FINAL_BEAN_CLASS_WITH_DECORATORS_NOT_ALLOWED, this);
         }
         for (Decorator<?> decorator : decorators) {
-            AnnotatedType<?> decoratorClass;
+            EnhancedAnnotatedType<?> decoratorClass;
             if (decorator instanceof DecoratorImpl<?>) {
                 DecoratorImpl<?> decoratorBean = (DecoratorImpl<?>) decorator;
-                decoratorClass = decoratorBean.getAnnotated();
+                decoratorClass = decoratorBean.getBeanManager().getServices().get(ClassTransformer.class).getEnhancedAnnotatedType(decoratorBean.getAnnotated());
             } else if (decorator instanceof CustomDecoratorWrapper<?>) {
                 decoratorClass = ((CustomDecoratorWrapper<?>) decorator).getEnhancedAnnotated();
             } else {
                 throw new IllegalStateException(NON_CONTAINER_DECORATOR, decorator);
             }
 
-            EnhancedAnnotatedType<?> enhancedDecoratorClass = beanManager.getServices().get(ClassTransformer.class).getEnhancedAnnotatedType(decoratorClass);
-            for (EnhancedAnnotatedMethod<?, ?> decoratorMethod : enhancedDecoratorClass.getEnhancedMethods()) {
+            for (EnhancedAnnotatedMethod<?, ?> decoratorMethod : decoratorClass.getEnhancedMethods()) {
                 EnhancedAnnotatedMethod<?, ?> method = type.getEnhancedMethod(decoratorMethod.getSignature());
                 if (method != null && !method.isStatic() && !method.isPrivate() && method.isFinal()) {
                     throw new DeploymentException(FINAL_BEAN_CLASS_WITH_INTERCEPTORS_NOT_ALLOWED, method, decoratorMethod);

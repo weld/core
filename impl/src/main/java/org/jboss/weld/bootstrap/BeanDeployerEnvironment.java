@@ -311,9 +311,9 @@ public class BeanDeployerEnvironment {
     private void addNewBeanFromInjecitonPoint(Class<?> rawType, Type baseType) {
         if (getEjbDescriptors().contains(rawType)) {
             InternalEjbDescriptor<?> descriptor = getEjbDescriptors().getUnique(rawType);
-            newSessionBeanDescriptorsFromInjectionPoint.put(descriptor, classTransformer.getEnhancedAnnotatedType(rawType, baseType));
+            newSessionBeanDescriptorsFromInjectionPoint.put(descriptor, classTransformer.getEnhancedAnnotatedType(rawType, baseType, manager.getId()));
         } else {
-            newManagedBeanClasses.add(classTransformer.getEnhancedAnnotatedType(rawType, baseType));
+            newManagedBeanClasses.add(classTransformer.getEnhancedAnnotatedType(rawType, baseType, manager.getId()));
         }
     }
 

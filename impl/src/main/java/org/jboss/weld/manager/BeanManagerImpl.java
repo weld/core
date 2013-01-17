@@ -1030,7 +1030,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     public <T> InjectionTarget<T> createInjectionTarget(AnnotatedType<T> type, Bean<T> bean) {
         AnnotatedTypeValidator.validateAnnotatedType(type);
         try {
-            EnhancedAnnotatedType<T> enhancedType = getServices().get(ClassTransformer.class).getEnhancedAnnotatedType(type);
+            EnhancedAnnotatedType<T> enhancedType = getServices().get(ClassTransformer.class).getEnhancedAnnotatedType(type, getId());
             InjectionTarget<T> injectionTarget = internalCreateInjectionTarget(enhancedType, bean);
 
             getServices().get(InjectionTargetService.class).validateProducer(injectionTarget);
@@ -1086,7 +1086,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     public <S, X extends S , T> Producer<T> createProducer(final AnnotatedField<S> field, DisposalMethod<X, T> disposalMethod, final Bean<X> declaringBean, final Bean<T> bean) {
-        EnhancedAnnotatedField<T, S> enhancedField = getServices().get(MemberTransformer.class).loadEnhancedMember(field);
+        EnhancedAnnotatedField<T, S> enhancedField = getServices().get(MemberTransformer.class).loadEnhancedMember(field, getId());
         return new ProducerFieldProducer<X, T>(enhancedField, disposalMethod) {
 
             @Override
@@ -1130,7 +1130,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     public <S, X extends S, T> Producer<T> createProducer(final AnnotatedMethod<S> method, DisposalMethod<X, T> disposalMethod, final Bean<X> declaringBean, final Bean<T> bean) {
-        EnhancedAnnotatedMethod<T, S> enhancedMethod = getServices().get(MemberTransformer.class).loadEnhancedMember(method);
+        EnhancedAnnotatedMethod<T, S> enhancedMethod = getServices().get(MemberTransformer.class).loadEnhancedMember(method, getId());
         return new ProducerMethodProducer<X, T>(enhancedMethod, disposalMethod) {
 
             @Override
@@ -1238,11 +1238,11 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     @Override
     public <T> AnnotatedType<T> createAnnotatedType(Class<T> type) {
-        return getServices().get(ClassTransformer.class).getAnnotatedType(type);
+        return getServices().get(ClassTransformer.class).getBackedAnnotatedType(type, getId());
     }
 
     public <T> EnhancedAnnotatedType<T> createEnhancedAnnotatedType(Class<T> type) {
-        return getServices().get(ClassTransformer.class).getEnhancedAnnotatedType(type);
+        return getServices().get(ClassTransformer.class).getEnhancedAnnotatedType(type, getId());
     }
 
     @Override
@@ -1365,7 +1365,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     @Override
     public <T> BeanAttributes<T> createBeanAttributes(AnnotatedType<T> type) {
-        EnhancedAnnotatedType<T> clazz = services.get(ClassTransformer.class).getEnhancedAnnotatedType(type);
+        EnhancedAnnotatedType<T> clazz = services.get(ClassTransformer.class).getEnhancedAnnotatedType(type, getId());
         if (services.get(EjbDescriptors.class).contains(type.getJavaClass())) {
             return BeanAttributesFactory.forSessionBean(clazz, services.get(EjbDescriptors.class).getUnique(clazz.getJavaClass()), this);
         }
@@ -1380,7 +1380,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     public <X> BeanAttributes<?> internalCreateBeanAttributes(AnnotatedMember<X> member) {
         EnhancedAnnotatedMember<?, X, Member> weldMember = null;
         if (member instanceof AnnotatedField<?> || member instanceof AnnotatedMethod<?>) {
-            weldMember = services.get(MemberTransformer.class).loadEnhancedMember(member);
+            weldMember = services.get(MemberTransformer.class).loadEnhancedMember(member, getId());
         } else {
             throw new IllegalArgumentException(INCORRECT_PRODUCER_MEMBER, member);
         }
@@ -1404,14 +1404,14 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     private <X> FieldInjectionPointAttributes<?, X> createFieldInjectionPoint(AnnotatedField<X> field) {
-        EnhancedAnnotatedField<?, X> enhancedField = services.get(MemberTransformer.class).loadEnhancedMember(field);
+        EnhancedAnnotatedField<?, X> enhancedField = services.get(MemberTransformer.class).loadEnhancedMember(field, getId());
         return InferingFieldInjectionPointAttributes.of(enhancedField, null, field.getDeclaringType().getJavaClass(), this);
     }
 
     @Override
     public ParameterInjectionPointAttributes<?, ?> createInjectionPoint(AnnotatedParameter<?> parameter) {
         AnnotatedTypeValidator.validateAnnotatedParameter(parameter);
-        EnhancedAnnotatedParameter<?, ?> enhancedParameter = services.get(MemberTransformer.class).load(parameter);
+        EnhancedAnnotatedParameter<?, ?> enhancedParameter = services.get(MemberTransformer.class).loadEnhancedParameter(parameter, getId());
         return validateInjectionPoint(InferingParameterInjectionPointAttributes.of(enhancedParameter, null, parameter.getDeclaringCallable().getDeclaringType().getJavaClass(), this));
     }
 
@@ -1471,22 +1471,13 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     public <T> Collection<SlimAnnotatedType<T>> getSlimAnnotatedTypes(Class<T> type) {
         Preconditions.checkArgumentNotNull(type, "type");
-        SlimAnnotatedTypeStore store = getServices().get(SlimAnnotatedTypeStore.class);
-        return store.get(type);
+        return getServices().get(SlimAnnotatedTypeStore.class).get(type);
     }
 
     @Override
     public <T> AnnotatedType<T> getAnnotatedType(Class<T> type, String id) {
         Preconditions.checkArgumentNotNull(type, "type");
-        if (id == null) {
-            id = type.getName();
-        }
-        for (SlimAnnotatedType<T> annotatedType : getSlimAnnotatedTypes(type)) {
-            if (id.equals(annotatedType.getID())) {
-                return annotatedType;
-            }
-        }
-        return null;
+        return getServices().get(SlimAnnotatedTypeStore.class).get(type, id);
     }
 
     @Override

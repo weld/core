@@ -14,24 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.serialization.annotated;
+package org.jboss.weld.annotated;
 
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.inject.Inject;
+/**
+ * Marker interface for anything that needs to be identified by an explicit {@link Identifier}.
+ *
+ * @author Jozef Hartinger
+ *
+ */
+public interface Identified<I extends Identifier> {
 
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.weld.manager.BeanManagerImpl;
-import org.junit.runner.RunWith;
-
-@RunWith(Arquillian.class)
-public class UnbackedAnnotatedTypeSerializationTest extends BackedAnnotatedTypeSerializationTest {
-
-    @Inject
-    private BeanManagerImpl manager;
-
-    @Override
-    public AnnotatedType<Foo> getAnnotatedType() {
-        return manager.getAnnotatedType(Foo.class, FooExtension.FOO_ID);
-    }
-
+    I getIdentifier();
 }

@@ -2,12 +2,11 @@ package org.jboss.weld.annotated.slim.unbacked;
 
 import static org.jboss.weld.logging.messages.BeanMessage.PROXY_REQUIRED;
 import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
+import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,13 +14,13 @@ import javax.enterprise.inject.spi.AnnotatedConstructor;
 import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.IdentifiedAnnotatedType;
 
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
+import org.jboss.weld.annotated.slim.AnnotatedTypeIdentifier;
 import org.jboss.weld.exceptions.InvalidObjectException;
-import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.reflection.Formats;
-import org.jboss.weld.util.reflection.Reflections;
+
+import com.google.common.base.Objects;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
@@ -38,44 +37,40 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 @SuppressWarnings(value = { "SE_NO_SUITABLE_CONSTRUCTOR", "SE_NO_SERIALVERSIONID" }, justification = "False positive from FindBugs - serialization is handled by SerializationProxy.")
 public class UnbackedAnnotatedType<X> extends UnbackedAnnotated implements SlimAnnotatedType<X>, Serializable {
 
-    public static <X> UnbackedAnnotatedType<X> of(AnnotatedType<X> originalType) {
-        if (originalType instanceof IdentifiedAnnotatedType<?>) {
-            return UnbackedAnnotatedType.of(originalType, Reflections.<IdentifiedAnnotatedType<?>>cast(originalType).getID());
-        }
-        return UnbackedAnnotatedType.of(originalType, AnnotatedTypes.createTypeId(originalType));
+    public static <X> UnbackedAnnotatedType<X> additionalAnnotatedType(AnnotatedType<X> source, String bdaId, String suffix) {
+        return new UnbackedAnnotatedType<X>(source, AnnotatedTypeIdentifier.of(bdaId, source.getJavaClass().getName(), suffix, false));
     }
 
-    public static <X> UnbackedAnnotatedType<X> of(AnnotatedType<X> originalType, String id) {
-        return new UnbackedAnnotatedType<X>(originalType.getBaseType(), originalType.getTypeClosure(), originalType.getAnnotations(), originalType.getJavaClass(),
-                originalType.getConstructors(), originalType.getMethods(), originalType.getFields(), id);
+    public static <X> UnbackedAnnotatedType<X> modifiedAnnotatedType(SlimAnnotatedType<X> originalType, AnnotatedType<X> source) {
+        AnnotatedTypeIdentifier identifier = AnnotatedTypeIdentifier.forModifiedAnnotatedType(originalType.getIdentifier());
+        return new UnbackedAnnotatedType<X>(source, identifier);
     }
 
     private final Class<X> javaClass;
     private final Set<AnnotatedConstructor<X>> constructors;
     private final Set<AnnotatedMethod<? super X>> methods;
     private final Set<AnnotatedField<? super X>> fields;
-    private final String id;
+    private final AnnotatedTypeIdentifier identifier;
 
-    public UnbackedAnnotatedType(Type baseType, Set<Type> typeClosure, Set<Annotation> annotations, Class<X> javaClass, Set<AnnotatedConstructor<X>> originalConstructors,
-            Set<AnnotatedMethod<? super X>> originalMethods, Set<AnnotatedField<? super X>> originalFields, String id) {
-        super(baseType, typeClosure, annotations);
-        this.javaClass = javaClass;
-        Set<AnnotatedConstructor<X>> constructors = new HashSet<AnnotatedConstructor<X>>(originalConstructors.size());
-        for (AnnotatedConstructor<X> originalConstructor : originalConstructors) {
-            constructors.add(UnbackedAnnotatedConstructor.of(originalConstructor, this));
+    private UnbackedAnnotatedType(AnnotatedType<X> source, AnnotatedTypeIdentifier identifier) {
+        super(source.getBaseType(), source.getTypeClosure(), source.getAnnotations());
+        this.javaClass = source.getJavaClass();
+        Set<AnnotatedConstructor<X>> constructors = new HashSet<AnnotatedConstructor<X>>(source.getConstructors().size());
+        for (AnnotatedConstructor<X> constructor : source.getConstructors()) {
+            constructors.add(UnbackedAnnotatedConstructor.of(constructor, this));
         }
         this.constructors = immutableSet(constructors);
-        Set<AnnotatedMethod<? super X>> methods = new HashSet<AnnotatedMethod<? super X>>(originalMethods.size());
-        for (AnnotatedMethod<? super X> originalMethod : originalMethods) {
+        Set<AnnotatedMethod<? super X>> methods = new HashSet<AnnotatedMethod<? super X>>(source.getMethods().size());
+        for (AnnotatedMethod<? super X> originalMethod : source.getMethods()) {
             methods.add(UnbackedAnnotatedMethod.of(originalMethod, this));
         }
         this.methods = immutableSet(methods);
-        Set<AnnotatedField<? super X>> fields = new HashSet<AnnotatedField<? super X>>(originalFields.size());
-        for (AnnotatedField<? super X> originalField : originalFields) {
+        Set<AnnotatedField<? super X>> fields = new HashSet<AnnotatedField<? super X>>(source.getFields().size());
+        for (AnnotatedField<? super X> originalField : source.getFields()) {
             fields.add(UnbackedAnnotatedField.of(originalField, this));
         }
         this.fields = immutableSet(fields);
-        this.id = id;
+        this.identifier = identifier;
     }
 
     public Class<X> getJavaClass() {
@@ -102,16 +97,21 @@ public class UnbackedAnnotatedType<X> extends UnbackedAnnotated implements SlimA
     // Serialization
 
     private Object writeReplace() throws ObjectStreamException {
-        return new IdentifiedAnnotatedTypeSerializationProxy<X>(getID());
+        return new SerializationProxy<X>(getIdentifier());
     }
 
     private void readObject(ObjectInputStream stream) throws InvalidObjectException {
         throw new InvalidObjectException(PROXY_REQUIRED);
     }
 
+    // TODO: remove once IdentifiedAnnotatedType is deprecated
     @Override
     public String getID() {
-        return id;
+        String id = identifier.getSuffix();
+        if (id != null) {
+            return id;
+        }
+        return identifier.getClassName();
     }
 
     @Override
@@ -121,7 +121,7 @@ public class UnbackedAnnotatedType<X> extends UnbackedAnnotated implements SlimA
 
     @Override
     public int hashCode() {
-        return getID().hashCode();
+        return identifier.hashCode();
     }
 
     @Override
@@ -129,13 +129,15 @@ public class UnbackedAnnotatedType<X> extends UnbackedAnnotated implements SlimA
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
+        if (obj instanceof UnbackedAnnotatedType<?>) {
+            UnbackedAnnotatedType<?> that = cast(obj);
+            return Objects.equal(this.identifier, that.identifier);
         }
-        if (!(obj instanceof SlimAnnotatedType<?>)) {
-            return false;
-        }
-        SlimAnnotatedType<?> other = (SlimAnnotatedType<?>) obj;
-        return other.getID().equals(getID());
+        return false;
+    }
+
+    @Override
+    public AnnotatedTypeIdentifier getIdentifier() {
+        return identifier;
     }
 }

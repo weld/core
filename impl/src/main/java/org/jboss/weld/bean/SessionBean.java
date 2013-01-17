@@ -90,7 +90,7 @@ public class SessionBean<T> extends AbstractClassBean<T> {
         if (type.isDiscovered()) {
             return createId(beanType, ejbDescriptor);
         } else {
-            return new StringBuilder().append(beanType).append(BEAN_ID_SEPARATOR).append(ejbDescriptor.getEjbName()).append(type.getID()).toString();
+            return new StringBuilder().append(beanType).append(BEAN_ID_SEPARATOR).append(ejbDescriptor.getEjbName()).append(type.slim().getIdentifier().asString()).toString();
         }
     }
 

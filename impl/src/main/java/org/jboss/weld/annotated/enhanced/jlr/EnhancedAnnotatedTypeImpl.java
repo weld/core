@@ -48,6 +48,7 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.enhanced.MethodSignature;
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
+import org.jboss.weld.annotated.slim.AnnotatedTypeIdentifier;
 import org.jboss.weld.annotated.slim.backed.BackedAnnotatedType;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.collections.ArraySet;
@@ -142,10 +143,10 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
             if (superclass == null) {
                 this.superclass = null;
             } else {
-                this.superclass = classTransformer.getEnhancedAnnotatedType(superclass);
+                this.superclass = classTransformer.getEnhancedAnnotatedType(superclass, slim.getIdentifier().getBdaId());
             }
         } else {
-            this.superclass = classTransformer.getEnhancedAnnotatedType(Object.class);
+            this.superclass = classTransformer.getEnhancedAnnotatedType(Object.class, AnnotatedTypeIdentifier.NULL_BDA_ID);
         }
 
         // Assign class field information
@@ -651,7 +652,7 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
 
     @Override
     public int hashCode() {
-        return getID().hashCode();
+        return slim.hashCode();
     }
 
     @Override
@@ -659,13 +660,10 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
+        if (obj instanceof EnhancedAnnotatedTypeImpl<?>) {
+            EnhancedAnnotatedTypeImpl<?> that = cast(obj);
+            return slim.equals(that.slim);
         }
-        if (!(obj instanceof EnhancedAnnotatedTypeImpl<?>)) {
-            return false;
-        }
-        EnhancedAnnotatedTypeImpl<?> other = (EnhancedAnnotatedTypeImpl<?>) obj;
-        return getID().equals(other.getID());
+        return false;
     }
 }

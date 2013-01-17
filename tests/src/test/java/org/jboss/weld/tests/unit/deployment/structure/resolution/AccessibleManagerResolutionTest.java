@@ -66,7 +66,7 @@ public class AccessibleManagerResolutionTest {
     }
 
     private <T> void addBean(BeanManagerImpl manager, Class<T> c) {
-        EnhancedAnnotatedType<T> clazz = classTransformer.getEnhancedAnnotatedType(c);
+        EnhancedAnnotatedType<T> clazz = manager.createEnhancedAnnotatedType(c);
         RIBean<?> bean = ManagedBean.of(BeanAttributesFactory.forBean(clazz, manager), clazz, manager);
         manager.addBean(bean);
         manager.getBeanResolver().clear();

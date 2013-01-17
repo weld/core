@@ -37,8 +37,8 @@ import org.jboss.weld.util.reflection.Reflections;
  * @author Marius Bogoevici
  */
 public class CustomDecoratorWrapper<T> extends ForwardingDecorator<T> implements WeldDecorator<T> {
-    private Decorator<T> delegate;
-    private EnhancedAnnotatedType<T> weldClass;
+    private final Decorator<T> delegate;
+    private final EnhancedAnnotatedType<T> weldClass;
 
     private Map<MethodSignature, InvokableAnnotatedMethod<?>> decoratorMethods;
 
@@ -48,7 +48,7 @@ public class CustomDecoratorWrapper<T> extends ForwardingDecorator<T> implements
 
     private CustomDecoratorWrapper(Decorator<T> delegate, BeanManagerImpl beanManager) {
         this.delegate = delegate;
-        this.weldClass = beanManager.getServices().get(ClassTransformer.class).getEnhancedAnnotatedType(Reflections.<Class<T>>cast(delegate.getBeanClass()));
+        this.weldClass = beanManager.getServices().get(ClassTransformer.class).getEnhancedAnnotatedType(Reflections.<Class<T>>cast(delegate.getBeanClass()), beanManager.getId());
         this.decoratorMethods = Decorators.getDecoratorMethods(beanManager, delegate.getDecoratedTypes(), this.weldClass);
     }
 

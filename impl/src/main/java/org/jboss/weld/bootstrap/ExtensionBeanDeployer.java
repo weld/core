@@ -68,10 +68,10 @@ public class ExtensionBeanDeployer {
     public ExtensionBeanDeployer deployBeans() {
         ClassTransformer classTransformer = beanManager.getServices().get(ClassTransformer.class);
         for (Metadata<Extension> extension : extensions) {
-            EnhancedAnnotatedType<Extension> clazz = cast(classTransformer.getEnhancedAnnotatedType(extension.getValue().getClass()));
-
             // Locate the BeanDeployment for this extension
-            BeanDeployment beanDeployment = DeploymentStructures.getOrCreateBeanDeployment(deployment, beanManager, beanDeployments, contexts, clazz.getJavaClass(), enablementBuilder);
+            BeanDeployment beanDeployment = DeploymentStructures.getOrCreateBeanDeployment(deployment, beanManager, beanDeployments, contexts, extension.getValue().getClass(), enablementBuilder);
+
+            EnhancedAnnotatedType<Extension> clazz = cast(classTransformer.getEnhancedAnnotatedType(extension.getValue().getClass(), beanDeployment.getBeanDeploymentArchive().getId()));
 
             ExtensionBean bean = new ExtensionBean(beanDeployment.getBeanManager(), clazz, extension);
             Set<ObserverInitializationContext<?, ?>> observerMethodInitializers = new HashSet<ObserverInitializationContext<?, ?>>();

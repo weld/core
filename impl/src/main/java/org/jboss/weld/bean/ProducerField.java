@@ -99,7 +99,7 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field> {
         StringBuilder sb = new StringBuilder();
         sb.append(ProducerField.class.getSimpleName());
         sb.append(BEAN_ID_SEPARATOR);
-        sb.append(declaringBean.getEnhancedAnnotated().getID());
+        sb.append(declaringBean.getAnnotated().getIdentifier().asString());
         sb.append(".");
         if (declaringBean.getEnhancedAnnotated().isDiscovered()) {
             sb.append(field.getName());

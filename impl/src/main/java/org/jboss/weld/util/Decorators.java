@@ -202,7 +202,7 @@ public class Decorators {
         Set<MethodSignature> signatures = new HashSet<MethodSignature>();
 
         for (Type decoratedType : decoratedTypes) {
-            for (EnhancedAnnotatedMethod<?, ?> method : ClassTransformer.instance(beanManager).getEnhancedAnnotatedType(Reflections.getRawType(decoratedType)).getEnhancedMethods()) {
+            for (EnhancedAnnotatedMethod<?, ?> method : ClassTransformer.instance(beanManager).getEnhancedAnnotatedType(Reflections.getRawType(decoratedType), beanManager.getId()).getEnhancedMethods()) {
                 signatures.add(method.getSignature());
             }
         }

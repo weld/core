@@ -18,25 +18,17 @@ package org.jboss.weld.annotated.slim;
 
 import java.util.Collection;
 
+import javax.enterprise.inject.spi.BeanManager;
+
 import org.jboss.weld.bootstrap.api.Service;
-import org.jboss.weld.exceptions.DeploymentException;
 
 /**
- * Store for {@link SlimAnnotatedType}s. This service keeps references to {@link SlimAnnotatedType}s mapped by their ids. The
- * service is used for serialization of {@link SlimAnnotatedType} and lookup.
+ * Stores {@link SlimAnnotatedType}s and allows them to be retrieved via {@link BeanManager#getAnnotatedTypes(Class)} and {@link BeanManager#getAnnotatedType(Class, String)}.
  *
  * @author Jozef Hartinger
  *
  */
 public interface SlimAnnotatedTypeStore extends Service {
-
-    /**
-     * Retrieves a previously stored {@link SlimAnnotatedType}.
-     *
-     * @param id type identifier
-     * @return type identified by the identifier
-     */
-    <X> SlimAnnotatedType<X> get(String id);
 
     /**
      * Retrieves a previously stored list of {@link SlimAnnotatedType}s that match the given type.
@@ -47,17 +39,15 @@ public interface SlimAnnotatedTypeStore extends Service {
     <X> Collection<SlimAnnotatedType<X>> get(Class<X> type);
 
     /**
+     * Retrieves a previously stored {@link SlimAnnotatedType} that matches the given type and ID suffix.
+     */
+    <X> SlimAnnotatedType<X> get(Class<X> type, String suffix);
+
+    /**
      * Put a {@link SlimAnnotatedType} into the store.
      *
      * @param type type to store
-     * @throws DeploymentException if the type identifier is not unique
      */
     <X> void put(SlimAnnotatedType<X> type);
 
-    /**
-     * Put a {@link SlimAnnotatedType} into the store. Nothing is done if the store already contains a type with the given id.
-     *
-     * @param type type to store
-     */
-    <X> void putIfAbsent(SlimAnnotatedType<X> type);
 }

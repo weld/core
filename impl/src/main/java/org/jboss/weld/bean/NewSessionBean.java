@@ -38,7 +38,7 @@ public class NewSessionBean<T> extends SessionBean<T> implements NewBean {
      * @return a new NewEnterpriseBean instance
      */
     public static <T> NewSessionBean<T> of(BeanAttributes<T> attributes, InternalEjbDescriptor<T> ejbDescriptor, BeanManagerImpl beanManager) {
-        EnhancedAnnotatedType<T> type = beanManager.getServices().get(ClassTransformer.class).getEnhancedAnnotatedType(ejbDescriptor.getBeanClass());
+        EnhancedAnnotatedType<T> type = beanManager.getServices().get(ClassTransformer.class).getEnhancedAnnotatedType(ejbDescriptor.getBeanClass(), beanManager.getId());
         return new NewSessionBean<T>(attributes, type, ejbDescriptor, createId(NewSessionBean.class.getSimpleName(), ejbDescriptor), beanManager);
     }
 

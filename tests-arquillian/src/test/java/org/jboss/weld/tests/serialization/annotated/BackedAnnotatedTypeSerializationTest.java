@@ -31,7 +31,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.weld.annotated.slim.SlimAnnotatedTypeStore;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
@@ -42,7 +41,7 @@ public class BackedAnnotatedTypeSerializationTest {
 
     @Inject
     private BeanManagerImpl manager;
-    
+
     @Deployment
     public static Archive<?> getDeployment() {
         return ShrinkWrap.create(BeanArchive.class).addPackage(BackedAnnotatedTypeSerializationTest.class.getPackage())
@@ -50,8 +49,7 @@ public class BackedAnnotatedTypeSerializationTest {
     }
 
     public AnnotatedType<Foo> getAnnotatedType() {
-        SlimAnnotatedTypeStore store = manager.getServices().get(SlimAnnotatedTypeStore.class);
-        return store.get(Foo.class.getName());
+        return manager.getAnnotatedType(Foo.class, null);
     }
 
     @Test

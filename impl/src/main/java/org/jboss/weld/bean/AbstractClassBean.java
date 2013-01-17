@@ -103,7 +103,8 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> imp
     @Override
     protected void preSpecialize() {
         super.preSpecialize();
-        if (getEnhancedAnnotated().getEnhancedSuperclass() == null || getEnhancedAnnotated().getEnhancedSuperclass().getJavaClass().equals(Object.class)) {
+        Class<?> superclass = getAnnotated().getJavaClass().getSuperclass();
+        if (superclass == null || superclass.equals(Object.class)) {
             throw new DefinitionException(SPECIALIZING_BEAN_MUST_EXTEND_A_BEAN, this);
         }
     }

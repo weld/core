@@ -30,6 +30,7 @@ import java.util.Map;
 import org.jboss.weld.Container;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.exceptions.InvalidObjectException;
 import org.jboss.weld.interceptor.reader.DefaultMethodMetadata;
 import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
@@ -42,14 +43,14 @@ import org.jboss.weld.resources.ClassTransformer;
 public class WeldInterceptorClassMetadata<T> implements ClassMetadata<T>, Serializable {
     private static final long serialVersionUID = -5087425231467781559L;
 
-    private final Class<T> clazz;
+    private final SlimAnnotatedType<T> type;
 
     private final WeldInterceptorClassMetadata<?> superclass;
 
     private final Map<Method, MethodMetadata> methodMetadata;
 
     private WeldInterceptorClassMetadata(EnhancedAnnotatedType<T> weldClass) {
-        this.clazz = weldClass.getJavaClass();
+        this.type = weldClass.slim();
         Map<Method, MethodMetadata> methodMetadataMap = new HashMap<Method, MethodMetadata>();
         for (EnhancedAnnotatedMethod<?, ?> method : weldClass.getDeclaredEnhancedMethods()) {
             MethodMetadata methodMetadata = DefaultMethodMetadata.of(method, WeldAnnotatedMethodReader.getInstance());
@@ -70,7 +71,7 @@ public class WeldInterceptorClassMetadata<T> implements ClassMetadata<T>, Serial
     }
 
     public String getClassName() {
-        return clazz.getName();
+        return getJavaClass().getName();
     }
 
     public Iterable<MethodMetadata> getDeclaredMethods() {
@@ -83,7 +84,7 @@ public class WeldInterceptorClassMetadata<T> implements ClassMetadata<T>, Serial
     }
 
     public Class<T> getJavaClass() {
-        return clazz;
+        return type.getJavaClass();
     }
 
     public ClassMetadata<?> getSuperclass() {
@@ -91,7 +92,7 @@ public class WeldInterceptorClassMetadata<T> implements ClassMetadata<T>, Serial
     }
 
     private Object writeReplace() throws ObjectStreamException {
-        return new SerializationProxy<T>(clazz);
+        return new SerializationProxy<T>(type);
     }
 
     private void readObject(ObjectInputStream stream) throws InvalidObjectException {
@@ -102,15 +103,15 @@ public class WeldInterceptorClassMetadata<T> implements ClassMetadata<T>, Serial
 
         private static final long serialVersionUID = 514950313251775936L;
 
-        private final Class<T> clazz;
+        private final SlimAnnotatedType<T> type;
 
-        public SerializationProxy(Class<T> clazz) {
-            this.clazz = clazz;
+        public SerializationProxy(SlimAnnotatedType<T> type) {
+            this.type = type;
         }
 
         private Object readResolve() {
-            EnhancedAnnotatedType<T> type = Container.instance().services().get(ClassTransformer.class).getEnhancedAnnotatedType(clazz);
-            return new WeldInterceptorClassMetadata<T>(type);
+            EnhancedAnnotatedType<T> enhancedType = Container.instance().services().get(ClassTransformer.class).getEnhancedAnnotatedType(type);
+            return new WeldInterceptorClassMetadata<T>(enhancedType);
         }
     }
 }

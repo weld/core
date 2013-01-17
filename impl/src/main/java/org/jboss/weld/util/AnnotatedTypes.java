@@ -27,6 +27,7 @@ import javax.enterprise.inject.spi.AnnotatedMember;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.AnnotatedType;
+import javax.enterprise.inject.spi.IdentifiedAnnotatedType;
 
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -189,7 +190,11 @@ public class AnnotatedTypes {
      * @return
      */
     public static <X> String createTypeId(AnnotatedType<X> annotatedType) {
-        return createTypeId(annotatedType.getJavaClass(), annotatedType.getAnnotations(), annotatedType.getMethods(), annotatedType.getFields(), annotatedType.getConstructors());
+        if (annotatedType instanceof IdentifiedAnnotatedType<?>) {
+            return Reflections.<IdentifiedAnnotatedType<?>>cast(annotatedType).getID();
+        } else {
+            return createTypeId(annotatedType.getJavaClass(), annotatedType.getAnnotations(), annotatedType.getMethods(), annotatedType.getFields(), annotatedType.getConstructors());
+        }
     }
 
     /**

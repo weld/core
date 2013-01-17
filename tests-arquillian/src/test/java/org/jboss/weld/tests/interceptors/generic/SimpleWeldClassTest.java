@@ -30,6 +30,7 @@ import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.annotated.slim.AnnotatedTypeIdentifier;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.ReflectionCacheFactory;
@@ -55,7 +56,7 @@ public class SimpleWeldClassTest {
     @Test
     public void testWeldClassForGenericSuperclass() {
         TypeStore ts = new TypeStore();
-        EnhancedAnnotatedType<StringProcessor> weldClass = new ClassTransformer(ts, new SharedObjectCache(), ReflectionCacheFactory.newInstance(ts)).getEnhancedAnnotatedType(StringProcessor.class);
+        EnhancedAnnotatedType<StringProcessor> weldClass = new ClassTransformer(ts, new SharedObjectCache(), ReflectionCacheFactory.newInstance(ts)).getEnhancedAnnotatedType(StringProcessor.class, AnnotatedTypeIdentifier.NULL_BDA_ID);
         Collection<EnhancedAnnotatedMethod<?, ? super StringProcessor>> methods = weldClass.getEnhancedMethods();
         //assert methods.size() == 2;
         List<AnnotatedMethod<?>> interceptableMethods = Beans.getInterceptableMethods(weldClass);

@@ -61,6 +61,7 @@ import org.jboss.weld.logging.Category;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
+import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.collections.Multimaps;
 import org.jboss.weld.util.reflection.Reflections;
@@ -102,7 +103,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
             containerLifecycleEvents.preloadProcessAnnotatedType(clazz);
             SlimAnnotatedType<?> annotatedType = null;
             try {
-                annotatedType = classTransformer.getAnnotatedType(clazz);
+                annotatedType = classTransformer.getBackedAnnotatedType(clazz, getManager().getId());
             } catch (ResourceLoadingException e) {
                 log.info(IGNORING_CLASS_DUE_TO_LOADING_ERROR, className);
                 xlog.catching(DEBUG, e);
@@ -114,8 +115,11 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
         return this;
     }
 
-    public <T> BeanDeployer addSyntheticClass(AnnotatedType<T> annotatedType, Extension extension) {
-        getEnvironment().addSyntheticAnnotatedType(classTransformer.getAnnotatedType(annotatedType), extension);
+    public <T> BeanDeployer addSyntheticClass(AnnotatedType<T> source, Extension extension, String suffix) {
+        if (suffix == null) {
+            suffix = AnnotatedTypes.createTypeId(source);
+        }
+        getEnvironment().addSyntheticAnnotatedType(classTransformer.getUnbackedAnnotatedType(source, getManager().getId(), suffix), extension);
         return this;
     }
 
@@ -142,7 +146,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
                     boolean dirty = event.isDirty();
                     if (dirty) {
                         classesToBeRemoved.add(annotatedType); // remove the original class
-                        classesToBeAdded.add(event.getAnnotatedType());
+                        classesToBeAdded.add(event.getResultingAnnotatedType());
                     }
                 }
             }
@@ -160,9 +164,9 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
 
     public void processEnums() {
         EnumService enumService = getManager().getServices().get(EnumService.class);
-        for (AnnotatedType<?> annotatedType: getEnvironment().getAnnotatedTypes()) {
+        for (SlimAnnotatedType<?> annotatedType: getEnvironment().getAnnotatedTypes()) {
             if (Reflections.isEnum(annotatedType.getJavaClass())) {
-                enumService.addEnumClass(Reflections.<AnnotatedType<Enum<?>>> cast(annotatedType));
+                enumService.addEnumClass(Reflections.<SlimAnnotatedType<Enum<?>>> cast(annotatedType));
             }
         }
         // add @New injection points from enums
@@ -172,9 +176,9 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
     }
 
     public void createClassBeans() {
-        Map<Class<?>, Set<AnnotatedType<?>>> otherWeldClasses = Multimaps.newConcurrentSetMultimap();
+        Map<Class<?>, Set<SlimAnnotatedType<?>>> otherWeldClasses = Multimaps.newConcurrentSetMultimap();
 
-        for (AnnotatedType<?> annotatedType : getEnvironment().getAnnotatedTypes()) {
+        for (SlimAnnotatedType<?> annotatedType : getEnvironment().getAnnotatedTypes()) {
             createClassBean(annotatedType, otherWeldClasses);
         }
         // create session beans
@@ -184,7 +188,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
             }
             if (ejbDescriptor.isSingleton() || ejbDescriptor.isStateful() || ejbDescriptor.isStateless()) {
                 if (otherWeldClasses.containsKey(ejbDescriptor.getBeanClass())) {
-                    for (AnnotatedType<?> annotatedType : otherWeldClasses.get(ejbDescriptor.getBeanClass())) {
+                    for (SlimAnnotatedType<?> annotatedType : otherWeldClasses.get(ejbDescriptor.getBeanClass())) {
                         EnhancedAnnotatedType<?> weldClass = classTransformer.getEnhancedAnnotatedType(annotatedType);
                         createSessionBean(ejbDescriptor, Reflections.<EnhancedAnnotatedType> cast(weldClass));
                     }
@@ -195,7 +199,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
         }
     }
 
-    protected void createClassBean(AnnotatedType<?> annotatedType, Map<Class<?>, Set<AnnotatedType<?>>> otherWeldClasses) {
+    protected void createClassBean(SlimAnnotatedType<?> annotatedType, Map<Class<?>, Set<SlimAnnotatedType<?>>> otherWeldClasses) {
         boolean managedBeanOrDecorator = !getEnvironment().getEjbDescriptors().contains(annotatedType.getJavaClass()) && Beans.isTypeManagedBeanOrDecoratorOrInterceptor(annotatedType);
         if (managedBeanOrDecorator) {
             containerLifecycleEvents.preloadProcessInjectionTarget(annotatedType.getJavaClass());
@@ -337,7 +341,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
         for (InternalEjbDescriptor<?> descriptor : getEnvironment().getEjbDescriptors()) {
             if (descriptor.isMessageDriven()) {
                 if (!getManager().getInterceptorModelRegistry().containsKey(descriptor.getBeanClass())) {
-                    InterceptionModelInitializer.of(getManager(), classTransformer.getEnhancedAnnotatedType(descriptor.getBeanClass()), null).init();
+                    InterceptionModelInitializer.of(getManager(), classTransformer.getEnhancedAnnotatedType(descriptor.getBeanClass(), getManager().getId()), null).init();
                 }
                 InterceptionModel<ClassMetadata<?>, ?> model = getManager().getInterceptorModelRegistry().get(descriptor.getBeanClass());
                 if (model != null) {

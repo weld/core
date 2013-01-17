@@ -49,18 +49,18 @@ public class SubclassedComponentInstantiator<T> implements Instantiator<T> {
 
     private final ConstructorInjectionPoint<T> proxyClassConstructorInjectionPoint;
 
-    public SubclassedComponentInstantiator(AnnotatedType<T> type, Bean<T> bean, DefaultInstantiator<T> delegate, BeanManagerImpl manager) {
+    public SubclassedComponentInstantiator(EnhancedAnnotatedType<T> type, Bean<T> bean, DefaultInstantiator<T> delegate, BeanManagerImpl manager) {
         this(type, bean, delegate.getConstructor(), manager);
     }
 
-    protected SubclassedComponentInstantiator(AnnotatedType<T> type, Bean<T> bean, ConstructorInjectionPoint<T> originalConstructor, BeanManagerImpl manager) {
+    protected SubclassedComponentInstantiator(EnhancedAnnotatedType<T> type, Bean<T> bean, ConstructorInjectionPoint<T> originalConstructor, BeanManagerImpl manager) {
         EnhancedAnnotatedConstructor<T> constructorForEnhancedSubclass = initEnhancedSubclass(manager, type, bean, originalConstructor);
         this.proxyClassConstructorInjectionPoint = new ProxyClassConstructorInjectionPointWrapper<T>(bean, type.getJavaClass(), constructorForEnhancedSubclass, originalConstructor, manager);
     }
 
-    protected EnhancedAnnotatedConstructor<T> initEnhancedSubclass(BeanManagerImpl manager, AnnotatedType<T> type, Bean<?> bean, ConstructorInjectionPoint<T> originalConstructorInjectionPoint) {
+    protected EnhancedAnnotatedConstructor<T> initEnhancedSubclass(BeanManagerImpl manager, EnhancedAnnotatedType<T> type, Bean<?> bean, ConstructorInjectionPoint<T> originalConstructorInjectionPoint) {
         ClassTransformer transformer = manager.getServices().get(ClassTransformer.class);
-        EnhancedAnnotatedType<T> enhancedSubclass = transformer.getEnhancedAnnotatedType(createEnhancedSubclass(type, bean));
+        EnhancedAnnotatedType<T> enhancedSubclass = transformer.getEnhancedAnnotatedType(createEnhancedSubclass(type, bean), type.slim().getIdentifier().getBdaId());
         return EnhancedAnnotatedConstructorImpl.of(enhancedSubclass.getDeclaredEnhancedConstructor(originalConstructorInjectionPoint.getSignature()),
                 enhancedSubclass,
                 transformer);

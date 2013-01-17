@@ -132,7 +132,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
         String typeId = null;
         if (declaringBean instanceof AbstractClassBean<?>) {
             AbstractClassBean<?> classBean = (AbstractClassBean<?>) declaringBean;
-            typeId = classBean.getAnnotated().getID();
+            typeId = classBean.getAnnotated().getIdentifier().asString();
         } else {
             typeId = declaringBean.getBeanClass().getName();
         }

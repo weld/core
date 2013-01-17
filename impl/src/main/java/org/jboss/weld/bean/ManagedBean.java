@@ -33,7 +33,6 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.Decorator;
-import javax.enterprise.inject.spi.IdentifiedAnnotatedType;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
@@ -45,7 +44,6 @@ import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.util.Decorators;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.reflection.Formats;
@@ -86,8 +84,8 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
         return new ManagedBean<T>(attributes, clazz, createId(ManagedBean.class.getSimpleName(), clazz), beanManager);
     }
 
-    protected static String createId(String beanType, IdentifiedAnnotatedType<?> type) {
-        return new StringBuilder().append(beanType).append(BEAN_ID_SEPARATOR).append(type.getID()).toString();
+    protected static String createId(String beanType, EnhancedAnnotatedType<?> type) {
+        return new StringBuilder().append(beanType).append(BEAN_ID_SEPARATOR).append(type.slim().getIdentifier().asString()).toString();
     }
 
     /**

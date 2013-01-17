@@ -94,16 +94,22 @@ public class BeforeBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implemen
         getBeanManager().getServices().get(MetaAnnotationStore.class).clearAnnotationData(stereotype);
     }
 
-    public void addAnnotatedType(AnnotatedType<?> type) {
-        if (Beans.isVetoed(type)) {
+    @Override
+    public void addAnnotatedType(AnnotatedType<?> source) {
+        // TODO: once this method is deprecated as part of CDI-83, log a warning then it is called
+        addAnnotatedType(source, null);
+    }
+
+    // @Override TODO: waiting for CDI-83
+    public void addAnnotatedType(AnnotatedType<?> source, String id) {
+        if (Beans.isVetoed(source)) {
             return;
         }
         Object receiver = getReceiver();
         if (!(receiver instanceof Extension)) {
             throw new IllegalStateException("BeforeBeanDiscovery receiver is not an extension");
         }
-        BeanDeployer deployer = getOrCreateBeanDeployment(type.getJavaClass()).getBeanDeployer();
-        deployer.addSyntheticClass(type, (Extension) receiver);
+        BeanDeployer deployer = getOrCreateBeanDeployment(source.getJavaClass()).getBeanDeployer();
+        deployer.addSyntheticClass(source, (Extension) receiver, id);
     }
-
 }

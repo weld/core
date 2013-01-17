@@ -22,6 +22,8 @@ import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.IdentifiedAnnotatedType;
 
 import org.jboss.weld.Container;
+import org.jboss.weld.annotated.Identified;
+import org.jboss.weld.resources.ClassTransformer;
 
 /**
  * Marker interface for lightweight implementations of {@link AnnotatedType}.
@@ -30,24 +32,23 @@ import org.jboss.weld.Container;
  *
  * @param <T> the type
  */
-public interface SlimAnnotatedType<T> extends IdentifiedAnnotatedType<T> {
+public interface SlimAnnotatedType<T> extends IdentifiedAnnotatedType<T>, Identified<AnnotatedTypeIdentifier> {
 
     /**
      * Clear up cached content to save memory. Called after bootstrap is complete.
      */
     void clear();
 
-    public static class IdentifiedAnnotatedTypeSerializationProxy<X> implements Serializable {
+    public static class SerializationProxy<X> implements Serializable {
+        private static final long serialVersionUID = 6800705438537396237L;
+        private final AnnotatedTypeIdentifier identifier;
 
-        private static final long serialVersionUID = 6346909556206514705L;
-        private final String id;
-
-        public IdentifiedAnnotatedTypeSerializationProxy(String id) {
-            this.id = id;
+        public SerializationProxy(AnnotatedTypeIdentifier identifier) {
+            this.identifier = identifier;
         }
 
         private Object readResolve() {
-            return Container.instance().services().get(SlimAnnotatedTypeStore.class).get(id);
+            return Container.instance().services().get(ClassTransformer.class).getSlimAnnotatedTypeById(identifier);
         }
     }
 }

@@ -23,9 +23,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.enterprise.inject.spi.AnnotatedType;
-
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.injection.producer.InjectionTargetService;
@@ -55,7 +54,7 @@ public class EnumService implements Service {
         this.instances = new HashSet<EnumInstanceContext<?>>();
     }
 
-    public <T extends Enum<?>> void addEnumClass(AnnotatedType<T> annotatedType) {
+    public <T extends Enum<?>> void addEnumClass(SlimAnnotatedType<T> annotatedType) {
         if (injectionTargets.containsKey(annotatedType.getJavaClass())) {
             return;
         }

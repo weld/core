@@ -20,6 +20,7 @@ import javax.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.annotated.slim.AnnotatedTypeIdentifier;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.ReflectionCacheFactory;
@@ -40,7 +41,7 @@ public class WeldMethodTest {
     */
     @Test
     public void testMethodReturnsGenericTypeOfClass() throws Exception {
-        EnhancedAnnotatedType<Choice<?, ?>> clazz = transformer.getEnhancedAnnotatedType(CHOICE_LITERAL);
+        EnhancedAnnotatedType<Choice<?, ?>> clazz = transformer.getEnhancedAnnotatedType(CHOICE_LITERAL, AnnotatedTypeIdentifier.NULL_BDA_ID);
         EnhancedAnnotatedMethod<?, ?> method = clazz.getEnhancedMethod(Choice.class.getMethod("aMethod"));
         Assert.assertEquals(3, method.getTypeClosure().size());
     }

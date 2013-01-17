@@ -34,6 +34,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.annotated.slim.AnnotatedTypeIdentifier;
 import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.resources.ClassTransformer;
@@ -112,13 +113,12 @@ public class CustomDecorator implements Decorator<Object> {
     }
 
     class CustomInjectionPoint implements InjectionPoint {
-        private final EnhancedAnnotatedType<?> targetClass;
         private final EnhancedAnnotatedField<CustomWindowFrame, ?> windowField;
 
         public CustomInjectionPoint() {
             TypeStore ts = new TypeStore();
             ClassTransformer transformer = new ClassTransformer(ts, new SharedObjectCache(), ReflectionCacheFactory.newInstance(ts));
-            targetClass = transformer.getEnhancedAnnotatedType(CustomWindowFrame.class);
+            EnhancedAnnotatedType<?> targetClass = transformer.getEnhancedAnnotatedType(CustomWindowFrame.class, AnnotatedTypeIdentifier.NULL_BDA_ID);
             windowField = targetClass.getDeclaredEnhancedField("window");
         }
 

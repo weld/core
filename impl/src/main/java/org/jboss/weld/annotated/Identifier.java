@@ -14,24 +14,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.serialization.annotated;
+package org.jboss.weld.annotated;
 
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.inject.Inject;
+import java.io.Serializable;
 
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.weld.manager.BeanManagerImpl;
-import org.junit.runner.RunWith;
+import javax.enterprise.inject.spi.PassivationCapable;
 
-@RunWith(Arquillian.class)
-public class UnbackedAnnotatedTypeSerializationTest extends BackedAnnotatedTypeSerializationTest {
+/**
+ * Marker interface for an identifier. The identifier has to be mutable and serializable.
+ *
+ * @author Jozef Hartinger
+ *
+ */
+public interface Identifier extends Serializable {
 
-    @Inject
-    private BeanManagerImpl manager;
+    String ID_SEPARATOR = "-";
 
-    @Override
-    public AnnotatedType<Foo> getAnnotatedType() {
-        return manager.getAnnotatedType(Foo.class, FooExtension.FOO_ID);
-    }
+    /**
+     * String representation of this identifier. This is required as some parts of the CDI API use String identifiers, for
+     * example {@link PassivationCapable#getId()}. Unlike {@link #toString()}, this method returns a non-verbose canonical
+     * string identifier.
+     *
+     * @return
+     */
+    String asString();
 
 }

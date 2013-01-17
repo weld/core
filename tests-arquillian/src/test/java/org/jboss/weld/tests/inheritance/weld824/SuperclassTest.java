@@ -28,6 +28,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
+import javax.enterprise.inject.spi.Extension;
 import javax.inject.Inject;
 
 import static org.junit.Assert.assertTrue;
@@ -56,7 +57,7 @@ public class SuperclassTest {
     public static JavaArchive createJavaArchive() {
         JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "test.jar");
         jar.addClasses(SimpleExtension.class, Foo.class, Bar.class);
-        jar.addAsManifestResource("org/jboss/weld/tests/inheritance/weld824/SimpleExtension", "services/javax.enterprise.inject.spi.Extension");
+        jar.addAsServiceProvider(Extension.class, SimpleExtension.class);
         return jar;
     }
 

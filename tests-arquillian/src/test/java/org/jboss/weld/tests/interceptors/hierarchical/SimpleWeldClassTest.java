@@ -30,6 +30,7 @@ import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.annotated.slim.AnnotatedTypeIdentifier;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.ReflectionCacheFactory;
@@ -58,7 +59,7 @@ public class SimpleWeldClassTest {
     @Test
     public void testWeldClassForCovariantReturnType() {
         TypeStore typeStore = new TypeStore();
-        EnhancedAnnotatedType<Attacker> weldClass = new ClassTransformer(typeStore, new SharedObjectCache(), ReflectionCacheFactory.newInstance(typeStore)).getEnhancedAnnotatedType(Attacker.class);
+        EnhancedAnnotatedType<Attacker> weldClass = new ClassTransformer(typeStore, new SharedObjectCache(), ReflectionCacheFactory.newInstance(typeStore)).getEnhancedAnnotatedType(Attacker.class, AnnotatedTypeIdentifier.NULL_BDA_ID);
         Collection<EnhancedAnnotatedMethod<?, ? super Attacker>> methods = weldClass.getEnhancedMethods();
         Assert.assertEquals(4, methods.size());
         List<AnnotatedMethod<?>> interceptableMethods = Beans.getInterceptableMethods(weldClass);
