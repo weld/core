@@ -42,6 +42,7 @@ import org.jboss.weld.util.bytecode.DescriptorUtils;
 import org.jboss.weld.util.bytecode.MethodInformation;
 import org.jboss.weld.util.bytecode.RuntimeMethodInformation;
 import org.jboss.weld.util.bytecode.StaticMethodInformation;
+import org.jboss.weld.util.reflection.SecureReflections;
 
 /**
  * This special proxy factory is mostly used for abstract decorators. When a
@@ -129,13 +130,13 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
         if (cls == null)
             return;
 
-        all.addAll(Arrays.asList(cls.getDeclaredMethods()));
+        all.addAll(Arrays.asList(SecureReflections.getDeclaredMethods(cls)));
 
         decoratorMethods(cls.getSuperclass(), all);
 
         // by now we should have all declared methods, let's only add the missing ones
         for (Class<?> ifc : cls.getInterfaces()) {
-            Method[] methods = ifc.getDeclaredMethods();
+            Method[] methods = ifc.getMethods();
             for (Method m : methods) {
                 boolean isEqual = false;
                 for (Method a : all) {

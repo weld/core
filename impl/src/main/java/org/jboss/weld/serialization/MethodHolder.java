@@ -21,6 +21,7 @@ import static org.jboss.weld.logging.messages.ReflectionMessage.UNABLE_TO_GET_ME
 import java.lang.reflect.Method;
 
 import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.util.reflection.SecureReflections;
 
 /**
  * Serializable holder for {@link Method}.
@@ -46,7 +47,7 @@ public class MethodHolder extends AbstractSerializableHolder<Method> {
     @Override
     protected Method initialize() {
         try {
-            return declaringClass.getMethod(methodName, parameterTypes);
+            return SecureReflections.getDeclaredMethod(declaringClass, methodName, parameterTypes);
         } catch (Exception e) {
             throw new WeldException(UNABLE_TO_GET_METHOD_ON_DESERIALIZATION, e, declaringClass, parameterTypes);
         }

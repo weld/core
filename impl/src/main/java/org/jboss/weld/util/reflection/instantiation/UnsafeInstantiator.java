@@ -43,10 +43,10 @@ public class UnsafeInstantiator implements Instantiator {
     private void init() {
         try {
             Class<?> unsafe = Class.forName(REFLECTION_CLASS_NAME);
-            Field accessor = unsafe.getDeclaredField("theUnsafe");
+            Field accessor = SecureReflections.getDeclaredField(unsafe, "theUnsafe");
             SecureReflections.ensureAccessible(accessor);
             unsafeInstance = accessor.get(null);
-            allocateInstanceMethod = unsafe.getDeclaredMethod("allocateInstance", Class.class);
+            allocateInstanceMethod = SecureReflections.getDeclaredMethod(unsafe, "allocateInstance", Class.class);
         } catch (Exception e) {
             // OK to fail
         }

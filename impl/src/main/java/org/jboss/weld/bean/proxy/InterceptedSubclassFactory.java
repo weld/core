@@ -42,6 +42,7 @@ import org.jboss.weld.util.bytecode.DescriptorUtils;
 import org.jboss.weld.util.bytecode.MethodInformation;
 import org.jboss.weld.util.bytecode.RuntimeMethodInformation;
 import org.jboss.weld.util.bytecode.StaticMethodInformation;
+import org.jboss.weld.util.reflection.SecureReflections;
 
 /**
  * Factory for producing subclasses that are used by the combined interceptors and decorators stack.
@@ -105,7 +106,7 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
             // Add all methods from the class heirachy
             Class<?> cls = getBeanType();
             while (cls != null) {
-                for (Method method : cls.getDeclaredMethods()) {
+                for (Method method : SecureReflections.getDeclaredMethods(cls)) {
                     final MethodSignatureImpl methodSignature = new MethodSignatureImpl(method);
                     if (!Modifier.isFinal(method.getModifiers()) && enhancedMethodSignatures.contains(methodSignature) && !finalMethods.contains(methodSignature)) {
                         try {
@@ -286,20 +287,20 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
     protected void addSpecialMethods(ClassFile proxyClassType) {
         try {
             // Add special methods for interceptors
-            for (Method method : LifecycleMixin.class.getDeclaredMethods()) {
+            for (Method method : LifecycleMixin.class.getMethods()) {
                 log.trace("Adding method " + method);
                 MethodInformation methodInfo = new RuntimeMethodInformation(method);
                 createInterceptorBody(proxyClassType.addMethod(method), methodInfo, false);
             }
-            Method getInstanceMethod = TargetInstanceProxy.class.getDeclaredMethod("getTargetInstance");
-            Method getInstanceClassMethod = TargetInstanceProxy.class.getDeclaredMethod("getTargetClass");
+            Method getInstanceMethod = TargetInstanceProxy.class.getMethod("getTargetInstance");
+            Method getInstanceClassMethod = TargetInstanceProxy.class.getMethod("getTargetClass");
             generateGetTargetInstanceBody(proxyClassType.addMethod(getInstanceMethod));
             generateGetTargetClassBody(proxyClassType.addMethod(getInstanceClassMethod));
 
-            Method setMethodHandlerMethod = ProxyObject.class.getDeclaredMethod("setHandler", MethodHandler.class);
+            Method setMethodHandlerMethod = ProxyObject.class.getMethod("setHandler", MethodHandler.class);
             generateSetMethodHandlerBody(proxyClassType.addMethod(setMethodHandlerMethod));
 
-            Method getMethodHandlerMethod = ProxyObject.class.getDeclaredMethod("getHandler");
+            Method getMethodHandlerMethod = ProxyObject.class.getMethod("getHandler");
             generateGetMethodHandlerBody(proxyClassType.addMethod(getMethodHandlerMethod));
        } catch (Exception e) {
             throw new WeldException(e);

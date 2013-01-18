@@ -411,7 +411,7 @@ public class ProxyFactory<T> {
                 ConstructorUtils.addDefaultConstructor(proxyClassType, initialValueBytecode);
             } else {
                 boolean constructorFound = false;
-                for (Constructor<?> constructor : getBeanType().getDeclaredConstructors()) {
+                for (Constructor<?> constructor : SecureReflections.getDeclaredConstructors(getBeanType())) {
                     if ((constructor.getModifiers() & Modifier.PRIVATE) == 0) {
                         constructorFound = true;
                         String[] exceptions = new String[constructor.getExceptionTypes().length];
@@ -471,7 +471,7 @@ public class ProxyFactory<T> {
             generateHashCodeMethod(proxyClassType);
 
             while (cls != null) {
-                for (Method method : cls.getDeclaredMethods()) {
+                for (Method method : SecureReflections.getDeclaredMethods(cls)) {
                     if (!Modifier.isStatic(method.getModifiers()) && !Modifier.isFinal(method.getModifiers()) && (method.getDeclaringClass() != Object.class || method.getName().equals("toString"))) {
                         try {
                             MethodInformation methodInfo = new RuntimeMethodInformation(method);
@@ -656,14 +656,14 @@ public class ProxyFactory<T> {
     protected void addSpecialMethods(ClassFile proxyClassType) {
         try {
             // Add special methods for interceptors
-            for (Method method : LifecycleMixin.class.getDeclaredMethods()) {
+            for (Method method : LifecycleMixin.class.getMethods()) {
                 log.trace("Adding method " + method);
                 MethodInformation methodInfo = new RuntimeMethodInformation(method);
                 final ClassMethod classMethod = proxyClassType.addMethod(method);
                 createInterceptorBody(classMethod, methodInfo);
             }
-            Method getInstanceMethod = TargetInstanceProxy.class.getDeclaredMethod("getTargetInstance");
-            Method getInstanceClassMethod = TargetInstanceProxy.class.getDeclaredMethod("getTargetClass");
+            Method getInstanceMethod = TargetInstanceProxy.class.getMethod("getTargetInstance");
+            Method getInstanceClassMethod = TargetInstanceProxy.class.getMethod("getTargetClass");
 
             MethodInformation getInstanceMethodInfo = new RuntimeMethodInformation(getInstanceMethod);
             createInterceptorBody(proxyClassType.addMethod(getInstanceMethod), getInstanceMethodInfo);
@@ -672,10 +672,10 @@ public class ProxyFactory<T> {
             MethodInformation getInstanceClassMethodInfo = new RuntimeMethodInformation(getInstanceClassMethod);
             createInterceptorBody(proxyClassType.addMethod(getInstanceClassMethod), getInstanceClassMethodInfo);
 
-            Method setMethodHandlerMethod = ProxyObject.class.getDeclaredMethod("setHandler", MethodHandler.class);
+            Method setMethodHandlerMethod = ProxyObject.class.getMethod("setHandler", MethodHandler.class);
             generateSetMethodHandlerBody(proxyClassType.addMethod(setMethodHandlerMethod));
 
-            Method getMethodHandlerMethod = ProxyObject.class.getDeclaredMethod("getHandler");
+            Method getMethodHandlerMethod = ProxyObject.class.getMethod("getHandler");
             generateGetMethodHandlerBody(proxyClassType.addMethod(getMethodHandlerMethod));
         } catch (Exception e) {
             throw new WeldException(e);

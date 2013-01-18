@@ -25,6 +25,7 @@ import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.weld.interceptor.spi.metadata.MethodMetadata;
 import org.jboss.weld.interceptor.util.ArrayIterator;
 import org.jboss.weld.interceptor.util.ImmutableIteratorWrapper;
+import org.jboss.weld.util.reflection.SecureReflections;
 
 /**
  * @author Marius Bogoevici
@@ -50,7 +51,7 @@ public class ReflectiveClassMetadata<T> implements ClassMetadata<T>, Serializabl
     public Iterable<MethodMetadata> getDeclaredMethods() {
         return new Iterable<MethodMetadata>() {
             public Iterator<MethodMetadata> iterator() {
-                return new ImmutableIteratorWrapper<Method>(new ArrayIterator<Method>(ReflectiveClassMetadata.this.clazz.getDeclaredMethods())) {
+                return new ImmutableIteratorWrapper<Method>(new ArrayIterator<Method>(SecureReflections.getDeclaredMethods(ReflectiveClassMetadata.this.clazz))) {
                     @Override
                     protected MethodMetadata wrapObject(Method method) {
                         return DefaultMethodMetadata.of(method);

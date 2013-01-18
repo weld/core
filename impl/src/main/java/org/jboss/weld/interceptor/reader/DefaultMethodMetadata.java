@@ -29,6 +29,7 @@ import org.jboss.weld.interceptor.spi.model.InterceptionType;
 import org.jboss.weld.interceptor.util.InterceptionTypeRegistry;
 import org.jboss.weld.resources.SharedObjectFacade;
 import org.jboss.weld.util.collections.ArraySet;
+import org.jboss.weld.util.reflection.SecureReflections;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
@@ -65,7 +66,7 @@ public class DefaultMethodMetadata<M> implements MethodMetadata, Serializable {
     private DefaultMethodMetadata(Set<InterceptionType> interceptionTypes, MethodReference methodReference) {
         this.supportedInterceptorTypes = interceptionTypes;
         try {
-            this.javaMethod = methodReference.getDeclaringClass().getDeclaredMethod(methodReference.getMethodName(), methodReference.getParameterTypes());
+            this.javaMethod = SecureReflections.getDeclaredMethod(methodReference.getDeclaringClass(), methodReference.getMethodName(), methodReference.getParameterTypes());
         } catch (NoSuchMethodException e) {
             throw new IllegalStateException(e);
         }

@@ -21,6 +21,7 @@ import static org.jboss.weld.logging.messages.ReflectionMessage.UNABLE_TO_GET_FI
 import java.lang.reflect.Field;
 
 import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.util.reflection.SecureReflections;
 
 /**
  * Serializable holder for {@link Field}.
@@ -44,7 +45,7 @@ public class FieldHolder extends AbstractSerializableHolder<Field> {
     @Override
     protected Field initialize() {
         try {
-            return declaringClass.getDeclaredField(fieldName);
+            return SecureReflections.getDeclaredField(declaringClass, fieldName);
         } catch (Exception e) {
             throw new WeldException(UNABLE_TO_GET_FIELD_ON_DESERIALIZATION, e, declaringClass, fieldName);
         }

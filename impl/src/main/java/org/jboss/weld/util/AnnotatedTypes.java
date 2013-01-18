@@ -30,6 +30,7 @@ import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.IdentifiedAnnotatedType;
 
 import org.jboss.weld.util.reflection.Reflections;
+import org.jboss.weld.util.reflection.SecureReflections;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -273,7 +274,7 @@ public class AnnotatedTypes {
             builder.append('@');
             builder.append(a.annotationType().getName());
             builder.append('(');
-            Method[] declaredMethods = a.annotationType().getDeclaredMethods();
+            Method[] declaredMethods = SecureReflections.getDeclaredMethods(a.annotationType());
             List<Method> methods = new ArrayList<Method>(declaredMethods.length);
             for (Method m : declaredMethods) {
                 methods.add(m);

@@ -21,6 +21,7 @@ import static org.jboss.weld.logging.messages.ReflectionMessage.UNABLE_TO_GET_CO
 import java.lang.reflect.Constructor;
 
 import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.util.reflection.SecureReflections;
 
 /**
  * Serializable holder for {@link Constructor}.
@@ -48,7 +49,7 @@ public class ConstructorHolder<X> extends AbstractSerializableHolder<Constructor
     @Override
     protected Constructor<X> initialize() {
         try {
-            return declaringClass.getConstructor(parameterTypes);
+            return SecureReflections.getDeclaredConstructor(declaringClass, parameterTypes);
         } catch (Exception e) {
             throw new WeldException(UNABLE_TO_GET_CONSTRUCTOR_ON_DESERIALIZATION, e, declaringClass, parameterTypes);
         }

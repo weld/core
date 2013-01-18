@@ -222,12 +222,12 @@ public class SessionBean<T> extends AbstractClassBean<T> {
         if (!observerMethods.isEmpty()) {
             Set<MethodSignature> businessMethodSignatures = new HashSet<MethodSignature>();
             for (BusinessInterfaceDescriptor<?> businessInterfaceDescriptor : ejbDescriptor.getLocalBusinessInterfaces()) {
-                for (Method m : businessInterfaceDescriptor.getInterface().getDeclaredMethods()) {
+                for (Method m : businessInterfaceDescriptor.getInterface().getMethods()) {
                     businessMethodSignatures.add(new MethodSignatureImpl(m));
                 }
             }
             for (BusinessInterfaceDescriptor<?> businessInterfaceDescriptor : ejbDescriptor.getRemoteBusinessInterfaces()) {
-                for (Method m : businessInterfaceDescriptor.getInterface().getDeclaredMethods()) {
+                for (Method m : businessInterfaceDescriptor.getInterface().getMethods()) {
                     businessMethodSignatures.add(new MethodSignatureImpl(m));
                 }
             }
