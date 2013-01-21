@@ -120,6 +120,7 @@ import org.jboss.weld.bean.builtin.AbstractDecorableBuiltInBean;
 import org.jboss.weld.bean.builtin.ee.EEResourceProducerField;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.bootstrap.enablement.ClassEnablement;
+import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.IllegalProductException;
@@ -358,7 +359,9 @@ public class Validator implements Service {
         // check that UserTransaction is not injected into a SessionBean with container-managed transactions
         if (bean instanceof SessionBean<?>) {
             JtaApiAbstraction jtaApi = beanManager.getServices().get(JtaApiAbstraction.class);
-            if (jtaApi.USER_TRANSACTION_CLASS.equals(rawType) && (ij.getQualifiers().isEmpty() || ij.getQualifiers().contains(DefaultLiteral.INSTANCE)) && Beans.isSessionBeanWithContainerManagedTransactions(bean, beanManager)) {
+            if (jtaApi.USER_TRANSACTION_CLASS.equals(rawType) &&
+                    (ij.getQualifiers().isEmpty() || ij.getQualifiers().contains(DefaultLiteral.INSTANCE)) &&
+                    beanManager.getServices().get(EJBApiAbstraction.class).isSessionBeanWithContainerManagedTransactions(bean)) {
                 throw new DefinitionException(USER_TRANSACTION_INJECTION_INTO_BEAN_WITH_CONTAINER_MANAGED_TRANSACTIONS, ij);
             }
         }

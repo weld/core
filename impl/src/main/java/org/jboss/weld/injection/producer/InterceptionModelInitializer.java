@@ -49,16 +49,15 @@ import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.interceptor.builder.InterceptionModelBuilder;
+import org.jboss.weld.interceptor.builder.InterceptorsApiAbstraction;
 import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
-import org.jboss.weld.interceptor.util.InterceptionUtils;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.reflection.Reflections;
-import org.jboss.weld.util.reflection.SecureReflections;
 
 /**
  * Initializes {@link InterceptionModel} for a {@link Bean} or a non-contextual component.
@@ -84,6 +83,9 @@ public class InterceptionModelInitializer<T> {
     private final EnhancedAnnotatedType<T> annotatedType;
     private final Set<Class<? extends Annotation>> stereotypes;
 
+    private final InterceptorsApiAbstraction interceptorsApi;
+    private final EJBApiAbstraction ejbApi;
+
     private Map<Interceptor<?>, InterceptorMetadata<SerializableContextual<Interceptor<?>, ?>>> interceptorMetadatas = new HashMap<Interceptor<?>, InterceptorMetadata<SerializableContextual<Interceptor<?>, ?>>>();
     private List<AnnotatedMethod<?>> businessMethods;
     private final InterceptionModelBuilder<ClassMetadata<?>,?> builder;
@@ -98,6 +100,8 @@ public class InterceptionModelInitializer<T> {
         } else {
             stereotypes = bean.getStereotypes();
         }
+        this.interceptorsApi = manager.getServices().get(InterceptorsApiAbstraction.class);
+        this.ejbApi = manager.getServices().get(EJBApiAbstraction.class);
     }
 
     public void init() {
@@ -199,11 +203,7 @@ public class InterceptionModelInitializer<T> {
     }
 
     private void initClassDeclaredEjbInterceptors() {
-        Class<?>[] classDeclaredInterceptors = null;
-        if (annotatedType.isAnnotationPresent(InterceptionUtils.getInterceptorsAnnotationClass())) {
-            Annotation interceptorsAnnotation = annotatedType.getAnnotation(InterceptionUtils.getInterceptorsAnnotationClass());
-            classDeclaredInterceptors = SecureReflections.extractValues(interceptorsAnnotation);
-        }
+        Class<?>[] classDeclaredInterceptors = interceptorsApi.extractInterceptorClasses(annotatedType);
 
         if (classDeclaredInterceptors != null) {
             for (Class<?> clazz : classDeclaredInterceptors) {
@@ -215,12 +215,12 @@ public class InterceptionModelInitializer<T> {
     private void initMethodDeclaredEjbInterceptors(AnnotatedMethod<?> method) {
         Method javaMethod = Reflections.<AnnotatedMethod<T>>cast(method).getJavaMember();
 
-        boolean excludeClassInterceptors = method.isAnnotationPresent(InterceptionUtils.getExcludeClassInterceptorsAnnotationClass());
+        boolean excludeClassInterceptors = method.isAnnotationPresent(interceptorsApi.getExcludeClassInterceptorsAnnotationClass());
         if (excludeClassInterceptors) {
             builder.ignoreGlobalInterceptors(javaMethod);
         }
 
-        Class<?>[] methodDeclaredInterceptors = getMethodDeclaredInterceptors(method);
+        Class<?>[] methodDeclaredInterceptors = interceptorsApi.extractInterceptorClasses(method);
         if (methodDeclaredInterceptors != null && methodDeclaredInterceptors.length > 0) {
             if (Reflections.isFinal(method.getJavaMember())) {
                 throw new DefinitionException(FINAL_INTERCEPTED_BEAN_METHOD_NOT_ALLOWED, method, methodDeclaredInterceptors[0].getName());
@@ -243,15 +243,7 @@ public class InterceptionModelInitializer<T> {
     }
 
     private boolean isTimeoutAnnotationPresentOn(AnnotatedMethod<?> method) {
-        return method.isAnnotationPresent(manager.getServices().get(EJBApiAbstraction.class).TIMEOUT_ANNOTATION_CLASS);
-    }
-
-    private Class<?>[] getMethodDeclaredInterceptors(AnnotatedMethod<?> method) {
-        Class<?>[] methodDeclaredInterceptors = null;
-        if (method.isAnnotationPresent(InterceptionUtils.getInterceptorsAnnotationClass())) {
-            methodDeclaredInterceptors = SecureReflections.extractValues(method.getAnnotation(InterceptionUtils.getInterceptorsAnnotationClass()));
-        }
-        return methodDeclaredInterceptors;
+        return method.isAnnotationPresent(ejbApi.TIMEOUT_ANNOTATION_CLASS);
     }
 
     private InterceptorMetadata<SerializableContextual<?, ?>>[] toSerializableContextualArray(List<Interceptor<?>> interceptors) {

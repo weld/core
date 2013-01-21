@@ -30,6 +30,7 @@ import static org.jboss.weld.logging.messages.BeanMessage.SPECIALIZING_ENTERPRIS
 
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -220,24 +221,28 @@ public class SessionBean<T> extends AbstractClassBean<T> {
         Collection<EnhancedAnnotatedMethod<?, ? super T>> observerMethods = BeanMethods.getObserverMethods(this.getEnhancedAnnotated());
 
         if (!observerMethods.isEmpty()) {
-            Set<MethodSignature> businessMethodSignatures = new HashSet<MethodSignature>();
-            for (BusinessInterfaceDescriptor<?> businessInterfaceDescriptor : ejbDescriptor.getLocalBusinessInterfaces()) {
-                for (Method m : businessInterfaceDescriptor.getInterface().getMethods()) {
-                    businessMethodSignatures.add(new MethodSignatureImpl(m));
-                }
-            }
-            for (BusinessInterfaceDescriptor<?> businessInterfaceDescriptor : ejbDescriptor.getRemoteBusinessInterfaces()) {
-                for (Method m : businessInterfaceDescriptor.getInterface().getMethods()) {
-                    businessMethodSignatures.add(new MethodSignatureImpl(m));
-                }
-            }
-
+            Set<MethodSignature> businessMethodSignatures = getBusinessMethodSignatures();
             for (EnhancedAnnotatedMethod<?, ? super T> observerMethod : observerMethods) {
-                if (!observerMethod.isStatic() && !businessMethodSignatures.contains(new MethodSignatureImpl(observerMethod))) {
+                if (!observerMethod.isStatic() && !businessMethodSignatures.contains(observerMethod.getSignature())) {
                     throw new DefinitionException(OBSERVER_METHOD_MUST_BE_STATIC_OR_BUSINESS, observerMethod, getEnhancedAnnotated());
                 }
             }
         }
+    }
+
+    protected Set<MethodSignature> getBusinessMethodSignatures() {
+        Set<MethodSignature> businessMethodSignatures = new HashSet<MethodSignature>();
+        for (BusinessInterfaceDescriptor<?> businessInterfaceDescriptor : ejbDescriptor.getLocalBusinessInterfaces()) {
+            for (Method m : businessInterfaceDescriptor.getInterface().getMethods()) {
+                businessMethodSignatures.add(new MethodSignatureImpl(m));
+            }
+        }
+        for (BusinessInterfaceDescriptor<?> businessInterfaceDescriptor : ejbDescriptor.getRemoteBusinessInterfaces()) {
+            for (Method m : businessInterfaceDescriptor.getInterface().getMethods()) {
+                businessMethodSignatures.add(new MethodSignatureImpl(m));
+            }
+        }
+        return Collections.unmodifiableSet(businessMethodSignatures);
     }
 
     public SessionObjectReference createReference() {

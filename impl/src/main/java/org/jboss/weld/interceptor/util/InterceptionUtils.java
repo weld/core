@@ -17,14 +17,10 @@
 
 package org.jboss.weld.interceptor.util;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.concurrent.Callable;
 
 import org.jboss.weld.interceptor.proxy.InterceptorException;
 import org.jboss.weld.interceptor.proxy.LifecycleMixin;
-import org.jboss.weld.interceptor.spi.model.InterceptionType;
 
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
@@ -32,23 +28,6 @@ import org.jboss.weld.interceptor.spi.model.InterceptionType;
 public class InterceptionUtils {
     public static final String POST_CONSTRUCT = "lifecycle_mixin_$$_postConstruct";
     public static final String PRE_DESTROY = "lifecycle_mixin_$$_preDestroy";
-
-
-    private static final Class<? extends Annotation> INTERCEPTORS_ANNOTATION_CLASS;
-    private static final Class<? extends Annotation> EXCLUDE_CLASS_INTERCEPTORS_ANNOTATION_CLASS;
-
-    static {
-        Class<? extends Annotation> interceptorAnnotation = null;
-        Class<? extends Annotation> excludeClass = null;
-        try {
-            interceptorAnnotation = (Class<? extends Annotation>) Class.forName("javax.interceptor.Interceptors");
-            excludeClass = (Class<? extends Annotation>) Class.forName("javax.interceptor.ExcludeClassInterceptors");
-        } catch (ClassNotFoundException e) {
-            //do nothing
-        }
-        INTERCEPTORS_ANNOTATION_CLASS = interceptorAnnotation;
-        EXCLUDE_CLASS_INTERCEPTORS_ANNOTATION_CLASS = excludeClass;
-    }
 
     private static void executePostConstruct(Object proxy, Callable callback) {
         if (proxy instanceof LifecycleMixin) {
@@ -84,34 +63,5 @@ public class InterceptionUtils {
 
     public static void executePredestroy(Object proxy) {
         executePredestroy(proxy, null);
-    }
-
-    /**
-     * @param method
-     * @return true if the method has none of the interception type annotations, and is public and not static
-     *         false otherwise
-     */
-    public static boolean isInterceptionCandidate(Method method) {
-        // just a provisory implementation - any method which is not an interceptor method
-        // is an interception candidate
-        if (method.getDeclaringClass().equals(Object.class))
-            return false;
-        int modifiers = method.getModifiers();
-        if (Modifier.isStatic(modifiers))
-            return false;
-        for (InterceptionType interceptionType : InterceptionTypeRegistry.getSupportedInterceptionTypes()) {
-            if (method.getAnnotation(InterceptionTypeRegistry.getAnnotationClass(interceptionType)) != null) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public static Class<? extends Annotation> getInterceptorsAnnotationClass() {
-        return INTERCEPTORS_ANNOTATION_CLASS;
-    }
-
-    public static Class<? extends Annotation> getExcludeClassInterceptorsAnnotationClass() {
-        return EXCLUDE_CLASS_INTERCEPTORS_ANNOTATION_CLASS;
     }
 }

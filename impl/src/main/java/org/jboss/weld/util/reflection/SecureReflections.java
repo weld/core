@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.util.reflection;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -25,11 +24,8 @@ import java.lang.reflect.Method;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
-import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.util.reflection.instantiation.InstantiatorFactory;
-
-import static org.jboss.weld.logging.messages.UtilMessage.ANNOTATION_VALUES_INACCESSIBLE;
 
 /**
  * @author Nicklas Karlsson
@@ -322,28 +318,6 @@ public class SecureReflections {
     }
 
     /**
-     * Invokes a given method with given parameters on an instance
-     *
-     * @param instance   The instance to invoke on
-     * @param methodName The name of the method to invoke
-     * @param parameters The method parameters
-     * @return The return value of the method
-     * @throws IllegalArgumentException  If there was an illegal argument passed
-     * @throws IllegalAccessException    If there was an illegal access attempt
-     * @throws InvocationTargetException If there was another error invoking the
-     *                                   method
-     * @see java.lang.reflect.Method#invoke(Object, Object...)
-     */
-    public static <T> T invoke(final Object instance, final String methodName, final Object... parameters) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-        Class<?>[] parameterTypes = new Class<?>[parameters.length];
-        for (int i = 0; i < parameters.length; i++) {
-            parameterTypes[i] = parameters[i].getClass();
-        }
-        Method method = getMethod(instance.getClass(), methodName, parameterTypes);
-        return invoke(instance, method, parameters);
-    }
-
-    /**
      * Creates a new instance of a class
      *
      * @param <T>   The type of the instance
@@ -434,21 +408,6 @@ public class SecureReflections {
                 return lookupMethod(clazz);
             }
         }.runAsMethodAccess();
-    }
-
-    /**
-     * Helper class for reading the value of an annotation
-     *
-     * @param annotation The annotation to inspect
-     * @return The array of classes
-     */
-    public static Class<?>[] extractValues(Annotation annotation) {
-        try {
-            Class<?>[] valueClasses = invoke(annotation, "value");
-            return valueClasses;
-        } catch (Exception e) {
-            throw new DeploymentException(ANNOTATION_VALUES_INACCESSIBLE, e);
-        }
     }
 
     /**

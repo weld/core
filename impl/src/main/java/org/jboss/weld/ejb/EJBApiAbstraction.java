@@ -17,8 +17,13 @@
 package org.jboss.weld.ejb;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 
+import javax.enterprise.inject.spi.Bean;
+
+import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bootstrap.api.Service;
+import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.util.ApiAbstraction;
 
@@ -54,6 +59,27 @@ public class EJBApiAbstraction extends ApiAbstraction implements Service {
     public final Object CONTAINER_MANAGED_TRANSACTION_MANAGEMENT_ENUM_VALUE;
 
     public void cleanup() {
+    }
+
+    public boolean isSessionBeanWithContainerManagedTransactions(Bean<?> bean) {
+        if (bean instanceof SessionBean<?>) {
+            SessionBean<?> sessionBean = (SessionBean<?>) bean;
+            Annotation transactionManagementAnnotation = sessionBean.getAnnotated().getAnnotation(TRANSACTION_MANAGEMENT);
+            if (transactionManagementAnnotation == null || transactionManagementAnnotation instanceof DummyAnnotation) {
+                return true;
+            }
+            Object value;
+            try {
+                Method method = transactionManagementAnnotation.annotationType().getMethod("value");
+                value = method.invoke(transactionManagementAnnotation);
+            } catch (NoSuchMethodException e) {
+                return true;
+            } catch (Exception e) {
+                throw new WeldException(e);
+            }
+            return CONTAINER_MANAGED_TRANSACTION_MANAGEMENT_ENUM_VALUE.equals(value);
+        }
+        return false;
     }
 
 }

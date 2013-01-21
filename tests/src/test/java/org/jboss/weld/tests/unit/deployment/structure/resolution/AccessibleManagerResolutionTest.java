@@ -33,10 +33,12 @@ import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
 import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.event.GlobalObserverNotifierService;
 import org.jboss.weld.injection.producer.InjectionTargetService;
+import org.jboss.weld.interceptor.builder.InterceptorsApiAbstraction;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.resources.DefaultResourceLoader;
 import org.jboss.weld.resources.ReflectionCacheFactory;
 import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.serialization.ContextualStoreImpl;
@@ -63,6 +65,7 @@ public class AccessibleManagerResolutionTest {
         this.services.add(GlobalObserverNotifierService.class, new GlobalObserverNotifierService(services));
         this.services.add(InjectionTargetService.class, new InjectionTargetService(BeanManagerImpl.newRootManager("foo", services)));
         this.services.add(SpecializationAndEnablementRegistry.class, new SpecializationAndEnablementRegistry());
+        this.services.add(InterceptorsApiAbstraction.class, new InterceptorsApiAbstraction(DefaultResourceLoader.INSTANCE));
     }
 
     private <T> void addBean(BeanManagerImpl manager, Class<T> c) {

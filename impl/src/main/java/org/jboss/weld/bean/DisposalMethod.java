@@ -39,6 +39,7 @@ import javax.inject.Qualifier;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
+import org.jboss.weld.annotated.enhanced.MethodSignature;
 import org.jboss.weld.bootstrap.Validator;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.injection.InjectionPointFactory;
@@ -47,7 +48,6 @@ import org.jboss.weld.injection.ParameterInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resolution.QualifierInstance;
 import org.jboss.weld.util.reflection.Reflections;
-import org.jboss.weld.util.reflection.SecureReflections;
 
 public class DisposalMethod<X, T> {
 
@@ -127,18 +127,9 @@ public class DisposalMethod<X, T> {
             throw new DefinitionException(INCONSISTENT_ANNOTATIONS_ON_METHOD, "@Specialized", "@Disposes", disposalMethodInjectionPoint);
         }
         if (declaringBean instanceof SessionBean<?>) {
-            boolean methodDeclaredOnTypes = false;
-            // TODO use annotated item?
-            for (Type type : declaringBean.getTypes()) {
-                if (type instanceof Class<?>) {
-                    Class<?> clazz = (Class<?>) type;
-                    if (SecureReflections.isMethodExists(clazz, enhancedAnnotatedMethod.getName(), enhancedAnnotatedMethod.getParameterTypesAsArray())) {
-                        methodDeclaredOnTypes = true;
-                        continue;
-                    }
-                }
-            }
-            if (!methodDeclaredOnTypes) {
+            SessionBean<?> sessionBean = (SessionBean<?>) declaringBean;
+            Set<MethodSignature> businessMethodSignatures = sessionBean.getBusinessMethodSignatures();
+            if (!businessMethodSignatures.contains(enhancedAnnotatedMethod.getSignature())) {
                 throw new DefinitionException(METHOD_NOT_BUSINESS_METHOD, enhancedAnnotatedMethod, declaringBean);
             }
         }

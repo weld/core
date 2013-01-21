@@ -16,15 +16,15 @@
  */
 package org.jboss.weld.logging;
 
-import ch.qos.cal10n.MessageConveyor;
-import ch.qos.cal10n.MessageConveyorException;
-import com.google.common.base.Function;
-import com.google.common.collect.MapMaker;
-import org.jboss.weld.util.reflection.SecureReflections;
-
 import java.lang.reflect.Field;
 import java.util.Locale;
 import java.util.concurrent.ConcurrentMap;
+
+import ch.qos.cal10n.MessageConveyor;
+import ch.qos.cal10n.MessageConveyorException;
+
+import com.google.common.base.Function;
+import com.google.common.collect.MapMaker;
 
 public class WeldMessageConveyor extends MessageConveyor {
 
@@ -39,7 +39,7 @@ public class WeldMessageConveyor extends MessageConveyor {
         public String apply(Enum<?> from) {
             Field field;
             try {
-                field = SecureReflections.getField(from.getClass(), from.name());
+                field = from.getClass().getField(from.name());
             } catch (NoSuchFieldException e) {
                 throw new IllegalArgumentException("Cannot reflect on key to obtain @MessageId. Key: " + from + "; Key Type: " + from.getClass());
             }

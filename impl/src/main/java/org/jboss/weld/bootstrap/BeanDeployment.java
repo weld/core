@@ -63,6 +63,7 @@ import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.ejb.spi.EjbServices;
 import org.jboss.weld.enums.EnumService;
 import org.jboss.weld.injection.producer.InjectionTargetService;
+import org.jboss.weld.interceptor.builder.InterceptorsApiAbstraction;
 import org.jboss.weld.jsf.JsfApiAbstraction;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.api.ExecutorServices;
@@ -128,6 +129,7 @@ public class BeanDeployment {
         services.add(PersistenceApiAbstraction.class, new PersistenceApiAbstraction(resourceLoader));
         services.add(WSApiAbstraction.class, new WSApiAbstraction(resourceLoader));
         services.add(JtaApiAbstraction.class, new JtaApiAbstraction(resourceLoader));
+        services.add(InterceptorsApiAbstraction.class, new InterceptorsApiAbstraction(resourceLoader));
         this.beanManager = BeanManagerImpl.newManager(deploymentManager, beanDeploymentArchive.getId(), services);
         services.add(InjectionTargetService.class, new InjectionTargetService(beanManager));
         services.add(EnumService.class, new EnumService(beanManager));
