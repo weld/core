@@ -32,6 +32,7 @@ import org.jboss.weld.bootstrap.enablement.EnablementBuilder;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.exceptions.DefinitionException;
+import org.jboss.weld.exceptions.UnsupportedOperationException;
 import org.jboss.weld.literal.InterceptorBindingTypeLiteral;
 import org.jboss.weld.literal.NormalScopeLiteral;
 import org.jboss.weld.literal.QualifierLiteral;
@@ -111,5 +112,15 @@ public class BeforeBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implemen
         }
         BeanDeployer deployer = getOrCreateBeanDeployment(source.getJavaClass()).getBeanDeployer();
         deployer.addSyntheticClass(source, (Extension) receiver, id);
+    }
+
+    @Override
+    public void addQualifier(AnnotatedType<? extends Annotation> qualifier) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void addInterceptorBinding(AnnotatedType<? extends Annotation> bindingType) {
+        throw new UnsupportedOperationException();
     }
 }
