@@ -34,7 +34,7 @@ public class FooExtension implements Extension {
     protected <X> IdentifiedAnnotatedType<X> wrap(final AnnotatedType<X> type) {
         return new ForwardingIdentifiedAnnotatedType<X>(type) {
             @Override
-            public String getID() {
+            public String getId() {
                 return FOO_ID;
             }
         };

@@ -196,7 +196,7 @@ public abstract class ForwardingWeldClass<T> extends ForwardingWeldAnnotated<T, 
     }
 
     @Override
-    public String getID() {
-        return delegate().getID();
+    public String getId() {
+        return delegate().getId();
     }
 }

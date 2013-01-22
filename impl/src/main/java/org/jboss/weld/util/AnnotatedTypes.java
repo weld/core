@@ -191,7 +191,7 @@ public class AnnotatedTypes {
      */
     public static <X> String createTypeId(AnnotatedType<X> annotatedType) {
         if (annotatedType instanceof IdentifiedAnnotatedType<?>) {
-            return Reflections.<IdentifiedAnnotatedType<?>>cast(annotatedType).getID();
+            return Reflections.<IdentifiedAnnotatedType<?>>cast(annotatedType).getId();
         } else {
             return createTypeId(annotatedType.getJavaClass(), annotatedType.getAnnotations(), annotatedType.getMethods(), annotatedType.getFields(), annotatedType.getConstructors());
         }

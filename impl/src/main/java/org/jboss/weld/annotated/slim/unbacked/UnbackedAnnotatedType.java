@@ -106,7 +106,7 @@ public class UnbackedAnnotatedType<X> extends UnbackedAnnotated implements SlimA
 
     // TODO: remove once IdentifiedAnnotatedType is deprecated
     @Override
-    public String getID() {
+    public String getId() {
         String id = identifier.getSuffix();
         if (id != null) {
             return id;

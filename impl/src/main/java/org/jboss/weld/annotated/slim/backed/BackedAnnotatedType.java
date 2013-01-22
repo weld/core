@@ -201,7 +201,7 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
 
     // TODO: remove once IdentifiedAnnotatedType is deprecated
     @Override
-    public String getID() {
+    public String getId() {
         String id = identifier.getSuffix();
         if (id != null) {
             return id;

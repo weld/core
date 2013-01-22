@@ -646,8 +646,8 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
     }
 
     @Override
-    public String getID() {
-        return slim.getID();
+    public String getId() {
+        return slim.getId();
     }
 
     @Override
