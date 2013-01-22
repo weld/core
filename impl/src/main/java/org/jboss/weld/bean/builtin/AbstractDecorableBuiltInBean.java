@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.bean.builtin;
 
-import static org.jboss.weld.logging.Category.BEAN;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.BeanMessage.DYNAMIC_LOOKUP_OF_BUILT_IN_NOT_ALLOWED;
 
 import java.util.List;
@@ -31,7 +29,6 @@ import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Decorators;
-import org.slf4j.cal10n.LocLogger;
 
 /**
  * Built-in bean that can be decorated by a {@link Decorator}
@@ -40,8 +37,6 @@ import org.slf4j.cal10n.LocLogger;
  *
  */
 public abstract class AbstractDecorableBuiltInBean<T> extends AbstractBuiltInBean<T> implements DecorableBean<T> {
-
-    private static final LocLogger log = loggerFactory().getLogger(BEAN);
 
     private final CurrentInjectionPoint cip;
 

@@ -16,12 +16,17 @@
  */
 package org.jboss.weld.bean.builtin;
 
+import static org.jboss.weld.logging.messages.BeanMessage.DYNAMIC_LOOKUP_OF_BUILT_IN_NOT_ALLOWED;
+
 import javax.decorator.Decorator;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.Interceptor;
 
 import org.jboss.weld.context.WeldCreationalContext;
+import org.jboss.weld.exceptions.IllegalArgumentException;
+import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
@@ -30,16 +35,30 @@ import org.jboss.weld.manager.BeanManagerImpl;
  * @author Jozef Hartinger
  *
  */
-public abstract class AbstractBuiltInMetadataBean<T> extends AbstractFacadeBean<T> {
+public abstract class AbstractBuiltInMetadataBean<T> extends AbstractBuiltInBean<T> {
+
+    private final CurrentInjectionPoint cip;
 
     public AbstractBuiltInMetadataBean(String idSuffix, Class<T> type, BeanManagerImpl beanManager) {
         super(idSuffix, beanManager, type);
+        this.cip = beanManager.getServices().get(CurrentInjectionPoint.class);
     }
 
     @Override
     public void destroy(T instance, CreationalContext<T> creationalContext) {
         // noop
     }
+
+    @Override
+    public T create(CreationalContext<T> creationalContext) {
+        InjectionPoint ip = cip.peek();
+        if (ip == null) {
+            throw new IllegalArgumentException(DYNAMIC_LOOKUP_OF_BUILT_IN_NOT_ALLOWED, toString());
+        }
+        return newInstance(ip, creationalContext);
+    }
+
+    protected abstract T newInstance(InjectionPoint ip, CreationalContext<T> creationalContext);
 
     protected WeldCreationalContext<?> getParentCreationalContext(CreationalContext<?> ctx) {
         if (ctx instanceof WeldCreationalContext<?>) {
@@ -48,7 +67,7 @@ public abstract class AbstractBuiltInMetadataBean<T> extends AbstractFacadeBean<
                 return parentContext;
             }
         }
-        throw new IllegalArgumentException("Unable to determine parent creational context of " + ctx);
+        throw new java.lang.IllegalArgumentException("Unable to determine parent creational context of " + ctx);
     }
 
     @Override
