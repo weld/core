@@ -36,17 +36,17 @@ public class SimpleAnnotationDiscovery implements AnnotationDiscovery {
     public boolean containsAnnotations(Class<?> javaClass, Collection<Class<? extends Annotation>> requiredAnnotations) {
         for (Class<?> clazz = javaClass; clazz != null && clazz != Object.class; clazz = clazz.getSuperclass()) {
             // class level annotations
-            if (containsAnnotations(cache.getAnnotations(javaClass), requiredAnnotations)) {
+            if (containsAnnotations(cache.getAnnotations(clazz), requiredAnnotations)) {
                 return true;
             }
             // fields
-            for (Field field : javaClass.getDeclaredFields()) {
+            for (Field field : clazz.getDeclaredFields()) {
                 if (containsAnnotations(cache.getAnnotations(field), requiredAnnotations)) {
                     return true;
                 }
             }
             // constructors
-            for (Constructor<?> constructor : javaClass.getConstructors()) {
+            for (Constructor<?> constructor : clazz.getConstructors()) {
                 if (containsAnnotations(cache.getAnnotations(constructor), requiredAnnotations)) {
                     return true;
                 }
@@ -57,7 +57,7 @@ public class SimpleAnnotationDiscovery implements AnnotationDiscovery {
                 }
             }
             // methods
-            for (Method method : javaClass.getMethods()) {
+            for (Method method : clazz.getDeclaredMethods()) {
                 if (containsAnnotations(cache.getAnnotations(method), requiredAnnotations)) {
                     return true;
                 }
