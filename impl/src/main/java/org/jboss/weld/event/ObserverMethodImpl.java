@@ -234,12 +234,9 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
         checkObserverMethod(annotated);
     }
 
+    @Override
     public void notify(final T event) {
         sendEvent(event);
-    }
-
-    public void notify(T event, Set<Annotation> qualifiers) {
-        notify(event);
     }
 
     /**

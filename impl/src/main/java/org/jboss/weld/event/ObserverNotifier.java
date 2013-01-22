@@ -21,14 +21,7 @@ import static org.jboss.weld.logging.messages.UtilMessage.TYPE_PARAMETER_NOT_ALL
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.GenericArrayType;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
-import java.lang.reflect.WildcardType;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 
@@ -104,34 +97,23 @@ public class ObserverNotifier {
 
     public void fireEvent(Type eventType, Object event, Annotation... qualifiers) {
         checkEventObjectType(eventType);
-        Set<Annotation> qualifierSet = new HashSet<Annotation>(Arrays.asList(qualifiers));
         // we use the array of qualifiers for resolution so that we can catch duplicate qualifiers
-        notifyObservers(event, qualifierSet, resolveObserverMethods(eventType, qualifiers));
+        notifyObservers(event, resolveObserverMethods(eventType, qualifiers));
     }
 
     public void fireEvent(Type eventType, Object event, Set<Annotation> qualifiers) {
         checkEventObjectType(eventType);
-        notifyObservers(event, qualifiers, resolveObserverMethods(eventType, qualifiers));
+        notifyObservers(event, resolveObserverMethods(eventType, qualifiers));
     }
 
     public void fireEvent(Object event, Resolvable resolvable) {
         checkEventObjectType(event);
-        notifyObservers(event, Collections.<Annotation>emptySet(), resolveObserverMethods(resolvable));
+        notifyObservers(event, resolveObserverMethods(resolvable));
     }
 
-    private <T> void notifyObservers(final T event, Set<Annotation> qualifiers, final Set<ObserverMethod<? super T>> observers) {
+    private <T> void notifyObservers(final T event, final Set<ObserverMethod<? super T>> observers) {
         for (ObserverMethod<? super T> observer : observers) {
-            /*
-             * The spec requires that the set of qualifiers of an event always contains the {@link Any} qualifier. We optimize this
-             * and only do it for extension-provided observer methods since {@link ObserverMethodImpl} does not use the qualifiers
-             * anyway.
-             */
-            if (!(observer instanceof ObserverMethodImpl<?, ?>) && !qualifiers.contains(AnyLiteral.INSTANCE)) {
-                qualifiers = new HashSet<Annotation>(qualifiers);
-                qualifiers.add(AnyLiteral.INSTANCE);
-                qualifiers = Collections.unmodifiableSet(qualifiers);
-            }
-            notifyObserver(event, qualifiers, observer);
+            notifyObserver(event, observer);
         }
     }
 
@@ -169,8 +151,8 @@ public class ObserverNotifier {
         }
     }
 
-    protected <T> void notifyObserver(final T event, Set<Annotation> qualifiers, final ObserverMethod<? super T> observer) {
-        observer.notify(event, qualifiers);
+    protected <T> void notifyObserver(final T event, final ObserverMethod<? super T> observer) {
+        observer.notify(event);
     }
 
     public void checkEventObjectType(Object event) {

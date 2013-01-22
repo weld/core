@@ -28,9 +28,7 @@ import javax.enterprise.inject.spi.ObserverMethod;
 
 public class GiraffeObserver implements ObserverMethod<Giraffe> {
 
-    private boolean legacyNotifyCalled;
     private Giraffe receivedPayload;
-    private Set<Annotation> receivedQualifiers;
 
     private final Set<Annotation> qualifiers;
 
@@ -44,9 +42,7 @@ public class GiraffeObserver implements ObserverMethod<Giraffe> {
     }
 
     protected void reset() {
-        this.legacyNotifyCalled = false;
         this.receivedPayload = null;
-        this.receivedQualifiers = null;
     }
 
     public Class<?> getBeanClass() {
@@ -70,23 +66,10 @@ public class GiraffeObserver implements ObserverMethod<Giraffe> {
     }
 
     public void notify(Giraffe event) {
-        legacyNotifyCalled = true;
-    }
-
-    public void notify(Giraffe event, Set<Annotation> qualifiers) {
         receivedPayload = event;
-        receivedQualifiers = qualifiers;
-    }
-
-    public boolean isLegacyNotifyCalled() {
-        return legacyNotifyCalled;
     }
 
     public Giraffe getReceivedPayload() {
         return receivedPayload;
-    }
-
-    public Set<Annotation> getReceivedQualifiers() {
-        return receivedQualifiers;
     }
 }

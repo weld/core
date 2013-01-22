@@ -16,9 +16,6 @@
  */
 package org.jboss.weld.event;
 
-import java.lang.annotation.Annotation;
-import java.util.Set;
-
 import javax.enterprise.event.TransactionPhase;
 import javax.enterprise.inject.spi.ObserverMethod;
 
@@ -42,11 +39,11 @@ public class TransactionalObserverNotifier extends ObserverNotifier {
     }
 
     @Override
-    protected <T> void notifyObserver(final T event, Set<Annotation> qualifiers, final ObserverMethod<? super T> observer) {
+    protected <T> void notifyObserver(final T event, final ObserverMethod<? super T> observer) {
         if (immediateDispatch(observer)) {
-            super.notifyObserver(event, qualifiers, observer);
+            super.notifyObserver(event, observer);
         } else {
-            deferNotification(event, qualifiers, observer);
+            deferNotification(event, observer);
         }
     }
 
@@ -60,8 +57,8 @@ public class TransactionalObserverNotifier extends ObserverNotifier {
      *
      * @param event The event object
      */
-    private <T> void deferNotification(final T event, final Set<Annotation> qualifiers, final ObserverMethod<? super T> observer) {
-        DeferredEventNotification<T> deferredEvent = new DeferredEventNotification<T>(event, observer, qualifiers);
+    private <T> void deferNotification(final T event, final ObserverMethod<? super T> observer) {
+        DeferredEventNotification<T> deferredEvent = new DeferredEventNotification<T>(event, observer);
         TransactionPhase transactionPhase = observer.getTransactionPhase();
 
         if (transactionPhase.equals(TransactionPhase.BEFORE_COMPLETION)) {

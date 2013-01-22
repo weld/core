@@ -16,8 +16,10 @@
  */
 package org.jboss.weld.event;
 
-import java.lang.annotation.Annotation;
-import java.util.Set;
+import static org.jboss.weld.logging.Category.EVENT;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.EventMessage.ASYNC_FIRE;
+import static org.jboss.weld.logging.messages.EventMessage.ASYNC_OBSERVER_FAILURE;
 
 import javax.enterprise.inject.spi.ObserverMethod;
 
@@ -27,11 +29,6 @@ import org.jboss.weld.context.unbound.UnboundLiteral;
 import org.slf4j.cal10n.LocLogger;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLogger.Level;
-
-import static org.jboss.weld.logging.Category.EVENT;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.EventMessage.ASYNC_FIRE;
-import static org.jboss.weld.logging.messages.EventMessage.ASYNC_OBSERVER_FAILURE;
 
 /**
  * A task that will notify the observer of a specific event at some future time.
@@ -47,8 +44,6 @@ public class DeferredEventNotification<T> implements Runnable {
     protected final ObserverMethod<? super T> observer;
     // The event object
     protected final T event;
-    // Event qualifiers
-    private final Set<Annotation> qualifiers;
 
     /**
      * Creates a new deferred event notifier.
@@ -56,10 +51,9 @@ public class DeferredEventNotification<T> implements Runnable {
      * @param observer The observer to be notified
      * @param event    The event being fired
      */
-    public DeferredEventNotification(T event, ObserverMethod<? super T> observer, Set<Annotation> qualifiers) {
+    public DeferredEventNotification(T event, ObserverMethod<? super T> observer) {
         this.observer = observer;
         this.event = event;
-        this.qualifiers = qualifiers;
     }
 
     public void run() {
@@ -69,7 +63,7 @@ public class DeferredEventNotification<T> implements Runnable {
 
                 @Override
                 protected void execute() {
-                    observer.notify(event, qualifiers);
+                    observer.notify(event);
                 }
 
             }.run();
@@ -115,5 +109,4 @@ public class DeferredEventNotification<T> implements Runnable {
         }
 
     }
-
 }

@@ -17,7 +17,6 @@
 package org.jboss.weld.tests.observers.extension;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 
 import java.lang.annotation.Annotation;
@@ -32,7 +31,6 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.weld.literal.AnyLiteral;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -63,7 +61,7 @@ public abstract class AbstractObserverNotificationTestSuperclass {
         fireEvent(payload);
         verifyObserversNotNotified(extension.getFiveMeterTallGiraffeObserver(),
                 extension.getSixMeterTallAngryGiraffeObserver(), extension.getAngryNubianGiraffeObserver());
-        verifyObserversNotified(payload, toSet(), extension.getAnyGiraffeObserver());
+        verifyObserversNotified(payload, extension.getAnyGiraffeObserver());
     }
 
     @Test
@@ -73,7 +71,7 @@ public abstract class AbstractObserverNotificationTestSuperclass {
 
         fireEvent(payload, qualifier);
         verifyObserversNotNotified(extension.getSixMeterTallAngryGiraffeObserver(), extension.getAngryNubianGiraffeObserver());
-        verifyObserversNotified(payload, toSet(qualifier), extension.getAnyGiraffeObserver(),
+        verifyObserversNotified(payload, extension.getAnyGiraffeObserver(),
                 extension.getFiveMeterTallGiraffeObserver());
     }
 
@@ -84,7 +82,7 @@ public abstract class AbstractObserverNotificationTestSuperclass {
 
         fireEvent(payload, qualifiers.toArray(new Annotation[0]));
         verifyObserversNotNotified(extension.getSixMeterTallAngryGiraffeObserver());
-        verifyObserversNotified(payload, qualifiers, extension.getAnyGiraffeObserver(),
+        verifyObserversNotified(payload, extension.getAnyGiraffeObserver(),
                 extension.getFiveMeterTallGiraffeObserver(), extension.getAngryNubianGiraffeObserver());
     }
 
@@ -95,29 +93,19 @@ public abstract class AbstractObserverNotificationTestSuperclass {
         extension.getAngryNubianGiraffeObserver().reset();
     }
 
-    private void verifyObserversNotified(Giraffe payload, Set<Annotation> qualifiers, GiraffeObserver... observers) {
-        Set<Annotation> expectedQualifiers = processQualifiers(qualifiers);
+    private void verifyObserversNotified(Giraffe payload, GiraffeObserver... observers) {
         for (GiraffeObserver observer : observers) {
-            assertFalse(observer.isLegacyNotifyCalled());
             assertEquals(payload, observer.getReceivedPayload());
-            assertEquals(expectedQualifiers, observer.getReceivedQualifiers());
         }
     }
 
     private void verifyObserversNotNotified(GiraffeObserver... observers) {
         for (GiraffeObserver observer : observers) {
-            assertFalse(observer.isLegacyNotifyCalled());
             assertNull(observer.getReceivedPayload());
-            assertNull(observer.getReceivedQualifiers());
         }
     }
 
     private Set<Annotation> toSet(Annotation... annotations) {
         return new HashSet<Annotation>(Arrays.asList(annotations));
-    }
-
-    protected Set<Annotation> processQualifiers(Set<Annotation> qualifiers) {
-        qualifiers.add(AnyLiteral.INSTANCE); // every event has this qualifier
-        return qualifiers;
     }
 }
