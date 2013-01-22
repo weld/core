@@ -17,13 +17,9 @@
 package org.jboss.weld.tests.extensions.lifecycle.processModule;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessModule;
 
@@ -38,21 +34,12 @@ public class MultimoduleProcessingExtension implements Extension {
     public static class ProcessModuleHolder {
         private final List<Class<?>> interceptors;
         private final List<Class<?>> decorators;
-        private final Set<Class<?>> alternatives;
-        private final Set<AnnotatedType<?>> annotatedTypes;
-        private final Set<Class<?>> classes;
+        private final List<Class<?>> alternatives;
 
         public ProcessModuleHolder(ProcessModule event) {
             this.interceptors = new ArrayList<Class<?>>(event.getInterceptors());
             this.decorators = new ArrayList<Class<?>>(event.getDecorators());
-            this.alternatives = new HashSet<Class<?>>(event.getAlternatives());
-            this.annotatedTypes = new HashSet<AnnotatedType<?>>();
-            this.classes = new HashSet<Class<?>>();
-            for (Iterator<AnnotatedType<?>> i = event.getAnnotatedTypes(); i.hasNext();) {
-                AnnotatedType<?> type = i.next();
-                annotatedTypes.add(type);
-                classes.add(type.getJavaClass());
-            }
+            this.alternatives = new ArrayList<Class<?>>(event.getAlternatives());
         }
 
         public List<Class<?>> getInterceptors() {
@@ -63,16 +50,8 @@ public class MultimoduleProcessingExtension implements Extension {
             return decorators;
         }
 
-        public Set<Class<?>> getAlternatives() {
+        public List<Class<?>> getAlternatives() {
             return alternatives;
-        }
-
-        public Set<AnnotatedType<?>> getAnnotatedTypes() {
-            return annotatedTypes;
-        }
-
-        public Set<Class<?>> getClasses() {
-            return classes;
         }
     }
 

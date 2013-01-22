@@ -19,33 +19,22 @@ package org.jboss.weld.tests.extensions.lifecycle.processModule;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessModule;
 
 public class ModuleProcessingExtension implements Extension {
 
     private int moduleCount;
-    private List<AnnotatedType<?>> annotatedTypes = new ArrayList<AnnotatedType<?>>();
 
     void countEvents(@Observes ProcessModule event) {
         moduleCount++;
     }
 
-    void processAnnotatedTypes(@Observes ProcessModule event) {
-        for (Iterator<AnnotatedType<?>> i = event.getAnnotatedTypes(); i.hasNext();) {
-            annotatedTypes.add(i.next());
-        }
-    }
-
     void processAlternatives(@Observes ProcessModule event) {
-        Set<Class<?>> alternatives = event.getAlternatives();
+        List<Class<?>> alternatives = event.getAlternatives();
         assertEquals(1, alternatives.size());
         assertTrue(alternatives.contains(Lion.class));
         alternatives.remove(Lion.class);
@@ -77,9 +66,5 @@ public class ModuleProcessingExtension implements Extension {
 
     public int getModuleCount() {
         return moduleCount;
-    }
-
-    public List<AnnotatedType<?>> getAnnotatedTypes() {
-        return annotatedTypes;
     }
 }

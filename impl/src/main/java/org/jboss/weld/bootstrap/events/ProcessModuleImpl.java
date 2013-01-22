@@ -64,23 +64,12 @@ public class ProcessModuleImpl extends AbstractDeploymentContainerEvent implemen
     }
 
     @Override
-    public Set<Class<?>> getAlternatives() {
-        return new SetView<ClassEnablement, Class<?>>() {
+    public List<Class<?>> getAlternatives() {
+        return new ListView<ClassEnablement, Class<?>>() {
+
             @Override
-            protected Set<ClassEnablement> getDelegate() {
-                // TODO: this is a temporary workaround until ProcessModule.getAlternatives() is changed to return a List instead of a Set
-                return new ListToSet<ClassEnablement>() {
-
-                    @Override
-                    public boolean add(ClassEnablement e) {
-                        return delegate().add(e);
-                    }
-
-                    @Override
-                    protected List<ClassEnablement> delegate() {
-                        return moduleEnablementBuilder.getAlternatives();
-                    }
-                };
+            protected List<ClassEnablement> getDelegate() {
+                return moduleEnablementBuilder.getAlternatives();
             }
 
             @Override
@@ -119,11 +108,6 @@ public class ProcessModuleImpl extends AbstractDeploymentContainerEvent implemen
                 return viewProvider;
             }
         };
-    }
-
-    @Override
-    public Iterator<AnnotatedType<?>> getAnnotatedTypes() {
-        return cast(deployment.getBeanDeployer().getEnvironment().getAnnotatedTypes().iterator());
     }
 
     @Override

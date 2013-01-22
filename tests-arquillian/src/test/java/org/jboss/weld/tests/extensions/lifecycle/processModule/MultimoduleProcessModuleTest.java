@@ -17,7 +17,6 @@
 package org.jboss.weld.tests.extensions.lifecycle.processModule;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -66,29 +65,18 @@ public class MultimoduleProcessModuleTest {
         List<ProcessModuleHolder> events = new ArrayList<ProcessModuleHolder>(extension.getEvents());
         for (Iterator<ProcessModuleHolder> i = events.iterator(); i.hasNext(); ) {
             ProcessModuleHolder event = i.next();
-            if (event.getClasses().contains(Tiger.class)) {
+            if (event.getAlternatives().size() == 1) {
                 assertEquals(1, event.getAlternatives().size());
                 assertEquals(Tiger.class, event.getAlternatives().iterator().next());
                 assertEquals(1, event.getDecorators().size());
                 assertEquals(Decorator1.class, event.getDecorators().get(0));
                 assertEquals(1, event.getInterceptors().size());
                 assertEquals(Interceptor1.class, event.getInterceptors().get(0));
-                assertTrue(event.getClasses().contains(Animal.class));
-                assertTrue(event.getClasses().contains(Decorator1.class));
-                assertTrue(event.getClasses().contains(Interceptor1.class));
-                assertTrue(event.getClasses().contains(Tiger.class));
-                assertTrue(event.getClasses().contains(MultimoduleProcessingExtension.class));
-                assertFalse(event.getClasses().contains(Elephant.class));
-                assertFalse(event.getClasses().contains(ElephantExtension.class));
-                assertFalse(event.getClasses().contains(Lion.class));
                 i.remove();
-            } else if (event.getClasses().contains(Lion.class)) {
+            } else if (event.getAlternatives().isEmpty()) {
                 assertTrue(event.getAlternatives().isEmpty());
                 assertTrue(event.getInterceptors().isEmpty());
                 assertTrue(event.getDecorators().isEmpty());
-                assertFalse(event.getClasses().contains(Tiger.class));
-                assertFalse(event.getClasses().contains(MultimoduleProcessingExtension.class));
-                assertFalse(event.getClasses().contains(ElephantExtension.class));
                 i.remove();
             }
         }

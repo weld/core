@@ -68,13 +68,6 @@ public class ProcessModuleTest {
     }
 
     @Test
-    public void testAnnotatedTypes(ModuleProcessingExtension extension) {
-        List<AnnotatedType<?>> types = extension.getAnnotatedTypes();
-        assertContainsAll(types, Animal.class, Decorator1.class, Interceptor1.class, Lion.class,
-                ModuleProcessingExtension.class, Tiger.class);
-    }
-
-    @Test
     public void testAlternatives() {
         Bean<?> bean = manager.resolve(manager.getBeans(Animal.class));
         assertEquals(Tiger.class, bean.getBeanClass());
@@ -94,15 +87,5 @@ public class ProcessModuleTest {
         assertEquals(2, interceptors.size());
         assertEquals(Interceptor3.class, interceptors.get(0).getBeanClass());
         assertEquals(Interceptor1.class, interceptors.get(1).getBeanClass());
-    }
-
-    private void assertContainsAll(Collection<AnnotatedType<?>> annotatedTypes, Class<?>... types) {
-        Set<Class<?>> typeSet = new HashSet<Class<?>>(Arrays.asList(types));
-        for (AnnotatedType<?> item : annotatedTypes) {
-            typeSet.remove(item.getJavaClass());
-        }
-        if (!typeSet.isEmpty()) {
-            throw new IllegalStateException("The following types are not contained: " + typeSet);
-        }
     }
 }
