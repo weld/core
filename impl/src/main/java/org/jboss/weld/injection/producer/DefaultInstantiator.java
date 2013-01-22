@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.injection.producer;
 
+import static org.jboss.weld.logging.Category.BEAN;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 
@@ -25,6 +28,8 @@ import org.jboss.weld.injection.ConstructorInjectionPoint;
 import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.logging.messages.BeanMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.reflection.Reflections;
+import org.slf4j.cal10n.LocLogger;
 
 /**
  * Creates a new Java object by calling its class constructor. This class is thread-safe.
@@ -35,6 +40,8 @@ import org.jboss.weld.manager.BeanManagerImpl;
  */
 public class DefaultInstantiator<T> implements Instantiator<T> {
 
+    private static final LocLogger log = loggerFactory().getLogger(BEAN);
+
     private final ConstructorInjectionPoint<T> constructor;
 
     public DefaultInstantiator(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl manager) {
@@ -42,13 +49,20 @@ public class DefaultInstantiator<T> implements Instantiator<T> {
             throw new DefinitionException(BeanMessage.INJECTION_TARGET_CANNOT_BE_CREATED_FOR_INTERFACE, type);
         }
         if (type.isAbstract()) {
-            throw new DefinitionException(BeanMessage.INJECTION_TARGET_CANNOT_BE_CREATED_FOR_ABSTRACT_CLASS, type);
+            /*
+             * We could be strict here and throw an error but there are certain extension (e.g. Solder)
+             * which rely on this so in order not to break them we only display a warning.
+             */
+            log.warn(BeanMessage.INJECTION_TARGET_CREATED_FOR_ABSTRACT_CLASS, type.getJavaClass());
         }
         constructor = InjectionPointFactory.instance().createConstructorInjectionPoint(bean, type, manager);
     }
 
     @Override
     public T newInstance(CreationalContext<T> ctx, BeanManagerImpl manager) {
+        if (Reflections.isAbstract(constructor.getMember().getDeclaringClass())) {
+            throw new DefinitionException(BeanMessage.INJECTION_TARGET_CREATED_FOR_ABSTRACT_CLASS, constructor.getMember().getDeclaringClass());
+        }
         return constructor.newInstance(manager, ctx);
     }
 

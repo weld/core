@@ -58,4 +58,11 @@ public class InjectionTargetDecorationTest {
         assertTrue(instance.decorated1());
         assertTrue(instance.decorated2());
     }
+
+    @Test
+    public void testInjectionTargetMayBeCreatedForAbstractClass() {
+        InjectionTarget<AbstractClass> it = manager.createInjectionTarget(manager.createAnnotatedType(AbstractClass.class));
+        ConcreteClass instance = new ConcreteClass();
+        it.inject(instance, manager.<AbstractClass>createCreationalContext(null));
+    }
 }

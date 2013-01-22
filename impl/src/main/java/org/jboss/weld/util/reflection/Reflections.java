@@ -217,6 +217,10 @@ public class Reflections {
         return Modifier.isAbstract(method.getModifiers());
     }
 
+    public static boolean isAbstract(Class<?> clazz) {
+        return Modifier.isAbstract(clazz.getModifiers());
+    }
+
     /**
      * Gets the actual type arguments of a class
      *
