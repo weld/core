@@ -383,7 +383,7 @@ public class WeldBootstrap implements Bootstrap {
             }
 
             // we need to know which BDAs are physical so that we fire ProcessModule for there archives only
-            Collection<BeanDeploymentArchive> physicalBeanDeploymentArchives = deployment.getBeanDeploymentArchives();
+            Set<BeanDeployment> physicalBeanDeploymentArchives = new HashSet<BeanDeployment>(beanDeployments.values());
 
             ExtensionBeanDeployer extensionBeanDeployer = new ExtensionBeanDeployer(deploymentManager, deployment, beanDeployments, contexts, enablementBuilder);
             extensionBeanDeployer.addExtensions(deployment.getExtensions());
@@ -400,9 +400,9 @@ public class WeldBootstrap implements Bootstrap {
 
             BeforeBeanDiscoveryImpl.fire(deploymentManager, deployment, beanDeployments, contexts, enablementBuilder);
 
-            // for each BDA transform its classes into WeldClass instances
-            for (Entry<BeanDeploymentArchive, BeanDeployment> entry : beanDeployments.entrySet()) {
-                entry.getValue().createClasses();
+            // for each physical BDA transform its classes into AnnotatedType instances
+            for (BeanDeployment beanDeployment : physicalBeanDeploymentArchives) {
+                beanDeployment.createClasses();
             }
 
             // Re-Read the deployment structure, this will be the physical
@@ -412,7 +412,7 @@ public class WeldBootstrap implements Bootstrap {
 
             for (Entry<BeanDeploymentArchive, BeanDeployment> entry : beanDeployments.entrySet()) {
                 BeanDeployment beanDeployment = entry.getValue();
-                if (physicalBeanDeploymentArchives.contains(entry.getKey())) {
+                if (physicalBeanDeploymentArchives.contains(beanDeployment)) {
                     // only fire for physical BDAs
                     ProcessModuleImpl.fire(beanDeployment);
                 }
