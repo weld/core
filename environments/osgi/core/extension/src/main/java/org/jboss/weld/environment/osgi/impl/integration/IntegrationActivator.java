@@ -27,11 +27,9 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
-import org.osgi.framework.ServiceEvent;
-import org.osgi.framework.ServiceListener;
-import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
-import org.osgi.framework.SynchronousBundleListener;
+import org.osgi.util.tracker.BundleTracker;
+import org.osgi.util.tracker.BundleTrackerCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,6 +39,11 @@ import javax.enterprise.inject.spi.BeanManager;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.FutureTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.jboss.weld.environment.osgi.impl.extension.beans.RegistrationsHolderImpl;
 
@@ -53,18 +56,15 @@ import org.jboss.weld.environment.osgi.impl.extension.beans.RegistrationsHolderI
  * arriving/departing bean bundle and to start/stop when a CDI container
  * factory service arrives/leaves.
  * <p/>
- * @see Activator
+ * @see org.jboss.weld.environment.osgi.impl.Activator
  *
  * @author Guillaume Sauthier
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
  */
-public class IntegrationActivator implements BundleActivator, SynchronousBundleListener, ServiceListener {
+public class IntegrationActivator implements BundleActivator, BundleTrackerCustomizer, SingleServiceTracker.Listener<CDIContainerFactory> {
 
-    private static Logger logger =
-                          LoggerFactory.getLogger(IntegrationActivator.class);
-
-    private ServiceReference factoryRef = null;
+    private static Logger logger = LoggerFactory.getLogger(IntegrationActivator.class);
 
     private BundleContext context;
 
@@ -72,50 +72,99 @@ public class IntegrationActivator implements BundleActivator, SynchronousBundleL
 
     private Map<Long, CDIContainer> managed;
 
+    private BundleTracker bundleTracker;
+
+    private SingleServiceTracker<CDIContainerFactory> factoryTracker;
+
+    private CDIContainerFactory factory;
+
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+
+    private final ConcurrentMap<Bundle, FutureTask> destroying = new ConcurrentHashMap<Bundle, FutureTask>();
+
     @Override
     public void start(BundleContext context) throws Exception {
         logger.trace("Entering IntegrationActivator : start() with parameter {}",
                      new Object[] {context});
         this.context = context;
-        ServiceReference[] refs = context.getServiceReferences(CDIContainerFactory.class.getName(), null);
-        if (refs != null && refs.length > 0) {
-            factoryRef = refs[0];
-            startCDIOSGi();
-        }
-        else {
-            logger.warn("No CDI container factory service found");
-        }
-        context.addServiceListener(this);
+        bundleTracker = new BundleTracker(context, Bundle.ACTIVE, this);
+        factoryTracker = new SingleServiceTracker<CDIContainerFactory>(context, CDIContainerFactory.class, this);
+        factoryTracker.open();
         logger.debug("Weld-OSGi integration part STARTED");
     }
 
     @Override
     public void stop(BundleContext context) throws Exception {
         logger.trace("Entering ExtensionActivator : stop() with parameter {}",
-                     new Object[] {context});
-        stopCDIOSGi();
+                new Object[]{context});
+        factoryTracker.close();
         logger.debug("Weld-OSGi integration part STOPPED");
     }
 
     /**
+     * This method listens to arriving/departing service to monitor CDI
+     * container factory services.
+     * <p/>
+     * When such a service first arrive, Weld-OSGi framework can start. Then
+     * other services are store and when the active service is departing
+     * Weld-OSGi framework is restarted and switch to next available service
+     * (or just stop is there is none).
+     * <p/>
+     */
+    @Override
+    public void bind(CDIContainerFactory service) {
+        executor.submit(new Runnable() {
+            @Override
+            public void run() {
+                doUpdateCDIFactory();
+            }
+        });
+    }
+
+    @Override
+    public Object addingBundle(Bundle bundle, BundleEvent event) {
+        logger.debug("Bundle {} has started", bundle.getSymbolicName());
+        if (started.get()) {
+            startManagement(bundle);
+        }
+        return bundle;
+    }
+
+    @Override
+    public void modifiedBundle(Bundle bundle, BundleEvent event, Object object) {
+        // Given we only track the ACTIVE state, we're not interested in
+        // other state changes.
+    }
+
+    @Override
+    public void removedBundle(Bundle bundle, BundleEvent event, Object object) {
+        logger.debug("Bundle {} is stopping", bundle.getSymbolicName());
+        if (started.get()) {
+            stopManagement(bundle);
+        }
+    }
+
+    protected void doUpdateCDIFactory() {
+        stopCDIOSGi();
+        factory = factoryTracker.getService();
+        if (factory != null) {
+            startCDIOSGi();
+        }
+
+    }
+
+    /**
      * This method start Weld-OSGi framework for the OSGi environment. It
-     * manages all already active bean bundles and strats listening for
+     * manages all already active bean bundles and starts listening for
      * {@link BundleEvent}.
      * <p/>
      */
     public void startCDIOSGi() {
-        logger.trace("Entering ExtensionActivator : "
-                     + "startCDIOSGi() with no parameter");
+        logger.trace("Entering ExtensionActivator : startCDIOSGi() with no parameter");
         logger.info("Weld-OSGi bean bundles management STARTED");
         started.set(true);
         managed = new HashMap<Long, CDIContainer>();
-        for (Bundle bundle : context.getBundles()) {
-            logger.debug("Scanning {}", bundle.getSymbolicName());
-            if (Bundle.ACTIVE == bundle.getState()) {
-                startManagement(bundle);
-            }
-        }
-        context.addBundleListener(this);
+        bundleTracker.open();
     }
 
     /**
@@ -124,85 +173,10 @@ public class IntegrationActivator implements BundleActivator, SynchronousBundleL
      * <p/>
      */
     public void stopCDIOSGi() {
-        logger.trace("Entering ExtensionActivator : "
-                     + "stopCDIOSGi() with no parameter");
-        for (Bundle bundle : context.getBundles()) {
-            logger.trace("Scanning {}", bundle.getSymbolicName());
-            if (managed.get(bundle.getBundleId()) != null) {
-                stopManagement(bundle);
-            }
-        }
+        logger.trace("Entering ExtensionActivator : stopCDIOSGi() with no parameter");
+        bundleTracker.close();
         started.set(false);
         logger.info("Weld-OSGi bean bundles management STOPPED");
-    }
-
-    /**
-     * This method listens to arriving/departing bundle to manage/unmanage them.
-     * <p/>
-     * @param event the listened {@link BundleEvent}.
-     */
-    @Override
-    public void bundleChanged(BundleEvent event) {
-        switch(event.getType()) {
-            case BundleEvent.STARTED:
-                logger.debug("Bundle {} has started", event.getBundle().getSymbolicName());
-                if (started.get()) {
-                    startManagement(event.getBundle());
-                }
-                break;
-            case BundleEvent.STOPPING:
-                logger.debug("Bundle {} is stopping", event.getBundle().getSymbolicName());
-                if (started.get()) {
-                    stopManagement(event.getBundle());
-                }
-                break;
-        }
-    }
-
-    /**
-     * This method listens to arriving/departing service to monitor CDI
-     * container factory services.
-     * <p/>
-     * When such a service first arrive, Weld-OSGi framework can start. Then
-     * other services are store and when the acitve service is departing
-     * Weld-OSGi framework is restarted and switch to next available service
-     * (or just stop is there is none).
-     * <p/>
-     * @param event the listened {@link ServiceEvent}.
-     */
-    @Override
-    public void serviceChanged(ServiceEvent event) {
-        try {
-            ServiceReference[] refs = context.getServiceReferences(CDIContainerFactory.class.getName(), null);
-            if (ServiceEvent.REGISTERED == event.getType()) {
-                if (!started.get() && refs != null && refs.length > 0) {
-                    logger.info("CDI container factory service found");
-                    factoryRef = refs[0];
-                    startCDIOSGi();
-                }
-            }
-            else if (ServiceEvent.UNREGISTERING == event.getType()) {
-                if (factoryRef != null) {
-                    if (started.get() && (event.getServiceReference().compareTo(factoryRef) == 0)) {
-                        logger.warn("CDI container factory service unregistered");
-                        if (refs == null || refs.length == 0) {
-                            logger.warn("No CDI container factory service found");
-                            factoryRef = null;
-                            stopCDIOSGi();
-                        }
-                        else { //switch to the next factory service
-                            logger.info("Switching to the next factory service");
-                            stopCDIOSGi();
-                            factoryRef = refs[0];
-                            startCDIOSGi();
-                        }
-                    }
-                }
-            }
-        }
-        catch(Exception ex) {
-            ex.printStackTrace();
-        }
     }
 
     private void startManagement(Bundle bundle) {
@@ -222,13 +196,13 @@ public class IntegrationActivator implements BundleActivator, SynchronousBundleL
             // setting contextual information
             holder.getInstance().select(BundleHolder.class).get().setBundle(bundle);
             holder.getInstance().select(BundleHolder.class).get().setContext(bundle.getBundleContext());
-            holder.getInstance().select(ContainerObserver.class).get().setContainers(factory().containers());
+            holder.getInstance().select(ContainerObserver.class).get().setContainers(factory.containers());
             holder.getInstance().select(ContainerObserver.class).get().setCurrentContainer(holder);
             // registering publishable services
             ServicePublisher publisher = new ServicePublisher(holder.getBeanClasses(),
                                                               bundle,
                                                               holder.getInstance(),
-                                                              factory().getContractBlacklist());
+                                                              factory.getContractBlacklist());
             publisher.registerAndLaunchComponents();
             // fire container start
             holder.getBeanManager().fireEvent(new BundleContainerEvents.BundleContainerInitialized(bundle.getBundleContext()));
@@ -243,7 +217,7 @@ public class IntegrationActivator implements BundleActivator, SynchronousBundleL
                 logger.warn("Unable to register a utility service for bundle {}: {}", bundle, t);
             }
             holder.setRegistrations(regs);
-            factory().addContainer(holder);
+            factory.addContainer(holder);
             managed.put(bundle.getBundleId(), holder);
             logger.debug("Bundle {} is managed", bundle.getSymbolicName());
         }
@@ -255,11 +229,42 @@ public class IntegrationActivator implements BundleActivator, SynchronousBundleL
         holder.setReady();
     }
 
-    private void stopManagement(Bundle bundle) {
+    private void stopManagement(final Bundle bundle) {
+        FutureTask future;
+        synchronized (managed) {
+            future = destroying.get(bundle);
+            if (future == null) {
+                final CDIContainer container = managed.remove(bundle.getBundleId());
+                if (container != null) {
+                    future = new FutureTask<Void>(new Runnable() {
+                        public void run() {
+                            try {
+                                doStopManagement(bundle, container);
+                            } finally {
+                                synchronized (managed) {
+                                    destroying.remove(bundle);
+                                }
+                            }
+                        }
+                    }, null);
+                    destroying.put(bundle, future);
+                }
+            }
+        }
+        if (future != null) {
+            try {
+                future.run();
+                future.get();
+            } catch (Throwable t) {
+                logger.warn("Error while destroying CDI container for bundle " + bundle, t);
+            }
+        }
+    }
+
+    private void doStopManagement(Bundle bundle, CDIContainer container) {
         logger.debug("Unmanaging {}", bundle.getSymbolicName());
         Bundle previousBundle = WeldOSGiExtension.setCurrentBundle(bundle);
         BundleContext previousContext = WeldOSGiExtension.setCurrentContext(bundle.getBundleContext());
-        CDIContainer container = managed.get(bundle.getBundleId());
         if (started.get() && managed.containsKey(bundle.getBundleId())) {
             if (container != null) {
                 //BundleHolder bundleHolder = holder.getInstance().select(BundleHolder.class).get();
