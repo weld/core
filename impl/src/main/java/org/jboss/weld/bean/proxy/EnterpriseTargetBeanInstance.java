@@ -25,6 +25,7 @@ import java.util.Set;
 
 /**
  * @author David Allen
+ * @author Marko Luksa
  */
 public class EnterpriseTargetBeanInstance extends AbstractBeanInstance implements Serializable {
     private static final long serialVersionUID = 2825052095047112162L;
@@ -32,14 +33,14 @@ public class EnterpriseTargetBeanInstance extends AbstractBeanInstance implement
     private final Class<?> beanType;
     private final MethodHandler methodHandler;
 
+
     public EnterpriseTargetBeanInstance(Class<?> baseType, MethodHandler methodHandler) {
         this.beanType = baseType;
         this.methodHandler = methodHandler;
     }
 
     public EnterpriseTargetBeanInstance(Set<Type> types, MethodHandler methodHandler) {
-        this.beanType = computeInstanceType(types);
-        this.methodHandler = methodHandler;
+        this(computeInstanceType(types), methodHandler);
     }
 
     public Object getInstance() {
@@ -51,8 +52,8 @@ public class EnterpriseTargetBeanInstance extends AbstractBeanInstance implement
     }
 
     public Object invoke(Object instance, Method method, Object... arguments) throws Throwable {
-        // Pass the invocation directly to the method handler
-        return methodHandler.invoke(null, method, method, arguments);
+         // Pass the invocation directly to the method handler
+         return methodHandler.invoke(null, method, method, arguments);
     }
 
 }

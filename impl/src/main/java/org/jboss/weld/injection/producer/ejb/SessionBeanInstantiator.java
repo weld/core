@@ -27,6 +27,7 @@ import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bean.proxy.EnterpriseBeanProxyMethodHandler;
 import org.jboss.weld.bean.proxy.EnterpriseProxyFactory;
 import org.jboss.weld.bean.proxy.EnterpriseTargetBeanInstance;
+import org.jboss.weld.bean.proxy.InjectionPointPropagatingEnterpriseTargetBeanInstance;
 import org.jboss.weld.bean.proxy.ProxyFactory;
 import org.jboss.weld.exceptions.CreationException;
 import org.jboss.weld.exceptions.WeldException;
@@ -66,7 +67,7 @@ public class SessionBeanInstantiator<T> implements Instantiator<T> {
     }
 
     protected EnterpriseTargetBeanInstance createEnterpriseTargetBeanInstance(CreationalContext<T> creationalContext) {
-        return new EnterpriseTargetBeanInstance(bean.getBeanClass(), new EnterpriseBeanProxyMethodHandler<T>(bean, creationalContext));
+        return new InjectionPointPropagatingEnterpriseTargetBeanInstance(bean.getBeanClass(), new EnterpriseBeanProxyMethodHandler<T>(bean, creationalContext), bean.getBeanManager());
     }
 
     @Override

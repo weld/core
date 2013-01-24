@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2008, Red Hat, Inc., and individual contributors
+ * Copyright 2013, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,8 +14,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.injection;
+package org.jboss.weld.tests.injectionPoint.weld1177;
 
-public class CurrentInjectionPoint extends InjectionPointStack {
+import java.lang.reflect.Member;
+import java.lang.reflect.Type;
 
+import javax.ejb.Stateless;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.inject.Inject;
+
+@Stateless
+public class Baz {
+
+    @Inject
+    private InjectionPoint injectionPoint;
+
+    public InjectionPoint getInjectionPoint() {
+        return injectionPoint;
+    }
+
+    public void doSomething() {
+    }
+
+    public Member getInjectionPointMember() {
+        return injectionPoint.getMember();
+    }
+
+    public Type getInjectionPointType() {
+        return injectionPoint.getType();
+    }
 }

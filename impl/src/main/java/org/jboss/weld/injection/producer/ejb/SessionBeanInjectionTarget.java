@@ -29,6 +29,8 @@ import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bean.interceptor.InterceptorBindingsAdapter;
 import org.jboss.weld.ejb.spi.EjbServices;
 import org.jboss.weld.injection.ConstructorInjectionPoint;
+import org.jboss.weld.injection.CurrentInjectionPoint;
+import org.jboss.weld.injection.DynamicInjectionPoint;
 import org.jboss.weld.injection.InjectionContextImpl;
 import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.producer.AbstractInjectionTarget;
@@ -41,10 +43,12 @@ import org.jboss.weld.util.Beans;
 public class SessionBeanInjectionTarget<T> extends AbstractInjectionTarget<T> {
 
     private final SessionBean<T> bean;
+    private final CurrentInjectionPoint currentInjectionPoint;
 
     public SessionBeanInjectionTarget(EnhancedAnnotatedType<T> type, SessionBean<T> bean, BeanManagerImpl beanManager) {
         super(type, bean, beanManager);
         this.bean = bean;
+        this.currentInjectionPoint = beanManager.getServices().get(CurrentInjectionPoint.class);
     }
 
     @Override
@@ -74,6 +78,23 @@ public class SessionBeanInjectionTarget<T> extends AbstractInjectionTarget<T> {
         new InjectionContextImpl<T>(getBeanManager(), this, getType(), instance) {
 
             public void proceed() {
+                if (isStatelessSessionBean()) {
+                    currentInjectionPoint.push(new DynamicInjectionPoint(beanManager.getServices()));
+                    try {
+                        injectFieldsAndInitializers();
+                    } finally {
+                        currentInjectionPoint.pop();
+                    }
+                } else {
+                    injectFieldsAndInitializers();
+                }
+            }
+
+            private boolean isStatelessSessionBean() {
+                return getBean().getEjbDescriptor().isStateless();
+            }
+
+            private void injectFieldsAndInitializers() {
                 Beans.injectFieldsAndInitializers(instance, ctx, getBeanManager(), getInjectableFields(), getInitializerMethods());
             }
 
@@ -90,5 +111,4 @@ public class SessionBeanInjectionTarget<T> extends AbstractInjectionTarget<T> {
             throw new IllegalArgumentException("Cannot create SessionBeanInjectionTarget for " + bean);
         }
     }
-
 }

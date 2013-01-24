@@ -87,7 +87,7 @@ public class InjectionPointHolder extends AbstractSerializableHolder<InjectionPo
 
         private static final long serialVersionUID = 6952579330771485841L;
 
-        private final InjectionPoint ip;
+        private final transient InjectionPoint ip;
 
         public NoopInjectionPointIdentifier(InjectionPoint ip) {
             this.ip = ip;

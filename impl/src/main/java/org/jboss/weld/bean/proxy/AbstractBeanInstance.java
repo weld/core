@@ -52,7 +52,7 @@ public abstract class AbstractBeanInstance implements BeanInstance {
         return computeInstanceType(bean.getTypes());
     }
 
-    protected Class<?> computeInstanceType(Set<Type> types) {
+    protected static Class<?> computeInstanceType(Set<Type> types) {
         TypeInfo typeInfo = TypeInfo.of(types);
         Class<?> superClass = typeInfo.getSuperClass();
         if (superClass.equals(Object.class)) {
