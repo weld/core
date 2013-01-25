@@ -25,6 +25,7 @@ import org.jboss.weld.environment.osgi.api.annotation.Publish;
 import org.jboss.weld.environment.osgi.impl.extension.beans.RegistrationsHolderImpl;
 import org.jboss.weld.environment.osgi.impl.extension.service.WeldOSGiExtension;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -283,8 +284,9 @@ public class ServicePublisher {
             }
         }
         if (registration != null) {
-            WeldOSGiExtension.currentBundle.set(bundle.getBundleId());
+            Bundle previousBundle = WeldOSGiExtension.setCurrentBundle(bundle);
             instance.select(RegistrationsHolderImpl.class).get().addRegistration(registration);
+            WeldOSGiExtension.setCurrentBundle(previousBundle);
         }
     }
 

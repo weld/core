@@ -87,12 +87,14 @@ public class EmbeddedContainer {
     public EmbeddedCDIContainer initialize() {
         logger.trace("Entering EmbeddedContainer : "
                      + "initialize() with no parameter");
-        WeldOSGiExtension.currentContext.set(context);
+        Bundle previousBundle = WeldOSGiExtension.setCurrentBundle(context.getBundle());
+        BundleContext previousContext = WeldOSGiExtension.setCurrentContext(context);
         container.initialize();
         context.addBundleListener(listener);
         context.addServiceListener(listener);
         container.getEvent();
-        WeldOSGiExtension.currentContext.remove();
+        WeldOSGiExtension.setCurrentBundle(previousBundle);
+        WeldOSGiExtension.setCurrentContext(previousContext);
         return container;
     }
 
@@ -167,8 +169,8 @@ public class EmbeddedContainer {
                     bundleEvent = new BundleEvents.BundleUpdated(bundle);
                     break;
             }
-            boolean set = WeldOSGiExtension.currentBundle.get() != null;
-            WeldOSGiExtension.currentBundle.set(context.getBundle().getBundleId());
+            Bundle previousBundle = WeldOSGiExtension.setCurrentBundle(context.getBundle());
+            BundleContext previousContext = WeldOSGiExtension.setCurrentContext(context);
             try {
                 //broadcast the OSGi event through CDI event system
                 container.getEvent().select(BundleEvent.class).fire(event);
@@ -180,9 +182,8 @@ public class EmbeddedContainer {
                 //broadcast the corresponding Weld-OSGi event
                 fireAllEvent(bundleEvent, container.getEvent());
             }
-            if (!set) {
-                WeldOSGiExtension.currentBundle.remove();
-            }
+            WeldOSGiExtension.setCurrentBundle(previousBundle);
+            WeldOSGiExtension.setCurrentContext(previousContext);
         }
 
         @Override
@@ -203,8 +204,8 @@ public class EmbeddedContainer {
                     serviceEvent = new ServiceEvents.ServiceDeparture(ref, context);
                     break;
             }
-            boolean set = WeldOSGiExtension.currentBundle.get() != null;
-            WeldOSGiExtension.currentBundle.set(context.getBundle().getBundleId());
+            Bundle previousBundle = WeldOSGiExtension.setCurrentBundle(context.getBundle());
+            BundleContext previousContext = WeldOSGiExtension.setCurrentContext(context);
             try {
                 //broadcast the OSGi event through CDI event system
                 container.getEvent().select(ServiceEvent.class).fire(event);
@@ -216,9 +217,8 @@ public class EmbeddedContainer {
                 //broadcast the corresponding Weld-OSGi event
                 fireAllEvent(serviceEvent, container.getEvent(), container.getInstance());
             }
-            if (!set) {
-                WeldOSGiExtension.currentBundle.remove();
-            }
+            WeldOSGiExtension.setCurrentBundle(previousBundle);
+            WeldOSGiExtension.setCurrentContext(previousContext);
         }
 
         private void fireAllEvent(AbstractServiceEvent event, Event broadcaster, Instance<Object> instance) {
