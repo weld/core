@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.injection.producer.ejb;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
@@ -24,13 +25,17 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
 
+import org.jboss.weld.Container;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bean.interceptor.InterceptorBindingsAdapter;
 import org.jboss.weld.ejb.spi.EjbServices;
 import org.jboss.weld.injection.ConstructorInjectionPoint;
+import org.jboss.weld.injection.CurrentInjectionPoint;
+import org.jboss.weld.injection.ForwardingInjectionPoint;
 import org.jboss.weld.injection.InjectionContextImpl;
 import org.jboss.weld.injection.InjectionPointFactory;
+import org.jboss.weld.injection.SLSBInvocationInjectionPoint;
 import org.jboss.weld.injection.producer.AbstractInjectionTarget;
 import org.jboss.weld.injection.producer.Instantiator;
 import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
@@ -74,6 +79,24 @@ public class SessionBeanInjectionTarget<T> extends AbstractInjectionTarget<T> {
         new InjectionContextImpl<T>(getBeanManager(), this, getType(), instance) {
 
             public void proceed() {
+                if (isStatelessSessionBean()) {
+                    CurrentInjectionPoint currentInjectionPoint = Container.instance().services().get(CurrentInjectionPoint.class);
+                    currentInjectionPoint.push(new SLSBDynamicInjectionPoint());
+                    try {
+                        injectFieldsAndInitializers();
+                    } finally {
+                        currentInjectionPoint.pop();
+                    }
+                } else {
+                    injectFieldsAndInitializers();
+                }
+            }
+
+            private boolean isStatelessSessionBean() {
+                return getBean().getEjbDescriptor().isStateless();
+            }
+
+            private void injectFieldsAndInitializers() {
                 Beans.injectFieldsAndInitializers(instance, ctx, getBeanManager(), getInjectableFields(), getInitializerMethods());
             }
 
@@ -88,6 +111,15 @@ public class SessionBeanInjectionTarget<T> extends AbstractInjectionTarget<T> {
             return new SessionBeanInstantiator<T>(type, (SessionBean<T>) bean);
         } else {
             throw new IllegalArgumentException("Cannot create SessionBeanInjectionTarget for " + bean);
+        }
+    }
+
+    private static class SLSBDynamicInjectionPoint extends ForwardingInjectionPoint implements Serializable {
+
+        private static final long serialVersionUID = 0L;
+
+        protected InjectionPoint delegate() {
+            return Container.instance().services().get(SLSBInvocationInjectionPoint.class).peek();
         }
     }
 

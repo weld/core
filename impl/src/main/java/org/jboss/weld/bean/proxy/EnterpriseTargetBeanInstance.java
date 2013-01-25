@@ -23,23 +23,33 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Set;
 
+import javax.enterprise.inject.spi.InjectionPoint;
+
+import org.jboss.weld.Container;
+import org.jboss.weld.injection.CurrentInjectionPoint;
+import org.jboss.weld.injection.SLSBInvocationInjectionPoint;
+import org.jboss.weld.serialization.InjectionPointHolder;
+
 /**
  * @author David Allen
+ * @author Marko Luksa
  */
 public class EnterpriseTargetBeanInstance extends AbstractBeanInstance implements Serializable {
     private static final long serialVersionUID = 2825052095047112162L;
 
     private final Class<?> beanType;
     private final MethodHandler methodHandler;
+    private final InjectionPointHolder injectionPointHolder;
 
     public EnterpriseTargetBeanInstance(Class<?> baseType, MethodHandler methodHandler) {
         this.beanType = baseType;
         this.methodHandler = methodHandler;
+        InjectionPoint injectionPoint = Container.instance().services().get(CurrentInjectionPoint.class).peek();
+        this.injectionPointHolder = injectionPoint == null ? null : new InjectionPointHolder(injectionPoint);
     }
 
     public EnterpriseTargetBeanInstance(Set<Type> types, MethodHandler methodHandler) {
-        this.beanType = computeInstanceType(types);
-        this.methodHandler = methodHandler;
+        this(computeInstanceType(types), methodHandler);
     }
 
     public Object getInstance() {
@@ -51,8 +61,14 @@ public class EnterpriseTargetBeanInstance extends AbstractBeanInstance implement
     }
 
     public Object invoke(Object instance, Method method, Object... arguments) throws Throwable {
-        // Pass the invocation directly to the method handler
-        return methodHandler.invoke(null, method, method, arguments);
+        SLSBInvocationInjectionPoint slsbInvocationInjectionPoint = Container.instance().services().get(SLSBInvocationInjectionPoint.class);
+        slsbInvocationInjectionPoint.push(injectionPointHolder == null ? null : injectionPointHolder.get());
+        try {
+            // Pass the invocation directly to the method handler
+            return methodHandler.invoke(null, method, method, arguments);
+        } finally {
+            slsbInvocationInjectionPoint.pop();
+        }
     }
 
 }

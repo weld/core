@@ -108,6 +108,7 @@ import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.executor.ExecutorServicesFactory;
 import org.jboss.weld.injection.CurrentInjectionPoint;
+import org.jboss.weld.injection.SLSBInvocationInjectionPoint;
 import org.jboss.weld.injection.producer.InjectionTargetService;
 import org.jboss.weld.logging.messages.VersionMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -336,6 +337,7 @@ public class WeldBootstrap implements Bootstrap {
         services.add(MetaAnnotationStore.class, new MetaAnnotationStore(classTransformer));
         services.add(ContextualStore.class, new ContextualStoreImpl());
         services.add(CurrentInjectionPoint.class, new CurrentInjectionPoint());
+        services.add(SLSBInvocationInjectionPoint.class, new SLSBInvocationInjectionPoint());
         services.add(SpecializationAndEnablementRegistry.class, new SpecializationAndEnablementRegistry());
 
         GlobalObserverNotifierService observerNotificationService = new GlobalObserverNotifierService(services);

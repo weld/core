@@ -16,6 +16,6 @@
  */
 package org.jboss.weld.injection;
 
-public class CurrentInjectionPoint extends InjectionPointStack {
+public class SLSBInvocationInjectionPoint extends InjectionPointStack {
 
 }
