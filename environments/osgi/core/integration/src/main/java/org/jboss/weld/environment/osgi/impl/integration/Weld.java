@@ -75,8 +75,7 @@ public class Weld {
         ClassLoader old = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
         // -------------
-        boolean set = WeldOSGiExtension.currentBundle.get() != null;
-        WeldOSGiExtension.currentBundle.set(bundle.getBundleId());
+        Bundle previousBundle = WeldOSGiExtension.setCurrentBundle(bundle);
         try {
             bootstrap = new WeldBootstrap();
             BundleDeployment deployment = createDeployment(bootstrap);
@@ -107,9 +106,7 @@ public class Weld {
                     t);
             t.printStackTrace();
         } finally {
-            if (!set) {
-                WeldOSGiExtension.currentBundle.remove();
-            }
+            WeldOSGiExtension.setCurrentBundle(previousBundle);
             Thread.currentThread().setContextClassLoader(old);
         }
         return started;

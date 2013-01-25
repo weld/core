@@ -169,8 +169,8 @@ public class ExtensionActivator implements BundleActivator,
                     break;
             }
             for (ServiceReference reference : cdiEventServiceReferences) {
-                boolean set = WeldOSGiExtension.currentBundle.get() != null;
-                WeldOSGiExtension.currentBundle.set(reference.getBundle().getBundleId());
+                BundleContext previousContext = WeldOSGiExtension.setCurrentContext(reference.getBundle().getBundleContext());
+                Bundle previousBundle = WeldOSGiExtension.setCurrentBundle(reference.getBundle());
                 Event<Object> broadcastingCDIEvent =
                               (Event<Object>) context.getService(reference);
                 try {
@@ -182,9 +182,8 @@ public class ExtensionActivator implements BundleActivator,
                 if (resultingWeldOSGiBundleEvent != null) {
                     fireAllEvent(resultingWeldOSGiBundleEvent, broadcastingCDIEvent);
                 }
-                if (!set) {
-                    WeldOSGiExtension.currentBundle.remove();
-                }
+                WeldOSGiExtension.setCurrentBundle(previousBundle);
+                WeldOSGiExtension.setCurrentContext(previousContext);
             }
         }
     }
@@ -229,8 +228,8 @@ public class ExtensionActivator implements BundleActivator,
                     break;
             }
             for (ServiceReference reference : cdiInstanceServiceReferences) {
-                boolean set = WeldOSGiExtension.currentBundle.get() != null;
-                WeldOSGiExtension.currentBundle.set(reference.getBundle().getBundleId());
+                BundleContext previousContext = WeldOSGiExtension.setCurrentContext(reference.getBundle().getBundleContext());
+                Bundle previousBundle = WeldOSGiExtension.setCurrentBundle(reference.getBundle());
                 Instance<Object> instance =
                                  (Instance<Object>) context.getService(reference);
                 try {
@@ -246,9 +245,8 @@ public class ExtensionActivator implements BundleActivator,
                 catch(Throwable t) {
                     //ignore
                 }
-                if (!set) {
-                    WeldOSGiExtension.currentBundle.remove();
-                }
+                WeldOSGiExtension.setCurrentBundle(previousBundle);
+                WeldOSGiExtension.setCurrentContext(previousContext);
             }
         }
     }

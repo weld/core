@@ -90,18 +90,13 @@ public class WeldCDIContainer implements CDIContainer {
                 + "an inter bundle event: {}",
                 bundle,
                 event);
-        Long set = WeldOSGiExtension.currentBundle.get();
-        WeldOSGiExtension.currentBundle.set(bundle.getBundleId());
+        Bundle previousBundle = WeldOSGiExtension.setCurrentBundle(bundle);
         container.getEvent().select(InterBundleEvent.class,
                 new SpecificationAnnotation(
                         event.type()),
                 new SentAnnotation()).fire(
                 event);
-        if (set != null) {
-            WeldOSGiExtension.currentBundle.set(set);
-        } else {
-            WeldOSGiExtension.currentBundle.remove();
-        }
+        WeldOSGiExtension.setCurrentBundle(previousBundle);
     }
 
     @Override
