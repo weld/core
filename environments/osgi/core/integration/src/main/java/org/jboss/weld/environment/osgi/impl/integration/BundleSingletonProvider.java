@@ -47,7 +47,8 @@ public class BundleSingletonProvider extends SingletonProvider {
         }
 
         private Long getId() {
-            Long value = WeldOSGiExtension.currentBundle.get();
+            Bundle bundle = WeldOSGiExtension.getCurrentBundle();
+            Long value = bundle != null ? bundle.getBundleId() : null;
             // fix with a patched version of weld ProxyMethodHandler
 //            if (value == null) {
 //                return FrameworkUtil.getBundle(ProxyMethodHandler.currentCaller.get()).getBundleId();
@@ -88,10 +89,9 @@ public class BundleSingletonProvider extends SingletonProvider {
                         if (maybeBundle != null) {
                             if (!maybeBundle.getSymbolicName()
                                     .equals("org.jboss.weld.osgi.weld-osgi")) {
-                                WeldOSGiExtension.currentBundle.
-                                        set(maybeBundle.getBundleId());
+                                Bundle previousBundle = WeldOSGiExtension.setCurrentBundle(maybeBundle);
                                 maybeObject = get(null);
-                                WeldOSGiExtension.currentBundle.remove();
+                                WeldOSGiExtension.setCurrentBundle(previousBundle);
                                 if (maybeObject != null) {
                                     return maybeObject;
                                 }
