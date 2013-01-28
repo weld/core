@@ -196,6 +196,14 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <!-- Disable annotation processor for test sources -->
+                    <testCompilerArgument>-proc:none</testCompilerArgument>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
