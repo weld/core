@@ -22,7 +22,6 @@ import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.jboss.weld.bootstrap.BootstrapConfiguration;
 import org.jboss.weld.logging.messages.BootstrapMessage;
 import org.slf4j.cal10n.LocLogger;
 
@@ -39,10 +38,6 @@ public class FixedThreadPoolExecutorServices extends AbstractExecutorServices {
     private final int threadPoolSize;
 
     private final ExecutorService executor;
-
-    public FixedThreadPoolExecutorServices() {
-        this(BootstrapConfiguration.DEFAULT_THREAD_POOL_SIZE);
-    }
 
     public FixedThreadPoolExecutorServices(int threadPoolSize) {
         this.threadPoolSize = threadPoolSize;

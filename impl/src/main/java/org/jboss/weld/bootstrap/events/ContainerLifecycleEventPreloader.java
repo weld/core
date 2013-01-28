@@ -21,7 +21,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.jboss.weld.bootstrap.BootstrapConfiguration;
 import org.jboss.weld.event.ObserverNotifier;
 import org.jboss.weld.executor.DeamonThreadFactory;
 import org.jboss.weld.util.reflection.ParameterizedTypeImpl;
@@ -55,8 +54,8 @@ public class ContainerLifecycleEventPreloader {
     private final ExecutorService executor;
     private final ObserverNotifier notifier;
 
-    public ContainerLifecycleEventPreloader(BootstrapConfiguration configuration, ObserverNotifier notifier) {
-        this.executor = Executors.newFixedThreadPool(configuration.getPreloaderThreads(), new DeamonThreadFactory(new ThreadGroup("weld-preloaders"), "weld-preloader-"));
+    public ContainerLifecycleEventPreloader(int threadPoolSize, ObserverNotifier notifier) {
+        this.executor = Executors.newFixedThreadPool(threadPoolSize, new DeamonThreadFactory(new ThreadGroup("weld-preloaders"), "weld-preloader-"));
         this.notifier = notifier;
     }
 

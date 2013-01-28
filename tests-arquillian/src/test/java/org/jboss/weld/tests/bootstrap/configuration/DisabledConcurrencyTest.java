@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.tests.bootstrap.configuration;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import javax.inject.Inject;
@@ -28,28 +29,24 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.weld.bootstrap.ConcurrentValidator;
 import org.jboss.weld.bootstrap.Validator;
-import org.jboss.weld.bootstrap.events.ContainerLifecycleEvents;
-import org.jboss.weld.executor.ProfilingExecutorServices;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.manager.api.ExecutorServices;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-public class DebugTest {
+public class DisabledConcurrencyTest {
 
     @Inject
     private BeanManagerImpl manager;
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).addAsResource(new StringAsset("threadPoolDebug=true"), "org.jboss.weld.executor.properties");
+        return ShrinkWrap.create(BeanArchive.class).addAsResource(new StringAsset("concurrentDeployment=false"), "org.jboss.weld.bootstrap.properties");
     }
 
     @Test
     public void testServices() {
-        assertTrue(manager.getServices().get(Validator.class) instanceof ConcurrentValidator);
-        assertTrue(manager.getServices().get(ContainerLifecycleEvents.class) != null);
-        assertTrue(manager.getServices().get(ExecutorServices.class) instanceof ProfilingExecutorServices);
+        assertTrue(manager.getServices().get(Validator.class) instanceof Validator);
+        assertFalse(manager.getServices().get(Validator.class) instanceof ConcurrentValidator);
     }
 }

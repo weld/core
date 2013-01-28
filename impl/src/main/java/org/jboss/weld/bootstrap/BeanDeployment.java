@@ -55,6 +55,7 @@ import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
 import org.jboss.weld.bootstrap.enablement.EnablementBuilder;
 import org.jboss.weld.bootstrap.enablement.ModuleEnablementBuilder;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
+import org.jboss.weld.bootstrap.spi.BootstrapConfiguration;
 import org.jboss.weld.bootstrap.spi.Filter;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.ejb.EJBApiAbstraction;
@@ -64,6 +65,7 @@ import org.jboss.weld.enums.EnumService;
 import org.jboss.weld.injection.producer.InjectionTargetService;
 import org.jboss.weld.jsf.JsfApiAbstraction;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.manager.api.ExecutorServices;
 import org.jboss.weld.metadata.FilterPredicate;
 import org.jboss.weld.metadata.ScanningPredicate;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
@@ -135,7 +137,7 @@ public class BeanDeployment {
             ejbDescriptors.addAll(beanDeploymentArchive.getEjbs());
         }
 
-        if (services.get(Validator.class) instanceof ConcurrentValidator) {
+        if (services.get(BootstrapConfiguration.class).isConcurrentDeploymentEnabled() && services.contains(ExecutorServices.class)) {
             beanDeployer = new ConcurrentBeanDeployer(beanManager, ejbDescriptors, deploymentServices);
         } else {
             beanDeployer = new BeanDeployer(beanManager, ejbDescriptors, deploymentServices);

@@ -18,7 +18,6 @@ package org.jboss.weld.tests.bootstrap.configuration;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 import javax.inject.Inject;
 
@@ -30,28 +29,25 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.weld.bootstrap.ConcurrentValidator;
 import org.jboss.weld.bootstrap.Validator;
-import org.jboss.weld.bootstrap.events.ContainerLifecycleEvents;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.api.ExecutorServices;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-public class DisabledThreadingTest {
+public class DisabledExecutorTest {
 
     @Inject
     private BeanManagerImpl manager;
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).addAsResource(new StringAsset("enableThreading=false"), "org.jboss.weld.bootstrap.properties");
+        return ShrinkWrap.create(BeanArchive.class).addAsResource(new StringAsset("threadPoolType=NONE"), "org.jboss.weld.executor.properties");
     }
 
     @Test
     public void testServices() {
-        assertTrue(manager.getServices().get(Validator.class) instanceof Validator);
         assertFalse(manager.getServices().get(Validator.class) instanceof ConcurrentValidator);
-        assertFalse(manager.getServices().get(ContainerLifecycleEvents.class).isPreloaderEnabled());
         assertNull(manager.getServices().get(ExecutorServices.class));
     }
 }

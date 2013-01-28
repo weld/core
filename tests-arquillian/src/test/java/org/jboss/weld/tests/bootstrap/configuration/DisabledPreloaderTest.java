@@ -44,7 +44,7 @@ public class DisabledPreloaderTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).addAsResource(new StringAsset("preloaderThreads=0"),
+        return ShrinkWrap.create(BeanArchive.class).addAsResource(new StringAsset("preloaderThreadPoolSize=0"),
                 "org.jboss.weld.bootstrap.properties");
     }
 

@@ -73,8 +73,10 @@ import org.jboss.weld.bootstrap.events.ProcessModuleImpl;
 import org.jboss.weld.bootstrap.events.SimpleAnnotationDiscovery;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.BeansXml;
+import org.jboss.weld.bootstrap.spi.BootstrapConfiguration;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.bootstrap.spi.Metadata;
+import org.jboss.weld.bootstrap.spi.helpers.FileBasedBootstrapConfiguration;
 import org.jboss.weld.context.ApplicationContext;
 import org.jboss.weld.context.DependentContext;
 import org.jboss.weld.context.RequestContext;
@@ -265,6 +267,9 @@ public class WeldBootstrap implements Bootstrap {
             if (!registry.contains(ProxyServices.class)) {
                 registry.add(ProxyServices.class, new SimpleProxyServices());
             }
+            if (!registry.contains(BootstrapConfiguration.class)) {
+                registry.add(BootstrapConfiguration.class, new FileBasedBootstrapConfiguration(DefaultResourceLoader.INSTANCE));
+            }
 
             verifyServices(registry, environment.getRequiredDeploymentServices());
 
@@ -343,28 +348,37 @@ public class WeldBootstrap implements Bootstrap {
         GlobalObserverNotifierService observerNotificationService = new GlobalObserverNotifierService(services);
         services.add(GlobalObserverNotifierService.class, observerNotificationService);
 
-        BootstrapConfiguration configuration = new BootstrapConfiguration(DefaultResourceLoader.INSTANCE);
-        ContainerLifecycleEventPreloader preloader = null;
-        if (configuration.isThreadingEnabled()) {
-            ExecutorServices executor = ExecutorServicesFactory.create(configuration);
+        /*
+         * Setup ExecutorServices
+         */
+        ExecutorServices executor = ExecutorServicesFactory.create(DefaultResourceLoader.INSTANCE);
+        if (executor != null) {
             services.add(ExecutorServices.class, executor);
-            if (configuration.isConcurrentDeployerEnabled()) {
-                services.add(Validator.class, new ConcurrentValidator(executor));
-            }
-            if (configuration.isPreloaderEnabled()) {
-                preloader = new ContainerLifecycleEventPreloader(configuration, observerNotificationService.getGlobalLenientObserverNotifier());
-            }
         }
 
         if (!services.contains(AnnotationDiscovery.class)) {
             services.add(AnnotationDiscovery.class, new SimpleAnnotationDiscovery(services.get(ReflectionCache.class)));
         }
 
-        services.add(ContainerLifecycleEvents.class, new ContainerLifecycleEvents(preloader, services.get(AnnotationDiscovery.class)));
-
-        if (!services.contains(Validator.class)) {
+        /*
+         * Setup Validator
+         */
+        BootstrapConfiguration bootstrapConfiguration = services.get(BootstrapConfiguration.class);
+        if (bootstrapConfiguration.isConcurrentDeploymentEnabled() && services.contains(ExecutorServices.class)) {
+            services.add(Validator.class, new ConcurrentValidator(executor));
+        } else {
             services.add(Validator.class, new Validator());
         }
+
+        /*
+         * Preloader for container lifecycle events
+         */
+        ContainerLifecycleEventPreloader preloader = null;
+        int preloaderThreadPoolSize = bootstrapConfiguration.getPreloaderThreadPoolSize();
+        if (preloaderThreadPoolSize > 0) {
+            preloader = new ContainerLifecycleEventPreloader(preloaderThreadPoolSize, observerNotificationService.getGlobalLenientObserverNotifier());
+        }
+        services.add(ContainerLifecycleEvents.class, new ContainerLifecycleEvents(preloader, services.get(AnnotationDiscovery.class)));
     }
 
     public BeanManagerImpl getManager(BeanDeploymentArchive beanDeploymentArchive) {

@@ -24,7 +24,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import org.jboss.weld.bootstrap.BootstrapConfiguration;
 import org.jboss.weld.logging.messages.BootstrapMessage;
 import org.slf4j.cal10n.LocLogger;
 
@@ -44,10 +43,6 @@ public class TimingOutFixedThreadPoolExecutorServices extends AbstractExecutorSe
     private long keepAliveTime;
 
     private final ThreadPoolExecutor executor;
-
-    public TimingOutFixedThreadPoolExecutorServices() {
-        this(BootstrapConfiguration.DEFAULT_THREAD_POOL_SIZE, BootstrapConfiguration.DEFAULT_KEEP_ALIVE_TIME);
-    }
 
     public TimingOutFixedThreadPoolExecutorServices(int threadPoolSize, long keepAliveTime) {
 

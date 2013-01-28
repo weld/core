@@ -116,9 +116,9 @@
 
    </section>
    <section>
-      <title>Parallel bootstrap configuration</title>
+      <title>Concurrent deployment configuration</title>
     <para>
-        Weld by default supports parallel loading and deploying of
+        Weld by default supports concurrent loading and deploying of
         beans. However, in certain deployment scenarios the default
         setup may not be appropriate. Bootstrap configuration may be
         altered using the
@@ -129,7 +129,7 @@
     </para>
 
     <table id="bootstrap.configuration.table">
-         <title>Bootstrap configuration options</title>
+         <title>Concurrent deployment configuration options</title>
          <tgroup cols="3">
          <thead>
             <row>
@@ -140,32 +140,12 @@
          </thead>
          <tbody>
             <row>
-                <entry><literal>enableThreading</literal></entry>
+                <entry><literal>concurrentDeployment</literal></entry>
                 <entry>true</entry>
-                <entry>If set to false, Weld will only use the default thread for
-                    bootstrap and will not try to spawn any additional threads. This
-                    mode is safe for environments such as GAE.</entry>
+                <entry>If set to false, <literal>ConcurrentDeployer</literal> and <literal>ConcurrentValidator</literal> will not be used.</entry>
             </row>
-         </tbody>
-         <tbody>
             <row>
-                <entry><literal>debug</literal></entry>
-                <entry>false</entry>
-                <entry>If set to true, debug timing information is printed to the standard output.</entry>
-            </row>
-         </tbody>
-         <tbody>
-            <row>
-                <entry><literal>deployerThreads</literal></entry>
-                <entry><function>Runtime.getRuntime().availableProcessors()</function></entry>
-                <entry>The number of threads to be used for bean loading
-                    and deployment. If set to 0 the serial deployer is used instead
-                    of its concurrent counterpart.</entry>
-            </row>
-         </tbody>
-         <tbody>
-            <row>
-                <entry><literal>preloaderThreads</literal></entry>
+                <entry><literal>preloaderThreadPoolSize</literal></entry>
                 <entry><function>Math.max(1, Runtime.getRuntime().availableProcessors() - 1)</function></entry>
                 <entry>Weld is capable of resolving observer methods for container
                     lifecycle events in advance while bean deployer threads are
@@ -177,7 +157,49 @@
             </row>
          </tbody>
          </tgroup>
-      </table>
+    </table>
+
+    <section>
+        <title>Thread pool configuration</title>
+        <para>
+            For certain types of tasks Weld uses its own thread pool. The thread
+            pool is represented by the
+            <literal>ExecutorServices</literal>
+            service. It is possible to alter the thread pool configuration in the
+            <filename>WEB-INF/classes/org.jboss.weld.executor.properties</filename>
+            file.
+        </para>
+        <table id="executor.configuration.table">
+             <title>Executor configuration options</title>
+             <tgroup cols="3">
+             <thead>
+                <row>
+                   <entry>Configuration option</entry>
+                   <entry>Default value</entry>
+                   <entry>Description</entry>
+                </row>
+             </thead>
+             <tbody>
+                <row>
+                    <entry><literal>debug</literal></entry>
+                    <entry>false</entry>
+                    <entry>If set to true, debug timing information is printed to the standard output.</entry>
+                </row>
+                <row>
+                    <entry><literal>threadPoolSize</literal></entry>
+                    <entry><function>Runtime.getRuntime().availableProcessors()</function></entry>
+                    <entry>The number of threads to be used for bean loading
+                        and deployment.</entry>
+                </row>
+                <row>
+                    <entry><literal>threadPoolType</literal></entry>
+                    <entry><function>FIXED</function></entry>
+                    <entry>The type of the thread pool. Possible values are: <literal>FIXED</literal>, <literal>FIXED_TIMEOUT</literal>, <literal>NONE</literal>, <literal>SINGLE_THREAD</literal></entry>
+                </row>
+             </tbody>
+             </tgroup>
+          </table>
+    </section>
    </section>
 
 <!--
