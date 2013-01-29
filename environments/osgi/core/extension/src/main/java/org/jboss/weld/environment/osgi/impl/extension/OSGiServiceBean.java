@@ -16,21 +16,6 @@
  */
 package org.jboss.weld.environment.osgi.impl.extension;
 
-import org.jboss.weld.environment.osgi.impl.extension.beans.DynamicServiceHandler;
-import org.jboss.weld.environment.osgi.api.annotation.Filter;
-import org.jboss.weld.environment.osgi.api.annotation.OSGiService;
-import org.osgi.framework.FrameworkUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.CreationException;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.util.AnnotationLiteral;
-import javax.enterprise.util.Nonbinding;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -40,7 +25,23 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import javax.enterprise.context.Dependent;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.CreationException;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.util.AnnotationLiteral;
+import javax.enterprise.util.Nonbinding;
+
+import org.jboss.weld.environment.osgi.api.annotation.Filter;
+import org.jboss.weld.environment.osgi.api.annotation.OSGiService;
+import org.jboss.weld.environment.osgi.impl.extension.beans.DynamicServiceHandler;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This the bean class for all beans generated from a
@@ -157,7 +158,7 @@ public class OSGiServiceBean implements Bean {
                                                             filter,
                                                             qualifiers,
                                                             timeout);
-            Object proxy = Proxy.newProxyInstance(getClass().getClassLoader(),
+            Object proxy = Proxy.newProxyInstance(getBeanClass().getClassLoader(),
                                                   new Class[] {getBeanClass()},
                                                   handler);
             //memorize if the handler has been allready stored
