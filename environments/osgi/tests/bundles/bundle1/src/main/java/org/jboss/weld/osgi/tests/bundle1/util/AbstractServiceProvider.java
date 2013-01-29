@@ -20,11 +20,12 @@ package org.jboss.weld.osgi.tests.bundle1.util;
 import javax.inject.Inject;
 
 import org.jboss.weld.environment.osgi.api.annotation.OSGiService;
-import org.jboss.weld.environment.osgi.api.annotation.Required;
+import org.jboss.weld.environment.osgi.api.annotation.Publish;
 import org.jboss.weld.osgi.tests.bundle1.api.AbstractService;
 
+@Publish
 public class AbstractServiceProvider {
-    AbstractService service;
+    private AbstractService service;
 
     public AbstractService getService() {
         return service;
@@ -32,7 +33,6 @@ public class AbstractServiceProvider {
 
     @Inject
     @OSGiService
-    @Required
     public void setService(AbstractService service) {
         this.service = service;
     }
