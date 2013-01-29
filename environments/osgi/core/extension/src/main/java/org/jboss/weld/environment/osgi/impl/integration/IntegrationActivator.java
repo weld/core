@@ -211,9 +211,8 @@ public class IntegrationActivator implements BundleActivator, SynchronousBundleL
             return;
         }
         logger.debug("Managing {}", bundle.getSymbolicName());
-        boolean set = WeldOSGiExtension.currentBundle.get() != null;
-        WeldOSGiExtension.currentBundle.set(bundle.getBundleId());
-        WeldOSGiExtension.currentContext.set(bundle.getBundleContext());
+        Bundle previousBundle = WeldOSGiExtension.setCurrentBundle(bundle);
+        BundleContext previousContext = WeldOSGiExtension.setCurrentContext(bundle.getBundleContext());
         CDIContainer holder = factory().createContainer(bundle);
         logger.trace("CDI container created");
         holder.initialize();
@@ -251,17 +250,15 @@ public class IntegrationActivator implements BundleActivator, SynchronousBundleL
         else {
             logger.debug("Bundle {} is not a bean bundle", bundle.getSymbolicName());
         }
-        if (!set) {
-            WeldOSGiExtension.currentBundle.remove();
-        }
-        WeldOSGiExtension.currentContext.remove();
+        WeldOSGiExtension.setCurrentBundle(previousBundle);
+        WeldOSGiExtension.setCurrentContext(previousContext);
         holder.setReady();
     }
 
     private void stopManagement(Bundle bundle) {
         logger.debug("Unmanaging {}", bundle.getSymbolicName());
-        boolean set = WeldOSGiExtension.currentBundle.get() != null;
-        WeldOSGiExtension.currentBundle.set(bundle.getBundleId());
+        Bundle previousBundle = WeldOSGiExtension.setCurrentBundle(bundle);
+        BundleContext previousContext = WeldOSGiExtension.setCurrentContext(bundle.getBundleContext());
         CDIContainer container = managed.get(bundle.getBundleId());
         if (started.get() && managed.containsKey(bundle.getBundleId())) {
             if (container != null) {
@@ -299,9 +296,8 @@ public class IntegrationActivator implements BundleActivator, SynchronousBundleL
                 logger.debug("Bundle {} is not a bean bundle", bundle.getSymbolicName());
             }
         }
-        if (!set) {
-            WeldOSGiExtension.currentBundle.remove();
-        }
+        WeldOSGiExtension.setCurrentBundle(previousBundle);
+        WeldOSGiExtension.setCurrentContext(previousContext);
     }
 
     public CDIContainerFactory factory() {

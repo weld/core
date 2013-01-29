@@ -101,7 +101,8 @@ public class DynamicServiceHandler implements InvocationHandler {
         logger.trace("Call on the DynamicServiceHandler {} for method {}",
                      this,
                      method);
-        WeldOSGiExtension.currentBundle.set(ctx.getBundle().getBundleId());
+        BundleContext previousContext = WeldOSGiExtension.setCurrentContext(ctx);
+        Bundle previousBundle = WeldOSGiExtension.setCurrentBundle(ctx.getBundle());
         //intercept HashCode method when the handler is not allready registered
         //map.put() need a correct hashCode() method to use
         //see OSGiServiceBean
@@ -139,7 +140,8 @@ public class DynamicServiceHandler implements InvocationHandler {
         }
         finally {
             ctx.ungetService(reference);
-            WeldOSGiExtension.currentBundle.remove();
+            WeldOSGiExtension.setCurrentBundle(previousBundle);
+            WeldOSGiExtension.setCurrentContext(previousContext);
         }
         /*Object instanceToUse = this.tracker.waitForService(timeout);
         try {
