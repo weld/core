@@ -18,34 +18,23 @@ package org.jboss.weld.environment.osgi.impl.extension.service;
 
 import java.io.File;
 import java.io.InputStream;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Dictionary;
-import javax.naming.NamingException;
-import org.jboss.weld.environment.osgi.api.Service;
-import org.jboss.weld.environment.osgi.api.annotation.Filter;
-import org.jboss.weld.environment.osgi.api.annotation.OSGiService;
-import org.jboss.weld.environment.osgi.api.annotation.Required;
-import org.jboss.weld.environment.osgi.impl.extension.beans.OSGiUtilitiesProducer;
-import org.jboss.weld.environment.osgi.impl.extension.OSGiServiceAnnotatedType;
-import org.jboss.weld.environment.osgi.impl.extension.FilterGenerator;
-import org.jboss.weld.environment.osgi.impl.extension.OSGiServiceBean;
-import org.jboss.weld.environment.osgi.impl.extension.OSGiServiceProducerBean;
-import org.jboss.weld.environment.osgi.impl.extension.beans.BundleHolder;
-import org.jboss.weld.environment.osgi.impl.extension.beans.ContainerObserver;
-import org.jboss.weld.environment.osgi.impl.extension.beans.RegistrationsHolderImpl;
-import org.jboss.weld.environment.osgi.impl.extension.beans.ServiceRegistryImpl;
-import org.jboss.weld.environment.osgi.impl.integration.InstanceHolder;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleException;
-import org.osgi.framework.BundleListener;
-import org.osgi.framework.BundleReference;
-import org.osgi.framework.FrameworkListener;
-import org.osgi.framework.ServiceRegistration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
+import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
@@ -56,20 +45,15 @@ import javax.enterprise.inject.spi.ProcessBean;
 import javax.enterprise.inject.spi.ProcessInjectionTarget;
 import javax.enterprise.inject.spi.ProcessObserverMethod;
 import javax.enterprise.inject.spi.ProcessProducer;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.naming.Context;
 import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
+import org.jboss.weld.environment.osgi.api.Service;
+import org.jboss.weld.environment.osgi.api.annotation.Filter;
+import org.jboss.weld.environment.osgi.api.annotation.OSGiService;
 import org.jboss.weld.environment.osgi.api.annotation.Publish;
+import org.jboss.weld.environment.osgi.api.annotation.Required;
 import org.jboss.weld.environment.osgi.api.events.AbstractBundleEvent;
 import org.jboss.weld.environment.osgi.api.events.AbstractServiceEvent;
 import org.jboss.weld.environment.osgi.api.events.BundleEvents;
@@ -79,13 +63,31 @@ import org.jboss.weld.environment.osgi.impl.annotation.BundleNameAnnotation;
 import org.jboss.weld.environment.osgi.impl.annotation.BundleVersionAnnotation;
 import org.jboss.weld.environment.osgi.impl.annotation.FilterAnnotation;
 import org.jboss.weld.environment.osgi.impl.annotation.SpecificationAnnotation;
+import org.jboss.weld.environment.osgi.impl.extension.FilterGenerator;
+import org.jboss.weld.environment.osgi.impl.extension.OSGiServiceAnnotatedType;
+import org.jboss.weld.environment.osgi.impl.extension.OSGiServiceBean;
+import org.jboss.weld.environment.osgi.impl.extension.OSGiServiceProducerBean;
+import org.jboss.weld.environment.osgi.impl.extension.beans.BundleHolder;
+import org.jboss.weld.environment.osgi.impl.extension.beans.ContainerObserver;
+import org.jboss.weld.environment.osgi.impl.extension.beans.OSGiUtilitiesProducer;
+import org.jboss.weld.environment.osgi.impl.extension.beans.RegistrationsHolderImpl;
+import org.jboss.weld.environment.osgi.impl.extension.beans.ServiceRegistryImpl;
+import org.jboss.weld.environment.osgi.impl.integration.InstanceHolder;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
+import org.osgi.framework.BundleException;
+import org.osgi.framework.BundleListener;
+import org.osgi.framework.BundleReference;
+import org.osgi.framework.FrameworkListener;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.framework.SynchronousBundleListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Weld OSGi {@link  Extension}. Contains copy/paste parts from the GlassFish
@@ -631,6 +633,11 @@ public class WeldOSGiExtension implements Extension {
         }
 
         @Override
+        public Bundle getBundle(String s) {
+            return context.getBundle(s);
+        }
+
+        @Override
         public String toString() {
             return context.toString();
         }
@@ -688,6 +695,21 @@ public class WeldOSGiExtension implements Extension {
         @Override
         public ServiceReference[] getServiceReferences(String clazz, String filter) throws InvalidSyntaxException {
             return context.getServiceReferences(clazz, filter);
+        }
+
+        @Override
+        public <S> ServiceRegistration<S> registerService(Class<S> sClass, S s, Dictionary<String, ?> stringDictionary) {
+            return context.registerService(sClass, s, stringDictionary);
+        }
+
+        @Override
+        public <S> ServiceReference<S> getServiceReference(Class<S> sClass) {
+            return context.getServiceReference(sClass);
+        }
+
+        @Override
+        public <S> Collection<ServiceReference<S>> getServiceReferences(Class<S> sClass, String s) throws InvalidSyntaxException {
+            return context.getServiceReferences(sClass, s);
         }
 
         @Override

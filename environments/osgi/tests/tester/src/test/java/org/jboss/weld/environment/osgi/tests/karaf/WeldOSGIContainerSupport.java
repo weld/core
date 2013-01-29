@@ -4,17 +4,15 @@ import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import org.openengsb.labs.paxexam.karaf.options.KarafDistributionOption;
-import org.openengsb.labs.paxexam.karaf.options.LogLevelOption;
 import org.ops4j.pax.exam.Option;
-
-import static org.openengsb.labs.paxexam.karaf.options.KarafDistributionOption.karafDistributionConfiguration;
-import static org.openengsb.labs.paxexam.karaf.options.KarafDistributionOption.logLevel;
-import static org.openengsb.labs.paxexam.karaf.options.KarafDistributionOption.replaceConfigurationFile;
-import static org.ops4j.pax.exam.CoreOptions.maven;
 
 public class WeldOSGIContainerSupport {
 
+    public static Option[] getDefaultKarafOptions() {
+        return null;
+    }
+
+    /*
     public static Option[] getDefaultKarafOptions() {
         return
                 // Set the karaf environment with some customer configuration
@@ -33,6 +31,8 @@ public class WeldOSGIContainerSupport {
                         //replaceConfigurationFile("etc/custom.properties", new File("src/test/resources/org/jboss/weld/environment/osgi/tests/karaf/custom.properties"))
                 };
     }
+
+*/
 
     protected static File getSource(String resource) {
         try {

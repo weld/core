@@ -72,7 +72,7 @@
         <selenium.maven.plugin.version>1.0.1</selenium.maven.plugin.version>
         <slf4j.version>1.6.1</slf4j.version>
         <testng.version>5.10</testng.version>
-        <osgi.version>4.2.0</osgi.version>
+        <osgi.version>4.3.1</osgi.version>
         <!-- Weld OSGi deps -->
         <javax.web.version>6.0</javax.web.version>
         <javax.el.version>2.2</javax.el.version>

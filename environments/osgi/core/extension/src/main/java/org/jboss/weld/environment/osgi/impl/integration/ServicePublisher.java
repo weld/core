@@ -16,6 +16,23 @@
  */
 package org.jboss.weld.environment.osgi.impl.integration;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Dictionary;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Properties;
+import java.util.Set;
+
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Default;
+import javax.enterprise.inject.Instance;
+import javax.enterprise.util.Nonbinding;
+import javax.inject.Qualifier;
+
 import javassist.ClassClassPath;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -30,20 +47,6 @@ import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Default;
-import javax.enterprise.inject.Instance;
-import javax.enterprise.util.Nonbinding;
-import javax.inject.Qualifier;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
-
 /**
  * This class scans all bean classes of the current bean bundle and publishes
  * as OSGi services all that are {@link Publish} annotated.
@@ -51,6 +54,7 @@ import java.util.Set;
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
  */
+@SuppressWarnings("unchecked")
 public class ServicePublisher {
 
     private static Logger logger =
@@ -215,15 +219,14 @@ public class ServicePublisher {
         ServiceRegistration registration = null;
         Publish publish = clazz.getAnnotation(Publish.class);
         Class[] contracts = publish.contracts();
-        Properties properties = getServiceProperties(qualifiers);
+        Dictionary properties = getServiceProperties(qualifiers);
         if (publish.rank() != 0) {
-            properties.setProperty("service.rank", publish.rank() + "");
+            properties.put("service.rank", publish.rank() + "");
         }
         if (contracts.length > 0) {// if there are contracts
             String[] names = new String[contracts.length];
             for (int i = 0; i < contracts.length; i++) {
-                if (contracts[i].isAssignableFrom(clazz)
-                        && contracts[i].isInterface()) {
+                if (contracts[i].isAssignableFrom(clazz)) {
                     names[i] = contracts[i].getName();
                     logger.info("Registering OSGi service {} as {}",
                             clazz.getName(),
@@ -232,9 +235,6 @@ public class ServicePublisher {
                     RuntimeException e = new RuntimeException("Contract "
                             + contracts[i]
                             + " is not assignable from "
-                            + clazz
-                            + ", or is not an interface."
-                            + " Unable to publish the service "
                             + clazz);
                     logger.error(e.getMessage());
                     throw e;
@@ -265,7 +265,7 @@ public class ServicePublisher {
                         service,
                         properties);
             } else {
-                Class superClass = clazz.getClass().getSuperclass();
+                Class superClass = clazz.getSuperclass();
                 if (superClass != null && superClass != Object.class) {// if there is a superclass
                     logger.info("Registering OSGi service {} as {}",
                             clazz.getName(),
@@ -290,16 +290,16 @@ public class ServicePublisher {
         }
     }
 
-    private static Properties getServiceProperties(List<Annotation> qualifiers) {
+    private static Dictionary<String, ?> getServiceProperties(List<Annotation> qualifiers) {
         logger.trace("Entering ServicePublisher : "
                 + "getServiceProperties() with parameter {}",
                 new Object[]{qualifiers});
-        Properties properties = new Properties();
+        Dictionary properties = new Hashtable<String, Object>();
         if (!qualifiers.isEmpty()) {
             for (Annotation qualifier : qualifiers) {
                 if (qualifier.annotationType().equals(Properties.class)) {
                     for (Property property : ((org.jboss.weld.environment.osgi.api.annotation.Properties) qualifier).value()) {
-                        properties.setProperty(property.name(), property.value());
+                        properties.put(property.name(), property.value());
                     }
                 } else if (!qualifier.annotationType().equals(Default.class) && !qualifier.annotationType().equals(Any.class)) {
                     if (qualifier.annotationType().getDeclaredMethods().length > 0) {
@@ -315,13 +315,13 @@ public class ServicePublisher {
                                             value = "*";
                                         }
                                     }
-                                    properties.setProperty(key, value.toString());
+                                    properties.put(key, value.toString());
                                 } catch (Throwable t) {// ignore
                                 }
                             }
                         }
                     } else {
-                        properties.setProperty(qualifier.annotationType().getSimpleName().toLowerCase(), "*");
+                        properties.put(qualifier.annotationType().getSimpleName().toLowerCase(), "*");
                     }
                 }
             }
