@@ -16,19 +16,19 @@
  */
 package org.jboss.weld.environment.osgi.impl.extension.beans;
 
-import org.jboss.weld.environment.osgi.api.annotation.Filter;
-import org.jboss.weld.environment.osgi.impl.extension.service.WeldOSGiExtension;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.ServiceReference;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Set;
+
+import javassist.util.proxy.MethodHandler;
+import org.jboss.weld.environment.osgi.api.annotation.Filter;
 import org.jboss.weld.environment.osgi.impl.extension.OSGiServiceBean;
+import org.jboss.weld.environment.osgi.impl.extension.service.WeldOSGiExtension;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Handler for proxy used by {@link OSGiServiceBean}. Dynamicaly lookup for a
@@ -38,7 +38,7 @@ import org.osgi.framework.BundleContext;
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
  */
-public class DynamicServiceHandler implements InvocationHandler {
+public class DynamicServiceHandler implements InvocationHandler, MethodHandler {
 
     private static Logger logger =
                           LoggerFactory.getLogger(DynamicServiceHandler.class);
@@ -154,4 +154,7 @@ public class DynamicServiceHandler implements InvocationHandler {
         }*/
     }
 
+    public Object invoke(Object self, Method thisMethod, Method proceed, Object[] args) throws Throwable {
+        return invoke(self, thisMethod, args);
+    }
 }
