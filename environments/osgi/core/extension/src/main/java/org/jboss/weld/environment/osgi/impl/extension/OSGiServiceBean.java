@@ -20,6 +20,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -35,6 +37,9 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.enterprise.util.Nonbinding;
 
+import javassist.util.proxy.MethodFilter;
+import javassist.util.proxy.ProxyFactory;
+import javassist.util.proxy.ProxyObject;
 import org.jboss.weld.environment.osgi.api.annotation.Filter;
 import org.jboss.weld.environment.osgi.api.annotation.OSGiService;
 import org.jboss.weld.environment.osgi.impl.extension.beans.DynamicServiceHandler;
@@ -50,6 +55,7 @@ import org.slf4j.LoggerFactory;
  * <b/>
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
+ * @author Ales JUSTIN -- RED HAT (ales.justin@jboss.org)
  *
  * @see OSGiServiceProducerBean
  */
@@ -158,9 +164,9 @@ public class OSGiServiceBean implements Bean {
                                                             filter,
                                                             qualifiers,
                                                             timeout);
-            Object proxy = Proxy.newProxyInstance(getBeanClass().getClassLoader(),
-                                                  new Class[] {getBeanClass()},
-                                                  handler);
+
+            Object proxy = createProxy(getBeanClass(), handler);
+
             //memorize if the handler has been allready stored
             if (handlers.containsKey(proxy)) {
                 handler.setStored(true);
@@ -270,4 +276,49 @@ public class OSGiServiceBean implements Bean {
         return result.equals("()") ? "" : result;
     }
 
+    @SuppressWarnings("unchecked")
+    public static Object createProxy(Class<?> clazz, DynamicServiceHandler handler) throws Exception {
+        if (clazz.isInterface()) {
+            return Proxy.newProxyInstance(clazz.getClassLoader(), new Class[]{clazz}, handler);
+        } else {
+            final ProxyFactory factory = new ProxyFactory();
+            factory.setFilter(FINALIZE_FILTER);
+            factory.setSuperclass(clazz); // expose impl
+            // ProxyFactory already caches classes
+            Class<?> proxyClass = getProxyClass(factory);
+            ProxyObject proxyObject = (ProxyObject) proxyClass.newInstance();
+            proxyObject.setHandler(handler);
+            return proxyObject;
+        }
+    }
+
+    protected static Class<?> getProxyClass(ProxyFactory factory) {
+        SecurityManager sm = System.getSecurityManager();
+        if (sm == null)
+            return factory.createClass();
+        else
+            return AccessController.doPrivileged(new ClassCreator(factory));
+    }
+
+    /**
+     * Privileged class creator.
+     */
+    protected static class ClassCreator implements PrivilegedAction<Class<?>> {
+        private ProxyFactory factory;
+
+        public ClassCreator(ProxyFactory factory) {
+            this.factory = factory;
+        }
+
+        public Class<?> run() {
+            return factory.createClass();
+        }
+    }
+
+    private static final MethodFilter FINALIZE_FILTER = new MethodFilter() {
+        public boolean isHandled(Method m) {
+            // skip finalize methods
+            return !("finalize".equals(m.getName()) && m.getParameterTypes().length == 0);
+        }
+    };
 }
