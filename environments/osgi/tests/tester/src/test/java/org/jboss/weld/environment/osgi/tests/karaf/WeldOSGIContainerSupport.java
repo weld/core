@@ -1,10 +1,12 @@
 package org.jboss.weld.environment.osgi.tests.karaf;
 
+import java.io.File;
+import java.net.URISyntaxException;
+import java.net.URL;
+
 import org.openengsb.labs.paxexam.karaf.options.KarafDistributionOption;
 import org.openengsb.labs.paxexam.karaf.options.LogLevelOption;
 import org.ops4j.pax.exam.Option;
-
-import java.io.File;
 
 import static org.openengsb.labs.paxexam.karaf.options.KarafDistributionOption.karafDistributionConfiguration;
 import static org.openengsb.labs.paxexam.karaf.options.KarafDistributionOption.logLevel;
@@ -14,7 +16,7 @@ import static org.ops4j.pax.exam.CoreOptions.maven;
 public class WeldOSGIContainerSupport {
 
     public static Option[] getDefaultKarafOptions() {
-        Option[] options =
+        return
                 // Set the karaf environment with some customer configuration
                 new Option[]{
                         karafDistributionConfiguration()
@@ -27,12 +29,17 @@ public class WeldOSGIContainerSupport {
                         logLevel(LogLevelOption.LogLevel.INFO),
 
                         // override the config.properties (to fix pax-exam bug)
-                        replaceConfigurationFile("etc/config.properties", new File("src/test/resources/org/jboss/weld/environment/osgi/tests/karaf/config.properties"))
+                        replaceConfigurationFile("etc/config.properties", getSource("/org/jboss/weld/environment/osgi/tests/karaf/config.properties"))
                         //replaceConfigurationFile("etc/custom.properties", new File("src/test/resources/org/jboss/weld/environment/osgi/tests/karaf/custom.properties"))
                 };
-
-        return options;
-
     }
 
+    protected static File getSource(String resource) {
+        try {
+            URL url = WeldOSGIContainerSupport.class.getResource(resource);
+            return new File(url.toURI());
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

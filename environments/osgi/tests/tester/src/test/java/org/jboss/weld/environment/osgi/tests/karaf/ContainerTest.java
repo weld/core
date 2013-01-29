@@ -1,5 +1,12 @@
 package org.jboss.weld.environment.osgi.tests.karaf;
 
+import java.util.Collection;
+
+import javax.enterprise.event.Event;
+import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.inject.Inject;
+
 import org.jboss.weld.environment.osgi.spi.CDIContainer;
 import org.jboss.weld.environment.osgi.spi.CDIContainerFactory;
 import org.jboss.weld.environment.osgi.tests.util.Environment;
@@ -11,14 +18,12 @@ import org.ops4j.pax.exam.junit.Configuration;
 import org.ops4j.pax.exam.junit.ExamReactorStrategy;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.ops4j.pax.exam.spi.reactors.AllConfinedStagedReactorFactory;
-import org.osgi.framework.*;
-
-import javax.enterprise.event.Event;
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
-
-import java.util.Collection;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleException;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
+import org.osgi.framework.ServiceRegistration;
 
 import static org.jboss.weld.environment.osgi.tests.karaf.WeldOSGIContainerSupport.getDefaultKarafOptions;
 import static org.jboss.weld.environment.osgi.tests.util.Environment.toMavenBundle;
@@ -87,7 +92,7 @@ public class ContainerTest {
 
         Collection<ServiceRegistration> registrations1 = container1.getRegistrations();
         Collection<ServiceRegistration> registrations2 = container2.getRegistrations();
-        Assert.assertEquals("The registration collection 1 had the wrong number of registrations", (3 + 9 + 3), registrations1.size());
+        Assert.assertEquals("The registration collection 1 had the wrong number of registrations", (4 + 9 + 3), registrations1.size());
         Assert.assertEquals("The registration collection 2 had the wrong number of registrations", (3 + 2), registrations2.size());
 
         Collection<String> beanClasses1 = container1.getBeanClasses();
