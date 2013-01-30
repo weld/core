@@ -16,17 +16,19 @@
  */
 package org.jboss.weld.environment.osgi.api.events;
 
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.Constants;
-import org.osgi.framework.ServiceReference;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.jboss.weld.environment.osgi.api.utils.ClassLoaderLoader;
+import org.jboss.weld.environment.osgi.api.utils.Loader;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
+import org.osgi.framework.ServiceReference;
 
 /**
  * <p>This abstract class represents all the Weld-OSGi service events as a
@@ -138,8 +140,7 @@ public abstract class AbstractServiceEvent {
      */
     public List<String> getServiceClassNames() {
         if (classesNames == null) {
-            classesNames = Arrays.asList(
-                    (String[]) reference.getProperty(Constants.OBJECTCLASS));
+            classesNames = Arrays.asList((String[]) reference.getProperty(Constants.OBJECTCLASS));
         }
         return classesNames;
     }
@@ -191,11 +192,21 @@ public abstract class AbstractServiceEvent {
      * @return all the firing service implementation classes.
      */
     public List<Class<?>> getServiceClasses(Class<?> type) {
+        return getServiceClasses(new ClassLoaderLoader(type.getClassLoader()));
+    }
+
+    /**
+     * Get the class that are the firing service implementations.
+     *
+     * @param cl the classloader from which the service will be loaded
+     * @return all the firing service implementation classes.
+     */
+    public List<Class<?>> getServiceClasses(Loader loader) {
         if (classes == null) {
             classes = new ArrayList<Class<?>>();
             for (String className : getServiceClassNames()) {
                 try {
-                    classes.add(type.getClassLoader().loadClass(className));
+                    classes.add(loader.loadClass(className));
                 } catch (ClassNotFoundException ex) {
                     ex.printStackTrace();
                     return Collections.emptyList();

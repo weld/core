@@ -55,8 +55,7 @@ public class ServiceEvents {
          * @param ref     the firing {@link ServiceReference}
          * @param context the firing {@link BundleContext}
          */
-        public ServiceArrival(
-                ServiceReference ref, BundleContext context) {
+        public ServiceArrival(ServiceReference ref, BundleContext context) {
             super(ref, context);
         }
 
@@ -78,8 +77,7 @@ public class ServiceEvents {
          * @param ref     the firing {@link ServiceReference}
          * @param context the firing {@link BundleContext}
          */
-        public ServiceChanged(
-                ServiceReference ref, BundleContext context) {
+        public ServiceChanged(ServiceReference ref, BundleContext context) {
             super(ref, context);
         }
 
@@ -101,8 +99,7 @@ public class ServiceEvents {
          * @param ref     the firing {@link ServiceReference}
          * @param context the firing {@link BundleContext}
          */
-        public ServiceDeparture(
-                ServiceReference ref, BundleContext context) {
+        public ServiceDeparture(ServiceReference ref, BundleContext context) {
             super(ref, context);
         }
 
