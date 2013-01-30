@@ -121,10 +121,10 @@ public class EventTest {
         int offset = 1; // TODO -- why this offset?
         Assert.assertEquals("The number of listened BundleInstalled event was wrong", offset, bundleInstalled);
         Assert.assertEquals("The number of listened BundleUninstalled event was wrong", 0, bundleUninstalled);
-        Assert.assertEquals("The number of listened BundleResolved event was wrong", 2 + offset, bundleResolved);
+        Assert.assertEquals("The number of listened BundleResolved event was wrong", 3 + offset, bundleResolved);
         Assert.assertEquals("The number of listened BundleUnresolved event was wrong", 0, bundleUnresolved);
-        Assert.assertEquals("The number of listened BundleStarting event was wrong", 2 + offset, bundleStarting);
-        Assert.assertEquals("The number of listened BundleStarted event was wrong", 3, bundleStarted);
+        Assert.assertEquals("The number of listened BundleStarting event was wrong", 3 + offset, bundleStarting);
+        Assert.assertEquals("The number of listened BundleStarted event was wrong", 4, bundleStarted);
         Assert.assertEquals("The number of listened BundleStopping event was wrong", 0, bundleStopping);
         Assert.assertEquals("The number of listened BundleStopped event was wrong", 0, bundleStopped);
         Assert.assertEquals("The number of listened BundleUpdated event was wrong", 0, bundleUpdated);

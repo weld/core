@@ -1,3 +1,11 @@
 Bundle-Activator org.jboss.weld.osgi.tests.lifecycle.OSGiActivator
 
 Export-Package org.jboss.weld.osgi.tests.lifecycle
+
+Import-Package javax.enterprise.context; \
+               javax.enterprise.context.spi; \
+               javax.enterprise.event; \
+               javax.enterprise.inject; \
+               javax.enterprise.inject.spi; \
+               javax.enterprise.util; version=1.0.0, \
+               *
