@@ -16,10 +16,25 @@
  */
 package org.jboss.weld.environment.osgi.impl.integration;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import javax.enterprise.event.Event;
+import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.spi.BeanManager;
+
 import org.jboss.weld.environment.osgi.api.events.BundleContainerEvents;
 import org.jboss.weld.environment.osgi.api.events.Invalid;
 import org.jboss.weld.environment.osgi.impl.extension.beans.BundleHolder;
 import org.jboss.weld.environment.osgi.impl.extension.beans.ContainerObserver;
+import org.jboss.weld.environment.osgi.impl.extension.beans.RegistrationsHolderImpl;
 import org.jboss.weld.environment.osgi.impl.extension.service.WeldOSGiExtension;
 import org.jboss.weld.environment.osgi.spi.CDIContainer;
 import org.jboss.weld.environment.osgi.spi.CDIContainerFactory;
@@ -33,20 +48,6 @@ import org.osgi.util.tracker.BundleTrackerCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.enterprise.event.Event;
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.spi.BeanManager;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.FutureTask;
-import java.util.concurrent.atomic.AtomicBoolean;
-import org.jboss.weld.environment.osgi.impl.extension.beans.RegistrationsHolderImpl;
-
 /**
  * This is the activator of the Weld-OSGi integration part.
  * It starts with the extension originBundle.
@@ -56,17 +57,15 @@ import org.jboss.weld.environment.osgi.impl.extension.beans.RegistrationsHolderI
  * arriving/departing bean bundle and to start/stop when a CDI container
  * factory service arrives/leaves.
  * <p/>
- * @see org.jboss.weld.environment.osgi.impl.Activator
  *
  * @author Guillaume Sauthier
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
+ * @see org.jboss.weld.environment.osgi.impl.Activator
  */
 public class IntegrationActivator implements BundleActivator, BundleTrackerCustomizer, SingleServiceTracker.Listener<CDIContainerFactory> {
 
     private static Logger logger = LoggerFactory.getLogger(IntegrationActivator.class);
-
-    private BundleContext context;
 
     private AtomicBoolean started = new AtomicBoolean(false);
 
@@ -82,11 +81,11 @@ public class IntegrationActivator implements BundleActivator, BundleTrackerCusto
 
     private final ConcurrentMap<Bundle, FutureTask> destroying = new ConcurrentHashMap<Bundle, FutureTask>();
 
+    @SuppressWarnings("unchecked")
     @Override
     public void start(BundleContext context) throws Exception {
         logger.trace("Entering IntegrationActivator : start() with parameter {}",
-                     new Object[] {context});
-        this.context = context;
+                new Object[]{context});
         bundleTracker = new BundleTracker(context, Bundle.ACTIVE, this);
         factoryTracker = new SingleServiceTracker<CDIContainerFactory>(context, CDIContainerFactory.class, this);
         factoryTracker.open();
@@ -181,13 +180,13 @@ public class IntegrationActivator implements BundleActivator, BundleTrackerCusto
 
     private void startManagement(Bundle bundle) {
         if (bundle.getHeaders().get("Embedded-CDIContainer") != null
-            && bundle.getHeaders().get("Embedded-CDIContainer").equals("true")) {
+                && bundle.getHeaders().get("Embedded-CDIContainer").equals("true")) {
             return;
         }
         logger.debug("Managing {}", bundle.getSymbolicName());
         Bundle previousBundle = WeldOSGiExtension.setCurrentBundle(bundle);
         BundleContext previousContext = WeldOSGiExtension.setCurrentContext(bundle.getBundleContext());
-        CDIContainer holder = factory().createContainer(bundle);
+        CDIContainer holder = factory.createContainer(bundle);
         logger.trace("CDI container created");
         holder.initialize();
         logger.trace("CDI container initialized");
@@ -200,9 +199,9 @@ public class IntegrationActivator implements BundleActivator, BundleTrackerCusto
             holder.getInstance().select(ContainerObserver.class).get().setCurrentContainer(holder);
             // registering publishable services
             ServicePublisher publisher = new ServicePublisher(holder.getBeanClasses(),
-                                                              bundle,
-                                                              holder.getInstance(),
-                                                              factory.getContractBlacklist());
+                    bundle,
+                    holder.getInstance(),
+                    factory.getContractBlacklist());
             publisher.registerAndLaunchComponents();
             // fire container start
             holder.getBeanManager().fireEvent(new BundleContainerEvents.BundleContainerInitialized(bundle.getBundleContext()));
@@ -213,15 +212,14 @@ public class IntegrationActivator implements BundleActivator, BundleTrackerCusto
                 regs.add(bundleContext.registerService(Event.class.getName(), holder.getEvent(), null));
                 regs.add(bundleContext.registerService(BeanManager.class.getName(), holder.getBeanManager(), null));
                 regs.add(bundleContext.registerService(Instance.class.getName(), holder.getInstance(), null));
-            } catch(Throwable t) {// Ignore
+            } catch (Throwable t) {// Ignore
                 logger.warn("Unable to register a utility service for bundle {}: {}", bundle, t);
             }
             holder.setRegistrations(regs);
             factory.addContainer(holder);
             managed.put(bundle.getBundleId(), holder);
             logger.debug("Bundle {} is managed", bundle.getSymbolicName());
-        }
-        else {
+        } else {
             logger.debug("Bundle {} is not a bean bundle", bundle.getSymbolicName());
         }
         WeldOSGiExtension.setCurrentBundle(previousBundle);
@@ -274,8 +272,7 @@ public class IntegrationActivator implements BundleActivator, BundleTrackerCusto
                     logger.trace("Firing the BundleContainerEvents.BundleContainerShutdown event");
                     // here singleton issue ?
                     container.getBeanManager().fireEvent(new BundleContainerEvents.BundleContainerShutdown(bundle.getBundleContext()));
-                }
-                catch(Throwable t) {
+                } catch (Throwable ignored) {
                 }
                 for (ServiceRegistration reg : regs.getRegistrations()) {
                     try {
@@ -290,23 +287,15 @@ public class IntegrationActivator implements BundleActivator, BundleTrackerCusto
                 //holder.shutdown();
                 managed.remove(bundle.getBundleId());
                 if (started.get()) {
-                    if (factoryRef != null) {
-                        factory().removeContainer(bundle);
-                    }
+                    factory.removeContainer(bundle);
                 }
                 container.shutdown();
                 logger.debug("Bundle {} is unmanaged", bundle.getSymbolicName());
-            }
-            else {
+            } else {
                 logger.debug("Bundle {} is not a bean bundle", bundle.getSymbolicName());
             }
         }
         WeldOSGiExtension.setCurrentBundle(previousBundle);
         WeldOSGiExtension.setCurrentContext(previousContext);
     }
-
-    public CDIContainerFactory factory() {
-        return (CDIContainerFactory) context.getService(factoryRef);
-    }
-
 }

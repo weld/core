@@ -25,6 +25,7 @@ import javassist.util.proxy.MethodHandler;
 import org.jboss.weld.environment.osgi.api.annotation.Filter;
 import org.jboss.weld.environment.osgi.impl.extension.OSGiServiceBean;
 import org.jboss.weld.environment.osgi.impl.extension.service.WeldOSGiExtension;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
