@@ -35,10 +35,10 @@ import javax.enterprise.inject.spi.AnnotatedType;
 import javax.inject.Qualifier;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotated;
+import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.resources.ClassTransformer;
-import org.jboss.weld.resources.SharedObjectFacade;
 import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.collections.ArraySetMultimap;
 import org.jboss.weld.util.collections.Arrays2;
@@ -141,7 +141,17 @@ public abstract class AbstractEnhancedAnnotated<T, S> implements EnhancedAnnotat
         this.annotationMap = immutableMap(annotationMap);
         ArraySetMultimap<Class<? extends Annotation>, Annotation> metaAnnotationMap = new ArraySetMultimap<Class<? extends Annotation>, Annotation>();
         for (Annotation annotation : annotationMap.values()) {
-            addMetaAnnotations(metaAnnotationMap, annotation, classTransformer.getReflectionCache().getAnnotations(annotation.annotationType()), false);
+
+            // WELD-1310 Include synthetic annotations
+            SlimAnnotatedType<?> syntheticAnnotationAnnotatedType = classTransformer
+                    .getSyntheticAnnotationAnnotatedType(annotation.annotationType());
+            if (syntheticAnnotationAnnotatedType == null) {
+                addMetaAnnotations(metaAnnotationMap, annotation,
+                        classTransformer.getReflectionCache().getAnnotations(annotation.annotationType()), false);
+            } else {
+                addMetaAnnotations(metaAnnotationMap, annotation, syntheticAnnotationAnnotatedType.getAnnotations(), false);
+            }
+
             addMetaAnnotations(metaAnnotationMap, annotation, classTransformer.getTypeStore().get(annotation.annotationType()), false);
         }
         this.metaAnnotationMap = metaAnnotationMap;

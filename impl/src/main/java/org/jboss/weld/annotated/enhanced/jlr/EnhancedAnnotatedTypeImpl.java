@@ -47,8 +47,8 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.enhanced.MethodSignature;
-import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.annotated.slim.AnnotatedTypeIdentifier;
+import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.annotated.slim.backed.BackedAnnotatedType;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.collections.ArraySet;
@@ -271,7 +271,18 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
 
         ArraySetMultimap<Class<? extends Annotation>, Annotation> declaredMetaAnnotationMap = new ArraySetMultimap<Class<? extends Annotation>, Annotation>();
         for (Annotation declaredAnnotation : declaredAnnotationMap.values()) {
-            addMetaAnnotations(declaredMetaAnnotationMap, declaredAnnotation, classTransformer.getReflectionCache().getAnnotations(declaredAnnotation.annotationType()), true);
+
+            // WELD-1310 Include synthetic annotations
+            SlimAnnotatedType<?> syntheticAnnotationAnnotatedType = classTransformer
+                    .getSyntheticAnnotationAnnotatedType(declaredAnnotation.annotationType());
+            if (syntheticAnnotationAnnotatedType == null) {
+                addMetaAnnotations(declaredMetaAnnotationMap, declaredAnnotation, classTransformer.getReflectionCache()
+                        .getAnnotations(declaredAnnotation.annotationType()), true);
+            } else {
+                addMetaAnnotations(declaredMetaAnnotationMap, declaredAnnotation,
+                        syntheticAnnotationAnnotatedType.getAnnotations(), true);
+            }
+
             addMetaAnnotations(declaredMetaAnnotationMap, declaredAnnotation, classTransformer.getTypeStore().get(declaredAnnotation.annotationType()), true);
             declaredMetaAnnotationMap.putSingleElement(declaredAnnotation.annotationType(), declaredAnnotation);
         }

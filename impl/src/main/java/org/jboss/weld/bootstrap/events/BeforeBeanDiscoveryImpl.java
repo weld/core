@@ -32,7 +32,6 @@ import org.jboss.weld.bootstrap.enablement.EnablementBuilder;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.exceptions.DefinitionException;
-import org.jboss.weld.exceptions.UnsupportedOperationException;
 import org.jboss.weld.literal.InterceptorBindingTypeLiteral;
 import org.jboss.weld.literal.NormalScopeLiteral;
 import org.jboss.weld.literal.QualifierLiteral;
@@ -116,11 +115,16 @@ public class BeforeBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implemen
 
     @Override
     public void addQualifier(AnnotatedType<? extends Annotation> qualifier) {
-        throw new UnsupportedOperationException();
+        addSyntheticAnnotation(qualifier);
     }
 
     @Override
     public void addInterceptorBinding(AnnotatedType<? extends Annotation> bindingType) {
-        throw new UnsupportedOperationException();
+        addSyntheticAnnotation(bindingType);
+    }
+
+    private void addSyntheticAnnotation(AnnotatedType<? extends Annotation> annotation) {
+        getBeanManager().getServices().get(ClassTransformer.class).addSyntheticAnnotation(annotation, getBeanManager().getId());
+        getBeanManager().getServices().get(MetaAnnotationStore.class).clearAnnotationData(annotation.getJavaClass());
     }
 }

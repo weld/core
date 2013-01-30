@@ -64,29 +64,37 @@ public class ClassTransformer implements BootstrapService {
     private class TransformClassToWeldAnnotation implements Function<Class<? extends Annotation>, EnhancedAnnotation<?>> {
         @Override
         public EnhancedAnnotation<?> apply(Class<? extends Annotation> from) {
-            /*
-             * TODO: we do not recognize the BDA that defined the annotation
-             * This could in theory cause problem is two annotations with the same name but different definition are defined within the same application (different BDAs)
-             */
-            return EnhancedAnnotationImpl.create(getBackedAnnotatedType(from, AnnotatedTypeIdentifier.NULL_BDA_ID), ClassTransformer.this);
+
+            SlimAnnotatedType<? extends Annotation> slimAnnotatedType = syntheticAnnotationsAnnotatedTypes.get(from);
+
+            if (slimAnnotatedType == null) {
+                /*
+                 * TODO: we do not recognize the BDA that defined the annotation This could in theory cause problem is two
+                 * annotations with the same name but different definition are defined within the same application (different
+                 * BDAs)
+                 */
+                slimAnnotatedType = getBackedAnnotatedType(from, AnnotatedTypeIdentifier.NULL_BDA_ID);
+            }
+            return EnhancedAnnotationImpl.create(slimAnnotatedType, ClassTransformer.this);
         }
     }
 
     private class TransformClassToBackedAnnotatedType implements Function<TypeHolder<?>, BackedAnnotatedType<?>> {
         @Override
         public BackedAnnotatedType<?> apply(TypeHolder<?> typeHolder) {
-            BackedAnnotatedType<?> type = BackedAnnotatedType.of(typeHolder.getRawType(), typeHolder.getBaseType(), cache, reflectionCache, typeHolder.getBdaId());
+            BackedAnnotatedType<?> type = BackedAnnotatedType.of(typeHolder.getRawType(), typeHolder.getBaseType(), cache,
+                    reflectionCache, typeHolder.getBdaId());
             return updateLookupTable(type);
         }
     }
 
-    private class TransformSlimAnnotatedTypeToEnhancedAnnotatedType implements Function<SlimAnnotatedType<?>, EnhancedAnnotatedType<?>> {
+    private class TransformSlimAnnotatedTypeToEnhancedAnnotatedType implements
+            Function<SlimAnnotatedType<?>, EnhancedAnnotatedType<?>> {
         @Override
         public EnhancedAnnotatedType<?> apply(SlimAnnotatedType<?> annotatedType) {
             return EnhancedAnnotatedTypeImpl.of(annotatedType, ClassTransformer.this);
         }
     }
-
 
     private static final class TypeHolder<T> {
 
@@ -132,6 +140,9 @@ public class ClassTransformer implements BootstrapService {
         }
     }
 
+    // The synthetic annotations map (annotation type -> annotated type)
+    private final ConcurrentMap<Class<? extends Annotation>, UnbackedAnnotatedType<? extends Annotation>> syntheticAnnotationsAnnotatedTypes = new ConcurrentHashMap<Class<? extends Annotation>, UnbackedAnnotatedType<? extends Annotation>>();
+
     private final ConcurrentMap<AnnotatedTypeIdentifier, SlimAnnotatedType<?>> slimAnnotatedTypesById;
 
     private final ConcurrentMap<TypeHolder<?>, BackedAnnotatedType<?>> backedAnnotatedTypes;
@@ -145,7 +156,8 @@ public class ClassTransformer implements BootstrapService {
     public ClassTransformer(TypeStore typeStore, SharedObjectCache cache, ReflectionCache reflectionCache) {
         MapMaker defaultMaker = new MapMaker();
         MapMaker weakValuesMaker = new MapMaker().weakValues();
-        // if an AnnotatedType reference is not retained by a Bean we are not going to need it at runtime and can therefore drop it immediately
+        // if an AnnotatedType reference is not retained by a Bean we are not going to need it at runtime and can therefore drop
+        // it immediately
         this.backedAnnotatedTypes = weakValuesMaker.makeComputingMap(new TransformClassToBackedAnnotatedType());
         this.enhancedAnnotatedTypes = defaultMaker.makeComputingMap(new TransformSlimAnnotatedTypeToEnhancedAnnotatedType());
         this.annotations = defaultMaker.makeComputingMap(new TransformClassToWeldAnnotation());
@@ -162,7 +174,8 @@ public class ClassTransformer implements BootstrapService {
             return cast(backedAnnotatedTypes.get(new TypeHolder<T>(rawType, baseType, bdaId)));
         } catch (ComputationException e) {
             final Throwable cause = e.getCause();
-            if (cause instanceof NoClassDefFoundError || cause instanceof TypeNotPresentException || cause instanceof ResourceLoadingException || cause instanceof LinkageError) {
+            if (cause instanceof NoClassDefFoundError || cause instanceof TypeNotPresentException
+                    || cause instanceof ResourceLoadingException || cause instanceof LinkageError) {
                 throw new ResourceLoadingException("Error loading class " + rawType.getName(), cause);
             } else {
                 if (log.isTraceEnabled()) {
@@ -191,6 +204,11 @@ public class ClassTransformer implements BootstrapService {
         return updateLookupTable(type);
     }
 
+    public UnbackedAnnotatedType<? extends Annotation> getSyntheticAnnotationAnnotatedType(
+            Class<? extends Annotation> annotationType) {
+        return syntheticAnnotationsAnnotatedTypes.get(annotationType);
+    }
+
     private <T, S extends SlimAnnotatedType<T>> S updateLookupTable(S annotatedType) {
         SlimAnnotatedType<?> previousValue = slimAnnotatedTypesById.putIfAbsent(annotatedType.getIdentifier(), annotatedType);
         if (previousValue == null) {
@@ -217,8 +235,10 @@ public class ClassTransformer implements BootstrapService {
         if (annotatedType instanceof SlimAnnotatedType<?>) {
             return cast(getEnhancedAnnotatedType((SlimAnnotatedType<?>) annotatedType));
         }
-        return getEnhancedAnnotatedType(getUnbackedAnnotatedType(annotatedType, bdaId, AnnotatedTypes.createTypeId(annotatedType)));
+        return getEnhancedAnnotatedType(getUnbackedAnnotatedType(annotatedType, bdaId,
+                AnnotatedTypes.createTypeId(annotatedType)));
     }
+
     public <T> EnhancedAnnotatedType<T> getEnhancedAnnotatedType(SlimAnnotatedType<T> annotatedType) {
         return cast(enhancedAnnotatedTypes.get(annotatedType));
     }
@@ -244,6 +264,16 @@ public class ClassTransformer implements BootstrapService {
         return reflectionCache;
     }
 
+    /**
+     *
+     * @param annotation
+     */
+    public void addSyntheticAnnotation(AnnotatedType<? extends Annotation> annotation, String bdaId) {
+        syntheticAnnotationsAnnotatedTypes.put(annotation.getJavaClass(),
+                getUnbackedAnnotatedType(annotation, bdaId, AnnotatedTypeIdentifier.SYNTHETIC_ANNOTATION_SUFFIX));
+        clearAnnotationData(annotation.getJavaClass());
+    }
+
     @Override
     public void cleanupAfterBoot() {
         this.enhancedAnnotatedTypes.clear();
@@ -258,5 +288,6 @@ public class ClassTransformer implements BootstrapService {
     public void cleanup() {
         cleanupAfterBoot();
         slimAnnotatedTypesById.clear();
+        syntheticAnnotationsAnnotatedTypes.clear();
     }
 }

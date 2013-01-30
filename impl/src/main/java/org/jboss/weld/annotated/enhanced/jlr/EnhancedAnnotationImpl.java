@@ -55,15 +55,14 @@ public class EnhancedAnnotationImpl<T extends Annotation> extends EnhancedAnnota
 
     //we can't call this method 'of', cause it won't compile on JDK7
     public static <A extends Annotation> EnhancedAnnotation<A> create(SlimAnnotatedType<A> annotatedType, ClassTransformer classTransformer) {
-        Class<A> annotationType = annotatedType.getJavaClass();
-        Map<Class<? extends Annotation>, Annotation> annotationMap = new HashMap<Class<? extends Annotation>, Annotation>();
-        annotationMap.putAll(buildAnnotationMap(classTransformer.getReflectionCache().getAnnotations(annotationType)));
-        annotationMap.putAll(buildAnnotationMap(classTransformer.getTypeStore().get(annotationType)));
 
-        Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap = new HashMap<Class<? extends Annotation>, Annotation>();
-        declaredAnnotationMap.putAll(buildAnnotationMap(classTransformer.getReflectionCache().getDeclaredAnnotations(annotationType)));
-        declaredAnnotationMap.putAll(buildAnnotationMap(classTransformer.getTypeStore().get(annotationType)));
-        return new EnhancedAnnotationImpl<A>(annotatedType, annotationMap, declaredAnnotationMap, classTransformer);
+        Class<A> annotationType = annotatedType.getJavaClass();
+
+        Map<Class<? extends Annotation>, Annotation> annotationMap = new HashMap<Class<? extends Annotation>, Annotation>();
+        annotationMap.putAll(buildAnnotationMap(annotatedType.getAnnotations()));
+        annotationMap.putAll(buildAnnotationMap(classTransformer.getTypeStore().get(annotationType)));
+        // Annotations and declared annotations are the same for annotation type
+        return new EnhancedAnnotationImpl<A>(annotatedType, annotationMap, annotationMap, classTransformer);
     }
 
     /**
