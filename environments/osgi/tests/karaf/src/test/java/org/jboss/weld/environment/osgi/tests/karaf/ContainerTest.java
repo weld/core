@@ -29,13 +29,14 @@ import static org.jboss.weld.environment.osgi.tests.karaf.WeldOSGIContainerSuppo
 import static org.jboss.weld.environment.osgi.tests.util.Environment.toMavenBundle;
 import static org.ops4j.pax.exam.OptionUtils.combine;
 
+@SuppressWarnings("unchecked")
 @RunWith(JUnit4TestRunner.class)
 @ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
 public class ContainerTest {
 
     @Configuration
     public static Option[] configure() {
-        Option[] options = combine(
+        return combine(
 
                 getDefaultKarafOptions(),
 
@@ -46,8 +47,6 @@ public class ContainerTest {
                 )
 
         );
-
-        return options;
     }
 
     @Inject
@@ -93,7 +92,7 @@ public class ContainerTest {
         Collection<ServiceRegistration> registrations1 = container1.getRegistrations();
         Collection<ServiceRegistration> registrations2 = container2.getRegistrations();
         Assert.assertEquals("The registration collection 1 had the wrong number of registrations", (4 + 9 + 3), registrations1.size());
-        Assert.assertEquals("The registration collection 2 had the wrong number of registrations", (3 + 2), registrations2.size());
+        Assert.assertEquals("The registration collection 2 had the wrong number of registrations", (4 + 2), registrations2.size());
 
         Collection<String> beanClasses1 = container1.getBeanClasses();
         Collection<String> beanClasses2 = container2.getBeanClasses();

@@ -41,27 +41,27 @@ public class Environment {
         return mavenBundle(groupId, artifactName).version(version);
     }
 
-    public static Option[] toCDIOSGiEnvironment(Option... options) {
+    protected static List<Option> toDefaultOptions(Option... options) {
         List<Option> result = new ArrayList<Option>();
         result.add(toMavenBundle("org.jboss.weld.osgi", "weld-osgi-core-mandatory"));
         result.add(toMavenBundle("org.jboss.weld.osgi", "weld-osgi-core-api"));
         result.add(toMavenBundle("org.jboss.weld.osgi", "weld-osgi-core-spi"));
         result.add(toMavenBundle("org.jboss.weld.osgi", "weld-osgi-core-extension"));
         result.add(toMavenBundle("org.jboss.weld.osgi", "weld-osgi-core-integration"));
+        result.add(toMavenBundle("org.jboss.weld.osgi.tests", "weld-osgi-tests-utils"));
+        Collections.addAll(result, options);
+        return result;
+    }
+
+    public static Option[] toCDIOSGiEnvironment(Option... options) {
+        List<Option> result = toDefaultOptions(options);
         result.add(junitBundles());
         result.add(felix());
-        Collections.addAll(result, options);
         return result.toArray(new Option[result.size()]);
     }
 
     public static Option[] toCDIKarafEnvironment(Option... options) {
-        List<Option> result = new ArrayList<Option>();
-        result.add(toMavenBundle("org.jboss.weld.osgi", "weld-osgi-core-mandatory"));
-        result.add(toMavenBundle("org.jboss.weld.osgi", "weld-osgi-core-api"));
-        result.add(toMavenBundle("org.jboss.weld.osgi", "weld-osgi-core-spi"));
-        result.add(toMavenBundle("org.jboss.weld.osgi", "weld-osgi-core-extension"));
-        result.add(toMavenBundle("org.jboss.weld.osgi", "weld-osgi-core-integration"));
-        Collections.addAll(result, options);
+        List<Option> result = toDefaultOptions(options);
         return result.toArray(new Option[result.size()]);
     }
 

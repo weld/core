@@ -489,6 +489,12 @@
 
             <dependency>
                 <groupId>org.jboss.weld.osgi.tests</groupId>
+                <artifactId>weld-osgi-tests-utils</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.weld.osgi.tests</groupId>
                 <artifactId>weld-osgi-bundle1</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -545,6 +551,12 @@
             <dependency>
                 <groupId>org.ops4j.pax.exam</groupId>
                 <artifactId>pax-exam</artifactId>
+                <version>${pax.exam.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.ops4j.pax.exam</groupId>
+                <artifactId>pax-exam-spi</artifactId>
                 <version>${pax.exam.version}</version>
             </dependency>
 

@@ -25,11 +25,11 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jboss.weld.osgi.tests</groupId>
-    <artifactId>weld-osgi-tester</artifactId>
+    <artifactId>weld-osgi-karaf</artifactId>
     <packaging>jar</packaging>
-    <name>Weld OSGi (Tester)</name>
+    <name>Weld OSGi (Karaf)</name>
 
-    <description>Integration tests launcher for Weld-OSGi</description>
+    <description>Integration tests launcher for Weld-OSGi and Karaf</description>
 
     <url>http://www.seamframework.org/Weld</url>
     <licenses>
@@ -50,6 +50,10 @@
             <email>matthieu.clochard@serli.com</email>
         </developer>
     </developers>
+
+    <properties>
+        <apache.karaf.version>2.3.0</apache.karaf.version>
+    </properties>
 
     <dependencies>
 
@@ -401,15 +405,55 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>org.apache.felix.framework</artifactId>
+            <groupId>org.apache.karaf</groupId>
+            <artifactId>apache-karaf</artifactId>
+            <version>${apache.karaf.version}</version>
+            <type>tar.gz</type>
             <scope>test</scope>
         </dependency>
 
         <dependency>
-            <groupId>org.ops4j.pax.exam</groupId>
-            <artifactId>pax-exam-container-native</artifactId>
-            <scope>test</scope>
+            <groupId>org.openengsb.labs.paxexam.karaf</groupId>
+            <artifactId>paxexam-karaf-container</artifactId>
+            <version>1.0.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.karaf</groupId>
+                    <artifactId>org.apache.karaf.client</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.ops4j.pax.exam</groupId>
+                    <artifactId>pax-exam</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.ops4j.pax.exam</groupId>
+                    <artifactId>pax-exam-spi</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.ops4j.pax.exam</groupId>
+                    <artifactId>pax-exam-container-rbc</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.ops4j.pax.exam</groupId>
+                    <artifactId>pax-exam-container-rbc-client</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.ops4j.pax.exam</groupId>
+                    <artifactId>pax-exam-container-remote</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.ops4j.pax.exam</groupId>
+                    <artifactId>pax-exam-invoker-junit</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.ops4j.pax.exam</groupId>
+                    <artifactId>pax-exam</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.ops4j.pax.exam</groupId>
+                    <artifactId>pax-exam</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
     </dependencies>

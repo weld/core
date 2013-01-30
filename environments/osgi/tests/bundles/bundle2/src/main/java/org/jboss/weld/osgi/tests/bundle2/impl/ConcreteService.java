@@ -24,7 +24,7 @@ import org.jboss.weld.osgi.tests.bundle1.api.AbstractService;
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
 @Publish
-public class ConcreteService extends AbstractService {
+public class ConcreteService { //} extends AbstractService {
     public String foo() {
         return "Foo";
     }

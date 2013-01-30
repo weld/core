@@ -52,6 +52,8 @@
     </developers>
 
     <modules>
+        <module>utils</module>
+        <module>karaf</module>
         <module>tester</module>
         <module>bundles/bundle1</module>
         <module>bundles/bundle2</module>
