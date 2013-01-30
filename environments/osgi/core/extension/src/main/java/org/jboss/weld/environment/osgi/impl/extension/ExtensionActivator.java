@@ -16,16 +16,26 @@
  */
 package org.jboss.weld.environment.osgi.impl.extension;
 
-import org.jboss.weld.environment.osgi.impl.annotation.FilterAnnotation;
-import org.jboss.weld.environment.osgi.impl.annotation.SpecificationAnnotation;
-import org.jboss.weld.environment.osgi.impl.annotation.BundleVersionAnnotation;
-import org.jboss.weld.environment.osgi.impl.annotation.BundleNameAnnotation;
+import java.lang.annotation.Annotation;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.enterprise.event.Event;
+import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.spi.Extension;
+
 import org.jboss.weld.environment.osgi.api.annotation.Filter;
 import org.jboss.weld.environment.osgi.api.events.AbstractBundleEvent;
 import org.jboss.weld.environment.osgi.api.events.AbstractServiceEvent;
 import org.jboss.weld.environment.osgi.api.events.BundleEvents;
 import org.jboss.weld.environment.osgi.api.events.ServiceEvents;
+import org.jboss.weld.environment.osgi.api.utils.BundleLoader;
 import org.jboss.weld.environment.osgi.impl.Activator;
+import org.jboss.weld.environment.osgi.impl.annotation.BundleNameAnnotation;
+import org.jboss.weld.environment.osgi.impl.annotation.BundleVersionAnnotation;
+import org.jboss.weld.environment.osgi.impl.annotation.FilterAnnotation;
+import org.jboss.weld.environment.osgi.impl.annotation.SpecificationAnnotation;
 import org.jboss.weld.environment.osgi.impl.extension.service.WeldOSGiExtension;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
@@ -38,15 +48,6 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.framework.SynchronousBundleListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.enterprise.event.Event;
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.spi.Extension;
-
-import java.lang.annotation.Annotation;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * This is the activator of the Weld-OSGi extension part.
@@ -70,6 +71,7 @@ import java.util.Set;
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
  */
+@SuppressWarnings("unchecked")
 public class ExtensionActivator implements BundleActivator,
                                            SynchronousBundleListener,
                                            ServiceListener {
@@ -111,8 +113,8 @@ public class ExtensionActivator implements BundleActivator,
         logger.trace("Entering ExtensionActivator : "
                      + "bundleChanged() with parameter {}",
                      new Object[] {event});
-        ServiceReference[] cdiEventServiceReferences =
-                           findReferences(context, Event.class);
+
+        ServiceReference[] cdiEventServiceReferences = findReferences(context, Event.class);
         if (cdiEventServiceReferences != null) {
             Bundle originBundle = event.getBundle();
             AbstractBundleEvent resultingWeldOSGiBundleEvent = null;
@@ -202,61 +204,55 @@ public class ExtensionActivator implements BundleActivator,
         logger.trace("Entering ExtensionActivator : "
                      + "serviceChanged() with parameter {}",
                      new Object[] {event});
-        ServiceReference[] cdiInstanceServiceReferences =
-                           findReferences(context, Instance.class);
+
+        ServiceReference[] cdiInstanceServiceReferences = findReferences(context, Instance.class);
         if (cdiInstanceServiceReferences != null) {
             ServiceReference originServiceReference = event.getServiceReference();
             AbstractServiceEvent resultingWeldOSGiServiceEvent = null;
             switch(event.getType()) {
                 case ServiceEvent.MODIFIED:
                     logger.debug("Receiving a new OSGi service event MODIFIED");
-                    resultingWeldOSGiServiceEvent =
-                    new ServiceEvents.ServiceChanged(originServiceReference,
-                                                     context);
+                    resultingWeldOSGiServiceEvent = new ServiceEvents.ServiceChanged(originServiceReference, context);
                     break;
                 case ServiceEvent.REGISTERED:
                     logger.debug("Receiving a new OSGi service event REGISTERED");
-                    resultingWeldOSGiServiceEvent =
-                    new ServiceEvents.ServiceArrival(originServiceReference,
-                                                     context);
+                    resultingWeldOSGiServiceEvent = new ServiceEvents.ServiceArrival(originServiceReference, context);
                     break;
                 case ServiceEvent.UNREGISTERING:
                     logger.debug("Receiving a new OSGi service event UNREGISTERING");
-                    resultingWeldOSGiServiceEvent =
-                    new ServiceEvents.ServiceDeparture(originServiceReference,
-                                                       context);
+                    resultingWeldOSGiServiceEvent = new ServiceEvents.ServiceDeparture(originServiceReference, context);
                     break;
             }
             for (ServiceReference reference : cdiInstanceServiceReferences) {
-                BundleContext previousContext = WeldOSGiExtension.setCurrentContext(reference.getBundle().getBundleContext());
-                Bundle previousBundle = WeldOSGiExtension.setCurrentBundle(reference.getBundle());
-                Instance<Object> instance =
-                                 (Instance<Object>) context.getService(reference);
+                Bundle bundle = reference.getBundle();
+                Bundle previousBundle = WeldOSGiExtension.setCurrentBundle(bundle);
+                BundleContext previousContext = WeldOSGiExtension.setCurrentContext(bundle.getBundleContext());
                 try {
-                    Event<Object> broadcastingCDIEvent =
-                                  instance.select(Event.class).get();
+                    Instance<Object> instance = (Instance<Object>) context.getService(reference);
+                    Event<Object> broadcastingCDIEvent = instance.select(Event.class).get();
                     broadcastingCDIEvent.select(ServiceEvent.class).fire(event);
                     if (resultingWeldOSGiServiceEvent != null) {
-                        fireAllEvent(resultingWeldOSGiServiceEvent,
+                        fireAllEvent(originServiceReference.getBundle(),
+                                     resultingWeldOSGiServiceEvent,
                                      broadcastingCDIEvent,
                                      instance);
                     }
                 }
                 catch(Throwable t) {
                     //ignore
+                } finally {
+                    WeldOSGiExtension.setCurrentContext(previousContext);
+                    WeldOSGiExtension.setCurrentBundle(previousBundle);
                 }
-                WeldOSGiExtension.setCurrentBundle(previousBundle);
-                WeldOSGiExtension.setCurrentContext(previousContext);
             }
         }
     }
 
-    private ServiceReference[] findReferences(BundleContext context,
-                                              Class<?> type) {
+    private ServiceReference[] findReferences(BundleContext context, Class<?> type) {
         logger.trace("Entering ExtensionActivator : "
                      + "findReferences() with parameters {} | {}",
-                     new Object[] {context,
-                                   type});
+                     new Object[] {context, type});
+
         ServiceReference[] references = null;
         try {
             references = context.getServiceReferences(type.getName(), null);
@@ -281,14 +277,16 @@ public class ExtensionActivator implements BundleActivator,
         }
     }
 
-    private void fireAllEvent(AbstractServiceEvent event,
+    private void fireAllEvent(Bundle bundle,
+                              AbstractServiceEvent event,
                               Event broadcaster,
                               Instance<Object> instance) {
+
         logger.trace("Entering ExtensionActivator : "
                      + "fireAllEvent() with parameters {} | {}",
-                     new Object[] {event,
-                                   instance});
-        List<Class<?>> classes = event.getServiceClasses(getClass());
+                     new Object[] {event, instance});
+
+        List<Class<?>> classes = event.getServiceClasses(new BundleLoader(bundle));
         Class eventClass = event.getClass();
         for (Class<?> clazz : classes) {
             try {

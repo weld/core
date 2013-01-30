@@ -122,9 +122,10 @@ public class IntegrationActivator implements BundleActivator, BundleTrackerCusto
 
     @Override
     public Object addingBundle(Bundle bundle, BundleEvent event) {
-        logger.debug("Bundle {} has started", bundle.getSymbolicName());
+        logger.debug("Bundle {} starting", bundle.getSymbolicName());
         if (started.get()) {
             startManagement(bundle);
+            logger.debug("Bundle {} started", bundle.getSymbolicName());
         }
         return bundle;
     }
@@ -140,6 +141,7 @@ public class IntegrationActivator implements BundleActivator, BundleTrackerCusto
         logger.debug("Bundle {} is stopping", bundle.getSymbolicName());
         if (started.get()) {
             stopManagement(bundle);
+            logger.debug("Bundle {} is stopped", bundle.getSymbolicName());
         }
     }
 
@@ -161,8 +163,8 @@ public class IntegrationActivator implements BundleActivator, BundleTrackerCusto
     public void startCDIOSGi() {
         logger.trace("Entering ExtensionActivator : startCDIOSGi() with no parameter");
         logger.info("Weld-OSGi bean bundles management STARTED");
-        started.set(true);
         managed = new HashMap<Long, CDIContainer>();
+        started.set(true);
         bundleTracker.open();
     }
 
@@ -186,44 +188,48 @@ public class IntegrationActivator implements BundleActivator, BundleTrackerCusto
         logger.debug("Managing {}", bundle.getSymbolicName());
         Bundle previousBundle = WeldOSGiExtension.setCurrentBundle(bundle);
         BundleContext previousContext = WeldOSGiExtension.setCurrentContext(bundle.getBundleContext());
-        CDIContainer holder = factory.createContainer(bundle);
-        logger.trace("CDI container created");
-        holder.initialize();
-        logger.trace("CDI container initialized");
-        if (holder.isStarted()) {
-            logger.trace("CDI container started");
-            // setting contextual information
-            holder.getInstance().select(BundleHolder.class).get().setBundle(bundle);
-            holder.getInstance().select(BundleHolder.class).get().setContext(bundle.getBundleContext());
-            holder.getInstance().select(ContainerObserver.class).get().setContainers(factory.containers());
-            holder.getInstance().select(ContainerObserver.class).get().setCurrentContainer(holder);
-            // registering publishable services
-            ServicePublisher publisher = new ServicePublisher(holder.getBeanClasses(),
-                    bundle,
-                    holder.getInstance(),
-                    factory.getContractBlacklist());
-            publisher.registerAndLaunchComponents();
-            // fire container start
-            holder.getBeanManager().fireEvent(new BundleContainerEvents.BundleContainerInitialized(bundle.getBundleContext()));
-            // registering utility services
-            Collection<ServiceRegistration> regs = holder.getInstance().select(RegistrationsHolderImpl.class).get().getRegistrations();
-            BundleContext bundleContext = bundle.getBundleContext();
-            try {
-                regs.add(bundleContext.registerService(Event.class.getName(), holder.getEvent(), null));
-                regs.add(bundleContext.registerService(BeanManager.class.getName(), holder.getBeanManager(), null));
-                regs.add(bundleContext.registerService(Instance.class.getName(), holder.getInstance(), null));
-            } catch (Throwable t) {// Ignore
-                logger.warn("Unable to register a utility service for bundle {}: {}", bundle, t);
+        CDIContainer holder;
+        try {
+            holder = factory.createContainer(bundle);
+            logger.trace("CDI container created");
+            holder.initialize();
+            logger.trace("CDI container initialized");
+            if (holder.isStarted()) {
+                logger.trace("CDI container started");
+                // setting contextual information
+                holder.getInstance().select(BundleHolder.class).get().setBundle(bundle);
+                holder.getInstance().select(BundleHolder.class).get().setContext(bundle.getBundleContext());
+                holder.getInstance().select(ContainerObserver.class).get().setContainers(factory.containers());
+                holder.getInstance().select(ContainerObserver.class).get().setCurrentContainer(holder);
+                // registering publishable services
+                ServicePublisher publisher = new ServicePublisher(holder.getBeanClasses(),
+                        bundle,
+                        holder.getInstance(),
+                        factory.getContractBlacklist());
+                publisher.registerAndLaunchComponents();
+                // fire container start
+                holder.getBeanManager().fireEvent(new BundleContainerEvents.BundleContainerInitialized(bundle.getBundleContext()));
+                // registering utility services
+                Collection<ServiceRegistration> regs = holder.getInstance().select(RegistrationsHolderImpl.class).get().getRegistrations();
+                BundleContext bundleContext = bundle.getBundleContext();
+                try {
+                    regs.add(bundleContext.registerService(Event.class.getName(), holder.getEvent(), null));
+                    regs.add(bundleContext.registerService(BeanManager.class.getName(), holder.getBeanManager(), null));
+                    regs.add(bundleContext.registerService(Instance.class.getName(), holder.getInstance(), null));
+                } catch (Throwable t) {// Ignore
+                    logger.warn("Unable to register a utility service for bundle {}: {}", bundle, t);
+                }
+                holder.setRegistrations(regs);
+                factory.addContainer(holder);
+                managed.put(bundle.getBundleId(), holder);
+                logger.debug("Bundle {} is managed", bundle.getSymbolicName());
+            } else {
+                logger.debug("Bundle {} is not a bean bundle", bundle.getSymbolicName());
             }
-            holder.setRegistrations(regs);
-            factory.addContainer(holder);
-            managed.put(bundle.getBundleId(), holder);
-            logger.debug("Bundle {} is managed", bundle.getSymbolicName());
-        } else {
-            logger.debug("Bundle {} is not a bean bundle", bundle.getSymbolicName());
+        } finally {
+            WeldOSGiExtension.setCurrentBundle(previousBundle);
+            WeldOSGiExtension.setCurrentContext(previousContext);
         }
-        WeldOSGiExtension.setCurrentBundle(previousBundle);
-        WeldOSGiExtension.setCurrentContext(previousContext);
         holder.setReady();
     }
 
@@ -263,39 +269,42 @@ public class IntegrationActivator implements BundleActivator, BundleTrackerCusto
         logger.debug("Unmanaging {}", bundle.getSymbolicName());
         Bundle previousBundle = WeldOSGiExtension.setCurrentBundle(bundle);
         BundleContext previousContext = WeldOSGiExtension.setCurrentContext(bundle.getBundleContext());
-        if (started.get() && managed.containsKey(bundle.getBundleId())) {
-            if (container != null) {
-                //BundleHolder bundleHolder = holder.getInstance().select(BundleHolder.class).get();
-                RegistrationsHolderImpl regs = container.getInstance().select(RegistrationsHolderImpl.class).get();
-                try {
-                    logger.trace("The container {} has been unregistered", container);
-                    logger.trace("Firing the BundleContainerEvents.BundleContainerShutdown event");
-                    // here singleton issue ?
-                    container.getBeanManager().fireEvent(new BundleContainerEvents.BundleContainerShutdown(bundle.getBundleContext()));
-                } catch (Throwable ignored) {
-                }
-                for (ServiceRegistration reg : regs.getRegistrations()) {
+        try {
+            if (started.get() && managed.containsKey(bundle.getBundleId())) {
+                if (container != null) {
+                    //BundleHolder bundleHolder = holder.getInstance().select(BundleHolder.class).get();
+                    RegistrationsHolderImpl regs = container.getInstance().select(RegistrationsHolderImpl.class).get();
                     try {
-                        reg.unregister();
-                    } catch (Throwable t) {
-                        //t.printStackTrace();
+                        logger.trace("The container {} has been unregistered", container);
+                        logger.trace("Firing the BundleContainerEvents.BundleContainerShutdown event");
+                        // here singleton issue ?
+                        container.getBeanManager().fireEvent(new BundleContainerEvents.BundleContainerShutdown(bundle.getBundleContext()));
+                    } catch (Throwable ignored) {
                     }
+                    for (ServiceRegistration reg : regs.getRegistrations()) {
+                        try {
+                            reg.unregister();
+                        } catch (Throwable t) {
+                            //t.printStackTrace();
+                        }
+                    }
+                    logger.trace("Firing the BundleState.INVALID event");
+                    container.getBeanManager().fireEvent(new Invalid());
+                    logger.trace("Shutting down the container {}", container);
+                    //holder.shutdown();
+                    managed.remove(bundle.getBundleId());
+                    if (started.get()) {
+                        factory.removeContainer(bundle);
+                    }
+                    container.shutdown();
+                    logger.debug("Bundle {} is unmanaged", bundle.getSymbolicName());
+                } else {
+                    logger.debug("Bundle {} is not a bean bundle", bundle.getSymbolicName());
                 }
-                logger.trace("Firing the BundleState.INVALID event");
-                container.getBeanManager().fireEvent(new Invalid());
-                logger.trace("Shutting down the container {}", container);
-                //holder.shutdown();
-                managed.remove(bundle.getBundleId());
-                if (started.get()) {
-                    factory.removeContainer(bundle);
-                }
-                container.shutdown();
-                logger.debug("Bundle {} is unmanaged", bundle.getSymbolicName());
-            } else {
-                logger.debug("Bundle {} is not a bean bundle", bundle.getSymbolicName());
             }
+        } finally {
+            WeldOSGiExtension.setCurrentBundle(previousBundle);
+            WeldOSGiExtension.setCurrentContext(previousContext);
         }
-        WeldOSGiExtension.setCurrentBundle(previousBundle);
-        WeldOSGiExtension.setCurrentContext(previousContext);
     }
 }
