@@ -617,7 +617,7 @@ public class MockPaymentProcessor implements PaymentProcessor {
 
         <note>
             <para>
-                A future release of Weld will likely support a non-standard workaround for this limitation, using
+                Weld also supports a non-standard workaround for this limitation, using
                 non-portable JVM APIs:
             </para>
 
@@ -638,7 +638,8 @@ public class MockPaymentProcessor implements PaymentProcessor {
             </itemizedlist>
 
             <para>
-                But we didn't get around to implementing this yet.
+                To enable this workaround, simply put an empty marker file
+                <literal>META-INF/org.jboss.weld.enableUnsafeProxies</literal> somewhere on the application's classpath.
             </para>
         </note>
 
