@@ -39,7 +39,9 @@ public class QuickExtension implements Extension {
 
     public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery event, final BeanManager manager) {
         Assert.assertFalse(manager.isQualifier(Quick.class));
+        Assert.assertFalse(manager.isQualifier(Slow.class));
         event.addQualifier(new QuickAnnotatedType(manager.createAnnotatedType(Quick.class)));
+        event.addQualifier(manager.createAnnotatedType(Slow.class));
     }
 
     @SuppressWarnings({ "unchecked", "serial" })

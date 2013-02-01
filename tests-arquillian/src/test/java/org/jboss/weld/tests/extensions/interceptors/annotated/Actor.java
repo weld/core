@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.tests.extensions.interceptors.annotated;
 
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
@@ -29,7 +27,7 @@ import javax.enterprise.inject.Stereotype;
 
 @Quick(dirty = false, name = "man")
 @Stereotype
-@Target({ TYPE, METHOD, FIELD })
+@Target({ TYPE })
 @Retention(RUNTIME)
 @Documented
 public @interface Actor {

@@ -14,22 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.extensions.qualifiers.annotated;
+package org.jboss.weld.tests.extensions.interceptors.annotated;
 
-import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.ElementType.TYPE;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target({ TYPE, METHOD, PARAMETER, FIELD })
+@Target({ TYPE, METHOD })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Quick {
+public @interface Slow {
 
-    boolean dirty();
-
-    String name();
 }

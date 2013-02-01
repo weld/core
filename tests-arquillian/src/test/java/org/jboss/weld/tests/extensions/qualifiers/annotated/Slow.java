@@ -27,9 +27,6 @@ import java.lang.annotation.Target;
 
 @Target({ TYPE, METHOD, PARAMETER, FIELD })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Quick {
+public @interface Slow {
 
-    boolean dirty();
-
-    String name();
 }

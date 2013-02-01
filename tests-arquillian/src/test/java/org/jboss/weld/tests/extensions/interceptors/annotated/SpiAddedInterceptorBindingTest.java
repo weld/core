@@ -19,6 +19,7 @@ package org.jboss.weld.tests.extensions.interceptors.annotated;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.InterceptionType;
+import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -35,7 +36,7 @@ public class SpiAddedInterceptorBindingTest {
 
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class).intercept(QuickInterceptor.class)
+        return ShrinkWrap.create(BeanArchive.class).intercept(QuickInterceptor.class).intercept(SlowInterceptor.class)
                 .addPackage(SpiAddedInterceptorBindingTest.class.getPackage())
                 .addAsServiceProvider(Extension.class, QuickExtension.class);
     }
@@ -45,6 +46,9 @@ public class SpiAddedInterceptorBindingTest {
 
     @Inject
     Hack hack;
+
+    @Inject
+    Snail snail;
 
     @Inject
     James james;
@@ -69,6 +73,14 @@ public class SpiAddedInterceptorBindingTest {
         Assert.assertFalse(QuickInterceptor.isIntercepted);
         hack.ping();
         Assert.assertTrue(QuickInterceptor.isIntercepted);
+
+        SlowInterceptor.reset();
+        Assert.assertTrue(beanManager.isInterceptorBinding(Slow.class));
+        Assert.assertEquals(1, beanManager.resolveInterceptors(InterceptionType.AROUND_INVOKE, new AnnotationLiteral<Slow>() {
+        }).size());
+        Assert.assertFalse(SlowInterceptor.isIntercepted);
+        snail.ping();
+        Assert.assertTrue(SlowInterceptor.isIntercepted);
     }
 
     @Test

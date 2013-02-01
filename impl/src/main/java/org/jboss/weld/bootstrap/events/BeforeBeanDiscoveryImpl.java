@@ -44,6 +44,7 @@ import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.ReflectionCache;
 import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.annotated.AnnotatedTypeWrapper;
 
 public class BeforeBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implements BeforeBeanDiscovery {
 
@@ -115,15 +116,19 @@ public class BeforeBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implemen
 
     @Override
     public void addQualifier(AnnotatedType<? extends Annotation> qualifier) {
-        addSyntheticAnnotation(qualifier);
+        addSyntheticAnnotation(qualifier, QualifierLiteral.INSTANCE);
     }
 
     @Override
     public void addInterceptorBinding(AnnotatedType<? extends Annotation> bindingType) {
-        addSyntheticAnnotation(bindingType);
+        addSyntheticAnnotation(bindingType, InterceptorBindingTypeLiteral.INSTANCE);
     }
 
-    private void addSyntheticAnnotation(AnnotatedType<? extends Annotation> annotation) {
+    private <A extends Annotation> void addSyntheticAnnotation(AnnotatedType<A> annotation, Annotation requiredMetaAnnotation) {
+        if (requiredMetaAnnotation != null && !annotation.isAnnotationPresent(requiredMetaAnnotation.annotationType())) {
+            // Add required meta annotation
+            annotation = new AnnotatedTypeWrapper<A>(annotation, requiredMetaAnnotation);
+        }
         getBeanManager().getServices().get(ClassTransformer.class).addSyntheticAnnotation(annotation, getBeanManager().getId());
         getBeanManager().getServices().get(MetaAnnotationStore.class).clearAnnotationData(annotation.getJavaClass());
     }

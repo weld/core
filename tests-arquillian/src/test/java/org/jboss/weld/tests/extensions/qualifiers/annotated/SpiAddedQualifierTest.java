@@ -48,6 +48,7 @@ public class SpiAddedQualifierTest {
     @Test
     public void testAddedQualifierAnnotatedType() {
         Assert.assertTrue(beanManager.isQualifier(Quick.class));
+        Assert.assertTrue(beanManager.isQualifier(Slow.class));
         Set<Bean<?>> hackBeans = beanManager.getBeans(Hack.class, new QuickLiteral() {
 
             @Override
@@ -76,5 +77,12 @@ public class SpiAddedQualifierTest {
             }
         });
         Assert.assertEquals(0, hackBeans.size());
+
+        Set<Bean<?>> snailBeans = beanManager.getBeans(Snail.class);
+        Assert.assertEquals(0, snailBeans.size());
+        snailBeans = beanManager.getBeans("snail");
+        Assert.assertEquals(1, snailBeans.size());
+        // Any, Slow, Named
+        Assert.assertEquals(3, snailBeans.iterator().next().getQualifiers().size());
     }
 }
