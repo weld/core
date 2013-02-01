@@ -18,7 +18,9 @@ public class BridgeProxyFactory extends ProxyFactory {
     private static final Map<Bundle, ClassLoader> map = new HashMap<Bundle, ClassLoader>();
 
     public static void clear(Bundle bundle) {
-        map.remove(bundle);
+        synchronized (map) {
+            map.remove(bundle);
+        }
     }
 
     public BridgeProxyFactory(Class<?> superClass) {
