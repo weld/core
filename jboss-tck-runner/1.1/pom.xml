@@ -22,6 +22,7 @@
 
     <properties>
         <xnio.api.version>3.0.7.GA</xnio.api.version>
+        <htmlunit.version>2.9</htmlunit.version>
     </properties>
 
     <dependencies>
