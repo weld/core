@@ -16,10 +16,8 @@
  */
 package org.jboss.weld.environment.osgi.impl.extension.beans;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.util.Set;
 
 import javassist.util.proxy.MethodHandler;
 import org.jboss.weld.environment.osgi.api.annotation.Filter;
@@ -45,31 +43,21 @@ public class DynamicServiceHandler implements InvocationHandler, MethodHandler {
                           LoggerFactory.getLogger(DynamicServiceHandler.class);
 
     private final BundleContext ctx;
-
     private final String name;
-
-    private Filter filter;
-
-    /*private final ServiceTracker tracker;*/
+    private final Filter filter;
     private final long timeout;
-
-    private Set<Annotation> qualifiers;
-
-    boolean stored = false;
 
     public DynamicServiceHandler(BundleContext ctx,
                                  String name,
                                  Filter filter,
-                                 Set<Annotation> qualifiers,
                                  long timeout) {
         logger.trace("Entering DynamicServiceHandler : "
-                     + "DynamicServiceHandler() with parameters {} | {} | {} | {}",
-                     new Object[] {name, filter, qualifiers, timeout});
+                     + "DynamicServiceHandler() with parameters {} | {}",
+                     new Object[] {name, filter, timeout});
         this.ctx = ctx;
         this.name = name;
         this.filter = filter;
         this.timeout = timeout;
-        this.qualifiers = qualifiers;
         /* ServiceTracker usage, currently fails
         try {
         if (filter != null && filter.value() != null && filter.value().length() > 0) {
@@ -89,58 +77,40 @@ public class DynamicServiceHandler implements InvocationHandler, MethodHandler {
         logger.debug("New DynamicServiceHandler constructed {}", this);
     }
 
-    /*public void closeHandler() {
-    this.tracker.close();
-    }*/
-    public void setStored(boolean stored) {
-        this.stored = stored;
-    }
-
+    @SuppressWarnings("unchecked")
     @Override
-    public Object invoke(Object proxy, Method method, Object[] args)
-            throws Throwable {
-        logger.trace("Call on the DynamicServiceHandler {} for method {}",
-                     this,
-                     method);
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        logger.trace("Call on the DynamicServiceHandler {} for method {}", this, method);
+
         BundleContext previousContext = WeldOSGiExtension.setCurrentContext(ctx);
         Bundle previousBundle = WeldOSGiExtension.setCurrentBundle(ctx.getBundle());
-        //intercept HashCode method when the handler is not allready registered
-        //map.put() need a correct hashCode() method to use
-        //see OSGiServiceBean
-        if (!stored && method.getName().equals("hashCode")) {
-            int result = name.hashCode();
-            result = 31 * result + filter.value().hashCode();
-            result = 31 * result + qualifiers.hashCode();
-            result = 31 * result + (int) timeout;
-            return result;
-        }
-        ServiceReference reference = null;
-        if (filter != null
-            && filter.value() != null
-            && filter.value().length() > 0) {
-            ServiceReference[] refs =
-                               ctx.getServiceReferences(name, filter.value());
-            if (refs != null && refs.length > 0) {
-                reference = refs[0];
-            }
-        }
-        else {
-            reference = ctx.getServiceReference(name);
-        }
-        if (reference == null) {
-            throw new IllegalStateException("Can't call service "
-                                            + name
-                                            + ". No matching service found.");
-        }
-        Object instanceToUse = ctx.getService(reference);
         try {
-            return method.invoke(instanceToUse, args);
-        }
-        catch(Throwable t) {
-            throw new RuntimeException(t);
-        }
-        finally {
-            ctx.ungetService(reference);
+            ServiceReference reference = null;
+            if (filter != null && filter.value() != null && filter.value().length() > 0) {
+                ServiceReference[] refs = ctx.getServiceReferences(name, filter.value());
+                if (refs != null && refs.length > 0) {
+                    reference = refs[0];
+                }
+            }
+            else {
+                reference = ctx.getServiceReference(name);
+            }
+            if (reference == null) {
+                throw new IllegalStateException("Can't call service "
+                                                + name
+                                                + ". No matching service found.");
+            }
+            Object instanceToUse = ctx.getService(reference);
+            try {
+                return method.invoke(instanceToUse, args);
+            }
+            catch(Throwable t) {
+                throw new RuntimeException(t);
+            }
+            finally {
+                ctx.ungetService(reference);
+            }
+        } finally {
             WeldOSGiExtension.setCurrentBundle(previousBundle);
             WeldOSGiExtension.setCurrentContext(previousContext);
         }

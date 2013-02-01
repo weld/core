@@ -528,18 +528,21 @@ public class WeldOSGiExtension implements Extension {
             Bundle previousBundle = WeldOSGiExtension.setCurrentBundle(context.getBundle());
             BundleContext previousContext = WeldOSGiExtension.setCurrentContext(context);
             try {
-                //broadcast the OSGi event through CDI event system
-                extension.beanManager.fireEvent(event);
+                try {
+                    //broadcast the OSGi event through CDI event system
+                    extension.beanManager.fireEvent(event);
+                }
+                catch(Throwable t) {
+                    t.printStackTrace();
+                }
+                if (bundleEvent != null) {
+                    //broadcast the corresponding Weld-OSGi event
+                    fireAllBundleEvent(bundleEvent);
+                }
+            } finally {
+                WeldOSGiExtension.setCurrentBundle(previousBundle);
+                WeldOSGiExtension.setCurrentContext(previousContext);
             }
-            catch(Throwable t) {
-                t.printStackTrace();
-            }
-            if (bundleEvent != null) {
-                //broadcast the corresponding Weld-OSGi event
-                fireAllBundleEvent(bundleEvent);
-            }
-            WeldOSGiExtension.setCurrentBundle(previousBundle);
-            WeldOSGiExtension.setCurrentContext(previousContext);
         }
 
         @Override
