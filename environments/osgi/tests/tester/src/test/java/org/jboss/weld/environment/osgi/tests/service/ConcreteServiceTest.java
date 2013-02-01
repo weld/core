@@ -69,5 +69,6 @@ public class ConcreteServiceTest {
 
         AbstractServiceProvider asp = (AbstractServiceProvider) context.getService(aspRefs[0]);
         Assert.assertEquals(as.foo(), asp.getService().foo());
+        Assert.assertEquals(as.foo(), asp.getOther().foo());
     }
 }

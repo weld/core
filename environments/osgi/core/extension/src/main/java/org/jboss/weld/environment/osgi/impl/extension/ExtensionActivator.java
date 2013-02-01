@@ -36,6 +36,7 @@ import org.jboss.weld.environment.osgi.impl.annotation.BundleVersionAnnotation;
 import org.jboss.weld.environment.osgi.impl.annotation.FilterAnnotation;
 import org.jboss.weld.environment.osgi.impl.annotation.SpecificationAnnotation;
 import org.jboss.weld.environment.osgi.impl.extension.service.WeldOSGiExtension;
+import org.jboss.weld.environment.osgi.impl.extension.util.BridgeProxyFactory;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -145,6 +146,7 @@ public class ExtensionActivator implements BundleActivator,
                     break;
                 case BundleEvent.STOPPED:
                     logger.debug("Receiving a new OSGi bundle event STOPPED");
+                    BridgeProxyFactory.clear(originBundle); // clear classloader
                     resultingWeldOSGiBundleEvent =
                     new BundleEvents.BundleStopped(originBundle);
                     break;
@@ -172,19 +174,21 @@ public class ExtensionActivator implements BundleActivator,
             for (ServiceReference reference : cdiEventServiceReferences) {
                 BundleContext previousContext = WeldOSGiExtension.setCurrentContext(reference.getBundle().getBundleContext());
                 Bundle previousBundle = WeldOSGiExtension.setCurrentBundle(reference.getBundle());
-                Event<Object> broadcastingCDIEvent =
-                              (Event<Object>) context.getService(reference);
                 try {
-                    broadcastingCDIEvent.select(BundleEvent.class).fire(event);
+                    Event<Object> broadcastingCDIEvent = (Event<Object>) context.getService(reference);
+                    try {
+                        broadcastingCDIEvent.select(BundleEvent.class).fire(event);
+                    }
+                    catch(Throwable t) {
+                        //ignore
+                    }
+                    if (resultingWeldOSGiBundleEvent != null) {
+                        fireAllEvent(resultingWeldOSGiBundleEvent, broadcastingCDIEvent);
+                    }
+                } finally {
+                    WeldOSGiExtension.setCurrentBundle(previousBundle);
+                    WeldOSGiExtension.setCurrentContext(previousContext);
                 }
-                catch(Throwable t) {
-                    //ignore
-                }
-                if (resultingWeldOSGiBundleEvent != null) {
-                    fireAllEvent(resultingWeldOSGiBundleEvent, broadcastingCDIEvent);
-                }
-                WeldOSGiExtension.setCurrentBundle(previousBundle);
-                WeldOSGiExtension.setCurrentContext(previousContext);
             }
         }
     }

@@ -25,15 +25,22 @@ import org.jboss.weld.osgi.tests.bundle1.api.AbstractService;
 
 @Publish
 public class AbstractServiceProvider {
+    @Inject
+    @OSGiService
     private AbstractService service;
+
+    private AbstractService other;
 
     public AbstractService getService() {
         return service;
     }
 
+    public AbstractService getOther() {
+        return other;
+    }
+
     @Inject
-    @OSGiService
-    public void setService(AbstractService service) {
-        this.service = service;
+    public void setOther(@OSGiService AbstractService other) {
+        this.other = other;
     }
 }

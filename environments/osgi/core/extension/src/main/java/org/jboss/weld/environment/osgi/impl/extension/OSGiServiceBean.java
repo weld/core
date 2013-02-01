@@ -23,9 +23,7 @@ import java.lang.reflect.Type;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import javax.enterprise.context.Dependent;
@@ -37,12 +35,12 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.enterprise.util.Nonbinding;
 
-import javassist.util.proxy.MethodFilter;
 import javassist.util.proxy.ProxyFactory;
 import javassist.util.proxy.ProxyObject;
 import org.jboss.weld.environment.osgi.api.annotation.Filter;
 import org.jboss.weld.environment.osgi.api.annotation.OSGiService;
 import org.jboss.weld.environment.osgi.impl.extension.beans.DynamicServiceHandler;
+import org.jboss.weld.environment.osgi.impl.extension.util.BridgeProxyFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.slf4j.Logger;
@@ -63,9 +61,6 @@ public class OSGiServiceBean implements Bean {
 
     private static final Logger logger =
                                 LoggerFactory.getLogger(OSGiServiceBean.class);
-
-    private final Map<Object, DynamicServiceHandler> handlers =
-                                                     new HashMap<Object, DynamicServiceHandler>();
 
     private final BundleContext ctx;
 
@@ -162,20 +157,9 @@ public class OSGiServiceBean implements Bean {
                                   new DynamicServiceHandler(context,
                                                             ((Class) type).getName(),
                                                             filter,
-                                                            qualifiers,
                                                             timeout);
 
             Object proxy = createProxy(getBeanClass(), handler);
-
-            //memorize if the handler has been allready stored
-            if (handlers.containsKey(proxy)) {
-                handler.setStored(true);
-            } else {
-                //map.put() need a correct hashCode() method to use
-                //see DynamicServiceHandler
-                handlers.put(proxy, handler);
-                handler.setStored(true);
-            }
             logger.debug("New proxy for {} created", this);
             return proxy;
         }
@@ -187,18 +171,7 @@ public class OSGiServiceBean implements Bean {
 
     @Override
     public void destroy(Object instance, CreationalContext creationalContext) {
-        logger.trace("Entering OSGiServiceBean : "
-                     + "destroy()");
-        // Nothing to do, services are unget after each call.
-        DynamicServiceHandler handler = handlers.get(instance);
-        if (handler != null) {
-            /* ServiceTracker usage, currently fails
-            handler.closeHandler();*/
-            handlers.remove(instance);
-        }
-        else {
-            logger.info("Can't close handler for bean {}", this.toString());
-        }
+        logger.trace("Entering OSGiServiceBean : destroy()");
     }
 
     @Override
@@ -281,9 +254,7 @@ public class OSGiServiceBean implements Bean {
         if (clazz.isInterface()) {
             return Proxy.newProxyInstance(clazz.getClassLoader(), new Class[]{clazz}, handler);
         } else {
-            final ProxyFactory factory = new ProxyFactory();
-            factory.setFilter(FINALIZE_FILTER);
-            factory.setSuperclass(clazz); // expose impl
+            final ProxyFactory factory = new BridgeProxyFactory(clazz);
             // ProxyFactory already caches classes
             Class<?> proxyClass = getProxyClass(factory);
             ProxyObject proxyObject = (ProxyObject) proxyClass.newInstance();
@@ -314,11 +285,4 @@ public class OSGiServiceBean implements Bean {
             return factory.createClass();
         }
     }
-
-    private static final MethodFilter FINALIZE_FILTER = new MethodFilter() {
-        public boolean isHandled(Method m) {
-            // skip finalize methods
-            return !("finalize".equals(m.getName()) && m.getParameterTypes().length == 0);
-        }
-    };
 }
