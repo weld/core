@@ -16,11 +16,24 @@
  */
 package org.jboss.weld.environment.osgi.impl.extension.service;
 
+import java.lang.annotation.Annotation;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.enterprise.event.Event;
+import javax.enterprise.inject.Instance;
+
 import org.jboss.weld.environment.osgi.api.annotation.Filter;
 import org.jboss.weld.environment.osgi.api.events.AbstractBundleEvent;
 import org.jboss.weld.environment.osgi.api.events.AbstractServiceEvent;
 import org.jboss.weld.environment.osgi.api.events.BundleEvents;
 import org.jboss.weld.environment.osgi.api.events.ServiceEvents;
+import org.jboss.weld.environment.osgi.impl.annotation.BundleNameAnnotation;
+import org.jboss.weld.environment.osgi.impl.annotation.BundleVersionAnnotation;
+import org.jboss.weld.environment.osgi.impl.annotation.FilterAnnotation;
+import org.jboss.weld.environment.osgi.impl.annotation.SpecificationAnnotation;
+import org.jboss.weld.environment.osgi.impl.extension.ExtensionActivator;
 import org.jboss.weld.environment.osgi.spi.CDIContainer;
 import org.jboss.weld.environment.osgi.spi.CDIContainerFactory;
 import org.jboss.weld.environment.osgi.spi.EmbeddedCDIContainer;
@@ -31,21 +44,9 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
+import org.osgi.framework.SynchronousBundleListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.enterprise.event.Event;
-import javax.enterprise.inject.Instance;
-import java.lang.annotation.Annotation;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import org.jboss.weld.environment.osgi.impl.annotation.BundleNameAnnotation;
-import org.jboss.weld.environment.osgi.impl.annotation.BundleVersionAnnotation;
-import org.jboss.weld.environment.osgi.impl.annotation.SpecificationAnnotation;
-import org.jboss.weld.environment.osgi.impl.annotation.FilterAnnotation;
-import org.jboss.weld.environment.osgi.impl.extension.ExtensionActivator;
-import org.osgi.framework.SynchronousBundleListener;
 
 /**
  * This is an embedded container for the current bundle. This bundle is not
@@ -222,7 +223,7 @@ public class EmbeddedContainer {
         }
 
         private void fireAllEvent(AbstractServiceEvent event, Event broadcaster, Instance<Object> instance) {
-            List<Class<?>> classes = event.getServiceClasses(getClass());
+            List<Class<?>> classes = event.getServiceClasses();
             Class eventClass = event.getClass();
             for (Class<?> clazz : classes) {
                 try {

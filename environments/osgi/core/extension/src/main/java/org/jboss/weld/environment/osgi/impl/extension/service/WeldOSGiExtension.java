@@ -563,23 +563,25 @@ public class WeldOSGiExtension implements Extension {
             Bundle previousBundle = WeldOSGiExtension.setCurrentBundle(context.getBundle());
             BundleContext previousContext = WeldOSGiExtension.setCurrentContext(context);
             try {
-                //broadcast the OSGi event through CDI event system
-                extension.beanManager.fireEvent(event);
+                try {
+                    //broadcast the OSGi event through CDI event system
+                    extension.beanManager.fireEvent(event);
+                }
+                catch(Throwable t) {
+                    t.printStackTrace();
+                }
+                if (serviceEvent != null) {
+                    //broadcast the corresponding Weld-OSGi event
+                    fireAllServiceEvent(serviceEvent);
+                }
+            } finally {
+                WeldOSGiExtension.setCurrentBundle(previousBundle);
+                WeldOSGiExtension.setCurrentContext(previousContext);
             }
-            catch(Throwable t) {
-                t.printStackTrace();
-            }
-            if (serviceEvent != null) {
-                //broadcast the corresponding Weld-OSGi event
-                fireAllServiceEvent(serviceEvent);
-            }
-            WeldOSGiExtension.setCurrentBundle(previousBundle);
-            WeldOSGiExtension.setCurrentContext(previousContext);
         }
 
         private void fireAllServiceEvent(AbstractServiceEvent event) {
-            List<Class<?>> classes = event.getServiceClasses(getClass());
-            Class eventClass = event.getClass();
+            List<Class<?>> classes = event.getServiceClasses();
             for (Class<?> clazz : classes) {
                 try {
                     Annotation[] qualifs = filteredServicesQualifiers(event,

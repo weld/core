@@ -30,7 +30,6 @@ import org.jboss.weld.environment.osgi.api.events.AbstractBundleEvent;
 import org.jboss.weld.environment.osgi.api.events.AbstractServiceEvent;
 import org.jboss.weld.environment.osgi.api.events.BundleEvents;
 import org.jboss.weld.environment.osgi.api.events.ServiceEvents;
-import org.jboss.weld.environment.osgi.api.utils.BundleLoader;
 import org.jboss.weld.environment.osgi.impl.Activator;
 import org.jboss.weld.environment.osgi.impl.annotation.BundleNameAnnotation;
 import org.jboss.weld.environment.osgi.impl.annotation.BundleVersionAnnotation;
@@ -232,8 +231,7 @@ public class ExtensionActivator implements BundleActivator,
                     Event<Object> broadcastingCDIEvent = instance.select(Event.class).get();
                     broadcastingCDIEvent.select(ServiceEvent.class).fire(event);
                     if (resultingWeldOSGiServiceEvent != null) {
-                        fireAllEvent(originServiceReference.getBundle(),
-                                     resultingWeldOSGiServiceEvent,
+                        fireAllEvent(resultingWeldOSGiServiceEvent,
                                      broadcastingCDIEvent,
                                      instance);
                     }
@@ -277,8 +275,7 @@ public class ExtensionActivator implements BundleActivator,
         }
     }
 
-    private void fireAllEvent(Bundle bundle,
-                              AbstractServiceEvent event,
+    private void fireAllEvent(AbstractServiceEvent event,
                               Event broadcaster,
                               Instance<Object> instance) {
 
@@ -286,7 +283,7 @@ public class ExtensionActivator implements BundleActivator,
                      + "fireAllEvent() with parameters {} | {}",
                      new Object[] {event, instance});
 
-        List<Class<?>> classes = event.getServiceClasses(new BundleLoader(bundle));
+        List<Class<?>> classes = event.getServiceClasses();
         Class eventClass = event.getClass();
         for (Class<?> clazz : classes) {
             try {
