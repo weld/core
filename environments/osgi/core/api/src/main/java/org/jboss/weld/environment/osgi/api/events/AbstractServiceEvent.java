@@ -18,13 +18,10 @@ package org.jboss.weld.environment.osgi.api.events;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jboss.weld.environment.osgi.api.utils.ClassLoaderLoader;
-import org.jboss.weld.environment.osgi.api.utils.Loader;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
@@ -109,6 +106,7 @@ public abstract class AbstractServiceEvent {
      * @return the service instance of the firing service.
      * @see BundleContext#getService(org.osgi.framework.ServiceReference)
      */
+    @SuppressWarnings("unchecked")
     public Object getService() {
         return context.getService(reference);
     }
@@ -160,7 +158,7 @@ public abstract class AbstractServiceEvent {
             throw new RuntimeException("the type " + type
                     + " isn't supported for the service."
                     + " Supported types are "
-                    + getServiceClasses(type));
+                    + getServiceClasses());
         }
     }
 
@@ -174,7 +172,7 @@ public abstract class AbstractServiceEvent {
     public boolean isTyped(Class<?> type) {
         boolean typed = false;
         if (!assignable.containsKey(type)) {
-            for (Class clazz : getServiceClasses(type)) {
+            for (Class clazz : getServiceClasses()) {
                 if (type.isAssignableFrom(clazz)) {
                     typed = true;
                     break;
@@ -188,32 +186,21 @@ public abstract class AbstractServiceEvent {
     /**
      * Get the class that are the firing service implementations.
      *
-     * @param type the class from which the service will be loaded
      * @return all the firing service implementation classes.
      */
-    public List<Class<?>> getServiceClasses(Class<?> type) {
-        return getServiceClasses(new ClassLoaderLoader(type.getClassLoader()));
-    }
-
-    /**
-     * Get the class that are the firing service implementations.
-     *
-     * @param cl the classloader from which the service will be loaded
-     * @return all the firing service implementation classes.
-     */
-    public List<Class<?>> getServiceClasses(Loader loader) {
-        if (classes == null) {
-            classes = new ArrayList<Class<?>>();
-            for (String className : getServiceClassNames()) {
-                try {
-                    classes.add(loader.loadClass(className));
-                } catch (ClassNotFoundException ex) {
-                    ex.printStackTrace();
-                    return Collections.emptyList();
+    public List<Class<?>> getServiceClasses() {
+        try {
+            if (classes == null) {
+                Bundle bundle = getRegisteringBundle();
+                classes = new ArrayList<Class<?>>();
+                for (String className : getServiceClassNames()) {
+                    classes.add(bundle.loadClass(className));
                 }
             }
+            return classes;
+        } catch (ClassNotFoundException e) {
+            throw new IllegalStateException(e);
         }
-        return classes;
     }
 
 }

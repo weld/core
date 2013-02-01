@@ -159,7 +159,7 @@ public class ServiceRegistryImpl implements ServiceRegistry {
         if (osgiServiceDependencies == null) {
             osgiServiceDependencies = extension.getRequiredOsgiServiceDependencies();
         }
-        if (event == null || applicable(event.getServiceClasses(getClass()))) {
+        if (event == null || applicable(event.getServiceClasses())) {
             boolean valid = true;
             if (!osgiServiceDependencies.isEmpty()) {
                 invalid:
