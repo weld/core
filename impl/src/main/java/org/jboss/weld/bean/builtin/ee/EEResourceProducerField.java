@@ -18,9 +18,9 @@ package org.jboss.weld.bean.builtin.ee;
 
 import static org.jboss.weld.logging.messages.BeanMessage.BEAN_NOT_EE_RESOURCE_PRODUCER;
 import static org.jboss.weld.logging.messages.BeanMessage.INVALID_RESOURCE_PRODUCER_FIELD;
-import static org.jboss.weld.logging.messages.BeanMessage.NON_DEPENDENT_RESOURCE_PRODUCER_FIELD;
-import static org.jboss.weld.logging.messages.BeanMessage.NAMED_RESOURCE_PRODUCER_FIELD;
 import static org.jboss.weld.logging.messages.BeanMessage.INVALID_RESOURCE_PRODUCER_TYPE;
+import static org.jboss.weld.logging.messages.BeanMessage.NAMED_RESOURCE_PRODUCER_FIELD;
+import static org.jboss.weld.logging.messages.BeanMessage.NON_DEPENDENT_RESOURCE_PRODUCER_FIELD;
 
 import java.io.Serializable;
 
@@ -43,11 +43,9 @@ import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.injection.InjectionPointFactory;
-import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
 import org.jboss.weld.serialization.spi.ContextualStore;
-import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.ws.WSApiAbstraction;
 
@@ -101,8 +99,6 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T> {
         return new EEResourceProducerField<X, T>(attributes, field, declaringBean, disposalMethod, manager, services);
     }
 
-    private final WeldInjectionPoint<?, ?> injectionPoint;
-
     private ProxyFactory<T> proxyFactory;
 
     private final Class<T> rawType;
@@ -110,7 +106,6 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T> {
     protected EEResourceProducerField(BeanAttributes<T> attributes, EnhancedAnnotatedField<T, ? super X> field, AbstractClassBean<X> declaringBean, DisposalMethod<X, ?> disposalMethod, BeanManagerImpl manager, ServiceRegistry services) {
         super(attributes, field, declaringBean, disposalMethod, manager, services);
         this.rawType = field.getJavaClass();
-        this.injectionPoint = InjectionPointFactory.instance().createFieldInjectionPoint(field, declaringBean, declaringBean.getBeanClass(), manager);
     }
 
     @Override
@@ -170,12 +165,7 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T> {
      * Access to the underlying producer field
      */
     private T createUnderlying(CreationalContext<T> creationalContext) {
-        // Treat static fields as a special case, as they won't be injected, as the no bean is resolved, and normally there is no injection on static fields
-        if (getAnnotated().isStatic()) {
-            return Reflections.<T>cast(Beans.resolveEEResource(getBeanManager(), injectionPoint));
-        } else {
-            return super.create(creationalContext);
-        }
+        return super.create(creationalContext);
     }
 
     @Override

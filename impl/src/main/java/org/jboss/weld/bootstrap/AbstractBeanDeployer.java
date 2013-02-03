@@ -55,6 +55,7 @@ import org.jboss.weld.bean.attributes.BeanAttributesFactory;
 import org.jboss.weld.bean.attributes.ExternalBeanAttributesFactory;
 import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
 import org.jboss.weld.bean.builtin.ee.EEResourceProducerField;
+import org.jboss.weld.bean.builtin.ee.StaticEEResourceProducerField;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.events.ContainerLifecycleEvents;
 import org.jboss.weld.bootstrap.events.ProcessBeanAttributesImpl;
@@ -230,7 +231,11 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
         DisposalMethod<X, ?> disposalMethod = resolveDisposalMethod(attributes, declaringBean);
         ProducerField<X, T> bean;
         if (isEEResourceProducerField(field)) {
-            bean = EEResourceProducerField.of(attributes, field, declaringBean, disposalMethod, manager, services);
+            if (field.isStatic()) {
+                bean = StaticEEResourceProducerField.of(attributes, field, declaringBean, disposalMethod, manager, services);
+            } else {
+                bean = EEResourceProducerField.of(attributes, field, declaringBean, disposalMethod, manager, services);
+            }
         } else {
             bean = ProducerField.of(attributes, field, declaringBean, disposalMethod, manager, services);
         }

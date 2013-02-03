@@ -61,12 +61,16 @@ public class ResourceInjectionPoint<T, X> extends DelegatingFieldInjectionPointA
         this.factory = factory;
     }
 
-    public void inject(Object declaringInstance, CreationalContext<?> ctx) {
+    public T getReference(CreationalContext<?> ctx) {
         ResourceReference<T> reference = factory.createResource();
-        delegate.inject(declaringInstance, reference.getInstance());
         if (ctx instanceof WeldCreationalContext<?>) {
             Reflections.<WeldCreationalContext<?>>cast(ctx).addDependentResourceReference(reference);
         }
+        return reference.getInstance();
+    }
+
+    public void inject(Object declaringInstance, CreationalContext<?> ctx) {
+        delegate.inject(declaringInstance, getReference(ctx));
     }
 
     public void disinject(Object declaringInstance) {
