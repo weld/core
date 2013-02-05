@@ -31,6 +31,7 @@ import static org.jboss.weld.logging.messages.BeanMessage.SPECIALIZING_ENTERPRIS
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.decorator.Decorator;
@@ -43,6 +44,7 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.enhanced.MethodSignature;
 import org.jboss.weld.annotated.enhanced.jlr.MethodSignatureImpl;
+import org.jboss.weld.bean.interceptor.InterceptorBindingsAdapter;
 import org.jboss.weld.bean.proxy.EnterpriseBeanInstance;
 import org.jboss.weld.bean.proxy.Marker;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
@@ -53,6 +55,11 @@ import org.jboss.weld.ejb.spi.EjbServices;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.IllegalArgumentException;
+import org.jboss.weld.injection.producer.Instantiator;
+import org.jboss.weld.injection.producer.ejb.ProxyDecoratorApplyingSessionBeanInstantiator;
+import org.jboss.weld.injection.producer.ejb.SessionBeanProxyInstantiator;
+import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
+import org.jboss.weld.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.util.BeanMethods;
@@ -69,6 +76,8 @@ import org.jboss.weld.util.reflection.Formats;
 public class SessionBean<T> extends AbstractClassBean<T> {
     // The EJB descriptor
     private final InternalEjbDescriptor<T> ejbDescriptor;
+
+    private Instantiator<T> proxyInstantiator;
 
     /**
      * Creates a simple, annotation defined Enterprise Web Bean using the annotations specified on type
@@ -162,7 +171,7 @@ public class SessionBean<T> extends AbstractClassBean<T> {
      * @return The instance
      */
     public T create(final CreationalContext<T> creationalContext) {
-        return getProducer().produce(creationalContext);
+        return proxyInstantiator.newInstance(creationalContext, beanManager);
     }
 
     public void destroy(T instance, CreationalContext<T> creationalContext) {
@@ -261,6 +270,24 @@ public class SessionBean<T> extends AbstractClassBean<T> {
     @Override
     public boolean isPassivationCapableDependency() {
         return true; // all session beans are passivation capable dependencies
+    }
+
+    @Override
+    public void initializeAfterBeanDiscovery() {
+        super.initializeAfterBeanDiscovery();
+        this.proxyInstantiator = new SessionBeanProxyInstantiator<T>(enhancedAnnotatedItem, this);
+        List<javax.enterprise.inject.spi.Decorator<?>> decorators = beanManager.resolveDecorators(getTypes(), getQualifiers());
+        if (!decorators.isEmpty()) {
+            this.proxyInstantiator = (new ProxyDecoratorApplyingSessionBeanInstantiator<T>(proxyInstantiator, this, decorators));
+        }
+        registerInterceptors();
+    }
+
+    protected void registerInterceptors() {
+        InterceptionModel<ClassMetadata<?>, ?> model = beanManager.getInterceptorModelRegistry().get(getEjbDescriptor().getBeanClass());
+        if (model != null) {
+            getBeanManager().getServices().get(EjbServices.class).registerInterceptors(getEjbDescriptor(), new InterceptorBindingsAdapter(model));
+        }
     }
 }
 

@@ -40,12 +40,12 @@ import org.jboss.weld.util.reflection.SecureReflections;
  *
  * @author Jozef Hartinger
  */
-public class SessionBeanInstantiator<T> implements Instantiator<T> {
+public class SessionBeanProxyInstantiator<T> implements Instantiator<T> {
 
     private final Class<T> proxyClass;
     private final SessionBean<T> bean;
 
-    public SessionBeanInstantiator(EnhancedAnnotatedType<T> type, SessionBean<T> bean) {
+    public SessionBeanProxyInstantiator(EnhancedAnnotatedType<T> type, SessionBean<T> bean) {
         this.bean = bean;
         this.proxyClass = new EnterpriseProxyFactory<T>(type.getJavaClass(), bean).getProxyClass();
     }
