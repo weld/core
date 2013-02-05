@@ -81,12 +81,12 @@ public class StaticEEResourceProducerField<X, T> extends EEResourceProducerField
 
             Class<? extends Annotation> persistenceUnitAnnotationType = persistenceApiAbstraction.PERSISTENCE_UNIT_ANNOTATION_CLASS;
             if (injectionPoint.getAnnotated().isAnnotationPresent(persistenceUnitAnnotationType)) {
-                return ResourceInjectionPoint.forPersistenceUnit(injectionPoint, jpaServices);
+                return ResourceInjectionPoint.forPersistenceUnit(injectionPoint, jpaServices, persistenceApiAbstraction);
             }
 
             Class<? extends Annotation> persistenceContextAnnotationType = persistenceApiAbstraction.PERSISTENCE_CONTEXT_ANNOTATION_CLASS;
             if (injectionPoint.getAnnotated().isAnnotationPresent(persistenceContextAnnotationType)) {
-                return ResourceInjectionPoint.forPersistenceContext(injectionPoint, jpaServices);
+                return ResourceInjectionPoint.forPersistenceContext(injectionPoint, jpaServices, persistenceApiAbstraction);
             }
         }
 

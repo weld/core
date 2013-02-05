@@ -16,15 +16,19 @@
  */
 package org.jboss.weld.injection;
 
+import static org.jboss.weld.logging.messages.BeanMessage.INVALID_RESOURCE_PRODUCER_TYPE;
+
 import javax.enterprise.context.spi.CreationalContext;
 
 import org.jboss.weld.context.WeldCreationalContext;
+import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.injection.attributes.FieldInjectionPointAttributes;
 import org.jboss.weld.injection.spi.EjbInjectionServices;
 import org.jboss.weld.injection.spi.JpaInjectionServices;
 import org.jboss.weld.injection.spi.ResourceInjectionServices;
 import org.jboss.weld.injection.spi.ResourceReference;
 import org.jboss.weld.injection.spi.ResourceReferenceFactory;
+import org.jboss.weld.persistence.PersistenceApiAbstraction;
 import org.jboss.weld.util.DelegatingFieldInjectionPointAttributes;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -41,11 +45,17 @@ public class ResourceInjectionPoint<T, X> extends DelegatingFieldInjectionPointA
         return new ResourceInjectionPoint<T, X>(delegate, Reflections.<ResourceReferenceFactory<T>>cast(injectionServices.registerEjbInjectionPoint(delegate)));
     }
 
-    public static <T, X> ResourceInjectionPoint<T, X> forPersistenceContext(FieldInjectionPoint<T, X> delegate, JpaInjectionServices injectionServices) {
+    public static <T, X> ResourceInjectionPoint<T, X> forPersistenceContext(FieldInjectionPoint<T, X> delegate, JpaInjectionServices injectionServices, PersistenceApiAbstraction api) {
+        if (!delegate.getType().equals(api.ENTITY_MANAGER_CLASS)) {
+            throw new DefinitionException(INVALID_RESOURCE_PRODUCER_TYPE, delegate.getAnnotated(), api.ENTITY_MANAGER_CLASS);
+        }
         return new ResourceInjectionPoint<T, X>(delegate, Reflections.<ResourceReferenceFactory<T>>cast(injectionServices.registerPersistenceContextInjectionPoint(delegate)));
     }
 
-    public static <T, X> ResourceInjectionPoint<T, X> forPersistenceUnit(FieldInjectionPoint<T, X> delegate, JpaInjectionServices injectionServices) {
+    public static <T, X> ResourceInjectionPoint<T, X> forPersistenceUnit(FieldInjectionPoint<T, X> delegate, JpaInjectionServices injectionServices, PersistenceApiAbstraction api) {
+        if (!delegate.getType().equals(api.ENTITY_MANAGER_FACTORY_CLASS)) {
+            throw new DefinitionException(INVALID_RESOURCE_PRODUCER_TYPE, delegate.getAnnotated(), api.ENTITY_MANAGER_FACTORY_CLASS);
+        }
         return new ResourceInjectionPoint<T, X>(delegate, Reflections.<ResourceReferenceFactory<T>>cast(injectionServices.registerPersistenceUnitInjectionPoint(delegate)));
     }
 

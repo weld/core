@@ -18,7 +18,6 @@ package org.jboss.weld.bean.builtin.ee;
 
 import static org.jboss.weld.logging.messages.BeanMessage.BEAN_NOT_EE_RESOURCE_PRODUCER;
 import static org.jboss.weld.logging.messages.BeanMessage.INVALID_RESOURCE_PRODUCER_FIELD;
-import static org.jboss.weld.logging.messages.BeanMessage.INVALID_RESOURCE_PRODUCER_TYPE;
 import static org.jboss.weld.logging.messages.BeanMessage.NAMED_RESOURCE_PRODUCER_FIELD;
 import static org.jboss.weld.logging.messages.BeanMessage.NON_DEPENDENT_RESOURCE_PRODUCER_FIELD;
 
@@ -42,7 +41,6 @@ import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.IllegalStateException;
-import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
 import org.jboss.weld.serialization.spi.ContextualStore;
@@ -131,23 +129,6 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T> {
                 || getAnnotated().isAnnotationPresent(ejbApiAbstraction.EJB_ANNOTATION_CLASS)
                 || getAnnotated().isAnnotationPresent(wsApiAbstraction.WEB_SERVICE_REF_ANNOTATION_CLASS))) {
             throw new IllegalStateException(INVALID_RESOURCE_PRODUCER_FIELD, getAnnotated());
-        }
-    }
-
-    @Override
-    protected void checkType() {
-        super.checkType();
-        // check JPA resources
-        PersistenceApiAbstraction persistenceApiAbstraction = beanManager.getServices().get(PersistenceApiAbstraction.class);
-        if (getAnnotated().isAnnotationPresent(persistenceApiAbstraction.PERSISTENCE_UNIT_ANNOTATION_CLASS)) {
-            if (!getType().equals(persistenceApiAbstraction.ENTITY_MANAGER_FACTORY_CLASS)) {
-                throw new DefinitionException(INVALID_RESOURCE_PRODUCER_TYPE, getAnnotated(), persistenceApiAbstraction.ENTITY_MANAGER_FACTORY_CLASS);
-            }
-        }
-        if (getAnnotated().isAnnotationPresent(persistenceApiAbstraction.PERSISTENCE_CONTEXT_ANNOTATION_CLASS)) {
-            if (!getType().equals(persistenceApiAbstraction.ENTITY_MANAGER_CLASS)) {
-                throw new DefinitionException(INVALID_RESOURCE_PRODUCER_TYPE, getAnnotated(), persistenceApiAbstraction.ENTITY_MANAGER_CLASS);
-            }
         }
     }
 

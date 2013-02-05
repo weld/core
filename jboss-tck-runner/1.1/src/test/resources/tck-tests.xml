@@ -68,22 +68,7 @@
                     <exclude name="testInterceptor"/>
                 </methods>
             </class>
-            <!-- WELD-1089 -->
-            <class name="org.jboss.cdi.tck.tests.implementation.simple.resource.broken.type.ResourceDefinitionWithDifferentTypeTest">
-                <methods>
-                    <exclude name="testDeployment"/>
-                </methods>
-            </class>
-            <class name="org.jboss.cdi.tck.tests.implementation.simple.resource.broken.type.ejb.ResourceDefinitionWithDifferentTypeTest">
-                <methods>
-                    <exclude name="testDeployment"/>
-                </methods>
-            </class>
-            <class name="org.jboss.cdi.tck.tests.implementation.simple.resource.broken.type.env.ResourceDefinitionWithDifferentTypeTest">
-                <methods>
-                    <exclude name="testDeployment"/>
-                </methods>
-            </class>
+            <!-- WELD-1099 -->
             <class name="org.jboss.cdi.tck.tests.implementation.simple.resource.broken.type.ws.ResourceDefinitionWithDifferentTypeTest">
                 <methods>
                     <exclude name="testDeployment"/>

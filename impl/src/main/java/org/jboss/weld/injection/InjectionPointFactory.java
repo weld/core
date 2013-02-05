@@ -233,12 +233,12 @@ public class InjectionPointFactory {
     public Set<ResourceInjectionPoint<?, ?>> getPersistenceContextInjectionPoints(Bean<?> declaringBean, EnhancedAnnotatedType<?> type, BeanManagerImpl manager) {
         JpaInjectionServices injectionServices = manager.getServices().get(JpaInjectionServices.class);
         if (injectionServices != null) {
-            Class<? extends Annotation> persistenceContextAnnotationType = manager.getServices().get(PersistenceApiAbstraction.class).PERSISTENCE_CONTEXT_ANNOTATION_CLASS;
-            Set<FieldInjectionPoint<?, ?>> fieldInjectionPoints = getFieldInjectionPointsWithSpecialAnnotation(declaringBean, type, persistenceContextAnnotationType, manager);
+            PersistenceApiAbstraction api = manager.getServices().get(PersistenceApiAbstraction.class);
+            Set<FieldInjectionPoint<?, ?>> fieldInjectionPoints = getFieldInjectionPointsWithSpecialAnnotation(declaringBean, type, api.PERSISTENCE_CONTEXT_ANNOTATION_CLASS, manager);
             if (!fieldInjectionPoints.isEmpty()) {
                 Set<ResourceInjectionPoint<?, ?>> resourceInjectionPoints = new HashSet<ResourceInjectionPoint<?,?>>(fieldInjectionPoints.size());
                 for (FieldInjectionPoint<?, ?> fieldInjectionPoint : fieldInjectionPoints) {
-                    resourceInjectionPoints.add(ResourceInjectionPoint.forPersistenceContext(fieldInjectionPoint, injectionServices));
+                    resourceInjectionPoints.add(ResourceInjectionPoint.forPersistenceContext(fieldInjectionPoint, injectionServices, api));
                 }
                 return resourceInjectionPoints;
             }
@@ -249,12 +249,12 @@ public class InjectionPointFactory {
     public Set<ResourceInjectionPoint<?, ?>> getPersistenceUnitInjectionPoints(Bean<?> declaringBean, EnhancedAnnotatedType<?> type, BeanManagerImpl manager) {
         JpaInjectionServices injectionServices = manager.getServices().get(JpaInjectionServices.class);
         if (injectionServices != null) {
-            Class<? extends Annotation> persistenceUnitAnnotationType = manager.getServices().get(PersistenceApiAbstraction.class).PERSISTENCE_UNIT_ANNOTATION_CLASS;
-            Set<FieldInjectionPoint<?, ?>> fieldInjectionPoints = getFieldInjectionPointsWithSpecialAnnotation(declaringBean, type, persistenceUnitAnnotationType, manager);
+            PersistenceApiAbstraction api = manager.getServices().get(PersistenceApiAbstraction.class);
+            Set<FieldInjectionPoint<?, ?>> fieldInjectionPoints = getFieldInjectionPointsWithSpecialAnnotation(declaringBean, type, api.PERSISTENCE_UNIT_ANNOTATION_CLASS, manager);
             if (!fieldInjectionPoints.isEmpty()) {
                 Set<ResourceInjectionPoint<?, ?>> resourceInjectionPoints = new HashSet<ResourceInjectionPoint<?,?>>(fieldInjectionPoints.size());
                 for (FieldInjectionPoint<?, ?> fieldInjectionPoint : fieldInjectionPoints) {
-                    resourceInjectionPoints.add(ResourceInjectionPoint.forPersistenceUnit(fieldInjectionPoint, injectionServices));
+                    resourceInjectionPoints.add(ResourceInjectionPoint.forPersistenceUnit(fieldInjectionPoint, injectionServices, api));
                 }
                 return resourceInjectionPoints;
             }
