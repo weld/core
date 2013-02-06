@@ -151,6 +151,11 @@
                     <exclude name="testRequestContextActiveOnError" />
                 </methods>
             </class>
+            <class name="org.jboss.cdi.tck.tests.context.session.async.SessionContextAsyncListenerTest">
+                <methods>
+                    <exclude name="testSessionContextActiveOnError" />
+                </methods>
+            </class>
             <!-- AS7-5965 -->
             <class name="org.jboss.cdi.tck.tests.deployment.packaging.rar.ResourceAdapterArchiveTest">
                 <methods>
@@ -166,6 +171,12 @@
             <class name="org.jboss.cdi.tck.tests.deployment.packaging.installedLibrary.InstalledLibraryEarTest">
                 <methods>
                     <exclude name=".*"/>
+                </methods>
+            </class>
+            <!-- AS7-6428 -->
+            <class name="org.jboss.cdi.tck.tests.context.session.listener.SessionContextHttpSessionListenerTest">
+                <methods>
+                    <exclude name="testSessionScopeActiveDuringHttpSessionListenerCall"/>
                 </methods>
             </class>
             
