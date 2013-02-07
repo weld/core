@@ -56,6 +56,8 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
 
     private final Set<MethodSignature> enhancedMethodSignatures;
 
+    private final Class<?> proxiedBeanType;
+
     public InterceptedSubclassFactory(Class<?> proxiedBeanType, Set<? extends Type> typeClosure, Bean<?> bean, Set<MethodSignature> enhancedMethodSignatures) {
         this(proxiedBeanType, typeClosure, getProxyName(proxiedBeanType, typeClosure, bean), bean, enhancedMethodSignatures);
     }
@@ -72,6 +74,7 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
     public InterceptedSubclassFactory(Class<?> proxiedBeanType, Set<? extends Type> typeClosure, String proxyName, Bean<?> bean, Set<MethodSignature> enhancedMethodSignatures) {
         super(proxiedBeanType, typeClosure, proxyName, bean);
         this.enhancedMethodSignatures = enhancedMethodSignatures;
+        this.proxiedBeanType = proxiedBeanType;
     }
 
     /**
@@ -328,6 +331,11 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
         b.aload(1);
         b.putfield(method.getClassFile().getName(), "methodHandler", DescriptorUtils.classToStringRepresentation(MethodHandler.class));
         b.returnInstruction();
+    }
+
+    @Override
+    public Class<?> getBeanType() {
+        return proxiedBeanType;
     }
 
 }

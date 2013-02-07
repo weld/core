@@ -34,6 +34,9 @@ import org.jboss.weld.util.bytecode.RuntimeMethodInformation;
  * @author David Allen
  */
 public class EnterpriseProxyFactory<T> extends ProxyFactory<T> {
+
+    private static final String SUFFIX = "$EnterpriseProxy$";
+
     /**
      * Produces a factory for a specific bean implementation.
      *
@@ -58,6 +61,10 @@ public class EnterpriseProxyFactory<T> extends ProxyFactory<T> {
         } catch (Exception e) {
             throw new WeldException(e);
         }
+    }
 
+    @Override
+    protected String getProxyNameSuffix() {
+        return SUFFIX;
     }
 }

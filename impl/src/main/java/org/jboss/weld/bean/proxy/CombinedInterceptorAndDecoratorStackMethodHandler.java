@@ -77,5 +77,11 @@ public class CombinedInterceptorAndDecoratorStackMethodHandler implements Method
         return getDisabledHandlers().contains(this);
     }
 
+    public MethodHandler getInterceptorMethodHandler() {
+        return interceptorMethodHandler;
+    }
 
+    public Object getOuterDecorator() {
+        return outerDecorator;
+    }
 }

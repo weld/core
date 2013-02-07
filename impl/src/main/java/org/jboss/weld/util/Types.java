@@ -21,11 +21,16 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
+import java.util.Set;
 
 import org.jboss.weld.util.reflection.GenericArrayTypeImpl;
 import org.jboss.weld.util.reflection.ParameterizedTypeImpl;
 import org.jboss.weld.util.reflection.RawType;
 import org.jboss.weld.util.reflection.Reflections;
+
+import com.google.common.base.Function;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
 
 /**
  * Utility class for Types
@@ -104,8 +109,8 @@ public class Types {
     /**
      * Returns a canonical type for a given class.
      *
-     * If the class is a raw type of a parameterized class, the matching
-     * {@link ParameterizedType} (with unresolved type variables) is resolved.
+     * If the class is a raw type of a parameterized class, the matching {@link ParameterizedType} (with unresolved type
+     * variables) is resolved.
      *
      * If the class is an array then the component type of the array is canonicalized
      *
@@ -165,5 +170,14 @@ public class Types {
             return containsUnresolvedTypeVariableOrWildcard(genericArrayType.getGenericComponentType());
         }
         return false;
+    }
+
+    public static Set<Class<?>> getRawTypes(Set<Type> types) {
+        return ImmutableSet.copyOf(Iterables.transform(types, new Function<Type, Class<?>>() {
+            @Override
+            public Class<?> apply(Type input) {
+                return Reflections.getRawType(input);
+            }
+        }));
     }
 }

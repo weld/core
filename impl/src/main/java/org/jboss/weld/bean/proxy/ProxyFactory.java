@@ -365,11 +365,11 @@ public class ProxyFactory<T> {
         additionalInterfaces.removeAll(specialInterfaces);
 
         ClassFile proxyClassType = null;
-        if (beanType.isInterface()) {
+        if (getBeanType().isInterface()) {
             proxyClassType = new ClassFile(proxyClassName, Object.class.getName());
-            proxyClassType.addInterface(beanType.getName());
+            proxyClassType.addInterface(getBeanType().getName());
         } else {
-            proxyClassType = new ClassFile(proxyClassName, beanType.getName());
+            proxyClassType = new ClassFile(proxyClassName, getBeanType().getName());
         }
         // Add interfaces which require method generation
         for (Class<?> clazz : additionalInterfaces) {
@@ -407,11 +407,11 @@ public class ProxyFactory<T> {
      */
     protected void addConstructors(ClassFile proxyClassType, List<DeferredBytecode> initialValueBytecode) {
         try {
-            if (beanType.isInterface()) {
+            if (getBeanType().isInterface()) {
                 ConstructorUtils.addDefaultConstructor(proxyClassType, initialValueBytecode);
             } else {
                 boolean constructorFound = false;
-                for (Constructor<?> constructor : beanType.getDeclaredConstructors()) {
+                for (Constructor<?> constructor : getBeanType().getDeclaredConstructors()) {
                     if ((constructor.getModifiers() & Modifier.PRIVATE) == 0) {
                         constructorFound = true;
                         String[] exceptions = new String[constructor.getExceptionTypes().length];
@@ -464,7 +464,7 @@ public class ProxyFactory<T> {
     protected void addMethodsFromClass(ClassFile proxyClassType) {
         try {
             // Add all methods from the class heirachy
-            Class<?> cls = beanType;
+            Class<?> cls = getBeanType();
             // first add equals/hashCode methods if required
             generateEqualsMethod(proxyClassType);
 

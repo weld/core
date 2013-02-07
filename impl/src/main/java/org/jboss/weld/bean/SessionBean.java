@@ -31,7 +31,6 @@ import static org.jboss.weld.logging.messages.BeanMessage.SPECIALIZING_ENTERPRIS
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.decorator.Decorator;
@@ -56,7 +55,6 @@ import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.injection.producer.Instantiator;
-import org.jboss.weld.injection.producer.ejb.ProxyDecoratorApplyingSessionBeanInstantiator;
 import org.jboss.weld.injection.producer.ejb.SessionBeanProxyInstantiator;
 import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
@@ -276,10 +274,6 @@ public class SessionBean<T> extends AbstractClassBean<T> {
     public void initializeAfterBeanDiscovery() {
         super.initializeAfterBeanDiscovery();
         this.proxyInstantiator = new SessionBeanProxyInstantiator<T>(enhancedAnnotatedItem, this);
-        List<javax.enterprise.inject.spi.Decorator<?>> decorators = beanManager.resolveDecorators(getTypes(), getQualifiers());
-        if (!decorators.isEmpty()) {
-            this.proxyInstantiator = (new ProxyDecoratorApplyingSessionBeanInstantiator<T>(proxyInstantiator, this, decorators));
-        }
         registerInterceptors();
     }
 
