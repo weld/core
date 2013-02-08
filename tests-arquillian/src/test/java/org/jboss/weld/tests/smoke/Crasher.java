@@ -1,6 +1,5 @@
 package org.jboss.weld.tests.smoke;
 
-import javax.annotation.Nonnull;
 
 /**
  * @author Sam Corbet
@@ -8,12 +7,12 @@ import javax.annotation.Nonnull;
  */
 public class Crasher {
     protected class NonStaticInner {
-        public NonStaticInner(@Nonnull Integer a) {
+        public NonStaticInner(Integer a) {
             System.out.println("Hi" + a);
         }
 
         protected class NonStaticInner2 {
-            public NonStaticInner2(@Nonnull Double a) {
+            public NonStaticInner2(Double a) {
                 System.out.println("Hi" + a);
             }
         }

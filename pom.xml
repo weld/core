@@ -45,7 +45,7 @@
         <contiperf.version>1.06</contiperf.version>
         <findbugs-maven-plugin.version>2.5.1</findbugs-maven-plugin.version>
         <glassfish.el.version>2.1.2-b04</glassfish.el.version>
-        <google.guava.version>12.0.1</google.guava.version>
+        <google.guava.version>13.0.1</google.guava.version>
         <htmlunit.version>2.4</htmlunit.version>
         <jacoco.version>0.5.8.201207111220</jacoco.version>
         <javax.activation.version>1.1</javax.activation.version>
@@ -69,7 +69,7 @@
         <junit.version>4.8.1</junit.version>
         <log4j.version>1.2.14</log4j.version>
         <selenium.maven.plugin.version>1.0.1</selenium.maven.plugin.version>
-        <slf4j.version>1.6.1</slf4j.version>
+        <slf4j.version>1.7.2</slf4j.version>
         <testng.version>5.10</testng.version>
         <weld.api.version>2.0.Beta3</weld.api.version>
     </properties>
