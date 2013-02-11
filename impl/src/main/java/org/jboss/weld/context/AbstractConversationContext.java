@@ -209,7 +209,8 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
             super.setActive(true);
 
             // Attach the conversation
-            if (cid != null) {
+            // WELD-1315 Don't try to restore the long-running conversation if cid param is empty
+            if (cid != null && !cid.isEmpty()) {
                 ManagedConversation conversation = getConversation(cid);
                 if (conversation != null) {
                     boolean lock = conversation.lock(getConcurrentAccessTimeout());
