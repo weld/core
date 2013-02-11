@@ -65,5 +65,6 @@ public enum UtilMessage {
     @MessageId("000829")EXTENSION_CLASS_NOT_FOUND,
     @MessageId("000830")CLASS_LOADING_ERROR,
     @MessageId("000831")COULD_NOT_READ_SERVICES_LIST,
+    @MessageId("000832")UNABLE_TO_LOAD_CACHE_VALUE,
 
 }

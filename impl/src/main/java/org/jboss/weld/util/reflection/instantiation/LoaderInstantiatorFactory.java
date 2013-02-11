@@ -17,10 +17,12 @@
 
 package org.jboss.weld.util.reflection.instantiation;
 
-import java.util.Map;
+import static org.jboss.weld.util.cache.LoadingCacheUtils.getCacheValue;
 
 import com.google.common.base.Function;
-import com.google.common.collect.MapMaker;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 
 /**
  * Instantiator factory per loader.
@@ -30,8 +32,8 @@ import com.google.common.collect.MapMaker;
 public class LoaderInstantiatorFactory extends AbstractInstantiatorFactory implements Function<ClassLoader, Boolean> {
 
     private volatile Boolean enabled;
-    @SuppressWarnings("deprecation")
-    private final Map<ClassLoader, Boolean> cached = new MapMaker().makeComputingMap(this);
+
+    private final LoadingCache<ClassLoader, Boolean> cached = CacheBuilder.newBuilder().build(CacheLoader.from(this));
 
     public boolean useInstantiators() {
         final ClassLoader tccl = Thread.currentThread().getContextClassLoader();
@@ -51,11 +53,11 @@ public class LoaderInstantiatorFactory extends AbstractInstantiatorFactory imple
             return enabled;
         }
 
-        return cached.get(tccl);
+        return getCacheValue(cached, tccl);
     }
 
     public void cleanup() {
-        cached.clear();
+        cached.invalidateAll();
     }
 
     public Boolean apply(ClassLoader tccl) {

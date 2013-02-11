@@ -22,7 +22,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentMap;
 
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.CDI;
@@ -34,8 +33,9 @@ import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.logging.messages.BeanManagerMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
 
-import com.google.common.base.Function;
-import com.google.common.collect.MapMaker;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 
 /**
  * Provides convenient way to access the CDI container.
@@ -45,13 +45,13 @@ import com.google.common.collect.MapMaker;
  */
 public class Weld extends CDI<Object> {
 
-    private class ClassNameToBeanManager implements Function<String, BeanManagerProxy> {
+    private class ClassNameToBeanManager extends CacheLoader<String, BeanManagerProxy> {
 
         /**
          * Determines the correct {@link BeanManagerImpl} based on a class name of the caller.
          */
         @Override
-        public BeanManagerProxy apply(String callerClassName) {
+        public BeanManagerProxy load(String callerClassName) {
             return new BeanManagerProxy(findBeanManager(callerClassName));
         }
 
@@ -79,12 +79,12 @@ public class Weld extends CDI<Object> {
         }
     }
 
-    private final ConcurrentMap<String, BeanManagerProxy> beanManagers;
+    private final LoadingCache<String, BeanManagerProxy> beanManagers;
     // used for caller detection
     private final Set<String> subclassNames;
 
     public Weld() {
-        beanManagers = new MapMaker().weakValues().makeComputingMap(new ClassNameToBeanManager());
+        beanManagers = CacheBuilder.newBuilder().weakValues().build(new ClassNameToBeanManager());
         Set<String> names = new HashSet<String>();
         for (Class<?> clazz = getClass(); clazz != CDI.class; clazz = clazz.getSuperclass()) {
             names.add(clazz.getName());
@@ -112,7 +112,7 @@ public class Weld extends CDI<Object> {
         if (state.equals(ContainerState.STOPPED) || state.equals(ContainerState.SHUTDOWN)) {
             throw new IllegalStateException(BeanManagerMessage.BEAN_MANAGER_NOT_AVAILABLE);
         }
-        return beanManagers.get(getCallingClassName());
+        return beanManagers.getUnchecked(getCallingClassName());
     }
 
     /**
@@ -178,7 +178,7 @@ public class Weld extends CDI<Object> {
     }
 
     public void cleanup() {
-        beanManagers.clear();
+        beanManagers.invalidateAll();
     }
 
     @Override

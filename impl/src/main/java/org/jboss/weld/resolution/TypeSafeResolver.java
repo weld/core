@@ -16,18 +16,19 @@
  */
 package org.jboss.weld.resolution;
 
+import static org.jboss.weld.util.cache.LoadingCacheUtils.getCacheValue;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ConcurrentMap;
 
 import org.jboss.weld.util.collections.WeldCollections;
 
-import com.google.common.base.Function;
-import com.google.common.collect.MapMaker;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 
 /**
  * Implementation of type safe bean resolution
@@ -38,7 +39,7 @@ import com.google.common.collect.MapMaker;
  */
 public abstract class TypeSafeResolver<R extends Resolvable, T, C extends Collection<T>> {
 
-    private static class ResolvableToBeanCollection<R extends Resolvable, T, C extends Collection<T>> implements Function<R, C> {
+    private static class ResolvableToBeanCollection<R extends Resolvable, T, C extends Collection<T>> extends CacheLoader<R, C> {
 
         private final TypeSafeResolver<R, T, C> resolver;
 
@@ -46,14 +47,14 @@ public abstract class TypeSafeResolver<R extends Resolvable, T, C extends Collec
             this.resolver = resolver;
         }
 
-        public C apply(R from) {
+        public C load(R from) {
             return resolver.makeResultImmutable(resolver.sortResult(resolver.filterResult(resolver.findMatching(from))));
         }
 
     }
 
     // The resolved injection points
-    private final ConcurrentMap<R, C> resolved;
+    private final LoadingCache<R, C> resolved;
     // The beans to search
     private final Iterable<? extends T> allBeans;
     private final ResolvableToBeanCollection<R, T, C> resolverFunction;
@@ -64,7 +65,7 @@ public abstract class TypeSafeResolver<R extends Resolvable, T, C extends Collec
      */
     public TypeSafeResolver(Iterable<? extends T> allBeans) {
         this.resolverFunction = new ResolvableToBeanCollection<R, T, C>(this);
-        this.resolved = new MapMaker().makeComputingMap(resolverFunction);
+        this.resolved = CacheBuilder.newBuilder().build(resolverFunction);
         this.allBeans = allBeans;
     }
 
@@ -72,7 +73,7 @@ public abstract class TypeSafeResolver<R extends Resolvable, T, C extends Collec
      * Reset all cached resolutions
      */
     public void clear() {
-        this.resolved.clear();
+        this.resolved.invalidateAll();
     }
 
     /**
@@ -84,9 +85,9 @@ public abstract class TypeSafeResolver<R extends Resolvable, T, C extends Collec
     public C resolve(R resolvable, boolean cache) {
         R wrappedResolvable = wrap(resolvable);
         if (cache) {
-            return resolved.get(wrappedResolvable);
+            return getCacheValue(resolved, wrappedResolvable);
         } else {
-            return resolverFunction.apply(wrappedResolvable);
+            return resolverFunction.load(wrappedResolvable);
         }
     }
 
@@ -138,7 +139,7 @@ public abstract class TypeSafeResolver<R extends Resolvable, T, C extends Collec
     }
 
     public boolean isCached(R resolvable) {
-        return resolved.containsKey(wrap(resolvable));
+        return resolved.getIfPresent(wrap(resolvable)) != null;
     }
 
     /**

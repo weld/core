@@ -19,12 +19,12 @@ package org.jboss.weld.bootstrap;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.BootstrapMessage.BEAN_IS_BOTH_INTERCEPTOR_AND_DECORATOR;
 import static org.jboss.weld.logging.messages.BootstrapMessage.IGNORING_CLASS_DUE_TO_LOADING_ERROR;
+import static org.jboss.weld.util.cache.LoadingCacheUtils.getCacheValue;
 import static org.slf4j.ext.XLogger.Level.DEBUG;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -68,6 +68,8 @@ import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
 import org.slf4j.ext.XLogger;
+
+import com.google.common.cache.LoadingCache;
 
 /**
  * @author Pete Muir
@@ -196,7 +198,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
     }
 
     public void createClassBeans() {
-        Map<Class<?>, Set<SlimAnnotatedType<?>>> otherWeldClasses = Multimaps.newConcurrentSetMultimap();
+        LoadingCache<Class<?>, Set<SlimAnnotatedType<?>>> otherWeldClasses = Multimaps.newConcurrentSetMultimap();
 
         for (SlimAnnotatedType<?> annotatedType : getEnvironment().getAnnotatedTypes()) {
             createClassBean(annotatedType, otherWeldClasses);
@@ -207,8 +209,8 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
                 continue;
             }
             if (ejbDescriptor.isSingleton() || ejbDescriptor.isStateful() || ejbDescriptor.isStateless()) {
-                if (otherWeldClasses.containsKey(ejbDescriptor.getBeanClass())) {
-                    for (SlimAnnotatedType<?> annotatedType : otherWeldClasses.get(ejbDescriptor.getBeanClass())) {
+                if (otherWeldClasses.getIfPresent(ejbDescriptor.getBeanClass()) != null) {
+                    for (SlimAnnotatedType<?> annotatedType : getCacheValue(otherWeldClasses, ejbDescriptor.getBeanClass())) {
                         EnhancedAnnotatedType<?> weldClass = classTransformer.getEnhancedAnnotatedType(annotatedType);
                         createSessionBean(ejbDescriptor, Reflections.<EnhancedAnnotatedType> cast(weldClass));
                     }
@@ -219,7 +221,8 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
         }
     }
 
-    protected void createClassBean(SlimAnnotatedType<?> annotatedType, Map<Class<?>, Set<SlimAnnotatedType<?>>> otherWeldClasses) {
+    protected void createClassBean(SlimAnnotatedType<?> annotatedType,
+            LoadingCache<Class<?>, Set<SlimAnnotatedType<?>>> otherWeldClasses) {
         boolean managedBeanOrDecorator = !getEnvironment().getEjbDescriptors().contains(annotatedType.getJavaClass()) && Beans.isTypeManagedBeanOrDecoratorOrInterceptor(annotatedType);
         if (managedBeanOrDecorator) {
             containerLifecycleEvents.preloadProcessInjectionTarget(annotatedType.getJavaClass());
@@ -238,7 +241,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
                 createManagedBean(weldClass);
             }
         } else {
-            otherWeldClasses.get(annotatedType.getJavaClass()).add(annotatedType);
+            getCacheValue(otherWeldClasses, annotatedType.getJavaClass()).add(annotatedType);
         }
     }
 

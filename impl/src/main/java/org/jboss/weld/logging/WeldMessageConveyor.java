@@ -16,19 +16,21 @@
  */
 package org.jboss.weld.logging;
 
+import static org.jboss.weld.util.cache.LoadingCacheUtils.getCacheValue;
+
 import java.lang.reflect.Field;
 import java.util.Locale;
-import java.util.concurrent.ConcurrentMap;
 
 import ch.qos.cal10n.MessageConveyor;
 import ch.qos.cal10n.MessageConveyorException;
 
-import com.google.common.base.Function;
-import com.google.common.collect.MapMaker;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 
 public class WeldMessageConveyor extends MessageConveyor {
 
-    private static class ComputeMessagePrefix implements Function<Enum<?>, String> {
+    private static class ComputeMessagePrefix extends CacheLoader<Enum<?>, String> {
 
         private final String subsystem;
 
@@ -38,7 +40,7 @@ public class WeldMessageConveyor extends MessageConveyor {
             this.subsystem = subsystem;
         }
 
-        public String apply(Enum<?> from) {
+        public String load(Enum<?> from) {
             Field field;
             try {
                 field = from.getClass().getField(from.name());
@@ -56,11 +58,11 @@ public class WeldMessageConveyor extends MessageConveyor {
 
     private static final String SEPARATOR = "-";
 
-    private final ConcurrentMap<Enum<?>, String> messagePrefixCache;
+    private final LoadingCache<Enum<?>, String> messagePrefixCache;
 
     public WeldMessageConveyor(Locale locale, String subsystem) {
         super(locale);
-        this.messagePrefixCache = new MapMaker().makeComputingMap(new ComputeMessagePrefix(subsystem));
+        this.messagePrefixCache = CacheBuilder.newBuilder().build(new ComputeMessagePrefix(subsystem));
     }
 
     @Override
@@ -69,7 +71,7 @@ public class WeldMessageConveyor extends MessageConveyor {
     }
 
     private <E extends Enum<?>> String getMessagePrefix(final E key) {
-        return messagePrefixCache.get(key);
+        return getCacheValue(messagePrefixCache, key);
     }
 
 }

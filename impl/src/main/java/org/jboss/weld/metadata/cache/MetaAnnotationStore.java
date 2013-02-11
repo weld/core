@@ -16,19 +16,20 @@
  */
 package org.jboss.weld.metadata.cache;
 
-import com.google.common.base.Function;
-import com.google.common.collect.ComputationException;
-import com.google.common.collect.MapMaker;
+import static org.jboss.weld.util.cache.LoadingCacheUtils.getCastCacheValue;
+
+import java.lang.annotation.Annotation;
+
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.resources.ClassTransformer;
 
-import java.lang.annotation.Annotation;
-import java.util.concurrent.ConcurrentMap;
-
-import static org.jboss.weld.util.reflection.Reflections.cast;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import com.google.common.util.concurrent.UncheckedExecutionException;
 
 /**
  * Metadata singleton for holding EJB metadata, scope models etc.
@@ -37,7 +38,8 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
  */
 public class MetaAnnotationStore implements Service {
 
-    private abstract static class AbstractMetaAnnotationFunction<M extends AnnotationModel<Annotation>> implements Function<Class<Annotation>, M> {
+    private abstract static class AbstractMetaAnnotationFunction<M extends AnnotationModel<Annotation>> extends
+            CacheLoader<Class<Annotation>, M> {
 
         private final ClassTransformer classTransformer;
 
@@ -57,7 +59,7 @@ public class MetaAnnotationStore implements Service {
             super(classTransformer);
         }
 
-        public StereotypeModel<Annotation> apply(Class<Annotation> from) {
+        public StereotypeModel<Annotation> load(Class<Annotation> from) {
             return new StereotypeModel<Annotation>(getClassTransformer().getEnhancedAnnotation(from));
         }
 
@@ -69,7 +71,7 @@ public class MetaAnnotationStore implements Service {
             super(classTransformer);
         }
 
-        public ScopeModel<Annotation> apply(Class<Annotation> from) {
+        public ScopeModel<Annotation> load(Class<Annotation> from) {
             return new ScopeModel<Annotation>(getClassTransformer().getEnhancedAnnotation(from));
         }
 
@@ -81,7 +83,7 @@ public class MetaAnnotationStore implements Service {
             super(classTransformer);
         }
 
-        public QualifierModel<Annotation> apply(Class<Annotation> from) {
+        public QualifierModel<Annotation> load(Class<Annotation> from) {
             return new QualifierModel<Annotation>(getClassTransformer().getEnhancedAnnotation(from));
         }
 
@@ -93,27 +95,27 @@ public class MetaAnnotationStore implements Service {
             super(classTransformer);
         }
 
-        public InterceptorBindingModel<Annotation> apply(Class<Annotation> from) {
+        public InterceptorBindingModel<Annotation> load(Class<Annotation> from) {
             return new InterceptorBindingModel<Annotation>(getClassTransformer().getEnhancedAnnotation(from));
         }
 
     }
 
     // The stereotype models
-    private final ConcurrentMap<Class<Annotation>, StereotypeModel<Annotation>> stereotypes;
+    private final LoadingCache<Class<Annotation>, StereotypeModel<Annotation>> stereotypes;
     // The scope models
-    private final ConcurrentMap<Class<Annotation>, ScopeModel<Annotation>> scopes;
+    private final LoadingCache<Class<Annotation>, ScopeModel<Annotation>> scopes;
     // The binding type models
-    private final ConcurrentMap<Class<Annotation>, QualifierModel<Annotation>> qualifiers;
+    private final LoadingCache<Class<Annotation>, QualifierModel<Annotation>> qualifiers;
     // the interceptor bindings
-    private final ConcurrentMap<Class<Annotation>, InterceptorBindingModel<Annotation>> interceptorBindings;
+    private final LoadingCache<Class<Annotation>, InterceptorBindingModel<Annotation>> interceptorBindings;
 
     public MetaAnnotationStore(ClassTransformer classTransformer) {
-        MapMaker mapMaker = new MapMaker();
-        this.stereotypes = mapMaker.makeComputingMap(new StereotypeFunction(classTransformer));
-        this.scopes = mapMaker.makeComputingMap(new ScopeFunction(classTransformer));
-        this.qualifiers = mapMaker.makeComputingMap(new QualifierFunction(classTransformer));
-        this.interceptorBindings = mapMaker.makeComputingMap(new InterceptorBindingFunction(classTransformer));
+        CacheBuilder<Object, Object> cacheBuilder = CacheBuilder.newBuilder();
+        this.stereotypes = cacheBuilder.build(new StereotypeFunction(classTransformer));
+        this.scopes = cacheBuilder.build(new ScopeFunction(classTransformer));
+        this.qualifiers = cacheBuilder.build(new QualifierFunction(classTransformer));
+        this.interceptorBindings = cacheBuilder.build(new InterceptorBindingFunction(classTransformer));
     }
 
     /**
@@ -121,10 +123,10 @@ public class MetaAnnotationStore implements Service {
      * annotation has been modified through the SPI
      */
     public void clearAnnotationData(Class<? extends Annotation> annotationClass) {
-        stereotypes.remove(annotationClass);
-        scopes.remove(annotationClass);
-        qualifiers.remove(annotationClass);
-        interceptorBindings.remove(annotationClass);
+        stereotypes.invalidate(annotationClass);
+        scopes.invalidate(annotationClass);
+        qualifiers.invalidate(annotationClass);
+        interceptorBindings.invalidate(annotationClass);
     }
 
     /**
@@ -137,7 +139,7 @@ public class MetaAnnotationStore implements Service {
      * @return The stereotype model
      */
     public <T extends Annotation> StereotypeModel<T> getStereotype(final Class<T> stereotype) {
-        return cast(stereotypes.get(stereotype));
+        return getCastCacheValue(stereotypes, stereotype);
     }
 
     /**
@@ -150,7 +152,7 @@ public class MetaAnnotationStore implements Service {
      * @return The scope type model
      */
     public <T extends Annotation> ScopeModel<T> getScopeModel(final Class<T> scope) {
-        return cast(scopes.get(scope));
+        return getCastCacheValue(scopes, scope);
     }
 
     /**
@@ -163,7 +165,7 @@ public class MetaAnnotationStore implements Service {
      * @return The binding type model
      */
     public <T extends Annotation> QualifierModel<T> getBindingTypeModel(final Class<T> bindingType) {
-        return cast(qualifiers.get(bindingType));
+        return getCastCacheValue(qualifiers, bindingType);
     }
 
     /**
@@ -184,20 +186,21 @@ public class MetaAnnotationStore implements Service {
     }
 
     public void cleanup() {
-        this.qualifiers.clear();
-        this.scopes.clear();
-        this.stereotypes.clear();
-        this.interceptorBindings.clear();
+        this.qualifiers.invalidateAll();
+        this.scopes.invalidateAll();
+        this.stereotypes.invalidateAll();
+        this.interceptorBindings.invalidateAll();
     }
 
     public <T extends Annotation> InterceptorBindingModel<T> getInterceptorBindingModel(final Class<T> interceptorBinding) {
         // Unwrap Definition/Deployment exceptions wrapped in a ComputationException
         // TODO: generalize this and move to a higher level (MBG)
         try {
-            return cast(interceptorBindings.get(interceptorBinding));
-        } catch (ComputationException e) {
-            if (e.getCause() instanceof DeploymentException || e.getCause() instanceof DefinitionException) {
-                throw (WeldException) e.getCause();
+            return getCastCacheValue(interceptorBindings, interceptorBinding, false);
+        } catch (UncheckedExecutionException e) {
+            final Throwable cause = e.getCause();
+            if (cause instanceof DeploymentException || cause instanceof DefinitionException) {
+                throw (WeldException) cause;
             } else {
                 throw e;
             }

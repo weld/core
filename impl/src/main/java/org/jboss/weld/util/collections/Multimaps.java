@@ -21,8 +21,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 
-import com.google.common.base.Function;
-import com.google.common.collect.MapMaker;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 
 /**
  * Multimap utilities.
@@ -35,11 +36,11 @@ public class Multimaps {
     private Multimaps() {
     }
 
-    private static final MapMaker MAP_MAKER = new MapMaker();
+    private static final CacheBuilder<Object, Object> CACHE_BUILDER = CacheBuilder.newBuilder();
 
-    private static class ConcurrentSetMultimapValueSupplier<K, V> implements Function<K , Set<V>> {
+    private static class ConcurrentSetMultimapValueSupplier<K, V> extends CacheLoader<K, Set<V>> {
         @Override
-        public Set<V> apply(K input) {
+        public Set<V> load(K input) {
             return Collections.synchronizedSet(new HashSet<V>());
         }
     }
@@ -47,7 +48,7 @@ public class Multimaps {
     /**
      * Creates a {@link ConcurrentMap} instance whose values are populated with synchronized HashSet instances.
      */
-    public static <K, V> ConcurrentMap<K, Set<V>> newConcurrentSetMultimap() {
-        return MAP_MAKER.makeComputingMap(new ConcurrentSetMultimapValueSupplier<K, V>());
+    public static <K, V> LoadingCache<K, Set<V>> newConcurrentSetMultimap() {
+        return CACHE_BUILDER.build(new ConcurrentSetMultimapValueSupplier<K, V>());
     }
 }

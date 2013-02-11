@@ -16,8 +16,9 @@
  */
 package org.jboss.weld.bootstrap;
 
+import static org.jboss.weld.util.cache.LoadingCacheUtils.getCacheValue;
+
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.Bean;
@@ -35,6 +36,8 @@ import org.jboss.weld.manager.api.ExecutorServices;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.collections.Multimaps;
 import org.jboss.weld.util.reflection.Reflections;
+
+import com.google.common.cache.LoadingCache;
 
 /**
  * BeanDeployer that processes some of the deployment tasks in parallel. A threadsafe instance of
@@ -64,7 +67,7 @@ public class ConcurrentBeanDeployer extends BeanDeployer {
 
     @Override
     public void createClassBeans() {
-        final Map<Class<?>, Set<SlimAnnotatedType<?>>> otherWeldClasses = Multimaps.newConcurrentSetMultimap();
+        final LoadingCache<Class<?>, Set<SlimAnnotatedType<?>>> otherWeldClasses = Multimaps.newConcurrentSetMultimap();
 
         executor.invokeAllAndCheckForExceptions(new IterativeWorkerTaskFactory<SlimAnnotatedType<?>>(getEnvironment().getAnnotatedTypes()) {
             protected void doWork(SlimAnnotatedType<?> weldClass) {
@@ -76,8 +79,8 @@ public class ConcurrentBeanDeployer extends BeanDeployer {
             protected void doWork(InternalEjbDescriptor<?> descriptor) {
                 if (!getEnvironment().isVetoed(descriptor.getBeanClass()) && !Beans.isVetoed(descriptor.getBeanClass())) {
                     if (descriptor.isSingleton() || descriptor.isStateful() || descriptor.isStateless()) {
-                        if (otherWeldClasses.containsKey(descriptor.getBeanClass())) {
-                            for (SlimAnnotatedType<?> annotatedType : otherWeldClasses.get(descriptor.getBeanClass())) {
+                        if (otherWeldClasses.getIfPresent(descriptor.getBeanClass()) != null) {
+                            for (SlimAnnotatedType<?> annotatedType : getCacheValue(otherWeldClasses, descriptor.getBeanClass())) {
                                 EnhancedAnnotatedType<?> weldClass = classTransformer.getEnhancedAnnotatedType(annotatedType);
                                 createSessionBean(descriptor, Reflections.<EnhancedAnnotatedType> cast(weldClass));
                             }

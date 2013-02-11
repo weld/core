@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.bootstrap;
 
+import static org.jboss.weld.util.cache.LoadingCacheUtils.getCacheValue;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.util.Collection;
@@ -24,7 +25,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 import javax.enterprise.inject.spi.Bean;
 
@@ -36,9 +36,10 @@ import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.manager.BeanManagerImpl;
 
-import com.google.common.base.Function;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ConcurrentHashMultiset;
-import com.google.common.collect.MapMaker;
 import com.google.common.collect.Multiset;
 import com.google.common.collect.Multisets;
 
@@ -50,10 +51,10 @@ import com.google.common.collect.Multisets;
  */
 public class SpecializationAndEnablementRegistry implements Service {
 
-    private class SpecializedBeanResolverForBeanManager implements Function<BeanManagerImpl, SpecializedBeanResolver> {
+    private class SpecializedBeanResolverForBeanManager extends CacheLoader<BeanManagerImpl, SpecializedBeanResolver> {
 
         @Override
-        public SpecializedBeanResolver apply(BeanManagerImpl manager) {
+        public SpecializedBeanResolver load(BeanManagerImpl manager) {
             return new SpecializedBeanResolver(buildAccessibleBeanDeployerEnvironments(manager));
         }
 
@@ -75,10 +76,10 @@ public class SpecializationAndEnablementRegistry implements Service {
         }
     }
 
-    private class BeansSpecializedByBean implements Function<Bean<?>, Set<? extends AbstractBean<?, ?>>> {
+    private class BeansSpecializedByBean extends CacheLoader<Bean<?>, Set<? extends AbstractBean<?, ?>>> {
 
         @Override
-        public Set<? extends AbstractBean<?, ?>> apply(Bean<?> specializingBean) {
+        public Set<? extends AbstractBean<?, ?>> load(Bean<?> specializingBean) {
             Set<? extends AbstractBean<?, ?>> result = null;
             if (specializingBean instanceof AbstractClassBean<?>) {
                 result = apply((AbstractClassBean<?>) specializingBean);
@@ -104,20 +105,21 @@ public class SpecializationAndEnablementRegistry implements Service {
         }
 
         private SpecializedBeanResolver getSpecializedBeanResolver(RIBean<?> bean) {
-            return specializedBeanResolvers.get(bean.getBeanManager());
+            return getCacheValue(specializedBeanResolvers, bean.getBeanManager());
         }
     }
 
-    private final Map<BeanManagerImpl, SpecializedBeanResolver> specializedBeanResolvers;
+    private final LoadingCache<BeanManagerImpl, SpecializedBeanResolver> specializedBeanResolvers;
     private final Map<BeanManagerImpl, BeanDeployerEnvironment> environmentByManager = new ConcurrentHashMap<BeanManagerImpl, BeanDeployerEnvironment>();
     // maps specializing beans to the set of specialized beans
-    private final ConcurrentMap<Bean<?>, Set<? extends AbstractBean<?, ?>>> specializedBeans;
+    private final LoadingCache<Bean<?>, Set<? extends AbstractBean<?, ?>>> specializedBeans;
     // fast lookup structure that allows us to figure out if a given bean is specialized in any of the bean deployments
     private final Multiset<AbstractBean<?, ?>> specializedBeansSet = ConcurrentHashMultiset.create();
 
     public SpecializationAndEnablementRegistry() {
-        this.specializedBeanResolvers = new MapMaker().makeComputingMap(new SpecializedBeanResolverForBeanManager());
-        this.specializedBeans = new MapMaker().makeComputingMap(new BeansSpecializedByBean());
+        CacheBuilder<Object, Object> cacheBuilder = CacheBuilder.newBuilder();
+        this.specializedBeanResolvers = cacheBuilder.build(new SpecializedBeanResolverForBeanManager());
+        this.specializedBeans = cacheBuilder.build(new BeansSpecializedByBean());
     }
 
     /**
@@ -127,21 +129,22 @@ public class SpecializationAndEnablementRegistry implements Service {
         if (specializingBean instanceof AbstractClassBean<?>) {
             AbstractClassBean<?> abstractClassBean = (AbstractClassBean<?>) specializingBean;
             if (abstractClassBean.isSpecializing()) {
-                return specializedBeans.get(specializingBean);
+                return getCacheValue(specializedBeans, specializingBean);
             }
         }
         if (specializingBean instanceof ProducerMethod<?, ?>) {
             ProducerMethod<?, ?> producerMethod = (ProducerMethod<?, ?>) specializingBean;
             if (producerMethod.isSpecializing()) {
-                return specializedBeans.get(specializingBean);
+                return getCacheValue(specializedBeans, specializingBean);
             }
         }
         return Collections.emptySet();
     }
 
     public void vetoSpecializingBean(Bean<?> bean) {
-        Set<? extends AbstractBean<?, ?>> noLongerSpecializedBeans = this.specializedBeans.remove(bean);
+        Set<? extends AbstractBean<?, ?>> noLongerSpecializedBeans = specializedBeans.getIfPresent(bean);
         if (noLongerSpecializedBeans != null) {
+            specializedBeans.invalidate(bean);
             for (AbstractBean<?, ?> noLongerSpecializedBean : noLongerSpecializedBeans) {
                 specializedBeansSet.remove(noLongerSpecializedBean);
             }
@@ -172,7 +175,7 @@ public class SpecializationAndEnablementRegistry implements Service {
     }
 
     public void registerEnvironment(BeanManagerImpl manager, BeanDeployerEnvironment environment, boolean additionalBeanArchive) {
-        if (!specializedBeanResolvers.isEmpty() && !additionalBeanArchive) {
+        if ((specializedBeanResolvers.size() > 0) && !additionalBeanArchive) {
             /*
              * An environment should not be added after we started resolving specialized beans. However we cannot avoid that completely
              * in certain situations e.g. when a bean is added through AfterBeanDiscovery (otherwise a chicken-egg problem emerges between
@@ -190,9 +193,9 @@ public class SpecializationAndEnablementRegistry implements Service {
 
     @Override
     public void cleanup() {
-        specializedBeanResolvers.clear();
+        specializedBeanResolvers.invalidateAll();
         environmentByManager.clear();
-        specializedBeans.clear();
+        specializedBeans.invalidateAll();
         specializedBeansSet.clear();
     }
 

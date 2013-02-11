@@ -21,11 +21,10 @@ import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.BeanMessage.BEAN_ID_CREATION_FAILED;
 import static org.jboss.weld.logging.messages.BeanMessage.CREATED_NEW_CLIENT_PROXY_TYPE;
 import static org.jboss.weld.logging.messages.BeanMessage.LOOKED_UP_CLIENT_PROXY;
-import static org.jboss.weld.util.reflection.Reflections.cast;
+import static org.jboss.weld.util.cache.LoadingCacheUtils.getCastCacheValue;
 
 import java.lang.reflect.Type;
 import java.util.Set;
-import java.util.concurrent.ConcurrentMap;
 
 import javax.enterprise.inject.spi.Bean;
 
@@ -37,8 +36,9 @@ import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.Proxies.TypeInfo;
 import org.slf4j.cal10n.LocLogger;
 
-import com.google.common.base.Function;
-import com.google.common.collect.MapMaker;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 
 /**
  * A proxy pool for holding scope adaptors (client proxies)
@@ -50,9 +50,9 @@ public class ClientProxyProvider {
     private static final LocLogger log = loggerFactory().getLogger(BEAN);
 
     private static final Object BEAN_NOT_PROXYABLE_MARKER = new Object();
-    private static final Function<Bean<Object>, Object> CREATE_BEAN_TYPE_CLOSURE_CLIENT_PROXY = new Function<Bean<Object>, Object>() {
+    private static final CacheLoader<Bean<Object>, Object> CREATE_BEAN_TYPE_CLOSURE_CLIENT_PROXY = new CacheLoader<Bean<Object>, Object>() {
         @Override
-        public Object apply(Bean<Object> from) {
+        public Object load(Bean<Object> from) {
             if (Proxies.isTypesProxyable(from)) {
                 return createClientProxy(from);
             } else {
@@ -109,9 +109,9 @@ public class ClientProxyProvider {
         }
     }
 
-    private static final Function<RequestedTypeHolder, Object> CREATE_REQUESTED_TYPE_CLOSURE_CLIENT_PROXY = new Function<ClientProxyProvider.RequestedTypeHolder, Object>() {
+    private static final CacheLoader<RequestedTypeHolder, Object> CREATE_REQUESTED_TYPE_CLOSURE_CLIENT_PROXY = new CacheLoader<ClientProxyProvider.RequestedTypeHolder, Object>() {
         @Override
-        public Object apply(RequestedTypeHolder input) {
+        public Object load(RequestedTypeHolder input) {
             Set<Type> requestedTypeClosure = Container.instance().services().get(SharedObjectCache.class).getTypeClosureHolder(input.requestedType).get();
             if (Proxies.isTypesProxyable(requestedTypeClosure)) {
                 return createClientProxy(input.bean, requestedTypeClosure);
@@ -126,15 +126,16 @@ public class ClientProxyProvider {
      *
      * @author Nicklas Karlsson
      */
-    private final ConcurrentMap<Bean<Object>, Object> beanTypeClosureProxyPool;
-    private final ConcurrentMap<RequestedTypeHolder, Object> requestedTypeClosureProxyPool;
+    private final LoadingCache<Bean<Object>, Object> beanTypeClosureProxyPool;
+    private final LoadingCache<RequestedTypeHolder, Object> requestedTypeClosureProxyPool;
 
     /**
      * Constructor
      */
     public ClientProxyProvider() {
-        this.beanTypeClosureProxyPool = new MapMaker().makeComputingMap(CREATE_BEAN_TYPE_CLOSURE_CLIENT_PROXY);
-        this.requestedTypeClosureProxyPool = new MapMaker().makeComputingMap(CREATE_REQUESTED_TYPE_CLOSURE_CLIENT_PROXY);
+        CacheBuilder<Object, Object> cacheBuilder = CacheBuilder.newBuilder();
+        this.beanTypeClosureProxyPool = cacheBuilder.build(CREATE_BEAN_TYPE_CLOSURE_CLIENT_PROXY);
+        this.requestedTypeClosureProxyPool = cacheBuilder.build(CREATE_REQUESTED_TYPE_CLOSURE_CLIENT_PROXY);
     }
 
     /**
@@ -167,7 +168,7 @@ public class ClientProxyProvider {
     }
 
     public <T> T getClientProxy(final Bean<T> bean) {
-        T proxy = cast(beanTypeClosureProxyPool.get(bean));
+        T proxy = getCastCacheValue(beanTypeClosureProxyPool, bean);
         if (proxy == BEAN_NOT_PROXYABLE_MARKER) {
             throw Proxies.getUnproxyableTypesException(bean);
         }
@@ -185,14 +186,14 @@ public class ClientProxyProvider {
      */
     public <T> T getClientProxy(final Bean<T> bean, Type requestedType) {
         // let's first try to use the proxy that implements all the bean types
-        T proxy = cast(beanTypeClosureProxyPool.get(bean));
+        T proxy = getCastCacheValue(beanTypeClosureProxyPool, bean);
         if (proxy == BEAN_NOT_PROXYABLE_MARKER) {
             /*
              *  the bean may have a type that is not proxyable - this is not a problem as long as the unproxyable
              *  type is not in the type closure of the requested type
              *  https://issues.jboss.org/browse/WELD-1052
              */
-            proxy = cast(requestedTypeClosureProxyPool.get(new RequestedTypeHolder(requestedType, bean)));
+            proxy = getCastCacheValue(requestedTypeClosureProxyPool, new RequestedTypeHolder(requestedType, bean));
             if (proxy == BEAN_NOT_PROXYABLE_MARKER) {
                 throw Proxies.getUnproxyableTypeException(requestedType);
             }
@@ -213,8 +214,8 @@ public class ClientProxyProvider {
     }
 
     public void clear() {
-        this.beanTypeClosureProxyPool.clear();
-        this.requestedTypeClosureProxyPool.clear();
+        this.beanTypeClosureProxyPool.invalidateAll();
+        this.requestedTypeClosureProxyPool.invalidateAll();
     }
 
 }

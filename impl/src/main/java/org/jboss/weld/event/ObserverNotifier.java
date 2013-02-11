@@ -18,12 +18,12 @@ package org.jboss.weld.event;
 
 import static org.jboss.weld.logging.messages.UtilMessage.EVENT_TYPE_NOT_ALLOWED;
 import static org.jboss.weld.logging.messages.UtilMessage.TYPE_PARAMETER_NOT_ALLOWED_IN_EVENT_TYPE;
+import static org.jboss.weld.util.cache.LoadingCacheUtils.getCacheValue;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Set;
-import java.util.concurrent.ConcurrentMap;
 
 import javax.enterprise.inject.spi.ObserverMethod;
 
@@ -39,8 +39,9 @@ import org.jboss.weld.util.Observers;
 import org.jboss.weld.util.Types;
 import org.jboss.weld.util.reflection.Reflections;
 
-import com.google.common.base.Function;
-import com.google.common.collect.MapMaker;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 
 /**
  * Provides event-related operations such sa observer method resolution and event delivery.
@@ -73,8 +74,8 @@ public class ObserverNotifier {
     private final TypeSafeObserverResolver resolver;
     private final SharedObjectCache sharedObjectCache;
     private final boolean strict;
-    private final ConcurrentMap<Type, RuntimeException> eventTypeCheckCache;
     protected final CurrentEventMetadata currentEventMetadata;
+    private final LoadingCache<Type, RuntimeException> eventTypeCheckCache;
 
     protected ObserverNotifier(TypeSafeObserverResolver resolver, ServiceRegistry services, boolean strict) {
         this.resolver = resolver;
@@ -82,7 +83,7 @@ public class ObserverNotifier {
         this.strict = strict;
         this.currentEventMetadata = services.get(CurrentEventMetadata.class);
         if (strict) {
-            eventTypeCheckCache = new MapMaker().makeComputingMap(new EventTypeCheck());
+            eventTypeCheckCache = CacheBuilder.newBuilder().build(new EventTypeCheck());
         } else {
             eventTypeCheckCache = null; // not necessary
         }
@@ -158,7 +159,7 @@ public class ObserverNotifier {
     public void clear() {
         resolver.clear();
         if (eventTypeCheckCache != null) {
-            eventTypeCheckCache.clear();
+            eventTypeCheckCache.invalidateAll();
         }
     }
 
@@ -176,17 +177,17 @@ public class ObserverNotifier {
 
     public void checkEventObjectType(Type eventType) {
         if (strict) {
-            RuntimeException exception = eventTypeCheckCache.get(eventType);
+            RuntimeException exception = getCacheValue(eventTypeCheckCache, eventType);
             if (exception != NO_EXCEPTION_MARKER) {
                 throw exception;
             }
         }
     }
 
-    private class EventTypeCheck implements Function<Type, RuntimeException> {
+    private class EventTypeCheck extends CacheLoader<Type, RuntimeException> {
 
         @Override
-        public RuntimeException apply(Type eventType) {
+        public RuntimeException load(Type eventType) {
             Type resolvedType = Types.getCanonicalType(eventType);
 
             /*

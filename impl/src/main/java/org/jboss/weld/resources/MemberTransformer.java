@@ -18,11 +18,11 @@ package org.jboss.weld.resources;
 
 import static org.jboss.weld.logging.messages.BeanMessage.INVALID_ANNOTATED_MEMBER;
 import static org.jboss.weld.logging.messages.BeanMessage.UNABLE_TO_LOAD_MEMBER;
+import static org.jboss.weld.util.cache.LoadingCacheUtils.getCastCacheValue;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.reflect.Member;
 import java.util.Collection;
-import java.util.concurrent.ConcurrentMap;
 
 import javax.enterprise.inject.spi.AnnotatedConstructor;
 import javax.enterprise.inject.spi.AnnotatedField;
@@ -48,9 +48,10 @@ import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.reflection.Reflections;
 
-import com.google.common.base.Function;
 import com.google.common.base.Objects;
-import com.google.common.collect.MapMaker;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 
 /**
  * Serves several functions. Firstly, transforms a given {@link AnnotatedMember} into its richer counterpart
@@ -90,35 +91,36 @@ public class MemberTransformer implements BootstrapService {
 
     private final ClassTransformer transformer;
 
-    private final ConcurrentMap<UnbackedMemberIdentifier<?>, UnbackedAnnotatedMember<?>> unbackedAnnotatedMembersById;
+    private final LoadingCache<UnbackedMemberIdentifier<?>, UnbackedAnnotatedMember<?>> unbackedAnnotatedMembersById;
 
-    private final ConcurrentMap<MemberKey<?, ?>, EnhancedAnnotatedMember<?, ?, ?>> enhancedMemberCache;
+    private final LoadingCache<MemberKey<?, ?>, EnhancedAnnotatedMember<?, ?, ?>> enhancedMemberCache;
     private final EnhancedFieldLoader enhancedFieldLoader;
     private final EnhancedMethodLoader enhancedMethodLoader;
     private final EnhancedConstructorLoader enhancedConstructorLoader;
 
     public MemberTransformer(ClassTransformer transformer) {
+        CacheBuilder<Object, Object> cacheBuilder = CacheBuilder.newBuilder();
         this.transformer = transformer;
-        this.unbackedAnnotatedMembersById = new MapMaker().makeComputingMap(new UnbackedMemberById());
+        this.unbackedAnnotatedMembersById = cacheBuilder.build(new UnbackedMemberById());
         this.enhancedFieldLoader = new EnhancedFieldLoader();
         this.enhancedMethodLoader = new EnhancedMethodLoader();
         this.enhancedConstructorLoader = new EnhancedConstructorLoader();
-        this.enhancedMemberCache = new MapMaker().makeComputingMap(new EnhancedMemberLoaderFunction());
+        this.enhancedMemberCache = cacheBuilder.build(new EnhancedMemberLoaderFunction());
     }
 
     // Unbacked members
 
     public <X> UnbackedAnnotatedMember<X> getUnbackedMember(UnbackedMemberIdentifier<X> identifier) {
-        return cast(unbackedAnnotatedMembersById.get(identifier));
+        return getCastCacheValue(unbackedAnnotatedMembersById, identifier);
     }
 
     /**
      * If an unbacked member is being deserialized it is looked in all the members of the declaring type and cached.
      */
-    private static class UnbackedMemberById implements Function<UnbackedMemberIdentifier<?>, UnbackedAnnotatedMember<?>> {
+    private static class UnbackedMemberById extends CacheLoader<UnbackedMemberIdentifier<?>, UnbackedAnnotatedMember<?>> {
 
         @Override
-        public UnbackedAnnotatedMember<?> apply(UnbackedMemberIdentifier<?> identifier) {
+        public UnbackedAnnotatedMember<?> load(UnbackedMemberIdentifier<?> identifier) {
             return findMatchingMember(identifier.getType(), identifier.getMemberId());
         }
 
@@ -149,7 +151,7 @@ public class MemberTransformer implements BootstrapService {
             return Reflections.cast(member);
         }
         EnhancedAnnotatedType<X> declaringType = transformer.getEnhancedAnnotatedType(member.getDeclaringType(), bdaId);
-        return Reflections.cast(enhancedMemberCache.get(new MemberKey<X, AnnotatedMember<X>>(declaringType, member)));
+        return getCastCacheValue(enhancedMemberCache, new MemberKey<X, AnnotatedMember<X>>(declaringType, member));
     }
 
     public <X> EnhancedAnnotatedParameter<?, X> loadEnhancedParameter(AnnotatedParameter<X> parameter, String bdaId) {
@@ -160,9 +162,9 @@ public class MemberTransformer implements BootstrapService {
         return callable.getEnhancedParameters().get(parameter.getPosition());
     }
 
-    private class EnhancedMemberLoaderFunction implements Function<MemberKey<?, ?>, EnhancedAnnotatedMember<?, ?, ?>> {
+    private class EnhancedMemberLoaderFunction extends CacheLoader<MemberKey<?, ?>, EnhancedAnnotatedMember<?, ?, ?>> {
         @Override
-        public EnhancedAnnotatedMember<?, ?, ?> apply(MemberKey<?, ?> from) {
+        public EnhancedAnnotatedMember<?, ?, ?> load(MemberKey<?, ?> from) {
             if (from.member instanceof AnnotatedField<?>) {
                 return enhancedFieldLoader.load(Reflections.<MemberKey<?, AnnotatedField<?>>> cast(from));
             }
@@ -233,12 +235,12 @@ public class MemberTransformer implements BootstrapService {
     }
 
     public void cleanupAfterBoot() {
-        enhancedMemberCache.clear();
+        enhancedMemberCache.invalidateAll();
     }
 
     @Override
     public void cleanup() {
         cleanupAfterBoot();
-        unbackedAnnotatedMembersById.clear();
+        unbackedAnnotatedMembersById.invalidateAll();
     }
 }

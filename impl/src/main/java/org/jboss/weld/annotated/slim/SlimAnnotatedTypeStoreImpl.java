@@ -21,23 +21,23 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.util.Collections;
 import java.util.Set;
-import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.jboss.weld.bootstrap.api.Service;
 
-import com.google.common.base.Function;
 import com.google.common.base.Objects;
-import com.google.common.collect.MapMaker;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 
 public class SlimAnnotatedTypeStoreImpl implements SlimAnnotatedTypeStore, Service {
 
-    private final ConcurrentMap<Class<?>, Set<SlimAnnotatedType<?>>> typesByClass;
+    private final LoadingCache<Class<?>, Set<SlimAnnotatedType<?>>> typesByClass;
 
     public SlimAnnotatedTypeStoreImpl() {
-        this.typesByClass = new MapMaker().makeComputingMap(new Function<Class<?>, Set<SlimAnnotatedType<?>>>() {
+        this.typesByClass = CacheBuilder.newBuilder().build(new CacheLoader<Class<?>, Set<SlimAnnotatedType<?>>>() {
             @Override
-            public Set<SlimAnnotatedType<?>> apply(Class<?> input) {
+            public Set<SlimAnnotatedType<?>> load(Class<?> input) {
                 return new CopyOnWriteArraySet<SlimAnnotatedType<?>>();
             }
         });
@@ -55,16 +55,16 @@ public class SlimAnnotatedTypeStoreImpl implements SlimAnnotatedTypeStore, Servi
 
     @Override
     public <X> Set<SlimAnnotatedType<X>> get(Class<X> type) {
-        return cast(Collections.unmodifiableSet(typesByClass.get(type)));
+        return cast(Collections.unmodifiableSet(typesByClass.getUnchecked(type)));
     }
 
     @Override
     public <X> void put(SlimAnnotatedType<X> type) {
-        typesByClass.get(type.getJavaClass()).add(type);
+        typesByClass.getUnchecked(type.getJavaClass()).add(type);
     }
 
     @Override
     public void cleanup() {
-        typesByClass.clear();
+        typesByClass.invalidateAll();
     }
 }
