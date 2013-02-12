@@ -17,7 +17,6 @@
 package org.jboss.weld.tests.event.observer.transactional;
 
 import javax.ejb.Local;
-import java.math.BigInteger;
 
 @Local
 public interface PomeranianInterface {
@@ -26,35 +25,25 @@ public interface PomeranianInterface {
      *
      * @param someEvent
      */
-    void observeStringEvent(String someEvent);
+    void observeInProgress(Bark event);
 
     /**
      * Observes an Integer event if the transaction is successfully completed.
      *
      * @param event
      */
-    void observeIntegerEvent(Integer event);
+    void observeAfterCompletion(Bark event);
 
     /**
      * Observes a Float event only if the transaction failed.
      *
      * @param event
      */
-    void observeFloatEvent(Float event);
+    void observeAfterSuccess(Bark event);
 
-    void observeBigIntegerEvent(BigInteger event);
+    void observeAfterFailure(Bark event);
 
-    void observeExceptionEvent(RuntimeException event);
-
-    void observeCharEvent(Character event);
-
-    boolean isCorrectContext();
-
-    void setCorrectContext(boolean correctContext);
-
-    boolean isCorrectTransactionState();
-
-    void setCorrectTransactionState(boolean correctTransactionState);
-
-    void removeSessionBean();
+    void observeBeforeCompletion(Bark event);
+    
+    void observeAndFail(Bark event) throws FooException;
 }
