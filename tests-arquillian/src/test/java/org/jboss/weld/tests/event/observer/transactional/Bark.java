@@ -16,16 +16,5 @@
  */
 package org.jboss.weld.tests.event.observer.transactional;
 
-import java.lang.annotation.Annotation;
-import javax.ejb.Local;
-
-@Local
-public interface Agent {
-
-    abstract void sendInTransaction(Object event, Annotation... annot);
-
-    abstract void sendOutsideTransaction(Object event);
-
-    void sendInTransactionAndFail(Object event) throws Exception;
-
+public class Bark {
 }

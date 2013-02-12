@@ -16,16 +16,14 @@
  */
 package org.jboss.weld.tests.event.observer.transactional;
 
-import java.lang.annotation.Annotation;
-import javax.ejb.Local;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import javax.inject.Qualifier;
 
-@Local
-public interface Agent {
-
-    abstract void sendInTransaction(Object event, Annotation... annot);
-
-    abstract void sendOutsideTransaction(Object event);
-
-    void sendInTransactionAndFail(Object event) throws Exception;
-
+@Qualifier
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.PARAMETER, ElementType.TYPE, ElementType.FIELD, ElementType.METHOD})
+public @interface Gnarly {
 }
