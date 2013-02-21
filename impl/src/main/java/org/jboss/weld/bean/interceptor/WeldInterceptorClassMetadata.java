@@ -109,7 +109,7 @@ public class WeldInterceptorClassMetadata<T> implements ClassMetadata<T>, Serial
             this.type = type;
         }
 
-        private Object readResolve() {
+        private Object readResolve() throws ObjectStreamException {
             EnhancedAnnotatedType<T> enhancedType = Container.instance().services().get(ClassTransformer.class).getEnhancedAnnotatedType(type);
             return new WeldInterceptorClassMetadata<T>(enhancedType);
         }

@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.annotated.slim.unbacked;
 
+import java.io.ObjectStreamException;
 import java.io.Serializable;
 
 import org.jboss.weld.Container;
@@ -47,7 +48,7 @@ public class UnbackedMemberIdentifier<X> implements Serializable {
         return memberId;
     }
 
-    private Object readResolve() {
+    private Object readResolve() throws ObjectStreamException {
         return Container.instance().services().get(MemberTransformer.class).getUnbackedMember(this);
     }
 }

@@ -142,7 +142,7 @@ public class BackedAnnotatedConstructor<X> extends BackedAnnotatedCallable<X, Co
             super(constructor.getDeclaringType(), new ConstructorHolder<X>(constructor.getJavaMember()));
         }
 
-        private Object readResolve() {
+        private Object readResolve() throws ObjectStreamException {
             return resolve();
         }
 

@@ -132,7 +132,7 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
             super(event);
         }
 
-        private Object readResolve() {
+        private Object readResolve() throws ObjectStreamException {
             return EventImpl.of(getInjectionPoint(), getBeanManager());
         }
 

@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.annotated.slim;
 
+import java.io.ObjectStreamException;
 import java.io.Serializable;
 
 import javax.enterprise.inject.spi.AnnotatedType;
@@ -47,7 +48,7 @@ public interface SlimAnnotatedType<T> extends IdentifiedAnnotatedType<T>, Identi
             this.identifier = identifier;
         }
 
-        private Object readResolve() {
+        private Object readResolve() throws ObjectStreamException {
             return Container.instance().services().get(ClassTransformer.class).getSlimAnnotatedTypeById(identifier);
         }
     }

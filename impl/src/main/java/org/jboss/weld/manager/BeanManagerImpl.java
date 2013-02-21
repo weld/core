@@ -37,6 +37,7 @@ import static org.jboss.weld.manager.BeanManagers.buildAccessibleClosure;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 import static org.jboss.weld.util.reflection.Reflections.isCacheable;
 
+import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
@@ -974,7 +975,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     // Serialization
 
-    protected Object readResolve() {
+    protected Object readResolve() throws ObjectStreamException {
         return Container.instance().activityManager(id);
     }
 

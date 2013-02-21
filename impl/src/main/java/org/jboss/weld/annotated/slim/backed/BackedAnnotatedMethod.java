@@ -118,7 +118,7 @@ public class BackedAnnotatedMethod<X> extends BackedAnnotatedCallable<X, Method>
             super(method.getDeclaringType(), new MethodHolder(method.getJavaMember()));
         }
 
-        private Object readResolve() {
+        private Object readResolve() throws ObjectStreamException {
             return resolve();
         }
 

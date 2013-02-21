@@ -100,7 +100,7 @@ public class BackedAnnotatedField<X> extends BackedAnnotatedMember<X> implements
             super(field.getDeclaringType(), new FieldHolder(field.getJavaMember()));
         }
 
-        private Object readResolve() {
+        private Object readResolve() throws ObjectStreamException {
             return resolve();
         }
 

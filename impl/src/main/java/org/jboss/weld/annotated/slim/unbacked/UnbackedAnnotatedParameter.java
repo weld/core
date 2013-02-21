@@ -64,7 +64,7 @@ public class UnbackedAnnotatedParameter<X> extends UnbackedAnnotated implements 
             this.position = parameter.getPosition();
         }
 
-        private Object readResolve() {
+        private Object readResolve() throws ObjectStreamException {
             return callable.getParameters().get(position);
         }
     }

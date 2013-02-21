@@ -219,7 +219,7 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
             super(instance);
         }
 
-        private Object readResolve() {
+        private Object readResolve() throws ObjectStreamException {
             return InstanceImpl.of(getInjectionPoint(), getCreationalContext(), getBeanManager());
         }
 

@@ -139,7 +139,7 @@ public class BackedAnnotatedParameter<X> extends BackedAnnotated implements Anno
             this.position = parameter.getPosition();
         }
 
-        private Object readResolve() {
+        private Object readResolve() throws ObjectStreamException {
             return callable.getParameters().get(position);
         }
     }

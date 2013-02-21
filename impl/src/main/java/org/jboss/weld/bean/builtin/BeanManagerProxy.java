@@ -18,6 +18,7 @@ package org.jboss.weld.bean.builtin;
 
 import static org.jboss.weld.logging.messages.BeanManagerMessage.METHOD_NOT_AVAILABLE_DURING_INITIALIZATION;
 
+import java.io.ObjectStreamException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.List;
@@ -120,7 +121,7 @@ public class BeanManagerProxy extends ForwardingBeanManager {
         return super.resolveInterceptors(type, interceptorBindings);
     }
 
-    protected Object readResolve() {
+    protected Object readResolve() throws ObjectStreamException {
         return new BeanManagerProxy(this.manager);
     }
 
