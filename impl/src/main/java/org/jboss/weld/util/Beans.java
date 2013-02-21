@@ -79,7 +79,6 @@ import org.jboss.weld.bean.InterceptorImpl;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bootstrap.SpecializationAndEnablementRegistry;
 import org.jboss.weld.bootstrap.enablement.ModuleEnablement;
-import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.ejb.spi.BusinessInterfaceDescriptor;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.exceptions.DefinitionException;
@@ -87,17 +86,12 @@ import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.injection.FieldInjectionPoint;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.ResourceInjectionPoint;
-import org.jboss.weld.injection.WeldInjectionPoint;
-import org.jboss.weld.injection.spi.EjbInjectionServices;
-import org.jboss.weld.injection.spi.JpaInjectionServices;
-import org.jboss.weld.injection.spi.ResourceInjectionServices;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
 import org.jboss.weld.interceptor.util.InterceptionTypeRegistry;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.InterceptorBindingModel;
 import org.jboss.weld.metadata.cache.MergedStereotypes;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
-import org.jboss.weld.persistence.PersistenceApiAbstraction;
 import org.jboss.weld.resolution.QualifierInstance;
 import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
@@ -357,44 +351,6 @@ public class Beans {
         for (ResourceInjectionPoint<?, ?> ip : resourceInjectionPoints) {
             ip.inject(beanInstance, ctx);
         }
-    }
-
-    /**
-     * Inspect an injection point, and try to retrieve a EE resource for it
-     */
-    public static Object resolveEEResource(BeanManagerImpl manager, WeldInjectionPoint<?, ?> injectionPoint) {
-        EjbInjectionServices ejbServices = manager.getServices().get(EjbInjectionServices.class);
-        JpaInjectionServices jpaServices = manager.getServices().get(JpaInjectionServices.class);
-        ResourceInjectionServices resourceServices = manager.getServices().get(ResourceInjectionServices.class);
-
-        if (ejbServices != null) {
-            Class<? extends Annotation> ejbAnnotationType = manager.getServices().get(EJBApiAbstraction.class).EJB_ANNOTATION_CLASS;
-            if (injectionPoint.getAnnotated().isAnnotationPresent(ejbAnnotationType)) {
-                return ejbServices.resolveEjb(injectionPoint);
-            }
-        }
-
-        if (jpaServices != null) {
-            final PersistenceApiAbstraction persistenceApiAbstraction = manager.getServices().get(PersistenceApiAbstraction.class);
-
-            Class<? extends Annotation> persistenceUnitAnnotationType = persistenceApiAbstraction.PERSISTENCE_UNIT_ANNOTATION_CLASS;
-            if (injectionPoint.getAnnotated().isAnnotationPresent(persistenceUnitAnnotationType)) {
-                return jpaServices.resolvePersistenceUnit(injectionPoint);
-            }
-
-            Class<? extends Annotation> persistenceContextAnnotationType = persistenceApiAbstraction.PERSISTENCE_CONTEXT_ANNOTATION_CLASS;
-            if (injectionPoint.getAnnotated().isAnnotationPresent(persistenceContextAnnotationType)) {
-                return jpaServices.resolvePersistenceContext(injectionPoint);
-            }
-        }
-
-        if (resourceServices != null) {
-            Class<? extends Annotation> resourceAnnotationType = manager.getServices().get(EJBApiAbstraction.class).RESOURCE_ANNOTATION_CLASS;
-            if (injectionPoint.getAnnotated().isAnnotationPresent(resourceAnnotationType)) {
-                return resourceServices.resolveResource(injectionPoint);
-            }
-        }
-        return null;
     }
 
     /**
