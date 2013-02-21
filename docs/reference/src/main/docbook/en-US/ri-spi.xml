@@ -419,7 +419,23 @@
             being performed, including the <literal>target</literal> being injected.  <literal>ic.proceed()</literal>
             should be called to perform CDI-style injection, and call initializer methods.
          </para>
-         
+
+         <section id="injection.services.validation">
+              <title>Resource injection point validation</title>
+              <para>
+                    For each
+                    <itemizedlist>
+                        <listitem>@Resource injection point</listitem>
+                        <listitem>@PersistenceContext injection point</listitem>
+                        <listitem>@PersistenceUnit injection point</listitem>
+                        <listitem>@EJB injection point</listitem>
+                        <listitem>@WebServiceRef injection point</listitem>
+                    </itemizedlist>
+                    Weld calls the <literal>InjectionServices.validateResourceInjectionPoint()</literal> method. That allows the integrator
+                    to validate resource injection points before the application is deployed.
+              </para>
+         </section>
+
       </section>
       
       <section>

@@ -42,6 +42,7 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.slim.unbacked.UnbackedAnnotatedType;
+import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.injection.attributes.FieldInjectionPointAttributes;
@@ -50,10 +51,12 @@ import org.jboss.weld.injection.attributes.InferingParameterInjectionPointAttrib
 import org.jboss.weld.injection.attributes.ParameterInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.SpecialParameterInjectionPoint;
 import org.jboss.weld.injection.spi.EjbInjectionServices;
+import org.jboss.weld.injection.spi.InjectionServices;
 import org.jboss.weld.injection.spi.JpaInjectionServices;
 import org.jboss.weld.injection.spi.ResourceInjectionServices;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
+import org.jboss.weld.util.ApiAbstraction;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.collections.ArraySet;
 
@@ -206,76 +209,102 @@ public class InjectionPointFactory {
         injectableFields.add(createFieldInjectionPoint(annotatedField, declaringBean, declaringComponentClass, manager));
     }
 
-    private Set<FieldInjectionPoint<?, ?>> getFieldInjectionPointsWithSpecialAnnotation(Bean<?> declaringBean, EnhancedAnnotatedType<?> type, Class<? extends Annotation> annotationType, BeanManagerImpl manager) {
-        ArraySet<FieldInjectionPoint<?, ?>> injectionPoints = new ArraySet<FieldInjectionPoint<?, ?>>();
-        for (EnhancedAnnotatedField<?, ?> field : type.getEnhancedFields(annotationType)) {
-            injectionPoints.add(createFieldInjectionPoint(field, declaringBean, type.getJavaClass(), manager));
+    private abstract class ResourceInjectionPointDiscovery<S extends Service, A extends ApiAbstraction> {
+
+        private Set<FieldInjectionPoint<?, ?>> getFieldInjectionPointsWithSpecialAnnotation(Bean<?> declaringBean, EnhancedAnnotatedType<?> type, Class<? extends Annotation> annotationType, BeanManagerImpl manager) {
+            ArraySet<FieldInjectionPoint<?, ?>> injectionPoints = new ArraySet<FieldInjectionPoint<?, ?>>();
+            for (EnhancedAnnotatedField<?, ?> field : type.getEnhancedFields(annotationType)) {
+                injectionPoints.add(createFieldInjectionPoint(field, declaringBean, type.getJavaClass(), manager));
+            }
+            return immutableSet(injectionPoints);
         }
-        return immutableSet(injectionPoints);
+
+        public Set<ResourceInjectionPoint<?, ?>> proceed(Bean<?> bean, EnhancedAnnotatedType<?> type, BeanManagerImpl manager, A api, S specializedInjectionServices) {
+            if (api != null) {
+                InjectionServices injectionServices = manager.getServices().get(InjectionServices.class);
+
+                if (injectionServices != null || specializedInjectionServices != null) {
+                    Class<? extends Annotation> markerAnnotation = getMarkerAnnotation(api);
+                    Set<FieldInjectionPoint<?, ?>> fieldInjectionPoints = getFieldInjectionPointsWithSpecialAnnotation(bean, type, markerAnnotation, manager);
+                    if (!fieldInjectionPoints.isEmpty()) {
+                        if (injectionServices != null) {
+                            for (FieldInjectionPoint<?, ?> fieldInjectionPoint : fieldInjectionPoints) {
+                                injectionServices.validateResourceInjectionPoint(fieldInjectionPoint);
+                            }
+                        }
+
+                        if (specializedInjectionServices != null) {
+                            Set<ResourceInjectionPoint<?, ?>> resourceInjectionPoints = new HashSet<ResourceInjectionPoint<?,?>>(fieldInjectionPoints.size());
+                            for (FieldInjectionPoint<?, ?> fieldInjectionPoint : fieldInjectionPoints) {
+                                resourceInjectionPoints.add(createResourceInjectionPoint(fieldInjectionPoint, markerAnnotation, specializedInjectionServices, api));
+                            }
+                            return resourceInjectionPoints;
+                        }
+                    }
+                }
+            }
+            return Collections.emptySet();
+        }
+
+        protected abstract ResourceInjectionPoint<?, ?> createResourceInjectionPoint(FieldInjectionPoint<?, ?> ip, Class<? extends Annotation> annotation, S specializedInjectionServices, A api);
+
+        protected abstract Class<? extends Annotation> getMarkerAnnotation(A api);
     }
 
     public Set<ResourceInjectionPoint<?, ?>> getEjbInjectionPoints(Bean<?> declaringBean, EnhancedAnnotatedType<?> type, BeanManagerImpl manager) {
-        EjbInjectionServices injectionServices = manager.getServices().get(EjbInjectionServices.class);
-        if (injectionServices != null) {
-            Class<? extends Annotation> ejbAnnotationType = manager.getServices().get(EJBApiAbstraction.class).EJB_ANNOTATION_CLASS;
-            Set<FieldInjectionPoint<?, ?>> fieldInjectionPoints = getFieldInjectionPointsWithSpecialAnnotation(declaringBean, type, ejbAnnotationType, manager);
-            if (!fieldInjectionPoints.isEmpty()) {
-                Set<ResourceInjectionPoint<?, ?>> resourceInjectionPoints = new HashSet<ResourceInjectionPoint<?,?>>(fieldInjectionPoints.size());
-                for (FieldInjectionPoint<?, ?> fieldInjectionPoint : fieldInjectionPoints) {
-                    resourceInjectionPoints.add(ResourceInjectionPoint.forEjb(fieldInjectionPoint, injectionServices));
-                }
-                return resourceInjectionPoints;
+        return new ResourceInjectionPointDiscovery<EjbInjectionServices, EJBApiAbstraction>() {
+            @Override
+            protected ResourceInjectionPoint<?, ?> createResourceInjectionPoint(FieldInjectionPoint<?, ?> ip, Class<? extends Annotation> annotation, EjbInjectionServices specializedInjectionServices, EJBApiAbstraction api) {
+                return ResourceInjectionPoint.forEjb(ip, specializedInjectionServices);
             }
-        }
-        return Collections.emptySet();
+
+            @Override
+            protected Class<? extends Annotation> getMarkerAnnotation(EJBApiAbstraction api) {
+                return api.EJB_ANNOTATION_CLASS;
+            }
+        }.proceed(declaringBean, type, manager, manager.getServices().get(EJBApiAbstraction.class), manager.getServices().get(EjbInjectionServices.class));
     }
 
     public Set<ResourceInjectionPoint<?, ?>> getPersistenceContextInjectionPoints(Bean<?> declaringBean, EnhancedAnnotatedType<?> type, BeanManagerImpl manager) {
-        JpaInjectionServices injectionServices = manager.getServices().get(JpaInjectionServices.class);
-        if (injectionServices != null) {
-            PersistenceApiAbstraction api = manager.getServices().get(PersistenceApiAbstraction.class);
-            Set<FieldInjectionPoint<?, ?>> fieldInjectionPoints = getFieldInjectionPointsWithSpecialAnnotation(declaringBean, type, api.PERSISTENCE_CONTEXT_ANNOTATION_CLASS, manager);
-            if (!fieldInjectionPoints.isEmpty()) {
-                Set<ResourceInjectionPoint<?, ?>> resourceInjectionPoints = new HashSet<ResourceInjectionPoint<?,?>>(fieldInjectionPoints.size());
-                for (FieldInjectionPoint<?, ?> fieldInjectionPoint : fieldInjectionPoints) {
-                    resourceInjectionPoints.add(ResourceInjectionPoint.forPersistenceContext(fieldInjectionPoint, injectionServices, api));
-                }
-                return resourceInjectionPoints;
+        return new ResourceInjectionPointDiscovery<JpaInjectionServices, PersistenceApiAbstraction>() {
+            @Override
+            protected ResourceInjectionPoint<?, ?> createResourceInjectionPoint(FieldInjectionPoint<?, ?> ip, Class<? extends Annotation> annotation, JpaInjectionServices specializedInjectionServices, PersistenceApiAbstraction api) {
+                return ResourceInjectionPoint.forPersistenceContext(ip, specializedInjectionServices, api);
             }
-        }
-        return Collections.emptySet();
+
+            @Override
+            protected Class<? extends Annotation> getMarkerAnnotation(PersistenceApiAbstraction api) {
+                return api.PERSISTENCE_CONTEXT_ANNOTATION_CLASS;
+            }
+        }.proceed(declaringBean, type, manager, manager.getServices().get(PersistenceApiAbstraction.class), manager.getServices().get(JpaInjectionServices.class));
     }
 
     public Set<ResourceInjectionPoint<?, ?>> getPersistenceUnitInjectionPoints(Bean<?> declaringBean, EnhancedAnnotatedType<?> type, BeanManagerImpl manager) {
-        JpaInjectionServices injectionServices = manager.getServices().get(JpaInjectionServices.class);
-        if (injectionServices != null) {
-            PersistenceApiAbstraction api = manager.getServices().get(PersistenceApiAbstraction.class);
-            Set<FieldInjectionPoint<?, ?>> fieldInjectionPoints = getFieldInjectionPointsWithSpecialAnnotation(declaringBean, type, api.PERSISTENCE_UNIT_ANNOTATION_CLASS, manager);
-            if (!fieldInjectionPoints.isEmpty()) {
-                Set<ResourceInjectionPoint<?, ?>> resourceInjectionPoints = new HashSet<ResourceInjectionPoint<?,?>>(fieldInjectionPoints.size());
-                for (FieldInjectionPoint<?, ?> fieldInjectionPoint : fieldInjectionPoints) {
-                    resourceInjectionPoints.add(ResourceInjectionPoint.forPersistenceUnit(fieldInjectionPoint, injectionServices, api));
-                }
-                return resourceInjectionPoints;
+        return new ResourceInjectionPointDiscovery<JpaInjectionServices, PersistenceApiAbstraction>() {
+            @Override
+            protected ResourceInjectionPoint<?, ?> createResourceInjectionPoint(FieldInjectionPoint<?, ?> ip, Class<? extends Annotation> annotation, JpaInjectionServices specializedInjectionServices, PersistenceApiAbstraction api) {
+                return ResourceInjectionPoint.forPersistenceUnit(ip, specializedInjectionServices, api);
             }
-        }
-        return Collections.emptySet();
+
+            @Override
+            protected Class<? extends Annotation> getMarkerAnnotation(PersistenceApiAbstraction api) {
+                return api.PERSISTENCE_UNIT_ANNOTATION_CLASS;
+            }
+        }.proceed(declaringBean, type, manager, manager.getServices().get(PersistenceApiAbstraction.class), manager.getServices().get(JpaInjectionServices.class));
     }
 
     public Set<ResourceInjectionPoint<?, ?>> getResourceInjectionPoints(Bean<?> declaringBean, EnhancedAnnotatedType<?> type, BeanManagerImpl manager) {
-        ResourceInjectionServices injectionServices = manager.getServices().get(ResourceInjectionServices.class);
-        if (injectionServices != null) {
-            Class<? extends Annotation> resourceAnnotationType = manager.getServices().get(EJBApiAbstraction.class).RESOURCE_ANNOTATION_CLASS;
-            Set<FieldInjectionPoint<?, ?>> fieldInjectionPoints = getFieldInjectionPointsWithSpecialAnnotation(declaringBean, type, resourceAnnotationType, manager);
-            if (!fieldInjectionPoints.isEmpty()) {
-                Set<ResourceInjectionPoint<?, ?>> resourceInjectionPoints = new HashSet<ResourceInjectionPoint<?,?>>(fieldInjectionPoints.size());
-                for (FieldInjectionPoint<?, ?> fieldInjectionPoint : fieldInjectionPoints) {
-                    resourceInjectionPoints.add(ResourceInjectionPoint.forResource(fieldInjectionPoint, injectionServices));
-                }
-                return resourceInjectionPoints;
+        return new ResourceInjectionPointDiscovery<ResourceInjectionServices, EJBApiAbstraction>() {
+            @Override
+            protected ResourceInjectionPoint<?, ?> createResourceInjectionPoint(FieldInjectionPoint<?, ?> ip, Class<? extends Annotation> annotation, ResourceInjectionServices specializedInjectionServices, EJBApiAbstraction api) {
+                return ResourceInjectionPoint.forResource(ip, specializedInjectionServices);
             }
-        }
-        return Collections.emptySet();
+
+            @Override
+            protected Class<? extends Annotation> getMarkerAnnotation(EJBApiAbstraction api) {
+                return api.RESOURCE_ANNOTATION_CLASS;
+            }
+        }.proceed(declaringBean, type, manager, manager.getServices().get(EJBApiAbstraction.class), manager.getServices().get(ResourceInjectionServices.class));
     }
 
     /*

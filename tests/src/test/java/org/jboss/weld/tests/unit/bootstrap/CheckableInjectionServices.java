@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.tests.unit.bootstrap;
 
+import javax.enterprise.inject.spi.InjectionPoint;
+
 import org.jboss.weld.injection.spi.InjectionContext;
 import org.jboss.weld.injection.spi.InjectionServices;
 
@@ -71,4 +73,7 @@ public class CheckableInjectionServices implements InjectionServices {
     public void cleanup() {
     }
 
+    @Override
+    public void validateResourceInjectionPoint(InjectionPoint injectionPoint) {
+    }
 }
