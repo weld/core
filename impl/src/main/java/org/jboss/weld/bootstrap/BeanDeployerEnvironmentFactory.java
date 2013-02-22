@@ -44,14 +44,14 @@ public class BeanDeployerEnvironmentFactory {
     }
 
     public static BeanDeployerEnvironment newEnvironment(EjbDescriptors ejbDescriptors, BeanManagerImpl manager) {
-        return registerEnvironment(manager, new BeanDeployerEnvironment(ejbDescriptors, manager));
+        return new BeanDeployerEnvironment(ejbDescriptors, manager);
     }
 
     /**
      * Creates a new threadsafe BeanDeployerEnvironment instance. These instances are used by {@link ConcurrentBeanDeployer} during bootstrap.
      */
     public static BeanDeployerEnvironment newConcurrentEnvironment(EjbDescriptors ejbDescriptors, BeanManagerImpl manager) {
-        return registerEnvironment(manager, new BeanDeployerEnvironment(
+        return new BeanDeployerEnvironment(
                 Sets.newSetFromMap(new ConcurrentHashMap<SlimAnnotatedType<?>, Boolean>()),
                 new ConcurrentHashMap<AnnotatedType<?>, Extension>(),
                 Sets.newSetFromMap(new ConcurrentHashMap<Class<?>, Boolean>()),
@@ -67,11 +67,7 @@ public class BeanDeployerEnvironmentFactory {
                 ejbDescriptors,
                 Sets.newSetFromMap(new ConcurrentHashMap<EnhancedAnnotatedType<?>, Boolean>()),
                 new ConcurrentHashMap<InternalEjbDescriptor<?>, EnhancedAnnotatedType<?>>(),
-                manager));
+                manager);
     }
 
-    private static BeanDeployerEnvironment registerEnvironment(BeanManagerImpl manager, BeanDeployerEnvironment environment) {
-        manager.getServices().get(SpecializationAndEnablementRegistry.class).registerEnvironment(manager, environment);
-        return environment;
-    }
 }

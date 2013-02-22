@@ -42,7 +42,7 @@ public class DeploymentStructures {
         } else {
             BeanDeployment beanDeployment = beanDeployments.get(beanDeploymentArchive);
             if (beanDeployment == null) {
-                beanDeployment = new BeanDeployment(beanDeploymentArchive, deploymentManager, deployment.getServices(), contexts, enablementBuilder);
+                beanDeployment = new BeanDeployment(beanDeploymentArchive, deploymentManager, deployment.getServices(), contexts, enablementBuilder, true);
                 beanDeployments.put(beanDeploymentArchive, beanDeployment);
             }
             return beanDeployment;

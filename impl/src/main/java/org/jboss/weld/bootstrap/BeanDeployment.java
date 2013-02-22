@@ -103,6 +103,10 @@ public class BeanDeployment {
     private final EnablementBuilder enablementBuilder;
 
     public BeanDeployment(BeanDeploymentArchive beanDeploymentArchive, BeanManagerImpl deploymentManager, ServiceRegistry deploymentServices, Collection<ContextHolder<? extends Context>> contexts, EnablementBuilder enablementBuilder) {
+        this(beanDeploymentArchive, deploymentManager, deploymentServices, contexts, enablementBuilder, false);
+    }
+
+    public BeanDeployment(BeanDeploymentArchive beanDeploymentArchive, BeanManagerImpl deploymentManager, ServiceRegistry deploymentServices, Collection<ContextHolder<? extends Context>> contexts, EnablementBuilder enablementBuilder, boolean additionalBeanArchive) {
         this.beanDeploymentArchive = beanDeploymentArchive;
         EjbDescriptors ejbDescriptors = new EjbDescriptors();
 
@@ -144,6 +148,7 @@ public class BeanDeployment {
         } else {
             beanDeployer = new BeanDeployer(beanManager, ejbDescriptors, deploymentServices);
         }
+        beanManager.getServices().get(SpecializationAndEnablementRegistry.class).registerEnvironment(beanManager, beanDeployer.getEnvironment(), additionalBeanArchive);
 
         // Must at the Manager bean straight away, as it can be injected during startup!
         beanManager.addBean(new BeanManagerBean(beanManager));

@@ -19,6 +19,7 @@ package org.jboss.weld.tests.specialization.extension.bean;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.enterprise.context.Dependent;
@@ -28,8 +29,6 @@ import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.literal.DefaultLiteral;
-
-import com.google.common.collect.ImmutableSet;
 
 public class OrangeBean implements Bean<Orange> {
 
@@ -42,14 +41,23 @@ public class OrangeBean implements Bean<Orange> {
     public void destroy(Orange instance, CreationalContext<Orange> creationalContext) {
     }
 
+    @SuppressWarnings("unchecked")
+    private <T> Set<T> immutableSet(T... items) {
+        Set<T> set = new HashSet<T>();
+        for (T item : items) {
+            set.add(item);
+        }
+        return Collections.unmodifiableSet(set);
+    }
+
     @Override
     public Set<Type> getTypes() {
-        return ImmutableSet.<Type>of(Object.class, Orange.class);
+        return this.<Type>immutableSet(Object.class, Orange.class);
     }
 
     @Override
     public Set<Annotation> getQualifiers() {
-        return ImmutableSet.of(DefaultLiteral.INSTANCE, AnyLiteral.INSTANCE);
+        return immutableSet(DefaultLiteral.INSTANCE, AnyLiteral.INSTANCE);
     }
 
     @Override
