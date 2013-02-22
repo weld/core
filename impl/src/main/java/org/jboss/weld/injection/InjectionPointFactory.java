@@ -52,6 +52,7 @@ import org.jboss.weld.injection.attributes.ParameterInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.SpecialParameterInjectionPoint;
 import org.jboss.weld.injection.spi.EjbInjectionServices;
 import org.jboss.weld.injection.spi.InjectionServices;
+import org.jboss.weld.injection.spi.JaxwsInjectionServices;
 import org.jboss.weld.injection.spi.JpaInjectionServices;
 import org.jboss.weld.injection.spi.ResourceInjectionServices;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -59,6 +60,7 @@ import org.jboss.weld.persistence.PersistenceApiAbstraction;
 import org.jboss.weld.util.ApiAbstraction;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.collections.ArraySet;
+import org.jboss.weld.ws.WSApiAbstraction;
 
 /**
  * Factory class that producer {@link InjectionPoint} instances for fields, parameters, methods and constructors. The
@@ -305,6 +307,20 @@ public class InjectionPointFactory {
                 return api.RESOURCE_ANNOTATION_CLASS;
             }
         }.proceed(declaringBean, type, manager, manager.getServices().get(EJBApiAbstraction.class), manager.getServices().get(ResourceInjectionServices.class));
+    }
+
+    public Set<ResourceInjectionPoint<?, ?>> getWebServiceRefInjectionPoints(Bean<?> declaringBean, EnhancedAnnotatedType<?> type, BeanManagerImpl manager) {
+        return new ResourceInjectionPointDiscovery<JaxwsInjectionServices, WSApiAbstraction>() {
+            @Override
+            protected ResourceInjectionPoint<?, ?> createResourceInjectionPoint(FieldInjectionPoint<?, ?> ip, Class<? extends Annotation> annotation, JaxwsInjectionServices specializedInjectionServices, WSApiAbstraction api) {
+                return ResourceInjectionPoint.forWebServiceRef(ip, specializedInjectionServices);
+            }
+
+            @Override
+            protected Class<? extends Annotation> getMarkerAnnotation(WSApiAbstraction api) {
+                return api.WEB_SERVICE_REF_ANNOTATION_CLASS;
+            }
+        }.proceed(declaringBean, type, manager, manager.getServices().get(WSApiAbstraction.class), manager.getServices().get(JaxwsInjectionServices.class));
     }
 
     /*

@@ -250,7 +250,7 @@
          </tip>
 
          <para>
-            Weld registers resource injection points with <literal>EjbInjectionServices</literal>, <literal>JpaInjectionServices</literal> and <literal>ResourceInjectionServices</literal> implementations
+            Weld registers resource injection points with <literal>EjbInjectionServices</literal>, <literal>JpaInjectionServices</literal>, <literal>ResourceInjectionServices</literal> and <literal>JaxwsInjectionServices</literal> implementations
             upfront (at bootstrap). This allows validation of resource injection points to be performed at boot time rather than runtime. For each resource injection point Weld obtains a <literal>ResourceReferenceFactory</literal>
             which it then uses at runtime for creating resource references.
          </para>
@@ -396,6 +396,17 @@
                </listitem>
             </itemizedlist>
          </note>
+      </section>
+
+      <section id="jaxws.services">
+         <title>Web Service Injection Services</title>
+           
+         <para>
+            The resolution of <literal>@WebServiceRef</literal> (for injection into managed beans) is delegated to the
+            container. An integrator must provide an implementation of <literal>JaxwsInjectionServices</literal>. 
+            This service is not required if the implementation of <xref linkend="injection.services"/>
+            takes care of <literal>@WebServiceRef</literal> injection.
+         </para>
       </section>
       
       <section id="injection.services">

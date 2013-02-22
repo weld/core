@@ -50,6 +50,7 @@ public class DefaultInjectionTarget<T> extends AbstractInjectionTarget<T> {
         resourceInjectionPoints.addAll(InjectionPointFactory.silentInstance().getPersistenceContextInjectionPoints(bean, type, beanManager));
         resourceInjectionPoints.addAll(InjectionPointFactory.silentInstance().getPersistenceUnitInjectionPoints(bean, type, beanManager));
         resourceInjectionPoints.addAll(InjectionPointFactory.silentInstance().getResourceInjectionPoints(bean, type, beanManager));
+        resourceInjectionPoints.addAll(InjectionPointFactory.silentInstance().getWebServiceRefInjectionPoints(bean, type, beanManager));
         this.resourceInjectionPoints = immutableSet(resourceInjectionPoints);
     }
 

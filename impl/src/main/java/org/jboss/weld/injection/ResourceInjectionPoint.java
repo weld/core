@@ -24,6 +24,7 @@ import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.injection.attributes.FieldInjectionPointAttributes;
 import org.jboss.weld.injection.spi.EjbInjectionServices;
+import org.jboss.weld.injection.spi.JaxwsInjectionServices;
 import org.jboss.weld.injection.spi.JpaInjectionServices;
 import org.jboss.weld.injection.spi.ResourceInjectionServices;
 import org.jboss.weld.injection.spi.ResourceReference;
@@ -61,6 +62,10 @@ public class ResourceInjectionPoint<T, X> extends DelegatingFieldInjectionPointA
 
     public static <T, X> ResourceInjectionPoint<T, X> forResource(FieldInjectionPoint<T, X> delegate, ResourceInjectionServices injectionServices) {
         return new ResourceInjectionPoint<T, X>(delegate, Reflections.<ResourceReferenceFactory<T>>cast(injectionServices.registerResourceInjectionPoint(delegate)));
+    }
+
+    public static <T, X> ResourceInjectionPoint<T, X> forWebServiceRef(FieldInjectionPoint<T, X> delegate, JaxwsInjectionServices injectionServices) {
+        return new ResourceInjectionPoint<T, X>(delegate, Reflections.<ResourceReferenceFactory<T>>cast(injectionServices.registerWebServiceRefInjectionPoint(delegate)));
     }
 
     private final FieldInjectionPoint<T, X> delegate;

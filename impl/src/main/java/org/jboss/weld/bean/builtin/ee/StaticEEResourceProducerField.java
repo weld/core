@@ -32,10 +32,12 @@ import org.jboss.weld.injection.FieldInjectionPoint;
 import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.ResourceInjectionPoint;
 import org.jboss.weld.injection.spi.EjbInjectionServices;
+import org.jboss.weld.injection.spi.JaxwsInjectionServices;
 import org.jboss.weld.injection.spi.JpaInjectionServices;
 import org.jboss.weld.injection.spi.ResourceInjectionServices;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
+import org.jboss.weld.ws.WSApiAbstraction;
 
 /**
  * A resource producer field that is static (not injected).
@@ -94,7 +96,15 @@ public class StaticEEResourceProducerField<X, T> extends EEResourceProducerField
         if (resourceServices != null) {
             Class<? extends Annotation> resourceAnnotationType = manager.getServices().get(EJBApiAbstraction.class).RESOURCE_ANNOTATION_CLASS;
             if (injectionPoint.getAnnotated().isAnnotationPresent(resourceAnnotationType)) {
-                ResourceInjectionPoint.forResource(injectionPoint, resourceServices);
+                return ResourceInjectionPoint.forResource(injectionPoint, resourceServices);
+            }
+        }
+
+        JaxwsInjectionServices jaxwsInjectionServices = manager.getServices().get(JaxwsInjectionServices.class);
+        if (jaxwsInjectionServices != null) {
+            Class<? extends Annotation> webServiceRefAnnotationType = manager.getServices().get(WSApiAbstraction.class).WEB_SERVICE_REF_ANNOTATION_CLASS;
+            if (injectionPoint.getAnnotated().isAnnotationPresent(webServiceRefAnnotationType)) {
+                return ResourceInjectionPoint.forWebServiceRef(injectionPoint, jaxwsInjectionServices);
             }
         }
         return null;
