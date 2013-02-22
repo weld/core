@@ -223,7 +223,7 @@ public class Validator implements Service {
                 if (producer.getDisposalMethod() != null) {
                     for (InjectionPoint ip : producer.getDisposalMethod().getInjectionPoints()) {
                         // pass the producer bean instead of the disposal method bean
-                        validateInjectionPointForDefinitionErrors(ip, bean, beanManager);
+                        validateInjectionPointForDefinitionErrors(ip, bean, beanManager, false);
                         validateInjectionPointForDeploymentProblems(ip, bean, beanManager);
                     }
                 }
@@ -305,14 +305,14 @@ public class Validator implements Service {
      * @param beanManager the bean manager
      */
     public void validateInjectionPoint(InjectionPoint ij, BeanManagerImpl beanManager) {
-        validateInjectionPointForDefinitionErrors(ij, ij.getBean(), beanManager);
+        validateInjectionPointForDefinitionErrors(ij, ij.getBean(), beanManager, false);
         validateInjectionPointForDeploymentProblems(ij, ij.getBean(), beanManager);
     }
 
     /**
      * Checks for definition errors associated with a given {@link InjectionPoint}
      */
-    public void validateInjectionPointForDefinitionErrors(InjectionPoint ij, Bean<?> bean, BeanManagerImpl beanManager) {
+    public void validateInjectionPointForDefinitionErrors(InjectionPoint ij, Bean<?> bean, BeanManagerImpl beanManager, boolean suppressInjectionPointMetadataCheck) {
         if (ij.getAnnotated().getAnnotation(New.class) != null && ij.getQualifiers().size() > 1) {
             throw new DefinitionException(NEW_WITH_QUALIFIERS, ij);
         }
@@ -336,11 +336,13 @@ public class Validator implements Service {
         checkFacadeInjectionPoint(ij, Instance.class);
         checkFacadeInjectionPoint(ij, Event.class);
         // metadata injection points
-        if (ij.getType().equals(InjectionPoint.class) && bean == null) {
-            throw new DefinitionException(INJECTION_INTO_NON_BEAN, ij);
-        }
-        if (ij.getType().equals(InjectionPoint.class) && !Dependent.class.equals(bean.getScope())) {
-            throw new DefinitionException(INJECTION_INTO_NON_DEPENDENT_BEAN, ij);
+        if (!suppressInjectionPointMetadataCheck) {
+            if (ij.getType().equals(InjectionPoint.class) && bean == null) {
+                throw new DefinitionException(INJECTION_INTO_NON_BEAN, ij);
+            }
+            if (ij.getType().equals(InjectionPoint.class) && !Dependent.class.equals(bean.getScope())) {
+                throw new DefinitionException(INJECTION_INTO_NON_DEPENDENT_BEAN, ij);
+            }
         }
         Class<?> rawType = Reflections.getRawType(ij.getType());
         if (Bean.class.equals(rawType) || Interceptor.class.equals(rawType) || Decorator.class.equals(rawType)) {
@@ -679,8 +681,10 @@ public class Validator implements Service {
 
     protected void validateObserverMethods(Iterable<ObserverInitializationContext<?, ?>> observers, BeanManagerImpl beanManager) {
         for (ObserverInitializationContext<?, ?> omi : observers) {
-            for (InjectionPoint ip : omi.getObserver().getInjectionPoints())
-                validateInjectionPoint(ip, beanManager);
+            for (InjectionPoint ip : omi.getObserver().getInjectionPoints()) {
+                validateInjectionPointForDefinitionErrors(ip, ip.getBean(), beanManager, true);
+                validateInjectionPointForDeploymentProblems(ip, ip.getBean(), beanManager);
+            }
         }
     }
 

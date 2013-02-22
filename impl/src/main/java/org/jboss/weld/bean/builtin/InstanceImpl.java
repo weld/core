@@ -16,8 +16,8 @@
  */
 package org.jboss.weld.bean.builtin;
 
-import static org.jboss.weld.logging.messages.BeanMessage.PROXY_REQUIRED;
 import static org.jboss.weld.logging.messages.BeanMessage.DESTROY_UNSUPPORTED;
+import static org.jboss.weld.logging.messages.BeanMessage.PROXY_REQUIRED;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.io.ObjectInputStream;
@@ -44,7 +44,6 @@ import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.exceptions.InvalidObjectException;
 import org.jboss.weld.exceptions.UnsupportedOperationException;
 import org.jboss.weld.injection.CurrentInjectionPoint;
-import org.jboss.weld.injection.ForwardingInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resolution.Resolvable;
 import org.jboss.weld.resolution.ResolvableBuilder;
@@ -61,37 +60,6 @@ import com.google.common.base.Preconditions;
  */
 @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = { "SE_NO_SUITABLE_CONSTRUCTOR", "SE_BAD_FIELD" }, justification = "Uses SerializationProxy")
 public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements Instance<T>, Serializable {
-
-    private static class InstanceInjectionPoint extends ForwardingInjectionPoint implements Serializable {
-
-        private static final long serialVersionUID = -4102173765226078459L;
-
-        private final InjectionPoint injectionPoint;
-        private final Type type;
-        private final Set<Annotation> qualifiers;
-
-        public InstanceInjectionPoint(InjectionPoint injectionPoint, Type type, Set<Annotation> qualifiers) {
-            this.injectionPoint = injectionPoint;
-            this.type = type;
-            this.qualifiers = qualifiers;
-        }
-
-        @Override
-        protected InjectionPoint delegate() {
-            return injectionPoint;
-        }
-
-        @Override
-        public Type getType() {
-            return type;
-        }
-
-        @Override
-        public Set<Annotation> getQualifiers() {
-            return qualifiers;
-        }
-
-    }
 
     private static final long serialVersionUID = -376721889693284887L;
 
@@ -110,7 +78,7 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
             .create();
         Bean<?> bean = getBeanManager().getBean(resolvable);
         // Generate a correct injection point for the bean, we do this by taking the original injection point and adjusting the qualifiers and type
-        InjectionPoint ip = new InstanceInjectionPoint(getInjectionPoint(), getType(), getQualifiers());
+        InjectionPoint ip = new DynamicLookupInjectionPoint(getInjectionPoint(), getType(), getQualifiers());
         CurrentInjectionPoint currentInjectionPoint = getBeanManager().getServices().get(CurrentInjectionPoint.class);
         try {
             currentInjectionPoint.push(ip);

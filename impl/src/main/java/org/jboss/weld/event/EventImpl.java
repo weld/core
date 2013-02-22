@@ -29,8 +29,10 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.bean.builtin.AbstractFacade;
+import org.jboss.weld.bean.builtin.DynamicLookupInjectionPoint;
 import org.jboss.weld.bean.builtin.FacadeInjectionPoint;
 import org.jboss.weld.exceptions.InvalidObjectException;
+import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Types;
 import org.jboss.weld.util.reflection.EventObjectTypeResolverBuilder;
@@ -55,10 +57,12 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
     }
 
     private final transient HierarchyDiscovery injectionPointTypeHierarchy;
+    private final transient CurrentInjectionPoint currentInjectionPointStack;
 
     private EventImpl(InjectionPoint injectionPoint, BeanManagerImpl beanManager) {
         super(injectionPoint, null, beanManager);
         this.injectionPointTypeHierarchy = new HierarchyDiscovery(getType());
+        this.currentInjectionPointStack = beanManager.getServices().get(CurrentInjectionPoint.class);
     }
 
     /**
@@ -72,7 +76,12 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
     }
 
     public void fire(T event) {
-        getBeanManager().getGlobalStrictObserverNotifier().fireEvent(getEventType(event), event, getQualifiers());
+        currentInjectionPointStack.push(new DynamicLookupInjectionPoint(getInjectionPoint(), getType(), getQualifiers()));
+        try {
+            getBeanManager().getGlobalStrictObserverNotifier().fireEvent(getEventType(event), event, getQualifiers());
+        } finally {
+            currentInjectionPointStack.pop();
+        }
     }
 
     public Event<T> select(Annotation... qualifiers) {

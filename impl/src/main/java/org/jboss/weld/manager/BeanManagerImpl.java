@@ -1418,7 +1418,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     private <T extends InjectionPoint> T validateInjectionPoint(T injectionPoint) {
         try {
-            services.get(Validator.class).validateInjectionPointForDefinitionErrors(injectionPoint, null, this);
+            services.get(Validator.class).validateInjectionPointForDefinitionErrors(injectionPoint, null, this, true);
         } catch (DefinitionException e) {
             throw new IllegalArgumentException(e);
         }
