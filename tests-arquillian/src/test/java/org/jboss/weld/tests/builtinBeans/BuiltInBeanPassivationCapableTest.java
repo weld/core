@@ -16,6 +16,22 @@
  */
 package org.jboss.weld.tests.builtinBeans;
 
+import static org.jboss.weld.tests.builtinBeans.Checker.checkBeanManager;
+import static org.jboss.weld.tests.builtinBeans.Checker.checkEquality;
+import static org.jboss.weld.tests.builtinBeans.Checker.checkEvent;
+import static org.jboss.weld.tests.builtinBeans.Checker.checkInjectionPoint;
+import static org.jboss.weld.tests.builtinBeans.Checker.checkInstance;
+import static org.jboss.weld.tests.builtinBeans.Checker.checkPrincipal;
+import static org.jboss.weld.tests.builtinBeans.Checker.checkUserTransaction;
+
+import java.security.Principal;
+
+import javax.enterprise.event.Event;
+import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.transaction.UserTransaction;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -29,25 +45,6 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
-import javax.enterprise.event.Event;
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.transaction.UserTransaction;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
-import java.security.Principal;
-
-import static org.jboss.weld.tests.builtinBeans.Checker.checkBeanManager;
-import static org.jboss.weld.tests.builtinBeans.Checker.checkEquality;
-import static org.jboss.weld.tests.builtinBeans.Checker.checkEvent;
-import static org.jboss.weld.tests.builtinBeans.Checker.checkInjectionPoint;
-import static org.jboss.weld.tests.builtinBeans.Checker.checkInstance;
-import static org.jboss.weld.tests.builtinBeans.Checker.checkPrincipal;
-import static org.jboss.weld.tests.builtinBeans.Checker.checkUserTransaction;
-import static org.jboss.weld.tests.builtinBeans.Checker.checkValidator;
-import static org.jboss.weld.tests.builtinBeans.Checker.checkValidatorFactory;
-
 @RunWith(Arquillian.class)
 public class BuiltInBeanPassivationCapableTest {
     @Deployment
@@ -57,18 +54,6 @@ public class BuiltInBeanPassivationCapableTest {
                  .decorate(AnimalDecorator.class)
                 .addPackage(BuiltInBeanPassivationCapableTest.class.getPackage())
                 .addClass(Utils.class);
-    }
-
-    @Test
-    public void testDefaultValidatorBean(Validator validator) throws Throwable {
-        Validator validator1 = Utils.deserialize(Utils.serialize(validator));
-        Assert.assertTrue(checkValidator(validator1));
-    }
-
-    @Test
-    public void testDefaultValidatorFactoryBean(ValidatorFactory validatorFactory) throws Throwable {
-        ValidatorFactory validatorFactory1 = Utils.deserialize(Utils.serialize(validatorFactory));
-        Assert.assertTrue(checkValidatorFactory(validatorFactory1));
     }
 
     @Test

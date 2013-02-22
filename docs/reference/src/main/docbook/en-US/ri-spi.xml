@@ -467,6 +467,11 @@
             container should provide an implementation of <literal>ValidationServices</literal>.
          </para>
 
+         <para>
+            <literal>ValidationServices</literal> implementation is optional and should only be provided if the Bean
+            Validation implementation itself does not provide built-in beans.
+         </para>
+
       </section>
       
       <section>

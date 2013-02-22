@@ -32,10 +32,6 @@ import java.io.Serializable;
 @SessionScoped
 public class Consumer implements Serializable {
 
-    @Inject
-    Validator validator;
-    @Inject
-    ValidatorFactory validatorFactory;
     // Not working incontainer as there is no principal
     //@Inject Principal principal;
     @Inject
@@ -68,8 +64,6 @@ public class Consumer implements Serializable {
         // Not working incontainer as there is no principal
         //assert Checker.checkPrincipal(principal);
         Assert.assertTrue(Checker.checkUserTransaction(userTransaction));
-        Assert.assertTrue(Checker.checkValidator(validator));
-        Assert.assertTrue(Checker.checkValidatorFactory(validatorFactory));
         Assert.assertTrue(Checker.checkInstance(cow));
         Assert.assertTrue(Checker.checkEvent(event, observer));
     }
