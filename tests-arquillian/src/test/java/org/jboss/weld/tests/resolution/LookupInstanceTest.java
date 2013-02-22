@@ -16,6 +16,12 @@
  */
 package org.jboss.weld.tests.resolution;
 
+import static org.junit.Assert.assertEquals;
+
+import javax.enterprise.inject.Instance;
+import javax.enterprise.util.TypeLiteral;
+import javax.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -24,14 +30,8 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.test.util.Utils;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import javax.enterprise.inject.Instance;
-import javax.enterprise.util.TypeLiteral;
-import javax.inject.Inject;
-import java.util.List;
 
 @RunWith(Arquillian.class)
 public class LookupInstanceTest {
@@ -45,16 +45,13 @@ public class LookupInstanceTest {
     @Inject
     private BeanManagerImpl beanManager;
 
+    @SuppressWarnings("serial")
     @Test
     public void testLookupInstance() throws Exception {
-        try {
-            Utils.getReference(
-                    beanManager,
-                    new TypeLiteral<Instance<List<?>>>() {
-                    }.getRawType(), DefaultLiteral.INSTANCE);
-                    Assert.fail();
-        } catch (IllegalArgumentException expected) {
-        }
+        Instance<Object> instance = Utils.getReference(beanManager, new TypeLiteral<Instance<Object>>() {
+        }.getRawType(), DefaultLiteral.INSTANCE);
+        Foo foo = instance.select(Foo.class).get();
+        assertEquals("foo", foo.getName());
     }
 
 }

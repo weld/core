@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.bean.builtin;
 
-import static org.jboss.weld.logging.messages.BeanMessage.DYNAMIC_LOOKUP_OF_BUILT_IN_NOT_ALLOWED;
-
 import java.util.List;
 
 import javax.enterprise.context.spi.CreationalContext;
@@ -25,7 +23,6 @@ import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.bean.DecorableBean;
-import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Decorators;
@@ -47,12 +44,7 @@ public abstract class AbstractDecorableBuiltInBean<T> extends AbstractBuiltInBea
 
     @Override
     public T create(CreationalContext<T> creationalContext) {
-        InjectionPoint ip = cip.peek();
-        // some of the built-in beans require injection point metadata while other can do without it
-        if (ip == null && (isInjectionPointMetadataRequired() || !getDecorators(ip).isEmpty())) {
-            injectionPointNotAvailable();
-            return null;
-        }
+        InjectionPoint ip = getInjectionPoint(cip);
 
         List<Decorator<?>> decorators = getDecorators(ip);
         T instance = newInstance(ip, creationalContext);
@@ -68,17 +60,13 @@ public abstract class AbstractDecorableBuiltInBean<T> extends AbstractBuiltInBea
 
     protected abstract Class<T> getProxyClass();
 
-    protected boolean isInjectionPointMetadataRequired() {
-        return false;
+    protected InjectionPoint getInjectionPoint(CurrentInjectionPoint cip) {
+        return cip.peek();
     }
 
     @Override
     public Class<?> getBeanClass() {
         return getClass();
-    }
-
-    protected void injectionPointNotAvailable() {
-        throw new IllegalArgumentException(DYNAMIC_LOOKUP_OF_BUILT_IN_NOT_ALLOWED, toString());
     }
 
     @Override

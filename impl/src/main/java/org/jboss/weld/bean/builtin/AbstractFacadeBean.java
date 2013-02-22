@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.bean.builtin;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
 
@@ -24,6 +26,8 @@ import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.bean.proxy.ProxyFactory;
+import org.jboss.weld.injection.CurrentInjectionPoint;
+import org.jboss.weld.injection.EmptyInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
@@ -62,7 +66,13 @@ public abstract class AbstractFacadeBean<T> extends AbstractDecorableBuiltInBean
     }
 
     @Override
-    protected boolean isInjectionPointMetadataRequired() {
-        return true;
+    protected InjectionPoint getInjectionPoint(CurrentInjectionPoint cip) {
+        InjectionPoint ip = super.getInjectionPoint(cip);
+        if (ip == null) {
+            ip = new DynamicLookupInjectionPoint(EmptyInjectionPoint.INSTANCE, getDefaultType(), Collections.<Annotation>emptySet());
+        }
+        return ip;
     }
+
+    protected abstract Type getDefaultType();
 }

@@ -18,9 +18,12 @@ package org.jboss.weld.bean.builtin;
 
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
+import java.lang.reflect.Type;
+
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.event.EventImpl;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -28,6 +31,8 @@ import org.jboss.weld.manager.BeanManagerImpl;
 public class EventBean extends AbstractFacadeBean<Event<?>> {
 
     private static final Class<Event<?>> TYPE = cast(Event.class);
+    @SuppressWarnings("serial")
+    private static final Type DEFAULT_TYPE = new TypeLiteral<Event<Object>>(){}.getType();
 
     public EventBean(BeanManagerImpl manager) {
         super(Event.class.getSimpleName(), manager, TYPE);
@@ -46,6 +51,11 @@ public class EventBean extends AbstractFacadeBean<Event<?>> {
     @Override
     public String toString() {
         return "Implicit Bean [javax.enterprise.event.Event] with qualifiers [@Default]";
+    }
+
+    @Override
+    protected Type getDefaultType() {
+        return DEFAULT_TYPE;
     }
 
 }

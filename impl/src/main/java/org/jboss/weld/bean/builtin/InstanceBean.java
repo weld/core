@@ -27,18 +27,19 @@ import javax.inject.Provider;
 
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.collections.Arrays2;
+import org.jboss.weld.util.reflection.Reflections;
 
 public class InstanceBean extends AbstractFacadeBean<Instance<?>> {
-    private static final Class<Instance<?>> INSTANCE_TYPE = new TypeLiteral<Instance<?>>() {
+    private static final Type INSTANCE_TYPE = new TypeLiteral<Instance<Object>>() {
         private static final long serialVersionUID = -1246199714407637856L;
-    }.getRawType();
-    private static final Class<Provider<?>> PROVIDER_TYPE = new TypeLiteral<Provider<?>>() {
+    }.getType();
+    private static final Type PROVIDER_TYPE = new TypeLiteral<Provider<Object>>() {
         private static final long serialVersionUID = -5256050387550468441L;
-    }.getRawType();
+    }.getType();
     private static final Set<Type> DEFAULT_TYPES = Arrays2.<Type>asSet(INSTANCE_TYPE, PROVIDER_TYPE, Object.class);
 
     public InstanceBean(BeanManagerImpl manager) {
-        super(Instance.class.getSimpleName(), manager, INSTANCE_TYPE);
+        super(Instance.class.getSimpleName(), manager, Reflections.<Class<Instance<?>>>cast(Instance.class));
     }
 
     @Override
@@ -58,6 +59,11 @@ public class InstanceBean extends AbstractFacadeBean<Instance<?>> {
     @Override
     public String toString() {
         return "Implicit Bean [javax.enterprise.inject.Instance] with qualifiers [@Default]";
+    }
+
+    @Override
+    protected Type getDefaultType() {
+        return INSTANCE_TYPE;
     }
 
 }

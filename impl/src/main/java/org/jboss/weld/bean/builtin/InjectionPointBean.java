@@ -16,9 +16,12 @@
  */
 package org.jboss.weld.bean.builtin;
 
+import static org.jboss.weld.logging.messages.BeanMessage.DYNAMIC_LOOKUP_OF_BUILT_IN_NOT_ALLOWED;
+
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.InjectionPoint;
 
+import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.bean.SerializableForwardingInjectionPoint;
@@ -58,9 +61,14 @@ public class InjectionPointBean extends AbstractStaticallyDecorableBuiltInBean<I
 
     }
 
+
     @Override
-    protected boolean isInjectionPointMetadataRequired() {
-        return true;
+    protected InjectionPoint getInjectionPoint(CurrentInjectionPoint cip) {
+        InjectionPoint ip = super.getInjectionPoint(cip);
+        if (ip == null) {
+            throw new IllegalArgumentException(DYNAMIC_LOOKUP_OF_BUILT_IN_NOT_ALLOWED, toString());
+        }
+        return ip;
     }
 
     @Override
