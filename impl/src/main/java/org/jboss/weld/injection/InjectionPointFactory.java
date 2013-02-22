@@ -226,8 +226,7 @@ public class InjectionPointFactory {
                 InjectionServices injectionServices = manager.getServices().get(InjectionServices.class);
 
                 if (injectionServices != null || specializedInjectionServices != null) {
-                    Class<? extends Annotation> markerAnnotation = getMarkerAnnotation(api);
-                    Set<FieldInjectionPoint<?, ?>> fieldInjectionPoints = getFieldInjectionPointsWithSpecialAnnotation(bean, type, markerAnnotation, manager);
+                    Set<FieldInjectionPoint<?, ?>> fieldInjectionPoints = getFieldInjectionPointsWithSpecialAnnotation(bean, type, getMarkerAnnotation(api), manager);
                     if (!fieldInjectionPoints.isEmpty()) {
                         if (injectionServices != null) {
                             for (FieldInjectionPoint<?, ?> fieldInjectionPoint : fieldInjectionPoints) {
@@ -238,7 +237,7 @@ public class InjectionPointFactory {
                         if (specializedInjectionServices != null) {
                             Set<ResourceInjectionPoint<?, ?>> resourceInjectionPoints = new HashSet<ResourceInjectionPoint<?,?>>(fieldInjectionPoints.size());
                             for (FieldInjectionPoint<?, ?> fieldInjectionPoint : fieldInjectionPoints) {
-                                resourceInjectionPoints.add(createResourceInjectionPoint(fieldInjectionPoint, markerAnnotation, specializedInjectionServices, api));
+                                resourceInjectionPoints.add(createResourceInjectionPoint(fieldInjectionPoint, specializedInjectionServices, api));
                             }
                             return resourceInjectionPoints;
                         }
@@ -248,7 +247,7 @@ public class InjectionPointFactory {
             return Collections.emptySet();
         }
 
-        protected abstract ResourceInjectionPoint<?, ?> createResourceInjectionPoint(FieldInjectionPoint<?, ?> ip, Class<? extends Annotation> annotation, S specializedInjectionServices, A api);
+        protected abstract ResourceInjectionPoint<?, ?> createResourceInjectionPoint(FieldInjectionPoint<?, ?> ip, S specializedInjectionServices, A api);
 
         protected abstract Class<? extends Annotation> getMarkerAnnotation(A api);
     }
@@ -256,7 +255,7 @@ public class InjectionPointFactory {
     public Set<ResourceInjectionPoint<?, ?>> getEjbInjectionPoints(Bean<?> declaringBean, EnhancedAnnotatedType<?> type, BeanManagerImpl manager) {
         return new ResourceInjectionPointDiscovery<EjbInjectionServices, EJBApiAbstraction>() {
             @Override
-            protected ResourceInjectionPoint<?, ?> createResourceInjectionPoint(FieldInjectionPoint<?, ?> ip, Class<? extends Annotation> annotation, EjbInjectionServices specializedInjectionServices, EJBApiAbstraction api) {
+            protected ResourceInjectionPoint<?, ?> createResourceInjectionPoint(FieldInjectionPoint<?, ?> ip, EjbInjectionServices specializedInjectionServices, EJBApiAbstraction api) {
                 return ResourceInjectionPoint.forEjb(ip, specializedInjectionServices);
             }
 
@@ -270,7 +269,7 @@ public class InjectionPointFactory {
     public Set<ResourceInjectionPoint<?, ?>> getPersistenceContextInjectionPoints(Bean<?> declaringBean, EnhancedAnnotatedType<?> type, BeanManagerImpl manager) {
         return new ResourceInjectionPointDiscovery<JpaInjectionServices, PersistenceApiAbstraction>() {
             @Override
-            protected ResourceInjectionPoint<?, ?> createResourceInjectionPoint(FieldInjectionPoint<?, ?> ip, Class<? extends Annotation> annotation, JpaInjectionServices specializedInjectionServices, PersistenceApiAbstraction api) {
+            protected ResourceInjectionPoint<?, ?> createResourceInjectionPoint(FieldInjectionPoint<?, ?> ip, JpaInjectionServices specializedInjectionServices, PersistenceApiAbstraction api) {
                 return ResourceInjectionPoint.forPersistenceContext(ip, specializedInjectionServices, api);
             }
 
@@ -284,7 +283,7 @@ public class InjectionPointFactory {
     public Set<ResourceInjectionPoint<?, ?>> getPersistenceUnitInjectionPoints(Bean<?> declaringBean, EnhancedAnnotatedType<?> type, BeanManagerImpl manager) {
         return new ResourceInjectionPointDiscovery<JpaInjectionServices, PersistenceApiAbstraction>() {
             @Override
-            protected ResourceInjectionPoint<?, ?> createResourceInjectionPoint(FieldInjectionPoint<?, ?> ip, Class<? extends Annotation> annotation, JpaInjectionServices specializedInjectionServices, PersistenceApiAbstraction api) {
+            protected ResourceInjectionPoint<?, ?> createResourceInjectionPoint(FieldInjectionPoint<?, ?> ip, JpaInjectionServices specializedInjectionServices, PersistenceApiAbstraction api) {
                 return ResourceInjectionPoint.forPersistenceUnit(ip, specializedInjectionServices, api);
             }
 
@@ -298,7 +297,7 @@ public class InjectionPointFactory {
     public Set<ResourceInjectionPoint<?, ?>> getResourceInjectionPoints(Bean<?> declaringBean, EnhancedAnnotatedType<?> type, BeanManagerImpl manager) {
         return new ResourceInjectionPointDiscovery<ResourceInjectionServices, EJBApiAbstraction>() {
             @Override
-            protected ResourceInjectionPoint<?, ?> createResourceInjectionPoint(FieldInjectionPoint<?, ?> ip, Class<? extends Annotation> annotation, ResourceInjectionServices specializedInjectionServices, EJBApiAbstraction api) {
+            protected ResourceInjectionPoint<?, ?> createResourceInjectionPoint(FieldInjectionPoint<?, ?> ip, ResourceInjectionServices specializedInjectionServices, EJBApiAbstraction api) {
                 return ResourceInjectionPoint.forResource(ip, specializedInjectionServices);
             }
 
@@ -312,7 +311,7 @@ public class InjectionPointFactory {
     public Set<ResourceInjectionPoint<?, ?>> getWebServiceRefInjectionPoints(Bean<?> declaringBean, EnhancedAnnotatedType<?> type, BeanManagerImpl manager) {
         return new ResourceInjectionPointDiscovery<JaxwsInjectionServices, WSApiAbstraction>() {
             @Override
-            protected ResourceInjectionPoint<?, ?> createResourceInjectionPoint(FieldInjectionPoint<?, ?> ip, Class<? extends Annotation> annotation, JaxwsInjectionServices specializedInjectionServices, WSApiAbstraction api) {
+            protected ResourceInjectionPoint<?, ?> createResourceInjectionPoint(FieldInjectionPoint<?, ?> ip, JaxwsInjectionServices specializedInjectionServices, WSApiAbstraction api) {
                 return ResourceInjectionPoint.forWebServiceRef(ip, specializedInjectionServices);
             }
 
