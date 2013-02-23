@@ -24,18 +24,11 @@ package org.jboss.weld.servlet;
 
 import static org.jboss.weld.logging.Category.SERVLET;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.ConversationMessage.CLEANING_UP_TRANSIENT_CONVERSATION;
-import static org.jboss.weld.logging.messages.JsfMessage.CLEANING_UP_CONVERSATION;
-import static org.jboss.weld.logging.messages.JsfMessage.FOUND_CONVERSATION_FROM_REQUEST;
-import static org.jboss.weld.logging.messages.JsfMessage.RESUMING_CONVERSATION;
 import static org.jboss.weld.logging.messages.ServletMessage.ONLY_HTTP_SERVLET_LIFECYCLE_DEFINED;
 import static org.jboss.weld.logging.messages.ServletMessage.REQUEST_DESTROYED;
 import static org.jboss.weld.logging.messages.ServletMessage.REQUEST_INITIALIZED;
-import static org.jboss.weld.util.reflection.Reflections.cast;
+import static org.jboss.weld.servlet.ConversationFilter.CONVERSATION_FILTER_INITIALIZED;
 
-import javax.enterprise.context.spi.Context;
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.CDI;
 import javax.inject.Inject;
 import javax.servlet.ServletContextEvent;
@@ -46,9 +39,7 @@ import javax.servlet.http.HttpSessionEvent;
 import org.jboss.weld.Container;
 import org.jboss.weld.bean.builtin.BeanManagerProxy;
 import org.jboss.weld.bean.builtin.ee.ServletContextBean;
-import org.jboss.weld.context.ConversationContext;
 import org.jboss.weld.context.cache.RequestScopedBeanCache;
-import org.jboss.weld.context.http.HttpConversationContext;
 import org.jboss.weld.context.http.HttpRequestContext;
 import org.jboss.weld.context.http.HttpRequestContextImpl;
 import org.jboss.weld.context.http.HttpSessionContext;
@@ -75,18 +66,16 @@ import org.slf4j.cal10n.LocLogger;
  */
 public class WeldListener extends AbstractServletListener {
 
-    private static final String NO_CID = "nocid";
-    private static final String CONVERSATION_PROPAGATION = "conversationPropagation";
-    private static final String CONVERSATION_PROPAGATION_NONE = "none";
-    private static final String CONTEXT_ACTIVATED_IN_REQUEST = WeldListener.class.getName() + "CONTEXT_ACTIVATED_IN_REQUEST";
-
     private static final String HTTP_SESSION_EVENT = "org.jboss.weld." + HttpSessionEvent.class.getName();
 
     private static final LocLogger log = loggerFactory().getLogger(SERVLET);
 
-    private transient HttpSessionContext sessionContextCache;
-    private transient HttpRequestContext requestContextCache;
-    private transient HttpConversationContext conversationContextCache;
+    private HttpSessionContext sessionContextCache;
+    private HttpRequestContext requestContextCache;
+
+    private ConversationContextActivator conversationContextActivator;
+
+    private volatile Boolean conversationFilterRegistered;
 
     @Inject
     private BeanManagerImpl beanManager;
@@ -105,13 +94,6 @@ public class WeldListener extends AbstractServletListener {
         return requestContextCache;
     }
 
-    private HttpConversationContext conversationContext() {
-        if (conversationContextCache == null) {
-            this.conversationContextCache = Container.instance().deploymentManager().instance().select(HttpConversationContext.class).get();
-        }
-        return conversationContextCache;
-    }
-
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         if (beanManager == null) {
@@ -119,6 +101,7 @@ public class WeldListener extends AbstractServletListener {
             beanManager = BeanManagerProxy.unwrap(CDI.current().getBeanManager());
         }
         beanManager.getAccessibleLenientObserverNotifier().fireEvent(sce, InitializedLiteral.APPLICATION);
+        this.conversationContextActivator = new ConversationContextActivator(beanManager, sce.getServletContext());
     }
 
     @Override
@@ -163,7 +146,7 @@ public class WeldListener extends AbstractServletListener {
                 HttpServletRequest request = (HttpServletRequest) event.getServletRequest();
 
                 try {
-                    deactivateConversations(event);
+                    conversationContextActivator.deactivateConversationContext(request);
                     requestContext().invalidate();
                     requestContext().deactivate();
                     // fire @Destroyed(RequestScoped.class)
@@ -176,7 +159,7 @@ public class WeldListener extends AbstractServletListener {
                 } finally {
                     requestContext().dissociate(request);
                     sessionContext().dissociate(request);
-                    conversationContext().dissociate(request);
+                    conversationContextActivator.disassociateConversationContext(request);
                     ServletContextBean.cleanup();
                 }
             } else {
@@ -185,32 +168,15 @@ public class WeldListener extends AbstractServletListener {
         }
     }
 
-    /**
-     * Execute after the Render Response phase.
-     */
-    private void deactivateConversations(ServletRequestEvent event) {
-        ConversationContext conversationContext = instance().select(HttpConversationContext.class).get();
-        boolean isTransient = conversationContext.getCurrentConversation().isTransient();
-        if (log.isTraceEnabled()) {
-            if (isTransient) {
-                log.trace(CLEANING_UP_TRANSIENT_CONVERSATION);
-            } else {
-                log.trace(CLEANING_UP_CONVERSATION, conversationContext.getCurrentConversation().getId());
-            }
-        }
-        conversationContext.invalidate();
-        if (conversationContext.isActive()) {
-            // Only deactivate the context if one is already active, otherwise we get Exceptions
-            conversationContext.deactivate();
-        }
-        if (isTransient) {
-            beanManager.getAccessibleLenientObserverNotifier().fireEvent(event, DestroyedLiteral.CONVERSATION);
-        }
-    }
-
     @Override
     public void requestInitialized(ServletRequestEvent event) {
         log.trace(REQUEST_INITIALIZED, event.getServletRequest());
+
+        if (conversationFilterRegistered == null) {
+            Object value = event.getServletContext().getAttribute(CONVERSATION_FILTER_INITIALIZED);
+            conversationFilterRegistered = value != null && value.equals(Boolean.TRUE);
+        }
+
         // JBoss AS will still start the deployment even if Weld fails to start
         if (Container.available()) {
             if (event.getServletRequest() instanceof HttpServletRequest) {
@@ -220,21 +186,17 @@ public class WeldListener extends AbstractServletListener {
 
                 requestContext().associate(request);
                 sessionContext().associate(request);
-                conversationContext().associate(request);
+                if (!conversationFilterRegistered) {
+                    conversationContextActivator.associateConversationContext(request);
+                }
 
                 requestContext().activate();
                 sessionContext().activate();
 
-                /*
-                 * This is just wrong.
-                 * If an exception occurs during conversation activation (e.g. NonexistentConversationException), the
-                 * requestDestroyed callback is never invoked (per spec) to cleanup the threadlocals.
-                 *
-                 * Also, there is no way for an application to catch the application and handle it gracefully. This needs to be
-                 * fixed/clarified in the CDI spec (CDI-206).
-                 */
                 try {
-                    activateConversations(event);
+                    if (!conversationFilterRegistered) {
+                        conversationContextActivator.activateConversationContext(request);
+                    }
                     beanManager.getAccessibleLenientObserverNotifier().fireEvent(event, InitializedLiteral.REQUEST);
                 } catch (RuntimeException e) {
                     requestDestroyed(event);
@@ -245,69 +207,4 @@ public class WeldListener extends AbstractServletListener {
             }
         }
     }
-
-    // Conversation handling
-
-    private void activateConversations(ServletRequestEvent event) {
-        HttpServletRequest request = (HttpServletRequest) event.getServletRequest();
-        HttpConversationContext conversationContext = instance().select(HttpConversationContext.class).get();
-        String cid = getConversationId(request, conversationContext);
-        log.debug(RESUMING_CONVERSATION, cid);
-
-        /*
-         * Don't try to reactivate the ConversationContext if we have already activated it for this request WELD-877
-         */
-        if (!isContextActivatedInRequest(request)) {
-            setContextActivatedInRequest(request);
-            conversationContext.activate(cid);
-            if (cid == null) { // transient conversation
-                beanManager.getAccessibleLenientObserverNotifier().fireEvent(event, InitializedLiteral.CONVERSATION);
-            }
-        } else {
-            /*
-             * We may have previously been associated with a ConversationContext, but the reference to that context may have
-             * been lost during a Servlet forward WELD-877
-             */
-            conversationContext.dissociate(request);
-            conversationContext.associate(request);
-            conversationContext.activate(cid);
-        }
-    }
-
-    private void setContextActivatedInRequest(HttpServletRequest request) {
-        request.setAttribute(CONTEXT_ACTIVATED_IN_REQUEST, true);
-    }
-
-    private boolean isContextActivatedInRequest(HttpServletRequest request) {
-        Object result = request.getAttribute(CONTEXT_ACTIVATED_IN_REQUEST);
-        if (result == null) {
-            return false;
-        }
-        return (Boolean) result;
-    }
-
-    private static Instance<Context> instance() {
-        return Container.instance().deploymentManager().instance().select(Context.class);
-    }
-
-    /**
-     * Gets the propagated conversation id parameter from the request
-     *
-     * @return The conversation id (or null if not found)
-     */
-    public static String getConversationId(HttpServletRequest request, ConversationContext conversationContext) {
-        if (request.getParameter(NO_CID) != null) {
-            return null; // ignore cid; WELD-919
-        }
-
-        if (CONVERSATION_PROPAGATION_NONE.equals(request.getParameter(CONVERSATION_PROPAGATION))) {
-            return null; // conversationPropagation=none (CDI-135)
-        }
-
-        String cidName = conversationContext.getParameterName();
-        String cid = request.getParameter(cidName);
-        log.trace(FOUND_CONVERSATION_FROM_REQUEST, cid);
-        return cid;
-    }
-
 }

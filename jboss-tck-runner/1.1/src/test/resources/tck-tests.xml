@@ -72,12 +72,6 @@
                     <exclude name="testEjbInjectionPointGetBean"/>
                 </methods>
             </class>
-            <!-- WELD-1330 (CDI-206) -->
-            <class name="org.jboss.cdi.tck.tests.context.conversation.ClientConversationContextTest">
-                <methods>
-                    <exclude name="testNonexistentConversationExceptionThrown" />
-                </methods>
-            </class>
             <!-- WELD-1343 -->
             <class name="org.jboss.cdi.tck.tests.event.observer.ObserverNotificationTest">
                 <methods>
