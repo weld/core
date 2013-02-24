@@ -101,7 +101,7 @@ public class BeforeBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implemen
         addAnnotatedType(source, null);
     }
 
-    // @Override TODO: waiting for CDI-83
+    @Override
     public void addAnnotatedType(AnnotatedType<?> source, String id) {
         if (Beans.isVetoed(source)) {
             return;

@@ -16,34 +16,44 @@
  */
 package org.jboss.weld.tests.serialization.annotated;
 
+import static org.jboss.weld.util.reflection.Reflections.cast;
+import static org.junit.Assert.assertTrue;
+
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.IdentifiedAnnotatedType;
+
+import org.jboss.weld.annotated.slim.backed.BackedAnnotatedType;
+import org.jboss.weld.annotated.slim.unbacked.UnbackedAnnotatedType;
 
 public class FooExtension implements Extension {
 
     public static final String FOO_ID = FooExtension.class.getName() + "." + Foo.class.getName();
 
     void registerAnotherFoo(@Observes BeforeBeanDiscovery event, BeanManager manager) {
-        event.addAnnotatedType(wrap(manager.createAnnotatedType(Foo.class)));
+        event.addAnnotatedType(manager.createAnnotatedType(Foo.class), FOO_ID);
     }
 
-    protected <X> IdentifiedAnnotatedType<X> wrap(final AnnotatedType<X> type) {
-        return new ForwardingIdentifiedAnnotatedType<X>(type) {
-            @Override
-            public String getId() {
-                return FOO_ID;
-            }
-        };
+    private AnnotatedType<Foo> backedAnnotatedType;
+    private AnnotatedType<Foo> unbackedAnnotatedType;
+
+    public void observeFinalAnnotatedTypes(@Observes AfterBeanDiscovery event) {
+        backedAnnotatedType = cast(event.getAnnotatedType(Foo.class, null));
+        assertTrue(backedAnnotatedType instanceof BackedAnnotatedType<?>);
+        unbackedAnnotatedType = cast(event.getAnnotatedType(Foo.class, FOO_ID));
+        assertTrue(unbackedAnnotatedType instanceof UnbackedAnnotatedType<?>);
     }
 
-    private static abstract class ForwardingIdentifiedAnnotatedType<X> extends ForwardingAnnotatedType<X> implements
-            IdentifiedAnnotatedType<X> {
-        public ForwardingIdentifiedAnnotatedType(AnnotatedType<X> delegate) {
-            super(delegate);
-        }
+    public AnnotatedType<Foo> getBackedAnnotatedType() {
+        return backedAnnotatedType;
     }
+
+    public AnnotatedType<Foo> getUnbackedAnnotatedType() {
+        return unbackedAnnotatedType;
+    }
+
+
 }

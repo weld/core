@@ -21,7 +21,6 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 
 import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.IdentifiedAnnotatedType;
 
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 
@@ -30,7 +29,7 @@ import org.jboss.weld.annotated.slim.SlimAnnotatedType;
  *
  * @author Pete Muir
  */
-public interface EnhancedAnnotatedType<T> extends EnhancedAnnotated<T, Class<T>>, IdentifiedAnnotatedType<T> {
+public interface EnhancedAnnotatedType<T> extends EnhancedAnnotated<T, Class<T>>, AnnotatedType<T> {
 
     /**
      * Gets all fields on the type

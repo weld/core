@@ -196,16 +196,6 @@ public abstract class ForwardingBeanManager implements BeanManager, Serializable
     }
 
     @Override
-    public <T> AnnotatedType<T> getAnnotatedType(Class<T> type, String id) {
-        return delegate().getAnnotatedType(type, id);
-    }
-
-    @Override
-    public <T> Iterable<AnnotatedType<T>> getAnnotatedTypes(Class<T> type) {
-        return delegate().getAnnotatedTypes(type);
-    }
-
-    @Override
     public <T> InjectionTarget<T> createInjectionTarget(AnnotatedType<T> type) {
         return delegate().createInjectionTarget(type);
     }

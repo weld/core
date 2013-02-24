@@ -40,7 +40,7 @@ import org.junit.runner.RunWith;
 public class BackedAnnotatedTypeSerializationTest {
 
     @Inject
-    private BeanManagerImpl manager;
+    protected FooExtension extension;
 
     @Deployment
     public static Archive<?> getDeployment() {
@@ -49,7 +49,7 @@ public class BackedAnnotatedTypeSerializationTest {
     }
 
     public AnnotatedType<Foo> getAnnotatedType() {
-        return manager.getAnnotatedType(Foo.class, null);
+        return extension.getBackedAnnotatedType();
     }
 
     @Test

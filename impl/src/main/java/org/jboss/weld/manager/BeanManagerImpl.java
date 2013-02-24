@@ -89,8 +89,6 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMember;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
-import org.jboss.weld.annotated.slim.SlimAnnotatedType;
-import org.jboss.weld.annotated.slim.SlimAnnotatedTypeStore;
 import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.bean.DisposalMethod;
 import org.jboss.weld.bean.NewBean;
@@ -1468,21 +1466,5 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     @Override
     public int getInterceptorBindingHashCode(Annotation interceptorBinding) {
         return Bindings.getInterceptorBindingHashCode(interceptorBinding, services.get(MetaAnnotationStore.class));
-    }
-
-    public <T> Collection<SlimAnnotatedType<T>> getSlimAnnotatedTypes(Class<T> type) {
-        Preconditions.checkArgumentNotNull(type, "type");
-        return getServices().get(SlimAnnotatedTypeStore.class).get(type);
-    }
-
-    @Override
-    public <T> AnnotatedType<T> getAnnotatedType(Class<T> type, String id) {
-        Preconditions.checkArgumentNotNull(type, "type");
-        return getServices().get(SlimAnnotatedTypeStore.class).get(type, id);
-    }
-
-    @Override
-    public <T> Iterable<AnnotatedType<T>> getAnnotatedTypes(Class<T> type) {
-        return cast(getSlimAnnotatedTypes(type));
     }
 }

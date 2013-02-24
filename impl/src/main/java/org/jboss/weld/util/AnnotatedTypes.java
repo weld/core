@@ -17,20 +17,6 @@
 package org.jboss.weld.util;
 
 import static org.jboss.weld.util.reflection.Reflections.cast;
-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
-
-import javax.enterprise.inject.spi.Annotated;
-import javax.enterprise.inject.spi.AnnotatedCallable;
-import javax.enterprise.inject.spi.AnnotatedConstructor;
-import javax.enterprise.inject.spi.AnnotatedField;
-import javax.enterprise.inject.spi.AnnotatedMember;
-import javax.enterprise.inject.spi.AnnotatedMethod;
-import javax.enterprise.inject.spi.AnnotatedParameter;
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.IdentifiedAnnotatedType;
-
-import org.jboss.weld.util.reflection.Reflections;
-import org.jboss.weld.util.reflection.SecureReflections;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -46,6 +32,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import javax.enterprise.inject.spi.Annotated;
+import javax.enterprise.inject.spi.AnnotatedCallable;
+import javax.enterprise.inject.spi.AnnotatedConstructor;
+import javax.enterprise.inject.spi.AnnotatedField;
+import javax.enterprise.inject.spi.AnnotatedMember;
+import javax.enterprise.inject.spi.AnnotatedMethod;
+import javax.enterprise.inject.spi.AnnotatedParameter;
+import javax.enterprise.inject.spi.AnnotatedType;
+
+import org.jboss.weld.util.reflection.Reflections;
+import org.jboss.weld.util.reflection.SecureReflections;
+
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
 /**
  * Class that can take an AnnotatedType and return a unique string
@@ -191,11 +191,7 @@ public class AnnotatedTypes {
      * @return
      */
     public static <X> String createTypeId(AnnotatedType<X> annotatedType) {
-        if (annotatedType instanceof IdentifiedAnnotatedType<?>) {
-            return Reflections.<IdentifiedAnnotatedType<?>>cast(annotatedType).getId();
-        } else {
-            return createTypeId(annotatedType.getJavaClass(), annotatedType.getAnnotations(), annotatedType.getMethods(), annotatedType.getFields(), annotatedType.getConstructors());
-        }
+        return createTypeId(annotatedType.getJavaClass(), annotatedType.getAnnotations(), annotatedType.getMethods(), annotatedType.getFields(), annotatedType.getConstructors());
     }
 
     /**

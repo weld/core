@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.bootstrap.events;
 
+import static org.jboss.weld.util.reflection.Reflections.cast;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -23,12 +25,14 @@ import java.util.Map;
 
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
+import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.ObserverMethod;
 
+import org.jboss.weld.annotated.slim.SlimAnnotatedTypeStore;
 import org.jboss.weld.bean.CustomDecoratorWrapper;
 import org.jboss.weld.bean.attributes.ExternalBeanAttributesFactory;
 import org.jboss.weld.bootstrap.BeanDeployment;
@@ -38,6 +42,7 @@ import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Observers;
+import org.jboss.weld.util.Preconditions;
 import org.jboss.weld.util.bean.IsolatedForwardingBean;
 import org.jboss.weld.util.bean.IsolatedForwardingDecorator;
 import org.jboss.weld.util.bean.IsolatedForwardingInterceptor;
@@ -51,7 +56,10 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
 
     protected AfterBeanDiscoveryImpl(BeanManagerImpl beanManager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, Collection<ContextHolder<? extends Context>> contexts, EnablementBuilder enablementBuilder) {
         super(beanManager, AfterBeanDiscovery.class, beanDeployments, deployment, contexts, enablementBuilder);
+        this.slimAnnotatedTypeStore = beanManager.getServices().get(SlimAnnotatedTypeStore.class);
     }
+
+    private final SlimAnnotatedTypeStore slimAnnotatedTypeStore;
 
     public void addDefinitionError(Throwable t) {
         getErrors().add(t);
@@ -113,5 +121,17 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
             return new IsolatedForwardingDecorator.Impl<T>(WrappedBeanHolder.of(attributes, (Decorator<T>) bean));
         }
         return new IsolatedForwardingBean.Impl<T>(WrappedBeanHolder.of(attributes, bean));
+    }
+
+    @Override
+    public <T> AnnotatedType<T> getAnnotatedType(Class<T> type, String id) {
+        Preconditions.checkArgumentNotNull(type, "type");
+        return slimAnnotatedTypeStore.get(type, id);
+    }
+
+    @Override
+    public <T> Iterable<AnnotatedType<T>> getAnnotatedTypes(Class<T> type) {
+        Preconditions.checkArgumentNotNull(type, "type");
+        return cast(slimAnnotatedTypeStore.get(type));
     }
 }

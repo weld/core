@@ -199,16 +199,6 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
         return reflectionCache;
     }
 
-    // TODO: remove once IdentifiedAnnotatedType is deprecated
-    @Override
-    public String getId() {
-        String id = identifier.getSuffix();
-        if (id != null) {
-            return id;
-        }
-        return identifier.getClassName();
-    }
-
     @Override
     public AnnotatedTypeIdentifier getIdentifier() {
         return identifier;

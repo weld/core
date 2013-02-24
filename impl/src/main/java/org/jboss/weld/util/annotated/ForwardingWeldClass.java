@@ -194,9 +194,4 @@ public abstract class ForwardingWeldClass<T> extends ForwardingWeldAnnotated<T, 
     public Collection<EnhancedAnnotatedMethod<?, ? super T>> getEnhancedMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType) {
         return delegate().getEnhancedMethodsWithAnnotatedParameters(annotationType);
     }
-
-    @Override
-    public String getId() {
-        return delegate().getId();
-    }
 }

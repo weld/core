@@ -26,12 +26,9 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class UnbackedAnnotatedTypeSerializationTest extends BackedAnnotatedTypeSerializationTest {
 
-    @Inject
-    private BeanManagerImpl manager;
-
     @Override
     public AnnotatedType<Foo> getAnnotatedType() {
-        return manager.getAnnotatedType(Foo.class, FooExtension.FOO_ID);
+        return extension.getUnbackedAnnotatedType();
     }
 
 }

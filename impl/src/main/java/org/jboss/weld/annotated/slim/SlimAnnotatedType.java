@@ -20,7 +20,6 @@ import java.io.ObjectStreamException;
 import java.io.Serializable;
 
 import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.IdentifiedAnnotatedType;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.annotated.Identified;
@@ -33,7 +32,7 @@ import org.jboss.weld.resources.ClassTransformer;
  *
  * @param <T> the type
  */
-public interface SlimAnnotatedType<T> extends IdentifiedAnnotatedType<T>, Identified<AnnotatedTypeIdentifier> {
+public interface SlimAnnotatedType<T> extends AnnotatedType<T>, Identified<AnnotatedTypeIdentifier> {
 
     /**
      * Clear up cached content to save memory. Called after bootstrap is complete.
