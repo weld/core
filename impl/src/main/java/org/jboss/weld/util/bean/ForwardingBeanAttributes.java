@@ -66,11 +66,6 @@ public abstract class ForwardingBeanAttributes<T> implements BeanAttributes<T> {
     }
 
     @Override
-    public boolean isNullable() {
-        return attributes().isNullable();
-    }
-
-    @Override
     public int hashCode() {
         return attributes().hashCode();
     }

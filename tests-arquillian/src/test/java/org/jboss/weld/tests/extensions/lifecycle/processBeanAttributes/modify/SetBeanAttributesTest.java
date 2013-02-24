@@ -47,7 +47,7 @@ public class SetBeanAttributesTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).addPackage(Cat.class.getPackage()).addClass(BeanUtilities.class)
+        return ShrinkWrap.create(BeanArchive.class).alternate(Cat.class).addPackage(Cat.class.getPackage()).addClass(BeanUtilities.class)
                 .addAsServiceProvider(Extension.class, ModifyingExtension.class);
     }
 
@@ -72,6 +72,5 @@ public class SetBeanAttributesTest {
         // other attributes
         assertEquals(ApplicationScoped.class, bean.getScope());
         assertEquals(true, bean.isAlternative());
-        assertEquals(true, bean.isNullable());
     }
 }

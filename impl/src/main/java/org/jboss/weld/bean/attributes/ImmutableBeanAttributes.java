@@ -33,7 +33,6 @@ import org.jboss.weld.util.reflection.Formats;
  */
 public class ImmutableBeanAttributes<T> implements BeanAttributes<T> {
 
-    private final boolean nullable;
     private final Set<Class<? extends Annotation>> stereotypes;
     private final boolean alternative;
     private final String name;
@@ -41,9 +40,8 @@ public class ImmutableBeanAttributes<T> implements BeanAttributes<T> {
     private final Set<Type> types;
     private final Class<? extends Annotation> scope;
 
-    public ImmutableBeanAttributes(boolean nullable, Set<Class<? extends Annotation>> stereotypes, boolean alternative, String name, Set<Annotation> qualifiers, Set<Type> types,
+    public ImmutableBeanAttributes(Set<Class<? extends Annotation>> stereotypes, boolean alternative, String name, Set<Annotation> qualifiers, Set<Type> types,
             Class<? extends Annotation> scope) {
-        this.nullable = nullable;
         this.stereotypes = stereotypes;
         this.alternative = alternative;
         this.name = name;
@@ -56,12 +54,7 @@ public class ImmutableBeanAttributes<T> implements BeanAttributes<T> {
      * Utility constructor used for overriding Bean qualifiers and name for specialization purposes.
      */
     public ImmutableBeanAttributes(Set<Annotation> qualifiers, String name, BeanAttributes<T> attributes) {
-        this(attributes.isNullable(), attributes.getStereotypes(), attributes.isAlternative(), name, qualifiers, attributes.getTypes(), attributes.getScope());
-    }
-
-    @Override
-    public boolean isNullable() {
-        return nullable;
+        this(attributes.getStereotypes(), attributes.isAlternative(), name, qualifiers, attributes.getTypes(), attributes.getScope());
     }
 
     @Override

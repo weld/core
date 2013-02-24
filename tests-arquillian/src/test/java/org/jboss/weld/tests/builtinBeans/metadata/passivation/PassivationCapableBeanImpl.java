@@ -32,12 +32,12 @@ import org.jboss.weld.util.bean.ForwardingBeanAttributes;
  * An implementation of {@link Bean} which delegates to {@link InjectionTarget} and {@link BeanAttributes}. The bean is
  * passivation capable however the {@link PassivationCapableBeanImpl} class is intentionally not {@link Serializable} (it does
  * not have to).
- * 
+ *
  * The container is required to wrap this non-serializable instance with a serialization proxy in order to make the bean a
  * passivation capable dependency.
- * 
+ *
  * @author Jozef Hartinger
- * 
+ *
  * @param <T>
  */
 public class PassivationCapableBeanImpl<T> extends ForwardingBeanAttributes<T> implements Bean<T>, PassivationCapable {
@@ -87,5 +87,10 @@ public class PassivationCapableBeanImpl<T> extends ForwardingBeanAttributes<T> i
     @Override
     protected BeanAttributes<T> attributes() {
         return attributes;
+    }
+
+    @Override
+    public boolean isNullable() {
+        return false;
     }
 }

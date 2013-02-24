@@ -66,7 +66,6 @@ public class VerifyValuesTest {
         // name
         verifyName(attributes, "alpha");
         assertTrue(attributes.isAlternative());
-        assertTrue(attributes.isNullable());
         verifyStereotypes(attributes, AlphaStereotype.class);
         verifyQualifierTypes(attributes, AlphaQualifier.class, Named.class, Any.class);
         verifyTypes(attributes, Object.class, Alpha.class);
@@ -81,7 +80,6 @@ public class VerifyValuesTest {
         // name
         verifyName(attributes, "createBravo");
         assertTrue(attributes.isAlternative());
-        assertTrue(attributes.isNullable());
         verifyStereotypes(attributes, AlphaStereotype.class);
         verifyQualifierTypes(attributes, BravoQualifier.class, Named.class, Any.class);
         verifyTypes(attributes, BravoInterface.class, Object.class);
@@ -96,7 +94,6 @@ public class VerifyValuesTest {
         // name
         verifyName(attributes, "charlie");
         assertFalse(attributes.isAlternative());
-        assertTrue(attributes.isNullable());
         verifyStereotypes(attributes, AlphaStereotype.class);
         verifyQualifierTypes(attributes, CharlieQualifier.class, Named.class, Any.class);
         verifyTypes(attributes, Object.class, Charlie.class, CharlieInterface.class);

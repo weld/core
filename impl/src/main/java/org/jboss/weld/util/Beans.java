@@ -310,15 +310,6 @@ public class Beans {
         return annotated.isAnnotationPresent(Alternative.class) || mergedStereotypes.isAlternative();
     }
 
-    /**
-     * Is nullable.
-     *
-     * @return true if nullable, false otherwise
-     */
-    public static boolean isNullable(EnhancedAnnotated<?, ?> annotated) {
-        return !annotated.isPrimitive();
-    }
-
     public static <T> EnhancedAnnotatedConstructor<T> getBeanConstructor(EnhancedAnnotatedType<T> type) {
         Collection<EnhancedAnnotatedConstructor<T>> initializerAnnotatedConstructors = type.getEnhancedConstructors(Inject.class);
         log.trace(FOUND_INJECTABLE_CONSTRUCTORS, initializerAnnotatedConstructors, type);
@@ -553,8 +544,6 @@ public class Beans {
         builder.append(attributes.getScope().getName());
         builder.append(",");
         builder.append(attributes.isAlternative());
-        builder.append(",");
-        builder.append(attributes.isNullable());
         builder.append(AnnotatedTypes.createAnnotationCollectionId(attributes.getQualifiers()));
         builder.append(createTypeCollectionId(attributes.getStereotypes()));
         builder.append(createTypeCollectionId(attributes.getTypes()));

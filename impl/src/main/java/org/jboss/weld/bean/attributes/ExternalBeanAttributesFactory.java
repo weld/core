@@ -49,7 +49,7 @@ public class ExternalBeanAttributesFactory {
      */
     public static <T> BeanAttributes<T> of(BeanAttributes<T> source, BeanManager manager) {
         validateBeanAttributes(source, manager);
-        BeanAttributes<T> attributes = new ImmutableBeanAttributes<T>(source.isNullable(), defensiveCopy(source.getStereotypes()), source.isAlternative(), source.getName(),
+        BeanAttributes<T> attributes = new ImmutableBeanAttributes<T>(defensiveCopy(source.getStereotypes()), source.isAlternative(), source.getName(),
                 defensiveCopy(source.getQualifiers()), defensiveCopy(source.getTypes()), source.getScope());
         return attributes;
     }

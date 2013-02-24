@@ -73,22 +73,21 @@ public class BeanAttributesFactory {
         return new BeanAttributesBuilder<T>(annotated, Reflections.<InternalEjbDescriptor<T>> cast(descriptor), manager).build();
     }
 
-    public static <T> BeanAttributes<T> forNewBean(boolean nullable, Set<Type> types, final Class<?> javaClass) {
+    public static <T> BeanAttributes<T> forNewBean(Set<Type> types, final Class<?> javaClass) {
         Set<Annotation> qualifiers = Collections.<Annotation>singleton(new NewLiteral(javaClass));
-        return new ImmutableBeanAttributes<T>(nullable, Collections.<Class<? extends Annotation>> emptySet(), false, null, qualifiers, types, Dependent.class);
+        return new ImmutableBeanAttributes<T>(Collections.<Class<? extends Annotation>> emptySet(), false, null, qualifiers, types, Dependent.class);
     }
 
     public static <T> BeanAttributes<T> forNewManagedBean(EnhancedAnnotatedType<T> weldClass, BeanManagerImpl manager) {
-        return forNewBean(Beans.isNullable(weldClass), SharedObjectCache.instance(manager).getSharedSet(Beans.getTypes(weldClass)), weldClass.getJavaClass());
+        return forNewBean(SharedObjectCache.instance(manager).getSharedSet(Beans.getTypes(weldClass)), weldClass.getJavaClass());
     }
 
     public static <T> BeanAttributes<T> forNewSessionBean(BeanAttributes<T> originalAttributes, Class<?> javaClass) {
-        return forNewBean(originalAttributes.isNullable(), originalAttributes.getTypes(), javaClass);
+        return forNewBean(originalAttributes.getTypes(), javaClass);
     }
 
     private static class BeanAttributesBuilder<T> {
 
-        private boolean nullable;
         private MergedStereotypes<T, ?> mergedStereotypes;
         private boolean alternative;
         private String name;
@@ -99,7 +98,6 @@ public class BeanAttributesFactory {
 
         private BeanAttributesBuilder(EnhancedAnnotated<T, ?> annotated, InternalEjbDescriptor<T> descriptor, BeanManagerImpl manager) {
             this.manager = manager;
-            initNullable(annotated);
             initStereotypes(annotated, manager);
             initAlternative(annotated);
             initName(annotated);
@@ -110,10 +108,6 @@ public class BeanAttributesFactory {
             } else {
                 types = SharedObjectCache.instance(manager).getSharedSet(Beans.getTypes(annotated, descriptor));
             }
-        }
-
-        protected void initNullable(EnhancedAnnotated<?, ?> annotated) {
-            this.nullable = !annotated.isPrimitive();
         }
 
         protected <S> void initStereotypes(EnhancedAnnotated<T, S> annotated, BeanManagerImpl manager) {
@@ -238,7 +232,7 @@ public class BeanAttributesFactory {
         }
 
         public BeanAttributes<T> build() {
-            return new ImmutableBeanAttributes<T>(nullable, mergedStereotypes.getStereotypes(), alternative, name, qualifiers, types, scope);
+            return new ImmutableBeanAttributes<T>(mergedStereotypes.getStereotypes(), alternative, name, qualifiers, types, scope);
         }
     }
 }

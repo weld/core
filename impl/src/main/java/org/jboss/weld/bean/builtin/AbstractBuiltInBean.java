@@ -106,7 +106,7 @@ public abstract class AbstractBuiltInBean<T> extends RIBean<T> {
         private static final Set<Annotation> DEFAULT_QUALIFIERS = Arrays2.asSet(DefaultLiteral.INSTANCE, AnyLiteral.INSTANCE);
 
         public BuiltInBeanAttributes(Class<T> type) {
-            super(true, Collections.<Class<? extends Annotation>> emptySet(), false, null, DEFAULT_QUALIFIERS, immutableSet(Sets.<Type> newHashSet(type, Object.class)), Dependent.class);
+            super(Collections.<Class<? extends Annotation>> emptySet(), false, null, DEFAULT_QUALIFIERS, immutableSet(Sets.<Type> newHashSet(type, Object.class)), Dependent.class);
         }
     }
 

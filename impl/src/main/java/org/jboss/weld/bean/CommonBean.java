@@ -81,6 +81,15 @@ public abstract class CommonBean<T> extends ForwardingBeanAttributes<T> implemen
     }
 
     @Override
+    public boolean isNullable() {
+        /*
+         * This is deprecated and the return type does not really matter anymore.
+         * @see CDI-247
+         */
+        return false;
+    }
+
+    @Override
     public int hashCode() {
         return hashCode;
     }

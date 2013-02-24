@@ -71,4 +71,9 @@ public class ExternalInterceptorBean extends ForwardingBeanAttributes<ExternalIn
     protected BeanAttributes<ExternalInterceptor> attributes() {
         return delegate;
     }
+
+    @Override
+    public boolean isNullable() {
+        return false;
+    }
 }

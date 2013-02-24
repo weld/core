@@ -103,5 +103,10 @@ public class GlueDecoratorExtension implements Extension {
     }
 
     private abstract static class DecoratorImpl<T> extends ForwardingBeanAttributes<T> implements Decorator<T> {
+
+        @Override
+        public boolean isNullable() {
+            return false;
+        }
     }
 }

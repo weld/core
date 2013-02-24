@@ -69,7 +69,6 @@ public class CreateBeanAttributesTest {
         assertEquals(ApplicationScoped.class, attributes.getScope());
         assertEquals("mountain", attributes.getName());
         assertTrue(attributes.isAlternative());
-        assertTrue(attributes.isNullable());
     }
 
     @Test
@@ -83,7 +82,6 @@ public class CreateBeanAttributesTest {
         assertEquals(Dependent.class, attributes.getScope());
         assertEquals("Mount Blanc", attributes.getName());
         assertFalse(attributes.isAlternative());
-        assertTrue(attributes.isNullable());
     }
 
     @Test
@@ -96,7 +94,6 @@ public class CreateBeanAttributesTest {
         assertEquals(Dependent.class, attributes.getScope());
         assertEquals("lake", attributes.getName());
         assertTrue(attributes.isAlternative());
-        assertTrue(attributes.isNullable());
     }
 
     @Test
@@ -162,7 +159,6 @@ public class CreateBeanAttributesTest {
         assertEquals(ApplicationScoped.class, attributes.getScope());
         assertEquals("fish", attributes.getName());
         assertTrue(attributes.isAlternative());
-        assertTrue(attributes.isNullable());
     }
 
     private void verifyDamFish(BeanAttributes<?> attributes) {
@@ -172,7 +168,6 @@ public class CreateBeanAttributesTest {
         assertEquals(Dependent.class, attributes.getScope());
         assertNull(attributes.getName());
         assertFalse(attributes.isAlternative());
-        assertTrue(attributes.isNullable());
     }
 
     private void verifyVolume(BeanAttributes<?> attributes) {
@@ -182,7 +177,6 @@ public class CreateBeanAttributesTest {
         assertEquals(Dependent.class, attributes.getScope());
         assertEquals("volume", attributes.getName());
         assertFalse(attributes.isAlternative());
-        assertFalse(attributes.isNullable());
     }
 
     @Test(expected = IllegalArgumentException.class)

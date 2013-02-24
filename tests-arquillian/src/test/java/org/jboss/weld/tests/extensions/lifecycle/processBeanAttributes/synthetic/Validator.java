@@ -36,15 +36,13 @@ public class Validator {
         verifyTypes(attributes, Object.class, Vehicle.class, Bicycle.class);
         verifyQualifierTypes(attributes, FooQualifier.class, Any.class);
         assertFalse(attributes.isAlternative());
-        assertTrue(attributes.isNullable());
     }
-    
+
     public static void validateAfterModification(BeanAttributes<?> attributes) {
         assertEquals(RequestScoped.class, attributes.getScope());
         verifyStereotypes(attributes, BarStereotype.class);
         verifyTypes(attributes, Object.class, Bicycle.class);
         verifyQualifierTypes(attributes, FooQualifier.class, Any.class);
         assertTrue(attributes.isAlternative());
-        assertTrue(attributes.isNullable());
     }
 }
