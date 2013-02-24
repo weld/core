@@ -18,10 +18,6 @@ package org.jboss.weld.bootstrap.enablement;
 
 import java.util.List;
 
-import javax.enterprise.inject.spi.ProcessModule;
-
-import org.jboss.weld.bootstrap.spi.Metadata;
-
 import com.google.common.collect.ImmutableList;
 
 /**

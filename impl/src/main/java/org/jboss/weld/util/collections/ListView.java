@@ -21,8 +21,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-import org.jboss.weld.bootstrap.events.ProcessModuleImpl;
-
 /**
  * Provides a view of type List<VIEW> for a List<SOURCE> where the conversion between view and source is handled by a provided
  * {@link ViewProvider} implementation. Changes to the view list are reflected within the source list and vice versa.

@@ -20,8 +20,6 @@ import java.util.AbstractSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.jboss.weld.bootstrap.events.ProcessModuleImpl;
-
 /**
  * Provides a view of type Set<VIEW> for a Set<SOURCE> where the conversion between view and source is handled by a provided
  * {@link ViewProvider} implementation. Changes to the view set are reflected within the source set and vice versa.

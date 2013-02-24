@@ -28,20 +28,14 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessBeanAttributes;
-import javax.enterprise.inject.spi.ProcessModule;
 
 import org.jboss.weld.literal.AnyLiteral;
 
 public class ModifyingExtension implements Extension {
 
-    void enableAlternative(@Observes ProcessModule event) {
-        event.getAlternatives().add(Cat.class);
-    }
-
     void modify(@Observes final ProcessBeanAttributes<Cat> event) {
         event.setBeanAttributes(new BeanAttributes<Cat>() {
 
-            @SuppressWarnings("unchecked")
             public Set<Type> getTypes() {
                 return Collections.unmodifiableSet(new HashSet<Type>(Arrays.asList(Object.class, Cat.class)));
             }

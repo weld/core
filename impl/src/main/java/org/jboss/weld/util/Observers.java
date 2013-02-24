@@ -32,7 +32,6 @@ import javax.enterprise.inject.spi.ProcessBeanAttributes;
 import javax.enterprise.inject.spi.ProcessInjectionPoint;
 import javax.enterprise.inject.spi.ProcessInjectionTarget;
 import javax.enterprise.inject.spi.ProcessManagedBean;
-import javax.enterprise.inject.spi.ProcessModule;
 import javax.enterprise.inject.spi.ProcessObserverMethod;
 import javax.enterprise.inject.spi.ProcessProducer;
 import javax.enterprise.inject.spi.ProcessProducerField;
@@ -66,13 +65,11 @@ public class Observers {
         types.add(AfterBeanDiscovery.class);
         types.add(AfterDeploymentValidation.class);
         types.add(BeforeShutdown.class);
-        types.add(ProcessModule.class);
         types.add(ProcessAnnotatedType.class);
         types.add(ProcessSyntheticAnnotatedType.class);
         types.add(ProcessInjectionPoint.class);
         types.add(ProcessInjectionTarget.class);
         types.add(ProcessProducer.class);
-        // TODO ProcessProducerMethod and ProcessProducerField from 11.5.9 missing?
         types.add(ProcessBeanAttributes.class);
         types.add(ProcessBean.class);
         types.add(ProcessSessionBean.class);
@@ -87,7 +84,6 @@ public class Observers {
         canonicalSupertypes.add(AfterBeanDiscovery.class);
         canonicalSupertypes.add(AfterDeploymentValidation.class);
         canonicalSupertypes.add(BeforeShutdown.class);
-        canonicalSupertypes.add(ProcessModule.class);
         canonicalSupertypes.add(ProcessAnnotatedType.class);
         canonicalSupertypes.add(ProcessInjectionPoint.class);
         canonicalSupertypes.add(ProcessInjectionTarget.class);
