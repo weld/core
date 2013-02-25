@@ -91,6 +91,8 @@ public class ProxyFactory<T> {
     private final Bean<?> bean;
     private final Class<?> proxiedBeanType;
 
+    private final boolean usingUnsafeInstantiators;
+
     public static final String CONSTRUCTED_FLAG_NAME = "constructed";
 
     protected static final BytecodeMethodResolver DEFAULT_METHOD_RESOLVER = new DefaultBytecodeMethodResolver();
@@ -146,6 +148,13 @@ public class ProxyFactory<T> {
         Collections.sort(list, ClassHierarchyComparator.INSTANCE);
         additionalInterfaces.clear();
         additionalInterfaces.addAll(list);
+
+        InstantiatorFactory factory = Container.instance().services().get(InstantiatorFactory.class);
+        if (factory != null && factory.useInstantiators() && isCreatingProxy()) {
+            usingUnsafeInstantiators = true;
+        } else {
+            usingUnsafeInstantiators = false;
+        }
     }
 
     static String getProxyName(Class<?> proxiedBeanType, Set<? extends Type> typeClosure, Bean<?> bean) {
@@ -216,6 +225,10 @@ public class ProxyFactory<T> {
         return className;
     }
 
+    protected boolean isCreatingProxy() {
+        return true;
+    }
+
     /**
      * Adds an additional interface that the proxy should implement. The default
      * implementation will be to forward invocations to the bean instance.
@@ -239,8 +252,7 @@ public class ProxyFactory<T> {
         T proxy;
         Class<T> proxyClass = getProxyClass();
         try {
-            InstantiatorFactory factory = Container.instance().services().get(InstantiatorFactory.class);
-            if (factory != null && factory.useInstantiators()) {
+            if (usingUnsafeInstantiators) {
                 proxy = SecureReflections.newUnsafeInstance(proxyClass);
             } else {
                 proxy = SecureReflections.newInstance(proxyClass);
@@ -408,7 +420,7 @@ public class ProxyFactory<T> {
     protected void addConstructors(ClassFile proxyClassType, List<DeferredBytecode> initialValueBytecode) {
         try {
             if (getBeanType().isInterface()) {
-                ConstructorUtils.addDefaultConstructor(proxyClassType, initialValueBytecode);
+                ConstructorUtils.addDefaultConstructor(proxyClassType, initialValueBytecode, usingUnsafeInstantiators);
             } else {
                 boolean constructorFound = false;
                 for (Constructor<?> constructor : SecureReflections.getDeclaredConstructors(getBeanType())) {
@@ -418,7 +430,7 @@ public class ProxyFactory<T> {
                         for (int i = 0; i < exceptions.length; ++i) {
                             exceptions[i] = constructor.getExceptionTypes()[i].getName();
                         }
-                        ConstructorUtils.addConstructor("V", DescriptorUtils.getParameterTypes(constructor.getParameterTypes()), exceptions, proxyClassType, initialValueBytecode);
+                        ConstructorUtils.addConstructor("V", DescriptorUtils.getParameterTypes(constructor.getParameterTypes()), exceptions, proxyClassType, initialValueBytecode, usingUnsafeInstantiators);
                     }
                 }
                 if (!constructorFound) {
@@ -436,8 +448,10 @@ public class ProxyFactory<T> {
         // The field representing the underlying instance or special method
         // handling
         proxyClassType.addField(AccessFlag.PRIVATE, "methodHandler", MethodHandler.class);
-        // field used to indicate that super() has been called
-        proxyClassType.addField(AccessFlag.PRIVATE, CONSTRUCTED_FLAG_NAME, "Z");
+        if(!usingUnsafeInstantiators) {
+            // field used to indicate that super() has been called
+            proxyClassType.addField(AccessFlag.PRIVATE, CONSTRUCTED_FLAG_NAME, "Z");
+        }
 
     }
 
@@ -541,6 +555,9 @@ public class ProxyFactory<T> {
      * bean instance until after the constructor has finished.
      */
     protected void addConstructedGuardToMethodBody(final ClassMethod classMethod) {
+        if(usingUnsafeInstantiators) {
+            return;
+        }
         // now create the conditional
         final CodeAttribute cond = classMethod.getCodeAttribute();
         cond.aload(0);
@@ -749,7 +766,11 @@ public class ProxyFactory<T> {
         return Container.instance().services().get(ProxyServices.class).getClassLoader(superClass);
     }
 
-//    public static ClassLoader resolveClassLoaderForBeanProxy(Bean<?> bean) {
+    protected boolean isUsingUnsafeInstantiators() {
+        return usingUnsafeInstantiators;
+    }
+
+    //    public static ClassLoader resolveClassLoaderForBeanProxy(Bean<?> bean) {
 //        return resolveClassLoaderForBeanProxy(bean, TypeInfo.of(bean.getTypes()));
 //    }
 

@@ -38,8 +38,8 @@ public class ConstructorUtils {
     /**
      * adds a constructor that calls super()
      */
-    public static void addDefaultConstructor(ClassFile file, List<DeferredBytecode> initialValueBytecode) {
-        addConstructor("V", new String[0], new String[0], file, initialValueBytecode);
+    public static void addDefaultConstructor(ClassFile file, List<DeferredBytecode> initialValueBytecode, final boolean useUnsafeInstantiators) {
+        addConstructor("V", new String[0], new String[0], file, initialValueBytecode, useUnsafeInstantiators);
     }
 
     /**
@@ -54,7 +54,7 @@ public class ConstructorUtils {
      * @param file                 the classfile to add the constructor to
      * @param initialValueBytecode bytecode that can be used to set inial values
      */
-    public static void addConstructor(String returnType, String[] params, String[] exceptions, ClassFile file, List<DeferredBytecode> initialValueBytecode) {
+    public static void addConstructor(String returnType, String[] params, String[] exceptions, ClassFile file, List<DeferredBytecode> initialValueBytecode, final boolean useUnsafeInstantiators) {
         try {
 
             final ClassMethod ctor = file.addMethod(AccessFlag.PUBLIC, "<init>", returnType, params);
@@ -72,10 +72,12 @@ public class ConstructorUtils {
             b.loadMethodParameters();
             // now we have the parameters on the stack
             b.invokespecial(file.getSuperclass(), "<init>", DescriptorUtils.getMethodDescriptor(params, returnType));
-            // now set constructed to true
-            b.aload(0);
-            b.iconst(1);
-            b.putfield(file.getName(), ProxyFactory.CONSTRUCTED_FLAG_NAME, "Z");
+            if(!useUnsafeInstantiators) {
+                // now set constructed to true
+                b.aload(0);
+                b.iconst(1);
+                b.putfield(file.getName(), ProxyFactory.CONSTRUCTED_FLAG_NAME, "Z");
+            }
             b.returnInstruction();
         }  catch (DuplicateMemberException e) {
             throw new RuntimeException(e);
