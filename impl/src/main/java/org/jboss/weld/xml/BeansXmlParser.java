@@ -174,17 +174,16 @@ public class BeansXmlParser {
     }
 
     private static InputSource[] loadXsds() {
+
         List<InputSource> xsds = new ArrayList<InputSource>();
-        // The Weld xsd
-        InputSource weldXsd = loadXsd("weld_1_1.xsd", BeansXmlParser.class.getClassLoader());
-        // The CDI Xsd
-        InputSource cdiXsd = loadXsd("beans_1_1.xsd", BeanManager.class.getClassLoader());
-        if (weldXsd != null) {
-            xsds.add(weldXsd);
+
+        for (XmlSchema schema : XmlSchema.values()) {
+            InputSource source = loadXsd(schema.getFileName(), schema.getClassLoader());
+            if (source != null) {
+                xsds.add(source);
+            }
         }
-        if (cdiXsd != null) {
-            xsds.add(cdiXsd);
-        }
+
         return xsds.toArray(EMPTY_INPUT_SOURCE_ARRAY);
     }
 
