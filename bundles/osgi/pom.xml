@@ -117,6 +117,7 @@
                             ch.qos.cal10n; version=${cal10n.version}; resolution:=optional,
                             javax.interceptor.*, *;
                             resolution:=optional
+                            javax.transaction;version="1.1";resolution:=optional,
                         </Import-Package>
 
                         <Private-Package>
