@@ -276,7 +276,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
      * Interception model
      */
     private final transient ConcurrentMap<Class<?>, InterceptionModel<ClassMetadata<?>, ?>> interceptorModelRegistry = new ConcurrentHashMap<Class<?>, InterceptionModel<ClassMetadata<?>, ?>>();
-    private final transient MetadataCachingReader interceptorMetadataReader = new DefaultMetadataCachingReader();
+    private final transient MetadataCachingReader interceptorMetadataReader = new DefaultMetadataCachingReader(this);
 
     private final transient ContainerLifecycleEvents containerLifecycleEvents;
 

@@ -121,6 +121,7 @@ import org.jboss.weld.bean.WeldDecorator;
 import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
 import org.jboss.weld.bean.builtin.AbstractDecorableBuiltInBean;
 import org.jboss.weld.bean.builtin.ee.EEResourceProducerField;
+import org.jboss.weld.bean.interceptor.CdiInterceptorFactory;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.ejb.EJBApiAbstraction;
@@ -130,6 +131,7 @@ import org.jboss.weld.exceptions.InconsistentSpecializationException;
 import org.jboss.weld.exceptions.UnproxyableResolutionException;
 import org.jboss.weld.exceptions.UnserializableDependencyException;
 import org.jboss.weld.injection.producer.AbstractMemberProducer;
+import org.jboss.weld.interceptor.reader.ClassMetadataInterceptorFactory;
 import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
@@ -139,7 +141,6 @@ import org.jboss.weld.literal.InterceptedLiteral;
 import org.jboss.weld.logging.messages.ValidatorMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
-import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.weld.util.BeanMethods;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Decorators;
@@ -240,24 +241,24 @@ public class Validator implements Service {
             if (interceptors.size() > 0) {
                 boolean passivationCapabilityCheckRequired = beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(classBean.getScope()).isPassivating();
                 for (InterceptorMetadata<?> interceptorMetadata : interceptors) {
-                    if (interceptorMetadata.getInterceptorReference().getInterceptor() instanceof SerializableContextual) {
-                        SerializableContextual<Interceptor<?>, ?> serializableContextual = cast(interceptorMetadata.getInterceptorReference().getInterceptor());
+                    if (interceptorMetadata.getInterceptorFactory() instanceof CdiInterceptorFactory<?>) {
+                        CdiInterceptorFactory<?> cdiInterceptorFactory = (CdiInterceptorFactory<?>) interceptorMetadata.getInterceptorFactory();
+                        Interceptor<?> interceptor = cdiInterceptorFactory.getInterceptor();
 
                         if (passivationCapabilityCheckRequired) {
-                            Interceptor<?> interceptor = serializableContextual.get();
                             boolean isSerializable = (interceptor instanceof InterceptorImpl) ? ((InterceptorImpl<?>) interceptor).isSerializable() : (interceptor instanceof PassivationCapable);
                             if (isSerializable == false)
                                 throw new DeploymentException(PASSIVATING_BEAN_WITH_NONSERIALIZABLE_INTERCEPTOR, classBean, interceptor);
                         }
-                        for (InjectionPoint injectionPoint : serializableContextual.get().getInjectionPoints()) {
+                        for (InjectionPoint injectionPoint : interceptor.getInjectionPoints()) {
                             Bean<?> resolvedBean = beanManager.resolve(beanManager.getBeans(injectionPoint));
                             if (passivationCapabilityCheckRequired) {
                                 validateInjectionPointPassivationCapable(injectionPoint, resolvedBean, beanManager);
                             }
                         }
                     }
-                    if (interceptorMetadata.getInterceptorReference().getInterceptor() instanceof ClassMetadata<?>) {
-                        ClassMetadata<?> classMetadata = (ClassMetadata<?>) interceptorMetadata.getInterceptorReference().getInterceptor();
+                    if (interceptorMetadata.getInterceptorFactory() instanceof ClassMetadataInterceptorFactory<?>) {
+                        ClassMetadata<?> classMetadata = interceptorMetadata.getInterceptorClass();
                         if (passivationCapabilityCheckRequired && !Reflections.isSerializable(classMetadata.getJavaClass())) {
                             throw new DeploymentException(PASSIVATING_BEAN_WITH_NONSERIALIZABLE_INTERCEPTOR, this, classMetadata.getJavaClass().getName());
                         }

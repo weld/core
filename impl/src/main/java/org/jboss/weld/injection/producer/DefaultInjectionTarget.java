@@ -105,14 +105,17 @@ public class DefaultInjectionTarget<T> extends AbstractInjectionTarget<T> {
         }
 
         if (hasInterceptors || hasDecorators) {
-            if (getInstantiator() instanceof DefaultInstantiator<?>) {
-                setInstantiator(new SubclassedComponentInstantiator<T>(annotatedType, getBean(), (DefaultInstantiator<T>) getInstantiator(), beanManager));
+            if (!(getInstantiator() instanceof DefaultInstantiator<?>)) {
+                throw new IllegalStateException("Unexpected instantiator " + getInstantiator());
             }
+            DefaultInstantiator<T> delegate = (DefaultInstantiator<T>) getInstantiator();
+            setInstantiator(new SubclassedComponentInstantiator<T>(annotatedType, getBean(), delegate, beanManager));
+
             if (hasDecorators) {
                 setInstantiator(new SubclassDecoratorApplyingInstantiator<T>(getInstantiator(), getBean(), decorators));
             }
             if (hasInterceptors) {
-                setInstantiator(new InterceptorApplyingInstantiator<T>(annotatedType, this.getInstantiator(), beanManager));
+                setInstantiator(new InterceptorApplyingInstantiator<T>(annotatedType, this.getInstantiator(), beanManager, delegate.getConstructor().getAnnotated().getJavaMember()));
             }
         }
     }

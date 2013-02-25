@@ -21,7 +21,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
@@ -45,7 +44,7 @@ import org.jboss.weld.util.Beans;
  *
  * @param <T>
  */
-public class SubclassedComponentInstantiator<T> implements Instantiator<T> {
+public class SubclassedComponentInstantiator<T> extends AbstractInstantiator<T> {
 
     private final ConstructorInjectionPoint<T> proxyClassConstructorInjectionPoint;
 
@@ -82,11 +81,6 @@ public class SubclassedComponentInstantiator<T> implements Instantiator<T> {
     }
 
     @Override
-    public T newInstance(CreationalContext<T> ctx, BeanManagerImpl manager) {
-        return proxyClassConstructorInjectionPoint.newInstance(manager, ctx);
-    }
-
-    @Override
     public String toString() {
         return "SubclassedComponentInstantiator for " + proxyClassConstructorInjectionPoint.getType();
     }
@@ -99,5 +93,10 @@ public class SubclassedComponentInstantiator<T> implements Instantiator<T> {
     @Override
     public boolean hasDecoratorSupport() {
         return false;
+    }
+
+    @Override
+    protected ConstructorInjectionPoint<T> getConstructor() {
+        return proxyClassConstructorInjectionPoint;
     }
 }

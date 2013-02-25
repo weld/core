@@ -42,8 +42,8 @@ import javax.enterprise.inject.spi.Interceptor;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bean.InterceptorImpl;
+import org.jboss.weld.bean.interceptor.CdiInterceptorFactory;
 import org.jboss.weld.bean.interceptor.CustomInterceptorMetadata;
-import org.jboss.weld.bean.interceptor.SerializableContextualInterceptorReference;
 import org.jboss.weld.bean.interceptor.WeldInterceptorClassMetadata;
 import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.exceptions.DefinitionException;
@@ -54,7 +54,6 @@ import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.reflection.Reflections;
@@ -86,7 +85,7 @@ public class InterceptionModelInitializer<T> {
     private final InterceptorsApiAbstraction interceptorsApi;
     private final EJBApiAbstraction ejbApi;
 
-    private Map<Interceptor<?>, InterceptorMetadata<SerializableContextual<Interceptor<?>, ?>>> interceptorMetadatas = new HashMap<Interceptor<?>, InterceptorMetadata<SerializableContextual<Interceptor<?>, ?>>>();
+    private Map<Interceptor<?>, InterceptorMetadata<?>> interceptorMetadatas = new HashMap<Interceptor<?>, InterceptorMetadata<?>>();
     private List<AnnotatedMethod<?>> businessMethods;
     private final InterceptionModelBuilder<ClassMetadata<?>,?> builder;
     private boolean hasSerializationOrInvocationInterceptorMethods;
@@ -156,6 +155,7 @@ public class InterceptionModelInitializer<T> {
         initLifeCycleInterceptor(InterceptionType.PRE_DESTROY, classBindingAnnotations);
         initLifeCycleInterceptor(InterceptionType.PRE_PASSIVATE, classBindingAnnotations);
         initLifeCycleInterceptor(InterceptionType.POST_ACTIVATE, classBindingAnnotations);
+        initLifeCycleInterceptor(InterceptionType.AROUND_CONSTRUCT, classBindingAnnotations);
     }
 
     private void initLifeCycleInterceptor(InterceptionType interceptionType, Map<Class<? extends Annotation>, Annotation> classBindingAnnotations) {
@@ -246,16 +246,16 @@ public class InterceptionModelInitializer<T> {
         return method.isAnnotationPresent(ejbApi.TIMEOUT_ANNOTATION_CLASS);
     }
 
-    private InterceptorMetadata<SerializableContextual<?, ?>>[] toSerializableContextualArray(List<Interceptor<?>> interceptors) {
-        List<InterceptorMetadata<SerializableContextual<Interceptor<?>, ?>>> serializableContextuals = new ArrayList<InterceptorMetadata<SerializableContextual<Interceptor<?>, ?>>>();
+    private InterceptorMetadata<?>[] toSerializableContextualArray(List<Interceptor<?>> interceptors) {
+        List<InterceptorMetadata<?>> serializableContextuals = new ArrayList<InterceptorMetadata<?>>();
         for (Interceptor<?> interceptor : interceptors) {
             serializableContextuals.add(getCachedInterceptorMetadata(interceptor));
         }
         return serializableContextuals.toArray(InterceptionModelInitializer.<SerializableContextual<?, ?>>emptyInterceptorMetadataArray());
     }
 
-    private InterceptorMetadata<SerializableContextual<Interceptor<?>, ?>> getCachedInterceptorMetadata(Interceptor<?> interceptor) {
-        InterceptorMetadata<SerializableContextual<Interceptor<?>, ?>> interceptorMetadata = interceptorMetadatas.get(interceptor);
+    private InterceptorMetadata<?> getCachedInterceptorMetadata(Interceptor<?> interceptor) {
+        InterceptorMetadata<?> interceptorMetadata = interceptorMetadatas.get(interceptor);
         if (interceptorMetadata == null) {
             interceptorMetadata = getInterceptorMetadata(interceptor);
             interceptorMetadatas.put(interceptor, interceptorMetadata);
@@ -263,18 +263,14 @@ public class InterceptionModelInitializer<T> {
         return interceptorMetadata;
     }
 
-    private InterceptorMetadata<SerializableContextual<Interceptor<?>, ?>> getInterceptorMetadata(Interceptor<?> interceptor) {
-        ContextualStore store = manager.getServices().get(ContextualStore.class);
-        SerializableContextual<Interceptor<?>, ?> contextual = cast(store.getSerializableContextual(interceptor));
+    private <T> InterceptorMetadata<T> getInterceptorMetadata(Interceptor<T> interceptor) {
         if (interceptor instanceof InterceptorImpl) {
-            InterceptorImpl<?> interceptorImpl = (InterceptorImpl<?>) interceptor;
-            ClassMetadata<?> classMetadata = interceptorImpl.getInterceptorMetadata().getInterceptorClass();
-            SerializableContextualInterceptorReference interceptorReference = new SerializableContextualInterceptorReference(contextual, classMetadata);
-            return manager.getInterceptorMetadataReader().getInterceptorMetadata(interceptorReference);
+            InterceptorImpl<T> interceptorImpl = (InterceptorImpl<T>) interceptor;
+            return interceptorImpl.getInterceptorMetadata();
         } else {
             //custom interceptor
-            ClassMetadata<?> classMetadata = manager.getInterceptorMetadataReader().getClassMetadata(interceptor.getBeanClass());
-            return new CustomInterceptorMetadata(new SerializableContextualInterceptorReference(contextual, null), classMetadata);
+            ClassMetadata<T> classMetadata = cast(manager.getInterceptorMetadataReader().getClassMetadata(interceptor.getBeanClass()));
+            return new CustomInterceptorMetadata(new CdiInterceptorFactory<T>(classMetadata, interceptor), classMetadata);
         }
     }
 

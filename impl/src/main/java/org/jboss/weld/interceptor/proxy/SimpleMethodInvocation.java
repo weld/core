@@ -8,9 +8,9 @@ import org.jboss.weld.interceptor.spi.model.InterceptionType;
 /**
 * @author Marius Bogoevici
 */
-public class SimpleMethodInvocation<T> implements InterceptorMethodInvocation {
+public class SimpleMethodInvocation implements InterceptorMethodInvocation {
 
-    final T instance;
+    final Object instance;
 
     final MethodMetadata method;
 
@@ -18,7 +18,7 @@ public class SimpleMethodInvocation<T> implements InterceptorMethodInvocation {
 
     private InterceptionType interceptionType;
 
-    SimpleMethodInvocation(T instance, MethodMetadata method, boolean targetClass, InterceptionType interceptionType) {
+    SimpleMethodInvocation(Object instance, MethodMetadata method, boolean targetClass, InterceptionType interceptionType) {
         this.instance = instance;
         this.method = method;
         this.targetClass = targetClass;

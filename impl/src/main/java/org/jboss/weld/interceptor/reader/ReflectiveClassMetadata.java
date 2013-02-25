@@ -100,4 +100,9 @@ public class ReflectiveClassMetadata<T> implements ClassMetadata<T>, Serializabl
             return false;
         return true;
     }
+
+    @Override
+    public String toString() {
+        return "ReflectiveClassMetadata [clazz=" + clazz + "]";
+    }
 }

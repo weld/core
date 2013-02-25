@@ -17,8 +17,6 @@
 
 package org.jboss.weld.interceptor.spi.metadata;
 
-import java.io.Serializable;
-
 import org.jboss.weld.interceptor.proxy.InterceptorInvocation;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
 
@@ -27,13 +25,13 @@ import org.jboss.weld.interceptor.spi.model.InterceptionType;
  *
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
-public interface InterceptorMetadata<T> extends Serializable {
+public interface InterceptorMetadata<T> {
     /**
      * Returns the class for which this interceptor metadata was created
      *
      * @return
      */
-    InterceptorReference<T> getInterceptorReference();
+    InterceptorFactory<T> getInterceptorFactory();
 
     ClassMetadata<?> getInterceptorClass();
 
@@ -46,5 +44,5 @@ public interface InterceptorMetadata<T> extends Serializable {
      */
     boolean isEligible(InterceptionType interceptionType);
 
-    InterceptorInvocation getInterceptorInvocation(Object interceptorInstance, InterceptorMetadata interceptorReference, InterceptionType interceptionType);
+    InterceptorInvocation getInterceptorInvocation(Object interceptorInstance, InterceptionType interceptionType);
 }

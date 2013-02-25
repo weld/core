@@ -183,10 +183,10 @@ public class SecureReflections {
      * @throws NoSuchMethodException If the constructor cannot be found
      * @see java.lang.Class#getConstructor(Class...)
      */
-    public static Constructor<?> getConstructor(final Class<?> clazz, final Class<?>... parameterTypes) throws NoSuchMethodException {
-        return new SecureReflectionAccess<Constructor<?>>() {
+    public static <T> Constructor<T> getConstructor(final Class<T> clazz, final Class<?>... parameterTypes) throws NoSuchMethodException {
+        return new SecureReflectionAccess<Constructor<T>>() {
             @Override
-            protected Constructor<?> work() throws Exception {
+            protected Constructor<T> work() throws Exception {
                 return clazz.getConstructor(parameterTypes);
             }
         }.runAsMethodAccess();

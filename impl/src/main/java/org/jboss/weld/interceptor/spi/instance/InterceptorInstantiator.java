@@ -16,12 +16,12 @@
  */
 package org.jboss.weld.interceptor.spi.instance;
 
-import org.jboss.weld.interceptor.spi.metadata.InterceptorReference;
+import org.jboss.weld.interceptor.spi.metadata.InterceptorFactory;
 
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
 public interface InterceptorInstantiator<T, I> {
 
-    T createFor(InterceptorReference<I> interceptorReference);
+    T createFor(InterceptorFactory<I> interceptorReference);
 }

@@ -17,6 +17,12 @@
 
 package org.jboss.weld.bean.interceptor;
 
+import static org.jboss.weld.logging.messages.BeanMessage.INTERCEPTION_MODEL_NULL;
+import static org.jboss.weld.logging.messages.BeanMessage.INTERCEPTION_TYPE_LIFECYCLE;
+import static org.jboss.weld.logging.messages.BeanMessage.INTERCEPTION_TYPE_NOT_LIFECYCLE;
+import static org.jboss.weld.logging.messages.BeanMessage.INTERCEPTION_TYPE_NULL;
+import static org.jboss.weld.logging.messages.BeanMessage.METHOD_NULL;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,16 +35,9 @@ import javax.enterprise.inject.spi.Interceptor;
 import org.jboss.weld.ejb.spi.InterceptorBindings;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
+import org.jboss.weld.interceptor.spi.metadata.InterceptorFactory;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
-import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
-import org.jboss.weld.util.reflection.Reflections;
-
-import static org.jboss.weld.logging.messages.BeanMessage.INTERCEPTION_MODEL_NULL;
-import static org.jboss.weld.logging.messages.BeanMessage.INTERCEPTION_TYPE_LIFECYCLE;
-import static org.jboss.weld.logging.messages.BeanMessage.INTERCEPTION_TYPE_NOT_LIFECYCLE;
-import static org.jboss.weld.logging.messages.BeanMessage.INTERCEPTION_TYPE_NULL;
-import static org.jboss.weld.logging.messages.BeanMessage.METHOD_NULL;
 
 /**
  * @author Marius Bogoevici
@@ -56,7 +55,7 @@ public class InterceptorBindingsAdapter implements InterceptorBindings {
 
     public Collection<Interceptor<?>> getAllInterceptors() {
         Set<? extends InterceptorMetadata<?>> interceptorMetadataSet = interceptionModel.getAllInterceptors();
-        return extractSerializableContextualInterceptors(interceptorMetadataSet);
+        return extractCdiInterceptors(interceptorMetadataSet);
     }
 
     public List<Interceptor<?>> getMethodInterceptors(InterceptionType interceptionType, Method method) {
@@ -74,7 +73,7 @@ public class InterceptorBindingsAdapter implements InterceptorBindings {
             throw new IllegalArgumentException(INTERCEPTION_TYPE_LIFECYCLE, interceptionType.name());
         }
 
-        return extractSerializableContextualInterceptors(interceptionModel.getInterceptors(internalInterceptionType, method));
+        return extractCdiInterceptors(interceptionModel.getInterceptors(internalInterceptionType, method));
 
     }
 
@@ -89,16 +88,17 @@ public class InterceptorBindingsAdapter implements InterceptorBindings {
             throw new IllegalArgumentException(INTERCEPTION_TYPE_NOT_LIFECYCLE, interceptionType.name());
         }
 
-        return extractSerializableContextualInterceptors(interceptionModel.getInterceptors(internalInterceptionType, null));
+        return extractCdiInterceptors(interceptionModel.getInterceptors(internalInterceptionType, null));
     }
 
-    private List<Interceptor<?>> extractSerializableContextualInterceptors(Collection<? extends InterceptorMetadata<?>> interceptorMetadatas) {
+    private List<Interceptor<?>> extractCdiInterceptors(Collection<? extends InterceptorMetadata<?>> interceptorMetadatas) {
         // ignore interceptors which are not CDI interceptors
         ArrayList<Interceptor<?>> interceptors = new ArrayList<Interceptor<?>>();
         for (InterceptorMetadata<?> interceptorMetadata : interceptorMetadatas) {
-            Object interceptor = interceptorMetadata.getInterceptorReference().getInterceptor();
-            if (interceptor instanceof SerializableContextual) {
-                interceptors.add(Reflections.<SerializableContextual<Interceptor<?>, ?>>cast(interceptor).get());
+            InterceptorFactory<?> interceptorFactory = interceptorMetadata.getInterceptorFactory();
+            if (interceptorFactory instanceof CdiInterceptorFactory<?>) {
+                CdiInterceptorFactory<?> cdiInterceptorFactory = (CdiInterceptorFactory<?>) interceptorFactory;
+                interceptors.add(cdiInterceptorFactory.getInterceptor());
             }
         }
         return interceptors;

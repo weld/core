@@ -35,13 +35,14 @@ import javax.enterprise.inject.spi.Interceptor;
 import javax.interceptor.InvocationContext;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.bean.interceptor.CdiInterceptorFactory;
 import org.jboss.weld.bean.interceptor.WeldInterceptorClassMetadata;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.interceptor.proxy.InterceptorInvocation;
 import org.jboss.weld.interceptor.proxy.SimpleInterceptionChain;
-import org.jboss.weld.interceptor.reader.ClassMetadataInterceptorReference;
+import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
 import org.jboss.weld.logging.messages.ReflectionMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -55,7 +56,7 @@ import org.jboss.weld.util.reflection.Formats;
  */
 public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T> {
 
-    private final InterceptorMetadata<?> interceptorMetadata;
+    private final InterceptorMetadata<T> interceptorMetadata;
 
     private final Set<Annotation> interceptorBindingTypes;
 
@@ -67,7 +68,7 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
 
     protected InterceptorImpl(BeanAttributes<T> attributes, EnhancedAnnotatedType<T> type, BeanManagerImpl beanManager) {
         super(attributes, type, new StringBuilder().append(Interceptor.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(type.getName()).toString(), beanManager);
-        this.interceptorMetadata = beanManager.getInterceptorMetadataReader().getInterceptorMetadata(ClassMetadataInterceptorReference.of(WeldInterceptorClassMetadata.of(type)));
+        this.interceptorMetadata = getInterceptorMetadata(type, this, beanManager);
         this.serializable = type.isSerializable();
         this.interceptorBindingTypes = Collections.unmodifiableSet(new HashSet<Annotation>(Interceptors.mergeBeanInterceptorBindings(beanManager, getEnhancedAnnotated(), getStereotypes()).values()));
 
@@ -79,11 +80,17 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
         }
     }
 
+    private static <T> InterceptorMetadata<T> getInterceptorMetadata(EnhancedAnnotatedType<T> type, Interceptor<T> interceptor, BeanManagerImpl manager) {
+        ClassMetadata<T> classMetadata = WeldInterceptorClassMetadata.of(type);
+        CdiInterceptorFactory<T> reference = new CdiInterceptorFactory<T>(classMetadata, interceptor);
+        return manager.getInterceptorMetadataReader().getInterceptorMetadata(reference);
+    }
+
     public Set<Annotation> getInterceptorBindings() {
         return interceptorBindingTypes;
     }
 
-    public InterceptorMetadata<?> getInterceptorMetadata() {
+    public InterceptorMetadata<T> getInterceptorMetadata() {
         return interceptorMetadata;
     }
 
@@ -91,8 +98,8 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
         try {
             org.jboss.weld.interceptor.spi.model.InterceptionType interceptionType = org.jboss.weld.interceptor.spi.model.InterceptionType.valueOf(type.name());
             Collection<InterceptorInvocation> invocations = new ArrayList<InterceptorInvocation>();
-            invocations.add(interceptorMetadata.getInterceptorInvocation(instance, interceptorMetadata, interceptionType));
-            return new SimpleInterceptionChain(invocations, instance, ctx.getMethod()).invokeNextInterceptor(ctx);
+            invocations.add(interceptorMetadata.getInterceptorInvocation(instance, interceptionType));
+            return new SimpleInterceptionChain(invocations).invokeNextInterceptor(ctx);
         } catch (RuntimeException e) {
             throw e;
         } catch (Throwable e) {

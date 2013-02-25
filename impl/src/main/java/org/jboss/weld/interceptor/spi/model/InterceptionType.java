@@ -27,7 +27,8 @@ public enum InterceptionType {
     POST_CONSTRUCT(true, "javax.annotation.PostConstruct"),
     PRE_DESTROY(true, "javax.annotation.PreDestroy"),
     POST_ACTIVATE(true, "javax.ejb.PostActivate"),
-    PRE_PASSIVATE(true, "javax.ejb.PrePassivate");
+    PRE_PASSIVATE(true, "javax.ejb.PrePassivate"),
+    AROUND_CONSTRUCT(true, "javax.interceptor.AroundConstruct");
 
     private final boolean lifecycleCallback;
 

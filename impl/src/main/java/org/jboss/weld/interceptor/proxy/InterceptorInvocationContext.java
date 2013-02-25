@@ -18,6 +18,7 @@
 package org.jboss.weld.interceptor.proxy;
 
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collections;
@@ -46,6 +47,9 @@ public class InterceptorInvocationContext implements InvocationContext {
     private final InterceptionChain interceptionChain;
 
     private final Object timer;
+
+    private final Constructor<?> constructor;
+
     private static final Map<Class<?>, Set<Class<?>>> WIDENING_TABLE;
 
     private static final Map<Class<?>, Class<?>> WRAPPER_CLASSES;
@@ -87,41 +91,51 @@ public class InterceptorInvocationContext implements InvocationContext {
     }
 
     public InterceptorInvocationContext(InterceptionChain interceptionChain, Object target, Method targetMethod, Object[] parameters) {
-        this.interceptionChain = interceptionChain;
-        this.method = targetMethod;
-        this.parameters = parameters;
-        this.target = target;
-        this.timer = null;
+        this(interceptionChain, target, targetMethod, null, parameters, null);
     }
 
     public InterceptorInvocationContext(InterceptionChain interceptionChain, Object target, Method targetMethod, Object timer) {
-        this.interceptionChain = interceptionChain;
-        this.method = targetMethod;
-        this.timer = timer;
-        this.target = target;
-        this.parameters = null;
+        this(interceptionChain, target, targetMethod, null, null, timer);
     }
 
+    public InterceptorInvocationContext(InterceptionChain interceptionChain, Constructor<?> constructor, Object[] parameters) {
+        this(interceptionChain, null, null, constructor, parameters, null);
+    }
+
+    private InterceptorInvocationContext(InterceptionChain interceptionChain, Object target, Method method, Constructor<?> constructor, Object[] parameters, Object timer) {
+        this.interceptionChain = interceptionChain;
+        this.target = target;
+        this.method = method;
+        this.constructor = constructor;
+        this.parameters = parameters;
+        this.timer = timer;
+    }
+
+    @Override
     public Map<String, Object> getContextData() {
         return contextData;
     }
 
+    @Override
     public Method getMethod() {
         return method;
     }
 
+    @Override
     public Object[] getParameters() {
-        if (this.method != null) {
+        if (this.method != null || this.constructor != null) {
             return parameters;
         } else {
             throw new IllegalStateException("Illegal invocation to getParameters() during lifecycle invocation");
         }
     }
 
+    @Override
     public Object getTarget() {
         return target;
     }
 
+    @Override
     public Object proceed() throws Exception {
         try {
             return interceptionChain.invokeNextInterceptor(this);
@@ -139,7 +153,7 @@ public class InterceptorInvocationContext implements InvocationContext {
      * @param targetClass
      * @return
      */
-    private static boolean isWideningPrimitive(Class argumentClass, Class targetClass) {
+    private static boolean isWideningPrimitive(Class<?> argumentClass, Class<?> targetClass) {
         return WIDENING_TABLE.containsKey(argumentClass) && WIDENING_TABLE.get(argumentClass).contains(targetClass);
     }
 
@@ -160,16 +174,22 @@ public class InterceptorInvocationContext implements InvocationContext {
     }
 
     public void setParameters(Object[] params) {
-        if (method != null) {
+        if (this.method != null || this.constructor != null) {
             // there is no requirement to do anything if params is null
             // but this is theoretically possible only if the target method has no arguments
             int newParametersCount = params == null ? 0 : params.length;
-            if (method.getParameterTypes().length != newParametersCount)
-                throw new IllegalArgumentException("Wrong number of parameters: method has " + method.getParameterTypes().length
+            Class<?>[] parameterTypes = null;
+            if (method != null) {
+                parameterTypes = method.getParameterTypes();
+            } else {
+                parameterTypes = constructor.getParameterTypes();
+            }
+            if (parameterTypes.length != newParametersCount)
+                throw new IllegalArgumentException("Wrong number of parameters: method has " + parameterTypes.length
                         + ", attempting to set " + newParametersCount + (params != null ? "" : " (argument was null)"));
             if (params != null) {
                 for (int i = 0; i < params.length; i++) {
-                    Class<?> methodParameterClass = method.getParameterTypes()[i];
+                    Class<?> methodParameterClass = parameterTypes[i];
                     if (params[i] != null) {
                         //identity ok
                         Class<? extends Object> newArgumentClass = params[i].getClass();
@@ -208,8 +228,8 @@ public class InterceptorInvocationContext implements InvocationContext {
                         }
                     } else {
                         // null is never acceptable on a primitive type
-                        if (method.getParameterTypes()[i].isPrimitive()) {
-                            throw new IllegalArgumentException("Trying to set a null value on a " + method.getParameterTypes()[i].getName());
+                        if (parameterTypes[i].isPrimitive()) {
+                            throw new IllegalArgumentException("Trying to set a null value on a " + parameterTypes[i].getName());
                         }
                     }
                 }
@@ -220,8 +240,13 @@ public class InterceptorInvocationContext implements InvocationContext {
         }
     }
 
+    @Override
     public Object getTimer() {
         return timer;
     }
 
+    @Override
+    public Constructor<?> getConstructor() {
+        return constructor;
+    }
 }

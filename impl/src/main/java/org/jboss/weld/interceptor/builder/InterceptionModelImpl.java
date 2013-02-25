@@ -38,8 +38,6 @@ import org.jboss.weld.interceptor.spi.model.InterceptionType;
 
 class InterceptionModelImpl<T, I> implements BuildableInterceptionModel<T, I> {
 
-    private static final long serialVersionUID = -6305682630007991118L;
-
     private final Map<InterceptionType, List<InterceptorMetadata<I>>> globalInterceptors = new HashMap<InterceptionType, List<InterceptorMetadata<I>>>();
 
     private final Map<InterceptionType, Map<MethodReference, List<InterceptorMetadata<I>>>> methodBoundInterceptors = new HashMap<InterceptionType, Map<MethodReference, List<InterceptorMetadata<I>>>>();
@@ -77,7 +75,7 @@ class InterceptionModelImpl<T, I> implements BuildableInterceptionModel<T, I> {
             }
             return returnedInterceptors;
         }
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
 
     public Set<InterceptorMetadata<I>> getAllInterceptors() {
@@ -127,7 +125,7 @@ class InterceptionModelImpl<T, I> implements BuildableInterceptionModel<T, I> {
     }
 
     private void validateDuplicateInterceptors(InterceptionType interceptionType, List<InterceptorMetadata<I>> interceptorsList, InterceptorMetadata<I>... interceptors) {
-        for (InterceptorMetadata interceptor : interceptors) {
+        for (InterceptorMetadata<?> interceptor : interceptors) {
             if (interceptorsList.contains(interceptor)) {
                 if (interceptionType != null) {
                     throw new InterceptorException("Duplicate interceptor class definition when binding " + interceptor.getInterceptorClass().getClassName() + " on " + interceptionType.name());

@@ -17,7 +17,6 @@
 
 package org.jboss.weld.interceptor.spi.model;
 
-import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Set;
@@ -31,7 +30,7 @@ import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
  *
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
-public interface InterceptionModel<T, I> extends Serializable {
+public interface InterceptionModel<T, I> {
 
     /**
      * Returns the interceptors applicable for the given interception type and method

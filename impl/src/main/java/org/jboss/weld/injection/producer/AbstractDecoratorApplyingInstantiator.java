@@ -31,6 +31,7 @@ import org.jboss.weld.bean.proxy.ProxyFactory;
 import org.jboss.weld.bean.proxy.ProxyObject;
 import org.jboss.weld.bean.proxy.TargetBeanInstance;
 import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.injection.AroundConstructCallback;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.serialization.spi.ContextualStore;
@@ -60,9 +61,9 @@ public abstract class AbstractDecoratorApplyingInstantiator<T> implements Instan
     }
 
     @Override
-    public T newInstance(CreationalContext<T> ctx, BeanManagerImpl manager) {
+    public T newInstance(CreationalContext<T> ctx, BeanManagerImpl manager, AroundConstructCallback<T> callback) {
         InjectionPoint originalInjectionPoint = manager.getServices().get(CurrentInjectionPoint.class).peek();
-        return applyDecorators(delegate.newInstance(ctx, manager), ctx, originalInjectionPoint, manager);
+        return applyDecorators(delegate.newInstance(ctx, manager, callback), ctx, originalInjectionPoint, manager);
     }
 
     protected abstract T applyDecorators(T instance, CreationalContext<T> creationalContext, InjectionPoint originalInjectionPoint, BeanManagerImpl manager);

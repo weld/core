@@ -41,7 +41,7 @@ public final class InterceptionTypeRegistry {
 
         for (InterceptionType interceptionType : InterceptionType.values()) {
             try {
-                interceptionAnnotationClasses.put(interceptionType, (Class<? extends Annotation>) InterceptionTypeRegistry.class.forName(interceptionType.annotationClassName()));
+                interceptionAnnotationClasses.put(interceptionType, (Class<? extends Annotation>) InterceptionTypeRegistry.class.getClassLoader().loadClass(interceptionType.annotationClassName()));
             } catch (Exception e) {
                 LOG.warn("Class '" + interceptionType.annotationClassName() + "' not found, interception based on it is not enabled");
             }

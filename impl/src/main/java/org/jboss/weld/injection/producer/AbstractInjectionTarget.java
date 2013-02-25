@@ -151,7 +151,7 @@ public abstract class AbstractInjectionTarget<T> extends AbstractProducer<T> imp
     }
 
     public T produce(CreationalContext<T> ctx) {
-        T instance = instantiator.newInstance(ctx, beanManager);
+        T instance = instantiator.newInstance(ctx, beanManager, null);
         if (bean != null && !bean.getScope().equals(Dependent.class) && !instantiator.hasDecoratorSupport()) {
             // This should be safe, but needs verification PLM
             // Without this, the chaining of decorators will fail as the

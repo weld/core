@@ -20,18 +20,17 @@ package org.jboss.weld.interceptor.proxy;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
 import org.jboss.weld.interceptor.spi.metadata.MethodMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
 
 /**
  * @author Marius Bogoevici
  */
-public class SimpleInterceptorInvocation<T> implements InterceptorInvocation {
+public class SimpleInterceptorInvocation implements InterceptorInvocation {
 
     private Collection<InterceptorMethodInvocation> interceptorMethodInvocations;
 
-    public SimpleInterceptorInvocation(T instance, InterceptionType interceptionType, Collection<MethodMetadata> interceptorMethods, boolean targetClass) {
+    public SimpleInterceptorInvocation(Object instance, InterceptionType interceptionType, Collection<MethodMetadata> interceptorMethods, boolean targetClass) {
         interceptorMethodInvocations = new ArrayList<InterceptorMethodInvocation>();
         for (MethodMetadata method : interceptorMethods) {
             interceptorMethodInvocations.add(new SimpleMethodInvocation(instance, method, targetClass, interceptionType));

@@ -1,6 +1,5 @@
 package org.jboss.weld.interceptor.proxy;
 
-import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Collections;
 

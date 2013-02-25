@@ -30,6 +30,7 @@ import javax.enterprise.inject.spi.Bean;
 import org.jboss.weld.annotated.enhanced.ConstructorSignature;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedConstructor;
 import org.jboss.weld.annotated.runtime.RuntimeAnnotatedMembers;
+import org.jboss.weld.injection.AroundConstructCallback.ConstructionHandle;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
@@ -51,10 +52,20 @@ public class ConstructorInjectionPoint<T> extends AbstractCallableInjectionPoint
         this.signature = constructor.getSignature();
     }
 
-    public T newInstance(BeanManagerImpl manager, CreationalContext<?> ctx) {
+    public T newInstance(BeanManagerImpl manager, CreationalContext<?> ctx, AroundConstructCallback<T> callback) {
         CreationalContext<?> invocationContext = manager.createCreationalContext(null);
         try {
-            return newInstance(getParameterValues(manager, ctx, invocationContext));
+            Object[] parameterValues = getParameterValues(manager, ctx, invocationContext);
+            if (callback == null) {
+                return newInstance(parameterValues);
+            } else {
+                return callback.aroundConstruct(parameterValues, new ConstructionHandle<T>() {
+                    @Override
+                    public T construct(Object[] parameters) {
+                        return newInstance(parameters);
+                    }
+                });
+            }
         } finally {
             invocationContext.release();
         }

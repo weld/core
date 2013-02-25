@@ -114,5 +114,10 @@ public class WeldInterceptorClassMetadata<T> implements ClassMetadata<T>, Serial
             return new WeldInterceptorClassMetadata<T>(enhancedType);
         }
     }
+
+    @Override
+    public String toString() {
+        return "WeldInterceptorClassMetadata [type=" + type + "]";
+    }
 }
 

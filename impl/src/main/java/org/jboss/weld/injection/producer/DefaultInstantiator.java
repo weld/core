@@ -24,6 +24,7 @@ import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.exceptions.DefinitionException;
+import org.jboss.weld.injection.AroundConstructCallback;
 import org.jboss.weld.injection.ConstructorInjectionPoint;
 import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.logging.messages.BeanMessage;
@@ -38,7 +39,7 @@ import org.slf4j.cal10n.LocLogger;
  *
  * @param <T>
  */
-public class DefaultInstantiator<T> implements Instantiator<T> {
+public class DefaultInstantiator<T> extends AbstractInstantiator<T> {
 
     private static final LocLogger log = loggerFactory().getLogger(BEAN);
 
@@ -59,13 +60,14 @@ public class DefaultInstantiator<T> implements Instantiator<T> {
     }
 
     @Override
-    public T newInstance(CreationalContext<T> ctx, BeanManagerImpl manager) {
+    public T newInstance(CreationalContext<T> ctx, BeanManagerImpl manager, AroundConstructCallback<T> callback) {
         if (Reflections.isAbstract(constructor.getMember().getDeclaringClass())) {
             throw new DefinitionException(BeanMessage.INJECTION_TARGET_CREATED_FOR_ABSTRACT_CLASS, constructor.getMember().getDeclaringClass());
         }
-        return constructor.newInstance(manager, ctx);
+        return super.newInstance(ctx, manager, callback);
     }
 
+    @Override
     public ConstructorInjectionPoint<T> getConstructor() {
         return constructor;
     }

@@ -18,7 +18,7 @@ import javax.interceptor.InvocationContext;
 import org.jboss.weld.interceptor.builder.MethodReference;
 import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
-import org.jboss.weld.interceptor.spi.metadata.InterceptorReference;
+import org.jboss.weld.interceptor.spi.metadata.InterceptorFactory;
 import org.jboss.weld.interceptor.spi.metadata.MethodMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
 import org.jboss.weld.interceptor.util.InterceptionTypeRegistry;
@@ -36,12 +36,12 @@ public class InterceptorMetadataUtils {
     private static final LocLogger LOG = loggerFactory().getLogger(REFLECTION);
 
 
-    public static InterceptorMetadata readMetadataForInterceptorClass(InterceptorReference<?> interceptorReference) {
-        return new SimpleInterceptorMetadata(interceptorReference, false, buildMethodMap(interceptorReference.getClassMetadata(), false));
+    public static InterceptorMetadata readMetadataForInterceptorClass(InterceptorFactory<?> interceptorReference) {
+        return new DefaultInterceptorMetadata(interceptorReference, buildMethodMap(interceptorReference.getClassMetadata(), false));
     }
 
-    public static InterceptorMetadata readMetadataForTargetClass(ClassMetadata<?> classMetadata) {
-        return new SimpleInterceptorMetadata(ClassMetadataInterceptorReference.of(classMetadata), true, buildMethodMap(classMetadata, true));
+    public static <T> TargetClassInterceptorMetadata readMetadataForTargetClass(ClassMetadata<T> classMetadata) {
+        return new TargetClassInterceptorMetadata(classMetadata, buildMethodMap(classMetadata, true));
     }
 
     public static boolean isInterceptorMethod(InterceptionType interceptionType, MethodMetadata method, boolean forTargetClass) {

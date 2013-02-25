@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2010, Red Hat, Inc. and/or its affiliates, and individual
- * contributors by the @authors tag. See the copyright.txt in the
- * distribution for a full listing of individual contributors.
+ * Copyright 2013, Red Hat, Inc., and individual contributors
+ * by the @authors tag. See the copyright.txt in the distribution for a
+ * full listing of individual contributors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.interceptor.spi.metadata;
+package org.jboss.weld.injection;
 
-import java.io.Serializable;
 
-/**
- * Defines a minimal contract for an interceptor reference. Allows different types
- * of interceptors to be used at the same time (classes, CDI interceptors)
- */
-public interface InterceptorReference<T> extends Serializable {
-    T getInterceptor();
+public interface AroundConstructCallback<T> {
 
-    ClassMetadata<?> getClassMetadata();
+    T aroundConstruct(Object[] parameters, ConstructionHandle<T> handle);
+
+    public interface ConstructionHandle<T> {
+        T construct(Object[] parameters);
+    }
 }

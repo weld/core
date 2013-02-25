@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2012, Red Hat, Inc., and individual contributors
+ * Copyright 2013, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -19,27 +19,15 @@ package org.jboss.weld.injection.producer;
 import javax.enterprise.context.spi.CreationalContext;
 
 import org.jboss.weld.injection.AroundConstructCallback;
+import org.jboss.weld.injection.ConstructorInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
 
-/**
- * Implementation of this interface is capable of producing Java objects. This abstraction allows different strategies to be employed
- * in a component creation process, e.g. {@link DefaultInstantiator} or {@link SubclassedComponentInstantiator}.
- *
- * @author Jozef Hartinger
- *
- * @param <T>
- */
-public interface Instantiator<T> {
+public abstract class AbstractInstantiator<T> implements Instantiator<T> {
 
-    T newInstance(CreationalContext<T> ctx, BeanManagerImpl manager, AroundConstructCallback<T> callback);
+    @Override
+    public T newInstance(CreationalContext<T> ctx, BeanManagerImpl manager, AroundConstructCallback<T> callback) {
+        return getConstructor().newInstance(manager, ctx, callback);
+    }
 
-    /**
-     * Indicates whether instances created by this Instantiator support interception.
-     */
-    boolean hasInterceptorSupport();
-
-    /**
-     * Indicates whether instances created by this Instantiator support decorators.
-     */
-    boolean hasDecoratorSupport();
+    protected abstract ConstructorInjectionPoint<T> getConstructor();
 }

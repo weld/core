@@ -14,17 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.jboss.weld.interceptor.spi.metadata;
 
-package org.jboss.weld.interceptor.spi.context;
-
-import javax.interceptor.InvocationContext;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.BeanManager;
 
 /**
- * @author Marius Bogoevici
+ * Produces instances of interceptors
+ *
+ * @author Jozef Hartinger
+ *
+ * @param <T>
  */
-public interface InterceptionChain {
+public interface InterceptorFactory<T> {
 
-    Object invokeNextInterceptor(InvocationContext invocationContext) throws Throwable;
+    ClassMetadata<T> getClassMetadata();
 
-    boolean hasNextInterceptor();
+    T create(CreationalContext<T> ctx, BeanManager manager);
 }
