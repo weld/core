@@ -78,6 +78,7 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
     private final String beanId;
 
     private volatile Field beanIdField;
+    private volatile Field threadLocalCacheField;
 
     static {
         Set<Class<? extends Annotation>> scopes = new HashSet<Class<? extends Annotation>>();
@@ -102,6 +103,15 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
                 f.setAccessible(true);
                 beanIdField = f;
             }
+            if (threadLocalCacheField == null && isUsingUnsafeInstantiators()) {
+                final Field f = SecureReflections.getDeclaredField(instance.getClass(), CACHE_FIELD);
+                f.setAccessible(true);
+                threadLocalCacheField = f;
+            }
+            if(isUsingUnsafeInstantiators()) {
+                threadLocalCacheField.set(instance, new ThreadLocal());
+            }
+
             beanIdField.set(instance, beanId);
             return instance;
         } catch (NoSuchFieldException e) {

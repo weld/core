@@ -339,4 +339,8 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
         return proxiedBeanType;
     }
 
+    @Override
+    protected boolean isCreatingProxy() {
+        return false;
+    }
 }
