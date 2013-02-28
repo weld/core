@@ -18,6 +18,7 @@ package org.jboss.weld.manager;
 
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionTarget;
 import javax.enterprise.inject.spi.InjectionTargetFactory;
 
@@ -67,7 +68,7 @@ public class InjectionTargetFactoryImpl<T> implements InjectionTargetFactory<T> 
 
     public AbstractInjectionTarget<T> internalCreateInjectionTarget(EnhancedAnnotatedType<T> type, Bean<T> bean) {
         AbstractInjectionTarget<T> injectionTarget = null;
-        if (bean instanceof DecoratorImpl<?> || type.isAnnotationPresent(javax.decorator.Decorator.class)) {
+        if (bean instanceof Decorator<?> || type.isAnnotationPresent(javax.decorator.Decorator.class)) {
             injectionTarget = new DecoratorInjectionTarget<T>(type, bean, manager);
         } else if (bean instanceof SessionBean<?>) {
             injectionTarget = new SessionBeanInjectionTarget<T>(type, (SessionBean<T>) bean, manager);

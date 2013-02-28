@@ -16,18 +16,12 @@
  */
 package org.jboss.weld.tests.beanManager.bean;
 
-import javax.decorator.Decorator;
 import javax.decorator.Delegate;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Vetoed;
 import javax.inject.Inject;
 
 @Vetoed
-/*
- * This annotation should not be here but we cannot do without it until CDI-268 is resolved
- * See WELD-1283
- */
-@Decorator
 public class VehicleDecorator implements Vehicle {
 
     @Inject
