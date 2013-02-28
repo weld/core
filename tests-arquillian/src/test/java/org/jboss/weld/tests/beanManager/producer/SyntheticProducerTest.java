@@ -76,7 +76,7 @@ public class SyntheticProducerTest {
     @Test
     public void testStaticProducerField() {
         AnnotatedField<? super Factory> field = this.<Factory, AnnotatedField<Factory>>getAnnotatedMember(Factory.class, "WOODY");
-        Producer<Toy> producer = cast(manager.createProducer(field, null));
+        Producer<Toy> producer = cast(manager.getProducerFactory(field).createProducer(null));
         assertNotNull(producer);
         assertTrue(producer.getInjectionPoints().isEmpty());
         Toy woody = producer.produce(manager.<Toy>createCreationalContext(null));
@@ -87,7 +87,7 @@ public class SyntheticProducerTest {
     public void testNonStaticProducerField() {
         AnnotatedField<? super AnotherFactory> field = this.<AnotherFactory, AnnotatedField<AnotherFactory>>getAnnotatedMember(AnotherFactory.class, "jessie");
         Bean<AnotherFactory> declaringBean = cast(manager.resolve(manager.getBeans(AnotherFactory.class)));
-        Producer<Toy> producer = cast(manager.createProducer(field, declaringBean));
+        Producer<Toy> producer = cast(manager.getProducerFactory(field, declaringBean).createProducer(null));
         assertNotNull(producer);
         assertTrue(producer.getInjectionPoints().isEmpty());
         Toy jessie = producer.produce(manager.<Toy>createCreationalContext(null));
@@ -97,7 +97,7 @@ public class SyntheticProducerTest {
     @Test
     public void testStaticProducerMethod() {
         AnnotatedMethod<? super Factory> method = this.<Factory, AnnotatedMethod<Factory>>getAnnotatedMember(Factory.class, "getBuzz");
-        Producer<Toy> producer = cast(manager.createProducer(method, null));
+        Producer<Toy> producer = cast(manager.getProducerFactory(method).createProducer(null));
         assertNotNull(producer);
         validateInjectionPoints(producer.getInjectionPoints());
         Toy buzz = producer.produce(manager.<Toy>createCreationalContext(null));
@@ -108,7 +108,7 @@ public class SyntheticProducerTest {
     public void testNonStaticProducerMethod() {
         AnnotatedMethod<? super AnotherFactory> method = this.<AnotherFactory, AnnotatedMethod<AnotherFactory>>getAnnotatedMember(AnotherFactory.class, "getRex");
         Bean<AnotherFactory> declaringBean = cast(manager.resolve(manager.getBeans(AnotherFactory.class)));
-        Producer<Toy> producer = cast(manager.createProducer(method, declaringBean));
+        Producer<Toy> producer = cast(manager.getProducerFactory(method, declaringBean).createProducer(null));
         assertNotNull(producer);
         validateInjectionPoints(producer.getInjectionPoints());
         Toy rex = producer.produce(manager.<Toy>createCreationalContext(null));
@@ -135,33 +135,33 @@ public class SyntheticProducerTest {
     @Test(expected = IllegalArgumentException.class)
     public void testInvalidProducerMethod1() {
         AnnotatedMethod<? super Factory> method = this.<Factory, AnnotatedMethod<Factory>>getAnnotatedMember(Factory.class, "invalidProducerMethod1");
-        manager.createProducer(method, null);
+        manager.getProducerFactory(method).createProducer(null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testInvalidProducerMethod2() {
         // method is not static but no declaringBean is provided
         AnnotatedMethod<? super Factory> method = this.<Factory, AnnotatedMethod<Factory>>getAnnotatedMember(Factory.class, "invalidProducerMethod2");
-        manager.createProducer(method, null);
+        manager.getProducerFactory(method).createProducer(null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testInvalidProducerField1() {
         AnnotatedField<? super Factory> field = this.<Factory, AnnotatedField<Factory>>getAnnotatedMember(Factory.class, "INVALID_FIELD1");
-        manager.createProducer(field, null);
+        manager.getProducerFactory(field).createProducer(null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testInvalidProducerField2() {
         AnnotatedField<? super Factory> field = this.<Factory, AnnotatedField<Factory>>getAnnotatedMember(Factory.class, "INVALID_FIELD2");
-        manager.createProducer(field, null);
+        manager.getProducerFactory(field).createProducer(null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testInvalidProducerField3() {
         // field is not static but no declaringBean is provided
         AnnotatedField<? super Factory> field = this.<Factory, AnnotatedField<Factory>>getAnnotatedMember(Factory.class, "INVALID_FIELD3");
-        manager.createProducer(field, null);
+        manager.getProducerFactory(field).createProducer(null);
     }
 }
 

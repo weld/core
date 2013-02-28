@@ -19,6 +19,7 @@ package org.jboss.weld.tests.beanManager.injectionTarget;
 import static org.junit.Assert.assertTrue;
 
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionTarget;
 import javax.inject.Inject;
@@ -28,7 +29,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,8 +49,9 @@ public class InjectionTargetDecorationTest {
     public void testInjectionTargetDecoration() {
         @SuppressWarnings("unchecked")
         Bean<Skyscraper> bean = (Bean<Skyscraper>) manager.resolve(manager.getBeans(Skyscraper.class));
-        EnhancedAnnotatedType<Skyscraper> type = manager.createEnhancedAnnotatedType(Skyscraper.class);
-        InjectionTarget<Skyscraper> target = manager.internalCreateInjectionTarget(type, bean);
+        AnnotatedType<Skyscraper> type = manager.createAnnotatedType(Skyscraper.class);
+
+        InjectionTarget<Skyscraper> target = manager.getInjectionTargetFactory(type).createInjectionTarget(bean);
         CreationalContext<Skyscraper> ctx = manager.createCreationalContext(bean);
 
         Skyscraper instance = target.produce(ctx);

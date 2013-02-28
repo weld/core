@@ -39,10 +39,11 @@ import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
+import javax.enterprise.inject.spi.InjectionTargetFactory;
 import javax.enterprise.inject.spi.InterceptionType;
 import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.ObserverMethod;
-import javax.enterprise.inject.spi.Producer;
+import javax.enterprise.inject.spi.ProducerFactory;
 
 /**
  * Forwarding implementation of {@link BeanManager}.
@@ -201,16 +202,6 @@ public abstract class ForwardingBeanManager implements BeanManager, Serializable
     }
 
     @Override
-    public <X> Producer<?> createProducer(AnnotatedField<? super X> field, Bean<X> declaringBean) {
-        return delegate().createProducer(field, declaringBean);
-    }
-
-    @Override
-    public <X> Producer<?> createProducer(AnnotatedMethod<? super X> method, Bean<X> declaringBean) {
-        return delegate().createProducer(method, declaringBean);
-    }
-
-    @Override
     public <T> BeanAttributes<T> createBeanAttributes(AnnotatedType<T> type) {
         return delegate().createBeanAttributes(type);
     }
@@ -221,13 +212,13 @@ public abstract class ForwardingBeanManager implements BeanManager, Serializable
     }
 
     @Override
-    public <T> Bean<T> createBean(BeanAttributes<T> attributes, Class<T> beanClass, InjectionTarget<T> injectionTarget) {
-        return delegate().createBean(attributes, beanClass, injectionTarget);
+    public <T> Bean<T> createBean(BeanAttributes<T> attributes, Class<T> beanClass, InjectionTargetFactory<T> injectionTargetFactory) {
+        return delegate().createBean(attributes, beanClass, injectionTargetFactory);
     }
 
     @Override
-    public <T> Bean<T> createBean(BeanAttributes<T> attributes, Class<?> beanClass, Producer<T> producer) {
-        return delegate().createBean(attributes, beanClass, producer);
+    public <T> Bean<T> createBean(BeanAttributes<T> attributes, Class<?> beanClass, ProducerFactory<T> producerFactory) {
+        return delegate().createBean(attributes, beanClass, producerFactory);
     }
 
     @Override
@@ -262,5 +253,20 @@ public abstract class ForwardingBeanManager implements BeanManager, Serializable
     @Override
     public String toString() {
         return delegate().toString();
+    }
+
+    @Override
+    public <T> InjectionTargetFactory<T> getInjectionTargetFactory(AnnotatedType<T> annotatedType) {
+        return delegate().getInjectionTargetFactory(annotatedType);
+    }
+
+    @Override
+    public <X> ProducerFactory<X> getProducerFactory(AnnotatedField<? super X> field) {
+        return delegate().getProducerFactory(field);
+    }
+
+    @Override
+    public <X> ProducerFactory<X> getProducerFactory(AnnotatedMethod<? super X> method) {
+        return delegate().getProducerFactory(method);
     }
 }

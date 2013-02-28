@@ -21,57 +21,30 @@ import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.Set;
 
+import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.InjectionTarget;
-import javax.enterprise.inject.spi.ProcessInjectionPoint;
-import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.Extension;
+import javax.enterprise.inject.spi.InjectionTargetFactory;
 
-import org.jboss.weld.injection.ForwardingInjectionPoint;
 import org.jboss.weld.literal.AnyLiteral;
 
 /**
  * Register {@link VehicleDecorator} as a decorator using {@link PassivationCapableDecoratorImpl}.
- * 
+ *
  * @author Jozef Hartinger
- * 
+ *
  */
 public class VehicleDecoratorExtension implements Extension {
-
-    private PassivationCapableDecoratorImpl<VehicleDecorator> decorator;
 
     void registerVehicleDecorator(@Observes AfterBeanDiscovery event, BeanManager manager) {
         AnnotatedType<VehicleDecorator> annotatedType = manager.createAnnotatedType(VehicleDecorator.class);
         BeanAttributes<VehicleDecorator> attributes = manager.createBeanAttributes(annotatedType);
         Set<Annotation> delegateQualifiers = Collections.<Annotation> singleton(AnyLiteral.INSTANCE);
         Set<Type> decoratedTypes = Collections.<Type> singleton(Vehicle.class);
-        this.decorator = new PassivationCapableDecoratorImpl<VehicleDecorator>(VehicleDecorator.class, attributes,
-                Vehicle.class, delegateQualifiers, decoratedTypes);
-        InjectionTarget<VehicleDecorator> injectionTarget = manager.createInjectionTarget(annotatedType);
-        this.decorator.setInjectionTarget(injectionTarget);
-        event.addBean(this.decorator);
-    }
-
-    void wrapInjectionPoints(@Observes ProcessInjectionPoint<VehicleDecorator, ?> event) {
-        final InjectionPoint delegate = event.getInjectionPoint();
-        if (delegate.getBean() == null) {
-            event.setInjectionPoint(new ForwardingInjectionPoint() {
-
-                @Override
-                public Bean<?> getBean() {
-                    return decorator;
-                }
-
-                @Override
-                protected InjectionPoint delegate() {
-                    return delegate;
-                }
-            });
-        }
+        InjectionTargetFactory<VehicleDecorator> factory = manager.getInjectionTargetFactory(annotatedType);
+        event.addBean(new PassivationCapableDecoratorImpl<VehicleDecorator>(VehicleDecorator.class, attributes, Vehicle.class, delegateQualifiers, decoratedTypes, factory));
     }
 }

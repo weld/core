@@ -19,6 +19,7 @@ package org.jboss.weld.bean;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.InjectionTarget;
+import javax.enterprise.inject.spi.InjectionTargetFactory;
 
 import org.jboss.weld.manager.BeanManagerImpl;
 
@@ -33,9 +34,9 @@ public class SyntheticClassBean<T> extends AbstractSyntheticBean<T> {
 
     protected final InjectionTarget<T> producer;
 
-    public SyntheticClassBean(BeanAttributes<T> attributes, Class<T> beanClass, InjectionTarget<T> producer, BeanManagerImpl manager) {
-        super(attributes, createId(attributes, beanClass, producer), manager, beanClass, producer);
-        this.producer = producer;
+    public SyntheticClassBean(BeanAttributes<T> attributes, Class<T> beanClass, InjectionTargetFactory<T> factory, BeanManagerImpl manager) {
+        super(attributes, createId(attributes, beanClass), manager, beanClass);
+        this.producer = factory.createInjectionTarget(this);
     }
 
     @Override
@@ -54,6 +55,11 @@ public class SyntheticClassBean<T> extends AbstractSyntheticBean<T> {
         } finally {
             creationalContext.release();
         }
+    }
+
+    @Override
+    protected InjectionTarget<T> getProducer() {
+        return producer;
     }
 
     @Override

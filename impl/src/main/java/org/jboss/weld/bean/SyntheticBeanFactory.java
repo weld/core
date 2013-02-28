@@ -19,9 +19,10 @@ package org.jboss.weld.bean;
 import javax.decorator.Decorator;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanAttributes;
-import javax.enterprise.inject.spi.InjectionTarget;
+import javax.enterprise.inject.spi.InjectionTargetFactory;
 import javax.enterprise.inject.spi.PassivationCapable;
 import javax.enterprise.inject.spi.Producer;
+import javax.enterprise.inject.spi.ProducerFactory;
 
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.reflection.Reflections;
@@ -38,47 +39,47 @@ public class SyntheticBeanFactory {
     private SyntheticBeanFactory() {
     }
 
-    public static <T> AbstractSyntheticBean<T> create(BeanAttributes<T> attributes, Class<T> beanClass, InjectionTarget<T> injectionTarget, BeanManagerImpl manager) {
+    public static <T> AbstractSyntheticBean<T> create(BeanAttributes<T> attributes, Class<T> beanClass, InjectionTargetFactory<T> factory, BeanManagerImpl manager) {
         if (attributes.getStereotypes().contains(Decorator.class)) {
-            return createDecorator(attributes, beanClass, injectionTarget, manager);
+            return createDecorator(attributes, beanClass, factory, manager);
         } else {
-            return createClassBean(attributes, beanClass, injectionTarget, manager);
+            return createClassBean(attributes, beanClass, factory, manager);
         }
     }
 
-    public static <T> AbstractSyntheticBean<T> create(BeanAttributes<T> attributes, Class<?> beanClass, Producer<T> producer, BeanManagerImpl manager) {
-        return createProducerBean(attributes, beanClass, producer, manager);
+    public static <T> AbstractSyntheticBean<T> create(BeanAttributes<T> attributes, Class<?> beanClass, ProducerFactory<T> factory, BeanManagerImpl manager) {
+        return createProducerBean(attributes, beanClass, factory, manager);
     }
 
-    private static <T> AbstractSyntheticBean<T> createClassBean(BeanAttributes<T> attributes, Class<T> beanClass, InjectionTarget<T> injectionTarget, BeanManagerImpl manager) {
+    private static <T> AbstractSyntheticBean<T> createClassBean(BeanAttributes<T> attributes, Class<T> beanClass, InjectionTargetFactory<T> factory, BeanManagerImpl manager) {
         if (Reflections.isSerializable(beanClass)) {
-            return new PassivationCapableSyntheticClassBean<T>(attributes, beanClass, injectionTarget, manager);
+            return new PassivationCapableSyntheticClassBean<T>(attributes, beanClass, factory, manager);
         } else {
-            return new SyntheticClassBean<T>(attributes, beanClass, injectionTarget, manager);
+            return new SyntheticClassBean<T>(attributes, beanClass, factory, manager);
         }
     }
 
-    private static <T> AbstractSyntheticBean<T> createDecorator(BeanAttributes<T> attributes, Class<T> beanClass, InjectionTarget<T> injectionTarget, BeanManagerImpl manager) {
+    private static <T> AbstractSyntheticBean<T> createDecorator(BeanAttributes<T> attributes, Class<T> beanClass, InjectionTargetFactory<T> factory, BeanManagerImpl manager) {
         if (Reflections.isSerializable(beanClass)) {
-            return new PassivationCapableSyntheticDecorator<T>(attributes, beanClass, injectionTarget, manager);
+            return new PassivationCapableSyntheticDecorator<T>(attributes, beanClass, factory, manager);
         } else {
-            return new SyntheticDecorator<T>(attributes, beanClass, injectionTarget, manager);
+            return new SyntheticDecorator<T>(attributes, beanClass, factory, manager);
         }
     }
 
-    private static <T> AbstractSyntheticBean<T> createProducerBean(BeanAttributes<T> attributes, Class<?> beanClass, Producer<T> producer, BeanManagerImpl manager) {
-        return new SyntheticProducerBean<T>(attributes, beanClass, producer, manager);
+    private static <T> AbstractSyntheticBean<T> createProducerBean(BeanAttributes<T> attributes, Class<?> beanClass, ProducerFactory<T> factory, BeanManagerImpl manager) {
+        return new SyntheticProducerBean<T>(attributes, beanClass, factory, manager);
     }
 
     private static class PassivationCapableSyntheticClassBean<T> extends SyntheticClassBean<T> implements PassivationCapable {
-        protected PassivationCapableSyntheticClassBean(BeanAttributes<T> attributes, Class<T> beanClass, InjectionTarget<T> injectionTarget, BeanManagerImpl manager) {
-            super(attributes, beanClass, injectionTarget, manager);
+        protected PassivationCapableSyntheticClassBean(BeanAttributes<T> attributes, Class<T> beanClass, InjectionTargetFactory<T> factory, BeanManagerImpl manager) {
+            super(attributes, beanClass, factory, manager);
         }
     }
 
     private static class PassivationCapableSyntheticDecorator<T> extends SyntheticDecorator<T> implements PassivationCapable {
-        protected PassivationCapableSyntheticDecorator(BeanAttributes<T> attributes, Class<T> beanClass, InjectionTarget<T> producer, BeanManagerImpl manager) {
-            super(attributes, beanClass, producer, manager);
+        protected PassivationCapableSyntheticDecorator(BeanAttributes<T> attributes, Class<T> beanClass, InjectionTargetFactory<T> factory, BeanManagerImpl manager) {
+            super(attributes, beanClass, factory, manager);
         }
     }
 }

@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2012, Red Hat, Inc., and individual contributors
+ * Copyright 2013, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,19 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.beanManager.producer;
+package org.jboss.weld.manager;
 
-import static org.junit.Assert.assertNotNull;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.ProducerFactory;
 
-import javax.enterprise.inject.spi.BeanManager;
+public abstract class AbstractProducerFactory<X> implements ProducerFactory<X> {
 
-public class AnotherFactory {
+    private final Bean<X> declaringBean;
+    private final BeanManagerImpl manager;
 
-    final Toy jessie = new Toy("Jessie");
+    protected AbstractProducerFactory(Bean<X> declaringBean, BeanManagerImpl manager) {
+        this.declaringBean = declaringBean;
+        this.manager = manager;
+    }
 
-    public Toy getRex(BeanManager manager, SpaceSuit<Toy> suit) {
-        assertNotNull(manager);
-        assertNotNull(suit);
-        return new Toy("Rex");
+    protected Bean<X> getDeclaringBean() {
+        return declaringBean;
+    }
+
+    protected BeanManagerImpl getManager() {
+        return manager;
     }
 }

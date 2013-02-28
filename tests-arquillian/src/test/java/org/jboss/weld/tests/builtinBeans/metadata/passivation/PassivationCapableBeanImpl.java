@@ -24,6 +24,7 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
+import javax.enterprise.inject.spi.InjectionTargetFactory;
 import javax.enterprise.inject.spi.PassivationCapable;
 
 import org.jboss.weld.util.bean.ForwardingBeanAttributes;
@@ -42,17 +43,14 @@ import org.jboss.weld.util.bean.ForwardingBeanAttributes;
  */
 public class PassivationCapableBeanImpl<T> extends ForwardingBeanAttributes<T> implements Bean<T>, PassivationCapable {
 
-    private volatile InjectionTarget<T> injectionTarget;
+    private final InjectionTarget<T> injectionTarget;
     private final Class<?> beanClass;
     private final BeanAttributes<T> attributes;
 
-    public PassivationCapableBeanImpl(Class<?> beanClass, BeanAttributes<T> attributes) {
+    public PassivationCapableBeanImpl(Class<?> beanClass, BeanAttributes<T> attributes, InjectionTargetFactory<T> factory) {
         this.beanClass = beanClass;
         this.attributes = attributes;
-    }
-
-    public void setInjectionTarget(InjectionTarget<T> injectionTarget) {
-        this.injectionTarget = injectionTarget;
+        this.injectionTarget = factory.createInjectionTarget(this);
     }
 
     @Override

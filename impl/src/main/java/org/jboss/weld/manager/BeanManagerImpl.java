@@ -28,7 +28,6 @@ import static org.jboss.weld.logging.messages.BeanManagerMessage.NOT_INTERCEPTOR
 import static org.jboss.weld.logging.messages.BeanManagerMessage.NOT_STEREOTYPE;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.NO_DECORATOR_TYPES;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.NO_INSTANCE_OF_EXTENSION;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.NULL_DECLARING_BEAN;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.SPECIFIED_TYPE_NOT_BEAN_TYPE;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.TOO_MANY_ACTIVITIES;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.UNRESOLVABLE_ELEMENT;
@@ -75,22 +74,21 @@ import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
+import javax.enterprise.inject.spi.InjectionTargetFactory;
 import javax.enterprise.inject.spi.InterceptionType;
 import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.ObserverMethod;
 import javax.enterprise.inject.spi.PassivationCapable;
 import javax.enterprise.inject.spi.Producer;
+import javax.enterprise.inject.spi.ProducerFactory;
 import javax.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.annotated.AnnotatedTypeValidator;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMember;
-import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
-import org.jboss.weld.bean.DecoratorImpl;
-import org.jboss.weld.bean.DisposalMethod;
 import org.jboss.weld.bean.NewBean;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.SessionBean;
@@ -128,14 +126,6 @@ import org.jboss.weld.injection.attributes.FieldInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.InferingFieldInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.InferingParameterInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.ParameterInjectionPointAttributes;
-import org.jboss.weld.injection.producer.AbstractInjectionTarget;
-import org.jboss.weld.injection.producer.DecoratorInjectionTarget;
-import org.jboss.weld.injection.producer.DefaultInjectionTarget;
-import org.jboss.weld.injection.producer.InjectionTargetInitializationContext;
-import org.jboss.weld.injection.producer.InjectionTargetService;
-import org.jboss.weld.injection.producer.ProducerFieldProducer;
-import org.jboss.weld.injection.producer.ProducerMethodProducer;
-import org.jboss.weld.injection.producer.ejb.SessionBeanInjectionTarget;
 import org.jboss.weld.interceptor.reader.cache.DefaultMetadataCachingReader;
 import org.jboss.weld.interceptor.reader.cache.MetadataCachingReader;
 import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
@@ -1023,135 +1013,17 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     @Override
     public <T> InjectionTarget<T> createInjectionTarget(AnnotatedType<T> type) {
-        return createInjectionTarget(type, null);
+        return getInjectionTargetFactory(type).createInjectionTarget(null);
     }
 
-    public <T> InjectionTarget<T> createInjectionTarget(AnnotatedType<T> type, Bean<T> bean) {
-        AnnotatedTypeValidator.validateAnnotatedType(type);
-        try {
-            EnhancedAnnotatedType<T> enhancedType = getServices().get(ClassTransformer.class).getEnhancedAnnotatedType(type, getId());
-            InjectionTarget<T> injectionTarget = internalCreateInjectionTarget(enhancedType, bean);
-
-            getServices().get(InjectionTargetService.class).validateProducer(injectionTarget);
-            return injectionTarget;
-        } catch (Throwable e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    public <T> AbstractInjectionTarget<T> internalCreateInjectionTarget(EnhancedAnnotatedType<T> type, Bean<T> bean) {
-        AbstractInjectionTarget<T> injectionTarget = null;
-        if (bean instanceof DecoratorImpl<?> || type.isAnnotationPresent(javax.decorator.Decorator.class)) {
-            injectionTarget = new DecoratorInjectionTarget<T>(type, bean, this);
-        } else if (bean instanceof SessionBean<?>) {
-            injectionTarget = new SessionBeanInjectionTarget<T>(type, (SessionBean<T>) bean, this);
-        } else {
-            injectionTarget = new DefaultInjectionTarget<T>(type, bean, this);
-        }
-        /*
-         * Every InjectionTarget, regardless whether it's used within Weld's Bean implementation or requested from extension
-         * has to be initialized after beans (interceptors) are deployed.
-         */
-        getServices().get(InjectionTargetService.class).addInjectionTargetToBeInitialized(new InjectionTargetInitializationContext<T>(type, injectionTarget));
-        return injectionTarget;
-    }
-
+    @Override
     public <T> InjectionTarget<T> createInjectionTarget(EjbDescriptor<T> descriptor) {
         if (descriptor.isMessageDriven()) {
             throw new UnsupportedOperationException();
         } else {
             InjectionTarget<T> injectionTarget = getBean(descriptor).getProducer();
-            getServices().get(InjectionTargetService.class).validateProducer(injectionTarget);
             return injectionTarget;
         }
-    }
-
-    /**
-     * Creates a new {@link Producer} implementation for a given field. This method is required by the specification.
-     */
-    @Override
-    public <X> Producer<?> createProducer(AnnotatedField<? super X> field, Bean<X> declaringBean) {
-        if (declaringBean == null && !field.isStatic()) {
-            throw new IllegalArgumentException(NULL_DECLARING_BEAN, field);
-        }
-        AnnotatedTypeValidator.validateAnnotatedMember(field);
-        try {
-            Producer<?> producer = createProducer(field, null, declaringBean, null);
-            getServices().get(InjectionTargetService.class).validateProducer(producer);
-            return producer;
-        } catch (Throwable e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    public <S, X extends S , T> Producer<T> createProducer(final AnnotatedField<S> field, DisposalMethod<X, T> disposalMethod, final Bean<X> declaringBean, final Bean<T> bean) {
-        EnhancedAnnotatedField<T, S> enhancedField = getServices().get(MemberTransformer.class).loadEnhancedMember(field, getId());
-        return new ProducerFieldProducer<X, T>(enhancedField, disposalMethod) {
-
-            @Override
-            public AnnotatedField<? super X> getAnnotated() {
-                return field;
-            }
-
-            @Override
-            public BeanManagerImpl getBeanManager() {
-                return BeanManagerImpl.this;
-            }
-
-            @Override
-            public Bean<X> getDeclaringBean() {
-                return declaringBean;
-            }
-
-            @Override
-            public Bean<T> getBean() {
-                return bean;
-            }
-        };
-    }
-
-    /**
-     * Creates a new {@link Producer} implementation for a given method. This method is required by the specification.
-     */
-    @Override
-    public <X> Producer<?> createProducer(AnnotatedMethod<? super X> method, Bean<X> declaringBean) {
-        if (declaringBean == null && !method.isStatic()) {
-            throw new IllegalArgumentException(NULL_DECLARING_BEAN, method);
-        }
-        AnnotatedTypeValidator.validateAnnotatedMember(method);
-        try {
-            Producer<?> producer = createProducer(method, null, declaringBean, null);
-            getServices().get(InjectionTargetService.class).validateProducer(producer);
-            return producer;
-        } catch (Throwable e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    public <S, X extends S, T> Producer<T> createProducer(final AnnotatedMethod<S> method, DisposalMethod<X, T> disposalMethod, final Bean<X> declaringBean, final Bean<T> bean) {
-        EnhancedAnnotatedMethod<T, S> enhancedMethod = getServices().get(MemberTransformer.class).loadEnhancedMember(method, getId());
-        return new ProducerMethodProducer<X, T>(enhancedMethod, disposalMethod) {
-
-            @Override
-            public AnnotatedMethod<? super X> getAnnotated() {
-                return method;
-            }
-
-            @Override
-            public BeanManagerImpl getBeanManager() {
-                return BeanManagerImpl.this;
-            }
-
-            @Override
-            public Bean<X> getDeclaringBean() {
-                return declaringBean;
-            }
-
-            @Override
-            public Bean<T> getBean() {
-                return bean;
-            }
-        };
     }
 
     @Override
@@ -1387,13 +1259,13 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     @Override
-    public <T> Bean<T> createBean(BeanAttributes<T> attributes, Class<T> beanClass, InjectionTarget<T> injectionTarget) {
-        return SyntheticBeanFactory.create(attributes, beanClass, injectionTarget, this);
+    public <T> Bean<T> createBean(BeanAttributes<T> attributes, Class<T> beanClass, InjectionTargetFactory<T> injectionTargetFactory) {
+        return SyntheticBeanFactory.create(attributes, beanClass, injectionTargetFactory, this);
     }
 
     @Override
-    public <T> Bean<T> createBean(BeanAttributes<T> attributes, Class<?> beanClass, Producer<T> producer) {
-        return SyntheticBeanFactory.create(attributes, beanClass, producer, this);
+    public <T> Bean<T> createBean(BeanAttributes<T> attributes, Class<?> beanClass, ProducerFactory<T> producerFactory) {
+        return SyntheticBeanFactory.create(attributes, beanClass, producerFactory, this);
     }
 
     @Override
@@ -1466,5 +1338,28 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     @Override
     public int getInterceptorBindingHashCode(Annotation interceptorBinding) {
         return Bindings.getInterceptorBindingHashCode(interceptorBinding, services.get(MetaAnnotationStore.class));
+    }
+
+    @Override
+    public <T> InjectionTargetFactoryImpl<T> getInjectionTargetFactory(AnnotatedType<T> type) {
+        return new InjectionTargetFactoryImpl<T>(type, this);
+    }
+
+    @Override
+    public <X> FieldProducerFactory<X> getProducerFactory(AnnotatedField<? super X> field) {
+        return getProducerFactory(field, null);
+    }
+
+    public <X> FieldProducerFactory<X> getProducerFactory(AnnotatedField<? super X> field, Bean<X> declaringBean) {
+        return new FieldProducerFactory<X>(field, declaringBean, this);
+    }
+
+    @Override
+    public <X> MethodProducerFactory<X> getProducerFactory(AnnotatedMethod<? super X> method) {
+        return getProducerFactory(method, null);
+    }
+
+    public <X> MethodProducerFactory<X> getProducerFactory(AnnotatedMethod<? super X> method, Bean<X> declaringBean) {
+        return new MethodProducerFactory<X>(method, declaringBean, this);
     }
 }

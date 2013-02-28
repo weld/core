@@ -25,17 +25,18 @@ import java.util.Set;
 import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionTarget;
+import javax.enterprise.inject.spi.InjectionTargetFactory;
 
 /**
  * An implementation of {@link Decorator} which delegates to {@link InjectionTarget} and {@link BeanAttributes}. The bean is
  * passivation capable however the {@link PassivationCapableDecoratorImpl} class is intentionally not {@link Serializable} (it
  * does not have to).
- * 
+ *
  * The container is required to wrap this non-serializable instance with a serialization proxy in order to make the bean a
  * passivation capable dependency.
- * 
+ *
  * @author Jozef Hartinger
- * 
+ *
  * @param <T>
  */
 public class PassivationCapableDecoratorImpl<T> extends PassivationCapableBeanImpl<T> implements Decorator<T> {
@@ -45,8 +46,8 @@ public class PassivationCapableDecoratorImpl<T> extends PassivationCapableBeanIm
     private final Set<Type> decoratedTypes;
 
     public PassivationCapableDecoratorImpl(Class<?> beanClass, BeanAttributes<T> attributes, Type delegateType,
-            Set<Annotation> delegateQualifiers, Set<Type> decoratedTypes) {
-        super(beanClass, attributes);
+            Set<Annotation> delegateQualifiers, Set<Type> decoratedTypes, InjectionTargetFactory<T> factory) {
+        super(beanClass, attributes, factory);
         this.delegateType = delegateType;
         this.delegateQualifiers = Collections.unmodifiableSet(delegateQualifiers);
         this.decoratedTypes = Collections.unmodifiableSet(decoratedTypes);

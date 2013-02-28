@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.tests.beanManager.bean;
 
+import static org.jboss.weld.util.reflection.Reflections.cast;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -27,6 +28,7 @@ import java.util.Set;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
+import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
@@ -34,74 +36,76 @@ import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.InjectionTarget;
-import javax.enterprise.inject.spi.ProcessProducer;
-import javax.enterprise.inject.spi.Producer;
+import javax.enterprise.inject.spi.InjectionTargetFactory;
+import javax.enterprise.inject.spi.ProcessManagedBean;
+import javax.enterprise.inject.spi.ProducerFactory;
 
+import org.jboss.weld.bean.builtin.BeanManagerProxy;
 import org.jboss.weld.literal.DefaultLiteral;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.bean.ForwardingBeanAttributes;
 import org.jboss.weld.util.reflection.Reflections;
 
 public class BeanExtension implements Extension {
 
-    private Bean<Lion> hungryLion;
-    private Bean<Lion> hungryTiger;
+    private Bean<Zoo> zooBean;
 
     void registerBeans(@Observes AfterBeanDiscovery event, BeanManager manager) {
         // create a synthetic class bean
         {
             AnnotatedType<Office> oat = manager.createAnnotatedType(Office.class);
             BeanAttributes<Office> oa = manager.createBeanAttributes(oat);
-            InjectionTarget<Office> oit = manager.createInjectionTarget(oat);
-            Bean<?> bean = manager.createBean(oa, Office.class, oit);
+            InjectionTargetFactory<Office> factory = manager.getInjectionTargetFactory(oat);
+            Bean<?> bean = manager.createBean(oa, Office.class, factory);
             event.addBean(bean);
         }
         // create a serializable synthetic class bean
         {
             AnnotatedType<SerializableOffice> oat = manager.createAnnotatedType(SerializableOffice.class);
             BeanAttributes<SerializableOffice> oa = manager.createBeanAttributes(oat);
-            InjectionTarget<SerializableOffice> oit = manager.createInjectionTarget(oat);
-            Bean<?> bean = manager.createBean(oa, SerializableOffice.class, oit);
+            InjectionTargetFactory<SerializableOffice> factory = manager.getInjectionTargetFactory(oat);
+            Bean<?> bean = manager.createBean(oa, SerializableOffice.class, factory);
             event.addBean(bean);
         }
         // create a synthetic decorator
         {
             AnnotatedType<VehicleDecorator> oat = manager.createAnnotatedType(VehicleDecorator.class);
             BeanAttributes<VehicleDecorator> oa = addDecoratorStereotype(manager.createBeanAttributes(oat));
-            InjectionTarget<VehicleDecorator> oit = manager.createInjectionTarget(oat);
-            Bean<?> bean = manager.createBean(oa, VehicleDecorator.class, oit);
+            InjectionTargetFactory<VehicleDecorator> factory = manager.getInjectionTargetFactory(oat);
+            Bean<?> bean = manager.createBean(oa, VehicleDecorator.class, factory);
             assertTrue(bean instanceof Decorator<?>);
             event.addBean(bean);
         }
 
-        // synthetic producer field
-        assertNotNull(hungryLion);
-        event.addBean(hungryLion);
-        // synthetic producer method
-        assertNotNull(hungryTiger);
-        event.addBean(hungryTiger);
-    }
+        assertNotNull(zooBean);
 
-    void prepareHungryLion(@Observes ProcessProducer<Zoo, Lion> event, BeanManager manager) {
-        AnnotatedType<Zoo> zoo = manager.createAnnotatedType(Zoo.class);
-        assertEquals(1, zoo.getFields().size());
-        BeanAttributes<Lion> attributes = Reflections.cast(starveOut(manager.createBeanAttributes(zoo.getFields().iterator().next())));
-        Producer<Lion> producer = event.getProducer();
-        hungryLion = Reflections.cast(manager.createBean(attributes, Zoo.class, producer));
-    }
-
-    void prepareHungryTiger(@Observes ProcessProducer<Zoo, Tiger> event, BeanManager manager) {
-        AnnotatedType<Zoo> zoo = manager.createAnnotatedType(Zoo.class);
-        AnnotatedMethod<?> method = null;
-        for (AnnotatedMethod<?> _method : zoo.getMethods()) {
-            if (_method.getBaseType().equals(Tiger.class)) {
-                method = _method;
-            }
+        // create synthetic producer field
+        {
+            AnnotatedType<Zoo> zoo = manager.createAnnotatedType(Zoo.class);
+            assertEquals(1, zoo.getFields().size());
+            AnnotatedField<? super Zoo> field = zoo.getFields().iterator().next();
+            BeanAttributes<Lion> attributes = Reflections.cast(starveOut(manager.createBeanAttributes(field)));
+            ProducerFactory<Zoo> factory = getManagerImpl(manager).getProducerFactory(field, zooBean);
+            event.addBean(manager.createBean(attributes, Zoo.class, Reflections.<ProducerFactory<Lion>>cast(factory)));
         }
-        assertNotNull(method);
-        BeanAttributes<Tiger> attributes = Reflections.cast(starveOut(manager.createBeanAttributes(method)));
-        Producer<Tiger> producer = event.getProducer();
-        hungryTiger = Reflections.cast(manager.createBean(attributes, Zoo.class, producer));
+        // create synthetic producer method
+        {
+            AnnotatedType<Zoo> zoo = manager.createAnnotatedType(Zoo.class);
+            AnnotatedMethod<? super Zoo> method = null;
+            for (AnnotatedMethod<? super Zoo> _method : zoo.getMethods()) {
+                if (_method.getBaseType().equals(Tiger.class)) {
+                    method = _method;
+                }
+            }
+            assertNotNull(method);
+            BeanAttributes<Tiger> attributes = Reflections.cast(starveOut(manager.createBeanAttributes(method)));
+            ProducerFactory<Zoo> factory = getManagerImpl(manager).getProducerFactory(method, zooBean);
+            event.addBean(manager.createBean(attributes, Zoo.class, Reflections.<ProducerFactory<Tiger>>cast(factory)));
+        }
+    }
+
+    void observeZooBean(@Observes ProcessManagedBean<Zoo> event) {
+        this.zooBean = event.getBean();
     }
 
     private <T> BeanAttributes<T> starveOut(final BeanAttributes<T> attributes) {
@@ -135,5 +139,12 @@ public class BeanExtension implements Extension {
                 return Collections.<Class<? extends Annotation>> singleton(javax.decorator.Decorator.class);
             }
         };
+    }
+
+    private static BeanManagerImpl getManagerImpl(BeanManager manager) {
+        if (manager instanceof BeanManagerProxy) {
+            manager = Reflections.<BeanManagerProxy>cast(manager).delegate();
+        }
+        return cast(manager);
     }
 }

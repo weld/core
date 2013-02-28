@@ -16,15 +16,12 @@
  */
 package org.jboss.weld.bean;
 
-import java.util.HashSet;
 import java.util.Set;
 
-import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.Producer;
 
-import org.jboss.weld.injection.ForwardingInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
 
@@ -38,41 +35,15 @@ import org.jboss.weld.util.Beans;
 public abstract class AbstractSyntheticBean<T> extends CommonBean<T> {
 
     private final Class<?> beanClass;
-    protected final Producer<T> producer;
-    private final Set<InjectionPoint> injectionPoints;
 
-    protected AbstractSyntheticBean(BeanAttributes<T> attributes, String id, BeanManagerImpl manager, Class<?> beanClass, Producer<T> producer) {
+    protected AbstractSyntheticBean(BeanAttributes<T> attributes, String id, BeanManagerImpl manager, Class<?> beanClass) {
         super(attributes, id, manager);
         this.beanClass = beanClass;
-        this.producer = producer;
-        this.injectionPoints = wrapInjectionPoints(producer.getInjectionPoints());
     }
 
-    protected static <T> String createId(BeanAttributes<T> attributes, Class<?> beanClass, Producer<T> producer) {
+    protected static <T> String createId(BeanAttributes<T> attributes, Class<?> beanClass) {
         return new StringBuilder().append(SyntheticClassBean.class.getName()).append(RIBean.BEAN_ID_SEPARATOR).append(beanClass.getName())
                 .append(Beans.createBeanAttributesId(attributes)).toString();
-    }
-
-    /**
-     * Wraps a set of injection points to reflect this bean within the {@link InjectionPoint#getBean()} method.
-     */
-    protected Set<InjectionPoint> wrapInjectionPoints(Set<InjectionPoint> injectionPoints) {
-        Set<InjectionPoint> wrappedInjectionPoints = new HashSet<InjectionPoint>(injectionPoints.size());
-        for (final InjectionPoint ip : injectionPoints) {
-            wrappedInjectionPoints.add(new ForwardingInjectionPoint() {
-
-                @Override
-                public Bean<?> getBean() {
-                    return AbstractSyntheticBean.this;
-                }
-
-                @Override
-                protected InjectionPoint delegate() {
-                    return ip;
-                }
-            });
-        }
-        return wrappedInjectionPoints;
     }
 
     @Override
@@ -82,10 +53,8 @@ public abstract class AbstractSyntheticBean<T> extends CommonBean<T> {
 
     @Override
     public Set<InjectionPoint> getInjectionPoints() {
-        return injectionPoints;
+        return getProducer().getInjectionPoints();
     }
 
-    protected Producer<T> getProducer() {
-        return producer;
-    }
+    protected abstract Producer<T> getProducer();
 }

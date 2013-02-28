@@ -59,10 +59,6 @@ public class ModifyingExtension implements Extension {
             public boolean isAlternative() {
                 return true;
             }
-
-            public boolean isNullable() {
-                return true;
-            }
         });
     }
 }

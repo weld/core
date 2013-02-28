@@ -23,60 +23,33 @@ import java.util.Set;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.InjectionTarget;
+import javax.enterprise.inject.spi.InjectionTargetFactory;
 import javax.enterprise.inject.spi.InterceptionType;
-import javax.enterprise.inject.spi.ProcessInjectionPoint;
 import javax.interceptor.InvocationContext;
-
-import org.jboss.weld.injection.ForwardingInjectionPoint;
 
 /**
  * Register {@link FastInterceptor} as an interceptor using {@link AbstractPassivationCapableInterceptorImpl}.
- * 
+ *
  * @author Jozef Hartinger
- * 
+ *
  */
 public class FastInterceptorExtension implements Extension {
-
-    private AbstractPassivationCapableInterceptorImpl<FastInterceptor> interceptor;
 
     void registerInterceptor(@Observes AfterBeanDiscovery event, BeanManager manager) {
         AnnotatedType<FastInterceptor> annotatedType = manager.createAnnotatedType(FastInterceptor.class);
         BeanAttributes<FastInterceptor> attributes = manager.createBeanAttributes(annotatedType);
         Set<Annotation> interceptorBindings = Collections.<Annotation> singleton(Fast.Literal.INSTANCE);
         Set<InterceptionType> interceptionTypes = Collections.singleton(InterceptionType.AROUND_INVOKE);
-        this.interceptor = new AbstractPassivationCapableInterceptorImpl<FastInterceptor>(FastInterceptor.class, attributes,
-                interceptorBindings, interceptionTypes) {
+        InjectionTargetFactory<FastInterceptor> factory = manager.getInjectionTargetFactory(annotatedType);
+        event.addBean(new AbstractPassivationCapableInterceptorImpl<FastInterceptor>(FastInterceptor.class, attributes,
+                interceptorBindings, interceptionTypes, factory) {
             @Override
             public Object intercept(InterceptionType type, FastInterceptor instance, InvocationContext ctx) throws Exception {
                 return instance; // instead of intercepting return the interceptor instance so that we can examine its state
             }
-        };
-        InjectionTarget<FastInterceptor> injectionTarget = manager.createInjectionTarget(annotatedType);
-        this.interceptor.setInjectionTarget(injectionTarget);
-        event.addBean(interceptor);
-    }
-
-    void wrapInjectionPoints(@Observes ProcessInjectionPoint<FastInterceptor, ?> event) {
-        final InjectionPoint delegate = event.getInjectionPoint();
-        if (delegate.getBean() == null) {
-            event.setInjectionPoint(new ForwardingInjectionPoint() {
-
-                @Override
-                public Bean<?> getBean() {
-                    return interceptor;
-                }
-
-                @Override
-                protected InjectionPoint delegate() {
-                    return delegate;
-                }
-            });
-        }
+        });
     }
 }

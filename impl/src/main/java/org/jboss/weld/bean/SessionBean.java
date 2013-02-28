@@ -111,7 +111,7 @@ public class SessionBean<T> extends AbstractClassBean<T> {
     protected SessionBean(BeanAttributes<T> attributes, EnhancedAnnotatedType<T> type, InternalEjbDescriptor<T> ejbDescriptor, String idSuffix, BeanManagerImpl manager) {
         super(attributes, type, idSuffix, manager);
         this.ejbDescriptor = ejbDescriptor;
-        setProducer(beanManager.internalCreateInjectionTarget(getEnhancedAnnotated(), this));
+        setProducer(beanManager.getInjectionTargetFactory(getEnhancedAnnotated()).internalCreateInjectionTarget(getEnhancedAnnotated(), this));
     }
 
     /**

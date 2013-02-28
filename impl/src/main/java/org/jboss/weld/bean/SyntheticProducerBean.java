@@ -19,6 +19,7 @@ package org.jboss.weld.bean;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.Producer;
+import javax.enterprise.inject.spi.ProducerFactory;
 
 import org.jboss.weld.manager.BeanManagerImpl;
 
@@ -31,8 +32,11 @@ import org.jboss.weld.manager.BeanManagerImpl;
  */
 public class SyntheticProducerBean<T> extends AbstractSyntheticBean<T> {
 
-    protected SyntheticProducerBean(BeanAttributes<T> attributes, Class<?> beanClass, Producer<T> producer, BeanManagerImpl manager) {
-        super(attributes, createId(attributes, beanClass, producer), manager, beanClass, producer);
+    private final Producer<T> producer;
+
+    protected SyntheticProducerBean(BeanAttributes<T> attributes, Class<?> beanClass, ProducerFactory<T> factory, BeanManagerImpl manager) {
+        super(attributes, createId(attributes, beanClass), manager, beanClass);
+        this.producer = (Producer<T>) factory.createProducer(this);
     }
 
     @Override
@@ -49,4 +53,8 @@ public class SyntheticProducerBean<T> extends AbstractSyntheticBean<T> {
         }
     }
 
+    @Override
+    protected Producer<T> getProducer() {
+        return producer;
+    }
 }
