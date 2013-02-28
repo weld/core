@@ -18,6 +18,7 @@ package org.jboss.weld.tests.contexts.passivating.injection;
 
 import java.io.Serializable;
 
+import javax.enterprise.inject.TransientReference;
 import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
@@ -29,11 +30,11 @@ import javax.interceptor.InvocationContext;
 public class BioInterceptor implements Serializable {
 
     @Inject
-    public BioInterceptor(Truck truck, Pasture pasture) {
+    public BioInterceptor(Truck truck, @TransientReference Pasture pasture) {
     }
 
     @Inject
-    public void init(Truck truck, Pasture pasture) {
+    public void init(Truck truck, @TransientReference Pasture pasture) {
     }
 
     @AroundInvoke

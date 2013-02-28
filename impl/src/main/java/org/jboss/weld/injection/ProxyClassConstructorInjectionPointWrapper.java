@@ -19,7 +19,6 @@ package org.jboss.weld.injection;
 
 import java.util.List;
 
-import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedConstructor;
@@ -76,10 +75,10 @@ public class ProxyClassConstructorInjectionPointWrapper<T> extends ConstructorIn
     }
 
     @Override
-    public T newInstance(BeanManagerImpl manager, CreationalContext<?> creationalContext, Object[] parameterValues) {
+    protected T newInstance(Object[] parameterValues) {
         // Once the instance is created, a method handler is required regardless of whether
         // an actual bean instance is known yet.
-        final T instance = super.newInstance(manager, creationalContext, parameterValues);
+        final T instance = super.newInstance(parameterValues);
         if (decorator) {
             BeanInstance beanInstance = null;
             if (hasDelegateInjectionPoint()) {

@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.contexts.passivating.injection;
+package org.jboss.weld.tests.contexts.passivating.injection.broken;
 
 import java.io.Serializable;
 
@@ -25,13 +25,13 @@ import javax.inject.Inject;
 
 @SuppressWarnings("serial")
 @SessionScoped
-public class Farm implements Serializable {
+public class FarmBroken3 implements Serializable {
 
-    protected Farm() {
+    protected FarmBroken3() {
     }
 
     @Inject
-    public Farm(Truck truck, @TransientReference Pasture pasture) {
+    public FarmBroken3(Truck truck, @TransientReference Pasture pasture) {
     }
 
     @Inject
@@ -41,7 +41,7 @@ public class Farm implements Serializable {
     @Produces
     @Random
     @SessionScoped
-    public Sheep chooseRandomSheepFromDelivery(Truck truck,  @TransientReference Pasture pasture) {
+    public Sheep chooseRandomSheepFromDelivery(Truck truck, Pasture pasture) {
         return truck.getSheeps().get(0);
     }
 

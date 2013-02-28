@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2010, Red Hat, Inc., and individual contributors
+ * Copyright 2013, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,35 +14,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.contexts.passivating.injection;
+package org.jboss.weld.tests.transientReference;
 
-import java.io.Serializable;
-
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.TransientReference;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 
-@SuppressWarnings("serial")
-@SessionScoped
-public class Farm implements Serializable {
+public class TestingBean1 {
 
-    protected Farm() {
-    }
+    private static boolean initialized;
+    private static boolean destroyed;
 
     @Inject
-    public Farm(Truck truck, @TransientReference Pasture pasture) {
+    private TestingBean2 dependency;
+
+    @PostConstruct
+    public void init() {
+        dependency.toString();
+        initialized = true;
     }
 
-    @Inject
-    public void init(Truck truck, @TransientReference Pasture pasture) {
+    @PreDestroy
+    public void destroy() {
+        destroyed = true;
     }
 
-    @Produces
-    @Random
-    @SessionScoped
-    public Sheep chooseRandomSheepFromDelivery(Truck truck,  @TransientReference Pasture pasture) {
-        return truck.getSheeps().get(0);
+    public static boolean isInitialized() {
+        return initialized;
     }
 
+    public static boolean isDestroyed() {
+        return destroyed;
+    }
+
+    public static void reset() {
+        initialized = false;
+        destroyed = false;
+    }
 }

@@ -18,7 +18,11 @@ package org.jboss.weld.tests.contexts.passivating.injection;
 
 import java.io.Serializable;
 
+import javax.enterprise.context.SessionScoped;
+
 @SuppressWarnings("serial")
+@SessionScoped
+@Bio
 public class Sheep implements Serializable, Animal {
 
     public void run() {

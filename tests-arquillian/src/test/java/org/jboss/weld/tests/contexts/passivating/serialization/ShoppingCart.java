@@ -19,6 +19,7 @@ package org.jboss.weld.tests.contexts.passivating.serialization;
 import java.io.Serializable;
 
 import javax.enterprise.context.SessionScoped;
+import javax.enterprise.inject.TransientReference;
 import javax.inject.Inject;
 
 @SessionScoped
@@ -33,10 +34,10 @@ public class ShoppingCart implements Serializable {
     }
 
     @Inject
-    public ShoppingCart(Logger logger) {
+    public ShoppingCart(@TransientReference Logger logger) {
     }
 
     @Inject
-    public void init(Logger logger) {
+    public void init(@TransientReference Logger logger) {
     }
 }

@@ -22,9 +22,9 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Iterator;
-import java.util.List;
 
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.TransientReference;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.Bean;
 
@@ -48,53 +48,33 @@ public class MethodInjectionPoint<T, X> extends AbstractCallableInjectionPoint<T
     }
 
     public T invoke(Object declaringInstance, BeanManagerImpl manager, CreationalContext<?> creationalContext, Class<? extends RuntimeException> exceptionTypeToThrow) {
-        try {
-            return method.invoke(declaringInstance, getParameterValues(getParameterInjectionPoints(), null, null, manager, creationalContext));
-        } catch (IllegalArgumentException e) {
-            rethrowException(e, exceptionTypeToThrow);
-        } catch (IllegalAccessException e) {
-            rethrowException(e, exceptionTypeToThrow);
-        } catch (InvocationTargetException e) {
-            rethrowException(e, exceptionTypeToThrow);
-        }
-        return null;
+        return invokeWithSpecialValue(declaringInstance, null, null, manager, creationalContext, exceptionTypeToThrow);
     }
 
-    public T invokeWithSpecialValue(Object declaringInstance, Class<? extends Annotation> annotatedParameter, Object parameter, BeanManagerImpl manager,
-            CreationalContext<?> creationalContext, Class<? extends RuntimeException> exceptionTypeToThrow) {
+    public T invokeWithSpecialValue(Object declaringInstance, Class<? extends Annotation> annotatedParameter, Object parameter, BeanManagerImpl manager, CreationalContext<?> ctx, Class<? extends RuntimeException> exceptionTypeToThrow) {
+        CreationalContext<?> invocationContext = manager.createCreationalContext(null);
         try {
-            return method.invoke(declaringInstance, getParameterValues(getParameterInjectionPoints(), annotatedParameter, parameter, manager, creationalContext));
+            return method.invoke(declaringInstance, getParameterValues(annotatedParameter, parameter, manager, ctx, invocationContext));
         } catch (IllegalArgumentException e) {
             rethrowException(e, exceptionTypeToThrow);
         } catch (IllegalAccessException e) {
             rethrowException(e, exceptionTypeToThrow);
         } catch (InvocationTargetException e) {
             rethrowException(e, exceptionTypeToThrow);
+        } finally {
+            invocationContext.release();
         }
         return null;
     }
 
     public T invokeOnInstance(Object declaringInstance, BeanManagerImpl manager, CreationalContext<?> creationalContext, Class<? extends RuntimeException> exceptionTypeToThrow) {
-        try {
-            return method.invokeOnInstance(declaringInstance, getParameterValues(getParameterInjectionPoints(), null, null, manager, creationalContext));
-        } catch (IllegalArgumentException e) {
-            rethrowException(e);
-        } catch (IllegalAccessException e) {
-            rethrowException(e);
-        } catch (InvocationTargetException e) {
-            rethrowException(e);
-        } catch (SecurityException e) {
-            rethrowException(e, exceptionTypeToThrow);
-        } catch (NoSuchMethodException e) {
-            rethrowException(e, exceptionTypeToThrow);
-        }
-        return null;
+        return invokeOnInstanceWithSpecialValue(declaringInstance, null, null, manager, creationalContext, exceptionTypeToThrow);
     }
 
-    public T invokeOnInstanceWithSpecialValue(Object declaringInstance, Class<? extends Annotation> annotatedParameter, Object parameter, BeanManagerImpl manager,
-            CreationalContext<?> creationalContext, Class<? extends RuntimeException> exceptionTypeToThrow) {
+    public T invokeOnInstanceWithSpecialValue(Object declaringInstance, Class<? extends Annotation> annotatedParameter, Object parameter, BeanManagerImpl manager, CreationalContext<?> ctx, Class<? extends RuntimeException> exceptionTypeToThrow) {
+        CreationalContext<?> invocationContext = manager.createCreationalContext(null);
         try {
-            return method.invokeOnInstance(declaringInstance, getParameterValues(getParameterInjectionPoints(), annotatedParameter, parameter, manager, creationalContext));
+            return method.invokeOnInstance(declaringInstance, getParameterValues(annotatedParameter, parameter, manager, ctx, invocationContext));
         } catch (IllegalArgumentException e) {
             rethrowException(e, exceptionTypeToThrow);
         } catch (SecurityException e) {
@@ -105,20 +85,14 @@ public class MethodInjectionPoint<T, X> extends AbstractCallableInjectionPoint<T
             rethrowException(e, exceptionTypeToThrow);
         } catch (NoSuchMethodException e) {
             rethrowException(e, exceptionTypeToThrow);
+        } finally {
+            invocationContext.release();
         }
         return null;
     }
 
     public void inject(Object declaringInstance, Object value) {
-        try {
-            method.invoke(declaringInstance, value);
-        } catch (IllegalArgumentException e) {
-            rethrowException(e);
-        } catch (IllegalAccessException e) {
-            rethrowException(e);
-        } catch (InvocationTargetException e) {
-            rethrowException(e);
-        }
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -128,16 +102,17 @@ public class MethodInjectionPoint<T, X> extends AbstractCallableInjectionPoint<T
      * @param manager The Bean manager
      * @return The object array of looked up values
      */
-    protected Object[] getParameterValues(List<ParameterInjectionPoint<?, X>> parameters, Class<? extends Annotation> specialParam, Object specialVal, BeanManagerImpl manager,
-            CreationalContext<?> creationalContext) {
-        Object[] parameterValues = new Object[parameters.size()];
-        Iterator<ParameterInjectionPoint<?, X>> iterator = parameters.iterator();
+    protected Object[] getParameterValues(Class<? extends Annotation> specialParam, Object specialVal, BeanManagerImpl manager, CreationalContext<?> ctx, CreationalContext<?> invocationContext) {
+        Object[] parameterValues = new Object[getParameterInjectionPoints().size()];
+        Iterator<ParameterInjectionPoint<?, X>> iterator = getParameterInjectionPoints().iterator();
         for (int i = 0; i < parameterValues.length; i++) {
             ParameterInjectionPoint<?, ?> param = iterator.next();
             if (specialParam != null && param.getAnnotated().isAnnotationPresent(specialParam)) {
                 parameterValues[i] = specialVal;
+            } else if (param.getAnnotated().isAnnotationPresent(TransientReference.class)){
+                parameterValues[i] = param.getValueToInject(manager, invocationContext);
             } else {
-                parameterValues[i] = param.getValueToInject(manager, creationalContext);
+                parameterValues[i] = param.getValueToInject(manager, ctx);
             }
         }
         return parameterValues;

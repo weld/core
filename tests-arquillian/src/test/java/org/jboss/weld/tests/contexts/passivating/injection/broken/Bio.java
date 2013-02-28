@@ -14,35 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.contexts.passivating.injection;
+package org.jboss.weld.tests.contexts.passivating.injection.broken;
 
-import java.io.Serializable;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.TransientReference;
-import javax.inject.Inject;
+import javax.interceptor.InterceptorBinding;
 
-@SuppressWarnings("serial")
-@SessionScoped
-public class Farm implements Serializable {
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-    protected Farm() {
-    }
-
-    @Inject
-    public Farm(Truck truck, @TransientReference Pasture pasture) {
-    }
-
-    @Inject
-    public void init(Truck truck, @TransientReference Pasture pasture) {
-    }
-
-    @Produces
-    @Random
-    @SessionScoped
-    public Sheep chooseRandomSheepFromDelivery(Truck truck,  @TransientReference Pasture pasture) {
-        return truck.getSheeps().get(0);
-    }
+@InterceptorBinding
+@Inherited
+@Target({ TYPE, METHOD })
+@Retention(RUNTIME)
+@Documented
+public @interface Bio {
 
 }

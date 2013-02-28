@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2010, Red Hat, Inc., and individual contributors
+ * Copyright 2013, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,35 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.contexts.passivating.injection;
+package org.jboss.weld.tests.transientReference;
 
-import java.io.Serializable;
-
-import javax.enterprise.context.SessionScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.TransientReference;
-import javax.inject.Inject;
 
-@SuppressWarnings("serial")
-@SessionScoped
-public class Farm implements Serializable {
-
-    protected Farm() {
-    }
-
-    @Inject
-    public Farm(Truck truck, @TransientReference Pasture pasture) {
-    }
-
-    @Inject
-    public void init(Truck truck, @TransientReference Pasture pasture) {
-    }
+@ApplicationScoped
+public class ExceptionProducer {
 
     @Produces
-    @Random
-    @SessionScoped
-    public Sheep chooseRandomSheepFromDelivery(Truck truck,  @TransientReference Pasture pasture) {
-        return truck.getSheeps().get(0);
+    public NullPointerException produce(@TransientReference TestingBean1 bean) {
+        return new NullPointerException();
     }
-
 }

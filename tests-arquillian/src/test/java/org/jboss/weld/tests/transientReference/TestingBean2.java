@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2010, Red Hat, Inc., and individual contributors
+ * Copyright 2013, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,33 +14,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.contexts.passivating.injection;
+package org.jboss.weld.tests.transientReference;
 
-import java.io.Serializable;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 
-import javax.decorator.Decorator;
-import javax.decorator.Delegate;
-import javax.enterprise.inject.TransientReference;
-import javax.inject.Inject;
+public class TestingBean2 {
 
-@SuppressWarnings("serial")
-@Decorator
-public class AnimalDecorator implements Animal, Serializable {
+    private static boolean initialized;
+    private static boolean destroyed;
 
-    @Inject
-    @Delegate
-    private Animal delegate;
-
-    @Inject
-    public AnimalDecorator(Truck truck, @TransientReference Pasture pasture) {
+    @PostConstruct
+    public void init() {
+        initialized = true;
     }
 
-    @Inject
-    public void init(Truck truck, @TransientReference Pasture pasture) {
+    @PreDestroy
+    public void destroy() {
+        destroyed = true;
     }
 
-    public void run() {
-        delegate.run();
+    public static boolean isInitialized() {
+        return initialized;
     }
 
+    public static boolean isDestroyed() {
+        return destroyed;
+    }
+
+    public static void reset() {
+        initialized = false;
+        destroyed = false;
+    }
 }

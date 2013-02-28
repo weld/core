@@ -53,7 +53,6 @@ import static org.jboss.weld.logging.messages.ValidatorMessage.INVALID_BEAN_META
 import static org.jboss.weld.logging.messages.ValidatorMessage.INVALID_BEAN_METADATA_INJECTION_POINT_TYPE_ARGUMENT;
 import static org.jboss.weld.logging.messages.ValidatorMessage.NEW_WITH_QUALIFIERS;
 import static org.jboss.weld.logging.messages.ValidatorMessage.NON_FIELD_INJECTION_POINT_CANNOT_USE_NAMED;
-import static org.jboss.weld.logging.messages.ValidatorMessage.NON_SERIALIZABLE_BEAN_INJECTED_INTO_PASSIVATING_BEAN;
 import static org.jboss.weld.logging.messages.ValidatorMessage.PASSIVATING_BEAN_WITH_NONSERIALIZABLE_DECORATOR;
 import static org.jboss.weld.logging.messages.ValidatorMessage.PASSIVATING_BEAN_WITH_NONSERIALIZABLE_INTERCEPTOR;
 import static org.jboss.weld.logging.messages.ValidatorMessage.PSEUDO_SCOPED_BEAN_HAS_CIRCULAR_REFERENCES;
@@ -86,8 +85,10 @@ import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Intercepted;
 import javax.enterprise.inject.New;
 import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.TransientReference;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.AnnotatedField;
+import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Decorator;
@@ -123,7 +124,6 @@ import org.jboss.weld.bootstrap.enablement.ClassEnablement;
 import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.DeploymentException;
-import org.jboss.weld.exceptions.IllegalProductException;
 import org.jboss.weld.exceptions.InconsistentSpecializationException;
 import org.jboss.weld.exceptions.UnproxyableResolutionException;
 import org.jboss.weld.exceptions.UnserializableDependencyException;
@@ -441,9 +441,12 @@ public class Validator implements Service {
     }
 
     public void validateInjectionPointPassivationCapable(InjectionPoint ij, Bean<?> resolvedBean, BeanManagerImpl beanManager) {
-        if ((ij.getMember() instanceof Field) && !ij.isTransient() && !Beans.isPassivationCapableDependency(resolvedBean)) {
-            if (resolvedBean.getScope().equals(Dependent.class) && resolvedBean instanceof AbstractProducerBean<?, ?, ?>) {
-                throw new IllegalProductException(NON_SERIALIZABLE_BEAN_INJECTED_INTO_PASSIVATING_BEAN, ij.getBean(), resolvedBean);
+        if (!Beans.isPassivationCapableDependency(resolvedBean)) {
+            if (((ij.getMember() instanceof Field) && ij.isTransient())) {
+                return;
+            }
+            if (ij.getAnnotated() instanceof AnnotatedParameter<?> && ij.getAnnotated().isAnnotationPresent(TransientReference.class)) {
+                return;
             }
             throw new UnserializableDependencyException(INJECTION_POINT_HAS_NON_SERIALIZABLE_DEPENDENCY, ij.getBean(), resolvedBean);
         }

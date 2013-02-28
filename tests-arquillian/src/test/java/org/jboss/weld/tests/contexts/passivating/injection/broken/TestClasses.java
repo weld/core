@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2010, Red Hat, Inc., and individual contributors
+ * Copyright 2013, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,33 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.contexts.passivating.injection;
+package org.jboss.weld.tests.contexts.passivating.injection.broken;
 
-import java.io.Serializable;
+public abstract class TestClasses {
 
-import javax.decorator.Decorator;
-import javax.decorator.Delegate;
-import javax.enterprise.inject.TransientReference;
-import javax.inject.Inject;
-
-@SuppressWarnings("serial")
-@Decorator
-public class AnimalDecorator implements Animal, Serializable {
-
-    @Inject
-    @Delegate
-    private Animal delegate;
-
-    @Inject
-    public AnimalDecorator(Truck truck, @TransientReference Pasture pasture) {
+    protected static Class<?>[] getCommonClasses() {
+        return new Class<?>[] { TestClasses.class, Animal.class, Bio.class, Pasture.class, Random.class, Sheep.class, Truck.class };
     }
-
-    @Inject
-    public void init(Truck truck, @TransientReference Pasture pasture) {
-    }
-
-    public void run() {
-        delegate.run();
-    }
-
 }

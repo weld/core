@@ -36,6 +36,8 @@ import org.junit.runner.RunWith;
  *
  * @see https://issues.jboss.org/browse/WELD-1076
  *
+ * Note: After CDI-141 has been reverted this test makes much less sense.
+ *
  * @author Jozef Hartinger
  *
  */

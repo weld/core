@@ -18,20 +18,18 @@ package org.jboss.weld.injection;
 
 import static org.jboss.weld.injection.Exceptions.rethrowException;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
-import java.util.List;
 
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.TransientReference;
 import javax.enterprise.inject.spi.AnnotatedConstructor;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.annotated.enhanced.ConstructorSignature;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedConstructor;
 import org.jboss.weld.annotated.runtime.RuntimeAnnotatedMembers;
-import org.jboss.weld.exceptions.UnsupportedOperationException;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
@@ -53,11 +51,16 @@ public class ConstructorInjectionPoint<T> extends AbstractCallableInjectionPoint
         this.signature = constructor.getSignature();
     }
 
-    public T newInstance(BeanManagerImpl manager, CreationalContext<?> creationalContext) {
-        return newInstance(manager, creationalContext, getParameterValues(getParameterInjectionPoints(), null, null, manager, creationalContext));
+    public T newInstance(BeanManagerImpl manager, CreationalContext<?> ctx) {
+        CreationalContext<?> invocationContext = manager.createCreationalContext(null);
+        try {
+            return newInstance(getParameterValues(manager, ctx, invocationContext));
+        } finally {
+            invocationContext.release();
+        }
     }
 
-    public T newInstance(BeanManagerImpl manager, CreationalContext<?> creationalContext, Object[] parameterValues) {
+    protected T newInstance(Object[] parameterValues) {
         try {
             return RuntimeAnnotatedMembers.newInstance(getAnnotated(), parameterValues);
         } catch (IllegalArgumentException e) {
@@ -83,16 +86,15 @@ public class ConstructorInjectionPoint<T> extends AbstractCallableInjectionPoint
      * @param manager The Bean manager
      * @return The object array of looked up values
      */
-    protected Object[] getParameterValues(List<ParameterInjectionPoint<?, T>> parameters, Object specialVal, Class<? extends Annotation> specialParam, BeanManagerImpl manager,
-            CreationalContext<?> creationalContext) {
-        Object[] parameterValues = new Object[parameters.size()];
-        Iterator<ParameterInjectionPoint<?, T>> iterator = parameters.iterator();
+    public Object[] getParameterValues(BeanManagerImpl manager, CreationalContext<?> ctx, CreationalContext<?> invocationContext) {
+        Object[] parameterValues = new Object[getParameterInjectionPoints().size()];
+        Iterator<ParameterInjectionPoint<?, T>> iterator = getParameterInjectionPoints().iterator();
         for (int i = 0; i < parameterValues.length; i++) {
             ParameterInjectionPoint<?, ?> param = iterator.next();
-            if (specialParam != null && param.getAnnotated().isAnnotationPresent(specialParam)) {
-                parameterValues[i] = specialVal;
+            if (param.getAnnotated().isAnnotationPresent(TransientReference.class)) {
+                parameterValues[i] = param.getValueToInject(manager, invocationContext);
             } else {
-                parameterValues[i] = param.getValueToInject(manager, creationalContext);
+                parameterValues[i] = param.getValueToInject(manager, ctx);
             }
         }
         return parameterValues;

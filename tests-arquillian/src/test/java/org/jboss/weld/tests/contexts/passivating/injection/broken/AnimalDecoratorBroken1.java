@@ -14,35 +14,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.contexts.passivating.injection;
+package org.jboss.weld.tests.contexts.passivating.injection.broken;
 
 import java.io.Serializable;
 
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.inject.Produces;
+import javax.decorator.Decorator;
+import javax.decorator.Delegate;
 import javax.enterprise.inject.TransientReference;
 import javax.inject.Inject;
 
 @SuppressWarnings("serial")
-@SessionScoped
-public class Farm implements Serializable {
-
-    protected Farm() {
-    }
+@Decorator
+public class AnimalDecoratorBroken1 implements Animal, Serializable {
 
     @Inject
-    public Farm(Truck truck, @TransientReference Pasture pasture) {
+    @Delegate
+    private Animal delegate;
+
+    @Inject
+    public AnimalDecoratorBroken1(Truck truck, Pasture pasture) {
     }
 
     @Inject
     public void init(Truck truck, @TransientReference Pasture pasture) {
     }
 
-    @Produces
-    @Random
-    @SessionScoped
-    public Sheep chooseRandomSheepFromDelivery(Truck truck,  @TransientReference Pasture pasture) {
-        return truck.getSheeps().get(0);
+    public void run() {
+        delegate.run();
     }
 
 }

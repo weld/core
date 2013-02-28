@@ -24,7 +24,6 @@ import javax.enterprise.inject.spi.InjectionTargetFactory;
 
 import org.jboss.weld.annotated.AnnotatedTypeValidator;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
-import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.injection.producer.AbstractInjectionTarget;
