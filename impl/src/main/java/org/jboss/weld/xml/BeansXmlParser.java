@@ -29,13 +29,11 @@ import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.enterprise.inject.spi.BeanManager;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.jboss.weld.bootstrap.spi.BeansXml;
-import org.jboss.weld.bootstrap.spi.EnabledClass;
 import org.jboss.weld.bootstrap.spi.Filter;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.exceptions.IllegalStateException;
@@ -129,15 +127,18 @@ public class BeansXmlParser {
     }
 
     public BeansXml parse(Iterable<URL> urls, boolean removeDuplicates) {
-        List<Metadata<EnabledClass>> alternatives = new ArrayList<Metadata<EnabledClass>>();
-        List<Metadata<EnabledClass>> decorators = new ArrayList<Metadata<EnabledClass>>();
-        List<Metadata<EnabledClass>> interceptors = new ArrayList<Metadata<EnabledClass>>();
+        List<Metadata<String>> alternatives = new ArrayList<Metadata<String>>();
+        List<Metadata<String>> alternativeStereotypes = new ArrayList<Metadata<String>>();
+        List<Metadata<String>> decorators = new ArrayList<Metadata<String>>();
+        List<Metadata<String>> interceptors = new ArrayList<Metadata<String>>();
         List<Metadata<Filter>> includes = new ArrayList<Metadata<Filter>>();
         List<Metadata<Filter>> excludes = new ArrayList<Metadata<Filter>>();
         URL beansXmlUrl = null;
         for (URL url : urls) {
             BeansXml beansXml = parse(url);
-            addTo(alternatives, beansXml.getEnabledAlternatives(), removeDuplicates);
+            addTo(alternatives, beansXml.getEnabledAlternativeClasses(), removeDuplicates);
+            addTo(alternativeStereotypes, beansXml.getEnabledAlternativeStereotypes(), removeDuplicates);
+            addTo(alternatives, beansXml.getEnabledAlternativeClasses(), removeDuplicates);
             addTo(decorators, beansXml.getEnabledDecorators(), removeDuplicates);
             addTo(interceptors, beansXml.getEnabledInterceptors(), removeDuplicates);
             includes.addAll(beansXml.getScanning().getIncludes());
@@ -148,13 +149,13 @@ public class BeansXmlParser {
              */
             beansXmlUrl = url;
         }
-        return new BeansXmlImpl(alternatives, decorators, interceptors, new ScanningImpl(includes, excludes), beansXmlUrl);
+        return new BeansXmlImpl(alternatives, alternativeStereotypes, decorators, interceptors, new ScanningImpl(includes, excludes), beansXmlUrl);
     }
 
-    private void addTo(List<Metadata<EnabledClass>> list, List<Metadata<EnabledClass>> listToAdd, boolean removeDuplicates) {
+    private void addTo(List<Metadata<String>> list, List<Metadata<String>> listToAdd, boolean removeDuplicates) {
         if (removeDuplicates) {
-            List<Metadata<EnabledClass>> filteredListToAdd = new ArrayList<Metadata<EnabledClass>>(listToAdd.size());
-            for (Metadata<EnabledClass> metadata : listToAdd) {
+            List<Metadata<String>> filteredListToAdd = new ArrayList<Metadata<String>>(listToAdd.size());
+            for (Metadata<String> metadata : listToAdd) {
                 if (!alreadyAdded(metadata, list)) {
                     filteredListToAdd.add(metadata);
                 }
@@ -164,8 +165,8 @@ public class BeansXmlParser {
         list.addAll(listToAdd);
     }
 
-    private boolean alreadyAdded(Metadata<EnabledClass> metadata, List<Metadata<EnabledClass>> list) {
-        for (Metadata<EnabledClass> existing : list) {
+    private boolean alreadyAdded(Metadata<String> metadata, List<Metadata<String>> list) {
+        for (Metadata<String> existing : list) {
             if (existing.getValue().equals(metadata.getValue())) {
                 return true;
             }

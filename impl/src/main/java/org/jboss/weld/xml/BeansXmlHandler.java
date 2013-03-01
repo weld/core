@@ -13,17 +13,17 @@ import static org.jboss.weld.logging.messages.XmlMessage.XSD_VALIDATION_WARNING;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.jboss.weld.bootstrap.spi.BeansXml;
-import org.jboss.weld.bootstrap.spi.EnabledClass;
 import org.jboss.weld.bootstrap.spi.ClassAvailableActivation;
 import org.jboss.weld.bootstrap.spi.Filter;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.bootstrap.spi.SystemPropertyActivation;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.metadata.BeansXmlImpl;
-import org.jboss.weld.metadata.EnabledClassBuilder;
 import org.jboss.weld.metadata.ClassAvailableActivationImpl;
 import org.jboss.weld.metadata.FilterImpl;
 import org.jboss.weld.metadata.ScanningImpl;
@@ -56,12 +56,12 @@ public class BeansXmlHandler extends DefaultHandler {
 
     public abstract class Container {
 
-        private final String uri;
+        private final Set<String> uris;
         private final String localName;
         private final Collection<String> nestedElements;
 
-        public Container(String uri, String localName, String... nestedElements) {
-            this.uri = uri;
+        public Container(String[] uris, String localName, String... nestedElements) {
+            this.uris = new HashSet<String>(asList(uris));
             this.localName = localName;
             this.nestedElements = asList(nestedElements);
         }
@@ -70,8 +70,8 @@ public class BeansXmlHandler extends DefaultHandler {
             return localName;
         }
 
-        public String getUri() {
-            return uri;
+        public Set<String> getUris() {
+            return uris;
         }
 
         /**
@@ -99,82 +99,27 @@ public class BeansXmlHandler extends DefaultHandler {
             return "<" + localName + " />";
         }
 
-        protected boolean isInNamespace(String uri) {
-            return uri.length() == 0 || uri.equals(getUri());
+        protected boolean isInNamespace(String namespace) {
+            if (namespace.length() == 0) {
+                return true;
+            }
+            return getUris().contains(namespace);
         }
     }
 
     private abstract class SpecContainer extends Container {
 
-        private EnabledClassBuilder builder;
-        private final Collection<Metadata<EnabledClass>> records;
-
-        public SpecContainer(Collection<Metadata<EnabledClass>> records, String localName, String... nestedElements) {
-            super(JAVAEE_URI, localName, nestedElements);
-            this.records = records;
-        }
-
-        /**
-         * Indicates whether this {@link Container} is accepting a given element.
-         */
-        protected boolean isAccepting(String uri, String localName) {
-            return isInNamespace(uri) && getNestedElements().contains(localName);
-        }
-
-        protected String getAttribute(String name, Attributes attributes) {
-            String result = attributes.getValue(JAVAEE_URI, name);
-            if (result == null) {
-                result = attributes.getValue("", name);
-            }
-            if (result == null) {
-                return result;
-            } else {
-                return interpolate(trim(result));
-            }
-        }
-
-        @Override
-        public void processStartChildElement(String uri, String localName, String qName, Attributes attributes) {
-            if (!isAccepting(uri, localName)) {
-                return;
-            }
-            if (builder != null) {
-                throw new IllegalStateException(EnabledClassBuilder.class.getName() + " not cleaned up");
-            }
-            builder = new EnabledClassBuilder();
-
-            String enabled = getAttribute("enabled", attributes);
-            String priority = getAttribute("priority", attributes);
-
-            if (enabled != null) {
-                builder.setEnabled(Boolean.valueOf(enabled));
-            }
-            if (priority != null) {
-                builder.setPriority(Integer.valueOf(priority));
-            }
-            builder.setStereotype("stereotype".equals(localName));
-        }
-
-        @Override
-        public void processEndChildElement(String uri, String localName, String qName, String nestedText) {
-            if (!isAccepting(uri, localName)) {
-                return;
-            }
-            if (builder == null) {
-                throw new IllegalStateException(EnabledClassBuilder.class.getName() + " not set");
-            }
-            builder.setValue(interpolate(trim(nestedText)));
-            records.add(buildRecord(builder, qName));
-            builder = null;
-        }
-
-        protected Metadata<EnabledClass> buildRecord(EnabledClassBuilder builder, String qName) {
-            return new SpecXmlMetadata(qName, builder.create(), file, locator.getLineNumber());
+        public SpecContainer(String localName, String... nestedElements) {
+            super(JAVAEE_URIS, localName, nestedElements);
         }
     }
 
     public static final String WELD_URI = "http://jboss.org/schema/weld/beans";
-    public static final String JAVAEE_URI = "http://java.sun.com/xml/ns/javaee";
+    public static final String[] WELD_URIS = new String[] { WELD_URI };
+
+    public static final String JAVAEE_LEGACY_URI = "http://java.sun.com/xml/ns/javaee";
+    public static final String JAVAEE_URI = "http://xmlns.jcp.org/xml/ns/javaee";
+    public static final String[] JAVAEE_URIS = new String[] { JAVAEE_URI, JAVAEE_LEGACY_URI };
 
     /*
     * The containers we are parsing
@@ -184,9 +129,10 @@ public class BeansXmlHandler extends DefaultHandler {
     /*
     * Storage for parsed info
     */
-    private final List<Metadata<EnabledClass>> interceptors;
-    private final List<Metadata<EnabledClass>> decorators;
-    private final List<Metadata<EnabledClass>> alternatives;
+    private final List<Metadata<String>> interceptors;
+    private final List<Metadata<String>> decorators;
+    private final List<Metadata<String>> alternativesClasses;
+    private final List<Metadata<String>> alternativeStereotypes;
     private final List<Metadata<Filter>> includes;
     private final List<Metadata<Filter>> excludes;
     protected final URL file;
@@ -201,35 +147,59 @@ public class BeansXmlHandler extends DefaultHandler {
 
     public BeansXmlHandler(final URL file) {
         this.file = file;
-        this.interceptors = new ArrayList<Metadata<EnabledClass>>();
-        this.decorators = new ArrayList<Metadata<EnabledClass>>();
-        this.alternatives = new ArrayList<Metadata<EnabledClass>>();
+        this.interceptors = new ArrayList<Metadata<String>>();
+        this.decorators = new ArrayList<Metadata<String>>();
+        this.alternativesClasses = new ArrayList<Metadata<String>>();
+        this.alternativeStereotypes = new ArrayList<Metadata<String>>();
         this.includes = new ArrayList<Metadata<Filter>>();
         this.excludes = new ArrayList<Metadata<Filter>>();
         this.seenContainers = new ArrayList<Container>();
         this.containers = new ArrayList<Container>();
-        containers.add(new SpecContainer(interceptors, "interceptors", "class") {
+        containers.add(new SpecContainer("interceptors", "class") {
+
+            @Override
+            public void processEndChildElement(String uri, String localName, String qName, String nestedText) {
+                if (isInNamespace(uri) && "class".equals(localName)) {
+                    interceptors.add(new XmlMetadata<String>(qName, trim(nestedText), file, locator.getLineNumber()));
+                }
+            }
 
             @Override
             public void handleMultiple() {
                 throw new DefinitionException(MULTIPLE_INTERCEPTORS, file + "@" + locator.getLineNumber());
             }
         });
-        containers.add(new SpecContainer(decorators, "decorators", "class") {
+        containers.add(new SpecContainer("decorators", "class") {
+
+            @Override
+            public void processEndChildElement(String uri, String localName, String qName, String nestedText) {
+                if (isInNamespace(uri) && "class".equals(localName)) {
+                    decorators.add(new XmlMetadata<String>(qName, trim(nestedText), file, locator.getLineNumber()));
+                }
+            }
 
             @Override
             public void handleMultiple() {
                 throw new DefinitionException(MULTIPLE_DECORATORS, file + "@" + locator.getLineNumber());
             }
         });
-        containers.add(new SpecContainer(alternatives, "alternatives", "class", "stereotype") {
+        containers.add(new SpecContainer("alternatives", "class", "stereotype") {
+
+            @Override
+            public void processEndChildElement(String uri, String localName, String qName, String nestedText) {
+                if (isInNamespace(uri) && "class".equals(localName)) {
+                    alternativesClasses.add(new XmlMetadata<String>(qName, trim(nestedText), file, locator.getLineNumber()));
+                } else if (isInNamespace(uri) && "stereotype".equals(localName)) {
+                    alternativeStereotypes.add(new XmlMetadata<String>(qName, trim(nestedText), file, locator.getLineNumber()));
+                }
+            }
 
             @Override
             public void handleMultiple() {
                 throw new DefinitionException(MULTIPLE_ALTERNATIVES, file + "@" + locator.getLineNumber());
             }
         });
-        containers.add(new Container(WELD_URI, "scan") {
+        containers.add(new Container(WELD_URIS, "scan") {
 
             String name;
             String pattern;
@@ -333,7 +303,7 @@ public class BeansXmlHandler extends DefaultHandler {
                     return container;
                 }
             } else {
-                if (container.getLocalName().equals(localName) && container.getUri().equals(uri)) {
+                if (container.getLocalName().equals(localName) && container.getUris().contains(uri)) {
                     return container;
                 }
             }
@@ -342,7 +312,7 @@ public class BeansXmlHandler extends DefaultHandler {
     }
 
     public BeansXml createBeansXml() {
-        return new BeansXmlImpl(alternatives, decorators, interceptors, new ScanningImpl(includes, excludes), file);
+        return new BeansXmlImpl(alternativesClasses, alternativeStereotypes, decorators, interceptors, new ScanningImpl(includes, excludes), file);
     }
 
     @Override
