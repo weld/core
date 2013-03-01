@@ -1,19 +1,19 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 <!-- CDI TCK TestNG configuration for Weld -->
 <suite name="Weld / JBoss AS run of CDI TCK" verbose="0" configfailurepolicy="continue">
-    
+
     <listeners>
         <listener class-name="org.jboss.cdi.tck.impl.testng.SingleTestClassMethodInterceptor"/>
         <listener class-name="org.jboss.cdi.tck.impl.testng.ProgressLoggingTestListener"/>
     </listeners>
-    
+
     <test name="CDI TCK">
 
         <packages>
             <package name="org.jboss.cdi.tck.tests.*" />
             <package name="org.jboss.cdi.tck.interceptors.tests.*" />
         </packages>
-        
+
         <classes>
 
             <!-- Issues in the TCK -->
@@ -42,16 +42,21 @@
                     <exclude name="testIsNullableCalled" />
                 </methods>
             </class>
-            <!-- CDI-52 -->
-            <class name="org.jboss.cdi.tck.tests.implementation.disposal.method.definition.injectionpoint.DisposalMethodInjectionPointTest">
-                <methods>
-                    <exclude name="test" />
-                </methods>
-            </class>
             <!-- CDI-298 -->
             <class name="org.jboss.cdi.tck.tests.extensions.annotated.delivery.WithAnnotationsTest">
                 <methods>
                     <exclude name="testDelivery"/>
+                </methods>
+            </class>
+            <!-- CDI-328 -->
+            <class name="org.jboss.cdi.tck.tests.extensions.beanManager.producer.SyntheticProducerTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
+            <class name="org.jboss.cdi.tck.tests.extensions.beanManager.bean.SyntheticBeanTest">
+                <methods>
+                    <exclude name=".*"/>
                 </methods>
             </class>
 
@@ -131,6 +136,12 @@
                     <exclude name=".*"/>
                 </methods>
             </class>
+            <!-- WELD-1332 -->
+            <class name="org.jboss.cdi.tck.tests.lookup.typesafe.resolution.parameterized.raw.RawBeanTypeParameterizedRequiredTypeTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
 
             <!-- Issues in JBoss AS -->
             <!-- AS7-4232 -->
@@ -172,7 +183,7 @@
                     <exclude name="testSessionScopeActiveDuringHttpSessionListenerCall"/>
                 </methods>
             </class>
-            
+
         </classes>
     </test>
 
