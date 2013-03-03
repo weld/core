@@ -138,7 +138,6 @@ public class BeansXmlParser {
             BeansXml beansXml = parse(url);
             addTo(alternatives, beansXml.getEnabledAlternativeClasses(), removeDuplicates);
             addTo(alternativeStereotypes, beansXml.getEnabledAlternativeStereotypes(), removeDuplicates);
-            addTo(alternatives, beansXml.getEnabledAlternativeClasses(), removeDuplicates);
             addTo(decorators, beansXml.getEnabledDecorators(), removeDuplicates);
             addTo(interceptors, beansXml.getEnabledInterceptors(), removeDuplicates);
             includes.addAll(beansXml.getScanning().getIncludes());

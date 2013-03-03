@@ -262,11 +262,11 @@ public class Beans {
 
     public static boolean isBeanEnabled(Bean<?> bean, ModuleEnablement enabled) {
         if (bean.isAlternative()) {
-            if (enabled.isAlternativeEnabled(bean.getBeanClass())) {
+            if (enabled.isEnabledAlternativeClass(bean.getBeanClass())) {
                 return true;
             } else {
                 for (Class<? extends Annotation> stereotype : bean.getStereotypes()) {
-                    if (enabled.isAlternativeEnabled(stereotype)) {
+                    if (enabled.isEnabledAlternativeStereotype(stereotype)) {
                         return true;
                     }
                 }

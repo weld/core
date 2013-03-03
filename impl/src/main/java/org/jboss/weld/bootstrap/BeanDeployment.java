@@ -52,8 +52,8 @@ import org.jboss.weld.bean.builtin.ee.UserTransactionBean;
 import org.jboss.weld.bootstrap.api.Environment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
-import org.jboss.weld.bootstrap.enablement.EnablementBuilder;
-import org.jboss.weld.bootstrap.enablement.ModuleEnablementBuilder;
+import org.jboss.weld.bootstrap.enablement.GlobalEnablementBuilder;
+import org.jboss.weld.bootstrap.enablement.ModuleEnablement;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.BootstrapConfiguration;
 import org.jboss.weld.bootstrap.spi.Filter;
@@ -100,13 +100,12 @@ public class BeanDeployment {
     private final BeanManagerImpl beanManager;
     private final BeanDeployer beanDeployer;
     private final Collection<ContextHolder<? extends Context>> contexts;
-    private final EnablementBuilder enablementBuilder;
 
-    public BeanDeployment(BeanDeploymentArchive beanDeploymentArchive, BeanManagerImpl deploymentManager, ServiceRegistry deploymentServices, Collection<ContextHolder<? extends Context>> contexts, EnablementBuilder enablementBuilder) {
-        this(beanDeploymentArchive, deploymentManager, deploymentServices, contexts, enablementBuilder, false);
+    public BeanDeployment(BeanDeploymentArchive beanDeploymentArchive, BeanManagerImpl deploymentManager, ServiceRegistry deploymentServices, Collection<ContextHolder<? extends Context>> contexts) {
+        this(beanDeploymentArchive, deploymentManager, deploymentServices, contexts, false);
     }
 
-    public BeanDeployment(BeanDeploymentArchive beanDeploymentArchive, BeanManagerImpl deploymentManager, ServiceRegistry deploymentServices, Collection<ContextHolder<? extends Context>> contexts, EnablementBuilder enablementBuilder, boolean additionalBeanArchive) {
+    public BeanDeployment(BeanDeploymentArchive beanDeploymentArchive, BeanManagerImpl deploymentManager, ServiceRegistry deploymentServices, Collection<ContextHolder<? extends Context>> contexts, boolean additionalBeanArchive) {
         this.beanDeploymentArchive = beanDeploymentArchive;
         EjbDescriptors ejbDescriptors = new EjbDescriptors();
 
@@ -155,8 +154,6 @@ public class BeanDeployment {
         beanManager.addBean(new BeanManagerImplBean(beanManager));
 
         this.contexts = contexts;
-        this.enablementBuilder = enablementBuilder;
-        enablementBuilder.registerBeanDeployment(this);
     }
 
     public BeanManagerImpl getBeanManager() {
@@ -218,10 +215,15 @@ public class BeanDeployment {
      * Initializes Enabled after ProcessModule is fired.
      */
     public void createEnabled() {
-        beanManager.setEnabled(enablementBuilder.getModuleEnablementBuilder(this).create());
-        log.debug(ENABLED_ALTERNATIVES, this.beanManager, beanManager.getEnabled().getAlternatives());
-        log.debug(ENABLED_DECORATORS, this.beanManager, beanManager.getEnabled().getDecorators());
-        log.debug(ENABLED_INTERCEPTORS, this.beanManager, beanManager.getEnabled().getInterceptors());
+        GlobalEnablementBuilder builder = beanManager.getServices().get(GlobalEnablementBuilder.class);
+        ModuleEnablement enablement = builder.createModuleEnablement(this);
+        beanManager.setEnabled(enablement);
+
+        if (log.isDebugEnabled()) {
+            log.debug(ENABLED_ALTERNATIVES, this.beanManager, enablement.getAllAlternatives());
+            log.debug(ENABLED_DECORATORS, this.beanManager, enablement.getDecorators());
+            log.debug(ENABLED_INTERCEPTORS, this.beanManager, enablement.getInterceptors());
+        }
     }
 
     // TODO -- OK?
@@ -279,9 +281,5 @@ public class BeanDeployment {
         beanDeployer.doAfterBeanDiscovery(beanManager.getDecorators());
         beanDeployer.doAfterBeanDiscovery(beanManager.getInterceptors());
         beanDeployer.registerCdiInterceptorsForMessageDrivenBeans();
-    }
-
-    public ModuleEnablementBuilder getModuleEnablementBuilder() {
-        return enablementBuilder.getModuleEnablementBuilder(this);
     }
 }

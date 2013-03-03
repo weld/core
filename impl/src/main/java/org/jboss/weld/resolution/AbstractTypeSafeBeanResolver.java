@@ -41,7 +41,6 @@ import javax.inject.Provider;
 
 import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.bootstrap.SpecializationAndEnablementRegistry;
-import org.jboss.weld.bootstrap.enablement.ClassEnablement;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.LazyValueHolder;
@@ -103,22 +102,23 @@ public abstract class AbstractTypeSafeBeanResolver<T extends Bean<?>, C extends 
         /**
          * If all the beans left are alternatives with a priority, then the container will select the
          * alternative with the highest priority, and the ambiguous dependency is called resolvable.
+         *
          */
         public Set<Bean<?>> resolveAlternatives(Set<Bean<?>> alternatives) {
             int highestPriority = Integer.MIN_VALUE;
             Set<Bean<?>> selectedAlternativesWithHighestPriority = new HashSet<Bean<?>>();
 
             for (Bean<?> bean : alternatives) {
-                ClassEnablement enablement = beanManager.getEnabled().getAlternative(bean.getBeanClass());
-                if (enablement.getPriority() == null) {
+                Integer priority = beanManager.getEnabled().getAlternativePriority(bean.getBeanClass());
+                if (priority == null) {
                     // not all the beans left are alternatives with a priority - we are not able to resolve
                     return immutableSet(alternatives);
                 }
-                if (enablement.getPriority() > highestPriority) {
-                    highestPriority = enablement.getPriority();
+                if (priority > highestPriority) {
+                    highestPriority = priority;
                     selectedAlternativesWithHighestPriority.clear();
                 }
-                if (enablement.getPriority() == highestPriority) {
+                if (priority == highestPriority) {
                     selectedAlternativesWithHighestPriority.add(bean);
                 }
             }

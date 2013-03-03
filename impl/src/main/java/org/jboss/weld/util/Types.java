@@ -21,6 +21,8 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import org.jboss.weld.util.reflection.GenericArrayTypeImpl;
@@ -179,5 +181,17 @@ public class Types {
                 return Reflections.getRawType(input);
             }
         }));
+    }
+
+    /**
+     * Builds (class name -> class) map for given classes.
+     */
+    @SuppressWarnings("all")
+    public static <C extends Class<?>> Map<String, C> buildClassNameMap(Iterable<C> set) {
+        Map<String, C> loadedStereotypes = new HashMap<String, C>();
+        for (C javaClass : set) {
+            loadedStereotypes.put(javaClass.getName(), javaClass);
+        }
+        return loadedStereotypes;
     }
 }

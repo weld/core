@@ -59,6 +59,7 @@ import static org.jboss.weld.logging.messages.ValidatorMessage.PSEUDO_SCOPED_BEA
 import static org.jboss.weld.logging.messages.ValidatorMessage.SCOPE_ANNOTATION_ON_INJECTION_POINT;
 import static org.jboss.weld.logging.messages.ValidatorMessage.USER_TRANSACTION_INJECTION_INTO_BEAN_WITH_CONTAINER_MANAGED_TRANSACTIONS;
 import static org.jboss.weld.util.AnnotatedTypes.getDeclaringAnnotatedType;
+import static org.jboss.weld.util.Types.buildClassNameMap;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.annotation.Annotation;
@@ -73,6 +74,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.enterprise.context.Dependent;
@@ -120,7 +122,7 @@ import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
 import org.jboss.weld.bean.builtin.AbstractDecorableBuiltInBean;
 import org.jboss.weld.bean.builtin.ee.EEResourceProducerField;
 import org.jboss.weld.bootstrap.api.Service;
-import org.jboss.weld.bootstrap.enablement.ClassEnablement;
+import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.DeploymentException;
@@ -452,16 +454,17 @@ public class Validator implements Service {
         }
     }
 
-    public void validateDeployment(BeanManagerImpl manager, BeanDeployerEnvironment environment) {
+    public void validateDeployment(BeanManagerImpl manager, BeanDeployment deployment) {
         validateDecorators(manager.getDecorators(), manager);
         validateInterceptors(manager.getInterceptors(), manager);
         validateBeans(manager.getBeans(), manager);
-        validateEnabledDecoratorClasses(manager);
-        validateEnabledInterceptorClasses(manager);
-        validateEnabledAlternatives(manager);
+        validateEnabledDecoratorClasses(manager, deployment);
+        validateEnabledInterceptorClasses(manager, deployment);
+        validateEnabledAlternativeStereotypes(manager, deployment);
+        validateEnabledAlternativeClasses(manager, deployment);
         validateSpecialization(manager);
-        validateDisposalMethods(environment);
-        validateObserverMethods(environment.getObservers(), manager);
+        validateDisposalMethods(deployment.getBeanDeployer().getEnvironment());
+        validateObserverMethods(deployment.getBeanDeployer().getEnvironment().getObservers(), manager);
         validateBeanNames(manager);
     }
 
@@ -605,33 +608,51 @@ public class Validator implements Service {
         }
     }
 
-    private void validateEnabledInterceptorClasses(BeanManagerImpl beanManager) {
-        Set<Class<?>> interceptorBeanClasses = new HashSet<Class<?>>();
+    private void validateEnabledInterceptorClasses(BeanManagerImpl beanManager, BeanDeployment deployment) {
+        Set<String> interceptorBeanClasses = new HashSet<String>();
         for (Interceptor<?> interceptor : beanManager.getAccessibleInterceptors()) {
-            interceptorBeanClasses.add(interceptor.getBeanClass());
+            interceptorBeanClasses.add(interceptor.getBeanClass().getName());
         }
-        for (ClassEnablement enabledInterceptorClass : beanManager.getEnabled().getInterceptors()) {
-            if (!interceptorBeanClasses.contains(enabledInterceptorClass.getEnabledClass())) {
-                throw new DeploymentException(INTERCEPTOR_NOT_ANNOTATED_OR_REGISTERED, enabledInterceptorClass);
+        for (Metadata<String> interceptorClassName : deployment.getBeanDeploymentArchive().getBeansXml().getEnabledInterceptors()) {
+            if (!interceptorBeanClasses.contains(interceptorClassName.getValue())) {
+                throw new DeploymentException(INTERCEPTOR_NOT_ANNOTATED_OR_REGISTERED, interceptorClassName);
             }
         }
     }
 
-    private void validateEnabledDecoratorClasses(BeanManagerImpl beanManager) {
-        // TODO Move building this list to the boot or sth
-        Set<Class<?>> decoratorBeanClasses = new HashSet<Class<?>>();
+    private void validateEnabledDecoratorClasses(BeanManagerImpl beanManager, BeanDeployment deployment) {
+        Set<String> decoratorBeanClasses = new HashSet<String>();
         for (Decorator<?> bean : beanManager.getAccessibleDecorators()) {
-            decoratorBeanClasses.add(bean.getBeanClass());
+            decoratorBeanClasses.add(bean.getBeanClass().getName());
         }
-        for (ClassEnablement clazz : beanManager.getEnabled().getDecorators()) {
-            if (!decoratorBeanClasses.contains(clazz.getEnabledClass())) {
-                throw new DeploymentException(DECORATOR_CLASS_NOT_BEAN_CLASS_OF_DECORATOR, clazz, decoratorBeanClasses);
+        for (Metadata<String> interceptorClassName : deployment.getBeanDeploymentArchive().getBeansXml().getEnabledDecorators()) {
+            if (!decoratorBeanClasses.contains(interceptorClassName.getValue())) {
+                throw new DeploymentException(DECORATOR_CLASS_NOT_BEAN_CLASS_OF_DECORATOR, interceptorClassName, decoratorBeanClasses);
             }
         }
     }
 
-    private void validateEnabledAlternatives(BeanManagerImpl beanManager) {
-        if (beanManager.getEnabled().getAlternatives().size() > 0) {
+    private void validateEnabledAlternativeStereotypes(BeanManagerImpl beanManager, BeanDeployment deployment) {
+        // prepare lookup structure
+        Map<String, Class<? extends Annotation>> loadedStereotypes = buildClassNameMap(beanManager.getEnabled().getAlternativeStereotypes());
+
+        for (Metadata<String> definition : deployment.getBeanDeploymentArchive().getBeansXml().getEnabledAlternativeStereotypes()) {
+            Class<? extends Annotation> stereotype = loadedStereotypes.get(definition.getValue());
+            if (!beanManager.isStereotype(stereotype)) {
+                throw new DeploymentException(ALTERNATIVE_STEREOTYPE_NOT_STEREOTYPE, definition);
+            }
+            if (!isAlternative(beanManager, stereotype)) {
+                throw new DeploymentException(ALTERNATIVE_STEREOTYPE_NOT_ANNOTATED, definition);
+            }
+        }
+    }
+
+    private void validateEnabledAlternativeClasses(BeanManagerImpl beanManager, BeanDeployment deployment) {
+        if (beanManager.getEnabled().getAlternativeClasses().size() > 0) {
+
+            // prepare lookup structure
+            Map<String, Class<?>> loadedClasses = buildClassNameMap(beanManager.getEnabled().getAlternativeClasses());
+
             // lookup structure for validation of alternatives
             Multimap<Class<?>, Bean<?>> beansByClass = HashMultimap.create();
             for (Bean<?> bean : beanManager.getAccessibleBeans()) {
@@ -639,27 +660,20 @@ public class Validator implements Service {
                     beansByClass.put(bean.getBeanClass(), bean);
                 }
             }
-            for (ClassEnablement clazz : beanManager.getEnabled().getAlternatives()) {
-                if (clazz.getEnabledClass().isAnnotation()) {
-                    Class<? extends Annotation> annotation = Reflections.cast(clazz.getEnabledClass());
-                    if (!beanManager.isStereotype(annotation)) {
-                        throw new DeploymentException(ALTERNATIVE_STEREOTYPE_NOT_STEREOTYPE, clazz);
-                    }
-                    if (!isAlternative(beanManager, annotation)) {
-                        throw new DeploymentException(ALTERNATIVE_STEREOTYPE_NOT_ANNOTATED, clazz);
-                    }
-                } else if (clazz.getEnabledClass().isInterface()) {
-                    throw new DeploymentException(ALTERNATIVE_BEAN_CLASS_NOT_CLASS, clazz);
+            for (Metadata<String> definition : deployment.getBeanDeploymentArchive().getBeansXml().getEnabledAlternativeClasses()) {
+                Class<?> enabledClass = loadedClasses.get(definition.getValue());
+                if (enabledClass.isAnnotation() || enabledClass.isInterface()) {
+                    throw new DeploymentException(ALTERNATIVE_BEAN_CLASS_NOT_CLASS, definition);
                 } else {
                     // check that the class is a bean class of at least one alternative
                     boolean alternativeBeanFound = false;
-                    for (Bean<?> bean : beansByClass.get(clazz.getEnabledClass())) {
+                    for (Bean<?> bean : beansByClass.get(enabledClass)) {
                         if (bean.isAlternative()) {
                             alternativeBeanFound = true;
                         }
                     }
                     if (!alternativeBeanFound) {
-                        throw new DeploymentException(ALTERNATIVE_BEAN_CLASS_NOT_ANNOTATED, clazz);
+                        throw new DeploymentException(ALTERNATIVE_BEAN_CLASS_NOT_ANNOTATED, definition);
                     }
                 }
             }

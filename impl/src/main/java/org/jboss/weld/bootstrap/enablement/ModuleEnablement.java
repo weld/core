@@ -16,108 +16,87 @@
  */
 package org.jboss.weld.bootstrap.enablement;
 
-import static org.jboss.weld.logging.messages.ValidatorMessage.DECORATOR_SPECIFIED_TWICE;
-import static org.jboss.weld.logging.messages.ValidatorMessage.INTERCEPTOR_SPECIFIED_TWICE;
+import static com.google.common.collect.Sets.union;
 
+import java.lang.annotation.Annotation;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.Interceptor;
 
-import org.jboss.weld.exceptions.DeploymentException;
-import org.jboss.weld.logging.messages.ValidatorMessage;
+import com.google.common.collect.ImmutableMap;
 
 /**
- * Holds information about interceptors, decorators and alternatives that enabled in this module.
+ * Holds information about interceptors, decorators and alternatives that are enabled in this module.
  *
  * @author Jozef Hartinger
  *
  */
 public class ModuleEnablement {
 
-    public static final ModuleEnablement EMPTY_ENABLEMENT = new ModuleEnablement(Collections.<ClassEnablement>emptyList(), Collections.<ClassEnablement>emptyList(), Collections.<ClassEnablement>emptyList());
+    public static final ModuleEnablement EMPTY_ENABLEMENT = new ModuleEnablement(Collections.<Class<?>>emptyList(), Collections.<Class<?>>emptyList(), Collections.<Class<?>, Integer>emptyMap(), Collections.<Class<?>>emptySet(), Collections.<Class<? extends Annotation>>emptySet());
 
-    private final List<ClassEnablement> interceptors;
-    private final List<ClassEnablement> decorators;
-    private final List<ClassEnablement> alternatives;
+    private final List<Class<?>> interceptors;
+    private final List<Class<?>> decorators;
 
-    // fast lookup structures
-    private final Map<String, Integer> interceptorMap;
-    private final Map<String, Integer> decoratorMap;
+    private final Map<Class<?>, Integer> interceptorMap;
+    private final Map<Class<?>, Integer> decoratorMap;
+    private final Map<Class<?>, Integer> globalAlternatives;
 
-    private final Map<String, ClassEnablement> alternativeMap;
+    private final Set<Class<?>> localAlternativeClasses;
+    private final Set<Class<? extends Annotation>> localAlternativeStereotypes;
 
     private final Comparator<Decorator<?>> decoratorComparator;
     private final Comparator<Interceptor<?>> interceptorComparator;
 
-    public ModuleEnablement(List<ClassEnablement> interceptors, List<ClassEnablement> decorators,
-            List<ClassEnablement> alternatives) {
+    public ModuleEnablement(List<Class<?>> interceptors, List<Class<?>> decorators, Map<Class<?>, Integer> globalAlternatives,
+            Set<Class<?>> localAlternativeClasses, Set<Class<? extends Annotation>> localAlternativeStereotypes) {
         this.interceptors = interceptors;
         this.decorators = decorators;
-        this.alternatives = alternatives;
 
-        this.interceptorMap = createLookupMap(interceptors, INTERCEPTOR_SPECIFIED_TWICE);
-        this.decoratorMap = createLookupMap(decorators, DECORATOR_SPECIFIED_TWICE);
-
-        if (alternatives.isEmpty()) {
-            this.alternativeMap = Collections.emptyMap();
-        } else {
-            Map<String, ClassEnablement> alternativeMap = new HashMap<String, ClassEnablement>();
-            for (ClassEnablement alternative : alternatives) {
-                alternativeMap.put(alternative.getEnabledClass().getName(), alternative);
-            }
-            this.alternativeMap = Collections.unmodifiableMap(alternativeMap);
-        }
+        this.interceptorMap = createLookupMap(interceptors);
+        this.decoratorMap = createLookupMap(decorators);
 
         this.decoratorComparator = new EnablementComparator<Decorator<?>>(decoratorMap);
         this.interceptorComparator = new EnablementComparator<Interceptor<?>>(interceptorMap);
+
+        this.globalAlternatives = globalAlternatives;
+
+        this.localAlternativeClasses = localAlternativeClasses;
+        this.localAlternativeStereotypes = localAlternativeStereotypes;
     }
 
-    private static Map<String, Integer> createLookupMap(List<ClassEnablement> list, ValidatorMessage specifiedTwiceMessage) {
+    private static Map<Class<?>, Integer> createLookupMap(List<Class<?>> list) {
         if (list.isEmpty()) {
             return Collections.emptyMap();
         }
-        Map<String, Integer> result = new HashMap<String, Integer>();
+        Map<Class<?>, Integer> result = new HashMap<Class<?>, Integer>();
         for (int i = 0; i < list.size(); i++) {
-            Integer previousOccurence = result.put(list.get(i).getEnabledClass().getName(), i);
-            if (previousOccurence != null) {
-                throw new DeploymentException(specifiedTwiceMessage, list.get(i).getEnabledClass().getName(), list.get(i), list.get(previousOccurence));
-            }
+            result.put(list.get(i), i);
         }
-        return Collections.unmodifiableMap(result);
-    }
-
-    public boolean isAlternativeEnabled(Class<?> javaClass) {
-        return alternativeMap.containsKey(javaClass.getName());
-    }
-
-    public ClassEnablement getAlternative(Class<?> javaClass) {
-        return alternativeMap.get(javaClass.getName());
+        return ImmutableMap.copyOf(result);
     }
 
     public boolean isInterceptorEnabled(Class<?> javaClass) {
-        return interceptorMap.containsKey(javaClass.getName());
+        return interceptorMap.containsKey(javaClass);
     }
 
     public boolean isDecoratorEnabled(Class<?> javaClass) {
-        return decoratorMap.containsKey(javaClass.getName());
+        return decoratorMap.containsKey(javaClass);
     }
 
-    public List<ClassEnablement> getInterceptors() {
+    public List<Class<?>> getInterceptors() {
         return interceptors;
     }
 
-    public List<ClassEnablement> getDecorators() {
+    public List<Class<?>> getDecorators() {
         return decorators;
-    }
-
-    public List<ClassEnablement> getAlternatives() {
-        return alternatives;
     }
 
     public Comparator<Decorator<?>> getDecoratorComparator() {
@@ -128,27 +107,52 @@ public class ModuleEnablement {
         return interceptorComparator;
     }
 
+    public Integer getAlternativePriority(Class<?> javaClass) {
+        return globalAlternatives.get(javaClass);
+    }
+
+    public boolean isEnabledAlternativeClass(Class<?> alternativeClass) {
+        return globalAlternatives.containsKey(alternativeClass) || localAlternativeClasses.contains(alternativeClass);
+    }
+
+    public boolean isEnabledAlternativeStereotype(Class<?> alternativeClass) {
+        return globalAlternatives.containsKey(alternativeClass) || localAlternativeStereotypes.contains(alternativeClass);
+    }
+
+    public Set<Class<?>> getAlternativeClasses() {
+        return localAlternativeClasses;
+    }
+
+    public Set<Class<? extends Annotation>> getAlternativeStereotypes() {
+        return localAlternativeStereotypes;
+    }
+
+    public Set<Class<?>> getGlobalAlternatives() {
+        return globalAlternatives.keySet();
+    }
+
+    public Set<Class<?>> getAllAlternatives() {
+        return union(union(localAlternativeClasses, localAlternativeStereotypes), getGlobalAlternatives());
+    }
+
     private static class EnablementComparator<T extends Bean<?>> implements Comparator<T> {
 
-        private final Map<String, Integer> enabledClasses;
+        private final Map<Class<?>, Integer> enabledClasses;
 
-        public EnablementComparator(Map<String, Integer> enabledClasses) {
+        public EnablementComparator(Map<Class<?>, Integer> enabledClasses) {
             this.enabledClasses = enabledClasses;
         }
 
         @Override
         public int compare(T o1, T o2) {
-            int p1 = enabledClasses.get(o1.getBeanClass().getName());
-            int p2 = enabledClasses.get(o2.getBeanClass().getName());
+            int p1 = enabledClasses.get(o1.getBeanClass());
+            int p2 = enabledClasses.get(o2.getBeanClass());
             return p1 - p2;
         }
     }
 
     @Override
     public String toString() {
-        return "Enabled interceptors: " + interceptors + "\nEnabled decorators: " + decorators + "\nEnabled alternatives: "
-                + alternatives;
+        return "ModuleEnablement [interceptors=" + interceptors + ", decorators=" + decorators + ", alternatives=" + getAllAlternatives() + "]";
     }
-
-
 }

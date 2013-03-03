@@ -17,19 +17,14 @@
 
 package org.jboss.weld.tests.unit.bootstrap;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-
 import java.net.URL;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.jboss.weld.bootstrap.WeldBootstrap;
 import org.jboss.weld.bootstrap.spi.BeansXml;
-import org.jboss.weld.bootstrap.spi.EnabledClass;
-import org.jboss.weld.bootstrap.spi.Metadata;
 import org.testng.annotations.Test;
+
+import static org.testng.Assert.*;
 
 /**
  *
@@ -45,19 +40,17 @@ public class BeansXmlMergingTest {
 
         BeansXml beansXml = weldBootstrap.parse(Arrays.asList(url1, url1, url2), true);
 
-        assertEquals(2, beansXml.getEnabledAlternatives().size());
-        Set<String> alternativeClassNames = new HashSet<String>();
-        for (Metadata<EnabledClass> record : beansXml.getEnabledAlternatives()) {
-            alternativeClassNames.add(record.getValue().getValue());
-        }
-        assertTrue(alternativeClassNames.contains("org.jboss.weld.tests.unit.bootstrap.xml.Stereo"));
-        assertTrue(alternativeClassNames.contains("org.jboss.weld.tests.unit.bootstrap.xml.Alt"));
+        assertEquals(1, beansXml.getEnabledAlternativeStereotypes().size());
+        assertEquals("org.jboss.weld.tests.unit.bootstrap.xml.Stereo", beansXml.getEnabledAlternativeStereotypes().get(0).getValue());
+
+        assertEquals(1, beansXml.getEnabledAlternativeClasses().size());
+        assertEquals("org.jboss.weld.tests.unit.bootstrap.xml.Alt", beansXml.getEnabledAlternativeClasses().get(0).getValue());
 
         assertEquals(1, beansXml.getEnabledInterceptors().size());
-        assertEquals("org.jboss.weld.tests.unit.bootstrap.xml.Int", beansXml.getEnabledInterceptors().get(0).getValue().getValue());
+        assertEquals("org.jboss.weld.tests.unit.bootstrap.xml.Int", beansXml.getEnabledInterceptors().get(0).getValue());
 
         assertEquals(1, beansXml.getEnabledDecorators().size());
-        assertEquals("org.jboss.weld.tests.unit.bootstrap.xml.Dec", beansXml.getEnabledDecorators().get(0).getValue().getValue());
+        assertEquals("org.jboss.weld.tests.unit.bootstrap.xml.Dec", beansXml.getEnabledDecorators().get(0).getValue());
     }
 
     @Test
@@ -67,7 +60,8 @@ public class BeansXmlMergingTest {
         URL url = getClass().getResource("/org/jboss/weld/tests/unit/bootstrap/xml/beans3.xml");
         BeansXml beansXml = weldBootstrap.parse(Arrays.asList(url), true);
 
-        assertEquals(4, beansXml.getEnabledAlternatives().size());
+        assertEquals(2, beansXml.getEnabledAlternativeStereotypes().size());
+        assertEquals(2, beansXml.getEnabledAlternativeClasses().size());
         assertEquals(2, beansXml.getEnabledInterceptors().size());
         assertEquals(2, beansXml.getEnabledDecorators().size());
     }

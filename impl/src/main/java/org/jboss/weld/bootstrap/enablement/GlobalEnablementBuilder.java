@@ -1,0 +1,263 @@
+/*
+ * JBoss, Home of Professional Open Source
+ * Copyright 2013, Red Hat, Inc., and individual contributors
+ * by the @authors tag. See the copyright.txt in the distribution for a
+ * full listing of individual contributors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.jboss.weld.bootstrap.enablement;
+
+import static com.google.common.collect.Lists.transform;
+import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_CLASS_SPECIFIED_MULTIPLE_TIMES;
+import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_STEREOTYPE_SPECIFIED_MULTIPLE_TIMES;
+import static org.jboss.weld.logging.messages.ValidatorMessage.DECORATOR_SPECIFIED_TWICE;
+import static org.jboss.weld.logging.messages.ValidatorMessage.INTERCEPTOR_SPECIFIED_TWICE;
+import static org.jboss.weld.util.reflection.Reflections.cast;
+
+import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.jboss.weld.bootstrap.BeanDeployment;
+import org.jboss.weld.bootstrap.api.helpers.AbstractBootstrapService;
+import org.jboss.weld.bootstrap.spi.BeansXml;
+import org.jboss.weld.bootstrap.spi.Metadata;
+import org.jboss.weld.exceptions.DeploymentException;
+import org.jboss.weld.logging.messages.BootstrapMessage;
+import org.jboss.weld.logging.messages.ValidatorMessage;
+import org.jboss.weld.resources.spi.ResourceLoader;
+import org.jboss.weld.resources.spi.ResourceLoadingException;
+import org.jboss.weld.util.Preconditions;
+import org.jboss.weld.util.collections.ListView;
+import org.jboss.weld.util.collections.ViewProvider;
+
+import com.google.common.base.Function;
+import com.google.common.base.Objects;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+
+/**
+ * This service gathers globally enabled interceptors, decorators and alternatives and builds a list of each.
+ *
+ * @author Jozef Hartinger
+ *
+ */
+public class GlobalEnablementBuilder extends AbstractBootstrapService {
+
+    private static class Item implements Comparable<Item> {
+
+        private final Class<?> javaClass;
+        private final Integer priority;
+
+        private Item(Class<?> javaClass) {
+            this(javaClass, null);
+        }
+
+        private Item(Class<?> javaClass, Integer priority) {
+            Preconditions.checkArgumentNotNull(javaClass, "javaClass");
+            this.javaClass = javaClass;
+            this.priority = priority;
+        }
+
+        @Override
+        public int compareTo(Item o) {
+            if (priority == o.priority) {
+                /*
+                 * The spec does not specify what happens if two records have the same priority. Instead of giving random
+                 * results, we compare the records based on their class name lexicographically.
+                 */
+                return javaClass.getName().compareTo(o.javaClass.getName());
+            }
+            return priority - o.priority;
+        }
+
+        @Override
+        public int hashCode() {
+            return javaClass.hashCode();
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj instanceof Item) {
+                Item that = (Item) obj;
+                return Objects.equal(javaClass, that.javaClass);
+            }
+            return false;
+        }
+
+        @Override
+        public String toString() {
+            return "[Class=" + javaClass + ", priority=" + priority + "]";
+        }
+    }
+
+    private static class ItemViewProvider implements ViewProvider<Item, Class<?>> {
+
+        private static ItemViewProvider ITEM_VIEW_PROVIDER = new ItemViewProvider();
+
+        @Override
+        public Class<?> toView(Item item) {
+            return item.javaClass;
+        }
+
+        @Override
+        public Item fromView(Class<?> javaClass) {
+            return new Item(javaClass);
+        }
+    }
+
+    private abstract static class AbstractEnablementListView extends ListView<Item, Class<?>> {
+        @Override
+        protected ViewProvider<Item, Class<?>> getViewProvider() {
+            return ItemViewProvider.ITEM_VIEW_PROVIDER;
+        }
+    }
+
+    private final List<Item> alternatives = Collections.synchronizedList(new ArrayList<Item>());
+    private final List<Item> interceptors = Collections.synchronizedList(new ArrayList<Item>());
+    private final List<Item> decorators = Collections.synchronizedList(new ArrayList<Item>());
+
+    private Map<Class<?>, Integer> cachedAlternativeMap;
+
+    private void addItem(List<Item> list, Class<?> javaClass, int priority) {
+        list.add(new Item(javaClass, priority));
+        Collections.sort(list);
+    }
+
+    public void addAlternative(Class<?> javaClass, int priority) {
+        addItem(alternatives, javaClass, priority);
+    }
+
+    public void addInterceptor(Class<?> javaClass, int priority) {
+        addItem(interceptors, javaClass, priority);
+    }
+
+    public void addDecorator(Class<?> javaClass, int priority) {
+        addItem(decorators, javaClass, priority);
+    }
+
+    public List<Class<?>> getAlternativeList() {
+        return new AbstractEnablementListView() {
+            @Override
+            protected List<Item> getDelegate() {
+                return alternatives;
+            }
+        };
+    }
+
+    public List<Class<?>> getInterceptorList() {
+        return new AbstractEnablementListView() {
+            @Override
+            protected List<Item> getDelegate() {
+                return interceptors;
+            }
+        };
+    }
+
+    public List<Class<?>> getDecoratorList() {
+        return new AbstractEnablementListView() {
+            @Override
+            protected List<Item> getDelegate() {
+                return decorators;
+            }
+        };
+    }
+
+    /*
+     * cachedAlternativeMap is accessed from a single thread only and the result is safely propagated. Therefore, there is no
+     * need to synchronize access to cachedAlternativeMap.
+     */
+    private Map<Class<?>, Integer> getGlobalAlternativeMap() {
+        if (cachedAlternativeMap == null) {
+            Map<Class<?>, Integer> map = new HashMap<Class<?>, Integer>();
+            for (Item item : alternatives) {
+                map.put(item.javaClass, item.priority);
+            }
+            cachedAlternativeMap = ImmutableMap.copyOf(map);
+        }
+        return cachedAlternativeMap;
+    }
+
+    public ModuleEnablement createModuleEnablement(BeanDeployment deployment) {
+
+        ClassLoader loader = new ClassLoader(deployment.getBeanManager().getServices().get(ResourceLoader.class));
+
+        BeansXml beansXml = deployment.getBeanDeploymentArchive().getBeansXml();
+
+        // Interceptors
+        List<Class<?>> localInterceptors = transform(checkForDuplicates(beansXml.getEnabledInterceptors(), INTERCEPTOR_SPECIFIED_TWICE), loader);
+        List<Class<?>> moduleInterceptors = ImmutableList.<Class<?>> builder().addAll(getInterceptorList()).addAll(localInterceptors).build();
+
+        // Decorators
+        List<Class<?>> localDecorators = transform(checkForDuplicates(beansXml.getEnabledDecorators(), DECORATOR_SPECIFIED_TWICE), loader);
+        List<Class<?>> moduleDecorators = ImmutableList.<Class<?>> builder().addAll(getDecoratorList()).addAll(localDecorators).build();
+
+        // Alternatives
+        Set<Class<?>> alternativeClasses = ImmutableSet.copyOf(transform(checkForDuplicates(beansXml.getEnabledAlternativeClasses(), ALTERNATIVE_CLASS_SPECIFIED_MULTIPLE_TIMES), loader));
+        Set<Class<? extends Annotation>> alternativeStereotypes = cast(ImmutableSet.copyOf(transform(checkForDuplicates(beansXml.getEnabledAlternativeStereotypes(), ALTERNATIVE_STEREOTYPE_SPECIFIED_MULTIPLE_TIMES), loader)));
+
+        Map<Class<?>, Integer> globalAlternatives = getGlobalAlternativeMap();
+
+
+        return new ModuleEnablement(moduleInterceptors, moduleDecorators, globalAlternatives, alternativeClasses, alternativeStereotypes);
+    }
+
+    private static <T> List<Metadata<T>> checkForDuplicates(List<Metadata<T>> list, ValidatorMessage specifiedTwiceMessage) {
+        Map<T, Metadata<T>> map = new HashMap<T, Metadata<T>>();
+        for (Metadata<T> item : list) {
+            Metadata<T> previousOccurence = map.put(item.getValue(), item);
+            if (previousOccurence != null) {
+                throw new DeploymentException(specifiedTwiceMessage, item.getValue(), item, previousOccurence);
+            }
+        }
+        return list;
+    }
+
+    private static class ClassLoader implements Function<Metadata<String>, Class<?>> {
+
+        private final ResourceLoader resourceLoader;
+
+        public ClassLoader(ResourceLoader resourceLoader) {
+            this.resourceLoader = resourceLoader;
+        }
+
+        public Class<?> apply(Metadata<String> from) {
+            try {
+                return resourceLoader.classForName(from.getValue());
+            } catch (ResourceLoadingException e) {
+                throw new DeploymentException(BootstrapMessage.ERROR_LOADING_BEANS_XML_ENTRY, e.getMessage() + "; location: " + from.getLocation(), e.getCause());
+            } catch (Exception e) {
+                throw new DeploymentException(BootstrapMessage.ERROR_LOADING_BEANS_XML_ENTRY, e.getMessage() + "; location: " + from.getLocation(), e);
+            }
+        }
+    }
+
+    @Override
+    public void cleanupAfterBoot() {
+        alternatives.clear();
+        interceptors.clear();
+        decorators.clear();
+    }
+
+    @Override
+    public String toString() {
+        return "GlobalEnablementBuilder [alternatives=" + alternatives + ", interceptors=" + interceptors + ", decorators=" + decorators + "]";
+    }
+}

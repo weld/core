@@ -61,7 +61,7 @@ import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.api.helpers.ServiceRegistries;
 import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
-import org.jboss.weld.bootstrap.enablement.EnablementBuilder;
+import org.jboss.weld.bootstrap.enablement.GlobalEnablementBuilder;
 import org.jboss.weld.bootstrap.events.AfterBeanDiscoveryImpl;
 import org.jboss.weld.bootstrap.events.AfterDeploymentValidationImpl;
 import org.jboss.weld.bootstrap.events.AnnotationDiscovery;
@@ -163,15 +163,13 @@ public class WeldBootstrap implements Bootstrap {
         private final Deployment deployment;
         private final Map<BeanDeploymentArchive, BeanDeployment> managerAwareBeanDeploymentArchives;
         private final Collection<ContextHolder<? extends Context>> contexts;
-        private final EnablementBuilder enablementBuilder;
 
-        public DeploymentVisitor(BeanManagerImpl deploymentManager, Environment environment, final Deployment deployment, Collection<ContextHolder<? extends Context>> contexts, EnablementBuilder enablementBuilder) {
+        public DeploymentVisitor(BeanManagerImpl deploymentManager, Environment environment, final Deployment deployment, Collection<ContextHolder<? extends Context>> contexts) {
             this.deploymentManager = deploymentManager;
             this.environment = environment;
             this.deployment = deployment;
             this.contexts = contexts;
             this.managerAwareBeanDeploymentArchives = new ConcurrentHashMap<BeanDeploymentArchive, BeanDeployment>();
-            this.enablementBuilder = enablementBuilder;
         }
 
         public Map<BeanDeploymentArchive, BeanDeployment> visit() {
@@ -207,7 +205,7 @@ public class WeldBootstrap implements Bootstrap {
             BeanDeployment parent = managerAwareBeanDeploymentArchives.get(beanDeploymentArchive);
             if (parent == null) {
                 // Create the BeanDeployment
-                parent = new BeanDeployment(beanDeploymentArchive, deploymentManager, deployment.getServices(), contexts, enablementBuilder);
+                parent = new BeanDeployment(beanDeploymentArchive, deploymentManager, deployment.getServices(), contexts);
 
                 // Attach it
                 managerAwareBeanDeploymentArchives.put(beanDeploymentArchive, parent);
@@ -241,11 +239,9 @@ public class WeldBootstrap implements Bootstrap {
     private DeploymentVisitor deploymentVisitor;
     private final BeansXmlParser beansXmlParser;
     private Collection<ContextHolder<? extends Context>> contexts;
-    private final EnablementBuilder enablementBuilder;
 
     public WeldBootstrap() {
         this.beansXmlParser = new BeansXmlParser();
-        this.enablementBuilder = new EnablementBuilder();
     }
 
     public Bootstrap startContainer(Environment environment, Deployment deployment) {
@@ -314,7 +310,7 @@ public class WeldBootstrap implements Bootstrap {
 
             this.contexts = createContexts(deploymentServices);
 
-            this.deploymentVisitor = new DeploymentVisitor(deploymentManager, environment, deployment, contexts, enablementBuilder);
+            this.deploymentVisitor = new DeploymentVisitor(deploymentManager, environment, deployment, contexts);
 
             // Read the deployment structure, this will be the physical structure
             // as caused by the presence of beans.xml
@@ -378,6 +374,7 @@ public class WeldBootstrap implements Bootstrap {
             preloader = new ContainerLifecycleEventPreloader(preloaderThreadPoolSize, observerNotificationService.getGlobalLenientObserverNotifier());
         }
         services.add(ContainerLifecycleEvents.class, new ContainerLifecycleEvents(preloader, services.get(AnnotationDiscovery.class)));
+        services.add(GlobalEnablementBuilder.class, new GlobalEnablementBuilder());
     }
 
     public BeanManagerImpl getManager(BeanDeploymentArchive beanDeploymentArchive) {
@@ -400,7 +397,7 @@ public class WeldBootstrap implements Bootstrap {
             // we need to know which BDAs are physical so that we fire ProcessModule for there archives only
             Set<BeanDeployment> physicalBeanDeploymentArchives = new HashSet<BeanDeployment>(beanDeployments.values());
 
-            ExtensionBeanDeployer extensionBeanDeployer = new ExtensionBeanDeployer(deploymentManager, deployment, beanDeployments, contexts, enablementBuilder);
+            ExtensionBeanDeployer extensionBeanDeployer = new ExtensionBeanDeployer(deploymentManager, deployment, beanDeployments, contexts);
             extensionBeanDeployer.addExtensions(deployment.getExtensions());
             extensionBeanDeployer.deployBeans();
 
@@ -413,7 +410,7 @@ public class WeldBootstrap implements Bootstrap {
             // physical BDA
             beanDeployments = deploymentVisitor.visit();
 
-            BeforeBeanDiscoveryImpl.fire(deploymentManager, deployment, beanDeployments, contexts, enablementBuilder);
+            BeforeBeanDiscoveryImpl.fire(deploymentManager, deployment, beanDeployments, contexts);
 
             // for each physical BDA transform its classes into AnnotatedType instances
             for (BeanDeployment beanDeployment : physicalBeanDeploymentArchives) {
@@ -455,7 +452,7 @@ public class WeldBootstrap implements Bootstrap {
             for (Entry<BeanDeploymentArchive, BeanDeployment> entry : beanDeployments.entrySet()) {
                 entry.getValue().deployBeans(environment);
             }
-            AfterBeanDiscoveryImpl.fire(deploymentManager, deployment, beanDeployments, contexts, enablementBuilder);
+            AfterBeanDiscoveryImpl.fire(deploymentManager, deployment, beanDeployments, contexts);
             // Re-read the deployment structure, this will be the physical
             // structure, extensions, classes, and any beans added using addBean
             // outside the physical structure
@@ -476,7 +473,7 @@ public class WeldBootstrap implements Bootstrap {
             for (Entry<BeanDeploymentArchive, BeanDeployment> entry : beanDeployments.entrySet()) {
                 BeanManagerImpl beanManager = entry.getValue().getBeanManager();
                 beanManager.getBeanResolver().clear();
-                deployment.getServices().get(Validator.class).validateDeployment(beanManager, entry.getValue().getBeanDeployer().getEnvironment());
+                deployment.getServices().get(Validator.class).validateDeployment(beanManager, entry.getValue());
                 beanManager.getServices().get(InjectionTargetService.class).validate();
             }
             Container.instance().setState(ContainerState.VALIDATED);
@@ -497,7 +494,6 @@ public class WeldBootstrap implements Bootstrap {
             deploymentManager.getGlobalLenientObserverNotifier().clear();
             deploymentManager.getDecoratorResolver().clear();
             deploymentManager.getServices().cleanupAfterBoot();
-            enablementBuilder.clear();
             for (Entry<BeanDeploymentArchive, BeanDeployment> entry : beanDeployments.entrySet()) {
                 BeanManagerImpl beanManager = entry.getValue().getBeanManager();
                 beanManager.getBeanResolver().clear();

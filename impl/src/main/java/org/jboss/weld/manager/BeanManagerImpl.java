@@ -900,7 +900,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     public String toString() {
         StringBuilder buffer = new StringBuilder();
         buffer.append("Manager\n");
-        buffer.append("Enabled alternatives: " + getEnabled().getAlternatives() + "\n");
+        buffer.append("Enabled alternatives: " + getEnabled().getAllAlternatives() + "\n");
         buffer.append("Registered contexts: " + contexts.keySet() + "\n");
         buffer.append("Registered beans: " + getBeans().size() + "\n");
         return buffer.toString();

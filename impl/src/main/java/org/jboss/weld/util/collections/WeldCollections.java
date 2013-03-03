@@ -18,6 +18,7 @@ package org.jboss.weld.util.collections;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -92,5 +93,13 @@ public class WeldCollections {
             ArraySetMultimap.class.cast(map).trimToSize();
         }
         return Collections.unmodifiableMap(map);
+    }
+
+    /**
+     * Fluent version of {@link Collections#sort(List, Comparator)}
+     */
+    public static <T> List<T> sort(List<T> list, Comparator<? super T> comparator) {
+        Collections.sort(list, comparator);
+        return list;
     }
 }

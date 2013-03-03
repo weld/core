@@ -16,33 +16,33 @@
  */
 package org.jboss.weld.util;
 
+import static org.jboss.weld.logging.messages.UtilMessage.UNABLE_TO_FIND_BEAN_DEPLOYMENT_ARCHIVE;
+
+import java.util.Collection;
+import java.util.Map;
+
+import javax.enterprise.context.spi.Context;
+
 import org.jboss.weld.bootstrap.BeanDeployment;
 import org.jboss.weld.bootstrap.ContextHolder;
-import org.jboss.weld.bootstrap.enablement.EnablementBuilder;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.manager.BeanManagerImpl;
-
-import javax.enterprise.context.spi.Context;
-import java.util.Collection;
-import java.util.Map;
-
-import static org.jboss.weld.logging.messages.UtilMessage.UNABLE_TO_FIND_BEAN_DEPLOYMENT_ARCHIVE;
 
 public class DeploymentStructures {
 
     private DeploymentStructures() {
     }
 
-    public static BeanDeployment getOrCreateBeanDeployment(Deployment deployment, BeanManagerImpl deploymentManager, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, Collection<ContextHolder<? extends Context>> contexts, Class<?> clazz, EnablementBuilder enablementBuilder) {
+    public static BeanDeployment getOrCreateBeanDeployment(Deployment deployment, BeanManagerImpl deploymentManager, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, Collection<ContextHolder<? extends Context>> contexts, Class<?> clazz) {
         BeanDeploymentArchive beanDeploymentArchive = deployment.loadBeanDeploymentArchive(clazz);
         if (beanDeploymentArchive == null) {
             throw new IllegalStateException(UNABLE_TO_FIND_BEAN_DEPLOYMENT_ARCHIVE, clazz);
         } else {
             BeanDeployment beanDeployment = beanDeployments.get(beanDeploymentArchive);
             if (beanDeployment == null) {
-                beanDeployment = new BeanDeployment(beanDeploymentArchive, deploymentManager, deployment.getServices(), contexts, enablementBuilder, true);
+                beanDeployment = new BeanDeployment(beanDeploymentArchive, deploymentManager, deployment.getServices(), contexts, true);
                 beanDeployments.put(beanDeploymentArchive, beanDeployment);
             }
             return beanDeployment;

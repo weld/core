@@ -28,7 +28,6 @@ import javax.enterprise.inject.spi.Extension;
 import org.jboss.weld.bootstrap.BeanDeployer;
 import org.jboss.weld.bootstrap.BeanDeployment;
 import org.jboss.weld.bootstrap.ContextHolder;
-import org.jboss.weld.bootstrap.enablement.EnablementBuilder;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.exceptions.DefinitionException;
@@ -48,12 +47,12 @@ import org.jboss.weld.util.annotated.AnnotatedTypeWrapper;
 
 public class BeforeBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implements BeforeBeanDiscovery {
 
-    public static void fire(BeanManagerImpl beanManager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, Collection<ContextHolder<? extends Context>> contexts, EnablementBuilder enablementBuilder) {
-        new BeforeBeanDiscoveryImpl(beanManager, deployment, beanDeployments, contexts, enablementBuilder).fire();
+    public static void fire(BeanManagerImpl beanManager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, Collection<ContextHolder<? extends Context>> contexts) {
+        new BeforeBeanDiscoveryImpl(beanManager, deployment, beanDeployments, contexts).fire();
     }
 
-    protected BeforeBeanDiscoveryImpl(BeanManagerImpl beanManager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, Collection<ContextHolder<? extends Context>> contexts, EnablementBuilder enablementBuilder) {
-        super(beanManager, BeforeBeanDiscovery.class, beanDeployments, deployment, contexts, enablementBuilder);
+    protected BeforeBeanDiscoveryImpl(BeanManagerImpl beanManager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, Collection<ContextHolder<? extends Context>> contexts) {
+        super(beanManager, BeforeBeanDiscovery.class, beanDeployments, deployment, contexts);
     }
 
     public void addQualifier(Class<? extends Annotation> bindingType) {
