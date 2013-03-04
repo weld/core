@@ -142,6 +142,12 @@
                     <exclude name=".*"/>
                 </methods>
             </class>
+            <!-- WELD-1343 -->
+            <class name="org.jboss.cdi.tck.tests.event.observer.ObserverNotificationTest">
+                <methods>
+                    <exclude name="testObserverMethodNotInvokedIfNoActiveContext"/>
+                </methods>
+            </class>
 
             <!-- Issues in JBoss AS -->
             <!-- AS7-4232 -->
