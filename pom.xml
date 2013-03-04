@@ -59,6 +59,7 @@
         <jboss.metadata.version>1.0.0.CR16</jboss.metadata.version>
         <jboss.shrinkwrap.api.version>1.0.0-cr-1</jboss.shrinkwrap.api.version>
         <jboss.shrinkwrap.descriptors.version>1.1.0-beta-1</jboss.shrinkwrap.descriptors.version>
+        <jboss.spec.annotation.version>1.0.0.Alpha1</jboss.spec.annotation.version>
         <jboss.spec.ejb.version>1.0.0.CR2</jboss.spec.ejb.version>
         <jboss.spec.servlet.version>1.0.0.Beta2</jboss.spec.servlet.version>
         <jboss.spec.jaxrs.version>1.0.0.Final</jboss.spec.jaxrs.version>
@@ -329,6 +330,12 @@
 	            <groupId>org.jboss.spec.javax.ws.rs</groupId>
 	            <artifactId>jboss-jaxrs-api_1.1_spec</artifactId>
                 <version>${jboss.spec.jaxrs.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.spec.javax.annotation</groupId>
+                <artifactId>jboss-annotations-api_1.2_spec</artifactId>
+                <version>${jboss.spec.annotation.version}</version>
             </dependency>
 
             <dependency>
