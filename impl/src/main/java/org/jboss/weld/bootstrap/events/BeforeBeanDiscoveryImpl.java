@@ -23,9 +23,7 @@ import java.util.Map;
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
-import javax.enterprise.inject.spi.Extension;
 
-import org.jboss.weld.bootstrap.BeanDeployer;
 import org.jboss.weld.bootstrap.BeanDeployment;
 import org.jboss.weld.bootstrap.ContextHolder;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
@@ -42,10 +40,9 @@ import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.ReflectionCache;
-import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.annotated.AnnotatedTypeWrapper;
 
-public class BeforeBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implements BeforeBeanDiscovery {
+public class BeforeBeanDiscoveryImpl extends AbstractAnnotatedTypeRegisteringEvent implements BeforeBeanDiscovery {
 
     public static void fire(BeanManagerImpl beanManager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, Collection<ContextHolder<? extends Context>> contexts) {
         new BeforeBeanDiscoveryImpl(beanManager, deployment, beanDeployments, contexts).fire();
@@ -101,16 +98,8 @@ public class BeforeBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implemen
     }
 
     @Override
-    public void addAnnotatedType(AnnotatedType<?> source, String id) {
-        if (Beans.isVetoed(source)) {
-            return;
-        }
-        Object receiver = getReceiver();
-        if (!(receiver instanceof Extension)) {
-            throw new IllegalStateException("BeforeBeanDiscovery receiver is not an extension");
-        }
-        BeanDeployer deployer = getOrCreateBeanDeployment(source.getJavaClass()).getBeanDeployer();
-        deployer.addSyntheticClass(source, (Extension) receiver, id);
+    public void addAnnotatedType(AnnotatedType<?> type, String id) {
+        addSyntheticAnnotatedType(type, id);
     }
 
     @Override

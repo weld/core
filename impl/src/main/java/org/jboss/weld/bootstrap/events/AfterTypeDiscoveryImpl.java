@@ -23,25 +23,32 @@ import java.util.Map;
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.spi.AfterTypeDiscovery;
 import javax.enterprise.inject.spi.AnnotatedType;
+import javax.enterprise.inject.spi.Extension;
 
+import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.bootstrap.BeanDeployment;
 import org.jboss.weld.bootstrap.ContextHolder;
 import org.jboss.weld.bootstrap.enablement.GlobalEnablementBuilder;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.resources.ClassTransformer;
 
-public class AfterTypeDiscoveryImpl extends AbstractBeanDiscoveryEvent implements AfterTypeDiscovery {
+public class AfterTypeDiscoveryImpl extends AbstractAnnotatedTypeRegisteringEvent implements AfterTypeDiscovery {
 
     public static void fire(BeanManagerImpl beanManager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, Collection<ContextHolder<? extends Context>> contexts) {
         new AfterTypeDiscoveryImpl(beanManager, beanDeployments, deployment, contexts).fire();
     }
 
     private final GlobalEnablementBuilder builder;
+    private final ContainerLifecycleEvents events;
+    private final ClassTransformer transformer;
 
     protected AfterTypeDiscoveryImpl(BeanManagerImpl beanManager, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, Deployment deployment, Collection<ContextHolder<? extends Context>> contexts) {
         super(beanManager, AfterTypeDiscovery.class, beanDeployments, deployment, contexts);
         this.builder = beanManager.getServices().get(GlobalEnablementBuilder.class);
+        this.events = beanManager.getServices().get(ContainerLifecycleEvents.class);
+        this.transformer = beanManager.getServices().get(ClassTransformer.class);
     }
 
     @Override
@@ -61,6 +68,26 @@ public class AfterTypeDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
 
     @Override
     public void addAnnotatedType(AnnotatedType<?> type) {
-        throw new UnsupportedOperationException();
+        addAnnotatedType(type, null);
+    }
+
+    // TODO: add @Override when we can
+    public void addAnnotatedType(AnnotatedType<?> type, String id) {
+        addSyntheticAnnotatedType(type, id);
+    }
+
+    @Override
+    protected void storeSyntheticAnnotatedType(BeanDeployment deployment, AnnotatedType<?> type, String id) {
+        SlimAnnotatedType<?> annotatedType = transformer.getUnbackedAnnotatedType(type, getBeanManager().getId(), id);
+        Extension extension = getSyntheticAnnotatedTypeSource();
+
+        ProcessAnnotatedTypeImpl<?> event = events.fireProcessAnnotatedType(getBeanManager(), annotatedType, extension);
+        if (event == null) {
+            deployment.getBeanDeployer().getEnvironment().addSyntheticAnnotatedType(annotatedType, extension);
+        } else  if (event.isVeto()) {
+            return;
+        } else {
+            deployment.getBeanDeployer().getEnvironment().addSyntheticAnnotatedType(event.getResultingAnnotatedType(), extension);
+        }
     }
 }
