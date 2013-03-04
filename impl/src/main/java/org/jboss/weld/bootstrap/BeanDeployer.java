@@ -28,7 +28,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.annotation.Priority;
 import javax.decorator.Decorator;
+import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Extension;
@@ -46,6 +48,7 @@ import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.attributes.BeanAttributesFactory;
 import org.jboss.weld.bean.interceptor.InterceptorBindingsAdapter;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
+import org.jboss.weld.bootstrap.enablement.GlobalEnablementBuilder;
 import org.jboss.weld.bootstrap.events.ProcessAnnotatedTypeImpl;
 import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
@@ -110,9 +113,25 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
             }
             if (annotatedType != null) {
                 getEnvironment().addAnnotatedType(annotatedType);
+                processPriority(annotatedType);
             }
         }
         return this;
+    }
+
+    private void processPriority(AnnotatedType<?> type) {
+        Priority priority = type.getAnnotation(Priority.class);
+        if (priority != null) {
+            int value = priority.value();
+            GlobalEnablementBuilder builder = getManager().getServices().get(GlobalEnablementBuilder.class);
+            if (type.isAnnotationPresent(Interceptor.class)) {
+                builder.addInterceptor(type.getJavaClass(), value);
+            } else if (type.isAnnotationPresent(Decorator.class)) {
+                builder.addDecorator(type.getJavaClass(), value);
+            } else if (type.isAnnotationPresent(Alternative.class)) {
+                builder.addAlternative(type.getJavaClass(), value);
+            }
+        }
     }
 
     public <T> BeanDeployer addSyntheticClass(AnnotatedType<T> source, Extension extension, String suffix) {

@@ -22,6 +22,7 @@ import java.util.Set;
 
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AfterDeploymentValidation;
+import javax.enterprise.inject.spi.AfterTypeDiscovery;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.BeforeShutdown;
@@ -60,27 +61,9 @@ public class Observers {
     public static final Set<Class<?>> CONTAINER_LIFECYCLE_EVENT_CANONICAL_SUPERTYPES;
 
     static {
-        Set<Class<?>> types = new HashSet<Class<?>>();
-        types.add(BeforeBeanDiscovery.class);
-        types.add(AfterBeanDiscovery.class);
-        types.add(AfterDeploymentValidation.class);
-        types.add(BeforeShutdown.class);
-        types.add(ProcessAnnotatedType.class);
-        types.add(ProcessSyntheticAnnotatedType.class);
-        types.add(ProcessInjectionPoint.class);
-        types.add(ProcessInjectionTarget.class);
-        types.add(ProcessProducer.class);
-        types.add(ProcessBeanAttributes.class);
-        types.add(ProcessBean.class);
-        types.add(ProcessSessionBean.class);
-        types.add(ProcessManagedBean.class);
-        types.add(ProcessProducerMethod.class);
-        types.add(ProcessProducerField.class);
-        types.add(ProcessObserverMethod.class);
-        CONTAINER_LIFECYCLE_EVENT_TYPES = Collections.unmodifiableSet(types);
-
         Set<Class<?>> canonicalSupertypes = new HashSet<Class<?>>();
         canonicalSupertypes.add(BeforeBeanDiscovery.class);
+        canonicalSupertypes.add(AfterTypeDiscovery.class);
         canonicalSupertypes.add(AfterBeanDiscovery.class);
         canonicalSupertypes.add(AfterDeploymentValidation.class);
         canonicalSupertypes.add(BeforeShutdown.class);
@@ -92,6 +75,15 @@ public class Observers {
         canonicalSupertypes.add(ProcessBean.class);
         canonicalSupertypes.add(ProcessObserverMethod.class);
         CONTAINER_LIFECYCLE_EVENT_CANONICAL_SUPERTYPES = Collections.unmodifiableSet(canonicalSupertypes);
+
+        Set<Class<?>> types = new HashSet<Class<?>>(CONTAINER_LIFECYCLE_EVENT_CANONICAL_SUPERTYPES);
+        types.add(ProcessSyntheticAnnotatedType.class);
+        types.add(ProcessSessionBean.class);
+        types.add(ProcessManagedBean.class);
+        types.add(ProcessProducerMethod.class);
+        types.add(ProcessProducerField.class);
+        CONTAINER_LIFECYCLE_EVENT_TYPES = Collections.unmodifiableSet(types);
+
     }
 
     public static boolean isContainerLifecycleObserverMethod(ObserverMethod<?> method) {

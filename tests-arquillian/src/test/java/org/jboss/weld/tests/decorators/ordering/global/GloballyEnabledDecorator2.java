@@ -16,8 +16,10 @@
  */
 package org.jboss.weld.tests.decorators.ordering.global;
 
+import javax.annotation.Priority;
 import javax.decorator.Decorator;
 
 @Decorator
+@Priority(2015)
 public class GloballyEnabledDecorator2 extends AbstractDecorator {
 }

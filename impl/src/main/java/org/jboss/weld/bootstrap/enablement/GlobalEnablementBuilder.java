@@ -134,11 +134,11 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
     private final List<Item> interceptors = Collections.synchronizedList(new ArrayList<Item>());
     private final List<Item> decorators = Collections.synchronizedList(new ArrayList<Item>());
 
-    private Map<Class<?>, Integer> cachedAlternativeMap;
+    private volatile Map<Class<?>, Integer> cachedAlternativeMap;
+    private volatile boolean sorted;
 
     private void addItem(List<Item> list, Class<?> javaClass, int priority) {
         list.add(new Item(javaClass, priority));
-        Collections.sort(list);
     }
 
     public void addAlternative(Class<?> javaClass, int priority) {
@@ -154,6 +154,7 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
     }
 
     public List<Class<?>> getAlternativeList() {
+        sort();
         return new AbstractEnablementListView() {
             @Override
             protected List<Item> getDelegate() {
@@ -163,6 +164,7 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
     }
 
     public List<Class<?>> getInterceptorList() {
+        sort();
         return new AbstractEnablementListView() {
             @Override
             protected List<Item> getDelegate() {
@@ -172,6 +174,7 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
     }
 
     public List<Class<?>> getDecoratorList() {
+        sort();
         return new AbstractEnablementListView() {
             @Override
             protected List<Item> getDelegate() {
@@ -193,6 +196,15 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
             cachedAlternativeMap = ImmutableMap.copyOf(map);
         }
         return cachedAlternativeMap;
+    }
+
+    private void sort() {
+        if (!sorted) {
+            Collections.sort(alternatives);
+            Collections.sort(interceptors);
+            Collections.sort(decorators);
+            sorted = true;
+        }
     }
 
     public ModuleEnablement createModuleEnablement(BeanDeployment deployment) {

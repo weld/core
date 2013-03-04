@@ -64,6 +64,7 @@ import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
 import org.jboss.weld.bootstrap.enablement.GlobalEnablementBuilder;
 import org.jboss.weld.bootstrap.events.AfterBeanDiscoveryImpl;
 import org.jboss.weld.bootstrap.events.AfterDeploymentValidationImpl;
+import org.jboss.weld.bootstrap.events.AfterTypeDiscoveryImpl;
 import org.jboss.weld.bootstrap.events.AnnotationDiscovery;
 import org.jboss.weld.bootstrap.events.BeforeBeanDiscoveryImpl;
 import org.jboss.weld.bootstrap.events.BeforeShutdownImpl;
@@ -301,6 +302,7 @@ public class WeldBootstrap implements Bootstrap {
             deploymentServices.add(ContainerLifecycleEvents.class, registry.get(ContainerLifecycleEvents.class));
             deploymentServices.add(SpecializationAndEnablementRegistry.class, registry.get(SpecializationAndEnablementRegistry.class));
             deploymentServices.add(ReflectionCache.class, registry.get(ReflectionCache.class));
+            deploymentServices.add(GlobalEnablementBuilder.class, registry.get(GlobalEnablementBuilder.class));
 
             this.environment = environment;
             this.deploymentManager = BeanManagerImpl.newRootManager("deployment", deploymentServices);
@@ -416,6 +418,8 @@ public class WeldBootstrap implements Bootstrap {
             for (BeanDeployment beanDeployment : physicalBeanDeploymentArchives) {
                 beanDeployment.createClasses();
             }
+
+            AfterTypeDiscoveryImpl.fire(deploymentManager, deployment, beanDeployments, contexts);
 
             // Re-Read the deployment structure, this will be the physical
             // structure, extensions and any classes added using addAnnotatedType
