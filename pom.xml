@@ -61,6 +61,7 @@
         <jboss.shrinkwrap.descriptors.version>1.1.0-beta-1</jboss.shrinkwrap.descriptors.version>
         <jboss.spec.annotation.version>1.0.0.Alpha1</jboss.spec.annotation.version>
         <jboss.spec.ejb.version>1.0.0.CR2</jboss.spec.ejb.version>
+        <jboss.spec.interceptors.version>1.0.0.Alpha1</jboss.spec.interceptors.version>
         <jboss.spec.servlet.version>1.0.0.Beta2</jboss.spec.servlet.version>
         <jboss.spec.jaxrs.version>1.0.0.Final</jboss.spec.jaxrs.version>
         <jboss.test.harness.version>1.1.0-CR9</jboss.test.harness.version>
@@ -113,6 +114,12 @@
                 <groupId>javax.enterprise</groupId>
                 <artifactId>cdi-api</artifactId>
                 <version>${cdi.api.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.jboss.spec.javax.interceptor</groupId>
+                        <artifactId>jboss-interceptors-api_1.1_spec</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>
@@ -318,6 +325,12 @@
                 <groupId>org.jboss.spec.javax.ejb</groupId>
                 <artifactId>jboss-ejb-api_3.1_spec</artifactId>
                 <version>${jboss.spec.ejb.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.spec.javax.interceptor</groupId>
+                <artifactId>jboss-interceptors-api_1.2_spec</artifactId>
+                <version>${jboss.spec.interceptors.version}</version>
             </dependency>
 
             <dependency>
