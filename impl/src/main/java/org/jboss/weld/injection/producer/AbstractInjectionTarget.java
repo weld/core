@@ -18,18 +18,15 @@ package org.jboss.weld.injection.producer;
 
 import static org.jboss.weld.logging.messages.BeanMessage.FINAL_BEAN_CLASS_WITH_DECORATORS_NOT_ALLOWED;
 import static org.jboss.weld.logging.messages.BeanMessage.FINAL_BEAN_CLASS_WITH_INTERCEPTORS_NOT_ALLOWED;
-import static org.jboss.weld.logging.messages.BeanMessage.INVOCATION_ERROR;
 import static org.jboss.weld.logging.messages.BeanMessage.NON_CONTAINER_DECORATOR;
 import static org.jboss.weld.logging.messages.BeanMessage.SIMPLE_BEAN_AS_NON_STATIC_INNER_CLASS_NOT_ALLOWED;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
@@ -39,17 +36,14 @@ import javax.enterprise.inject.spi.Interceptor;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
-import org.jboss.weld.annotated.runtime.RuntimeAnnotatedMembers;
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.bean.CustomDecoratorWrapper;
 import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.IllegalStateException;
-import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
-import org.jboss.weld.util.BeanMethods;
 import org.jboss.weld.util.collections.WeldCollections;
 
 /**
@@ -60,14 +54,13 @@ public abstract class AbstractInjectionTarget<T> extends AbstractProducer<T> imp
 
     protected final BeanManagerImpl beanManager;
     private final SlimAnnotatedType<T> type;
-    private final List<AnnotatedMethod<? super T>> postConstructMethods;
-    private final List<AnnotatedMethod<? super T>> preDestroyMethods;
     private final Set<InjectionPoint> injectionPoints;
     private final Bean<T> bean;
 
     // Instantiation
     private Instantiator<T> instantiator;
     private final Injector<T> injector;
+    private final LifecycleCallbackInvoker<T> invoker;
 
     public AbstractInjectionTarget(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager) {
         this.beanManager = beanManager;
@@ -75,8 +68,6 @@ public abstract class AbstractInjectionTarget<T> extends AbstractProducer<T> imp
         Set<InjectionPoint> injectionPoints = new HashSet<InjectionPoint>();
 
         this.bean = bean;
-        this.postConstructMethods = initPostConstructMethods(type);
-        this.preDestroyMethods = initPreDestroyMethods(type);
 
         checkType(type);
         this.injector = initInjector(type, bean, beanManager);
@@ -84,22 +75,8 @@ public abstract class AbstractInjectionTarget<T> extends AbstractProducer<T> imp
         this.instantiator = initInstantiator(type, bean, beanManager, injectionPoints);
         this.injectionPoints = WeldCollections.immutableSet(injectionPoints);
         checkDelegateInjectionPoints();
-    }
 
-    protected List<AnnotatedMethod<? super T>> initPostConstructMethods(EnhancedAnnotatedType<T> type) {
-        if (isInterceptor()) {
-            return Collections.emptyList();
-        } else {
-            return BeanMethods.getPostConstructMethods(type);
-        }
-    }
-
-    protected List<AnnotatedMethod<? super T>> initPreDestroyMethods(EnhancedAnnotatedType<T> type) {
-        if (isInterceptor()) {
-            return Collections.emptyList();
-        } else {
-            return BeanMethods.getPreDestroyMethods(type);
-        }
+        this.invoker = initInvoker(type);
     }
 
     protected void checkType(EnhancedAnnotatedType<T> type) {
@@ -161,29 +138,11 @@ public abstract class AbstractInjectionTarget<T> extends AbstractProducer<T> imp
     }
 
     public void postConstruct(T instance) {
-        for (AnnotatedMethod<? super T> method : postConstructMethods) {
-            if (method != null) {
-                try {
-                    // note: RI supports injection into @PreDestroy
-                    RuntimeAnnotatedMembers.invokeMethod(method, instance);
-                } catch (Exception e) {
-                    throw new WeldException(INVOCATION_ERROR, e, method, instance);
-                }
-            }
-        }
+        invoker.postConstruct(instance, instantiator);
     }
 
     public void preDestroy(T instance) {
-        for (AnnotatedMethod<? super T> method : preDestroyMethods) {
-            if (method != null) {
-                try {
-                    // note: RI supports injection into @PreDestroy
-                    RuntimeAnnotatedMembers.invokeMethod(method, instance);
-                } catch (Exception e) {
-                    throw new WeldException(INVOCATION_ERROR, e, method, instance);
-                }
-            }
-        }
+        invoker.preDestroy(instance, instantiator);
     }
 
     public void dispose(T instance) {
@@ -222,14 +181,6 @@ public abstract class AbstractInjectionTarget<T> extends AbstractProducer<T> imp
         return instantiator.hasDecoratorSupport();
     }
 
-    public List<AnnotatedMethod<? super T>> getPostConstructMethods() {
-        return postConstructMethods;
-    }
-
-    public List<AnnotatedMethod<? super T>> getPreDestroyMethods() {
-        return preDestroyMethods;
-    }
-
     protected void initializeAfterBeanDiscovery(EnhancedAnnotatedType<T> annotatedType) {
         if (isInterceptionCandidate() && !beanManager.getInterceptorModelRegistry().containsKey(annotatedType.getJavaClass())) {
             new InterceptionModelInitializer<T>(beanManager, annotatedType, getBean()).init();
@@ -248,6 +199,14 @@ public abstract class AbstractInjectionTarget<T> extends AbstractProducer<T> imp
         return new DefaultInjector<T>(type, bean, beanManager);
     }
 
+    protected LifecycleCallbackInvoker<T> initInvoker(EnhancedAnnotatedType<T> type) {
+        if (isInterceptor()) {
+            return NoopLifecycleCallbackInvoker.getInstance();
+        } else {
+            return new DefaultLifecycleCallbackInvoker<T>(type);
+        }
+    }
+
     @Override
     public AnnotatedType<T> getAnnotated() {
         return type;
@@ -255,6 +214,10 @@ public abstract class AbstractInjectionTarget<T> extends AbstractProducer<T> imp
 
     public Injector<T> getInjector() {
         return injector;
+    }
+
+    public LifecycleCallbackInvoker<T> getLifecycleCallbackInvoker() {
+        return invoker;
     }
 
     @Override

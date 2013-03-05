@@ -83,7 +83,7 @@ public class DependentContextImpl implements DependentContext {
                 ManagedBean<?> managedBean = (ManagedBean<?>) contextual;
                 if (managedBean.getProducer() instanceof AbstractInjectionTarget<?>) {
                     AbstractInjectionTarget<?> injectionTarget = (AbstractInjectionTarget<?>) managedBean.getProducer();
-                    if (injectionTarget.getPreDestroyMethods().isEmpty() && !injectionTarget.hasInterceptors()) {
+                    if (injectionTarget.getLifecycleCallbackInvoker().getPreDestroyMethods().isEmpty() && !injectionTarget.hasInterceptors()) {
                         // there is no @PreDestroy callback to call when destroying this dependent instance
                         // therefore, we do not need to keep the reference
                         return;
