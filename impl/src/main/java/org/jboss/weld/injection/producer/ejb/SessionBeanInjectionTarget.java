@@ -31,7 +31,7 @@ import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bean.proxy.CombinedInterceptorAndDecoratorStackMethodHandler;
 import org.jboss.weld.bean.proxy.MethodHandler;
 import org.jboss.weld.bean.proxy.ProxyObject;
-import org.jboss.weld.injection.producer.AbstractInjectionTarget;
+import org.jboss.weld.injection.producer.BasicInjectionTarget;
 import org.jboss.weld.injection.producer.DefaultInstantiator;
 import org.jboss.weld.injection.producer.Injector;
 import org.jboss.weld.injection.producer.Instantiator;
@@ -42,7 +42,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Types;
 import org.jboss.weld.util.reflection.Reflections;
 
-public class SessionBeanInjectionTarget<T> extends AbstractInjectionTarget<T> {
+public class SessionBeanInjectionTarget<T> extends BasicInjectionTarget<T> {
 
     private final SessionBean<T> bean;
 

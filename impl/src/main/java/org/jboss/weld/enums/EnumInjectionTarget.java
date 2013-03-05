@@ -25,9 +25,8 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
-import org.jboss.weld.injection.ResourceInjectionPoint;
 import org.jboss.weld.injection.WeldInjectionPoint;
-import org.jboss.weld.injection.producer.DefaultInjectionTarget;
+import org.jboss.weld.injection.producer.BeanInjectionTarget;
 import org.jboss.weld.injection.producer.Instantiator;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.InjectionPoints;
@@ -41,7 +40,7 @@ import org.jboss.weld.util.InjectionPoints;
  * @param <T> enum type
  */
 
-public class EnumInjectionTarget<T extends Enum<?>> extends DefaultInjectionTarget<T> {
+public class EnumInjectionTarget<T extends Enum<?>> extends BeanInjectionTarget<T> {
     public static <T extends Enum<?>> EnumInjectionTarget<T> of(EnhancedAnnotatedType<T> clazz, BeanManagerImpl manager) {
         return new EnumInjectionTarget<T>(clazz, manager);
     }
@@ -62,9 +61,9 @@ public class EnumInjectionTarget<T extends Enum<?>> extends DefaultInjectionTarg
 
     @Override
     public void dispose(T instance) {
-        for (ResourceInjectionPoint<?, ?> ip : getResourceInjectionPoints()) {
-            ip.disinject(instance);
-        }
+//        for (ResourceInjectionPoint<?, ?> ip : getResourceInjectionPoints()) {
+//            ip.disinject(instance);
+//        }
         for (InjectionPoint ip : getInjectionPoints()) {
             if (ip.getAnnotated() instanceof AnnotatedField<?>) {
                 disinject(InjectionPoints.getWeldInjectionPoint(ip), instance);

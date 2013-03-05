@@ -26,9 +26,9 @@ import org.jboss.weld.annotated.AnnotatedTypeValidator;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.exceptions.IllegalArgumentException;
-import org.jboss.weld.injection.producer.AbstractInjectionTarget;
+import org.jboss.weld.injection.producer.BasicInjectionTarget;
 import org.jboss.weld.injection.producer.DecoratorInjectionTarget;
-import org.jboss.weld.injection.producer.DefaultInjectionTarget;
+import org.jboss.weld.injection.producer.BeanInjectionTarget;
 import org.jboss.weld.injection.producer.InjectionTargetInitializationContext;
 import org.jboss.weld.injection.producer.InjectionTargetService;
 import org.jboss.weld.injection.producer.ejb.SessionBeanInjectionTarget;
@@ -56,7 +56,7 @@ public class InjectionTargetFactoryImpl<T> implements InjectionTargetFactory<T> 
         AnnotatedTypeValidator.validateAnnotatedType(type);
         try {
             EnhancedAnnotatedType<T> enhancedType = manager.getServices().get(ClassTransformer.class).getEnhancedAnnotatedType(type, manager.getId());
-            InjectionTarget<T> injectionTarget = internalCreateInjectionTarget(enhancedType, bean);
+            InjectionTarget<T> injectionTarget = createInjectionTarget(enhancedType, bean);
 
             manager.getServices().get(InjectionTargetService.class).validateProducer(injectionTarget);
             return injectionTarget;
@@ -65,14 +65,14 @@ public class InjectionTargetFactoryImpl<T> implements InjectionTargetFactory<T> 
         }
     }
 
-    public AbstractInjectionTarget<T> internalCreateInjectionTarget(EnhancedAnnotatedType<T> type, Bean<T> bean) {
-        AbstractInjectionTarget<T> injectionTarget = null;
+    public BasicInjectionTarget<T> createInjectionTarget(EnhancedAnnotatedType<T> type, Bean<T> bean) {
+        BasicInjectionTarget<T> injectionTarget = null;
         if (bean instanceof Decorator<?> || type.isAnnotationPresent(javax.decorator.Decorator.class)) {
             injectionTarget = new DecoratorInjectionTarget<T>(type, bean, manager);
         } else if (bean instanceof SessionBean<?>) {
             injectionTarget = new SessionBeanInjectionTarget<T>(type, (SessionBean<T>) bean, manager);
         } else {
-            injectionTarget = new DefaultInjectionTarget<T>(type, bean, manager);
+            injectionTarget = new BeanInjectionTarget<T>(type, bean, manager);
         }
         /*
          * Every InjectionTarget, regardless whether it's used within Weld's Bean implementation or requested from extension

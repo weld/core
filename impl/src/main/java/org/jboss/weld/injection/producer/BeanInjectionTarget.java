@@ -16,46 +16,32 @@
  */
 package org.jboss.weld.injection.producer;
 
-import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
-
+import static org.jboss.weld.logging.messages.BeanMessage.FINAL_BEAN_CLASS_WITH_DECORATORS_NOT_ALLOWED;
+import static org.jboss.weld.logging.messages.BeanMessage.FINAL_BEAN_CLASS_WITH_INTERCEPTORS_NOT_ALLOWED;
+import static org.jboss.weld.logging.messages.BeanMessage.NON_CONTAINER_DECORATOR;
 import java.util.List;
-import java.util.Set;
-
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
-import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.spi.Interceptor;
 
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
-import org.jboss.weld.injection.InjectionPointFactory;
-import org.jboss.weld.injection.ResourceInjectionPoint;
+import org.jboss.weld.bean.CustomDecoratorWrapper;
+import org.jboss.weld.bean.DecoratorImpl;
+import org.jboss.weld.exceptions.DeploymentException;
+import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.interceptor.util.InterceptionUtils;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.util.collections.ArraySet;
+import org.jboss.weld.resources.ClassTransformer;
 
 /**
  * @author Pete Muir
  * @author Jozef Hartinger
  */
-public class DefaultInjectionTarget<T> extends AbstractInjectionTarget<T> {
+public class BeanInjectionTarget<T> extends BasicInjectionTarget<T> {
 
-    private final Set<ResourceInjectionPoint<?, ?>> resourceInjectionPoints;
-
-    public DefaultInjectionTarget(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager) {
+    public BeanInjectionTarget(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager) {
         super(type, bean, beanManager);
-        Set<ResourceInjectionPoint<?, ?>> resourceInjectionPoints = new ArraySet<ResourceInjectionPoint<?,?>>();
-        resourceInjectionPoints.addAll(InjectionPointFactory.silentInstance().getEjbInjectionPoints(bean, type, beanManager));
-        resourceInjectionPoints.addAll(InjectionPointFactory.silentInstance().getPersistenceContextInjectionPoints(bean, type, beanManager));
-        resourceInjectionPoints.addAll(InjectionPointFactory.silentInstance().getPersistenceUnitInjectionPoints(bean, type, beanManager));
-        resourceInjectionPoints.addAll(InjectionPointFactory.silentInstance().getResourceInjectionPoints(bean, type, beanManager));
-        resourceInjectionPoints.addAll(InjectionPointFactory.silentInstance().getWebServiceRefInjectionPoints(bean, type, beanManager));
-        this.resourceInjectionPoints = immutableSet(resourceInjectionPoints);
-    }
-
-    @Override
-    protected Instantiator<T> initInstantiator(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager, Set<InjectionPoint> injectionPoints) {
-        DefaultInstantiator<T> instantiator = new DefaultInstantiator<T>(type, bean, beanManager);
-        injectionPoints.addAll(instantiator.getConstructor().getParameterInjectionPoints());
-        return instantiator;
     }
 
     @Override
@@ -83,8 +69,22 @@ public class DefaultInjectionTarget<T> extends AbstractInjectionTarget<T> {
         // No-op
     }
 
+    protected boolean isInterceptor() {
+        return (getBean() instanceof Interceptor<?>) || getType().isAnnotationPresent(javax.interceptor.Interceptor.class);
+    }
+
+    protected boolean isDecorator() {
+        return (getBean() instanceof Decorator<?>) || getType().isAnnotationPresent(javax.decorator.Decorator.class);
+    }
+
+    protected boolean isInterceptionCandidate() {
+        return !isInterceptor() && !isDecorator();
+    }
+
     public void initializeAfterBeanDiscovery(EnhancedAnnotatedType<T> annotatedType) {
-        super.initializeAfterBeanDiscovery(annotatedType);
+        if (isInterceptionCandidate() && !beanManager.getInterceptorModelRegistry().containsKey(annotatedType.getJavaClass())) {
+            new InterceptionModelInitializer<T>(beanManager, annotatedType, getBean()).init();
+        }
         boolean hasInterceptors = isInterceptionCandidate() && (beanManager.getInterceptorModelRegistry().containsKey(getType().getJavaClass()));
 
         List<Decorator<?>> decorators = null;
@@ -98,7 +98,7 @@ public class DefaultInjectionTarget<T> extends AbstractInjectionTarget<T> {
 
         if (hasInterceptors || hasDecorators) {
             if (!(getInstantiator() instanceof DefaultInstantiator<?>)) {
-                throw new IllegalStateException("Unexpected instantiator " + getInstantiator());
+                throw new java.lang.IllegalStateException("Unexpected instantiator " + getInstantiator());
             }
             DefaultInstantiator<T> delegate = (DefaultInstantiator<T>) getInstantiator();
             setInstantiator(new SubclassedComponentInstantiator<T>(annotatedType, getBean(), delegate, beanManager));
@@ -112,7 +112,36 @@ public class DefaultInjectionTarget<T> extends AbstractInjectionTarget<T> {
         }
     }
 
-    public Set<ResourceInjectionPoint<?, ?>> getResourceInjectionPoints() {
-        return resourceInjectionPoints;
+    protected void checkDecoratedMethods(EnhancedAnnotatedType<T> type, List<Decorator<?>> decorators) {
+        if (type.isFinal()) {
+            throw new DeploymentException(FINAL_BEAN_CLASS_WITH_DECORATORS_NOT_ALLOWED, this);
+        }
+        for (Decorator<?> decorator : decorators) {
+            EnhancedAnnotatedType<?> decoratorClass;
+            if (decorator instanceof DecoratorImpl<?>) {
+                DecoratorImpl<?> decoratorBean = (DecoratorImpl<?>) decorator;
+                decoratorClass = decoratorBean.getBeanManager().getServices().get(ClassTransformer.class).getEnhancedAnnotatedType(decoratorBean.getAnnotated());
+            } else if (decorator instanceof CustomDecoratorWrapper<?>) {
+                decoratorClass = ((CustomDecoratorWrapper<?>) decorator).getEnhancedAnnotated();
+            } else {
+                throw new IllegalStateException(NON_CONTAINER_DECORATOR, decorator);
+            }
+
+            for (EnhancedAnnotatedMethod<?, ?> decoratorMethod : decoratorClass.getEnhancedMethods()) {
+                EnhancedAnnotatedMethod<?, ?> method = type.getEnhancedMethod(decoratorMethod.getSignature());
+                if (method != null && !method.isStatic() && !method.isPrivate() && method.isFinal()) {
+                    throw new DeploymentException(FINAL_BEAN_CLASS_WITH_INTERCEPTORS_NOT_ALLOWED, method, decoratorMethod);
+                }
+            }
+        }
+    }
+
+    @Override
+    protected LifecycleCallbackInvoker<T> initInvoker(EnhancedAnnotatedType<T> type) {
+        if (isInterceptor()) {
+            return NoopLifecycleCallbackInvoker.getInstance();
+        } else {
+            return new DefaultLifecycleCallbackInvoker<T>(type);
+        }
     }
 }

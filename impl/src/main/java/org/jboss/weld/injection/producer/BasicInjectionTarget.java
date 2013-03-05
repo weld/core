@@ -16,41 +16,36 @@
  */
 package org.jboss.weld.injection.producer;
 
-import static org.jboss.weld.logging.messages.BeanMessage.FINAL_BEAN_CLASS_WITH_DECORATORS_NOT_ALLOWED;
-import static org.jboss.weld.logging.messages.BeanMessage.FINAL_BEAN_CLASS_WITH_INTERCEPTORS_NOT_ALLOWED;
-import static org.jboss.weld.logging.messages.BeanMessage.NON_CONTAINER_DECORATOR;
 import static org.jboss.weld.logging.messages.BeanMessage.SIMPLE_BEAN_AS_NON_STATIC_INNER_CLASS_NOT_ALLOWED;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
-import javax.enterprise.inject.spi.Interceptor;
-
-import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
-import org.jboss.weld.bean.CustomDecoratorWrapper;
-import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.exceptions.DefinitionException;
-import org.jboss.weld.exceptions.DeploymentException;
-import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.collections.WeldCollections;
 
 /**
+ * Basic {@link InjectionTarget} implementation. The implementation supports:
+ * <ul>
+ *  <li>@Inject injection + initializers</li>
+ *  <li>@PostConstruct/@PreDestroy callbacks</li>
+ * </ul>
+ *
+ * Interception and decoration is not supported but can be added using extension points.
+ *
  * @author Pete Muir
  * @author Jozef Hartinger
  */
-public abstract class AbstractInjectionTarget<T> extends AbstractProducer<T> implements InjectionTarget<T> {
+public class BasicInjectionTarget<T> extends AbstractProducer<T> implements InjectionTarget<T> {
 
     protected final BeanManagerImpl beanManager;
     private final SlimAnnotatedType<T> type;
@@ -62,7 +57,7 @@ public abstract class AbstractInjectionTarget<T> extends AbstractProducer<T> imp
     private final Injector<T> injector;
     private final LifecycleCallbackInvoker<T> invoker;
 
-    public AbstractInjectionTarget(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager) {
+    public BasicInjectionTarget(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager) {
         this.beanManager = beanManager;
         this.type = type.slim();
         Set<InjectionPoint> injectionPoints = new HashSet<InjectionPoint>();
@@ -83,42 +78,6 @@ public abstract class AbstractInjectionTarget<T> extends AbstractProducer<T> imp
         if (type.isAnonymousClass() || (type.isMemberClass() && !type.isStatic())) {
             throw new DefinitionException(SIMPLE_BEAN_AS_NON_STATIC_INNER_CLASS_NOT_ALLOWED, type);
         }
-    }
-
-    protected void checkDecoratedMethods(EnhancedAnnotatedType<T> type, List<Decorator<?>> decorators) {
-        if (type.isFinal()) {
-            throw new DeploymentException(FINAL_BEAN_CLASS_WITH_DECORATORS_NOT_ALLOWED, this);
-        }
-        for (Decorator<?> decorator : decorators) {
-            EnhancedAnnotatedType<?> decoratorClass;
-            if (decorator instanceof DecoratorImpl<?>) {
-                DecoratorImpl<?> decoratorBean = (DecoratorImpl<?>) decorator;
-                decoratorClass = decoratorBean.getBeanManager().getServices().get(ClassTransformer.class).getEnhancedAnnotatedType(decoratorBean.getAnnotated());
-            } else if (decorator instanceof CustomDecoratorWrapper<?>) {
-                decoratorClass = ((CustomDecoratorWrapper<?>) decorator).getEnhancedAnnotated();
-            } else {
-                throw new IllegalStateException(NON_CONTAINER_DECORATOR, decorator);
-            }
-
-            for (EnhancedAnnotatedMethod<?, ?> decoratorMethod : decoratorClass.getEnhancedMethods()) {
-                EnhancedAnnotatedMethod<?, ?> method = type.getEnhancedMethod(decoratorMethod.getSignature());
-                if (method != null && !method.isStatic() && !method.isPrivate() && method.isFinal()) {
-                    throw new DeploymentException(FINAL_BEAN_CLASS_WITH_INTERCEPTORS_NOT_ALLOWED, method, decoratorMethod);
-                }
-            }
-        }
-    }
-
-    protected boolean isInterceptor() {
-        return (bean instanceof Interceptor<?>) || type.isAnnotationPresent(javax.interceptor.Interceptor.class);
-    }
-
-    protected boolean isDecorator() {
-        return (bean instanceof Decorator<?>) || type.isAnnotationPresent(javax.decorator.Decorator.class);
-    }
-
-    protected boolean isInterceptionCandidate() {
-        return !isInterceptor() && !isDecorator();
     }
 
     public T produce(CreationalContext<T> ctx) {
@@ -182,9 +141,6 @@ public abstract class AbstractInjectionTarget<T> extends AbstractProducer<T> imp
     }
 
     protected void initializeAfterBeanDiscovery(EnhancedAnnotatedType<T> annotatedType) {
-        if (isInterceptionCandidate() && !beanManager.getInterceptorModelRegistry().containsKey(annotatedType.getJavaClass())) {
-            new InterceptionModelInitializer<T>(beanManager, annotatedType, getBean()).init();
-        }
     }
 
     /**
@@ -193,18 +149,18 @@ public abstract class AbstractInjectionTarget<T> extends AbstractProducer<T> imp
      * {@link #initInstantiator(EnhancedAnnotatedType, Bean, BeanManagerImpl, Set)} method is supposed to register all these
      * injection points within the injectionPoints set passed in as a parameter.
      */
-    protected abstract Instantiator<T> initInstantiator(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager, Set<InjectionPoint> injectionPoints);
+    protected Instantiator<T> initInstantiator(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager, Set<InjectionPoint> injectionPoints) {
+        DefaultInstantiator<T> instantiator = new DefaultInstantiator<T>(type, bean, beanManager);
+        injectionPoints.addAll(instantiator.getConstructor().getParameterInjectionPoints());
+        return instantiator;
+    }
 
     protected Injector<T> initInjector(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager) {
         return new DefaultInjector<T>(type, bean, beanManager);
     }
 
     protected LifecycleCallbackInvoker<T> initInvoker(EnhancedAnnotatedType<T> type) {
-        if (isInterceptor()) {
-            return NoopLifecycleCallbackInvoker.getInstance();
-        } else {
-            return new DefaultLifecycleCallbackInvoker<T>(type);
-        }
+        return new DefaultLifecycleCallbackInvoker<T>(type);
     }
 
     @Override

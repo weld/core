@@ -48,7 +48,7 @@ import org.jboss.weld.util.Decorators;
  *
  * @param <T>
  */
-public class DecoratorInjectionTarget<T> extends DefaultInjectionTarget<T> {
+public class DecoratorInjectionTarget<T> extends BeanInjectionTarget<T> {
 
     private final WeldInjectionPoint<?, ?> delegateInjectionPoint;
 

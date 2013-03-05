@@ -37,7 +37,7 @@ import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.ManagedBean;
 import org.jboss.weld.bean.NewManagedBean;
 import org.jboss.weld.injection.MethodInjectionPoint;
-import org.jboss.weld.injection.producer.AbstractInjectionTarget;
+import org.jboss.weld.injection.producer.BasicInjectionTarget;
 import org.jboss.weld.injection.producer.DefaultInstantiator;
 import org.jboss.weld.injection.producer.Instantiator;
 import org.jboss.weld.literal.NewLiteral;
@@ -102,8 +102,8 @@ public class NewSimpleBeanTest {
     private List<Set<MethodInjectionPoint<?, ?>>> getInitializerMethods(Bean<?> bean) {
         if (bean instanceof AbstractClassBean<?>) {
             InjectionTarget<?> injectionTarget = Reflections.<AbstractClassBean<?>>cast(bean).getProducer();
-            if (injectionTarget instanceof AbstractInjectionTarget<?>) {
-                return Reflections.<AbstractInjectionTarget<?>>cast(injectionTarget).getInjector().getInitializerMethods();
+            if (injectionTarget instanceof BasicInjectionTarget<?>) {
+                return Reflections.<BasicInjectionTarget<?>>cast(injectionTarget).getInjector().getInitializerMethods();
             }
         }
         throw new IllegalArgumentException(bean.toString());
@@ -111,8 +111,8 @@ public class NewSimpleBeanTest {
 
     private AnnotatedConstructor<?> getConstructor(AbstractClassBean<?> bean) {
         InjectionTarget<?> target = bean.getProducer();
-        if (target instanceof AbstractInjectionTarget<?>) {
-            AbstractInjectionTarget<?> weldTarget = (AbstractInjectionTarget<?>) target;
+        if (target instanceof BasicInjectionTarget<?>) {
+            BasicInjectionTarget<?> weldTarget = (BasicInjectionTarget<?>) target;
             Instantiator<?> instantiator = weldTarget.getInstantiator();
             if (instantiator instanceof DefaultInstantiator<?>) {
                 return Reflections.<DefaultInstantiator<?>>cast(instantiator).getConstructor().getAnnotated();

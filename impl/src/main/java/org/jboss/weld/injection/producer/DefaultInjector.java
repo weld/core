@@ -48,7 +48,7 @@ public class DefaultInjector<T> implements Injector<T> {
     private final List<Set<FieldInjectionPoint<?, ?>>> injectableFields;
     private final List<Set<MethodInjectionPoint<?, ?>>> initializerMethods;
 
-    protected DefaultInjector(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager) {
+    public DefaultInjector(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager) {
         this.injectableFields = InjectionPointFactory.instance().getFieldInjectionPoints(bean, type, beanManager);
         this.initializerMethods = BeanMethods.getInitializerMethods(bean, type, beanManager);
     }

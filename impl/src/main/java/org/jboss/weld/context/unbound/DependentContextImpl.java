@@ -38,7 +38,7 @@ import org.jboss.weld.context.SerializableContextualInstanceImpl;
 import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.context.api.ContextualInstance;
 import org.jboss.weld.exceptions.UnsupportedOperationException;
-import org.jboss.weld.injection.producer.AbstractInjectionTarget;
+import org.jboss.weld.injection.producer.BasicInjectionTarget;
 import org.jboss.weld.injection.producer.AbstractMemberProducer;
 import org.jboss.weld.serialization.spi.ContextualStore;
 
@@ -81,8 +81,8 @@ public class DependentContextImpl implements DependentContext {
         if (creationalContext.getDependentInstances().isEmpty()) {
             if (contextual instanceof ManagedBean<?> && ! isInterceptorOrDecorator(contextual)) {
                 ManagedBean<?> managedBean = (ManagedBean<?>) contextual;
-                if (managedBean.getProducer() instanceof AbstractInjectionTarget<?>) {
-                    AbstractInjectionTarget<?> injectionTarget = (AbstractInjectionTarget<?>) managedBean.getProducer();
+                if (managedBean.getProducer() instanceof BasicInjectionTarget<?>) {
+                    BasicInjectionTarget<?> injectionTarget = (BasicInjectionTarget<?>) managedBean.getProducer();
                     if (injectionTarget.getLifecycleCallbackInvoker().getPreDestroyMethods().isEmpty() && !injectionTarget.hasInterceptors()) {
                         // there is no @PreDestroy callback to call when destroying this dependent instance
                         // therefore, we do not need to keep the reference
