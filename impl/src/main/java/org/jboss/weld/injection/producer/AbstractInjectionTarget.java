@@ -40,19 +40,16 @@ import javax.enterprise.inject.spi.Interceptor;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.runtime.RuntimeAnnotatedMembers;
+import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.bean.CustomDecoratorWrapper;
 import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.exceptions.WeldException;
-import org.jboss.weld.injection.FieldInjectionPoint;
-import org.jboss.weld.injection.InjectionPointFactory;
-import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.BeanMethods;
-import org.jboss.weld.util.InjectionPoints;
 import org.jboss.weld.util.collections.WeldCollections;
 
 /**
@@ -62,9 +59,7 @@ import org.jboss.weld.util.collections.WeldCollections;
 public abstract class AbstractInjectionTarget<T> extends AbstractProducer<T> implements InjectionTarget<T> {
 
     protected final BeanManagerImpl beanManager;
-    private final AnnotatedType<T> type;
-    private final List<Set<FieldInjectionPoint<?, ?>>> injectableFields;
-    private final List<Set<MethodInjectionPoint<?, ?>>> initializerMethods;
+    private final SlimAnnotatedType<T> type;
     private final List<AnnotatedMethod<? super T>> postConstructMethods;
     private final List<AnnotatedMethod<? super T>> preDestroyMethods;
     private final Set<InjectionPoint> injectionPoints;
@@ -72,6 +67,7 @@ public abstract class AbstractInjectionTarget<T> extends AbstractProducer<T> imp
 
     // Instantiation
     private Instantiator<T> instantiator;
+    private final Injector<T> injector;
 
     public AbstractInjectionTarget(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager) {
         this.beanManager = beanManager;
@@ -79,14 +75,12 @@ public abstract class AbstractInjectionTarget<T> extends AbstractProducer<T> imp
         Set<InjectionPoint> injectionPoints = new HashSet<InjectionPoint>();
 
         this.bean = bean;
-        this.injectableFields = InjectionPointFactory.instance().getFieldInjectionPoints(bean, type, beanManager);
-        injectionPoints.addAll(InjectionPoints.flattenInjectionPoints(this.injectableFields));
-        this.initializerMethods = BeanMethods.getInitializerMethods(bean, type, beanManager);
-        injectionPoints.addAll(InjectionPoints.flattenParameterInjectionPoints(initializerMethods));
         this.postConstructMethods = initPostConstructMethods(type);
         this.preDestroyMethods = initPreDestroyMethods(type);
 
         checkType(type);
+        this.injector = initInjector(type, bean, beanManager);
+        this.injector.registerInjectionPoints(injectionPoints);
         this.instantiator = initInstantiator(type, bean, beanManager, injectionPoints);
         this.injectionPoints = WeldCollections.immutableSet(injectionPoints);
         checkDelegateInjectionPoints();
@@ -161,6 +155,11 @@ public abstract class AbstractInjectionTarget<T> extends AbstractProducer<T> imp
         return instance;
     }
 
+    @Override
+    public void inject(T instance, CreationalContext<T> ctx) {
+        injector.inject(instance, ctx, beanManager, type, this);
+    }
+
     public void postConstruct(T instance) {
         for (AnnotatedMethod<? super T> method : postConstructMethods) {
             if (method != null) {
@@ -201,14 +200,6 @@ public abstract class AbstractInjectionTarget<T> extends AbstractProducer<T> imp
 
     protected BeanManagerImpl getBeanManager() {
         return beanManager;
-    }
-
-    public List<Set<FieldInjectionPoint<?, ?>>> getInjectableFields() {
-        return injectableFields;
-    }
-
-    public List<Set<MethodInjectionPoint<?, ?>>> getInitializerMethods() {
-        return initializerMethods;
     }
 
     public Instantiator<T> getInstantiator() {
@@ -253,9 +244,17 @@ public abstract class AbstractInjectionTarget<T> extends AbstractProducer<T> imp
      */
     protected abstract Instantiator<T> initInstantiator(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager, Set<InjectionPoint> injectionPoints);
 
+    protected Injector<T> initInjector(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager) {
+        return new DefaultInjector<T>(type, bean, beanManager);
+    }
+
     @Override
     public AnnotatedType<T> getAnnotated() {
         return type;
+    }
+
+    public Injector<T> getInjector() {
+        return injector;
     }
 
     @Override

@@ -21,18 +21,15 @@ import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
-import org.jboss.weld.injection.InjectionContextImpl;
 import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.ResourceInjectionPoint;
 import org.jboss.weld.interceptor.util.InterceptionUtils;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.collections.ArraySet;
 
 /**
@@ -61,14 +58,9 @@ public class DefaultInjectionTarget<T> extends AbstractInjectionTarget<T> {
         return instantiator;
     }
 
-    public void inject(final T instance, final CreationalContext<T> ctx) {
-        new InjectionContextImpl<T>(beanManager, this, getType(), instance) {
-            public void proceed() {
-                Beans.injectEEFields(resourceInjectionPoints, instance, ctx);
-                Beans.injectFieldsAndInitializers(instance, ctx, beanManager, getInjectableFields(), getInitializerMethods());
-            }
-
-        }.run();
+    @Override
+    protected Injector<T> initInjector(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager) {
+        return new ResourceInjector<T>(type, bean, beanManager);
     }
 
     public void postConstruct(T instance) {

@@ -31,60 +31,29 @@ import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bean.proxy.CombinedInterceptorAndDecoratorStackMethodHandler;
 import org.jboss.weld.bean.proxy.MethodHandler;
 import org.jboss.weld.bean.proxy.ProxyObject;
-import org.jboss.weld.injection.CurrentInjectionPoint;
-import org.jboss.weld.injection.DynamicInjectionPoint;
-import org.jboss.weld.injection.InjectionContextImpl;
 import org.jboss.weld.injection.producer.AbstractInjectionTarget;
 import org.jboss.weld.injection.producer.DefaultInstantiator;
+import org.jboss.weld.injection.producer.Injector;
 import org.jboss.weld.injection.producer.Instantiator;
+import org.jboss.weld.injection.producer.StatelessSessionBeanInjector;
 import org.jboss.weld.injection.producer.SubclassDecoratorApplyingInstantiator;
 import org.jboss.weld.injection.producer.SubclassedComponentInstantiator;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Types;
+import org.jboss.weld.util.reflection.Reflections;
 
 public class SessionBeanInjectionTarget<T> extends AbstractInjectionTarget<T> {
 
     private final SessionBean<T> bean;
-    private final CurrentInjectionPoint currentInjectionPoint;
 
     public SessionBeanInjectionTarget(EnhancedAnnotatedType<T> type, SessionBean<T> bean, BeanManagerImpl beanManager) {
         super(type, bean, beanManager);
         this.bean = bean;
-        this.currentInjectionPoint = beanManager.getServices().get(CurrentInjectionPoint.class);
     }
 
     @Override
     public SessionBean<T> getBean() {
         return bean;
-    }
-
-    @Override
-    public void inject(final T instance, final CreationalContext<T> ctx) {
-        new InjectionContextImpl<T>(getBeanManager(), this, getType(), instance) {
-
-            public void proceed() {
-                if (isStatelessSessionBean()) {
-                    currentInjectionPoint.push(new DynamicInjectionPoint(beanManager.getServices()));
-                    try {
-                        injectFieldsAndInitializers();
-                    } finally {
-                        currentInjectionPoint.pop();
-                    }
-                } else {
-                    injectFieldsAndInitializers();
-                }
-            }
-
-            private boolean isStatelessSessionBean() {
-                return getBean().getEjbDescriptor().isStateless();
-            }
-
-            private void injectFieldsAndInitializers() {
-                Beans.injectFieldsAndInitializers(instance, ctx, getBeanManager(), getInjectableFields(), getInitializerMethods());
-            }
-
-        }.run();
     }
 
     @Override
@@ -96,6 +65,14 @@ public class SessionBeanInjectionTarget<T> extends AbstractInjectionTarget<T> {
         } else {
             throw new IllegalArgumentException("Cannot create SessionBeanInjectionTarget for " + bean);
         }
+    }
+
+    @Override
+    protected Injector<T> initInjector(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager) {
+        if (Reflections.<SessionBean<T>>cast(bean).getEjbDescriptor().isStateless()) {
+            return new StatelessSessionBeanInjector<T>(type, bean, beanManager);
+        }
+        return super.initInjector(type, bean, beanManager);
     }
 
     @Override

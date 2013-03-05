@@ -103,7 +103,7 @@ public class NewSimpleBeanTest {
         if (bean instanceof AbstractClassBean<?>) {
             InjectionTarget<?> injectionTarget = Reflections.<AbstractClassBean<?>>cast(bean).getProducer();
             if (injectionTarget instanceof AbstractInjectionTarget<?>) {
-                return Reflections.<AbstractInjectionTarget<?>>cast(injectionTarget).getInitializerMethods();
+                return Reflections.<AbstractInjectionTarget<?>>cast(injectionTarget).getInjector().getInitializerMethods();
             }
         }
         throw new IllegalArgumentException(bean.toString());

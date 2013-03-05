@@ -19,10 +19,10 @@ package org.jboss.weld.injection.producer;
 import static org.jboss.weld.logging.Category.BEAN;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.BeanMessage.CIRCULAR_CALL;
+import static org.jboss.weld.logging.messages.BeanMessage.DECLARING_BEAN_MISSING;
 import static org.jboss.weld.logging.messages.BeanMessage.PRODUCER_METHOD_CANNOT_HAVE_A_WILDCARD_RETURN_TYPE;
 import static org.jboss.weld.logging.messages.BeanMessage.PRODUCER_METHOD_WITH_TYPE_VARIABLE_RETURN_TYPE_MUST_BE_DEPENDENT;
 import static org.jboss.weld.logging.messages.BeanMessage.RETURN_TYPE_MUST_BE_CONCRETE;
-import static org.jboss.weld.logging.messages.BeanMessage.DECLARING_BEAN_MISSING;
 
 import java.io.Serializable;
 import java.lang.reflect.Member;
@@ -43,7 +43,6 @@ import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
 
