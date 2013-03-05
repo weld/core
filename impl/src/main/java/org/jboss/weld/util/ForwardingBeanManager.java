@@ -217,7 +217,7 @@ public abstract class ForwardingBeanManager implements BeanManager, Serializable
     }
 
     @Override
-    public <T> Bean<T> createBean(BeanAttributes<T> attributes, Class<?> beanClass, ProducerFactory<T> producerFactory) {
+    public <T, X> Bean<T> createBean(BeanAttributes<T> attributes, Class<X> beanClass, ProducerFactory<X> producerFactory) {
         return delegate().createBean(attributes, beanClass, producerFactory);
     }
 
@@ -261,12 +261,12 @@ public abstract class ForwardingBeanManager implements BeanManager, Serializable
     }
 
     @Override
-    public <X> ProducerFactory<X> getProducerFactory(AnnotatedField<? super X> field) {
-        return delegate().getProducerFactory(field);
+    public <X> ProducerFactory<X> getProducerFactory(AnnotatedField<? super X> field, Bean<X> declaringBean) {
+        return delegate().getProducerFactory(field, declaringBean);
     }
 
     @Override
-    public <X> ProducerFactory<X> getProducerFactory(AnnotatedMethod<? super X> method) {
-        return delegate().getProducerFactory(method);
+    public <X> ProducerFactory<X> getProducerFactory(AnnotatedMethod<? super X> method, Bean<X> declaringBean) {
+        return delegate().getProducerFactory(method, declaringBean);
     }
 }

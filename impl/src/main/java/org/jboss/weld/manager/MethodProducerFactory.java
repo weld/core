@@ -42,13 +42,13 @@ public class MethodProducerFactory<X> extends AbstractProducerFactory<X> {
     }
 
     @Override
-    public Producer<?> createProducer(Bean<X> bean) {
+    public <T> Producer<T> createProducer(Bean<T> bean) {
         if (getDeclaringBean() == null && !method.isStatic()) {
             throw new IllegalArgumentException(NULL_DECLARING_BEAN, method);
         }
         AnnotatedTypeValidator.validateAnnotatedMember(method);
         try {
-            Producer<?> producer = createProducer(getDeclaringBean(), bean, null);
+            Producer<T> producer = createProducer(getDeclaringBean(), bean, null);
             getManager().getServices().get(InjectionTargetService.class).validateProducer(producer);
             return producer;
         } catch (Throwable e) {

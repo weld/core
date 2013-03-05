@@ -86,7 +86,7 @@ public class BeanExtension implements Extension {
             AnnotatedField<? super Zoo> field = zoo.getFields().iterator().next();
             BeanAttributes<Lion> attributes = Reflections.cast(starveOut(manager.createBeanAttributes(field)));
             ProducerFactory<Zoo> factory = getManagerImpl(manager).getProducerFactory(field, zooBean);
-            event.addBean(manager.createBean(attributes, Zoo.class, Reflections.<ProducerFactory<Lion>>cast(factory)));
+            event.addBean(manager.createBean(attributes, Zoo.class, factory));
         }
         // create synthetic producer method
         {
@@ -100,7 +100,7 @@ public class BeanExtension implements Extension {
             assertNotNull(method);
             BeanAttributes<Tiger> attributes = Reflections.cast(starveOut(manager.createBeanAttributes(method)));
             ProducerFactory<Zoo> factory = getManagerImpl(manager).getProducerFactory(method, zooBean);
-            event.addBean(manager.createBean(attributes, Zoo.class, Reflections.<ProducerFactory<Tiger>>cast(factory)));
+            event.addBean(manager.createBean(attributes, Zoo.class, factory));
         }
     }
 

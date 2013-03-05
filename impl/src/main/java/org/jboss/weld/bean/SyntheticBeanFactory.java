@@ -47,7 +47,7 @@ public class SyntheticBeanFactory {
         }
     }
 
-    public static <T> AbstractSyntheticBean<T> create(BeanAttributes<T> attributes, Class<?> beanClass, ProducerFactory<T> factory, BeanManagerImpl manager) {
+    public static <T, X> AbstractSyntheticBean<T> create(BeanAttributes<T> attributes, Class<X> beanClass, ProducerFactory<X> factory, BeanManagerImpl manager) {
         return createProducerBean(attributes, beanClass, factory, manager);
     }
 
@@ -67,8 +67,8 @@ public class SyntheticBeanFactory {
         }
     }
 
-    private static <T> AbstractSyntheticBean<T> createProducerBean(BeanAttributes<T> attributes, Class<?> beanClass, ProducerFactory<T> factory, BeanManagerImpl manager) {
-        return new SyntheticProducerBean<T>(attributes, beanClass, factory, manager);
+    private static <T, X> AbstractSyntheticBean<T> createProducerBean(BeanAttributes<T> attributes, Class<X> beanClass, ProducerFactory<X> factory, BeanManagerImpl manager) {
+        return new SyntheticProducerBean<T, X>(attributes, beanClass, factory, manager);
     }
 
     private static class PassivationCapableSyntheticClassBean<T> extends SyntheticClassBean<T> implements PassivationCapable {

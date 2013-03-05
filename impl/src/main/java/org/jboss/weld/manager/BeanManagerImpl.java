@@ -79,7 +79,6 @@ import javax.enterprise.inject.spi.InterceptionType;
 import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.ObserverMethod;
 import javax.enterprise.inject.spi.PassivationCapable;
-import javax.enterprise.inject.spi.Producer;
 import javax.enterprise.inject.spi.ProducerFactory;
 import javax.enterprise.util.TypeLiteral;
 
@@ -1264,7 +1263,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     @Override
-    public <T> Bean<T> createBean(BeanAttributes<T> attributes, Class<?> beanClass, ProducerFactory<T> producerFactory) {
+    public <T, X> Bean<T> createBean(BeanAttributes<T> attributes, Class<X> beanClass, ProducerFactory<X> producerFactory) {
         return SyntheticBeanFactory.create(attributes, beanClass, producerFactory, this);
     }
 
@@ -1346,19 +1345,11 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     @Override
-    public <X> FieldProducerFactory<X> getProducerFactory(AnnotatedField<? super X> field) {
-        return getProducerFactory(field, null);
-    }
-
     public <X> FieldProducerFactory<X> getProducerFactory(AnnotatedField<? super X> field, Bean<X> declaringBean) {
         return new FieldProducerFactory<X>(field, declaringBean, this);
     }
 
     @Override
-    public <X> MethodProducerFactory<X> getProducerFactory(AnnotatedMethod<? super X> method) {
-        return getProducerFactory(method, null);
-    }
-
     public <X> MethodProducerFactory<X> getProducerFactory(AnnotatedMethod<? super X> method, Bean<X> declaringBean) {
         return new MethodProducerFactory<X>(method, declaringBean, this);
     }

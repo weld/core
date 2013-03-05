@@ -67,11 +67,6 @@ public class AfterTypeDiscoveryImpl extends AbstractAnnotatedTypeRegisteringEven
     }
 
     @Override
-    public void addAnnotatedType(AnnotatedType<?> type) {
-        addAnnotatedType(type, null);
-    }
-
-    // TODO: add @Override when we can
     public void addAnnotatedType(AnnotatedType<?> type, String id) {
         addSyntheticAnnotatedType(type, id);
     }

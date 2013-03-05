@@ -30,13 +30,13 @@ import org.jboss.weld.manager.BeanManagerImpl;
  *
  * @param <T>
  */
-public class SyntheticProducerBean<T> extends AbstractSyntheticBean<T> {
+public class SyntheticProducerBean<T, X> extends AbstractSyntheticBean<T> {
 
     private final Producer<T> producer;
 
-    protected SyntheticProducerBean(BeanAttributes<T> attributes, Class<?> beanClass, ProducerFactory<T> factory, BeanManagerImpl manager) {
+    protected SyntheticProducerBean(BeanAttributes<T> attributes, Class<X> beanClass, ProducerFactory<X> factory, BeanManagerImpl manager) {
         super(attributes, createId(attributes, beanClass), manager, beanClass);
-        this.producer = (Producer<T>) factory.createProducer(this);
+        this.producer = factory.createProducer(this);
     }
 
     @Override
