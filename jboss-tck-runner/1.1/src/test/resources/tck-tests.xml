@@ -59,6 +59,12 @@
                     <exclude name=".*"/>
                 </methods>
             </class>
+            <!-- CDI-331 - either the Instance.isAmbiguous() behavior is fixed in the spec or AssertBean must not test this method within assertAvailable -->
+            <class name="org.jboss.cdi.tck.tests.alternative.selection.SelectedAlternative02Test">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
 
             <!-- Issues in Weld (the RI) -->
             <!-- WELD-430 -->
@@ -146,6 +152,17 @@
             <class name="org.jboss.cdi.tck.tests.event.observer.ObserverNotificationTest">
                 <methods>
                     <exclude name="testObserverMethodNotInvokedIfNoActiveContext"/>
+                </methods>
+            </class>
+            <!-- WELD-1349 -->
+            <class name="org.jboss.cdi.tck.tests.alternative.selection.SelectedAlternative01Test">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
+            <class name="org.jboss.cdi.tck.tests.alternative.selection.resource.ResourceAlternative04Test">
+                <methods>
+                    <exclude name=".*"/>
                 </methods>
             </class>
 
