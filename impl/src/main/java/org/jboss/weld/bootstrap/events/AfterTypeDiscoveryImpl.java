@@ -26,6 +26,7 @@ import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Extension;
 
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
+import org.jboss.weld.annotated.slim.SlimAnnotatedTypeStore;
 import org.jboss.weld.bootstrap.BeanDeployment;
 import org.jboss.weld.bootstrap.ContextHolder;
 import org.jboss.weld.bootstrap.enablement.GlobalEnablementBuilder;
@@ -43,12 +44,14 @@ public class AfterTypeDiscoveryImpl extends AbstractAnnotatedTypeRegisteringEven
     private final GlobalEnablementBuilder builder;
     private final ContainerLifecycleEvents events;
     private final ClassTransformer transformer;
+    private final SlimAnnotatedTypeStore store;
 
     protected AfterTypeDiscoveryImpl(BeanManagerImpl beanManager, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, Deployment deployment, Collection<ContextHolder<? extends Context>> contexts) {
         super(beanManager, AfterTypeDiscovery.class, beanDeployments, deployment, contexts);
         this.builder = beanManager.getServices().get(GlobalEnablementBuilder.class);
         this.events = beanManager.getServices().get(ContainerLifecycleEvents.class);
         this.transformer = beanManager.getServices().get(ClassTransformer.class);
+        this.store = beanManager.getServices().get(SlimAnnotatedTypeStore.class);
     }
 
     @Override
@@ -79,10 +82,13 @@ public class AfterTypeDiscoveryImpl extends AbstractAnnotatedTypeRegisteringEven
         ProcessAnnotatedTypeImpl<?> event = events.fireProcessAnnotatedType(getBeanManager(), annotatedType, extension);
         if (event == null) {
             deployment.getBeanDeployer().getEnvironment().addSyntheticAnnotatedType(annotatedType, extension);
+            store.put(annotatedType);
         } else  if (event.isVeto()) {
             return;
         } else {
-            deployment.getBeanDeployer().getEnvironment().addSyntheticAnnotatedType(event.getResultingAnnotatedType(), extension);
+            annotatedType = event.getResultingAnnotatedType();
+            deployment.getBeanDeployer().getEnvironment().addSyntheticAnnotatedType(annotatedType, extension);
+            store.put(annotatedType);
         }
     }
 }

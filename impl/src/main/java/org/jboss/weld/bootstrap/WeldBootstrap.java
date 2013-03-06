@@ -419,12 +419,17 @@ public class WeldBootstrap implements Bootstrap {
                 beanDeployment.createClasses();
             }
 
-            AfterTypeDiscoveryImpl.fire(deploymentManager, deployment, beanDeployments, contexts);
 
             // Re-Read the deployment structure, this will be the physical
             // structure, extensions and any classes added using addAnnotatedType
             // outside the physical BDA
             beanDeployments = deploymentVisitor.visit();
+
+            for (BeanDeployment beanDeployment : beanDeployments.values()) {
+                beanDeployment.createTypes();
+            }
+
+            AfterTypeDiscoveryImpl.fire(deploymentManager, deployment, beanDeployments, contexts);
 
             for (BeanDeployment beanDeployment : beanDeployments.values()) {
                 beanDeployment.createEnabled();

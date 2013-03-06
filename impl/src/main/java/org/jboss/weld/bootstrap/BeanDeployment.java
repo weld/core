@@ -226,10 +226,12 @@ public class BeanDeployment {
         }
     }
 
-    // TODO -- OK?
-    public void createBeans(Environment environment) {
+    public void createTypes() {
         beanDeployer.processAnnotatedTypes();
         beanDeployer.registerAnnotatedTypes();
+    }
+
+    public void createBeans(Environment environment) {
         beanDeployer.addBuiltInBean(new InjectionPointBean(beanManager));
         beanDeployer.addBuiltInBean(new EventBean(beanManager));
         beanDeployer.addBuiltInBean(new InstanceBean(beanManager));
