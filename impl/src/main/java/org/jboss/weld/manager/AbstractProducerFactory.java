@@ -16,8 +16,17 @@
  */
 package org.jboss.weld.manager;
 
+import static org.jboss.weld.logging.messages.BeanManagerMessage.NULL_DECLARING_BEAN;
+
+import javax.enterprise.inject.spi.AnnotatedMember;
 import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.Producer;
 import javax.enterprise.inject.spi.ProducerFactory;
+
+import org.jboss.weld.annotated.AnnotatedTypeValidator;
+import org.jboss.weld.bean.DisposalMethod;
+import org.jboss.weld.exceptions.IllegalArgumentException;
+import org.jboss.weld.injection.producer.InjectionTargetService;
 
 public abstract class AbstractProducerFactory<X> implements ProducerFactory<X> {
 
@@ -35,5 +44,24 @@ public abstract class AbstractProducerFactory<X> implements ProducerFactory<X> {
 
     protected BeanManagerImpl getManager() {
         return manager;
+    }
+
+    protected abstract AnnotatedMember<X> getAnnotatedMember();
+
+    public abstract <T> Producer<T> createProducer(final Bean<X> declaringBean, final Bean<T> bean, DisposalMethod<X, T> disposalMethod);
+
+    @Override
+    public <T> Producer<T> createProducer(Bean<T> bean) {
+        if (getDeclaringBean() == null && !getAnnotatedMember().isStatic()) {
+            throw new IllegalArgumentException(NULL_DECLARING_BEAN, getAnnotatedMember());
+        }
+        AnnotatedTypeValidator.validateAnnotatedMember(getAnnotatedMember());
+        try {
+            Producer<T> producer = createProducer(getDeclaringBean(), bean, null);
+            getManager().getServices().get(InjectionTargetService.class).validateProducer(producer);
+            return producer;
+        } catch (Throwable e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 }

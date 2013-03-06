@@ -16,18 +16,15 @@
  */
 package org.jboss.weld.manager;
 
-import static org.jboss.weld.logging.messages.BeanManagerMessage.NULL_DECLARING_BEAN;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import javax.enterprise.inject.spi.AnnotatedField;
+import javax.enterprise.inject.spi.AnnotatedMember;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Producer;
 
-import org.jboss.weld.annotated.AnnotatedTypeValidator;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
 import org.jboss.weld.bean.DisposalMethod;
-import org.jboss.weld.exceptions.IllegalArgumentException;
-import org.jboss.weld.injection.producer.InjectionTargetService;
 import org.jboss.weld.injection.producer.ProducerFieldProducer;
 import org.jboss.weld.resources.MemberTransformer;
 
@@ -40,24 +37,10 @@ public class FieldProducerFactory<X> extends AbstractProducerFactory<X> {
         this.field = cast(field);
     }
 
-    @Override
-    public <T> Producer<T> createProducer(Bean<T> bean) {
-        if (getDeclaringBean() == null && !field.isStatic()) {
-            throw new IllegalArgumentException(NULL_DECLARING_BEAN, field);
-        }
-        AnnotatedTypeValidator.validateAnnotatedMember(field);
-        try {
-            Producer<T> producer = createProducer(getDeclaringBean(), bean, null);
-            getManager().getServices().get(InjectionTargetService.class).validateProducer(producer);
-            return producer;
-        } catch (Throwable e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
     /**
      * Producers returned from this method are not validated. Internal use only.
      */
+    @Override
     public <T> Producer<T> createProducer(final Bean<X> declaringBean, final Bean<T> bean, DisposalMethod<X, T> disposalMethod) {
         EnhancedAnnotatedField<T, X> enhancedField = getManager().getServices().get(MemberTransformer.class).loadEnhancedMember(field, getManager().getId());
         return new ProducerFieldProducer<X, T>(enhancedField, disposalMethod) {
@@ -82,6 +65,11 @@ public class FieldProducerFactory<X> extends AbstractProducerFactory<X> {
                 return bean;
             }
         };
+    }
+
+    @Override
+    protected AnnotatedMember<X> getAnnotatedMember() {
+        return field;
     }
 
 }

@@ -16,19 +16,16 @@
  */
 package org.jboss.weld.manager;
 
-import static org.jboss.weld.logging.messages.BeanManagerMessage.NULL_DECLARING_BEAN;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
+import javax.enterprise.inject.spi.AnnotatedMember;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Producer;
 
-import org.jboss.weld.annotated.AnnotatedTypeValidator;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.bean.DisposalMethod;
 import org.jboss.weld.bean.ProducerMethod;
-import org.jboss.weld.exceptions.IllegalArgumentException;
-import org.jboss.weld.injection.producer.InjectionTargetService;
 import org.jboss.weld.injection.producer.ProducerMethodProducer;
 import org.jboss.weld.resources.MemberTransformer;
 
@@ -39,21 +36,6 @@ public class MethodProducerFactory<X> extends AbstractProducerFactory<X> {
     protected MethodProducerFactory(AnnotatedMethod<? super X> method, Bean<X> declaringBean, BeanManagerImpl manager) {
         super(declaringBean, manager);
         this.method = cast(method);
-    }
-
-    @Override
-    public <T> Producer<T> createProducer(Bean<T> bean) {
-        if (getDeclaringBean() == null && !method.isStatic()) {
-            throw new IllegalArgumentException(NULL_DECLARING_BEAN, method);
-        }
-        AnnotatedTypeValidator.validateAnnotatedMember(method);
-        try {
-            Producer<T> producer = createProducer(getDeclaringBean(), bean, null);
-            getManager().getServices().get(InjectionTargetService.class).validateProducer(producer);
-            return producer;
-        } catch (Throwable e) {
-            throw new IllegalArgumentException(e);
-        }
     }
 
     /**
@@ -83,6 +65,11 @@ public class MethodProducerFactory<X> extends AbstractProducerFactory<X> {
                 return bean;
             }
         };
+    }
+
+    @Override
+    protected AnnotatedMember<X> getAnnotatedMember() {
+        return method;
     }
 
 }
