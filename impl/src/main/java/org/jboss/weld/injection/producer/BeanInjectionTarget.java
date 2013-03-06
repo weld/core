@@ -81,10 +81,14 @@ public class BeanInjectionTarget<T> extends BasicInjectionTarget<T> {
         return !isInterceptor() && !isDecorator();
     }
 
-    public void initializeAfterBeanDiscovery(EnhancedAnnotatedType<T> annotatedType) {
+    protected void initializeInterceptionModel(EnhancedAnnotatedType<T> annotatedType) {
         if (isInterceptionCandidate() && !beanManager.getInterceptorModelRegistry().containsKey(annotatedType.getJavaClass())) {
             new InterceptionModelInitializer<T>(beanManager, annotatedType, getBean()).init();
         }
+    }
+
+    public void initializeAfterBeanDiscovery(EnhancedAnnotatedType<T> annotatedType) {
+        initializeInterceptionModel(annotatedType);
         boolean hasInterceptors = isInterceptionCandidate() && (beanManager.getInterceptorModelRegistry().containsKey(getType().getJavaClass()));
 
         List<Decorator<?>> decorators = null;

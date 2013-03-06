@@ -31,10 +31,13 @@ import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bean.proxy.CombinedInterceptorAndDecoratorStackMethodHandler;
 import org.jboss.weld.bean.proxy.MethodHandler;
 import org.jboss.weld.bean.proxy.ProxyObject;
-import org.jboss.weld.injection.producer.BasicInjectionTarget;
+import org.jboss.weld.injection.producer.BeanInjectionTarget;
+import org.jboss.weld.injection.producer.DefaultInjector;
 import org.jboss.weld.injection.producer.DefaultInstantiator;
 import org.jboss.weld.injection.producer.Injector;
 import org.jboss.weld.injection.producer.Instantiator;
+import org.jboss.weld.injection.producer.LifecycleCallbackInvoker;
+import org.jboss.weld.injection.producer.NoopLifecycleCallbackInvoker;
 import org.jboss.weld.injection.producer.StatelessSessionBeanInjector;
 import org.jboss.weld.injection.producer.SubclassDecoratorApplyingInstantiator;
 import org.jboss.weld.injection.producer.SubclassedComponentInstantiator;
@@ -42,7 +45,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Types;
 import org.jboss.weld.util.reflection.Reflections;
 
-public class SessionBeanInjectionTarget<T> extends BasicInjectionTarget<T> {
+public class SessionBeanInjectionTarget<T> extends BeanInjectionTarget<T> {
 
     private final SessionBean<T> bean;
 
@@ -72,17 +75,16 @@ public class SessionBeanInjectionTarget<T> extends BasicInjectionTarget<T> {
         if (Reflections.<SessionBean<T>>cast(bean).getEjbDescriptor().isStateless()) {
             return new StatelessSessionBeanInjector<T>(type, bean, beanManager);
         }
-        return super.initInjector(type, bean, beanManager);
+        return new DefaultInjector<T>(type, bean, beanManager);
     }
 
     @Override
-    protected void initializeAfterBeanDiscovery(EnhancedAnnotatedType<T> annotatedType) {
-        super.initializeAfterBeanDiscovery(annotatedType);
+    public void initializeAfterBeanDiscovery(EnhancedAnnotatedType<T> annotatedType) {
+        initializeInterceptionModel(annotatedType);
         List<Decorator<?>> decorators = beanManager.resolveDecorators(getBean().getTypes(), getBean().getQualifiers());
         if (!decorators.isEmpty()) {
             Instantiator<T> instantiator = getInstantiator();
-            instantiator = new SubclassedComponentInstantiator<T>(annotatedType, getBean(),
-                    (DefaultInstantiator<T>) instantiator, beanManager);
+            instantiator = new SubclassedComponentInstantiator<T>(annotatedType, getBean(), (DefaultInstantiator<T>) instantiator, beanManager);
             instantiator = new SubclassDecoratorApplyingInstantiator<T>(instantiator, getBean(), decorators);
             setInstantiator(instantiator);
         }
@@ -98,6 +100,11 @@ public class SessionBeanInjectionTarget<T> extends BasicInjectionTarget<T> {
             proxy.setHandler(new SessionBeanViewMethodHandler(bean.getTypes(), (CombinedInterceptorAndDecoratorStackMethodHandler) proxy.getHandler()));
         }
         return result;
+    }
+
+    @Override
+    protected LifecycleCallbackInvoker<T> initInvoker(EnhancedAnnotatedType<T> type) {
+        return NoopLifecycleCallbackInvoker.getInstance();
     }
 
     /**

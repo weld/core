@@ -16,13 +16,14 @@
  */
 package org.jboss.weld.manager;
 
+import static org.jboss.weld.annotated.AnnotatedTypeValidator.validateAnnotatedType;
+
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionTarget;
 import javax.enterprise.inject.spi.InjectionTargetFactory;
 
-import org.jboss.weld.annotated.AnnotatedTypeValidator;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.exceptions.IllegalArgumentException;
@@ -35,7 +36,8 @@ import org.jboss.weld.injection.producer.ejb.SessionBeanInjectionTarget;
 import org.jboss.weld.resources.ClassTransformer;
 
 /**
- * Factory capable of producing {@link InjectionTarget} implementations for a given combination of {@link AnnotatedType} and {@link Bean} objects.
+ * Factory capable of producing {@link InjectionTarget} implementations for a given combination of {@link AnnotatedType} and
+ * {@link Bean} objects.
  *
  * @author Jozef Hartinger
  *
@@ -43,22 +45,22 @@ import org.jboss.weld.resources.ClassTransformer;
  */
 public class InjectionTargetFactoryImpl<T> implements InjectionTargetFactory<T> {
 
-    private final AnnotatedType<T> type;
     private final BeanManagerImpl manager;
+    private final EnhancedAnnotatedType<T> type;
+    private final InjectionTargetService injectionTargetService;
 
     protected InjectionTargetFactoryImpl(AnnotatedType<T> type, BeanManagerImpl manager) {
-        this.type = type;
         this.manager = manager;
+        validateAnnotatedType(type);
+        this.type = manager.getServices().get(ClassTransformer.class).getEnhancedAnnotatedType(type, manager.getId());
+        this.injectionTargetService = manager.getServices().get(InjectionTargetService.class);
     }
 
     @Override
     public InjectionTarget<T> createInjectionTarget(Bean<T> bean) {
-        AnnotatedTypeValidator.validateAnnotatedType(type);
         try {
-            EnhancedAnnotatedType<T> enhancedType = manager.getServices().get(ClassTransformer.class).getEnhancedAnnotatedType(type, manager.getId());
-            InjectionTarget<T> injectionTarget = createInjectionTarget(enhancedType, bean);
-
-            manager.getServices().get(InjectionTargetService.class).validateProducer(injectionTarget);
+            InjectionTarget<T> injectionTarget = createInjectionTarget(type, bean);
+            injectionTargetService.validateProducer(injectionTarget);
             return injectionTarget;
         } catch (Throwable e) {
             throw new IllegalArgumentException(e);
@@ -75,10 +77,20 @@ public class InjectionTargetFactoryImpl<T> implements InjectionTargetFactory<T> 
             injectionTarget = new BeanInjectionTarget<T>(type, bean, manager);
         }
         /*
-         * Every InjectionTarget, regardless whether it's used within Weld's Bean implementation or requested from extension
-         * has to be initialized after beans (interceptors) are deployed.
+         * Every InjectionTarget, regardless whether it's used within Weld's Bean implementation or requested from extension has
+         * to be initialized after beans (interceptors) are deployed.
          */
         manager.getServices().get(InjectionTargetService.class).addInjectionTargetToBeInitialized(new InjectionTargetInitializationContext<T>(type, injectionTarget));
         return injectionTarget;
+    }
+
+    protected InjectionTarget<T> createMessageDrivenInjectionTarget() {
+        try {
+            InjectionTarget<T> injectionTarget = new BasicInjectionTarget<T>(type, null, manager);
+            injectionTargetService.validateProducer(injectionTarget);
+            return injectionTarget;
+        } catch (Throwable e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 }
