@@ -17,20 +17,19 @@
 
 package org.jboss.weld.interceptor.reader;
 
-import static org.jboss.weld.logging.messages.UtilMessage.UNABLE_TO_FIND_CONSTRUCTOR;
-
-import java.lang.reflect.Constructor;
-
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.CreationException;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.InjectionTarget;
+import javax.enterprise.inject.spi.Interceptor;
+import javax.interceptor.Interceptors;
 
-import org.jboss.weld.exceptions.DefinitionException;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.injection.producer.BasicInjectionTarget;
+import org.jboss.weld.injection.producer.LifecycleCallbackInvoker;
+import org.jboss.weld.injection.producer.NoopLifecycleCallbackInvoker;
 import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorFactory;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.util.reflection.SecureReflections;
 
 public class ClassMetadataInterceptorFactory<T> implements InterceptorFactory<T> {
 
@@ -40,16 +39,10 @@ public class ClassMetadataInterceptorFactory<T> implements InterceptorFactory<T>
 
     private final ClassMetadata<T> classMetadata;
     private final InjectionTarget<T> injectionTarget;
-    private final Constructor<T> constructor;
 
     private ClassMetadataInterceptorFactory(ClassMetadata<T> classMetadata, BeanManagerImpl manager) {
         this.classMetadata = classMetadata;
-        this.injectionTarget = manager.createInjectionTarget(manager.createAnnotatedType(classMetadata.getJavaClass()));
-        try {
-            this.constructor = SecureReflections.ensureAccessible(SecureReflections.getDeclaredConstructor(classMetadata.getJavaClass()));
-        } catch (NoSuchMethodException e) {
-            throw new DefinitionException(UNABLE_TO_FIND_CONSTRUCTOR, e);
-        }
+        this.injectionTarget = new InterceptorInjectionTarget<T>(manager.createEnhancedAnnotatedType(classMetadata.getJavaClass()), manager);
     }
 
     @Override
@@ -58,13 +51,9 @@ public class ClassMetadataInterceptorFactory<T> implements InterceptorFactory<T>
     }
 
     public T create(CreationalContext<T> ctx, BeanManager manager) {
-        try {
-            T instance = constructor.newInstance(); // TODO: use special InjectionTarget (that does not apply interceptors) to instantiate the class
-            injectionTarget.inject(instance, ctx);
-            return instance;
-        } catch (Exception e) {
-            throw new CreationException(e);
-        }
+        T instance = injectionTarget.produce(ctx);
+        injectionTarget.inject(instance, ctx);
+        return instance;
     }
 
     @Override
@@ -87,5 +76,25 @@ public class ClassMetadataInterceptorFactory<T> implements InterceptorFactory<T>
     @Override
     public String toString() {
         return "ClassMetadataInterceptorFactory [class=" + classMetadata.getJavaClass().getName() + "]";
+    }
+
+    /**
+     * {@link InjectionTarget} for interceptors which do not have associated {@link Interceptor}. These interceptors are a
+     * result of using {@link Interceptors} annotation directly on the target class.
+     *
+     * @author Jozef Hartinger
+     *
+     * @param <T>
+     */
+    private static class InterceptorInjectionTarget<T> extends BasicInjectionTarget<T> {
+
+        public InterceptorInjectionTarget(EnhancedAnnotatedType<T> type, BeanManagerImpl beanManager) {
+            super(type, null, beanManager);
+        }
+
+        @Override
+        protected LifecycleCallbackInvoker<T> initInvoker(EnhancedAnnotatedType<T> type) {
+            return NoopLifecycleCallbackInvoker.getInstance();
+        }
     }
 }
