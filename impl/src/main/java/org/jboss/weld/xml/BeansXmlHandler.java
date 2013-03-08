@@ -13,10 +13,10 @@ import static org.jboss.weld.logging.messages.XmlMessage.XSD_VALIDATION_WARNING;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.jboss.weld.bootstrap.spi.BeanDiscoveryMode;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.ClassAvailableActivation;
 import org.jboss.weld.bootstrap.spi.Filter;
@@ -34,6 +34,8 @@ import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
+
+import com.google.common.collect.ImmutableSet;
 
 /**
  * An implementation of the beans.xml parser written using SAX
@@ -60,8 +62,8 @@ public class BeansXmlHandler extends DefaultHandler {
         private final String localName;
         private final Collection<String> nestedElements;
 
-        public Container(String[] uris, String localName, String... nestedElements) {
-            this.uris = new HashSet<String>(asList(uris));
+        public Container(Set<String> uris, String localName, String... nestedElements) {
+            this.uris = uris;
             this.localName = localName;
             this.nestedElements = asList(nestedElements);
         }
@@ -115,11 +117,15 @@ public class BeansXmlHandler extends DefaultHandler {
     }
 
     public static final String WELD_URI = "http://jboss.org/schema/weld/beans";
-    public static final String[] WELD_URIS = new String[] { WELD_URI };
+    public static final Set<String> WELD_URIS = ImmutableSet.of(WELD_URI);
 
     public static final String JAVAEE_LEGACY_URI = "http://java.sun.com/xml/ns/javaee";
     public static final String JAVAEE_URI = "http://xmlns.jcp.org/xml/ns/javaee";
-    public static final String[] JAVAEE_URIS = new String[] { JAVAEE_URI, JAVAEE_LEGACY_URI };
+    public static final Set<String> JAVAEE_URIS = ImmutableSet.of(JAVAEE_LEGACY_URI, JAVAEE_URI);
+
+    private static final String VERSION_ATTRIBUTE_NAME = "version";
+    private static final String BEAN_DISCOVERY_MODE_ATTRIBUTE_NAME = "bean-discovery-mode";
+    private static final String ROOT_ELEMENT_NAME = "beans";
 
     /*
     * The containers we are parsing
@@ -136,6 +142,8 @@ public class BeansXmlHandler extends DefaultHandler {
     private final List<Metadata<Filter>> includes;
     private final List<Metadata<Filter>> excludes;
     protected final URL file;
+    private BeanDiscoveryMode discoveryMode;
+    private String version;
 
     /*
     * Parser State
@@ -155,6 +163,7 @@ public class BeansXmlHandler extends DefaultHandler {
         this.excludes = new ArrayList<Metadata<Filter>>();
         this.seenContainers = new ArrayList<Container>();
         this.containers = new ArrayList<Container>();
+        this.discoveryMode = BeanDiscoveryMode.ALL; // this is the default value for a beans.xml file
         containers.add(new SpecContainer("interceptors", "class") {
 
             @Override
@@ -256,6 +265,11 @@ public class BeansXmlHandler extends DefaultHandler {
 
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+        if (localName.equals(ROOT_ELEMENT_NAME) && (uri == "" || JAVAEE_URIS.contains(uri))) {
+            processRootElement(attributes);
+            return;
+        }
+
         if (currentContainer == null) {
             Container container = getContainer(uri, localName);
             if (container != null) {
@@ -270,6 +284,17 @@ public class BeansXmlHandler extends DefaultHandler {
             if (currentContainer.getNestedElements().contains(localName)) {
                 buffer = new StringBuilder();
             }
+        }
+    }
+
+    private void processRootElement(Attributes attributes) {
+        String discoveryMode = attributes.getValue(BEAN_DISCOVERY_MODE_ATTRIBUTE_NAME);
+        if (discoveryMode != null) {
+            this.discoveryMode = BeanDiscoveryMode.valueOf(discoveryMode.toUpperCase());
+        }
+        String version = attributes.getValue(VERSION_ATTRIBUTE_NAME);
+        if (version != null) {
+            this.version = version;
         }
     }
 
@@ -312,7 +337,7 @@ public class BeansXmlHandler extends DefaultHandler {
     }
 
     public BeansXml createBeansXml() {
-        return new BeansXmlImpl(alternativesClasses, alternativeStereotypes, decorators, interceptors, new ScanningImpl(includes, excludes), file);
+        return new BeansXmlImpl(alternativesClasses, alternativeStereotypes, decorators, interceptors, new ScanningImpl(includes, excludes), file, discoveryMode, version);
     }
 
     @Override

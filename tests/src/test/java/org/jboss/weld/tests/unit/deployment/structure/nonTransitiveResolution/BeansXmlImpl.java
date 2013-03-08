@@ -1,6 +1,8 @@
 package org.jboss.weld.tests.unit.deployment.structure.nonTransitiveResolution;
 
 import com.google.common.base.Function;
+
+import org.jboss.weld.bootstrap.spi.BeanDiscoveryMode;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.bootstrap.spi.Scanning;
@@ -76,6 +78,16 @@ public class BeansXmlImpl implements BeansXml {
 
     @Override
     public URL getUrl() {
+        return null;
+    }
+
+    @Override
+    public BeanDiscoveryMode getBeanDiscoveryMode() {
+        return BeanDiscoveryMode.ALL;
+    }
+
+    @Override
+    public String getVersion() {
         return null;
     }
 
