@@ -257,6 +257,12 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     private final transient Set<Bean<?>> beanSet = Collections.synchronizedSet(new HashSet<Bean<?>>());
 
     /*
+     * Data structure representing all managers *accessible* from this bean
+     * deployment archive activity
+     */
+    private final transient Set<BeanManagerImpl> managers;
+
+    /*
     * These data structures represent the managers *accessible* from this bean
     * deployment archive activity
     */
@@ -302,7 +308,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                 new CopyOnWriteArraySet<CurrentActivity>(),
                 ModuleEnablement.EMPTY_ENABLEMENT,
                 id,
-                new AtomicInteger());
+                new AtomicInteger(),
+                new HashSet<BeanManagerImpl>());
     }
 
     public static BeanManagerImpl newManager(BeanManagerImpl rootManager, String id, ServiceRegistry services) {
@@ -320,7 +327,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                 new CopyOnWriteArraySet<CurrentActivity>(),
                 ModuleEnablement.EMPTY_ENABLEMENT,
                 id,
-                new AtomicInteger());
+                new AtomicInteger(),
+                rootManager.managers);
     }
 
     /**
@@ -354,7 +362,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                 parentManager.getCurrentActivities(),
                 parentManager.getEnabled(),
                 new StringBuilder().append(parentManager.getChildIds().incrementAndGet()).toString(),
-                parentManager.getChildIds());
+                parentManager.getChildIds(),
+                parentManager.managers);
     }
 
     private BeanManagerImpl(
@@ -371,7 +380,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
             Set<CurrentActivity> currentActivities,
             ModuleEnablement enabled,
             String id,
-            AtomicInteger childIds) {
+            AtomicInteger childIds,
+            Set<BeanManagerImpl> managers) {
         this.services = serviceRegistry;
         this.beans = beans;
         this.transitiveBeans = transitiveBeans;
@@ -386,6 +396,9 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         this.namespaces = namespaces;
         this.id = id;
         this.childIds = new AtomicInteger();
+        this.managers = managers;
+
+        managers.add(this);
 
         // Set up the structure to store accessible managers in
         this.accessibleManagers = new HashSet<BeanManagerImpl>();
@@ -393,8 +406,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         // TODO Currently we build the accessible bean list on the fly, we need to set it in stone once bootstrap is finished...
         Transform<Bean<?>> beanTransform = new BeanTransform(this);
         this.beanResolver = new TypeSafeBeanResolver(this, createDynamicAccessibleIterable(beanTransform));
-        this.decoratorResolver = new TypeSafeDecoratorResolver(this, createDynamicAccessibleIterable(DecoratorTransform.INSTANCE));
-        this.interceptorResolver = new TypeSafeInterceptorResolver(this, createDynamicAccessibleIterable(InterceptorTransform.INSTANCE));
+        this.decoratorResolver = new TypeSafeDecoratorResolver(this, createDynamicGlobalIterable(DecoratorTransform.INSTANCE));
+        this.interceptorResolver = new TypeSafeInterceptorResolver(this, createDynamicGlobalIterable(InterceptorTransform.INSTANCE));
         this.nameBasedResolver = new NameBasedResolver(this, createDynamicAccessibleIterable(beanTransform));
         this.weldELResolver = new WeldELResolver(this);
         this.childActivities = new CopyOnWriteArraySet<BeanManagerImpl>();
@@ -408,6 +421,17 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         this.containerLifecycleEvents = serviceRegistry.get(ContainerLifecycleEvents.class);
     }
 
+    private <T> Iterable<T> createDynamicGlobalIterable(final Transform<T> transform) {
+        return new Iterable<T>() {
+            public Iterator<T> iterator() {
+                Set<Iterable<T>> result = new HashSet<Iterable<T>>();
+                for (BeanManagerImpl manager : managers) {
+                    result.add(transform.transform(manager));
+                }
+                return Iterators.concat(Iterators.transform(result.iterator(), IterableToIteratorFunction.<T>instance()));
+            }
+        };
+    }
 
     private <T> Iterable<T> createDynamicAccessibleIterable(final Transform<T> transform) {
         return new Iterable<T>() {
@@ -1142,6 +1166,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     public void cleanup() {
         services.cleanup();
         this.accessibleManagers.clear();
+        this.managers.clear();
         this.beanResolver.clear();
         this.beans.clear();
         this.childActivities.clear();
