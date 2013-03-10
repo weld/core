@@ -10,7 +10,7 @@
     <parent>
         <groupId>org.jboss.weld</groupId>
         <artifactId>weld-parent</artifactId>
-        <version>21</version>
+        <version>22</version>
     </parent>
 
     <prerequisites>
@@ -40,7 +40,6 @@
         <cdi.api.version>1.1-20130305</cdi.api.version>
         <cdi.tck-1-0.version>1.0.4.SP3</cdi.tck-1-0.version>
         <cdi.tck-1-1.version>1.1.0-SNAPSHOT</cdi.tck-1-1.version>
-        <checkstyle.plugin.version>2.9.1</checkstyle.plugin.version>
         <classfilewriter.version>1.0.4.Final</classfilewriter.version>
         <contiperf.version>1.06</contiperf.version>
         <findbugs-maven-plugin.version>2.5.1</findbugs-maven-plugin.version>
@@ -77,7 +76,6 @@
     </properties>
 
     <modules>
-        <module>build-config</module>
         <module>impl</module>
     </modules>
 
@@ -521,34 +519,6 @@
                     <artifactId>selenium-maven-plugin</artifactId>
                     <version>${selenium.maven.plugin.version}</version>
                 </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-checkstyle-plugin</artifactId>
-                    <version>${checkstyle.plugin.version}</version>
-                    <configuration>
-                        <configLocation>weld-checkstyle/checkstyle.xml</configLocation>
-                        <consoleOutput>true</consoleOutput>
-                        <failsOnError>true</failsOnError>
-                        <useFile />
-                    </configuration>
-                    <dependencies>
-                        <dependency>
-                            <groupId>org.jboss.weld</groupId>
-                            <artifactId>weld-build-config</artifactId>
-                            <version>${project.version}</version>
-                        </dependency>
-                    </dependencies>
-                    <executions>
-                        <execution>
-                            <id>check-style</id>
-                            <phase>compile</phase>
-                            <goals>
-                                <goal>checkstyle</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-
                 <!-- So m2e doesn't throw errors for features it doesn't support in the
                     POM -->
                 <plugin>
