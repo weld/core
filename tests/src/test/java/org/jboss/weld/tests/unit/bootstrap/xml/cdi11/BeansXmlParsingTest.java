@@ -19,9 +19,15 @@ package org.jboss.weld.tests.unit.bootstrap.xml.cdi11;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 
+import java.util.Collection;
+
 import org.jboss.weld.bootstrap.WeldBootstrap;
 import org.jboss.weld.bootstrap.spi.BeanDiscoveryMode;
 import org.jboss.weld.bootstrap.spi.BeansXml;
+import org.jboss.weld.bootstrap.spi.Filter;
+import org.jboss.weld.bootstrap.spi.Metadata;
+import org.jboss.weld.metadata.FilterPredicate;
+import org.jboss.weld.resources.DefaultResourceLoader;
 import org.testng.annotations.Test;
 
 public class BeansXmlParsingTest {
@@ -72,5 +78,25 @@ public class BeansXmlParsingTest {
         BeansXml xml = getBeansXml("cdi11-beans5.xml");
         assertEquals(xml.getBeanDiscoveryMode(), BeanDiscoveryMode.ALL);
         assertNull(xml.getVersion());
+    }
+
+    @Test
+    public void testExclusionFilters1() {
+        BeansXml xml = getBeansXml("cdi11-exclude-beans1.xml");
+        Collection<Metadata<Filter>> filters = xml.getScanning().getExcludes();
+        assertEquals(filters.size(), 3);
+        for (Metadata<Filter> filter : filters) {
+            new FilterPredicate(filter, DefaultResourceLoader.INSTANCE);
+        }
+    }
+
+    @Test(expectedExceptions = Exception.class)
+    public void testExclusionFilters2() {
+        BeansXml xml = getBeansXml("cdi11-exclude-beans2.xml");
+        Collection<Metadata<Filter>> filters = xml.getScanning().getExcludes();
+        assertEquals(filters.size(), 1);
+        for (Metadata<Filter> filter : filters) {
+            new FilterPredicate(filter, DefaultResourceLoader.INSTANCE);
+        }
     }
 }

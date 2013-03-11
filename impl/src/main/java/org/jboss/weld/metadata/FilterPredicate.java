@@ -5,6 +5,7 @@ import org.jboss.weld.bootstrap.spi.ClassAvailableActivation;
 import org.jboss.weld.bootstrap.spi.Filter;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.bootstrap.spi.SystemPropertyActivation;
+import org.jboss.weld.bootstrap.spi.WeldFilter;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
 
@@ -22,8 +23,7 @@ import java.util.regex.PatternSyntaxException;
 public class FilterPredicate implements Predicate<String> {
 
     private final boolean active;
-    private final Pattern pattern;
-    private final String name;
+    private final Matcher matcher;
 
     public FilterPredicate(Metadata<Filter> filter, ResourceLoader resourceLoader) {
         boolean active = true;
@@ -36,7 +36,7 @@ public class FilterPredicate implements Predicate<String> {
                 if (className == null) {
                     throw new IllegalStateException("Must specify class name at " + classAvailableActivation);
                 }
-                boolean inverted = isInverted(className);
+                boolean inverted = isInverted(className) || classAvailableActivation.getValue().isInverted();
                 if (inverted) {
                     className = removeInversion(className);
                 }
@@ -75,30 +75,37 @@ public class FilterPredicate implements Predicate<String> {
             }
         }
         this.active = active;
-        if (filter.getValue().getPattern() != null) {
-            this.name = null;
-            try {
-                this.pattern = Pattern.compile(filter.getValue().getPattern());
-            } catch (PatternSyntaxException e) {
-                throw new IllegalStateException("Error parsing pattern at " + filter, e);
+        if (filter.getValue() instanceof WeldFilter) {
+            WeldFilter weldFilter = (WeldFilter) filter.getValue();
+            if (weldFilter.getName() != null && weldFilter.getPattern() != null) {
+                throw new IllegalStateException("Cannot specify both a pattern and a name at " + filter);
             }
-        } else if (filter.getValue().getName() != null) {
-            this.name = filter.getValue().getName();
-            this.pattern = null;
-        } else if (filter.getValue().getPattern() != null && filter.getValue().getName() != null) {
-            throw new IllegalStateException("Cannot specify both a pattern and a name at " + filter);
+            if (weldFilter.getName() == null && weldFilter.getPattern() == null) {
+                throw new IllegalStateException("Cannot specify both a pattern and a name at " + filter);
+            }
+            if (weldFilter.getPattern() != null) {
+                this.matcher = new PatternMatcher(filter, weldFilter.getPattern());
+            } else {
+                this.matcher = new AntSelectorMatcher(weldFilter.getName());
+            }
         } else {
-            throw new IllegalStateException("Must specify one of a pattern and a name at " + filter);
+            if (filter.getValue().getName() == null) {
+                throw new IllegalStateException("Name must be specified at " + filter);
+            }
+            String name = filter.getValue().getName();
+            if (name.endsWith(".**")) {
+                this.matcher = new PrefixMatcher(name.substring(0, name.length() - 3), filter);
+            } else if (name.endsWith(".*")) {
+                this.matcher = new PackageMatcher(name.substring(0, name.length() - 2), filter);
+            } else {
+                this.matcher = new FullyQualifierClassNameMatcher(name, filter);
+            }
         }
     }
 
     public boolean apply(String className) {
         if (active) {
-            if (pattern != null) {
-                return pattern.matcher(className).matches();
-            } else {
-                return Selectors.matchPath(this.name, className);
-            }
+            return matcher.matches(className);
         } else {
             return false;
         }
@@ -143,9 +150,97 @@ public class FilterPredicate implements Predicate<String> {
 
     private static String removeInversion(String string) {
         if (!string.startsWith("!")) {
-            throw new IllegalStateException("Cannot remove inversion from non-inverted string [" + string + "]");
+            return string;
         }
         return string.substring(1);
     }
 
+    private interface Matcher {
+        boolean matches(String input);
+    }
+
+    private static class PatternMatcher implements Matcher {
+        private final Pattern pattern;
+
+        private PatternMatcher(Metadata<Filter> filter, String pattern) {
+            try {
+                this.pattern = Pattern.compile(pattern);
+            } catch (PatternSyntaxException e) {
+                throw new IllegalStateException("Error parsing pattern at " + filter, e);
+            }
+        }
+
+        @Override
+        public boolean matches(String input) {
+            return pattern.matcher(input).matches();
+        }
+    }
+
+    private static class AntSelectorMatcher implements Matcher {
+        private final String name;
+
+        private AntSelectorMatcher(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public boolean matches(String input) {
+            return Selectors.matchPath(this.name, input);
+        }
+    }
+
+    private abstract static class CDI11Matcher implements Matcher {
+        private static final Pattern CDI11_EXCLUDE_PATTERN = Pattern.compile("([\\p{L}_$][\\p{L}\\p{N}_$]*\\.)*[\\p{L}_$][\\p{L}\\p{N}_$]*");
+        protected final String expression;
+
+        private CDI11Matcher(String expression, Metadata<Filter> filter) {
+            this.expression = expression;
+            if (!CDI11_EXCLUDE_PATTERN.matcher(expression).matches()) {
+                throw new IllegalArgumentException("Invalid expression " + filter);
+            }
+        }
+    }
+
+    private static class FullyQualifierClassNameMatcher extends CDI11Matcher {
+
+        private FullyQualifierClassNameMatcher(String fqcn, Metadata<Filter> filter) {
+            super(fqcn, filter);
+        }
+
+        @Override
+        public boolean matches(String input) {
+            return expression.equals(input);
+        }
+    }
+
+    private static class PrefixMatcher extends CDI11Matcher {
+
+        private PrefixMatcher(String prefix, Metadata<Filter> filter) {
+            super(prefix, filter);
+        }
+
+        @Override
+        public boolean matches(String input) {
+            return input != null && input.startsWith(expression);
+        }
+    }
+
+    private static class PackageMatcher extends CDI11Matcher {
+
+        private PackageMatcher(String pkg, Metadata<Filter> filter) {
+            super(pkg, filter);
+        }
+
+        @Override
+        public boolean matches(String input) {
+            if (input == null) {
+                return false;
+            }
+            int lastDot = input.lastIndexOf('.');
+            if (lastDot == -1) {
+                return false;
+            }
+            return expression.equals(input.substring(0, lastDot));
+        }
+    }
 }

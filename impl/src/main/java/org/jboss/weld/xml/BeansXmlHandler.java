@@ -28,6 +28,7 @@ import org.jboss.weld.metadata.ClassAvailableActivationImpl;
 import org.jboss.weld.metadata.FilterImpl;
 import org.jboss.weld.metadata.ScanningImpl;
 import org.jboss.weld.metadata.SystemPropertyActivationImpl;
+import org.jboss.weld.metadata.WeldFilterImpl;
 import org.slf4j.cal10n.LocLogger;
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
@@ -116,16 +117,21 @@ public class BeansXmlHandler extends DefaultHandler {
         }
     }
 
-    public static final String WELD_URI = "http://jboss.org/schema/weld/beans";
-    public static final Set<String> WELD_URIS = ImmutableSet.of(WELD_URI);
 
     public static final String JAVAEE_LEGACY_URI = "http://java.sun.com/xml/ns/javaee";
     public static final String JAVAEE_URI = "http://xmlns.jcp.org/xml/ns/javaee";
     public static final Set<String> JAVAEE_URIS = ImmutableSet.of(JAVAEE_LEGACY_URI, JAVAEE_URI);
 
+    public static final String WELD_URI = "http://jboss.org/schema/weld/beans";
+    public static final Set<String> SCANNING_URI = ImmutableSet.of(WELD_URI, JAVAEE_URI, JAVAEE_LEGACY_URI);
+
     private static final String VERSION_ATTRIBUTE_NAME = "version";
     private static final String BEAN_DISCOVERY_MODE_ATTRIBUTE_NAME = "bean-discovery-mode";
     private static final String ROOT_ELEMENT_NAME = "beans";
+
+    private static final String IF_CLASS_AVAILABLE = "if-class-available";
+    private static final String IF_CLASS_NOT_AVAILABLE = "if-class-not-available";
+    private static final String IF_SYSTEM_PROPERTY = "if-system-property";
 
     /*
     * The containers we are parsing
@@ -208,7 +214,7 @@ public class BeansXmlHandler extends DefaultHandler {
                 throw new DefinitionException(MULTIPLE_ALTERNATIVES, file + "@" + locator.getLineNumber());
             }
         });
-        containers.add(new Container(WELD_URIS, "scan") {
+        containers.add(new Container(SCANNING_URI, "scan") {
 
             String name;
             String pattern;
@@ -222,26 +228,34 @@ public class BeansXmlHandler extends DefaultHandler {
                     pattern = interpolate(trim(attributes.getValue("pattern")));
                     systemPropertyActivations = new ArrayList<Metadata<SystemPropertyActivation>>();
                     classAvailableActivations = new ArrayList<Metadata<ClassAvailableActivation>>();
-                } else if (isInNamespace(uri) && "if-system-property".equals(localName)) {
-                    String systemPropertyName = interpolate(trim(attributes.getValue("name")));
-                    String systemPropertyValue = interpolate(trim(attributes.getValue("value")));
-                    Metadata<SystemPropertyActivation> systemPropertyActivation = new XmlMetadata<SystemPropertyActivation>(qName, new SystemPropertyActivationImpl(systemPropertyName, systemPropertyValue), file, locator.getLineNumber());
-                    systemPropertyActivations.add(systemPropertyActivation);
-                } else if (isInNamespace(uri) && "if-class-available".equals(localName)) {
-                    String className = interpolate(trim(attributes.getValue("name")));
-                    Metadata<ClassAvailableActivation> classAvailableActivation = new XmlMetadata<ClassAvailableActivation>(qName, new ClassAvailableActivationImpl(className), file, locator.getLineNumber());
-                    classAvailableActivations.add(classAvailableActivation);
+                } else if (isInNamespace(uri)) {
+                    if (IF_CLASS_AVAILABLE.equals(localName) || IF_CLASS_NOT_AVAILABLE.equals(localName)) {
+                        String className = interpolate(trim(attributes.getValue("name")));
+                        Metadata<ClassAvailableActivation> classAvailableActivation = new XmlMetadata<ClassAvailableActivation>(qName, new ClassAvailableActivationImpl(className, IF_CLASS_NOT_AVAILABLE.equals(localName)), file, locator.getLineNumber());
+                        classAvailableActivations.add(classAvailableActivation);
+                    } else if (IF_SYSTEM_PROPERTY.equals(localName)) {
+                        String systemPropertyName = interpolate(trim(attributes.getValue("name")));
+                        String systemPropertyValue = interpolate(trim(attributes.getValue("value")));
+                        Metadata<SystemPropertyActivation> systemPropertyActivation = new XmlMetadata<SystemPropertyActivation>(qName, new SystemPropertyActivationImpl(systemPropertyName, systemPropertyValue), file, locator.getLineNumber());
+                        systemPropertyActivations.add(systemPropertyActivation);
+                    }
                 }
             }
 
             @Override
             public void processEndChildElement(String uri, String localName, String qName, String nestedText) {
                 if (isFilterElement(uri, localName)) {
-                    Metadata<Filter> filter = new XmlMetadata<Filter>(qName, new FilterImpl(pattern, name, systemPropertyActivations, classAvailableActivations), file, locator.getLineNumber());
+                    Filter filter = null;
+                    if (WELD_URI.equals(uri)) {
+                        filter = new WeldFilterImpl(name, systemPropertyActivations, classAvailableActivations, pattern);
+                    } else {
+                        filter = new FilterImpl(name, systemPropertyActivations, classAvailableActivations);
+                    }
+                    Metadata<Filter> filterMetadata = new XmlMetadata<Filter>(qName, filter, file, locator.getLineNumber());
                     if ("include".equals(localName)) {
-                        includes.add(filter);
+                        includes.add(filterMetadata);
                     } else if ("exclude".equals(localName)) {
-                        excludes.add(filter);
+                        excludes.add(filterMetadata);
                     }
                     // reset
                     name = null;
