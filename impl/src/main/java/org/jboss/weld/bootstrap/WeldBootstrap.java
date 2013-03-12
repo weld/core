@@ -25,9 +25,12 @@ import static org.jboss.weld.logging.messages.BootstrapMessage.JTA_UNAVAILABLE;
 import static org.jboss.weld.logging.messages.BootstrapMessage.MANAGER_NOT_INITIALIZED;
 import static org.jboss.weld.logging.messages.BootstrapMessage.UNSPECIFIED_REQUIRED_SERVICE;
 import static org.jboss.weld.logging.messages.BootstrapMessage.VALIDATING_BEANS;
+import static org.jboss.weld.util.reflection.Reflections.cast;
 
+import java.lang.annotation.Annotation;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -36,16 +39,26 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.ConversationScoped;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.enterprise.context.spi.Context;
+import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.CDI;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.Interceptor;
+import javax.enterprise.inject.spi.WithAnnotations;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.ContainerState;
 import org.jboss.weld.Weld;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.slim.SlimAnnotatedTypeStore;
 import org.jboss.weld.annotated.slim.SlimAnnotatedTypeStoreImpl;
 import org.jboss.weld.bean.DecoratorImpl;
@@ -56,9 +69,11 @@ import org.jboss.weld.bean.builtin.BeanManagerImplBean;
 import org.jboss.weld.bean.builtin.ContextBean;
 import org.jboss.weld.bean.proxy.util.SimpleProxyServices;
 import org.jboss.weld.bootstrap.api.Bootstrap;
+import org.jboss.weld.bootstrap.api.CDI11Bootstrap;
 import org.jboss.weld.bootstrap.api.Environment;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
+import org.jboss.weld.bootstrap.api.TypeDiscoveryConfiguration;
 import org.jboss.weld.bootstrap.api.helpers.ServiceRegistries;
 import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
 import org.jboss.weld.bootstrap.enablement.GlobalEnablementBuilder;
@@ -140,6 +155,8 @@ import org.jboss.weld.util.reflection.instantiation.LoaderInstantiatorFactory;
 import org.jboss.weld.xml.BeansXmlParser;
 import org.slf4j.cal10n.LocLogger;
 
+import com.google.common.collect.ImmutableSet;
+
 /**
  * Common bootstrapping functionality that is run at application startup and
  * detects and register beans
@@ -147,7 +164,7 @@ import org.slf4j.cal10n.LocLogger;
  * @author Pete Muir
  * @author Ales Justin
  */
-public class WeldBootstrap implements Bootstrap {
+public class WeldBootstrap implements CDI11Bootstrap {
 
     private static final LocLogger log = loggerFactory().getLogger(BOOTSTRAP);
 
@@ -240,9 +257,52 @@ public class WeldBootstrap implements Bootstrap {
     private DeploymentVisitor deploymentVisitor;
     private final BeansXmlParser beansXmlParser;
     private Collection<ContextHolder<? extends Context>> contexts;
+    private final ServiceRegistry initialServices = new SimpleServiceRegistry();
 
     public WeldBootstrap() {
         this.beansXmlParser = new BeansXmlParser();
+    }
+
+    @Override
+    public TypeDiscoveryConfiguration startExtensions(Iterable<Metadata<Extension>> extensions) {
+        synchronized (this) {
+
+            setupInitialServices();
+            ClassTransformer classTransformer = initialServices.get(ClassTransformer.class);
+
+            final Set<Class<? extends Annotation>> requiredAnnotations = new HashSet<Class<? extends Annotation>>();
+            for (Metadata<Extension> extension : extensions) {
+                EnhancedAnnotatedType<Extension> clazz = cast(classTransformer.getEnhancedAnnotatedType(extension.getValue().getClass(), "INITIAL"));
+                for (EnhancedAnnotatedMethod<?, ?> method : clazz.getEnhancedMethodsWithAnnotatedParameters(Observes.class)) {
+                    for (EnhancedAnnotatedParameter<?, ?> parameter : method.getEnhancedParameters(Observes.class)) {
+                        WithAnnotations annotation = parameter.getAnnotation(WithAnnotations.class);
+                        if (annotation != null) {
+                            requiredAnnotations.addAll(Arrays.asList(annotation.value()));
+                        }
+                    }
+                }
+            }
+
+            // TODO: we should fire BeforeBeanDiscovery to allow extensions to register additional scopes
+            final Set<Class<? extends Annotation>> scopes = ImmutableSet.of(Dependent.class, RequestScoped.class, ConversationScoped.class, SessionScoped.class, ApplicationScoped.class);
+
+            return new TypeDiscoveryConfigurationImpl(scopes, requiredAnnotations);
+        }
+    }
+
+    private void setupInitialServices() {
+        if (initialServices.contains(TypeStore.class)) {
+            return;
+        }
+        // instantiate initial services which we need for this phase
+        TypeStore store = new TypeStore();
+        SharedObjectCache cache = new SharedObjectCache();
+        ReflectionCache reflectionCache = ReflectionCacheFactory.newInstance(store);
+        ClassTransformer classTransformer = new ClassTransformer(store, cache, reflectionCache);
+        initialServices.add(TypeStore.class, store);
+        initialServices.add(SharedObjectCache.class, cache);
+        initialServices.add(ReflectionCache.class, reflectionCache);
+        initialServices.add(ClassTransformer.class, classTransformer);
     }
 
     public Bootstrap startContainer(Environment environment, Deployment deployment) {
@@ -250,7 +310,12 @@ public class WeldBootstrap implements Bootstrap {
             if (deployment == null) {
                 throw new IllegalArgumentException(DEPLOYMENT_REQUIRED);
             }
+
             final ServiceRegistry registry = deployment.getServices();
+
+            setupInitialServices(); // we call to make sure legacy integrators which do not call startExtensions() do not make Weld fail
+            registry.addAll(initialServices.entrySet());
+
             if (!registry.contains(ResourceLoader.class)) {
                 registry.add(ResourceLoader.class, DefaultResourceLoader.INSTANCE);
             }
@@ -326,17 +391,12 @@ public class WeldBootstrap implements Bootstrap {
         // Temporary workaround to provide context for building annotated class
         // TODO expose AnnotatedClass on SPI and allow container to provide impl
         // of this via ResourceLoader
-        TypeStore typeStore = new TypeStore();
-        services.add(TypeStore.class, typeStore);
-        SharedObjectCache cache = new SharedObjectCache();
-        services.add(SharedObjectCache.class, cache);
-        ReflectionCache reflectionCache = ReflectionCacheFactory.newInstance(typeStore);
-        services.add(ReflectionCache.class, reflectionCache);
         services.add(SlimAnnotatedTypeStore.class, new SlimAnnotatedTypeStoreImpl());
-        ClassTransformer classTransformer = new ClassTransformer(typeStore, cache, reflectionCache);
-        services.add(ClassTransformer.class, classTransformer);
-        services.add(MemberTransformer.class, new MemberTransformer(classTransformer));
-        services.add(MetaAnnotationStore.class, new MetaAnnotationStore(classTransformer));
+        if (services.get(ClassTransformer.class) == null) {
+            throw new RuntimeException();
+        }
+        services.add(MemberTransformer.class, new MemberTransformer(services.get(ClassTransformer.class)));
+        services.add(MetaAnnotationStore.class, new MetaAnnotationStore(services.get(ClassTransformer.class)));
         services.add(ContextualStore.class, new ContextualStoreImpl());
         services.add(CurrentInjectionPoint.class, new CurrentInjectionPoint());
         services.add(SLSBInvocationInjectionPoint.class, new SLSBInvocationInjectionPoint());

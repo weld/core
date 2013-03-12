@@ -56,6 +56,7 @@ import org.jboss.weld.bootstrap.enablement.GlobalEnablementBuilder;
 import org.jboss.weld.bootstrap.enablement.ModuleEnablement;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.BootstrapConfiguration;
+import org.jboss.weld.bootstrap.spi.CDI11BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Filter;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.ejb.EJBApiAbstraction;
@@ -171,8 +172,9 @@ public class BeanDeployment {
     protected Iterable<String> loadClasses() {
         Function<Metadata<Filter>, Predicate<String>> filterToPredicateFunction = new Function<Metadata<Filter>, Predicate<String>>() {
 
-            ResourceLoader resourceLoader = getBeanManager().getServices().get(ResourceLoader.class);
+            ResourceLoader resourceLoader = beanDeployer.getResourceLoader();
 
+            @Override
             public Predicate<String> apply(Metadata<Filter> from) {
                 return new FilterPredicate(from, resourceLoader);
             }
@@ -229,6 +231,10 @@ public class BeanDeployment {
     public void createTypes() {
         beanDeployer.processAnnotatedTypes();
         beanDeployer.registerAnnotatedTypes();
+        if (getBeanDeploymentArchive() instanceof CDI11BeanDeploymentArchive) {
+            CDI11BeanDeploymentArchive bda = (CDI11BeanDeploymentArchive) getBeanDeploymentArchive();
+            beanDeployer.processAdditionalAnnotatedTypes(bda.getAdditionalTypes()); // TODO: should filters be applied here as well?
+        }
     }
 
     public void createBeans(Environment environment) {

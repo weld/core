@@ -123,6 +123,7 @@ import org.jboss.weld.bean.builtin.AbstractDecorableBuiltInBean;
 import org.jboss.weld.bean.builtin.ee.EEResourceProducerField;
 import org.jboss.weld.bean.interceptor.CdiInterceptorFactory;
 import org.jboss.weld.bootstrap.api.Service;
+import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.exceptions.DefinitionException;
@@ -610,46 +611,57 @@ public class Validator implements Service {
     }
 
     private void validateEnabledInterceptorClasses(BeanManagerImpl beanManager, BeanDeployment deployment) {
-        Set<String> interceptorBeanClasses = new HashSet<String>();
-        for (Interceptor<?> interceptor : beanManager.getAccessibleInterceptors()) {
-            interceptorBeanClasses.add(interceptor.getBeanClass().getName());
-        }
-        for (Metadata<String> interceptorClassName : deployment.getBeanDeploymentArchive().getBeansXml().getEnabledInterceptors()) {
-            if (!interceptorBeanClasses.contains(interceptorClassName.getValue())) {
-                throw new DeploymentException(INTERCEPTOR_NOT_ANNOTATED_OR_REGISTERED, interceptorClassName);
+        BeansXml beansXml = deployment.getBeanDeploymentArchive().getBeansXml();
+        if (beansXml != null && !beansXml.getEnabledInterceptors().isEmpty()) {
+            Set<String> interceptorBeanClasses = new HashSet<String>();
+            for (Interceptor<?> interceptor : beanManager.getAccessibleInterceptors()) {
+                interceptorBeanClasses.add(interceptor.getBeanClass().getName());
+            }
+            for (Metadata<String> interceptorClassName : beansXml.getEnabledInterceptors()) {
+                if (!interceptorBeanClasses.contains(interceptorClassName.getValue())) {
+                    throw new DeploymentException(INTERCEPTOR_NOT_ANNOTATED_OR_REGISTERED, interceptorClassName);
+                }
             }
         }
     }
 
     private void validateEnabledDecoratorClasses(BeanManagerImpl beanManager, BeanDeployment deployment) {
-        Set<String> decoratorBeanClasses = new HashSet<String>();
-        for (Decorator<?> bean : beanManager.getAccessibleDecorators()) {
-            decoratorBeanClasses.add(bean.getBeanClass().getName());
-        }
-        for (Metadata<String> interceptorClassName : deployment.getBeanDeploymentArchive().getBeansXml().getEnabledDecorators()) {
-            if (!decoratorBeanClasses.contains(interceptorClassName.getValue())) {
-                throw new DeploymentException(DECORATOR_CLASS_NOT_BEAN_CLASS_OF_DECORATOR, interceptorClassName, decoratorBeanClasses);
+        BeansXml beansXml = deployment.getBeanDeploymentArchive().getBeansXml();
+        if (beansXml != null && !beansXml.getEnabledDecorators().isEmpty()) {
+            Set<String> decoratorBeanClasses = new HashSet<String>();
+            for (Decorator<?> bean : beanManager.getAccessibleDecorators()) {
+                decoratorBeanClasses.add(bean.getBeanClass().getName());
+            }
+            for (Metadata<String> interceptorClassName : beansXml.getEnabledDecorators()) {
+                if (!decoratorBeanClasses.contains(interceptorClassName.getValue())) {
+                    throw new DeploymentException(DECORATOR_CLASS_NOT_BEAN_CLASS_OF_DECORATOR, interceptorClassName, decoratorBeanClasses);
+                }
             }
         }
     }
 
     private void validateEnabledAlternativeStereotypes(BeanManagerImpl beanManager, BeanDeployment deployment) {
-        // prepare lookup structure
-        Map<String, Class<? extends Annotation>> loadedStereotypes = buildClassNameMap(beanManager.getEnabled().getAlternativeStereotypes());
+        BeansXml beansXml = deployment.getBeanDeploymentArchive().getBeansXml();
+        if (beansXml != null && !beansXml.getEnabledAlternativeStereotypes().isEmpty()) {
+            // prepare lookup structure
 
-        for (Metadata<String> definition : deployment.getBeanDeploymentArchive().getBeansXml().getEnabledAlternativeStereotypes()) {
-            Class<? extends Annotation> stereotype = loadedStereotypes.get(definition.getValue());
-            if (!beanManager.isStereotype(stereotype)) {
-                throw new DeploymentException(ALTERNATIVE_STEREOTYPE_NOT_STEREOTYPE, definition);
-            }
-            if (!isAlternative(beanManager, stereotype)) {
-                throw new DeploymentException(ALTERNATIVE_STEREOTYPE_NOT_ANNOTATED, definition);
+            Map<String, Class<? extends Annotation>> loadedStereotypes = buildClassNameMap(beanManager.getEnabled().getAlternativeStereotypes());
+
+            for (Metadata<String> definition : beansXml.getEnabledAlternativeStereotypes()) {
+                Class<? extends Annotation> stereotype = loadedStereotypes.get(definition.getValue());
+                if (!beanManager.isStereotype(stereotype)) {
+                    throw new DeploymentException(ALTERNATIVE_STEREOTYPE_NOT_STEREOTYPE, definition);
+                }
+                if (!isAlternative(beanManager, stereotype)) {
+                    throw new DeploymentException(ALTERNATIVE_STEREOTYPE_NOT_ANNOTATED, definition);
+                }
             }
         }
     }
 
     private void validateEnabledAlternativeClasses(BeanManagerImpl beanManager, BeanDeployment deployment) {
-        if (beanManager.getEnabled().getAlternativeClasses().size() > 0) {
+        BeansXml beansXml = deployment.getBeanDeploymentArchive().getBeansXml();
+        if (beansXml != null && !beansXml.getEnabledAlternativeClasses().isEmpty()) {
 
             // prepare lookup structure
             Map<String, Class<?>> loadedClasses = buildClassNameMap(beanManager.getEnabled().getAlternativeClasses());
@@ -661,7 +673,7 @@ public class Validator implements Service {
                     beansByClass.put(bean.getBeanClass(), bean);
                 }
             }
-            for (Metadata<String> definition : deployment.getBeanDeploymentArchive().getBeansXml().getEnabledAlternativeClasses()) {
+            for (Metadata<String> definition : beansXml.getEnabledAlternativeClasses()) {
                 Class<?> enabledClass = loadedClasses.get(definition.getValue());
                 if (enabledClass.isAnnotation() || enabledClass.isInterface()) {
                     throw new DeploymentException(ALTERNATIVE_BEAN_CLASS_NOT_CLASS, definition);
@@ -890,6 +902,7 @@ public class Validator implements Service {
         }
     }
 
+    @Override
     public void cleanup() {
     }
 

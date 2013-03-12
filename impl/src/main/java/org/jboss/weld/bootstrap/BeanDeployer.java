@@ -82,7 +82,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
     private transient XLogger xlog = loggerFactory().getXLogger(Category.CLASS_LOADING);
 
     private final ResourceLoader resourceLoader;
-
+    private final SlimAnnotatedTypeStore annotatedTypeStore;
 
     public BeanDeployer(BeanManagerImpl manager, EjbDescriptors ejbDescriptors, ServiceRegistry services) {
         this(manager, ejbDescriptors, services, BeanDeployerEnvironmentFactory.newEnvironment(ejbDescriptors, manager));
@@ -91,32 +91,42 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
     public BeanDeployer(BeanManagerImpl manager, EjbDescriptors ejbDescriptors, ServiceRegistry services, BeanDeployerEnvironment environment) {
         super(manager, services, environment);
         this.resourceLoader = manager.getServices().get(ResourceLoader.class);
+        this.annotatedTypeStore = manager.getServices().get(SlimAnnotatedTypeStore.class);
     }
 
     public BeanDeployer addClass(String className) {
-        Class<?> clazz = null;
-        try {
-            clazz = resourceLoader.classForName(className);
-        } catch (ResourceLoadingException e) {
-            log.info(IGNORING_CLASS_DUE_TO_LOADING_ERROR, className);
-            xlog.catching(DEBUG, e);
-        }
-
-        if (clazz != null && !clazz.isAnnotation() && !Beans.isVetoed(clazz)) {
-            containerLifecycleEvents.preloadProcessAnnotatedType(clazz);
-            SlimAnnotatedType<?> annotatedType = null;
-            try {
-                annotatedType = classTransformer.getBackedAnnotatedType(clazz, getManager().getId());
-            } catch (ResourceLoadingException e) {
-                log.info(IGNORING_CLASS_DUE_TO_LOADING_ERROR, className);
-                xlog.catching(DEBUG, e);
-            }
-            if (annotatedType != null) {
-                getEnvironment().addAnnotatedType(annotatedType);
-                processPriority(annotatedType);
+        Class<?> clazz = loadClass(className);
+        if (clazz != null) {
+            SlimAnnotatedType<?> type = loadAnnotatedType(clazz);
+            if (type != null) {
+                getEnvironment().addAnnotatedType(type);
+                processPriority(type);
             }
         }
         return this;
+    }
+
+    private Class<?> loadClass(String className) {
+        try {
+            return resourceLoader.classForName(className);
+        } catch (ResourceLoadingException e) {
+            log.info(IGNORING_CLASS_DUE_TO_LOADING_ERROR, className);
+            xlog.catching(DEBUG, e);
+            return null;
+        }
+    }
+
+    private <T> SlimAnnotatedType<T> loadAnnotatedType(Class<T> clazz) {
+        if (clazz != null && !clazz.isAnnotation() && !Beans.isVetoed(clazz)) {
+            containerLifecycleEvents.preloadProcessAnnotatedType(clazz);
+            try {
+                return classTransformer.getBackedAnnotatedType(clazz, getManager().getId());
+            } catch (ResourceLoadingException e) {
+                log.info(IGNORING_CLASS_DUE_TO_LOADING_ERROR, clazz.getName());
+                xlog.catching(DEBUG, e);
+            }
+        }
+        return null;
     }
 
     private void processPriority(AnnotatedType<?> type) {
@@ -181,9 +191,24 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
         }
     }
 
+    public void processAdditionalAnnotatedTypes(Iterable<String> classes) {
+        for (String className : classes) {
+            Class<?> clazz = loadClass(className);
+            if (clazz != null) {
+                SlimAnnotatedType<?> type = loadAnnotatedType(clazz);
+                ProcessAnnotatedTypeImpl<?> event = containerLifecycleEvents.fireProcessAnnotatedType(getManager(), type, null);
+                if (event == null) {
+                    annotatedTypeStore.put(type);
+                } else if (!event.isVeto()) {
+                    annotatedTypeStore.put(event.getResultingAnnotatedType());
+                }
+            }
+        }
+    }
+
     public void processEnums() {
         EnumService enumService = getManager().getServices().get(EnumService.class);
-        for (SlimAnnotatedType<?> annotatedType: getEnvironment().getAnnotatedTypes()) {
+        for (SlimAnnotatedType<?> annotatedType : getEnvironment().getAnnotatedTypes()) {
             if (Reflections.isEnum(annotatedType.getJavaClass())) {
                 enumService.addEnumClass(Reflections.<SlimAnnotatedType<Enum<?>>> cast(annotatedType));
             }

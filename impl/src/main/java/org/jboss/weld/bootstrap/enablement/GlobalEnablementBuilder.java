@@ -213,22 +213,32 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
 
         BeansXml beansXml = deployment.getBeanDeploymentArchive().getBeansXml();
 
-        // Interceptors
-        List<Class<?>> localInterceptors = transform(checkForDuplicates(beansXml.getEnabledInterceptors(), INTERCEPTOR_SPECIFIED_TWICE), loader);
-        List<Class<?>> moduleInterceptors = ImmutableList.<Class<?>> builder().addAll(getInterceptorList()).addAll(localInterceptors).build();
+        ImmutableList.Builder<Class<?>> moduleInterceptorsBuilder = ImmutableList.<Class<?>> builder();
+        ImmutableList.Builder<Class<?>> moduleDecoratorsBuilder = ImmutableList.<Class<?>> builder();
 
-        // Decorators
-        List<Class<?>> localDecorators = transform(checkForDuplicates(beansXml.getEnabledDecorators(), DECORATOR_SPECIFIED_TWICE), loader);
-        List<Class<?>> moduleDecorators = ImmutableList.<Class<?>> builder().addAll(getDecoratorList()).addAll(localDecorators).build();
+        Set<Class<?>> alternativeClasses = null;
+        Set<Class<? extends Annotation>> alternativeStereotypes = null;
 
-        // Alternatives
-        Set<Class<?>> alternativeClasses = ImmutableSet.copyOf(transform(checkForDuplicates(beansXml.getEnabledAlternativeClasses(), ALTERNATIVE_CLASS_SPECIFIED_MULTIPLE_TIMES), loader));
-        Set<Class<? extends Annotation>> alternativeStereotypes = cast(ImmutableSet.copyOf(transform(checkForDuplicates(beansXml.getEnabledAlternativeStereotypes(), ALTERNATIVE_STEREOTYPE_SPECIFIED_MULTIPLE_TIMES), loader)));
+        moduleInterceptorsBuilder.addAll(getInterceptorList());
+        moduleDecoratorsBuilder.addAll(getDecoratorList());
+
+        if (beansXml != null) {
+            List<Class<?>> localInterceptors = transform(checkForDuplicates(beansXml.getEnabledInterceptors(), INTERCEPTOR_SPECIFIED_TWICE), loader);
+            moduleInterceptorsBuilder.addAll(localInterceptors);
+
+            List<Class<?>> localDecorators = transform(checkForDuplicates(beansXml.getEnabledDecorators(), DECORATOR_SPECIFIED_TWICE), loader);
+            moduleDecoratorsBuilder.addAll(localDecorators);
+
+            alternativeClasses = ImmutableSet.copyOf(transform(checkForDuplicates(beansXml.getEnabledAlternativeClasses(), ALTERNATIVE_CLASS_SPECIFIED_MULTIPLE_TIMES), loader));
+            alternativeStereotypes = cast(ImmutableSet.copyOf(transform(checkForDuplicates(beansXml.getEnabledAlternativeStereotypes(), ALTERNATIVE_STEREOTYPE_SPECIFIED_MULTIPLE_TIMES), loader)));
+        } else {
+            alternativeClasses = Collections.emptySet();
+            alternativeStereotypes = Collections.emptySet();
+        }
 
         Map<Class<?>, Integer> globalAlternatives = getGlobalAlternativeMap();
 
-
-        return new ModuleEnablement(moduleInterceptors, moduleDecorators, globalAlternatives, alternativeClasses, alternativeStereotypes);
+        return new ModuleEnablement(moduleInterceptorsBuilder.build(), moduleDecoratorsBuilder.build(), globalAlternatives, alternativeClasses, alternativeStereotypes);
     }
 
     private static <T> List<Metadata<T>> checkForDuplicates(List<Metadata<T>> list, ValidatorMessage specifiedTwiceMessage) {
@@ -250,6 +260,7 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
             this.resourceLoader = resourceLoader;
         }
 
+        @Override
         public Class<?> apply(Metadata<String> from) {
             try {
                 return resourceLoader.classForName(from.getValue());
