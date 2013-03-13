@@ -196,11 +196,13 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
             Class<?> clazz = loadClass(className);
             if (clazz != null) {
                 SlimAnnotatedType<?> type = loadAnnotatedType(clazz);
-                ProcessAnnotatedTypeImpl<?> event = containerLifecycleEvents.fireProcessAnnotatedType(getManager(), type, null);
-                if (event == null) {
-                    annotatedTypeStore.put(type);
-                } else if (!event.isVeto()) {
-                    annotatedTypeStore.put(event.getResultingAnnotatedType());
+                if (type != null) {
+                    ProcessAnnotatedTypeImpl<?> event = containerLifecycleEvents.fireProcessAnnotatedType(getManager(), type, null);
+                    if (event == null) {
+                        annotatedTypeStore.put(type);
+                    } else if (!event.isVeto()) {
+                        annotatedTypeStore.put(event.getResultingAnnotatedType());
+                    }
                 }
             }
         }
