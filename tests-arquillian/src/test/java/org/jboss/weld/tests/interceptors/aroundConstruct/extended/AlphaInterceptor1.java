@@ -14,18 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.interceptors.aroundConstruct;
+package org.jboss.weld.tests.interceptors.aroundConstruct.extended;
 
-public class BravoParameter {
+import javax.interceptor.Interceptor;
 
-    public final String value;
-
-    public BravoParameter(String value) {
-        this.value = value;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
+@Interceptor
+@AlphaBinding(1)
+public class AlphaInterceptor1 extends AbstractInterceptor {
 }

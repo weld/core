@@ -14,21 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.interceptors.aroundConstruct;
+package org.jboss.weld.tests.interceptors.aroundConstruct.extended;
 
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import javax.interceptor.AroundConstruct;
+import javax.interceptor.InvocationContext;
 
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
+import org.jboss.weld.test.util.ActionSequence;
 
-import javax.interceptor.InterceptorBinding;
+public class AbstractInterceptor {
 
-@InterceptorBinding
-@Inherited
-@Target({ TYPE })
-@Retention(RUNTIME)
-public @interface BravoBinding {
-
+    @AroundConstruct
+    public void intercept(InvocationContext ctx) {
+        ActionSequence.addAction(getClass().getSimpleName());
+        try {
+            ctx.proceed();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

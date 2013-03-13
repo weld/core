@@ -14,18 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.interceptors.aroundConstruct;
-
-import java.io.Serializable;
+package org.jboss.weld.tests.interceptors.aroundConstruct.extended;
 
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 
-@SuppressWarnings("serial")
-@AlphaBinding
-public class Alpha implements Serializable {
+import org.jboss.weld.test.util.ActionSequence;
+
+@AlphaBinding(1)
+public class BeanWithConstructorLevelAndTypeLevelBinding {
 
     @Inject
-    public Alpha(BeanManager manager) {
+    @BravoBinding
+    public BeanWithConstructorLevelAndTypeLevelBinding(BeanManager manager) {
+        ActionSequence.addAction(BeanWithConstructorLevelAndTypeLevelBinding.class.getSimpleName());
     }
 }

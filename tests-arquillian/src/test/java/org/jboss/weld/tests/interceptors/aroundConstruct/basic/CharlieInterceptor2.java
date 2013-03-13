@@ -14,29 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.interceptors.aroundConstruct;
+package org.jboss.weld.tests.interceptors.aroundConstruct.basic;
 
 import javax.interceptor.AroundConstruct;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 
-import junit.framework.Assert;
-
 @Interceptor
 @CharlieBinding
-public class CharlieInterceptor1 extends AbstractInterceptor {
+public class CharlieInterceptor2 extends AbstractInterceptor {
 
     @AroundConstruct
     public void aroundConstruct(InvocationContext ctx) {
         try {
             ctx.proceed();
-            Assert.fail();
-        } catch (CharlieException expected) {
-            invoked();
-            throw expected;
         } catch (Exception e) {
-            Assert.fail();
+            throw new RuntimeException();
         }
+        invoked();
+        throw new CharlieException();
     }
 
 }

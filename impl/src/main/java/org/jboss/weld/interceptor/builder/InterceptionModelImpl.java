@@ -17,6 +17,7 @@
 
 package org.jboss.weld.interceptor.builder;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,6 +54,9 @@ class InterceptionModelImpl<T, I> implements BuildableInterceptionModel<T, I> {
     }
 
     public List<InterceptorMetadata<I>> getInterceptors(InterceptionType interceptionType, Method method) {
+        if (InterceptionType.AROUND_CONSTRUCT.equals(interceptionType)) {
+            throw new IllegalStateException("Cannot use getInterceptors() for @AroundConstruct interceptor lookup. Use getConstructorInvocationInterceptors() instead.");
+        }
         if (interceptionType.isLifecycleCallback() && method != null) {
             throw new IllegalArgumentException("On a lifecycle callback, the associated method must be null");
         }
@@ -136,6 +140,14 @@ class InterceptionModelImpl<T, I> implements BuildableInterceptionModel<T, I> {
 
     private static MethodReference methodHolder(Method method) {
         return MethodReference.of(method, true);
+    }
+
+    @Override
+    public List<InterceptorMetadata<I>> getConstructorInvocationInterceptors() {
+        if (globalInterceptors.containsKey(InterceptionType.AROUND_CONSTRUCT)) {
+            return globalInterceptors.get(InterceptionType.AROUND_CONSTRUCT);
+        }
+        return Collections.emptyList();
     }
 
 }

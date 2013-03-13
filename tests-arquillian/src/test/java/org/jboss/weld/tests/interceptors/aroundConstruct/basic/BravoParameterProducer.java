@@ -14,28 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.interceptors.aroundConstruct;
+package org.jboss.weld.tests.interceptors.aroundConstruct.basic;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import javax.enterprise.inject.Produces;
 
-@BravoBinding
-@ApplicationScoped
-public class Bravo {
+public class BravoParameterProducer {
 
-    private final BravoParameter parameter;
-
-    public Bravo() { // needed for the bean to be proxyable
-        this.parameter = null;
+    @Produces
+    public BravoParameter produceParameter1() {
+        return new BravoParameter("parameter1");
     }
-
-    @Inject
-    public Bravo(BravoParameter parameter) {
-        this.parameter = parameter;
-    }
-
-    public BravoParameter getParameter() {
-        return parameter;
-    }
-
 }

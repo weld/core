@@ -14,21 +14,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.interceptors.aroundConstruct;
+package org.jboss.weld.tests.interceptors.aroundConstruct.basic;
 
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
+@BravoBinding
+@ApplicationScoped
+public class Bravo {
 
-import javax.interceptor.InterceptorBinding;
+    private final BravoParameter parameter;
 
-@InterceptorBinding
-@Inherited
-@Target({ TYPE })
-@Retention(RUNTIME)
-public @interface CharlieBinding {
+    public Bravo() { // needed for the bean to be proxyable
+        this.parameter = null;
+    }
+
+    @Inject
+    public Bravo(BravoParameter parameter) {
+        this.parameter = parameter;
+    }
+
+    public BravoParameter getParameter() {
+        return parameter;
+    }
 
 }

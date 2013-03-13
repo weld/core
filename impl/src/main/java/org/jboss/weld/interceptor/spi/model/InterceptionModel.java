@@ -17,9 +17,12 @@
 
 package org.jboss.weld.interceptor.spi.model;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Set;
+
+import javax.interceptor.AroundConstruct;
 
 import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
 
@@ -33,7 +36,7 @@ import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
 public interface InterceptionModel<T, I> {
 
     /**
-     * Returns the interceptors applicable for the given interception type and method
+     * Returns the interceptors applicable for the given interception type and method. For resolving {@link AroundConstruct} interceptors use {@link #getConstructorInvocationInterceptors(Constructor)}.
      *
      * @param interceptionType
      * @param method           - null if the interception type is lifecycle
@@ -42,6 +45,11 @@ public interface InterceptionModel<T, I> {
      *                                  but method is null, as well as if interceptionType is callback and method is not null
      */
     List<InterceptorMetadata<I>> getInterceptors(InterceptionType interceptionType, Method method);
+
+    /**
+     * Returns {@link AroundConstruct} interceptors applicable for the given constructor.
+     */
+    List<InterceptorMetadata<I>> getConstructorInvocationInterceptors();
 
     /**
      * Returns all interceptor classes that are applicable to the given intercepted entity

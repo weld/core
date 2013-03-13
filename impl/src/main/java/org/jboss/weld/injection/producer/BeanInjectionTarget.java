@@ -82,8 +82,9 @@ public class BeanInjectionTarget<T> extends BasicInjectionTarget<T> {
     }
 
     protected void initializeInterceptionModel(EnhancedAnnotatedType<T> annotatedType) {
+        DefaultInstantiator<T> instantiator = (DefaultInstantiator<T>) getInstantiator();
         if (isInterceptionCandidate() && !beanManager.getInterceptorModelRegistry().containsKey(annotatedType.getJavaClass())) {
-            new InterceptionModelInitializer<T>(beanManager, annotatedType, getBean()).init();
+            new InterceptionModelInitializer<T>(beanManager, annotatedType, instantiator.getConstructor().getAnnotated(), getBean()).init();
         }
     }
 

@@ -82,7 +82,7 @@ public class InterceptorApplyingInstantiator<T> implements Instantiator<T> {
         AroundConstructCallback<T> callback = null;
 
         if (InterceptionTypeRegistry.isSupported(InterceptionType.AROUND_CONSTRUCT)) {
-            List<? extends InterceptorMetadata<?>> interceptors = interceptionModel.getInterceptors(InterceptionType.AROUND_CONSTRUCT, null);
+            List<? extends InterceptorMetadata<?>> interceptors = interceptionModel.getConstructorInvocationInterceptors();
             if (!interceptors.isEmpty()) {
 
                 // build interceptor invocations

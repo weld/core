@@ -14,9 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.interceptors.aroundConstruct;
+package org.jboss.weld.tests.interceptors.aroundConstruct.extended;
 
-@CharlieBinding
-public class Charlie {
+import javax.enterprise.inject.spi.BeanManager;
+import javax.inject.Inject;
 
+import org.jboss.weld.test.util.ActionSequence;
+
+@AlphaBinding(1)
+public class BeanOverridingTypeLevelBinding {
+
+    @Inject
+    @AlphaBinding(2)
+    public BeanOverridingTypeLevelBinding(BeanManager manager) {
+        ActionSequence.addAction(BeanOverridingTypeLevelBinding.class.getSimpleName());
+    }
 }

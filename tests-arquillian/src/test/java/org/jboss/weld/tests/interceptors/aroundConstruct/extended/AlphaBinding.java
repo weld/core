@@ -14,9 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.interceptors.aroundConstruct;
+package org.jboss.weld.tests.interceptors.aroundConstruct.extended;
 
-@SuppressWarnings("serial")
-public class CharlieException extends RuntimeException {
+import static java.lang.annotation.ElementType.CONSTRUCTOR;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import javax.interceptor.InterceptorBinding;
+
+@InterceptorBinding
+@Inherited
+@Target({ TYPE, METHOD, CONSTRUCTOR })
+@Retention(RUNTIME)
+public @interface AlphaBinding {
+
+    int value();
 }

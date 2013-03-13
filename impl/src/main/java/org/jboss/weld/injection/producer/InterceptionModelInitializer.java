@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.enterprise.inject.spi.AnnotatedConstructor;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InterceptionType;
@@ -75,12 +76,13 @@ public class InterceptionModelInitializer<T> {
     }
 
     public static <T> InterceptionModelInitializer<T> of(BeanManagerImpl manager, EnhancedAnnotatedType<T> annotatedType, Bean<?> bean) {
-        return new InterceptionModelInitializer<T>(manager, annotatedType, bean);
+        return new InterceptionModelInitializer<T>(manager, annotatedType, Beans.getBeanConstructor(annotatedType), bean);
     }
 
     private final BeanManagerImpl manager;
     private final EnhancedAnnotatedType<T> annotatedType;
     private final Set<Class<? extends Annotation>> stereotypes;
+    private final AnnotatedConstructor<T> constructor;
 
     private final InterceptorsApiAbstraction interceptorsApi;
     private final EJBApiAbstraction ejbApi;
@@ -90,7 +92,8 @@ public class InterceptionModelInitializer<T> {
     private final InterceptionModelBuilder<ClassMetadata<?>,?> builder;
     private boolean hasSerializationOrInvocationInterceptorMethods;
 
-    public InterceptionModelInitializer(BeanManagerImpl manager, EnhancedAnnotatedType<T> annotatedType, Bean<?> bean) {
+    public InterceptionModelInitializer(BeanManagerImpl manager, EnhancedAnnotatedType<T> annotatedType, AnnotatedConstructor<T> constructor, Bean<?> bean) {
+        this.constructor = constructor;
         this.manager = manager;
         this.annotatedType = annotatedType;
         this.builder = InterceptionModelBuilder.<ClassMetadata<?>>newBuilderFor(getClassMetadata());
@@ -140,12 +143,17 @@ public class InterceptionModelInitializer<T> {
     private void initCdiInterceptors() {
         Map<Class<? extends Annotation>, Annotation> classBindingAnnotations = getClassInterceptorBindings();
         initCdiLifecycleInterceptors(classBindingAnnotations);
+        initCdiConstructorInterceptors(classBindingAnnotations);
         initCdiBusinessMethodInterceptors(classBindingAnnotations);
     }
 
     private Map<Class<? extends Annotation>, Annotation> getClassInterceptorBindings() {
         return mergeBeanInterceptorBindings(manager, annotatedType, stereotypes);
     }
+
+    /*
+     * CDI lifecycle interceptors
+     */
 
     private void initCdiLifecycleInterceptors(Map<Class<? extends Annotation>, Annotation> classBindingAnnotations) {
         if (classBindingAnnotations.size() == 0) {
@@ -155,7 +163,6 @@ public class InterceptionModelInitializer<T> {
         initLifeCycleInterceptor(InterceptionType.PRE_DESTROY, classBindingAnnotations);
         initLifeCycleInterceptor(InterceptionType.PRE_PASSIVATE, classBindingAnnotations);
         initLifeCycleInterceptor(InterceptionType.POST_ACTIVATE, classBindingAnnotations);
-        initLifeCycleInterceptor(InterceptionType.AROUND_CONSTRUCT, classBindingAnnotations);
     }
 
     private void initLifeCycleInterceptor(InterceptionType interceptionType, Map<Class<? extends Annotation>, Annotation> classBindingAnnotations) {
@@ -165,15 +172,14 @@ public class InterceptionModelInitializer<T> {
         }
     }
 
+    /*
+     * CDI business method interceptors
+     */
+
     private void initCdiBusinessMethodInterceptors(Map<Class<? extends Annotation>, Annotation> classBindingAnnotations) {
         for (AnnotatedMethod<?> method : businessMethods) {
-            initCdiBusinessMethodInterceptor(method, getMethodBindingAnnotations(classBindingAnnotations, method));
+            initCdiBusinessMethodInterceptor(method, getMemberBindingAnnotations(classBindingAnnotations, method.getAnnotations()));
         }
-    }
-
-    private Collection<Annotation> getMethodBindingAnnotations(Map<Class<? extends Annotation>, Annotation> classBindingAnnotations, AnnotatedMethod<?> method) {
-        Set<Annotation> methodBindingAnnotations = flattenInterceptorBindings(manager, filterInterceptorBindings(manager, method.getAnnotations()), true, true);
-        return mergeMethodInterceptorBindings(classBindingAnnotations, methodBindingAnnotations).values();
     }
 
     private void initCdiBusinessMethodInterceptor(AnnotatedMethod<?> method, Collection<Annotation> methodBindingAnnotations) {
@@ -195,19 +201,59 @@ public class InterceptionModelInitializer<T> {
         }
     }
 
+    /*
+     * CDI @AroundConstruct interceptors
+     */
+
+    private void initCdiConstructorInterceptors(Map<Class<? extends Annotation>, Annotation> classBindingAnnotations) {
+        Collection<Annotation> constructorBindings = getMemberBindingAnnotations(classBindingAnnotations, constructor.getAnnotations());
+        if (constructorBindings.isEmpty()) {
+            return;
+        }
+        List<Interceptor<?>> constructorBoundInterceptors = manager.resolveInterceptors(InterceptionType.AROUND_CONSTRUCT, constructorBindings);
+        if (!constructorBoundInterceptors.isEmpty()) {
+            builder.intercept(InterceptionType.AROUND_CONSTRUCT).with(toSerializableContextualArray(constructorBoundInterceptors));
+        }
+    }
+
+    private Collection<Annotation> getMemberBindingAnnotations(Map<Class<? extends Annotation>, Annotation> classBindingAnnotations, Set<Annotation> memberAnnotations) {
+        Set<Annotation> methodBindingAnnotations = flattenInterceptorBindings(manager, filterInterceptorBindings(manager, memberAnnotations), true, true);
+        return mergeMethodInterceptorBindings(classBindingAnnotations, methodBindingAnnotations).values();
+    }
+
+    /*
+     * EJB-style interceptors
+     */
+
     private void initEjbInterceptors() {
         initClassDeclaredEjbInterceptors();
+        initConstructorDeclaredEjbInterceptors();
         for (AnnotatedMethod<?> method : businessMethods) {
             initMethodDeclaredEjbInterceptors(method);
         }
     }
 
+    /*
+     * Class-level EJB-style interceptors
+     */
     private void initClassDeclaredEjbInterceptors() {
         Class<?>[] classDeclaredInterceptors = interceptorsApi.extractInterceptorClasses(annotatedType);
 
         if (classDeclaredInterceptors != null) {
             for (Class<?> clazz : classDeclaredInterceptors) {
                 builder.interceptAll().with(manager.getInterceptorMetadataReader().getInterceptorMetadata(clazz));
+            }
+        }
+    }
+
+    /*
+     * Constructor-level EJB-style interceptors
+     */
+    public void initConstructorDeclaredEjbInterceptors() {
+        Class<?>[] classDeclaredInterceptors = interceptorsApi.extractInterceptorClasses(constructor);
+        if (classDeclaredInterceptors != null) {
+            for (Class<?> clazz : classDeclaredInterceptors) {
+                builder.intercept(InterceptionType.AROUND_CONSTRUCT).with(manager.getInterceptorMetadataReader().getInterceptorMetadata(clazz));
             }
         }
     }

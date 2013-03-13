@@ -14,25 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.interceptors.aroundConstruct;
+package org.jboss.weld.tests.interceptors.aroundConstruct.extended;
 
-import javax.interceptor.AroundConstruct;
-import javax.interceptor.Interceptor;
-import javax.interceptor.InvocationContext;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.inject.Inject;
 
-@Interceptor
-@CharlieBinding
-public class CharlieInterceptor2 extends AbstractInterceptor {
+import org.jboss.weld.test.util.ActionSequence;
 
-    @AroundConstruct
-    public void aroundConstruct(InvocationContext ctx) {
-        try {
-            ctx.proceed();
-        } catch (Exception e) {
-            throw new RuntimeException();
-        }
-        invoked();
-        throw new CharlieException();
+@AlphaBinding(1)
+public class BeanWithTypeLevelBinding {
+
+    @Inject
+    public BeanWithTypeLevelBinding(BeanManager manager) {
+        ActionSequence.addAction(BeanWithTypeLevelBinding.class.getSimpleName());
     }
-
 }
