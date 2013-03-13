@@ -30,12 +30,6 @@
                     <exclude name="testObtainingWrappedAnnotatedType" />
                 </methods>
             </class>
-            <!-- CDI-180 -->
-            <class name="org.jboss.cdi.tck.tests.context.request.ejb.EJBRequestContextTest">
-                <methods>
-                    <exclude name="testRequestScopeActiveDuringRemoteCallToEjb" />
-                </methods>
-            </class>
             <!-- CDI-247 -->
             <class name="org.jboss.cdi.tck.tests.definition.bean.custom.CustomBeanImplementationTest">
                 <methods>
@@ -161,6 +155,17 @@
                 </methods>
             </class>
             <class name="org.jboss.cdi.tck.tests.alternative.selection.resource.ResourceAlternative04Test">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
+            <!-- WELD-1342 -->
+            <class name="org.jboss.cdi.tck.tests.deployment.discovery.BeanDiscoveryTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
+            <class name="org.jboss.cdi.tck.tests.deployment.discovery.enterprise.EnterpriseBeanDiscoveryTest">
                 <methods>
                     <exclude name=".*"/>
                 </methods>
