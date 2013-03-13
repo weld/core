@@ -27,6 +27,7 @@ import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
@@ -51,13 +52,16 @@ public class GlobalDecoratorOrderingTest {
     }
 
     public static Archive<?> getWebArchive() {
+        JavaArchive thirdPartyLibrary = ShrinkWrap.create(JavaArchive.class).addClasses(ThirdPartyDecorator.class, ThirdPartyDecoratorExtension.class).addAsServiceProvider(Extension.class, ThirdPartyDecoratorExtension.class);
+
         BeansXml beans = new BeansXml();
         beans.decorators(LegacyDecorator1.class, LegacyDecorator2.class, LegacyDecorator3.class);
         return ShrinkWrap
                 .create(WebArchive.class, "test.war")
                 .addClasses(DecoratedImpl.class, LegacyDecorator1.class, LegacyDecorator2.class, LegacyDecorator3.class,
                         WebApplicationGlobalDecorator.class, GlobalDecoratorOrderingTest.class, DecoratorRegisteringExtension.class)
-                .addAsWebInfResource(beans, "beans.xml").addAsServiceProvider(Extension.class, DecoratorRegisteringExtension.class);
+                .addAsWebInfResource(beans, "beans.xml").addAsServiceProvider(Extension.class, DecoratorRegisteringExtension.class)
+                .addAsLibrary(thirdPartyLibrary);
     }
 
     public static Archive<?> getSharedLibrary() {
@@ -73,6 +77,7 @@ public class GlobalDecoratorOrderingTest {
     @Test
     public void testDecoratorsInWebInfClasses() {
         List<String> expected = new ArrayList<String>();
+        expected.add(ThirdPartyDecorator.class.getSimpleName());
         expected.add(GloballyEnabledDecorator1.class.getSimpleName());
         expected.add(ExtensionEnabledDecorator1.class.getSimpleName());
         expected.add(GloballyEnabledDecorator4.class.getSimpleName());

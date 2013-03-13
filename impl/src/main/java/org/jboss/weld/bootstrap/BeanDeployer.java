@@ -83,6 +83,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
 
     private final ResourceLoader resourceLoader;
     private final SlimAnnotatedTypeStore annotatedTypeStore;
+    private final GlobalEnablementBuilder globalEnablementBuilder;
 
     public BeanDeployer(BeanManagerImpl manager, EjbDescriptors ejbDescriptors, ServiceRegistry services) {
         this(manager, ejbDescriptors, services, BeanDeployerEnvironmentFactory.newEnvironment(ejbDescriptors, manager));
@@ -92,6 +93,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
         super(manager, services, environment);
         this.resourceLoader = manager.getServices().get(ResourceLoader.class);
         this.annotatedTypeStore = manager.getServices().get(SlimAnnotatedTypeStore.class);
+        this.globalEnablementBuilder = manager.getServices().get(GlobalEnablementBuilder.class);
     }
 
     public BeanDeployer addClass(String className) {
@@ -100,7 +102,6 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
             SlimAnnotatedType<?> type = loadAnnotatedType(clazz);
             if (type != null) {
                 getEnvironment().addAnnotatedType(type);
-                processPriority(type);
             }
         }
         return this;
@@ -133,13 +134,12 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
         Priority priority = type.getAnnotation(Priority.class);
         if (priority != null) {
             int value = priority.value();
-            GlobalEnablementBuilder builder = getManager().getServices().get(GlobalEnablementBuilder.class);
             if (type.isAnnotationPresent(Interceptor.class)) {
-                builder.addInterceptor(type.getJavaClass(), value);
+                globalEnablementBuilder.addInterceptor(type.getJavaClass(), value);
             } else if (type.isAnnotationPresent(Decorator.class)) {
-                builder.addDecorator(type.getJavaClass(), value);
+                globalEnablementBuilder.addDecorator(type.getJavaClass(), value);
             } else if (type.isAnnotationPresent(Alternative.class)) {
-                builder.addAlternative(type.getJavaClass(), value);
+                globalEnablementBuilder.addAlternative(type.getJavaClass(), value);
             }
         }
     }
@@ -177,7 +177,10 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
                         classesToBeRemoved.add(annotatedType); // remove the original class
                         classesToBeAdded.add(event.getResultingAnnotatedType());
                     }
+                    processPriority(event.getResultingAnnotatedType());
                 }
+            } else {
+                processPriority(annotatedType);
             }
         }
         getEnvironment().removeAnnotatedTypes(classesToBeRemoved);
