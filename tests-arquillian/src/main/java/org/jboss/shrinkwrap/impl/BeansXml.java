@@ -6,16 +6,44 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class BeansXml implements Asset {
-    private List<Class<?>> alternatives = new ArrayList<Class<?>>();
-    private List<Class<?>> interceptors = new ArrayList<Class<?>>();
-    private List<Class<?>> decorators = new ArrayList<Class<?>>();
-    private List<Class<?>> stereotypes = new ArrayList<Class<?>>();
+
+    public static final BeansXml SUPPRESSOR = new BeansXml(Collections.<Class<?>> emptyList(), Collections.<Class<?>> emptyList(), Collections.<Class<?>> emptyList(), Collections.<Class<?>> emptyList()) {
+        @Override
+        public BeanDiscoveryMode getBeanDiscoveryMode() {
+            return BeanDiscoveryMode.NONE;
+        }
+    };
+
+    public static enum BeanDiscoveryMode {
+
+        NONE("none"), ANNOTATED("annotated"), ALL("all");
+
+        private final String value;
+
+        private BeanDiscoveryMode(String value) {
+            this.value = value;
+        }
+    }
+
+    private final List<Class<?>> alternatives;
+    private final List<Class<?>> interceptors;
+    private final List<Class<?>> decorators;
+    private final List<Class<?>> stereotypes;
+    private BeanDiscoveryMode mode = BeanDiscoveryMode.ALL;
 
     public BeansXml() {
+        this(new ArrayList<Class<?>>(), new ArrayList<Class<?>>(), new ArrayList<Class<?>>(), new ArrayList<Class<?>>());
+    }
 
+    private BeansXml(List<Class<?>> alternatives, List<Class<?>> interceptors, List<Class<?>> decorators, List<Class<?>> stereotypes) {
+        this.alternatives = alternatives;
+        this.interceptors = interceptors;
+        this.decorators = decorators;
+        this.stereotypes = stereotypes;
     }
 
     public BeansXml alternatives(Class<?>... alternatives) {
@@ -38,9 +66,19 @@ public class BeansXml implements Asset {
         return this;
     }
 
+    public BeanDiscoveryMode getBeanDiscoveryMode() {
+        return mode;
+    }
+
+    public void setBeanDiscoveryMode(BeanDiscoveryMode mode) {
+        this.mode = mode;
+    }
+
     public InputStream openStream() {
         StringBuilder xml = new StringBuilder();
-        xml.append("<beans>\n");
+        xml.append("<beans version=\"1.1\" bean-discovery-mode=\"");
+        xml.append(getBeanDiscoveryMode().value);
+        xml.append("\">\n");
         appendAlternatives(alternatives, stereotypes, xml);
         appendSection("interceptors", "class", interceptors, xml);
         appendSection("decorators", "class", decorators, xml);

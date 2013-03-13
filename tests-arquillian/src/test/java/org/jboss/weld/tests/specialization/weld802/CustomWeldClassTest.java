@@ -24,12 +24,14 @@ import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.shrinkwrap.impl.BeansXml;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.spi.Extension;
 import javax.inject.Inject;
 
 import static org.junit.Assert.assertEquals;
@@ -60,10 +62,11 @@ public class CustomWeldClassTest {
      * However, both Foo and Bar classes are registered through the SimpleExtension. Bar specializes Foo.
      */
     public static JavaArchive createJavaArchive() {
-        JavaArchive war = ShrinkWrap.create(JavaArchive.class, "test.jar");
-        war.addClasses(CustomExtension.class, Foo.class, Bar.class);
-        war.addAsManifestResource(new StringAsset("org.jboss.weld.tests.specialization.weld802.CustomExtension"), "services/javax.enterprise.inject.spi.Extension");
-        return war;
+        JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "test.jar");
+        jar.addClasses(CustomExtension.class, Foo.class, Bar.class);
+        jar.addAsServiceProvider(Extension.class, CustomExtension.class);
+        jar.addAsManifestResource(BeansXml.SUPPRESSOR, "beans.xml");
+        return jar;
     }
 
     @Test

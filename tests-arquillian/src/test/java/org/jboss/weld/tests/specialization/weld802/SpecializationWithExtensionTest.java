@@ -23,12 +23,14 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.shrinkwrap.impl.BeansXml;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.spi.Extension;
 import javax.inject.Inject;
 
 import static org.junit.Assert.assertEquals;
@@ -59,10 +61,11 @@ public class SpecializationWithExtensionTest {
      * However, both Foo and Bar classes are registered through the SimpleExtension. Bar specializes Foo.
      */
     public static JavaArchive createJavaArchive() {
-        JavaArchive war = ShrinkWrap.create(JavaArchive.class, "test.jar");
-        war.addClasses(SimpleExtension.class, Foo.class, Bar.class);
-        war.addAsManifestResource("org/jboss/weld/tests/specialization/weld802/SimpleExtension", "services/javax.enterprise.inject.spi.Extension");
-        return war;
+        JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "test.jar");
+        jar.addClasses(SimpleExtension.class, Foo.class, Bar.class);
+        jar.addAsServiceProvider(Extension.class, SimpleExtension.class);
+        jar.addAsManifestResource(BeansXml.SUPPRESSOR, "beans.xml");
+        return jar;
     }
 
     @Test
