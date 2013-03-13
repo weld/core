@@ -27,6 +27,7 @@ import static org.jboss.weld.logging.messages.BootstrapMessage.ENABLED_INTERCEPT
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 import javax.enterprise.context.spi.Context;
 
@@ -55,6 +56,7 @@ import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
 import org.jboss.weld.bootstrap.enablement.GlobalEnablementBuilder;
 import org.jboss.weld.bootstrap.enablement.ModuleEnablement;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
+import org.jboss.weld.bootstrap.spi.BeanDiscoveryMode;
 import org.jboss.weld.bootstrap.spi.BootstrapConfiguration;
 import org.jboss.weld.bootstrap.spi.CDI11BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Filter;
@@ -170,6 +172,10 @@ public class BeanDeployment {
     }
 
     protected Iterable<String> loadClasses() {
+        if (getBeanDeploymentArchive().getBeansXml() != null && getBeanDeploymentArchive().getBeansXml().getBeanDiscoveryMode().equals(BeanDiscoveryMode.NONE)) {
+            // if the integrator for some reason ignored the "none" flag make sure we do not process the archive
+            return Collections.emptySet();
+        }
         Function<Metadata<Filter>, Predicate<String>> filterToPredicateFunction = new Function<Metadata<Filter>, Predicate<String>>() {
 
             ResourceLoader resourceLoader = beanDeployer.getResourceLoader();
