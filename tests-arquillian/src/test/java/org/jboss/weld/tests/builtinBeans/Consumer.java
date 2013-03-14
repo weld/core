@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.builtinBeans;
 
-import junit.framework.Assert;
+import java.io.Serializable;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
@@ -25,11 +25,11 @@ import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 import javax.transaction.UserTransaction;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
-import java.io.Serializable;
+
+import junit.framework.Assert;
 
 @SessionScoped
+@SuppressWarnings("serial")
 public class Consumer implements Serializable {
 
     // Not working incontainer as there is no principal

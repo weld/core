@@ -43,8 +43,6 @@ import org.jboss.weld.bean.builtin.InjectionPointBean;
 import org.jboss.weld.bean.builtin.InstanceBean;
 import org.jboss.weld.bean.builtin.InterceptedBeanMetadataBean;
 import org.jboss.weld.bean.builtin.InterceptorMetadataBean;
-import org.jboss.weld.bean.builtin.ee.DefaultValidatorBean;
-import org.jboss.weld.bean.builtin.ee.DefaultValidatorFactoryBean;
 import org.jboss.weld.bean.builtin.ee.HttpServletRequestBean;
 import org.jboss.weld.bean.builtin.ee.HttpSessionBean;
 import org.jboss.weld.bean.builtin.ee.PrincipalBean;
@@ -83,7 +81,6 @@ import org.jboss.weld.util.JtaApiAbstraction;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.instantiation.DefaultInstantiatorFactory;
 import org.jboss.weld.util.reflection.instantiation.InstantiatorFactory;
-import org.jboss.weld.validation.spi.ValidationServices;
 import org.jboss.weld.ws.WSApiAbstraction;
 import org.slf4j.cal10n.LocLogger;
 
@@ -264,10 +261,6 @@ public class BeanDeployment {
         }
         if (beanManager.getServices().contains(SecurityServices.class)) {
             beanDeployer.addBuiltInBean(new PrincipalBean(beanManager));
-        }
-        if (beanManager.getServices().contains(ValidationServices.class)) {
-            beanDeployer.addBuiltInBean(new DefaultValidatorBean(beanManager));
-            beanDeployer.addBuiltInBean(new DefaultValidatorFactoryBean(beanManager));
         }
         // Register the context beans
         for (ContextHolder<? extends Context> context : contexts) {

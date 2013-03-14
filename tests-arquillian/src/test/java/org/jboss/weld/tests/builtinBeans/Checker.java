@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.tests.builtinBeans;
 
+import java.security.Principal;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
@@ -23,10 +25,6 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
-import javax.validation.ValidationException;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
-import java.security.Principal;
 
 public class Checker {
 
@@ -47,28 +45,6 @@ public class Checker {
             }
         } catch (SystemException e) {
             throw new RuntimeException(e);
-        }
-        return false;
-    }
-
-    public static boolean checkValidator(Validator validator) {
-        try {
-            if (validator != null) {
-                validator.unwrap(String.class);
-            }
-        } catch (ValidationException e) {
-            return true;
-        }
-        return false;
-    }
-
-    public static boolean checkValidatorFactory(ValidatorFactory validatorFactory) {
-        try {
-            if (validatorFactory != null) {
-                validatorFactory.unwrap(String.class);
-            }
-        } catch (ValidationException e) {
-            return true;
         }
         return false;
     }
