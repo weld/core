@@ -51,7 +51,6 @@ import org.jboss.weld.injection.attributes.InferingParameterInjectionPointAttrib
 import org.jboss.weld.injection.attributes.ParameterInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.SpecialParameterInjectionPoint;
 import org.jboss.weld.injection.spi.EjbInjectionServices;
-import org.jboss.weld.injection.spi.InjectionServices;
 import org.jboss.weld.injection.spi.JaxwsInjectionServices;
 import org.jboss.weld.injection.spi.JpaInjectionServices;
 import org.jboss.weld.injection.spi.ResourceInjectionServices;
@@ -223,24 +222,14 @@ public class InjectionPointFactory {
 
         public Set<ResourceInjectionPoint<?, ?>> proceed(Bean<?> bean, EnhancedAnnotatedType<?> type, BeanManagerImpl manager, A api, S specializedInjectionServices) {
             if (api != null) {
-                InjectionServices injectionServices = manager.getServices().get(InjectionServices.class);
-
-                if (injectionServices != null || specializedInjectionServices != null) {
+                if (specializedInjectionServices != null) {
                     Set<FieldInjectionPoint<?, ?>> fieldInjectionPoints = getFieldInjectionPointsWithSpecialAnnotation(bean, type, getMarkerAnnotation(api), manager);
                     if (!fieldInjectionPoints.isEmpty()) {
-                        if (injectionServices != null) {
-                            for (FieldInjectionPoint<?, ?> fieldInjectionPoint : fieldInjectionPoints) {
-                                injectionServices.validateResourceInjectionPoint(fieldInjectionPoint);
-                            }
+                        Set<ResourceInjectionPoint<?, ?>> resourceInjectionPoints = new HashSet<ResourceInjectionPoint<?, ?>>(fieldInjectionPoints.size());
+                        for (FieldInjectionPoint<?, ?> fieldInjectionPoint : fieldInjectionPoints) {
+                            resourceInjectionPoints.add(createResourceInjectionPoint(fieldInjectionPoint, specializedInjectionServices, api));
                         }
-
-                        if (specializedInjectionServices != null) {
-                            Set<ResourceInjectionPoint<?, ?>> resourceInjectionPoints = new HashSet<ResourceInjectionPoint<?,?>>(fieldInjectionPoints.size());
-                            for (FieldInjectionPoint<?, ?> fieldInjectionPoint : fieldInjectionPoints) {
-                                resourceInjectionPoints.add(createResourceInjectionPoint(fieldInjectionPoint, specializedInjectionServices, api));
-                            }
-                            return resourceInjectionPoints;
-                        }
+                        return resourceInjectionPoints;
                     }
                 }
             }

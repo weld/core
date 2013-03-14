@@ -28,11 +28,12 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.injection.producer.BasicInjectionTarget;
-import org.jboss.weld.injection.producer.DecoratorInjectionTarget;
 import org.jboss.weld.injection.producer.BeanInjectionTarget;
+import org.jboss.weld.injection.producer.DecoratorInjectionTarget;
 import org.jboss.weld.injection.producer.InjectionTargetInitializationContext;
 import org.jboss.weld.injection.producer.InjectionTargetService;
 import org.jboss.weld.injection.producer.ejb.SessionBeanInjectionTarget;
+import org.jboss.weld.injection.spi.InjectionServices;
 import org.jboss.weld.resources.ClassTransformer;
 
 /**
@@ -48,12 +49,14 @@ public class InjectionTargetFactoryImpl<T> implements InjectionTargetFactory<T> 
     private final BeanManagerImpl manager;
     private final EnhancedAnnotatedType<T> type;
     private final InjectionTargetService injectionTargetService;
+    private final InjectionServices injectionServices;
 
     protected InjectionTargetFactoryImpl(AnnotatedType<T> type, BeanManagerImpl manager) {
         this.manager = manager;
         validateAnnotatedType(type);
         this.type = manager.getServices().get(ClassTransformer.class).getEnhancedAnnotatedType(type, manager.getId());
         this.injectionTargetService = manager.getServices().get(InjectionTargetService.class);
+        this.injectionServices = manager.getServices().get(InjectionServices.class);
     }
 
     @Override
@@ -80,17 +83,25 @@ public class InjectionTargetFactoryImpl<T> implements InjectionTargetFactory<T> 
          * Every InjectionTarget, regardless whether it's used within Weld's Bean implementation or requested from extension has
          * to be initialized after beans (interceptors) are deployed.
          */
-        manager.getServices().get(InjectionTargetService.class).addInjectionTargetToBeInitialized(new InjectionTargetInitializationContext<T>(type, injectionTarget));
+        injectionTargetService.addInjectionTargetToBeInitialized(new InjectionTargetInitializationContext<T>(type, injectionTarget));
+        postProcessInjectionTarget(type, injectionTarget);
         return injectionTarget;
     }
 
     protected InjectionTarget<T> createMessageDrivenInjectionTarget() {
         try {
             InjectionTarget<T> injectionTarget = new BasicInjectionTarget<T>(type, null, manager);
+            postProcessInjectionTarget(type, injectionTarget);
             injectionTargetService.validateProducer(injectionTarget);
             return injectionTarget;
         } catch (Throwable e) {
             throw new IllegalArgumentException(e);
+        }
+    }
+
+    private <X> void postProcessInjectionTarget(AnnotatedType<X> type, InjectionTarget<X> injectionTarget) {
+        if (injectionServices != null) {
+            injectionServices.registerInjectionTarget(injectionTarget, type);
         }
     }
 }

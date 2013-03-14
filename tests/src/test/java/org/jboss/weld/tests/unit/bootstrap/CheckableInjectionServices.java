@@ -16,7 +16,9 @@
  */
 package org.jboss.weld.tests.unit.bootstrap;
 
+import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.spi.InjectionTarget;
 
 import org.jboss.weld.injection.spi.InjectionContext;
 import org.jboss.weld.injection.spi.InjectionServices;
@@ -74,6 +76,6 @@ public class CheckableInjectionServices implements InjectionServices {
     }
 
     @Override
-    public void validateResourceInjectionPoint(InjectionPoint injectionPoint) {
+    public <T> void registerInjectionTarget(InjectionTarget<T> injectionTarget, AnnotatedType<T> annotatedType) {
     }
 }
