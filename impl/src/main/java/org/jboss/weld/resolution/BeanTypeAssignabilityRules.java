@@ -49,6 +49,12 @@ public class BeanTypeAssignabilityRules extends EventTypeAssignabilityRules {
              * all type parameters of the bean type are either unbounded type variables or java.lang.Object.
              */
             return isArrayOfUnboundedTypeVariablesOrObjects(otherActualTypeArguments);
+        } else if (otherActualTypeArguments.length == 0) {
+            /*
+             * A raw bean type is considered assignable to a parameterized required type if the raw types are identical and all
+             * type parameters of the required type are either unbounded type variables or java.lang.Object.
+             */
+            return isArrayOfUnboundedTypeVariablesOrObjects(requiredType.getActualTypeArguments());
         } else {
             return super.areActualTypeArgumentsMatching(requiredType, otherActualTypeArguments);
         }
@@ -103,7 +109,7 @@ public class BeanTypeAssignabilityRules extends EventTypeAssignabilityRules {
          * type parameter is assignable to the upper bound, if any, of the bean type parameter.
          */
         if (beanType instanceof TypeVariable<?>) {
-            TypeVariable<?> requiredTypeVariable = (TypeVariable<?>) requiredType;
+            TypeVariable<?> requiredTypeVariable = requiredType;
             TypeVariable<?> beanTypeVariable = (TypeVariable<?>) beanType;
             return areTypesInsideBounds(requiredTypeVariable.getBounds(), EMPTY_TYPES, beanTypeVariable.getBounds());
         }

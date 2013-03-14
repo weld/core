@@ -22,6 +22,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
+import java.util.Arrays;
 import java.util.Set;
 
 import org.jboss.weld.util.Types;
@@ -289,6 +290,11 @@ public class EventTypeAssignabilityRules implements AssignabilityRules {
 
         private Class<?> getBoxedRawType() {
             return Types.boxedClass(getRawType());
+        }
+
+        @Override
+        public String toString() {
+            return "ActualTypeHolder [rawType=" + rawType + ", actualTypeArguments=" + Arrays.toString(actualTypeArguments) + "]";
         }
     }
 }

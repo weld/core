@@ -1,5 +1,8 @@
 package org.jboss.weld.tests.assignability;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Set;
 
 import javax.enterprise.inject.spi.Bean;
@@ -20,6 +23,7 @@ import org.junit.runner.RunWith;
 /**
  *
  */
+@SuppressWarnings("serial")
 @RunWith(Arquillian.class)
 public class AssignabilityTest {
 
@@ -83,4 +87,45 @@ public class AssignabilityTest {
         Assert.assertEquals(0, beans.size());
     }
 
+    /*
+     * A raw bean type is considered assignable to a parameterized required type if the raw types are identical and all type
+     * parameters of the required type are either unbounded type variables or java.lang.Object.
+     */
+
+    @Test
+    public void testAssignability8() {
+        Set<Bean<?>> beans = beanManager.getBeans(new TypeLiteral<Animal<Object, Object, Object>>() {
+        }.getType());
+        assertEquals(1, beans.size());
+        assertTrue(beans.iterator().next().getName().equals("zebra"));
+    }
+
+    @Test
+    public <T> void testAssignability9() {
+        Set<Bean<?>> beans = beanManager.getBeans(new TypeLiteral<Animal<Object, T, Object>>() {
+        }.getType());
+        assertEquals(1, beans.size());
+        assertTrue(beans.iterator().next().getName().equals("zebra"));
+    }
+
+    @Test
+    public <T extends Number> void testAssignability10() {
+        Set<Bean<?>> beans = beanManager.getBeans(new TypeLiteral<Animal<Object, T, Object>>() {
+        }.getType());
+        assertEquals(0, beans.size());
+    }
+
+    @Test
+    public void testAssignability11() {
+        Set<Bean<?>> beans = beanManager.getBeans(new TypeLiteral<Animal<Object, Object, String>>() {
+        }.getType());
+        assertEquals(0, beans.size());
+    }
+
+    @Test
+    public void testAssignability12() {
+        Set<Bean<?>> beans = beanManager.getBeans(Animal.class);
+        assertEquals(1, beans.size());
+        assertTrue(beans.iterator().next().getName().equals("zebra"));
+    }
 }
