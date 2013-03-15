@@ -18,37 +18,25 @@
 
             <!-- Issues in the TCK -->
 
-            <!-- CDI-206 -->
-            <class name="org.jboss.cdi.tck.tests.context.conversation.ClientConversationContextTest">
-                <methods>
-                    <exclude name="testNonexistentConversationExceptionThrown" />
-                </methods>
-            </class>
-            <!-- CDI-83 -->
-            <class name="org.jboss.cdi.tck.tests.extensions.beanManager.BeanManagerTest">
-                <methods>
-                    <exclude name="testObtainingWrappedAnnotatedType" />
-                </methods>
-            </class>
-            <!-- CDI-247 -->
-            <class name="org.jboss.cdi.tck.tests.definition.bean.custom.CustomBeanImplementationTest">
-                <methods>
-                    <exclude name="testIsNullableCalled" />
-                </methods>
-            </class>
-            <!-- CDI-328 -->
-            <class name="org.jboss.cdi.tck.tests.extensions.beanManager.producer.SyntheticProducerTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
-            <class name="org.jboss.cdi.tck.tests.extensions.beanManager.bean.SyntheticBeanTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
             <!-- CDI-331 - either the Instance.isAmbiguous() behavior is fixed in the spec or AssertBean must not test this method within assertAvailable -->
             <class name="org.jboss.cdi.tck.tests.alternative.selection.SelectedAlternative02Test">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
+            <!-- CDITCK-283 -->
+            <class name="org.jboss.cdi.tck.tests.context.request.event.jms.RequestScopeEventMessageDeliveryTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
+            <class name="org.jboss.cdi.tck.tests.context.jms.MessageDrivenBeanContextTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
+            <!-- CDITCK-326-->
+            <class name="org.jboss.cdi.tck.tests.lookup.modules.SpecializedProducerMethodInjectionNotAvailableTest">
                 <methods>
                     <exclude name=".*"/>
                 </methods>
@@ -84,50 +72,10 @@
                     <exclude name="testEjbInjectionPointGetBean"/>
                 </methods>
             </class>
-            <!-- CDITCK-283 -->
-            <class name="org.jboss.cdi.tck.tests.context.request.event.jms.RequestScopeEventMessageDeliveryTest">
+            <!-- WELD-1330 (CDI-206) -->
+            <class name="org.jboss.cdi.tck.tests.context.conversation.ClientConversationContextTest">
                 <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
-            <class name="org.jboss.cdi.tck.tests.context.jms.MessageDrivenBeanContextTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
-            <!-- CDITCK-284 -->
-            <class name="org.jboss.cdi.tck.tests.lookup.modules.SpecializedProducerMethodInjectionNotAvailableTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
-            <!-- WELD-1229 -->
-            <class name="org.jboss.cdi.tck.tests.vetoed.VetoedTest">
-                <methods>
-                    <exclude name="testVetoedAnnotation"/>
-                    <exclude name="testPackageLevelVeto"/>
-                </methods>
-            </class>
-            <class name="org.jboss.cdi.tck.tests.extensions.annotated.ProcessAnnotatedTypeTest">
-                <methods>
-                    <exclude name="testProcessAnnotatedTypeFiredForAnnotation"/>
-                </methods>
-            </class>
-            <!-- WELD-1246 -->
-            <class name="org.jboss.cdi.tck.tests.decorators.builtin.principal.BuiltinPrincipalDecoratorTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
-             <!-- WELD-1244 -->
-            <class name="org.jboss.cdi.tck.tests.interceptors.definition.enterprise.interceptorOrder.SessionBeanInterceptorOrderTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
-            <class name="org.jboss.cdi.tck.tests.interceptors.definition.lifecycle.enterprise.order.EnterpriseLifecycleInterceptorDefinitionTest">
-                <methods>
-                    <exclude name=".*"/>
+                    <exclude name="testNonexistentConversationExceptionThrown" />
                 </methods>
             </class>
             <!-- WELD-1343 -->
@@ -166,28 +114,6 @@
             </class>
 
             <!-- Issues in JBoss AS -->
-            <!-- AS7-4232 -->
-            <class name="org.jboss.cdi.tck.tests.context.application.async.ApplicationContextAsyncListenerTest">
-                <methods>
-                    <exclude name="testApplicationContextActiveOnError" />
-                </methods>
-            </class>
-            <class name="org.jboss.cdi.tck.tests.context.request.async.RequestContextAsyncListenerTest">
-                <methods>
-                    <exclude name="testRequestContextActiveOnError" />
-                </methods>
-            </class>
-            <class name="org.jboss.cdi.tck.tests.context.session.async.SessionContextAsyncListenerTest">
-                <methods>
-                    <exclude name="testSessionContextActiveOnError" />
-                </methods>
-            </class>
-            <!-- AS7-5965 -->
-            <class name="org.jboss.cdi.tck.tests.deployment.packaging.rar.ResourceAdapterArchiveTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
             <!-- AS7-5966 -->
             <class name="org.jboss.cdi.tck.tests.deployment.packaging.installedLibrary.InstalledLibraryWarTest">
                 <methods>
@@ -203,6 +129,12 @@
             <class name="org.jboss.cdi.tck.tests.context.session.listener.SessionContextHttpSessionListenerTest">
                 <methods>
                     <exclude name="testSessionScopeActiveDuringHttpSessionListenerCall"/>
+                </methods>
+            </class>
+            <!-- AS7-6739 -->
+            <class name="org.jboss.cdi.tck.tests.interceptors.definition.lifecycle.enterprise.order.EnterpriseLifecycleInterceptorDefinitionTest">
+                <methods>
+                    <exclude name=".*"/>
                 </methods>
             </class>
 
