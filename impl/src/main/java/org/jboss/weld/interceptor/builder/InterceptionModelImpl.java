@@ -48,6 +48,8 @@ class InterceptionModelImpl<T, I> implements BuildableInterceptionModel<T, I> {
 
     private final T interceptedEntity;
 
+    private boolean hasTargetClassInterceptors;
+
     public InterceptionModelImpl(T interceptedEntity) {
         this.interceptedEntity = interceptedEntity;
     }
@@ -150,13 +152,21 @@ class InterceptionModelImpl<T, I> implements BuildableInterceptionModel<T, I> {
     }
 
     @Override
-    public boolean hasConstructorInterceptors() {
+    public boolean hasExternalConstructorInterceptors() {
         return !getConstructorInvocationInterceptors().isEmpty();
     }
 
     @Override
-    public boolean hasNonConstructorInterceptors() {
+    public boolean hasExternalNonConstructorInterceptors() {
         return allInterceptors.size() > getConstructorInvocationInterceptors().size();
     }
 
+    public void setHasTargetClassInterceptors(boolean hasTargetClassInterceptors) {
+        this.hasTargetClassInterceptors = hasTargetClassInterceptors;
+    }
+
+    @Override
+    public boolean hasTargetClassInterceptors() {
+        return hasTargetClassInterceptors;
+    }
 }

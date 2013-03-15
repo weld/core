@@ -99,7 +99,7 @@ public class BeanInjectionTarget<T> extends BasicInjectionTarget<T> {
         if (isInterceptionCandidate()) {
             interceptionModel = beanManager.getInterceptorModelRegistry().get(getType().getJavaClass());
         }
-        boolean hasNonConstructorInterceptors = interceptionModel != null && interceptionModel.hasNonConstructorInterceptors();
+        boolean hasNonConstructorInterceptors = interceptionModel != null && (interceptionModel.hasExternalNonConstructorInterceptors() || interceptionModel.hasTargetClassInterceptors());
 
         List<Decorator<?>> decorators = null;
         if (getBean() != null && isInterceptionCandidate()) {
@@ -130,7 +130,7 @@ public class BeanInjectionTarget<T> extends BasicInjectionTarget<T> {
     }
 
     protected void setupConstructorInterceptionInstantiator(InterceptionModel<ClassMetadata<?>, ?> interceptionModel) {
-        if (interceptionModel != null && interceptionModel.hasConstructorInterceptors()) {
+        if (interceptionModel != null && interceptionModel.hasExternalConstructorInterceptors()) {
             setInstantiator(new ConstructorInterceptionInstantiator<T>(getInstantiator(), interceptionModel));
         }
     }

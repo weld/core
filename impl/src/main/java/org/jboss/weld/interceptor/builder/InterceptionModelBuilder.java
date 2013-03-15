@@ -29,7 +29,7 @@ import org.jboss.weld.interceptor.spi.model.InterceptionType;
  */
 public class InterceptionModelBuilder<T, I> {
 
-    private final BuildableInterceptionModel<T, I> interceptionModel;
+    private final InterceptionModelImpl<T, I> interceptionModel;
 
     private final T interceptedEntity;
 
@@ -88,10 +88,11 @@ public class InterceptionModelBuilder<T, I> {
 
     public MethodInterceptorDescriptor intercept(javax.enterprise.inject.spi.InterceptionType interceptionType) {
         InterceptionType weldInterceptionType = InterceptionType.valueOf(interceptionType);
-        if (!weldInterceptionType.isLifecycleCallback()) {
-            throw new IllegalArgumentException("Illegal interception type: " + interceptionType);
-        }
         return new MethodInterceptorDescriptor(null, weldInterceptionType);
+    }
+
+    public void setHasTargetClassInterceptors(boolean hasTargetClassInterceptors) {
+        this.interceptionModel.setHasTargetClassInterceptors(hasTargetClassInterceptors);
     }
 
     public void ignoreGlobalInterceptors(Method m) {

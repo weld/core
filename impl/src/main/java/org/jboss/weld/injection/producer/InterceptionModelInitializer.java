@@ -134,6 +134,7 @@ public class InterceptionModelInitializer<T> {
             // target class
             hasSerializationOrInvocationInterceptorMethods = false;
         }
+        builder.setHasTargetClassInterceptors(hasSerializationOrInvocationInterceptorMethods);
     }
 
     private ClassMetadata<T> getClassMetadata() {
@@ -241,7 +242,12 @@ public class InterceptionModelInitializer<T> {
 
         if (classDeclaredInterceptors != null) {
             for (Class<?> clazz : classDeclaredInterceptors) {
-                builder.interceptAll().with(manager.getInterceptorMetadataReader().getInterceptorMetadata(clazz));
+                InterceptorMetadata<?> interceptor = manager.getInterceptorMetadataReader().getInterceptorMetadata(clazz);
+                for (InterceptionType interceptionType : InterceptionType.values()) {
+                    if (interceptor.isEligible(org.jboss.weld.interceptor.spi.model.InterceptionType.valueOf(interceptionType))) {
+                        builder.intercept(interceptionType).with(interceptor);
+                    }
+                }
             }
         }
     }
