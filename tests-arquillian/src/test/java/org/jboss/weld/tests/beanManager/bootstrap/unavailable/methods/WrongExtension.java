@@ -22,9 +22,12 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
 import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.enterprise.context.Dependent;
+import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AfterDeploymentValidation;
@@ -122,43 +125,7 @@ public class WrongExtension implements Extension {
         }
 
         try {
-            beanManager.validate(new InjectionPoint() {
-
-                @Override
-                public boolean isTransient() {
-                    return false;
-                }
-
-                @Override
-                public boolean isDelegate() {
-                    return false;
-                }
-
-                @Override
-                public Type getType() {
-                    return Foo.class;
-                }
-
-                @Override
-                public Set<Annotation> getQualifiers() {
-                    return null;
-                }
-
-                @Override
-                public Member getMember() {
-                    return null;
-                }
-
-                @Override
-                public Bean<?> getBean() {
-                    return null;
-                }
-
-                @Override
-                public Annotated getAnnotated() {
-                    return null;
-                }
-            });
+            beanManager.validate(new FooInjectionPoint());
             fail("validate() must not be available");
         } catch (IllegalStateException e) {
             // Expected
@@ -181,7 +148,118 @@ public class WrongExtension implements Extension {
     }
 
     void validate(@Observes AfterDeploymentValidation event, BeanManager manager) {
-        manager.validate(injectionPoint); // should pass
+        testAvailableMethods(manager);
     }
 
+    private void testAvailableMethods(BeanManager beanManager) {
+        beanManager.getReference(new FooBean(), Foo.class, beanManager.createCreationalContext(null));
+        beanManager.getBeans("foo");
+        beanManager.getBeans(Foo.class);
+        beanManager.getInjectableReference(
+                beanManager.createInjectionPoint(beanManager.createAnnotatedType(Foo.class).getFields().iterator().next()),
+                beanManager.createCreationalContext(null));
+        beanManager.resolve(null);
+        beanManager.resolveObserverMethods(new Foo());
+        beanManager.resolveInterceptors(InterceptionType.AROUND_INVOKE, new AnnotationLiteral<Transactional>() { });
+        beanManager.resolveDecorators(new HashSet<Type>(Arrays.asList(Foo.class)));
+        beanManager.validate(injectionPoint);
+        beanManager.getPassivationCapableBean("foo");
+    }
+
+
+    private static class FooBean implements Bean<Foo> {
+        @Override
+        public Class<?> getBeanClass() {
+            return Foo.class;
+        }
+
+        @Override
+        public Set<InjectionPoint> getInjectionPoints() {
+            return Collections.emptySet();
+        }
+
+        @Override
+        public boolean isNullable() {
+            return false;
+        }
+
+        @Override
+        public Set<Type> getTypes() {
+            HashSet<Type> set = new HashSet<Type>();
+            set.add(Foo.class);
+            return set;
+        }
+
+        @Override
+        public Set<Annotation> getQualifiers() {
+            return Collections.emptySet();
+        }
+
+        @Override
+        public Class<? extends Annotation> getScope() {
+            return Dependent.class;
+        }
+
+        @Override
+        public String getName() {
+            return null;
+        }
+
+        @Override
+        public Set<Class<? extends Annotation>> getStereotypes() {
+            return Collections.emptySet();
+        }
+
+        @Override
+        public boolean isAlternative() {
+            return false;
+        }
+
+        @Override
+        public Foo create(CreationalContext<Foo> creationalContext) {
+            return null;
+        }
+
+        @Override
+        public void destroy(Foo instance, CreationalContext<Foo> creationalContext) {
+        }
+    }
+
+    private static class FooInjectionPoint implements InjectionPoint {
+
+        @Override
+        public boolean isTransient() {
+            return false;
+        }
+
+        @Override
+        public boolean isDelegate() {
+            return false;
+        }
+
+        @Override
+        public Type getType() {
+            return Foo.class;
+        }
+
+        @Override
+        public Set<Annotation> getQualifiers() {
+            return null;
+        }
+
+        @Override
+        public Member getMember() {
+            return null;
+        }
+
+        @Override
+        public Bean<?> getBean() {
+            return null;
+        }
+
+        @Override
+        public Annotated getAnnotated() {
+            return null;
+        }
+    }
 }
