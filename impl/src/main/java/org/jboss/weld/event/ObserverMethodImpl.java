@@ -74,6 +74,7 @@ import org.jboss.weld.util.reflection.HierarchyDiscovery;
  *
  * @author David Allen
  * @author Jozef Hartinger
+ * @author Marko Luksa
  */
 public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
 
@@ -247,19 +248,19 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
     protected void sendEvent(final T event) {
         if (observerMethod.getAnnotated().isStatic()) {
             sendEvent(event, null, beanManager.createCreationalContext(declaringBean));
-        } else if (reception.equals(Reception.IF_EXISTS)) {
-            Object receiver = getReceiverIfExists();
-            // The observer is conditional, and there is no existing bean
-            if (receiver == null) {
-                return;
-            } else {
-                sendEvent(event, receiver, null);
-            }
         } else {
-            CreationalContext<?> creationalContext = beanManager.createCreationalContext(declaringBean);
-            sendEvent(event, getReceiver(creationalContext), creationalContext);
-        }
+            CreationalContext<?> creationalContext;
+            if (reception.equals(Reception.IF_EXISTS)) {
+                creationalContext = null;
+            } else {
+                creationalContext = beanManager.createCreationalContext(declaringBean);
+            }
 
+            Object receiver = getReceiverIfExists(creationalContext);
+            if (receiver != null) {
+                sendEvent(event, receiver, creationalContext);
+            }
+        }
     }
 
     protected void sendEvent(T event, Object receiver, CreationalContext<?> creationalContext) {
@@ -289,16 +290,16 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
     protected void postNotify(T event, Object receiver) {
     }
 
-    protected Object getReceiverIfExists() {
+    private Object getReceiverIfExists(CreationalContext<?> creationalContext) {
         try {
-            return beanManager.getReference(declaringBean, null, null, false);
+            return getReceiver(creationalContext);
         } catch (ContextNotActiveException e) {
             return null;
         }
     }
 
     protected Object getReceiver(CreationalContext<?> ctx) {
-        return beanManager.getReference(declaringBean, null, ctx, false);
+        return beanManager.getReference(declaringBean, null, ctx, true);
     }
 
     @Override
