@@ -16,18 +16,42 @@
  */
 package org.jboss.weld.injection.producer;
 
+import java.lang.reflect.Constructor;
+
 import javax.enterprise.context.spi.CreationalContext;
 
 import org.jboss.weld.injection.AroundConstructCallback;
-import org.jboss.weld.injection.ConstructorInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
 
-public abstract class AbstractInstantiator<T> implements Instantiator<T> {
+public class ForwardingInstantiator<T> implements Instantiator<T> {
+
+    private final Instantiator<T> delegate;
+
+    public ForwardingInstantiator(Instantiator<T> delegate) {
+        this.delegate = delegate;
+    }
+
+    protected Instantiator<T> delegate() {
+        return delegate;
+    }
 
     @Override
     public T newInstance(CreationalContext<T> ctx, BeanManagerImpl manager, AroundConstructCallback<T> callback) {
-        return getConstructorInjectionPoint().newInstance(manager, ctx, callback);
+        return delegate().newInstance(ctx, manager, callback);
     }
 
-    protected abstract ConstructorInjectionPoint<T> getConstructorInjectionPoint();
+    @Override
+    public boolean hasInterceptorSupport() {
+        return delegate().hasInterceptorSupport();
+    }
+
+    @Override
+    public boolean hasDecoratorSupport() {
+        return delegate().hasDecoratorSupport();
+    }
+
+    @Override
+    public Constructor<T> getConstructor() {
+        return delegate().getConstructor();
+    }
 }

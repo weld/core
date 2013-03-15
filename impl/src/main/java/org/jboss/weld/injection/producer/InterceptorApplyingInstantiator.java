@@ -16,33 +16,17 @@
  */
 package org.jboss.weld.injection.producer;
 
-import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
-
 import javax.enterprise.context.spi.CreationalContext;
-import javax.interceptor.InvocationContext;
 
-import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bean.proxy.CombinedInterceptorAndDecoratorStackMethodHandler;
 import org.jboss.weld.bean.proxy.ProxyObject;
 import org.jboss.weld.exceptions.DeploymentException;
-import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.injection.AroundConstructCallback;
 import org.jboss.weld.interceptor.proxy.DefaultInvocationContextFactory;
 import org.jboss.weld.interceptor.proxy.InterceptionContext;
-import org.jboss.weld.interceptor.proxy.InterceptorInvocation;
-import org.jboss.weld.interceptor.proxy.InterceptorInvocationContext;
 import org.jboss.weld.interceptor.proxy.InterceptorMethodHandler;
-import org.jboss.weld.interceptor.proxy.SimpleInterceptionChain;
-import org.jboss.weld.interceptor.reader.TargetClassInterceptorMetadata;
 import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
-import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
-import org.jboss.weld.interceptor.spi.model.InterceptionType;
-import org.jboss.weld.interceptor.util.InterceptionTypeRegistry;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
@@ -53,85 +37,23 @@ import org.jboss.weld.manager.BeanManagerImpl;
  *
  * @param <T>
  */
-public class InterceptorApplyingInstantiator<T> implements Instantiator<T> {
+public class InterceptorApplyingInstantiator<T> extends ForwardingInstantiator<T> {
 
-    private final TargetClassInterceptorMetadata<T> targetClassInterceptorMetadata;
     private final InterceptionModel<ClassMetadata<?>, ?> interceptionModel;
-    private final Instantiator<T> delegate;
-    private final Constructor<T> constructor;
 
-    public InterceptorApplyingInstantiator(EnhancedAnnotatedType<T> type, Instantiator<T> delegate, BeanManagerImpl manager, Constructor<T> constructor) {
-        this.targetClassInterceptorMetadata = manager.getInterceptorMetadataReader().getTargetClassInterceptorMetadata(manager.getInterceptorMetadataReader().getClassMetadata(type.getJavaClass()));
-        this.interceptionModel = manager.getInterceptorModelRegistry().get(type.getJavaClass());
-        this.delegate = delegate;
-        this.constructor = constructor;
+    public InterceptorApplyingInstantiator(Instantiator<T> delegate, InterceptionModel<ClassMetadata<?>, ?> model) {
+        super(delegate);
+        this.interceptionModel = model;
     }
 
     @Override
-    public T newInstance(CreationalContext<T> ctx, BeanManagerImpl manager, AroundConstructCallback<T> ignored) {
-        InterceptionContext interceptionContext = new InterceptionContext(targetClassInterceptorMetadata, interceptionModel, ctx, manager);
+    public T newInstance(CreationalContext<T> ctx, BeanManagerImpl manager, AroundConstructCallback<T> callback) {
+        InterceptionContext interceptionContext = InterceptionContext.forNonConstructorInterception(interceptionModel, ctx, manager);
 
-        T instance = invokeConstructor(interceptionContext, ctx, manager);
+        T instance = delegate().newInstance(ctx, manager, callback);
 
         applyInterceptors(instance, interceptionContext);
         return instance;
-    }
-
-    protected T invokeConstructor(InterceptionContext interceptionContext, final CreationalContext<T> ctx, final BeanManagerImpl manager) {
-
-        AroundConstructCallback<T> callback = null;
-
-        if (InterceptionTypeRegistry.isSupported(InterceptionType.AROUND_CONSTRUCT)) {
-            List<? extends InterceptorMetadata<?>> interceptors = interceptionModel.getConstructorInvocationInterceptors();
-            if (!interceptors.isEmpty()) {
-
-                // build interceptor invocations
-                final Collection<InterceptorInvocation> interceptorInvocations = new ArrayList<InterceptorInvocation>(interceptors.size());
-                for (InterceptorMetadata<?> interceptorMetadata : interceptors) {
-                    interceptorInvocations.add(interceptorMetadata.getInterceptorInvocation(interceptionContext.getInterceptorInstance(interceptorMetadata), InterceptionType.AROUND_CONSTRUCT));
-                }
-
-                callback = new AroundConstructCallback<T>() {
-
-                    @Override
-                    public T aroundConstruct(Object[] parameters, final ConstructionHandle<T> constructionHandle) {
-
-                        /*
-                         * The AroundConstruct interceptor method can access the constructed instance using InvocationContext.getTarget
-                         * method after the InvocationContext.proceed completes.
-                         */
-                        final AtomicReference<T> target = new AtomicReference<T>();
-
-                        SimpleInterceptionChain chain = new SimpleInterceptionChain(interceptorInvocations) {
-                            @Override
-                            protected Object interceptorChainCompleted(InvocationContext invocationCtx) throws Exception {
-                                // all the interceptors were invoked, call the constructor now
-                                target.set(constructionHandle.construct(invocationCtx.getParameters()));
-                                return null;
-                            }
-                        };
-
-                        InterceptorInvocationContext invocationCtx = new InterceptorInvocationContext(chain, constructor, parameters) {
-                            @Override
-                            public Object getTarget() {
-                                return target.get();
-                            }
-                        };
-
-                        try {
-                            chain.invokeNextInterceptor(invocationCtx);
-                        } catch (RuntimeException e) {
-                            throw e;
-                        } catch (Throwable e) {
-                            throw new WeldException(e);
-                        }
-                        return target.get();
-                    }
-                };
-            }
-        }
-
-        return delegate.newInstance(ctx, manager, callback);
     }
 
     protected T applyInterceptors(T instance, InterceptionContext interceptionContext) {
@@ -145,20 +67,13 @@ public class InterceptorApplyingInstantiator<T> implements Instantiator<T> {
         return instance;
     }
 
-
-
     @Override
     public String toString() {
-        return "InterceptorApplyingInstantiator for " + delegate;
+        return "InterceptorApplyingInstantiator for " + delegate();
     }
 
     @Override
     public boolean hasInterceptorSupport() {
         return true;
-    }
-
-    @Override
-    public boolean hasDecoratorSupport() {
-        return delegate.hasDecoratorSupport();
     }
 }

@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.injection.producer;
 
+import java.lang.reflect.Constructor;
+
 import javax.enterprise.context.spi.CreationalContext;
 
 import org.jboss.weld.injection.AroundConstructCallback;
@@ -42,4 +44,10 @@ public interface Instantiator<T> {
      * Indicates whether instances created by this Instantiator support decorators.
      */
     boolean hasDecoratorSupport();
+
+    /**
+     * Returns the constructor used for instantiation. If an enhanced subclass is used for a component instance, this method
+     * returns the matching constructor of the original component class.
+     */
+    Constructor<T> getConstructor();
 }

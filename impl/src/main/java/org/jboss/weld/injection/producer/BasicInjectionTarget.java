@@ -151,7 +151,7 @@ public class BasicInjectionTarget<T> extends AbstractProducer<T> implements Inje
      */
     protected Instantiator<T> initInstantiator(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager, Set<InjectionPoint> injectionPoints) {
         DefaultInstantiator<T> instantiator = new DefaultInstantiator<T>(type, bean, beanManager);
-        injectionPoints.addAll(instantiator.getConstructor().getParameterInjectionPoints());
+        injectionPoints.addAll(instantiator.getConstructorInjectionPoint().getParameterInjectionPoints());
         return instantiator;
     }
 

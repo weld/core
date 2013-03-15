@@ -44,15 +44,14 @@ import org.jboss.weld.serialization.spi.ContextualStore;
  * @see SubclassDecoratorApplyingInstantiator
  * @see ProxyDecoratorApplyingSessionBeanInstantiator
  */
-public abstract class AbstractDecoratorApplyingInstantiator<T> implements Instantiator<T> {
+public abstract class AbstractDecoratorApplyingInstantiator<T> extends ForwardingInstantiator<T> {
 
-    private final Instantiator<T> delegate;
     private final Bean<T> bean;
     private final Class<T> proxyClass;
     private final List<Decorator<?>> decorators;
 
     public AbstractDecoratorApplyingInstantiator(Instantiator<T> delegate, Bean<T> bean, List<Decorator<?>> decorators) {
-        this.delegate = delegate;
+        super(delegate);
         this.bean = bean;
         this.decorators = decorators;
         ProxyFactory<T> factory = new ProxyFactory<T>(bean.getBeanClass(), bean.getTypes(), bean);
@@ -63,7 +62,7 @@ public abstract class AbstractDecoratorApplyingInstantiator<T> implements Instan
     @Override
     public T newInstance(CreationalContext<T> ctx, BeanManagerImpl manager, AroundConstructCallback<T> callback) {
         InjectionPoint originalInjectionPoint = manager.getServices().get(CurrentInjectionPoint.class).peek();
-        return applyDecorators(delegate.newInstance(ctx, manager, callback), ctx, originalInjectionPoint, manager);
+        return applyDecorators(delegate().newInstance(ctx, manager, callback), ctx, originalInjectionPoint, manager);
     }
 
     protected abstract T applyDecorators(T instance, CreationalContext<T> creationalContext, InjectionPoint originalInjectionPoint, BeanManagerImpl manager);
@@ -88,10 +87,6 @@ public abstract class AbstractDecoratorApplyingInstantiator<T> implements Instan
         wrapperMethodHandler.setOuterDecorator(outerDelegate);
     }
 
-    public Instantiator<T> getDelegate() {
-        return delegate;
-    }
-
     public Bean<T> getBean() {
         return bean;
     }
@@ -102,11 +97,6 @@ public abstract class AbstractDecoratorApplyingInstantiator<T> implements Instan
 
     public List<Decorator<?>> getDecorators() {
         return decorators;
-    }
-
-    @Override
-    public boolean hasInterceptorSupport() {
-        return delegate.hasInterceptorSupport();
     }
 
     @Override

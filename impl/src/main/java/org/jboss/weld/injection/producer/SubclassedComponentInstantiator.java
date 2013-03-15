@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.injection.producer;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.HashSet;
@@ -47,14 +48,16 @@ import org.jboss.weld.util.Beans;
 public class SubclassedComponentInstantiator<T> extends AbstractInstantiator<T> {
 
     private final ConstructorInjectionPoint<T> proxyClassConstructorInjectionPoint;
+    private final Constructor<T> componentClassConstructor;
 
     public SubclassedComponentInstantiator(EnhancedAnnotatedType<T> type, Bean<T> bean, DefaultInstantiator<T> delegate, BeanManagerImpl manager) {
-        this(type, bean, delegate.getConstructor(), manager);
+        this(type, bean, delegate.getConstructorInjectionPoint(), manager);
     }
 
     protected SubclassedComponentInstantiator(EnhancedAnnotatedType<T> type, Bean<T> bean, ConstructorInjectionPoint<T> originalConstructor, BeanManagerImpl manager) {
         EnhancedAnnotatedConstructor<T> constructorForEnhancedSubclass = initEnhancedSubclass(manager, type, bean, originalConstructor);
         this.proxyClassConstructorInjectionPoint = new ProxyClassConstructorInjectionPointWrapper<T>(bean, type.getJavaClass(), constructorForEnhancedSubclass, originalConstructor, manager);
+        this.componentClassConstructor = originalConstructor.getAnnotated().getJavaMember();
     }
 
     protected EnhancedAnnotatedConstructor<T> initEnhancedSubclass(BeanManagerImpl manager, EnhancedAnnotatedType<T> type, Bean<?> bean, ConstructorInjectionPoint<T> originalConstructorInjectionPoint) {
@@ -95,8 +98,17 @@ public class SubclassedComponentInstantiator<T> extends AbstractInstantiator<T> 
         return false;
     }
 
+    /**
+     * Note that this method return a {@link ConstructorInjectionPoint} that represents the constructor of an enhanced subclass.
+     * Use {@link #getConstructor()} to get the matching component class constructor.
+     */
     @Override
-    protected ConstructorInjectionPoint<T> getConstructor() {
+    protected ConstructorInjectionPoint<T> getConstructorInjectionPoint() {
         return proxyClassConstructorInjectionPoint;
+    }
+
+    @Override
+    public Constructor<T> getConstructor() {
+        return componentClassConstructor;
     }
 }

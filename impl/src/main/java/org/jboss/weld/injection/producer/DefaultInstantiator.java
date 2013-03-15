@@ -19,6 +19,8 @@ package org.jboss.weld.injection.producer;
 import static org.jboss.weld.logging.Category.BEAN;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 
+import java.lang.reflect.Constructor;
+
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 
@@ -68,8 +70,13 @@ public class DefaultInstantiator<T> extends AbstractInstantiator<T> {
     }
 
     @Override
-    public ConstructorInjectionPoint<T> getConstructor() {
+    public ConstructorInjectionPoint<T> getConstructorInjectionPoint() {
         return constructor;
+    }
+
+    @Override
+    public Constructor<T> getConstructor() {
+        return constructor.getAnnotated().getJavaMember();
     }
 
     @Override

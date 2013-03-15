@@ -17,7 +17,6 @@
 
 package org.jboss.weld.interceptor.builder;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -148,6 +147,16 @@ class InterceptionModelImpl<T, I> implements BuildableInterceptionModel<T, I> {
             return globalInterceptors.get(InterceptionType.AROUND_CONSTRUCT);
         }
         return Collections.emptyList();
+    }
+
+    @Override
+    public boolean hasConstructorInterceptors() {
+        return !getConstructorInvocationInterceptors().isEmpty();
+    }
+
+    @Override
+    public boolean hasNonConstructorInterceptors() {
+        return allInterceptors.size() > getConstructorInvocationInterceptors().size();
     }
 
 }

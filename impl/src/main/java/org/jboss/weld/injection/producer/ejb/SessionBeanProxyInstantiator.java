@@ -20,6 +20,8 @@ import static org.jboss.weld.logging.messages.BeanMessage.EJB_NOT_FOUND;
 import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_BEAN_ACCESS_FAILED;
 import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_FAILED;
 
+import java.lang.reflect.Constructor;
+
 import javax.enterprise.context.spi.CreationalContext;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
@@ -83,5 +85,10 @@ public class SessionBeanProxyInstantiator<T> implements Instantiator<T> {
 
     public SessionBean<T> getBean() {
         return bean;
+    }
+
+    @Override
+    public Constructor<T> getConstructor() {
+        return null; // not relevant
     }
 }

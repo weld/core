@@ -63,4 +63,14 @@ public interface InterceptionModel<T, I> {
      */
     T getInterceptedEntity();
 
+    /**
+     * Indicates whether the given entity has associated {@link AroundConstruct} interceptors.
+     */
+    boolean hasConstructorInterceptors();
+
+    /**
+     * Indicates whether the given entity has an associated interceptor of a kind other than {@link AroundConstruct}
+     */
+    boolean hasNonConstructorInterceptors();
+
 }

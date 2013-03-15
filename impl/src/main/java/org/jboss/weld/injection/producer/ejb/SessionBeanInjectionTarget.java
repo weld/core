@@ -63,7 +63,7 @@ public class SessionBeanInjectionTarget<T> extends BeanInjectionTarget<T> {
     protected Instantiator<T> initInstantiator(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager, Set<InjectionPoint> injectionPoints) {
         if (bean instanceof SessionBean<?>) {
             DefaultInstantiator<T> instantiator = new DefaultInstantiator<T>(type, bean, beanManager);
-            injectionPoints.addAll(instantiator.getConstructor().getParameterInjectionPoints());
+            injectionPoints.addAll(instantiator.getConstructorInjectionPoint().getParameterInjectionPoints());
             return instantiator;
         } else {
             throw new IllegalArgumentException("Cannot create SessionBeanInjectionTarget for " + bean);
@@ -81,6 +81,11 @@ public class SessionBeanInjectionTarget<T> extends BeanInjectionTarget<T> {
     @Override
     public void initializeAfterBeanDiscovery(EnhancedAnnotatedType<T> annotatedType) {
         initializeInterceptionModel(annotatedType);
+        /*
+         * We only take care of @AroundConstructor interception. The EJB container deals with the other types of interception.
+         */
+        setupConstructorInterceptionInstantiator(beanManager.getInterceptorModelRegistry().get(getType().getJavaClass()));
+
         List<Decorator<?>> decorators = beanManager.resolveDecorators(getBean().getTypes(), getBean().getQualifiers());
         if (!decorators.isEmpty()) {
             Instantiator<T> instantiator = getInstantiator();

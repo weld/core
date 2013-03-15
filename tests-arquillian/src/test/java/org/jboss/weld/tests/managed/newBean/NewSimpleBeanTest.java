@@ -115,7 +115,7 @@ public class NewSimpleBeanTest {
             BasicInjectionTarget<?> weldTarget = (BasicInjectionTarget<?>) target;
             Instantiator<?> instantiator = weldTarget.getInstantiator();
             if (instantiator instanceof DefaultInstantiator<?>) {
-                return Reflections.<DefaultInstantiator<?>>cast(instantiator).getConstructor().getAnnotated();
+                return Reflections.<DefaultInstantiator<?>>cast(instantiator).getConstructorInjectionPoint().getAnnotated();
             }
         }
         throw new IllegalArgumentException(bean.toString());

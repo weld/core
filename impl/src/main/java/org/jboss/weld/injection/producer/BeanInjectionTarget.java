@@ -19,7 +19,9 @@ package org.jboss.weld.injection.producer;
 import static org.jboss.weld.logging.messages.BeanMessage.FINAL_BEAN_CLASS_WITH_DECORATORS_NOT_ALLOWED;
 import static org.jboss.weld.logging.messages.BeanMessage.FINAL_BEAN_CLASS_WITH_INTERCEPTORS_NOT_ALLOWED;
 import static org.jboss.weld.logging.messages.BeanMessage.NON_CONTAINER_DECORATOR;
+
 import java.util.List;
+
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.Interceptor;
@@ -30,6 +32,8 @@ import org.jboss.weld.bean.CustomDecoratorWrapper;
 import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.IllegalStateException;
+import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
+import org.jboss.weld.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.interceptor.util.InterceptionUtils;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
@@ -84,13 +88,18 @@ public class BeanInjectionTarget<T> extends BasicInjectionTarget<T> {
     protected void initializeInterceptionModel(EnhancedAnnotatedType<T> annotatedType) {
         DefaultInstantiator<T> instantiator = (DefaultInstantiator<T>) getInstantiator();
         if (isInterceptionCandidate() && !beanManager.getInterceptorModelRegistry().containsKey(annotatedType.getJavaClass())) {
-            new InterceptionModelInitializer<T>(beanManager, annotatedType, instantiator.getConstructor().getAnnotated(), getBean()).init();
+            new InterceptionModelInitializer<T>(beanManager, annotatedType, instantiator.getConstructorInjectionPoint().getAnnotated(), getBean()).init();
         }
     }
 
     public void initializeAfterBeanDiscovery(EnhancedAnnotatedType<T> annotatedType) {
         initializeInterceptionModel(annotatedType);
-        boolean hasInterceptors = isInterceptionCandidate() && (beanManager.getInterceptorModelRegistry().containsKey(getType().getJavaClass()));
+
+        InterceptionModel<ClassMetadata<?>, ?> interceptionModel = null;
+        if (isInterceptionCandidate()) {
+            interceptionModel = beanManager.getInterceptorModelRegistry().get(getType().getJavaClass());
+        }
+        boolean hasNonConstructorInterceptors = interceptionModel != null && interceptionModel.hasNonConstructorInterceptors();
 
         List<Decorator<?>> decorators = null;
         if (getBean() != null && isInterceptionCandidate()) {
@@ -101,19 +110,28 @@ public class BeanInjectionTarget<T> extends BasicInjectionTarget<T> {
             checkDecoratedMethods(annotatedType, decorators);
         }
 
-        if (hasInterceptors || hasDecorators) {
+        if (hasNonConstructorInterceptors || hasDecorators) {
             if (!(getInstantiator() instanceof DefaultInstantiator<?>)) {
                 throw new java.lang.IllegalStateException("Unexpected instantiator " + getInstantiator());
             }
             DefaultInstantiator<T> delegate = (DefaultInstantiator<T>) getInstantiator();
             setInstantiator(new SubclassedComponentInstantiator<T>(annotatedType, getBean(), delegate, beanManager));
-
             if (hasDecorators) {
                 setInstantiator(new SubclassDecoratorApplyingInstantiator<T>(getInstantiator(), getBean(), decorators));
             }
-            if (hasInterceptors) {
-                setInstantiator(new InterceptorApplyingInstantiator<T>(annotatedType, this.getInstantiator(), beanManager, delegate.getConstructor().getAnnotated().getJavaMember()));
+            if (hasNonConstructorInterceptors) {
+                setInstantiator(new InterceptorApplyingInstantiator<T>(getInstantiator(), interceptionModel));
             }
+        }
+
+        if (isInterceptionCandidate()) {
+            setupConstructorInterceptionInstantiator(interceptionModel);
+        }
+    }
+
+    protected void setupConstructorInterceptionInstantiator(InterceptionModel<ClassMetadata<?>, ?> interceptionModel) {
+        if (interceptionModel != null && interceptionModel.hasConstructorInterceptors()) {
+            setInstantiator(new ConstructorInterceptionInstantiator<T>(getInstantiator(), interceptionModel));
         }
     }
 
