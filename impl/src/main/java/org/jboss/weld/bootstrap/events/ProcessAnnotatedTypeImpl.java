@@ -30,6 +30,7 @@ import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resolution.Resolvable;
 import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.resources.spi.AnnotationDiscovery;
 
 /**
  * Container lifecycle event for each Java class or interface discovered by
@@ -47,14 +48,14 @@ public class ProcessAnnotatedTypeImpl<X> extends AbstractDefinitionContainerEven
     private final Resolvable resolvable;
 
     public ProcessAnnotatedTypeImpl(BeanManagerImpl beanManager, SlimAnnotatedType<X> annotatedType, AnnotationDiscovery discovery) {
-        this(beanManager, annotatedType, ProcessAnnotatedType.class, annotatedType.getJavaClass(), discovery);
+        this(beanManager, annotatedType, ProcessAnnotatedType.class, discovery);
     }
 
-    protected ProcessAnnotatedTypeImpl(BeanManagerImpl beanManager, SlimAnnotatedType<X> annotatedType, Class<? extends ProcessAnnotatedType> rawType, Class<?> typeArgument, AnnotationDiscovery discovery) {
-        super(beanManager, rawType, new Type[] { typeArgument });
+    protected ProcessAnnotatedTypeImpl(BeanManagerImpl beanManager, SlimAnnotatedType<X> annotatedType, Class<? extends ProcessAnnotatedType> rawType, AnnotationDiscovery discovery) {
+        super(beanManager, rawType, new Type[] { annotatedType.getJavaClass() });
         this.annotatedType = annotatedType;
         this.originalAnnotatedType = annotatedType;
-        this.resolvable = createResolvable(typeArgument, discovery);
+        this.resolvable = createResolvable(annotatedType, discovery);
     }
 
     public AnnotatedType<X> getAnnotatedType() {
@@ -83,8 +84,8 @@ public class ProcessAnnotatedTypeImpl<X> extends AbstractDefinitionContainerEven
         this.annotatedType = type;
     }
 
-    protected Resolvable createResolvable(Class<?> typeArgument, AnnotationDiscovery discovery) {
-        return ProcessAnnotatedTypeEventResolvable.forProcessAnnotatedType(typeArgument, discovery);
+    protected Resolvable createResolvable(SlimAnnotatedType<X> annotatedType, AnnotationDiscovery discovery) {
+        return ProcessAnnotatedTypeEventResolvable.forProcessAnnotatedType(annotatedType, discovery);
     }
 
     @Override

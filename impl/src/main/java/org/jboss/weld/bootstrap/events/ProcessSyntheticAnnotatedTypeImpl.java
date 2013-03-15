@@ -22,6 +22,7 @@ import javax.enterprise.inject.spi.ProcessSyntheticAnnotatedType;
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resolution.Resolvable;
+import org.jboss.weld.resources.spi.AnnotationDiscovery;
 
 /**
  *
@@ -33,13 +34,13 @@ public class ProcessSyntheticAnnotatedTypeImpl<T> extends ProcessAnnotatedTypeIm
     private Extension source;
 
     public ProcessSyntheticAnnotatedTypeImpl(BeanManagerImpl beanManager, SlimAnnotatedType<T> annotatedType, AnnotationDiscovery discovery, Extension source) {
-        super(beanManager, annotatedType, ProcessSyntheticAnnotatedType.class, annotatedType.getJavaClass(), discovery);
+        super(beanManager, annotatedType, ProcessSyntheticAnnotatedType.class, discovery);
         this.source = source;
     }
 
     @Override
-    protected Resolvable createResolvable(Class<?> typeArgument, AnnotationDiscovery discovery) {
-        return ProcessAnnotatedTypeEventResolvable.forProcessSyntheticAnnotatedType(typeArgument, discovery);
+    protected Resolvable createResolvable(SlimAnnotatedType<T> annotatedType, AnnotationDiscovery discovery) {
+        return ProcessAnnotatedTypeEventResolvable.forProcessSyntheticAnnotatedType(annotatedType, discovery);
     }
 
     @Override

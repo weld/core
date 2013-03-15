@@ -17,13 +17,21 @@
 package org.jboss.weld.bootstrap.events;
 
 import java.lang.annotation.Annotation;
+import java.lang.annotation.Inherited;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.Collection;
 
 import org.jboss.weld.resources.ReflectionCache;
+import org.jboss.weld.resources.spi.AnnotationDiscovery;
 
+/**
+ * Basic implementation of {@link AnnotationDiscovery} which uses Java Reflection. This is the fallback option if an annotation
+ * index is not available.
+ *
+ * @author Jozef Hartinger
+ *
+ */
 public class SimpleAnnotationDiscovery implements AnnotationDiscovery {
 
     private final ReflectionCache cache;
@@ -33,36 +41,38 @@ public class SimpleAnnotationDiscovery implements AnnotationDiscovery {
     }
 
     @Override
-    public boolean containsAnnotations(Class<?> javaClass, Collection<Class<? extends Annotation>> requiredAnnotations) {
+    public boolean containsAnnotation(Class<?> javaClass, Class<? extends Annotation> requiredAnnotation) {
         for (Class<?> clazz = javaClass; clazz != null && clazz != Object.class; clazz = clazz.getSuperclass()) {
             // class level annotations
-            if (containsAnnotations(cache.getAnnotations(clazz), requiredAnnotations)) {
-                return true;
+            if (clazz == javaClass || requiredAnnotation.isAnnotationPresent(Inherited.class)) {
+                if (containsAnnotations(cache.getAnnotations(clazz), requiredAnnotation)) {
+                    return true;
+                }
             }
             // fields
             for (Field field : clazz.getDeclaredFields()) {
-                if (containsAnnotations(cache.getAnnotations(field), requiredAnnotations)) {
+                if (containsAnnotations(cache.getAnnotations(field), requiredAnnotation)) {
                     return true;
                 }
             }
             // constructors
             for (Constructor<?> constructor : clazz.getConstructors()) {
-                if (containsAnnotations(cache.getAnnotations(constructor), requiredAnnotations)) {
+                if (containsAnnotations(cache.getAnnotations(constructor), requiredAnnotation)) {
                     return true;
                 }
                 for (Annotation[] parameterAnnotations : constructor.getParameterAnnotations()) {
-                    if (containsAnnotations(parameterAnnotations, requiredAnnotations)) {
+                    if (containsAnnotations(parameterAnnotations, requiredAnnotation)) {
                         return true;
                     }
                 }
             }
             // methods
             for (Method method : clazz.getDeclaredMethods()) {
-                if (containsAnnotations(cache.getAnnotations(method), requiredAnnotations)) {
+                if (containsAnnotations(cache.getAnnotations(method), requiredAnnotation)) {
                     return true;
                 }
                 for (Annotation[] parameterAnnotations : method.getParameterAnnotations()) {
-                    if (containsAnnotations(parameterAnnotations, requiredAnnotations)) {
+                    if (containsAnnotations(parameterAnnotations, requiredAnnotation)) {
                         return true;
                     }
                 }
@@ -71,22 +81,18 @@ public class SimpleAnnotationDiscovery implements AnnotationDiscovery {
         return false;
     }
 
-    private boolean containsAnnotations(Annotation[] annotations, Collection<Class<? extends Annotation>> requiredAnnotations) {
-        return containsAnnotations(annotations, requiredAnnotations, true);
+    private boolean containsAnnotations(Annotation[] annotations, Class<? extends Annotation> requiredAnnotation) {
+        return containsAnnotation(annotations, requiredAnnotation, true);
     }
 
-    private boolean containsAnnotations(Annotation[] annotations, Collection<Class<? extends Annotation>> requiredAnnotations,
-            boolean checkMetaAnnotations) {
-        for (Class<? extends Annotation> requiredAnnotation : requiredAnnotations) {
-            for (Annotation annotation : annotations) {
-                Class<? extends Annotation> annotationType = annotation.annotationType();
-                if (requiredAnnotation.equals(annotationType)) {
-                    return true;
-                }
-                if (checkMetaAnnotations
-                        && containsAnnotations(cache.getAnnotations(annotationType), requiredAnnotations, false)) {
-                    return true;
-                }
+    private boolean containsAnnotation(Annotation[] annotations, Class<? extends Annotation> requiredAnnotation, boolean checkMetaAnnotations) {
+        for (Annotation annotation : annotations) {
+            Class<? extends Annotation> annotationType = annotation.annotationType();
+            if (requiredAnnotation.equals(annotationType)) {
+                return true;
+            }
+            if (checkMetaAnnotations && containsAnnotation(cache.getAnnotations(annotationType), requiredAnnotation, false)) {
+                return true;
             }
         }
         return false;
@@ -95,5 +101,4 @@ public class SimpleAnnotationDiscovery implements AnnotationDiscovery {
     @Override
     public void cleanup() {
     }
-
 }

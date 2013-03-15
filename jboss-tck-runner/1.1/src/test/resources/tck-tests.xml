@@ -36,12 +36,6 @@
                     <exclude name="testIsNullableCalled" />
                 </methods>
             </class>
-            <!-- CDI-298 -->
-            <class name="org.jboss.cdi.tck.tests.extensions.annotated.delivery.WithAnnotationsTest">
-                <methods>
-                    <exclude name="testDelivery"/>
-                </methods>
-            </class>
             <!-- CDI-328 -->
             <class name="org.jboss.cdi.tck.tests.extensions.beanManager.producer.SyntheticProducerTest">
                 <methods>
