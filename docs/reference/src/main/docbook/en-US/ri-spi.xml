@@ -648,6 +648,22 @@
          </para>
       </section>
       <section>
+            <title>CDI Conversation Filter</title>
+            <para>
+                A CDI implementation is required to provide a Servlet filter named <quote>CDI Conversation Filter</quote>. The filter
+                may be mapped by an application in the web descriptor. That allows application to place another filter around the CDI filter for dealing with exceptions.
+            </para>
+            <para>
+                Weld provides this filter with a fully qualified class name of<code>org.jboss.weld.servlet.ConversationFilter</code>.
+            </para>
+            <para>
+                If the application contains a filter mapping for a filter named <quote>CDI Conversation Filter</quote>, the integrator is required to register
+                <code>org.jboss.weld.servlet.ConversationFilter</code> as a filter with <quote>CDI Conversation Filter</quote> as its filter name. If no such mapping
+                exists in the application, the integrator is not required to register the filter. In that case, WeldListener will take care of conversation context
+                activation/deactivation at the beginning of HTTP request processing.
+            </para>
+      </section>
+      <section>
          <title>JSF</title>
          <para>
             If you are integrating Weld into a JSF environment you must register
