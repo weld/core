@@ -36,8 +36,6 @@ import org.jboss.weld.injection.producer.DefaultInjector;
 import org.jboss.weld.injection.producer.DefaultInstantiator;
 import org.jboss.weld.injection.producer.Injector;
 import org.jboss.weld.injection.producer.Instantiator;
-import org.jboss.weld.injection.producer.LifecycleCallbackInvoker;
-import org.jboss.weld.injection.producer.NoopLifecycleCallbackInvoker;
 import org.jboss.weld.injection.producer.StatelessSessionBeanInjector;
 import org.jboss.weld.injection.producer.SubclassDecoratorApplyingInstantiator;
 import org.jboss.weld.injection.producer.SubclassedComponentInstantiator;
@@ -105,11 +103,6 @@ public class SessionBeanInjectionTarget<T> extends BeanInjectionTarget<T> {
             proxy.setHandler(new SessionBeanViewMethodHandler(bean.getTypes(), (CombinedInterceptorAndDecoratorStackMethodHandler) proxy.getHandler()));
         }
         return result;
-    }
-
-    @Override
-    protected LifecycleCallbackInvoker<T> initInvoker(EnhancedAnnotatedType<T> type) {
-        return NoopLifecycleCallbackInvoker.getInstance();
     }
 
     /**
