@@ -103,6 +103,11 @@ public class MessageDrivenInjectionTargetTest {
             public boolean isMessageDriven() {
                 return true;
             }
+
+            @Override
+            public boolean isPassivationCapable() {
+                return false;
+            }
         });
 
         CreationalContext<MessageDriven> ctx = manager.<MessageDriven> createCreationalContext(null);

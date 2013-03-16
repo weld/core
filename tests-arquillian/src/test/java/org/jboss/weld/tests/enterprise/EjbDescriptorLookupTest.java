@@ -25,8 +25,10 @@ import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.tests.category.Integration;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 import javax.enterprise.inject.spi.Bean;
@@ -37,6 +39,7 @@ import javax.inject.Inject;
  * @author pmuir
  */
 @RunWith(Arquillian.class)
+@Category(Integration.class) // all EJB tests need to use this category because the arquillian-weld-ee container does not implement EjbDescriptor.isPassivationCapable()
 public class EjbDescriptorLookupTest {
     @Deployment
     public static Archive<?> deploy() {

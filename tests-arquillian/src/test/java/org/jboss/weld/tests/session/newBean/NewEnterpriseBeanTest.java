@@ -38,12 +38,15 @@ import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.producer.BasicInjectionTarget;
 import org.jboss.weld.literal.NewLiteral;
+import org.jboss.weld.tests.category.Integration;
 import org.jboss.weld.util.reflection.Reflections;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
+@Category(Integration.class) // all EJB tests need to use this category because the arquillian-weld-ee container does not implement EjbDescriptor.isPassivationCapable()
 public class NewEnterpriseBeanTest {
     @Deployment
     public static Archive<?> deploy() {
