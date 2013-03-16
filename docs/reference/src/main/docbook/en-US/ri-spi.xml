@@ -617,6 +617,32 @@
 }]]></programlisting>
 
        </section>
+
+        <section>
+            <title>AnnotationDiscovery</title>
+            <para>
+                An integrator may optionally implement the <literal>AnnotationDiscovery</literal> service.
+            </para>
+            <programlisting role="JAVA"><![CDATA[public interface AnnotationDiscovery extends Service {
+    boolean containsAnnotation(Class<?> javaClass, Class<? extends Annotation> annotation);
+}]]></programlisting>
+            <para>
+                The service allows an integrator to expose a fast annotation index obtained by performing byte-level scanning. Weld
+                uses the service at various places to optimize bootstrap performance by avoiding expensive Java Reflection API calls.
+                See the service Javadoc for details on the API contract.
+            </para>
+            <para>
+                The service implementation may also implement <literal>ExtendedAnnotationDiscovery</literal> to allow Weld to discover
+                annotations annotated with a given meta-annotation effectively. Again, implementing this interface is optional and should
+                only be done by an integrator that builds an annotation index.
+            </para>
+                        <programlisting role="JAVA"><![CDATA[public interface ExtendedAnnotationDiscovery extends AnnotationDiscovery {
+    Set<String> getAnnotationsAnnotatedWith(Class<? extends Annotation> annotation);
+}]]></programlisting>
+            <para>
+                If the <literal>AnnotationDiscovery</literal> service is not available, Weld falls back to using Java Reflection API
+            </para>
+        </section>
    
     </section>
     
