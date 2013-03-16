@@ -138,6 +138,7 @@ public class ConversationContextActivator {
     }
 
     // TODO: we should NOT be rebuilding it
+    // CDI-354
     private ServletRequestEvent buildServletRequestEvent(ServletRequest request) {
         return new ServletRequestEvent(ctx, request);
     }
