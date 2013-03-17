@@ -22,6 +22,7 @@ import org.jboss.weld.logging.MessageId;
 import ch.qos.cal10n.BaseName;
 import ch.qos.cal10n.Locale;
 import ch.qos.cal10n.LocaleData;
+import org.jboss.weld.logging.MessageId;
 
 @BaseName("org.jboss.weld.messages.validator")
 @LocaleData({
@@ -101,4 +102,7 @@ public enum ValidatorMessage {
     @MessageId("001463")BEAN_WITH_PASSIVATING_SCOPE_NOT_PASSIVATION_CAPABLE,
     @MessageId("001465")BUILTIN_BEAN_WITH_NONSERIALIZABLE_DECORATOR,
     @MessageId("001466")INJECTION_INTO_DISPOSER_METHOD,
+    @MessageId("001467")INTERCEPTOR_METHOD_DOES_NOT_RETURN_OBJECT_OR_VOID,
+    @MessageId("001468")INTERCEPTOR_METHOD_DOES_NOT_HAVE_VOID_RETURN_TYPE,
+    @MessageId("001469")INTERCEPTOR_METHOD_DOES_NOT_HAVE_ZERO_PARAMETERS,
 }

@@ -148,10 +148,17 @@ public class BeanMethods {
 
         @Override
         public void processMethod(EnhancedAnnotatedMethod<?, ? super T> method) {
-            if (foundMethod != null) {
-                duplicateMethod(method);
+            if (isValidTargetClassLifecycleInterceptorMethod(method)) {
+                if (foundMethod != null) {
+                    duplicateMethod(method);
+                }
+                foundMethod = method;
             }
-            foundMethod = method;
+        }
+
+        private boolean isValidTargetClassLifecycleInterceptorMethod(EnhancedAnnotatedMethod<?, ? super T> method) {
+            // TODO: this method actually duplicates code in InterceptorMetadataUtils.isValidTargetClassLifecycleInterceptorMethod
+            return Void.TYPE.equals(method.getJavaClass()) && method.getParameterTypesAsArray().length == 0;
         }
 
         @Override
