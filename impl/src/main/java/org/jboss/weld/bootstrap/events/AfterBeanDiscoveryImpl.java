@@ -78,17 +78,6 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
         ExternalBeanAttributesFactory.validateBeanAttributes(bean, beanManager);
         ContainerLifecycleEvents containerLifecycleEvents = beanManager.getServices().get(ContainerLifecycleEvents.class);
 
-        // ProcessBeanAttributes for the Bean
-        ProcessBeanAttributesImpl<T> event = containerLifecycleEvents.fireProcessBeanAttributes(beanManager, bean, null, bean.getBeanClass());
-        if (event != null) {
-            if (event.isVeto()) {
-                return;
-            }
-            if (event.isDirty()) {
-                bean = setBeanAttributes(bean, ExternalBeanAttributesFactory.of(event.getBeanAttributes(), getBeanManager()));
-            }
-        }
-
         if (bean instanceof Interceptor<?>) {
             beanManager.addInterceptor((Interceptor<?>) bean);
         } else if (bean instanceof Decorator<?>) {

@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2010, Red Hat, Inc., and individual contributors
+ * Copyright 2013, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,23 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.extensions.lifecycle.processBeanAttributes.synthetic;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
+package org.jboss.weld.tests.extensions.lifecycle.processBeanAttributes.notfired;
 
-import javax.enterprise.inject.Stereotype;
-
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
-@Stereotype
-@Target({ TYPE, METHOD, FIELD })
-@Retention(RUNTIME)
-@Documented
-public @interface FooStereotype {
-
+public abstract class Foo {
 }
