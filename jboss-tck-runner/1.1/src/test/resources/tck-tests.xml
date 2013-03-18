@@ -35,12 +35,6 @@
                     <exclude name=".*"/>
                 </methods>
             </class>
-            <!-- CDITCK-326-->
-            <class name="org.jboss.cdi.tck.tests.lookup.modules.SpecializedProducerMethodInjectionNotAvailableTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
 
             <!-- Issues in Weld (the RI) -->
             <!-- WELD-430 -->
