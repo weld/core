@@ -125,6 +125,18 @@
                     <exclude name=".*"/>
                 </methods>
             </class>
+            <!-- JMS tests not working on AS7 -->
+            <class name="org.jboss.cdi.tck.tests.extensions.container.event.jms.ContainerEventTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
+            <class name="org.jboss.cdi.tck.tests.interceptors.definition.enterprise.jms.MessageDrivenBeanInterceptorInvocationTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
+            
 
         </classes>
     </test>
