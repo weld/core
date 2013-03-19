@@ -51,7 +51,7 @@ public class WrongExtension implements Extension {
         testUnavailableMethods(beanManager);
     }
 
-    public void observeProcessBean(ProcessBean<Foo> event, BeanManager beanManager) {
+    public void observeProcessBean(@Observes ProcessBean<Foo> event, BeanManager beanManager) {
         this.fooBean = event.getBean();
         testUnavailableMethods(beanManager);
     }
