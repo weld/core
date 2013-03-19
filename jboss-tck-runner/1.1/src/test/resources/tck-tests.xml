@@ -119,7 +119,7 @@
                     <exclude name=".*"/>
                 </methods>
             </class>
-            <!-- JMS tests not working on AS7 -->
+            <!-- JMS tests not working on AS7, see CDITCK-315 -->
             <class name="org.jboss.cdi.tck.tests.extensions.container.event.jms.ContainerEventTest">
                 <methods>
                     <exclude name=".*"/>
@@ -130,7 +130,22 @@
                     <exclude name=".*"/>
                 </methods>
             </class>
-
+            <!-- SFSB passivationCapable, see CDITCK-327 -->
+            <class name="org.jboss.cdi.tck.tests.context.passivating.enterprise.invalid.StatefulSessionBeanTest">
+                <methods>
+                    <exclude name="testDeployment"/>
+                </methods>
+            </class>
+            <class name="org.jboss.cdi.tck.tests.context.passivating.enterprise.invalid.StatefulSessionBeanXmlDescriptorTest">
+                <methods>
+                    <exclude name="testDeployment"/>
+                </methods>
+            </class>
+            <class name="org.jboss.cdi.tck.tests.context.passivating.enterprise.valid.StatefulSessionBeanXmlDescriptorTest">
+                <methods>
+                    <exclude name="testDeployment"/>
+                </methods>
+            </class>
 
         </classes>
     </test>
