@@ -109,7 +109,7 @@ public class InterceptorMetadataUtils {
         if (!Object.class.equals(method.getReturnType())) {
             LOG.warn(ValidatorMessage.INTERCEPTOR_METHOD_DOES_NOT_RETURN_OBJECT,
                     javaMethod.getName(), javaMethod.getDeclaringClass().getName(),
-                    interceptionType.annotationClassName());
+                    interceptionType.annotationClassName(), OBJECT_CLASS_NAME);
             return false;
         }
 
