@@ -272,7 +272,7 @@ public class SessionBean<T> extends AbstractClassBean<T> {
 
     @Override
     public boolean isPassivationCapableDependency() {
-        return true; // all session beans are passivation capable dependencies
+        return (ejbDescriptor.isStateful() && isPassivationCapableBean()) || ejbDescriptor.isSingleton() || ejbDescriptor.isStateless();
     }
 
     @Override
