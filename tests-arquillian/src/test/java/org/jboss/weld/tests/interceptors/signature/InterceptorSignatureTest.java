@@ -55,7 +55,12 @@ public class InterceptorSignatureTest {
                         PostConstructInterceptorWithInvalidReturnType.class,
                         PostConstructInterceptorWithInvalidParameterCount.class,
                         PostConstructInterceptorWithInvalidParameterType.class)
-                .addClasses(AroundConstructInterceptorWithVoidReturnType.class,
+                .addClasses(
+                        TargetClassWithAroundConstruct.class,
+                        TargetClassWithAroundInvokeWithInvalidReturnType.class,
+                        TargetClassWithAroundInvokeWithInvalidParameterCount.class,
+                        TargetClassWithAroundInvokeWithInvalidParameterType.class,
+                        AroundConstructInterceptorWithVoidReturnType.class,
                         AroundConstructInterceptorWithObjectReturnType.class,
                         AroundInvokeInterceptorWithValidSignature.class,
 //                        AroundInvokeInterceptorWithInvalidParameterCount.class,   // TODO: AS7 EE throws deployment error for invalid AroundInvoke signature
@@ -78,6 +83,33 @@ public class InterceptorSignatureTest {
 
     @Inject
     private BeanManager beanManager;
+
+    @Test
+    public void testTargetClassWithAroundConstruct() {
+        TargetClassWithAroundConstruct bean = getBean(TargetClassWithAroundConstruct.class);
+        assertNotInvoked(bean.aroundConstructInvoked);
+    }
+
+    @Test
+    public void testTargetClassWithAroundInvokeWithInvalidReturnType() {
+        TargetClassWithAroundInvokeWithInvalidReturnType bean = getBean(TargetClassWithAroundInvokeWithInvalidReturnType.class);
+        bean.foo();
+        assertNotInvoked(bean.aroundInvokeInvoked);
+    }
+
+    @Test
+    public void testTargetClassWithAroundInvokeWithInvalidParameterCount() {
+        TargetClassWithAroundInvokeWithInvalidParameterCount bean = getBean(TargetClassWithAroundInvokeWithInvalidParameterCount.class);
+        bean.foo();
+        assertNotInvoked(bean.aroundInvokeInvoked);
+    }
+
+    @Test
+    public void testTargetClassWithAroundInvokeWithInvalidParameterType() {
+        TargetClassWithAroundInvokeWithInvalidParameterType bean = getBean(TargetClassWithAroundInvokeWithInvalidParameterType.class);
+        bean.foo();
+        assertNotInvoked(bean.aroundInvokeInvoked);
+    }
 
     @Test
     public void testTargetClassLifecycleInterceptor() {
