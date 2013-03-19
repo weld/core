@@ -109,11 +109,6 @@ public class ExtensionObserverMethodImpl<T, X> extends ObserverMethodImpl<T, X> 
         event.setReceiver(receiver);
     }
 
-    @Override
-    protected Object getReceiverIfExists() {
-        return getReceiver(null);
-    }
-
     /*
      * Contexts may not be active during notification of container lifecycle events. Therefore, we invoke the methods direcly on
      * an extension instance.
