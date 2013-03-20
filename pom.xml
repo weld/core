@@ -490,6 +490,12 @@
                 </exclusions>
             </dependency>
 
+            <dependency>
+                <groupId>org.jboss.cdi.tck</groupId>
+                <artifactId>cdi-tck-ext-lib</artifactId>
+                <version>${cdi.tck-1-1.version}</version>
+            </dependency>
+
         </dependencies>
 
     </dependencyManagement>
