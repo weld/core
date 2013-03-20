@@ -33,13 +33,13 @@ import org.junit.runner.RunWith;
  * @author <a href="mailto:mluksa@redhat.com">Marko Luksa</a>
  */
 @RunWith(Arquillian.class)
-public class AroundInvokeInterceptorWithValidSignatureTest extends AbstractSignatureTest{
+public class AroundInvokeInterceptorWithValidSignatureTest extends AbstractSignatureTestBase {
 
     @Deployment
     public static Archive<?> deploy() {
         return ShrinkWrap.create(BeanArchive.class)
                 .intercept(MyInterceptor.class)
-                .addClasses(AbstractSignatureTest.class, Intercept.class, InterceptedBean.class);
+                .addClasses(AbstractSignatureTestBase.class, Intercept.class, InterceptedBean.class);
     }
 
     @Test

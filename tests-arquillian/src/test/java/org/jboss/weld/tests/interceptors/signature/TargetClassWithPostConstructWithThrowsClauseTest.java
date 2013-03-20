@@ -17,10 +17,6 @@
 
 package org.jboss.weld.tests.interceptors.signature;
 
-import javax.interceptor.AroundConstruct;
-import javax.interceptor.Interceptor;
-import javax.interceptor.InvocationContext;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -33,32 +29,19 @@ import org.junit.runner.RunWith;
  * @author <a href="mailto:mluksa@redhat.com">Marko Luksa</a>
  */
 @RunWith(Arquillian.class)
-public class AroundConstructInterceptorWithObjectReturnTypeTest extends AbstractSignatureTestBase {
+public class TargetClassWithPostConstructWithThrowsClauseTest extends AbstractSignatureTestBase {
 
     @Deployment
     public static Archive<?> deploy() {
         return ShrinkWrap.create(BeanArchive.class)
-                .intercept(MyInterceptor.class)
-                .addClasses(AbstractSignatureTestBase.class, Lifecycle.class, InterceptedBean.class);
+                .addClass(TargetClassWithPostConstructWithThrowsClause.class)
+                .addClass(AbstractSignatureTestBase.class);
     }
 
     @Test
-    public void testInterceptor() {
-        MyInterceptor.invoked = false;
-        getBean(InterceptedBean.class);
-        assertInvoked(MyInterceptor.invoked);
+    public void testTargetClassPostConstruct() {
+        TargetClassWithPostConstructWithThrowsClause bean = getBean(TargetClassWithPostConstructWithThrowsClause.class);
+        assertInvoked(bean.postConstructInvoked);
     }
 
-    @Lifecycle
-    @Interceptor
-    public static class MyInterceptor {
-        public static boolean invoked;
-
-        @AroundConstruct
-        public Object aroundConstruct(InvocationContext ctx) throws Exception {
-            invoked = true;
-            ctx.proceed();
-            return null;
-        }
-    }
 }

@@ -29,13 +29,13 @@ import org.junit.runner.RunWith;
  * @author <a href="mailto:mluksa@redhat.com">Marko Luksa</a>
  */
 @RunWith(Arquillian.class)
-public class TargetClassWithValidPostConstructTest extends AbstractSignatureTest{
+public class TargetClassWithValidPostConstructTest extends AbstractSignatureTestBase {
 
     @Deployment
     public static Archive<?> deploy() {
         return ShrinkWrap.create(BeanArchive.class)
                 .addClass(TargetClassWithValidPostConstruct.class)
-                .addClass(AbstractSignatureTest.class);
+                .addClass(AbstractSignatureTestBase.class);
     }
 
     @Test

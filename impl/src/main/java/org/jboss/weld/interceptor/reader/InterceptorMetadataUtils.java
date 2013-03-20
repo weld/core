@@ -1,9 +1,5 @@
 package org.jboss.weld.interceptor.reader;
 
-import static org.jboss.weld.logging.Category.REFLECTION;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.util.collections.WeldCollections.immutableMap;
-
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.security.AccessController;
@@ -28,6 +24,10 @@ import org.jboss.weld.interceptor.util.InterceptorMetadataException;
 import org.jboss.weld.logging.messages.ValidatorMessage;
 import org.jboss.weld.security.SetAccessibleAction;
 import org.slf4j.cal10n.LocLogger;
+
+import static org.jboss.weld.logging.Category.REFLECTION;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.util.collections.WeldCollections.immutableMap;
 
 /**
  * @author Marius Bogoevici
@@ -79,6 +79,16 @@ public class InterceptorMetadataUtils {
             throw new DefinitionException(ValidatorMessage.INTERCEPTOR_METHOD_DOES_NOT_HAVE_ZERO_PARAMETERS,
                     javaMethod.getName(), javaMethod.getDeclaringClass().getName(),
                     interceptionType.annotationClassName());
+        }
+        Class<?>[] exceptionTypes = javaMethod.getExceptionTypes();
+        if (exceptionTypes.length != 0) {
+            for (Class<?> exceptionType : exceptionTypes) {
+                if (!RuntimeException.class.isAssignableFrom(exceptionType)) {
+                    LOG.warn(ValidatorMessage.INTERCEPTOR_METHOD_SHOULD_NOT_THROW_CHECKED_EXCEPTIONS,
+                            javaMethod.getName(), javaMethod.getDeclaringClass().getName(),
+                            exceptionType.getName());
+                }
+            }
         }
         return true;
     }

@@ -13,7 +13,7 @@ import static junit.framework.Assert.assertTrue;
 /**
  * @author <a href="mailto:mluksa@redhat.com">Marko Luksa</a>
  */
-public class AbstractSignatureTest {
+public abstract class AbstractSignatureTestBase {
     @Inject
     private BeanManager beanManager;
 
