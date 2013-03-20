@@ -17,24 +17,30 @@
 
 package org.jboss.weld.tests.interceptors.signature;
 
-import javax.annotation.PostConstruct;
-import javax.interceptor.Interceptor;
-import javax.interceptor.InvocationContext;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.ShouldThrowException;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.BeanArchive;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
- *
+ * @author <a href="mailto:mluksa@redhat.com">Marko Luksa</a>
  */
-@Lifecycle
-@Interceptor
-public class PostConstructInterceptorWithInvalidReturnType {
+@RunWith(Arquillian.class)
+public class TargetClassWithPostConstructWithInvalidReturnTypeTest {
 
-    public static boolean invoked;
+    @Deployment
+    @ShouldThrowException(Exception.class) // AS7-1197
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addClass(TargetClassWithPostConstructWithInvalidReturnType.class);
+    }
 
-    @PostConstruct
-    public String postConstruct(InvocationContext ctx) throws Exception {
-        invoked = true;
-        ctx.proceed();
-        return "";
+    @Test
+    public void testDeploymentFails() {
     }
 
 }

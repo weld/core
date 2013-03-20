@@ -17,14 +17,31 @@
 
 package org.jboss.weld.tests.interceptors.signature;
 
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.BeanArchive;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 /**
  * @author <a href="mailto:mluksa@redhat.com">Marko Luksa</a>
  */
-@Intercept
-@Lifecycle
-public class InterceptedBean {
+@RunWith(Arquillian.class)
+public class TargetClassWithValidPostConstructTest extends AbstractSignatureTest{
 
-    public String foo() {
-        return "foo";
+    @Deployment
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addClass(TargetClassWithValidPostConstruct.class)
+                .addClass(AbstractSignatureTest.class);
     }
+
+    @Test
+    public void testTargetClassPostConstruct() {
+        TargetClassWithValidPostConstruct bean = getBean(TargetClassWithValidPostConstruct.class);
+        assertInvoked(bean.postConstructInvoked);
+    }
+
 }

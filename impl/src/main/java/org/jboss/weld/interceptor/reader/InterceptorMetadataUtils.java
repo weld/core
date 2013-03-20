@@ -16,6 +16,7 @@ import java.util.Set;
 
 import javax.interceptor.InvocationContext;
 
+import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.interceptor.builder.MethodReference;
 import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorFactory;
@@ -63,18 +64,21 @@ public class InterceptorMetadataUtils {
 
     private static boolean isValidTargetClassLifecycleInterceptorMethod(InterceptionType interceptionType, MethodMetadata method) {
         Method javaMethod = method.getJavaMethod();
+        if (interceptionType == InterceptionType.AROUND_CONSTRUCT) {
+            throw new DefinitionException(ValidatorMessage.AROUND_CONSTRUCT_INTERCEPTOR_METHOD_NOT_ALLOWED_ON_TARGET_CLASS,
+                    javaMethod.getName(), javaMethod.getDeclaringClass().getName(),
+                    interceptionType.annotationClassName());
+        }
         if (!Void.TYPE.equals(method.getReturnType())) {
-            LOG.warn(ValidatorMessage.INTERCEPTOR_METHOD_DOES_NOT_HAVE_VOID_RETURN_TYPE,
+            throw new DefinitionException(ValidatorMessage.INTERCEPTOR_METHOD_DOES_NOT_HAVE_VOID_RETURN_TYPE,
                     javaMethod.getName(), javaMethod.getDeclaringClass().getName(),
                     interceptionType.annotationClassName(), Void.TYPE.getName());
-            return false;
         }
         Class<?>[] parameterTypes = javaMethod.getParameterTypes();
         if (parameterTypes.length != 0) {
-            LOG.warn(ValidatorMessage.INTERCEPTOR_METHOD_DOES_NOT_HAVE_ZERO_PARAMETERS,
+            throw new DefinitionException(ValidatorMessage.INTERCEPTOR_METHOD_DOES_NOT_HAVE_ZERO_PARAMETERS,
                     javaMethod.getName(), javaMethod.getDeclaringClass().getName(),
                     interceptionType.annotationClassName());
-            return false;
         }
         return true;
     }
@@ -82,24 +86,21 @@ public class InterceptorMetadataUtils {
     private static boolean isValidInterceptorClassLifecycleInterceptorMethod(InterceptionType interceptionType, MethodMetadata method) {
         Method javaMethod = method.getJavaMethod();
         if (!Object.class.equals(method.getReturnType()) && !Void.TYPE.equals(method.getReturnType())) {
-            LOG.warn(ValidatorMessage.INTERCEPTOR_METHOD_DOES_NOT_RETURN_OBJECT_OR_VOID,
+            throw new DefinitionException(ValidatorMessage.INTERCEPTOR_METHOD_DOES_NOT_RETURN_OBJECT_OR_VOID,
                     javaMethod.getName(), javaMethod.getDeclaringClass().getName(),
                     interceptionType.annotationClassName(), Void.TYPE.getName(), OBJECT_CLASS_NAME);
-            return false;
         }
 
         Class<?>[] parameterTypes = javaMethod.getParameterTypes();
         if (parameterTypes.length != 1) {
-            LOG.warn(ValidatorMessage.INTERCEPTOR_METHOD_DOES_NOT_HAVE_EXACTLY_ONE_PARAMETER,
+            throw new DefinitionException(ValidatorMessage.INTERCEPTOR_METHOD_DOES_NOT_HAVE_EXACTLY_ONE_PARAMETER,
                     javaMethod.getName(), javaMethod.getDeclaringClass().getName(),
                     interceptionType.annotationClassName());
-            return false;
         }
         if (!InvocationContext.class.isAssignableFrom(parameterTypes[0])) {
-            LOG.warn(ValidatorMessage.INTERCEPTOR_METHOD_DOES_NOT_HAVE_CORRECT_TYPE_OF_PARAMETER,
+            throw new DefinitionException(ValidatorMessage.INTERCEPTOR_METHOD_DOES_NOT_HAVE_CORRECT_TYPE_OF_PARAMETER,
                     javaMethod.getName(), javaMethod.getDeclaringClass().getName(),
                     interceptionType.annotationClassName(), InvocationContext.class.getName());
-            return false;
         }
         return true;
     }
@@ -107,24 +108,21 @@ public class InterceptorMetadataUtils {
     private static boolean isValidBusinessMethodInterceptorMethod(InterceptionType interceptionType, MethodMetadata method) {
         Method javaMethod = method.getJavaMethod();
         if (!Object.class.equals(method.getReturnType())) {
-            LOG.warn(ValidatorMessage.INTERCEPTOR_METHOD_DOES_NOT_RETURN_OBJECT,
+            throw new DefinitionException(ValidatorMessage.INTERCEPTOR_METHOD_DOES_NOT_RETURN_OBJECT,
                     javaMethod.getName(), javaMethod.getDeclaringClass().getName(),
                     interceptionType.annotationClassName(), OBJECT_CLASS_NAME);
-            return false;
         }
 
         Class<?>[] parameterTypes = javaMethod.getParameterTypes();
         if (parameterTypes.length != 1) {
-            LOG.warn(ValidatorMessage.INTERCEPTOR_METHOD_DOES_NOT_HAVE_EXACTLY_ONE_PARAMETER,
+            throw new DefinitionException(ValidatorMessage.INTERCEPTOR_METHOD_DOES_NOT_HAVE_EXACTLY_ONE_PARAMETER,
                     javaMethod.getName(), javaMethod.getDeclaringClass().getName(),
                     interceptionType.annotationClassName());
-            return false;
         }
         if (!InvocationContext.class.isAssignableFrom(parameterTypes[0])) {
-            LOG.warn(ValidatorMessage.INTERCEPTOR_METHOD_DOES_NOT_HAVE_CORRECT_TYPE_OF_PARAMETER,
+            throw new DefinitionException(ValidatorMessage.INTERCEPTOR_METHOD_DOES_NOT_HAVE_CORRECT_TYPE_OF_PARAMETER,
                     javaMethod.getName(), javaMethod.getDeclaringClass().getName(),
                     interceptionType.annotationClassName(), InvocationContext.class.getName());
-            return false;
         }
         return true;
     }

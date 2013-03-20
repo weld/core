@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
 import javax.interceptor.InterceptorBinding;
 
 /**
- *
+ * @author <a href="mailto:mluksa@redhat.com">Marko Luksa</a>
  */
 @InterceptorBinding
 @Target({ElementType.TYPE, ElementType.METHOD})

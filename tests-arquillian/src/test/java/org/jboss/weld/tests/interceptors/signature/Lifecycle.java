@@ -28,7 +28,7 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- *
+ * @author <a href="mailto:mluksa@redhat.com">Marko Luksa</a>
  */
 @InterceptorBinding
 @Inherited

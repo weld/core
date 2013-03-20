@@ -17,24 +17,30 @@
 
 package org.jboss.weld.tests.interceptors.signature;
 
-import javax.interceptor.AroundInvoke;
-import javax.interceptor.Interceptor;
-import javax.interceptor.InvocationContext;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.ShouldThrowException;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.BeanArchive;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
- *
+ * @author <a href="mailto:mluksa@redhat.com">Marko Luksa</a>
  */
-@Intercept
-@Interceptor
-public class AroundInvokeInterceptorWithInvalidReturnType {
+@RunWith(Arquillian.class)
+public class TargetClassWithAroundInvokeWithInvalidParameterCountTest {
 
-    public static boolean invoked;
+    @Deployment
+    @ShouldThrowException(Exception.class) // AS7-1197
+    public static Archive<?> deploy() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addClass(TargetClassWithAroundInvokeWithInvalidParameterCount.class);
+    }
 
-    @AroundInvoke
-    public String aroundInvoke(InvocationContext ctx) throws Exception {
-        invoked = true;
-        ctx.proceed();
-        return "";
+    @Test
+    public void testDeploymentFails() {
     }
 
 }

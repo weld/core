@@ -22,7 +22,6 @@ import org.jboss.weld.logging.MessageId;
 import ch.qos.cal10n.BaseName;
 import ch.qos.cal10n.Locale;
 import ch.qos.cal10n.LocaleData;
-import org.jboss.weld.logging.MessageId;
 
 @BaseName("org.jboss.weld.messages.validator")
 @LocaleData({
@@ -105,4 +104,5 @@ public enum ValidatorMessage {
     @MessageId("001467")INTERCEPTOR_METHOD_DOES_NOT_RETURN_OBJECT_OR_VOID,
     @MessageId("001468")INTERCEPTOR_METHOD_DOES_NOT_HAVE_VOID_RETURN_TYPE,
     @MessageId("001469")INTERCEPTOR_METHOD_DOES_NOT_HAVE_ZERO_PARAMETERS,
+    @MessageId("001470")AROUND_CONSTRUCT_INTERCEPTOR_METHOD_NOT_ALLOWED_ON_TARGET_CLASS,
 }
