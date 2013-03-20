@@ -76,7 +76,7 @@ public class Reflections {
     public static boolean isCacheable(Collection<Annotation> annotations) {
         for (Annotation qualifier : annotations) {
             Class<?> clazz = qualifier.getClass();
-            if (clazz.isAnonymousClass() || (clazz.isMemberClass() && isStatic(clazz))) {
+            if (isNonStaticInnerClass(clazz)) {
                 return false;
             }
         }
@@ -86,7 +86,7 @@ public class Reflections {
     public static boolean isCacheable(Annotation[] annotations) {
         for (Annotation qualifier : annotations) {
             Class<?> clazz = qualifier.getClass();
-            if (clazz.isAnonymousClass() || (clazz.isMemberClass() && isStatic(clazz))) {
+            if (isNonStaticInnerClass(clazz)) {
                 return false;
             }
         }
@@ -388,5 +388,14 @@ public class Reflections {
 
     private static boolean isEmptyBoundArray(Type[] bounds) {
         return bounds == null || bounds.length == 0 || (bounds.length == 1 && Object.class.equals(bounds[0]));
+    }
+
+    /**
+     * @see https://issues.jboss.org/browse/WELD-1081
+     */
+    public static boolean isNonStaticInnerClass(Class<?> javaClass) {
+        return javaClass.getEnclosingConstructor() != null
+                || javaClass.getEnclosingMethod() != null
+                || (javaClass.getEnclosingClass() != null && !Reflections.isStatic(javaClass));
     }
 }

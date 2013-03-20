@@ -32,6 +32,7 @@ import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.collections.WeldCollections;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * Basic {@link InjectionTarget} implementation. The implementation supports:
@@ -75,7 +76,7 @@ public class BasicInjectionTarget<T> extends AbstractProducer<T> implements Inje
     }
 
     protected void checkType(EnhancedAnnotatedType<T> type) {
-        if (type.isAnonymousClass() || (type.isMemberClass() && !type.isStatic())) {
+        if (Reflections.isNonStaticInnerClass(type.getJavaClass())) {
             throw new DefinitionException(SIMPLE_BEAN_AS_NON_STATIC_INNER_CLASS_NOT_ALLOWED, type);
         }
     }
