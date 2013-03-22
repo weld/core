@@ -17,23 +17,26 @@
 
 package org.jboss.weld.bean.proxy;
 
-import org.jboss.weld.context.SerializableContextualInstanceImpl;
-import org.jboss.weld.exceptions.WeldException;
-import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.serialization.spi.ContextualStore;
-import org.jboss.weld.util.reflection.Reflections;
-import org.jboss.weld.util.reflection.SecureReflections;
+import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_BEAN_ACCESS_FAILED;
+import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_FAILED;
+
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Stack;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Stack;
 
-import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_BEAN_ACCESS_FAILED;
-import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_FAILED;
+import org.jboss.weld.context.SerializableContextualInstanceImpl;
+import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.security.NewInstanceAction;
+import org.jboss.weld.serialization.spi.ContextualStore;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * @author Marius Bogoevici
@@ -103,17 +106,21 @@ public class DecorationHelper<T> {
 
     private T createProxy(InjectionPoint injectionPoint, CreationalContext<?> creationalContext) {
         try {
-            T proxy = SecureReflections.newInstance(proxyClassForDecorator);
+            T proxy = AccessController.doPrivileged(NewInstanceAction.of(proxyClassForDecorator));
             TargetBeanInstance newTargetBeanInstance = new TargetBeanInstance(targetBeanInstance);
             Decorator<Object> decorator = Reflections.cast(decorators.get(counter++));
             DecoratorProxyMethodHandler methodHandler = createMethodHandler(injectionPoint, creationalContext, decorator);
             newTargetBeanInstance.setInterceptorsHandler(methodHandler);
             ProxyFactory.setBeanInstance(proxy, newTargetBeanInstance, bean);
             return proxy;
-        } catch (InstantiationException e) {
-            throw new WeldException(PROXY_INSTANTIATION_FAILED, e, this);
-        } catch (IllegalAccessException e) {
-            throw new WeldException(PROXY_INSTANTIATION_BEAN_ACCESS_FAILED, e, this);
+        } catch (PrivilegedActionException e) {
+            if (e.getCause() instanceof InstantiationException) {
+                throw new WeldException(PROXY_INSTANTIATION_FAILED, e.getCause(), this);
+            } else if (e.getCause() instanceof IllegalAccessException) {
+                throw new WeldException(PROXY_INSTANTIATION_BEAN_ACCESS_FAILED, e.getCause(), this);
+            } else {
+                throw new WeldException(e.getCause());
+            }
         }
     }
 

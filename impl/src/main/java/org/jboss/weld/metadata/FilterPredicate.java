@@ -8,7 +8,9 @@ import org.jboss.weld.bootstrap.spi.SystemPropertyActivation;
 import org.jboss.weld.bootstrap.spi.WeldFilter;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
+import org.jboss.weld.security.GetSystemPropertyAction;
 
+import java.security.AccessController;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -63,14 +65,15 @@ public class FilterPredicate implements Predicate<String> {
                     propertyName = removeInversion(propertyName);
                 }
 
+                String actualPropertyValue = AccessController.doPrivileged(new GetSystemPropertyAction(propertyName));
                 if (requiredPropertyValue == null) {
-                    active = active && isNotNull(System.getProperty(propertyName), propertyNameInverted);
+                    active = active && isNotNull(actualPropertyValue, propertyNameInverted);
                 } else {
                     boolean requiredPropertyValueInverted = isInverted(requiredPropertyValue);
                     if (requiredPropertyValueInverted) {
                         requiredPropertyValue = removeInversion(requiredPropertyValue);
                     }
-                    active = active && isEqual(requiredPropertyValue, System.getProperty(propertyName), requiredPropertyValueInverted);
+                    active = active && isEqual(requiredPropertyValue, actualPropertyValue, requiredPropertyValueInverted);
                 }
             }
         }

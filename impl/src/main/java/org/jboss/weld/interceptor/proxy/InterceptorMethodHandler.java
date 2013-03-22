@@ -5,13 +5,14 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.security.AccessController;
 
 import org.jboss.weld.bean.proxy.MethodHandler;
 import org.jboss.weld.interceptor.spi.context.InvocationContextFactory;
 import org.jboss.weld.interceptor.spi.metadata.MethodMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
 import org.jboss.weld.interceptor.util.InterceptionUtils;
-import org.jboss.weld.util.reflection.SecureReflections;
+import org.jboss.weld.security.SetAccessibleAction;
 
 /**
  * @author Marius Bogoevici
@@ -29,7 +30,7 @@ public class InterceptorMethodHandler implements MethodHandler, Serializable {
     }
 
     public Object invoke(Object self, Method thisMethod, Method proceed, Object[] args) throws Throwable {
-        SecureReflections.ensureAccessible(thisMethod);
+        AccessController.doPrivileged(SetAccessibleAction.of(thisMethod));
         if (proceed == null) {
             if (thisMethod.getName().equals(InterceptionUtils.POST_CONSTRUCT)) {
                 return executeInterception(self, null, null, InterceptionType.POST_CONSTRUCT);

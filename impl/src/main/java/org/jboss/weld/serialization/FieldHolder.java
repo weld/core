@@ -19,9 +19,10 @@ package org.jboss.weld.serialization;
 import static org.jboss.weld.logging.messages.ReflectionMessage.UNABLE_TO_GET_FIELD_ON_DESERIALIZATION;
 
 import java.lang.reflect.Field;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 import org.jboss.weld.exceptions.WeldException;
-import org.jboss.weld.util.reflection.SecureReflections;
 
 /**
  * Serializable holder for {@link Field}.
@@ -29,7 +30,7 @@ import org.jboss.weld.util.reflection.SecureReflections;
  * @author Jozef Hartinger
  *
  */
-public class FieldHolder extends AbstractSerializableHolder<Field> {
+public class FieldHolder extends AbstractSerializableHolder<Field> implements PrivilegedAction<Field> {
 
     private static final long serialVersionUID = 407021346356682729L;
 
@@ -44,8 +45,13 @@ public class FieldHolder extends AbstractSerializableHolder<Field> {
 
     @Override
     protected Field initialize() {
+        return AccessController.doPrivileged(this);
+    }
+
+    @Override
+    public Field run() {
         try {
-            return SecureReflections.getDeclaredField(declaringClass, fieldName);
+            return declaringClass.getDeclaredField(fieldName);
         } catch (Exception e) {
             throw new WeldException(UNABLE_TO_GET_FIELD_ON_DESERIALIZATION, e, declaringClass, fieldName);
         }

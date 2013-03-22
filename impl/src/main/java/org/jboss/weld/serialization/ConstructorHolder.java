@@ -19,9 +19,10 @@ package org.jboss.weld.serialization;
 import static org.jboss.weld.logging.messages.ReflectionMessage.UNABLE_TO_GET_CONSTRUCTOR_ON_DESERIALIZATION;
 
 import java.lang.reflect.Constructor;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 import org.jboss.weld.exceptions.WeldException;
-import org.jboss.weld.util.reflection.SecureReflections;
 
 /**
  * Serializable holder for {@link Constructor}.
@@ -29,7 +30,7 @@ import org.jboss.weld.util.reflection.SecureReflections;
  * @author Jozef Hartinger
  *
  */
-public class ConstructorHolder<X> extends AbstractSerializableHolder<Constructor<X>> {
+public class ConstructorHolder<X> extends AbstractSerializableHolder<Constructor<X>> implements PrivilegedAction<Constructor<X>> {
 
     private static final long serialVersionUID = -6439218442811003152L;
 
@@ -48,8 +49,13 @@ public class ConstructorHolder<X> extends AbstractSerializableHolder<Constructor
 
     @Override
     protected Constructor<X> initialize() {
+        return AccessController.doPrivileged(this);
+    }
+
+    @Override
+    public Constructor<X> run() {
         try {
-            return SecureReflections.getDeclaredConstructor(declaringClass, parameterTypes);
+            return declaringClass.getDeclaredConstructor(parameterTypes);
         } catch (Exception e) {
             throw new WeldException(UNABLE_TO_GET_CONSTRUCTOR_ON_DESERIALIZATION, e, declaringClass, parameterTypes);
         }

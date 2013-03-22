@@ -23,6 +23,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -44,11 +46,12 @@ import org.jboss.classfilewriter.code.ExceptionHandler;
 import org.jboss.weld.Container;
 import org.jboss.weld.bean.proxy.util.SerializableClientProxy;
 import org.jboss.weld.context.cache.RequestScopedBeanCache;
+import org.jboss.weld.security.GetDeclaredFieldAction;
+import org.jboss.weld.security.SetAccessibleAction;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.bytecode.DeferredBytecode;
 import org.jboss.weld.util.bytecode.DescriptorUtils;
 import org.jboss.weld.util.bytecode.MethodInformation;
-import org.jboss.weld.util.reflection.SecureReflections;
 
 /**
  * Proxy factory that generates client proxies, it uses optimizations that
@@ -99,13 +102,13 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
         try {
             final T instance = super.create(beanInstance);
             if (beanIdField == null) {
-                final Field f = SecureReflections.getDeclaredField(instance.getClass(), BEAN_ID_FIELD);
-                f.setAccessible(true);
+                final Field f = AccessController.doPrivileged(new GetDeclaredFieldAction(instance.getClass(), BEAN_ID_FIELD));
+                AccessController.doPrivileged(SetAccessibleAction.of(f));
                 beanIdField = f;
             }
             if (threadLocalCacheField == null && isUsingUnsafeInstantiators()) {
-                final Field f = SecureReflections.getDeclaredField(instance.getClass(), CACHE_FIELD);
-                f.setAccessible(true);
+                final Field f = AccessController.doPrivileged(new GetDeclaredFieldAction(instance.getClass(),  CACHE_FIELD));
+                AccessController.doPrivileged(SetAccessibleAction.of(f));
                 threadLocalCacheField = f;
             }
             if(isUsingUnsafeInstantiators()) {
@@ -114,10 +117,10 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
 
             beanIdField.set(instance, beanId);
             return instance;
-        } catch (NoSuchFieldException e) {
-            throw new RuntimeException(e);
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
+        } catch (PrivilegedActionException e) {
+            throw new RuntimeException(e.getCause());
         }
     }
 

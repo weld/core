@@ -40,8 +40,10 @@ public class ClassFileUtils {
                 public Object run() throws Exception {
                     Class<?> cl = Class.forName("java.lang.ClassLoader");
                     defineClass1 = cl.getDeclaredMethod("defineClass", new Class[]{String.class, byte[].class, int.class, int.class});
+                    defineClass1.setAccessible(true);
 
                     defineClass2 = cl.getDeclaredMethod("defineClass", new Class[]{String.class, byte[].class, int.class, int.class, ProtectionDomain.class});
+                    defineClass2.setAccessible(true);
                     return null;
                 }
             });
@@ -99,9 +101,7 @@ public class ClassFileUtils {
     }
 
     private static synchronized Class<?> toClass2(Method method, ClassLoader loader, Object[] args) throws Exception {
-        method.setAccessible(true);
         Class<?> clazz = Class.class.cast(method.invoke(loader, args));
-        method.setAccessible(false);
         return clazz;
     }
 

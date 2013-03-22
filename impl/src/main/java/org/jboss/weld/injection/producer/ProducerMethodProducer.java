@@ -20,6 +20,8 @@ import static org.jboss.weld.logging.messages.BeanMessage.INCONSISTENT_ANNOTATIO
 import static org.jboss.weld.logging.messages.BeanMessage.METHOD_NOT_BUSINESS_METHOD;
 
 import java.lang.reflect.Type;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
 import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
@@ -36,7 +38,7 @@ import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.MethodInjectionPoint;
-import org.jboss.weld.util.reflection.SecureReflections;
+import org.jboss.weld.security.GetMethodAction;
 
 /**
  * {@link Producer} implementation for producer methods.
@@ -68,10 +70,13 @@ public abstract class ProducerMethodProducer<X, T> extends AbstractMemberProduce
             boolean methodDeclaredOnTypes = false;
             // TODO use annotated item?
             for (Type type : getDeclaringBean().getTypes()) {
+                // TODO: deal with parameterized types!
                 if (type instanceof Class<?>) {
-                    if (SecureReflections.isMethodExists((Class<?>) type, method.getName(), method.getParameterTypesAsArray())) {
+                    try {
+                        AccessController.doPrivileged(new GetMethodAction((Class<?>) type, method.getName(), method.getParameterTypesAsArray()));
                         methodDeclaredOnTypes = true;
-                        continue;
+                        break;
+                    } catch (PrivilegedActionException ignored) {
                     }
                 }
             }

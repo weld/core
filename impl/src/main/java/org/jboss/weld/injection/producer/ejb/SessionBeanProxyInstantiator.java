@@ -21,6 +21,8 @@ import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_BE
 import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_FAILED;
 
 import java.lang.reflect.Constructor;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
 
 import javax.enterprise.context.spi.CreationalContext;
 
@@ -36,7 +38,7 @@ import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.injection.AroundConstructCallback;
 import org.jboss.weld.injection.producer.Instantiator;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.util.reflection.SecureReflections;
+import org.jboss.weld.security.NewInstanceAction;
 
 /**
  * Instantiator implementation that instantiates a proxy for a session bean.
@@ -56,14 +58,18 @@ public class SessionBeanProxyInstantiator<T> implements Instantiator<T> {
     @Override
     public T newInstance(CreationalContext<T> ctx, BeanManagerImpl manager, AroundConstructCallback<T> ignored) {
         try {
-            T instance = SecureReflections.newInstance(proxyClass);
+            T instance = AccessController.doPrivileged(NewInstanceAction.of(proxyClass));
             ctx.push(instance);
             ProxyFactory.setBeanInstance(instance, createEnterpriseTargetBeanInstance(ctx), bean);
             return instance;
-        } catch (InstantiationException e) {
-            throw new WeldException(PROXY_INSTANTIATION_FAILED, e, this);
-        } catch (IllegalAccessException e) {
-            throw new WeldException(PROXY_INSTANTIATION_BEAN_ACCESS_FAILED, e, this);
+        } catch (PrivilegedActionException e) {
+            if (e.getCause() instanceof InstantiationException) {
+                throw new WeldException(PROXY_INSTANTIATION_FAILED, e.getCause(), this);
+            } else if (e.getCause() instanceof IllegalAccessException) {
+                throw new WeldException(PROXY_INSTANTIATION_BEAN_ACCESS_FAILED, e.getCause(), this);
+            } else {
+                throw new WeldException(e.getCause());
+            }
         } catch (Exception e) {
             throw new CreationException(EJB_NOT_FOUND, e, proxyClass);
         }

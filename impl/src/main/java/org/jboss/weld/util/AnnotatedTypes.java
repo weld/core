@@ -24,6 +24,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.security.AccessController;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -42,8 +43,8 @@ import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.AnnotatedType;
 
+import org.jboss.weld.security.GetDeclaredMethodsAction;
 import org.jboss.weld.util.reflection.Reflections;
-import org.jboss.weld.util.reflection.SecureReflections;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
@@ -270,7 +271,7 @@ public class AnnotatedTypes {
             builder.append('@');
             builder.append(a.annotationType().getName());
             builder.append('(');
-            Method[] declaredMethods = SecureReflections.getDeclaredMethods(a.annotationType());
+            Method[] declaredMethods = AccessController.doPrivileged(new GetDeclaredMethodsAction(a.annotationType()));
             List<Method> methods = new ArrayList<Method>(declaredMethods.length);
             for (Method m : declaredMethods) {
                 methods.add(m);

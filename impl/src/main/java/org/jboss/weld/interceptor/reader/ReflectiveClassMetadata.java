@@ -19,13 +19,14 @@ package org.jboss.weld.interceptor.reader;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.security.AccessController;
 import java.util.Iterator;
 
 import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.weld.interceptor.spi.metadata.MethodMetadata;
 import org.jboss.weld.interceptor.util.ArrayIterator;
 import org.jboss.weld.interceptor.util.ImmutableIteratorWrapper;
-import org.jboss.weld.util.reflection.SecureReflections;
+import org.jboss.weld.security.GetDeclaredMethodsAction;
 
 /**
  * @author Marius Bogoevici
@@ -51,7 +52,7 @@ public class ReflectiveClassMetadata<T> implements ClassMetadata<T>, Serializabl
     public Iterable<MethodMetadata> getDeclaredMethods() {
         return new Iterable<MethodMetadata>() {
             public Iterator<MethodMetadata> iterator() {
-                return new ImmutableIteratorWrapper<Method>(new ArrayIterator<Method>(SecureReflections.getDeclaredMethods(ReflectiveClassMetadata.this.clazz))) {
+                return new ImmutableIteratorWrapper<Method>(new ArrayIterator<Method>(AccessController.doPrivileged(new GetDeclaredMethodsAction(ReflectiveClassMetadata.this.clazz)))) {
                     @Override
                     protected MethodMetadata wrapObject(Method method) {
                         return DefaultMethodMetadata.of(method);

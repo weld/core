@@ -16,10 +16,20 @@
  */
 package org.jboss.weld.util;
 
+import static org.jboss.weld.logging.messages.UtilMessage.CANNOT_PROXY_NON_CLASS_TYPE;
+import static org.jboss.weld.logging.messages.ValidatorMessage.NOT_PROXYABLE_ARRAY_TYPE;
+import static org.jboss.weld.logging.messages.ValidatorMessage.NOT_PROXYABLE_FINAL_TYPE_OR_METHOD;
+import static org.jboss.weld.logging.messages.ValidatorMessage.NOT_PROXYABLE_NO_CONSTRUCTOR;
+import static org.jboss.weld.logging.messages.ValidatorMessage.NOT_PROXYABLE_PRIMITIVE;
+import static org.jboss.weld.logging.messages.ValidatorMessage.NOT_PROXYABLE_PRIVATE_CONSTRUCTOR;
+import static org.jboss.weld.logging.messages.ValidatorMessage.NOT_PROXYABLE_UNKNOWN;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -30,17 +40,9 @@ import javax.enterprise.inject.spi.Bean;
 import org.jboss.weld.Container;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.exceptions.UnproxyableResolutionException;
+import org.jboss.weld.security.GetDeclaredConstructorAction;
 import org.jboss.weld.util.reflection.Reflections;
-import org.jboss.weld.util.reflection.SecureReflections;
 import org.jboss.weld.util.reflection.instantiation.InstantiatorFactory;
-
-import static org.jboss.weld.logging.messages.UtilMessage.CANNOT_PROXY_NON_CLASS_TYPE;
-import static org.jboss.weld.logging.messages.ValidatorMessage.NOT_PROXYABLE_ARRAY_TYPE;
-import static org.jboss.weld.logging.messages.ValidatorMessage.NOT_PROXYABLE_FINAL_TYPE_OR_METHOD;
-import static org.jboss.weld.logging.messages.ValidatorMessage.NOT_PROXYABLE_NO_CONSTRUCTOR;
-import static org.jboss.weld.logging.messages.ValidatorMessage.NOT_PROXYABLE_PRIMITIVE;
-import static org.jboss.weld.logging.messages.ValidatorMessage.NOT_PROXYABLE_PRIVATE_CONSTRUCTOR;
-import static org.jboss.weld.logging.messages.ValidatorMessage.NOT_PROXYABLE_UNKNOWN;
 
 /**
  * Utilties for working with Javassist proxies
@@ -207,8 +209,8 @@ public class Proxies {
 
         Constructor<?> constructor;
         try {
-            constructor = SecureReflections.getDeclaredConstructor(clazz);
-        } catch (NoSuchMethodException e) {
+            constructor = AccessController.doPrivileged(GetDeclaredConstructorAction.of(clazz));
+        } catch (PrivilegedActionException e) {
             InstantiatorFactory factory = Container.instance().services().get(InstantiatorFactory.class);
             if (factory == null || factory.useInstantiators() == false) {
                 return new UnproxyableResolutionException(NOT_PROXYABLE_NO_CONSTRUCTOR, clazz, getDeclaringBeanInfo(declaringBean));

@@ -17,11 +17,20 @@
 
 package org.jboss.weld.bean.proxy;
 
+import static org.jboss.weld.logging.Category.BEAN;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_BEAN_ACCESS_FAILED;
+import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_FAILED;
+import static org.jboss.weld.logging.messages.BeanMessage.UNABLE_TO_LOAD_PROXY_CLASS;
+import static org.jboss.weld.util.reflection.Reflections.cast;
+
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
 import java.security.ProtectionDomain;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,6 +52,9 @@ import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.interceptor.proxy.LifecycleMixin;
 import org.jboss.weld.interceptor.util.proxy.TargetInstanceProxy;
+import org.jboss.weld.security.GetDeclaredConstructorsAction;
+import org.jboss.weld.security.GetDeclaredMethodsAction;
+import org.jboss.weld.security.NewInstanceAction;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.serialization.spi.ProxyServices;
 import org.jboss.weld.util.Proxies.TypeInfo;
@@ -56,16 +68,8 @@ import org.jboss.weld.util.bytecode.MethodInformation;
 import org.jboss.weld.util.bytecode.RuntimeMethodInformation;
 import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.reflection.Reflections;
-import org.jboss.weld.util.reflection.SecureReflections;
 import org.jboss.weld.util.reflection.instantiation.InstantiatorFactory;
 import org.slf4j.cal10n.LocLogger;
-
-import static org.jboss.weld.logging.Category.BEAN;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_BEAN_ACCESS_FAILED;
-import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_FAILED;
-import static org.jboss.weld.logging.messages.BeanMessage.UNABLE_TO_LOAD_PROXY_CLASS;
-import static org.jboss.weld.util.reflection.Reflections.cast;
 
 /**
  * Main factory to produce proxy classes and instances for Weld beans. This
@@ -91,9 +95,9 @@ public class ProxyFactory<T> {
     private final Bean<?> bean;
     private final Class<?> proxiedBeanType;
 
-    private final boolean usingUnsafeInstantiators;
-
     public static final String CONSTRUCTED_FLAG_NAME = "constructed";
+
+    private final InstantiatorFactory instantiatorFactory;
 
     protected static final BytecodeMethodResolver DEFAULT_METHOD_RESOLVER = new DefaultBytecodeMethodResolver();
 
@@ -151,9 +155,9 @@ public class ProxyFactory<T> {
 
         InstantiatorFactory factory = Container.instance().services().get(InstantiatorFactory.class);
         if (factory != null && factory.useInstantiators() && isCreatingProxy()) {
-            usingUnsafeInstantiators = true;
+            this.instantiatorFactory = factory;
         } else {
-            usingUnsafeInstantiators = false;
+            this.instantiatorFactory = null;
         }
     }
 
@@ -252,15 +256,19 @@ public class ProxyFactory<T> {
         T proxy;
         Class<T> proxyClass = getProxyClass();
         try {
-            if (usingUnsafeInstantiators) {
-                proxy = SecureReflections.newUnsafeInstance(proxyClass);
+            if (instantiatorFactory != null) {
+                proxy = instantiatorFactory.getInstantiator().instantiate(proxyClass);
             } else {
-                proxy = SecureReflections.newInstance(proxyClass);
+                proxy = AccessController.doPrivileged(NewInstanceAction.of(proxyClass));
             }
-        } catch (InstantiationException e) {
-            throw new DefinitionException(PROXY_INSTANTIATION_FAILED, e, this);
-        } catch (IllegalAccessException e) {
-            throw new DefinitionException(PROXY_INSTANTIATION_BEAN_ACCESS_FAILED, e, this);
+        } catch (PrivilegedActionException e) {
+            if (e.getCause() instanceof InstantiationException) {
+                throw new DefinitionException(PROXY_INSTANTIATION_FAILED, e.getCause(), this);
+            } else if (e.getCause() instanceof IllegalAccessException) {
+                throw new DefinitionException(PROXY_INSTANTIATION_BEAN_ACCESS_FAILED, e.getCause(), this);
+            } else {
+                throw new WeldException(e.getCause());
+            }
         }
         ((ProxyObject) proxy).setHandler(new ProxyMethodHandler(beanInstance, bean));
         return proxy;
@@ -420,17 +428,17 @@ public class ProxyFactory<T> {
     protected void addConstructors(ClassFile proxyClassType, List<DeferredBytecode> initialValueBytecode) {
         try {
             if (getBeanType().isInterface()) {
-                ConstructorUtils.addDefaultConstructor(proxyClassType, initialValueBytecode, usingUnsafeInstantiators);
+                ConstructorUtils.addDefaultConstructor(proxyClassType, initialValueBytecode, isUsingUnsafeInstantiators());
             } else {
                 boolean constructorFound = false;
-                for (Constructor<?> constructor : SecureReflections.getDeclaredConstructors(getBeanType())) {
+                for (Constructor<?> constructor : AccessController.doPrivileged(new GetDeclaredConstructorsAction(getBeanType()))) {
                     if ((constructor.getModifiers() & Modifier.PRIVATE) == 0) {
                         constructorFound = true;
                         String[] exceptions = new String[constructor.getExceptionTypes().length];
                         for (int i = 0; i < exceptions.length; ++i) {
                             exceptions[i] = constructor.getExceptionTypes()[i].getName();
                         }
-                        ConstructorUtils.addConstructor("V", DescriptorUtils.getParameterTypes(constructor.getParameterTypes()), exceptions, proxyClassType, initialValueBytecode, usingUnsafeInstantiators);
+                        ConstructorUtils.addConstructor("V", DescriptorUtils.getParameterTypes(constructor.getParameterTypes()), exceptions, proxyClassType, initialValueBytecode, isUsingUnsafeInstantiators());
                     }
                 }
                 if (!constructorFound) {
@@ -448,7 +456,7 @@ public class ProxyFactory<T> {
         // The field representing the underlying instance or special method
         // handling
         proxyClassType.addField(AccessFlag.PRIVATE, "methodHandler", MethodHandler.class);
-        if(!usingUnsafeInstantiators) {
+        if(!isUsingUnsafeInstantiators()) {
             // field used to indicate that super() has been called
             proxyClassType.addField(AccessFlag.PRIVATE, CONSTRUCTED_FLAG_NAME, "Z");
         }
@@ -485,7 +493,7 @@ public class ProxyFactory<T> {
             generateHashCodeMethod(proxyClassType);
 
             while (cls != null) {
-                for (Method method : SecureReflections.getDeclaredMethods(cls)) {
+                for (Method method : AccessController.doPrivileged(new GetDeclaredMethodsAction(cls))) {
                     if (!Modifier.isStatic(method.getModifiers()) && !Modifier.isFinal(method.getModifiers()) && (method.getDeclaringClass() != Object.class || method.getName().equals("toString"))) {
                         try {
                             MethodInformation methodInfo = new RuntimeMethodInformation(method);
@@ -555,7 +563,7 @@ public class ProxyFactory<T> {
      * bean instance until after the constructor has finished.
      */
     protected void addConstructedGuardToMethodBody(final ClassMethod classMethod) {
-        if(usingUnsafeInstantiators) {
+        if(isUsingUnsafeInstantiators()) {
             return;
         }
         // now create the conditional
@@ -767,7 +775,7 @@ public class ProxyFactory<T> {
     }
 
     protected boolean isUsingUnsafeInstantiators() {
-        return usingUnsafeInstantiators;
+        return instantiatorFactory != null;
     }
 
     //    public static ClassLoader resolveClassLoaderForBeanProxy(Bean<?> bean) {

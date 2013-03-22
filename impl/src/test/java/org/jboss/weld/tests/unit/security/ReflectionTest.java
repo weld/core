@@ -16,62 +16,79 @@
  */
 package org.jboss.weld.tests.unit.security;
 
-import org.jboss.weld.util.reflection.SecureReflections;
-import org.junit.Assert;
-import org.junit.Test;
-
 import java.lang.reflect.AccessibleObject;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+
+import org.jboss.weld.security.GetConstructorAction;
+import org.jboss.weld.security.GetConstructorsAction;
+import org.jboss.weld.security.GetDeclaredConstructorAction;
+import org.jboss.weld.security.GetDeclaredConstructorsAction;
+import org.jboss.weld.security.GetDeclaredFieldAction;
+import org.jboss.weld.security.GetDeclaredFieldsAction;
+import org.jboss.weld.security.GetDeclaredMethodAction;
+import org.jboss.weld.security.GetDeclaredMethodsAction;
+import org.jboss.weld.security.GetFieldAction;
+import org.jboss.weld.security.GetFieldsAction;
+import org.jboss.weld.security.GetMethodAction;
+import org.jboss.weld.security.GetMethodsAction;
+import org.jboss.weld.security.MethodLookupAction;
+import org.jboss.weld.security.NewInstanceAction;
+import org.jboss.weld.security.SetAccessibleAction;
+import org.jboss.weld.util.reflection.Reflections;
+import org.junit.Assert;
+import org.junit.Test;
 
 public class ReflectionTest {
 
     @Test
-    public void testGetField() throws NoSuchFieldException {
-        Assert.assertNotNull(SecureReflections.getField(TestObject.class, "publicField"));
+    public void testGetField() throws PrivilegedActionException {
+        Assert.assertNotNull(AccessController.doPrivileged(new GetFieldAction(TestObject.class, "publicField")));
     }
 
     @Test(expected = NoSuchFieldException.class)
-    public void testGetFieldNotFound() throws NoSuchFieldException {
-        SecureReflections.getField(TestObject.class, "eioota");
+    public void testGetFieldNotFound() throws Throwable {
+        try {
+            AccessController.doPrivileged(new GetFieldAction(TestObject.class, "eioota"));
+        } catch (PrivilegedActionException e) {
+            throw e.getCause();
+        }
     }
 
     @Test
-    public void testGetDeclaredField() throws SecurityException, NoSuchFieldException {
-        Assert.assertNotNull(SecureReflections.getDeclaredField(TestObject.class, "publicField"));
+    public void testGetDeclaredField() throws PrivilegedActionException {
+        Assert.assertNotNull(AccessController.doPrivileged(new GetDeclaredFieldAction(TestObject.class, "publicField")));
     }
 
     @Test(expected = NoSuchFieldException.class)
-    public void testGetDeclaredFieldNotFound() throws NoSuchFieldException {
-        SecureReflections.getDeclaredField(TestObject.class, "eioota");
+    public void testGetDeclaredFieldNotFound() throws Throwable {
+        try {
+            AccessController.doPrivileged(new GetDeclaredFieldAction(TestObject.class, "eioota"));
+        } catch (PrivilegedActionException e) {
+            throw e.getCause();
+        }
     }
 
     @Test
     public void testGetFields() {
-        Assert.assertEquals(1, SecureReflections.getFields(TestObject.class).length);
+        Assert.assertEquals(1, AccessController.doPrivileged(new GetFieldsAction(TestObject.class)).length);
     }
 
     @Test
     public void testGetDeclaredFields() {
-        Assert.assertEquals(2, SecureReflections.getDeclaredFields(TestObject.class).length);
+        Assert.assertEquals(2, AccessController.doPrivileged(new GetDeclaredFieldsAction(TestObject.class)).length);
     }
 
     @Test
     public void testFieldAccess() {
-        testAllAccessible(grantAccess(SecureReflections.getDeclaredFields(TestObject.class)));
+        testAllAccessible(grantAccess(AccessController.doPrivileged(new GetDeclaredFieldsAction(TestObject.class))));
     }
 
     private AccessibleObject[] grantAccess(AccessibleObject[] objects) {
         for (AccessibleObject object : objects) {
-            if (object instanceof Field) {
-                SecureReflections.ensureAccessible((Field) object);
-            } else if (object instanceof Method) {
-                SecureReflections.ensureAccessible((Method) object);
-            } else if (object instanceof Constructor<?>) {
-                SecureReflections.ensureAccessible((Constructor<?>) object);
-            }
+            AccessController.doPrivileged(SetAccessibleAction.of(object));
         }
         return objects;
     }
@@ -85,94 +102,114 @@ public class ReflectionTest {
     }
 
     @Test
-    public void testGetMethod() throws NoSuchMethodException {
-        Assert.assertNotNull(SecureReflections.getMethod(TestObject.class, "publicTest", new Class<?>[]{String.class}));
+    public void testGetMethod() throws PrivilegedActionException {
+        Assert.assertNotNull(AccessController.doPrivileged(new GetMethodAction(TestObject.class, "publicTest", new Class<?>[]{String.class})));
     }
 
     @Test(expected = NoSuchMethodException.class)
-    public void testGetMethodNotFound() throws NoSuchMethodException {
-        SecureReflections.getMethod(TestObject.class, "xpublicTest", new Class<?>[]{String.class});
+    public void testGetMethodNotFound() throws Throwable {
+        try {
+            AccessController.doPrivileged(new GetMethodAction(TestObject.class, "xpublicTest", new Class<?>[]{String.class}));
+        } catch (PrivilegedActionException e) {
+            throw e.getCause();
+        }
     }
 
     @Test
-    public void testGetDeclaredMethod() throws NoSuchMethodException {
-        Assert.assertNotNull(SecureReflections.getDeclaredMethod(TestObject.class, "publicTest", new Class<?>[]{String.class}));
+    public void testGetDeclaredMethod() throws PrivilegedActionException {
+        Assert.assertNotNull(AccessController.doPrivileged(new GetDeclaredMethodAction(TestObject.class, "publicTest", new Class<?>[]{String.class})));
     }
 
     @Test(expected = NoSuchMethodException.class)
-    public void testGetDeclaredMethodNotFound() throws NoSuchMethodException {
-        SecureReflections.getDeclaredMethod(TestObject.class, "xpublicTest", new Class<?>[]{String.class});
+    public void testGetDeclaredMethodNotFound() throws Throwable {
+        try {
+            AccessController.doPrivileged(new GetDeclaredMethodAction(TestObject.class, "xpublicTest", new Class<?>[]{String.class}));
+        } catch (PrivilegedActionException e) {
+            throw e.getCause();
+        }
     }
 
     @Test
     public void testGetMethods() {
-        Assert.assertEquals(10, SecureReflections.getMethods(TestObject.class).length);
+        Assert.assertEquals(10, AccessController.doPrivileged(new GetMethodsAction(TestObject.class)).length);
     }
 
     @Test
     public void testGetDeclaredMethods() {
-        Assert.assertEquals(2, SecureReflections.getDeclaredMethods(TestObject.class).length);
+        Assert.assertEquals(2, AccessController.doPrivileged(new GetDeclaredMethodsAction(TestObject.class)).length);
     }
 
     @Test
     public void testMethodAccess() {
-        testAllAccessible(grantAccess(SecureReflections.getDeclaredMethods(TestObject.class)));
+        testAllAccessible(grantAccess(AccessController.doPrivileged(new GetDeclaredMethodsAction(TestObject.class))));
     }
 
     @Test
-    public void testGetConstructor() throws NoSuchMethodException {
-        Assert.assertNotNull(SecureReflections.getConstructor(TestObject.class, new Class<?>[]{Integer.class}));
+    public void testGetConstructor() throws PrivilegedActionException {
+        Assert.assertNotNull(AccessController.doPrivileged(GetConstructorAction.of(TestObject.class, new Class<?>[]{Integer.class})));
     }
 
     @Test(expected = NoSuchMethodException.class)
-    public void testGetConstructorNotFound() throws NoSuchMethodException {
-        SecureReflections.getConstructor(TestObject.class, new Class<?>[]{Float.class});
+    public void testGetConstructorNotFound() throws Throwable {
+        try {
+            AccessController.doPrivileged(GetConstructorAction.of(TestObject.class, new Class<?>[]{Float.class}));
+        } catch (PrivilegedActionException e) {
+            throw e.getCause();
+        }
     }
 
     @Test
-    public void testGetDeclaredConstructor() throws NoSuchMethodException {
-        Assert.assertNotNull(SecureReflections.getDeclaredConstructor(TestObject.class, new Class<?>[]{String.class}));
+    public void testGetDeclaredConstructor() throws PrivilegedActionException {
+        Assert.assertNotNull(AccessController.doPrivileged(GetDeclaredConstructorAction.of(TestObject.class, new Class<?>[]{String.class})));
     }
 
     @Test(expected = NoSuchMethodException.class)
-    public void testGetDeclaredConstructorNotFound() throws NoSuchMethodException {
-        SecureReflections.getDeclaredConstructor(TestObject.class, new Class<?>[]{Float.class});
+    public void testGetDeclaredConstructorNotFound() throws Throwable {
+        try {
+            AccessController.doPrivileged(GetDeclaredConstructorAction.of(TestObject.class, new Class<?>[]{Float.class}));
+        } catch (PrivilegedActionException e) {
+            throw e.getCause();
+        }
     }
 
     @Test
     public void testGetConstructors() {
-        Assert.assertEquals(2, SecureReflections.getConstructors(TestObject.class).length);
+        Assert.assertEquals(2, AccessController.doPrivileged(new GetConstructorsAction(TestObject.class)).length);
     }
 
     @Test
     public void testGetDeclaredConstructors() {
-        Assert.assertEquals(3, SecureReflections.getDeclaredConstructors(TestObject.class).length);
+        Assert.assertEquals(3, AccessController.doPrivileged(new GetDeclaredConstructorsAction(TestObject.class)).length);
     }
 
     @Test
     public void testConstructorAccess() {
-        testAllAccessible(grantAccess(SecureReflections.getDeclaredConstructors(TestObject.class)));
+        testAllAccessible(grantAccess(AccessController.doPrivileged(new GetDeclaredConstructorsAction(TestObject.class))));
     }
 
     @Test
-    public void testNewInstance() throws InstantiationException, IllegalAccessException {
-        Assert.assertNotNull(SecureReflections.newInstance(TestObject.class));
+    public void testNewInstance() throws PrivilegedActionException {
+        Assert.assertNotNull(AccessController.doPrivileged(NewInstanceAction.of(TestObject.class)));
     }
 
     @Test
     public void testInvoke() throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
         TestObject to = new TestObject();
         Method m = TestObject.class.getMethod("publicTest", new Class<?>[]{String.class});
-        Assert.assertEquals("foo", SecureReflections.invoke(to, m, ""));
+        Assert.assertEquals("foo", m.invoke(to, ""));
     }
 
     @Test
-    public void testLookupMethod() throws NoSuchMethodException {
-        Assert.assertNotNull(SecureReflections.lookupMethod(TestObject.class, "rootOfAllEvil", new Class<?>[]{}));
+    public void testLookupMethod() throws PrivilegedActionException {
+        Assert.assertNotNull(AccessController.doPrivileged(new MethodLookupAction(TestObject.class, "rootOfAllEvil", new Class<?>[]{})));
     }
 
     @Test(expected = NoSuchMethodException.class)
-    public void testLookupMethodNotFound() throws NoSuchMethodException {
-        Assert.assertNotNull(SecureReflections.lookupMethod(TestObject.class, "eioota", new Class<?>[]{}));
+    public void testLookupMethodNotFound() throws Throwable {
+        try {
+            AccessController.doPrivileged(new MethodLookupAction(TestObject.class, "eioota", new Class<?>[] {}));
+        } catch (PrivilegedActionException e) {
+            throw e.getCause();
+        }
     }
 }

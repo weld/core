@@ -17,18 +17,20 @@
 
 package org.jboss.weld.bean.proxy;
 
-import org.jboss.weld.util.Proxies.TypeInfo;
-import org.jboss.weld.util.reflection.SecureReflections;
-import org.slf4j.cal10n.LocLogger;
+import static org.jboss.weld.logging.Category.BEAN;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 
-import javax.enterprise.inject.spi.Bean;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.security.AccessController;
 import java.util.Set;
 
-import static org.jboss.weld.logging.Category.BEAN;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import javax.enterprise.inject.spi.Bean;
+
+import org.jboss.weld.security.SetAccessibleAction;
+import org.jboss.weld.util.Proxies.TypeInfo;
+import org.slf4j.cal10n.LocLogger;
 
 /**
  * @author David Allen
@@ -40,7 +42,7 @@ public abstract class AbstractBeanInstance implements BeanInstance {
     public Object invoke(Object instance, Method method, Object... arguments) throws Throwable {
         Object result = null;
         try {
-            SecureReflections.ensureAccessible(method);
+            AccessController.doPrivileged(SetAccessibleAction.of(method));
             result = method.invoke(instance, arguments);
         } catch (InvocationTargetException e) {
             throw e.getCause();

@@ -16,11 +16,14 @@
  */
 package org.jboss.weld.injection;
 
-import org.jboss.weld.exceptions.WeldException;
-import org.jboss.weld.util.reflection.SecureReflections;
+import java.lang.reflect.InvocationTargetException;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
 
 import javax.enterprise.inject.CreationException;
-import java.lang.reflect.InvocationTargetException;
+
+import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.security.NewInstanceAction;
 
 class Exceptions {
 
@@ -30,11 +33,10 @@ class Exceptions {
         } else {
             RuntimeException e;
             try {
-                e = SecureReflections.newInstance(exceptionToThrow);
-            } catch (InstantiationException e1) {
-                throw new WeldException(e1);
-            } catch (IllegalAccessException e1) {
-                throw new WeldException(e1);
+
+                e = AccessController.doPrivileged(NewInstanceAction.of(exceptionToThrow));
+            } catch (PrivilegedActionException ex) {
+                throw new WeldException(ex.getCause());
             }
             e.initCause(t);
             throw e;

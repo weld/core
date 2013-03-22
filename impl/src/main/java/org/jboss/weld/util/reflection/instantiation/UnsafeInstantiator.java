@@ -16,15 +16,18 @@
  */
 package org.jboss.weld.util.reflection.instantiation;
 
+import static org.jboss.weld.logging.messages.ReflectionMessage.UNSAFE_INSTANTIATION_FAILED;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.security.AccessController;
 
 import org.jboss.weld.exceptions.WeldException;
-import org.jboss.weld.util.reflection.SecureReflections;
+import org.jboss.weld.security.GetDeclaredFieldAction;
+import org.jboss.weld.security.GetDeclaredMethodAction;
+import org.jboss.weld.security.SetAccessibleAction;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
-
-import static org.jboss.weld.logging.messages.ReflectionMessage.UNSAFE_INSTANTIATION_FAILED;
 
 
 /**
@@ -43,10 +46,10 @@ public class UnsafeInstantiator implements Instantiator {
     private void init() {
         try {
             Class<?> unsafe = Class.forName(REFLECTION_CLASS_NAME);
-            Field accessor = SecureReflections.getDeclaredField(unsafe, "theUnsafe");
-            SecureReflections.ensureAccessible(accessor);
+            Field accessor = AccessController.doPrivileged(new GetDeclaredFieldAction(unsafe, "theUnsafe"));
+            AccessController.doPrivileged(SetAccessibleAction.of(accessor));
             unsafeInstance = accessor.get(null);
-            allocateInstanceMethod = SecureReflections.getDeclaredMethod(unsafe, "allocateInstance", Class.class);
+            allocateInstanceMethod = AccessController.doPrivileged(new GetDeclaredMethodAction(unsafe, "allocateInstance", Class.class));
         } catch (Exception e) {
             // OK to fail
         }

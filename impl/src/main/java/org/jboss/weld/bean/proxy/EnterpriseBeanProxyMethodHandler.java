@@ -16,25 +16,25 @@
  */
 package org.jboss.weld.bean.proxy;
 
-import org.jboss.weld.annotated.enhanced.MethodSignature;
-import org.jboss.weld.annotated.enhanced.jlr.MethodSignatureImpl;
-import org.jboss.weld.bean.SessionBean;
-import org.jboss.weld.ejb.api.SessionObjectReference;
-import org.jboss.weld.exceptions.UnsupportedOperationException;
-import org.jboss.weld.util.reflection.SecureReflections;
-import org.slf4j.cal10n.LocLogger;
-
-import javax.enterprise.context.spi.CreationalContext;
-import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Collection;
-
 import static org.jboss.weld.logging.Category.BEAN;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.BeanMessage.CALL_PROXIED_METHOD;
 import static org.jboss.weld.logging.messages.BeanMessage.CREATED_SESSION_BEAN_PROXY;
 import static org.jboss.weld.logging.messages.BeanMessage.INVALID_REMOVE_METHOD_INVOCATION;
+
+import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.util.Collection;
+
+import javax.enterprise.context.spi.CreationalContext;
+
+import org.jboss.weld.annotated.enhanced.MethodSignature;
+import org.jboss.weld.annotated.enhanced.jlr.MethodSignatureImpl;
+import org.jboss.weld.bean.SessionBean;
+import org.jboss.weld.ejb.api.SessionObjectReference;
+import org.jboss.weld.exceptions.UnsupportedOperationException;
+import org.jboss.weld.util.reflection.Reflections;
+import org.slf4j.cal10n.LocLogger;
 
 /**
  * Method handler for enterprise bean client proxies
@@ -105,7 +105,8 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
             return businessInterface.getName() + " [REMOVED]";
         }
         Object proxiedInstance = reference.getBusinessObject(businessInterface);
-        Object returnValue = SecureReflections.invokeAndUnwrap(proxiedInstance, method, args);
+
+        Object returnValue = Reflections.invokeAndUnwrap(proxiedInstance, method, args);
         log.trace(CALL_PROXIED_METHOD, method, proxiedInstance, args, returnValue);
         return returnValue;
     }

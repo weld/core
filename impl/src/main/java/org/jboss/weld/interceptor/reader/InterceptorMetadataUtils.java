@@ -6,6 +6,7 @@ import static org.jboss.weld.util.collections.WeldCollections.immutableMap;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.security.AccessController;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -17,14 +18,14 @@ import javax.interceptor.InvocationContext;
 
 import org.jboss.weld.interceptor.builder.MethodReference;
 import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
-import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorFactory;
+import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
 import org.jboss.weld.interceptor.spi.metadata.MethodMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
 import org.jboss.weld.interceptor.util.InterceptionTypeRegistry;
 import org.jboss.weld.interceptor.util.InterceptorMetadataException;
 import org.jboss.weld.logging.messages.ValidatorMessage;
-import org.jboss.weld.util.reflection.SecureReflections;
+import org.jboss.weld.security.SetAccessibleAction;
 import org.slf4j.cal10n.LocLogger;
 
 /**
@@ -141,7 +142,7 @@ public class InterceptorMetadataUtils {
                             // add method in the list - if it is there already, it means that it has been added by a subclass
                             // final methods are treated separately, as a final method cannot override another method nor be
                             // overridden
-                            SecureReflections.ensureAccessible(method.getJavaMethod());
+                            AccessController.doPrivileged(SetAccessibleAction.of(method.getJavaMethod()));
                             if (!foundMethods.contains(methodReference)) {
                                 methodMap.get(interceptionType).add(0, method);
                             }

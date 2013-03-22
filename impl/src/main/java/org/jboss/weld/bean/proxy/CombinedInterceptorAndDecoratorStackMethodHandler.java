@@ -1,14 +1,15 @@
 package org.jboss.weld.bean.proxy;
 
-import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Set;
-
-import org.jboss.weld.util.reflection.SecureReflections;
-
 import static org.jboss.weld.bean.proxy.InterceptionDecorationContext.endInterceptorContext;
 import static org.jboss.weld.bean.proxy.InterceptionDecorationContext.startInterceptorContext;
+
+import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.util.Set;
+
+import org.jboss.weld.security.SetAccessibleAction;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * A method handler that wraps the invocation of interceptors and decorators.
@@ -55,14 +56,20 @@ public class CombinedInterceptorAndDecoratorStackMethodHandler implements Method
                         }
                     } else {
                         if (outerDecorator != null) {
-                            return SecureReflections.invokeAndUnwrap(outerDecorator, thisMethod, args);
+                            if (!thisMethod.isAccessible()) {
+                                AccessController.doPrivileged(SetAccessibleAction.of(thisMethod));
+                            }
+                            return Reflections.invokeAndUnwrap(outerDecorator, thisMethod, args);
                         }
                     }
                 } finally {
                     this.getDisabledHandlers().remove(this);
                 }
             }
-            return SecureReflections.invokeAndUnwrap(self, proceed, args);
+            if (!proceed.isAccessible()) {
+                AccessController.doPrivileged(SetAccessibleAction.of(proceed));
+            }
+            return Reflections.invokeAndUnwrap(self, proceed, args);
         } finally {
             if (externalContext) {
                 endInterceptorContext();

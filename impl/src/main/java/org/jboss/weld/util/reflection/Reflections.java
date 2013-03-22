@@ -26,6 +26,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Array;
 import java.lang.reflect.GenericArrayType;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -33,6 +34,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
+import java.security.AccessController;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,8 +42,10 @@ import java.util.Set;
 
 import javax.inject.Qualifier;
 
+import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
+import org.jboss.weld.security.GetDeclaredMethodsAction;
 import org.jboss.weld.util.Types;
 import org.slf4j.cal10n.LocLogger;
 import org.slf4j.ext.XLogger;
@@ -171,7 +175,7 @@ public class Reflections {
         if (isFinal(type)) {
             return type;
         }
-        for (Method method : SecureReflections.getDeclaredMethods(type)) {
+        for (Method method : AccessController.doPrivileged(new GetDeclaredMethodsAction(type))) {
             if (isFinal(method) && !isPrivate(method) && !isStatic(method)) {
                 return method;
             }
@@ -397,5 +401,23 @@ public class Reflections {
         return javaClass.getEnclosingConstructor() != null
                 || javaClass.getEnclosingMethod() != null
                 || (javaClass.getEnclosingClass() != null && !Reflections.isStatic(javaClass));
+    }
+
+    /**
+     * Invokes the method on a given instance passing in given parameters. If the invocation yields
+     * {@link InvocationTargetException}, the exception is unwrapped.
+     *
+     * It is a responsibility of the caller to make sure that the method is accessible to the caller.
+     */
+    public static <T> T invokeAndUnwrap(final Object instance, final Method method, final Object... parameters) throws Throwable {
+        try {
+            return cast(method.invoke(instance, parameters));
+        } catch (IllegalArgumentException e) {
+            throw new WeldException(e);
+        } catch (IllegalAccessException e) {
+            throw new WeldException(e);
+        } catch (InvocationTargetException e) {
+            throw e.getCause();
+        }
     }
 }

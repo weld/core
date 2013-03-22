@@ -18,6 +18,7 @@ package org.jboss.weld.injection.producer;
 
 import static org.jboss.weld.logging.messages.BeanMessage.INVOCATION_ERROR;
 
+import java.security.AccessController;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -28,6 +29,7 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.runtime.RuntimeAnnotatedMembers;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.interceptor.util.InterceptionUtils;
+import org.jboss.weld.security.SetAccessibleAction;
 import org.jboss.weld.util.BeanMethods;
 
 /**
@@ -69,6 +71,9 @@ public class DefaultLifecycleCallbackInvoker<T> implements LifecycleCallbackInvo
     protected void invokeMethods(List<AnnotatedMethod<? super T>> methods, T instance) {
         for (AnnotatedMethod<? super T> method : methods) {
             try {
+                if (!method.getJavaMember().isAccessible()) {
+                    AccessController.doPrivileged(SetAccessibleAction.of(method.getJavaMember())); // TODO: make sure this does not leak
+                }
                 RuntimeAnnotatedMembers.invokeMethod(method, instance);
             } catch (Exception e) {
                 throw new WeldException(INVOCATION_ERROR, e, method, instance);

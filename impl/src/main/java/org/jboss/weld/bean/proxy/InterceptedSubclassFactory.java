@@ -20,6 +20,7 @@ package org.jboss.weld.bean.proxy;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
+import java.security.AccessController;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -36,13 +37,13 @@ import org.jboss.weld.annotated.enhanced.jlr.MethodSignatureImpl;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.interceptor.proxy.LifecycleMixin;
 import org.jboss.weld.interceptor.util.proxy.TargetInstanceProxy;
+import org.jboss.weld.security.GetDeclaredMethodsAction;
 import org.jboss.weld.util.bytecode.Boxing;
 import org.jboss.weld.util.bytecode.BytecodeUtils;
 import org.jboss.weld.util.bytecode.DescriptorUtils;
 import org.jboss.weld.util.bytecode.MethodInformation;
 import org.jboss.weld.util.bytecode.RuntimeMethodInformation;
 import org.jboss.weld.util.bytecode.StaticMethodInformation;
-import org.jboss.weld.util.reflection.SecureReflections;
 
 /**
  * Factory for producing subclasses that are used by the combined interceptors and decorators stack.
@@ -106,7 +107,7 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
             // Add all methods from the class heirachy
             Class<?> cls = getBeanType();
             while (cls != null) {
-                for (Method method : SecureReflections.getDeclaredMethods(cls)) {
+                for (Method method : AccessController.doPrivileged(new GetDeclaredMethodsAction(cls))) {
                     final MethodSignatureImpl methodSignature = new MethodSignatureImpl(method);
                     if (!Modifier.isFinal(method.getModifiers()) && enhancedMethodSignatures.contains(methodSignature) && !finalMethods.contains(methodSignature)) {
                         try {

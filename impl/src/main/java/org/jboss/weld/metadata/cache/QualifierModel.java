@@ -29,6 +29,7 @@ import static org.jboss.weld.logging.messages.ReflectionMessage.MISSING_TARGET_M
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Target;
 import java.lang.reflect.InvocationTargetException;
+import java.security.AccessController;
 import java.util.Collections;
 import java.util.Set;
 
@@ -39,6 +40,7 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotation;
 import org.jboss.weld.annotated.runtime.RuntimeAnnotatedMembers;
 import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.security.SetAccessibleAction;
 import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
@@ -119,6 +121,7 @@ public class QualifierModel<T extends Annotation> extends AbstractBindingModel<T
             for (AnnotatedMethod<?> annotatedMethod : getAnnotatedAnnotation().getMethods()) {
                 if (!getNonBindingMembers().contains(annotatedMethod)) {
                     try {
+                        AccessController.doPrivileged(SetAccessibleAction.of(annotatedMethod.getJavaMember()));
                         Object thisValue = RuntimeAnnotatedMembers.invokeMethod(annotatedMethod, instance);
                         Object thatValue = RuntimeAnnotatedMembers.invokeMethod(annotatedMethod, other);
                         if (!thisValue.equals(thatValue)) {

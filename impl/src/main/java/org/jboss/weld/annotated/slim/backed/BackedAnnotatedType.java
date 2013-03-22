@@ -13,22 +13,25 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.security.AccessController;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.AnnotatedConstructor;
 import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 
-import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.annotated.slim.AnnotatedTypeIdentifier;
+import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.exceptions.InvalidObjectException;
 import org.jboss.weld.resources.ReflectionCache;
 import org.jboss.weld.resources.SharedObjectCache;
+import org.jboss.weld.security.GetDeclaredConstructorsAction;
+import org.jboss.weld.security.GetDeclaredFieldsAction;
+import org.jboss.weld.security.GetDeclaredMethodsAction;
 import org.jboss.weld.util.LazyValueHolder;
 import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
-import org.jboss.weld.util.reflection.SecureReflections;
 
 import com.google.common.base.Objects;
 
@@ -155,7 +158,7 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
     private class BackedAnnotatedConstructors extends EagerlyInitializedLazyValueHolder<Set<AnnotatedConstructor<X>>> {
         @Override
         protected Set<AnnotatedConstructor<X>> computeValue() {
-            Constructor<?>[] declaredConstructors = SecureReflections.getDeclaredConstructors(javaClass);
+            Constructor<?>[] declaredConstructors = AccessController.doPrivileged(new GetDeclaredConstructorsAction(javaClass));
             ArraySet<AnnotatedConstructor<X>> constructors = new ArraySet<AnnotatedConstructor<X>>(declaredConstructors.length);
             for (Constructor<?> constructor : declaredConstructors) {
                 Constructor<X> c = Reflections.cast(constructor);
@@ -171,7 +174,7 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
             ArraySet<AnnotatedField<? super X>> fields = new ArraySet<AnnotatedField<? super X>>();
             Class<? super X> clazz = javaClass;
             while (clazz != Object.class && clazz != null) {
-                for (Field field : SecureReflections.getDeclaredFields(clazz)) {
+                for (Field field : AccessController.doPrivileged(new GetDeclaredFieldsAction(clazz))) {
                     fields.add(BackedAnnotatedField.of(field, BackedAnnotatedType.this, sharedObjectCache));
                 }
                 clazz = clazz.getSuperclass();
@@ -186,7 +189,7 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
             ArraySet<AnnotatedMethod<? super X>> methods = new ArraySet<AnnotatedMethod<? super X>>();
             Class<? super X> clazz = javaClass;
             while (clazz != Object.class && clazz != null) {
-                for (Method method : SecureReflections.getDeclaredMethods(clazz)) {
+                for (Method method : AccessController.doPrivileged(new GetDeclaredMethodsAction(clazz))) {
                     methods.add(BackedAnnotatedMethod.of(method, BackedAnnotatedType.this, sharedObjectCache));
                 }
                 clazz = clazz.getSuperclass();

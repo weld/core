@@ -19,9 +19,10 @@ package org.jboss.weld.serialization;
 import static org.jboss.weld.logging.messages.ReflectionMessage.UNABLE_TO_GET_METHOD_ON_DESERIALIZATION;
 
 import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 import org.jboss.weld.exceptions.WeldException;
-import org.jboss.weld.util.reflection.SecureReflections;
 
 /**
  * Serializable holder for {@link Method}.
@@ -29,7 +30,7 @@ import org.jboss.weld.util.reflection.SecureReflections;
  * @author Jozef Hartinger
  *
  */
-public class MethodHolder extends AbstractSerializableHolder<Method> {
+public class MethodHolder extends AbstractSerializableHolder<Method> implements PrivilegedAction<Method> {
 
     private static final long serialVersionUID = -3033089710155551280L;
 
@@ -46,8 +47,13 @@ public class MethodHolder extends AbstractSerializableHolder<Method> {
 
     @Override
     protected Method initialize() {
+        return AccessController.doPrivileged(this);
+    }
+
+    @Override
+    public Method run() {
         try {
-            return SecureReflections.getDeclaredMethod(declaringClass, methodName, parameterTypes);
+            return declaringClass.getDeclaredMethod(methodName, parameterTypes);
         } catch (Exception e) {
             throw new WeldException(UNABLE_TO_GET_METHOD_ON_DESERIALIZATION, e, declaringClass, parameterTypes);
         }

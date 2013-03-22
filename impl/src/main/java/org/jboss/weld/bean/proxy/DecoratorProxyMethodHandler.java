@@ -20,6 +20,7 @@ import static org.jboss.weld.logging.messages.BeanMessage.UNEXPECTED_UNWRAPPED_C
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.security.AccessController;
 
 import javax.enterprise.inject.spi.Decorator;
 import javax.inject.Inject;
@@ -28,8 +29,9 @@ import org.jboss.weld.annotated.runtime.InvokableAnnotatedMethod;
 import org.jboss.weld.bean.WeldDecorator;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.interceptor.util.proxy.TargetInstanceProxyMethodHandler;
+import org.jboss.weld.security.SetAccessibleAction;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextualInstance;
-import org.jboss.weld.util.reflection.SecureReflections;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * Method handler for decorated beans
@@ -83,6 +85,9 @@ public class DecoratorProxyMethodHandler extends TargetInstanceProxyMethodHandle
                 }
             }
         }
-        return SecureReflections.invokeAndUnwrap(getTargetInstance(), method, args);
+        if (!method.isAccessible()) {
+            AccessController.doPrivileged(SetAccessibleAction.of(method));
+        }
+        return Reflections.invokeAndUnwrap(getTargetInstance(), method, args);
     }
 }

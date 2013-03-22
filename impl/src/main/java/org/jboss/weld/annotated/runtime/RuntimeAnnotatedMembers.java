@@ -17,8 +17,10 @@
 package org.jboss.weld.annotated.runtime;
 
 import static org.jboss.weld.logging.messages.UtilMessage.ACCESS_ERROR_ON_FIELD;
+import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.reflect.InvocationTargetException;
+import java.security.AccessController;
 
 import javax.enterprise.inject.spi.AnnotatedConstructor;
 import javax.enterprise.inject.spi.AnnotatedField;
@@ -26,8 +28,8 @@ import javax.enterprise.inject.spi.AnnotatedMember;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 
 import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.security.SetAccessibleAction;
 import org.jboss.weld.util.reflection.Reflections;
-import org.jboss.weld.util.reflection.SecureReflections;
 
 /**
  * Utility methods for operating on {@link AnnotatedMember}s at runtime.
@@ -49,7 +51,7 @@ public class RuntimeAnnotatedMembers {
      * @see org.jboss.weld.annotated.enhanced.EnhancedAnnotatedConstructor#newInstance(Object... params)
      */
     public static <T> T newInstance(AnnotatedConstructor<T> constructor, Object... parameters) throws IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {
-        return SecureReflections.ensureAccessible(constructor.getJavaMember()).newInstance(parameters);
+        return AccessController.doPrivileged(SetAccessibleAction.of(constructor.getJavaMember())).newInstance(parameters);
     }
 
     /**
@@ -59,22 +61,28 @@ public class RuntimeAnnotatedMembers {
      * @param value             The value to inject
      */
     public static void setFieldValue(AnnotatedField<?> field, Object instance, Object value) throws IllegalArgumentException, IllegalAccessException {
-        SecureReflections.ensureAccessible(field.getJavaMember()).set(instance, value);
-    }
-
-    public static void setFieldValueOnInstance(AnnotatedField<?> field, Object instance, Object value) throws IllegalArgumentException, SecurityException, IllegalAccessException, NoSuchFieldException {
-        SecureReflections.getField(instance.getClass(), field.getJavaMember().getName()).set(instance, value);
+        AccessController.doPrivileged(SetAccessibleAction.of(field.getJavaMember())).set(instance, value);
     }
 
     public static <T, X> T getFieldValue(AnnotatedField<X> field, Object instance) {
         try {
-            return Reflections.<T>cast(SecureReflections.ensureAccessible(field.getJavaMember()).get(instance));
+            return Reflections.<T>cast(AccessController.doPrivileged(SetAccessibleAction.of(field.getJavaMember())).get(instance));
         } catch (Exception e) {
             throw new WeldException(ACCESS_ERROR_ON_FIELD, e, field.getJavaMember().getName(), field.getJavaMember().getDeclaringClass());
         }
     }
 
+    /**
+     * Invokes the method on a given instace with give
+     * @param method
+     * @param instance
+     * @param parameters
+     * @return
+     * @throws IllegalArgumentException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     */
     public static <T, X> T invokeMethod(AnnotatedMethod<X> method, Object instance, Object... parameters) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
-        return SecureReflections.<T>invoke(instance, method.getJavaMember(), parameters);
+        return cast(method.getJavaMember().invoke(instance, parameters));
     }
 }

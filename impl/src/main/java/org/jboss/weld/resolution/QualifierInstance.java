@@ -5,6 +5,7 @@ import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
+import java.security.AccessController;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,6 +21,7 @@ import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.metadata.cache.QualifierModel;
+import org.jboss.weld.security.SetAccessibleAction;
 import org.jboss.weld.util.collections.ArraySet;
 
 /**
@@ -85,6 +87,7 @@ public class QualifierInstance {
         for (final AnnotatedMethod<?> method : model.getAnnotatedAnnotation().getMethods()) {
             if(!model.getNonBindingMembers().contains(method)) {
                 try {
+                    AccessController.doPrivileged(SetAccessibleAction.of(method.getJavaMember()));
                     values.put(method, RuntimeAnnotatedMembers.invokeMethod(method, instance));
                 } catch (IllegalAccessException e) {
                     throw new WeldException(e);

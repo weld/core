@@ -20,6 +20,8 @@ package org.jboss.weld.interceptor.reader;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
 import java.util.Collections;
 import java.util.Set;
 
@@ -28,8 +30,8 @@ import org.jboss.weld.interceptor.spi.metadata.MethodMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
 import org.jboss.weld.interceptor.util.InterceptionTypeRegistry;
 import org.jboss.weld.resources.SharedObjectFacade;
+import org.jboss.weld.security.GetDeclaredMethodAction;
 import org.jboss.weld.util.collections.ArraySet;
-import org.jboss.weld.util.reflection.SecureReflections;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
@@ -66,9 +68,9 @@ public class DefaultMethodMetadata<M> implements MethodMetadata, Serializable {
     private DefaultMethodMetadata(Set<InterceptionType> interceptionTypes, MethodReference methodReference) {
         this.supportedInterceptorTypes = interceptionTypes;
         try {
-            this.javaMethod = SecureReflections.getDeclaredMethod(methodReference.getDeclaringClass(), methodReference.getMethodName(), methodReference.getParameterTypes());
-        } catch (NoSuchMethodException e) {
-            throw new IllegalStateException(e);
+            this.javaMethod = AccessController.doPrivileged(new GetDeclaredMethodAction(methodReference.getDeclaringClass(), methodReference.getMethodName(), methodReference.getParameterTypes()));
+        } catch (PrivilegedActionException e) {
+            throw new IllegalStateException(e.getCause());
         }
     }
 
