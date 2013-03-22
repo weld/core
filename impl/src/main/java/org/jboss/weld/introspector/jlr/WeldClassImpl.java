@@ -463,8 +463,10 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
     public WeldMethod<?, ?> getWeldMethod(Method methodDescriptor) {
         // TODO Should be cached
         for (WeldMethod<?, ?> annotatedMethod : getWeldMethods()) {
-            if (annotatedMethod.getName().equals(methodDescriptor.getName()) && Arrays.equals(annotatedMethod.getParameterTypesAsArray(), methodDescriptor.getParameterTypes())) {
-                return annotatedMethod;
+            if(!annotatedMethod.getJavaMember().isBridge()) {
+                if (annotatedMethod.getName().equals(methodDescriptor.getName()) && Arrays.equals(annotatedMethod.getParameterTypesAsArray(), methodDescriptor.getParameterTypes())) {
+                    return annotatedMethod;
+                }
             }
         }
         return null;
