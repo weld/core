@@ -53,23 +53,6 @@ public class RequestBeanStore extends AttributeBeanStore {
         request.setAttribute(key, instance);
     }
 
-    @Override
-    public boolean attach() {
-        // Doesn't support detachment
-        return false;
-    }
-
-    @Override
-    public boolean detach() {
-        return false;
-    }
-
-    @Override
-    public boolean isAttached() {
-        // Doesn't support detachment
-        return true;
-    }
-
     public HttpServletRequest getRequest() {
         return request;
     }
