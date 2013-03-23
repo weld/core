@@ -35,7 +35,6 @@ import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.After;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -68,7 +67,6 @@ import com.gargoylesoftware.htmlunit.WebClient;
  */
 @RunWith(Arquillian.class)
 @Category(Integration.class)
-@Ignore("WELD-1159")
 public class ContextDeadlockTest {
     
     @ArquillianResource

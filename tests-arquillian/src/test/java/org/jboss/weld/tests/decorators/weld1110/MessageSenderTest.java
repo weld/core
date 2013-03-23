@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 
 import junit.framework.Assert;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -14,7 +15,6 @@ import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.impl.BeansXml;
 import org.jboss.weld.tests.category.Integration;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -44,14 +44,12 @@ public class MessageSenderTest {
     private URL base;
 
     @Test
-    @Ignore("WELD-1110")
     public void testImpl() throws Exception {
         String response = getWebServiceResponse("rest/message/Hello");
         Assert.assertEquals("Decorated Hello", response);
     }
 
     @Test
-    @Ignore
     public void testFacade() throws Exception {
         String response = getWebServiceResponse("rest/facade/Hello");
         Assert.assertEquals("Decorated Hello", response);
