@@ -118,7 +118,6 @@ import org.jboss.weld.context.unbound.RequestContextImpl;
 import org.jboss.weld.context.unbound.SingletonContextImpl;
 import org.jboss.weld.context.unbound.UnboundLiteral;
 import org.jboss.weld.ejb.spi.EjbServices;
-import org.jboss.weld.enums.EnumService;
 import org.jboss.weld.event.GlobalObserverNotifierService;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.exceptions.IllegalStateException;
@@ -591,7 +590,6 @@ public class WeldBootstrap implements CDI11Bootstrap {
                 }
             }
             for (BeanDeployment deployment : beanDeployments.values()) {
-                deployment.getBeanManager().getServices().get(EnumService.class).inject();
                 deployment.getBeanDeployer().cleanup();
             }
             Container.instance().setState(ContainerState.INITIALIZED);
@@ -648,27 +646,18 @@ public class WeldBootstrap implements CDI11Bootstrap {
                 deploymentManager.instance().select(ApplicationContext.class).get().invalidate();
             } finally {
                 try {
-                    // Next, the container must destroy dependent objects injected into enums.
-                    if (beanDeployments != null) {
-                        for (BeanDeployment deployment : beanDeployments.values()) {
-                            deployment.getBeanManager().getServices().get(EnumService.class).disinject();
-                        }
-                    }
+                    // Finally, the container must fire an event of type BeforeShutdown.
+                    BeforeShutdownImpl.fire(deploymentManager, beanDeployments);
                 } finally {
+                    Container.instance().setState(ContainerState.SHUTDOWN);
+                    Container.instance().cleanup();
+                    // remove BeanManager references
                     try {
-                        // Finally, the container must fire an event of type BeforeShutdown.
-                        BeforeShutdownImpl.fire(deploymentManager, beanDeployments);
-                    } finally {
-                        Container.instance().setState(ContainerState.SHUTDOWN);
-                        Container.instance().cleanup();
-                        // remove BeanManager references
-                        try {
-                            CDI<?> cdi = CDI.current();
-                            if (cdi instanceof Weld) {
-                                ((Weld) cdi).cleanup();
-                            }
-                        } catch (java.lang.IllegalStateException ignored) {
+                        CDI<?> cdi = CDI.current();
+                        if (cdi instanceof Weld) {
+                            ((Weld) cdi).cleanup();
                         }
+                    } catch (java.lang.IllegalStateException ignored) {
                     }
                 }
             }

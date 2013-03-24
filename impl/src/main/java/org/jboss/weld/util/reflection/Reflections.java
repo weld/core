@@ -362,26 +362,6 @@ public class Reflections {
         }
     }
 
-    public static boolean isEnum(Class<?> clazz) {
-        return clazz.isEnum() || (clazz.getSuperclass() != null && clazz.getSuperclass().isEnum());
-    }
-
-    public static boolean isArrayOfUnboundedTypeVariablesOrObjects(Type[] types) {
-        for (Type type : types) {
-            if (Object.class.equals(type)) {
-                continue;
-            }
-            if (type instanceof TypeVariable<?>) {
-                Type[] bounds = ((TypeVariable<?>) type).getBounds();
-                if (isEmptyBoundArray(bounds)) {
-                    continue;
-                }
-            }
-            return false;
-        }
-        return true;
-    }
-
     public static boolean isUnboundedWildcard(Type type) {
         if (type instanceof WildcardType) {
             WildcardType wildcard = (WildcardType) type;

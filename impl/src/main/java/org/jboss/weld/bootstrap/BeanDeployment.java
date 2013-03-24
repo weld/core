@@ -62,7 +62,6 @@ import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.ejb.spi.EjbServices;
-import org.jboss.weld.enums.EnumService;
 import org.jboss.weld.injection.producer.InjectionTargetService;
 import org.jboss.weld.interceptor.builder.InterceptorsApiAbstraction;
 import org.jboss.weld.jsf.JsfApiAbstraction;
@@ -135,7 +134,6 @@ public class BeanDeployment {
         services.add(InterceptorsApiAbstraction.class, new InterceptorsApiAbstraction(resourceLoader));
         this.beanManager = BeanManagerImpl.newManager(deploymentManager, beanDeploymentArchive.getId(), services);
         services.add(InjectionTargetService.class, new InjectionTargetService(beanManager));
-        services.add(EnumService.class, new EnumService(beanManager));
         if (beanManager.getServices().contains(EjbServices.class)) {
             // Must populate EJB cache first, as we need it to detect whether a
             // bean is an EJB!
@@ -268,7 +266,6 @@ public class BeanDeployment {
         }
 
         // TODO Register the context beans
-        beanDeployer.processEnums();
         beanDeployer.createClassBeans();
 
     }

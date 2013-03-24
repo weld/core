@@ -53,8 +53,6 @@ import org.jboss.weld.bootstrap.events.ProcessAnnotatedTypeImpl;
 import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.ejb.spi.EjbServices;
-import org.jboss.weld.enums.EnumInjectionTarget;
-import org.jboss.weld.enums.EnumService;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.injection.producer.InterceptionModelInitializer;
@@ -208,19 +206,6 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
                     }
                 }
             }
-        }
-    }
-
-    public void processEnums() {
-        EnumService enumService = getManager().getServices().get(EnumService.class);
-        for (SlimAnnotatedType<?> annotatedType : getEnvironment().getAnnotatedTypes()) {
-            if (Reflections.isEnum(annotatedType.getJavaClass())) {
-                enumService.addEnumClass(Reflections.<SlimAnnotatedType<Enum<?>>> cast(annotatedType));
-            }
-        }
-        // add @New injection points from enums
-        for (EnumInjectionTarget<?> enumInjectionTarget : enumService.getEnumInjectionTargets()) {
-            getEnvironment().addNewBeansFromInjectionPoints(enumInjectionTarget.getInjectionPoints());
         }
     }
 

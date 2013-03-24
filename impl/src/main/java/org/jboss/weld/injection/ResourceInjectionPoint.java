@@ -88,10 +88,6 @@ public class ResourceInjectionPoint<T, X> extends DelegatingFieldInjectionPointA
         delegate.inject(declaringInstance, getReference(ctx));
     }
 
-    public void disinject(Object declaringInstance) {
-        delegate.inject(declaringInstance, null);
-    }
-
     @Override
     protected FieldInjectionPointAttributes<T, X> delegate() {
         return delegate.delegate();
