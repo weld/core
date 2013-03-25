@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
+
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.inject.Instance;
 
@@ -310,14 +311,12 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
 
                 for (ManagedConversation conversation : conversations.values()) {
                     String id = conversation.getId();
-                    if (isCurrentConversation(id)) {
+                    if (!conversation.isTransient()) {
                         // the currently associated conversation will be destroyed at the end of the current request
-                        if (!conversation.isTransient()) {
-                            conversation.end();
-                        }
-                    } else {
-                        // a conversation that is not currently associated is destroyed immediately
                         conversation.end();
+                    }
+                    if (!isCurrentConversation(id)) {
+                        // a conversation that is not currently associated is destroyed immediately
                         destroyConversation(session, id);
                     }
                 }
