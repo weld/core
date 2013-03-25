@@ -58,7 +58,6 @@ import org.jboss.weld.manager.BeanManagerImpl;
  */
 public abstract class AbstractConversationContext<R, S> extends AbstractBoundContext<R> implements ConversationContext {
 
-    private static final String IDENTIFIER = AbstractConversationContext.class.getName();
     private static final String CURRENT_CONVERSATION_ATTRIBUTE_NAME = ConversationContext.class.getName() + ".currentConversation";
     public static final String CONVERSATIONS_ATTRIBUTE_NAME = ConversationContext.class.getName() + ".conversations";
 
@@ -111,14 +110,12 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
     }
 
     public boolean associate(R request) {
-        if (getRequestAttribute(request, IDENTIFIER) == null) {
+        if (this.associated.get() == null) {
             this.associated.set(request);
             /*
             * We need to delay attaching the bean store until activate() is called
             * so that we can attach the correct conversation id
             */
-            // Don't reassociate
-            setRequestAttribute(request, IDENTIFIER, IDENTIFIER);
 
             /*
             * We may need access to the conversation id generator and
@@ -153,7 +150,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
     }
 
     public boolean dissociate(R request) {
-        if (isAssociated() && getRequestAttribute(request, IDENTIFIER) != null) {
+        if (isAssociated() && this.associated.get() != null) {
             try {
                 /*
                 * If the session is available, store the conversation id generator and
@@ -166,7 +163,6 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
                     setSessionAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME, getRequestAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME), false);
                 }
                 this.associated.set(null);
-                removeRequestAttribute(request, IDENTIFIER);
                 return true;
             } finally {
                 cleanup();

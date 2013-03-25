@@ -16,8 +16,6 @@ import org.jboss.weld.context.beanstore.http.LazySessionBeanStore;
 
 public class HttpSessionContextImpl extends AbstractBoundContext<HttpServletRequest> implements HttpSessionContext {
 
-    private static final String IDENTIFIER = HttpSessionContextImpl.class.getName();
-
     private final NamingScheme namingScheme;
 
     public HttpSessionContextImpl() {
@@ -26,30 +24,13 @@ public class HttpSessionContextImpl extends AbstractBoundContext<HttpServletRequ
     }
 
     public boolean associate(HttpServletRequest request) {
-        if (request.getAttribute(IDENTIFIER) == null) {
+        if (getBeanStore() == null) {
             // Don't reassociate
-            request.setAttribute(IDENTIFIER, IDENTIFIER);
             setBeanStore(new LazySessionBeanStore(request, namingScheme));
             return true;
         } else {
             return false;
         }
-    }
-
-    public boolean dissociate(HttpServletRequest request) {
-
-        if (request.getAttribute(IDENTIFIER) != null) {
-            try {
-                setBeanStore(null);
-                request.removeAttribute(IDENTIFIER);
-                return true;
-            } finally {
-                cleanup();
-            }
-        } else {
-            return false;
-        }
-
     }
 
     public boolean destroy(HttpSession session) {
@@ -85,5 +66,4 @@ public class HttpSessionContextImpl extends AbstractBoundContext<HttpServletRequ
     protected Conversation getConversation() {
         return Container.instance().deploymentManager().instance().select(Conversation.class).get();
     }
-
 }

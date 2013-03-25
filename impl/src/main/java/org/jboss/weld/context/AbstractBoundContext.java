@@ -72,4 +72,16 @@ public abstract class AbstractBoundContext<S> extends AbstractManagedContext imp
         super.deactivate();
     }
 
+    public boolean dissociate(S storage) {
+        if (getBeanStore() != null) {
+            try {
+                setBeanStore(null);
+                return true;
+            } finally {
+                cleanup();
+            }
+        } else {
+            return false;
+        }
+    }
 }

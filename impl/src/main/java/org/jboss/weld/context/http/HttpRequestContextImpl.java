@@ -36,8 +36,6 @@ import org.jboss.weld.util.reflection.Reflections;
 
 public class HttpRequestContextImpl extends AbstractBoundContext<HttpServletRequest> implements HttpRequestContext {
 
-    private static final String IDENTIFIER = HttpRequestContextImpl.class.getName();
-
     private final NamingScheme namingScheme;
 
     /**
@@ -49,29 +47,13 @@ public class HttpRequestContextImpl extends AbstractBoundContext<HttpServletRequ
     }
 
     public boolean associate(HttpServletRequest request) {
-        if (request.getAttribute(IDENTIFIER) == null) {
-            request.setAttribute(IDENTIFIER, IDENTIFIER);
+        if (getBeanStore() == null) {
             setBeanStore(new RequestBeanStore(request, namingScheme));
             getBeanStore().attach();
             return true;
         } else {
             return false;
         }
-    }
-
-    public boolean dissociate(HttpServletRequest request) {
-        if (request.getAttribute(IDENTIFIER) != null) {
-            try {
-                setBeanStore(null);
-                request.removeAttribute(IDENTIFIER);
-                return true;
-            } finally {
-                cleanup();
-            }
-        } else {
-            return false;
-        }
-
     }
 
     @Override
