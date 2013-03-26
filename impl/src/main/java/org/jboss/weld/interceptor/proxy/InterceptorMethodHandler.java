@@ -1,8 +1,5 @@
 package org.jboss.weld.interceptor.proxy;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.security.AccessController;
@@ -55,23 +52,4 @@ public class InterceptorMethodHandler implements MethodHandler, Serializable {
         MethodMetadata methodMetadata = ctx.getTargetClassInterceptorMetadata().getInterceptorClass().getDeclaredMethod(method);
         return methodMetadata != null && methodMetadata.isInterceptorMethod();
     }
-
-    private void writeObject(ObjectOutputStream objectOutputStream) throws IOException {
-        try {
-            executeInterception(null, null, null, InterceptionType.PRE_PASSIVATE);
-            objectOutputStream.defaultWriteObject();
-        } catch (Throwable throwable) {
-            throw new IOException("Error while serializing class", throwable);
-        }
-    }
-
-    private void readObject(ObjectInputStream objectInputStream) throws IOException {
-        try {
-            objectInputStream.defaultReadObject();
-            executeInterception(null, null, null, InterceptionType.POST_ACTIVATE);
-        } catch (Throwable throwable) {
-            throw new IOException("Error while deserializing class", throwable);
-        }
-    }
-
 }
