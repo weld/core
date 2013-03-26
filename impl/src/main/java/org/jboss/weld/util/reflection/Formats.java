@@ -61,6 +61,7 @@ public class Formats {
 
     private static final Function<?> SPACE_DELIMITER_FUNCTION = new Function<Object>() {
 
+        @Override
         public String apply(Object from, int position) {
             if (position > 0) {
                 return " " + (from == null ? "null" : from.toString());
@@ -72,6 +73,7 @@ public class Formats {
 
     private static final Function<?> COMMA_DELIMITER_FUNCTION = new Function<Object>() {
 
+        @Override
         public String apply(Object from, int position) {
             if (position > 0) {
                 return ", " + (from == null ? "null" : from.toString());
@@ -83,6 +85,7 @@ public class Formats {
 
     private static final Function<Annotation> ANNOTATION_LIST_FUNCTION = new Function<Annotation>() {
 
+        @Override
         public String apply(Annotation from, int position) {
             return spaceDelimiterFunction().apply("@" + from.annotationType().getSimpleName(), position);
         }
@@ -115,6 +118,7 @@ public class Formats {
     public static String formatTypes(Iterable<? extends Type> baseTypes) {
         return formatIterable(baseTypes, new Function<Type>() {
 
+            @Override
             public String apply(Type from, int position) {
                 return commaDelimiterFunction().apply(formatType(from), position);
             }
@@ -125,6 +129,7 @@ public class Formats {
     public static String formatBusinessInterfaceDescriptors(Iterable<? extends BusinessInterfaceDescriptor<?>> businessInterfaceDescriptors) {
         return formatIterable(businessInterfaceDescriptors, new Function<BusinessInterfaceDescriptor<?>>() {
 
+            @Override
             public String apply(BusinessInterfaceDescriptor<?> from, int position) {
                 return commaDelimiterFunction().apply(formatType(from.getInterface()), position);
             }
@@ -143,6 +148,7 @@ public class Formats {
     public static String formatAsFormalParameterList(Iterable<? extends AnnotatedParameter<?>> parameters) {
         return "(" + formatIterable(parameters, new Function<AnnotatedParameter<?>>() {
 
+            @Override
             public String apply(AnnotatedParameter<?> from, int position) {
                 return commaDelimiterFunction().apply(formatParameter(from), position);
             }
@@ -238,6 +244,7 @@ public class Formats {
     public static String formatActualTypeArguments(Type[] actualTypeArguments) {
         return wrapIfNeccessary(formatIterable(actualTypeArguments, new Function<Type>() {
 
+            @Override
             public String apply(Type from, int position) {
                 return commaDelimiterFunction().apply(formatType(from), position);
             }
@@ -376,5 +383,26 @@ public class Formats {
 
     public static String formatAnnotatedParameter(AnnotatedParameter<?> parameter) {
         return Formats.formatSimpleClassName(parameter) + " Parameter " + (parameter.getPosition() + 1) + " of " + parameter.getDeclaringCallable().toString();
+    }
+
+    /**
+     * Attempts to extract a name of a missing class loader dependency from an exception such as {@link NoClassDefFoundError} or {@link ClassNotFoundException}.
+     */
+    public static String getNameOfMissingClassLoaderDependency(Throwable e) {
+        if (e instanceof NoClassDefFoundError) {
+            if (e.getMessage() != null) {
+                return e.getMessage().replace('/', '.');
+            }
+        }
+        if (e instanceof ClassNotFoundException) {
+            if (e.getMessage() != null) {
+                return e.getMessage();
+            }
+        }
+        if (e.getCause() != null) {
+            return getNameOfMissingClassLoaderDependency(e.getCause());
+        } else {
+            return "[unknown]";
+        }
     }
 }

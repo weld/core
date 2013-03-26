@@ -65,6 +65,7 @@ import org.jboss.weld.resources.spi.ResourceLoadingException;
 import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.collections.Multimaps;
+import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
 import org.slf4j.ext.XLogger;
@@ -109,7 +110,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
         try {
             return resourceLoader.classForName(className);
         } catch (ResourceLoadingException e) {
-            log.info(IGNORING_CLASS_DUE_TO_LOADING_ERROR, className);
+            log.info(IGNORING_CLASS_DUE_TO_LOADING_ERROR, className, Formats.getNameOfMissingClassLoaderDependency(e));
             xlog.catching(DEBUG, e);
             return null;
         }
@@ -121,7 +122,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
             try {
                 return classTransformer.getBackedAnnotatedType(clazz, getManager().getId());
             } catch (ResourceLoadingException e) {
-                log.info(IGNORING_CLASS_DUE_TO_LOADING_ERROR, clazz.getName());
+                log.info(IGNORING_CLASS_DUE_TO_LOADING_ERROR, clazz.getName(), Formats.getNameOfMissingClassLoaderDependency(e));
                 xlog.catching(DEBUG, e);
             }
         }
