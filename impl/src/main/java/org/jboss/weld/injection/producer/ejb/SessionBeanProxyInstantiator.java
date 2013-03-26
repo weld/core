@@ -60,7 +60,7 @@ public class SessionBeanProxyInstantiator<T> implements Instantiator<T> {
         try {
             T instance = AccessController.doPrivileged(NewInstanceAction.of(proxyClass));
             ctx.push(instance);
-            ProxyFactory.setBeanInstance(instance, createEnterpriseTargetBeanInstance(ctx), bean);
+            ProxyFactory.setBeanInstance(instance, createEnterpriseTargetBeanInstance(), bean);
             return instance;
         } catch (PrivilegedActionException e) {
             if (e.getCause() instanceof InstantiationException) {
@@ -75,8 +75,8 @@ public class SessionBeanProxyInstantiator<T> implements Instantiator<T> {
         }
     }
 
-    protected EnterpriseTargetBeanInstance createEnterpriseTargetBeanInstance(CreationalContext<T> creationalContext) {
-        return new InjectionPointPropagatingEnterpriseTargetBeanInstance(bean.getBeanClass(), new EnterpriseBeanProxyMethodHandler<T>(bean, creationalContext), bean.getBeanManager());
+    protected EnterpriseTargetBeanInstance createEnterpriseTargetBeanInstance() {
+        return new InjectionPointPropagatingEnterpriseTargetBeanInstance(bean.getBeanClass(), new EnterpriseBeanProxyMethodHandler<T>(bean), bean.getBeanManager());
     }
 
     @Override

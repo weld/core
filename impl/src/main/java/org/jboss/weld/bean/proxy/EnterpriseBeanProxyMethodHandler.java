@@ -22,17 +22,16 @@ import static org.jboss.weld.logging.messages.BeanMessage.CALL_PROXIED_METHOD;
 import static org.jboss.weld.logging.messages.BeanMessage.CREATED_SESSION_BEAN_PROXY;
 import static org.jboss.weld.logging.messages.BeanMessage.INVALID_REMOVE_METHOD_INVOCATION;
 
+import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.lang.reflect.Method;
-import java.util.Collection;
-
-import javax.enterprise.context.spi.CreationalContext;
 
 import org.jboss.weld.annotated.enhanced.MethodSignature;
 import org.jboss.weld.annotated.enhanced.jlr.MethodSignatureImpl;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.ejb.api.SessionObjectReference;
 import org.jboss.weld.exceptions.UnsupportedOperationException;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
 
@@ -50,11 +49,11 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
     // The log provider
     private static final LocLogger log = loggerFactory().getLogger(BEAN);
 
+    private final BeanManagerImpl manager;
+    private final String beanId;
     private final SessionObjectReference reference;
-    private final Class<?> objectInterface;
-    private final Collection<MethodSignature> removeMethodSignatures;
-    private final boolean clientCanCallRemoveMethods;
-    private final boolean stateful;
+
+    private final transient SessionBean<T> bean;
 
     /**
      * Constructor
@@ -62,12 +61,11 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
      * @param bean the session bean
      * @param creationalContext
      */
-    public EnterpriseBeanProxyMethodHandler(SessionBean<T> bean, CreationalContext<T> creationalContext) {
-        this.objectInterface = bean.getEjbDescriptor().getObjectInterface();
-        this.removeMethodSignatures = bean.getEjbDescriptor().getRemoveMethodSignatures();
-        this.clientCanCallRemoveMethods = bean.isClientCanCallRemoveMethods();
+    public EnterpriseBeanProxyMethodHandler(SessionBean<T> bean) {
+        this.bean = bean;
+        this.manager = bean.getBeanManager();
+        this.beanId = bean.getId();
         this.reference = bean.createReference();
-        this.stateful = bean.getEjbDescriptor().isStateful();
         log.trace(CREATED_SESSION_BEAN_PROXY, bean);
     }
 
@@ -87,9 +85,10 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
      * @return the resulting value of the method invocation.
      * @throws Throwable if the method invocation fails.
      */
+    @Override
     public Object invoke(Object self, Method method, Method proceed, Object[] args) throws Throwable {
         if ("destroy".equals(method.getName()) && Marker.isMarker(0, method, args)) {
-            if (stateful) {
+            if (bean.getEjbDescriptor().isStateful()) {
                 if(!reference.isRemoved()) {
                     reference.remove();
                 }
@@ -97,7 +96,7 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
             return null;
         }
 
-        if (!clientCanCallRemoveMethods && isRemoveMethod(method)) {
+        if (!bean.isClientCanCallRemoveMethods() && isRemoveMethod(method)) {
             throw new UnsupportedOperationException(INVALID_REMOVE_METHOD_INVOCATION, method);
         }
         Class<?> businessInterface = getBusinessInterface(method);
@@ -114,7 +113,7 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
     private boolean isRemoveMethod(Method method) {
         // TODO we can certainly optimize this search algorithm!
         MethodSignature methodSignature = new MethodSignatureImpl(method);
-        return removeMethodSignatures.contains(methodSignature);
+        return bean.getEjbDescriptor().getRemoveMethodSignatures().contains(methodSignature);
     }
 
     private boolean isToStringMethod(Method method) {
@@ -122,12 +121,26 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
     }
 
     private Class<?> getBusinessInterface(Method method) {
-        Class<?> businessInterface = method.getDeclaringClass();
-        if (businessInterface.equals(Object.class)) {
-            return objectInterface;
-        } else {
-            return businessInterface;
+        Class<?> declaringClass = method.getDeclaringClass();
+        if (declaringClass.equals(Object.class)) {
+            return bean.getEjbDescriptor().getObjectInterface();
         }
+        if (bean.getEjbDescriptor().getLocalBusinessInterfacesAsClasses().contains(declaringClass)) {
+            return declaringClass;
+        }
+        // TODO we can certainly optimize this search algorithm!
+        for (Class<?> view : bean.getEjbDescriptor().getLocalBusinessInterfacesAsClasses()) {
+            for (Class<?> currentClass = view; currentClass != Object.class && currentClass != null; currentClass = currentClass.getSuperclass()) {
+                if (currentClass.equals(view)) {
+                    return view;
+                }
+            }
+        }
+        throw new RuntimeException("Unable to locate a business interface declaring " + method);
     }
 
+    @SuppressWarnings("unchecked")
+    private Object readResolve() throws ObjectStreamException {
+        return new EnterpriseBeanProxyMethodHandler<T>((SessionBean<T>) manager.getPassivationCapableBean(beanId));
+    }
 }

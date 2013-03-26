@@ -16,15 +16,20 @@
  */
 package org.jboss.weld.ejb;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Set;
+
 import org.jboss.weld.annotated.enhanced.MethodSignature;
 import org.jboss.weld.annotated.enhanced.jlr.MethodSignatureImpl;
 import org.jboss.weld.ejb.spi.BusinessInterfaceDescriptor;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.ejb.spi.helpers.ForwardingEjbDescriptor;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.ImmutableSet;
 
 /**
  * More powerful version of {@link EjbDescriptor} that exposes Maps for some
@@ -35,9 +40,20 @@ import java.util.Collection;
  */
 public class InternalEjbDescriptor<T> extends ForwardingEjbDescriptor<T> {
 
+    private static class BusinessInterfaceDescriptorToClassFunction implements Function<BusinessInterfaceDescriptor<?>, Class<?>> {
+
+        private static final BusinessInterfaceDescriptorToClassFunction INSTANCE = new BusinessInterfaceDescriptorToClassFunction();
+
+        @Override
+        public Class<?> apply(BusinessInterfaceDescriptor<?> input) {
+            return input.getInterface();
+        }
+    }
+
     private final Class<?> objectInterface;
     private final EjbDescriptor<T> delegate;
     private final Collection<MethodSignature> removeMethodSignatures;
+    private final Set<Class<?>> localBusinessInterfaces;
 
     public InternalEjbDescriptor(EjbDescriptor<T> ejbDescriptor) {
         this.delegate = ejbDescriptor;
@@ -48,6 +64,7 @@ public class InternalEjbDescriptor<T> extends ForwardingEjbDescriptor<T> {
                 removeMethodSignatures.add(new MethodSignatureImpl(method));
             }
         }
+        this.localBusinessInterfaces = ImmutableSet.copyOf(Collections2.transform(getLocalBusinessInterfaces(), BusinessInterfaceDescriptorToClassFunction.INSTANCE));
     }
 
     @Override
@@ -71,4 +88,7 @@ public class InternalEjbDescriptor<T> extends ForwardingEjbDescriptor<T> {
         }
     }
 
+    public Set<Class<?>> getLocalBusinessInterfacesAsClasses() {
+        return localBusinessInterfaces;
+    }
 }
