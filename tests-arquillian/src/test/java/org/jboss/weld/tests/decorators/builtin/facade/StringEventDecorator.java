@@ -16,13 +16,16 @@
  */
 package org.jboss.weld.tests.decorators.builtin.facade;
 
+import java.io.Serializable;
+
 import javax.decorator.Decorator;
 import javax.decorator.Delegate;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 @Decorator
-public abstract class StringEventDecorator implements Event<String> {
+@SuppressWarnings("serial")
+public abstract class StringEventDecorator implements Event<String>, Serializable {
 
     @Inject
     @Delegate

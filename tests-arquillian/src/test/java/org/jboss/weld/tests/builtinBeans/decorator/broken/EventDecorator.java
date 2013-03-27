@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2012, Red Hat, Inc., and individual contributors
+ * Copyright 2013, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,9 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.decorators.builtin.facade;
-
-import java.io.Serializable;
+package org.jboss.weld.tests.builtinBeans.decorator.broken;
 
 import javax.decorator.Decorator;
 import javax.decorator.Delegate;
@@ -24,15 +22,14 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 @Decorator
-@SuppressWarnings("serial")
-public abstract class IntegerEventDecorator implements Event<Integer>, Serializable {
+public abstract class EventDecorator implements Event<String> {
 
     @Inject
     @Delegate
-    private Event<Integer> delegate;
+    private Event<String> delegate;
 
     @Override
-    public void fire(Integer event) {
-        delegate.fire(event + 10);
+    public void fire(String event) {
+        delegate.fire(event);
     }
 }

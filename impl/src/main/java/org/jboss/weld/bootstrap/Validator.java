@@ -100,6 +100,7 @@ import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.PassivationCapable;
 import javax.enterprise.inject.spi.Producer;
 import javax.inject.Named;
+import javax.inject.Provider;
 import javax.inject.Scope;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotated;
@@ -551,6 +552,22 @@ public class Validator implements Service {
         }
 
         Decorators.checkDelegateType(decorator);
+
+        /*
+         * Validate decorators of facade built-in beans
+         */
+        Type delegateType = decorator.getDelegateType();
+        if (delegateType instanceof ParameterizedType) {
+            ParameterizedType parameterizedDelegateType = (ParameterizedType) delegateType;
+            if (!Decorators.isPassivationCapable(decorator)) {
+                if (Instance.class.equals(parameterizedDelegateType.getRawType()) || Provider.class.equals(parameterizedDelegateType.getRawType())) {
+                    throw new UnserializableDependencyException(BUILTIN_BEAN_WITH_NONSERIALIZABLE_DECORATOR, decorator, Instance.class.getName());
+                }
+                if (Event.class.equals(parameterizedDelegateType.getRawType())) {
+                    throw new UnserializableDependencyException(BUILTIN_BEAN_WITH_NONSERIALIZABLE_DECORATOR, decorator, Event.class.getName());
+                }
+            }
+        }
 
         if (decorator instanceof WeldDecorator<?>) {
 
