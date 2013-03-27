@@ -19,6 +19,7 @@ package org.jboss.weld.injection.producer;
 import static org.jboss.weld.logging.messages.BeanMessage.CONFLICTING_INTERCEPTOR_BINDINGS;
 import static org.jboss.weld.logging.messages.BeanMessage.FINAL_BEAN_CLASS_WITH_INTERCEPTORS_NOT_ALLOWED;
 import static org.jboss.weld.logging.messages.BeanMessage.FINAL_INTERCEPTED_BEAN_METHOD_NOT_ALLOWED;
+import static org.jboss.weld.logging.messages.ValidatorMessage.NOT_PROXYABLE_PRIVATE_CONSTRUCTOR;
 import static org.jboss.weld.util.Interceptors.filterInterceptorBindings;
 import static org.jboss.weld.util.Interceptors.flattenInterceptorBindings;
 import static org.jboss.weld.util.Interceptors.mergeBeanInterceptorBindings;
@@ -47,7 +48,6 @@ import org.jboss.weld.bean.interceptor.CdiInterceptorFactory;
 import org.jboss.weld.bean.interceptor.CustomInterceptorMetadata;
 import org.jboss.weld.bean.interceptor.WeldInterceptorClassMetadata;
 import org.jboss.weld.ejb.EJBApiAbstraction;
-import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.interceptor.builder.InterceptionModelBuilder;
 import org.jboss.weld.interceptor.builder.InterceptorsApiAbstraction;
@@ -116,7 +116,10 @@ public class InterceptionModelInitializer<T> {
         InterceptionModel<ClassMetadata<?>, ?> interceptionModel = builder.build();
         if (interceptionModel.getAllInterceptors().size() > 0 || hasSerializationOrInvocationInterceptorMethods) {
             if (annotatedType.isFinal()) {
-                throw new DefinitionException(FINAL_BEAN_CLASS_WITH_INTERCEPTORS_NOT_ALLOWED, annotatedType.getJavaClass());
+                throw new DeploymentException(FINAL_BEAN_CLASS_WITH_INTERCEPTORS_NOT_ALLOWED, annotatedType.getJavaClass());
+            }
+            if (Reflections.isPrivate(constructor.getJavaMember())) {
+                throw new DeploymentException(NOT_PROXYABLE_PRIVATE_CONSTRUCTOR, annotatedType.getJavaClass(), constructor, annotatedType.getJavaClass());
             }
             manager.getInterceptorModelRegistry().put(annotatedType.getJavaClass(), interceptionModel);
         }
@@ -195,7 +198,7 @@ public class InterceptionModelInitializer<T> {
         List<Interceptor<?>> methodBoundInterceptors = manager.resolveInterceptors(interceptionType, methodBindingAnnotations);
         if (methodBoundInterceptors != null && methodBoundInterceptors.size() > 0) {
             if (Reflections.isFinal(method.getJavaMember())) {
-                throw new DefinitionException(FINAL_INTERCEPTED_BEAN_METHOD_NOT_ALLOWED, method, methodBoundInterceptors.get(0).getBeanClass().getName());
+                throw new DeploymentException(FINAL_INTERCEPTED_BEAN_METHOD_NOT_ALLOWED, method, methodBoundInterceptors.get(0).getBeanClass().getName());
             }
             Method javaMethod = Reflections.<AnnotatedMethod<T>>cast(method).getJavaMember();
             builder.intercept(interceptionType, javaMethod).with(toSerializableContextualArray(methodBoundInterceptors));
@@ -275,7 +278,7 @@ public class InterceptionModelInitializer<T> {
         Class<?>[] methodDeclaredInterceptors = interceptorsApi.extractInterceptorClasses(method);
         if (methodDeclaredInterceptors != null && methodDeclaredInterceptors.length > 0) {
             if (Reflections.isFinal(method.getJavaMember())) {
-                throw new DefinitionException(FINAL_INTERCEPTED_BEAN_METHOD_NOT_ALLOWED, method, methodDeclaredInterceptors[0].getName());
+                throw new DeploymentException(FINAL_INTERCEPTED_BEAN_METHOD_NOT_ALLOWED, method, methodDeclaredInterceptors[0].getName());
             }
 
             InterceptionType interceptionType = isTimeoutAnnotationPresentOn(method)
