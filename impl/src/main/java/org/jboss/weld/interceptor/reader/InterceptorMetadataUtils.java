@@ -75,7 +75,7 @@ public class InterceptorMetadataUtils {
                     interceptionType.annotationClassName(), Void.TYPE.getName());
         }
         Class<?>[] parameterTypes = javaMethod.getParameterTypes();
-        if (parameterTypes.length != 0) {
+        if (parameterTypes.length > 1) {
             throw new DefinitionException(ValidatorMessage.INTERCEPTOR_METHOD_DOES_NOT_HAVE_ZERO_PARAMETERS,
                     javaMethod.getName(), javaMethod.getDeclaringClass().getName(),
                     interceptionType.annotationClassName());
@@ -90,7 +90,8 @@ public class InterceptorMetadataUtils {
                 }
             }
         }
-        return true;
+
+        return parameterTypes.length == 0;
     }
 
     private static boolean isValidInterceptorClassLifecycleInterceptorMethod(InterceptionType interceptionType, MethodMetadata method) {
@@ -102,17 +103,20 @@ public class InterceptorMetadataUtils {
         }
 
         Class<?>[] parameterTypes = javaMethod.getParameterTypes();
-        if (parameterTypes.length != 1) {
+        if (parameterTypes.length == 0) {
+            return false;
+        } else if (parameterTypes.length == 1) {
+            if (InvocationContext.class.isAssignableFrom(parameterTypes[0])) {
+                return true;
+            }
+            throw new DefinitionException(ValidatorMessage.INTERCEPTOR_METHOD_DOES_NOT_HAVE_CORRECT_TYPE_OF_PARAMETER,
+                    javaMethod.getName(), javaMethod.getDeclaringClass().getName(),
+                    interceptionType.annotationClassName(), InvocationContext.class.getName());
+        } else {
             throw new DefinitionException(ValidatorMessage.INTERCEPTOR_METHOD_DOES_NOT_HAVE_EXACTLY_ONE_PARAMETER,
                     javaMethod.getName(), javaMethod.getDeclaringClass().getName(),
                     interceptionType.annotationClassName());
         }
-        if (!InvocationContext.class.isAssignableFrom(parameterTypes[0])) {
-            throw new DefinitionException(ValidatorMessage.INTERCEPTOR_METHOD_DOES_NOT_HAVE_CORRECT_TYPE_OF_PARAMETER,
-                    javaMethod.getName(), javaMethod.getDeclaringClass().getName(),
-                    interceptionType.annotationClassName(), InvocationContext.class.getName());
-        }
-        return true;
     }
 
     private static boolean isValidBusinessMethodInterceptorMethod(InterceptionType interceptionType, MethodMetadata method) {

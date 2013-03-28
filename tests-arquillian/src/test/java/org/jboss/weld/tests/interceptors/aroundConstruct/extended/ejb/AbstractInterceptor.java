@@ -21,7 +21,7 @@ import javax.interceptor.InvocationContext;
 
 import org.jboss.weld.test.util.ActionSequence;
 
-public class AbstractInterceptor {
+public abstract class AbstractInterceptor {
 
     @AroundConstruct
     public void intercept(InvocationContext ctx) {

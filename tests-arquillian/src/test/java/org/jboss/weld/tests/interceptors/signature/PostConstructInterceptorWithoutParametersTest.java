@@ -17,7 +17,8 @@
 
 package org.jboss.weld.tests.interceptors.signature;
 
-import javax.inject.Inject;
+import javax.annotation.PostConstruct;
+import javax.interceptor.Interceptor;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -31,21 +32,31 @@ import org.junit.runner.RunWith;
  * @author <a href="mailto:mluksa@redhat.com">Marko Luksa</a>
  */
 @RunWith(Arquillian.class)
-public class TargetClassWithPostConstructWithInvalidParameterCountTest extends AbstractSignatureTestBase {
+public class PostConstructInterceptorWithoutParametersTest extends AbstractSignatureTestBase {
 
     @Deployment
     public static Archive<?> deploy() {
         return ShrinkWrap.create(BeanArchive.class)
-                .addClass(TargetClassWithPostConstructWithInvalidParameterCount.class)
-                .addClasses(AbstractSignatureTestBase.class);
+                .intercept(MyInterceptor.class)
+                .addClasses(AbstractSignatureTestBase.class, Lifecycle.class, InterceptedBean.class);
     }
-
-    @Inject
-    private TargetClassWithPostConstructWithInvalidParameterCount target;
 
     @Test
-    public void testPostConstructNotInvoked() {
-        assertNotInvoked(target.postConstructInvoked);
+    public void testDeploymentFails() {
+        MyInterceptor.invoked = false;
+        getBean(InterceptedBean.class);
+        assertNotInvoked(MyInterceptor.invoked);
     }
 
+    @Lifecycle
+    @Interceptor
+    public static class MyInterceptor {
+        public static boolean invoked;
+
+        @PostConstruct
+        public Object postConstruct() throws Exception {
+            invoked = true;
+            return null;
+        }
+    }
 }
