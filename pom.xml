@@ -35,6 +35,7 @@
         <arquillian.glassfish.version>1.0.0.CR1</arquillian.glassfish.version>
         <arquillian.jboss6.version>1.0.0.CR2</arquillian.jboss6.version>
         <atinject.tck.version>1.0.0-PFD-3</atinject.tck.version>
+        <build.config.version>1</build.config.version>
         <cal10n.version>0.7.7</cal10n.version>
         <cargo.maven2.plugin.version>1.0</cargo.maven2.plugin.version>
         <cdi.api.version>1.1-20130305</cdi.api.version>
