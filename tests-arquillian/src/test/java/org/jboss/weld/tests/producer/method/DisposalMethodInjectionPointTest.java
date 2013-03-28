@@ -16,6 +16,10 @@
  */
 package org.jboss.weld.tests.producer.method;
 
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Bean;
+import javax.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -26,10 +30,6 @@ import org.jboss.weld.test.util.Utils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Bean;
-import javax.inject.Inject;
 
 @RunWith(Arquillian.class)
 public class DisposalMethodInjectionPointTest {
@@ -56,6 +56,5 @@ public class DisposalMethodInjectionPointTest {
         Bar bar = barConsumer.getBar();
         barConsumerBean.destroy(barConsumer, ctx);
         Assert.assertEquals(bar, BarProducer.getDisposedBar());
-        Assert.assertEquals("bar", BarProducer.getDisposedInjection().getName());
     }
 }

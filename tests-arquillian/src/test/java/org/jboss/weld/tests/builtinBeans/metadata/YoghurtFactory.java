@@ -16,12 +16,7 @@
  */
 package org.jboss.weld.tests.builtinBeans.metadata;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.Bean;
 
@@ -30,7 +25,6 @@ public class YoghurtFactory {
 
     private Bean<?> fruitYoghurtBean;
     private Bean<?> probioticYoghurtBean;
-    private final List<Bean<?>> beans = new ArrayList<Bean<?>>();
 
     @Produces
     @Fruit
@@ -46,19 +40,11 @@ public class YoghurtFactory {
         return new Yoghurt();
     }
 
-    public void dispose(@Disposes @Any Yoghurt yoghurt, Bean<Yoghurt> bean) {
-        beans.add(bean);
-    }
-
     public Bean<?> getFruitYoghurtBean() {
         return fruitYoghurtBean;
     }
 
     public Bean<?> getProbioticYoghurtBean() {
         return probioticYoghurtBean;
-    }
-
-    public List<Bean<?>> getBeans() {
-        return beans;
     }
 }

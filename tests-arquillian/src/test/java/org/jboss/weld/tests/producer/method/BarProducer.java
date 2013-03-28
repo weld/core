@@ -16,11 +16,12 @@
  */
 package org.jboss.weld.tests.producer.method;
 
+import java.lang.reflect.Member;
+
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
-import java.lang.reflect.Member;
 
 /**
  * Class with a producer method and disposal method both containing InjectionPoint
@@ -30,7 +31,6 @@ import java.lang.reflect.Member;
  */
 public class BarProducer {
     private static Bar disposedBar;
-    private static Member disposedInjection;
     private static Member producedInjection;
 
     @Produces
@@ -39,17 +39,12 @@ public class BarProducer {
         return new Bar("blah");
     }
 
-    public void dispose(@Disposes @Any Bar bar, InjectionPoint injectionPoint) {
+    public void dispose(@Disposes @Any Bar bar) {
         disposedBar = bar;
-        disposedInjection = injectionPoint.getMember();
     }
 
     public static Bar getDisposedBar() {
         return disposedBar;
-    }
-
-    public static Member getDisposedInjection() {
-        return disposedInjection;
     }
 
     public static Member getProducedInjection() {
@@ -58,7 +53,6 @@ public class BarProducer {
 
     public static void reset() {
         disposedBar = null;
-        disposedInjection = null;
         producedInjection = null;
     }
 }

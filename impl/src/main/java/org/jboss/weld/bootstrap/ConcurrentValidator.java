@@ -104,7 +104,8 @@ public class ConcurrentValidator extends Validator {
         executor.invokeAllAndCheckForExceptions(new IterativeWorkerTaskFactory<ObserverInitializationContext<?, ?>>(observers) {
             protected void doWork(ObserverInitializationContext<?, ?> observerMethod) {
                 for (InjectionPoint ip : observerMethod.getObserver().getInjectionPoints()) {
-                    validateInjectionPointForDefinitionErrors(ip, ip.getBean(), beanManager, true);
+                    validateInjectionPointForDefinitionErrors(ip, ip.getBean(), beanManager);
+                    // TODO: validateMetadataInjectionPoint
                     validateInjectionPointForDeploymentProblems(ip, ip.getBean(), beanManager);
                 }
             }

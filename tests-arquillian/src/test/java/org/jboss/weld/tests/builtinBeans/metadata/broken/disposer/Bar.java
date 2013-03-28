@@ -14,21 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.builtinBeans.metadata.passivation.disposer;
+package org.jboss.weld.tests.builtinBeans.metadata.broken.disposer;
 
 import java.io.Serializable;
 
-import javax.inject.Inject;
+public class Bar implements Serializable {
 
-public class Foo implements Serializable {
+    private static final long serialVersionUID = -1913344654658055424L;
 
-    private static final long serialVersionUID = -6641103320351014031L;
-
-    @Inject
-    private Bar bar;
-
-    public Bar getBar() {
-        return bar;
+    public Bar(boolean value) {
     }
 
 }

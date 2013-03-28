@@ -17,10 +17,11 @@
 
 package org.jboss.weld.logging.messages;
 
+import org.jboss.weld.logging.MessageId;
+
 import ch.qos.cal10n.BaseName;
 import ch.qos.cal10n.Locale;
 import ch.qos.cal10n.LocaleData;
-import org.jboss.weld.logging.MessageId;
 
 @BaseName("org.jboss.weld.messages.validator")
 @LocaleData({
@@ -99,4 +100,5 @@ public enum ValidatorMessage {
     @MessageId("001462")GLOBALLY_ENABLED_DECORATOR_NOT_IN_ARCHIVE,
     @MessageId("001463")BEAN_WITH_PASSIVATING_SCOPE_NOT_PASSIVATION_CAPABLE,
     @MessageId("001465")BUILTIN_BEAN_WITH_NONSERIALIZABLE_DECORATOR,
+    @MessageId("001466")INJECTION_INTO_DISPOSER_METHOD,
 }

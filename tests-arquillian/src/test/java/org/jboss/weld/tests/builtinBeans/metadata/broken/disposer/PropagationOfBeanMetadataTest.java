@@ -14,22 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.builtinBeans.metadata.passivation.disposer;
+package org.jboss.weld.tests.builtinBeans.metadata.broken.disposer;
 
-import static org.junit.Assert.assertTrue;
-
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.ShouldThrowException;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.weld.test.util.Utils;
-import org.jboss.weld.util.reflection.Reflections;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -38,20 +33,14 @@ public class PropagationOfBeanMetadataTest {
 
     @Inject
     private BeanManager manager;
-    
+
     @Deployment
+    @ShouldThrowException(Exception.class)
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).addPackage(PropagationOfBeanMetadataTest.class.getPackage()).addClasses(Utils.class);
+        return ShrinkWrap.create(BeanArchive.class).addPackage(PropagationOfBeanMetadataTest.class.getPackage());
     }
 
     @Test
-    public void testBeanMetadataPropagatedToDisposerMethod() throws Exception {
-        Bean<Foo> bean = Reflections.cast(manager.resolve(manager.getBeans(Foo.class)));
-        CreationalContext<Foo> ctx = manager.createCreationalContext(bean);
-        Foo instance = bean.create(ctx);
-        Foo instance2 = Utils.deserialize(Utils.serialize(instance));
-        CreationalContext<Foo> ctx2 = Utils.deserialize(Utils.serialize(ctx));
-        bean.destroy(instance2, ctx2);
-        assertTrue(BarProducer.isDisposerCalled());
+    public void test() throws Exception {
     }
 }

@@ -14,21 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.builtinBeans.injectionPoint.disposer;
+package org.jboss.weld.tests.builtinBeans.metadata.broken.disposer;
 
-import java.io.Serializable;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Disposes;
+import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.spi.Bean;
 
-import javax.inject.Inject;
+@ApplicationScoped
+public class BarProducer {
 
-public class Foo implements Serializable {
+    @Produces
+    public Bar produceBar() {
+        return new Bar(true);
+    }
 
-    private static final long serialVersionUID = -6641103320351014031L;
-
-    @Inject
-    private Bar bar;
-
-    public Bar getBar() {
-        return bar;
+    public void disposeBar(@Disposes Bar bar, Bean<Bar> bean) {
     }
 
 }

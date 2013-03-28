@@ -14,42 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.builtinBeans.metadata.passivation.disposer;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+package org.jboss.weld.tests.builtinBeans.injectionPoint.disposer.broken;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 @ApplicationScoped
 public class BarProducer {
-
-    private static boolean disposerCalled;
 
     @Produces
     public Bar produceBar() {
         return new Bar(true);
     }
 
-    public void disposeBar(@Disposes Bar bar, Bean<Bar> bean, InjectionPoint injectionPoint) {
-        assertNotNull(bean);
-        assertEquals(BarProducer.class, bean.getBeanClass());
-        assertNotNull(injectionPoint);
-        assertNotNull(injectionPoint.getBean());
-        assertEquals(Foo.class, injectionPoint.getBean().getBeanClass());
-        disposerCalled = true;
+    public void disposeBar(@Disposes Bar bar, InjectionPoint injectionPoint) {
     }
-
-    public static boolean isDisposerCalled() {
-        return disposerCalled;
-    }
-
-    public static void reset() {
-        BarProducer.disposerCalled = false;
-    }
-
 }

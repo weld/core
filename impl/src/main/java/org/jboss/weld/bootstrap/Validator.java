@@ -58,7 +58,6 @@ import static org.jboss.weld.logging.messages.ValidatorMessage.PASSIVATING_BEAN_
 import static org.jboss.weld.logging.messages.ValidatorMessage.PSEUDO_SCOPED_BEAN_HAS_CIRCULAR_REFERENCES;
 import static org.jboss.weld.logging.messages.ValidatorMessage.SCOPE_ANNOTATION_ON_INJECTION_POINT;
 import static org.jboss.weld.logging.messages.ValidatorMessage.USER_TRANSACTION_INJECTION_INTO_BEAN_WITH_CONTAINER_MANAGED_TRANSACTIONS;
-import static org.jboss.weld.util.AnnotatedTypes.getDeclaringAnnotatedType;
 import static org.jboss.weld.util.Types.buildClassNameMap;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
@@ -143,6 +142,7 @@ import org.jboss.weld.literal.InterceptedLiteral;
 import org.jboss.weld.logging.messages.ValidatorMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
+import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.BeanMethods;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Decorators;
@@ -228,8 +228,9 @@ public class Validator implements Service {
                 if (producer.getDisposalMethod() != null) {
                     for (InjectionPoint ip : producer.getDisposalMethod().getInjectionPoints()) {
                         // pass the producer bean instead of the disposal method bean
-                        validateInjectionPointForDefinitionErrors(ip, bean, beanManager, false);
-                        validateInjectionPointForDeploymentProblems(ip, bean, beanManager);
+                        validateInjectionPointForDefinitionErrors(ip, null, beanManager);
+                        validateMetadataInjectionPoint(ip, null, ValidatorMessage.INJECTION_INTO_DISPOSER_METHOD);
+                        validateInjectionPointForDeploymentProblems(ip, null, beanManager);
                     }
                 }
             }
@@ -310,14 +311,15 @@ public class Validator implements Service {
      * @param beanManager the bean manager
      */
     public void validateInjectionPoint(InjectionPoint ij, BeanManagerImpl beanManager) {
-        validateInjectionPointForDefinitionErrors(ij, ij.getBean(), beanManager, false);
+        validateInjectionPointForDefinitionErrors(ij, ij.getBean(), beanManager);
+        validateMetadataInjectionPoint(ij, ij.getBean(), INJECTION_INTO_NON_BEAN);
         validateInjectionPointForDeploymentProblems(ij, ij.getBean(), beanManager);
     }
 
     /**
      * Checks for definition errors associated with a given {@link InjectionPoint}
      */
-    public void validateInjectionPointForDefinitionErrors(InjectionPoint ij, Bean<?> bean, BeanManagerImpl beanManager, boolean suppressInjectionPointMetadataCheck) {
+    public void validateInjectionPointForDefinitionErrors(InjectionPoint ij, Bean<?> bean, BeanManagerImpl beanManager) {
         if (ij.getAnnotated().getAnnotation(New.class) != null && ij.getQualifiers().size() > 1) {
             throw new DefinitionException(NEW_WITH_QUALIFIERS, ij);
         }
@@ -340,36 +342,36 @@ public class Validator implements Service {
         }
         checkFacadeInjectionPoint(ij, Instance.class);
         checkFacadeInjectionPoint(ij, Event.class);
+        // check that UserTransaction is not injected into a SessionBean with container-managed transactions
+        if (bean instanceof SessionBean<?>) {
+            JtaApiAbstraction jtaApi = beanManager.getServices().get(JtaApiAbstraction.class);
+            if (jtaApi.USER_TRANSACTION_CLASS.equals(ij.getType()) &&
+                    (ij.getQualifiers().isEmpty() || ij.getQualifiers().contains(DefaultLiteral.INSTANCE)) &&
+                    beanManager.getServices().get(EJBApiAbstraction.class).isSessionBeanWithContainerManagedTransactions(bean)) {
+                throw new DefinitionException(USER_TRANSACTION_INJECTION_INTO_BEAN_WITH_CONTAINER_MANAGED_TRANSACTIONS, ij);
+            }
+        }
+    }
+
+    public void validateMetadataInjectionPoint(InjectionPoint ij, Bean<?> bean, ValidatorMessage message) {
         // metadata injection points
-        if (!suppressInjectionPointMetadataCheck) {
-            if (ij.getType().equals(InjectionPoint.class) && bean == null) {
-                throw new DefinitionException(INJECTION_INTO_NON_BEAN, ij);
-            }
-            if (ij.getType().equals(InjectionPoint.class) && !Dependent.class.equals(bean.getScope())) {
-                throw new DefinitionException(INJECTION_INTO_NON_DEPENDENT_BEAN, ij);
-            }
+        if (ij.getType().equals(InjectionPoint.class) && bean == null) {
+            throw new DefinitionException(message, ij);
+        }
+        if (ij.getType().equals(InjectionPoint.class) && !Dependent.class.equals(bean.getScope())) {
+            throw new DefinitionException(INJECTION_INTO_NON_DEPENDENT_BEAN, ij);
         }
         Class<?> rawType = Reflections.getRawType(ij.getType());
         if (Bean.class.equals(rawType) || Interceptor.class.equals(rawType) || Decorator.class.equals(rawType)) {
             if (bean == null) {
-                throw new DefinitionException(INJECTION_INTO_NON_BEAN, ij);
+                throw new DefinitionException(message, ij);
             }
             if (bean instanceof AbstractClassBean<?>) {
-                checkBeanMetadataInjectionPoint(bean, ij, getDeclaringAnnotatedType(ij.getAnnotated()).getBaseType());
+                checkBeanMetadataInjectionPoint(bean, ij, AnnotatedTypes.getDeclaringAnnotatedType(ij.getAnnotated()).getBaseType());
             }
-            // make sure this is PM injection point and not an injection point of the disposer method
-            if (bean instanceof ProducerMethod<?, ?> && bean == ij.getBean()) {
+            if (bean instanceof ProducerMethod<?, ?>) {
                 ProducerMethod<?, ?> producerMethod = Reflections.cast(bean);
                 checkBeanMetadataInjectionPoint(bean, ij, producerMethod.getAnnotated().getBaseType());
-            }
-        }
-        // check that UserTransaction is not injected into a SessionBean with container-managed transactions
-        if (bean instanceof SessionBean<?>) {
-            JtaApiAbstraction jtaApi = beanManager.getServices().get(JtaApiAbstraction.class);
-            if (jtaApi.USER_TRANSACTION_CLASS.equals(rawType) &&
-                    (ij.getQualifiers().isEmpty() || ij.getQualifiers().contains(DefaultLiteral.INSTANCE)) &&
-                    beanManager.getServices().get(EJBApiAbstraction.class).isSessionBeanWithContainerManagedTransactions(bean)) {
-                throw new DefinitionException(USER_TRANSACTION_INJECTION_INTO_BEAN_WITH_CONTAINER_MANAGED_TRANSACTIONS, ij);
             }
         }
     }
@@ -729,7 +731,8 @@ public class Validator implements Service {
     protected void validateObserverMethods(Iterable<ObserverInitializationContext<?, ?>> observers, BeanManagerImpl beanManager) {
         for (ObserverInitializationContext<?, ?> omi : observers) {
             for (InjectionPoint ip : omi.getObserver().getInjectionPoints()) {
-                validateInjectionPointForDefinitionErrors(ip, ip.getBean(), beanManager, true);
+                validateInjectionPointForDefinitionErrors(ip, ip.getBean(), beanManager);
+                // TODO: validateMetadataInjectionPoint
                 validateInjectionPointForDeploymentProblems(ip, ip.getBean(), beanManager);
             }
         }
