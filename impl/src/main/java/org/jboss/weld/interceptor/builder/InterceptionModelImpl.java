@@ -34,6 +34,7 @@ import org.jboss.weld.interceptor.spi.model.InterceptionType;
 
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
+ * @author <a href="mailto:mluksa@redhat.com">Marko Luksa</a>
  */
 
 class InterceptionModelImpl<T, I> implements BuildableInterceptionModel<T, I> {
@@ -71,12 +72,17 @@ class InterceptionModelImpl<T, I> implements BuildableInterceptionModel<T, I> {
                 return globalInterceptors.get(interceptionType);
             }
         } else {
+            MethodReference methodReference = methodHolder(method);
             ArrayList<InterceptorMetadata<I>> returnedInterceptors = new ArrayList<InterceptorMetadata<I>>();
-            if (!methodsIgnoringGlobals.contains(methodHolder(method)) && globalInterceptors.containsKey(interceptionType)) {
+            if (!methodsIgnoringGlobals.contains(methodReference) && globalInterceptors.containsKey(interceptionType)) {
                 returnedInterceptors.addAll(globalInterceptors.get(interceptionType));
             }
-            if (methodBoundInterceptors.containsKey(interceptionType) && methodBoundInterceptors.get(interceptionType).containsKey(methodHolder(method))) {
-                returnedInterceptors.addAll(methodBoundInterceptors.get(interceptionType).get(methodHolder(method)));
+            Map<MethodReference, List<InterceptorMetadata<I>>> map = methodBoundInterceptors.get(interceptionType);
+            if (map != null) {
+                List<InterceptorMetadata<I>> list = map.get(methodReference);
+                if (list != null) {
+                    returnedInterceptors.addAll(list);
+                }
             }
             return returnedInterceptors;
         }

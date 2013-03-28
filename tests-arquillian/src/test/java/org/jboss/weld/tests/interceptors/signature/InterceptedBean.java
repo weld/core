@@ -14,22 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.interceptors.aroundConstruct.extended.ejb;
 
-import javax.interceptor.AroundConstruct;
-import javax.interceptor.InvocationContext;
+package org.jboss.weld.tests.interceptors.signature;
 
-import org.jboss.weld.test.util.ActionSequence;
+/**
+ * @author <a href="mailto:mluksa@redhat.com">Marko Luksa</a>
+ */
+@Intercept
+@Lifecycle
+public class InterceptedBean {
 
-public abstract class AbstractInterceptor {
-
-    @AroundConstruct
-    public void intercept(InvocationContext ctx) {
-        ActionSequence.addAction(getClass().getSimpleName());
-        try {
-            ctx.proceed();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    public String foo() {
+        return "foo";
     }
 }
