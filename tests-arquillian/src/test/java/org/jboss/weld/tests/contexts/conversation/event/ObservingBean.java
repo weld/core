@@ -23,7 +23,7 @@ import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.context.Destroyed;
 import javax.enterprise.context.Initialized;
 import javax.enterprise.event.Observes;
-import javax.servlet.ServletRequestEvent;
+import javax.servlet.ServletRequest;
 
 @ApplicationScoped
 public class ObservingBean {
@@ -31,11 +31,11 @@ public class ObservingBean {
     private final AtomicInteger initializedConversationCount = new AtomicInteger();
     private final AtomicInteger destroyedConversationCount = new AtomicInteger();
 
-    public void observeConversationInitialized(@Observes @Initialized(ConversationScoped.class) ServletRequestEvent event) {
+    public void observeConversationInitialized(@Observes @Initialized(ConversationScoped.class) ServletRequest request) {
         initializedConversationCount.incrementAndGet();
     }
 
-    public void observeConversationDestroyed(@Observes @Destroyed(ConversationScoped.class) ServletRequestEvent event) {
+    public void observeConversationDestroyed(@Observes @Destroyed(ConversationScoped.class) ServletRequest request) {
         destroyedConversationCount.incrementAndGet();
     }
 

@@ -34,6 +34,7 @@ import javax.inject.Inject;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletRequestEvent;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
 
 import org.jboss.weld.bean.builtin.BeanManagerProxy;
@@ -62,10 +63,11 @@ import org.slf4j.cal10n.LocLogger;
  * @author Ales Justin
  * @author <a href="mailto:lincolnbaxter@gmail.com">Lincoln Baxter, III</a>
  * @author Jozef Hartinger
+ * @author Marko Luksa
  */
 public class WeldListener extends AbstractServletListener {
 
-    private static final String HTTP_SESSION_EVENT = "org.jboss.weld." + HttpSessionEvent.class.getName();
+    private static final String HTTP_SESSION = "org.jboss.weld." + HttpSession.class.getName();
 
     private static final LocLogger log = loggerFactory().getLogger(SERVLET);
 
@@ -99,36 +101,37 @@ public class WeldListener extends AbstractServletListener {
             // servlet containers may not be able to inject fields in a servlet listener
             beanManager = BeanManagerProxy.unwrap(CDI.current().getBeanManager());
         }
-        beanManager.getAccessibleLenientObserverNotifier().fireEvent(sce, InitializedLiteral.APPLICATION);
+        beanManager.getAccessibleLenientObserverNotifier().fireEvent(sce.getServletContext(), InitializedLiteral.APPLICATION);
         this.conversationContextActivator = new ConversationContextActivator(beanManager, sce.getServletContext());
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-        beanManager.getAccessibleLenientObserverNotifier().fireEvent(sce, DestroyedLiteral.APPLICATION);
+        beanManager.getAccessibleLenientObserverNotifier().fireEvent(sce.getServletContext(), DestroyedLiteral.APPLICATION);
     }
 
     @Override
     public void sessionCreated(HttpSessionEvent event) {
-        beanManager.getAccessibleLenientObserverNotifier().fireEvent(event, InitializedLiteral.SESSION);
+        beanManager.getAccessibleLenientObserverNotifier().fireEvent(event.getSession(), InitializedLiteral.SESSION);
     }
 
     @Override
     public void sessionDestroyed(HttpSessionEvent event) {
         // Mark the session context and conversation contexts to destroy
         // instances when appropriate
-        boolean destroyed = sessionContext().destroy(event.getSession());
+        HttpSession session = event.getSession();
+        boolean destroyed = sessionContext().destroy(session);
         RequestScopedBeanCache.endRequest();
         if (destroyed) {
             // we are outside of a request (the session timed out) and therefore the session was destroyed immediately
             // we can fire the @Destroyed(SessionScoped.class) event immediately
-            beanManager.getAccessibleLenientObserverNotifier().fireEvent(event, DestroyedLiteral.SESSION);
+            beanManager.getAccessibleLenientObserverNotifier().fireEvent(session, DestroyedLiteral.SESSION);
         } else {
             // the old session won't be available at the time we destroy this request
             // let's store its reference until then
             if (requestContext() instanceof HttpRequestContextImpl) {
                 HttpServletRequest request = Reflections.<HttpRequestContextImpl> cast(requestContext()).getHttpServletRequest();
-                request.setAttribute(HTTP_SESSION_EVENT, event);
+                request.setAttribute(HTTP_SESSION, session);
             }
         }
     }
@@ -144,11 +147,11 @@ public class WeldListener extends AbstractServletListener {
                 requestContext().invalidate();
                 requestContext().deactivate();
                 // fire @Destroyed(RequestScoped.class)
-                beanManager.getAccessibleLenientObserverNotifier().fireEvent(event, DestroyedLiteral.REQUEST);
+                beanManager.getAccessibleLenientObserverNotifier().fireEvent(request, DestroyedLiteral.REQUEST);
                 sessionContext().deactivate();
                 // fire @Destroyed(SessionScoped.class)
                 if (!sessionContext().isValid()) {
-                    beanManager.getAccessibleLenientObserverNotifier().fireEvent(request.getAttribute(HTTP_SESSION_EVENT), DestroyedLiteral.SESSION);
+                    beanManager.getAccessibleLenientObserverNotifier().fireEvent(request.getAttribute(HTTP_SESSION), DestroyedLiteral.SESSION);
                 }
             } finally {
                 requestContext().dissociate(request);
@@ -188,7 +191,7 @@ public class WeldListener extends AbstractServletListener {
                 if (!conversationFilterRegistered) {
                     conversationContextActivator.activateConversationContext(request);
                 }
-                beanManager.getAccessibleLenientObserverNotifier().fireEvent(event, InitializedLiteral.REQUEST);
+                beanManager.getAccessibleLenientObserverNotifier().fireEvent(request, InitializedLiteral.REQUEST);
             } catch (RuntimeException e) {
                 requestDestroyed(event);
                 throw e;

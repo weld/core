@@ -20,14 +20,14 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Destroyed;
 import javax.enterprise.context.Initialized;
 import javax.enterprise.event.Observes;
-import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContext;
 
 @ApplicationScoped
 public class Observer1 {
 
     private boolean observed;
 
-    void observe(@Observes @Initialized(ApplicationScoped.class) ServletContextEvent event) {
+    void observe(@Observes @Initialized(ApplicationScoped.class) ServletContext servletContext) {
         if (observed) {
             throw new IllegalStateException("ServletContextEvent invoked multiple times.");
         }
@@ -38,7 +38,7 @@ public class Observer1 {
         return observed;
     }
 
-    void observeDestroyedServletContext(@Observes @Destroyed(ApplicationScoped.class) ServletContextEvent event) {
+    void observeDestroyedServletContext(@Observes @Destroyed(ApplicationScoped.class) ServletContext servletContext) {
         System.out.println("ServletContext destroyed"); // this is tricky to test properly
     }
 }

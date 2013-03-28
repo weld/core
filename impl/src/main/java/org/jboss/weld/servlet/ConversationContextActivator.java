@@ -25,8 +25,6 @@ import static org.jboss.weld.logging.messages.JsfMessage.RESUMING_CONVERSATION;
 
 import javax.enterprise.inject.Instance;
 import javax.servlet.ServletContext;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletRequestEvent;
 import javax.servlet.http.HttpServletRequest;
 
 import org.jboss.weld.context.ConversationContext;
@@ -43,6 +41,7 @@ import org.slf4j.cal10n.LocLogger;
  * @see WeldListener
  *
  * @author Jozef Hartinger
+ * @author Marko Luksa
  *
  */
 public class ConversationContextActivator {
@@ -88,7 +87,7 @@ public class ConversationContextActivator {
             setContextActivatedInRequest(request);
             conversationContext.activate(cid);
             if (cid == null) { // transient conversation
-                beanManager.getAccessibleLenientObserverNotifier().fireEvent(buildServletRequestEvent(request), InitializedLiteral.CONVERSATION);
+                beanManager.getAccessibleLenientObserverNotifier().fireEvent(request, InitializedLiteral.CONVERSATION);
             }
         } else {
             /*
@@ -137,12 +136,6 @@ public class ConversationContextActivator {
         return (Boolean) result;
     }
 
-    // TODO: we should NOT be rebuilding it
-    // CDI-354
-    private ServletRequestEvent buildServletRequestEvent(ServletRequest request) {
-        return new ServletRequestEvent(ctx, request);
-    }
-
     protected void deactivateConversationContext(HttpServletRequest request) {
         ConversationContext conversationContext = httpConversationContext.get();
         boolean isTransient = conversationContext.getCurrentConversation().isTransient();
@@ -159,7 +152,7 @@ public class ConversationContextActivator {
             conversationContext.deactivate();
         }
         if (isTransient) {
-            beanManager.getAccessibleLenientObserverNotifier().fireEvent(buildServletRequestEvent(request), DestroyedLiteral.CONVERSATION);
+            beanManager.getAccessibleLenientObserverNotifier().fireEvent(request, DestroyedLiteral.CONVERSATION);
         }
     }
 

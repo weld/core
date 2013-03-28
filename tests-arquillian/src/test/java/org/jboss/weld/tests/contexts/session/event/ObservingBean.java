@@ -23,7 +23,7 @@ import javax.enterprise.context.Destroyed;
 import javax.enterprise.context.Initialized;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
-import javax.servlet.http.HttpSessionEvent;
+import javax.servlet.http.HttpSession;
 
 @ApplicationScoped
 public class ObservingBean {
@@ -31,11 +31,11 @@ public class ObservingBean {
     private final AtomicInteger initializedSessionCount = new AtomicInteger();
     private final AtomicInteger destroyedSessionCount = new AtomicInteger();
 
-    public void observeSessionInitialized(@Observes @Initialized(SessionScoped.class) HttpSessionEvent event) {
+    public void observeSessionInitialized(@Observes @Initialized(SessionScoped.class) HttpSession session) {
         initializedSessionCount.incrementAndGet();
     }
 
-    public void observeSessionDestroyed(@Observes @Destroyed(SessionScoped.class) HttpSessionEvent event) {
+    public void observeSessionDestroyed(@Observes @Destroyed(SessionScoped.class) HttpSession session) {
         destroyedSessionCount.incrementAndGet();
     }
 
