@@ -24,7 +24,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.context.Destroyed;
 import javax.enterprise.event.Observes;
-import javax.servlet.ServletRequestEvent;
+import javax.servlet.ServletRequest;
 
 @ApplicationScoped
 public class DestroyedConversationObserver {
@@ -36,8 +36,8 @@ public class DestroyedConversationObserver {
         disassociatedConversationIds.add(id);
     }
 
-    void observeDestroyedAssociatedConversation(@Observes @Destroyed(ConversationScoped.class) ServletRequestEvent event) {
-        String cid = event.getServletRequest().getParameter("cid");
+    void observeDestroyedAssociatedConversation(@Observes @Destroyed(ConversationScoped.class) ServletRequest request) {
+        String cid = request.getParameter("cid");
         if (cid != null) {
             associatedConversationIds.add(cid);
         }

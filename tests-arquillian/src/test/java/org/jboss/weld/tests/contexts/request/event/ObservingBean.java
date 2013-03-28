@@ -23,7 +23,7 @@ import javax.enterprise.context.Destroyed;
 import javax.enterprise.context.Initialized;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
-import javax.servlet.ServletRequestEvent;
+import javax.servlet.ServletRequest;
 
 @ApplicationScoped
 public class ObservingBean {
@@ -31,14 +31,14 @@ public class ObservingBean {
     private final AtomicInteger initializedRequestCount = new AtomicInteger();
     private final AtomicInteger destroyedRequestCount = new AtomicInteger();
 
-    public void observeRequestInitialized(@Observes @Initialized(RequestScoped.class) ServletRequestEvent event) {
-        if (!"bar".equals(event.getServletRequest().getParameter("foo"))) {
+    public void observeRequestInitialized(@Observes @Initialized(RequestScoped.class) ServletRequest request) {
+        if (!"bar".equals(request.getParameter("foo"))) {
             throw new IllegalArgumentException("Unknown request, parameter foo not set.");
         }
         initializedRequestCount.incrementAndGet();
     }
 
-    public void observeRequestDestroyed(@Observes @Destroyed(RequestScoped.class) ServletRequestEvent event) {
+    public void observeRequestDestroyed(@Observes @Destroyed(RequestScoped.class) ServletRequest request) {
         destroyedRequestCount.incrementAndGet();
     }
 
