@@ -56,9 +56,6 @@ public class DisposalMethod<X, T> {
 
     private final MethodInjectionPoint<T, ? super X> disposalMethodInjectionPoint;
     private final AnnotatedParameter<? super X> disposesParameter;
-    // indicates whether a given type of metadata is required by the disposal method
-    private boolean injectionPointMetadataParameter = false;
-    private boolean beanMetadataParameter = false;
 
     private final Set<QualifierInstance> qualifiers;
 
@@ -73,24 +70,11 @@ public class DisposalMethod<X, T> {
         EnhancedAnnotatedParameter<?, ? super X> enhancedDisposesParameter = getEnhancedDisposesParameter(enhancedAnnotatedMethod);
         this.disposesParameter = enhancedDisposesParameter.slim();
         this.qualifiers = QualifierInstance.qualifiers(beanManager, enhancedDisposesParameter.getMetaAnnotations(Qualifier.class));
-        initMetadataParameters(enhancedAnnotatedMethod);
         checkDisposalMethod(enhancedAnnotatedMethod, declaringBean);
     }
 
     private EnhancedAnnotatedParameter<?, ? super X> getEnhancedDisposesParameter(EnhancedAnnotatedMethod<T, ? super X> enhancedAnnotatedMethod) {
         return enhancedAnnotatedMethod.getEnhancedParameters(Disposes.class).get(0);
-    }
-
-    private void initMetadataParameters(EnhancedAnnotatedMethod<T, ? super X> enhancedAnnotatedMethod) {
-        for (EnhancedAnnotatedParameter<?, ?> parameter : enhancedAnnotatedMethod.getEnhancedParameters()) {
-            Class<?> type = parameter.getJavaClass();
-            if (InjectionPoint.class.equals(type)) {
-                injectionPointMetadataParameter = true;
-            }
-            if (Bean.class.equals(type)) {
-                beanMetadataParameter = true;
-            }
-        }
     }
 
     public AnnotatedParameter<? super X> getDisposesParameter() {
@@ -151,14 +135,6 @@ public class DisposalMethod<X, T> {
 
     public AbstractClassBean<X> getDeclaringBean() {
         return declaringBean;
-    }
-
-    public boolean hasInjectionPointMetadataParameter() {
-        return injectionPointMetadataParameter;
-    }
-
-    public boolean hasBeanMetadataParameter() {
-        return beanMetadataParameter;
     }
 
     @Override

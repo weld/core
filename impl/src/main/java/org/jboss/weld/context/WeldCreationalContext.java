@@ -18,13 +18,11 @@ package org.jboss.weld.context;
 
 import java.util.List;
 
-import org.jboss.weld.context.api.ContextualInstance;
-import org.jboss.weld.injection.CurrentInjectionPoint;
-import org.jboss.weld.injection.spi.ResourceReference;
-
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.InjectionPoint;
+
+import org.jboss.weld.context.api.ContextualInstance;
+import org.jboss.weld.injection.spi.ResourceReference;
 
 /**
  * @param <T>
@@ -51,25 +49,6 @@ public interface WeldCreationalContext<T> extends CreationalContext<T> {
      * @return the {@link Contextual} for which this {@link CreationalContext} is created.
      */
     Contextual<T> getContextual();
-
-    /**
-     * Indicates that the Contextual should be stored so that it is accessible to a disposer method. This should only be used if
-     * the disposer method has a Bean metadata parameter.
-     */
-    void storeContextual();
-
-    /**
-     * Store an injection point so that it can be accessed from a disposer method. This should only be used if
-     * the disposer method has an InjectionPoint metadata parameter.
-     */
-    void storeInjectionPoint(InjectionPoint ip);
-
-    /**
-     * Loads a stored {@link InjectionPoint} instance. The instance is only available if required by a disposer method.
-     *  DO NOT use this method for obtaining the {@link InjectionPoint} reference from elsewhere. Use {@link CurrentInjectionPoint}
-     * instead.
-     */
-    InjectionPoint loadInjectionPoint();
 
     /**
      * Returns an unmodifiable list of dependent instances.

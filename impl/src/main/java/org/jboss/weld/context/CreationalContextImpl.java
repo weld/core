@@ -27,13 +27,9 @@ import java.util.Map;
 
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.context.api.ContextualInstance;
 import org.jboss.weld.injection.spi.ResourceReference;
-import org.jboss.weld.util.bean.SerializableForwardingBean;
-import org.jboss.weld.util.bean.SerializableForwardingInjectionPoint;
 import org.jboss.weld.util.reflection.Reflections;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
@@ -59,13 +55,6 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
     private final WeldCreationalContext<?> parentCreationalContext;
 
     private List<ResourceReference<?>> resourceReferences;
-
-    /*
-     * A disposer method may define a metadata injection point. If that's the case, we need to preserve the metadata associated
-     * with a given instance.
-     */
-    private SerializableForwardingBean<T> persistentContextual;
-    private SerializableForwardingInjectionPoint persistentInjectionPoint;
 
     public CreationalContextImpl(Contextual<T> contextual) {
         this(contextual, null, Collections.synchronizedList(new ArrayList<ContextualInstance<?>>()), null);
@@ -132,38 +121,6 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
         return parentCreationalContext;
     }
 
-    public Contextual<T> getContextual() {
-        if (persistentContextual != null) {
-            return persistentContextual;
-        }
-        return contextual;
-    }
-
-    public void storeContextual() {
-        if (contextual instanceof Bean<?>) {
-            Bean<T> bean = Reflections.cast(contextual);
-            if (contextual instanceof SerializableForwardingBean<?>) {
-                this.persistentContextual = (SerializableForwardingBean<T>) bean;
-            } else {
-                this.persistentContextual = new SerializableForwardingBean<T>(bean);
-            }
-        } else {
-            throw new IllegalArgumentException("Unable to store " + contextual);
-        }
-    }
-
-    public InjectionPoint loadInjectionPoint() {
-        return persistentInjectionPoint;
-    }
-
-    public void storeInjectionPoint(InjectionPoint ip) {
-        if (ip instanceof SerializableForwardingInjectionPoint) {
-            this.persistentInjectionPoint = (SerializableForwardingInjectionPoint) ip;
-        } else {
-            this.persistentInjectionPoint = new SerializableForwardingInjectionPoint(ip);
-        }
-    }
-
     public List<ContextualInstance<?>> getDependentInstances() {
         return Collections.unmodifiableList(dependentInstances);
     }
@@ -217,5 +174,10 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
             }
         }
         return false;
+    }
+
+    @Override
+    public Contextual<T> getContextual() {
+        return contextual;
     }
 }

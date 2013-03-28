@@ -34,16 +34,13 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.AnnotatedMember;
 import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.Producer;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMember;
 import org.jboss.weld.bean.DisposalMethod;
 import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.exceptions.DefinitionException;
-import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
 
 /**
@@ -56,11 +53,9 @@ public abstract class AbstractMemberProducer<X, T> extends AbstractProducer<T> {
     private static final LocLogger log = loggerFactory().getLogger(BEAN);
 
     private final DisposalMethod<?, ?> disposalMethod;
-    private final CurrentInjectionPoint currentInjectionPointService;
 
     public AbstractMemberProducer(EnhancedAnnotatedMember<T, ? super X, ? extends Member> enhancedMember, DisposalMethod<?, ?> disposalMethod) {
         this.disposalMethod = disposalMethod;
-        this.currentInjectionPointService = getBeanManager().getServices().get(CurrentInjectionPoint.class);
         checkDeclaringBean();
         checkProducerReturnType(enhancedMember);
     }
@@ -116,70 +111,20 @@ public abstract class AbstractMemberProducer<X, T> extends AbstractProducer<T> {
         }
     }
 
-    /**
-     * If metadata is required by the disposer method, store it within the CreationalContext.
-     */
-    private void storeMetadata(CreationalContext<T> creationalContext) {
-        if (disposalMethod != null) {
-            if (disposalMethod.hasBeanMetadataParameter()) {
-                WeldCreationalContext<T> ctx = getWeldCreationalContext(creationalContext);
-                ctx.storeContextual();
-            }
-            if (disposalMethod.hasInjectionPointMetadataParameter()) {
-                getWeldCreationalContext(creationalContext).storeInjectionPoint(currentInjectionPointService.peek());
-            }
-        }
-    }
-
-    private <A> WeldCreationalContext<A> getWeldCreationalContext(CreationalContext<A> ctx) {
-        if (ctx instanceof WeldCreationalContext<?>) {
-            return Reflections.cast(ctx);
-        }
-        throw new IllegalArgumentException("Unable to store values in " + ctx);
-    }
-
-    // according to the spec, anyone may call this method
-    // we are not able to metadata since we do not have the CreationalContext of the producer bean
-    // we create a new CreationalContext just for the invocation of the disposer method
     public void dispose(T instance) {
-        CreationalContext<T> ctx = getBeanManager().createCreationalContext(null);
-        try {
-            dispose(instance, ctx);
-        } finally {
-            ctx.release();
-        }
-    }
-
-    // invoke a disposer method - if exists
-    // if the disposer metod requires bean metadata, it can be loaded from the CreationalContext
-    public void dispose(T instance, CreationalContext<T> ctx) {
         if (disposalMethod != null) {
-            if (disposalMethod.hasInjectionPointMetadataParameter()) {
-                loadMetadataForDisposerInvocation(ctx);
-            }
+            CreationalContext<T> ctx = getBeanManager().createCreationalContext(null);
             try {
                 Object receiver = getReceiver(ctx, ctx);
                 disposalMethod.invokeDisposeMethod(receiver, instance, ctx);
             } finally {
-                if (disposalMethod.hasInjectionPointMetadataParameter()) {
-                    currentInjectionPointService.pop();
-                }
+                ctx.release();
             }
         }
     }
 
-    protected void loadMetadataForDisposerInvocation(CreationalContext<T> ctx) {
-        WeldCreationalContext<T> weldCtx = getWeldCreationalContext(ctx);
-        InjectionPoint ip = weldCtx.loadInjectionPoint();
-        if (ip == null) {
-            throw new IllegalStateException("Unable to restore InjectionPoint instance.");
-        }
-        currentInjectionPointService.push(ip);
-    }
-
     @Override
     public T produce(CreationalContext<T> ctx) {
-        storeMetadata(ctx);
         CreationalContext<X> receiverCreationalContext = getBeanManager().createCreationalContext(getDeclaringBean());
         Object receiver = getReceiver(ctx, receiverCreationalContext);
 

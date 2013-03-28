@@ -42,7 +42,6 @@ import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.IllegalProductException;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.injection.CurrentInjectionPoint;
-import org.jboss.weld.injection.producer.AbstractMemberProducer;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.reflection.Reflections;
@@ -194,11 +193,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
 
     public void destroy(T instance, CreationalContext<T> creationalContext) {
         try {
-            if (getProducer() instanceof AbstractMemberProducer<?, ?>) {
-                Reflections.<AbstractMemberProducer<?, T>>cast(getProducer()).dispose(instance, creationalContext);
-            } else {
-                getProducer().dispose(instance);
-            }
+            getProducer().dispose(instance);
         } finally {
             if (getDeclaringBean().isDependent()) {
                 creationalContext.release();
