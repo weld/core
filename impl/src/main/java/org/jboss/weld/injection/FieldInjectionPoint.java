@@ -18,8 +18,10 @@ package org.jboss.weld.injection;
 
 import static org.jboss.weld.injection.Exceptions.rethrowException;
 
+import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.security.AccessController;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Instance;
@@ -28,13 +30,13 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.ProcessInjectionPoint;
 
-import org.jboss.weld.annotated.runtime.RuntimeAnnotatedMembers;
 import org.jboss.weld.bean.proxy.DecoratorProxy;
 import org.jboss.weld.injection.attributes.FieldInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.ForwardingInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.WeldInjectionPointAttributes;
 import org.jboss.weld.interceptor.util.proxy.TargetInstanceProxy;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.security.GetAccessibleCopyOfMember;
 import org.jboss.weld.util.reflection.Reflections;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
@@ -53,12 +55,14 @@ public class FieldInjectionPoint<T, X> extends ForwardingInjectionPointAttribute
 
     private final boolean cacheable;
     private transient Bean<?> cachedBean;
+    private final transient Field accessibleField;
 
     private final FieldInjectionPointAttributes<T, X> attributes;
 
     protected FieldInjectionPoint(FieldInjectionPointAttributes<T, X> attributes) {
         this.attributes = attributes;
         this.cacheable = isCacheableInjectionPoint(attributes);
+        this.accessibleField = AccessController.doPrivileged(new GetAccessibleCopyOfMember<Field>(attributes.getMember()));
     }
 
     protected static boolean isCacheableInjectionPoint(WeldInjectionPointAttributes<?, ?> attributes) {
@@ -87,7 +91,7 @@ public class FieldInjectionPoint<T, X> extends ForwardingInjectionPointAttribute
                 }
                 objectToInject = manager.getReference(this, cachedBean, creationalContext);
             }
-            RuntimeAnnotatedMembers.setFieldValue(getAnnotated(), instanceToInject, objectToInject);
+            accessibleField.set(instanceToInject, objectToInject);
         } catch (IllegalArgumentException e) {
             rethrowException(e);
         } catch (IllegalAccessException e) {
@@ -103,7 +107,7 @@ public class FieldInjectionPoint<T, X> extends ForwardingInjectionPointAttribute
                 if (instanceToInject instanceof TargetInstanceProxy)
                     instanceToInject = Reflections.<TargetInstanceProxy<T>> cast(declaringInstance).getTargetInstance();
             }
-            RuntimeAnnotatedMembers.setFieldValue(getAnnotated(), instanceToInject, value);
+            accessibleField.set(instanceToInject, value);
         } catch (IllegalArgumentException e) {
             rethrowException(e);
         } catch (IllegalAccessException e) {
@@ -119,5 +123,9 @@ public class FieldInjectionPoint<T, X> extends ForwardingInjectionPointAttribute
     @Override
     public AnnotatedField<X> getAnnotated() {
         return attributes.getAnnotated();
+    }
+
+    private Object readResolve() throws ObjectStreamException {
+        return new FieldInjectionPoint<T, X>(attributes);
     }
 }

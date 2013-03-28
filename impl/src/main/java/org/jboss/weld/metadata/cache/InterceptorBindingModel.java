@@ -37,7 +37,6 @@ import javax.interceptor.InterceptorBinding;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotation;
-import org.jboss.weld.annotated.runtime.RuntimeAnnotatedMembers;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.security.SetAccessibleAction;
@@ -140,8 +139,8 @@ public class InterceptorBindingModel<T extends Annotation> extends AbstractBindi
                 if (includeNonBindingTypes || !getNonBindingMembers().contains(annotatedMethod)) {
                     try {
                         AccessController.doPrivileged(SetAccessibleAction.of(annotatedMethod.getJavaMember()));
-                        Object thisValue = RuntimeAnnotatedMembers.invokeMethod(annotatedMethod, instance);
-                        Object thatValue = RuntimeAnnotatedMembers.invokeMethod(annotatedMethod, other);
+                        Object thisValue = annotatedMethod.getJavaMember().invoke(instance);
+                        Object thatValue = annotatedMethod.getJavaMember().invoke(other);
                         if (!thisValue.equals(thatValue)) {
                             return false;
                         }

@@ -14,26 +14,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.injection.producer;
+package org.jboss.weld.tests.security.members;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
+import javax.inject.Inject;
 
-/**
- * Implementations of this interface are capable of performing {@link PostConstruct} / {@link PreDestroy} lifecycle callback
- * invocations.
- *
- * @author Jozef Hartinger
- *
- * @param <T>
- */
-public interface LifecycleCallbackInvoker<T> {
+public class Foo {
 
-    void postConstruct(T instance, Instantiator<T> instantiator);
+    private final Bar constructorBar;
+    private Bar initializerBar;
+    @Inject
+    private Bar fieldBar;
 
-    void preDestroy(T instance, Instantiator<T> instantiator);
+    @Inject
+    public Foo(Bar constructorBar) {
+        this.constructorBar = constructorBar;
+    }
 
-    boolean hasPreDestroyMethods();
+    @Inject
+    public void init(Bar initializerBar) {
+        this.initializerBar = initializerBar;
+    }
 
-    boolean hasPostConstructMethods();
+    Bar getConstructorBar() {
+        return constructorBar;
+    }
+
+    Bar getInitializerBar() {
+        return initializerBar;
+    }
+
+    Bar getFieldBar() {
+        return fieldBar;
+    }
+
 }

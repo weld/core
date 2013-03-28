@@ -17,11 +17,17 @@
 package org.jboss.weld.injection;
 
 import static org.jboss.weld.injection.Exceptions.rethrowException;
+import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.Map;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.TransientReference;
@@ -29,8 +35,12 @@ import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
-import org.jboss.weld.annotated.runtime.InvokableAnnotatedMethod;
+import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.security.GetAccessibleCopyOfMember;
+import org.jboss.weld.security.MethodLookupAction;
+
+import com.google.common.collect.ImmutableMap;
 
 /**
  * High-level representation of an injected method. This class does not need to be serializable because it is never injected.
@@ -40,11 +50,16 @@ import org.jboss.weld.manager.BeanManagerImpl;
  */
 public class MethodInjectionPoint<T, X> extends AbstractCallableInjectionPoint<T, X, Method> {
 
-    private final InvokableAnnotatedMethod<X> method;
+    private final AnnotatedMethod<X> annotatedMethod;
+    private final Method accessibleMethod;
+
+    private volatile Map<Class<?>, Method> methods;
 
     protected MethodInjectionPoint(EnhancedAnnotatedMethod<T, X> enhancedMethod, Bean<?> declaringBean, Class<?> declaringComponentClass, boolean observerOrDisposer, InjectionPointFactory factory, BeanManagerImpl manager) {
         super(enhancedMethod, declaringBean, declaringComponentClass, observerOrDisposer, factory, manager);
-        this.method = new InvokableAnnotatedMethod<X>(enhancedMethod.slim());
+        this.annotatedMethod = enhancedMethod.slim();
+        this.accessibleMethod = AccessController.doPrivileged(new GetAccessibleCopyOfMember<Method>(annotatedMethod.getJavaMember()));
+        this.methods = Collections.<Class<?>, Method>singletonMap(annotatedMethod.getJavaMember().getDeclaringClass(), accessibleMethod);
     }
 
     public T invoke(Object declaringInstance, BeanManagerImpl manager, CreationalContext<?> creationalContext, Class<? extends RuntimeException> exceptionTypeToThrow) {
@@ -54,7 +69,7 @@ public class MethodInjectionPoint<T, X> extends AbstractCallableInjectionPoint<T
     public T invokeWithSpecialValue(Object declaringInstance, Class<? extends Annotation> annotatedParameter, Object parameter, BeanManagerImpl manager, CreationalContext<?> ctx, Class<? extends RuntimeException> exceptionTypeToThrow) {
         CreationalContext<?> invocationContext = manager.createCreationalContext(null);
         try {
-            return method.invoke(declaringInstance, getParameterValues(annotatedParameter, parameter, manager, ctx, invocationContext));
+            return cast(accessibleMethod.invoke(declaringInstance, getParameterValues(annotatedParameter, parameter, manager, ctx, invocationContext)));
         } catch (IllegalArgumentException e) {
             rethrowException(e, exceptionTypeToThrow);
         } catch (IllegalAccessException e) {
@@ -74,7 +89,8 @@ public class MethodInjectionPoint<T, X> extends AbstractCallableInjectionPoint<T
     public T invokeOnInstanceWithSpecialValue(Object declaringInstance, Class<? extends Annotation> annotatedParameter, Object parameter, BeanManagerImpl manager, CreationalContext<?> ctx, Class<? extends RuntimeException> exceptionTypeToThrow) {
         CreationalContext<?> invocationContext = manager.createCreationalContext(null);
         try {
-            return method.invokeOnInstance(declaringInstance, getParameterValues(annotatedParameter, parameter, manager, ctx, invocationContext));
+            Method method = getMethodFromClass(declaringInstance.getClass());
+            return cast(method.invoke(declaringInstance, getParameterValues(annotatedParameter, parameter, manager, ctx, invocationContext)));
         } catch (IllegalArgumentException e) {
             rethrowException(e, exceptionTypeToThrow);
         } catch (SecurityException e) {
@@ -120,6 +136,30 @@ public class MethodInjectionPoint<T, X> extends AbstractCallableInjectionPoint<T
 
     @Override
     public AnnotatedMethod<X> getAnnotated() {
-        return method.delegate();
+        return annotatedMethod;
+    }
+
+    private Method getMethodFromClass(Class<?> clazz) throws NoSuchMethodException {
+        final Map<Class<?>, Method> methods = this.methods;
+        Method method = this.methods.get(clazz);
+        if (method == null) {
+            // the same method may be written to the map twice, but that is ok
+            // lookupMethod is very slow
+            Method delegate = annotatedMethod.getJavaMember();
+            try {
+                method = AccessController.doPrivileged(new MethodLookupAction(clazz, delegate.getName(), delegate.getParameterTypes()));
+                if (!Modifier.isPublic(method.getModifiers())) {
+                    method = AccessController.doPrivileged(new GetAccessibleCopyOfMember<Method>(method));
+                }
+            } catch (PrivilegedActionException e) {
+                if (e.getCause() instanceof NoSuchMethodException) {
+                    throw (NoSuchMethodException) e.getCause();
+                }
+                throw new WeldException(e.getCause());
+            }
+            final Map<Class<?>, Method> newMethods = ImmutableMap.<Class<?>, Method>builder().putAll(methods).put(clazz, method).build();
+            this.methods = newMethods;
+        }
+        return method;
     }
 }

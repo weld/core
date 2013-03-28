@@ -20,6 +20,7 @@ import static org.jboss.weld.injection.Exceptions.rethrowException;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.security.AccessController;
 import java.util.Iterator;
 
 import javax.enterprise.context.spi.CreationalContext;
@@ -29,9 +30,9 @@ import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.annotated.enhanced.ConstructorSignature;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedConstructor;
-import org.jboss.weld.annotated.runtime.RuntimeAnnotatedMembers;
 import org.jboss.weld.injection.AroundConstructCallback.ConstructionHandle;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.security.GetAccessibleCopyOfMember;
 
 /**
  * High-level representation of an injected constructor. This class does not need to be serializable because it is never injected.
@@ -45,11 +46,13 @@ public class ConstructorInjectionPoint<T> extends AbstractCallableInjectionPoint
 
     private final AnnotatedConstructor<T> constructor;
     private final ConstructorSignature signature;
+    private final Constructor<T> accessibleConstructor;
 
     protected ConstructorInjectionPoint(EnhancedAnnotatedConstructor<T> constructor, Bean<T> declaringBean, Class<?> declaringComponentClass, InjectionPointFactory factory, BeanManagerImpl manager) {
         super(constructor, declaringBean, declaringComponentClass, false, factory, manager);
         this.constructor = constructor.slim();
         this.signature = constructor.getSignature();
+        this.accessibleConstructor = AccessController.doPrivileged(new GetAccessibleCopyOfMember<Constructor<T>>(constructor.getJavaMember()));
     }
 
     public T newInstance(BeanManagerImpl manager, CreationalContext<?> ctx, AroundConstructCallback<T> callback) {
@@ -73,7 +76,7 @@ public class ConstructorInjectionPoint<T> extends AbstractCallableInjectionPoint
 
     protected T newInstance(Object[] parameterValues) {
         try {
-            return RuntimeAnnotatedMembers.newInstance(getAnnotated(), parameterValues);
+            return accessibleConstructor.newInstance(parameterValues);
         } catch (IllegalArgumentException e) {
             rethrowException(e);
         } catch (InstantiationException e) {

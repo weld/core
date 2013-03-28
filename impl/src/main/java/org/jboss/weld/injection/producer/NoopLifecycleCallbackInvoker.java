@@ -59,4 +59,14 @@ public class NoopLifecycleCallbackInvoker<T> implements LifecycleCallbackInvoker
     public List<AnnotatedMethod<? super T>> getPostConstructMethods() {
         return Collections.emptyList();
     }
+
+    @Override
+    public boolean hasPreDestroyMethods() {
+        return true; // we cannot say no for sure
+    }
+
+    @Override
+    public boolean hasPostConstructMethods() {
+        return true; // we cannot say no for sure
+    }
 }

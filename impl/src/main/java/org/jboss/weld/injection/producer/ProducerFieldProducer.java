@@ -18,7 +18,11 @@ package org.jboss.weld.injection.producer;
 
 import static org.jboss.weld.logging.messages.BeanMessage.INJECTED_FIELD_CANNOT_BE_PRODUCER;
 import static org.jboss.weld.logging.messages.BeanMessage.PRODUCER_FIELD_ON_SESSION_BEAN_MUST_BE_STATIC;
+import static org.jboss.weld.logging.messages.UtilMessage.ACCESS_ERROR_ON_FIELD;
+import static org.jboss.weld.util.reflection.Reflections.cast;
 
+import java.lang.reflect.Field;
+import java.security.AccessController;
 import java.util.Collections;
 import java.util.Set;
 
@@ -29,11 +33,12 @@ import javax.enterprise.inject.spi.Producer;
 import javax.inject.Inject;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
-import org.jboss.weld.annotated.runtime.RuntimeAnnotatedMembers;
 import org.jboss.weld.bean.DisposalMethod;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.exceptions.DefinitionException;
+import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.interceptor.util.proxy.TargetInstanceProxy;
+import org.jboss.weld.security.GetAccessibleCopyOfMember;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
@@ -44,8 +49,11 @@ import org.jboss.weld.util.reflection.Reflections;
  */
 public abstract class ProducerFieldProducer<X, T> extends AbstractMemberProducer<X, T> {
 
+    private final Field accessibleField;
+
     public ProducerFieldProducer(EnhancedAnnotatedField<T, ? super X> enhancedField, DisposalMethod<?, ?> disposalMethod) {
         super(enhancedField, disposalMethod);
+        this.accessibleField = AccessController.doPrivileged(new GetAccessibleCopyOfMember<Field>(enhancedField.getJavaMember()));
         checkProducerField(enhancedField);
     }
 
@@ -76,7 +84,11 @@ public abstract class ProducerFieldProducer<X, T> extends AbstractMemberProducer
         if (receiver instanceof TargetInstanceProxy) {
             receiver = Reflections.<TargetInstanceProxy<T>> cast(receiver).getTargetInstance();
         }
-        return RuntimeAnnotatedMembers.getFieldValue(getAnnotated(), receiver);
+        try {
+            return cast(accessibleField.get(receiver));
+        } catch (IllegalAccessException e) {
+            throw new WeldException(ACCESS_ERROR_ON_FIELD, e, accessibleField.getName(), accessibleField.getDeclaringClass());
+        }
     }
 
     @Override

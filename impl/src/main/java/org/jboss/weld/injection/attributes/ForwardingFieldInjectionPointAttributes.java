@@ -38,7 +38,7 @@ public class ForwardingFieldInjectionPointAttributes<T, X> extends AbstractForwa
         if (ip instanceof FieldInjectionPointAttributes<?, ?>) {
             return Reflections.cast(ip);
         }
-        if (!(ip.getAnnotated() instanceof AnnotatedField<?>)) {
+        if (!(ip.getAnnotated() instanceof AnnotatedField<?>) || !(ip.getMember() instanceof Field)) {
             throw new IllegalArgumentException(BeanMessage.INVALID_INJECTION_POINT_TYPE, ForwardingFieldInjectionPointAttributes.class, ip.getAnnotated());
         }
         return new ForwardingFieldInjectionPointAttributes<T, X>(ip);
@@ -53,5 +53,10 @@ public class ForwardingFieldInjectionPointAttributes<T, X> extends AbstractForwa
     @Override
     public AnnotatedField<X> getAnnotated() {
         return Reflections.cast(delegate().getAnnotated()); // checked in initializer
+    }
+
+    @Override
+    public Field getMember() {
+        return (Field) delegate().getMember();
     }
 }

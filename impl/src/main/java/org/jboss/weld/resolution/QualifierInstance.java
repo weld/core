@@ -15,7 +15,6 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.Bean;
 
-import org.jboss.weld.annotated.runtime.RuntimeAnnotatedMembers;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -88,7 +87,7 @@ public class QualifierInstance {
             if(!model.getNonBindingMembers().contains(method)) {
                 try {
                     AccessController.doPrivileged(SetAccessibleAction.of(method.getJavaMember()));
-                    values.put(method, RuntimeAnnotatedMembers.invokeMethod(method, instance));
+                    values.put(method, method.getJavaMember().invoke(instance));
                 } catch (IllegalAccessException e) {
                     throw new WeldException(e);
                 } catch (InvocationTargetException e) {

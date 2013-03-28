@@ -18,6 +18,7 @@ package org.jboss.weld.injection.producer;
 
 import static org.jboss.weld.logging.messages.BeanMessage.INVOCATION_ERROR;
 
+import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.util.List;
 
@@ -26,11 +27,14 @@ import javax.annotation.PreDestroy;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
-import org.jboss.weld.annotated.runtime.RuntimeAnnotatedMembers;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.interceptor.util.InterceptionUtils;
-import org.jboss.weld.security.SetAccessibleAction;
+import org.jboss.weld.security.GetAccessibleCopyOfMember;
 import org.jboss.weld.util.BeanMethods;
+
+import com.google.common.base.Function;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 
 /**
  * If the component is not intercepted this implementation takes care of invoking its lifecycle callback methods. If the
@@ -42,12 +46,23 @@ import org.jboss.weld.util.BeanMethods;
  */
 public class DefaultLifecycleCallbackInvoker<T> implements LifecycleCallbackInvoker<T> {
 
-    private final List<AnnotatedMethod<? super T>> postConstructMethods;
-    private final List<AnnotatedMethod<? super T>> preDestroyMethods;
+    private static final Function<AnnotatedMethod<?>, Method> ACCESSIBLE_METHOD_FUNCTION = new Function<AnnotatedMethod<?>, Method>() {
+        @Override
+        public Method apply(AnnotatedMethod<?> method) {
+            return AccessController.doPrivileged(new GetAccessibleCopyOfMember<Method>(method.getJavaMember()));
+        }
+    };
+
+    private final List<Method> accessiblePostConstructMethods;
+    private final List<Method> accessiblePreDestroyMethods;
 
     public DefaultLifecycleCallbackInvoker(EnhancedAnnotatedType<T> type) {
-        this.postConstructMethods = BeanMethods.getPostConstructMethods(type);
-        this.preDestroyMethods = BeanMethods.getPreDestroyMethods(type);
+        this.accessiblePostConstructMethods = initMethodList(BeanMethods.getPostConstructMethods(type));
+        this.accessiblePreDestroyMethods = initMethodList(BeanMethods.getPreDestroyMethods(type));
+    }
+
+    private List<Method> initMethodList(List<? extends AnnotatedMethod<?>> methods) {
+         return ImmutableList.copyOf(Lists.transform(methods, ACCESSIBLE_METHOD_FUNCTION));
     }
 
     @Override
@@ -55,7 +70,7 @@ public class DefaultLifecycleCallbackInvoker<T> implements LifecycleCallbackInvo
         if (instantiator.hasInterceptorSupport()) {
             InterceptionUtils.executePostConstruct(instance);
         } else {
-            invokeMethods(postConstructMethods, instance);
+            invokeMethods(accessiblePostConstructMethods, instance);
         }
     }
 
@@ -64,17 +79,14 @@ public class DefaultLifecycleCallbackInvoker<T> implements LifecycleCallbackInvo
         if (instantiator.hasInterceptorSupport()) {
             InterceptionUtils.executePredestroy(instance);
         } else {
-            invokeMethods(preDestroyMethods, instance);
+            invokeMethods(accessiblePreDestroyMethods, instance);
         }
     }
 
-    protected void invokeMethods(List<AnnotatedMethod<? super T>> methods, T instance) {
-        for (AnnotatedMethod<? super T> method : methods) {
+    private void invokeMethods(List<Method> methods, T instance) {
+        for (Method method : methods) {
             try {
-                if (!method.getJavaMember().isAccessible()) {
-                    AccessController.doPrivileged(SetAccessibleAction.of(method.getJavaMember())); // TODO: make sure this does not leak
-                }
-                RuntimeAnnotatedMembers.invokeMethod(method, instance);
+                method.invoke(instance);
             } catch (Exception e) {
                 throw new WeldException(INVOCATION_ERROR, e, method, instance);
             }
@@ -82,12 +94,12 @@ public class DefaultLifecycleCallbackInvoker<T> implements LifecycleCallbackInvo
     }
 
     @Override
-    public List<AnnotatedMethod<? super T>> getPostConstructMethods() {
-        return postConstructMethods;
+    public boolean hasPreDestroyMethods() {
+        return !accessiblePreDestroyMethods.isEmpty();
     }
 
     @Override
-    public List<AnnotatedMethod<? super T>> getPreDestroyMethods() {
-        return preDestroyMethods;
+    public boolean hasPostConstructMethods() {
+        return !accessiblePostConstructMethods.isEmpty();
     }
 }

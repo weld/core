@@ -17,7 +17,6 @@
 package org.jboss.weld.injection.attributes;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Member;
 
 import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.Bean;
@@ -50,7 +49,7 @@ public class InferingFieldInjectionPointAttributes<T, X> extends AbstractInferin
     }
 
     @Override
-    public Member getMember() {
+    public Field getMember() {
         return getAnnotated().getJavaMember();
     }
 

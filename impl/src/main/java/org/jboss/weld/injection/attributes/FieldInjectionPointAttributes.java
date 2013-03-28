@@ -25,4 +25,6 @@ public interface FieldInjectionPointAttributes<T, X> extends WeldInjectionPointA
     @Override
     AnnotatedField<X> getAnnotated();
 
+    @Override
+    Field getMember();
 }

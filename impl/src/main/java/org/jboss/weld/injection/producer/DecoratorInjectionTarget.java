@@ -16,29 +16,33 @@
  */
 package org.jboss.weld.injection.producer;
 
+import static org.jboss.weld.logging.messages.UtilMessage.ACCESS_ERROR_ON_FIELD;
+
+import java.lang.reflect.Field;
 import java.lang.reflect.Type;
+import java.security.AccessController;
 import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
-import org.jboss.weld.annotated.runtime.RuntimeAnnotatedMembers;
 import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.bean.proxy.DecoratorProxy;
 import org.jboss.weld.bean.proxy.DecoratorProxyFactory;
 import org.jboss.weld.bean.proxy.ProxyMethodHandler;
 import org.jboss.weld.bean.proxy.ProxyObject;
 import org.jboss.weld.bean.proxy.TargetBeanInstance;
+import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.injection.ConstructorInjectionPoint;
 import org.jboss.weld.injection.FieldInjectionPoint;
 import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.security.GetAccessibleCopyOfMember;
 import org.jboss.weld.util.Decorators;
 
 /**
@@ -51,10 +55,17 @@ import org.jboss.weld.util.Decorators;
 public class DecoratorInjectionTarget<T> extends BeanInjectionTarget<T> {
 
     private final WeldInjectionPoint<?, ?> delegateInjectionPoint;
+    private final Field accessibleField;
 
     public DecoratorInjectionTarget(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager) {
         super(type, bean, beanManager);
         this.delegateInjectionPoint = Decorators.findDelegateInjectionPoint(type, getInjectionPoints());
+        if (delegateInjectionPoint instanceof FieldInjectionPoint<?, ?>) {
+            FieldInjectionPoint<?, ?> fip = (FieldInjectionPoint<?, ?>) delegateInjectionPoint;
+            this.accessibleField = AccessController.doPrivileged(new GetAccessibleCopyOfMember<Field>(fip.getAnnotated().getJavaMember()));
+        } else {
+            this.accessibleField = null;
+        }
         checkAbstractMethods(type);
     }
 
@@ -86,18 +97,22 @@ public class DecoratorInjectionTarget<T> extends BeanInjectionTarget<T> {
     public void inject(T instance, CreationalContext<T> ctx) {
         super.inject(instance, ctx);
 
-        if (delegateInjectionPoint instanceof FieldInjectionPoint<?, ?>) {
-            if (instance instanceof DecoratorProxy) {
-                // this code is only applicable if the delegate is injected into a field
-                // as the proxy can't intercept the delegate when setting the field
-                // we need to now read the delegate from the field
+        if (accessibleField != null && instance instanceof DecoratorProxy) {
 
-                // this is only needed for fields, as constructor and method injection are handed
-                // at injection time
-                final Object delegate = RuntimeAnnotatedMembers.getFieldValue((AnnotatedField<?>) delegateInjectionPoint.getAnnotated(), instance);
-                final ProxyMethodHandler handler = new ProxyMethodHandler(new TargetBeanInstance(delegate), getBean());
-                ((ProxyObject) instance).setHandler(handler);
+            // this code is only applicable if the delegate is injected into a field
+            // as the proxy can't intercept the delegate when setting the field
+            // we need to now read the delegate from the field
+
+            // this is only needed for fields, as constructor and method injection are handed
+            // at injection time
+            Object delegate;
+            try {
+                delegate = accessibleField.get(instance);
+            } catch (IllegalAccessException e) {
+                throw new WeldException(ACCESS_ERROR_ON_FIELD, e, accessibleField.getName(), accessibleField.getDeclaringClass());
             }
+            final ProxyMethodHandler handler = new ProxyMethodHandler(new TargetBeanInstance(delegate), getBean());
+            ((ProxyObject) instance).setHandler(handler);
         }
     }
 
