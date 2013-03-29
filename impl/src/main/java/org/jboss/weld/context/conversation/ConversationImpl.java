@@ -36,7 +36,7 @@ import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.ConversationMessage.BEGIN_CALLED_ON_LONG_RUNNING_CONVERSATION;
 import static org.jboss.weld.logging.messages.ConversationMessage.CONVERSATION_ID_ALREADY_IN_USE;
 import static org.jboss.weld.logging.messages.ConversationMessage.CONVERSATION_LOCKED;
-import static org.jboss.weld.logging.messages.ConversationMessage.CONVERSATION_UNAVAILBLE;
+import static org.jboss.weld.logging.messages.ConversationMessage.CONVERSATION_UNAVAILABLE;
 import static org.jboss.weld.logging.messages.ConversationMessage.CONVERSATION_UNLOCKED;
 import static org.jboss.weld.logging.messages.ConversationMessage.DEMOTED_LRC;
 import static org.jboss.weld.logging.messages.ConversationMessage.END_CALLED_ON_TRANSIENT_CONVERSATION;
@@ -176,7 +176,7 @@ public class ConversationImpl implements ManagedConversation, Serializable {
         if (success) {
             log.trace(CONVERSATION_LOCKED, this);
         } else {
-            log.warn(CONVERSATION_UNAVAILBLE, timeout, this);
+            log.warn(CONVERSATION_UNAVAILABLE, timeout, this);
         }
         return success;
     }
