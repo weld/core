@@ -41,12 +41,6 @@
                     <exclude name=".*"/>
                 </methods>
             </class>
-            <!-- CDI-352 (WELD-1073) -->
-            <class name="org.jboss.cdi.tck.tests.deployment.packaging.interceptor.InterceptorClassNotInBeanArchiveTest">
-                <methods>
-                    <exclude name="testInterceptor"/>
-                </methods>
-            </class>
 
             <!-- Issues in Weld (the RI) -->
             <!-- WELD-1099 -->
