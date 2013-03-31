@@ -187,26 +187,8 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
     }
 
     public void registerAnnotatedTypes() {
-        SlimAnnotatedTypeStore store = getManager().getServices().get(SlimAnnotatedTypeStore.class);
         for (SlimAnnotatedType<?> type : getEnvironment().getAnnotatedTypes()) {
-            store.put(type);
-        }
-    }
-
-    public void processAdditionalAnnotatedTypes(Iterable<String> classes) {
-        for (String className : classes) {
-            Class<?> clazz = loadClass(className);
-            if (clazz != null) {
-                SlimAnnotatedType<?> type = loadAnnotatedType(clazz);
-                if (type != null) {
-                    ProcessAnnotatedTypeImpl<?> event = containerLifecycleEvents.fireProcessAnnotatedType(getManager(), type, null);
-                    if (event == null) {
-                        annotatedTypeStore.put(type);
-                    } else if (!event.isVeto()) {
-                        annotatedTypeStore.put(event.getResultingAnnotatedType());
-                    }
-                }
-            }
+            annotatedTypeStore.put(type);
         }
     }
 

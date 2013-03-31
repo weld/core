@@ -26,13 +26,12 @@ import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.BeansXml;
-import org.jboss.weld.bootstrap.spi.CDI11BeanDeploymentArchive;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.injection.spi.EjbInjectionServices;
 import org.jboss.weld.injection.spi.JpaInjectionServices;
 import org.jboss.weld.injection.spi.ResourceInjectionServices;
 
-public class EmptyBeanDeploymentArchive implements CDI11BeanDeploymentArchive {
+public class EmptyBeanDeploymentArchive implements BeanDeploymentArchive {
 
     private final ServiceRegistry services = new SimpleServiceRegistry();
 
@@ -70,10 +69,5 @@ public class EmptyBeanDeploymentArchive implements CDI11BeanDeploymentArchive {
     @Override
     public String getId() {
         return "EMPTY";
-    }
-
-    @Override
-    public Collection<String> getAdditionalTypes() {
-        return Collections.emptySet();
     }
 }

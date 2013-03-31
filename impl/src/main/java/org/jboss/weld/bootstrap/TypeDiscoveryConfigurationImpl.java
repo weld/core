@@ -26,11 +26,9 @@ import org.jboss.weld.bootstrap.api.TypeDiscoveryConfiguration;
 public class TypeDiscoveryConfigurationImpl implements TypeDiscoveryConfiguration {
 
     private final Set<Class<? extends Annotation>> beanDefiningAnnotations;
-    private final Set<Class<? extends Annotation>> additionalTypeMarkerAnnotations;
 
-    protected TypeDiscoveryConfigurationImpl(Set<Class<? extends Annotation>> beanDefiningAnnotations, Set<Class<? extends Annotation>> additionalTypeMarkerAnnotations) {
+    protected TypeDiscoveryConfigurationImpl(Set<Class<? extends Annotation>> beanDefiningAnnotations) {
         this.beanDefiningAnnotations = unmodifiableSet(beanDefiningAnnotations);
-        this.additionalTypeMarkerAnnotations = unmodifiableSet(additionalTypeMarkerAnnotations);
     }
 
     @Override
@@ -39,12 +37,7 @@ public class TypeDiscoveryConfigurationImpl implements TypeDiscoveryConfiguratio
     }
 
     @Override
-    public Set<Class<? extends Annotation>> getAdditionalTypeMarkerAnnotations() {
-        return additionalTypeMarkerAnnotations;
-    }
-
-    @Override
     public String toString() {
-        return "TypeDiscoveryConfigurationImpl [beanDefiningAnnotations=" + beanDefiningAnnotations + ", additionalTypeMarkerAnnotations=" + additionalTypeMarkerAnnotations + "]";
+        return "TypeDiscoveryConfigurationImpl [beanDefiningAnnotations=" + beanDefiningAnnotations + "]";
     }
 }

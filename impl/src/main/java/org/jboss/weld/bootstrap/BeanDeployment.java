@@ -56,7 +56,6 @@ import org.jboss.weld.bootstrap.enablement.ModuleEnablement;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.BeanDiscoveryMode;
 import org.jboss.weld.bootstrap.spi.BootstrapConfiguration;
-import org.jboss.weld.bootstrap.spi.CDI11BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Filter;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.ejb.EJBApiAbstraction;
@@ -232,10 +231,6 @@ public class BeanDeployment {
     public void createTypes() {
         beanDeployer.processAnnotatedTypes();
         beanDeployer.registerAnnotatedTypes();
-        if (getBeanDeploymentArchive() instanceof CDI11BeanDeploymentArchive) {
-            CDI11BeanDeploymentArchive bda = (CDI11BeanDeploymentArchive) getBeanDeploymentArchive();
-            beanDeployer.processAdditionalAnnotatedTypes(bda.getAdditionalTypes()); // TODO: should filters be applied here as well?
-        }
     }
 
     public void createBeans(Environment environment) {

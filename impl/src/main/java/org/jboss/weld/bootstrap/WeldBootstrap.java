@@ -25,12 +25,10 @@ import static org.jboss.weld.logging.messages.BootstrapMessage.JTA_UNAVAILABLE;
 import static org.jboss.weld.logging.messages.BootstrapMessage.MANAGER_NOT_INITIALIZED;
 import static org.jboss.weld.logging.messages.BootstrapMessage.UNSPECIFIED_REQUIRED_SERVICE;
 import static org.jboss.weld.logging.messages.BootstrapMessage.VALIDATING_BEANS;
-import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.annotation.Annotation;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -45,20 +43,15 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.context.spi.Context;
-import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.CDI;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.Interceptor;
-import javax.enterprise.inject.spi.WithAnnotations;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.ContainerState;
 import org.jboss.weld.Weld;
-import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
-import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
-import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.slim.SlimAnnotatedTypeStore;
 import org.jboss.weld.annotated.slim.SlimAnnotatedTypeStoreImpl;
 import org.jboss.weld.bean.DecoratorImpl;
@@ -265,27 +258,9 @@ public class WeldBootstrap implements CDI11Bootstrap {
     @Override
     public TypeDiscoveryConfiguration startExtensions(Iterable<Metadata<Extension>> extensions) {
         synchronized (this) {
-
-            setupInitialServices();
-            ClassTransformer classTransformer = initialServices.get(ClassTransformer.class);
-
-            final Set<Class<? extends Annotation>> requiredAnnotations = new HashSet<Class<? extends Annotation>>();
-            for (Metadata<Extension> extension : extensions) {
-                EnhancedAnnotatedType<Extension> clazz = cast(classTransformer.getEnhancedAnnotatedType(extension.getValue().getClass(), "INITIAL"));
-                for (EnhancedAnnotatedMethod<?, ?> method : clazz.getEnhancedMethodsWithAnnotatedParameters(Observes.class)) {
-                    for (EnhancedAnnotatedParameter<?, ?> parameter : method.getEnhancedParameters(Observes.class)) {
-                        WithAnnotations annotation = parameter.getAnnotation(WithAnnotations.class);
-                        if (annotation != null) {
-                            requiredAnnotations.addAll(Arrays.asList(annotation.value()));
-                        }
-                    }
-                }
-            }
-
             // TODO: we should fire BeforeBeanDiscovery to allow extensions to register additional scopes
             final Set<Class<? extends Annotation>> scopes = ImmutableSet.of(Dependent.class, RequestScoped.class, ConversationScoped.class, SessionScoped.class, ApplicationScoped.class);
-
-            return new TypeDiscoveryConfigurationImpl(scopes, requiredAnnotations);
+            return new TypeDiscoveryConfigurationImpl(scopes);
         }
     }
 
@@ -312,7 +287,7 @@ public class WeldBootstrap implements CDI11Bootstrap {
 
             final ServiceRegistry registry = deployment.getServices();
 
-            setupInitialServices(); // we call to make sure legacy integrators which do not call startExtensions() do not make Weld fail
+            setupInitialServices();
             registry.addAll(initialServices.entrySet());
 
             if (!registry.contains(ResourceLoader.class)) {
