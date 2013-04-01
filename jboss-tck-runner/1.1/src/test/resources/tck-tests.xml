@@ -84,12 +84,7 @@
             </class>
 
             <!-- Issues in JBoss AS -->
-            <!-- AS7-5966 -->
-            <class name="org.jboss.cdi.tck.tests.deployment.packaging.installedLibrary.InstalledLibraryWarTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
+            <!-- AS7-6821 -->
             <class name="org.jboss.cdi.tck.tests.deployment.packaging.installedLibrary.InstalledLibraryEarTest">
                 <methods>
                     <exclude name=".*"/>
@@ -116,22 +111,6 @@
             <class name="org.jboss.cdi.tck.tests.interceptors.definition.enterprise.jms.MessageDrivenBeanInterceptorInvocationTest">
                 <methods>
                     <exclude name=".*"/>
-                </methods>
-            </class>
-            <!-- SFSB passivationCapable, see CDITCK-327 -->
-            <class name="org.jboss.cdi.tck.tests.context.passivating.enterprise.invalid.StatefulSessionBeanTest">
-                <methods>
-                    <exclude name="testDeployment"/>
-                </methods>
-            </class>
-            <class name="org.jboss.cdi.tck.tests.context.passivating.enterprise.invalid.StatefulSessionBeanXmlDescriptorTest">
-                <methods>
-                    <exclude name="testDeployment"/>
-                </methods>
-            </class>
-            <class name="org.jboss.cdi.tck.tests.context.passivating.enterprise.valid.StatefulSessionBeanXmlDescriptorTest">
-                <methods>
-                    <exclude name="testDeployment"/>
                 </methods>
             </class>
 
