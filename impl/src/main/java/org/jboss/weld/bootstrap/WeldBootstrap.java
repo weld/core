@@ -81,6 +81,7 @@ import org.jboss.weld.bootstrap.events.SimpleAnnotationDiscovery;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.BootstrapConfiguration;
+import org.jboss.weld.bootstrap.spi.CDI11Deployment;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.bootstrap.spi.helpers.FileBasedBootstrapConfiguration;
@@ -120,6 +121,7 @@ import org.jboss.weld.injection.SLSBInvocationInjectionPoint;
 import org.jboss.weld.injection.producer.InjectionTargetService;
 import org.jboss.weld.logging.messages.VersionMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.manager.BeanManagerLookupService;
 import org.jboss.weld.manager.api.ExecutorServices;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
@@ -353,9 +355,16 @@ public class WeldBootstrap implements CDI11Bootstrap {
 
             this.deploymentVisitor = new DeploymentVisitor(deploymentManager, environment, deployment, contexts);
 
+            if (deployment instanceof CDI11Deployment) {
+                registry.add(BeanManagerLookupService.class, new BeanManagerLookupService((CDI11Deployment) deployment, deploymentVisitor.managerAwareBeanDeploymentArchives));
+            } else {
+                log.warn("Legacy deployment metadata provided by the integrator. Certain functionality will not be available.");
+            }
+
             // Read the deployment structure, this will be the physical structure
             // as caused by the presence of beans.xml
             beanDeployments = deploymentVisitor.visit();
+
 
             return this;
         }

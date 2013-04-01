@@ -70,6 +70,7 @@ import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanAttributes;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.InjectionPoint;
@@ -102,6 +103,7 @@ import org.jboss.weld.bootstrap.Validator;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.enablement.ModuleEnablement;
 import org.jboss.weld.bootstrap.events.ContainerLifecycleEvents;
+import org.jboss.weld.bootstrap.spi.CDI11Deployment;
 import org.jboss.weld.context.ContextNotActiveException;
 import org.jboss.weld.context.CreationalContextImpl;
 import org.jboss.weld.context.PassivatingContextWrapper;
@@ -1036,14 +1038,14 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     @Override
     public <T> InjectionTarget<T> createInjectionTarget(AnnotatedType<T> type) {
-        return getInjectionTargetFactory(type).createInjectionTarget(null);
+        return getLocalInjectionTargetFactory(type).createInjectionTarget(null);
     }
 
     @Override
     public <T> InjectionTarget<T> createInjectionTarget(EjbDescriptor<T> descriptor) {
         if (descriptor.isMessageDriven()) {
             AnnotatedType<T> type = createAnnotatedType(descriptor.getBeanClass());
-            return getInjectionTargetFactory(type).createMessageDrivenInjectionTarget();
+            return getLocalInjectionTargetFactory(type).createMessageDrivenInjectionTarget();
         } else {
             InjectionTarget<T> injectionTarget = getBean(descriptor).getProducer();
             return injectionTarget;
@@ -1365,18 +1367,33 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         return Bindings.getInterceptorBindingHashCode(interceptorBinding, services.get(MetaAnnotationStore.class));
     }
 
-    @Override
-    public <T> InjectionTargetFactoryImpl<T> getInjectionTargetFactory(AnnotatedType<T> type) {
+    /**
+     * Creates an {@link InjectionTargetFactory} for a given type. The factory will be using this {@link BeanManager}.
+     */
+    public <T> InjectionTargetFactoryImpl<T> getLocalInjectionTargetFactory(AnnotatedType<T> type) {
         return new InjectionTargetFactoryImpl<T>(type, this);
+    }
+
+    /**
+     * Creates an {@link InjectionTargetFactory} for a given type. The {@link BeanManager} for the {@link InjectionTarget} will
+     * be infered using {@link CDI11Deployment#getBeanDeploymentArchive(Class)}.
+     */
+    @Override
+    public <T> InjectionTargetFactory<T> getInjectionTargetFactory(AnnotatedType<T> type) {
+        BeanManagerImpl manager = BeanManagerLookupService.lookupBeanManager(type.getJavaClass(), this);
+        return new InjectionTargetFactoryImpl<T>(type, manager);
     }
 
     @Override
     public <X> FieldProducerFactory<X> getProducerFactory(AnnotatedField<? super X> field, Bean<X> declaringBean) {
-        return new FieldProducerFactory<X>(field, declaringBean, this);
+        BeanManagerImpl manager = BeanManagerLookupService.lookupBeanManager(field.getDeclaringType().getJavaClass(), this);
+        return new FieldProducerFactory<X>(field, declaringBean, manager);
     }
 
     @Override
     public <X> MethodProducerFactory<X> getProducerFactory(AnnotatedMethod<? super X> method, Bean<X> declaringBean) {
-        return new MethodProducerFactory<X>(method, declaringBean, this);
+        BeanManagerImpl manager = BeanManagerLookupService.lookupBeanManager(method.getDeclaringType().getJavaClass(), this);
+        return new MethodProducerFactory<X>(method, declaringBean, manager);
     }
+
 }

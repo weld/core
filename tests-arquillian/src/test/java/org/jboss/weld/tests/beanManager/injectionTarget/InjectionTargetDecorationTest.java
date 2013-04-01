@@ -51,7 +51,7 @@ public class InjectionTargetDecorationTest {
         Bean<Skyscraper> bean = (Bean<Skyscraper>) manager.resolve(manager.getBeans(Skyscraper.class));
         AnnotatedType<Skyscraper> type = manager.createAnnotatedType(Skyscraper.class);
 
-        InjectionTarget<Skyscraper> target = manager.getInjectionTargetFactory(type).createInjectionTarget(bean);
+        InjectionTarget<Skyscraper> target = manager.getLocalInjectionTargetFactory(type).createInjectionTarget(bean);
         CreationalContext<Skyscraper> ctx = manager.createCreationalContext(bean);
 
         Skyscraper instance = target.produce(ctx);
