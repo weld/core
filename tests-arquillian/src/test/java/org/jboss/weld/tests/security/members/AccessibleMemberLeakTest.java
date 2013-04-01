@@ -189,7 +189,13 @@ public class AccessibleMemberLeakTest {
     @Test
     public void testCreateInjectionPointWithConstructor() {
         AnnotatedType<SimpleBean> type = manager.createAnnotatedType(SimpleBean.class);
-        AnnotatedConstructor<?> constructor = type.getConstructors().iterator().next();
+        AnnotatedConstructor<?> constructor = null;
+        for (AnnotatedConstructor<?> c : type.getConstructors()) {
+            if (c.isAnnotationPresent(Inject.class)) {
+                constructor = c;
+                break;
+            }
+        }
         assertNotNull(constructor);
         InjectionPoint ip = manager.createInjectionPoint(constructor.getParameters().get(0));
         testMember(ip.getMember());
