@@ -30,7 +30,6 @@ import java.util.Set;
 
 import javax.annotation.Priority;
 import javax.decorator.Decorator;
-import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Extension;
@@ -137,7 +136,11 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
                 globalEnablementBuilder.addInterceptor(type.getJavaClass(), value);
             } else if (type.isAnnotationPresent(Decorator.class)) {
                 globalEnablementBuilder.addDecorator(type.getJavaClass(), value);
-            } else if (type.isAnnotationPresent(Alternative.class)) {
+            } else {
+                /*
+                 * An alternative may be given a priority for the application by placing the @Priority annotation on the bean
+                 * class that declares the producer method, field or resource.
+                 */
                 globalEnablementBuilder.addAlternative(type.getJavaClass(), value);
             }
         }
