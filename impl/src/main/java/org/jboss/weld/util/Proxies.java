@@ -175,9 +175,8 @@ public class Proxies {
         return getUnproxyableTypesExceptionInt(types, null);
     }
 
-    // --- private
 
-    private static UnproxyableResolutionException getUnproxyableTypeException(Type type, Bean<?> declaringBean) {
+    public static UnproxyableResolutionException getUnproxyableTypeException(Type type, Bean<?> declaringBean) {
         if (type instanceof Class<?>) {
             return getUnproxyableClassException((Class<?>) type, declaringBean);
         } else if (type instanceof ParameterizedType) {
@@ -188,6 +187,8 @@ public class Proxies {
         }
         return new UnproxyableResolutionException(NOT_PROXYABLE_UNKNOWN, type, getDeclaringBeanInfo(declaringBean));
     }
+
+    // --- private
 
     private static UnproxyableResolutionException getUnproxyableTypesExceptionInt(Iterable<? extends Type> types, Bean<?> declaringBean) {
         for (Type apiType : types) {

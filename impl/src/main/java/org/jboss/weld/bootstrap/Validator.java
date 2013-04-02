@@ -394,7 +394,7 @@ public class Validator implements Service {
         if (!resolvedBeans.isEmpty()) {
             Bean<?> resolvedBean = (Bean<?>) resolvedBeans.iterator().next();
             if (beanManager.isNormalScope(resolvedBean.getScope())) {
-                UnproxyableResolutionException ue = Proxies.getUnproxyableTypeException(ij.getType());
+                UnproxyableResolutionException ue = Proxies.getUnproxyableTypeException(ij.getType(), resolvedBean);
                 if (ue != null) {
                     throw new DeploymentException(INJECTION_POINT_HAS_NON_PROXYABLE_DEPENDENCIES, ue, ij);
                 }

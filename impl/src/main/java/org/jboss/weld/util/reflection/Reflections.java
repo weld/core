@@ -175,9 +175,11 @@ public class Reflections {
         if (isFinal(type)) {
             return type;
         }
-        for (Method method : AccessController.doPrivileged(new GetDeclaredMethodsAction(type))) {
-            if (isFinal(method) && !isPrivate(method) && !isStatic(method)) {
-                return method;
+        for (Class<?> clazz = type; clazz != null && clazz != Object.class; clazz = clazz.getSuperclass()) {
+            for (Method method : AccessController.doPrivileged(new GetDeclaredMethodsAction(clazz))) {
+                if (isFinal(method) && !isPrivate(method) && !isStatic(method)) {
+                    return method;
+                }
             }
         }
         return null;
