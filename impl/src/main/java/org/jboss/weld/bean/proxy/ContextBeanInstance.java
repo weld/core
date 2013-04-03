@@ -63,7 +63,7 @@ public class ContextBeanInstance<T> extends AbstractBeanInstance implements Seri
         this.bean = bean;
         this.id = id;
         this.instanceType = computeInstanceType(bean);
-        log.trace("Created context instance locator for bean " + bean + " identified as " + id);
+        log.trace("Created context instance locator for bean {} identified as {}", bean, id);
     }
 
     public T getInstance() {

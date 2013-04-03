@@ -42,7 +42,7 @@ public class VFSURLScanner extends URLScanner {
 
     @Override
     protected void handleArchiveByFile(File file, final Set<String> classes, final Set<URL> urls) throws IOException {
-        log.trace("archive: " + file);
+        log.trace("archive: {}", file);
         //noinspection deprecation
         handleURL(file.toURL(), classes, urls);
     }

@@ -162,7 +162,7 @@ MyBean(MyExtension myExtension) {
    }
       
    <T> void processAnnotatedType(@Observes ProcessAnnotatedType<T> pat) {
-      Logger.global.debug("scanning type: " + pat.getAnnotatedType().getJavaClass().getName());
+      Logger.global.debug("scanning type: {}", pat.getAnnotatedType().getJavaClass().getName());
    } 
 
    void afterBeanDiscovery(@Observes AfterBeanDiscovery abd) {
