@@ -51,6 +51,8 @@ class InterceptionModelImpl<T, I> implements BuildableInterceptionModel<T, I> {
 
     private boolean hasTargetClassInterceptors;
 
+    private boolean hasExternalNonConstructorInterceptors;
+
     public InterceptionModelImpl(T interceptedEntity) {
         this.interceptedEntity = interceptedEntity;
     }
@@ -106,6 +108,9 @@ class InterceptionModelImpl<T, I> implements BuildableInterceptionModel<T, I> {
     }
 
     public void appendInterceptors(InterceptionType interceptionType, Method method, InterceptorMetadata<I>... interceptors) {
+        if (interceptionType != InterceptionType.AROUND_CONSTRUCT) {
+            hasExternalNonConstructorInterceptors = true;
+        }
         if (null == method) {
             List<InterceptorMetadata<I>> interceptorsList = globalInterceptors.get(interceptionType);
             if (interceptorsList == null) {
@@ -164,7 +169,7 @@ class InterceptionModelImpl<T, I> implements BuildableInterceptionModel<T, I> {
 
     @Override
     public boolean hasExternalNonConstructorInterceptors() {
-        return allInterceptors.size() > getConstructorInvocationInterceptors().size();
+        return hasExternalNonConstructorInterceptors;
     }
 
     public void setHasTargetClassInterceptors(boolean hasTargetClassInterceptors) {
