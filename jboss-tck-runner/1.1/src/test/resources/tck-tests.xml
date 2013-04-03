@@ -37,32 +37,10 @@
             </class>
 
             <!-- Issues in Weld (the RI) -->
-            <!-- WELD-1099 -->
-            <class name="org.jboss.cdi.tck.tests.implementation.simple.resource.broken.type.ws.ResourceDefinitionWithDifferentTypeTest">
-                <methods>
-                    <exclude name="testDeployment"/>
-                </methods>
-            </class>
-            <class name="org.jboss.cdi.tck.tests.lookup.injection.non.contextual.ws.WebServiceResourceTest">
-                <methods>
-                    <exclude name="testResourceInvocation"/>
-                </methods>
-            </class>
             <!-- WELD-1181 -->
             <class name="org.jboss.cdi.tck.tests.lookup.injectionpoint.non.contextual.NonContextualInjectionPointTest">
                 <methods>
                     <exclude name="testEjbInjectionPointGetBean"/>
-                </methods>
-            </class>
-            <!-- WELD-1342 -->
-            <class name="org.jboss.cdi.tck.tests.deployment.discovery.BeanDiscoveryTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
-            <class name="org.jboss.cdi.tck.tests.deployment.discovery.enterprise.EnterpriseBeanDiscoveryTest">
-                <methods>
-                    <exclude name=".*"/>
                 </methods>
             </class>
 
@@ -92,6 +70,28 @@
                 </methods>
             </class>
             <class name="org.jboss.cdi.tck.tests.interceptors.definition.enterprise.jms.MessageDrivenBeanInterceptorInvocationTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
+            <!-- AS7-6831 @WebServiceRef injection not working in JBoss AS -->
+            <class name="org.jboss.cdi.tck.tests.implementation.simple.resource.broken.type.ws.ResourceDefinitionWithDifferentTypeTest">
+                <methods>
+                    <exclude name="testDeployment"/>
+                </methods>
+            </class>
+            <class name="org.jboss.cdi.tck.tests.lookup.injection.non.contextual.ws.WebServiceResourceTest">
+                <methods>
+                    <exclude name="testResourceInvocation"/>
+                </methods>
+            </class>
+            <!-- AS7-6832 Add support for implicit bean archives -->
+            <class name="org.jboss.cdi.tck.tests.deployment.discovery.BeanDiscoveryTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
+            <class name="org.jboss.cdi.tck.tests.deployment.discovery.enterprise.EnterpriseBeanDiscoveryTest">
                 <methods>
                     <exclude name=".*"/>
                 </methods>
