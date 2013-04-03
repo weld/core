@@ -96,7 +96,7 @@ public class ProfilingExecutorServices implements ExecutorServices {
     @Override
     public void cleanup() {
         if (!getTaskExecutor().isShutdown()) {
-            log.info("Total time spent in ThreadPool execution is " + executionTimeSum.get() + " ms");
+            log.info("Total time spent in ThreadPool execution is {} ms", executionTimeSum.get());
         }
         delegate.cleanup();
     }

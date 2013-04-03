@@ -289,7 +289,7 @@ public class ProxyFactory<T> {
             proxyClassName = proxyClassName.replaceFirst("java", "org.jboss.weld");
         }
         Class<T> proxyClass = null;
-        log.trace("Retrieving/generating proxy class " + proxyClassName);
+        log.trace("Retrieving/generating proxy class {}", proxyClassName);
         try {
             // First check to see if we already have this proxy class
             proxyClass = cast(classLoader.loadClass(proxyClassName));
@@ -414,7 +414,7 @@ public class ProxyFactory<T> {
             domain = ProxyFactory.class.getProtectionDomain();
         }
         Class<T> proxyClass = cast(ClassFileUtils.toClass(proxyClassType, classLoader, domain));
-        log.trace("Created Proxy class of type " + proxyClass + " supporting interfaces " + Arrays.toString(proxyClass.getInterfaces()));
+        log.trace("Created Proxy class of type {} supporting interfaces {}", proxyClass, Arrays.toString(proxyClass.getInterfaces()));
         return proxyClass;
     }
 
@@ -500,7 +500,7 @@ public class ProxyFactory<T> {
                             ClassMethod classMethod = proxyClassType.addMethod(method);
                             addConstructedGuardToMethodBody(classMethod);
                             createForwardingMethodBody(classMethod, methodInfo);
-                            log.trace("Adding method " + method);
+                            log.trace("Adding method {}", method);
                         } catch (DuplicateMemberException e) {
                             // do nothing. This will happen if superclass methods
                             // have been overridden
@@ -515,7 +515,7 @@ public class ProxyFactory<T> {
                         MethodInformation methodInfo = new RuntimeMethodInformation(method);
                         ClassMethod classMethod = proxyClassType.addMethod(method);
                         createSpecialMethodBody(classMethod, methodInfo);
-                        log.trace("Adding method " + method);
+                        log.trace("Adding method {}", method);
                     } catch (DuplicateMemberException e) {
                     }
                 }
@@ -682,7 +682,7 @@ public class ProxyFactory<T> {
         try {
             // Add special methods for interceptors
             for (Method method : LifecycleMixin.class.getMethods()) {
-                log.trace("Adding method " + method);
+                log.trace("Adding method {}", method);
                 MethodInformation methodInfo = new RuntimeMethodInformation(method);
                 final ClassMethod classMethod = proxyClassType.addMethod(method);
                 createInterceptorBody(classMethod, methodInfo);

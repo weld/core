@@ -88,9 +88,7 @@ public abstract class AbstractInterceptionChain implements InterceptionChain {
         int oldCurrentPosition = currentPosition;
         try {
             InterceptorMethodInvocation nextInterceptorMethodInvocation = interceptorMethodInvocations.get(currentPosition++);
-            if (log.isTraceEnabled()) {
-                log.trace("Invoking next interceptor in chain:" + nextInterceptorMethodInvocation.toString());
-            }
+            log.trace("Invoking next interceptor in chain: {}", nextInterceptorMethodInvocation.toString());
             if (nextInterceptorMethodInvocation.expectsInvocationContext()) {
                 return nextInterceptorMethodInvocation.invoke(invocationContext);
             } else {
