@@ -178,9 +178,7 @@ public class ClassTransformer implements BootstrapService {
                     || cause instanceof ResourceLoadingException || cause instanceof LinkageError) {
                 throw new ResourceLoadingException("Error loading class " + rawType.getName(), cause);
             } else {
-                if (log.isTraceEnabled()) {
-                    log.trace("Error loading class '" + rawType.getName() + "' : " + cause);
-                }
+                log.trace("Error loading class '{}' : {}", rawType.getName(), cause);
                 throw e;
             }
         }

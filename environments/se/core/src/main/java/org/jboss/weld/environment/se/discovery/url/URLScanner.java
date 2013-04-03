@@ -68,7 +68,7 @@ public class URLScanner {
     private String getUrlPath(String resourceName, URL url) throws URISyntaxException {
         String urlPath = url.toExternalForm();
         String urlType = getUrlType(urlPath);
-        log.debug("URL Type: " + urlType);
+        log.debug("URL Type: {}", urlType);
         boolean isFile = "file".equals(urlType);
         boolean isJar = "jar".equals(urlType);
         // Extra built-in support for simple file-based resources

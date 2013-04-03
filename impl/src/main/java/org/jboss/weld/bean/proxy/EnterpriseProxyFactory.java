@@ -54,7 +54,7 @@ public class EnterpriseProxyFactory<T> extends ProxyFactory<T> {
         try {
             proxyClassType.addInterface(EnterpriseBeanInstance.class.getName());
             for (Method method : EnterpriseBeanInstance.class.getMethods()) {
-                log.trace("Adding method " + method);
+                log.trace("Adding method {}", method);
                 MethodInformation methodInfo = new RuntimeMethodInformation(method);
                 createInterceptorBody(proxyClassType.addMethod(method), methodInfo);
             }

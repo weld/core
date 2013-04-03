@@ -61,16 +61,16 @@ public class BeanManagerResourceBindingListener implements ServletContextListene
                             break;
                         }
                     } catch (Exception e) {
-                        log.info("Problem when interating through " + RESOURCES_CONTEXT, e);
+                        log.info("Problem when iterating through " + RESOURCES_CONTEXT, e);
                     }
                 }
             } catch (NamingException e) {
-                log.info("Could not read context " + RESOURCES_CONTEXT + ": Trying to create it!");
+                log.info("Could not read context {}: Trying to create it!", RESOURCES_CONTEXT);
                 try {
                     Context compCtx = (Context) ctx.lookup("java:comp");
                     compCtx.createSubcontext("env");
                 } catch (Exception ex) {
-                    log.error("Could not create context:" + RESOURCES_CONTEXT);
+                    log.error("Could not create context: {}", RESOURCES_CONTEXT);
                 }
             }
 
@@ -80,7 +80,7 @@ public class BeanManagerResourceBindingListener implements ServletContextListene
                     ctx.rebind(QUALIFIED_BEAN_MANAGER_JNDI_NAME,
                             new Reference(BeanManager.class.getName(), BEAN_MANAGER_OBJECT_FACTORY, null));
                     bound = true;
-                    log.info("BeanManager reference bound to " + QUALIFIED_BEAN_MANAGER_JNDI_NAME);
+                    log.info("BeanManager reference bound to {}", QUALIFIED_BEAN_MANAGER_JNDI_NAME);
                 } catch (NamingException e) {
                     throw new RuntimeException("Could not bind BeanManager reference to JNDI: " + e.getExplanation()
                             + " \n"
