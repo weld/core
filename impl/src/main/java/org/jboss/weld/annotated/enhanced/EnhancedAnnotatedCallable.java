@@ -19,13 +19,7 @@ package org.jboss.weld.annotated.enhanced;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
 import java.util.List;
-import java.util.Set;
-
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.spi.AnnotatedCallable;
-
-import org.jboss.weld.util.collections.Arrays2;
 
 /**
  * @author pmuir

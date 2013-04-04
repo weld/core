@@ -17,7 +17,6 @@
 
 package org.jboss.weld.interceptor.spi.model;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Set;

@@ -37,7 +37,6 @@ import org.jboss.weld.security.GetMethodsAction;
 import org.jboss.weld.security.MethodLookupAction;
 import org.jboss.weld.security.NewInstanceAction;
 import org.jboss.weld.security.SetAccessibleAction;
-import org.jboss.weld.util.reflection.Reflections;
 import org.junit.Assert;
 import org.junit.Test;
 

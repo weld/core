@@ -17,8 +17,6 @@
 package org.jboss.weld.annotated.enhanced;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-
 import javax.enterprise.inject.spi.AnnotatedConstructor;
 
 /**
