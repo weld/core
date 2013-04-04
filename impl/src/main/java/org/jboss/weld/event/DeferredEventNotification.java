@@ -43,40 +43,47 @@ public class DeferredEventNotification<T> implements Runnable {
     // The observer
     protected final ObserverMethod<? super T> observer;
     // The event object
-    protected final T event;
+    protected final EventPacket<T> eventPacket;
+    private final CurrentEventMetadata currentEventMetadata;
 
     /**
      * Creates a new deferred event notifier.
      *
      * @param observer The observer to be notified
-     * @param event    The event being fired
+     * @param eventPacket    The event being fired
      */
-    public DeferredEventNotification(T event, ObserverMethod<? super T> observer) {
+    public DeferredEventNotification(EventPacket<T> eventPacket, ObserverMethod<? super T> observer, CurrentEventMetadata currentEventMetadata) {
         this.observer = observer;
-        this.event = event;
+        this.eventPacket = eventPacket;
+        this.currentEventMetadata = currentEventMetadata;
     }
 
     public void run() {
         try {
-            log.debug(ASYNC_FIRE, event, observer);
+            log.debug(ASYNC_FIRE, eventPacket, observer);
             new RunInRequest() {
 
                 @Override
                 protected void execute() {
-                    observer.notify(event);
+                    currentEventMetadata.push(eventPacket);
+                    try {
+                        observer.notify(eventPacket.getPayload());
+                    } finally {
+                        currentEventMetadata.pop();
+                    }
                 }
 
             }.run();
 
         } catch (Exception e) {
-            log.error(ASYNC_OBSERVER_FAILURE, event);
+            log.error(ASYNC_OBSERVER_FAILURE, eventPacket);
             xLog.throwing(Level.DEBUG, e);
         }
     }
 
     @Override
     public String toString() {
-        return "Deferred event [" + event + "] for [" + observer + "]";
+        return "Deferred event [" + eventPacket.getPayload() + "] for [" + observer + "]";
     }
 
     private abstract static class RunInRequest {

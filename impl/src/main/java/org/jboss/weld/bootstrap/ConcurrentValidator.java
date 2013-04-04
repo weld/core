@@ -18,6 +18,7 @@ package org.jboss.weld.bootstrap;
 
 import static org.jboss.weld.logging.messages.ValidatorMessage.AMBIGUOUS_EL_NAME;
 import static org.jboss.weld.logging.messages.ValidatorMessage.BEAN_NAME_IS_PREFIX;
+import static org.jboss.weld.logging.messages.ValidatorMessage.INJECTION_INTO_NON_BEAN;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -105,7 +106,7 @@ public class ConcurrentValidator extends Validator {
             protected void doWork(ObserverInitializationContext<?, ?> observerMethod) {
                 for (InjectionPoint ip : observerMethod.getObserver().getInjectionPoints()) {
                     validateInjectionPointForDefinitionErrors(ip, ip.getBean(), beanManager);
-                    // TODO: validateMetadataInjectionPoint
+                    validateMetadataInjectionPoint(ip, null, INJECTION_INTO_NON_BEAN);
                     validateInjectionPointForDeploymentProblems(ip, ip.getBean(), beanManager);
                 }
             }

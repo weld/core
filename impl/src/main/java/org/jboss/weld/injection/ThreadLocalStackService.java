@@ -19,16 +19,14 @@ package org.jboss.weld.injection;
 import java.util.EmptyStackException;
 import java.util.Stack;
 
-import javax.enterprise.inject.spi.InjectionPoint;
-
 import org.jboss.weld.bootstrap.api.Service;
 
-public class InjectionPointStack implements Service {
+public class ThreadLocalStackService<T> implements Service {
 
-    private final ThreadLocal<Stack<InjectionPoint>> injectionPointStack;
+    private final ThreadLocal<Stack<T>> threadLocalStack;
 
-    public InjectionPointStack() {
-        this.injectionPointStack = new ThreadLocal<Stack<InjectionPoint>>();
+    public ThreadLocalStackService() {
+        this.threadLocalStack = new ThreadLocal<Stack<T>>();
     }
 
     /**
@@ -36,20 +34,20 @@ public class InjectionPointStack implements Service {
      * point exists, it will be replaced. If no current injection point exists,
      * one will be added.
      *
-     * @param injectionPoint the injection point to use
+     * @param item the injection point to use
      * @return the injection point added, or null if previous existed did not exist
      */
-    public void push(InjectionPoint injectionPoint) {
-        Stack<InjectionPoint> stack = injectionPointStack.get();
+    public void push(T item) {
+        Stack<T> stack = threadLocalStack.get();
         if (stack == null) {
-            stack = new Stack<InjectionPoint>();
-            injectionPointStack.set(stack);
+            stack = new Stack<T>();
+            threadLocalStack.set(stack);
         }
-        stack.push(injectionPoint);
+        stack.push(item);
     }
 
-    public InjectionPoint pop() {
-        Stack<InjectionPoint> stack = injectionPointStack.get();
+    public T pop() {
+        Stack<T> stack = threadLocalStack.get();
         if (stack == null) {
             throw new EmptyStackException();
         }
@@ -57,7 +55,7 @@ public class InjectionPointStack implements Service {
             return stack.pop();
         } finally {
             if (stack.isEmpty()) {
-                injectionPointStack.remove();
+                threadLocalStack.remove();
             }
         }
     }
@@ -67,8 +65,8 @@ public class InjectionPointStack implements Service {
      *
      * @return the current injection point
      */
-    public InjectionPoint peek() {
-        Stack<InjectionPoint> stack = injectionPointStack.get();
+    public T peek() {
+        Stack<T> stack = threadLocalStack.get();
         if (stack == null) {
             return null;
         }

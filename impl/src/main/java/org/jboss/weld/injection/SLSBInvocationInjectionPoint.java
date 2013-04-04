@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.injection;
 
-public class SLSBInvocationInjectionPoint extends InjectionPointStack {
+import javax.enterprise.inject.spi.InjectionPoint;
+
+public class SLSBInvocationInjectionPoint extends ThreadLocalStackService<InjectionPoint> {
 
 }

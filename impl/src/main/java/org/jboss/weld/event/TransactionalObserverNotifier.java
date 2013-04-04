@@ -39,7 +39,7 @@ public class TransactionalObserverNotifier extends ObserverNotifier {
     }
 
     @Override
-    protected <T> void notifyObserver(final T event, final ObserverMethod<? super T> observer) {
+    protected <T> void notifyObserver(final EventPacket<T> event, final ObserverMethod<? super T> observer) {
         if (immediateDispatch(observer)) {
             super.notifyObserver(event, observer);
         } else {
@@ -55,10 +55,10 @@ public class TransactionalObserverNotifier extends ObserverNotifier {
      * Defers an event for processing in a later phase of the current
      * transaction.
      *
-     * @param event The event object
+     * @param eventPacket The event object
      */
-    private <T> void deferNotification(final T event, final ObserverMethod<? super T> observer) {
-        DeferredEventNotification<T> deferredEvent = new DeferredEventNotification<T>(event, observer);
+    private <T> void deferNotification(final EventPacket<T> packet, final ObserverMethod<? super T> observer) {
+        DeferredEventNotification<T> deferredEvent = new DeferredEventNotification<T>(packet, observer, currentEventMetadata);
         TransactionPhase transactionPhase = observer.getTransactionPhase();
 
         if (transactionPhase.equals(TransactionPhase.BEFORE_COMPLETION)) {

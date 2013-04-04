@@ -112,6 +112,7 @@ import org.jboss.weld.context.unbound.RequestContextImpl;
 import org.jboss.weld.context.unbound.SingletonContextImpl;
 import org.jboss.weld.context.unbound.UnboundLiteral;
 import org.jboss.weld.ejb.spi.EjbServices;
+import org.jboss.weld.event.CurrentEventMetadata;
 import org.jboss.weld.event.GlobalObserverNotifierService;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.exceptions.IllegalStateException;
@@ -383,6 +384,7 @@ public class WeldBootstrap implements CDI11Bootstrap {
         services.add(ContextualStore.class, new ContextualStoreImpl());
         services.add(CurrentInjectionPoint.class, new CurrentInjectionPoint());
         services.add(SLSBInvocationInjectionPoint.class, new SLSBInvocationInjectionPoint());
+        services.add(CurrentEventMetadata.class, new CurrentEventMetadata());
         services.add(SpecializationAndEnablementRegistry.class, new SpecializationAndEnablementRegistry());
 
         GlobalObserverNotifierService observerNotificationService = new GlobalObserverNotifierService(services);

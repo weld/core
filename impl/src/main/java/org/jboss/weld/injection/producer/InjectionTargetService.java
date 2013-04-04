@@ -37,6 +37,7 @@ public class InjectionTargetService extends AbstractBootstrapService {
             // Validate injection points for definition errors now
             for (InjectionPoint ip : producer.getInjectionPoints()) {
                 validator.validateInjectionPointForDefinitionErrors(ip, ip.getBean(), beanManager);
+                validator.validateEventMetadataInjectionPoint(ip);
             }
             // Schedule validation for deployment problems to be done later
             producersToValidate.add(producer);

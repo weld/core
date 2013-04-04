@@ -39,6 +39,7 @@ import org.jboss.weld.bean.builtin.ConversationBean;
 import org.jboss.weld.bean.builtin.DecoratedBeanMetadataBean;
 import org.jboss.weld.bean.builtin.DecoratorMetadataBean;
 import org.jboss.weld.bean.builtin.EventBean;
+import org.jboss.weld.bean.builtin.EventMetadataBean;
 import org.jboss.weld.bean.builtin.InjectionPointBean;
 import org.jboss.weld.bean.builtin.InstanceBean;
 import org.jboss.weld.bean.builtin.InterceptedBeanMetadataBean;
@@ -235,6 +236,7 @@ public class BeanDeployment {
 
     public void createBeans(Environment environment) {
         beanDeployer.addBuiltInBean(new InjectionPointBean(beanManager));
+        beanDeployer.addBuiltInBean(new EventMetadataBean(beanManager));
         beanDeployer.addBuiltInBean(new EventBean(beanManager));
         beanDeployer.addBuiltInBean(new InstanceBean(beanManager));
         beanDeployer.addBuiltInBean(new ConversationBean(beanManager));

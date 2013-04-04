@@ -113,6 +113,7 @@ import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.el.Namespace;
 import org.jboss.weld.el.WeldELResolver;
 import org.jboss.weld.el.WeldExpressionFactory;
+import org.jboss.weld.event.EventPacket;
 import org.jboss.weld.event.GlobalObserverNotifierService;
 import org.jboss.weld.event.ObserverNotifier;
 import org.jboss.weld.exceptions.AmbiguousResolutionException;
@@ -645,7 +646,9 @@ public class BeanManagerImpl implements WeldManager, Serializable {
      */
     @Override
     public void fireEvent(Object event, Annotation... qualifiers) {
-        globalStrictObserverNotifier.fireEvent(event, qualifiers);
+        Resolvable resolvable = globalStrictObserverNotifier.buildEventResolvable(event.getClass(), qualifiers);
+        EventPacket<?> packet = EventPacket.of(event, resolvable, qualifiers);
+        globalStrictObserverNotifier.fireEvent(packet);
     }
 
     /**

@@ -27,45 +27,52 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.spi.EventMetadata;
+
+import org.jboss.weld.literal.AnyLiteral;
 
 public class Observer {
 
-    void observeFooEvent(@Observes Foo event, InjectionPoint ip) {
+    void observeFooEvent(@Observes Foo event, EventMetadata metadata) {
         assertNotNull(event);
-        assertNotNull(ip);
-        assertEquals(Foo.class, ip.getType());
+        assertNotNull(metadata);
+        assertNotNull(metadata.getInjectionPoint());
+        assertEquals(Foo.class, metadata.getType());
+        // qualifiers
+        assertTrue(metadata.getQualifiers().contains(AnyLiteral.INSTANCE));
 
-        checkBean(ip.getBean());
+        checkBean(metadata.getInjectionPoint().getBean());
 
-        assertTrue(ip.getMember() instanceof Field);
-        assertEquals(EventDispatcher.class, ip.getMember().getDeclaringClass());
+        assertTrue(metadata.getInjectionPoint().getMember() instanceof Field);
+        assertEquals(EventDispatcher.class, metadata.getInjectionPoint().getMember().getDeclaringClass());
 
-        assertTrue(ip.getAnnotated() instanceof AnnotatedField<?>);
+        assertTrue(metadata.getInjectionPoint().getAnnotated() instanceof AnnotatedField<?>);
 
-        assertFalse(ip.isTransient());
-        assertFalse(ip.isDelegate());
+        assertFalse(metadata.getInjectionPoint().isTransient());
+        assertFalse(metadata.getInjectionPoint().isDelegate());
         event.observe();
     }
 
-    void observeBarEvent(@Observes Bar event, InjectionPoint ip) {
+    void observeBarEvent(@Observes Bar event, EventMetadata metadata) {
         assertNotNull(event);
-        assertNotNull(ip);
-        assertEquals(Bar.class, ip.getType());
+        assertNotNull(metadata);
+        assertNotNull(metadata.getInjectionPoint());
+        assertEquals(Bar.class, metadata.getType());
         // qualifiers
-        assertEquals(3, ip.getQualifiers().size());
-        assertTrue(ip.getQualifiers().contains(Alpha.Literal.INSTANCE));
-        assertTrue(ip.getQualifiers().contains(Bravo.Literal.INSTANCE));
-        assertTrue(ip.getQualifiers().contains(Charlie.Literal.INSTANCE));
+        assertEquals(4, metadata.getQualifiers().size());
+        assertTrue(metadata.getQualifiers().contains(Alpha.Literal.INSTANCE));
+        assertTrue(metadata.getQualifiers().contains(Bravo.Literal.INSTANCE));
+        assertTrue(metadata.getQualifiers().contains(Charlie.Literal.INSTANCE));
+        assertTrue(metadata.getQualifiers().contains(AnyLiteral.INSTANCE));
 
-        checkBean(ip.getBean());
-        assertTrue(ip.getMember() instanceof Field);
-        assertEquals(EventDispatcher.class, ip.getMember().getDeclaringClass());
+        checkBean(metadata.getInjectionPoint().getBean());
+        assertTrue(metadata.getInjectionPoint().getMember() instanceof Field);
+        assertEquals(EventDispatcher.class, metadata.getInjectionPoint().getMember().getDeclaringClass());
 
-        assertTrue(ip.getAnnotated() instanceof AnnotatedField<?>);
+        assertTrue(metadata.getInjectionPoint().getAnnotated() instanceof AnnotatedField<?>);
 
-        assertTrue(ip.isTransient());
-        assertFalse(ip.isDelegate());
+        assertTrue(metadata.getInjectionPoint().isTransient());
+        assertFalse(metadata.getInjectionPoint().isDelegate());
         event.observe();
     }
 

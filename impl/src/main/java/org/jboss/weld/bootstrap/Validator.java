@@ -34,6 +34,7 @@ import static org.jboss.weld.logging.messages.ValidatorMessage.DECORATORS_CANNOT
 import static org.jboss.weld.logging.messages.ValidatorMessage.DECORATORS_CANNOT_HAVE_PRODUCER_METHODS;
 import static org.jboss.weld.logging.messages.ValidatorMessage.DECORATOR_CLASS_NOT_BEAN_CLASS_OF_DECORATOR;
 import static org.jboss.weld.logging.messages.ValidatorMessage.DISPOSAL_METHODS_WITHOUT_PRODUCER;
+import static org.jboss.weld.logging.messages.ValidatorMessage.EVENT_METADATA_INJECTED_OUTSIDE_OF_OBSERVER;
 import static org.jboss.weld.logging.messages.ValidatorMessage.INJECTION_INTO_NON_BEAN;
 import static org.jboss.weld.logging.messages.ValidatorMessage.INJECTION_INTO_NON_DEPENDENT_BEAN;
 import static org.jboss.weld.logging.messages.ValidatorMessage.INJECTION_POINT_HAS_AMBIGUOUS_DEPENDENCIES;
@@ -93,6 +94,7 @@ import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Decorator;
+import javax.enterprise.inject.spi.EventMetadata;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
 import javax.enterprise.inject.spi.Interceptor;
@@ -230,6 +232,7 @@ public class Validator implements Service {
                         // pass the producer bean instead of the disposal method bean
                         validateInjectionPointForDefinitionErrors(ip, null, beanManager);
                         validateMetadataInjectionPoint(ip, null, ValidatorMessage.INJECTION_INTO_DISPOSER_METHOD);
+                        validateEventMetadataInjectionPoint(ip);
                         validateInjectionPointForDeploymentProblems(ip, null, beanManager);
                     }
                 }
@@ -313,6 +316,7 @@ public class Validator implements Service {
     public void validateInjectionPoint(InjectionPoint ij, BeanManagerImpl beanManager) {
         validateInjectionPointForDefinitionErrors(ij, ij.getBean(), beanManager);
         validateMetadataInjectionPoint(ij, ij.getBean(), INJECTION_INTO_NON_BEAN);
+        validateEventMetadataInjectionPoint(ij);
         validateInjectionPointForDeploymentProblems(ij, ij.getBean(), beanManager);
     }
 
@@ -373,6 +377,12 @@ public class Validator implements Service {
                 ProducerMethod<?, ?> producerMethod = Reflections.cast(bean);
                 checkBeanMetadataInjectionPoint(bean, ij, producerMethod.getAnnotated().getBaseType());
             }
+        }
+    }
+
+    public void validateEventMetadataInjectionPoint(InjectionPoint ip) {
+        if (EventMetadata.class.equals(ip.getType()) && ip.getQualifiers().contains(DefaultLiteral.INSTANCE)) {
+            throw new DefinitionException(EVENT_METADATA_INJECTED_OUTSIDE_OF_OBSERVER, ip);
         }
     }
 
@@ -732,7 +742,7 @@ public class Validator implements Service {
         for (ObserverInitializationContext<?, ?> omi : observers) {
             for (InjectionPoint ip : omi.getObserver().getInjectionPoints()) {
                 validateInjectionPointForDefinitionErrors(ip, ip.getBean(), beanManager);
-                // TODO: validateMetadataInjectionPoint
+                validateMetadataInjectionPoint(ip, null, INJECTION_INTO_NON_BEAN);
                 validateInjectionPointForDeploymentProblems(ip, ip.getBean(), beanManager);
             }
         }
