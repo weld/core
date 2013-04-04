@@ -37,12 +37,8 @@
             </class>
 
             <!-- Issues in Weld (the RI) -->
-            <!-- WELD-1181 -->
-            <class name="org.jboss.cdi.tck.tests.lookup.injectionpoint.non.contextual.NonContextualInjectionPointTest">
-                <methods>
-                    <exclude name="testEjbInjectionPointGetBean"/>
-                </methods>
-            </class>
+
+
 
             <!-- Issues in JBoss AS -->
             <!-- AS7-6821 -->

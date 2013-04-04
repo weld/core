@@ -21,6 +21,7 @@ import static org.jboss.weld.logging.messages.BeanMessage.DYNAMIC_LOOKUP_OF_BUIL
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.InjectionPoint;
 
+import org.jboss.weld.ejb.SessionBeanInjectionPoint;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -54,7 +55,9 @@ public class InjectionPointBean extends AbstractStaticallyDecorableBuiltInBean<I
         if (injectionPoint instanceof SerializableForwardingInjectionPoint) {
             return injectionPoint;
         }
-        return new SerializableForwardingInjectionPoint(injectionPoint);
+        injectionPoint = new SerializableForwardingInjectionPoint(injectionPoint);
+        injectionPoint = SessionBeanInjectionPoint.wrapIfNecessary(injectionPoint);
+        return injectionPoint;
     }
 
     public void destroy(InjectionPoint instance, CreationalContext<InjectionPoint> creationalContext) {

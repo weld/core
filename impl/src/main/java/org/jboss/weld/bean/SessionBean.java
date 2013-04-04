@@ -49,6 +49,7 @@ import org.jboss.weld.bean.proxy.EnterpriseBeanInstance;
 import org.jboss.weld.bean.proxy.Marker;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
+import org.jboss.weld.ejb.SessionBeanInjectionPoint;
 import org.jboss.weld.ejb.api.SessionObjectReference;
 import org.jboss.weld.ejb.spi.BusinessInterfaceDescriptor;
 import org.jboss.weld.ejb.spi.EjbServices;
@@ -246,7 +247,12 @@ public class SessionBean<T> extends AbstractClassBean<T> {
     }
 
     public SessionObjectReference createReference() {
-        return beanManager.getServices().get(EjbServices.class).resolveEjb(getEjbDescriptor().delegate());
+        try {
+            SessionBeanInjectionPoint.registerContextualInstance(getEjbDescriptor());
+            return beanManager.getServices().get(EjbServices.class).resolveEjb(getEjbDescriptor().delegate());
+        } finally {
+            SessionBeanInjectionPoint.unregisterContextualInstance(getEjbDescriptor());
+        }
     }
 
     @Override
