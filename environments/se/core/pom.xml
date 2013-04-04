@@ -70,7 +70,7 @@
 
         <dependency>
             <groupId>javax.el</groupId>
-            <artifactId>el-api</artifactId>
+            <artifactId>javax.el-api</artifactId>
         </dependency>
 
         <!-- WELD-203 -->
