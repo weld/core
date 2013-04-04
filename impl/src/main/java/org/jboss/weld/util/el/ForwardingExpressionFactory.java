@@ -16,7 +16,11 @@
  */
 package org.jboss.weld.util.el;
 
+import java.lang.reflect.Method;
+import java.util.Map;
+
 import javax.el.ELContext;
+import javax.el.ELResolver;
 import javax.el.ExpressionFactory;
 import javax.el.MethodExpression;
 import javax.el.ValueExpression;
@@ -64,4 +68,13 @@ public abstract class ForwardingExpressionFactory extends ExpressionFactory {
         return delegate().toString();
     }
 
+    @Override
+    public ELResolver getStreamELResolver() {
+        return delegate().getStreamELResolver();
+    }
+
+    @Override
+    public Map<String, Method> getInitFunctionMap() {
+        return delegate().getInitFunctionMap();
+    }
 }

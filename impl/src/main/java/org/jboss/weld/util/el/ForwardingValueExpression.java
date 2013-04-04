@@ -18,6 +18,7 @@ package org.jboss.weld.util.el;
 
 import javax.el.ELContext;
 import javax.el.ValueExpression;
+import javax.el.ValueReference;
 
 /**
  * @author pmuir
@@ -80,4 +81,8 @@ public abstract class ForwardingValueExpression extends ValueExpression {
         return delegate().toString();
     }
 
+    @Override
+    public ValueReference getValueReference(ELContext context) {
+        return delegate().getValueReference(context);
+    }
 }
