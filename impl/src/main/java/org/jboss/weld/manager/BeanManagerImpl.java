@@ -1038,7 +1038,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     @Override
     public <T> InjectionTarget<T> createInjectionTarget(AnnotatedType<T> type) {
-        return getLocalInjectionTargetFactory(type).createInjectionTarget(null);
+        return getInjectionTargetFactory(type).createInjectionTarget(null);
     }
 
     @Override
