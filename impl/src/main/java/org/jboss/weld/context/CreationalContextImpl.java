@@ -54,7 +54,7 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
 
     private final WeldCreationalContext<?> parentCreationalContext;
 
-    private List<ResourceReference<?>> resourceReferences;
+    private transient List<ResourceReference<?>> resourceReferences;
 
     public CreationalContextImpl(Contextual<T> contextual) {
         this(contextual, null, Collections.synchronizedList(new ArrayList<ContextualInstance<?>>()), null);
