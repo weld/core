@@ -28,7 +28,6 @@ import java.util.Set;
 
 import javax.enterprise.inject.spi.AnnotatedType;
 
-import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.IllegalArgumentException;

@@ -20,7 +20,6 @@ import org.jboss.weld.Container;
 import org.jboss.weld.annotated.enhanced.TypeClosureLazyValueHolder;
 import org.jboss.weld.util.LazyValueHolder;
 import org.jboss.weld.util.collections.ArraySetMultimap;
-import org.jboss.weld.util.reflection.HierarchyDiscovery;
 
 import java.lang.reflect.Type;
 import java.util.Map;

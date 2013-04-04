@@ -3,20 +3,16 @@ package org.jboss.weld.annotated.slim.backed;
 import static org.jboss.weld.logging.messages.BeanMessage.UNABLE_TO_LOAD_MEMBER;
 
 import java.io.Serializable;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Member;
 import java.lang.reflect.Type;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.AnnotatedMember;
 
-import org.jboss.weld.Container;
 import org.jboss.weld.exceptions.IllegalStateException;
-import org.jboss.weld.resources.MemberTransformer;
 import org.jboss.weld.resources.ReflectionCache;
 import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.serialization.AbstractSerializableHolder;
-import org.jboss.weld.serialization.ConstructorHolder;
 import org.jboss.weld.util.LazyValueHolder;
 import org.jboss.weld.util.reflection.RawType;
 import org.jboss.weld.util.reflection.Reflections;

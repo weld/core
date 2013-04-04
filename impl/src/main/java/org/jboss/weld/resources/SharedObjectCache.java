@@ -27,7 +27,6 @@ import org.jboss.weld.util.LazyValueHolder;
 import org.jboss.weld.util.Types;
 import org.jboss.weld.util.collections.ArraySetMultimap;
 import org.jboss.weld.util.collections.WeldCollections;
-import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.Reflections;
 
 import com.google.common.base.Function;
