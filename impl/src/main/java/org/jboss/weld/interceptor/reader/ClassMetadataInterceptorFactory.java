@@ -56,6 +56,10 @@ public class ClassMetadataInterceptorFactory<T> implements InterceptorFactory<T>
         return instance;
     }
 
+    public InjectionTarget<T> getInjectionTarget() {
+        return injectionTarget;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

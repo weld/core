@@ -60,7 +60,6 @@ import static org.jboss.weld.logging.messages.ValidatorMessage.PSEUDO_SCOPED_BEA
 import static org.jboss.weld.logging.messages.ValidatorMessage.SCOPE_ANNOTATION_ON_INJECTION_POINT;
 import static org.jboss.weld.logging.messages.ValidatorMessage.USER_TRANSACTION_INJECTION_INTO_BEAN_WITH_CONTAINER_MANAGED_TRANSACTIONS;
 import static org.jboss.weld.util.Types.buildClassNameMap;
-import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -96,7 +95,6 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.EventMetadata;
 import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.InjectionTarget;
 import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.PassivationCapable;
 import javax.enterprise.inject.spi.Producer;
@@ -264,15 +262,15 @@ public class Validator implements Service {
                         }
                     }
                     if (interceptorMetadata.getInterceptorFactory() instanceof ClassMetadataInterceptorFactory<?>) {
+                        ClassMetadataInterceptorFactory<?> factory = (ClassMetadataInterceptorFactory<?>) interceptorMetadata.getInterceptorFactory();
                         ClassMetadata<?> classMetadata = interceptorMetadata.getInterceptorClass();
                         if (passivationCapabilityCheckRequired && !Reflections.isSerializable(classMetadata.getJavaClass())) {
                             throw new DeploymentException(PASSIVATING_BEAN_WITH_NONSERIALIZABLE_INTERCEPTOR, this, classMetadata.getJavaClass().getName());
                         }
-                        InjectionTarget<Object> injectionTarget = cast(beanManager.createInjectionTarget(beanManager.createAnnotatedType(classMetadata.getJavaClass())));
-                        for (InjectionPoint injectionPoint : injectionTarget.getInjectionPoints()) {
-                            Bean<?> resolvedBean = beanManager.resolve(beanManager.getBeans(injectionPoint));
+                        for (InjectionPoint injectionPoint : factory.getInjectionTarget().getInjectionPoints()) {
                             validateInjectionPoint(injectionPoint, beanManager);
                             if (passivationCapabilityCheckRequired) {
+                                Bean<?> resolvedBean = beanManager.resolve(beanManager.getBeans(injectionPoint));
                                 validateInjectionPointPassivationCapable(injectionPoint, resolvedBean, beanManager);
                             }
                         }
