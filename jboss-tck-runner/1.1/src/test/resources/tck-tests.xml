@@ -57,12 +57,6 @@
                     <exclude name="testSessionScopeActiveDuringHttpSessionListenerCall"/>
                 </methods>
             </class>
-            <!-- AS7-6739 -->
-            <class name="org.jboss.cdi.tck.tests.interceptors.definition.lifecycle.enterprise.order.EnterpriseLifecycleInterceptorDefinitionTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
             <!-- JMS tests not working on AS7, see CDITCK-315 -->
             <class name="org.jboss.cdi.tck.tests.extensions.container.event.jms.ContainerEventTest">
                 <methods>
