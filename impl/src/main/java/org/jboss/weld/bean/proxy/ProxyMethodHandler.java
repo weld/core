@@ -71,19 +71,14 @@ public class ProxyMethodHandler implements MethodHandler, Serializable {
     * @see javassist.util.proxy.MethodHandler#invoke(java.lang.Object, java.lang.reflect.Method, java.lang.reflect.Method, java.lang.Object[])
     */
     public Object invoke(Object self, Method thisMethod, Method proceed, Object[] args) throws Throwable {
-        boolean traceEnabled = log.isTraceEnabled();
         if (thisMethod == null) {
-            if (traceEnabled) {
-                log.trace("MethodHandler processing returning bean instance for " + self.getClass());
-            }
+            log.trace("MethodHandler processing returning bean instance for {}", self.getClass());
             if (beanInstance == null) {
                 throw new WeldException(BEAN_INSTANCE_NOT_SET_ON_PROXY);
             }
             return beanInstance.getInstance();
         }
-        if (traceEnabled) {
-            log.trace("MethodHandler processing call to " + thisMethod + " for " + self.getClass());
-        }
+        log.trace("MethodHandler processing call to {} for {}", thisMethod, self.getClass());
         if (thisMethod.getDeclaringClass().equals(TargetInstanceProxy.class)) {
             if (beanInstance == null) {
                 throw new WeldException(BEAN_INSTANCE_NOT_SET_ON_PROXY, getBean());
@@ -96,9 +91,7 @@ public class ProxyMethodHandler implements MethodHandler, Serializable {
                 return null;
             }
         } else if (thisMethod.getName().equals("_initMH")) {
-            if (traceEnabled) {
-                log.trace("Setting new MethodHandler with bean instance for " + args[0] + " on " + self.getClass());
-            }
+            log.trace("Setting new MethodHandler with bean instance for {} on {}", args[0], self.getClass());
             return new ProxyMethodHandler(new TargetBeanInstance(args[0]), getBean());
         } else {
             if (beanInstance == null) {

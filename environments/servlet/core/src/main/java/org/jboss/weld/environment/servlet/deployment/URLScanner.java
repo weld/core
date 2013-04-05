@@ -114,7 +114,7 @@ public class URLScanner {
     protected void handle(Set<String> paths, Set<String> classes, Set<URL> urls) {
         for (String urlPath : paths) {
             try {
-                log.trace("scanning: " + urlPath);
+                log.trace("scanning: {}", urlPath);
 
                 File file = new File(urlPath);
 
@@ -131,7 +131,7 @@ public class URLScanner {
 
     protected void handleArchiveByFile(File file, Set<String> classes, Set<URL> urls) throws IOException {
         try {
-            log.trace("archive: " + file);
+            log.trace("archive: {}", file);
 
             ZipFile zip = new ZipFile(file);
             Enumeration<? extends ZipEntry> entries = zip.entries();
@@ -158,13 +158,13 @@ public class URLScanner {
     private void handleDirectory(File file, String path, File[] excludedDirectories, Set<String> classes, Set<URL> urls) {
         for (File excludedDirectory : excludedDirectories) {
             if (file.equals(excludedDirectory)) {
-                log.trace("skipping excluded directory: " + file);
+                log.trace("skipping excluded directory: {}", file);
 
                 return;
             }
         }
 
-        log.trace("handling directory: " + file);
+        log.trace("handling directory: {}", file);
 
         for (File child : file.listFiles()) {
             String newPath = (path == null) ? child.getName() : (path + '/' + child.getName());
@@ -175,7 +175,7 @@ public class URLScanner {
                 try {
                     handle(newPath, child.toURI().toURL(), classes, urls);
                 } catch (MalformedURLException e) {
-                    log.error("Error loading file " + newPath);
+                    log.error("Error loading file {}", newPath);
                 }
             }
         }

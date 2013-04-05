@@ -82,7 +82,7 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
         b.checkcast(MethodHandler.class);
         b.putfield(classMethod.getClassFile().getName(), "methodHandler", DescriptorUtils.classToStringRepresentation(MethodHandler.class));
         b.returnInstruction();
-        log.trace("Created MH initializer body for decorator proxy:  " + getBeanType());
+        log.trace("Created MH initializer body for decorator proxy: {}", getBeanType());
 
     }
 

@@ -121,7 +121,7 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
                             ClassMethod classMethod = proxyClassType.addMethod(method);
                             addConstructedGuardToMethodBody(classMethod);
                             createForwardingMethodBody(classMethod, methodInfo);
-                            log.trace("Adding method " + method);
+                            log.trace("Adding method {}", method);
                         } catch (DuplicateMemberException e) {
                             // do nothing. This will happen if superclass methods have
                             // been overridden
@@ -139,7 +139,7 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
                             MethodInformation methodInformation = new RuntimeMethodInformation(method);
                             final ClassMethod classMethod = proxyClassType.addMethod(method);
                             createSpecialMethodBody(classMethod, methodInformation);
-                            log.trace("Adding method " + method);
+                            log.trace("Adding method {}", method);
                         } catch (DuplicateMemberException e) {
                         }
                     }
@@ -289,7 +289,7 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
         try {
             // Add special methods for interceptors
             for (Method method : LifecycleMixin.class.getMethods()) {
-                log.trace("Adding method " + method);
+                log.trace("Adding method {}", method);
                 MethodInformation methodInfo = new RuntimeMethodInformation(method);
                 createInterceptorBody(proxyClassType.addMethod(method), methodInfo, false);
             }

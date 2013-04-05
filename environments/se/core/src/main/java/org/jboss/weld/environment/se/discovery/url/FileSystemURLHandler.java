@@ -48,9 +48,7 @@ public class FileSystemURLHandler {
 
     public void handle(String urlPath) {
         try {
-            if (log.isTraceEnabled()) {
-                log.trace("scanning: " + urlPath);
-            }
+            log.trace("scanning: {}", urlPath);
 
             File file = new File(urlPath);
             if (file.isDirectory()) {
@@ -65,9 +63,7 @@ public class FileSystemURLHandler {
 
     private void handleArchiveByFile(File file) throws IOException {
         try {
-            if (log.isTraceEnabled()) {
-                log.trace("archive: " + file);
-            }
+            log.trace("archive: {}", file);
 
             String archiveUrl = "jar:" + file.toURI().toURL().toExternalForm() + "!/";
             ZipFile zip = new ZipFile(file);
@@ -84,9 +80,7 @@ public class FileSystemURLHandler {
     }
 
     private void handleDirectory(File dir, String path) {
-        if (log.isTraceEnabled()) {
-            log.trace("handling directory: " + dir);
-        }
+        log.trace("handling directory: {}", dir);
 
         File[] files = dir.listFiles();
         assert files != null;
@@ -99,7 +93,7 @@ public class FileSystemURLHandler {
                 try {
                     addToDiscovered(newPath, child.toURI().toURL());
                 } catch (MalformedURLException e) {
-                    log.error("Error loading file " + newPath);
+                    log.error("Error loading file {}", newPath);
                 }
             }
         }
