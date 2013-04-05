@@ -1,27 +1,28 @@
 package org.jboss.weld.context.http;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.jboss.weld.context.AbstractConversationContext;
 import org.jboss.weld.context.beanstore.BoundBeanStore;
 import org.jboss.weld.context.beanstore.NamingScheme;
 import org.jboss.weld.context.beanstore.http.EagerSessionBeanStore;
 import org.jboss.weld.context.beanstore.http.LazySessionBeanStore;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import org.jboss.weld.servlet.SessionHolder;
 
 public class HttpConversationContextImpl extends AbstractConversationContext<HttpServletRequest, HttpSession> implements HttpConversationContext {
 
     @Override
     protected void setSessionAttribute(HttpServletRequest request, String name, Object value, boolean create) {
-        if (create || request.getSession(false) != null) {
-            request.getSession(true).setAttribute(name, value);
+        if (create || SessionHolder.getSessionIfExists() != null) {
+            getSessionFromRequest(request, true).setAttribute(name, value);
         }
     }
 
     @Override
     protected Object getSessionAttribute(HttpServletRequest request, String name, boolean create) {
-        if (create || request.getSession(false) != null) {
-            return request.getSession(true).getAttribute(name);
+        if (create || SessionHolder.getSessionIfExists() != null) {
+            return getSessionFromRequest(request, true).getAttribute(name);
         } else {
             return null;
         }
@@ -59,7 +60,7 @@ public class HttpConversationContextImpl extends AbstractConversationContext<Htt
 
     @Override
     protected HttpSession getSessionFromRequest(HttpServletRequest request, boolean create) {
-        return request.getSession(create);
+        return SessionHolder.getSession(request, create);
     }
 
 

@@ -246,9 +246,8 @@ public class BeanDeployment {
         beanDeployer.addBuiltInBean(new InterceptorMetadataBean(beanManager));
         beanDeployer.addBuiltInBean(new DecoratorMetadataBean(beanManager));
         if (Reflections.isClassLoadable(ServletApi.SERVLET_CONTEXT_CLASS_NAME, WeldClassLoaderResourceLoader.INSTANCE)) {
-            HttpServletRequestBean httpServletRequestBean = new HttpServletRequestBean(beanManager);
-            beanDeployer.addBuiltInBean(httpServletRequestBean);
-            beanDeployer.addBuiltInBean(new HttpSessionBean(httpServletRequestBean, beanManager));
+            beanDeployer.addBuiltInBean(new HttpServletRequestBean(beanManager));
+            beanDeployer.addBuiltInBean(new HttpSessionBean(beanManager));
             beanDeployer.addBuiltInBean(new ServletContextBean(beanManager));
         }
         if (beanManager.getServices().contains(TransactionServices.class)) {

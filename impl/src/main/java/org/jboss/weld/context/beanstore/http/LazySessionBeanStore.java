@@ -16,15 +16,16 @@
  */
 package org.jboss.weld.context.beanstore.http;
 
-import org.jboss.weld.context.beanstore.NamingScheme;
-import org.slf4j.cal10n.LocLogger;
+import static org.jboss.weld.logging.Category.CONTEXT;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.ContextMessage.LOADING_BEAN_STORE_MAP_FROM_SESSION;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import static org.jboss.weld.logging.Category.CONTEXT;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.ContextMessage.LOADING_BEAN_STORE_MAP_FROM_SESSION;
+import org.jboss.weld.context.beanstore.NamingScheme;
+import org.jboss.weld.servlet.SessionHolder;
+import org.slf4j.cal10n.LocLogger;
 
 /**
  * <p>
@@ -64,13 +65,13 @@ public class LazySessionBeanStore extends AbstractSessionBeanStore {
      * @return http session or null if no such session exists
      */
     protected HttpSession getSessionIfExists() {
-        return request.getSession(false);
+        return SessionHolder.getSessionIfExists();
     }
 
     @Override
     protected HttpSession getSession(boolean create) {
         try {
-            return request.getSession(create);
+            return SessionHolder.getSession(request, create);
         } catch (IllegalStateException e) {
             // If container can't create an underlying session, invalidate the
             // current one

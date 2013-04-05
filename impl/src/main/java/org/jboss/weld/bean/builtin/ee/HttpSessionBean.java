@@ -27,6 +27,7 @@ import org.jboss.weld.bean.builtin.AbstractStaticallyDecorableBuiltInBean;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.logging.messages.ServletMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.servlet.SessionHolder;
 
 /**
  * Built-in bean exposing {@link HttpSession}.
@@ -36,17 +37,14 @@ import org.jboss.weld.manager.BeanManagerImpl;
  */
 public class HttpSessionBean extends AbstractStaticallyDecorableBuiltInBean<HttpSession> {
 
-    private final HttpServletRequestBean requestBean;
-
-    public HttpSessionBean(HttpServletRequestBean requestBean, BeanManagerImpl manager) {
+    public HttpSessionBean(BeanManagerImpl manager) {
         super(HttpSessionBean.class.getName(), manager, HttpSession.class);
-        this.requestBean = requestBean;
     }
 
     @Override
     protected HttpSession newInstance(InjectionPoint ip, CreationalContext<HttpSession> creationalContext) {
         try {
-            return requestBean.create(null).getSession();
+            return SessionHolder.getSessionIfExists();
         } catch (IllegalStateException e) {
             throw new IllegalStateException(ServletMessage.CANNOT_INJECT_OBJECT_OUTSIDE_OF_SERVLET_REQUEST, e, HttpSession.class.getSimpleName());
         }

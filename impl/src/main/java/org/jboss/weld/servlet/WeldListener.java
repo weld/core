@@ -112,6 +112,7 @@ public class WeldListener extends AbstractServletListener {
 
     @Override
     public void sessionCreated(HttpSessionEvent event) {
+        SessionHolder.sessionCreated(event);
         beanManager.getAccessibleLenientObserverNotifier().fireEvent(event.getSession(), InitializedLiteral.SESSION);
     }
 
@@ -121,6 +122,7 @@ public class WeldListener extends AbstractServletListener {
         // instances when appropriate
         HttpSession session = event.getSession();
         boolean destroyed = sessionContext().destroy(session);
+        SessionHolder.clear();
         RequestScopedBeanCache.endRequest();
         if (destroyed) {
             // we are outside of a request (the session timed out) and therefore the session was destroyed immediately
@@ -157,6 +159,7 @@ public class WeldListener extends AbstractServletListener {
                 requestContext().dissociate(request);
                 sessionContext().dissociate(request);
                 conversationContextActivator.disassociateConversationContext(request);
+                SessionHolder.clear();
                 ServletContextBean.cleanup();
             }
         } else {
@@ -175,6 +178,8 @@ public class WeldListener extends AbstractServletListener {
 
         if (event.getServletRequest() instanceof HttpServletRequest) {
             HttpServletRequest request = (HttpServletRequest) event.getServletRequest();
+
+            SessionHolder.requestInitialized(request);
 
             ServletContextBean.setServletContext(event.getServletContext());
 
