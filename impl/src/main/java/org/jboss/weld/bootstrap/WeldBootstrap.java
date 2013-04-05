@@ -253,6 +253,7 @@ public class WeldBootstrap implements CDI11Bootstrap {
     private final BeansXmlParser beansXmlParser;
     private Collection<ContextHolder<? extends Context>> contexts;
     private final ServiceRegistry initialServices = new SimpleServiceRegistry();
+    private Iterable<Metadata<Extension>> extensions;
 
     public WeldBootstrap() {
         this.beansXmlParser = new BeansXmlParser();
@@ -261,6 +262,7 @@ public class WeldBootstrap implements CDI11Bootstrap {
     @Override
     public TypeDiscoveryConfiguration startExtensions(Iterable<Metadata<Extension>> extensions) {
         synchronized (this) {
+            this.extensions = extensions;
             // TODO: we should fire BeforeBeanDiscovery to allow extensions to register additional scopes
             final Set<Class<? extends Annotation>> scopes = ImmutableSet.of(Dependent.class, RequestScoped.class, ConversationScoped.class, SessionScoped.class, ApplicationScoped.class);
             return new TypeDiscoveryConfigurationImpl(scopes);
@@ -286,6 +288,10 @@ public class WeldBootstrap implements CDI11Bootstrap {
         synchronized (this) {
             if (deployment == null) {
                 throw new IllegalArgumentException(DEPLOYMENT_REQUIRED);
+            }
+
+            if (this.extensions == null) {
+                this.extensions = deployment.getExtensions();
             }
 
             final ServiceRegistry registry = deployment.getServices();
@@ -445,7 +451,7 @@ public class WeldBootstrap implements CDI11Bootstrap {
             Set<BeanDeployment> physicalBeanDeploymentArchives = new HashSet<BeanDeployment>(beanDeployments.values());
 
             ExtensionBeanDeployer extensionBeanDeployer = new ExtensionBeanDeployer(deploymentManager, deployment, beanDeployments, contexts);
-            extensionBeanDeployer.addExtensions(deployment.getExtensions());
+            extensionBeanDeployer.addExtensions(extensions);
             extensionBeanDeployer.deployBeans();
 
             // Add the Deployment BeanManager Bean to the Deployment BeanManager
