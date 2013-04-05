@@ -75,7 +75,7 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
 
         @Override
         public int compareTo(Item o) {
-            if (priority == o.priority) {
+            if (priority.equals(o.priority)) {
                 /*
                  * The spec does not specify what happens if two records have the same priority. Instead of giving random
                  * results, we compare the records based on their class name lexicographically.
