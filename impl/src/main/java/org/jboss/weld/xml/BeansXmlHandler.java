@@ -279,7 +279,7 @@ public class BeansXmlHandler extends DefaultHandler {
 
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-        if (localName.equals(ROOT_ELEMENT_NAME) && (uri == "" || JAVAEE_URIS.contains(uri))) {
+        if (localName.equals(ROOT_ELEMENT_NAME) && ("".equals(uri) || JAVAEE_URIS.contains(uri))) {
             processRootElement(attributes);
             return;
         }

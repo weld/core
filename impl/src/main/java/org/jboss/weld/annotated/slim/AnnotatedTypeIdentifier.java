@@ -50,9 +50,9 @@ import com.google.common.base.Objects;
  */
 public class AnnotatedTypeIdentifier implements Identifier {
 
-    public static String NULL_BDA_ID = AnnotatedTypeIdentifier.class.getName() + ".null";
+    public static final String NULL_BDA_ID = AnnotatedTypeIdentifier.class.getName() + ".null";
 
-    public static String SYNTHETIC_ANNOTATION_SUFFIX = "syntheticAnnotation";
+    public static final String SYNTHETIC_ANNOTATION_SUFFIX = "syntheticAnnotation";
 
     public static AnnotatedTypeIdentifier forBackedAnnotatedType(Class<?> javaClass, Type type, String bdaId) {
         return new AnnotatedTypeIdentifier(bdaId, javaClass.getName(), getTypeId(type), false);
