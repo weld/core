@@ -27,7 +27,7 @@ import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.ServletMessage.ONLY_HTTP_SERVLET_LIFECYCLE_DEFINED;
 import static org.jboss.weld.logging.messages.ServletMessage.REQUEST_DESTROYED;
 import static org.jboss.weld.logging.messages.ServletMessage.REQUEST_INITIALIZED;
-import static org.jboss.weld.servlet.ConversationFilter.CONVERSATION_FILTER_INITIALIZED;
+import static org.jboss.weld.servlet.ConversationFilter.CONVERSATION_FILTER_REGISTERED;
 
 import javax.enterprise.inject.spi.CDI;
 import javax.inject.Inject;
@@ -97,6 +97,7 @@ public class WeldListener extends AbstractServletListener {
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
+        this.conversationFilterRegistered = Boolean.valueOf(sce.getServletContext().getInitParameter(CONVERSATION_FILTER_REGISTERED));
         if (beanManager == null) {
             // servlet containers may not be able to inject fields in a servlet listener
             beanManager = BeanManagerProxy.unwrap(CDI.current().getBeanManager());
@@ -172,8 +173,8 @@ public class WeldListener extends AbstractServletListener {
         log.trace(REQUEST_INITIALIZED, event.getServletRequest());
 
         if (conversationFilterRegistered == null) {
-            Object value = event.getServletContext().getAttribute(CONVERSATION_FILTER_INITIALIZED);
-            conversationFilterRegistered = value != null && value.equals(Boolean.TRUE);
+            Object value = event.getServletContext().getAttribute(CONVERSATION_FILTER_REGISTERED);
+            conversationFilterRegistered = Boolean.TRUE.equals(value);
         }
 
         if (event.getServletRequest() instanceof HttpServletRequest) {

@@ -44,7 +44,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
  */
 public class ConversationFilter implements Filter {
 
-    static final String CONVERSATION_FILTER_INITIALIZED = ConversationFilter.class.getName() +  ".initialized";
+    public static final String CONVERSATION_FILTER_REGISTERED = ConversationFilter.class.getName() +  ".registered";
 
     @Inject
     private BeanManagerImpl manager;
@@ -54,7 +54,7 @@ public class ConversationFilter implements Filter {
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         this.conversationContextActivator = new ConversationContextActivator(manager, filterConfig.getServletContext());
-        filterConfig.getServletContext().setAttribute(CONVERSATION_FILTER_INITIALIZED, Boolean.TRUE);
+        filterConfig.getServletContext().setAttribute(CONVERSATION_FILTER_REGISTERED, Boolean.TRUE);
     }
 
     @Override
