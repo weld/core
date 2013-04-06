@@ -97,7 +97,10 @@ public class WeldListener extends AbstractServletListener {
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        this.conversationFilterRegistered = Boolean.valueOf(sce.getServletContext().getInitParameter(CONVERSATION_FILTER_REGISTERED));
+        String initParam = sce.getServletContext().getInitParameter(CONVERSATION_FILTER_REGISTERED);
+        if (initParam != null) {
+            this.conversationFilterRegistered = Boolean.valueOf(initParam);
+        }
         if (beanManager == null) {
             // servlet containers may not be able to inject fields in a servlet listener
             beanManager = BeanManagerProxy.unwrap(CDI.current().getBeanManager());
