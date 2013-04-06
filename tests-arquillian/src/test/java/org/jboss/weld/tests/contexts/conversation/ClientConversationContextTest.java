@@ -33,13 +33,12 @@ package org.jboss.weld.tests.contexts.conversation;
  * limitations under the License.
  */
 
-import com.gargoylesoftware.htmlunit.Page;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlSpan;
-import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
+import static org.junit.Assert.assertEquals;
+
+import java.net.URL;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -52,11 +51,13 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
-import java.net.URL;
-import java.util.HashSet;
-import java.util.Set;
-
-import static org.junit.Assert.assertEquals;
+import com.gargoylesoftware.htmlunit.Page;
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
+import com.gargoylesoftware.htmlunit.html.HtmlElement;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.html.HtmlSpan;
+import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 
 /**
  * @author Nicklas Karlsson
@@ -244,7 +245,7 @@ public class ClientConversationContextTest {
 
         // Now start a conversation and access the page that throws an exception
         // again
-        HtmlPage hailstorm = getFirstMatchingElement(cloud, HtmlSubmitInput.class, "hail").click();
+        Page hailstorm = getFirstMatchingElement(cloud, HtmlSubmitInput.class, "hail").click();
 
         String cid = getCid(hailstorm);
 
@@ -272,7 +273,7 @@ public class ClientConversationContextTest {
         // Activate the conversation from a GET request
         HtmlPage page2 = client.getPage(getPath("/cloud.jsf", cid));
         assertEquals(Cloud.CUMULUS, getFirstMatchingElement(page2, HtmlSpan.class, "cloudName").getTextContent());
-        
+
         // Send a GET request with the "cid" parameter and suppressed conversation propagation (using conversationPropagation=none)
         HtmlPage page3 = client.getPage(getPath("/cloud.jsf", cid) + "&conversationPropagation=none");
         assertEquals(Cloud.NAME, getFirstMatchingElement(page3, HtmlSpan.class, "cloudName").getTextContent());

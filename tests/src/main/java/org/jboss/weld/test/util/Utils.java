@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.test.util;
 
+import static org.jboss.weld.logging.messages.BeanManagerMessage.UNRESOLVABLE_TYPE;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -44,8 +46,6 @@ import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.test.util.el.EL;
 import org.jboss.weld.util.collections.EnumerationList;
 import org.jboss.weld.util.reflection.Reflections;
-
-import static org.jboss.weld.logging.messages.BeanManagerMessage.UNRESOLVABLE_TYPE;
 
 
 public class Utils {
@@ -150,7 +150,7 @@ public class Utils {
     }
 
     public static <T> T getReference(BeanManager beanManager, Bean<T> bean) {
-        return getReference(beanManager, bean, bean.getBeanClass());
+        return getReference(beanManager, bean, Object.class);
     }
 
     @SuppressWarnings("unchecked")
