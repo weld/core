@@ -184,7 +184,7 @@ Export-Package javax.el;version=2.2.0, \
                org.jboss.weld.environment.se.discovery; \
                org.jboss.weld.environment.se.discovery.url; \
                org.jboss.weld.environment.se.contexts; \
-               org.jboss.weld.messages; version=2.1-SNAPSHOT
+               org.jboss.weld.messages; version=${pom.version}
 
 
 DynamicImport-Package *
