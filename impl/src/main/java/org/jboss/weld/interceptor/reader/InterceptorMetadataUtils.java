@@ -1,5 +1,9 @@
 package org.jboss.weld.interceptor.reader;
 
+import static org.jboss.weld.logging.Category.REFLECTION;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.util.collections.WeldCollections.immutableMap;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.security.AccessController;
@@ -24,10 +28,6 @@ import org.jboss.weld.interceptor.util.InterceptorMetadataException;
 import org.jboss.weld.logging.messages.ValidatorMessage;
 import org.jboss.weld.security.SetAccessibleAction;
 import org.slf4j.cal10n.LocLogger;
-
-import static org.jboss.weld.logging.Category.REFLECTION;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.util.collections.WeldCollections.immutableMap;
 
 /**
  * @author Marius Bogoevici
@@ -64,11 +64,18 @@ public class InterceptorMetadataUtils {
 
     private static boolean isValidTargetClassLifecycleInterceptorMethod(InterceptionType interceptionType, MethodMetadata method) {
         Method javaMethod = method.getJavaMethod();
+        /*
+         * This check is relaxed (WELD-1399) because we are not able to distinguish a CDI managed bean from
+         * an interceptor class bound using @Interceptors.
+         *
+         * This will be revisited as part of https://issues.jboss.org/browse/WELD-1401
+         *
         if (interceptionType == InterceptionType.AROUND_CONSTRUCT) {
             throw new DefinitionException(ValidatorMessage.AROUND_CONSTRUCT_INTERCEPTOR_METHOD_NOT_ALLOWED_ON_TARGET_CLASS,
                     javaMethod.getName(), javaMethod.getDeclaringClass().getName(),
                     interceptionType.annotationClassName());
         }
+        */
         if (!Void.TYPE.equals(method.getReturnType())) {
             throw new DefinitionException(ValidatorMessage.INTERCEPTOR_METHOD_DOES_NOT_HAVE_VOID_RETURN_TYPE,
                     javaMethod.getName(), javaMethod.getDeclaringClass().getName(),
