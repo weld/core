@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.tests.interceptors.exclusion;
 
+import javax.interceptor.AroundConstruct;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.InvocationContext;
 
@@ -27,5 +28,15 @@ public class Interceptor1 {
     Object intercept(InvocationContext ctx) throws Exception {
         ActionSequence.addAction(this.getClass().getName());
         return ctx.proceed();
+    }
+
+    @AroundConstruct
+    void aroundConstruct(InvocationContext ctx) {
+        ActionSequence.addAction(this.getClass().getName());
+        try {
+            ctx.proceed();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
