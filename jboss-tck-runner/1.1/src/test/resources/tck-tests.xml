@@ -24,21 +24,7 @@
 
             <!-- Issues in the TCK -->
 
-            <!-- CDITCK-283 -->
-            <class name="org.jboss.cdi.tck.tests.context.request.event.jms.RequestScopeEventMessageDeliveryTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
-            <class name="org.jboss.cdi.tck.tests.context.jms.MessageDrivenBeanContextTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
-
             <!-- Issues in Weld (the RI) -->
-
-
 
             <!-- Issues in JBoss AS -->
             <!-- AS7-6821 -->
@@ -54,6 +40,16 @@
                 </methods>
             </class>
             <class name="org.jboss.cdi.tck.tests.interceptors.definition.enterprise.jms.MessageDrivenBeanInterceptorInvocationTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
+            <class name="org.jboss.cdi.tck.tests.context.request.event.jms.RequestScopeEventMessageDeliveryTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
+            <class name="org.jboss.cdi.tck.tests.context.jms.MessageDrivenBeanContextTest">
                 <methods>
                     <exclude name=".*"/>
                 </methods>
