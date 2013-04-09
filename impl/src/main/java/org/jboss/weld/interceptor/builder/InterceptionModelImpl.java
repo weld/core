@@ -119,15 +119,16 @@ class InterceptionModelImpl<T, I> implements BuildableInterceptionModel<T, I> {
             }
             appendInterceptorClassesToList(interceptionType, interceptorsList, interceptors);
         } else {
+            MethodReference methodHolder = methodHolder(method);
             if (null == methodBoundInterceptors.get(interceptionType)) {
                 methodBoundInterceptors.put(interceptionType, new HashMap<MethodReference, List<InterceptorMetadata<I>>>());
             }
-            List<InterceptorMetadata<I>> interceptorsList = methodBoundInterceptors.get(interceptionType).get(methodHolder(method));
+            List<InterceptorMetadata<I>> interceptorsList = methodBoundInterceptors.get(interceptionType).get(methodHolder);
             if (interceptorsList == null) {
                 interceptorsList = new ArrayList<InterceptorMetadata<I>>();
-                methodBoundInterceptors.get(interceptionType).put(methodHolder(method), interceptorsList);
+                methodBoundInterceptors.get(interceptionType).put(methodHolder, interceptorsList);
             }
-            if (globalInterceptors.containsKey(interceptionType)) {
+            if (globalInterceptors.containsKey(interceptionType) && !methodsIgnoringGlobals.contains(methodHolder)) {
                 validateDuplicateInterceptors(interceptionType, globalInterceptors.get(interceptionType), interceptors);
             }
             appendInterceptorClassesToList(interceptionType, interceptorsList, interceptors);
