@@ -270,7 +270,7 @@ public class IntegrationActivator implements BundleActivator, BundleTrackerCusto
         Bundle previousBundle = WeldOSGiExtension.setCurrentBundle(bundle);
         BundleContext previousContext = WeldOSGiExtension.setCurrentContext(bundle.getBundleContext());
         try {
-            if (started.get() && managed.containsKey(bundle.getBundleId())) {
+            if (started.get()) {
                 if (container != null) {
                     //BundleHolder bundleHolder = holder.getInstance().select(BundleHolder.class).get();
                     RegistrationsHolderImpl regs = container.getInstance().select(RegistrationsHolderImpl.class).get();
