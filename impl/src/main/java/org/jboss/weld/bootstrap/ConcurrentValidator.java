@@ -34,7 +34,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.Producer;
 
-import org.jboss.weld.bean.RIBean;
+import org.jboss.weld.bean.CommonBean;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.executor.IterativeWorkerTaskFactory;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -63,7 +63,7 @@ public class ConcurrentValidator extends Validator {
     @Override
     public void validateBeans(Collection<? extends Bean<?>> beans, final BeanManagerImpl manager) {
         final List<RuntimeException> problems = new CopyOnWriteArrayList<RuntimeException>();
-        final Set<RIBean<?>> specializedBeans = Sets.newSetFromMap(new ConcurrentHashMap<RIBean<?>, Boolean>());
+        final Set<CommonBean<?>> specializedBeans = Sets.newSetFromMap(new ConcurrentHashMap<CommonBean<?>, Boolean>());
 
         executor.invokeAllAndCheckForExceptions(new IterativeWorkerTaskFactory<Bean<?>>(beans) {
             protected void doWork(Bean<?> bean) {
@@ -91,7 +91,7 @@ public class ConcurrentValidator extends Validator {
 
     @Override
     public void validateDecorators(Collection<? extends Decorator<?>> decorators, final BeanManagerImpl manager) {
-        final Set<RIBean<?>> specializedBeans = Sets.newSetFromMap(new ConcurrentHashMap<RIBean<?>, Boolean>());
+        final Set<CommonBean<?>> specializedBeans = Sets.newSetFromMap(new ConcurrentHashMap<CommonBean<?>, Boolean>());
 
         executor.invokeAllAndCheckForExceptions(new IterativeWorkerTaskFactory<Decorator<?>>(decorators) {
             protected void doWork(Decorator<?> decorator) {

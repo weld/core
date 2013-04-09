@@ -53,7 +53,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.decorator.Decorator;
-import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Alternative;
@@ -67,6 +66,7 @@ import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.Extension;
+import javax.enterprise.inject.spi.PassivationCapable;
 import javax.inject.Inject;
 
 import org.jboss.weld.Container;
@@ -139,7 +139,7 @@ public class Beans {
         if (bean instanceof RIBean<?>) {
             return ((RIBean<?>) bean).isPassivationCapableBean();
         } else {
-            return Reflections.isSerializable(bean.getBeanClass());
+            return bean instanceof PassivationCapable;
         }
     }
 
@@ -153,15 +153,8 @@ public class Beans {
     public static boolean isPassivationCapableDependency(Bean<?> bean) {
         if (bean instanceof RIBean<?>) {
             return ((RIBean<?>) bean).isPassivationCapableDependency();
-        } else {
-            if (Container.instance().services().get(MetaAnnotationStore.class).getScopeModel(bean.getScope()).isNormal()) {
-                return true;
-            } else if (bean.getScope().equals(Dependent.class) && isPassivationCapableBean(bean)) {
-                return true;
-            } else {
-                return false;
-            }
         }
+        return bean instanceof PassivationCapable;
     }
 
     /**

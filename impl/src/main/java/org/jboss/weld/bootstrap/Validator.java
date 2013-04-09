@@ -107,6 +107,7 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bean.AbstractBean;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.AbstractProducerBean;
+import org.jboss.weld.bean.CommonBean;
 import org.jboss.weld.bean.DecorableBean;
 import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.bean.DisposalMethod;
@@ -115,7 +116,6 @@ import org.jboss.weld.bean.NewBean;
 import org.jboss.weld.bean.NewManagedBean;
 import org.jboss.weld.bean.NewSessionBean;
 import org.jboss.weld.bean.ProducerMethod;
-import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bean.WeldDecorator;
 import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
@@ -191,7 +191,7 @@ public class Validator implements Service {
             validatePseudoScopedBean(bean, beanManager);
         }
 
-        if (beanManager.isPassivatingScope(bean.getScope()) && !(bean instanceof PassivationCapable)) {
+        if (beanManager.isPassivatingScope(bean.getScope()) && !Beans.isPassivationCapableBean(bean)) {
             throw new DeploymentException(BEAN_WITH_PASSIVATING_SCOPE_NOT_PASSIVATION_CAPABLE, bean);
         }
     }
@@ -204,7 +204,7 @@ public class Validator implements Service {
      * @param beanManager      the current manager
      * @param specializedBeans the existing specialized beans
      */
-    protected void validateRIBean(RIBean<?> bean, BeanManagerImpl beanManager, Collection<RIBean<?>> specializedBeans) {
+    protected void validateRIBean(CommonBean<?> bean, BeanManagerImpl beanManager, Collection<CommonBean<?>> specializedBeans) {
         validateGeneralBean(bean, beanManager);
         if (bean instanceof NewBean) {
             return;
@@ -238,19 +238,26 @@ public class Validator implements Service {
         }
     }
 
+    private void validateCustomBean(Bean<?> bean, BeanManagerImpl beanManager) {
+        validateGeneralBean(bean, beanManager);
+        if (!(bean instanceof PassivationCapable) && beanManager.isNormalScope(bean.getScope())) {
+            log.warn(ValidatorMessage.BEAN_NOT_PASSIVATION_CAPABLE, bean);
+        }
+    }
+
     private void validateInterceptors(BeanManagerImpl beanManager, AbstractClassBean<?> classBean) {
         InterceptionModel<ClassMetadata<?>, ?> interceptionModel = beanManager.getInterceptorModelRegistry().get(classBean.getType());
         if (interceptionModel != null) {
             Set<? extends InterceptorMetadata<?>> interceptors = interceptionModel.getAllInterceptors();
             if (interceptors.size() > 0) {
-                boolean passivationCapabilityCheckRequired = beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(classBean.getScope()).isPassivating();
+                boolean passivationCapabilityCheckRequired = beanManager.isPassivatingScope(classBean.getScope());
                 for (InterceptorMetadata<?> interceptorMetadata : interceptors) {
                     if (interceptorMetadata.getInterceptorFactory() instanceof CdiInterceptorFactory<?>) {
                         CdiInterceptorFactory<?> cdiInterceptorFactory = (CdiInterceptorFactory<?>) interceptorMetadata.getInterceptorFactory();
                         Interceptor<?> interceptor = cdiInterceptorFactory.getInterceptor();
 
                         if (passivationCapabilityCheckRequired) {
-                            boolean isSerializable = (interceptor instanceof InterceptorImpl) ? ((InterceptorImpl<?>) interceptor).isSerializable() : (interceptor instanceof PassivationCapable);
+                            boolean isSerializable = (interceptor instanceof InterceptorImpl) ? ((InterceptorImpl<?>) interceptor).isSerializable() : Beans.isPassivationCapableDependency(interceptor);
                             if (isSerializable == false)
                                 throw new DeploymentException(PASSIVATING_BEAN_WITH_NONSERIALIZABLE_INTERCEPTOR, classBean, interceptor);
                         }
@@ -492,7 +499,7 @@ public class Validator implements Service {
 
     public void validateBeans(Collection<? extends Bean<?>> beans, BeanManagerImpl manager) {
         final List<RuntimeException> problems = new ArrayList<RuntimeException>();
-        final Set<RIBean<?>> specializedBeans = new HashSet<RIBean<?>>();
+        final Set<CommonBean<?>> specializedBeans = new HashSet<CommonBean<?>>();
 
         for (Bean<?> bean : beans) {
             validateBean(bean, specializedBeans, manager, problems);
@@ -506,12 +513,12 @@ public class Validator implements Service {
         }
     }
 
-    protected void validateBean(Bean<?> bean, Collection<RIBean<?>> specializedBeans, BeanManagerImpl manager, List<RuntimeException> problems) {
+    protected void validateBean(Bean<?> bean, Collection<CommonBean<?>> specializedBeans, BeanManagerImpl manager, List<RuntimeException> problems) {
         try {
-            if (bean instanceof RIBean<?>) {
-                validateRIBean((RIBean<?>) bean, manager, specializedBeans);
+            if (bean instanceof CommonBean<?>) {
+                validateRIBean((CommonBean<?>) bean, manager, specializedBeans);
             } else {
-                validateGeneralBean(bean, manager);
+                validateCustomBean(bean, manager);
             }
         } catch (RuntimeException e) {
             problems.add(e);
@@ -549,13 +556,13 @@ public class Validator implements Service {
     }
 
     public void validateDecorators(Collection<? extends Decorator<?>> decorators, BeanManagerImpl manager) {
-        Set<RIBean<?>> specializedBeans = new HashSet<RIBean<?>>();
+        Set<CommonBean<?>> specializedBeans = new HashSet<CommonBean<?>>();
         for (Decorator<?> decorator : decorators) {
             validateDecorator(decorator, specializedBeans, manager);
         }
     }
 
-    protected void validateDecorator(Decorator<?> decorator, Collection<RIBean<?>> specializedBeans, BeanManagerImpl manager) {
+    protected void validateDecorator(Decorator<?> decorator, Collection<CommonBean<?>> specializedBeans, BeanManagerImpl manager) {
 
         if (decorator.getDecoratedTypes().isEmpty()) {
             throw new DefinitionException(ValidatorMessage.NO_DECORATED_TYPES, decorator);
@@ -585,7 +592,7 @@ public class Validator implements Service {
 
             if (decorator instanceof DecoratorImpl<?>) {
                 // Discovered decorator bean - abstract methods and delegate injection point are validated during bean initialization
-                validateRIBean((RIBean<?>) decorator, manager, specializedBeans);
+                validateRIBean((CommonBean<?>) decorator, manager, specializedBeans);
 
                 // Following checks are not legal for custom decorator beans as we cannot rely on decorator bean class methods
                 if (!BeanMethods.getObserverMethods(annotated).isEmpty()) {
