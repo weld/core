@@ -21,12 +21,12 @@ import static org.jboss.weld.logging.messages.BeanMessage.SIMPLE_BEAN_AS_NON_STA
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
+
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.exceptions.DefinitionException;
@@ -51,19 +51,20 @@ public class BasicInjectionTarget<T> extends AbstractProducer<T> implements Inje
     protected final BeanManagerImpl beanManager;
     private final SlimAnnotatedType<T> type;
     private final Set<InjectionPoint> injectionPoints;
-    private final Bean<T> bean;
 
     // Instantiation
     private Instantiator<T> instantiator;
     private final Injector<T> injector;
     private final LifecycleCallbackInvoker<T> invoker;
 
+    public BasicInjectionTarget(EnhancedAnnotatedType<T> type, BeanManagerImpl beanManager) {
+        this(type, null, beanManager);
+    }
+
     public BasicInjectionTarget(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager) {
         this.beanManager = beanManager;
         this.type = type.slim();
         Set<InjectionPoint> injectionPoints = new HashSet<InjectionPoint>();
-
-        this.bean = bean;
 
         checkType(type);
         this.injector = initInjector(type, bean, beanManager);
@@ -82,14 +83,7 @@ public class BasicInjectionTarget<T> extends AbstractProducer<T> implements Inje
     }
 
     public T produce(CreationalContext<T> ctx) {
-        T instance = instantiator.newInstance(ctx, beanManager, null);
-        if (bean != null && !bean.getScope().equals(Dependent.class) && !instantiator.hasDecoratorSupport()) {
-            // This should be safe, but needs verification PLM
-            // Without this, the chaining of decorators will fail as the
-            // incomplete instance will be resolved
-            ctx.push(instance);
-        }
-        return instance;
+        return instantiator.newInstance(ctx, beanManager, null);
     }
 
     @Override
@@ -129,10 +123,6 @@ public class BasicInjectionTarget<T> extends AbstractProducer<T> implements Inje
         this.instantiator = instantiator;
     }
 
-    public Bean<T> getBean() {
-        return bean;
-    }
-
     public boolean hasInterceptors() {
         return instantiator.hasInterceptorSupport();
     }
@@ -152,7 +142,7 @@ public class BasicInjectionTarget<T> extends AbstractProducer<T> implements Inje
      */
     protected Instantiator<T> initInstantiator(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager, Set<InjectionPoint> injectionPoints) {
         DefaultInstantiator<T> instantiator = new DefaultInstantiator<T>(type, bean, beanManager);
-        injectionPoints.addAll(instantiator.getConstructorInjectionPoint().getParameterInjectionPoints());
+        injectionPoints.addAll(instantiator.getParameterInjectionPoints());
         return instantiator;
     }
 
@@ -184,5 +174,10 @@ public class BasicInjectionTarget<T> extends AbstractProducer<T> implements Inje
         } else {
             return "InjectionTarget for " + getBean();
         }
+    }
+
+    @Override
+    public Bean<T> getBean() {
+        return null;
     }
 }

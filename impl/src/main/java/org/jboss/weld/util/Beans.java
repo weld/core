@@ -303,6 +303,14 @@ public class Beans {
         return annotated.isAnnotationPresent(Alternative.class) || mergedStereotypes.isAlternative();
     }
 
+    public static <T> EnhancedAnnotatedConstructor<T> getBeanConstructorStrict(EnhancedAnnotatedType<T> type) {
+        EnhancedAnnotatedConstructor<T> constructor = getBeanConstructor(type);
+        if (constructor == null) {
+            throw new DefinitionException(UNABLE_TO_FIND_CONSTRUCTOR, type);
+        }
+        return constructor;
+    }
+
     public static <T> EnhancedAnnotatedConstructor<T> getBeanConstructor(EnhancedAnnotatedType<T> type) {
         Collection<EnhancedAnnotatedConstructor<T>> initializerAnnotatedConstructors = type.getEnhancedConstructors(Inject.class);
         log.trace(FOUND_INJECTABLE_CONSTRUCTORS, initializerAnnotatedConstructors, type);
@@ -316,14 +324,13 @@ public class Beans {
             constructor = type.getNoArgsEnhancedConstructor();
             log.trace(FOUND_DEFAULT_CONSTRUCTOR, constructor, type);
         }
-        if (constructor == null) {
-            throw new DefinitionException(UNABLE_TO_FIND_CONSTRUCTOR, type);
-        }
-        if (!constructor.getEnhancedParameters(Disposes.class).isEmpty()) {
-            throw new DefinitionException(PARAMETER_ANNOTATION_NOT_ALLOWED_ON_CONSTRUCTOR, "@Disposes", constructor);
-        }
-        if (!constructor.getEnhancedParameters(Observes.class).isEmpty()) {
-            throw new DefinitionException(PARAMETER_ANNOTATION_NOT_ALLOWED_ON_CONSTRUCTOR, "@Observes", constructor);
+        if (constructor != null) {
+            if (!constructor.getEnhancedParameters(Disposes.class).isEmpty()) {
+                throw new DefinitionException(PARAMETER_ANNOTATION_NOT_ALLOWED_ON_CONSTRUCTOR, "@Disposes", constructor);
+            }
+            if (!constructor.getEnhancedParameters(Observes.class).isEmpty()) {
+                throw new DefinitionException(PARAMETER_ANNOTATION_NOT_ALLOWED_ON_CONSTRUCTOR, "@Observes", constructor);
+            }
         }
         return constructor;
     }

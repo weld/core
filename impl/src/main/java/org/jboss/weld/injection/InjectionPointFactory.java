@@ -158,7 +158,7 @@ public class InjectionPointFactory {
      */
 
     public <T> ConstructorInjectionPoint<T> createConstructorInjectionPoint(Bean<T> declaringBean, EnhancedAnnotatedType<T> type, BeanManagerImpl manager) {
-        EnhancedAnnotatedConstructor<T> constructor = Beans.getBeanConstructor(type);
+        EnhancedAnnotatedConstructor<T> constructor = Beans.getBeanConstructorStrict(type);
         return createConstructorInjectionPoint(declaringBean, type.getJavaClass(), constructor, manager);
     }
 

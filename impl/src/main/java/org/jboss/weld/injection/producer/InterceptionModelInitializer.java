@@ -76,7 +76,7 @@ public class InterceptionModelInitializer<T> {
     }
 
     public static <T> InterceptionModelInitializer<T> of(BeanManagerImpl manager, EnhancedAnnotatedType<T> annotatedType, Bean<?> bean) {
-        return new InterceptionModelInitializer<T>(manager, annotatedType, Beans.getBeanConstructor(annotatedType), bean);
+        return new InterceptionModelInitializer<T>(manager, annotatedType, Beans.getBeanConstructorStrict(annotatedType), bean);
     }
 
     private final BeanManagerImpl manager;

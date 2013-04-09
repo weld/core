@@ -22,6 +22,8 @@ import static org.jboss.weld.logging.messages.BeanMessage.NON_CONTAINER_DECORATO
 
 import java.util.List;
 
+import javax.enterprise.context.Dependent;
+import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.Interceptor;
@@ -44,8 +46,11 @@ import org.jboss.weld.resources.ClassTransformer;
  */
 public class BeanInjectionTarget<T> extends BasicInjectionTarget<T> {
 
+    private final Bean<T> bean;
+
     public BeanInjectionTarget(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager) {
         super(type, bean, beanManager);
+        this.bean = bean;
     }
 
     @Override
@@ -87,6 +92,9 @@ public class BeanInjectionTarget<T> extends BasicInjectionTarget<T> {
 
     protected void initializeInterceptionModel(EnhancedAnnotatedType<T> annotatedType) {
         DefaultInstantiator<T> instantiator = (DefaultInstantiator<T>) getInstantiator();
+        if (instantiator.getConstructorInjectionPoint() == null) {
+            return; // this is a non-producible InjectionTarget (only created to inject existing instances)
+        }
         if (isInterceptionCandidate() && !beanManager.getInterceptorModelRegistry().containsKey(annotatedType.getJavaClass())) {
             new InterceptionModelInitializer<T>(beanManager, annotatedType, instantiator.getConstructorInjectionPoint().getAnnotated(), getBean()).init();
         }
@@ -160,11 +168,28 @@ public class BeanInjectionTarget<T> extends BasicInjectionTarget<T> {
     }
 
     @Override
+    public T produce(CreationalContext<T> ctx) {
+        T instance = super.produce(ctx);
+        if (bean != null && !bean.getScope().equals(Dependent.class) && !getInstantiator().hasDecoratorSupport()) {
+            // This should be safe, but needs verification PLM
+            // Without this, the chaining of decorators will fail as the
+            // incomplete instance will be resolved
+            ctx.push(instance);
+        }
+        return instance;
+    }
+
+    @Override
     protected LifecycleCallbackInvoker<T> initInvoker(EnhancedAnnotatedType<T> type) {
         if (isInterceptor()) {
             return NoopLifecycleCallbackInvoker.getInstance();
         } else {
             return new DefaultLifecycleCallbackInvoker<T>(type);
         }
+    }
+
+    @Override
+    public Bean<T> getBean() {
+        return bean;
     }
 }

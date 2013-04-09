@@ -82,7 +82,7 @@ public class DecoratorInjectionTarget<T> extends BeanInjectionTarget<T> {
                 }
             };
         } else {
-            DefaultInstantiator<T> instantiator = new DefaultInstantiator<T>(type, getBean(), beanManager);
+            DefaultInstantiator<T> instantiator = new DefaultInstantiator<T>(type, bean, beanManager);
             injectionPoints.addAll(instantiator.getConstructorInjectionPoint().getParameterInjectionPoints());
             return instantiator;
         }
