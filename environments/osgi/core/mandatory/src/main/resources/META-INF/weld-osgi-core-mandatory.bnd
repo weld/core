@@ -99,6 +99,7 @@ Export-Package javax.el;version=2.2.0, \
                ch.qos.cal10n; \
                ch.qos.cal10n.verifier; \
                ch.qos.cal10n.util; version=0.7.2, \
+               org.jboss.weld.interceptor; \
                org.jboss.weld.interceptor.reader; \
                org.jboss.weld.interceptor.reader.cache; \
                org.jboss.weld.interceptor.spi.instance; \
