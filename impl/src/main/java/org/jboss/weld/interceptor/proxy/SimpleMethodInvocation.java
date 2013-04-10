@@ -26,10 +26,12 @@ public class SimpleMethodInvocation implements InterceptorMethodInvocation {
     }
 
     public Object invoke(InvocationContext invocationContext) throws Exception {
-        if (invocationContext != null)
+        if (invocationContext != null) {
             return method.getJavaMethod().invoke(instance, invocationContext);
-        else
+        }
+        else {
             return method.getJavaMethod().invoke(instance);
+        }
     }
 
     public MethodMetadata getMethod() {

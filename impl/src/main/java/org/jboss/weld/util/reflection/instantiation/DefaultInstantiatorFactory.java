@@ -34,8 +34,9 @@ public class DefaultInstantiatorFactory extends AbstractInstantiatorFactory {
             synchronized (this) {
                 if (enabled == null) {
                     ResourceLoader loader = Container.instance().services().get(ResourceLoader.class);
-                    if (loader == null)
+                    if (loader == null) {
                         loader = DefaultResourceLoader.INSTANCE;
+                    }
 
                     boolean tmp = loader.getResource(MARKER) != null;
 

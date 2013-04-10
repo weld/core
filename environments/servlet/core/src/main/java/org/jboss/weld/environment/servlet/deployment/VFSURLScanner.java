@@ -79,27 +79,32 @@ public class VFSURLScanner extends URLScanner {
      * @return the relative path
      */
     static String getRelativePath(VirtualFile parent, VirtualFile child) {
-        if (child == null)
+        if (child == null) {
             throw new IllegalArgumentException("Null child");
+        }
 
         String childPath = child.getPathName();
         if (parent != null) {
             String parentPath = parent.getPathName();
 
-            if (parentPath.length() == childPath.length())
+            if (parentPath.length() == childPath.length()) {
                 return "";
+            }
 
             // Not sure about this? It is obviously not a direct child if it is shorter?
             if (parentPath.length() < childPath.length()) {
-                if (parentPath.endsWith("/") == false)
+                if (parentPath.endsWith("/") == false) {
                     parentPath = parentPath + "/";
-                if (childPath.startsWith(parentPath))
+                }
+                if (childPath.startsWith(parentPath)) {
                     return childPath.substring(parentPath.length());
+                }
             }
         }
 
-        if (childPath.endsWith("/"))
+        if (childPath.endsWith("/")) {
             childPath = childPath.substring(0, childPath.length() - 1);
+        }
 
         return childPath;
     }

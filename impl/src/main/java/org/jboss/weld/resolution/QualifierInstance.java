@@ -100,13 +100,21 @@ public class QualifierInstance {
 
     @Override
     public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         final QualifierInstance that = (QualifierInstance) o;
 
-        if (!annotationClass.equals(that.annotationClass)) return false;
-        if (!values.equals(that.values)) return false;
+        if (!annotationClass.equals(that.annotationClass)) {
+            return false;
+        }
+        if (!values.equals(that.values)) {
+            return false;
+        }
 
         return true;
     }

@@ -62,8 +62,9 @@ public class TomcatListener extends Listener {
 
     @SuppressWarnings({"UnusedParameters"})
     protected static void recurse(DirContext context, Set<String> classes, Set<URL> urls, String prefix) throws Exception {
-        if (prefix.length() > 0)
+        if (prefix.length() > 0) {
             prefix += ".";
+        }
 
         NamingEnumeration ne = context.listBindings("");
         while (ne.hasMoreElements()) {

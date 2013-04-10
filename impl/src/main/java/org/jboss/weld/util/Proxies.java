@@ -165,8 +165,9 @@ public class Proxies {
     }
 
     public static UnproxyableResolutionException getUnproxyableTypesException(Bean<?> declaringBean) {
-        if (declaringBean == null)
+        if (declaringBean == null) {
             throw new java.lang.IllegalArgumentException("Null declaring bean!");
+        }
 
         return getUnproxyableTypesExceptionInt(declaringBean.getTypes(), declaringBean);
     }

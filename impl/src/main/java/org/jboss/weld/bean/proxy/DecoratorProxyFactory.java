@@ -128,9 +128,9 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
     }
 
     private void decoratorMethods(Class<?> cls, Set<Method> all) {
-        if (cls == null)
+        if (cls == null) {
             return;
-
+        }
         all.addAll(Arrays.asList(AccessController.doPrivileged(new GetDeclaredMethodsAction(cls))));
 
         decoratorMethods(cls.getSuperclass(), all);
@@ -146,8 +146,9 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
                         break;
                     }
                 }
-                if (isEqual == false)
+                if (isEqual == false) {
                     all.add(m);
+                }
             }
         }
     }
@@ -156,8 +157,9 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
     private static boolean isEqual(Method m, Method a) {
         if (m.getName().equals(a.getName()) && m.getParameterTypes().length == a.getParameterTypes().length && m.getReturnType().isAssignableFrom(a.getReturnType())) {
             for (int i = 0; i < m.getParameterTypes().length; i++) {
-                if (m.getParameterTypes()[i].isAssignableFrom(a.getParameterTypes()[i]) == false)
+                if (m.getParameterTypes()[i].isAssignableFrom(a.getParameterTypes()[i]) == false) {
                     return false;
+                }
             }
             return true;
         }

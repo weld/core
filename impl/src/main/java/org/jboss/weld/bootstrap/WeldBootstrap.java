@@ -197,8 +197,9 @@ public class WeldBootstrap implements CDI11Bootstrap {
             ServiceRegistry registry = archive.getServices();
             if (registry.contains(serviceClass) == false) {
                 T service = deployment.getServices().get(serviceClass);
-                if (service != null)
+                if (service != null) {
                     registry.add(serviceClass, service);
+                }
             }
         }
 
