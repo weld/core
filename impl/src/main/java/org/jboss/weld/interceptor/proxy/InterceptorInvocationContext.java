@@ -184,9 +184,10 @@ public class InterceptorInvocationContext implements InvocationContext {
             } else {
                 parameterTypes = constructor.getParameterTypes();
             }
-            if (parameterTypes.length != newParametersCount)
+            if (parameterTypes.length != newParametersCount) {
                 throw new IllegalArgumentException("Wrong number of parameters: method has " + parameterTypes.length
                         + ", attempting to set " + newParametersCount + (params != null ? "" : " (argument was null)"));
+            }
             if (params != null) {
                 for (int i = 0; i < params.length; i++) {
                     Class<?> methodParameterClass = parameterTypes[i];

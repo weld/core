@@ -967,10 +967,12 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         CurrentActivity activeCurrentActivity = null;
         for (CurrentActivity currentActivity : currentActivities) {
             if (currentActivity.getContext().isActive()) {
-                if (activeCurrentActivity == null)
+                if (activeCurrentActivity == null) {
                     activeCurrentActivity = currentActivity;
-                else
+                }
+                else {
                     throw new IllegalStateException(TOO_MANY_ACTIVITIES, currentActivities);
+                }
             }
         }
         if (activeCurrentActivity == null) {

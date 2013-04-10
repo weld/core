@@ -53,23 +53,32 @@ public abstract class AbstractProducer<T> implements Producer<T> {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         AbstractProducer<?> other = (AbstractProducer<?>) obj;
         if (getAnnotated() == null) {
-            if (other.getAnnotated() != null)
+            if (other.getAnnotated() != null) {
                 return false;
-        } else if (!getAnnotated().equals(other.getAnnotated()))
-            return false;
+            }
+        } else {
+            if (!getAnnotated().equals(other.getAnnotated())) {
+                return false;
+            }
+        }
         if (getBean() == null) {
-            if (other.getBean() != null)
+            if (other.getBean() != null) {
                 return false;
-        } else if (!getBean().equals(other.getBean()))
+            }
+        } else if (!getBean().equals(other.getBean())) {
             return false;
+        }
         return true;
     }
 }

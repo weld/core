@@ -59,16 +59,18 @@ public class MortbayWeldServletHandler extends ServletHandler {
         wac.setServletHandler(wHanlder);
         wac.getSecurityHandler().setHandler(wHanlder);
 
-        if (startNewHandler)
+        if (startNewHandler) {
             wHanlder.start();
+        }
 
         Resource jettyEnv = null;
         Resource webInf = wac.getWebInf();
         if (webInf != null && webInf.exists()) {
             jettyEnv = webInf.addPath("jetty-env.xml");
         }
-        if (jettyEnv == null || jettyEnv.exists() == false)
+        if (jettyEnv == null || jettyEnv.exists() == false) {
             log.warning("Missing jetty-env.xml, no BeanManager present in JNDI.");
+        }
     }
 
     public static void process(WebAppContext wac) throws Exception {
@@ -77,8 +79,9 @@ public class MortbayWeldServletHandler extends ServletHandler {
 
     public static void process(ServletContext context) throws Exception {
         WebAppContext wac = (WebAppContext) WebAppContext.getCurrentWebAppContext();
-        if (wac == null)
+        if (wac == null) {
             wac = findWAC(context);
+        }
 
         if (wac != null) {
             process(wac, true);
@@ -101,8 +104,9 @@ public class MortbayWeldServletHandler extends ServletHandler {
                     for (Handler h : hc.getHandlers()) {
                         if (h instanceof WebAppContext) {
                             WebAppContext wac = (WebAppContext) h;
-                            if (wac.getServletHandler() == servletHandler)
+                            if (wac.getServletHandler() == servletHandler) {
                                 return wac;
+                            }
                         }
                     }
                 }

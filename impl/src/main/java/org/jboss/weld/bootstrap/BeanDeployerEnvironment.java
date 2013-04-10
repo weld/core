@@ -385,23 +385,30 @@ public class BeanDeployerEnvironment {
 
         @Override
         public boolean equals(Object obj) {
-            if (this == obj)
+            if (this == obj) {
                 return true;
-            if (obj == null)
+            }
+            if (obj == null) {
                 return false;
-            if (getClass() != obj.getClass())
+            }
+            if (getClass() != obj.getClass()) {
                 return false;
+            }
             WeldMethodKey other = (WeldMethodKey) obj;
             if (declaringClass == null) {
-                if (other.declaringClass != null)
+                if (other.declaringClass != null) {
                     return false;
-            } else if (!declaringClass.equals(other.declaringClass))
+                }
+            } else if (!declaringClass.equals(other.declaringClass)) {
                 return false;
+            }
             if (signature == null) {
-                if (other.signature != null)
+                if (other.signature != null) {
                     return false;
-            } else if (!signature.equals(other.signature))
+                }
+            } else if (!signature.equals(other.signature)) {
                 return false;
+            }
             return true;
         }
     }

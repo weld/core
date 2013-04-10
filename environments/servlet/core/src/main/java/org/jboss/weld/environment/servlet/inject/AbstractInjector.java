@@ -37,8 +37,9 @@ public abstract class AbstractInjector {
     private final Map<Class<?>, InjectionTarget<?>> cache = new WeakHashMap<Class<?>, InjectionTarget<?>>();
 
     protected AbstractInjector(WeldManager manager) {
-        if (manager == null)
+        if (manager == null) {
             throw new IllegalArgumentException("Null manager");
+        }
         this.manager = manager;
     }
 

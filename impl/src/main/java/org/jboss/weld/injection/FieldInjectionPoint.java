@@ -104,8 +104,9 @@ public class FieldInjectionPoint<T, X> extends ForwardingInjectionPointAttribute
             Object instanceToInject = declaringInstance;
             if (!(instanceToInject instanceof DecoratorProxy)) {
                 // if declaringInstance is a proxy, unwrap it
-                if (instanceToInject instanceof TargetInstanceProxy)
+                if (instanceToInject instanceof TargetInstanceProxy) {
                     instanceToInject = Reflections.<TargetInstanceProxy<T>> cast(declaringInstance).getTargetInstance();
+                }
             }
             accessibleField.set(instanceToInject, value);
         } catch (IllegalArgumentException e) {

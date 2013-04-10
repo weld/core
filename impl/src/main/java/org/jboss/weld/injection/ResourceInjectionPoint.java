@@ -103,18 +103,23 @@ public class ResourceInjectionPoint<T, X> extends DelegatingFieldInjectionPointA
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (!super.equals(obj))
+        }
+        if (!super.equals(obj)) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         ResourceInjectionPoint<?, ?> other = (ResourceInjectionPoint<?, ?>) obj;
         if (delegate == null) {
-            if (other.delegate != null)
+            if (other.delegate != null) {
                 return false;
-        } else if (!delegate.equals(other.delegate))
+            }
+        } else if (!delegate.equals(other.delegate)) {
             return false;
+        }
         return true;
     }
 }
