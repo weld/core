@@ -41,6 +41,7 @@ import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InterceptionType;
 import javax.enterprise.inject.spi.Interceptor;
+import javax.interceptor.ExcludeClassInterceptors;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bean.InterceptorImpl;
@@ -242,11 +243,18 @@ public class InterceptionModelInitializer<T> {
      */
     private void initClassDeclaredEjbInterceptors() {
         Class<?>[] classDeclaredInterceptors = interceptorsApi.extractInterceptorClasses(annotatedType);
+        boolean excludeClassLevelAroundConstructInterceptors = constructor.isAnnotationPresent(ExcludeClassInterceptors.class);
 
         if (classDeclaredInterceptors != null) {
             for (Class<?> clazz : classDeclaredInterceptors) {
                 InterceptorMetadata<?> interceptor = manager.getInterceptorMetadataReader().getInterceptorMetadata(clazz);
                 for (InterceptionType interceptionType : InterceptionType.values()) {
+                    if (excludeClassLevelAroundConstructInterceptors && interceptionType.equals(InterceptionType.AROUND_CONSTRUCT)) {
+                        /*
+                         * @ExcludeClassInterceptors suppresses @AroundConstruct interceptors defined on class level
+                         */
+                        continue;
+                    }
                     if (interceptor.isEligible(org.jboss.weld.interceptor.spi.model.InterceptionType.valueOf(interceptionType))) {
                         builder.intercept(interceptionType).with(interceptor);
                     }
@@ -259,9 +267,9 @@ public class InterceptionModelInitializer<T> {
      * Constructor-level EJB-style interceptors
      */
     public void initConstructorDeclaredEjbInterceptors() {
-        Class<?>[] classDeclaredInterceptors = interceptorsApi.extractInterceptorClasses(constructor);
-        if (classDeclaredInterceptors != null) {
-            for (Class<?> clazz : classDeclaredInterceptors) {
+        Class<?>[] constructorDeclaredInterceptors = interceptorsApi.extractInterceptorClasses(constructor);
+        if (constructorDeclaredInterceptors != null) {
+            for (Class<?> clazz : constructorDeclaredInterceptors) {
                 builder.intercept(InterceptionType.AROUND_CONSTRUCT).with(manager.getInterceptorMetadataReader().getInterceptorMetadata(clazz));
             }
         }

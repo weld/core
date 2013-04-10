@@ -14,27 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.interceptors.exclusion;
+package org.jboss.weld.tests.interceptors.aroundConstruct.extended;
 
-import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
-import javax.interceptor.ExcludeClassInterceptors;
-import javax.interceptor.Interceptors;
+import javax.interceptor.AroundInvoke;
+import javax.interceptor.Interceptor;
+import javax.interceptor.InvocationContext;
 
-@Interceptors({ Interceptor1.class, Interceptor2.class })
-public class InterceptedBean {
+@Interceptor
+@AroundInvokeBinding
+public class AroundInvokeInterceptor {
 
-    @Inject
-    @Interceptors(Interceptor2.class)
-    @ExcludeClassInterceptors
-    public InterceptedBean(BeanManager manager) {
-    }
-
-    @Interceptors(Interceptor2.class)
-    @ExcludeClassInterceptors
-    public void ping() {
-    }
-
-    public void pong() {
+    @AroundInvoke
+    Object intercept(InvocationContext ctx) throws Exception {
+        return ctx.proceed();
     }
 }

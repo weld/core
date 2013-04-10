@@ -14,27 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.interceptors.exclusion;
+package org.jboss.weld.tests.interceptors.aroundConstruct.extended;
 
-import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
-import javax.interceptor.ExcludeClassInterceptors;
-import javax.interceptor.Interceptors;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-@Interceptors({ Interceptor1.class, Interceptor2.class })
-public class InterceptedBean {
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
-    @Inject
-    @Interceptors(Interceptor2.class)
-    @ExcludeClassInterceptors
-    public InterceptedBean(BeanManager manager) {
-    }
+import javax.interceptor.InterceptorBinding;
 
-    @Interceptors(Interceptor2.class)
-    @ExcludeClassInterceptors
-    public void ping() {
-    }
-
-    public void pong() {
-    }
+@InterceptorBinding
+@Inherited
+@Target({ TYPE, METHOD })
+@Retention(RUNTIME)
+public @interface AroundInvokeBinding {
 }

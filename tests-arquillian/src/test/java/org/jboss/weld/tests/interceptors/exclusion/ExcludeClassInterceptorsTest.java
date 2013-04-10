@@ -27,7 +27,6 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.test.util.ActionSequence;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -52,7 +51,6 @@ public class ExcludeClassInterceptorsTest {
     }
 
     @Test
-    @Ignore("WELD-1404") // TODO: make sure to uncomment annotations on InterceptedBean's constructor
     public void testConstructorInterceptors() {
         ActionSequence.reset();
         bean.get();

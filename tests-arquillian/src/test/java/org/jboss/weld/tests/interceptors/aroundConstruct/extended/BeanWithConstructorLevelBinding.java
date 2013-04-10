@@ -21,6 +21,7 @@ import javax.inject.Inject;
 
 import org.jboss.weld.test.util.ActionSequence;
 
+@AroundInvokeBinding
 public class BeanWithConstructorLevelBinding {
 
     @Inject
