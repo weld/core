@@ -106,7 +106,7 @@ public class WeldListener extends AbstractServletListener {
             beanManager = BeanManagerProxy.unwrap(CDI.current().getBeanManager());
         }
         beanManager.getAccessibleLenientObserverNotifier().fireEvent(sce.getServletContext(), InitializedLiteral.APPLICATION);
-        this.conversationContextActivator = new ConversationContextActivator(beanManager, sce.getServletContext());
+        this.conversationContextActivator = new ConversationContextActivator(beanManager);
     }
 
     @Override

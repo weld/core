@@ -53,7 +53,7 @@ public class ConversationFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        this.conversationContextActivator = new ConversationContextActivator(manager, filterConfig.getServletContext());
+        this.conversationContextActivator = new ConversationContextActivator(manager);
         filterConfig.getServletContext().setAttribute(CONVERSATION_FILTER_REGISTERED, Boolean.TRUE);
     }
 
