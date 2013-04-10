@@ -29,6 +29,9 @@ public class InterceptionUtils {
     public static final String POST_CONSTRUCT = "lifecycle_mixin_$$_postConstruct";
     public static final String PRE_DESTROY = "lifecycle_mixin_$$_preDestroy";
 
+    private InterceptionUtils() {
+    }
+
     private static void executePostConstruct(Object proxy, Callable callback) {
         if (proxy instanceof LifecycleMixin) {
             LifecycleMixin lifecycleMixin = (LifecycleMixin) proxy;

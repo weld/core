@@ -17,6 +17,9 @@ public class Deployments {
 
     public static final Asset FACES_WEB_XML = new ByteArrayAsset((DEFAULT_WEB_XML_PREFIX + "<listener><listener-class>com.sun.faces.config.ConfigureListener</listener-class></listener> <context-param><param-name>javax.faces.DEFAULT_SUFFIX</param-name><param-value>.xhtml</param-value></context-param> <servlet><servlet-name>Faces Servlet</servlet-name><servlet-class>javax.faces.webapp.FacesServlet</servlet-class><load-on-startup>1</load-on-startup></servlet> <servlet-mapping><servlet-name>Faces Servlet</servlet-name><url-pattern>*.jsf</url-pattern></servlet-mapping> " + DEFAULT_WEB_XML_SUFFIX).getBytes());
 
+    private Deployments() {
+    }
+
     public static WebArchive baseDeployment(BeansXml beansXml, Asset webXml) {
         return ShrinkWrap.create(WebArchive.class).addAsWebInfResource(beansXml, "beans.xml").setWebXML(webXml);
     }

@@ -59,6 +59,9 @@ public class BeanAttributesFactory {
 
     private static final Set<Annotation> DEFAULT_QUALIFIERS = Collections.unmodifiableSet(new ArraySet<Annotation>(AnyLiteral.INSTANCE, DefaultLiteral.INSTANCE).trimToSize());
 
+    private BeanAttributesFactory() {
+    }
+
     /**
      * Creates new {@link BeanAttributes} to represent a managed bean.
      */

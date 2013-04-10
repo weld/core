@@ -114,6 +114,9 @@ public class Beans {
     // TODO Convert messages
     private static final LocLogger log = loggerFactory().getLogger(BEAN);
 
+    private Beans() {
+    }
+
     /**
      * Indicates if a bean's scope type is passivating
      *

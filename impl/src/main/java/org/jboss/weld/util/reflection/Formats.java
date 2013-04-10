@@ -41,6 +41,9 @@ import org.jboss.weld.ejb.spi.BusinessInterfaceDescriptor;
  */
 public class Formats {
 
+    private Formats() {
+    }
+
     /**
      * A transformation from one object to a String.
      *
