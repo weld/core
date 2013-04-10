@@ -69,7 +69,7 @@ public abstract class AbstractInterceptorMetadata<T> implements InterceptorMetad
         }
         List<MethodMetadata> interceptorMethods = this.interceptorMethodMap.get(interceptionType);
         // return true if there are any interceptor methods for this interception type
-        return interceptorMethods != null && interceptorMethods.isEmpty() == false;
+        return (interceptorMethods != null && !(interceptorMethods.isEmpty()));
     }
 
     @Override

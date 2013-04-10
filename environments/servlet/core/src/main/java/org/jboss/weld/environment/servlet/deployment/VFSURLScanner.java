@@ -93,7 +93,7 @@ public class VFSURLScanner extends URLScanner {
 
             // Not sure about this? It is obviously not a direct child if it is shorter?
             if (parentPath.length() < childPath.length()) {
-                if (parentPath.endsWith("/") == false) {
+                if (!parentPath.endsWith("/")) {
                     parentPath = parentPath + "/";
                 }
                 if (childPath.startsWith(parentPath)) {

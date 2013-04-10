@@ -61,7 +61,7 @@ public class LazyCyclicSessionBeanStore extends LazySessionBeanStore {
                 if (newTemp) {
                     temp.remove();
                 }
-                if (session != null && map.isEmpty() == false) {
+                if (session != null && !(map.isEmpty())) {
                     for (Map.Entry<String, Object> entry : map.entrySet()) {
                         session.setAttribute(entry.getKey(), entry.getValue());
                     }
