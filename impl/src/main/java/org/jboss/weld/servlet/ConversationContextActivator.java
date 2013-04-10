@@ -24,7 +24,6 @@ import static org.jboss.weld.logging.messages.JsfMessage.FOUND_CONVERSATION_FROM
 import static org.jboss.weld.logging.messages.JsfMessage.RESUMING_CONVERSATION;
 
 import javax.enterprise.inject.Instance;
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.jboss.weld.context.ConversationContext;
@@ -55,12 +54,10 @@ public class ConversationContextActivator {
 
     private final BeanManagerImpl beanManager;
     private final Instance<HttpConversationContext> httpConversationContext;
-    private final ServletContext ctx;
 
-    protected ConversationContextActivator(BeanManagerImpl beanManager, ServletContext ctx) {
+    protected ConversationContextActivator(BeanManagerImpl beanManager) {
         this.beanManager = beanManager;
         this.httpConversationContext = beanManager.instance().select(HttpConversationContext.class);
-        this.ctx = ctx;
     }
 
     public void startConversationContext(HttpServletRequest request) {
@@ -138,21 +135,21 @@ public class ConversationContextActivator {
 
     protected void deactivateConversationContext(HttpServletRequest request) {
         ConversationContext conversationContext = httpConversationContext.get();
-        boolean isTransient = conversationContext.getCurrentConversation().isTransient();
-        if (log.isTraceEnabled()) {
-            if (isTransient) {
-                log.trace(CLEANING_UP_TRANSIENT_CONVERSATION);
-            } else {
-                log.trace(CLEANING_UP_CONVERSATION, conversationContext.getCurrentConversation().getId());
-            }
-        }
-        conversationContext.invalidate();
         if (conversationContext.isActive()) {
             // Only deactivate the context if one is already active, otherwise we get Exceptions
+            boolean isTransient = conversationContext.getCurrentConversation().isTransient();
+            if (log.isTraceEnabled()) {
+                if (isTransient) {
+                    log.trace(CLEANING_UP_TRANSIENT_CONVERSATION);
+                } else {
+                    log.trace(CLEANING_UP_CONVERSATION, conversationContext.getCurrentConversation().getId());
+                }
+            }
+            conversationContext.invalidate();
             conversationContext.deactivate();
-        }
-        if (isTransient) {
-            beanManager.getAccessibleLenientObserverNotifier().fireEvent(request, DestroyedLiteral.CONVERSATION);
+            if (isTransient) {
+                beanManager.getAccessibleLenientObserverNotifier().fireEvent(request, DestroyedLiteral.CONVERSATION);
+            }
         }
     }
 
