@@ -95,8 +95,11 @@ public class HierarchyDiscovery {
         }
         Type[] genericInterfaces = clazz.getGenericInterfaces();
         Class<?>[] interfaces = clazz.getInterfaces();
-        for (int i = 0; i < interfaces.length; i++) {
-            discoverTypes(processAndResolveType(genericInterfaces[i], interfaces[i]));
+        if (genericInterfaces.length == interfaces.length) {
+            // this branch should execute every time!
+            for (int i = 0; i < interfaces.length; i++) {
+                discoverTypes(processAndResolveType(genericInterfaces[i], interfaces[i]));
+            }
         }
     }
 
