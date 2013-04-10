@@ -720,10 +720,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     private boolean isProxyRequired(Bean<?> bean) {
         if (bean instanceof RIBean<?>) {
             return ((RIBean<?>) bean).isProxyRequired();
-        } else if (isNormalScope(bean.getScope())) {
-            return true;
         } else {
-            return false;
+            return isNormalScope(bean.getScope());
         }
     }
 

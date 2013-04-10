@@ -410,7 +410,7 @@ public class Beans {
     public static Set<Annotation> mergeInQualifiers(Collection<Annotation> qualifiers, Annotation[] newQualifiers) {
         Set<Annotation> result = new HashSet<Annotation>();
 
-        if (qualifiers != null && qualifiers.isEmpty() == false) {
+        if (qualifiers != null && !(qualifiers.isEmpty())) {
             result.addAll(qualifiers);
         }
         if (newQualifiers != null && newQualifiers.length > 0) {
