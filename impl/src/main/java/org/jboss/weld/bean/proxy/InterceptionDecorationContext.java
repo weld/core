@@ -39,6 +39,9 @@ import java.util.Set;
 public class InterceptionDecorationContext {
     private static ThreadLocal<List<Set<CombinedInterceptorAndDecoratorStackMethodHandler>>> interceptionContexts = new ThreadLocal<List<Set<CombinedInterceptorAndDecoratorStackMethodHandler>>>();
 
+    private InterceptionDecorationContext() {
+    }
+
     private static Set<CombinedInterceptorAndDecoratorStackMethodHandler> pop() {
         List<Set<CombinedInterceptorAndDecoratorStackMethodHandler>> stack = interceptionContexts.get();
         if (stack == null) {

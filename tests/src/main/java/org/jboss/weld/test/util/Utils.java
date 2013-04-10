@@ -50,6 +50,9 @@ import org.jboss.weld.util.reflection.Reflections;
 
 public class Utils {
 
+    private Utils() {
+    }
+
     /**
      * Checks if all annotations are in a given set of annotations
      *

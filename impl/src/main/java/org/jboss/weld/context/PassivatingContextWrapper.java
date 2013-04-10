@@ -34,6 +34,9 @@ import org.jboss.weld.util.ForwardingContext;
  */
 public class PassivatingContextWrapper {
 
+    private PassivatingContextWrapper() {
+    }
+
     public static Context wrap(Context context, ContextualStore store) {
         if (context instanceof AlterableContext) {
             return new AlterableContextWrapper((AlterableContext) context, store);

@@ -60,6 +60,9 @@ public class Observers {
      */
     public static final Set<Class<?>> CONTAINER_LIFECYCLE_EVENT_CANONICAL_SUPERTYPES;
 
+    private Observers() {
+    }
+
     static {
         Set<Class<?>> canonicalSupertypes = new HashSet<Class<?>>();
         canonicalSupertypes.add(BeforeBeanDiscovery.class);

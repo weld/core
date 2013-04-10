@@ -48,6 +48,9 @@ public class EL {
 
     public static final ELContextListener[] EL_CONTEXT_LISTENERS = {new WeldELContextListener()};
 
+    private EL() {
+    }
+
     private static ELResolver createELResolver(BeanManagerImpl beanManagerImpl) {
         CompositeELResolver resolver = new CompositeELResolver();
         resolver.add(beanManagerImpl.getELResolver());

@@ -130,6 +130,9 @@ public class Proxies {
 
     }
 
+    private Proxies() {
+    }
+
     /**
      * Indicates if a class is proxyable
      *

@@ -34,6 +34,9 @@ import org.jboss.classfilewriter.ClassFile;
 public class ClassFileUtils {
     private static java.lang.reflect.Method defineClass1, defineClass2;
 
+    private ClassFileUtils() {
+    }
+
     static {
         try {
             AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {

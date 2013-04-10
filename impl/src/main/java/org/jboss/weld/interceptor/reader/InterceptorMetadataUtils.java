@@ -37,6 +37,8 @@ public class InterceptorMetadataUtils {
 
     private static final LocLogger LOG = loggerFactory().getLogger(REFLECTION);
 
+    private InterceptorMetadataUtils() {
+    }
 
     public static InterceptorMetadata readMetadataForInterceptorClass(InterceptorFactory<?> interceptorReference) {
         return new DefaultInterceptorMetadata(interceptorReference, buildMethodMap(interceptorReference.getClassMetadata(), false));

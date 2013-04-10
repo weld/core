@@ -28,6 +28,9 @@ public class RequestScopedBeanCache {
 
     private static final ThreadLocal<List<RequestScopedItem>> CACHE = new ThreadLocal<List<RequestScopedItem>>();
 
+    private RequestScopedBeanCache() {
+    }
+
     public static boolean isActive() {
         return CACHE.get() != null;
     }

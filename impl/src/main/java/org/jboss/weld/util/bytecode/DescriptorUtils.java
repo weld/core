@@ -27,6 +27,10 @@ import java.util.List;
  * @author Stuart Douglas
  */
 public class DescriptorUtils {
+
+    private DescriptorUtils() {
+    }
+
     /**
      * Changes a class name to the internal form suitable for use in a descriptor
      * string.

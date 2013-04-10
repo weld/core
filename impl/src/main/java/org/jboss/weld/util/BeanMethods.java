@@ -57,6 +57,9 @@ public class BeanMethods {
 
     private static final LocLogger log = loggerFactory().getLogger(BEAN);
 
+    private BeanMethods() {
+    }
+
     /**
      * We need to employ different strategies when discovering a list of specific methods of a {@link Bean} (e.g. initializer
      * methods, producer methods, lifecycle event callback listeners, etc.) An implementation of this interface knows how to

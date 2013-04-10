@@ -66,6 +66,9 @@ public class Reflections {
     public static final Annotation[] EMPTY_ANNOTATIONS = {};
     public static final Class<?>[] EMPTY_CLASSES = new Class<?>[0];
 
+    private Reflections() {
+    }
+
     public static Map<Class<?>, Type> buildTypeMap(Set<Type> types) {
         Map<Class<?>, Type> map = new HashMap<Class<?>, Type>();
         for (Type type : types) {
