@@ -123,8 +123,9 @@ public class WeldApplication extends ForwardingApplication {
             } catch (Throwable t) {
                 throw new IllegalStateException("Exception fetching BeanManager instance!", t);
             }
-            if (notFound)
+            if (notFound) {
                 throw new IllegalStateException("Not in a servlet or portlet environment!");
+            }
         }
         return beanManager;
     }

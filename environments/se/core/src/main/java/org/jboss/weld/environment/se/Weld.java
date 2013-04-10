@@ -72,8 +72,9 @@ public class Weld {
      * @param extension an extension
      */
     public void addExtension(Extension extension) {
-        if (extensions == null)
+        if (extensions == null) {
             extensions = new HashSet<Metadata<Extension>>();
+        }
         extensions.add(new MetadataImpl<Extension>(extension, "<explicity-added>"));
     }
 
@@ -86,8 +87,9 @@ public class Weld {
     public WeldContainer initialize() {
         ResourceLoader resourceLoader = new WeldSEResourceLoader();
         // check for beans.xml
-        if (resourceLoader.getResource(WeldSEUrlDeployment.BEANS_XML) == null)
+        if (resourceLoader.getResource(WeldSEUrlDeployment.BEANS_XML) == null) {
             throw new IllegalStateException("Missing beans.xml file in META-INF!");
+        }
 
         final Bootstrap delegate;
         try {
@@ -119,8 +121,9 @@ public class Weld {
                 Iterable<Metadata<Extension>> iter = delegate.loadExtensions(classLoader);
                 if (extensions != null) {
                     Set<Metadata<Extension>> set = new HashSet<Metadata<Extension>>(extensions);
-                    for (Metadata<Extension> ext : iter)
+                    for (Metadata<Extension> ext : iter) {
                         set.add(ext);
+                    }
                     return set;
                 } else {
                     return iter;

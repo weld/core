@@ -81,8 +81,9 @@ public class Listener extends ForwardingServletListener {
     public void contextDestroyed(ServletContextEvent sce) {
         bootstrap.shutdown();
 
-        if (container != null)
+        if (container != null) {
             container.destroy(new ContainerContext(sce, null));
+        }
 
         super.contextDestroyed(sce);
     }
@@ -188,7 +189,7 @@ public class Listener extends ForwardingServletListener {
     protected Container findContainer(ContainerContext cc, StringBuilder dump) {
         Iterable<Container> extContainers = ServiceLoader.load(Container.class, getClass().getClassLoader());
         Container container = checkContainers(cc, dump, extContainers);
-        if (container == null)
+        if (container == null) {
             container = checkContainers(cc, dump, Arrays.asList(
                     // Needs to be first: gwt-dev jar has tomcat classes but uses jetty
                     GwtDevHostedModeContainer.INSTANCE,
@@ -198,14 +199,16 @@ public class Listener extends ForwardingServletListener {
                     JettyPost72Container.INSTANCE,
                     Jetty7Container.INSTANCE)
             );
+        }
         return container;
     }
 
     protected Container checkContainers(ContainerContext cc, StringBuilder dump, Iterable<Container> containers) {
         for (Container c : containers) {
             try {
-                if (c.touch(cc))
+                if (c.touch(cc)) {
                     return c;
+                }
             } catch (Throwable t) {
                 dump.append(c).append("->").append(t.getMessage()).append("\n");
             }

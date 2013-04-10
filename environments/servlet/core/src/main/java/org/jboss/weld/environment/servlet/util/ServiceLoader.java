@@ -52,8 +52,9 @@ public class ServiceLoader {
             }
         }
 
-        if (clazz == null)
+        if (clazz == null) {
             throw new IllegalArgumentException("No ServiceLoader class available!");
+        }
 
         try {
             loadMethod = clazz.getDeclaredMethod("load", Class.class, ClassLoader.class);

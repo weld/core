@@ -41,8 +41,9 @@ public class JettyPost72Container extends AbstractJettyContainer {
         ServletContext sc = context.getContext();
         String si = sc.getServerInfo();
         int p = si.indexOf("/");
-        if (p < 0)
+        if (p < 0) {
             return false;
+        }
 
         String version = si.substring(p + 1);
         String[] split = version.split("\\.");

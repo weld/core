@@ -66,15 +66,24 @@ public class MethodReference implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         MethodReference that = (MethodReference) o;
 
-        if (declaringClass != null ? !declaringClass.equals(that.declaringClass) : that.declaringClass != null)
+        if (declaringClass != null ? !declaringClass.equals(that.declaringClass) : that.declaringClass != null) {
             return false;
-        if (methodName != null ? !methodName.equals(that.methodName) : that.methodName != null) return false;
-        if (!Arrays.equals(parameterTypes, that.parameterTypes)) return false;
+        }
+        if (methodName != null ? !methodName.equals(that.methodName) : that.methodName != null) {
+            return false;
+        }
+        if (!Arrays.equals(parameterTypes, that.parameterTypes)) {
+            return false;
+        }
 
         return true;
     }

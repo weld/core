@@ -81,23 +81,30 @@ public class ClientProxyProvider {
 
         @Override
         public boolean equals(Object obj) {
-            if (this == obj)
+            if (this == obj) {
                 return true;
-            if (obj == null)
+            }
+            if (obj == null) {
                 return false;
-            if (getClass() != obj.getClass())
+            }
+            if (getClass() != obj.getClass()) {
                 return false;
+            }
             RequestedTypeHolder other = (RequestedTypeHolder) obj;
             if (bean == null) {
-                if (other.bean != null)
+                if (other.bean != null) {
                     return false;
-            } else if (!bean.equals(other.bean))
+                }
+            } else if (!bean.equals(other.bean)) {
                 return false;
+            }
             if (requestedType == null) {
-                if (other.requestedType != null)
+                if (other.requestedType != null) {
                     return false;
-            } else if (!requestedType.equals(other.requestedType))
+                }
+            } else if (!requestedType.equals(other.requestedType)) {
                 return false;
+            }
             return true;
         }
     }
