@@ -67,7 +67,7 @@ public class EclipseWeldServletHandler extends ServletHandler {
         if (webInf != null && webInf.exists()) {
             jettyEnv = webInf.addPath("jetty-env.xml");
         }
-        if (jettyEnv == null || jettyEnv.exists() == false) {
+        if (jettyEnv == null || !(jettyEnv.exists())) {
             log.warning("Missing jetty-env.xml, no BeanManager present in JNDI.");
         }
     }

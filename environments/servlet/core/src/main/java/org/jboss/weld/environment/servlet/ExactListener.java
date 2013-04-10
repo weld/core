@@ -82,7 +82,7 @@ public class ExactListener extends Listener {
                     String line;
                     while ((line = reader.readLine()) != null) {
                         // ignore comments
-                        if (line.startsWith("#") == false) {
+                        if (!line.startsWith("#")) {
                             classes.add(line);
                         }
                     }

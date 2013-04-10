@@ -146,7 +146,7 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
                         break;
                     }
                 }
-                if (isEqual == false) {
+                if (!isEqual) {
                     all.add(m);
                 }
             }
@@ -157,7 +157,7 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
     private static boolean isEqual(Method m, Method a) {
         if (m.getName().equals(a.getName()) && m.getParameterTypes().length == a.getParameterTypes().length && m.getReturnType().isAssignableFrom(a.getReturnType())) {
             for (int i = 0; i < m.getParameterTypes().length; i++) {
-                if (m.getParameterTypes()[i].isAssignableFrom(a.getParameterTypes()[i]) == false) {
+                if (!(m.getParameterTypes()[i].isAssignableFrom(a.getParameterTypes()[i]))) {
                     return false;
                 }
             }
