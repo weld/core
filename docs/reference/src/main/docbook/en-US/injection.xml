@@ -836,7 +836,7 @@ PaymentProcessor p = anyPaymentProcessor.select(qualifier).get().process(payment
             a qualifier type:
         </para>
 
-        <programlisting role="JAVA"><![CDATA[@BindingType
+        <programlisting role="JAVA"><![CDATA[@Qualifier
 @Retention(RUNTIME)
 @Target({TYPE, METHOD, FIELD, PARAMETER})
 public @interface HttpParam {
@@ -845,8 +845,8 @@ public @interface HttpParam {
 
         <para>We would use this qualifier type at injection points as follows:</para>
 
-        <programlisting role="JAVA"><![CDATA[@HttpParam("username") String username;
-@HttpParam("password") String password;]]></programlisting>
+        <programlisting role="JAVA"><![CDATA[@HttpParam("username") @Inject String username;
+@HttpParam("password") @Inject String password;]]></programlisting>
 
         <para>The following producer method does the work:</para>
 
