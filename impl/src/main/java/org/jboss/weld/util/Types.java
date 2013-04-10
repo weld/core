@@ -41,6 +41,9 @@ import com.google.common.collect.Iterables;
  */
 public class Types {
 
+    private Types() {
+    }
+
     /**
      * Gets the boxed type of a class
      *

@@ -18,6 +18,9 @@ package org.jboss.weld.tests.util;
 
 public class Assert {
 
+    private Assert() {
+    }
+
     public static void assertTrue(boolean expression) {
         if (!expression) {
             throw new IllegalArgumentException();

@@ -25,6 +25,9 @@ import org.jboss.classfilewriter.code.CodeAttribute;
  */
 public class BytecodeUtils {
 
+    private BytecodeUtils() {
+    }
+
     /**
      * Adds the correct load instruction based on the type descriptor
      *

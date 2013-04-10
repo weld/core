@@ -35,6 +35,9 @@ public class ServiceLoader {
     private static final Method loadMethod;
     private static boolean weldSL = false;
 
+    private ServiceLoader() {
+    }
+
     static {
         ClassLoader cl = ServiceLoader.class.getClassLoader();
         Class<?> clazz = null;

@@ -35,6 +35,9 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
  */
 public class SerializableContextualFactory {
 
+    private SerializableContextualFactory() {
+    }
+
     @java.lang.SuppressWarnings({ "rawtypes", "unchecked" })
     public static <C extends Contextual<I>, I> SerializableContextual<C, I> create(C contextual, ContextualStore contextualStore) {
         if (contextual instanceof PassivationCapable) {
