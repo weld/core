@@ -41,6 +41,9 @@ import org.jboss.weld.ejb.spi.BusinessInterfaceDescriptor;
  */
 public class Formats {
 
+    private static final String SNAPSHOT = "SNAPSHOT";
+    private static final String NULL = "null";
+
     private Formats() {
     }
 
@@ -67,9 +70,9 @@ public class Formats {
         @Override
         public String apply(Object from, int position) {
             if (position > 0) {
-                return " " + (from == null ? "null" : from.toString());
+                return " " + (from == null ? NULL : from.toString());
             } else {
-                return from == null ? "null" : from.toString();
+                return from == null ? NULL : from.toString();
             }
         }
     };
@@ -79,9 +82,9 @@ public class Formats {
         @Override
         public String apply(Object from, int position) {
             if (position > 0) {
-                return ", " + (from == null ? "null" : from.toString());
+                return ", " + (from == null ? NULL : from.toString());
             } else {
-                return from == null ? "null" : from.toString();
+                return from == null ? NULL : from.toString();
             }
         }
     };
@@ -107,7 +110,7 @@ public class Formats {
 
     public static String formatType(Type baseType) {
         if (baseType == null) {
-            return "null";
+            return NULL;
         } else {
             Class<?> rawType = Reflections.getRawType(baseType);
             if (rawType != null) {
@@ -290,7 +293,7 @@ public class Formats {
         if (version == null && timestamp != null) {
             return timestamp;
         } else if (version == null && timestamp == null) {
-            return "SNAPSHOT";
+            return SNAPSHOT;
         }
         String major = null;
         String minor = null;
@@ -325,7 +328,7 @@ public class Formats {
         }
         if (major == null && timestamp == null) {
             // Handle the case we have nothing
-            return "SNAPSHOT";
+            return SNAPSHOT;
         }
 
         StringBuilder builder = new StringBuilder();
@@ -338,7 +341,7 @@ public class Formats {
         }
         if (qualifier != null) {
             builder.append(" (");
-            if (qualifier.equals("SNAPSHOT") && timestamp != null) {
+            if (qualifier.equals(SNAPSHOT) && timestamp != null) {
                 builder.append(timestamp);
             } else {
                 builder.append(qualifier);

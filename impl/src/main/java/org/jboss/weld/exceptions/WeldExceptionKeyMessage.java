@@ -32,6 +32,7 @@ import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
  */
 public class WeldExceptionKeyMessage implements WeldExceptionMessage, Serializable {
     private static final long serialVersionUID = 3474682221381024558L;
+    private static final String EXCEPTION_MESSAGE_FOR_KEY = "Exception message for key ";
     private Enum<?> messageKey;
     private String[] messageArguments;
 
@@ -68,10 +69,10 @@ public class WeldExceptionKeyMessage implements WeldExceptionMessage, Serializab
         } catch (Exception e) {
             // We want the using exception to be processed, but also include
             // this one in its message
-            result = "Exception message for key " + messageKey + " not found due to " + e.getLocalizedMessage();
+            result = EXCEPTION_MESSAGE_FOR_KEY + messageKey + " not found due to " + e.getLocalizedMessage();
         }
         if (result == null) {
-            result = "Exception message for key " + messageKey + " not found";
+            result = EXCEPTION_MESSAGE_FOR_KEY + messageKey + " not found";
         }
         return result;
     }

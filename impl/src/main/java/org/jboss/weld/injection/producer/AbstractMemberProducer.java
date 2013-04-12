@@ -155,12 +155,17 @@ public abstract class AbstractMemberProducer<X, T> extends AbstractProducer<T> {
 
     @Override
     public String toString() {
+        StringBuilder result = new StringBuilder("Producer for ");
         if (getDeclaringBean() == null) {
-            return "Producer for " + getAnnotated();
-        } else if (getBean() == null) {
-            return "Producer for " + getAnnotated() + " declared on " + getDeclaringBean();
+            result.append(getAnnotated());
         } else {
-            return "Producer for " + getBean() + " declared on " + getDeclaringBean();
+            if (getBean() == null) {
+                result.append(getAnnotated());
+        } else {
+                result.append(getBean());
+            }
+            result.append(" declared on " + getDeclaringBean());
         }
+        return result.toString();
     }
 }

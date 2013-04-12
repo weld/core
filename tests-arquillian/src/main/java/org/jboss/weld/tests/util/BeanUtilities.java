@@ -37,6 +37,9 @@ import javax.enterprise.inject.spi.BeanAttributes;
  */
 public class BeanUtilities {
 
+    private static final String FOUND_ON = " found on ";
+    private static final String NOT_FOUND_ON = " not found on ";
+
     private BeanUtilities() {
     }
 
@@ -50,7 +53,7 @@ public class BeanUtilities {
                 fail("Expected type " + type + " not a bean type of " + attributes);
             }
         }
-        assertTrue("The following unexpected types " + types + " found on " + attributes, types.isEmpty());
+        assertTrue("The following unexpected types " + types + FOUND_ON + attributes, types.isEmpty());
     }
 
     /**
@@ -61,10 +64,10 @@ public class BeanUtilities {
         assertEquals(expected.length, stereotypes.size());
         for (Class<?> stereotype : expected) {
             if (!stereotypes.remove(stereotype)) {
-                fail("Expected stereotype " + stereotype + " not found on " + attributes);
+                fail("Expected stereotype " + stereotype + NOT_FOUND_ON + attributes);
             }
         }
-        assertTrue("The following unexpected stereotypes " + stereotypes + " found on " + attributes, stereotypes.isEmpty());
+        assertTrue("The following unexpected stereotypes " + stereotypes + FOUND_ON + attributes, stereotypes.isEmpty());
     }
 
     /**
@@ -94,6 +97,6 @@ public class BeanUtilities {
                 fail("Expected qualifier not present " + qualifier.annotationType());
             }
         }
-        assertTrue("Expected qualifiers" + expectedQualifiers + " not found on " + attributes, expectedQualifiers.isEmpty());
+        assertTrue("Expected qualifiers" + expectedQualifiers + NOT_FOUND_ON + attributes, expectedQualifiers.isEmpty());
     }
 }

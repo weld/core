@@ -181,6 +181,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     private static final LocLogger log = loggerFactory().getLogger(BOOTSTRAP);
 
+    private static final String CREATIONAL_CONTEXT = "creationalContext";
     /*
     * Application scoped services
     * ***************************
@@ -729,7 +730,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     public Object getReference(Bean<?> bean, Type requestedType, CreationalContext<?> creationalContext) {
         Preconditions.checkArgumentNotNull(bean, "bean");
         Preconditions.checkArgumentNotNull(requestedType, "requestedType");
-        Preconditions.checkArgumentNotNull(creationalContext, "creationalContext");
+        Preconditions.checkArgumentNotNull(creationalContext, CREATIONAL_CONTEXT);
         if (!BeanTypeAssignabilityRules.instance().matches(requestedType, bean.getTypes())) {
             throw new IllegalArgumentException(SPECIFIED_TYPE_NOT_BEAN_TYPE, requestedType, bean);
         }
@@ -747,7 +748,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
      */
     public Object getReference(InjectionPoint injectionPoint, Bean<?> resolvedBean, CreationalContext<?> creationalContext) {
         Preconditions.checkArgumentNotNull(resolvedBean, "resolvedBean");
-        Preconditions.checkArgumentNotNull(creationalContext, "creationalContext");
+        Preconditions.checkArgumentNotNull(creationalContext, CREATIONAL_CONTEXT);
 
         boolean registerInjectionPoint = isRegisterableInjectionPoint(injectionPoint);
         boolean delegateInjectionPoint = injectionPoint != null && injectionPoint.isDelegate();

@@ -42,10 +42,11 @@ public class ClassFileUtils {
             AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
                 public Object run() throws Exception {
                     Class<?> cl = Class.forName("java.lang.ClassLoader");
-                    defineClass1 = cl.getDeclaredMethod("defineClass", new Class[]{String.class, byte[].class, int.class, int.class});
+                    final String name = "defineClass";
+                    defineClass1 = cl.getDeclaredMethod(name, new Class[]{String.class, byte[].class, int.class, int.class});
                     defineClass1.setAccessible(true);
 
-                    defineClass2 = cl.getDeclaredMethod("defineClass", new Class[]{String.class, byte[].class, int.class, int.class, ProtectionDomain.class});
+                    defineClass2 = cl.getDeclaredMethod(name, new Class[]{String.class, byte[].class, int.class, int.class, ProtectionDomain.class});
                     defineClass2.setAccessible(true);
                     return null;
                 }

@@ -56,6 +56,7 @@ import org.jboss.weld.util.bytecode.StaticMethodInformation;
  */
 public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
     public static final String PROXY_SUFFIX = "DecoratorProxy";
+    private static final String INIT_MH_METHOD_NAME = "_initMH";
     private final WeldInjectionPoint<?, ?> delegateInjectionPoint;
     private final Field delegateField;
 
@@ -74,13 +75,14 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
      * methodHandler field as then new methodHandler
      */
     private void addHandlerInitializerMethod(ClassFile proxyClassType) throws Exception {
-         ClassMethod classMethod = proxyClassType.addMethod(AccessFlag.PRIVATE, "_initMH", "V", "Ljava/lang/Object;");
+        ClassMethod classMethod = proxyClassType.addMethod(AccessFlag.PRIVATE, INIT_MH_METHOD_NAME, DescriptorUtils.VOID_CLASS_DESCRIPTOR, LJAVA_LANG_OBJECT);
         final CodeAttribute b = classMethod.getCodeAttribute();
         b.aload(0);
-        StaticMethodInformation methodInfo = new StaticMethodInformation("_initMH", new Class[]{Object.class}, void.class, classMethod.getClassFile().getName());
+        StaticMethodInformation methodInfo = new StaticMethodInformation(INIT_MH_METHOD_NAME, new Class[] { Object.class }, void.class,
+                classMethod.getClassFile().getName());
         invokeMethodHandler(classMethod, methodInfo, false, DEFAULT_METHOD_RESOLVER);
         b.checkcast(MethodHandler.class);
-        b.putfield(classMethod.getClassFile().getName(), "methodHandler", DescriptorUtils.classToStringRepresentation(MethodHandler.class));
+        b.putfield(classMethod.getClassFile().getName(), METHOD_HANDLER_FIELD_NAME, DescriptorUtils.classToStringRepresentation(MethodHandler.class));
         b.returnInstruction();
         log.trace("Created MH initializer body for decorator proxy: {}", getBeanType());
 
@@ -240,7 +242,7 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
         // now we need to call _initMH
         b.aload(0); // load this
         b.aload(actualDelegateParamterPosition); // load the delegate
-        b.invokevirtual(classMethod.getClassFile().getName(), "_initMH", "(Ljava/lang/Object;)V");
+        b.invokevirtual(classMethod.getClassFile().getName(), INIT_MH_METHOD_NAME, "(" + LJAVA_LANG_OBJECT + ")" + DescriptorUtils.VOID_CLASS_DESCRIPTOR);
         // return the object from the top of the stack that we got from calling
         // the superclass method earlier
         b.returnInstruction();
@@ -248,9 +250,11 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
     }
 
     protected static class TargetInstanceBytecodeMethodResolver implements BytecodeMethodResolver {
+        private static final String JAVA_LANG_CLASS_CLASS_NAME = "java.lang.Class";
+
         public void getDeclaredMethod(ClassMethod classMethod, String declaringClass, String methodName, String[] parameterTypes) {
             // get the correct class type to use to resolve the method
-            MethodInformation methodInfo = new StaticMethodInformation("getTargetClass", new String[0], "Ljava/lang/Class;", TargetInstanceProxy.class.getName());
+            MethodInformation methodInfo = new StaticMethodInformation("getTargetClass", new String[0], LJAVA_LANG_CLASS, TargetInstanceProxy.class.getName());
             invokeMethodHandler(classMethod, methodInfo, false, DEFAULT_METHOD_RESOLVER);
             CodeAttribute code = classMethod.getCodeAttribute();
             code.checkcast("java/lang/Class");
@@ -258,7 +262,7 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
             code.ldc(methodName);
             // now we need to load the parameter types into an array
             code.iconst(parameterTypes.length);
-            code.anewarray("java.lang.Class");
+            code.anewarray(JAVA_LANG_CLASS_CLASS_NAME);
             for (int i = 0; i < parameterTypes.length; ++i) {
                 code.dup(); // duplicate the array reference
                 code.iconst(i);
@@ -268,7 +272,7 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
                 // and store it in the array
                 code.aastore();
             }
-            code.invokevirtual("java.lang.Class", "getDeclaredMethod", "(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;");
+            code.invokevirtual(JAVA_LANG_CLASS_CLASS_NAME, "getDeclaredMethod", "(" + LJAVA_LANG_STRING + "[" + LJAVA_LANG_CLASS + ")" + LJAVA_LANG_REFLECT_METHOD);
         }
 
         static final TargetInstanceBytecodeMethodResolver INSTANCE = new TargetInstanceBytecodeMethodResolver();

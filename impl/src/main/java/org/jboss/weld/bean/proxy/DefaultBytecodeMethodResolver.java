@@ -32,6 +32,8 @@ import org.jboss.weld.util.bytecode.BytecodeUtils;
 public class DefaultBytecodeMethodResolver implements BytecodeMethodResolver {
 
 
+    private static final String JAVA_LANG_CLASS_CLASS_NAME = "java.lang.Class";
+
     public void getDeclaredMethod(final ClassMethod classMethod, final String declaringClass, final String methodName, final String[] parameterTypes) {
         final CodeAttribute code =classMethod.getCodeAttribute();
         BytecodeUtils.pushClassType(code, declaringClass);
@@ -39,7 +41,7 @@ public class DefaultBytecodeMethodResolver implements BytecodeMethodResolver {
         code.ldc(methodName);
         // now we need to load the parameter types into an array
         code.iconst(parameterTypes.length);
-        code.anewarray("java.lang.Class");
+        code.anewarray(JAVA_LANG_CLASS_CLASS_NAME);
         for (int i = 0; i < parameterTypes.length; ++i) {
             code.dup(); // duplicate the array reference
             code.iconst(i);
@@ -49,7 +51,7 @@ public class DefaultBytecodeMethodResolver implements BytecodeMethodResolver {
             // and store it in the array
             code.aastore();
         }
-        code.invokevirtual("java.lang.Class", "getDeclaredMethod", "(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;");
+        code.invokevirtual(JAVA_LANG_CLASS_CLASS_NAME, "getDeclaredMethod", "(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;");
 
     }
 }

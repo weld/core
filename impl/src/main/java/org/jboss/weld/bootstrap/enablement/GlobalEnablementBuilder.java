@@ -254,6 +254,7 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
 
     private static class ClassLoader implements Function<Metadata<String>, Class<?>> {
 
+        private static final String LOCATION = "; location: ";
         private final ResourceLoader resourceLoader;
 
         public ClassLoader(ResourceLoader resourceLoader) {
@@ -265,9 +266,9 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
             try {
                 return resourceLoader.classForName(from.getValue());
             } catch (ResourceLoadingException e) {
-                throw new DeploymentException(BootstrapMessage.ERROR_LOADING_BEANS_XML_ENTRY, e.getMessage() + "; location: " + from.getLocation(), e.getCause());
+                throw new DeploymentException(BootstrapMessage.ERROR_LOADING_BEANS_XML_ENTRY, e.getMessage() + LOCATION + from.getLocation(), e.getCause());
             } catch (Exception e) {
-                throw new DeploymentException(BootstrapMessage.ERROR_LOADING_BEANS_XML_ENTRY, e.getMessage() + "; location: " + from.getLocation(), e);
+                throw new DeploymentException(BootstrapMessage.ERROR_LOADING_BEANS_XML_ENTRY, e.getMessage() + LOCATION + from.getLocation(), e);
             }
         }
     }

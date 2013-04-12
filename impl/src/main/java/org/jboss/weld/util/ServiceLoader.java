@@ -57,6 +57,8 @@ import static java.util.logging.Level.WARNING;
  */
 public class ServiceLoader<S> implements Iterable<Metadata<S>> {
 
+    private static final String ERROR_INSTANTIATING = "Error instantiating ";
+
     private static final String SERVICES = "META-INF/services";
 
     private static final Logger log = Logger.getLogger("ServiceLoader");
@@ -240,18 +242,22 @@ public class ServiceLoader<S> implements Iterable<Metadata<S>> {
             log.log(WARNING, "Could not instantiate service class " + serviceClass.getName(), e);
             return null;
         } catch (InvocationTargetException e) {
-            throw new RuntimeException("Error instantiating " + serviceClass, e.getCause());
+            throw new RuntimeException(ERROR_INSTANTIATING + serviceClass, e.getCause());
         } catch (IllegalArgumentException e) {
-            throw new RuntimeException("Error instantiating " + serviceClass, e);
+            throwRuntimeExc(serviceClass, e);
         } catch (InstantiationException e) {
-            throw new RuntimeException("Error instantiating " + serviceClass, e);
+            throwRuntimeExc(serviceClass, e);
         } catch (IllegalAccessException e) {
-            throw new RuntimeException("Error instantiating " + serviceClass, e);
+            throwRuntimeExc(serviceClass, e);
         } catch (SecurityException e) {
-            throw new RuntimeException("Error instantiating " + serviceClass, e);
+            throwRuntimeExc(serviceClass, e);
         } catch (NoSuchMethodException e) {
-            throw new RuntimeException("Error instantiating " + serviceClass, e);
+            throwRuntimeExc(serviceClass, e);
         }
+    }
+
+    private void throwRuntimeExc(Class<? extends S> serviceClass, Throwable e) {
+        throw new RuntimeException(ERROR_INSTANTIATING + serviceClass, e);
     }
 
     /**

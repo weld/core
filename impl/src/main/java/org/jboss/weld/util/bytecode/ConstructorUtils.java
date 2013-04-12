@@ -39,7 +39,7 @@ public class ConstructorUtils {
      * adds a constructor that calls super()
      */
     public static void addDefaultConstructor(ClassFile file, List<DeferredBytecode> initialValueBytecode, final boolean useUnsafeInstantiators) {
-        addConstructor("V", new String[0], new String[0], file, initialValueBytecode, useUnsafeInstantiators);
+        addConstructor(DescriptorUtils.VOID_CLASS_DESCRIPTOR, new String[0], new String[0], file, initialValueBytecode, useUnsafeInstantiators);
     }
 
     /**
@@ -57,7 +57,8 @@ public class ConstructorUtils {
     public static void addConstructor(String returnType, String[] params, String[] exceptions, ClassFile file, List<DeferredBytecode> initialValueBytecode, final boolean useUnsafeInstantiators) {
         try {
 
-            final ClassMethod ctor = file.addMethod(AccessFlag.PUBLIC, "<init>", returnType, params);
+            final String initMethodName = "<init>";
+            final ClassMethod ctor = file.addMethod(AccessFlag.PUBLIC, initMethodName, returnType, params);
             ctor.addCheckedExceptions(exceptions);
             final CodeAttribute b = ctor.getCodeAttribute();
             for(final DeferredBytecode iv : initialValueBytecode) {
@@ -71,12 +72,12 @@ public class ConstructorUtils {
             b.aload(0);
             b.loadMethodParameters();
             // now we have the parameters on the stack
-            b.invokespecial(file.getSuperclass(), "<init>", DescriptorUtils.getMethodDescriptor(params, returnType));
+            b.invokespecial(file.getSuperclass(), initMethodName, DescriptorUtils.getMethodDescriptor(params, returnType));
             if(!useUnsafeInstantiators) {
                 // now set constructed to true
                 b.aload(0);
                 b.iconst(1);
-                b.putfield(file.getName(), ProxyFactory.CONSTRUCTED_FLAG_NAME, "Z");
+                b.putfield(file.getName(), ProxyFactory.CONSTRUCTED_FLAG_NAME, DescriptorUtils.BOOLEAN_CLASS_DESCRIPTOR);
             }
             b.returnInstruction();
         }  catch (DuplicateMemberException e) {

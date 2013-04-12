@@ -17,12 +17,13 @@ import static org.junit.Assert.assertNotNull;
 public class LibrariesDiscoveredTestBase {
 
     private static final Logger log = Logger.getLogger(LibrariesDiscoveredTestBase.class.getName());
+    private static final String DELIMITER = "-------------------------";
 
     public static WebArchive deployment() {
         JavaArchive library = ShrinkWrap.create(JavaArchive.class, "library.jar").addClass(Camel.class).addAsManifestResource(new BeansXml(), "beans.xml");
-        log.fine("-------------------------");
+        log.fine(DELIMITER);
         log.fine("Library");
-        log.fine("-------------------------");
+        log.fine(DELIMITER);
         log.fine(library.toString(true));
         return baseDeployment().addClasses(Needle.class, LibrariesDiscoveredTestBase.class).addAsLibrary(library);
     }
