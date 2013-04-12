@@ -25,6 +25,9 @@ import org.jboss.classfilewriter.code.CodeAttribute;
  */
 public class BytecodeUtils {
 
+    private static final String TYPE = "TYPE";
+    private static final String LJAVA_LANG_CLASS = "Ljava/lang/Class;";
+
     private BytecodeUtils() {
     }
 
@@ -76,29 +79,31 @@ public class BytecodeUtils {
             char type = classType.charAt(0);
             switch (type) {
                 case 'I':
-                    b.getstatic(Integer.class.getName(), "TYPE", "Ljava/lang/Class;");
+                    b.getstatic(Integer.class.getName(), TYPE, LJAVA_LANG_CLASS);
                     break;
                 case 'J':
-                    b.getstatic(Long.class.getName(), "TYPE", "Ljava/lang/Class;");
+                    b.getstatic(Long.class.getName(), TYPE, LJAVA_LANG_CLASS);
                     break;
                 case 'S':
-                    b.getstatic(Short.class.getName(), "TYPE", "Ljava/lang/Class;");
+                    b.getstatic(Short.class.getName(), TYPE, LJAVA_LANG_CLASS);
                     break;
                 case 'F':
-                    b.getstatic(Float.class.getName(), "TYPE", "Ljava/lang/Class;");
+                    b.getstatic(Float.class.getName(), TYPE, LJAVA_LANG_CLASS);
                     break;
                 case 'D':
-                    b.getstatic(Double.class.getName(), "TYPE", "Ljava/lang/Class;");
+                    b.getstatic(Double.class.getName(), TYPE, LJAVA_LANG_CLASS);
                     break;
                 case 'B':
-                    b.getstatic(Byte.class.getName(), "TYPE", "Ljava/lang/Class;");
+                    b.getstatic(Byte.class.getName(), TYPE, LJAVA_LANG_CLASS);
                     break;
                 case 'C':
-                    b.getstatic(Character.class.getName(), "TYPE", "Ljava/lang/Class;");
+                    b.getstatic(Character.class.getName(), TYPE, LJAVA_LANG_CLASS);
                     break;
                 case 'Z':
-                    b.getstatic(Boolean.class.getName(), "TYPE", "Ljava/lang/Class;");
+                    b.getstatic(Boolean.class.getName(), TYPE, LJAVA_LANG_CLASS);
                     break;
+                default:
+                    throw new RuntimeException("Cannot handle primitive type: " + type);
             }
         }
     }

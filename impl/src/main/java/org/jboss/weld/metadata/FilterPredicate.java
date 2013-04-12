@@ -80,10 +80,8 @@ public class FilterPredicate implements Predicate<String> {
         this.active = active;
         if (filter.getValue() instanceof WeldFilter) {
             WeldFilter weldFilter = (WeldFilter) filter.getValue();
-            if (weldFilter.getName() != null && weldFilter.getPattern() != null) {
-                throw new IllegalStateException("Cannot specify both a pattern and a name at " + filter);
-            }
-            if (weldFilter.getName() == null && weldFilter.getPattern() == null) {
+            if ((weldFilter.getName() != null && weldFilter.getPattern() != null)
+             || (weldFilter.getName() == null && weldFilter.getPattern() == null)) {
                 throw new IllegalStateException("Cannot specify both a pattern and a name at " + filter);
             }
             if (weldFilter.getPattern() != null) {

@@ -28,6 +28,10 @@ import java.lang.reflect.Method;
  */
 public abstract class Reflections {
 
+    private static final String CANNOT_LOAD_CLASS_FOR = "Cannot load class for ";
+    private static final String WITH_NO_ARGUMENT_CONSTRUCTOR = " with no-argument constructor";
+    private static final String CANNOT_INSTANTIATE_INSTANCE_OF = "Cannot instantiate instance of ";
+
     private Reflections() {
     }
 
@@ -35,9 +39,9 @@ public abstract class Reflections {
         try {
             return Reflections.<T>classForName(className).newInstance();
         } catch (InstantiationException e) {
-            throw new IllegalArgumentException("Cannot instantiate instance of " + className + " with no-argument constructor", e);
+            throw new IllegalArgumentException(CANNOT_INSTANTIATE_INSTANCE_OF + className + WITH_NO_ARGUMENT_CONSTRUCTOR, e);
         } catch (IllegalAccessException e) {
-            throw new IllegalArgumentException("Cannot instantiate instance of " + className + " with no-argument constructor", e);
+            throw new IllegalArgumentException(CANNOT_INSTANTIATE_INSTANCE_OF + className + WITH_NO_ARGUMENT_CONSTRUCTOR, e);
         }
     }
 
@@ -53,9 +57,9 @@ public abstract class Reflections {
                 return (Class<T>) Class.forName(name);
             }
         } catch (ClassNotFoundException e) {
-            throw new IllegalArgumentException("Cannot load class for " + name, e);
+            throw new IllegalArgumentException(CANNOT_LOAD_CLASS_FOR + name, e);
         } catch (NoClassDefFoundError e) {
-            throw new IllegalArgumentException("Cannot load class for " + name, e);
+            throw new IllegalArgumentException(CANNOT_LOAD_CLASS_FOR + name, e);
         }
     }
 

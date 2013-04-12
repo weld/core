@@ -35,19 +35,21 @@ public class RequestScopedBeanCache {
         return CACHE.get() != null;
     }
 
-    public static void addItem(final RequestScopedItem item) {
-        final List<RequestScopedItem> cache = CACHE.get();
+    private static void checkCacheForAdding(final List<RequestScopedItem> cache) {
         if (cache == null) {
             throw new IllegalStateException("Unable to add request scoped cache item when request cache is not active");
         }
+    }
+
+    public static void addItem(final RequestScopedItem item) {
+        final List<RequestScopedItem> cache = CACHE.get();
+        checkCacheForAdding(cache);
         cache.add(item);
     }
 
     public static void addItem(final ThreadLocal item) {
         final List<RequestScopedItem> cache = CACHE.get();
-        if (cache == null) {
-            throw new IllegalStateException("Unable to add request scoped cache item when request cache is not active");
-        }
+        checkCacheForAdding(cache);
         cache.add(new RequestScopedItem() {
             public void invalidate() {
                 item.remove();
