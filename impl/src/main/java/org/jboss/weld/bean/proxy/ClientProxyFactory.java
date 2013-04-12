@@ -68,6 +68,13 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
 
     private static final String CACHE_FIELD = "BEAN_INSTANCE_CACHE";
 
+    private static final String INTERCEPTION_DECORATION_CONTEXT_CLASS_NAME = InterceptionDecorationContext.class.getName();
+
+    private static final String HASH_CODE_METHOD = "hashCode";
+    private static final String EMPTY_PARENTHESES = "()";
+    private static final String END_INTERCEPTOR_CONTEXT_METHOD_NAME = "endInterceptorContext";
+    private static final String START_INTERCEPTOR_CONTEXT_METHOD_NAME = "startInterceptorContext";
+
     /**
      * It is possible although very unlikely that two different beans will end up with the same proxy class
      * (generally this will only happen in test situations where weld is being started/stopped multiple times
@@ -129,15 +136,15 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
         super.addFields(proxyClassType, initialValueBytecode);
         if (CACHABLE_SCOPES.contains(getBean().getScope())) {
             try {
-                proxyClassType.addField(AccessFlag.TRANSIENT | AccessFlag.PRIVATE, CACHE_FIELD, "Ljava/lang/ThreadLocal;");
+                proxyClassType.addField(AccessFlag.TRANSIENT | AccessFlag.PRIVATE, CACHE_FIELD, LJAVA_LANG_THREAD_LOCAL);
                 initialValueBytecode.add(new DeferredBytecode() {
                     public void apply(final CodeAttribute codeAttribute) {
 
                         codeAttribute.aload(0);
                         codeAttribute.newInstruction(ThreadLocal.class.getName());
                         codeAttribute.dup();
-                        codeAttribute.invokespecial(ThreadLocal.class.getName(), "<init>", "()V");
-                        codeAttribute.putfield(proxyClassType.getName(), CACHE_FIELD, "Ljava/lang/ThreadLocal;");
+                        codeAttribute.invokespecial(ThreadLocal.class.getName(), INIT_METHOD_NAME, EMPTY_PARENTHESES + DescriptorUtils.VOID_CLASS_DESCRIPTOR);
+                        codeAttribute.putfield(proxyClassType.getName(), CACHE_FIELD, LJAVA_LANG_THREAD_LOCAL);
                     }
                 });
             } catch (DuplicateMemberException e) {
@@ -150,15 +157,15 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
     @Override
     protected void addSerializationSupport(ClassFile proxyClassType) {
         final Class<Exception>[] exceptions = new Class[]{ObjectStreamException.class};
-        final ClassMethod writeReplace = proxyClassType.addMethod(AccessFlag.PRIVATE, "writeReplace", "Ljava/lang/Object;");
+        final ClassMethod writeReplace = proxyClassType.addMethod(AccessFlag.PRIVATE, "writeReplace", LJAVA_LANG_OBJECT);
         writeReplace.addCheckedExceptions(exceptions);
 
         CodeAttribute b = writeReplace.getCodeAttribute();
         b.newInstruction(SerializableClientProxy.class.getName());
         b.dup();
         b.aload(0);
-        b.getfield(proxyClassType.getName(), BEAN_ID_FIELD, "Ljava/lang/String;");
-        b.invokespecial(SerializableClientProxy.class.getName(), "<init>", "(Ljava/lang/String;)V");
+        b.getfield(proxyClassType.getName(), BEAN_ID_FIELD, LJAVA_LANG_STRING);
+        b.invokespecial(SerializableClientProxy.class.getName(), INIT_METHOD_NAME, "(" + LJAVA_LANG_STRING + ")" + DescriptorUtils.VOID_CLASS_DESCRIPTOR);
         b.returnInstruction();
     }
 
@@ -192,7 +199,7 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
         // the method has succeeded or not
 
         final ExceptionHandler start = b.exceptionBlockStart(Throwable.class.getName());
-        b.invokestatic("org.jboss.weld.bean.proxy.InterceptionDecorationContext", "startInterceptorContext", "()V");
+        b.invokestatic(INTERCEPTION_DECORATION_CONTEXT_CLASS_NAME, START_INTERCEPTOR_CONTEXT_METHOD_NAME, EMPTY_PARENTHESES + DescriptorUtils.VOID_CLASS_DESCRIPTOR);
 
         final Class<? extends Annotation> scope = getBean().getScope();
 
@@ -215,7 +222,7 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
         }
 
         // end the interceptor context, everything was fine
-        b.invokestatic("org.jboss.weld.bean.proxy.InterceptionDecorationContext", "endInterceptorContext", "()V");
+        b.invokestatic(INTERCEPTION_DECORATION_CONTEXT_CLASS_NAME, END_INTERCEPTOR_CONTEXT_METHOD_NAME, EMPTY_PARENTHESES + DescriptorUtils.VOID_CLASS_DESCRIPTOR);
 
         // jump over the catch block
         BranchEnd gotoEnd = b.gotoInstruction();
@@ -223,7 +230,7 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
         // create catch block
         b.exceptionBlockEnd(start);
         b.exceptionHandlerStart(start);
-        b.invokestatic("org.jboss.weld.bean.proxy.InterceptionDecorationContext", "endInterceptorContext", "()V");
+        b.invokestatic(INTERCEPTION_DECORATION_CONTEXT_CLASS_NAME, END_INTERCEPTOR_CONTEXT_METHOD_NAME, EMPTY_PARENTHESES + DescriptorUtils.VOID_CLASS_DESCRIPTOR);
         b.athrow();
 
         // update the correct address to jump over the catch block
@@ -262,14 +269,14 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
      */
     private void loadCachableBeanInstance(ClassFile file, MethodInformation methodInfo, CodeAttribute b) {
         //first we need to see if the scope is active
-        b.invokestatic(RequestScopedBeanCache.class.getName(), "isActive", "()Z");
+        b.invokestatic(RequestScopedBeanCache.class.getName(), "isActive", EMPTY_PARENTHESES + DescriptorUtils.BOOLEAN_CLASS_DESCRIPTOR);
         //if it is not active we just get the bean directly
 
         final BranchEnd returnInstruction = b.ifeq();
         //get the bean from the cache
         b.aload(0);
-        b.getfield(file.getName(), CACHE_FIELD, "Ljava/lang/ThreadLocal;");
-        b.invokevirtual(ThreadLocal.class.getName(), "get", "()Ljava/lang/Object;");
+        b.getfield(file.getName(), CACHE_FIELD, LJAVA_LANG_THREAD_LOCAL);
+        b.invokevirtual(ThreadLocal.class.getName(), "get", EMPTY_PARENTHESES + LJAVA_LANG_OBJECT);
         b.dup();
         final BranchEnd createNewInstance = b.ifnull();
         //so we have a not-null bean instance in the cache
@@ -282,11 +289,11 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
         loadBeanInstance(file, methodInfo, b);
         b.dup();
         b.aload(0);
-        b.getfield(file.getName(), CACHE_FIELD, "Ljava/lang/ThreadLocal;");
+        b.getfield(file.getName(), CACHE_FIELD, LJAVA_LANG_THREAD_LOCAL);
         b.dupX1();
         b.swap();
-        b.invokevirtual(ThreadLocal.class.getName(), "set", "(Ljava/lang/Object;)V");
-        b.invokestatic(RequestScopedBeanCache.class.getName(), "addItem", "(Ljava/lang/ThreadLocal;)V");
+        b.invokevirtual(ThreadLocal.class.getName(), "set", "(" + LJAVA_LANG_OBJECT + ")" + DescriptorUtils.VOID_CLASS_DESCRIPTOR);
+        b.invokestatic(RequestScopedBeanCache.class.getName(), "addItem", "(" + LJAVA_LANG_THREAD_LOCAL + ")" + DescriptorUtils.VOID_CLASS_DESCRIPTOR);
         final BranchEnd endOfIfStatement = b.gotoInstruction();
         b.branchEnd(returnInstruction);
         loadBeanInstance(file, methodInfo, b);
@@ -305,7 +312,7 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
 
         // now we have all our arguments on the stack
         // lets invoke the method
-        b.invokeinterface(MethodHandler.class.getName(), "invoke", "(Ljava/lang/Object;Ljava/lang/reflect/Method;Ljava/lang/reflect/Method;[Ljava/lang/Object;)Ljava/lang/Object;");
+        b.invokeinterface(MethodHandler.class.getName(), "invoke", "("+ LJAVA_LANG_OBJECT + LJAVA_LANG_REFLECT_METHOD + LJAVA_LANG_REFLECT_METHOD + "[" + LJAVA_LANG_OBJECT + ")" + LJAVA_LANG_OBJECT);
 
         b.checkcast(methodInfo.getDeclaringClass());
     }
@@ -316,12 +323,12 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
      */
     @Override
     protected void generateHashCodeMethod(ClassFile proxyClassType) {
-        final ClassMethod method = proxyClassType.addMethod(AccessFlag.PUBLIC, "hashCode", "I");
+        final ClassMethod method = proxyClassType.addMethod(AccessFlag.PUBLIC, HASH_CODE_METHOD, DescriptorUtils.INT_CLASS_DESCRIPTOR);
         final CodeAttribute b = method.getCodeAttribute();
         // MyProxyName.class.hashCode()
         b.loadClass(proxyClassType.getName());
         // now we have the class object on top of the stack
-        b.invokevirtual("java.lang.Object", "hashCode", "()I");
+        b.invokevirtual("java.lang.Object", HASH_CODE_METHOD, EMPTY_PARENTHESES + DescriptorUtils.INT_CLASS_DESCRIPTOR);
         // now we have the hashCode
         b.returnInstruction();
     }
@@ -335,7 +342,7 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
      */
     @Override
     protected void generateEqualsMethod(ClassFile proxyClassType) {
-        ClassMethod method = proxyClassType.addMethod(AccessFlag.PUBLIC, "equals", "Z", "Ljava/lang/Object;");
+        ClassMethod method = proxyClassType.addMethod(AccessFlag.PUBLIC, "equals", DescriptorUtils.BOOLEAN_CLASS_DESCRIPTOR, LJAVA_LANG_OBJECT);
         CodeAttribute b = method.getCodeAttribute();
         b.aload(1);
         b.instanceofInstruction(proxyClassType.getName());

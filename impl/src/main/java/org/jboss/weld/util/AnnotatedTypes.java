@@ -286,13 +286,13 @@ public class AnnotatedTypes {
                     builder.append('=');
                     builder.append(value.toString());
                 } catch (NullPointerException e) {
-                    throw new RuntimeException("NullPointerException accessing annotation member, annotation:" + a.annotationType().getName() + " member: " + method.getName(), e);
+                    throwRE(a, method, e);
                 } catch (IllegalArgumentException e) {
-                    throw new RuntimeException("IllegalArgumentException accessing annotation member, annotation:" + a.annotationType().getName() + " member: " + method.getName(), e);
+                    throwRE(a, method, e);
                 } catch (IllegalAccessException e) {
-                    throw new RuntimeException("IllegalAccessException accessing annotation member, annotation:" + a.annotationType().getName() + " member: " + method.getName(), e);
+                    throwRE(a, method, e);
                 } catch (InvocationTargetException e) {
-                    throw new RuntimeException("InvocationTargetException accessing annotation member, annotation:" + a.annotationType().getName() + " member: " + method.getName(), e);
+                    throwRE(a, method, e);
                 }
                 if (i + 1 != methods.size()) {
                     builder.append(',');
@@ -302,6 +302,11 @@ public class AnnotatedTypes {
         }
         builder.append(']');
         return builder.toString();
+    }
+
+    private static void throwRE(Annotation a, Method method, Throwable e) {
+        throw new RuntimeException(e.getClass().getSimpleName() + " accessing annotation member, annotation: "
+                + a.annotationType().getName() + " member: " + method.getName(), e);
     }
 
     public static <X> String createFieldId(AnnotatedField<X> field) {

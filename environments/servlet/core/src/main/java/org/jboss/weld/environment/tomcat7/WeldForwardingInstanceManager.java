@@ -25,6 +25,8 @@ import static org.jboss.weld.environment.servlet.util.Reflections.setFieldValue;
  * @author <a href="mailto:matija.mazi@gmail.com">Matija Mazi</a>
  */
 public class WeldForwardingInstanceManager extends ForwardingInstanceManager {
+    private static final String NEITHER_FIELD_NOR_SETTER_FOUND_FOR_INSTANCE_MANAGER = "neither field nor setter found for instanceManager";
+    private static final String INSTANCE_MANAGER_FIELD_NAME = "instanceManager";
     private final InstanceManager firstProcessor;
     private final InstanceManager secondProcessor;
 
@@ -110,11 +112,11 @@ public class WeldForwardingInstanceManager extends ForwardingInstanceManager {
         if (method != null) {
             return invokeMethod(method, InstanceManager.class, stdContext);
         }
-        Field field = findDeclaredField(stdContext.getClass(), "instanceManager");
+        Field field = findDeclaredField(stdContext.getClass(), INSTANCE_MANAGER_FIELD_NAME);
         if (field != null) {
             return getFieldValue(field, stdContext, InstanceManager.class);
         }
-        throw new RuntimeException("neither field nor setter found for instanceManager");
+        throw new RuntimeException(NEITHER_FIELD_NOR_SETTER_FOUND_FOR_INSTANCE_MANAGER);
     }
 
     private static void setInstanceManager(StandardContext stdContext, InstanceManager instanceManager) {
@@ -124,12 +126,12 @@ public class WeldForwardingInstanceManager extends ForwardingInstanceManager {
             invokeMethod(method, void.class, stdContext, instanceManager);
             return;
         }
-        Field field = findDeclaredField(stdContext.getClass(), "instanceManager");
+        Field field = findDeclaredField(stdContext.getClass(), INSTANCE_MANAGER_FIELD_NAME);
         if (field != null) {
             setFieldValue(field, stdContext, instanceManager);
             return;
         }
-        throw new RuntimeException("neither field nor setter found for instanceManager");
+        throw new RuntimeException(NEITHER_FIELD_NOR_SETTER_FOUND_FOR_INSTANCE_MANAGER);
     }
 
 }

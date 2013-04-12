@@ -39,7 +39,7 @@ public class DefaultBytecodeMethodResolver implements BytecodeMethodResolver {
         code.ldc(methodName);
         // now we need to load the parameter types into an array
         code.iconst(parameterTypes.length);
-        code.anewarray("java.lang.Class");
+        code.anewarray(Class.class.getName());
         for (int i = 0; i < parameterTypes.length; ++i) {
             code.dup(); // duplicate the array reference
             code.iconst(i);
@@ -49,7 +49,7 @@ public class DefaultBytecodeMethodResolver implements BytecodeMethodResolver {
             // and store it in the array
             code.aastore();
         }
-        code.invokevirtual("java.lang.Class", "getDeclaredMethod", "(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;");
+        code.invokevirtual(Class.class.getName(), "getDeclaredMethod", "(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;");
 
     }
 }

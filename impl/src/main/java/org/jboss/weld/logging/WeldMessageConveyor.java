@@ -32,6 +32,8 @@ public class WeldMessageConveyor extends MessageConveyor {
 
         private final String subsystem;
 
+        private static final String KEY_TYPE = "; Key Type: ";
+
         private ComputeMessagePrefix(String subsystem) {
             this.subsystem = subsystem;
         }
@@ -41,10 +43,10 @@ public class WeldMessageConveyor extends MessageConveyor {
             try {
                 field = from.getClass().getField(from.name());
             } catch (NoSuchFieldException e) {
-                throw new IllegalArgumentException("Cannot reflect on key to obtain @MessageId. Key: " + from + "; Key Type: " + from.getClass());
+                throw new IllegalArgumentException("Cannot reflect on key to obtain @MessageId. Key: " + from + KEY_TYPE + from.getClass());
             }
             if (!field.isAnnotationPresent(MessageId.class)) {
-                throw new IllegalArgumentException("@MessageId must be present. Key: " + from + "; Key Type: " + from.getClass());
+                throw new IllegalArgumentException("@MessageId must be present. Key: " + from + KEY_TYPE + from.getClass());
             }
             String messageId = field.getAnnotation(MessageId.class).value();
             return new StringBuilder().append(subsystem).append(SEPARATOR).append(messageId).append(" ").toString();

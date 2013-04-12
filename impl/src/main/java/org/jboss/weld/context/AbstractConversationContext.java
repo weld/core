@@ -65,6 +65,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
     private static final long DEFAULT_TIMEOUT = 10 * 60 * 1000L;
     private static final long CONCURRENT_ACCESS_TIMEOUT = 1000L;
     private static final String PARAMETER_NAME = "cid";
+    private static final String UNABLE_TO_LOAD_CURRENT_CONVERSATION = "Unable to load current conversations from the associated request, something went badly wrong when associate() was called";
 
     private final AtomicReference<String> parameterName;
     private final AtomicLong defaultTimeout;
@@ -375,22 +376,24 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
         return getConversationMap().values();
     }
 
-    private Map<String, ManagedConversation> getConversationMap() {
+    private void checkIsAssociated() {
         if (!isAssociated()) {
             throw new IllegalStateException("A request must be associated with the context in order to load the known conversations");
         }
+    }
+
+    private Map<String, ManagedConversation> getConversationMap() {
+        checkIsAssociated();
         if (!(getRequestAttribute(getRequest(), CONVERSATIONS_ATTRIBUTE_NAME) instanceof Map<?, ?>)) {
-            throw new IllegalStateException("Unable to load current conversations from the associated request, something went badly wrong when associate() was called");
+            throw new IllegalStateException(UNABLE_TO_LOAD_CURRENT_CONVERSATION);
         }
         return cast(getRequestAttribute(getRequest(), CONVERSATIONS_ATTRIBUTE_NAME));
     }
 
     public ManagedConversation getCurrentConversation() {
-        if (!isAssociated()) {
-            throw new IllegalStateException("A request must be associated with the context in order to load the known conversations");
-        }
+        checkIsAssociated();
         if (!(getRequestAttribute(getRequest(), CURRENT_CONVERSATION_ATTRIBUTE_NAME) instanceof ManagedConversation)) {
-            throw new IllegalStateException("Unable to load current conversations from the associated request, something went badly wrong when associate() was called");
+            throw new IllegalStateException(UNABLE_TO_LOAD_CURRENT_CONVERSATION);
         }
         return (ManagedConversation) getRequestAttribute(getRequest(), CURRENT_CONVERSATION_ATTRIBUTE_NAME);
     }
