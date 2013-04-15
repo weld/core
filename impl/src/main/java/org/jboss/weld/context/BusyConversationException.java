@@ -20,6 +20,7 @@ package org.jboss.weld.context;
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 import org.jboss.weld.exceptions.WeldExceptionKeyMessage;
 import org.jboss.weld.exceptions.WeldExceptionMessage;
+import org.jboss.weld.exceptions.WeldExceptionStringMessage;
 
 /**
  * A localized message version of the
@@ -32,10 +33,11 @@ public class BusyConversationException extends javax.enterprise.context.BusyConv
 
     private static final long serialVersionUID = 2L;
 
-    private WeldExceptionMessage message;
+    private final WeldExceptionMessage message;
 
     public BusyConversationException(Throwable throwable) {
-        super(throwable.getLocalizedMessage(), throwable);
+        super(throwable);
+        this.message = new WeldExceptionStringMessage(throwable.getLocalizedMessage());
     }
 
     public <E extends Enum<?>> BusyConversationException(E key, Object... args) {

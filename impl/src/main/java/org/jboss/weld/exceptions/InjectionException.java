@@ -29,7 +29,7 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 public class InjectionException extends javax.enterprise.inject.InjectionException {
     private static final long serialVersionUID = 2L;
 
-    private WeldExceptionMessage message;
+    private final WeldExceptionMessage message;
 
     /**
      * Creates a new exception with the given cause.
