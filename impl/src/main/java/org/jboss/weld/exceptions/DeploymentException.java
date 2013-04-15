@@ -30,7 +30,7 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 public class DeploymentException extends javax.enterprise.inject.spi.DeploymentException {
     private static final long serialVersionUID = 8014646336322875707L;
 
-    private WeldExceptionMessage message;
+    private final WeldExceptionMessage message;
 
     /**
      * Creates a new exception with the given localized message key and optional
