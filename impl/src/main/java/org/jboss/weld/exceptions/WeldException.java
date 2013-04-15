@@ -27,7 +27,7 @@ import java.util.List;
 public class WeldException extends RuntimeException {
     private static final long serialVersionUID = 2L;
 
-    private WeldExceptionMessage message;
+    private final WeldExceptionMessage message;
 
     /**
      * Creates a new exception with the given cause.

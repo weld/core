@@ -29,7 +29,7 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 public class UnproxyableResolutionException extends javax.enterprise.inject.UnproxyableResolutionException {
     private static final long serialVersionUID = 2L;
 
-    private WeldExceptionMessage message;
+    private final WeldExceptionMessage message;
 
     /**
      * Creates a new exception with the given cause.
