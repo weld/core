@@ -42,7 +42,7 @@ You could also prepare the Eclipse project before hand, then import the project
 into Eclipse. First, transform the pom.xml into an m2eclipse Eclipse project
 using this command:
 
- mvn eclipse:m2eclipse
+ mvn eclipse:eclipse
 
 Now go into Eclipse an import the project by selecting "Existing projects into
 workspace" and selecting the project folder. Both approaches use the Eclipse
