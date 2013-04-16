@@ -388,10 +388,8 @@ public class ProxyFactory<T> {
     }
 
     private Class<T> createProxyClass(String proxyClassName) throws Exception {
-        ArraySet<Class<?>> specialInterfaces = new ArraySet<Class<?>>(3);
-        specialInterfaces.add(LifecycleMixin.class);
-        specialInterfaces.add(TargetInstanceProxy.class);
-        specialInterfaces.add(ProxyObject.class);
+        ArraySet<Class<?>> specialInterfaces = new ArraySet<Class<?>>(
+                LifecycleMixin.class, TargetInstanceProxy.class, ProxyObject.class);
         addAdditionalInterfaces(specialInterfaces);
         // Remove special interfaces from main set (deserialization scenario)
         additionalInterfaces.removeAll(specialInterfaces);

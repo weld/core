@@ -40,14 +40,17 @@ public class JsfApiAbstraction extends ApiAbstraction implements Service {
 
     private static final String BEHAVIOR_CLASS_NAME = "javax.faces.component.behavior.Behavior";
 
+    private static final double COMMON_VERSION = 2.0;
+    private static final double OLDER_VERSION = 1.2;
+
     public JsfApiAbstraction(ResourceLoader resourceLoader) {
         super(resourceLoader);
         this.FACES_CONTEXT = classForName(FACES_CONTEXT_CLASS_NAME);
         this.BEHAVIOR_CLASS = classForName(BEHAVIOR_CLASS_NAME);
         if (this.BEHAVIOR_CLASS.getName().equals(BEHAVIOR_CLASS_NAME)) {
-            MINIMUM_API_VERSION = 2.0;
+            MINIMUM_API_VERSION = COMMON_VERSION;
         } else {
-            MINIMUM_API_VERSION = 1.2;
+            MINIMUM_API_VERSION = OLDER_VERSION;
         }
     }
 

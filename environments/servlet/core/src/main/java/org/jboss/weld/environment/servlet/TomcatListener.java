@@ -70,8 +70,9 @@ public class TomcatListener extends Listener {
         while (ne.hasMoreElements()) {
             Binding next = (Binding) ne.nextElement();
             String name = prefix + next.getName();
-            if (name.endsWith(".class")) {
-                classes.add(name.substring(0, name.length() - 6));
+            final String classFilenameExtension = ".class";
+            if (name.endsWith(classFilenameExtension)) {
+                classes.add(name.substring(0, name.length() - classFilenameExtension.length()));
                 continue;
             }
 
