@@ -71,7 +71,7 @@ public class BeansXmlParser {
 
     public BeansXml parse(final URL beansXml) {
         SAXParserFactory factory = SAXParserFactory.newInstance();
-        factory.setValidating(disableValidating == false);
+        factory.setValidating(!disableValidating);
         factory.setNamespaceAware(true);
         if (beansXml == null) {
             throw new IllegalStateException(LOAD_ERROR, "unknown");

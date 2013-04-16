@@ -29,7 +29,7 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 public class IllegalStateException extends java.lang.IllegalStateException {
     private static final long serialVersionUID = 2L;
 
-    private WeldExceptionMessage message;
+    private final WeldExceptionMessage message;
 
     /**
      * Creates a new exception with the given localized message key and optional
@@ -54,7 +54,8 @@ public class IllegalStateException extends java.lang.IllegalStateException {
      * @param throwable The cause of the exception
      */
     public IllegalStateException(Throwable cause) {
-        super(cause.getLocalizedMessage(), cause);
+        super(cause);
+        this.message = new WeldExceptionStringMessage(cause.getLocalizedMessage());
     }
 
     @Override

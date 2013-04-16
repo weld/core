@@ -104,7 +104,7 @@ public class ArraySetMultimap<K, V> extends AbstractMap<K, List<V>> {
 
         @Override
         public boolean equals(Object o) {
-            if (o instanceof Map.Entry == false) {
+            if (!(o instanceof Map.Entry)) {
                 return false;
             }
 

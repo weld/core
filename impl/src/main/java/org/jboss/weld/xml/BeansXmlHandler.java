@@ -49,6 +49,10 @@ public class BeansXmlHandler extends DefaultHandler {
 
     static final LocLogger log = loggerFactory().getLogger(BOOTSTRAP);
 
+    private static final String VALUE_ATTRIBUTE_QUALIFIED_NAME = "value";
+    private static final String PATTERN_ATTRIBUTE_QUALIFIED_NAME = "pattern";
+    private static final String NAME_ATTRIBUTE_QUALIFIED_NAME = "name";
+
     protected static String trim(String str) {
         if (str == null) {
             return null;
@@ -133,6 +137,11 @@ public class BeansXmlHandler extends DefaultHandler {
     private static final String IF_CLASS_NOT_AVAILABLE = "if-class-not-available";
     private static final String IF_SYSTEM_PROPERTY = "if-system-property";
 
+    private static final String CLASS = "class";
+    private static final String STEREOTYPE = "stereotype";
+    private static final String INCLUDE = "include";
+    private static final String EXCLUDE = "exclude";
+
     /*
     * The containers we are parsing
     */
@@ -170,11 +179,11 @@ public class BeansXmlHandler extends DefaultHandler {
         this.seenContainers = new ArrayList<Container>();
         this.containers = new ArrayList<Container>();
         this.discoveryMode = BeanDiscoveryMode.ALL; // this is the default value for a beans.xml file
-        containers.add(new SpecContainer("interceptors", "class") {
+        containers.add(new SpecContainer("interceptors", CLASS) {
 
             @Override
             public void processEndChildElement(String uri, String localName, String qName, String nestedText) {
-                if (isInNamespace(uri) && "class".equals(localName)) {
+                if (isInNamespace(uri) && CLASS.equals(localName)) {
                     interceptors.add(new XmlMetadata<String>(qName, trim(nestedText), file, locator.getLineNumber()));
                 }
             }
@@ -184,11 +193,11 @@ public class BeansXmlHandler extends DefaultHandler {
                 throw new DefinitionException(MULTIPLE_INTERCEPTORS, file + "@" + locator.getLineNumber());
             }
         });
-        containers.add(new SpecContainer("decorators", "class") {
+        containers.add(new SpecContainer("decorators", CLASS) {
 
             @Override
             public void processEndChildElement(String uri, String localName, String qName, String nestedText) {
-                if (isInNamespace(uri) && "class".equals(localName)) {
+                if (isInNamespace(uri) && CLASS.equals(localName)) {
                     decorators.add(new XmlMetadata<String>(qName, trim(nestedText), file, locator.getLineNumber()));
                 }
             }
@@ -198,13 +207,13 @@ public class BeansXmlHandler extends DefaultHandler {
                 throw new DefinitionException(MULTIPLE_DECORATORS, file + "@" + locator.getLineNumber());
             }
         });
-        containers.add(new SpecContainer("alternatives", "class", "stereotype") {
+        containers.add(new SpecContainer("alternatives", CLASS, STEREOTYPE) {
 
             @Override
             public void processEndChildElement(String uri, String localName, String qName, String nestedText) {
-                if (isInNamespace(uri) && "class".equals(localName)) {
+                if (isInNamespace(uri) && CLASS.equals(localName)) {
                     alternativesClasses.add(new XmlMetadata<String>(qName, trim(nestedText), file, locator.getLineNumber()));
-                } else if (isInNamespace(uri) && "stereotype".equals(localName)) {
+                } else if (isInNamespace(uri) && STEREOTYPE.equals(localName)) {
                     alternativeStereotypes.add(new XmlMetadata<String>(qName, trim(nestedText), file, locator.getLineNumber()));
                 }
             }
@@ -224,18 +233,18 @@ public class BeansXmlHandler extends DefaultHandler {
             @Override
             public void processStartChildElement(String uri, String localName, String qName, Attributes attributes) {
                 if (isFilterElement(uri, localName)) {
-                    name = interpolate(trim(attributes.getValue("name")));
-                    pattern = interpolate(trim(attributes.getValue("pattern")));
+                    name = interpolate(trim(attributes.getValue(NAME_ATTRIBUTE_QUALIFIED_NAME)));
+                    pattern = interpolate(trim(attributes.getValue(PATTERN_ATTRIBUTE_QUALIFIED_NAME)));
                     systemPropertyActivations = new ArrayList<Metadata<SystemPropertyActivation>>();
                     classAvailableActivations = new ArrayList<Metadata<ClassAvailableActivation>>();
                 } else if (isInNamespace(uri)) {
                     if (IF_CLASS_AVAILABLE.equals(localName) || IF_CLASS_NOT_AVAILABLE.equals(localName)) {
-                        String className = interpolate(trim(attributes.getValue("name")));
+                        String className = interpolate(trim(attributes.getValue(NAME_ATTRIBUTE_QUALIFIED_NAME)));
                         Metadata<ClassAvailableActivation> classAvailableActivation = new XmlMetadata<ClassAvailableActivation>(qName, new ClassAvailableActivationImpl(className, IF_CLASS_NOT_AVAILABLE.equals(localName)), file, locator.getLineNumber());
                         classAvailableActivations.add(classAvailableActivation);
                     } else if (IF_SYSTEM_PROPERTY.equals(localName)) {
-                        String systemPropertyName = interpolate(trim(attributes.getValue("name")));
-                        String systemPropertyValue = interpolate(trim(attributes.getValue("value")));
+                        String systemPropertyName = interpolate(trim(attributes.getValue(NAME_ATTRIBUTE_QUALIFIED_NAME)));
+                        String systemPropertyValue = interpolate(trim(attributes.getValue(VALUE_ATTRIBUTE_QUALIFIED_NAME)));
                         Metadata<SystemPropertyActivation> systemPropertyActivation = new XmlMetadata<SystemPropertyActivation>(qName, new SystemPropertyActivationImpl(systemPropertyName, systemPropertyValue), file, locator.getLineNumber());
                         systemPropertyActivations.add(systemPropertyActivation);
                     }
@@ -252,9 +261,9 @@ public class BeansXmlHandler extends DefaultHandler {
                         filter = new FilterImpl(name, systemPropertyActivations, classAvailableActivations);
                     }
                     Metadata<Filter> filterMetadata = new XmlMetadata<Filter>(qName, filter, file, locator.getLineNumber());
-                    if ("include".equals(localName)) {
+                    if (INCLUDE.equals(localName)) {
                         includes.add(filterMetadata);
-                    } else if ("exclude".equals(localName)) {
+                    } else if (EXCLUDE.equals(localName)) {
                         excludes.add(filterMetadata);
                     }
                     // reset
@@ -266,7 +275,7 @@ public class BeansXmlHandler extends DefaultHandler {
             }
 
             private boolean isFilterElement(String uri, String localName) {
-                return isInNamespace(uri) && ("include".equals(localName) || "exclude".equals(localName));
+                return isInNamespace(uri) && (INCLUDE.equals(localName) || EXCLUDE.equals(localName));
             }
 
             @Override

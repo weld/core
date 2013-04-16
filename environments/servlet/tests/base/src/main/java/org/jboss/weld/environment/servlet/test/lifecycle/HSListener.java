@@ -37,11 +37,12 @@ public class HSListener implements HttpSessionListener {
         } catch (NamingException e) {
             throw new RuntimeException(e);
         } finally {
-            if (context != null)
+            if (context != null) {
                 try {
                     context.close();
                 } catch (NamingException ignored) {
                 }
+            }
         }
     }
 

@@ -49,6 +49,8 @@ import org.jboss.weld.util.bean.WrappedBeanHolder;
 
 public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implements AfterBeanDiscovery {
 
+    private static final String TYPE_ARGUMENT_NAME = "type";
+
     public static void fire(BeanManagerImpl beanManager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, Collection<ContextHolder<? extends Context>> contexts) {
         new AfterBeanDiscoveryImpl(beanManager, deployment, beanDeployments, contexts).fire();
     }
@@ -113,13 +115,13 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
 
     @Override
     public <T> AnnotatedType<T> getAnnotatedType(Class<T> type, String id) {
-        Preconditions.checkArgumentNotNull(type, "type");
+        Preconditions.checkArgumentNotNull(type, TYPE_ARGUMENT_NAME);
         return slimAnnotatedTypeStore.get(type, id);
     }
 
     @Override
     public <T> Iterable<AnnotatedType<T>> getAnnotatedTypes(Class<T> type) {
-        Preconditions.checkArgumentNotNull(type, "type");
+        Preconditions.checkArgumentNotNull(type, TYPE_ARGUMENT_NAME);
         return cast(slimAnnotatedTypeStore.get(type));
     }
 }

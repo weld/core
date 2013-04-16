@@ -87,18 +87,23 @@ public class ReflectiveClassMetadata<T> implements ClassMetadata<T>, Serializabl
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         ReflectiveClassMetadata<?> other = (ReflectiveClassMetadata<?>) obj;
         if (clazz == null) {
-            if (other.clazz != null)
+            if (other.clazz != null) {
                 return false;
-        } else if (!clazz.equals(other.clazz))
+            }
+        } else if (!clazz.equals(other.clazz)) {
             return false;
+        }
         return true;
     }
 

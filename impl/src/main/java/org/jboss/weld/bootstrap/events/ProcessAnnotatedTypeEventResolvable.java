@@ -139,18 +139,23 @@ public class ProcessAnnotatedTypeEventResolvable implements Resolvable {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (!(obj instanceof ProcessAnnotatedTypeEventResolvable))
+        }
+        if (!(obj instanceof ProcessAnnotatedTypeEventResolvable)) {
             return false;
+        }
         ProcessAnnotatedTypeEventResolvable other = (ProcessAnnotatedTypeEventResolvable) obj;
         if (types == null) {
-            if (other.types != null)
+            if (other.types != null) {
                 return false;
-        } else if (!types.equals(other.types))
+            }
+        } else if (!types.equals(other.types)) {
             return false;
+        }
         return true;
     }
 

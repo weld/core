@@ -195,10 +195,11 @@ public class WeldBootstrap implements CDI11Bootstrap {
         private <T extends Service> void copyService(BeanDeploymentArchive archive, Class<T> serviceClass) {
             // for certain services we can fall back to deployment-level settings or defaults
             ServiceRegistry registry = archive.getServices();
-            if (registry.contains(serviceClass) == false) {
+            if (!registry.contains(serviceClass)) {
                 T service = deployment.getServices().get(serviceClass);
-                if (service != null)
+                if (service != null) {
                     registry.add(serviceClass, service);
+                }
             }
         }
 

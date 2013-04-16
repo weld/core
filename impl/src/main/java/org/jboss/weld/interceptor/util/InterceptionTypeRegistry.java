@@ -36,6 +36,9 @@ public final class InterceptionTypeRegistry {
     private static final Logger LOG = LoggerFactory.getLogger(InterceptionTypeRegistry.class);
     private static final Map<InterceptionType, Class<? extends Annotation>> INTERCEPTOR_ANNOTATION_CLASSES;
 
+    private InterceptionTypeRegistry() {
+    }
+
     static {
         final Map<InterceptionType, Class<? extends Annotation>> interceptionAnnotationClasses = new HashMap<InterceptionType, Class<? extends Annotation>>();
 

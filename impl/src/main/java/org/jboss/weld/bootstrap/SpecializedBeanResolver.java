@@ -38,6 +38,8 @@ public class SpecializedBeanResolver {
 
     private final Set<BeanDeployerEnvironment> accessibleEnvironments;
 
+    private static final String IS_NOT_A_SPECIALIZING_BEAN = " is not a specializing bean";
+
     public SpecializedBeanResolver(Set<BeanDeployerEnvironment> accessibleEnvironments) {
         this.accessibleEnvironments = accessibleEnvironments;
     }
@@ -70,14 +72,14 @@ public class SpecializedBeanResolver {
 
     protected Set<AbstractClassBean<?>> resolveSpecializedBeans(final AbstractClassBean<?> bean) {
         if (!bean.isSpecializing()) {
-            throw new IllegalArgumentException(bean + " is not a specializing bean");
+            throw new IllegalArgumentException(bean + IS_NOT_A_SPECIALIZING_BEAN);
         }
         return getSpecializedBeans(bean, CLASS_BEAN_TRANSFORM);
     }
 
     protected Set<ProducerMethod<?, ?>> resolveSpecializedBeans(final ProducerMethod<?, ?> bean) {
         if (!bean.isSpecializing()) {
-            throw new IllegalArgumentException(bean + " is not a specializing bean");
+            throw new IllegalArgumentException(bean + IS_NOT_A_SPECIALIZING_BEAN);
         }
         return getSpecializedBeans(bean, PRODUCER_METHOD_TRANSFORM);
     }

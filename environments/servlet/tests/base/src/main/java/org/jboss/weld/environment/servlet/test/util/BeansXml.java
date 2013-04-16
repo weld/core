@@ -19,6 +19,13 @@ public class BeansXml implements Asset {
             "          http://java.sun.com/xml/ns/javaee http://docs.jboss.org/cdi/beans_1_0.xsd\n" +
             "          http://jboss.org/schema/weld/beans http://jboss.org/schema/weld/beans_1_1.xsd\">\n";
 
+    private static final String CLOSING_TAG_PREFIX = "</";
+    private static final String OPENING_TAG_PREFIX = "<";
+    private static final String TAG_SUFFIX_NEW_LINE = ">\n";
+    private static final String TAG_SUFFIX = ">";
+    private static final String ALTERNATIVES_ELEMENT_NAME = "alternatives";
+    private static final String CLASS = "class";
+
     private String schema = SCHEMA;
 
     private List<Class<?>> alternatives = new ArrayList<Class<?>>();
@@ -57,8 +64,8 @@ public class BeansXml implements Asset {
         StringBuilder xml = new StringBuilder();
         xml.append(schema);
         appendAlternatives(alternatives, stereotypes, xml);
-        appendSection("interceptors", "class", interceptors, xml);
-        appendSection("decorators", "class", decorators, xml);
+        appendSection("interceptors", CLASS, interceptors, xml);
+        appendSection("decorators", CLASS, decorators, xml);
         appendExternal(xml);
         xml.append("</beans>");
 
@@ -71,24 +78,24 @@ public class BeansXml implements Asset {
 
     private void appendAlternatives(List<Class<?>> alternatives, List<Class<?>> stereotypes, StringBuilder xml) {
         if (alternatives.size() > 0 || stereotypes.size() > 0) {
-            xml.append("<").append("alternatives").append(">\n");
-            appendClasses("class", alternatives, xml);
+            xml.append(OPENING_TAG_PREFIX).append(ALTERNATIVES_ELEMENT_NAME).append(TAG_SUFFIX_NEW_LINE);
+            appendClasses(CLASS, alternatives, xml);
             appendClasses("stereotype", stereotypes, xml);
-            xml.append("</").append("alternatives").append(">\n");
+            xml.append(CLOSING_TAG_PREFIX).append(ALTERNATIVES_ELEMENT_NAME).append(TAG_SUFFIX_NEW_LINE);
         }
     }
 
     private void appendSection(String name, String subName, List<Class<?>> classes, StringBuilder xml) {
         if (classes.size() > 0) {
-            xml.append("<").append(name).append(">\n");
+            xml.append(OPENING_TAG_PREFIX).append(name).append(TAG_SUFFIX_NEW_LINE);
             appendClasses(subName, classes, xml);
-            xml.append("</").append(name).append(">\n");
+            xml.append(CLOSING_TAG_PREFIX).append(name).append(TAG_SUFFIX_NEW_LINE);
         }
     }
 
     private void appendClasses(String name, List<Class<?>> classes, StringBuilder xml) {
         for (Class<?> clazz : classes) {
-            xml.append("<").append(name).append(">").append(clazz.getName()).append("</").append(name).append(">\n");
+            xml.append(OPENING_TAG_PREFIX).append(name).append(TAG_SUFFIX).append(clazz.getName()).append(CLOSING_TAG_PREFIX).append(name).append(TAG_SUFFIX_NEW_LINE);
         }
     }
 }

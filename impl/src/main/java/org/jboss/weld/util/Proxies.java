@@ -130,6 +130,9 @@ public class Proxies {
 
     }
 
+    private Proxies() {
+    }
+
     /**
      * Indicates if a class is proxyable
      *
@@ -165,8 +168,9 @@ public class Proxies {
     }
 
     public static UnproxyableResolutionException getUnproxyableTypesException(Bean<?> declaringBean) {
-        if (declaringBean == null)
+        if (declaringBean == null) {
             throw new java.lang.IllegalArgumentException("Null declaring bean!");
+        }
 
         return getUnproxyableTypesExceptionInt(declaringBean.getTypes(), declaringBean);
     }
@@ -213,7 +217,7 @@ public class Proxies {
             constructor = AccessController.doPrivileged(GetDeclaredConstructorAction.of(clazz));
         } catch (PrivilegedActionException e) {
             InstantiatorFactory factory = Container.instance().services().get(InstantiatorFactory.class);
-            if (factory == null || factory.useInstantiators() == false) {
+            if (factory == null || !(factory.useInstantiators())) {
                 return new UnproxyableResolutionException(NOT_PROXYABLE_NO_CONSTRUCTOR, clazz, getDeclaringBeanInfo(declaringBean));
             } else {
                 return null;
@@ -223,7 +227,7 @@ public class Proxies {
             return new UnproxyableResolutionException(NOT_PROXYABLE_NO_CONSTRUCTOR, clazz, getDeclaringBeanInfo(declaringBean));
         } else if (Modifier.isPrivate(constructor.getModifiers())) {
             InstantiatorFactory factory = Container.instance().services().get(InstantiatorFactory.class);
-            if (factory == null || factory.useInstantiators() == false) {
+            if (factory == null || !(factory.useInstantiators())) {
                 return new UnproxyableResolutionException(NOT_PROXYABLE_PRIVATE_CONSTRUCTOR, clazz, constructor, getDeclaringBeanInfo(declaringBean));
             } else {
                 return null;

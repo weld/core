@@ -23,6 +23,8 @@ import org.jboss.weld.metadata.cache.QualifierModel;
 import org.jboss.weld.security.SetAccessibleAction;
 import org.jboss.weld.util.collections.ArraySet;
 
+import com.google.common.base.Objects;
+
 /**
  * Optmized representation of a qualifier. JDK annotation proxies are slooow, this class provides significantly
  * faster equals/hashCode methods, that also correctly handle non binding attributes.
@@ -77,7 +79,7 @@ public class QualifierInstance {
     private QualifierInstance(Class<? extends Annotation> annotationClass, Map<AnnotatedMethod<?>, Object> values) {
         this.annotationClass = annotationClass;
         this.values = values;
-        this.hashCode = 31 * annotationClass.hashCode() + values.hashCode();
+        this.hashCode = Objects.hashCode(annotationClass, values);
     }
 
     private static Map<AnnotatedMethod<?>, Object> createValues(final Annotation instance, final Class<? extends Annotation> annotationClass, final MetaAnnotationStore store) {
@@ -100,13 +102,21 @@ public class QualifierInstance {
 
     @Override
     public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         final QualifierInstance that = (QualifierInstance) o;
 
-        if (!annotationClass.equals(that.annotationClass)) return false;
-        if (!values.equals(that.values)) return false;
+        if (!annotationClass.equals(that.annotationClass)) {
+            return false;
+        }
+        if (!values.equals(that.values)) {
+            return false;
+        }
 
         return true;
     }

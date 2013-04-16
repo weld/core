@@ -58,12 +58,13 @@ public class LazyCyclicSessionBeanStore extends LazySessionBeanStore {
             return session;
         } finally {
             if (create) {
-                if (newTemp)
+                if (newTemp) {
                     temp.remove();
-
-                if (session != null && map.isEmpty() == false) {
-                    for (Map.Entry<String, Object> entry : map.entrySet())
+                }
+                if (session != null && !(map.isEmpty())) {
+                    for (Map.Entry<String, Object> entry : map.entrySet()) {
                         session.setAttribute(entry.getKey(), entry.getValue());
+                    }
                 }
             }
         }
@@ -76,8 +77,9 @@ public class LazyCyclicSessionBeanStore extends LazySessionBeanStore {
             Collection<String> names = new HashSet<String>();
             names.addAll(map.keySet());
             HttpSession session = getSessionIfExists();
-            if (session != null)
+            if (session != null) {
                 names.addAll(new EnumerationList<String>(Reflections.<Enumeration<String>>cast(session.getAttributeNames())));
+            }
             return names;
         }
 
@@ -91,8 +93,9 @@ public class LazyCyclicSessionBeanStore extends LazySessionBeanStore {
             map.remove(key);
 
             HttpSession session = getSessionIfExists();
-            if (session != null)
+            if (session != null) {
                 session.removeAttribute(key);
+            }
         } else {
             super.removeAttribute(key);
         }
@@ -112,8 +115,9 @@ public class LazyCyclicSessionBeanStore extends LazySessionBeanStore {
                 map.put(key, instance);
             }
         } finally {
-            if (created)
+            if (created) {
                 temp.remove();
+            }
         }
     }
 
@@ -122,13 +126,13 @@ public class LazyCyclicSessionBeanStore extends LazySessionBeanStore {
         Map<String, Object> map = temp.get();
         if (map != null) {
             Object value = map.get(prefixedId);
-            if (value != null)
+            if (value != null) {
                 return value;
-
+            }
             HttpSession session = getSessionIfExists();
-            if (session != null)
+            if (session != null) {
                 return session.getAttribute(prefixedId);
-
+            }
             return null;
         }
 

@@ -169,11 +169,13 @@ public class BasicInjectionTarget<T> extends AbstractProducer<T> implements Inje
 
     @Override
     public String toString() {
+        StringBuilder result = new StringBuilder("InjectionTarget for ");
         if (getBean() == null) {
-             return "InjectionTarget for " + getAnnotated();
+            result.append(getAnnotated());
         } else {
-            return "InjectionTarget for " + getBean();
+            result.append(getBean());
         }
+        return result.toString();
     }
 
     @Override

@@ -101,6 +101,18 @@ public class ProxyFactory<T> {
 
     protected static final BytecodeMethodResolver DEFAULT_METHOD_RESOLVER = new DefaultBytecodeMethodResolver();
 
+    protected static final String LJAVA_LANG_REFLECT_METHOD = "Ljava/lang/reflect/Method;";
+    protected static final String LJAVA_LANG_BYTE = "Ljava/lang/Byte;";
+    protected static final String LJAVA_LANG_CLASS = "Ljava/lang/Class;";
+    protected static final String LJAVA_LANG_OBJECT = "Ljava/lang/Object;";
+    protected static final String LJAVA_LANG_STRING = "Ljava/lang/String;";
+    protected static final String LJAVA_LANG_THREAD_LOCAL = "Ljava/lang/ThreadLocal;";
+
+    protected static final String INIT_METHOD_NAME = "<init>";
+    protected static final String ADDING_METHOD_LOG_PREFIX = "Adding method {}";
+    protected static final String METHOD_HANDLER_FIELD_NAME = "methodHandler";
+    private static final String JAVA = "java";
+
     /**
      * created a new proxy factory from a bean instance. The proxy name is
      * generated from the bean id
@@ -285,8 +297,8 @@ public class ProxyFactory<T> {
         if (!proxyClassName.endsWith(suffix)) {
             proxyClassName = proxyClassName + suffix;
         }
-        if (proxyClassName.startsWith("java")) {
-            proxyClassName = proxyClassName.replaceFirst("java", "org.jboss.weld");
+        if (proxyClassName.startsWith(JAVA)) {
+            proxyClassName = proxyClassName.replaceFirst(JAVA, "org.jboss.weld");
         }
         Class<T> proxyClass = null;
         log.trace("Retrieving/generating proxy class {}", proxyClassName);
@@ -376,10 +388,8 @@ public class ProxyFactory<T> {
     }
 
     private Class<T> createProxyClass(String proxyClassName) throws Exception {
-        ArraySet<Class<?>> specialInterfaces = new ArraySet<Class<?>>(3);
-        specialInterfaces.add(LifecycleMixin.class);
-        specialInterfaces.add(TargetInstanceProxy.class);
-        specialInterfaces.add(ProxyObject.class);
+        ArraySet<Class<?>> specialInterfaces = new ArraySet<Class<?>>(
+                LifecycleMixin.class, TargetInstanceProxy.class, ProxyObject.class);
         addAdditionalInterfaces(specialInterfaces);
         // Remove special interfaces from main set (deserialization scenario)
         additionalInterfaces.removeAll(specialInterfaces);
@@ -438,7 +448,7 @@ public class ProxyFactory<T> {
                         for (int i = 0; i < exceptions.length; ++i) {
                             exceptions[i] = constructor.getExceptionTypes()[i].getName();
                         }
-                        ConstructorUtils.addConstructor("V", DescriptorUtils.getParameterTypes(constructor.getParameterTypes()), exceptions, proxyClassType, initialValueBytecode, isUsingUnsafeInstantiators());
+                        ConstructorUtils.addConstructor(DescriptorUtils.VOID_CLASS_DESCRIPTOR, DescriptorUtils.getParameterTypes(constructor.getParameterTypes()), exceptions, proxyClassType, initialValueBytecode, isUsingUnsafeInstantiators());
                     }
                 }
                 if (!constructorFound) {
@@ -455,10 +465,10 @@ public class ProxyFactory<T> {
     protected void addFields(ClassFile proxyClassType, List<DeferredBytecode> initialValueBytecode) {
         // The field representing the underlying instance or special method
         // handling
-        proxyClassType.addField(AccessFlag.PRIVATE, "methodHandler", MethodHandler.class);
+        proxyClassType.addField(AccessFlag.PRIVATE, METHOD_HANDLER_FIELD_NAME, MethodHandler.class);
         if(!isUsingUnsafeInstantiators()) {
             // field used to indicate that super() has been called
-            proxyClassType.addField(AccessFlag.PRIVATE, CONSTRUCTED_FLAG_NAME, "Z");
+            proxyClassType.addField(AccessFlag.PRIVATE, CONSTRUCTED_FLAG_NAME, DescriptorUtils.BOOLEAN_CLASS_DESCRIPTOR);
         }
 
     }
@@ -500,7 +510,7 @@ public class ProxyFactory<T> {
                             ClassMethod classMethod = proxyClassType.addMethod(method);
                             addConstructedGuardToMethodBody(classMethod);
                             createForwardingMethodBody(classMethod, methodInfo);
-                            log.trace("Adding method {}", method);
+                            log.trace(ADDING_METHOD_LOG_PREFIX, method);
                         } catch (DuplicateMemberException e) {
                             // do nothing. This will happen if superclass methods
                             // have been overridden
@@ -515,7 +525,7 @@ public class ProxyFactory<T> {
                         MethodInformation methodInfo = new RuntimeMethodInformation(method);
                         ClassMethod classMethod = proxyClassType.addMethod(method);
                         createSpecialMethodBody(classMethod, methodInfo);
-                        log.trace("Adding method {}", method);
+                        log.trace(ADDING_METHOD_LOG_PREFIX, method);
                     } catch (DuplicateMemberException e) {
                     }
                 }
@@ -569,7 +579,7 @@ public class ProxyFactory<T> {
         // now create the conditional
         final CodeAttribute cond = classMethod.getCodeAttribute();
         cond.aload(0);
-        cond.getfield(classMethod.getClassFile().getName(), CONSTRUCTED_FLAG_NAME, "Z");
+        cond.getfield(classMethod.getClassFile().getName(), CONSTRUCTED_FLAG_NAME, DescriptorUtils.BOOLEAN_CLASS_DESCRIPTOR);
 
         // jump if the proxy constructor has finished
         BranchEnd jumpMarker = cond.ifne();
@@ -625,7 +635,7 @@ public class ProxyFactory<T> {
         // add an appropriate return instruction
         final CodeAttribute b = classMethod.getCodeAttribute();
         b.aload(0);
-        b.getfield(classMethod.getClassFile().getName(), "methodHandler", DescriptorUtils.classToStringRepresentation(MethodHandler.class));
+        b.getfield(classMethod.getClassFile().getName(), METHOD_HANDLER_FIELD_NAME, DescriptorUtils.classToStringRepresentation(MethodHandler.class));
         b.aload(0);
         bytecodeMethodResolver.getDeclaredMethod(classMethod, method.getDeclaringClass(), method.getName(), method.getParameterTypes());
         b.aconstNull();
@@ -653,10 +663,11 @@ public class ProxyFactory<T> {
         }
         // now we have all our arguments on the stack
         // lets invoke the method
-        b.invokeinterface(MethodHandler.class.getName(), "invoke", "Ljava/lang/Object;", new String[]{"Ljava/lang/Object;", "Ljava/lang/reflect/Method;", "Ljava/lang/reflect/Method;", "[Ljava/lang/Object;"});
+        b.invokeinterface(MethodHandler.class.getName(), "invoke", LJAVA_LANG_OBJECT, new String[] { LJAVA_LANG_OBJECT,
+                LJAVA_LANG_REFLECT_METHOD, LJAVA_LANG_REFLECT_METHOD, "[" + LJAVA_LANG_OBJECT });
         if (addReturnInstruction) {
             // now we need to return the appropriate type
-            if (method.getReturnType().equals("V") ) {
+            if (method.getReturnType().equals(DescriptorUtils.VOID_CLASS_DESCRIPTOR)) {
                 b.returnInstruction();
             } else if(DescriptorUtils.isPrimitive(method.getReturnType())) {
                 Boxing.unbox(b, method.getReturnType());
@@ -682,7 +693,7 @@ public class ProxyFactory<T> {
         try {
             // Add special methods for interceptors
             for (Method method : LifecycleMixin.class.getMethods()) {
-                log.trace("Adding method {}", method);
+                log.trace(ADDING_METHOD_LOG_PREFIX, method);
                 MethodInformation methodInfo = new RuntimeMethodInformation(method);
                 final ClassMethod classMethod = proxyClassType.addMethod(method);
                 createInterceptorBody(classMethod, methodInfo);
@@ -711,14 +722,14 @@ public class ProxyFactory<T> {
         final CodeAttribute b = method.getCodeAttribute();
         b.aload(0);
         b.aload(1);
-        b.putfield(method.getClassFile().getName(), "methodHandler", DescriptorUtils.classToStringRepresentation(MethodHandler.class));
+        b.putfield(method.getClassFile().getName(), METHOD_HANDLER_FIELD_NAME, DescriptorUtils.classToStringRepresentation(MethodHandler.class));
         b.returnInstruction();
     }
 
     private static void generateGetMethodHandlerBody(ClassMethod method) {
         final CodeAttribute b = method.getCodeAttribute();
         b.aload(0);
-        b.getfield(method.getClassFile().getName(), "methodHandler", DescriptorUtils.classToStringRepresentation(MethodHandler.class));
+        b.getfield(method.getClassFile().getName(), METHOD_HANDLER_FIELD_NAME, DescriptorUtils.classToStringRepresentation(MethodHandler.class));
         b.returnInstruction();
     }
 
@@ -731,19 +742,19 @@ public class ProxyFactory<T> {
      * however the proxy is directly created without calling the constructor
      */
     private void addConstructorsForBeanWithPrivateConstructors(ClassFile proxyClassType) {
-        ClassMethod ctor = proxyClassType.addMethod(AccessFlag.PUBLIC, "<init>", "V", "Ljava/lang/Byte;");
+        ClassMethod ctor = proxyClassType.addMethod(AccessFlag.PUBLIC, INIT_METHOD_NAME, DescriptorUtils.VOID_CLASS_DESCRIPTOR, LJAVA_LANG_BYTE);
         CodeAttribute b = ctor.getCodeAttribute();
         b.aload(0);
         b.aconstNull();
         b.aconstNull();
-        b.invokespecial(proxyClassType.getName(), "<init>", "(Ljava/lang/Byte;Ljava/lang/Byte;)V");
+        b.invokespecial(proxyClassType.getName(), INIT_METHOD_NAME, "(" + LJAVA_LANG_BYTE + LJAVA_LANG_BYTE + ")" + DescriptorUtils.VOID_CLASS_DESCRIPTOR);
         b.returnInstruction();
 
-        ctor = proxyClassType.addMethod(AccessFlag.PUBLIC, "<init>", "V", "Ljava/lang/Byte;", "Ljava/lang/Byte;");
+        ctor = proxyClassType.addMethod(AccessFlag.PUBLIC, INIT_METHOD_NAME, DescriptorUtils.VOID_CLASS_DESCRIPTOR, LJAVA_LANG_BYTE, LJAVA_LANG_BYTE);
         b = ctor.getCodeAttribute();
         b.aload(0);
         b.aconstNull();
-        b.invokespecial(proxyClassType.getName(), "<init>", "(Ljava/lang/Byte;)V");
+        b.invokespecial(proxyClassType.getName(), INIT_METHOD_NAME, "(" + LJAVA_LANG_BYTE + ")" + DescriptorUtils.VOID_CLASS_DESCRIPTOR);
         b.returnInstruction();
     }
 
@@ -764,7 +775,7 @@ public class ProxyFactory<T> {
      */
     public static ClassLoader resolveClassLoaderForBeanProxy(Class<?> proxiedType, TypeInfo typeInfo) {
         Class<?> superClass = typeInfo.getSuperClass();
-        if (superClass.getName().startsWith("java")) {
+        if (superClass.getName().startsWith(JAVA)) {
             ClassLoader cl = Container.instance().services().get(ProxyServices.class).getClassLoader(proxiedType);
             if (cl == null) {
                 cl = Thread.currentThread().getContextClassLoader();

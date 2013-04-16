@@ -30,7 +30,7 @@ public class UnsupportedOperationException extends java.lang.UnsupportedOperatio
 
     private static final long serialVersionUID = 2L;
 
-    private WeldExceptionMessage message;
+    private final WeldExceptionMessage message;
 
     /**
      * Creates a new exception with no message.  Here the stacktrace serves as the
@@ -39,6 +39,7 @@ public class UnsupportedOperationException extends java.lang.UnsupportedOperatio
      */
     public UnsupportedOperationException() {
         super();
+        this.message = new WeldExceptionStringMessage("");
     }
 
     /**

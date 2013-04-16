@@ -56,6 +56,8 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
 
     private static final String SUPER_DELEGATE_SUFFIX = "$$super";
 
+    private static final String COMBINED_INTERCEPTOR_AND_DECORATOR_STACK_METHOD_HANDLER_CLASS_NAME = "org.jboss.weld.bean.proxy.CombinedInterceptorAndDecoratorStackMethodHandler";
+
     private final Set<MethodSignature> enhancedMethodSignatures;
 
     private final Class<?> proxiedBeanType;
@@ -121,7 +123,7 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
                             ClassMethod classMethod = proxyClassType.addMethod(method);
                             addConstructedGuardToMethodBody(classMethod);
                             createForwardingMethodBody(classMethod, methodInfo);
-                            log.trace("Adding method {}", method);
+                            log.trace(ADDING_METHOD_LOG_PREFIX, method);
                         } catch (DuplicateMemberException e) {
                             // do nothing. This will happen if superclass methods have
                             // been overridden
@@ -139,7 +141,7 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
                             MethodInformation methodInformation = new RuntimeMethodInformation(method);
                             final ClassMethod classMethod = proxyClassType.addMethod(method);
                             createSpecialMethodBody(classMethod, methodInformation);
-                            log.trace("Adding method {}", method);
+                            log.trace(ADDING_METHOD_LOG_PREFIX, method);
                         } catch (DuplicateMemberException e) {
                         }
                     }
@@ -209,15 +211,15 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
         // add an appropriate return instruction
         final CodeAttribute b = method.getCodeAttribute();
         b.aload(0);
-        b.getfield(method.getClassFile().getName(), "methodHandler", DescriptorUtils.classToStringRepresentation(MethodHandler.class));
+        b.getfield(method.getClassFile().getName(), METHOD_HANDLER_FIELD_NAME, DescriptorUtils.classToStringRepresentation(MethodHandler.class));
 
         // this is a self invocation optimisation
         // test to see if this is a self invocation, and if so invokespecial the
         // superclass method directly
         if (addProceed) {
             b.dup();
-            b.checkcast("org.jboss.weld.bean.proxy.CombinedInterceptorAndDecoratorStackMethodHandler");
-            b.invokevirtual("org.jboss.weld.bean.proxy.CombinedInterceptorAndDecoratorStackMethodHandler", "isDisabledHandler", "()Z");
+            b.checkcast(COMBINED_INTERCEPTOR_AND_DECORATOR_STACK_METHOD_HANDLER_CLASS_NAME);
+            b.invokevirtual(COMBINED_INTERCEPTOR_AND_DECORATOR_STACK_METHOD_HANDLER_CLASS_NAME, "isDisabledHandler", "()" + DescriptorUtils.BOOLEAN_CLASS_DESCRIPTOR);
             b.iconst(0);
             BranchEnd invokeSuperDirectly = b.ifIcmpeq();
             // now build the bytecode that invokes the super class method
@@ -260,10 +262,10 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
         }
         // now we have all our arguments on the stack
         // lets invoke the method
-        b.invokeinterface(MethodHandler.class.getName(), "invoke", "(Ljava/lang/Object;Ljava/lang/reflect/Method;Ljava/lang/reflect/Method;[Ljava/lang/Object;)Ljava/lang/Object;");
+        b.invokeinterface(MethodHandler.class.getName(), "invoke", "(" + LJAVA_LANG_OBJECT + LJAVA_LANG_REFLECT_METHOD + LJAVA_LANG_REFLECT_METHOD + "[" + LJAVA_LANG_OBJECT + ")" + LJAVA_LANG_OBJECT);
         if (addReturnInstruction) {
             // now we need to return the appropriate type
-            if(methodInfo.getReturnType().equals("V")) {
+            if (methodInfo.getReturnType().equals(DescriptorUtils.VOID_CLASS_DESCRIPTOR)) {
                 b.returnInstruction();
             } else if (DescriptorUtils.isPrimitive(methodInfo.getReturnType())) {
                 Boxing.unbox(b,method.getReturnType());
@@ -289,7 +291,7 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
         try {
             // Add special methods for interceptors
             for (Method method : LifecycleMixin.class.getMethods()) {
-                log.trace("Adding method {}", method);
+                log.trace(ADDING_METHOD_LOG_PREFIX, method);
                 MethodInformation methodInfo = new RuntimeMethodInformation(method);
                 createInterceptorBody(proxyClassType.addMethod(method), methodInfo, false);
             }
@@ -311,7 +313,7 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
     private static void generateGetMethodHandlerBody(ClassMethod method) {
         final CodeAttribute b = method.getCodeAttribute();
         b.aload(0);
-        b.getfield(method.getClassFile().getName(), "methodHandler", DescriptorUtils.classToStringRepresentation(MethodHandler.class));
+        b.getfield(method.getClassFile().getName(), METHOD_HANDLER_FIELD_NAME, DescriptorUtils.classToStringRepresentation(MethodHandler.class));
         b.returnInstruction();
     }
 
@@ -331,7 +333,7 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
         final CodeAttribute b = method.getCodeAttribute();
         b.aload(0);
         b.aload(1);
-        b.putfield(method.getClassFile().getName(), "methodHandler", DescriptorUtils.classToStringRepresentation(MethodHandler.class));
+        b.putfield(method.getClassFile().getName(), METHOD_HANDLER_FIELD_NAME, DescriptorUtils.classToStringRepresentation(MethodHandler.class));
         b.returnInstruction();
     }
 

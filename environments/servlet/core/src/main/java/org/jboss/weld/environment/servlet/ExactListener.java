@@ -48,8 +48,9 @@ public class ExactListener extends Listener {
         private ExactScanner(ClassLoader classLoader, ServletContext context) {
             super(classLoader);
 
-            if (context == null)
+            if (context == null) {
                 throw new IllegalArgumentException("Null context");
+            }
 
             this.context = context;
         }
@@ -57,8 +58,9 @@ public class ExactListener extends Listener {
         protected URL getExactBeansURL() {
             try {
                 URL url = context.getResource("/WEB-INF/" + BEAN_CLASSES);
-                if (url == null)
+                if (url == null) {
                     url = getClassLoader().getResource(BEAN_CLASSES);
+                }
 
                 return url;
             } catch (MalformedURLException e) {
@@ -69,8 +71,9 @@ public class ExactListener extends Listener {
         @Override
         public void scanResources(String[] resources, Set<String> classes, Set<URL> urls) {
             URL url = getExactBeansURL();
-            if (url == null)
+            if (url == null) {
                 throw new IllegalArgumentException("Missing exact beans resource: " + BEAN_CLASSES);
+            }
 
             try {
                 InputStream is = url.openStream();
@@ -79,8 +82,9 @@ public class ExactListener extends Listener {
                     String line;
                     while ((line = reader.readLine()) != null) {
                         // ignore comments
-                        if (line.startsWith("#") == false)
+                        if (!line.startsWith("#")) {
                             classes.add(line);
+                        }
                     }
                 } finally {
                     try {

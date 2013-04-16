@@ -41,6 +41,9 @@ public class SessionHolder {
 
     private static final ThreadLocal<HttpSession> CURRENT_SESSION = new ThreadLocal<HttpSession>();
 
+    private SessionHolder() {
+    }
+
     public static void requestInitialized(HttpServletRequest request) {
         CURRENT_SESSION.set(request.getSession(false));
     }

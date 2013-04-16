@@ -80,18 +80,23 @@ public class BackedAnnotatedMethod<X> extends BackedAnnotatedCallable<X, Method>
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         BackedAnnotatedMethod<?> other = (BackedAnnotatedMethod<?>) obj;
         if (method == null) {
-            if (other.method != null)
+            if (other.method != null) {
                 return false;
-        } else if (!method.equals(other.method))
+            }
+        } else if (!method.equals(other.method)) {
             return false;
+        }
         return true;
     }
 

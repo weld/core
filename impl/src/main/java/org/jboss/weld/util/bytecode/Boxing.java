@@ -29,6 +29,14 @@ import org.jboss.classfilewriter.code.CodeAttribute;
  */
 public class Boxing {
 
+    private static final String JAVA_LANG_NUMBER = "java.lang.Number";
+    private static final String JAVA_LANG_CHARACTER = "java.lang.Character";
+    private static final String JAVA_LANG_BOOLEAN = "java.lang.Boolean";
+    private static final String VALUE_OF = "valueOf";
+
+    private Boxing() {
+    }
+
     public static void boxIfNessesary(CodeAttribute b, String desc) {
         if (desc.length() == 1) {
             char type = desc.charAt(0);
@@ -58,7 +66,7 @@ public class Boxing {
                     boxBoolean(b);
                     break;
                 default:
-                    throw new RuntimeException("Cannot box unkown primitive type: " + type);
+                    throw new RuntimeException("Cannot box unknown primitive type: " + type);
             }
         }
     }
@@ -82,89 +90,90 @@ public class Boxing {
                 return unboxChar(b);
             case 'Z':
                 return unboxBoolean(b);
+            default:
+                throw new RuntimeException("Cannot unbox unknown primitive type: " + type);
         }
-        throw new RuntimeException("Cannot unbox unkown primitive type: " + type);
     }
 
     public static void boxInt(CodeAttribute bc) {
-        bc.invokestatic("java.lang.Integer", "valueOf", "(I)Ljava/lang/Integer;");
+        bc.invokestatic("java.lang.Integer", VALUE_OF, "(I)Ljava/lang/Integer;");
     }
 
     public static void boxLong(CodeAttribute bc) {
-        bc.invokestatic("java.lang.Long", "valueOf", "(J)Ljava/lang/Long;");
+        bc.invokestatic("java.lang.Long", VALUE_OF, "(J)Ljava/lang/Long;");
     }
 
     public static void boxShort(CodeAttribute bc) {
-        bc.invokestatic("java.lang.Short", "valueOf", "(S)Ljava/lang/Short;");
+        bc.invokestatic("java.lang.Short", VALUE_OF, "(S)Ljava/lang/Short;");
     }
 
     public static void boxByte(CodeAttribute bc) {
-        bc.invokestatic("java.lang.Byte", "valueOf", "(B)Ljava/lang/Byte;");
+        bc.invokestatic("java.lang.Byte", VALUE_OF, "(B)Ljava/lang/Byte;");
     }
 
     public static void boxFloat(CodeAttribute bc) {
-        bc.invokestatic("java.lang.Float", "valueOf", "(F)Ljava/lang/Float;");
+        bc.invokestatic("java.lang.Float", VALUE_OF, "(F)Ljava/lang/Float;");
     }
 
     public static void boxDouble(CodeAttribute bc) {
-        bc.invokestatic("java.lang.Double", "valueOf", "(D)Ljava/lang/Double;");
+        bc.invokestatic("java.lang.Double", VALUE_OF, "(D)Ljava/lang/Double;");
     }
 
     public static void boxChar(CodeAttribute bc) {
-        bc.invokestatic("java.lang.Character", "valueOf", "(C)Ljava/lang/Character;");
+        bc.invokestatic(JAVA_LANG_CHARACTER, VALUE_OF, "(C)Ljava/lang/Character;");
     }
 
     public static void boxBoolean(CodeAttribute bc) {
-        bc.invokestatic("java.lang.Boolean", "valueOf", "(Z)Ljava/lang/Boolean;");
+        bc.invokestatic(JAVA_LANG_BOOLEAN, VALUE_OF, "(Z)Ljava/lang/Boolean;");
     }
 
     // unboxing
 
     public static CodeAttribute unboxInt(CodeAttribute bc) {
-        bc.checkcast("java.lang.Number");
-        bc.invokevirtual("java.lang.Number", "intValue", "()I");
+        bc.checkcast(JAVA_LANG_NUMBER);
+        bc.invokevirtual(JAVA_LANG_NUMBER, "intValue", "()I");
         return bc;
     }
 
     public static CodeAttribute unboxLong(CodeAttribute bc) {
-        bc.checkcast("java.lang.Number");
-        bc.invokevirtual("java.lang.Number", "longValue", "()J");
+        bc.checkcast(JAVA_LANG_NUMBER);
+        bc.invokevirtual(JAVA_LANG_NUMBER, "longValue", "()J");
         return bc;
     }
 
     public static CodeAttribute unboxShort(CodeAttribute bc) {
-        bc.checkcast("java.lang.Number");
-        bc.invokevirtual("java.lang.Number", "shortValue", "()S");
+        bc.checkcast(JAVA_LANG_NUMBER);
+        bc.invokevirtual(JAVA_LANG_NUMBER, "shortValue", "()S");
         return bc;
     }
 
     public static CodeAttribute unboxByte(CodeAttribute bc) {
-        bc.checkcast("java.lang.Number");
-        bc.invokevirtual("java.lang.Number", "byteValue", "()B");
+        bc.checkcast(JAVA_LANG_NUMBER);
+        bc.invokevirtual(JAVA_LANG_NUMBER, "byteValue", "()B");
         return bc;
     }
 
     public static CodeAttribute unboxFloat(CodeAttribute bc) {
-        bc.checkcast("java.lang.Number");
-        bc.invokevirtual("java.lang.Number", "floatValue", "()F");
+        bc.checkcast(JAVA_LANG_NUMBER);
+        bc.invokevirtual(JAVA_LANG_NUMBER, "floatValue", "()F");
         return bc;
     }
 
     public static CodeAttribute unboxDouble(CodeAttribute bc) {
-        bc.checkcast("java.lang.Number");
-        bc.invokevirtual("java.lang.Number", "doubleValue", "()D");
+        bc.checkcast(JAVA_LANG_NUMBER);
+        bc.invokevirtual(JAVA_LANG_NUMBER, "doubleValue", "()D");
         return bc;
     }
 
     public static CodeAttribute unboxChar(CodeAttribute bc) {
-        bc.checkcast("java.lang.Character");
-        bc.invokevirtual("java.lang.Character", "charValue", "()C");
+        bc.checkcast(JAVA_LANG_CHARACTER);
+        bc.invokevirtual(JAVA_LANG_CHARACTER, "charValue", "()C");
         return bc;
     }
 
     public static CodeAttribute unboxBoolean(CodeAttribute bc) {
-        bc.checkcast("java.lang.Boolean");
-        bc.invokevirtual("java.lang.Boolean", "booleanValue", "()Z");
+        bc.checkcast(JAVA_LANG_BOOLEAN);
+        bc.invokevirtual(JAVA_LANG_BOOLEAN, "booleanValue", "()Z");
         return bc;
     }
 

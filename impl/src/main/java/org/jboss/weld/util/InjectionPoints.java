@@ -80,8 +80,9 @@ public class InjectionPoints {
             return ((DecoratorImpl<?>) decorator).getDelegateInjectionPoint();
         } else {
             for (InjectionPoint injectionPoint : decorator.getInjectionPoints()) {
-                if (injectionPoint.isDelegate())
+                if (injectionPoint.isDelegate()) {
                     return injectionPoint;
+                }
             }
         }
         return null;

@@ -30,7 +30,7 @@ public class IllegalProductException extends javax.enterprise.inject.IllegalProd
 
     private static final long serialVersionUID = 2L;
 
-    private WeldExceptionMessage message;
+    private final WeldExceptionMessage message;
 
     /**
      * Creates a new exception with the given localized message key and optional

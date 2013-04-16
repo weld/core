@@ -26,6 +26,8 @@ import static org.jboss.weld.environment.servlet.util.Reflections.setFieldValue;
  *         originalAnnotationProcessor, then to weldProcessor.
  */
 public class WeldForwardingAnnotationProcessor extends ForwardingAnnotationProcessor {
+    private static final String NEITHER_FIELD_NOR_SETTER_FOUND_FOR_ANNOTATION_PROCESSOR = "neither field nor setter found for annotationProcessor";
+    private static final String ANNOTATION_PROCESSOR_FIELD_NAME = "annotationProcessor";
     private final AnnotationProcessor firstProcessor;
     private final AnnotationProcessor secondProcessor;
 
@@ -103,11 +105,11 @@ public class WeldForwardingAnnotationProcessor extends ForwardingAnnotationProce
         if (method != null) {
             return invokeMethod(method, AnnotationProcessor.class, stdContext);
         }
-        Field field = findDeclaredField(stdContext.getClass(), "annotationProcessor");
+        Field field = findDeclaredField(stdContext.getClass(), ANNOTATION_PROCESSOR_FIELD_NAME);
         if (field != null) {
             return getFieldValue(field, stdContext, AnnotationProcessor.class);
         }
-        throw new RuntimeException("neither field nor setter found for annotationProcessor");
+        throw new RuntimeException(NEITHER_FIELD_NOR_SETTER_FOUND_FOR_ANNOTATION_PROCESSOR);
     }
 
     private static void setAnnotationProcessor(StandardContext stdContext, AnnotationProcessor annotationProcessor) {
@@ -117,11 +119,11 @@ public class WeldForwardingAnnotationProcessor extends ForwardingAnnotationProce
             invokeMethod(method, void.class, stdContext, annotationProcessor);
             return;
         }
-        Field field = findDeclaredField(stdContext.getClass(), "annotationProcessor");
+        Field field = findDeclaredField(stdContext.getClass(), ANNOTATION_PROCESSOR_FIELD_NAME);
         if (field != null) {
             setFieldValue(field, stdContext, annotationProcessor);
             return;
         }
-        throw new RuntimeException("neither field nor setter found for annotationProcessor");
+        throw new RuntimeException(NEITHER_FIELD_NOR_SETTER_FOUND_FOR_ANNOTATION_PROCESSOR);
     }
 }

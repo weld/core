@@ -43,6 +43,9 @@ import org.jboss.weld.exceptions.DefinitionException;
  */
 public class ExternalBeanAttributesFactory {
 
+    private ExternalBeanAttributesFactory() {
+    }
+
     /**
      * @param source source {@link BeanAttributes}.
      * @return a safe copy of source {@link BeanAttributes}.
