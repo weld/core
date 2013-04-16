@@ -87,8 +87,9 @@ public class URLScanner {
                     URL url = urlEnum.nextElement();
                     String urlPath = url.toURI().getSchemeSpecificPart();
 
-                    if (urlPath.startsWith("file:")) {
-                        urlPath = urlPath.substring(5);
+                    final String fileUrlType = "file:";
+                    if (urlPath.startsWith(fileUrlType)) {
+                        urlPath = urlPath.substring(fileUrlType.length());
                     }
 
                     if (urlPath.indexOf(SEPARATOR) > 0) {

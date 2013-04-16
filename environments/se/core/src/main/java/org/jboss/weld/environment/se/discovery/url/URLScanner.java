@@ -83,8 +83,9 @@ public class URLScanner {
 
             if (isJar && urlPath.lastIndexOf(SEPARATOR) > 0) {
                 urlPath = urlPath.substring(0, urlPath.lastIndexOf(SEPARATOR));
-                if (urlPath.startsWith("file:")) {
-                    urlPath = urlPath.substring(5);
+                final String fileUrlType = "file:";
+                if (urlPath.startsWith(fileUrlType)) {
+                    urlPath = urlPath.substring(fileUrlType.length());
                 }
             } else {
                 // hack for /META-INF/beans.xml

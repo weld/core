@@ -116,10 +116,12 @@ public class Reflections {
      */
     public static String getPropertyName(Method method) {
         String methodName = method.getName();
-        if (methodName.matches("^(get).*")) {
-            return Introspector.decapitalize(methodName.substring(3));
-        } else if (methodName.matches("^(is).*")) {
-            return Introspector.decapitalize(methodName.substring(2));
+        final String get = "get";
+        final String is = "is";
+        if (methodName.startsWith(get)) {
+            return Introspector.decapitalize(methodName.substring(get.length()));
+        } else if (methodName.startsWith(is)) {
+            return Introspector.decapitalize(methodName.substring(is.length()));
         } else {
             return null;
         }

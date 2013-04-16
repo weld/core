@@ -33,6 +33,9 @@ import java.lang.reflect.Method;
 public class JettyPost72Container extends AbstractJettyContainer {
     public static Container INSTANCE = new JettyPost72Container();
 
+    private static final int MAJOR_VERSION = 7;
+    private static final int MINOR_VERSION = 2;
+
     protected String classToCheck() {
         throw new IllegalAccessError("Should not be used!");
     }
@@ -49,7 +52,7 @@ public class JettyPost72Container extends AbstractJettyContainer {
         String[] split = version.split("\\.");
         int major = Integer.parseInt(split[0]);
         int minor = Integer.parseInt(split[1]);
-        return (100 * major + 10 * minor) >= 720;
+        return (major > MAJOR_VERSION || (major == MAJOR_VERSION & minor >= MINOR_VERSION));
     }
 
     public void initialize(ContainerContext context) {

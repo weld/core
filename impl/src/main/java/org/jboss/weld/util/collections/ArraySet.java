@@ -48,6 +48,8 @@ public class ArraySet<E> implements Set<E>, Serializable {
     // Underlying array of set elements
     private ArrayList<E> elements;
 
+    private static final int defaultInitialCapacity = 5;
+
     public ArraySet(ArrayList<E> initialList) {
         elements = initialList;
     }
@@ -62,7 +64,7 @@ public class ArraySet<E> implements Set<E>, Serializable {
     }
 
     public ArraySet() {
-        this(5);
+        this(defaultInitialCapacity);
     }
 
     public ArraySet(E... initialElements) {
