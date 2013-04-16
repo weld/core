@@ -103,8 +103,9 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
     public void release(Contextual<T> contextual, T instance) {
         for (ContextualInstance<?> dependentInstance : dependentInstances) {
             // do not destroy contextual again, since it's just being destroyed
-            if (contextual == null || (dependentInstance.getContextual().equals(contextual) == false))
+            if (contextual == null || !(dependentInstance.getContextual().equals(contextual))) {
                 destroy(dependentInstance);
+            }
         }
         if (resourceReferences != null) {
             for (ResourceReference<?> reference : resourceReferences) {

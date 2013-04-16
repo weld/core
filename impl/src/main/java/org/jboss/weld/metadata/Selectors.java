@@ -33,6 +33,9 @@ public class Selectors {
      */
     public static final String DEEP_TREE_MATCH = "**";
 
+    private Selectors() {
+    }
+
     /**
      * Tests whether or not a given path matches a given pattern.
      * <p/>

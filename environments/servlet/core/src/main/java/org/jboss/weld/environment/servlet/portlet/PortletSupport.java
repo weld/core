@@ -29,6 +29,9 @@ import org.jboss.weld.environment.servlet.Listener;
 public final class PortletSupport {
     private static volatile Boolean enabled;
 
+    private PortletSupport() {
+    }
+
     /**
      * Is portlet env supported.
      *

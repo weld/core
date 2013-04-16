@@ -27,6 +27,9 @@ import org.jboss.weld.security.NewInstanceAction;
 
 class Exceptions {
 
+    private Exceptions() {
+    }
+
     private static void rethrowException(Throwable t, Class<? extends RuntimeException> exceptionToThrow) {
         if (t instanceof RuntimeException) {
             throw (RuntimeException) t;

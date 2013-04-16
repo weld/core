@@ -38,8 +38,9 @@ public class ConfigTestBase {
         BeansXml beansXml = new BeansXml() {
             protected void appendExternal(StringBuilder xml) {
                 xml.append("<weld:scan>");
-                for (Package pckg : excludedPackages)
+                for (Package pckg : excludedPackages) {
                     xml.append("<weld:exclude name=\"").append(pckg.getName()).append(".**\"/>");
+                }
                 xml.append("</weld:scan>");
             }
         };

@@ -80,10 +80,8 @@ public class FilterPredicate implements Predicate<String> {
         this.active = active;
         if (filter.getValue() instanceof WeldFilter) {
             WeldFilter weldFilter = (WeldFilter) filter.getValue();
-            if (weldFilter.getName() != null && weldFilter.getPattern() != null) {
-                throw new IllegalStateException("Cannot specify both a pattern and a name at " + filter);
-            }
-            if (weldFilter.getName() == null && weldFilter.getPattern() == null) {
+            if ((weldFilter.getName() != null && weldFilter.getPattern() != null)
+             || (weldFilter.getName() == null && weldFilter.getPattern() == null)) {
                 throw new IllegalStateException("Cannot specify both a pattern and a name at " + filter);
             }
             if (weldFilter.getPattern() != null) {
@@ -96,10 +94,12 @@ public class FilterPredicate implements Predicate<String> {
                 throw new IllegalStateException("Name must be specified at " + filter);
             }
             String name = filter.getValue().getName();
-            if (name.endsWith(".**")) {
-                this.matcher = new PrefixMatcher(name.substring(0, name.length() - 3), filter);
-            } else if (name.endsWith(".*")) {
-                this.matcher = new PackageMatcher(name.substring(0, name.length() - 2), filter);
+            String suffixDotDoubleStar = ".**";
+            String suffixDotStar = ".*";
+            if (name.endsWith(suffixDotDoubleStar)) {
+                this.matcher = new PrefixMatcher(name.substring(0, name.length() - suffixDotDoubleStar.length()), filter);
+            } else if (name.endsWith(suffixDotStar)) {
+                this.matcher = new PackageMatcher(name.substring(0, name.length() - suffixDotStar.length()), filter);
             } else {
                 this.matcher = new FullyQualifierClassNameMatcher(name, filter);
             }

@@ -67,8 +67,9 @@ public class WebAppBeanDeploymentArchive implements BeanDeploymentArchive {
                     scanner.scanDirectories(files, classes, urls);
                 } else {
                     URL url = servletContext.getResource(WEB_INF_CLASSES);
-                    if (url != null)
+                    if (url != null) {
                         scanner.scanURLs(new URL[]{url}, classes, urls);
+                    }
                 }
             }
         } catch (MalformedURLException e) {

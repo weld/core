@@ -32,16 +32,18 @@ import org.jboss.weld.util.collections.EnumerationList;
  */
 public abstract class AbstractClassLoaderResourceLoader implements ResourceLoader {
 
+    private static final String ERROR_LOADING_CLASS = "Error loading class ";
+
     @Override
     public Class<?> classForName(String name) {
         try {
             return classLoader().loadClass(name);
         } catch (ClassNotFoundException e) {
-            throw new ResourceLoadingException("Error loading class " + name, e);
+            throw new ResourceLoadingException(ERROR_LOADING_CLASS + name, e);
         } catch (NoClassDefFoundError e) {
-            throw new ResourceLoadingException("Error loading class " + name, e);
+            throw new ResourceLoadingException(ERROR_LOADING_CLASS + name, e);
         } catch (TypeNotPresentException e) {
-            throw new ResourceLoadingException("Error loading class " + name, e);
+            throw new ResourceLoadingException(ERROR_LOADING_CLASS + name, e);
         }
     }
 

@@ -29,8 +29,9 @@ public class ArrayIterator<T> implements Iterator<T> {
     private int currentIndex = 0;
 
     public ArrayIterator(T[] array) {
-        if (array == null)
+        if (array == null) {
             throw new IllegalArgumentException("Iterated array cannot be null");
+        }
         this.array = array;
     }
 

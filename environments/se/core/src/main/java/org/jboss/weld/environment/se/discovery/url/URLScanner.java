@@ -40,6 +40,11 @@ import java.net.URL;
 public class URLScanner {
 
     private static final Logger log = LoggerFactory.getLogger(URLScanner.class);
+
+    private static final String FILE = "file";
+    // according to JarURLConnection api doc, the separator is "!/"
+    private static final String SEPARATOR = "!/";
+
     private final String[] resources;
     private final ResourceLoader resourceLoader;
     private final Bootstrap bootstrap;
@@ -69,17 +74,18 @@ public class URLScanner {
         String urlPath = url.toExternalForm();
         String urlType = getUrlType(urlPath);
         log.debug("URL Type: {}", urlType);
-        boolean isFile = "file".equals(urlType);
+        boolean isFile = FILE.equals(urlType);
         boolean isJar = "jar".equals(urlType);
         // Extra built-in support for simple file-based resources
         if (isFile || isJar) {
             // switch to using toURI().getSchemeSpecificPart() instead of toExternalForm()
             urlPath = url.toURI().getSchemeSpecificPart();
 
-            if (isJar && urlPath.lastIndexOf("!/") > 0) {   // according to JarURLConnection api doc, the separator is "!/"
-                urlPath = urlPath.substring(0, urlPath.lastIndexOf("!/"));
-                if (urlPath.startsWith("file:")) {
-                    urlPath = urlPath.substring(5);
+            if (isJar && urlPath.lastIndexOf(SEPARATOR) > 0) {
+                urlPath = urlPath.substring(0, urlPath.lastIndexOf(SEPARATOR));
+                final String fileUrlType = "file:";
+                if (urlPath.startsWith(fileUrlType)) {
+                    urlPath = urlPath.substring(fileUrlType.length());
                 }
             } else {
                 // hack for /META-INF/beans.xml
@@ -98,7 +104,7 @@ public class URLScanner {
      * determine resource type (eg: jar, file, bundle)
      */
     private String getUrlType(String urlPath) {
-        String urlType = "file";
+        String urlType = FILE;
         int colonIndex = urlPath.indexOf(":");
         if (colonIndex != -1) {
             urlType = urlPath.substring(0, colonIndex);

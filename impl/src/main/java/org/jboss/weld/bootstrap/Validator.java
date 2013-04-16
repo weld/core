@@ -258,8 +258,9 @@ public class Validator implements Service {
 
                         if (passivationCapabilityCheckRequired) {
                             boolean isSerializable = (interceptor instanceof InterceptorImpl) ? ((InterceptorImpl<?>) interceptor).isSerializable() : Beans.isPassivationCapableDependency(interceptor);
-                            if (isSerializable == false)
+                            if (!isSerializable) {
                                 throw new DeploymentException(PASSIVATING_BEAN_WITH_NONSERIALIZABLE_INTERCEPTOR, classBean, interceptor);
+                            }
                         }
                         for (InjectionPoint injectionPoint : interceptor.getInjectionPoints()) {
                             Bean<?> resolvedBean = beanManager.resolve(beanManager.getBeans(injectionPoint));

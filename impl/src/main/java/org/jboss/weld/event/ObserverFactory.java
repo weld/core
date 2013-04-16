@@ -31,6 +31,10 @@ import org.jboss.weld.manager.BeanManagerImpl;
  * @author David Allen
  */
 public class ObserverFactory {
+
+    private ObserverFactory() {
+    }
+
     /**
      * Creates an observer
      *

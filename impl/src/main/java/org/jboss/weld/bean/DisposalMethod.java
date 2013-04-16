@@ -51,6 +51,7 @@ import org.jboss.weld.util.reflection.Reflections;
 
 public class DisposalMethod<X, T> {
 
+    private static final String DISPOSER_ANNOTATION = "@Disposes";
     private final BeanManagerImpl beanManager;
     private final AbstractClassBean<X> declaringBean;
 
@@ -99,16 +100,16 @@ public class DisposalMethod<X, T> {
             throw new DefinitionException(MULTIPLE_DISPOSE_PARAMS, disposalMethodInjectionPoint);
         }
         if (enhancedAnnotatedMethod.getEnhancedParameters(Observes.class).size() > 0) {
-            throw new DefinitionException(INCONSISTENT_ANNOTATIONS_ON_METHOD, "@Observes", "@Disposes", disposalMethodInjectionPoint);
+            throw new DefinitionException(INCONSISTENT_ANNOTATIONS_ON_METHOD, "@Observes", DISPOSER_ANNOTATION, disposalMethodInjectionPoint);
         }
         if (enhancedAnnotatedMethod.getAnnotation(Inject.class) != null) {
-            throw new DefinitionException(INCONSISTENT_ANNOTATIONS_ON_METHOD, "@Intitializer", "@Disposes", disposalMethodInjectionPoint);
+            throw new DefinitionException(INCONSISTENT_ANNOTATIONS_ON_METHOD, "@Intitializer", DISPOSER_ANNOTATION, disposalMethodInjectionPoint);
         }
         if (enhancedAnnotatedMethod.getAnnotation(Produces.class) != null) {
-            throw new DefinitionException(INCONSISTENT_ANNOTATIONS_ON_METHOD, "@Produces", "@Disposes", disposalMethodInjectionPoint);
+            throw new DefinitionException(INCONSISTENT_ANNOTATIONS_ON_METHOD, "@Produces", DISPOSER_ANNOTATION, disposalMethodInjectionPoint);
         }
         if (enhancedAnnotatedMethod.getAnnotation(Specializes.class) != null) {
-            throw new DefinitionException(INCONSISTENT_ANNOTATIONS_ON_METHOD, "@Specialized", "@Disposes", disposalMethodInjectionPoint);
+            throw new DefinitionException(INCONSISTENT_ANNOTATIONS_ON_METHOD, "@Specialized", DISPOSER_ANNOTATION, disposalMethodInjectionPoint);
         }
         if (declaringBean instanceof SessionBean<?>) {
             SessionBean<?> sessionBean = (SessionBean<?>) declaringBean;

@@ -48,6 +48,7 @@ import org.jboss.weld.security.GetMethodAction;
  */
 public abstract class ProducerMethodProducer<X, T> extends AbstractMemberProducer<X, T> {
 
+    private static final String PRODUCER_ANNOTATION = "@Produces";
     // The underlying method
     private final MethodInjectionPoint<T, ? super X> method;
 
@@ -63,9 +64,9 @@ public abstract class ProducerMethodProducer<X, T> extends AbstractMemberProduce
      */
     protected void checkProducerMethod(EnhancedAnnotatedMethod<T, ? super X> method) {
         if (method.getEnhancedParameters(Observes.class).size() > 0) {
-            throw new DefinitionException(INCONSISTENT_ANNOTATIONS_ON_METHOD, "@Produces", "@Observes");
+            throw new DefinitionException(INCONSISTENT_ANNOTATIONS_ON_METHOD, PRODUCER_ANNOTATION, "@Observes");
         } else if (method.getEnhancedParameters(Disposes.class).size() > 0) {
-            throw new DefinitionException(INCONSISTENT_ANNOTATIONS_ON_METHOD, "@Produces", "@Disposes");
+            throw new DefinitionException(INCONSISTENT_ANNOTATIONS_ON_METHOD, PRODUCER_ANNOTATION, "@Disposes");
         } else if (getDeclaringBean() instanceof SessionBean<?>) {
             boolean methodDeclaredOnTypes = false;
             // TODO use annotated item?

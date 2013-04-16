@@ -49,6 +49,8 @@ import org.jboss.weld.util.reflection.Reflections;
  */
 public class BeanManagerProxy extends ForwardingBeanManager {
 
+    private static final String GET_BEANS_METHOD_NAME = "getBeans()";
+
     private static final long serialVersionUID = -6990849486568169846L;
 
     private final BeanManagerImpl manager;
@@ -77,13 +79,13 @@ public class BeanManagerProxy extends ForwardingBeanManager {
 
     @Override
     public Set<Bean<?>> getBeans(Type beanType, Annotation... qualifiers) {
-        checkContainerValidated("getBeans()");
+        checkContainerValidated(GET_BEANS_METHOD_NAME);
         return super.getBeans(beanType, qualifiers);
     }
 
     @Override
     public Set<Bean<?>> getBeans(String name) {
-        checkContainerValidated("getBeans()");
+        checkContainerValidated(GET_BEANS_METHOD_NAME);
         return super.getBeans(name);
     }
 

@@ -104,18 +104,23 @@ public class BackedAnnotatedConstructor<X> extends BackedAnnotatedCallable<X, Co
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         BackedAnnotatedConstructor<?> other = (BackedAnnotatedConstructor<?>) obj;
         if (constructor == null) {
-            if (other.constructor != null)
+            if (other.constructor != null) {
                 return false;
-        } else if (!constructor.equals(other.constructor))
+            }
+        } else if (!constructor.equals(other.constructor)) {
             return false;
+        }
         return true;
     }
 

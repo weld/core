@@ -9,6 +9,8 @@ public class Generator {
     private int lastInt = 0;
     private java.util.Random random = new java.util.Random(System.currentTimeMillis());
 
+    private static final int RANGE = 100;
+
     java.util.Random getRandom() {
         return random;
     }
@@ -16,9 +18,9 @@ public class Generator {
     @Produces
     @Random
     int next() {
-        int nextInt = getRandom().nextInt(100);
+        int nextInt = getRandom().nextInt(RANGE);
         while (nextInt == lastInt) {
-            nextInt = getRandom().nextInt(100);
+            nextInt = getRandom().nextInt(RANGE);
         }
         lastInt = nextInt;
         return nextInt;

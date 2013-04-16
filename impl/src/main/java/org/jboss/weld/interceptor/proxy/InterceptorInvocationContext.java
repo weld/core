@@ -184,9 +184,10 @@ public class InterceptorInvocationContext implements InvocationContext {
             } else {
                 parameterTypes = constructor.getParameterTypes();
             }
-            if (parameterTypes.length != newParametersCount)
+            if (parameterTypes.length != newParametersCount) {
                 throw new IllegalArgumentException("Wrong number of parameters: method has " + parameterTypes.length
                         + ", attempting to set " + newParametersCount + (params != null ? "" : " (argument was null)"));
+            }
             if (params != null) {
                 for (int i = 0; i < params.length; i++) {
                     Class<?> methodParameterClass = parameterTypes[i];
@@ -201,13 +202,13 @@ public class InterceptorInvocationContext implements InvocationContext {
                             if (methodParameterClass.isPrimitive()) {
                                 //widening primitive
                                 if (!isWideningPrimitive(newArgumentClass, methodParameterClass)) {
-                                    throw new IllegalArgumentException("Incompatible parameter type on position: " + i + " :" + newArgumentClass + " (expected type was " + methodParameterClass.getName() + ")");
+                                    throwIAE(i, methodParameterClass, newArgumentClass);
                                 }
                             } else {
                                 //boxing+widening reference
                                 Class<?> boxedArgumentClass = getWrapperClass(newArgumentClass);
                                 if (!methodParameterClass.isAssignableFrom(boxedArgumentClass)) {
-                                    throw new IllegalArgumentException("Incompatible parameter type on position: " + i + " :" + newArgumentClass + " (expected type was " + methodParameterClass.getName() + ")");
+                                    throwIAE(i, methodParameterClass, newArgumentClass);
                                 }
                             }
                         } else {
@@ -217,12 +218,12 @@ public class InterceptorInvocationContext implements InvocationContext {
                                 Class<?> unboxedClass = getPrimitiveClass(newArgumentClass);
 
                                 if (!unboxedClass.equals(methodParameterClass) && !isWideningPrimitive(unboxedClass, methodParameterClass)) {
-                                    throw new IllegalArgumentException("Incompatible parameter type on position: " + i + " :" + newArgumentClass + " (expected type was " + methodParameterClass.getName() + ")");
+                                    throwIAE(i, methodParameterClass, newArgumentClass);
                                 }
                             } else {
                                 //widening reference
                                 if (!methodParameterClass.isAssignableFrom(newArgumentClass)) {
-                                    throw new IllegalArgumentException("Incompatible parameter type on position: " + i + " :" + newArgumentClass + " (expected type was " + methodParameterClass.getName() + ")");
+                                    throwIAE(i, methodParameterClass, newArgumentClass);
                                 }
                             }
                         }
@@ -238,6 +239,10 @@ public class InterceptorInvocationContext implements InvocationContext {
         } else {
             throw new IllegalStateException("Illegal invocation to setParameters() during lifecycle invocation");
         }
+    }
+
+    private void throwIAE(int i, Class<?> methodParameterClass, Class<? extends Object> newArgumentClass) {
+        throw new IllegalArgumentException("Incompatible parameter type on position: " + i + " :" + newArgumentClass + " (expected type was " + methodParameterClass.getName() + ")");
     }
 
     @Override

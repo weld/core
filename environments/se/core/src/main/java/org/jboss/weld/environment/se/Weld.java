@@ -62,6 +62,7 @@ import java.util.Set;
 public class Weld {
 
     private static final String BOOTSTRAP_IMPL_CLASS_NAME = "org.jboss.weld.bootstrap.WeldBootstrap";
+    private static final String ERROR_LOADING_WELD_BOOTSTRAP_EXC_MESSAGE = "Error loading Weld bootstrap, check that Weld is on the classpath";
 
     private ShutdownManager shutdownManager;
     private Set<Metadata<Extension>> extensions;
@@ -72,8 +73,9 @@ public class Weld {
      * @param extension an extension
      */
     public void addExtension(Extension extension) {
-        if (extensions == null)
+        if (extensions == null) {
             extensions = new HashSet<Metadata<Extension>>();
+        }
         extensions.add(new MetadataImpl<Extension>(extension, "<explicity-added>"));
     }
 
@@ -86,16 +88,17 @@ public class Weld {
     public WeldContainer initialize() {
         ResourceLoader resourceLoader = new WeldSEResourceLoader();
         // check for beans.xml
-        if (resourceLoader.getResource(WeldSEUrlDeployment.BEANS_XML) == null)
+        if (resourceLoader.getResource(WeldSEUrlDeployment.BEANS_XML) == null) {
             throw new IllegalStateException("Missing beans.xml file in META-INF!");
+        }
 
         final Bootstrap delegate;
         try {
             delegate = (Bootstrap) resourceLoader.classForName(BOOTSTRAP_IMPL_CLASS_NAME).newInstance();
         } catch (InstantiationException ex) {
-            throw new IllegalStateException("Error loading Weld bootstrap, check that Weld is on the classpath", ex);
+            throw new IllegalStateException(ERROR_LOADING_WELD_BOOTSTRAP_EXC_MESSAGE, ex);
         } catch (IllegalAccessException ex) {
-            throw new IllegalStateException("Error loading Weld bootstrap, check that Weld is on the classpath", ex);
+            throw new IllegalStateException(ERROR_LOADING_WELD_BOOTSTRAP_EXC_MESSAGE, ex);
         }
 
         Bootstrap bootstrap = new ForwardingBootstrap() {
@@ -119,8 +122,9 @@ public class Weld {
                 Iterable<Metadata<Extension>> iter = delegate.loadExtensions(classLoader);
                 if (extensions != null) {
                     Set<Metadata<Extension>> set = new HashSet<Metadata<Extension>>(extensions);
-                    for (Metadata<Extension> ext : iter)
+                    for (Metadata<Extension> ext : iter) {
                         set.add(ext);
+                    }
                     return set;
                 } else {
                     return iter;

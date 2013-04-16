@@ -41,6 +41,11 @@ import java.util.zip.ZipFile;
 public class URLScanner {
     private static final Logger log = LoggerFactory.getLogger(URLScanner.class);
 
+    private static final String CLASS_FILENAME_EXTENSION = ".class";
+    private static final String COULD_NOT_READ = "could not read: ";
+    // according to JarURLConnection api doc, the separator is "!/"
+    private static final String SEPARATOR = "!/";
+
     private final ClassLoader classLoader;
 
     public URLScanner(ClassLoader classLoader) {
@@ -52,7 +57,7 @@ public class URLScanner {
     }
 
     protected void handle(String name, URL url, Set<String> classes, Set<URL> urls) {
-        if (name.endsWith(".class")) {
+        if (name.endsWith(CLASS_FILENAME_EXTENSION)) {
             classes.add(filenameToClassname(name));
         } else if (name.equals(WebAppBeanDeploymentArchive.META_INF_BEANS_XML)) {
             urls.add(url);
@@ -82,12 +87,13 @@ public class URLScanner {
                     URL url = urlEnum.nextElement();
                     String urlPath = url.toURI().getSchemeSpecificPart();
 
-                    if (urlPath.startsWith("file:")) {
-                        urlPath = urlPath.substring(5);
+                    final String fileUrlType = "file:";
+                    if (urlPath.startsWith(fileUrlType)) {
+                        urlPath = urlPath.substring(fileUrlType.length());
                     }
 
-                    if (urlPath.indexOf("!/") > 0) {   // according to JarURLConnection api doc, the separator is "!/"
-                        urlPath = urlPath.substring(0, urlPath.indexOf("!/"));
+                    if (urlPath.indexOf(SEPARATOR) > 0) {
+                        urlPath = urlPath.substring(0, urlPath.indexOf(SEPARATOR));
                     } else {
                         File dirOrArchive = new File(urlPath);
 
@@ -102,9 +108,9 @@ public class URLScanner {
                     paths.add(urlPath);
                 }
             } catch (IOException ioe) {
-                log.warn("could not read: " + resourceName, ioe);
+                log.warn(COULD_NOT_READ + resourceName, ioe);
             } catch (URISyntaxException e) {
-                log.warn("could not read: " + resourceName, e);
+                log.warn(COULD_NOT_READ + resourceName, e);
             }
         }
 
@@ -139,7 +145,7 @@ public class URLScanner {
                 ZipEntry entry = entries.nextElement();
                 String name = entry.getName();
                 // By using File, the correct URL chars are escaped (such as space) and others are not (such as / and $)
-                String entryUrlString = "jar:" + new File(file.getPath() + "!/" + name).toURI().toURL().toExternalForm();
+                String entryUrlString = "jar:" + new File(file.getPath() + SEPARATOR + name).toURI().toURL().toExternalForm();
                 if (name.endsWith("/") && !entryUrlString.endsWith("/")) {
                     entryUrlString += "/";
                 }
@@ -192,6 +198,6 @@ public class URLScanner {
      * @return classname
      */
     public static String filenameToClassname(String filename) {
-        return filename.substring(0, filename.lastIndexOf(".class")).replace('/', '.').replace('\\', '.');
+        return filename.substring(0, filename.lastIndexOf(CLASS_FILENAME_EXTENSION)).replace('/', '.').replace('\\', '.');
     }
 }

@@ -62,8 +62,9 @@ public class WeldCrossContextFilter implements Filter {
          chain.doFilter(request, response);
 
       } finally {
-         if (activated)
+         if (activated) {
             listener.requestDestroyed(new ServletRequestEvent(config.getServletContext(), request));
+         }
       }
    }
 

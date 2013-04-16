@@ -5,6 +5,9 @@ import java.util.List;
 
 public class EventHolder {
 
+    private EventHolder() {
+    }
+
     public static List<Object> events = new ArrayList<Object>();
 
 }

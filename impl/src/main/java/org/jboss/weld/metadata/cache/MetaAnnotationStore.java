@@ -173,12 +173,13 @@ public class MetaAnnotationStore implements Service {
      */
     @Override
     public String toString() {
+        final String newLine = "\n";
         StringBuilder buffer = new StringBuilder();
-        buffer.append("Metadata cache\n");
-        buffer.append("Registered binding type models: ").append(qualifiers.size()).append("\n");
-        buffer.append("Registered scope type models: ").append(scopes.size()).append("\n");
-        buffer.append("Registered stereotype models: ").append(stereotypes.size()).append("\n");
-        buffer.append("Registered interceptor binding models: ").append(interceptorBindings.size()).append("\n");
+        buffer.append("Metadata cache").append(newLine);
+        buffer.append("Registered binding type models: ").append(qualifiers.size()).append(newLine);
+        buffer.append("Registered scope type models: ").append(scopes.size()).append(newLine);
+        buffer.append("Registered stereotype models: ").append(stereotypes.size()).append(newLine);
+        buffer.append("Registered interceptor binding models: ").append(interceptorBindings.size()).append(newLine);
         return buffer.toString();
     }
 

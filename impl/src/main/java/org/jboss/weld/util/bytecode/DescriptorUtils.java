@@ -27,6 +27,20 @@ import java.util.List;
  * @author Stuart Douglas
  */
 public class DescriptorUtils {
+
+    public static final String VOID_CLASS_DESCRIPTOR = "V";
+    public static final String BYTE_CLASS_DESCRIPTOR = "B";
+    public static final String CHAR_CLASS_DESCRIPTOR = "C";
+    public static final String DOUBLE_CLASS_DESCRIPTOR = "D";
+    public static final String FLOAT_CLASS_DESCRIPTOR = "F";
+    public static final String INT_CLASS_DESCRIPTOR = "I";
+    public static final String LONG_CLASS_DESCRIPTOR = "J";
+    public static final String SHORT_CLASS_DESCRIPTOR = "S";
+    public static final String BOOLEAN_CLASS_DESCRIPTOR = "Z";
+
+    private DescriptorUtils() {
+    }
+
     /**
      * Changes a class name to the internal form suitable for use in a descriptor
      * string.
@@ -86,23 +100,23 @@ public class DescriptorUtils {
 
     public static String classToStringRepresentation(Class<?> c) {
         if (void.class.equals(c)) {
-            return "V";
+            return VOID_CLASS_DESCRIPTOR;
         } else if (byte.class.equals(c)) {
-            return "B";
+            return BYTE_CLASS_DESCRIPTOR;
         } else if (char.class.equals(c)) {
-            return "C";
+            return CHAR_CLASS_DESCRIPTOR;
         } else if (double.class.equals(c)) {
-            return "D";
+            return DOUBLE_CLASS_DESCRIPTOR;
         } else if (float.class.equals(c)) {
-            return "F";
+            return FLOAT_CLASS_DESCRIPTOR;
         } else if (int.class.equals(c)) {
-            return "I";
+            return INT_CLASS_DESCRIPTOR;
         } else if (long.class.equals(c)) {
-            return "J";
+            return LONG_CLASS_DESCRIPTOR;
         } else if (short.class.equals(c)) {
-            return "S";
+            return SHORT_CLASS_DESCRIPTOR;
         } else if (boolean.class.equals(c)) {
-            return "Z";
+            return BOOLEAN_CLASS_DESCRIPTOR;
         } else if (c.isArray()) {
             return c.getName().replace(".", "/");
         } else {
@@ -147,7 +161,7 @@ public class DescriptorUtils {
             desc.append(DescriptorUtils.classToStringRepresentation(p));
         }
         desc.append(")");
-        desc.append("V");
+        desc.append(VOID_CLASS_DESCRIPTOR);
         return desc.toString();
     }
 

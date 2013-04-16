@@ -34,13 +34,15 @@ public class ContainerContext {
     private WeldManager manager;
 
     public ContainerContext(ServletContextEvent event, WeldManager manager) {
-        if (event == null)
+        if (event == null) {
             throw new IllegalArgumentException("Null servlet context event");
+        }
 
         this.event = event;
         this.context = event.getServletContext();
-        if (manager == null)
+        if (manager == null) {
             manager = (WeldManager) context.getAttribute(Listener.BEAN_MANAGER_ATTRIBUTE_NAME);
+        }
 
         this.manager = manager;
     }

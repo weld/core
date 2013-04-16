@@ -114,6 +114,9 @@ public class Beans {
     // TODO Convert messages
     private static final LocLogger log = loggerFactory().getLogger(BEAN);
 
+    private Beans() {
+    }
+
     /**
      * Indicates if a bean's scope type is passivating
      *
@@ -187,8 +190,9 @@ public class Beans {
 
     private static boolean isInterceptorMethod(AnnotatedMethod<?> annotatedMethod) {
         for (InterceptionType interceptionType : InterceptionTypeRegistry.getSupportedInterceptionTypes()) {
-            if (annotatedMethod.isAnnotationPresent(InterceptionTypeRegistry.getAnnotationClass(interceptionType)))
+            if (annotatedMethod.isAnnotationPresent(InterceptionTypeRegistry.getAnnotationClass(interceptionType))) {
                 return true;
+            }
         }
         return false;
     }
@@ -399,8 +403,9 @@ public class Beans {
     }
 
     public static Annotation[] mergeInQualifiers(Annotation[] qualifiers, Annotation[] newQualifiers) {
-        if (qualifiers == null || newQualifiers == null)
+        if (qualifiers == null || newQualifiers == null) {
             return EMPTY_ANNOTATIONS;
+        }
 
         return mergeInQualifiers(asList(qualifiers), newQualifiers).toArray(Reflections.EMPTY_ANNOTATIONS);
     }
@@ -408,9 +413,9 @@ public class Beans {
     public static Set<Annotation> mergeInQualifiers(Collection<Annotation> qualifiers, Annotation[] newQualifiers) {
         Set<Annotation> result = new HashSet<Annotation>();
 
-        if (qualifiers != null && qualifiers.isEmpty() == false)
+        if (qualifiers != null && !(qualifiers.isEmpty())) {
             result.addAll(qualifiers);
-
+        }
         if (newQualifiers != null && newQualifiers.length > 0) {
             final MetaAnnotationStore store = Container.instance().services().get(MetaAnnotationStore.class);
             Set<Annotation> checkedNewQualifiers = new HashSet<Annotation>();

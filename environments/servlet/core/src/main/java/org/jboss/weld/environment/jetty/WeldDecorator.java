@@ -56,8 +56,9 @@ public class WeldDecorator implements ServletContextHandler.Decorator {
         if (injector == null) {
             JettyWeldInjector jwi = (JettyWeldInjector) servletContext.getAttribute(AbstractJettyContainer.INJECTOR_ATTRIBUTE_NAME);
 
-            if (jwi == null)
+            if (jwi == null) {
                 throw new IllegalArgumentException("No such Jetty injector found in servlet context attributes.");
+            }
 
             injector = jwi;
         }

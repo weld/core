@@ -29,7 +29,7 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 public class UnsatisfiedResolutionException extends javax.enterprise.inject.UnsatisfiedResolutionException {
     private static final long serialVersionUID = 2L;
 
-    private WeldExceptionMessage message;
+    private final WeldExceptionMessage message;
 
     /**
      * Creates a new exception with the given cause.

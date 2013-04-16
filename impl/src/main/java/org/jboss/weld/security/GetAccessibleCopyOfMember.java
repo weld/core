@@ -25,6 +25,8 @@ import java.security.PrivilegedAction;
 
 public class GetAccessibleCopyOfMember<T extends AccessibleObject & Member> implements PrivilegedAction<T> {
 
+    private static final String UNABLE_TO_OBTAIN_AN_ACCESSIBLE_COPY_OF = "Unable to obtain an accessible copy of ";
+
     private final T originalMember;
 
     public GetAccessibleCopyOfMember(T originalMember) {
@@ -52,9 +54,9 @@ public class GetAccessibleCopyOfMember<T extends AccessibleObject & Member> impl
                 return (T) copyMethod((Method) originalMember, declaringClass);
             }
         } catch (Exception e) {
-            throw new IllegalArgumentException("Unable to obtain an accessible copy of " + originalMember, e);
+            throw new IllegalArgumentException(UNABLE_TO_OBTAIN_AN_ACCESSIBLE_COPY_OF + originalMember, e);
         }
-        throw new IllegalArgumentException("Unable to obtain an accessible copy of " + originalMember);
+        throw new IllegalArgumentException(UNABLE_TO_OBTAIN_AN_ACCESSIBLE_COPY_OF + originalMember);
     }
 
     private Field copyField(Field field, Class<?> declaringClass) throws NoSuchFieldException {

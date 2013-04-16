@@ -62,15 +62,17 @@ public class TomcatListener extends Listener {
 
     @SuppressWarnings({"UnusedParameters"})
     protected static void recurse(DirContext context, Set<String> classes, Set<URL> urls, String prefix) throws Exception {
-        if (prefix.length() > 0)
+        if (prefix.length() > 0) {
             prefix += ".";
+        }
 
         NamingEnumeration ne = context.listBindings("");
         while (ne.hasMoreElements()) {
             Binding next = (Binding) ne.nextElement();
             String name = prefix + next.getName();
-            if (name.endsWith(".class")) {
-                classes.add(name.substring(0, name.length() - 6));
+            final String classFilenameExtension = ".class";
+            if (name.endsWith(classFilenameExtension)) {
+                classes.add(name.substring(0, name.length() - classFilenameExtension.length()));
                 continue;
             }
 

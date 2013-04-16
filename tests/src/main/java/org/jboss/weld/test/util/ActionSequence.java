@@ -100,8 +100,9 @@ public final class ActionSequence {
         List<String> sequenceData = getData();
         List<String> matchData = Arrays.asList(actions);
 
-        if (sequenceData.size() < matchData.size())
+        if (sequenceData.size() < matchData.size()) {
             return false;
+        }
 
         return sequenceData.subList(0, matchData.size()).equals(matchData);
     }
@@ -116,8 +117,9 @@ public final class ActionSequence {
         List<String> sequenceData = getData();
         List<String> matchData = Arrays.asList(actions);
 
-        if (sequenceData.size() < matchData.size())
+        if (sequenceData.size() < matchData.size()) {
             return false;
+        }
 
         return sequenceData.subList(sequenceData.size() - matchData.size(), sequenceData.size()).equals(matchData);
     }
@@ -272,8 +274,9 @@ public final class ActionSequence {
 
     private static void checkStringValue(String value) {
 
-        if (VALID_NAME_PATTERN.matcher(value).matches())
+        if (VALID_NAME_PATTERN.matcher(value).matches()) {
             return;
+        }
 
         throw new IllegalArgumentException("Invalid name/id specified:" + value);
     }
