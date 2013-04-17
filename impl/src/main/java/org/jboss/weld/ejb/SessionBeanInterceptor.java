@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.ejb;
 
+import java.io.ObjectStreamException;
 import java.io.Serializable;
 
 import org.jboss.weld.Container;
@@ -37,7 +38,7 @@ public class SessionBeanInterceptor  extends AbstractEJBRequestScopeActivationIn
     private static final long serialVersionUID = 2658712435730329384L;
 
     private final BeanManagerImpl beanManager;
-    private final EjbRequestContext ejbRequestContext;
+    private final transient EjbRequestContext ejbRequestContext;
 
     public SessionBeanInterceptor() {
         this.beanManager = Container.instance().deploymentManager();
@@ -52,6 +53,10 @@ public class SessionBeanInterceptor  extends AbstractEJBRequestScopeActivationIn
     @Override
     protected BeanManagerImpl getBeanManager() {
         return beanManager;
+    }
+
+    private Object readResolve() throws ObjectStreamException {
+        return new SessionBeanInterceptor();
     }
 }
 
