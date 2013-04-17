@@ -6,16 +6,16 @@ Import-Package org.jboss.weld.environment.osgi.api; \
                org.jboss.weld.environment.osgi.api.annotation; \
                org.jboss.weld.environment.osgi.api.events; \
                org.jboss.weld.environment.osgi.spi;version=${pom.version}, \
-               javax.el;version=2.2.0, \
-               javax.inject;version=1.0.0, \
+               javax.el;version=${javax.el.version}, \
+               javax.inject;version=${cdi.api.version}, \
                javax.decorator; \
                javax.enterprise.context; \
                javax.enterprise.context.spi; \
                javax.enterprise.event; \
                javax.enterprise.inject; \
                javax.enterprise.inject.spi; \
-               javax.enterprise.util; version=1.0.0, \
-               javax.interceptor; version=1.1.0, \
+               javax.enterprise.util; version=${cdi.api.version}, \
+               javax.interceptor; version=${jboss.interceptors.api.version}, \
                org.osgi.framework, \
                javassist; \
                javassist.bytecode; \
@@ -33,10 +33,10 @@ Import-Package org.jboss.weld.environment.osgi.api; \
                javassist.tools; \
                javassist.tools.reflect; \
                javassist.tools.rmi; \
-               javassist.tools.web; version=3.14.0, \
+               javassist.tools.web; version=${javassist.version}, \
                org.slf4j; \
                org.slf4j.spi; \
-               org.slf4j.helpers; version=1.6.1, \
+               org.slf4j.helpers; version=${slf4j.version}, \
                ch.qos.logback.classic; \
                ch.qos.logback.classic.filter; \
                ch.qos.logback.classic.html; \
@@ -86,7 +86,7 @@ Import-Package org.jboss.weld.environment.osgi.api; \
                ch.qos.logback.core.pattern.parser; \
                ch.qos.logback.core.pattern.util; \
                ch.qos.logback.core.recovery; \
-               org.slf4j.impl; version=0.9.29
+               org.slf4j.impl; version=${logback.version}
 
 
 DynamicImport-Package *
