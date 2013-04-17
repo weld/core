@@ -66,10 +66,11 @@ import org.jboss.weld.util.bytecode.DeferredBytecode;
 import org.jboss.weld.util.bytecode.DescriptorUtils;
 import org.jboss.weld.util.bytecode.MethodInformation;
 import org.jboss.weld.util.bytecode.RuntimeMethodInformation;
-import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.instantiation.InstantiatorFactory;
 import org.slf4j.cal10n.LocLogger;
+
+import com.google.common.collect.ImmutableSet;
 
 /**
  * Main factory to produce proxy classes and instances for Weld beans. This
@@ -100,6 +101,8 @@ public class ProxyFactory<T> {
     private final InstantiatorFactory instantiatorFactory;
 
     protected static final BytecodeMethodResolver DEFAULT_METHOD_RESOLVER = new DefaultBytecodeMethodResolver();
+
+    private static final Set<Class<?>> SPECIAL_INTERFACES = ImmutableSet.of(LifecycleMixin.class, TargetInstanceProxy.class, ProxyObject.class);
 
     /**
      * created a new proxy factory from a bean instance. The proxy name is
@@ -371,18 +374,13 @@ public class ProxyFactory<T> {
      * Sub classes may override to specify additional interfaces the proxy should
      * implement
      */
-    protected void addAdditionalInterfaces(Set<Class<?>> interfaces) {
-
+    protected Set<Class<?>> getSpecialInterfaces() {
+        return SPECIAL_INTERFACES;
     }
 
     private Class<T> createProxyClass(String proxyClassName) throws Exception {
-        ArraySet<Class<?>> specialInterfaces = new ArraySet<Class<?>>(3);
-        specialInterfaces.add(LifecycleMixin.class);
-        specialInterfaces.add(TargetInstanceProxy.class);
-        specialInterfaces.add(ProxyObject.class);
-        addAdditionalInterfaces(specialInterfaces);
         // Remove special interfaces from main set (deserialization scenario)
-        additionalInterfaces.removeAll(specialInterfaces);
+        additionalInterfaces.removeAll(getSpecialInterfaces());
 
         ClassFile proxyClassType = null;
         if (getBeanType().isInterface()) {
@@ -397,12 +395,13 @@ public class ProxyFactory<T> {
         }
         List<DeferredBytecode> initialValueBytecode = new ArrayList<DeferredBytecode>();
 
-        addFields(proxyClassType, initialValueBytecode);
-        addConstructors(proxyClassType, initialValueBytecode);
+        boolean useConstructedFlag = !isUsingUnsafeInstantiators();
+        addFields(proxyClassType, initialValueBytecode, useConstructedFlag);
+        addConstructors(proxyClassType, initialValueBytecode, useConstructedFlag);
         addMethods(proxyClassType);
 
         // Additional interfaces whose methods require special handling
-        for (Class<?> specialInterface : specialInterfaces) {
+        for (Class<?> specialInterface : getSpecialInterfaces()) {
             proxyClassType.addInterface(specialInterface.getName());
         }
         // TODO: change the ProxyServices SPI to allow the container to figure out
@@ -425,10 +424,10 @@ public class ProxyFactory<T> {
      * @param proxyClassType       the Javassist class for the proxy
      * @param initialValueBytecode
      */
-    protected void addConstructors(ClassFile proxyClassType, List<DeferredBytecode> initialValueBytecode) {
+    protected void addConstructors(ClassFile proxyClassType, List<DeferredBytecode> initialValueBytecode, boolean useConstructedFlag) {
         try {
             if (getBeanType().isInterface()) {
-                ConstructorUtils.addDefaultConstructor(proxyClassType, initialValueBytecode, isUsingUnsafeInstantiators());
+                ConstructorUtils.addDefaultConstructor(proxyClassType, initialValueBytecode, useConstructedFlag);
             } else {
                 boolean constructorFound = false;
                 for (Constructor<?> constructor : AccessController.doPrivileged(new GetDeclaredConstructorsAction(getBeanType()))) {
@@ -438,7 +437,7 @@ public class ProxyFactory<T> {
                         for (int i = 0; i < exceptions.length; ++i) {
                             exceptions[i] = constructor.getExceptionTypes()[i].getName();
                         }
-                        ConstructorUtils.addConstructor("V", DescriptorUtils.getParameterTypes(constructor.getParameterTypes()), exceptions, proxyClassType, initialValueBytecode, isUsingUnsafeInstantiators());
+                        ConstructorUtils.addConstructor("V", DescriptorUtils.getParameterTypes(constructor.getParameterTypes()), exceptions, proxyClassType, initialValueBytecode, useConstructedFlag);
                     }
                 }
                 if (!constructorFound) {
@@ -452,11 +451,11 @@ public class ProxyFactory<T> {
         }
     }
 
-    protected void addFields(ClassFile proxyClassType, List<DeferredBytecode> initialValueBytecode) {
+    protected void addFields(ClassFile proxyClassType, List<DeferredBytecode> initialValueBytecode, boolean useConstructedFlag) {
         // The field representing the underlying instance or special method
         // handling
         proxyClassType.addField(AccessFlag.PRIVATE, "methodHandler", MethodHandler.class);
-        if(!isUsingUnsafeInstantiators()) {
+        if (useConstructedFlag) {
             // field used to indicate that super() has been called
             proxyClassType.addField(AccessFlag.PRIVATE, CONSTRUCTED_FLAG_NAME, "Z");
         }

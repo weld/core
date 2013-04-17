@@ -38,8 +38,8 @@ public class ConstructorUtils {
     /**
      * adds a constructor that calls super()
      */
-    public static void addDefaultConstructor(ClassFile file, List<DeferredBytecode> initialValueBytecode, final boolean useUnsafeInstantiators) {
-        addConstructor("V", new String[0], new String[0], file, initialValueBytecode, useUnsafeInstantiators);
+    public static void addDefaultConstructor(ClassFile file, List<DeferredBytecode> initialValueBytecode, final boolean useConstructedFlag) {
+        addConstructor("V", new String[0], new String[0], file, initialValueBytecode, useConstructedFlag);
     }
 
     /**
@@ -54,7 +54,7 @@ public class ConstructorUtils {
      * @param file                 the classfile to add the constructor to
      * @param initialValueBytecode bytecode that can be used to set inial values
      */
-    public static void addConstructor(String returnType, String[] params, String[] exceptions, ClassFile file, List<DeferredBytecode> initialValueBytecode, final boolean useUnsafeInstantiators) {
+    public static void addConstructor(String returnType, String[] params, String[] exceptions, ClassFile file, List<DeferredBytecode> initialValueBytecode, final boolean useConstructedFlag) {
         try {
 
             final ClassMethod ctor = file.addMethod(AccessFlag.PUBLIC, "<init>", returnType, params);
@@ -72,7 +72,7 @@ public class ConstructorUtils {
             b.loadMethodParameters();
             // now we have the parameters on the stack
             b.invokespecial(file.getSuperclass(), "<init>", DescriptorUtils.getMethodDescriptor(params, returnType));
-            if(!useUnsafeInstantiators) {
+            if (useConstructedFlag) {
                 // now set constructed to true
                 b.aload(0);
                 b.iconst(1);

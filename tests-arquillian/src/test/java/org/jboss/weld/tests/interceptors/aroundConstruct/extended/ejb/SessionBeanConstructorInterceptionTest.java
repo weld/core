@@ -18,6 +18,7 @@ package org.jboss.weld.tests.interceptors.aroundConstruct.extended.ejb;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.enterprise.inject.Instance;
@@ -72,7 +73,7 @@ public class SessionBeanConstructorInterceptionTest {
 
     private void assertSequenceEquals(Class<?>... expected) {
         List<String> data = ActionSequence.getSequence().getData();
-        assertEquals(expected.length, data.size());
+        assertEquals("Unexpected sequence " + data + ", expected " + Arrays.toString(expected), expected.length, data.size());
         for (int i = 0; i < expected.length; i++) {
             assertEquals(expected[i].getSimpleName(), data.get(i));
         }
