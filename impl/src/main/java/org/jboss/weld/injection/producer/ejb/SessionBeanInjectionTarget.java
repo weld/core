@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.injection.producer.ejb;
 
-import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.List;
@@ -80,6 +79,10 @@ public class SessionBeanInjectionTarget<T> extends BeanInjectionTarget<T> {
     @Override
     public void initializeAfterBeanDiscovery(EnhancedAnnotatedType<T> annotatedType) {
         initializeInterceptionModel(annotatedType);
+        /*
+         * We only take care of @AroundConstructor interception. The EJB container deals with the other types of interception.
+         */
+        setupConstructorInterceptionInstantiator(beanManager.getInterceptorModelRegistry().get(getType().getJavaClass()));
 
         List<Decorator<?>> decorators = beanManager.resolveDecorators(getBean().getTypes(), getBean().getQualifiers());
         if (!decorators.isEmpty()) {
@@ -87,14 +90,7 @@ public class SessionBeanInjectionTarget<T> extends BeanInjectionTarget<T> {
             instantiator = new SubclassedComponentInstantiator<T>(annotatedType, getBean(), (DefaultInstantiator<T>) instantiator, beanManager);
             instantiator = new SubclassDecoratorApplyingInstantiator<T>(instantiator, getBean(), decorators);
             setInstantiator(instantiator);
-        } else if (getBean().getEjbDescriptor().isStateful() && !Serializable.class.isAssignableFrom(getBean().getBeanClass())) {
-            setInstantiator(new SerializableSessionBeanInstantiator<T>(annotatedType, getBean(), getInstantiator(), beanManager));
         }
-
-        /*
-         * We only take care of @AroundConstructor interception. The EJB container deals with the other types of interception.
-         */
-        setupConstructorInterceptionInstantiator(beanManager.getInterceptorModelRegistry().get(getType().getJavaClass()));
     }
 
     @Override

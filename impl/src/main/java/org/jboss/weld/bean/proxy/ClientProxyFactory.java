@@ -125,8 +125,8 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
     }
 
     @Override
-    protected void addFields(final ClassFile proxyClassType, List<DeferredBytecode> initialValueBytecode, boolean useConstructedFlag) {
-        super.addFields(proxyClassType, initialValueBytecode, useConstructedFlag);
+    protected void addFields(final ClassFile proxyClassType, List<DeferredBytecode> initialValueBytecode) {
+        super.addFields(proxyClassType, initialValueBytecode);
         if (CACHABLE_SCOPES.contains(getBean().getScope())) {
             try {
                 proxyClassType.addField(AccessFlag.TRANSIENT | AccessFlag.PRIVATE, CACHE_FIELD, "Ljava/lang/ThreadLocal;");

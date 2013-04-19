@@ -45,9 +45,6 @@ import org.jboss.weld.util.bytecode.MethodInformation;
 import org.jboss.weld.util.bytecode.RuntimeMethodInformation;
 import org.jboss.weld.util.bytecode.StaticMethodInformation;
 
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
-
 /**
  * This special proxy factory is mostly used for abstract decorators. When a
  * delegate field is injected, the abstract methods directly invoke the
@@ -58,9 +55,6 @@ import com.google.common.collect.Sets;
  * @author Stuart Douglas
  */
 public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
-
-    private static final Set<Class<?>> DECORATOR_PROXY_SET = ImmutableSet.<Class<?>>of(DecoratorProxy.class);
-
     public static final String PROXY_SUFFIX = "DecoratorProxy";
     private final WeldInjectionPoint<?, ?> delegateInjectionPoint;
     private final Field delegateField;
@@ -93,8 +87,8 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
     }
 
     @Override
-    protected Set<Class<?>> getSpecialInterfaces() {
-        return Sets.union(super.getSpecialInterfaces(), DECORATOR_PROXY_SET);
+    protected void addAdditionalInterfaces(Set<Class<?>> interfaces) {
+        interfaces.add(DecoratorProxy.class);
     }
 
     @Override
