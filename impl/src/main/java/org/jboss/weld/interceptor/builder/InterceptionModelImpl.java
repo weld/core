@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.jboss.weld.interceptor.proxy.InterceptorException;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
 
@@ -128,27 +127,13 @@ class InterceptionModelImpl<T, I> implements BuildableInterceptionModel<T, I> {
                 interceptorsList = new ArrayList<InterceptorMetadata<I>>();
                 methodBoundInterceptors.get(interceptionType).put(methodHolder, interceptorsList);
             }
-            if (globalInterceptors.containsKey(interceptionType) && !methodsIgnoringGlobals.contains(methodHolder)) {
-                validateDuplicateInterceptors(interceptionType, globalInterceptors.get(interceptionType), interceptors);
-            }
             appendInterceptorClassesToList(interceptionType, interceptorsList, interceptors);
         }
         allInterceptors.addAll(Arrays.asList(interceptors));
     }
 
     private void appendInterceptorClassesToList(InterceptionType interceptionType, List<InterceptorMetadata<I>> interceptorsList, InterceptorMetadata<I>... interceptors) {
-        validateDuplicateInterceptors(interceptionType, interceptorsList, interceptors);
         interceptorsList.addAll(Arrays.asList(interceptors));
-    }
-
-    private void validateDuplicateInterceptors(InterceptionType interceptionType, List<InterceptorMetadata<I>> interceptorsList, InterceptorMetadata<I>... interceptors) {
-        for (InterceptorMetadata<?> interceptor : interceptors) {
-            if (interceptorsList.contains(interceptor)) {
-                if (interceptionType != null) {
-                    throw new InterceptorException("Duplicate interceptor class definition when binding " + interceptor.getInterceptorClass().getClassName() + " on " + interceptionType.name());
-                }
-            }
-        }
     }
 
     private static MethodReference methodHolder(Method method) {
