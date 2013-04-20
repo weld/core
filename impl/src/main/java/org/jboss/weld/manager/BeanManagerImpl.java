@@ -1377,7 +1377,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
      * be infered using {@link CDI11Deployment#getBeanDeploymentArchive(Class)}.
      */
     @Override
-    public <T> InjectionTargetFactory<T> getInjectionTargetFactory(AnnotatedType<T> type) {
+    public <T> InjectionTargetFactoryImpl<T> getInjectionTargetFactory(AnnotatedType<T> type) {
         BeanManagerImpl manager = BeanManagerLookupService.lookupBeanManager(type.getJavaClass(), this);
         return new InjectionTargetFactoryImpl<T>(type, manager);
     }

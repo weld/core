@@ -20,13 +20,7 @@ package org.jboss.weld.interceptor.reader;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.InjectionTarget;
-import javax.enterprise.inject.spi.Interceptor;
-import javax.interceptor.Interceptors;
 
-import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
-import org.jboss.weld.injection.producer.BasicInjectionTarget;
-import org.jboss.weld.injection.producer.LifecycleCallbackInvoker;
-import org.jboss.weld.injection.producer.NoopLifecycleCallbackInvoker;
 import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorFactory;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -42,7 +36,7 @@ public class ClassMetadataInterceptorFactory<T> implements InterceptorFactory<T>
 
     private ClassMetadataInterceptorFactory(ClassMetadata<T> classMetadata, BeanManagerImpl manager) {
         this.classMetadata = classMetadata;
-        this.injectionTarget = new InterceptorInjectionTarget<T>(manager.createEnhancedAnnotatedType(classMetadata.getJavaClass()), manager);
+        this.injectionTarget = manager.getInjectionTargetFactory(manager.createAnnotatedType(classMetadata.getJavaClass())).createInterceptorInjectionTarget();
     }
 
     @Override
@@ -80,25 +74,5 @@ public class ClassMetadataInterceptorFactory<T> implements InterceptorFactory<T>
     @Override
     public String toString() {
         return "ClassMetadataInterceptorFactory [class=" + classMetadata.getJavaClass().getName() + "]";
-    }
-
-    /**
-     * {@link InjectionTarget} for interceptors which do not have associated {@link Interceptor}. These interceptors are a
-     * result of using {@link Interceptors} annotation directly on the target class.
-     *
-     * @author Jozef Hartinger
-     *
-     * @param <T>
-     */
-    private static class InterceptorInjectionTarget<T> extends BasicInjectionTarget<T> {
-
-        public InterceptorInjectionTarget(EnhancedAnnotatedType<T> type, BeanManagerImpl beanManager) {
-            super(type, null, beanManager);
-        }
-
-        @Override
-        protected LifecycleCallbackInvoker<T> initInvoker(EnhancedAnnotatedType<T> type) {
-            return NoopLifecycleCallbackInvoker.getInstance();
-        }
     }
 }

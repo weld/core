@@ -22,7 +22,8 @@ import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionTarget;
-import javax.enterprise.inject.spi.InjectionTargetFactory;
+import javax.enterprise.inject.spi.Interceptor;
+import javax.interceptor.Interceptors;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bean.SessionBean;
@@ -32,8 +33,11 @@ import org.jboss.weld.injection.producer.BeanInjectionTarget;
 import org.jboss.weld.injection.producer.DecoratorInjectionTarget;
 import org.jboss.weld.injection.producer.InjectionTargetInitializationContext;
 import org.jboss.weld.injection.producer.InjectionTargetService;
+import org.jboss.weld.injection.producer.LifecycleCallbackInvoker;
+import org.jboss.weld.injection.producer.NoopLifecycleCallbackInvoker;
 import org.jboss.weld.injection.producer.ejb.SessionBeanInjectionTarget;
 import org.jboss.weld.injection.spi.InjectionServices;
+import org.jboss.weld.manager.api.WeldInjectionTargetFactory;
 import org.jboss.weld.resources.ClassTransformer;
 
 /**
@@ -44,7 +48,7 @@ import org.jboss.weld.resources.ClassTransformer;
  *
  * @param <T>
  */
-public class InjectionTargetFactoryImpl<T> implements InjectionTargetFactory<T> {
+public class InjectionTargetFactoryImpl<T> implements WeldInjectionTargetFactory<T> {
 
     private final BeanManagerImpl manager;
     private final EnhancedAnnotatedType<T> type;
@@ -61,8 +65,17 @@ public class InjectionTargetFactoryImpl<T> implements InjectionTargetFactory<T> 
 
     @Override
     public InjectionTarget<T> createInjectionTarget(Bean<T> bean) {
+        return createInjectionTarget(bean, false);
+    }
+
+    @Override
+    public InjectionTarget<T> createInterceptorInjectionTarget() {
+        return createInjectionTarget(null, true);
+    }
+
+    private InjectionTarget<T> createInjectionTarget(Bean<T> bean, boolean interceptor) {
         try {
-            InjectionTarget<T> injectionTarget = createInjectionTarget(type, bean);
+            InjectionTarget<T> injectionTarget = createInjectionTarget(type, bean, interceptor);
             injectionTargetService.validateProducer(injectionTarget);
             return injectionTarget;
         } catch (Throwable e) {
@@ -70,12 +83,14 @@ public class InjectionTargetFactoryImpl<T> implements InjectionTargetFactory<T> 
         }
     }
 
-    public BasicInjectionTarget<T> createInjectionTarget(EnhancedAnnotatedType<T> type, Bean<T> bean) {
+    public BasicInjectionTarget<T> createInjectionTarget(EnhancedAnnotatedType<T> type, Bean<T> bean, boolean interceptor) {
         BasicInjectionTarget<T> injectionTarget = null;
         if (bean instanceof Decorator<?> || type.isAnnotationPresent(javax.decorator.Decorator.class)) {
             injectionTarget = new DecoratorInjectionTarget<T>(type, bean, manager);
         } else if (bean instanceof SessionBean<?>) {
             injectionTarget = new SessionBeanInjectionTarget<T>(type, (SessionBean<T>) bean, manager);
+        } else if (interceptor){
+            injectionTarget = new InterceptorInjectionTarget<T>(type, manager);
         } else {
             injectionTarget = new BeanInjectionTarget<T>(type, bean, manager);
         }
@@ -102,6 +117,24 @@ public class InjectionTargetFactoryImpl<T> implements InjectionTargetFactory<T> 
     private <X> void postProcessInjectionTarget(AnnotatedType<X> type, InjectionTarget<X> injectionTarget) {
         if (injectionServices != null) {
             injectionServices.registerInjectionTarget(injectionTarget, type);
+        }
+    }
+
+
+    /**
+     * {@link InjectionTarget} for interceptors which do not have associated {@link Interceptor}. These interceptors are a
+     * result of using {@link Interceptors} annotation directly on the target class.
+     *
+     * @author Jozef Hartinger
+     */
+    private static class InterceptorInjectionTarget<T> extends BasicInjectionTarget<T> {
+        public InterceptorInjectionTarget(EnhancedAnnotatedType<T> type, BeanManagerImpl beanManager) {
+            super(type, null, beanManager);
+        }
+
+        @Override
+        protected LifecycleCallbackInvoker<T> initInvoker(EnhancedAnnotatedType<T> type) {
+            return NoopLifecycleCallbackInvoker.getInstance();
         }
     }
 }

@@ -97,7 +97,7 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
     protected ManagedBean(BeanAttributes<T> attributes, EnhancedAnnotatedType<T> type, String idSuffix, BeanManagerImpl beanManager) {
         super(attributes, type, idSuffix, beanManager);
         this.proxiable = Proxies.isTypesProxyable(getTypes());
-        setProducer(beanManager.getLocalInjectionTargetFactory(getEnhancedAnnotated()).createInjectionTarget(getEnhancedAnnotated(), this));
+        setProducer(beanManager.getLocalInjectionTargetFactory(getEnhancedAnnotated()).createInjectionTarget(getEnhancedAnnotated(), this, false));
     }
 
     @Override
