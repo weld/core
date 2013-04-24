@@ -40,7 +40,7 @@
         <cargo.maven2.plugin.version>1.0</cargo.maven2.plugin.version>
         <cdi.api.version>1.1</cdi.api.version>
         <cdi.tck-1-0.version>1.0.4.SP3</cdi.tck-1-0.version>
-        <cdi.tck-1-1.version>1.1.0.CR3</cdi.tck-1-1.version>
+        <cdi.tck-1-1.version>1.1.0.Final</cdi.tck-1-1.version>
         <classfilewriter.version>1.0.4.Final</classfilewriter.version>
         <contiperf.version>1.06</contiperf.version>
         <findbugs-maven-plugin.version>2.5.1</findbugs-maven-plugin.version>
@@ -76,7 +76,7 @@
         <selenium.maven.plugin.version>1.0.1</selenium.maven.plugin.version>
         <slf4j.version>1.7.2</slf4j.version>
         <testng.version>5.10</testng.version>
-        <weld.api.version>2.0.CR4</weld.api.version>
+        <weld.api.version>2.0.Final</weld.api.version>
     </properties>
 
     <modules>
