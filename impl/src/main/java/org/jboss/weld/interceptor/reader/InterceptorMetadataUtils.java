@@ -76,7 +76,11 @@ public class InterceptorMetadataUtils {
                     interceptionType.annotationClassName());
         }
         */
-        if (!Void.TYPE.equals(method.getReturnType())) {
+        /*
+         * Again, we relax the check and allow both void and Object return types as we cannot distinguish between
+         * a managed bean and an interceptor class.
+         */
+        if (!Void.TYPE.equals(method.getReturnType()) && !Object.class.equals(method.getReturnType())) {
             throw new DefinitionException(ValidatorMessage.INTERCEPTOR_METHOD_DOES_NOT_HAVE_VOID_RETURN_TYPE,
                     javaMethod.getName(), javaMethod.getDeclaringClass().getName(),
                     interceptionType.annotationClassName(), Void.TYPE.getName());

@@ -17,8 +17,9 @@
 
 package org.jboss.weld.tests.interceptors.signature;
 
+import javax.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.ShouldThrowException;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -32,15 +33,18 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class TargetClassWithPostConstructWithInvalidReturnTypeTest {
 
+    @Inject
+    private TargetClassWithPostConstructWithInvalidReturnType bean;
+
     @Deployment
-    @ShouldThrowException(Exception.class) // AS7-1197
     public static Archive<?> deploy() {
         return ShrinkWrap.create(BeanArchive.class)
                 .addClass(TargetClassWithPostConstructWithInvalidReturnType.class);
     }
 
     @Test
-    public void testDeploymentFails() {
+    public void test() {
+        bean.foo();
     }
 
 }
