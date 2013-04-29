@@ -18,6 +18,7 @@ package org.jboss.weld.bean.builtin;
 
 import static org.jboss.weld.logging.messages.BeanMessage.DESTROY_UNSUPPORTED;
 import static org.jboss.weld.logging.messages.BeanMessage.PROXY_REQUIRED;
+import static org.jboss.weld.logging.messages.BeanMessage.INSTANCE_ITERATOR_REMOVE_UNSUPPORTED;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.io.ObjectInputStream;
@@ -25,8 +26,6 @@ import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -63,26 +62,31 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
 
     private static final long serialVersionUID = -376721889693284887L;
 
-    public static <I> Instance<I> of(InjectionPoint injectionPoint, CreationalContext<I> creationalContext, BeanManagerImpl beanManager) {
+    public static <I> Instance<I> of(InjectionPoint injectionPoint, CreationalContext<I> creationalContext,
+            BeanManagerImpl beanManager) {
         return new InstanceImpl<I>(injectionPoint, creationalContext, beanManager);
     }
 
-    private InstanceImpl(InjectionPoint injectionPoint, CreationalContext<? super T> creationalContext, BeanManagerImpl beanManager) {
+    private InstanceImpl(InjectionPoint injectionPoint, CreationalContext<? super T> creationalContext,
+            BeanManagerImpl beanManager) {
         super(injectionPoint, creationalContext, beanManager);
     }
 
     public T get() {
-        Resolvable resolvable = new ResolvableBuilder(getType(), getBeanManager())
-            .addQualifiers(getQualifiers())
-            .setDeclaringBean(getInjectionPoint().getBean())
-            .create();
+        Resolvable resolvable = new ResolvableBuilder(getType(), getBeanManager()).addQualifiers(getQualifiers())
+                .setDeclaringBean(getInjectionPoint().getBean()).create();
         Bean<?> bean = getBeanManager().getBean(resolvable);
-        // Generate a correct injection point for the bean, we do this by taking the original injection point and adjusting the qualifiers and type
+        return getBeanInstance(bean);
+    }
+
+    private T getBeanInstance(Bean<?> bean) {
+        // Generate a correct injection point for the bean, we do this by taking the original injection point and adjusting the
+        // qualifiers and type
         InjectionPoint ip = new DynamicLookupInjectionPoint(getInjectionPoint(), getType(), getQualifiers());
         CurrentInjectionPoint currentInjectionPoint = getBeanManager().getServices().get(CurrentInjectionPoint.class);
         try {
             currentInjectionPoint.push(ip);
-            return Reflections.<T>cast(getBeanManager().getReference(bean, getType(), getCreationalContext()));
+            return Reflections.<T> cast(getBeanManager().getReference(bean, getType(), getCreationalContext()));
         } finally {
             currentInjectionPoint.pop();
         }
@@ -103,15 +107,7 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
     }
 
     public Iterator<T> iterator() {
-        Collection<T> instances = new ArrayList<T>();
-        for (Bean<?> bean : getBeans()) {
-            // Don't return the InjectionPoint bean, it's not a possible to inject an instance of that!
-            if (!InjectionPoint.class.isAssignableFrom(bean.getBeanClass())) {
-                Object object = getBeanManager().getReference(bean, getType(), getBeanManager().createCreationalContext(bean));
-                instances.add(Reflections.<T>cast(object));
-            }
-        }
-        return instances.iterator();
+        return new InstanceImplIterator(getBeans());
     }
 
     public boolean isAmbiguous() {
@@ -135,7 +131,8 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
     }
 
     private <U extends T> Instance<U> selectInstance(Type subtype, Annotation[] newQualifiers) {
-        InjectionPoint modifiedInjectionPoint = new FacadeInjectionPoint(getInjectionPoint(), subtype, getQualifiers(), newQualifiers);
+        InjectionPoint modifiedInjectionPoint = new FacadeInjectionPoint(getInjectionPoint(), subtype, getQualifiers(),
+                newQualifiers);
         return new InstanceImpl<U>(modifiedInjectionPoint, getCreationalContext(), getBeanManager());
     }
 
@@ -188,6 +185,32 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
 
         private Object readResolve() throws ObjectStreamException {
             return InstanceImpl.of(getInjectionPoint(), getCreationalContext(), getBeanManager());
+        }
+
+    }
+
+    final class InstanceImplIterator implements Iterator<T> {
+
+        private final Iterator<Bean<?>> delegate;
+
+        private InstanceImplIterator(Set<Bean<?>> beans) {
+            super();
+            this.delegate = beans.iterator();
+        }
+
+        @Override
+        public boolean hasNext() {
+            return delegate.hasNext();
+        }
+
+        @Override
+        public T next() {
+            return getBeanInstance(delegate.next());
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException(INSTANCE_ITERATOR_REMOVE_UNSUPPORTED);
         }
 
     }
