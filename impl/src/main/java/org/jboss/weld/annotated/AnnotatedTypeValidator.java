@@ -16,8 +16,15 @@
  */
 package org.jboss.weld.annotated;
 
+import static org.jboss.weld.logging.Category.BOOTSTRAP;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.MetadataMessage.INVALID_PARAMETER_POSITION;
 import static org.jboss.weld.logging.messages.MetadataMessage.METADATA_SOURCE_RETURNED_NULL;
+import static org.jboss.weld.logging.messages.MetadataMessage.NOT_IN_HIERARCHY;
+import static org.jboss.weld.logging.messages.MetadataMessage.NO_CONSTRUCTOR;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.AnnotatedMember;
@@ -25,6 +32,7 @@ import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.AnnotatedType;
 
 import org.jboss.weld.exceptions.IllegalArgumentException;
+import org.slf4j.cal10n.LocLogger;
 
 /**
  * Validates that methods of an {@link Annotated} implementation return sane values.
@@ -32,6 +40,7 @@ import org.jboss.weld.exceptions.IllegalArgumentException;
  *
  */
 public class AnnotatedTypeValidator {
+    private static final LocLogger log = loggerFactory().getLogger(BOOTSTRAP);
 
     private AnnotatedTypeValidator() {
     }
@@ -62,6 +71,7 @@ public class AnnotatedTypeValidator {
         checkNotNull(type.getFields(), "getFields()", type);
         checkNotNull(type.getConstructors(), "getConstructors()", type);
         checkNotNull(type.getMethods(), "getMethods()", type);
+        checkSensibility(type);
     }
 
     private static void checkNotNull(Object expression, String methodName, Object target) {
@@ -69,4 +79,32 @@ public class AnnotatedTypeValidator {
             throw new IllegalArgumentException(METADATA_SOURCE_RETURNED_NULL, methodName, target);
         }
     }
+
+    /**
+     * Checks if the given AnnotatedType is sensible, otherwise provides warnings.
+     */
+    private static void checkSensibility(AnnotatedType<?> type) {
+        // check if it has a constructor
+        if (type.getConstructors().isEmpty() && !type.getJavaClass().isInterface()) {
+            log.warn(NO_CONSTRUCTOR, type);
+        }
+
+        Set<Class<?>> hierarchy = new HashSet<Class<?>>();
+        for (Class<?> clazz = type.getJavaClass(); clazz != null; clazz = clazz.getSuperclass()) {
+            hierarchy.add(clazz);
+        }
+
+        checkMembersBelongToHierarchy(type.getConstructors(), hierarchy, type);
+        checkMembersBelongToHierarchy(type.getMethods(), hierarchy, type);
+        checkMembersBelongToHierarchy(type.getFields(), hierarchy, type);
+    }
+
+    private static void checkMembersBelongToHierarchy(Iterable<? extends AnnotatedMember<?>> members, Set<Class<?>> hierarchy, AnnotatedType<?> type) {
+        for (AnnotatedMember<?> member : members) {
+            if (!hierarchy.contains(member.getJavaMember().getDeclaringClass())) {
+                log.warn(NOT_IN_HIERARCHY, member.toString(), type.toString());
+            }
+        }
+    }
+
 }
