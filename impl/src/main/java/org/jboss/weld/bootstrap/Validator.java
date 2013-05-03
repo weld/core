@@ -246,7 +246,7 @@ public class Validator implements Service {
     }
 
     private void validateInterceptors(BeanManagerImpl beanManager, AbstractClassBean<?> classBean) {
-        InterceptionModel<ClassMetadata<?>, ?> interceptionModel = beanManager.getInterceptorModelRegistry().get(classBean.getType());
+        InterceptionModel<ClassMetadata<?>> interceptionModel = beanManager.getInterceptorModelRegistry().get(classBean.getType());
         if (interceptionModel != null) {
             Set<? extends InterceptorMetadata<?>> interceptors = interceptionModel.getAllInterceptors();
             if (interceptors.size() > 0) {

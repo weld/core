@@ -44,9 +44,9 @@ import org.jboss.weld.interceptor.spi.model.InterceptionModel;
  */
 public class InterceptorBindingsAdapter implements InterceptorBindings {
 
-    private InterceptionModel<ClassMetadata<?>, ?> interceptionModel;
+    private InterceptionModel<ClassMetadata<?>> interceptionModel;
 
-    public InterceptorBindingsAdapter(InterceptionModel<ClassMetadata<?>, ?> interceptionModel) {
+    public InterceptorBindingsAdapter(InterceptionModel<ClassMetadata<?>> interceptionModel) {
         if (interceptionModel == null) {
             throw new IllegalArgumentException(INTERCEPTION_MODEL_NULL);
         }

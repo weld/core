@@ -90,7 +90,7 @@ public class InterceptionModelInitializer<T> {
 
     private Map<Interceptor<?>, InterceptorMetadata<?>> interceptorMetadatas = new HashMap<Interceptor<?>, InterceptorMetadata<?>>();
     private List<AnnotatedMethod<?>> businessMethods;
-    private final InterceptionModelBuilder<ClassMetadata<?>,?> builder;
+    private final InterceptionModelBuilder<ClassMetadata<?>> builder;
     private boolean hasSerializationOrInvocationInterceptorMethods;
 
     public InterceptionModelInitializer(BeanManagerImpl manager, EnhancedAnnotatedType<T> annotatedType, AnnotatedConstructor<T> constructor, Bean<?> bean) {
@@ -114,7 +114,7 @@ public class InterceptionModelInitializer<T> {
         initEjbInterceptors();
         initCdiInterceptors();
 
-        InterceptionModel<ClassMetadata<?>, ?> interceptionModel = builder.build();
+        InterceptionModel<ClassMetadata<?>> interceptionModel = builder.build();
         if (interceptionModel.getAllInterceptors().size() > 0 || hasSerializationOrInvocationInterceptorMethods) {
             if (annotatedType.isFinal()) {
                 throw new DeploymentException(FINAL_BEAN_CLASS_WITH_INTERCEPTORS_NOT_ALLOWED, annotatedType.getJavaClass());
@@ -280,7 +280,7 @@ public class InterceptionModelInitializer<T> {
 
         boolean excludeClassInterceptors = method.isAnnotationPresent(interceptorsApi.getExcludeClassInterceptorsAnnotationClass());
         if (excludeClassInterceptors) {
-            builder.ignoreGlobalInterceptors(javaMethod);
+            builder.addMethodIgnoringGlobalInterceptors(javaMethod);
         }
 
         Class<?>[] methodDeclaredInterceptors = interceptorsApi.extractInterceptorClasses(method);

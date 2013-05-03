@@ -44,9 +44,9 @@ import org.jboss.weld.manager.BeanManagerImpl;
  */
 public class ConstructorInterceptionInstantiator<T> extends ForwardingInstantiator<T> {
 
-    private final InterceptionModel<ClassMetadata<?>, ?> model;
+    private final InterceptionModel<ClassMetadata<?>> model;
 
-    public ConstructorInterceptionInstantiator(Instantiator<T> delegate, InterceptionModel<ClassMetadata<?>, ?> model) {
+    public ConstructorInterceptionInstantiator(Instantiator<T> delegate, InterceptionModel<ClassMetadata<?>> model) {
         super(delegate);
         this.model = model;
     }

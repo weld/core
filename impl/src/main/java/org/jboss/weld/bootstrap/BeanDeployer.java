@@ -363,7 +363,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
                 if (!getManager().getInterceptorModelRegistry().containsKey(descriptor.getBeanClass())) {
                     InterceptionModelInitializer.of(getManager(), classTransformer.getEnhancedAnnotatedType(descriptor.getBeanClass(), getManager().getId()), null).init();
                 }
-                InterceptionModel<ClassMetadata<?>, ?> model = getManager().getInterceptorModelRegistry().get(descriptor.getBeanClass());
+                InterceptionModel<ClassMetadata<?>> model = getManager().getInterceptorModelRegistry().get(descriptor.getBeanClass());
                 if (model != null) {
                     ejbServices.registerInterceptors(descriptor, new InterceptorBindingsAdapter(model));
                 }

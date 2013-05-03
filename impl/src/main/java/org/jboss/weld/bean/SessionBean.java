@@ -289,7 +289,7 @@ public class SessionBean<T> extends AbstractClassBean<T> {
     }
 
     protected void registerInterceptors() {
-        InterceptionModel<ClassMetadata<?>, ?> model = beanManager.getInterceptorModelRegistry().get(getEjbDescriptor().getBeanClass());
+        InterceptionModel<ClassMetadata<?>> model = beanManager.getInterceptorModelRegistry().get(getEjbDescriptor().getBeanClass());
         if (model != null) {
             getBeanManager().getServices().get(EjbServices.class).registerInterceptors(getEjbDescriptor(), new InterceptorBindingsAdapter(model));
         }
