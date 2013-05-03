@@ -19,44 +19,58 @@ package org.jboss.weld.interceptor.builder;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
+import org.jboss.weld.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+
 /**
+ * This impl is immutable provided the type of the intercetped entity is immutable as well.
+ *
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  * @author <a href="mailto:mluksa@redhat.com">Marko Luksa</a>
+ * @author Martin Kouba
+ *
+ * @param <T> the type of the intercepted entity
  */
+class InterceptionModelImpl<T> implements InterceptionModel<T> {
 
-class InterceptionModelImpl<T, I> implements BuildableInterceptionModel<T, I> {
+    private final Map<InterceptionType, List<InterceptorMetadata<?>>> globalInterceptors;
 
-    private final Map<InterceptionType, List<InterceptorMetadata<I>>> globalInterceptors = new HashMap<InterceptionType, List<InterceptorMetadata<I>>>();
+    private final Map<InterceptionType, Map<MethodReference, List<InterceptorMetadata<?>>>> methodBoundInterceptors;
 
-    private final Map<InterceptionType, Map<MethodReference, List<InterceptorMetadata<I>>>> methodBoundInterceptors = new HashMap<InterceptionType, Map<MethodReference, List<InterceptorMetadata<I>>>>();
+    private final Set<MethodReference> methodsIgnoringGlobalInterceptors;
 
-    private final Set<MethodReference> methodsIgnoringGlobals = new HashSet<MethodReference>();
-
-    private final Set<InterceptorMetadata<I>> allInterceptors = new LinkedHashSet<InterceptorMetadata<I>>();
+    private final Set<InterceptorMetadata<?>> allInterceptors;
 
     private final T interceptedEntity;
 
-    private boolean hasTargetClassInterceptors;
+    private final boolean hasTargetClassInterceptors;
 
-    private boolean hasExternalNonConstructorInterceptors;
+    private final boolean hasExternalNonConstructorInterceptors;
 
-    public InterceptionModelImpl(T interceptedEntity) {
-        this.interceptedEntity = interceptedEntity;
+    /**
+     *
+     * @param builder
+     */
+    InterceptionModelImpl(InterceptionModelBuilder<T> builder) {
+        this.interceptedEntity = builder.getInterceptedEntity();
+        this.hasTargetClassInterceptors = builder.isHasTargetClassInterceptors();
+        this.hasExternalNonConstructorInterceptors = builder.isHasExternalNonConstructorInterceptors();
+        this.globalInterceptors = ImmutableMap.<InterceptionType, List<InterceptorMetadata<?>>>copyOf(builder.getGlobalInterceptors());
+        this.methodBoundInterceptors = ImmutableMap.<InterceptionType, Map<MethodReference,List<InterceptorMetadata<?>>>>copyOf(builder.getMethodBoundInterceptors());
+        this.methodsIgnoringGlobalInterceptors = ImmutableSet.<MethodReference>copyOf(builder.getMethodsIgnoringGlobalInterceptors());
+        this.allInterceptors = ImmutableSet.<InterceptorMetadata<?>>copyOf(builder.getAllInterceptors());
     }
 
-    public List<InterceptorMetadata<I>> getInterceptors(InterceptionType interceptionType, Method method) {
+    public List<InterceptorMetadata<?>> getInterceptors(InterceptionType interceptionType, Method method) {
         if (InterceptionType.AROUND_CONSTRUCT.equals(interceptionType)) {
             throw new IllegalStateException("Cannot use getInterceptors() for @AroundConstruct interceptor lookup. Use getConstructorInvocationInterceptors() instead.");
         }
@@ -73,14 +87,14 @@ class InterceptionModelImpl<T, I> implements BuildableInterceptionModel<T, I> {
                 return globalInterceptors.get(interceptionType);
             }
         } else {
-            MethodReference methodReference = methodHolder(method);
-            ArrayList<InterceptorMetadata<I>> returnedInterceptors = new ArrayList<InterceptorMetadata<I>>();
-            if (!methodsIgnoringGlobals.contains(methodReference) && globalInterceptors.containsKey(interceptionType)) {
+            MethodReference methodReference = MethodReference.of(method, true);
+            ArrayList<InterceptorMetadata<?>> returnedInterceptors = new ArrayList<InterceptorMetadata<?>>();
+            if (!methodsIgnoringGlobalInterceptors.contains(methodReference) && globalInterceptors.containsKey(interceptionType)) {
                 returnedInterceptors.addAll(globalInterceptors.get(interceptionType));
             }
-            Map<MethodReference, List<InterceptorMetadata<I>>> map = methodBoundInterceptors.get(interceptionType);
+            Map<MethodReference, List<InterceptorMetadata<?>>> map = methodBoundInterceptors.get(interceptionType);
             if (map != null) {
-                List<InterceptorMetadata<I>> list = map.get(methodReference);
+                List<InterceptorMetadata<?>> list = map.get(methodReference);
                 if (list != null) {
                     returnedInterceptors.addAll(list);
                 }
@@ -90,7 +104,7 @@ class InterceptionModelImpl<T, I> implements BuildableInterceptionModel<T, I> {
         return Collections.emptyList();
     }
 
-    public Set<InterceptorMetadata<I>> getAllInterceptors() {
+    public Set<InterceptorMetadata<?>> getAllInterceptors() {
         return Collections.unmodifiableSet(allInterceptors);
     }
 
@@ -98,50 +112,8 @@ class InterceptionModelImpl<T, I> implements BuildableInterceptionModel<T, I> {
         return this.interceptedEntity;
     }
 
-    public void setIgnoresGlobals(Method method, boolean ignoresGlobals) {
-        if (ignoresGlobals) {
-            methodsIgnoringGlobals.add(methodHolder(method));
-        } else {
-            methodsIgnoringGlobals.remove(methodHolder(method));
-        }
-    }
-
-    public void appendInterceptors(InterceptionType interceptionType, Method method, InterceptorMetadata<I>... interceptors) {
-        if (interceptionType != InterceptionType.AROUND_CONSTRUCT) {
-            hasExternalNonConstructorInterceptors = true;
-        }
-        if (null == method) {
-            List<InterceptorMetadata<I>> interceptorsList = globalInterceptors.get(interceptionType);
-            if (interceptorsList == null) {
-                interceptorsList = new ArrayList<InterceptorMetadata<I>>();
-                globalInterceptors.put(interceptionType, interceptorsList);
-            }
-            appendInterceptorClassesToList(interceptionType, interceptorsList, interceptors);
-        } else {
-            MethodReference methodHolder = methodHolder(method);
-            if (null == methodBoundInterceptors.get(interceptionType)) {
-                methodBoundInterceptors.put(interceptionType, new HashMap<MethodReference, List<InterceptorMetadata<I>>>());
-            }
-            List<InterceptorMetadata<I>> interceptorsList = methodBoundInterceptors.get(interceptionType).get(methodHolder);
-            if (interceptorsList == null) {
-                interceptorsList = new ArrayList<InterceptorMetadata<I>>();
-                methodBoundInterceptors.get(interceptionType).put(methodHolder, interceptorsList);
-            }
-            appendInterceptorClassesToList(interceptionType, interceptorsList, interceptors);
-        }
-        allInterceptors.addAll(Arrays.asList(interceptors));
-    }
-
-    private void appendInterceptorClassesToList(InterceptionType interceptionType, List<InterceptorMetadata<I>> interceptorsList, InterceptorMetadata<I>... interceptors) {
-        interceptorsList.addAll(Arrays.asList(interceptors));
-    }
-
-    private static MethodReference methodHolder(Method method) {
-        return MethodReference.of(method, true);
-    }
-
     @Override
-    public List<InterceptorMetadata<I>> getConstructorInvocationInterceptors() {
+    public List<InterceptorMetadata<?>> getConstructorInvocationInterceptors() {
         if (globalInterceptors.containsKey(InterceptionType.AROUND_CONSTRUCT)) {
             return globalInterceptors.get(InterceptionType.AROUND_CONSTRUCT);
         }
@@ -156,10 +128,6 @@ class InterceptionModelImpl<T, I> implements BuildableInterceptionModel<T, I> {
     @Override
     public boolean hasExternalNonConstructorInterceptors() {
         return hasExternalNonConstructorInterceptors;
-    }
-
-    public void setHasTargetClassInterceptors(boolean hasTargetClassInterceptors) {
-        this.hasTargetClassInterceptors = hasTargetClassInterceptors;
     }
 
     @Override

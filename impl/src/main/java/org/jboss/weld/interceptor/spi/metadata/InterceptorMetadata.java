@@ -24,6 +24,7 @@ import org.jboss.weld.interceptor.spi.model.InterceptionType;
  * This class is parametrized for
  *
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
+ * @param <T> The type (class) of the interceptor bean
  */
 public interface InterceptorMetadata<T> {
     /**

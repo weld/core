@@ -32,7 +32,7 @@ import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
  *
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
-public interface InterceptionModel<T, I> {
+public interface InterceptionModel<T> {
 
     /**
      * Returns the interceptors applicable for the given interception type and method. For resolving {@link AroundConstruct} interceptors use {@link #getConstructorInvocationInterceptors(Constructor)}.
@@ -43,19 +43,19 @@ public interface InterceptionModel<T, I> {
      * @throws IllegalArgumentException if interceptionType is business method or around timeout
      *                                  but method is null, as well as if interceptionType is callback and method is not null
      */
-    List<InterceptorMetadata<I>> getInterceptors(InterceptionType interceptionType, Method method);
+    List<InterceptorMetadata<?>> getInterceptors(InterceptionType interceptionType, Method method);
 
     /**
      * Returns {@link AroundConstruct} interceptors applicable for the given constructor.
      */
-    List<InterceptorMetadata<I>> getConstructorInvocationInterceptors();
+    List<InterceptorMetadata<?>> getConstructorInvocationInterceptors();
 
     /**
      * Returns all interceptor classes that are applicable to the given intercepted entity
      *
      * @return all interceptors
      */
-    Set<InterceptorMetadata<I>> getAllInterceptors();
+    Set<InterceptorMetadata<?>> getAllInterceptors();
 
     /**
      * @return the intercepted entity
