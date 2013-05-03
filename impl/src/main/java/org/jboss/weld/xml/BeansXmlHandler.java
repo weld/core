@@ -142,6 +142,9 @@ public class BeansXmlHandler extends DefaultHandler {
     private static final String INCLUDE = "include";
     private static final String EXCLUDE = "exclude";
 
+    // See also http://www.w3.org/TR/2001/REC-xmlschema-1-20010502/#cvc-elt
+    private static final String VALIDATION_ERROR_CODE_CVC_ELT_1 = "cvc-elt.1";
+
     /*
     * The containers we are parsing
     */
@@ -382,7 +385,7 @@ public class BeansXmlHandler extends DefaultHandler {
 
     @Override
     public void error(SAXParseException e) throws SAXException {
-        if (e.getMessage().equals("cvc-elt.1: Cannot find the declaration of element 'beans'.")) {
+        if (e.getMessage().startsWith(VALIDATION_ERROR_CODE_CVC_ELT_1) && e.getMessage().contains(ROOT_ELEMENT_NAME)) {
             // Ignore the errors we get when there is no schema defined
             return;
         }
