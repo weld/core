@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.examples.permalink;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -28,11 +26,23 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicLong;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+
 /**
  * @author Dan Allen
  */
 @ApplicationScoped
 public class BlogEntryRepository implements Repository {
+
+    private static final String DEFAULT_AUTHOR = "Dan";
+
+    private static final String CATEGORY_JSF2 = "JSF 2";
+
+    private static final String CATEGORY_GENERAL = "General";
+
+    private static final String CATEGORY_JAVAEE = "Java EE";
+
     private static AtomicLong uniqueEntryId = new AtomicLong(0);
 
     private static AtomicLong uniqueCommentId = new AtomicLong(0);
@@ -47,12 +57,13 @@ public class BlogEntryRepository implements Repository {
 
     @PostConstruct
     public void seed() {
-        entries.add(new BlogEntry(uniqueEntryId.incrementAndGet(), "Dan", "General", "My first post", parseDate("15/01/09 13:30"), "This is the obligatory first post."));
-        entries.add(new BlogEntry(uniqueEntryId.incrementAndGet(), "Dan", "JSF 2", "View parameters", parseDate("16/01/09 15:12"), "One of the new features in JSF 2 is view parameters. If you are familiar with Seam, you will recognize them as page parameters. They bring the value binding concept to GET requests by allowing you to associate a request parameter with a EL value binding expression. You can witness view parameters in action in this demo. View parameters are especially useful for ensuring that the URL is always bookmarkable throughout the user's browsing session."));
-        entries.add(new BlogEntry(uniqueEntryId.incrementAndGet(), "Dan", "JSF 2", "Bookmarkable links", parseDate("18/01/09 14:45"), "JSF finally has bookmarkable links. No more complaining that \"everything is a POST!\""));
-        entries.add(new BlogEntry(uniqueEntryId.incrementAndGet(), "Dan", "Java EE", "What's new in Java EE 6", parseDate("20/01/09 08:15"), "JSF 2, JPA 2, EJB 3.1, Java Contexts and Dependency Injection (formally Web Beans) and more!"));
-        entries.add(new BlogEntry(uniqueEntryId.incrementAndGet(), "Dan", "JSF 2", "Annotation nation", parseDate("22/01/09 10:34"), "You can finally free yourself from the tangles of XML and use annotations to define your managed beans. You put @ManagedBean on a class to define a managed bean and you annotate a field with @ManagedProperty to wire two beans together. If those annotations aren't enough to satisfy you, then check out JSR-299: Java Contexts and Dependency Injection. That spec uses annotations extensively and is a drop-in replacement for the JSF managed bean facility...and a much more capabable one at that!"));
-        entries.add(new BlogEntry(uniqueEntryId.incrementAndGet(), "Dan", "JSF 2", "Mojarra == RI", parseDate("25/01/09 11:00"), "The JSF reference implementation finally has a name: Mojarra. Surprise, it's the name of a fish."));
+
+        entries.add(new BlogEntry(uniqueEntryId.incrementAndGet(), DEFAULT_AUTHOR, CATEGORY_GENERAL, "My first post", parseDate("15/01/09 13:30"), "This is the obligatory first post."));
+        entries.add(new BlogEntry(uniqueEntryId.incrementAndGet(), DEFAULT_AUTHOR, CATEGORY_JSF2, "View parameters", parseDate("16/01/09 15:12"), "One of the new features in JSF 2 is view parameters. If you are familiar with Seam, you will recognize them as page parameters. They bring the value binding concept to GET requests by allowing you to associate a request parameter with a EL value binding expression. You can witness view parameters in action in this demo. View parameters are especially useful for ensuring that the URL is always bookmarkable throughout the user's browsing session."));
+        entries.add(new BlogEntry(uniqueEntryId.incrementAndGet(), DEFAULT_AUTHOR, CATEGORY_JSF2, "Bookmarkable links", parseDate("18/01/09 14:45"), "JSF finally has bookmarkable links. No more complaining that \"everything is a POST!\""));
+        entries.add(new BlogEntry(uniqueEntryId.incrementAndGet(), DEFAULT_AUTHOR, CATEGORY_JAVAEE, "What's new in Java EE 6", parseDate("20/01/09 08:15"), "JSF 2, JPA 2, EJB 3.1, Java Contexts and Dependency Injection (formally Web Beans) and more!"));
+        entries.add(new BlogEntry(uniqueEntryId.incrementAndGet(), DEFAULT_AUTHOR, CATEGORY_JSF2, "Annotation nation", parseDate("22/01/09 10:34"), "You can finally free yourself from the tangles of XML and use annotations to define your managed beans. You put @ManagedBean on a class to define a managed bean and you annotate a field with @ManagedProperty to wire two beans together. If those annotations aren't enough to satisfy you, then check out JSR-299: Java Contexts and Dependency Injection. That spec uses annotations extensively and is a drop-in replacement for the JSF managed bean facility...and a much more capabable one at that!"));
+        entries.add(new BlogEntry(uniqueEntryId.incrementAndGet(), DEFAULT_AUTHOR, CATEGORY_JSF2, "Mojarra == RI", parseDate("25/01/09 11:00"), "The JSF reference implementation finally has a name: Mojarra. Surprise, it's the name of a fish."));
         Collections.sort(entries, new Comparator<BlogEntry>() {
             public int compare(BlogEntry a, BlogEntry b) {
                 return b.getPostDate().compareTo(a.getPostDate());

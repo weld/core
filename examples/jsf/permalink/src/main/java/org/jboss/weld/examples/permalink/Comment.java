@@ -16,10 +16,11 @@
  */
 package org.jboss.weld.examples.permalink;
 
+import java.util.Date;
+
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.util.Date;
 
 /**
  * @author Dan Allen
@@ -27,6 +28,9 @@ import java.util.Date;
 @Named
 @RequestScoped
 public class Comment {
+
+    private static final String SEMICOLON = ";";
+
     private Long id;
 
     private BlogEntry entry;
@@ -61,8 +65,9 @@ public class Comment {
     }
 
     public void checkAuthor() {
-        if (users != null && isRemember())
+        if (users != null && isRemember()) {
             users.setUsername(author);
+        }
     }
 
     public BlogEntry getEntry() {
@@ -84,8 +89,9 @@ public class Comment {
     public String getAuthor() {
         if (users != null) {
             String username = users.getUsername();
-            if (username != null)
+            if (username != null) {
                 return username;
+            }
         }
         return author;
     }
@@ -127,8 +133,8 @@ public class Comment {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Comment@").append(hashCode()).append("{");
-        sb.append("id=").append(id).append("; ");
-        sb.append("author=").append(author).append("; ");
+        sb.append("id=").append(id).append(SEMICOLON);
+        sb.append("author=").append(author).append(SEMICOLON);
         sb.append("body=").append(body);
         sb.append("}");
         return sb.toString();

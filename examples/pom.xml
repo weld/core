@@ -223,7 +223,7 @@
                 <artifactId>coyote</artifactId>
                 <version>${tomcat.version}</version>
             </dependency>
-            
+
             <dependency>
                 <groupId>org.jboss.arquillian</groupId>
                 <artifactId>arquillian-bom</artifactId>
@@ -231,14 +231,14 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            
+
             <dependency>
                 <groupId>org.jboss.arquillian.extension</groupId>
                 <artifactId>arquillian-drone-bom</artifactId>
                 <version>${arquillian.drone.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
-            </dependency>	
+            </dependency>
 
             <dependency>
                 <groupId>org.jboss.arquillian.test</groupId>
@@ -247,7 +247,7 @@
                 <classifier>tests</classifier>
                 <scope>test</scope>
             </dependency>
-            
+
             <dependency>
                 <groupId>org.jboss.arquillian.graphene</groupId>
                 <artifactId>arquillian-graphene</artifactId>
@@ -268,6 +268,15 @@
     </dependencyManagement>
 
     <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <configuration combine.self="override">
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+        </plugins>
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -277,7 +286,7 @@
                         <ejbVersion>3.0</ejbVersion>
                     </configuration>
                 </plugin>
-                <!-- Work around issues encountered with http://jira.codehaus.org/browse/MWAR-187 
+                <!-- Work around issues encountered with http://jira.codehaus.org/browse/MWAR-187
                     during release -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -317,6 +326,16 @@
                             </component>
                         </components>
                     </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.tomcat.maven</groupId>
+                    <artifactId>tomcat6-maven-plugin</artifactId>
+                    <version>2.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.tomcat.maven</groupId>
+                    <artifactId>tomcat7-maven-plugin</artifactId>
+                    <version>2.1</version>
                 </plugin>
             </plugins>
         </pluginManagement>

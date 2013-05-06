@@ -37,7 +37,7 @@ Then, create a new domain for the application:
 Finally, deploy the application using:
 
    mvn package glassfish:deploy
-   
+
 The application becomes available at <http://localhost:7070/weld-permalink>
 
 Deploying to standalone Tomcat
@@ -49,7 +49,11 @@ configuration, with a hostname of localhost and port 8080. Before starting
 Tomcat, add the following line to `conf/tomcat-users.xml` to allow the Maven
 Tomcat plugin to access the manager application, then start Tomcat:
 
+    Tomcat 6:
     <user username="admin" password="" roles="manager"/>
+
+    Tomcat 7:
+    <user username="admin" password="" roles="manager-gui,manager-script"/>
 
 To override this username and password, add a `<server>` with id `tomcat` in your
 Maven `settings.xml` file, set the `<username>` and `<password>` elqements to the
@@ -59,23 +63,41 @@ tomcat-maven-plugin configuration in the `pom.xml`.
 You can deploy it as an exploded archive immediately after the war goal is
 finished assembling the exploded structure:
 
-    mvn clean compile war:exploded tomcat:exploded -Ptomcat
+    Tomcat 6:
+    mvn clean compile war:exploded tomcat6:deploy -Ptomcat
+
+    Tomcat 7:
+    mvn clean compile war:exploded tomcat7:deploy -Ptomcat
 
 Once the application is deployed, you can redeploy it using this command:
 
-   mvn tomcat:redeploy -Ptomcat
+    Tomcat 6:
+    mvn tomcat6:redeploy -Ptomcat
+
+    Tomcat 7:
+    mvn tomcat7:redeploy -Ptomcat
 
 But likely you want to run one or more build goals first before you redeploy:
 
-    mvn compile tomcat:redeploy -Ptomcat
-    mvn war:exploded tomcat:redeploy -Ptomcat
-    mvn compile war:exploded tomcat:redeploy -Ptomcat
+    Tomcat 6:
+    mvn compile tomcat6:redeploy -Ptomcat
+    mvn war:exploded tomcat6:redeploy -Ptomcat
+    mvn compile war:exploded tomcat6:redeploy -Ptomcat
+
+    Tomcat 7:
+    mvn compile tomcat7:redeploy -Ptomcat
+    mvn war:exploded tomcat7:redeploy -Ptomcat
+    mvn compile war:exploded tomcat7:redeploy -Ptomcat
 
 Now you can view the application at <http://localhost:8080/weld-permalink>.
- 
+
 To undeploy, use:
 
-    mvn tomcat:undeploy -Ptomcat
+    Tomcat 6:
+    mvn tomcat6:undeploy -Ptomcat
+
+    Tomcat 7:
+    mvn tomcat7:undeploy -Ptomcat
 
 Deploying to embedded Jetty
 ------------------------------
@@ -85,7 +107,7 @@ Simply run:
     mvn war:inplace jetty:run -Pjetty
 
 The application will be running at the following local URL:
- 
+
    http://localhost:9090/weld-permalink
 
 Importing the project into Eclipse
