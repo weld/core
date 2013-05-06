@@ -1,5 +1,7 @@
 package org.jboss.weld.examples.numberguess;
 
+import java.io.Serializable;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.inject.Instance;
@@ -9,7 +11,6 @@ import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.io.Serializable;
 
 @Named
 @SessionScoped
@@ -18,6 +19,8 @@ public class Game implements Serializable {
      *
      */
     private static final long serialVersionUID = 991300443278089016L;
+
+    private static final int DEFAULT_REMAINING_GUESSES = 10;
 
     private int number;
 
@@ -77,7 +80,7 @@ public class Game implements Serializable {
     public void reset() {
         this.smallest = 0;
         this.guess = 0;
-        this.remainingGuesses = 10;
+        this.remainingGuesses = DEFAULT_REMAINING_GUESSES;
         this.biggest = maxNumber;
         this.number = randomNumber.get();
     }
