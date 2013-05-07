@@ -54,7 +54,7 @@ public abstract class Reflections {
             }
         } catch (ClassNotFoundException e) {
             throw new IllegalArgumentException("Cannot load class for " + name, e);
-        } catch (NoClassDefFoundError e) {
+        } catch (LinkageError e) {
             throw new IllegalArgumentException("Cannot load class for " + name, e);
         }
     }
