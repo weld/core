@@ -57,7 +57,7 @@ public class WeldSEResourceLoader implements ResourceLoader {
             return clazz;
         } catch (ClassNotFoundException e) {
             throw new ResourceLoadingException(e);
-        } catch (NoClassDefFoundError e) {
+        } catch (LinkageError e) {
             throw new ResourceLoadingException(e);
         }
     }

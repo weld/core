@@ -25,7 +25,7 @@ public class ClassLoaderResourceLoader implements ResourceLoader {
             return classLoader.loadClass(name);
         } catch (ClassNotFoundException e) {
             throw new ResourceLoadingException("Error loading class " + name, e);
-        } catch (NoClassDefFoundError e) {
+        } catch (LinkageError e) {
             throw new ResourceLoadingException("Error loading class " + name, e);
         } catch (TypeNotPresentException e) {
             throw new ResourceLoadingException("Error loading class " + name, e);
