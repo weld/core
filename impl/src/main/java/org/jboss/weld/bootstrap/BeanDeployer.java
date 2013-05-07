@@ -96,7 +96,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
     private boolean isBeanCandidate(Class<?> clazz) {
         try {
             return !clazz.isAnnotation() && !clazz.isEnum() && !Reflections.isNonStaticInnerClass(clazz);
-        } catch (NoClassDefFoundError e) {
+        } catch (LinkageError e) {
             logIgnoredClass(clazz.getName(), e);
             return false;
         }
