@@ -27,57 +27,158 @@
             <!-- Ensure that the DefaultDS has been set up -->
 
             <!-- Issues in the TCK -->
-            <!-- CDITCK-212 -->
-            <class name="org.jboss.jsr299.tck.tests.context.DestroyedInstanceReturnedByGetTest">
-                <methods>
-                    <exclude name="testDestroyedInstanceMustNotBeReturnedByGet"/>
-                </methods>
-            </class>
-	    <!-- CDITCK-249 -->
-	    <class name="org.jboss.jsr299.tck.tests.inheritance.specialization.enterprise.EnterpriseBeanSpecializationTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
-            <class name="org.jboss.jsr299.tck.tests.inheritance.specialization.enterprise.EnterpriseBeanSpecializationIntegrationTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
-	    <!-- CDITCK-250 -->
-	    <class name="org.jboss.jsr299.tck.tests.implementation.enterprise.newBean.NewEnterpriseBeanTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
-	    <class name="org.jboss.jsr299.tck.tests.implementation.enterprise.newBean.NewEnterpriseBeanICTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
-            <!-- CDITCK-231 -->
-            <class name="org.jboss.jsr299.tck.tests.implementation.producer.method.definition.ProducerMethodDefinitionTest">
-                <methods>
-                    <exclude name="testNonStaticProducerMethodInheritedBySpecializingSubclass" />
-                </methods>
-            </class>
-            <class name="org.jboss.jsr299.tck.tests.inheritance.specialization.simple.SimpleBeanSpecializationTest">
-                <methods>
-                    <exclude name="testProducerMethodOnSpecializedBeanCalledOnSpecializingBean" />
-                </methods>
-            </class>
-            <!-- CDITCK-264 -->
-            <class name="org.jboss.jsr299.tck.tests.implementation.producer.method.definition.enterprise.EnterpriseProducerMethodDefinitionTest">
-                <methods>
-                    <exclude name="testNonStaticProducerMethodInheritedBySpecializingSubclass" />
-                </methods>
-            </class>
-            <!-- CDITCK-265 -->
-            <class name="org.jboss.jsr299.tck.tests.implementation.producer.field.lifecycle.ProducerFieldLifecycleTest">
-                <methods>
-                    <exclude name=".*" />
-                </methods>
-            </class>
+         <!-- CDITCK-212 -->
+         <class
+            name="org.jboss.jsr299.tck.tests.context.DestroyedInstanceReturnedByGetTest">
+            <methods>
+               <exclude name="testDestroyedInstanceMustNotBeReturnedByGet" />
+            </methods>
+         </class>
+         <!-- CDITCK-213 -->
+         <class
+            name="org.jboss.jsr299.tck.tests.interceptors.definition.enterprise.interceptorOrder.SessionBeanInterceptorOrderTest">
+            <methods>
+               <exclude
+                  name="testInterceptorsDeclaredUsingInterceptorsCalledBeforeInterceptorBinding" />
+            </methods>
+         </class>
+         <class
+            name="org.jboss.jsr299.tck.tests.interceptors.definition.enterprise.nonContextualReference.SessionBeanInterceptorOnNonContextualEjbReferenceTest">
+            <methods>
+               <exclude
+                  name="testNonContextualSessionBeanReferenceIsIntercepted" />
+            </methods>
+         </class>
+         <class
+            name="org.jboss.jsr299.tck.tests.interceptors.definition.enterprise.simpleInterception.SessionBeanInterceptorDefinitionTest">
+            <methods>
+               <exclude name="testSessionBeanIsIntercepted" />
+            </methods>
+         </class>
+         <!-- CDITCK-219 -->
+         <class
+            name="org.jboss.jsr299.tck.tests.context.session.SessionContextTest">
+            <methods>
+               <exclude
+                  name="testSessionContextDestroyedWhenHttpSessionTimesOut" />
+            </methods>
+         </class>
+         <!-- CDITCK-217 -->
+         <class
+            name="org.jboss.jsr299.tck.tests.lookup.injection.non.contextual.ws.InjectionIntoWebServiceEndPointTest">
+            <methods>
+               <exclude name="testInjectionIntoWebServiceEndpoint" />
+            </methods>
+         </class>
+         <!-- CDITCK-220 -->
+         <class
+            name="org.jboss.jsr299.tck.tests.implementation.builtin.BuiltInBeansTest">
+            <methods>
+               <exclude name="testUserTransactionBean" />
+            </methods>
+         </class>
+         <!-- CDITCK-223 -->
+         <class
+            name="org.jboss.jsr299.tck.tests.implementation.enterprise.lifecycle.EnterpriseBeanLifecycleTest">
+            <methods>
+               <exclude name="testCreateSFSB" />
+            </methods>
+         </class>
+         <!-- CDITCK-221 -->
+         <class
+            name="org.jboss.jsr299.tck.tests.context.application.ejb.ApplicationContextSharedTest">
+            <methods>
+               <exclude name="testApplicationContextShared" />
+               <exclude
+                  name="testApplicationScopeActiveDuringCallToEjbTimeoutMethod" />
+            </methods>
+         </class>
+         <class
+            name="org.jboss.jsr299.tck.tests.context.request.ejb.EJBRequestContextTest">
+            <methods>
+               <exclude
+                  name="testRequestScopeActiveDuringCallToEjbTimeoutMethod" />
+               <exclude
+                  name="testRequestScopeDestroyedAfterCallToEjbTimeoutMethod" />
+            </methods>
+         </class>
+         <!-- CDITCK-249 -->
+         <class
+            name="org.jboss.jsr299.tck.tests.inheritance.specialization.enterprise.EnterpriseBeanSpecializationTest">
+            <methods>
+               <exclude name=".*" />
+            </methods>
+         </class>
+         <class
+            name="org.jboss.jsr299.tck.tests.inheritance.specialization.enterprise.EnterpriseBeanSpecializationIntegrationTest">
+            <methods>
+               <exclude name=".*" />
+            </methods>
+         </class>
+         <!-- CDITCK-250 -->
+         <class
+            name="org.jboss.jsr299.tck.tests.implementation.enterprise.newBean.NewEnterpriseBeanTest">
+            <methods>
+               <exclude name=".*" />
+            </methods>
+         </class>
+         <class
+            name="org.jboss.jsr299.tck.tests.implementation.enterprise.newBean.NewEnterpriseBeanICTest">
+            <methods>
+               <exclude name=".*" />
+            </methods>
+         </class>
+         <!-- CDITCK-231 -->
+         <class
+            name="org.jboss.jsr299.tck.tests.implementation.producer.method.definition.ProducerMethodDefinitionTest">
+            <methods>
+               <exclude
+                  name="testNonStaticProducerMethodInheritedBySpecializingSubclass" />
+            </methods>
+         </class>
+         <class
+            name="org.jboss.jsr299.tck.tests.inheritance.specialization.simple.SimpleBeanSpecializationTest">
+            <methods>
+               <exclude
+                  name="testProducerMethodOnSpecializedBeanCalledOnSpecializingBean" />
+            </methods>
+         </class>
+         <!-- CDITCK-264 -->
+         <class
+            name="org.jboss.jsr299.tck.tests.implementation.producer.method.definition.enterprise.EnterpriseProducerMethodDefinitionTest">
+            <methods>
+               <exclude
+                  name="testNonStaticProducerMethodInheritedBySpecializingSubclass" />
+            </methods>
+         </class>
+         <!-- CDITCK-265 -->
+         <class
+            name="org.jboss.jsr299.tck.tests.implementation.producer.field.lifecycle.ProducerFieldLifecycleTest">
+            <methods>
+               <exclude name=".*" />
+            </methods>
+         </class>
+         <!-- CDITCK-263 -->
+         <class
+            name="org.jboss.jsr299.tck.tests.implementation.simple.lifecycle.unproxyable.UnproxyableManagedBeanTest">
+            <methods>
+               <exclude name=".*" />
+            </methods>
+         </class>
+         <!-- CDITCK-280 -->
+         <class
+            name="org.jboss.jsr299.tck.tests.context.passivating.broken.finalProducerFieldNotPassivationCapable.NonPassivationCapableProducerFieldTest">
+            <methods>
+               <exclude name=".*" />
+            </methods>
+         </class>
+         <!-- CDITCK-281 -->
+         <class
+            name="org.jboss.jsr299.tck.tests.deployment.lifecycle.broken.normalScope.AddingNormalScopeTest">
+            <methods>
+               <exclude name=".*" />
+            </methods>
+         </class>
 
             <!-- Issues in Weld (the RI) -->
 
