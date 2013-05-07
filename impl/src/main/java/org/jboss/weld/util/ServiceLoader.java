@@ -238,7 +238,7 @@ public class ServiceLoader<S> implements Iterable<Metadata<S>> {
             Constructor<? extends S> constructor = serviceClass.getDeclaredConstructor();
             constructor.setAccessible(true);
             return constructor.newInstance();
-        } catch (NoClassDefFoundError e) {
+        } catch (LinkageError e) {
             log.log(WARNING, "Could not instantiate service class " + serviceClass.getName(), e);
             return null;
         } catch (InvocationTargetException e) {

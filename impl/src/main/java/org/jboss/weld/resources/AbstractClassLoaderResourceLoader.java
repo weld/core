@@ -40,7 +40,7 @@ public abstract class AbstractClassLoaderResourceLoader implements ResourceLoade
             return classLoader().loadClass(name);
         } catch (ClassNotFoundException e) {
             throw new ResourceLoadingException(ERROR_LOADING_CLASS + name, e);
-        } catch (NoClassDefFoundError e) {
+        } catch (LinkageError e) {
             throw new ResourceLoadingException(ERROR_LOADING_CLASS + name, e);
         } catch (TypeNotPresentException e) {
             throw new ResourceLoadingException(ERROR_LOADING_CLASS + name, e);

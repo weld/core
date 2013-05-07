@@ -58,7 +58,7 @@ public abstract class Reflections {
             }
         } catch (ClassNotFoundException e) {
             throw new IllegalArgumentException(CANNOT_LOAD_CLASS_FOR + name, e);
-        } catch (NoClassDefFoundError e) {
+        } catch (LinkageError e) {
             throw new IllegalArgumentException(CANNOT_LOAD_CLASS_FOR + name, e);
         }
     }
