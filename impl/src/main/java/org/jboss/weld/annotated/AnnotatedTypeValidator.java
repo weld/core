@@ -26,6 +26,7 @@ import static org.jboss.weld.logging.messages.MetadataMessage.NOT_IN_HIERARCHY;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -83,21 +84,29 @@ public class AnnotatedTypeValidator {
         }
     }
 
+    /**
+     * Checks if the given AnnotatedType is sensible, otherwise provides warnings.
+     */
     private static void checkSensibility(AnnotatedType<?> type) {
-        //check if it has a constructor
-        if(type.getConstructors().isEmpty()) {
-            log.warn(NO_CONSTRUCTOR,type);
+        // check if it has a constructor
+        if (type.getConstructors().isEmpty()) {
+            log.warn(NO_CONSTRUCTOR, type);
         }
-        //check if its javaMembers belong to the class hierarchy of annotatedType
+        // check if its javaMembers belong to the class hierarchy of annotatedType
         List<AnnotatedMember<?>> members = new ArrayList<AnnotatedMember<?>>();
         members.addAll(type.getConstructors());
         members.addAll(type.getFields());
         members.addAll(type.getMethods());
-        Set<Type> typeClosures = type.getTypeClosure();
-        for(AnnotatedMember<?> member: members) {
-           if(!typeClosures.contains(member.getJavaMember().getDeclaringClass())) {
-                log.warn(NOT_IN_HIERARCHY,member.toString(),type.toString());
-           }
+        Set<Class<?>> hierarchy = new HashSet<Class<?>>();
+        Class<?> clazz = type.getJavaClass();
+        while (clazz != null && clazz != Object.class) {
+            hierarchy.add(clazz);
+            clazz = clazz.getSuperclass();
+        }
+        for (AnnotatedMember<?> member : members) {
+            if (!hierarchy.contains(member.getJavaMember().getDeclaringClass())) {
+                log.warn(NOT_IN_HIERARCHY, member.toString(), type.toString());
+            }
         }
     }
 
