@@ -23,7 +23,6 @@ import static org.jboss.weld.logging.messages.JsfMessage.CLEANING_UP_CONVERSATIO
 import static org.jboss.weld.logging.messages.JsfMessage.FOUND_CONVERSATION_FROM_REQUEST;
 import static org.jboss.weld.logging.messages.JsfMessage.RESUMING_CONVERSATION;
 
-import javax.enterprise.inject.Instance;
 import javax.servlet.http.HttpServletRequest;
 
 import org.jboss.weld.context.ConversationContext;
@@ -53,11 +52,17 @@ public class ConversationContextActivator {
     private static final LocLogger log = loggerFactory().getLogger(SERVLET);
 
     private final BeanManagerImpl beanManager;
-    private final Instance<HttpConversationContext> httpConversationContext;
+    private HttpConversationContext httpConversationContextCache;
 
     protected ConversationContextActivator(BeanManagerImpl beanManager) {
         this.beanManager = beanManager;
-        this.httpConversationContext = beanManager.instance().select(HttpConversationContext.class);
+    }
+
+    private HttpConversationContext httpConversationContext() {
+        if (httpConversationContextCache == null) {
+            this.httpConversationContextCache = beanManager.instance().select(HttpConversationContext.class).get();
+        }
+        return httpConversationContextCache;
     }
 
     public void startConversationContext(HttpServletRequest request) {
@@ -73,8 +78,8 @@ public class ConversationContextActivator {
     // Conversation handling
 
     protected void activateConversationContext(HttpServletRequest request) {
-        HttpConversationContext conversationContext = httpConversationContext.get();
-        String cid = getConversationId(request, conversationContext);
+        HttpConversationContext conversationContext = httpConversationContext();
+        String cid = getConversationId(request, httpConversationContext());
         log.debug(RESUMING_CONVERSATION, cid);
 
         /*
@@ -98,7 +103,7 @@ public class ConversationContextActivator {
     }
 
     protected void associateConversationContext(HttpServletRequest request) {
-        httpConversationContext.get().associate(request);
+        httpConversationContext().associate(request);
     }
 
     /**
@@ -134,7 +139,7 @@ public class ConversationContextActivator {
     }
 
     protected void deactivateConversationContext(HttpServletRequest request) {
-        ConversationContext conversationContext = httpConversationContext.get();
+        ConversationContext conversationContext = httpConversationContext();
         if (conversationContext.isActive()) {
             // Only deactivate the context if one is already active, otherwise we get Exceptions
             boolean isTransient = conversationContext.getCurrentConversation().isTransient();
@@ -154,6 +159,6 @@ public class ConversationContextActivator {
     }
 
     protected void disassociateConversationContext(HttpServletRequest request) {
-        httpConversationContext.get().dissociate(request);
+        httpConversationContext().dissociate(request);
     }
 }
