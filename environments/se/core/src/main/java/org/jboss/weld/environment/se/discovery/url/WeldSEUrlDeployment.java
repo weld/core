@@ -16,13 +16,13 @@
  */
 package org.jboss.weld.environment.se.discovery.url;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.environment.se.discovery.AbstractWeldSEDeployment;
 import org.jboss.weld.resources.spi.ResourceLoader;
-
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Weld Deployment for Java SE environment.
@@ -49,4 +49,8 @@ public class WeldSEUrlDeployment extends AbstractWeldSEDeployment {
         return beanDeploymentArchive;
     }
 
+    @Override
+    public BeanDeploymentArchive getBeanDeploymentArchive(Class<?> beanClass) {
+        return beanDeploymentArchive;
+    }
 }

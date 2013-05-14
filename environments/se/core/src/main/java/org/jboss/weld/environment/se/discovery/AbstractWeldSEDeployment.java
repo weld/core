@@ -1,13 +1,14 @@
 package org.jboss.weld.environment.se.discovery;
 
+import javax.enterprise.inject.spi.Extension;
+
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
+import org.jboss.weld.bootstrap.spi.CDI11Deployment;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.environment.se.discovery.url.WeldSEResourceLoader;
-
-import javax.enterprise.inject.spi.Extension;
 
 /**
  * Implements the basic requirements of a {@link Deployment}. Provides a service
@@ -19,7 +20,7 @@ import javax.enterprise.inject.spi.Extension;
  * @author Pete Muir
  * @author Ales Justin
  */
-public abstract class AbstractWeldSEDeployment implements Deployment {
+public abstract class AbstractWeldSEDeployment implements CDI11Deployment {
 
     public static final String BEANS_XML = "META-INF/beans.xml";
     public static final String[] RESOURCES = {BEANS_XML};
