@@ -77,6 +77,7 @@
         <slf4j.version>1.7.2</slf4j.version>
         <testng.version>5.10</testng.version>
         <weld.api.version>2.0.Final</weld.api.version>
+        <wildfly.version>8.0.0.Alpha1-SNAPSHOT</wildfly.version>
     </properties>
 
     <modules>
@@ -300,6 +301,25 @@
                 <groupId>org.jboss.as</groupId>
                 <artifactId>jboss-as-arquillian-container-remote</artifactId>
                 <version>${jboss.as7.version}</version>
+            </dependency>
+
+            <!-- WildFly Arquillian container -->
+            <dependency>
+                <groupId>org.wildfly</groupId>
+                <artifactId>wildfly-arquillian-common</artifactId>
+                <version>${wildfly.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.wildfly</groupId>
+                <artifactId>wildfly-arquillian-container-managed</artifactId>
+                <version>${wildfly.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.wildfly</groupId>
+                <artifactId>wildfly-arquillian-container-remote</artifactId>
+                <version>${wildfly.version}</version>
             </dependency>
 
             <dependency>
