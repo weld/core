@@ -129,6 +129,11 @@
                     <exclude name="testShutdown"/>
                 </methods>
             </class>
+            <class name="org.jboss.cdi.tck.tests.context.application.ApplicationContextTest">
+                <methods>
+                    <exclude name="testApplicationContextSharedBetweenJaxRsRequests"/>
+                </methods>
+            </class>
 
         </classes>
     </test>
