@@ -15,7 +15,6 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import com.google.common.util.concurrent.UncheckedExecutionException;
 
 /**
  *
@@ -27,8 +26,6 @@ public class DefaultMetadataCachingReader implements MetadataCachingReader {
     private final LoadingCache<ClassMetadata<?>, InterceptorMetadata<?>> classMetadataInterceptorMetadataCache;
 
     private final LoadingCache<Class<?>, ClassMetadata<?>> reflectiveClassMetadataCache;
-
-    private boolean unwrapRuntimeExceptions;
 
     private final BeanManagerImpl manager;
 
@@ -54,56 +51,22 @@ public class DefaultMetadataCachingReader implements MetadataCachingReader {
                 return ReflectiveClassMetadata.of(from);
             }
         });
-        this.unwrapRuntimeExceptions = true;
-    }
-
-    public void setUnwrapRuntimeExceptions(boolean unwrapRuntimeExceptions) {
-        this.unwrapRuntimeExceptions = unwrapRuntimeExceptions;
     }
 
     public <T> InterceptorMetadata<T> getInterceptorMetadata(InterceptorFactory<T> interceptorReference) {
-        try {
-            return getCastCacheValue(interceptorMetadataCache, interceptorReference, false);
-        } catch (UncheckedExecutionException e) {
-            if (unwrapRuntimeExceptions && e.getCause() instanceof RuntimeException) {
-                throw (RuntimeException) e.getCause();
-            }
-            throw e;
-        }
+        return getCastCacheValue(interceptorMetadataCache, interceptorReference);
     }
 
     public <T> TargetClassInterceptorMetadata<T> getTargetClassInterceptorMetadata(ClassMetadata<T> classMetadata) {
-        try {
-            return getCastCacheValue(classMetadataInterceptorMetadataCache, classMetadata, false);
-        } catch (UncheckedExecutionException e) {
-            if (unwrapRuntimeExceptions && e.getCause() instanceof RuntimeException) {
-                throw (RuntimeException) e.getCause();
-            }
-            throw e;
-        }
+        return getCastCacheValue(classMetadataInterceptorMetadataCache, classMetadata);
     }
 
     public <T> InterceptorMetadata<T> getInterceptorMetadata(Class<T> clazz) {
-        try {
-            return getCastCacheValue(interceptorMetadataCache,
-                    ClassMetadataInterceptorFactory.of(getCacheValue(reflectiveClassMetadataCache, clazz, false), manager), false);
-        } catch (UncheckedExecutionException e) {
-            if (unwrapRuntimeExceptions && e.getCause() instanceof RuntimeException) {
-                throw (RuntimeException) e.getCause();
-            }
-            throw e;
-        }
+        return getCastCacheValue(interceptorMetadataCache, ClassMetadataInterceptorFactory.of(getCacheValue(reflectiveClassMetadataCache, clazz), manager));
     }
 
     public <T> ClassMetadata<T> getClassMetadata(Class<T> clazz) {
-        try {
-            return getCastCacheValue(reflectiveClassMetadataCache, clazz, false);
-        } catch (UncheckedExecutionException e) {
-            if (unwrapRuntimeExceptions && e.getCause() instanceof RuntimeException) {
-                throw (RuntimeException) e.getCause();
-            }
-            throw e;
-        }
+        return getCastCacheValue(reflectiveClassMetadataCache, clazz);
     }
 
     public void cleanAfterBoot() {

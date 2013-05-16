@@ -48,7 +48,6 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.util.concurrent.ExecutionError;
-import com.google.common.util.concurrent.UncheckedExecutionException;
 
 /**
  * @author Pete Muir
@@ -174,14 +173,12 @@ public class ClassTransformer implements BootstrapService {
 
     public <T> BackedAnnotatedType<T> getBackedAnnotatedType(final Class<T> rawType, final Type baseType, final String bdaId) {
         try {
-            return getCastCacheValue(backedAnnotatedTypes, new TypeHolder<T>(rawType, baseType, bdaId), false);
-        } catch (UncheckedExecutionException e) {
-            final Throwable cause = e.getCause();
-            if(cause instanceof TypeNotPresentException
-                    || cause instanceof ResourceLoadingException) {
-                throw new ResourceLoadingException("Exception while loading class " + rawType.getName(), cause);
+            return getCastCacheValue(backedAnnotatedTypes, new TypeHolder<T>(rawType, baseType, bdaId));
+        } catch (RuntimeException e) {
+            if (e instanceof TypeNotPresentException || e instanceof ResourceLoadingException) {
+                log.trace("Exception while loading class '{}' : {}", rawType.getName(), e);
+                throw new ResourceLoadingException("Exception while loading class " + rawType.getName(), e);
             }
-            log.trace("Exception while loading class '{}' : {}", rawType.getName(), cause);
             throw e;
         } catch (ExecutionError e) {
             // LoadingCache throws ExecutionError if an error was thrown while loading the value
