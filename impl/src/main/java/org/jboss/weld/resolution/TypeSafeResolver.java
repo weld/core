@@ -53,6 +53,16 @@ public abstract class TypeSafeResolver<R extends Resolvable, T, C extends Collec
 
     }
 
+    /*
+     * https://issues.jboss.org/browse/WELD-1323
+     */
+    private static final long RESOLVED_CACHE_UPPER_BOUND;
+    private static final long DEFAULT_RESOLVED_CACHE_UPPER_BOUND = 0x100000L;
+
+    static {
+        RESOLVED_CACHE_UPPER_BOUND = Long.getLong("org.jboss.weld.resolution.cacheSize", DEFAULT_RESOLVED_CACHE_UPPER_BOUND);
+    }
+
     // The resolved injection points
     private final LoadingCache<R, C> resolved;
     // The beans to search
@@ -65,7 +75,7 @@ public abstract class TypeSafeResolver<R extends Resolvable, T, C extends Collec
      */
     public TypeSafeResolver(Iterable<? extends T> allBeans) {
         this.resolverFunction = new ResolvableToBeanCollection<R, T, C>(this);
-        this.resolved = CacheBuilder.newBuilder().build(resolverFunction);
+        this.resolved = CacheBuilder.newBuilder().maximumSize(RESOLVED_CACHE_UPPER_BOUND).build(resolverFunction);
         this.allBeans = allBeans;
     }
 
