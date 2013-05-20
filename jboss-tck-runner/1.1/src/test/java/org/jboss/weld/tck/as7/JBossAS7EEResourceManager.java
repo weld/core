@@ -40,7 +40,7 @@ public class JBossAS7EEResourceManager {
             eventContext.proceed();
 
             // Then check resources
-            ModelControllerClient client = ModelControllerClient.Factory.create("localhost", 9999);
+            ModelControllerClient client = ModelControllerClient.Factory.create("localhost", 9990);
             checkJmsQueue(client);
             checkJmsTopic(client);
             checkTestDataSource(client);
