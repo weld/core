@@ -16,6 +16,18 @@
  */
 package org.jboss.weld.environment.se;
 
+import java.lang.annotation.Annotation;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.UnsatisfiedResolutionException;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.Extension;
+
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.Environments;
 import org.jboss.weld.bootstrap.api.helpers.ForwardingBootstrap;
@@ -28,17 +40,6 @@ import org.jboss.weld.environment.se.events.ContainerInitialized;
 import org.jboss.weld.metadata.MetadataImpl;
 import org.jboss.weld.resources.spi.ResourceLoader;
 
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.UnsatisfiedResolutionException;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.Extension;
-import java.lang.annotation.Annotation;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
 /**
  * <p>
  * The preferred method of booting Weld SE.
@@ -49,9 +50,10 @@ import java.util.Set;
  * </p>
  * <p/>
  * <pre>
- * WeldContainer weld = new Weld().initialize();
- * weld.instance().select(Foo.class).get();
- * weld.event().select(Bar.class).fire(new Bar());
+ * Weld weld = new Weld();
+ * WeldContainer container = weld.initialize();
+ * container.instance().select(Foo.class).get();
+ * container.event().select(Bar.class).fire(new Bar());
  * weld.shutdown();
  * </pre>
  *
@@ -143,8 +145,7 @@ public class Weld {
         bootstrap.endInitialization();
 
         // Set up the ShutdownManager for later
-        this.shutdownManager = getInstanceByType(bootstrap.getManager(deployment.loadBeanDeploymentArchive(ShutdownManager.class)), ShutdownManager.class);
-        this.shutdownManager.setBootstrap(bootstrap);
+        this.shutdownManager = new ShutdownManager(bootstrap);
 
         WeldContainer container = getInstanceByType(bootstrap.getManager(deployment.loadBeanDeploymentArchive(WeldContainer.class)), WeldContainer.class);
 

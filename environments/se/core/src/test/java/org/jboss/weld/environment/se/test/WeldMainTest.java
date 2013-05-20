@@ -16,7 +16,9 @@
  */
 package org.jboss.weld.environment.se.test;
 
-import org.jboss.weld.environment.se.ShutdownManager;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
 import org.jboss.weld.environment.se.test.beans.CustomEvent;
@@ -26,43 +28,43 @@ import org.jboss.weld.environment.se.test.beans.ObserverTestBean;
 import org.jboss.weld.environment.se.test.beans.ParametersTestBean;
 import org.junit.Test;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 /**
  * @author Peter Royle
  */
 public class WeldMainTest {
 
     /**
-     * Test the alternate API for boting WeldContainer from an SE app.
+     * Test the alternate API for booting WeldContainer from an SE app.
      */
     @Test
     public void testInitialize() {
 
-        WeldContainer weld = new Weld().initialize();
+        Weld weld = new Weld();
+        WeldContainer container = weld.initialize();
 
-        MainTestBean mainTestBean = weld.instance().select(MainTestBean.class).get();
+        MainTestBean mainTestBean = container.instance().select(MainTestBean.class).get();
         assertNotNull(mainTestBean);
 
         ParametersTestBean paramsBean = mainTestBean.getParametersTestBean();
         assertNotNull(paramsBean);
         assertNotNull(paramsBean.getParameters());
 
-        shutdownManager(weld);
+        weld.shutdown();
     }
 
     /**
-     * Test the firing of observers using the alternate API for boting WeldContainer from an SE app.
+     * Test the firing of observers using the alternate API for booting WeldContainer from an SE app.
      */
     @Test
     public void testObservers() {
+
         InitObserverTestBean.reset();
         ObserverTestBean.reset();
 
+        Weld weld = new Weld();
+        WeldContainer container = weld.initialize();
 
-        WeldContainer weld = new Weld().initialize();
-        weld.event().select(CustomEvent.class).fire(new CustomEvent());
+        container.event().select(CustomEvent.class).fire(new CustomEvent());
 
         assertTrue(ObserverTestBean.isBuiltInObserved());
         assertTrue(ObserverTestBean.isCustomObserved());
@@ -70,10 +72,8 @@ public class WeldMainTest {
         // moved as per WELD-949
         assertTrue(ObserverTestBean.isInitObserved());
         assertTrue(InitObserverTestBean.isInitObserved());
+
+        weld.shutdown();
     }
 
-    private void shutdownManager(WeldContainer weld) {
-        ShutdownManager shutdownManager = weld.instance().select(ShutdownManager.class).get();
-        shutdownManager.shutdown();
-    }
 }

@@ -20,16 +20,18 @@ import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.enterprise.context.ApplicationScoped;
-
-@ApplicationScoped
 public class ShutdownManager {
 
     private static Logger log = LoggerFactory.getLogger(ShutdownManager.class);
 
     private boolean hasShutdownBeenCalled = false;
 
-    private Bootstrap bootstrap;
+    private final Bootstrap bootstrap;
+
+    ShutdownManager(Bootstrap bootstrap) {
+        super();
+        this.bootstrap = bootstrap;
+    }
 
     /**
      * Shutdown Weld SE gracefully.
@@ -42,14 +44,9 @@ public class ShutdownManager {
                 bootstrap.shutdown();
             } else {
                 log.debug("Skipping spurious call to shutdown");
-                log.trace("Spurious call to shutdown from: ",
-                        Thread.currentThread().getStackTrace());
+                log.trace("Spurious call to shutdown from: ", Thread.currentThread().getStackTrace());
             }
         }
-    }
-
-    public void setBootstrap(Bootstrap bootstrap) {
-        this.bootstrap = bootstrap;
     }
 
 }
