@@ -1,11 +1,10 @@
 package org.jboss.weld.environment.se.test.events;
 
-import org.jboss.weld.environment.se.ShutdownManager;
-import org.jboss.weld.environment.se.events.ContainerInitialized;
-
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
+
+import org.jboss.weld.environment.se.events.ContainerInitialized;
 
 public class Foo {
 
@@ -29,7 +28,7 @@ public class Foo {
     @EventQualifier1
     private Event<Bar> eventTest;
 
-    public void start(@Observes ContainerInitialized event, ShutdownManager shutdownManager) {
+    public void start(@Observes ContainerInitialized event) {
         eventTest.fire(new Bar());
         observedContainerInitialized = true;
     }

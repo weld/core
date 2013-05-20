@@ -16,32 +16,28 @@
  */
 package org.jboss.weld.environment.se.test;
 
-import org.jboss.weld.environment.se.ShutdownManager;
-import org.jboss.weld.environment.se.Weld;
-import org.jboss.weld.environment.se.WeldContainer;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import org.jboss.weld.environment.se.test.decorators.AbstractDoor;
 import org.jboss.weld.environment.se.test.decorators.CarDoor;
 import org.jboss.weld.environment.se.test.decorators.CarDoorAlarm;
 import org.jboss.weld.environment.se.test.decorators.HouseDoor;
 import org.junit.Test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 /**
  * @author Peter Royle
  */
-public class DecoratorsTest {
+public class DecoratorsTest extends WeldSETest {
 
     /**
      * Test that decorators work as expected in SE.
      */
     @Test
     public void testDecorators() {
-        WeldContainer weld = new Weld().initialize();
 
-        CarDoor carDoor = weld.instance().select(CarDoor.class).get();
+        CarDoor carDoor = container.instance().select(CarDoor.class).get();
         assertNotNull(carDoor);
 
         // the car door is alarmed
@@ -50,7 +46,7 @@ public class DecoratorsTest {
         testDoor(carDoor);
         assertTrue(CarDoorAlarm.alarmActivated);
 
-        HouseDoor houseDoor = weld.instance().select(HouseDoor.class).get();
+        HouseDoor houseDoor = container.instance().select(HouseDoor.class).get();
         assertNotNull(carDoor);
 
         // the house door is not alarmed
@@ -58,8 +54,6 @@ public class DecoratorsTest {
         assertFalse(CarDoorAlarm.alarmActivated);
         testDoor(houseDoor);
         assertFalse(CarDoorAlarm.alarmActivated);
-
-        shutdownManager(weld);
     }
 
     private void testDoor(AbstractDoor door) {
@@ -73,8 +67,4 @@ public class DecoratorsTest {
         assertFalse(door.isOpen());
     }
 
-    private void shutdownManager(WeldContainer weld) {
-        ShutdownManager shutdownManager = weld.instance().select(ShutdownManager.class).get();
-        shutdownManager.shutdown();
-    }
 }

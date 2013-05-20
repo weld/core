@@ -16,23 +16,33 @@
  */
 package org.jboss.weld.environment.se.test;
 
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 
-import org.jboss.weld.environment.se.events.ContainerInitialized;
-import org.jboss.weld.environment.se.test.events.Foo;
+import org.jboss.weld.environment.se.StartMain;
+import org.jboss.weld.environment.se.WeldContainer;
+import org.jboss.weld.environment.se.test.beans.MainTestBean;
+import org.jboss.weld.environment.se.test.beans.ParametersTestBean;
 import org.junit.Test;
 
 /**
  * @author Peter Royle
  */
-public class EventsTest extends WeldSETest {
+public class StartMainEmptyArgsTest {
 
-    // forum post check
+    /**
+     * Test of main method, of class StartMain when no command-line args are
+     * provided.
+     */
     @Test
-    public void testEventQualifiersCorrect() {
-        Foo.reset();
-        container.event().select(ContainerInitialized.class).fire(new ContainerInitialized());
-        assertFalse(Foo.isObservedEventTest());
+    public void testMainEmptyArgs() {
+        WeldContainer container = new StartMain(new String[]{}).go();
+
+        MainTestBean mainTestBean = container.instance().select(MainTestBean.class).get();
+        assertNotNull(mainTestBean);
+
+        ParametersTestBean paramsBean = mainTestBean.getParametersTestBean();
+        assertNotNull(paramsBean);
+        assertNotNull(paramsBean.getParameters());
     }
 
 }
