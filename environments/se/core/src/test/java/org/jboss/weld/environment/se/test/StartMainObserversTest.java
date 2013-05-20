@@ -16,31 +16,37 @@
  */
 package org.jboss.weld.environment.se.test;
 
-
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import javax.enterprise.inject.spi.BeanManager;
 
-import org.jboss.weld.environment.se.test.scopes.Bar;
-import org.jboss.weld.environment.se.test.scopes.Foo;
+import org.jboss.weld.environment.se.StartMain;
+import org.jboss.weld.environment.se.WeldContainer;
+import org.jboss.weld.environment.se.test.beans.CustomEvent;
+import org.jboss.weld.environment.se.test.beans.InitObserverTestBean;
+import org.jboss.weld.environment.se.test.beans.ObserverTestBean;
 import org.junit.Test;
 
 /**
  * @author Peter Royle
+ * @author Martin Kouba
  */
-public class ScopesTest extends WeldSETest {
+public class StartMainObserversTest {
 
-    /**
-     * Test that decorators work as expected in SE.
-     */
     @Test
-    // WELD-322
-    public void testScopes() {
+    public void testObservers() {
+        InitObserverTestBean.reset();
+        ObserverTestBean.reset();
 
+        WeldContainer container = new StartMain(new String[]{}).go();
         BeanManager manager = container.getBeanManager();
+        manager.fireEvent(new CustomEvent());
 
-        assertEquals(1, manager.getBeans(Bar.class).size());
-        assertEquals(2, manager.getBeans(Foo.class).size());
+        assertTrue(ObserverTestBean.isBuiltInObserved());
+        assertTrue(ObserverTestBean.isCustomObserved());
+        assertTrue(ObserverTestBean.isInitObserved());
+
+        assertTrue(InitObserverTestBean.isInitObserved());
     }
 
 }
