@@ -17,9 +17,10 @@
 
 package org.jboss.weld.exceptions;
 
-import java.io.Serializable;
-
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+
+import java.io.ObjectStreamException;
+import java.io.Serializable;
 
 /**
  * Exception message based on an enumerated key and optional object arguments.
@@ -77,4 +78,7 @@ public class WeldExceptionKeyMessage implements WeldExceptionMessage, Serializab
         return result;
     }
 
+    private Object writeReplace() throws ObjectStreamException {
+        return new WeldExceptionStringMessage(getAsString());
+    }
 }

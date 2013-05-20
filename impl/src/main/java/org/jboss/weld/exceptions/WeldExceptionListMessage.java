@@ -17,6 +17,7 @@
 
 package org.jboss.weld.exceptions;
 
+import java.io.ObjectStreamException;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.io.StringWriter;
@@ -62,6 +63,10 @@ public class WeldExceptionListMessage implements WeldExceptionMessage, Serializa
         }
         messageBuffer.flush();
         message = writer.toString();
+    }
+
+    private Object writeReplace() throws ObjectStreamException {
+        return new WeldExceptionStringMessage(getAsString());
     }
 
 }
