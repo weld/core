@@ -16,29 +16,21 @@
  */
 package org.jboss.weld.environment.se.test;
 
-import org.jboss.weld.environment.se.ShutdownManager;
-import org.jboss.weld.environment.se.StartMain;
-import org.jboss.weld.environment.se.WeldContainer;
-import org.jboss.weld.environment.se.test.beans.CustomEvent;
-import org.jboss.weld.environment.se.test.beans.InitObserverTestBean;
-import org.jboss.weld.environment.se.test.beans.MainTestBean;
-import org.jboss.weld.environment.se.test.beans.ObserverTestBean;
-import org.jboss.weld.environment.se.test.beans.ParametersTestBean;
-import org.junit.Test;
-
-import javax.enterprise.inject.spi.BeanManager;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+
+import org.jboss.weld.environment.se.StartMain;
+import org.jboss.weld.environment.se.WeldContainer;
+import org.jboss.weld.environment.se.test.beans.MainTestBean;
+import org.jboss.weld.environment.se.test.beans.ParametersTestBean;
+import org.junit.Test;
 
 /**
  * @author Peter Royle
  */
 public class StartMainTest {
 
-    public static String[] ARGS = new String[]{"arg1", "arg2", "arg3"};
-    public static String[] ARGS_EMPTY = new String[]{};
+    private static String[] ARGS = new String[]{"arg1", "arg2", "arg3"};
 
     /**
      * Test of main method, of class StartMain. Checks that the beans found in
@@ -49,10 +41,9 @@ public class StartMainTest {
     public void testMain() {
         String[] args = ARGS;
 
-        WeldContainer weld = new StartMain(args).go();
-        BeanManager manager = weld.getBeanManager();
+        WeldContainer container = new StartMain(args).go();
 
-        MainTestBean mainTestBean = weld.instance().select(MainTestBean.class).get();
+        MainTestBean mainTestBean = container.instance().select(MainTestBean.class).get();
         assertNotNull(mainTestBean);
 
         ParametersTestBean paramsBean = mainTestBean.getParametersTestBean();
@@ -64,48 +55,6 @@ public class StartMainTest {
         assertEquals(ARGS[1], paramsBean.getParameters().get(1));
         assertNotNull(paramsBean.getParameters().get(2));
         assertEquals(ARGS[2], paramsBean.getParameters().get(2));
-
-        shutdownManager(weld);
-    }
-
-    /**
-     * Test of main method, of class StartMain when no command-line args are
-     * provided.
-     */
-    @Test
-    public void testMainEmptyArgs() {
-        WeldContainer weld = new StartMain(ARGS_EMPTY).go();
-        BeanManager manager = weld.getBeanManager();
-
-        MainTestBean mainTestBean = weld.instance().select(MainTestBean.class).get();
-        assertNotNull(mainTestBean);
-
-        ParametersTestBean paramsBean = mainTestBean.getParametersTestBean();
-        assertNotNull(paramsBean);
-        assertNotNull(paramsBean.getParameters());
-
-        shutdownManager(weld);
-    }
-
-    @Test
-    public void testObservers() {
-        InitObserverTestBean.reset();
-        ObserverTestBean.reset();
-
-        WeldContainer weld = new StartMain(ARGS_EMPTY).go();
-        BeanManager manager = weld.getBeanManager();
-        manager.fireEvent(new CustomEvent());
-
-        assertTrue(ObserverTestBean.isBuiltInObserved());
-        assertTrue(ObserverTestBean.isCustomObserved());
-        assertTrue(ObserverTestBean.isInitObserved());
-
-        assertTrue(InitObserverTestBean.isInitObserved());
-    }
-
-    private void shutdownManager(WeldContainer weld) {
-        ShutdownManager shutdownManager = weld.instance().select(ShutdownManager.class).get();
-        shutdownManager.shutdown();
     }
 
 }
