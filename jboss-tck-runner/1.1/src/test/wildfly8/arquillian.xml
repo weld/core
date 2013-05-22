@@ -8,10 +8,10 @@
         <!-- property name="deploymentExportPath">target/</property-->
     </engine>
 
-    <container qualifier="jboss-as-7" default="true">
+    <container qualifier="wildfly-8" default="true">
         <configuration>
             <property name="serverConfig">standalone-full.xml</property>
-            <property name="javaVmArguments">-Xms128m -Xmx1g -XX:MaxPermSize=512m -ea ${jacoco.agent} -DcdiTckExcludeDummy=true</property>
+            <property name="javaVmArguments">-Xms128m -Xmx1g -XX:MaxPermSize=512m -ea -DcdiTckExcludeDummy=true</property>
             <property name="outputToConsole">false</property>
         </configuration>
         <protocol type="Servlet 3.0">

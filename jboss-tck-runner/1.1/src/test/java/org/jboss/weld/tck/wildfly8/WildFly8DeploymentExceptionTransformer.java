@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tck.as7;
+package org.jboss.weld.tck.wildfly8;
 
 import java.util.List;
 
@@ -30,10 +30,10 @@ import org.jboss.as.arquillian.container.ExceptionTransformer;
  * 
  * See AS7-1197 for more details.
  * 
- * @see JBossAS7Extension
+ * @see WildFly8Extension
  * @author Martin Kouba
  */
-public class JBossAS7DeploymentExceptionTransformer implements DeploymentExceptionTransformer {
+public class WildFly8DeploymentExceptionTransformer implements DeploymentExceptionTransformer {
 
     private static final String[] DEPLOYMENT_EXCEPTION_FRAGMENTS = new String[] {
             "org.jboss.weld.exceptions.DeploymentException", "org.jboss.weld.exceptions.UnserializableDependencyException",

@@ -14,29 +14,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tck.as7;
+package org.jboss.weld.tck.wildfly8;
 
 import org.jboss.arquillian.container.spi.client.container.DeploymentExceptionTransformer;
 import org.jboss.arquillian.core.spi.LoadableExtension;
 import org.jboss.as.arquillian.container.ExceptionTransformer;
 
 /**
- * 
+ * TODO the managed container class did not change so far, but will likely change soon
  *
  * @author Martin Kouba
  */
-public class JBossAS7Extension implements LoadableExtension {
+public class WildFly8Extension implements LoadableExtension {
 
     private static final String JBOSSAS7_MANAGED_CONTAINER_CLASS = "org.jboss.as.arquillian.container.managed.ManagedDeployableContainer";
-   
+
     public void register(ExtensionBuilder builder) {
 
         if (Validate.classExists(JBOSSAS7_MANAGED_CONTAINER_CLASS)) {
             // Override the default NOOP exception transformer
             builder.override(DeploymentExceptionTransformer.class, ExceptionTransformer.class,
-                    JBossAS7DeploymentExceptionTransformer.class);
+                    WildFly8DeploymentExceptionTransformer.class);
             // Observe container start and check EE resources
-            builder.observer(JBossAS7EEResourceManager.class);
+            builder.observer(WildFly8EEResourceManager.class);
         }
     }
 

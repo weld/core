@@ -1,0 +1,136 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<!-- CDI TCK TestNG configuration for Weld -->
+<suite name="Weld / JBoss AS run of CDI TCK" verbose="0" configfailurepolicy="continue">
+
+    <listeners>
+        <listener class-name="org.jboss.cdi.tck.impl.testng.SingleTestClassMethodInterceptor"/>
+        <listener class-name="org.jboss.cdi.tck.impl.testng.ProgressLoggingTestListener"/>
+        <!-- The default JUnit XML reporter is disabled -->
+        <listener class-name="org.testng.reporters.SuiteHTMLReporter"/>
+        <listener class-name="org.testng.reporters.FailedReporter"/>
+        <listener class-name="org.testng.reporters.XMLReporter"/>
+        <listener class-name="org.testng.reporters.EmailableReporter"/>
+        <listener class-name="org.testng.reporters.TestHTMLReporter" />
+    </listeners>
+
+    <test name="CDI TCK">
+
+        <packages>
+            <package name="org.jboss.cdi.tck.tests.*" />
+            <package name="org.jboss.cdi.tck.interceptors.tests.*" />
+        </packages>
+
+        <classes>
+
+            <!-- Issues in the TCK -->
+
+            <!-- Issues in Weld (the RI) -->
+
+            <!-- Issues in JBoss AS -->
+            <!-- AS7-6821 -->
+            <class name="org.jboss.cdi.tck.tests.deployment.packaging.installedLibrary.InstalledLibraryEarTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
+            <!-- JMS tests not working on AS7, see CDITCK-315 -->
+            <class name="org.jboss.cdi.tck.tests.extensions.container.event.jms.ContainerEventTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
+            <class name="org.jboss.cdi.tck.tests.interceptors.definition.enterprise.jms.MessageDrivenBeanInterceptorInvocationTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
+            <class name="org.jboss.cdi.tck.tests.context.request.event.jms.RequestScopeEventMessageDeliveryTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
+            <class name="org.jboss.cdi.tck.tests.context.jms.MessageDrivenBeanContextTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
+            <!-- AS7-6831 @WebServiceRef injection not working in JBoss AS -->
+            <class name="org.jboss.cdi.tck.tests.implementation.simple.resource.broken.type.ws.ResourceDefinitionWithDifferentTypeTest">
+                <methods>
+                    <exclude name="testDeployment"/>
+                </methods>
+            </class>
+            <class name="org.jboss.cdi.tck.tests.lookup.injection.non.contextual.ws.WebServiceResourceTest">
+                <methods>
+                    <exclude name="testResourceInvocation"/>
+                </methods>
+            </class>
+            <!-- AS7-6832 Add support for implicit bean archives -->
+            <class name="org.jboss.cdi.tck.tests.deployment.discovery.BeanDiscoveryTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
+            <class name="org.jboss.cdi.tck.tests.deployment.discovery.enterprise.EnterpriseBeanDiscoveryTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
+            <!-- Incompatibilities with Undertow -->
+            <class name="org.jboss.cdi.tck.tests.context.application.async.ApplicationContextAsyncListenerTest">
+                <methods>
+                    <exclude name="testApplicationContextActiveOnStartAsync"/>
+                </methods>
+            </class>
+            <class name="org.jboss.cdi.tck.tests.context.conversation.determination.ConversationDeterminationTest">
+                <methods>
+                    <exclude name="testConversationDetermination"/>
+                </methods>
+            </class>
+            <class name="org.jboss.cdi.tck.tests.context.request.async.RequestContextAsyncListenerTest">
+                <methods>
+                    <exclude name="testRequestContextActiveOnComplete"/>
+                    <exclude name="testRequestContextActiveOnStartAsync"/>
+                </methods>
+            </class>
+            <class name="org.jboss.cdi.tck.tests.context.request.jaxrs.RequestContextTest">
+                <methods>
+                    <exclude name="testRequestScopeActiveDuringWebServiceInvocation"/>
+                </methods>
+            </class>
+            <class name="org.jboss.cdi.tck.tests.context.request.ws.RequestContextTest">
+                <methods>
+                    <exclude name="testRequestScopeActiveDuringWebServiceInvocation"/>
+                </methods>
+            </class>
+            <class name="org.jboss.cdi.tck.tests.context.session.SessionContextTest">
+                <methods>
+                    <exclude name="testSessionContextDestroyedWhenHttpSessionTimesOut"/>
+                </methods>
+            </class>
+            <class name="org.jboss.cdi.tck.tests.context.session.async.SessionContextAsyncListenerTest">
+                <methods>
+                    <exclude name="testSessionContextActiveOnComplete"/>
+                    <exclude name="testSessionContextActiveOnStartAsync"/>
+                </methods>
+            </class>
+            <class name="org.jboss.cdi.tck.tests.context.session.listener.SessionContextServletRequestListenerTest">
+                <methods>
+                    <exclude name="testSessionScopeActiveDuringServletRequestListenerCall"/>
+                </methods>
+            </class>
+            <class name="org.jboss.cdi.tck.tests.lookup.el.integration.IntegrationWithUnifiedELTest">
+                <methods>
+                    <exclude name="testELResolverRegisteredWithServletContainer"/>
+                </methods>
+            </class>
+            <class name="org.jboss.cdi.tck.tests.deployment.shutdown.ApplicationShutdownLifecycleTest">
+                <methods>
+                    <exclude name="testShutdown"/>
+                </methods>
+            </class>
+
+        </classes>
+    </test>
+
+</suite>

@@ -41,6 +41,7 @@
         <cargo.maven2.plugin.version>1.0</cargo.maven2.plugin.version>
         <cdi.api.version>1.1</cdi.api.version>
         <cdi.tck-1-1.version>1.1.0.SP2</cdi.tck-1-1.version>
+        <cdi.tck-1-2.version>1.2.0-SNAPSHOT</cdi.tck-1-2.version>
         <classfilewriter.version>1.0.4.Final</classfilewriter.version>
         <contiperf.version>1.06</contiperf.version>
         <findbugs-maven-plugin.version>2.5.1</findbugs-maven-plugin.version>
@@ -610,7 +611,7 @@
             </modules>
         </profile>
         <profile>
-            <id>tck11</id>
+            <id>tck</id>
             <activation>
                 <property>
                     <name>weld.default.build.cditck11</name>

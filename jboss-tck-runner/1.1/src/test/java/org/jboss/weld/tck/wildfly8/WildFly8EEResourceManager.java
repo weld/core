@@ -1,4 +1,4 @@
-package org.jboss.weld.tck.as7;
+package org.jboss.weld.tck.wildfly8;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -17,20 +17,20 @@ import org.jboss.dmr.Property;
 /**
  * Assumptions:
  * <ul>
- * <li>JBoss AS 7 managed container adapter</li>
+ * <li>WildFly 8 managed container adapter</li>
  * <li>only one container is used in the same time</li>
  * <li>H2 JDBC driver is properly configured</li>
  * </ul>
- * 
+ *
  * @author Martin Kouba
  */
-public class JBossAS7EEResourceManager {
+public class WildFly8EEResourceManager {
 
-    private static final Logger logger = Logger.getLogger(JBossAS7EEResourceManager.class.getName());
+    private static final Logger logger = Logger.getLogger(WildFly8EEResourceManager.class.getName());
 
     /**
      * Observe {@link StartContainer} and check/add required EE resources.
-     * 
+     *
      * @param eventContext
      */
     public void checkResources(@Observes EventContext<StartContainer> eventContext) {
@@ -52,7 +52,7 @@ public class JBossAS7EEResourceManager {
 
     /**
      * Check JMS topic and try to create one if it does not exist.
-     * 
+     *
      * @param client
      * @throws IOException
      */
@@ -94,7 +94,7 @@ public class JBossAS7EEResourceManager {
 
     /**
      * Check JMS queue and try to create one if it does not exist.
-     * 
+     *
      * @param client
      * @throws IOException
      */
@@ -137,7 +137,7 @@ public class JBossAS7EEResourceManager {
 
     /**
      * Check test data source and try to create one if it does not exist.
-     * 
+     *
      * @param client
      * @throws IOException
      */

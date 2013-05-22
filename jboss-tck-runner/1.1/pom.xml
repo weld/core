@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
         <artifactId>weld-core-parent</artifactId>
         <groupId>org.jboss.weld</groupId>
@@ -6,10 +7,9 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.jboss.weld</groupId>
     <artifactId>weld-jboss-runner-tck11</artifactId>
-    <name>CDI TCK 1.1 runner for Weld (JBoss AS)</name>
-    <description>Aggregates dependencies and runs the CDI TCK (both standalone and on JBoss AS)</description>
+    <name>CDI TCK runner (1.1, 1.2) for Weld (WildFly)</name>
+    <description>Aggregates dependencies and runs the CDI TCK (both standalone and on WildFly)</description>
 
     <licenses>
         <license>
@@ -21,7 +21,6 @@
     <url>http://www.seamframework.org/Weld</url>
 
     <properties>
-        <xnio.api.version>3.1.0.CR3</xnio.api.version>
         <htmlunit.version>2.9</htmlunit.version>
     </properties>
 
@@ -50,7 +49,7 @@
         <dependency>
             <groupId>org.jboss.cdi.tck</groupId>
             <artifactId>cdi-tck-api</artifactId>
-            <version>${cdi.tck-1-1.version}</version>
+            <version>${cdi.tck.version}</version>
         </dependency>
 
         <dependency>
@@ -62,7 +61,7 @@
         <dependency>
             <groupId>org.jboss.cdi.tck</groupId>
             <artifactId>cdi-tck-impl</artifactId>
-            <version>${cdi.tck-1-1.version}</version>
+            <version>${cdi.tck.version}</version>
             <type>xml</type>
             <classifier>suite</classifier>
             <scope>test</scope>
@@ -71,7 +70,7 @@
         <dependency>
             <groupId>org.jboss.cdi.tck</groupId>
             <artifactId>cdi-tck-impl</artifactId>
-            <version>${cdi.tck-1-1.version}</version>
+            <version>${cdi.tck.version}</version>
             <scope>test</scope>
         </dependency>
 
@@ -81,16 +80,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!--
-            This is necessary for the TCK to run against AS 7.2.0.Alpha1-SNAPSHOT.
-            This can be safely removed once AS7 upgrades to remoting-jmx 1.1.0.Beta2 or better
-         -->
-        <dependency>
-            <groupId>org.jboss.xnio</groupId>
-            <artifactId>xnio-api</artifactId>
-            <version>${xnio.api.version}</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
     <build>
@@ -120,11 +109,14 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.10</version>
                 <configuration>
-                    <suiteXmlFiles>
-                        <suiteXmlFile>src/test/resources/tck-tests.xml</suiteXmlFile>
-                    </suiteXmlFiles>
                     <argLine>-Xmx256m</argLine>
                     <forkMode>once</forkMode>
+                    <properties>
+                        <property>
+                            <name>usedefaultlisteners</name>
+                            <value>false</value>
+                        </property>
+                    </properties>
                 </configuration>
             </plugin>
             <plugin>
@@ -176,9 +168,65 @@
     <profiles>
 
         <profile>
+            <id>tck11</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <property>
+                    <name>!tck12</name>
+                </property>
+            </activation>
+            <properties>
+                <cdi.tck.version>${cdi.tck-1-1.version}</cdi.tck.version>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <suiteXmlFiles>
+                                <suiteXmlFile>src/test/tck11/tck-tests.xml</suiteXmlFile>
+                            </suiteXmlFiles>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>tck12</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <property>
+                    <name>tck12</name>
+                </property>
+            </activation>
+            <properties>
+                <cdi.tck.version>${cdi.tck-1-2.version}</cdi.tck.version>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <suiteXmlFiles>
+                                <suiteXmlFile>src/test/tck12/tck-tests.xml</suiteXmlFile>
+                            </suiteXmlFiles>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- Run the TCK in standalone mode -->
+        <profile>
             <id>weld-embedded</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <activeByDefault>false</activeByDefault>
+                <property>
+                    <name>!incontainer</name>
+                </property>
             </activation>
             <dependencies>
                 <dependency>
@@ -190,7 +238,7 @@
                             <groupId>org.jboss.arquillian.core</groupId>
                             <artifactId>arquillian-core-spi</artifactId>
                         </exclusion>
-                         <exclusion>
+                        <exclusion>
                             <groupId>org.jboss.arquillian.container</groupId>
                             <artifactId>arquillian-container-test-spi</artifactId>
                         </exclusion>
@@ -224,21 +272,12 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
-                        <version>2.10</version>
                         <configuration>
-                            <suiteXmlFiles>
-                                <suiteXmlFile>src/test/resources/tck-tests.xml</suiteXmlFile>
-                            </suiteXmlFiles>
-                            <properties>
-					            <property>
-					              <name>usedefaultlisteners</name>
-					              <value>false</value>
-					            </property>
-				            </properties>
                             <excludedGroups>integration,javaee-full</excludedGroups>
                             <systemPropertyVariables>
                                 <arquillian.launch>weld</arquillian.launch>
-                                <!-- Specified system properties are not available during in-container test execution -->
+                                <!-- Specified system properties are not
+                                    available during in-container test execution -->
                                 <org.jboss.cdi.tck.libraryDirectory>target/dependency/lib</org.jboss.cdi.tck.libraryDirectory>
                                 <org.jboss.cdi.tck.testDataSource>java:jboss/datasources/ExampleDS</org.jboss.cdi.tck.testDataSource>
                             </systemPropertyVariables>
@@ -248,12 +287,14 @@
             </build>
         </profile>
 
+        <!-- Run the TCK in the managed container (full Java EE platform) -->
         <profile>
             <id>incontainer</id>
             <activation>
                 <activeByDefault>false</activeByDefault>
                 <property>
                     <name>incontainer</name>
+                    <value>true</value>
                 </property>
             </activation>
             <dependencies>
@@ -285,29 +326,20 @@
                         <directory>src/test/resources</directory>
                     </resource>
                     <resource>
-                        <directory>src/test/jbossas7</directory>
+                        <directory>src/test/wildfly8</directory>
                     </resource>
                 </resources>
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
-                        <version>2.10</version>
                         <configuration>
-                            <suiteXmlFiles>
-                                <suiteXmlFile>src/test/resources/tck-tests.xml</suiteXmlFile>
-                            </suiteXmlFiles>
-                            <properties>
-                                <property>
-                                    <name>usedefaultlisteners</name>
-                                    <value>false</value>
-                                </property>
-                            </properties>
                             <systemPropertyVariables>
                                 <!-- Silencing the broken code in getActiveConfiguration(),
                                     see https://github.com/arquillian/arquillian/blob/master/impl-base/src/main/java/org/jboss/arquillian/impl/client/container/ContainerRegistryCreator.java -->
-                                <arquillian.launch>jboss-as-7</arquillian.launch>
-                                <!-- Specified system properties are not available during in-container test execution -->
+                                <arquillian.launch>wildfly-8</arquillian.launch>
+                                <!-- Specified system properties are not
+                                    available during in-container test execution -->
                                 <org.jboss.cdi.tck.libraryDirectory>target/dependency/lib</org.jboss.cdi.tck.libraryDirectory>
                                 <org.jboss.cdi.tck.testDataSource>java:jboss/datasources/ExampleDS</org.jboss.cdi.tck.testDataSource>
                             </systemPropertyVariables>
@@ -319,12 +351,81 @@
                 </plugins>
             </build>
         </profile>
+
+        <!-- Run the TCK in the managed container (Web Profile) -->
+        <profile>
+            <id>incontainer-webprofile</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <property>
+                    <name>incontainer</name>
+                    <value>webprofile</value>
+                </property>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>org.wildfly</groupId>
+                    <artifactId>wildfly-arquillian-container-managed</artifactId>
+                    <scope>test</scope>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>org.jboss.arquillian.core</groupId>
+                            <artifactId>arquillian-core-spi</artifactId>
+                        </exclusion>
+                        <exclusion>
+                            <groupId>org.jboss.arquillian.core</groupId>
+                            <artifactId>arquillian-core-api</artifactId>
+                        </exclusion>
+                    </exclusions>
+                </dependency>
+                <dependency>
+                    <groupId>org.jboss.arquillian.protocol</groupId>
+                    <artifactId>arquillian-protocol-servlet</artifactId>
+                    <version>${arquillian.version}</version>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>src/test/resources</directory>
+                    </resource>
+                    <resource>
+                        <directory>src/test/wildfly8</directory>
+                    </resource>
+                </resources>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <excludedGroups>javaee-full</excludedGroups>
+                            <systemPropertyVariables>
+                                <!-- Silencing the broken code in getActiveConfiguration(),
+                                    see https://github.com/arquillian/arquillian/blob/master/impl-base/src/main/java/org/jboss/arquillian/impl/client/container/ContainerRegistryCreator.java -->
+                                <arquillian.launch>wildfly-8</arquillian.launch>
+                                <!-- Specified system properties are not
+                                    available during in-container test execution -->
+                                <org.jboss.cdi.tck.libraryDirectory>target/dependency/lib</org.jboss.cdi.tck.libraryDirectory>
+                                <org.jboss.cdi.tck.testDataSource>java:jboss/datasources/ExampleDS</org.jboss.cdi.tck.testDataSource>
+                            </systemPropertyVariables>
+                            <systemProperties>
+                                <jacoco.agent>${jacoco.agent}</jacoco.agent>
+                            </systemProperties>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- Run the TCK in the remote container (full Java EE platform) -->
         <profile>
             <id>incontainer-remote</id>
             <activation>
                 <activeByDefault>false</activeByDefault>
                 <property>
-                    <name>incontainer-remote</name>
+                    <name>incontainer</name>
+                    <value>remote</value>
                 </property>
             </activation>
             <dependencies>
@@ -356,29 +457,20 @@
                         <directory>src/test/resources</directory>
                     </resource>
                     <resource>
-                        <directory>src/test/jbossas7</directory>
+                        <directory>src/test/wildfly8</directory>
                     </resource>
                 </resources>
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
-                        <version>2.10</version>
                         <configuration>
-                            <suiteXmlFiles>
-                                <suiteXmlFile>src/test/resources/tck-tests.xml</suiteXmlFile>
-                            </suiteXmlFiles>
-                            <properties>
-                                <property>
-                                    <name>usedefaultlisteners</name>
-                                    <value>false</value>
-                                </property>
-                            </properties>
                             <systemPropertyVariables>
                                 <!-- Silencing the broken code in getActiveConfiguration(),
                                     see https://github.com/arquillian/arquillian/blob/master/impl-base/src/main/java/org/jboss/arquillian/impl/client/container/ContainerRegistryCreator.java -->
-                                <arquillian.launch>jboss-as-7</arquillian.launch>
-                                <!-- Specified system properties are not available during in-container test execution -->
+                                <arquillian.launch>wildfly-8</arquillian.launch>
+                                <!-- Specified system properties are not
+                                    available during in-container test execution -->
                                 <org.jboss.cdi.tck.libraryDirectory>target/dependency/lib</org.jboss.cdi.tck.libraryDirectory>
                                 <org.jboss.cdi.tck.testDataSource>java:jboss/datasources/ExampleDS</org.jboss.cdi.tck.testDataSource>
                             </systemPropertyVariables>
@@ -387,155 +479,7 @@
                 </plugins>
             </build>
         </profile>
-        <profile>
-            <id>jbossas7</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-                <property>
-                    <name>jbossas7</name>
-                </property>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>org.jboss.as</groupId>
-                    <artifactId>jboss-as-arquillian-container-managed</artifactId>
-                    <scope>test</scope>
-                    <exclusions>
-                        <exclusion>
-                            <groupId>org.jboss.arquillian.core</groupId>
-                            <artifactId>arquillian-core-spi</artifactId>
-                        </exclusion>
-                        <exclusion>
-                            <groupId>org.jboss.arquillian.core</groupId>
-                            <artifactId>arquillian-core-api</artifactId>
-                        </exclusion>
-                    </exclusions>
-                </dependency>
-                <dependency>
-                    <groupId>org.jboss.arquillian.protocol</groupId>
-                    <artifactId>arquillian-protocol-servlet</artifactId>
-                    <version>${arquillian.version}</version>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.jboss.as</groupId>
-                    <artifactId>jboss-as-arquillian-common</artifactId>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
-            <build>
-                <resources>
-                    <resource>
-                        <directory>src/test/resources</directory>
-                    </resource>
-                    <resource>
-                        <directory>src/test/jbossas7</directory>
-                    </resource>
-                </resources>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <version>2.10</version>
-                        <configuration>
-                            <suiteXmlFiles>
-                                <suiteXmlFile>src/test/resources/tck-tests.xml</suiteXmlFile>
-                            </suiteXmlFiles>
-                            <properties>
-                                <property>
-                                    <name>usedefaultlisteners</name>
-                                    <value>false</value>
-                                </property>
-                            </properties>
-                            <systemPropertyVariables>
-                                <!-- Silencing the broken code in getActiveConfiguration(),
-                                    see https://github.com/arquillian/arquillian/blob/master/impl-base/src/main/java/org/jboss/arquillian/impl/client/container/ContainerRegistryCreator.java -->
-                                <arquillian.launch>jboss-as-7</arquillian.launch>
-                                <!-- Specified system properties are not available during in-container test execution -->
-                                <org.jboss.cdi.tck.libraryDirectory>target/dependency/lib</org.jboss.cdi.tck.libraryDirectory>
-                                <org.jboss.cdi.tck.testDataSource>java:jboss/datasources/ExampleDS</org.jboss.cdi.tck.testDataSource>
-                            </systemPropertyVariables>
-                            <systemProperties>
-                                <jacoco.agent>${jacoco.agent}</jacoco.agent>
-                            </systemProperties>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>jbossas7-remote</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-                <property>
-                    <name>jbossas7-remote</name>
-                </property>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>org.jboss.as</groupId>
-                    <artifactId>jboss-as-arquillian-container-remote</artifactId>
-                    <scope>test</scope>
-                    <exclusions>
-                        <exclusion>
-                            <groupId>org.jboss.arquillian.core</groupId>
-                            <artifactId>arquillian-core-spi</artifactId>
-                        </exclusion>
-                        <exclusion>
-                            <groupId>org.jboss.arquillian.core</groupId>
-                            <artifactId>arquillian-core-api</artifactId>
-                        </exclusion>
-                    </exclusions>
-                </dependency>
-                <dependency>
-                    <groupId>org.jboss.arquillian.protocol</groupId>
-                    <artifactId>arquillian-protocol-servlet</artifactId>
-                    <version>${arquillian.version}</version>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.jboss.as</groupId>
-                    <artifactId>jboss-as-arquillian-common</artifactId>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
-            <build>
-                <resources>
-                    <resource>
-                        <directory>src/test/resources</directory>
-                    </resource>
-                    <resource>
-                        <directory>src/test/jbossas7</directory>
-                    </resource>
-                </resources>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <version>2.10</version>
-                        <configuration>
-                            <suiteXmlFiles>
-                                <suiteXmlFile>src/test/resources/tck-tests.xml</suiteXmlFile>
-                            </suiteXmlFiles>
-                            <properties>
-                                <property>
-                                    <name>usedefaultlisteners</name>
-                                    <value>false</value>
-                                </property>
-                            </properties>
-                            <systemPropertyVariables>
-                                <!-- Silencing the broken code in getActiveConfiguration(),
-                                    see https://github.com/arquillian/arquillian/blob/master/impl-base/src/main/java/org/jboss/arquillian/impl/client/container/ContainerRegistryCreator.java -->
-                                <arquillian.launch>jboss-as-7</arquillian.launch>
-                                <!-- Specified system properties are not available during in-container test execution -->
-                                <org.jboss.cdi.tck.libraryDirectory>target/dependency/lib</org.jboss.cdi.tck.libraryDirectory>
-                                <org.jboss.cdi.tck.testDataSource>java:jboss/datasources/ExampleDS</org.jboss.cdi.tck.testDataSource>
-                            </systemPropertyVariables>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
+
         <profile>
             <id>jacoco</id>
             <activation>
