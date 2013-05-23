@@ -20,15 +20,16 @@ package org.jboss.weld.metadata.cache;
 import static org.jboss.weld.logging.Category.REFLECTION;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.MetadataMessage.NON_BINDING_MEMBER_TYPE;
+import static org.jboss.weld.logging.messages.ReflectionMessage.INVALID_INTERCEPTOR_BINDING_TARGET_DECLARATION;
 import static org.jboss.weld.logging.messages.ReflectionMessage.MISSING_TARGET;
 import static org.jboss.weld.logging.messages.ReflectionMessage.MISSING_TARGET_TYPE_METHOD_OR_TARGET_TYPE;
-import static org.jboss.weld.logging.messages.ReflectionMessage.TARGET_TYPE_METHOD_INHERITS_FROM_TARGET_TYPE;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
 import java.lang.reflect.InvocationTargetException;
 import java.security.AccessController;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
 
@@ -99,15 +100,20 @@ public class InterceptorBindingModel<T extends Annotation> extends AbstractBindi
     }
 
     private void checkMetaAnnotations(EnhancedAnnotation<T> annotatedAnnotation) {
-        Target target = annotatedAnnotation.getAnnotation(Target.class);
-        if (target != null && Arrays2.containsAll(target.value(), ElementType.METHOD)) {
-            for (Annotation inheritedBinding : getInheritedInterceptionBindingTypes()) {
-                target = inheritedBinding.annotationType().getAnnotation(Target.class);
-                if (target != null && !Arrays2.containsAll(target.value(), ElementType.METHOD)) {
-                    log.debug(TARGET_TYPE_METHOD_INHERITS_FROM_TARGET_TYPE, annotatedAnnotation, inheritedBinding);
-                }
+        ElementType[] elementTypes = getTargetElementTypes(annotatedAnnotation.getAnnotation(Target.class));
+        for (Annotation inheritedBinding : getInheritedInterceptionBindingTypes()) {
+            ElementType[] metaAnnotationElementTypes = getTargetElementTypes(inheritedBinding.annotationType().getAnnotation(Target.class));
+            if (!Arrays2.containsAll(metaAnnotationElementTypes, elementTypes)) {
+                log.warn(INVALID_INTERCEPTOR_BINDING_TARGET_DECLARATION, inheritedBinding.annotationType().getName(), Arrays.toString(metaAnnotationElementTypes), annotatedAnnotation.getJavaClass().getName(), Arrays.toString(elementTypes));
             }
         }
+    }
+
+    private ElementType[] getTargetElementTypes(Target target) {
+        if (target == null) {
+            return ElementType.values();
+        }
+        return target.value();
     }
 
     private void checkArrayAndAnnotationValuedMembers(EnhancedAnnotation<T> annotatedAnnotation) {

@@ -16,10 +16,11 @@
  */
 package org.jboss.weld.logging.messages;
 
+import org.jboss.weld.logging.MessageId;
+
 import ch.qos.cal10n.BaseName;
 import ch.qos.cal10n.Locale;
 import ch.qos.cal10n.LocaleData;
-import org.jboss.weld.logging.MessageId;
 
 @BaseName("org.jboss.weld.messages.reflection")
 @LocaleData({
@@ -54,5 +55,6 @@ public enum ReflectionMessage {
     @MessageId("000618")METHODHANDLER_SET_FAILED,
     @MessageId("000619")METHOD_ELEMENT_TYPE_NOT_ALLOWED,
     @MessageId("000620")MISSING_TARGET_METHOD_FIELD_PARAMETER_TYPE,
+    @MessageId("000621")INVALID_INTERCEPTOR_BINDING_TARGET_DECLARATION,
 
 }
