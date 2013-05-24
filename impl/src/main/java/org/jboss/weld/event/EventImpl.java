@@ -56,6 +56,7 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
     }
 
     private final transient HierarchyDiscovery injectionPointTypeHierarchy;
+    private transient volatile CachedResolvable cachedResolvable;
 
     private EventImpl(InjectionPoint injectionPoint, BeanManagerImpl beanManager) {
         super(injectionPoint, null, beanManager);
@@ -73,10 +74,24 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
     }
 
     public void fire(T event) {
+        CachedResolvable resolvable = getEventResolvable(event);
+
+        EventPacket<T> packet = EventPacket.of(event, resolvable.type, resolvable.resolvable, getQualifiers(), getInjectionPoint());
+        getBeanManager().getGlobalStrictObserverNotifier().fireEvent(packet);
+    }
+
+    private CachedResolvable getEventResolvable(T event) {
+        CachedResolvable cachedResolvable = this.cachedResolvable;
+        if (cachedResolvable != null) {
+            if (cachedResolvable.rawType.equals(event.getClass())) {
+                return cachedResolvable;
+            }
+        }
         Type eventType = getEventType(event);
         Resolvable resolvable = getBeanManager().getGlobalStrictObserverNotifier().buildEventResolvable(eventType, getQualifiers());
-        EventPacket<T> packet = EventPacket.of(event, eventType, resolvable, getQualifiers(), getInjectionPoint());
-        getBeanManager().getGlobalStrictObserverNotifier().fireEvent(packet);
+        cachedResolvable = new CachedResolvable(event.getClass(), eventType, resolvable);
+        this.cachedResolvable = cachedResolvable;
+        return cachedResolvable;
     }
 
     public Event<T> select(Annotation... qualifiers) {
@@ -140,6 +155,18 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
             return EventImpl.of(getInjectionPoint(), getBeanManager());
         }
 
+    }
+
+    private static class CachedResolvable {
+        private final Class<?> rawType;
+        private final Type type;
+        private final Resolvable resolvable;
+
+        public CachedResolvable(Class<?> rawType, Type type, Resolvable resolvable) {
+            this.rawType = rawType;
+            this.type = type;
+            this.resolvable = resolvable;
+        }
     }
 
 }
