@@ -20,6 +20,7 @@ import static org.jboss.weld.logging.messages.BeanMessage.FINAL_BEAN_CLASS_WITH_
 import static org.jboss.weld.logging.messages.BeanMessage.FINAL_BEAN_CLASS_WITH_INTERCEPTORS_NOT_ALLOWED;
 import static org.jboss.weld.logging.messages.BeanMessage.NON_CONTAINER_DECORATOR;
 
+import java.lang.reflect.Modifier;
 import java.util.List;
 
 import javax.enterprise.context.Dependent;
@@ -87,7 +88,7 @@ public class BeanInjectionTarget<T> extends BasicInjectionTarget<T> {
     }
 
     protected boolean isInterceptionCandidate() {
-        return !isInterceptor() && !isDecorator();
+        return !isInterceptor() && !isDecorator() && !Modifier.isAbstract(getType().getJavaClass().getModifiers());
     }
 
     protected void initializeInterceptionModel(EnhancedAnnotatedType<T> annotatedType) {
