@@ -16,7 +16,23 @@
  */
 package org.jboss.weld.tests.activities.current;
 
-import com.sun.el.ExpressionFactoryImpl;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.el.ExpressionFactory;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.context.spi.Context;
+import javax.enterprise.context.spi.Contextual;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.util.AnnotationLiteral;
+import javax.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -29,21 +45,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.spi.Context;
-import javax.enterprise.context.spi.Contextual;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.util.AnnotationLiteral;
-import javax.inject.Inject;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-
 /**
  * Spec version: 20090519
  */
@@ -54,7 +55,7 @@ public class ELCurrentActivityTest {
         return ShrinkWrap.create(BeanArchive.class)
                 .addPackage(ELCurrentActivityTest.class.getPackage())
                 .addClasses(Utils.class, EL.class)
-                .addPackages(true, ExpressionFactoryImpl.class.getPackage());
+                .addPackages(true, ExpressionFactory.class.getPackage());
     }
 
     private static class DummyContext implements Context {

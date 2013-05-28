@@ -16,7 +16,12 @@
  */
 package org.jboss.weld.tests.el.resolver;
 
-import com.sun.el.ExpressionFactoryImpl;
+import static org.junit.Assert.assertNotSame;
+
+import javax.el.ELContext;
+import javax.el.ExpressionFactory;
+import javax.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -27,12 +32,6 @@ import org.jboss.weld.test.util.el.EL;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import javax.el.ELContext;
-import javax.el.ExpressionFactory;
-import javax.inject.Inject;
-
-import static org.junit.Assert.assertNotSame;
 
 /**
  * Test the WeldELResolver and that it collaborates with the standard EL resolver chain.
@@ -47,7 +46,7 @@ public class ELResolverTest {
         return ShrinkWrap.create(BeanArchive.class)
                 .addPackage(ELResolverTest.class.getPackage())
                 .addClass(EL.class)
-                .addPackages(true, ExpressionFactoryImpl.class.getPackage());
+                .addPackages(true, ExpressionFactory.class.getPackage());
     }
 
     @Inject

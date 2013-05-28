@@ -38,6 +38,10 @@
                     <groupId>org.testng</groupId>
                     <artifactId>testng</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.jboss.spec.javax.el</groupId>
+                    <artifactId>jboss-el-api_3.0_spec</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
 
@@ -50,6 +54,12 @@
             <groupId>org.jboss.cdi.tck</groupId>
             <artifactId>cdi-tck-api</artifactId>
             <version>${cdi.tck.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>el-api</artifactId>
+                    <groupId>javax.el</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -65,6 +75,12 @@
             <type>xml</type>
             <classifier>suite</classifier>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>el-api</artifactId>
+                    <groupId>javax.el</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -72,12 +88,17 @@
             <artifactId>cdi-tck-impl</artifactId>
             <version>${cdi.tck.version}</version>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>el-api</artifactId>
+                    <groupId>javax.el</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
-            <groupId>org.glassfish.web</groupId>
-            <artifactId>el-impl</artifactId>
-            <scope>test</scope>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.el</artifactId>
         </dependency>
 
     </dependencies>

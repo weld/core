@@ -68,11 +68,6 @@
             <artifactId>cdi-api</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>javax.el</groupId>
-            <artifactId>javax.el-api</artifactId>
-        </dependency>
-
         <!-- WELD-203 -->
         <dependency>
             <groupId>org.jboss.spec.javax.annotation</groupId>

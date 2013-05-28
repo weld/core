@@ -50,7 +50,7 @@
         <htmlunit.version>2.4</htmlunit.version>
         <jacoco.version>0.5.8.201207111220</jacoco.version>
         <javax.activation.version>1.1</javax.activation.version>
-        <javax.el.version>3.0-b08</javax.el.version>
+        <javax.el.version>3.0.0</javax.el.version>
         <javax.jms.version>1.1</javax.jms.version>
         <jbossas.client.version>6.1.0.Final</jbossas.client.version>
         <jbossas.server.manager.version>1.0.3.GA</jbossas.server.manager.version>
@@ -63,13 +63,14 @@
         <jboss.shrinkwrap.descriptors.version>1.1.0-beta-1</jboss.shrinkwrap.descriptors.version>
         <jboss.spec.annotation.version>1.0.0.Alpha1</jboss.spec.annotation.version>
         <jboss.spec.ejb.version>1.0.2.Final</jboss.spec.ejb.version>
+        <jboss.spec.el-api.version>1.0.0.Alpha1</jboss.spec.el-api.version>
         <jboss.spec.interceptors.version>1.0.0.Alpha3</jboss.spec.interceptors.version>
         <jboss.spec.servlet.version>1.0.2.Final</jboss.spec.servlet.version>
         <jboss.spec.jaxrs.version>1.0.0.Final</jboss.spec.jaxrs.version>
         <jboss.vfs.version>2.1.3.SP1</jboss.vfs.version>
         <jnp-client.version>4.0.2</jnp-client.version>
         <jsf.api.version>2.0</jsf.api.version>
-        <jsp.api.version>2.1</jsp.api.version>
+        <jsp.api.version>2.2</jsp.api.version>
         <jstl.api.version>1.2</jstl.api.version>
         <junit.version>4.8.1</junit.version>
         <log4j.version>1.2.14</log4j.version>
@@ -113,10 +114,24 @@
                 <version>${javax.activation.version}</version>
             </dependency>
 
+            <!-- This version of EL 3.0 API is not JDK 6 compatible -->
             <dependency>
                 <groupId>javax.el</groupId>
                 <artifactId>javax.el-api</artifactId>
                 <version>${javax.el.version}</version>
+            </dependency>
+
+            <!-- This artifact bundles EL API and impl and is not JDK 6 compatible -->
+            <dependency>
+                <groupId>org.glassfish</groupId>
+                <artifactId>javax.el</artifactId>
+                <version>${javax.el.version}</version>
+            </dependency>
+
+            <dependency>
+               <groupId>org.jboss.spec.javax.el</groupId>
+               <artifactId>jboss-el-api_3.0_spec</artifactId>
+                <version>${jboss.spec.el-api.version}</version>
             </dependency>
 
             <dependency>

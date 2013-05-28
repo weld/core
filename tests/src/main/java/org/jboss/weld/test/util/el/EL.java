@@ -16,26 +16,15 @@
  */
 package org.jboss.weld.test.util.el;
 
-import com.sun.el.ExpressionFactoryImpl;
-import com.sun.el.lang.FunctionMapperImpl;
-import com.sun.el.lang.VariableMapperImpl;
-import org.jboss.weld.el.WeldELContextListener;
-import org.jboss.weld.el.WeldExpressionFactory;
-import org.jboss.weld.manager.BeanManagerImpl;
-
-import javax.el.ArrayELResolver;
-import javax.el.BeanELResolver;
-import javax.el.CompositeELResolver;
 import javax.el.ELContext;
 import javax.el.ELContextEvent;
 import javax.el.ELContextListener;
-import javax.el.ELResolver;
 import javax.el.ExpressionFactory;
-import javax.el.FunctionMapper;
-import javax.el.ListELResolver;
-import javax.el.MapELResolver;
-import javax.el.ResourceBundleELResolver;
-import javax.el.VariableMapper;
+import javax.el.StandardELContext;
+
+import org.jboss.weld.el.WeldELContextListener;
+import org.jboss.weld.el.WeldExpressionFactory;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
  * Access to EL
@@ -44,48 +33,16 @@ import javax.el.VariableMapper;
  */
 public class EL {
 
-    public static final ExpressionFactory EXPRESSION_FACTORY = new WeldExpressionFactory(new ExpressionFactoryImpl());
+    public static final ExpressionFactory EXPRESSION_FACTORY = new WeldExpressionFactory(ExpressionFactory.newInstance());
 
-    public static final ELContextListener[] EL_CONTEXT_LISTENERS = {new WeldELContextListener()};
+    public static final ELContextListener[] EL_CONTEXT_LISTENERS = { new WeldELContextListener() };
 
     private EL() {
     }
 
-    private static ELResolver createELResolver(BeanManagerImpl beanManagerImpl) {
-        CompositeELResolver resolver = new CompositeELResolver();
-        resolver.add(beanManagerImpl.getELResolver());
-        resolver.add(new MapELResolver());
-        resolver.add(new ListELResolver());
-        resolver.add(new ArrayELResolver());
-        resolver.add(new ResourceBundleELResolver());
-        resolver.add(new BeanELResolver());
-        return resolver;
-    }
-
     public static ELContext createELContext(BeanManagerImpl beanManagerImpl) {
-        return createELContext(createELResolver(beanManagerImpl), new FunctionMapperImpl());
-    }
-
-    public static ELContext createELContext(final ELResolver resolver, final FunctionMapper functionMapper) {
-        ELContext context = new ELContext() {
-            final VariableMapperImpl variableMapper = new VariableMapperImpl();
-
-            @Override
-            public ELResolver getELResolver() {
-                return resolver;
-            }
-
-            @Override
-            public FunctionMapper getFunctionMapper() {
-                return functionMapper;
-            }
-
-            @Override
-            public VariableMapper getVariableMapper() {
-                return variableMapper;
-            }
-
-        };
+        StandardELContext context = new StandardELContext(EXPRESSION_FACTORY);
+        context.addELResolver(beanManagerImpl.getELResolver());
         callELContextListeners(context);
         return context;
     }
