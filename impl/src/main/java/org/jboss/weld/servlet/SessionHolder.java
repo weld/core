@@ -18,7 +18,6 @@ package org.jboss.weld.servlet;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
 /**
@@ -26,7 +25,7 @@ import javax.servlet.http.HttpSessionListener;
  *
  * This utility class was added to work around an incompatibility problem with some Servlet containers (JBoss Web, Tomcat). In
  * these containers, {@link HttpServletRequest#getSession(boolean)} cannot be used within
- * {@link HttpSessionListener#sessionCreated(HttpSessionEvent)} method invocation is the created session is not made available.
+ * {@link HttpSessionListener#sessionCreated(HttpSession)} method invocation is the created session is not made available.
  * As a result either null is returned or a new session is created (possibly causing an endless loop).
  *
  * This utility class receives an {@link HttpSession} once it is created and holds it until the request is destroyed / session
@@ -48,8 +47,8 @@ public class SessionHolder {
         CURRENT_SESSION.set(request.getSession(false));
     }
 
-    public static void sessionCreated(HttpSessionEvent event) {
-        CURRENT_SESSION.set(event.getSession());
+    public static void sessionCreated(HttpSession session) {
+        CURRENT_SESSION.set(session);
     }
 
     public static HttpSession getSessionIfExists() {

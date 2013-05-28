@@ -22,11 +22,7 @@
  */
 package org.jboss.weld.servlet;
 
-import static org.jboss.weld.logging.Category.SERVLET;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.ServletMessage.ONLY_HTTP_SERVLET_LIFECYCLE_DEFINED;
-import static org.jboss.weld.logging.messages.ServletMessage.REQUEST_DESTROYED;
-import static org.jboss.weld.logging.messages.ServletMessage.REQUEST_INITIALIZED;
 import static org.jboss.weld.servlet.ConversationFilter.CONVERSATION_FILTER_REGISTERED;
 
 import javax.enterprise.inject.spi.CDI;
@@ -34,29 +30,19 @@ import javax.inject.Inject;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletRequestEvent;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
 
 import org.jboss.weld.bean.builtin.BeanManagerProxy;
-import org.jboss.weld.bean.builtin.ee.ServletContextBean;
-import org.jboss.weld.context.cache.RequestScopedBeanCache;
-import org.jboss.weld.context.http.HttpRequestContext;
-import org.jboss.weld.context.http.HttpRequestContextImpl;
-import org.jboss.weld.context.http.HttpSessionContext;
 import org.jboss.weld.exceptions.IllegalStateException;
-import org.jboss.weld.literal.DestroyedLiteral;
-import org.jboss.weld.literal.InitializedLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.servlet.api.helpers.AbstractServletListener;
-import org.jboss.weld.util.reflection.Reflections;
-import org.slf4j.cal10n.LocLogger;
 
 /**
  * The Weld listener
  * <p/>
  * Listens for context/session creation/destruction.
  * <p/>
- * Delegates work to the ServletLifeCycle.
+ * Delegates work to the HttpContextLifecycle.
  *
  * @author Nicklas Karlsson
  * @author Dan Allen
@@ -67,105 +53,42 @@ import org.slf4j.cal10n.LocLogger;
  */
 public class WeldListener extends AbstractServletListener {
 
-    private static final String HTTP_SESSION = "org.jboss.weld." + HttpSession.class.getName();
-
-    private static final LocLogger log = loggerFactory().getLogger(SERVLET);
-
-    private HttpSessionContext sessionContextCache;
-    private HttpRequestContext requestContextCache;
-
-    private ConversationContextActivator conversationContextActivator;
-
-    private volatile Boolean conversationFilterRegistered;
-
     @Inject
     private BeanManagerImpl beanManager;
-
-    private HttpSessionContext sessionContext() {
-        if (sessionContextCache == null) {
-            this.sessionContextCache = beanManager.instance().select(HttpSessionContext.class).get();
-        }
-        return sessionContextCache;
-    }
-
-    private HttpRequestContext requestContext() {
-        if (requestContextCache == null) {
-            this.requestContextCache = beanManager.instance().select(HttpRequestContext.class).get();
-        }
-        return requestContextCache;
-    }
+    private HttpContextLifecycle lifecycle;
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        String initParam = sce.getServletContext().getInitParameter(CONVERSATION_FILTER_REGISTERED);
-        if (initParam != null) {
-            this.conversationFilterRegistered = Boolean.valueOf(initParam);
-        }
         if (beanManager == null) {
             // servlet containers may not be able to inject fields in a servlet listener
             beanManager = BeanManagerProxy.unwrap(CDI.current().getBeanManager());
         }
-        beanManager.getAccessibleLenientObserverNotifier().fireEvent(sce.getServletContext(), InitializedLiteral.APPLICATION);
-        this.conversationContextActivator = new ConversationContextActivator(beanManager);
+        this.lifecycle = new HttpContextLifecycle(beanManager);
+        if (Boolean.valueOf(sce.getServletContext().getInitParameter(CONVERSATION_FILTER_REGISTERED))) {
+            this.lifecycle.setConversationActivationEnabled(false);
+        }
+        this.lifecycle.contextInitialized(sce.getServletContext());
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-        beanManager.getAccessibleLenientObserverNotifier().fireEvent(sce.getServletContext(), DestroyedLiteral.APPLICATION);
+        lifecycle.contextDestroyed(sce.getServletContext());
     }
 
     @Override
     public void sessionCreated(HttpSessionEvent event) {
-        SessionHolder.sessionCreated(event);
-        beanManager.getAccessibleLenientObserverNotifier().fireEvent(event.getSession(), InitializedLiteral.SESSION);
+        lifecycle.sessionCreated(event.getSession());
     }
 
     @Override
     public void sessionDestroyed(HttpSessionEvent event) {
-        // Mark the session context and conversation contexts to destroy
-        // instances when appropriate
-        HttpSession session = event.getSession();
-        boolean destroyed = sessionContext().destroy(session);
-        SessionHolder.clear();
-        RequestScopedBeanCache.endRequest();
-        if (destroyed) {
-            // we are outside of a request (the session timed out) and therefore the session was destroyed immediately
-            // we can fire the @Destroyed(SessionScoped.class) event immediately
-            beanManager.getAccessibleLenientObserverNotifier().fireEvent(session, DestroyedLiteral.SESSION);
-        } else {
-            // the old session won't be available at the time we destroy this request
-            // let's store its reference until then
-            if (requestContext() instanceof HttpRequestContextImpl) {
-                HttpServletRequest request = Reflections.<HttpRequestContextImpl> cast(requestContext()).getHttpServletRequest();
-                request.setAttribute(HTTP_SESSION, session);
-            }
-        }
+        lifecycle.sessionDestroyed(event.getSession());
     }
 
     @Override
     public void requestDestroyed(ServletRequestEvent event) {
-        log.trace(REQUEST_DESTROYED, event.getServletRequest());
         if (event.getServletRequest() instanceof HttpServletRequest) {
-            HttpServletRequest request = (HttpServletRequest) event.getServletRequest();
-
-            try {
-                conversationContextActivator.deactivateConversationContext(request);
-                requestContext().invalidate();
-                requestContext().deactivate();
-                // fire @Destroyed(RequestScoped.class)
-                beanManager.getAccessibleLenientObserverNotifier().fireEvent(request, DestroyedLiteral.REQUEST);
-                sessionContext().deactivate();
-                // fire @Destroyed(SessionScoped.class)
-                if (!sessionContext().isValid()) {
-                    beanManager.getAccessibleLenientObserverNotifier().fireEvent(request.getAttribute(HTTP_SESSION), DestroyedLiteral.SESSION);
-                }
-            } finally {
-                requestContext().dissociate(request);
-                sessionContext().dissociate(request);
-                conversationContextActivator.disassociateConversationContext(request);
-                SessionHolder.clear();
-                ServletContextBean.cleanup();
-            }
+            lifecycle.requestDestroyed((HttpServletRequest) event.getServletRequest());
         } else {
             throw new IllegalStateException(ONLY_HTTP_SERVLET_LIFECYCLE_DEFINED);
         }
@@ -173,38 +96,15 @@ public class WeldListener extends AbstractServletListener {
 
     @Override
     public void requestInitialized(ServletRequestEvent event) {
-        log.trace(REQUEST_INITIALIZED, event.getServletRequest());
-
-        if (conversationFilterRegistered == null) {
+        if (lifecycle.isConversationActivationEnabled()) {
             Object value = event.getServletContext().getAttribute(CONVERSATION_FILTER_REGISTERED);
-            conversationFilterRegistered = Boolean.TRUE.equals(value);
+            if (Boolean.TRUE.equals(value)) {
+                this.lifecycle.setConversationActivationEnabled(false);
+            }
         }
 
         if (event.getServletRequest() instanceof HttpServletRequest) {
-            HttpServletRequest request = (HttpServletRequest) event.getServletRequest();
-
-            SessionHolder.requestInitialized(request);
-
-            ServletContextBean.setServletContext(event.getServletContext());
-
-            requestContext().associate(request);
-            sessionContext().associate(request);
-            if (!conversationFilterRegistered) {
-                conversationContextActivator.associateConversationContext(request);
-            }
-
-            requestContext().activate();
-            sessionContext().activate();
-
-            try {
-                if (!conversationFilterRegistered) {
-                    conversationContextActivator.activateConversationContext(request);
-                }
-                beanManager.getAccessibleLenientObserverNotifier().fireEvent(request, InitializedLiteral.REQUEST);
-            } catch (RuntimeException e) {
-                requestDestroyed(event);
-                throw e;
-            }
+            lifecycle.requestInitialized((HttpServletRequest) event.getServletRequest(), event.getServletContext());
         } else {
             throw new IllegalStateException(ONLY_HTTP_SERVLET_LIFECYCLE_DEFINED);
         }
