@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.bootstrap.events;
 
+import static org.jboss.weld.logging.messages.BeanMessage.PASSIVATION_CAPABLE_BEAN_HAS_NULL_ID;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.util.Collection;
@@ -31,6 +32,7 @@ import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.ObserverMethod;
+import javax.enterprise.inject.spi.PassivationCapable;
 
 import org.jboss.weld.annotated.slim.SlimAnnotatedTypeStore;
 import org.jboss.weld.bean.CustomDecoratorWrapper;
@@ -39,6 +41,7 @@ import org.jboss.weld.bootstrap.BeanDeployment;
 import org.jboss.weld.bootstrap.ContextHolder;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
+import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Observers;
 import org.jboss.weld.util.Preconditions;
@@ -80,6 +83,12 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
         ExternalBeanAttributesFactory.validateBeanAttributes(bean, beanManager);
         ContainerLifecycleEvents containerLifecycleEvents = beanManager.getServices().get(ContainerLifecycleEvents.class);
 
+        if (bean instanceof PassivationCapable) {
+            PassivationCapable passivationCapable = (PassivationCapable) bean;
+            if (passivationCapable.getId() == null) {
+                throw new IllegalArgumentException(PASSIVATION_CAPABLE_BEAN_HAS_NULL_ID, bean);
+            }
+        }
         if (bean instanceof Interceptor<?>) {
             beanManager.addInterceptor((Interceptor<?>) bean);
         } else if (bean instanceof Decorator<?>) {
