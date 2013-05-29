@@ -647,6 +647,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
      */
     @Override
     public void fireEvent(Object event, Annotation... qualifiers) {
+        Preconditions.checkArgumentNotNull(event, "event");
         Resolvable resolvable = globalStrictObserverNotifier.buildEventResolvable(event.getClass(), qualifiers);
         EventPacket<?> packet = EventPacket.of(event, resolvable, qualifiers);
         globalStrictObserverNotifier.fireEvent(packet);

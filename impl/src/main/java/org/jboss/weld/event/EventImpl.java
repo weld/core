@@ -33,6 +33,7 @@ import org.jboss.weld.bean.builtin.FacadeInjectionPoint;
 import org.jboss.weld.exceptions.InvalidObjectException;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resolution.Resolvable;
+import org.jboss.weld.util.Preconditions;
 import org.jboss.weld.util.Types;
 import org.jboss.weld.util.reflection.EventObjectTypeResolverBuilder;
 import org.jboss.weld.util.reflection.Formats;
@@ -49,6 +50,7 @@ import org.jboss.weld.util.reflection.TypeResolver;
 @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_NO_SUITABLE_CONSTRUCTOR", justification = "Uses SerializationProxy")
 public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T>, Serializable {
 
+    private static final String SUBTYPE_ARGUMENT_NAME = "subtype";
     private static final long serialVersionUID = 656782657242515455L;
 
     public static <E> EventImpl<E> of(InjectionPoint injectionPoint, BeanManagerImpl beanManager) {
@@ -74,6 +76,7 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
     }
 
     public void fire(T event) {
+        Preconditions.checkArgumentNotNull(event, "event");
         CachedResolvable resolvable = getEventResolvable(event);
 
         EventPacket<T> packet = EventPacket.of(event, resolvable.type, resolvable.resolvable, getQualifiers(), getInjectionPoint());
@@ -99,10 +102,12 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
     }
 
     public <U extends T> Event<U> select(Class<U> subtype, Annotation... qualifiers) {
+        Preconditions.checkArgumentNotNull(subtype, SUBTYPE_ARGUMENT_NAME);
         return selectEvent(subtype, qualifiers);
     }
 
     public <U extends T> Event<U> select(TypeLiteral<U> subtype, Annotation... qualifiers) {
+        Preconditions.checkArgumentNotNull(subtype, SUBTYPE_ARGUMENT_NAME);
         return selectEvent(subtype.getType(), qualifiers);
     }
 
