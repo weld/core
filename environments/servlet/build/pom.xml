@@ -115,4 +115,41 @@
         </plugins>
     </build>
 
+    <profiles>
+        <profile>
+            <id>release</id>
+            <activation>
+                <property>
+                    <name>release</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <configuration>
+                            <includeDependencySources>true</includeDependencySources>
+                            <dependencySourceIncludes>
+                                <dependency-source>org.jboss.weld:*</dependency-source>
+                                <dependency-source>org.jboss.weld.servlet:*</dependency-source>
+                                <dependency-source>javax.enterprise:*</dependency-source>
+                                <dependency-source>javax.inject:*</dependency-source>
+                            </dependencySourceIncludes>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>aggregate-jar</id>
+                                <goals>
+                                    <goal>aggregate-jar</goal>
+                                </goals>
+                                <phase>package</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
 </project>
