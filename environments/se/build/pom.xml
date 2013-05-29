@@ -65,6 +65,7 @@
                 </executions>
                 <configuration>
                     <createSourcesJar>true</createSourcesJar>
+                    <createDependencyReducedPom>false</createDependencyReducedPom>
                     <artifactSet>
                         <excludes>
                         </excludes>
