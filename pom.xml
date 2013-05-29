@@ -1,7 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.jboss.weld</groupId>
     <artifactId>weld-core-parent</artifactId>
     <packaging>pom</packaging>
     <version>2.0.1-SNAPSHOT</version>
@@ -24,6 +23,8 @@
 
 
     <properties>
+        <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
+
         <!-- Dependency versions. KEEP IN ALPHABETICAL ORDER -->
         <apache.httpclient.version>3.1</apache.httpclient.version>
         <arquillian.version>1.0.2.Final</arquillian.version>
@@ -83,6 +84,8 @@
 
     <modules>
         <module>impl</module>
+        <module>jsf</module>
+        <module>bundles/impl</module>
     </modules>
 
     <!-- Dependency management. KEEP IN ALPHABETICAL ORDER -->
@@ -410,6 +413,18 @@
             <dependency>
                 <groupId>org.jboss.weld</groupId>
                 <artifactId>weld-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.weld</groupId>
+                <artifactId>weld-core-impl</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.weld</groupId>
+                <artifactId>weld-core-jsf</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
