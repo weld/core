@@ -17,19 +17,19 @@
 package org.jboss.weld.tests.enterprise;
 
 import java.io.Serializable;
-
-import org.jboss.ejb3.annotation.CacheConfig;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
+import javax.ejb.StatefulTimeout;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.inject.spi.BeanManager;
 
 @SuppressWarnings("serial")
 @Stateful
 @SessionScoped
-@CacheConfig(idleTimeoutSeconds = 1)
+@StatefulTimeout(value=1,unit=TimeUnit.SECONDS)
 public class HelloBean implements IHelloBean, Serializable {
     @Resource(mappedName = "java:comp/BeanManager")
     private BeanManager beanManager;

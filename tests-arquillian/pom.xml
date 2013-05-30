@@ -68,27 +68,8 @@
         </dependency>
 
         <dependency>
-            <groupId>javax.jms</groupId>
-            <artifactId>jms</artifactId>
-        </dependency>
-
-       <dependency>
-            <groupId>org.jboss.ejb3</groupId>
-            <artifactId>jboss-ejb3-ext-api</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.jboss.logging</groupId>
-                    <artifactId>jboss-logging-spi</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.jboss.metadata</groupId>
-                    <artifactId>jboss-metadata</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.jboss.javaee</groupId>
-                    <artifactId>jboss-ejb-api</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>org.jboss.spec.javax.jms</groupId>
+            <artifactId>jboss-jms-api_1.1_spec</artifactId>
         </dependency>
 
         <dependency>
@@ -140,10 +121,8 @@
         </dependency>
 
         <dependency>
-            <groupId>javax.faces</groupId>
-            <artifactId>jsf-api</artifactId>
-            <!-- override for testing compatibility w/ JSF 2.0 -->
-            <version>2.0.2-FCS</version>
+            <groupId>org.jboss.spec.javax.faces</groupId>
+            <artifactId>jboss-jsf-api_2.1_spec</artifactId>
         </dependency>
 
         <dependency>
