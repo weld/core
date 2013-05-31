@@ -54,7 +54,7 @@
             <artifactId>weld-core-impl</artifactId>
             <scope>test</scope>
         </dependency>
-    
+
         <dependency>
             <groupId>org.jboss.weld</groupId>
             <artifactId>weld-core-jsf</artifactId>
@@ -74,7 +74,7 @@
         </dependency>
 
         <dependency>
-            <groupId>javax.faces</groupId>
+            <groupId>com.sun.faces</groupId>
             <artifactId>jsf-impl</artifactId>
             <scope>test</scope>
         </dependency>

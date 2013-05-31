@@ -159,7 +159,7 @@
                 </dependency>
 
                 <dependency>
-                    <groupId>javax.faces</groupId>
+                    <groupId>com.sun.faces</groupId>
                     <artifactId>jsf-impl</artifactId>
                     <scope>runtime</scope>
                 </dependency>
@@ -288,7 +288,7 @@
                 </dependency>
 
                 <dependency>
-                    <groupId>javax.faces</groupId>
+                    <groupId>com.sun.faces</groupId>
                     <artifactId>jsf-impl</artifactId>
                     <scope>runtime</scope>
                 </dependency>

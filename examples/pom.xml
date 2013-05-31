@@ -106,8 +106,8 @@
     </modules>
 
     <properties>
-        <!-- Override JSF version to 2.0 -->
-        <jsf.version>2.0.2-FCS</jsf.version>
+        <jsf.version>2.1</jsf.version>
+        <jsf-impl.version>2.1.22</jsf-impl.version>
         <facelets.version>1.1.15</facelets.version>
         <tomcat.version>6.0.36</tomcat.version>
         <jetty.version>6.1.21</jetty.version>
@@ -164,10 +164,10 @@
                 <version>${jsf.version}</version>
             </dependency>
 
-            <dependency>
-                <groupId>javax.faces</groupId>
+             <dependency>
+                <groupId>com.sun.faces</groupId>
                 <artifactId>jsf-impl</artifactId>
-                <version>${jsf.version}</version>
+                <version>${jsf-impl.version}</version>
             </dependency>
 
             <dependency>

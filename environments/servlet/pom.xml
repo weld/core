@@ -28,11 +28,8 @@
     </description>
 
     <properties>
-        <!--
-           Use JSF 2 for all extensions support, despite core using JSF
-           1.2
-        -->
-        <jsf.version>2.0.2-FCS</jsf.version>
+        <jsf.version>2.1</jsf.version>
+        <jsf-impl.version>2.1.22</jsf-impl.version>
         <tomcat.version>6.0.36</tomcat.version>
         <tomcat7.version>7.0.33</tomcat7.version>
         <jetty6.version>6.1.26</jetty6.version>
@@ -55,9 +52,9 @@
             </dependency>
 
             <dependency>
-                <groupId>javax.faces</groupId>
+                <groupId>com.sun.faces</groupId>
                 <artifactId>jsf-impl</artifactId>
-                <version>${jsf.version}</version>
+                <version>${jsf-impl.version}</version>
             </dependency>
 
             <dependency>
