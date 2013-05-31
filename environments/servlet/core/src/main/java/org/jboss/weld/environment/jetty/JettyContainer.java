@@ -26,18 +26,20 @@ import javax.servlet.ServletContext;
 import java.lang.reflect.Method;
 
 /**
- * Jetty 7.2+ container.
+ * Jetty 7.2+, 8.x and 9.x container.
  *
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
-public class JettyPost72Container extends AbstractJettyContainer {
-    public static Container INSTANCE = new JettyPost72Container();
+public class JettyContainer extends AbstractJettyContainer {
+    public static Container INSTANCE = new JettyContainer();
+
+    private static final String JETTY_REQUIRED_CLASS_NAME = "org.eclipse.jetty.servlet.ServletHandler";
 
     private static final int MAJOR_VERSION = 7;
     private static final int MINOR_VERSION = 2;
 
     protected String classToCheck() {
-        throw new IllegalAccessError("Should not be used!");
+        return JETTY_REQUIRED_CLASS_NAME;
     }
 
     public boolean touch(ContainerContext context) throws Exception {
@@ -52,7 +54,11 @@ public class JettyPost72Container extends AbstractJettyContainer {
         String[] split = version.split("\\.");
         int major = Integer.parseInt(split[0]);
         int minor = Integer.parseInt(split[1]);
-        return (major > MAJOR_VERSION || (major == MAJOR_VERSION & minor >= MINOR_VERSION));
+        return !(major < MAJOR_VERSION || (major == MAJOR_VERSION & minor <= MINOR_VERSION));
+    }
+
+    protected Class<?> getWeldServletHandlerClass() {
+        return EclipseWeldServletHandler.class;
     }
 
     public void initialize(ContainerContext context) {
@@ -66,7 +72,7 @@ public class JettyPost72Container extends AbstractJettyContainer {
             Method processMethod = decoratorClass.getMethod("process", ServletContext.class);
             processMethod.invoke(null, context.getContext());
 
-            log.info("Jetty7 detected, JSR-299 injection will be available in Listeners, Servlets and Filters.");
+            log.info("Jetty detected, JSR-299 injection will be available in Listeners, Servlets and Filters.");
         } catch (Exception e) {
             log.error("Unable to create JettyWeldInjector. CDI injection will not be available in Servlets, Filters or Listeners", e);
         }

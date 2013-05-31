@@ -30,9 +30,7 @@ import org.jboss.weld.bootstrap.api.Environments;
 import org.jboss.weld.environment.Container;
 import org.jboss.weld.environment.ContainerContext;
 import org.jboss.weld.environment.gwtdev.GwtDevHostedModeContainer;
-import org.jboss.weld.environment.jetty.Jetty6Container;
-import org.jboss.weld.environment.jetty.Jetty7Container;
-import org.jboss.weld.environment.jetty.JettyPost72Container;
+import org.jboss.weld.environment.jetty.JettyContainer;
 import org.jboss.weld.environment.servlet.deployment.ServletDeployment;
 import org.jboss.weld.environment.servlet.deployment.URLScanner;
 import org.jboss.weld.environment.servlet.deployment.VFSURLScanner;
@@ -195,9 +193,7 @@ public class Listener extends ForwardingServletListener {
                     GwtDevHostedModeContainer.INSTANCE,
                     Tomcat7Container.INSTANCE,
                     Tomcat6Container.INSTANCE,
-                    Jetty6Container.INSTANCE,
-                    JettyPost72Container.INSTANCE,
-                    Jetty7Container.INSTANCE)
+                    JettyContainer.INSTANCE)
             );
         }
         return container;
