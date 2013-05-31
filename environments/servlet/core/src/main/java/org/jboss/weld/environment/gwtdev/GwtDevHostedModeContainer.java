@@ -17,13 +17,21 @@
 
 package org.jboss.weld.environment.gwtdev;
 
+import java.lang.reflect.Method;
+
+import javax.servlet.ServletContext;
+
 import org.jboss.weld.environment.Container;
-import org.jboss.weld.environment.jetty.Jetty6Container;
+import org.jboss.weld.environment.ContainerContext;
+import org.jboss.weld.environment.jetty.AbstractJettyContainer;
+import org.jboss.weld.environment.jetty.JettyWeldInjector;
+import org.jboss.weld.environment.servlet.util.Reflections;
+import org.jboss.weld.manager.api.WeldManager;
 
 /**
  *
  */
-public class GwtDevHostedModeContainer extends Jetty6Container {
+public class GwtDevHostedModeContainer extends AbstractJettyContainer {
     public static Container INSTANCE = new GwtDevHostedModeContainer();
 
     // The gwt-dev jar is never in the project classpath (only in the maven/eclipse/intellij plugin classpath)
@@ -34,4 +42,23 @@ public class GwtDevHostedModeContainer extends Jetty6Container {
         return GWT_DEV_HOSTED_MODE_REQUIRED_CLASS_NAME;
     }
 
+    protected Class<?> getWeldServletHandlerClass() {
+        return MortbayWeldServletHandler.class;
+    }
+
+    public void initialize(ContainerContext context) {
+        // Try pushing a Jetty Injector into the servlet context
+        try {
+            Class<?> clazz = Reflections.classForName(JettyWeldInjector.class.getName());
+            Object injector = clazz.getConstructor(WeldManager.class).newInstance(context.getManager());
+            context.getContext().setAttribute(INJECTOR_ATTRIBUTE_NAME, injector);
+            log.info("GWTHostedMode detected, JSR-299 injection will be available in Servlets and Filters. Injection into Listeners is not supported.");
+
+            Class<?> decoratorClass = getWeldServletHandlerClass();
+            Method processMethod = decoratorClass.getMethod("process", ServletContext.class);
+            processMethod.invoke(null, context.getContext());
+        } catch (Exception e) {
+            log.error("Unable to create JettyWeldInjector. CDI injection will not be available in Servlets, Filters or Listeners", e);
+        }
+    }
 }

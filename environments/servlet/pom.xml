@@ -19,7 +19,6 @@
         <module>tests/base</module>
         <module>tests/tomcat</module>
         <module>tests/tomcat7</module>
-        <module>tests/jetty6</module>
         <module>tests/jetty</module>
     </modules>
 

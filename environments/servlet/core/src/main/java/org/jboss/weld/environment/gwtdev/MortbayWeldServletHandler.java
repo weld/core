@@ -1,5 +1,7 @@
-package org.jboss.weld.environment.jetty;
+package org.jboss.weld.environment.gwtdev;
 
+import org.jboss.weld.environment.jetty.AbstractJettyContainer;
+import org.jboss.weld.environment.jetty.JettyWeldInjector;
 import org.mortbay.jetty.Handler;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.handler.ContextHandler;
