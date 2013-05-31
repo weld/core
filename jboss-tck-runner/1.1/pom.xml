@@ -44,7 +44,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
-    
+
         <dependency>
             <groupId>org.jboss.weld</groupId>
             <artifactId>weld-core-jsf</artifactId>
@@ -91,6 +91,10 @@
                     <artifactId>el-api</artifactId>
                     <groupId>javax.el</groupId>
                 </exclusion>
+                <exclusion>
+                    <artifactId>jsf-api</artifactId>
+                    <groupId>javax.faces</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
 
@@ -104,12 +108,21 @@
                     <artifactId>el-api</artifactId>
                     <groupId>javax.el</groupId>
                 </exclusion>
+                <exclusion>
+                    <artifactId>jsf-api</artifactId>
+                    <groupId>javax.faces</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
 
         <dependency>
             <groupId>org.glassfish</groupId>
             <artifactId>javax.el</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.spec.javax.faces</groupId>
+            <artifactId>jboss-jsf-api_2.1_spec</artifactId>
         </dependency>
 
     </dependencies>
