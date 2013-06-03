@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2010, Red Hat, Inc., and individual contributors
+ * Copyright 2013, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -17,15 +17,33 @@
 package org.jboss.weld.injection;
 
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.AnnotatedParameter;
 
-import org.jboss.weld.injection.attributes.WeldInjectionPointAttributes;
-import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.injection.spi.ResourceReference;
+import org.jboss.weld.injection.spi.ResourceReferenceFactory;
 
-public interface ParameterInjectionPoint<T, X> extends WeldInjectionPointAttributes<T, Object> {
+/**
+ * High-level representation of a resource field and setter method.
+ *
+ * @author Martin Kouba
+ *
+ * @param <T> the resource type
+ */
+public interface ResourceInjection<T> {
 
-    @Override
-    AnnotatedParameter<X> getAnnotated();
+    /**
+     *
+     * @param ctx
+     * @return the resource reference for this injection point
+     * @see ResourceReference
+     * @see ResourceReferenceFactory
+     */
+    T getResourceReference(CreationalContext<?> ctx);
 
-    T getValueToInject(BeanManagerImpl manager, CreationalContext<?> creationalContext);
+    /**
+     *
+     * @param declaringInstance
+     * @param ctx
+     */
+    void injectResourceReference(Object declaringInstance, CreationalContext<?> ctx);
+
 }

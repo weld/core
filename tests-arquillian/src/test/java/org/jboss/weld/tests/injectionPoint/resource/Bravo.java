@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2008, Red Hat, Inc., and individual contributors
+ * Copyright 2010, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,17 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.injection;
+package org.jboss.weld.tests.injectionPoint.resource;
 
-import org.jboss.weld.injection.attributes.WeldInjectionPointAttributes;
+import javax.ejb.EJB;
 
-public interface WeldInjectionPoint<T, S> extends WeldInjectionPointAttributes<T, S> {
+import org.jboss.weld.test.util.ActionSequence;
 
-    /**
-     * Injects an instance
-     *
-     * @param declaringInstance The instance to inject into
-     * @param value The value to inject
-     */
-    void inject(Object declaringInstance, Object value);
+public class Bravo extends Charlie {
+
+    private SessionBean anotherSessionBean;
+
+    public SessionBean getAnotherSessionBean() {
+        return anotherSessionBean;
+    }
+
+    @EJB
+    public void setAnotherSessionBean(SessionBean anotherSessionBean) {
+        this.anotherSessionBean = anotherSessionBean;
+        ActionSequence.addAction(Bravo.class.getName()+SessionBean.class.getName());
+    }
+
 }

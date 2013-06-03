@@ -27,10 +27,10 @@ import org.jboss.weld.injection.FieldInjectionPoint;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.ParameterInjectionPoint;
 import org.jboss.weld.injection.ParameterInjectionPointImpl;
-import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.injection.attributes.ForwardingFieldInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.ForwardingParameterInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.SpecialParameterInjectionPoint;
+import org.jboss.weld.injection.attributes.WeldInjectionPointAttributes;
 import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -44,7 +44,7 @@ public class InjectionPoints {
     private InjectionPoints() {
     }
 
-    public static <T extends WeldInjectionPoint<?, ?>> Set<T> flattenInjectionPoints(List<? extends Set<T>> fieldInjectionPoints) {
+    public static <T extends WeldInjectionPointAttributes<?, ?>> Set<T> flattenInjectionPoints(List<? extends Set<T>> fieldInjectionPoints) {
         ArraySet<T> injectionPoints = new ArraySet<T>();
         for (Set<T> i : fieldInjectionPoints) {
             injectionPoints.addAll(i);
@@ -88,8 +88,8 @@ public class InjectionPoints {
         return null;
     }
 
-    public static <T, X> WeldInjectionPoint<T, ?> getWeldInjectionPoint(InjectionPoint injectionPoint) {
-        if (injectionPoint instanceof WeldInjectionPoint<?, ?>) {
+    public static <T, X> WeldInjectionPointAttributes<T, ?> getWeldInjectionPoint(InjectionPoint injectionPoint) {
+        if (injectionPoint instanceof WeldInjectionPointAttributes<?, ?>) {
             return Reflections.cast(injectionPoint);
         }
         if (injectionPoint.getAnnotated() instanceof AnnotatedField<?>) {

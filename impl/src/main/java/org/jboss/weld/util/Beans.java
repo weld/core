@@ -85,7 +85,7 @@ import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.injection.FieldInjectionPoint;
 import org.jboss.weld.injection.MethodInjectionPoint;
-import org.jboss.weld.injection.ResourceInjectionPoint;
+import org.jboss.weld.injection.ResourceInjection;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
 import org.jboss.weld.interceptor.util.InterceptionTypeRegistry;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -132,8 +132,7 @@ public class Beans {
     }
 
     /**
-     * Tests if a bean is capable of having its state temporarily stored to
-     * secondary storage
+     * Tests if a bean is capable of having its state temporarily stored to secondary storage
      *
      * @param bean The bean to inspect
      * @return True if the bean is passivation capable
@@ -147,8 +146,7 @@ public class Beans {
     }
 
     /**
-     * Tests if a bean is capable of having its state temporarily stored to
-     * secondary storage
+     * Tests if a bean is capable of having its state temporarily stored to secondary storage
      *
      * @param bean The bean to inspect
      * @return True if the bean is passivation capable
@@ -177,8 +175,7 @@ public class Beans {
     public static List<AnnotatedMethod<?>> getInterceptableMethods(AnnotatedType<?> type) {
         List<AnnotatedMethod<?>> annotatedMethods = new ArrayList<AnnotatedMethod<?>>();
         for (AnnotatedMethod<?> annotatedMethod : type.getMethods()) {
-            boolean businessMethod = !annotatedMethod.isStatic()
-                    && !annotatedMethod.isAnnotationPresent(Inject.class)
+            boolean businessMethod = !annotatedMethod.isStatic() && !annotatedMethod.isAnnotationPresent(Inject.class)
                     && !annotatedMethod.getJavaMember().isBridge();
 
             if (businessMethod && !isInterceptorMethod(annotatedMethod)) {
@@ -198,19 +195,21 @@ public class Beans {
     }
 
     /**
-     * Checks that all the qualifiers in the set requiredQualifiers are in the set
-     * of qualifiers. Qualifier equality rules for annotation members are followed.
+     * Checks that all the qualifiers in the set requiredQualifiers are in the set of qualifiers. Qualifier equality rules for
+     * annotation members are followed.
      *
      * @param requiredQualifiers The required qualifiers
-     * @param qualifiers         The set of qualifiers to check
+     * @param qualifiers The set of qualifiers to check
      * @return True if all matches, false otherwise
      */
     public static boolean containsAllQualifiers(Set<QualifierInstance> requiredQualifiers, Set<QualifierInstance> qualifiers) {
         return qualifiers.containsAll(requiredQualifiers);
     }
 
-    public static boolean containsAllInterceptionBindings(Set<Annotation> expectedBindings, Set<QualifierInstance> existingBindings, BeanManagerImpl manager) {
-        final Set<QualifierInstance> expected = manager.extractInterceptorBindingsForQualifierInstance(QualifierInstance.qualifiers(manager, expectedBindings));
+    public static boolean containsAllInterceptionBindings(Set<Annotation> expectedBindings,
+            Set<QualifierInstance> existingBindings, BeanManagerImpl manager) {
+        final Set<QualifierInstance> expected = manager.extractInterceptorBindingsForQualifierInstance(QualifierInstance
+                .qualifiers(manager, expectedBindings));
         return manager.extractInterceptorBindingsForQualifierInstance(existingBindings).containsAll(expected);
     }
 
@@ -218,7 +217,8 @@ public class Beans {
         Map<Class<? extends Annotation>, Annotation> foundAnnotations = new HashMap<Class<? extends Annotation>, Annotation>();
         for (Annotation binding : bindings) {
             if (foundAnnotations.containsKey(binding.annotationType())) {
-                InterceptorBindingModel<?> bindingType = manager.getServices().get(MetaAnnotationStore.class).getInterceptorBindingModel(binding.annotationType());
+                InterceptorBindingModel<?> bindingType = manager.getServices().get(MetaAnnotationStore.class)
+                        .getInterceptorBindingModel(binding.annotationType());
                 if (!bindingType.isEqual(binding, foundAnnotations.get(binding.annotationType()), false)) {
                     return true;
                 }
@@ -234,11 +234,12 @@ public class Beans {
      * <p/>
      * The deployment type X is
      *
-     * @param beans                  The beans to filter
+     * @param beans The beans to filter
      * @param beanManager the bean manager
      * @return The filtered beans
      */
-    public static <T extends Bean<?>> Set<T> removeDisabledAndSpecializedBeans(Set<T> beans, final BeanManagerImpl beanManager, final SpecializationAndEnablementRegistry registry) {
+    public static <T extends Bean<?>> Set<T> removeDisabledAndSpecializedBeans(Set<T> beans, final BeanManagerImpl beanManager,
+            final SpecializationAndEnablementRegistry registry) {
         if (beans.size() == 0) {
             return beans;
         } else {
@@ -269,7 +270,7 @@ public class Beans {
                 }
                 return false;
             }
-        } else if (bean instanceof AbstractProducerBean<?,?,?>) {
+        } else if (bean instanceof AbstractProducerBean<?, ?, ?>) {
             AbstractProducerBean<?, ?, ?> receiverBean = (AbstractProducerBean<?, ?, ?>) bean;
             return isBeanEnabled(receiverBean.getDeclaringBean(), enabled);
         } else if (bean instanceof DecoratorImpl<?>) {
@@ -316,7 +317,8 @@ public class Beans {
     }
 
     public static <T> EnhancedAnnotatedConstructor<T> getBeanConstructor(EnhancedAnnotatedType<T> type) {
-        Collection<EnhancedAnnotatedConstructor<T>> initializerAnnotatedConstructors = type.getEnhancedConstructors(Inject.class);
+        Collection<EnhancedAnnotatedConstructor<T>> initializerAnnotatedConstructors = type
+                .getEnhancedConstructors(Inject.class);
         log.trace(FOUND_INJECTABLE_CONSTRUCTORS, initializerAnnotatedConstructors, type);
         EnhancedAnnotatedConstructor<T> constructor = null;
         if (initializerAnnotatedConstructors.size() > 1) {
@@ -340,11 +342,18 @@ public class Beans {
     }
 
     /**
-     * Injects EJBs and common fields
+     * Injects EJBs and other EE resources.
+     *
+     * @param resourceInjectionsHierarchy
+     * @param beanInstance
+     * @param ctx
      */
-    public static <T> void injectEEFields(Iterable<ResourceInjectionPoint<?, ?>> resourceInjectionPoints, T beanInstance, CreationalContext<T> ctx) {
-        for (ResourceInjectionPoint<?, ?> ip : resourceInjectionPoints) {
-            ip.inject(beanInstance, ctx);
+    public static <T> void injectEEFields(Iterable<Set<ResourceInjection<?>>> resourceInjectionsHierarchy,
+            T beanInstance, CreationalContext<T> ctx) {
+        for (Set<ResourceInjection<?>> resourceInjections : resourceInjectionsHierarchy) {
+            for (ResourceInjection<?> resourceInjection : resourceInjections) {
+                resourceInjection.injectResourceReference(beanInstance, ctx);
+            }
         }
     }
 
@@ -367,15 +376,19 @@ public class Beans {
      *
      * @param instance The instance to inject into
      */
-    public static <T> void injectBoundFields(T instance, CreationalContext<T> creationalContext, BeanManagerImpl manager, Iterable<? extends FieldInjectionPoint<?, ?>> injectableFields) {
+    public static <T> void injectBoundFields(T instance, CreationalContext<T> creationalContext, BeanManagerImpl manager,
+            Iterable<? extends FieldInjectionPoint<?, ?>> injectableFields) {
         for (FieldInjectionPoint<?, ?> injectableField : injectableFields) {
             injectableField.inject(instance, manager, creationalContext);
         }
     }
 
-    public static <T> void injectFieldsAndInitializers(T instance, CreationalContext<T> ctx, BeanManagerImpl beanManager, List<? extends Iterable<? extends FieldInjectionPoint<?, ?>>> injectableFields, List<? extends Iterable<? extends MethodInjectionPoint<?, ?>>> initializerMethods) {
+    public static <T> void injectFieldsAndInitializers(T instance, CreationalContext<T> ctx, BeanManagerImpl beanManager,
+            List<? extends Iterable<? extends FieldInjectionPoint<?, ?>>> injectableFields,
+            List<? extends Iterable<? extends MethodInjectionPoint<?, ?>>> initializerMethods) {
         if (injectableFields.size() != initializerMethods.size()) {
-            throw new IllegalArgumentException(INVALID_QUANTITY_INJECTABLE_FIELDS_AND_INITIALIZER_METHODS, injectableFields, initializerMethods);
+            throw new IllegalArgumentException(INVALID_QUANTITY_INJECTABLE_FIELDS_AND_INITIALIZER_METHODS, injectableFields,
+                    initializerMethods);
         }
         for (int i = 0; i < injectableFields.size(); i++) {
             injectBoundFields(instance, ctx, beanManager, injectableFields.get(i));
@@ -388,7 +401,8 @@ public class Beans {
      *
      * @param instance The bean instance
      */
-    public static <T> void callInitializers(T instance, CreationalContext<T> creationalContext, BeanManagerImpl manager, Iterable<? extends MethodInjectionPoint<?, ?>> initializerMethods) {
+    public static <T> void callInitializers(T instance, CreationalContext<T> creationalContext, BeanManagerImpl manager,
+            Iterable<? extends MethodInjectionPoint<?, ?>> initializerMethods) {
         for (MethodInjectionPoint<?, ?> initializer : initializerMethods) {
             initializer.invoke(instance, manager, creationalContext, CreationException.class);
         }
@@ -443,7 +457,8 @@ public class Beans {
             return new ArraySet<Type>(annotated.getBaseType(), Object.class);
         } else {
             if (annotated.isAnnotationPresent(Typed.class)) {
-                return new ArraySet<Type>(getTypedTypes(Reflections.buildTypeMap(annotated.getTypeClosure()), annotated.getJavaClass(), annotated.getAnnotation(Typed.class)));
+                return new ArraySet<Type>(getTypedTypes(Reflections.buildTypeMap(annotated.getTypeClosure()),
+                        annotated.getJavaClass(), annotated.getAnnotation(Typed.class)));
             } else {
                 if (annotated.getJavaClass().isInterface()) {
                     return new ArraySet<Type>(annotated.getTypeClosure(), Object.class);
@@ -463,7 +478,8 @@ public class Beans {
         HierarchyDiscovery beanClassDiscovery = new HierarchyDiscovery(ejbDescriptor.getBeanClass());
         for (BusinessInterfaceDescriptor<?> businessInterfaceDescriptor : ejbDescriptor.getLocalBusinessInterfaces()) {
             // first we need to resolve the local interface
-            Type resolvedLocalInterface = beanClassDiscovery.resolveType(Types.getCanonicalType(businessInterfaceDescriptor.getInterface()));
+            Type resolvedLocalInterface = beanClassDiscovery.resolveType(Types.getCanonicalType(businessInterfaceDescriptor
+                    .getInterface()));
             typeMap.putAll(new HierarchyDiscovery(resolvedLocalInterface).getTypeMap());
         }
         if (annotated.isAnnotationPresent(Typed.class)) {
@@ -501,8 +517,7 @@ public class Beans {
     public static boolean isTypeManagedBeanOrDecoratorOrInterceptor(AnnotatedType<?> annotatedType) {
         Class<?> javaClass = annotatedType.getJavaClass();
         return !javaClass.isEnum() && !Extension.class.isAssignableFrom(javaClass)
-                && !Reflections.isNonStaticInnerClass(javaClass)
-                && !Reflections.isParamerterizedTypeWithWildcard(javaClass)
+                && !Reflections.isNonStaticInnerClass(javaClass) && !Reflections.isParamerterizedTypeWithWildcard(javaClass)
                 && hasSimpleCdiConstructor(annotatedType);
     }
 
@@ -606,6 +621,7 @@ public class Beans {
     private static class TypeComparator implements Comparator<Type>, Serializable {
         private static final long serialVersionUID = -2162735176891985078L;
         private static final TypeComparator INSTANCE = new TypeComparator();
+
         @Override
         public int compare(Type o1, Type o2) {
             return createTypeId(o1).compareTo(createTypeId(o2));

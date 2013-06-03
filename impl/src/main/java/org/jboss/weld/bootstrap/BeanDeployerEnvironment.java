@@ -56,7 +56,7 @@ import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
 import org.jboss.weld.bean.builtin.ExtensionBean;
 import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
-import org.jboss.weld.injection.WeldInjectionPoint;
+import org.jboss.weld.injection.attributes.WeldInjectionPointAttributes;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resolution.ResolvableBuilder;
 import org.jboss.weld.resolution.TypeSafeDisposerResolver;
@@ -286,7 +286,7 @@ public class BeanDeployerEnvironment {
 
     public void addNewBeansFromInjectionPoints(Set<? extends InjectionPoint> injectionPoints) {
         for (InjectionPoint injectionPoint : injectionPoints) {
-            WeldInjectionPoint<?, ?> weldInjectionPoint = InjectionPoints.getWeldInjectionPoint(injectionPoint);
+            WeldInjectionPointAttributes<?, ?> weldInjectionPoint = InjectionPoints.getWeldInjectionPoint(injectionPoint);
             if (weldInjectionPoint.getQualifier(New.class) != null) {
 
                 Class<?> rawType = Reflections.getRawType(weldInjectionPoint.getType());

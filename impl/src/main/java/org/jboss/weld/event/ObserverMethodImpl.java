@@ -56,8 +56,8 @@ import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.ParameterInjectionPoint;
-import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.injection.attributes.SpecialParameterInjectionPoint;
+import org.jboss.weld.injection.attributes.WeldInjectionPointAttributes;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.util.Observers;
@@ -91,8 +91,8 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
     protected TransactionPhase transactionPhase;
     private final String id;
 
-    private final Set<WeldInjectionPoint<?, ?>> injectionPoints;
-    private final Set<WeldInjectionPoint<?, ?>> newInjectionPoints;
+    private final Set<WeldInjectionPointAttributes<?, ?>> injectionPoints;
+    private final Set<WeldInjectionPointAttributes<?, ?>> newInjectionPoints;
 
     /**
      * Creates an Observer which describes and encapsulates an observer method
@@ -114,8 +114,8 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
         this.reception = observesAnnotation.notifyObserver();
         transactionPhase = ObserverFactory.getTransactionalPhase(observer);
 
-        Set<WeldInjectionPoint<?, ?>> injectionPoints = new HashSet<WeldInjectionPoint<?, ?>>();
-        Set<WeldInjectionPoint<?, ?>> newInjectionPoints = new HashSet<WeldInjectionPoint<?, ?>>();
+        Set<WeldInjectionPointAttributes<?, ?>> injectionPoints = new HashSet<WeldInjectionPointAttributes<?, ?>>();
+        Set<WeldInjectionPointAttributes<?, ?>> newInjectionPoints = new HashSet<WeldInjectionPointAttributes<?, ?>>();
         for (ParameterInjectionPoint<?, ?> injectionPoint : observerMethod.getParameterInjectionPoints()) {
             if (injectionPoint instanceof SpecialParameterInjectionPoint) {
                 continue;
@@ -144,11 +144,11 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
         return InjectionPointFactory.instance().createMethodInjectionPoint(observer, declaringBean, declaringBean.getBeanClass(), true, manager);
     }
 
-    public Set<WeldInjectionPoint<?, ?>> getInjectionPoints() {
+    public Set<WeldInjectionPointAttributes<?, ?>> getInjectionPoints() {
         return Collections.unmodifiableSet(injectionPoints);
     }
 
-    public Set<WeldInjectionPoint<?, ?>> getNewInjectionPoints() {
+    public Set<WeldInjectionPointAttributes<?, ?>> getNewInjectionPoints() {
         return Collections.unmodifiableSet(newInjectionPoints);
     }
 

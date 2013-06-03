@@ -16,47 +16,47 @@
  */
 package org.jboss.weld.injection.producer;
 
-import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
+import static org.jboss.weld.util.collections.WeldCollections.immutableList;
 
+import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
-import org.jboss.weld.injection.InjectionPointFactory;
-import org.jboss.weld.injection.ResourceInjectionPoint;
+import org.jboss.weld.injection.ResourceInjection;
+import org.jboss.weld.injection.ResourceInjectionFactory;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
-import org.jboss.weld.util.collections.ArraySet;
 
 /**
- * {@link Injector} that adds support for resource field injection.
+ * {@link Injector} that adds support for resource field and setter injection.
  *
  * @see DefaultInjector
  *
  * @author Jozef Hartinger
+ * @author Martin Kouba
  *
  * @param <T>
  */
 public class ResourceInjector<T> extends DefaultInjector<T> {
 
-    private final Set<ResourceInjectionPoint<?, ?>> resourceInjectionPoints;
+    /**
+     * Holds sets of resource injection points per class in type hierarchy
+     */
+    private List<Set<ResourceInjection<?>>> resourceInjectionsHierarchy;
 
     protected ResourceInjector(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager) {
         super(type, bean, beanManager);
-        Set<ResourceInjectionPoint<?, ?>> resourceInjectionPoints = new ArraySet<ResourceInjectionPoint<?, ?>>();
-        resourceInjectionPoints.addAll(InjectionPointFactory.silentInstance().getEjbInjectionPoints(bean, type, beanManager));
-        resourceInjectionPoints.addAll(InjectionPointFactory.silentInstance().getPersistenceContextInjectionPoints(bean, type, beanManager));
-        resourceInjectionPoints.addAll(InjectionPointFactory.silentInstance().getPersistenceUnitInjectionPoints(bean, type, beanManager));
-        resourceInjectionPoints.addAll(InjectionPointFactory.silentInstance().getResourceInjectionPoints(bean, type, beanManager));
-        resourceInjectionPoints.addAll(InjectionPointFactory.silentInstance().getWebServiceRefInjectionPoints(bean, type, beanManager));
-        this.resourceInjectionPoints = immutableSet(resourceInjectionPoints);
+        this.resourceInjectionsHierarchy = immutableList(ResourceInjectionFactory.instance().getResourceInjections(bean, type,
+                beanManager));
     }
 
     @Override
     public void inject(T instance, CreationalContext<T> ctx, BeanManagerImpl manager) {
-        Beans.injectEEFields(resourceInjectionPoints, instance, ctx);
+        // Java EE component environment resource dependencies are injected first
+        Beans.injectEEFields(resourceInjectionsHierarchy, instance, ctx);
         super.inject(instance, ctx, manager);
     }
 }

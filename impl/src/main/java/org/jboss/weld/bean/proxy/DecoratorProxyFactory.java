@@ -36,7 +36,7 @@ import org.jboss.classfilewriter.code.CodeAttribute;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.injection.FieldInjectionPoint;
 import org.jboss.weld.injection.ParameterInjectionPoint;
-import org.jboss.weld.injection.WeldInjectionPoint;
+import org.jboss.weld.injection.attributes.WeldInjectionPointAttributes;
 import org.jboss.weld.interceptor.util.proxy.TargetInstanceProxy;
 import org.jboss.weld.security.GetDeclaredMethodsAction;
 import org.jboss.weld.util.bytecode.BytecodeUtils;
@@ -57,10 +57,10 @@ import org.jboss.weld.util.bytecode.StaticMethodInformation;
 public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
     public static final String PROXY_SUFFIX = "DecoratorProxy";
     private static final String INIT_MH_METHOD_NAME = "_initMH";
-    private final WeldInjectionPoint<?, ?> delegateInjectionPoint;
+    private final WeldInjectionPointAttributes<?, ?> delegateInjectionPoint;
     private final Field delegateField;
 
-    public DecoratorProxyFactory(Class<T> proxyType, WeldInjectionPoint<?, ?> delegateInjectionPoint, Bean<?> bean) {
+    public DecoratorProxyFactory(Class<T> proxyType, WeldInjectionPointAttributes<?, ?> delegateInjectionPoint, Bean<?> bean) {
         super(proxyType, Collections.<Type>emptySet(), bean);
         this.delegateInjectionPoint = delegateInjectionPoint;
         if (delegateInjectionPoint instanceof FieldInjectionPoint<?, ?>) {
