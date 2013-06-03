@@ -48,14 +48,8 @@
         </dependency>
 
         <dependency>
-            <groupId>javax.faces</groupId>
-            <artifactId>jsf-api</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-         <dependency>
-            <groupId>com.sun.faces</groupId>
-            <artifactId>jsf-impl</artifactId>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.faces</artifactId>
             <scope>test</scope>
         </dependency>
 
