@@ -24,6 +24,7 @@ import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Extension;
 
+import org.jboss.weld.annotated.AnnotatedTypeValidator;
 import org.jboss.weld.bootstrap.BeanDeployment;
 import org.jboss.weld.bootstrap.ContextHolder;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
@@ -38,6 +39,7 @@ public class AbstractAnnotatedTypeRegisteringEvent extends AbstractBeanDiscovery
     }
 
     protected void addSyntheticAnnotatedType(AnnotatedType<?> type, String id) {
+        AnnotatedTypeValidator.validateAnnotatedType(type);
         if (Beans.isVetoed(type)) {
             return;
         }
