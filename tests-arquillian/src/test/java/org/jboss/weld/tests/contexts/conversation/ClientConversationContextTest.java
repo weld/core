@@ -164,7 +164,7 @@ public class ClientConversationContextTest {
         page = getFirstMatchingElement(page, HtmlSubmitInput.class, "start").click();
         assertEquals("Pete", getFirstMatchingElement(page, HtmlSpan.class, "name").getTextContent());
         String cid = getCid(page);
-        page = getFirstMatchingElement(page, HtmlSubmitInput.class, "dummy").click();
+        getFirstMatchingElement(page, HtmlSubmitInput.class, "dummy").click();
         page = client.getPage(getPath("/locking-issue.jsf?cid=" + cid));
         assertEquals("Pete", getFirstMatchingElement(page, HtmlSpan.class, "name").getTextContent());
     }
