@@ -433,6 +433,23 @@
                 </dependency>
             </dependencies>
         </profile>
+        
+        <profile>
+            <id>arquillian-wildfly-managed-8</id>
+            <activation>
+                <property>
+                    <name>arquillian</name>
+                    <value>wildfly-managed-8</value>
+                </property>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>org.wildfly</groupId>
+                    <artifactId>wildfly-arquillian-container-managed</artifactId>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+        </profile>
 
         <profile>
             <id>arquillian-jbossas-remote-7</id>
@@ -446,6 +463,23 @@
                 <dependency>
                     <groupId>org.jboss.as</groupId>
                     <artifactId>jboss-as-arquillian-container-remote</artifactId>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+        
+        <profile>
+            <id>arquillian-wildfly-remote-8</id>
+            <activation>
+                <property>
+                    <name>arquillian</name>
+                    <value>wildfly-remote-8</value>
+                </property>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>org.wildfly</groupId>
+                    <artifactId>wildfly-arquillian-container-remote</artifactId>
                     <scope>test</scope>
                 </dependency>
             </dependencies>
