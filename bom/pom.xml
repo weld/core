@@ -92,8 +92,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.atinject</groupId>
-            <artifactId>inject-tck</artifactId>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject-tck</artifactId>
         </dependency>
 
         <dependency>

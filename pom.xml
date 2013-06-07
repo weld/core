@@ -35,7 +35,7 @@
         <arquillian.jetty.version>1.0.0.CR1</arquillian.jetty.version>
         <arquillian.glassfish.version>1.0.0.CR1</arquillian.glassfish.version>
         <arquillian.jboss6.version>1.0.0.CR2</arquillian.jboss6.version>
-        <atinject.tck.version>1.0.0-PFD-3</atinject.tck.version>
+        <atinject.tck.version>1</atinject.tck.version>
         <build.config.version>3</build.config.version>
         <cal10n.version>0.7.7</cal10n.version>
         <cargo.maven2.plugin.version>1.0</cargo.maven2.plugin.version>
@@ -184,8 +184,8 @@
             </dependency>
 
             <dependency>
-                <groupId>org.atinject</groupId>
-                <artifactId>inject-tck</artifactId>
+                <groupId>javax.inject</groupId>
+                <artifactId>javax.inject-tck</artifactId>
                 <version>${atinject.tck.version}</version>
             </dependency>
 
@@ -714,7 +714,6 @@
             <activation>
                 <property>
                     <name>jboss-public-repository</name>
-                    <value>!false</value>
                 </property>
             </activation>
             <repositories>
