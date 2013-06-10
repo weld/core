@@ -107,6 +107,7 @@
                                     <exclude>javax.faces:jsf-api</exclude>
                                     <exclude>org.mortbay.jetty:jetty</exclude>
                                     <exclude>javax.el:el-api</exclude>
+                                    <exclude>org.jboss.spec.javax.el:jboss-el-api_3.0_spec</exclude>
                                 </excludes>
                             </artifactSet>
                         </configuration>
