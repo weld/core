@@ -47,6 +47,8 @@ public class HttpContextLifecycle implements Service {
 
     private static final String HTTP_SESSION = "org.jboss.weld." + HttpSession.class.getName();
 
+    private static final String INCLUDE_HEADER = "javax.servlet.include.request_uri";
+
     private static final LocLogger log = loggerFactory().getLogger(SERVLET);
 
     private HttpSessionContext sessionContextCache;
@@ -112,6 +114,10 @@ public class HttpContextLifecycle implements Service {
     }
 
     public void requestInitialized(HttpServletRequest request, ServletContext ctx) {
+        if (isIncludedRequest(request)) {
+            return;
+        }
+
         log.trace(REQUEST_INITIALIZED, request);
 
         SessionHolder.requestInitialized(request);
@@ -139,6 +145,9 @@ public class HttpContextLifecycle implements Service {
     }
 
     public void requestDestroyed(HttpServletRequest request) {
+        if (isIncludedRequest(request)) {
+            return;
+        }
         log.trace(REQUEST_DESTROYED, request);
 
         try {
@@ -168,6 +177,14 @@ public class HttpContextLifecycle implements Service {
 
     public void setConversationActivationEnabled(boolean conversationActivationEnabled) {
         this.conversationActivationEnabled = conversationActivationEnabled;
+    }
+
+    /**
+     * Some Servlet containers fire HttpServletListeners for include requests (inner requests caused by calling the include method of RequestDispatcher). This
+     * causes problems with context shut down as context manipulation is not reentrant. This method detects if this request is an included request or not.
+     */
+    private boolean isIncludedRequest(HttpServletRequest request) {
+        return request.getAttribute(INCLUDE_HEADER) != null;
     }
 
     @Override

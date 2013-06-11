@@ -1,9 +1,10 @@
 package org.jboss.weld.tests.servlet.crosscontext;
 
-import com.gargoylesoftware.htmlunit.Page;
-import com.gargoylesoftware.htmlunit.WebClient;
+import static org.junit.Assert.assertEquals;
+
 import java.io.IOException;
 import java.net.URL;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.Testable;
 import org.jboss.arquillian.junit.Arquillian;
@@ -13,12 +14,16 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import static org.junit.Assert.assertEquals;
-import org.junit.Ignore;
+import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
+import com.gargoylesoftware.htmlunit.Page;
+import com.gargoylesoftware.htmlunit.WebClient;
+
 @RunWith(Arquillian.class)
+@Category(Integration.class)
 public class CrossContextInclusionTest {
 
     @Deployment(testable = false)
@@ -38,7 +43,6 @@ public class CrossContextInclusionTest {
     }
 
     @Test
-    @Ignore("WELD-1415")
     public void testCrossContextInclusion(@ArquillianResource(MainServlet.class) URL contextPath) throws IOException {
         Page page = new WebClient().getPage(contextPath + "/main");
         assertEquals(200, page.getWebResponse().getStatusCode());
