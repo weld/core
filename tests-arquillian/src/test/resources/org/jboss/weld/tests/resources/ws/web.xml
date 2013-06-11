@@ -6,7 +6,7 @@
 
     <servlet>
         <servlet-name>Translator</servlet-name>
-        <servlet-class>org.jboss.weld.tests.resources.ws.TranslatorService</servlet-class>
+        <servlet-class>org.jboss.weld.tests.resources.ws.TranslatorEndpoint</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
