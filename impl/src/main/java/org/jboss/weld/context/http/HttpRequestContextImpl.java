@@ -34,8 +34,6 @@ import java.lang.annotation.Annotation;
 
 public class HttpRequestContextImpl extends AbstractBoundContext<ServletRequest> implements HttpRequestContext {
 
-    private static final String IDENTIFIER = HttpRequestContextImpl.class.getName();
-
     private final NamingScheme namingScheme;
 
     /**
@@ -47,29 +45,13 @@ public class HttpRequestContextImpl extends AbstractBoundContext<ServletRequest>
     }
 
     public boolean associate(ServletRequest request) {
-        if (request.getAttribute(IDENTIFIER) == null) {
-            request.setAttribute(IDENTIFIER, IDENTIFIER);
+        if (getBeanStore() == null) {
             setBeanStore(new RequestBeanStore(request, namingScheme));
             getBeanStore().attach();
             return true;
         } else {
             return false;
         }
-    }
-
-    public boolean dissociate(ServletRequest request) {
-        if (request.getAttribute(IDENTIFIER) != null) {
-            try {
-                setBeanStore(null);
-                request.removeAttribute(IDENTIFIER);
-                return true;
-            } finally {
-                cleanup();
-            }
-        } else {
-            return false;
-        }
-
     }
 
     @Override

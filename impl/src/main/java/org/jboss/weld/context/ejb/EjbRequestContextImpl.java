@@ -11,8 +11,6 @@ import java.lang.annotation.Annotation;
 
 public class EjbRequestContextImpl extends AbstractBoundContext<InvocationContext> implements EjbRequestContext {
 
-    private static final String IDENTIFIER = EjbRequestContextImpl.class.getName();
-
     private final NamingScheme namingScheme;
 
     public EjbRequestContextImpl() {
@@ -25,30 +23,12 @@ public class EjbRequestContextImpl extends AbstractBoundContext<InvocationContex
     }
 
     public boolean associate(InvocationContext ctx) {
-        if (!ctx.getContextData().containsKey(IDENTIFIER)) {
+        if (getBeanStore() == null) {
             // Don't reassociate
-            ctx.getContextData().put(IDENTIFIER, IDENTIFIER);
             setBeanStore(new InvocationContextBeanStore(namingScheme, ctx));
-
             return true;
         } else {
             return false;
         }
     }
-
-    public boolean dissociate(InvocationContext ctx) {
-        if (ctx.getContextData().containsKey(IDENTIFIER)) {
-            try {
-                setBeanStore(null);
-                ctx.getContextData().remove(IDENTIFIER);
-                return true;
-            } finally {
-                cleanup();
-            }
-        } else {
-            return false;
-        }
-
-    }
-
 }
