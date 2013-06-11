@@ -36,7 +36,7 @@ import org.jboss.weld.interceptor.spi.context.InterceptionChain;
  */
 public class InterceptorInvocationContext implements InvocationContext {
 
-    private final Map<String, Object> contextData = new HashMap<String, Object>();
+    private final Map<String, Object> contextData;
 
     private final Method method;
 
@@ -98,17 +98,22 @@ public class InterceptorInvocationContext implements InvocationContext {
         this(interceptionChain, target, targetMethod, null, null, timer);
     }
 
-    public InterceptorInvocationContext(InterceptionChain interceptionChain, Constructor<?> constructor, Object[] parameters) {
-        this(interceptionChain, null, null, constructor, parameters, null);
+    public InterceptorInvocationContext(InterceptionChain interceptionChain, Constructor<?> constructor, Object[] parameters, Map<String, Object> contextData) {
+        this(interceptionChain, null, null, constructor, parameters, null, contextData);
     }
 
     private InterceptorInvocationContext(InterceptionChain interceptionChain, Object target, Method method, Constructor<?> constructor, Object[] parameters, Object timer) {
+        this(interceptionChain, target, method, constructor, parameters, timer, new HashMap<String, Object>());
+    }
+
+    private InterceptorInvocationContext(InterceptionChain interceptionChain, Object target, Method method, Constructor<?> constructor, Object[] parameters, Object timer, Map<String, Object> contextData) {
         this.interceptionChain = interceptionChain;
         this.target = target;
         this.method = method;
         this.constructor = constructor;
         this.parameters = parameters;
         this.timer = timer;
+        this.contextData = contextData;
     }
 
     @Override

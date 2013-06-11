@@ -20,7 +20,6 @@ import java.lang.reflect.Constructor;
 
 import javax.enterprise.context.spi.CreationalContext;
 
-import org.jboss.weld.injection.AroundConstructCallback;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
@@ -33,7 +32,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
  */
 public interface Instantiator<T> {
 
-    T newInstance(CreationalContext<T> ctx, BeanManagerImpl manager, AroundConstructCallback<T> callback);
+    T newInstance(CreationalContext<T> ctx, BeanManagerImpl manager);
 
     /**
      * Indicates whether instances created by this Instantiator support interception.

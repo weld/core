@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar xmlns="http://xmlns.jcp.org/xml/ns/javaee/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    version="3.2">
+
+    <enterprise-beans>
+        <session>
+            <ejb-name>InterceptedStatefulBean</ejb-name>
+            <business-local>org.jboss.weld.tests.interceptors.aroundConstruct.integration.InterceptedStatefulBean</business-local>
+            <ejb-class>org.jboss.weld.tests.interceptors.aroundConstruct.integration.InterceptedStatefulBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <passivation-capable>true</passivation-capable>
+        </session>
+    </enterprise-beans>
+
+    <interceptors>
+        <interceptor>
+            <interceptor-class>org.jboss.weld.tests.interceptors.aroundConstruct.integration.AlphaInterceptor</interceptor-class>
+        </interceptor>
+    </interceptors>
+
+    <assembly-descriptor>
+        <interceptor-binding>
+            <ejb-name>*</ejb-name>
+            <interceptor-class>org.jboss.weld.tests.interceptors.aroundConstruct.integration.AlphaInterceptor</interceptor-class>
+        </interceptor-binding>
+    </assembly-descriptor>
+</ejb-jar>

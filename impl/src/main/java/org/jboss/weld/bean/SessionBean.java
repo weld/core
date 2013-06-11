@@ -171,7 +171,7 @@ public class SessionBean<T> extends AbstractClassBean<T> {
      * @return The instance
      */
     public T create(final CreationalContext<T> creationalContext) {
-        return proxyInstantiator.newInstance(creationalContext, beanManager, null);
+        return proxyInstantiator.newInstance(creationalContext, beanManager);
     }
 
     public void destroy(T instance, CreationalContext<T> creationalContext) {

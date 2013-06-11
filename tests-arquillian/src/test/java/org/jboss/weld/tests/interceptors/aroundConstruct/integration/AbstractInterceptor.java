@@ -14,14 +14,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.injection;
+package org.jboss.weld.tests.interceptors.aroundConstruct.integration;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
-public interface AroundConstructCallback<T> {
+import java.lang.reflect.Constructor;
 
-    T aroundConstruct(Object[] parameters, ConstructionHandle<T> handle);
+import javax.interceptor.InvocationContext;
 
-    public interface ConstructionHandle<T> {
-        T construct(Object[] parameters);
+public abstract class AbstractInterceptor {
+
+    protected void checkConstructor(Constructor<?> constructor) {
+        assertNotNull(constructor);
+        assertEquals(InterceptedStatefulBean.class, constructor.getDeclaringClass());
+    }
+
+    protected void proceed(InvocationContext ctx) {
+        try {
+            ctx.proceed();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

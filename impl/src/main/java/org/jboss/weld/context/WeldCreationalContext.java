@@ -28,7 +28,7 @@ import org.jboss.weld.injection.spi.ResourceReference;
  * @param <T>
  * @author pmuir
  */
-public interface WeldCreationalContext<T> extends CreationalContext<T> {
+public interface WeldCreationalContext<T> extends org.jboss.weld.construction.api.WeldCreationalContext<T> {
 
     <S> WeldCreationalContext<S> getCreationalContext(Contextual<S> Contextual);
 

@@ -720,8 +720,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     public Object getReference(Bean<?> bean, Type requestedType, CreationalContext<?> creationalContext, boolean noProxy) {
-        if (creationalContext instanceof WeldCreationalContext<?>) {
-            creationalContext = ((WeldCreationalContext<?>) creationalContext).getCreationalContext(bean);
+        if (creationalContext instanceof CreationalContextImpl<?>) {
+            creationalContext = ((CreationalContextImpl<?>) creationalContext).getCreationalContext(bean);
         }
         if (!noProxy && isProxyRequired(bean)) {
             if (creationalContext != null || getContext(bean.getScope()).get(bean) != null) {
@@ -784,8 +784,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                 requestedType = injectionPoint.getType();
             }
             // TODO Can we move this logic to getReference?
-            if (creationalContext instanceof WeldCreationalContext<?>) {
-                WeldCreationalContext<?> wbCreationalContext = (WeldCreationalContext<?>) creationalContext;
+            if (creationalContext instanceof CreationalContextImpl<?>) {
+                CreationalContextImpl<?> wbCreationalContext = (CreationalContextImpl<?>) creationalContext;
                 final Object incompleteInstance = wbCreationalContext.getIncompleteInstance(resolvedBean);
                 if (incompleteInstance != null) {
                     return incompleteInstance;

@@ -14,19 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.injection.producer;
+package org.jboss.weld.tests.interceptors.aroundConstruct.integration;
 
-import javax.enterprise.context.spi.CreationalContext;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-import org.jboss.weld.injection.ConstructorInjectionPoint;
-import org.jboss.weld.manager.BeanManagerImpl;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
-public abstract class AbstractInstantiator<T> implements Instantiator<T> {
+import javax.interceptor.InterceptorBinding;
 
-    @Override
-    public T newInstance(CreationalContext<T> ctx, BeanManagerImpl manager) {
-        return getConstructorInjectionPoint().newInstance(manager, ctx);
-    }
+@InterceptorBinding
+@Inherited
+@Target({ TYPE })
+@Retention(RUNTIME)
+public @interface CharlieBinding {
 
-    protected abstract ConstructorInjectionPoint<T> getConstructorInjectionPoint();
 }

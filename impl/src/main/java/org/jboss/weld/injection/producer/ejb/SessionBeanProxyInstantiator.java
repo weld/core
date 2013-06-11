@@ -35,7 +35,6 @@ import org.jboss.weld.bean.proxy.InjectionPointPropagatingEnterpriseTargetBeanIn
 import org.jboss.weld.bean.proxy.ProxyFactory;
 import org.jboss.weld.exceptions.CreationException;
 import org.jboss.weld.exceptions.WeldException;
-import org.jboss.weld.injection.AroundConstructCallback;
 import org.jboss.weld.injection.producer.Instantiator;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.security.NewInstanceAction;
@@ -56,7 +55,7 @@ public class SessionBeanProxyInstantiator<T> implements Instantiator<T> {
     }
 
     @Override
-    public T newInstance(CreationalContext<T> ctx, BeanManagerImpl manager, AroundConstructCallback<T> ignored) {
+    public T newInstance(CreationalContext<T> ctx, BeanManagerImpl manager) {
         try {
             T instance = AccessController.doPrivileged(NewInstanceAction.of(proxyClass));
             ctx.push(instance);

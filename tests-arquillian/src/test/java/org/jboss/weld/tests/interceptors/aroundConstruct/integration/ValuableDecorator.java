@@ -14,19 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.injection.producer;
+package org.jboss.weld.tests.interceptors.aroundConstruct.integration;
 
-import javax.enterprise.context.spi.CreationalContext;
+import javax.annotation.Priority;
+import javax.decorator.Decorator;
+import javax.decorator.Delegate;
+import javax.inject.Inject;
 
-import org.jboss.weld.injection.ConstructorInjectionPoint;
-import org.jboss.weld.manager.BeanManagerImpl;
+@Decorator
+@Priority(2020)
+public class ValuableDecorator implements Valuable {
 
-public abstract class AbstractInstantiator<T> implements Instantiator<T> {
+    @Inject
+    @Delegate
+    private Valuable delegate;
 
     @Override
-    public T newInstance(CreationalContext<T> ctx, BeanManagerImpl manager) {
-        return getConstructorInjectionPoint().newInstance(manager, ctx);
+    public Integer getValue() {
+        return delegate.getValue();
     }
-
-    protected abstract ConstructorInjectionPoint<T> getConstructorInjectionPoint();
 }

@@ -20,7 +20,6 @@ import java.lang.reflect.Constructor;
 
 import javax.enterprise.context.spi.CreationalContext;
 
-import org.jboss.weld.injection.AroundConstructCallback;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 public class ForwardingInstantiator<T> implements Instantiator<T> {
@@ -36,8 +35,8 @@ public class ForwardingInstantiator<T> implements Instantiator<T> {
     }
 
     @Override
-    public T newInstance(CreationalContext<T> ctx, BeanManagerImpl manager, AroundConstructCallback<T> callback) {
-        return delegate().newInstance(ctx, manager, callback);
+    public T newInstance(CreationalContext<T> ctx, BeanManagerImpl manager) {
+        return delegate().newInstance(ctx, manager);
     }
 
     @Override

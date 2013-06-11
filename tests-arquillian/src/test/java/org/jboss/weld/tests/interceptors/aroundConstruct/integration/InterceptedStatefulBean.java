@@ -14,19 +14,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.injection.producer;
+package org.jboss.weld.tests.interceptors.aroundConstruct.integration;
 
-import javax.enterprise.context.spi.CreationalContext;
+import static org.junit.Assert.assertEquals;
 
-import org.jboss.weld.injection.ConstructorInjectionPoint;
-import org.jboss.weld.manager.BeanManagerImpl;
+import javax.inject.Inject;
+import javax.interceptor.Interceptors;
 
-public abstract class AbstractInstantiator<T> implements Instantiator<T> {
+@CharlieBinding
+@Interceptors(BravoInterceptor.class)
+public class InterceptedStatefulBean implements Valuable {
 
-    @Override
-    public T newInstance(CreationalContext<T> ctx, BeanManagerImpl manager) {
-        return getConstructorInjectionPoint().newInstance(manager, ctx);
+    private final Integer value;
+
+    public InterceptedStatefulBean() {
+        this.value = null;
     }
 
-    protected abstract ConstructorInjectionPoint<T> getConstructorInjectionPoint();
+    @Inject
+    public InterceptedStatefulBean(Integer value) {
+        assertEquals(Integer.valueOf(3), value);
+        this.value = value;
+    }
+
+    @Override
+    public Integer getValue() {
+        return value;
+    }
 }

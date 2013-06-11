@@ -19,6 +19,7 @@ package org.jboss.weld.injection;
 
 import java.util.List;
 
+import javax.enterprise.inject.spi.AnnotatedConstructor;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedConstructor;
@@ -92,5 +93,10 @@ public class ProxyClassConstructorInjectionPointWrapper<T> extends ConstructorIn
             }
         }
         return instance;
+    }
+
+    @Override
+    public AnnotatedConstructor<T> getComponentConstructor() {
+        return originalConstructorInjectionPoint.getAnnotated();
     }
 }

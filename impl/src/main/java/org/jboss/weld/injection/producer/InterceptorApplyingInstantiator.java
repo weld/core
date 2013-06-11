@@ -21,7 +21,6 @@ import javax.enterprise.context.spi.CreationalContext;
 import org.jboss.weld.bean.proxy.CombinedInterceptorAndDecoratorStackMethodHandler;
 import org.jboss.weld.bean.proxy.ProxyObject;
 import org.jboss.weld.exceptions.DeploymentException;
-import org.jboss.weld.injection.AroundConstructCallback;
 import org.jboss.weld.interceptor.proxy.DefaultInvocationContextFactory;
 import org.jboss.weld.interceptor.proxy.InterceptionContext;
 import org.jboss.weld.interceptor.proxy.InterceptorMethodHandler;
@@ -47,10 +46,10 @@ public class InterceptorApplyingInstantiator<T> extends ForwardingInstantiator<T
     }
 
     @Override
-    public T newInstance(CreationalContext<T> ctx, BeanManagerImpl manager, AroundConstructCallback<T> callback) {
+    public T newInstance(CreationalContext<T> ctx, BeanManagerImpl manager) {
         InterceptionContext interceptionContext = InterceptionContext.forNonConstructorInterception(interceptionModel, ctx, manager);
 
-        T instance = delegate().newInstance(ctx, manager, callback);
+        T instance = delegate().newInstance(ctx, manager);
 
         applyInterceptors(instance, interceptionContext);
         return instance;

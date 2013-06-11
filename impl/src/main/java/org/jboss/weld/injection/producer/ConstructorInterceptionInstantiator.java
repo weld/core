@@ -18,14 +18,18 @@ package org.jboss.weld.injection.producer;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.AnnotatedConstructor;
 import javax.interceptor.AroundConstruct;
 import javax.interceptor.InvocationContext;
 
+import org.jboss.weld.construction.api.AroundConstructCallback;
+import org.jboss.weld.construction.api.ConstructionHandle;
+import org.jboss.weld.context.CreationalContextImpl;
 import org.jboss.weld.exceptions.WeldException;
-import org.jboss.weld.injection.AroundConstructCallback;
 import org.jboss.weld.interceptor.proxy.InterceptionContext;
 import org.jboss.weld.interceptor.proxy.InterceptorInvocation;
 import org.jboss.weld.interceptor.proxy.InterceptorInvocationContext;
@@ -35,6 +39,7 @@ import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * Delegating {@link Instantiator} that takes care of {@link AroundConstruct} interceptor invocation.
@@ -52,8 +57,18 @@ public class ConstructorInterceptionInstantiator<T> extends ForwardingInstantiat
     }
 
     @Override
-    public T newInstance(CreationalContext<T> ctx, BeanManagerImpl manager, AroundConstructCallback<T> callback) {
+    public T newInstance(CreationalContext<T> ctx, BeanManagerImpl manager) {
+        if (ctx instanceof CreationalContextImpl<?>) {
+            CreationalContextImpl<T> weldCtx = Reflections.cast(ctx);
+            if (!weldCtx.isConstructorInterceptionSuppressed()) {
+                registerAroundConstructCallback(weldCtx, manager);
+            }
+        }
 
+        return delegate().newInstance(ctx, manager);
+    }
+
+    private void registerAroundConstructCallback(CreationalContextImpl<T> ctx, BeanManagerImpl manager) {
         InterceptionContext interceptionContext = InterceptionContext.forConstructorInterception(model, ctx, manager);
         // build interceptor invocations
         final Collection<InterceptorInvocation> interceptorInvocations = new ArrayList<InterceptorInvocation>(model.getConstructorInvocationInterceptors().size());
@@ -61,10 +76,10 @@ public class ConstructorInterceptionInstantiator<T> extends ForwardingInstantiat
             interceptorInvocations.add(interceptorMetadata.getInterceptorInvocation(interceptionContext.getInterceptorInstance(interceptorMetadata), InterceptionType.AROUND_CONSTRUCT));
         }
 
-        AroundConstructCallback<T> aroundConstructCallback = new AroundConstructCallback<T>() {
-            @Override
-            public T aroundConstruct(Object[] parameters, final ConstructionHandle<T> constructionHandle) {
+        AroundConstructCallback<T> callback = new AroundConstructCallback<T>() {
 
+            @Override
+            public T aroundConstruct(final ConstructionHandle<T> handle, AnnotatedConstructor<T> constructor, Object[] parameters, Map<String, Object> data) {
                 /*
                  * The AroundConstruct interceptor method can access the constructed instance using InvocationContext.getTarget
                  * method after the InvocationContext.proceed completes.
@@ -75,12 +90,13 @@ public class ConstructorInterceptionInstantiator<T> extends ForwardingInstantiat
                     @Override
                     protected Object interceptorChainCompleted(InvocationContext invocationCtx) throws Exception {
                         // all the interceptors were invoked, call the constructor now
-                        target.set(constructionHandle.construct(invocationCtx.getParameters()));
+                        T instance = handle.proceed(invocationCtx.getParameters(), invocationCtx.getContextData());
+                        target.set(instance);
                         return null;
                     }
                 };
 
-                InterceptorInvocationContext invocationCtx = new InterceptorInvocationContext(chain, delegate().getConstructor(), parameters) {
+                InterceptorInvocationContext invocationCtx = new InterceptorInvocationContext(chain, constructor.getJavaMember(), parameters, data) {
                     @Override
                     public Object getTarget() {
                         return target.get();
@@ -97,7 +113,8 @@ public class ConstructorInterceptionInstantiator<T> extends ForwardingInstantiat
                 return target.get();
             }
         };
-        return delegate().newInstance(ctx, manager, aroundConstructCallback);
+
+        ctx.registerAroundConstructCallback(callback);
     }
 
     @Override

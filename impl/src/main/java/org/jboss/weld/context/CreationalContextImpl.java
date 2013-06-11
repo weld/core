@@ -22,12 +22,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 
+import org.jboss.weld.construction.api.AroundConstructCallback;
 import org.jboss.weld.context.api.ContextualInstance;
 import org.jboss.weld.injection.spi.ResourceReference;
 import org.jboss.weld.util.reflection.Reflections;
@@ -52,22 +54,27 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
 
     private final List<ContextualInstance<?>> parentDependentInstances;
 
-    private final WeldCreationalContext<?> parentCreationalContext;
+    private final CreationalContextImpl<?> parentCreationalContext;
 
     private transient List<ResourceReference<?>> resourceReferences;
+
+    private boolean constructorInterceptionSuppressed;
+
+    private transient List<AroundConstructCallback<T>> aroundConstructCallbacks;
 
     public CreationalContextImpl(Contextual<T> contextual) {
         this(contextual, null, Collections.synchronizedList(new ArrayList<ContextualInstance<?>>()), null);
     }
 
     private CreationalContextImpl(Contextual<T> contextual, Map<Contextual<?>, Object> incompleteInstances,
-            List<ContextualInstance<?>> parentDependentInstancesStore, WeldCreationalContext<?> parentCreationalContext) {
+            List<ContextualInstance<?>> parentDependentInstancesStore, CreationalContextImpl<?> parentCreationalContext) {
         this.incompleteInstances = incompleteInstances;
         this.contextual = contextual;
         // this is direct ref by intention - to track dependencies hierarchy
         this.dependentInstances = Collections.synchronizedList(new ArrayList<ContextualInstance<?>>());
         this.parentDependentInstances = parentDependentInstancesStore;
         this.parentCreationalContext = parentCreationalContext;
+        this.constructorInterceptionSuppressed = false;
     }
 
     public void push(T incompleteInstance) {
@@ -77,7 +84,8 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
         incompleteInstances.put(contextual, incompleteInstance);
     }
 
-    public <S> WeldCreationalContext<S> getCreationalContext(Contextual<S> contextual) {
+
+    public <S> CreationalContextImpl<S> getCreationalContext(Contextual<S> contextual) {
         return new CreationalContextImpl<S>(contextual, incompleteInstances, dependentInstances, this);
     }
 
@@ -93,13 +101,11 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
         parentDependentInstances.add(contextualInstance);
     }
 
-    @java.lang.SuppressWarnings({"NullableProblems"})
     public void release() {
         release(null, null);
     }
 
     // should not be public
-    @java.lang.SuppressWarnings({"UnusedParameters"})
     public void release(Contextual<T> contextual, T instance) {
         for (ContextualInstance<?> dependentInstance : dependentInstances) {
             // do not destroy contextual again, since it's just being destroyed
@@ -118,10 +124,16 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
         beanInstance.getContextual().destroy(beanInstance.getInstance(), beanInstance.getCreationalContext());
     }
 
-    public WeldCreationalContext<?> getParentCreationalContext() {
+    /**
+     * @return the parent {@link CreationalContext} or null if there isn't any parent.
+     */
+    public CreationalContextImpl<?> getParentCreationalContext() {
         return parentCreationalContext;
     }
 
+    /**
+     * Returns an unmodifiable list of dependent instances.
+     */
     public List<ContextualInstance<?>> getDependentInstances() {
         return Collections.unmodifiableList(dependentInstances);
     }
@@ -156,7 +168,10 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
         return this;
     }
 
-    @Override
+    /**
+     * Register a {@link ResourceReference} as a dependency. {@link ResourceReference#release()} will be called on every {@link ResourceReference} once this
+     * {@link CreationalContext} instance is released.
+     */
     public void addDependentResourceReference(ResourceReference<?> resoruceReference) {
         if (resourceReferences == null) {
             this.resourceReferences = new ArrayList<ResourceReference<?>>();
@@ -164,7 +179,11 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
         this.resourceReferences.add(resoruceReference);
     }
 
-    @Override
+    /**
+     * Destroys dependent instance
+     * @param instance
+     * @return true if the instance was destroyed, false otherwise
+     */
     public boolean destroyDependentInstance(T instance) {
         for (Iterator<ContextualInstance<?>> iterator = dependentInstances.iterator(); iterator.hasNext();) {
             ContextualInstance<?> contextualInstance = iterator.next();
@@ -177,8 +196,35 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
         return false;
     }
 
-    @Override
+    /**
+     * @return the {@link Contextual} for which this {@link CreationalContext} is created.
+     */
     public Contextual<T> getContextual() {
         return contextual;
+    }
+
+    public List<AroundConstructCallback<T>> getAroundConstructCallbacks() {
+        if (aroundConstructCallbacks == null) {
+            return Collections.emptyList();
+        }
+        return aroundConstructCallbacks;
+    }
+
+    @Override
+    public void setConstructorInterceptionSuppressed(boolean value) {
+        this.constructorInterceptionSuppressed = value;
+    }
+
+    @Override
+    public boolean isConstructorInterceptionSuppressed() {
+        return this.constructorInterceptionSuppressed;
+    }
+
+    @Override
+    public void registerAroundConstructCallback(AroundConstructCallback<T> callback) {
+        if (aroundConstructCallbacks == null) {
+            this.aroundConstructCallbacks = new LinkedList<AroundConstructCallback<T>>();
+        }
+        this.aroundConstructCallbacks.add(callback);
     }
 }

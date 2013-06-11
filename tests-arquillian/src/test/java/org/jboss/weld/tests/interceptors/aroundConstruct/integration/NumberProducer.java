@@ -14,19 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.injection.producer;
+package org.jboss.weld.tests.interceptors.aroundConstruct.integration;
 
-import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.Produces;
 
-import org.jboss.weld.injection.ConstructorInjectionPoint;
-import org.jboss.weld.manager.BeanManagerImpl;
+public class NumberProducer {
 
-public abstract class AbstractInstantiator<T> implements Instantiator<T> {
-
-    @Override
-    public T newInstance(CreationalContext<T> ctx, BeanManagerImpl manager) {
-        return getConstructorInjectionPoint().newInstance(manager, ctx);
-    }
-
-    protected abstract ConstructorInjectionPoint<T> getConstructorInjectionPoint();
+    @Produces
+    public final Integer value = -5;
 }

@@ -83,7 +83,7 @@ public class BasicInjectionTarget<T> extends AbstractProducer<T> implements Inje
     }
 
     public T produce(CreationalContext<T> ctx) {
-        return instantiator.newInstance(ctx, beanManager, null);
+        return instantiator.newInstance(ctx, beanManager);
     }
 
     @Override
