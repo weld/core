@@ -31,6 +31,7 @@ import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.servlet.api.helpers.AbstractServletListener;
 import org.slf4j.cal10n.LocLogger;
 
+import javax.servlet.ServletRequest;
 import javax.servlet.ServletRequestEvent;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSessionEvent;
@@ -53,6 +54,9 @@ import static org.jboss.weld.logging.messages.ServletMessage.REQUEST_INITIALIZED
 public class WeldListener extends AbstractServletListener {
 
     private static final LocLogger log = loggerFactory().getLogger(SERVLET);
+
+    private static final String INCLUDE_HEADER = "javax.servlet.include.request_uri";
+
 
     private transient HttpSessionContext sessionContextCache;
     private transient HttpRequestContext requestContextCache;
@@ -92,6 +96,9 @@ public class WeldListener extends AbstractServletListener {
 
     @Override
     public void requestDestroyed(ServletRequestEvent event) {
+        if (isIncludedRequest(event.getServletRequest())) {
+            return;
+        }
         log.trace(REQUEST_DESTROYED, event.getServletRequest());
         // JBoss AS will still start the deployment even if WB fails
         if (Container.available()) {
@@ -124,6 +131,9 @@ public class WeldListener extends AbstractServletListener {
 
     @Override
     public void requestInitialized(ServletRequestEvent event) {
+        if (isIncludedRequest(event.getServletRequest())) {
+            return;
+        }
         log.trace(REQUEST_INITIALIZED, event.getServletRequest());
         // JBoss AS will still start the deployment even if Weld fails to start
         if (Container.available()) {
@@ -146,4 +156,11 @@ public class WeldListener extends AbstractServletListener {
         }
     }
 
+    /**
+     * Some Servlet containers fire HttpServletListeners for include requests (inner requests caused by calling the include method of RequestDispatcher). This
+     * causes problems with context shut down as context manipulation is not reentrant. This method detects if this request is an included request or not.
+     */
+    private boolean isIncludedRequest(ServletRequest request) {
+        return request.getAttribute(INCLUDE_HEADER) != null;
+    }
 }
