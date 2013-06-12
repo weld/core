@@ -1,23 +1,27 @@
 package org.jboss.weld.environment.jetty;
 
 
-import org.eclipse.jetty.server.Handler;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.handler.ContextHandler;
-import org.eclipse.jetty.server.handler.HandlerCollection;
-import org.eclipse.jetty.servlet.ServletHandler;
-import org.eclipse.jetty.util.resource.Resource;
-import org.eclipse.jetty.webapp.WebAppContext;
+import java.util.logging.Logger;
 
 import javax.servlet.Filter;
 import javax.servlet.Servlet;
 import javax.servlet.ServletContext;
-import java.util.logging.Logger;
+
+import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.ContextHandler;
+import org.eclipse.jetty.server.handler.HandlerCollection;
+import org.eclipse.jetty.servlet.ServletContextHandler.Decorator;
+import org.eclipse.jetty.servlet.ServletHandler;
+import org.eclipse.jetty.util.resource.Resource;
+import org.eclipse.jetty.webapp.WebAppContext;
 
 /**
  * @author <a href="mailto:matija.mazi@gmail.com">Matija Mazi</a>
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
+ * @deprecated As of Jetty 7.2 Weld implements {@link Decorator} to inject servlets and filters
  */
+@Deprecated
 public class EclipseWeldServletHandler extends ServletHandler {
     private static final Logger log = Logger.getLogger(EclipseWeldServletHandler.class.getName());
 

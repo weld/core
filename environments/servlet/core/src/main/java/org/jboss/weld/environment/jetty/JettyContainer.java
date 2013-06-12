@@ -17,13 +17,14 @@
 
 package org.jboss.weld.environment.jetty;
 
+import java.lang.reflect.Method;
+
+import javax.servlet.ServletContext;
+
 import org.jboss.weld.environment.Container;
 import org.jboss.weld.environment.ContainerContext;
 import org.jboss.weld.environment.servlet.util.Reflections;
 import org.jboss.weld.manager.api.WeldManager;
-
-import javax.servlet.ServletContext;
-import java.lang.reflect.Method;
 
 /**
  * Jetty 7.2+, 8.x and 9.x container.
@@ -39,6 +40,7 @@ public class JettyContainer extends AbstractJettyContainer {
     private static final int MINOR_VERSION = 2;
 
     protected String classToCheck() {
+        // This is not used anyway - ServletContext.getServerInfo() is parsed instead
         return JETTY_REQUIRED_CLASS_NAME;
     }
 
@@ -49,16 +51,11 @@ public class JettyContainer extends AbstractJettyContainer {
         if (p < 0) {
             return false;
         }
-
         String version = si.substring(p + 1);
         String[] split = version.split("\\.");
         int major = Integer.parseInt(split[0]);
         int minor = Integer.parseInt(split[1]);
-        return !(major < MAJOR_VERSION || (major == MAJOR_VERSION & minor <= MINOR_VERSION));
-    }
-
-    protected Class<?> getWeldServletHandlerClass() {
-        return EclipseWeldServletHandler.class;
+        return (major > MAJOR_VERSION || (major == MAJOR_VERSION & minor >= MINOR_VERSION));
     }
 
     public void initialize(ContainerContext context) {
@@ -72,7 +69,7 @@ public class JettyContainer extends AbstractJettyContainer {
             Method processMethod = decoratorClass.getMethod("process", ServletContext.class);
             processMethod.invoke(null, context.getContext());
 
-            log.info("Jetty detected, JSR-299 injection will be available in Listeners, Servlets and Filters.");
+            log.info("Jetty 7.2+ detected, CDI injection will be available in Listeners, Servlets and Filters.");
         } catch (Exception e) {
             log.error("Unable to create JettyWeldInjector. CDI injection will not be available in Servlets, Filters or Listeners", e);
         }
