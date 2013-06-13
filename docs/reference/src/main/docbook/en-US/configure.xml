@@ -17,36 +17,36 @@
       </para>
 
       <para>All the configuration is done in the <filename>beans.xml</filename> file. For more information see <xref linkend="packaging"/></para>
-      
+
       <example>
         <title>beans.xml</title>
       <programlisting role="XML"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://java.sun.com/xml/ns/javaee" 
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-       xmlns:weld="http://jboss.org/schema/weld/beans" 
+<beans xmlns="http://java.sun.com/xml/ns/javaee"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:weld="http://jboss.org/schema/weld/beans"
        xsi:schemaLocation="
           http://java.sun.com/xml/ns/javaee http://docs.jboss.org/cdi/beans_1_0.xsd
           http://jboss.org/schema/weld/beans http://jboss.org/schema/weld/beans_1_1.xsd">
-    
+
     <weld:scan>
-      
+
         <!-- Don't deploy the classes for the swing app! -->
         <weld:exclude name="com.acme.swing.**" />
-      
+
         <!-- Don't include GWT support if GWT is not installed -->
         <weld:exclude name="com.acme.gwt.**">
             <weld:if-class-available name="!com.google.GWT"/>
         </weld:exclude>
-        
+
         <!--
             Exclude classes which end in Blether if the system property verbosity is set to low
             i.e.
-              java ... -Dverbosity=low            
-        -->        
+              java ... -Dverbosity=low
+        -->
         <weld:exclude pattern="^(.*)Blether$">
             <weld:if-system-property name="verbosity" value="low"/>
         </weld:exclude>
-        
+
        <!--
              Don't include JSF support if Wicket classes are present, and the viewlayer system
              property is not set
@@ -56,7 +56,7 @@
             <weld:if-system-property name="!viewlayer"/>
         </weld:exclude>
     </weld:scan>
-    
+
 </beans>]]></programlisting>
       </example>
 
@@ -65,7 +65,7 @@
          Weld scans. The first filter excludes all classes in the package <code>com.acme.swing</code>, and
          in most cases this will be sufficient for your needs.
       </para>
-      
+
       <para>
          However, sometimes it's useful to be able to activate the filter depending on the environment used.
          In this case, Weld allows you to activate (or deactivate) a filter based on either system properties
@@ -73,20 +73,20 @@
          classes depending on the capabilities of the environment you deploy to - in this case we are excluding
          GWT support if GWT is not installed.
       </para>
-      
+
       <note>
          <para>
-            Notice how we use a <code>!</code> character on the <code>name</code> attribute to invert the 
+            Notice how we use a <code>!</code> character on the <code>name</code> attribute to invert the
             activation condition. You can invert any activation condition in this way.
          </para>
       </note>
-      
+
       <para>
-         The third filter uses a regular expression to select the classes to match (normally we use simple 
-         name-based patterns, as they don't require us to escape the period which delimits the package 
+         The third filter uses a regular expression to select the classes to match (normally we use simple
+         name-based patterns, as they don't require us to escape the period which delimits the package
          hierarchy).
       </para>
-      
+
       <note>
          <para>
             If you specify just a system property name, Weld will activate the filter if that system property
@@ -94,22 +94,22 @@
             activate the filter if the system property's value matches exactly.
          </para>
       </note>
-      
+
       <para>
-         The fourth filter shows more a advanced configurations, where we use multiple activation conditions to 
+         The fourth filter shows more a advanced configurations, where we use multiple activation conditions to
          decide whether to activate the filter.
       </para>
-      
+
       <para>
-         You can combine as many activation conditions as you like (<emphasis>all</emphasis> must be true for the 
+         You can combine as many activation conditions as you like (<emphasis>all</emphasis> must be true for the
          filter to be activated).
          If you want to a filter that is active if <emphasis>any</emphasis> of the activation conditions are true,
          then you need multiple identical filters, each with different activation conditions.
       </para>
-      
+
       <tip>
          <para>
-            In general, the semantics defined by Ant's pattern sets 
+            In general, the semantics defined by Ant's pattern sets
             (http://ant.apache.org/manual/dirtasks.html#patternset) are followed.
          </para>
       </tip>
@@ -200,6 +200,23 @@
              </tgroup>
           </table>
     </section>
+   </section>
+
+   <section>
+      <title>Non-portable mode during application initialization</title>
+      <para>
+          By default the application initialization is performed in the portable mode which denotes specification-compliant behaviour. However it's also possible to enable the non-portable mode, in which some definition errors and deployment
+          problems do not cause application initialization to abort. Currently the non-portable mode allows extension developers to call all the <literal>BeanManager</literal>'s methods before the <literal>AfterDeploymentValidation</literal>
+          event is fired.
+      </para>
+      <para>
+          Set the system property <literal>org.jboss.weld.nonPortableMode</literal> to <literal>true</literal> in order to enable the non-portable mode during initialization.
+      </para>
+      <note>
+         <para>
+            The main purpose of the non-portable mode is to support some legacy extensions, e.g. Seam Solder. It's highly recommended to use the portable mode whenever possible - non-portable mode may lead to unexpected behaviour during initialization process.
+         </para>
+      </note>
    </section>
 
 <!--

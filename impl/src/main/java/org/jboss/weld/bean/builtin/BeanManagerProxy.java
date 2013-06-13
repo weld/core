@@ -37,6 +37,7 @@ import javax.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.ContainerState;
+import org.jboss.weld.SystemPropertiesConfiguration;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.ForwardingBeanManager;
@@ -130,12 +131,16 @@ public class BeanManagerProxy extends ForwardingBeanManager {
     }
 
     /**
-     * Verifies that the container has been validated. If it hasn't been, an {@link IllegalStateException} is thrown.
+     * When in portable mode (default) this method verifies that the container has been validated. If it hasn't been, an
+     * {@link IllegalStateException} is thrown. When in non-portable mode this method is no-op.
      *
      * @param methodName
      * @throws IllegalStateException If the application initialization is not finished yet
      */
     private void checkContainerValidated(String methodName) {
+        if (SystemPropertiesConfiguration.INSTANCE.isNonPortableModeEnabled()) {
+            return;
+        }
         if (this.container == null) {
             this.container = Container.instance();
         }

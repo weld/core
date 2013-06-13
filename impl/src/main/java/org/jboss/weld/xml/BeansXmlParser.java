@@ -24,8 +24,6 @@ import static org.jboss.weld.logging.messages.XmlMessage.PARSING_ERROR;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +31,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.jboss.weld.SystemPropertiesConfiguration;
 import org.jboss.weld.bootstrap.spi.BeanDiscoveryMode;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.Filter;
@@ -56,22 +55,10 @@ import org.xml.sax.SAXNotSupportedException;
 public class BeansXmlParser {
 
     private static final InputSource[] EMPTY_INPUT_SOURCE_ARRAY = new InputSource[0];
-    private static boolean disableValidating;
-
-    static {
-        try {
-            disableValidating = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
-                public Boolean run() {
-                    return Boolean.getBoolean("org.jboss.weld.xml.disableValidating");
-                }
-            });
-        } catch (Throwable ignored) {
-        }
-    }
 
     public BeansXml parse(final URL beansXml) {
         SAXParserFactory factory = SAXParserFactory.newInstance();
-        factory.setValidating(!disableValidating);
+        factory.setValidating(!SystemPropertiesConfiguration.INSTANCE.isXmlValidationDisabled());
         factory.setNamespaceAware(true);
         if (beansXml == null) {
             throw new IllegalStateException(LOAD_ERROR, "unknown");
