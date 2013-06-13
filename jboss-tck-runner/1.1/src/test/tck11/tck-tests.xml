@@ -27,12 +27,6 @@
             <!-- Issues in Weld (the RI) -->
 
             <!-- Issues in JBoss AS -->
-            <!-- AS7-6821 -->
-            <class name="org.jboss.cdi.tck.tests.deployment.packaging.installedLibrary.InstalledLibraryEarTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
             <!-- JMS tests not working on AS7, see CDITCK-315 -->
             <class name="org.jboss.cdi.tck.tests.extensions.container.event.jms.ContainerEventTest">
                 <methods>

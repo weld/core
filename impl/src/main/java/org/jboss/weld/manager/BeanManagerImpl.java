@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.manager;
 
+import static org.jboss.weld.annotated.AnnotatedTypeValidator.validateAnnotatedType;
 import static org.jboss.weld.logging.Category.BOOTSTRAP;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.AMBIGUOUS_BEANS_FOR_DEPENDENCY;
@@ -1380,6 +1381,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
      */
     @Override
     public <T> InjectionTargetFactoryImpl<T> getInjectionTargetFactory(AnnotatedType<T> type) {
+        validateAnnotatedType(type);
         BeanManagerImpl manager = BeanManagerLookupService.lookupBeanManager(type.getJavaClass(), this);
         return new InjectionTargetFactoryImpl<T>(type, manager);
     }

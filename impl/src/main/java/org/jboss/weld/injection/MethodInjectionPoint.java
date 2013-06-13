@@ -107,10 +107,6 @@ public class MethodInjectionPoint<T, X> extends AbstractCallableInjectionPoint<T
         return null;
     }
 
-    public void inject(Object declaringInstance, Object value) {
-        throw new UnsupportedOperationException();
-    }
-
     /**
      * Helper method for getting the current parameter values from a list of annotated parameters.
      *

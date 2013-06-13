@@ -1,9 +1,8 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>weld-core-parent</artifactId>
     <packaging>pom</packaging>
-    <version>2.0.1-SNAPSHOT</version>
+    <version>2.0.2-SNAPSHOT</version>
 
     <name>Weld Parent</name>
 
@@ -36,7 +35,7 @@
         <arquillian.jetty.version>1.0.0.CR1</arquillian.jetty.version>
         <arquillian.glassfish.version>1.0.0.CR1</arquillian.glassfish.version>
         <arquillian.jboss6.version>1.0.0.CR2</arquillian.jboss6.version>
-        <atinject.tck.version>1.0.0-PFD-3</atinject.tck.version>
+        <atinject.tck.version>1</atinject.tck.version>
         <build.config.version>3</build.config.version>
         <cal10n.version>0.7.7</cal10n.version>
         <cargo.maven2.plugin.version>1.0</cargo.maven2.plugin.version>
@@ -185,8 +184,8 @@
             </dependency>
 
             <dependency>
-                <groupId>org.atinject</groupId>
-                <artifactId>inject-tck</artifactId>
+                <groupId>javax.inject</groupId>
+                <artifactId>javax.inject-tck</artifactId>
                 <version>${atinject.tck.version}</version>
             </dependency>
 
@@ -709,45 +708,6 @@
             <modules>
                 <module>bundles/osgi</module>
             </modules>
-        </profile>
-        <profile>
-            <id>jboss-public-repository</id>
-            <activation>
-                <property>
-                    <name>jboss-public-repository</name>
-                    <value>!false</value>
-                </property>
-            </activation>
-            <repositories>
-                <repository>
-                    <id>jboss-public-repository-group</id>
-                    <name>JBoss Public Maven Repository Group</name>
-                    <url>http://repository.jboss.org/nexus/content/groups/public</url>
-                    <releases>
-                        <enabled>true</enabled>
-                        <updatePolicy>never</updatePolicy>
-                    </releases>
-                    <snapshots>
-                        <enabled>false</enabled>
-                        <updatePolicy>never</updatePolicy>
-                    </snapshots>
-                </repository>
-            </repositories>
-            <pluginRepositories>
-                <pluginRepository>
-                    <id>jboss-public-repository-group</id>
-                    <name>JBoss Public Maven Repository Group</name>
-                    <url>http://repository.jboss.org/nexus/content/groups/public</url>
-                    <releases>
-                        <enabled>true</enabled>
-                        <updatePolicy>never</updatePolicy>
-                    </releases>
-                    <snapshots>
-                        <enabled>false</enabled>
-                        <updatePolicy>never</updatePolicy>
-                    </snapshots>
-                </pluginRepository>
-            </pluginRepositories>
         </profile>
     </profiles>
 

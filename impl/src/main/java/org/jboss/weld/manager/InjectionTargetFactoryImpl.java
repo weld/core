@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.manager;
 
-import static org.jboss.weld.annotated.AnnotatedTypeValidator.validateAnnotatedType;
-
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
@@ -57,7 +55,6 @@ public class InjectionTargetFactoryImpl<T> implements WeldInjectionTargetFactory
 
     protected InjectionTargetFactoryImpl(AnnotatedType<T> type, BeanManagerImpl manager) {
         this.manager = manager;
-        validateAnnotatedType(type);
         this.type = manager.getServices().get(ClassTransformer.class).getEnhancedAnnotatedType(type, manager.getId());
         this.injectionTargetService = manager.getServices().get(InjectionTargetService.class);
         this.injectionServices = manager.getServices().get(InjectionServices.class);

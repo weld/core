@@ -42,7 +42,7 @@ import org.jboss.weld.util.reflection.Reflections;
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
 @SuppressWarnings(value = "SE_TRANSIENT_FIELD_NOT_RESTORED", justification = "The bean cache is loaded lazily.")
-public class FieldInjectionPoint<T, X> extends ForwardingInjectionPointAttributes<T, Field> implements WeldInjectionPoint<T, Field>, Serializable {
+public class FieldInjectionPoint<T, X> extends ForwardingInjectionPointAttributes<T, Field> implements WeldInjectionPointAttributes<T, Field>, Serializable {
 
     /**
      * Creates an injection point without firing the {@link ProcessInjectionPoint} event.
@@ -92,23 +92,6 @@ public class FieldInjectionPoint<T, X> extends ForwardingInjectionPointAttribute
                 objectToInject = manager.getReference(this, cachedBean, creationalContext);
             }
             accessibleField.set(instanceToInject, objectToInject);
-        } catch (IllegalArgumentException e) {
-            rethrowException(e);
-        } catch (IllegalAccessException e) {
-            rethrowException(e);
-        }
-    }
-
-    public void inject(Object declaringInstance, Object value) {
-        try {
-            Object instanceToInject = declaringInstance;
-            if (!(instanceToInject instanceof DecoratorProxy)) {
-                // if declaringInstance is a proxy, unwrap it
-                if (instanceToInject instanceof TargetInstanceProxy) {
-                    instanceToInject = Reflections.<TargetInstanceProxy<T>> cast(declaringInstance).getTargetInstance();
-                }
-            }
-            accessibleField.set(instanceToInject, value);
         } catch (IllegalArgumentException e) {
             rethrowException(e);
         } catch (IllegalAccessException e) {

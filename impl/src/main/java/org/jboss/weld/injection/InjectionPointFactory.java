@@ -20,11 +20,8 @@ import static org.jboss.weld.logging.messages.UtilMessage.QUALIFIER_ON_FINAL_FIE
 import static org.jboss.weld.util.collections.WeldCollections.immutableList;
 import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
 
-import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -42,24 +39,15 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.slim.unbacked.UnbackedAnnotatedType;
-import org.jboss.weld.bootstrap.api.Service;
-import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.injection.attributes.FieldInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.InferingFieldInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.InferingParameterInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.ParameterInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.SpecialParameterInjectionPoint;
-import org.jboss.weld.injection.spi.EjbInjectionServices;
-import org.jboss.weld.injection.spi.JaxwsInjectionServices;
-import org.jboss.weld.injection.spi.JpaInjectionServices;
-import org.jboss.weld.injection.spi.ResourceInjectionServices;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.persistence.PersistenceApiAbstraction;
-import org.jboss.weld.util.ApiAbstraction;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.collections.ArraySet;
-import org.jboss.weld.ws.WSApiAbstraction;
 
 /**
  * Factory class that producer {@link InjectionPoint} instances for fields, parameters, methods and constructors. The
@@ -77,13 +65,17 @@ public class InjectionPointFactory {
     private static final InjectionPointFactory SILENT_INSTANCE = new InjectionPointFactory() {
 
         @Override
-        protected <T, X> FieldInjectionPointAttributes<T, X> processInjectionPoint(FieldInjectionPointAttributes<T, X> injectionPointAttributes, Class<?> declaringComponentClass, BeanManagerImpl manager) {
+        protected <T, X> FieldInjectionPointAttributes<T, X> processInjectionPoint(
+                FieldInjectionPointAttributes<T, X> injectionPointAttributes, Class<?> declaringComponentClass,
+                BeanManagerImpl manager) {
             // NOOP
             return injectionPointAttributes;
         }
 
         @Override
-        protected <T, X> ParameterInjectionPointAttributes<T, X> processInjectionPoint(ParameterInjectionPointAttributes<T, X> injectionPointAttributes, Class<?> declaringComponentClass, BeanManagerImpl manager) {
+        protected <T, X> ParameterInjectionPointAttributes<T, X> processInjectionPoint(
+                ParameterInjectionPointAttributes<T, X> injectionPointAttributes, Class<?> declaringComponentClass,
+                BeanManagerImpl manager) {
             // NOOP
             return injectionPointAttributes;
         }
@@ -91,6 +83,7 @@ public class InjectionPointFactory {
 
     /**
      * Returns the default {@link InjectionPointFactory} singleton.
+     *
      * @return the default {@link InjectionPointFactory} singleton
      */
     public static InjectionPointFactory instance() {
@@ -100,6 +93,7 @@ public class InjectionPointFactory {
     /**
      * Returns an {@link InjectionPointFactory} instance that never produces a {@link ProcessInjectionPoint} event. This is used
      * for creating observer method injection points of extensions and proxy classes.
+     *
      * @return an {@link InjectionPointFactory} instance
      */
     public static InjectionPointFactory silentInstance() {
@@ -109,15 +103,21 @@ public class InjectionPointFactory {
     /**
      * Notifies CDI extension of a given {@link InjectionPoint}.
      */
-    protected <T, X> FieldInjectionPointAttributes<T, X> processInjectionPoint(FieldInjectionPointAttributes<T, X> injectionPointAttributes, Class<?> declaringComponentClass, BeanManagerImpl manager) {
-        return manager.getContainerLifecycleEvents().fireProcessInjectionPoint(injectionPointAttributes, declaringComponentClass, manager);
+    protected <T, X> FieldInjectionPointAttributes<T, X> processInjectionPoint(
+            FieldInjectionPointAttributes<T, X> injectionPointAttributes, Class<?> declaringComponentClass,
+            BeanManagerImpl manager) {
+        return manager.getContainerLifecycleEvents().fireProcessInjectionPoint(injectionPointAttributes,
+                declaringComponentClass, manager);
     }
 
     /**
      * Notifies CDI extension of a given {@link InjectionPoint}.
      */
-    protected <T, X> ParameterInjectionPointAttributes<T, X> processInjectionPoint(ParameterInjectionPointAttributes<T, X> injectionPointAttributes, Class<?> declaringComponentClass, BeanManagerImpl manager) {
-        return manager.getContainerLifecycleEvents().fireProcessInjectionPoint(injectionPointAttributes, declaringComponentClass, manager);
+    protected <T, X> ParameterInjectionPointAttributes<T, X> processInjectionPoint(
+            ParameterInjectionPointAttributes<T, X> injectionPointAttributes, Class<?> declaringComponentClass,
+            BeanManagerImpl manager) {
+        return manager.getContainerLifecycleEvents().fireProcessInjectionPoint(injectionPointAttributes,
+                declaringComponentClass, manager);
     }
 
     /*
@@ -126,29 +126,34 @@ public class InjectionPointFactory {
 
     /**
      * Creates a new {@link FieldInjectionPoint} and fires the {@link ProcessInjectionPoint} event.
+     *
      * @param field
      * @param declaringBean
      * @param declaringComponentClass used for resolution of type variables of the injection point type
      * @param manager
      * @return
      */
-    public <T, X> FieldInjectionPoint<T, X> createFieldInjectionPoint(EnhancedAnnotatedField<T, X> field, Bean<?> declaringBean, Class<?> declaringComponentClass, BeanManagerImpl manager) {
-        FieldInjectionPointAttributes<T, X> attributes = InferingFieldInjectionPointAttributes.of(field, declaringBean, declaringComponentClass, manager);
+    public <T, X> FieldInjectionPoint<T, X> createFieldInjectionPoint(EnhancedAnnotatedField<T, X> field,
+            Bean<?> declaringBean, Class<?> declaringComponentClass, BeanManagerImpl manager) {
+        FieldInjectionPointAttributes<T, X> attributes = InferingFieldInjectionPointAttributes.of(field, declaringBean,
+                declaringComponentClass, manager);
         attributes = processInjectionPoint(attributes, declaringComponentClass, manager);
         return new FieldInjectionPoint<T, X>(attributes);
     }
 
     /**
      * Creates a new {@link ParameterInjectionPoint} and fires the {@link ProcessInjectionPoint} event.
+     *
      * @param parameter
      * @param declaringBean
      * @param declaringComponentClass used for resolution of type variables of the injection point type
      * @param manager
      * @return
      */
-    public <T, X> ParameterInjectionPoint<T, X> createParameterInjectionPoint(EnhancedAnnotatedParameter<T, X> parameter, Bean<?> declaringBean,
-            Class<?> declaringComponentClass, BeanManagerImpl manager) {
-        ParameterInjectionPointAttributes<T, X> attributes = InferingParameterInjectionPointAttributes.of(parameter, declaringBean, declaringComponentClass, manager);
+    public <T, X> ParameterInjectionPoint<T, X> createParameterInjectionPoint(EnhancedAnnotatedParameter<T, X> parameter,
+            Bean<?> declaringBean, Class<?> declaringComponentClass, BeanManagerImpl manager) {
+        ParameterInjectionPointAttributes<T, X> attributes = InferingParameterInjectionPointAttributes.of(parameter,
+                declaringBean, declaringComponentClass, manager);
         attributes = processInjectionPoint(attributes, declaringComponentClass, manager);
         return new ParameterInjectionPointImpl<T, X>(attributes);
     }
@@ -157,23 +162,28 @@ public class InjectionPointFactory {
      * Creation of callable InjectionPoints
      */
 
-    public <T> ConstructorInjectionPoint<T> createConstructorInjectionPoint(Bean<T> declaringBean, EnhancedAnnotatedType<T> type, BeanManagerImpl manager) {
+    public <T> ConstructorInjectionPoint<T> createConstructorInjectionPoint(Bean<T> declaringBean,
+            EnhancedAnnotatedType<T> type, BeanManagerImpl manager) {
         EnhancedAnnotatedConstructor<T> constructor = Beans.getBeanConstructorStrict(type);
         return createConstructorInjectionPoint(declaringBean, type.getJavaClass(), constructor, manager);
     }
 
-    public <T> ConstructorInjectionPoint<T> createConstructorInjectionPoint(Bean<T> declaringBean, Class<?> declaringComponentClass, EnhancedAnnotatedConstructor<T> constructor, BeanManagerImpl manager) {
+    public <T> ConstructorInjectionPoint<T> createConstructorInjectionPoint(Bean<T> declaringBean,
+            Class<?> declaringComponentClass, EnhancedAnnotatedConstructor<T> constructor, BeanManagerImpl manager) {
         return new ConstructorInjectionPoint<T>(constructor, declaringBean, declaringComponentClass, this, manager);
     }
 
-    public <T, X> MethodInjectionPoint<T, X> createMethodInjectionPoint(EnhancedAnnotatedMethod<T, X> enhancedMethod, Bean<?> declaringBean, Class<?> declaringComponentClass, boolean observerOrDisposer, BeanManagerImpl manager) {
-        return new MethodInjectionPoint<T, X>(enhancedMethod, declaringBean, declaringComponentClass, observerOrDisposer, this, manager);
+    public <T, X> MethodInjectionPoint<T, X> createMethodInjectionPoint(EnhancedAnnotatedMethod<T, X> enhancedMethod,
+            Bean<?> declaringBean, Class<?> declaringComponentClass, boolean observerOrDisposer, BeanManagerImpl manager) {
+        return new MethodInjectionPoint<T, X>(enhancedMethod, declaringBean, declaringComponentClass, observerOrDisposer, this,
+                manager);
     }
 
     /*
      * Utility methods for field InjectionPoints
      */
-    public List<Set<FieldInjectionPoint<?, ?>>> getFieldInjectionPoints(Bean<?> declaringBean, EnhancedAnnotatedType<?> type, BeanManagerImpl manager) {
+    public List<Set<FieldInjectionPoint<?, ?>>> getFieldInjectionPoints(Bean<?> declaringBean, EnhancedAnnotatedType<?> type,
+            BeanManagerImpl manager) {
         List<Set<FieldInjectionPoint<?, ?>>> injectableFieldsList = new ArrayList<Set<FieldInjectionPoint<?, ?>>>();
 
         if (type.slim() instanceof UnbackedAnnotatedType<?>) {
@@ -190,7 +200,8 @@ public class InjectionPointFactory {
                 injectableFieldsList.add(0, immutableSet(fields));
             }
         } else {
-            for (EnhancedAnnotatedType<?> t = type; t != null && !t.getJavaClass().equals(Object.class); t = t.getEnhancedSuperclass()) {
+            for (EnhancedAnnotatedType<?> t = type; t != null && !t.getJavaClass().equals(Object.class); t = t
+                    .getEnhancedSuperclass()) {
                 ArraySet<FieldInjectionPoint<?, ?>> fields = new ArraySet<FieldInjectionPoint<?, ?>>();
                 for (EnhancedAnnotatedField<?, ?> annotatedField : t.getDeclaredEnhancedFields(Inject.class)) {
                     if (!annotatedField.isStatic()) {
@@ -203,124 +214,28 @@ public class InjectionPointFactory {
         return immutableList(injectableFieldsList);
     }
 
-    private void addFieldInjectionPoint(EnhancedAnnotatedField<?, ?> annotatedField, Set<FieldInjectionPoint<?, ?>> injectableFields, Bean<?> declaringBean, Class<?> declaringComponentClass, BeanManagerImpl manager) {
+    private void addFieldInjectionPoint(EnhancedAnnotatedField<?, ?> annotatedField,
+            Set<FieldInjectionPoint<?, ?>> injectableFields, Bean<?> declaringBean, Class<?> declaringComponentClass,
+            BeanManagerImpl manager) {
         if (annotatedField.isFinal()) {
             throw new DefinitionException(QUALIFIER_ON_FINAL_FIELD, annotatedField);
         }
         injectableFields.add(createFieldInjectionPoint(annotatedField, declaringBean, declaringComponentClass, manager));
     }
 
-    private abstract class ResourceInjectionPointDiscovery<S extends Service, A extends ApiAbstraction> {
 
-        private Set<FieldInjectionPoint<?, ?>> getFieldInjectionPointsWithSpecialAnnotation(Bean<?> declaringBean, EnhancedAnnotatedType<?> type, Class<? extends Annotation> annotationType, BeanManagerImpl manager) {
-            ArraySet<FieldInjectionPoint<?, ?>> injectionPoints = new ArraySet<FieldInjectionPoint<?, ?>>();
-            for (EnhancedAnnotatedField<?, ?> field : type.getEnhancedFields(annotationType)) {
-                injectionPoints.add(createFieldInjectionPoint(field, declaringBean, type.getJavaClass(), manager));
-            }
-            return immutableSet(injectionPoints);
-        }
 
-        public Set<ResourceInjectionPoint<?, ?>> proceed(Bean<?> bean, EnhancedAnnotatedType<?> type, BeanManagerImpl manager, A api, S specializedInjectionServices) {
-            if (api != null) {
-                if (specializedInjectionServices != null) {
-                    Set<FieldInjectionPoint<?, ?>> fieldInjectionPoints = getFieldInjectionPointsWithSpecialAnnotation(bean, type, getMarkerAnnotation(api), manager);
-                    if (!fieldInjectionPoints.isEmpty()) {
-                        Set<ResourceInjectionPoint<?, ?>> resourceInjectionPoints = new HashSet<ResourceInjectionPoint<?, ?>>(fieldInjectionPoints.size());
-                        for (FieldInjectionPoint<?, ?> fieldInjectionPoint : fieldInjectionPoints) {
-                            resourceInjectionPoints.add(createResourceInjectionPoint(fieldInjectionPoint, specializedInjectionServices, api));
-                        }
-                        return resourceInjectionPoints;
-                    }
-                }
-            }
-            return Collections.emptySet();
-        }
-
-        protected abstract ResourceInjectionPoint<?, ?> createResourceInjectionPoint(FieldInjectionPoint<?, ?> ip, S specializedInjectionServices, A api);
-
-        protected abstract Class<? extends Annotation> getMarkerAnnotation(A api);
-    }
-
-    public Set<ResourceInjectionPoint<?, ?>> getEjbInjectionPoints(Bean<?> declaringBean, EnhancedAnnotatedType<?> type, BeanManagerImpl manager) {
-        return new ResourceInjectionPointDiscovery<EjbInjectionServices, EJBApiAbstraction>() {
-            @Override
-            protected ResourceInjectionPoint<?, ?> createResourceInjectionPoint(FieldInjectionPoint<?, ?> ip, EjbInjectionServices specializedInjectionServices, EJBApiAbstraction api) {
-                return ResourceInjectionPoint.forEjb(ip, specializedInjectionServices);
-            }
-
-            @Override
-            protected Class<? extends Annotation> getMarkerAnnotation(EJBApiAbstraction api) {
-                return api.EJB_ANNOTATION_CLASS;
-            }
-        }.proceed(declaringBean, type, manager, manager.getServices().get(EJBApiAbstraction.class), manager.getServices().get(EjbInjectionServices.class));
-    }
-
-    public Set<ResourceInjectionPoint<?, ?>> getPersistenceContextInjectionPoints(Bean<?> declaringBean, EnhancedAnnotatedType<?> type, BeanManagerImpl manager) {
-        return new ResourceInjectionPointDiscovery<JpaInjectionServices, PersistenceApiAbstraction>() {
-            @Override
-            protected ResourceInjectionPoint<?, ?> createResourceInjectionPoint(FieldInjectionPoint<?, ?> ip, JpaInjectionServices specializedInjectionServices, PersistenceApiAbstraction api) {
-                return ResourceInjectionPoint.forPersistenceContext(ip, specializedInjectionServices, api);
-            }
-
-            @Override
-            protected Class<? extends Annotation> getMarkerAnnotation(PersistenceApiAbstraction api) {
-                return api.PERSISTENCE_CONTEXT_ANNOTATION_CLASS;
-            }
-        }.proceed(declaringBean, type, manager, manager.getServices().get(PersistenceApiAbstraction.class), manager.getServices().get(JpaInjectionServices.class));
-    }
-
-    public Set<ResourceInjectionPoint<?, ?>> getPersistenceUnitInjectionPoints(Bean<?> declaringBean, EnhancedAnnotatedType<?> type, BeanManagerImpl manager) {
-        return new ResourceInjectionPointDiscovery<JpaInjectionServices, PersistenceApiAbstraction>() {
-            @Override
-            protected ResourceInjectionPoint<?, ?> createResourceInjectionPoint(FieldInjectionPoint<?, ?> ip, JpaInjectionServices specializedInjectionServices, PersistenceApiAbstraction api) {
-                return ResourceInjectionPoint.forPersistenceUnit(ip, specializedInjectionServices, api);
-            }
-
-            @Override
-            protected Class<? extends Annotation> getMarkerAnnotation(PersistenceApiAbstraction api) {
-                return api.PERSISTENCE_UNIT_ANNOTATION_CLASS;
-            }
-        }.proceed(declaringBean, type, manager, manager.getServices().get(PersistenceApiAbstraction.class), manager.getServices().get(JpaInjectionServices.class));
-    }
-
-    public Set<ResourceInjectionPoint<?, ?>> getResourceInjectionPoints(Bean<?> declaringBean, EnhancedAnnotatedType<?> type, BeanManagerImpl manager) {
-        return new ResourceInjectionPointDiscovery<ResourceInjectionServices, EJBApiAbstraction>() {
-            @Override
-            protected ResourceInjectionPoint<?, ?> createResourceInjectionPoint(FieldInjectionPoint<?, ?> ip, ResourceInjectionServices specializedInjectionServices, EJBApiAbstraction api) {
-                return ResourceInjectionPoint.forResource(ip, specializedInjectionServices);
-            }
-
-            @Override
-            protected Class<? extends Annotation> getMarkerAnnotation(EJBApiAbstraction api) {
-                return api.RESOURCE_ANNOTATION_CLASS;
-            }
-        }.proceed(declaringBean, type, manager, manager.getServices().get(EJBApiAbstraction.class), manager.getServices().get(ResourceInjectionServices.class));
-    }
-
-    public Set<ResourceInjectionPoint<?, ?>> getWebServiceRefInjectionPoints(Bean<?> declaringBean, EnhancedAnnotatedType<?> type, BeanManagerImpl manager) {
-        return new ResourceInjectionPointDiscovery<JaxwsInjectionServices, WSApiAbstraction>() {
-            @Override
-            protected ResourceInjectionPoint<?, ?> createResourceInjectionPoint(FieldInjectionPoint<?, ?> ip, JaxwsInjectionServices specializedInjectionServices, WSApiAbstraction api) {
-                return ResourceInjectionPoint.forWebServiceRef(ip, specializedInjectionServices);
-            }
-
-            @Override
-            protected Class<? extends Annotation> getMarkerAnnotation(WSApiAbstraction api) {
-                return api.WEB_SERVICE_REF_ANNOTATION_CLASS;
-            }
-        }.proceed(declaringBean, type, manager, manager.getServices().get(WSApiAbstraction.class), manager.getServices().get(JaxwsInjectionServices.class));
-    }
 
     /*
      * Utility methods for parameter InjectionPoints
      */
 
-    public <X> List<ParameterInjectionPoint<?, X>> getParameterInjectionPoints(EnhancedAnnotatedCallable<?, X, ?> callable, Bean<?> declaringBean, Class<?> declaringComponentClass, BeanManagerImpl manager, boolean observerOrDisposer) {
+    public <X> List<ParameterInjectionPoint<?, X>> getParameterInjectionPoints(EnhancedAnnotatedCallable<?, X, ?> callable,
+            Bean<?> declaringBean, Class<?> declaringComponentClass, BeanManagerImpl manager, boolean observerOrDisposer) {
         List<ParameterInjectionPoint<?, X>> parameters = new ArrayList<ParameterInjectionPoint<?, X>>();
 
         /*
-         * bean that the injection point belongs to
-         * this is null for observer and disposer methods
+         * bean that the injection point belongs to this is null for observer and disposer methods
          */
         Bean<?> bean = null;
         if (!observerOrDisposer) {

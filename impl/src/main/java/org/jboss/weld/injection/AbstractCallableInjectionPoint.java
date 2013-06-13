@@ -32,12 +32,13 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedCallable;
 import org.jboss.weld.exceptions.UnsupportedOperationException;
 import org.jboss.weld.injection.attributes.SpecialParameterInjectionPoint;
+import org.jboss.weld.injection.attributes.WeldInjectionPointAttributes;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.InjectionPoints;
 import org.jboss.weld.util.collections.ListToSet;
 
-public abstract class AbstractCallableInjectionPoint<T, X, S extends Member> implements WeldInjectionPoint<T, S> {
+abstract class AbstractCallableInjectionPoint<T, X, S extends Member> implements WeldInjectionPointAttributes<T, S> {
 
     private final Bean<?> declaringBean;
     private final List<ParameterInjectionPoint<?, X>> parameters;

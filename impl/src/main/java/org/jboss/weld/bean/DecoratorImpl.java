@@ -31,7 +31,7 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.enhanced.MethodSignature;
 import org.jboss.weld.annotated.runtime.InvokableAnnotatedMethod;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
-import org.jboss.weld.injection.WeldInjectionPoint;
+import org.jboss.weld.injection.attributes.WeldInjectionPointAttributes;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.util.Decorators;
@@ -52,7 +52,7 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
     }
 
     private Map<MethodSignature, InvokableAnnotatedMethod<?>> decoratorMethods;
-    private WeldInjectionPoint<?, ?> delegateInjectionPoint;
+    private WeldInjectionPointAttributes<?, ?> delegateInjectionPoint;
     private Set<Annotation> delegateBindings;
     private Type delegateType;
     private Set<Type> delegateTypes;
@@ -107,7 +107,7 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
         return decoratedTypes;
     }
 
-    public WeldInjectionPoint<?, ?> getDelegateInjectionPoint() {
+    public WeldInjectionPointAttributes<?, ?> getDelegateInjectionPoint() {
         return delegateInjectionPoint;
     }
 

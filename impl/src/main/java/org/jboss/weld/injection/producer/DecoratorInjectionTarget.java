@@ -40,7 +40,7 @@ import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.injection.ConstructorInjectionPoint;
 import org.jboss.weld.injection.FieldInjectionPoint;
 import org.jboss.weld.injection.InjectionPointFactory;
-import org.jboss.weld.injection.WeldInjectionPoint;
+import org.jboss.weld.injection.attributes.WeldInjectionPointAttributes;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.security.GetAccessibleCopyOfMember;
 import org.jboss.weld.util.Decorators;
@@ -54,7 +54,7 @@ import org.jboss.weld.util.Decorators;
  */
 public class DecoratorInjectionTarget<T> extends BeanInjectionTarget<T> {
 
-    private final WeldInjectionPoint<?, ?> delegateInjectionPoint;
+    private final WeldInjectionPointAttributes<?, ?> delegateInjectionPoint;
     private final Field accessibleField;
 
     public DecoratorInjectionTarget(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager) {
@@ -74,7 +74,7 @@ public class DecoratorInjectionTarget<T> extends BeanInjectionTarget<T> {
         if (type.isAbstract()) {
             ConstructorInjectionPoint<T> originalConstructor = InjectionPointFactory.instance().createConstructorInjectionPoint(bean, type, beanManager);
             injectionPoints.addAll(originalConstructor.getParameterInjectionPoints());
-            final WeldInjectionPoint<?, ?> delegateInjectionPoint = Decorators.findDelegateInjectionPoint(type, injectionPoints);
+            final WeldInjectionPointAttributes<?, ?> delegateInjectionPoint = Decorators.findDelegateInjectionPoint(type, injectionPoints);
             return new SubclassedComponentInstantiator<T>(type, bean, originalConstructor, beanManager) {
                 @Override
                 protected Class<T> createEnhancedSubclass(AnnotatedType<T> type, Bean<?> bean) {

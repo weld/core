@@ -21,17 +21,14 @@ import java.lang.annotation.Annotation;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.ProcessInjectionPoint;
 
-import org.jboss.weld.injection.WeldInjectionPoint;
-
 /**
  * Representation of properties of an {@link InjectionPoint}, which can be modified by an extension in the
- * {@link ProcessInjectionPoint} phase. After the phase, these data objects are wrapped within matching
- * {@link WeldInjectionPoint} implementation, which contain additional logic.
+ * {@link ProcessInjectionPoint} phase.
  *
  * @author Jozef Hartinger
  *
  * @param <T>
- * @param <X>
+ * @param <S>
  */
 public interface WeldInjectionPointAttributes<T, S> extends InjectionPoint {
 

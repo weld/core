@@ -87,6 +87,9 @@ public class InterceptorBindingsAdapter implements InterceptorBindings {
         if (!internalInterceptionType.isLifecycleCallback()) {
             throw new IllegalArgumentException(INTERCEPTION_TYPE_NOT_LIFECYCLE, interceptionType.name());
         }
+        if (internalInterceptionType.equals(org.jboss.weld.interceptor.spi.model.InterceptionType.AROUND_CONSTRUCT)) {
+            return extractCdiInterceptors(interceptionModel.getConstructorInvocationInterceptors());
+        }
 
         return extractCdiInterceptors(interceptionModel.getInterceptors(internalInterceptionType, null));
     }

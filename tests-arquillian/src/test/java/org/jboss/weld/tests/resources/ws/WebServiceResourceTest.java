@@ -34,7 +34,7 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 /**
- * 
+ *
  * @author Martin Kouba
  */
 @Category(Integration.class)
@@ -43,23 +43,23 @@ public class WebServiceResourceTest {
 
 	@Deployment
 	public static Archive<?> createTestArchive() {
-		return ShrinkWrap.create(WebArchive.class, "test.war")
+		return ShrinkWrap.create(WebArchive.class)
 				.addPackage(WebServiceResourceTest.class.getPackage())
 				.addAsWebInfResource(
 				        WebServiceResourceTest.class.getPackage(),
-                        "web.xml")
+                        "web.xml", "web.xml")
 				.addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
 	}
-	
+
 	@True
 	@Inject
 	Translator translator;
-	
+
 	@Test
 	public void testWebServiceResourceDeclaration() {
 	    assertNotNull(translator);
 	}
-	
+
 	@Test
 	@Ignore("WELD-1099")
 	public void testWebServiceResourceInvocation() {

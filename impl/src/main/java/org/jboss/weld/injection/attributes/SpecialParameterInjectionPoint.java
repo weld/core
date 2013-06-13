@@ -43,11 +43,6 @@ public class SpecialParameterInjectionPoint<T, X> extends ForwardingInjectionPoi
     }
 
     @Override
-    public void inject(Object declaringInstance, Object value) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public AnnotatedParameter<X> getAnnotated() {
         return attributes.getAnnotated();
     }

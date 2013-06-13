@@ -14,18 +14,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.injection;
+package org.jboss.weld.tests.injectionPoint.resource;
 
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.AnnotatedParameter;
+import javax.annotation.Resource;
+import javax.ejb.EJB;
 
-import org.jboss.weld.injection.attributes.WeldInjectionPointAttributes;
-import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.test.util.ActionSequence;
 
-public interface ParameterInjectionPoint<T, X> extends WeldInjectionPointAttributes<T, Object> {
+public class Alpha extends Bravo {
 
-    @Override
-    AnnotatedParameter<X> getAnnotated();
+    private SessionBean sessionBean;
 
-    T getValueToInject(BeanManagerImpl manager, CreationalContext<?> creationalContext);
+    private String greeting;
+
+    @Resource
+    public void setGreeting(String greeting) {
+       this.greeting = greeting;
+       ActionSequence.addAction(Alpha.class.getName()+String.class.getName());
+    }
+
+    @EJB
+    public void setSessionBean(SessionBean sessionBean) {
+        this.sessionBean = sessionBean;
+        ActionSequence.addAction(Alpha.class.getName()+SessionBean.class.getName());
+    }
+
+    public String getGreeting() {
+        return greeting;
+    }
+
+    public SessionBean getSessionBean() {
+        return sessionBean;
+    }
+
 }

@@ -24,6 +24,7 @@ import java.lang.reflect.Type;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 
+import org.jboss.weld.annotated.AnnotatedTypeValidator;
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.IllegalArgumentException;
@@ -81,6 +82,7 @@ public class ProcessAnnotatedTypeImpl<X> extends AbstractDefinitionContainerEven
         if (!this.originalAnnotatedType.getJavaClass().equals(type.getJavaClass())) {
             throw new IllegalArgumentException(ANNOTATED_TYPE_JAVA_CLASS_MISMATCH, this.annotatedType.getJavaClass(), type.getJavaClass());
         }
+        AnnotatedTypeValidator.validateAnnotatedType(type);
         this.annotatedType = type;
     }
 

@@ -59,7 +59,7 @@ import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.injection.MethodInjectionPoint;
-import org.jboss.weld.injection.WeldInjectionPoint;
+import org.jboss.weld.injection.attributes.WeldInjectionPointAttributes;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.serialization.spi.ContextualStore;
@@ -136,8 +136,8 @@ public class Decorators {
         return null;
     }
 
-    public static WeldInjectionPoint<?, ?> findDelegateInjectionPoint(AnnotatedType<?> type, Iterable<InjectionPoint> injectionPoints) {
-        WeldInjectionPoint<?, ?> result = null;
+    public static WeldInjectionPointAttributes<?, ?> findDelegateInjectionPoint(AnnotatedType<?> type, Iterable<InjectionPoint> injectionPoints) {
+        WeldInjectionPointAttributes<?, ?> result = null;
         for (InjectionPoint injectionPoint : injectionPoints) {
             if (injectionPoint.isDelegate()) {
                 if (result != null) {

@@ -4,13 +4,13 @@
     <artifactId>weld-servlet-parent</artifactId>
     <name>Weld Servlet Parent</name>
     <packaging>pom</packaging>
-    <version>2.0.1-SNAPSHOT</version>
+    <version>2.0.2-SNAPSHOT</version>
 
     <parent>
         <groupId>org.jboss.weld</groupId>
         <artifactId>weld-core-parent</artifactId>
         <relativePath>../../pom.xml</relativePath>
-        <version>2.0.1-SNAPSHOT</version>
+        <version>2.0.2-SNAPSHOT</version>
     </parent>
 
     <modules>
@@ -27,15 +27,12 @@
     </description>
 
     <properties>
-        <!--
-           Use JSF 2 for all extensions support, despite core using JSF
-           1.2
-        -->
-        <jsf.version>2.0.2-FCS</jsf.version>
+        <jsf.version>2.1</jsf.version>
+        <jsf-impl.version>2.1.22</jsf-impl.version>
         <tomcat.version>6.0.36</tomcat.version>
         <tomcat7.version>7.0.33</tomcat7.version>
         <jetty6.version>6.1.26</jetty6.version>
-        <jetty.version>8.1.8.v20121106</jetty.version>
+        <jetty.version>8.1.11.v20130520</jetty.version>
         <uel.glassfish.version>2.2</uel.glassfish.version>
         <!-- Testing deps -->
         <apache.httpclient.version>3.1</apache.httpclient.version>
@@ -54,9 +51,9 @@
             </dependency>
 
             <dependency>
-                <groupId>javax.faces</groupId>
-                <artifactId>jsf-impl</artifactId>
-                <version>${jsf.version}</version>
+                <groupId>org.glassfish</groupId>
+                <artifactId>javax.faces</artifactId>
+                <version>${jsf-impl.version}</version>
             </dependency>
 
             <dependency>
