@@ -57,10 +57,6 @@ public class JettyContainer extends AbstractJettyContainer {
         return !(major < MAJOR_VERSION || (major == MAJOR_VERSION & minor <= MINOR_VERSION));
     }
 
-    protected Class<?> getWeldServletHandlerClass() {
-        return EclipseWeldServletHandler.class;
-    }
-
     public void initialize(ContainerContext context) {
         // Try pushing a Jetty Injector into the servlet context
         try {
