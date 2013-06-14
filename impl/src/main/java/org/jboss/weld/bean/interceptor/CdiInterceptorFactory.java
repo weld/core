@@ -19,11 +19,11 @@ package org.jboss.weld.bean.interceptor;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Interceptor;
 
 import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorFactory;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 public class CdiInterceptorFactory<T> implements InterceptorFactory<T> {
 
@@ -40,8 +40,9 @@ public class CdiInterceptorFactory<T> implements InterceptorFactory<T> {
         return classMetadata;
     }
 
-    public T create(CreationalContext<T> ctx, BeanManager manager) {
-        return cast(manager.getReference(interceptor, interceptor.getBeanClass(), ctx));
+    @Override
+    public T create(CreationalContext<T> ctx, BeanManagerImpl manager) {
+        return cast(manager.getReference(interceptor, interceptor.getBeanClass(), ctx, true));
     }
 
     public Interceptor<T> getInterceptor() {

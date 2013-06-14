@@ -28,7 +28,7 @@ import javax.interceptor.InvocationContext;
  */
 @Shot
 @Interceptor
-public class Goalkeeper implements Serializable {
+public class Goalkeeper<T extends Number> implements Serializable {
 
     public static boolean called;
 

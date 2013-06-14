@@ -17,7 +17,8 @@
 package org.jboss.weld.interceptor.spi.metadata;
 
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.BeanManager;
+
+import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
  * Produces instances of interceptors
@@ -30,5 +31,5 @@ public interface InterceptorFactory<T> {
 
     ClassMetadata<T> getClassMetadata();
 
-    T create(CreationalContext<T> ctx, BeanManager manager);
+    T create(CreationalContext<T> ctx, BeanManagerImpl manager);
 }

@@ -18,7 +18,6 @@
 package org.jboss.weld.interceptor.reader;
 
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.InjectionTarget;
 
 import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
@@ -44,7 +43,7 @@ public class ClassMetadataInterceptorFactory<T> implements InterceptorFactory<T>
         return classMetadata;
     }
 
-    public T create(CreationalContext<T> ctx, BeanManager manager) {
+    public T create(CreationalContext<T> ctx, BeanManagerImpl manager) {
         T instance = injectionTarget.produce(ctx);
         injectionTarget.inject(instance, ctx);
         return instance;
