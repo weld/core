@@ -242,7 +242,7 @@ public abstract class AbstractTypeSafeBeanResolver<T extends Bean<?>, C extends 
 
     @Override
     protected Set<T> filterResult(Set<T> matched) {
-        return Beans.removeDisabledAndSpecializedBeans(matched, beanManager, registry);
+        return Beans.removeDisabledBeans(matched, beanManager, registry);
     }
 
     public <X> Set<Bean<? extends X>> resolve(Set<Bean<? extends X>> beans) {

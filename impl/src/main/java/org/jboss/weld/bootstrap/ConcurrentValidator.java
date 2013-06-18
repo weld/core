@@ -131,7 +131,7 @@ public class ConcurrentValidator extends Validator {
         final SpecializationAndEnablementRegistry registry = beanManager.getServices().get(SpecializationAndEnablementRegistry.class);
         executor.invokeAllAndCheckForExceptions(new IterativeWorkerTaskFactory<String>(namedAccessibleBeans.keySet()) {
             protected void doWork(String name) {
-                Set<Bean<?>> resolvedBeans = beanManager.getBeanResolver().resolve(Beans.removeDisabledAndSpecializedBeans(namedAccessibleBeans.get(name), beanManager, registry));
+                Set<Bean<?>> resolvedBeans = beanManager.getBeanResolver().resolve(Beans.removeDisabledBeans(namedAccessibleBeans.get(name), beanManager, registry));
                 if (resolvedBeans.size() > 1) {
                     throw new DeploymentException(AMBIGUOUS_EL_NAME, name, resolvedBeans);
                 }

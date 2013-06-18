@@ -33,7 +33,7 @@ import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.bean.ProducerMethod;
 import org.jboss.weld.bean.RIBean;
-import org.jboss.weld.bootstrap.api.Service;
+import org.jboss.weld.bootstrap.api.helpers.AbstractBootstrapService;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 import com.google.common.cache.CacheBuilder;
@@ -49,7 +49,7 @@ import com.google.common.collect.Multisets;
  * @author Jozef Hartinger
  *
  */
-public class SpecializationAndEnablementRegistry implements Service {
+public class SpecializationAndEnablementRegistry extends AbstractBootstrapService {
 
     private class SpecializedBeanResolverForBeanManager extends CacheLoader<BeanManagerImpl, SpecializedBeanResolver> {
 
@@ -192,7 +192,7 @@ public class SpecializationAndEnablementRegistry implements Service {
     }
 
     @Override
-    public void cleanup() {
+    public void cleanupAfterBoot() {
         specializedBeanResolvers.invalidateAll();
         environmentByManager.clear();
         specializedBeans.invalidateAll();

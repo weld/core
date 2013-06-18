@@ -59,7 +59,7 @@ public class NameBasedResolver {
                 }
             }
             //noinspection unchecked
-            return ImmutableSet.copyOf((Iterable<Bean<?>>) Beans.removeDisabledAndSpecializedBeans(matchedBeans, beanManager, registry));
+            return ImmutableSet.copyOf((Iterable<Bean<?>>) Beans.removeDisabledBeans(matchedBeans, beanManager, registry));
         }
 
     }

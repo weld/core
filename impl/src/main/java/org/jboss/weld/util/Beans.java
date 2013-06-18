@@ -31,7 +31,6 @@ import static org.jboss.weld.logging.messages.UtilMessage.REDUNDANT_QUALIFIER;
 import static org.jboss.weld.logging.messages.UtilMessage.UNABLE_TO_FIND_CONSTRUCTOR;
 import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
 import static org.jboss.weld.util.reflection.Reflections.EMPTY_ANNOTATIONS;
-import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
@@ -238,7 +237,7 @@ public class Beans {
      * @param beanManager the bean manager
      * @return The filtered beans
      */
-    public static <T extends Bean<?>> Set<T> removeDisabledAndSpecializedBeans(Set<T> beans, final BeanManagerImpl beanManager,
+    public static <T extends Bean<?>> Set<T> removeDisabledBeans(Set<T> beans, final BeanManagerImpl beanManager,
             final SpecializationAndEnablementRegistry registry) {
         if (beans.size() == 0) {
             return beans;
@@ -246,13 +245,7 @@ public class Beans {
             return Sets.filter(beans, new Predicate<T>() {
                 @Override
                 public boolean apply(T bean) {
-                    if (bean instanceof AbstractProducerBean<?, ?, ?>) {
-                        AbstractProducerBean<?, ?, ?> producer = cast(bean);
-                        if (registry.isSpecializedInAnyBeanDeployment(producer.getDeclaringBean())) {
-                            return false;
-                        }
-                    }
-                    return isBeanEnabled(bean, beanManager.getEnabled()) && !registry.isSpecializedInAnyBeanDeployment(bean);
+                    return isBeanEnabled(bean, beanManager.getEnabled());
                 }
             });
         }

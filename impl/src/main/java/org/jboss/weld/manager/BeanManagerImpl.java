@@ -33,6 +33,9 @@ import static org.jboss.weld.logging.messages.BeanManagerMessage.SPECIFIED_TYPE_
 import static org.jboss.weld.logging.messages.BeanManagerMessage.TOO_MANY_ACTIVITIES;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.UNRESOLVABLE_ELEMENT;
 import static org.jboss.weld.logging.messages.BootstrapMessage.FOUND_BEAN;
+import static org.jboss.weld.logging.messages.BootstrapMessage.FOUND_DISABLED_ALTERNATIVE;
+import static org.jboss.weld.logging.messages.BootstrapMessage.FOUND_PRODUCER_OF_SPECIALIZED_BEAN;
+import static org.jboss.weld.logging.messages.BootstrapMessage.FOUND_SPECIALIZED_BEAN;
 import static org.jboss.weld.manager.BeanManagers.buildAccessibleClosure;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 import static org.jboss.weld.util.reflection.Reflections.isCacheable;
@@ -90,6 +93,7 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMember;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.bean.NewBean;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.SessionBean;
@@ -100,6 +104,7 @@ import org.jboss.weld.bean.builtin.ExtensionBean;
 import org.jboss.weld.bean.builtin.InstanceImpl;
 import org.jboss.weld.bean.proxy.ClientProxyProvider;
 import org.jboss.weld.bean.proxy.DecorationHelper;
+import org.jboss.weld.bootstrap.SpecializationAndEnablementRegistry;
 import org.jboss.weld.bootstrap.Validator;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.enablement.ModuleEnablement;
@@ -249,7 +254,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     * only and represent the beans, decorators, interceptors, namespaces and
     * observers deployed in this bean deployment archive activity
     */
-    private final transient List<Bean<?>> beans;
+    private final transient List<Bean<?>> enabledBeans;
     private final transient List<Bean<?>> transitiveBeans;
     private final transient List<Decorator<?>> decorators;
     private final transient List<Interceptor<?>> interceptors;
@@ -289,6 +294,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     private final transient MetadataCachingReader interceptorMetadataReader = new DefaultMetadataCachingReader(this);
 
     private final transient ContainerLifecycleEvents containerLifecycleEvents;
+
+    private final transient SpecializationAndEnablementRegistry registry;
 
     /**
      * Create a new, root, manager
@@ -388,7 +395,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
             AtomicInteger childIds,
             Set<BeanManagerImpl> managers) {
         this.services = serviceRegistry;
-        this.beans = beans;
+        this.enabledBeans = beans;
         this.transitiveBeans = transitiveBeans;
         this.decorators = decorators;
         this.interceptors = interceptors;
@@ -424,6 +431,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         this.globalStrictObserverNotifier = globalObserverNotifierService.getGlobalStrictObserverNotifier();
         globalObserverNotifierService.registerBeanManager(this);
         this.containerLifecycleEvents = serviceRegistry.get(ContainerLifecycleEvents.class);
+        this.registry = getServices().get(SpecializationAndEnablementRegistry.class);
     }
 
     private <T> Iterable<T> createDynamicGlobalIterable(final Transform<T> transform) {
@@ -462,7 +470,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     public void addBean(Bean<?> bean) {
-        addBean(bean, beans, transitiveBeans);
+        addBean(bean, enabledBeans, transitiveBeans);
     }
 
     /**
@@ -476,7 +484,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
             addBean(bean, beanList, transitiveBeans);
         }
         // optimize so that we do not modify CopyOnWriteLists for each Bean
-        this.beans.addAll(beanList);
+        this.enabledBeans.addAll(beanList);
         this.transitiveBeans.addAll(transitiveBeans);
         for (BeanManagerImpl childActivity : childActivities) {
             childActivity.addBeans(beanList);
@@ -485,19 +493,29 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     private void addBean(Bean<?> bean, List<Bean<?>> beanList, List<Bean<?>> transitiveBeans) {
         if (beanSet.add(bean)) {
-            log.debug(FOUND_BEAN, bean);
-            beanList.add(bean);
-            if (bean instanceof SessionBean) {
-                SessionBean<?> enterpriseBean = (SessionBean<?>) bean;
-                enterpriseBeans.put(enterpriseBean.getEjbDescriptor(), enterpriseBean);
-            }
-            if (bean instanceof PassivationCapable) {
-                getServices().get(ContextualStore.class).putIfAbsent(bean);
-            }
-            registerBeanNamespace(bean);
-            // New beans (except for SessionBeans) and most built in beans aren't resolvable transtively
-            if (bean instanceof ExtensionBean || bean instanceof SessionBean || (!(bean instanceof NewBean) && !(bean instanceof AbstractBuiltInBean<?>))) {
-                transitiveBeans.add(bean);
+            if (bean.isAlternative() && !registry.isEnabledInAnyBeanDeployment(bean)) {
+                log.debug(FOUND_DISABLED_ALTERNATIVE, bean);
+            } else if (registry.isSpecializedInAnyBeanDeployment(bean)) {
+                log.debug(FOUND_SPECIALIZED_BEAN, bean);
+            } else if (bean instanceof AbstractProducerBean<?, ?, ?>
+                    && registry.isSpecializedInAnyBeanDeployment(((AbstractProducerBean<?, ?, ?>) bean).getDeclaringBean())) {
+                log.debug(FOUND_PRODUCER_OF_SPECIALIZED_BEAN, bean);
+            } else {
+                log.debug(FOUND_BEAN, bean);
+                beanList.add(bean);
+                if (bean instanceof SessionBean) {
+                    SessionBean<?> enterpriseBean = (SessionBean<?>) bean;
+                    enterpriseBeans.put(enterpriseBean.getEjbDescriptor(), enterpriseBean);
+                }
+                if (bean instanceof PassivationCapable) {
+                    getServices().get(ContextualStore.class).putIfAbsent(bean);
+                }
+                registerBeanNamespace(bean);
+                // New beans (except for SessionBeans) and most built in beans aren't resolvable transtively
+                if (bean instanceof ExtensionBean || bean instanceof SessionBean
+                        || (!(bean instanceof NewBean) && !(bean instanceof AbstractBuiltInBean<?>))) {
+                    transitiveBeans.add(bean);
+                }
             }
         }
     }
@@ -585,7 +603,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
      * @return The list of known beans
      */
     public List<Bean<?>> getBeans() {
-        return Collections.unmodifiableList(beans);
+        return Collections.unmodifiableList(enabledBeans);
     }
 
     List<Bean<?>> getTransitiveBeans() {
@@ -1171,7 +1189,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         this.accessibleManagers.clear();
         this.managers.clear();
         this.beanResolver.clear();
-        this.beans.clear();
+        this.enabledBeans.clear();
         this.childActivities.clear();
         this.clientProxyProvider.clear();
         this.contexts.clear();
