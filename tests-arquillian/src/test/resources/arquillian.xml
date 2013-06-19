@@ -12,7 +12,6 @@
 	<container qualifier="weld" default="true">
 		<configuration>
 			<property name="enableConversationScope">true</property>
-            <property name="allowConnectingToRunningServer">true</property>
         </configuration>
 	</container>
 
