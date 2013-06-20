@@ -203,7 +203,7 @@ public class InjectionPointHolder extends AbstractSerializableHolder<InjectionPo
 
         public MethodParameterInjectionPointIdentifier(Bean<?> bean, int position, AnnotatedMethod<?> constructor) {
             super(bean, position);
-            this.method = new MethodHolder(constructor.getJavaMember());
+            this.method = MethodHolder.of(constructor);
         }
 
         @Override
