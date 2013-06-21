@@ -1,39 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <parent>
-        <artifactId>weld-osgi-parent</artifactId>
-        <groupId>org.jboss.weld.osgi</groupId>
-        <version>2.1-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>org.jboss.weld.osgi.examples</groupId>
-    <artifactId>weld-osgi-examples</artifactId>
-    <packaging>pom</packaging>
-    <name>Weld OSGi (Examples)</name>
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <parent>
+      <artifactId>weld-osgi-parent</artifactId>
+      <groupId>org.jboss.weld.osgi</groupId>
+      <version>2.1-SNAPSHOT</version>
+      <relativePath>../pom.xml</relativePath>
+   </parent>
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>org.jboss.weld.osgi.examples</groupId>
+   <artifactId>weld-osgi-examples</artifactId>
+   <packaging>pom</packaging>
+   <name>Weld OSGi (Examples)</name>
 
-    <description>Examples for Weld-OSGi</description>
+   <description>Examples for Weld-OSGi</description>
 
-    <url>http://www.seamframework.org/Weld</url>
-    <licenses>
-        <license>
-            <name>Apache License, Version 2.0</name>
-            <distribution>repo</distribution>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
-        </license>
-    </licenses>
+   <url>http://www.seamframework.org/Weld</url>
+   <licenses>
+      <license>
+         <name>Apache License, Version 2.0</name>
+         <distribution>repo</distribution>
+         <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+      </license>
+   </licenses>
 
-    <developers>
-        <developer>
-            <name>Mathieu Ancelin</name>
-            <email>mathieu.ancelin@serli.com</email>
-        </developer>
-        <developer>
-            <name>Matthieu Clochard</name>
-            <email>matthieu.clochard@serli.com</email>
-        </developer>
-    </developers>
+   <developers>
+      <developer>
+         <name>Mathieu Ancelin</name>
+         <email>mathieu.ancelin@serli.com</email>
+      </developer>
+      <developer>
+         <name>Matthieu Clochard</name>
+         <email>matthieu.clochard@serli.com</email>
+      </developer>
+   </developers>
 
    <modules>
       <module>container-felix</module>
@@ -47,6 +47,91 @@
       <module>standalone</module>
       <module>user-doc</module>
    </modules>
+
+   <properties>
+      <org.eclipse.equinox.version>3.5.2</org.eclipse.equinox.version>
+      <gogo.command.version>0.4.0</gogo.command.version>
+      <gogo.runtime.version>0.4.0</gogo.runtime.version>
+      <felix.obr.version>1.2.1</felix.obr.version>
+      <felix.shell.text.ui.version>1.0.2</felix.shell.text.ui.version>
+      <felix.shell.version>1.0.2</felix.shell.version>
+      <felix.http.version>2.0.4</felix.http.version>
+      <felix.log.version>1.0.0</felix.log.version>
+      <felix.configadmin.version>1.2.8</felix.configadmin.version>
+   </properties>
+
+   <dependencyManagement>
+      <dependencies>
+         <dependency>
+            <groupId>org.eclipse.equinox</groupId>
+            <artifactId>org.eclipse.osgi</artifactId>
+            <version>${org.eclipse.equinox.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.main</artifactId>
+            <version>3.0.6</version>
+            <scope>provided</scope>
+         </dependency>
+
+         <dependency>
+            <groupId>org.knopflerfish</groupId>
+            <artifactId>framework</artifactId>
+            <version>5.1.14</version>
+         </dependency>
+         
+         <dependency>
+            <groupId>com.googlecode.pojosr</groupId>
+            <artifactId>de.kalpatec.pojosr.framework</artifactId>
+            <version>0.1.4</version>
+        </dependency>
+
+         <dependency>
+            <groupId>org.apache.felix.gogo</groupId>
+            <artifactId>org.apache.felix.gogo.commands</artifactId>
+            <version>${gogo.command.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.bundlerepository</artifactId>
+            <version>${felix.obr.version}</version>
+         </dependency>
+
+
+         <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.shell.tui</artifactId>
+            <version>${felix.shell.text.ui.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.shell</artifactId>
+            <version>${felix.shell.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.http.bundle</artifactId>
+            <version>${felix.http.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.log</artifactId>
+            <version>${felix.log.version}</version>
+         </dependency>
+
+         <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.configadmin</artifactId>
+            <version>${felix.configadmin.version}</version>
+         </dependency>
+
+      </dependencies>
+   </dependencyManagement>
 
    <build>
       <pluginManagement>
