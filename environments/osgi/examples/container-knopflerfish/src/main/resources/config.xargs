@@ -28,19 +28,19 @@
 -install modules/weld-osgi-standalone-${project.version}.jar
 -install modules/groovy-all-1.8.0-rc-3.jar
 -install modules/jsr311-api-1.1.jar
--install modules/org.apache.felix.gogo.commands-0.4.0.jar
--install modules/org.apache.felix.gogo.runtime-0.4.0.jar
--install modules/org.osgi.compendium-4.2.0.jar
+-install modules/org.apache.felix.gogo.commands-${gogo.command.version}.jar
+-install modules/org.apache.felix.gogo.runtime-${gogo.runtime.version}.jar
+-install modules/org.osgi.compendium-${osgi.version}.jar
 
 
 -istart modules/weld-osgi-core-extension-${project.version}.jar
 -istart modules/weld-osgi-core-integration-${project.version}.jar
--istart modules/org.apache.felix.configadmin-1.2.8.jar
--istart modules/org.apache.felix.http.bundle-2.0.4.jar
--istart modules/org.apache.felix.log-1.0.0.jar
--istart modules/org.apache.felix.shell-1.0.2.jar
--istart modules/org.apache.felix.shell.tui-1.0.2.jar
--istart modules/org.apache.felix.bundlerepository-1.2.1.jar
+-istart modules/org.apache.felix.configadmin-${felix.configadmin.version}.jar
+-istart modules/org.apache.felix.http.bundle-${felix.http.version}.jar
+-istart modules/org.apache.felix.log-${felix.log.version}.jar
+-istart modules/org.apache.felix.shell-${felix.shell.version}.jar
+-istart modules/org.apache.felix.shell.tui-${felix.shell.text.ui.version}.jar
+-istart modules/org.apache.felix.bundlerepository-${felix.obr.version}.jar
 
 -Forg.osgi.service.http.port=9000
 -Forg.apache.felix.http.whiteboardEnabled=true
