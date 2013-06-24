@@ -71,56 +71,24 @@
                 </methods>
             </class>
             <!-- Incompatibilities with Undertow -->
-            <class name="org.jboss.cdi.tck.tests.context.application.async.ApplicationContextAsyncListenerTest">
-                <methods>
-                    <exclude name="testApplicationContextActiveOnStartAsync"/>
-                </methods>
-            </class>
-            <class name="org.jboss.cdi.tck.tests.context.conversation.determination.ConversationDeterminationTest">
-                <methods>
-                    <exclude name="testConversationDetermination"/>
-                </methods>
-            </class>
-            <class name="org.jboss.cdi.tck.tests.context.request.async.RequestContextAsyncListenerTest">
-                <methods>
-                    <exclude name="testRequestContextActiveOnComplete"/>
-                    <exclude name="testRequestContextActiveOnStartAsync"/>
-                </methods>
-            </class>
-            <class name="org.jboss.cdi.tck.tests.context.request.jaxrs.RequestContextTest">
-                <methods>
-                    <exclude name="testRequestScopeActiveDuringWebServiceInvocation"/>
-                </methods>
-            </class>
-            <class name="org.jboss.cdi.tck.tests.context.request.ws.RequestContextTest">
-                <methods>
-                    <exclude name="testRequestScopeActiveDuringWebServiceInvocation"/>
-                </methods>
-            </class>
             <class name="org.jboss.cdi.tck.tests.context.session.SessionContextTest">
                 <methods>
                     <exclude name="testSessionContextDestroyedWhenHttpSessionTimesOut"/>
                 </methods>
             </class>
-            <class name="org.jboss.cdi.tck.tests.context.session.async.SessionContextAsyncListenerTest">
-                <methods>
-                    <exclude name="testSessionContextActiveOnComplete"/>
-                    <exclude name="testSessionContextActiveOnStartAsync"/>
-                </methods>
-            </class>
-            <class name="org.jboss.cdi.tck.tests.context.session.listener.SessionContextServletRequestListenerTest">
-                <methods>
-                    <exclude name="testSessionScopeActiveDuringServletRequestListenerCall"/>
-                </methods>
-            </class>
-            <class name="org.jboss.cdi.tck.tests.lookup.el.integration.IntegrationWithUnifiedELTest">
-                <methods>
-                    <exclude name="testELResolverRegisteredWithServletContainer"/>
-                </methods>
-            </class>
             <class name="org.jboss.cdi.tck.tests.deployment.shutdown.ApplicationShutdownLifecycleTest">
                 <methods>
                     <exclude name="testShutdown"/>
+                </methods>
+            </class>
+            <class name="org.jboss.cdi.tck.tests.context.conversation.InvalidatingSessionDestroysConversationTest">
+                <methods>
+                    <exclude name="testInvalidatingSessionDestroysConversation"/>
+                </methods>
+            </class>
+            <class name="org.jboss.cdi.tck.tests.context.conversation.event.notattached.DestroyConversationNotAssociatedWithCurrentRequestEventTest">
+                <methods>
+                    <exclude name="testLifecycleEventFired"/>
                 </methods>
             </class>
 
