@@ -98,7 +98,7 @@
             </para>
 
             <programlisting role="XML"><![CDATA[<Context>
-   <Resource name="BeanManager" 
+   <Resource name="BeanManager"
       auth="Container"
       type="javax.enterprise.inject.spi.BeanManager"
       factory="org.jboss.weld.resources.ManagerObjectFactory"/>
@@ -122,7 +122,7 @@
             </para>
 
             <para>
-                Weld also supports Servlet injection in Tomcat 6.
+                Weld also supports Servlet injection in Tomcat containers.
             </para>
 
         </section>
@@ -131,32 +131,12 @@
             <title>Jetty</title>
 
             <para>
-                Like Tomcat, Jetty has a read-only JNDI, so Weld can't automatically bind the BeanManager. To
-                bind the BeanManager to JNDI in Jetty 6, you should populate
-                <literal>WEB-INF/jetty-env.xml</literal>
-                with
-                the following contents:
+                Since Weld 2.0.2.Final only Jetty 7, 8 and 9 are supported.
             </para>
 
-            <programlisting role="XML"><![CDATA[<!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN"
-   "http://jetty.mortbay.org/configure.dtd">
-<Configure id="webAppCtx" class="org.mortbay.jetty.webapp.WebAppContext">
-   <New id="BeanManager" class="org.mortbay.jetty.plus.naming.Resource">
-      <Arg><Ref id="webAppCtx"/></Arg> 
-      <Arg>BeanManager</Arg>
-      <Arg>
-         <New class="javax.naming.Reference">
-            <Arg>javax.enterprise.inject.spi.BeanManager</Arg> 
-            <Arg>org.jboss.weld.resources.ManagerObjectFactory</Arg>
-            <Arg/>
-         </New>
-      </Arg>
-   </New>
-</Configure>]]></programlisting>
-
             <para>
-                Jetty 7 has moved to the Eclipse Foundation; if you are using Jetty 7 put the following in your
-                <literal>WEB-INF/jetty-env.xml</literal>:
+                To bind the BeanManager into JNDI, you should either populate <literal>WEB-INF/jetty-env.xml</literal>
+                with the following contents:
             </para>
 
             <programlisting role="XML"><![CDATA[<!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN"
@@ -177,7 +157,18 @@
 </Configure> ]]></programlisting>
 
             <para>
-                Just like in Tomcat, you need to make it available to your deployment by adding this to the bottom of
+                Or you can configure a special Servlet listener to bind the BeanManager automatically:
+            </para>
+
+<programlisting role="XML"><![CDATA[
+<listener>
+   <listener-class>org.jboss.weld.environment.servlet.BeanManagerResourceBindingListener</listener-class>
+</listener>
+ ]]></programlisting>
+
+
+            <para>
+                Just like in Tomcat, you need to make the BeanManager available to your deployment by adding this to the bottom of
                 <literal>web.xml</literal>:
             </para>
 
@@ -189,33 +180,14 @@
 </resource-env-ref>]]></programlisting>
 
             <para>
-                Notice that Jetty doesn't not have built-in support for an
-                <literal>javax.naming.spi.ObjectFactory</literal>
-                like Tomcat, so it's necessary to manually create the
-                <literal>javax.naming.Reference</literal>
-                to wrap
-                around it.
-            </para>
-
-            <para>
                 Jetty only allows you to bind entries to<literal>java:comp/env</literal>, so the BeanManager will be
                 available at
                 <literal>java:comp/env/BeanManager</literal>
             </para>
 
             <para>
-                Weld also supports Servlet injection in Jetty 6. To enable this, add the file
-                <literal>WEB-INF/jetty-web.xml</literal>
-                with the following content to your war:
+                Weld also supports Servlet and Filter injection in Jetty containers.
             </para>
-
-            <programlisting role="XML"><![CDATA[<!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN"
-   "http://jetty.mortbay.org/configure.dtd">
-<Configure id="webAppCtx" class="org.mortbay.jetty.webapp.WebAppContext">
-   <Call class="org.jboss.weld.environment.jetty.WeldServletHandler" name="process">
-      <Arg><Ref id="webAppCtx"/></Arg>
-   </Call>
-</Configure>]]></programlisting>
 
         </section>
 
