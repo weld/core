@@ -78,7 +78,7 @@
         <slf4j.version>1.7.2</slf4j.version>
         <testng.version>5.10</testng.version>
         <weld.api.version>2.0.Final</weld.api.version>
-        <wildfly.version>8.0.0.Alpha1</wildfly.version>
+        <wildfly.version>8.0.0.Alpha2</wildfly.version>
     </properties>
 
     <modules>
