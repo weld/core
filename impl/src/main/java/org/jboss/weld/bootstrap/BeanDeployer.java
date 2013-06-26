@@ -290,9 +290,8 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
         // remove vetoed class beans
         for (AbstractBean<?, ?> bean : vetoedBeans) {
             if (bean.isSpecializing()) {
-                SpecializationAndEnablementRegistry registry = getManager().getServices().get(SpecializationAndEnablementRegistry.class);
-                previouslySpecializedBeans.addAll(registry.resolveSpecializedBeans(bean));
-                registry.vetoSpecializingBean(bean);
+                previouslySpecializedBeans.addAll(specializationAndEnablementRegistry.resolveSpecializedBeans(bean));
+                specializationAndEnablementRegistry.vetoSpecializingBean(bean);
             }
             getEnvironment().vetoBean(bean);
         }

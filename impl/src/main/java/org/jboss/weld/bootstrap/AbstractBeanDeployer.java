@@ -89,6 +89,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
     protected final ContainerLifecycleEvents containerLifecycleEvents;
     protected final ClassTransformer classTransformer;
     protected final SlimAnnotatedTypeStore slimAnnotatedTypeStore;
+    protected final SpecializationAndEnablementRegistry specializationAndEnablementRegistry;
 
     public AbstractBeanDeployer(BeanManagerImpl manager, ServiceRegistry services, E environment) {
         this.manager = manager;
@@ -97,6 +98,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
         this.containerLifecycleEvents = Container.instance().deploymentManager().getServices().get(ContainerLifecycleEvents.class);
         this.classTransformer = services.get(ClassTransformer.class);
         this.slimAnnotatedTypeStore = services.get(SlimAnnotatedTypeStore.class);
+        this.specializationAndEnablementRegistry = services.get(SpecializationAndEnablementRegistry.class);
     }
 
     protected BeanManagerImpl getManager() {
@@ -324,7 +326,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
     }
 
     protected <T, S> boolean fireProcessBeanAttributes(AbstractBean<T, S> bean) {
-        if (!manager.getServices().get(SpecializationAndEnablementRegistry.class).isCandidateForLifecycleEvent(bean)) {
+        if (!specializationAndEnablementRegistry.isCandidateForLifecycleEvent(bean)) {
             return false;
         }
 
