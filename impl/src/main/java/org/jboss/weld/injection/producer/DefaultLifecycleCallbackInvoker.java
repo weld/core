@@ -67,7 +67,8 @@ public class DefaultLifecycleCallbackInvoker<T> implements LifecycleCallbackInvo
 
     @Override
     public void postConstruct(T instance, Instantiator<T> instantiator) {
-        if (instantiator.hasInterceptorSupport()) {
+        // this may be null for NonProducibleInjectionTarget
+        if (instantiator != null && instantiator.hasInterceptorSupport()) {
             InterceptionUtils.executePostConstruct(instance);
         } else {
             invokeMethods(accessiblePostConstructMethods, instance);
@@ -76,7 +77,8 @@ public class DefaultLifecycleCallbackInvoker<T> implements LifecycleCallbackInvo
 
     @Override
     public void preDestroy(T instance, Instantiator<T> instantiator) {
-        if (instantiator.hasInterceptorSupport()) {
+        // this may be null for NonProducibleInjectionTarget
+        if (instantiator != null && instantiator.hasInterceptorSupport()) {
             InterceptionUtils.executePredestroy(instance);
         } else {
             invokeMethods(accessiblePreDestroyMethods, instance);

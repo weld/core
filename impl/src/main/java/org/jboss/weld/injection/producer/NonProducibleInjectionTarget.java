@@ -59,4 +59,15 @@ public class NonProducibleInjectionTarget<T> extends BasicInjectionTarget<T> {
     protected void checkType(EnhancedAnnotatedType<T> type) {
         // suppress type check
     }
+
+    @Override
+    public boolean hasInterceptors() {
+        return false;
+    }
+
+    @Override
+    public boolean hasDecorators() {
+        return false;
+    }
+
 }

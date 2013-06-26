@@ -63,6 +63,7 @@ public class InjectionTargetTest {
         CreationalContext<AbstractClass> ctx = beanManager.createCreationalContext(null);
         AbstractClass instance = new AbstractClass() {
         };
+        it.postConstruct(instance);
         it.inject(instance, ctx);
         assertNotNull(instance.getManager());
         try {
@@ -70,6 +71,7 @@ public class InjectionTargetTest {
             Assert.fail();
         } catch (CreationException expected) {
         }
+        it.preDestroy(instance);
     }
 
     @Test
@@ -78,6 +80,7 @@ public class InjectionTargetTest {
                 null);
         CreationalContext<NonStaticInnerClass> ctx = beanManager.createCreationalContext(null);
         NonStaticInnerClass instance = new NonStaticInnerClass();
+        it.postConstruct(instance);
         it.inject(instance, ctx);
         assertNotNull(instance.getEvent());
         try {
@@ -85,6 +88,7 @@ public class InjectionTargetTest {
             Assert.fail();
         } catch (CreationException expected) {
         }
+        it.preDestroy(instance);
     }
 
     private class NonStaticInnerClass {
