@@ -106,6 +106,7 @@ import org.jboss.weld.context.http.HttpRequestContext;
 import org.jboss.weld.context.http.HttpRequestContextImpl;
 import org.jboss.weld.context.http.HttpSessionContext;
 import org.jboss.weld.context.http.HttpSessionContextImpl;
+import org.jboss.weld.context.http.HttpSessionDestructionContext;
 import org.jboss.weld.context.unbound.ApplicationContextImpl;
 import org.jboss.weld.context.unbound.DependentContextImpl;
 import org.jboss.weld.context.unbound.RequestContextImpl;
@@ -609,6 +610,7 @@ public class WeldBootstrap implements CDI11Bootstrap {
         if (Reflections.isClassLoadable(ServletApi.SERVLET_CONTEXT_CLASS_NAME, WeldClassLoaderResourceLoader.INSTANCE)) {
             // Register the Http contexts if not in
             contexts.add(new ContextHolder<HttpSessionContext>(new HttpSessionContextImpl(), HttpSessionContext.class, HttpLiteral.INSTANCE));
+            contexts.add(new ContextHolder<HttpSessionDestructionContext>(new HttpSessionDestructionContext(), HttpSessionDestructionContext.class, HttpLiteral.INSTANCE));
             contexts.add(new ContextHolder<HttpConversationContext>(new HttpConversationContextImpl(), HttpConversationContext.class, HttpLiteral.INSTANCE));
             contexts.add(new ContextHolder<HttpRequestContext>(new HttpRequestContextImpl(), HttpRequestContext.class, HttpLiteral.INSTANCE));
         }

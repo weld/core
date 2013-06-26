@@ -31,6 +31,7 @@ import org.jboss.weld.context.cache.RequestScopedBeanCache;
 import org.jboss.weld.context.http.HttpRequestContext;
 import org.jboss.weld.context.http.HttpRequestContextImpl;
 import org.jboss.weld.context.http.HttpSessionContext;
+import org.jboss.weld.context.http.HttpSessionDestructionContext;
 import org.jboss.weld.literal.DestroyedLiteral;
 import org.jboss.weld.literal.InitializedLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -52,6 +53,7 @@ public class HttpContextLifecycle implements Service {
 
     private static final LocLogger log = loggerFactory().getLogger(SERVLET);
 
+    private HttpSessionDestructionContext sessionDestructionContextCache;
     private HttpSessionContext sessionContextCache;
     private HttpRequestContext requestContextCache;
 
@@ -64,6 +66,13 @@ public class HttpContextLifecycle implements Service {
         this.beanManager = beanManager;
         this.conversationContextActivator = new ConversationContextActivator(beanManager);
         this.conversationActivationEnabled = true;
+    }
+
+    private HttpSessionDestructionContext getSessionDestructionContext() {
+        if (sessionDestructionContextCache == null) {
+            this.sessionDestructionContextCache = beanManager.instance().select(HttpSessionDestructionContext.class).get();
+        }
+        return sessionDestructionContextCache;
     }
 
     private HttpSessionContext getSessionContext() {
@@ -96,6 +105,7 @@ public class HttpContextLifecycle implements Service {
     public void sessionDestroyed(HttpSession session) {
         // Mark the session context and conversation contexts to destroy
         // instances when appropriate
+        deactivateSessionDestructionContext(session);
         boolean destroyed = getSessionContext().destroy(session);
         SessionHolder.clear();
         RequestScopedBeanCache.endRequest();
@@ -111,6 +121,14 @@ public class HttpContextLifecycle implements Service {
                         .getHttpServletRequest();
                 request.setAttribute(HTTP_SESSION, session);
             }
+        }
+    }
+
+    private void deactivateSessionDestructionContext(HttpSession session) {
+        HttpSessionDestructionContext context = getSessionDestructionContext();
+        if (context.isActive()) {
+            context.deactivate();
+            context.dissociate(session);
         }
     }
 
