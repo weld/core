@@ -16,11 +16,13 @@ import org.jboss.weld.context.beanstore.http.LazySessionBeanStore;
 
 public class HttpSessionContextImpl extends AbstractBoundContext<HttpServletRequest> implements HttpSessionContext {
 
+    public static final SimpleNamingScheme NAMING_SCHEME = new SimpleNamingScheme(HttpSessionContext.class.getName());
+
     private final NamingScheme namingScheme;
 
     public HttpSessionContextImpl() {
         super(true);
-        this.namingScheme = new SimpleNamingScheme(HttpSessionContext.class.getName());
+        this.namingScheme = NAMING_SCHEME;
     }
 
     public boolean associate(HttpServletRequest request) {
