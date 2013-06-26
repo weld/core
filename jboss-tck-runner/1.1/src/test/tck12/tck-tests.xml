@@ -25,6 +25,12 @@
             <!-- Issues in the TCK -->
 
             <!-- Issues in Weld (the RI) -->
+            <!-- WELD-1269 -->
+            <class name="org.jboss.cdi.tck.tests.context.session.listener.SessionContextHttpSessionListenerTest">
+                <methods>
+                    <exclude name="testSessionScopeActiveDuringHttpSessionListenerCallOnTimeout"/>
+                </methods>
+            </class>
 
             <!-- Issues in JBoss AS -->
             <!-- JMS tests not working on AS7, see CDITCK-315 -->
