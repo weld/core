@@ -18,10 +18,10 @@ package org.jboss.weld.servlet;
 
 import static org.jboss.weld.logging.Category.SERVLET;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.ServletMessage.REQUEST_DESTROYED;
 import static org.jboss.weld.logging.messages.ServletMessage.REQUEST_INITIALIZED;
 
 import javax.servlet.ServletContext;
+import javax.servlet.ServletRequestListener;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -48,6 +48,7 @@ public class HttpContextLifecycle implements Service {
     private static final String HTTP_SESSION = "org.jboss.weld." + HttpSession.class.getName();
 
     private static final String INCLUDE_HEADER = "javax.servlet.include.request_uri";
+    private static final String REQUEST_DESTROYED = HttpContextLifecycle.class.getName() + ".request.destroyed";
 
     private static final LocLogger log = loggerFactory().getLogger(SERVLET);
 
@@ -140,12 +141,16 @@ public class HttpContextLifecycle implements Service {
             beanManager.getAccessibleLenientObserverNotifier().fireEvent(request, InitializedLiteral.REQUEST);
         } catch (RuntimeException e) {
             requestDestroyed(request);
+            /*
+             * If the servlet container happens to call the destroyed callback again, ignore it.
+             */
+            request.setAttribute(REQUEST_DESTROYED, Boolean.TRUE);
             throw e;
         }
     }
 
     public void requestDestroyed(HttpServletRequest request) {
-        if (isIncludedRequest(request)) {
+        if (isIncludedRequest(request) || isRequestDestroyed(request)) {
             return;
         }
         log.trace(REQUEST_DESTROYED, request);
@@ -185,6 +190,16 @@ public class HttpContextLifecycle implements Service {
      */
     private boolean isIncludedRequest(HttpServletRequest request) {
         return request.getAttribute(INCLUDE_HEADER) != null;
+    }
+
+    /**
+     * The way servlet containers react to an exception that occurs in a {@link ServletRequestListener} differs among servlet listeners. In certain containers
+     * the destroyed callback may be invoked multiple times, causing the latter invocations to fail as thread locals have already been unset. We use the
+     * {@link #REQUEST_DESTROYED} flag to indicate that all further invocations of the
+     * {@link ServletRequestListener#requestDestroyed(javax.servlet.ServletRequestEvent)} should be ignored by Weld.
+     */
+    private boolean isRequestDestroyed(HttpServletRequest request) {
+        return request.getAttribute(REQUEST_DESTROYED) != null;
     }
 
     @Override
