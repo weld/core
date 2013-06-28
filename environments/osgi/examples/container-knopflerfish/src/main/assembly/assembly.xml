@@ -9,8 +9,8 @@
             <useProjectArtifact>false</useProjectArtifact>
             <outputDirectory>modules</outputDirectory>
             <includes>
-                <include>org.apache.felix.gogo:org.apache.felix.gogo.commands</include>
-                <include>org.apache.felix.gogo:org.apache.felix.gogo.runtime</include>
+                <include>org.apache.felix:org.apache.felix.gogo.command</include>
+                <include>org.apache.felix:org.apache.felix.gogo.runtime</include>
                 <include>org.jboss.weld.osgi.examples:weld-osgi-paint-api</include>
                 <include>org.jboss.weld.osgi.examples:weld-osgi-paint-core</include>
                 <include>org.jboss.weld.osgi.examples:weld-osgi-paint-triangle</include>

@@ -17,6 +17,8 @@
 
 package org.jboss.weld.osgi.examples.web.fwk;
 
+import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -79,7 +81,7 @@ public class HttpServiceTracker extends ServiceTracker {
         ClassLoader actual = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(JerseyApplication.class.getClassLoader());
         try {
-            Properties props = new Properties();
+            Dictionary<String, Object> props = new Hashtable<String, Object>();
             props.put("alias", contextRoot);
             props.put("init.javax.ws.rs.Application", JerseyApplication.class.getName());
             reg = bc.registerService(Servlet.class.getName(),

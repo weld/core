@@ -28,7 +28,7 @@
 -install modules/weld-osgi-standalone-${project.version}.jar
 -install modules/groovy-all-1.8.0-rc-3.jar
 -install modules/jsr311-api-1.1.jar
--install modules/org.apache.felix.gogo.commands-${gogo.command.version}.jar
+-install modules/org.apache.felix.gogo.command-${gogo.command.version}.jar
 -install modules/org.apache.felix.gogo.runtime-${gogo.runtime.version}.jar
 -install modules/org.osgi.compendium-${osgi.version}.jar
 

@@ -130,8 +130,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.felix.gogo</groupId>
-            <artifactId>org.apache.felix.gogo.commands</artifactId>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.gogo.command</artifactId>
         </dependency>
 
         <dependency>
