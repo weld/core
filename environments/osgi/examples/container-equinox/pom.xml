@@ -223,13 +223,13 @@
         </dependency>
 
         <dependency>
-            <groupId>org.eclipse.equinox</groupId>
+            <groupId>org.eclipse</groupId>
             <artifactId>org.eclipse.osgi</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>org.apache.felix.gogo</groupId>
-            <artifactId>org.apache.felix.gogo.commands</artifactId>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.gogo.command</artifactId>
         </dependency>
 
         <dependency>
@@ -284,11 +284,8 @@
                         </goals>
                         <configuration>
                             <tasks>
-                                <copy file="target/classes/config.ini"
-                                    tofile="${project.build.directory}/config.ini" />
-                                <copy
-                                    file="${maven.dependency.org.eclipse.equinox.org.eclipse.osgi.jar.path}"
-                                    tofile="${project.build.directory}/equinox.jar" />
+                                <copy file="target/classes/config.ini" tofile="${project.build.directory}/config.ini" />
+                                <copy file="${maven.dependency.org.eclipse.org.eclipse.osgi.jar.path}" tofile="${project.build.directory}/equinox.jar" />
                             </tasks>
                         </configuration>
                     </execution>
