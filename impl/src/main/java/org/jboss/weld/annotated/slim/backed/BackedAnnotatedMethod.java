@@ -120,7 +120,7 @@ public class BackedAnnotatedMethod<X> extends BackedAnnotatedCallable<X, Method>
         private static final long serialVersionUID = 8008578690970722095L;
 
         public SerializationProxy(BackedAnnotatedMethod<X> method) {
-            super(method.getDeclaringType(), new MethodHolder(method.getJavaMember()));
+            super(method.getDeclaringType(), MethodHolder.of(method));
         }
 
         private Object readResolve() throws ObjectStreamException {

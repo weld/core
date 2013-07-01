@@ -15,18 +15,18 @@
  * limitations under the License.
  */
 
-package org.jboss.weld.tests.unit.interceptor.builder;
+package org.jboss.weld.tests.unit.serialization;
 
 import java.lang.reflect.Method;
 
-import org.jboss.weld.interceptor.builder.MethodReference;
+import org.jboss.weld.serialization.MethodHolder;
 import org.jboss.weld.test.util.Utils;
 import org.testng.annotations.Test;
 
 /**
  * @author <a href="mailto:mluksa@redhat.com">Marko Luksa</a>
  */
-public class MethodReferenceSerializationTest {
+public class MethodHolderSerializationTest {
 
     @Test
     public void testPrimitiveParameters() throws Exception {
@@ -58,7 +58,7 @@ public class MethodReferenceSerializationTest {
     }
 
     private void assertReferenceSerializable(Method method) throws Exception {
-        MethodReference reference = MethodReference.of(method, false);
+        MethodHolder reference = MethodHolder.of(method);
         Utils.deserialize(Utils.serialize(reference));
     }
 
