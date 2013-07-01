@@ -16,9 +16,8 @@ import java.util.Set;
 
 import javax.interceptor.InvocationContext;
 
-import org.jboss.weld.annotated.enhanced.MethodSignature;
-import org.jboss.weld.annotated.enhanced.jlr.MethodSignatureImpl;
 import org.jboss.weld.exceptions.DefinitionException;
+import org.jboss.weld.interceptor.builder.MethodReference;
 import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorFactory;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
@@ -32,7 +31,6 @@ import org.slf4j.cal10n.LocLogger;
 
 /**
  * @author Marius Bogoevici
- * @author Marko Luksa
  */
 public class InterceptorMetadataUtils {
     protected static final String OBJECT_CLASS_NAME = Object.class.getName();
@@ -159,38 +157,34 @@ public class InterceptorMetadataUtils {
     static Map<InterceptionType, List<MethodMetadata>> buildMethodMap(ClassMetadata<?> interceptorClass, boolean forTargetClass) {
         Map<InterceptionType, List<MethodMetadata>> methodMap = new HashMap<InterceptionType, List<MethodMetadata>>();
         ClassMetadata<?> currentClass = interceptorClass;
-        Set<MethodSignature> foundMethods = new HashSet<MethodSignature>();
+        Set<MethodReference> foundMethods = new HashSet<MethodReference>();
         do {
             Set<InterceptionType> detectedInterceptorTypes = new HashSet<InterceptionType>();
 
             for (MethodMetadata method : currentClass.getDeclaredMethods()) {
-                boolean privateMethod = Modifier.isPrivate(method.getJavaMethod().getModifiers());
-                MethodSignature methodSignature = new MethodSignatureImpl(method.getJavaMethod());
-                if (privateMethod || !foundMethods.contains(methodSignature)) {
+                MethodReference methodReference = MethodReference.of(method, Modifier.isPrivate(method.getJavaMethod().getModifiers()));
+                if (!foundMethods.contains(methodReference)) {
                     for (InterceptionType interceptionType : InterceptionTypeRegistry.getSupportedInterceptionTypes()) {
                         if (isInterceptorMethod(interceptionType, method, forTargetClass)) {
+                            if (methodMap.get(interceptionType) == null) {
+                                methodMap.put(interceptionType, new LinkedList<MethodMetadata>());
+                            }
                             if (detectedInterceptorTypes.contains(interceptionType)) {
                                 throw new InterceptorMetadataException("Same interception type cannot be specified twice on the same class");
+                            } else {
+                                detectedInterceptorTypes.add(interceptionType);
                             }
-                            detectedInterceptorTypes.add(interceptionType);
-
                             // add method in the list - if it is there already, it means that it has been added by a subclass
                             // final methods are treated separately, as a final method cannot override another method nor be
                             // overridden
                             AccessController.doPrivileged(SetAccessibleAction.of(method.getJavaMethod()));
-
-                            List<MethodMetadata> methodList = methodMap.get(interceptionType);
-                            if (methodList == null) {
-                                methodList = new LinkedList<MethodMetadata>();
-                                methodMap.put(interceptionType, methodList);
+                            if (!foundMethods.contains(methodReference)) {
+                                methodMap.get(interceptionType).add(0, method);
                             }
-                            methodList.add(0, method);
                         }
                     }
                     // the method reference must be added anyway - overridden methods are not taken into consideration
-                    if (!privateMethod) {
-                        foundMethods.add(methodSignature);
-                    }
+                    foundMethods.add(methodReference);
                 }
             }
             currentClass = currentClass.getSuperclass();

@@ -21,14 +21,8 @@ import static org.jboss.weld.logging.messages.ReflectionMessage.UNABLE_TO_GET_ME
 import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.Arrays;
-
-import javax.enterprise.inject.spi.AnnotatedMethod;
 
 import org.jboss.weld.exceptions.WeldException;
-import org.jboss.weld.interceptor.spi.metadata.MethodMetadata;
-
-import com.google.common.base.Objects;
 
 /**
  * Serializable holder for {@link Method}.
@@ -51,18 +45,6 @@ public class MethodHolder extends AbstractSerializableHolder<Method> implements 
         this.parameterTypes = method.getParameterTypes();
     }
 
-    public static MethodHolder of(Method method) {
-        return new MethodHolder(method);
-    }
-
-    public static MethodHolder of(AnnotatedMethod<?> method) {
-        return new MethodHolder(method.getJavaMember());
-    }
-
-    public static MethodHolder of(MethodMetadata method) {
-        return new MethodHolder(method.getJavaMethod());
-    }
-
     @Override
     protected Method initialize() {
         return AccessController.doPrivileged(this);
@@ -76,25 +58,4 @@ public class MethodHolder extends AbstractSerializableHolder<Method> implements 
             throw new WeldException(UNABLE_TO_GET_METHOD_ON_DESERIALIZATION, e, declaringClass, parameterTypes);
         }
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        MethodHolder that = (MethodHolder) o;
-        return Objects.equal(declaringClass, that.declaringClass)
-                && Objects.equal(methodName, that.methodName)
-                && Arrays.equals(parameterTypes, that.parameterTypes);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(declaringClass, methodName, parameterTypes);
-    }
-
 }

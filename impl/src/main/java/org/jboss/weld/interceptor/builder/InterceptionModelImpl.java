@@ -27,7 +27,6 @@ import java.util.Set;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
-import org.jboss.weld.serialization.MethodHolder;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -45,9 +44,9 @@ class InterceptionModelImpl<T> implements InterceptionModel<T> {
 
     private final Map<InterceptionType, List<InterceptorMetadata<?>>> globalInterceptors;
 
-    private final Map<InterceptionType, Map<MethodHolder, List<InterceptorMetadata<?>>>> methodBoundInterceptors;
+    private final Map<InterceptionType, Map<MethodReference, List<InterceptorMetadata<?>>>> methodBoundInterceptors;
 
-    private final Set<MethodHolder> methodsIgnoringGlobalInterceptors;
+    private final Set<MethodReference> methodsIgnoringGlobalInterceptors;
 
     private final Set<InterceptorMetadata<?>> allInterceptors;
 
@@ -66,8 +65,8 @@ class InterceptionModelImpl<T> implements InterceptionModel<T> {
         this.hasTargetClassInterceptors = builder.isHasTargetClassInterceptors();
         this.hasExternalNonConstructorInterceptors = builder.isHasExternalNonConstructorInterceptors();
         this.globalInterceptors = ImmutableMap.<InterceptionType, List<InterceptorMetadata<?>>>copyOf(builder.getGlobalInterceptors());
-        this.methodBoundInterceptors = ImmutableMap.<InterceptionType, Map<MethodHolder,List<InterceptorMetadata<?>>>>copyOf(builder.getMethodBoundInterceptors());
-        this.methodsIgnoringGlobalInterceptors = ImmutableSet.<MethodHolder>copyOf(builder.getMethodsIgnoringGlobalInterceptors());
+        this.methodBoundInterceptors = ImmutableMap.<InterceptionType, Map<MethodReference,List<InterceptorMetadata<?>>>>copyOf(builder.getMethodBoundInterceptors());
+        this.methodsIgnoringGlobalInterceptors = ImmutableSet.<MethodReference>copyOf(builder.getMethodsIgnoringGlobalInterceptors());
         this.allInterceptors = ImmutableSet.<InterceptorMetadata<?>>copyOf(builder.getAllInterceptors());
     }
 
@@ -88,14 +87,14 @@ class InterceptionModelImpl<T> implements InterceptionModel<T> {
                 return globalInterceptors.get(interceptionType);
             }
         } else {
-            MethodHolder methodHolder = MethodHolder.of(method);
+            MethodReference methodReference = MethodReference.of(method, true);
             ArrayList<InterceptorMetadata<?>> returnedInterceptors = new ArrayList<InterceptorMetadata<?>>();
-            if (!methodsIgnoringGlobalInterceptors.contains(methodHolder) && globalInterceptors.containsKey(interceptionType)) {
+            if (!methodsIgnoringGlobalInterceptors.contains(methodReference) && globalInterceptors.containsKey(interceptionType)) {
                 returnedInterceptors.addAll(globalInterceptors.get(interceptionType));
             }
-            Map<MethodHolder, List<InterceptorMetadata<?>>> map = methodBoundInterceptors.get(interceptionType);
+            Map<MethodReference, List<InterceptorMetadata<?>>> map = methodBoundInterceptors.get(interceptionType);
             if (map != null) {
-                List<InterceptorMetadata<?>> list = map.get(methodHolder);
+                List<InterceptorMetadata<?>> list = map.get(methodReference);
                 if (list != null) {
                     returnedInterceptors.addAll(list);
                 }

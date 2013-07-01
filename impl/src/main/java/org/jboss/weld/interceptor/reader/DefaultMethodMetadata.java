@@ -20,14 +20,17 @@ package org.jboss.weld.interceptor.reader;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
 import java.util.Collections;
 import java.util.Set;
 
+import org.jboss.weld.interceptor.builder.MethodReference;
 import org.jboss.weld.interceptor.spi.metadata.MethodMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
 import org.jboss.weld.interceptor.util.InterceptionTypeRegistry;
 import org.jboss.weld.resources.SharedObjectFacade;
-import org.jboss.weld.serialization.MethodHolder;
+import org.jboss.weld.security.GetDeclaredMethodAction;
 import org.jboss.weld.util.collections.ArraySet;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
@@ -37,7 +40,6 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
  *
  * @author Marius Bogoevici
  * @author Jozef Hartinger
- * @author Marko Luksa
  */
 @SuppressWarnings(value = { "SE_BAD_FIELD", "SE_NO_SERIALVERSIONID" }, justification = "False positive from FindBugs - serialization is handled by SerializationProxy.")
 public class DefaultMethodMetadata<M> implements MethodMetadata, Serializable {
@@ -63,9 +65,13 @@ public class DefaultMethodMetadata<M> implements MethodMetadata, Serializable {
         }
     }
 
-    private DefaultMethodMetadata(Set<InterceptionType> interceptionTypes, MethodHolder methodHolder) {
+    private DefaultMethodMetadata(Set<InterceptionType> interceptionTypes, MethodReference methodReference) {
         this.supportedInterceptorTypes = interceptionTypes;
-        this.javaMethod = methodHolder.get();
+        try {
+            this.javaMethod = AccessController.doPrivileged(new GetDeclaredMethodAction(methodReference.getDeclaringClass(), methodReference.getMethodName(), methodReference.getParameterTypes()));
+        } catch (PrivilegedActionException e) {
+            throw new IllegalStateException(e.getCause());
+        }
     }
 
     public static <M> MethodMetadata of(M methodReference, AnnotatedMethodReader<M> methodReader) {
@@ -94,24 +100,24 @@ public class DefaultMethodMetadata<M> implements MethodMetadata, Serializable {
     }
 
     private Object writeReplace() {
-        return new DefaultMethodMetadataSerializationProxy(supportedInterceptorTypes, MethodHolder.of(this));
+        return new DefaultMethodMetadataSerializationProxy(supportedInterceptorTypes, MethodReference.of(this, true));
     }
 
 
     private static class DefaultMethodMetadataSerializationProxy implements Serializable {
 
-        private static final long serialVersionUID = 6505717058846166714L;
+        private static final long serialVersionUID = 6505717058846166713L;
 
         private final Set<InterceptionType> supportedInterceptionTypes;
-        private final MethodHolder methodHolder;
+        private final MethodReference methodReference;
 
-        private DefaultMethodMetadataSerializationProxy(Set<InterceptionType> supportedInterceptionTypes, MethodHolder methodHolder) {
+        private DefaultMethodMetadataSerializationProxy(Set<InterceptionType> supportedInterceptionTypes, MethodReference methodReference) {
             this.supportedInterceptionTypes = supportedInterceptionTypes;
-            this.methodHolder = methodHolder;
+            this.methodReference = methodReference;
         }
 
         private Object readResolve() throws ObjectStreamException {
-            return new DefaultMethodMetadata(supportedInterceptionTypes, methodHolder);
+            return new DefaultMethodMetadata(supportedInterceptionTypes, methodReference);
         }
 
     }

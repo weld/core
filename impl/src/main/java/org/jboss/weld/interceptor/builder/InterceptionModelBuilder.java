@@ -29,7 +29,6 @@ import java.util.Set;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
-import org.jboss.weld.serialization.MethodHolder;
 
 
 /**
@@ -51,13 +50,13 @@ public class InterceptionModelBuilder<T> {
 
     private boolean hasExternalNonConstructorInterceptors;
 
-    private final Set<MethodHolder> methodsIgnoringGlobalInterceptors = new HashSet<MethodHolder>();
+    private final Set<MethodReference> methodsIgnoringGlobalInterceptors = new HashSet<MethodReference>();
 
     private final Set<InterceptorMetadata<?>> allInterceptors = new LinkedHashSet<InterceptorMetadata<?>>();
 
     private final Map<InterceptionType, List<InterceptorMetadata<?>>> globalInterceptors = new HashMap<InterceptionType, List<InterceptorMetadata<?>>>();
 
-    private final Map<InterceptionType, Map<MethodHolder, List<InterceptorMetadata<?>>>> methodBoundInterceptors = new HashMap<InterceptionType, Map<MethodHolder, List<InterceptorMetadata<?>>>>();
+    private final Map<InterceptionType, Map<MethodReference, List<InterceptorMetadata<?>>>> methodBoundInterceptors = new HashMap<InterceptionType, Map<MethodReference, List<InterceptorMetadata<?>>>>();
 
     /**
      *
@@ -136,7 +135,7 @@ public class InterceptionModelBuilder<T> {
 
     public void addMethodIgnoringGlobalInterceptors(Method method) {
         checkModelNotBuilt();
-        this.methodsIgnoringGlobalInterceptors.add(MethodHolder.of(method));
+        this.methodsIgnoringGlobalInterceptors.add(MethodReference.of(method, true));
     }
 
     public final class MethodInterceptorDescriptor {
@@ -172,9 +171,9 @@ public class InterceptionModelBuilder<T> {
             }
             interceptorsList.addAll(Arrays.asList(interceptors));
         } else {
-            MethodHolder methodHolder = MethodHolder.of(method);
+            MethodReference methodHolder = MethodReference.of(method, true);
             if (null == methodBoundInterceptors.get(interceptionType)) {
-                methodBoundInterceptors.put(interceptionType, new HashMap<MethodHolder, List<InterceptorMetadata<?>>>());
+                methodBoundInterceptors.put(interceptionType, new HashMap<MethodReference, List<InterceptorMetadata<?>>>());
             }
             List<InterceptorMetadata<?>> interceptorsList = methodBoundInterceptors.get(interceptionType).get(methodHolder);
             if (interceptorsList == null) {
@@ -199,7 +198,7 @@ public class InterceptionModelBuilder<T> {
         return hasExternalNonConstructorInterceptors;
     }
 
-    Set<MethodHolder> getMethodsIgnoringGlobalInterceptors() {
+    Set<MethodReference> getMethodsIgnoringGlobalInterceptors() {
         return methodsIgnoringGlobalInterceptors;
     }
 
@@ -211,7 +210,7 @@ public class InterceptionModelBuilder<T> {
         return globalInterceptors;
     }
 
-    Map<InterceptionType, Map<MethodHolder, List<InterceptorMetadata<?>>>> getMethodBoundInterceptors() {
+    Map<InterceptionType, Map<MethodReference, List<InterceptorMetadata<?>>>> getMethodBoundInterceptors() {
         return methodBoundInterceptors;
     }
 
