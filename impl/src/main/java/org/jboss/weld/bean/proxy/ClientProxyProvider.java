@@ -16,23 +16,23 @@
  */
 package org.jboss.weld.bean.proxy;
 
-import com.google.common.base.Function;
-import com.google.common.collect.MapMaker;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import org.jboss.weld.Container;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.Proxies.TypeInfo;
-import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
 
 import javax.enterprise.inject.spi.Bean;
-import java.util.concurrent.ConcurrentMap;
 
 import static org.jboss.weld.logging.Category.BEAN;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.BeanMessage.BEAN_ID_CREATION_FAILED;
 import static org.jboss.weld.logging.messages.BeanMessage.CREATED_NEW_CLIENT_PROXY_TYPE;
 import static org.jboss.weld.logging.messages.BeanMessage.LOOKED_UP_CLIENT_PROXY;
+import static org.jboss.weld.util.cache.LoadingCacheUtils.getCastCacheValue;
 
 /**
  * A proxy pool for holding scope adaptors (client proxies)
@@ -43,9 +43,9 @@ import static org.jboss.weld.logging.messages.BeanMessage.LOOKED_UP_CLIENT_PROXY
 public class ClientProxyProvider {
     private static final LocLogger log = loggerFactory().getLogger(BEAN);
 
-    private static final Function<Bean<Object>, Object> CREATE_CLIENT_PROXY = new Function<Bean<Object>, Object>() {
+    private static final CacheLoader<Bean<Object>, Object> CREATE_CLIENT_PROXY = new CacheLoader<Bean<Object>, Object>() {
 
-        public Object apply(Bean<Object> from) {
+        public Object load(Bean<Object> from) {
             String id = Container.instance().services().get(ContextualStore.class).putIfAbsent(from);
             if (id == null) {
                 throw new DefinitionException(BEAN_ID_CREATION_FAILED, from);
@@ -59,13 +59,13 @@ public class ClientProxyProvider {
      *
      * @author Nicklas Karlsson
      */
-    private final ConcurrentMap<Bean<Object>, Object> pool;
+    private final LoadingCache<Bean<Object>, Object> pool;
 
     /**
      * Constructor
      */
     public ClientProxyProvider() {
-        this.pool = new MapMaker().makeComputingMap(CREATE_CLIENT_PROXY);
+        this.pool = CacheBuilder.newBuilder().build(CREATE_CLIENT_PROXY);
     }
 
     /**
@@ -99,7 +99,7 @@ public class ClientProxyProvider {
      * @return the client proxy for the bean
      */
     public <T> T getClientProxy(final Bean<T> bean) {
-        T proxy = Reflections.<T>cast(pool.get(bean));
+        T proxy = getCastCacheValue(pool, bean);
         log.trace(LOOKED_UP_CLIENT_PROXY, proxy.getClass(), bean);
         return proxy;
     }
@@ -115,7 +115,7 @@ public class ClientProxyProvider {
     }
 
     public void clear() {
-        this.pool.clear();
+        this.pool.invalidateAll();
     }
 
 }

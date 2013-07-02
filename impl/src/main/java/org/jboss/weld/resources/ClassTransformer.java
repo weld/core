@@ -16,9 +16,11 @@
  */
 package org.jboss.weld.resources;
 
-import com.google.common.base.Function;
-import com.google.common.collect.ComputationException;
-import com.google.common.collect.MapMaker;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import com.google.common.util.concurrent.ExecutionError;
+import com.google.common.util.concurrent.UncheckedExecutionException;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.introspector.ForwardingAnnotatedType;
 import org.jboss.weld.introspector.WeldAnnotation;
@@ -34,9 +36,8 @@ import org.slf4j.Logger;
 import javax.enterprise.inject.spi.AnnotatedType;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.concurrent.ConcurrentMap;
 
-import static org.jboss.weld.util.reflection.Reflections.cast;
+import static org.jboss.weld.util.cache.LoadingCacheUtils.getCastCacheValue;
 
 /**
  * @author Pete Muir
@@ -47,7 +48,7 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
 public class ClassTransformer implements Service {
     private static Logger log = LoggerFactory.loggerFactory().getLogger(Category.CLASS_LOADING);
 
-    private static class TransformTypeToWeldClass implements Function<TypeHolder<?>, WeldClass<?>> {
+    private static class TransformTypeToWeldClass extends CacheLoader<TypeHolder<?>, WeldClass<?>> {
 
         private final ClassTransformer classTransformer;
 
@@ -55,13 +56,13 @@ public class ClassTransformer implements Service {
             this.classTransformer = classTransformer;
         }
 
-        public WeldClass<?> apply(TypeHolder<?> from) {
+        public WeldClass<?> load(TypeHolder<?> from) {
             return WeldClassImpl.of(from.getRawType(), from.getBaseType(), classTransformer);
         }
 
     }
 
-    private static class TransformClassToWeldAnnotation implements Function<Class<? extends Annotation>, WeldAnnotation<?>> {
+    private static class TransformClassToWeldAnnotation extends CacheLoader<Class<? extends Annotation>, WeldAnnotation<?>> {
 
         private final ClassTransformer classTransformer;
 
@@ -69,13 +70,13 @@ public class ClassTransformer implements Service {
             this.classTransformer = classTransformer;
         }
 
-        public WeldAnnotation<?> apply(Class<? extends Annotation> from) {
+        public WeldAnnotation<?> load(Class<? extends Annotation> from) {
             return WeldAnnotationImpl.create(from, classTransformer);
         }
 
     }
 
-    private static class TransformAnnotatedTypeToWeldClass implements Function<AnnotatedType<?>, WeldClass<?>> {
+    private static class TransformAnnotatedTypeToWeldClass extends CacheLoader<AnnotatedType<?>, WeldClass<?>> {
 
         private final ClassTransformer classTransformer;
 
@@ -84,7 +85,7 @@ public class ClassTransformer implements Service {
             this.classTransformer = classTransformer;
         }
 
-        public WeldClass<?> apply(AnnotatedType<?> from) {
+        public WeldClass<?> load(AnnotatedType<?> from) {
             return WeldClassImpl.of(from, classTransformer);
         }
 
@@ -128,24 +129,24 @@ public class ClassTransformer implements Service {
         }
     }
 
-    private final ConcurrentMap<TypeHolder<?>, WeldClass<?>> classes;
-    private final ConcurrentMap<AnnotatedType<?>, WeldClass<?>> annotatedTypes;
-    private final ConcurrentMap<Class<? extends Annotation>, WeldAnnotation<?>> annotations;
+    private final LoadingCache<TypeHolder<?>, WeldClass<?>> classes;
+    private final LoadingCache<AnnotatedType<?>, WeldClass<?>> annotatedTypes;
+    private final LoadingCache<Class<? extends Annotation>, WeldAnnotation<?>> annotations;
     private final TypeStore typeStore;
 
     public ClassTransformer(TypeStore typeStore) {
-        MapMaker maker = new MapMaker();
-        this.classes = maker.makeComputingMap(new TransformTypeToWeldClass(this));
-        this.annotatedTypes = maker.makeComputingMap(new TransformAnnotatedTypeToWeldClass(this));
-        this.annotations = maker.makeComputingMap(new TransformClassToWeldAnnotation(this));
+        CacheBuilder<Object, Object> builder = CacheBuilder.newBuilder();
+        this.classes = builder.build(new TransformTypeToWeldClass(this));
+        this.annotatedTypes = builder.build(new TransformAnnotatedTypeToWeldClass(this));
+        this.annotations = builder.build(new TransformClassToWeldAnnotation(this));
         this.typeStore = typeStore;
     }
 
     @SuppressWarnings("unchecked")
     public <T> WeldClass<T> loadClass(final Class<T> rawType, final Type baseType) {
         try {
-            return (WeldClass<T>) classes.get(new TypeHolder<T>(rawType, baseType));
-        } catch (ComputationException e) {
+            return getCastCacheValue(classes, new TypeHolder<T>(rawType, baseType));
+        } catch (UncheckedExecutionException e) {
             final Throwable cause = e.getCause();
             if (cause instanceof NoClassDefFoundError || cause instanceof TypeNotPresentException || cause instanceof ResourceLoadingException || cause instanceof LinkageError) {
                 throw new ResourceLoadingException("Error loading class " + rawType.getName(), cause);
@@ -160,22 +161,27 @@ public class ClassTransformer implements Service {
 
     public <T> WeldClass<T> loadClass(final Class<T> clazz) {
         try {
-            return cast(classes.get(new TypeHolder<T>(clazz, clazz)));
-        } catch (ComputationException e) {
+            return getCastCacheValue(classes, new TypeHolder<T>(clazz, clazz));
+        } catch (UncheckedExecutionException e) {
             final Throwable cause = e.getCause();
-            if (cause instanceof NoClassDefFoundError || cause instanceof TypeNotPresentException || cause instanceof ResourceLoadingException || cause instanceof LinkageError) {
+            if (cause instanceof TypeNotPresentException || cause instanceof ResourceLoadingException) {
                 throw new ResourceLoadingException("Error loading class " + clazz.getName(), cause);
-            } else {
-                if (log.isTraceEnabled()) {
-                    log.trace("Error loading class '" + clazz.getName() + "' : " + cause);
-                }
-                throw e;
             }
+            log.trace("Exception while loading class '{}' : {}", clazz.getName(), cause);
+            throw e;
+        } catch (ExecutionError e) {
+            // LoadingCache throws ExecutionError if an error was thrown while loading the value
+            final Throwable cause = e.getCause();
+            if (cause instanceof NoClassDefFoundError || cause instanceof LinkageError) {
+                throw new ResourceLoadingException("Error while loading class " + clazz.getName(), cause);
+            }
+            log.trace("Error while loading class '{}' : {}", clazz.getName(), cause);
+            throw e;
         }
     }
 
     public void clearAnnotationData(Class<? extends Annotation> annotationClass) {
-        annotations.remove(annotationClass);
+        annotations.invalidate(annotationClass);
     }
 
     @SuppressWarnings("unchecked")
@@ -187,13 +193,13 @@ public class ClassTransformer implements Service {
             ForwardingAnnotatedType fat = (ForwardingAnnotatedType) clazz;
             return (WeldClass<T>) fat.delegate();
         } else {
-            return (WeldClass<T>) annotatedTypes.get(clazz);
+            return getCastCacheValue(annotatedTypes, clazz);
         }
     }
 
     @SuppressWarnings("unchecked")
     public <T extends Annotation> WeldAnnotation<T> loadAnnotation(final Class<T> clazz) {
-        return (WeldAnnotation<T>) annotations.get(clazz);
+        return getCastCacheValue(annotations, clazz);
     }
 
     public TypeStore getTypeStore() {
@@ -201,9 +207,9 @@ public class ClassTransformer implements Service {
     }
 
     public void cleanup() {
-        this.annotatedTypes.clear();
-        this.annotations.clear();
-        this.classes.clear();
+        this.annotatedTypes.invalidateAll();
+        this.annotations.invalidateAll();
+        this.classes.invalidateAll();
     }
 
 }
