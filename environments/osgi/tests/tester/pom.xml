@@ -62,6 +62,12 @@
             <groupId>org.jboss.weld.osgi.tests</groupId>
             <artifactId>weld-osgi-tests-utils</artifactId>
             <scope>test</scope>
+            <exclusions>
+               <exclusion>
+                  <artifactId>org.osgi.core</artifactId>
+                  <groupId>org.osgi</groupId>
+               </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -257,10 +263,7 @@
         </dependency>
 
                                    -->
-        <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.core</artifactId>
-        </dependency>
+
 
         <dependency>
             <groupId>org.osgi</groupId>
@@ -270,19 +273,35 @@
         <dependency>
             <groupId>org.jboss.weld.osgi</groupId>
             <artifactId>weld-osgi-core-api</artifactId>
-            <version>${project.version}</version>
+            <exclusions>
+               <exclusion>
+                  <artifactId>org.osgi.core</artifactId>
+                  <groupId>org.osgi</groupId>
+               </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
             <groupId>org.jboss.weld.osgi</groupId>
             <artifactId>weld-osgi-core-extension</artifactId>
-            <version>${project.version}</version>
+            <exclusions>
+               <exclusion>
+                  <artifactId>org.osgi.core</artifactId>
+                  <groupId>org.osgi</groupId>
+               </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
             <groupId>org.jboss.weld.osgi</groupId>
             <artifactId>weld-osgi-core-spi</artifactId>
             <scope>test</scope>
+            <exclusions>
+               <exclusion>
+                  <artifactId>org.osgi.core</artifactId>
+                  <groupId>org.osgi</groupId>
+               </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
