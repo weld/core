@@ -6,16 +6,16 @@ Import-Package org.jboss.weld.environment.osgi.api; \
                org.jboss.weld.environment.osgi.api.annotation; \
                org.jboss.weld.environment.osgi.api.events; \
                org.jboss.weld.environment.osgi.spi;version=${pom.version}, \
-               javax.el;version=2.2.0, \
-               javax.inject;version=1.0.0, \
+               javax.el;version=${javax.el.version}, \
+               javax.inject;version=${cdi.api.version}, \
                javax.decorator; \
                javax.enterprise.context; \
                javax.enterprise.context.spi; \
                javax.enterprise.event; \
                javax.enterprise.inject; \
                javax.enterprise.inject.spi; \
-               javax.enterprise.util; version=1.0.0, \
-               javax.interceptor; version=1.1.0, \
+               javax.enterprise.util; version=${cdi.api.version}, \
+               javax.interceptor; version=${jboss.interceptors.api.version}, \
                org.osgi.framework, \
                javassist; \
                javassist.bytecode; \
@@ -33,7 +33,7 @@ Import-Package org.jboss.weld.environment.osgi.api; \
                javassist.tools; \
                javassist.tools.reflect; \
                javassist.tools.rmi; \
-               javassist.tools.web; version=3.14.0, \
+               javassist.tools.web; version=${javassist.version}, \
                org.slf4j; \
                org.slf4j.spi; \
                org.slf4j.helpers; \
@@ -41,7 +41,7 @@ Import-Package org.jboss.weld.environment.osgi.api; \
                org.slf4j.profiler; \
                org.slf4j.agent; \
                org.slf4j.instrumentation; \
-               org.slf4j.ext; version=1.6.1, \
+               org.slf4j.ext; version=${slf4j.version}, \
                ch.qos.logback.classic; \
                ch.qos.logback.classic.filter; \
                ch.qos.logback.classic.html; \
@@ -91,7 +91,7 @@ Import-Package org.jboss.weld.environment.osgi.api; \
                ch.qos.logback.core.pattern.parser; \
                ch.qos.logback.core.pattern.util; \
                ch.qos.logback.core.recovery; \
-               org.slf4j.impl; version=0.9.29, \
+               org.slf4j.impl; version=${logback.version}, \
                com.google.common.primitives; \
                com.google.common.collect; \
                com.google.common.util.concurrent; \
@@ -102,7 +102,8 @@ Import-Package org.jboss.weld.environment.osgi.api; \
                com.google.common.base.internal, \
                ch.qos.cal10n; \
                ch.qos.cal10n.verifier; \
-               ch.qos.cal10n.util; version=0.7.2, \
+               ch.qos.cal10n.util; version=${cal10n.version}, \
+               org.jboss.weld.interceptor; \
                org.jboss.weld.interceptor.reader; \
                org.jboss.weld.interceptor.reader.cache; \
                org.jboss.weld.interceptor.spi.instance; \
@@ -188,6 +189,6 @@ Import-Package org.jboss.weld.environment.osgi.api; \
                org.jboss.weld.environment.se.discovery; \
                org.jboss.weld.environment.se.discovery.url; \
                org.jboss.weld.environment.se.contexts; \
-               org.jboss.weld.messages; version=1.2.0-SNAPSHOT
+               org.jboss.weld.messages; version=${pom.version}
 
 DynamicImport-Package *
