@@ -19,7 +19,7 @@ package org.jboss.weld.bean;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanAttributes;
 
-import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.util.bean.ForwardingBeanAttributes;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -32,20 +32,13 @@ import org.jboss.weld.util.reflection.Reflections;
  */
 public abstract class CommonBean<T> extends ForwardingBeanAttributes<T> implements Bean<T> {
 
-    public static final String BEAN_ID_PREFIX = RIBean.class.getPackage().getName();
-
-    public static final String BEAN_ID_SEPARATOR = "-";
-
-    private final String id;
-
-    private final int hashCode;
-
     private volatile BeanAttributes<T> attributes;
 
-    protected CommonBean(BeanAttributes<T> attributes, String idSuffix, BeanManagerImpl beanManager) {
+    private final BeanIdentifier identifier;
+
+    protected CommonBean(BeanAttributes<T> attributes, BeanIdentifier identifier) {
         this.attributes = attributes;
-        this.id = new StringBuilder().append(BEAN_ID_PREFIX).append(BEAN_ID_SEPARATOR).append(beanManager.getId()).append(BEAN_ID_SEPARATOR).append(idSuffix).toString();
-        this.hashCode = this.id.hashCode();
+        this.identifier = identifier;
     }
 
     protected Object unwrap(Object object) {
@@ -64,12 +57,14 @@ public abstract class CommonBean<T> extends ForwardingBeanAttributes<T> implemen
     @Override
     public boolean equals(Object obj) {
         Object object = unwrap(obj);
+        if (this == obj) {
+            return true;
+        }
         if (object instanceof CommonBean<?>) {
             CommonBean<?> that = (CommonBean<?>) object;
-            return this.getId().equals(that.getId());
-        } else {
-            return false;
+            return this.getIdentifier().equals(that.getIdentifier());
         }
+        return false;
     }
 
     protected BeanAttributes<T> attributes() {
@@ -91,15 +86,19 @@ public abstract class CommonBean<T> extends ForwardingBeanAttributes<T> implemen
 
     @Override
     public int hashCode() {
-        return hashCode;
+        return identifier.hashCode();
     }
 
     public String getId() {
-        return id;
+        return identifier.asString();
+    }
+
+    public BeanIdentifier getIdentifier() {
+        return identifier;
     }
 
     @Override
     public String toString() {
-        return id;
+        return getId();
     }
 }

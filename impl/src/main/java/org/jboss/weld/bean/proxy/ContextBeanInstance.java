@@ -17,20 +17,22 @@
 
 package org.jboss.weld.bean.proxy;
 
+import static org.jboss.weld.util.reflection.Reflections.cast;
+
+import java.io.Serializable;
+
+import javax.enterprise.context.spi.Context;
+import javax.enterprise.inject.spi.Bean;
+
 import org.jboss.weld.Container;
 import org.jboss.weld.context.CreationalContextImpl;
 import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.injection.EmptyInjectionPoint;
+import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.serialization.spi.ContextualStore;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
-
-import javax.enterprise.context.spi.Context;
-import javax.enterprise.inject.spi.Bean;
-import java.io.Serializable;
-
-import static org.jboss.weld.util.reflection.Reflections.cast;
 
 /**
  * An instance locator that uses a context to lookup the instance if
@@ -46,8 +48,7 @@ public class ContextBeanInstance<T> extends AbstractBeanInstance implements Seri
     // The bean
     private transient Bean<T> bean;
     // The bean index in the manager
-    private final String id;
-
+    private final BeanIdentifier id;
     private final String contextId;
     // The actual type of the resulting bean instance
     private final Class<?> instanceType;
@@ -61,7 +62,7 @@ public class ContextBeanInstance<T> extends AbstractBeanInstance implements Seri
      * @param bean The contextual bean
      * @param id   The unique identifier of this bean
      */
-    public ContextBeanInstance(Bean<T> bean, String id, String contextId) {
+    public ContextBeanInstance(Bean<T> bean, BeanIdentifier id, String contextId) {
         this.bean = bean;
         this.id = id;
         this.contextId = contextId;

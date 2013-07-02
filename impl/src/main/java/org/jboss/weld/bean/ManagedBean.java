@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.bean;
 
+import static org.jboss.weld.bean.BeanIdentifiers.forManagedBean;
 import static org.jboss.weld.logging.Category.BEAN;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.BeanMessage.BEAN_MUST_BE_DEPENDENT;
@@ -44,6 +45,7 @@ import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.util.Decorators;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.reflection.Formats;
@@ -81,11 +83,7 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
      * @return A Web Bean
      */
     public static <T> ManagedBean<T> of(BeanAttributes<T> attributes, EnhancedAnnotatedType<T> clazz, BeanManagerImpl beanManager) {
-        return new ManagedBean<T>(attributes, clazz, createId(ManagedBean.class.getSimpleName(), clazz), beanManager);
-    }
-
-    protected static String createId(String beanType, EnhancedAnnotatedType<?> type) {
-        return new StringBuilder().append(beanType).append(BEAN_ID_SEPARATOR).append(type.slim().getIdentifier().asString()).toString();
+        return new ManagedBean<T>(attributes, clazz, new StringBeanIdentifier(forManagedBean(clazz)), beanManager);
     }
 
     /**
@@ -94,8 +92,8 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
      * @param type        The type of the bean
      * @param beanManager The Bean manager
      */
-    protected ManagedBean(BeanAttributes<T> attributes, EnhancedAnnotatedType<T> type, String idSuffix, BeanManagerImpl beanManager) {
-        super(attributes, type, idSuffix, beanManager);
+    protected ManagedBean(BeanAttributes<T> attributes, EnhancedAnnotatedType<T> type, BeanIdentifier identifier, BeanManagerImpl beanManager) {
+        super(attributes, type, identifier, beanManager);
         this.proxiable = Proxies.isTypesProxyable(getTypes(), beanManager.getServices());
         setProducer(beanManager.getLocalInjectionTargetFactory(getEnhancedAnnotated()).createInjectionTarget(getEnhancedAnnotated(), this, false));
     }

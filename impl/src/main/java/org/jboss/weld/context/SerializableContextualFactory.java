@@ -22,6 +22,7 @@ import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.inject.spi.PassivationCapable;
 
 import org.jboss.weld.Container;
+import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 
@@ -63,7 +64,7 @@ public class SerializableContextualFactory {
         private transient C cached;
 
         // the id of a non-serializable, passivation capable contextual
-        private String id;
+        private BeanIdentifier id;
 
         private String contextId;
 
@@ -83,7 +84,9 @@ public class SerializableContextualFactory {
             this.cached = contextual;
         }
 
-        protected abstract String getId(C contextual, ContextualStore contextualStore);
+        protected BeanIdentifier getId(C contextual, ContextualStore contextualStore) {
+            return contextualStore.putIfAbsent(contextual);
+        }
 
         private ContextualStore getContextualStore() {
             if (cachedContextualStore == null) {
@@ -134,12 +137,6 @@ public class SerializableContextualFactory {
         public DefaultSerializableContextual(String contextId, C contextual, ContextualStore contextualStore) {
             super(contextId, contextual, contextualStore);
         }
-
-        @Override
-        protected String getId(C contextual, ContextualStore contextualStore) {
-            return contextualStore.putIfAbsent(contextual);
-        }
-
     }
 
     // every Contextual with passivating scope should implement PassivationCapable
@@ -149,11 +146,6 @@ public class SerializableContextualFactory {
 
         public PassivationCapableSerializableContextual(String contextId, C contextual, ContextualStore contextualStore) {
             super(contextId, contextual, contextualStore);
-        }
-
-        @Override
-        protected String getId(C contextual, ContextualStore contextualStore) {
-            return contextual.getId();
         }
 
         @Override

@@ -26,6 +26,8 @@ import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Extension;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.bean.BeanIdentifiers;
+import org.jboss.weld.bean.StringBeanIdentifier;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Proxies;
@@ -35,15 +37,13 @@ import org.jboss.weld.util.Proxies;
  */
 public class ExtensionBean extends AbstractBuiltInBean<Extension> {
 
-    private static final String ID_PREFIX = "Extension";
-
     private final AnnotatedType<Extension> annotatedType;
     private final Metadata<Extension> instance;
     private final boolean passivationCapable;
     private final boolean proxiable;
 
     public ExtensionBean(BeanManagerImpl manager, EnhancedAnnotatedType<Extension> clazz, Metadata<Extension> instance) {
-        super(new StringBuilder().append(ID_PREFIX).append(BEAN_ID_SEPARATOR).append(clazz.getName()).toString(), manager, clazz.getJavaClass());
+        super(new StringBeanIdentifier(BeanIdentifiers.forExtension(clazz)), manager, clazz.getJavaClass());
         this.annotatedType = clazz.slim();
         this.instance = instance;
         this.passivationCapable = clazz.isSerializable();

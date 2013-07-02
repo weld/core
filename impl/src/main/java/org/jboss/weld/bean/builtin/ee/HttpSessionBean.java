@@ -38,7 +38,7 @@ import org.jboss.weld.servlet.SessionHolder;
 public class HttpSessionBean extends AbstractStaticallyDecorableBuiltInBean<HttpSession> {
 
     public HttpSessionBean(BeanManagerImpl manager) {
-        super(HttpSessionBean.class.getName(), manager, HttpSession.class);
+        super(manager, HttpSession.class);
     }
 
     @Override

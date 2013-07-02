@@ -157,6 +157,7 @@ import org.jboss.weld.resolution.TypeSafeInterceptorResolver;
 import org.jboss.weld.resolution.TypeSafeObserverResolver;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.MemberTransformer;
+import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Bindings;
@@ -1108,6 +1109,11 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     @Override
+    public Bean<?> getPassivationCapableBean(BeanIdentifier identifier) {
+        return getServices().get(ContextualStore.class).<Bean<Object>, Object>getContextual(identifier);
+    }
+
+    @Override
     public Set<Annotation> getStereotypeDefinition(Class<? extends Annotation> stereotype) {
         final StereotypeModel<? extends Annotation> model = getServices().get(MetaAnnotationStore.class).getStereotype(stereotype);
         if (model.isValid()) {
@@ -1427,5 +1433,4 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         BeanManagerImpl manager = BeanManagerLookupService.lookupBeanManager(method.getDeclaringType().getJavaClass(), this);
         return new MethodProducerFactory<X>(method, declaringBean, manager);
     }
-
 }

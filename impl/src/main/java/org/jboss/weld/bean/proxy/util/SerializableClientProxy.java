@@ -25,6 +25,7 @@ import javax.enterprise.inject.spi.Bean;
 import org.jboss.weld.Container;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.logging.messages.BeanMessage;
+import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.serialization.spi.ContextualStore;
 
 /**
@@ -40,10 +41,10 @@ public class SerializableClientProxy implements Serializable {
 
     private static final long serialVersionUID = -46820068707447753L;
 
-    private final String beanId;
+    private final BeanIdentifier beanId;
     private final String contextId;
 
-    public SerializableClientProxy(final String beanId, final String contextId) {
+    public SerializableClientProxy(final BeanIdentifier beanId, final String contextId) {
         this.beanId = beanId;
         this.contextId = contextId;
     }

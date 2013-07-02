@@ -19,7 +19,7 @@ public class ConversationBean extends AbstractStaticallyDecorableBuiltInBean<Con
     private Instance<ConversationContext> conversationContexts;
 
     public ConversationBean(BeanManagerImpl beanManager) {
-        super(Conversation.class.getName(), beanManager, Conversation.class);
+        super(beanManager, Conversation.class);
     }
 
     @Override

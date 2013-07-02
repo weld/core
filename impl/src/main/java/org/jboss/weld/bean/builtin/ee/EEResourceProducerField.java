@@ -43,6 +43,7 @@ import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
+import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.ws.WSApiAbstraction;
@@ -56,13 +57,13 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T> {
 
         private static final long serialVersionUID = 6287931036073200963L;
 
-        private final String beanId;
+        private final BeanIdentifier beanId;
         private transient T instance;
         private final CreationalContext<T> creationalContext;
 
         private EEResourceCallable(BeanManagerImpl beanManager, ProducerField<?, T> producerField, CreationalContext<T> creationalContext) {
             super(beanManager);
-            this.beanId = producerField.getId();
+            this.beanId = producerField.getIdentifier();
             this.creationalContext = creationalContext;
         }
 

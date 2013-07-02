@@ -42,8 +42,8 @@ public abstract class AbstractFacadeBean<T> extends AbstractDecorableBuiltInBean
 
     private Class<T> proxyClass;
 
-    protected AbstractFacadeBean(String idSuffix, BeanManagerImpl manager, Class<T> type) {
-        super(idSuffix, manager, type);
+    protected AbstractFacadeBean(BeanManagerImpl manager, Class<T> type) {
+        super(manager, type);
     }
 
     public void destroy(T instance, CreationalContext<T> creationalContext) {

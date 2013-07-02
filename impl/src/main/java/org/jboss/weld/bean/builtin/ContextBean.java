@@ -1,14 +1,17 @@
 package org.jboss.weld.bean.builtin;
 
-import org.jboss.weld.bootstrap.ContextHolder;
-import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.util.reflection.HierarchyDiscovery;
-
-import javax.enterprise.context.spi.Context;
-import javax.enterprise.context.spi.CreationalContext;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Set;
+
+import javax.enterprise.context.spi.Context;
+import javax.enterprise.context.spi.CreationalContext;
+
+import org.jboss.weld.bean.BeanIdentifiers;
+import org.jboss.weld.bean.StringBeanIdentifier;
+import org.jboss.weld.bootstrap.ContextHolder;
+import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.reflection.HierarchyDiscovery;
 
 public class ContextBean<T extends Context> extends AbstractBuiltInBean<T> {
 
@@ -22,7 +25,7 @@ public class ContextBean<T extends Context> extends AbstractBuiltInBean<T> {
     private final Set<Annotation> qualifiers;
 
     public ContextBean(ContextHolder<T> contextHolder, BeanManagerImpl beanManager) {
-        super(contextHolder.getType().getName(), beanManager, contextHolder.getType());
+        super(new StringBeanIdentifier(BeanIdentifiers.forBuiltInBean(beanManager, contextHolder.getType(), null)), beanManager, contextHolder.getType());
         this.context = contextHolder.getContext();
         this.types = new HierarchyDiscovery(contextHolder.getType()).getTypeClosure();
         this.qualifiers = contextHolder.getQualifiers();

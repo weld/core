@@ -34,6 +34,7 @@ import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.util.Beans;
 
 /**
@@ -59,8 +60,8 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> imp
      * @param type        The type
      * @param beanManager The Bean manager
      */
-    protected AbstractClassBean(BeanAttributes<T> attributes, EnhancedAnnotatedType<T> type, String idSuffix, BeanManagerImpl beanManager) {
-        super(attributes, idSuffix, beanManager);
+    protected AbstractClassBean(BeanAttributes<T> attributes, EnhancedAnnotatedType<T> type, BeanIdentifier identifier, BeanManagerImpl beanManager) {
+        super(attributes, identifier, beanManager);
         this.enhancedAnnotatedItem = type;
         this.annotatedType = type.slim();
         initType();

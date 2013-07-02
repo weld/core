@@ -25,7 +25,8 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
 
-import org.jboss.weld.bean.RIBean;
+import org.jboss.weld.bean.BeanIdentifiers;
+import org.jboss.weld.bean.StringBeanIdentifier;
 import org.jboss.weld.literal.DecoratedLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
 
@@ -39,7 +40,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
 public class DecoratedBeanMetadataBean extends InterceptedBeanMetadataBean {
 
     public DecoratedBeanMetadataBean(BeanManagerImpl beanManager) {
-        super(Decorated.class.getSimpleName() + RIBean.BEAN_ID_SEPARATOR + Bean.class.getSimpleName(), beanManager);
+        super(new StringBeanIdentifier(BeanIdentifiers.forBuiltInBean(beanManager, Bean.class, Decorated.class.getSimpleName())), beanManager);
     }
 
     @Override

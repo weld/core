@@ -28,10 +28,12 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.Interceptor;
 
-import org.jboss.weld.bean.RIBean;
+import org.jboss.weld.bean.BeanIdentifiers;
+import org.jboss.weld.bean.StringBeanIdentifier;
 import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.literal.InterceptedLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.util.bean.SerializableForwardingBean;
 
 /**
@@ -44,11 +46,11 @@ import org.jboss.weld.util.bean.SerializableForwardingBean;
 public class InterceptedBeanMetadataBean extends BeanMetadataBean {
 
     public InterceptedBeanMetadataBean(BeanManagerImpl beanManager) {
-        this(Intercepted.class.getSimpleName() + RIBean.BEAN_ID_SEPARATOR + Bean.class.getSimpleName(), beanManager);
+        this(new StringBeanIdentifier(BeanIdentifiers.forBuiltInBean(beanManager, Bean.class, Intercepted.class.getSimpleName())), beanManager);
     }
 
-    protected InterceptedBeanMetadataBean(String idSuffix, BeanManagerImpl beanManager) {
-        super(idSuffix, beanManager);
+    protected InterceptedBeanMetadataBean(BeanIdentifier identifier, BeanManagerImpl beanManager) {
+        super(identifier, beanManager);
     }
 
     @Override

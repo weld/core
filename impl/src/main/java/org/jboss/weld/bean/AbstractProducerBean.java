@@ -43,6 +43,7 @@ import org.jboss.weld.exceptions.IllegalProductException;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -72,8 +73,8 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
      * @param declaringBean The declaring bean
      * @param beanManager   The Bean manager
      */
-    public AbstractProducerBean(BeanAttributes<T> attributes, String idSuffix, AbstractClassBean<X> declaringBean, BeanManagerImpl beanManager, ServiceRegistry services) {
-        super(attributes, idSuffix, beanManager);
+    public AbstractProducerBean(BeanAttributes<T> attributes, BeanIdentifier identifier, AbstractClassBean<X> declaringBean, BeanManagerImpl beanManager, ServiceRegistry services) {
+        super(attributes, identifier, beanManager);
         this.declaringBean = declaringBean;
     }
 

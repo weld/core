@@ -41,7 +41,7 @@ import org.jboss.weld.util.reflection.Reflections;
 public class HttpServletRequestBean extends AbstractStaticallyDecorableBuiltInBean<HttpServletRequest> {
 
     public HttpServletRequestBean(BeanManagerImpl beanManager) {
-        super(HttpServletRequestBean.class.getName(), beanManager, HttpServletRequest.class);
+        super(beanManager, HttpServletRequest.class);
     }
 
     @Override

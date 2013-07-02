@@ -24,7 +24,9 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.Interceptor;
 
+import org.jboss.weld.bean.BeanIdentifiers;
 import org.jboss.weld.bean.ForwardingInterceptor;
+import org.jboss.weld.bean.StringBeanIdentifier;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.serialization.BeanHolder;
 import org.jboss.weld.util.reflection.Reflections;
@@ -39,7 +41,7 @@ import org.jboss.weld.util.reflection.Reflections;
 public class InterceptorMetadataBean extends AbstractBuiltInMetadataBean<Interceptor<?>> {
 
     public InterceptorMetadataBean(BeanManagerImpl beanManager) {
-        super(Interceptor.class.getSimpleName(), Reflections.<Class<Interceptor<?>>> cast(Interceptor.class), beanManager);
+        super(new StringBeanIdentifier(BeanIdentifiers.forBuiltInBean(beanManager, Interceptor.class, null)), Reflections.<Class<Interceptor<?>>> cast(Interceptor.class), beanManager);
     }
 
     @Override

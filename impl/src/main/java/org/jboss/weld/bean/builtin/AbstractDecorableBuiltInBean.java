@@ -22,7 +22,9 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
 
+import org.jboss.weld.bean.BeanIdentifiers;
 import org.jboss.weld.bean.DecorableBean;
+import org.jboss.weld.bean.StringBeanIdentifier;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Decorators;
@@ -37,8 +39,8 @@ public abstract class AbstractDecorableBuiltInBean<T> extends AbstractBuiltInBea
 
     private final CurrentInjectionPoint cip;
 
-    protected AbstractDecorableBuiltInBean(String idSuffix, BeanManagerImpl beanManager, Class<T> type) {
-        super(idSuffix, beanManager, type);
+    protected AbstractDecorableBuiltInBean(BeanManagerImpl beanManager, Class<T> type) {
+        super(new StringBeanIdentifier(BeanIdentifiers.forBuiltInBean(beanManager, type, null)), beanManager, type);
         this.cip = beanManager.getServices().get(CurrentInjectionPoint.class);
     }
 

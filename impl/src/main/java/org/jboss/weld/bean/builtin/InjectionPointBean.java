@@ -46,7 +46,7 @@ public class InjectionPointBean extends AbstractStaticallyDecorableBuiltInBean<I
      * @param manager The RI manager implementation
      */
     public InjectionPointBean(BeanManagerImpl manager) {
-        super(InjectionPoint.class.getSimpleName(), manager, InjectionPoint.class);
+        super(manager, InjectionPoint.class);
         this.currentInjectionPointService = getBeanManager().getServices().get(CurrentInjectionPoint.class);
     }
 

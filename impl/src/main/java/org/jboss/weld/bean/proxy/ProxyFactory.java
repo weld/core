@@ -55,6 +55,7 @@ import org.jboss.weld.interceptor.util.proxy.TargetInstanceProxy;
 import org.jboss.weld.security.GetDeclaredConstructorsAction;
 import org.jboss.weld.security.GetDeclaredMethodsAction;
 import org.jboss.weld.security.NewInstanceAction;
+import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.serialization.spi.ProxyServices;
 import org.jboss.weld.util.Proxies.TypeInfo;
@@ -106,6 +107,7 @@ public class ProxyFactory<T> {
     protected static final String LJAVA_LANG_BYTE = "Ljava/lang/Byte;";
     protected static final String LJAVA_LANG_CLASS = "Ljava/lang/Class;";
     protected static final String LJAVA_LANG_OBJECT = "Ljava/lang/Object;";
+    protected static final String LBEAN_IDENTIFIER = "Lorg/jboss/weld/serialization/spi/BeanIdentifier;";
     protected static final String LJAVA_LANG_STRING = "Ljava/lang/String;";
     protected static final String LJAVA_LANG_THREAD_LOCAL = "Ljava/lang/ThreadLocal;";
 
@@ -236,7 +238,7 @@ public class ProxyFactory<T> {
         //proxy name for two interfaces with the same simple name.
         //append the hash code of the bean id to be sure
         if (bean != null) {
-            final String id = Container.instance(contextId).services().get(ContextualStore.class).putIfAbsent(bean);
+            final BeanIdentifier id = Container.instance(contextId).services().get(ContextualStore.class).putIfAbsent(bean);
             name.append(id.hashCode());
         }
         className = name.toString();

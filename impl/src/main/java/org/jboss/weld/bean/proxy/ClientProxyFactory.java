@@ -48,6 +48,7 @@ import org.jboss.weld.bean.proxy.util.SerializableClientProxy;
 import org.jboss.weld.context.cache.RequestScopedBeanCache;
 import org.jboss.weld.security.GetDeclaredFieldAction;
 import org.jboss.weld.security.SetAccessibleAction;
+import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.bytecode.DeferredBytecode;
 import org.jboss.weld.util.bytecode.DescriptorUtils;
@@ -85,7 +86,7 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
      */
     private static final String BEAN_ID_FIELD = "BEAN_ID_FIELD";
 
-    private final String beanId;
+    private final BeanIdentifier beanId;
 
     private volatile Field beanIdField;
     private volatile Field threadLocalCacheField;
@@ -151,7 +152,7 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
                 throw new RuntimeException(e);
             }
         }
-        proxyClassType.addField(AccessFlag.VOLATILE | AccessFlag.PRIVATE, BEAN_ID_FIELD, String.class);
+        proxyClassType.addField(AccessFlag.VOLATILE | AccessFlag.PRIVATE, BEAN_ID_FIELD, BeanIdentifier.class);
     }
 
     @Override
@@ -164,9 +165,9 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
         b.newInstruction(SerializableClientProxy.class.getName());
         b.dup();
         b.aload(0);
-        b.getfield(proxyClassType.getName(), BEAN_ID_FIELD, LJAVA_LANG_STRING);
+        b.getfield(proxyClassType.getName(), BEAN_ID_FIELD, BeanIdentifier.class);
         b.ldc(getContextId());
-        b.invokespecial(SerializableClientProxy.class.getName(), INIT_METHOD_NAME, "(Ljava/lang/String;Ljava/lang/String;)V");
+        b.invokespecial(SerializableClientProxy.class.getName(), INIT_METHOD_NAME, "(" + LBEAN_IDENTIFIER + LJAVA_LANG_STRING + ")" + DescriptorUtils.VOID_CLASS_DESCRIPTOR);
         b.returnInstruction();
     }
 

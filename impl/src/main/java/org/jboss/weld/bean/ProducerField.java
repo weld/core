@@ -27,7 +27,6 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.injection.producer.ProducerFieldProducer;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.reflection.Formats;
@@ -66,7 +65,7 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field> {
      * @param manager       The Bean manager
      */
     protected ProducerField(BeanAttributes<T> attributes, EnhancedAnnotatedField<T, ? super X> field, AbstractClassBean<X> declaringBean, DisposalMethod<X, ?> disposalMethod, BeanManagerImpl manager, ServiceRegistry services) {
-        super(attributes, createId(field, declaringBean), declaringBean, manager, services);
+        super(attributes, new StringBeanIdentifier(BeanIdentifiers.forProducerField(field, declaringBean)), declaringBean, manager, services);
         this.enhancedAnnotatedField = field;
         this.annotatedField = field.slim();
         initType();
@@ -93,20 +92,6 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field> {
                 return ProducerField.this;
             }
         });
-    }
-
-    protected static String createId(EnhancedAnnotatedField<?, ?> field, AbstractClassBean<?> declaringBean) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(ProducerField.class.getSimpleName());
-        sb.append(BEAN_ID_SEPARATOR);
-        sb.append(declaringBean.getAnnotated().getIdentifier().asString());
-        sb.append(".");
-        if (declaringBean.getEnhancedAnnotated().isDiscovered()) {
-            sb.append(field.getName());
-        } else {
-            sb.append(AnnotatedTypes.createFieldId(field));
-        }
-        return sb.toString();
     }
 
     @Override

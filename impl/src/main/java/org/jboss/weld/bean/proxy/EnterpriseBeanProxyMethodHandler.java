@@ -32,6 +32,7 @@ import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.ejb.api.SessionObjectReference;
 import org.jboss.weld.exceptions.UnsupportedOperationException;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
 
@@ -50,7 +51,7 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
     private static final LocLogger log = loggerFactory().getLogger(BEAN);
 
     private final BeanManagerImpl manager;
-    private final String beanId;
+    private final BeanIdentifier beanId;
     private final SessionObjectReference reference;
 
     private final transient SessionBean<T> bean;
@@ -64,7 +65,7 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
     public EnterpriseBeanProxyMethodHandler(SessionBean<T> bean) {
         this.bean = bean;
         this.manager = bean.getBeanManager();
-        this.beanId = bean.getId();
+        this.beanId = bean.getIdentifier();
         this.reference = bean.createReference();
         log.trace(CREATED_SESSION_BEAN_PROXY, bean);
     }

@@ -28,6 +28,7 @@ import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.serialization.spi.BeanIdentifier;
 
 /**
  * Common superclass for {@link Bean}, {@link Interceptor} and {@link Decorator} builtin beans.
@@ -39,8 +40,8 @@ public abstract class AbstractBuiltInMetadataBean<T> extends AbstractBuiltInBean
 
     private final CurrentInjectionPoint cip;
 
-    public AbstractBuiltInMetadataBean(String idSuffix, Class<T> type, BeanManagerImpl beanManager) {
-        super(idSuffix, beanManager, type);
+    public AbstractBuiltInMetadataBean(BeanIdentifier identifier, Class<T> type, BeanManagerImpl beanManager) {
+        super(identifier, beanManager, type);
         this.cip = beanManager.getServices().get(CurrentInjectionPoint.class);
     }
 

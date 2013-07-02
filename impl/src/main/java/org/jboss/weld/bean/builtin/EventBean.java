@@ -35,7 +35,7 @@ public class EventBean extends AbstractFacadeBean<Event<?>> {
     private static final Type DEFAULT_TYPE = new TypeLiteral<Event<Object>>(){}.getType();
 
     public EventBean(BeanManagerImpl manager) {
-        super(Event.class.getSimpleName(), manager, TYPE);
+        super(manager, TYPE);
     }
 
     @Override

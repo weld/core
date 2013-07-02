@@ -36,14 +36,9 @@ public abstract class AbstractSyntheticBean<T> extends CommonBean<T> {
 
     private final Class<?> beanClass;
 
-    protected AbstractSyntheticBean(BeanAttributes<T> attributes, String id, BeanManagerImpl manager, Class<?> beanClass) {
-        super(attributes, id, manager);
+    protected AbstractSyntheticBean(BeanAttributes<T> attributes, BeanManagerImpl manager, Class<?> beanClass) {
+        super(attributes, new StringBeanIdentifier(BeanIdentifiers.forSyntheticBean(attributes, beanClass)));
         this.beanClass = beanClass;
-    }
-
-    protected static <T> String createId(BeanAttributes<T> attributes, Class<?> beanClass) {
-        return new StringBuilder().append(SyntheticClassBean.class.getName()).append(RIBean.BEAN_ID_SEPARATOR).append(beanClass.getName())
-                .append(Beans.createBeanAttributesId(attributes)).toString();
     }
 
     @Override

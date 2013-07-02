@@ -30,7 +30,6 @@ import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.injection.producer.ProducerMethodProducer;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.reflection.Formats;
@@ -61,7 +60,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
     }
 
     protected ProducerMethod(BeanAttributes<T> attributes, EnhancedAnnotatedMethod<T, ? super X> method, AbstractClassBean<X> declaringBean, DisposalMethod<X, ?> disposalMethod, BeanManagerImpl beanManager, ServiceRegistry services) {
-        super(attributes, createId(method, declaringBean), declaringBean, beanManager, services);
+        super(attributes, new StringBeanIdentifier(BeanIdentifiers.forProducerMethod(method, declaringBean)), declaringBean, beanManager, services);
         this.enhancedAnnotatedMethod = method;
         this.annotatedMethod = method.slim();
         initType();
@@ -83,19 +82,6 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
                 return ProducerMethod.this;
             }
         });
-    }
-
-    protected static <T, X> String createId(EnhancedAnnotatedMethod<T, ? super X> method, AbstractClassBean<X> declaringBean) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(ProducerMethod.class.getSimpleName());
-        sb.append(BEAN_ID_SEPARATOR);
-        sb.append(declaringBean.getAnnotated().getIdentifier().asString());
-        if (declaringBean.getEnhancedAnnotated().isDiscovered()) {
-            sb.append(method.getSignature().toString());
-        } else {
-            sb.append(AnnotatedTypes.createCallableId(method));
-        }
-        return sb.toString();
     }
 
     @Override

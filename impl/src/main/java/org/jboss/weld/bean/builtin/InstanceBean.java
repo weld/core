@@ -39,7 +39,7 @@ public class InstanceBean extends AbstractFacadeBean<Instance<?>> {
     private static final Set<Type> DEFAULT_TYPES = Arrays2.<Type>asSet(INSTANCE_TYPE, PROVIDER_TYPE, Object.class);
 
     public InstanceBean(BeanManagerImpl manager) {
-        super(Instance.class.getSimpleName(), manager, Reflections.<Class<Instance<?>>>cast(Instance.class));
+        super(manager, Reflections.<Class<Instance<?>>>cast(Instance.class));
     }
 
     @Override

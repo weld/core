@@ -39,7 +39,7 @@ public class ServletContextBean extends AbstractStaticallyDecorableBuiltInBean<S
     private static ThreadLocal<ServletContext> servletContext = new ThreadLocal<ServletContext>();
 
     public ServletContextBean(BeanManagerImpl beanManager) {
-        super(ServletContextBean.class.getName(), beanManager, ServletContext.class);
+        super(beanManager, ServletContext.class);
     }
 
     @Override

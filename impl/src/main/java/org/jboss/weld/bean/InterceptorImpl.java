@@ -17,6 +17,7 @@
 
 package org.jboss.weld.bean;
 
+import static org.jboss.weld.bean.BeanIdentifiers.forInterceptor;
 import static org.jboss.weld.logging.messages.BeanMessage.CONFLICTING_INTERCEPTOR_BINDINGS;
 import static org.jboss.weld.logging.messages.BeanMessage.MISSING_BINDING_ON_INTERCEPTOR;
 
@@ -67,7 +68,7 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
     }
 
     protected InterceptorImpl(BeanAttributes<T> attributes, EnhancedAnnotatedType<T> type, BeanManagerImpl beanManager) {
-        super(attributes, type, new StringBuilder().append(Interceptor.class.getSimpleName()).append(BEAN_ID_SEPARATOR).append(type.getName()).toString(), beanManager);
+        super(attributes, type, new StringBeanIdentifier(forInterceptor(type)), beanManager);
         this.interceptorMetadata = getInterceptorMetadata(type, this, beanManager);
         this.serializable = type.isSerializable();
         this.interceptorBindingTypes = Collections.unmodifiableSet(new HashSet<Annotation>(Interceptors.mergeBeanInterceptorBindings(beanManager, getEnhancedAnnotated(), getStereotypes()).values()));

@@ -46,6 +46,7 @@ import org.jboss.weld.bootstrap.SpecializationAndEnablementRegistry;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
+import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.slf4j.cal10n.LocLogger;
 
 /**
@@ -72,8 +73,8 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
      *
      * @param beanManager The Bean manager
      */
-    public AbstractBean(BeanAttributes<T> attributes, String idSuffix, BeanManagerImpl beanManager) {
-        super(attributes, idSuffix, beanManager);
+    public AbstractBean(BeanAttributes<T> attributes, BeanIdentifier identifier, BeanManagerImpl beanManager) {
+        super(attributes, identifier, beanManager);
     }
 
     /**

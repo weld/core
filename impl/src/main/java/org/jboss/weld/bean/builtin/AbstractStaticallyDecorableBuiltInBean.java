@@ -36,8 +36,8 @@ public abstract class AbstractStaticallyDecorableBuiltInBean<T> extends Abstract
     private List<Decorator<?>> decorators;
     private Class<T> proxyClass;
 
-    protected AbstractStaticallyDecorableBuiltInBean(String idSuffix, BeanManagerImpl beanManager, Class<T> type) {
-        super(idSuffix, beanManager, type);
+    protected AbstractStaticallyDecorableBuiltInBean(BeanManagerImpl beanManager, Class<T> type) {
+        super(beanManager, type);
     }
 
     @Override

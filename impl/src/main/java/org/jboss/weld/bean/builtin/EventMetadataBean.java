@@ -34,7 +34,7 @@ public class EventMetadataBean extends AbstractStaticallyDecorableBuiltInBean<Ev
     private final CurrentEventMetadata currentEventMetadata;
 
     public EventMetadataBean(BeanManagerImpl beanManager) {
-        super(EventMetadata.class.getSimpleName(), beanManager, EventMetadata.class);
+        super(beanManager, EventMetadata.class);
         this.currentEventMetadata = beanManager.getServices().get(CurrentEventMetadata.class);
     }
 

@@ -33,18 +33,18 @@ import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
+import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.util.collections.Arrays2;
 
 import com.google.common.collect.Sets;
 
 public abstract class AbstractBuiltInBean<T> extends RIBean<T> {
 
-    private static final String ID_PREFIX = "Built-in";
     private boolean proxyRequired;
     private final Class<T> type;
 
-    protected AbstractBuiltInBean(String idSuffix, BeanManagerImpl beanManager, Class<T> type) {
-        super(new BuiltInBeanAttributes<T>(type), new StringBuilder().append(ID_PREFIX).append(BEAN_ID_SEPARATOR).append(idSuffix).toString(), beanManager);
+    protected AbstractBuiltInBean(BeanIdentifier identifier, BeanManagerImpl beanManager, Class<T> type) {
+        super(new BuiltInBeanAttributes<T>(type), identifier, beanManager);
         this.type = type;
     }
 

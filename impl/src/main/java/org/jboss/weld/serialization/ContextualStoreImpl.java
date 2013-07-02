@@ -26,8 +26,11 @@ import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.PassivationCapable;
 
+import org.jboss.weld.bean.CommonBean;
+import org.jboss.weld.bean.StringBeanIdentifier;
 import org.jboss.weld.context.SerializableContextualFactory;
 import org.jboss.weld.context.SerializableContextualInstanceImpl;
+import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextualInstance;
@@ -43,12 +46,12 @@ public class ContextualStoreImpl implements ContextualStore {
     private static final String GENERATED_ID_PREFIX = ContextualStoreImpl.class.getName();
 
     // The map containing container-local contextuals
-    private final ConcurrentMap<Contextual<?>, String> contextuals;
+    private final ConcurrentMap<Contextual<?>, BeanIdentifier> contextuals;
     // Inverse mapping of container-local contextuals
-    private final ConcurrentMap<String, Contextual<?>> contextualsInverse;
+    private final ConcurrentMap<BeanIdentifier, Contextual<?>> contextualsInverse;
 
     // The map containing passivation capable contextuals
-    private final ConcurrentMap<String, Contextual<?>> passivationCapableContextuals;
+    private final ConcurrentMap<BeanIdentifier, Contextual<?>> passivationCapableContextuals;
 
     private final AtomicInteger idGenerator;
 
@@ -57,9 +60,9 @@ public class ContextualStoreImpl implements ContextualStore {
     public ContextualStoreImpl(String contextId) {
         this.contextId = contextId;
         this.idGenerator = new AtomicInteger(0);
-        this.contextuals = new ConcurrentHashMap<Contextual<?>, String>();
-        this.contextualsInverse = new ConcurrentHashMap<String, Contextual<?>>();
-        this.passivationCapableContextuals = new ConcurrentHashMap<String, Contextual<?>>();
+        this.contextuals = new ConcurrentHashMap<Contextual<?>, BeanIdentifier>();
+        this.contextualsInverse = new ConcurrentHashMap<BeanIdentifier, Contextual<?>>();
+        this.passivationCapableContextuals = new ConcurrentHashMap<BeanIdentifier, Contextual<?>>();
     }
 
     /**
@@ -70,12 +73,17 @@ public class ContextualStoreImpl implements ContextualStore {
      * @param id An identifier for the contextual
      * @return the contextual
      */
-    @SuppressWarnings("unchecked")
     public <C extends Contextual<I>, I> C getContextual(String id) {
-        if (id.startsWith(GENERATED_ID_PREFIX)) {
-            return (C) contextualsInverse.get(id);
+        return getContextual(new StringBeanIdentifier(id));
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <C extends Contextual<I>, I> C getContextual(BeanIdentifier identifier) {
+        if (identifier.asString().startsWith(GENERATED_ID_PREFIX)) {
+            return (C) contextualsInverse.get(identifier);
         } else {
-            return (C) passivationCapableContextuals.get(id);
+            return (C) passivationCapableContextuals.get(identifier);
         }
     }
 
@@ -88,21 +96,29 @@ public class ContextualStoreImpl implements ContextualStore {
      * @return the current id for the contextual
      */
     @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "RV_RETURN_VALUE_OF_PUTIFABSENT_IGNORED", justification = "Using non-standard semantics of putIfAbsent")
-    public String putIfAbsent(Contextual<?> contextual) {
+    public BeanIdentifier putIfAbsent(Contextual<?> contextual) {
+        if (contextual instanceof CommonBean<?>) {
+            // this is a Bean<?> created by Weld
+            CommonBean<?> bean = (CommonBean<?>) contextual;
+            passivationCapableContextuals.putIfAbsent(bean.getIdentifier(), contextual);
+            return bean.getIdentifier();
+        }
         if (contextual instanceof PassivationCapable) {
+            // this is an extension-provided passivation capable bean
             PassivationCapable passivationCapable = (PassivationCapable) contextual;
             String id = passivationCapable.getId();
-            passivationCapableContextuals.putIfAbsent(id, contextual);
-            return id;
+            BeanIdentifier identifier = new StringBeanIdentifier(id);
+            passivationCapableContextuals.putIfAbsent(identifier, contextual);
+            return identifier;
         } else {
-            String id = contextuals.get(contextual);
+            BeanIdentifier id = contextuals.get(contextual);
             if (id != null) {
                 return id;
             } else {
                 synchronized (contextual) {
                     id = contextuals.get(contextual);
                     if (id == null) {
-                        id = new StringBuilder().append(GENERATED_ID_PREFIX).append(idGenerator.incrementAndGet()).toString();
+                        id = new StringBeanIdentifier(new StringBuilder().append(GENERATED_ID_PREFIX).append(idGenerator.incrementAndGet()).toString());
                         contextuals.put(contextual, id);
                         contextualsInverse.put(id, contextual);
                     }

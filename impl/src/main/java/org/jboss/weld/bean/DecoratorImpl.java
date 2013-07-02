@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.bean;
 
+import static org.jboss.weld.bean.BeanIdentifiers.forDecorator;
+
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -25,7 +27,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.BeanAttributes;
-import javax.enterprise.inject.spi.Decorator;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.enhanced.MethodSignature;
@@ -59,7 +60,7 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
     private Set<Type> decoratedTypes;
 
     protected DecoratorImpl(BeanAttributes<T> attributes, EnhancedAnnotatedType<T> type, BeanManagerImpl beanManager) {
-        super(attributes, type, Decorator.class.getSimpleName() + BEAN_ID_SEPARATOR + type.getName(), beanManager);
+        super(attributes, type, new StringBeanIdentifier(forDecorator(type)), beanManager);
     }
 
     @Override

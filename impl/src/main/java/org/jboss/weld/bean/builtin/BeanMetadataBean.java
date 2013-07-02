@@ -23,7 +23,10 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 
+import org.jboss.weld.bean.BeanIdentifiers;
+import org.jboss.weld.bean.StringBeanIdentifier;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.util.bean.SerializableForwardingBean;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -36,11 +39,11 @@ import org.jboss.weld.util.reflection.Reflections;
 public class BeanMetadataBean extends AbstractBuiltInMetadataBean<Bean<?>> {
 
     public BeanMetadataBean(BeanManagerImpl beanManager) {
-        this(Bean.class.getSimpleName(), beanManager);
+        this(new StringBeanIdentifier(BeanIdentifiers.forBuiltInBean(beanManager, Bean.class, null)), beanManager);
     }
 
-    protected BeanMetadataBean(String idSuffix, BeanManagerImpl beanManager) {
-        super(idSuffix, Reflections.<Class<Bean<?>>> cast(Bean.class), beanManager);
+    protected BeanMetadataBean(BeanIdentifier identifier, BeanManagerImpl beanManager) {
+        super(identifier, Reflections.<Class<Bean<?>>> cast(Bean.class), beanManager);
     }
 
     @Override

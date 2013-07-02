@@ -21,6 +21,8 @@ import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
 
+import org.jboss.weld.bean.BeanIdentifiers;
+import org.jboss.weld.bean.StringBeanIdentifier;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.collections.Arrays2;
 
@@ -29,7 +31,7 @@ public class BeanManagerImplBean extends AbstractBuiltInBean<BeanManagerImpl> {
     private static final Set<Type> TYPES = Arrays2.<Type>asSet(Object.class, BeanManagerImpl.class);
 
     public BeanManagerImplBean(BeanManagerImpl manager) {
-        super(BeanManagerImpl.class.getSimpleName(), manager, BeanManagerImpl.class);
+        super(new StringBeanIdentifier(BeanIdentifiers.forBuiltInBean(manager, BeanManagerImpl.class, null)), manager, BeanManagerImpl.class);
     }
 
     public BeanManagerImpl create(CreationalContext<BeanManagerImpl> creationalContext) {
