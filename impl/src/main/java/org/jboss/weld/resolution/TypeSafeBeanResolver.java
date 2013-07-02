@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.resolution;
 
+import static org.jboss.weld.util.cache.LoadingCacheUtils.getCastCacheValue;
+
 import java.io.Serializable;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
@@ -28,23 +30,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.concurrent.ConcurrentMap;
 
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.Bean;
 import javax.inject.Provider;
 
-import com.google.common.base.Function;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.MapMaker;
 import com.google.common.primitives.Primitives;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.LazyValueHolder;
 import org.jboss.weld.util.reflection.Reflections;
-
-import static org.jboss.weld.util.reflection.Reflections.cast;
 
 /**
  * @author pmuir
@@ -53,17 +53,17 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
 public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<Resolvable, T> {
 
     private final BeanManagerImpl beanManager;
-    private final ConcurrentMap<Set<Bean<?>>, Set<Bean<?>>> disambiguatedBeans;
+    private final LoadingCache<Set<Bean<?>>, Set<Bean<?>>> disambiguatedBeans;
 
     private final LazyValueHolder<Map<Type, ArrayList<T>>> beansByType;
 
-    public static class BeanDisambiguation implements Function<Set<Bean<?>>, Set<Bean<?>>> {
+    public static class BeanDisambiguation extends CacheLoader<Set<Bean<?>>, Set<Bean<?>>> {
 
         private BeanDisambiguation() {
         }
 
         @SuppressWarnings("unchecked")
-        public Set<Bean<?>> apply(Set<Bean<?>> from) {
+        public Set<Bean<?>> load(Set<Bean<?>> from) {
             if (from.size() > 1) {
                 Set<Bean<?>> allBeans = new HashSet<Bean<?>>();
                 Set<Bean<?>> alternativeBeans = new HashSet<Bean<?>>();
@@ -88,7 +88,7 @@ public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<Re
     public TypeSafeBeanResolver(BeanManagerImpl beanManager, final Iterable<T> beans) {
         super(beans, beanManager);
         this.beanManager = beanManager;
-        this.disambiguatedBeans = new MapMaker().makeComputingMap(new BeanDisambiguation());
+        this.disambiguatedBeans = CacheBuilder.newBuilder().build(new BeanDisambiguation());
         // beansByType stores a map of a type to all beans that are assignable to
         // that type. This means that it most cases we do not need to loop through
         // every bean in the system when performing resolution
@@ -213,13 +213,13 @@ public class TypeSafeBeanResolver<T extends Bean<?>> extends TypeSafeResolver<Re
         //noinspection unchecked
         beans = ImmutableSet.copyOf((Iterable) beans);
         //noinspection SuspiciousMethodCalls
-        return cast(disambiguatedBeans.get(beans));
+        return getCastCacheValue(disambiguatedBeans, beans);
     }
 
     @Override
     public void clear() {
         super.clear();
-        this.disambiguatedBeans.clear();
+        this.disambiguatedBeans.invalidateAll();
         this.beansByType.clear();
     }
 }

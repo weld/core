@@ -16,8 +16,9 @@
  */
 package org.jboss.weld.bean;
 
-import com.google.common.base.Function;
-import com.google.common.collect.MapMaker;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
@@ -35,7 +36,6 @@ import org.slf4j.cal10n.LocLogger;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.NormalScope;
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.Producer;
@@ -52,7 +52,6 @@ import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.ConcurrentMap;
 
 import static org.jboss.weld.logging.Category.BEAN;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
@@ -69,6 +68,7 @@ import static org.jboss.weld.logging.messages.BeanMessage.PRODUCER_METHOD_WITH_T
 import static org.jboss.weld.logging.messages.BeanMessage.RETURN_TYPE_MUST_BE_CONCRETE;
 import static org.jboss.weld.logging.messages.BeanMessage.USING_DEFAULT_SCOPE;
 import static org.jboss.weld.logging.messages.BeanMessage.USING_SCOPE;
+import static org.jboss.weld.util.cache.LoadingCacheUtils.getCacheValue;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 /**
@@ -83,9 +83,9 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
  */
 public abstract class AbstractProducerBean<X, T, S extends Member> extends AbstractReceiverBean<X, T, S> {
 
-    private static final Function<Class<?>, Boolean> SERIALIZABLE_CHECK = new Function<Class<?>, Boolean>() {
+    private static final CacheLoader<Class<?>, Boolean> SERIALIZABLE_CHECK = new CacheLoader<Class<?>, Boolean>() {
 
-        public Boolean apply(Class<?> from) {
+        public Boolean load(Class<?> from) {
             return Reflections.isSerializable(from);
         }
 
@@ -102,7 +102,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
     private boolean passivationCapableDependency;
 
     // Serialization cache for produced types at runtime
-    private ConcurrentMap<Class<?>, Boolean> serializationCheckCache;
+    private LoadingCache<Class<?>, Boolean> serializationCheckCache;
 
     /**
      * Constructor
@@ -112,7 +112,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
      */
     public AbstractProducerBean(String idSuffix, AbstractClassBean<X> declaringBean, BeanManagerImpl beanManager, ServiceRegistry services) {
         super(idSuffix, declaringBean, beanManager, services);
-        serializationCheckCache = new MapMaker().makeComputingMap(SERIALIZABLE_CHECK);
+        serializationCheckCache = CacheBuilder.newBuilder().build(SERIALIZABLE_CHECK);
     }
 
     @Override
@@ -259,7 +259,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
     }
 
     protected boolean isTypeSerializable(final Class<?> clazz) {
-        return serializationCheckCache.get(clazz);
+        return getCacheValue(serializationCheckCache, clazz);
     }
 
     @Override

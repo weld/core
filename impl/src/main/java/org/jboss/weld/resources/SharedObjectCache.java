@@ -16,17 +16,20 @@
  */
 package org.jboss.weld.resources;
 
+import static org.jboss.weld.util.cache.LoadingCacheUtils.getCacheValue;
+import static org.jboss.weld.util.cache.LoadingCacheUtils.getCastCacheValue;
+
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
-import com.google.common.base.Function;
-import com.google.common.collect.MapMaker;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.util.collections.ArraySetMultimap;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
-import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * Allows classes to share Maps/Sets to conserve memory.
@@ -34,61 +37,61 @@ import org.jboss.weld.util.reflection.Reflections;
  * @author Stuart Douglas <stuart@baileyroberts.com.au>
  */
 public class SharedObjectCache implements Service {
-    private final Map<Set<?>, Set<?>> sharedSets = new MapMaker().makeComputingMap(new Function<Set<?>, Set<?>>() {
-        public Set<?> apply(Set<?> from) {
+    private final LoadingCache<Set<?>, Set<?>> sharedSets = CacheBuilder.newBuilder().build(new CacheLoader<Set<?>, Set<?>>() {
+        public Set<?> load(Set<?> from) {
             return Collections.unmodifiableSet(from);
         }
     });
 
-    private final Map<Map<?, ?>, Map<?, ?>> sharedMaps = new MapMaker().makeComputingMap(new Function<Map<?, ?>, Map<?, ?>>() {
-        public Map<?, ?> apply(Map<?, ?> from) {
+    private final LoadingCache<Map<?, ?>, Map<?, ?>> sharedMaps = CacheBuilder.newBuilder().build(new CacheLoader<Map<?, ?>, Map<?, ?>>() {
+        public Map<?, ?> load(Map<?, ?> from) {
             return Collections.unmodifiableMap(from);
         }
     });
 
-    private final Map<ArraySetMultimap<?, ?>, ArraySetMultimap<?, ?>> sharedMultiMaps = new MapMaker().makeComputingMap(new Function<ArraySetMultimap<?, ?>, ArraySetMultimap<?, ?>>() {
-        public ArraySetMultimap<?, ?> apply(ArraySetMultimap<?, ?> from) {
+    private final LoadingCache<ArraySetMultimap<?, ?>, ArraySetMultimap<?, ?>> sharedMultiMaps = CacheBuilder.newBuilder().build(new CacheLoader<ArraySetMultimap<?, ?>, ArraySetMultimap<?, ?>>() {
+        public ArraySetMultimap<?, ?> load(ArraySetMultimap<?, ?> from) {
             return from;
         }
     });
 
-    private final Map<Type, Set<Type>> typeClosures = new MapMaker().makeComputingMap(new Function<Type, Set<Type>>() {
+    private final LoadingCache<Type, Set<Type>> typeClosures = CacheBuilder.newBuilder().build(new CacheLoader<Type, Set<Type>>() {
 
-        public Set<Type> apply(Type from) {
+        public Set<Type> load(Type from) {
             return Collections.unmodifiableSet(new HierarchyDiscovery(from).getTypeClosure());
         }
     });
 
-    private final Map<Type, Type> resolvedTypes = new MapMaker().makeComputingMap(new Function<Type, Type>() {
+    private final LoadingCache<Type, Type> resolvedTypes = CacheBuilder.newBuilder().build(new CacheLoader<Type, Type>() {
 
-        public Type apply(Type from) {
+        public Type load(Type from) {
             return new HierarchyDiscovery(from).getResolvedType();
         }
     });
 
     public <T> Set<T> getSharedSet(Set<T> set) {
-        return Reflections.cast(sharedSets.get(set));
+        return getCastCacheValue(sharedSets, set);
     }
 
     public <K, V> Map<K, V> getSharedMap(Map<K, V> map) {
-        return Reflections.cast(sharedMaps.get(map));
+        return getCastCacheValue(sharedMaps, map);
     }
 
     public <K, V> ArraySetMultimap<K, V> getSharedMultimap(ArraySetMultimap<K, V> map) {
-        return Reflections.cast(sharedMultiMaps.get(map));
+        return getCastCacheValue(sharedMultiMaps, map);
     }
 
     public Set<Type> getTypeClosure(Type type) {
-        return typeClosures.get(type);
+        return getCacheValue(typeClosures, type);
     }
 
     public Type getResolvedType(Type type) {
-        return resolvedTypes.get(type);
+        return getCacheValue(resolvedTypes, type);
     }
 
     public void cleanup() {
-        sharedSets.clear();
-        sharedMaps.clear();
-        sharedMultiMaps.clear();
+        sharedSets.invalidateAll();
+        sharedMaps.invalidateAll();
+        sharedMultiMaps.invalidateAll();
     }
 }
