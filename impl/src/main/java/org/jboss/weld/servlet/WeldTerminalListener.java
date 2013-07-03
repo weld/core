@@ -43,7 +43,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
  *
  * @author Marko Luksa
  */
-public class HttpSessionDestructionContextActivatingListener implements HttpSessionListener {
+public class WeldTerminalListener implements HttpSessionListener {
 
     @Inject
     private BeanManagerImpl beanManager;
