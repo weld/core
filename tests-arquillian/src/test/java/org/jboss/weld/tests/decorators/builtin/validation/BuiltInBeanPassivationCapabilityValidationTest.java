@@ -37,7 +37,7 @@ import org.junit.runner.RunWith;
 public class BuiltInBeanPassivationCapabilityValidationTest {
 
     @Deployment
-    @ShouldThrowException(Exception.class)
+    @ShouldThrowException(DeploymentException.class)
     public static Archive<?> getDeployment() {
         return ShrinkWrap.create(BeanArchive.class).decorate(ConversationDecorator.class).addPackage(BuiltInBeanPassivationCapabilityValidationTest.class.getPackage());
     }

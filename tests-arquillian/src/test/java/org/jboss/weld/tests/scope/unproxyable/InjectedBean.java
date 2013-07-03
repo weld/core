@@ -23,5 +23,5 @@ public class InjectedBean {
     @Inject
     @HttpParam("")
     @SuppressWarnings("unused")
-    private Integer param;
+    private String param;
 }

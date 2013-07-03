@@ -16,11 +16,13 @@
  */
 package org.jboss.weld.tests.scope.unproxyable;
 
+import java.io.Serializable;
+
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.inject.Produces;
-import java.io.Serializable;
 
+@SuppressWarnings("serial")
 @SessionScoped
 public class Foo implements Serializable {
 

@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.scope.unproxyable;
 
-import javax.inject.Inject;
+import javax.enterprise.inject.spi.DeploymentException;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.ShouldThrowException;
@@ -31,18 +31,15 @@ import org.junit.runner.RunWith;
 public class UnproxyableTest {
 
     @Deployment
-    @ShouldThrowException(Exception.class) // AS7-1197
+    @ShouldThrowException(DeploymentException.class)
     public static JavaArchive deploy() {
         BeanArchive archive = ShrinkWrap.create(BeanArchive.class);
         archive.addPackage(UnproxyableTest.class.getPackage());
-
         return archive;
     }
 
-    //groups = "incontainer-broken"
     @Test
     public void test() {
-
     }
 
 }
