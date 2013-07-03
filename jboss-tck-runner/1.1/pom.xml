@@ -296,7 +296,7 @@
                     <groupId>javax.validation</groupId>
                     <artifactId>validation-api</artifactId>
                 </dependency>
-                <!-- Because we need this to compile the exception transformer -->
+                <!-- Because we need this to compile the exception transformer and resource manager -->
                 <dependency>
                     <groupId>org.jboss.as</groupId>
                     <artifactId>jboss-as-arquillian-common</artifactId>

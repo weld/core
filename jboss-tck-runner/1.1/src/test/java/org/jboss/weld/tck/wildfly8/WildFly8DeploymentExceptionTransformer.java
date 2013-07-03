@@ -23,13 +23,12 @@ import javax.enterprise.inject.spi.DeploymentException;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.jboss.arquillian.container.spi.client.container.DeploymentExceptionTransformer;
-import org.jboss.as.arquillian.container.ExceptionTransformer;
 
 /**
- * TEMPORARY WORKAROUND - temporary replacement for NOOP {@link ExceptionTransformer} used by JBoss AS7 managed container.
- * 
+ * TEMPORARY WORKAROUND - temporary replacement for NOOP {@link org.jboss.as.arquillian.container.ExceptionTransformer} used by JBoss AS7 managed container.
+ *
  * See AS7-1197 for more details.
- * 
+ *
  * @see WildFly8Extension
  * @author Martin Kouba
  */
