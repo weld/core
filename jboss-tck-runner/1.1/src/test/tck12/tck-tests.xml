@@ -31,6 +31,11 @@
                     <exclude name="testSessionScopeActiveDuringHttpSessionListenerCallOnTimeout"/>
                 </methods>
             </class>
+            <class name="org.jboss.cdi.tck.tests.context.session.listener.shutdown.SessionContextListenerShutdownTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
 
             <!-- Issues in JBoss AS -->
             <!-- JMS tests not working on AS7, see CDITCK-315 -->
