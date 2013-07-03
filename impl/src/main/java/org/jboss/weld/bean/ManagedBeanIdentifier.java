@@ -16,26 +16,29 @@
  */
 package org.jboss.weld.bean;
 
+import org.jboss.weld.annotated.slim.AnnotatedTypeIdentifier;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 
-public class StringBeanIdentifier implements BeanIdentifier {
+public class ManagedBeanIdentifier implements BeanIdentifier {
 
-    private static final long serialVersionUID = -3389031898783605246L;
+    private static final long serialVersionUID = -2549776947566879012L;
 
-    private final String value;
+    private final AnnotatedTypeIdentifier typeIdentifier;
+    private final int hashCode;
 
-    public StringBeanIdentifier(String value) {
-        this.value = value;
+    public ManagedBeanIdentifier(AnnotatedTypeIdentifier typeIdentifier) {
+        this.typeIdentifier = typeIdentifier;
+        this.hashCode = asString().hashCode();
     }
 
     @Override
     public String asString() {
-        return value;
+        return BeanIdentifiers.forManagedBean(typeIdentifier);
     }
 
     @Override
     public int hashCode() {
-        return value.hashCode();
+        return hashCode;
     }
 
     @Override
@@ -44,15 +47,15 @@ public class StringBeanIdentifier implements BeanIdentifier {
             return true;
         }
         if (obj instanceof BeanIdentifier) {
-            if (this.hashCode() != obj.hashCode()) {
+            if (this.hashCode != obj.hashCode()) {
                 return false;
             }
-            if (obj instanceof StringBeanIdentifier) {
-                StringBeanIdentifier that = (StringBeanIdentifier) obj;
-                return this.value.equals(that.value);
+            if (obj instanceof ManagedBeanIdentifier) {
+                ManagedBeanIdentifier that = (ManagedBeanIdentifier) obj;
+                return this.typeIdentifier.equals(that.typeIdentifier);
             }
             BeanIdentifier that = (BeanIdentifier) obj;
-            return this.value.equals(that.asString());
+            return this.asString().equals(that.asString());
         }
         return false;
     }

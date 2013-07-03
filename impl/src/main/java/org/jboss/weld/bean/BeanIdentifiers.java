@@ -22,6 +22,7 @@ import javax.enterprise.inject.spi.Extension;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.annotated.slim.AnnotatedTypeIdentifier;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.AnnotatedTypes;
@@ -40,7 +41,11 @@ public class BeanIdentifiers {
     }
 
     public static String forManagedBean(EnhancedAnnotatedType<?> type) {
-        return getPrefix(ManagedBean.class).append(type.slim().getIdentifier().asString()).toString();
+        return forManagedBean(type.slim().getIdentifier());
+    }
+
+    public static String forManagedBean(AnnotatedTypeIdentifier identifier) {
+        return getPrefix(ManagedBean.class).append(identifier.asString()).toString();
     }
 
     public static String forDecorator(EnhancedAnnotatedType<?> type) {

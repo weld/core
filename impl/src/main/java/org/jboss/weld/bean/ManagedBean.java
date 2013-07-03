@@ -29,6 +29,7 @@ import static org.jboss.weld.logging.messages.BeanMessage.SPECIALIZING_BEAN_MUST
 
 import java.util.Set;
 
+import javax.enterprise.context.Dependent;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
@@ -83,7 +84,13 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
      * @return A Web Bean
      */
     public static <T> ManagedBean<T> of(BeanAttributes<T> attributes, EnhancedAnnotatedType<T> clazz, BeanManagerImpl beanManager) {
-        return new ManagedBean<T>(attributes, clazz, new StringBeanIdentifier(forManagedBean(clazz)), beanManager);
+        BeanIdentifier identifier;
+        if (Dependent.class.equals(attributes.getScope())) {
+            identifier = new ManagedBeanIdentifier(clazz.slim().getIdentifier());
+        } else {
+            identifier = new StringBeanIdentifier(forManagedBean(clazz));
+        }
+        return new ManagedBean<T>(attributes, clazz, identifier, beanManager);
     }
 
     /**
