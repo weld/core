@@ -16,6 +16,7 @@ import org.jboss.weld.environment.osgi.api.annotation.Properties;
 import org.jboss.weld.environment.osgi.api.annotation.Property;
 import org.jboss.weld.environment.osgi.impl.extension.FilterGenerator;
 import junit.framework.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.enterprise.util.AnnotationLiteral;
@@ -31,7 +32,7 @@ import static java.lang.annotation.ElementType.*;
 public class FilterGeneratorTest {
 
     @Test
-    Ignore
+    @Ignore
     public void filterTest() {
 
         Set<String> testSet = new HashSet<String>();

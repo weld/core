@@ -56,7 +56,7 @@ public class BundleSingletonProvider extends SingletonProvider {
         }
 
         @Override
-        public T get() {
+        public T get(String contextId) {
             if (!store.containsKey(getId())) {
                 T maybeObject = null;
                 Throwable t = new Throwable();
@@ -87,7 +87,7 @@ public class BundleSingletonProvider extends SingletonProvider {
                         if (maybeBundle != null) {
                             if (!maybeBundle.getSymbolicName().equals("org.jboss.weld.osgi.weld-osgi")) {
                                 CDIOSGiExtension.currentBundle.set(maybeBundle.getBundleId());
-                                maybeObject = get();
+                                maybeObject = get(contextId);
                                 CDIOSGiExtension.currentBundle.remove();
                                 if (maybeObject != null) {
                                     return maybeObject;
@@ -103,17 +103,17 @@ public class BundleSingletonProvider extends SingletonProvider {
         }
 
         @Override
-        public void set(T object) {
+        public void set(String contextId, T object) {
             store.put(getId(), object);
         }
 
         @Override
-        public void clear() {
+        public void clear(String contextId) {
             store.remove(getId());
         }
 
         @Override
-        public boolean isSet() {
+        public boolean isSet(String contextId) {
             return store.containsKey(getId());
         }
     }
