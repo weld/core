@@ -55,6 +55,10 @@
                     <groupId>javax.jta</groupId>
                     <artifactId>transaction-api</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>javax.enterprise</groupId>
+                    <artifactId>cdi-api</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
 
