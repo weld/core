@@ -38,8 +38,8 @@ public class ExtensionTest {
     public static Option[] configure() {
         return options(
                 Environment.CDIOSGiEnvironment(
-                        mavenBundle("org.jboss.weld.osgi.tests","weld-osgi-bundle1").version("1.0-SNAPSHOT"),
-                        mavenBundle("org.jboss.weld.osgi.tests", "weld-osgi-cdi-spi").version("1.0-SNAPSHOT")
+                        mavenBundle("org.jboss.weld.osgi.tests","weld-osgi-bundle1").version("2.1-SNAPSHOT"),
+                        mavenBundle("org.jboss.weld.osgi.tests", "weld-osgi-cdi-spi").version("2.1-SNAPSHOT")
                                               )
         );
     }

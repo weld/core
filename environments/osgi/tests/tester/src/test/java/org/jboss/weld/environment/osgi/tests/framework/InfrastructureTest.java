@@ -43,7 +43,7 @@ public class InfrastructureTest {
     public static Option[] configure() {
         return options(
                 Environment.CDIOSGiEnvironment(
-                        mavenBundle("org.jboss.weld.osgi.tests", "weld-osgi-importing").version("1.0-SNAPSHOT")
+                        mavenBundle("org.jboss.weld.osgi.tests", "weld-osgi-importing").version("2.1-SNAPSHOT")
                                               )
         );
     }
