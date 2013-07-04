@@ -37,7 +37,6 @@ import java.util.Set;
 
 import javax.enterprise.inject.spi.Bean;
 
-import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.exceptions.UnproxyableResolutionException;
@@ -217,7 +216,7 @@ public class Proxies {
         try {
             constructor = AccessController.doPrivileged(GetDeclaredConstructorAction.of(clazz));
         } catch (PrivilegedActionException e) {
-            InstantiatorFactory factory = Container.instance().services().get(InstantiatorFactory.class);
+            InstantiatorFactory factory = services.get(InstantiatorFactory.class);
             if (factory == null || !(factory.useInstantiators())) {
                 return new UnproxyableResolutionException(NOT_PROXYABLE_NO_CONSTRUCTOR, clazz, getDeclaringBeanInfo(declaringBean));
             } else {
@@ -227,7 +226,7 @@ public class Proxies {
         if (constructor == null) {
             return new UnproxyableResolutionException(NOT_PROXYABLE_NO_CONSTRUCTOR, clazz, getDeclaringBeanInfo(declaringBean));
         } else if (Modifier.isPrivate(constructor.getModifiers())) {
-            InstantiatorFactory factory = Container.instance().services().get(InstantiatorFactory.class);
+            InstantiatorFactory factory = services.get(InstantiatorFactory.class);
             if (factory == null || !(factory.useInstantiators())) {
                 return new UnproxyableResolutionException(NOT_PROXYABLE_PRIVATE_CONSTRUCTOR, clazz, constructor, getDeclaringBeanInfo(declaringBean));
             } else {

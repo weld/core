@@ -58,7 +58,7 @@ public class ClientProxyProvider {
     private class CreateClientProxy extends CacheLoader<Bean<Object>, Object> {
         @Override
         public Object load(Bean<Object> from) {
-            if (Proxies.isTypesProxyable(from, services)) {
+            if (Proxies.isTypesProxyable(from, services())) {
                 return createClientProxy(from);
             } else {
                 return BEAN_NOT_PROXYABLE_MARKER;
@@ -69,8 +69,8 @@ public class ClientProxyProvider {
     private class CreateClientProxyForType extends CacheLoader<RequestedTypeHolder, Object> {
         @Override
         public Object load(RequestedTypeHolder input) {
-            Set<Type> requestedTypeClosure = Container.instance(contextId).services().get(SharedObjectCache.class).getTypeClosureHolder(input.requestedType).get();
-            if (Proxies.isTypesProxyable(requestedTypeClosure, services)) {
+            Set<Type> requestedTypeClosure = services().get(SharedObjectCache.class).getTypeClosureHolder(input.requestedType).get();
+            if (Proxies.isTypesProxyable(requestedTypeClosure, services())) {
                 return createClientProxy(input.bean, requestedTypeClosure);
             } else {
                 return BEAN_NOT_PROXYABLE_MARKER;
@@ -135,19 +135,29 @@ public class ClientProxyProvider {
     private final LoadingCache<RequestedTypeHolder, Object> requestedTypeClosureProxyPool;
 
     private final String contextId;
-    private final ServiceRegistry services;
+    private volatile ServiceRegistry services;
 
     /**
      * Constructor
      */
-    public ClientProxyProvider(String contextId, ServiceRegistry services) {
+    public ClientProxyProvider(String contextId) {
         CacheBuilder<Object, Object> cacheBuilder = CacheBuilder.newBuilder();
         this.CREATE_BEAN_TYPE_CLOSURE_CLIENT_PROXY = new CreateClientProxy();
         this.CREATE_REQUESTED_TYPE_CLOSURE_CLIENT_PROXY = new CreateClientProxyForType();
         this.beanTypeClosureProxyPool = cacheBuilder.build(CREATE_BEAN_TYPE_CLOSURE_CLIENT_PROXY);
         this.requestedTypeClosureProxyPool = cacheBuilder.build(CREATE_REQUESTED_TYPE_CLOSURE_CLIENT_PROXY);
         this.contextId = contextId;
-        this.services = services;
+    }
+
+    private ServiceRegistry services() {
+        if (services == null) {
+            synchronized (this) {
+                if (services == null) {
+                    this.services = Container.instance(contextId).services();
+                }
+            }
+        }
+        return this.services;
     }
 
     /**
@@ -182,7 +192,7 @@ public class ClientProxyProvider {
     public <T> T getClientProxy(final Bean<T> bean) {
         T proxy = getCastCacheValue(beanTypeClosureProxyPool, bean);
         if (proxy == BEAN_NOT_PROXYABLE_MARKER) {
-            throw Proxies.getUnproxyableTypesException(bean, services);
+            throw Proxies.getUnproxyableTypesException(bean, services());
         }
         log.trace(LOOKED_UP_CLIENT_PROXY, proxy.getClass(), bean);
         return proxy;
@@ -207,7 +217,7 @@ public class ClientProxyProvider {
              */
             proxy = getCastCacheValue(requestedTypeClosureProxyPool, new RequestedTypeHolder(requestedType, bean));
             if (proxy == BEAN_NOT_PROXYABLE_MARKER) {
-                throw Proxies.getUnproxyableTypeException(requestedType, services);
+                throw Proxies.getUnproxyableTypeException(requestedType, services());
             }
         }
         log.trace(LOOKED_UP_CLIENT_PROXY, proxy.getClass(), bean);

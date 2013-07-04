@@ -69,6 +69,10 @@ public class Container {
         return container;
     }
 
+    public static Container instance(BeanManagerImpl manager) {
+        return instance(manager.getContextId());
+    }
+
     public static boolean available(String contextId) {
         boolean b = instance.isSet(contextId) && instance(contextId) != null
                 && instance(contextId).getState().isAvailable();

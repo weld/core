@@ -316,7 +316,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                 new CopyOnWriteArrayList<ObserverMethod<?>>(),
                 new CopyOnWriteArrayList<String>(),
                 new ConcurrentHashMap<EjbDescriptor<?>, SessionBean<?>>(),
-                new ClientProxyProvider(contextId, serviceRegistry),
+                new ClientProxyProvider(contextId),
                 contexts,
                 new CopyOnWriteArraySet<CurrentActivity>(),
                 ModuleEnablement.EMPTY_ENABLEMENT,
