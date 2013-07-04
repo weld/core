@@ -16,6 +16,13 @@
  */
 package org.jboss.weld;
 
+import static org.jboss.weld.logging.messages.BeanManagerMessage.NULL_BEAN_MANAGER_ID;
+
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.jboss.weld.annotated.slim.AnnotatedTypeIdentifier;
 import org.jboss.weld.bootstrap.BeanDeployment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.api.Singleton;
@@ -26,12 +33,6 @@ import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.logging.LoggerFactory;
 import org.jboss.weld.logging.MessageConveyorFactory;
 import org.jboss.weld.manager.BeanManagerImpl;
-
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
-
-import static org.jboss.weld.logging.messages.BeanManagerMessage.NULL_BEAN_MANAGER_ID;
 
 /**
  * A Weld application container
@@ -65,8 +66,15 @@ public class Container {
     }
 
     public static Container instance(String contextId) {
-        Container container = instance.get(contextId);
-        return container;
+        return instance.get(contextId);
+    }
+
+    public static Container instance(BeanManagerImpl manager) {
+        return instance(manager.getContextId());
+    }
+
+    public static Container instance(AnnotatedTypeIdentifier identifier) {
+        return instance(identifier.getContextId());
     }
 
     public static boolean available(String contextId) {

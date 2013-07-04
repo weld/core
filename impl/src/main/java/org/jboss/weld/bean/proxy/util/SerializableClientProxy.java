@@ -41,11 +41,11 @@ public class SerializableClientProxy implements Serializable {
     private static final long serialVersionUID = -46820068707447753L;
 
     private final String beanId;
-    private final String containerId;
+    private final String contextId;
 
-    public SerializableClientProxy(final String beanId, final String containerId) {
+    public SerializableClientProxy(final String beanId, final String contextId) {
         this.beanId = beanId;
-        this.containerId = containerId;
+        this.contextId = contextId;
     }
 
     /**
@@ -55,11 +55,11 @@ public class SerializableClientProxy implements Serializable {
      * @throws java.io.ObjectStreamException
      */
     Object readResolve() throws ObjectStreamException {
-        Bean<?> bean = Container.instance(containerId).services().get(ContextualStore.class).<Bean<Object>, Object>getContextual(beanId);
+        Bean<?> bean = Container.instance(contextId).services().get(ContextualStore.class).<Bean<Object>, Object>getContextual(beanId);
         if (bean == null) {
             throw new WeldException(BeanMessage.PROXY_DESERIALIZATION_FAILURE);
         }
-        return Container.instance(containerId).deploymentManager().getClientProxyProvider().getClientProxy(bean);
+        return Container.instance(contextId).deploymentManager().getClientProxyProvider().getClientProxy(bean);
     }
 
 }

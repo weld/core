@@ -144,7 +144,7 @@ public class BeanManagerProxy extends ForwardingBeanManager {
             return;
         }
         if (this.container == null) {
-            this.container = Container.instance(manager.getContextId());
+            this.container = Container.instance(manager);
         }
         ContainerState state = container.getState();
         if (SHUTDOWN.equals(state)) {
