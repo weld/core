@@ -1,93 +1,91 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-   <parent>
-      <groupId>org.jboss.weld.osgi</groupId>
-      <artifactId>weld-osgi-core</artifactId>
-      <version>1.0-SNAPSHOT</version>
-      <relativePath>../pom.xml</relativePath>
-   </parent>
-   <modelVersion>4.0.0</modelVersion>
-   <groupId>org.jboss.weld.osgi</groupId>
-   <artifactId>weld-osgi-core-extension</artifactId>
-   <packaging>bundle</packaging>
-   <name>Weld OSGi (Extension bundle)</name>
-   <description>Weld OSGi extension bundle</description>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>org.jboss.weld.osgi</groupId>
+        <artifactId>weld-osgi-core</artifactId>
+        <relativePath>../pom.xml</relativePath>
+        <version>2.0.3-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.jboss.weld.osgi</groupId>
+    <artifactId>weld-osgi-core-extension</artifactId>
+    <packaging>bundle</packaging>
+    <name>Weld OSGi (Extension bundle)</name>
+    <description>Weld OSGi extension bundle</description>
 
-   <licenses>
-      <license>
-         <name>Apache License, Version 2.0</name>
-         <distribution>repo</distribution>
-         <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
-      </license>
-   </licenses>
-   <url>http://www.seamframework.org/Weld</url>
-   
-   <dependencies>
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <distribution>repo</distribution>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+        </license>
+    </licenses>
+    <url>http://www.seamframework.org/Weld</url>
+
+    <dependencies>
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.core</artifactId>
             <version>4.2.0</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.compendium</artifactId>
             <version>4.2.0</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.jboss.weld.osgi</groupId>
-   <artifactId>weld-osgi-core-api</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <artifactId>weld-osgi-core-api</artifactId>
+            <version>${project.version}</version>
         </dependency>
-        
+
         <dependency>
-       <groupId>org.jboss.weld.osgi</groupId>
-   <artifactId>weld-osgi-core-spi</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <groupId>org.jboss.weld.osgi</groupId>
+            <artifactId>weld-osgi-core-spi</artifactId>
+            <version>${project.version}</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>1.6.1</version>
         </dependency>
-        
+
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
             <version>0.9.26</version>
         </dependency>
-        
+
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <version>0.9.26</version>
         </dependency>
-        
+
+        <!-- TODO: remove and replace with classfilewriter -->
         <dependency>
             <groupId>org.javassist</groupId>
             <artifactId>javassist</artifactId>
             <version>3.14.0-GA</version>
         </dependency>
-        
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.8.1</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
 
-   <build>
-      <plugins>
-         <plugin>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>maven-bundle-plugin</artifactId>
-         </plugin>
-      </plugins>
-   </build>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
