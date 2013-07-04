@@ -41,7 +41,6 @@
             <groupId>org.jboss.weld.osgi.examples</groupId>
             <artifactId>weld-osgi-calculator-api</artifactId>
             <version>${project.version}</version>
-            <type>bundle</type>
         </dependency>
 
         <dependency>

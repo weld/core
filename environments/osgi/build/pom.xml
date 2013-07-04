@@ -3,7 +3,7 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
         <artifactId>weld-osgi-parent</artifactId>
-        <groupId>org.jboss.weld</groupId>
+        <groupId>org.jboss.weld.osgi</groupId>
         <relativePath>../pom.xml</relativePath>
         <version>2.1-SNAPSHOT</version>
     </parent>
