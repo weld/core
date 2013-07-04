@@ -5,7 +5,7 @@
         <artifactId>weld-core-parent</artifactId>
         <groupId>org.jboss.weld</groupId>
         <relativePath>../../../parent/pom.xml</relativePath>
-        <version>2.0.3-SNAPSHOT</version>
+        <version>2.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jboss.weld.osgi.tests</groupId>
