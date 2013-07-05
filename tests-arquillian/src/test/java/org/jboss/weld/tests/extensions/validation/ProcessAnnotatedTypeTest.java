@@ -18,6 +18,7 @@ package org.jboss.weld.tests.extensions.validation;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.DefinitionException;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 
@@ -31,7 +32,7 @@ import org.junit.runner.RunWith;
 public class ProcessAnnotatedTypeTest extends AbstractTestClass {
 
     @Deployment
-    @ShouldThrowException(Exception.class)
+    @ShouldThrowException(DefinitionException.class)
     public static Archive<?> getDeployment() {
         return getDeployment(ProcessAnnotatedTypeTest.class, BrokenExtension.class);
     }

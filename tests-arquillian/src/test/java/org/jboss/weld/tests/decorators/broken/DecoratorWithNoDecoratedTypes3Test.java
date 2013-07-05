@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.tests.decorators.broken;
 
+import javax.enterprise.inject.spi.DefinitionException;
 import javax.enterprise.inject.spi.Extension;
 
 import org.jboss.shrinkwrap.api.Archive;
@@ -32,7 +33,7 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class DecoratorWithNoDecoratedTypes3Test {
 
-    @ShouldThrowException(Exception.class)
+    @ShouldThrowException(DefinitionException.class)
     @Deployment
     public static Archive<?> getDeployment() {
         return ShrinkWrap

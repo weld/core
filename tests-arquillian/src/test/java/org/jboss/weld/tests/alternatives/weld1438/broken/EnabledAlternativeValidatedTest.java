@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.tests.alternatives.weld1438.broken;
 
+import javax.enterprise.inject.spi.DeploymentException;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.ShouldThrowException;
 import org.jboss.arquillian.junit.Arquillian;
@@ -35,7 +37,7 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class EnabledAlternativeValidatedTest {
 
-    @ShouldThrowException(Exception.class)
+    @ShouldThrowException(DeploymentException.class)
     @Deployment
     public static Archive<?> getDeployment() {
         return ShrinkWrap.create(BeanArchive.class).alternate(FilePrinter.class).addClass(FilePrinter.class);

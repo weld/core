@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.tests.specialization.extension.broken;
 
+import javax.enterprise.inject.spi.DefinitionException;
 import javax.enterprise.inject.spi.Extension;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -30,7 +31,7 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class DifferentNamesOfSpecializedBeansTest {
 
-    @ShouldThrowException(Exception.class)
+    @ShouldThrowException(DefinitionException.class)
     @Deployment
     public static Archive<?> getDeployment() {
         return ShrinkWrap.create(BeanArchive.class).addPackage(DifferentNamesOfSpecializedBeansTest.class.getPackage()).addAsServiceProvider(Extension.class, ModifyingExtension.class);

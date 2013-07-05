@@ -17,6 +17,8 @@
 
 package org.jboss.weld.tests.interceptors.signature;
 
+import javax.enterprise.inject.spi.DeploymentException;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.ShouldThrowException;
 import org.jboss.arquillian.junit.Arquillian;
@@ -35,7 +37,7 @@ import org.junit.runner.RunWith;
 public class TargetClassWithAroundConstructTest {
 
     @Deployment
-    @ShouldThrowException(Exception.class) // AS7-1197
+    @ShouldThrowException(DeploymentException.class)
     public static Archive<?> deploy() {
         return ShrinkWrap.create(BeanArchive.class)
                 .addClass(TargetClassWithAroundConstruct.class);

@@ -10,7 +10,7 @@ public class ResourceProducer {
     @SuppressWarnings("unused")
     @Produces
     @ApplicationScoped
-    @PersistenceContext
+    @PersistenceContext(unitName = "pu1")
     private EntityManager entityManager;
 
 }

@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.tests.event.observer.validation.enterprise;
 
+import javax.enterprise.inject.spi.DefinitionException;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.ShouldThrowException;
 import org.jboss.arquillian.junit.Arquillian;
@@ -32,8 +34,7 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class InheritedObserverMethodNotInBusinessInterfaceValidationTest {
     @Deployment
-    // @ShouldThrowException(DefinitionException.class)
-    @ShouldThrowException(Exception.class) // AS7-1197
+    @ShouldThrowException(DefinitionException.class)
     public static JavaArchive getDeployment() {
         return ShrinkWrap.create(JavaArchive.class, "test.jar")
                 .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")

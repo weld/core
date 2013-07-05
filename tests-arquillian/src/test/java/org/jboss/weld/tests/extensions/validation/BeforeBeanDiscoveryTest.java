@@ -18,6 +18,7 @@ package org.jboss.weld.tests.extensions.validation;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
+import javax.enterprise.inject.spi.DefinitionException;
 import javax.enterprise.inject.spi.Extension;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -30,7 +31,7 @@ import org.junit.runner.RunWith;
 public class BeforeBeanDiscoveryTest extends AbstractTestClass {
 
     @Deployment
-    @ShouldThrowException(Exception.class)
+    @ShouldThrowException(DefinitionException.class)
     public static Archive<?> getDeployment() {
         return getDeployment(BeforeBeanDiscoveryTest.class, BrokenExtension.class);
     }

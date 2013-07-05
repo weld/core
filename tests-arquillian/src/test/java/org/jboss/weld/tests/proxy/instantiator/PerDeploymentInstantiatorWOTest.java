@@ -17,6 +17,7 @@
 
 package org.jboss.weld.tests.proxy.instantiator;
 
+import javax.enterprise.inject.spi.DeploymentException;
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -35,7 +36,7 @@ import org.junit.runner.RunWith;
 public class PerDeploymentInstantiatorWOTest extends AbstractPerDeploymentInstantiator {
 
     @Deployment
-    @ShouldThrowException(Exception.class)
+    @ShouldThrowException(DeploymentException.class)
     public static Archive<?> getDeploymentWO() {
         return getDeployment();
     }
