@@ -665,7 +665,7 @@
          <title>Servlet</title>
          <para>
             If you are integrating Weld into a Servlet environment you must register
-            <literal>org.jboss.weld.servlet.WeldListener</literal> and
+            <literal>org.jboss.weld.servlet.WeldInitialListener</literal> and
              <literal>org.jboss.weld.servlet.WeldTerminalListener</literal> as Servlet listeners, either
             automatically, or through user configuration, for each CDI application which uses Servlet.
          </para>

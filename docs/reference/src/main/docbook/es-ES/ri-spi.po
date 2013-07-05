@@ -439,7 +439,7 @@ msgstr ""
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "If you are integrating Weld into a Servlet environment you must register <literal>org.jboss.weld.servlet.WeldListener</literal> as a Servlet listener, either automatically, or through user configuration, for each CDI application which uses Servlet."
+msgid "If you are integrating Weld into a Servlet environment you must register <literal>org.jboss.weld.servlet.WeldInitialListener</literal> as a Servlet listener, either automatically, or through user configuration, for each CDI application which uses Servlet."
 msgstr "Si usted está integrando el Web Beans en un entorno de Servlet debe registrar <literal>org.jboss.webbeans.servlet.WebBeansListener</literal> como oyente de Servlet, ya sea automáticamente o a través de la configuración de usuario, para cada aplicación Web Beans que utiliza Servlet."
 
 #. Tag: para

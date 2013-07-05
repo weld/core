@@ -436,7 +436,7 @@ msgstr "サーブレット"
 
 #. Tag: para
 #, fuzzy, no-c-format
-msgid "If you are integrating Weld into a Servlet environment you must register <literal>org.jboss.weld.servlet.WeldListener</literal> as a Servlet listener, either automatically, or through user configuration, for each CDI application which uses Servlet."
+msgid "If you are integrating Weld into a Servlet environment you must register <literal>org.jboss.weld.servlet.WeldInitialListener</literal> as a Servlet listener, either automatically, or through user configuration, for each CDI application which uses Servlet."
 msgstr "Web Beansをサーブレット環境と統合しているなら、自動的またはユーザ設定によって、<literal>org.jboss.webbeans.servlet.WebBeansListener</literal>をサーブレットリスナーとして登録する必要があります。この登録は、サーブレットを使用する各Web Beansアプリケーションで必要です。"
 
 #. Tag: para

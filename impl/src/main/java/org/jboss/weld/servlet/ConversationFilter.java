@@ -34,9 +34,9 @@ import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
  * Filter that handles conversation context activation if mapped by the application. Otherwise, conversation context is
- * activated by {@link WeldListener} at the beginning of the request processing.
+ * activated by {@link org.jboss.weld.servlet.WeldInitialListener} at the beginning of the request processing.
  *
- * @see WeldListener
+ * @see org.jboss.weld.servlet.WeldInitialListener
  * @see ConversationContextActivator
  *
  * @author Jozef Hartinger
