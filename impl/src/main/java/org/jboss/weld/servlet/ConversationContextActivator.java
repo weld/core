@@ -36,7 +36,7 @@ import org.slf4j.cal10n.LocLogger;
  * This component takes care of activation/deactivation of the conversation context for a servlet request.
  *
  * @see ConversationFilter
- * @see WeldListener
+ * @see org.jboss.weld.servlet.WeldInitialListener
  *
  * @author Jozef Hartinger
  * @author Marko Luksa
@@ -47,7 +47,7 @@ public class ConversationContextActivator {
     private static final String NO_CID = "nocid";
     private static final String CONVERSATION_PROPAGATION = "conversationPropagation";
     private static final String CONVERSATION_PROPAGATION_NONE = "none";
-    private static final String CONTEXT_ACTIVATED_IN_REQUEST = WeldListener.class.getName() + "CONTEXT_ACTIVATED_IN_REQUEST";
+    private static final String CONTEXT_ACTIVATED_IN_REQUEST = ConversationContextActivator.class.getName() + "CONTEXT_ACTIVATED_IN_REQUEST";
 
     private static final LocLogger log = loggerFactory().getLogger(SERVLET);
 

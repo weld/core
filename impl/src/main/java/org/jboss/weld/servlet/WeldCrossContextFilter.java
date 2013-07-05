@@ -36,11 +36,11 @@ import java.io.IOException;
  */
 public class WeldCrossContextFilter implements Filter {
    private static final String REQUEST_CONTEXT_KEY = "org.jboss.weld.context.http.HttpRequestContextImpl";
-   private WeldListener listener;
+   private WeldInitialListener listener;
    private FilterConfig config;
 
    public void init(FilterConfig filterConfig) throws ServletException {
-      listener = new WeldListener();
+      listener = new WeldInitialListener();
       this.config = filterConfig;
    }
 
