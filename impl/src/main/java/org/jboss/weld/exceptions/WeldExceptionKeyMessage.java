@@ -54,7 +54,7 @@ public class WeldExceptionKeyMessage implements WeldExceptionMessage, Serializab
             this.messageArguments = new String[args.length];
             int index = 0;
             for (Object arg : args) {
-                messageArguments[index++] = arg == null ? "null" : arg.toString();
+                messageArguments[index++] = String.valueOf(arg);
             }
         }
     }
