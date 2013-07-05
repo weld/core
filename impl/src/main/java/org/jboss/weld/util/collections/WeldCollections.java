@@ -25,6 +25,7 @@ import java.util.Set;
 
 import org.jboss.weld.util.reflection.Reflections;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -101,5 +102,29 @@ public class WeldCollections {
     public static <T> List<T> sort(List<T> list, Comparator<? super T> comparator) {
         Collections.sort(list, comparator);
         return list;
+    }
+
+    /**
+     * Returns the supplied list as a multi-row string with every toString() of every element of the list
+     * in its own row.
+     * Example: toMultiRowString(Arrays.asList("aaa", "bbb", "ccc")) will return:
+     * <pre>
+     * [
+     *   - aaa,
+     *   - bbb,
+     *   - ccc]
+     * </pre>
+     */
+    public static String toMultiRowString(List<?> list) {
+        if (list == null) {
+            return null;
+        }
+        if (list.isEmpty()) {
+            return "[]";
+        }
+        StringBuilder sb = new StringBuilder("[\n  - ");
+        Joiner.on(",\n  - ").appendTo(sb, list);
+        sb.append("]");
+        return sb.toString();
     }
 }

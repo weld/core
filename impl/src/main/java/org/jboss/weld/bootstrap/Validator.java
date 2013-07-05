@@ -149,6 +149,7 @@ import org.jboss.weld.util.Decorators;
 import org.jboss.weld.util.JtaApiAbstraction;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.collections.HashSetSupplier;
+import org.jboss.weld.util.collections.WeldCollections;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
@@ -889,7 +890,7 @@ public class Validator implements Service {
             // create a list that shows the path to the bean
             List<Object> realDependencyPath = new ArrayList<Object>(dependencyPath);
             realDependencyPath.add(bean);
-            throw new DeploymentException(PSEUDO_SCOPED_BEAN_HAS_CIRCULAR_REFERENCES, realDependencyPath);
+            throw new DeploymentException(PSEUDO_SCOPED_BEAN_HAS_CIRCULAR_REFERENCES, WeldCollections.toMultiRowString(realDependencyPath));
         }
         if (validatedBeans.contains(bean)) {
             return;
