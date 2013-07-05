@@ -17,6 +17,8 @@
 
 package org.jboss.weld.tests.event.observer.validation;
 
+import javax.enterprise.inject.spi.DeploymentException;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.ShouldThrowException;
 import org.jboss.arquillian.junit.Arquillian;
@@ -33,8 +35,7 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class ObserverMethodParameterInjectionValidationTest {
     @Deployment
-    // @ShouldThrowException(DefinitionException.class)
-    @ShouldThrowException(Exception.class) // AS7-1197
+    @ShouldThrowException(DeploymentException.class)
     public static JavaArchive getDeployment() {
         return ShrinkWrap.create(JavaArchive.class, "test.jar")
                 .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")

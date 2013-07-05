@@ -1,12 +1,15 @@
 package org.jboss.weld.tests.resources.producer.non.dependent;
 
+import javax.enterprise.inject.spi.DefinitionException;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.ShouldThrowException;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.Asset;
+import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -16,13 +19,14 @@ import org.junit.runner.RunWith;
 @Category(Integration.class)
 public class NonDependentResourceProducerFieldTest {
 
+    public static final Asset PERSISTENCE_XML = new ByteArrayAsset("<persistence xmlns=\"http://java.sun.com/xml/ns/persistence\" version=\"1.0\"><persistence-unit name=\"pu1\"><jta-data-source>java:jboss/datasources/ExampleDS</jta-data-source></persistence-unit></persistence>".getBytes());
+
     @Deployment
-    // @ShouldThrowException(DefinitionException.class)
-    @ShouldThrowException(Exception.class) // AS7-1197
+    @ShouldThrowException(DefinitionException.class)
     public static JavaArchive deploy() {
         return ShrinkWrap.create(BeanArchive.class)
-                .addPackage(NonDependentResourceProducerFieldTest.class.getPackage());
-
+                .addPackage(NonDependentResourceProducerFieldTest.class.getPackage())
+                .addAsResource(PERSISTENCE_XML, "META-INF/persistence.xml");
     }
 
 

@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.tests.interceptors.weld459.fmcl;
 
+import javax.enterprise.inject.spi.DeploymentException;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.ShouldThrowException;
 import org.jboss.arquillian.junit.Arquillian;
@@ -29,8 +31,7 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class FinalMethodClassLevelInterceptorTest  {
 
-    // @ShouldThrowException(DefinitionException.class)
-    @ShouldThrowException(Exception.class) // AS7-1197
+    @ShouldThrowException(DeploymentException.class)
     @Deployment
     public static Archive<?> deploy() {
         return ShrinkWrap.create(BeanArchive.class)

@@ -28,6 +28,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.DefinitionException;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
@@ -37,7 +38,7 @@ import javax.enterprise.inject.spi.BeanManager;
 public class NonProxyableTest {
 
     @Deployment
-    @ShouldThrowException(Exception.class)
+    @ShouldThrowException(DefinitionException.class)
     public static Archive getDeployment() {
         return ShrinkWrap.create(BeanArchive.class).addPackage(NonProxyableTest.class.getPackage());
     }

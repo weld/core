@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.tests.decorators.broken;
 
+import javax.enterprise.inject.spi.DefinitionException;
+
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -28,7 +30,7 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class DecoratorWithNoDecoratedTypes1Test {
 
-    @ShouldThrowException(Exception.class)
+    @ShouldThrowException(DefinitionException.class)
     @Deployment
     public static Archive<?> getDeployment() {
         return ShrinkWrap.create(BeanArchive.class).addClass(SerializableDecorator.class);

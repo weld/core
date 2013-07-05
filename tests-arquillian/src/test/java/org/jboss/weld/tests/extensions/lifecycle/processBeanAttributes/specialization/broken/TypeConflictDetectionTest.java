@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.tests.extensions.lifecycle.processBeanAttributes.specialization.broken;
 
+import javax.enterprise.inject.spi.DefinitionException;
 import javax.enterprise.inject.spi.Extension;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -31,7 +32,7 @@ import org.junit.runner.RunWith;
 public class TypeConflictDetectionTest {
 
     @Deployment
-    @ShouldThrowException(Exception.class)
+    @ShouldThrowException(DefinitionException.class)
     public static Archive<?> getDeployment() {
         return ShrinkWrap.create(BeanArchive.class).addClasses(Specialized.class, Specializing.class, TypeExtension.class)
                 .addAsServiceProvider(Extension.class, TypeExtension.class);

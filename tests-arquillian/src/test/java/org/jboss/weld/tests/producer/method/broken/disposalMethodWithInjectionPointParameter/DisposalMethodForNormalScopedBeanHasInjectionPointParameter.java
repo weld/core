@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.tests.producer.method.broken.disposalMethodWithInjectionPointParameter;
 
+import javax.enterprise.inject.spi.DefinitionException;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.ShouldThrowException;
 import org.jboss.arquillian.junit.Arquillian;
@@ -29,7 +31,7 @@ import org.junit.runner.RunWith;
 public class DisposalMethodForNormalScopedBeanHasInjectionPointParameter {
 
     @Deployment
-    @ShouldThrowException(Exception.class)
+    @ShouldThrowException(DefinitionException.class)
     public static Archive<?> deploy() {
         return ShrinkWrap.create(BeanArchive.class).addPackage(Orange.class.getPackage());
     }

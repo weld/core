@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.tests.disposer.specialization;
 
+import javax.enterprise.inject.spi.DefinitionException;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.ShouldThrowException;
 import org.jboss.arquillian.junit.Arquillian;
@@ -34,7 +36,7 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class DisposerMethodSpecializationTest {
 
-    @ShouldThrowException(Exception.class)
+    @ShouldThrowException(DefinitionException.class)
     @Deployment
     public static Archive<?> getDeployment() {
         return ShrinkWrap.create(BeanArchive.class).addPackage(Gearbox.class.getPackage());

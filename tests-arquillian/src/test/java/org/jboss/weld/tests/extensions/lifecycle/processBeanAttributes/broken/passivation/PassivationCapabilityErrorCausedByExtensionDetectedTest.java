@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.tests.extensions.lifecycle.processBeanAttributes.broken.passivation;
 
+import javax.enterprise.inject.spi.DeploymentException;
 import javax.enterprise.inject.spi.Extension;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -31,7 +32,7 @@ import org.junit.runner.RunWith;
 public class PassivationCapabilityErrorCausedByExtensionDetectedTest {
 
     @Deployment
-    @ShouldThrowException(Exception.class)
+    @ShouldThrowException(DeploymentException.class)
     public static Archive<?> getDeployment() {
         return ShrinkWrap.create(BeanArchive.class).addClasses(ModifyingExtension1.class, Laptop.class).addAsServiceProvider(Extension.class, ModifyingExtension1.class);
     }

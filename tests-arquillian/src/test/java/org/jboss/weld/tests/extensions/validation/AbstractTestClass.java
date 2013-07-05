@@ -32,7 +32,8 @@ import org.junit.Test;
 public abstract class AbstractTestClass {
 
     public static Archive<?> getDeployment(Class<?> testClass, Class<? extends Extension> extensionClass) {
-        return ShrinkWrap.create(BeanArchive.class).addClasses(Telephone.class, testClass)
+        return ShrinkWrap.create(BeanArchive.class)
+                .addClasses(AbstractTestClass.class, Telephone.class, testClass)
                 .addAsServiceProvider(Extension.class, extensionClass);
     }
 

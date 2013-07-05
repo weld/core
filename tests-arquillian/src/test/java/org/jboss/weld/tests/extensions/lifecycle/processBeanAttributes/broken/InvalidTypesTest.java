@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.tests.extensions.lifecycle.processBeanAttributes.broken;
 
+import javax.enterprise.inject.spi.DefinitionException;
 import javax.enterprise.inject.spi.Extension;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -31,7 +32,7 @@ import org.junit.runner.RunWith;
 public class InvalidTypesTest {
 
     @Deployment
-    @ShouldThrowException(Exception.class)
+    @ShouldThrowException(DefinitionException.class)
     public static Archive<?> getDeployment() {
         return ShrinkWrap.create(BeanArchive.class).addClasses(Telephone.class, PlainOldAnnotation.class, InvalidTypesExtension.class)
                 .addAsServiceProvider(Extension.class, InvalidTypesExtension.class);

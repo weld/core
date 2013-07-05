@@ -33,7 +33,8 @@ import org.junit.runner.RunWith;
 public class TargetClassWithAroundInvokeWithInvalidReturnTypeTest {
 
     @Deployment
-    @ShouldThrowException(Exception.class) // AS7-1197
+    // Can either be IllegalArgumentException (thrown by org.jboss.as.ee) or DefinitionException (thrown by Weld)
+    @ShouldThrowException(Exception.class)
     public static Archive<?> deploy() {
         return ShrinkWrap.create(BeanArchive.class)
                 .addClass(TargetClassWithAroundInvokeWithInvalidReturnType.class);

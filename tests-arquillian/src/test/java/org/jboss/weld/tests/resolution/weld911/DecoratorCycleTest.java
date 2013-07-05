@@ -17,6 +17,8 @@
 
 package org.jboss.weld.tests.resolution.weld911;
 
+import javax.enterprise.inject.spi.DeploymentException;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.ShouldThrowException;
 import org.jboss.arquillian.junit.Arquillian;
@@ -34,7 +36,7 @@ import org.junit.runner.RunWith;
 public class DecoratorCycleTest {
 
     @Deployment
-    @ShouldThrowException(Exception.class)
+    @ShouldThrowException(DeploymentException.class)
     public static Archive getDeployment() {
         return ShrinkWrap.create(BeanArchive.class)
                 .decorate(BarDecorator.class)

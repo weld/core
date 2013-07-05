@@ -17,6 +17,8 @@
 
 package org.jboss.weld.tests.interceptors.passivation.broken.nonSerializableInterceptor;
 
+import javax.enterprise.inject.spi.DefinitionException;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.ShouldThrowException;
 import org.jboss.arquillian.junit.Arquillian;
@@ -32,8 +34,7 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class NonPassivatingInterceptorOnPassivatingBean {
 
-    // @ShouldThrowException(DefinitionException.class)
-    @ShouldThrowException(Exception.class) // AS7-1197
+    @ShouldThrowException(DefinitionException.class)
     @Deployment
     public static Archive<?> deploy() {
         return ShrinkWrap.create(BeanArchive.class)

@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.tests.contexts.passivating.enterprise.broken.sessionBeanWithPassivatingScopeNotSerializable;
 
+import javax.enterprise.inject.spi.DeploymentException;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.ShouldThrowException;
 import org.jboss.arquillian.junit.Arquillian;
@@ -33,7 +35,7 @@ public class NonPassivationCapableEjbTest {
      * then the container automatically detects the problem and treats it as a deployment problem.
      */
     @Deployment
-    @ShouldThrowException(Exception.class)
+    @ShouldThrowException(DeploymentException.class)
     public static JavaArchive getDeployment() {
         return ShrinkWrap.create(BeanArchive.class).addPackage(Cup_Broken.class.getPackage());
     }

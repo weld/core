@@ -18,6 +18,7 @@
 package org.jboss.weld.tests.interceptors.signature;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.inject.spi.DefinitionException;
 import javax.interceptor.Interceptor;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -36,10 +37,11 @@ import org.junit.runner.RunWith;
 public class PostConstructInterceptorWithInvalidParameterTypeTest {
 
     @Deployment
-    @ShouldThrowException(Exception.class) // AS7-1197
+    @ShouldThrowException(DefinitionException.class)
     public static Archive<?> deploy() {
         return ShrinkWrap.create(BeanArchive.class)
                 .intercept(MyInterceptor.class)
+                .addClass(PostConstructInterceptorWithInvalidParameterTypeTest.class)
                 .addClasses(Lifecycle.class, InterceptedBean.class);
     }
 
