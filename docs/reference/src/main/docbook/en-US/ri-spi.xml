@@ -665,8 +665,14 @@
          <title>Servlet</title>
          <para>
             If you are integrating Weld into a Servlet environment you must register
-            <literal>org.jboss.weld.servlet.WeldListener</literal> as a Servlet listener, either
+            <literal>org.jboss.weld.servlet.WeldListener</literal> and
+             <literal>org.jboss.weld.servlet.WeldTerminalListener</literal> as Servlet listeners, either
             automatically, or through user configuration, for each CDI application which uses Servlet.
+         </para>
+         <para>
+             You must ensure that <literal>WeldListener</literal> is called before any other application-defined listener
+             is called and that <literal>WeldTerminalListener</literal> is called only after all application-defined
+             listeners have been called.
          </para>
          <para>
             You must ensure that <literal>WeldListener.contextInitialized()</literal> is called
