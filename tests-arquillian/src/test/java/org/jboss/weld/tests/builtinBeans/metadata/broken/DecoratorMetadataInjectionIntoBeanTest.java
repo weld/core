@@ -17,6 +17,7 @@
 package org.jboss.weld.tests.builtinBeans.metadata.broken;
 
 import javax.enterprise.inject.spi.Decorator;
+import javax.enterprise.inject.spi.DefinitionException;
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -32,7 +33,7 @@ import org.junit.runner.RunWith;
 public class DecoratorMetadataInjectionIntoBeanTest {
 
     @Deployment
-    @ShouldThrowException(Exception.class)
+    @ShouldThrowException(DefinitionException.class)
     public static Archive<?> getDeployment() {
         return ShrinkWrap.create(BeanArchive.class).addClass(DecoratorMetadataInjectionIntoBeanTest.class);
     }

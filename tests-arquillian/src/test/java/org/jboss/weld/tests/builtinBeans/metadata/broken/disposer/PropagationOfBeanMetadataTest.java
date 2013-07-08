@@ -17,6 +17,7 @@
 package org.jboss.weld.tests.builtinBeans.metadata.broken.disposer;
 
 import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.DefinitionException;
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -35,7 +36,7 @@ public class PropagationOfBeanMetadataTest {
     private BeanManager manager;
 
     @Deployment
-    @ShouldThrowException(Exception.class)
+    @ShouldThrowException(DefinitionException.class)
     public static Archive<?> getDeployment() {
         return ShrinkWrap.create(BeanArchive.class).addPackage(PropagationOfBeanMetadataTest.class.getPackage());
     }

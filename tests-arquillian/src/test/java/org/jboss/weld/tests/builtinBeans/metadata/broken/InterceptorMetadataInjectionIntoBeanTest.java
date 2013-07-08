@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.tests.builtinBeans.metadata.broken;
 
+import javax.enterprise.inject.spi.DefinitionException;
 import javax.enterprise.inject.spi.Interceptor;
 import javax.inject.Inject;
 
@@ -32,7 +33,7 @@ import org.junit.runner.RunWith;
 public class InterceptorMetadataInjectionIntoBeanTest {
 
     @Deployment
-    @ShouldThrowException(Exception.class)
+    @ShouldThrowException(DefinitionException.class)
     public static Archive<?> getDeployment() {
         return ShrinkWrap.create(BeanArchive.class).addClass(InterceptorMetadataInjectionIntoBeanTest.class);
     }
