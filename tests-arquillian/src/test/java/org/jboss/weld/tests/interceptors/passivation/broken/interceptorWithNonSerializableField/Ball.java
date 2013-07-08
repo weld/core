@@ -19,11 +19,12 @@ package org.jboss.weld.tests.interceptors.passivation.broken.interceptorWithNonS
 
 import java.io.Serializable;
 
+import javax.enterprise.context.SessionScoped;
 
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
-
+@SessionScoped
 public class Ball implements Serializable {
     public void shoot() {
     }

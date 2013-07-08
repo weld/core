@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 
-package org.jboss.weld.tests.interceptors.passivation.broken.interceptorWithNonSerializableField;
+package org.jboss.weld.tests.interceptors.passivation.broken.nonSerializableInterceptor;
 
-import javax.enterprise.inject.spi.DefinitionException;
+import javax.enterprise.inject.spi.DeploymentException;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.ShouldThrowException;
@@ -32,19 +32,17 @@ import org.junit.runner.RunWith;
  * @author Marius Bogoevici
  */
 @RunWith(Arquillian.class)
-public class InterceptorWithNonSerializableFieldOnPassivatingBean {
+public class NonPassivatingInterceptorOnPassivatingBeanTest {
 
-    @ShouldThrowException(DefinitionException.class)
+    @ShouldThrowException(DeploymentException.class)
     @Deployment
     public static Archive<?> deploy() {
         return ShrinkWrap.create(BeanArchive.class)
                 .intercept(Defender.class)
-                .addPackage(InterceptorWithNonSerializableFieldOnPassivatingBean.class.getPackage());
+                .addPackage(NonPassivatingInterceptorOnPassivatingBeanTest.class.getPackage());
     }
 
     @Test
-    // TODO Needs the exception transformer to run in JBAS
-    public void testNonPassivatingField() throws Exception {
-        assert false;
+    public void test() throws Exception {
     }
 }
