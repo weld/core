@@ -70,6 +70,7 @@ import org.jboss.weld.persistence.PersistenceApiAbstraction;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.BeanMethods;
 import org.jboss.weld.util.Observers;
+import org.jboss.weld.util.collections.WeldCollections;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.ws.WSApiAbstraction;
 import org.slf4j.cal10n.LocLogger;
@@ -198,7 +199,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
         if (disposalBeans.size() == 1) {
             return disposalBeans.iterator().next();
         } else if (disposalBeans.size() > 1) {
-            throw new DefinitionException(MULTIPLE_DISPOSAL_METHODS, this, disposalBeans);
+            throw new DefinitionException(MULTIPLE_DISPOSAL_METHODS, this, WeldCollections.toMultiRowString(disposalBeans));
         }
         return null;
     }

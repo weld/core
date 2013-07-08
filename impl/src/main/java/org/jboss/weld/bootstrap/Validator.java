@@ -405,7 +405,7 @@ public class Validator implements Service {
             throw new DeploymentException(INJECTION_POINT_HAS_UNSATISFIED_DEPENDENCIES, ij, Formats.formatAnnotations(ij.getQualifiers().toArray(new Annotation[ij.getQualifiers().size()])), Formats.formatType(ij.getType()));
         }
         if (resolvedBeans.size() > 1) {
-            throw new DeploymentException(INJECTION_POINT_HAS_AMBIGUOUS_DEPENDENCIES, ij, Formats.formatAnnotations(ij.getQualifiers().toArray(new Annotation[ij.getQualifiers().size()])), Formats.formatType(ij.getType()), resolvedBeans);
+            throw new DeploymentException(INJECTION_POINT_HAS_AMBIGUOUS_DEPENDENCIES, ij, Formats.formatAnnotations(ij.getQualifiers().toArray(new Annotation[ij.getQualifiers().size()])), Formats.formatType(ij.getType()), WeldCollections.toMultiRowString(resolvedBeans));
         }
         // Account for the case this is disabled decorator
         if (!resolvedBeans.isEmpty()) {
@@ -668,9 +668,9 @@ public class Validator implements Service {
             for (Decorator<?> bean : beanManager.getAccessibleDecorators()) {
                 decoratorBeanClasses.add(bean.getBeanClass().getName());
             }
-            for (Metadata<String> interceptorClassName : beansXml.getEnabledDecorators()) {
-                if (!decoratorBeanClasses.contains(interceptorClassName.getValue())) {
-                    throw new DeploymentException(DECORATOR_CLASS_NOT_BEAN_CLASS_OF_DECORATOR, interceptorClassName, decoratorBeanClasses);
+            for (Metadata<String> decoratorClassName : beansXml.getEnabledDecorators()) {
+                if (!decoratorBeanClasses.contains(decoratorClassName.getValue())) {
+                    throw new DeploymentException(DECORATOR_CLASS_NOT_BEAN_CLASS_OF_DECORATOR, decoratorClassName, WeldCollections.toMultiRowString(decoratorBeanClasses));
                 }
             }
         }
@@ -741,7 +741,7 @@ public class Validator implements Service {
     private void validateDisposalMethods(BeanDeployerEnvironment environment) {
         Set<DisposalMethod<?, ?>> beans = environment.getUnresolvedDisposalBeans();
         if (!beans.isEmpty()) {
-            throw new DefinitionException(DISPOSAL_METHODS_WITHOUT_PRODUCER, beans);
+            throw new DefinitionException(DISPOSAL_METHODS_WITHOUT_PRODUCER, WeldCollections.toMultiRowString(beans));
         }
     }
 

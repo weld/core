@@ -76,6 +76,7 @@ import org.jboss.weld.security.spi.SecurityServices;
 import org.jboss.weld.servlet.ServletApi;
 import org.jboss.weld.transaction.spi.TransactionServices;
 import org.jboss.weld.util.JtaApiAbstraction;
+import org.jboss.weld.util.collections.WeldCollections;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.instantiation.DefaultInstantiatorFactory;
 import org.jboss.weld.util.reflection.instantiation.InstantiatorFactory;
@@ -221,9 +222,9 @@ public class BeanDeployment {
         beanManager.setEnabled(enablement);
 
         if (log.isDebugEnabled()) {
-            log.debug(ENABLED_ALTERNATIVES, this.beanManager, enablement.getAllAlternatives());
-            log.debug(ENABLED_DECORATORS, this.beanManager, enablement.getDecorators());
-            log.debug(ENABLED_INTERCEPTORS, this.beanManager, enablement.getInterceptors());
+            log.debug(ENABLED_ALTERNATIVES, this.beanManager, WeldCollections.toMultiRowString(enablement.getAllAlternatives()));
+            log.debug(ENABLED_DECORATORS, this.beanManager, WeldCollections.toMultiRowString(enablement.getDecorators()));
+            log.debug(ENABLED_INTERCEPTORS, this.beanManager, WeldCollections.toMultiRowString(enablement.getInterceptors()));
         }
     }
 

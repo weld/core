@@ -17,6 +17,7 @@
 package org.jboss.weld.util.collections;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -105,26 +106,24 @@ public class WeldCollections {
     }
 
     /**
-     * Returns the supplied list as a multi-row string with every toString() of every element of the list
+     * Returns the supplied collection as a multi-row string with every toString() of every element of the collection
      * in its own row.
      * Example: toMultiRowString(Arrays.asList("aaa", "bbb", "ccc")) will return:
      * <pre>
-     * [
      *   - aaa,
      *   - bbb,
-     *   - ccc]
+     *   - ccc
      * </pre>
      */
-    public static String toMultiRowString(List<?> list) {
-        if (list == null) {
+    public static String toMultiRowString(Collection<?> collection) {
+        if (collection == null) {
             return null;
         }
-        if (list.isEmpty()) {
-            return "[]";
+        if (collection.isEmpty()) {
+            return "(empty collection)";
         }
-        StringBuilder sb = new StringBuilder("[\n  - ");
-        Joiner.on(",\n  - ").appendTo(sb, list);
-        sb.append("]");
+        StringBuilder sb = new StringBuilder("\n  - ");
+        Joiner.on(",\n  - ").appendTo(sb, collection);
         return sb.toString();
     }
 }

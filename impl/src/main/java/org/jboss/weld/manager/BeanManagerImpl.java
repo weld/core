@@ -165,6 +165,7 @@ import org.jboss.weld.util.Interceptors;
 import org.jboss.weld.util.Preconditions;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.collections.IterableToIteratorFunction;
+import org.jboss.weld.util.collections.WeldCollections;
 import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
 
@@ -990,7 +991,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                     activeCurrentActivity = currentActivity;
                 }
                 else {
-                    throw new IllegalStateException(TOO_MANY_ACTIVITIES, currentActivities);
+                    throw new IllegalStateException(TOO_MANY_ACTIVITIES, WeldCollections.toMultiRowString(currentActivities));
                 }
             }
         }
@@ -1172,7 +1173,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         } else if (resolvedBeans.size() == 0) {
             return null;
         } else {
-            throw new AmbiguousResolutionException(AMBIGUOUS_BEANS_FOR_DEPENDENCY, beans);
+            throw new AmbiguousResolutionException(AMBIGUOUS_BEANS_FOR_DEPENDENCY, WeldCollections.toMultiRowString(beans));
         }
     }
 
