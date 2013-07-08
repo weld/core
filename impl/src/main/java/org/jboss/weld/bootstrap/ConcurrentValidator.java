@@ -41,6 +41,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.api.ExecutorServices;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.collections.HashSetSupplier;
+import org.jboss.weld.util.collections.WeldCollections;
 
 import com.google.common.collect.Multimaps;
 import com.google.common.collect.SetMultimap;
@@ -133,7 +134,7 @@ public class ConcurrentValidator extends Validator {
             protected void doWork(String name) {
                 Set<Bean<?>> resolvedBeans = beanManager.getBeanResolver().resolve(Beans.removeDisabledBeans(namedAccessibleBeans.get(name), beanManager, registry));
                 if (resolvedBeans.size() > 1) {
-                    throw new DeploymentException(AMBIGUOUS_EL_NAME, name, resolvedBeans);
+                    throw new DeploymentException(AMBIGUOUS_EL_NAME, name, WeldCollections.toMultiRowString(resolvedBeans));
                 }
                 if (accessibleNamespaces.contains(name)) {
                     throw new DeploymentException(BEAN_NAME_IS_PREFIX, name);
