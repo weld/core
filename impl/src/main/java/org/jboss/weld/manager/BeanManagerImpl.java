@@ -803,12 +803,10 @@ public class BeanManagerImpl implements WeldManager, Serializable {
      */
     @Override
     public String toString() {
-        StringBuilder buffer = new StringBuilder();
-        buffer.append("Manager\n");
-        buffer.append("Enabled alternatives: " + getEnabled().getAlternativeClasses() + " " + getEnabled().getAlternativeStereotypes() + "\n");
-        buffer.append("Registered contexts: " + contexts.keySet() + "\n");
-        buffer.append("Registered beans: " + getBeans().size() + "\n");
-        return buffer.toString();
+        return "Manager " + id + "\n"
+                + "Enabled alternatives: " + getEnabled().getAlternativeClasses() + " " + getEnabled().getAlternativeStereotypes() + "\n"
+                + "Registered contexts: " + contexts.keySet() + "\n"
+                + "Registered beans: " + getBeans().size() + "\n";
     }
 
     @Override
