@@ -56,7 +56,6 @@ public class ProcessSyntheticAnnotatedTypeTest {
     public void testEventsFired() {
         Set<Class<?>> patClasses = extension.getPatClasses();
         Set<Class<?>> psatClasses = extension.getPsatClasses();
-        assertEquals(3, psatClasses.size());
         assertTrue(psatClasses.contains(Orange.class));
         assertTrue(psatClasses.contains(Apple.class));
         assertTrue(psatClasses.contains(Pear.class));
