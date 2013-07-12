@@ -72,16 +72,16 @@ public final class BeansClosure {
 
     // --- modification methods
 
-    public void addSpecialized(Bean<?> target, Bean<?> override) {
-        addSpecializedInternal(target, override);
+    public void addSpecialized(Bean<?> specializedBean, Bean<?> specializingBean) {
+        addSpecializedInternal(specializedBean, specializingBean);
         for (BeanManagerImpl accessibleBeanManager : getAccessibleBeanManagers()) {
             BeansClosure closure = accessibleBeanManager.getClosure();
-            closure.addSpecializedInternal(target, override);
+            closure.addSpecializedInternal(specializedBean, specializingBean);
         }
     }
 
-    protected void addSpecializedInternal(Bean<?> target, Bean<?> override) {
-        specialized.put(target, override);
+    protected void addSpecializedInternal(Bean<?> specializedBean, Bean<?> specializingBean) {
+        specialized.put(specializedBean, specializingBean);
     }
 
     public void addEnvironment(BeanDeployerEnvironment environment) {
@@ -114,19 +114,19 @@ public final class BeansClosure {
         return Collections.unmodifiableMap(specialized);
     }
 
-    public Bean<?> getSpecialized(Bean<?> bean) {
+    public Bean<?> getSpecializingBean(Bean<?> bean) {
         return specialized.get(bean);
     }
 
     public boolean isSpecialized(Bean<?> bean) {
-        return getSpecialized(bean) != null;
+        return getSpecializingBean(bean) != null;
     }
 
-    public Bean<?> mostSpecialized(Bean<?> bean) {
+    public Bean<?> getMostSpecializingBean(Bean<?> bean) {
         Bean most = bean;
         while (most != null) {
             Bean<?> temp = most;
-            most = specialized.get(bean);
+            most = getSpecializingBean(bean);
             bean = temp;
         }
         return bean;

@@ -594,7 +594,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     public Object getReference(Bean<?> bean, CreationalContext<?> creationalContext, boolean noProxy) {
-        bean = getMostSpecializedBean(bean);
+        bean = getMostSpecializingBean(bean);
         if (creationalContext instanceof WeldCreationalContext<?>) {
             creationalContext = ((WeldCreationalContext<?>) creationalContext).getCreationalContext(bean);
         }
@@ -945,9 +945,9 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         }
     }
 
-    public <X> Bean<? extends X> getMostSpecializedBean(Bean<X> bean) {
+    public <X> Bean<? extends X> getMostSpecializingBean(Bean<X> bean) {
         //noinspection unchecked
-        return (Bean<? extends X>) closure.mostSpecialized(bean);
+        return (Bean<? extends X>) closure.getMostSpecializingBean(bean);
     }
 
     public void validate(InjectionPoint ij) {
