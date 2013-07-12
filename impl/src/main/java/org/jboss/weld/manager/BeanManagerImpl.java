@@ -321,7 +321,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                 parentManager.getContexts(),
                 parentManager.getCurrentActivities(),
                 parentManager.getEnabled(),
-                new StringBuilder().append(parentManager.getChildIds().incrementAndGet()).toString(),
+                String.valueOf(parentManager.getChildIds().incrementAndGet()),
                 parentManager.getChildIds());
     }
 
