@@ -270,7 +270,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                 new CopyOnWriteArraySet<CurrentActivity>(),
                 enabled,
                 id,
-                new AtomicInteger());
+                new AtomicInteger(),
+                new BeansClosure());
     }
 
     public static BeanManagerImpl newManager(BeanManagerImpl rootManager, String id, ServiceRegistry services, Enabled enabled) {
@@ -288,7 +289,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                 new CopyOnWriteArraySet<CurrentActivity>(),
                 enabled,
                 id,
-                new AtomicInteger());
+                new AtomicInteger(),
+                rootManager.getClosure());
     }
 
     /**
@@ -321,8 +323,9 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                 parentManager.getContexts(),
                 parentManager.getCurrentActivities(),
                 parentManager.getEnabled(),
-                new StringBuilder().append(parentManager.getChildIds().incrementAndGet()).toString(),
-                parentManager.getChildIds());
+                String.valueOf(parentManager.getChildIds().incrementAndGet()),
+                parentManager.getChildIds(),
+                parentManager.getClosure());
     }
 
     private BeanManagerImpl(
@@ -339,7 +342,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
             Set<CurrentActivity> currentActivities,
             Enabled enabled,
             String id,
-            AtomicInteger childIds) {
+            AtomicInteger childIds,
+            BeansClosure beansClosure) {
         this.services = serviceRegistry;
         this.beans = beans;
         this.transitiveBeans = transitiveBeans;
@@ -368,7 +372,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         this.childActivities = new CopyOnWriteArraySet<BeanManagerImpl>();
         TypeSafeObserverResolver observerResolver = new TypeSafeObserverResolver(this, createDynamicAccessibleIterable(ObserverMethodTransform.INSTANCE));
         this.accessibleObserverNotifier = ObserverNotifier.of(observerResolver, getServices());
-        this.closure = new BeansClosure(this);
+        this.closure = beansClosure;
     }
 
     public BeansClosure getClosure() {
@@ -594,7 +598,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     public Object getReference(Bean<?> bean, CreationalContext<?> creationalContext, boolean noProxy) {
-        bean = getMostSpecializedBean(bean);
+        bean = getMostSpecializingBean(bean);
         if (creationalContext instanceof WeldCreationalContext<?>) {
             creationalContext = ((WeldCreationalContext<?>) creationalContext).getCreationalContext(bean);
         }
@@ -803,12 +807,10 @@ public class BeanManagerImpl implements WeldManager, Serializable {
      */
     @Override
     public String toString() {
-        StringBuilder buffer = new StringBuilder();
-        buffer.append("Manager\n");
-        buffer.append("Enabled alternatives: " + getEnabled().getAlternativeClasses() + " " + getEnabled().getAlternativeStereotypes() + "\n");
-        buffer.append("Registered contexts: " + contexts.keySet() + "\n");
-        buffer.append("Registered beans: " + getBeans().size() + "\n");
-        return buffer.toString();
+        return "Manager " + id + "\n"
+                + "Enabled alternatives: " + getEnabled().getAlternativeClasses() + " " + getEnabled().getAlternativeStereotypes() + "\n"
+                + "Registered contexts: " + contexts.keySet() + "\n"
+                + "Registered beans: " + getBeans().size() + "\n";
     }
 
     @Override
@@ -945,9 +947,9 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         }
     }
 
-    public <X> Bean<? extends X> getMostSpecializedBean(Bean<X> bean) {
+    public <X> Bean<? extends X> getMostSpecializingBean(Bean<X> bean) {
         //noinspection unchecked
-        return (Bean<? extends X>) closure.mostSpecialized(bean);
+        return (Bean<? extends X>) closure.getMostSpecializingBean(bean);
     }
 
     public void validate(InjectionPoint ij) {

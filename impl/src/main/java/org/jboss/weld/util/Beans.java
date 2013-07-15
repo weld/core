@@ -624,9 +624,9 @@ public class Beans {
      */
     public static <T extends Bean<?>> boolean isSpecialized(T bean, Set<T> beans, BeanManagerImpl beanManager) {
         BeansClosure closure = beanManager.getClosure();
-        Bean<?> specializedBean = closure.getSpecialized(bean);
+        Bean<?> specializingBean = closure.getSpecializingBean(bean);
         //noinspection SuspiciousMethodCalls
-        return (specializedBean != null && beans.contains(specializedBean));
+        return (specializingBean != null && beans.contains(specializingBean));
     }
 
     /**
