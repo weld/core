@@ -26,6 +26,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -34,6 +35,7 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Arquillian.class)
 @Named(ProgrammaticallyAddedProcessBeanAttributesTest.IGNORE_ME)
+@Ignore("WELD-1456")
 public class ProgrammaticallyAddedProcessBeanAttributesTest {
 
     public static final String IGNORE_ME = "ignoreMe";
