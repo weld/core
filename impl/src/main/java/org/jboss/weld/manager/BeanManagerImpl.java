@@ -270,7 +270,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                 new CopyOnWriteArraySet<CurrentActivity>(),
                 enabled,
                 id,
-                new AtomicInteger());
+                new AtomicInteger(),
+                new BeansClosure());
     }
 
     public static BeanManagerImpl newManager(BeanManagerImpl rootManager, String id, ServiceRegistry services, Enabled enabled) {
@@ -288,7 +289,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                 new CopyOnWriteArraySet<CurrentActivity>(),
                 enabled,
                 id,
-                new AtomicInteger());
+                new AtomicInteger(),
+                rootManager.getClosure());
     }
 
     /**
@@ -322,7 +324,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                 parentManager.getCurrentActivities(),
                 parentManager.getEnabled(),
                 String.valueOf(parentManager.getChildIds().incrementAndGet()),
-                parentManager.getChildIds());
+                parentManager.getChildIds(),
+                parentManager.getClosure());
     }
 
     private BeanManagerImpl(
@@ -339,7 +342,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
             Set<CurrentActivity> currentActivities,
             Enabled enabled,
             String id,
-            AtomicInteger childIds) {
+            AtomicInteger childIds,
+            BeansClosure beansClosure) {
         this.services = serviceRegistry;
         this.beans = beans;
         this.transitiveBeans = transitiveBeans;
@@ -368,7 +372,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         this.childActivities = new CopyOnWriteArraySet<BeanManagerImpl>();
         TypeSafeObserverResolver observerResolver = new TypeSafeObserverResolver(this, createDynamicAccessibleIterable(ObserverMethodTransform.INSTANCE));
         this.accessibleObserverNotifier = ObserverNotifier.of(observerResolver, getServices());
-        this.closure = new BeansClosure(this);
+        this.closure = beansClosure;
     }
 
     public BeansClosure getClosure() {
