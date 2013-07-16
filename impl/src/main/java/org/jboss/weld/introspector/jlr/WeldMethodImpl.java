@@ -91,39 +91,31 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
 
         if (annotatedMethod == null) {
             for (int i = 0; i < method.getParameterTypes().length; i++) {
-                if (method.getParameterAnnotations()[i].length > 0) {
-                    Class<? extends Object> clazz = method.getParameterTypes()[i];
-                    Type parametertype = method.getGenericParameterTypes()[i];
-                    WeldParameter<?, X> parameter = WeldParameterImpl.of(method.getParameterAnnotations()[i], clazz, parametertype, this, i, classTransformer);
-                    this.parameters.add(parameter);
-                } else {
-                    Class<? extends Object> clazz = method.getParameterTypes()[i];
-                    Type parameterType = method.getGenericParameterTypes()[i];
-                    WeldParameter<?, X> parameter = WeldParameterImpl.of(new Annotation[0], Reflections.<Class<Object>>cast(clazz), parameterType, this, i, classTransformer);
-                    this.parameters.add(parameter);
-                }
+                this.parameters.add(
+                    WeldParameterImpl.of(
+                        method.getParameterAnnotations()[i],
+                        method.getParameterTypes()[i],
+                        method.getGenericParameterTypes()[i],
+                        this, i, classTransformer));
             }
         } else {
             if (annotatedMethod.getParameters().size() != method.getParameterTypes().length) {
                 throw new DefinitionException(ReflectionMessage.INCORRECT_NUMBER_OF_ANNOTATED_PARAMETERS_METHOD, annotatedMethod.getParameters().size(), annotatedMethod, annotatedMethod.getParameters(), Arrays.asList(method.getParameterTypes()));
-            } else {
-                for (AnnotatedParameter<? super X> annotatedParameter : annotatedMethod.getParameters()) {
-                    WeldParameter<?, X> parameter = WeldParameterImpl.of(annotatedParameter.getAnnotations(), method.getParameterTypes()[annotatedParameter.getPosition()], annotatedParameter.getBaseType(), this, annotatedParameter.getPosition(), classTransformer);
-                    this.parameters.add(parameter);
-                }
             }
-
+            for (AnnotatedParameter<? super X> annotatedParameter : annotatedMethod.getParameters()) {
+                this.parameters.add(
+                    WeldParameterImpl.of(
+                        annotatedParameter.getAnnotations(),
+                        method.getParameterTypes()[annotatedParameter.getPosition()],
+                        annotatedParameter.getBaseType(),
+                        this, annotatedParameter.getPosition(), classTransformer));
+            }
         }
         this.parameters.trimToSize();
 
         String propertyName = Reflections.getPropertyName(getDelegate());
-        if (propertyName == null) {
-            this.propertyName = getName();
-        } else {
-            this.propertyName = propertyName;
-        }
+        this.propertyName = propertyName == null ? getName() : propertyName;
         this.signature = new MethodSignatureImpl(this);
-
     }
 
     @Override
@@ -150,7 +142,9 @@ public class WeldMethodImpl<T, X> extends AbstractWeldCallable<T, X, Method> imp
     }
 
     public boolean isEquivalent(Method method) {
-        return this.getDeclaringType().isEquivalent(method.getDeclaringClass()) && this.getName().equals(method.getName()) && Arrays.equals(this.getParameterTypesAsArray(), method.getParameterTypes());
+        return this.getDeclaringType().isEquivalent(method.getDeclaringClass())
+            && this.getName().equals(method.getName())
+            && Arrays.equals(this.getParameterTypesAsArray(), method.getParameterTypes());
     }
 
 
