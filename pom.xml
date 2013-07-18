@@ -435,12 +435,6 @@
 
             <dependency>
                 <groupId>org.jboss.weld</groupId>
-                <artifactId>weld-porting-package-tck10</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.weld</groupId>
                 <artifactId>weld-porting-package-tck11</artifactId>
                 <version>${project.version}</version>
             </dependency>
