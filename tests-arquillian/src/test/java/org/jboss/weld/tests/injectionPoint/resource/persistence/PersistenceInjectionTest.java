@@ -36,16 +36,14 @@ import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.test.util.ActionSequence;
 import org.jboss.weld.tests.category.Integration;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 /**
- * 
+ *
  * @author Matus Abaffy
  */
-@Ignore("@PersistenceUnit on setter methods not working yet - waiting for WF 8.0.0.Alpha3")
 @Category(Integration.class)
 @RunWith(Arquillian.class)
 public class PersistenceInjectionTest {
