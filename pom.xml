@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>weld-core-parent</artifactId>
     <packaging>pom</packaging>
@@ -79,6 +80,10 @@
         <testng.version>5.10</testng.version>
         <weld.api.version>2.1-SNAPSHOT</weld.api.version>
         <wildfly.version>8.0.0.Alpha2</wildfly.version>
+        <!-- weld-osgi dependencies -->
+        <javassist.version>3.14.0-GA</javassist.version>
+        <logback.version>0.9.29</logback.version>
+        <osgi.version>4.2.0</osgi.version>
     </properties>
 
     <modules>
@@ -131,8 +136,8 @@
             </dependency>
 
             <dependency>
-               <groupId>org.jboss.spec.javax.el</groupId>
-               <artifactId>jboss-el-api_3.0_spec</artifactId>
+                <groupId>org.jboss.spec.javax.el</groupId>
+                <artifactId>jboss-el-api_3.0_spec</artifactId>
                 <version>${jboss.spec.el-api.version}</version>
             </dependency>
 
@@ -147,7 +152,7 @@
                     </exclusion>
                     <exclusion>
                         <groupId>javax.el</groupId>
-                        <artifactId>el-api</artifactId><!-- we are using
+                        <artifactId>el-api</artifactId><!-- we are using 
                             javax.el:javax.el-api instead -->
                     </exclusion>
                 </exclusions>
@@ -536,6 +541,36 @@
                 <version>${jsp.api.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.javassist</groupId>
+                <artifactId>javassist</artifactId>
+                <version>${javassist.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-core</artifactId>
+                <version>${logback.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>${logback.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.osgi</groupId>
+                <artifactId>org.osgi.core</artifactId>
+                <version>${osgi.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.osgi</groupId>
+                <artifactId>org.osgi.compendium</artifactId>
+                <version>${osgi.version}</version>
+            </dependency>
+
         </dependencies>
 
     </dependencyManagement>
@@ -565,7 +600,7 @@
                     <artifactId>selenium-maven-plugin</artifactId>
                     <version>${selenium.maven.plugin.version}</version>
                 </plugin>
-                <!-- So m2e doesn't throw errors for features it doesn't
+                <!-- So m2e doesn't throw errors for features it doesn't 
                     support in the POM -->
                 <plugin>
                     <groupId>org.eclipse.m2e</groupId>
@@ -596,10 +631,10 @@
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>${compiler.version}</version>
                     <configuration>
-                       <source>1.6</source>
-                       <target>1.6</target>
+                        <source>1.6</source>
+                        <target>1.6</target>
                     </configuration>
-                 </plugin>
+                </plugin>
             </plugins>
 
         </pluginManagement>
