@@ -27,22 +27,22 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
+import javassist.ClassClassPath;
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.NotFoundException;
+
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.util.Nonbinding;
 import javax.inject.Qualifier;
 
-import javassist.ClassClassPath;
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.NotFoundException;
 import org.jboss.weld.environment.osgi.api.annotation.Property;
 import org.jboss.weld.environment.osgi.api.annotation.Publish;
 import org.jboss.weld.environment.osgi.impl.extension.beans.RegistrationsHolderImpl;
 import org.jboss.weld.environment.osgi.impl.extension.service.WeldOSGiExtension;
 import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,6 +59,11 @@ public class ServicePublisher {
 
     private static Logger logger =
             LoggerFactory.getLogger(ServicePublisher.class);
+    private static final String ENTERING_SERVICE_PUBLISHER_MESSAGE = "Entering ServicePublisher : ";
+    private static final String SCANNING_CLASS_MESSAGE = "Scanning class {}";
+    private static final String FOUND_NEW_SERVICE_MESSAGE = "Found a new auto-published service class {}";
+    private static final String REGISTERING_OSGI_SERVICE_MESSAGE = "Registering OSGi service {} as {}";
+
     private final Collection<Class<?>> classes;
     private final Bundle bundle;
     private final Instance<Object> instance;
@@ -68,7 +73,7 @@ public class ServicePublisher {
             Bundle bundle,
             Instance<Object> instance,
             Set<String> blackList) {
-        logger.trace("Entering ServicePublisher : "
+        logger.trace(ENTERING_SERVICE_PUBLISHER_MESSAGE
                 + "ServicePublisher() with parameters {} | {} | {} | {}",
                 new Object[]{classes, bundle, instance, blackList});
         this.classes = new ArrayList<Class<?>>();
@@ -89,11 +94,11 @@ public class ServicePublisher {
             CtClass ctClass = null;
             Class<?> clazz;
             for (String className : classes) {
-                logger.trace("Scanning class {}", className);
+                logger.trace(SCANNING_CLASS_MESSAGE, className);
                 try {
                     ctClass = classPool.get(className);
                     if (ctClass.getAnnotation(Publish.class) != null) {
-                        logger.debug("Found a new auto-published service class {}", className);
+                        logger.debug(FOUND_NEW_SERVICE_MESSAGE, className);
                         clazz = bundle.loadClass(className);
                         this.classes.add(clazz);
                     }
@@ -141,7 +146,7 @@ public class ServicePublisher {
      * <p/>
      */
     public void registerAndLaunchComponents() {
-        logger.trace("Entering ServicePublisher : "
+        logger.trace(ENTERING_SERVICE_PUBLISHER_MESSAGE
                 + "registerAndLaunchComponents() with no parameter");
         logger.info("Registering/Starting OSGi Service for bundle {}",
                 bundle.getSymbolicName());
@@ -158,11 +163,11 @@ public class ServicePublisher {
 //            for (String className : classes) {
             for (Class<?> clazz : classes) {
                 String className = clazz.getName();
-                logger.trace("Scanning class {}", className);
+                logger.trace(SCANNING_CLASS_MESSAGE, className);
 //                try {
 //                    ctClass = classPool.get(className);
 //                    if (ctClass.getAnnotation(Publish.class) != null) {
-                logger.debug("Found a new auto-published service class {}", className);
+                logger.debug(FOUND_NEW_SERVICE_MESSAGE, className);
 //                        clazz = bundle.loadClass(className);
                 Object service = null;
                 InstanceHolder instanceHolder = instance.select(InstanceHolder.class).get();
@@ -213,7 +218,7 @@ public class ServicePublisher {
     private void publish(Class<?> clazz,
             Object service,
             List<Annotation> qualifiers) {
-        logger.trace("Entering ServicePublisher : "
+        logger.trace(ENTERING_SERVICE_PUBLISHER_MESSAGE
                 + "publish() with parameters {} | {} | {}",
                 new Object[]{clazz, service, qualifiers});
         ServiceRegistration registration = null;
@@ -228,7 +233,7 @@ public class ServicePublisher {
             for (int i = 0; i < contracts.length; i++) {
                 if (contracts[i].isAssignableFrom(clazz)) {
                     names[i] = contracts[i].getName();
-                    logger.info("Registering OSGi service {} as {}",
+                    logger.info(REGISTERING_OSGI_SERVICE_MESSAGE,
                             clazz.getName(),
                             names[i]);
                 } else {
@@ -257,7 +262,7 @@ public class ServicePublisher {
                 String[] names = new String[contracts.length];
                 for (int i = 0; i < contracts.length; i++) {
                     names[i] = contracts[i].getName();
-                    logger.info("Registering OSGi service {} as {}",
+                    logger.info(REGISTERING_OSGI_SERVICE_MESSAGE,
                             clazz.getName(),
                             names[i]);
                 }
@@ -267,14 +272,14 @@ public class ServicePublisher {
             } else {
                 Class superClass = clazz.getSuperclass();
                 if (superClass != null && superClass != Object.class) {// if there is a superclass
-                    logger.info("Registering OSGi service {} as {}",
+                    logger.info(REGISTERING_OSGI_SERVICE_MESSAGE,
                             clazz.getName(),
                             superClass.getName());
                     registration = bundle.getBundleContext().registerService(superClass.getName(),
                             service,
                             properties);
                 } else {// publish directly with the implementation type
-                    logger.info("Registering OSGi service {} as {}",
+                    logger.info(REGISTERING_OSGI_SERVICE_MESSAGE,
                             clazz.getName(),
                             clazz.getName());
                     registration = bundle.getBundleContext().registerService(clazz.getName(),
@@ -291,7 +296,7 @@ public class ServicePublisher {
     }
 
     private static Dictionary<String, ?> getServiceProperties(List<Annotation> qualifiers) {
-        logger.trace("Entering ServicePublisher : "
+        logger.trace(ENTERING_SERVICE_PUBLISHER_MESSAGE
                 + "getServiceProperties() with parameter {}",
                 new Object[]{qualifiers});
         Dictionary properties = new Hashtable<String, Object>();
@@ -330,7 +335,7 @@ public class ServicePublisher {
     }
 
     private static List<Annotation> getQualifiers(Class<?> clazz) {
-        logger.trace("Entering ServicePublisher : "
+        logger.trace(ENTERING_SERVICE_PUBLISHER_MESSAGE
                 + "getQualifiers() with parameter {}",
                 new Object[]{clazz});
         List<Annotation> qualifiers = new ArrayList<Annotation>();

@@ -21,22 +21,24 @@ package org.jboss.weld.osgi.examples.calculator.core;
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.enterprise.util.AnnotationLiteral;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.enterprise.util.AnnotationLiteral;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
 import org.jboss.weld.environment.osgi.api.Service;
 import org.jboss.weld.environment.osgi.api.annotation.Specification;
 import org.jboss.weld.environment.osgi.api.events.InterBundleEvent;
@@ -50,6 +52,12 @@ import org.jboss.weld.osgi.examples.calculator.api.Operator;
 
 @Singleton
 public class CalculatorGUI extends JFrame {
+
+    private static final int COLUMN_COUNT = 12;
+    private static final int ROWS = 4;
+    private static final int COLS = 3;
+    private static final int HGAP = 4;
+    private static final int VGAP = 4;
 
     private final Font BIGGER_FONT = new Font("monospaced", Font.PLAIN, 20);
     private JTextField textfield;
@@ -72,14 +80,14 @@ public class CalculatorGUI extends JFrame {
     @Inject
     public CalculatorGUI(Service<Operator> operators) {
         this.operators = operators;
-        textfield = new JTextField("0", 12);
+        textfield = new JTextField("0", COLUMN_COUNT);
         textfield.setHorizontalAlignment(JTextField.RIGHT);
         textfield.setFont(BIGGER_FONT);
         textfield.setEditable(false);
         ActionListener listener = null;
         String buttonOrder = "123456789C0=";
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new GridLayout(4, 3, 4, 4));
+        buttonPanel.setLayout(new GridLayout(ROWS, COLS, HGAP, VGAP));
         for (int i = 0; i < buttonOrder.length(); i++) {
             String key = buttonOrder.substring(i, i + 1);
             if (key.equals("=")) {
@@ -95,7 +103,7 @@ public class CalculatorGUI extends JFrame {
             buttonPanel.add(button);
         }
         panel = new JPanel();
-        panel.setLayout(new GridLayout(4, 1, 4, 4));
+        panel.setLayout(new GridLayout(ROWS, 1, HGAP, VGAP));
         JButton b = new JButton("$");
         b.setFont(BIGGER_FONT);
         b.setVisible(false);
@@ -111,7 +119,7 @@ public class CalculatorGUI extends JFrame {
         notifs.add(list);
         model.add(0, "Start ...                ");
         pan = new JPanel();
-        pan.setLayout(new BorderLayout(4, 4));
+        pan.setLayout(new BorderLayout(HGAP, VGAP));
         pan.add(textfield, BorderLayout.NORTH);
         pan.add(buttonPanel, BorderLayout.CENTER);
         pan.add(panel, BorderLayout.EAST);
@@ -141,7 +149,7 @@ public class CalculatorGUI extends JFrame {
     private void update() {
         pan.remove(panel);
         panel = new JPanel();
-        panel.setLayout(new GridLayout(4, 1, 4, 4));
+        panel.setLayout(new GridLayout(ROWS, 1, HGAP, VGAP));
         for (OperatorListener listener : registeredOperators.values()) {
             JButton button = new JButton(listener.getOperator().label());
             button.addActionListener(listener);

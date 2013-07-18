@@ -16,13 +16,6 @@
  */
 package org.jboss.weld.environment.osgi.impl.extension.beans;
 
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.InjectionPoint;
 import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
@@ -31,11 +24,19 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
+import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.spi.InjectionPoint;
+
 import org.jboss.weld.environment.osgi.api.Registration;
 import org.jboss.weld.environment.osgi.api.RegistrationHolder;
 import org.jboss.weld.environment.osgi.api.annotation.BundleDataFile;
 import org.jboss.weld.environment.osgi.api.annotation.BundleHeader;
 import org.jboss.weld.environment.osgi.api.annotation.BundleHeaders;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This the class responsible for OSGi utility injection for the current bundle.
@@ -47,11 +48,16 @@ public class OSGiUtilitiesProducer {
 
     private static Logger logger =
                           LoggerFactory.getLogger(OSGiUtilitiesProducer.class);
+    private static final String WITH_PARAMETERS_MESSAGE = "with parameters {} | {}";
+    private static final String UNABLE_TO_RETRIEVE_BUNDLE_CONTEXT_MESSAGE = "Returning null, unable to retrieve the BundleContext ";
+    private static final String UNABLE_TO_RETRIEVE_DICTIONARY_HEADERS_MESSAGE = "Returning null, unable to retrieve the dictionary headers ";
+    private static final String FOR_BUNDLE_MESSAGE = "for bundle {}";
+
 
     @Produces
     public Bundle getBundle(BundleHolder holder, InjectionPoint p) {
         logger.trace("Entering OSGiUtilitiesProducer : getBundle() "
-                     + "with parameters {} | {}",
+                     + WITH_PARAMETERS_MESSAGE,
                      new Object[] {holder,p});
         logger.debug("Returning the current bundle {}", holder.getBundle());
         return holder.getBundle();
@@ -60,7 +66,7 @@ public class OSGiUtilitiesProducer {
     @Produces
     public BundleContext getBundleContext(BundleHolder holder, InjectionPoint p) {
         logger.trace("Entering OSGiUtilitiesProducer : getBundleContext() "
-                + "with parameters {} | {}",
+                + WITH_PARAMETERS_MESSAGE,
                      new Object[] {holder,p});
         logger.debug("Returning the current bundle {} bundle context {}",
                      holder.getBundle(),
@@ -72,7 +78,7 @@ public class OSGiUtilitiesProducer {
     @BundleDataFile("")
     public File getDataFile(BundleHolder holder, InjectionPoint p) {
         logger.trace("Entering OSGiUtilitiesProducer : getDataFile() "
-                + "with parameters {} | {}",
+                + WITH_PARAMETERS_MESSAGE,
                      new Object[] {holder,p});
         Set<Annotation> qualifiers = p.getQualifiers();
         BundleDataFile file = null;
@@ -89,7 +95,7 @@ public class OSGiUtilitiesProducer {
         }
         BundleContext context = getBundleContext(holder, p);
         if (context == null) {
-            logger.warn("Returning null, unable to retrieve the BundleContext "
+            logger.warn(UNABLE_TO_RETRIEVE_BUNDLE_CONTEXT_MESSAGE
                         + "for holder {} and injection point {}", holder, p);
             return null;
         }
@@ -120,12 +126,12 @@ public class OSGiUtilitiesProducer {
     public Map<String, String> getBundleHeaders(BundleHolder holder,
                                                 InjectionPoint p) {
         logger.trace("Entering OSGiUtilitiesProducer : getBundleHeaders() "
-                + "with parameters {} | {}",
+                + WITH_PARAMETERS_MESSAGE,
                      new Object[] {holder,p});
         Dictionary dict = getBundle(holder, p).getHeaders();
         if (dict == null) {
-            logger.warn("Returning null, unable to retrieve the dictionary headers"
-                        + " for bundle {}", getBundle(holder, p));
+            logger.warn(UNABLE_TO_RETRIEVE_DICTIONARY_HEADERS_MESSAGE
+                        + FOR_BUNDLE_MESSAGE, getBundle(holder, p));
             return null;
         }
         Map<String, String> headers = new HashMap<String, String>();
@@ -135,7 +141,7 @@ public class OSGiUtilitiesProducer {
             headers.put(key, (String) dict.get(key));
         }
         logger.debug("Returning the headers {} "
-                     + "for bundle {}",
+                     + FOR_BUNDLE_MESSAGE,
                      headers,
                      getBundle(holder, p));
         return headers;
@@ -145,7 +151,7 @@ public class OSGiUtilitiesProducer {
     @BundleHeader("")
     public String getBundleHeader(BundleHolder holder, InjectionPoint p) {
         logger.trace("Entering OSGiUtilitiesProducer : getBundleHeader() "
-                + "with parameters {} | {}",
+                + WITH_PARAMETERS_MESSAGE,
                      new Object[] {holder,p});
         Set<Annotation> qualifiers = p.getQualifiers();
         BundleHeader header = null;
@@ -162,12 +168,12 @@ public class OSGiUtilitiesProducer {
         }
         Dictionary dict = getBundle(holder, p).getHeaders();
         if (dict == null) {
-            logger.warn("Returning null, unable to retrieve the dictionary headers"
-                        + " for bundle {}", getBundle(holder, p));
+            logger.warn(UNABLE_TO_RETRIEVE_DICTIONARY_HEADERS_MESSAGE
+                        + FOR_BUNDLE_MESSAGE, getBundle(holder, p));
             return null;
         }
         logger.debug("Returning the header {} value "
-                     + "for bundle {}",
+                     + FOR_BUNDLE_MESSAGE,
                      header,
                      getBundle(holder, p));
         return (String) dict.get(header.value());

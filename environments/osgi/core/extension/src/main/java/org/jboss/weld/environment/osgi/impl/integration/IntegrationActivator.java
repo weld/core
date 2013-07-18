@@ -66,6 +66,8 @@ import org.slf4j.LoggerFactory;
 public class IntegrationActivator implements BundleActivator, BundleTrackerCustomizer, SingleServiceTracker.Listener<CDIContainerFactory> {
 
     private static Logger logger = LoggerFactory.getLogger(IntegrationActivator.class);
+    private static final String EMBEDDED_CDI_CONTAINER_HEADER = "Embedded-CDIContainer";
+    private static final String NOT_BUNDLE_MESSAGE = "Bundle {} is not a bean bundle";
 
     private AtomicBoolean started = new AtomicBoolean(false);
 
@@ -181,8 +183,8 @@ public class IntegrationActivator implements BundleActivator, BundleTrackerCusto
     }
 
     private void startManagement(Bundle bundle) {
-        if (bundle.getHeaders().get("Embedded-CDIContainer") != null
-                && bundle.getHeaders().get("Embedded-CDIContainer").equals("true")) {
+        if (bundle.getHeaders().get(EMBEDDED_CDI_CONTAINER_HEADER) != null
+                && bundle.getHeaders().get(EMBEDDED_CDI_CONTAINER_HEADER).equals("true")) {
             return;
         }
         logger.debug("Managing {}", bundle.getSymbolicName());
@@ -224,7 +226,7 @@ public class IntegrationActivator implements BundleActivator, BundleTrackerCusto
                 managed.put(bundle.getBundleId(), holder);
                 logger.debug("Bundle {} is managed", bundle.getSymbolicName());
             } else {
-                logger.debug("Bundle {} is not a bean bundle", bundle.getSymbolicName());
+                logger.debug(NOT_BUNDLE_MESSAGE, bundle.getSymbolicName());
             }
         } finally {
             WeldOSGiExtension.setCurrentBundle(previousBundle);
@@ -299,7 +301,7 @@ public class IntegrationActivator implements BundleActivator, BundleTrackerCusto
                     container.shutdown();
                     logger.debug("Bundle {} is unmanaged", bundle.getSymbolicName());
                 } else {
-                    logger.debug("Bundle {} is not a bean bundle", bundle.getSymbolicName());
+                    logger.debug(NOT_BUNDLE_MESSAGE, bundle.getSymbolicName());
                 }
             }
         } finally {

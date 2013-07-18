@@ -26,6 +26,9 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import javassist.util.proxy.ProxyFactory;
+import javassist.util.proxy.ProxyObject;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Any;
@@ -35,8 +38,6 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.enterprise.util.Nonbinding;
 
-import javassist.util.proxy.ProxyFactory;
-import javassist.util.proxy.ProxyObject;
 import org.jboss.weld.environment.osgi.api.annotation.Filter;
 import org.jboss.weld.environment.osgi.api.annotation.OSGiService;
 import org.jboss.weld.environment.osgi.impl.extension.beans.DynamicServiceHandler;
@@ -265,10 +266,11 @@ public class OSGiServiceBean implements Bean {
 
     protected static Class<?> getProxyClass(ProxyFactory factory) {
         SecurityManager sm = System.getSecurityManager();
-        if (sm == null)
+        if (sm == null) {
             return factory.createClass();
-        else
+        } else {
             return AccessController.doPrivileged(new ClassCreator(factory));
+        }
     }
 
     /**

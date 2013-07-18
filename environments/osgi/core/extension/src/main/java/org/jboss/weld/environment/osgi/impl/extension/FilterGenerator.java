@@ -16,22 +16,23 @@
  */
 package org.jboss.weld.environment.osgi.impl.extension;
 
-import org.jboss.weld.environment.osgi.api.annotation.Filter;
-import org.jboss.weld.environment.osgi.api.annotation.OSGiService;
-import org.jboss.weld.environment.osgi.api.annotation.Properties;
-import org.jboss.weld.environment.osgi.api.annotation.Property;
-import org.jboss.weld.environment.osgi.api.annotation.Required;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.util.Nonbinding;
 import javax.inject.Qualifier;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+
+import org.jboss.weld.environment.osgi.api.annotation.Filter;
+import org.jboss.weld.environment.osgi.api.annotation.OSGiService;
+import org.jboss.weld.environment.osgi.api.annotation.Properties;
+import org.jboss.weld.environment.osgi.api.annotation.Property;
+import org.jboss.weld.environment.osgi.api.annotation.Required;
 import org.jboss.weld.environment.osgi.impl.annotation.FilterAnnotation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +48,13 @@ public class FilterGenerator {
 
     private static Logger logger =
                           LoggerFactory.getLogger(FilterGenerator.class);
+    private static final String ENTERING_MESSAGE = "Entering FilterGenerator : ";
+    private static final String MAKE_FILTER_WITH_PARAMETER_MESSAGE = "makeFilter() with parameter {}";
+    private static final String MAKE_FILTER_WITH_PARAMETERS_MESSAGE = "makeFilter() with parameters {} | {}";
+    private static final String TOKENIZE_WITH_PARAMETERS_MESSAGE = "tokenize() with parameter {}";
+
+    private FilterGenerator() {
+    }
 
     /**
      * Produce an empty {@link Filter} annotation.
@@ -56,7 +64,7 @@ public class FilterGenerator {
      * @see FilterAnnotation
      */
     public static Filter makeFilter() {
-        logger.trace("Entering FilterGenerator : "
+        logger.trace(ENTERING_MESSAGE
                      + "makeFilter() with no parameter");
         return new FilterAnnotation("");
     }
@@ -98,8 +106,8 @@ public class FilterGenerator {
      * @see FilterAnnotation
      */
     public static Filter makeFilter(String filter) {
-        logger.trace("Entering FilterGenerator : "
-                     + "makeFilter() with parameter {}",
+        logger.trace(ENTERING_MESSAGE
+                     + MAKE_FILTER_WITH_PARAMETER_MESSAGE,
                      new Object[] {filter});
         return new FilterAnnotation(filter);
     }
@@ -125,8 +133,8 @@ public class FilterGenerator {
      * @see FilterAnnotation
      */
     public static Filter makeFilter(Collection<Annotation> annotations) {
-        logger.trace("Entering FilterGenerator : "
-                     + "makeFilter() with parameter {}",
+        logger.trace(ENTERING_MESSAGE
+                     + MAKE_FILTER_WITH_PARAMETER_MESSAGE,
                      new Object[] {annotations});
         return make(tokenize(annotations));
     }
@@ -140,8 +148,8 @@ public class FilterGenerator {
      * @see FilterGenerator#makeFilter(java.util.Collection)
      */
     public static Filter makeFilter(InjectionPoint injectionPoint) {
-        logger.trace("Entering FilterGenerator : "
-                     + "makeFilter() with parameter {}",
+        logger.trace(ENTERING_MESSAGE
+                     + MAKE_FILTER_WITH_PARAMETER_MESSAGE,
                      new Object[] {injectionPoint});
         Set<Annotation> qualifiers = injectionPoint.getQualifiers();
         return FilterGenerator.makeFilter(qualifiers);
@@ -157,8 +165,8 @@ public class FilterGenerator {
      * @see FilterAnnotation
      */
     public static Filter makeFilter(Filter old, String filter) {
-        logger.trace("Entering FilterGenerator : "
-                     + "makeFilter() with parameters {} | {}",
+        logger.trace(ENTERING_MESSAGE
+                     + MAKE_FILTER_WITH_PARAMETERS_MESSAGE,
                      new Object[] {old,
                                    filter});
         Set<String> tokens = new HashSet<String>();
@@ -184,8 +192,8 @@ public class FilterGenerator {
      */
     public static Filter makeFilter(Filter old,
                                     Collection<Annotation> annotations) {
-        logger.trace("Entering FilterGenerator : "
-                     + "makeFilter() with parameters {} | {}",
+        logger.trace(ENTERING_MESSAGE
+                     + MAKE_FILTER_WITH_PARAMETERS_MESSAGE,
                      new Object[] {old,
                                    annotations});
         Set<String> tokens = new HashSet<String>();
@@ -197,8 +205,8 @@ public class FilterGenerator {
     }
 
     private static Set<String> tokenize(Properties properties) {
-        logger.trace("Entering FilterGenerator : "
-                     + "tokenize() with parameter {}",
+        logger.trace(ENTERING_MESSAGE
+                     + TOKENIZE_WITH_PARAMETERS_MESSAGE,
                      new Object[] {properties});
         Set<String> result = new HashSet<String>();
         for (Property property : properties.value()) {
@@ -209,8 +217,8 @@ public class FilterGenerator {
     }
 
     private static Set<String> tokenize(Collection<Annotation> annotations) {
-        logger.trace("Entering FilterGenerator : "
-                     + "tokenize() with parameter {}",
+        logger.trace(ENTERING_MESSAGE
+                     + TOKENIZE_WITH_PARAMETERS_MESSAGE,
                      new Object[] {annotations});
         Set<String> result = new HashSet<String>();
         String current = "";

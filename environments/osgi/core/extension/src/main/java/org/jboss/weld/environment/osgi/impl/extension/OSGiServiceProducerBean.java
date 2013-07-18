@@ -16,12 +16,13 @@
  */
 package org.jboss.weld.environment.osgi.impl.extension;
 
-import org.jboss.weld.environment.osgi.api.annotation.Filter;
-import org.jboss.weld.environment.osgi.impl.extension.beans.ServiceImpl;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
@@ -30,13 +31,13 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.enterprise.util.Nonbinding;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+
+import org.jboss.weld.environment.osgi.api.annotation.Filter;
+import org.jboss.weld.environment.osgi.impl.extension.beans.ServiceImpl;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This the bean class for all beans generated from a {@link Service} typed
@@ -51,6 +52,7 @@ public class OSGiServiceProducerBean<Service> implements Bean<Service> {
 
     private static Logger logger =
                           LoggerFactory.getLogger(OSGiServiceProducerBean.class);
+    private static final String ENTERING_MESSAGE = "Entering OSGiServiceProducerBean : ";
 
     private final InjectionPoint injectionPoint;
 
@@ -63,7 +65,7 @@ public class OSGiServiceProducerBean<Service> implements Bean<Service> {
     private Type type;
 
     public OSGiServiceProducerBean(InjectionPoint injectionPoint, BundleContext ctx) {
-        logger.trace("Entering OSGiServiceProducerBean : "
+        logger.trace(ENTERING_MESSAGE
                      + "OSGiServiceProducerBean() with parameter {}",
                      new Object[] {injectionPoint});
         this.injectionPoint = injectionPoint;
@@ -146,7 +148,7 @@ public class OSGiServiceProducerBean<Service> implements Bean<Service> {
     @Override
     public void destroy(Service instance,
                         CreationalContext<Service> creationalContext) {
-        logger.trace("Entering OSGiServiceProducerBean : "
+        logger.trace(ENTERING_MESSAGE
                      + "destroy() with parameter {} | {}",
                      new Object[] {instance, creationalContext});
         // Nothing to do, services are unget after each call.

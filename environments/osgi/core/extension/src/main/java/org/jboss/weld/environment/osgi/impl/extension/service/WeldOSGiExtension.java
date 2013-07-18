@@ -104,6 +104,8 @@ public class WeldOSGiExtension implements Extension {
 
     private static Logger logger = LoggerFactory.getLogger(
             WeldOSGiExtension.class);
+    private static final String HYBRID_MODE_MESSAGE = "Starting Weld-OSGi extension in hybrid mode.";
+
     private static boolean autoRunInHybridMode = true;
     // hack for weld integration
     private static ThreadLocal<BundleContext> currentContext = new ThreadLocal<BundleContext>();
@@ -262,14 +264,14 @@ public class WeldOSGiExtension implements Extension {
 
     public void startHybridMode() {
         if (!Activator.osgiStarted() && WeldOSGiExtension.autoRunInHybridMode) {
-            logger.warn("Starting Weld-OSGi extension in hybrid mode.");
+            logger.warn(HYBRID_MODE_MESSAGE);
             runExtensionInHybridMode();
         }
     }
 
     public void startHybridMode(BundleContext ctx) {
          if (!Activator.osgiStarted() && WeldOSGiExtension.autoRunInHybridMode) {
-            logger.warn("Starting Weld-OSGi extension in hybrid mode.");
+            logger.warn(HYBRID_MODE_MESSAGE);
             listener = runInHybridMode(ctx);
          }
     }
@@ -524,6 +526,8 @@ public class WeldOSGiExtension implements Extension {
                     logger.debug("Receiving a new OSGi bundle event UPDATED");
                     bundleEvent = new BundleEvents.BundleUpdated(bundle);
                     break;
+                default:
+                    // noop
             }
             Bundle previousBundle = WeldOSGiExtension.setCurrentBundle(context.getBundle());
             BundleContext previousContext = WeldOSGiExtension.setCurrentContext(context);
@@ -562,6 +566,8 @@ public class WeldOSGiExtension implements Extension {
                     logger.debug("Receiving a new OSGi service event UNREGISTERING");
                     serviceEvent = new ServiceEvents.ServiceDeparture(ref, context);
                     break;
+                default:
+                    // noop
             }
             Bundle previousBundle = WeldOSGiExtension.setCurrentBundle(context.getBundle());
             BundleContext previousContext = WeldOSGiExtension.setCurrentContext(context);

@@ -17,6 +17,7 @@
 package org.jboss.weld.environment.osgi.impl;
 
 import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.jboss.weld.environment.osgi.impl.extension.ExtensionActivator;
 import org.jboss.weld.environment.osgi.impl.integration.IntegrationActivator;
 import org.osgi.framework.BundleActivator;
@@ -42,6 +43,7 @@ import org.slf4j.LoggerFactory;
 public class Activator implements BundleActivator {
 
     private static Logger logger = LoggerFactory.getLogger(Activator.class);
+    private static final String ENTERING_MESSAGE = "Entering {} : {} with parameter {}";
 
     private BundleActivator integration = new IntegrationActivator();
 
@@ -52,7 +54,7 @@ public class Activator implements BundleActivator {
     @Override
     public void start(BundleContext context) throws Exception {
         OSGI_STARTED.getAndSet(true);
-        logger.trace("Entering {} : {} with parameter {}",
+        logger.trace(ENTERING_MESSAGE,
                      new Object[] {getClass().getName(),
                                    Thread.currentThread().getStackTrace()[1].getMethodName(),
                                    context
@@ -66,7 +68,7 @@ public class Activator implements BundleActivator {
     @Override
     public void stop(BundleContext context) throws Exception {
         OSGI_STARTED.getAndSet(false);
-        logger.trace("Entering {} : {} with parameter {}",
+        logger.trace(ENTERING_MESSAGE,
                      new Object[] {getClass().getName(),
                                    Thread.currentThread().getStackTrace()[1].getMethodName(),
                                    context

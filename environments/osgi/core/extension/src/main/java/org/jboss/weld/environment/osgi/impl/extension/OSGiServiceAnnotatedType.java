@@ -16,10 +16,10 @@
  */
 package org.jboss.weld.environment.osgi.impl.extension;
 
-import org.jboss.weld.environment.osgi.api.annotation.Filter;
-import org.jboss.weld.environment.osgi.api.annotation.OSGiService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.enterprise.inject.spi.AnnotatedConstructor;
 import javax.enterprise.inject.spi.AnnotatedField;
@@ -27,10 +27,11 @@ import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.inject.Inject;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.HashSet;
-import java.util.Set;
+
+import org.jboss.weld.environment.osgi.api.annotation.Filter;
+import org.jboss.weld.environment.osgi.api.annotation.OSGiService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This is an {@link AnnotatedType} that wrap all annotated type processed by
@@ -51,6 +52,8 @@ public class OSGiServiceAnnotatedType<T> implements AnnotatedType<T> {
 
     private static Logger logger =
                           LoggerFactory.getLogger(OSGiServiceAnnotatedType.class);
+    private static final String ENTERING_MESSAGE = "Entering OSGiServiceAnnotatedType : ";
+    private static final String DOES_NOT_APPLY_TO_BEAN_CLASS_MESSAGE = ", does not apply to bean class (";
 
     private AnnotatedType<T> annotatedType;
 
@@ -64,7 +67,7 @@ public class OSGiServiceAnnotatedType<T> implements AnnotatedType<T> {
                                            new HashSet<AnnotatedField<? super T>>();
 
     public OSGiServiceAnnotatedType(AnnotatedType<T> annotatedType) throws Exception {
-        logger.trace("Entering OSGiServiceAnnotatedType : "
+        logger.trace(ENTERING_MESSAGE
                      + "OSGiServiceAnnotatedType() with parameter {}",
                      new Object[] {annotatedType});
         this.annotatedType = annotatedType;
@@ -73,13 +76,13 @@ public class OSGiServiceAnnotatedType<T> implements AnnotatedType<T> {
     }
 
     private void process() throws Exception {
-        logger.trace("Entering OSGiServiceAnnotatedType : "
+        logger.trace(ENTERING_MESSAGE
                      + "process() with no parameter");
         if (getJavaClass().getAnnotation(Filter.class) != null) {
             StringBuilder msg = new StringBuilder();
             msg.append("Filter qualifier: ")
                .append(getAnnotation(Filter.class))
-               .append(", does not apply to bean class (")
+               .append(DOES_NOT_APPLY_TO_BEAN_CLASS_MESSAGE)
                .append(getBaseType()).append(')');
             logger.error(msg.toString());
             throw new Exception(msg.toString());
@@ -89,7 +92,7 @@ public class OSGiServiceAnnotatedType<T> implements AnnotatedType<T> {
                 StringBuilder msg = new StringBuilder();
                 msg.append("Filter stereotype: ")
                    .append(annotation)
-                   .append(", does not apply to bean class (")
+                   .append(DOES_NOT_APPLY_TO_BEAN_CLASS_MESSAGE)
                    .append(getBaseType()).append(')');
                 logger.error(msg.toString());
                 throw new Exception(msg.toString());

@@ -59,6 +59,7 @@ public class EmbeddedContainer {
 
     private static Logger logger =
                           LoggerFactory.getLogger(EmbeddedContainer.class);
+    private static final String ENTERING_EMBEDDED_CONTAINER_MESSAGE = "Entering EmbeddedContainer : ";
 
     private final CDIContainer container;
 
@@ -67,7 +68,7 @@ public class EmbeddedContainer {
     private final EmbeddedListener listener;
 
     public EmbeddedContainer(BundleContext context) {
-        logger.trace("Entering EmbeddedContainer : "
+        logger.trace(ENTERING_EMBEDDED_CONTAINER_MESSAGE
                      + "EmbeddedContainer() with parameter {}",
                      new Object[] {context});
         this.context = context;
@@ -86,7 +87,7 @@ public class EmbeddedContainer {
     }
 
     public EmbeddedCDIContainer initialize() {
-        logger.trace("Entering EmbeddedContainer : "
+        logger.trace(ENTERING_EMBEDDED_CONTAINER_MESSAGE
                      + "initialize() with no parameter");
         Bundle previousBundle = WeldOSGiExtension.setCurrentBundle(context.getBundle());
         BundleContext previousContext = WeldOSGiExtension.setCurrentContext(context);
@@ -100,7 +101,7 @@ public class EmbeddedContainer {
     }
 
     public void shutdown() {
-        logger.trace("Entering EmbeddedContainer : "
+        logger.trace(ENTERING_EMBEDDED_CONTAINER_MESSAGE
                      + "shutdown() with no parameter");
         container.shutdown();
         context.removeBundleListener(listener);
@@ -169,6 +170,8 @@ public class EmbeddedContainer {
                     logger.debug("Receiving a new OSGi bundle event UPDATED");
                     bundleEvent = new BundleEvents.BundleUpdated(bundle);
                     break;
+                default:
+                    // noop
             }
             Bundle previousBundle = WeldOSGiExtension.setCurrentBundle(context.getBundle());
             BundleContext previousContext = WeldOSGiExtension.setCurrentContext(context);
@@ -204,6 +207,8 @@ public class EmbeddedContainer {
                     logger.debug("Receiving a new OSGi service event UNREGISTERING");
                     serviceEvent = new ServiceEvents.ServiceDeparture(ref, context);
                     break;
+                default:
+                    // noop
             }
             Bundle previousBundle = WeldOSGiExtension.setCurrentBundle(context.getBundle());
             BundleContext previousContext = WeldOSGiExtension.setCurrentContext(context);

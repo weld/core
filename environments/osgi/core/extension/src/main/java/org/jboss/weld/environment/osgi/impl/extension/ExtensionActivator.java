@@ -78,6 +78,7 @@ public class ExtensionActivator implements BundleActivator,
 
     private static Logger logger =
                           LoggerFactory.getLogger(ExtensionActivator.class);
+    private static final String ENTERING_MESSAGE = "Entering ExtensionActivator : ";
 
     private BundleContext context;
 
@@ -110,7 +111,7 @@ public class ExtensionActivator implements BundleActivator,
      */
     @Override
     public void bundleChanged(BundleEvent event) {
-        logger.trace("Entering ExtensionActivator : "
+        logger.trace(ENTERING_MESSAGE
                      + "bundleChanged() with parameter {}",
                      new Object[] {event});
 
@@ -170,6 +171,8 @@ public class ExtensionActivator implements BundleActivator,
                     resultingWeldOSGiBundleEvent =
                     new BundleEvents.BundleUpdated(originBundle);
                     break;
+                default:
+                    // noop
             }
             for (ServiceReference reference : cdiEventServiceReferences) {
                 BundleContext previousContext = WeldOSGiExtension.setCurrentContext(reference.getBundle().getBundleContext());
@@ -204,7 +207,7 @@ public class ExtensionActivator implements BundleActivator,
      */
     @Override
     public void serviceChanged(ServiceEvent event) {
-        logger.trace("Entering ExtensionActivator : "
+        logger.trace(ENTERING_MESSAGE
                      + "serviceChanged() with parameter {}",
                      new Object[] {event});
 
@@ -225,6 +228,8 @@ public class ExtensionActivator implements BundleActivator,
                     logger.debug("Receiving a new OSGi service event UNREGISTERING");
                     resultingWeldOSGiServiceEvent = new ServiceEvents.ServiceDeparture(originServiceReference, context);
                     break;
+                default:
+                    // noop
             }
             for (ServiceReference reference : cdiInstanceServiceReferences) {
                 Bundle bundle = reference.getBundle();
@@ -251,7 +256,7 @@ public class ExtensionActivator implements BundleActivator,
     }
 
     private ServiceReference[] findReferences(BundleContext context, Class<?> type) {
-        logger.trace("Entering ExtensionActivator : "
+        logger.trace(ENTERING_MESSAGE
                      + "findReferences() with parameters {} | {}",
                      new Object[] {context, type});
 
@@ -266,7 +271,7 @@ public class ExtensionActivator implements BundleActivator,
     }
 
     private void fireAllEvent(AbstractBundleEvent event, Event broadcaster) {
-        logger.trace("Entering ExtensionActivator : "
+        logger.trace(ENTERING_MESSAGE
                      + "fireAllEvent() with parameters {}",
                      new Object[] {event});
         try {
@@ -283,7 +288,7 @@ public class ExtensionActivator implements BundleActivator,
                               Event broadcaster,
                               Instance<Object> instance) {
 
-        logger.trace("Entering ExtensionActivator : "
+        logger.trace(ENTERING_MESSAGE
                      + "fireAllEvent() with parameters {} | {}",
                      new Object[] {event, instance});
 
@@ -306,7 +311,7 @@ public class ExtensionActivator implements BundleActivator,
     private Annotation[] filteredServicesQualifiers(AbstractServiceEvent event,
                                                     SpecificationAnnotation specific,
                                                     Instance<Object> instance) {
-        logger.trace("Entering ExtensionActivator : "
+        logger.trace(ENTERING_MESSAGE
                      + "filteredServicesQualifiers() with parameters {} | {} | {}",
                      new Object[] {event,
                                    specific,

@@ -16,13 +16,6 @@
  */
 package org.jboss.weld.environment.osgi.impl.extension.beans;
 
-import org.jboss.weld.environment.osgi.impl.extension.FilterGenerator;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceReference;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
@@ -31,8 +24,15 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+
 import org.jboss.weld.environment.osgi.api.Service;
 import org.jboss.weld.environment.osgi.api.annotation.Filter;
+import org.jboss.weld.environment.osgi.impl.extension.FilterGenerator;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of {@link Service}.
@@ -43,6 +43,8 @@ import org.jboss.weld.environment.osgi.api.annotation.Filter;
 public class ServiceImpl<T> implements Service<T> {
 
     private static Logger logger = LoggerFactory.getLogger(ServiceImpl.class);
+    private static final String ENTERING_SERVICEIMPL_MESSAGE = "Entering ServiceImpl : ";
+    private static final String NEW_SERVICEIMPL_MESSAGE = "New ServiceImpl constructed {}";
 
     private final Class serviceClass;
 
@@ -57,25 +59,25 @@ public class ServiceImpl<T> implements Service<T> {
     private Filter filter;
 
     public ServiceImpl(Type type, BundleContext registry) {
-        logger.trace("Entering ServiceImpl : "
+        logger.trace(ENTERING_SERVICEIMPL_MESSAGE
                      + "ServiceImpl() with parameters {} | {}",
                      new Object[] {type, registry});
         serviceClass = (Class) type;
         serviceName = serviceClass.getName();
         this.registry = registry;
         filter = FilterGenerator.makeFilter();
-        logger.debug("New ServiceImpl constructed {}", this);
+        logger.debug(NEW_SERVICEIMPL_MESSAGE, this);
     }
 
     public ServiceImpl(Type type, BundleContext registry, Filter filter) {
-        logger.trace("Entering ServiceImpl : "
+        logger.trace(ENTERING_SERVICEIMPL_MESSAGE
                      + "ServiceImpl() with parameters {} | {} | {}",
                      new Object[] {type, registry, filter});
         serviceClass = (Class) type;
         serviceName = serviceClass.getName();
         this.registry = registry;
         this.filter = filter;
-        logger.debug("New ServiceImpl constructed {}", this);
+        logger.debug(NEW_SERVICEIMPL_MESSAGE, this);
     }
 
     @Override
@@ -85,7 +87,7 @@ public class ServiceImpl<T> implements Service<T> {
     }
 
     private void populateServices() {
-        logger.trace("Entering ServiceImpl : "
+        logger.trace(ENTERING_SERVICEIMPL_MESSAGE
                      + "populateServices() with no parameter");
         services.clear();
         String filterString = null;
@@ -125,7 +127,7 @@ public class ServiceImpl<T> implements Service<T> {
                     services.add((T) Proxy.newProxyInstance(
                             getClass().getClassLoader(),
                             new Class[] {
-                                (Class) serviceClass
+                                serviceClass
                             },
                             new ServiceReferenceHandler(ref, registry)));
                 }

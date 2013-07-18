@@ -16,13 +16,6 @@
  */
 package org.jboss.weld.environment.osgi.impl.integration.discovery.bundle;
 
-import org.jboss.weld.bootstrap.api.Bootstrap;
-import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
-import org.jboss.weld.environment.osgi.impl.integration.discovery.BundleBeanDeploymentArchive;
-import org.osgi.framework.Bundle;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -33,6 +26,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+
+import org.jboss.weld.bootstrap.api.Bootstrap;
+import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
+import org.jboss.weld.environment.osgi.impl.integration.discovery.BundleBeanDeploymentArchive;
+import org.osgi.framework.Bundle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Factory for {@link BeanDeploymentArchive} used by {@link BundleDeployment}.
@@ -47,6 +47,12 @@ public class BundleBeanDeploymentArchiveFactory {
     private Logger logger = LoggerFactory.getLogger(
             BundleBeanDeploymentArchiveFactory.class);
 
+    private static final String BEANS_XML = "beans.xml";
+    private static final String JAR_PREFIX = "jar:";
+    private static final String CLASS_SUFFIX = ".class";
+    private static final String FOUND_NEW_CLASS_MESSAGE = "Found a new bean class: {}";
+    private static final String FOUND_NEW_BEANS_XML_MESSAGE = "Found a new beans.xml file: {}";
+
     private Set<String> discoveredClasses = new HashSet<String>();
 
     private List<URL> discoveredBeanXmlUrls = new ArrayList<URL>();
@@ -60,7 +66,7 @@ public class BundleBeanDeploymentArchiveFactory {
         discoveredBeanXmlUrls.clear();
         discoveredClasses.clear();
 
-        Enumeration beansXmlMarkers = bundle.findEntries("/", "beans.xml", true);
+        Enumeration beansXmlMarkers = bundle.findEntries("/", BEANS_XML, true);
         Enumeration innerJars = bundle.findEntries("/", "*.jar", true);
         Enumeration innerZips = bundle.findEntries("/", "*.zip", true);
 
@@ -112,29 +118,29 @@ public class BundleBeanDeploymentArchiveFactory {
                     logger.trace("Found an inner zip file {} within zip file {}",
                             zipEntryPath,
                             zipPath);
-                    scanZip(new URL("jar:" + zipUrl + "!" + zipEntryPath));
-                } else if (zipEntryPath.toLowerCase().endsWith(".class")) {
+                    scanZip(new URL(JAR_PREFIX + zipUrl + "!" + zipEntryPath));
+                } else if (zipEntryPath.toLowerCase().endsWith(CLASS_SUFFIX)) {
                     String clazz = null;
                     String[] parts = zipEntryPath.split("!");
                     if (parts.length > 1) {
                         clazz = parts[1].substring(1).
                             replace("/", ".").
-                            replace(".class", "");
+                            replace(CLASS_SUFFIX, "");
                     } else {
                         clazz = zipEntryPath.substring(1).
                             replace("/", ".").
-                            replace(".class", "");
+                            replace(CLASS_SUFFIX, "");
                     }
-                    logger.trace("Found a new bean class: {}", clazz);
+                    logger.trace(FOUND_NEW_CLASS_MESSAGE, clazz);
                     zipClasses.add(clazz);
-                } else if (zipEntryPath.toLowerCase().endsWith("beans.xml")) {
+                } else if (zipEntryPath.toLowerCase().endsWith(BEANS_XML)) {
 //                    if (!zipEntryPath.equalsIgnoreCase("/meta-inf/beans.xml")) {
 //                        logger.warn("Invalid location for beans.xml file: {}",
 //                                zipEntryPath);
 //                    } else {
-                    logger.trace("Found a new beans.xml file: {}",
+                    logger.trace(FOUND_NEW_BEANS_XML_MESSAGE,
                             zipEntryPath);
-                    zipBeanXmlUrls.add(new URL("jar:" + zipUrl + "!"
+                    zipBeanXmlUrls.add(new URL(JAR_PREFIX + zipUrl + "!"
                             + zipEntryPath));
 //                    }
 
@@ -160,7 +166,7 @@ public class BundleBeanDeploymentArchiveFactory {
         while (beansXmlMarkers.hasMoreElements()) {
             URL beansXmlUrl = (URL) beansXmlMarkers.nextElement();
             String beansXmlPath = beansXmlUrl.getPath();
-            logger.trace("Found a new beans.xml file: {}", beansXmlPath);
+            logger.trace(FOUND_NEW_BEANS_XML_MESSAGE, beansXmlPath);
             if (!beansXmlPath.endsWith("META-INF/beans.xml")) {
                 logger.warn("Invalid location for beans.xml file: {}", beansXmlPath);
                 continue;
@@ -176,16 +182,16 @@ public class BundleBeanDeploymentArchiveFactory {
                     if (parts.length > 1) {
                         clazz = parts[1].substring(1).
                             replace("/", ".").
-                            replace(".class", "");
+                            replace(CLASS_SUFFIX, "");
                     } else {
                         clazz = url.getFile().substring(1).
                             replace("/", ".").
-                            replace(".class", "");
+                            replace(CLASS_SUFFIX, "");
                     }
 //                    String clazz = url.getFile().substring(1).
 //                            replace("/", ".").
-//                            replace(".class", "");
-                    logger.trace("Found a new bean class: {}", clazz);
+//                            replace(CLASS_SUFFIX, "");
+                    logger.trace(FOUND_NEW_CLASS_MESSAGE, clazz);
                     discoveredClasses.add(clazz);
                 }
             }
