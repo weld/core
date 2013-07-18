@@ -1,7 +1,6 @@
 Import-Package org.osgi.framework
 
 Export-Package javax.el;version=2.2.0, \
-               javax.inject;version=1.0.0, \
                javax.decorator; \
                javax.enterprise.context; \
                javax.enterprise.context.spi; \
