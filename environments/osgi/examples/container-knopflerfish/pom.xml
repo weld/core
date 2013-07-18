@@ -35,6 +35,25 @@
       </developer>
    </developers>
 
+   <repositories>
+        <repository>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+                <checksumPolicy>fail</checksumPolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+                <checksumPolicy>fail</checksumPolicy>
+            </snapshots>
+            <id>Knopflerfish</id>
+            <name>Knopflerfish Releases Repository</name>
+            <url>http://www.knopflerfish.org/maven2</url>
+            <layout>default</layout>
+        </repository>
+    </repositories>
+
    <dependencies>
 
       <dependency>
@@ -248,6 +267,12 @@
          <version>${project.version}</version>
       </dependency>
 
+      <dependency>
+         <groupId>org.knopflerfish</groupId>
+         <artifactId>framework</artifactId>
+         <version>5.1.14</version>
+      </dependency>
+
    </dependencies>
 
    <build>
@@ -270,8 +295,8 @@
                   </goals>
                   <configuration>
                      <tasks>
-                        <copy file="target/classes/config.properties" tofile="${project.build.directory}/config.properties"/>
-                        <copy file="${maven.dependency.org.apache.felix.org.apache.felix.main.jar.path}" tofile="${project.build.directory}/felix.jar"/>
+                        <copy file="target/classes/config.xargs" tofile="${project.build.directory}/config.xargs" />
+                        <copy file="${maven.dependency.org.knopflerfish.framework.jar.path}" tofile="${project.build.directory}/knopflerfish.jar" />
                      </tasks>
                   </configuration>
                </execution>
