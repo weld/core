@@ -38,7 +38,7 @@ public class Environment {
     private Environment() {
     }
 
-    public static final String PROJECT_VERSION = "1.2.0-SNAPSHOT";
+    public static final String PROJECT_VERSION = "2.1-SNAPSHOT";
 
     public static Option toMavenBundle(String groupId, String artifactName) {
         return mavenBundle(groupId, artifactName).version(PROJECT_VERSION);
