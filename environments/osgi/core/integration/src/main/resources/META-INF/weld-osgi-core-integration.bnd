@@ -103,7 +103,6 @@ Import-Package org.jboss.weld.environment.osgi.api; \
                ch.qos.cal10n; \
                ch.qos.cal10n.verifier; \
                ch.qos.cal10n.util; version=${cal10n.version}, \
-               org.jboss.weld.interceptor; \
                org.jboss.weld.interceptor.reader; \
                org.jboss.weld.interceptor.reader.cache; \
                org.jboss.weld.interceptor.spi.instance; \
@@ -144,8 +143,6 @@ Import-Package org.jboss.weld.environment.osgi.api; \
                org.jboss.weld.jsf; \
                org.jboss.weld.ejb; \
                org.jboss.weld.event; \
-               org.jboss.weld.introspector; \
-               org.jboss.weld.introspector.jlr; \
                org.jboss.weld.context.beanstore; \
                org.jboss.weld.context.beanstore.ejb; \
                org.jboss.weld.context.beanstore.http; \

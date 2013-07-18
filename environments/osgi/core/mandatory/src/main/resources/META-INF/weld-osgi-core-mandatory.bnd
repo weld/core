@@ -88,6 +88,7 @@ Export-Package javax.el;version=${javax.el.version}, \
                ch.qos.logback.core.pattern.util; \
                ch.qos.logback.core.recovery; \
                org.slf4j.impl; version=${logback.version}, \
+               com.google.common.annotations; \
                com.google.common.primitives; \
                com.google.common.collect; \
                com.google.common.util.concurrent; \
@@ -95,11 +96,10 @@ Export-Package javax.el;version=${javax.el.version}, \
                com.google.common.net; \
                com.google.common.annotations; \
                com.google.common.base; \
-               com.google.common.base.internal, \
+               com.google.common.base.internal; version=${google.guava.version}, \
                ch.qos.cal10n; \
                ch.qos.cal10n.verifier; \
                ch.qos.cal10n.util; version=${cal10n.version}, \
-               org.jboss.weld.interceptor; \
                org.jboss.weld.interceptor.reader; \
                org.jboss.weld.interceptor.reader.cache; \
                org.jboss.weld.interceptor.spi.instance; \
@@ -140,8 +140,6 @@ Export-Package javax.el;version=${javax.el.version}, \
                org.jboss.weld.jsf; \
                org.jboss.weld.ejb; \
                org.jboss.weld.event; \
-               org.jboss.weld.introspector; \
-               org.jboss.weld.introspector.jlr; \
                org.jboss.weld.context.beanstore; \
                org.jboss.weld.context.beanstore.ejb; \
                org.jboss.weld.context.beanstore.http; \
