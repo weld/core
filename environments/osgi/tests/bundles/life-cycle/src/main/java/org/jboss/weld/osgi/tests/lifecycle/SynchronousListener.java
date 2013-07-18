@@ -27,7 +27,7 @@ public class SynchronousListener implements SynchronousBundleListener {
         if (event.getType() == BundleEvent.STARTED) {
             FlagFarm.synchronousStartedEntrance = FlagFarm.currentRank++;
             try {
-                timer.process(500);
+                timer.process(1);
             }
             catch(InterruptedException ex) {
                 throw new RuntimeException();
@@ -37,7 +37,7 @@ public class SynchronousListener implements SynchronousBundleListener {
         else if (event.getType() == BundleEvent.STOPPING) {
             FlagFarm.synchronousStoppingEntrance = FlagFarm.currentRank++;
             try {
-                timer.process(500);
+                timer.process(1);
             }
             catch(InterruptedException ex) {
                 throw new RuntimeException();

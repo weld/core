@@ -1,17 +1,20 @@
 package org.jboss.weld.osgi.examples.userdoc.talkative.harry;
 
-import org.osgi.framework.Bundle;
-
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
+
 import org.jboss.weld.environment.osgi.api.annotation.Sent;
 import org.jboss.weld.environment.osgi.api.annotation.Specification;
 import org.jboss.weld.environment.osgi.api.events.BundleContainerEvents;
 import org.jboss.weld.environment.osgi.api.events.BundleEvents;
 import org.jboss.weld.environment.osgi.api.events.InterBundleEvent;
+import org.osgi.framework.Bundle;
 
 public class App {
+
+    private static final int NAME_BEGIN_INDEX = 21;
+    private static final String NAME = "harry";
 
     @Inject
     private Event<InterBundleEvent> communication;
@@ -27,15 +30,15 @@ public class App {
     }
 
     public void greetNewcomer(@Observes BundleEvents.BundleStarted event) {
-        String name = event.getSymbolicName().substring(21, event.getSymbolicName().length());
-        if (!name.equals("harry")) {
+        String name = event.getSymbolicName().substring(NAME_BEGIN_INDEX, event.getSymbolicName().length());
+        if (!name.equals(NAME)) {
             System.out.println("Harry: Welcome " + name + '!');
         }
     }
 
     public void sayGoodbyeToLeaver(@Observes BundleEvents.BundleStopped event) {
-        String name = event.getSymbolicName().substring(21, event.getSymbolicName().length());
-        if (!name.equals("harry")) {
+        String name = event.getSymbolicName().substring(NAME_BEGIN_INDEX, event.getSymbolicName().length());
+        if (!name.equals(NAME)) {
             System.out.println("Harry: Goodbye " + name + '!');
         }
     }
@@ -54,14 +57,15 @@ public class App {
         }
 
         public void run() {
+            final int waitTime = 5000;
             while(true) {
                 try {
-                    sleep(5000);
+                    sleep(waitTime);
                 } catch (InterruptedException e) {
                 }
                 if(bundle.getState() == Bundle.ACTIVE) {
                     System.out.println("Harry: is there still someone here ?");
-                    communication.fire(new InterBundleEvent("harry"));
+                    communication.fire(new InterBundleEvent(NAME));
                 } else {
                     break;
                 }

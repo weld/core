@@ -17,6 +17,7 @@
 package org.jboss.weld.osgi.tests.lifecycle;
 
 import javax.inject.Inject;
+
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -46,7 +47,7 @@ public class OSGiActivator implements BundleActivator {
         context.registerService(NotAutoPublishedService.class.getName(), new NotAutoPublishedService(), null);
 
         FlagFarm.osgiStartEntrance = FlagFarm.currentRank++;
-        timer.process(500);
+        timer.process(1);
         FlagFarm.osgiStartExit = FlagFarm.currentRank++;
 
         if (injected != null) {
@@ -102,7 +103,7 @@ public class OSGiActivator implements BundleActivator {
     @Override
     public void stop(BundleContext context) throws Exception {
         FlagFarm.osgiStopEntrance = FlagFarm.currentRank++;
-        timer.process(1000);
+        timer.process(2);
         FlagFarm.osgiStopExit = FlagFarm.currentRank++;
 
         if (injected != null) {

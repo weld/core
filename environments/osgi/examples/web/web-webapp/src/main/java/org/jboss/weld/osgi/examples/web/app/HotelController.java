@@ -83,6 +83,7 @@ public class HotelController implements Controller {
             @QueryParam("booking.creditCardName") String cardName,
             @QueryParam("booking.creditCardExpiryMonth") String cardMonth,
             @QueryParam("booking.creditCardExpiryYear") String cardYear) {
+        final String failure = "failure";
         if (app.isValid()) {
             for (HotelProvider provider : providers) {
                 for (Hotel h : provider.hotels()) {
@@ -91,13 +92,13 @@ public class HotelController implements Controller {
                         if (success) {
                             return "success";
                         } else {
-                            return "failure";
+                            return failure;
                         }
                     }
                 }
             }
         }
-        return "failure";
+        return failure;
     }
 
     @GET

@@ -17,20 +17,26 @@
 
 package org.jboss.weld.environment.osgi.tests.util;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import static org.ops4j.pax.exam.CoreOptions.*;
-import org.ops4j.pax.exam.Option;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-
 import static org.ops4j.pax.exam.CoreOptions.felix;
 import static org.ops4j.pax.exam.CoreOptions.junitBundles;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import org.ops4j.pax.exam.Option;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+
 public class Environment {
+
+    private static final int REFRESH_TIME_FOR_STATE = 50;
+    private static final int REFRESH_TIME_FOR_ENVIRONMENT = 500;
+    private static final String ORG_JBOSS_WELD_OSGI = "org.jboss.weld.osgi";
+
+    private Environment() {
+    }
 
     public static final String PROJECT_VERSION = "1.2.0-SNAPSHOT";
 
@@ -44,11 +50,11 @@ public class Environment {
 
     protected static List<Option> toDefaultOptions(Option... options) {
         List<Option> result = new ArrayList<Option>();
-        result.add(toMavenBundle("org.jboss.weld.osgi", "weld-osgi-core-mandatory"));
-        result.add(toMavenBundle("org.jboss.weld.osgi", "weld-osgi-core-api"));
-        result.add(toMavenBundle("org.jboss.weld.osgi", "weld-osgi-core-spi"));
-        result.add(toMavenBundle("org.jboss.weld.osgi", "weld-osgi-core-extension"));
-        result.add(toMavenBundle("org.jboss.weld.osgi", "weld-osgi-core-integration"));
+        result.add(toMavenBundle(ORG_JBOSS_WELD_OSGI, "weld-osgi-core-mandatory"));
+        result.add(toMavenBundle(ORG_JBOSS_WELD_OSGI, "weld-osgi-core-api"));
+        result.add(toMavenBundle(ORG_JBOSS_WELD_OSGI, "weld-osgi-core-spi"));
+        result.add(toMavenBundle(ORG_JBOSS_WELD_OSGI, "weld-osgi-core-extension"));
+        result.add(toMavenBundle(ORG_JBOSS_WELD_OSGI, "weld-osgi-core-integration"));
         result.add(toMavenBundle("org.jboss.weld.osgi.tests", "weld-osgi-tests-utils"));
         Collections.addAll(result, options);
         return result;
@@ -76,7 +82,7 @@ public class Environment {
                     break;
                 }
             }
-            Thread.sleep(500);
+            Thread.sleep(REFRESH_TIME_FOR_ENVIRONMENT);
         }
         WeldOSGiWait.waitForContainersToStart(context, context.getBundles());
     }
@@ -87,7 +93,7 @@ public class Environment {
             if(bundle.getState() == state) {
                 ready = true;
             }
-            Thread.sleep(50);
+            Thread.sleep(REFRESH_TIME_FOR_STATE);
         }
     }
 
@@ -99,7 +105,7 @@ public class Environment {
                     ready = true;
                 }
             }
-            Thread.sleep(50);
+            Thread.sleep(REFRESH_TIME_FOR_STATE);
         }
     }
 
@@ -126,7 +132,6 @@ public class Environment {
                 break;
             default:
                 result = "UNKNOWN";
-
         }
         return result;
     }
@@ -134,7 +139,7 @@ public class Environment {
     public static String state(BundleContext context) {
         String result = "";
         for(Bundle b : context.getBundles()) {
-            result += b.getSymbolicName() + "-" + b.getVersion() + ": " + state(b.getState()) +System.getProperty("line.separator");
+            result += b.getSymbolicName() + "-" + b.getVersion() + ": " + state(b.getState()) + System.getProperty("line.separator");
         }
         return result;
     }

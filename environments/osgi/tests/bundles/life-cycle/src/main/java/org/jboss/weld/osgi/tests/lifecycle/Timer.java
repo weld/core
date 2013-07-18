@@ -17,8 +17,15 @@
 package org.jboss.weld.osgi.tests.lifecycle;
 
 public class Timer {
-    public void process(int timeout) throws InterruptedException {
-        Thread.sleep(timeout);
+    static final int HALF_SECOND = 500;
+
+    /*
+     * Sleeps the thread for the specified amount of half seconds.
+     *
+     * @param halfSeconds the number of half seconds to sleep the thread
+     */
+    public void process(int halfSeconds) throws InterruptedException {
+        Thread.sleep(halfSeconds * HALF_SECOND);
     }
 
 }

@@ -3,6 +3,7 @@ package org.jboss.weld.osgi.examples.userdoc.helloworld.consumer.multilingual2;
 import javax.enterprise.event.Observes;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
+
 import org.jboss.weld.environment.osgi.api.Service;
 import org.jboss.weld.environment.osgi.api.annotation.OSGiService;
 import org.jboss.weld.environment.osgi.api.events.BundleContainerEvents;
@@ -10,6 +11,9 @@ import org.jboss.weld.osgi.examples.userdoc.helloworld.provider.api.HelloWorld;
 import org.jboss.weld.osgi.examples.userdoc.helloworld.provider.api.Language;
 
 public class App {
+
+    private static final String LANGUAGE_VALUE_GERMAN = "(language.value=GERMAN)";
+    private static final String LANGUAGE_VALUE_FRENCH = "(language.value=FRENCH)";
 
     @Inject
     @OSGiService
@@ -50,8 +54,8 @@ public class App {
     public void onStartup(@Observes BundleContainerEvents.BundleContainerInitialized event) {
         helloWorld2 = helloWorldService.get();
         helloWorldEnglish2 = helloWorldServiceEnglish.select(new LanguageAnnotationEnglish()).get();
-        helloWorldFrench2 = helloWorldServiceFrench.select("(language.value=FRENCH)").get();
-        helloWorldGerman2 = helloWorldServiceGerman.select("(language.value=GERMAN)").get();
+        helloWorldFrench2 = helloWorldServiceFrench.select(LANGUAGE_VALUE_FRENCH).get();
+        helloWorldGerman2 = helloWorldServiceGerman.select(LANGUAGE_VALUE_GERMAN).get();
 
         helloWorld.sayHello();
         helloWorld2.sayHello();
@@ -70,8 +74,8 @@ public class App {
     public void onShutdown(@Observes BundleContainerEvents.BundleContainerShutdown event) {
         helloWorld2 = helloWorldService.get();
         helloWorldEnglish2 = helloWorldServiceEnglish.select(new LanguageAnnotationEnglish()).get();
-        helloWorldFrench2 = helloWorldServiceFrench.select("(language.value=FRENCH)").get();
-        helloWorldGerman2 = helloWorldServiceGerman.select("(language.value=GERMAN)").get();
+        helloWorldFrench2 = helloWorldServiceFrench.select(LANGUAGE_VALUE_FRENCH).get();
+        helloWorldGerman2 = helloWorldServiceGerman.select(LANGUAGE_VALUE_GERMAN).get();
 
         helloWorld.sayGoodbye();
         helloWorld2.sayGoodbye();

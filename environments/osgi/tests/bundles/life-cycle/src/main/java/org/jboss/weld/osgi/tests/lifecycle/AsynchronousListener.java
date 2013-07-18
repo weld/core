@@ -22,12 +22,14 @@ import org.osgi.framework.BundleListener;
 public class AsynchronousListener implements BundleListener {
     Timer timer = new Timer();
 
+    private static final int WAIT_TIME_IN_HALF_SECONDS = 3;
+
     @Override
     public void bundleChanged(BundleEvent event) {
         if (event.getType() == BundleEvent.STARTED) {
             FlagFarm.asynchronousStartedEntrance = FlagFarm.currentRank++;
             try {
-                timer.process(1500);
+                timer.process(WAIT_TIME_IN_HALF_SECONDS);
             }
             catch(InterruptedException ex) {
                 throw new RuntimeException();

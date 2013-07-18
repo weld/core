@@ -20,6 +20,7 @@ package org.jboss.weld.osgi.examples.web.fwk.view;
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
+
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
@@ -29,6 +30,11 @@ import javax.ws.rs.core.Response.ResponseBuilder;
  * @author Mathieu ANCELIN
  */
 public class Render {
+
+    private static final int NOT_IMPLEMENTED_RESPONSE_STATUS = 501;
+
+    private Render() {
+    }
 
     public static Response redirect(String url) {
         ResponseBuilder builder;
@@ -88,7 +94,7 @@ public class Render {
     public static Response unavailable() {
         return Response.status(Response.Status.SERVICE_UNAVAILABLE)
             .type(MediaType.TEXT_HTML)
-            .entity("<html><head><title>Error</title></head>"
+            .entity("<html><head><title>Service unavailable</title></head>"
                         + "<body><h1>Service unavailable</h1></body></html>").build();
     }
 
@@ -100,7 +106,7 @@ public class Render {
     }
 
     public static Response todo() {
-        return Response.status(501)
+        return Response.status(NOT_IMPLEMENTED_RESPONSE_STATUS)
             .type(MediaType.TEXT_HTML)
             .entity("<html><head><title>TODO</title></head>"
                         + "<body><h1>Page not yet implemented</h1></body></html>").build();

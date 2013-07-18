@@ -19,11 +19,12 @@ package org.jboss.weld.osgi.examples.web.fwk;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
-import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.enterprise.inject.Instance;
 import javax.servlet.Servlet;
+
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
@@ -34,6 +35,7 @@ import org.osgi.util.tracker.ServiceTracker;
 
 public class HttpServiceTracker extends ServiceTracker {
 
+    private static final String STATIC_SUBDIR = "/static";
     private final BundleContext bc;
     private HttpService httpService = null;
     private ServiceRegistration reg;
@@ -61,7 +63,7 @@ public class HttpServiceTracker extends ServiceTracker {
     @Override
     public void removedService(ServiceReference ref, Object service) {
         if (httpService == service) {
-            httpService.unregister(contextRoot + "/static");
+            httpService.unregister(contextRoot + STATIC_SUBDIR);
             reg.unregister();
             httpService = null;
         }
@@ -71,7 +73,7 @@ public class HttpServiceTracker extends ServiceTracker {
     private void registerResources() {
         try {
             HttpContext myHttpContext = new OSGiHttpContext(loader);
-            httpService.registerResources(contextRoot + "/static", "/tmp/static", myHttpContext);
+            httpService.registerResources(contextRoot + STATIC_SUBDIR, "/tmp" + STATIC_SUBDIR, myHttpContext);
         } catch (NamespaceException ex) {
             Logger.getLogger(HttpServiceTracker.class.getName()).log(Level.SEVERE, null, ex);
         }

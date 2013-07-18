@@ -17,6 +17,9 @@
 package org.jboss.weld.osgi.tests.lifecycle;
 
 public class FlagFarm {
+    private FlagFarm() {
+    }
+
     public static int currentRank = 0;
 
     public static int osgiStartEntrance = -1;

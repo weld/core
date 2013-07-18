@@ -19,7 +19,9 @@ package org.jboss.weld.osgi.examples.web.england;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+
 import javax.enterprise.context.ApplicationScoped;
+
 import org.jboss.weld.environment.osgi.api.annotation.Publish;
 import org.jboss.weld.osgi.examples.web.api.Hotel;
 import org.jboss.weld.osgi.examples.web.api.HotelProvider;
@@ -29,10 +31,15 @@ import org.jboss.weld.osgi.examples.web.api.HotelProvider;
 public class EnglandHotelProvider implements HotelProvider {
 
     private static final Collection<Hotel> hotels = new ArrayList<Hotel>();
+    private static final String COUNTRY = "England";
 
     static {
-        hotels.add(new Hotel("The Montcalm", "London", "England", "2222", new Double(100)));
-        hotels.add(new Hotel("The Berkeley", "London", "England", "2222", new Double(200)));
+        final String address = "London";
+        final String zip = "2222";
+        final int price = 100;
+
+        hotels.add(new Hotel("The Montcalm", address, COUNTRY, zip, new Double(price)));
+        hotels.add(new Hotel("The Berkeley", address, COUNTRY, zip, new Double(2 * price)));
     }
 
     @Override
@@ -42,7 +49,7 @@ public class EnglandHotelProvider implements HotelProvider {
 
     @Override
     public String getCountry() {
-        return "England";
+        return COUNTRY;
     }
 
     @Override

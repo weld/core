@@ -53,6 +53,7 @@ import org.jboss.weld.osgi.examples.paint.api.Shape;
 @Singleton
 public class PaintFrame extends JFrame implements MouseListener {
 
+    private static final int PANEL_MINIMAL_SIZE = 400;
     private static final int BOX = 54;
     private JToolBar toolbar;
     private String selected;
@@ -79,12 +80,12 @@ public class PaintFrame extends JFrame implements MouseListener {
         panel = new JPanel();
         panel.setBackground(Color.WHITE);
         panel.setLayout(null);
-        panel.setMinimumSize(new Dimension(400, 400));
+        panel.setMinimumSize(new Dimension(PANEL_MINIMAL_SIZE, PANEL_MINIMAL_SIZE));
         panel.addMouseListener(this);
         getContentPane().setLayout(new BorderLayout());
         getContentPane().add(toolbar, BorderLayout.NORTH);
         getContentPane().add(panel, BorderLayout.CENTER);
-        setSize(400, 400);
+        setSize(PANEL_MINIMAL_SIZE, PANEL_MINIMAL_SIZE);
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         this.addWindowListener(new WindowAdapter() {
             @Override

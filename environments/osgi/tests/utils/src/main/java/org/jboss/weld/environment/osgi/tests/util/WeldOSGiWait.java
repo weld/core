@@ -8,6 +8,9 @@ import org.osgi.framework.ServiceReference;
 
 public class WeldOSGiWait {
 
+    private WeldOSGiWait() {
+    }
+
     @SuppressWarnings("unchecked")
     public static void waitForContainersToStart(BundleContext ctx, Bundle... bundles) {
         ServiceReference s = ctx.getServiceReference(CDIContainerFactory.class.getName());
