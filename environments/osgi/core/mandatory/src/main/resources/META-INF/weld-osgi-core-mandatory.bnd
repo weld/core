@@ -11,7 +11,7 @@ Export-Package javax.el;version=${javax.el.version}, \
                javax.enterprise.inject; \
                javax.enterprise.inject.spi; \
                javax.enterprise.util; version=${cdi.api.version}, \
-               javax.interceptor; version=${jboss.interceptors.api.version}, \
+               javax.interceptor; version=${jboss.spec.interceptors.version}, \
                javassist; \
                javassist.bytecode; \
                javassist.bytecode.analysis; \

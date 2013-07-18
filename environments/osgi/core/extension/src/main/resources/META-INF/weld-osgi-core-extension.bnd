@@ -15,7 +15,7 @@ Import-Package org.jboss.weld.environment.osgi.api; \
                javax.enterprise.inject; \
                javax.enterprise.inject.spi; \
                javax.enterprise.util; version=${cdi.api.version}, \
-               javax.interceptor; version=${jboss.interceptors.api.version}, \
+               javax.interceptor; version=${jboss.spec.interceptors.version}, \
                org.osgi.framework, \
                javassist; \
                javassist.bytecode; \
