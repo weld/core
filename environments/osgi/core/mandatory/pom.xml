@@ -92,6 +92,11 @@
             <artifactId>cdi-api</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.jboss.classfilewriter</groupId>
+            <artifactId>jboss-classfilewriter</artifactId>
+        </dependency>
+
         <!-- TODO: remove and replace with classfilewriter -->
         <dependency>
             <groupId>org.javassist</groupId>

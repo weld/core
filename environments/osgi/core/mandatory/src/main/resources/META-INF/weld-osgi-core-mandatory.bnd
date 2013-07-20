@@ -90,6 +90,7 @@ Export-Package javax.el;version=${javax.el.version}, \
                org.slf4j.impl; version=${logback.version}, \
                com.google.common.annotations; \
                com.google.common.primitives; \
+               com.google.common.cache; \
                com.google.common.collect; \
                com.google.common.util.concurrent; \
                com.google.common.io; \
@@ -100,6 +101,15 @@ Export-Package javax.el;version=${javax.el.version}, \
                ch.qos.cal10n; \
                ch.qos.cal10n.verifier; \
                ch.qos.cal10n.util; version=${cal10n.version}, \
+               org.jboss.weld.annotated; \
+               org.jboss.weld.annotated.slim; \
+               org.jboss.weld.annotated.slim.backed; \
+               org.jboss.weld.annotated.slim.unbacked; \
+               org.jboss.weld.annotated.enhanced; \
+               org.jboss.weld.annotated.enhanced.jlr; \
+               org.jboss.weld.annotated.runtime; \
+               org.jboss.weld.annotated.runtime; \
+               org.jboss.weld.construction.api; \
                org.jboss.weld.interceptor.reader; \
                org.jboss.weld.interceptor.reader.cache; \
                org.jboss.weld.interceptor.spi.instance; \
@@ -146,6 +156,8 @@ Export-Package javax.el;version=${javax.el.version}, \
                org.jboss.weld.context.cache; \
                org.jboss.weld.context.conversation; \
                org.jboss.weld.util; \
+               org.jboss.weld.util.bean; \
+               org.jboss.weld.util.cache; \
                org.jboss.weld.util.dom; \
                org.jboss.weld.util.reflection; \
                org.jboss.weld.util.reflection.instantiation; \
@@ -153,13 +165,16 @@ Export-Package javax.el;version=${javax.el.version}, \
                org.jboss.weld.util.bytecode; \
                org.jboss.weld.util.collections; \
                org.jboss.weld.exceptions; \
+               org.jboss.weld.executor; \
                org.jboss.weld.metadata; \
                org.jboss.weld.metadata.cache; \
                org.jboss.weld.el; \
                org.jboss.weld.xml; \
                org.jboss.weld.servlet; \
+               org.jboss.weld.security; \
                org.jboss.weld.ws; \
                org.jboss.weld.bean; \
+               org.jboss.weld.bean.attributes; \
                org.jboss.weld.bean.builtin; \
                org.jboss.weld.bean.builtin.ee; \
                org.jboss.weld.bean.proxy; \
@@ -168,6 +183,7 @@ Export-Package javax.el;version=${javax.el.version}, \
                org.jboss.weld.resources; \
                org.jboss.weld.literal; \
                org.jboss.weld.bootstrap; \
+               org.jboss.weld.bootstrap.enablement; \
                org.jboss.weld.bootstrap.events; \
                org.jboss.weld.logging; \
                org.jboss.weld.logging.messages; \
@@ -175,6 +191,9 @@ Export-Package javax.el;version=${javax.el.version}, \
                org.jboss.weld.persistence; \
                org.jboss.weld.resolution; \
                org.jboss.weld.injection; \
+               org.jboss.weld.injection.attributes; \
+               org.jboss.weld.injection.producer; \
+               org.jboss.weld.injection.producer.ejb; \
                org.jboss.weld.environment.se; \
                org.jboss.weld.environment.se.events; \
                org.jboss.weld.environment.se.bindings; \
@@ -183,7 +202,13 @@ Export-Package javax.el;version=${javax.el.version}, \
                org.jboss.weld.environment.se.discovery; \
                org.jboss.weld.environment.se.discovery.url; \
                org.jboss.weld.environment.se.contexts; \
-               org.jboss.weld.messages; version=${pom.version}
+               org.jboss.weld.messages; version=${pom.version}, \
+               org.jboss.classfilewriter; \
+               org.jboss.classfilewriter.annotations; \
+               org.jboss.classfilewriter.attributes; \
+               org.jboss.classfilewriter.code; \
+               org.jboss.classfilewriter.constpool; \
+               org.jboss.classfilewriter.util; version=${classfilewriter.version}
 
 
 DynamicImport-Package *
