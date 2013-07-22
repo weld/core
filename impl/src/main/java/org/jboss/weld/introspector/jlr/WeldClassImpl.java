@@ -17,6 +17,8 @@
 package org.jboss.weld.introspector.jlr;
 
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
 import com.google.common.collect.Sets;
 import org.jboss.weld.introspector.ConstructorSignature;
 import org.jboss.weld.introspector.DiscoveredExternalAnnotatedType;
@@ -32,6 +34,7 @@ import org.jboss.weld.resources.SharedObjectFacade;
 import org.jboss.weld.util.LazyValueHolder;
 import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.collections.ArraySetMultimap;
+import org.jboss.weld.util.collections.HashSetSupplier;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SecureReflections;
@@ -93,6 +96,8 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
 
     // The set of abstracted methods
     private final ArraySet<WeldMethod<?, ? super T>> declaredMethods;
+    // The Set of overridden methods
+    private final Set<WeldMethod<?, ? super T>> overriddenMethods;
     // The map from annotation type to abstracted method with annotation
     private final ArrayListMultimap<Class<? extends Annotation>, WeldMethod<?, ? super T>> declaredAnnotatedMethods;
     // The map from annotation type to method with a parameter with annotation
@@ -295,6 +300,34 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
         }
         declaredMetaAnnotationMap.trimToSize();
         this.declaredMetaAnnotationMap = SharedObjectFacade.wrap(declaredMetaAnnotationMap);
+
+        this.overriddenMethods = getOverriddenMethods(this, this.methods);
+    }
+
+    protected Set<WeldMethod<?, ? super T>> getOverriddenMethods(WeldClass<T> annotatedType, Set<WeldMethod<?, ? super T>> methods) {
+        Set<WeldMethod<?, ? super T>> overriddenMethods = new HashSet<WeldMethod<?, ? super T>>();
+        Multimap<MethodSignature, Package> seenMethods = Multimaps.newSetMultimap(new HashMap<MethodSignature, Collection<Package>>(), HashSetSupplier.<Package>instance());
+        for (Class<? super T> clazz = annotatedType.getJavaClass(); clazz != null && clazz != Object.class; clazz = clazz.getSuperclass()) {
+            for (WeldMethod<?, ? super T> method : methods) {
+                if (method.getJavaMember().getDeclaringClass().equals(clazz)) {
+                    if (isOverridden(method, seenMethods)) {
+                        overriddenMethods.add(method);
+                    }
+                    seenMethods.put(method.getSignature(), method.getPackage());
+                }
+            }
+        }
+        return Collections.unmodifiableSet(overriddenMethods);
+    }
+
+    private static boolean isOverridden(WeldMethod<?, ?> method, Multimap<MethodSignature, Package> seenMethods) {
+        if (method.isPrivate()) {
+            return false;
+        } else if (method.isPackagePrivate() && seenMethods.containsKey(method.getSignature())) {
+            return seenMethods.get(method.getSignature()).contains(method.getPackage());
+        } else {
+            return seenMethods.containsKey(method.getSignature());
+        }
     }
 
     private <X> WeldClass<X> getDeclaringWeldClass(Member member, ClassTransformer transformer) {
@@ -614,5 +647,10 @@ public class WeldClassImpl<T> extends AbstractWeldAnnotated<T, Class<T>> impleme
 
     public boolean isModified() {
         return modified;
+    }
+
+    @Override
+    public boolean isMethodOverridden(WeldMethod<?, ? super T> method) {
+        return overriddenMethods.contains(method);
     }
 }

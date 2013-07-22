@@ -171,4 +171,9 @@ public abstract class ForwardingWeldClass<T> extends ForwardingWeldAnnotated<T, 
     public boolean isModified() {
         return delegate().isModified();
     }
+
+    @Override
+    public boolean isMethodOverridden(WeldMethod<?, ? super T> method) {
+        return delegate().isMethodOverridden(method);
+    }
 }

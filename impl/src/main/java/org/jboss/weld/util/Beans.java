@@ -258,10 +258,10 @@ public class Beans {
     }
 
     public static <T> List<WeldMethod<?, ? super T>> getPostConstructMethods(WeldClass<T> type) {
-        WeldClass<?> t = type;
+        WeldClass<? super T> t = type;
         List<WeldMethod<?, ? super T>> methods = new ArrayList<WeldMethod<?, ? super T>>();
         while (!t.getJavaClass().equals(Object.class)) {
-            Collection<WeldMethod<?, ? super T>> declaredMethods = cast(t.getDeclaredWeldMethods(PostConstruct.class));
+            Collection<WeldMethod<?, ? super T>> declaredMethods = filterOutOverriddenMethods(type, Reflections.<Collection<WeldMethod<?, ? super T>>>cast(t.getDeclaredWeldMethods(PostConstruct.class)));
             log.trace(FOUND_POST_CONSTRUCT_METHODS, declaredMethods, type);
             if (declaredMethods.size() > 1) {
                 throw new DefinitionException(TOO_MANY_POST_CONSTRUCT_METHODS, type);
@@ -273,6 +273,16 @@ public class Beans {
             t = t.getWeldSuperclass();
         }
         return methods;
+    }
+
+    private static <T> Collection<WeldMethod<?, ? super T>> filterOutOverriddenMethods(WeldClass<T> type, Collection<WeldMethod<?, ? super T>> methods) {
+        Collection<WeldMethod<?, ? super T>> notOverriddenMethods = new ArrayList<WeldMethod<?, ? super T>>();
+        for (WeldMethod<?, ? super T> method : methods) {
+            if (!type.isMethodOverridden(method)) {
+                notOverriddenMethods.add(method);
+            }
+        }
+        return Collections.unmodifiableCollection(notOverriddenMethods);
     }
 
     public static <T> List<WeldMethod<?, ? super T>> getObserverMethods(WeldClass<T> type) {
@@ -302,7 +312,7 @@ public class Beans {
         WeldClass<?> t = type;
         List<WeldMethod<?, ? super T>> methods = new ArrayList<WeldMethod<?, ? super T>>();
         while (!t.getJavaClass().equals(Object.class)) {
-            Collection<WeldMethod<?, ? super T>> declaredMethods = cast(t.getDeclaredWeldMethods(PreDestroy.class));
+            Collection<WeldMethod<?, ? super T>> declaredMethods = filterOutOverriddenMethods(type, Reflections.<Collection<WeldMethod<?, ? super T>>>cast(t.getDeclaredWeldMethods(PreDestroy.class)));
             log.trace(FOUND_PRE_DESTROY_METHODS, declaredMethods, type);
             if (declaredMethods.size() > 1) {
                 throw new DefinitionException(TOO_MANY_PRE_DESTROY_METHODS, type);
