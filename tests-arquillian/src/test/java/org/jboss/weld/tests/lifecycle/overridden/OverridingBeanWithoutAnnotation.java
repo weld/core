@@ -9,4 +9,7 @@ public class OverridingBeanWithoutAnnotation extends AbstractBean {
         super.postConstruct();
     }
 
+    public void preDestroy() {
+        super.preDestroy();
+    }
 }

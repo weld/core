@@ -211,4 +211,5 @@ public interface WeldClass<T> extends WeldAnnotated<T, Class<T>>, AnnotatedType<
      */
     Collection<Annotation> getDeclaredMetaAnnotations(Class<? extends Annotation> metaAnnotationType);
 
+    boolean isMethodOverridden(WeldMethod<?, ? super T> method);
 }
