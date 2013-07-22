@@ -17,7 +17,9 @@
 package org.jboss.weld.bean.builtin;
 
 import static org.jboss.weld.ContainerState.INITIALIZED;
+import static org.jboss.weld.ContainerState.SHUTDOWN;
 import static org.jboss.weld.ContainerState.VALIDATED;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.METHOD_NOT_AVAILABLE_AFTER_SHUTDOWN;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.METHOD_NOT_AVAILABLE_DURING_INITIALIZATION;
 
 import java.io.ObjectStreamException;
@@ -145,7 +147,9 @@ public class BeanManagerProxy extends ForwardingBeanManager {
             this.container = Container.instance();
         }
         ContainerState state = container.getState();
-        if (!INITIALIZED.equals(state) && !VALIDATED.equals(state)) {
+        if (SHUTDOWN.equals(state)) {
+            throw new IllegalStateException(METHOD_NOT_AVAILABLE_AFTER_SHUTDOWN, methodName);
+        } else if (!(INITIALIZED.equals(state) || VALIDATED.equals(state))) {
             throw new IllegalStateException(METHOD_NOT_AVAILABLE_DURING_INITIALIZATION, methodName);
         }
     }
