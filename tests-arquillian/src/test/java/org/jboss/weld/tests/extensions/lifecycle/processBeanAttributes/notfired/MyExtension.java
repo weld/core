@@ -19,9 +19,11 @@ package org.jboss.weld.tests.extensions.lifecycle.processBeanAttributes.notfired
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.context.Dependent;
@@ -35,7 +37,9 @@ import javax.enterprise.inject.spi.ProcessBeanAttributes;
 
 public class MyExtension implements Extension {
 
-    public static int processBeanAttributesInvocationCount;
+   public static final String PROGRAMMATICALLY_ADDED_BEAN_NAME = "programmaticallyAdded";
+
+    public static List<ProcessBeanAttributes<?>> receivedProcessBeanAttributesEvents = new ArrayList<ProcessBeanAttributes<?>>();
 
     public void addBean(@Observes AfterBeanDiscovery abd) {
         abd.addBean(new Bean<Foo>() {
@@ -71,7 +75,7 @@ public class MyExtension implements Extension {
 
             @Override
             public String getName() {
-                return null;
+                return PROGRAMMATICALLY_ADDED_BEAN_NAME;
             }
 
             @Override
@@ -96,8 +100,6 @@ public class MyExtension implements Extension {
     }
 
     public void processBeanAttributes(@Observes ProcessBeanAttributes<?> event) {
-        if (!ProgrammaticallyAddedProcessBeanAttributesTest.IGNORE_ME.equals(event.getBeanAttributes().getName())) {
-            processBeanAttributesInvocationCount++;
-        }
+        receivedProcessBeanAttributesEvents.add(event);
     }
 }
