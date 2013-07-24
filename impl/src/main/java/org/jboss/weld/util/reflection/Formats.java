@@ -17,6 +17,8 @@
 package org.jboss.weld.util.reflection;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Member;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -29,6 +31,7 @@ import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.AnnotatedType;
+import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.ejb.spi.BusinessInterfaceDescriptor;
 
@@ -45,6 +48,35 @@ public class Formats {
     private static final String NULL = "null";
 
     private Formats() {
+    }
+
+    // see WELD-1454
+    public static String formatAsStackTraceElement(InjectionPoint ij) {
+        Member member;
+        if (ij.getAnnotated() instanceof AnnotatedField) {
+            AnnotatedField annotatedField = (AnnotatedField) ij.getAnnotated();
+            member = annotatedField.getJavaMember();
+        } else if (ij.getAnnotated() instanceof AnnotatedParameter<?>) {
+            AnnotatedParameter<?> annotatedParameter = (AnnotatedParameter<?>) ij.getAnnotated();
+            member = annotatedParameter.getDeclaringCallable().getJavaMember();
+        } else {
+            // Not throwing an exception, because this method is invoked when an exception is already being thrown.
+            // Throwing an exception here would hide the original exception.
+            return "-";
+        }
+        return member.getDeclaringClass().getName()
+            + "." + (member instanceof Constructor<?> ? "<init>" : member.getName())
+            + "(" + getFileName(member.getDeclaringClass()) + ":" + getLineNumber(member) + ")";
+    }
+
+    private static int getLineNumber(Member member) {
+        // TODO find the actual line number where the member is declared
+        return 0;
+    }
+
+    private static String getFileName(Class<?> clazz) {
+        // TODO find the actual file name the class is declared in
+        return clazz.getSimpleName() + ".java";
     }
 
     /**
