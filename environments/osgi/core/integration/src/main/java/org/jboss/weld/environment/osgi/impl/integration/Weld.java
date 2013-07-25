@@ -17,6 +17,13 @@
 
 package org.jboss.weld.environment.osgi.impl.integration;
 
+import java.util.Collection;
+
+import javax.enterprise.event.Event;
+import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.util.TypeLiteral;
+
 import org.jboss.weld.bootstrap.WeldBootstrap;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
@@ -26,11 +33,6 @@ import org.jboss.weld.environment.osgi.impl.integration.discovery.bundle.BundleD
 import org.jboss.weld.manager.api.WeldManager;
 import org.osgi.framework.Bundle;
 import org.slf4j.LoggerFactory;
-
-import javax.enterprise.event.Event;
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.spi.BeanManager;
-import java.util.Collection;
 
 /**
  * Weld container used for bean bundles by
@@ -143,8 +145,8 @@ public class Weld {
         return false;
     }
 
-    public Event getEvent() {
-        return manager.instance().select(Event.class).get();
+    public Event<Object> getEvent() {
+        return manager.instance().select(new TypeLiteral<Event<Object>>() {}).get();
     }
 
     public BeanManager getBeanManager() {
