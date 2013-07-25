@@ -23,6 +23,7 @@ import java.util.Set;
 
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 
 import org.jboss.weld.environment.osgi.api.annotation.Filter;
@@ -237,11 +238,11 @@ public class ExtensionActivator implements BundleActivator,
                 BundleContext previousContext = WeldOSGiExtension.setCurrentContext(bundle.getBundleContext());
                 try {
                     Instance<Object> instance = (Instance<Object>) context.getService(reference);
-                    Event<Object> broadcastingCDIEvent = instance.select(Event.class).get();
-                    broadcastingCDIEvent.select(ServiceEvent.class).fire(event);
+                    BeanManager manager = instance.select(BeanManager.class).get();
+                    manager.fireEvent(event);
                     if (resultingWeldOSGiServiceEvent != null) {
                         fireAllEvent(resultingWeldOSGiServiceEvent,
-                                     broadcastingCDIEvent,
+                                     manager,
                                      instance);
                     }
                 }
@@ -284,23 +285,19 @@ public class ExtensionActivator implements BundleActivator,
         }
     }
 
-    private void fireAllEvent(AbstractServiceEvent event,
-                              Event broadcaster,
-                              Instance<Object> instance) {
+    private void fireAllEvent(AbstractServiceEvent event, BeanManager manager, Instance<Object> instance) {
 
         logger.trace(ENTERING_MESSAGE
                      + "fireAllEvent() with parameters {} | {}",
                      new Object[] {event, instance});
 
         List<Class<?>> classes = event.getServiceClasses();
-        Class eventClass = event.getClass();
         for (Class<?> clazz : classes) {
             try {
                 // here singleton issue
-                broadcaster.select(eventClass,
-                                   filteredServicesQualifiers(event,
+                manager.fireEvent(event, filteredServicesQualifiers(event,
                                                               new SpecificationAnnotation(clazz),
-                                                              instance)).fire(event);
+                                                              instance));
             }
             catch(Throwable t) {
                 //ignore
