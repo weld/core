@@ -111,8 +111,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
         try {
             return resourceLoader.classForName(className);
         } catch (ResourceLoadingException e) {
-            log.info(IGNORING_CLASS_DUE_TO_LOADING_ERROR, className, Formats.getNameOfMissingClassLoaderDependency(e));
-            xlog.catching(DEBUG, e);
+            handleResourceLoadingException(className, e);
             return null;
         }
     }
@@ -123,11 +122,17 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
             try {
                 return classTransformer.getBackedAnnotatedType(clazz, getManager().getId());
             } catch (ResourceLoadingException e) {
-                log.info(IGNORING_CLASS_DUE_TO_LOADING_ERROR, clazz.getName(), Formats.getNameOfMissingClassLoaderDependency(e));
-                xlog.catching(DEBUG, e);
+                handleResourceLoadingException(clazz.getName(), e);
             }
         }
         return null;
+    }
+
+    private void handleResourceLoadingException(String className, ResourceLoadingException e) {
+        String missingDependency = Formats.getNameOfMissingClassLoaderDependency(e);
+        log.info(IGNORING_CLASS_DUE_TO_LOADING_ERROR, className, missingDependency);
+        xlog.catching(DEBUG, e);
+        getManager().registerClassWithMissingDependency(className, missingDependency);
     }
 
     private void processPriority(AnnotatedType<?> type) {
