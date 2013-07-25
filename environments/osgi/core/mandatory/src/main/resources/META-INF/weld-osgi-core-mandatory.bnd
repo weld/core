@@ -3,6 +3,9 @@ Import-Package org.osgi.framework, \
                org.slf4j.*;version="[1.6,2)";resolution:=optional,
 
 Export-Package javax.el;version=${javax.el.version}, \
+               javax.annotation; \
+               javax.annotation.security; \
+               javax.annotation.sql; version=${jboss.spec.annotation.version}, \
                javax.decorator; \
                javax.inject; \
                javax.enterprise.context; \
