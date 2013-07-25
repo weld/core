@@ -75,6 +75,7 @@ import com.google.common.cache.LoadingCache;
  * @author Pete Muir
  * @author Jozef Hartinger
  * @author alesj
+ * @author Marko Luksa
  */
 public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> {
 
@@ -84,6 +85,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
     private final ResourceLoader resourceLoader;
     private final SlimAnnotatedTypeStore annotatedTypeStore;
     private final GlobalEnablementBuilder globalEnablementBuilder;
+    private final MissingDependenciesRegistry missingDependenciesRegistry;
 
     public BeanDeployer(BeanManagerImpl manager, EjbDescriptors ejbDescriptors, ServiceRegistry services) {
         this(manager, ejbDescriptors, services, BeanDeployerEnvironmentFactory.newEnvironment(ejbDescriptors, manager));
@@ -94,6 +96,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
         this.resourceLoader = manager.getServices().get(ResourceLoader.class);
         this.annotatedTypeStore = manager.getServices().get(SlimAnnotatedTypeStore.class);
         this.globalEnablementBuilder = manager.getServices().get(GlobalEnablementBuilder.class);
+        this.missingDependenciesRegistry = manager.getServices().get(MissingDependenciesRegistry.class);
     }
 
     public BeanDeployer addClass(String className) {
@@ -111,8 +114,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
         try {
             return resourceLoader.classForName(className);
         } catch (ResourceLoadingException e) {
-            log.info(IGNORING_CLASS_DUE_TO_LOADING_ERROR, className, Formats.getNameOfMissingClassLoaderDependency(e));
-            xlog.catching(DEBUG, e);
+            handleResourceLoadingException(className, e);
             return null;
         }
     }
@@ -123,11 +125,17 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
             try {
                 return classTransformer.getBackedAnnotatedType(clazz, getManager().getId());
             } catch (ResourceLoadingException e) {
-                log.info(IGNORING_CLASS_DUE_TO_LOADING_ERROR, clazz.getName(), Formats.getNameOfMissingClassLoaderDependency(e));
-                xlog.catching(DEBUG, e);
+                handleResourceLoadingException(clazz.getName(), e);
             }
         }
         return null;
+    }
+
+    private void handleResourceLoadingException(String className, ResourceLoadingException e) {
+        String missingDependency = Formats.getNameOfMissingClassLoaderDependency(e);
+        log.info(IGNORING_CLASS_DUE_TO_LOADING_ERROR, className, missingDependency);
+        xlog.catching(DEBUG, e);
+        missingDependenciesRegistry.registerClassWithMissingDependency(className, missingDependency);
     }
 
     private void processPriority(AnnotatedType<?> type) {

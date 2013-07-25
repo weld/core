@@ -58,6 +58,8 @@ import static org.jboss.weld.logging.messages.ValidatorMessage.PASSIVATING_BEAN_
 import static org.jboss.weld.logging.messages.ValidatorMessage.PASSIVATING_BEAN_WITH_NONSERIALIZABLE_INTERCEPTOR;
 import static org.jboss.weld.logging.messages.ValidatorMessage.PSEUDO_SCOPED_BEAN_HAS_CIRCULAR_REFERENCES;
 import static org.jboss.weld.logging.messages.ValidatorMessage.SCOPE_ANNOTATION_ON_INJECTION_POINT;
+import static org.jboss.weld.logging.messages.ValidatorMessage.UNSATISFIED_DEPENDENCY_BECAUSE_CLASS_IGNORED;
+import static org.jboss.weld.logging.messages.ValidatorMessage.UNSATISFIED_DEPENDENCY_BECAUSE_QUALIFIERS_DONT_MATCH;
 import static org.jboss.weld.logging.messages.ValidatorMessage.USER_TRANSACTION_INJECTION_INTO_BEAN_WITH_CONTAINER_MANAGED_TRANSACTIONS;
 import static org.jboss.weld.util.Types.buildClassNameMap;
 
@@ -136,6 +138,7 @@ import org.jboss.weld.interceptor.reader.ClassMetadataInterceptorFactory;
 import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
+import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.literal.DecoratedLiteral;
 import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.literal.InterceptedLiteral;
@@ -406,7 +409,8 @@ public class Validator implements Service {
                 ij,
                 Formats.formatAnnotations(ij.getQualifiers()),
                 Formats.formatInjectionPointType(ij.getType()),
-                Formats.formatAsStackTraceElement(ij));
+                Formats.formatAsStackTraceElement(ij),
+                getUnsatisfiedDependenciesAdditionalInfo(ij, beanManager));
         }
         if (resolvedBeans.size() > 1) {
             throw new DeploymentException(INJECTION_POINT_HAS_AMBIGUOUS_DEPENDENCIES,
@@ -429,6 +433,28 @@ public class Validator implements Service {
                 validateInjectionPointPassivationCapable(ij, resolvedBean, beanManager);
             }
         }
+    }
+
+    private String getUnsatisfiedDependenciesAdditionalInfo(InjectionPoint ij, BeanManagerImpl beanManager) {
+        Set<Bean<?>> beansMatchedByType = beanManager.getBeans(ij.getType(), AnyLiteral.INSTANCE);
+        if (beansMatchedByType.isEmpty()) {
+            Class<?> rawType = Reflections.getRawType(ij.getType());
+            if (rawType != null) {
+                MissingDependenciesRegistry missingDependenciesRegistry = beanManager.getServices().get(MissingDependenciesRegistry.class);
+                String missingDependency = missingDependenciesRegistry.getMissingDependencyForClass(rawType.getName());
+                if (missingDependency != null) {
+                    return loggerFactory().getMessageConveyor().getMessage(
+                        UNSATISFIED_DEPENDENCY_BECAUSE_CLASS_IGNORED,
+                        rawType.getName(),
+                        missingDependency);
+                }
+            }
+        } else {
+            return loggerFactory().getMessageConveyor().getMessage(
+                UNSATISFIED_DEPENDENCY_BECAUSE_QUALIFIERS_DONT_MATCH,
+                WeldCollections.toMultiRowString(beansMatchedByType));
+        }
+        return "";
     }
 
     public void validateProducers(Collection<Producer<?>> producers, BeanManagerImpl beanManager) {
