@@ -1,6 +1,6 @@
 #!/bin/sh
 
-cd ./examples/container-pojosr/target/weld-osgi-container-lite-1.1.3-SNAPSHOT-all/weld-osgi-container-lite-1.1.3-SNAPSHOT/;
+cd ./examples/container-pojosr/target/weld-osgi-container-lite-all/weld-osgi-container-lite/;
 
 LIBS=./modules
 LIBS_CLASSPATH=`find $LIBS -type f -name \*.jar` 
