@@ -25,6 +25,7 @@ import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.util.AnnotationLiteral;
+import javax.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.environment.osgi.api.annotation.Sent;
 import org.jboss.weld.environment.osgi.api.annotation.Specification;
@@ -138,8 +139,8 @@ public class WeldCDIContainer implements CDIContainer {
     }
 
     @Override
-    public Event getEvent() {
-        return container.getInstance().select(Event.class).get();
+    public Event<Object> getEvent() {
+        return container.getInstance().select(new TypeLiteral<Event<Object>>(){}).get();
     }
 
     @Override

@@ -16,22 +16,24 @@
  */
 package org.jboss.weld.environment.osgi.impl.integration.discovery;
 
-import org.jboss.weld.bootstrap.api.Bootstrap;
-import org.jboss.weld.bootstrap.api.ServiceRegistry;
-import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
-import org.jboss.weld.bootstrap.spi.Deployment;
-import org.jboss.weld.bootstrap.spi.Metadata;
-import org.jboss.weld.environment.osgi.impl.integration.OSGiProxyService;
-import org.jboss.weld.serialization.spi.ProxyServices;
-import org.osgi.framework.Bundle;
-
-import javax.enterprise.inject.spi.Extension;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.enterprise.inject.spi.Extension;
+
+import org.jboss.weld.bootstrap.api.Bootstrap;
+import org.jboss.weld.bootstrap.api.ServiceRegistry;
+import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
+import org.jboss.weld.bootstrap.spi.CDI11Deployment;
+import org.jboss.weld.bootstrap.spi.Deployment;
+import org.jboss.weld.bootstrap.spi.Metadata;
+import org.jboss.weld.environment.osgi.impl.integration.OSGiProxyService;
+import org.jboss.weld.serialization.spi.ProxyServices;
+import org.osgi.framework.Bundle;
 
 /**
  * Implements the basic requirements of a {@link Deployment}. Provides a service
@@ -43,7 +45,7 @@ import java.util.Set;
  * @author Mathieu ANCELIN - SERLI (mathieu.ancelin@serli.com)
  * @author Matthieu CLOCHARD - SERLI (matthieu.clochard@serli.com)
  */
-public abstract class AbstractWeldOSGiDeployment implements Deployment {
+public abstract class AbstractWeldOSGiDeployment implements CDI11Deployment {
     private final ServiceRegistry serviceRegistry;
 
     private final Iterable<Metadata<Extension>> extensions;

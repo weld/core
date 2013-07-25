@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.environment.osgi.impl.integration.discovery.bundle;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.environment.osgi.impl.integration.Weld;
@@ -23,9 +26,6 @@ import org.jboss.weld.environment.osgi.impl.integration.discovery.AbstractWeldOS
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.osgi.framework.Bundle;
 import org.slf4j.LoggerFactory;
-
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Weld Deployment for OSGi environment.
@@ -66,6 +66,11 @@ public class BundleDeployment extends AbstractWeldOSGiDeployment {
     }
 
     public BeanDeploymentArchive getBeanDeploymentArchive() {
+        return beanDeploymentArchive;
+    }
+
+    @Override
+    public BeanDeploymentArchive getBeanDeploymentArchive(Class<?> beanClass) {
         return beanDeploymentArchive;
     }
 
