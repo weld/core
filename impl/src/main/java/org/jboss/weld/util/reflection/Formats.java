@@ -140,6 +140,14 @@ public class Formats {
         return (Function<T>) COMMA_DELIMITER_FUNCTION;
     }
 
+    public static String formatInjectionPointType(Type type) {
+        if (type instanceof Class<?>) {
+            return ((Class) type).getSimpleName();
+        } else {
+            return Formats.formatType(type);
+        }
+    }
+
     public static String formatType(Type baseType) {
         if (baseType == null) {
             return NULL;

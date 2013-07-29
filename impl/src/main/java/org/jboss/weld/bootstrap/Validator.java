@@ -405,14 +405,14 @@ public class Validator implements Service {
             throw new DeploymentException(INJECTION_POINT_HAS_UNSATISFIED_DEPENDENCIES,
                 ij,
                 Formats.formatAnnotations(ij.getQualifiers()),
-                Formats.formatType(ij.getType()),
+                Formats.formatInjectionPointType(ij.getType()),
                 Formats.formatAsStackTraceElement(ij));
         }
         if (resolvedBeans.size() > 1) {
             throw new DeploymentException(INJECTION_POINT_HAS_AMBIGUOUS_DEPENDENCIES,
                 ij,
                 Formats.formatAnnotations(ij.getQualifiers()),
-                Formats.formatType(ij.getType()),
+                Formats.formatInjectionPointType(ij.getType()),
                 Formats.formatAsStackTraceElement(ij),
                 WeldCollections.toMultiRowString(resolvedBeans));
         }
