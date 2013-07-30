@@ -32,7 +32,7 @@
         <arquillian.weld.version>1.0.0.CR7</arquillian.weld.version>
         <arquillian.tomcat.version>1.0.0.CR4</arquillian.tomcat.version>
         <arquillian.tomcat7.version>1.0.0.CR4</arquillian.tomcat7.version>
-        <arquillian.jetty.version>1.0.0.CR1</arquillian.jetty.version>
+        <arquillian.jetty.version>1.0.0.CR2</arquillian.jetty.version>
         <arquillian.glassfish.version>1.0.0.CR1</arquillian.glassfish.version>
         <arquillian.jboss6.version>1.0.0.CR2</arquillian.jboss6.version>
         <atinject.tck.version>1</atinject.tck.version>
@@ -288,6 +288,12 @@
             <dependency>
                 <groupId>org.jboss.arquillian.container</groupId>
                 <artifactId>arquillian-jetty-embedded-7</artifactId>
+                <version>${arquillian.jetty.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.arquillian.container</groupId>
+                <artifactId>arquillian-jetty-embedded-9</artifactId>
                 <version>${arquillian.jetty.version}</version>
             </dependency>
 
