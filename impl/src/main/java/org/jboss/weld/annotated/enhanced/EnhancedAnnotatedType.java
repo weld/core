@@ -46,9 +46,9 @@ public interface EnhancedAnnotatedType<T> extends EnhancedAnnotated<T, Class<T>>
     Collection<EnhancedAnnotatedMethod<?, ? super T>> getEnhancedMethods();
 
     /**
-     * Gets all fields on the type
+     * Gets all methods on the type
      *
-     * @return A set of abstracted fields
+     * @return A set of abstracted methods
      */
     Collection<EnhancedAnnotatedMethod<?, ? super T>> getDeclaredEnhancedMethods();
 
