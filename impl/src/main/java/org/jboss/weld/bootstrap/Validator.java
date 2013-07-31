@@ -138,6 +138,7 @@ import org.jboss.weld.interceptor.reader.ClassMetadataInterceptorFactory;
 import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
+import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.literal.DecoratedLiteral;
 import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.literal.InterceptedLiteral;
@@ -435,11 +436,12 @@ public class Validator implements Service {
     }
 
     private String getUnsatisfiedDependenciesAdditionalInfo(InjectionPoint ij, BeanManagerImpl beanManager) {
-        Set<Bean<?>> beansMatchedByType = beanManager.getBeans(ij.getType());
+        Set<Bean<?>> beansMatchedByType = beanManager.getBeans(ij.getType(), AnyLiteral.INSTANCE);
         if (beansMatchedByType.isEmpty()) {
             Class<?> rawType = Reflections.getRawType(ij.getType());
             if (rawType != null) {
-                String missingDependency = beanManager.getMissingDependencyForClass(rawType.getName());
+                MissingDependenciesRegistry missingDependenciesRegistry = beanManager.getServices().get(MissingDependenciesRegistry.class);
+                String missingDependency = missingDependenciesRegistry.getMissingDependencyForClass(rawType.getName());
                 if (missingDependency != null) {
                     return loggerFactory().getMessageConveyor().getMessage(
                         UNSATISFIED_DEPENDENCY_BECAUSE_CLASS_IGNORED,
