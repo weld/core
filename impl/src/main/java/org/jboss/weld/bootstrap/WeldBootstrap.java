@@ -650,7 +650,7 @@ public class WeldBootstrap implements CDI11Bootstrap {
             } finally {
                 try {
                     // Finally, the container must fire an event of type BeforeShutdown.
-                    BeforeShutdownImpl.fire(deploymentManager, beanDeployments);
+                    BeforeShutdownImpl.fire(deploymentManager);
                 } finally {
                     Container.instance(contextId).setState(ContainerState.SHUTDOWN);
                     Container.instance(contextId).cleanup();
