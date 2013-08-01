@@ -17,8 +17,6 @@
 
 package org.jboss.weld.interceptor.reader;
 
-import java.io.ObjectStreamException;
-import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Set;
@@ -26,10 +24,7 @@ import java.util.Set;
 import org.jboss.weld.interceptor.spi.metadata.MethodMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
 import org.jboss.weld.interceptor.util.InterceptionTypeRegistry;
-import org.jboss.weld.serialization.MethodHolder;
 import org.jboss.weld.util.collections.ArraySet;
-
-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
 /**
  * Represents information about an interceptor method
@@ -38,10 +33,7 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
  * @author Jozef Hartinger
  * @author Marko Luksa
  */
-@SuppressWarnings(value = { "SE_BAD_FIELD", "SE_NO_SERIALVERSIONID" }, justification = "False positive from FindBugs - serialization is handled by SerializationProxy.")
-public class DefaultMethodMetadata<M> implements MethodMetadata, Serializable {
-
-    private static final long serialVersionUID = -4538617003189564552L;
+public class DefaultMethodMetadata<M> implements MethodMetadata {
 
     private final Method javaMethod;
 
@@ -60,11 +52,6 @@ public class DefaultMethodMetadata<M> implements MethodMetadata, Serializable {
         } else {
             this.supportedInterceptorTypes = supportedInterceptorTypes;
         }
-    }
-
-    private DefaultMethodMetadata(Set<InterceptionType> interceptionTypes, MethodHolder methodHolder) {
-        this.supportedInterceptorTypes = interceptionTypes;
-        this.javaMethod = methodHolder.get();
     }
 
     public static <M> MethodMetadata of(M methodReference, AnnotatedMethodReader<M> methodReader) {
@@ -90,28 +77,5 @@ public class DefaultMethodMetadata<M> implements MethodMetadata, Serializable {
 
     public Class<?> getReturnType() {
         return javaMethod.getReturnType();
-    }
-
-    private Object writeReplace() {
-        return new DefaultMethodMetadataSerializationProxy(supportedInterceptorTypes, MethodHolder.of(this));
-    }
-
-
-    private static class DefaultMethodMetadataSerializationProxy implements Serializable {
-
-        private static final long serialVersionUID = 6505717058846166714L;
-
-        private final Set<InterceptionType> supportedInterceptionTypes;
-        private final MethodHolder methodHolder;
-
-        private DefaultMethodMetadataSerializationProxy(Set<InterceptionType> supportedInterceptionTypes, MethodHolder methodHolder) {
-            this.supportedInterceptionTypes = supportedInterceptionTypes;
-            this.methodHolder = methodHolder;
-        }
-
-        private Object readResolve() throws ObjectStreamException {
-            return new DefaultMethodMetadata(supportedInterceptionTypes, methodHolder);
-        }
-
     }
 }
