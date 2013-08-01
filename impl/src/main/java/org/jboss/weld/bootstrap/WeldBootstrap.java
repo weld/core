@@ -518,16 +518,20 @@ public class WeldBootstrap implements CDI11Bootstrap {
             for (BeanDeployment beanDeployment : beanDeployments.values()) {
                 beanDeployment.deploySpecialized(environment);
             }
+
             // TODO keep a list of new bdas, add them all in, and deploy beans for
             // them, then merge into existing
             for (BeanDeployment beanDeployment : beanDeployments.values()) {
                 beanDeployment.deployBeans(environment);
             }
+
             AfterBeanDiscoveryImpl.fire(deploymentManager, deployment, beanDeployments, contexts);
+            
             // Re-read the deployment structure, this will be the physical
             // structure, extensions, classes, and any beans added using addBean
             // outside the physical structure
             beanDeployments = deploymentVisitor.visit();
+
             for (BeanDeployment beanDeployment : beanDeployments.values()) {
                 beanDeployment.getBeanManager().getServices().get(InjectionTargetService.class).initialize();
                 beanDeployment.afterBeanDiscovery(environment);
