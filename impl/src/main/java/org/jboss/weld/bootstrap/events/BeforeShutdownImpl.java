@@ -16,13 +16,10 @@
  */
 package org.jboss.weld.bootstrap.events;
 
-import org.jboss.weld.bootstrap.BeanDeployment;
-import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.slf4j.Logger;
 
 import javax.enterprise.inject.spi.BeforeShutdown;
-import java.util.Map;
 
 import static org.jboss.weld.logging.Category.BOOTSTRAP;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
@@ -35,7 +32,7 @@ public class BeforeShutdownImpl extends AbstractContainerEvent implements Before
 
     private static final Logger log = loggerFactory().getLogger(BOOTSTRAP);
 
-    public static void fire(BeanManagerImpl beanManager, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments) {
+    public static void fire(BeanManagerImpl beanManager) {
         new BeforeShutdownImpl(beanManager).fire();
     }
 
