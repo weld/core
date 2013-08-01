@@ -988,7 +988,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     public BeanManagerImpl setCurrent(Class<? extends Annotation> scopeType) {
-        if (!getServices().get(MetaAnnotationStore.class).getScopeModel(scopeType).isNormal()) {
+        if (!isNormalScope(scopeType)) {
             throw new IllegalArgumentException(NON_NORMAL_SCOPE, scopeType);
         }
         currentActivities.add(new CurrentActivity(getContext(scopeType), this));

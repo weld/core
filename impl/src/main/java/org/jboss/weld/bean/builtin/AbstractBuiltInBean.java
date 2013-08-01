@@ -54,11 +54,7 @@ public abstract class AbstractBuiltInBean<T> extends RIBean<T> {
 
     @Override
     public void internalInitialize(BeanDeployerEnvironment environment) {
-        if (getScope() != null) {
-            proxyRequired = getBeanManager().getServices().get(MetaAnnotationStore.class).getScopeModel(getScope()).isNormal();
-        } else {
-            proxyRequired = false;
-        }
+        proxyRequired = getScope() != null && isNormalScoped();
     }
 
     @Override
