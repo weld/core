@@ -30,12 +30,12 @@ import java.lang.annotation.Annotation;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.ConversationScoped;
@@ -160,6 +160,7 @@ import com.google.common.collect.ImmutableSet;
  *
  * @author Pete Muir
  * @author Ales Justin
+ * @author Marko Luksa
  */
 public class WeldBootstrap implements CDI11Bootstrap {
 
@@ -176,22 +177,24 @@ public class WeldBootstrap implements CDI11Bootstrap {
         private final BeanManagerImpl deploymentManager;
         private final Environment environment;
         private final Deployment deployment;
-        private final Map<BeanDeploymentArchive, BeanDeployment> managerAwareBeanDeploymentArchives;
+        private final Map<BeanDeploymentArchive, BeanDeployment> bdaToBeanDeploymentMap;
+        private final Map<BeanDeploymentArchive, BeanManagerImpl> bdaToBeanManagerMap;
         private final Collection<ContextHolder<? extends Context>> contexts;
 
-        public DeploymentVisitor(BeanManagerImpl deploymentManager, Environment environment, final Deployment deployment, Collection<ContextHolder<? extends Context>> contexts) {
+        public DeploymentVisitor(BeanManagerImpl deploymentManager, Environment environment, final Deployment deployment, Collection<ContextHolder<? extends Context>> contexts, Map<BeanDeploymentArchive, BeanManagerImpl> bdaToBeanManagerMap) {
             this.deploymentManager = deploymentManager;
             this.environment = environment;
             this.deployment = deployment;
             this.contexts = contexts;
-            this.managerAwareBeanDeploymentArchives = new ConcurrentHashMap<BeanDeploymentArchive, BeanDeployment>();
+            this.bdaToBeanDeploymentMap = new HashMap<BeanDeploymentArchive, BeanDeployment>();
+            this.bdaToBeanManagerMap = bdaToBeanManagerMap;
         }
 
         public Map<BeanDeploymentArchive, BeanDeployment> visit() {
             for (BeanDeploymentArchive archive : deployment.getBeanDeploymentArchives()) {
-                visit(archive, managerAwareBeanDeploymentArchives, new HashSet<BeanDeploymentArchive>(), true);
+                visit(archive, bdaToBeanDeploymentMap, new HashSet<BeanDeploymentArchive>(), true);
             }
-            return managerAwareBeanDeploymentArchives;
+            return bdaToBeanDeploymentMap;
         }
 
         private <T extends Service> void copyService(BeanDeploymentArchive archive, Class<T> serviceClass) {
@@ -205,7 +208,7 @@ public class WeldBootstrap implements CDI11Bootstrap {
             }
         }
 
-        private BeanDeployment visit(BeanDeploymentArchive beanDeploymentArchive, Map<BeanDeploymentArchive, BeanDeployment> managerAwareBeanDeploymentArchives, Set<BeanDeploymentArchive> seenBeanDeploymentArchives, boolean validate) {
+        private BeanDeployment visit(BeanDeploymentArchive beanDeploymentArchive, Map<BeanDeploymentArchive, BeanDeployment> bdaToBeanDeploymentMap, Set<BeanDeploymentArchive> seenBeanDeploymentArchives, boolean validate) {
             copyService(beanDeploymentArchive, ResourceLoader.class);
             copyService(beanDeploymentArchive, InstantiatorFactory.class);
             // Check that the required services are specified
@@ -218,23 +221,24 @@ public class WeldBootstrap implements CDI11Bootstrap {
                 throw new IllegalArgumentException(DEPLOYMENT_ARCHIVE_NULL, beanDeploymentArchive);
             }
 
-            BeanDeployment parent = managerAwareBeanDeploymentArchives.get(beanDeploymentArchive);
+            BeanDeployment parent = bdaToBeanDeploymentMap.get(beanDeploymentArchive);
             if (parent == null) {
                 // Create the BeanDeployment
                 parent = new BeanDeployment(beanDeploymentArchive, deploymentManager, deployment.getServices(), contexts);
 
                 // Attach it
-                managerAwareBeanDeploymentArchives.put(beanDeploymentArchive, parent);
+                bdaToBeanDeploymentMap.put(beanDeploymentArchive, parent);
+                bdaToBeanManagerMap.put(beanDeploymentArchive, parent.getBeanManager());
             }
             seenBeanDeploymentArchives.add(beanDeploymentArchive);
             for (BeanDeploymentArchive archive : beanDeploymentArchive.getBeanDeploymentArchives()) {
                 BeanDeployment child;
                 // Cut any circularities
                 if (!seenBeanDeploymentArchives.contains(archive)) {
-                    child = visit(archive, managerAwareBeanDeploymentArchives, seenBeanDeploymentArchives, validate);
+                    child = visit(archive, bdaToBeanDeploymentMap, seenBeanDeploymentArchives, validate);
                 } else {
                     // already visited
-                    child = managerAwareBeanDeploymentArchives.get(archive);
+                    child = bdaToBeanDeploymentMap.get(archive);
                 }
                 parent.getBeanManager().addAccessibleBeanManager(child.getBeanManager());
             }
@@ -250,6 +254,7 @@ public class WeldBootstrap implements CDI11Bootstrap {
     // The Bean manager
     private BeanManagerImpl deploymentManager;
     private Map<BeanDeploymentArchive, BeanDeployment> beanDeployments;
+    private Map<BeanDeploymentArchive, BeanManagerImpl> bdaToBeanManagerMap;
     private Environment environment;
     private Deployment deployment;
     private DeploymentVisitor deploymentVisitor;
@@ -370,10 +375,11 @@ public class WeldBootstrap implements CDI11Bootstrap {
 
             this.contexts = createContexts(deploymentServices);
 
-            this.deploymentVisitor = new DeploymentVisitor(deploymentManager, environment, deployment, contexts);
+            this.bdaToBeanManagerMap = new HashMap<BeanDeploymentArchive, BeanManagerImpl>();
+            this.deploymentVisitor = new DeploymentVisitor(deploymentManager, environment, deployment, contexts, bdaToBeanManagerMap);
 
             if (deployment instanceof CDI11Deployment) {
-                registry.add(BeanManagerLookupService.class, new BeanManagerLookupService((CDI11Deployment) deployment, deploymentVisitor.managerAwareBeanDeploymentArchives));
+                registry.add(BeanManagerLookupService.class, new BeanManagerLookupService((CDI11Deployment) deployment, bdaToBeanManagerMap));
             } else {
                 log.warn("Legacy deployment metadata provided by the integrator. Certain functionality will not be available.");
             }
@@ -442,12 +448,8 @@ public class WeldBootstrap implements CDI11Bootstrap {
 
     public BeanManagerImpl getManager(BeanDeploymentArchive beanDeploymentArchive) {
         synchronized (this) {
-            BeanDeployment beanDeployment = beanDeployments.get(beanDeploymentArchive);
-            if (beanDeployment != null) {
-                return beanDeployment.getBeanManager().getCurrent();
-            } else {
-                return null;
-            }
+            BeanManagerImpl beanManager = bdaToBeanManagerMap.get(beanDeploymentArchive);
+            return beanManager == null ? null : beanManager.getCurrent();
         }
     }
 
@@ -564,6 +566,7 @@ public class WeldBootstrap implements CDI11Bootstrap {
             deploymentManager.getGlobalLenientObserverNotifier().clear();
             deploymentManager.getDecoratorResolver().clear();
             deploymentManager.getServices().cleanupAfterBoot();
+            deploymentVisitor = null;
             for (Entry<BeanDeploymentArchive, BeanDeployment> entry : beanDeployments.entrySet()) {
                 BeanManagerImpl beanManager = entry.getValue().getBeanManager();
                 beanManager.getBeanResolver().clear();
@@ -591,9 +594,16 @@ public class WeldBootstrap implements CDI11Bootstrap {
                     }
                 }
             }
-            for (BeanDeployment deployment : beanDeployments.values()) {
-                deployment.getBeanDeployer().cleanup();
+
+            for (Entry<BeanDeploymentArchive, BeanDeployment> entry : beanDeployments.entrySet()) {
+                BeanDeploymentArchive bda = entry.getKey();
+                BeanDeployment beanDeployment = entry.getValue();
+                if (!bdaToBeanManagerMap.containsKey(bda)) {
+                    bdaToBeanManagerMap.put(bda, beanDeployment.getBeanManager());
+                }
+                beanDeployment.getBeanDeployer().cleanup();
             }
+            beanDeployments = null;
             Container.instance(contextId).setState(ContainerState.INITIALIZED);
             return this;
         }

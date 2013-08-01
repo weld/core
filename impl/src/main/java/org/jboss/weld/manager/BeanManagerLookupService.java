@@ -20,7 +20,6 @@ import java.util.Map;
 
 import javax.enterprise.inject.spi.BeanManager;
 
-import org.jboss.weld.bootstrap.BeanDeployment;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.CDI11Deployment;
@@ -29,16 +28,17 @@ import org.jboss.weld.bootstrap.spi.CDI11Deployment;
  * Simple facade over {@link CDI11Deployment} that allows {@link BeanManager} for a given class to be looked up at runtime.
  *
  * @author Jozef Hartinger
+ * @author Marko Luksa
  *
  */
 public class BeanManagerLookupService implements Service {
 
     private final CDI11Deployment deployment;
-    private final Map<BeanDeploymentArchive, BeanDeployment> deployments;
+    private final Map<BeanDeploymentArchive, BeanManagerImpl> bdaToBeanManagerMap;
 
-    public BeanManagerLookupService(CDI11Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> deployments) {
+    public BeanManagerLookupService(CDI11Deployment deployment, Map<BeanDeploymentArchive, BeanManagerImpl> bdaToBeanManagerMap) {
         this.deployment = deployment;
-        this.deployments = deployments;
+        this.bdaToBeanManagerMap = bdaToBeanManagerMap;
     }
 
     private BeanManagerImpl lookupBeanManager(Class<?> javaClass) {
@@ -49,7 +49,7 @@ public class BeanManagerLookupService implements Service {
         if (archive == null) {
             return null;
         }
-        return deployments.get(archive).getBeanManager();
+        return bdaToBeanManagerMap.get(archive);
     }
 
     public static BeanManagerImpl lookupBeanManager(Class<?> javaClass, BeanManagerImpl fallback) {
