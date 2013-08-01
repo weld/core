@@ -202,10 +202,6 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
         return Dependent.class.equals(getScope());
     }
 
-    public boolean isNormalScoped() {
-        return getBeanManager().getServices().get(MetaAnnotationStore.class).getScopeModel(getScope()).isNormal();
-    }
-
     public boolean isSpecializing() {
         return getAnnotated().isAnnotationPresent(Specializes.class);
     }

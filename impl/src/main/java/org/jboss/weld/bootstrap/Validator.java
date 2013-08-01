@@ -965,7 +965,7 @@ public class Validator implements Service {
         if (bean != null) {
             if (!(bean instanceof AbstractBuiltInBean<?>)) {
                 if (!ij.isDelegate()) {
-                    boolean normalScoped = beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(bean.getScope()).isNormal();
+                    boolean normalScoped = beanManager.isNormalScope(bean.getScope());
                     if (!normalScoped) {
                         reallyValidatePseudoScopedBean(bean, beanManager, dependencyPath, validatedBeans);
                     }
