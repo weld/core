@@ -17,7 +17,6 @@
 
 package org.jboss.weld.interceptor.reader;
 
-import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.util.Iterator;
@@ -31,9 +30,7 @@ import org.jboss.weld.security.GetDeclaredMethodsAction;
 /**
  * @author Marius Bogoevici
  */
-public class ReflectiveClassMetadata<T> implements ClassMetadata<T>, Serializable {
-
-    private static final long serialVersionUID = -2088679292389273922L;
+public class ReflectiveClassMetadata<T> implements ClassMetadata<T> {
 
     private final Class<T> clazz;
 
@@ -74,7 +71,7 @@ public class ReflectiveClassMetadata<T> implements ClassMetadata<T>, Serializabl
     @SuppressWarnings({"unchecked", "rawtypes"})
     public ClassMetadata<?> getSuperclass() {
         Class<?> superClass = clazz.getSuperclass();
-        return superClass == null ? null : new ReflectiveClassMetadata(superClass);
+        return superClass == null ? null : of(superClass);
     }
 
     @Override

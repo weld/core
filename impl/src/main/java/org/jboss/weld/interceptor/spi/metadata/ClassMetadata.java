@@ -17,7 +17,6 @@
 
 package org.jboss.weld.interceptor.spi.metadata;
 
-import java.io.Serializable;
 import java.lang.reflect.Method;
 
 /**
@@ -27,7 +26,7 @@ import java.lang.reflect.Method;
  *
  * @author Marius Bogoevici
  */
-public interface ClassMetadata<T> extends Serializable {
+public interface ClassMetadata<T> {
 
     Iterable<MethodMetadata> getDeclaredMethods();
 

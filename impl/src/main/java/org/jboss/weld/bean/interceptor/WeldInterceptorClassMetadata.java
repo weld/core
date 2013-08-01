@@ -17,31 +17,23 @@
 
 package org.jboss.weld.bean.interceptor;
 
-import static org.jboss.weld.logging.messages.BeanMessage.PROXY_REQUIRED;
 import static org.jboss.weld.util.collections.WeldCollections.immutableMap;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectStreamException;
-import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jboss.weld.Container;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
-import org.jboss.weld.exceptions.InvalidObjectException;
 import org.jboss.weld.interceptor.reader.DefaultMethodMetadata;
 import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.weld.interceptor.spi.metadata.MethodMetadata;
-import org.jboss.weld.resources.ClassTransformer;
 
 /**
  * @author Marius Bogoevici
  */
-public class WeldInterceptorClassMetadata<T> implements ClassMetadata<T>, Serializable {
-    private static final long serialVersionUID = -5087425231467781559L;
+public class WeldInterceptorClassMetadata<T> implements ClassMetadata<T> {
 
     private final SlimAnnotatedType<T> type;
 
@@ -89,30 +81,6 @@ public class WeldInterceptorClassMetadata<T> implements ClassMetadata<T>, Serial
 
     public ClassMetadata<?> getSuperclass() {
         return superclass;
-    }
-
-    private Object writeReplace() throws ObjectStreamException {
-        return new SerializationProxy<T>(type);
-    }
-
-    private void readObject(ObjectInputStream stream) throws InvalidObjectException {
-        throw new InvalidObjectException(PROXY_REQUIRED);
-    }
-
-    private static class SerializationProxy<T> implements Serializable {
-
-        private static final long serialVersionUID = 514950313251775936L;
-
-        private final SlimAnnotatedType<T> type;
-
-        public SerializationProxy(SlimAnnotatedType<T> type) {
-            this.type = type;
-        }
-
-        private Object readResolve() throws ObjectStreamException {
-            EnhancedAnnotatedType<T> enhancedType = Container.instance().services().get(ClassTransformer.class).getEnhancedAnnotatedType(type);
-            return new WeldInterceptorClassMetadata<T>(enhancedType);
-        }
     }
 
     @Override
