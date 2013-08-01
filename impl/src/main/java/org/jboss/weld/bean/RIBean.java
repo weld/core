@@ -88,6 +88,10 @@ public abstract class RIBean<T> extends CommonBean<T> implements PassivationCapa
         return getScope().equals(Dependent.class);
     }
 
+    public boolean isNormalScoped() {
+        return getBeanManager().isNormalScope(getScope());
+    }
+
     public abstract boolean isProxyable();
 
     public abstract boolean isPassivationCapableBean();
