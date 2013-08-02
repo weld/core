@@ -25,10 +25,10 @@ public abstract class MessageConveyorFactory {
     private static volatile MessageConveyorFactory INSTANCE;
 
     private static MessageConveyorFactory load() {
-        return new WeldMessageConveyerFactory();
+        return new WeldMessageConveyorFactory();
     }
 
-    public static MessageConveyorFactory messageConveyerFactory() {
+    public static MessageConveyorFactory messageConveyorFactory() {
         if (INSTANCE == null) {
             synchronized (MessageConveyorFactory.class) {
                 if (INSTANCE == null) {
@@ -43,22 +43,22 @@ public abstract class MessageConveyorFactory {
         INSTANCE = null;
     }
 
-    public static IMessageConveyor defaultMessageConveyer(String subsystem) {
-        return messageConveyerFactory().getDefaultMessageConveyer(subsystem);
+    public static IMessageConveyor defaultMessageConveyor(String subsystem) {
+        return messageConveyorFactory().getDefaultMessageConveyor(subsystem);
     }
 
     /**
-     * Get the message conveyer for the default locale.
+     * Get the message conveyor for the default locale.
      * <p/>
      * By default, Locale.getDefault() will be used as the locale, but a custom
-     * implementation of MessageConveyerFactory may choose to use an alternative
+     * implementation of MessageConveyorFactory may choose to use an alternative
      * locale.
      */
-    public abstract IMessageConveyor getDefaultMessageConveyer(String subsystem);
+    public abstract IMessageConveyor getDefaultMessageConveyor(String subsystem);
 
     /**
-     * Get the message conveyer for the given locale.
+     * Get the message conveyor for the given locale.
      */
-    public abstract IMessageConveyor getMessageConveyer(Locale locale, String subsystem);
+    public abstract IMessageConveyor getMessageConveyor(Locale locale, String subsystem);
 
 }

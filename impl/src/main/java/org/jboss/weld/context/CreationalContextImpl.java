@@ -172,11 +172,11 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
      * Register a {@link ResourceReference} as a dependency. {@link ResourceReference#release()} will be called on every {@link ResourceReference} once this
      * {@link CreationalContext} instance is released.
      */
-    public void addDependentResourceReference(ResourceReference<?> resoruceReference) {
+    public void addDependentResourceReference(ResourceReference<?> resourceReference) {
         if (resourceReferences == null) {
             this.resourceReferences = new ArrayList<ResourceReference<?>>();
         }
-        this.resourceReferences.add(resoruceReference);
+        this.resourceReferences.add(resourceReference);
     }
 
     /**

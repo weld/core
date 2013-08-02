@@ -43,7 +43,7 @@ import java.io.IOException;
  * </p>
  * <p/>
  * <p>
- * This fiter intercepts the call to
+ * This filter intercepts the call to
  * {@link HttpServletResponse#sendRedirect(String)} and appends the conversation
  * id request parameter to the URL if the conversation is long-running, but only
  * if the request parameter is not already present.

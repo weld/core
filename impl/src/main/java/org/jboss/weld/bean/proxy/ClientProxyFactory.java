@@ -63,7 +63,7 @@ import org.jboss.weld.util.bytecode.MethodInformation;
  */
 public class ClientProxyFactory<T> extends ProxyFactory<T> {
 
-    private static final Set<Class<? extends Annotation>> CACHABLE_SCOPES;
+    private static final Set<Class<? extends Annotation>> CACHEABLE_SCOPES;
 
     public static final String CLIENT_PROXY_SUFFIX = "ClientProxy";
 
@@ -97,7 +97,7 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
         scopes.add(ConversationScoped.class);
         scopes.add(SessionScoped.class);
         scopes.add(ApplicationScoped.class);
-        CACHABLE_SCOPES = Collections.unmodifiableSet(scopes);
+        CACHEABLE_SCOPES = Collections.unmodifiableSet(scopes);
     }
 
     public ClientProxyFactory(String contextId, Class<?> proxiedBeanType, Set<? extends Type> typeClosure, Bean<?> bean) {
@@ -135,7 +135,7 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
     @Override
     protected void addFields(final ClassFile proxyClassType, List<DeferredBytecode> initialValueBytecode) {
         super.addFields(proxyClassType, initialValueBytecode);
-        if (CACHABLE_SCOPES.contains(getBean().getScope())) {
+        if (CACHEABLE_SCOPES.contains(getBean().getScope())) {
             try {
                 proxyClassType.addField(AccessFlag.TRANSIENT | AccessFlag.PRIVATE, CACHE_FIELD, LJAVA_LANG_THREAD_LOCAL);
                 initialValueBytecode.add(new DeferredBytecode() {
@@ -205,8 +205,8 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
 
         final Class<? extends Annotation> scope = getBean().getScope();
 
-        if (CACHABLE_SCOPES.contains(scope)) {
-            loadCachableBeanInstance(classMethod.getClassFile(), methodInfo, b);
+        if (CACHEABLE_SCOPES.contains(scope)) {
+            loadCacheableBeanInstance(classMethod.getClassFile(), methodInfo, b);
         } else {
             loadBeanInstance(classMethod.getClassFile(), methodInfo, b);
         }
@@ -269,7 +269,7 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
      * If the bean is part of a well known scope then this code caches instances in a thread local for the life of the
      * request, as a performance enhancement.
      */
-    private void loadCachableBeanInstance(ClassFile file, MethodInformation methodInfo, CodeAttribute b) {
+    private void loadCacheableBeanInstance(ClassFile file, MethodInformation methodInfo, CodeAttribute b) {
         //first we need to see if the scope is active
         b.invokestatic(RequestScopedBeanCache.class.getName(), "isActive", EMPTY_PARENTHESES + DescriptorUtils.BOOLEAN_CLASS_DESCRIPTOR);
         //if it is not active we just get the bean directly

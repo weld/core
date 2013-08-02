@@ -37,7 +37,7 @@ public class Boxing {
     private Boxing() {
     }
 
-    public static void boxIfNessesary(CodeAttribute b, String desc) {
+    public static void boxIfNecessary(CodeAttribute b, String desc) {
         if (desc.length() == 1) {
             char type = desc.charAt(0);
             switch (type) {

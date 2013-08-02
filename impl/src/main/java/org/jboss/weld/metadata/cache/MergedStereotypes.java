@@ -40,7 +40,7 @@ public class MergedStereotypes<T, E> {
     private final ArraySet<Annotation> possibleScopeTypes;
     // Is the bean name defaulted?
     private boolean beanNameDefaulted;
-    // Are any of the sterotypes alternatives
+    // Are any of the stereotypes alternatives
     private boolean alternative;
 
     private Set<Class<? extends Annotation>> stereotypes;
@@ -94,7 +94,7 @@ public class MergedStereotypes<T, E> {
             }
             this.stereotypes.add(stereotypeAnnotation.annotationType());
             // Merge in inherited stereotypes
-            merge(stereotype.getInheritedSterotypes());
+            merge(stereotype.getInheritedStereotypes());
         }
     }
 
@@ -134,7 +134,7 @@ public class MergedStereotypes<T, E> {
      */
     @Override
     public String toString() {
-        return "Merged stereotype model; Any of the sterotypes is an alternative: " +
+        return "Merged stereotype model; Any of the stereotypes is an alternative: " +
                 alternative + "; possible scopes " + possibleScopeTypes;
     }
 

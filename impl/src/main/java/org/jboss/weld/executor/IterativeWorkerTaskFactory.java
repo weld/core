@@ -68,7 +68,7 @@ public abstract class IterativeWorkerTaskFactory<T> implements ExecutorServices.
     }
 
     /**
-     * Called before the compulation begins.
+     * Called before the compilation begins.
      */
     protected void init() {
     }

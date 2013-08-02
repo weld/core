@@ -84,7 +84,7 @@ public class BeanMethods {
 
         /**
          * Returns all methods of a given kind (e.g. all observer methods) of a given {@link EnhancedAnnotatedType}. This
-         * includes methods defined on classes upper in the class hierarchy. Overriden methods are not returned.
+         * includes methods defined on classes upper in the class hierarchy. Overridden methods are not returned.
          */
         Collection<EnhancedAnnotatedMethod<?, ? super T>> getAllMethods(EnhancedAnnotatedType<T> type);
 

@@ -282,7 +282,7 @@ public class Reflections {
         return type.getTypeParameters().length > 0;
     }
 
-    public static boolean isParamerterizedTypeWithWildcard(Class<?> type) {
+    public static boolean isParameterizedTypeWithWildcard(Class<?> type) {
         return isParameterizedType(type) && containsWildcards(type.getTypeParameters());
     }
 

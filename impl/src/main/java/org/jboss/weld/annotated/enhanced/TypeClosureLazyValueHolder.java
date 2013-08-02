@@ -25,7 +25,7 @@ import org.jboss.weld.util.LazyValueHolder;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 
 /**
- * {@link LazyValueHolder} that calculates a type closue. In many cases this
+ * {@link LazyValueHolder} that calculates a type closure. In many cases this
  * will not be needed, so computing it on demand saves memory and startup time.
  *
  * @author Stuart Douglas

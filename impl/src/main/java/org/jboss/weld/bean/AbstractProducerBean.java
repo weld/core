@@ -79,7 +79,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
     }
 
     @Override
-    // Overriden to provide the class of the bean that declares the producer
+    // Overridden to provide the class of the bean that declares the producer
     // method/field
     public Class<?> getBeanClass() {
         return getDeclaringBean().getBeanClass();

@@ -115,9 +115,9 @@ public class TestAnnotatedTypeBuilder<X> {
     }
 
     public AnnotatedType<X> create() {
-        Map<Constructor<X>, Map<Integer, TestAnnotationStore>> constructorParameterAnnnotations = new HashMap<Constructor<X>, Map<Integer, TestAnnotationStore>>();
+        Map<Constructor<X>, Map<Integer, TestAnnotationStore>> constructorParameterAnnotations = new HashMap<Constructor<X>, Map<Integer, TestAnnotationStore>>();
         Map<Constructor<X>, TestAnnotationStore> constructorAnnotations = new HashMap<Constructor<X>, TestAnnotationStore>();
-        Map<Method, Map<Integer, TestAnnotationStore>> methodParameterAnnnotations = new HashMap<Method, Map<Integer, TestAnnotationStore>>();
+        Map<Method, Map<Integer, TestAnnotationStore>> methodParameterAnnotations = new HashMap<Method, Map<Integer, TestAnnotationStore>>();
         Map<Method, TestAnnotationStore> methodAnnotations = new HashMap<Method, TestAnnotationStore>();
         Map<Field, TestAnnotationStore> fieldAnnotations = new HashMap<Field, TestAnnotationStore>();
 
@@ -130,7 +130,7 @@ public class TestAnnotatedTypeBuilder<X> {
         }
         for (Entry<Method, Map<Integer, TestAnnotationBuilder>> e : methodParameters.entrySet()) {
             Map<Integer, TestAnnotationStore> parameterAnnotations = new HashMap<Integer, TestAnnotationStore>();
-            methodParameterAnnnotations.put(e.getKey(), parameterAnnotations);
+            methodParameterAnnotations.put(e.getKey(), parameterAnnotations);
             for (Entry<Integer, TestAnnotationBuilder> pe : e.getValue().entrySet()) {
                 parameterAnnotations.put(pe.getKey(), pe.getValue().create());
             }
@@ -141,13 +141,13 @@ public class TestAnnotatedTypeBuilder<X> {
         }
         for (Entry<Constructor<X>, Map<Integer, TestAnnotationBuilder>> e : constructorParameters.entrySet()) {
             Map<Integer, TestAnnotationStore> parameterAnnotations = new HashMap<Integer, TestAnnotationStore>();
-            constructorParameterAnnnotations.put(e.getKey(), parameterAnnotations);
+            constructorParameterAnnotations.put(e.getKey(), parameterAnnotations);
             for (Entry<Integer, TestAnnotationBuilder> pe : e.getValue().entrySet()) {
                 parameterAnnotations.put(pe.getKey(), pe.getValue().create());
             }
         }
 
-        return new TestAnnotatedType<X>(underlying, typeAnnotations.create(), fieldAnnotations, methodAnnotations, methodParameterAnnnotations, constructorAnnotations, constructorParameterAnnnotations);
+        return new TestAnnotatedType<X>(underlying, typeAnnotations.create(), fieldAnnotations, methodAnnotations, methodParameterAnnotations, constructorAnnotations, constructorParameterAnnotations);
     }
 
 }

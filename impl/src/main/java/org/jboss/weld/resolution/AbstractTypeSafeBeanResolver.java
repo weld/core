@@ -137,7 +137,7 @@ public abstract class AbstractTypeSafeBeanResolver<T extends Bean<?>, C extends 
         // every bean in the system when performing resolution
 
         // we build this map lazily, as we do not have access to all beans when
-        // the resolveris created. Calling the resolvers clear method will also
+        // the resolver is created. Calling the resolvers clear method will also
         // clear this map.This task is not suitable for a computing hashmap, as
         // the whole map should be calculated in one hit, so only a single
         // iteration over all beans is required

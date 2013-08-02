@@ -44,15 +44,15 @@ public class ConstructorUtils {
 
     /**
      * Adds a constructor that delegates to a super constructor with the same
-     * descriptor. The bytecode in inialValueBytecode will be executed at the
-     * start of the constructor and can be used to inialize fields to a default
+     * descriptor. The bytecode in initialValueBytecode will be executed at the
+     * start of the constructor and can be used to initialize fields to a default
      * value. As the object is not properly constructed at this point this
      * bytecode may not reference this (i.e. the variable at location 0)
      *
      * @param returnType           the constructor descriptor
      * @param exceptions           any exceptions that are thrown
      * @param file                 the classfile to add the constructor to
-     * @param initialValueBytecode bytecode that can be used to set inial values
+     * @param initialValueBytecode bytecode that can be used to set initial values
      */
     public static void addConstructor(String returnType, String[] params, String[] exceptions, ClassFile file, List<DeferredBytecode> initialValueBytecode, final boolean useUnsafeInstantiators) {
         try {

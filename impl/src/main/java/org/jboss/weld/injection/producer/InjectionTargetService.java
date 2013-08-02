@@ -31,7 +31,7 @@ public class InjectionTargetService extends AbstractBootstrapService {
 
     public void validateProducer(Producer<?> producer) {
         if (container.getState().equals(ContainerState.VALIDATED) || container.getState().equals(ContainerState.INITIALIZED)) {
-            // We are past the bootstrap and therefore we can validate the producer immediatelly
+            // We are past the bootstrap and therefore we can validate the producer immediately
             validator.validateProducer(producer, beanManager);
         } else {
             // Validate injection points for definition errors now

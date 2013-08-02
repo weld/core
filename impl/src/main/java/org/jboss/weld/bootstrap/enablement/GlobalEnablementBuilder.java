@@ -244,9 +244,9 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
     private static <T> List<Metadata<T>> checkForDuplicates(List<Metadata<T>> list, ValidatorMessage specifiedTwiceMessage) {
         Map<T, Metadata<T>> map = new HashMap<T, Metadata<T>>();
         for (Metadata<T> item : list) {
-            Metadata<T> previousOccurence = map.put(item.getValue(), item);
-            if (previousOccurence != null) {
-                throw new DeploymentException(specifiedTwiceMessage, item.getValue(), item, previousOccurence);
+            Metadata<T> previousOccurrence = map.put(item.getValue(), item);
+            if (previousOccurrence != null) {
+                throw new DeploymentException(specifiedTwiceMessage, item.getValue(), item, previousOccurrence);
             }
         }
         return list;

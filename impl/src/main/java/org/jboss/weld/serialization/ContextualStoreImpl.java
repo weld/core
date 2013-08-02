@@ -92,7 +92,7 @@ public class ContextualStoreImpl implements ContextualStore {
      * id. If the contextual is passivation capable, it's id will be used,
      * otherwise an id will be generated
      *
-     * @param contextual the contexutal to add
+     * @param contextual the contextual to add
      * @return the current id for the contextual
      */
     @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "RV_RETURN_VALUE_OF_PUTIFABSENT_IGNORED", justification = "Using non-standard semantics of putIfAbsent")

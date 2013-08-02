@@ -197,7 +197,7 @@ public class BeanDeployment {
 
             /*
             * Take a copy of the transformed collection, this means that the
-            * filter predicate is only built once per filter predicte
+            * filter predicate is only built once per filter predicate
             */
             Collection<Predicate<String>> includes = new ArrayList<Predicate<String>>(transform(includeFilters, filterToPredicateFunction));
             Collection<Predicate<String>> excludes = new ArrayList<Predicate<String>>(transform(excludeFilters, filterToPredicateFunction));

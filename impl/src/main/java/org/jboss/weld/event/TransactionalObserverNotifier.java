@@ -24,7 +24,7 @@ import org.jboss.weld.resolution.TypeSafeObserverResolver;
 import org.jboss.weld.transaction.spi.TransactionServices;
 
 /**
- * {@link ObserverNotifier} whith support for transactional observer methods.
+ * {@link ObserverNotifier} with support for transactional observer methods.
  *
  * @author Jozef Hartinger
  *

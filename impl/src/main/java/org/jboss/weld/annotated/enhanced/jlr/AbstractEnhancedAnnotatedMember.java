@@ -29,7 +29,7 @@ import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
- * Represents an abstract annotated memeber (field, method or constructor)
+ * Represents an abstract annotated member (field, method or constructor)
  * <p/>
  * This class is immutable, and therefore threadsafe
  *

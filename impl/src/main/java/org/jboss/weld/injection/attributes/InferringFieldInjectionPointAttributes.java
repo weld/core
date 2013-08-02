@@ -33,17 +33,17 @@ import org.jboss.weld.util.reflection.Reflections;
  * @author Jozef Hartinger
  *
  */
-public class InferingFieldInjectionPointAttributes<T, X> extends AbstractInferingInjectionPointAttributes<T, Field> implements FieldInjectionPointAttributes<T, X> {
+public class InferringFieldInjectionPointAttributes<T, X> extends AbstractInferringInjectionPointAttributes<T, Field> implements FieldInjectionPointAttributes<T, X> {
 
     private static final long serialVersionUID = -3099189770772787108L;
 
-    public static <T, X> InferingFieldInjectionPointAttributes<T, X> of(EnhancedAnnotatedField<T, X> field, Bean<?> bean, Class<?> declaringComponentClass, BeanManagerImpl manager) {
-        return new InferingFieldInjectionPointAttributes<T, X>(field, bean, declaringComponentClass, manager);
+    public static <T, X> InferringFieldInjectionPointAttributes<T, X> of(EnhancedAnnotatedField<T, X> field, Bean<?> bean, Class<?> declaringComponentClass, BeanManagerImpl manager) {
+        return new InferringFieldInjectionPointAttributes<T, X>(field, bean, declaringComponentClass, manager);
     }
 
     private final AnnotatedField<X> field;
 
-    protected InferingFieldInjectionPointAttributes(EnhancedAnnotatedField<T, X> field, Bean<?> bean, Class<?> declaringComponentClass, BeanManagerImpl manager) {
+    protected InferringFieldInjectionPointAttributes(EnhancedAnnotatedField<T, X> field, Bean<?> bean, Class<?> declaringComponentClass, BeanManagerImpl manager) {
         super(manager.getContextId(), bean, SharedObjectCache.instance(manager).getSharedSet(field.getQualifiers()), declaringComponentClass);
         this.field = field.slim();
     }
@@ -65,8 +65,8 @@ public class InferingFieldInjectionPointAttributes<T, X> extends AbstractInferin
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof InferingFieldInjectionPointAttributes<?, ?>) {
-            AnnotatedField<?> field = Reflections.<InferingFieldInjectionPointAttributes<?, ?>> cast(obj).getAnnotated();
+        if (obj instanceof InferringFieldInjectionPointAttributes<?, ?>) {
+            AnnotatedField<?> field = Reflections.<InferringFieldInjectionPointAttributes<?, ?>> cast(obj).getAnnotated();
             return AnnotatedTypes.compareAnnotatedField(getAnnotated(), field);
         }
         return false;

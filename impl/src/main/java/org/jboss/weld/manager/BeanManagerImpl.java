@@ -131,8 +131,8 @@ import org.jboss.weld.exceptions.InjectionException;
 import org.jboss.weld.exceptions.UnsatisfiedResolutionException;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.injection.attributes.FieldInjectionPointAttributes;
-import org.jboss.weld.injection.attributes.InferingFieldInjectionPointAttributes;
-import org.jboss.weld.injection.attributes.InferingParameterInjectionPointAttributes;
+import org.jboss.weld.injection.attributes.InferringFieldInjectionPointAttributes;
+import org.jboss.weld.injection.attributes.InferringParameterInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.ParameterInjectionPointAttributes;
 import org.jboss.weld.interceptor.reader.cache.DefaultMetadataCachingReader;
 import org.jboss.weld.interceptor.reader.cache.MetadataCachingReader;
@@ -241,7 +241,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     /*
      * Lenient instances do not perform event type checking - this is required for firing container lifecycle events.
-     * Strict instances do performe event type checking and are used for firing application an extension events.
+     * Strict instances do perform event type checking and are used for firing application an extension events.
      */
     private final transient ObserverNotifier accessibleLenientObserverNotifier;
     private final transient ObserverNotifier globalLenientObserverNotifier;
@@ -523,7 +523,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                     getServices().get(ContextualStore.class).putIfAbsent(bean);
                 }
                 registerBeanNamespace(bean);
-                // New beans (except for SessionBeans) and most built in beans aren't resolvable transtively
+                // New beans (except for SessionBeans) and most built in beans aren't resolvable transitively
                 if (bean instanceof ExtensionBean || bean instanceof SessionBean
                         || (!(bean instanceof NewBean) && !(bean instanceof AbstractBuiltInBean<?>))) {
                     transitiveBeans.add(bean);
@@ -1340,14 +1340,14 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     private <X> FieldInjectionPointAttributes<?, X> createFieldInjectionPoint(AnnotatedField<X> field) {
         EnhancedAnnotatedField<?, X> enhancedField = services.get(MemberTransformer.class).loadEnhancedMember(field, getId());
-        return InferingFieldInjectionPointAttributes.of(enhancedField, null, field.getDeclaringType().getJavaClass(), this);
+        return InferringFieldInjectionPointAttributes.of(enhancedField, null, field.getDeclaringType().getJavaClass(), this);
     }
 
     @Override
     public ParameterInjectionPointAttributes<?, ?> createInjectionPoint(AnnotatedParameter<?> parameter) {
         AnnotatedTypeValidator.validateAnnotatedParameter(parameter);
         EnhancedAnnotatedParameter<?, ?> enhancedParameter = services.get(MemberTransformer.class).loadEnhancedParameter(parameter, getId());
-        return validateInjectionPoint(InferingParameterInjectionPointAttributes.of(enhancedParameter, null, parameter.getDeclaringCallable().getDeclaringType().getJavaClass(), this));
+        return validateInjectionPoint(InferringParameterInjectionPointAttributes.of(enhancedParameter, null, parameter.getDeclaringCallable().getDeclaringType().getJavaClass(), this));
     }
 
     private <T extends InjectionPoint> T validateInjectionPoint(T injectionPoint) {
@@ -1413,7 +1413,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     /**
      * Creates an {@link InjectionTargetFactory} for a given type. The {@link BeanManager} for the {@link InjectionTarget} will
-     * be infered using {@link CDI11Deployment#getBeanDeploymentArchive(Class)}.
+     * be inferred using {@link CDI11Deployment#getBeanDeploymentArchive(Class)}.
      */
     @Override
     public <T> InjectionTargetFactoryImpl<T> getInjectionTargetFactory(AnnotatedType<T> type) {

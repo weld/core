@@ -7,7 +7,7 @@ import java.util.Iterator;
 
 /**
  * An ELResolver that behaves as though it is invisible, meaning it's
- * indempontent to the chain and the next ELResolver in the line will be
+ * idempotent to the chain and the next ELResolver in the line will be
  * consulted.
  *
  * @author Dan Allen

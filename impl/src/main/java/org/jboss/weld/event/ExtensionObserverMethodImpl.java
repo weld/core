@@ -83,7 +83,7 @@ public class ExtensionObserverMethodImpl<T, X> extends ObserverMethodImpl<T, X> 
 
     @Override
     protected MethodInjectionPoint<T, ? super X> initMethodInjectionPoint(EnhancedAnnotatedMethod<T, ? super X> observer, RIBean<X> declaringBean, BeanManagerImpl manager) {
-        // use silent creation of injection points for ProcessInjectionPoint events not to be fired for extention observer methods
+        // use silent creation of injection points for ProcessInjectionPoint events not to be fired for extension observer methods
         return InjectionPointFactory.silentInstance().createMethodInjectionPoint(observer, declaringBean, declaringBean.getBeanClass(), true, manager);
     }
 
@@ -107,7 +107,7 @@ public class ExtensionObserverMethodImpl<T, X> extends ObserverMethodImpl<T, X> 
     }
 
     /*
-     * Contexts may not be active during notification of container lifecycle events. Therefore, we invoke the methods direcly on
+     * Contexts may not be active during notification of container lifecycle events. Therefore, we invoke the methods directly on
      * an extension instance.
      */
     @Override

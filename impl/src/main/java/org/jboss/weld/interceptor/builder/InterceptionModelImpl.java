@@ -33,7 +33,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 /**
- * This impl is immutable provided the type of the intercetped entity is immutable as well.
+ * This impl is immutable provided the type of the intercepted entity is immutable as well.
  *
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  * @author <a href="mailto:mluksa@redhat.com">Marko Luksa</a>

@@ -26,7 +26,7 @@ import org.jboss.weld.util.collections.ArraySet;
 import com.google.common.base.Objects;
 
 /**
- * Optmized representation of a qualifier. JDK annotation proxies are slooow, this class provides significantly
+ * Optimized representation of a qualifier. JDK annotation proxies are slooow, this class provides significantly
  * faster equals/hashCode methods, that also correctly handle non binding attributes.
  *
  * @author Stuart Douglas
