@@ -45,7 +45,6 @@ import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.SpecializationAndEnablementRegistry;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.slf4j.cal10n.LocLogger;
 

@@ -43,6 +43,6 @@ public class AddPassivationCapableBeanWithNullIdTest {
 
     @Test
     public void test() {
-        assertTrue(extension.IAEthrown);
+        assertTrue(extension.isIAEthrown());
     }
 }
