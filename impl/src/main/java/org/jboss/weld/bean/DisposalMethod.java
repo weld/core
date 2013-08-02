@@ -103,7 +103,7 @@ public class DisposalMethod<X, T> {
             throw new DefinitionException(INCONSISTENT_ANNOTATIONS_ON_METHOD, "@Observes", DISPOSER_ANNOTATION, disposalMethodInjectionPoint);
         }
         if (enhancedAnnotatedMethod.getAnnotation(Inject.class) != null) {
-            throw new DefinitionException(INCONSISTENT_ANNOTATIONS_ON_METHOD, "@Intitializer", DISPOSER_ANNOTATION, disposalMethodInjectionPoint);
+            throw new DefinitionException(INCONSISTENT_ANNOTATIONS_ON_METHOD, "@Inject", DISPOSER_ANNOTATION, disposalMethodInjectionPoint);
         }
         if (enhancedAnnotatedMethod.getAnnotation(Produces.class) != null) {
             throw new DefinitionException(INCONSISTENT_ANNOTATIONS_ON_METHOD, "@Produces", DISPOSER_ANNOTATION, disposalMethodInjectionPoint);
