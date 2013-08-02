@@ -35,4 +35,8 @@ public class SomeExtension implements Extension {
             // nothing - test will fail
         }
     }
+
+    public boolean isIAEthrown() {
+        return IAEthrown;
+    }
 }
