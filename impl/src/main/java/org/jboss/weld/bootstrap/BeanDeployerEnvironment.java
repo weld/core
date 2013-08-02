@@ -453,6 +453,7 @@ public class BeanDeployerEnvironment {
         this.vetoedClasses.clear();
         this.classBeanMap.invalidateAll();
         this.producerMethodBeanMap.invalidateAll();
+        this.producerFields.clear();
         this.allDisposalBeans.clear();
         this.resolvedDisposalBeans.clear();
         this.beans.clear();
