@@ -38,7 +38,7 @@ public class RunnableDecorator implements Runnable {
     Runnable runnable;
 
     /**
-     * Set up the ThreadContet and delegate.
+     * Set up the ThreadContext and delegate.
      */
     public void run() {
         // set up context for this thread

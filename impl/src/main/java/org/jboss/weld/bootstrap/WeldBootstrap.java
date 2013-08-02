@@ -188,8 +188,8 @@ public class WeldBootstrap implements CDI11Bootstrap {
         }
 
         public Map<BeanDeploymentArchive, BeanDeployment> visit() {
-            for (BeanDeploymentArchive archvive : deployment.getBeanDeploymentArchives()) {
-                visit(archvive, managerAwareBeanDeploymentArchives, new HashSet<BeanDeploymentArchive>(), true);
+            for (BeanDeploymentArchive archive : deployment.getBeanDeploymentArchives()) {
+                visit(archive, managerAwareBeanDeploymentArchives, new HashSet<BeanDeploymentArchive>(), true);
             }
             return managerAwareBeanDeploymentArchives;
         }
@@ -229,7 +229,7 @@ public class WeldBootstrap implements CDI11Bootstrap {
             seenBeanDeploymentArchives.add(beanDeploymentArchive);
             for (BeanDeploymentArchive archive : beanDeploymentArchive.getBeanDeploymentArchives()) {
                 BeanDeployment child;
-                // Cut any circularties
+                // Cut any circularities
                 if (!seenBeanDeploymentArchives.contains(archive)) {
                     child = visit(archive, managerAwareBeanDeploymentArchives, seenBeanDeploymentArchives, validate);
                 } else {

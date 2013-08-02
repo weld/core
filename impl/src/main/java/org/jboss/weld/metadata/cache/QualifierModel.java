@@ -148,7 +148,7 @@ public class QualifierModel<T extends Annotation> extends AbstractBindingModel<T
      */
     @Override
     public String toString() {
-        return (isValid() ? "Valid" : "Invalid") + " qualifer model for " + getRawType() + " with non-binding members " + getNonBindingMembers();
+        return (isValid() ? "Valid" : "Invalid") + " qualifier model for " + getRawType() + " with non-binding members " + getNonBindingMembers();
     }
 
 }

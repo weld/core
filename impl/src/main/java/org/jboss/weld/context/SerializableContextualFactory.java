@@ -58,7 +58,7 @@ public class SerializableContextualFactory {
         }
 
         // A directly serializable contextual
-        private C serialiazable;
+        private C serializable;
         @SuppressWarnings(value = "SE_TRANSIENT_FIELD_NOT_RESTORED", justification = "A cache which is lazily loaded")
         // A cached, transient version of the contextual
         private transient C cached;
@@ -75,7 +75,7 @@ public class SerializableContextualFactory {
             this.cachedContextualStore = contextualStore;
             if (contextual instanceof Serializable) {
                 // the contextual is serializable, so we can just use it
-                this.serialiazable = contextual;
+                this.serializable = contextual;
             } else {
                 this.id = getId(contextual, contextualStore);
             }
@@ -103,8 +103,8 @@ public class SerializableContextualFactory {
         }
 
         private void loadContextual() {
-            if (serialiazable != null) {
-                this.cached = serialiazable;
+            if (serializable != null) {
+                this.cached = serializable;
             } else if (id != null) {
                 this.cached = getContextualStore().<C, I> getContextual(id);
             }

@@ -24,13 +24,13 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author Jozef Hartinger
  *
  */
-public class DeamonThreadFactory implements ThreadFactory {
+public class DaemonThreadFactory implements ThreadFactory {
 
     private final AtomicInteger threadNumber = new AtomicInteger(1);
     private final String threadNamePrefix;
     private final ThreadGroup threadGroup ;
 
-    public DeamonThreadFactory(ThreadGroup threadGroup, String threadNamePrefix) {
+    public DaemonThreadFactory(ThreadGroup threadGroup, String threadNamePrefix) {
         this.threadGroup = threadGroup;
         this.threadNamePrefix = threadNamePrefix;
     }

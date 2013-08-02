@@ -44,7 +44,7 @@ public abstract class AbstractInjector {
     }
 
     protected void inject(Object instance) {
-        // not data-race safe, however doesn't matter, as the injection target created for class A is interchangable for another injection target created for class A
+        // not data-race safe, however doesn't matter, as the injection target created for class A is interchangeable for another injection target created for class A
         // TODO Make this a concurrent cache when we switch to google collections
         Class<?> clazz = instance.getClass();
         if (!cache.containsKey(clazz)) {

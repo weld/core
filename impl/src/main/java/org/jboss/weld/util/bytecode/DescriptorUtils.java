@@ -54,7 +54,7 @@ public class DescriptorUtils {
 
     /**
      * returns an array of String representations of the parameter types.
-     * Primitives are returned as their native representations, while clases are
+     * Primitives are returned as their native representations, while classes are
      * returned in the internal descriptor form e.g. Ljava/lang/Integer;
      */
     public static String[] descriptorStringToParameterArray(String methodDescriptor) {

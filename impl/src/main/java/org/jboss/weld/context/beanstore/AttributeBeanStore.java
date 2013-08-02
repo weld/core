@@ -37,7 +37,7 @@ import static org.jboss.weld.logging.messages.ContextMessage.UPDATING_STORE_WITH
  * A bound bean store backed by attributes. This bean store is "write-through" -
  * if attached it will write any modifications to the backing store immediately.
  * If detached modifications will not be written through. If the bean store is
- * reattched, then any local modifications will be written to the underlying
+ * reattached, then any local modifications will be written to the underlying
  * store.
  * </p>
  * <p/>

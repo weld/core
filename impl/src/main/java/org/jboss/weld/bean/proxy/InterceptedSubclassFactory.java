@@ -106,7 +106,7 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
     protected void addMethodsFromClass(ClassFile proxyClassType) {
         try {
             final Set<MethodSignatureImpl> finalMethods = new HashSet<MethodSignatureImpl>();
-            // Add all methods from the class heirachy
+            // Add all methods from the class hierarchy
             Class<?> cls = getBeanType();
             while (cls != null) {
                 for (Method method : AccessController.doPrivileged(new GetDeclaredMethodsAction(cls))) {
@@ -250,8 +250,8 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
             b.iconst(i);
             // load the parameter value
             BytecodeUtils.addLoadInstruction(b, typeString, localVariableCount);
-            // box the parameter if nessesary
-            Boxing.boxIfNessesary(b, typeString);
+            // box the parameter if necessary
+            Boxing.boxIfNecessary(b, typeString);
             // and store it in the array
             b.aastore();
             if (DescriptorUtils.isWide(typeString)) {

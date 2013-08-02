@@ -41,8 +41,8 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.slim.unbacked.UnbackedAnnotatedType;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.injection.attributes.FieldInjectionPointAttributes;
-import org.jboss.weld.injection.attributes.InferingFieldInjectionPointAttributes;
-import org.jboss.weld.injection.attributes.InferingParameterInjectionPointAttributes;
+import org.jboss.weld.injection.attributes.InferringFieldInjectionPointAttributes;
+import org.jboss.weld.injection.attributes.InferringParameterInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.ParameterInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.SpecialParameterInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -135,8 +135,8 @@ public class InjectionPointFactory {
      */
     public <T, X> FieldInjectionPoint<T, X> createFieldInjectionPoint(EnhancedAnnotatedField<T, X> field,
             Bean<?> declaringBean, Class<?> declaringComponentClass, BeanManagerImpl manager) {
-        FieldInjectionPointAttributes<T, X> attributes = InferingFieldInjectionPointAttributes.of(field, declaringBean,
-                declaringComponentClass, manager);
+        FieldInjectionPointAttributes<T, X> attributes = InferringFieldInjectionPointAttributes.of(field, declaringBean,
+            declaringComponentClass, manager);
         attributes = processInjectionPoint(attributes, declaringComponentClass, manager);
         return new FieldInjectionPoint<T, X>(attributes);
     }
@@ -152,8 +152,8 @@ public class InjectionPointFactory {
      */
     public <T, X> ParameterInjectionPoint<T, X> createParameterInjectionPoint(EnhancedAnnotatedParameter<T, X> parameter,
             Bean<?> declaringBean, Class<?> declaringComponentClass, BeanManagerImpl manager) {
-        ParameterInjectionPointAttributes<T, X> attributes = InferingParameterInjectionPointAttributes.of(parameter,
-                declaringBean, declaringComponentClass, manager);
+        ParameterInjectionPointAttributes<T, X> attributes = InferringParameterInjectionPointAttributes.of(parameter,
+            declaringBean, declaringComponentClass, manager);
         attributes = processInjectionPoint(attributes, declaringComponentClass, manager);
         return new ParameterInjectionPointImpl<T, X>(attributes);
     }

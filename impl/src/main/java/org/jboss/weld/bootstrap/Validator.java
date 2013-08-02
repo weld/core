@@ -915,7 +915,7 @@ public class Validator implements Service {
     }
 
     /**
-     * checks if a bean has been seen before in the dependecyPath. If not, it
+     * checks if a bean has been seen before in the dependencyPath. If not, it
      * resolves the InjectionPoints and adds the resolved beans to the set of
      * beans to be validated
      */

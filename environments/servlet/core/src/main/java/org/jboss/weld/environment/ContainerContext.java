@@ -24,7 +24,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 
 /**
- * Wrap listner arguments.
+ * Wrap listener arguments.
  *
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */

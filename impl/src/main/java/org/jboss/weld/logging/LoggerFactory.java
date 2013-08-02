@@ -34,7 +34,7 @@ public class LoggerFactory {
     private final IMessageConveyor messageConveyor;
 
     private LoggerFactory(String subsystem) {
-        this.messageConveyor = MessageConveyorFactory.messageConveyerFactory().getDefaultMessageConveyer(subsystem);
+        this.messageConveyor = MessageConveyorFactory.messageConveyorFactory().getDefaultMessageConveyor(subsystem);
         this.locLoggerFactory = new LocLoggerFactory(messageConveyor);
     }
 

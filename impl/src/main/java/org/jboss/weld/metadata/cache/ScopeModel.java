@@ -50,7 +50,7 @@ public class ScopeModel<T extends Annotation> extends AnnotationModel<T> {
     private final boolean passivating;
 
     /**
-     * Constrctor
+     * Constructor
      *
      * @param scope The scope type
      */

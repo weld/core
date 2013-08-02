@@ -288,27 +288,27 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
         }
         this.declaredMetaAnnotationMap = immutableMap(declaredMetaAnnotationMap);
 
-        this.overriddenMethods = getOverridenMethods(this, methodsTemp);
+        this.overriddenMethods = getOverriddenMethods(this, methodsTemp);
         methodsTemp.removeAll(overriddenMethods);
         this.methods = methodsTemp;
         this.annotatedMethods = buildAnnotatedMethodMultimap(this.methods);
         this.annotatedMethodsByAnnotatedParameters = buildAnnotatedParameterMethodMultimap(this.methods);
     }
 
-    protected Set<EnhancedAnnotatedMethod<?, ? super T>> getOverridenMethods(EnhancedAnnotatedType<T> annotatedType, Set<EnhancedAnnotatedMethod<?, ? super T>> methods) {
-        Set<EnhancedAnnotatedMethod<?, ? super T>> overridenMethods = new HashSet<EnhancedAnnotatedMethod<?,? super T>>();
+    protected Set<EnhancedAnnotatedMethod<?, ? super T>> getOverriddenMethods(EnhancedAnnotatedType<T> annotatedType, Set<EnhancedAnnotatedMethod<?, ? super T>> methods) {
+        Set<EnhancedAnnotatedMethod<?, ? super T>> overriddenMethods = new HashSet<EnhancedAnnotatedMethod<?,? super T>>();
         Multimap<MethodSignature, Package> seenMethods = Multimaps.newSetMultimap(new HashMap<MethodSignature, Collection<Package>>(), HashSetSupplier.<Package>instance());
         for (Class<? super T> clazz = annotatedType.getJavaClass(); clazz != null && clazz != Object.class; clazz = clazz.getSuperclass()) {
             for (EnhancedAnnotatedMethod<?, ? super T> method : methods) {
                 if (method.getJavaMember().getDeclaringClass().equals(clazz)) {
                     if (isOverridden(method, seenMethods)) {
-                        overridenMethods.add(method);
+                        overriddenMethods.add(method);
                     }
                     seenMethods.put(method.getSignature(), method.getPackage());
                 }
             }
         }
-        return immutableSet(overridenMethods);
+        return immutableSet(overriddenMethods);
     }
 
     protected Multimap<Class<? extends Annotation>, EnhancedAnnotatedMethod<?, ? super T>> buildAnnotatedMethodMultimap(Set<EnhancedAnnotatedMethod<?, ? super T>> effectiveMethods) {

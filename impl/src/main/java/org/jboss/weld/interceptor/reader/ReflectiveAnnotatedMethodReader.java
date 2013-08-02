@@ -36,7 +36,7 @@ public class ReflectiveAnnotatedMethodReader implements AnnotatedMethodReader<Me
     }
 
     public Method getJavaMethod(Method methodReference) {
-        // this looks a bit of an excessive indirection, but it is designed to accomodate the case when the
+        // this looks a bit of an excessive indirection, but it is designed to accommodate the case when the
         // method is wrapped in a more generic structure, like the CDI AnnotatedType
         return methodReference;
     }

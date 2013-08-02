@@ -57,7 +57,7 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 public class AnnotatedTypes {
 
     /**
-     * Does the first stage of comparing AnnoatedCallables, however it cannot
+     * Does the first stage of comparing AnnotatedCallables, however it cannot
      * compare the method parameters
      */
     @SuppressWarnings("SE_COMPARATOR_SHOULD_BE_SERIALIZABLE")
@@ -181,7 +181,7 @@ public class AnnotatedTypes {
         }
     }
 
-    private static final char SEPERATOR = ';';
+    private static final char SEPARATOR = ';';
 
     /**
      * Generates a unique signature for an annotated type. Members without
@@ -216,7 +216,7 @@ public class AnnotatedTypes {
         for (AnnotatedField<? super X> field : sortedFields) {
             if (!field.getAnnotations().isEmpty()) {
                 builder.append(createFieldId(field));
-                builder.append(SEPERATOR);
+                builder.append(SEPARATOR);
             }
         }
 
@@ -227,7 +227,7 @@ public class AnnotatedTypes {
         for (AnnotatedMethod<? super X> method : sortedMethods) {
             if (!method.getAnnotations().isEmpty() || hasMethodParameters(method)) {
                 builder.append(createCallableId(method));
-                builder.append(SEPERATOR);
+                builder.append(SEPARATOR);
             }
         }
 
@@ -238,7 +238,7 @@ public class AnnotatedTypes {
         for (AnnotatedConstructor<? super X> constructor : sortedConstructors) {
             if (!constructor.getAnnotations().isEmpty() || hasMethodParameters(constructor)) {
                 builder.append(createCallableId(constructor));
-                builder.append(SEPERATOR);
+                builder.append(SEPARATOR);
             }
         }
         builder.append("}");
@@ -383,7 +383,7 @@ public class AnnotatedTypes {
     }
 
     /**
-     * compares two annotated elemetes to see if they have the same annotations
+     * compares two annotated elements to see if they have the same annotations
      *
      * @param a1
      * @param a2
@@ -409,7 +409,7 @@ public class AnnotatedTypes {
     }
 
     /**
-     * Compares two annotated paramerets and returns true if they are equal
+     * Compares two annotated parameters and returns true if they are equal
      */
     public static boolean compareAnnotatedParameters(AnnotatedParameter<?> p1, AnnotatedParameter<?> p2) {
         return compareAnnotatedCallable(p1.getDeclaringCallable(), p2.getDeclaringCallable()) && p1.getPosition() == p2.getPosition() && compareAnnotated(p1, p2);

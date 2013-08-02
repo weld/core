@@ -33,17 +33,17 @@ import org.jboss.weld.util.reflection.Reflections;
  * @author Jozef Hartinger
  *
  */
-public class InferingParameterInjectionPointAttributes<T, X> extends AbstractInferingInjectionPointAttributes<T, Object> implements ParameterInjectionPointAttributes<T, X> {
+public class InferringParameterInjectionPointAttributes<T, X> extends AbstractInferringInjectionPointAttributes<T, Object> implements ParameterInjectionPointAttributes<T, X> {
 
     private static final long serialVersionUID = 1237037554422642608L;
 
-    public static <T, X> InferingParameterInjectionPointAttributes<T, X> of(EnhancedAnnotatedParameter<T, X> parameter, Bean<?> bean, Class<?> declaringComponentClass, BeanManagerImpl manager) {
-        return new InferingParameterInjectionPointAttributes<T, X>(parameter, bean, declaringComponentClass, manager);
+    public static <T, X> InferringParameterInjectionPointAttributes<T, X> of(EnhancedAnnotatedParameter<T, X> parameter, Bean<?> bean, Class<?> declaringComponentClass, BeanManagerImpl manager) {
+        return new InferringParameterInjectionPointAttributes<T, X>(parameter, bean, declaringComponentClass, manager);
     }
 
     private final AnnotatedParameter<X> parameter;
 
-    protected InferingParameterInjectionPointAttributes(EnhancedAnnotatedParameter<T, X> parameter, Bean<?> bean, Class<?> declaringComponentClass, BeanManagerImpl manager) {
+    protected InferringParameterInjectionPointAttributes(EnhancedAnnotatedParameter<T, X> parameter, Bean<?> bean, Class<?> declaringComponentClass, BeanManagerImpl manager) {
         super(manager.getContextId(), bean, SharedObjectCache.instance(manager).getSharedSet(parameter.getQualifiers()), declaringComponentClass);
         this.parameter = parameter.slim();
     }
@@ -65,8 +65,8 @@ public class InferingParameterInjectionPointAttributes<T, X> extends AbstractInf
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof InferingParameterInjectionPointAttributes<?, ?>) {
-            AnnotatedParameter<?> parameter = Reflections.<InferingParameterInjectionPointAttributes<?, ?>> cast(obj).getAnnotated();
+        if (obj instanceof InferringParameterInjectionPointAttributes<?, ?>) {
+            AnnotatedParameter<?> parameter = Reflections.<InferringParameterInjectionPointAttributes<?, ?>> cast(obj).getAnnotated();
             return AnnotatedTypes.compareAnnotatedParameters(getAnnotated(), parameter);
         }
         return false;

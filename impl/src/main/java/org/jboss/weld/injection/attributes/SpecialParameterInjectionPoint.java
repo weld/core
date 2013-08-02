@@ -39,7 +39,7 @@ public class SpecialParameterInjectionPoint<T, X> extends ForwardingInjectionPoi
     private final ParameterInjectionPointAttributes<T, X> attributes;
 
     protected SpecialParameterInjectionPoint(EnhancedAnnotatedParameter<T, X> parameter, Bean<?> bean, Class<?> declaringComponentClass, BeanManagerImpl manager) {
-        this.attributes = InferingParameterInjectionPointAttributes.of(parameter, bean, declaringComponentClass, manager);
+        this.attributes = InferringParameterInjectionPointAttributes.of(parameter, bean, declaringComponentClass, manager);
     }
 
     @Override

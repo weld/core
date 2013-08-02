@@ -299,18 +299,18 @@ public class BeanDeployerEnvironment {
                         // e.g. @Inject @New(ChequePaymentProcessor.class) Instance<PaymentProcessor> chequePaymentProcessor;
                         // see WELD-975
                         Type typeParameter = Reflections.getActualTypeArguments(weldInjectionPoint.getType())[0];
-                        addNewBeanFromInjecitonPoint(Reflections.getRawType(typeParameter), typeParameter);
+                        addNewBeanFromInjectionPoint(Reflections.getRawType(typeParameter), typeParameter);
                     } else {
-                        addNewBeanFromInjecitonPoint(rawType, weldInjectionPoint.getType());
+                        addNewBeanFromInjectionPoint(rawType, weldInjectionPoint.getType());
                     }
                 } else {
-                    addNewBeanFromInjecitonPoint(_new.value(), _new.value());
+                    addNewBeanFromInjectionPoint(_new.value(), _new.value());
                 }
             }
         }
     }
 
-    private void addNewBeanFromInjecitonPoint(Class<?> rawType, Type baseType) {
+    private void addNewBeanFromInjectionPoint(Class<?> rawType, Type baseType) {
         if (getEjbDescriptors().contains(rawType)) {
             InternalEjbDescriptor<?> descriptor = getEjbDescriptors().getUnique(rawType);
             newSessionBeanDescriptorsFromInjectionPoint.put(descriptor, classTransformer.getEnhancedAnnotatedType(rawType, baseType, manager.getId()));

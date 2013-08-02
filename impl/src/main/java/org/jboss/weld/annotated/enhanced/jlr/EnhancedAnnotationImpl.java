@@ -87,7 +87,7 @@ public class EnhancedAnnotationImpl<T extends Annotation> extends EnhancedAnnota
     }
 
     @Override
-    protected Set<EnhancedAnnotatedMethod<?, ? super T>> getOverridenMethods(EnhancedAnnotatedType<T> annotatedType, Set<EnhancedAnnotatedMethod<?, ? super T>> methods) {
+    protected Set<EnhancedAnnotatedMethod<?, ? super T>> getOverriddenMethods(EnhancedAnnotatedType<T> annotatedType, Set<EnhancedAnnotatedMethod<?, ? super T>> methods) {
         return Collections.emptySet();
     }
 

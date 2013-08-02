@@ -499,7 +499,7 @@ public class ProxyFactory<T> {
 
     protected void addMethodsFromClass(ClassFile proxyClassType) {
         try {
-            // Add all methods from the class heirachy
+            // Add all methods from the class hierarchy
             Class<?> cls = getBeanType();
             // first add equals/hashCode methods if required
             generateEqualsMethod(proxyClassType);
@@ -655,8 +655,8 @@ public class ProxyFactory<T> {
             b.iconst(i);
             // load the parameter value
             BytecodeUtils.addLoadInstruction(b, typeString, localVariableCount);
-            // box the parameter if nessesary
-            Boxing.boxIfNessesary(b, typeString);
+            // box the parameter if necessary
+            Boxing.boxIfNecessary(b, typeString);
             // and store it in the array
             b.aastore();
             if (DescriptorUtils.isWide(typeString)) {

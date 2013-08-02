@@ -57,12 +57,12 @@ public class EclipseWeldServletHandler extends ServletHandler {
     }
 
     protected static void process(WebAppContext wac, boolean startNewHandler) throws Exception {
-        EclipseWeldServletHandler wHanlder = new EclipseWeldServletHandler(wac.getServletHandler(), wac.getServletContext());
-        wac.setServletHandler(wHanlder);
-        wac.getSecurityHandler().setHandler(wHanlder);
+        EclipseWeldServletHandler wHandler = new EclipseWeldServletHandler(wac.getServletHandler(), wac.getServletContext());
+        wac.setServletHandler(wHandler);
+        wac.getSecurityHandler().setHandler(wHandler);
 
         if (startNewHandler) {
-            wHanlder.start();
+            wHandler.start();
         }
 
         Resource jettyEnv = null;

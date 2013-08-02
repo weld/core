@@ -143,7 +143,7 @@ public final class ResourceInjectionFactory {
          * @param fieldInjectionPoint
          * @param beanManager
          * @return {@link ResourceInjection} for static producer field or <code>null</code> if required services are not
-         *         supported or the field is not annoted with the specific marker annotation
+         *         supported or the field is not annotated with the specific marker annotation
          * @see StaticEEResourceProducerField
          */
         protected <T, X> ResourceInjection<T> createStaticProducerFieldResourceInjection(

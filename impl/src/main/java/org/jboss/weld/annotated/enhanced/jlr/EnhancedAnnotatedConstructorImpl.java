@@ -101,7 +101,7 @@ public class EnhancedAnnotatedConstructorImpl<T> extends AbstractEnhancedAnnotat
     /**
      * Gets the abstracted parameters
      * <p/>
-     * If the parameters are null, initalize them first
+     * If the parameters are null, initialize them first
      *
      * @return A list of annotated parameter abstractions
      * @see org.jboss.weld.annotated.enhanced.EnhancedAnnotatedConstructor#getEnhancedParameters()

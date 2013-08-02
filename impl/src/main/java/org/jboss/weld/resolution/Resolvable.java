@@ -23,7 +23,7 @@ import java.util.Set;
 import javax.enterprise.inject.spi.Bean;
 
 /**
- * Something that is resovable by the resolver. A resolvable is defined by it's
+ * Something that is resolvable by the resolver. A resolvable is defined by it's
  * bindings and type closure
  *
  * @author pmuir

@@ -39,7 +39,7 @@ public class ManagerObjectFactory implements ObjectFactory {
     }
 
     // Exception messages
-    private static final IMessageConveyor messageConveyer = loggerFactory().getMessageConveyor();
+    private static final IMessageConveyor messageConveyor = loggerFactory().getMessageConveyor();
 
     public Object getObjectInstance(Object obj, Name name, Context nameCtx, Hashtable<?, ?> environment) throws Exception {
         if (Container.available(contextId)) {
@@ -48,9 +48,9 @@ public class ManagerObjectFactory implements ObjectFactory {
                     return entry.getValue().getCurrent();
                 }
             }
-            throw new NamingException(messageConveyer.getMessage(CANNOT_LOCATE_BEAN_MANAGER));
+            throw new NamingException(messageConveyor.getMessage(CANNOT_LOCATE_BEAN_MANAGER));
         } else {
-            throw new NamingException(messageConveyer.getMessage(CANNOT_LOCATE_BEAN_MANAGER));
+            throw new NamingException(messageConveyor.getMessage(CANNOT_LOCATE_BEAN_MANAGER));
         }
     }
 

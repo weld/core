@@ -21,7 +21,7 @@ import javax.transaction.Synchronization;
 import static javax.transaction.Status.STATUS_COMMITTED;
 
 /**
- * A JTA transaction sychronization which wraps a Runnable.
+ * A JTA transaction synchronization which wraps a Runnable.
  *
  * @author David Allen
  */

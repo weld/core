@@ -22,7 +22,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.jboss.weld.event.ObserverNotifier;
-import org.jboss.weld.executor.DeamonThreadFactory;
+import org.jboss.weld.executor.DaemonThreadFactory;
 import org.jboss.weld.util.reflection.ParameterizedTypeImpl;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
@@ -55,7 +55,7 @@ public class ContainerLifecycleEventPreloader {
     private final ObserverNotifier notifier;
 
     public ContainerLifecycleEventPreloader(int threadPoolSize, ObserverNotifier notifier) {
-        this.executor = Executors.newFixedThreadPool(threadPoolSize, new DeamonThreadFactory(new ThreadGroup("weld-preloaders"), "weld-preloader-"));
+        this.executor = Executors.newFixedThreadPool(threadPoolSize, new DaemonThreadFactory(new ThreadGroup("weld-preloaders"), "weld-preloader-"));
         this.notifier = notifier;
     }
 

@@ -78,7 +78,7 @@ public class Weld {
         if (extensions == null) {
             extensions = new HashSet<Metadata<Extension>>();
         }
-        extensions.add(new MetadataImpl<Extension>(extension, "<explicity-added>"));
+        extensions.add(new MetadataImpl<Extension>(extension, "<explicitly-added>"));
     }
 
     /**

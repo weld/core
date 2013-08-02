@@ -90,7 +90,7 @@ public class Listener extends ForwardingServletListener {
      * Create server deployment.
      * <p/>
      * Can be overridden with custom servlet deployment.
-     * e.g. exact resources listing in ristricted wnv like GAE
+     * e.g. exact resources listing in restricted env like GAE
      *
      * @param context   the servlet context
      * @param bootstrap the bootstrap

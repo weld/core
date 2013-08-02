@@ -41,7 +41,7 @@ public class WeldSEResourceLoader implements ResourceLoader {
             // if the class relies on optional dependencies that are not present
             // then a CNFE can be thrown later in the deployment process when the
             // Introspector is inspecting the class. We call getMethods, getFields
-            // and getConstructors now over the whole type heirachey to force
+            // and getConstructors now over the whole type hierarchy to force
             // these errors to occur early.
             // NOTE it is still possible for a CNFE to be thrown at runtime if
             // a class has methods that refer to classes that are not present in

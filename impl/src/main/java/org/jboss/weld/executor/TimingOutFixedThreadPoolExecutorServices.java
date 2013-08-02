@@ -52,7 +52,7 @@ public class TimingOutFixedThreadPoolExecutorServices extends AbstractExecutorSe
         this.executor = new ThreadPoolExecutor(threadPoolSize, threadPoolSize,
                 keepAliveTime, TimeUnit.SECONDS,
                 new LinkedBlockingQueue<Runnable>(),
-                new DeamonThreadFactory(new ThreadGroup("weld-workers"), "weld-worker-"));
+                new DaemonThreadFactory(new ThreadGroup("weld-workers"), "weld-worker-"));
         // Terminate threads if no new tasks arrive within the keep-alive time
         this.executor.allowCoreThreadTimeOut(true);
 

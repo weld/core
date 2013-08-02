@@ -188,7 +188,7 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
             b.returnInstruction();
         } else {
             if (!Modifier.isPrivate(method.getMethod().getModifiers())) {
-                // if it is a parameter injection point we need to initalize the
+                // if it is a parameter injection point we need to initialize the
                 // injection point then handle the method with the method handler
 
                 // this is slightly different to a normal method handler call, as we pass
@@ -210,24 +210,24 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
      * <p/>
      * super initializer method is called first, and then _initMH is called
      *
-     * @param intializerMethodInfo
+     * @param initializerMethodInfo
      * @param delegateParameterPosition
      * @return
      */
-    private void createDelegateInitializerCode(ClassMethod classMethod, MethodInformation intializerMethodInfo, int delegateParameterPosition) {
+    private void createDelegateInitializerCode(ClassMethod classMethod, MethodInformation initializerMethodInfo, int delegateParameterPosition) {
         final CodeAttribute b = classMethod.getCodeAttribute();
-        // we need to push all the pareters on the stack to call the corresponding
+        // we need to push all the parameters on the stack to call the corresponding
         // superclass arguments
         b.aload(0); // load this
         int localVariables = 1;
-        int actualDelegateParamterPosition = 0;
-        for (int i = 0; i < intializerMethodInfo.getMethod().getParameterTypes().length; ++i) {
+        int actualDelegateParameterPosition = 0;
+        for (int i = 0; i < initializerMethodInfo.getMethod().getParameterTypes().length; ++i) {
             if (i == delegateParameterPosition) {
                 // figure out the actual position of the delegate in the local
                 // variables
-                actualDelegateParamterPosition = localVariables;
+                actualDelegateParameterPosition = localVariables;
             }
-            Class<?> type = intializerMethodInfo.getMethod().getParameterTypes()[i];
+            Class<?> type = initializerMethodInfo.getMethod().getParameterTypes()[i];
             BytecodeUtils.addLoadInstruction(b, DescriptorUtils.classToStringRepresentation(type), localVariables);
             if (type == long.class || type == double.class) {
                 localVariables = localVariables + 2;
@@ -235,13 +235,13 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
                 localVariables++;
             }
         }
-        b.invokespecial(classMethod.getClassFile().getSuperclass(), intializerMethodInfo.getName(), intializerMethodInfo.getDescriptor());
+        b.invokespecial(classMethod.getClassFile().getSuperclass(), initializerMethodInfo.getName(), initializerMethodInfo.getDescriptor());
         // if this method returns a value it is now sitting on top of the stack
         // we will leave it there are return it later
 
         // now we need to call _initMH
         b.aload(0); // load this
-        b.aload(actualDelegateParamterPosition); // load the delegate
+        b.aload(actualDelegateParameterPosition); // load the delegate
         b.invokevirtual(classMethod.getClassFile().getName(), INIT_MH_METHOD_NAME, "(" + LJAVA_LANG_OBJECT + ")" + DescriptorUtils.VOID_CLASS_DESCRIPTOR);
         // return the object from the top of the stack that we got from calling
         // the superclass method earlier

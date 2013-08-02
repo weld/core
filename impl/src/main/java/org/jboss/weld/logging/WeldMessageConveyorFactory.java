@@ -20,15 +20,15 @@ import ch.qos.cal10n.IMessageConveyor;
 
 import java.util.Locale;
 
-class WeldMessageConveyerFactory extends MessageConveyorFactory {
+class WeldMessageConveyorFactory extends MessageConveyorFactory {
 
     @Override
-    public IMessageConveyor getDefaultMessageConveyer(String subsystem) {
+    public IMessageConveyor getDefaultMessageConveyor(String subsystem) {
         return new WeldMessageConveyor(Locale.ENGLISH, subsystem);
     }
 
     @Override
-    public IMessageConveyor getMessageConveyer(Locale locale, String subsystem) {
+    public IMessageConveyor getMessageConveyor(Locale locale, String subsystem) {
         return new WeldMessageConveyor(locale, subsystem);
     }
 

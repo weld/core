@@ -45,7 +45,7 @@ import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.instantiation.InstantiatorFactory;
 
 /**
- * Utilties for working with Javassist proxies
+ * Utilities for working with Javassist proxies
  *
  * @author Nicklas Karlsson
  * @author Pete Muir

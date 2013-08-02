@@ -89,7 +89,7 @@ public abstract class AbstractMemberProducer<X, T> extends AbstractProducer<T> {
      * creation (it is not a dependent instance of the created instance).
      *
      * @param productCreationalContext the creational context of the produced instance
-     * @param receiverCreationalCOntext the creational context of the receiver
+     * @param receiverCreationalContext the creational context of the receiver
      * @return The receiver
      */
     protected Object getReceiver(CreationalContext<?> productCreationalContext, CreationalContext<?> receiverCreationalContext) {

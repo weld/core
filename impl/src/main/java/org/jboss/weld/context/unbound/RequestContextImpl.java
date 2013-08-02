@@ -26,7 +26,7 @@ public class RequestContextImpl extends AbstractUnboundContext implements Reques
     @Override
     public void deactivate() {
         super.deactivate();
-        // Dettach the bean store
+        // Detach the bean store
         setBeanStore(null);
         cleanup();
     }

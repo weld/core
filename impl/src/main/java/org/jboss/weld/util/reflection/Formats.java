@@ -288,7 +288,7 @@ public class Formats {
     }
 
     public static String formatActualTypeArguments(Type[] actualTypeArguments) {
-        return wrapIfNeccessary(formatIterable(actualTypeArguments, new Function<Type>() {
+        return wrapIfNecessary(formatIterable(actualTypeArguments, new Function<Type>() {
 
             @Override
             public String apply(Type from, int position) {
@@ -298,7 +298,7 @@ public class Formats {
         }), "<", ">");
     }
 
-    public static String wrapIfNeccessary(String string, String prepend, String append) {
+    public static String wrapIfNecessary(String string, String prepend, String append) {
         if (string != null && string.length() > 0) {
             return prepend + string + append;
         } else {
