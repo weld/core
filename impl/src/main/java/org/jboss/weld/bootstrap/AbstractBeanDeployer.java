@@ -44,6 +44,7 @@ import org.jboss.weld.bean.ProducerField;
 import org.jboss.weld.bean.ProducerMethod;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.SessionBean;
+import org.jboss.weld.bean.builtin.ExtensionBean;
 import org.jboss.weld.bean.builtin.ee.EEResourceProducerField;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.events.ProcessBeanImpl;
@@ -278,4 +279,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
         return environment;
     }
 
+    public void addExtension(ExtensionBean bean) {
+        getEnvironment().addExtension(bean);
+    }
 }

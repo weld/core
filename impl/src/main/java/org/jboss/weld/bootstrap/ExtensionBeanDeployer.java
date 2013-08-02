@@ -71,6 +71,7 @@ public class ExtensionBeanDeployer {
             Set<ObserverMethodImpl<?, ?>> observerMethods = new HashSet<ObserverMethodImpl<?, ?>>();
             createObserverMethods(bean, beanDeployment.getBeanManager(), clazz, observerMethods);
             beanDeployment.getBeanManager().addBean(bean);
+            beanDeployment.getBeanDeployer().addExtension(bean);
             for (ObserverMethodImpl<?, ?> observerMethod : observerMethods) {
                 observerMethod.initialize();
                 beanDeployment.getBeanManager().addObserver(observerMethod);
