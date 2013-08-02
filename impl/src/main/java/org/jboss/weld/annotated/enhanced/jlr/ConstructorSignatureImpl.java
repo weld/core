@@ -16,18 +16,24 @@
  */
 package org.jboss.weld.annotated.enhanced.jlr;
 
+import java.lang.reflect.Constructor;
+import java.util.Arrays;
+
 import org.jboss.weld.annotated.enhanced.ConstructorSignature;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedConstructor;
 import org.jboss.weld.util.collections.Arrays2;
 
-import java.lang.reflect.Constructor;
-import java.util.Arrays;
-
 public class ConstructorSignatureImpl implements ConstructorSignature {
+
+    public static final ConstructorSignatureImpl NO_ARGS_SIGNATURE = new ConstructorSignatureImpl(new String[0]);
 
     private static final long serialVersionUID = -9111642596078876778L;
 
     private final String[] parameterTypes;
+
+    private ConstructorSignatureImpl(String[] parameterTypes) {
+        this.parameterTypes = parameterTypes;
+    }
 
     public ConstructorSignatureImpl(EnhancedAnnotatedConstructor<?> method) {
         this.parameterTypes = new String[method.getEnhancedParameters().size()];

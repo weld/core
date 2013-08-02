@@ -484,12 +484,7 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
     }
 
     public EnhancedAnnotatedConstructor<T> getNoArgsEnhancedConstructor() {
-        for (EnhancedAnnotatedConstructor<T> constructor : constructors) {
-            if (constructor.getJavaMember().getParameterTypes().length == 0) {
-                return constructor;
-            }
-        }
-        return null;
+        return cast(declaredConstructorsBySignature.get(ConstructorSignatureImpl.NO_ARGS_SIGNATURE));
     }
 
     public Collection<EnhancedAnnotatedMethod<?, ? super T>> getDeclaredEnhancedMethodsWithAnnotatedParameters(Class<? extends Annotation> annotationType) {
