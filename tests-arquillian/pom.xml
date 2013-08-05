@@ -352,6 +352,7 @@
                                 <arquillian.launch>jboss-as-7</arquillian.launch>
                                 <jacoco.agent>${jacoco.agent}</jacoco.agent>
                                 <node.address>${node.address}</node.address>
+                                <additional.vm.args>${additional.vm.args}</additional.vm.args>
                             </systemProperties>
                             <test>${test}</test>
                             <parallel>none</parallel>
@@ -445,6 +446,7 @@
                                 <arquillian.launch>jboss-as-7</arquillian.launch>
                                 <jacoco.agent>${jacoco.agent}</jacoco.agent>
                                 <node.address>${node.address}</node.address>
+                                <additional.vm.args>${additional.vm.args}</additional.vm.args>
                             </systemProperties>
                             <test>${test}</test>
                             <parallel>none</parallel>

@@ -389,6 +389,7 @@
                             </systemPropertyVariables>
                             <systemProperties>
                                 <jacoco.agent>${jacoco.agent}</jacoco.agent>
+                                <additional.vm.args>${additional.vm.args}</additional.vm.args>
                             </systemProperties>
                         </configuration>
                     </plugin>
