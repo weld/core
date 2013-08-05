@@ -59,7 +59,7 @@ public class HierarchyDiscovery {
         return types;
     }
 
-    private void discoverTypes(Type type) {
+    protected void discoverTypes(Type type) {
         if (type instanceof RawType<?>) {
             RawType<?> rawType = (RawType<?>) type;
             this.types.put(rawType.getType(), rawType.getType());
@@ -89,10 +89,14 @@ public class HierarchyDiscovery {
         }
     }
 
-    private void discoverFromClass(Class<?> clazz) {
+    protected void discoverFromClass(Class<?> clazz) {
         if (clazz.getSuperclass() != null) {
             discoverTypes(processAndResolveType(clazz.getGenericSuperclass(), clazz.getSuperclass()));
         }
+        discoverInterfaces(clazz);
+    }
+
+    protected void discoverInterfaces(Class<?> clazz) {
         Type[] genericInterfaces = clazz.getGenericInterfaces();
         Class<?>[] interfaces = clazz.getInterfaces();
         if (genericInterfaces.length == interfaces.length) {
@@ -103,7 +107,7 @@ public class HierarchyDiscovery {
         }
     }
 
-    private Type processAndResolveType(Type superclass, Class<?> rawSuperclass) {
+    protected Type processAndResolveType(Type superclass, Class<?> rawSuperclass) {
         if (superclass instanceof ParameterizedType) {
             ParameterizedType parameterizedSuperclass = (ParameterizedType) superclass;
             processTypeVariables(rawSuperclass.getTypeParameters(), parameterizedSuperclass.getActualTypeArguments());
