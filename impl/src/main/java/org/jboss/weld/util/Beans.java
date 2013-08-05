@@ -95,6 +95,7 @@ import org.jboss.weld.resolution.QualifierInstance;
 import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.Reflections;
+import org.jboss.weld.util.reflection.SessionBeanHierarchyDiscovery;
 import org.slf4j.cal10n.LocLogger;
 
 import com.google.common.base.Predicate;
@@ -472,7 +473,8 @@ public class Beans {
             // first we need to resolve the local interface
             Type resolvedLocalInterface = beanClassDiscovery.resolveType(Types.getCanonicalType(businessInterfaceDescriptor
                     .getInterface()));
-            typeMap.putAll(new HierarchyDiscovery(resolvedLocalInterface).getTypeMap());
+            SessionBeanHierarchyDiscovery interfaceDiscovery = new SessionBeanHierarchyDiscovery(resolvedLocalInterface);
+            typeMap.putAll(interfaceDiscovery.getTypeMap());
         }
         if (annotated.isAnnotationPresent(Typed.class)) {
             types.addAll(getTypedTypes(typeMap, annotated.getJavaClass(), annotated.getAnnotation(Typed.class)));
