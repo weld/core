@@ -163,7 +163,7 @@ public class Beans {
         if (bean instanceof RIBean<?>) {
             return ((RIBean<?>) bean).isPassivationCapableDependency();
         } else {
-            if (Container.instance().services().get(MetaAnnotationStore.class).getScopeModel(bean.getScope()).isNormal()) {
+            if (isNormalScoped(bean)) {
                 return true;
             } else if (bean.getScope().equals(Dependent.class) && isPassivationCapableBean(bean)) {
                 return true;
@@ -171,6 +171,10 @@ public class Beans {
                 return false;
             }
         }
+    }
+
+    public static boolean isNormalScoped(Bean<?> bean) {
+        return Container.instance().services().get(MetaAnnotationStore.class).getScopeModel(bean.getScope()).isNormal();
     }
 
     /**

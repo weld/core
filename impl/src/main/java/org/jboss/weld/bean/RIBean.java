@@ -21,6 +21,7 @@ import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.resolution.QualifierInstance;
+import org.jboss.weld.util.Beans;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.spi.Bean;
@@ -146,4 +147,7 @@ public abstract class RIBean<T> implements Bean<T>, PassivationCapable {
         return qualifiers;
     }
 
+    public boolean isNormalScoped() {
+        return Beans.isNormalScoped(this);
+    }
 }

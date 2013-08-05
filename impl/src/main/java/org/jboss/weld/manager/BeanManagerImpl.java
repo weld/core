@@ -616,7 +616,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     private boolean isProxyRequired(Bean<?> bean) {
         if (bean instanceof RIBean<?>) {
             return ((RIBean<?>) bean).isProxyRequired();
-        } else if (getMetaAnnotationStore().getScopeModel(bean.getScope()).isNormal()) {
+        } else if (isNormalScope(bean.getScope())) {
             return true;
         } else {
             return false;
@@ -665,7 +665,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
             if (registerInjectionPoint) {
                 currentInjectionPoint.push(injectionPoint);
             }
-            if (getMetaAnnotationStore().getScopeModel(resolvedBean.getScope()).isNormal() && !Proxies.isTypeProxyable(injectionPoint.getType())) {
+            if (isNormalScope(resolvedBean.getScope()) && !Proxies.isTypeProxyable(injectionPoint.getType())) {
                 throw new UnproxyableResolutionException(UNPROXYABLE_RESOLUTION, resolvedBean, injectionPoint);
             }
             // TODO Can we move this logic to getReference?
@@ -703,7 +703,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
             throw new UnsatisfiedResolutionException(UNRESOLVABLE_ELEMENT, resolvable);
         }
 
-        boolean normalScoped = getMetaAnnotationStore().getScopeModel(bean.getScope()).isNormal();
+        boolean normalScoped = isNormalScope(bean.getScope());
         if (normalScoped && !Beans.isBeanProxyable(bean)) {
             throw Proxies.getUnproxyableTypesException(bean);
         }
@@ -836,7 +836,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     public BeanManagerImpl setCurrent(Class<? extends Annotation> scopeType) {
-        if (!getMetaAnnotationStore().getScopeModel(scopeType).isNormal()) {
+        if (!isNormalScope(scopeType)) {
             throw new IllegalArgumentException(NON_NORMAL_SCOPE, scopeType);
         }
         currentActivities.add(new CurrentActivity(getContext(scopeType), this));
