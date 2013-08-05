@@ -16,14 +16,12 @@
  */
 package org.jboss.weld.bean.builtin;
 
-import org.jboss.weld.Container;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.injection.WeldInjectionPoint;
 import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.util.collections.Arrays2;
 
 import javax.enterprise.context.Dependent;
@@ -43,11 +41,7 @@ public abstract class AbstractBuiltInBean<T> extends RIBean<T> {
 
     @Override
     public void initialize(BeanDeployerEnvironment environment) {
-        if (getScope() != null) {
-            proxyRequired = Container.instance().services().get(MetaAnnotationStore.class).getScopeModel(getScope()).isNormal();
-        } else {
-            proxyRequired = false;
-        }
+        proxyRequired = getScope() != null && isNormalScoped();
     }
 
     @Override

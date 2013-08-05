@@ -190,7 +190,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
         } else {
             this.passivationCapableBean = true;
         }
-        if (Container.instance().services().get(MetaAnnotationStore.class).getScopeModel(getScope()).isNormal()) {
+        if (isNormalScoped()) {
             this.passivationCapableDependency = true;
         } else if (getScope().equals(Dependent.class) && passivationCapableBean) {
             this.passivationCapableDependency = true;
