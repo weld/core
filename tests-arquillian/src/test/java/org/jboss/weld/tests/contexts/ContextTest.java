@@ -65,12 +65,12 @@ public class ContextTest {
             protected void work() {
                 try {
                     Utils.getReference(beanManager, Conversation.class).getId();
-                    Assert.fail();
+                    Assert.fail("Expected ContextNotActiveException, but no exception was thrown");
                 } catch (ContextNotActiveException e) {
                     // Expected
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Assert.fail();
+                    Assert.fail("Expected ContextNotActiveException, but another exception was thrown: " + e);
                 }
                 try {
                     Utils.getReference(beanManager, Conversation.class).getTimeout();
