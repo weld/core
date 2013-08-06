@@ -42,6 +42,7 @@ import static org.jboss.weld.logging.messages.ConversationMessage.PROMOTED_TRANS
 
 /**
  * @author Nicklas Karlsson
+ * @author Marko Luksa
  */
 public class ConversationImpl implements ManagedConversation, Serializable {
 
@@ -56,29 +57,15 @@ public class ConversationImpl implements ManagedConversation, Serializable {
     private ReentrantLock concurrencyLock;
     private long lastUsed;
 
-    private final Instance<ConversationContext> conversationContexts;
+    private ActiveConversationContextProxy activeConversationContextProxy;
 
     @Inject
     public ConversationImpl(Instance<ConversationContext> conversationContexts) {
-        this.conversationContexts = conversationContexts;
+        this.activeConversationContextProxy = new ActiveConversationContextProxy(conversationContexts);
         this._transient = true;
-        ConversationContext conversationContext = getConversationContext();
-        if (conversationContext != null) {
-            this.timeout = conversationContext.getDefaultTimeout();
-        } else {
-            this.timeout = 0;
-        }
+        this.timeout = activeConversationContextProxy.getDefaultTimeout();
         this.concurrencyLock = new ReentrantLock();
         touch();
-    }
-
-    private ConversationContext getConversationContext() {
-        for (ConversationContext conversationContext : conversationContexts) {
-            if (conversationContext.isActive()) {
-                return conversationContext;
-            }
-        }
-        return null;
     }
 
     public void begin() {
@@ -89,7 +76,7 @@ public class ConversationImpl implements ManagedConversation, Serializable {
         _transient = false;
         if (this.id == null) {
             // This a conversation that was made transient previously in this request
-            this.id = getConversationContext().generateConversationId();
+            this.id = activeConversationContextProxy.generateConversationId();
         }
         log.debug(PROMOTED_TRANSIENT, id);
     }
@@ -99,14 +86,13 @@ public class ConversationImpl implements ManagedConversation, Serializable {
         if (!_transient) {
             throw new IllegalStateException(BEGIN_CALLED_ON_LONG_RUNNING_CONVERSATION);
         }
-        if (getConversationContext().getConversation(id) != null) {
-            throw new IllegalStateException(CONVERSATION_ID_ALREADY_IN_USE, id);
+        if (activeConversationContextProxy.getConversation(id) != null) {
+            throw new IllegalArgumentException(CONVERSATION_ID_ALREADY_IN_USE + id);
         }
         _transient = false;
         this.id = id;
         log.debug(PROMOTED_TRANSIENT, id);
     }
-
 
     public void end() {
         verifyConversationContextActive();
@@ -192,10 +178,45 @@ public class ConversationImpl implements ManagedConversation, Serializable {
     }
 
     private void verifyConversationContextActive() {
-        ConversationContext ctx = getConversationContext();
-        if (ctx == null) {
+        if (!activeConversationContextProxy.isContextActive()) {
             throw new ContextNotActiveException("Conversation Context not active when method called on conversation " + this);
         }
     }
 
+    private class ActiveConversationContextProxy implements Serializable {
+
+        private static final long serialVersionUID = 1L;
+
+        private final Instance<ConversationContext> conversationContexts;
+
+        public ActiveConversationContextProxy(Instance<ConversationContext> conversationContexts) {
+            this.conversationContexts = conversationContexts;
+        }
+
+        public boolean isContextActive() {
+            return getActiveConversationContext() != null;
+        }
+
+        public long getDefaultTimeout() {
+            ConversationContext ctx = getActiveConversationContext();
+            return ctx == null ? 0 : ctx.getDefaultTimeout();
+        }
+
+        public String generateConversationId() {
+            return getActiveConversationContext().generateConversationId();
+        }
+
+        public ManagedConversation getConversation(String id) {
+            return getActiveConversationContext().getConversation(id);
+        }
+
+        private ConversationContext getActiveConversationContext() {
+            for (ConversationContext ctx : conversationContexts) {
+                if (ctx.isActive()) {
+                    return ctx;
+                }
+            }
+            return null;
+        }
+    }
 }
