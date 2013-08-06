@@ -150,16 +150,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
     public boolean dissociate(R request) {
         if (isAssociated() && this.associated.get() != null) {
             try {
-                /*
-                * If the session is available, store the conversation id generator and
-                * conversations if necessary.
-                */
-                if (getSessionAttribute(request, CONVERSATION_ID_GENERATOR_ATTRIBUTE_NAME, false) == null) {
-                    setSessionAttribute(request, CONVERSATION_ID_GENERATOR_ATTRIBUTE_NAME, getRequestAttribute(request, CONVERSATION_ID_GENERATOR_ATTRIBUTE_NAME), false);
-                }
-                if (getSessionAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME, false) == null) {
-                    setSessionAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME, getRequestAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME), false);
-                }
+                copyConversationIdGeneratorAndConversationsToSession(request);
                 this.associated.set(null);
                 return true;
             } finally {
@@ -169,6 +160,24 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
             return false;
         }
     }
+
+    public void copyConversationIdGeneratorAndConversationsToSession(R request) {
+        /*
+        * If the session is available, store the conversation id generator and
+        * conversations if necessary.
+        */
+        if (getSessionAttribute(request, CONVERSATION_ID_GENERATOR_ATTRIBUTE_NAME, false) == null) {
+            setSessionAttribute(request, CONVERSATION_ID_GENERATOR_ATTRIBUTE_NAME, getRequestAttribute(request, CONVERSATION_ID_GENERATOR_ATTRIBUTE_NAME), false);
+        }
+        if (getSessionAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME, false) == null) {
+            setSessionAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME, getRequestAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME), false);
+        }
+    }
+
+    public void sessionCreated(R request) {
+        copyConversationIdGeneratorAndConversationsToSession(request);
+    }
+
 
     @Override
     public void activate() {
