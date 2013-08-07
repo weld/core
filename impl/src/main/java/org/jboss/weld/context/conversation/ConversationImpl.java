@@ -49,7 +49,7 @@ import static org.jboss.weld.logging.messages.ConversationMessage.PROMOTED_TRANS
  */
 public class ConversationImpl implements ManagedConversation, Serializable {
 
-    private static final long serialVersionUID = 8873338254645033645L;
+    private static final long serialVersionUID = -4745666731860421405L;
 
     private static final LocLogger log = loggerFactory().getLogger(CONVERSATION);
 
@@ -189,9 +189,9 @@ public class ConversationImpl implements ManagedConversation, Serializable {
 
 
     @SuppressWarnings(value = "SE_BAD_FIELD", justification = "InstanceImpl, which we actually use, is serializable")
-    private class ActiveConversationContextProxy implements Serializable {
+    private static class ActiveConversationContextProxy implements Serializable {
 
-        private static final long serialVersionUID = 1L;
+        private static final long serialVersionUID = 952323629449500464L;
 
         private final Instance<ConversationContext> conversationContexts;
 
