@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.manager;
 
-import java.util.Map;
+import java.util.concurrent.ConcurrentMap;
 
 import javax.enterprise.inject.spi.BeanManager;
 
@@ -34,9 +34,9 @@ import org.jboss.weld.bootstrap.spi.CDI11Deployment;
 public class BeanManagerLookupService implements Service {
 
     private final CDI11Deployment deployment;
-    private final Map<BeanDeploymentArchive, BeanManagerImpl> bdaToBeanManagerMap;
+    private final ConcurrentMap<BeanDeploymentArchive, BeanManagerImpl> bdaToBeanManagerMap;
 
-    public BeanManagerLookupService(CDI11Deployment deployment, Map<BeanDeploymentArchive, BeanManagerImpl> bdaToBeanManagerMap) {
+    public BeanManagerLookupService(CDI11Deployment deployment, ConcurrentMap<BeanDeploymentArchive, BeanManagerImpl> bdaToBeanManagerMap) {
         this.deployment = deployment;
         this.bdaToBeanManagerMap = bdaToBeanManagerMap;
     }

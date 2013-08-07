@@ -18,7 +18,6 @@ package org.jboss.weld.bootstrap.events;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.spi.AfterTypeDiscovery;
@@ -28,17 +27,17 @@ import javax.enterprise.inject.spi.Extension;
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.annotated.slim.SlimAnnotatedTypeStore;
 import org.jboss.weld.bootstrap.BeanDeployment;
+import org.jboss.weld.bootstrap.BeanDeploymentArchiveMapping;
 import org.jboss.weld.bootstrap.ContextHolder;
 import org.jboss.weld.bootstrap.enablement.GlobalEnablementBuilder;
-import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
 
 public class AfterTypeDiscoveryImpl extends AbstractAnnotatedTypeRegisteringEvent implements AfterTypeDiscovery {
 
-    public static void fire(BeanManagerImpl beanManager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, Collection<ContextHolder<? extends Context>> contexts) {
-        new AfterTypeDiscoveryImpl(beanManager, beanDeployments, deployment, contexts).fire();
+    public static void fire(BeanManagerImpl beanManager, Deployment deployment, BeanDeploymentArchiveMapping bdaMapping, Collection<ContextHolder<? extends Context>> contexts) {
+        new AfterTypeDiscoveryImpl(beanManager, bdaMapping, deployment, contexts).fire();
     }
 
     private final GlobalEnablementBuilder builder;
@@ -46,8 +45,8 @@ public class AfterTypeDiscoveryImpl extends AbstractAnnotatedTypeRegisteringEven
     private final ClassTransformer transformer;
     private final SlimAnnotatedTypeStore store;
 
-    protected AfterTypeDiscoveryImpl(BeanManagerImpl beanManager, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, Deployment deployment, Collection<ContextHolder<? extends Context>> contexts) {
-        super(beanManager, AfterTypeDiscovery.class, beanDeployments, deployment, contexts);
+    protected AfterTypeDiscoveryImpl(BeanManagerImpl beanManager, BeanDeploymentArchiveMapping bdaMapping, Deployment deployment, Collection<ContextHolder<? extends Context>> contexts) {
+        super(beanManager, AfterTypeDiscovery.class, bdaMapping, deployment, contexts);
         this.builder = beanManager.getServices().get(GlobalEnablementBuilder.class);
         this.events = beanManager.getServices().get(ContainerLifecycleEvents.class);
         this.transformer = beanManager.getServices().get(ClassTransformer.class);

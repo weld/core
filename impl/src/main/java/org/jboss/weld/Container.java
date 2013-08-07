@@ -23,7 +23,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.jboss.weld.annotated.slim.AnnotatedTypeIdentifier;
-import org.jboss.weld.bootstrap.BeanDeployment;
+import org.jboss.weld.bootstrap.BeanDeploymentArchiveMapping;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.api.Singleton;
 import org.jboss.weld.bootstrap.api.SingletonProvider;
@@ -198,12 +198,12 @@ public class Container {
     /**
      * Add sub-deployment units to the container
      *
-     * @param beanDeployments
+     * @param bdaMapping
      */
-    public void putBeanDeployments(Map<BeanDeploymentArchive, BeanDeployment> beanDeployments) {
-        for (Entry<BeanDeploymentArchive, BeanDeployment> entry : beanDeployments.entrySet()) {
-            beanDeploymentArchives.put(entry.getKey(), entry.getValue().getBeanManager());
-            addActivity(entry.getValue().getBeanManager());
+    public void putBeanDeployments(BeanDeploymentArchiveMapping bdaMapping) {
+        for (Entry<BeanDeploymentArchive, BeanManagerImpl> entry : bdaMapping.getBdaToBeanManagerMap().entrySet()) {
+            beanDeploymentArchives.put(entry.getKey(), entry.getValue());
+            addActivity(entry.getValue());
         }
     }
 

@@ -12,10 +12,8 @@ import static org.jboss.weld.logging.messages.BootstrapMessage.VALIDATING_BEANS;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -141,8 +139,7 @@ public class WeldStartup {
     }
 
     private BeanManagerImpl deploymentManager;
-    private Map<BeanDeploymentArchive, BeanDeployment> beanDeployments;
-    private Map<BeanDeploymentArchive,BeanManagerImpl> bdaToBeanManagerMap;
+    private BeanDeploymentArchiveMapping bdaMapping;
     private Collection<ContextHolder<? extends Context>> contexts;
     private Iterable<Metadata<Extension>> extensions;
     private Environment environment;
@@ -233,22 +230,22 @@ public class WeldStartup {
 
         this.contexts = createContexts(deploymentServices);
 
-        this.bdaToBeanManagerMap = new HashMap<BeanDeploymentArchive, BeanManagerImpl>();
-        this.deploymentVisitor = new DeploymentVisitor(deploymentManager, environment, deployment, contexts, bdaToBeanManagerMap);
+        this.bdaMapping = new BeanDeploymentArchiveMapping();
+        this.deploymentVisitor = new DeploymentVisitor(deploymentManager, environment, deployment, contexts, bdaMapping);
 
         if (deployment instanceof CDI11Deployment) {
-            registry.add(BeanManagerLookupService.class, new BeanManagerLookupService((CDI11Deployment) deployment, bdaToBeanManagerMap));
+            registry.add(BeanManagerLookupService.class, new BeanManagerLookupService((CDI11Deployment) deployment, bdaMapping.getBdaToBeanManagerMap()));
         } else {
             log.warn("Legacy deployment metadata provided by the integrator. Certain functionality will not be available.");
         }
 
-        // Read the deployment structure, this will be the physical structure
+        // Read the deployment structure, bdaMapping will be the physical structure
         // as caused by the presence of beans.xml
-        beanDeployments = deploymentVisitor.visit();
+        deploymentVisitor.visit();
 
         Container.currentId.remove();
 
-        return new WeldRuntime(contextId, deploymentManager, bdaToBeanManagerMap);
+        return new WeldRuntime(contextId, deploymentManager, bdaMapping.getBdaToBeanManagerMap());
     }
 
     private void setupInitialServices() {
@@ -325,10 +322,10 @@ public class WeldStartup {
             throw new IllegalStateException(MANAGER_NOT_INITIALIZED);
         }
 
-        // we need to know which BDAs are physical so that we fire ProcessModule for there archives only
-        Set<BeanDeployment> physicalBeanDeploymentArchives = new HashSet<BeanDeployment>(beanDeployments.values());
+        // we need to know which BDAs are physical so that we fire ProcessModule for their archives only
+        Set<BeanDeployment> physicalBeanDeploymentArchives = new HashSet<BeanDeployment>(getBeanDeployments());
 
-        ExtensionBeanDeployer extensionBeanDeployer = new ExtensionBeanDeployer(deploymentManager, deployment, beanDeployments, contexts);
+        ExtensionBeanDeployer extensionBeanDeployer = new ExtensionBeanDeployer(deploymentManager, deployment, bdaMapping, contexts);
         extensionBeanDeployer.addExtensions(extensions);
         extensionBeanDeployer.deployBeans();
 
@@ -336,12 +333,12 @@ public class WeldStartup {
         deploymentManager.addBean(new BeanManagerBean(deploymentManager));
         deploymentManager.addBean(new BeanManagerImplBean(deploymentManager));
 
-        // Re-Read the deployment structure, this will be the physical
+        // Re-Read the deployment structure, bdaMapping will be the physical
         // structure, and will add in BDAs for any extensions outside a
         // physical BDA
-        beanDeployments = deploymentVisitor.visit();
+        deploymentVisitor.visit();
 
-        BeforeBeanDiscoveryImpl.fire(deploymentManager, deployment, beanDeployments, contexts);
+        BeforeBeanDiscoveryImpl.fire(deploymentManager, deployment, bdaMapping, contexts);
 
         // for each physical BDA transform its classes into AnnotatedType instances
         for (BeanDeployment beanDeployment : physicalBeanDeploymentArchives) {
@@ -349,64 +346,64 @@ public class WeldStartup {
         }
 
 
-        // Re-Read the deployment structure, this will be the physical
+        // Re-Read the deployment structure, bdaMapping will be the physical
         // structure, extensions and any classes added using addAnnotatedType
         // outside the physical BDA
-        beanDeployments = deploymentVisitor.visit();
+        deploymentVisitor.visit();
 
-        for (BeanDeployment beanDeployment : beanDeployments.values()) {
+        for (BeanDeployment beanDeployment : getBeanDeployments()) {
             beanDeployment.createTypes();
         }
 
-        AfterTypeDiscoveryImpl.fire(deploymentManager, deployment, beanDeployments, contexts);
+        AfterTypeDiscoveryImpl.fire(deploymentManager, deployment, bdaMapping, contexts);
 
-        for (BeanDeployment beanDeployment : beanDeployments.values()) {
+        for (BeanDeployment beanDeployment : getBeanDeployments()) {
             beanDeployment.createEnabled();
         }
     }
 
 
     public void deployBeans() {
-        for (BeanDeployment deployment : beanDeployments.values()) {
+        for (BeanDeployment deployment : getBeanDeployments()) {
             deployment.createBeans(environment);
         }
         // we must use separate loops, otherwise cyclic specialization would not work
-        for (BeanDeployment deployment : beanDeployments.values()) {
+        for (BeanDeployment deployment : getBeanDeployments()) {
             deployment.getBeanDeployer().processClassBeanAttributes();
             deployment.getBeanDeployer().createProducersAndObservers();
         }
-        for (BeanDeployment deployment : beanDeployments.values()) {
+        for (BeanDeployment deployment : getBeanDeployments()) {
             deployment.getBeanDeployer().processProducerAttributes();
             deployment.getBeanDeployer().createNewBeans();
         }
 
-        for (BeanDeployment beanDeployment : beanDeployments.values()) {
+        for (BeanDeployment beanDeployment : getBeanDeployments()) {
             beanDeployment.deploySpecialized(environment);
         }
 
         // TODO keep a list of new bdas, add them all in, and deploy beans for them, then merge into existing
-        for (BeanDeployment beanDeployment : beanDeployments.values()) {
+        for (BeanDeployment beanDeployment : getBeanDeployments()) {
             beanDeployment.deployBeans(environment);
         }
 
-        AfterBeanDiscoveryImpl.fire(deploymentManager, deployment, beanDeployments, contexts);
+        AfterBeanDiscoveryImpl.fire(deploymentManager, deployment, bdaMapping, contexts);
 
-        // Re-read the deployment structure, this will be the physical
+        // Re-read the deployment structure, bdaMapping will be the physical
         // structure, extensions, classes, and any beans added using addBean
         // outside the physical structure
-        beanDeployments = deploymentVisitor.visit();
+        deploymentVisitor.visit();
 
-        for (BeanDeployment beanDeployment : beanDeployments.values()) {
+        for (BeanDeployment beanDeployment : getBeanDeployments()) {
             beanDeployment.getBeanManager().getServices().get(InjectionTargetService.class).initialize();
             beanDeployment.afterBeanDiscovery(environment);
         }
-        getContainer().putBeanDeployments(beanDeployments);
+        getContainer().putBeanDeployments(bdaMapping);
         getContainer().setState(ContainerState.DEPLOYED);
     }
 
     public void validateBeans() {
         log.debug(VALIDATING_BEANS);
-        for (BeanDeployment beanDeployment : beanDeployments.values()) {
+        for (BeanDeployment beanDeployment : getBeanDeployments()) {
             BeanManagerImpl beanManager = beanDeployment.getBeanManager();
             beanManager.getBeanResolver().clear();
             deployment.getServices().get(Validator.class).validateDeployment(beanManager, beanDeployment);
@@ -427,7 +424,7 @@ public class WeldStartup {
         deploymentManager.getGlobalLenientObserverNotifier().clear();
         deploymentManager.getDecoratorResolver().clear();
         deploymentManager.getServices().cleanupAfterBoot();
-        for (BeanDeployment beanDeployment : beanDeployments.values()) {
+        for (BeanDeployment beanDeployment : getBeanDeployments()) {
             BeanManagerImpl beanManager = beanDeployment.getBeanManager();
             beanManager.getBeanResolver().clear();
             beanManager.getAccessibleLenientObserverNotifier().clear();
@@ -454,16 +451,15 @@ public class WeldStartup {
                 }
             }
         }
-        for (Map.Entry<BeanDeploymentArchive, BeanDeployment> entry : beanDeployments.entrySet()) {
-            BeanDeploymentArchive bda = entry.getKey();
-            BeanDeployment beanDeployment = entry.getValue();
-            if (!bdaToBeanManagerMap.containsKey(bda)) {
-                bdaToBeanManagerMap.put(bda, beanDeployment.getBeanManager());
-            }
+        for (BeanDeployment beanDeployment : getBeanDeployments()) {
             beanDeployment.getBeanDeployer().cleanup();
         }
 
         getContainer().setState(ContainerState.INITIALIZED);
+    }
+
+    private Collection<BeanDeployment> getBeanDeployments() {
+        return bdaMapping.getBeanDeployments();
     }
 
     private Container getContainer() {
@@ -525,5 +521,10 @@ public class WeldStartup {
         // TODO: we should fire BeforeBeanDiscovery to allow extensions to register additional scopes
         final Set<Class<? extends Annotation>> scopes = ImmutableSet.of(Dependent.class, RequestScoped.class, ConversationScoped.class, SessionScoped.class, ApplicationScoped.class);
         return new TypeDiscoveryConfigurationImpl(scopes);
+    }
+
+    public BeanManagerImpl getManager(BeanDeploymentArchive beanDeploymentArchive) {
+        BeanDeployment beanDeployment = bdaMapping.getBeanDeployment(beanDeploymentArchive);
+        return beanDeployment == null ? null : beanDeployment.getBeanManager().getCurrent();
     }
 }
