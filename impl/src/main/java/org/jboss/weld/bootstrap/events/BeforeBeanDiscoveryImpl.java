@@ -18,15 +18,13 @@ package org.jboss.weld.bootstrap.events;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;
-import java.util.Map;
 
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 
-import org.jboss.weld.bootstrap.BeanDeployment;
+import org.jboss.weld.bootstrap.BeanDeploymentArchiveMapping;
 import org.jboss.weld.bootstrap.ContextHolder;
-import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.literal.InterceptorBindingTypeLiteral;
@@ -44,12 +42,12 @@ import org.jboss.weld.util.annotated.AnnotatedTypeWrapper;
 
 public class BeforeBeanDiscoveryImpl extends AbstractAnnotatedTypeRegisteringEvent implements BeforeBeanDiscovery {
 
-    public static void fire(BeanManagerImpl beanManager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, Collection<ContextHolder<? extends Context>> contexts) {
-        new BeforeBeanDiscoveryImpl(beanManager, deployment, beanDeployments, contexts).fire();
+    public static void fire(BeanManagerImpl beanManager, Deployment deployment, BeanDeploymentArchiveMapping bdaMapping, Collection<ContextHolder<? extends Context>> contexts) {
+        new BeforeBeanDiscoveryImpl(beanManager, deployment, bdaMapping, contexts).fire();
     }
 
-    protected BeforeBeanDiscoveryImpl(BeanManagerImpl beanManager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, Collection<ContextHolder<? extends Context>> contexts) {
-        super(beanManager, BeforeBeanDiscovery.class, beanDeployments, deployment, contexts);
+    protected BeforeBeanDiscoveryImpl(BeanManagerImpl beanManager, Deployment deployment, BeanDeploymentArchiveMapping bdaMapping, Collection<ContextHolder<? extends Context>> contexts) {
+        super(beanManager, BeforeBeanDiscovery.class, bdaMapping, deployment, contexts);
     }
 
     public void addQualifier(Class<? extends Annotation> bindingType) {

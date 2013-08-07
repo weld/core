@@ -3,9 +3,7 @@ package org.jboss.weld.bootstrap;
 import static org.jboss.weld.logging.messages.BootstrapMessage.DEPLOYMENT_ARCHIVE_NULL;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import javax.enterprise.context.spi.Context;
@@ -29,24 +27,23 @@ public class DeploymentVisitor {
     private final BeanManagerImpl deploymentManager;
     private final Environment environment;
     private final Deployment deployment;
-    private final Map<BeanDeploymentArchive, BeanDeployment> bdaToBeanDeploymentMap;
-    private final Map<BeanDeploymentArchive, BeanManagerImpl> bdaToBeanManagerMap;
+    private final BeanDeploymentArchiveMapping bdaMapping;
     private final Collection<ContextHolder<? extends Context>> contexts;
 
-    public DeploymentVisitor(BeanManagerImpl deploymentManager, Environment environment, final Deployment deployment, Collection<ContextHolder<? extends Context>> contexts, Map<BeanDeploymentArchive, BeanManagerImpl> bdaToBeanManagerMap) {
+    public DeploymentVisitor(BeanManagerImpl deploymentManager, Environment environment, final Deployment deployment,
+                             Collection<ContextHolder<? extends Context>> contexts,
+                             BeanDeploymentArchiveMapping bdaMapping) {
         this.deploymentManager = deploymentManager;
         this.environment = environment;
         this.deployment = deployment;
         this.contexts = contexts;
-        this.bdaToBeanDeploymentMap = new HashMap<BeanDeploymentArchive, BeanDeployment>();
-        this.bdaToBeanManagerMap = bdaToBeanManagerMap;
+        this.bdaMapping = bdaMapping;
     }
 
-    public Map<BeanDeploymentArchive, BeanDeployment> visit() {
+    public void visit() {
         for (BeanDeploymentArchive archive : deployment.getBeanDeploymentArchives()) {
             visit(archive, new HashSet<BeanDeploymentArchive>());
         }
-        return bdaToBeanDeploymentMap;
     }
 
     private BeanDeployment visit(BeanDeploymentArchive bda, Set<BeanDeploymentArchive> seenBeanDeploymentArchives) {
@@ -60,14 +57,13 @@ public class DeploymentVisitor {
             throw new org.jboss.weld.exceptions.IllegalArgumentException(DEPLOYMENT_ARCHIVE_NULL, bda);
         }
 
-        BeanDeployment parent = bdaToBeanDeploymentMap.get(bda);
+        BeanDeployment parent = bdaMapping.getBeanDeployment(bda);
         if (parent == null) {
             // Create the BeanDeployment
             parent = new BeanDeployment(bda, deploymentManager, deployment.getServices(), contexts);
 
             // Attach it
-            bdaToBeanDeploymentMap.put(bda, parent);
-            bdaToBeanManagerMap.put(bda, parent.getBeanManager());
+            bdaMapping.put(bda, parent);
         }
 
         seenBeanDeploymentArchives.add(bda);
@@ -79,7 +75,7 @@ public class DeploymentVisitor {
                 child = visit(archive, seenBeanDeploymentArchives);
             } else {
                 // already visited
-                child = bdaToBeanDeploymentMap.get(archive);
+                child = bdaMapping.getBeanDeployment(archive);
             }
             parent.getBeanManager().addAccessibleBeanManager(child.getBeanManager());
         }

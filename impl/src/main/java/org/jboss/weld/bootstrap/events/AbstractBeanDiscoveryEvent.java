@@ -20,13 +20,12 @@ import static org.jboss.weld.util.reflection.Reflections.EMPTY_TYPES;
 
 import java.lang.reflect.Type;
 import java.util.Collection;
-import java.util.Map;
 
 import javax.enterprise.context.spi.Context;
 
 import org.jboss.weld.bootstrap.BeanDeployment;
+import org.jboss.weld.bootstrap.BeanDeploymentArchiveMapping;
 import org.jboss.weld.bootstrap.ContextHolder;
-import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.TypeStore;
@@ -37,22 +36,22 @@ import org.jboss.weld.util.DeploymentStructures;
  */
 public abstract class AbstractBeanDiscoveryEvent extends AbstractDefinitionContainerEvent {
 
-    private final Map<BeanDeploymentArchive, BeanDeployment> beanDeployments;
+    private final BeanDeploymentArchiveMapping bdaMapping;
     private final Deployment deployment;
     private final Collection<ContextHolder<? extends Context>> contexts;
 
-    public AbstractBeanDiscoveryEvent(BeanManagerImpl beanManager, Type rawType, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, Deployment deployment, Collection<ContextHolder<? extends Context>> contexts) {
+    public AbstractBeanDiscoveryEvent(BeanManagerImpl beanManager, Type rawType, BeanDeploymentArchiveMapping bdaMapping, Deployment deployment, Collection<ContextHolder<? extends Context>> contexts) {
         super(beanManager, rawType, EMPTY_TYPES);
-        this.beanDeployments = beanDeployments;
+        this.bdaMapping = bdaMapping;
         this.deployment = deployment;
         this.contexts = contexts;
     }
 
     /**
-     * @return the beanDeployments
+     * @return the bdaMapping
      */
-    protected Map<BeanDeploymentArchive, BeanDeployment> getBeanDeployments() {
-        return beanDeployments;
+    protected BeanDeploymentArchiveMapping getBeanDeployments() {
+        return bdaMapping;
     }
 
     /**
@@ -68,7 +67,7 @@ public abstract class AbstractBeanDiscoveryEvent extends AbstractDefinitionConta
 
 
     protected BeanDeployment getOrCreateBeanDeployment(Class<?> clazz) {
-        return DeploymentStructures.getOrCreateBeanDeployment(deployment, getBeanManager(), beanDeployments, contexts, clazz);
+        return DeploymentStructures.getOrCreateBeanDeployment(deployment, getBeanManager(), bdaMapping, contexts, clazz);
     }
 
 }

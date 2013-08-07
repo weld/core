@@ -20,7 +20,6 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import javax.enterprise.context.spi.Context;
@@ -31,7 +30,6 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.builtin.ExtensionBean;
 import org.jboss.weld.bootstrap.events.ContainerLifecycleEvents;
-import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.event.ObserverFactory;
@@ -49,15 +47,15 @@ public class ExtensionBeanDeployer {
     private final BeanManagerImpl beanManager;
     private final Set<Metadata<Extension>> extensions;
     private final Deployment deployment;
-    private final Map<BeanDeploymentArchive, BeanDeployment> beanDeployments;
+    private final BeanDeploymentArchiveMapping bdaMapping;
     private final Collection<ContextHolder<? extends Context>> contexts;
     private final ContainerLifecycleEvents containerLifecycleEventObservers;
 
-    public ExtensionBeanDeployer(BeanManagerImpl manager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, Collection<ContextHolder<? extends Context>> contexts) {
+    public ExtensionBeanDeployer(BeanManagerImpl manager, Deployment deployment, BeanDeploymentArchiveMapping bdaMapping, Collection<ContextHolder<? extends Context>> contexts) {
         this.beanManager = manager;
         this.extensions = new HashSet<Metadata<Extension>>();
         this.deployment = deployment;
-        this.beanDeployments = beanDeployments;
+        this.bdaMapping = bdaMapping;
         this.contexts = contexts;
         this.containerLifecycleEventObservers = beanManager.getServices().get(ContainerLifecycleEvents.class);
     }
@@ -66,7 +64,7 @@ public class ExtensionBeanDeployer {
         ClassTransformer classTransformer = beanManager.getServices().get(ClassTransformer.class);
         for (Metadata<Extension> extension : extensions) {
             // Locate the BeanDeployment for this extension
-            BeanDeployment beanDeployment = DeploymentStructures.getOrCreateBeanDeployment(deployment, beanManager, beanDeployments, contexts, extension.getValue().getClass());
+            BeanDeployment beanDeployment = DeploymentStructures.getOrCreateBeanDeployment(deployment, beanManager, bdaMapping, contexts, extension.getValue().getClass());
 
             EnhancedAnnotatedType<Extension> clazz = cast(classTransformer.getEnhancedAnnotatedType(extension.getValue().getClass(), beanDeployment.getBeanDeploymentArchive().getId()));
 

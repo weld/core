@@ -1,6 +1,6 @@
 package org.jboss.weld.bootstrap;
 
-import java.util.Map;
+import java.util.concurrent.ConcurrentMap;
 
 import javax.enterprise.inject.spi.CDI;
 
@@ -20,10 +20,10 @@ import org.jboss.weld.manager.BeanManagerImpl;
 public class WeldRuntime {
 
     private BeanManagerImpl deploymentManager;
-    private Map<BeanDeploymentArchive, BeanManagerImpl> bdaToBeanManagerMap;
+    private ConcurrentMap<BeanDeploymentArchive, BeanManagerImpl> bdaToBeanManagerMap;
     private String contextId;
 
-    public WeldRuntime(String contextId, BeanManagerImpl deploymentManager, Map<BeanDeploymentArchive, BeanManagerImpl> bdaToBeanManagerMap) {
+    public WeldRuntime(String contextId, BeanManagerImpl deploymentManager, ConcurrentMap<BeanDeploymentArchive, BeanManagerImpl> bdaToBeanManagerMap) {
         this.contextId = contextId;
         this.deploymentManager = deploymentManager;
         this.bdaToBeanManagerMap = bdaToBeanManagerMap;

@@ -22,7 +22,6 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
@@ -37,9 +36,8 @@ import javax.enterprise.inject.spi.PassivationCapable;
 import org.jboss.weld.annotated.slim.SlimAnnotatedTypeStore;
 import org.jboss.weld.bean.CustomDecoratorWrapper;
 import org.jboss.weld.bean.attributes.ExternalBeanAttributesFactory;
-import org.jboss.weld.bootstrap.BeanDeployment;
+import org.jboss.weld.bootstrap.BeanDeploymentArchiveMapping;
 import org.jboss.weld.bootstrap.ContextHolder;
-import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -54,12 +52,12 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
 
     private static final String TYPE_ARGUMENT_NAME = "type";
 
-    public static void fire(BeanManagerImpl beanManager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, Collection<ContextHolder<? extends Context>> contexts) {
-        new AfterBeanDiscoveryImpl(beanManager, deployment, beanDeployments, contexts).fire();
+    public static void fire(BeanManagerImpl beanManager, Deployment deployment, BeanDeploymentArchiveMapping bdaMapping, Collection<ContextHolder<? extends Context>> contexts) {
+        new AfterBeanDiscoveryImpl(beanManager, deployment, bdaMapping, contexts).fire();
     }
 
-    protected AfterBeanDiscoveryImpl(BeanManagerImpl beanManager, Deployment deployment, Map<BeanDeploymentArchive, BeanDeployment> beanDeployments, Collection<ContextHolder<? extends Context>> contexts) {
-        super(beanManager, AfterBeanDiscovery.class, beanDeployments, deployment, contexts);
+    protected AfterBeanDiscoveryImpl(BeanManagerImpl beanManager, Deployment deployment, BeanDeploymentArchiveMapping bdaMapping, Collection<ContextHolder<? extends Context>> contexts) {
+        super(beanManager, AfterBeanDiscovery.class, bdaMapping, deployment, contexts);
         this.slimAnnotatedTypeStore = beanManager.getServices().get(SlimAnnotatedTypeStore.class);
     }
 
