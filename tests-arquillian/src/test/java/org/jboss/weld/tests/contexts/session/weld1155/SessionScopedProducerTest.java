@@ -19,11 +19,13 @@ package org.jboss.weld.tests.contexts.session.weld1155;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import com.gargoylesoftware.htmlunit.util.Cookie;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -37,7 +39,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
-import com.gargoylesoftware.htmlunit.TextPage;
+import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 
 /**
@@ -54,7 +56,7 @@ public class SessionScopedProducerTest {
     private volatile URL url;
 
     private final WebClient client = new WebClient();
-    
+
     private final ExecutorService executor = Executors.newCachedThreadPool();
 
     @Deployment(testable = false)
@@ -66,11 +68,11 @@ public class SessionScopedProducerTest {
     @Test
     public void test() throws Exception {
         client.getPage(url.toString() + "/initial");
-        client.setThrowExceptionOnFailingStatusCode(false);
+        Set<Cookie> cookies = client.getCookieManager().getCookies();
 
         List<Callable<Void>> requests = new LinkedList<Callable<Void>>();
-        requests.add(new ConcurrentRequest());
-        requests.add(new ConcurrentRequest());
+        requests.add(new ConcurrentRequest(cookies));
+        requests.add(new ConcurrentRequest(cookies));
 
         for (Future<Void> result : executor.invokeAll(requests)) {
             result.get();
@@ -84,10 +86,20 @@ public class SessionScopedProducerTest {
 
     private class ConcurrentRequest implements Callable<Void> {
 
+        private final WebClient client;
+
+        public ConcurrentRequest(Set<Cookie> cookies) {
+            client = new WebClient();
+            client.setThrowExceptionOnFailingStatusCode(false);
+            for (Cookie cookie : cookies) {
+                client.getCookieManager().addCookie(cookie);
+            }
+        }
+
         public Void call() throws Exception {
-            TextPage page = client.getPage(url);
+            Page page = client.getPage(url);
             if (page.getWebResponse().getStatusCode() == 500) {
-                throw new RuntimeException(page.getContent());
+                throw new RuntimeException(page.getWebResponse().getContentAsString());
             }
             return null;
         }
