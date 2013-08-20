@@ -27,27 +27,6 @@
             <!-- Issues in Weld (the RI) -->
 
             <!-- Issues in JBoss AS -->
-            <!-- JMS tests not working on AS7, see CDITCK-315 -->
-            <class name="org.jboss.cdi.tck.tests.extensions.container.event.jms.ContainerEventTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
-            <class name="org.jboss.cdi.tck.tests.interceptors.definition.enterprise.jms.MessageDrivenBeanInterceptorInvocationTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
-            <class name="org.jboss.cdi.tck.tests.context.request.event.jms.RequestScopeEventMessageDeliveryTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
-            <class name="org.jboss.cdi.tck.tests.context.jms.MessageDrivenBeanContextTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
             <!-- AS7-6831 @WebServiceRef injection not working in JBoss AS -->
             <class name="org.jboss.cdi.tck.tests.implementation.simple.resource.broken.type.ws.ResourceDefinitionWithDifferentTypeTest">
                 <methods>
@@ -57,17 +36,6 @@
             <class name="org.jboss.cdi.tck.tests.lookup.injection.non.contextual.ws.WebServiceResourceTest">
                 <methods>
                     <exclude name="testResourceInvocation"/>
-                </methods>
-            </class>
-            <!-- AS7-6832 Add support for implicit bean archives -->
-            <class name="org.jboss.cdi.tck.tests.deployment.discovery.BeanDiscoveryTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
-            <class name="org.jboss.cdi.tck.tests.deployment.discovery.enterprise.EnterpriseBeanDiscoveryTest">
-                <methods>
-                    <exclude name=".*"/>
                 </methods>
             </class>
         </classes>
