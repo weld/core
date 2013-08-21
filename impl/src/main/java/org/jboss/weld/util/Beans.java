@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.util;
 
-import static java.util.Arrays.asList;
 import static org.jboss.weld.logging.Category.BEAN;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.BeanMessage.FOUND_DEFAULT_CONSTRUCTOR;
@@ -30,7 +29,6 @@ import static org.jboss.weld.logging.messages.UtilMessage.INVALID_QUANTITY_INJEC
 import static org.jboss.weld.logging.messages.UtilMessage.REDUNDANT_QUALIFIER;
 import static org.jboss.weld.logging.messages.UtilMessage.UNABLE_TO_FIND_CONSTRUCTOR;
 import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
-import static org.jboss.weld.util.reflection.Reflections.EMPTY_ANNOTATIONS;
 
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
@@ -68,7 +66,6 @@ import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.PassivationCapable;
 import javax.inject.Inject;
 
-import org.jboss.weld.Container;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotated;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedConstructor;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
@@ -410,22 +407,14 @@ public class Beans {
         return annotatedItem.isAnnotationPresent(Decorator.class);
     }
 
-    public static Annotation[] mergeInQualifiers(String contextId, Annotation[] qualifiers, Annotation[] newQualifiers) {
-        if (qualifiers == null || newQualifiers == null) {
-            return EMPTY_ANNOTATIONS;
-        }
-
-        return mergeInQualifiers(contextId, asList(qualifiers), newQualifiers).toArray(Reflections.EMPTY_ANNOTATIONS);
-    }
-
-    public static Set<Annotation> mergeInQualifiers(String contextId, Collection<Annotation> qualifiers, Annotation[] newQualifiers) {
+    public static Set<Annotation> mergeInQualifiers(BeanManagerImpl manager, Collection<Annotation> qualifiers, Annotation[] newQualifiers) {
         Set<Annotation> result = new HashSet<Annotation>();
 
         if (qualifiers != null && !(qualifiers.isEmpty())) {
             result.addAll(qualifiers);
         }
         if (newQualifiers != null && newQualifiers.length > 0) {
-            final MetaAnnotationStore store = Container.instance(contextId).services().get(MetaAnnotationStore.class);
+            final MetaAnnotationStore store = manager.getServices().get(MetaAnnotationStore.class);
             Set<Annotation> checkedNewQualifiers = new HashSet<Annotation>();
             for (Annotation qualifier : newQualifiers) {
                 if (!store.getBindingTypeModel(qualifier.annotationType()).isValid()) {

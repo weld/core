@@ -1,16 +1,18 @@
 package org.jboss.weld.bean.builtin;
 
-import org.jboss.weld.injection.ForwardingInjectionPoint;
-import org.jboss.weld.util.reflection.ParameterizedTypeImpl;
+import static org.jboss.weld.util.Beans.mergeInQualifiers;
 
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.spi.InjectionPoint;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Set;
 
-import static org.jboss.weld.util.Beans.mergeInQualifiers;
+import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.spi.InjectionPoint;
+
+import org.jboss.weld.injection.ForwardingInjectionPoint;
+import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.reflection.ParameterizedTypeImpl;
 
 public class FacadeInjectionPoint extends ForwardingInjectionPoint implements Serializable {
 
@@ -20,10 +22,10 @@ public class FacadeInjectionPoint extends ForwardingInjectionPoint implements Se
     private final Type type;
     private final Set<Annotation> qualifiers;
 
-    public FacadeInjectionPoint(String contextId, InjectionPoint injectionPoint, Type subtype, Set<Annotation> existingQualifiers, Annotation[] newQualifiers) {
+    public FacadeInjectionPoint(BeanManagerImpl manager, InjectionPoint injectionPoint, Type subtype, Set<Annotation> existingQualifiers, Annotation[] newQualifiers) {
         this.injectionPoint = injectionPoint;
         this.type = new ParameterizedTypeImpl(Instance.class, new Type[]{subtype}, null);
-        this.qualifiers = mergeInQualifiers(contextId, existingQualifiers, newQualifiers);
+        this.qualifiers = mergeInQualifiers(manager, existingQualifiers, newQualifiers);
     }
 
     @Override

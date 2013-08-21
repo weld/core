@@ -179,7 +179,7 @@ public class ClientProxyProvider {
     }
 
     private <T> T createClientProxy(Bean<T> bean, Set<Type> types) {
-        BeanIdentifier id = Container.instance().services().get(ContextualStore.class).putIfAbsent(bean);
+        BeanIdentifier id = Container.instance(contextId).services().get(ContextualStore.class).putIfAbsent(bean);
         if (id == null) {
             throw new DefinitionException(BEAN_ID_CREATION_FAILED, bean);
         }

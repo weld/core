@@ -32,6 +32,7 @@ import javax.servlet.ServletRequestEvent;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSessionEvent;
 
+import org.jboss.weld.Container;
 import org.jboss.weld.bean.builtin.BeanManagerProxy;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -60,8 +61,18 @@ public class WeldInitialListener extends AbstractServletListener {
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
+        // if running in OSGi environment, use the context id obtained from servlet context
         if (beanManager == null) {
-            // servlet containers may not be able to inject fields in a servlet listener
+            String contextId = sce.getServletContext().getInitParameter(Container.CONTEXT_ID_KEY);
+            if (contextId != null) {
+                Container instance = Container.instance(contextId);
+                if (instance.beanDeploymentArchives().size() == 1) {
+                    this.beanManager = instance.beanDeploymentArchives().values().iterator().next();
+                }
+            }
+        }
+        // servlet containers may not be able to inject fields in a servlet listener
+        if (beanManager == null) {
             beanManager = BeanManagerProxy.unwrap(CDI.current().getBeanManager());
         }
         this.lifecycle = new HttpContextLifecycle(beanManager);
