@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.test.util;
 
-import static org.jboss.weld.logging.messages.BeanManagerMessage.UNRESOLVABLE_TYPE;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -40,7 +38,7 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.bean.proxy.ProxyObject;
-import org.jboss.weld.exceptions.UnsatisfiedResolutionException;
+import org.jboss.weld.logging.BeanManagerLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.test.util.el.EL;
@@ -127,7 +125,7 @@ public class Utils {
         Set<Bean<?>> beans = beanManager.getBeans(beanType, bindings);
         Bean<?> bean = beanManager.resolve(beans);
         if (bean == null) {
-            throw new UnsatisfiedResolutionException(UNRESOLVABLE_TYPE, beanType, Arrays.toString(bindings));
+            throw BeanManagerLogger.LOG.unresolvableType(beanType, Arrays.toString(bindings));
         }
 
         @SuppressWarnings("unchecked")

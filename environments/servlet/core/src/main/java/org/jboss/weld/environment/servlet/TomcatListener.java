@@ -16,16 +16,16 @@
  */
 package org.jboss.weld.environment.servlet;
 
-import org.jboss.weld.environment.servlet.deployment.URLScanner;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.net.URL;
+import java.util.Set;
 
 import javax.naming.Binding;
 import javax.naming.NamingEnumeration;
 import javax.naming.directory.DirContext;
 import javax.servlet.ServletContext;
-import java.net.URL;
-import java.util.Set;
+
+import org.jboss.logging.Logger;
+import org.jboss.weld.environment.servlet.deployment.URLScanner;
 
 /**
  * Tomcat listener.
@@ -34,7 +34,7 @@ import java.util.Set;
  * @author Ales Justin
  */
 public class TomcatListener extends Listener {
-    private static final Logger log = LoggerFactory.getLogger(TomcatListener.class);
+    private static final Logger log = Logger.getLogger(TomcatListener.class);
 
     protected URLScanner createUrlScanner(ClassLoader classLoader, ServletContext context) {
         return new TomcatScanner(classLoader);

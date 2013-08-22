@@ -16,8 +16,6 @@
  */
 package org.jboss.weld;
 
-import static org.jboss.weld.logging.messages.BeanManagerMessage.NULL_BEAN_MANAGER_ID;
-
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
@@ -29,9 +27,7 @@ import org.jboss.weld.bootstrap.api.Singleton;
 import org.jboss.weld.bootstrap.api.SingletonProvider;
 import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
-import org.jboss.weld.exceptions.IllegalArgumentException;
-import org.jboss.weld.logging.LoggerFactory;
-import org.jboss.weld.logging.MessageConveyorFactory;
+import org.jboss.weld.logging.BeanManagerLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
@@ -145,8 +141,6 @@ public class Container {
         beanDeploymentArchives.clear();
         deploymentServices.cleanup();
         deploymentManager.cleanup();
-        LoggerFactory.cleanup();
-        MessageConveyorFactory.cleanup();
         instance.clear(contextId);
     }
 
@@ -180,7 +174,7 @@ public class Container {
     public String addActivity(BeanManagerImpl manager) {
         String id = manager.getId();
         if (manager.getId() == null) {
-            throw new IllegalArgumentException(NULL_BEAN_MANAGER_ID, manager);
+            throw BeanManagerLogger.LOG.nullBeanManagerId();
         }
         managers.put(id, manager);
         return id;

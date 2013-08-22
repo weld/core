@@ -29,6 +29,7 @@ import org.jboss.weld.context.CreationalContextImpl;
 import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.injection.EmptyInjectionPoint;
+import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.serialization.spi.ContextualStore;
 
@@ -67,7 +68,7 @@ public class ContextBeanInstance<T> extends AbstractBeanInstance implements Seri
         this.id = id;
         this.contextId = contextId;
         this.instanceType = computeInstanceType(bean);
-        log.trace("Created context instance locator for bean {} identified as {}", bean, id);
+        BeanLogger.LOG.createdContextInstance(bean, id);
     }
 
     public T getInstance() {

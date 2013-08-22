@@ -1,7 +1,5 @@
 package org.jboss.weld.annotated.slim.backed;
 
-import static org.jboss.weld.logging.messages.BeanMessage.UNABLE_TO_LOAD_MEMBER;
-
 import java.io.Serializable;
 import java.lang.reflect.Member;
 import java.lang.reflect.Type;
@@ -9,7 +7,7 @@ import java.util.Set;
 
 import javax.enterprise.inject.spi.AnnotatedMember;
 
-import org.jboss.weld.exceptions.IllegalStateException;
+import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.resources.ReflectionCache;
 import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.serialization.AbstractSerializableHolder;
@@ -61,7 +59,7 @@ public abstract class BackedAnnotatedMember<X> extends BackedAnnotated implement
                     return annotatedMember;
                 }
             }
-            throw new IllegalStateException(UNABLE_TO_LOAD_MEMBER, memberHolder.get());
+            throw BeanLogger.LOG.unableToLoadMember(memberHolder.get());
         }
 
         protected abstract Iterable<A> getCandidates();

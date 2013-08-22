@@ -23,7 +23,6 @@
 package org.jboss.weld.context;
 
 import static org.jboss.weld.context.conversation.ConversationIdGenerator.CONVERSATION_ID_GENERATOR_ATTRIBUTE_NAME;
-import static org.jboss.weld.logging.messages.ConversationMessage.NO_CONVERSATION_FOUND_TO_RESTORE;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.annotation.Annotation;
@@ -44,7 +43,7 @@ import org.jboss.weld.context.beanstore.NamingScheme;
 import org.jboss.weld.context.conversation.ConversationIdGenerator;
 import org.jboss.weld.context.conversation.ConversationImpl;
 import org.jboss.weld.literal.DestroyedLiteral;
-import org.jboss.weld.logging.messages.ConversationMessage;
+import org.jboss.weld.logging.ConversationLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 
@@ -213,13 +212,13 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
                     } else {
                         // Associate the request with a new transient conversation
                         associateRequest();
-                        throw new BusyConversationException(ConversationMessage.CONVERSATION_LOCK_TIMEDOUT, cid);
+                        throw ConversationLogger.LOG.conversationLockTimedout(cid);
                     }
                 } else {
                     // CDI 6.7.4 we must activate a new transient conversation before we throw the exception
                     associateRequest();
                     // Make sure that the conversation already exists
-                    throw new NonexistentConversationException(NO_CONVERSATION_FOUND_TO_RESTORE, cid);
+                    throw ConversationLogger.LOG.noConversationFoundToRestore(cid);
                 }
             } else {
                 associateRequest();

@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.injection.producer;
 
-import static org.jboss.weld.logging.messages.UtilMessage.ACCESS_ERROR_ON_FIELD;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.security.AccessController;
@@ -36,11 +34,11 @@ import org.jboss.weld.bean.proxy.DecoratorProxyFactory;
 import org.jboss.weld.bean.proxy.ProxyMethodHandler;
 import org.jboss.weld.bean.proxy.ProxyObject;
 import org.jboss.weld.bean.proxy.TargetBeanInstance;
-import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.injection.ConstructorInjectionPoint;
 import org.jboss.weld.injection.FieldInjectionPoint;
 import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.attributes.WeldInjectionPointAttributes;
+import org.jboss.weld.logging.UtilLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.security.GetAccessibleCopyOfMember;
 import org.jboss.weld.util.Decorators;
@@ -109,7 +107,7 @@ public class DecoratorInjectionTarget<T> extends BeanInjectionTarget<T> {
             try {
                 delegate = accessibleField.get(instance);
             } catch (IllegalAccessException e) {
-                throw new WeldException(ACCESS_ERROR_ON_FIELD, e, accessibleField.getName(), accessibleField.getDeclaringClass());
+                throw UtilLogger.LOG.accessErrorOnField(accessibleField.getName(), accessibleField.getDeclaringClass(), e);
             }
             final ProxyMethodHandler handler = new ProxyMethodHandler(beanManager.getContextId(), new TargetBeanInstance(delegate), getBean());
             ((ProxyObject) instance).setHandler(handler);

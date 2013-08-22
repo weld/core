@@ -25,7 +25,7 @@ import javax.servlet.http.HttpSession;
 
 import org.jboss.weld.bean.builtin.AbstractStaticallyDecorableBuiltInBean;
 import org.jboss.weld.exceptions.IllegalStateException;
-import org.jboss.weld.logging.messages.ServletMessage;
+import org.jboss.weld.logging.ServletLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.servlet.SessionHolder;
 
@@ -46,7 +46,7 @@ public class HttpSessionBean extends AbstractStaticallyDecorableBuiltInBean<Http
         try {
             return SessionHolder.getSessionIfExists();
         } catch (IllegalStateException e) {
-            throw new IllegalStateException(ServletMessage.CANNOT_INJECT_OBJECT_OUTSIDE_OF_SERVLET_REQUEST, e, HttpSession.class.getSimpleName());
+            throw ServletLogger.LOG.cannotInjectObjectOutsideOfServletRequest(HttpSession.class.getSimpleName(), e);
         }
     }
 

@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.annotated.enhanced.jlr;
 
-import static org.jboss.weld.logging.messages.ReflectionMessage.ANNOTATION_MAP_NULL;
-import static org.jboss.weld.logging.messages.ReflectionMessage.DECLARED_ANNOTATION_MAP_NULL;
 import static org.jboss.weld.util.collections.WeldCollections.immutableMap;
 import static org.jboss.weld.util.reflection.Reflections.EMPTY_ANNOTATIONS;
 
@@ -36,8 +34,8 @@ import javax.inject.Qualifier;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotated;
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
-import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.literal.DefaultLiteral;
+import org.jboss.weld.logging.ReflectionLogger;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.collections.ArraySetMultimap;
@@ -136,7 +134,7 @@ public abstract class AbstractEnhancedAnnotated<T, S> implements EnhancedAnnotat
         }
 
         if (annotationMap == null) {
-            throw new WeldException(ANNOTATION_MAP_NULL);
+            throw ReflectionLogger.LOG.annotationMapNull();
         }
         this.annotationMap = immutableMap(annotationMap);
         ArraySetMultimap<Class<? extends Annotation>, Annotation> metaAnnotationMap = new ArraySetMultimap<Class<? extends Annotation>, Annotation>();
@@ -157,7 +155,7 @@ public abstract class AbstractEnhancedAnnotated<T, S> implements EnhancedAnnotat
         this.metaAnnotationMap = metaAnnotationMap;
 
         if (declaredAnnotationMap == null) {
-            throw new WeldException(DECLARED_ANNOTATION_MAP_NULL);
+            throw ReflectionLogger.LOG.declaredAnnotationMapNull();
         }
         if (delegate.getBaseType() instanceof ParameterizedType) {
             this.actualTypeArguments = ((ParameterizedType) delegate.getBaseType()).getActualTypeArguments();

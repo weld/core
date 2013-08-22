@@ -16,15 +16,13 @@
  */
 package org.jboss.weld.el;
 
-import org.jboss.weld.exceptions.IllegalArgumentException;
-import org.jboss.weld.util.el.ForwardingExpressionFactory;
-
 import javax.el.ELContext;
 import javax.el.ExpressionFactory;
 import javax.el.MethodExpression;
 import javax.el.ValueExpression;
 
-import static org.jboss.weld.logging.messages.ElMessage.NULL_EXPRESSION_FACTORY;
+import org.jboss.weld.logging.ElLogger;
+import org.jboss.weld.util.el.ForwardingExpressionFactory;
 
 /**
  * @author pmuir
@@ -35,7 +33,7 @@ public class WeldExpressionFactory extends ForwardingExpressionFactory {
 
     public WeldExpressionFactory(ExpressionFactory expressionFactory) {
         if (expressionFactory == null) {
-            throw new IllegalArgumentException(NULL_EXPRESSION_FACTORY);
+            throw ElLogger.LOG.nullExpressionFactory();
         }
         this.delegate = expressionFactory;
     }

@@ -29,7 +29,11 @@ public enum Category {
     CONVERSATION("Conversation"),
     CONTEXT("Context"),
     EL("El"),
-    CLASS_LOADING("ClassLoading");
+    RESOLUTION("Resolution"),
+    BEAN_MANAGER("BeanManager"),
+    VALIDATOR("Validator"),
+    INTERCEPTOR("Interceptor"),
+    ;
 
     private static final String LOG_PREFIX = "org.jboss.weld.";
 

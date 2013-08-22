@@ -16,9 +16,6 @@
  */
 package org.jboss.weld.environment.se.discovery.url;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -30,6 +27,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
+import org.jboss.logging.Logger;
+
 /**
  * This class provides file-system orientated scanning
  *
@@ -38,7 +37,7 @@ import java.util.zip.ZipFile;
  */
 public class FileSystemURLHandler {
 
-    private static final Logger log = LoggerFactory.getLogger(FileSystemURLHandler.class);
+    private static final Logger log = Logger.getLogger(FileSystemURLHandler.class);
 
     private static final String CLASS_FILE_EXTENSION = ".class";
     private static final String BEANS_XML = "beans.xml";
@@ -48,7 +47,7 @@ public class FileSystemURLHandler {
 
     public void handle(String urlPath) {
         try {
-            log.trace("scanning: {}", urlPath);
+            log.tracev("scanning: {0}", urlPath);
 
             File file = new File(urlPath);
             if (file.isDirectory()) {
@@ -63,7 +62,7 @@ public class FileSystemURLHandler {
 
     private void handleArchiveByFile(File file) throws IOException {
         try {
-            log.trace("archive: {}", file);
+            log.tracev("archive: {0}", file);
 
             String archiveUrl = "jar:" + file.toURI().toURL().toExternalForm() + "!/";
             ZipFile zip = new ZipFile(file);
@@ -74,13 +73,14 @@ public class FileSystemURLHandler {
                 String name = entry.getName();
                 addToDiscovered(name, new URL(archiveUrl + name));
             }
+            zip.close();
         } catch (ZipException e) {
             throw new RuntimeException("Error handling file " + file, e);
         }
     }
 
     private void handleDirectory(File dir, String path) {
-        log.trace("handling directory: {}", dir);
+        log.tracev("handling directory: {0}", dir);
 
         File[] files = dir.listFiles();
         assert files != null;
@@ -93,7 +93,7 @@ public class FileSystemURLHandler {
                 try {
                     addToDiscovered(newPath, child.toURI().toURL());
                 } catch (MalformedURLException e) {
-                    log.error("Error loading file {}", newPath);
+                    log.errorv("Error loading file {0}", newPath);
                 }
             }
         }

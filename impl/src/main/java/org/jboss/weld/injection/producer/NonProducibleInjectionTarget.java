@@ -25,7 +25,7 @@ import javax.enterprise.inject.spi.InjectionTarget;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.exceptions.CreationException;
-import org.jboss.weld.logging.messages.BeanMessage;
+import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
@@ -52,7 +52,7 @@ public class NonProducibleInjectionTarget<T> extends BasicInjectionTarget<T> {
 
     @Override
     public T produce(CreationalContext<T> ctx) {
-        throw new CreationException(BeanMessage.INJECTION_TARGET_CANNOT_PRODUCE_INSTANCE, getAnnotated().getJavaClass());
+        throw BeanLogger.LOG.injectionTargetCannotProduceInstance(getAnnotated().getJavaClass());
     }
 
     @Override

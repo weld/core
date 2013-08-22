@@ -16,13 +16,6 @@
  */
 package org.jboss.weld.context;
 
-import static org.jboss.weld.logging.Category.CONTEXT;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.ContextMessage.CONTEXTUAL_INSTANCE_REMOVED;
-import static org.jboss.weld.logging.messages.ContextMessage.CONTEXTUAL_IS_NULL;
-import static org.jboss.weld.logging.messages.ContextMessage.CONTEXT_CLEARED;
-import static org.jboss.weld.logging.messages.ContextMessage.NO_BEAN_STORE_AVAILABLE;
-
 import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.context.spi.AlterableContext;
 import javax.enterprise.context.spi.Contextual;
@@ -34,11 +27,9 @@ import org.jboss.weld.context.api.ContextualInstance;
 import org.jboss.weld.context.beanstore.BeanStore;
 import org.jboss.weld.context.beanstore.LockedBean;
 import org.jboss.weld.context.cache.RequestScopedBeanCache;
-import org.jboss.weld.exceptions.IllegalArgumentException;
-import org.jboss.weld.exceptions.IllegalStateException;
+import org.jboss.weld.logging.ContextLogger;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.serialization.spi.ContextualStore;
-import org.slf4j.cal10n.LocLogger;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
@@ -53,7 +44,6 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
  * @see org.jboss.weld.context.BasicContext
  */
 public abstract class AbstractContext implements AlterableContext {
-    private static final LocLogger log = loggerFactory().getLogger(CONTEXT);
 
     private final boolean multithreaded;
 
@@ -85,7 +75,7 @@ public abstract class AbstractContext implements AlterableContext {
             return null;
         }
         if (contextual == null) {
-            throw new IllegalArgumentException(CONTEXTUAL_IS_NULL);
+            throw ContextLogger.LOG.contextualIsNull();
         }
         BeanIdentifier id = getId(contextual);
         ContextualInstance<T> beanInstance = beanStore.get(id);
@@ -127,10 +117,10 @@ public abstract class AbstractContext implements AlterableContext {
             throw new ContextNotActiveException();
         }
         if (contextual == null) {
-            throw new IllegalArgumentException(CONTEXTUAL_IS_NULL);
+            throw ContextLogger.LOG.contextualIsNull();
         }
         if (getBeanStore() == null) {
-            throw new IllegalStateException(NO_BEAN_STORE_AVAILABLE, this);
+            throw ContextLogger.LOG.noBeanStoreAvailable(this);
         }
         BeanIdentifier id = getId(contextual);
         ContextualInstance<?> beanInstance = getBeanStore().remove(id);
@@ -142,23 +132,23 @@ public abstract class AbstractContext implements AlterableContext {
 
     private <T> ContextualInstance<T> getContextualInstance(BeanIdentifier id) {
         if (getBeanStore() == null) {
-            throw new IllegalStateException(NO_BEAN_STORE_AVAILABLE, this);
+            throw ContextLogger.LOG.noBeanStoreAvailable(this);
         }
         return getBeanStore().get(id);
     }
 
     private <T> void destroyContextualInstance(ContextualInstance<T> instance) {
         instance.getContextual().destroy(instance.getInstance(), instance.getCreationalContext());
-        log.trace(CONTEXTUAL_INSTANCE_REMOVED, instance, this);
+        ContextLogger.LOG.contextualInstanceRemoved(instance, this);
     }
 
     /**
      * Destroys the context
      */
     protected void destroy() {
-        log.trace(CONTEXT_CLEARED, this);
+        ContextLogger.LOG.contextCleared(this);
         if (getBeanStore() == null) {
-            throw new IllegalStateException(NO_BEAN_STORE_AVAILABLE, this);
+            throw ContextLogger.LOG.noBeanStoreAvailable(this);
         }
         for (BeanIdentifier id : getBeanStore()) {
             destroyContextualInstance(getContextualInstance(id));

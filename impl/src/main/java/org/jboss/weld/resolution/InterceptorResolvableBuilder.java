@@ -16,10 +16,6 @@
  */
 package org.jboss.weld.resolution;
 
-import static org.jboss.weld.logging.messages.BeanManagerMessage.DUPLICATE_INTERCEPTOR_BINDING;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.INTERCEPTOR_BINDINGS_EMPTY;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.INTERCEPTOR_RESOLUTION_WITH_NONBINDING_TYPE;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collection;
@@ -29,7 +25,7 @@ import java.util.Set;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InterceptionType;
 
-import org.jboss.weld.exceptions.IllegalArgumentException;
+import org.jboss.weld.logging.BeanManagerLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 public class InterceptorResolvableBuilder extends ResolvableBuilder {
@@ -47,10 +43,10 @@ public class InterceptorResolvableBuilder extends ResolvableBuilder {
     @Override
     protected void checkQualifier(Annotation qualifier,final QualifierInstance qualifierInstance, Class<? extends  Annotation> annotationType) {
         if (!getMetaAnnotationStore().getInterceptorBindingModel(annotationType).isValid()) {
-            throw new IllegalArgumentException(INTERCEPTOR_RESOLUTION_WITH_NONBINDING_TYPE, qualifier);
+            throw BeanManagerLogger.LOG.interceptorResolutionWithNonbindingType(qualifier);
         }
         if (qualifierInstances.contains(qualifierInstance)) {
-            throw new IllegalArgumentException(DUPLICATE_INTERCEPTOR_BINDING, qualifiers);
+            throw BeanManagerLogger.LOG.duplicateInterceptorBinding(qualifiers);
         }
     }
 
@@ -98,7 +94,7 @@ public class InterceptorResolvableBuilder extends ResolvableBuilder {
     @Override
     public InterceptorResolvable create() {
         if (qualifiers.size() == 0) {
-            throw new IllegalArgumentException(INTERCEPTOR_BINDINGS_EMPTY);
+            throw BeanManagerLogger.LOG.interceptorBindingsEmpty();
         }
         return new InterceptorResolvableImpl(rawType, types, mappedQualifiers, declaringBean, interceptionType, qualifierInstances);
     }

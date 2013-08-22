@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.bean;
 
-import static org.jboss.weld.logging.messages.BeanMessage.NO_DELEGATE_FOR_DECORATOR;
-import static org.jboss.weld.logging.messages.BeanMessage.TOO_MANY_DELEGATES_FOR_DECORATOR;
 import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
 
 import java.io.Serializable;
@@ -32,7 +30,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
 import javax.enterprise.inject.spi.InjectionTargetFactory;
 
-import org.jboss.weld.exceptions.DefinitionException;
+import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -59,13 +57,13 @@ public class SyntheticDecorator<T> extends SyntheticClassBean<T> implements Deco
         for (InjectionPoint injectionPoint : injectionPoints) {
             if (injectionPoint.isDelegate()) {
                 if (delegate != null) {
-                    throw new DefinitionException(TOO_MANY_DELEGATES_FOR_DECORATOR, getBeanClass());
+                    throw BeanLogger.LOG.tooManyDelegatesForDecorator(getBeanClass());
                 }
                 delegate = injectionPoint;
             }
         }
         if (delegate == null) {
-            throw new DefinitionException(NO_DELEGATE_FOR_DECORATOR, getBeanClass());
+            throw BeanLogger.LOG.noDelegateForDecorator(getBeanClass());
         }
         return delegate;
     }

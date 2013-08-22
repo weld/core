@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.injection.producer;
 
-import static org.jboss.weld.logging.messages.BeanMessage.INVOCATION_ERROR;
-
 import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.util.List;
@@ -27,8 +25,8 @@ import javax.annotation.PreDestroy;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
-import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.interceptor.util.InterceptionUtils;
+import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.security.GetAccessibleCopyOfMember;
 import org.jboss.weld.util.BeanMethods;
 
@@ -90,7 +88,7 @@ public class DefaultLifecycleCallbackInvoker<T> implements LifecycleCallbackInvo
             try {
                 method.invoke(instance);
             } catch (Exception e) {
-                throw new WeldException(INVOCATION_ERROR, e, method, instance);
+                throw BeanLogger.LOG.invocationError(method, instance, e);
             }
         }
     }

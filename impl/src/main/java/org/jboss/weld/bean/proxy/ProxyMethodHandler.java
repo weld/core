@@ -17,11 +17,6 @@
 
 package org.jboss.weld.bean.proxy;
 
-import static org.jboss.weld.logging.Category.BEAN;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.BeanMessage.BEAN_INSTANCE_NOT_SET_ON_PROXY;
-import static org.jboss.weld.logging.messages.BeanMessage.PROXY_HANDLER_SERIALIZED_FOR_NON_SERIALIZABLE_BEAN;
-
 import java.io.Serializable;
 import java.lang.reflect.Method;
 
@@ -31,11 +26,10 @@ import javax.enterprise.inject.spi.PassivationCapable;
 import org.jboss.weld.Container;
 import org.jboss.weld.bean.CommonBean;
 import org.jboss.weld.bean.StringBeanIdentifier;
-import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.interceptor.util.proxy.TargetInstanceProxy;
+import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.serialization.spi.ContextualStore;
-import org.slf4j.cal10n.LocLogger;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
@@ -49,9 +43,6 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 public class ProxyMethodHandler implements MethodHandler, Serializable {
 
     private static final long serialVersionUID = 5293834510764991583L;
-
-    // The log provider
-    protected static final LocLogger log = loggerFactory().getLogger(BEAN);
 
     // The bean instance to forward calls to
     private final BeanInstance beanInstance;
@@ -80,16 +71,16 @@ public class ProxyMethodHandler implements MethodHandler, Serializable {
     */
     public Object invoke(Object self, Method thisMethod, Method proceed, Object[] args) throws Throwable {
         if (thisMethod == null) {
-            log.trace("MethodHandler processing returning bean instance for {}", self.getClass());
+            BeanLogger.LOG.methodHandlerProcessingReturningBeanInstance(self.getClass());
             if (beanInstance == null) {
-                throw new WeldException(BEAN_INSTANCE_NOT_SET_ON_PROXY);
+                throw BeanLogger.LOG.beanInstanceNotSetOnProxy(getBean());
             }
             return beanInstance.getInstance();
         }
-        log.trace("MethodHandler processing call to {} for {}", thisMethod, self.getClass());
+        BeanLogger.LOG.methodHandlerProcessingCall(thisMethod, self.getClass());
         if (thisMethod.getDeclaringClass().equals(TargetInstanceProxy.class)) {
             if (beanInstance == null) {
-                throw new WeldException(BEAN_INSTANCE_NOT_SET_ON_PROXY, getBean());
+                throw BeanLogger.LOG.beanInstanceNotSetOnProxy(getBean());
             }
             if (thisMethod.getName().equals("getTargetInstance")) {
                 return beanInstance.getInstance();
@@ -99,11 +90,11 @@ public class ProxyMethodHandler implements MethodHandler, Serializable {
                 return null;
             }
         } else if (thisMethod.getName().equals("_initMH")) {
-            log.trace("Setting new MethodHandler with bean instance for {} on {}", args[0], self.getClass());
+            BeanLogger.LOG.settingNewMethodHandler(args[0], self.getClass());
             return new ProxyMethodHandler(contextId, new TargetBeanInstance(args[0]), getBean());
         } else {
             if (beanInstance == null) {
-                throw new WeldException(BEAN_INSTANCE_NOT_SET_ON_PROXY);
+                throw BeanLogger.LOG.beanInstanceNotSetOnProxy(getBean());
             }
             Object instance = beanInstance.getInstance();
             Object result = beanInstance.invoke(instance, thisMethod, args);
@@ -119,7 +110,7 @@ public class ProxyMethodHandler implements MethodHandler, Serializable {
     public Bean<?> getBean() {
         if (bean == null) {
             if (beanId == null) {
-                throw new WeldException(PROXY_HANDLER_SERIALIZED_FOR_NON_SERIALIZABLE_BEAN);
+                throw BeanLogger.LOG.proxyHandlerSerializedForNonSerializableBean();
             }
             bean = Container.instance(contextId).services().get(ContextualStore.class).<Bean<Object>, Object>getContextual(beanId);
         }

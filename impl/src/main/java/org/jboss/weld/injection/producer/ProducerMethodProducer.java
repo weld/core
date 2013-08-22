@@ -16,11 +16,6 @@
  */
 package org.jboss.weld.injection.producer;
 
-import static org.jboss.weld.logging.messages.BeanMessage.INCONSISTENT_ANNOTATIONS_ON_METHOD;
-import static org.jboss.weld.logging.messages.BeanMessage.METHOD_NOT_BUSINESS_METHOD;
-import static org.jboss.weld.logging.messages.BeanMessage.PRODUCER_METHOD_CANNOT_HAVE_A_WILDCARD_RETURN_TYPE;
-import static org.jboss.weld.logging.messages.BeanMessage.PRODUCER_METHOD_WITH_TYPE_VARIABLE_RETURN_TYPE_MUST_BE_DEPENDENT;
-
 import java.lang.reflect.Type;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
@@ -40,7 +35,7 @@ import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.MethodInjectionPoint;
-import org.jboss.weld.logging.messages.BeanMessage;
+import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.security.GetMethodAction;
 
 /**
@@ -67,9 +62,9 @@ public abstract class ProducerMethodProducer<X, T> extends AbstractMemberProduce
      */
     protected void checkProducerMethod(EnhancedAnnotatedMethod<T, ? super X> method) {
         if (method.getEnhancedParameters(Observes.class).size() > 0) {
-            throw new DefinitionException(INCONSISTENT_ANNOTATIONS_ON_METHOD, PRODUCER_ANNOTATION, "@Observes");
+            throw BeanLogger.LOG.inconsistentAnnotationsOnMethod(PRODUCER_ANNOTATION, "@Observes", this.method);
         } else if (method.getEnhancedParameters(Disposes.class).size() > 0) {
-            throw new DefinitionException(INCONSISTENT_ANNOTATIONS_ON_METHOD, PRODUCER_ANNOTATION, "@Disposes");
+            throw BeanLogger.LOG.inconsistentAnnotationsOnMethod(PRODUCER_ANNOTATION, "@Disposes", this.method);
         } else if (getDeclaringBean() instanceof SessionBean<?>) {
             boolean methodDeclaredOnTypes = false;
             // TODO use annotated item?
@@ -85,7 +80,7 @@ public abstract class ProducerMethodProducer<X, T> extends AbstractMemberProduce
                 }
             }
             if (!methodDeclaredOnTypes) {
-                throw new DefinitionException(METHOD_NOT_BUSINESS_METHOD, this, getDeclaringBean());
+                throw BeanLogger.LOG.methodNotBusinessMethod(this, getDeclaringBean());
             }
         }
     }
@@ -109,11 +104,11 @@ public abstract class ProducerMethodProducer<X, T> extends AbstractMemberProduce
         return method.getAnnotated();
     }
 
-    protected BeanMessage producerCannotHaveWildcardBeanType() {
-        return PRODUCER_METHOD_CANNOT_HAVE_A_WILDCARD_RETURN_TYPE;
+    protected DefinitionException producerCannotHaveWildcardBeanType(Object member) {
+        return BeanLogger.LOG.producerMethodCannotHaveAWildcardReturnType(member);
     }
 
-    protected BeanMessage producerWithTypeVariableBeanTypeMustBeDependent() {
-        return PRODUCER_METHOD_WITH_TYPE_VARIABLE_RETURN_TYPE_MUST_BE_DEPENDENT;
+    protected DefinitionException producerWithTypeVariableBeanTypeMustBeDependent(Object member) {
+        return BeanLogger.LOG.producerMethodWithTypeVariableReturnTypeMustBeDependent(member);
     }
 }

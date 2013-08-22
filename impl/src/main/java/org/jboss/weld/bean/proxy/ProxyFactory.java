@@ -17,11 +17,6 @@
 
 package org.jboss.weld.bean.proxy;
 
-import static org.jboss.weld.logging.Category.BEAN;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_BEAN_ACCESS_FAILED;
-import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_FAILED;
-import static org.jboss.weld.logging.messages.BeanMessage.UNABLE_TO_LOAD_PROXY_CLASS;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.io.Serializable;
@@ -52,6 +47,7 @@ import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.interceptor.proxy.LifecycleMixin;
 import org.jboss.weld.interceptor.util.proxy.TargetInstanceProxy;
+import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.security.GetDeclaredConstructorsAction;
 import org.jboss.weld.security.GetDeclaredMethodsAction;
 import org.jboss.weld.security.NewInstanceAction;
@@ -70,7 +66,6 @@ import org.jboss.weld.util.bytecode.RuntimeMethodInformation;
 import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.instantiation.InstantiatorFactory;
-import org.slf4j.cal10n.LocLogger;
 
 /**
  * Main factory to produce proxy classes and instances for Weld beans. This
@@ -83,8 +78,7 @@ import org.slf4j.cal10n.LocLogger;
  * @author Ales Justin
  */
 public class ProxyFactory<T> {
-    // The log provider
-    protected static final LocLogger log = loggerFactory().getLogger(BEAN);
+
     // Default proxy class name suffix
     public static final String PROXY_SUFFIX = "$Proxy$";
     public static final String DEFAULT_PROXY_PACKAGE = "org.jboss.weld.proxies";
@@ -112,7 +106,6 @@ public class ProxyFactory<T> {
     protected static final String LJAVA_LANG_THREAD_LOCAL = "Ljava/lang/ThreadLocal;";
 
     protected static final String INIT_METHOD_NAME = "<init>";
-    protected static final String ADDING_METHOD_LOG_PREFIX = "Adding method {}";
     protected static final String METHOD_HANDLER_FIELD_NAME = "methodHandler";
     private static final String JAVA = "java";
 
@@ -279,9 +272,9 @@ public class ProxyFactory<T> {
             }
         } catch (PrivilegedActionException e) {
             if (e.getCause() instanceof InstantiationException) {
-                throw new DefinitionException(PROXY_INSTANTIATION_FAILED, e.getCause(), this);
+                throw new DefinitionException(BeanLogger.LOG.proxyInstantiationFailed(this), e.getCause());
             } else if (e.getCause() instanceof IllegalAccessException) {
-                throw new DefinitionException(PROXY_INSTANTIATION_BEAN_ACCESS_FAILED, e.getCause(), this);
+                throw new DefinitionException(BeanLogger.LOG.proxyInstantiationBeanAccessFailed(this), e.getCause());
             } else {
                 throw new WeldException(e.getCause());
             }
@@ -305,7 +298,7 @@ public class ProxyFactory<T> {
             proxyClassName = proxyClassName.replaceFirst(JAVA, "org.jboss.weld");
         }
         Class<T> proxyClass = null;
-        log.trace("Retrieving/generating proxy class {}", proxyClassName);
+        BeanLogger.LOG.generatingProxyClass(proxyClassName);
         try {
             // First check to see if we already have this proxy class
             proxyClass = cast(classLoader.loadClass(proxyClassName));
@@ -319,7 +312,7 @@ public class ProxyFactory<T> {
                 try {
                     proxyClass = cast(classLoader.loadClass(proxyClassName));
                 } catch (ClassNotFoundException e2) {
-                    throw new WeldException(UNABLE_TO_LOAD_PROXY_CLASS, e1, bean, proxiedBeanType, classLoader);
+                    throw BeanLogger.LOG.unableToLoadProxyClass(bean, proxiedBeanType, classLoader, e1);
                 }
             }
         }
@@ -428,7 +421,7 @@ public class ProxyFactory<T> {
             domain = ProxyFactory.class.getProtectionDomain();
         }
         Class<T> proxyClass = cast(ClassFileUtils.toClass(proxyClassType, classLoader, domain));
-        log.trace("Created Proxy class of type {} supporting interfaces {}", proxyClass, Arrays.toString(proxyClass.getInterfaces()));
+        BeanLogger.LOG.createdProxyClass(proxyClass, Arrays.toString(proxyClass.getInterfaces()));
         return proxyClass;
     }
 
@@ -514,7 +507,7 @@ public class ProxyFactory<T> {
                             ClassMethod classMethod = proxyClassType.addMethod(method);
                             addConstructedGuardToMethodBody(classMethod);
                             createForwardingMethodBody(classMethod, methodInfo);
-                            log.trace(ADDING_METHOD_LOG_PREFIX, method);
+                            BeanLogger.LOG.addingMethodToProxy(method);
                         } catch (DuplicateMemberException e) {
                             // do nothing. This will happen if superclass methods
                             // have been overridden
@@ -529,7 +522,7 @@ public class ProxyFactory<T> {
                         MethodInformation methodInfo = new RuntimeMethodInformation(method);
                         ClassMethod classMethod = proxyClassType.addMethod(method);
                         createSpecialMethodBody(classMethod, methodInfo);
-                        log.trace(ADDING_METHOD_LOG_PREFIX, method);
+                        BeanLogger.LOG.addingMethodToProxy(method);
                     } catch (DuplicateMemberException e) {
                     }
                 }
@@ -697,7 +690,7 @@ public class ProxyFactory<T> {
         try {
             // Add special methods for interceptors
             for (Method method : LifecycleMixin.class.getMethods()) {
-                log.trace(ADDING_METHOD_LOG_PREFIX, method);
+                BeanLogger.LOG.addingMethodToProxy(method);
                 MethodInformation methodInfo = new RuntimeMethodInformation(method);
                 final ClassMethod classMethod = proxyClassType.addMethod(method);
                 createInterceptorBody(classMethod, methodInfo);

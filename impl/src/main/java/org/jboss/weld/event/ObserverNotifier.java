@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.event;
 
-import static org.jboss.weld.logging.messages.UtilMessage.EVENT_TYPE_NOT_ALLOWED;
-import static org.jboss.weld.logging.messages.UtilMessage.TYPE_PARAMETER_NOT_ALLOWED_IN_EVENT_TYPE;
 import static org.jboss.weld.util.cache.LoadingCacheUtils.getCacheValue;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
@@ -28,8 +26,8 @@ import java.util.Set;
 import javax.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
-import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.literal.AnyLiteral;
+import org.jboss.weld.logging.UtilLogger;
 import org.jboss.weld.resolution.Resolvable;
 import org.jboss.weld.resolution.ResolvableBuilder;
 import org.jboss.weld.resolution.TypeSafeObserverResolver;
@@ -194,7 +192,7 @@ public class ObserverNotifier {
              * If the runtime type of the event object contains a type variable, the container must throw an IllegalArgumentException.
              */
             if (Types.containsUnresolvedTypeVariableOrWildcard(resolvedType)) {
-                return new IllegalArgumentException(TYPE_PARAMETER_NOT_ALLOWED_IN_EVENT_TYPE, eventType);
+                return UtilLogger.LOG.typeParameterNotAllowedInEventType(eventType);
             }
 
             /*
@@ -204,7 +202,7 @@ public class ObserverNotifier {
             Class<?> resolvedClass = Reflections.getRawType(eventType);
             for (Class<?> containerEventType : Observers.CONTAINER_LIFECYCLE_EVENT_CANONICAL_SUPERTYPES) {
                 if (containerEventType.isAssignableFrom(resolvedClass)) {
-                    return new IllegalArgumentException(EVENT_TYPE_NOT_ALLOWED, eventType);
+                    return UtilLogger.LOG.eventTypeNotAllowed(eventType);
                 }
             }
             return NO_EXCEPTION_MARKER;

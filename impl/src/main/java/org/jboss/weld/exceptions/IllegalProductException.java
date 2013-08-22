@@ -33,15 +33,23 @@ public class IllegalProductException extends javax.enterprise.inject.IllegalProd
     private final WeldExceptionMessage message;
 
     /**
-     * Creates a new exception with the given localized message key and optional
-     * arguments for the message.
+     * Creates a new exception with the given localized message.
      *
-     * @param <E>  The enumeration type for the message keys
-     * @param key  The localized message to use
-     * @param args Optional arguments to insert into the message
+     * @param message
      */
-    public <E extends Enum<?>> IllegalProductException(E key, Object... args) {
-        message = new WeldExceptionKeyMessage(key, args);
+    public IllegalProductException(String message) {
+        this.message = new WeldExceptionStringMessage(message);
+    }
+
+    /**
+     * Creates a new exception with the given localized message and the cause for this exception.
+     *
+     * @param message
+     * @param throwable
+     */
+    public IllegalProductException(String message, Throwable throwable) {
+        super(throwable);
+        this.message = new WeldExceptionStringMessage(message);
     }
 
     @Override

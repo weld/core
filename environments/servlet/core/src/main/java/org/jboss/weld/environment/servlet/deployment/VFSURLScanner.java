@@ -16,17 +16,16 @@
  */
 package org.jboss.weld.environment.servlet.deployment;
 
-import org.jboss.virtual.VFS;
-import org.jboss.virtual.VirtualFile;
-import org.jboss.virtual.VirtualFileVisitor;
-import org.jboss.virtual.VisitorAttributes;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Set;
+
+import org.jboss.logging.Logger;
+import org.jboss.virtual.VFS;
+import org.jboss.virtual.VirtualFile;
+import org.jboss.virtual.VirtualFileVisitor;
+import org.jboss.virtual.VisitorAttributes;
 
 /**
  * This class provides JBoss VFS orientated scanning
@@ -34,7 +33,7 @@ import java.util.Set;
  * @author Ales Justin
  */
 public class VFSURLScanner extends URLScanner {
-    private static final Logger log = LoggerFactory.getLogger(VFSURLScanner.class);
+    private static final Logger log = Logger.getLogger(VFSURLScanner.class);
 
     public VFSURLScanner(ClassLoader classLoader) {
         super(classLoader);
@@ -42,7 +41,7 @@ public class VFSURLScanner extends URLScanner {
 
     @Override
     protected void handleArchiveByFile(File file, final Set<String> classes, final Set<URL> urls) throws IOException {
-        log.trace("archive: {}", file);
+        log.tracev("archive: {0}", file);
         //noinspection deprecation
         handleURL(file.toURL(), classes, urls);
     }

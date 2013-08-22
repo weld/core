@@ -19,13 +19,6 @@ package org.jboss.weld.metadata.cache;
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.TYPE;
-import static org.jboss.weld.logging.Category.REFLECTION;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.MetadataMessage.MULTIPLE_SCOPES;
-import static org.jboss.weld.logging.messages.MetadataMessage.QUALIFIER_ON_STEREOTYPE;
-import static org.jboss.weld.logging.messages.MetadataMessage.VALUE_ON_NAMED_STEREOTYPE;
-import static org.jboss.weld.logging.messages.ReflectionMessage.MISSING_TARGET;
-import static org.jboss.weld.logging.messages.ReflectionMessage.MISSING_TARGET_METHOD_FIELD_TYPE_PARAMETER_OR_TARGET_METHOD_TYPE_OR_TARGET_METHOD_OR_TARGET_TYPE_OR_TARGET_FIELD;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
@@ -43,9 +36,9 @@ import javax.inject.Scope;
 import javax.interceptor.InterceptorBinding;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotation;
-import org.jboss.weld.exceptions.DefinitionException;
+import org.jboss.weld.logging.MetadataLogger;
+import org.jboss.weld.logging.ReflectionLogger;
 import org.jboss.weld.util.collections.Arrays2;
-import org.slf4j.cal10n.LocLogger;
 
 /**
  * A meta model for a stereotype, allows us to cache a stereotype and to
@@ -55,7 +48,6 @@ import org.slf4j.cal10n.LocLogger;
  */
 public class StereotypeModel<T extends Annotation> extends AnnotationModel<T> {
     private static final Set<Class<? extends Annotation>> META_ANNOTATIONS = Collections.<Class<? extends Annotation>>singleton(Stereotype.class);
-    private static final LocLogger log = loggerFactory().getLogger(REFLECTION);
 
     // Is the stereotype an alternative
     private boolean alternative;
@@ -99,7 +91,7 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T> {
         if (bindings.size() > 0) {
             for (Annotation annotation : bindings) {
                 if (!annotation.annotationType().equals(Named.class)) {
-                    throw new DefinitionException(QUALIFIER_ON_STEREOTYPE, annotatedAnnotation);
+                    throw MetadataLogger.LOG.qualifierOnStereotype(annotatedAnnotation);
                 }
             }
         }
@@ -122,7 +114,7 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T> {
     private void initBeanNameDefaulted(EnhancedAnnotation<T> annotatedAnnotation) {
         if (annotatedAnnotation.isAnnotationPresent(Named.class)) {
             if (!"".equals(annotatedAnnotation.getAnnotation(Named.class).value())) {
-                throw new DefinitionException(VALUE_ON_NAMED_STEREOTYPE, annotatedAnnotation);
+                throw MetadataLogger.LOG.valueOnNamedStereotype(annotatedAnnotation);
             }
             beanNameDefaulted = true;
         }
@@ -136,7 +128,7 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T> {
         scopeTypes.addAll(annotatedAnnotation.getMetaAnnotations(Scope.class));
         scopeTypes.addAll(annotatedAnnotation.getMetaAnnotations(NormalScope.class));
         if (scopeTypes.size() > 1) {
-            throw new DefinitionException(MULTIPLE_SCOPES, annotatedAnnotation);
+            throw MetadataLogger.LOG.multipleScopes(annotatedAnnotation);
         } else if (scopeTypes.size() == 1) {
             this.defaultScopeType = scopeTypes.iterator().next();
         }
@@ -156,7 +148,7 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T> {
         super.check(annotatedAnnotation);
         if (isValid()) {
             if (!annotatedAnnotation.isAnnotationPresent(Target.class)) {
-                log.debug(MISSING_TARGET, annotatedAnnotation);
+                ReflectionLogger.LOG.missingTarget(annotatedAnnotation);
             } else {
                 ElementType[] elementTypes = annotatedAnnotation.getAnnotation(Target.class).value();
                 if (!(Arrays2.unorderedEquals(elementTypes, METHOD, FIELD, TYPE) ||
@@ -165,7 +157,7 @@ public class StereotypeModel<T extends Annotation> extends AnnotationModel<T> {
                                 Arrays2.unorderedEquals(elementTypes, FIELD) ||
                                 Arrays2.unorderedEquals(elementTypes, METHOD, TYPE)
                 )) {
-                    log.debug(MISSING_TARGET_METHOD_FIELD_TYPE_PARAMETER_OR_TARGET_METHOD_TYPE_OR_TARGET_METHOD_OR_TARGET_TYPE_OR_TARGET_FIELD, annotatedAnnotation);
+                    ReflectionLogger.LOG.missingTargetMethodFieldTypeParameterOrTargetMethodTypeOrTargetMethodOrTargetTypeOrTargetField(annotatedAnnotation);
                 }
             }
         }

@@ -27,8 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.jboss.weld.bean.builtin.AbstractStaticallyDecorableBuiltInBean;
 import org.jboss.weld.context.http.HttpRequestContextImpl;
-import org.jboss.weld.exceptions.IllegalStateException;
-import org.jboss.weld.logging.messages.ServletMessage;
+import org.jboss.weld.logging.ServletLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -51,9 +50,9 @@ public class HttpServletRequestBean extends AbstractStaticallyDecorableBuiltInBe
             if (context instanceof HttpRequestContextImpl) {
                 return Reflections.<HttpRequestContextImpl> cast(context).getHttpServletRequest();
             }
-            throw new IllegalStateException(ServletMessage.CANNOT_INJECT_OBJECT_OUTSIDE_OF_SERVLET_REQUEST, HttpServletRequest.class.getSimpleName());
+            throw ServletLogger.LOG.cannotInjectObjectOutsideOfServletRequest(HttpServletRequest.class.getSimpleName(), null);
         } catch (ContextNotActiveException e) {
-            throw new IllegalStateException(ServletMessage.CANNOT_INJECT_OBJECT_OUTSIDE_OF_SERVLET_REQUEST, e, HttpServletRequest.class.getSimpleName());
+            throw ServletLogger.LOG.cannotInjectObjectOutsideOfServletRequest(HttpServletRequest.class.getSimpleName(), e);
         }
     }
 

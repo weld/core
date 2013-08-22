@@ -16,19 +16,12 @@
  */
 package org.jboss.weld.event;
 
-import static org.jboss.weld.logging.Category.EVENT;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.EventMessage.ASYNC_FIRE;
-import static org.jboss.weld.logging.messages.EventMessage.ASYNC_OBSERVER_FAILURE;
-
 import javax.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.context.RequestContext;
 import org.jboss.weld.context.unbound.UnboundLiteral;
-import org.slf4j.cal10n.LocLogger;
-import org.slf4j.ext.XLogger;
-import org.slf4j.ext.XLogger.Level;
+import org.jboss.weld.logging.EventLogger;
 
 /**
  * A task that will notify the observer of a specific event at some future time.
@@ -37,8 +30,6 @@ import org.slf4j.ext.XLogger.Level;
  * @author Jozef Hartinger
  */
 public class DeferredEventNotification<T> implements Runnable {
-    private static final LocLogger log = loggerFactory().getLogger(EVENT);
-    private static final XLogger xLog = loggerFactory().getXLogger(EVENT);
 
     // The observer
     protected final ObserverMethod<? super T> observer;
@@ -62,7 +53,7 @@ public class DeferredEventNotification<T> implements Runnable {
 
     public void run() {
         try {
-            log.debug(ASYNC_FIRE, eventPacket, observer);
+            EventLogger.LOG.asyncFire(eventPacket, observer);
             new RunInRequest(contextId) {
 
                 @Override
@@ -78,8 +69,8 @@ public class DeferredEventNotification<T> implements Runnable {
             }.run();
 
         } catch (Exception e) {
-            log.error(ASYNC_OBSERVER_FAILURE, eventPacket);
-            xLog.throwing(Level.DEBUG, e);
+            EventLogger.LOG.asyncObserverFailure(eventPacket);
+            EventLogger.LOG.catchingDebug(e);
         }
     }
 

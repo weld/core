@@ -16,12 +16,9 @@
  */
 package org.jboss.weld.util;
 
-import static org.jboss.weld.logging.messages.BeanManagerMessage.INTERCEPTOR_RESOLUTION_WITH_NONBINDING_TYPE;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.INVALID_QUALIFIER;
-
 import java.lang.annotation.Annotation;
 
-import org.jboss.weld.exceptions.IllegalArgumentException;
+import org.jboss.weld.logging.BeanManagerLogger;
 import org.jboss.weld.metadata.cache.InterceptorBindingModel;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.metadata.cache.QualifierModel;
@@ -59,7 +56,7 @@ public class Bindings {
 
         QualifierModel<?> model = store.getBindingTypeModel(qualifier.annotationType());
         if (model == null || !model.isValid()) {
-            throw new IllegalArgumentException(INVALID_QUALIFIER, qualifier);
+            throw BeanManagerLogger.LOG.invalidQualifier(qualifier);
         }
     }
 
@@ -82,7 +79,7 @@ public class Bindings {
 
         InterceptorBindingModel<?> model = store.getInterceptorBindingModel(qualifier.annotationType());
         if (model == null || !model.isValid()) {
-            throw new IllegalArgumentException(INTERCEPTOR_RESOLUTION_WITH_NONBINDING_TYPE, qualifier);
+            throw BeanManagerLogger.LOG.interceptorResolutionWithNonbindingType(qualifier);
         }
     }
 }

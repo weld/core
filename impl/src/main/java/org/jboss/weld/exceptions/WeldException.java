@@ -40,32 +40,6 @@ public class WeldException extends RuntimeException {
     }
 
     /**
-     * Creates a new exception with the given localized message key and optional
-     * arguments for the message.
-     *
-     * @param <E>  The enumeration type for the message keys
-     * @param key  The localized message to use
-     * @param args Optional arguments to insert into the message
-     */
-    public <E extends Enum<?>> WeldException(E key, Object... args) {
-        this.message = new WeldExceptionKeyMessage(key, args);
-    }
-
-    /**
-     * Creates a new exception with the given localized message key, the cause
-     * for this exception and optional arguments for the message.
-     *
-     * @param <E>       The enumeration type for the message keys
-     * @param key       The localized message to use
-     * @param throwable The cause for this exception
-     * @param args      Optional arguments to insert into the message
-     */
-    public <E extends Enum<?>> WeldException(E key, Throwable throwable, Object... args) {
-        super(throwable);
-        this.message = new WeldExceptionKeyMessage(key, args);
-    }
-
-    /**
      * Creates a new exception based on a list of throwables.  The throwables are not
      * used as the cause, but the message from each throwable is included as the message
      * for this exception.
@@ -75,6 +49,26 @@ public class WeldException extends RuntimeException {
     public WeldException(List<Throwable> errors) {
         super();
         this.message = new WeldExceptionListMessage(errors);
+    }
+
+    /**
+     * Creates a new exception with the given localized message.
+     *
+     * @param message
+     */
+    public WeldException(String message) {
+        this.message = new WeldExceptionStringMessage(message);
+    }
+
+    /**
+     * Creates a new exception with the given localized message and the cause for this exception.
+     *
+     * @param message
+     * @param throwable
+     */
+    public WeldException(String message, Throwable throwable) {
+        super(throwable);
+        this.message = new WeldExceptionStringMessage(message);
     }
 
     @Override

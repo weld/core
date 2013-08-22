@@ -16,31 +16,18 @@
  */
 package org.jboss.weld.context.conversation;
 
-import org.jboss.weld.context.ConversationContext;
-import org.jboss.weld.context.ManagedConversation;
-import org.jboss.weld.exceptions.IllegalArgumentException;
-import org.jboss.weld.exceptions.IllegalStateException;
-import org.jboss.weld.manager.BeanManagerImpl;
-import org.slf4j.cal10n.LocLogger;
-
-import javax.enterprise.context.ContextNotActiveException;
-import javax.enterprise.context.ConversationScoped;
-import javax.inject.Inject;
 import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static org.jboss.weld.logging.Category.CONVERSATION;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.ConversationMessage.BEGIN_CALLED_ON_LONG_RUNNING_CONVERSATION;
-import static org.jboss.weld.logging.messages.ConversationMessage.CONVERSATION_ID_ALREADY_IN_USE;
-import static org.jboss.weld.logging.messages.ConversationMessage.CONVERSATION_LOCKED;
-import static org.jboss.weld.logging.messages.ConversationMessage.CONVERSATION_UNAVAILABLE;
-import static org.jboss.weld.logging.messages.ConversationMessage.CONVERSATION_UNLOCKED;
-import static org.jboss.weld.logging.messages.ConversationMessage.DEMOTED_LRC;
-import static org.jboss.weld.logging.messages.ConversationMessage.END_CALLED_ON_TRANSIENT_CONVERSATION;
-import static org.jboss.weld.logging.messages.ConversationMessage.ILLEGAL_CONVERSATION_UNLOCK_ATTEMPT;
-import static org.jboss.weld.logging.messages.ConversationMessage.PROMOTED_TRANSIENT;
+import javax.enterprise.context.ContextNotActiveException;
+import javax.enterprise.context.ConversationScoped;
+import javax.inject.Inject;
+
+import org.jboss.weld.context.ConversationContext;
+import org.jboss.weld.context.ManagedConversation;
+import org.jboss.weld.logging.ConversationLogger;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
  * @author Nicklas Karlsson
@@ -49,8 +36,6 @@ import static org.jboss.weld.logging.messages.ConversationMessage.PROMOTED_TRANS
 public class ConversationImpl implements ManagedConversation, Serializable {
 
     private static final long serialVersionUID = -5566903049468084035L;
-
-    private static final LocLogger log = loggerFactory().getLogger(CONVERSATION);
 
     private String id;
     private boolean _transient;
@@ -73,36 +58,36 @@ public class ConversationImpl implements ManagedConversation, Serializable {
     public void begin() {
         verifyConversationContextActive();
         if (!_transient) {
-            throw new IllegalStateException(BEGIN_CALLED_ON_LONG_RUNNING_CONVERSATION);
+            throw ConversationLogger.LOG.beginCalledOnLongRunningConversation();
         }
         _transient = false;
         if (this.id == null) {
             // This a conversation that was made transient previously in this request
             this.id = getActiveConversationContext().generateConversationId();
         }
-        log.debug(PROMOTED_TRANSIENT, id);
+        ConversationLogger.LOG.promotedTransient(id);
     }
 
     public void begin(String id) {
         verifyConversationContextActive();
         if (!_transient) {
-            throw new IllegalStateException(BEGIN_CALLED_ON_LONG_RUNNING_CONVERSATION);
+            throw ConversationLogger.LOG.beginCalledOnLongRunningConversation();
         }
         if (getActiveConversationContext().getConversation(id) != null) {
-            throw new IllegalArgumentException(CONVERSATION_ID_ALREADY_IN_USE, id);
+            throw ConversationLogger.LOG.conversationIdAlreadyInUse(id);
         }
         _transient = false;
         this.id = id;
-        log.debug(PROMOTED_TRANSIENT, id);
+        ConversationLogger.LOG.promotedTransient(id);
     }
 
 
     public void end() {
         verifyConversationContextActive();
         if (_transient) {
-            throw new IllegalStateException(END_CALLED_ON_TRANSIENT_CONVERSATION);
+            throw ConversationLogger.LOG.endCalledOnTransientConversation();
         }
-        log.debug(DEMOTED_LRC, id);
+        ConversationLogger.LOG.demotedLrc(id);
         _transient = true;
     }
 
@@ -159,9 +144,9 @@ public class ConversationImpl implements ManagedConversation, Serializable {
             success = false;
         }
         if (success) {
-            log.trace(CONVERSATION_LOCKED, this);
+            ConversationLogger.LOG.conversationLocked(this);
         } else {
-            log.warn(CONVERSATION_UNAVAILABLE, timeout, this);
+            ConversationLogger.LOG.conversationUnavailable(timeout, this);
         }
         return success;
     }
@@ -173,9 +158,9 @@ public class ConversationImpl implements ManagedConversation, Serializable {
         }
         if (concurrencyLock.isHeldByCurrentThread()) {
             concurrencyLock.unlock();
-            log.trace(CONVERSATION_UNLOCKED, this);
+            ConversationLogger.LOG.conversationUnlocked(this);
         } else {
-            log.warn(ILLEGAL_CONVERSATION_UNLOCK_ATTEMPT, this, "not owner");
+            ConversationLogger.LOG.illegalConversationUnlockAttempt(this, "not owner");
         }
         return !concurrencyLock.isLocked();
     }

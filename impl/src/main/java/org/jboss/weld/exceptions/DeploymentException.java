@@ -33,33 +33,6 @@ public class DeploymentException extends javax.enterprise.inject.spi.DeploymentE
     private final WeldExceptionMessage message;
 
     /**
-     * Creates a new exception with the given localized message key and optional
-     * arguments for the message.
-     *
-     * @param <E>  The enumeration type for the message keys
-     * @param key  The localized message to use
-     * @param args Optional arguments to insert into the message
-     */
-    public <E extends Enum<?>> DeploymentException(E key, Object... args) {
-        super(DeploymentException.class.getName()); // the no-args constructor is missing
-        this.message = new WeldExceptionKeyMessage(key, args);
-    }
-
-    /**
-     * Creates a new exception with the given localized message key, the cause
-     * for this exception and optional arguments for the message.
-     *
-     * @param <E>       The enumeration type for the message keys
-     * @param key       The localized message to use
-     * @param throwable The cause for this exception
-     * @param args      Optional arguments to insert into the message
-     */
-    public <E extends Enum<?>> DeploymentException(E key, Throwable throwable, Object... args) {
-        super(throwable);
-        this.message = new WeldExceptionStringMessage(throwable.getLocalizedMessage());
-    }
-
-    /**
      * Creates a new exception with the given cause.
      *
      * @param throwable The cause of the exception
@@ -79,6 +52,27 @@ public class DeploymentException extends javax.enterprise.inject.spi.DeploymentE
     public DeploymentException(List<? extends Throwable> errors) {
         super(DeploymentException.class.getName()); // the no-args constructor is missing
         this.message = new WeldExceptionListMessage(errors);
+    }
+
+    /**
+     * Creates a new exception with the given localized message.
+     *
+     * @param message
+     */
+    public DeploymentException(String message) {
+        super(DeploymentException.class.getName()); // the no-args constructor is missing
+        this.message = new WeldExceptionStringMessage(message);
+    }
+
+    /**
+     * Creates a new exception with the given localized message and the cause for this exception.
+     *
+     * @param message
+     * @param throwable
+     */
+    public DeploymentException(String message, Throwable throwable) {
+        super(throwable);
+        this.message = new WeldExceptionStringMessage(message);
     }
 
     @Override

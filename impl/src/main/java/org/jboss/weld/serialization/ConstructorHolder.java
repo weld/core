@@ -16,13 +16,11 @@
  */
 package org.jboss.weld.serialization;
 
-import static org.jboss.weld.logging.messages.ReflectionMessage.UNABLE_TO_GET_CONSTRUCTOR_ON_DESERIALIZATION;
-
 import java.lang.reflect.Constructor;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
-import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.logging.ReflectionLogger;
 
 /**
  * Serializable holder for {@link Constructor}.
@@ -57,7 +55,7 @@ public class ConstructorHolder<X> extends AbstractSerializableHolder<Constructor
         try {
             return declaringClass.getDeclaredConstructor(parameterTypes);
         } catch (Exception e) {
-            throw new WeldException(UNABLE_TO_GET_CONSTRUCTOR_ON_DESERIALIZATION, e, declaringClass, parameterTypes);
+            throw ReflectionLogger.LOG.unableToGetConstructorOnDeserialization(declaringClass, parameterTypes, e);
         }
     }
 }

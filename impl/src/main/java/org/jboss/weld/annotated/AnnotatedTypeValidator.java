@@ -16,13 +16,6 @@
  */
 package org.jboss.weld.annotated;
 
-import static org.jboss.weld.logging.Category.BOOTSTRAP;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.MetadataMessage.INVALID_PARAMETER_POSITION;
-import static org.jboss.weld.logging.messages.MetadataMessage.METADATA_SOURCE_RETURNED_NULL;
-import static org.jboss.weld.logging.messages.MetadataMessage.NOT_IN_HIERARCHY;
-import static org.jboss.weld.logging.messages.MetadataMessage.NO_CONSTRUCTOR;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -31,8 +24,7 @@ import javax.enterprise.inject.spi.AnnotatedMember;
 import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.AnnotatedType;
 
-import org.jboss.weld.exceptions.IllegalArgumentException;
-import org.slf4j.cal10n.LocLogger;
+import org.jboss.weld.logging.MetadataLogger;
 
 /**
  * Validates that methods of an {@link Annotated} implementation return sane values.
@@ -40,7 +32,6 @@ import org.slf4j.cal10n.LocLogger;
  *
  */
 public class AnnotatedTypeValidator {
-    private static final LocLogger log = loggerFactory().getLogger(BOOTSTRAP);
 
     private AnnotatedTypeValidator() {
     }
@@ -54,7 +45,7 @@ public class AnnotatedTypeValidator {
     public static void validateAnnotatedParameter(AnnotatedParameter<?> parameter) {
         validateAnnotated(parameter);
         if (parameter.getPosition() < 0) {
-            throw new IllegalArgumentException(INVALID_PARAMETER_POSITION, parameter.getPosition(), parameter);
+            throw MetadataLogger.LOG.invalidParameterPosition(parameter.getPosition(), parameter);
         }
         checkNotNull(parameter.getDeclaringCallable(), "getDeclaringCallable()", parameter);
     }
@@ -76,7 +67,7 @@ public class AnnotatedTypeValidator {
 
     private static void checkNotNull(Object expression, String methodName, Object target) {
         if (expression == null) {
-            throw new IllegalArgumentException(METADATA_SOURCE_RETURNED_NULL, methodName, target);
+            throw MetadataLogger.LOG.metadataSourceReturnedNull(methodName, target);
         }
     }
 
@@ -86,7 +77,7 @@ public class AnnotatedTypeValidator {
     private static void checkSensibility(AnnotatedType<?> type) {
         // check if it has a constructor
         if (type.getConstructors().isEmpty() && !type.getJavaClass().isInterface()) {
-            log.warn(NO_CONSTRUCTOR, type);
+            MetadataLogger.LOG.noConstructor(type);
         }
 
         Set<Class<?>> hierarchy = new HashSet<Class<?>>();
@@ -102,7 +93,7 @@ public class AnnotatedTypeValidator {
     private static void checkMembersBelongToHierarchy(Iterable<? extends AnnotatedMember<?>> members, Set<Class<?>> hierarchy, AnnotatedType<?> type) {
         for (AnnotatedMember<?> member : members) {
             if (!hierarchy.contains(member.getJavaMember().getDeclaringClass())) {
-                log.warn(NOT_IN_HIERARCHY, member.toString(), type.toString());
+                MetadataLogger.LOG.notInHierarchy(member.toString(), type.toString());
             }
         }
     }

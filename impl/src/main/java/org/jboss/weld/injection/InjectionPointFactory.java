@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.injection;
 
-import static org.jboss.weld.logging.messages.UtilMessage.QUALIFIER_ON_FINAL_FIELD;
 import static org.jboss.weld.util.collections.WeldCollections.immutableList;
 import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
 
@@ -39,12 +38,12 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.slim.unbacked.UnbackedAnnotatedType;
-import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.injection.attributes.FieldInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.InferringFieldInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.InferringParameterInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.ParameterInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.SpecialParameterInjectionPoint;
+import org.jboss.weld.logging.UtilLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.collections.ArraySet;
@@ -218,7 +217,7 @@ public class InjectionPointFactory {
             Set<FieldInjectionPoint<?, ?>> injectableFields, Bean<?> declaringBean, Class<?> declaringComponentClass,
             BeanManagerImpl manager) {
         if (annotatedField.isFinal()) {
-            throw new DefinitionException(QUALIFIER_ON_FINAL_FIELD, annotatedField);
+            throw UtilLogger.LOG.qualifierOnFinalField(annotatedField);
         }
         injectableFields.add(createFieldInjectionPoint(annotatedField, declaringBean, declaringComponentClass, manager));
     }

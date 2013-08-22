@@ -37,6 +37,7 @@ import org.jboss.weld.annotated.enhanced.jlr.MethodSignatureImpl;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.interceptor.proxy.LifecycleMixin;
 import org.jboss.weld.interceptor.util.proxy.TargetInstanceProxy;
+import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.security.GetDeclaredMethodsAction;
 import org.jboss.weld.util.bytecode.Boxing;
 import org.jboss.weld.util.bytecode.BytecodeUtils;
@@ -123,7 +124,7 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
                             ClassMethod classMethod = proxyClassType.addMethod(method);
                             addConstructedGuardToMethodBody(classMethod);
                             createForwardingMethodBody(classMethod, methodInfo);
-                            log.trace(ADDING_METHOD_LOG_PREFIX, method);
+                            BeanLogger.LOG.addingMethodToProxy(method);
                         } catch (DuplicateMemberException e) {
                             // do nothing. This will happen if superclass methods have
                             // been overridden
@@ -141,7 +142,7 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
                             MethodInformation methodInformation = new RuntimeMethodInformation(method);
                             final ClassMethod classMethod = proxyClassType.addMethod(method);
                             createSpecialMethodBody(classMethod, methodInformation);
-                            log.trace(ADDING_METHOD_LOG_PREFIX, method);
+                            BeanLogger.LOG.addingMethodToProxy(method);
                         } catch (DuplicateMemberException e) {
                         }
                     }
@@ -291,7 +292,7 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
         try {
             // Add special methods for interceptors
             for (Method method : LifecycleMixin.class.getMethods()) {
-                log.trace(ADDING_METHOD_LOG_PREFIX, method);
+                BeanLogger.LOG.addingMethodToProxy(method);
                 MethodInformation methodInfo = new RuntimeMethodInformation(method);
                 createInterceptorBody(proxyClassType.addMethod(method), methodInfo, false);
             }

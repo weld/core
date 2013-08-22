@@ -16,15 +16,13 @@
  */
 package org.jboss.weld.interceptor.builder;
 
-import static org.jboss.weld.logging.messages.UtilMessage.ANNOTATION_VALUES_INACCESSIBLE;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
 import javax.enterprise.inject.spi.Annotated;
 
 import org.jboss.weld.bootstrap.api.Service;
-import org.jboss.weld.exceptions.DeploymentException;
+import org.jboss.weld.logging.UtilLogger;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.util.ApiAbstraction;
 
@@ -45,7 +43,7 @@ public class InterceptorsApiAbstraction extends ApiAbstraction implements Servic
             try {
                 this.interceptorsValueMethod = INTERCEPTORS_ANNOTATION_CLASS.getMethod("value");
             } catch (Exception e) {
-                throw new DeploymentException(ANNOTATION_VALUES_INACCESSIBLE, e);
+                throw UtilLogger.LOG.annotationValuesInaccessible(e);
             }
         }
     }
@@ -64,7 +62,7 @@ public class InterceptorsApiAbstraction extends ApiAbstraction implements Servic
             try {
                 return (Class<?>[]) interceptorsValueMethod.invoke(annotation);
             } catch (Exception e) {
-                throw new DeploymentException(ANNOTATION_VALUES_INACCESSIBLE, e);
+                throw UtilLogger.LOG.annotationValuesInaccessible(e);
             }
         }
         return null;

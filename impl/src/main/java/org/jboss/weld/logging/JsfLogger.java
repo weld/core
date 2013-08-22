@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2008, Red Hat, Inc., and individual contributors
+ * Copyright 2013, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,29 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.jboss.weld.logging;
 
-package org.jboss.weld.logging.messages;
+import static org.jboss.weld.logging.WeldLogger.WELD_PROJECT_CODE;
 
-import ch.qos.cal10n.BaseName;
-import ch.qos.cal10n.Locale;
-import ch.qos.cal10n.LocaleData;
-import org.jboss.weld.logging.MessageId;
+import org.jboss.logging.annotations.Message;
+import org.jboss.logging.annotations.MessageLogger;
 
-@BaseName("org.jboss.weld.messages.el")
-@LocaleData({
-        @Locale("en")
-})
 /**
- * Log messages for EL resolution.
+ * Conversation-related messages (500-504) moved to {@link ConversationLogger}.
  *
- * Message IDs: 001000 - 001099
- *
- * @author David Allen
- *
+ * Message Ids: 000500 - 000599
  */
-public enum ElMessage {
-    @MessageId("001000")RESOLUTION_ERROR,
-    @MessageId("001001")NULL_EXPRESSION_FACTORY,
-    @MessageId("001002")PROPERTY_LOOKUP,
-    @MessageId("001003")PROPERTY_RESOLVED;
+@MessageLogger(projectCode = WELD_PROJECT_CODE)
+public interface JsfLogger extends WeldLogger {
+
+    /**
+     * @deprecated Not in use
+     */
+    @Deprecated
+    @Message(id = 505, value = "Weld does not support using JSF in a non-servlet environment")
+    String improperEnvironment();
+
 }

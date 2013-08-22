@@ -38,6 +38,7 @@ import org.jboss.weld.injection.FieldInjectionPoint;
 import org.jboss.weld.injection.ParameterInjectionPoint;
 import org.jboss.weld.injection.attributes.WeldInjectionPointAttributes;
 import org.jboss.weld.interceptor.util.proxy.TargetInstanceProxy;
+import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.security.GetDeclaredMethodsAction;
 import org.jboss.weld.util.bytecode.BytecodeUtils;
 import org.jboss.weld.util.bytecode.DescriptorUtils;
@@ -84,7 +85,7 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
         b.checkcast(MethodHandler.class);
         b.putfield(classMethod.getClassFile().getName(), METHOD_HANDLER_FIELD_NAME, DescriptorUtils.classToStringRepresentation(MethodHandler.class));
         b.returnInstruction();
-        log.trace("Created MH initializer body for decorator proxy: {}", getBeanType());
+        BeanLogger.LOG.createdMethodHandlerInitializerForDecoratorProxy(getBeanType());
 
     }
 

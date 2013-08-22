@@ -17,9 +17,6 @@
 
 package org.jboss.weld.bean.proxy;
 
-import static org.jboss.weld.logging.Category.BEAN;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -30,14 +27,11 @@ import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.security.SetAccessibleAction;
 import org.jboss.weld.util.Proxies.TypeInfo;
-import org.slf4j.cal10n.LocLogger;
 
 /**
  * @author David Allen
  */
 public abstract class AbstractBeanInstance implements BeanInstance {
-    // The log provider
-    protected static final LocLogger log = loggerFactory().getLogger(BEAN);
 
     public Object invoke(Object instance, Method method, Object... arguments) throws Throwable {
         Object result = null;

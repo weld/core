@@ -17,14 +17,6 @@
 
 package org.jboss.weld.util;
 
-import static org.jboss.weld.logging.messages.BeanMessage.ABSTRACT_METHOD_MUST_MATCH_DECORATED_TYPE;
-import static org.jboss.weld.logging.messages.BeanMessage.DELEGATE_MUST_SUPPORT_EVERY_DECORATED_TYPE;
-import static org.jboss.weld.logging.messages.BeanMessage.DELEGATE_ON_NON_INITIALIZER_METHOD;
-import static org.jboss.weld.logging.messages.BeanMessage.NO_DELEGATE_FOR_DECORATOR;
-import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_FAILED;
-import static org.jboss.weld.logging.messages.BeanMessage.TOO_MANY_DELEGATES_FOR_DECORATOR;
-import static org.jboss.weld.logging.messages.BeanMessage.UNABLE_TO_PROCESS;
-
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -60,6 +52,7 @@ import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.attributes.WeldInjectionPointAttributes;
+import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.serialization.spi.ContextualStore;
@@ -110,7 +103,7 @@ public class Decorators {
         if (type instanceof ParameterizedType && (((ParameterizedType) type).getRawType() instanceof Class)) {
             return beanManager.createEnhancedAnnotatedType((Class<?>) ((ParameterizedType) type).getRawType());
         }
-        throw new IllegalStateException(UNABLE_TO_PROCESS, type);
+        throw new IllegalStateException(BeanLogger.LOG.unableToProcess(type));
     }
 
     public static <T> InvokableAnnotatedMethod<?> findDecoratorMethod(WeldDecorator<T> decorator, Map<MethodSignature, InvokableAnnotatedMethod<?>> decoratorMethods, Method method) {
@@ -141,16 +134,16 @@ public class Decorators {
         for (InjectionPoint injectionPoint : injectionPoints) {
             if (injectionPoint.isDelegate()) {
                 if (result != null) {
-                    throw new DefinitionException(TOO_MANY_DELEGATES_FOR_DECORATOR, type);
+                    throw BeanLogger.LOG.tooManyDelegatesForDecorator(type);
                 }
                 if (injectionPoint instanceof MethodInjectionPoint<?, ?> && !injectionPoint.getAnnotated().isAnnotationPresent(Inject.class)) {
-                    throw new DefinitionException(DELEGATE_ON_NON_INITIALIZER_METHOD, injectionPoint);
+                    throw BeanLogger.LOG.delegateOnNonInitializerMethod(injectionPoint);
                 }
                 result = InjectionPoints.getWeldInjectionPoint(injectionPoint);
             }
         }
         if (result == null) {
-            throw new DefinitionException(NO_DELEGATE_FOR_DECORATOR, type);
+            throw BeanLogger.LOG.noDelegateForDecorator(type);
         }
         return result;
     }
@@ -162,7 +155,7 @@ public class Decorators {
         try {
             final T outerDelegate = decorationHelper.getNextDelegate(originalInjectionPoint, creationalContext);
             if (outerDelegate == null) {
-                throw new WeldException(PROXY_INSTANTIATION_FAILED, bean);
+                throw new WeldException(BeanLogger.LOG.proxyInstantiationFailed(bean));
             }
             return outerDelegate;
         } finally {
@@ -182,7 +175,7 @@ public class Decorators {
 
         for (Type decoratedType : decorator.getDecoratedTypes()) {
             if(!types.contains(decoratedType)) {
-                throw new DefinitionException(DELEGATE_MUST_SUPPORT_EVERY_DECORATED_TYPE, decoratedType, decorator);
+                throw BeanLogger.LOG.delegateMustSupportEveryDecoratedType(decoratedType, decorator);
             }
         }
     }
@@ -214,7 +207,7 @@ public class Decorators {
             if (Reflections.isAbstract(((AnnotatedMethod<?>) method).getJavaMember())) {
                 MethodSignature methodSignature = method.getSignature();
                 if (!signatures.contains(methodSignature)) {
-                    throw new DefinitionException(ABSTRACT_METHOD_MUST_MATCH_DECORATED_TYPE, method.getSignature(), type);
+                    throw BeanLogger.LOG.abstractMethodMustMatchDecoratedType(method.getSignature(), type);
                 }
             }
         }

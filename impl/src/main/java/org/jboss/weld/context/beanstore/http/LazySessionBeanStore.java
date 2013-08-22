@@ -16,16 +16,12 @@
  */
 package org.jboss.weld.context.beanstore.http;
 
-import static org.jboss.weld.logging.Category.CONTEXT;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.ContextMessage.LOADING_BEAN_STORE_MAP_FROM_SESSION;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.jboss.weld.context.beanstore.NamingScheme;
+import org.jboss.weld.logging.ContextLogger;
 import org.jboss.weld.servlet.SessionHolder;
-import org.slf4j.cal10n.LocLogger;
 
 /**
  * <p>
@@ -50,14 +46,12 @@ import org.slf4j.cal10n.LocLogger;
  */
 public class LazySessionBeanStore extends AbstractSessionBeanStore {
 
-    private static final LocLogger log = loggerFactory().getLogger(CONTEXT);
-
     private final HttpServletRequest request;
 
     public LazySessionBeanStore(HttpServletRequest request, NamingScheme namingScheme) {
         super(namingScheme);
         this.request = request;
-        log.trace(LOADING_BEAN_STORE_MAP_FROM_SESSION, this, getSession(false));
+        ContextLogger.LOG.loadingBeanStoreMapFromSession(this, getSession(false));
     }
 
     /**

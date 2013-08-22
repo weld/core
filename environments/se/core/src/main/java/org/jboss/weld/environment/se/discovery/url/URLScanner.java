@@ -16,16 +16,15 @@
  */
 package org.jboss.weld.environment.se.discovery.url;
 
+import java.io.File;
+import java.net.URISyntaxException;
+import java.net.URL;
+
+import org.jboss.logging.Logger;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.environment.se.discovery.ImmutableBeanDeploymentArchive;
 import org.jboss.weld.resources.spi.ResourceLoader;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.net.URISyntaxException;
-import java.net.URL;
 
 /**
  * Scan the classloader
@@ -39,7 +38,7 @@ import java.net.URL;
  */
 public class URLScanner {
 
-    private static final Logger log = LoggerFactory.getLogger(URLScanner.class);
+    private static final Logger log = Logger.getLogger(URLScanner.class);
 
     private static final String FILE = "file";
     // according to JarURLConnection api doc, the separator is "!/"
@@ -73,7 +72,7 @@ public class URLScanner {
     private String getUrlPath(String resourceName, URL url) throws URISyntaxException {
         String urlPath = url.toExternalForm();
         String urlType = getUrlType(urlPath);
-        log.debug("URL Type: {}", urlType);
+        log.debugv("URL Type: {0}", urlType);
         boolean isFile = FILE.equals(urlType);
         boolean isJar = "jar".equals(urlType);
         // Extra built-in support for simple file-based resources

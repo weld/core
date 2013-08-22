@@ -16,18 +16,6 @@
  */
 package org.jboss.weld.util;
 
-import static org.jboss.weld.logging.Category.BEAN;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.BeanMessage.FOUND_DEFAULT_CONSTRUCTOR;
-import static org.jboss.weld.logging.messages.BeanMessage.FOUND_INJECTABLE_CONSTRUCTORS;
-import static org.jboss.weld.logging.messages.BeanMessage.FOUND_ONE_INJECTABLE_CONSTRUCTOR;
-import static org.jboss.weld.logging.messages.BeanMessage.PARAMETER_ANNOTATION_NOT_ALLOWED_ON_CONSTRUCTOR;
-import static org.jboss.weld.logging.messages.BeanMessage.TYPED_CLASS_NOT_IN_HIERARCHY;
-import static org.jboss.weld.logging.messages.UtilMessage.AMBIGUOUS_CONSTRUCTOR;
-import static org.jboss.weld.logging.messages.UtilMessage.ANNOTATION_NOT_QUALIFIER;
-import static org.jboss.weld.logging.messages.UtilMessage.INVALID_QUANTITY_INJECTABLE_FIELDS_AND_INITIALIZER_METHODS;
-import static org.jboss.weld.logging.messages.UtilMessage.REDUNDANT_QUALIFIER;
-import static org.jboss.weld.logging.messages.UtilMessage.UNABLE_TO_FIND_CONSTRUCTOR;
 import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
 
 import java.io.Serializable;
@@ -77,13 +65,13 @@ import org.jboss.weld.bootstrap.SpecializationAndEnablementRegistry;
 import org.jboss.weld.bootstrap.enablement.ModuleEnablement;
 import org.jboss.weld.ejb.spi.BusinessInterfaceDescriptor;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
-import org.jboss.weld.exceptions.DefinitionException;
-import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.injection.FieldInjectionPoint;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.ResourceInjection;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
 import org.jboss.weld.interceptor.util.InterceptionTypeRegistry;
+import org.jboss.weld.logging.BeanLogger;
+import org.jboss.weld.logging.UtilLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.InterceptorBindingModel;
 import org.jboss.weld.metadata.cache.MergedStereotypes;
@@ -93,7 +81,6 @@ import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SessionBeanHierarchyDiscovery;
-import org.slf4j.cal10n.LocLogger;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Sets;
@@ -108,8 +95,6 @@ import com.google.common.collect.Sets;
  * @author Jozef Hartinger
  */
 public class Beans {
-    // TODO Convert messages
-    private static final LocLogger log = loggerFactory().getLogger(BEAN);
 
     private Beans() {
     }
@@ -302,7 +287,7 @@ public class Beans {
     public static <T> EnhancedAnnotatedConstructor<T> getBeanConstructorStrict(EnhancedAnnotatedType<T> type) {
         EnhancedAnnotatedConstructor<T> constructor = getBeanConstructor(type);
         if (constructor == null) {
-            throw new DefinitionException(UNABLE_TO_FIND_CONSTRUCTOR, type);
+            throw UtilLogger.LOG.unableToFindConstructor(type);
         }
         return constructor;
     }
@@ -310,23 +295,23 @@ public class Beans {
     public static <T> EnhancedAnnotatedConstructor<T> getBeanConstructor(EnhancedAnnotatedType<T> type) {
         Collection<EnhancedAnnotatedConstructor<T>> initializerAnnotatedConstructors = type
                 .getEnhancedConstructors(Inject.class);
-        log.trace(FOUND_INJECTABLE_CONSTRUCTORS, initializerAnnotatedConstructors, type);
+        BeanLogger.LOG.foundInjectableConstructors(initializerAnnotatedConstructors, type);
         EnhancedAnnotatedConstructor<T> constructor = null;
         if (initializerAnnotatedConstructors.size() > 1) {
-            throw new DefinitionException(AMBIGUOUS_CONSTRUCTOR, type, initializerAnnotatedConstructors);
+            throw UtilLogger.LOG.ambiguousConstructor(type, initializerAnnotatedConstructors);
         } else if (initializerAnnotatedConstructors.size() == 1) {
             constructor = initializerAnnotatedConstructors.iterator().next();
-            log.trace(FOUND_ONE_INJECTABLE_CONSTRUCTOR, constructor, type);
+            BeanLogger.LOG.foundOneInjectableConstructor(constructor, type);
         } else if (type.getNoArgsEnhancedConstructor() != null) {
             constructor = type.getNoArgsEnhancedConstructor();
-            log.trace(FOUND_DEFAULT_CONSTRUCTOR, constructor, type);
+            BeanLogger.LOG.foundDefaultConstructor(constructor, type);
         }
         if (constructor != null) {
             if (!constructor.getEnhancedParameters(Disposes.class).isEmpty()) {
-                throw new DefinitionException(PARAMETER_ANNOTATION_NOT_ALLOWED_ON_CONSTRUCTOR, "@Disposes", constructor);
+                throw BeanLogger.LOG.parameterAnnotationNotAllowedOnConstructor("@Disposes", constructor);
             }
             if (!constructor.getEnhancedParameters(Observes.class).isEmpty()) {
-                throw new DefinitionException(PARAMETER_ANNOTATION_NOT_ALLOWED_ON_CONSTRUCTOR, "@Observes", constructor);
+                throw BeanLogger.LOG.parameterAnnotationNotAllowedOnConstructor("@Observes", constructor);
             }
         }
         return constructor;
@@ -378,8 +363,7 @@ public class Beans {
             List<? extends Iterable<? extends FieldInjectionPoint<?, ?>>> injectableFields,
             List<? extends Iterable<? extends MethodInjectionPoint<?, ?>>> initializerMethods) {
         if (injectableFields.size() != initializerMethods.size()) {
-            throw new IllegalArgumentException(INVALID_QUANTITY_INJECTABLE_FIELDS_AND_INITIALIZER_METHODS, injectableFields,
-                    initializerMethods);
+            throw UtilLogger.LOG.invalidQuantityInjectableFieldsAndInitializerMethods(injectableFields, initializerMethods);
         }
         for (int i = 0; i < injectableFields.size(); i++) {
             injectBoundFields(instance, ctx, beanManager, injectableFields.get(i));
@@ -418,10 +402,10 @@ public class Beans {
             Set<Annotation> checkedNewQualifiers = new HashSet<Annotation>();
             for (Annotation qualifier : newQualifiers) {
                 if (!store.getBindingTypeModel(qualifier.annotationType()).isValid()) {
-                    throw new IllegalArgumentException(ANNOTATION_NOT_QUALIFIER, qualifier);
+                    throw UtilLogger.LOG.annotationNotQualifier(qualifier);
                 }
                 if (checkedNewQualifiers.contains(qualifier)) {
-                    throw new IllegalArgumentException(REDUNDANT_QUALIFIER, qualifier, Arrays.asList(newQualifiers));
+                    throw UtilLogger.LOG.redundantQualifier(qualifier, Arrays.asList(newQualifiers));
                 }
                 checkedNewQualifiers.add(qualifier);
             }
@@ -484,7 +468,7 @@ public class Beans {
             if (tmp != null) {
                 types.add(tmp);
             } else {
-                throw new DefinitionException(TYPED_CLASS_NOT_IN_HIERARCHY, specifiedClass.getName(), rawType);
+                throw BeanLogger.LOG.typedClassNotInHierarchy(specifiedClass.getName(), rawType);
             }
         }
         types.add(Object.class);

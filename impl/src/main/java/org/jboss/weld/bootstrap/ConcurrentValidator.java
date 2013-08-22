@@ -16,10 +16,6 @@
  */
 package org.jboss.weld.bootstrap;
 
-import static org.jboss.weld.logging.messages.ValidatorMessage.AMBIGUOUS_EL_NAME;
-import static org.jboss.weld.logging.messages.ValidatorMessage.BEAN_NAME_IS_PREFIX;
-import static org.jboss.weld.logging.messages.ValidatorMessage.INJECTION_INTO_NON_BEAN;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -37,6 +33,7 @@ import javax.enterprise.inject.spi.Producer;
 import org.jboss.weld.bean.CommonBean;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.executor.IterativeWorkerTaskFactory;
+import org.jboss.weld.logging.ValidatorLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.api.ExecutorServices;
 import org.jboss.weld.util.Beans;
@@ -107,7 +104,7 @@ public class ConcurrentValidator extends Validator {
             protected void doWork(ObserverInitializationContext<?, ?> observerMethod) {
                 for (InjectionPoint ip : observerMethod.getObserver().getInjectionPoints()) {
                     validateInjectionPointForDefinitionErrors(ip, ip.getBean(), beanManager);
-                    validateMetadataInjectionPoint(ip, null, INJECTION_INTO_NON_BEAN);
+                    validateMetadataInjectionPoint(ip, null, ValidatorLogger.INJECTION_INTO_NON_BEAN_CALLBACK);
                     validateInjectionPointForDeploymentProblems(ip, ip.getBean(), beanManager);
                 }
             }
@@ -134,10 +131,10 @@ public class ConcurrentValidator extends Validator {
             protected void doWork(String name) {
                 Set<Bean<?>> resolvedBeans = beanManager.getBeanResolver().resolve(Beans.removeDisabledBeans(namedAccessibleBeans.get(name), beanManager, registry));
                 if (resolvedBeans.size() > 1) {
-                    throw new DeploymentException(AMBIGUOUS_EL_NAME, name, WeldCollections.toMultiRowString(resolvedBeans));
+                    throw ValidatorLogger.LOG.ambiguousElName(name, WeldCollections.toMultiRowString(resolvedBeans));
                 }
                 if (accessibleNamespaces.contains(name)) {
-                    throw new DeploymentException(BEAN_NAME_IS_PREFIX, name);
+                    throw ValidatorLogger.LOG.beanNameIsPrefix(name);
                 }
             }
         });

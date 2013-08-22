@@ -16,12 +16,7 @@
  */
 package org.jboss.weld.ejb;
 
-import com.google.common.base.Supplier;
-import com.google.common.collect.Multimaps;
-import com.google.common.collect.SetMultimap;
-import org.jboss.weld.bootstrap.api.Service;
-import org.jboss.weld.ejb.spi.EjbDescriptor;
-import org.jboss.weld.exceptions.IllegalStateException;
+import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -30,8 +25,13 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import static org.jboss.weld.logging.messages.BeanMessage.TOO_MANY_EJBS_FOR_CLASS;
-import static org.jboss.weld.util.reflection.Reflections.cast;
+import org.jboss.weld.bootstrap.api.Service;
+import org.jboss.weld.ejb.spi.EjbDescriptor;
+import org.jboss.weld.logging.BeanLogger;
+
+import com.google.common.base.Supplier;
+import com.google.common.collect.Multimaps;
+import com.google.common.collect.SetMultimap;
 
 /**
  * EJB descriptors by EJB implementation class or name
@@ -106,7 +106,7 @@ public class EjbDescriptors implements Service, Iterable<InternalEjbDescriptor<?
     public <T> InternalEjbDescriptor<T> getUnique(Class<T> beanClass) {
         Set<String> ejbs = ejbByClass.get(beanClass);
         if (ejbs.size() > 1) {
-            throw new IllegalStateException(TOO_MANY_EJBS_FOR_CLASS, beanClass, ejbs);
+            throw BeanLogger.LOG.tooManyEjbsForClass(beanClass, ejbs);
         } else if (ejbs.size() == 0) {
             return null;
         } else {

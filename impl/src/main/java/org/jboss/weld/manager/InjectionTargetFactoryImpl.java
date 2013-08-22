@@ -16,10 +16,6 @@
  */
 package org.jboss.weld.manager;
 
-import static org.jboss.weld.logging.Category.BEAN;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.BeanMessage.INJECTION_TARGET_CREATED_FOR_CLASS_WITHOUT_APPROPRIATE_CONSTRUCTOR;
-
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
@@ -29,7 +25,6 @@ import javax.interceptor.Interceptors;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bean.SessionBean;
-import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.injection.producer.BasicInjectionTarget;
 import org.jboss.weld.injection.producer.BeanInjectionTarget;
@@ -41,12 +36,11 @@ import org.jboss.weld.injection.producer.NonProducibleInjectionTarget;
 import org.jboss.weld.injection.producer.NoopLifecycleCallbackInvoker;
 import org.jboss.weld.injection.producer.ejb.SessionBeanInjectionTarget;
 import org.jboss.weld.injection.spi.InjectionServices;
-import org.jboss.weld.logging.messages.BeanMessage;
+import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.api.WeldInjectionTargetFactory;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.reflection.Reflections;
-import org.slf4j.cal10n.LocLogger;
 
 /**
  * Factory capable of producing {@link InjectionTarget} implementations for a given combination of {@link AnnotatedType} and
@@ -57,8 +51,6 @@ import org.slf4j.cal10n.LocLogger;
  * @param <T>
  */
 public class InjectionTargetFactoryImpl<T> implements WeldInjectionTargetFactory<T> {
-
-    private static final LocLogger log = loggerFactory().getLogger(BEAN);
 
     private final BeanManagerImpl manager;
     private final EnhancedAnnotatedType<T> type;
@@ -109,20 +101,20 @@ public class InjectionTargetFactoryImpl<T> implements WeldInjectionTargetFactory
         }
         if (type.isAbstract()) {
             if (type.getJavaClass().isInterface()) {
-                throw new DefinitionException(BeanMessage.INJECTION_TARGET_CANNOT_BE_CREATED_FOR_INTERFACE, type);
+                throw BeanLogger.LOG.injectionTargetCannotBeCreatedForInterface(type);
             }
-            log.warn(BeanMessage.INJECTION_TARGET_CREATED_FOR_ABSTRACT_CLASS, type.getJavaClass());
+            BeanLogger.LOG.injectionTargetCreatedForAbstractClass(type.getJavaClass());
             return new NonProducibleInjectionTarget<T>(type, bean, manager);
         }
         if (Reflections.isNonStaticInnerClass(type.getJavaClass())) {
-            log.warn(BeanMessage.INJECTION_TARGET_CREATED_FOR_NON_STATIC_INNER_CLASS, type.getJavaClass());
+            BeanLogger.LOG.injectionTargetCreatedForNonStaticInnerClass(type.getJavaClass());
             return new NonProducibleInjectionTarget<T>(type, bean, manager);
         }
         if (Beans.getBeanConstructor(type) == null) {
             if (bean == null) {
-                log.warn(INJECTION_TARGET_CREATED_FOR_CLASS_WITHOUT_APPROPRIATE_CONSTRUCTOR, type.getJavaClass());
+                BeanLogger.LOG.injectionTargetCreatedForClassWithoutAppropriateConstructor(type.getJavaClass());
             } else {
-                throw new DefinitionException(INJECTION_TARGET_CREATED_FOR_CLASS_WITHOUT_APPROPRIATE_CONSTRUCTOR, type.getJavaClass());
+                throw BeanLogger.LOG.injectionTargetCreatedForClassWithoutAppropriateConstructorException(type.getJavaClass());
             }
             return new NonProducibleInjectionTarget<T>(type, bean, manager);
         }

@@ -16,9 +16,6 @@
  */
 package org.jboss.weld.bootstrap.events;
 
-import static org.jboss.weld.logging.messages.BootstrapMessage.ANNOTATED_TYPE_JAVA_CLASS_MISMATCH;
-import static org.jboss.weld.logging.messages.BootstrapMessage.ANNOTATION_TYPE_NULL;
-
 import java.lang.reflect.Type;
 
 import javax.enterprise.inject.spi.AnnotatedType;
@@ -27,7 +24,7 @@ import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import org.jboss.weld.annotated.AnnotatedTypeValidator;
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.exceptions.DefinitionException;
-import org.jboss.weld.exceptions.IllegalArgumentException;
+import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resolution.Resolvable;
 import org.jboss.weld.resources.ClassTransformer;
@@ -77,10 +74,10 @@ public class ProcessAnnotatedTypeImpl<X> extends AbstractDefinitionContainerEven
 
     public void setAnnotatedType(AnnotatedType<X> type) {
         if (type == null) {
-            throw new IllegalArgumentException(ANNOTATION_TYPE_NULL, this);
+            throw BootstrapLogger.LOG.annotationTypeNull(this);
         }
         if (!this.originalAnnotatedType.getJavaClass().equals(type.getJavaClass())) {
-            throw new IllegalArgumentException(ANNOTATED_TYPE_JAVA_CLASS_MISMATCH, this.annotatedType.getJavaClass(), type.getJavaClass());
+            throw BootstrapLogger.LOG.annotatedTypeJavaClassMismatch(this.annotatedType.getJavaClass(), type.getJavaClass());
         }
         AnnotatedTypeValidator.validateAnnotatedType(type);
         this.annotatedType = type;

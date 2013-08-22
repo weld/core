@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.annotated.enhanced.jlr;
 
-import static org.jboss.weld.logging.messages.ReflectionMessage.UNABLE_TO_GET_PARAMETER_NAME;
-
 import java.lang.annotation.Annotation;
 import java.util.Map;
 
@@ -28,6 +26,7 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedCallable;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.exceptions.IllegalArgumentException;
+import org.jboss.weld.logging.ReflectionLogger;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.reflection.Formats;
 
@@ -107,7 +106,7 @@ public class EnhancedAnnotatedParameterImpl<T, X> extends AbstractEnhancedAnnota
      * @see org.jboss.weld.annotated.enhanced.EnhancedAnnotated#getName()
      */
     public String getName() {
-        throw new IllegalArgumentException(UNABLE_TO_GET_PARAMETER_NAME);
+        throw ReflectionLogger.LOG.unableToGetParameterName();
     }
 
     /**

@@ -16,9 +16,7 @@
  */
 package org.jboss.weld.context.beanstore;
 
-import org.jboss.weld.exceptions.IllegalArgumentException;
-
-import static org.jboss.weld.logging.messages.ContextMessage.DELIMITER_IN_PREFIX;
+import org.jboss.weld.logging.ContextLogger;
 
 /**
  * A utility which can prefix/de-prefix a String based identifier
@@ -39,7 +37,7 @@ public class SimpleNamingScheme extends AbstractNamingScheme {
     public SimpleNamingScheme(String prefix) {
         super("#");
         if (prefix.indexOf(getDelimiter()) >= 0) {
-            throw new IllegalArgumentException(DELIMITER_IN_PREFIX, getDelimiter(), prefix);
+            throw ContextLogger.LOG.delimiterInPrefix(getDelimiter(), prefix);
         }
         this.prefix = prefix;
     }

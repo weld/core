@@ -17,15 +17,6 @@
 package org.jboss.weld.bean;
 
 import static org.jboss.weld.bean.BeanIdentifiers.forManagedBean;
-import static org.jboss.weld.logging.Category.BEAN;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.BeanMessage.BEAN_MUST_BE_DEPENDENT;
-import static org.jboss.weld.logging.messages.BeanMessage.ERROR_DESTROYING;
-import static org.jboss.weld.logging.messages.BeanMessage.PASSIVATING_BEAN_HAS_NON_PASSIVATION_CAPABLE_DECORATOR;
-import static org.jboss.weld.logging.messages.BeanMessage.PASSIVATING_BEAN_HAS_NON_PASSIVATION_CAPABLE_INTERCEPTOR;
-import static org.jboss.weld.logging.messages.BeanMessage.PASSIVATING_BEAN_NEEDS_SERIALIZABLE_IMPL;
-import static org.jboss.weld.logging.messages.BeanMessage.PUBLIC_FIELD_ON_NORMAL_SCOPED_BEAN_NOT_ALLOWED;
-import static org.jboss.weld.logging.messages.BeanMessage.SPECIALIZING_BEAN_MUST_EXTEND_A_BEAN;
 
 import java.util.Set;
 
@@ -43,18 +34,14 @@ import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.context.CreationalContextImpl;
 import org.jboss.weld.context.RequestContext;
 import org.jboss.weld.context.unbound.UnboundLiteral;
-import org.jboss.weld.exceptions.DefinitionException;
-import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
+import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.util.Decorators;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
-import org.slf4j.cal10n.LocLogger;
-import org.slf4j.ext.XLogger;
-import org.slf4j.ext.XLogger.Level;
 
 /**
  * Represents a simple bean
@@ -66,10 +53,6 @@ import org.slf4j.ext.XLogger.Level;
  * @author Marko Luksa
  */
 public class ManagedBean<T> extends AbstractClassBean<T> {
-
-    // Logger
-    private static final LocLogger log = loggerFactory().getLogger(BEAN);
-    private static final XLogger xLog = loggerFactory().getXLogger(BEAN);
 
     private final boolean proxiable;
 
@@ -199,8 +182,8 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
                 creationalContext.release();
             }
         } catch (Exception e) {
-            log.error(ERROR_DESTROYING, this, instance);
-            xLog.throwing(Level.DEBUG, e);
+            BeanLogger.LOG.errorDestroying(this, instance);
+            BeanLogger.LOG.catchingDebug(e);
         }
     }
 
@@ -210,16 +193,16 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
     @Override
     protected void checkType() {
         if (!isDependent() && getEnhancedAnnotated().isParameterizedType()) {
-            throw new DefinitionException(BEAN_MUST_BE_DEPENDENT, type);
+            throw BeanLogger.LOG.beanMustBeDependent(type);
         }
         boolean passivating = beanManager.isPassivatingScope(getScope());
         if (passivating && !isPassivationCapableBean()) {
             if (!getEnhancedAnnotated().isSerializable()) {
-                throw new DeploymentException(PASSIVATING_BEAN_NEEDS_SERIALIZABLE_IMPL, this);
+                throw BeanLogger.LOG.passivatingBeanNeedsSerializableImpl(this);
             } else if (hasDecorators() && !allDecoratorsArePassivationCapable()) {
-                throw new DeploymentException(PASSIVATING_BEAN_HAS_NON_PASSIVATION_CAPABLE_DECORATOR, this, getFirstNonPassivationCapableDecorator());
+                throw BeanLogger.LOG.passivatingBeanHasNonPassivationCapableDecorator(this, getFirstNonPassivationCapableDecorator());
             } else if (hasInterceptors() && !allInterceptorsArePassivationCapable()) {
-                throw new DeploymentException(PASSIVATING_BEAN_HAS_NON_PASSIVATION_CAPABLE_INTERCEPTOR, this, getFirstNonPassivationCapableInterceptor());
+                throw BeanLogger.LOG.passivatingBeanHasNonPassivationCapableInterceptor(this, getFirstNonPassivationCapableInterceptor());
             }
         }
     }
@@ -230,7 +213,7 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
         if (isNormalScoped()) {
             for (EnhancedAnnotatedField<?, ?> field : getEnhancedAnnotated().getEnhancedFields()) {
                 if (field.isPublic() && !field.isStatic()) {
-                    throw new DefinitionException(PUBLIC_FIELD_ON_NORMAL_SCOPED_BEAN_NOT_ALLOWED, field);
+                    throw BeanLogger.LOG.publicFieldOnNormalScopedBeanNotAllowed(field);
                 }
             }
         }
@@ -240,11 +223,11 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
     protected void specialize() {
         Set<? extends AbstractBean<?, ?>> specializedBeans = getSpecializedBeans();
         if (specializedBeans.isEmpty()) {
-            throw new DefinitionException(SPECIALIZING_BEAN_MUST_EXTEND_A_BEAN, this);
+            throw BeanLogger.LOG.specializingBeanMustExtendABean(this);
         }
         for (AbstractBean<?, ?> specializedBean : specializedBeans) {
             if (!(specializedBean instanceof ManagedBean<?>)) {
-                throw new DefinitionException(SPECIALIZING_BEAN_MUST_EXTEND_A_BEAN, this);
+                throw BeanLogger.LOG.specializingBeanMustExtendABean(this);
             }
         }
     }

@@ -16,10 +16,6 @@
  */
 package org.jboss.weld.metadata.cache;
 
-import static org.jboss.weld.logging.Category.REFLECTION;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.ReflectionMessage.MISSING_RETENTION;
-
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -28,9 +24,8 @@ import java.util.Set;
 import javax.enterprise.inject.spi.AnnotatedType;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotation;
-import org.jboss.weld.exceptions.DefinitionException;
-import org.jboss.weld.logging.messages.MetadataMessage;
-import org.slf4j.cal10n.LocLogger;
+import org.jboss.weld.logging.MetadataLogger;
+import org.jboss.weld.logging.ReflectionLogger;
 
 /**
  * Abstract representation of an annotation model
@@ -38,7 +33,6 @@ import org.slf4j.cal10n.LocLogger;
  * @author Pete Muir
  */
 public abstract class AnnotationModel<T extends Annotation> {
-    private static final LocLogger log = loggerFactory().getLogger(REFLECTION);
 
     // The underlying annotation
     private final AnnotatedType<T> annotatedAnnotation;
@@ -69,7 +63,7 @@ public abstract class AnnotationModel<T extends Annotation> {
      */
     protected void initType(EnhancedAnnotation<T> annotatedAnnotation) {
         if (!Annotation.class.isAssignableFrom(getRawType())) {
-            throw new DefinitionException(MetadataMessage.META_ANNOTATION_ON_WRONG_TYPE, getMetaAnnotationTypes(), getRawType());
+            throw MetadataLogger.LOG.metaAnnotationOnWrongType(getMetaAnnotationTypes(), getRawType());
         }
     }
 
@@ -88,7 +82,7 @@ public abstract class AnnotationModel<T extends Annotation> {
     protected void check(EnhancedAnnotation<T> annotatedAnnotation) {
         if (valid && (!annotatedAnnotation.isAnnotationPresent(Retention.class) || annotatedAnnotation.isAnnotationPresent(Retention.class) && !annotatedAnnotation.getAnnotation(Retention.class).value().equals(RetentionPolicy.RUNTIME))) {
             this.valid = false;
-            log.debug(MISSING_RETENTION, annotatedAnnotation);
+            ReflectionLogger.LOG.missingRetention(annotatedAnnotation);
         }
     }
 

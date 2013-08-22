@@ -16,13 +16,11 @@
  */
 package org.jboss.weld.bean.builtin.ee;
 
-import org.jboss.weld.exceptions.IllegalStateException;
-import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.security.spi.SecurityServices;
-
 import java.security.Principal;
 
-import static org.jboss.weld.logging.messages.BeanMessage.SECURITY_SERVICES_NOT_AVAILABLE;
+import org.jboss.weld.logging.BeanLogger;
+import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.security.spi.SecurityServices;
 
 /**
  * @author pmuir
@@ -42,7 +40,7 @@ public class PrincipalBean extends AbstractEEBean<Principal> {
             if (securityServices != null) {
                 return securityServices.getPrincipal();
             } else {
-                throw new IllegalStateException(SECURITY_SERVICES_NOT_AVAILABLE);
+                throw BeanLogger.LOG.securityServicesNotAvailable();
             }
         }
 

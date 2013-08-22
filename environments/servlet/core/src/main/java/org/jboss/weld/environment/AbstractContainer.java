@@ -17,9 +17,8 @@
 
 package org.jboss.weld.environment;
 
+import org.jboss.logging.Logger;
 import org.jboss.weld.environment.servlet.util.Reflections;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Abstract container.
@@ -27,7 +26,8 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
 public abstract class AbstractContainer implements Container {
-    protected final Logger log = LoggerFactory.getLogger(getClass());
+
+    protected final Logger log = Logger.getLogger(getClass());
 
     /**
      * Get class name to check is we can use this container.

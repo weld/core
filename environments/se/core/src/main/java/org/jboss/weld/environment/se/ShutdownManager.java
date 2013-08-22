@@ -16,13 +16,12 @@
  */
 package org.jboss.weld.environment.se;
 
+import org.jboss.logging.Logger;
 import org.jboss.weld.bootstrap.api.Bootstrap;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ShutdownManager {
 
-    private static Logger log = LoggerFactory.getLogger(ShutdownManager.class);
+    private static Logger log = Logger.getLogger(ShutdownManager.class);
 
     private boolean hasShutdownBeenCalled = false;
 
@@ -44,7 +43,7 @@ public class ShutdownManager {
                 bootstrap.shutdown();
             } else {
                 log.debug("Skipping spurious call to shutdown");
-                log.trace("Spurious call to shutdown from: ", Thread.currentThread().getStackTrace());
+                log.tracev("Spurious call to shutdown from: {0}", Thread.currentThread().getStackTrace());
             }
         }
     }
