@@ -39,12 +39,6 @@
             <optional>true</optional>
         </dependency>
 
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-jdk14</artifactId>
-            <optional>true</optional>
-        </dependency>
-
     </dependencies>
 
     <build>
@@ -82,8 +76,6 @@
                                     <exclude>org.mortbay.jetty:jetty</exclude>
                                     <exclude>javax.annotation:jsr250-api</exclude>
                                     <exclude>org.javassist:javassist</exclude>
-                                    <exclude>org.slf4j:slf4j-api</exclude>
-                                    <exclude>org.slf4j:slf4j-jdk14</exclude>
                                 </excludes>
                             </artifactSet>
                         </configuration>

@@ -16,12 +16,6 @@
  */
 package org.jboss.weld.bean.proxy;
 
-import static org.jboss.weld.logging.Category.BEAN;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.BeanMessage.CALL_PROXIED_METHOD;
-import static org.jboss.weld.logging.messages.BeanMessage.CREATED_SESSION_BEAN_PROXY;
-import static org.jboss.weld.logging.messages.BeanMessage.INVALID_REMOVE_METHOD_INVOCATION;
-
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.lang.reflect.Method;
@@ -30,11 +24,10 @@ import org.jboss.weld.annotated.enhanced.MethodSignature;
 import org.jboss.weld.annotated.enhanced.jlr.MethodSignatureImpl;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.ejb.api.SessionObjectReference;
-import org.jboss.weld.exceptions.UnsupportedOperationException;
+import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.util.reflection.Reflections;
-import org.slf4j.cal10n.LocLogger;
 
 /**
  * Method handler for enterprise bean client proxies
@@ -46,9 +39,6 @@ import org.slf4j.cal10n.LocLogger;
 public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Serializable {
 
     private static final long serialVersionUID = 2107723373882153667L;
-
-    // The log provider
-    private static final LocLogger log = loggerFactory().getLogger(BEAN);
 
     private final BeanManagerImpl manager;
     private final BeanIdentifier beanId;
@@ -67,7 +57,7 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
         this.manager = bean.getBeanManager();
         this.beanId = bean.getIdentifier();
         this.reference = bean.createReference();
-        log.trace(CREATED_SESSION_BEAN_PROXY, bean);
+        BeanLogger.LOG.createdSessionBeanProxy(bean);
     }
 
     /**
@@ -98,7 +88,7 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
         }
 
         if (!bean.isClientCanCallRemoveMethods() && isRemoveMethod(method)) {
-            throw new UnsupportedOperationException(INVALID_REMOVE_METHOD_INVOCATION, method);
+            throw BeanLogger.LOG.invalidRemoveMethodInvocation(method);
         }
         Class<?> businessInterface = getBusinessInterface(method);
         if (reference.isRemoved() && isToStringMethod(method)) {
@@ -107,7 +97,7 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
         Object proxiedInstance = reference.getBusinessObject(businessInterface);
 
         Object returnValue = Reflections.invokeAndUnwrap(proxiedInstance, method, args);
-        log.trace(CALL_PROXIED_METHOD, method, proxiedInstance, args, returnValue);
+        BeanLogger.LOG.callProxiedMethod(method, proxiedInstance, args, returnValue);
         return returnValue;
     }
 

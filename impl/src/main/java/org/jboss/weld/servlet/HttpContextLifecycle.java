@@ -16,10 +16,6 @@
  */
 package org.jboss.weld.servlet;
 
-import static org.jboss.weld.logging.Category.SERVLET;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.ServletMessage.REQUEST_INITIALIZED;
-
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRequestListener;
 import javax.servlet.http.HttpServletRequest;
@@ -34,10 +30,10 @@ import org.jboss.weld.context.http.HttpSessionContext;
 import org.jboss.weld.context.http.HttpSessionDestructionContext;
 import org.jboss.weld.literal.DestroyedLiteral;
 import org.jboss.weld.literal.InitializedLiteral;
+import org.jboss.weld.logging.ServletLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.servlet.spi.HttpContextActivationFilter;
 import org.jboss.weld.util.reflection.Reflections;
-import org.slf4j.cal10n.LocLogger;
 
 /**
  * Takes care of setting up and tearing down CDI contexts around an HTTP request and dispatching context lifecycle events.
@@ -52,8 +48,6 @@ public class HttpContextLifecycle implements Service {
 
     private static final String INCLUDE_HEADER = "javax.servlet.include.request_uri";
     private static final String REQUEST_DESTROYED = HttpContextLifecycle.class.getName() + ".request.destroyed";
-
-    private static final LocLogger log = loggerFactory().getLogger(SERVLET);
 
     private HttpSessionDestructionContext sessionDestructionContextCache;
     private HttpSessionContext sessionContextCache;
@@ -145,7 +139,7 @@ public class HttpContextLifecycle implements Service {
             return;
         }
 
-        log.trace(REQUEST_INITIALIZED, request);
+        ServletLogger.LOG.requestInitialized(request);
 
         SessionHolder.requestInitialized(request);
 
@@ -186,7 +180,8 @@ public class HttpContextLifecycle implements Service {
         if (!contextActivationFilter.accepts(request)) {
             return;
         }
-        log.trace(REQUEST_DESTROYED, request);
+
+        ServletLogger.LOG.requestDestroyed(request);
 
         try {
             conversationContextActivator.deactivateConversationContext(request);

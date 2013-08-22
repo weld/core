@@ -17,13 +17,6 @@
 
 package org.jboss.weld.metadata.cache;
 
-import static org.jboss.weld.logging.Category.REFLECTION;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.MetadataMessage.NON_BINDING_MEMBER_TYPE;
-import static org.jboss.weld.logging.messages.ReflectionMessage.INVALID_INTERCEPTOR_BINDING_TARGET_DECLARATION;
-import static org.jboss.weld.logging.messages.ReflectionMessage.MISSING_TARGET;
-import static org.jboss.weld.logging.messages.ReflectionMessage.MISSING_TARGET_TYPE_METHOD_OR_TARGET_TYPE;
-
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
@@ -38,19 +31,18 @@ import javax.interceptor.InterceptorBinding;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotation;
-import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.logging.MetadataLogger;
+import org.jboss.weld.logging.ReflectionLogger;
 import org.jboss.weld.security.SetAccessibleAction;
 import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.reflection.Reflections;
-import org.slf4j.cal10n.LocLogger;
 
 /**
  * @author Marius Bogoevici
  */
 public class InterceptorBindingModel<T extends Annotation> extends AbstractBindingModel<T> {
-    private static final Set<Class<? extends Annotation>> META_ANNOTATIONS = Collections.<Class<? extends Annotation>>singleton(InterceptorBinding.class);
-    private static final LocLogger log = loggerFactory().getLogger(REFLECTION);
+    private static final Set<Class<? extends Annotation>> META_ANNOTATIONS = Collections.<Class<? extends Annotation>> singleton(InterceptorBinding.class);
     private Set<Annotation> inheritedInterceptionBindingTypes;
     private Set<Annotation> metaAnnotations;
 
@@ -86,17 +78,18 @@ public class InterceptorBindingModel<T extends Annotation> extends AbstractBindi
         super.check(annotatedAnnotation);
         if (isValid()) {
             if (!annotatedAnnotation.isAnnotationPresent(Target.class)) {
-                log.debug(MISSING_TARGET, annotatedAnnotation);
+                ReflectionLogger.LOG.missingTarget(annotatedAnnotation);
             }
             if (!isValidTargetType(annotatedAnnotation)) {
-                log.debug(MISSING_TARGET_TYPE_METHOD_OR_TARGET_TYPE, annotatedAnnotation);
+                ReflectionLogger.LOG.missingTargetTypeMethodOrTargetType(annotatedAnnotation);
             }
         }
     }
 
     private static boolean isValidTargetType(EnhancedAnnotation<?> annotation) {
         Target target = annotation.getAnnotation(Target.class);
-        return target != null && (Arrays2.unorderedEquals(target.value(), ElementType.TYPE, ElementType.METHOD) || Arrays2.unorderedEquals(target.value(), ElementType.TYPE));
+        return target != null
+                && (Arrays2.unorderedEquals(target.value(), ElementType.TYPE, ElementType.METHOD) || Arrays2.unorderedEquals(target.value(), ElementType.TYPE));
     }
 
     private void checkMetaAnnotations(EnhancedAnnotation<T> annotatedAnnotation) {
@@ -104,7 +97,8 @@ public class InterceptorBindingModel<T extends Annotation> extends AbstractBindi
         for (Annotation inheritedBinding : getInheritedInterceptionBindingTypes()) {
             ElementType[] metaAnnotationElementTypes = getTargetElementTypes(inheritedBinding.annotationType().getAnnotation(Target.class));
             if (!Arrays2.containsAll(metaAnnotationElementTypes, elementTypes)) {
-                log.warn(INVALID_INTERCEPTOR_BINDING_TARGET_DECLARATION, inheritedBinding.annotationType().getName(), Arrays.toString(metaAnnotationElementTypes), annotatedAnnotation.getJavaClass().getName(), Arrays.toString(elementTypes));
+                ReflectionLogger.LOG.invalidInterceptorBindingTargetDeclaration(inheritedBinding.annotationType().getName(),
+                        Arrays.toString(metaAnnotationElementTypes), annotatedAnnotation.getJavaClass().getName(), Arrays.toString(elementTypes));
             }
         }
     }
@@ -118,15 +112,15 @@ public class InterceptorBindingModel<T extends Annotation> extends AbstractBindi
 
     private void checkArrayAndAnnotationValuedMembers(EnhancedAnnotation<T> annotatedAnnotation) {
         for (EnhancedAnnotatedMethod<?, ?> annotatedMethod : annotatedAnnotation.getMembers()) {
-            if ((Reflections.isArrayType(annotatedMethod.getJavaClass()) || Annotation.class.isAssignableFrom(annotatedMethod.getJavaClass())) && !getNonBindingMembers().contains(annotatedMethod.slim())) {
-                throw new DefinitionException(NON_BINDING_MEMBER_TYPE, annotatedMethod);
+            if ((Reflections.isArrayType(annotatedMethod.getJavaClass()) || Annotation.class.isAssignableFrom(annotatedMethod.getJavaClass()))
+                    && !getNonBindingMembers().contains(annotatedMethod.slim())) {
+                throw MetadataLogger.LOG.nonBindingMemberTypeException(annotatedMethod);
             }
         }
     }
 
     /**
-     * Retrieves the transitive interceptor binding types that are inherited by
-     * this interceptor binding, as per section 9.1.1 of the specification,
+     * Retrieves the transitive interceptor binding types that are inherited by this interceptor binding, as per section 9.1.1 of the specification,
      * "Interceptor binding types with additional interceptor bindings"
      *
      * @return a set of transitive interceptor bindings, if any

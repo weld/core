@@ -16,11 +16,9 @@
  */
 package org.jboss.weld.util.cache;
 
-import static org.jboss.weld.logging.messages.UtilMessage.UNABLE_TO_LOAD_CACHE_VALUE;
-
 import java.util.concurrent.ExecutionException;
 
-import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.logging.UtilLogger;
 
 import com.google.common.cache.LoadingCache;
 import com.google.common.util.concurrent.ExecutionError;
@@ -53,13 +51,13 @@ public final class LoadingCacheUtils {
         try {
             return cache.get(key);
         } catch (ExecutionException e) {
-            throw new WeldException(UNABLE_TO_LOAD_CACHE_VALUE, e.getCause(), key);
+            throw UtilLogger.LOG.unableToLoadCacheValue(key, e.getCause());
         } catch (UncheckedExecutionException e) {
             Throwable cause = e.getCause();
             if (cause instanceof RuntimeException) {
                 throw (RuntimeException) cause;
             }
-            throw new WeldException(UNABLE_TO_LOAD_CACHE_VALUE, cause, key);
+            throw UtilLogger.LOG.unableToLoadCacheValue(key, cause);
         }
     }
 

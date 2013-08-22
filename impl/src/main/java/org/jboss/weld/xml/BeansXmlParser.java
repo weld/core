@@ -17,9 +17,6 @@
 package org.jboss.weld.xml;
 
 import static org.jboss.weld.bootstrap.spi.BeansXml.EMPTY_BEANS_XML;
-import static org.jboss.weld.logging.messages.XmlMessage.CONFIGURATION_ERROR;
-import static org.jboss.weld.logging.messages.XmlMessage.LOAD_ERROR;
-import static org.jboss.weld.logging.messages.XmlMessage.PARSING_ERROR;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,6 +34,7 @@ import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.Filter;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.exceptions.IllegalStateException;
+import org.jboss.weld.logging.XmlLogger;
 import org.jboss.weld.metadata.BeansXmlImpl;
 import org.jboss.weld.metadata.ScanningImpl;
 import org.xml.sax.InputSource;
@@ -61,15 +59,15 @@ public class BeansXmlParser {
         factory.setValidating(!SystemPropertiesConfiguration.INSTANCE.isXmlValidationDisabled());
         factory.setNamespaceAware(true);
         if (beansXml == null) {
-            throw new IllegalStateException(LOAD_ERROR, "unknown");
+            throw XmlLogger.LOG.loadError("unknown", null);
         }
         SAXParser parser;
         try {
             parser = factory.newSAXParser();
         } catch (SAXException e) {
-            throw new IllegalStateException(CONFIGURATION_ERROR, e);
+            throw XmlLogger.LOG.configurationError(e);
         } catch (ParserConfigurationException e) {
-            throw new IllegalStateException(CONFIGURATION_ERROR, e);
+            throw XmlLogger.LOG.configurationError(e);
         }
         InputStream beansXmlInputStream = null;
         try {
@@ -96,9 +94,9 @@ public class BeansXmlParser {
 
             return handler.createBeansXml();
         } catch (IOException e) {
-            throw new IllegalStateException(LOAD_ERROR, e, beansXml);
+            throw XmlLogger.LOG.loadError(beansXml, e);
         } catch (SAXException e) {
-            throw new IllegalStateException(PARSING_ERROR, e, beansXml);
+            throw XmlLogger.LOG.parsingError(beansXml, e);
         } finally {
             if (beansXmlInputStream != null) {
                 try {

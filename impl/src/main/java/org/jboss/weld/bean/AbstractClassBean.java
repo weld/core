@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.bean;
 
-import static org.jboss.weld.logging.messages.BeanMessage.SPECIALIZING_BEAN_MUST_EXTEND_A_BEAN;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -31,8 +29,8 @@ import javax.enterprise.inject.spi.Producer;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
-import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
+import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.util.Beans;
@@ -106,7 +104,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> imp
         super.preSpecialize();
         Class<?> superclass = getAnnotated().getJavaClass().getSuperclass();
         if (superclass == null || superclass.equals(Object.class)) {
-            throw new DefinitionException(SPECIALIZING_BEAN_MUST_EXTEND_A_BEAN, this);
+            throw BeanLogger.LOG.specializingBeanMustExtendABean(this);
         }
     }
 

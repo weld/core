@@ -17,7 +17,7 @@
 package org.jboss.weld.util;
 
 import org.jboss.weld.exceptions.IllegalArgumentException;
-import static org.jboss.weld.logging.messages.ValidatorMessage.ARGUMENT_NULL;
+import org.jboss.weld.logging.ValidatorLogger;
 
 /**
  *
@@ -37,7 +37,7 @@ public class Preconditions {
      */
     public static void checkArgumentNotNull(Object reference, String argumentName) {
         if (reference == null) {
-            throw new IllegalArgumentException(ARGUMENT_NULL, argumentName);
+            throw ValidatorLogger.LOG.argumentNull(argumentName);
         }
     }
 }

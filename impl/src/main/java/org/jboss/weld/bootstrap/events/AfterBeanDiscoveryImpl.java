@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.bootstrap.events;
 
-import static org.jboss.weld.logging.messages.BeanMessage.PASSIVATION_CAPABLE_BEAN_HAS_NULL_ID;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.util.Collection;
@@ -39,7 +38,7 @@ import org.jboss.weld.bean.attributes.ExternalBeanAttributesFactory;
 import org.jboss.weld.bootstrap.BeanDeploymentArchiveMapping;
 import org.jboss.weld.bootstrap.ContextHolder;
 import org.jboss.weld.bootstrap.spi.Deployment;
-import org.jboss.weld.exceptions.IllegalArgumentException;
+import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Observers;
 import org.jboss.weld.util.Preconditions;
@@ -84,7 +83,7 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
         if (bean instanceof PassivationCapable) {
             PassivationCapable passivationCapable = (PassivationCapable) bean;
             if (passivationCapable.getId() == null) {
-                throw new IllegalArgumentException(PASSIVATION_CAPABLE_BEAN_HAS_NULL_ID, bean);
+                throw BeanLogger.LOG.passivationCapableBeanHasNullId(bean);
             }
         }
         if (bean instanceof Interceptor<?>) {

@@ -16,11 +16,6 @@
  */
 package org.jboss.weld.bean.builtin.ee;
 
-import static org.jboss.weld.logging.messages.BeanMessage.BEAN_NOT_EE_RESOURCE_PRODUCER;
-import static org.jboss.weld.logging.messages.BeanMessage.INVALID_RESOURCE_PRODUCER_FIELD;
-import static org.jboss.weld.logging.messages.BeanMessage.NAMED_RESOURCE_PRODUCER_FIELD;
-import static org.jboss.weld.logging.messages.BeanMessage.NON_DEPENDENT_RESOURCE_PRODUCER_FIELD;
-
 import java.io.Serializable;
 
 import javax.enterprise.context.Dependent;
@@ -39,8 +34,7 @@ import org.jboss.weld.bean.proxy.ProxyFactory;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.ejb.EJBApiAbstraction;
-import org.jboss.weld.exceptions.DefinitionException;
-import org.jboss.weld.exceptions.IllegalStateException;
+import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
@@ -73,7 +67,7 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T> {
                 if (contextual instanceof EEResourceProducerField<?, ?>) {
                     this.instance = Reflections.<EEResourceProducerField<?, T>>cast(contextual).createUnderlying(creationalContext);
                 } else {
-                    throw new IllegalStateException(BEAN_NOT_EE_RESOURCE_PRODUCER, contextual);
+                    throw BeanLogger.LOG.beanNotEeResourceProducer(contextual);
                 }
             }
             return instance;
@@ -116,10 +110,10 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T> {
 
     protected void checkEEResource() {
         if (!getScope().equals(Dependent.class)) {
-            throw new DefinitionException(NON_DEPENDENT_RESOURCE_PRODUCER_FIELD, this);
+            throw BeanLogger.LOG.nonDependentResourceProducerField(this);
         }
         if (getName() != null) {
-            throw new DefinitionException(NAMED_RESOURCE_PRODUCER_FIELD, this);
+            throw BeanLogger.LOG.namedResourceProducerField(this);
         }
         EJBApiAbstraction ejbApiAbstraction = beanManager.getServices().get(EJBApiAbstraction.class);
         PersistenceApiAbstraction persistenceApiAbstraction = beanManager.getServices().get(PersistenceApiAbstraction.class);
@@ -129,7 +123,7 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T> {
                 || getAnnotated().isAnnotationPresent(persistenceApiAbstraction.PERSISTENCE_UNIT_ANNOTATION_CLASS)
                 || getAnnotated().isAnnotationPresent(ejbApiAbstraction.EJB_ANNOTATION_CLASS)
                 || getAnnotated().isAnnotationPresent(wsApiAbstraction.WEB_SERVICE_REF_ANNOTATION_CLASS))) {
-            throw new IllegalStateException(INVALID_RESOURCE_PRODUCER_FIELD, getAnnotated());
+            throw BeanLogger.LOG.invalidResourceProducerField(getAnnotated());
         }
     }
 

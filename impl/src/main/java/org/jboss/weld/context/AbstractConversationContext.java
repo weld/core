@@ -23,7 +23,6 @@
 package org.jboss.weld.context;
 
 import static org.jboss.weld.context.conversation.ConversationIdGenerator.CONVERSATION_ID_GENERATOR_ATTRIBUTE_NAME;
-import static org.jboss.weld.logging.messages.ConversationMessage.NO_CONVERSATION_FOUND_TO_RESTORE;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.annotation.Annotation;
@@ -44,7 +43,7 @@ import org.jboss.weld.context.beanstore.NamingScheme;
 import org.jboss.weld.context.conversation.ConversationIdGenerator;
 import org.jboss.weld.context.conversation.ConversationImpl;
 import org.jboss.weld.literal.DestroyedLiteral;
-import org.jboss.weld.logging.messages.ConversationMessage;
+import org.jboss.weld.logging.ConversationLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 
@@ -84,30 +83,37 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
         this.manager = Container.instance(contextId).deploymentManager();
     }
 
+    @Override
     public String getParameterName() {
         return parameterName.get();
     }
 
+    @Override
     public void setParameterName(String cid) {
         this.parameterName.set(cid);
     }
 
+    @Override
     public void setConcurrentAccessTimeout(long timeout) {
         this.concurrentAccessTimeout.set(timeout);
     }
 
+    @Override
     public long getConcurrentAccessTimeout() {
         return concurrentAccessTimeout.get();
     }
 
+    @Override
     public void setDefaultTimeout(long timeout) {
         this.defaultTimeout.set(timeout);
     }
 
+    @Override
     public long getDefaultTimeout() {
         return defaultTimeout.get();
     }
 
+    @Override
     public boolean associate(R request) {
         if (this.associated.get() == null) {
             this.associated.set(request);
@@ -148,6 +154,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
         }
     }
 
+    @Override
     public boolean dissociate(R request) {
         if (isAssociated() && this.associated.get() != null) {
             try {
@@ -204,6 +211,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
         getBeanStore().attach();
     }
 
+    @Override
     public void activate(String cid) {
         if (getBeanStore() == null) {
             if (!isAssociated()) {
@@ -223,12 +231,12 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
                     } else {
                         // CDI 6.7.4 we must activate a new transient conversation before we throw the exception
                         associateRequestWithNewConversation();
-                        throw new BusyConversationException(ConversationMessage.CONVERSATION_LOCK_TIMEDOUT, cid);
+                        throw ConversationLogger.LOG.conversationLockTimedout(cid);
                     }
                 } else {
                     // CDI 6.7.4 we must activate a new transient conversation before we throw the exception
                     associateRequestWithNewConversation();
-                    throw new NonexistentConversationException(NO_CONVERSATION_FOUND_TO_RESTORE, cid);
+                    throw ConversationLogger.LOG.noConversationFoundToRestore(cid);
                 }
             } else {
                 associateRequestWithNewConversation();
@@ -368,6 +376,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
         }
     }
 
+    @Override
     public String generateConversationId() {
         if (!isAssociated()) {
             throw new IllegalStateException("A request must be associated with the context in order to generate a conversation id");
@@ -383,10 +392,12 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
         return System.currentTimeMillis() > (conversation.getLastUsed() + conversation.getTimeout());
     }
 
+    @Override
     public ManagedConversation getConversation(String id) {
         return getConversationMap().get(id);
     }
 
+    @Override
     public Collection<ManagedConversation> getConversations() {
         return getConversationMap().values();
     }
@@ -405,6 +416,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
         return cast(getRequestAttribute(getRequest(), CONVERSATIONS_ATTRIBUTE_NAME));
     }
 
+    @Override
     public ManagedConversation getCurrentConversation() {
         checkIsAssociated();
         if (!(getRequestAttribute(getRequest(), CURRENT_CONVERSATION_ATTRIBUTE_NAME) instanceof ManagedConversation)) {
@@ -413,6 +425,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
         return (ManagedConversation) getRequestAttribute(getRequest(), CURRENT_CONVERSATION_ATTRIBUTE_NAME);
     }
 
+    @Override
     public Class<? extends Annotation> getScope() {
         return ConversationScoped.class;
     }

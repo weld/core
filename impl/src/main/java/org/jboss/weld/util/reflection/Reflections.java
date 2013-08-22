@@ -16,9 +16,6 @@
  */
 package org.jboss.weld.util.reflection;
 
-import static org.jboss.weld.logging.Category.UTIL;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-
 import java.beans.Introspector;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
@@ -47,8 +44,6 @@ import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
 import org.jboss.weld.security.GetDeclaredMethodsAction;
 import org.jboss.weld.util.Types;
-import org.slf4j.cal10n.LocLogger;
-import org.slf4j.ext.XLogger;
 
 /**
  * Utility class for static reflection-type operations
@@ -58,9 +53,6 @@ import org.slf4j.ext.XLogger;
  * @author Marko Luksa
  */
 public class Reflections {
-
-    static final LocLogger log = loggerFactory().getLogger(UTIL);
-    static final XLogger xLog = loggerFactory().getXLogger(UTIL);
 
     public static final Type[] EMPTY_TYPES = {};
     public static final Annotation[] EMPTY_ANNOTATIONS = {};

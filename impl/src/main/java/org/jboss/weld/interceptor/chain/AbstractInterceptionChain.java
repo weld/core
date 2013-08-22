@@ -31,16 +31,13 @@ import org.jboss.weld.interceptor.reader.TargetClassInterceptorMetadata;
 import org.jboss.weld.interceptor.spi.context.InterceptionChain;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jboss.weld.logging.InterceptorLogger;
 
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  *
  */
 public abstract class AbstractInterceptionChain implements InterceptionChain {
-
-    private static final Logger log = LoggerFactory.getLogger(AbstractInterceptionChain.class);
 
     private int currentPosition;
 
@@ -88,7 +85,7 @@ public abstract class AbstractInterceptionChain implements InterceptionChain {
         int oldCurrentPosition = currentPosition;
         try {
             InterceptorMethodInvocation nextInterceptorMethodInvocation = interceptorMethodInvocations.get(currentPosition++);
-            log.trace("Invoking next interceptor in chain: {}", nextInterceptorMethodInvocation.toString());
+            InterceptorLogger.LOG.invokingNextInterceptorInChain(nextInterceptorMethodInvocation.toString());
             if (nextInterceptorMethodInvocation.expectsInvocationContext()) {
                 return nextInterceptorMethodInvocation.invoke(invocationContext);
             } else {

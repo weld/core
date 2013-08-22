@@ -20,11 +20,6 @@ import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.ElementType.TYPE;
-import static org.jboss.weld.logging.Category.REFLECTION;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.MetadataMessage.NON_BINDING_MEMBER_TYPE;
-import static org.jboss.weld.logging.messages.ReflectionMessage.MISSING_TARGET;
-import static org.jboss.weld.logging.messages.ReflectionMessage.MISSING_TARGET_METHOD_FIELD_PARAMETER_TYPE;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Target;
@@ -39,10 +34,11 @@ import javax.inject.Qualifier;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotation;
 import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.logging.MetadataLogger;
+import org.jboss.weld.logging.ReflectionLogger;
 import org.jboss.weld.security.SetAccessibleAction;
 import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.reflection.Reflections;
-import org.slf4j.cal10n.LocLogger;
 
 /**
  * Model of a binding type
@@ -50,7 +46,6 @@ import org.slf4j.cal10n.LocLogger;
  * @author Pete Muir
  */
 public class QualifierModel<T extends Annotation> extends AbstractBindingModel<T> {
-    private static final LocLogger log = loggerFactory().getLogger(REFLECTION);
 
     private static final Set<Class<? extends Annotation>> META_ANNOTATIONS = Collections.<Class<? extends Annotation>>singleton(Qualifier.class);
 
@@ -68,7 +63,7 @@ public class QualifierModel<T extends Annotation> extends AbstractBindingModel<T
         super.initValid(annotatedAnnotation);
         for (EnhancedAnnotatedMethod<?, ?> annotatedMethod : annotatedAnnotation.getMembers()) {
             if ((Reflections.isArrayType(annotatedMethod.getJavaClass()) || Annotation.class.isAssignableFrom(annotatedMethod.getJavaClass())) && !getNonBindingMembers().contains(annotatedMethod.slim())) {
-                log.debug(NON_BINDING_MEMBER_TYPE, annotatedMethod);
+                MetadataLogger.LOG.nonBindingMemberType(annotatedMethod);
                 super.valid = false;
             }
         }
@@ -82,9 +77,9 @@ public class QualifierModel<T extends Annotation> extends AbstractBindingModel<T
         if (isValid()) {
 
             if (!annotatedAnnotation.isAnnotationPresent(Target.class)) {
-                log.debug(MISSING_TARGET, annotatedAnnotation);
+                ReflectionLogger.LOG.missingTarget(annotatedAnnotation);
             } else if (!Arrays2.unorderedEquals(annotatedAnnotation.getAnnotation(Target.class).value(), METHOD, FIELD, PARAMETER, TYPE)) {
-                log.debug(MISSING_TARGET_METHOD_FIELD_PARAMETER_TYPE, annotatedAnnotation);
+                ReflectionLogger.LOG.missingTargetMethodFieldParameterType(annotatedAnnotation);
             }
         }
     }

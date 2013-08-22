@@ -54,18 +54,6 @@ public class InjectionException extends javax.enterprise.inject.InjectionExcepti
         this.message = new WeldExceptionStringMessage(message);
     }
 
-    /**
-     * Creates a new exception with the given localized message key and optional
-     * arguments for the message.
-     *
-     * @param <E>  The enumeration type for the message keys
-     * @param key  The localized message to use
-     * @param args Optional arguments to insert into the message
-     */
-    public <E extends Enum<?>> InjectionException(E key, Object... args) {
-        message = new WeldExceptionKeyMessage(key, args);
-    }
-
     @Override
     public String getLocalizedMessage() {
         return getMessage();

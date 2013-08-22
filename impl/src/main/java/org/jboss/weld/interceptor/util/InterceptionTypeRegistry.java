@@ -25,15 +25,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jboss.weld.logging.InterceptorLogger;
 
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
 public final class InterceptionTypeRegistry {
 
-    private static final Logger LOG = LoggerFactory.getLogger(InterceptionTypeRegistry.class);
     private static final Map<InterceptionType, Class<? extends Annotation>> INTERCEPTOR_ANNOTATION_CLASSES;
 
     private InterceptionTypeRegistry() {
@@ -46,7 +44,7 @@ public final class InterceptionTypeRegistry {
             try {
                 interceptionAnnotationClasses.put(interceptionType, (Class<? extends Annotation>) InterceptionTypeRegistry.class.getClassLoader().loadClass(interceptionType.annotationClassName()));
             } catch (Exception e) {
-                LOG.warn("Class '{}' not found, interception based on it is not enabled", interceptionType.annotationClassName());
+                InterceptorLogger.LOG.interceptorAnnotationClassNotFound(interceptionType.annotationClassName());
             }
         }
         INTERCEPTOR_ANNOTATION_CLASSES = Collections.unmodifiableMap(interceptionAnnotationClasses);

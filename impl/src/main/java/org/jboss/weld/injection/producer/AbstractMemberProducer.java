@@ -16,12 +16,6 @@
  */
 package org.jboss.weld.injection.producer;
 
-import static org.jboss.weld.logging.Category.BEAN;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.BeanMessage.CIRCULAR_CALL;
-import static org.jboss.weld.logging.messages.BeanMessage.DECLARING_BEAN_MISSING;
-import static org.jboss.weld.logging.messages.BeanMessage.RETURN_TYPE_MUST_BE_CONCRETE;
-
 import java.io.Serializable;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Member;
@@ -40,9 +34,8 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMember;
 import org.jboss.weld.bean.DisposalMethod;
 import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.exceptions.DefinitionException;
-import org.jboss.weld.logging.messages.BeanMessage;
+import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.slf4j.cal10n.LocLogger;
 
 /**
  * Common functionality for {@link Producer}s backing producer fields and producer methods.
@@ -51,8 +44,6 @@ import org.slf4j.cal10n.LocLogger;
  * @author Marko Luksa
  */
 public abstract class AbstractMemberProducer<X, T> extends AbstractProducer<T> {
-
-    private static final LocLogger log = loggerFactory().getLogger(BEAN);
 
     private final DisposalMethod<?, ?> disposalMethod;
 
@@ -64,7 +55,7 @@ public abstract class AbstractMemberProducer<X, T> extends AbstractProducer<T> {
 
     protected void checkDeclaringBean() {
         if (getDeclaringBean() == null && !getAnnotated().isStatic()) {
-            throw new org.jboss.weld.exceptions.IllegalArgumentException(DECLARING_BEAN_MISSING, getAnnotated());
+            throw BeanLogger.LOG.declaringBeanMissing(getAnnotated());
         }
     }
 
@@ -78,7 +69,7 @@ public abstract class AbstractMemberProducer<X, T> extends AbstractProducer<T> {
 
     private void checkReturnTypeIsConcrete(EnhancedAnnotatedMember<T, ? super X, ? extends Member> enhancedMember, Type type) {
         if (type instanceof TypeVariable<?> || type instanceof WildcardType) {
-            throw new DefinitionException(RETURN_TYPE_MUST_BE_CONCRETE, enhancedMember);
+            throw BeanLogger.LOG.returnTypeMustBeConcrete(enhancedMember);
         } else if (type instanceof GenericArrayType) {
             GenericArrayType arrayType = (GenericArrayType) type;
             checkReturnTypeIsConcrete(enhancedMember, arrayType.getGenericComponentType());
@@ -88,10 +79,10 @@ public abstract class AbstractMemberProducer<X, T> extends AbstractProducer<T> {
     private void checkReturnTypeForWildcardsAndTypeVariables(EnhancedAnnotatedMember<T, ? super X, ? extends Member> enhancedMember, Type type) {
         if (type instanceof TypeVariable<?>) {
             if (!isDependent()) {
-                throw new DefinitionException(producerWithTypeVariableBeanTypeMustBeDependent(), enhancedMember);
+                throw producerWithTypeVariableBeanTypeMustBeDependent(enhancedMember);
             }
         } else if (type instanceof WildcardType) {
-            throw new DefinitionException(producerCannotHaveWildcardBeanType(), enhancedMember);
+            throw producerCannotHaveWildcardBeanType(enhancedMember);
         } else if (type instanceof ParameterizedType) {
             ParameterizedType parameterizedType = (ParameterizedType) type;
             for (Type parameterType : parameterizedType.getActualTypeArguments()) {
@@ -103,9 +94,9 @@ public abstract class AbstractMemberProducer<X, T> extends AbstractProducer<T> {
         }
     }
 
-    protected abstract BeanMessage producerCannotHaveWildcardBeanType();
+    protected abstract DefinitionException producerCannotHaveWildcardBeanType(Object member);
 
-    protected abstract BeanMessage producerWithTypeVariableBeanTypeMustBeDependent();
+    protected abstract DefinitionException producerWithTypeVariableBeanTypeMustBeDependent(Object member);
 
     private boolean isDependent() {
         return getBean() != null && Dependent.class.equals(getBean().getScope());
@@ -130,7 +121,7 @@ public abstract class AbstractMemberProducer<X, T> extends AbstractProducer<T> {
                 WeldCreationalContext<?> creationalContextImpl = (WeldCreationalContext<?>) productCreationalContext;
                 final Object incompleteInstance = creationalContextImpl.getIncompleteInstance(getDeclaringBean());
                 if (incompleteInstance != null) {
-                    log.warn(CIRCULAR_CALL, getAnnotated(), getDeclaringBean());
+                    BeanLogger.LOG.circularCall(getAnnotated(), getDeclaringBean());
                     return incompleteInstance;
                 }
             }

@@ -16,10 +16,6 @@
  */
 package org.jboss.weld.injection.producer.ejb;
 
-import static org.jboss.weld.logging.messages.BeanMessage.EJB_NOT_FOUND;
-import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_BEAN_ACCESS_FAILED;
-import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_FAILED;
-
 import java.lang.reflect.Constructor;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
@@ -33,9 +29,9 @@ import org.jboss.weld.bean.proxy.EnterpriseProxyFactory;
 import org.jboss.weld.bean.proxy.EnterpriseTargetBeanInstance;
 import org.jboss.weld.bean.proxy.InjectionPointPropagatingEnterpriseTargetBeanInstance;
 import org.jboss.weld.bean.proxy.ProxyFactory;
-import org.jboss.weld.exceptions.CreationException;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.injection.producer.Instantiator;
+import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.security.NewInstanceAction;
 
@@ -63,14 +59,14 @@ public class SessionBeanProxyInstantiator<T> implements Instantiator<T> {
             return instance;
         } catch (PrivilegedActionException e) {
             if (e.getCause() instanceof InstantiationException) {
-                throw new WeldException(PROXY_INSTANTIATION_FAILED, e.getCause(), this);
+                throw new WeldException(BeanLogger.LOG.proxyInstantiationFailed(this), e.getCause());
             } else if (e.getCause() instanceof IllegalAccessException) {
-                throw new WeldException(PROXY_INSTANTIATION_BEAN_ACCESS_FAILED, e.getCause(), this);
+                throw new WeldException(BeanLogger.LOG.proxyInstantiationBeanAccessFailed(this), e.getCause());
             } else {
                 throw new WeldException(e.getCause());
             }
         } catch (Exception e) {
-            throw new CreationException(EJB_NOT_FOUND, e, proxyClass);
+            throw BeanLogger.LOG.ejbNotFound(proxyClass, e);
         }
     }
 

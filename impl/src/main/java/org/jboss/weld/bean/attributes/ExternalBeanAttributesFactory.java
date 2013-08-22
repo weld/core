@@ -16,18 +16,6 @@
  */
 package org.jboss.weld.bean.attributes;
 
-import static org.jboss.weld.logging.messages.MetadataMessage.BEAN_WITH_PARAMETERIZED_TYPE_CONTAINING_TYPE_VARIABLES_MUST_BE_DEPENDENT_SCOPED;
-import static org.jboss.weld.logging.messages.MetadataMessage.NOT_A_QUALIFIER;
-import static org.jboss.weld.logging.messages.MetadataMessage.NOT_A_SCOPE;
-import static org.jboss.weld.logging.messages.MetadataMessage.NOT_A_STEREOTYPE;
-import static org.jboss.weld.logging.messages.MetadataMessage.PARAMETERIZED_TYPE_CONTAINING_WILDCARD_PARAMETER_IS_NOT_A_VALID_BEAN_TYPE;
-import static org.jboss.weld.logging.messages.MetadataMessage.QUALIFIERS_NULL;
-import static org.jboss.weld.logging.messages.MetadataMessage.SCOPE_NULL;
-import static org.jboss.weld.logging.messages.MetadataMessage.STEREOTYPES_NULL;
-import static org.jboss.weld.logging.messages.MetadataMessage.TYPES_EMPTY;
-import static org.jboss.weld.logging.messages.MetadataMessage.TYPES_NULL;
-import static org.jboss.weld.logging.messages.MetadataMessage.TYPE_VARIABLE_IS_NOT_A_VALID_BEAN_TYPE;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
@@ -41,7 +29,7 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.BeanManager;
 
-import org.jboss.weld.exceptions.DefinitionException;
+import org.jboss.weld.logging.MetadataLogger;
 
 /**
  * Creates {@link BeanAttributes} based on BeanAttributes provided by an extension. This class handles creating a safe copy as
@@ -83,27 +71,33 @@ public class ExternalBeanAttributesFactory {
     }
 
     public static void validateStereotypes(BeanAttributes<?> attributes, BeanManager manager) {
-        checkNull(attributes.getStereotypes(), STEREOTYPES_NULL, attributes);
+        if(attributes.getStereotypes() == null) {
+            throw MetadataLogger.LOG.stereotypesNull(attributes);
+        }
         for (Class<? extends Annotation> annotation : attributes.getStereotypes()) {
             if (!manager.isStereotype(annotation)) {
-                throw new DefinitionException(NOT_A_STEREOTYPE, annotation, attributes);
+                throw MetadataLogger.LOG.notAStereotype(annotation, attributes);
             }
         }
     }
 
     public static void validateQualifiers(BeanAttributes<?> attributes, BeanManager manager) {
-        checkNull(attributes.getQualifiers(), QUALIFIERS_NULL, attributes);
+        if(attributes.getQualifiers() == null) {
+            throw MetadataLogger.LOG.qualifiersNull(attributes);
+        }
         for (Annotation annotation : attributes.getQualifiers()) {
             if (!manager.isQualifier(annotation.annotationType())) {
-                throw new DefinitionException(NOT_A_QUALIFIER, annotation.annotationType(), attributes);
+                throw MetadataLogger.LOG.notAQualifier(annotation.annotationType(), attributes);
             }
         }
     }
 
     public static void validateTypes(BeanAttributes<?> attributes, BeanManager manager) {
-        checkNull(attributes.getTypes(), TYPES_NULL, attributes);
+        if(attributes.getTypes() == null) {
+            throw MetadataLogger.LOG.typesNull(attributes);
+        }
         if (attributes.getTypes().isEmpty()) {
-            throw new DefinitionException(TYPES_EMPTY, attributes);
+            throw MetadataLogger.LOG.typesEmpty(attributes);
         }
         for (Type type : attributes.getTypes()) {
             validateBeanType(type, attributes);
@@ -117,7 +111,7 @@ public class ExternalBeanAttributesFactory {
 
     private static void checkBeanTypeNotATypeVariable(Type beanType, Type type, BeanAttributes<?> attributes) {
         if (type instanceof TypeVariable<?>) {
-            throw new DefinitionException(TYPE_VARIABLE_IS_NOT_A_VALID_BEAN_TYPE, beanType, attributes);
+            throw MetadataLogger.LOG.typeVariableIsNotAValidBeanType(beanType, attributes);
         } else if (type instanceof GenericArrayType) {
             GenericArrayType arrayType = (GenericArrayType) type;
             checkBeanTypeNotATypeVariable(beanType, arrayType.getGenericComponentType(), attributes);
@@ -127,10 +121,10 @@ public class ExternalBeanAttributesFactory {
     private static void checkBeanTypeForWildcardsAndTypeVariables(Type beanType, Type type, BeanAttributes<?> attributes) {
         if (type instanceof TypeVariable<?>) {
             if (!attributes.getScope().equals(Dependent.class)) {
-                throw new DefinitionException(BEAN_WITH_PARAMETERIZED_TYPE_CONTAINING_TYPE_VARIABLES_MUST_BE_DEPENDENT_SCOPED, beanType, attributes);
+                throw MetadataLogger.LOG.beanWithParameterizedTypeContainingTypeVariablesMustBeDependentScoped(beanType, attributes);
             }
         } else if (type instanceof WildcardType) {
-            throw new DefinitionException(PARAMETERIZED_TYPE_CONTAINING_WILDCARD_PARAMETER_IS_NOT_A_VALID_BEAN_TYPE, beanType, attributes);
+            throw MetadataLogger.LOG.parameterizedTypeContainingWildcardParameterIsNotAValidBeanType(beanType, attributes);
         } else if (type instanceof ParameterizedType) {
             ParameterizedType parameterizedType = (ParameterizedType) type;
             for (Type typeArgument : parameterizedType.getActualTypeArguments()) {
@@ -143,15 +137,12 @@ public class ExternalBeanAttributesFactory {
     }
 
     public static void validateScope(BeanAttributes<?> attributes, BeanManager manager) {
-        checkNull(attributes.getScope(), SCOPE_NULL, attributes);
+        if(attributes.getScope() == null) {
+            throw MetadataLogger.LOG.scopeNull(attributes);
+        }
         if (!manager.isScope(attributes.getScope())) {
-            throw new DefinitionException(NOT_A_SCOPE, attributes.getScope(), attributes);
+            throw MetadataLogger.LOG.notAScope(attributes.getScope(), attributes);
         }
     }
 
-    public static <E extends Enum<?>> void checkNull(Object object, E key, Object... objects) {
-        if (object == null) {
-            throw new DefinitionException(key, objects);
-        }
-    }
 }

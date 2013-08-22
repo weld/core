@@ -1,6 +1,5 @@
 package org.jboss.weld.annotated.slim.unbacked;
 
-import static org.jboss.weld.logging.messages.BeanMessage.PROXY_REQUIRED;
 import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
@@ -18,6 +17,7 @@ import javax.enterprise.inject.spi.AnnotatedType;
 import org.jboss.weld.annotated.slim.AnnotatedTypeIdentifier;
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.exceptions.InvalidObjectException;
+import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.util.reflection.Formats;
 
@@ -102,7 +102,7 @@ public class UnbackedAnnotatedType<X> extends UnbackedAnnotated implements SlimA
     }
 
     private void readObject(ObjectInputStream stream) throws InvalidObjectException {
-        throw new InvalidObjectException(PROXY_REQUIRED);
+        throw BeanLogger.LOG.proxyRequired();
     }
 
     @Override

@@ -16,16 +16,12 @@
  */
 package org.jboss.weld.executor;
 
-import static org.jboss.weld.logging.Category.BOOTSTRAP;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import org.jboss.weld.logging.messages.BootstrapMessage;
-import org.slf4j.cal10n.LocLogger;
+import org.jboss.weld.logging.BootstrapLogger;
 
 /**
  * Implementation of {@link ExtendedExecutorServices} that uses a fixed thread pool. However threads are terminated if no new tasks arrive within the keep-alive time.
@@ -33,8 +29,6 @@ import org.slf4j.cal10n.LocLogger;
  * @author Martin Kouba
  */
 public class TimingOutFixedThreadPoolExecutorServices extends AbstractExecutorServices {
-
-    private static final LocLogger log = loggerFactory().getLogger(BOOTSTRAP);
 
     private final int threadPoolSize;
     /**
@@ -56,7 +50,7 @@ public class TimingOutFixedThreadPoolExecutorServices extends AbstractExecutorSe
         // Terminate threads if no new tasks arrive within the keep-alive time
         this.executor.allowCoreThreadTimeOut(true);
 
-        log.debug(BootstrapMessage.THREADS_IN_USE, threadPoolSize);
+        BootstrapLogger.LOG.threadsInUse(threadPoolSize);
     }
 
     public int getPoolSize() {

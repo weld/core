@@ -17,25 +17,6 @@
 package org.jboss.weld.manager;
 
 import static org.jboss.weld.annotated.AnnotatedTypeValidator.validateAnnotatedType;
-import static org.jboss.weld.logging.Category.BOOTSTRAP;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.AMBIGUOUS_BEANS_FOR_DEPENDENCY;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.CONTEXT_NOT_ACTIVE;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.DUPLICATE_ACTIVE_CONTEXTS;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.INCORRECT_PRODUCER_MEMBER;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.INTERCEPTOR_BINDINGS_EMPTY;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.NON_NORMAL_SCOPE;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.NOT_INTERCEPTOR_BINDING_TYPE;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.NOT_STEREOTYPE;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.NO_DECORATOR_TYPES;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.NO_INSTANCE_OF_EXTENSION;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.SPECIFIED_TYPE_NOT_BEAN_TYPE;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.TOO_MANY_ACTIVITIES;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.UNRESOLVABLE_ELEMENT;
-import static org.jboss.weld.logging.messages.BootstrapMessage.FOUND_BEAN;
-import static org.jboss.weld.logging.messages.BootstrapMessage.FOUND_DISABLED_ALTERNATIVE;
-import static org.jboss.weld.logging.messages.BootstrapMessage.FOUND_PRODUCER_OF_SPECIALIZED_BEAN;
-import static org.jboss.weld.logging.messages.BootstrapMessage.FOUND_SPECIALIZED_BEAN;
 import static org.jboss.weld.manager.BeanManagers.buildAccessibleClosure;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 import static org.jboss.weld.util.reflection.Reflections.isCacheable;
@@ -110,7 +91,6 @@ import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.enablement.ModuleEnablement;
 import org.jboss.weld.bootstrap.events.ContainerLifecycleEvents;
 import org.jboss.weld.bootstrap.spi.CDI11Deployment;
-import org.jboss.weld.context.ContextNotActiveException;
 import org.jboss.weld.context.CreationalContextImpl;
 import org.jboss.weld.context.PassivatingContextWrapper;
 import org.jboss.weld.context.WeldCreationalContext;
@@ -122,13 +102,11 @@ import org.jboss.weld.el.WeldExpressionFactory;
 import org.jboss.weld.event.EventPacket;
 import org.jboss.weld.event.GlobalObserverNotifierService;
 import org.jboss.weld.event.ObserverNotifier;
-import org.jboss.weld.exceptions.AmbiguousResolutionException;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.exceptions.InjectionException;
-import org.jboss.weld.exceptions.UnsatisfiedResolutionException;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.injection.attributes.FieldInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.InferringFieldInjectionPointAttributes;
@@ -138,6 +116,8 @@ import org.jboss.weld.interceptor.reader.cache.DefaultMetadataCachingReader;
 import org.jboss.weld.interceptor.reader.cache.MetadataCachingReader;
 import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
+import org.jboss.weld.logging.BeanManagerLogger;
+import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.metadata.cache.InterceptorBindingModel;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
@@ -168,7 +148,6 @@ import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.collections.IterableToIteratorFunction;
 import org.jboss.weld.util.collections.WeldCollections;
 import org.jboss.weld.util.reflection.Reflections;
-import org.slf4j.cal10n.LocLogger;
 
 import com.google.common.collect.Iterators;
 
@@ -186,8 +165,6 @@ import com.google.common.collect.Iterators;
 public class BeanManagerImpl implements WeldManager, Serializable {
 
     private static final long serialVersionUID = 3021562879133838561L;
-
-    private static final LocLogger log = loggerFactory().getLogger(BOOTSTRAP);
 
     private static final String CREATIONAL_CONTEXT = "creationalContext";
     /*
@@ -506,14 +483,14 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     private void addBean(Bean<?> bean, List<Bean<?>> beanList, List<Bean<?>> transitiveBeans) {
         if (beanSet.add(bean)) {
             if (bean.isAlternative() && !registry.isEnabledInAnyBeanDeployment(bean)) {
-                log.debug(FOUND_DISABLED_ALTERNATIVE, bean);
+                BootstrapLogger.LOG.foundDisabledAlternative(bean);
             } else if (registry.isSpecializedInAnyBeanDeployment(bean)) {
-                log.debug(FOUND_SPECIALIZED_BEAN, bean);
+                BootstrapLogger.LOG.foundSpecializedBean(bean);
             } else if (bean instanceof AbstractProducerBean<?, ?, ?>
                     && registry.isSpecializedInAnyBeanDeployment(((AbstractProducerBean<?, ?, ?>) bean).getDeclaringBean())) {
-                log.debug(FOUND_PRODUCER_OF_SPECIALIZED_BEAN, bean);
+                BootstrapLogger.LOG.foundProducerOfSpecializedBean(bean);
             } else {
-                log.debug(FOUND_BEAN, bean);
+                BootstrapLogger.LOG.foundBean(bean);
                 beanList.add(bean);
                 if (bean instanceof SessionBean) {
                     SessionBean<?> enterpriseBean = (SessionBean<?>) bean;
@@ -697,7 +674,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     public Context getContext(Class<? extends Annotation> scopeType) {
         Context activeContext = internalGetContext(scopeType);
         if (activeContext == null) {
-            throw new ContextNotActiveException(CONTEXT_NOT_ACTIVE, scopeType.getName());
+            throw BeanManagerLogger.LOG.contextNotActive(scopeType.getName());
         }
         return activeContext;
     }
@@ -728,7 +705,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                 if (activeContext == null) {
                     activeContext = context;
                 } else {
-                    throw new IllegalStateException(DUPLICATE_ACTIVE_CONTEXTS, scopeType.getName());
+                    throw BeanManagerLogger.LOG.duplicateActiveContexts(scopeType.getName());
                 }
             }
         }
@@ -768,7 +745,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         Preconditions.checkArgumentNotNull(requestedType, "requestedType");
         Preconditions.checkArgumentNotNull(creationalContext, CREATIONAL_CONTEXT);
         if (!BeanTypeAssignabilityRules.instance().matches(requestedType, bean.getTypes())) {
-            throw new IllegalArgumentException(SPECIFIED_TYPE_NOT_BEAN_TYPE, requestedType, bean);
+            throw BeanManagerLogger.LOG.specifiedTypeNotBeanType(requestedType, bean);
         }
         return getReference(bean, requestedType, creationalContext, false);
     }
@@ -833,7 +810,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         // We can always cache as this is only ever called by Weld where we avoid non-static inner classes for annotation literals
         Bean<T> bean = cast(resolve(beanResolver.resolve(resolvable, true)));
         if (bean == null) {
-            throw new UnsatisfiedResolutionException(UNRESOLVABLE_ELEMENT, resolvable);
+            throw BeanManagerLogger.LOG.unresolvableElement(resolvable);
         }
 
         if (isNormalScope(bean.getScope()) && !Beans.isBeanProxyable(bean, this)) {
@@ -860,7 +837,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     private void checkResolveDecoratorsArguments(Set<Type> types) {
         if (types.isEmpty()) {
-            throw new IllegalArgumentException(NO_DECORATOR_TYPES);
+            throw BeanManagerLogger.LOG.noDecoratorTypes();
         }
     }
 
@@ -878,11 +855,11 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     @Override
     public List<Interceptor<?>> resolveInterceptors(InterceptionType type, Annotation... interceptorBindings) {
         if (interceptorBindings.length == 0) {
-            throw new IllegalArgumentException(INTERCEPTOR_BINDINGS_EMPTY);
+            throw BeanManagerLogger.LOG.interceptorBindingsEmpty();
         }
         for (Annotation annotation : interceptorBindings) {
             if (!isInterceptorBinding(annotation.annotationType())) {
-               throw new IllegalArgumentException(NOT_INTERCEPTOR_BINDING_TYPE, annotation);
+               throw BeanManagerLogger.LOG.notInterceptorBindingType(annotation);
             }
         }
         Set<Annotation> flattenedInterceptorBindings = Interceptors.flattenInterceptorBindings(this, Arrays.asList(interceptorBindings), true, true);
@@ -993,7 +970,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     public BeanManagerImpl setCurrent(Class<? extends Annotation> scopeType) {
         if (!isNormalScope(scopeType)) {
-            throw new IllegalArgumentException(NON_NORMAL_SCOPE, scopeType);
+            throw new IllegalArgumentException(BeanManagerLogger.LOG.nonNormalScope(scopeType));
         }
         currentActivities.add(new CurrentActivity(getContext(scopeType), this));
         return this;
@@ -1007,7 +984,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                     activeCurrentActivity = currentActivity;
                 }
                 else {
-                    throw new IllegalStateException(TOO_MANY_ACTIVITIES, WeldCollections.toMultiRowString(currentActivities));
+                    throw BeanManagerLogger.LOG.tooManyActivities(WeldCollections.toMultiRowString(currentActivities));
                 }
             }
         }
@@ -1103,7 +1080,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         if (model.isValid()) {
             return model.getMetaAnnotations();
         } else {
-            throw new IllegalArgumentException(NOT_INTERCEPTOR_BINDING_TYPE, bindingType);
+            throw BeanManagerLogger.LOG.notInterceptorBindingType(bindingType);
         }
     }
 
@@ -1123,7 +1100,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         if (model.isValid()) {
             return model.getMetaAnnotations();
         } else {
-            throw new IllegalArgumentException(NOT_STEREOTYPE, stereotype);
+            throw BeanManagerLogger.LOG.notStereotype(stereotype);
         }
     }
 
@@ -1194,7 +1171,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         } else if (resolvedBeans.size() == 0) {
             return null;
         } else {
-            throw new AmbiguousResolutionException(AMBIGUOUS_BEANS_FOR_DEPENDENCY, WeldCollections.toMultiRowString(beans));
+            throw BeanManagerLogger.LOG.ambiguousBeansForDependency(WeldCollections.toMultiRowString(beans));
         }
     }
 
@@ -1321,7 +1298,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         if (member instanceof AnnotatedField<?> || member instanceof AnnotatedMethod<?>) {
             weldMember = services.get(MemberTransformer.class).loadEnhancedMember(member, getId());
         } else {
-            throw new IllegalArgumentException(INCORRECT_PRODUCER_MEMBER, member);
+            throw BeanManagerLogger.LOG.incorrectProducerMember(member);
         }
         return BeanAttributesFactory.forBean(weldMember, this);
     }
@@ -1373,7 +1350,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
             }
         }
         if (bean == null) {
-            throw new IllegalArgumentException(NO_INSTANCE_OF_EXTENSION, extensionClass);
+            throw BeanManagerLogger.LOG.noInstanceOfExtension(extensionClass);
         }
         // We intentionally do not return a contextual instance, since it is not available at bootstrap.
         return extensionClass.cast(bean.create(null));

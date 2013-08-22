@@ -17,10 +17,10 @@
 
 package org.jboss.weld.context;
 
-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
-import org.jboss.weld.exceptions.WeldExceptionKeyMessage;
 import org.jboss.weld.exceptions.WeldExceptionMessage;
 import org.jboss.weld.exceptions.WeldExceptionStringMessage;
+
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
 /**
  * A localized message version of the
@@ -40,8 +40,13 @@ public class BusyConversationException extends javax.enterprise.context.BusyConv
         this.message = new WeldExceptionStringMessage(throwable.getLocalizedMessage());
     }
 
-    public <E extends Enum<?>> BusyConversationException(E key, Object... args) {
-        message = new WeldExceptionKeyMessage(key, args);
+    /**
+     * Creates a new exception with the given localized message.
+     *
+     * @param message
+     */
+    public BusyConversationException(String message) {
+        this.message = new WeldExceptionStringMessage(message);
     }
 
     @Override

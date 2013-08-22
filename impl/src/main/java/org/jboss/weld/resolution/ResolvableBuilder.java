@@ -16,10 +16,6 @@
  */
 package org.jboss.weld.resolution;
 
-import static org.jboss.weld.logging.messages.BeanManagerMessage.DUPLICATE_QUALIFIERS;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.INVALID_QUALIFIER;
-import static org.jboss.weld.logging.messages.ResolutionMessage.CANNOT_EXTRACT_RAW_TYPE;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
@@ -41,10 +37,11 @@ import javax.enterprise.inject.spi.Interceptor;
 import javax.inject.Named;
 import javax.inject.Provider;
 
-import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.literal.NamedLiteral;
 import org.jboss.weld.literal.NewLiteral;
+import org.jboss.weld.logging.BeanManagerLogger;
+import org.jboss.weld.logging.ResolutionLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.util.reflection.Reflections;
@@ -81,7 +78,7 @@ public class ResolvableBuilder {
         if (type != null) {
             this.rawType = Reflections.getRawType(type);
             if (rawType == null || type instanceof TypeVariable<?>) {
-                throw new IllegalArgumentException(CANNOT_EXTRACT_RAW_TYPE, type);
+                throw ResolutionLogger.LOG.cannotExtractRawType(type);
             }
             this.types.add(type);
         }
@@ -206,10 +203,10 @@ public class ResolvableBuilder {
 
     protected void checkQualifier(Annotation qualifier, final QualifierInstance qualifierInstance, Class<? extends Annotation> annotationType) {
         if (!store.getBindingTypeModel(annotationType).isValid()) {
-            throw new IllegalArgumentException(INVALID_QUALIFIER, qualifier);
+            throw BeanManagerLogger.LOG.invalidQualifier(qualifier);
         }
         if (qualifierInstances.contains(qualifierInstance)) {
-            throw new IllegalArgumentException(DUPLICATE_QUALIFIERS, qualifiers);
+            throw BeanManagerLogger.LOG.duplicateQualifiers(qualifiers);
         }
     }
 

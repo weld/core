@@ -16,9 +16,6 @@
  */
 package org.jboss.weld.bean.attributes;
 
-import static org.jboss.weld.logging.messages.BeanMessage.MULTIPLE_SCOPES_FOUND_FROM_STEREOTYPES;
-import static org.jboss.weld.logging.messages.BeanMessage.ONLY_ONE_SCOPE_ALLOWED;
-
 import java.beans.Introspector;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -38,11 +35,11 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
-import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.literal.NamedLiteral;
 import org.jboss.weld.literal.NewLiteral;
+import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MergedStereotypes;
 import org.jboss.weld.resources.SharedObjectCache;
@@ -218,7 +215,7 @@ public class BeanAttributesFactory {
 
         protected void validateScopeSet(Set<Annotation> scopes, EnhancedAnnotated<T, ?> annotated) {
             if (scopes.size() > 1) {
-                throw new DefinitionException(ONLY_ONE_SCOPE_ALLOWED, annotated);
+                throw BeanLogger.LOG.onlyOneScopeAllowed(annotated);
             }
         }
 
@@ -228,7 +225,7 @@ public class BeanAttributesFactory {
                 this.scope = possibleScopes.iterator().next().annotationType();
                 return true;
             } else if (possibleScopes.size() > 1) {
-                throw new DefinitionException(MULTIPLE_SCOPES_FOUND_FROM_STEREOTYPES, mergedStereotypes);
+                throw BeanLogger.LOG.multipleScopesFoundFromStereotypes(mergedStereotypes);
             } else {
                 return false;
             }

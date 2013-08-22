@@ -17,13 +17,12 @@
 
 package org.jboss.weld.bean.proxy.util;
 
-import org.jboss.weld.exceptions.WeldException;
-import org.jboss.weld.logging.messages.BeanMessage;
-import org.jboss.weld.serialization.spi.ProxyServices;
-
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+
+import org.jboss.weld.logging.BeanLogger;
+import org.jboss.weld.serialization.spi.ProxyServices;
 
 /**
  * A default implementation of the {@link ProxyServices} which simply use the
@@ -53,7 +52,7 @@ public class SimpleProxyServices implements ProxyServices {
                 }
             });
         } catch (PrivilegedActionException pae) {
-            throw new WeldException(BeanMessage.CANNOT_LOAD_CLASS, className, pae.getException());
+            throw BeanLogger.LOG.cannotLoadClass(className, pae.getException());
         }
     }
 

@@ -29,8 +29,7 @@ import javax.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.bean.builtin.BeanManagerProxy;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
-import org.jboss.weld.exceptions.IllegalStateException;
-import org.jboss.weld.logging.messages.BeanManagerMessage;
+import org.jboss.weld.logging.BeanManagerLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 import com.google.common.cache.CacheBuilder;
@@ -57,7 +56,7 @@ public class Weld extends CDI<Object> {
 
         public BeanManagerImpl findBeanManager(String callerClassName) {
             if (callerClassName == null) {
-                throw new IllegalStateException(BeanManagerMessage.UNABLE_TO_IDENTIFY_BEAN_MANAGER);
+                throw BeanManagerLogger.LOG.unableToIdentifyBeanManager();
             }
             Container container = Container.instance();
             Set<BeanManagerImpl> managers = new HashSet<BeanManagerImpl>();
@@ -96,21 +95,21 @@ public class Weld extends CDI<Object> {
      * Callback that allows to override the behavior when CDI.current() is not called from within a bean archive.
      */
     protected BeanManagerImpl unsatisfiedBeanManager(String callerClassName) {
-        throw new IllegalStateException(BeanManagerMessage.UNSATISFIED_BEAN_MANAGER, callerClassName);
+        throw BeanManagerLogger.LOG.unsatisfiedBeanManager(callerClassName);
     }
 
     /**
      * Callback that allows to override the behavior when class that invoked CDI.current() is placed in multiple bean archives.
      */
     protected BeanManagerImpl ambiguousBeanManager(String callerClassName, Set<BeanManagerImpl> managers) {
-        throw new IllegalStateException(BeanManagerMessage.AMBIGUOUS_BEAN_MANAGER, callerClassName);
+        throw BeanManagerLogger.LOG.ambiguousBeanManager(callerClassName);
     }
 
     @Override
     public BeanManagerProxy getBeanManager() {
         ContainerState state = Container.instance().getState();
         if (state.equals(ContainerState.STOPPED) || state.equals(ContainerState.SHUTDOWN)) {
-            throw new IllegalStateException(BeanManagerMessage.BEAN_MANAGER_NOT_AVAILABLE);
+            throw BeanManagerLogger.LOG.beanManagerNotAvailable();
         }
         return beanManagers.getUnchecked(getCallingClassName());
     }
@@ -130,7 +129,7 @@ public class Weld extends CDI<Object> {
                 outerSubclassReached = true;
             }
         }
-        throw new IllegalStateException(BeanManagerMessage.UNABLE_TO_IDENTIFY_BEAN_MANAGER);
+        throw BeanManagerLogger.LOG.unableToIdentifyBeanManager();
     }
 
     @Override

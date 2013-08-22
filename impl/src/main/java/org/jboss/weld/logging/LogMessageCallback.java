@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2008, Red Hat, Inc., and individual contributors
+ * Copyright 2013, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -16,20 +16,17 @@
  */
 package org.jboss.weld.logging;
 
-import ch.qos.cal10n.IMessageConveyor;
+/**
+ * Since Weld migrated to jboss-logging it's no longer possible to reference message enum keys and construct localized log messages lazily - use this
+ * callback as a workaround.
+ *
+ * @author Martin Kouba
+ */
+public interface LogMessageCallback {
 
-import java.util.Locale;
-
-class WeldMessageConveyorFactory extends MessageConveyorFactory {
-
-    @Override
-    public IMessageConveyor getDefaultMessageConveyor(String subsystem) {
-        return new WeldMessageConveyor(Locale.ENGLISH, subsystem);
-    }
-
-    @Override
-    public IMessageConveyor getMessageConveyor(Locale locale, String subsystem) {
-        return new WeldMessageConveyor(locale, subsystem);
-    }
+    /**
+     * @return the localized log message
+     */
+    String invoke(Object... params);
 
 }

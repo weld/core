@@ -16,18 +16,18 @@
  */
 package org.jboss.weld.bean.builtin;
 
-import org.jboss.weld.exceptions.IllegalStateException;
-import org.jboss.weld.manager.BeanManagerImpl;
-
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.InjectionPoint;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Set;
 
-import static org.jboss.weld.logging.messages.BeanMessage.TYPE_PARAMETER_MUST_BE_CONCRETE;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.InjectionPoint;
+
+import org.jboss.weld.exceptions.IllegalStateException;
+import org.jboss.weld.logging.BeanLogger;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
  * Common implementation for binding-type-based helpers
@@ -42,7 +42,7 @@ public abstract class AbstractFacade<T, X> {
         if (genericType instanceof ParameterizedType) {
             return ((ParameterizedType) genericType).getActualTypeArguments()[0];
         } else {
-            throw new IllegalStateException(TYPE_PARAMETER_MUST_BE_CONCRETE, injectionPoint);
+            throw new IllegalStateException(BeanLogger.LOG.typeParameterMustBeConcrete(injectionPoint));
         }
     }
 

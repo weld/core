@@ -16,18 +16,6 @@
  */
 package org.jboss.weld.bean;
 
-import static org.jboss.weld.logging.messages.BeanMessage.CANNOT_DESTROY_ENTERPRISE_BEAN_NOT_CREATED;
-import static org.jboss.weld.logging.messages.BeanMessage.CANNOT_DESTROY_NULL_BEAN;
-import static org.jboss.weld.logging.messages.BeanMessage.EJB_CANNOT_BE_DECORATOR;
-import static org.jboss.weld.logging.messages.BeanMessage.EJB_CANNOT_BE_INTERCEPTOR;
-import static org.jboss.weld.logging.messages.BeanMessage.GENERIC_SESSION_BEAN_MUST_BE_DEPENDENT;
-import static org.jboss.weld.logging.messages.BeanMessage.MESSAGE_DRIVEN_BEANS_CANNOT_BE_MANAGED;
-import static org.jboss.weld.logging.messages.BeanMessage.OBSERVER_METHOD_MUST_BE_STATIC_OR_BUSINESS;
-import static org.jboss.weld.logging.messages.BeanMessage.PASSIVATING_BEAN_NEEDS_SERIALIZABLE_IMPL;
-import static org.jboss.weld.logging.messages.BeanMessage.SCOPE_NOT_ALLOWED_ON_SINGLETON_BEAN;
-import static org.jboss.weld.logging.messages.BeanMessage.SCOPE_NOT_ALLOWED_ON_STATELESS_SESSION_BEAN;
-import static org.jboss.weld.logging.messages.BeanMessage.SPECIALIZING_ENTERPRISE_BEAN_MUST_EXTEND_AN_ENTERPRISE_BEAN;
-
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Collections;
@@ -53,13 +41,11 @@ import org.jboss.weld.ejb.SessionBeanInjectionPoint;
 import org.jboss.weld.ejb.api.SessionObjectReference;
 import org.jboss.weld.ejb.spi.BusinessInterfaceDescriptor;
 import org.jboss.weld.ejb.spi.EjbServices;
-import org.jboss.weld.exceptions.DefinitionException;
-import org.jboss.weld.exceptions.DeploymentException;
-import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.injection.producer.Instantiator;
 import org.jboss.weld.injection.producer.ejb.SessionBeanProxyInstantiator;
 import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
+import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
@@ -121,10 +107,10 @@ public class SessionBean<T> extends AbstractClassBean<T> {
      */
     protected void checkConflictingRoles() {
         if (getType().isAnnotationPresent(Interceptor.class)) {
-            throw new DefinitionException(EJB_CANNOT_BE_INTERCEPTOR, getType());
+            throw BeanLogger.LOG.ejbCannotBeInterceptor(getType());
         }
         if (getType().isAnnotationPresent(Decorator.class)) {
-            throw new DefinitionException(EJB_CANNOT_BE_DECORATOR, getType());
+            throw BeanLogger.LOG.ejbCannotBeDecorator(getType());
         }
     }
 
@@ -134,10 +120,10 @@ public class SessionBean<T> extends AbstractClassBean<T> {
      */
     protected void checkScopeAllowed() {
         if (ejbDescriptor.isStateless() && !isDependent()) {
-            throw new DefinitionException(SCOPE_NOT_ALLOWED_ON_STATELESS_SESSION_BEAN, getScope(), getType());
+            throw BeanLogger.LOG.scopeNotAllowedOnStatelessSessionBean(getScope(), getType());
         }
         if (ejbDescriptor.isSingleton() && !(isDependent() || getScope().equals(ApplicationScoped.class))) {
-            throw new DefinitionException(SCOPE_NOT_ALLOWED_ON_SINGLETON_BEAN, getScope(), getType());
+            throw BeanLogger.LOG.scopeNotAllowedOnSingletonBean(getScope(), getType());
         }
     }
 
@@ -145,11 +131,11 @@ public class SessionBean<T> extends AbstractClassBean<T> {
     protected void specialize() {
         Set<? extends AbstractBean<?, ?>> specializedBeans = getSpecializedBeans();
         if (specializedBeans.isEmpty()) {
-            throw new DefinitionException(SPECIALIZING_ENTERPRISE_BEAN_MUST_EXTEND_AN_ENTERPRISE_BEAN, this);
+            throw BeanLogger.LOG.specializingEnterpriseBeanMustExtendAnEnterpriseBean(this);
         }
         for (AbstractBean<?, ?> specializedBean : specializedBeans) {
             if (!(specializedBean instanceof SessionBean<?>)) {
-                throw new DefinitionException(SPECIALIZING_ENTERPRISE_BEAN_MUST_EXTEND_AN_ENTERPRISE_BEAN, this);
+                throw BeanLogger.LOG.specializingEnterpriseBeanMustExtendAnEnterpriseBean(this);
             }
         }
     }
@@ -165,10 +151,10 @@ public class SessionBean<T> extends AbstractClassBean<T> {
 
     public void destroy(T instance, CreationalContext<T> creationalContext) {
         if (instance == null) {
-            throw new IllegalArgumentException(CANNOT_DESTROY_NULL_BEAN, this);
+            throw BeanLogger.LOG.cannotDestroyNullBean(this);
         }
         if (!(instance instanceof EnterpriseBeanInstance)) {
-            throw new IllegalArgumentException(CANNOT_DESTROY_ENTERPRISE_BEAN_NOT_CREATED, instance);
+            throw BeanLogger.LOG.cannotDestroyEnterpriseBeanNotCreated(instance);
         }
         EnterpriseBeanInstance enterpriseBeanInstance = (EnterpriseBeanInstance) instance;
         enterpriseBeanInstance.destroy(Marker.INSTANCE, this, creationalContext);
@@ -180,18 +166,18 @@ public class SessionBean<T> extends AbstractClassBean<T> {
      */
     private void checkEJBTypeAllowed() {
         if (ejbDescriptor.isMessageDriven()) {
-            throw new DefinitionException(MESSAGE_DRIVEN_BEANS_CANNOT_BE_MANAGED, this);
+            throw BeanLogger.LOG.messageDrivenBeansCannotBeManaged(this);
         }
     }
 
     @Override
     protected void checkType() {
         if (!isDependent() && getEnhancedAnnotated().isGeneric()) {
-            throw new DefinitionException(GENERIC_SESSION_BEAN_MUST_BE_DEPENDENT, this);
+            throw BeanLogger.LOG.genericSessionBeanMustBeDependent(this);
         }
         boolean passivating = beanManager.getServices().get(MetaAnnotationStore.class).getScopeModel(getScope()).isPassivating();
         if (passivating && !isPassivationCapableBean()) {
-            throw new DeploymentException(PASSIVATING_BEAN_NEEDS_SERIALIZABLE_IMPL, this);
+            throw BeanLogger.LOG.passivatingBeanNeedsSerializableImpl(this);
         }
     }
 
@@ -214,7 +200,7 @@ public class SessionBean<T> extends AbstractClassBean<T> {
             Set<MethodSignature> businessMethodSignatures = getBusinessMethodSignatures();
             for (EnhancedAnnotatedMethod<?, ? super T> observerMethod : observerMethods) {
                 if (!observerMethod.isStatic() && !businessMethodSignatures.contains(observerMethod.getSignature())) {
-                    throw new DefinitionException(OBSERVER_METHOD_MUST_BE_STATIC_OR_BUSINESS, observerMethod, getEnhancedAnnotated());
+                    throw BeanLogger.LOG.observerMethodMustBeStaticOrBusiness(observerMethod, getEnhancedAnnotated());
                 }
             }
         }

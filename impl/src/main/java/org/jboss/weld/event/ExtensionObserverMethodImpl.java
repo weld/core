@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.event;
 
-import static org.jboss.weld.logging.messages.EventMessage.INVALID_WITH_ANNOTATIONS;
-
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.Collections;
@@ -35,9 +33,9 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bootstrap.events.AbstractContainerEvent;
-import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.MethodInjectionPoint;
+import org.jboss.weld.logging.EventLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -76,7 +74,7 @@ public class ExtensionObserverMethodImpl<T, X> extends ObserverMethodImpl<T, X> 
         if (!requiredTypeAnnotations.isEmpty()) {
             Class<?> rawObserverType = Reflections.getRawType(getObservedType());
             if (!rawObserverType.equals(ProcessAnnotatedType.class) && !rawObserverType.equals(ProcessSyntheticAnnotatedType.class)) {
-                throw new DefinitionException(INVALID_WITH_ANNOTATIONS, this);
+                throw EventLogger.LOG.invalidWithAnnotations(this);
             }
         }
     }

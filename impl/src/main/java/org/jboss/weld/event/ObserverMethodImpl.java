@@ -16,13 +16,6 @@
  */
 package org.jboss.weld.event;
 
-import static org.jboss.weld.logging.messages.EventMessage.INVALID_DISPOSES_PARAMETER;
-import static org.jboss.weld.logging.messages.EventMessage.INVALID_INITIALIZER;
-import static org.jboss.weld.logging.messages.EventMessage.INVALID_INJECTION_POINT;
-import static org.jboss.weld.logging.messages.EventMessage.INVALID_PRODUCER;
-import static org.jboss.weld.logging.messages.EventMessage.INVALID_SCOPED_CONDITIONAL_OBSERVER;
-import static org.jboss.weld.logging.messages.EventMessage.INVALID_WITH_ANNOTATIONS;
-import static org.jboss.weld.logging.messages.EventMessage.MULTIPLE_EVENT_PARAMETERS;
 import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
 
 import java.lang.annotation.Annotation;
@@ -52,12 +45,12 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.RIBean;
-import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.ParameterInjectionPoint;
 import org.jboss.weld.injection.attributes.SpecialParameterInjectionPoint;
 import org.jboss.weld.injection.attributes.WeldInjectionPointAttributes;
+import org.jboss.weld.logging.EventLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.util.Observers;
@@ -160,31 +153,31 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
         // Make sure exactly one and only one parameter is annotated with Observes
         List<EnhancedAnnotatedParameter<?, Y>> eventObjects = annotated.getEnhancedParameters(Observes.class);
         if (this.reception.equals(Reception.IF_EXISTS) && declaringBean.getScope().equals(Dependent.class)) {
-            throw new DefinitionException(INVALID_SCOPED_CONDITIONAL_OBSERVER, this);
+            throw EventLogger.LOG.invalidScopedConditionalObserver(this);
         }
         if (eventObjects.size() > 1) {
-            throw new DefinitionException(MULTIPLE_EVENT_PARAMETERS, this);
+            throw EventLogger.LOG.multipleEventParameters(this);
         }
         EnhancedAnnotatedParameter<?, Y> eventParameter = eventObjects.iterator().next();
         checkRequiredTypeAnnotations(eventParameter);
         // Check for parameters annotated with @Disposes
         List<?> disposeParams = annotated.getEnhancedParameters(Disposes.class);
         if (disposeParams.size() > 0) {
-            throw new DefinitionException(INVALID_DISPOSES_PARAMETER, this);
+            throw EventLogger.LOG.invalidDisposesParameter(this);
         }
         // Check annotations on the method to make sure this is not a producer
         // method, initializer method, or destructor method.
         if (this.observerMethod.getAnnotated().isAnnotationPresent(Produces.class)) {
-            throw new DefinitionException(INVALID_PRODUCER, this);
+            throw EventLogger.LOG.invalidProducer(this);
         }
         if (this.observerMethod.getAnnotated().isAnnotationPresent(Inject.class)) {
-            throw new DefinitionException(INVALID_INITIALIZER, this);
+            throw EventLogger.LOG.invalidInitializer(this);
         }
         boolean containerLifecycleObserverMethod = Observers.isContainerLifecycleObserverMethod(this);
         for (EnhancedAnnotatedParameter<?, ?> parameter : annotated.getEnhancedParameters()) {
             // if this is an observer method for container lifecycle event, it must not inject anything besides BeanManager
             if (containerLifecycleObserverMethod && !parameter.isAnnotationPresent(Observes.class) && !BeanManager.class.equals(parameter.getBaseType())) {
-                throw new DefinitionException(INVALID_INJECTION_POINT, this);
+                throw EventLogger.LOG.invalidInjectionPoint(this);
             }
         }
 
@@ -192,7 +185,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
 
     protected void checkRequiredTypeAnnotations(EnhancedAnnotatedParameter<?, ?> eventParameter) {
         if (eventParameter.isAnnotationPresent(WithAnnotations.class)) {
-            throw new DefinitionException(INVALID_WITH_ANNOTATIONS, this);
+            throw EventLogger.LOG.invalidWithAnnotations(this);
         }
     }
 

@@ -16,11 +16,6 @@
  */
 package org.jboss.weld.injection.producer;
 
-import static org.jboss.weld.logging.messages.BeanMessage.INJECTED_FIELD_CANNOT_BE_PRODUCER;
-import static org.jboss.weld.logging.messages.BeanMessage.PRODUCER_FIELD_ON_SESSION_BEAN_MUST_BE_STATIC;
-import static org.jboss.weld.logging.messages.BeanMessage.PRODUCER_METHOD_CANNOT_HAVE_A_WILDCARD_RETURN_TYPE;
-import static org.jboss.weld.logging.messages.BeanMessage.PRODUCER_METHOD_WITH_TYPE_VARIABLE_RETURN_TYPE_MUST_BE_DEPENDENT;
-import static org.jboss.weld.logging.messages.UtilMessage.ACCESS_ERROR_ON_FIELD;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.reflect.Field;
@@ -38,9 +33,9 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
 import org.jboss.weld.bean.DisposalMethod;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.exceptions.DefinitionException;
-import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.interceptor.util.proxy.TargetInstanceProxy;
-import org.jboss.weld.logging.messages.BeanMessage;
+import org.jboss.weld.logging.BeanLogger;
+import org.jboss.weld.logging.UtilLogger;
 import org.jboss.weld.security.GetAccessibleCopyOfMember;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -62,13 +57,13 @@ public abstract class ProducerFieldProducer<X, T> extends AbstractMemberProducer
 
     protected void checkProducerField(EnhancedAnnotatedField<T, ? super X> enhancedField) {
         if (getDeclaringBean() instanceof SessionBean<?> && !enhancedField.isStatic()) {
-            throw new DefinitionException(PRODUCER_FIELD_ON_SESSION_BEAN_MUST_BE_STATIC, enhancedField, enhancedField.getDeclaringType());
+            throw BeanLogger.LOG.producerFieldOnSessionBeanMustBeStatic(enhancedField, enhancedField.getDeclaringType());
         }
         if (enhancedField.isAnnotationPresent(Inject.class)) {
             if (getDeclaringBean() != null) {
-                throw new DefinitionException(INJECTED_FIELD_CANNOT_BE_PRODUCER, enhancedField, getDeclaringBean());
+                throw BeanLogger.LOG.injectedFieldCannotBeProducer(enhancedField, getDeclaringBean());
             } else {
-                throw new DefinitionException(INJECTED_FIELD_CANNOT_BE_PRODUCER, enhancedField, enhancedField.getDeclaringType());
+                throw BeanLogger.LOG.injectedFieldCannotBeProducer(enhancedField, enhancedField.getDeclaringType());
             }
         }
     }
@@ -90,7 +85,7 @@ public abstract class ProducerFieldProducer<X, T> extends AbstractMemberProducer
         try {
             return cast(accessibleField.get(receiver));
         } catch (IllegalAccessException e) {
-            throw new WeldException(ACCESS_ERROR_ON_FIELD, e, accessibleField.getName(), accessibleField.getDeclaringClass());
+            throw UtilLogger.LOG.accessErrorOnField(accessibleField.getName(), accessibleField.getDeclaringClass(), e);
         }
     }
 
@@ -99,11 +94,11 @@ public abstract class ProducerFieldProducer<X, T> extends AbstractMemberProducer
         return getAnnotated().toString();
     }
 
-    protected BeanMessage producerCannotHaveWildcardBeanType() {
-        return PRODUCER_METHOD_CANNOT_HAVE_A_WILDCARD_RETURN_TYPE;
+    protected DefinitionException producerCannotHaveWildcardBeanType(Object member) {
+        return BeanLogger.LOG.producerFieldCannotHaveAWildcardBeanType(member);
     }
 
-    protected BeanMessage producerWithTypeVariableBeanTypeMustBeDependent() {
-        return PRODUCER_METHOD_WITH_TYPE_VARIABLE_RETURN_TYPE_MUST_BE_DEPENDENT;
+    protected DefinitionException producerWithTypeVariableBeanTypeMustBeDependent(Object member) {
+        return BeanLogger.LOG.producerFieldWithTypeVariableBeanTypeMustBeDependent(member);
     }
 }

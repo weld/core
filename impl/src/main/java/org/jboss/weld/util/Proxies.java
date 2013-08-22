@@ -16,14 +16,6 @@
  */
 package org.jboss.weld.util;
 
-import static org.jboss.weld.logging.messages.UtilMessage.CANNOT_PROXY_NON_CLASS_TYPE;
-import static org.jboss.weld.logging.messages.ValidatorMessage.NOT_PROXYABLE_ARRAY_TYPE;
-import static org.jboss.weld.logging.messages.ValidatorMessage.NOT_PROXYABLE_FINAL_TYPE_OR_METHOD;
-import static org.jboss.weld.logging.messages.ValidatorMessage.NOT_PROXYABLE_NO_CONSTRUCTOR;
-import static org.jboss.weld.logging.messages.ValidatorMessage.NOT_PROXYABLE_PRIMITIVE;
-import static org.jboss.weld.logging.messages.ValidatorMessage.NOT_PROXYABLE_PRIVATE_CONSTRUCTOR;
-import static org.jboss.weld.logging.messages.ValidatorMessage.NOT_PROXYABLE_UNKNOWN;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
@@ -38,8 +30,9 @@ import java.util.Set;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
-import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.exceptions.UnproxyableResolutionException;
+import org.jboss.weld.logging.UtilLogger;
+import org.jboss.weld.logging.ValidatorLogger;
 import org.jboss.weld.security.GetDeclaredConstructorAction;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.instantiation.InstantiatorFactory;
@@ -107,7 +100,7 @@ public class Proxies {
             } else if (type instanceof ParameterizedType) {
                 add(((ParameterizedType) type).getRawType());
             } else {
-                throw new IllegalArgumentException(CANNOT_PROXY_NON_CLASS_TYPE, type);
+                throw UtilLogger.LOG.cannotProxyNonClassType(type);
             }
             return this;
         }
@@ -189,7 +182,7 @@ public class Proxies {
                 return getUnproxyableClassException((Class<?>) rawType, declaringBean, services);
             }
         }
-        return new UnproxyableResolutionException(NOT_PROXYABLE_UNKNOWN, type, getDeclaringBeanInfo(declaringBean));
+        return ValidatorLogger.LOG.notProxyableUnknown(type, getDeclaringBeanInfo(declaringBean));
     }
 
     // --- private
@@ -218,26 +211,26 @@ public class Proxies {
         } catch (PrivilegedActionException e) {
             InstantiatorFactory factory = services.get(InstantiatorFactory.class);
             if (factory == null || !(factory.useInstantiators())) {
-                return new UnproxyableResolutionException(NOT_PROXYABLE_NO_CONSTRUCTOR, clazz, getDeclaringBeanInfo(declaringBean));
+                return ValidatorLogger.LOG.notProxyableNoConstructor(clazz, getDeclaringBeanInfo(declaringBean));
             } else {
                 return null;
             }
         }
         if (constructor == null) {
-            return new UnproxyableResolutionException(NOT_PROXYABLE_NO_CONSTRUCTOR, clazz, getDeclaringBeanInfo(declaringBean));
+            return ValidatorLogger.LOG.notProxyableNoConstructor(clazz, getDeclaringBeanInfo(declaringBean));
         } else if (Modifier.isPrivate(constructor.getModifiers())) {
             InstantiatorFactory factory = services.get(InstantiatorFactory.class);
             if (factory == null || !(factory.useInstantiators())) {
-                return new UnproxyableResolutionException(NOT_PROXYABLE_PRIVATE_CONSTRUCTOR, clazz, constructor, getDeclaringBeanInfo(declaringBean));
+                return new UnproxyableResolutionException(ValidatorLogger.LOG.notProxyablePrivateConstructor(clazz, constructor, getDeclaringBeanInfo(declaringBean)));
             } else {
                 return null;
             }
         } else if (Reflections.isTypeOrAnyMethodFinal(clazz)) {
-            return new UnproxyableResolutionException(NOT_PROXYABLE_FINAL_TYPE_OR_METHOD, clazz, Reflections.getNonPrivateFinalMethodOrType(clazz), getDeclaringBeanInfo(declaringBean));
+            return ValidatorLogger.LOG.notProxyableFinalTypeOrMethod(clazz, Reflections.getNonPrivateFinalMethodOrType(clazz), getDeclaringBeanInfo(declaringBean));
         } else if (clazz.isPrimitive()) {
-            return new UnproxyableResolutionException(NOT_PROXYABLE_PRIMITIVE, clazz, getDeclaringBeanInfo(declaringBean));
+            return ValidatorLogger.LOG.notProxyablePrimitive(clazz, getDeclaringBeanInfo(declaringBean));
         } else if (Reflections.isArrayType(clazz)) {
-            return new UnproxyableResolutionException(NOT_PROXYABLE_ARRAY_TYPE, clazz, getDeclaringBeanInfo(declaringBean));
+            return ValidatorLogger.LOG.notProxyableArrayType(clazz, getDeclaringBeanInfo(declaringBean));
         } else {
             return null;
         }

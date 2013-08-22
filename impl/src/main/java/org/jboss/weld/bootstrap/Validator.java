@@ -16,52 +16,6 @@
  */
 package org.jboss.weld.bootstrap;
 
-import static org.jboss.weld.logging.Category.BOOTSTRAP;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.BeanMessage.INJECTED_FIELD_CANNOT_BE_PRODUCER;
-import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_BEAN_CLASS_NOT_ANNOTATED;
-import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_BEAN_CLASS_NOT_CLASS;
-import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_STEREOTYPE_NOT_ANNOTATED;
-import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_STEREOTYPE_NOT_STEREOTYPE;
-import static org.jboss.weld.logging.messages.ValidatorMessage.AMBIGUOUS_EL_NAME;
-import static org.jboss.weld.logging.messages.ValidatorMessage.BEAN_NAME_IS_PREFIX;
-import static org.jboss.weld.logging.messages.ValidatorMessage.BEAN_SPECIALIZED_TOO_MANY_TIMES;
-import static org.jboss.weld.logging.messages.ValidatorMessage.BEAN_WITH_PASSIVATING_SCOPE_NOT_PASSIVATION_CAPABLE;
-import static org.jboss.weld.logging.messages.ValidatorMessage.BUILTIN_BEAN_WITH_NONSERIALIZABLE_DECORATOR;
-import static org.jboss.weld.logging.messages.ValidatorMessage.DECORATORS_CANNOT_HAVE_DISPOSER_METHODS;
-import static org.jboss.weld.logging.messages.ValidatorMessage.DECORATORS_CANNOT_HAVE_OBSERVER_METHODS;
-import static org.jboss.weld.logging.messages.ValidatorMessage.DECORATORS_CANNOT_HAVE_PRODUCER_FIELDS;
-import static org.jboss.weld.logging.messages.ValidatorMessage.DECORATORS_CANNOT_HAVE_PRODUCER_METHODS;
-import static org.jboss.weld.logging.messages.ValidatorMessage.DECORATOR_CLASS_NOT_BEAN_CLASS_OF_DECORATOR;
-import static org.jboss.weld.logging.messages.ValidatorMessage.DISPOSAL_METHODS_WITHOUT_PRODUCER;
-import static org.jboss.weld.logging.messages.ValidatorMessage.EVENT_METADATA_INJECTED_OUTSIDE_OF_OBSERVER;
-import static org.jboss.weld.logging.messages.ValidatorMessage.INJECTION_INTO_NON_BEAN;
-import static org.jboss.weld.logging.messages.ValidatorMessage.INJECTION_INTO_NON_DEPENDENT_BEAN;
-import static org.jboss.weld.logging.messages.ValidatorMessage.INJECTION_POINT_HAS_AMBIGUOUS_DEPENDENCIES;
-import static org.jboss.weld.logging.messages.ValidatorMessage.INJECTION_POINT_HAS_NON_PROXYABLE_DEPENDENCIES;
-import static org.jboss.weld.logging.messages.ValidatorMessage.INJECTION_POINT_HAS_NON_SERIALIZABLE_DEPENDENCY;
-import static org.jboss.weld.logging.messages.ValidatorMessage.INJECTION_POINT_HAS_UNSATISFIED_DEPENDENCIES;
-import static org.jboss.weld.logging.messages.ValidatorMessage.INJECTION_POINT_HAS_WILDCARD;
-import static org.jboss.weld.logging.messages.ValidatorMessage.INJECTION_POINT_MUST_HAVE_TYPE_PARAMETER;
-import static org.jboss.weld.logging.messages.ValidatorMessage.INJECTION_POINT_WITH_TYPE_VARIABLE;
-import static org.jboss.weld.logging.messages.ValidatorMessage.INTERCEPTORS_CANNOT_HAVE_DISPOSER_METHODS;
-import static org.jboss.weld.logging.messages.ValidatorMessage.INTERCEPTORS_CANNOT_HAVE_OBSERVER_METHODS;
-import static org.jboss.weld.logging.messages.ValidatorMessage.INTERCEPTORS_CANNOT_HAVE_PRODUCER_FIELDS;
-import static org.jboss.weld.logging.messages.ValidatorMessage.INTERCEPTORS_CANNOT_HAVE_PRODUCER_METHODS;
-import static org.jboss.weld.logging.messages.ValidatorMessage.INTERCEPTOR_MUST_BE_DEPENDENT;
-import static org.jboss.weld.logging.messages.ValidatorMessage.INTERCEPTOR_NOT_ANNOTATED_OR_REGISTERED;
-import static org.jboss.weld.logging.messages.ValidatorMessage.INVALID_BEAN_METADATA_INJECTION_POINT_QUALIFIER;
-import static org.jboss.weld.logging.messages.ValidatorMessage.INVALID_BEAN_METADATA_INJECTION_POINT_TYPE;
-import static org.jboss.weld.logging.messages.ValidatorMessage.INVALID_BEAN_METADATA_INJECTION_POINT_TYPE_ARGUMENT;
-import static org.jboss.weld.logging.messages.ValidatorMessage.NEW_WITH_QUALIFIERS;
-import static org.jboss.weld.logging.messages.ValidatorMessage.NON_FIELD_INJECTION_POINT_CANNOT_USE_NAMED;
-import static org.jboss.weld.logging.messages.ValidatorMessage.PASSIVATING_BEAN_WITH_NONSERIALIZABLE_DECORATOR;
-import static org.jboss.weld.logging.messages.ValidatorMessage.PASSIVATING_BEAN_WITH_NONSERIALIZABLE_INTERCEPTOR;
-import static org.jboss.weld.logging.messages.ValidatorMessage.PSEUDO_SCOPED_BEAN_HAS_CIRCULAR_REFERENCES;
-import static org.jboss.weld.logging.messages.ValidatorMessage.SCOPE_ANNOTATION_ON_INJECTION_POINT;
-import static org.jboss.weld.logging.messages.ValidatorMessage.UNSATISFIED_DEPENDENCY_BECAUSE_CLASS_IGNORED;
-import static org.jboss.weld.logging.messages.ValidatorMessage.UNSATISFIED_DEPENDENCY_BECAUSE_QUALIFIERS_DONT_MATCH;
-import static org.jboss.weld.logging.messages.ValidatorMessage.USER_TRANSACTION_INJECTION_INTO_BEAN_WITH_CONTAINER_MANAGED_TRANSACTIONS;
 import static org.jboss.weld.util.Types.buildClassNameMap;
 
 import java.lang.annotation.Annotation;
@@ -131,9 +85,7 @@ import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.DeploymentException;
-import org.jboss.weld.exceptions.InconsistentSpecializationException;
 import org.jboss.weld.exceptions.UnproxyableResolutionException;
-import org.jboss.weld.exceptions.UnserializableDependencyException;
 import org.jboss.weld.injection.producer.AbstractMemberProducer;
 import org.jboss.weld.interceptor.reader.ClassMetadataInterceptorFactory;
 import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
@@ -143,7 +95,9 @@ import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.literal.DecoratedLiteral;
 import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.literal.InterceptedLiteral;
-import org.jboss.weld.logging.messages.ValidatorMessage;
+import org.jboss.weld.logging.BeanLogger;
+import org.jboss.weld.logging.LogMessageCallback;
+import org.jboss.weld.logging.ValidatorLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.util.AnnotatedTypes;
@@ -156,7 +110,6 @@ import org.jboss.weld.util.collections.HashSetSupplier;
 import org.jboss.weld.util.collections.WeldCollections;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
-import org.slf4j.cal10n.LocLogger;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
@@ -174,8 +127,6 @@ import com.google.common.collect.SetMultimap;
  * @author Ales Justin
  */
 public class Validator implements Service {
-
-    private static final LocLogger log = loggerFactory().getLogger(BOOTSTRAP);
 
     protected void validateGeneralBean(Bean<?> bean, BeanManagerImpl beanManager) {
         for (InjectionPoint ij : bean.getInjectionPoints()) {
@@ -197,7 +148,7 @@ public class Validator implements Service {
         }
 
         if (beanManager.isPassivatingScope(bean.getScope()) && !Beans.isPassivationCapableBean(bean)) {
-            throw new DeploymentException(BEAN_WITH_PASSIVATING_SCOPE_NOT_PASSIVATION_CAPABLE, bean);
+            throw ValidatorLogger.LOG.beanWithPassivatingScopeNotPassivationCapable(bean);
         }
     }
 
@@ -234,7 +185,7 @@ public class Validator implements Service {
                     for (InjectionPoint ip : producer.getDisposalMethod().getInjectionPoints()) {
                         // pass the producer bean instead of the disposal method bean
                         validateInjectionPointForDefinitionErrors(ip, null, beanManager);
-                        validateMetadataInjectionPoint(ip, null, ValidatorMessage.INJECTION_INTO_DISPOSER_METHOD);
+                        validateMetadataInjectionPoint(ip, null, ValidatorLogger.INJECTION_INTO_DISPOSER_METHOD_CALLBACK);
                         validateEventMetadataInjectionPoint(ip);
                         validateInjectionPointForDeploymentProblems(ip, null, beanManager);
                     }
@@ -246,7 +197,7 @@ public class Validator implements Service {
     private void validateCustomBean(Bean<?> bean, BeanManagerImpl beanManager) {
         validateGeneralBean(bean, beanManager);
         if (!(bean instanceof PassivationCapable) && beanManager.isNormalScope(bean.getScope())) {
-            log.warn(ValidatorMessage.BEAN_NOT_PASSIVATION_CAPABLE, bean);
+            ValidatorLogger.LOG.beanNotPassivationCapable(bean);
         }
     }
 
@@ -264,7 +215,7 @@ public class Validator implements Service {
                         if (passivationCapabilityCheckRequired) {
                             boolean isSerializable = (interceptor instanceof InterceptorImpl) ? ((InterceptorImpl<?>) interceptor).isSerializable() : Beans.isPassivationCapableDependency(interceptor);
                             if (!isSerializable) {
-                                throw new DeploymentException(PASSIVATING_BEAN_WITH_NONSERIALIZABLE_INTERCEPTOR, classBean, interceptor);
+                                throw ValidatorLogger.LOG.passivatingBeanWithNonserializableInterceptor(classBean, interceptor);
                             }
                         }
                         for (InjectionPoint injectionPoint : interceptor.getInjectionPoints()) {
@@ -278,7 +229,7 @@ public class Validator implements Service {
                         ClassMetadataInterceptorFactory<?> factory = (ClassMetadataInterceptorFactory<?>) interceptorMetadata.getInterceptorFactory();
                         ClassMetadata<?> classMetadata = interceptorMetadata.getInterceptorClass();
                         if (passivationCapabilityCheckRequired && !Reflections.isSerializable(classMetadata.getJavaClass())) {
-                            throw new DeploymentException(PASSIVATING_BEAN_WITH_NONSERIALIZABLE_INTERCEPTOR, this, classMetadata.getJavaClass().getName());
+                            throw ValidatorLogger.LOG.passivatingBeanWithNonserializableInterceptor(this, classMetadata.getJavaClass().getName());
                         }
                         for (InjectionPoint injectionPoint : factory.getInjectionTarget().getInjectionPoints()) {
                             validateInjectionPoint(injectionPoint, beanManager);
@@ -304,9 +255,9 @@ public class Validator implements Service {
         for (Decorator<?> decorator : decorators) {
             if (!Decorators.isPassivationCapable(decorator)) {
                 if (bean instanceof AbstractDecorableBuiltInBean<?>) {
-                    throw new UnserializableDependencyException(BUILTIN_BEAN_WITH_NONSERIALIZABLE_DECORATOR, decorator, bean);
+                    throw ValidatorLogger.LOG.builtinBeanWithNonserializableDecorator(decorator, bean);
                 } else {
-                    throw new UnserializableDependencyException(PASSIVATING_BEAN_WITH_NONSERIALIZABLE_DECORATOR, bean, decorator);
+                    throw ValidatorLogger.LOG.passivatingBeanWithNonserializableDecorator(bean, decorator);
                 }
             }
             for (InjectionPoint ij : decorator.getInjectionPoints()) {
@@ -326,7 +277,7 @@ public class Validator implements Service {
      */
     public void validateInjectionPoint(InjectionPoint ij, BeanManagerImpl beanManager) {
         validateInjectionPointForDefinitionErrors(ij, ij.getBean(), beanManager);
-        validateMetadataInjectionPoint(ij, ij.getBean(), INJECTION_INTO_NON_BEAN);
+        validateMetadataInjectionPoint(ij, ij.getBean(), ValidatorLogger.INJECTION_INTO_NON_DEPENDENT_BEAN_CALLBACK);
         validateEventMetadataInjectionPoint(ij);
         validateInjectionPointForDeploymentProblems(ij, ij.getBean(), beanManager);
     }
@@ -336,19 +287,20 @@ public class Validator implements Service {
      */
     public void validateInjectionPointForDefinitionErrors(InjectionPoint ij, Bean<?> bean, BeanManagerImpl beanManager) {
         if (ij.getAnnotated().getAnnotation(New.class) != null && ij.getQualifiers().size() > 1) {
-            throw new DefinitionException(NEW_WITH_QUALIFIERS, ij);
+            throw ValidatorLogger.LOG.newWithQualifiers(ij);
+            // throw new DefinitionException(NEW_WITH_QUALIFIERS, ij);
         }
         if (ij.getType() instanceof TypeVariable<?>) {
-            throw new DefinitionException(INJECTION_POINT_WITH_TYPE_VARIABLE, ij);
+            throw ValidatorLogger.LOG.injectionPointWithTypeVariable(ij);
         }
         if (!(ij.getMember() instanceof Field) && ij.getAnnotated().isAnnotationPresent(Named.class) && ij.getAnnotated().getAnnotation(Named.class).value().equals("")) {
-            throw new DefinitionException(NON_FIELD_INJECTION_POINT_CANNOT_USE_NAMED, ij);
+            throw ValidatorLogger.LOG.nonFieldInjectionPointCannotUseNamed(ij);
         }
         if (ij.getAnnotated().isAnnotationPresent(Produces.class)) {
             if (bean != null) {
-                throw new DefinitionException(INJECTED_FIELD_CANNOT_BE_PRODUCER, ij.getAnnotated(), bean);
+                throw BeanLogger.LOG.injectedFieldCannotBeProducer(ij.getAnnotated(), bean);
             } else {
-                throw new DefinitionException(INJECTED_FIELD_CANNOT_BE_PRODUCER, ij.getAnnotated(), Reflections.<AnnotatedField<?>>cast(ij.getAnnotated()).getDeclaringType());
+                throw BeanLogger.LOG.injectedFieldCannotBeProducer(ij.getAnnotated(), Reflections.<AnnotatedField<?>>cast(ij.getAnnotated()).getDeclaringType());
             }
         }
         boolean newBean = (bean instanceof NewManagedBean<?>) || (bean instanceof NewSessionBean<?>);
@@ -363,23 +315,23 @@ public class Validator implements Service {
             if (jtaApi.USER_TRANSACTION_CLASS.equals(ij.getType()) &&
                     (ij.getQualifiers().isEmpty() || ij.getQualifiers().contains(DefaultLiteral.INSTANCE)) &&
                     beanManager.getServices().get(EJBApiAbstraction.class).isSessionBeanWithContainerManagedTransactions(bean)) {
-                throw new DefinitionException(USER_TRANSACTION_INJECTION_INTO_BEAN_WITH_CONTAINER_MANAGED_TRANSACTIONS, ij);
+                throw ValidatorLogger.LOG.userTransactionInjectionIntoBeanWithContainerManagedTransactions(ij);
             }
         }
     }
 
-    public void validateMetadataInjectionPoint(InjectionPoint ij, Bean<?> bean, ValidatorMessage message) {
+    public void validateMetadataInjectionPoint(InjectionPoint ij, Bean<?> bean, LogMessageCallback messageCallback) {
         // metadata injection points
         if (ij.getType().equals(InjectionPoint.class) && bean == null) {
-            throw new DefinitionException(message, ij);
+            throw new DefinitionException(messageCallback.invoke(ij));
         }
         if (ij.getType().equals(InjectionPoint.class) && !Dependent.class.equals(bean.getScope())) {
-            throw new DefinitionException(INJECTION_INTO_NON_DEPENDENT_BEAN, ij);
+            throw new DefinitionException(ValidatorLogger.LOG.injectionIntoNonDependentBean(ij));
         }
         Class<?> rawType = Reflections.getRawType(ij.getType());
         if (Bean.class.equals(rawType) || Interceptor.class.equals(rawType) || Decorator.class.equals(rawType)) {
             if (bean == null) {
-                throw new DefinitionException(message, ij);
+                throw new DefinitionException(messageCallback.invoke(ij));
             }
             if (bean instanceof AbstractClassBean<?>) {
                 checkBeanMetadataInjectionPoint(bean, ij, AnnotatedTypes.getDeclaringAnnotatedType(ij.getAnnotated()).getBaseType());
@@ -393,7 +345,7 @@ public class Validator implements Service {
 
     public void validateEventMetadataInjectionPoint(InjectionPoint ip) {
         if (EventMetadata.class.equals(ip.getType()) && ip.getQualifiers().contains(DefaultLiteral.INSTANCE)) {
-            throw new DefinitionException(EVENT_METADATA_INJECTED_OUTSIDE_OF_OBSERVER, ip);
+            throw ValidatorLogger.LOG.eventMetadataInjectedOutsideOfObserver(ip);
         }
     }
 
@@ -406,7 +358,7 @@ public class Validator implements Service {
         }
         Set<?> resolvedBeans = beanManager.getBeanResolver().resolve(beanManager.getBeans(ij));
         if (!isInjectionPointSatisfied(ij, resolvedBeans, beanManager)) {
-            throw new DeploymentException(INJECTION_POINT_HAS_UNSATISFIED_DEPENDENCIES,
+            throw ValidatorLogger.LOG.injectionPointHasUnsatisfiedDependencies(
                 ij,
                 Formats.formatAnnotations(ij.getQualifiers()),
                 Formats.formatInjectionPointType(ij.getType()),
@@ -414,7 +366,7 @@ public class Validator implements Service {
                 getUnsatisfiedDependenciesAdditionalInfo(ij, beanManager));
         }
         if (resolvedBeans.size() > 1) {
-            throw new DeploymentException(INJECTION_POINT_HAS_AMBIGUOUS_DEPENDENCIES,
+            throw ValidatorLogger.LOG.injectionPointHasAmbiguousDependencies(
                 ij,
                 Formats.formatAnnotations(ij.getQualifiers()),
                 Formats.formatInjectionPointType(ij.getType()),
@@ -427,7 +379,7 @@ public class Validator implements Service {
             if (beanManager.isNormalScope(resolvedBean.getScope())) {
                 UnproxyableResolutionException ue = Proxies.getUnproxyableTypeException(ij.getType(), resolvedBean, beanManager.getServices());
                 if (ue != null) {
-                    throw new DeploymentException(INJECTION_POINT_HAS_NON_PROXYABLE_DEPENDENCIES, ue, ij);
+                    throw ValidatorLogger.LOG.injectionPointHasNonProxyableDependencies(ij, ue);
                 }
             }
             if (bean != null && Beans.isPassivatingScope(bean, beanManager)) {
@@ -444,15 +396,13 @@ public class Validator implements Service {
                 MissingDependenciesRegistry missingDependenciesRegistry = beanManager.getServices().get(MissingDependenciesRegistry.class);
                 String missingDependency = missingDependenciesRegistry.getMissingDependencyForClass(rawType.getName());
                 if (missingDependency != null) {
-                    return loggerFactory().getMessageConveyor().getMessage(
-                        UNSATISFIED_DEPENDENCY_BECAUSE_CLASS_IGNORED,
+                    return ValidatorLogger.LOG.unsatisfiedDependencyBecauseClassIgnored(
                         rawType.getName(),
                         missingDependency);
                 }
             }
         } else {
-            return loggerFactory().getMessageConveyor().getMessage(
-                UNSATISFIED_DEPENDENCY_BECAUSE_QUALIFIERS_DONT_MATCH,
+            return ValidatorLogger.LOG.unsatisfiedDependencyBecauseQualifiersDontMatch(
                 WeldCollections.toMultiRowString(beansMatchedByType));
         }
         return "";
@@ -492,7 +442,7 @@ public class Validator implements Service {
     }
 
     private void logScopeOnInjectionPointWarning(InjectionPoint ij, Annotation annotation) {
-        log.warn(SCOPE_ANNOTATION_ON_INJECTION_POINT, annotation, ij);
+        ValidatorLogger.LOG.scopeAnnotationOnInjectionPoint(annotation, ij);
     }
 
     private boolean hasScopeMetaAnnotation(Annotation annotation) {
@@ -508,7 +458,7 @@ public class Validator implements Service {
             if (ij.getAnnotated() instanceof AnnotatedParameter<?> && ij.getAnnotated().isAnnotationPresent(TransientReference.class)) {
                 return;
             }
-            throw new UnserializableDependencyException(INJECTION_POINT_HAS_NON_SERIALIZABLE_DEPENDENCY, ij.getBean(), resolvedBean);
+            throw ValidatorLogger.LOG.injectionPointHasNonSerializableDependency(ij.getBean(), resolvedBean);
         }
     }
 
@@ -530,7 +480,7 @@ public class Validator implements Service {
         SpecializationAndEnablementRegistry registry = manager.getServices().get(SpecializationAndEnablementRegistry.class);
         for (Entry<AbstractBean<?, ?>> entry : registry.getBeansSpecializedInAnyDeploymentAsMultiset().entrySet()) {
             if (entry.getCount() > 1) {
-                throw new InconsistentSpecializationException(BEAN_SPECIALIZED_TOO_MANY_TIMES, entry.getElement());
+                throw ValidatorLogger.LOG.beanSpecializedTooManyTimes(entry.getElement());
             }
         }
     }
@@ -573,20 +523,20 @@ public class Validator implements Service {
         if (interceptor instanceof InterceptorImpl<?>) {
             EnhancedAnnotatedType<?> annotated = ((InterceptorImpl<?>) interceptor).getEnhancedAnnotated();
             if (!BeanMethods.getObserverMethods(annotated).isEmpty()) {
-                throw new DefinitionException(INTERCEPTORS_CANNOT_HAVE_OBSERVER_METHODS, interceptor);
+                throw ValidatorLogger.LOG.interceptorsCannotHaveObserverMethods(interceptor);
             }
             if (!interceptor.getScope().equals(Dependent.class)) {
-                throw new DefinitionException(INTERCEPTOR_MUST_BE_DEPENDENT, interceptor);
+                throw ValidatorLogger.LOG.interceptorMustBeDependent(interceptor);
             }
             while (annotated != null && annotated.getJavaClass() != Object.class) {
                 if (!annotated.getDeclaredEnhancedMethods(Produces.class).isEmpty()) {
-                    throw new DefinitionException(INTERCEPTORS_CANNOT_HAVE_PRODUCER_METHODS, interceptor);
+                    throw ValidatorLogger.LOG.interceptorsCannotHaveProducerMethods(interceptor);
                 }
                 if (!annotated.getDeclaredEnhancedFields(Produces.class).isEmpty()) {
-                    throw new DefinitionException(INTERCEPTORS_CANNOT_HAVE_PRODUCER_FIELDS, interceptor);
+                    throw ValidatorLogger.LOG.interceptorsCannotHaveProducerFields(interceptor);
                 }
                 if (!annotated.getDeclaredEnhancedMethodsWithAnnotatedParameters(Disposes.class).isEmpty()) {
-                    throw new DefinitionException(INTERCEPTORS_CANNOT_HAVE_DISPOSER_METHODS, interceptor);
+                    throw ValidatorLogger.LOG.interceptorsCannotHaveDisposerMethods(interceptor);
                 }
                 annotated = annotated.getEnhancedSuperclass();
             }
@@ -606,7 +556,7 @@ public class Validator implements Service {
     protected void validateDecorator(Decorator<?> decorator, Collection<CommonBean<?>> specializedBeans, BeanManagerImpl manager) {
 
         if (decorator.getDecoratedTypes().isEmpty()) {
-            throw new DefinitionException(ValidatorMessage.NO_DECORATED_TYPES, decorator);
+            throw ValidatorLogger.LOG.noDecoratedTypes(decorator);
         }
 
         Decorators.checkDelegateType(decorator);
@@ -619,10 +569,10 @@ public class Validator implements Service {
             ParameterizedType parameterizedDelegateType = (ParameterizedType) delegateType;
             if (!Decorators.isPassivationCapable(decorator)) {
                 if (Instance.class.equals(parameterizedDelegateType.getRawType()) || Provider.class.equals(parameterizedDelegateType.getRawType())) {
-                    throw new UnserializableDependencyException(BUILTIN_BEAN_WITH_NONSERIALIZABLE_DECORATOR, decorator, Instance.class.getName());
+                    throw ValidatorLogger.LOG.builtinBeanWithNonserializableDecorator(decorator, Instance.class.getName());
                 }
                 if (Event.class.equals(parameterizedDelegateType.getRawType())) {
-                    throw new UnserializableDependencyException(BUILTIN_BEAN_WITH_NONSERIALIZABLE_DECORATOR, decorator, Event.class.getName());
+                    throw ValidatorLogger.LOG.builtinBeanWithNonserializableDecorator(decorator, Event.class.getName());
                 }
             }
         }
@@ -637,17 +587,17 @@ public class Validator implements Service {
 
                 // Following checks are not legal for custom decorator beans as we cannot rely on decorator bean class methods
                 if (!BeanMethods.getObserverMethods(annotated).isEmpty()) {
-                    throw new DefinitionException(DECORATORS_CANNOT_HAVE_OBSERVER_METHODS, decorator);
+                    throw ValidatorLogger.LOG.decoratorsCannotHaveObserverMethods(decorator);
                 }
                 while (annotated != null && annotated.getJavaClass() != Object.class) {
                     if (!annotated.getDeclaredEnhancedMethods(Produces.class).isEmpty()) {
-                        throw new DefinitionException(DECORATORS_CANNOT_HAVE_PRODUCER_METHODS, decorator);
+                        throw ValidatorLogger.LOG.decoratorsCannotHaveProducerMethods(decorator);
                     }
                     if (!annotated.getDeclaredEnhancedFields(Produces.class).isEmpty()) {
-                        throw new DefinitionException(DECORATORS_CANNOT_HAVE_PRODUCER_FIELDS, decorator);
+                        throw ValidatorLogger.LOG.decoratorsCannotHaveProducerFields(decorator);
                     }
                     if (!annotated.getDeclaredEnhancedMethodsWithAnnotatedParameters(Disposes.class).isEmpty()) {
-                        throw new DefinitionException(DECORATORS_CANNOT_HAVE_DISPOSER_METHODS, decorator);
+                        throw ValidatorLogger.LOG.decoratorsCannotHaveDisposerMethods(decorator);
                     }
                     annotated = annotated.getEnhancedSuperclass();
                 }
@@ -677,10 +627,10 @@ public class Validator implements Service {
         for (String name : namedAccessibleBeans.keySet()) {
             Set<Bean<?>> resolvedBeans = beanManager.getBeanResolver().resolve(Beans.removeDisabledBeans(namedAccessibleBeans.get(name), beanManager, registry));
             if (resolvedBeans.size() > 1) {
-                throw new DeploymentException(AMBIGUOUS_EL_NAME, name, resolvedBeans);
+                throw ValidatorLogger.LOG.ambiguousElName(name, resolvedBeans);
             }
             if (accessibleNamespaces.contains(name)) {
-                throw new DeploymentException(BEAN_NAME_IS_PREFIX, name);
+                throw ValidatorLogger.LOG.beanNameIsPrefix(name);
             }
         }
     }
@@ -694,7 +644,7 @@ public class Validator implements Service {
             }
             for (Metadata<String> interceptorClassName : beansXml.getEnabledInterceptors()) {
                 if (!interceptorBeanClasses.contains(interceptorClassName.getValue())) {
-                    throw new DeploymentException(INTERCEPTOR_NOT_ANNOTATED_OR_REGISTERED, interceptorClassName);
+                    throw ValidatorLogger.LOG.interceptorNotAnnotatedOrRegistered(interceptorClassName);
                 }
             }
         }
@@ -709,7 +659,7 @@ public class Validator implements Service {
             }
             for (Metadata<String> decoratorClassName : beansXml.getEnabledDecorators()) {
                 if (!decoratorBeanClasses.contains(decoratorClassName.getValue())) {
-                    throw new DeploymentException(DECORATOR_CLASS_NOT_BEAN_CLASS_OF_DECORATOR, decoratorClassName, WeldCollections.toMultiRowString(decoratorBeanClasses));
+                    throw ValidatorLogger.LOG.decoratorClassNotBeanClassOfDecorator(decoratorClassName, WeldCollections.toMultiRowString(decoratorBeanClasses));
                 }
             }
         }
@@ -725,10 +675,10 @@ public class Validator implements Service {
             for (Metadata<String> definition : beansXml.getEnabledAlternativeStereotypes()) {
                 Class<? extends Annotation> stereotype = loadedStereotypes.get(definition.getValue());
                 if (!beanManager.isStereotype(stereotype)) {
-                    throw new DeploymentException(ALTERNATIVE_STEREOTYPE_NOT_STEREOTYPE, definition);
+                    throw ValidatorLogger.LOG.alternativeStereotypeNotStereotype(definition);
                 }
                 if (!isAlternative(beanManager, stereotype)) {
-                    throw new DeploymentException(ALTERNATIVE_STEREOTYPE_NOT_ANNOTATED, definition);
+                    throw ValidatorLogger.LOG.alternativeStereotypeNotAnnotated(definition);
                 }
             }
         }
@@ -751,7 +701,7 @@ public class Validator implements Service {
             for (Metadata<String> definition : beansXml.getEnabledAlternativeClasses()) {
                 Class<?> enabledClass = loadedClasses.get(definition.getValue());
                 if (enabledClass.isAnnotation() || enabledClass.isInterface()) {
-                    throw new DeploymentException(ALTERNATIVE_BEAN_CLASS_NOT_CLASS, definition);
+                    throw ValidatorLogger.LOG.alternativeBeanClassNotClass(definition);
                 } else {
                     // check that the class is a bean class of at least one alternative
                     boolean alternativeBeanFound = false;
@@ -761,7 +711,7 @@ public class Validator implements Service {
                         }
                     }
                     if (!alternativeBeanFound) {
-                        throw new DeploymentException(ALTERNATIVE_BEAN_CLASS_NOT_ANNOTATED, definition);
+                        throw ValidatorLogger.LOG.alternativeBeanClassNotAnnotated(definition);
                     }
                 }
             }
@@ -780,7 +730,7 @@ public class Validator implements Service {
     private void validateDisposalMethods(BeanDeployerEnvironment environment) {
         Set<DisposalMethod<?, ?>> beans = environment.getUnresolvedDisposalBeans();
         if (!beans.isEmpty()) {
-            throw new DefinitionException(DISPOSAL_METHODS_WITHOUT_PRODUCER, WeldCollections.toMultiRowString(beans));
+            throw ValidatorLogger.LOG.disposalMethodsWithoutProducer(WeldCollections.toMultiRowString(beans));
         }
     }
 
@@ -788,7 +738,7 @@ public class Validator implements Service {
         for (ObserverInitializationContext<?, ?> omi : observers) {
             for (InjectionPoint ip : omi.getObserver().getInjectionPoints()) {
                 validateInjectionPointForDefinitionErrors(ip, ip.getBean(), beanManager);
-                validateMetadataInjectionPoint(ip, null, INJECTION_INTO_NON_BEAN);
+                validateMetadataInjectionPoint(ip, null, ValidatorLogger.INJECTION_INTO_NON_DEPENDENT_BEAN_CALLBACK);
                 validateInjectionPointForDeploymentProblems(ip, ip.getBean(), beanManager);
             }
         }
@@ -797,16 +747,16 @@ public class Validator implements Service {
     private static void checkFacadeInjectionPoint(InjectionPoint injectionPoint, Class<?> type) {
         Type injectionPointType = injectionPoint.getType();
         if (injectionPointType instanceof Class<?> && type.equals(injectionPointType)) {
-            throw new DefinitionException(INJECTION_POINT_MUST_HAVE_TYPE_PARAMETER, type, injectionPoint);
+            throw ValidatorLogger.LOG.injectionPointMustHaveTypeParameter(type, injectionPoint);
         }
         if (injectionPointType instanceof ParameterizedType && !injectionPoint.isDelegate()) {
             ParameterizedType parameterizedType = (ParameterizedType) injectionPointType;
             if (type.equals(parameterizedType.getRawType())) {
                 if (parameterizedType.getActualTypeArguments()[0] instanceof TypeVariable<?>) {
-                    throw new DefinitionException(INJECTION_POINT_WITH_TYPE_VARIABLE, injectionPoint);
+                    throw ValidatorLogger.LOG.injectionPointWithTypeVariable(injectionPoint);
                 }
                 if (parameterizedType.getActualTypeArguments()[0] instanceof WildcardType) {
-                    throw new DefinitionException(INJECTION_POINT_HAS_WILDCARD, type, injectionPoint);
+                    throw ValidatorLogger.LOG.injectionPointHasWildcard(type, injectionPoint);
                 }
             }
         }
@@ -814,31 +764,31 @@ public class Validator implements Service {
 
     public static void checkBeanMetadataInjectionPoint(Object bean, InjectionPoint ip, Type expectedTypeArgument) {
         if (!(ip.getType() instanceof ParameterizedType)) {
-            throw new DefinitionException(INVALID_BEAN_METADATA_INJECTION_POINT_TYPE, ip.getType(), ip);
+            throw ValidatorLogger.LOG.invalidBeanMetadataInjectionPointType(ip.getType(), ip);
         }
         ParameterizedType parameterizedType = (ParameterizedType) ip.getType();
         if (parameterizedType.getActualTypeArguments().length != 1) {
-            throw new DefinitionException(INVALID_BEAN_METADATA_INJECTION_POINT_TYPE, ip.getType(), ip);
+            throw ValidatorLogger.LOG.invalidBeanMetadataInjectionPointType(ip.getType(), ip);
         }
         Class<?> rawType = (Class<?>) parameterizedType.getRawType();
         Type typeArgument = parameterizedType.getActualTypeArguments()[0];
 
         if (bean == null) {
-            throw new DefinitionException(INJECTION_INTO_NON_BEAN, ip);
+            throw new DefinitionException(ValidatorLogger.LOG.injectionIntoNonBean(ip));
         }
         /*
          * If an Interceptor instance is injected into a bean instance other than an interceptor instance, the container
          * automatically detects the problem and treats it as a definition error.
          */
         if (rawType.equals(Interceptor.class) && !(bean instanceof Interceptor<?>)) {
-            throw new DefinitionException(INVALID_BEAN_METADATA_INJECTION_POINT_TYPE, ip.getType(), ip);
+            throw ValidatorLogger.LOG.invalidBeanMetadataInjectionPointType(ip.getType(), ip);
         }
         /*
          * If a Decorator instance is injected into a bean instance other than a decorator instance, the container automatically
          * detects the problem and treats it as a definition error.
          */
         if (rawType.equals(Decorator.class) && !(bean instanceof Decorator<?>)) {
-            throw new DefinitionException(INVALID_BEAN_METADATA_INJECTION_POINT_TYPE, ip.getType(), ip);
+            throw ValidatorLogger.LOG.invalidBeanMetadataInjectionPointType(ip.getType(), ip);
         }
         Set<Annotation> qualifiers = ip.getQualifiers();
         if (qualifiers.contains(InterceptedLiteral.INSTANCE)) {
@@ -847,17 +797,17 @@ public class Validator implements Service {
              * instance, the container automatically detects the problem and treats it as a definition error.
              */
             if (!(bean instanceof Interceptor<?>)) {
-                throw new DefinitionException(INVALID_BEAN_METADATA_INJECTION_POINT_QUALIFIER, Intercepted.class, Interceptor.class, ip);
+                throw ValidatorLogger.LOG.invalidBeanMetadataInjectionPointQualifier(Intercepted.class, Interceptor.class, ip);
             }
             /*
              * If the injection point is a field, an initializer method parameter or a bean constructor of an interceptor, with
              * qualifier @Intercepted, then the type parameter of the injected Bean must be an unbounded wildcard.
              */
             if (!rawType.equals(Bean.class)) {
-                throw new DefinitionException(INVALID_BEAN_METADATA_INJECTION_POINT_TYPE, ip.getType(), ip);
+                throw ValidatorLogger.LOG.invalidBeanMetadataInjectionPointType(ip.getType(), ip);
             }
             if (!Reflections.isUnboundedWildcard(typeArgument)) {
-                throw new DefinitionException(INVALID_BEAN_METADATA_INJECTION_POINT_TYPE_ARGUMENT, typeArgument, ip);
+                throw ValidatorLogger.LOG.invalidBeanMetadataInjectionPointTypeArgument(typeArgument, ip);
             }
         }
         if (qualifiers.contains(DecoratedLiteral.INSTANCE)) {
@@ -866,7 +816,7 @@ public class Validator implements Service {
              * the container automatically detects the problem and treats it as a definition error.
              */
             if (!(bean instanceof Decorator<?>)) {
-                throw new DefinitionException(INVALID_BEAN_METADATA_INJECTION_POINT_QUALIFIER, Decorated.class, Decorator.class, ip);
+                throw ValidatorLogger.LOG.invalidBeanMetadataInjectionPointQualifier(Decorated.class, Decorator.class, ip);
             }
             Decorator<?> decorator = Reflections.cast(bean);
             /*
@@ -874,10 +824,10 @@ public class Validator implements Service {
              * qualifier @Decorated, then the type parameter of the injected Bean must be the same as the delegate type.
              */
             if (!rawType.equals(Bean.class)) {
-                throw new DefinitionException(INVALID_BEAN_METADATA_INJECTION_POINT_TYPE, ip.getType(), ip);
+                throw ValidatorLogger.LOG.invalidBeanMetadataInjectionPointType(ip.getType(), ip);
             }
             if (!typeArgument.equals(decorator.getDelegateType())) {
-                throw new DefinitionException(INVALID_BEAN_METADATA_INJECTION_POINT_TYPE_ARGUMENT, typeArgument, ip);
+                throw ValidatorLogger.LOG.invalidBeanMetadataInjectionPointTypeArgument(typeArgument, ip);
             }
         }
         if (qualifiers.contains(DefaultLiteral.INSTANCE)) {
@@ -893,7 +843,7 @@ public class Validator implements Service {
              * same as the disposed parameter.
              */
             if (!expectedTypeArgument.equals(typeArgument)) {
-                throw new DefinitionException(INVALID_BEAN_METADATA_INJECTION_POINT_TYPE_ARGUMENT, typeArgument, ip);
+                throw ValidatorLogger.LOG.invalidBeanMetadataInjectionPointTypeArgument(typeArgument, ip);
             }
         }
     }
@@ -929,7 +879,7 @@ public class Validator implements Service {
             // create a list that shows the path to the bean
             List<Object> realDependencyPath = new ArrayList<Object>(dependencyPath);
             realDependencyPath.add(bean);
-            throw new DeploymentException(PSEUDO_SCOPED_BEAN_HAS_CIRCULAR_REFERENCES, WeldCollections.toMultiRowString(realDependencyPath));
+            throw ValidatorLogger.LOG.pseudoScopedBeanHasCircularReferences(WeldCollections.toMultiRowString(realDependencyPath));
         }
         if (validatedBeans.contains(bean)) {
             return;

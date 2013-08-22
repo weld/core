@@ -1,13 +1,20 @@
+/*
+ * JBoss, Home of Professional Open Source
+ * Copyright 2013, Red Hat, Inc., and individual contributors
+ * by the @authors tag. See the copyright.txt in the distribution for a
+ * full listing of individual contributors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.jboss.weld.bootstrap;
-
-import static org.jboss.weld.logging.Category.BOOTSTRAP;
-import static org.jboss.weld.logging.Category.VERSION;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.BootstrapMessage.DEPLOYMENT_REQUIRED;
-import static org.jboss.weld.logging.messages.BootstrapMessage.JTA_UNAVAILABLE;
-import static org.jboss.weld.logging.messages.BootstrapMessage.MANAGER_NOT_INITIALIZED;
-import static org.jboss.weld.logging.messages.BootstrapMessage.UNSPECIFIED_REQUIRED_SERVICE;
-import static org.jboss.weld.logging.messages.BootstrapMessage.VALIDATING_BEANS;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
@@ -88,12 +95,12 @@ import org.jboss.weld.context.unbound.UnboundLiteral;
 import org.jboss.weld.ejb.spi.EjbServices;
 import org.jboss.weld.event.CurrentEventMetadata;
 import org.jboss.weld.event.GlobalObserverNotifierService;
-import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.executor.ExecutorServicesFactory;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.injection.SLSBInvocationInjectionPoint;
 import org.jboss.weld.injection.producer.InjectionTargetService;
-import org.jboss.weld.logging.messages.VersionMessage;
+import org.jboss.weld.logging.BootstrapLogger;
+import org.jboss.weld.logging.VersionLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.BeanManagerLookupService;
 import org.jboss.weld.manager.api.ExecutorServices;
@@ -121,7 +128,6 @@ import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.instantiation.InstantiatorFactory;
 import org.jboss.weld.util.reflection.instantiation.LoaderInstantiatorFactory;
-import org.slf4j.cal10n.LocLogger;
 
 import com.google.common.collect.ImmutableSet;
 
@@ -135,10 +141,8 @@ import com.google.common.collect.ImmutableSet;
  */
 public class WeldStartup {
 
-    private static final LocLogger log = loggerFactory().getLogger(BOOTSTRAP);
-
     static {
-        loggerFactory().getLogger(VERSION).info(VersionMessage.VERSION, Formats.version(WeldBootstrap.class.getPackage()));
+        VersionLogger.LOG.version(Formats.version(WeldBootstrap.class.getPackage()));
     }
 
     private BeanManagerImpl deploymentManager;
@@ -157,7 +161,7 @@ public class WeldStartup {
 
     public WeldRuntime startContainer(String contextId, Environment environment, Deployment deployment) {
         if (deployment == null) {
-            throw new org.jboss.weld.exceptions.IllegalArgumentException(DEPLOYMENT_REQUIRED);
+            throw BootstrapLogger.LOG.deploymentRequired();
         }
 
         Container.currentId.set(contextId);
@@ -191,7 +195,7 @@ public class WeldStartup {
         verifyServices(registry, environment.getRequiredDeploymentServices());
 
         if (!registry.contains(TransactionServices.class)) {
-            log.info(JTA_UNAVAILABLE);
+            BootstrapLogger.LOG.jtaUnavailable();
         }
 
         // TODO Reinstate if we can find a good way to detect.
@@ -240,7 +244,7 @@ public class WeldStartup {
         if (deployment instanceof CDI11Deployment) {
             registry.add(BeanManagerLookupService.class, new BeanManagerLookupService((CDI11Deployment) deployment, bdaMapping.getBdaToBeanManagerMap()));
         } else {
-            log.warn("Legacy deployment metadata provided by the integrator. Certain functionality will not be available.");
+            BootstrapLogger.LOG.legacyDeploymentMetadataProvided();
         }
 
         // Read the deployment structure, bdaMapping will be the physical structure
@@ -327,7 +331,7 @@ public class WeldStartup {
 
     public void startInitialization() {
         if (deploymentManager == null) {
-            throw new IllegalStateException(MANAGER_NOT_INITIALIZED);
+            throw BootstrapLogger.LOG.managerNotInitialized();
         }
 
         // we need to know which BDAs are physical so that we fire ProcessModule for their archives only
@@ -410,7 +414,7 @@ public class WeldStartup {
     }
 
     public void validateBeans() {
-        log.debug(VALIDATING_BEANS);
+        BootstrapLogger.LOG.validatingBeans();
         for (BeanDeployment beanDeployment : getBeanDeployments()) {
             BeanManagerImpl beanManager = beanDeployment.getBeanManager();
             beanManager.getBeanResolver().clear();
@@ -519,7 +523,7 @@ public class WeldStartup {
     protected static void verifyServices(ServiceRegistry services, Set<Class<? extends Service>> requiredServices) {
         for (Class<? extends Service> serviceType : requiredServices) {
             if (!services.contains(serviceType)) {
-                throw new IllegalStateException(UNSPECIFIED_REQUIRED_SERVICE, serviceType.getName());
+                throw BootstrapLogger.LOG.unspecifiedRequiredService(serviceType.getName());
             }
         }
     }

@@ -28,8 +28,7 @@ import javax.enterprise.inject.spi.AnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedCallable;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.slim.backed.BackedAnnotatedMember;
-import org.jboss.weld.exceptions.DefinitionException;
-import org.jboss.weld.logging.messages.ReflectionMessage;
+import org.jboss.weld.logging.ReflectionLogger;
 import org.jboss.weld.resources.ClassTransformer;
 
 /**
@@ -56,7 +55,7 @@ public abstract class AbstractEnhancedAnnotatedCallable<T, X, S extends Member> 
             // For enums, BackedAnnotatedConstructor sets parameters to an empty list, so we shouldn't throw the DefinitionException
             Class<?> declaringClass = callable.getDeclaringType().getJavaClass();
             if (!declaringClass.isEnum() && !declaringClass.isMemberClass()) {
-                throw new DefinitionException(ReflectionMessage.INCORRECT_NUMBER_OF_ANNOTATED_PARAMETERS_METHOD, callable.getParameters().size(), callable, callable.getParameters(), Arrays.asList(parameterTypes));
+                throw ReflectionLogger.LOG.incorrectNumberOfAnnotatedParametersMethod(callable.getParameters().size(), callable, callable.getParameters(), Arrays.asList(parameterTypes));
             }
         }
     }

@@ -16,15 +16,13 @@
  */
 package org.jboss.weld.metadata.cache;
 
-import static org.jboss.weld.logging.messages.MetadataMessage.STEREOTYPE_NOT_REGISTERED;
-
 import java.lang.annotation.Annotation;
 import java.util.Set;
 
 import javax.enterprise.inject.Stereotype;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotated;
-import org.jboss.weld.exceptions.IllegalStateException;
+import org.jboss.weld.logging.MetadataLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.util.collections.ArraySet;
@@ -81,7 +79,7 @@ public class MergedStereotypes<T, E> {
             // Retrieve and merge all metadata from stereotypes
             StereotypeModel<?> stereotype = store.getStereotype(stereotypeAnnotation.annotationType());
             if (stereotype == null) {
-                throw new IllegalStateException(STEREOTYPE_NOT_REGISTERED, stereotypeAnnotation);
+                throw MetadataLogger.LOG.stereotypeNotRegistered(stereotypeAnnotation);
             }
             if (stereotype.isAlternative()) {
                 alternative = true;

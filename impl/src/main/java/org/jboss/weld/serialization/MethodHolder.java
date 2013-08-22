@@ -16,16 +16,14 @@
  */
 package org.jboss.weld.serialization;
 
-import static org.jboss.weld.logging.messages.ReflectionMessage.UNABLE_TO_GET_METHOD_ON_DESERIALIZATION;
-
 import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
 import javax.enterprise.inject.spi.AnnotatedMethod;
 
-import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.interceptor.spi.metadata.MethodMetadata;
+import org.jboss.weld.logging.ReflectionLogger;
 
 import com.google.common.base.Objects;
 
@@ -72,7 +70,7 @@ public class MethodHolder extends AbstractSerializableHolder<Method> implements 
         try {
             return declaringClass.getDeclaredMethod(methodName, parameterTypes);
         } catch (Exception e) {
-            throw new WeldException(UNABLE_TO_GET_METHOD_ON_DESERIALIZATION, e, declaringClass, parameterTypes);
+            throw ReflectionLogger.LOG.unableToGetMethodOnDeserialization(declaringClass, parameterTypes, e);
         }
     }
 

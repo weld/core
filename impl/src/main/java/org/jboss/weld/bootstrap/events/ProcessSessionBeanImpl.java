@@ -16,17 +16,17 @@
  */
 package org.jboss.weld.bootstrap.events;
 
-import org.jboss.weld.bean.SessionBean;
-import org.jboss.weld.exceptions.IllegalStateException;
-import org.jboss.weld.manager.BeanManagerImpl;
+import static org.jboss.weld.util.reflection.Reflections.cast;
+
+import java.lang.reflect.Type;
 
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.ProcessSessionBean;
 import javax.enterprise.inject.spi.SessionBeanType;
-import java.lang.reflect.Type;
 
-import static org.jboss.weld.logging.messages.BootstrapMessage.BEAN_TYPE_NOT_EJB;
-import static org.jboss.weld.util.reflection.Reflections.cast;
+import org.jboss.weld.bean.SessionBean;
+import org.jboss.weld.logging.BootstrapLogger;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 public class ProcessSessionBeanImpl<X> extends AbstractProcessClassBean<Object, SessionBean<Object>> implements ProcessSessionBean<X> {
 
@@ -57,7 +57,7 @@ public class ProcessSessionBeanImpl<X> extends AbstractProcessClassBean<Object, 
         } else if (getBean().getEjbDescriptor().isSingleton()) {
             return SessionBeanType.SINGLETON;
         } else {
-            throw new IllegalStateException(BEAN_TYPE_NOT_EJB, getBean());
+            throw BootstrapLogger.LOG.beanTypeNotEjb(getBean());
         }
     }
 

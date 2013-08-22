@@ -16,9 +16,6 @@
  */
 package org.jboss.weld.executor;
 
-import static org.jboss.weld.logging.Category.BOOTSTRAP;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -27,8 +24,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.api.ExecutorServices;
-import org.slf4j.cal10n.LocLogger;
 
 import com.google.common.util.concurrent.ForwardingExecutorService;
 
@@ -51,7 +48,7 @@ public class ProfilingExecutorServices implements ExecutorServices {
             }
             final long current = System.currentTimeMillis();
             final long time = current - start;
-            log.info("ThreadPool task execution #{} took {} ms", id, time);
+            BootstrapLogger.LOG.infov("ThreadPool task execution #{0} took {1} ms", id, time);
             start = 0L;
             executionTimeSum.addAndGet(time);
         }
@@ -75,8 +72,6 @@ public class ProfilingExecutorServices implements ExecutorServices {
         }
     }
 
-    private static final LocLogger log = loggerFactory().getLogger(BOOTSTRAP);
-
     private final ExecutorServices delegate;
 
     private final AtomicInteger executionId = new AtomicInteger();
@@ -85,7 +80,7 @@ public class ProfilingExecutorServices implements ExecutorServices {
 
     public ProfilingExecutorServices(ExecutorServices delegate) {
         this.delegate = delegate;
-        log.info("Delegating to {}", delegate);
+        BootstrapLogger.LOG.infov("Delegating to {0}", delegate);
     }
 
     @Override
@@ -96,7 +91,7 @@ public class ProfilingExecutorServices implements ExecutorServices {
     @Override
     public void cleanup() {
         if (!getTaskExecutor().isShutdown()) {
-            log.info("Total time spent in ThreadPool execution is {} ms", executionTimeSum.get());
+            BootstrapLogger.LOG.infov("Total time spent in ThreadPool execution is {0} ms", executionTimeSum.get());
         }
         delegate.cleanup();
     }

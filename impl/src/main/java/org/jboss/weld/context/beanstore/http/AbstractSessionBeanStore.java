@@ -1,12 +1,6 @@
 package org.jboss.weld.context.beanstore.http;
 
 import static java.util.Collections.emptyList;
-import static org.jboss.weld.logging.Category.CONTEXT;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.ContextMessage.ADDED_KEY_TO_SESSION;
-import static org.jboss.weld.logging.messages.ContextMessage.REMOVED_KEY_FROM_SESSION;
-import static org.jboss.weld.logging.messages.ContextMessage.UNABLE_TO_ADD_KEY_TO_SESSION;
-import static org.jboss.weld.logging.messages.ContextMessage.UNABLE_TO_REMOVE_KEY_FROM_SESSION;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.util.Collection;
@@ -18,10 +12,10 @@ import org.jboss.weld.context.api.ContextualInstance;
 import org.jboss.weld.context.beanstore.AttributeBeanStore;
 import org.jboss.weld.context.beanstore.LockStore;
 import org.jboss.weld.context.beanstore.NamingScheme;
+import org.jboss.weld.logging.ContextLogger;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.util.collections.EnumerationList;
 import org.jboss.weld.util.reflection.Reflections;
-import org.slf4j.cal10n.LocLogger;
 
 /**
  * Base class providing an HttpSession backed, bound bean store.
@@ -33,8 +27,6 @@ import org.slf4j.cal10n.LocLogger;
  * @see EagerSessionBeanStore
  */
 public abstract class AbstractSessionBeanStore extends AttributeBeanStore {
-
-    private static final LocLogger log = loggerFactory().getLogger(CONTEXT);
 
     private static final String SESSION_KEY = "org.jboss.weld.context.beanstore.http.LockStore";
 
@@ -62,9 +54,9 @@ public abstract class AbstractSessionBeanStore extends AttributeBeanStore {
         HttpSession session = getSession(false);
         if (session != null) {
             session.removeAttribute(key);
-            log.trace(REMOVED_KEY_FROM_SESSION, key, this.getSession(false).getId());
+            ContextLogger.LOG.removedKeyFromSession(key, this.getSession(false).getId());
         } else {
-            log.trace(UNABLE_TO_REMOVE_KEY_FROM_SESSION, key);
+            ContextLogger.LOG.unableToRemoveKeyFromSession(key);
         }
     }
 
@@ -73,9 +65,9 @@ public abstract class AbstractSessionBeanStore extends AttributeBeanStore {
         HttpSession session = getSession(true);
         if (session != null) {
             session.setAttribute(key, instance);
-            log.trace(ADDED_KEY_TO_SESSION, key, this.getSession(false).getId());
+            ContextLogger.LOG.addedKeyToSession(key, this.getSession(false).getId());
         } else {
-            log.trace(UNABLE_TO_ADD_KEY_TO_SESSION, key);
+            ContextLogger.LOG.unableToAddKeyToSession(key);
         }
     }
 

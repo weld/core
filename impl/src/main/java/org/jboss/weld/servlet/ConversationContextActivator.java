@@ -16,13 +16,6 @@
  */
 package org.jboss.weld.servlet;
 
-import static org.jboss.weld.logging.Category.SERVLET;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.ConversationMessage.CLEANING_UP_TRANSIENT_CONVERSATION;
-import static org.jboss.weld.logging.messages.JsfMessage.CLEANING_UP_CONVERSATION;
-import static org.jboss.weld.logging.messages.JsfMessage.FOUND_CONVERSATION_FROM_REQUEST;
-import static org.jboss.weld.logging.messages.JsfMessage.RESUMING_CONVERSATION;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -33,8 +26,8 @@ import org.jboss.weld.context.http.HttpRequestContext;
 import org.jboss.weld.context.http.HttpRequestContextImpl;
 import org.jboss.weld.literal.DestroyedLiteral;
 import org.jboss.weld.literal.InitializedLiteral;
+import org.jboss.weld.logging.ConversationLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.slf4j.cal10n.LocLogger;
 
 /**
  * This component takes care of activation/deactivation of the conversation context for a servlet request.
@@ -52,8 +45,6 @@ public class ConversationContextActivator {
     private static final String CONVERSATION_PROPAGATION = "conversationPropagation";
     private static final String CONVERSATION_PROPAGATION_NONE = "none";
     private static final String CONTEXT_ACTIVATED_IN_REQUEST = ConversationContextActivator.class.getName() + "CONTEXT_ACTIVATED_IN_REQUEST";
-
-    private static final LocLogger log = loggerFactory().getLogger(SERVLET);
 
     private final BeanManagerImpl beanManager;
     private HttpConversationContext httpConversationContextCache;
@@ -92,7 +83,7 @@ public class ConversationContextActivator {
     protected void activateConversationContext(HttpServletRequest request) {
         HttpConversationContext conversationContext = httpConversationContext();
         String cid = getConversationId(request, httpConversationContext());
-        log.debug(RESUMING_CONVERSATION, cid);
+        ConversationLogger.LOG.resumingConversation(cid);
 
         /*
          * Don't try to reactivate the ConversationContext if we have already activated it for this request WELD-877
@@ -105,8 +96,8 @@ public class ConversationContextActivator {
             }
         } else {
             /*
-             * We may have previously been associated with a ConversationContext, but the reference to that context may have
-             * been lost during a Servlet forward WELD-877
+             * We may have previously been associated with a ConversationContext, but the reference to that context may have been lost during a Servlet forward
+             * WELD-877
              */
             conversationContext.dissociate(request);
             conversationContext.associate(request);
@@ -134,7 +125,7 @@ public class ConversationContextActivator {
 
         String cidName = conversationContext.getParameterName();
         String cid = request.getParameter(cidName);
-        log.trace(FOUND_CONVERSATION_FROM_REQUEST, cid);
+        ConversationLogger.LOG.foundConversationFromRequest(cid);
         return cid;
     }
 
@@ -155,11 +146,11 @@ public class ConversationContextActivator {
         if (conversationContext.isActive()) {
             // Only deactivate the context if one is already active, otherwise we get Exceptions
             boolean isTransient = conversationContext.getCurrentConversation().isTransient();
-            if (log.isTraceEnabled()) {
+            if (ConversationLogger.LOG.isTraceEnabled()) {
                 if (isTransient) {
-                    log.trace(CLEANING_UP_TRANSIENT_CONVERSATION);
+                    ConversationLogger.LOG.cleaningUpTransientConversation();
                 } else {
-                    log.trace(CLEANING_UP_CONVERSATION, conversationContext.getCurrentConversation().getId());
+                    ConversationLogger.LOG.cleaningUpConversation(conversationContext.getCurrentConversation().getId());
                 }
             }
             conversationContext.invalidate();

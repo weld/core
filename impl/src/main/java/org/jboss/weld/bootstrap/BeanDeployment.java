@@ -19,11 +19,6 @@ package org.jboss.weld.bootstrap;
 import static com.google.common.collect.Collections2.filter;
 import static com.google.common.collect.Collections2.transform;
 import static java.util.Collections.emptyList;
-import static org.jboss.weld.logging.Category.BOOTSTRAP;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.BootstrapMessage.ENABLED_ALTERNATIVES;
-import static org.jboss.weld.logging.messages.BootstrapMessage.ENABLED_DECORATORS;
-import static org.jboss.weld.logging.messages.BootstrapMessage.ENABLED_INTERCEPTORS;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -64,6 +59,7 @@ import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.ejb.spi.EjbServices;
 import org.jboss.weld.injection.producer.InjectionTargetService;
 import org.jboss.weld.interceptor.builder.InterceptorsApiAbstraction;
+import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.api.ExecutorServices;
 import org.jboss.weld.metadata.FilterPredicate;
@@ -82,7 +78,6 @@ import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.instantiation.DefaultInstantiatorFactory;
 import org.jboss.weld.util.reflection.instantiation.InstantiatorFactory;
 import org.jboss.weld.ws.WSApiAbstraction;
-import org.slf4j.cal10n.LocLogger;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
@@ -93,8 +88,6 @@ import com.google.common.base.Predicate;
  * @author alesj
  */
 public class BeanDeployment {
-
-    private static final LocLogger log = loggerFactory().getLogger(BOOTSTRAP);
 
     private final BeanDeploymentArchive beanDeploymentArchive;
     private final BeanManagerImpl beanManager;
@@ -223,10 +216,10 @@ public class BeanDeployment {
         ModuleEnablement enablement = builder.createModuleEnablement(this);
         beanManager.setEnabled(enablement);
 
-        if (log.isDebugEnabled()) {
-            log.debug(ENABLED_ALTERNATIVES, this.beanManager, WeldCollections.toMultiRowString(enablement.getAllAlternatives()));
-            log.debug(ENABLED_DECORATORS, this.beanManager, WeldCollections.toMultiRowString(enablement.getDecorators()));
-            log.debug(ENABLED_INTERCEPTORS, this.beanManager, WeldCollections.toMultiRowString(enablement.getInterceptors()));
+        if (BootstrapLogger.LOG.isDebugEnabled()) {
+            BootstrapLogger.LOG.enabledAlternatives(this.beanManager, WeldCollections.toMultiRowString(enablement.getAllAlternatives()));
+            BootstrapLogger.LOG.enabledDecorators(this.beanManager, WeldCollections.toMultiRowString(enablement.getDecorators()));
+            BootstrapLogger.LOG.enabledInterceptors(this.beanManager, WeldCollections.toMultiRowString(enablement.getInterceptors()));
         }
     }
 

@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.resources;
 
-import static org.jboss.weld.logging.messages.BeanMessage.INVALID_ANNOTATED_MEMBER;
-import static org.jboss.weld.logging.messages.BeanMessage.UNABLE_TO_LOAD_MEMBER;
 import static org.jboss.weld.util.cache.LoadingCacheUtils.getCastCacheValue;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
@@ -42,9 +40,7 @@ import org.jboss.weld.annotated.slim.unbacked.UnbackedAnnotatedMember;
 import org.jboss.weld.annotated.slim.unbacked.UnbackedAnnotatedType;
 import org.jboss.weld.annotated.slim.unbacked.UnbackedMemberIdentifier;
 import org.jboss.weld.bootstrap.api.BootstrapService;
-import org.jboss.weld.exceptions.IllegalArgumentException;
-import org.jboss.weld.exceptions.IllegalStateException;
-import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -140,7 +136,7 @@ public class MemberTransformer implements BootstrapService {
                     return cast(constructor);
                 }
             }
-            throw new WeldException(UNABLE_TO_LOAD_MEMBER, id);
+            throw BeanLogger.LOG.unableToLoadMember(id);
         }
     }
 
@@ -174,7 +170,7 @@ public class MemberTransformer implements BootstrapService {
             if (from.member instanceof AnnotatedConstructor<?>) {
                 return enhancedConstructorLoader.load(Reflections.<MemberKey<?, AnnotatedConstructor<?>>> cast(from));
             }
-            throw new IllegalArgumentException(INVALID_ANNOTATED_MEMBER, from);
+            throw BeanLogger.LOG.invalidAnnotatedMember(from);
         }
     }
 
@@ -190,7 +186,7 @@ public class MemberTransformer implements BootstrapService {
                     return member;
                 }
             }
-            throw new IllegalStateException(UNABLE_TO_LOAD_MEMBER, source);
+            throw BeanLogger.LOG.unableToLoadMember(source);
         }
 
         public abstract boolean equals(W member1, A member2);

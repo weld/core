@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.manager;
 
-import static org.jboss.weld.logging.messages.BeanManagerMessage.NULL_DECLARING_BEAN;
-
 import javax.enterprise.inject.spi.AnnotatedMember;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Producer;
@@ -27,6 +25,7 @@ import org.jboss.weld.annotated.AnnotatedTypeValidator;
 import org.jboss.weld.bean.DisposalMethod;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.injection.producer.InjectionTargetService;
+import org.jboss.weld.logging.BeanManagerLogger;
 
 public abstract class AbstractProducerFactory<X> implements ProducerFactory<X> {
 
@@ -53,7 +52,7 @@ public abstract class AbstractProducerFactory<X> implements ProducerFactory<X> {
     @Override
     public <T> Producer<T> createProducer(Bean<T> bean) {
         if (getDeclaringBean() == null && !getAnnotatedMember().isStatic()) {
-            throw new IllegalArgumentException(NULL_DECLARING_BEAN, getAnnotatedMember());
+            throw BeanManagerLogger.LOG.nullDeclaringBean(getAnnotatedMember());
         }
         AnnotatedTypeValidator.validateAnnotatedMember(getAnnotatedMember());
         try {

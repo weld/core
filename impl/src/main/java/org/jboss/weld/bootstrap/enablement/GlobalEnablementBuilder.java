@@ -17,10 +17,6 @@
 package org.jboss.weld.bootstrap.enablement;
 
 import static com.google.common.collect.Lists.transform;
-import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_CLASS_SPECIFIED_MULTIPLE_TIMES;
-import static org.jboss.weld.logging.messages.ValidatorMessage.ALTERNATIVE_STEREOTYPE_SPECIFIED_MULTIPLE_TIMES;
-import static org.jboss.weld.logging.messages.ValidatorMessage.DECORATOR_SPECIFIED_TWICE;
-import static org.jboss.weld.logging.messages.ValidatorMessage.INTERCEPTOR_SPECIFIED_TWICE;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.annotation.Annotation;
@@ -36,8 +32,9 @@ import org.jboss.weld.bootstrap.api.helpers.AbstractBootstrapService;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.exceptions.DeploymentException;
-import org.jboss.weld.logging.messages.BootstrapMessage;
-import org.jboss.weld.logging.messages.ValidatorMessage;
+import org.jboss.weld.logging.BootstrapLogger;
+import org.jboss.weld.logging.LogMessageCallback;
+import org.jboss.weld.logging.ValidatorLogger;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
 import org.jboss.weld.util.Preconditions;
@@ -223,14 +220,14 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
         moduleDecoratorsBuilder.addAll(getDecoratorList());
 
         if (beansXml != null) {
-            List<Class<?>> localInterceptors = transform(checkForDuplicates(beansXml.getEnabledInterceptors(), INTERCEPTOR_SPECIFIED_TWICE), loader);
+            List<Class<?>> localInterceptors = transform(checkForDuplicates(beansXml.getEnabledInterceptors(), ValidatorLogger.INTERCEPTOR_SPECIFIED_TWICE_CALLBACK), loader);
             moduleInterceptorsBuilder.addAll(localInterceptors);
 
-            List<Class<?>> localDecorators = transform(checkForDuplicates(beansXml.getEnabledDecorators(), DECORATOR_SPECIFIED_TWICE), loader);
+            List<Class<?>> localDecorators = transform(checkForDuplicates(beansXml.getEnabledDecorators(), ValidatorLogger.DECORATOR_SPECIFIED_TWICE_CALLBACK), loader);
             moduleDecoratorsBuilder.addAll(localDecorators);
 
-            alternativeClasses = ImmutableSet.copyOf(transform(checkForDuplicates(beansXml.getEnabledAlternativeClasses(), ALTERNATIVE_CLASS_SPECIFIED_MULTIPLE_TIMES), loader));
-            alternativeStereotypes = cast(ImmutableSet.copyOf(transform(checkForDuplicates(beansXml.getEnabledAlternativeStereotypes(), ALTERNATIVE_STEREOTYPE_SPECIFIED_MULTIPLE_TIMES), loader)));
+            alternativeClasses = ImmutableSet.copyOf(transform(checkForDuplicates(beansXml.getEnabledAlternativeClasses(), ValidatorLogger.ALTERNATIVE_CLASS_SPECIFIED_MULTIPLE_TIMES_CALLBACK), loader));
+            alternativeStereotypes = cast(ImmutableSet.copyOf(transform(checkForDuplicates(beansXml.getEnabledAlternativeStereotypes(), ValidatorLogger.ALTERNATIVE_STEREOTYPE_SPECIFIED_MULTIPLE_TIMES_CALLBACK), loader)));
         } else {
             alternativeClasses = Collections.emptySet();
             alternativeStereotypes = Collections.emptySet();
@@ -241,12 +238,12 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
         return new ModuleEnablement(moduleInterceptorsBuilder.build(), moduleDecoratorsBuilder.build(), globalAlternatives, alternativeClasses, alternativeStereotypes);
     }
 
-    private static <T> List<Metadata<T>> checkForDuplicates(List<Metadata<T>> list, ValidatorMessage specifiedTwiceMessage) {
+    private static <T> List<Metadata<T>> checkForDuplicates(List<Metadata<T>> list, LogMessageCallback messageCallback) {
         Map<T, Metadata<T>> map = new HashMap<T, Metadata<T>>();
         for (Metadata<T> item : list) {
             Metadata<T> previousOccurrence = map.put(item.getValue(), item);
             if (previousOccurrence != null) {
-                throw new DeploymentException(specifiedTwiceMessage, item.getValue(), item, previousOccurrence);
+                throw new DeploymentException(messageCallback.invoke(item.getValue(), item, previousOccurrence));
             }
         }
         return list;
@@ -254,7 +251,6 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
 
     private static class ClassLoader implements Function<Metadata<String>, Class<?>> {
 
-        private static final String LOCATION = "; location: ";
         private final ResourceLoader resourceLoader;
 
         public ClassLoader(ResourceLoader resourceLoader) {
@@ -266,9 +262,9 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
             try {
                 return resourceLoader.classForName(from.getValue());
             } catch (ResourceLoadingException e) {
-                throw new DeploymentException(BootstrapMessage.ERROR_LOADING_BEANS_XML_ENTRY, e.getMessage() + LOCATION + from.getLocation(), e.getCause());
+                throw BootstrapLogger.LOG.errorLoadingBeansXmlEntry(from.getValue(), from.getLocation(), e.getCause());
             } catch (Exception e) {
-                throw new DeploymentException(BootstrapMessage.ERROR_LOADING_BEANS_XML_ENTRY, e.getMessage() + LOCATION + from.getLocation(), e);
+                throw BootstrapLogger.LOG.errorLoadingBeansXmlEntry(from.getValue(), from.getLocation(), e);
             }
         }
     }

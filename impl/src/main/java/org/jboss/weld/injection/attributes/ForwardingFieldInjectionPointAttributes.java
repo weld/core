@@ -21,8 +21,7 @@ import java.lang.reflect.Field;
 import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.InjectionPoint;
 
-import org.jboss.weld.exceptions.IllegalArgumentException;
-import org.jboss.weld.logging.messages.BeanMessage;
+import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
@@ -39,7 +38,7 @@ public class ForwardingFieldInjectionPointAttributes<T, X> extends AbstractForwa
             return Reflections.cast(ip);
         }
         if (!(ip.getAnnotated() instanceof AnnotatedField<?>) || !(ip.getMember() instanceof Field)) {
-            throw new IllegalArgumentException(BeanMessage.INVALID_INJECTION_POINT_TYPE, ForwardingFieldInjectionPointAttributes.class, ip.getAnnotated());
+            throw BeanLogger.LOG.invalidInjectionPointType(ForwardingFieldInjectionPointAttributes.class, ip.getAnnotated());
         }
         return new ForwardingFieldInjectionPointAttributes<T, X>(ip);
     }

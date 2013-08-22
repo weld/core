@@ -16,11 +16,6 @@
  */
 package org.jboss.weld.bean.proxy;
 
-import static org.jboss.weld.logging.Category.BEAN;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.BeanMessage.BEAN_ID_CREATION_FAILED;
-import static org.jboss.weld.logging.messages.BeanMessage.CREATED_NEW_CLIENT_PROXY_TYPE;
-import static org.jboss.weld.logging.messages.BeanMessage.LOOKED_UP_CLIENT_PROXY;
 import static org.jboss.weld.util.cache.LoadingCacheUtils.getCastCacheValue;
 
 import java.lang.reflect.Type;
@@ -30,13 +25,12 @@ import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
-import org.jboss.weld.exceptions.DefinitionException;
+import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.Proxies.TypeInfo;
-import org.slf4j.cal10n.LocLogger;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -49,7 +43,6 @@ import com.google.common.cache.LoadingCache;
  * @see org.jboss.weld.bean.proxy.ProxyMethodHandler
  */
 public class ClientProxyProvider {
-    private static final LocLogger log = loggerFactory().getLogger(BEAN);
 
     private static final Object BEAN_NOT_PROXYABLE_MARKER = new Object();
 
@@ -181,12 +174,12 @@ public class ClientProxyProvider {
     private <T> T createClientProxy(Bean<T> bean, Set<Type> types) {
         BeanIdentifier id = Container.instance(contextId).services().get(ContextualStore.class).putIfAbsent(bean);
         if (id == null) {
-            throw new DefinitionException(BEAN_ID_CREATION_FAILED, bean);
+            throw BeanLogger.LOG.beanIdCreationFailed(bean);
         }
         ContextBeanInstance<T> beanInstance = new ContextBeanInstance<T>(bean, id, contextId);
         TypeInfo typeInfo = TypeInfo.of(types);
         T proxy = new ClientProxyFactory<T>(contextId, typeInfo.getSuperClass(), types, bean).create(beanInstance);
-        log.trace(CREATED_NEW_CLIENT_PROXY_TYPE, proxy.getClass(), bean, id);
+        BeanLogger.LOG.createdNewClientProxyType(proxy.getClass(), bean, id);
         return proxy;
     }
 
@@ -195,7 +188,7 @@ public class ClientProxyProvider {
         if (proxy == BEAN_NOT_PROXYABLE_MARKER) {
             throw Proxies.getUnproxyableTypesException(bean, services());
         }
-        log.trace(LOOKED_UP_CLIENT_PROXY, proxy.getClass(), bean);
+        BeanLogger.LOG.lookedUpClientProxy(proxy.getClass(), bean);
         return proxy;
     }
     /**
@@ -221,7 +214,7 @@ public class ClientProxyProvider {
                 throw Proxies.getUnproxyableTypeException(requestedType, services());
             }
         }
-        log.trace(LOOKED_UP_CLIENT_PROXY, proxy.getClass(), bean);
+        BeanLogger.LOG.lookedUpClientProxy(proxy.getClass(), bean);
         return proxy;
     }
 

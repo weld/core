@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.bean.builtin;
 
-import static org.jboss.weld.logging.messages.BeanMessage.DYNAMIC_LOOKUP_OF_BUILT_IN_NOT_ALLOWED;
-
 import javax.decorator.Decorator;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
@@ -25,8 +23,8 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.Interceptor;
 
 import org.jboss.weld.context.WeldCreationalContext;
-import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.injection.CurrentInjectionPoint;
+import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 
@@ -54,7 +52,7 @@ public abstract class AbstractBuiltInMetadataBean<T> extends AbstractBuiltInBean
     public T create(CreationalContext<T> creationalContext) {
         InjectionPoint ip = cip.peek();
         if (ip == null) {
-            throw new IllegalArgumentException(DYNAMIC_LOOKUP_OF_BUILT_IN_NOT_ALLOWED, toString());
+            throw BeanLogger.LOG.dynamicLookupOfBuiltInNotAllowed(toString());
         }
         return newInstance(ip, creationalContext);
     }
@@ -68,7 +66,7 @@ public abstract class AbstractBuiltInMetadataBean<T> extends AbstractBuiltInBean
                 return parentContext;
             }
         }
-        throw new java.lang.IllegalArgumentException("Unable to determine parent creational context of " + ctx);
+        throw BeanLogger.LOG.unableToDetermineParentCreationalContext(ctx);
     }
 
     @Override
