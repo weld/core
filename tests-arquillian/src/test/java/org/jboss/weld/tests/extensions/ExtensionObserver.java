@@ -124,7 +124,7 @@ public class ExtensionObserver implements Extension {
         processProducer = true;
     }
 
-    public void observeProcessProducerMethod(@Observes ProcessProducerMethod<?, ?> event) {
+    public void observeProcessProducerMethod(@Observes ProcessProducerMethod<?, Stable> event) {
         processProducerMethod = true;
         this.processProducerMethodInstance = event;
     }
