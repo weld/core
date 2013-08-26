@@ -27,6 +27,7 @@ import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.reflection.DeclaredMemberIndexer;
 
 public class BeanIdentifiers {
 
@@ -84,14 +85,14 @@ public class BeanIdentifiers {
     }
 
     public static String forProducerMethod(EnhancedAnnotatedMethod<?, ?> method, AbstractClassBean<?> declaringBean) {
-        StringBuilder sb = getPrefix(ProducerMethod.class).append(declaringBean.getAnnotated().getIdentifier().asString())
-                .append(SEPARATOR);
         if (declaringBean.getEnhancedAnnotated().isDiscovered()) {
-            sb.append(method.getSignature().toString());
-        } else {
-            sb.append(AnnotatedTypes.createCallableId(method));
+            return forProducerMethod(declaringBean.getAnnotated().getIdentifier(), DeclaredMemberIndexer.getIndexForMethod(method.getJavaMember()));
         }
-        return sb.toString();
+        return getPrefix(ProducerMethod.class).append(method.getDeclaringType().slim().getIdentifier()).append(AnnotatedTypes.createCallableId(method)).toString();
+    }
+
+    public static String forProducerMethod(AnnotatedTypeIdentifier identifier, int memberIndex) {
+        return getPrefix(ProducerMethod.class).append(identifier.asString()).append(SEPARATOR).append(memberIndex).toString();
     }
 
     public static String forSyntheticBean(BeanAttributes<?> attributes, Class<?> beanClass) {

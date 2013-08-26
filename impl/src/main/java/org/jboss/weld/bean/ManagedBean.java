@@ -85,13 +85,15 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
      * @return A Web Bean
      */
     public static <T> ManagedBean<T> of(BeanAttributes<T> attributes, EnhancedAnnotatedType<T> clazz, BeanManagerImpl beanManager) {
-        BeanIdentifier identifier;
+        return new ManagedBean<T>(attributes, clazz, createId(attributes, clazz), beanManager);
+    }
+
+    private static BeanIdentifier createId(BeanAttributes<?> attributes, EnhancedAnnotatedType<?> clazz) {
         if (Dependent.class.equals(attributes.getScope()) || ApplicationScoped.class.equals(attributes.getScope())) {
-            identifier = new ManagedBeanIdentifier(clazz.slim().getIdentifier());
+            return new ManagedBeanIdentifier(clazz.slim().getIdentifier());
         } else {
-            identifier = new StringBeanIdentifier(forManagedBean(clazz));
+            return new StringBeanIdentifier(forManagedBean(clazz));
         }
-        return new ManagedBean<T>(attributes, clazz, identifier, beanManager);
     }
 
     /**
