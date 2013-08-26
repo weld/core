@@ -2,6 +2,8 @@ package org.jboss.weld.context.beanstore;
 
 import java.util.Collection;
 
+import org.jboss.weld.serialization.spi.BeanIdentifier;
+
 public abstract class ForwardingNamingScheme implements NamingScheme {
 
     protected abstract NamingScheme delegate();
@@ -10,11 +12,11 @@ public abstract class ForwardingNamingScheme implements NamingScheme {
         return delegate().accept(id);
     }
 
-    public String deprefix(String id) {
+    public BeanIdentifier deprefix(String id) {
         return delegate().deprefix(id);
     }
 
-    public String prefix(String id) {
+    public String prefix(BeanIdentifier id) {
         return delegate().prefix(id);
     }
 
@@ -22,11 +24,11 @@ public abstract class ForwardingNamingScheme implements NamingScheme {
         return delegate().filterIds(ids);
     }
 
-    public Collection<String> deprefix(Collection<String> ids) {
+    public Collection<BeanIdentifier> deprefix(Collection<String> ids) {
         return delegate().deprefix(ids);
     }
 
-    public Collection<String> prefix(Collection<String> ids) {
+    public Collection<String> prefix(Collection<BeanIdentifier> ids) {
         return delegate().prefix(ids);
     }
 

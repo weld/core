@@ -1,5 +1,14 @@
 package org.jboss.weld.context.beanstore.http;
 
+import static java.util.Collections.emptyList;
+import static org.jboss.weld.logging.Category.CONTEXT;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.ContextMessage.ADDED_KEY_TO_SESSION;
+import static org.jboss.weld.logging.messages.ContextMessage.REMOVED_KEY_FROM_SESSION;
+import static org.jboss.weld.logging.messages.ContextMessage.UNABLE_TO_ADD_KEY_TO_SESSION;
+import static org.jboss.weld.logging.messages.ContextMessage.UNABLE_TO_REMOVE_KEY_FROM_SESSION;
+import static org.jboss.weld.util.reflection.Reflections.cast;
+
 import java.util.Collection;
 import java.util.Enumeration;
 
@@ -9,18 +18,10 @@ import org.jboss.weld.context.api.ContextualInstance;
 import org.jboss.weld.context.beanstore.AttributeBeanStore;
 import org.jboss.weld.context.beanstore.LockStore;
 import org.jboss.weld.context.beanstore.NamingScheme;
+import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.util.collections.EnumerationList;
 import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
-
-import static java.util.Collections.emptyList;
-import static org.jboss.weld.logging.Category.CONTEXT;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.ContextMessage.ADDED_KEY_TO_SESSION;
-import static org.jboss.weld.logging.messages.ContextMessage.REMOVED_KEY_FROM_SESSION;
-import static org.jboss.weld.logging.messages.ContextMessage.UNABLE_TO_ADD_KEY_TO_SESSION;
-import static org.jboss.weld.logging.messages.ContextMessage.UNABLE_TO_REMOVE_KEY_FROM_SESSION;
-import static org.jboss.weld.util.reflection.Reflections.cast;
 
 /**
  * Base class providing an HttpSession backed, bound bean store.
@@ -79,7 +80,7 @@ public abstract class AbstractSessionBeanStore extends AttributeBeanStore {
     }
 
     @Override
-    public <T> ContextualInstance<T> get(String id) {
+    public <T> ContextualInstance<T> get(BeanIdentifier id) {
         ContextualInstance<T> instance = super.get(id);
         if (instance == null && isAttached()) {
             String prefixedId = getNamingScheme().prefix(id);

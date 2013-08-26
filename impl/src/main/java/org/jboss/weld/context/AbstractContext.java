@@ -36,6 +36,7 @@ import org.jboss.weld.context.beanstore.LockedBean;
 import org.jboss.weld.context.cache.RequestScopedBeanCache;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.exceptions.IllegalStateException;
+import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.slf4j.cal10n.LocLogger;
 
@@ -86,7 +87,7 @@ public abstract class AbstractContext implements AlterableContext {
         if (contextual == null) {
             throw new IllegalArgumentException(CONTEXTUAL_IS_NULL);
         }
-        String id = getId(contextual);
+        BeanIdentifier id = getId(contextual);
         ContextualInstance<T> beanInstance = beanStore.get(id);
         if (beanInstance != null) {
             return beanInstance.getInstance();
@@ -131,7 +132,7 @@ public abstract class AbstractContext implements AlterableContext {
         if (getBeanStore() == null) {
             throw new IllegalStateException(NO_BEAN_STORE_AVAILABLE, this);
         }
-        String id = getId(contextual);
+        BeanIdentifier id = getId(contextual);
         ContextualInstance<?> beanInstance = getBeanStore().remove(id);
         if (beanInstance != null) {
             RequestScopedBeanCache.invalidate();
@@ -139,7 +140,7 @@ public abstract class AbstractContext implements AlterableContext {
         }
     }
 
-    private <T> ContextualInstance<T> getContextualInstance(String id) {
+    private <T> ContextualInstance<T> getContextualInstance(BeanIdentifier id) {
         if (getBeanStore() == null) {
             throw new IllegalStateException(NO_BEAN_STORE_AVAILABLE, this);
         }
@@ -159,7 +160,7 @@ public abstract class AbstractContext implements AlterableContext {
         if (getBeanStore() == null) {
             throw new IllegalStateException(NO_BEAN_STORE_AVAILABLE, this);
         }
-        for (String id : getBeanStore()) {
+        for (BeanIdentifier id : getBeanStore()) {
             destroyContextualInstance(getContextualInstance(id));
         }
         getBeanStore().clear();
@@ -182,8 +183,8 @@ public abstract class AbstractContext implements AlterableContext {
         return Container.instance(contextId).services().get(ContextualStore.class).<Contextual<T>, T>getContextual(id);
     }
 
-    protected String getId(Contextual<?> contextual) {
-        return serviceRegistry.get(ContextualStore.class).putIfAbsent(contextual).asString();
+    protected BeanIdentifier getId(Contextual<?> contextual) {
+        return serviceRegistry.get(ContextualStore.class).putIfAbsent(contextual);
     }
 
     protected ServiceRegistry getServiceRegistry() {

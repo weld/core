@@ -1,13 +1,16 @@
 package org.jboss.weld.context.beanstore;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
+import static com.google.common.collect.Collections2.filter;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
-import static com.google.common.collect.Collections2.filter;
+import org.jboss.weld.bean.StringBeanIdentifier;
+import org.jboss.weld.serialization.spi.BeanIdentifier;
+
+import com.google.common.base.Function;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 
 public abstract class AbstractNamingScheme implements NamingScheme {
 
@@ -19,17 +22,17 @@ public abstract class AbstractNamingScheme implements NamingScheme {
 
     }
 
-    class DeprefixerFunction implements Function<String, String> {
+    class DeprefixerFunction implements Function<String, BeanIdentifier> {
 
-        public String apply(String from) {
+        public BeanIdentifier apply(String from) {
             return AbstractNamingScheme.this.deprefix(from);
         }
 
     }
 
-    class PrefixerFunction implements Function<String, String> {
+    class PrefixerFunction implements Function<BeanIdentifier, String> {
 
-        public String apply(String from) {
+        public String apply(BeanIdentifier from) {
             return AbstractNamingScheme.this.prefix(from);
         }
 
@@ -58,23 +61,23 @@ public abstract class AbstractNamingScheme implements NamingScheme {
         return id.startsWith(getPrefix() + delimiter);
     }
 
-    public String deprefix(String id) {
-        return id.substring(getPrefix().length() + delimiter.length());
+    public BeanIdentifier deprefix(String id) {
+        return new StringBeanIdentifier(id.substring(getPrefix().length() + delimiter.length()));
     }
 
-    public String prefix(String id) {
-        return getPrefix() + delimiter + id;
+    public String prefix(BeanIdentifier id) {
+        return getPrefix() + delimiter + id.asString();
     }
 
     public Collection<String> filterIds(Collection<String> ids) {
         return new ArrayList<String>(filter(ids, predicate));
     }
 
-    public Collection<String> deprefix(Collection<String> ids) {
-        return new ArrayList<String>(Collections2.transform(ids, deprefixerFunction));
+    public Collection<BeanIdentifier> deprefix(Collection<String> ids) {
+        return new ArrayList<BeanIdentifier>(Collections2.transform(ids, deprefixerFunction));
     }
 
-    public Collection<String> prefix(Collection<String> ids) {
+    public Collection<String> prefix(Collection<BeanIdentifier> ids) {
         return new ArrayList<String>(Collections2.transform(ids, prefixerFunction));
     }
 

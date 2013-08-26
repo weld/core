@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.jboss.weld.context.api.ContextualInstance;
+import org.jboss.weld.serialization.spi.BeanIdentifier;
 
 /**
  * A {@link Map} like store of contextual instances, used to back the Weld built
@@ -28,14 +29,14 @@ import org.jboss.weld.context.api.ContextualInstance;
  *
  * @author Nicklas Karlsson
  */
-public interface BeanStore extends Iterable<String> {
+public interface BeanStore extends Iterable<BeanIdentifier> {
     /**
      * Gets an instance of a contextual from the store
      *
      * @param id The id of the contextual to return
      * @return The instance or null if not found
      */
-    <T> ContextualInstance<T> get(String id);
+    <T> ContextualInstance<T> get(BeanIdentifier id);
 
     /**
      * Check if the store contains an instance
@@ -43,14 +44,14 @@ public interface BeanStore extends Iterable<String> {
      * @param id the id of the instance to check for
      * @return true if the instance is present, otherwise false
      */
-    boolean contains(String id);
+    boolean contains(BeanIdentifier id);
 
     /**
      * Clears the store of contextual instances
      */
     void clear();
 
-    Iterator<String> iterator();
+    Iterator<BeanIdentifier> iterator();
 
     /**
      * Adds a bean instance to the storage
@@ -58,19 +59,19 @@ public interface BeanStore extends Iterable<String> {
      * @param contextualInstance the contextual instance
      * @return the id for the instance
      */
-    <T> void put(String id, ContextualInstance<T> contextualInstance);
+    <T> void put(BeanIdentifier id, ContextualInstance<T> contextualInstance);
 
     /**
      * Gets a creation lock for the given bean id.
      * @param id The bean id
      * @return A handle that must be used to unlock the bean
      */
-    LockedBean lock(String id);
+    LockedBean lock(BeanIdentifier id);
 
     /**
      * Removes a bean instance identified by the given id.
      * @param id The bean id
      * @return the removed bean instance of null if there was no bean instance before
      */
-    <T> ContextualInstance<T> remove(String id);
+    <T> ContextualInstance<T> remove(BeanIdentifier id);
 }

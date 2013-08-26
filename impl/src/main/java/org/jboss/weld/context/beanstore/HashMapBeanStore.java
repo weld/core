@@ -21,6 +21,8 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jboss.weld.serialization.spi.BeanIdentifier;
+
 /**
  * A BeanStore that uses a HashMap as backing storage
  *
@@ -31,13 +33,13 @@ public class HashMapBeanStore extends AbstractMapBackedBeanStore implements Seri
     private static final long serialVersionUID = 4770689245633688471L;
 
     // The backing map
-    protected Map<String, Object> delegate;
+    protected Map<BeanIdentifier, Object> delegate;
 
     /**
      * Constructor
      */
     public HashMapBeanStore() {
-        delegate = new HashMap<String, Object>();
+        delegate = new HashMap<BeanIdentifier, Object>();
     }
 
     /**
@@ -46,11 +48,11 @@ public class HashMapBeanStore extends AbstractMapBackedBeanStore implements Seri
      * @return The delegate
      */
     @Override
-    public Map<String, Object> delegate() {
+    public Map<BeanIdentifier, Object> delegate() {
         return delegate;
     }
 
-    public LockedBean lock(final String id) {
+    public LockedBean lock(final BeanIdentifier id) {
         return null;
     }
 }

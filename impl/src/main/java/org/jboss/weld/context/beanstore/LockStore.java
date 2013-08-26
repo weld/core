@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.jboss.weld.serialization.spi.BeanIdentifier;
+
 /**
  * Helper class for bean store creation locking.
  *
@@ -32,13 +34,13 @@ public class LockStore implements Serializable {
 
     private static final long serialVersionUID = -698649566870070414L;
 
-    private transient volatile Map<String, ReferenceCountedLock> locks = new HashMap<String, ReferenceCountedLock>();
+    private transient volatile Map<BeanIdentifier, ReferenceCountedLock> locks = new HashMap<BeanIdentifier, ReferenceCountedLock>();
 
-    public LockedBean lock(String id) {
+    public LockedBean lock(BeanIdentifier id) {
         ReferenceCountedLock refLock;
         synchronized (this) {
             if(locks == null) {
-                locks = new HashMap<String, ReferenceCountedLock>();
+                locks = new HashMap<BeanIdentifier, ReferenceCountedLock>();
             }
             refLock = locks.get(id);
             if (refLock != null) {
@@ -53,11 +55,11 @@ public class LockStore implements Serializable {
     }
 
     private class ReferenceCountedLock implements LockedBean {
-        private final String key;
+        private final BeanIdentifier key;
         int count = 1;
         final ReentrantLock lock = new ReentrantLock();
 
-        private ReferenceCountedLock(final String key) {
+        private ReferenceCountedLock(final BeanIdentifier key) {
             this.key = key;
         }
 

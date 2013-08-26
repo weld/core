@@ -21,6 +21,8 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.jboss.weld.serialization.spi.BeanIdentifier;
+
 /**
  * A BeanStore that uses a HashMap as backing storage
  *
@@ -31,14 +33,14 @@ public class ConcurrentHashMapBeanStore extends AbstractMapBackedBeanStore imple
     private static final long serialVersionUID = 4770689245633688471L;
 
     // The backing map
-    protected Map<String, Object> delegate;
+    protected Map<BeanIdentifier, Object> delegate;
     private transient volatile LockStore lockStore;
 
     /**
      * Constructor
      */
     public ConcurrentHashMapBeanStore() {
-        delegate = new ConcurrentHashMap<String, Object>();
+        delegate = new ConcurrentHashMap<BeanIdentifier, Object>();
     }
 
     /**
@@ -47,7 +49,7 @@ public class ConcurrentHashMapBeanStore extends AbstractMapBackedBeanStore imple
      * @return The delegate
      */
     @Override
-    public Map<String, Object> delegate() {
+    public Map<BeanIdentifier, Object> delegate() {
         return delegate;
     }
 
@@ -56,7 +58,7 @@ public class ConcurrentHashMapBeanStore extends AbstractMapBackedBeanStore imple
         return "contextuals " + delegate;
     }
 
-    public LockedBean lock(final String id) {
+    public LockedBean lock(final BeanIdentifier id) {
         LockStore lockStore = this.lockStore;
         if(lockStore == null) {
             synchronized (this) {

@@ -2,6 +2,8 @@ package org.jboss.weld.context.beanstore;
 
 import java.util.Collection;
 
+import org.jboss.weld.serialization.spi.BeanIdentifier;
+
 public interface NamingScheme {
 
     /**
@@ -18,7 +20,7 @@ public interface NamingScheme {
      * @param id the prefixed id
      * @return the id without the prefix
      */
-    String deprefix(String id);
+    BeanIdentifier deprefix(String id);
 
     /**
      * Add the prefix to the id
@@ -26,7 +28,7 @@ public interface NamingScheme {
      * @param id the id to prefix
      * @return the prefixed id
      */
-    String prefix(String id);
+    String prefix(BeanIdentifier id);
 
     /**
      * Filter a collection of ids, retaining only those correctly prefixed.
@@ -35,8 +37,8 @@ public interface NamingScheme {
      */
     Collection<String> filterIds(Collection<String> ids);
 
-    Collection<String> deprefix(Collection<String> ids);
+    Collection<BeanIdentifier> deprefix(Collection<String> ids);
 
-    Collection<String> prefix(Collection<String> ids);
+    Collection<String> prefix(Collection<BeanIdentifier> ids);
 
 }

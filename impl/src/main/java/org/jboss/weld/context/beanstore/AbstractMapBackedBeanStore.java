@@ -16,19 +16,21 @@
  */
 package org.jboss.weld.context.beanstore;
 
+import static org.jboss.weld.util.reflection.Reflections.cast;
+
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
 import org.jboss.weld.context.api.ContextualInstance;
-
-import static org.jboss.weld.util.reflection.Reflections.cast;
+import org.jboss.weld.serialization.spi.BeanIdentifier;
 
 public abstract class AbstractMapBackedBeanStore implements BeanStore {
 
-    protected abstract Map<String, Object> delegate();
+    protected abstract Map<BeanIdentifier, Object> delegate();
 
-    public <T> ContextualInstance<T> get(String id) {
+    @Override
+    public <T> ContextualInstance<T> get(BeanIdentifier id) {
         return cast(delegate().get(id));
     }
 
@@ -36,11 +38,13 @@ public abstract class AbstractMapBackedBeanStore implements BeanStore {
         delegate().clear();
     }
 
-    public boolean contains(String id) {
+    @Override
+    public boolean contains(BeanIdentifier id) {
         return delegate().containsKey(id);
     }
 
-    public <T> ContextualInstance<T> remove(String id) {
+    @Override
+    public <T> ContextualInstance<T> remove(BeanIdentifier id) {
         return cast(delegate().remove(id));
     }
 
@@ -59,11 +63,12 @@ public abstract class AbstractMapBackedBeanStore implements BeanStore {
         return delegate().hashCode();
     }
 
-    public Set<String> getContextualIds() {
+    public Set<BeanIdentifier> getContextualIds() {
         return delegate().keySet();
     }
 
-    public <T> void put(String id, ContextualInstance<T> beanInstance) {
+    @Override
+    public <T> void put(BeanIdentifier id, ContextualInstance<T> beanInstance) {
         delegate().put(id, beanInstance);
     }
 
@@ -72,7 +77,8 @@ public abstract class AbstractMapBackedBeanStore implements BeanStore {
         return "holding " + delegate().size() + " instances";
     }
 
-    public Iterator<String> iterator() {
+    @Override
+    public Iterator<BeanIdentifier> iterator() {
         return delegate().keySet().iterator();
     }
 

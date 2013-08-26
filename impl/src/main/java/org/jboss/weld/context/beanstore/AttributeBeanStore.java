@@ -16,12 +16,6 @@
  */
 package org.jboss.weld.context.beanstore;
 
-import java.util.Collection;
-import java.util.Iterator;
-
-import org.jboss.weld.context.api.ContextualInstance;
-import org.slf4j.cal10n.LocLogger;
-
 import static org.jboss.weld.logging.Category.CONTEXT;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.ContextMessage.ADDING_DETACHED_CONTEXTUAL_UNDER_ID;
@@ -31,6 +25,13 @@ import static org.jboss.weld.logging.messages.ContextMessage.CONTEXTUAL_INSTANCE
 import static org.jboss.weld.logging.messages.ContextMessage.CONTEXTUAL_INSTANCE_REMOVED;
 import static org.jboss.weld.logging.messages.ContextMessage.CONTEXT_CLEARED;
 import static org.jboss.weld.logging.messages.ContextMessage.UPDATING_STORE_WITH_CONTEXTUAL_UNDER_ID;
+
+import java.util.Collection;
+import java.util.Iterator;
+
+import org.jboss.weld.context.api.ContextualInstance;
+import org.jboss.weld.serialization.spi.BeanIdentifier;
+import org.slf4j.cal10n.LocLogger;
 
 /**
  * <p>
@@ -92,7 +93,7 @@ public abstract class AttributeBeanStore implements BoundBeanStore {
         if (!attached) {
             attached = true;
             // beanStore is authoritative, so copy everything to the backing store
-            for (String id : beanStore) {
+            for (BeanIdentifier id : beanStore) {
                 ContextualInstance<?> instance = beanStore.get(id);
                 String prefixedId = getNamingScheme().prefix(id);
                 log.trace(UPDATING_STORE_WITH_CONTEXTUAL_UNDER_ID, instance, id);
@@ -104,7 +105,7 @@ public abstract class AttributeBeanStore implements BoundBeanStore {
             * into the bean store
             */
             for (String prefixedId : getPrefixedAttributeNames()) {
-                String id = getNamingScheme().deprefix(prefixedId);
+                BeanIdentifier id = getNamingScheme().deprefix(prefixedId);
                 if (!beanStore.contains(id)) {
                     ContextualInstance<?> instance = (ContextualInstance<?>) getAttribute(prefixedId);
                     beanStore.put(id, instance);
@@ -121,13 +122,15 @@ public abstract class AttributeBeanStore implements BoundBeanStore {
         return attached;
     }
 
-    public <T> ContextualInstance<T> get(String id) {
+    @Override
+    public <T> ContextualInstance<T> get(BeanIdentifier id) {
         ContextualInstance<T> instance = beanStore.get(id);
         log.trace(CONTEXTUAL_INSTANCE_FOUND, id, instance, this);
         return instance;
     }
 
-    public <T> void put(String id, ContextualInstance<T> instance) {
+    @Override
+    public <T> void put(BeanIdentifier id, ContextualInstance<T> instance) {
         beanStore.put(id, instance); // moved due to WELD-892
         if (isAttached()) {
             String prefixedId = namingScheme.prefix(id);
@@ -137,11 +140,11 @@ public abstract class AttributeBeanStore implements BoundBeanStore {
     }
 
     @Override
-    public <T> ContextualInstance<T> remove(String id) {
+    public <T> ContextualInstance<T> remove(BeanIdentifier id) {
         ContextualInstance<T> instance = beanStore.remove(id);
         if (instance != null) {
             if (isAttached()) {
-                removeAttribute(id);
+                removeAttribute(namingScheme.prefix(id));
             }
             log.trace(CONTEXTUAL_INSTANCE_REMOVED, id, this);
         }
@@ -149,9 +152,9 @@ public abstract class AttributeBeanStore implements BoundBeanStore {
     }
 
     public void clear() {
-        Iterator<String> it = iterator();
+        Iterator<BeanIdentifier> it = iterator();
         while (it.hasNext()) {
-            String id = it.next();
+            BeanIdentifier id = it.next();
             if (isAttached()) {
                 String prefixedId = namingScheme.prefix(id);
                 removeAttribute(prefixedId);
@@ -162,7 +165,7 @@ public abstract class AttributeBeanStore implements BoundBeanStore {
         log.trace(CONTEXT_CLEARED, this);
     }
 
-    public boolean contains(String id) {
+    public boolean contains(BeanIdentifier id) {
         return get(id) != null;
     }
 
@@ -170,7 +173,7 @@ public abstract class AttributeBeanStore implements BoundBeanStore {
         return namingScheme;
     }
 
-    public Iterator<String> iterator() {
+    public Iterator<BeanIdentifier> iterator() {
         return beanStore.iterator();
     }
 
@@ -215,7 +218,7 @@ public abstract class AttributeBeanStore implements BoundBeanStore {
      */
     protected abstract void setAttribute(String prefixedId, Object instance);
 
-    public LockedBean lock(final String id) {
+    public LockedBean lock(final BeanIdentifier id) {
         LockStore lockStore = getLockStore();
         if(lockStore == null) {
             //if the lockstore is null then no locking is necessary, as the underlying
