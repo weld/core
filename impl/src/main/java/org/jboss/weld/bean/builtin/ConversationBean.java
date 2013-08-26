@@ -6,7 +6,6 @@ import java.util.Locale;
 import javax.enterprise.context.Conversation;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
@@ -16,8 +15,6 @@ import org.jboss.weld.manager.BeanManagerImpl;
 
 public class ConversationBean extends AbstractStaticallyDecorableBuiltInBean<Conversation> {
 
-    private Instance<ConversationContext> conversationContexts;
-
     public ConversationBean(BeanManagerImpl beanManager) {
         super(Conversation.class.getName(), beanManager, Conversation.class);
     }
@@ -25,7 +22,6 @@ public class ConversationBean extends AbstractStaticallyDecorableBuiltInBean<Con
     @Override
     public void internalInitialize(BeanDeployerEnvironment environment) {
         super.internalInitialize(environment);
-        this.conversationContexts = getBeanManager().instance().select(ConversationContext.class);
     }
 
     @Override
@@ -40,7 +36,7 @@ public class ConversationBean extends AbstractStaticallyDecorableBuiltInBean<Con
         * return this dummy Conversation which will simply throw a
         * ContextNotActiveException for every method call as the spec requires.
         */
-        return new ConversationImpl(conversationContexts);
+        return new ConversationImpl(beanManager);
     }
 
     public void destroy(Conversation instance, CreationalContext<Conversation> creationalContext) {

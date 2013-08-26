@@ -691,6 +691,10 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         return activeContext;
     }
 
+    public Context getUnwrappedContext(Class<? extends Annotation> scopeType) {
+        return PassivatingContextWrapper.unwrap(getContext(scopeType));
+    }
+
     /**
      * Indicates whether there is an active context for a given scope.
      *

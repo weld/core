@@ -45,6 +45,15 @@ public class PassivatingContextWrapper {
         }
     }
 
+    public static Context unwrap(Context context) {
+        if (context instanceof AbstractPassivatingContextWrapper<?>) {
+            AbstractPassivatingContextWrapper<?> wrapper = (AbstractPassivatingContextWrapper<?>) context;
+            return wrapper.delegate();
+        } else {
+            return context;
+        }
+    }
+
     private abstract static class AbstractPassivatingContextWrapper<C extends Context> extends ForwardingContext {
 
         private final C context;
