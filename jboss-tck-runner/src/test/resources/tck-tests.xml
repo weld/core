@@ -49,6 +49,14 @@
               </methods>
             </class>
 
+            <!-- CDITCK-364 -->
+            <class
+              name="org.jboss.jsr299.tck.tests.implementation.simple.resource.persistenceContext.PersistenceContextInjectionTest">
+              <methods>
+                <exclude name=".*" />
+              </methods>
+            </class>
+
             <!-- Issues in Weld (the RI) -->
 
             <!-- Issues in JBoss AS -->
