@@ -116,8 +116,8 @@
                             org.slf4j; org.slf4j.spi; org.slf4j.helpers; version="[${slf4j.version},$${version;=+;${slf4j.version}})"; resolution:=optional,
                             ch.qos.cal10n; version=${cal10n.version}; resolution:=optional,
                             javax.interceptor.*; version="1.0",
+                            javax.annotation; version="1.1",
                             javax.transaction; version="1.1"; resolution:=optional,
-                            javax.annotation; resolution:=optional,
                             javax.el; version=1.0; resolution:=optional, 
                             *; resolution:=optional,
                         </Import-Package>

@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import javax.annotation.Priority;
 import javax.decorator.Decorator;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
@@ -62,6 +61,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
 import org.jboss.weld.util.AnnotatedTypes;
+import org.jboss.weld.util.AnnotationApiAbstraction;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.collections.Multimaps;
 import org.jboss.weld.util.reflection.Formats;
@@ -86,6 +86,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
     private final SlimAnnotatedTypeStore annotatedTypeStore;
     private final GlobalEnablementBuilder globalEnablementBuilder;
     private final MissingDependenciesRegistry missingDependenciesRegistry;
+    private final AnnotationApiAbstraction annotationApi;
 
     public BeanDeployer(BeanManagerImpl manager, EjbDescriptors ejbDescriptors, ServiceRegistry services) {
         this(manager, ejbDescriptors, services, BeanDeployerEnvironmentFactory.newEnvironment(ejbDescriptors, manager));
@@ -97,6 +98,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
         this.annotatedTypeStore = manager.getServices().get(SlimAnnotatedTypeStore.class);
         this.globalEnablementBuilder = manager.getServices().get(GlobalEnablementBuilder.class);
         this.missingDependenciesRegistry = manager.getServices().get(MissingDependenciesRegistry.class);
+        this.annotationApi = manager.getServices().get(AnnotationApiAbstraction.class);
     }
 
     public BeanDeployer addClass(String className) {
@@ -145,19 +147,21 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
     }
 
     private void processPriority(AnnotatedType<?> type) {
-        Priority priority = type.getAnnotation(Priority.class);
+        Object priority = type.getAnnotation(annotationApi.PRIORITY_ANNOTATION_CLASS);
         if (priority != null) {
-            int value = priority.value();
-            if (type.isAnnotationPresent(Interceptor.class)) {
-                globalEnablementBuilder.addInterceptor(type.getJavaClass(), value);
-            } else if (type.isAnnotationPresent(Decorator.class)) {
-                globalEnablementBuilder.addDecorator(type.getJavaClass(), value);
-            } else {
-                /*
-                 * An alternative may be given a priority for the application by placing the @Priority annotation on the bean
-                 * class that declares the producer method, field or resource.
-                 */
-                globalEnablementBuilder.addAlternative(type.getJavaClass(), value);
+            Integer value = annotationApi.getPriority(priority);
+            if (value != null) {
+                if (type.isAnnotationPresent(Interceptor.class)) {
+                    globalEnablementBuilder.addInterceptor(type.getJavaClass(), value);
+                } else if (type.isAnnotationPresent(Decorator.class)) {
+                    globalEnablementBuilder.addDecorator(type.getJavaClass(), value);
+                } else {
+                    /*
+                     * An alternative may be given a priority for the application by placing the @Priority annotation on the bean
+                     * class that declares the producer method, field or resource.
+                     */
+                    globalEnablementBuilder.addAlternative(type.getJavaClass(), value);
+                }
             }
         }
     }

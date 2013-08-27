@@ -75,6 +75,7 @@ import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.security.spi.SecurityServices;
 import org.jboss.weld.servlet.ServletApi;
 import org.jboss.weld.transaction.spi.TransactionServices;
+import org.jboss.weld.util.AnnotationApiAbstraction;
 import org.jboss.weld.util.JtaApiAbstraction;
 import org.jboss.weld.util.collections.WeldCollections;
 import org.jboss.weld.util.reflection.Reflections;
@@ -131,6 +132,7 @@ public class BeanDeployment {
         services.add(WSApiAbstraction.class, new WSApiAbstraction(resourceLoader));
         services.add(JtaApiAbstraction.class, new JtaApiAbstraction(resourceLoader));
         services.add(InterceptorsApiAbstraction.class, new InterceptorsApiAbstraction(resourceLoader));
+        services.add(AnnotationApiAbstraction.class, new AnnotationApiAbstraction(resourceLoader));
         this.beanManager = BeanManagerImpl.newManager(deploymentManager, beanDeploymentArchive.getId(), services);
         services.add(InjectionTargetService.class, new InjectionTargetService(beanManager));
         if (beanManager.getServices().contains(EjbServices.class)) {
