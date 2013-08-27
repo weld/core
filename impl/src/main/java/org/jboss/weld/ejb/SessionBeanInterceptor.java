@@ -41,7 +41,7 @@ public class SessionBeanInterceptor  extends AbstractEJBRequestScopeActivationIn
     private static final long serialVersionUID = 2658712435730329384L;
 
     private volatile BeanManagerImpl beanManager;
-    private volatile transient EjbRequestContext ejbRequestContext;
+    private transient volatile EjbRequestContext ejbRequestContext;
 
     @Override
     public Object aroundInvoke(InvocationContext invocation) throws Exception {
