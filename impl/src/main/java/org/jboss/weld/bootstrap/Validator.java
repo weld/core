@@ -116,6 +116,7 @@ import static org.jboss.weld.logging.messages.ValidatorMessage.INTERCEPTORS_CANN
 import static org.jboss.weld.logging.messages.ValidatorMessage.INTERCEPTORS_CANNOT_HAVE_OBSERVER_METHODS;
 import static org.jboss.weld.logging.messages.ValidatorMessage.INTERCEPTORS_CANNOT_HAVE_PRODUCER_FIELDS;
 import static org.jboss.weld.logging.messages.ValidatorMessage.INTERCEPTORS_CANNOT_HAVE_PRODUCER_METHODS;
+import static org.jboss.weld.logging.messages.ValidatorMessage.INTERCEPTOR_MUST_BE_DEPENDENT;
 import static org.jboss.weld.logging.messages.ValidatorMessage.INTERCEPTOR_NOT_ANNOTATED_OR_REGISTERED;
 import static org.jboss.weld.logging.messages.ValidatorMessage.NEW_WITH_QUALIFIERS;
 import static org.jboss.weld.logging.messages.ValidatorMessage.NON_FIELD_INJECTION_POINT_CANNOT_USE_NAMED;
@@ -414,6 +415,9 @@ public class Validator implements Service {
                     }
                     if (!annotated.getDeclaredWeldMethodsWithAnnotatedParameters(Observes.class).isEmpty()) {
                         throw new DefinitionException(INTERCEPTORS_CANNOT_HAVE_OBSERVER_METHODS, interceptor);
+                    }
+                    if (!interceptor.getScope().equals(Dependent.class)) {
+                        throw new DefinitionException(INTERCEPTOR_MUST_BE_DEPENDENT, interceptor);
                     }
                     annotated = annotated.getWeldSuperclass();
                 }
