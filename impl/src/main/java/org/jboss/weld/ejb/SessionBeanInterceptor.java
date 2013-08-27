@@ -19,7 +19,10 @@ package org.jboss.weld.ejb;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 
+import javax.interceptor.InvocationContext;
+
 import org.jboss.weld.Container;
+import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
 import org.jboss.weld.context.ejb.EjbRequestContext;
 import org.jboss.weld.manager.BeanManagerImpl;
 
@@ -37,12 +40,25 @@ public class SessionBeanInterceptor  extends AbstractEJBRequestScopeActivationIn
 
     private static final long serialVersionUID = 2658712435730329384L;
 
-    private final BeanManagerImpl beanManager;
-    private final transient EjbRequestContext ejbRequestContext;
+    private volatile BeanManagerImpl beanManager;
+    private volatile transient EjbRequestContext ejbRequestContext;
 
-    public SessionBeanInterceptor() {
-        this.beanManager = Container.instance().deploymentManager();
-        this.ejbRequestContext = super.getEjbRequestContext();
+    @Override
+    public Object aroundInvoke(InvocationContext invocation) throws Exception {
+        if (beanManager == null) {
+            this.beanManager = obtainBeanManager(invocation);
+            this.ejbRequestContext = getEjbRequestContext();
+        }
+        return super.aroundInvoke(invocation);
+    }
+
+    private BeanManagerImpl obtainBeanManager(InvocationContext invocation) {
+        Object value = invocation.getContextData().get(Container.CONTEXT_ID_KEY);
+        String contextId = RegistrySingletonProvider.STATIC_INSTANCE;
+        if (value instanceof String) {
+            contextId = (String) value;
+        }
+        return Container.instance(contextId).deploymentManager();
     }
 
     @Override
