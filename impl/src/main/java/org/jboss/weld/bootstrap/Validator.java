@@ -48,6 +48,7 @@ import static org.jboss.weld.logging.messages.ValidatorMessage.INTERCEPTORS_CANN
 import static org.jboss.weld.logging.messages.ValidatorMessage.INTERCEPTORS_CANNOT_HAVE_OBSERVER_METHODS;
 import static org.jboss.weld.logging.messages.ValidatorMessage.INTERCEPTORS_CANNOT_HAVE_PRODUCER_FIELDS;
 import static org.jboss.weld.logging.messages.ValidatorMessage.INTERCEPTORS_CANNOT_HAVE_PRODUCER_METHODS;
+import static org.jboss.weld.logging.messages.ValidatorMessage.INTERCEPTOR_MUST_BE_DEPENDENT;
 import static org.jboss.weld.logging.messages.ValidatorMessage.INTERCEPTOR_NOT_ANNOTATED_OR_REGISTERED;
 import static org.jboss.weld.logging.messages.ValidatorMessage.INVALID_BEAN_METADATA_INJECTION_POINT_QUALIFIER;
 import static org.jboss.weld.logging.messages.ValidatorMessage.INVALID_BEAN_METADATA_INJECTION_POINT_TYPE;
@@ -573,6 +574,9 @@ public class Validator implements Service {
             EnhancedAnnotatedType<?> annotated = ((InterceptorImpl<?>) interceptor).getEnhancedAnnotated();
             if (!BeanMethods.getObserverMethods(annotated).isEmpty()) {
                 throw new DefinitionException(INTERCEPTORS_CANNOT_HAVE_OBSERVER_METHODS, interceptor);
+            }
+            if (!interceptor.getScope().equals(Dependent.class)) {
+                throw new DefinitionException(INTERCEPTOR_MUST_BE_DEPENDENT, interceptor);
             }
             while (annotated != null && annotated.getJavaClass() != Object.class) {
                 if (!annotated.getDeclaredEnhancedMethods(Produces.class).isEmpty()) {
