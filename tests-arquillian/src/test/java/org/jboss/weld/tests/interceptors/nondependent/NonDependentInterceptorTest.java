@@ -6,7 +6,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.weld.exceptions.DefinitionException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -17,7 +16,8 @@ import org.junit.runner.RunWith;
 public class NonDependentInterceptorTest {
 
     @Deployment
-    @ShouldThrowException(DefinitionException.class)
+    // @ShouldThrowException(DefinitionException.class)
+    @ShouldThrowException(Exception.class)  // AS7-1197
     public static Archive<?> deploy() {
         return ShrinkWrap.create(BeanArchive.class)
                 .intercept(NonDependentInterceptor.class)
