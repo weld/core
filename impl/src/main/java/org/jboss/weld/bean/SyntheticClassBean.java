@@ -64,6 +64,7 @@ public class SyntheticClassBean<T> extends AbstractSyntheticBean<T> {
 
     @Override
     public String toString() {
-        return "SyntheticClassBean [attributes=" + attributes() + ", injectionTarget=" + producer + ", beanClass=" + getBeanClass() + "]";
+        return "SyntheticClassBean [attributes=" + attributes() + ", injectionTarget=" + producer.getClass() + ", beanClass="
+                + getBeanClass() + "]";
     }
 }
