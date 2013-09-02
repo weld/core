@@ -18,6 +18,8 @@ package org.jboss.weld.injection.producer;
 
 import static org.jboss.weld.logging.messages.BeanMessage.INCONSISTENT_ANNOTATIONS_ON_METHOD;
 import static org.jboss.weld.logging.messages.BeanMessage.METHOD_NOT_BUSINESS_METHOD;
+import static org.jboss.weld.logging.messages.BeanMessage.PRODUCER_METHOD_CANNOT_HAVE_A_WILDCARD_RETURN_TYPE;
+import static org.jboss.weld.logging.messages.BeanMessage.PRODUCER_METHOD_WITH_TYPE_VARIABLE_RETURN_TYPE_MUST_BE_DEPENDENT;
 
 import java.lang.reflect.Type;
 import java.security.AccessController;
@@ -38,6 +40,7 @@ import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.MethodInjectionPoint;
+import org.jboss.weld.logging.messages.BeanMessage;
 import org.jboss.weld.security.GetMethodAction;
 
 /**
@@ -104,5 +107,13 @@ public abstract class ProducerMethodProducer<X, T> extends AbstractMemberProduce
     @Override
     public AnnotatedMember<? super X> getAnnotated() {
         return method.getAnnotated();
+    }
+
+    protected BeanMessage producerCannotHaveWildcardBeanType() {
+        return PRODUCER_METHOD_CANNOT_HAVE_A_WILDCARD_RETURN_TYPE;
+    }
+
+    protected BeanMessage producerWithTypeVariableBeanTypeMustBeDependent() {
+        return PRODUCER_METHOD_WITH_TYPE_VARIABLE_RETURN_TYPE_MUST_BE_DEPENDENT;
     }
 }
