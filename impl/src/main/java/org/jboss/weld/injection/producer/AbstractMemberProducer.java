@@ -26,6 +26,7 @@ import static org.jboss.weld.logging.messages.BeanMessage.RETURN_TYPE_MUST_BE_CO
 
 import java.io.Serializable;
 import java.lang.reflect.Member;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
@@ -72,16 +73,30 @@ public abstract class AbstractMemberProducer<X, T> extends AbstractProducer<T> {
     protected void checkProducerReturnType(EnhancedAnnotatedMember<T, ? super X, ? extends Member> enhancedMember) {
         if ((enhancedMember.getBaseType() instanceof TypeVariable<?>) || (enhancedMember.getBaseType() instanceof WildcardType)) {
             throw new DefinitionException(RETURN_TYPE_MUST_BE_CONCRETE, enhancedMember.getBaseType());
-        } else if (enhancedMember.isParameterizedType()) {
-            boolean dependent = getBean() != null && Dependent.class.equals(getBean().getScope());
-            for (Type type : enhancedMember.getActualTypeArguments()) {
-                if (!dependent && type instanceof TypeVariable<?>) {
-                    throw new DefinitionException(PRODUCER_METHOD_WITH_TYPE_VARIABLE_RETURN_TYPE_MUST_BE_DEPENDENT, enhancedMember);
-                } else if (type instanceof WildcardType) {
-                    throw new DefinitionException(PRODUCER_METHOD_CANNOT_HAVE_A_WILDCARD_RETURN_TYPE, enhancedMember);
-                }
+        } else {
+            if (enhancedMember.isParameterizedType()) {
+                checkReturnTypeArguments(enhancedMember, enhancedMember.getActualTypeArguments());
             }
         }
+    }
+
+    private void checkReturnTypeArguments(EnhancedAnnotatedMember<T, ? super X, ? extends Member> enhancedMember, Type[] actualTypeArguments) {
+        for (Type type : actualTypeArguments) {
+            if (type instanceof TypeVariable<?>) {
+                if (!isDependent()) {
+                    throw new DefinitionException(PRODUCER_METHOD_WITH_TYPE_VARIABLE_RETURN_TYPE_MUST_BE_DEPENDENT, enhancedMember);
+                }
+            } else if (type instanceof WildcardType) {
+                throw new DefinitionException(PRODUCER_METHOD_CANNOT_HAVE_A_WILDCARD_RETURN_TYPE, enhancedMember);
+            } else if (type instanceof ParameterizedType) {
+                ParameterizedType parameterizedType = (ParameterizedType) type;
+                checkReturnTypeArguments(enhancedMember, parameterizedType.getActualTypeArguments());
+            }
+        }
+    }
+
+    private boolean isDependent() {
+        return getBean() != null && Dependent.class.equals(getBean().getScope());
     }
 
     /**
