@@ -32,9 +32,15 @@ import javax.enterprise.inject.spi.InjectionPoint;
 public class CustomBeanType implements Bean<Object> {
 
     private Type type;
+    private Class<? extends Annotation> scope;
 
     public CustomBeanType(Type type) {
+        this(type, Dependent.class);
+    }
+
+    public CustomBeanType(Type type, Class<? extends Annotation> scope) {
         this.type = type;
+        this.scope = scope;
     }
 
     @Override
@@ -64,7 +70,7 @@ public class CustomBeanType implements Bean<Object> {
 
     @Override
     public Class<? extends Annotation> getScope() {
-        return Dependent.class;
+        return scope;
     }
 
     @Override

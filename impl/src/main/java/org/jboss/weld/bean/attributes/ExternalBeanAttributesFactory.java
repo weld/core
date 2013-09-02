@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.bean.attributes;
 
+import static org.jboss.weld.logging.messages.MetadataMessage.BEAN_WITH_PARAMETERIZED_TYPE_CONTAINING_TYPE_VARIABLES_MUST_BE_DEPENDENT_SCOPED;
 import static org.jboss.weld.logging.messages.MetadataMessage.NOT_A_QUALIFIER;
 import static org.jboss.weld.logging.messages.MetadataMessage.NOT_A_SCOPE;
 import static org.jboss.weld.logging.messages.MetadataMessage.NOT_A_STEREOTYPE;
@@ -36,6 +37,7 @@ import java.lang.reflect.WildcardType;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.BeanManager;
 
@@ -110,7 +112,7 @@ public class ExternalBeanAttributesFactory {
 
     private static void validateBeanType(Type type, BeanAttributes<?> attributes) {
         checkBeanTypeNotATypeVariable(type, type, attributes);
-        checkBeanTypeDoesNotContainWildcards(type, type, attributes);
+        checkBeanTypeForWildcardsAndTypeVariables(type, type, attributes);
     }
 
     private static void checkBeanTypeNotATypeVariable(Type beanType, Type type, BeanAttributes<?> attributes) {
@@ -122,17 +124,21 @@ public class ExternalBeanAttributesFactory {
         }
     }
 
-    private static void checkBeanTypeDoesNotContainWildcards(Type beanType, Type type, BeanAttributes<?> attributes) {
-        if (type instanceof WildcardType) {
+    private static void checkBeanTypeForWildcardsAndTypeVariables(Type beanType, Type type, BeanAttributes<?> attributes) {
+        if (type instanceof TypeVariable<?>) {
+            if (!attributes.getScope().equals(Dependent.class)) {
+                throw new DefinitionException(BEAN_WITH_PARAMETERIZED_TYPE_CONTAINING_TYPE_VARIABLES_MUST_BE_DEPENDENT_SCOPED, beanType, attributes);
+            }
+        } else if (type instanceof WildcardType) {
             throw new DefinitionException(PARAMETERIZED_TYPE_CONTAINING_WILDCARD_PARAMETER_IS_NOT_A_VALID_BEAN_TYPE, beanType, attributes);
         } else if (type instanceof ParameterizedType) {
             ParameterizedType parameterizedType = (ParameterizedType) type;
             for (Type typeArgument : parameterizedType.getActualTypeArguments()) {
-                checkBeanTypeDoesNotContainWildcards(beanType, typeArgument, attributes);
+                checkBeanTypeForWildcardsAndTypeVariables(beanType, typeArgument, attributes);
             }
         } else if (type instanceof GenericArrayType) {
             GenericArrayType arrayType = (GenericArrayType) type;
-            checkBeanTypeDoesNotContainWildcards(beanType, arrayType.getGenericComponentType(), attributes);
+            checkBeanTypeForWildcardsAndTypeVariables(beanType, arrayType.getGenericComponentType(), attributes);
         }
     }
 
