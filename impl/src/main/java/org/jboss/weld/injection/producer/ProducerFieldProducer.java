@@ -18,6 +18,8 @@ package org.jboss.weld.injection.producer;
 
 import static org.jboss.weld.logging.messages.BeanMessage.INJECTED_FIELD_CANNOT_BE_PRODUCER;
 import static org.jboss.weld.logging.messages.BeanMessage.PRODUCER_FIELD_ON_SESSION_BEAN_MUST_BE_STATIC;
+import static org.jboss.weld.logging.messages.BeanMessage.PRODUCER_METHOD_CANNOT_HAVE_A_WILDCARD_RETURN_TYPE;
+import static org.jboss.weld.logging.messages.BeanMessage.PRODUCER_METHOD_WITH_TYPE_VARIABLE_RETURN_TYPE_MUST_BE_DEPENDENT;
 import static org.jboss.weld.logging.messages.UtilMessage.ACCESS_ERROR_ON_FIELD;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
@@ -38,6 +40,7 @@ import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.interceptor.util.proxy.TargetInstanceProxy;
+import org.jboss.weld.logging.messages.BeanMessage;
 import org.jboss.weld.security.GetAccessibleCopyOfMember;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -94,5 +97,13 @@ public abstract class ProducerFieldProducer<X, T> extends AbstractMemberProducer
     @Override
     public String toString() {
         return getAnnotated().toString();
+    }
+
+    protected BeanMessage producerCannotHaveWildcardBeanType() {
+        return PRODUCER_METHOD_CANNOT_HAVE_A_WILDCARD_RETURN_TYPE;
+    }
+
+    protected BeanMessage producerWithTypeVariableBeanTypeMustBeDependent() {
+        return PRODUCER_METHOD_WITH_TYPE_VARIABLE_RETURN_TYPE_MUST_BE_DEPENDENT;
     }
 }

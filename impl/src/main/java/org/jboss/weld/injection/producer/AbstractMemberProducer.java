@@ -20,12 +20,12 @@ import static org.jboss.weld.logging.Category.BEAN;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.BeanMessage.CIRCULAR_CALL;
 import static org.jboss.weld.logging.messages.BeanMessage.DECLARING_BEAN_MISSING;
-import static org.jboss.weld.logging.messages.BeanMessage.PRODUCER_METHOD_CANNOT_HAVE_A_WILDCARD_RETURN_TYPE;
-import static org.jboss.weld.logging.messages.BeanMessage.PRODUCER_METHOD_WITH_TYPE_VARIABLE_RETURN_TYPE_MUST_BE_DEPENDENT;
 import static org.jboss.weld.logging.messages.BeanMessage.RETURN_TYPE_MUST_BE_CONCRETE;
 
 import java.io.Serializable;
+import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Member;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
@@ -40,6 +40,7 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMember;
 import org.jboss.weld.bean.DisposalMethod;
 import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.exceptions.DefinitionException;
+import org.jboss.weld.logging.messages.BeanMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.slf4j.cal10n.LocLogger;
 
@@ -47,6 +48,7 @@ import org.slf4j.cal10n.LocLogger;
  * Common functionality for {@link Producer}s backing producer fields and producer methods.
  *
  * @author Jozef Hartinger
+ * @author Marko Luksa
  */
 public abstract class AbstractMemberProducer<X, T> extends AbstractProducer<T> {
 
@@ -70,18 +72,43 @@ public abstract class AbstractMemberProducer<X, T> extends AbstractProducer<T> {
      * Validates the producer method
      */
     protected void checkProducerReturnType(EnhancedAnnotatedMember<T, ? super X, ? extends Member> enhancedMember) {
-        if ((enhancedMember.getBaseType() instanceof TypeVariable<?>) || (enhancedMember.getBaseType() instanceof WildcardType)) {
-            throw new DefinitionException(RETURN_TYPE_MUST_BE_CONCRETE, enhancedMember.getBaseType());
-        } else if (enhancedMember.isParameterizedType()) {
-            boolean dependent = getBean() != null && Dependent.class.equals(getBean().getScope());
-            for (Type type : enhancedMember.getActualTypeArguments()) {
-                if (!dependent && type instanceof TypeVariable<?>) {
-                    throw new DefinitionException(PRODUCER_METHOD_WITH_TYPE_VARIABLE_RETURN_TYPE_MUST_BE_DEPENDENT, enhancedMember);
-                } else if (type instanceof WildcardType) {
-                    throw new DefinitionException(PRODUCER_METHOD_CANNOT_HAVE_A_WILDCARD_RETURN_TYPE, enhancedMember);
-                }
-            }
+        checkReturnTypeIsConcrete(enhancedMember, enhancedMember.getBaseType());
+        checkReturnTypeForWildcardsAndTypeVariables(enhancedMember, enhancedMember.getBaseType());
+    }
+
+    private void checkReturnTypeIsConcrete(EnhancedAnnotatedMember<T, ? super X, ? extends Member> enhancedMember, Type type) {
+        if (type instanceof TypeVariable<?> || type instanceof WildcardType) {
+            throw new DefinitionException(RETURN_TYPE_MUST_BE_CONCRETE, enhancedMember);
+        } else if (type instanceof GenericArrayType) {
+            GenericArrayType arrayType = (GenericArrayType) type;
+            checkReturnTypeIsConcrete(enhancedMember, arrayType.getGenericComponentType());
         }
+    }
+
+    private void checkReturnTypeForWildcardsAndTypeVariables(EnhancedAnnotatedMember<T, ? super X, ? extends Member> enhancedMember, Type type) {
+        if (type instanceof TypeVariable<?>) {
+            if (!isDependent()) {
+                throw new DefinitionException(producerWithTypeVariableBeanTypeMustBeDependent(), enhancedMember);
+            }
+        } else if (type instanceof WildcardType) {
+            throw new DefinitionException(producerCannotHaveWildcardBeanType(), enhancedMember);
+        } else if (type instanceof ParameterizedType) {
+            ParameterizedType parameterizedType = (ParameterizedType) type;
+            for (Type parameterType : parameterizedType.getActualTypeArguments()) {
+                checkReturnTypeForWildcardsAndTypeVariables(enhancedMember, parameterType);
+            }
+        } else if (type instanceof GenericArrayType) {
+            GenericArrayType arrayType = (GenericArrayType) type;
+            checkReturnTypeForWildcardsAndTypeVariables(enhancedMember, arrayType.getGenericComponentType());
+        }
+    }
+
+    protected abstract BeanMessage producerCannotHaveWildcardBeanType();
+
+    protected abstract BeanMessage producerWithTypeVariableBeanTypeMustBeDependent();
+
+    private boolean isDependent() {
+        return getBean() != null && Dependent.class.equals(getBean().getScope());
     }
 
     /**
