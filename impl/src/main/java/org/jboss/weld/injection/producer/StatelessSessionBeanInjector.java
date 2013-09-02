@@ -16,8 +16,11 @@
  */
 package org.jboss.weld.injection.producer;
 
+import java.util.Set;
+
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.injection.CurrentInjectionPoint;
@@ -37,6 +40,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
 public class StatelessSessionBeanInjector<T> extends DefaultInjector<T> {
 
     private final CurrentInjectionPoint currentInjectionPoint;
+    private boolean pushDynamicInjectionPoints;
 
     public StatelessSessionBeanInjector(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager) {
         super(type, bean, beanManager);
@@ -45,11 +49,30 @@ public class StatelessSessionBeanInjector<T> extends DefaultInjector<T> {
 
     @Override
     public void inject(T instance, CreationalContext<T> ctx, BeanManagerImpl manager) {
-        currentInjectionPoint.push(new DynamicInjectionPoint(manager));
+        if (pushDynamicInjectionPoints) {
+            currentInjectionPoint.push(new DynamicInjectionPoint(manager));
+        }
         try {
             super.inject(instance, ctx, manager);
         } finally {
-            currentInjectionPoint.pop();
+            if (pushDynamicInjectionPoints) {
+                currentInjectionPoint.pop();
+            }
         }
+    }
+
+    @Override
+    public void registerInjectionPoints(Set<InjectionPoint> injectionPoints) {
+        super.registerInjectionPoints(injectionPoints);
+        pushDynamicInjectionPoints = hasInjectionPointMetadata(injectionPoints);
+    }
+
+    private boolean hasInjectionPointMetadata(Set<InjectionPoint> injectionPoints) {
+        for(InjectionPoint injectionPoint : injectionPoints){
+            if(injectionPoint.getType() == InjectionPoint.class){
+                return true;
+            }
+        }
+        return false;
     }
 }
