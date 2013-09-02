@@ -25,6 +25,7 @@ import static org.jboss.weld.logging.messages.BeanMessage.PRODUCER_METHOD_WITH_T
 import static org.jboss.weld.logging.messages.BeanMessage.RETURN_TYPE_MUST_BE_CONCRETE;
 
 import java.io.Serializable;
+import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Member;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -48,6 +49,7 @@ import org.slf4j.cal10n.LocLogger;
  * Common functionality for {@link Producer}s backing producer fields and producer methods.
  *
  * @author Jozef Hartinger
+ * @author Marko Luksa
  */
 public abstract class AbstractMemberProducer<X, T> extends AbstractProducer<T> {
 
@@ -71,27 +73,34 @@ public abstract class AbstractMemberProducer<X, T> extends AbstractProducer<T> {
      * Validates the producer method
      */
     protected void checkProducerReturnType(EnhancedAnnotatedMember<T, ? super X, ? extends Member> enhancedMember) {
-        if ((enhancedMember.getBaseType() instanceof TypeVariable<?>) || (enhancedMember.getBaseType() instanceof WildcardType)) {
-            throw new DefinitionException(RETURN_TYPE_MUST_BE_CONCRETE, enhancedMember.getBaseType());
-        } else {
-            if (enhancedMember.isParameterizedType()) {
-                checkReturnTypeArguments(enhancedMember, enhancedMember.getActualTypeArguments());
-            }
+        checkReturnTypeIsConcrete(enhancedMember, enhancedMember.getBaseType());
+        checkReturnTypeForWildcardsAndTypeVariables(enhancedMember, enhancedMember.getBaseType());
+    }
+
+    private void checkReturnTypeIsConcrete(EnhancedAnnotatedMember<T, ? super X, ? extends Member> enhancedMember, Type type) {
+        if (type instanceof TypeVariable<?> || type instanceof WildcardType) {
+            throw new DefinitionException(RETURN_TYPE_MUST_BE_CONCRETE, enhancedMember);
+        } else if (type instanceof GenericArrayType) {
+            GenericArrayType arrayType = (GenericArrayType) type;
+            checkReturnTypeIsConcrete(enhancedMember, arrayType.getGenericComponentType());
         }
     }
 
-    private void checkReturnTypeArguments(EnhancedAnnotatedMember<T, ? super X, ? extends Member> enhancedMember, Type[] actualTypeArguments) {
-        for (Type type : actualTypeArguments) {
-            if (type instanceof TypeVariable<?>) {
-                if (!isDependent()) {
-                    throw new DefinitionException(PRODUCER_METHOD_WITH_TYPE_VARIABLE_RETURN_TYPE_MUST_BE_DEPENDENT, enhancedMember);
-                }
-            } else if (type instanceof WildcardType) {
-                throw new DefinitionException(PRODUCER_METHOD_CANNOT_HAVE_A_WILDCARD_RETURN_TYPE, enhancedMember);
-            } else if (type instanceof ParameterizedType) {
-                ParameterizedType parameterizedType = (ParameterizedType) type;
-                checkReturnTypeArguments(enhancedMember, parameterizedType.getActualTypeArguments());
+    private void checkReturnTypeForWildcardsAndTypeVariables(EnhancedAnnotatedMember<T, ? super X, ? extends Member> enhancedMember, Type type) {
+        if (type instanceof TypeVariable<?>) {
+            if (!isDependent()) {
+                throw new DefinitionException(PRODUCER_METHOD_WITH_TYPE_VARIABLE_RETURN_TYPE_MUST_BE_DEPENDENT, enhancedMember);
             }
+        } else if (type instanceof WildcardType) {
+            throw new DefinitionException(PRODUCER_METHOD_CANNOT_HAVE_A_WILDCARD_RETURN_TYPE, enhancedMember);
+        } else if (type instanceof ParameterizedType) {
+            ParameterizedType parameterizedType = (ParameterizedType) type;
+            for (Type parameterType : parameterizedType.getActualTypeArguments()) {
+                checkReturnTypeForWildcardsAndTypeVariables(enhancedMember, parameterType);
+            }
+        } else if (type instanceof GenericArrayType) {
+            GenericArrayType arrayType = (GenericArrayType) type;
+            checkReturnTypeForWildcardsAndTypeVariables(enhancedMember, arrayType.getGenericComponentType());
         }
     }
 
