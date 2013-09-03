@@ -325,6 +325,12 @@
                     <groupId>org.wildfly</groupId>
                     <artifactId>wildfly-arquillian-container-managed</artifactId>
                     <scope>test</scope>
+                    <exclusions>
+                      <exclusion>
+                        <groupId>org.jboss.logmanager</groupId>
+                        <artifactId>log4j-jboss-logmanager</artifactId>
+                      </exclusion>
+                    </exclusions>
                 </dependency>
                 <dependency>
                     <groupId>jboss</groupId>
@@ -374,6 +380,12 @@
                     <groupId>org.wildfly</groupId>
                     <artifactId>wildfly-arquillian-container-remote</artifactId>
                     <scope>test</scope>
+                    <exclusions>
+                      <exclusion>
+                        <groupId>org.jboss.logmanager</groupId>
+                        <artifactId>log4j-jboss-logmanager</artifactId>
+                      </exclusion>
+                    </exclusions>
                 </dependency>
                 <dependency>
                     <groupId>jboss</groupId>
