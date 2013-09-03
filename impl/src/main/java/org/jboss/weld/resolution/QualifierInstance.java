@@ -88,7 +88,11 @@ public class QualifierInstance {
         for (final AnnotatedMethod<?> method : model.getAnnotatedAnnotation().getMethods()) {
             if(!model.getNonBindingMembers().contains(method)) {
                 try {
-                    AccessController.doPrivileged(SetAccessibleAction.of(method.getJavaMember()));
+                    if(System.getSecurityManager() != null) {
+                        AccessController.doPrivileged(SetAccessibleAction.of(method.getJavaMember()));
+                    } else {
+                        method.getJavaMember().setAccessible(true);
+                    }
                     values.put(method, method.getJavaMember().invoke(instance));
                 } catch (IllegalAccessException e) {
                     throw new WeldException(e);
