@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.injection.producer;
 
-import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_FAILED;
-
 import java.util.List;
 
 import javax.enterprise.context.spi.CreationalContext;
@@ -32,6 +30,7 @@ import org.jboss.weld.bean.proxy.ProxyObject;
 import org.jboss.weld.bean.proxy.TargetBeanInstance;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.injection.CurrentInjectionPoint;
+import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.serialization.spi.ContextualStore;
 
@@ -73,7 +72,7 @@ public abstract class AbstractDecoratorApplyingInstantiator<T> extends Forwardin
         try {
             final T outerDelegate = decorationHelper.getNextDelegate(originalInjectionPoint, creationalContext);
             if (outerDelegate == null) {
-                throw new WeldException(PROXY_INSTANTIATION_FAILED, this);
+                throw new WeldException(BeanLogger.LOG.proxyInstantiationFailed(this));
             }
             return outerDelegate;
         } finally {

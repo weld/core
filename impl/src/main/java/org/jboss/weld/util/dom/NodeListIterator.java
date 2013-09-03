@@ -16,13 +16,11 @@
  */
 package org.jboss.weld.util.dom;
 
-import org.jboss.weld.exceptions.UnsupportedOperationException;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import java.util.Iterator;
 
-import static org.jboss.weld.logging.messages.UtilMessage.XML_DOM_READONLY;
+import org.jboss.weld.logging.UtilLogger;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 public class NodeListIterator implements Iterator<Node> {
 
@@ -43,7 +41,7 @@ public class NodeListIterator implements Iterator<Node> {
     }
 
     public void remove() {
-        throw new UnsupportedOperationException(XML_DOM_READONLY);
+        throw UtilLogger.LOG.xmlDomReadonly();
     }
 
 }

@@ -35,13 +35,11 @@ import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.annotated.slim.backed.BackedAnnotatedType;
 import org.jboss.weld.annotated.slim.unbacked.UnbackedAnnotatedType;
 import org.jboss.weld.bootstrap.api.BootstrapService;
-import org.jboss.weld.logging.Category;
-import org.jboss.weld.logging.LoggerFactory;
+import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
 import org.jboss.weld.util.AnnotatedTypes;
-import org.slf4j.Logger;
 
 import com.google.common.base.Objects;
 import com.google.common.cache.CacheBuilder;
@@ -60,8 +58,6 @@ public class ClassTransformer implements BootstrapService {
     public static ClassTransformer instance(BeanManagerImpl manager) {
         return manager.getServices().get(ClassTransformer.class);
     }
-
-    private static Logger log = LoggerFactory.loggerFactory().getLogger(Category.CLASS_LOADING);
 
     private class TransformClassToWeldAnnotation extends CacheLoader<Class<? extends Annotation>, EnhancedAnnotation<?>> {
         @Override
@@ -179,7 +175,7 @@ public class ClassTransformer implements BootstrapService {
             return getCastCacheValue(backedAnnotatedTypes, new TypeHolder<T>(rawType, baseType, bdaId));
         } catch (RuntimeException e) {
             if (e instanceof TypeNotPresentException || e instanceof ResourceLoadingException) {
-                log.trace("Exception while loading class '{}' : {}", rawType.getName(), e);
+                BootstrapLogger.LOG.exceptionWhileLoadingClass(rawType.getName(), e);
                 throw new ResourceLoadingException("Exception while loading class " + rawType.getName(), e);
             }
             throw e;
@@ -189,7 +185,7 @@ public class ClassTransformer implements BootstrapService {
             if(cause instanceof NoClassDefFoundError || cause instanceof LinkageError) {
                 throw new ResourceLoadingException("Error while loading class " + rawType.getName(), cause);
             }
-            log.trace("Error while loading class '{}' : {}", rawType.getName(), cause);
+            BootstrapLogger.LOG.errorWhileLoadingClass(rawType.getName(), cause);
             throw e;
         }
     }

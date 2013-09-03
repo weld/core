@@ -33,17 +33,15 @@ public class InvalidObjectException extends java.io.InvalidObjectException {
     private final WeldExceptionMessage message;
 
     /**
-     * Creates a new exception with the given localized message key and optional
-     * arguments for the message.
+     * Creates a new exception with the given localized message.
      *
-     * @param <E>  The enumeration type for the message keys
-     * @param key  The localized message to use
-     * @param args Optional arguments to insert into the message
+     * @param message
      */
-    public <E extends Enum<?>> InvalidObjectException(E key, Object... args) {
+    public InvalidObjectException(String message) {
         super(null);
-        message = new WeldExceptionKeyMessage(key, args);
+        this.message = new WeldExceptionStringMessage(message);
     }
+
 
     @Override
     public String getLocalizedMessage() {

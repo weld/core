@@ -17,9 +17,6 @@
 
 package org.jboss.weld.bean.proxy;
 
-import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_BEAN_ACCESS_FAILED;
-import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_FAILED;
-
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.util.LinkedList;
@@ -33,6 +30,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.context.SerializableContextualInstanceImpl;
 import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.security.NewInstanceAction;
 import org.jboss.weld.serialization.spi.ContextualStore;
@@ -115,9 +113,9 @@ public class DecorationHelper<T> {
             return proxy;
         } catch (PrivilegedActionException e) {
             if (e.getCause() instanceof InstantiationException) {
-                throw new WeldException(PROXY_INSTANTIATION_FAILED, e.getCause(), this);
+                throw new WeldException(BeanLogger.LOG.proxyInstantiationFailed(this), e.getCause());
             } else if (e.getCause() instanceof IllegalAccessException) {
-                throw new WeldException(PROXY_INSTANTIATION_BEAN_ACCESS_FAILED, e.getCause(), this);
+                throw new WeldException(BeanLogger.LOG.proxyInstantiationBeanAccessFailed(this), e.getCause());
             } else {
                 throw new WeldException(e.getCause());
             }

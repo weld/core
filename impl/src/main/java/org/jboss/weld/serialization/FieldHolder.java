@@ -16,13 +16,11 @@
  */
 package org.jboss.weld.serialization;
 
-import static org.jboss.weld.logging.messages.ReflectionMessage.UNABLE_TO_GET_FIELD_ON_DESERIALIZATION;
-
 import java.lang.reflect.Field;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
-import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.logging.ReflectionLogger;
 
 /**
  * Serializable holder for {@link Field}.
@@ -53,7 +51,7 @@ public class FieldHolder extends AbstractSerializableHolder<Field> implements Pr
         try {
             return declaringClass.getDeclaredField(fieldName);
         } catch (Exception e) {
-            throw new WeldException(UNABLE_TO_GET_FIELD_ON_DESERIALIZATION, e, declaringClass, fieldName);
+            throw ReflectionLogger.LOG.unableToGetFieldOnDeserialization(declaringClass, fieldName, e);
         }
     }
 }

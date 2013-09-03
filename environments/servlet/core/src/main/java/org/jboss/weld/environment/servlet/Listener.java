@@ -25,6 +25,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.jsp.JspApplicationContext;
 import javax.servlet.jsp.JspFactory;
 
+import org.jboss.logging.Logger;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.Environments;
 import org.jboss.weld.environment.Container;
@@ -43,15 +44,13 @@ import org.jboss.weld.injection.spi.ResourceInjectionServices;
 import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.servlet.api.ServletListener;
 import org.jboss.weld.servlet.api.helpers.ForwardingServletListener;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Pete Muir
  * @author Ales Justin
  */
 public class Listener extends ForwardingServletListener {
-    private static final Logger log = LoggerFactory.getLogger(Listener.class);
+    private static final Logger log = Logger.getLogger(Listener.class);
 
     private static final String BOOTSTRAP_IMPL_CLASS_NAME = "org.jboss.weld.bootstrap.WeldBootstrap";
     private static final String WELD_LISTENER_CLASS_NAME = "org.jboss.weld.servlet.WeldListener";
@@ -146,7 +145,7 @@ public class Listener extends ForwardingServletListener {
         Container container = findContainer(cc, dump);
         if (container == null) {
             log.info("No supported servlet container detected, CDI injection will NOT be available in Servlets, Filters or Listeners");
-            log.debug("Exception dump from Container lookup: {}", dump);
+            log.debugv("Exception dump from Container lookup: {0}", dump);
         } else {
             container.initialize(cc);
             this.container = container;

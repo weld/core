@@ -16,13 +16,11 @@
  */
 package org.jboss.weld.util.reflection.instantiation;
 
-import static org.jboss.weld.logging.messages.ReflectionMessage.UNSAFE_INSTANTIATION_FAILED;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.security.AccessController;
 
-import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.logging.ReflectionLogger;
 import org.jboss.weld.security.GetDeclaredFieldAction;
 import org.jboss.weld.security.GetDeclaredMethodAction;
 import org.jboss.weld.security.SetAccessibleAction;
@@ -65,7 +63,7 @@ public class UnsafeInstantiator implements Instantiator {
         try {
             return (T) allocateInstanceMethod.invoke(unsafeInstance, clazz);
         } catch (Exception e) {
-            throw new WeldException(UNSAFE_INSTANTIATION_FAILED, e, clazz);
+            throw ReflectionLogger.LOG.unsafeInstantiationFailed(clazz, e);
         }
     }
 }

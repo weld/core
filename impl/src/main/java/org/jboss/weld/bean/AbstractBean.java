@@ -16,16 +16,6 @@
  */
 package org.jboss.weld.bean;
 
-import static org.jboss.weld.logging.Category.BEAN;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.BeanMessage.BEANS_WITH_DIFFERENT_BEAN_NAMES_CANNOT_BE_SPECIALIZED;
-import static org.jboss.weld.logging.messages.BeanMessage.CREATING_BEAN;
-import static org.jboss.weld.logging.messages.BeanMessage.NAME_NOT_ALLOWED_ON_SPECIALIZATION;
-import static org.jboss.weld.logging.messages.BeanMessage.QUALIFIERS_USED;
-import static org.jboss.weld.logging.messages.BeanMessage.SPECIALIZING_BEAN_MISSING_SPECIALIZED_TYPE;
-import static org.jboss.weld.logging.messages.BeanMessage.USING_NAME;
-import static org.jboss.weld.logging.messages.BeanMessage.USING_SCOPE;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.HashSet;
@@ -43,10 +33,9 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotated;
 import org.jboss.weld.bean.attributes.ImmutableBeanAttributes;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.SpecializationAndEnablementRegistry;
-import org.jboss.weld.exceptions.DefinitionException;
+import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
-import org.slf4j.cal10n.LocLogger;
 
 /**
  * An abstract bean representation common for all beans
@@ -59,7 +48,6 @@ import org.slf4j.cal10n.LocLogger;
  */
 public abstract class AbstractBean<T, S> extends RIBean<T> {
 
-    private static final LocLogger log = loggerFactory().getLogger(BEAN);
     protected Class<T> type;
 
     private boolean preInitialized;
@@ -99,15 +87,15 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
     @Override
     public void internalInitialize(BeanDeployerEnvironment environment) {
         preInitialize();
-        log.trace(CREATING_BEAN, getType());
+        BeanLogger.LOG.creatingBean(getType());
         if (getScope() != null) {
             proxyRequired = isNormalScoped();
         } else {
             proxyRequired = false;
         }
-        log.trace(QUALIFIERS_USED, getQualifiers(), this);
-        log.trace(USING_NAME, getName(), this);
-        log.trace(USING_SCOPE, getScope(), this);
+        BeanLogger.LOG.qualifiersUsed(getQualifiers(), this);
+        BeanLogger.LOG.usingName(getName(), this);
+        BeanLogger.LOG.usingScope(getScope(), this);
     }
 
     @Override
@@ -128,15 +116,15 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
                 String name = specializedBean.getName();
                 if (previousSpecializedBeanName != null && name != null && !previousSpecializedBeanName.equals(specializedBean.getName())) {
                     // there may be multiple beans specialized by this bean - make sure they all share the same name
-                    throw new DefinitionException(BEANS_WITH_DIFFERENT_BEAN_NAMES_CANNOT_BE_SPECIALIZED, previousSpecializedBeanName, specializedBean.getName(), this);
+                    throw BeanLogger.LOG.beansWithDifferentBeanNamesCannotBeSpecialized(previousSpecializedBeanName, specializedBean.getName(), this);
                 }
                 previousSpecializedBeanName = name;
                 if (isNameDefined && name != null) {
-                    throw new DefinitionException(NAME_NOT_ALLOWED_ON_SPECIALIZATION, getAnnotated());
+                    throw BeanLogger.LOG.nameNotAllowedOnSpecialization(getAnnotated());
                 }
                 for (Type type : specializedBean.getTypes()) {
                     if (!getTypes().contains(type)) {
-                        throw new DefinitionException(SPECIALIZING_BEAN_MISSING_SPECIALIZED_TYPE, this, type, specializedBean);
+                        throw BeanLogger.LOG.specializingBeanMissingSpecializedType(this, type, specializedBean);
                     }
                 }
             }

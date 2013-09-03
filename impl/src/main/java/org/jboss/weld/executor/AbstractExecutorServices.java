@@ -16,9 +16,6 @@
  */
 package org.jboss.weld.executor;
 
-import static org.jboss.weld.logging.Category.BOOTSTRAP;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -27,9 +24,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import org.jboss.weld.exceptions.DeploymentException;
-import org.jboss.weld.logging.messages.BootstrapMessage;
+import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.api.ExecutorServices;
-import org.slf4j.cal10n.LocLogger;
 
 /**
  * Common functionality for {@link ExecutorServices}.
@@ -40,7 +36,6 @@ import org.slf4j.cal10n.LocLogger;
 public abstract class AbstractExecutorServices implements ExecutorServices {
 
     private static final long SHUTDOWN_TIMEOUT = 60L;
-    private static final LocLogger log = loggerFactory().getLogger(BOOTSTRAP);
 
     @Override
     public <T> List<Future<T>> invokeAllAndCheckForExceptions(Collection<? extends Callable<T>> tasks) {
@@ -84,7 +79,8 @@ public abstract class AbstractExecutorServices implements ExecutorServices {
                 // Wait a while for tasks to respond to being cancelled
                 if (!getTaskExecutor().awaitTermination(SHUTDOWN_TIMEOUT, TimeUnit.SECONDS)) {
                     // Log the error here
-                    log.warn(BootstrapMessage.TIMEOUT_SHUTTING_DOWN_THREAD_POOL, getTaskExecutor(), this);
+                    BootstrapLogger.LOG.timeoutShuttingDownThreadPool(getTaskExecutor(), this);
+                    // log.warn(BootstrapMessage.TIMEOUT_SHUTTING_DOWN_THREAD_POOL, getTaskExecutor(), this);
                 }
             }
         } catch (InterruptedException ie) {

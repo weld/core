@@ -16,19 +16,7 @@
  */
 package org.jboss.weld.tests.unit.bootstrap.xml;
 
-import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.TestContainer;
-import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.TestContainer.Runner;
-import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.TestContainer.Runner.Runnable;
-import org.jboss.weld.bootstrap.enablement.ModuleEnablement;
-import org.jboss.weld.exceptions.DefinitionException;
-import org.jboss.weld.exceptions.DeploymentException;
-import org.jboss.weld.exceptions.IllegalStateException;
-import org.jboss.weld.logging.messages.XmlMessage;
-import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.manager.api.WeldManager;
-import org.jboss.weld.resources.spi.ResourceLoadingException;
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import static org.testng.AssertJUnit.assertEquals;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -36,7 +24,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.testng.AssertJUnit.assertEquals;
+import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.TestContainer;
+import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.TestContainer.Runner;
+import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.TestContainer.Runner.Runnable;
+import org.jboss.weld.bootstrap.enablement.ModuleEnablement;
+import org.jboss.weld.exceptions.DeploymentException;
+import org.jboss.weld.logging.XmlLogger;
+import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.manager.api.WeldManager;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
 @SuppressWarnings("unchecked")
 public class BeansXmlTest {
@@ -54,17 +51,17 @@ public class BeansXmlTest {
 
     @Test
     public void testMultipleAlternativeBlocksFail() {
-        createRunner("multipleAlternativeBlocks.xml").runAndExpect(new DefinitionException(XmlMessage.MULTIPLE_ALTERNATIVES));
+        createRunner("multipleAlternativeBlocks.xml").runAndExpect(XmlLogger.LOG.multipleAlternatives(null));
     }
 
     @Test
     public void testMultipleDecoratorBlocksFail() {
-        createRunner("multipleDecoratorBlocks.xml").runAndExpect(new DefinitionException(XmlMessage.MULTIPLE_DECORATORS));
+        createRunner("multipleDecoratorBlocks.xml").runAndExpect(XmlLogger.LOG.multipleDecorators(null));
     }
 
     @Test
     public void testMultipleInterceptorBlocksFail() {
-        createRunner("multipleInterceptorsBlocks.xml").runAndExpect(new DefinitionException(XmlMessage.MULTIPLE_INTERCEPTORS));
+        createRunner("multipleInterceptorsBlocks.xml").runAndExpect(XmlLogger.LOG.multipleInterceptors(null));
     }
 
     @Test
@@ -123,7 +120,7 @@ public class BeansXmlTest {
 
     @Test
     public void testBeansXmlDoesntExist() {
-        createRunner("nope.xml").runAndExpect(new IllegalStateException(XmlMessage.LOAD_ERROR));
+        createRunner("nope.xml").runAndExpect(XmlLogger.LOG.loadError(null, null));
     }
 
     // WELD-467
@@ -169,12 +166,12 @@ public class BeansXmlTest {
 
     @Test
     public void testCannotLoadFile() throws MalformedURLException {
-        createRunner("http://foo.bar/beans.xml").runAndExpect(new IllegalStateException(XmlMessage.LOAD_ERROR));
+        createRunner("http://foo.bar/beans.xml").runAndExpect(XmlLogger.LOG.loadError(null, null));
     }
 
     @Test
     public void testParsingError() {
-        createRunner("unparseable.xml").runAndExpect(new IllegalStateException(XmlMessage.PARSING_ERROR));
+        createRunner("unparseable.xml").runAndExpect(XmlLogger.LOG.parsingError(null, null));
     }
 
     @Test

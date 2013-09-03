@@ -16,21 +16,19 @@
  */
 package org.jboss.weld.injection.producer;
 
-import static org.jboss.weld.logging.messages.BeanMessage.DELEGATE_NOT_ON_DECORATOR;
-
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.Producer;
 
-import org.jboss.weld.exceptions.DefinitionException;
+import org.jboss.weld.logging.BeanLogger;
 
 public abstract class AbstractProducer<T> implements Producer<T> {
 
     protected void checkDelegateInjectionPoints() {
         for (InjectionPoint injectionPoint : getInjectionPoints()) {
             if (injectionPoint.isDelegate()) {
-                throw new DefinitionException(DELEGATE_NOT_ON_DECORATOR, this);
+                throw BeanLogger.LOG.delegateNotOnDecorator(this);
             }
         }
     }

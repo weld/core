@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.bean.proxy;
 
-import static org.jboss.weld.logging.messages.BeanMessage.UNEXPECTED_UNWRAPPED_CUSTOM_DECORATOR;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.security.AccessController;
@@ -27,8 +25,8 @@ import javax.inject.Inject;
 
 import org.jboss.weld.annotated.runtime.InvokableAnnotatedMethod;
 import org.jboss.weld.bean.WeldDecorator;
-import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.interceptor.util.proxy.TargetInstanceProxyMethodHandler;
+import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.security.SetAccessibleAction;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextualInstance;
 import org.jboss.weld.util.reflection.Reflections;
@@ -70,7 +68,7 @@ public class DecoratorProxyMethodHandler extends TargetInstanceProxyMethodHandle
             WeldDecorator<?> weldDecorator = (WeldDecorator<?>) decorator;
             return doInvoke(weldDecorator, decoratorInstance.getInstance(), method, args);
         } else {
-            throw new IllegalStateException(UNEXPECTED_UNWRAPPED_CUSTOM_DECORATOR, decorator);
+            throw BeanLogger.LOG.unexpectedUnwrappedCustomDecorator(decorator);
         }
     }
 

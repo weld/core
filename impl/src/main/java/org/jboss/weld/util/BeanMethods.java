@@ -16,17 +16,6 @@
  */
 package org.jboss.weld.util;
 
-import static org.jboss.weld.logging.Category.BEAN;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.BeanMessage.FOUND_ONE_POST_CONSTRUCT_METHOD;
-import static org.jboss.weld.logging.messages.BeanMessage.FOUND_PRE_DESTROY_METHODS;
-import static org.jboss.weld.logging.messages.EventMessage.INVALID_INITIALIZER;
-import static org.jboss.weld.logging.messages.UtilMessage.INITIALIZER_CANNOT_BE_DISPOSAL_METHOD;
-import static org.jboss.weld.logging.messages.UtilMessage.INITIALIZER_CANNOT_BE_PRODUCER;
-import static org.jboss.weld.logging.messages.UtilMessage.INITIALIZER_METHOD_IS_GENERIC;
-import static org.jboss.weld.logging.messages.UtilMessage.TOO_MANY_POST_CONSTRUCT_METHODS;
-import static org.jboss.weld.logging.messages.UtilMessage.TOO_MANY_PRE_DESTROY_METHODS;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -45,17 +34,16 @@ import javax.inject.Inject;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
-import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.MethodInjectionPoint;
+import org.jboss.weld.logging.BeanLogger;
+import org.jboss.weld.logging.EventLogger;
+import org.jboss.weld.logging.UtilLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.collections.WeldCollections;
-import org.slf4j.cal10n.LocLogger;
 
 public class BeanMethods {
-
-    private static final LocLogger log = loggerFactory().getLogger(BEAN);
 
     private BeanMethods() {
     }
@@ -223,13 +211,13 @@ public class BeanMethods {
         public void processMethod(EnhancedAnnotatedMethod<?, ? super T> method) {
             if (method.isAnnotationPresent(Inject.class)) {
                 if (method.getAnnotation(Produces.class) != null) {
-                    throw new DefinitionException(INITIALIZER_CANNOT_BE_PRODUCER, method, type);
+                    throw UtilLogger.LOG.initializerCannotBeProducer(method, type);
                 } else if (method.getEnhancedParameters(Disposes.class).size() > 0) {
-                    throw new DefinitionException(INITIALIZER_CANNOT_BE_DISPOSAL_METHOD, method, type);
+                    throw UtilLogger.LOG.initializerCannotBeDisposalMethod(method, type);
                 } else if (method.getEnhancedParameters(Observes.class).size() > 0) {
-                    throw new DefinitionException(INVALID_INITIALIZER, method);
+                    throw EventLogger.LOG.invalidInitializer(method);
                 } else if (method.isGeneric()) {
-                    throw new DefinitionException(INITIALIZER_METHOD_IS_GENERIC, method, type);
+                    throw UtilLogger.LOG.initializerMethodIsGeneric(method, type);
                 }
                 if (!method.isStatic()) {
                     currentLevel.add(InjectionPointFactory.instance().createMethodInjectionPoint(method, declaringBean,
@@ -260,12 +248,12 @@ public class BeanMethods {
 
             @Override
             protected void duplicateMethod(EnhancedAnnotatedMethod<?, ? super T> method) {
-                throw new DefinitionException(TOO_MANY_POST_CONSTRUCT_METHODS, type);
+                throw UtilLogger.LOG.tooManyPostConstructMethods(type);
             }
 
             @Override
             protected EnhancedAnnotatedMethod<?, ? super T> processLevelResult(EnhancedAnnotatedMethod<?, ? super T> method) {
-                log.trace(FOUND_ONE_POST_CONSTRUCT_METHOD, method, type);
+                BeanLogger.LOG.foundOnePostConstructMethod(method, type);
                 return method;
             }
         });
@@ -281,12 +269,12 @@ public class BeanMethods {
 
             @Override
             protected void duplicateMethod(EnhancedAnnotatedMethod<?, ? super T> method) {
-                throw new DefinitionException(TOO_MANY_PRE_DESTROY_METHODS, type);
+                throw UtilLogger.LOG.tooManyPreDestroyMethods(type);
             }
 
             @Override
             protected EnhancedAnnotatedMethod<?, ? super T> processLevelResult(EnhancedAnnotatedMethod<?, ? super T> method) {
-                log.trace(FOUND_PRE_DESTROY_METHODS, method, type);
+                BeanLogger.LOG.foundOnePreDestroyMethod(method, type);
                 return method;
             }
         });

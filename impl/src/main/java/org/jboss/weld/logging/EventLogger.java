@@ -1,0 +1,79 @@
+/*
+ * JBoss, Home of Professional Open Source
+ * Copyright 2013, Red Hat, Inc., and individual contributors
+ * by the @authors tag. See the copyright.txt in the distribution for a
+ * full listing of individual contributors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.jboss.weld.logging;
+
+import static org.jboss.weld.logging.WeldLogger.WELD_PROJECT_CODE;
+
+import org.jboss.logging.Logger;
+import org.jboss.logging.Logger.Level;
+import org.jboss.logging.annotations.LogMessage;
+import org.jboss.logging.annotations.Message;
+import org.jboss.logging.annotations.Message.Format;
+import org.jboss.logging.annotations.MessageLogger;
+import org.jboss.weld.exceptions.DefinitionException;
+import org.jboss.weld.exceptions.InvalidObjectException;
+
+/**
+ * Log messages for events
+ *
+ * Message ids: 000400 - 000499
+ */
+@MessageLogger(projectCode = WELD_PROJECT_CODE)
+public interface EventLogger extends WeldLogger {
+
+    EventLogger LOG = Logger.getMessageLogger(EventLogger.class, Category.EVENT.getName());
+
+    @LogMessage(level=Level.DEBUG)
+    @Message(id = 400, value = "Sending event {0} directly to observer {1}", format = Format.MESSAGE_FORMAT)
+    void asyncFire(Object param1, Object param2);
+
+    @LogMessage(level=Level.ERROR)
+    @Message(id = 401, value = "Failure while notifying an observer of event {0}", format = Format.MESSAGE_FORMAT)
+    void asyncObserverFailure(Object param1);
+
+    /**
+     * @deprecated Not in use
+     */
+    @Deprecated
+    @Message(id = 402, value = "Sending event {0} asynchronously to transactional observer {1}", format = Format.MESSAGE_FORMAT)
+    String asyncTxFire(Object param1, Object param2);
+
+    @Message(id = 403, value = "Proxy required")
+    InvalidObjectException proxyRequired();
+
+    @Message(id = 404, value = "Conditional observer method [{0}] cannot be declared by a @Dependent scoped bean", format = Format.MESSAGE_FORMAT)
+    DefinitionException invalidScopedConditionalObserver(Object param1);
+
+    @Message(id = 405, value = "Observer method [{0}] cannot have more than one event parameter annotated @Observes", format = Format.MESSAGE_FORMAT)
+    DefinitionException multipleEventParameters(Object param1);
+
+    @Message(id = 406, value = "Observer method [{0}] cannot have a parameter annotated with @Disposes", format = Format.MESSAGE_FORMAT)
+    DefinitionException invalidDisposesParameter(Object param1);
+
+    @Message(id = 407, value = "Observer method [{0}] cannot be annotated with @Produces", format = Format.MESSAGE_FORMAT)
+    DefinitionException invalidProducer(Object param1);
+
+    @Message(id = 408, value = "Observer method [{0}] cannot be annotated with @Inject; observer methods are automatically injection points", format = Format.MESSAGE_FORMAT)
+    DefinitionException invalidInitializer(Object param1);
+
+    @Message(id = 409, value = "Observer method for container lifecycle event [{0}] can only inject BeanManager.", format = Format.MESSAGE_FORMAT)
+    DefinitionException invalidInjectionPoint(Object param1);
+
+    @Message(id = 410, value = "Observer method {0} cannot define @WithAnnotations", format = Format.MESSAGE_FORMAT)
+    DefinitionException invalidWithAnnotations(Object param1);
+
+}

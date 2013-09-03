@@ -16,12 +16,10 @@
  */
 package org.jboss.weld.util;
 
-import static org.jboss.weld.logging.messages.UtilMessage.CLASS_NOT_ENUM;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
-import org.jboss.weld.exceptions.IllegalArgumentException;
+import org.jboss.weld.logging.UtilLogger;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
 
@@ -100,7 +98,7 @@ public class ApiAbstraction {
     protected Object enumValue(Class<?> clazz, String memberName) {
         Preconditions.checkArgumentNotNull(memberName, "memberName");
         if (!clazz.isEnum()) {
-            throw new IllegalArgumentException(CLASS_NOT_ENUM, clazz);
+            throw UtilLogger.LOG.classNotEnum(clazz);
         }
         try {
             Field field = clazz.getField(memberName);

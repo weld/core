@@ -16,10 +16,6 @@
  */
 package org.jboss.weld.bean;
 
-import static org.jboss.weld.logging.messages.BeanMessage.INCONSISTENT_ANNOTATIONS_ON_METHOD;
-import static org.jboss.weld.logging.messages.BeanMessage.METHOD_NOT_BUSINESS_METHOD;
-import static org.jboss.weld.logging.messages.BeanMessage.MULTIPLE_DISPOSE_PARAMS;
-
 import java.lang.reflect.Type;
 import java.util.Set;
 
@@ -41,10 +37,10 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.annotated.enhanced.MethodSignature;
 import org.jboss.weld.bootstrap.Validator;
-import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.ParameterInjectionPoint;
+import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resolution.QualifierInstance;
 import org.jboss.weld.util.reflection.Reflections;
@@ -97,25 +93,25 @@ public class DisposalMethod<X, T> {
 
     private void checkDisposalMethod(EnhancedAnnotatedMethod<T, ? super X> enhancedAnnotatedMethod, AbstractClassBean<X> declaringBean) {
         if (enhancedAnnotatedMethod.getEnhancedParameters(Disposes.class).size() > 1) {
-            throw new DefinitionException(MULTIPLE_DISPOSE_PARAMS, disposalMethodInjectionPoint);
+            throw BeanLogger.LOG.multipleDisposeParams(disposalMethodInjectionPoint);
         }
         if (enhancedAnnotatedMethod.getEnhancedParameters(Observes.class).size() > 0) {
-            throw new DefinitionException(INCONSISTENT_ANNOTATIONS_ON_METHOD, "@Observes", DISPOSER_ANNOTATION, disposalMethodInjectionPoint);
+            throw BeanLogger.LOG.inconsistentAnnotationsOnMethod("@Observes", DISPOSER_ANNOTATION, disposalMethodInjectionPoint);
         }
         if (enhancedAnnotatedMethod.getAnnotation(Inject.class) != null) {
-            throw new DefinitionException(INCONSISTENT_ANNOTATIONS_ON_METHOD, "@Inject", DISPOSER_ANNOTATION, disposalMethodInjectionPoint);
+            throw BeanLogger.LOG.inconsistentAnnotationsOnMethod("@Inject", DISPOSER_ANNOTATION, disposalMethodInjectionPoint);
         }
         if (enhancedAnnotatedMethod.getAnnotation(Produces.class) != null) {
-            throw new DefinitionException(INCONSISTENT_ANNOTATIONS_ON_METHOD, "@Produces", DISPOSER_ANNOTATION, disposalMethodInjectionPoint);
+            throw BeanLogger.LOG.inconsistentAnnotationsOnMethod("@Produces", DISPOSER_ANNOTATION, disposalMethodInjectionPoint);
         }
         if (enhancedAnnotatedMethod.getAnnotation(Specializes.class) != null) {
-            throw new DefinitionException(INCONSISTENT_ANNOTATIONS_ON_METHOD, "@Specialized", DISPOSER_ANNOTATION, disposalMethodInjectionPoint);
+            throw BeanLogger.LOG.inconsistentAnnotationsOnMethod("@Specialized", DISPOSER_ANNOTATION, disposalMethodInjectionPoint);
         }
         if (declaringBean instanceof SessionBean<?>) {
             SessionBean<?> sessionBean = (SessionBean<?>) declaringBean;
             Set<MethodSignature> businessMethodSignatures = sessionBean.getBusinessMethodSignatures();
             if (!businessMethodSignatures.contains(enhancedAnnotatedMethod.getSignature())) {
-                throw new DefinitionException(METHOD_NOT_BUSINESS_METHOD, enhancedAnnotatedMethod, declaringBean);
+                throw BeanLogger.LOG.methodNotBusinessMethod(enhancedAnnotatedMethod, declaringBean);
             }
         }
         for (ParameterInjectionPoint<?, ?> ip : disposalMethodInjectionPoint.getParameterInjectionPoints()) {

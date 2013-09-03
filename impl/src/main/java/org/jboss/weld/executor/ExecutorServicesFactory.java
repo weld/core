@@ -20,8 +20,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Properties;
 
-import org.jboss.weld.exceptions.DeploymentException;
-import org.jboss.weld.logging.messages.BootstrapMessage;
+import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.api.ExecutorServices;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
@@ -96,7 +95,7 @@ public class ExecutorServicesFactory {
         try {
             return Integer.valueOf(value);
         } catch (NumberFormatException e) {
-            throw new DeploymentException(BootstrapMessage.INVALID_THREAD_POOL_SIZE, value);
+            throw BootstrapLogger.LOG.invalidThreadPoolSize(value);
         }
     }
 
@@ -108,7 +107,7 @@ public class ExecutorServicesFactory {
         try {
             return Long.valueOf(value);
         } catch (NumberFormatException e) {
-            throw new DeploymentException(BootstrapMessage.INVALID_PROPERTY_VALUE, property, value);
+            throw BootstrapLogger.LOG.invalidPropertyValue(property, value);
         }
     }
 
@@ -126,8 +125,8 @@ public class ExecutorServicesFactory {
         String value = properties.getProperty(property);
         try {
             return ThreadPoolType.valueOf(value);
-        } catch (NumberFormatException e) {
-            throw new DeploymentException(BootstrapMessage.INVALID_THREAD_POOL_TYPE, value);
+        } catch (Exception e) {
+            throw BootstrapLogger.LOG.invalidThreadPoolType(value);
         }
     }
 

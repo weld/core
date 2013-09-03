@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.servlet;
 
-import static org.jboss.weld.logging.messages.ServletMessage.ONLY_HTTP_SERVLET_LIFECYCLE_DEFINED;
-
 import java.io.IOException;
 
 import javax.inject.Inject;
@@ -29,7 +27,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
-import org.jboss.weld.exceptions.IllegalStateException;
+import org.jboss.weld.logging.ServletLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
@@ -68,7 +66,7 @@ public class ConversationFilter implements Filter {
              * We do not deactivate the conversation context in the filer. WeldListener takes care of that!
              */
         } else {
-            throw new IllegalStateException(ONLY_HTTP_SERVLET_LIFECYCLE_DEFINED);
+            throw ServletLogger.LOG.onlyHttpServletLifecycleDefined();
         }
     }
 

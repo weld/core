@@ -16,12 +16,6 @@
  */
 package org.jboss.weld.injection.producer;
 
-import static org.jboss.weld.logging.messages.BeanMessage.DECORATED_HAS_NO_NOARGS_CONSTRUCTOR;
-import static org.jboss.weld.logging.messages.BeanMessage.DECORATED_NOARGS_CONSTRUCTOR_IS_PRIVATE;
-import static org.jboss.weld.logging.messages.BeanMessage.FINAL_BEAN_CLASS_WITH_DECORATORS_NOT_ALLOWED;
-import static org.jboss.weld.logging.messages.BeanMessage.FINAL_BEAN_CLASS_WITH_INTERCEPTORS_NOT_ALLOWED;
-import static org.jboss.weld.logging.messages.BeanMessage.NON_CONTAINER_DECORATOR;
-
 import java.lang.reflect.Modifier;
 import java.util.List;
 
@@ -36,11 +30,10 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bean.CustomDecoratorWrapper;
 import org.jboss.weld.bean.DecoratorImpl;
-import org.jboss.weld.exceptions.DeploymentException;
-import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.interceptor.util.InterceptionUtils;
+import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
 
@@ -150,15 +143,15 @@ public class BeanInjectionTarget<T> extends BasicInjectionTarget<T> {
     protected void checkNoArgsConstructor(EnhancedAnnotatedType<T> type) {
         EnhancedAnnotatedConstructor<T> constructor = type.getNoArgsEnhancedConstructor();
         if (constructor == null) {
-            throw new DeploymentException(DECORATED_HAS_NO_NOARGS_CONSTRUCTOR, this);
+            throw BeanLogger.LOG.decoratedHasNoNoargsConstructor(this);
         } else if (constructor.isPrivate()) {
-            throw new DeploymentException(DECORATED_NOARGS_CONSTRUCTOR_IS_PRIVATE, this);
+            throw BeanLogger.LOG.decoratedNoargsConstructorIsPrivate(this);
         }
     }
 
     protected void checkDecoratedMethods(EnhancedAnnotatedType<T> type, List<Decorator<?>> decorators) {
         if (type.isFinal()) {
-            throw new DeploymentException(FINAL_BEAN_CLASS_WITH_DECORATORS_NOT_ALLOWED, this);
+            throw BeanLogger.LOG.finalBeanClassWithDecoratorsNotAllowed(this);
         }
         checkNoArgsConstructor(type);
         for (Decorator<?> decorator : decorators) {
@@ -169,13 +162,13 @@ public class BeanInjectionTarget<T> extends BasicInjectionTarget<T> {
             } else if (decorator instanceof CustomDecoratorWrapper<?>) {
                 decoratorClass = ((CustomDecoratorWrapper<?>) decorator).getEnhancedAnnotated();
             } else {
-                throw new IllegalStateException(NON_CONTAINER_DECORATOR, decorator);
+                throw BeanLogger.LOG.nonContainerDecorator(decorator);
             }
 
             for (EnhancedAnnotatedMethod<?, ?> decoratorMethod : decoratorClass.getEnhancedMethods()) {
                 EnhancedAnnotatedMethod<?, ?> method = type.getEnhancedMethod(decoratorMethod.getSignature());
                 if (method != null && !method.isStatic() && !method.isPrivate() && method.isFinal()) {
-                    throw new DeploymentException(FINAL_BEAN_CLASS_WITH_INTERCEPTORS_NOT_ALLOWED, method, decoratorMethod);
+                    throw BeanLogger.LOG.finalBeanClassWithInterceptorsNotAllowed(this);
                 }
             }
         }

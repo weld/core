@@ -19,10 +19,6 @@ package org.jboss.weld.metadata.cache;
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.TYPE;
-import static org.jboss.weld.logging.Category.REFLECTION;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.ReflectionMessage.MISSING_TARGET;
-import static org.jboss.weld.logging.messages.ReflectionMessage.MISSING_TARGET_METHOD_FIELD_TYPE;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Target;
@@ -32,8 +28,8 @@ import javax.enterprise.context.NormalScope;
 import javax.inject.Scope;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotation;
+import org.jboss.weld.logging.ReflectionLogger;
 import org.jboss.weld.util.collections.Arrays2;
-import org.slf4j.cal10n.LocLogger;
 
 /**
  * Model of a scope
@@ -43,8 +39,6 @@ import org.slf4j.cal10n.LocLogger;
 public class ScopeModel<T extends Annotation> extends AnnotationModel<T> {
 
     private static final Set<Class<? extends Annotation>> META_ANNOTATIONS = Arrays2.asSet(Scope.class, NormalScope.class);
-
-    private static final LocLogger log = loggerFactory().getLogger(REFLECTION);
 
     private final boolean normal;
     private final boolean passivating;
@@ -75,9 +69,9 @@ public class ScopeModel<T extends Annotation> extends AnnotationModel<T> {
         super.check(annotatedAnnotation);
         if (isValid()) {
             if (!annotatedAnnotation.isAnnotationPresent(Target.class)) {
-                log.debug(MISSING_TARGET, annotatedAnnotation);
+                ReflectionLogger.LOG.missingTarget(annotatedAnnotation);
             } else if (!Arrays2.unorderedEquals(annotatedAnnotation.getAnnotation(Target.class).value(), METHOD, FIELD, TYPE)) {
-                log.debug(MISSING_TARGET_METHOD_FIELD_TYPE, annotatedAnnotation);
+                ReflectionLogger.LOG.missingTargetMethodFieldType(annotatedAnnotation);
             }
         }
     }

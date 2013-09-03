@@ -19,11 +19,9 @@ package org.jboss.weld.util.reflection.instantiation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
-import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.logging.ReflectionLogger;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
-
-import static org.jboss.weld.logging.messages.ReflectionMessage.REFLECTIONFACTORY_INSTANTIATION_FAILED;
 
 /**
  * A instantiator for sun.reflect.ReflectionFactory
@@ -60,7 +58,7 @@ public class ReflectionFactoryInstantiator implements Instantiator {
             Constructor<T> instanceConstructor = (Constructor<T>) generator.invoke(reflectionFactoryInstance, clazz, Object.class.getDeclaredConstructor());
             return instanceConstructor.newInstance();
         } catch (Exception e) {
-            throw new WeldException(REFLECTIONFACTORY_INSTANTIATION_FAILED, e, clazz);
+            throw ReflectionLogger.LOG.reflectionfactoryInstantiationFailed(clazz, e);
         }
     }
 }

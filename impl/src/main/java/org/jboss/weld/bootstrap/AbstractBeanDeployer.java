@@ -16,13 +16,6 @@
  */
 package org.jboss.weld.bootstrap;
 
-import static org.jboss.weld.logging.Category.BOOTSTRAP;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.BeanMessage.MULTIPLE_DISPOSAL_METHODS;
-import static org.jboss.weld.logging.messages.BootstrapMessage.FOUND_DECORATOR;
-import static org.jboss.weld.logging.messages.BootstrapMessage.FOUND_INTERCEPTOR;
-import static org.jboss.weld.logging.messages.BootstrapMessage.FOUND_OBSERVER_METHOD;
-
 import java.lang.reflect.Member;
 import java.util.Set;
 
@@ -64,7 +57,8 @@ import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.event.ObserverFactory;
 import org.jboss.weld.event.ObserverMethodImpl;
-import org.jboss.weld.exceptions.DefinitionException;
+import org.jboss.weld.logging.BeanLogger;
+import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
 import org.jboss.weld.resources.ClassTransformer;
@@ -73,7 +67,6 @@ import org.jboss.weld.util.Observers;
 import org.jboss.weld.util.collections.WeldCollections;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.ws.WSApiAbstraction;
-import org.slf4j.cal10n.LocLogger;
 
 /**
  * @author Pete Muir
@@ -81,8 +74,6 @@ import org.slf4j.cal10n.LocLogger;
  * @author Jozef Hartinger
  */
 public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
-
-    private static final LocLogger log = loggerFactory().getLogger(BOOTSTRAP);
 
     private final BeanManagerImpl manager;
     private final ServiceRegistry services;
@@ -114,13 +105,13 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
             bean.initialize(getEnvironment());
             containerLifecycleEvents.fireProcessBean(getManager(), bean);
             manager.addDecorator(bean);
-            log.debug(FOUND_DECORATOR, bean);
+            BootstrapLogger.LOG.foundDecorator(bean);
         }
         for (InterceptorImpl<?> bean : getEnvironment().getInterceptors()) {
             bean.initialize(getEnvironment());
             containerLifecycleEvents.fireProcessBean(getManager(), bean);
             manager.addInterceptor(bean);
-            log.debug(FOUND_INTERCEPTOR, bean);
+            BootstrapLogger.LOG.foundInterceptor(bean);
         }
         return this;
     }
@@ -168,7 +159,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
         // TODO -- why do observers have to be the last?
         for (ObserverInitializationContext<?, ?> observerInitializer : getEnvironment().getObservers()) {
             if (Observers.isObserverMethodEnabled(observerInitializer.getObserver(), manager)) {
-                log.debug(FOUND_OBSERVER_METHOD, observerInitializer.getObserver());
+                BootstrapLogger.LOG.foundObserverMethod(observerInitializer.getObserver());
                 ProcessObserverMethodImpl.fire(manager, observerInitializer.getObserver());
                 manager.addObserver(observerInitializer.getObserver());
             }
@@ -199,7 +190,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
         if (disposalBeans.size() == 1) {
             return disposalBeans.iterator().next();
         } else if (disposalBeans.size() > 1) {
-            throw new DefinitionException(MULTIPLE_DISPOSAL_METHODS, this, WeldCollections.toMultiRowString(disposalBeans));
+            throw BeanLogger.LOG.multipleDisposalMethods(this, WeldCollections.toMultiRowString(disposalBeans));
         }
         return null;
     }

@@ -29,15 +29,12 @@ public class NullInstanceException extends WeldException {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Creates a new exception with the given localized message key and optional
-     * arguments for the message.
+     * Creates a new exception with the given localized message.
      *
-     * @param <E>  The enumeration type for the message keys
-     * @param key  The localized message to use
-     * @param args Optional arguments to insert into the message
+     * @param message
      */
-    public <E extends Enum<?>> NullInstanceException(E key, Object... args) {
-        super(key, args);
+    public NullInstanceException(String message) {
+        super(message);
     }
 
 }

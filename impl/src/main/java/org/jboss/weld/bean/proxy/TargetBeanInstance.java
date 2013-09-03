@@ -22,6 +22,8 @@ import java.lang.reflect.Method;
 
 import javax.enterprise.inject.spi.Bean;
 
+import org.jboss.weld.logging.BeanLogger;
+
 /**
  * A simple {@link BeanInstance} which always maintains a specific bean instance that is being proxied.
  *
@@ -79,14 +81,14 @@ public class TargetBeanInstance extends AbstractBeanInstance implements Serializ
     @Override
     public Object invoke(Object instance, Method method, Object... arguments) throws Throwable {
         if (interceptorsHandler != null) {
-            log.trace("Invoking interceptor chain for method {} on {}", method.toGenericString(), instance);
+            BeanLogger.LOG.invokingInterceptorChain(method.toGenericString(), instance);
             if (method.getDeclaringClass().isInterface()) {
                 return interceptorsHandler.invoke(instance, method, null, arguments);
             } else {
                 return interceptorsHandler.invoke(instance, method, method, arguments);
             }
         } else {
-            log.trace("Invoking method {} directly on {}", method.toGenericString(), instance);
+            BeanLogger.LOG.invokingMethodDirectly(method.toGenericString(), instance);
             return super.invoke(instance, method, arguments);
         }
     }

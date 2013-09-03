@@ -16,10 +16,6 @@
  */
 package org.jboss.weld.injection.producer;
 
-import static org.jboss.weld.logging.messages.BeanMessage.CONFLICTING_INTERCEPTOR_BINDINGS;
-import static org.jboss.weld.logging.messages.BeanMessage.FINAL_BEAN_CLASS_WITH_INTERCEPTORS_NOT_ALLOWED;
-import static org.jboss.weld.logging.messages.BeanMessage.FINAL_INTERCEPTED_BEAN_METHOD_NOT_ALLOWED;
-import static org.jboss.weld.logging.messages.ValidatorMessage.NOT_PROXYABLE_PRIVATE_CONSTRUCTOR;
 import static org.jboss.weld.util.Interceptors.filterInterceptorBindings;
 import static org.jboss.weld.util.Interceptors.flattenInterceptorBindings;
 import static org.jboss.weld.util.Interceptors.mergeBeanInterceptorBindings;
@@ -55,6 +51,8 @@ import org.jboss.weld.interceptor.builder.InterceptorsApiAbstraction;
 import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
+import org.jboss.weld.logging.BeanLogger;
+import org.jboss.weld.logging.ValidatorLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
 import org.jboss.weld.util.Beans;
@@ -117,10 +115,10 @@ public class InterceptionModelInitializer<T> {
         InterceptionModel<ClassMetadata<?>> interceptionModel = builder.build();
         if (interceptionModel.getAllInterceptors().size() > 0 || hasSerializationOrInvocationInterceptorMethods) {
             if (annotatedType.isFinal()) {
-                throw new DeploymentException(FINAL_BEAN_CLASS_WITH_INTERCEPTORS_NOT_ALLOWED, annotatedType.getJavaClass());
+                throw BeanLogger.LOG.finalBeanClassWithInterceptorsNotAllowed(annotatedType.getJavaClass());
             }
             if (Reflections.isPrivate(constructor.getJavaMember())) {
-                throw new DeploymentException(NOT_PROXYABLE_PRIVATE_CONSTRUCTOR, annotatedType.getJavaClass(), constructor, annotatedType.getJavaClass());
+                throw new DeploymentException(ValidatorLogger.LOG.notProxyablePrivateConstructor(annotatedType.getJavaClass(), constructor, annotatedType.getJavaClass()));
             }
             manager.getInterceptorModelRegistry().put(annotatedType.getJavaClass(), interceptionModel);
         }
@@ -199,7 +197,7 @@ public class InterceptionModelInitializer<T> {
         List<Interceptor<?>> methodBoundInterceptors = manager.resolveInterceptors(interceptionType, methodBindingAnnotations);
         if (methodBoundInterceptors != null && methodBoundInterceptors.size() > 0) {
             if (Reflections.isFinal(method.getJavaMember())) {
-                throw new DeploymentException(FINAL_INTERCEPTED_BEAN_METHOD_NOT_ALLOWED, method, methodBoundInterceptors.get(0).getBeanClass().getName());
+                throw BeanLogger.LOG.finalInterceptedBeanMethodNotAllowed(method, methodBoundInterceptors.get(0).getBeanClass().getName());
             }
             Method javaMethod = Reflections.<AnnotatedMethod<T>>cast(method).getJavaMember();
             builder.intercept(interceptionType, javaMethod).with(toSerializableContextualArray(methodBoundInterceptors));
@@ -286,7 +284,7 @@ public class InterceptionModelInitializer<T> {
         Class<?>[] methodDeclaredInterceptors = interceptorsApi.extractInterceptorClasses(method);
         if (methodDeclaredInterceptors != null && methodDeclaredInterceptors.length > 0) {
             if (Reflections.isFinal(method.getJavaMember())) {
-                throw new DeploymentException(FINAL_INTERCEPTED_BEAN_METHOD_NOT_ALLOWED, method, methodDeclaredInterceptors[0].getName());
+                throw new DeploymentException(BeanLogger.LOG.finalInterceptedBeanMethodNotAllowed(method, methodDeclaredInterceptors[0].getName()));
             }
 
             InterceptionType interceptionType = isTimeoutAnnotationPresentOn(method)
@@ -351,7 +349,7 @@ public class InterceptionModelInitializer<T> {
         for (Annotation methodBinding : methodBindingAnnotations) {
             Class<? extends Annotation> methodBindingType = methodBinding.annotationType();
             if (processedBindingTypes.contains(methodBindingType)) {
-                throw new DeploymentException(CONFLICTING_INTERCEPTOR_BINDINGS, annotatedType);
+                throw new DeploymentException(BeanLogger.LOG.conflictingInterceptorBindings(annotatedType));
             }
             processedBindingTypes.add(methodBindingType);
             // override bean interceptor binding

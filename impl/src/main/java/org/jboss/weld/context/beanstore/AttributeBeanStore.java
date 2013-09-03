@@ -16,22 +16,12 @@
  */
 package org.jboss.weld.context.beanstore;
 
-import static org.jboss.weld.logging.Category.CONTEXT;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.ContextMessage.ADDING_DETACHED_CONTEXTUAL_UNDER_ID;
-import static org.jboss.weld.logging.messages.ContextMessage.BEAN_STORE_DETACHED;
-import static org.jboss.weld.logging.messages.ContextMessage.CONTEXTUAL_INSTANCE_ADDED;
-import static org.jboss.weld.logging.messages.ContextMessage.CONTEXTUAL_INSTANCE_FOUND;
-import static org.jboss.weld.logging.messages.ContextMessage.CONTEXTUAL_INSTANCE_REMOVED;
-import static org.jboss.weld.logging.messages.ContextMessage.CONTEXT_CLEARED;
-import static org.jboss.weld.logging.messages.ContextMessage.UPDATING_STORE_WITH_CONTEXTUAL_UNDER_ID;
-
 import java.util.Collection;
 import java.util.Iterator;
 
 import org.jboss.weld.context.api.ContextualInstance;
+import org.jboss.weld.logging.ContextLogger;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
-import org.slf4j.cal10n.LocLogger;
 
 /**
  * <p>
@@ -52,8 +42,6 @@ import org.slf4j.cal10n.LocLogger;
  */
 public abstract class AttributeBeanStore implements BoundBeanStore {
 
-    private static final LocLogger log = loggerFactory().getLogger(CONTEXT);
-
     private final HashMapBeanStore beanStore;
     private final NamingScheme namingScheme;
 
@@ -71,7 +59,7 @@ public abstract class AttributeBeanStore implements BoundBeanStore {
     public boolean detach() {
         if (attached) {
             attached = false;
-            log.trace(BEAN_STORE_DETACHED, this);
+            ContextLogger.LOG.beanStoreDetached(this);
             return true;
         } else {
             return false;
@@ -96,7 +84,7 @@ public abstract class AttributeBeanStore implements BoundBeanStore {
             for (BeanIdentifier id : beanStore) {
                 ContextualInstance<?> instance = beanStore.get(id);
                 String prefixedId = getNamingScheme().prefix(id);
-                log.trace(UPDATING_STORE_WITH_CONTEXTUAL_UNDER_ID, instance, id);
+                ContextLogger.LOG.updatingStoreWithContextualUnderId(instance, id);
                 setAttribute(prefixedId, instance);
             }
 
@@ -109,7 +97,7 @@ public abstract class AttributeBeanStore implements BoundBeanStore {
                 if (!beanStore.contains(id)) {
                     ContextualInstance<?> instance = (ContextualInstance<?>) getAttribute(prefixedId);
                     beanStore.put(id, instance);
-                    log.trace(ADDING_DETACHED_CONTEXTUAL_UNDER_ID, instance, id);
+                    ContextLogger.LOG.addingDetachedContextualUnderId(instance, id);
                 }
             }
             return true;
@@ -125,7 +113,7 @@ public abstract class AttributeBeanStore implements BoundBeanStore {
     @Override
     public <T> ContextualInstance<T> get(BeanIdentifier id) {
         ContextualInstance<T> instance = beanStore.get(id);
-        log.trace(CONTEXTUAL_INSTANCE_FOUND, id, instance, this);
+        ContextLogger.LOG.contextualInstanceFound(id, instance, this);
         return instance;
     }
 
@@ -136,7 +124,7 @@ public abstract class AttributeBeanStore implements BoundBeanStore {
             String prefixedId = namingScheme.prefix(id);
             setAttribute(prefixedId, instance);
         }
-        log.trace(CONTEXTUAL_INSTANCE_ADDED, instance.getContextual(), id, this);
+        ContextLogger.LOG.contextualInstanceAdded(instance.getContextual(), id, this);
     }
 
     @Override
@@ -146,7 +134,7 @@ public abstract class AttributeBeanStore implements BoundBeanStore {
             if (isAttached()) {
                 removeAttribute(namingScheme.prefix(id));
             }
-            log.trace(CONTEXTUAL_INSTANCE_REMOVED, id, this);
+            ContextLogger.LOG.contextualInstanceRemoved(id, this);
         }
         return instance;
     }
@@ -160,9 +148,9 @@ public abstract class AttributeBeanStore implements BoundBeanStore {
                 removeAttribute(prefixedId);
             }
             it.remove();
-            log.trace(CONTEXTUAL_INSTANCE_REMOVED, id, this);
+            ContextLogger.LOG.contextualInstanceRemoved(id, this);
         }
-        log.trace(CONTEXT_CLEARED, this);
+        ContextLogger.LOG.contextCleared(this);
     }
 
     public boolean contains(BeanIdentifier id) {

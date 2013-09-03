@@ -16,9 +16,6 @@
  */
 package org.jboss.weld.environment.servlet.deployment;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -31,6 +28,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
+import org.jboss.logging.Logger;
+
 /**
  * This class provides file-system orientated scanning
  *
@@ -39,7 +38,7 @@ import java.util.zip.ZipFile;
  * @author Marko Luksa
  */
 public class URLScanner {
-    private static final Logger log = LoggerFactory.getLogger(URLScanner.class);
+    private static final Logger log = Logger.getLogger(URLScanner.class);
 
     private static final String CLASS_FILENAME_EXTENSION = ".class";
     private static final String COULD_NOT_READ = "could not read: ";
@@ -120,7 +119,7 @@ public class URLScanner {
     protected void handle(Set<String> paths, Set<String> classes, Set<URL> urls) {
         for (String urlPath : paths) {
             try {
-                log.trace("scanning: {}", urlPath);
+                log.tracev("scanning: {0}", urlPath);
 
                 File file = new File(urlPath);
 
@@ -137,7 +136,7 @@ public class URLScanner {
 
     protected void handleArchiveByFile(File file, Set<String> classes, Set<URL> urls) throws IOException {
         try {
-            log.trace("archive: {}", file);
+            log.tracev("archive: {0}", file);
 
             ZipFile zip = new ZipFile(file);
             Enumeration<? extends ZipEntry> entries = zip.entries();
@@ -152,6 +151,7 @@ public class URLScanner {
                 URL entryUrl = new URL(entryUrlString);
                 handle(name, entryUrl, classes, urls);
             }
+            zip.close();
         } catch (ZipException e) {
             throw new RuntimeException("Error handling file " + file, e);
         }
@@ -164,13 +164,13 @@ public class URLScanner {
     private void handleDirectory(File file, String path, File[] excludedDirectories, Set<String> classes, Set<URL> urls) {
         for (File excludedDirectory : excludedDirectories) {
             if (file.equals(excludedDirectory)) {
-                log.trace("skipping excluded directory: {}", file);
+                log.tracev("skipping excluded directory: {0}", file);
 
                 return;
             }
         }
 
-        log.trace("handling directory: {}", file);
+        log.tracev("handling directory: {0}", file);
 
         for (File child : file.listFiles()) {
             String newPath = (path == null) ? child.getName() : (path + '/' + child.getName());
@@ -181,7 +181,7 @@ public class URLScanner {
                 try {
                     handle(newPath, child.toURI().toURL(), classes, urls);
                 } catch (MalformedURLException e) {
-                    log.error("Error loading file {}", newPath);
+                    log.errorv("Error loading file {0}", newPath);
                 }
             }
         }

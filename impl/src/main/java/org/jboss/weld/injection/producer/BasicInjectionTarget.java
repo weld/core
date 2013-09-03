@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.injection.producer;
 
-import static org.jboss.weld.logging.messages.BeanMessage.SIMPLE_BEAN_AS_NON_STATIC_INNER_CLASS_NOT_ALLOWED;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -29,7 +27,7 @@ import javax.enterprise.inject.spi.InjectionTarget;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
-import org.jboss.weld.exceptions.DefinitionException;
+import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.collections.WeldCollections;
 import org.jboss.weld.util.reflection.Reflections;
@@ -78,7 +76,7 @@ public class BasicInjectionTarget<T> extends AbstractProducer<T> implements Inje
 
     protected void checkType(EnhancedAnnotatedType<T> type) {
         if (Reflections.isNonStaticInnerClass(type.getJavaClass())) {
-            throw new DefinitionException(SIMPLE_BEAN_AS_NON_STATIC_INNER_CLASS_NOT_ALLOWED, type);
+            throw BeanLogger.LOG.simpleBeanAsNonStaticInnerClassNotAllowed(type);
         }
     }
 

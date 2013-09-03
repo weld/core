@@ -16,23 +16,18 @@
  */
 package org.jboss.weld.resources;
 
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.CANNOT_LOCATE_BEAN_MANAGER;
-
 import java.util.Hashtable;
 import java.util.Map.Entry;
 
 import javax.naming.Context;
 import javax.naming.Name;
-import javax.naming.NamingException;
 import javax.naming.spi.ObjectFactory;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
+import org.jboss.weld.logging.BeanManagerLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
-
-import ch.qos.cal10n.IMessageConveyor;
 
 public class ManagerObjectFactory implements ObjectFactory {
     private final String contextId;
@@ -45,9 +40,6 @@ public class ManagerObjectFactory implements ObjectFactory {
         this.contextId = contextId;
     }
 
-    // Exception messages
-    private static final IMessageConveyor messageConveyor = loggerFactory().getMessageConveyor();
-
     public Object getObjectInstance(Object obj, Name name, Context nameCtx, Hashtable<?, ?> environment) throws Exception {
         if (Container.available(contextId)) {
             for (Entry<BeanDeploymentArchive, BeanManagerImpl> entry : Container.instance(contextId).beanDeploymentArchives().entrySet()) {
@@ -55,9 +47,9 @@ public class ManagerObjectFactory implements ObjectFactory {
                     return entry.getValue().getCurrent();
                 }
             }
-            throw new NamingException(messageConveyor.getMessage(CANNOT_LOCATE_BEAN_MANAGER));
+            throw BeanManagerLogger.LOG.cannotLocateBeanManager();
         } else {
-            throw new NamingException(messageConveyor.getMessage(CANNOT_LOCATE_BEAN_MANAGER));
+            throw BeanManagerLogger.LOG.cannotLocateBeanManager();
         }
     }
 

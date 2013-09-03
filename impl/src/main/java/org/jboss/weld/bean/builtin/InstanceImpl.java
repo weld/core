@@ -16,9 +16,6 @@
  */
 package org.jboss.weld.bean.builtin;
 
-import static org.jboss.weld.logging.messages.BeanMessage.DESTROY_UNSUPPORTED;
-import static org.jboss.weld.logging.messages.BeanMessage.INSTANCE_ITERATOR_REMOVE_UNSUPPORTED;
-import static org.jboss.weld.logging.messages.BeanMessage.PROXY_REQUIRED;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.io.ObjectInputStream;
@@ -41,8 +38,8 @@ import org.jboss.weld.bean.proxy.ProxyMethodHandler;
 import org.jboss.weld.bean.proxy.ProxyObject;
 import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.exceptions.InvalidObjectException;
-import org.jboss.weld.exceptions.UnsupportedOperationException;
 import org.jboss.weld.injection.CurrentInjectionPoint;
+import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resolution.Resolvable;
 import org.jboss.weld.resolution.ResolvableBuilder;
@@ -152,7 +149,7 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
                     alterableContext.destroy(bean);
                     return;
                 } else {
-                    throw new UnsupportedOperationException(DESTROY_UNSUPPORTED, context);
+                    throw BeanLogger.LOG.destroyUnsupported(context);
                 }
             }
         }
@@ -172,7 +169,7 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
     }
 
     private void readObject(ObjectInputStream stream) throws InvalidObjectException {
-        throw new InvalidObjectException(PROXY_REQUIRED);
+        throw BeanLogger.LOG.proxyRequired();
     }
 
     private static class SerializationProxy<T> extends AbstractFacadeSerializationProxy<T, Instance<T>> {
@@ -210,7 +207,7 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
 
         @Override
         public void remove() {
-            throw new UnsupportedOperationException(INSTANCE_ITERATOR_REMOVE_UNSUPPORTED);
+            throw BeanLogger.LOG.instanceIteratorRemoveUnsupported();
         }
 
     }

@@ -1,14 +1,6 @@
 package org.jboss.weld.xml;
 
 import static java.util.Arrays.asList;
-import static org.jboss.weld.logging.Category.BOOTSTRAP;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.XmlMessage.MULTIPLE_ALTERNATIVES;
-import static org.jboss.weld.logging.messages.XmlMessage.MULTIPLE_DECORATORS;
-import static org.jboss.weld.logging.messages.XmlMessage.MULTIPLE_INTERCEPTORS;
-import static org.jboss.weld.logging.messages.XmlMessage.MULTIPLE_SCANNING;
-import static org.jboss.weld.logging.messages.XmlMessage.XSD_VALIDATION_ERROR;
-import static org.jboss.weld.logging.messages.XmlMessage.XSD_VALIDATION_WARNING;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -22,14 +14,13 @@ import org.jboss.weld.bootstrap.spi.ClassAvailableActivation;
 import org.jboss.weld.bootstrap.spi.Filter;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.bootstrap.spi.SystemPropertyActivation;
-import org.jboss.weld.exceptions.DefinitionException;
+import org.jboss.weld.logging.XmlLogger;
 import org.jboss.weld.metadata.BeansXmlImpl;
 import org.jboss.weld.metadata.ClassAvailableActivationImpl;
 import org.jboss.weld.metadata.FilterImpl;
 import org.jboss.weld.metadata.ScanningImpl;
 import org.jboss.weld.metadata.SystemPropertyActivationImpl;
 import org.jboss.weld.metadata.WeldFilterImpl;
-import org.slf4j.cal10n.LocLogger;
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
@@ -46,8 +37,6 @@ import com.google.common.collect.ImmutableSet;
  * @author Pete Muir
  */
 public class BeansXmlHandler extends DefaultHandler {
-
-    static final LocLogger log = loggerFactory().getLogger(BOOTSTRAP);
 
     private static final String VALUE_ATTRIBUTE_QUALIFIED_NAME = "value";
     private static final String PATTERN_ATTRIBUTE_QUALIFIED_NAME = "pattern";
@@ -193,7 +182,7 @@ public class BeansXmlHandler extends DefaultHandler {
 
             @Override
             public void handleMultiple() {
-                throw new DefinitionException(MULTIPLE_INTERCEPTORS, file + "@" + locator.getLineNumber());
+                throw XmlLogger.LOG.multipleInterceptors(file + "@" + locator.getLineNumber());
             }
         });
         containers.add(new SpecContainer("decorators", CLASS) {
@@ -207,7 +196,7 @@ public class BeansXmlHandler extends DefaultHandler {
 
             @Override
             public void handleMultiple() {
-                throw new DefinitionException(MULTIPLE_DECORATORS, file + "@" + locator.getLineNumber());
+                throw XmlLogger.LOG.multipleDecorators(file + "@" + locator.getLineNumber());
             }
         });
         containers.add(new SpecContainer("alternatives", CLASS, STEREOTYPE) {
@@ -223,7 +212,7 @@ public class BeansXmlHandler extends DefaultHandler {
 
             @Override
             public void handleMultiple() {
-                throw new DefinitionException(MULTIPLE_ALTERNATIVES, file + "@" + locator.getLineNumber());
+                throw XmlLogger.LOG.multipleAlternatives(file + "@" + locator.getLineNumber());
             }
         });
         containers.add(new Container(SCANNING_URI, "scan") {
@@ -283,7 +272,7 @@ public class BeansXmlHandler extends DefaultHandler {
 
             @Override
             public void handleMultiple() {
-                throw new DefinitionException(MULTIPLE_SCANNING, file + "@" + locator.getLineNumber());
+                throw XmlLogger.LOG.multipleScanning(file + "@" + locator.getLineNumber());
             }
 
         });
@@ -380,7 +369,7 @@ public class BeansXmlHandler extends DefaultHandler {
 
     @Override
     public void warning(SAXParseException e) throws SAXException {
-        log.warn(XSD_VALIDATION_WARNING, file, e.getLineNumber(), e.getMessage());
+        XmlLogger.LOG.xsdValidationWarning(file, e.getLineNumber(), e.getMessage());
     }
 
     @Override
@@ -389,7 +378,7 @@ public class BeansXmlHandler extends DefaultHandler {
             // Ignore the errors we get when there is no schema defined
             return;
         }
-        log.warn(XSD_VALIDATION_ERROR, file, e.getLineNumber(), e.getMessage());
+        XmlLogger.LOG.xsdValidationError(file, e.getLineNumber(), e.getMessage());
     }
 
     protected String interpolate(String string) {

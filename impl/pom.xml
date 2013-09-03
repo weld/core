@@ -86,18 +86,14 @@
         </dependency>
 
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-ext</artifactId>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>jboss-logging-processor</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
-            <groupId>ch.qos.cal10n</groupId>
-            <artifactId>cal10n-api</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>jboss-logging</artifactId>
         </dependency>
 
         <dependency>
@@ -116,9 +112,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <scope>test</scope>
+           <groupId>org.jboss.logmanager</groupId>
+           <artifactId>jboss-logmanager</artifactId>
+           <scope>test</scope>
         </dependency>
 
     </dependencies>
@@ -133,41 +129,6 @@
                         <include>**/*Test.java</include>
                     </includes>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>ch.qos.cal10n.plugins</groupId>
-                <artifactId>maven-cal10n-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>verify-messages</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>verify</goal>
-                        </goals>
-                        <configuration>
-                            <enumTypes>
-                                <!-- list every enum type you would like 
-                                    to see checked -->
-                                <enumType>org.jboss.weld.logging.messages.BeanManagerMessage</enumType>
-                                <enumType>org.jboss.weld.logging.messages.BeanMessage</enumType>
-                                <enumType>org.jboss.weld.logging.messages.BootstrapMessage</enumType>
-                                <enumType>org.jboss.weld.logging.messages.ContextMessage</enumType>
-                                <enumType>org.jboss.weld.logging.messages.ConversationMessage</enumType>
-                                <enumType>org.jboss.weld.logging.messages.ElMessage</enumType>
-                                <enumType>org.jboss.weld.logging.messages.EventMessage</enumType>
-                                <enumType>org.jboss.weld.logging.messages.JsfMessage</enumType>
-                                <enumType>org.jboss.weld.logging.messages.MetadataMessage</enumType>
-                                <enumType>org.jboss.weld.logging.messages.ReflectionMessage</enumType>
-                                <enumType>org.jboss.weld.logging.messages.ResolutionMessage</enumType>
-                                <enumType>org.jboss.weld.logging.messages.ServletMessage</enumType>
-                                <enumType>org.jboss.weld.logging.messages.UtilMessage</enumType>
-                                <enumType>org.jboss.weld.logging.messages.ValidatorMessage</enumType>
-                                <enumType>org.jboss.weld.logging.messages.VersionMessage</enumType>
-                                <enumType>org.jboss.weld.logging.messages.XmlMessage</enumType>
-                            </enumTypes>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
@@ -192,13 +153,6 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>findbugs-maven-plugin</artifactId>
-                        <dependencies>
-                            <dependency>
-                                <groupId>org.slf4j</groupId>
-                                <artifactId>slf4j-simple</artifactId>
-                                <version>${slf4j.version}</version>
-                            </dependency>
-                        </dependencies>
                         <configuration>
                             <effort>Max</effort>
                             <threshold>Low</threshold>

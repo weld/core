@@ -16,13 +16,11 @@
  */
 package org.jboss.weld.bean.builtin.ee;
 
-import org.jboss.weld.exceptions.IllegalStateException;
-import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.transaction.spi.TransactionServices;
-
 import javax.transaction.UserTransaction;
 
-import static org.jboss.weld.logging.messages.BeanMessage.TRANSACTION_SERVICES_NOT_AVAILABLE;
+import org.jboss.weld.logging.BeanLogger;
+import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.transaction.spi.TransactionServices;
 
 /**
  * @author pmuir
@@ -42,7 +40,7 @@ public class UserTransactionBean extends AbstractEEBean<UserTransaction> {
             if (transactionServices != null) {
                 return transactionServices.getUserTransaction();
             } else {
-                throw new IllegalStateException(TRANSACTION_SERVICES_NOT_AVAILABLE);
+                throw BeanLogger.LOG.transactionServicesNotAvailable();
             }
         }
 

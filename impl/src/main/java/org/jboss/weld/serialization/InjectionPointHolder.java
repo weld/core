@@ -26,9 +26,7 @@ import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 
-import org.jboss.weld.exceptions.IllegalArgumentException;
-import org.jboss.weld.exceptions.IllegalStateException;
-import org.jboss.weld.logging.messages.BeanMessage;
+import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
@@ -59,10 +57,10 @@ public class InjectionPointHolder extends AbstractSerializableHolder<InjectionPo
                 AnnotatedMethod<?> method = Reflections.cast(parameter.getDeclaringCallable());
                 this.identifier = new MethodParameterInjectionPointIdentifier(contextId, ip.getBean(), parameter.getPosition(), method);
             } else {
-                throw new IllegalArgumentException(BeanMessage.INVALID_ANNOTATED_CALLABLE, parameter.getDeclaringCallable());
+                throw BeanLogger.LOG.invalidAnnotatedCallable(parameter.getDeclaringCallable());
             }
         } else {
-            throw new IllegalArgumentException(BeanMessage.INVALID_ANNOTATED_OF_INJECTION_POINT, ip.getAnnotated(), ip);
+            throw BeanLogger.LOG.invalidAnnotatedOfInjectionPoint(ip.getAnnotated(), ip);
         }
     }
 
@@ -116,13 +114,13 @@ public class InjectionPointHolder extends AbstractSerializableHolder<InjectionPo
             for (InjectionPoint ip : bean.get().getInjectionPoints()) {
                 if (matches(ip)) {
                     if (injectionPoint != null) {
-                        throw new IllegalStateException(BeanMessage.UNABLE_TO_RESTORE_INJECTION_POINT_MULTIPLE, bean.get(), injectionPoint, ip);
+                        throw BeanLogger.LOG.unableToRestoreInjectionPointMultiple(bean.get(), injectionPoint, ip);
                     }
                     injectionPoint = ip;
                 }
             }
             if (injectionPoint == null) {
-                throw new IllegalStateException(BeanMessage.UNABLE_TO_RESTORE_INJECTION_POINT, bean.get());
+                throw BeanLogger.LOG.unableToRestoreInjectionPoint(bean.get());
             }
             return injectionPoint;
         }

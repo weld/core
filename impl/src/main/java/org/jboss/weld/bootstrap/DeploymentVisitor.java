@@ -1,7 +1,5 @@
 package org.jboss.weld.bootstrap;
 
-import static org.jboss.weld.logging.messages.BootstrapMessage.DEPLOYMENT_ARCHIVE_NULL;
-
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -13,6 +11,7 @@ import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
+import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.util.reflection.instantiation.InstantiatorFactory;
@@ -54,7 +53,7 @@ public class DeploymentVisitor {
 
         // Check the id is not null
         if (bda.getId() == null) {
-            throw new org.jboss.weld.exceptions.IllegalArgumentException(DEPLOYMENT_ARCHIVE_NULL, bda);
+            throw BootstrapLogger.LOG.deploymentArchiveNull(bda);
         }
 
         BeanDeployment parent = bdaMapping.getBeanDeployment(bda);

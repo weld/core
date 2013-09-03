@@ -17,12 +17,6 @@
 
 package org.jboss.weld.bean.interceptor;
 
-import static org.jboss.weld.logging.messages.BeanMessage.INTERCEPTION_MODEL_NULL;
-import static org.jboss.weld.logging.messages.BeanMessage.INTERCEPTION_TYPE_LIFECYCLE;
-import static org.jboss.weld.logging.messages.BeanMessage.INTERCEPTION_TYPE_NOT_LIFECYCLE;
-import static org.jboss.weld.logging.messages.BeanMessage.INTERCEPTION_TYPE_NULL;
-import static org.jboss.weld.logging.messages.BeanMessage.METHOD_NULL;
-
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,11 +27,11 @@ import javax.enterprise.inject.spi.InterceptionType;
 import javax.enterprise.inject.spi.Interceptor;
 
 import org.jboss.weld.ejb.spi.InterceptorBindings;
-import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorFactory;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
+import org.jboss.weld.logging.BeanLogger;
 
 /**
  * @author Marius Bogoevici
@@ -48,7 +42,7 @@ public class InterceptorBindingsAdapter implements InterceptorBindings {
 
     public InterceptorBindingsAdapter(InterceptionModel<ClassMetadata<?>> interceptionModel) {
         if (interceptionModel == null) {
-            throw new IllegalArgumentException(INTERCEPTION_MODEL_NULL);
+            throw BeanLogger.LOG.interceptionModelNull();
         }
         this.interceptionModel = interceptionModel;
     }
@@ -60,17 +54,17 @@ public class InterceptorBindingsAdapter implements InterceptorBindings {
 
     public List<Interceptor<?>> getMethodInterceptors(InterceptionType interceptionType, Method method) {
         if (interceptionType == null) {
-            throw new IllegalArgumentException(INTERCEPTION_TYPE_NULL);
+            throw BeanLogger.LOG.interceptionTypeNull();
         }
 
         if (method == null) {
-            throw new IllegalArgumentException(METHOD_NULL);
+            throw BeanLogger.LOG.methodNull();
         }
 
         org.jboss.weld.interceptor.spi.model.InterceptionType internalInterceptionType = org.jboss.weld.interceptor.spi.model.InterceptionType.valueOf(interceptionType.name());
 
         if (internalInterceptionType.isLifecycleCallback()) {
-            throw new IllegalArgumentException(INTERCEPTION_TYPE_LIFECYCLE, interceptionType.name());
+            throw BeanLogger.LOG.interceptionTypeLifecycle(interceptionType.name());
         }
 
         return extractCdiInterceptors(interceptionModel.getInterceptors(internalInterceptionType, method));
@@ -79,13 +73,13 @@ public class InterceptorBindingsAdapter implements InterceptorBindings {
 
     public List<Interceptor<?>> getLifecycleInterceptors(InterceptionType interceptionType) {
         if (interceptionType == null) {
-            throw new IllegalArgumentException(INTERCEPTION_TYPE_NULL);
+            throw BeanLogger.LOG.interceptionTypeNull();
         }
 
         org.jboss.weld.interceptor.spi.model.InterceptionType internalInterceptionType = org.jboss.weld.interceptor.spi.model.InterceptionType.valueOf(interceptionType.name());
 
         if (!internalInterceptionType.isLifecycleCallback()) {
-            throw new IllegalArgumentException(INTERCEPTION_TYPE_NOT_LIFECYCLE, interceptionType.name());
+            throw BeanLogger.LOG.interceptionTypeNotLifecycle(interceptionType.name());
         }
         if (internalInterceptionType.equals(org.jboss.weld.interceptor.spi.model.InterceptionType.AROUND_CONSTRUCT)) {
             return extractCdiInterceptors(interceptionModel.getConstructorInvocationInterceptors());

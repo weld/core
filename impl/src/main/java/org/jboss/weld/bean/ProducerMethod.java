@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.bean;
 
-import static org.jboss.weld.logging.messages.BeanMessage.PRODUCER_METHOD_NOT_SPECIALIZING;
-
 import java.lang.reflect.Method;
 import java.util.Set;
 
@@ -29,8 +27,8 @@ import javax.enterprise.inject.spi.BeanAttributes;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
-import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.injection.producer.ProducerMethodProducer;
+import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.util.Beans;
@@ -119,7 +117,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
     protected void specialize() {
         Set<? extends AbstractBean<?, ?>> specializedBeans = getSpecializedBeans();
         if (specializedBeans.isEmpty()) {
-            throw new DefinitionException(PRODUCER_METHOD_NOT_SPECIALIZING, this);
+            throw BeanLogger.LOG.producerMethodNotSpecializing(this);
         }
     }
 

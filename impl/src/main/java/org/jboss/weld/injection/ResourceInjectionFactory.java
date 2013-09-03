@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.injection;
 
-import static org.jboss.weld.logging.messages.BeanMessage.INVALID_RESOURCE_PRODUCER_TYPE;
-import static org.jboss.weld.logging.messages.UtilMessage.RESOURCE_SETTER_INJECTION_NOT_A_JAVABEAN;
 import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
 
 import java.lang.annotation.Annotation;
@@ -36,12 +34,13 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bean.builtin.ee.StaticEEResourceProducerField;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.ejb.EJBApiAbstraction;
-import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.injection.spi.EjbInjectionServices;
 import org.jboss.weld.injection.spi.JaxwsInjectionServices;
 import org.jboss.weld.injection.spi.JpaInjectionServices;
 import org.jboss.weld.injection.spi.ResourceInjectionServices;
 import org.jboss.weld.injection.spi.ResourceReferenceFactory;
+import org.jboss.weld.logging.BeanLogger;
+import org.jboss.weld.logging.UtilLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
 import org.jboss.weld.util.ApiAbstraction;
@@ -186,7 +185,7 @@ public final class ResourceInjectionFactory {
             }
             for (EnhancedAnnotatedMethod<?, ?> method : type.getDeclaredEnhancedMethods(marker)) {
                 if (method.getParameters().size() != 1) {
-                    throw new DefinitionException(RESOURCE_SETTER_INJECTION_NOT_A_JAVABEAN, method);
+                    throw UtilLogger.LOG.resourceSetterInjectionNotAJavabean(method);
                 }
                 resourceInjections.add(createSetterResourceInjection(
                         InjectionPointFactory.silentInstance().createParameterInjectionPoint(
@@ -273,7 +272,7 @@ public final class ResourceInjectionFactory {
                 JpaInjectionServices injectionServices, PersistenceApiAbstraction apiAbstraction) {
 
             if (!injectionPoint.getType().equals(apiAbstraction.ENTITY_MANAGER_FACTORY_CLASS)) {
-                throw new DefinitionException(INVALID_RESOURCE_PRODUCER_TYPE, injectionPoint.getAnnotated(),
+                throw BeanLogger.LOG.invalidResourceProducerType(injectionPoint.getAnnotated(),
                         apiAbstraction.ENTITY_MANAGER_FACTORY_CLASS);
             }
             return Reflections.<ResourceReferenceFactory<T>> cast(injectionServices
@@ -307,7 +306,7 @@ public final class ResourceInjectionFactory {
                 JpaInjectionServices injectionServices, PersistenceApiAbstraction apiAbstraction) {
 
             if (!injectionPoint.getType().equals(apiAbstraction.ENTITY_MANAGER_CLASS)) {
-                throw new DefinitionException(INVALID_RESOURCE_PRODUCER_TYPE, injectionPoint.getAnnotated(),
+                throw BeanLogger.LOG.invalidResourceProducerType(injectionPoint.getAnnotated(),
                         apiAbstraction.ENTITY_MANAGER_CLASS);
             }
             return Reflections.<ResourceReferenceFactory<T>> cast(injectionServices

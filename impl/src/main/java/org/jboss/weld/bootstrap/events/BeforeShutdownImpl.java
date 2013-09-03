@@ -16,21 +16,17 @@
  */
 package org.jboss.weld.bootstrap.events;
 
-import org.jboss.weld.manager.BeanManagerImpl;
-import org.slf4j.Logger;
+import static org.jboss.weld.util.reflection.Reflections.EMPTY_TYPES;
 
 import javax.enterprise.inject.spi.BeforeShutdown;
 
-import static org.jboss.weld.logging.Category.BOOTSTRAP;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.util.reflection.Reflections.EMPTY_TYPES;
+import org.jboss.weld.logging.BootstrapLogger;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
  * @author pmuir
  */
 public class BeforeShutdownImpl extends AbstractContainerEvent implements BeforeShutdown {
-
-    private static final Logger log = loggerFactory().getLogger(BOOTSTRAP);
 
     public static void fire(BeanManagerImpl beanManager) {
         new BeforeShutdownImpl(beanManager).fire();
@@ -44,9 +40,9 @@ public class BeforeShutdownImpl extends AbstractContainerEvent implements Before
     public void fire() {
         super.fire();
         if (!getErrors().isEmpty()) {
-            log.error("Exception(s) thrown during observer of BeforeShutdown");
+            BootstrapLogger.LOG.exceptionThrownDuringBeforeShutdownObserver();
             for (Throwable t : getErrors()) {
-                log.error("", t);
+                BootstrapLogger.LOG.error("", t);
             }
         }
     }

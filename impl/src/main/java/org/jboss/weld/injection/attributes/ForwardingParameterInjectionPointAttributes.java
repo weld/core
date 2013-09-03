@@ -19,8 +19,7 @@ package org.jboss.weld.injection.attributes;
 import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.InjectionPoint;
 
-import org.jboss.weld.exceptions.IllegalArgumentException;
-import org.jboss.weld.logging.messages.BeanMessage;
+import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
@@ -37,7 +36,7 @@ public class ForwardingParameterInjectionPointAttributes<T, X> extends AbstractF
             return Reflections.cast(ip);
         }
         if (!(ip.getAnnotated() instanceof AnnotatedParameter<?>)) {
-            throw new IllegalArgumentException(BeanMessage.INVALID_INJECTION_POINT_TYPE, ForwardingParameterInjectionPointAttributes.class, ip.getAnnotated());
+            throw BeanLogger.LOG.invalidInjectionPointType(ForwardingParameterInjectionPointAttributes.class, ip.getAnnotated());
         }
         return new ForwardingParameterInjectionPointAttributes<T, X>(ip);
     }

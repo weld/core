@@ -24,8 +24,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.servlet.ServletContext;
 
 import org.jboss.weld.bean.builtin.AbstractStaticallyDecorableBuiltInBean;
-import org.jboss.weld.exceptions.IllegalStateException;
-import org.jboss.weld.logging.messages.ServletMessage;
+import org.jboss.weld.logging.ServletLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
@@ -45,7 +44,7 @@ public class ServletContextBean extends AbstractStaticallyDecorableBuiltInBean<S
     @Override
     protected ServletContext newInstance(InjectionPoint ip, CreationalContext<ServletContext> creationalContext) {
         if (servletContext.get() == null) {
-            throw new IllegalStateException(ServletMessage.CANNOT_INJECT_OBJECT_OUTSIDE_OF_SERVLET_REQUEST, ServletContext.class.getSimpleName());
+            throw ServletLogger.LOG.cannotInjectObjectOutsideOfServletRequest(ServletContext.class.getSimpleName(), null);
         }
         return servletContext.get();
     }

@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 import org.jboss.classfilewriter.ClassFile;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.util.bytecode.MethodInformation;
 import org.jboss.weld.util.bytecode.RuntimeMethodInformation;
 
@@ -53,7 +54,7 @@ public class EnterpriseProxyFactory<T> extends ProxyFactory<T> {
         try {
             proxyClassType.addInterface(EnterpriseBeanInstance.class.getName());
             for (Method method : EnterpriseBeanInstance.class.getMethods()) {
-                log.trace("Adding method {}", method);
+                BeanLogger.LOG.addingMethodToEnterpriseProxy(method);
                 MethodInformation methodInfo = new RuntimeMethodInformation(method);
                 createInterceptorBody(proxyClassType.addMethod(method), methodInfo);
             }

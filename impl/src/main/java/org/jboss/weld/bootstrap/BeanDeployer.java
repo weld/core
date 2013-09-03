@@ -16,11 +16,7 @@
  */
 package org.jboss.weld.bootstrap;
 
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.BootstrapMessage.BEAN_IS_BOTH_INTERCEPTOR_AND_DECORATOR;
-import static org.jboss.weld.logging.messages.BootstrapMessage.IGNORING_CLASS_DUE_TO_LOADING_ERROR;
 import static org.jboss.weld.util.cache.LoadingCacheUtils.getCacheValue;
-import static org.slf4j.ext.XLogger.Level.DEBUG;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -51,12 +47,10 @@ import org.jboss.weld.bootstrap.events.ProcessAnnotatedTypeImpl;
 import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.ejb.spi.EjbServices;
-import org.jboss.weld.exceptions.DefinitionException;
-import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.injection.producer.InterceptionModelInitializer;
 import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
-import org.jboss.weld.logging.Category;
+import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
@@ -66,8 +60,6 @@ import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.collections.Multimaps;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
-import org.slf4j.cal10n.LocLogger;
-import org.slf4j.ext.XLogger;
 
 import com.google.common.cache.LoadingCache;
 
@@ -78,9 +70,6 @@ import com.google.common.cache.LoadingCache;
  * @author Marko Luksa
  */
 public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> {
-
-    private transient LocLogger log = loggerFactory().getLogger(Category.CLASS_LOADING);
-    private transient XLogger xlog = loggerFactory().getXLogger(Category.CLASS_LOADING);
 
     private final ResourceLoader resourceLoader;
     private final SlimAnnotatedTypeStore annotatedTypeStore;
@@ -141,8 +130,8 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
 
     private void handleResourceLoadingException(String className, Throwable e) {
         String missingDependency = Formats.getNameOfMissingClassLoaderDependency(e);
-        log.info(IGNORING_CLASS_DUE_TO_LOADING_ERROR, className, missingDependency);
-        xlog.catching(DEBUG, e);
+        BootstrapLogger.LOG.ignoringClassDueToLoadingError(className, missingDependency);
+        BootstrapLogger.LOG.catchingDebug(e);
         missingDependenciesRegistry.registerClassWithMissingDependency(className, missingDependency);
     }
 
@@ -358,13 +347,13 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
 
     protected void validateInterceptor(EnhancedAnnotatedType<?> weldClass) {
         if (weldClass.isAnnotationPresent(Decorator.class)) {
-            throw new DeploymentException(BEAN_IS_BOTH_INTERCEPTOR_AND_DECORATOR, weldClass.getName());
+            throw BootstrapLogger.LOG.beanIsBothInterceptorAndDecorator(weldClass.getName());
         }
     }
 
     protected void validateDecorator(EnhancedAnnotatedType<?> weldClass) {
         if (weldClass.isAnnotationPresent(Interceptor.class)) {
-            throw new DefinitionException(BEAN_IS_BOTH_INTERCEPTOR_AND_DECORATOR, weldClass.getName());
+            throw BootstrapLogger.LOG.beanIsBothInterceptorAndDecorator(weldClass.getName());
         }
     }
 

@@ -22,7 +22,6 @@
  */
 package org.jboss.weld.servlet;
 
-import static org.jboss.weld.logging.messages.ServletMessage.ONLY_HTTP_SERVLET_LIFECYCLE_DEFINED;
 import static org.jboss.weld.servlet.ConversationFilter.CONVERSATION_FILTER_REGISTERED;
 
 import javax.enterprise.inject.spi.CDI;
@@ -34,7 +33,7 @@ import javax.servlet.http.HttpSessionEvent;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.bean.builtin.BeanManagerProxy;
-import org.jboss.weld.exceptions.IllegalStateException;
+import org.jboss.weld.logging.ServletLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.servlet.api.helpers.AbstractServletListener;
 
@@ -102,7 +101,7 @@ public class WeldInitialListener extends AbstractServletListener {
         if (event.getServletRequest() instanceof HttpServletRequest) {
             lifecycle.requestDestroyed((HttpServletRequest) event.getServletRequest());
         } else {
-            throw new IllegalStateException(ONLY_HTTP_SERVLET_LIFECYCLE_DEFINED);
+            throw ServletLogger.LOG.onlyHttpServletLifecycleDefined();
         }
     }
 
@@ -118,7 +117,7 @@ public class WeldInitialListener extends AbstractServletListener {
         if (event.getServletRequest() instanceof HttpServletRequest) {
             lifecycle.requestInitialized((HttpServletRequest) event.getServletRequest(), event.getServletContext());
         } else {
-            throw new IllegalStateException(ONLY_HTTP_SERVLET_LIFECYCLE_DEFINED);
+            throw ServletLogger.LOG.onlyHttpServletLifecycleDefined();
         }
     }
 }
