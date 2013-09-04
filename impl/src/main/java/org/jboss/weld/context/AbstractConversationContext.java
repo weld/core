@@ -289,6 +289,10 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
         }
     }
 
+    public void conversationPromotedToLongRunning(ConversationImpl conversation) {
+        getConversationMap().put(conversation.getId(), conversation);
+    }
+
     @Override
     public void invalidate() {
         for (ManagedConversation conversation : getConversations()) {
