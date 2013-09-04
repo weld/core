@@ -66,6 +66,32 @@ public class Weld1418Test {
         assertEquals(VALUE, value);
     }
 
+    @Test
+    @RunAsClient
+    public void testSecondRequestInSameConversationWhileFirstRequestStillActive() throws Exception {
+        CookieHandler.setDefault(new CookieManager());
+        String cid;
+        HttpURLConnection conn = (HttpURLConnection) new URL(baseUrl + "servlet/startConversation?sleep=500&value=" + VALUE).openConnection();
+        try {
+            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            try {
+                cid = in.readLine();
+
+                String value = makeRequest(new URL(baseUrl + "servlet/getValue?cid=" + cid));
+
+                while (in.readLine() != null) { // just wait for the first request to end
+                }
+
+                assertEquals(VALUE, value);
+            } finally {
+                in.close();
+            }
+        } finally {
+            conn.disconnect();
+        }
+    }
+
+
     private String makeRequest(URL url) throws IOException {
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         try {

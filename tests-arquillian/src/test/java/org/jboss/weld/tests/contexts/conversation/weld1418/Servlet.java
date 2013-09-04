@@ -37,13 +37,15 @@ public class Servlet extends HttpServlet {
             logInfo("session.getId() = " + session.getId());
             if (req.getPathInfo().startsWith("/startConversation")) {
                 conversation.begin();
+                logInfo("conversation.getId() = " + conversation.getId());
                 someBean.setValue(req.getParameter("value"));
                 out.println(conversation.getId());
                 logInfo("sending cid to client: cid=" + conversation.getId());
                 out.flush();
-                sleep(3000);    // keep request open, so another request can be made while this one is still open
+                sleep(req.getParameter("sleep") == null ? 3000 : Integer.parseInt(req.getParameter("sleep")));    // keep request open, so another request can be made while this one is still open
 
             } else if (req.getPathInfo().startsWith("/getValue")) {
+                logInfo("conversation.getId() = " + conversation.getId());
                 out.println((Object)someBean.getValue());
             } else {
                 out.println("");

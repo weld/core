@@ -55,6 +55,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
  * @author Pete Muir
  * @author Jozef Hartinger
  * @author George Sapountzis
+ * @author Marko Luksa
  */
 public abstract class AbstractConversationContext<R, S> extends AbstractBoundContext<R> implements ConversationContext {
 
@@ -184,8 +185,9 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
         this.activate(null);
     }
 
-    protected void associateRequest() {
+    protected void associateRequestWithNewConversation() {
         ManagedConversation conversation = new ConversationImpl(manager);
+        lock(conversation);
         setRequestAttribute(getRequest(), CURRENT_CONVERSATION_ATTRIBUTE_NAME, conversation);
 
         // Set a temporary bean store, this will be attached at the end of the request if needed
@@ -216,26 +218,29 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
             if (cid != null && !cid.isEmpty()) {
                 ManagedConversation conversation = getConversation(cid);
                 if (conversation != null && !isExpired(conversation)) {
-                    boolean lock = conversation.lock(getConcurrentAccessTimeout());
+                    boolean lock = lock(conversation);
                     if (lock) {
                         associateRequest(cid);
                     } else {
-                        // Associate the request with a new transient conversation
-                        associateRequest();
+                        // CDI 6.7.4 we must activate a new transient conversation before we throw the exception
+                        associateRequestWithNewConversation();
                         throw new BusyConversationException(ConversationMessage.CONVERSATION_LOCK_TIMEDOUT, cid);
                     }
                 } else {
                     // CDI 6.7.4 we must activate a new transient conversation before we throw the exception
-                    associateRequest();
-                    // Make sure that the conversation already exists
+                    associateRequestWithNewConversation();
                     throw new NonexistentConversationException(NO_CONVERSATION_FOUND_TO_RESTORE, cid);
                 }
             } else {
-                associateRequest();
+                associateRequestWithNewConversation();
             }
         } else {
             throw new IllegalStateException("Context is already active");
         }
+    }
+
+    private boolean lock(ManagedConversation conversation) {
+        return conversation.lock(getConcurrentAccessTimeout());
     }
 
     @Override
