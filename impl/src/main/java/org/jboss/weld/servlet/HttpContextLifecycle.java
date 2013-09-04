@@ -42,6 +42,7 @@ import org.slf4j.cal10n.LocLogger;
  * Takes care of setting up and tearing down CDI contexts around an HTTP request and dispatching context lifecycle events.
  *
  * @author Jozef Hartinger
+ * @author Marko Luksa
  *
  */
 public class HttpContextLifecycle implements Service {
@@ -99,6 +100,7 @@ public class HttpContextLifecycle implements Service {
 
     public void sessionCreated(HttpSession session) {
         SessionHolder.sessionCreated(session);
+        conversationContextActivator.sessionCreated(session);
         beanManager.getAccessibleLenientObserverNotifier().fireEvent(session, InitializedLiteral.SESSION);
     }
 

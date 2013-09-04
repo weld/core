@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.context.conversation;
 
+import org.jboss.weld.context.AbstractConversationContext;
 import org.jboss.weld.context.ConversationContext;
 import org.jboss.weld.context.ManagedConversation;
 import org.jboss.weld.exceptions.IllegalArgumentException;
@@ -80,6 +81,7 @@ public class ConversationImpl implements ManagedConversation, Serializable {
             // This a conversation that was made transient previously in this request
             this.id = getActiveConversationContext().generateConversationId();
         }
+        notifyConversationContext();
         log.debug(PROMOTED_TRANSIENT, id);
     }
 
@@ -93,7 +95,16 @@ public class ConversationImpl implements ManagedConversation, Serializable {
         }
         _transient = false;
         this.id = id;
+        notifyConversationContext();
         log.debug(PROMOTED_TRANSIENT, id);
+    }
+
+    private void notifyConversationContext() {
+        ConversationContext context = getActiveConversationContext();
+        if (context instanceof AbstractConversationContext) {
+            AbstractConversationContext abstractConversationContext = (AbstractConversationContext) context;
+            abstractConversationContext.conversationPromotedToLongRunning(this);
+        }
     }
 
 

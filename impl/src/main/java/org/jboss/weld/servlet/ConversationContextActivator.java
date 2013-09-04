@@ -24,9 +24,13 @@ import static org.jboss.weld.logging.messages.JsfMessage.FOUND_CONVERSATION_FROM
 import static org.jboss.weld.logging.messages.JsfMessage.RESUMING_CONVERSATION;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
+import org.jboss.weld.context.AbstractConversationContext;
 import org.jboss.weld.context.ConversationContext;
 import org.jboss.weld.context.http.HttpConversationContext;
+import org.jboss.weld.context.http.HttpRequestContext;
+import org.jboss.weld.context.http.HttpRequestContextImpl;
 import org.jboss.weld.literal.DestroyedLiteral;
 import org.jboss.weld.literal.InitializedLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -53,6 +57,7 @@ public class ConversationContextActivator {
 
     private final BeanManagerImpl beanManager;
     private HttpConversationContext httpConversationContextCache;
+    private HttpRequestContext requestContextCache;
 
     protected ConversationContextActivator(BeanManagerImpl beanManager) {
         this.beanManager = beanManager;
@@ -63,6 +68,13 @@ public class ConversationContextActivator {
             this.httpConversationContextCache = beanManager.instance().select(HttpConversationContext.class).get();
         }
         return httpConversationContextCache;
+    }
+
+    private HttpRequestContext getRequestContext() {
+        if (requestContextCache == null) {
+            this.requestContextCache = beanManager.instance().select(HttpRequestContext.class).get();
+        }
+        return requestContextCache;
     }
 
     public void startConversationContext(HttpServletRequest request) {
@@ -160,5 +172,16 @@ public class ConversationContextActivator {
 
     protected void disassociateConversationContext(HttpServletRequest request) {
         httpConversationContext().dissociate(request);
+    }
+
+    public void sessionCreated(HttpSession session) {
+        HttpRequestContext requestContext = getRequestContext();
+        HttpConversationContext httpConversationContext = httpConversationContext();
+        if (requestContext instanceof HttpRequestContextImpl && httpConversationContext instanceof AbstractConversationContext) {
+            HttpRequestContextImpl httpRequestContext = (HttpRequestContextImpl) requestContext;
+            HttpServletRequest request = httpRequestContext.getHttpServletRequest();
+            AbstractConversationContext abstractConversationContext = (AbstractConversationContext) httpConversationContext;
+            abstractConversationContext.sessionCreated(request);
+        }
     }
 }
