@@ -196,11 +196,10 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
         setRequestAttribute(getRequest(), ConversationNamingScheme.PARAMETER_NAME, namingScheme);
     }
 
-    protected void associateRequest(String cid) {
-        ManagedConversation conversation = getConversation(cid);
+    protected void associateRequest(ManagedConversation conversation) {
         setRequestAttribute(getRequest(), CURRENT_CONVERSATION_ATTRIBUTE_NAME, conversation);
 
-        NamingScheme namingScheme = new ConversationNamingScheme(ConversationContext.class.getName(), cid);
+        NamingScheme namingScheme = new ConversationNamingScheme(ConversationContext.class.getName(), conversation.getId());
         setBeanStore(createRequestBeanStore(namingScheme, getRequest()));
         getBeanStore().attach();
     }
@@ -220,7 +219,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
                 if (conversation != null && !isExpired(conversation)) {
                     boolean lock = lock(conversation);
                     if (lock) {
-                        associateRequest(cid);
+                        associateRequest(conversation);
                     } else {
                         // CDI 6.7.4 we must activate a new transient conversation before we throw the exception
                         associateRequestWithNewConversation();
