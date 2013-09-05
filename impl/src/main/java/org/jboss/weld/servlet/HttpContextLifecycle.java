@@ -35,6 +35,7 @@ import org.jboss.weld.context.http.HttpSessionDestructionContext;
 import org.jboss.weld.literal.DestroyedLiteral;
 import org.jboss.weld.literal.InitializedLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.servlet.spi.HttpContextActivationFilter;
 import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
 
@@ -62,11 +63,13 @@ public class HttpContextLifecycle implements Service {
 
     private final BeanManagerImpl beanManager;
     private final ConversationContextActivator conversationContextActivator;
+    private final HttpContextActivationFilter contextActivationFilter;
 
     public HttpContextLifecycle(BeanManagerImpl beanManager) {
         this.beanManager = beanManager;
         this.conversationContextActivator = new ConversationContextActivator(beanManager);
         this.conversationActivationEnabled = true;
+        this.contextActivationFilter = beanManager.getServices().get(HttpContextActivationFilter.class);
     }
 
     private HttpSessionDestructionContext getSessionDestructionContext() {
@@ -138,6 +141,9 @@ public class HttpContextLifecycle implements Service {
         if (isIncludedRequest(request)) {
             return;
         }
+        if (!contextActivationFilter.accepts(request)) {
+            return;
+        }
 
         log.trace(REQUEST_INITIALIZED, request);
 
@@ -175,6 +181,9 @@ public class HttpContextLifecycle implements Service {
 
     public void requestDestroyed(HttpServletRequest request) {
         if (isIncludedRequest(request) || isRequestDestroyed(request)) {
+            return;
+        }
+        if (!contextActivationFilter.accepts(request)) {
             return;
         }
         log.trace(REQUEST_DESTROYED, request);

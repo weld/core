@@ -27,7 +27,6 @@ import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.Interceptor;
 
-import com.google.common.collect.ImmutableSet;
 import org.jboss.weld.Container;
 import org.jboss.weld.ContainerState;
 import org.jboss.weld.annotated.slim.SlimAnnotatedTypeStore;
@@ -115,12 +114,16 @@ import org.jboss.weld.serialization.ContextualStoreImpl;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.serialization.spi.ProxyServices;
 import org.jboss.weld.servlet.ServletApi;
+import org.jboss.weld.servlet.spi.HttpContextActivationFilter;
+import org.jboss.weld.servlet.spi.helpers.AcceptingHttpContextActivationFilter;
 import org.jboss.weld.transaction.spi.TransactionServices;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.instantiation.InstantiatorFactory;
 import org.jboss.weld.util.reflection.instantiation.LoaderInstantiatorFactory;
 import org.slf4j.cal10n.LocLogger;
+
+import com.google.common.collect.ImmutableSet;
 
 /**
  * Common bootstrapping functionality that is run at application startup and
@@ -221,6 +224,7 @@ public class WeldStartup {
         deploymentServices.add(SpecializationAndEnablementRegistry.class, registry.get(SpecializationAndEnablementRegistry.class));
         deploymentServices.add(ReflectionCache.class, registry.get(ReflectionCache.class));
         deploymentServices.add(GlobalEnablementBuilder.class, registry.get(GlobalEnablementBuilder.class));
+        deploymentServices.add(HttpContextActivationFilter.class, registry.get(HttpContextActivationFilter.class));
 
         this.environment = environment;
         this.deploymentManager = BeanManagerImpl.newRootManager(contextId, "deployment", deploymentServices);
@@ -315,6 +319,10 @@ public class WeldStartup {
         }
         services.add(ContainerLifecycleEvents.class, new ContainerLifecycleEvents(preloader, services.get(AnnotationDiscovery.class)));
         services.add(GlobalEnablementBuilder.class, new GlobalEnablementBuilder());
+
+        if (!services.contains(HttpContextActivationFilter.class)) {
+            services.add(HttpContextActivationFilter.class, AcceptingHttpContextActivationFilter.INSTANCE);
+        }
     }
 
     public void startInitialization() {

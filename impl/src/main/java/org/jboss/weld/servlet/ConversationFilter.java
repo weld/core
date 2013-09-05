@@ -31,6 +31,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.servlet.spi.HttpContextActivationFilter;
 
 /**
  * Filter that handles conversation context activation if mapped by the application. Otherwise, conversation context is
@@ -48,6 +49,7 @@ public class ConversationFilter implements Filter {
 
     @Inject
     private BeanManagerImpl manager;
+    private HttpContextActivationFilter contextActivationFilter;
 
     private ConversationContextActivator conversationContextActivator;
 
@@ -55,6 +57,7 @@ public class ConversationFilter implements Filter {
     public void init(FilterConfig filterConfig) throws ServletException {
         this.conversationContextActivator = new ConversationContextActivator(manager);
         filterConfig.getServletContext().setAttribute(CONVERSATION_FILTER_REGISTERED, Boolean.TRUE);
+        contextActivationFilter = manager.getServices().get(HttpContextActivationFilter.class);
     }
 
     @Override
@@ -62,7 +65,9 @@ public class ConversationFilter implements Filter {
         if (request instanceof HttpServletRequest) {
             HttpServletRequest httpRequest = (HttpServletRequest) request;
 
-            conversationContextActivator.startConversationContext(httpRequest);
+            if (contextActivationFilter.accepts(httpRequest)) {
+                conversationContextActivator.startConversationContext(httpRequest);
+            }
             chain.doFilter(request, response);
             /*
              * We do not deactivate the conversation context in the filer. WeldListener takes care of that!
