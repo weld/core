@@ -78,7 +78,7 @@
         <log4j.version>1.2.14</log4j.version>
         <selenium.maven.plugin.version>1.0.1</selenium.maven.plugin.version>
         <testng.version>5.10</testng.version>
-        <weld.api.version>2.1-SNAPSHOT</weld.api.version>
+        <weld.api.version>2.1.Beta1</weld.api.version>
         <wildfly.version>8.0.0.Alpha2</wildfly.version>
     </properties>
 
