@@ -17,6 +17,7 @@
 package org.jboss.weld.tests.specialization.modular;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import javax.enterprise.event.Event;
@@ -28,24 +29,23 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.shrinkwrap.impl.BeansXml;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 /**
- * Test for specializing {@link Alternative}. Verifies that a bean is only specialized in the BDA where the specializing alternative
- * is enabled.
- *
+ * Test for specializing {@link Alternative}. Verifies that a bean is not specialized unless the specializing alternative is enabled.
+ * 
  * @author Jozef Hartinger
- *
+ * 
  */
 @RunWith(Arquillian.class)
 @Category(Integration.class)
-public class SpecializationTest4 {
+public class Specialization01Test {
 
     @Inject
     private InjectedBean1 bean1;
@@ -58,25 +58,28 @@ public class SpecializationTest4 {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        JavaArchive jar = ShrinkWrap.create(BeanArchive.class).alternate(AlternativeSpecializedFactory.class)
-                .addClasses(Factory.class, AlternativeSpecializedFactory.class, Product.class, InjectedBean2.class, FactoryEvent.class);
-        return ShrinkWrap.create(WebArchive.class).addClass(InjectedBean1.class)
-                .addAsWebInfResource(new BeansXml().alternatives(AlternativeSpecializedFactory.class), "beans.xml").addAsLibrary(jar);
+        JavaArchive jar = ShrinkWrap.create(BeanArchive.class).addClasses(Factory.class, AlternativeSpecializedFactory.class, Product.class,
+                InjectedBean2.class, FactoryEvent.class);
+        return ShrinkWrap.create(WebArchive.class).addClass(InjectedBean1.class).addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml").addAsLibrary(jar);
     }
 
     @Test
-    public void testEnabledAlternativeSpecializes() {
-        assertTrue(bean1.getFactory() instanceof AlternativeSpecializedFactory);
-        assertTrue(bean1.getProduct().isUnsatisfied());
+    public void testNotEnabledAlternativeDoesNotSpecialize() {
+        assertFalse(bean1.getFactory().get() instanceof AlternativeSpecializedFactory);
+        assertFalse(bean1.getProduct().isUnsatisfied());
+        assertFalse(bean1.getProduct().isAmbiguous());
+        assertNotNull(bean1.getProduct().get());
 
-        assertTrue(bean2.getFactory() instanceof AlternativeSpecializedFactory);
-        assertTrue(bean2.getProduct().isUnsatisfied());
+        assertFalse(bean2.getFactory().get() instanceof AlternativeSpecializedFactory);
+        assertFalse(bean2.getProduct().isUnsatisfied());
+        assertFalse(bean2.getProduct().isAmbiguous());
+        assertNotNull(bean2.getProduct().get());
     }
 
     @Test
     public void testEvent() {
         Factory.reset();
         event.fire(new FactoryEvent());
-        assertFalse(Factory.isEventDelivered());
+        assertTrue(Factory.isEventDelivered());
     }
 }
