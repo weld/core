@@ -32,7 +32,7 @@ public class VerifyingListener implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        assertTrue(bean1.getFactory() instanceof SpecializedFactory);
+        assertTrue(bean1.getFactory().get() instanceof SpecializedFactory);
         assertTrue(bean1.getProduct().isUnsatisfied());
 
         assertTrue(bean2.getFactory().isUnsatisfied());
