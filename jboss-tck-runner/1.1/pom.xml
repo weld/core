@@ -21,6 +21,7 @@
 
     <properties>
         <htmlunit.version>2.9</htmlunit.version>
+        <shrinkwrap.version>1.0.1</shrinkwrap.version>
     </properties>
 
     <dependencies>
