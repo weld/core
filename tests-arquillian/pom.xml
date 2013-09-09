@@ -44,16 +44,33 @@
         <dependency>
             <groupId>org.jboss.arquillian.junit</groupId>
             <artifactId>arquillian-junit-container</artifactId>
-            <scope>provided</scope>
-            <!--
-               should be test, but we need shrinkwrap-impl for compiling
-               BeanArchive
-            -->
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.shrinkwrap</groupId>
+            <artifactId>shrinkwrap-depchain</artifactId>
+            <type>pom</type>
         </dependency>
 
         <dependency>
             <groupId>org.jboss.shrinkwrap</groupId>
             <artifactId>shrinkwrap-impl-base</artifactId>
+            <!--
+               should be runtime, but we need shrinkwrap-impl-base for compiling
+               BeanArchive
+            -->
+           <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.shrinkwrap</groupId>
+            <artifactId>shrinkwrap-spi</artifactId>
+            <!--
+               should be runtime, but we need shrinkwrap-spi for compiling
+               BeanArchive
+            -->
+           <scope>provided</scope>
         </dependency>
 
         <dependency>
