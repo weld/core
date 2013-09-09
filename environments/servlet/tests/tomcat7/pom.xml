@@ -37,6 +37,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.jboss.shrinkwrap</groupId>
+            <artifactId>shrinkwrap-depchain</artifactId>
+            <type>pom</type>
+        </dependency>
+
+        <dependency>
             <groupId>org.jboss.weld.servlet</groupId>
             <artifactId>weld-servlet-test-base</artifactId>
             <scope>test</scope>
@@ -143,12 +149,6 @@
                 <dependency>
                     <groupId>org.jboss.arquillian.container</groupId>
                     <artifactId>arquillian-tomcat-embedded-7</artifactId>
-                    <scope>test</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.jboss.shrinkwrap.descriptors</groupId>
-                    <artifactId>shrinkwrap-descriptors-impl</artifactId>
                     <scope>test</scope>
                 </dependency>
 
