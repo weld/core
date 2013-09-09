@@ -91,7 +91,7 @@ public class SessionBeanInjectionTarget<T> extends BeanInjectionTarget<T> {
         /*
          * We only take care of @AroundConstructor interception. The EJB container deals with the other types of interception.
          */
-        setupConstructorInterceptionInstantiator(beanManager.getInterceptorModelRegistry().get(getType().getJavaClass()));
+        setupConstructorInterceptionInstantiator(beanManager.getInterceptorModelRegistry().get(getType()));
     }
 
     @Override

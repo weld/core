@@ -33,6 +33,7 @@ import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
 
+import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.interceptor.reader.TargetClassInterceptorMetadata;
 import org.jboss.weld.interceptor.reader.cache.MetadataCachingReader;
 import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
@@ -54,17 +55,17 @@ public class InterceptionContext implements Serializable {
     private static final Set<InterceptionType> CONSTRUCTOR_INTERCEPTION_TYPES = ImmutableSet.of(InterceptionType.AROUND_CONSTRUCT);
     private static final Set<InterceptionType> METHOD_INTERCEPTION_TYPES = ImmutableSet.of(AROUND_INVOKE, AROUND_TIMEOUT, POST_CONSTRUCT, PRE_DESTROY, POST_ACTIVATE, PRE_PASSIVATE);
 
-    public static InterceptionContext forConstructorInterception(InterceptionModel<ClassMetadata<?>> interceptionModel, CreationalContext<?> ctx, BeanManagerImpl manager) {
-        return of(interceptionModel, ctx, manager, CONSTRUCTOR_INTERCEPTION_TYPES);
+    public static InterceptionContext forConstructorInterception(InterceptionModel<ClassMetadata<?>> interceptionModel, CreationalContext<?> ctx, BeanManagerImpl manager, SlimAnnotatedType<?> type) {
+        return of(interceptionModel, ctx, manager, CONSTRUCTOR_INTERCEPTION_TYPES, type);
     }
 
-    public static InterceptionContext forNonConstructorInterception(InterceptionModel<ClassMetadata<?>> interceptionModel, CreationalContext<?> ctx, BeanManagerImpl manager) {
-        return of(interceptionModel, ctx, manager, METHOD_INTERCEPTION_TYPES);
+    public static InterceptionContext forNonConstructorInterception(InterceptionModel<ClassMetadata<?>> interceptionModel, CreationalContext<?> ctx, BeanManagerImpl manager, SlimAnnotatedType<?> type) {
+        return of(interceptionModel, ctx, manager, METHOD_INTERCEPTION_TYPES, type);
     }
 
-    private static InterceptionContext of(InterceptionModel<ClassMetadata<?>> interceptionModel, CreationalContext<?> ctx, BeanManagerImpl manager, Set<InterceptionType> interceptionTypes) {
+    private static InterceptionContext of(InterceptionModel<ClassMetadata<?>> interceptionModel, CreationalContext<?> ctx, BeanManagerImpl manager, Set<InterceptionType> interceptionTypes, SlimAnnotatedType<?> type) {
         TargetClassInterceptorMetadata<?> targetClassInterceptorMetadata = manager.getInterceptorMetadataReader().getTargetClassInterceptorMetadata(interceptionModel.getInterceptedEntity());
-        return new InterceptionContext(initInterceptorInstanceMap(interceptionModel, ctx, manager, interceptionTypes), manager, targetClassInterceptorMetadata, interceptionModel);
+        return new InterceptionContext(initInterceptorInstanceMap(interceptionModel, ctx, manager, interceptionTypes), manager, targetClassInterceptorMetadata, interceptionModel, type);
     }
 
     private static final long serialVersionUID = 7500722360133273633L;
@@ -74,14 +75,14 @@ public class InterceptionContext implements Serializable {
 
     private final Map<Class<?>, Object> interceptorInstances;
     private final BeanManagerImpl manager;
-    private final Class<?> targetClass;
+    private final SlimAnnotatedType<?> annotatedType;
 
-    private InterceptionContext(Map<Class<?>, Object> interceptorInstances, BeanManagerImpl manager, TargetClassInterceptorMetadata<?> targetClassInterceptorMetadata, InterceptionModel<ClassMetadata<?>> interceptionModel) {
+    private InterceptionContext(Map<Class<?>, Object> interceptorInstances, BeanManagerImpl manager, TargetClassInterceptorMetadata<?> targetClassInterceptorMetadata, InterceptionModel<ClassMetadata<?>> interceptionModel, SlimAnnotatedType<?> type) {
         this.interceptorInstances = interceptorInstances;
         this.manager = manager;
         this.targetClassInterceptorMetadata = targetClassInterceptorMetadata;
         this.interceptionModel = interceptionModel;
-        this.targetClass = targetClassInterceptorMetadata.getInterceptorClass().getJavaClass();
+        this.annotatedType = type;
     }
 
     private static Map<Class<?>, Object> initInterceptorInstanceMap(InterceptionModel<?> model, CreationalContext ctx, BeanManagerImpl manager, Set<InterceptionType> interceptionTypes) {
@@ -109,9 +110,9 @@ public class InterceptionContext implements Serializable {
     }
 
     private Object readResolve() throws ObjectStreamException {
-        InterceptionModel<ClassMetadata<?>> interceptionModel = manager.getInterceptorModelRegistry().get(targetClass);
+        InterceptionModel<ClassMetadata<?>> interceptionModel = manager.getInterceptorModelRegistry().get(annotatedType);
         MetadataCachingReader reader = manager.getInterceptorMetadataReader();
-        TargetClassInterceptorMetadata<?> targetClassInterceptorMetadata = reader.getTargetClassInterceptorMetadata(reader.getClassMetadata(targetClass));
-        return new InterceptionContext(interceptorInstances, manager, targetClassInterceptorMetadata, interceptionModel);
+        TargetClassInterceptorMetadata<?> targetClassInterceptorMetadata = reader.getTargetClassInterceptorMetadata(interceptionModel.getInterceptedEntity());
+        return new InterceptionContext(interceptorInstances, manager, targetClassInterceptorMetadata, interceptionModel, annotatedType);
     }
 }

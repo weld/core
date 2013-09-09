@@ -18,6 +18,7 @@ package org.jboss.weld.injection.producer;
 
 import javax.enterprise.context.spi.CreationalContext;
 
+import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.bean.proxy.CombinedInterceptorAndDecoratorStackMethodHandler;
 import org.jboss.weld.bean.proxy.ProxyObject;
 import org.jboss.weld.exceptions.DeploymentException;
@@ -39,15 +40,17 @@ import org.jboss.weld.manager.BeanManagerImpl;
 public class InterceptorApplyingInstantiator<T> extends ForwardingInstantiator<T> {
 
     private final InterceptionModel<ClassMetadata<?>> interceptionModel;
+    private final SlimAnnotatedType<T> annotatedType;
 
-    public InterceptorApplyingInstantiator(Instantiator<T> delegate, InterceptionModel<ClassMetadata<?>> model) {
+    public InterceptorApplyingInstantiator(Instantiator<T> delegate, InterceptionModel<ClassMetadata<?>> model, SlimAnnotatedType<T> type) {
         super(delegate);
         this.interceptionModel = model;
+        this.annotatedType = type;
     }
 
     @Override
     public T newInstance(CreationalContext<T> ctx, BeanManagerImpl manager) {
-        InterceptionContext interceptionContext = InterceptionContext.forNonConstructorInterception(interceptionModel, ctx, manager);
+        InterceptionContext interceptionContext = InterceptionContext.forNonConstructorInterception(interceptionModel, ctx, manager, annotatedType);
 
         T instance = delegate().newInstance(ctx, manager);
 

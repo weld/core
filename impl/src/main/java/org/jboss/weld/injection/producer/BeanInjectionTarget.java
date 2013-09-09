@@ -55,6 +55,7 @@ public class BeanInjectionTarget<T> extends BasicInjectionTarget<T> {
         return new ResourceInjector<T>(type, bean, beanManager);
     }
 
+    @Override
     public void postConstruct(T instance) {
         if (getInstantiator().hasInterceptorSupport()) {
             InterceptionUtils.executePostConstruct(instance);
@@ -63,6 +64,7 @@ public class BeanInjectionTarget<T> extends BasicInjectionTarget<T> {
         }
     }
 
+    @Override
     public void preDestroy(T instance) {
         if (getInstantiator().hasInterceptorSupport()) {
             InterceptionUtils.executePredestroy(instance);
@@ -71,6 +73,7 @@ public class BeanInjectionTarget<T> extends BasicInjectionTarget<T> {
         }
     }
 
+    @Override
     public void dispose(T instance) {
         // No-op
     }
@@ -92,17 +95,18 @@ public class BeanInjectionTarget<T> extends BasicInjectionTarget<T> {
         if (instantiator.getConstructorInjectionPoint() == null) {
             return; // this is a non-producible InjectionTarget (only created to inject existing instances)
         }
-        if (isInterceptionCandidate() && !beanManager.getInterceptorModelRegistry().containsKey(annotatedType.getJavaClass())) {
+        if (isInterceptionCandidate() && !beanManager.getInterceptorModelRegistry().containsKey(getType())) {
             new InterceptionModelInitializer<T>(beanManager, annotatedType, instantiator.getConstructorInjectionPoint().getAnnotated(), getBean()).init();
         }
     }
 
+    @Override
     public void initializeAfterBeanDiscovery(EnhancedAnnotatedType<T> annotatedType) {
         initializeInterceptionModel(annotatedType);
 
         InterceptionModel<ClassMetadata<?>> interceptionModel = null;
         if (isInterceptionCandidate()) {
-            interceptionModel = beanManager.getInterceptorModelRegistry().get(getType().getJavaClass());
+            interceptionModel = beanManager.getInterceptorModelRegistry().get(getType());
         }
         boolean hasNonConstructorInterceptors = interceptionModel != null && (interceptionModel.hasExternalNonConstructorInterceptors() || interceptionModel.hasTargetClassInterceptors());
 
@@ -125,7 +129,7 @@ public class BeanInjectionTarget<T> extends BasicInjectionTarget<T> {
                 setInstantiator(new SubclassDecoratorApplyingInstantiator<T>(getBeanManager().getContextId(), getInstantiator(), getBean(), decorators));
             }
             if (hasNonConstructorInterceptors) {
-                setInstantiator(new InterceptorApplyingInstantiator<T>(getInstantiator(), interceptionModel));
+                setInstantiator(new InterceptorApplyingInstantiator<T>(getInstantiator(), interceptionModel, getType()));
             }
         }
 
@@ -136,7 +140,7 @@ public class BeanInjectionTarget<T> extends BasicInjectionTarget<T> {
 
     protected void setupConstructorInterceptionInstantiator(InterceptionModel<ClassMetadata<?>> interceptionModel) {
         if (interceptionModel != null && interceptionModel.hasExternalConstructorInterceptors()) {
-            setInstantiator(new ConstructorInterceptionInstantiator<T>(getInstantiator(), interceptionModel));
+            setInstantiator(new ConstructorInterceptionInstantiator<T>(getInstantiator(), interceptionModel, getType()));
         }
     }
 

@@ -16,7 +16,17 @@
  */
 package org.jboss.weld.tests.interceptors.ejb;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.ejb.Timer;
+import javax.enterprise.inject.spi.InterceptionType;
+import javax.inject.Inject;
+
 import junit.framework.Assert;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -28,14 +38,6 @@ import org.jboss.weld.ejb.spi.InterceptorBindings;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import javax.ejb.Timer;
-import javax.enterprise.inject.spi.InterceptionType;
-import javax.inject.Inject;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 @RunWith(Arquillian.class)
 public class EnterpriseBeanInterceptionTest {
@@ -56,7 +58,7 @@ public class EnterpriseBeanInterceptionTest {
     // @Test -- impl details class
     public void testInterceptors() throws Exception {
         SessionBean<Ball> ballSessionBean = (SessionBean<Ball>) beanManager.getBeans(Ball.class).iterator().next();
-        InterceptorBindings interceptorBindings = new InterceptorBindingsAdapter(beanManager.getInterceptorModelRegistry().get(ballSessionBean.getType()));
+        InterceptorBindings interceptorBindings = new InterceptorBindingsAdapter(beanManager.getInterceptorModelRegistry().get(ballSessionBean.getAnnotated()));
         List<javax.enterprise.inject.spi.Interceptor> interceptors =
                 new ArrayList<javax.enterprise.inject.spi.Interceptor>(interceptorBindings.getAllInterceptors());
 

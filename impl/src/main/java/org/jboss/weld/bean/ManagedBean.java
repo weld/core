@@ -131,7 +131,7 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
     }
 
     private InterceptorMetadata<?> getFirstNonPassivationCapableInterceptor() {
-        for (InterceptorMetadata<?> interceptorMetadata : getBeanManager().getInterceptorModelRegistry().get(getType()).getAllInterceptors()) {
+        for (InterceptorMetadata<?> interceptorMetadata : getBeanManager().getInterceptorModelRegistry().get(getAnnotated()).getAllInterceptors()) {
             if (!Reflections.isSerializable(interceptorMetadata.getInterceptorClass().getJavaClass())) {
                 return interceptorMetadata;
             }
@@ -144,6 +144,7 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
      *
      * @return The instance
      */
+    @Override
     public T create(CreationalContext<T> creationalContext) {
         T instance = getProducer().produce(creationalContext);
         getProducer().inject(instance, creationalContext);
@@ -172,6 +173,7 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
      *
      * @param instance The instance
      */
+    @Override
     public void destroy(T instance, CreationalContext<T> creationalContext) {
         try {
             getProducer().preDestroy(instance);

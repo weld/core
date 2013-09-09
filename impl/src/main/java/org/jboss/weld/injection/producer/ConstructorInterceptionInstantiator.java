@@ -26,6 +26,7 @@ import javax.enterprise.inject.spi.AnnotatedConstructor;
 import javax.interceptor.AroundConstruct;
 import javax.interceptor.InvocationContext;
 
+import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.construction.api.AroundConstructCallback;
 import org.jboss.weld.construction.api.ConstructionHandle;
 import org.jboss.weld.context.CreationalContextImpl;
@@ -50,10 +51,12 @@ import org.jboss.weld.util.reflection.Reflections;
 public class ConstructorInterceptionInstantiator<T> extends ForwardingInstantiator<T> {
 
     private final InterceptionModel<ClassMetadata<?>> model;
+    private final SlimAnnotatedType<?> annotatedType;
 
-    public ConstructorInterceptionInstantiator(Instantiator<T> delegate, InterceptionModel<ClassMetadata<?>> model) {
+    public ConstructorInterceptionInstantiator(Instantiator<T> delegate, InterceptionModel<ClassMetadata<?>> model, SlimAnnotatedType<?> type) {
         super(delegate);
         this.model = model;
+        this.annotatedType = type;
     }
 
     @Override
@@ -69,7 +72,7 @@ public class ConstructorInterceptionInstantiator<T> extends ForwardingInstantiat
     }
 
     private void registerAroundConstructCallback(CreationalContextImpl<T> ctx, BeanManagerImpl manager) {
-        InterceptionContext interceptionContext = InterceptionContext.forConstructorInterception(model, ctx, manager);
+        InterceptionContext interceptionContext = InterceptionContext.forConstructorInterception(model, ctx, manager, annotatedType);
         // build interceptor invocations
         final Collection<InterceptorInvocation> interceptorInvocations = new ArrayList<InterceptorInvocation>(model.getConstructorInvocationInterceptors().size());
         for (InterceptorMetadata<?> interceptorMetadata : model.getConstructorInvocationInterceptors()) {

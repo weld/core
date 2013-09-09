@@ -59,7 +59,7 @@ public class DefaultMethodMetadata<M> implements MethodMetadata {
     }
 
     public static MethodMetadata of(Method method) {
-        return new DefaultMethodMetadata(method, new ReflectiveAnnotatedMethodReader());
+        return new DefaultMethodMetadata(method, ReflectiveAnnotatedMethodReader.getInstance());
     }
 
     @Override
@@ -67,14 +67,17 @@ public class DefaultMethodMetadata<M> implements MethodMetadata {
         return !supportedInterceptorTypes.isEmpty();
     }
 
+    @Override
     public Set<InterceptionType> getSupportedInterceptionTypes() {
         return supportedInterceptorTypes;
     }
 
+    @Override
     public Method getJavaMethod() {
         return javaMethod;
     }
 
+    @Override
     public Class<?> getReturnType() {
         return javaMethod.getReturnType();
     }

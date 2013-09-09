@@ -74,6 +74,7 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMember;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.bean.NewBean;
 import org.jboss.weld.bean.RIBean;
@@ -270,7 +271,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     /**
      * Interception model
      */
-    private final transient ConcurrentMap<Class<?>, InterceptionModel<ClassMetadata<?>>> interceptorModelRegistry = new ConcurrentHashMap<Class<?>, InterceptionModel<ClassMetadata<?>>>();
+    private final transient ConcurrentMap<SlimAnnotatedType<?>, InterceptionModel<ClassMetadata<?>>> interceptorModelRegistry = new ConcurrentHashMap<SlimAnnotatedType<?>, InterceptionModel<ClassMetadata<?>>>();
     private final transient MetadataCachingReader interceptorMetadataReader = new DefaultMetadataCachingReader(this);
 
     private final transient ContainerLifecycleEvents containerLifecycleEvents;
@@ -421,6 +422,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     private <T> Iterable<T> createDynamicGlobalIterable(final Transform<T> transform) {
         return new Iterable<T>() {
+            @Override
             public Iterator<T> iterator() {
                 Set<Iterable<T>> result = new HashSet<Iterable<T>>();
                 for (BeanManagerImpl manager : managers) {
@@ -438,6 +440,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     private <T> Iterable<T> createDynamicAccessibleIterable(final Transform<T> transform) {
         return new Iterable<T>() {
 
+            @Override
             public Iterator<T> iterator() {
                 Set<Iterable<T>> iterable = buildAccessibleClosure(BeanManagerImpl.this, transform);
                 return Iterators.concat(Iterators.transform(iterable.iterator(), IterableToIteratorFunction.<T>instance()));
@@ -961,6 +964,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         return getId().hashCode();
     }
 
+    @Override
     public BeanManagerImpl createActivity() {
         BeanManagerImpl childActivity = newChildActivityManager(this);
         childActivities.add(childActivity);
@@ -968,6 +972,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         return childActivity;
     }
 
+    @Override
     public BeanManagerImpl setCurrent(Class<? extends Annotation> scopeType) {
         if (!isNormalScope(scopeType)) {
             throw new IllegalArgumentException(BeanManagerLogger.LOG.nonNormalScope(scopeType));
@@ -976,6 +981,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         return this;
     }
 
+    @Override
     public BeanManagerImpl getCurrent() {
         CurrentActivity activeCurrentActivity = null;
         for (CurrentActivity currentActivity : currentActivities) {
@@ -995,6 +1001,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         }
     }
 
+    @Override
     public ServiceRegistry getServices() {
         return services;
     }
@@ -1029,6 +1036,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         return currentActivities;
     }
 
+    @Override
     public String getId() {
         return id;
     }
@@ -1175,10 +1183,12 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         }
     }
 
+    @Override
     public <T> EjbDescriptor<T> getEjbDescriptor(String beanName) {
         return getServices().get(EjbDescriptors.class).get(beanName);
     }
 
+    @Override
     public <T> SessionBean<T> getBean(EjbDescriptor<T> descriptor) {
         return cast(getEnterpriseBeans().get(descriptor));
     }
@@ -1204,7 +1214,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         this.observers.clear();
     }
 
-    public ConcurrentMap<Class<?>, InterceptionModel<ClassMetadata<?>>> getInterceptorModelRegistry() {
+    public ConcurrentMap<SlimAnnotatedType<?>, InterceptionModel<ClassMetadata<?>>> getInterceptorModelRegistry() {
         return interceptorModelRegistry;
     }
 
@@ -1241,6 +1251,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         // ResolvableBuilder.create() takes care of adding @Default if there is no qualifier selected
         private transient Set<Annotation> qualifiers = Collections.emptySet();
 
+        @Override
         public Type getType() {
             if (type == null) {
                 this.type = new TypeLiteral<Instance<Object>>() {
@@ -1249,32 +1260,39 @@ public class BeanManagerImpl implements WeldManager, Serializable {
             return type;
         }
 
+        @Override
         public Set<Annotation> getQualifiers() {
             return qualifiers;
         }
 
+        @Override
         public Bean<?> getBean() {
             return null;
         }
 
+        @Override
         public Member getMember() {
             return null;
         }
 
+        @Override
         public Annotated getAnnotated() {
             return null;
         }
 
+        @Override
         public boolean isDelegate() {
             return false;
         }
 
+        @Override
         public boolean isTransient() {
             return false;
         }
 
     }
 
+    @Override
     public Instance<Object> instance() {
         return InstanceImpl.of(InstanceInjectionPoint.INSTANCE, createCreationalContext(null), this);
     }

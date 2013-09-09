@@ -145,10 +145,12 @@ public class SessionBean<T> extends AbstractClassBean<T> {
      *
      * @return The instance
      */
+    @Override
     public T create(final CreationalContext<T> creationalContext) {
         return proxyInstantiator.newInstance(creationalContext, beanManager);
     }
 
+    @Override
     public void destroy(T instance, CreationalContext<T> creationalContext) {
         if (instance == null) {
             throw BeanLogger.LOG.cannotDestroyNullBean(this);
@@ -264,7 +266,7 @@ public class SessionBean<T> extends AbstractClassBean<T> {
     }
 
     protected void registerInterceptors() {
-        InterceptionModel<ClassMetadata<?>> model = beanManager.getInterceptorModelRegistry().get(getEjbDescriptor().getBeanClass());
+        InterceptionModel<ClassMetadata<?>> model = beanManager.getInterceptorModelRegistry().get(getAnnotated());
         if (model != null) {
             getBeanManager().getServices().get(EjbServices.class).registerInterceptors(getEjbDescriptor(), new InterceptorBindingsAdapter(model));
         }

@@ -120,7 +120,7 @@ public class InterceptionModelInitializer<T> {
             if (Reflections.isPrivate(constructor.getJavaMember())) {
                 throw new DeploymentException(ValidatorLogger.LOG.notProxyablePrivateConstructor(annotatedType.getJavaClass(), constructor, annotatedType.getJavaClass()));
             }
-            manager.getInterceptorModelRegistry().put(annotatedType.getJavaClass(), interceptionModel);
+            manager.getInterceptorModelRegistry().put(annotatedType.slim(), interceptionModel);
         }
     }
 

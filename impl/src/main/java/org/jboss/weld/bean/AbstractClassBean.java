@@ -78,6 +78,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> imp
         return !getDecorators().isEmpty();
     }
 
+    @Override
     public List<Decorator<?>> getDecorators() {
         if (isInterceptionCandidate()) {
             return beanManager.resolveDecorators(getTypes(), getQualifiers());
@@ -137,7 +138,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> imp
 
     public InterceptionModel<?> getInterceptors() {
         if (isInterceptionCandidate()) {
-            return beanManager.getInterceptorModelRegistry().get(getType());
+            return beanManager.getInterceptorModelRegistry().get(getAnnotated());
         } else {
             return null;
         }

@@ -369,10 +369,11 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
         EjbServices ejbServices = getManager().getServices().get(EjbServices.class);
         for (InternalEjbDescriptor<?> descriptor : getEnvironment().getEjbDescriptors()) {
             if (descriptor.isMessageDriven()) {
-                if (!getManager().getInterceptorModelRegistry().containsKey(descriptor.getBeanClass())) {
-                    InterceptionModelInitializer.of(getManager(), classTransformer.getEnhancedAnnotatedType(descriptor.getBeanClass(), getManager().getId()), null).init();
+                EnhancedAnnotatedType<?> type =  classTransformer.getEnhancedAnnotatedType(descriptor.getBeanClass(), getManager().getId());
+                if (!getManager().getInterceptorModelRegistry().containsKey(type.slim())) {
+                    InterceptionModelInitializer.of(getManager(), type, null).init();
                 }
-                InterceptionModel<ClassMetadata<?>> model = getManager().getInterceptorModelRegistry().get(descriptor.getBeanClass());
+                InterceptionModel<ClassMetadata<?>> model = getManager().getInterceptorModelRegistry().get(type.slim());
                 if (model != null) {
                     ejbServices.registerInterceptors(descriptor, new InterceptorBindingsAdapter(model));
                 }

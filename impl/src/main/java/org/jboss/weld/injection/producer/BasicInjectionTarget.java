@@ -80,6 +80,7 @@ public class BasicInjectionTarget<T> extends AbstractProducer<T> implements Inje
         }
     }
 
+    @Override
     public T produce(CreationalContext<T> ctx) {
         return instantiator.newInstance(ctx, beanManager);
     }
@@ -89,23 +90,27 @@ public class BasicInjectionTarget<T> extends AbstractProducer<T> implements Inje
         injector.inject(instance, ctx, beanManager, type, this);
     }
 
+    @Override
     public void postConstruct(T instance) {
         invoker.postConstruct(instance, instantiator);
     }
 
+    @Override
     public void preDestroy(T instance) {
         invoker.preDestroy(instance, instantiator);
     }
 
+    @Override
     public void dispose(T instance) {
         // No-op
     }
 
+    @Override
     public Set<InjectionPoint> getInjectionPoints() {
         return injectionPoints;
     }
 
-    protected AnnotatedType<T> getType() {
+    protected SlimAnnotatedType<T> getType() {
         return type;
     }
 
