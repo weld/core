@@ -26,6 +26,7 @@ import org.jboss.weld.Weld;
 import org.jboss.weld.bootstrap.events.BeforeShutdownImpl;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.context.ApplicationContext;
+import org.jboss.weld.context.SingletonContext;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
@@ -54,6 +55,7 @@ public class WeldRuntime {
         try {
             // First, the container must destroy all contexts.
             deploymentManager.instance().select(ApplicationContext.class).get().invalidate();
+            deploymentManager.instance().select(SingletonContext.class).get().invalidate();
         } finally {
             try {
                 // Finally, the container must fire an event of type BeforeShutdown.
