@@ -66,7 +66,7 @@ public class EnterpriseBeanLifecycleRemoteTest {
         EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "test.ear");
         ear.addAsModule(ShrinkWrap.create(WebArchive.class, "test.war")
                 .addClass(RemoteClient.class)
-                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml").setManifest(new StringAsset("Manifest-Version: 1.0\nClass-Path: test-archive.jar"))
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml").setManifest(new StringAsset("Manifest-Version: 1.0\nClass-Path: test-archive.jar\n"))
         );
         ear.addAsModule(ShrinkWrap.create(BeanArchive.class, "test-archive.jar")
                 .addClasses(KleinStadt.class, Kassel.class, GrossStadt.class, FrankfurtAmMain.class, SchoeneStadt.class)
