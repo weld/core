@@ -6,17 +6,20 @@ Jetty) or as a non-EJB application for a Java EE server (JBoss AS or GlassFish).
 to be made to the container. All services are self-contained within the
 deployment.
 
-Deploying to JBoss AS
+Deploying to JBoss AS, JBoss EAP, WildFly
 ---------------------
 
-Make sure you have assigned the absolute path of your JBoss AS installation to the
+Make sure you have assigned the absolute path of your installation to the
 JBOSS_HOME environment variable.
 
-To deploy the example run:
+1. Open terminal and start the server by running script:
+	$JBOSS_HOME/bin/standalone.sh
 
-   mvn jboss-as:run
+2. Deploy example on the server you have run in step the 1 using command
+	mvn jboss-as:deploy
 
-Now you can view the application at <http://localhost:8080/weld-numberguess>.
+3. Now you can view the application at <http://localhost:8080/weld-numberguess>.
+
 
 To run functional tests execute:
    mvn verify -Darquillian=jbossas-managed-7

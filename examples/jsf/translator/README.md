@@ -6,21 +6,24 @@ Jetty) or as a non-EJB application for a Java EE server (JBoss AS or GlassFish).
 to be made to the container. All services are self-contained within the
 deployment.
 
-Deploying to JBoss AS
+Deploying to JBoss AS, JBoss EAP, WildFly
 ---------------------
 
-Make sure you have assigned the absolute path of your JBoss AS installation to the
+Make sure you have assigned the absolute path of your installation to the
 JBOSS_HOME environment variable.
 
-Build the example by running:
+1. Open terminal and start the server by running script:
+	$JBOSS_HOME/bin/standalone.sh
 
-   mvn package
+2. Install the parent using command:
+	mvn install -f ../../pom.xml
 
-To deploy the example run:
+3. Deploy this example on the server you have run in the step 1 using command
+	mvn jboss-as:deploy -f ear/pom.xml
 
-   mvn jboss-as:run -f ear/pom.xml
+4. Now you can view the application at <http://localhost:8080/weld-translator>.
 
-Now you can view the application at <http://localhost:8080/weld-translator>.
+--------------------
 
 To run functional tests execute:
    mvn verify -Darquillian=jbossas-managed-7 -f ftest/pom.xml
