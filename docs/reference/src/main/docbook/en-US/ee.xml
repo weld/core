@@ -49,7 +49,9 @@
             <para>
                 The <literal>FacesContext</literal> is not injectable. You can get at it by calling 
                <literal>FacesContext.getCurrentInstance()</literal>. Alternatively you may define the following producer method:</para>
-            <programlisting role="JAVA"><![CDATA[class FacesContextProducer {
+            <programlisting role="JAVA"><![CDATA[import javax.enterprise.inject.Produces;
+
+class FacesContextProducer {
    @Produces @RequestScoped FacesContext getFacesContext() {
       return FacesContext.getCurrentInstance();
    }
@@ -179,7 +181,10 @@ public class ProcessOrder implements MessageListener {
          You can use producer fields and methods to prepare all of these resources for injection into a bean:
       </para>
 
-      <programlisting role="JAVA"><![CDATA[public class OrderResources {
+      <programlisting role="JAVA"><![CDATA[import javax.jms.ConnectionFactory;
+import javax.jms.Queue;
+
+public class OrderResources {
    @Resource(name="jms/ConnectionFactory")
    private ConnectionFactory connectionFactory;
   

@@ -313,7 +313,11 @@ PaymentProcessor getPaymentProcessor(@Synchronous PaymentProcessor syncPaymentPr
 
         <para>This is especially useful if you want to iterate over all beans with a certain bean type. For example:
         </para>
-        <programlisting role="JAVA"><![CDATA[@Inject
+        <programlisting role="JAVA"><![CDATA[import javax.enterprise.inject.Instance;
+
+...
+
+@Inject
 void initServices(@Any Instance<Service> services) { 
    for (Service service: services) {
       service.init();
@@ -732,7 +736,11 @@ public class MockPaymentProcessor implements PaymentProcessor {
             .)
         </para>
 
-        <programlisting role="JAVA"><![CDATA[@Inject @Any Instance<PaymentProcessor> paymentProcessorSource;]]></programlisting>
+        <programlisting role="JAVA"><![CDATA[import javax.enterprise.inject.Instance;
+
+...
+
+@Inject @Any Instance<PaymentProcessor> paymentProcessorSource;]]></programlisting>
 
         <para>
             Next, we need to obtain an instance of our qualifier type. Since annotations are interfaces, we can't just
@@ -820,7 +828,10 @@ PaymentProcessor p = anyPaymentProcessor.select(qualifier).get().process(payment
             explicitly specifying the log category:
         </para>
 
-        <programlisting role="JAVA"><![CDATA[class LogFactory {
+        <programlisting role="JAVA"><![CDATA[import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.Produces;
+
+class LogFactory {
 
    @Produces Logger createLogger(InjectionPoint injectionPoint) { 
       return Logger.getLogger(injectionPoint.getMember().getDeclaringClass().getName()); 
@@ -850,7 +861,10 @@ public @interface HttpParam {
 
         <para>The following producer method does the work:</para>
 
-        <programlisting role="JAVA"><![CDATA[class HttpParams
+        <programlisting role="JAVA"><![CDATA[import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.spi.InjectionPoint;
+
+class HttpParams
 
    @Produces @HttpParam("")
    String getParamValue(InjectionPoint ip) {

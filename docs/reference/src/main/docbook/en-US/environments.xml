@@ -291,7 +291,9 @@
                 Here's an example of a simple CDI SE application:
             </para>
 
-            <programlisting role="JAVA"><![CDATA[@Singleton
+            <programlisting role="JAVA"><![CDATA[import javax.inject.Singleton;
+
+@Singleton
 public class HelloWorld
 {
    public void printHello(@Observes ContainerInitialized event, @Parameters List<String> parameters) {
@@ -378,7 +380,9 @@ public class HelloWorld
                     to initialize a bean of type<literal>MyApplicationBean</literal>.
                 </para>
 
-                <programlisting role="JAVA"><![CDATA[public static void main(String[] args) {
+                <programlisting role="JAVA"><![CDATA[import org.jboss.weld.environment.se.Weld;
+
+public static void main(String[] args) {
    Weld weld = new Weld();
    WeldContainer container = weld.initialize();
    container.instance().select(MyApplicationBean.class).get();
@@ -392,7 +396,9 @@ public class HelloWorld
                     on startup.
                 </para>
 
-                <programlisting role="JAVA"><![CDATA[public static void main(String[] args) {
+                <programlisting role="JAVA"><![CDATA[org.jboss.weld.environment.se.Weld;
+
+public static void main(String[] args) {
    Weld weld = new Weld();
    WeldContainer container = weld.initialize();
    container.event().select(MyEvent.class).fire( new MyEvent() );

@@ -610,7 +610,9 @@
             <literal>org.jboss.weld.spi.ResourceLoader</literal>.
          </para>
 
-<programlisting role="JAVA"><![CDATA[public interface ResourceLoader extends Service {
+<programlisting role="JAVA"><![CDATA[import org.jboss.weld.bootstrap.api.Service;
+
+public interface ResourceLoader extends Service {
     public Class<?> classForName(String name);
     public URL getResource(String name);
     public Collection<URL> getResources(String name);
@@ -623,7 +625,9 @@
             <para>
                 An integrator may optionally implement the <literal>AnnotationDiscovery</literal> service.
             </para>
-            <programlisting role="JAVA"><![CDATA[public interface AnnotationDiscovery extends Service {
+            <programlisting role="JAVA"><![CDATA[org.jboss.weld.bootstrap.api.Service;
+
+public interface AnnotationDiscovery extends Service {
     boolean containsAnnotation(Class<?> javaClass, Class<? extends Annotation> annotation);
 }]]></programlisting>
             <para>

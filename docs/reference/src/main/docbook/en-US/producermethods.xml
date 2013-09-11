@@ -58,7 +58,9 @@
          implementation is fixed. A producer method has no such limitation:
       </para>
 
-<programlisting role="JAVA"><![CDATA[@SessionScoped
+<programlisting role="JAVA"><![CDATA[import javax.enterprise.inject.Produces;
+
+@SessionScoped
 public class Preferences implements Serializable {
    private PaymentStrategyType paymentStrategy;
    ...

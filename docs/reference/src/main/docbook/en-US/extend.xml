@@ -63,7 +63,9 @@
          it's needed to satisfy the requirements of Java SE's service provider architecture.
       </para>
       
-      <programlisting role="JAVA">class MyExtension implements Extension { ... }</programlisting>
+      <programlisting role="JAVA"> import javax.enterprise.inject.spi.Extension;
+
+class MyExtension implements Extension { ... }</programlisting>
       
       <para>
          Next, we need to register our extension as a service provider by creating a file named
@@ -155,7 +157,9 @@ MyBean(MyExtension myExtension) {
          Extensions may observe these events:
       </para>
    
-      <programlisting role="JAVA"><![CDATA[class MyExtension implements Extension {
+      <programlisting role="JAVA"><![CDATA[import javax.enterprise.inject.spi.Extension;
+
+class MyExtension implements Extension {
    
    void beforeBeanDiscovery(@Observes BeforeBeanDiscovery bbd) {
       Logger.global.debug("beginning the scanning process");
@@ -176,7 +180,9 @@ MyBean(MyExtension myExtension) {
          modify the container's metamodel and more. Here's a very simple example:
       </para>
       
-      <programlisting role="JAVA"><![CDATA[class MyExtension implements Extension {
+      <programlisting role="JAVA"><![CDATA[import javax.enterprise.inject.spi.Extension;
+
+class MyExtension implements Extension {
       
    <T> void processAnnotatedType(@Observes ProcessAnnotatedType<T> pat) {
       //tell the container to ignore the type if it is annotated @Ignore
@@ -304,7 +310,11 @@ MyBean(MyExtension myExtension) {
       </para>
       </note>
       
-      <programlisting role="JAVA"><![CDATA[//get the BeanManager
+      <programlisting role="JAVA"><![CDATA[import javax.enterprise.inject.spi.CDI;
+
+...
+
+//get the BeanManager
 BeanManager beanManager = CDI.current().getBeanManager();
 
 //CDI uses an AnnotatedType object to read the annotations of a class
@@ -388,7 +398,13 @@ ctx.release();  //clean up dependent objects
          upon the <literal>SecurityManager</literal> instance.
       </para>
       
-      <programlisting role="JAVA"><![CDATA[public class SecurityManagerExtension implements Extension {
+      <programlisting role="JAVA"><![CDATA[import javax.enterprise.inject.spi.Extension;
+import javax.enterprise.event.Observes;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import javax.enterprise.inject.spi.InjectionPoint;
+
+public class SecurityManagerExtension implements Extension {
     
     void afterBeanDiscovery(@Observes AfterBeanDiscovery abd, BeanManager bm) {
             
@@ -494,7 +510,11 @@ ctx.release();  //clean up dependent objects
          annotation. 
       </para>
       
-      <programlisting role="JAVA"><![CDATA[public class QualifiedNameExtension implements Extension {
+      <programlisting role="JAVA"><![CDATA[import java.lang.reflect.Type;
+import javax.enterprise.inject.spi.Extension;
+import java.lang.annotation.Annotation;
+
+public class QualifiedNameExtension implements Extension {
 
     <X> void processAnnotatedType(@Observes ProcessAnnotatedType<X> pat) {
 
@@ -583,7 +603,10 @@ ctx.release();  //clean up dependent objects
          class which implements a certain <literal>Service</literal> interface.
       </para>
       
-      <programlisting role="JAVA"><![CDATA[class ServiceAlternativeExtension implements Extension {
+      <programlisting role="JAVA"><![CDATA[import javax.enterprise.inject.spi.Extension;
+import java.lang.annotation.Annotation;
+
+class ServiceAlternativeExtension implements Extension {
       
    <T extends Service> void processAnnotatedType(@Observes ProcessAnnotatedType<T> pat) {
    
@@ -682,7 +705,11 @@ lastName=King</programlisting>
       <para>The portable extension works by wrapping the containers <literal>InjectionTarget</literal> and setting field 
       values from the <literal>inject()</literal> method.</para>
       
-      <programlisting role="JAVA"><![CDATA[public class ConfigExtension implements Extension {
+      <programlisting role="JAVA"><![CDATA[import javax.enterprise.event.Observes;
+import javax.enterprise.inject.spi.Extension;
+import javax.enterprise.inject.spi.InjectionPoint;
+
+public class ConfigExtension implements Extension {
 
 	<X> void processInjectionTarget(@Observes ProcessInjectionTarget<X> pit) {
 		
@@ -855,7 +882,9 @@ lastName=King</programlisting>
          support for the conversation scope to an application that uses Wicket.
       </para>
 
-<programlisting role="JAVA"><![CDATA[public interface AlterableContext extends Context {
+<programlisting role="JAVA"><![CDATA[import javax.enterprise.context.spi.Context;
+
+public interface AlterableContext extends Context {
     public void destroy(Contextual<?> contextual);
 }]]></programlisting>
 

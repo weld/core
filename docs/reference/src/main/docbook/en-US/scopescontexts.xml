@@ -187,7 +187,11 @@ public class SecondLevelCache { ... }]]></programlisting>
             In the following example, a conversation-scoped bean controls the conversation with which it is associated:
          </para>
   
-<programlisting role="JAVA"><![CDATA[@ConversationScoped @Stateful
+<programlisting role="JAVA"><![CDATA[import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+import javax.persistence.PersistenceContextType.EXTENDED;
+
+@ConversationScoped @Stateful
 public class OrderBuilder {
    private Order order;
    private @Inject Conversation conversation;
