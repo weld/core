@@ -185,7 +185,12 @@ public class TranslateController {
          instance of <literal>Instance</literal>, parameterized with the bean type:
       </para>
 
-      <programlisting role="JAVA"><![CDATA[@Inject Instance<TextTranslator> textTranslatorInstance;
+      <programlisting role="JAVA"><![CDATA[import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
+
+....
+
+@Inject Instance<TextTranslator> textTranslatorInstance;
 ...
 public void translate() {
    textTranslatorInstance.get().translate(inputText);

@@ -321,7 +321,10 @@ if (document.isBlog()) blogEvent.select(new AnnotationLiteral<Updated>(){}).fire
   
       <para>Imagine that we have cached a JPA query result set in the application scope:</para>
   
-  <programlisting role="JAVA"><![CDATA[@ApplicationScoped @Singleton
+  <programlisting role="JAVA"><![CDATA[import javax.ejb.Singleton;
+import javax.enterprise.inject.Produces;
+
+@ApplicationScoped @Singleton
 public class Catalog {
 
    @PersistenceContext EntityManager em;
@@ -349,7 +352,9 @@ public class Catalog {
          The bean that creates and deletes <literal>Product</literal>s could raise events, for example:
       </para>
   
-     <programlisting role="JAVA"><![CDATA[@Stateless
+     <programlisting role="JAVA"><![CDATA[import javax.enterprise.event.Event;
+
+@Stateless
 public class ProductManager {
    @PersistenceContext EntityManager em;
    @Inject @Any Event<Product> productEvent;
@@ -370,7 +375,9 @@ public class ProductManager {
          And now <literal>Catalog</literal> can observe the events after successful completion of the transaction:
       </para>
   
-  <programlisting role="JAVA"><![CDATA[@ApplicationScoped @Singleton
+  <programlisting role="JAVA"><![CDATA[import javax.ejb.Singleton;
+
+@ApplicationScoped @Singleton
 public class Catalog {
    ...
    void addProduct(@Observes(during = AFTER_SUCCESS) @Created Product product) {

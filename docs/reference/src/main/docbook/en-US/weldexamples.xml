@@ -284,7 +284,9 @@ public class Generator implements Serializable {
          only required when you want to make the bean accessible to a JSF view via EL (i.e., #{game}).
       </para>
          
-      <programlisting role="JAVA"><![CDATA[@Named
+      <programlisting role="JAVA"><![CDATA[import javax.enterprise.inject.Instance;
+
+@Named
 @SessionScoped
 public class Game implements Serializable {
 
@@ -811,7 +813,9 @@ public class Game
                <area id="guess1" coords="38" />
                <area id="replay" coords="48" />
             </areaspec>
-            <programlisting role="JAVA"><![CDATA[public class NumberGuessFrame extends javax.swing.JFrame
+            <programlisting role="JAVA"><![CDATA[import javax.enterprise.event.Observes;
+
+public class NumberGuessFrame extends javax.swing.JFrame
 {
    @Inject
    private Game game;

@@ -643,7 +643,9 @@ class ShoppingCart implements Serializable { ... }]]></programlisting>
             annotation.
          </para>
    
-   <programlisting role="JAVA"><![CDATA[@ApplicationScoped
+   <programlisting role="JAVA"><![CDATA[import javax.enterprise.inject.Produces;
+
+@ApplicationScoped
 public class RandomNumberGenerator {
    
    private java.util.Random random = new java.util.Random(System.currentTimeMillis());
@@ -733,7 +735,9 @@ public class RandomNumberGenerator {
             same annotation used for producer methods.
          </para>
 
-         <programlisting role="JAVA"><![CDATA[public class Shop {
+         <programlisting role="JAVA"><![CDATA[import javax.enterprise.inject.Produces;
+
+public class Shop {
    @Produces PaymentProcessor paymentProcessor = ....;
    @Produces @Catalog List<Product> products = ....;
 }]]></programlisting>
