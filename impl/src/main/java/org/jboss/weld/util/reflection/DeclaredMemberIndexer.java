@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.util.reflection;
 
+import static org.jboss.weld.util.reflection.Reflections.cast;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
@@ -96,8 +98,8 @@ public final class DeclaredMemberIndexer {
      * @return the declared constructor for the given index and declaring class
      * @throws IndexOutOfBoundsException if the index is out of range
      */
-    public static Constructor<?> getConstructorForIndex(int index, Class<?> declaringClass) {
-        return getDeclaredConstructors(declaringClass).get(index);
+    public static <T> Constructor<T> getConstructorForIndex(int index, Class<T> declaringClass) {
+        return cast(getDeclaredConstructors(declaringClass).get(index));
     }
 
     private static <T extends Member> int getIndexForMember(T declaredMember, List<T> declaredMembers) {

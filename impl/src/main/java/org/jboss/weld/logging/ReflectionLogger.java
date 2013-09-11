@@ -82,10 +82,10 @@ public interface ReflectionLogger extends WeldLogger {
     @Message(id = 609, value = "Cleaning Javassist proxy. Class {0}", format = Format.MESSAGE_FORMAT)
     String cleaningJavassistProxyClass(Object param1);
 
-    @Message(id = 610, value = "Unable to deserialize constructor. Declaring class {0}, signature {1}", format = Format.MESSAGE_FORMAT)
+    @Message(id = 610, value = "Unable to deserialize constructor. Declaring class {0}, index {1}", format = Format.MESSAGE_FORMAT)
     WeldException unableToGetConstructorOnDeserialization(Object param1, Object param2, @Cause Throwable cause);
 
-    @Message(id = 611, value = "Unable to deserialize method. Declaring class {0}, signature {1}", format = Format.MESSAGE_FORMAT)
+    @Message(id = 611, value = "Unable to deserialize method. Declaring class {0}, index {1}", format = Format.MESSAGE_FORMAT)
     WeldException unableToGetMethodOnDeserialization(Object param1, Object param2, @Cause Throwable cause);
 
     @Message(id = 612, value = "Unable to deserialize field. Declaring class {0}, field name {1}", format = Format.MESSAGE_FORMAT)

@@ -21,6 +21,7 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 
 import org.jboss.weld.logging.ReflectionLogger;
+import org.jboss.weld.util.reflection.DeclaredMemberIndexer;
 
 /**
  * Serializable holder for {@link Constructor}.
@@ -37,12 +38,12 @@ public class ConstructorHolder<X> extends AbstractSerializableHolder<Constructor
     }
 
     private final Class<X> declaringClass;
-    private final Class<?>[] parameterTypes;
+    private final int index;
 
     public ConstructorHolder(Constructor<X> constructor) {
         super(constructor);
         this.declaringClass = constructor.getDeclaringClass();
-        this.parameterTypes = constructor.getParameterTypes();
+        this.index = DeclaredMemberIndexer.getIndexForConstructor(constructor);
     }
 
     @Override
@@ -53,9 +54,9 @@ public class ConstructorHolder<X> extends AbstractSerializableHolder<Constructor
     @Override
     public Constructor<X> run() {
         try {
-            return declaringClass.getDeclaredConstructor(parameterTypes);
+            return DeclaredMemberIndexer.getConstructorForIndex(index, declaringClass);
         } catch (Exception e) {
-            throw ReflectionLogger.LOG.unableToGetConstructorOnDeserialization(declaringClass, parameterTypes, e);
+            throw ReflectionLogger.LOG.unableToGetConstructorOnDeserialization(declaringClass, index, e);
         }
     }
 }

@@ -24,6 +24,7 @@ import javax.enterprise.inject.spi.AnnotatedMethod;
 
 import org.jboss.weld.interceptor.spi.metadata.MethodMetadata;
 import org.jboss.weld.logging.ReflectionLogger;
+import org.jboss.weld.util.reflection.DeclaredMemberIndexer;
 
 import com.google.common.base.Objects;
 
@@ -38,14 +39,12 @@ public class MethodHolder extends AbstractSerializableHolder<Method> implements 
     private static final long serialVersionUID = -3033089710155551280L;
 
     private final Class<?> declaringClass;
-    private final String methodName;
-    private final Class<?>[] parameterTypes;
+    private final int index;
 
     public MethodHolder(Method method) {
         super(method);
+        this.index = DeclaredMemberIndexer.getIndexForMethod(method);
         this.declaringClass = method.getDeclaringClass();
-        this.methodName = method.getName();
-        this.parameterTypes = method.getParameterTypes();
     }
 
     public static MethodHolder of(Method method) {
@@ -68,9 +67,9 @@ public class MethodHolder extends AbstractSerializableHolder<Method> implements 
     @Override
     public Method run() {
         try {
-            return declaringClass.getDeclaredMethod(methodName, parameterTypes);
+            return DeclaredMemberIndexer.getMethodForIndex(index, declaringClass);
         } catch (Exception e) {
-            throw ReflectionLogger.LOG.unableToGetMethodOnDeserialization(declaringClass, parameterTypes, e);
+            throw ReflectionLogger.LOG.unableToGetMethodOnDeserialization(declaringClass, index, e);
         }
     }
 
