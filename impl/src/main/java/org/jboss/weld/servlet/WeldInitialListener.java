@@ -110,13 +110,14 @@ public class WeldInitialListener extends AbstractServletListener {
 
     @Override
     public void requestInitialized(ServletRequestEvent event) {
-        if (lifecycle.isConversationActivationEnabled()) {
+        if (!lifecycle.isConversationActivationSet()) {
             Object value = event.getServletContext().getAttribute(CONVERSATION_FILTER_REGISTERED);
             if (Boolean.TRUE.equals(value)) {
                 this.lifecycle.setConversationActivationEnabled(false);
+            } else {
+                this.lifecycle.setConversationActivationEnabled(true);
             }
         }
-
         if (event.getServletRequest() instanceof HttpServletRequest) {
             lifecycle.requestInitialized((HttpServletRequest) event.getServletRequest(), event.getServletContext());
         } else {
