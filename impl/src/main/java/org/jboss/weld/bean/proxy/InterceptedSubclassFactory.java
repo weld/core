@@ -21,6 +21,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.Bean;
@@ -33,6 +34,7 @@ import javassist.bytecode.DuplicateMemberException;
 import javassist.bytecode.Opcode;
 import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyObject;
+
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.interceptor.proxy.LifecycleMixin;
 import org.jboss.weld.interceptor.util.proxy.TargetInstanceProxy;
@@ -102,12 +104,17 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
     protected void addMethodsFromClass(ClassFile proxyClassType) {
         try {
             final Set<MethodSignatureImpl> finalMethods = new HashSet<MethodSignatureImpl>();
+            /*
+             * @see WELD-1507
+             */
+            final Set<MethodSignature> processedBridgeMethods = new HashSet<MethodSignature>();
             // Add all methods from the class heirachy
             Class<?> cls = getBeanType();
             while (cls != null) {
+                LinkedList<MethodSignature> declaredBridgeMethods = new LinkedList<MethodSignature>();
                 for (Method method : cls.getDeclaredMethods()) {
                     final MethodSignatureImpl methodSignature = new MethodSignatureImpl(method);
-                    if (!Modifier.isFinal(method.getModifiers()) && enhancedMethodSignatures.contains(methodSignature) && !finalMethods.contains(methodSignature)) {
+                    if (!Modifier.isFinal(method.getModifiers()) && enhancedMethodSignatures.contains(methodSignature) && !finalMethods.contains(methodSignature) && !processedBridgeMethods.contains(methodSignature)) {
                         try {
                             MethodInformation methodInfo = new RuntimeMethodInformation(method);
                             MethodInformation delegatingMethodInfo = new StaticMethodInformation(method.getName() + SUPER_DELEGATE_SUFFIX, method.getParameterTypes(), method.getReturnType(), proxyClassType.getName(), Modifier.PRIVATE | (method.getModifiers() & AccessFlag.BRIDGE));
@@ -118,20 +125,28 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
                             // do nothing. This will happen if superclass methods have
                             // been overridden
                         }
+                        if (method.isBridge()) {
+                            declaredBridgeMethods.add(methodSignature);
+                        }
                     } else if(Modifier.isFinal(method.getModifiers())) {
                         finalMethods.add(methodSignature);
                     }
                 }
+                processedBridgeMethods.addAll(declaredBridgeMethods);
                 cls = cls.getSuperclass();
             }
             for (Class<?> c : getAdditionalInterfaces()) {
                 for (Method method : c.getMethods()) {
-                    if(enhancedMethodSignatures.contains(new MethodSignatureImpl(method))) {
+                    MethodSignature signature = new MethodSignatureImpl(method);
+                    if(enhancedMethodSignatures.contains(signature) && !processedBridgeMethods.contains(signature)) {
                         try {
                             MethodInformation methodInformation = new RuntimeMethodInformation(method);
                             proxyClassType.addMethod(MethodUtils.makeMethod(methodInformation, method.getExceptionTypes(), createSpecialMethodBody(proxyClassType, methodInformation), proxyClassType.getConstPool()));
                             log.trace("Adding method " + method);
                         } catch (DuplicateMemberException e) {
+                        }
+                        if (method.isBridge()) {
+                            processedBridgeMethods.add(signature);
                         }
                     }
                 }
