@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.jboss.weld.logging.ServletLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.servlet.spi.HttpContextActivationFilter;
+import org.jboss.weld.util.servlet.ServletUtils;
 
 /**
  * Filter that handles conversation context activation if mapped by the application. Otherwise, conversation context is
@@ -55,7 +56,7 @@ public class ConversationFilter implements Filter {
     public void init(FilterConfig filterConfig) throws ServletException {
         this.conversationContextActivator = new ConversationContextActivator(manager);
         filterConfig.getServletContext().setAttribute(CONVERSATION_FILTER_REGISTERED, Boolean.TRUE);
-        contextActivationFilter = manager.getServices().get(HttpContextActivationFilter.class);
+        contextActivationFilter = ServletUtils.getContextActivationFilter(manager, filterConfig.getServletContext());
     }
 
     @Override

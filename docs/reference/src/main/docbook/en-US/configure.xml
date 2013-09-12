@@ -219,6 +219,27 @@
       </note>
    </section>
 
+   <section>
+      <title>Mapping CDI contexts to HTTP requests</title>
+      <para>
+         By default, CDI contexts are activated at the beginning of an HTTP request processing and deactivated once the processing finishes. This may represent an unnecessary overhead in certain situations, for example static resource serving).
+      </para>
+      <para>
+         Weld allows CDI context support to be mapped to a certain subset of requests only. A regular expression may be used for filtering HTTP requests that should have CDI contexts active during their processing.
+      </para>
+      <example>
+        <title>context mapping configuration in web.xml</title>
+      <programlisting role="XML"><![CDATA[<web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+
+    <context-param>
+        <param-name>org.jboss.weld.context.mapping</param-name>
+        <param-value>.*\.html</param-value>
+    </context-param>]]></programlisting>
+      </example>
+   </section>
+
 <!--
 vim:et:ts=3:sw=3:tw=120
 -->
