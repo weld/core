@@ -38,6 +38,7 @@ import javax.enterprise.inject.spi.ObserverMethod;
 import org.jboss.weld.Container;
 import org.jboss.weld.ContainerState;
 import org.jboss.weld.SystemPropertiesConfiguration;
+import org.jboss.weld.bootstrap.spi.BootstrapConfiguration;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.logging.BeanManagerLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -57,9 +58,15 @@ public class BeanManagerProxy extends ForwardingBeanManager {
 
     private final BeanManagerImpl manager;
     private transient volatile Container container;
+    private final boolean nonPortableMode;
 
     public BeanManagerProxy(BeanManagerImpl manager) {
         this.manager = manager;
+        if (SystemPropertiesConfiguration.INSTANCE.isNonPortableModeEnabled()) {
+            this.nonPortableMode = true;
+        } else {
+            this.nonPortableMode = manager.getServices().get(BootstrapConfiguration.class).isNonPortableModeEnabled();
+        }
     }
 
     @Override
@@ -139,7 +146,7 @@ public class BeanManagerProxy extends ForwardingBeanManager {
      * @throws IllegalStateException If the application initialization is not finished yet
      */
     private void checkContainerValidated(String methodName) {
-        if (SystemPropertiesConfiguration.INSTANCE.isNonPortableModeEnabled()) {
+        if (nonPortableMode) {
             return;
         }
         if (this.container == null) {
