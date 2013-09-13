@@ -53,7 +53,7 @@ public class HttpContextLifecycle implements Service {
     private HttpSessionContext sessionContextCache;
     private HttpRequestContext requestContextCache;
 
-    private volatile boolean conversationActivationEnabled;
+    private volatile Boolean conversationActivationEnabled;
 
     private final BeanManagerImpl beanManager;
     private final ConversationContextActivator conversationContextActivator;
@@ -62,7 +62,7 @@ public class HttpContextLifecycle implements Service {
     public HttpContextLifecycle(BeanManagerImpl beanManager) {
         this.beanManager = beanManager;
         this.conversationContextActivator = new ConversationContextActivator(beanManager);
-        this.conversationActivationEnabled = true;
+        this.conversationActivationEnabled = null;
         this.contextActivationFilter = beanManager.getServices().get(HttpContextActivationFilter.class);
     }
 
@@ -204,8 +204,8 @@ public class HttpContextLifecycle implements Service {
         }
     }
 
-    public boolean isConversationActivationEnabled() {
-        return conversationActivationEnabled;
+    public boolean isConversationActivationSet() {
+        return conversationActivationEnabled != null;
     }
 
     public void setConversationActivationEnabled(boolean conversationActivationEnabled) {
