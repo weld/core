@@ -59,11 +59,11 @@ public class HttpContextLifecycle implements Service {
     private final ConversationContextActivator conversationContextActivator;
     private final HttpContextActivationFilter contextActivationFilter;
 
-    public HttpContextLifecycle(BeanManagerImpl beanManager) {
+    public HttpContextLifecycle(BeanManagerImpl beanManager, HttpContextActivationFilter contextActivationFilter) {
         this.beanManager = beanManager;
         this.conversationContextActivator = new ConversationContextActivator(beanManager);
         this.conversationActivationEnabled = true;
-        this.contextActivationFilter = beanManager.getServices().get(HttpContextActivationFilter.class);
+        this.contextActivationFilter = contextActivationFilter;
     }
 
     private HttpSessionDestructionContext getSessionDestructionContext() {

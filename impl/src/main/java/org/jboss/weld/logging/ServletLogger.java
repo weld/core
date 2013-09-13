@@ -100,4 +100,8 @@ public interface ServletLogger extends WeldLogger {
     @Message(id = 710, value = "Cannot inject {0} outside of a Servlet request", format = Format.MESSAGE_FORMAT)
     IllegalStateException cannotInjectObjectOutsideOfServletRequest(Object param1, @Cause Throwable cause);
 
+    @LogMessage(level = Level.WARN)
+    @Message(id = 711, value = "Context activation pattern {0} ignored as it is overriden by the integrator.", format = Format.MESSAGE_FORMAT)
+    void webXmlMappingPatternIgnored(String pattern);
+
 }

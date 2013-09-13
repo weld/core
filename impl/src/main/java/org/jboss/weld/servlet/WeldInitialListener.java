@@ -36,6 +36,8 @@ import org.jboss.weld.bean.builtin.BeanManagerProxy;
 import org.jboss.weld.logging.ServletLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.servlet.api.helpers.AbstractServletListener;
+import org.jboss.weld.servlet.spi.HttpContextActivationFilter;
+import org.jboss.weld.util.servlet.ServletUtils;
 
 /**
  * The initial Weld listener. It should always be registered as the first listener, before any
@@ -74,7 +76,8 @@ public class WeldInitialListener extends AbstractServletListener {
         if (beanManager == null) {
             beanManager = BeanManagerProxy.unwrap(CDI.current().getBeanManager());
         }
-        this.lifecycle = new HttpContextLifecycle(beanManager);
+        HttpContextActivationFilter filter = ServletUtils.getContextActivationFilter(beanManager, sce.getServletContext());
+        this.lifecycle = new HttpContextLifecycle(beanManager, filter);
         if (Boolean.valueOf(sce.getServletContext().getInitParameter(CONVERSATION_FILTER_REGISTERED))) {
             this.lifecycle.setConversationActivationEnabled(false);
         }
