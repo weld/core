@@ -154,13 +154,8 @@
                 </dependency>
 
                 <dependency>
-                    <groupId>javax.faces</groupId>
-                    <artifactId>jsf-api</artifactId>
-                </dependency>
-
-                <dependency>
-                    <groupId>com.sun.faces</groupId>
-                    <artifactId>jsf-impl</artifactId>
+                    <groupId>org.glassfish</groupId>
+                    <artifactId>javax.faces</artifactId>
                     <scope>runtime</scope>
                 </dependency>
 
@@ -264,7 +259,7 @@
                              readme.txt for details
                           -->
                           <!--<server>tomcat</server>-->
-                          <url>http://localhost:${tomcat.http.port}/manager</url>
+                          <url>http://localhost:${tomcat.http.port}/manager/html</url>
                       </configuration>
                    </plugin>
 
@@ -283,13 +278,8 @@
                 </dependency>
 
                 <dependency>
-                    <groupId>javax.faces</groupId>
-                    <artifactId>jsf-api</artifactId>
-                </dependency>
-
-                <dependency>
-                    <groupId>com.sun.faces</groupId>
-                    <artifactId>jsf-impl</artifactId>
+                    <groupId>org.glassfish</groupId>
+                    <artifactId>javax.faces</artifactId>
                     <scope>runtime</scope>
                 </dependency>
 
