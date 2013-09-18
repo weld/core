@@ -54,7 +54,7 @@ Tomcat plugin to access the manager application, then start Tomcat:
     <user username="admin" password="" roles="manager"/>
 
     Tomcat 7:
-    <user username="admin" password="" roles="manager-gui,manager-script"/>
+    <user username="admin" password="" roles="standard,manager-script"/>
 
 To override this username and password, add a `<server>` with id `tomcat` in your
 Maven `settings.xml` file, set the `<username>` and `<password>` elqements to the
