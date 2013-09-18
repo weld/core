@@ -111,25 +111,6 @@ The application will be running at the following local URL:
 
    http://localhost:9090/weld-numberguess
 
-
-Launching Jetty embedded from Eclipse
--------------------------------------
-
-First, set up the Eclipse environment:
-
-    mvn clean eclipse:clean eclipse:eclipse -Pjetty-ide
-
-and import the project into eclipse
-
-Next, put all the needed resources into `src/main/webapp`
-
-    mvn war:inplace -Pjetty-ide
-
-Now, you are ready to run the server in Eclipse; find the Start class in
-`src/jetty/java`, and run its main method as a Java Application. The server
-will launch. Now you can view the application at <http://localhost:8080/weld-numberguess>.
-
-
 Using Google App Engine
 -----------------------
 
