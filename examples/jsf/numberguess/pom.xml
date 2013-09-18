@@ -388,7 +388,7 @@
                        readme.txt for details
                     -->
                     <!--<server>tomcat</server>-->
-                    <url>http://localhost:${tomcat.http.port}/manager/html</url>
+                    <url>http://localhost:${tomcat.http.port}/manager/text</url>
                 </configuration>
             </plugin>
 

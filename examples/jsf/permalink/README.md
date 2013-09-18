@@ -16,10 +16,10 @@ Make sure you have assigned the absolute path of your installation to the
 JBOSS_HOME environment variable.
 
 1. Open terminal and start the server by running script:
-	$JBOSS_HOME/bin/standalone.sh
+  $JBOSS_HOME/bin/standalone.sh
 
 2. Deploy example on the server you have run in the step 1 using command
-	mvn jboss-as:deploy
+  mvn jboss-as:deploy
 
 3. Now you can view the application at <http://localhost:8080/weld-permalink>.
 
@@ -56,7 +56,7 @@ Tomcat plugin to access the manager application, then start Tomcat:
     <user username="admin" password="" roles="manager"/>
 
     Tomcat 7:
-    <user username="admin" password="" roles="manager-gui,manager-script"/>
+    <user username="admin" password="" roles="standard,manager-script"/>
 
 To override this username and password, add a `<server>` with id `tomcat` in your
 Maven `settings.xml` file, set the `<username>` and `<password>` elqements to the
