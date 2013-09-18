@@ -25,12 +25,6 @@
             <!-- Issues in the TCK -->
 
             <!-- Issues in Weld (the RI) -->
-            <!-- WELD-1269 -->
-            <class name="org.jboss.cdi.tck.tests.context.session.listener.shutdown.SessionContextListenerShutdownTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
 
             <!-- Issues in JBoss AS -->
             <!-- AS7-6831 @WebServiceRef injection not working in JBoss AS -->
