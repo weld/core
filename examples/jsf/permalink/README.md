@@ -113,6 +113,8 @@ The application will be running at the following local URL:
 
    http://localhost:9090/weld-permalink
 
+NOTE: This configuration currently does not work on Maven 3.1.x due to class loading conflicts regarding JSR-330
+
 Importing the project into Eclipse
 ----------------------------------
 
