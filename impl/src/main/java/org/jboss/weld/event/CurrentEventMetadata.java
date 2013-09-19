@@ -16,7 +16,9 @@
  */
 package org.jboss.weld.event;
 
+import javax.enterprise.inject.spi.EventMetadata;
+
 import org.jboss.weld.injection.ThreadLocalStackService;
 
-public class CurrentEventMetadata extends ThreadLocalStackService<EventPacket<?>> {
+public class CurrentEventMetadata extends ThreadLocalStackService<EventMetadata> {
 }
