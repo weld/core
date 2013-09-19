@@ -151,9 +151,10 @@ public abstract class LargeTransactionDecorator
       <title>Enabling decorators</title>
 
       <para>
-         By default, all decorators are disabled. We need to <emphasis>enable</emphasis> our decorator in the
-         <literal>beans.xml</literal> descriptor of a bean archive. This activation only applies to the beans 
-         in that archive.
+         By default, all decorators are disabled. We need to <emphasis>enable</emphasis> our decorator. We can do it using
+         <literal>beans.xml</literal> descriptor of a bean archive. However, this activation only applies to the beans 
+         in that archive. From CDI 1.1 onwards the decorator can be enabled for the whole application using 
+         <literal>@Priority</literal> annotation.
       </para>
 
       <programlisting role="XML"><![CDATA[<beans
@@ -175,7 +176,7 @@ public abstract class LargeTransactionDecorator
       <itemizedlist>
          <listitem>
             <para>
-               it enables us to specify a total ordering for all decorators in our system, ensuring deterministic
+               it enables us to specify an ordering for decorators in our system, ensuring deterministic
                behavior, and
             </para>
          </listitem>
@@ -183,6 +184,17 @@ public abstract class LargeTransactionDecorator
             <para>it lets us enable or disable decorator classes at deployment time.</para>
          </listitem>
       </itemizedlist> 
+      <para>
+      Decorators enabled using <literal>@Priority</literal> are called before decorators enabled using <literal>beans.xml</literal>, 
+      the lower priority values are called first. 
+      </para>
+      <note>
+          <para>
+                Decorators with the <literal>@Priority</literal> that are listed in the <literal>beans.xml</literal> descriptor
+                will be called twice in Weld. However, this behaviour is non-portable and this combination 
+                should not be used as it can behave differently in the other implementation!
+          </para>
+      </note>
 
    </section>
   

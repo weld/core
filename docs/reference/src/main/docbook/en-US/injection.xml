@@ -405,7 +405,8 @@ public class MockPaymentProcessor implements PaymentProcessor {
             alternative in the
             <literal>beans.xml</literal>
             descriptor of a bean archive to make it available for
-            instantiation and injection. This activation only applies to the beans in that archive.
+            instantiation and injection. However, this activation only applies to the beans in that archive. From CDI 1.1 onwards
+            the alternative can be enabled for the whole application using <literal>@Priority</literal> annotation.
         </para>
 
         <programlisting role="XML"><![CDATA[<beans
@@ -422,7 +423,8 @@ public class MockPaymentProcessor implements PaymentProcessor {
         <para>
             When an ambiguous dependency exists at an injection point, the container attempts to resolve the ambiguity
             by looking for an enabled alternative among the beans that could be injected. If there is exactly one
-            enabled alternative, that's the bean that will be injected.
+            enabled alternative, that's the bean that will be injected. If there are more beans with priority, the one
+            with the highest priority value is selected.
         </para>
 
     </section>
@@ -464,7 +466,15 @@ public class MockPaymentProcessor implements PaymentProcessor {
                     explicitly enable an
                     <literal>@Alternative</literal>
                     bean that implements the bean type and has the
-                    appropriate qualifier types, using<literal>beans.xml</literal>.
+                    appropriate qualifier types, using <literal>beans.xml</literal>.
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    enable an
+                    <literal>@Alternative</literal>
+                    bean that implements the bean type and has the
+                    appropriate qualifier types, using <literal>@Priority</literal>annotation.
                 </para>
             </listitem>
         </itemizedlist>
@@ -496,6 +506,14 @@ public class MockPaymentProcessor implements PaymentProcessor {
                     <literal>@Alternative</literal>
                     beans that are trying to occupy the same space,
                     using<literal>beans.xml</literal>.
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    change priority value of one of two
+                    <literal>@Alternative</literal>
+                    beans with the <literal>@Priority</literal> if they have the same highest priority value.
+
                 </para>
             </listitem>
         </itemizedlist>
