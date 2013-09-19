@@ -24,6 +24,7 @@ import org.jboss.weld.context.ConversationContext;
 import org.jboss.weld.context.http.HttpConversationContext;
 import org.jboss.weld.context.http.HttpRequestContext;
 import org.jboss.weld.context.http.HttpRequestContextImpl;
+import org.jboss.weld.event.FastEvent;
 import org.jboss.weld.literal.DestroyedLiteral;
 import org.jboss.weld.literal.InitializedLiteral;
 import org.jboss.weld.logging.ConversationLogger;
@@ -50,8 +51,13 @@ public class ConversationContextActivator {
     private HttpConversationContext httpConversationContextCache;
     private HttpRequestContext requestContextCache;
 
+    private final FastEvent<HttpServletRequest> conversationInitializedEvent;
+    private final FastEvent<HttpServletRequest> conversationDestroyedEvent;
+
     protected ConversationContextActivator(BeanManagerImpl beanManager) {
         this.beanManager = beanManager;
+        conversationInitializedEvent = FastEvent.of(HttpServletRequest.class, beanManager, InitializedLiteral.CONVERSATION);
+        conversationDestroyedEvent = FastEvent.of(HttpServletRequest.class, beanManager, DestroyedLiteral.CONVERSATION);
     }
 
     private HttpConversationContext httpConversationContext() {
@@ -92,7 +98,7 @@ public class ConversationContextActivator {
             setContextActivatedInRequest(request);
             conversationContext.activate(cid);
             if (cid == null) { // transient conversation
-                beanManager.getAccessibleLenientObserverNotifier().fireEvent(request, InitializedLiteral.CONVERSATION);
+                conversationInitializedEvent.fire(request);
             }
         } else {
             /*
@@ -156,7 +162,7 @@ public class ConversationContextActivator {
             conversationContext.invalidate();
             conversationContext.deactivate();
             if (isTransient) {
-                beanManager.getAccessibleLenientObserverNotifier().fireEvent(request, DestroyedLiteral.CONVERSATION);
+                conversationDestroyedEvent.fire(request);
             }
         }
     }

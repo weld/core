@@ -28,6 +28,7 @@ import org.jboss.weld.context.http.HttpRequestContext;
 import org.jboss.weld.context.http.HttpRequestContextImpl;
 import org.jboss.weld.context.http.HttpSessionContext;
 import org.jboss.weld.context.http.HttpSessionDestructionContext;
+import org.jboss.weld.event.FastEvent;
 import org.jboss.weld.literal.DestroyedLiteral;
 import org.jboss.weld.literal.InitializedLiteral;
 import org.jboss.weld.logging.ServletLogger;
@@ -59,11 +60,24 @@ public class HttpContextLifecycle implements Service {
     private final ConversationContextActivator conversationContextActivator;
     private final HttpContextActivationFilter contextActivationFilter;
 
+    private final FastEvent<ServletContext> applicationInitializedEvent;
+    private final FastEvent<ServletContext> applicationDestroyedEvent;
+    private final FastEvent<HttpServletRequest> requestInitializedEvent;
+    private final FastEvent<HttpServletRequest> requestDestroyedEvent;
+    private final FastEvent<HttpSession> sessionInitializedEvent;
+    private final FastEvent<HttpSession> sessionDestroyedEvent;
+
     public HttpContextLifecycle(BeanManagerImpl beanManager, HttpContextActivationFilter contextActivationFilter) {
         this.beanManager = beanManager;
         this.conversationContextActivator = new ConversationContextActivator(beanManager);
         this.conversationActivationEnabled = null;
         this.contextActivationFilter = contextActivationFilter;
+        this.applicationInitializedEvent = FastEvent.of(ServletContext.class, beanManager, InitializedLiteral.APPLICATION);
+        this.applicationDestroyedEvent = FastEvent.of(ServletContext.class, beanManager, DestroyedLiteral.APPLICATION);
+        this.requestInitializedEvent = FastEvent.of(HttpServletRequest.class, beanManager, InitializedLiteral.REQUEST);
+        this.requestDestroyedEvent = FastEvent.of(HttpServletRequest.class, beanManager, DestroyedLiteral.REQUEST);
+        this.sessionInitializedEvent = FastEvent.of(HttpSession.class, beanManager, InitializedLiteral.SESSION);
+        this.sessionDestroyedEvent = FastEvent.of(HttpSession.class, beanManager, DestroyedLiteral.SESSION);
     }
 
     private HttpSessionDestructionContext getSessionDestructionContext() {
@@ -88,17 +102,17 @@ public class HttpContextLifecycle implements Service {
     }
 
     public void contextInitialized(ServletContext ctx) {
-        beanManager.getAccessibleLenientObserverNotifier().fireEvent(ctx, InitializedLiteral.APPLICATION);
+        applicationInitializedEvent.fire(ctx);
     }
 
     public void contextDestroyed(ServletContext ctx) {
-        beanManager.getAccessibleLenientObserverNotifier().fireEvent(ctx, DestroyedLiteral.APPLICATION);
+        applicationDestroyedEvent.fire(ctx);
     }
 
     public void sessionCreated(HttpSession session) {
         SessionHolder.sessionCreated(session);
         conversationContextActivator.sessionCreated(session);
-        beanManager.getAccessibleLenientObserverNotifier().fireEvent(session, InitializedLiteral.SESSION);
+        sessionInitializedEvent.fire(session);
     }
 
     public void sessionDestroyed(HttpSession session) {
@@ -111,7 +125,7 @@ public class HttpContextLifecycle implements Service {
         if (destroyed) {
             // we are outside of a request (the session timed out) and therefore the session was destroyed immediately
             // we can fire the @Destroyed(SessionScoped.class) event immediately
-            beanManager.getAccessibleLenientObserverNotifier().fireEvent(session, DestroyedLiteral.SESSION);
+            sessionDestroyedEvent.fire(session);
         } else {
             // the old session won't be available at the time we destroy this request
             // let's store its reference until then
@@ -158,7 +172,7 @@ public class HttpContextLifecycle implements Service {
             if (conversationActivationEnabled) {
                 conversationContextActivator.activateConversationContext(request);
             }
-            beanManager.getAccessibleLenientObserverNotifier().fireEvent(request, InitializedLiteral.REQUEST);
+            requestInitializedEvent.fire(request);
         } catch (RuntimeException e) {
             try {
                 requestDestroyed(request);
@@ -188,12 +202,11 @@ public class HttpContextLifecycle implements Service {
             getRequestContext().invalidate();
             getRequestContext().deactivate();
             // fire @Destroyed(RequestScoped.class)
-            beanManager.getAccessibleLenientObserverNotifier().fireEvent(request, DestroyedLiteral.REQUEST);
+            requestDestroyedEvent.fire(request);
             getSessionContext().deactivate();
             // fire @Destroyed(SessionScoped.class)
             if (!getSessionContext().isValid()) {
-                beanManager.getAccessibleLenientObserverNotifier().fireEvent(request.getAttribute(HTTP_SESSION),
-                        DestroyedLiteral.SESSION);
+                sessionDestroyedEvent.fire((HttpSession) request.getAttribute(HTTP_SESSION));
             }
         } finally {
             getRequestContext().dissociate(request);
