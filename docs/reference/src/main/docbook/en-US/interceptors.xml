@@ -129,9 +129,10 @@ public class TransactionInterceptor {
       <title>Enabling interceptors</title>
 
       <para>
-         By default, all interceptors are disabled. We need to <emphasis>enable</emphasis> our interceptor in the
-         <literal>beans.xml</literal> descriptor of a bean archive. This activation only applies to the beans in 
-         that archive.
+         By default, all interceptors are disabled. We need to <emphasis>enable</emphasis> our interceptor. We can do it using
+         <literal>beans.xml</literal> descriptor of a bean archive. However, this activation only applies to the beans 
+         in that archive. From CDI 1.1 onwards the alternative can be enabled for the whole application using 
+         <literal>@Priority</literal> annotation.
       </para>
 
 <programlisting role="XML"><![CDATA[<beans
@@ -154,7 +155,7 @@ public class TransactionInterceptor {
       <itemizedlist>
          <listitem>
             <para>
-               it enables us to specify a total ordering for all the interceptors in our system, ensuring deterministic
+               it enables us to specify a ordering for the interceptors in our system, ensuring deterministic
                behavior, and
             </para>
          </listitem>
@@ -164,7 +165,8 @@ public class TransactionInterceptor {
       </itemizedlist> 
 
       <para>
-         For example, we could specify that our security interceptor runs before our transaction interceptor.
+         Having two interceptors without <literal>@Priority</literal>, we could specify that our security interceptor 
+         runs before our transaction interceptor.
       </para>
 
       <programlisting role="XML"><![CDATA[<beans
@@ -181,6 +183,21 @@ public class TransactionInterceptor {
 
       <para>Or we could turn them both off in our test environment by simply not mentioning them in 
       <literal>beans.xml</literal>! Ah, so simple.</para>
+
+      <para>
+         It gets quite tricky when used along with interceptors annotated with <literal>@Priority</literal>.
+         Interceptors enabled using <literal>@Priority</literal> are called before interceptors enabled 
+         using <literal>beans.xml</literal>, the smaller priority values are called first.
+            
+      </para>
+
+      <note>
+          <para>
+                Interceptors with the <literal>@Priority</literal> that are listed in the <literal>beans.xml</literal> descriptor
+                will be called twice in WELD. However, this behaviour is non-portable and this combination 
+                should not be used as it can behave differently in the other implementation!
+          </para>
+      </note>
 
    </section>
 
