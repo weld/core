@@ -13,10 +13,10 @@ Make sure you have assigned the absolute path of your installation to the
 JBOSS_HOME environment variable.
 
 1. Open terminal and start the server by running script:
-	$JBOSS_HOME/bin/standalone.sh
+  $JBOSS_HOME/bin/standalone.sh
 
 2. Deploy example on the server you have run in step the 1 using command
-	mvn jboss-as:deploy
+  mvn jboss-as:deploy
 
 3. Now you can view the application at <http://localhost:8080/weld-numberguess>.
 
@@ -110,6 +110,8 @@ Simply run:
 The application will be running at the following local URL:
 
    http://localhost:9090/weld-numberguess
+
+NOTE: This configuration currently does not work on Maven 3.1.x due to class loading conflicts regarding JSR-330
 
 Using Google App Engine
 -----------------------
