@@ -38,9 +38,10 @@ import org.jboss.weld.examples.numberguess.ftest.Deployments;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import org.openqa.selenium.By;
+import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -152,27 +153,8 @@ public class NumberGuessClusterTest {
         for (int i = 4; i < parsedStrings.length; i++) {
             sb.append("/").append(parsedStrings[i]);
         }
-
-        String newAddress = sb.toString();
-        String firstPart = "";
-        String sid = "";         
         
-        //if (selenium.isCookiePresent("JSESSIONID")) {
-        if (!newAddress.contains(";")) {
-            sid = driver.manage().getCookieNamed("JSESSIONID").getValue();
-            firstPart = newAddress;
-        } else {
-            // get sessionid directly from browser URL if JSESSIONID cookie is not
-            // present
-            firstPart = newAddress.substring(0, newAddress.indexOf(";"));
-            sid = loc.substring(loc.indexOf("jsessionid=") + "jsessionid=".length(), loc.length());
-        }
-
-        newAddress = firstPart + ";jsessionid=" + sid;
-                
-        driver.manage().deleteAllCookies();
-
-        return newAddress;
+        return sb.toString();
     }
     
     private Integer getRemainingGuesses() {
@@ -231,7 +213,17 @@ public class NumberGuessClusterTest {
     
     private void switchBrowsers() throws MalformedURLException {
         String address = getAddressForSecondInstance();
+        
+        String sid = driver.manage().getCookieNamed("JSESSIONID").getValue();
+        
         String contextPath = browsersSwitched ? contextPath1 : contextPath2;
+       
+        // We navigate to the home page on the second server, just to set the cookies 
+        driver.navigate().to(new URL(contextPath));
+        driver.manage().deleteAllCookies();
+        driver.manage().addCookie(new Cookie("JSESSIONID", sid));
+        
+        // Now we navigate for reals
         driver.navigate().to(new URL(contextPath + "/" + address));
         
         browsersSwitched = !browsersSwitched;
@@ -257,7 +249,9 @@ public class NumberGuessClusterTest {
                 naiveStep();
             }
         } while(!isOnGuessPage());
-        
+
+        Thread.sleep(GRACE_TIME_TO_REPLICATE);        
+
         deployer.undeploy(DEPLOYMENT1);
         controller.stop(CONTAINER1);
         
