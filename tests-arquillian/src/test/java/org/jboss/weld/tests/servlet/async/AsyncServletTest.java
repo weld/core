@@ -35,7 +35,7 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
-import com.gargoylesoftware.htmlunit.TextPage;
+import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 
 @RunWith(Arquillian.class)
@@ -55,8 +55,8 @@ public class AsyncServletTest {
     @Test
     public void test() throws FailingHttpStatusCodeException, MalformedURLException, IOException {
         WebClient client = new WebClient();
-        TextPage page = client.getPage(url.toString() + "/foo");
-        String content = page.getContent();
+        Page page = client.getPage(url.toString() + "/foo");
+        String content = page.getWebResponse().getContentAsString();
         assertTrue("Unexpected response, was: " + content, content.contains("BMX"));
     }
 }

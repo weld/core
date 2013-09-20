@@ -16,10 +16,32 @@
  */
 package org.jboss.weld.servlet;
 
-public class ServletApi {
+import org.jboss.weld.bootstrap.api.Service;
+import org.jboss.weld.resources.spi.ResourceLoader;
+import org.jboss.weld.util.ApiAbstraction;
+import org.jboss.weld.util.reflection.Reflections;
+
+public class ServletApiAbstraction extends ApiAbstraction implements Service {
 
     public static final String SERVLET_CONTEXT_CLASS_NAME = "javax.servlet.ServletContext";
+    private static final String ASYNC_LISTENER_CONTEXT_CLASS_NAME = "javax.servlet.AsyncListener";
 
-    private ServletApi() {
+    private final boolean asyncSupported;
+
+    public ServletApiAbstraction(ResourceLoader resourceLoader) {
+        super(resourceLoader);
+        this.asyncSupported = Reflections.isClassLoadable(ASYNC_LISTENER_CONTEXT_CLASS_NAME, resourceLoader);
+    }
+
+    /**
+     * Indicates, whether the version of Servlet API is available that has support for async processing (Servlet 3.0 and better)
+     * @return
+     */
+    public boolean isAsyncSupported() {
+        return asyncSupported;
+    }
+
+    @Override
+    public void cleanup() {
     }
 }
