@@ -29,7 +29,7 @@ JBOSS_HOME environment variable.
 
 
 To run functional tests execute:
-   mvn verify -Darquillian=jbossas-managed-7
+   mvn verify -Darquillian=wildfly-managed-8
 
 = Importing the project into Eclipse
 

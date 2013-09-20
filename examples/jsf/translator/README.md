@@ -26,7 +26,7 @@ JBOSS_HOME environment variable.
 --------------------
 
 To run functional tests execute:
-   mvn verify -Darquillian=jbossas-managed-7 -f ftest/pom.xml
+   mvn verify -Darquillian=wildfly-managed-8 -f ftest/pom.xml
 
 Deploying to GlassFish
 ----------------------

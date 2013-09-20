@@ -26,14 +26,14 @@ Running the functional tests for the JSF examples
 Weld's JSF examples come with functional tests, which use Selenium to each flow a user can take
 through the GUI of the example.
 
-The functional tests can be run on an individual JSF examples or on all examples. JBoss AS 7
+The functional tests can be run on an individual JSF examples or on all examples. WildFly 8
 must to be installed to run the functional tests. 
 
-Make sure you have set the `JBOSS_HOME` environment property to point to your JBoss AS 7 distribution.
+Make sure you have set the `JBOSS_HOME` environment property to point to your WildFly distribution.
 
 To run the functional tests:
 
-    mvn -Darquillian=jbossas-managed-7 clean verify
+    mvn -Darquillian=wildfly-managed-8 clean verify
 
 You can run the functional tests against all examples (from the `examples` directory`) or against
 an individual example (from it's sub-directory).
