@@ -67,6 +67,8 @@ public class HttpContextLifecycle implements Service {
     private final FastEvent<HttpSession> sessionInitializedEvent;
     private final FastEvent<HttpSession> sessionDestroyedEvent;
 
+    private final ServletApiAbstraction servletApi;
+
     public HttpContextLifecycle(BeanManagerImpl beanManager, HttpContextActivationFilter contextActivationFilter) {
         this.beanManager = beanManager;
         this.conversationContextActivator = new ConversationContextActivator(beanManager);
@@ -78,6 +80,7 @@ public class HttpContextLifecycle implements Service {
         this.requestDestroyedEvent = FastEvent.of(HttpServletRequest.class, beanManager, DestroyedLiteral.REQUEST);
         this.sessionInitializedEvent = FastEvent.of(HttpSession.class, beanManager, InitializedLiteral.SESSION);
         this.sessionDestroyedEvent = FastEvent.of(HttpSession.class, beanManager, DestroyedLiteral.SESSION);
+        this.servletApi = beanManager.getServices().get(ServletApiAbstraction.class);
     }
 
     private HttpSessionDestructionContext getSessionDestructionContext() {
@@ -199,7 +202,13 @@ public class HttpContextLifecycle implements Service {
 
         try {
             conversationContextActivator.deactivateConversationContext(request);
-            getRequestContext().invalidate();
+            /*
+             * if this request has been switched to async then do not invalidate the context now
+             * as it will be invalidated at the end of the async operation.
+             */
+            if (!servletApi.isAsyncSupported() || !request.isAsyncStarted()) {
+                getRequestContext().invalidate();
+            }
             getRequestContext().deactivate();
             // fire @Destroyed(RequestScoped.class)
             requestDestroyedEvent.fire(request);

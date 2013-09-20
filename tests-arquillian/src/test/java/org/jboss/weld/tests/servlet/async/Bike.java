@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.tests.servlet.async;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.RequestScoped;
 
 @RequestScoped
@@ -23,11 +25,33 @@ public class Bike {
 
     private String value;
 
+    private boolean initialized;
+    private boolean destroyed;
+
     public String getValue() {
+        if (destroyed) {
+            throw new IllegalStateException("Already destroyed");
+        }
         return value;
     }
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    @PostConstruct
+    public void init() {
+        if (initialized) {
+            throw new IllegalStateException("Already initialized");
+        }
+        this.initialized = true;
+    }
+
+    @PreDestroy
+    public void destroy() {
+        if (destroyed) {
+            throw new IllegalStateException("Already destroyed");
+        }
+        this.destroyed = true;
     }
 }
