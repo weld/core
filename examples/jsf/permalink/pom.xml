@@ -56,8 +56,8 @@
 
         <dependency>
             <!-- needed for reference by maven-eclipse-plugin -->
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
+            <groupId>org.jboss.spec.javax.servlet</groupId>
+            <artifactId>jboss-servlet-api_3.0_spec</artifactId>
             <scope>provided</scope>
         </dependency>
 
