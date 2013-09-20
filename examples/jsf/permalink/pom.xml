@@ -478,6 +478,14 @@
         <profile>
             <id>arquillian-wildfly-remote-8</id>
         </profile>
+
+        <profile>
+            <id>arquillian-wildfly-managed-8</id>
+        </profile>
+
+        <profile>
+            <id>arquillian-wildfly-remote-8</id>
+        </profile>
     </profiles>
 
 </project>
