@@ -48,6 +48,7 @@ public class HttpContextLifecycle implements Service {
     private static final String HTTP_SESSION = "org.jboss.weld." + HttpSession.class.getName();
 
     private static final String INCLUDE_HEADER = "javax.servlet.include.request_uri";
+    private static final String FORWARD_HEADER = "javax.servlet.forward.request_uri";
     private static final String REQUEST_DESTROYED = HttpContextLifecycle.class.getName() + ".request.destroyed";
 
     private HttpSessionDestructionContext sessionDestructionContextCache;
@@ -149,7 +150,7 @@ public class HttpContextLifecycle implements Service {
     }
 
     public void requestInitialized(HttpServletRequest request, ServletContext ctx) {
-        if (isIncludedRequest(request)) {
+        if (isIncludedRequest(request) || isForwardedRequest(request)) {
             return;
         }
         if (!contextActivationFilter.accepts(request)) {
@@ -191,7 +192,7 @@ public class HttpContextLifecycle implements Service {
     }
 
     public void requestDestroyed(HttpServletRequest request) {
-        if (isIncludedRequest(request) || isRequestDestroyed(request)) {
+        if (isIncludedRequest(request) || isRequestDestroyed(request) || isForwardedRequest(request)) {
             return;
         }
         if (!contextActivationFilter.accepts(request)) {
@@ -240,6 +241,14 @@ public class HttpContextLifecycle implements Service {
      */
     private boolean isIncludedRequest(HttpServletRequest request) {
         return request.getAttribute(INCLUDE_HEADER) != null;
+    }
+
+    /**
+     * Some Servlet containers fire HttpServletListeners for forward requests (inner requests caused by calling the forward method of RequestDispatcher). This
+     * causes problems with context shut down as context manipulation is not reentrant. This method detects if this request is an forwarded request or not.
+     */
+    private boolean isForwardedRequest(HttpServletRequest request) {
+        return request.getAttribute(FORWARD_HEADER) != null;
     }
 
     /**
