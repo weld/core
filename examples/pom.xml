@@ -16,7 +16,7 @@
         Examples for Weld, the reference implementation of CDI
     </description>
 
-    <url>http://www.seamframework.org/Weld</url>
+    <url>http://weld.cdi-spec.org</url>
 
     <developers>
         <developer>
@@ -80,11 +80,6 @@
         <system>JIRA</system>
         <url>http://jira.jboss.org/browse/WELD</url>
     </issueManagement>
-
-    <organization>
-        <name>Seam Framework</name>
-        <url>http://seamframework.org</url>
-    </organization>
 
     <inceptionYear>2008</inceptionYear>
 

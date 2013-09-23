@@ -12,7 +12,7 @@
     <packaging>jar</packaging>
     <name>Weld Implementation</name>
     <description>Weld's implementation of CDI</description>
-    <url>http://www.seamframework.org/Weld</url>
+    <url>http://weld.cdi-spec.org</url>
     <licenses>
         <license>
             <name>Apache License, Version 2.0</name>

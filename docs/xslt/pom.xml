@@ -13,7 +13,7 @@
         The main project to transform DocBook XML into XHTML and other formats for
         Weld documentation @ SeamFramework.org.
     </description>
-    <url>http://www.seamframework.org</url>
+    <url>http://weld.cdi-spec.org/</url>
 
     <parent>
         <groupId>org.jboss.weld</groupId>

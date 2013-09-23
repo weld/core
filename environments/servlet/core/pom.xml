@@ -12,7 +12,7 @@
     <version>2.1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Weld Servlet Core</name>
-    <url>http://www.seamframework.org/Weld</url>
+    <url>http://weld.cdi-spec.org</url>
     <licenses>
         <license>
             <name>Apache License, Version 2.0</name>

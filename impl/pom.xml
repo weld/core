@@ -17,7 +17,7 @@
             <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
         </license>
     </licenses>
-    <url>http://www.seamframework.org/Weld</url>
+    <url>http://weld.cdi-spec.org</url>
 
     <dependencies>
 

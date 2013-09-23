@@ -13,7 +13,7 @@
     <packaging>jar</packaging>
     <name>Weld Examples: Translator [ftest] (JSF)</name>
 
-    <url>http://www.seamframework.org/Weld</url>
+    <url>http://weld.cdi-spec.org</url>
     <licenses>
         <license>
             <name>Apache License, Version 2.0</name>

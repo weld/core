@@ -3,7 +3,7 @@
 <partintro>
 
    <para>
-      Weld, the CDI Reference Implementation (RI), can be downloaded from the <ulink url="http://seamframework.org/Download">download page</ulink>. Information about the Weld source
+      Weld, the CDI Reference Implementation (RI), can be downloaded from the <ulink url="http://weld.cdi-spec.org/download">download page</ulink>. Information about the Weld source
       code repository and instructions about how to obtain and build the source can be found on the same page.
    </para>
    

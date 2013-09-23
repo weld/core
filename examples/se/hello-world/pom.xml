@@ -11,7 +11,7 @@
     <artifactId>weld-se-hello-world</artifactId>
     <packaging>jar</packaging>
     <name>Weld Examples: Hello World (Java SE)</name>
-    <url>http://www.seamframework.org/Weld</url>
+    <url>http://weld.cdi-spec.org</url>
     <licenses>
         <license>
             <name>Apache License, Version 2.0</name>

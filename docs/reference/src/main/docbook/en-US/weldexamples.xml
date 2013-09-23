@@ -1160,7 +1160,7 @@ public class TranslatorControllerBean implements TranslatorController {
    
    <para>
       That concludes our short tour of the Weld starter examples. For more information on Weld, please visit <ulink
-      url="http://www.seamframework.org/Weld">http://www.seamframework.org/Weld</ulink>.
+      url="http://weld.cdi-spec.org/">http://weld.cdi-spec.org/</ulink>.
    </para>
 
    </section>
