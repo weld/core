@@ -586,6 +586,11 @@
     <profiles>
         <profile>
             <id>update-jboss-as</id>
+            <activation>
+                <property>
+                    <name>release</name>
+                </property>
+            </activation>
             <modules>
                 <module>jboss-as/jboss-as-7</module>
             </modules>

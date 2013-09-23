@@ -38,110 +38,116 @@
             <version>${project.version}</version>
         </dependency>
     </dependencies>
-    <build>
-        <defaultGoal>package</defaultGoal>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copy-dependencies</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
+    <profiles>
+        <profile>
+            <id>update-jboss-as</id>
+            <build>
+                <defaultGoal>package</defaultGoal>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>copy-dependencies</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>copy-dependencies</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${project.build.directory}/dependency/lib</outputDirectory>
+                                    <overWriteSnapshots>true</overWriteSnapshots>
+                                    <stripVersion>true</stripVersion>
+                                    <includeArtifactIds>cdi-api,weld-api,weld-core,weld-spi</includeArtifactIds>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>update-jboss-as</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <tasks>
+                                        <property file="${basedir}/local.build.properties"/>
+                                        <property file="${basedir}/build.properties"/>
+                                        <property name="jboss.home" value="${env.JBOSS_HOME}"/>
+                                        
+                                        <available file="${jboss.home}/modules/system" property="module.dir" value="${jboss.home}/modules/system/layers/base/org/jboss/weld" />
+                                                <!-- The older versions of JBoss AS used this location for modules -->
+                                        <property name="module.dir" value="${jboss.home}/modules/org/jboss/weld"/>
+
+                                        <delete>
+                                            <fileset dir="${module.dir}/core/main" includes="*.jar"/>
+                                            <fileset dir="${module.dir}/spi/main" includes="*.jar"/>
+                                            <fileset dir="${module.dir}/api/main" includes="*.jar"/>
+                                            <fileset dir="${module.dir}/core/main" includes="*.index"/>
+                                            <fileset dir="${module.dir}/spi/main" includes="*.index"/>
+                                            <fileset dir="${module.dir}/api/main" includes="*.index"/>
+                                        </delete>
+
+                                        <copy todir="${module.dir}/core/main" overwrite="true">
+                                            <fileset dir="target/dependency/lib">
+                                                <include name="weld-core.jar"/>
+                                            </fileset>
+                                        </copy>
+
+                                        <replaceregexp file="${module.dir}/core/main/module.xml"
+                                                       match="path=&quot;.*?&quot;"
+                                                       replace="path=&quot;weld-core.jar&quot;"
+                                                       byline="true"/>
+
+                                        <copy todir="${module.dir}/spi/main" overwrite="true">
+                                            <fileset dir="target/dependency/lib">
+                                                <include name="weld-spi.jar"/>
+                                            </fileset>
+                                        </copy>
+
+                                        <replaceregexp file="${module.dir}/spi/main/module.xml"
+                                                       match="path=&quot;.*?&quot;"
+                                                       replace="path=&quot;weld-spi.jar&quot;"
+                                                       byline="true"/>
+
+                                        <copy todir="${module.dir}/api/main" overwrite="true">
+                                            <fileset dir="target/dependency/lib">
+                                                <include name="weld-api.jar"/>
+                                            </fileset>
+                                        </copy>
+
+                                        <replaceregexp file="${module.dir}/api/main/module.xml"
+                                                       match="path=&quot;.*?&quot;"
+                                                       replace="path=&quot;weld-api.jar&quot;"
+                                                       byline="true"/>
+
+                                    </tasks>
+                                </configuration>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                            <dependency>
+                                <groupId>ant</groupId>
+                                <artifactId>ant-nodeps</artifactId>
+                                <version>1.6.5</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-deploy-plugin</artifactId>
                         <configuration>
-                            <outputDirectory>${project.build.directory}/dependency/lib</outputDirectory>
-                            <overWriteSnapshots>true</overWriteSnapshots>
-                            <stripVersion>true</stripVersion>
-                            <includeArtifactIds>cdi-api,weld-api,weld-core,weld-spi</includeArtifactIds>
+                            <skip>true</skip>
                         </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>update-jboss-as</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <tasks>
-                                <property file="${basedir}/local.build.properties"/>
-                                <property file="${basedir}/build.properties"/>
-                                <property name="jboss.home" value="${env.JBOSS_HOME}"/>
-                                
-                                <available file="${jboss.home}/modules/system" property="module.dir" value="${jboss.home}/modules/system/layers/base/org/jboss/weld" />
-                                        <!-- The older versions of JBoss AS used this location for modules -->
-                                <property name="module.dir" value="${jboss.home}/modules/org/jboss/weld"/>
-
-                                <delete>
-                                    <fileset dir="${module.dir}/core/main" includes="*.jar"/>
-                                    <fileset dir="${module.dir}/spi/main" includes="*.jar"/>
-                                    <fileset dir="${module.dir}/api/main" includes="*.jar"/>
-                                    <fileset dir="${module.dir}/core/main" includes="*.index"/>
-                                    <fileset dir="${module.dir}/spi/main" includes="*.index"/>
-                                    <fileset dir="${module.dir}/api/main" includes="*.index"/>
-                                </delete>
-
-                                <copy todir="${module.dir}/core/main" overwrite="true">
-                                    <fileset dir="target/dependency/lib">
-                                        <include name="weld-core.jar"/>
-                                    </fileset>
-                                </copy>
-
-                                <replaceregexp file="${module.dir}/core/main/module.xml"
-                                               match="path=&quot;.*?&quot;"
-                                               replace="path=&quot;weld-core.jar&quot;"
-                                               byline="true"/>
-
-                                <copy todir="${module.dir}/spi/main" overwrite="true">
-                                    <fileset dir="target/dependency/lib">
-                                        <include name="weld-spi.jar"/>
-                                    </fileset>
-                                </copy>
-
-                                <replaceregexp file="${module.dir}/spi/main/module.xml"
-                                               match="path=&quot;.*?&quot;"
-                                               replace="path=&quot;weld-spi.jar&quot;"
-                                               byline="true"/>
-
-                                <copy todir="${module.dir}/api/main" overwrite="true">
-                                    <fileset dir="target/dependency/lib">
-                                        <include name="weld-api.jar"/>
-                                    </fileset>
-                                </copy>
-
-                                <replaceregexp file="${module.dir}/api/main/module.xml"
-                                               match="path=&quot;.*?&quot;"
-                                               replace="path=&quot;weld-api.jar&quot;"
-                                               byline="true"/>
-
-                            </tasks>
-                        </configuration>
-                    </execution>
-                </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>ant</groupId>
-                        <artifactId>ant-nodeps</artifactId>
-                        <version>1.6.5</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+                    </plugin>
+                </plugins>
+            </build>
+            
+        </profile>
+    </profiles>
 
 </project>
