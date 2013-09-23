@@ -56,31 +56,6 @@
                 <artifactId>maven-shade-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>jboss5</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <createSourcesJar>true</createSourcesJar>
-                            <shadedArtifactAttached>true</shadedArtifactAttached>
-                            <shadedClassifierName>jboss5</shadedClassifierName>
-                            <artifactSet>
-                                <excludes>
-                                    <exclude>xml-apis:xml-apis</exclude>
-                                    <exclude>org.apache.tomcat:catalina</exclude>
-                                    <exclude>org.apache.tomcat:servlet-api</exclude>
-                                    <exclude>org.apache.tomcat:juli</exclude>
-                                    <exclude>org.apache.tomcat:annotations-api</exclude>
-                                    <exclude>javax.faces:jsf-api</exclude>
-                                    <exclude>org.mortbay.jetty:jetty</exclude>
-                                    <exclude>javax.annotation:jsr250-api</exclude>
-                                    <exclude>org.javassist:javassist</exclude>
-                                </excludes>
-                            </artifactSet>
-                        </configuration>
-                    </execution>
-                    <execution>
                         <id>default</id>
                         <phase>package</phase>
                         <goals>
