@@ -293,14 +293,6 @@
         </profile>
 
         <profile>
-            <id>arquillian-jbossas-managed-7</id>
-        </profile>
-
-        <profile>
-            <id>arquillian-jbossas-remote-7</id>
-        </profile>
-
-        <profile>
             <id>arquillian-tomcat-embdedded-6</id>
         </profile>
 
@@ -318,24 +310,6 @@
 
         <profile>
             <id>arquillian-wildfly-cluster-8</id>
-        </profile>
-
-        <profile>
-            <id>arquillian-jbossas-cluster-7</id>
-            <activation>
-                <property>
-                    <name>arquillian</name>
-                    <value>jbossas-cluster-7</value>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                    </plugin>
-                </plugins>
-            </build>
         </profile>
     </profiles>
     <build>

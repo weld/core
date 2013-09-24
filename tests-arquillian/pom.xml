@@ -73,18 +73,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.jboss</groupId>
-            <artifactId>jboss-mdr</artifactId>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.jboss.logging</groupId>
-                    <artifactId>jboss-logging-spi</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
             <groupId>org.jboss.spec.javax.interceptor</groupId>
             <artifactId>jboss-interceptors-api_1.2_spec</artifactId>
         </dependency>
@@ -140,23 +128,6 @@
     <build>
         <defaultGoal>test</defaultGoal>
         <plugins>
-            <!--         <plugin>-->
-            <!--            <groupId>org.apache.maven.plugins</groupId>-->
-            <!--            <artifactId>maven-surefire-report-plugin</artifactId>-->
-            <!--            <executions>-->
-            <!--               <execution>-->
-            <!--                  <id>generate-test-report</id>-->
-            <!--                  <phase>test</phase>-->
-            <!--                  <goals>-->
-            <!--                     <goal>report</goal>-->
-            <!--                  </goals>-->
-            <!--               </execution>-->
-            <!--            </executions>-->
-            <!--            <configuration>-->
-            <!--               <outputDirectory>${project.build.directory}/surefire-reports</outputDirectory>-->
-            <!--               <outputName>test-report</outputName>-->
-            <!--            </configuration>-->
-            <!--         </plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -212,101 +183,6 @@
             </build>
         </profile>
 
-        <!-- InContainer profile using JBoss AS Managed. Runs the full integration test suite, used by e.g. Hudson. -->
-        <profile>
-            <id>jbossas6</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-                <property>
-                    <name>jbossas6</name>
-                </property>
-            </activation>
-            <properties>
-                <test>org.jboss.weld.tests.IntegrationSuite</test>
-            </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>org.jboss.arquillian.container</groupId>
-                    <artifactId>arquillian-jbossas-managed-6</artifactId>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.jboss.jbossas</groupId>
-                    <artifactId>jboss-server-manager</artifactId>
-                    <version>1.0.4.Final</version>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.jboss.jbossas</groupId>
-                    <artifactId>jboss-as-client</artifactId>
-                    <version>6.1.0.Final</version>
-                    <type>pom</type>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <systemProperties>
-                                <arquillian.launch>jboss-as-6</arquillian.launch>
-                            </systemProperties>
-                            <test>${test}</test>
-                            <parallel>none</parallel>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <!-- InContainer profile using JBoss AS Remote container. Used for debugging single tests, -Dtest=.. -->
-        <profile>
-            <id>jbossas6-remote</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-                <property>
-                    <name>jbossas6-remote</name>
-                </property>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>org.jboss.arquillian.container</groupId>
-                    <artifactId>arquillian-jbossas-remote-6</artifactId>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.jboss.jbossas</groupId>
-                    <artifactId>jboss-as-client</artifactId>
-                    <type>pom</type>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <systemProperties>
-                                <arquillian.launch>jboss-as-6</arquillian.launch>
-                            </systemProperties>
-                            <parallel>none</parallel>
-                        </configuration>
-                    </plugin>
-                </plugins>
-                <testResources>
-                    <testResource>
-                        <directory>src/test/jboss-resources</directory>
-                    </testResource>
-                    <testResource>
-                        <directory>src/test/resources</directory>
-                    </testResource>
-                </testResources>
-            </build>
-        </profile>
-
         <!-- InContainer profile using JBoss AS 7 Managed. Runs the full integration test suite, used by e.g. Hudson. -->
         <profile>
             <id>incontainer</id>
@@ -331,11 +207,6 @@
                         <artifactId>log4j-jboss-logmanager</artifactId>
                       </exclusion>
                     </exclusions>
-                </dependency>
-                <dependency>
-                    <groupId>jboss</groupId>
-                    <artifactId>jnp-client</artifactId>
-                    <scope>test</scope>
                 </dependency>
             </dependencies>
             <build>
@@ -387,105 +258,6 @@
                       </exclusion>
                     </exclusions>
                 </dependency>
-                <dependency>
-                    <groupId>jboss</groupId>
-                    <artifactId>jnp-client</artifactId>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <version>${surefire.plugin.version}</version>
-                        <configuration>
-                            <systemProperties>
-                                <arquillian.launch>jboss-as-7</arquillian.launch>
-                                <node.address>${node.address}</node.address>
-                            </systemProperties>
-                            <test>${test}</test>
-                            <parallel>none</parallel>
-
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <!-- InContainer profile using JBoss AS 7 Managed. Runs the full integration test suite, used by e.g. Hudson. -->
-        <profile>
-            <id>jbossas7</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-                <property>
-                    <name>jbossas7</name>
-                </property>
-            </activation>
-            <properties>
-                <test>org.jboss.weld.tests.IntegrationSuite</test>
-            </properties>
-
-            <dependencies>
-                <dependency>
-                    <groupId>org.jboss.as</groupId>
-                    <artifactId>jboss-as-arquillian-container-managed</artifactId>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>jboss</groupId>
-                    <artifactId>jnp-client</artifactId>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <version>${surefire.plugin.version}</version>
-                        <configuration>
-                            <systemPropertyVariables>
-                                <!-- jboss.server.config.file.name>standalone-full.xml</jboss.server.config.file.name-->
-                            </systemPropertyVariables>
-                            <systemProperties>
-                                <arquillian.launch>jboss-as-7</arquillian.launch>
-                                <jacoco.agent>${jacoco.agent}</jacoco.agent>
-                                <node.address>${node.address}</node.address>
-                                <additional.vm.args>${additional.vm.args}</additional.vm.args>
-                            </systemProperties>
-                            <test>${test}</test>
-                            <parallel>none</parallel>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <!-- InContainer profile using JBoss AS 7 Remote. Runs the full integration test suite, used by e.g. Hudson. -->
-        <profile>
-            <id>jbossas7-remote</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-                <property>
-                    <name>jbossas7-remote</name>
-                </property>
-            </activation>
-            <properties>
-                <test>org.jboss.weld.tests.IntegrationSuite</test>
-            </properties>
-
-            <dependencies>
-                <dependency>
-                    <groupId>org.jboss.as</groupId>
-                    <artifactId>jboss-as-arquillian-container-remote</artifactId>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>jboss</groupId>
-                    <artifactId>jnp-client</artifactId>
-                    <scope>test</scope>
-                </dependency>
             </dependencies>
             <build>
                 <plugins>
@@ -536,50 +308,6 @@
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
                             <test>org.jboss.weld.tests.NormalPerformanceSuite</test>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <!-- InContianer Performance test profile using JBoss AS Managed container -->
-        <profile>
-            <id>jbossas6-perf</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-                <property>
-                    <name>incontainer-perf</name>
-                </property>
-            </activation>
-            <properties>
-                <test>org.jboss.weld.tests.IntegrationPerformanceSuite</test>
-            </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>org.jboss.arquillian.container</groupId>
-                    <artifactId>arquillian-jbossas-managed-6</artifactId>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.jboss.jbossas</groupId>
-                    <artifactId>jboss-server-manager</artifactId>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.jboss.jbossas</groupId>
-                    <artifactId>jboss-as-client</artifactId>
-                    <type>pom</type>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <test>${test}</test>
-                            <parallel>none</parallel>
                         </configuration>
                     </plugin>
                 </plugins>

@@ -293,8 +293,8 @@
                 </dependency>
                 <!-- Because we need this to compile the exception transformer and resource manager -->
                 <dependency>
-                    <groupId>org.jboss.as</groupId>
-                    <artifactId>jboss-as-arquillian-common</artifactId>
+                    <groupId>org.wildfly</groupId>
+                    <artifactId>wildfly-arquillian-common</artifactId>
                     <scope>test</scope>
                 </dependency>
             </dependencies>

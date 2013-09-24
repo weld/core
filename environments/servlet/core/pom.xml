@@ -129,7 +129,7 @@
         <dependency>
             <groupId>org.jboss</groupId>
             <artifactId>jboss-vfs</artifactId>
-            <optional>true</optional>
+           <optional>true</optional>
         </dependency>
 
         <dependency>
