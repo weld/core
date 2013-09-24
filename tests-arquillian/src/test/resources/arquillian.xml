@@ -25,14 +25,4 @@
             <property name="managementAddress">${node.address}</property>
         </configuration>
 	</container>
-
-    <container qualifier="jboss-as-6">
-        <configuration>
-            <property name="bindAddress">127.0.0.1</property>
-            <property name="httpPort">8080</property>
-            <property name="profileName">default</property>
-            <property name="javaVmArguments">-Xmx1024m -XX:MaxPermSize=1024m</property>
-        </configuration>
-    </container>
-
 </arquillian>
