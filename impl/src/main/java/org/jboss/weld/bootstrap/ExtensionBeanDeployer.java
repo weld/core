@@ -26,24 +26,35 @@ import org.jboss.weld.event.ObserverFactory;
 import org.jboss.weld.event.ObserverMethodImpl;
 import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldMethod;
+import org.jboss.weld.logging.Category;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.resources.spi.ResourceLoadingException;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.DeploymentStructures;
+import org.slf4j.cal10n.LocLogger;
+import org.slf4j.ext.XLogger;
+import org.slf4j.ext.XLogger.Level;
 
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.spi.Extension;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.BootstrapMessage.IGNORING_EXTENSION_CLASS_DUE_TO_LOADING_ERROR;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 /**
  * @author pmuir
  */
 public class ExtensionBeanDeployer {
+
+    private transient LocLogger log = loggerFactory().getLogger(Category.CLASS_LOADING);
+    private transient XLogger xlog = loggerFactory().getXLogger(Category.CLASS_LOADING);
 
     private final BeanManagerImpl beanManager;
     private final Set<Metadata<Extension>> extensions;
@@ -62,19 +73,30 @@ public class ExtensionBeanDeployer {
     public ExtensionBeanDeployer deployBeans() {
         ClassTransformer classTransformer = Container.instance().services().get(ClassTransformer.class);
         for (Metadata<Extension> extension : extensions) {
-            WeldClass<Extension> clazz = cast(classTransformer.loadClass(extension.getValue().getClass()));
 
-            // Locate the BeanDeployment for this extension
-            BeanDeployment beanDeployment = DeploymentStructures.getOrCreateBeanDeployment(deployment, beanManager, beanDeployments, contexts, clazz.getJavaClass());
+            WeldClass<Extension> clazz = null;
 
-            ExtensionBean bean = new ExtensionBean(beanDeployment.getBeanManager(), clazz, extension);
-            Set<ObserverMethodImpl<?, ?>> observerMethods = new HashSet<ObserverMethodImpl<?, ?>>();
-            createObserverMethods(bean, beanDeployment.getBeanManager(), clazz, observerMethods);
-            beanDeployment.getBeanManager().addBean(bean);
-            beanDeployment.getBeanDeployer().addExtension(bean);
-            for (ObserverMethodImpl<?, ?> observerMethod : observerMethods) {
-                observerMethod.initialize();
-                beanDeployment.getBeanManager().addObserver(observerMethod);
+            try {
+                clazz = cast(classTransformer.loadClass(extension.getValue().getClass()));
+            } catch (ResourceLoadingException e) {
+                log.warn(IGNORING_EXTENSION_CLASS_DUE_TO_LOADING_ERROR, extension.getValue().getClass().getName());
+                xlog.catching(Level.DEBUG, e);
+            }
+
+            if (clazz != null) {
+                // Locate the BeanDeployment for this extension
+                BeanDeployment beanDeployment = DeploymentStructures.getOrCreateBeanDeployment(deployment, beanManager, beanDeployments, contexts,
+                        clazz.getJavaClass());
+
+                ExtensionBean bean = new ExtensionBean(beanDeployment.getBeanManager(), clazz, extension);
+                Set<ObserverMethodImpl<?, ?>> observerMethods = new HashSet<ObserverMethodImpl<?, ?>>();
+                createObserverMethods(bean, beanDeployment.getBeanManager(), clazz, observerMethods);
+                beanDeployment.getBeanManager().addBean(bean);
+                beanDeployment.getBeanDeployer().addExtension(bean);
+                for (ObserverMethodImpl<?, ?> observerMethod : observerMethods) {
+                    observerMethod.initialize();
+                    beanDeployment.getBeanManager().addObserver(observerMethod);
+                }
             }
         }
         return this;
