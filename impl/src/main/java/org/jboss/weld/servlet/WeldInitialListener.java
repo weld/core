@@ -23,6 +23,8 @@
 package org.jboss.weld.servlet;
 
 import static org.jboss.weld.servlet.ConversationFilter.CONVERSATION_FILTER_REGISTERED;
+import static org.jboss.weld.servlet.HttpContextLifecycle.CROSS_CONTEXT_FORWARD_IGNORE;
+import static org.jboss.weld.servlet.HttpContextLifecycle.CROSS_CONTEXT_INCLUDE_IGNORE;
 
 import javax.enterprise.inject.spi.CDI;
 import javax.inject.Inject;
@@ -80,6 +82,12 @@ public class WeldInitialListener extends AbstractServletListener {
         this.lifecycle = new HttpContextLifecycle(beanManager, filter);
         if (Boolean.valueOf(sce.getServletContext().getInitParameter(CONVERSATION_FILTER_REGISTERED))) {
             this.lifecycle.setConversationActivationEnabled(false);
+        }
+        if (!Boolean.valueOf(sce.getServletContext().getInitParameter(CROSS_CONTEXT_FORWARD_IGNORE))) {
+            this.lifecycle.setCrossContextRequestForwardIgnore(false);
+        }
+        if (!Boolean.valueOf(sce.getServletContext().getInitParameter(CROSS_CONTEXT_INCLUDE_IGNORE))) {
+            this.lifecycle.setCrossContextRequestIncludeIgnore(false);
         }
         this.lifecycle.contextInitialized(sce.getServletContext());
     }
