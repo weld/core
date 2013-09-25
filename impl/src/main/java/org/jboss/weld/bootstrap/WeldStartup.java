@@ -229,6 +229,7 @@ public class WeldStartup {
         deploymentServices.add(ReflectionCache.class, registry.get(ReflectionCache.class));
         deploymentServices.add(GlobalEnablementBuilder.class, registry.get(GlobalEnablementBuilder.class));
         deploymentServices.add(HttpContextActivationFilter.class, registry.get(HttpContextActivationFilter.class));
+        deploymentServices.add(MissingDependenciesRegistry.class, registry.get(MissingDependenciesRegistry.class));
 
         this.environment = environment;
         this.deploymentManager = BeanManagerImpl.newRootManager(contextId, "deployment", deploymentServices);

@@ -34,10 +34,13 @@ import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.event.ObserverFactory;
 import org.jboss.weld.event.ObserverMethodImpl;
+import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.resources.spi.ResourceLoadingException;
 import org.jboss.weld.util.BeanMethods;
 import org.jboss.weld.util.DeploymentStructures;
+import org.jboss.weld.util.reflection.Formats;
 
 /**
  * @author pmuir
@@ -50,38 +53,57 @@ public class ExtensionBeanDeployer {
     private final BeanDeploymentArchiveMapping bdaMapping;
     private final Collection<ContextHolder<? extends Context>> contexts;
     private final ContainerLifecycleEvents containerLifecycleEventObservers;
+    private final MissingDependenciesRegistry missingDependenciesRegistry;
 
-    public ExtensionBeanDeployer(BeanManagerImpl manager, Deployment deployment, BeanDeploymentArchiveMapping bdaMapping, Collection<ContextHolder<? extends Context>> contexts) {
+    public ExtensionBeanDeployer(BeanManagerImpl manager, Deployment deployment, BeanDeploymentArchiveMapping bdaMapping,
+            Collection<ContextHolder<? extends Context>> contexts) {
         this.beanManager = manager;
         this.extensions = new HashSet<Metadata<Extension>>();
         this.deployment = deployment;
         this.bdaMapping = bdaMapping;
         this.contexts = contexts;
         this.containerLifecycleEventObservers = beanManager.getServices().get(ContainerLifecycleEvents.class);
+        this.missingDependenciesRegistry = beanManager.getServices().get(MissingDependenciesRegistry.class);
     }
 
     public ExtensionBeanDeployer deployBeans() {
         ClassTransformer classTransformer = beanManager.getServices().get(ClassTransformer.class);
         for (Metadata<Extension> extension : extensions) {
             // Locate the BeanDeployment for this extension
-            BeanDeployment beanDeployment = DeploymentStructures.getOrCreateBeanDeployment(deployment, beanManager, bdaMapping, contexts, extension.getValue().getClass());
+            BeanDeployment beanDeployment = DeploymentStructures.getOrCreateBeanDeployment(deployment, beanManager, bdaMapping, contexts, extension.getValue()
+                    .getClass());
 
-            EnhancedAnnotatedType<Extension> clazz = cast(classTransformer.getEnhancedAnnotatedType(extension.getValue().getClass(), beanDeployment.getBeanDeploymentArchive().getId()));
+            EnhancedAnnotatedType<Extension> enchancedAnnotatedType = getEnhancedAnnotatedType(classTransformer, extension, beanDeployment);
 
-            ExtensionBean bean = new ExtensionBean(beanDeployment.getBeanManager(), clazz, extension);
-            Set<ObserverInitializationContext<?, ?>> observerMethodInitializers = new HashSet<ObserverInitializationContext<?, ?>>();
-            createObserverMethods(bean, beanDeployment.getBeanManager(), clazz, observerMethodInitializers);
-            beanDeployment.getBeanManager().addBean(bean);
-            beanDeployment.getBeanDeployer().addExtension(bean);
-            for (ObserverInitializationContext<?, ?> observerMethodInitializer : observerMethodInitializers) {
-                observerMethodInitializer.initialize();
-                beanDeployment.getBeanManager().addObserver(observerMethodInitializer.getObserver());
-                containerLifecycleEventObservers.processObserverMethod(observerMethodInitializer.getObserver());
+            if (enchancedAnnotatedType != null) {
+                ExtensionBean bean = new ExtensionBean(beanDeployment.getBeanManager(), enchancedAnnotatedType, extension);
+                Set<ObserverInitializationContext<?, ?>> observerMethodInitializers = new HashSet<ObserverInitializationContext<?, ?>>();
+                createObserverMethods(bean, beanDeployment.getBeanManager(), enchancedAnnotatedType, observerMethodInitializers);
+                beanDeployment.getBeanManager().addBean(bean);
+                beanDeployment.getBeanDeployer().addExtension(bean);
+                for (ObserverInitializationContext<?, ?> observerMethodInitializer : observerMethodInitializers) {
+                    observerMethodInitializer.initialize();
+                    beanDeployment.getBeanManager().addObserver(observerMethodInitializer.getObserver());
+                    containerLifecycleEventObservers.processObserverMethod(observerMethodInitializer.getObserver());
+                }
             }
         }
         return this;
     }
 
+    private EnhancedAnnotatedType<Extension> getEnhancedAnnotatedType(ClassTransformer classTransformer, Metadata<Extension> extension,
+            BeanDeployment beanDeployment) {
+        Class<? extends Extension> clazz = extension.getValue().getClass();
+        try {
+            return cast(classTransformer.getEnhancedAnnotatedType(clazz, beanDeployment.getBeanDeploymentArchive().getId()));
+        } catch (ResourceLoadingException e) {
+            String missingDependency = Formats.getNameOfMissingClassLoaderDependency(e);
+            BootstrapLogger.LOG.ignoringExtensionClassDueToLoadingError(clazz.getName(), missingDependency);
+            BootstrapLogger.LOG.catchingDebug(e);
+            missingDependenciesRegistry.registerClassWithMissingDependency(clazz.getName(), missingDependency);
+            return null;
+        }
+    }
 
     public void addExtensions(Iterable<Metadata<Extension>> extensions) {
         for (Metadata<Extension> extension : extensions) {
@@ -93,13 +115,15 @@ public class ExtensionBeanDeployer {
         this.extensions.add(extension);
     }
 
-    protected <X> void createObserverMethods(RIBean<X> declaringBean, BeanManagerImpl beanManager, EnhancedAnnotatedType<? super X> annotatedClass, Set<ObserverInitializationContext<?, ?>> observerMethodInitializers) {
+    protected <X> void createObserverMethods(RIBean<X> declaringBean, BeanManagerImpl beanManager, EnhancedAnnotatedType<? super X> annotatedClass,
+            Set<ObserverInitializationContext<?, ?>> observerMethodInitializers) {
         for (EnhancedAnnotatedMethod<?, ? super X> method : BeanMethods.getObserverMethods(annotatedClass)) {
             createObserverMethod(declaringBean, beanManager, method, observerMethodInitializers);
         }
     }
 
-    protected <T, X> void createObserverMethod(RIBean<X> declaringBean, BeanManagerImpl beanManager, EnhancedAnnotatedMethod<T, ? super X> method, Set<ObserverInitializationContext<?, ?>> observerMethodInitializers) {
+    protected <T, X> void createObserverMethod(RIBean<X> declaringBean, BeanManagerImpl beanManager, EnhancedAnnotatedMethod<T, ? super X> method,
+            Set<ObserverInitializationContext<?, ?>> observerMethodInitializers) {
         ObserverMethodImpl<T, X> observer = ObserverFactory.create(method, declaringBean, beanManager);
         ObserverInitializationContext<T, X> observerMethodInitializer = ObserverInitializationContext.of(observer, method);
         observerMethodInitializers.add(observerMethodInitializer);
