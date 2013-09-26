@@ -38,23 +38,29 @@ import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * Takes care of setting up and tearing down CDI contexts around an HTTP request and dispatching context lifecycle events.
- *
+ * 
  * @author Jozef Hartinger
  * @author Marko Luksa
- *
+ * 
  */
 public class HttpContextLifecycle implements Service {
 
     private static final String HTTP_SESSION = "org.jboss.weld." + HttpSession.class.getName();
 
     private static final String INCLUDE_HEADER = "javax.servlet.include.request_uri";
+    private static final String FORWARD_HEADER = "javax.servlet.forward.request_uri";
     private static final String REQUEST_DESTROYED = HttpContextLifecycle.class.getName() + ".request.destroyed";
+    
+    public static final String CROSS_CONTEXT_FORWARD_IGNORE="org.jboss.weld.crosscontext_forward";
+    public static final String CROSS_CONTEXT_INCLUDE_IGNORE="org.jboss.weld.crosscontext_include";
 
     private HttpSessionDestructionContext sessionDestructionContextCache;
     private HttpSessionContext sessionContextCache;
     private HttpRequestContext requestContextCache;
 
     private volatile Boolean conversationActivationEnabled;
+    private Boolean crossContextRequestForwardIgnored;
+    private Boolean crossContextRequestIncludeIgnored;
 
     private final BeanManagerImpl beanManager;
     private final ConversationContextActivator conversationContextActivator;
@@ -73,6 +79,8 @@ public class HttpContextLifecycle implements Service {
         this.beanManager = beanManager;
         this.conversationContextActivator = new ConversationContextActivator(beanManager);
         this.conversationActivationEnabled = null;
+        this.crossContextRequestForwardIgnored = true;
+        this.crossContextRequestIncludeIgnored = true;
         this.contextActivationFilter = contextActivationFilter;
         this.applicationInitializedEvent = FastEvent.of(ServletContext.class, beanManager, InitializedLiteral.APPLICATION);
         this.applicationDestroyedEvent = FastEvent.of(ServletContext.class, beanManager, DestroyedLiteral.APPLICATION);
@@ -133,8 +141,7 @@ public class HttpContextLifecycle implements Service {
             // the old session won't be available at the time we destroy this request
             // let's store its reference until then
             if (getRequestContext() instanceof HttpRequestContextImpl) {
-                HttpServletRequest request = Reflections.<HttpRequestContextImpl> cast(getRequestContext())
-                        .getHttpServletRequest();
+                HttpServletRequest request = Reflections.<HttpRequestContextImpl> cast(getRequestContext()).getHttpServletRequest();
                 request.setAttribute(HTTP_SESSION, session);
             }
         }
@@ -149,7 +156,10 @@ public class HttpContextLifecycle implements Service {
     }
 
     public void requestInitialized(HttpServletRequest request, ServletContext ctx) {
-        if (isIncludedRequest(request)) {
+        if(crossContextRequestForwardIgnored && isForwardedRequest(request)) {
+            return;
+        }
+        if (crossContextRequestIncludeIgnored && isIncludedRequest(request)) {
             return;
         }
         if (!contextActivationFilter.accepts(request)) {
@@ -191,7 +201,13 @@ public class HttpContextLifecycle implements Service {
     }
 
     public void requestDestroyed(HttpServletRequest request) {
-        if (isIncludedRequest(request) || isRequestDestroyed(request)) {
+        if(crossContextRequestForwardIgnored && isForwardedRequest(request)) {
+            return;
+        }
+        if (crossContextRequestIncludeIgnored && isIncludedRequest(request)) {
+            return;
+        }
+        if (isRequestDestroyed(request)) {
             return;
         }
         if (!contextActivationFilter.accepts(request)) {
@@ -243,6 +259,14 @@ public class HttpContextLifecycle implements Service {
     }
 
     /**
+     * Some Servlet containers fire HttpServletListeners for forward requests (inner requests caused by calling the forward method of RequestDispatcher). This
+     * causes problems with context shut down as context manipulation is not reentrant. This method detects if this request is an forwarded request or not.
+     */
+    private boolean isForwardedRequest(HttpServletRequest request) {
+        return request.getAttribute(FORWARD_HEADER) != null;
+    }
+
+    /**
      * The way servlet containers react to an exception that occurs in a {@link ServletRequestListener} differs among servlet listeners. In certain containers
      * the destroyed callback may be invoked multiple times, causing the latter invocations to fail as thread locals have already been unset. We use the
      * {@link #REQUEST_DESTROYED} flag to indicate that all further invocations of the
@@ -254,5 +278,15 @@ public class HttpContextLifecycle implements Service {
 
     @Override
     public void cleanup() {
+    }
+
+    public void setCrossContextRequestForwardIgnore(boolean forwardRequestIgnored) {
+        crossContextRequestForwardIgnored=forwardRequestIgnored;
+        
+    }
+
+    public void setCrossContextRequestIncludeIgnore(boolean includedRequestIgnored) {
+        crossContextRequestIncludeIgnored=includedRequestIgnored;
+        
     }
 }
