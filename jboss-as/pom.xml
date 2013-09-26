@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jboss.weld</groupId>
     <artifactId>weld-core-jboss-as7-updater</artifactId>
@@ -8,7 +7,7 @@
     <parent>
         <groupId>org.jboss.weld</groupId>
         <artifactId>weld-core-parent</artifactId>
-        <version>2.1.0-SNAPSHOT</version>
+        <version>2.1.0.CR1</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -30,7 +29,7 @@
     <properties>
         <!-- We have to explicitly state the project version. We cannot use ${project.version} 
             as the release plugin won't deal with double evaluation -->
-        <weld.update.version>2.1.0-SNAPSHOT</weld.update.version>
+        <weld.update.version>2.1.0.CR1</weld.update.version>
     </properties>
 
     <dependencies>
@@ -91,145 +90,94 @@
                                 </goals>
                                 <configuration>
                                     <tasks>
-                                        <property
-                                            file="${basedir}/local.build.properties" />
-                                        <property
-                                            file="${basedir}/build.properties" />
-                                        <property name="jboss.home"
-                                            value="${env.JBOSS_HOME}" />
+                                        <property file="${basedir}/local.build.properties" />
+                                        <property file="${basedir}/build.properties" />
+                                        <property name="jboss.home" value="${env.JBOSS_HOME}" />
     
-                                        <available
-                                            file="${jboss.home}/modules/system"
-                                            property="module.dir"
-                                            value="${jboss.home}/modules/system/layers/base/org/jboss/weld" />
+                                        <available file="${jboss.home}/modules/system" property="module.dir" value="${jboss.home}/modules/system/layers/base/org/jboss/weld" />
                                         <!-- The older versions of JBoss AS used 
                                             this location for modules -->
-                                        <property name="module.dir"
-                                            value="${jboss.home}/modules/org/jboss/weld" />
-                                        <property name="jsf.injection.dir"
-                                            value="${module.dir}/../as/jsf-injection/main" />
-                                        <property name="library.dir"
-                                            value="${jboss.home}/standalone/lib/ext" />
+                                        <property name="module.dir" value="${jboss.home}/modules/org/jboss/weld" />
+                                        <property name="jsf.injection.dir" value="${module.dir}/../as/jsf-injection/main" />
+                                        <property name="library.dir" value="${jboss.home}/standalone/lib/ext" />
     
                                         <!-- Check to see if this version of 
                                             AS / WildFly uses a separate weld-core-jsf artifact or not -->
-                                        <pathconvert property="weld.jsf.path"
-                                            pathsep=" " setonempty="false">
+                                        <pathconvert property="weld.jsf.path" pathsep=" " setonempty="false">
                                             <path>
-                                                <fileset
-                                                    dir="${jsf.injection.dir}"
-                                                    includes="weld-core-jsf*.jar" />
+                                                <fileset dir="${jsf.injection.dir}" includes="weld-core-jsf*.jar" />
                                             </path>
                                         </pathconvert>
                                         <!-- weld-core-impl is the right core 
                                             artifact if weld-core-jsf is used by the application server -->
-                                        <condition property="weld.core.file"
-                                            value="weld-core-impl.jar">
+                                        <condition property="weld.core.file" value="weld-core-impl.jar">
                                             <and>
                                                 <isset property="weld.jsf.path" />
                                             </and>
                                         </condition>
-                                        <condition property="weld.jsf.file"
-                                            value="weld-core-jsf.jar">
+                                        <condition property="weld.jsf.file" value="weld-core-jsf.jar">
                                             <and>
                                                 <isset property="weld.jsf.path" />
                                             </and>
                                         </condition>
                                         <!-- otherwise, use the old artifact 
                                             (weld-core) -->
-                                        <property name="weld.core.file"
-                                            value="weld-core.jar" />
+                                        <property name="weld.core.file" value="weld-core.jar" />
     
                                         <delete>
-                                            <fileset
-                                                dir="${module.dir}/core/main"
-                                                includes="*.jar" />
-                                            <fileset
-                                                dir="${module.dir}/spi/main"
-                                                includes="*.jar" />
-                                            <fileset
-                                                dir="${module.dir}/api/main"
-                                                includes="*.jar" />
-                                            <fileset dir="${jsf.injection.dir}"
-                                                includes="weld-core-jsf*.jar" />
-                                            <fileset
-                                                dir="${module.dir}/core/main"
-                                                includes="*.index" />
-                                            <fileset
-                                                dir="${module.dir}/spi/main"
-                                                includes="*.index" />
-                                            <fileset
-                                                dir="${module.dir}/api/main"
-                                                includes="*.index" />
-                                            <fileset dir="${jsf.injection.dir}"
-                                                includes="weld-core-jsf*.index" />
+                                            <fileset dir="${module.dir}/core/main" includes="*.jar" />
+                                            <fileset dir="${module.dir}/spi/main" includes="*.jar" />
+                                            <fileset dir="${module.dir}/api/main" includes="*.jar" />
+                                            <fileset dir="${jsf.injection.dir}" includes="weld-core-jsf*.jar" />
+                                            <fileset dir="${module.dir}/core/main" includes="*.index" />
+                                            <fileset dir="${module.dir}/spi/main" includes="*.index" />
+                                            <fileset dir="${module.dir}/api/main" includes="*.index" />
+                                            <fileset dir="${jsf.injection.dir}" includes="weld-core-jsf*.index" />
                                         </delete>
     
-                                        <copy todir="${module.dir}/core/main"
-                                            overwrite="true">
+                                        <copy todir="${module.dir}/core/main" overwrite="true">
                                             <fileset dir="target/dependency/lib">
                                                 <include name="${weld.core.file}" />
                                             </fileset>
                                         </copy>
     
-                                        <replaceregexp
-                                            file="${module.dir}/core/main/module.xml"
-                                            match="path=&quot;.*?&quot;"
-                                            replace="path=&quot;${weld.core.file}&quot;"
-                                            byline="true" />
+                                        <replaceregexp file="${module.dir}/core/main/module.xml" match="path=&quot;.*?&quot;" replace="path=&quot;${weld.core.file}&quot;" byline="true" />
     
-                                        <copy todir="${module.dir}/spi/main"
-                                            overwrite="true">
+                                        <copy todir="${module.dir}/spi/main" overwrite="true">
                                             <fileset dir="target/dependency/lib">
                                                 <include name="weld-spi.jar" />
                                             </fileset>
                                         </copy>
     
-                                        <replaceregexp
-                                            file="${module.dir}/spi/main/module.xml"
-                                            match="path=&quot;.*?&quot;"
-                                            replace="path=&quot;weld-spi.jar&quot;"
-                                            byline="true" />
+                                        <replaceregexp file="${module.dir}/spi/main/module.xml" match="path=&quot;.*?&quot;" replace="path=&quot;weld-spi.jar&quot;" byline="true" />
     
-                                        <copy todir="${module.dir}/api/main"
-                                            overwrite="true">
+                                        <copy todir="${module.dir}/api/main" overwrite="true">
                                             <fileset dir="target/dependency/lib">
                                                 <include name="weld-api.jar" />
                                             </fileset>
                                         </copy>
     
-                                        <replaceregexp
-                                            file="${module.dir}/api/main/module.xml"
-                                            match="path=&quot;.*?&quot;"
-                                            replace="path=&quot;weld-api.jar&quot;"
-                                            byline="true" />
+                                        <replaceregexp file="${module.dir}/api/main/module.xml" match="path=&quot;.*?&quot;" replace="path=&quot;weld-api.jar&quot;" byline="true" />
     
                                         <!-- Update the weld-core-jsf artifact 
                                             (this one is only used post WF 8.0.0.Alpha1) -->
-                                        <copy todir="${jsf.injection.dir}"
-                                            overwrite="true">
+                                        <copy todir="${jsf.injection.dir}" overwrite="true">
                                             <fileset dir="target/dependency/lib">
                                                 <include name="${weld.jsf.file}" />
                                             </fileset>
                                         </copy>
     
-                                        <replaceregexp
-                                            file="${jsf.injection.dir}/module.xml"
-                                            match="path=&quot;weld-core-jsf.*?&quot;"
-                                            replace="path=&quot;weld-core-jsf.jar&quot;"
-                                            byline="true" />
+                                        <replaceregexp file="${jsf.injection.dir}/module.xml" match="path=&quot;weld-core-jsf.*?&quot;" replace="path=&quot;weld-core-jsf.jar&quot;" byline="true" />
     
                                         <!-- Copy TCK library needed for TCK 
                                             runs -->
-                                        <condition property="cdi.tck.lib"
-                                            value="cdi-tck-ext-lib.jar">
+                                        <condition property="cdi.tck.lib" value="cdi-tck-ext-lib.jar">
                                             <and>
                                                 <isset property="tck" />
                                             </and>
                                         </condition>
     
-                                        <copy todir="${library.dir}"
-                                            overwrite="true">
+                                        <copy todir="${library.dir}" overwrite="true">
                                             <fileset dir="target/dependency/lib">
                                                 <include name="${cdi.tck.lib}" />
                                             </fileset>
