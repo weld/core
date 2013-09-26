@@ -80,8 +80,8 @@ public class WeldInitialListener extends AbstractServletListener {
             beanManager = BeanManagerProxy.unwrap(CDI.current().getBeanManager());
         }
         HttpContextActivationFilter filter = ServletUtils.getContextActivationFilter(beanManager, ctx);
-        final boolean ignoreForwards = getBooleanInitParameter(ctx, InitParameters.CONTEXT_FORWARD_IGNORE, true);
-        final boolean ignoreIncludes = getBooleanInitParameter(ctx, InitParameters.CONTEXT_INCLUDE_IGNORE, true);
+        final boolean ignoreForwards = getBooleanInitParameter(ctx, InitParameters.CONTEXT_IGNORE_FORWARD, true);
+        final boolean ignoreIncludes = getBooleanInitParameter(ctx, InitParameters.CONTEXT_IGNORE_INCLUDE, true);
         this.lifecycle = new HttpContextLifecycle(beanManager, filter, ignoreForwards, ignoreIncludes);
         if (Boolean.valueOf(ctx.getInitParameter(CONVERSATION_FILTER_REGISTERED))) {
             this.lifecycle.setConversationActivationEnabled(false);
