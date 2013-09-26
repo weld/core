@@ -16,14 +16,13 @@
  */
 package org.jboss.weld.tests.producer.field;
 
-import javax.enterprise.inject.Any;
+import java.util.List;
+
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-import java.util.List;
 
 public class ListInstance {
     @Inject
-    @Any
     Instance<List<?>> instance;
 
     public Instance<List<?>> get() {
