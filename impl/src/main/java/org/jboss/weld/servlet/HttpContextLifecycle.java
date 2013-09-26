@@ -38,10 +38,10 @@ import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * Takes care of setting up and tearing down CDI contexts around an HTTP request and dispatching context lifecycle events.
- * 
+ *
  * @author Jozef Hartinger
  * @author Marko Luksa
- * 
+ *
  */
 public class HttpContextLifecycle implements Service {
 
@@ -50,17 +50,14 @@ public class HttpContextLifecycle implements Service {
     private static final String INCLUDE_HEADER = "javax.servlet.include.request_uri";
     private static final String FORWARD_HEADER = "javax.servlet.forward.request_uri";
     private static final String REQUEST_DESTROYED = HttpContextLifecycle.class.getName() + ".request.destroyed";
-    
-    public static final String CROSS_CONTEXT_FORWARD_IGNORE="org.jboss.weld.crosscontext_forward";
-    public static final String CROSS_CONTEXT_INCLUDE_IGNORE="org.jboss.weld.crosscontext_include";
 
     private HttpSessionDestructionContext sessionDestructionContextCache;
     private HttpSessionContext sessionContextCache;
     private HttpRequestContext requestContextCache;
 
     private volatile Boolean conversationActivationEnabled;
-    private Boolean crossContextRequestForwardIgnored;
-    private Boolean crossContextRequestIncludeIgnored;
+    private final boolean ignoreForwards;
+    private final boolean ignoreIncludes;
 
     private final BeanManagerImpl beanManager;
     private final ConversationContextActivator conversationContextActivator;
@@ -75,12 +72,12 @@ public class HttpContextLifecycle implements Service {
 
     private final ServletApiAbstraction servletApi;
 
-    public HttpContextLifecycle(BeanManagerImpl beanManager, HttpContextActivationFilter contextActivationFilter) {
+    public HttpContextLifecycle(BeanManagerImpl beanManager, HttpContextActivationFilter contextActivationFilter, boolean ignoreForwards, boolean ignoreIncludes) {
         this.beanManager = beanManager;
         this.conversationContextActivator = new ConversationContextActivator(beanManager);
         this.conversationActivationEnabled = null;
-        this.crossContextRequestForwardIgnored = true;
-        this.crossContextRequestIncludeIgnored = true;
+        this.ignoreForwards = ignoreForwards;
+        this.ignoreIncludes = ignoreIncludes;
         this.contextActivationFilter = contextActivationFilter;
         this.applicationInitializedEvent = FastEvent.of(ServletContext.class, beanManager, InitializedLiteral.APPLICATION);
         this.applicationDestroyedEvent = FastEvent.of(ServletContext.class, beanManager, DestroyedLiteral.APPLICATION);
@@ -156,10 +153,10 @@ public class HttpContextLifecycle implements Service {
     }
 
     public void requestInitialized(HttpServletRequest request, ServletContext ctx) {
-        if(crossContextRequestForwardIgnored && isForwardedRequest(request)) {
+        if (ignoreForwards && isForwardedRequest(request)) {
             return;
         }
-        if (crossContextRequestIncludeIgnored && isIncludedRequest(request)) {
+        if (ignoreIncludes && isIncludedRequest(request)) {
             return;
         }
         if (!contextActivationFilter.accepts(request)) {
@@ -201,10 +198,10 @@ public class HttpContextLifecycle implements Service {
     }
 
     public void requestDestroyed(HttpServletRequest request) {
-        if(crossContextRequestForwardIgnored && isForwardedRequest(request)) {
+        if (ignoreForwards && isForwardedRequest(request)) {
             return;
         }
-        if (crossContextRequestIncludeIgnored && isIncludedRequest(request)) {
+        if (ignoreIncludes && isIncludedRequest(request)) {
             return;
         }
         if (isRequestDestroyed(request)) {
@@ -278,15 +275,5 @@ public class HttpContextLifecycle implements Service {
 
     @Override
     public void cleanup() {
-    }
-
-    public void setCrossContextRequestForwardIgnore(boolean forwardRequestIgnored) {
-        crossContextRequestForwardIgnored=forwardRequestIgnored;
-        
-    }
-
-    public void setCrossContextRequestIncludeIgnore(boolean includedRequestIgnored) {
-        crossContextRequestIncludeIgnored=includedRequestIgnored;
-        
     }
 }

@@ -4,6 +4,7 @@ import javax.servlet.ServletContext;
 
 import org.jboss.weld.logging.ServletLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.servlet.api.InitParameters;
 import org.jboss.weld.servlet.spi.HttpContextActivationFilter;
 import org.jboss.weld.servlet.spi.helpers.AcceptingHttpContextActivationFilter;
 import org.jboss.weld.servlet.spi.helpers.RegexHttpContextActivationFilter;
@@ -15,8 +16,6 @@ import org.jboss.weld.servlet.spi.helpers.RegexHttpContextActivationFilter;
  *
  */
 public class ServletUtils {
-
-    public static final String CONTEXT_MAPPING = "org.jboss.weld.context.mapping";
 
     private ServletUtils() {
     }
@@ -31,7 +30,7 @@ public class ServletUtils {
      */
     public static HttpContextActivationFilter getContextActivationFilter(BeanManagerImpl manager, ServletContext context) {
         HttpContextActivationFilter filter = manager.getServices().get(HttpContextActivationFilter.class);
-        final String pattern = context.getInitParameter(CONTEXT_MAPPING);
+        final String pattern = context.getInitParameter(InitParameters.CONTEXT_MAPPING);
         if (filter == AcceptingHttpContextActivationFilter.INSTANCE) {
             // SPI has precedence. If a filter was not set through SPI let's see if a mapping is set in web.xml
             if (pattern != null) {
