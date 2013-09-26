@@ -44,7 +44,7 @@ public class TimingOutFixedThreadPoolBootstrapConfigurationTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).addAsResource(new StringAsset("threadPoolSize=3\nthreadPoolType=FIXED_TIMEOUT\nthreadPoolKeepAliveTime=1"),
+        return ShrinkWrap.create(BeanArchive.class).addAsResource(new StringAsset("threadPoolSize=3\nthreadPoolType=FIXED_TIMEOUT\nthreadPoolKeepAliveTime=5"),
                 "org.jboss.weld.executor.properties");
     }
 
@@ -56,7 +56,7 @@ public class TimingOutFixedThreadPoolBootstrapConfigurationTest {
         TimingOutFixedThreadPoolExecutorServices executorServices = (TimingOutFixedThreadPoolExecutorServices) manager.getServices().get(ExecutorServices.class);
         // Use full capaticy of the pool
         assertEquals(3, executorServices.getPoolSize());
-        Thread.sleep(1100l);
+        Thread.sleep(7000l);
         // All workers timed out
         assertEquals(0, executorServices.getPoolSize());
     }
