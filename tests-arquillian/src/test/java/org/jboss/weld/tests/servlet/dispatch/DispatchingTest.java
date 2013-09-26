@@ -12,6 +12,7 @@ import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -31,6 +32,7 @@ import com.gargoylesoftware.htmlunit.WebClient;
  */
 @RunWith(Arquillian.class)
 @Category(Integration.class)
+@Ignore("WFLY-2163")
 public class DispatchingTest {
 
     @Deployment(testable = false)
