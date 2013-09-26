@@ -23,11 +23,10 @@
 package org.jboss.weld.servlet;
 
 import static org.jboss.weld.servlet.ConversationFilter.CONVERSATION_FILTER_REGISTERED;
-import static org.jboss.weld.servlet.HttpContextLifecycle.CROSS_CONTEXT_FORWARD_IGNORE;
-import static org.jboss.weld.servlet.HttpContextLifecycle.CROSS_CONTEXT_INCLUDE_IGNORE;
 
 import javax.enterprise.inject.spi.CDI;
 import javax.inject.Inject;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletRequestEvent;
 import javax.servlet.http.HttpServletRequest;
@@ -37,6 +36,7 @@ import org.jboss.weld.Container;
 import org.jboss.weld.bean.builtin.BeanManagerProxy;
 import org.jboss.weld.logging.ServletLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.servlet.api.InitParameters;
 import org.jboss.weld.servlet.api.helpers.AbstractServletListener;
 import org.jboss.weld.servlet.spi.HttpContextActivationFilter;
 import org.jboss.weld.util.servlet.ServletUtils;
@@ -64,9 +64,10 @@ public class WeldInitialListener extends AbstractServletListener {
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
+        final ServletContext ctx = sce.getServletContext();
         // if running in OSGi environment, use the context id obtained from servlet context
         if (beanManager == null) {
-            String contextId = sce.getServletContext().getInitParameter(Container.CONTEXT_ID_KEY);
+            String contextId = ctx.getInitParameter(Container.CONTEXT_ID_KEY);
             if (contextId != null) {
                 Container instance = Container.instance(contextId);
                 if (instance.beanDeploymentArchives().size() == 1) {
@@ -78,18 +79,22 @@ public class WeldInitialListener extends AbstractServletListener {
         if (beanManager == null) {
             beanManager = BeanManagerProxy.unwrap(CDI.current().getBeanManager());
         }
-        HttpContextActivationFilter filter = ServletUtils.getContextActivationFilter(beanManager, sce.getServletContext());
-        this.lifecycle = new HttpContextLifecycle(beanManager, filter);
-        if (Boolean.valueOf(sce.getServletContext().getInitParameter(CONVERSATION_FILTER_REGISTERED))) {
+        HttpContextActivationFilter filter = ServletUtils.getContextActivationFilter(beanManager, ctx);
+        final boolean ignoreForwards = getBooleanInitParameter(ctx, InitParameters.CONTEXT_FORWARD_IGNORE, true);
+        final boolean ignoreIncludes = getBooleanInitParameter(ctx, InitParameters.CONTEXT_INCLUDE_IGNORE, true);
+        this.lifecycle = new HttpContextLifecycle(beanManager, filter, ignoreForwards, ignoreIncludes);
+        if (Boolean.valueOf(ctx.getInitParameter(CONVERSATION_FILTER_REGISTERED))) {
             this.lifecycle.setConversationActivationEnabled(false);
         }
-        if (!Boolean.valueOf(sce.getServletContext().getInitParameter(CROSS_CONTEXT_FORWARD_IGNORE))) {
-            this.lifecycle.setCrossContextRequestForwardIgnore(false);
+        this.lifecycle.contextInitialized(ctx);
+    }
+
+    private boolean getBooleanInitParameter(ServletContext ctx, String parameterName, boolean defaultValue) {
+        String value = ctx.getInitParameter(parameterName);
+        if (value == null) {
+            return defaultValue;
         }
-        if (!Boolean.valueOf(sce.getServletContext().getInitParameter(CROSS_CONTEXT_INCLUDE_IGNORE))) {
-            this.lifecycle.setCrossContextRequestIncludeIgnore(false);
-        }
-        this.lifecycle.contextInitialized(sce.getServletContext());
+        return Boolean.valueOf(value);
     }
 
     @Override

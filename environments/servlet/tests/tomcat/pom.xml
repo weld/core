@@ -72,7 +72,7 @@
             <scope>test</scope>
         </dependency>
 
-	<dependency>
+        <dependency>
             <groupId>net.sourceforge.htmlunit</groupId>
             <artifactId>htmlunit</artifactId>
         </dependency>
