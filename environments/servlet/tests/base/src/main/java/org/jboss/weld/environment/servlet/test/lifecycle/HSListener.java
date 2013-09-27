@@ -47,7 +47,8 @@ public class HSListener implements HttpSessionListener {
     }
 
     public void sessionCreated(HttpSessionEvent se) {
-        getBeanManager().fireEvent(se.getSession());
+        // Use a special qualifier to distinguish @Initialized context events
+        getBeanManager().fireEvent(se.getSession(), HSCycleTestBase.LIFECYCLE_LITERAL);
     }
 
     public void sessionDestroyed(HttpSessionEvent se) {

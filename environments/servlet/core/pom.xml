@@ -7,9 +7,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.jboss.weld.servlet</groupId>
     <artifactId>weld-servlet-core</artifactId>
-    <version>2.1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Weld Servlet Core</name>
     <url>http://weld.cdi-spec.org</url>
@@ -49,7 +47,6 @@
         <dependency>
             <groupId>org.apache.tomcat</groupId>
             <artifactId>catalina</artifactId>
-            <version>6.0.18</version>
             <scope>provided</scope>
             <optional>true</optional>
             <exclusions>

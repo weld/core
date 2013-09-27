@@ -72,11 +72,6 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-            <groupId>net.sourceforge.htmlunit</groupId>
-            <artifactId>htmlunit</artifactId>
-        </dependency>
-
     </dependencies>
 
     <build>
@@ -118,9 +113,8 @@
         <profile>
             <id>default</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
                 <property>
-                    <name>default</name>
+                    <name>!incontainer</name>
                 </property>
             </activation>
             <build>
@@ -144,15 +138,29 @@
                 </property>
             </activation>
             <dependencies>
-                <dependency>
-                    <groupId>org.jboss.arquillian.container</groupId>
-                    <artifactId>arquillian-tomcat-embedded-6</artifactId>
-                    <scope>test</scope>
-                </dependency>
 
                 <dependency>
                     <groupId>org.jboss.shrinkwrap.descriptors</groupId>
                     <artifactId>shrinkwrap-descriptors-impl</artifactId>
+                    <scope>test</scope>
+                </dependency>
+
+            </dependencies>
+        </profile>
+
+        <profile>
+            <id>tomcat6</id>
+            <activation>
+                <property>
+                    <name>tomcat</name>
+                    <value>6</value>
+                </property>
+            </activation>
+            <dependencies>
+
+                <dependency>
+                    <groupId>org.jboss.arquillian.container</groupId>
+                    <artifactId>arquillian-tomcat-embedded-6</artifactId>
                     <scope>test</scope>
                 </dependency>
 
@@ -189,6 +197,102 @@
 
             </dependencies>
         </profile>
+
+        <profile>
+            <id>tomcat7</id>
+            <activation>
+                <property>
+                    <name>!tomcat</name>
+                </property>
+            </activation>
+            <dependencies>
+
+                <dependency>
+                    <groupId>org.jboss.arquillian.container</groupId>
+                    <artifactId>arquillian-tomcat-embedded-7</artifactId>
+                    <scope>test</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.apache.tomcat.embed</groupId>
+                    <artifactId>tomcat-embed-core</artifactId>
+                    <scope>test</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.apache.tomcat.embed</groupId>
+                    <artifactId>tomcat-embed-logging-juli</artifactId>
+                    <scope>test</scope>
+                </dependency>
+
+                <!-- Make sure this comes before Tomcat's EL on the classpath -->
+                <dependency>
+                    <groupId>org.glassfish.web</groupId>
+                    <artifactId>el-impl</artifactId>
+                    <scope>test</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.apache.tomcat.embed</groupId>
+                    <artifactId>tomcat-embed-jasper</artifactId>
+                    <scope>test</scope>
+                </dependency>
+
+            </dependencies>
+        </profile>
+
+        <!-- TODO finish this profile once Arquillian Tomcat 8 container is available -->
+        <profile>
+            <id>tomcat8</id>
+            <activation>
+                <property>
+                    <name>tomcat</name>
+                    <value>8</value>
+                </property>
+            </activation>
+
+            <dependencies>
+
+                <!--  Arquillian Tomcat 8 container is not yet available
+                <dependency>
+                    <groupId>org.jboss.arquillian.container</groupId>
+                    <artifactId>arquillian-tomcat-embedded-8</artifactId>
+                    <version>1.0.0.Final-SNAPSHOT</version>
+                    <scope>test</scope>
+                </dependency> -->
+
+                <dependency>
+                    <groupId>org.apache.tomcat.embed</groupId>
+                    <artifactId>tomcat-embed-core</artifactId>
+                    <version>8.0.0-RC3</version>
+                    <scope>test</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.apache.tomcat.embed</groupId>
+                    <artifactId>tomcat-embed-logging-juli</artifactId>
+                    <version>8.0.0-RC3</version>
+                    <scope>test</scope>
+                </dependency>
+
+                <!-- Make sure this comes before Tomcat's EL on the classpath -->
+                <dependency>
+                    <groupId>org.glassfish.web</groupId>
+                    <artifactId>el-impl</artifactId>
+                    <scope>test</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.apache.tomcat.embed</groupId>
+                    <artifactId>tomcat-embed-jasper</artifactId>
+                    <version>8.0.0-RC3</version>
+                    <scope>test</scope>
+                </dependency>
+
+            </dependencies>
+
+        </profile>
+
     </profiles>
 
 </project>
