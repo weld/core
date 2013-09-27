@@ -17,6 +17,8 @@
 
 package org.jboss.weld.environment.servlet.test.lifecycle;
 
+import javax.enterprise.util.AnnotationLiteral;
+
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
@@ -36,6 +38,10 @@ public class HSCycleTestBase {
         war.addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
         return war;
     }
+
+    @SuppressWarnings("serial")
+    public static final AnnotationLiteral<Lifecycle> LIFECYCLE_LITERAL = new AnnotationLiteral<Lifecycle>() {
+    };
 
     @Test
     public void testCycle(Pinger pinger) throws Exception {

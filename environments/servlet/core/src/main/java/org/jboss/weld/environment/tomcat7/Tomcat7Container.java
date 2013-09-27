@@ -36,7 +36,7 @@ public class Tomcat7Container extends AbstractContainer {
     public void initialize(ContainerContext context) {
         try {
             WeldForwardingInstanceManager.replaceInstanceManager(context.getEvent(), context.getManager());
-            log.info("Tomcat 7 detected, CDI injection will be available in Servlets and Filters. Injection into Listeners is not supported");
+            log.info("Tomcat 7+ detected, CDI injection will be available in Servlets and Filters. Injection into Listeners is not supported");
         } catch (Exception e) {
             log.error("Unable to replace Tomcat 7 AnnotationProcessor. CDI injection will not be available in Servlets, Filters, or Listeners", e);
         }
