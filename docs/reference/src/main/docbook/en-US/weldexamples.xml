@@ -806,11 +806,11 @@ public class Game
 
          <programlistingco>
             <areaspec>
-               <area id="gameIn" coords="3" />
-               <area id="messagesIn" coords="6" />
-               <area id="start" coords="9" />
-               <area id="init" coords="21" />
-               <area id="guess1" coords="38" />
+               <area id="gameIn" coords="5" />
+               <area id="messagesIn" coords="8" />
+               <area id="start" coords="11" />
+               <area id="init" coords="23" />
+               <area id="guess1" coords="40" />
                <area id="replay" coords="48" />
             </areaspec>
             <programlisting role="JAVA"><![CDATA[import javax.enterprise.event.Observes;
