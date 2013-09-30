@@ -7,7 +7,7 @@
       <title>Excluding classes from scanning and deployment</title>
 
       <para>
-         CDI 1.1 allows you to exclude classes in your archive from scanning, having
+         CDI 1.1 allows you to exclude classes in your archive from being scanned, having
          container lifecycle events fired, and being deployed as beans. See also <ulink url="http://docs.jboss.org/cdi/spec/1.1/cdi-spec.html#bean_discovery">12.4. Bean discovery</ulink>.
       </para>
 
@@ -83,7 +83,7 @@
       </note>
 
       <para>
-         The third filter shows how to exclude types from the specific package (note the name attribute has suffix ".*").
+         The third filter shows how to exclude all types from a specific package (note the <code>name</code> attribute has suffix ".*").
       </para>
 
       <para>
