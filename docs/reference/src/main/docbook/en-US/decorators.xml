@@ -192,7 +192,7 @@ public abstract class LargeTransactionDecorator
           <para>
                 Decorators with the <literal>@Priority</literal> that are listed in the <literal>beans.xml</literal> descriptor
                 will be called twice in Weld. However, this behaviour is non-portable and this combination 
-                should not be used as it can behave differently in the other implementation!
+                should not be used as it can behave differently in other implementations!
           </para>
       </note>
 
