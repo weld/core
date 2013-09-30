@@ -208,6 +208,10 @@
                       </exclusion>
                     </exclusions>
                 </dependency>
+                <dependency>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </dependency>
             </dependencies>
             <build>
                 <plugins>
@@ -257,6 +261,10 @@
                         <artifactId>log4j-jboss-logmanager</artifactId>
                       </exclusion>
                     </exclusions>
+                </dependency>
+                <dependency>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
                 </dependency>
             </dependencies>
             <build>
