@@ -295,9 +295,12 @@ public class WeldStartup {
         /*
          * Setup ExecutorServices
          */
-        ExecutorServices executor = ExecutorServicesFactory.create(DefaultResourceLoader.INSTANCE);
-        if (executor != null) {
-            services.add(ExecutorServices.class, executor);
+        ExecutorServices executor = services.get(ExecutorServices.class);
+        if (executor == null) {
+            executor = ExecutorServicesFactory.create(DefaultResourceLoader.INSTANCE);
+            if (executor != null) {
+                services.add(ExecutorServices.class, executor);
+            }
         }
 
         if (!services.contains(AnnotationDiscovery.class)) {
