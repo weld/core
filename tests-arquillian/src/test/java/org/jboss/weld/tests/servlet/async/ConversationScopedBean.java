@@ -16,29 +16,15 @@
  */
 package org.jboss.weld.tests.servlet.async;
 
-import java.io.IOException;
+import java.io.Serializable;
 
-import javax.inject.Inject;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.enterprise.context.ConversationScoped;
 
+@ConversationScoped
 @SuppressWarnings("serial")
-@WebServlet(value = "/foo/finish")
-public class Foo2Servlet extends HttpServlet {
+public class ConversationScopedBean implements Serializable {
 
-    @Inject
-    private Bike bike;
-
-    @Inject
-    private ConversationScopedBean bean;
-
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        bean.ping(); // check that the conversation context is active
-        resp.setContentType("text/plain");
-        resp.getWriter().print(bike.getValue());
+    public String ping() {
+        return "foo";
     }
 }
