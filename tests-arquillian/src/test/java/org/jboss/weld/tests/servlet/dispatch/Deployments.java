@@ -10,15 +10,20 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 
 public class Deployments {
 
-    public static Archive<?> deployment(Class<?> servletClass) {
+    public static Archive<?> deployment(Class<?> servletClass, boolean includeWebXml) {
 
         WebArchive war1 = ShrinkWrap.create(WebArchive.class, "app1.war")
-                .addClasses(servletClass, FirstServlet.class, FirstBean.class)
+                .addClasses(servletClass, FirstServlet.class, FirstBean.class, FirstConversationScopedBean.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
 
         WebArchive war2 = ShrinkWrap.create(WebArchive.class, "app2.war")
-                .addClasses(SecondServlet.class, SecondBean.class)
+                .addClasses(SecondServlet.class, SecondBean.class, SecondConversationScopedBean.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+
+        if (includeWebXml) {
+            war1.addAsWebInfResource(Deployments.class.getPackage(), "web.xml", "web.xml");
+            war2.addAsWebInfResource(Deployments.class.getPackage(), "web.xml", "web.xml");
+        }
 
         JavaArchive library = ShrinkWrap.create(JavaArchive.class)
                 .addClass(TestBean.class)

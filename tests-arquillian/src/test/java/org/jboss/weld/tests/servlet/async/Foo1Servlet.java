@@ -33,8 +33,12 @@ public class Foo1Servlet extends HttpServlet {
     @Inject
     private Bike bike;
 
+    @Inject
+    private ConversationScopedBean bean;
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        bean.ping(); // check that the conversation context is active
         bike.setValue("BMX");
         final AsyncContext ctx = req.startAsync();
         new Thread(new AsynchronousTask(ctx)).start();

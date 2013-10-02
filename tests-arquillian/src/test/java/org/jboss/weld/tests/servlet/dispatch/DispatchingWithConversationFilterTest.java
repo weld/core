@@ -12,16 +12,18 @@ import org.junit.runner.RunWith;
  * dispatch request is followed by a validation request in which the number of constructions/destructions is examined to verify that an activated context is
  * always deactivated properly (no leaks occur).
  *
+ * Unlike DispatchingTest, this test uses ConversationFilter for conversation activation.
+ *
  * @author Jozef Hartinger
  * @author Ron Smeral
  *
  */
 @RunWith(Arquillian.class)
 @Category(Integration.class)
-public class DispatchingTest extends AbstractDispatchingTestCase {
+public class DispatchingWithConversationFilterTest extends AbstractDispatchingTestCase {
 
     @Deployment(testable = false)
     public static Archive<?> getDeployment() {
-        return Deployments.deployment(MainServlet.class, false);
+        return Deployments.deployment(MainServlet.class, true);
     }
 }

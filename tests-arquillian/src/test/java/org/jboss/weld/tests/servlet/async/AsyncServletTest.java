@@ -48,8 +48,9 @@ public class AsyncServletTest {
     @Deployment(testable = false)
     public static Archive<?> getDeployment() {
         return ShrinkWrap.create(WebArchive.class, "async.war")
-                .addClasses(Foo1Servlet.class, Foo2Servlet.class, Bike.class, AsynchronousTask.class)
-                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+                .addClasses(Foo1Servlet.class, Foo2Servlet.class, Bike.class, AsynchronousTask.class, ConversationScopedBean.class)
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
+                .addAsWebInfResource(AsyncServletTest.class.getPackage(), "web.xml", "web.xml");
     }
 
     @Test
