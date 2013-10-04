@@ -58,11 +58,8 @@ import org.jboss.weld.util.reflection.HierarchyDiscovery;
 
 /**
  * <p>
- * Reference implementation for the ObserverMethod interface, which represents
- * an observer method. Each observer method has an event type which is the class
- * of the event object being observed, and event binding types that are
- * annotations applied to the event parameter to narrow the event notifications
- * delivered.
+ * Reference implementation for the ObserverMethod interface, which represents an observer method. Each observer method has an event type which is the class of
+ * the event object being observed, and event binding types that are annotations applied to the event parameter to narrow the event notifications delivered.
  * </p>
  *
  * @author David Allen
@@ -88,12 +85,11 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
     private final Set<WeldInjectionPointAttributes<?, ?>> newInjectionPoints;
 
     /**
-     * Creates an Observer which describes and encapsulates an observer method
-     * (8.5).
+     * Creates an Observer which describes and encapsulates an observer method (8.5).
      *
-     * @param observer      The observer
+     * @param observer The observer
      * @param declaringBean The observer bean
-     * @param manager       The Bean manager
+     * @param manager The Bean manager
      */
     protected ObserverMethodImpl(final EnhancedAnnotatedMethod<T, ? super X> observer, final RIBean<X> declaringBean, final BeanManagerImpl manager) {
         this.beanManager = manager;
@@ -102,7 +98,8 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
         EnhancedAnnotatedParameter<?, ? super X> eventParameter = observer.getEnhancedParameters(Observes.class).get(0);
         this.eventType = new HierarchyDiscovery(declaringBean.getBeanClass()).resolveType(eventParameter.getBaseType());
         this.id = createId(observer, declaringBean);
-        this.bindings = manager.getServices().get(SharedObjectCache.class).getSharedSet(observer.getEnhancedParameters(Observes.class).get(0).getMetaAnnotations(Qualifier.class));
+        this.bindings = manager.getServices().get(SharedObjectCache.class)
+                .getSharedSet(observer.getEnhancedParameters(Observes.class).get(0).getMetaAnnotations(Qualifier.class));
         Observes observesAnnotation = observer.getEnhancedParameters(Observes.class).get(0).getAnnotation(Observes.class);
         this.reception = observesAnnotation.notifyObserver();
         transactionPhase = ObserverFactory.getTransactionalPhase(observer);
@@ -122,7 +119,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
         this.newInjectionPoints = immutableSet(newInjectionPoints);
     }
 
-    protected static String createId(final EnhancedAnnotatedMethod<?, ? > observer, final RIBean<?> declaringBean) {
+    protected static String createId(final EnhancedAnnotatedMethod<?, ?> observer, final RIBean<?> declaringBean) {
         String typeId = null;
         if (declaringBean instanceof AbstractClassBean<?>) {
             AbstractClassBean<?> classBean = (AbstractClassBean<?>) declaringBean;
@@ -130,10 +127,12 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
         } else {
             typeId = declaringBean.getBeanClass().getName();
         }
-        return new StringBuilder().append(ID_PREFIX).append(ID_SEPARATOR).append(ObserverMethod.class.getSimpleName()).append(ID_SEPARATOR).append(typeId).append(".").append(observer.getSignature()).toString();
+        return new StringBuilder().append(ID_PREFIX).append(ID_SEPARATOR).append(ObserverMethod.class.getSimpleName()).append(ID_SEPARATOR).append(typeId)
+                .append(".").append(observer.getSignature()).toString();
     }
 
-    protected MethodInjectionPoint<T, ? super X> initMethodInjectionPoint(EnhancedAnnotatedMethod<T, ? super X> observer, RIBean<X> declaringBean, BeanManagerImpl manager) {
+    protected MethodInjectionPoint<T, ? super X> initMethodInjectionPoint(EnhancedAnnotatedMethod<T, ? super X> observer, RIBean<X> declaringBean,
+            BeanManagerImpl manager) {
         return InjectionPointFactory.instance().createMethodInjectionPoint(observer, declaringBean, declaringBean.getBeanClass(), true, manager);
     }
 
@@ -146,8 +145,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
     }
 
     /**
-     * Performs validation of the observer method for compliance with the
-     * specifications.
+     * Performs validation of the observer method for compliance with the specifications.
      */
     private <Y> void checkObserverMethod(EnhancedAnnotatedMethod<T, Y> annotated) {
         // Make sure exactly one and only one parameter is annotated with Observes
@@ -221,8 +219,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
     }
 
     /**
-     * Completes initialization of the observer and allows derived types to
-     * override behavior.
+     * Completes initialization of the observer and allows derived types to override behavior.
      */
     public void initialize(EnhancedAnnotatedMethod<T, ? super X> annotated) {
         checkObserverMethod(annotated);
@@ -292,7 +289,11 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
     }
 
     protected Object getReceiver(CreationalContext<?> ctx) {
-        return beanManager.getReference(declaringBean, null, ctx, true);
+        if (ctx != null) {
+            return beanManager.getReference(declaringBean, null, ctx, true);
+        }
+        // Conditional observer
+        return beanManager.getContext(declaringBean.getScope()).get(declaringBean);
     }
 
     @Override
