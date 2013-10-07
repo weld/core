@@ -46,7 +46,6 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.tests.category.Integration;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -64,7 +63,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
  */
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-@Ignore("WFLY-2163")
 public class ClientConversationContextTest {
 
     public static final String CID_REQUEST_PARAMETER_NAME = "cid";
