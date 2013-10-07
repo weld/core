@@ -109,7 +109,7 @@ public class ExtensionObserverMethodImpl<T, X> extends ObserverMethodImpl<T, X> 
      * an extension instance.
      */
     @Override
-    protected Object getReceiver(CreationalContext<?> ctx) {
+    protected Object getReceiver(CreationalContext<X> ctx) {
         return getDeclaringBean().create(null);
     }
 
