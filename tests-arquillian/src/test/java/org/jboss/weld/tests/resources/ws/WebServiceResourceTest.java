@@ -28,7 +28,6 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.tests.category.Integration;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -41,29 +40,29 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class WebServiceResourceTest {
 
-	@Deployment
-	public static Archive<?> createTestArchive() {
-		return ShrinkWrap.create(WebArchive.class)
-				.addPackage(WebServiceResourceTest.class.getPackage())
-				.addAsWebInfResource(
-				        WebServiceResourceTest.class.getPackage(),
+    @Deployment
+    public static Archive<?> createTestArchive() {
+        return ShrinkWrap.create(WebArchive.class)
+                .addPackage(WebServiceResourceTest.class.getPackage())
+                .addAsWebInfResource(
+                        WebServiceResourceTest.class.getPackage(),
                         "web.xml", "web.xml")
-				.addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
-	}
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+    }
 
-	@True
-	@Inject
-	Translator translator;
+    @True
+    @Inject
+    Translator translator;
 
-	@Test
-	public void testWebServiceResourceDeclaration() {
-	    assertNotNull(translator);
-	}
+    @Test
+    public void testWebServiceResourceDeclaration() {
+        assertNotNull(translator);
+    }
 
-	@Test
-	@Ignore("WELD-1099")
-	public void testWebServiceResourceInvocation() {
-	    assertEquals("ok", translator.translate("hello"));
-	}
+    @Test
+    //@Ignore("WELD-1099")
+    public void testWebServiceResourceInvocation() {
+        assertEquals("ok", translator.translate("hello"));
+    }
 
 }
