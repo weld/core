@@ -33,18 +33,7 @@
 
             <!-- Issues in Weld (the RI) -->
 
-            <!-- Issues in JBoss AS -->
-            <!-- AS7-6831 @WebServiceRef injection not working in JBoss AS -->
-            <class name="org.jboss.cdi.tck.tests.implementation.simple.resource.broken.type.ws.ResourceDefinitionWithDifferentTypeTest">
-                <methods>
-                    <exclude name="testDeployment"/>
-                </methods>
-            </class>
-            <class name="org.jboss.cdi.tck.tests.lookup.injection.non.contextual.ws.WebServiceResourceTest">
-                <methods>
-                    <exclude name="testResourceInvocation"/>
-                </methods>
-            </class>
+            <!-- Issues in WildFly -->
         </classes>
     </test>
 
