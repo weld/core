@@ -25,6 +25,7 @@ import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Extension;
 
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
+import org.jboss.weld.annotated.slim.SlimAnnotatedTypeContext;
 import org.jboss.weld.annotated.slim.SlimAnnotatedTypeStore;
 import org.jboss.weld.bootstrap.BeanDeployment;
 import org.jboss.weld.bootstrap.BeanDeploymentArchiveMapping;
@@ -77,10 +78,11 @@ public class AfterTypeDiscoveryImpl extends AbstractAnnotatedTypeRegisteringEven
     protected void storeSyntheticAnnotatedType(BeanDeployment deployment, AnnotatedType<?> type, String id) {
         SlimAnnotatedType<?> annotatedType = transformer.getUnbackedAnnotatedType(type, getBeanManager().getId(), id);
         Extension extension = getSyntheticAnnotatedTypeSource();
+        SlimAnnotatedTypeContext<?> annotatedTypeContext = SlimAnnotatedTypeContext.of(annotatedType, transformer, extension);
 
-        ProcessAnnotatedTypeImpl<?> event = events.fireProcessAnnotatedType(getBeanManager(), annotatedType, extension);
+        ProcessAnnotatedTypeImpl<?> event = events.fireProcessAnnotatedType(getBeanManager(), annotatedTypeContext);
         if (event == null) {
-            deployment.getBeanDeployer().getEnvironment().addSyntheticAnnotatedType(annotatedType, extension);
+            deployment.getBeanDeployer().getEnvironment().addAnnotatedType(annotatedTypeContext);
             store.put(annotatedType);
         } else  if (event.isVeto()) {
             return;

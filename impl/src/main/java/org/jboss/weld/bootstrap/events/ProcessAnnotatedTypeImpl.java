@@ -16,19 +16,14 @@
  */
 package org.jboss.weld.bootstrap.events;
 
-import java.lang.reflect.Type;
-
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 
 import org.jboss.weld.annotated.AnnotatedTypeValidator;
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
-import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.resolution.Resolvable;
 import org.jboss.weld.resources.ClassTransformer;
-import org.jboss.weld.resources.spi.AnnotationDiscovery;
 
 /**
  * Container lifecycle event for each Java class or interface discovered by
@@ -36,26 +31,27 @@ import org.jboss.weld.resources.spi.AnnotationDiscovery;
  *
  * @author pmuir
  * @author David Allen
+ * @author Jozef Hartinger
  */
 @SuppressWarnings("rawtypes")
-public class ProcessAnnotatedTypeImpl<X> extends AbstractDefinitionContainerEvent implements ProcessAnnotatedType<X> {
+public class ProcessAnnotatedTypeImpl<X> implements ProcessAnnotatedType<X>, ContainerEvent {
 
     private final SlimAnnotatedType<X> originalAnnotatedType;
+    private final BeanManagerImpl manager;
     private AnnotatedType<X> annotatedType;
     private boolean veto;
-    private final Resolvable resolvable;
 
-    public ProcessAnnotatedTypeImpl(BeanManagerImpl beanManager, SlimAnnotatedType<X> annotatedType, AnnotationDiscovery discovery) {
-        this(beanManager, annotatedType, ProcessAnnotatedType.class, discovery);
+    public ProcessAnnotatedTypeImpl(BeanManagerImpl beanManager, SlimAnnotatedType<X> annotatedType) {
+        this(beanManager, annotatedType, ProcessAnnotatedType.class);
     }
 
-    protected ProcessAnnotatedTypeImpl(BeanManagerImpl beanManager, SlimAnnotatedType<X> annotatedType, Class<? extends ProcessAnnotatedType> rawType, AnnotationDiscovery discovery) {
-        super(beanManager, rawType, new Type[] { annotatedType.getJavaClass() });
+    protected ProcessAnnotatedTypeImpl(BeanManagerImpl beanManager, SlimAnnotatedType<X> annotatedType, Class<? extends ProcessAnnotatedType> rawType) {
+        this.manager = beanManager;
         this.annotatedType = annotatedType;
         this.originalAnnotatedType = annotatedType;
-        this.resolvable = createResolvable(annotatedType, discovery);
     }
 
+    @Override
     public AnnotatedType<X> getAnnotatedType() {
         return annotatedType;
     }
@@ -66,12 +62,17 @@ public class ProcessAnnotatedTypeImpl<X> extends AbstractDefinitionContainerEven
      */
     public SlimAnnotatedType<X> getResultingAnnotatedType() {
         if (isDirty()) {
-            return ClassTransformer.instance(getBeanManager()).getUnbackedAnnotatedType(originalAnnotatedType, annotatedType);
+            return ClassTransformer.instance(manager).getUnbackedAnnotatedType(originalAnnotatedType, annotatedType);
         } else {
             return originalAnnotatedType;
         }
     }
 
+    public SlimAnnotatedType<X> getOriginalAnnotatedType() {
+        return originalAnnotatedType;
+    }
+
+    @Override
     public void setAnnotatedType(AnnotatedType<X> type) {
         if (type == null) {
             throw BootstrapLogger.LOG.annotationTypeNull(this);
@@ -83,22 +84,7 @@ public class ProcessAnnotatedTypeImpl<X> extends AbstractDefinitionContainerEven
         this.annotatedType = type;
     }
 
-    protected Resolvable createResolvable(SlimAnnotatedType<X> annotatedType, AnnotationDiscovery discovery) {
-        return ProcessAnnotatedTypeEventResolvable.forProcessAnnotatedType(annotatedType, discovery);
-    }
-
     @Override
-    public void fire() {
-        try {
-            getBeanManager().getGlobalLenientObserverNotifier().fireEvent(this, resolvable);
-        } catch (Exception e) {
-            getErrors().add(e);
-        }
-        if (!getErrors().isEmpty()) {
-            throw new DefinitionException(getErrors());
-        }
-    }
-
     public void veto() {
         this.veto = true;
     }

@@ -21,7 +21,6 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.AnnotatedConstructor;
@@ -39,11 +38,8 @@ import org.jboss.weld.annotated.slim.backed.BackedAnnotatedType;
 import org.jboss.weld.annotated.slim.unbacked.UnbackedAnnotatedType;
 import org.jboss.weld.resolution.QualifierInstance;
 import org.jboss.weld.resolution.Resolvable;
-import org.jboss.weld.resources.spi.AnnotationDiscovery;
-import org.jboss.weld.resources.spi.ExtendedAnnotationDiscovery;
 import org.jboss.weld.util.reflection.ParameterizedTypeImpl;
 
-import com.google.common.base.Predicate;
 import com.google.common.collect.Sets;
 
 /**
@@ -54,12 +50,20 @@ import com.google.common.collect.Sets;
  */
 public class ProcessAnnotatedTypeEventResolvable implements Resolvable {
 
-    public static ProcessAnnotatedTypeEventResolvable forProcessAnnotatedType(SlimAnnotatedType<?> annotatedType, AnnotationDiscovery discovery) {
+    public static ProcessAnnotatedTypeEventResolvable of(ProcessAnnotatedTypeImpl<?> event, RequiredAnnotationDiscovery discovery) {
+        if (event instanceof ProcessSyntheticAnnotatedType) {
+            return forProcessSyntheticAnnotatedType(event.getOriginalAnnotatedType(), discovery);
+        } else {
+            return forProcessAnnotatedType(event.getOriginalAnnotatedType(), discovery);
+        }
+    }
+
+    public static ProcessAnnotatedTypeEventResolvable forProcessAnnotatedType(SlimAnnotatedType<?> annotatedType, RequiredAnnotationDiscovery discovery) {
         ParameterizedType type = new ParameterizedTypeImpl(ProcessAnnotatedType.class, new Type[] { annotatedType.getJavaClass() }, null);
         return new ProcessAnnotatedTypeEventResolvable(Sets.<Type> newHashSet(Object.class, type), annotatedType, discovery);
     }
 
-    public static ProcessAnnotatedTypeEventResolvable forProcessSyntheticAnnotatedType(SlimAnnotatedType<?> annotatedType, AnnotationDiscovery discovery) {
+    public static ProcessAnnotatedTypeEventResolvable forProcessSyntheticAnnotatedType(SlimAnnotatedType<?> annotatedType, RequiredAnnotationDiscovery discovery) {
         ParameterizedType type1 = new ParameterizedTypeImpl(ProcessAnnotatedType.class, new Type[] { annotatedType.getJavaClass() }, null);
         ParameterizedType type2 = new ParameterizedTypeImpl(ProcessSyntheticAnnotatedType.class, new Type[] { annotatedType.getJavaClass() }, null);
         return new ProcessAnnotatedTypeEventResolvable(Sets.<Type> newHashSet(Object.class, type1, type2), annotatedType, discovery);
@@ -68,18 +72,12 @@ public class ProcessAnnotatedTypeEventResolvable implements Resolvable {
     private static final Set<QualifierInstance> QUALIFIERS = Collections.singleton(QualifierInstance.ANY);
     private final Set<Type> types;
     private final SlimAnnotatedType<?> annotatedType;
-    private final AnnotationDiscovery discovery;
-    private final AnnotationDiscoveryAdapter annotationDiscoveryAdapter;
+    private final RequiredAnnotationDiscovery discovery;
 
-    protected ProcessAnnotatedTypeEventResolvable(Set<Type> types, SlimAnnotatedType<?> annotatedType, AnnotationDiscovery discovery) {
+    protected ProcessAnnotatedTypeEventResolvable(Set<Type> types, SlimAnnotatedType<?> annotatedType, RequiredAnnotationDiscovery discovery) {
         this.types = types;
         this.annotatedType = annotatedType;
         this.discovery = discovery;
-        if (discovery instanceof ExtendedAnnotationDiscovery) {
-            this.annotationDiscoveryAdapter = new ExtendedAnnotationDiscoveryAdapter((ExtendedAnnotationDiscovery) discovery);
-        } else {
-            this.annotationDiscoveryAdapter = new BasicAnnotationDiscoveryAdapter();
-        }
     }
 
     @Override
@@ -96,7 +94,86 @@ public class ProcessAnnotatedTypeEventResolvable implements Resolvable {
      * Returns true if and only if the underlying {@link AnnotatedType} contains any of the given annotation types.
      */
     public boolean containsRequiredAnnotations(Collection<Class<? extends Annotation>> requiredAnnotations) {
-        return annotationDiscoveryAdapter.containsAnnotations(annotatedType, requiredAnnotations);
+        if (annotatedType instanceof BackedAnnotatedType<?>) {
+            return containsAnnotation((BackedAnnotatedType<?>) annotatedType, requiredAnnotations);
+        } else if (annotatedType instanceof UnbackedAnnotatedType<?>) {
+            return containsAnnotation((UnbackedAnnotatedType<?>) annotatedType, requiredAnnotations);
+        } else {
+            throw new IllegalArgumentException("Unknown SlimAnnotatedType implementation: " + annotatedType.getClass().toString());
+        }
+    }
+
+    protected boolean containsAnnotation(UnbackedAnnotatedType<?> annotatedType, Collection<Class<? extends Annotation>> requiredAnnotations) {
+        for (final Class<? extends Annotation> requiredAnnotation : requiredAnnotations) {
+            if (apply(annotatedType, requiredAnnotation)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean isEqualOrAnnotated(Class<? extends Annotation> requiredAnnotation, Annotation annotation) {
+        return annotation.annotationType().equals(requiredAnnotation) || annotation.annotationType().isAnnotationPresent(requiredAnnotation);
+    }
+
+    /**
+     * @return true if predicate returns true for any annotation defined anywhere on the annotatedType
+     */
+    protected boolean apply(UnbackedAnnotatedType<?> annotatedType, Class<? extends Annotation> requiredAnnotation) {
+     // type annotations
+        for (Annotation annotation : annotatedType.getAnnotations()) {
+            if (isEqualOrAnnotated(requiredAnnotation, annotation)) {
+                return true;
+            }
+            if (isEqualOrAnnotated(requiredAnnotation, annotation)) {
+                return true;
+            }
+        }
+        for (AnnotatedField<?> field : annotatedType.getFields()) {
+            for (Annotation annotation : field.getAnnotations()) {
+                if (isEqualOrAnnotated(requiredAnnotation, annotation)) {
+                    return true;
+                }
+            }
+        }
+        for (AnnotatedConstructor<?> constructor : annotatedType.getConstructors()) {
+            for (Annotation annotation : constructor.getAnnotations()) {
+                if (isEqualOrAnnotated(requiredAnnotation, annotation)) {
+                    return true;
+                }
+            }
+            for (AnnotatedParameter<?> parameter : constructor.getParameters()) {
+                for (Annotation annotation : parameter.getAnnotations()) {
+                    if (isEqualOrAnnotated(requiredAnnotation, annotation)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        for (AnnotatedMethod<?> method : annotatedType.getMethods()) {
+            for (Annotation annotation : method.getAnnotations()) {
+                if (isEqualOrAnnotated(requiredAnnotation, annotation)) {
+                    return true;
+                }
+            }
+            for (AnnotatedParameter<?> parameter : method.getParameters()) {
+                for (Annotation annotation : parameter.getAnnotations()) {
+                    if (isEqualOrAnnotated(requiredAnnotation, annotation)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    protected boolean containsAnnotation(BackedAnnotatedType<?> annotatedType, Collection<Class<? extends Annotation>> requiredAnnotations) {
+        for (Class<? extends Annotation> requiredAnnotation : requiredAnnotations) {
+            if (discovery.containsAnnotation(annotatedType.getJavaClass(), requiredAnnotation)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -157,130 +234,5 @@ public class ProcessAnnotatedTypeEventResolvable implements Resolvable {
             return false;
         }
         return true;
-    }
-
-    private interface AnnotationDiscoveryAdapter {
-        boolean containsAnnotations(SlimAnnotatedType<?> annotatedType, Collection<Class<? extends Annotation>> requiredAnnotations);
-    }
-
-    private class BasicAnnotationDiscoveryAdapter implements AnnotationDiscoveryAdapter {
-
-        @Override
-        public boolean containsAnnotations(SlimAnnotatedType<?> annotatedType, Collection<Class<? extends Annotation>> requiredAnnotations) {
-            if (annotatedType instanceof BackedAnnotatedType<?>) {
-                return containsAnnotation((BackedAnnotatedType<?>) annotatedType, requiredAnnotations);
-            } else if (annotatedType instanceof UnbackedAnnotatedType<?>) {
-                return containsAnnotation((UnbackedAnnotatedType<?>) annotatedType, requiredAnnotations);
-            } else {
-                throw new IllegalArgumentException();
-            }
-        }
-
-        protected boolean containsAnnotation(UnbackedAnnotatedType<?> annotatedType, Collection<Class<? extends Annotation>> requiredAnnotations) {
-            for (final Class<? extends Annotation> requiredAnnotation : requiredAnnotations) {
-                Predicate<Annotation> predicate = new Predicate<Annotation>() {
-                    @Override
-                    public boolean apply(Annotation annotation) {
-                        return annotation.annotationType().equals(requiredAnnotation) || annotation.annotationType().isAnnotationPresent(requiredAnnotation);
-                    }
-                };
-
-                if (apply(annotatedType, predicate)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        /**
-         * @return true if predicate returns true for any annotation defined anywhere on the annotatedType
-         */
-        protected boolean apply(UnbackedAnnotatedType<?> annotatedType, Predicate<Annotation> predicate) {
-         // type annotations
-            for (Annotation annotation : annotatedType.getAnnotations()) {
-                if (predicate.apply(annotation)) {
-                    return true;
-                }
-                if (predicate.apply(annotation)) {
-                    return true;
-                }
-            }
-            for (AnnotatedField<?> field : annotatedType.getFields()) {
-                for (Annotation annotation : field.getAnnotations()) {
-                    if (predicate.apply(annotation)) {
-                        return true;
-                    }
-                }
-            }
-            for (AnnotatedConstructor<?> constructor : annotatedType.getConstructors()) {
-                for (Annotation annotation : constructor.getAnnotations()) {
-                    if (predicate.apply(annotation)) {
-                        return true;
-                    }
-                }
-                for (AnnotatedParameter<?> parameter : constructor.getParameters()) {
-                    for (Annotation annotation : parameter.getAnnotations()) {
-                        if (predicate.apply(annotation)) {
-                            return true;
-                        }
-                    }
-                }
-            }
-            for (AnnotatedMethod<?> method : annotatedType.getMethods()) {
-                for (Annotation annotation : method.getAnnotations()) {
-                    if (predicate.apply(annotation)) {
-                        return true;
-                    }
-                }
-                for (AnnotatedParameter<?> parameter : method.getParameters()) {
-                    for (Annotation annotation : parameter.getAnnotations()) {
-                        if (predicate.apply(annotation)) {
-                            return true;
-                        }
-                    }
-                }
-            }
-            return false;
-        }
-
-        protected boolean containsAnnotation(BackedAnnotatedType<?> annotatedType, Collection<Class<? extends Annotation>> requiredAnnotations) {
-            for (Class<? extends Annotation> requiredAnnotation : requiredAnnotations) {
-                if (discovery.containsAnnotation(annotatedType.getJavaClass(), requiredAnnotation)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-    }
-
-    private class ExtendedAnnotationDiscoveryAdapter extends BasicAnnotationDiscoveryAdapter {
-
-        private final ExtendedAnnotationDiscovery discovery;
-
-        public ExtendedAnnotationDiscoveryAdapter(ExtendedAnnotationDiscovery discovery) {
-            this.discovery = discovery;
-        }
-
-        @Override
-        protected boolean containsAnnotation(UnbackedAnnotatedType<?> annotatedType, Collection<Class<? extends Annotation>> requiredAnnotations) {
-            /*
-             * first, use ExtendedAnnotationDiscovery.getAnnotationsAnnotatedWith() to build a set of required annotations and
-             * annotations annotated with required annotations
-             */
-            final Set<String> annotationTypeNames = new HashSet<String>();
-            for (Class<? extends Annotation> requiredAnnotation : requiredAnnotations) {
-                annotationTypeNames.add(requiredAnnotation.getName());
-                annotationTypeNames.addAll(discovery.getAnnotationsAnnotatedWith(requiredAnnotation));
-            }
-
-            Predicate<Annotation> predicate = new Predicate<Annotation>() {
-                @Override
-                public boolean apply(Annotation annotation) {
-                    return annotationTypeNames.contains(annotation.annotationType().getName());
-                }
-            };
-
-            return apply(annotatedType, predicate);
-        }
     }
 }

@@ -82,6 +82,10 @@ public class GlobalObserverNotifierService implements BootstrapService {
         return globalStrictObserverNotifier;
     }
 
+    public Iterable<ObserverMethod<?>> getAllObserverMethods() {
+        return createGlobalObserverMethodIterable(beanManagers);
+    }
+
     @Override
     public void cleanupAfterBoot() {
         this.globalStrictObserverNotifier.clear();

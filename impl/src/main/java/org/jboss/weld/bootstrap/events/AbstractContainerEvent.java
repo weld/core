@@ -19,25 +19,16 @@ package org.jboss.weld.bootstrap.events;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import javax.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.reflection.ParameterizedTypeImpl;
 
-public abstract class AbstractContainerEvent {
+public abstract class AbstractContainerEvent implements ContainerEvent {
 
     private final List<Throwable> errors;
     private final BeanManagerImpl beanManager;
     private final Type[] actualTypeArguments;
     private final Type rawType;
-
-    /*
-     * The receiver object and the observer method being used for event dispatch at a given time. This information is required
-     * for implementing ProcessSyntheticAnnotatedType and ProcessModule properly. The information must be set by an
-     * ObserverMethod implementation before invoking the target observer method and unset once the notification is complete.
-     */
-    private Object receiver;
-    private ObserverMethod<?> observerMethod;
 
     protected AbstractContainerEvent(BeanManagerImpl beanManager, Type rawType, Type[] actualTypeArguments) {
         this.errors = new ArrayList<Throwable>();
@@ -72,21 +63,5 @@ public abstract class AbstractContainerEvent {
 
     protected Type[] getActualTypeArguments() {
         return actualTypeArguments;
-    }
-
-    public Object getReceiver() {
-        return receiver;
-    }
-
-    public void setReceiver(Object receiver) {
-        this.receiver = receiver;
-    }
-
-    public ObserverMethod<?> getObserverMethod() {
-        return observerMethod;
-    }
-
-    public void setObserverMethod(ObserverMethod<?> observerMethod) {
-        this.observerMethod = observerMethod;
     }
 }

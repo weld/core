@@ -53,10 +53,10 @@ public class TypeSafeObserverResolver extends TypeSafeResolver<Resolvable, Obser
         }
         if (observer instanceof ExtensionObserverMethodImpl<?, ?>) {
             ExtensionObserverMethodImpl<?, ?> extensionObserver = (ExtensionObserverMethodImpl<?, ?>) observer;
-            if (resolvable instanceof ProcessAnnotatedTypeEventResolvable && !extensionObserver.getRequiredTypeAnnotations().isEmpty()) {
+            if (resolvable instanceof ProcessAnnotatedTypeEventResolvable && !extensionObserver.getRequiredAnnotations().isEmpty()) {
                 // this is a ProcessAnnotatedType observer method with @WithAnnotations and a resolvable for ProcessAnnotatedType
                 ProcessAnnotatedTypeEventResolvable patResolvable = (ProcessAnnotatedTypeEventResolvable) resolvable;
-                return patResolvable.containsRequiredAnnotations(extensionObserver.getRequiredTypeAnnotations());
+                return patResolvable.containsRequiredAnnotations(extensionObserver.getRequiredAnnotations());
             }
         } else {
             return !isContainerLifecycleEvent(resolvable); // container lifecycle events are only delivered to extensions

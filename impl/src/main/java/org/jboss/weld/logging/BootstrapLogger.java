@@ -18,6 +18,8 @@ package org.jboss.weld.logging;
 
 import static org.jboss.weld.logging.WeldLogger.WELD_PROJECT_CODE;
 
+import javax.enterprise.inject.spi.ObserverMethod;
+
 import org.jboss.logging.Logger;
 import org.jboss.logging.Logger.Level;
 import org.jboss.logging.annotations.Cause;
@@ -25,6 +27,7 @@ import org.jboss.logging.annotations.LogMessage;
 import org.jboss.logging.annotations.Message;
 import org.jboss.logging.annotations.Message.Format;
 import org.jboss.logging.annotations.MessageLogger;
+import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.IllegalArgumentException;
@@ -196,5 +199,25 @@ public interface BootstrapLogger extends WeldLogger {
 
     @Message(id = 140, value = "Calling Bootstrap method after container has already been initialized. For correct order, see CDI11Bootstrap's documentation.")
     IllegalStateException callingBootstrapMethodAfterContainerHasBeenInitialized();
+
+    @LogMessage(level = Logger.Level.INFO)
+    @Message(id = 141, value = "Falling back to the default observer method resolver due to {0}", format = Format.MESSAGE_FORMAT)
+    void notUsingFastResolver(ObserverMethod<?> observer);
+
+    @LogMessage(level = Logger.Level.WARN)
+    @Message(id = 142, value = "Exception loading annotated type using ClassFileServices. Falling back to the default implementation. {0}", format = Format.MESSAGE_FORMAT)
+    void exceptionLoadingAnnotatedType(String message);
+
+    @LogMessage(level = Logger.Level.TRACE)
+    @Message(id = Message.NONE , value = "No PAT observers resolved for {0}. Skipping.", format = Format.MESSAGE_FORMAT)
+    void patSkipped(SlimAnnotatedType<?> type);
+
+    @LogMessage(level = Logger.Level.TRACE)
+    @Message(id = Message.NONE , value = "Sending PAT using the default event resolver: {0}", format = Format.MESSAGE_FORMAT)
+    void patDefaultResolver(SlimAnnotatedType<?> type);
+
+    @LogMessage(level = Logger.Level.TRACE)
+    @Message(id = Message.NONE , value = "Sending PAT using the fast event resolver: {0}", format = Format.MESSAGE_FORMAT)
+    void patFastResolver(SlimAnnotatedType<?> type);
 
 }

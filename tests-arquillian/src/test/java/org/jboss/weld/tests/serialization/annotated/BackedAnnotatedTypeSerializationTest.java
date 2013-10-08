@@ -18,6 +18,8 @@ package org.jboss.weld.tests.serialization.annotated;
 
 import static org.junit.Assert.assertEquals;
 
+import java.lang.reflect.Modifier;
+
 import javax.enterprise.inject.spi.AnnotatedConstructor;
 import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.AnnotatedMethod;
@@ -31,7 +33,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -78,6 +79,9 @@ public class BackedAnnotatedTypeSerializationTest {
     @Test
     public void testConstructors() throws Exception {
         for (AnnotatedConstructor<?> constructor : getAnnotatedType().getConstructors()) {
+            if (!Modifier.isPublic(constructor.getJavaMember().getModifiers())) {
+                continue;
+            }
             AnnotatedConstructor<?> deserialized = Utils.deserialize(Utils.serialize(constructor));
             assertEquals(2, deserialized.getParameters().size());
         }

@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2012, Red Hat, Inc., and individual contributors
+ * Copyright 2013, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,19 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.serialization.annotated;
+package org.jboss.weld.bootstrap.events;
 
-import javax.enterprise.inject.spi.AnnotatedType;
-
-import org.jboss.arquillian.junit.Arquillian;
-import org.junit.runner.RunWith;
-
-@RunWith(Arquillian.class)
-public class UnbackedAnnotatedTypeSerializationTest extends BackedAnnotatedTypeSerializationTest {
-
-    @Override
-    public AnnotatedType<Foo> getAnnotatedType() {
-        return extension.getUnbackedAnnotatedType();
-    }
-
+/**
+ * Marker for lifecycle events dispatched by the Weld container.
+ *
+ * @author Jozef Hartinger
+ *
+ */
+public interface ContainerEvent {
 }

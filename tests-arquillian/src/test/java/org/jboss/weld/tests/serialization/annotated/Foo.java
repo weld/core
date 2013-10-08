@@ -23,6 +23,9 @@ public class Foo {
     @SuppressWarnings("unused")
     private int field;
 
+    protected Foo() {
+    }
+
     public Foo(@FooAnnotation int a, String b) {
     }
 
