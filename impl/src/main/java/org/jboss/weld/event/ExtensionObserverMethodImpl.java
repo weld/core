@@ -17,6 +17,7 @@
 package org.jboss.weld.event;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
@@ -71,10 +72,15 @@ public class ExtensionObserverMethodImpl<T, X> extends ObserverMethodImpl<T, X> 
 
     @Override
     protected void checkRequiredTypeAnnotations(EnhancedAnnotatedParameter<?, ?> eventParameter) {
-        if (!requiredTypeAnnotations.isEmpty()) {
-            Class<?> rawObserverType = Reflections.getRawType(getObservedType());
-            if (!rawObserverType.equals(ProcessAnnotatedType.class) && !rawObserverType.equals(ProcessSyntheticAnnotatedType.class)) {
-                throw EventLogger.LOG.invalidWithAnnotations(this);
+        Class<?> rawObserverType = Reflections.getRawType(getObservedType());
+        boolean isProcessAnnotatedType = rawObserverType.equals(ProcessAnnotatedType.class) || rawObserverType.equals(ProcessSyntheticAnnotatedType.class);
+        if (!isProcessAnnotatedType && !requiredTypeAnnotations.isEmpty()) {
+            throw EventLogger.LOG.invalidWithAnnotations(this);
+        }
+        if (isProcessAnnotatedType && requiredTypeAnnotations.isEmpty()) {
+            Type[] typeArguments = eventParameter.getActualTypeArguments();
+            if (typeArguments.length == 0 || Reflections.isUnboundedWildcard(typeArguments[0])) {
+                EventLogger.LOG.unrestrictedProcessAnnotatedTypes(this);
             }
         }
     }
