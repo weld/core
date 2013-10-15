@@ -18,7 +18,8 @@ package org.jboss.weld.tests.interceptors.aroundConstruct.basic;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+
+import java.util.List;
 
 import javax.enterprise.inject.Instance;
 
@@ -29,6 +30,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.weld.test.util.ActionSequence;
 import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,35 +42,34 @@ public class AroundConstructTest {
     public static Archive<?> getDeployment() {
         return ShrinkWrap.create(BeanArchive.class)
                 .intercept(AlphaInterceptor.class, BravoInterceptor.class, CharlieInterceptor1.class, CharlieInterceptor2.class)
-                .addPackage(AroundConstructTest.class.getPackage()).addClass(Utils.class);
+                .addPackage(AroundConstructTest.class.getPackage()).addClasses(ActionSequence.class, Utils.class);
     }
 
     @Test
     public void testInterceptorInvocation(Instance<Alpha> instance) {
-        AlphaInterceptor.reset();
+        ActionSequence.reset();
         instance.get();
-        assertTrue(AlphaInterceptor.isInvoked());
+        assertSequenceEquals(AlphaInterceptor.class);
     }
 
     @Test
     public void testReplacingParameters(Instance<Bravo> instance) {
-        BravoInterceptor.reset();
+        ActionSequence.reset();
         Bravo bravo = instance.get();
         assertNotNull(bravo.getParameter());
         assertEquals(BravoInterceptor.NEW_PARAMETER_VALUE, bravo.getParameter().getValue());
-        assertTrue(BravoInterceptor.isInvoked());
+        assertSequenceEquals(BravoInterceptor.class);
     }
 
     @Test
     public void testExceptions(Instance<Charlie> instance) {
-        CharlieInterceptor1.reset();
-        CharlieInterceptor2.reset();
+        ActionSequence.reset();
         try {
             instance.get();
             Assert.fail();
         } catch (CharlieException e) {
-            assertTrue(CharlieInterceptor1.isInvoked());
-            assertTrue(CharlieInterceptor2.isInvoked());
+            // reverse order because interceptors are stored in the ActionSequence after ctx.proceed returns
+            assertSequenceEquals(CharlieInterceptor2.class, CharlieInterceptor1.class);
         } catch (Throwable e) {
             Assert.fail();
         }
@@ -77,5 +78,13 @@ public class AroundConstructTest {
     @Test
     public void testSerialization(Instance<Alpha> instance) throws Exception {
         Utils.deserialize(Utils.serialize(instance.get()));
+    }
+
+    private void assertSequenceEquals(Class<?>... expected) {
+        List<String> data = ActionSequence.getSequence().getData();
+        assertEquals(expected.length, data.size());
+        for (int i = 0; i < expected.length; i++) {
+            assertEquals(expected[i].getSimpleName(), data.get(i));
+        }
     }
 }
