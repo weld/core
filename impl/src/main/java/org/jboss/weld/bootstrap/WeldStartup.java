@@ -215,29 +215,13 @@ public class WeldStartup {
 
         this.deployment = deployment;
         addImplementationServices(registry);
-
-        ServiceRegistry deploymentServices = new SimpleServiceRegistry();
-        deploymentServices.add(ClassTransformer.class, registry.get(ClassTransformer.class));
-        deploymentServices.add(SlimAnnotatedTypeStore.class, registry.get(SlimAnnotatedTypeStore.class));
-        deploymentServices.add(MetaAnnotationStore.class, registry.get(MetaAnnotationStore.class));
-        deploymentServices.add(TypeStore.class, registry.get(TypeStore.class));
-        deploymentServices.add(ContextualStore.class, registry.get(ContextualStore.class));
-        deploymentServices.add(CurrentInjectionPoint.class, registry.get(CurrentInjectionPoint.class));
-        deploymentServices.add(GlobalObserverNotifierService.class, registry.get(GlobalObserverNotifierService.class));
-        deploymentServices.add(ContainerLifecycleEvents.class, registry.get(ContainerLifecycleEvents.class));
-        deploymentServices.add(SpecializationAndEnablementRegistry.class, registry.get(SpecializationAndEnablementRegistry.class));
-        deploymentServices.add(ReflectionCache.class, registry.get(ReflectionCache.class));
-        deploymentServices.add(GlobalEnablementBuilder.class, registry.get(GlobalEnablementBuilder.class));
-        deploymentServices.add(HttpContextActivationFilter.class, registry.get(HttpContextActivationFilter.class));
-        deploymentServices.add(MissingDependenciesRegistry.class, registry.get(MissingDependenciesRegistry.class));
-
         this.environment = environment;
-        this.deploymentManager = BeanManagerImpl.newRootManager(contextId, "deployment", deploymentServices);
+        this.deploymentManager = BeanManagerImpl.newRootManager(contextId, "deployment", registry);
 
         Container.initialize(contextId, deploymentManager, ServiceRegistries.unmodifiableServiceRegistry(deployment.getServices()));
         getContainer().setState(ContainerState.STARTING);
 
-        this.contexts = createContexts(deploymentServices);
+        this.contexts = createContexts(registry);
 
         this.bdaMapping = new BeanDeploymentArchiveMapping();
         this.deploymentVisitor = new DeploymentVisitor(deploymentManager, environment, deployment, contexts, bdaMapping);
