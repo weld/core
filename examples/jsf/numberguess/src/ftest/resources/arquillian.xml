@@ -38,7 +38,7 @@
         </configuration>
     </container>
     
-    <container qualifier="jetty-embedded-6.1">
+    <container qualifier="jetty-embedded-7">
     </container>
 
     <group qualifier="wildfly-cluster-8">
