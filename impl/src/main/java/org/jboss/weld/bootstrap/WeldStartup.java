@@ -198,21 +198,6 @@ public class WeldStartup {
             BootstrapLogger.LOG.jtaUnavailable();
         }
 
-        // TODO Reinstate if we can find a good way to detect.
-        // if (!deployment.getServices().contains(EjbServices.class))
-        // {
-        // log.info("EJB services not available. Session beans will be simple beans, CDI-style injection into non-contextual EJBs, injection of remote EJBs and injection of @EJB in simple beans will not be available");
-        // }
-        // if (!deployment.getServices().contains(JpaInjectionServices.class))
-        // {
-        // log.info("JPA services not available. Injection of @PersistenceContext will not occur. Entity beans will be discovered as simple beans.");
-        // }
-        // if
-        // (!deployment.getServices().contains(ResourceInjectionServices.class))
-        // {
-        // log.info("@Resource injection not available.");
-        // }
-
         this.deployment = deployment;
         addImplementationServices(registry);
         this.environment = environment;
@@ -257,12 +242,9 @@ public class WeldStartup {
     }
 
     private void addImplementationServices(ServiceRegistry services) {
-        // Temporary workaround to provide context for building annotated class
-        // TODO expose AnnotatedClass on SPI and allow container to provide impl
-        // of this via ResourceLoader
         services.add(SlimAnnotatedTypeStore.class, new SlimAnnotatedTypeStoreImpl());
         if (services.get(ClassTransformer.class) == null) {
-            throw new RuntimeException();
+            throw new IllegalStateException(ClassTransformer.class.getSimpleName() + " not installed.");
         }
         services.add(MemberTransformer.class, new MemberTransformer(services.get(ClassTransformer.class)));
         services.add(MetaAnnotationStore.class, new MetaAnnotationStore(services.get(ClassTransformer.class)));
