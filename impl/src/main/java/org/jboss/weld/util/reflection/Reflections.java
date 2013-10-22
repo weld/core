@@ -369,6 +369,14 @@ public class Reflections {
         return false;
     }
 
+    public static boolean isUnboundedTypeVariable(Type type) {
+        if (type instanceof TypeVariable<?>) {
+            TypeVariable<?> typeVariable = (TypeVariable<?>) type;
+            return isEmptyBoundArray(typeVariable.getBounds());
+        }
+        return false;
+    }
+
     private static boolean isEmptyBoundArray(Type[] bounds) {
         return bounds == null || bounds.length == 0 || (bounds.length == 1 && Object.class.equals(bounds[0]));
     }
