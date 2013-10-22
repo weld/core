@@ -72,5 +72,5 @@ The `jsf/numberguess` and `jsf/permalink` examples can be also tested with Tomca
 
 The following command will execute functional tests with embedded Jetty container:
 
-    mvn -Pjetty -Darquillian=jetty-embedded-6.1 clean verify
+    mvn -Pjetty -Darquillian=jetty-embedded-7 clean verify
 
