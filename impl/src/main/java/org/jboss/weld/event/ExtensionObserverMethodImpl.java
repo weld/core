@@ -79,7 +79,7 @@ public class ExtensionObserverMethodImpl<T, X> extends ObserverMethodImpl<T, X> 
         }
         if (isProcessAnnotatedType && requiredTypeAnnotations.isEmpty()) {
             Type[] typeArguments = eventParameter.getActualTypeArguments();
-            if (typeArguments.length == 0 || Reflections.isUnboundedWildcard(typeArguments[0])) {
+            if (typeArguments.length == 0 || Reflections.isUnboundedWildcard(typeArguments[0]) || Reflections.isUnboundedTypeVariable(typeArguments[0])) {
                 EventLogger.LOG.unrestrictedProcessAnnotatedTypes(this);
             }
         }
