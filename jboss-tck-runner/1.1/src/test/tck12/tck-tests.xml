@@ -24,12 +24,6 @@
         <classes>
 
             <!-- Issues in the TCK -->
-            <!-- CDITCK-372 -->
-            <class name="org.jboss.cdi.tck.tests.lookup.typesafe.resolution.ResolutionByTypeTest">
-                <methods>
-                    <exclude name="testResolveByTypeWithPrimitives"/>
-                </methods>
-            </class>
 
             <!-- Issues in Weld (the RI) -->
 
