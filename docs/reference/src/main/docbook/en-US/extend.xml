@@ -518,10 +518,27 @@ public class QualifiedNameExtension implements Extension {
 
     <X> void processAnnotatedType(@Observes ProcessAnnotatedType<X> pat) {
 
-        //wrap this to override the annotations of the class
+        // wrap this to override the annotations of the class
         final AnnotatedType<X> at = pat.getAnnotatedType();
-        
         AnnotatedType<X> wrapped = new AnnotatedType<X>() {
+            
+            class NamedLiteral extends AnnotationLiteral<Named>
+            implements Named {
+                @Override
+                public String value() {
+                    Package pkg = at.getClass().getPackage();
+                    String unqualifiedName = at.getAnnotation(Named.class).value();
+                    final String qualifiedName;
+                    if (pkg.isAnnotationPresent(Named.class)) {
+                        qualifiedName = pkg.getAnnotation(Named.class).value() + '.' + unqualifiedName;
+                    } else {
+                        qualifiedName = unqualifiedName;
+                    }
+                    return qualifiedName;
+                }
+            }
+            
+            private final NamedLiteral namedLiteral = new NamedLiteral();
 
             @Override
             public Set<AnnotatedConstructor<X>> getConstructors() {
@@ -545,26 +562,8 @@ public class QualifiedNameExtension implements Extension {
 
             @Override
             public <T extends Annotation> T getAnnotation(final Class<T> annType) {
-                if ( Named.class.equals(annType) ) {
-                    class NamedLiteral 
-                            extends AnnotationLiteral<Named> 
-                            implements Named {
-                        @Override
-                        public String value() {
-                            Package pkg = at.getClass().getPackage();
-                            String unqualifiedName = at.getAnnotation(Named.class).value();
-                            final String qualifiedName;
-                            if ( pkg.isAnnotationPresent(Named.class) ) {
-                                qualifiedName = pkg.getAnnotation(Named.class).value() 
-                                      + '.' + unqualifiedName;
-                            }
-                            else {
-                                qualifiedName = unqualifiedName;
-                            }
-                            return qualifiedName;
-                        }
-                    }
-                    return (T) new NamedLiteral();
+                if (Named.class.equals(annType)) {
+                    return (T) namedLiteral;
                 }
                 else {
                     return at.getAnnotation(annType);
@@ -573,7 +572,8 @@ public class QualifiedNameExtension implements Extension {
 
             @Override
             public Set<Annotation> getAnnotations() {
-                return at.getAnnotations();
+                Set<Annotation> annotations = new HashSet<Annotation>(at.getAnnotations());
+                return annotations;
             }
 
             @Override
@@ -588,14 +588,17 @@ public class QualifiedNameExtension implements Extension {
 
             @Override
             public boolean isAnnotationPresent(Class<? extends Annotation> annType) {
+                if (Named.class.equals(annType)) {
+                    return true;
+                }
                 return at.isAnnotationPresent(annType);
             }
-            
+
         };
-        
+
         pat.setAnnotatedType(wrapped);
     }
-    
+
 }]]></programlisting>
 
       <para>
