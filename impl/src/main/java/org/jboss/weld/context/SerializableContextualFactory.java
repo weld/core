@@ -19,12 +19,15 @@ package org.jboss.weld.context;
 import java.io.Serializable;
 
 import javax.enterprise.context.spi.Contextual;
+import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.PassivationCapable;
 
 import org.jboss.weld.Container;
+import org.jboss.weld.bean.ForwardingBean;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
+import org.jboss.weld.util.reflection.Reflections;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
@@ -32,7 +35,7 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
  * Produces wrappers for {@link Contextual}s which are serializable.
  *
  * @author Jozef Hartinger
- *
+ * @author Martin Kouba
  */
 public class SerializableContextualFactory {
 
@@ -41,24 +44,28 @@ public class SerializableContextualFactory {
 
     @java.lang.SuppressWarnings({ "rawtypes", "unchecked" })
     public static <C extends Contextual<I>, I> SerializableContextual<C, I> create(String contextId, C contextual, ContextualStore contextualStore) {
-        if (contextual instanceof PassivationCapable) {
-            return new PassivationCapableSerializableContextual(contextId, contextual, contextualStore);
+        if (contextual instanceof Bean) {
+            if (contextual instanceof PassivationCapable) {
+                return new PassivationCapableSerializableBean(contextId, Reflections.<Bean> cast(contextual), contextualStore);
+            } else {
+                return new DefaultSerializableBean(contextId, Reflections.<Bean> cast(contextual), contextualStore);
+            }
         } else {
-            return new DefaultSerializableContextual<C, I>(contextId, contextual, contextualStore);
+            if (contextual instanceof PassivationCapable) {
+                return new PassivationCapableSerializableContextual(contextId, contextual, contextualStore);
+            } else {
+                return new DefaultSerializableContextual<C, I>(contextId, contextual, contextualStore);
+            }
         }
     }
 
-    private abstract static class AbstractSerializableContextual<C extends Contextual<I>, I> extends ForwardingContextual<I> implements SerializableContextual<C, I> {
+    private static final class SerializableContextualHolder<C extends Contextual<I>, I> implements Serializable {
 
-        private static final long serialVersionUID = 107855630671709443L;
-
-        @Override
-        protected Contextual<I> delegate() {
-            return get();
-        }
+        private static final long serialVersionUID = 46941665668478370L;
 
         // A directly serializable contextual
         private C serializable;
+
         @SuppressWarnings(value = "SE_TRANSIENT_FIELD_NOT_RESTORED", justification = "A cache which is lazily loaded")
         // A cached, transient version of the contextual
         private transient C cached;
@@ -70,7 +77,7 @@ public class SerializableContextualFactory {
 
         private transient ContextualStore cachedContextualStore;
 
-        public AbstractSerializableContextual(String contextId, C contextual, ContextualStore contextualStore) {
+        public SerializableContextualHolder(String contextId, C contextual, ContextualStore contextualStore) {
             this.contextId = contextId;
             this.cachedContextualStore = contextualStore;
             if (contextual instanceof Serializable) {
@@ -88,14 +95,14 @@ public class SerializableContextualFactory {
             return contextualStore.putIfAbsent(contextual);
         }
 
-        private ContextualStore getContextualStore() {
+        protected ContextualStore getContextualStore() {
             if (cachedContextualStore == null) {
                 this.cachedContextualStore = Container.instance(contextId).services().get(ContextualStore.class);
             }
             return this.cachedContextualStore;
         }
 
-        public C get() {
+        protected C get() {
             if (cached == null) {
                 loadContextual();
             }
@@ -111,6 +118,65 @@ public class SerializableContextualFactory {
             if (this.cached == null) {
                 throw new IllegalStateException("Error restoring serialized contextual with id " + id);
             }
+        }
+
+    }
+
+    private abstract static class AbstractSerializableBean<B extends Bean<I>, I> extends ForwardingBean<I> implements SerializableContextual<B, I> {
+
+        private static final long serialVersionUID = 7594992948498685840L;
+
+        private final SerializableContextualHolder<B, I> holder;
+
+        AbstractSerializableBean(String contextId, B bean, ContextualStore contextualStore) {
+            this.holder = new SerializableContextualHolder<B, I>(contextId, bean, contextualStore);
+        }
+
+        @Override
+        public B get() {
+            return holder.get();
+        }
+
+        @Override
+        protected Bean<I> delegate() {
+            return get();
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            // if the arriving object is also a AbstractSerializableBean, then unwrap it
+            if (obj instanceof AbstractSerializableBean<?, ?>) {
+                return delegate().equals(((AbstractSerializableBean<?, ?>) obj).get());
+            } else {
+                return delegate().equals(obj);
+            }
+        }
+
+        @Override
+        public int hashCode() {
+            return delegate().hashCode();
+        }
+
+    }
+
+    private abstract static class AbstractSerializableContextual<C extends Contextual<I>, I> extends ForwardingContextual<I> implements
+            SerializableContextual<C, I> {
+
+        private static final long serialVersionUID = 107855630671709443L;
+
+        private final SerializableContextualHolder<C, I> holder;
+
+        AbstractSerializableContextual(String contextId, C contextual, ContextualStore contextualStore) {
+            this.holder = new SerializableContextualHolder<C, I>(contextId, contextual, contextualStore);
+        }
+
+        @Override
+        protected Contextual<I> delegate() {
+            return get();
+        }
+
+        public C get() {
+            return holder.get();
         }
 
         @Override
@@ -140,12 +206,37 @@ public class SerializableContextualFactory {
     }
 
     // every Contextual with passivating scope should implement PassivationCapable
-    private static class PassivationCapableSerializableContextual<C extends Contextual<I> & PassivationCapable, I> extends AbstractSerializableContextual<C, I> implements PassivationCapable {
+    private static class PassivationCapableSerializableContextual<C extends Contextual<I> & PassivationCapable, I> extends AbstractSerializableContextual<C, I>
+            implements PassivationCapable {
 
         private static final long serialVersionUID = -2753893863961869301L;
 
         public PassivationCapableSerializableContextual(String contextId, C contextual, ContextualStore contextualStore) {
             super(contextId, contextual, contextualStore);
+        }
+
+        @Override
+        public String getId() {
+            return get().getId();
+        }
+    }
+
+    private static class DefaultSerializableBean<B extends Bean<I>, I> extends AbstractSerializableBean<B, I> {
+
+        private static final long serialVersionUID = -8901252027789701049L;
+
+        public DefaultSerializableBean(String contextId, B bean, ContextualStore contextualStore) {
+            super(contextId, bean, contextualStore);
+        }
+    }
+
+    private static class PassivationCapableSerializableBean<B extends Bean<I> & PassivationCapable, I> extends AbstractSerializableBean<B, I> implements
+            PassivationCapable {
+
+        private static final long serialVersionUID = 7458443513156329183L;
+
+        public PassivationCapableSerializableBean(String contextId, B bean, ContextualStore contextualStore) {
+            super(contextId, bean, contextualStore);
         }
 
         @Override
