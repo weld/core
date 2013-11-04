@@ -27,6 +27,7 @@ import java.util.Map;
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Bean;
 
 public class ClusterContext implements Context {
 
@@ -43,6 +44,10 @@ public class ClusterContext implements Context {
     public <T> T get(Contextual<T> contextual, CreationalContext<T> ctx) {
         called = true;
         assertTrue(contextual instanceof Serializable);
+
+        // WELD-1537
+        assertTrue(contextual instanceof Bean);
+
         if (ctx != null) {
             assertTrue(ctx instanceof Serializable);
         }
