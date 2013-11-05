@@ -33,6 +33,7 @@ import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.tests.category.Integration;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -46,6 +47,7 @@ import com.gargoylesoftware.htmlunit.util.Cookie;
  *
  * @author Martin Kouba
  */
+@Ignore("WFLY-1533")
 @RunAsClient
 @Category(Integration.class)
 @RunWith(Arquillian.class)
