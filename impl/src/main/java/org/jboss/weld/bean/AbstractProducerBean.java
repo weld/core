@@ -188,6 +188,9 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
     public void destroy(T instance, CreationalContext<T> creationalContext) {
         try {
             getProducer().dispose(instance);
+        } catch (Exception e) {
+            BeanLogger.LOG.errorDestroying(instance, this);
+            BeanLogger.LOG.catchingDebug(e);
         } finally {
             if (getDeclaringBean().isDependent()) {
                 creationalContext.release();
