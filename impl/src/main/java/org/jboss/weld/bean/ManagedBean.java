@@ -184,7 +184,7 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
                 creationalContext.release();
             }
         } catch (Exception e) {
-            BeanLogger.LOG.errorDestroying(this, instance);
+            BeanLogger.LOG.errorDestroying(instance, this);
             BeanLogger.LOG.catchingDebug(e);
         }
     }
