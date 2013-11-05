@@ -560,7 +560,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         boolean registerInjectionPoint = isRegisterableInjectionPoint(injectionPoint);
         CurrentInjectionPoint currentInjectionPoint = null;
         if (registerInjectionPoint) {
-            currentInjectionPoint = Container.instance(contextId).services().get(CurrentInjectionPoint.class);
+            currentInjectionPoint = services.get(CurrentInjectionPoint.class);
             currentInjectionPoint.push(injectionPoint);
         }
         try {
@@ -769,7 +769,6 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         boolean registerInjectionPoint = isRegisterableInjectionPoint(injectionPoint);
         boolean delegateInjectionPoint = injectionPoint != null && injectionPoint.isDelegate();
 
-        final ServiceRegistry services = Container.instance(contextId).services();
         CurrentInjectionPoint currentInjectionPoint = null;
         if (registerInjectionPoint) {
             currentInjectionPoint = services.get(CurrentInjectionPoint.class);
