@@ -156,7 +156,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
 
     @Override
     public boolean dissociate(R request) {
-        if (isAssociated() && this.associated.get() != null) {
+        if (isAssociated()) {
             try {
                 copyConversationIdGeneratorAndConversationsToSession(request);
                 this.associated.set(null);

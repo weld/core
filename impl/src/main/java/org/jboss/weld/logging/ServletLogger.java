@@ -18,6 +18,9 @@ package org.jboss.weld.logging;
 
 import static org.jboss.weld.logging.WeldLogger.WELD_PROJECT_CODE;
 
+import javax.enterprise.context.spi.Context;
+import javax.servlet.http.HttpServletRequest;
+
 import org.jboss.logging.Logger;
 import org.jboss.logging.Logger.Level;
 import org.jboss.logging.annotations.Cause;
@@ -103,5 +106,9 @@ public interface ServletLogger extends WeldLogger {
     @LogMessage(level = Level.WARN)
     @Message(id = 711, value = "Context activation pattern {0} ignored as it is overriden by the integrator.", format = Format.MESSAGE_FORMAT)
     void webXmlMappingPatternIgnored(String pattern);
+
+    @LogMessage(level = Level.WARN)
+    @Message(id = 712, value = "Unable to dissociate context {0} when destroying request {1}", format = Format.MESSAGE_FORMAT)
+    void unableToDissociateContext(Context context, HttpServletRequest request);
 
 }
