@@ -28,6 +28,7 @@ import org.jboss.weld.event.FastEvent;
 import org.jboss.weld.literal.DestroyedLiteral;
 import org.jboss.weld.literal.InitializedLiteral;
 import org.jboss.weld.logging.ConversationLogger;
+import org.jboss.weld.logging.ServletLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
@@ -168,7 +169,12 @@ public class ConversationContextActivator {
     }
 
     protected void disassociateConversationContext(HttpServletRequest request) {
-        httpConversationContext().dissociate(request);
+        try {
+            httpConversationContext().dissociate(request);
+        } catch (Exception e) {
+            ServletLogger.LOG.unableToDissociateContext(httpConversationContext(), request);
+            ServletLogger.LOG.catchingDebug(e);
+        }
     }
 
     public void sessionCreated(HttpSession session) {

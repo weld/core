@@ -232,8 +232,17 @@ public class HttpContextLifecycle implements Service {
             }
         } finally {
             getRequestContext().dissociate(request);
-            getSessionContext().dissociate(request);
+
+            // WFLY-1533 Underlying HTTP session may be invalid
+            try {
+                getSessionContext().dissociate(request);
+            } catch (Exception e) {
+                ServletLogger.LOG.unableToDissociateContext(getSessionContext(), request);
+                ServletLogger.LOG.catchingDebug(e);
+            }
+            // Catch block is inside the activator method so that we're able to log the context
             conversationContextActivator.disassociateConversationContext(request);
+
             SessionHolder.clear();
             ServletContextBean.cleanup();
         }
