@@ -16,6 +16,16 @@
  */
 package org.jboss.weld.environment.servlet.deployment;
 
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.servlet.ServletContext;
+
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
@@ -24,15 +34,6 @@ import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.environment.servlet.util.Reflections;
 import org.jboss.weld.environment.servlet.util.Servlets;
-
-import javax.servlet.ServletContext;
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * The means by which Web Beans are discovered on the classpath. This will only
@@ -75,7 +76,7 @@ public class WebAppBeanDeploymentArchive implements BeanDeploymentArchive {
         } catch (MalformedURLException e) {
             throw new IllegalStateException("Error loading resources from servlet context ", e);
         }
-        this.beansXml = bootstrap.parse(urls);
+        this.beansXml = bootstrap.parse(urls, true);
     }
 
     protected URLScanner createScanner(ServletContext context) {
