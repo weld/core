@@ -194,4 +194,7 @@ public interface BootstrapLogger extends WeldLogger {
     @Message(id = 139, value = "Ignoring portable extension class {0} because of underlying class loading error: Type {1} not found. Enable DEBUG logging level to see the full error." , format = Format.MESSAGE_FORMAT)
     void ignoringExtensionClassDueToLoadingError(String className, String missingDependency);
 
+    @Message(id = 140, value = "Calling Bootstrap method after container has already been initialized. For correct order, see CDI11Bootstrap's documentation.")
+    IllegalStateException callingBootstrapMethodAfterContainerHasBeenInitialized();
+
 }

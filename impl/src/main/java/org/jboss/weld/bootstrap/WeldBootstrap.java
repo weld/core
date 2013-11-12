@@ -29,6 +29,7 @@ import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.bootstrap.spi.Metadata;
+import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.ServiceLoader;
 import org.jboss.weld.xml.BeansXmlParser;
@@ -68,23 +69,28 @@ public class WeldBootstrap implements CDI11Bootstrap {
     }
 
     public synchronized Bootstrap startInitialization() {
+        checkInitializationNotAlreadyEnded();
         weldStartup.startInitialization();
         return this;
     }
 
     public synchronized Bootstrap deployBeans() {
+        checkInitializationNotAlreadyEnded();
         weldStartup.deployBeans();
         return this;
     }
 
     public synchronized Bootstrap validateBeans() {
+        checkInitializationNotAlreadyEnded();
         weldStartup.validateBeans();
         return this;
     }
 
     public synchronized Bootstrap endInitialization() {
-        weldStartup.endInitialization();
-        weldStartup = null;
+        if (weldStartup != null) {
+            weldStartup.endInitialization();
+            weldStartup = null;
+        }
         return this;
     }
 
@@ -97,6 +103,7 @@ public class WeldBootstrap implements CDI11Bootstrap {
     public synchronized void shutdown() {
         if (weldRuntime != null) {
             weldRuntime.shutdown();
+            weldRuntime = null;
         }
     }
 
@@ -118,4 +125,9 @@ public class WeldBootstrap implements CDI11Bootstrap {
         return ServiceLoader.load(Extension.class, classLoader);
     }
 
+    private void checkInitializationNotAlreadyEnded() {
+        if (weldStartup == null) {
+            throw BootstrapLogger.LOG.callingBootstrapMethodAfterContainerHasBeenInitialized();
+        }
+    }
 }
