@@ -30,6 +30,12 @@
                     <exclude name="testResolveByTypeWithPrimitives"/>
                 </methods>
             </class>
+            <!-- CDITCK-375 -->
+            <class name="org.jboss.cdi.tck.tests.lookup.manager.provider.custom.CustomCDIProviderTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
 
             <!-- Issues in Weld (the RI) -->
 
