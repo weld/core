@@ -111,11 +111,10 @@ public class InjectionTargetFactoryImpl<T> implements WeldInjectionTargetFactory
             return new NonProducibleInjectionTarget<T>(type, bean, manager);
         }
         if (Beans.getBeanConstructor(type) == null) {
-            if (bean == null) {
-                BeanLogger.LOG.injectionTargetCreatedForClassWithoutAppropriateConstructor(type.getJavaClass());
-            } else {
+            if (bean != null) {
                 throw BeanLogger.LOG.injectionTargetCreatedForClassWithoutAppropriateConstructorException(type.getJavaClass());
             }
+            BeanLogger.LOG.injectionTargetCreatedForClassWithoutAppropriateConstructor(type.getJavaClass());
             return new NonProducibleInjectionTarget<T>(type, bean, manager);
         }
         if (bean instanceof SessionBean<?>) {
