@@ -495,7 +495,7 @@ public interface BeanLogger extends WeldLogger {
     @Message(id = 1518, value = "Cannot create Producer implementation. Declaring bean missing for a non-static member {0}", format = Format.MESSAGE_FORMAT)
     IllegalArgumentException declaringBeanMissing(Object param1);
 
-    @LogMessage(level = Level.WARN)
+    @LogMessage(level = Level.DEBUG)
     @Message(id = 1519, value = "An InjectionTarget is created for an abstract {0}. It will not be possible to produce instances of this type!", format = Format.MESSAGE_FORMAT)
     void injectionTargetCreatedForAbstractClass(Object param1);
 
@@ -530,8 +530,8 @@ public interface BeanLogger extends WeldLogger {
     @Message(id = 1528, value = "Unable to create a new instance of {0}", format = Format.MESSAGE_FORMAT)
     String cannotInstantiateAbstractClass(Object param1);
 
-    @LogMessage(level = Level.WARN)
-    @Message(id = 1529, value = "An InjectionTarget is created for a {0} which does not have any appropriate constructor.", format = Format.MESSAGE_FORMAT)
+    @LogMessage(level = Level.DEBUG)
+    @Message(id = 1529, value = "An InjectionTarget is created for a {0} which does not have any appropriate constructor. It will not be possible to produce instances of this type!", format = Format.MESSAGE_FORMAT)
     void injectionTargetCreatedForClassWithoutAppropriateConstructor(Object param1);
 
     @Message(id = 1530, value = "Cannot produce an instance of {0}.", format = Format.MESSAGE_FORMAT)
@@ -543,7 +543,7 @@ public interface BeanLogger extends WeldLogger {
     @Message(id = 1532, value = "A passivation capable bean cannot have a null id: {0}", format = Format.MESSAGE_FORMAT)
     IllegalArgumentException passivationCapableBeanHasNullId(Object param1);
 
-    @LogMessage(level = Level.WARN)
+    @LogMessage(level = Level.DEBUG)
     @Message(id = 1533, value = "An InjectionTarget is created for a non-static inner {0}. It will not be possible to produce instances of this type!", format = Format.MESSAGE_FORMAT)
     void injectionTargetCreatedForNonStaticInnerClass(Object param1);
 
