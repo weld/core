@@ -20,9 +20,6 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.ejb.SessionBeanInjectionPoint;
-import org.jboss.weld.exceptions.IllegalArgumentException;
-import org.jboss.weld.injection.CurrentInjectionPoint;
-import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.bean.SerializableForwardingInjectionPoint;
 
@@ -33,44 +30,28 @@ import org.jboss.weld.util.bean.SerializableForwardingInjectionPoint;
  */
 public class InjectionPointBean extends AbstractStaticallyDecorableBuiltInBean<InjectionPoint> {
 
-    private final CurrentInjectionPoint currentInjectionPointService;
-
     /**
      * Creates an InjectionPoint Web Bean for the injection of the containing bean owning
      * the field, constructor or method for the annotated item
      *
-     * @param <T>     must be InjectionPoint
-     * @param <S>
-     * @param field   The annotated member field/parameter for the injection
      * @param manager The RI manager implementation
      */
     public InjectionPointBean(BeanManagerImpl manager) {
         super(manager, InjectionPoint.class);
-        this.currentInjectionPointService = getBeanManager().getServices().get(CurrentInjectionPoint.class);
     }
 
+    @Override
     protected InjectionPoint newInstance(InjectionPoint ip, CreationalContext<InjectionPoint> creationalContext) {
-        InjectionPoint injectionPoint = currentInjectionPointService.peek();
-        if (injectionPoint instanceof SerializableForwardingInjectionPoint) {
-            return injectionPoint;
+        if (ip instanceof SerializableForwardingInjectionPoint || ip == null) {
+            return ip;
         }
-        injectionPoint = new SerializableForwardingInjectionPoint(getBeanManager().getContextId(), injectionPoint);
-        injectionPoint = SessionBeanInjectionPoint.wrapIfNecessary(injectionPoint);
-        return injectionPoint;
+        ip = new SerializableForwardingInjectionPoint(getBeanManager().getContextId(), ip);
+        ip = SessionBeanInjectionPoint.wrapIfNecessary(ip);
+        return ip;
     }
 
     public void destroy(InjectionPoint instance, CreationalContext<InjectionPoint> creationalContext) {
 
-    }
-
-
-    @Override
-    protected InjectionPoint getInjectionPoint(CurrentInjectionPoint cip) {
-        InjectionPoint ip = super.getInjectionPoint(cip);
-        if (ip == null) {
-            throw new IllegalArgumentException(BeanLogger.LOG.dynamicLookupOfBuiltInNotAllowed(toString()));
-        }
-        return ip;
     }
 
     @Override
