@@ -129,14 +129,7 @@ public class ProxyFactory<T> {
         this.bean = bean;
         this.contextId = contextId;
         this.proxiedBeanType = proxiedBeanType;
-        for (Type type : typeClosure) {
-            Class<?> c = Reflections.getRawType(type);
-            // Ignore no-interface views, they are dealt with proxiedBeanType
-            // (pending redesign)
-            if (c.isInterface()) {
-                addInterface(c);
-            }
-        }
+        addInterfacesFromTypeClosure(typeClosure, proxiedBeanType);
         TypeInfo typeInfo = TypeInfo.of(typeClosure);
         Class<?> superClass = typeInfo.getSuperClass();
         superClass = superClass == null ? Object.class : superClass;
@@ -145,6 +138,8 @@ public class ProxyFactory<T> {
             superClass = proxiedBeanType;
         }
         this.beanType = superClass;
+
+
         addDefaultAdditionalInterfaces();
         baseProxyName = proxyName;
         if (bean != null) {
@@ -214,6 +209,17 @@ public class ProxyFactory<T> {
 
 
         return proxyPackage + '.' + className;
+    }
+
+    public void addInterfacesFromTypeClosure(Set<? extends Type> typeClosure, Class<?> proxiedBeanType) {
+        for (Type type : typeClosure) {
+            Class<?> c = Reflections.getRawType(type);
+            // Ignore no-interface views, they are dealt with proxiedBeanType
+            // (pending redesign)
+            if (c.isInterface()) {
+                addInterface(c);
+            }
+        }
     }
 
     private static String createCompoundProxyName(String contextId, Bean<?> bean, TypeInfo typeInfo, StringBuilder name) {
