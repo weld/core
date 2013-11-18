@@ -19,7 +19,6 @@ package org.jboss.weld.resolution;
 import java.util.Set;
 
 import org.jboss.weld.bean.DisposalMethod;
-import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
 
 /**
@@ -27,12 +26,10 @@ import org.jboss.weld.util.Beans;
  */
 public class TypeSafeDisposerResolver extends TypeSafeResolver<Resolvable, DisposalMethod<?, ?>, Set<DisposalMethod<?, ?>>> {
 
-    private final BeanManagerImpl manager;
     private final AssignabilityRules rules;
 
-    public TypeSafeDisposerResolver(BeanManagerImpl manager, Iterable<DisposalMethod<?, ?>> disposers) {
+    public TypeSafeDisposerResolver(Iterable<DisposalMethod<?, ?>> disposers) {
         super(disposers);
-        this.manager = manager;
         this.rules = BeanTypeAssignabilityRules.instance();
     }
 
@@ -66,13 +63,6 @@ public class TypeSafeDisposerResolver extends TypeSafeResolver<Resolvable, Dispo
                 return 31 * super.hashCode() + getDeclaringBean().hashCode();
             }
         };
-    }
-
-    /**
-     * @return the manager
-     */
-    public BeanManagerImpl getManager() {
-        return manager;
     }
 
     @Override
