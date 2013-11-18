@@ -139,7 +139,7 @@ public class BeanDeployerEnvironment {
         this.decorators = decorators;
         this.interceptors = interceptors;
         this.ejbDescriptors = ejbDescriptors;
-        this.disposalMethodResolver = new TypeSafeDisposerResolver(manager, allDisposalBeans);
+        this.disposalMethodResolver = new TypeSafeDisposerResolver(allDisposalBeans);
         this.classTransformer = manager.getServices().get(ClassTransformer.class);
         this.newManagedBeanClasses = newManagedBeanClasses;
         this.newSessionBeanDescriptorsFromInjectionPoint = newSessionBeanDescriptorsFromInjectionPoint;
