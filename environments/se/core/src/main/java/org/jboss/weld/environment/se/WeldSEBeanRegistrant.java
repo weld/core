@@ -22,6 +22,7 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
 
+import org.jboss.weld.bootstrap.events.AbstractContainerEvent;
 import org.jboss.weld.environment.se.beans.InstanceManager;
 import org.jboss.weld.environment.se.beans.ParametersFactory;
 import org.jboss.weld.environment.se.contexts.ThreadContext;
@@ -37,6 +38,10 @@ public class WeldSEBeanRegistrant implements Extension {
     public static ThreadContext THREAD_CONTEXT = null;
 
     public void registerWeldSEBeans(@Observes BeforeBeanDiscovery event, BeanManager manager) {
+        if (ignoreEvent(event)) {
+            return;
+        }
+
         event.addAnnotatedType(manager.createAnnotatedType(ParametersFactory.class));
         event.addAnnotatedType(manager.createAnnotatedType(InstanceManager.class));
         event.addAnnotatedType(manager.createAnnotatedType(RunnableDecorator.class));
@@ -44,11 +49,23 @@ public class WeldSEBeanRegistrant implements Extension {
     }
 
     public void registerWeldSEContexts(@Observes AfterBeanDiscovery event) {
+        if (ignoreEvent(event)) {
+            return;
+        }
+
         // set up this thread's bean store
         final ThreadContext threadContext = new ThreadContext();
 
         // activate and add context
         event.addContext(threadContext);
         THREAD_CONTEXT = threadContext;
+    }
+
+    /**
+     * Returns <tt>true</tt> if the specified event is not an instance of {@link AbstractContainerEvent}, i.e. was thrown by
+     * other CDI implementation than Weld.
+     */
+    private static boolean ignoreEvent(Object event) {
+        return !(event instanceof AbstractContainerEvent);
     }
 }
