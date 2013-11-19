@@ -435,8 +435,8 @@ public interface BeanLogger extends WeldLogger {
     @Message(id = 99, value = "Cannot load class {0} during deserialization of proxy", format = Format.MESSAGE_FORMAT)
     WeldException cannotLoadClass(Object param1, @Cause Throwable cause);
 
-    @Message(id = 1500, value = "Failed to deserialize proxy object")
-    WeldException proxyDeserializationFailure();
+    @Message(id = 1500, value = "Failed to deserialize proxy object with beanId {0}", format = Format.MESSAGE_FORMAT)
+    WeldException proxyDeserializationFailure(Object param1);
 
     @Message(id = 1501, value = "Method call requires a BeanInstance which has not been set for this proxy {0}", format = Format.MESSAGE_FORMAT)
     WeldException beanInstanceNotSetOnProxy(Object param1);
