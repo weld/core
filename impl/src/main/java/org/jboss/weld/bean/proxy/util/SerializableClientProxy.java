@@ -17,19 +17,20 @@
 
 package org.jboss.weld.bean.proxy.util;
 
-import org.jboss.weld.Container;
-import org.jboss.weld.serialization.spi.ContextualStore;
-
-import javax.enterprise.inject.spi.Bean;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 
+import javax.enterprise.inject.spi.Bean;
+
+import org.jboss.weld.Container;
+import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.logging.messages.BeanMessage;
+import org.jboss.weld.serialization.spi.ContextualStore;
+
 /**
- * A wrapper mostly for client proxies which provides header information useful
- * to generate the client proxy class in a VM before the proxy object is
- * deserialized. Only client proxies really need this extra step for
- * serialization and deserialization since the other proxy classes are generated
- * during bean archive deployment.
+ * A wrapper mostly for client proxies which provides header information useful to generate the client proxy class in a VM before the proxy object is
+ * deserialized. Only client proxies really need this extra step for serialization and deserialization since the other proxy classes are generated during bean
+ * archive deployment.
  *
  * @author David Allen
  */
@@ -49,8 +50,12 @@ public class SerializableClientProxy implements Serializable {
      * @return the proxy object
      * @throws java.io.ObjectStreamException
      */
+
     Object readResolve() throws ObjectStreamException {
         Bean<?> bean = Container.instance().services().get(ContextualStore.class).<Bean<Object>, Object>getContextual(beanId);
+        if (bean == null) {
+            throw new WeldException(BeanMessage.DESERIALIZATED_BEAN_WAS_NULL, beanId);
+        }
         return Container.instance().deploymentManager().getClientProxyProvider().getClientProxy(bean);
     }
 
