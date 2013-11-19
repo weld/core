@@ -57,7 +57,7 @@ public class SerializableClientProxy implements Serializable {
     Object readResolve() throws ObjectStreamException {
         Bean<?> bean = Container.instance(contextId).services().get(ContextualStore.class).<Bean<Object>, Object>getContextual(beanId);
         if (bean == null) {
-            throw BeanLogger.LOG.proxyDeserializationFailure();
+            throw BeanLogger.LOG.proxyDeserializationFailure(beanId);
         }
         return Container.instance(contextId).deploymentManager().getClientProxyProvider().getClientProxy(bean);
     }
