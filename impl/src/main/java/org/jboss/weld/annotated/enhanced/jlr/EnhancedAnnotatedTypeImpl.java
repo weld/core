@@ -287,20 +287,39 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
             declaredMetaAnnotationMap.putSingleElement(declaredAnnotation.annotationType(), declaredAnnotation);
         }
         this.declaredMetaAnnotationMap = immutableMap(declaredMetaAnnotationMap);
-
         this.overriddenMethods = getOverriddenMethods(this, methodsTemp);
-        methodsTemp.removeAll(overriddenMethods);
+
+        // WELD-1548 remove all overriden methods except for those which are overriden by a bridge method
+        methodsTemp.removeAll(getOverriddenMethods(this, methodsTemp, true));
+
         this.methods = methodsTemp;
         this.annotatedMethods = buildAnnotatedMethodMultimap(this.methods);
         this.annotatedMethodsByAnnotatedParameters = buildAnnotatedParameterMethodMultimap(this.methods);
     }
 
-    protected Set<EnhancedAnnotatedMethod<?, ? super T>> getOverriddenMethods(EnhancedAnnotatedType<T> annotatedType, Set<EnhancedAnnotatedMethod<?, ? super T>> methods) {
-        Set<EnhancedAnnotatedMethod<?, ? super T>> overriddenMethods = new HashSet<EnhancedAnnotatedMethod<?,? super T>>();
-        Multimap<MethodSignature, Package> seenMethods = Multimaps.newSetMultimap(new HashMap<MethodSignature, Collection<Package>>(), HashSetSupplier.<Package>instance());
+    protected Set<EnhancedAnnotatedMethod<?, ? super T>> getOverriddenMethods(EnhancedAnnotatedType<T> annotatedType,
+            Set<EnhancedAnnotatedMethod<?, ? super T>> methods) {
+        return getOverriddenMethods(annotatedType, methods, false);
+    }
+
+    /**
+     *
+     * @param annotatedType
+     * @param methods
+     * @param skipOverridingBridgeMethods If set to <code>true</code> the returning set will not contain methods overriden by a bridge method
+     * @return the set of overriden methods
+     */
+    protected Set<EnhancedAnnotatedMethod<?, ? super T>> getOverriddenMethods(EnhancedAnnotatedType<T> annotatedType,
+            Set<EnhancedAnnotatedMethod<?, ? super T>> methods, boolean skipOverridingBridgeMethods) {
+        Set<EnhancedAnnotatedMethod<?, ? super T>> overriddenMethods = new HashSet<EnhancedAnnotatedMethod<?, ? super T>>();
+        Multimap<MethodSignature, Package> seenMethods = Multimaps.newSetMultimap(new HashMap<MethodSignature, Collection<Package>>(),
+                HashSetSupplier.<Package> instance());
         for (Class<? super T> clazz = annotatedType.getJavaClass(); clazz != null && clazz != Object.class; clazz = clazz.getSuperclass()) {
             for (EnhancedAnnotatedMethod<?, ? super T> method : methods) {
                 if (method.getJavaMember().getDeclaringClass().equals(clazz)) {
+                    if (skipOverridingBridgeMethods && method.getJavaMember().isBridge()) {
+                        continue;
+                    }
                     if (isOverridden(method, seenMethods)) {
                         overriddenMethods.add(method);
                     }
