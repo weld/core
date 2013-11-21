@@ -299,6 +299,67 @@ public class OrderBuilder {
     
       </section>
 
+       <section>
+         <title>CDI Conversation filter</title>
+    
+         <para>
+
+            The conversation management is not always smooth. For example, if the propagated conversation cannot be
+            restored, the <literal>javax.enterprise.context.NonexistentConversationException</literal> is thrown. Or if there are 
+            concurrent requests for a one long-running conversation, <literal>javax.enterprise.context.BusyConversationException </literal>
+            is thrown. For such cases, developer has no opportunity to deal with the exception by default, 
+            as the conversation associated with a Servlet request is determined at the beginning of the request before 
+            calling any service() method of any servlet in the web application, even before calling any of the filters 
+            in the web application and before the container calls any ServletRequestListener or AsyncListener in the web
+            application.
+         </para>
+    
+         <para>
+            To be allowed to handle the exceptions, a filter defined in the CDI 1.1 with the name <literal> CDI 
+            Conversation Filter </literal> can be used. By mapping the <literal> CDI Conversation Filter </literal> 
+            in the web.xml just after some other filters, we are able to catch the exceptions in them since the ordering
+            in the web.xml specifies the ordering in which the filters will be called (described in the servlet specification).
+         </para>
+
+         <para>
+            In the following example, a filter MyFilter checks for the BusyConversationException thrown during 
+            the conversation association. In the web.xml example, the filter is mapped before the CDI Conversation Filter.
+         </para>
+    
+         <programlisting role="JAVA">public class MyFilter implements Filter {
+...
+
+@Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+      throws IOException, ServletException {
+        try {
+            chain.doFilter(request, response);
+        } catch (BusyConversationException e) {
+            response.setContentType("text/plain");
+            response.getWriter().print("BusyConversationException");
+        }
+    }
+
+...</programlisting>
+
+         <para>
+            To make it work, we need to map our MyFilter before the CDI Conversation Filter in the web.xml file.
+         </para>
+
+
+         <programlisting role="XML"><![CDATA[<filter-mapping>
+      <filter-name>My Filter</filter-name>
+      <url-pattern>/*</url-pattern>
+   </filter-mapping>
+
+   <filter-mapping>
+      <filter-name>CDI Conversation Filter</filter-name>
+      <url-pattern>/*</url-pattern>
+   </filter-mapping>]]></programlisting>
+
+      </section>
+
+
    </section>
    
    <section>

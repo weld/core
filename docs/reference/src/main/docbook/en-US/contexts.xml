@@ -12,7 +12,7 @@
          and <emphasis>unmanaged</emphasis>. Managed contexts can be activated (allowing bean
          instances to be retrieved from the context), invalidated (scheduling bean instances
          for destruction) and deactivated (stopping bean instances from being retrieved, and if
-         the context has been invalidated, causing the bean instances to destroyed). Unmanaged
+         the context has been invalidated, causing the bean instances to be destroyed). Unmanaged
          contexts are always active; some may offer the ability to destroy instances.
       </para>
       
