@@ -82,6 +82,13 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
         this.proxiedBeanType = proxiedBeanType;
     }
 
+    @Override
+    public void addInterfacesFromTypeClosure(Set<? extends Type> typeClosure, Class<?> proxiedBeanType) {
+        for (Class<?> c : proxiedBeanType.getInterfaces()) {
+            addInterface(c);
+        }
+    }
+
     /**
      * Returns a suffix to append to the name of the proxy class. The name
      * already consists of <class-name>_$$_Weld, to which the suffix is added.
