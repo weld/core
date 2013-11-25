@@ -208,7 +208,7 @@ public class ProxyFactory<T> {
         }
 
 
-        return proxyPackage + '.' + className;
+        return proxyPackage + '.' + getEnclosingPrefix(proxiedBeanType) + className;
     }
 
     public void addInterfacesFromTypeClosure(Set<? extends Type> typeClosure, Class<?> proxiedBeanType) {
@@ -242,6 +242,11 @@ public class ProxyFactory<T> {
         }
         className = name.toString();
         return className;
+    }
+
+    private static String getEnclosingPrefix(Class<?> clazz) {
+        Class<?> encl = clazz.getEnclosingClass();
+        return encl == null ? "" : getEnclosingPrefix(encl) + encl.getSimpleName() + '$';
     }
 
     protected boolean isCreatingProxy() {
