@@ -17,6 +17,13 @@
 
 package org.jboss.weld.bean.proxy;
 
+import static org.jboss.weld.logging.Category.BEAN;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_BEAN_ACCESS_FAILED;
+import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_FAILED;
+import static org.jboss.weld.logging.messages.BeanMessage.PROXY_SKIP_PACKAGE_PRIVATE_INTERFACE;
+import static org.jboss.weld.util.reflection.Reflections.cast;
+
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -30,8 +37,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.enterprise.inject.spi.Bean;
-
 import javassist.NotFoundException;
 import javassist.bytecode.AccessFlag;
 import javassist.bytecode.Bytecode;
@@ -43,6 +48,8 @@ import javassist.bytecode.MethodInfo;
 import javassist.bytecode.Opcode;
 import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyObject;
+
+import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.exceptions.DefinitionException;
@@ -67,13 +74,6 @@ import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SecureReflections;
 import org.jboss.weld.util.reflection.instantiation.InstantiatorFactory;
 import org.slf4j.cal10n.LocLogger;
-
-import static org.jboss.weld.logging.Category.BEAN;
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.BeanMessage.PROXY_SKIP_PACKAGE_PRIVATE_INTERFACE;
-import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_BEAN_ACCESS_FAILED;
-import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_FAILED;
-import static org.jboss.weld.util.reflection.Reflections.cast;
 
 /**
  * Main factory to produce proxy classes and instances for Weld beans. This
@@ -184,7 +184,7 @@ public class ProxyFactory<T> {
         }
 
 
-        return proxyPackage + '.' + className;
+        return proxyPackage + '.' + getEnclosingPrefix(proxiedBeanType) + className;
     }
 
     private static String createCompoundProxyName(Bean<?> bean, TypeInfo typeInfo, StringBuilder name) {
@@ -205,6 +205,11 @@ public class ProxyFactory<T> {
         name.append(id.hashCode());
         className = name.toString();
         return className;
+    }
+
+    private static String getEnclosingPrefix(Class<?> clazz) {
+        Class<?> encl = clazz.getEnclosingClass();
+        return encl == null ? "" : getEnclosingPrefix(encl) + encl.getSimpleName() + '$';
     }
 
     /**
