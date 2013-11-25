@@ -228,4 +228,30 @@ public interface ConversationLogger extends WeldLogger {
     @Message(id = 332, value = "Conversation ID {0} is already in use", format = Format.MESSAGE_FORMAT)
     IllegalArgumentException conversationIdAlreadyInUse(Object param1);
 
+    @Message(id = 333, value = "Must call associate() before calling activate()", format = Format.MESSAGE_FORMAT)
+    IllegalStateException mustCallAssociateBeforeActivate();
+
+    @Message(id = 334, value = "Must call associate() before calling deactivate()", format = Format.MESSAGE_FORMAT)
+    IllegalStateException mustCallAssociateBeforeDeactivate();
+
+    @Message(id = 335, value = "Context is already active", format = Format.MESSAGE_FORMAT)
+    IllegalStateException contextAlreadyActive();
+
+    @Message(id = 336, value = "Context is not active", format = Format.MESSAGE_FORMAT)
+    IllegalStateException contextNotActive();
+
+    @Message(id = 337, value = "Unable to find ConversationNamingScheme in the request, this conversation wasn't transient at the start of the request", format = Format.MESSAGE_FORMAT)
+    IllegalStateException conversationNamingSchemeNotFound();
+
+    @Message(id = 338, value = "Unable to locate ConversationIdGenerator", format = Format.MESSAGE_FORMAT)
+    IllegalStateException conversationIdGeneratorNotFound();
+
+    @Message(id = 339, value = "A request must be associated with the context in order to generate a conversation id", format = Format.MESSAGE_FORMAT)
+    IllegalStateException mustCallAssociateBeforeGeneratingId();
+
+    @Message(id = 340, value = "A request must be associated with the context in order to load the known conversations", format = Format.MESSAGE_FORMAT)
+    IllegalStateException mustCallAssociateBeforeLoadingKnownConversations();
+
+    @Message(id = 341, value = "Unable to load current conversations from the associated request, something went badly wrong when associate() was called", format = Format.MESSAGE_FORMAT)
+    IllegalStateException unableToLoadCurrentConversations();
 }

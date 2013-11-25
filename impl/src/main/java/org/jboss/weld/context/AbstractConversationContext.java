@@ -64,7 +64,6 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
     private static final long DEFAULT_TIMEOUT = 10 * 60 * 1000L;
     private static final long CONCURRENT_ACCESS_TIMEOUT = 1000L;
     private static final String PARAMETER_NAME = "cid";
-    private static final String UNABLE_TO_LOAD_CURRENT_CONVERSATION = "Unable to load current conversations from the associated request, something went badly wrong when associate() was called";
 
     private final AtomicReference<String> parameterName;
     private final AtomicLong defaultTimeout;
@@ -215,7 +214,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
     public void activate(String cid) {
         if (getBeanStore() == null) {
             if (!isAssociated()) {
-                throw new IllegalStateException("Must call associate() before calling activate()");
+                throw ConversationLogger.LOG.mustCallAssociateBeforeActivate();
             }
             // Activate the context
             super.setActive(true);
@@ -242,7 +241,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
                 associateRequestWithNewConversation();
             }
         } else {
-            throw new IllegalStateException("Context is already active");
+            throw ConversationLogger.LOG.contextAlreadyActive();
         }
     }
 
@@ -255,7 +254,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
         // Disassociate from the current conversation
         if (getBeanStore() != null) {
             if (!isAssociated()) {
-                throw new IllegalStateException("Must call associate() before calling deactivate()");
+                throw ConversationLogger.LOG.mustCallAssociateBeforeDeactivate();
             }
 
             if (getCurrentConversation().isTransient()) {
@@ -272,7 +271,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
                         * about.
                         */
                         if (!(getRequestAttribute(getRequest(), ConversationNamingScheme.PARAMETER_NAME) instanceof ConversationNamingScheme)) {
-                            throw new IllegalStateException("Unable to find ConversationNamingScheme in the request, this conversation wasn't transient at the start of the request");
+                            throw ConversationLogger.LOG.conversationNamingSchemeNotFound();
                         }
                         ((ConversationNamingScheme) getRequestAttribute(getRequest(), ConversationNamingScheme.PARAMETER_NAME)).setCid(getCurrentConversation().getId());
 
@@ -297,7 +296,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
             // deactivate the context
             super.setActive(false);
         } else {
-            throw new IllegalStateException("Context is not active");
+            throw ConversationLogger.LOG.contextNotActive();
         }
     }
 
@@ -379,10 +378,10 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
     @Override
     public String generateConversationId() {
         if (!isAssociated()) {
-            throw new IllegalStateException("A request must be associated with the context in order to generate a conversation id");
+            throw ConversationLogger.LOG.mustCallAssociateBeforeGeneratingId();
         }
         if (!(getRequestAttribute(getRequest(), CONVERSATION_ID_GENERATOR_ATTRIBUTE_NAME) instanceof ConversationIdGenerator)) {
-            throw new IllegalStateException("Unable to locate ConversationIdGenerator");
+            throw ConversationLogger.LOG.conversationIdGeneratorNotFound();
         }
         ConversationIdGenerator generator = (ConversationIdGenerator) getRequestAttribute(getRequest(), CONVERSATION_ID_GENERATOR_ATTRIBUTE_NAME);
         return generator.call();
@@ -404,14 +403,14 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
 
     private void checkIsAssociated() {
         if (!isAssociated()) {
-            throw new IllegalStateException("A request must be associated with the context in order to load the known conversations");
+            throw ConversationLogger.LOG.mustCallAssociateBeforeLoadingKnownConversations();
         }
     }
 
     private Map<String, ManagedConversation> getConversationMap() {
         checkIsAssociated();
         if (!(getRequestAttribute(getRequest(), CONVERSATIONS_ATTRIBUTE_NAME) instanceof Map<?, ?>)) {
-            throw new IllegalStateException(UNABLE_TO_LOAD_CURRENT_CONVERSATION);
+            throw ConversationLogger.LOG.unableToLoadCurrentConversations();
         }
         return cast(getRequestAttribute(getRequest(), CONVERSATIONS_ATTRIBUTE_NAME));
     }
@@ -420,7 +419,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
     public ManagedConversation getCurrentConversation() {
         checkIsAssociated();
         if (!(getRequestAttribute(getRequest(), CURRENT_CONVERSATION_ATTRIBUTE_NAME) instanceof ManagedConversation)) {
-            throw new IllegalStateException(UNABLE_TO_LOAD_CURRENT_CONVERSATION);
+            throw ConversationLogger.LOG.unableToLoadCurrentConversations();
         }
         return (ManagedConversation) getRequestAttribute(getRequest(), CURRENT_CONVERSATION_ATTRIBUTE_NAME);
     }
