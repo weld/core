@@ -361,12 +361,48 @@ public class OrderBuilder {
       <para>
          The mapping of the <literal>CDI Conversation Filter</literal> determines when Weld reads the <literal>cid</literal> request parameter. This process forces request body parsing. If your application relies on setting a custom character encoding for the request or parsing the request body
          itself by reading an <literal>InputStream</literal> or <literal>Reader</literal>, make sure that this is performed in a filter that executes before the CDI Conversation Filter is executed. See <ulink url="http://weld.cdi-spec.org/documentation/#3">this FAQ page for details</ulink>.
+         Alternatively, the lazy conversation context initialization (see below) may be used.
       </para>
    </tip>
 
       </section>
+      <section>
+         <title>Lazy and eager conversation context initialization</title>
+         <para>
+            Conversation context may be initialized lazily or eagerly.
+         </para>
 
+      <para>
+         When initialized lazily, the conversation context (no matter if transient or long-running) is only initialized when a <literal>@ConversationScoped</literal> bean is accessed for the first time. At that point, the <literal>cid</literal> parameter is read
+         and the conversation is restored. The conversation context may not be initialized at all throughout the request processing if no conversation state is accessed. Note that if a problem
+         occurs during this delayed initialization, the conversation state access (bean method invocation) may result in <literal>BusyConversationException</literal> or <literal>NonexistentConversationException</literal>
+         being thrown.
+      </para>
 
+      <para>
+         When initialized eagerly, the conversation context is initialized at a predefined time. Either at the beginning of the request processing before any listener, filter or servlet is invoked or, if the <literal>CDI Conversation Filter</literal> is mapped, during execution of this filter.
+      </para>
+
+      <para>
+         Conversation context initialization mode may be configured using the <literal>org.jboss.weld.context.conversation.lazy</literal> init parameter.
+      </para>
+
+      <programlisting role="XML"><![CDATA[<context-param>
+   <param-name>org.jboss.weld.context.conversation.lazy</param-name>
+   <param-value>true</param-value>
+</context-param>]]></programlisting>
+
+      <para>
+         If the init parameter is not set, the following default behavior applies:
+      </para>
+         <itemizedlist>
+            <listitem>If the <literal>CDI Conversation Filter</literal> is mapped, the conversation context is initialized eagerly within this filter</listitem>
+            <listitem>
+               If an observer for <literal>@Initialized(ConversationScoped.class)</literal> or <literal>@Destroyed(ConversationScoped.class)</literal> event 
+               exists in the application, the conversation context is initialized eagerly</listitem>
+            <listitem>Otherwise, the conversation context is initialized lazily</listitem>
+         </itemizedlist>
+      </section>
    </section>
    
    <section>

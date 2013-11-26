@@ -186,11 +186,6 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
     }
 
 
-    @Override
-    public void activate() {
-        this.activate(null);
-    }
-
     protected void associateRequestWithNewConversation() {
         ManagedConversation conversation = new ConversationImpl(manager);
         lock(conversation);
@@ -211,37 +206,46 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
     }
 
     @Override
+    public void activate() {
+        this.activate(null);
+    }
+
+    @Override
     public void activate(String cid) {
-        if (getBeanStore() == null) {
+        if (!isActive()) {
             if (!isAssociated()) {
                 throw ConversationLogger.LOG.mustCallAssociateBeforeActivate();
             }
             // Activate the context
             super.setActive(true);
 
-            // Attach the conversation
-            // WELD-1315 Don't try to restore the long-running conversation if cid param is empty
-            if (cid != null && !cid.isEmpty()) {
-                ManagedConversation conversation = getConversation(cid);
-                if (conversation != null && !isExpired(conversation)) {
-                    boolean lock = lock(conversation);
-                    if (lock) {
-                        associateRequest(conversation);
-                    } else {
-                        // CDI 6.7.4 we must activate a new transient conversation before we throw the exception
-                        associateRequestWithNewConversation();
-                        throw ConversationLogger.LOG.conversationLockTimedout(cid);
-                    }
+            initialize(cid);
+        } else {
+            throw ConversationLogger.LOG.contextAlreadyActive();
+        }
+    }
+
+    protected void initialize(String cid) {
+        // Attach the conversation
+        // WELD-1315 Don't try to restore the long-running conversation if cid param is empty
+        if (cid != null && !cid.isEmpty()) {
+            ManagedConversation conversation = getConversation(cid);
+            if (conversation != null && !isExpired(conversation)) {
+                boolean lock = lock(conversation);
+                if (lock) {
+                    associateRequest(conversation);
                 } else {
                     // CDI 6.7.4 we must activate a new transient conversation before we throw the exception
                     associateRequestWithNewConversation();
-                    throw ConversationLogger.LOG.noConversationFoundToRestore(cid);
+                    throw ConversationLogger.LOG.conversationLockTimedout(cid);
                 }
             } else {
+                // CDI 6.7.4 we must activate a new transient conversation before we throw the exception
                 associateRequestWithNewConversation();
+                throw ConversationLogger.LOG.noConversationFoundToRestore(cid);
             }
         } else {
-            throw ConversationLogger.LOG.contextAlreadyActive();
+            associateRequestWithNewConversation();
         }
     }
 
@@ -252,7 +256,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
     @Override
     public void deactivate() {
         // Disassociate from the current conversation
-        if (getBeanStore() != null) {
+        if (isActive()) {
             if (!isAssociated()) {
                 throw ConversationLogger.LOG.mustCallAssociateBeforeDeactivate();
             }
@@ -321,6 +325,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
         // the context may be active
         // if it is, we need to re-attach the bean store once the other conversations are destroyed
         BoundBeanStore beanStore = getBeanStore();
+        final boolean active = isActive();
         if (beanStore != null) {
             beanStore.detach();
         }
@@ -347,10 +352,10 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
             return true;
         } finally {
             setBeanStore(beanStore);
-            setActive(beanStore != null);
-            if (isActive()) {
+            setActive(active);
+            if (beanStore != null) {
                 getBeanStore().attach();
-            } else {
+            } else if (!isActive()){
                 cleanup();
             }
         }
@@ -383,6 +388,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
         if (!(getRequestAttribute(getRequest(), CONVERSATION_ID_GENERATOR_ATTRIBUTE_NAME) instanceof ConversationIdGenerator)) {
             throw ConversationLogger.LOG.conversationIdGeneratorNotFound();
         }
+        checkContextInitialized();
         ConversationIdGenerator generator = (ConversationIdGenerator) getRequestAttribute(getRequest(), CONVERSATION_ID_GENERATOR_ATTRIBUTE_NAME);
         return generator.call();
     }
@@ -409,6 +415,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
 
     private Map<String, ManagedConversation> getConversationMap() {
         checkIsAssociated();
+        checkContextInitialized();
         if (!(getRequestAttribute(getRequest(), CONVERSATIONS_ATTRIBUTE_NAME) instanceof Map<?, ?>)) {
             throw ConversationLogger.LOG.unableToLoadCurrentConversations();
         }
@@ -418,6 +425,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
     @Override
     public ManagedConversation getCurrentConversation() {
         checkIsAssociated();
+        checkContextInitialized();
         if (!(getRequestAttribute(getRequest(), CURRENT_CONVERSATION_ATTRIBUTE_NAME) instanceof ManagedConversation)) {
             throw ConversationLogger.LOG.unableToLoadCurrentConversations();
         }
@@ -503,7 +511,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
      *
      * @return true if the context is associated
      */
-    private boolean isAssociated() {
+    protected boolean isAssociated() {
         return associated.get() != null;
     }
 
@@ -512,8 +520,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
      *
      * @return the request
      */
-    private R getRequest() {
+    protected R getRequest() {
         return associated.get();
     }
-
 }

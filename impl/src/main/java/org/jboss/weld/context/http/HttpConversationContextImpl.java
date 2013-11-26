@@ -66,6 +66,4 @@ public class HttpConversationContextImpl extends AbstractConversationContext<Htt
     protected HttpSession getSessionFromRequest(HttpServletRequest request, boolean create) {
         return SessionHolder.getSession(request, create);
     }
-
-
 }
