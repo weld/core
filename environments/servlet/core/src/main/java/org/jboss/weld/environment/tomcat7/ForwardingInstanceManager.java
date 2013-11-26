@@ -1,9 +1,10 @@
 package org.jboss.weld.environment.tomcat7;
 
-import org.apache.tomcat.InstanceManager;
+import java.lang.reflect.InvocationTargetException;
 
 import javax.naming.NamingException;
-import java.lang.reflect.InvocationTargetException;
+
+import org.apache.tomcat.InstanceManager;
 
 public abstract class ForwardingInstanceManager implements InstanceManager {
 
@@ -11,7 +12,6 @@ public abstract class ForwardingInstanceManager implements InstanceManager {
 
     public void destroyInstance(Object o) throws IllegalAccessException, InvocationTargetException {
         delegate().destroyInstance(o);
-
     }
 
     public void newInstance(Object o) throws IllegalAccessException, InvocationTargetException, NamingException {
@@ -24,6 +24,10 @@ public abstract class ForwardingInstanceManager implements InstanceManager {
 
     public Object newInstance(String fqcn) throws IllegalAccessException, InvocationTargetException, NamingException, InstantiationException, ClassNotFoundException {
         return delegate().newInstance(fqcn);
+    }
+
+    public Object newInstance(Class<?> clazz) throws IllegalAccessException, InvocationTargetException, NamingException, InstantiationException {
+        return delegate().newInstance(clazz);
     }
 
 }

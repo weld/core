@@ -1,11 +1,12 @@
 package org.jboss.weld.environment.tomcat7;
 
+import java.lang.reflect.InvocationTargetException;
+
+import javax.naming.NamingException;
+
 import org.apache.tomcat.InstanceManager;
 import org.jboss.weld.environment.servlet.inject.AbstractInjector;
 import org.jboss.weld.manager.api.WeldManager;
-
-import javax.naming.NamingException;
-import java.lang.reflect.InvocationTargetException;
 
 public class WeldInstanceManager extends AbstractInjector implements InstanceManager {
 
@@ -25,6 +26,10 @@ public class WeldInstanceManager extends AbstractInjector implements InstanceMan
     }
 
     public Object newInstance(String fqcn, ClassLoader classLoader) throws IllegalAccessException, InvocationTargetException, NamingException, InstantiationException, ClassNotFoundException {
+        return null;
+    }
+
+    public Object newInstance(Class<?> clazz) throws IllegalAccessException, InvocationTargetException, NamingException, InstantiationException {
         return null;
     }
 

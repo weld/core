@@ -1,22 +1,23 @@
 package org.jboss.weld.environment.tomcat7;
 
-import org.apache.catalina.core.ApplicationContext;
-import org.apache.catalina.core.ApplicationContextFacade;
-import org.apache.catalina.core.StandardContext;
-import org.apache.tomcat.InstanceManager;
-import org.jboss.weld.manager.api.WeldManager;
-
-import javax.naming.NamingException;
-import javax.servlet.ServletContextEvent;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
 import static org.jboss.weld.environment.servlet.util.Reflections.findDeclaredField;
 import static org.jboss.weld.environment.servlet.util.Reflections.findDeclaredMethod;
 import static org.jboss.weld.environment.servlet.util.Reflections.getFieldValue;
 import static org.jboss.weld.environment.servlet.util.Reflections.invokeMethod;
 import static org.jboss.weld.environment.servlet.util.Reflections.setFieldValue;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
+import javax.naming.NamingException;
+import javax.servlet.ServletContextEvent;
+
+import org.apache.catalina.core.ApplicationContext;
+import org.apache.catalina.core.ApplicationContextFacade;
+import org.apache.catalina.core.StandardContext;
+import org.apache.tomcat.InstanceManager;
+import org.jboss.weld.manager.api.WeldManager;
 
 /**
  * Forwards all calls in turn to two delegates: first to InstanceManager, then
@@ -62,6 +63,13 @@ public class WeldForwardingInstanceManager extends ForwardingInstanceManager {
     @Override
     public Object newInstance(String fqcn) throws IllegalAccessException, InvocationTargetException, NamingException, InstantiationException, ClassNotFoundException {
         Object a = super.newInstance(fqcn);
+        secondProcessor.newInstance(a);
+        return a;
+    }
+
+    @Override
+    public Object newInstance(Class<?> clazz) throws IllegalAccessException, InvocationTargetException, NamingException, InstantiationException {
+        Object a = super.newInstance(clazz);
         secondProcessor.newInstance(a);
         return a;
     }
