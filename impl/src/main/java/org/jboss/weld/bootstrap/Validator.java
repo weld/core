@@ -644,7 +644,7 @@ public class Validator implements Service {
             }
             for (Metadata<String> interceptorClassName : beansXml.getEnabledInterceptors()) {
                 if (!interceptorBeanClasses.contains(interceptorClassName.getValue())) {
-                    throw ValidatorLogger.LOG.interceptorNotAnnotatedOrRegistered(interceptorClassName);
+                    throw ValidatorLogger.LOG.interceptorClassDoesNotMatchInterceptorBean(interceptorClassName);
                 }
             }
         }
