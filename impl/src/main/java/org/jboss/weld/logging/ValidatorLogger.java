@@ -147,7 +147,7 @@ public interface ValidatorLogger extends WeldLogger {
     @Message(id = 1416, value = "Enabled interceptor class {0} specified twice:\n  - {1},\n  - {2}", format = Format.MESSAGE_FORMAT)
     String interceptorSpecifiedTwice(Object param1, Object param2, Object param3);
 
-    @Message(id = 1417, value = "Enabled interceptor class {0} is neither annotated @Interceptor nor registered through a portable extension", format = Format.MESSAGE_FORMAT)
+    @Message(id = 1417, value = "Enabled interceptor class {0} does not match an interceptor bean: the class is not found, or not annotated with @Interceptor and still not registered through a portable extension, or not annotated with @Dependent inside an implicit bean archive", format = Format.MESSAGE_FORMAT)
     DeploymentException interceptorNotAnnotatedOrRegistered(Object param1);
 
     @Message(id = 1418, value = "Enabled decorator class {0} specified twice:\n  - {1},\n  - {2}", format = Format.MESSAGE_FORMAT)
