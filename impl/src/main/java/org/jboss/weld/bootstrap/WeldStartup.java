@@ -81,13 +81,13 @@ import org.jboss.weld.context.ejb.EjbLiteral;
 import org.jboss.weld.context.ejb.EjbRequestContext;
 import org.jboss.weld.context.ejb.EjbRequestContextImpl;
 import org.jboss.weld.context.http.HttpConversationContext;
-import org.jboss.weld.context.http.HttpConversationContextImpl;
 import org.jboss.weld.context.http.HttpLiteral;
 import org.jboss.weld.context.http.HttpRequestContext;
 import org.jboss.weld.context.http.HttpRequestContextImpl;
 import org.jboss.weld.context.http.HttpSessionContext;
 import org.jboss.weld.context.http.HttpSessionContextImpl;
 import org.jboss.weld.context.http.HttpSessionDestructionContext;
+import org.jboss.weld.context.http.LazyHttpConversationContextImpl;
 import org.jboss.weld.context.unbound.ApplicationContextImpl;
 import org.jboss.weld.context.unbound.DependentContextImpl;
 import org.jboss.weld.context.unbound.RequestContextImpl;
@@ -469,7 +469,7 @@ public class WeldStartup {
             // Register the Http contexts if not in
             contexts.add(new ContextHolder<HttpSessionContext>(new HttpSessionContextImpl(contextId), HttpSessionContext.class, HttpLiteral.INSTANCE));
             contexts.add(new ContextHolder<HttpSessionDestructionContext>(new HttpSessionDestructionContext(contextId), HttpSessionDestructionContext.class, HttpLiteral.INSTANCE));
-            contexts.add(new ContextHolder<HttpConversationContext>(new HttpConversationContextImpl(contextId), HttpConversationContext.class, HttpLiteral.INSTANCE));
+            contexts.add(new ContextHolder<HttpConversationContext>(new LazyHttpConversationContextImpl(contextId), HttpConversationContext.class, HttpLiteral.INSTANCE));
             contexts.add(new ContextHolder<HttpRequestContext>(new HttpRequestContextImpl(contextId), HttpRequestContext.class, HttpLiteral.INSTANCE));
         }
 

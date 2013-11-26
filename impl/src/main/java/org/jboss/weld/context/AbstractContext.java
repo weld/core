@@ -65,11 +65,13 @@ public abstract class AbstractContext implements AlterableContext {
      * @throws ContextNotActiveException if the context is not active
      * @see javax.enterprise.context.spi.Context#get(BaseBean, boolean)
      */
+    @Override
     @SuppressWarnings(value = "UL_UNRELEASED_LOCK", justification = "False positive from FindBugs")
     public <T> T get(Contextual<T> contextual, CreationalContext<T> creationalContext) {
         if (!isActive()) {
             throw new ContextNotActiveException();
         }
+        checkContextInitialized();
         BeanStore beanStore = getBeanStore();
         if (beanStore == null) {
             return null;
@@ -107,6 +109,7 @@ public abstract class AbstractContext implements AlterableContext {
         }
     }
 
+    @Override
     public <T> T get(Contextual<T> contextual) {
         return get(contextual, null);
     }
@@ -116,6 +119,7 @@ public abstract class AbstractContext implements AlterableContext {
         if (!isActive()) {
             throw new ContextNotActiveException();
         }
+        checkContextInitialized();
         if (contextual == null) {
             throw ContextLogger.LOG.contextualIsNull();
         }
@@ -179,6 +183,12 @@ public abstract class AbstractContext implements AlterableContext {
 
     protected ServiceRegistry getServiceRegistry() {
         return serviceRegistry;
+    }
+
+    /**
+     * Allows contexts that are initialized lazily to plug in additional logic.
+     */
+    protected void checkContextInitialized() {
     }
 
 }
