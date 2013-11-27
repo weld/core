@@ -85,10 +85,10 @@ public class ContextBeanInstance<T> extends AbstractBeanInstance implements Seri
 
         WeldCreationalContext<T> creationalContext;
         WeldCreationalContext<?> previousCreationalContext = currentCreationalContext.get();
-        if (currentCreationalContext.get() == null) {
+        if (previousCreationalContext == null) {
             creationalContext = new CreationalContextImpl<T>(bean);
         } else {
-            creationalContext = currentCreationalContext.get().getCreationalContext(bean);
+            creationalContext = previousCreationalContext.getCreationalContext(bean);
         }
         final CurrentInjectionPoint currentInjectionPoint = container.services().get(CurrentInjectionPoint.class);
         currentCreationalContext.set(creationalContext);
