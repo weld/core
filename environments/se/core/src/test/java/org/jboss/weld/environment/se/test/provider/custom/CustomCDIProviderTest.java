@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.environment.se.test.provider.custom;
 
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import javax.enterprise.inject.spi.CDI;
@@ -24,18 +25,20 @@ import org.jboss.weld.environment.se.test.WeldSETest;
 import org.junit.Test;
 
 /**
- * @author Matus Abaffy
+ * @author Martin Kouba
  */
 public class CustomCDIProviderTest extends WeldSETest {
 
     @Test
     public void testCustomCDIProvider() {
-        MyCDI.reset();
-        // Setting CDI provider may affect other tests in weld-se-core,
-        // as they will use this CDI provider if they run after this test
-        CDI.setCDIProvider(MyCDI.INSTANCE);
-        CDI.current().getBeanManager();
-        assertTrue(MyCDI.isGetBMCalled);
-        assertTrue(MyCDI.isGetCDICalled);
+        try {
+            CustomCDIProvider.reset();
+            CDI.setCDIProvider(new CustomCDIProvider());
+            assertNull(CDI.current());
+            assertTrue(CustomCDIProvider.isCalled);
+        } finally {
+            // Unset the CDIProvider so that other tests are not affected
+            TestCDI.unsetCDIProvider();
+        }
     }
 }

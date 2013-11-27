@@ -17,6 +17,7 @@
 package org.jboss.weld.environment.servlet.test.provider;
 
 import static org.jboss.weld.environment.servlet.test.util.Deployments.baseDeployment;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import javax.enterprise.inject.spi.CDI;
@@ -32,10 +33,14 @@ public class CustomCDIProviderTestBase {
 
     @Test
     public void testCustomCDIProvider() {
-        MyCDIProvider.reset();
-        CDI<Object> discovered = CDI.current();
-        CDI.setCDIProvider(new MyCDIProvider(discovered));
-        CDI.current();
-        assertTrue(MyCDIProvider.isCalled);
+        try {
+            CustomCDIProvider.reset();
+            CDI.setCDIProvider(new CustomCDIProvider());
+            assertNull(CDI.current());
+            assertTrue(CustomCDIProvider.isCalled);
+        } finally {
+            // Unset the CDIProvider so that other tests are not affected
+            TestCDI.unsetCDIProvider();
+        }
     }
 }
