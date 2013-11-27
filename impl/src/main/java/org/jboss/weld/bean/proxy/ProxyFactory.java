@@ -213,7 +213,7 @@ public class ProxyFactory<T> {
         }
 
 
-        return proxyPackage + '.' + className;
+        return proxyPackage + '.' + getEnclosingPrefix(proxiedBeanType) + className;
     }
 
     private static String createCompoundProxyName(String contextId, Bean<?> bean, TypeInfo typeInfo, StringBuilder name) {
@@ -236,6 +236,11 @@ public class ProxyFactory<T> {
         }
         className = name.toString();
         return className;
+    }
+
+    private static String getEnclosingPrefix(Class<?> clazz) {
+        Class<?> encl = clazz.getEnclosingClass();
+        return encl == null ? "" : getEnclosingPrefix(encl) + encl.getSimpleName() + '$';
     }
 
     protected boolean isCreatingProxy() {
