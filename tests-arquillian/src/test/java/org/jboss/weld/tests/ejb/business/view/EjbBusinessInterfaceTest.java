@@ -17,7 +17,9 @@
 package org.jboss.weld.tests.ejb.business.view;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -37,6 +39,9 @@ public class EjbBusinessInterfaceTest {
     @Inject
     private InjectedBean bean;
 
+    @Inject
+    private Event<MyEvent> fooEvent;
+
     @Deployment
     public static Archive<?> getDeployment() {
         return ShrinkWrap.create(BeanArchive.class).addPackage(EjbBusinessInterfaceTest.class.getPackage());
@@ -55,5 +60,12 @@ public class EjbBusinessInterfaceTest {
     @Test
     public void testMethodDefinedOnSuperInterface2() {
         assertEquals("ping", bean.getBarSuperInterface().ping("ping"));
+    }
+
+    // See https://bugzilla.redhat.com/show_bug.cgi?id=1034776
+    @Test
+    public void testInterfaceInheritedMethodRecognizedAsLocalBusinessMethod() {
+        fooEvent.fire(new MyEvent());
+        assertTrue(BaseClass.isFooObserved());
     }
 }
