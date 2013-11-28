@@ -143,13 +143,22 @@ public abstract class AbstractMemberProducer<X, T> extends AbstractProducer<T> {
 
     @Override
     public T produce(CreationalContext<T> ctx) {
-        CreationalContext<X> receiverCreationalContext = getBeanManager().createCreationalContext(getDeclaringBean());
+
+        CreationalContext<X> receiverCreationalContext = getReceiverCreationalContext(ctx);
         Object receiver = getReceiver(ctx, receiverCreationalContext);
 
         try {
             return produce(receiver, ctx);
         } finally {
             receiverCreationalContext.release();
+        }
+    }
+
+    private CreationalContext<X> getReceiverCreationalContext(CreationalContext<T> ctx) {
+        if(ctx instanceof WeldCreationalContext) {
+            return ((WeldCreationalContext<?>)ctx).getProducerReceiverCreationalContext(getDeclaringBean());
+        } else {
+            return getBeanManager().createCreationalContext(getDeclaringBean());
         }
     }
 
