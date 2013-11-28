@@ -30,7 +30,16 @@ import org.jboss.weld.injection.spi.ResourceReference;
  */
 public interface WeldCreationalContext<T> extends org.jboss.weld.construction.api.WeldCreationalContext<T> {
 
-    <S> WeldCreationalContext<S> getCreationalContext(Contextual<S> Contextual);
+    <S> WeldCreationalContext<S> getCreationalContext(Contextual<S> contextual);
+
+    /**
+     * The returned {@link CreationalContext} shares nothing but incomplete instances.
+     *
+     * @param contextual
+     * @return the {@link CreationalContext} for a producer reciever
+     * @see WELD-1513
+     */
+    <S> WeldCreationalContext<S> getProducerReceiverCreationalContext(Contextual<S> contextual);
 
     <S> S getIncompleteInstance(Contextual<S> bean);
 
