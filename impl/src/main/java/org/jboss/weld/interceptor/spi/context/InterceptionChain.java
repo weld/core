@@ -24,7 +24,7 @@ import javax.interceptor.InvocationContext;
  */
 public interface InterceptionChain {
 
-    Object invokeNextInterceptor(InvocationContext invocationContext) throws Throwable;
+    Object invokeNextInterceptor(InvocationContext invocationContext) throws Exception;
 
     boolean hasNextInterceptor();
 }

@@ -68,7 +68,13 @@ public abstract class AbstractInterceptionChain implements InterceptionChain {
         }
     }
 
-    public Object invokeNextInterceptor(InvocationContext invocationContext) throws Throwable {
+    protected AbstractInterceptionChain(InterceptorInvocation interceptorInvocation) {
+        this.currentPosition = 0;
+        interceptorMethodInvocations = new ArrayList<InterceptorMethodInvocation>(interceptorInvocation.getInterceptorMethodInvocations());
+    }
+
+    @Override
+    public Object invokeNextInterceptor(InvocationContext invocationContext) throws Exception {
 
         try {
             if (hasNextInterceptor()) {
@@ -77,7 +83,14 @@ public abstract class AbstractInterceptionChain implements InterceptionChain {
                 return interceptorChainCompleted(invocationContext);
             }
         } catch (InvocationTargetException e) {
-            throw e.getCause();
+            Throwable cause = e.getCause();
+            if (cause instanceof Error) {
+                throw (Error) cause;
+            }
+            if (cause instanceof Exception) {
+                throw (Exception) cause;
+            }
+            throw new RuntimeException(cause);
         }
     }
 
@@ -103,6 +116,7 @@ public abstract class AbstractInterceptionChain implements InterceptionChain {
 
     protected abstract Object interceptorChainCompleted(InvocationContext invocationContext) throws Exception;
 
+    @Override
     public boolean hasNextInterceptor() {
         return currentPosition < interceptorMethodInvocations.size();
     }
