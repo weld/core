@@ -40,6 +40,11 @@ public class SimpleInterceptionChain extends AbstractInterceptionChain {
         super(interceptorInvocations);
     }
 
+    public SimpleInterceptionChain(InterceptorInvocation interceptorInvocation) {
+        super(interceptorInvocation);
+    }
+
+    @Override
     protected Object interceptorChainCompleted(InvocationContext ctx) throws Exception {
         Method method = ctx.getMethod();
         if (method != null) {
