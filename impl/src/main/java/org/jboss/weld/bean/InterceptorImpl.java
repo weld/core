@@ -22,8 +22,6 @@ import static org.jboss.weld.bean.BeanIdentifiers.forInterceptor;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -39,13 +37,16 @@ import org.jboss.weld.bean.interceptor.WeldInterceptorClassMetadata;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.interceptor.proxy.InterceptorInvocation;
+import org.jboss.weld.interceptor.proxy.InterceptorInvocationContext;
 import org.jboss.weld.interceptor.proxy.SimpleInterceptionChain;
+import org.jboss.weld.interceptor.spi.context.InterceptionChain;
 import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.logging.ReflectionLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.ForwardingInvocationContext;
 import org.jboss.weld.util.Interceptors;
 import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.reflection.Formats;
@@ -85,6 +86,7 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
         return manager.getInterceptorMetadataReader().getInterceptorMetadata(reference);
     }
 
+    @Override
     public Set<Annotation> getInterceptorBindings() {
         return interceptorBindingTypes;
     }
@@ -93,12 +95,41 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
         return interceptorMetadata;
     }
 
-    public Object intercept(InterceptionType type, T instance, InvocationContext ctx) {
+    @Override
+    public Object intercept(InterceptionType type, T instance, final InvocationContext ctx) {
+        final org.jboss.weld.interceptor.spi.model.InterceptionType interceptionType = org.jboss.weld.interceptor.spi.model.InterceptionType.valueOf(type.name());
+        final InterceptorInvocation invocation = interceptorMetadata.getInterceptorInvocation(instance, interceptionType);
+
         try {
-            org.jboss.weld.interceptor.spi.model.InterceptionType interceptionType = org.jboss.weld.interceptor.spi.model.InterceptionType.valueOf(type.name());
-            Collection<InterceptorInvocation> invocations = new ArrayList<InterceptorInvocation>();
-            invocations.add(interceptorMetadata.getInterceptorInvocation(instance, interceptionType));
-            return new SimpleInterceptionChain(invocations).invokeNextInterceptor(ctx);
+            if (ctx instanceof InterceptorInvocationContext || invocation.getInterceptorMethodInvocations().size() < 2) {
+                return new SimpleInterceptionChain(invocation).invokeNextInterceptor(ctx);
+            } else {
+                /*
+                 * Calling Interceptor.intercept() may result in multiple interceptor method invocations (provided the interceptor class
+                 * interceptor methods on superclasses). This requires cooperation with InvocationContext.
+                 *
+                 * If the InvocationContext used is our InterceptorInvocationContext or if there is no more than 1 InterceptorMethodInvocation
+                 * then no special treatment is required. Otherwise, we use a wrapper InvocationTarget for the purpose of executing the chain of
+                 * interceptor methods of this interceptor.
+                 */
+                final InterceptionChain chain = new SimpleInterceptionChain(invocation) {
+                    @Override
+                    protected Object interceptorChainCompleted(InvocationContext context) throws Exception {
+                        return ctx.proceed(); // done with the inner chain, let the outer chain proceed
+                    }
+                };
+                return chain.invokeNextInterceptor(new ForwardingInvocationContext() {
+                    @Override
+                    protected InvocationContext delegate() {
+                        return ctx;
+                    }
+
+                    @Override
+                    public Object proceed() throws Exception {
+                        return chain.invokeNextInterceptor(this);
+                    }
+                });
+            }
         } catch (RuntimeException e) {
             throw e;
         } catch (Throwable e) {
@@ -106,6 +137,7 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
         }
     }
 
+    @Override
     public boolean intercepts(InterceptionType type) {
         return interceptorMetadata.isEligible(org.jboss.weld.interceptor.spi.model.InterceptionType.valueOf(type.name()));
     }
