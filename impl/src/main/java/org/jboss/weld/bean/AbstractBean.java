@@ -279,7 +279,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
     }
 
     protected void postSpecialize() {
-        if (getWeldAnnotated().isAnnotationPresent(Named.class) && getSpecializedBean().getWeldAnnotated().isAnnotationPresent(Named.class)) {
+        if (getWeldAnnotated().isAnnotationPresent(Named.class) && getSpecializedBean().getName() != null) {
             throw new DefinitionException(NAME_NOT_ALLOWED_ON_SPECIALIZATION, getWeldAnnotated());
         }
         for (Type type : getSpecializedBean().getTypes()) {
@@ -288,7 +288,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
             }
         }
         this.qualifiers.addAll(getSpecializedBean().getQualifiers());
-        if (isSpecializing() && getSpecializedBean().getWeldAnnotated().isAnnotationPresent(Named.class)) {
+        if (isSpecializing() && getSpecializedBean().getName() != null) {
             this.name = getSpecializedBean().getName();
         }
         BeansClosure closure = beanManager.getClosure();
