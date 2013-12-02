@@ -186,7 +186,7 @@
     </section>
    </section>
 
-   <section>
+   <section id="non-portable.mode">
       <title>Non-portable mode during application initialization</title>
       <para>
           By default the application initialization is performed in the portable mode which denotes specification-compliant behaviour. However it's also possible to enable the non-portable mode, in which some definition errors and deployment
@@ -203,7 +203,7 @@
       </note>
    </section>
 
-   <section>
+   <section id="context.mapping">
       <title>Mapping CDI contexts to HTTP requests</title>
       <para>
          By default, CDI contexts are activated at the beginning of an HTTP request processing and deactivated once the processing finishes. This may represent an unnecessary overhead in certain situations, for example static resource serving).

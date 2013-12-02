@@ -941,6 +941,108 @@ cc.release();]]></programlisting>
         </section>
     </section>
 
+    <section>
+        <title>Migration notes</title>
+        <para>
+            This part of the appendix documents the changes in Weld across major and minor releases that an integrator should be aware of.
+            These changes mostly touch changes in the SPI or in the container contract.
+        </para>
+        <section>
+            <title>Migration from Weld 1.x to 2.0</title>
+            <para>
+                All the changes are documented in this external <ulink url="https://community.jboss.org/wiki/WeldIntegratorGuide-ChangesForWeld20">migration document</ulink>.
+            </para>
+        </section>
+        <section>
+            <title>Migration from Weld 2.0 to 2.1</title>
+            <section>
+                <title>Logging</title>
+                <para>
+                    Weld no longer uses <literal>slf4j</literal> for logging. Instead, <ulink url="http://search.maven.org/#search%7Cga%7C1%7Cjboss-logging">jboss-logging</ulink> is now used as a logging facade.
+                </para>
+            </section>
+            <section>
+                <title>HttpContextActivationFilter</title>
+                <para>
+                    A new service named <ulink url="http://docs.jboss.org/weld/javadoc/2.1/weld-spi/org/jboss/weld/servlet/spi/HttpContextActivationFilter.html">HttpContextActivationFilter</ulink> was added to the Weld SPI.
+                    This optional service allows an integrator to decide if CDI contexts should be activated or not for a given HTTP request. By default, CDI contexts are always active but this hook allows an integrator to eliminate
+                    the overhead of CDI context activation for certain types of requests where CDI is known not to be needed (e.g. request for a static resource).
+                </para>
+                <para>Note that when the service is provided, <link linkend="context.mapping">user configuration</link> is overriden.</para>
+            </section>
+            <section>
+                <title>Non-portable mode</title>
+                <para>
+                    The <ulink url="http://docs.jboss.org/weld/javadoc/2.1/weld-spi/org/jboss/weld/bootstrap/spi/BootstrapConfiguration.html#isNonPortableModeEnabled%28%29">BootstrapConfiguration</ulink> service now allows the <link linkend="non-portable.mode">non-portable mode</link> to be enabled by the integrator.
+                </para>
+            </section>
+            <section>
+                <title>Singleton SPI</title>
+                <para>
+                    Since Weld 2.1 the <ulink url="http://docs.jboss.org/weld/javadoc/2.1/weld-spi/org/jboss/weld/bootstrap/api/Singleton.html">Singleton SPI</ulink> requires the singleton to be identified
+                    by a String <literal>context id</literal>. This allows multiple Weld containers to run at the same time in environments where the TCCL cannot be used to distinguish the containers (e.g. OSGi environment).
+                </para>
+                <para>
+                    The intergrator should:
+                    <itemizedlist>
+                        <listitem>implement the new methods</listitem>
+                        <listitem>use <literal>WeldBootstrap.startContainer(String contextId, Environment environment, Deployment deployment)</literal> to start Weld</listitem>
+                        <listitem>eliminate all <literal>Container.instance() calls</literal> and replace them with <literal>Container.instance(String contextId)</literal></listitem>
+                    </itemizedlist>
+                </para>
+            </section>
+            <section>
+                <title>Weld-OSGi bundle</title>
+                <para>
+                    The Weld-OSGi bundle does no include Weld's runtime dependencies anymore. Therefore, it is possible to deploy the following artifacts in order to satisfy Weld's dependencies:
+                </para>
+                <table>
+                <tgroup cols='3'>
+                        <thead>
+                            <row>
+                                <entry>group id</entry>
+                                <entry>artifact id</entry>
+                                <entry>version</entry>
+                            </row>
+                        </thead>
+                        <tbody>
+                            <row>
+                                <entry>org.jboss.logging</entry>
+                                <entry>jboss-logging</entry>
+                                <entry>3.1.3.GA</entry>
+                            </row>
+                            <row>
+                                <entry>com.google.guava</entry>
+                                <entry>guava</entry>
+                                <entry>13.0.1</entry>
+                            </row>
+                            <row>
+                                <entry>javax.enterprise</entry>
+                                <entry>cdi-api</entry>
+                                <entry>1.1-20130918</entry>
+                            </row>
+                            <row>
+                                <entry>javax.annotation</entry>
+                                <entry>javax.annotation-api</entry>
+                                <entry>1.2</entry>
+                            </row>
+                            <row>
+                                <entry>javax.interceptor</entry>
+                                <entry>javax.interceptor-api</entry>
+                                <entry>1.2</entry>
+                            </row>
+                            <row>
+                                <entry>org.apache.geronimo.specs</entry>
+                                <entry>geronimo-el_2.2_spec</entry>
+                                <entry>1.0.3</entry>
+                            </row>
+                        </tbody>
+                    </tgroup>
+                </table>
+            </section>
+        </section>
+    </section>
+
 <!--
 vim:et:ts=3:sw=3:tw=120
 -->
