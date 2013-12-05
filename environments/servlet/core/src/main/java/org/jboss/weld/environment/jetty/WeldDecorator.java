@@ -17,16 +17,17 @@
 
 package org.jboss.weld.environment.jetty;
 
-import org.eclipse.jetty.server.handler.ContextHandler;
-import org.eclipse.jetty.servlet.FilterHolder;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
+import java.util.EventListener;
 
 import javax.servlet.Filter;
 import javax.servlet.Servlet;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import java.util.EventListener;
+
+import org.eclipse.jetty.server.handler.ContextHandler;
+import org.eclipse.jetty.servlet.FilterHolder;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
 
 /**
  * Jetty Eclipse Weld support.
@@ -34,6 +35,7 @@ import java.util.EventListener;
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
 public class WeldDecorator implements ServletContextHandler.Decorator {
+
     private ServletContext servletContext;
     private JettyWeldInjector injector;
 
@@ -55,30 +57,26 @@ public class WeldDecorator implements ServletContextHandler.Decorator {
     protected JettyWeldInjector getInjector() {
         if (injector == null) {
             JettyWeldInjector jwi = (JettyWeldInjector) servletContext.getAttribute(AbstractJettyContainer.INJECTOR_ATTRIBUTE_NAME);
-
             if (jwi == null) {
                 throw new IllegalArgumentException("No such Jetty injector found in servlet context attributes.");
             }
-
             injector = jwi;
         }
-
         return injector;
     }
 
+    // ServletContextHandler.Decorator in Jetty 7.x, 8.x and 9.0.x defines following methods
+
     public <T extends Filter> T decorateFilterInstance(T filter) throws ServletException {
-        getInjector().inject(filter);
-        return filter;
+        return decorate(filter);
     }
 
     public <T extends Servlet> T decorateServletInstance(T servlet) throws ServletException {
-        getInjector().inject(servlet);
-        return servlet;
+        return decorate(servlet);
     }
 
     public <T extends EventListener> T decorateListenerInstance(T listener) throws ServletException {
-        getInjector().inject(listener);
-        return listener;
+        return decorate(listener);
     }
 
     public void decorateFilterHolder(FilterHolder filter) throws ServletException {
@@ -88,14 +86,26 @@ public class WeldDecorator implements ServletContextHandler.Decorator {
     }
 
     public void destroyServletInstance(Servlet s) {
-        getInjector().destroy(s);
+        destroy(s);
     }
 
     public void destroyFilterInstance(Filter f) {
-        getInjector().destroy(f);
+        destroy(f);
     }
 
     public void destroyListenerInstance(EventListener f) {
-        getInjector().destroy(f);
+        destroy(f);
     }
+
+    // ServletContextHandler.Decorator in Jetty 9.1 defines following methods
+
+    public <T> T decorate(T o) {
+        getInjector().inject(o);
+        return o;
+    }
+
+    public void destroy(Object o) {
+        getInjector().destroy(o);
+    }
+
 }
