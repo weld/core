@@ -66,36 +66,75 @@ public class WeldDecorator implements ServletContextHandler.Decorator {
         return injector;
     }
 
+    /**
+     * Eclipse Jetty 7/8/9.0 - decorate
+     */
     public <T extends Filter> T decorateFilterInstance(T filter) throws ServletException {
         getInjector().inject(filter);
         return filter;
     }
 
+    /**
+     * Eclipse Jetty 7/8/9.0 - decorate
+     */
     public <T extends Servlet> T decorateServletInstance(T servlet) throws ServletException {
         getInjector().inject(servlet);
         return servlet;
     }
 
+    /**
+     * Eclipse Jetty 7/8/9.0 - decorate
+     */
     public <T extends EventListener> T decorateListenerInstance(T listener) throws ServletException {
         getInjector().inject(listener);
         return listener;
     }
 
+    /**
+     * Eclipse Jetty 7/8/9.0 - decorate
+     */
     public void decorateFilterHolder(FilterHolder filter) throws ServletException {
     }
 
+    /**
+     * Eclipse Jetty 7/8/9.0 - decorate
+     */
     public void decorateServletHolder(ServletHolder servlet) throws ServletException {
     }
 
+    /**
+     * Eclipse Jetty 7/8/9.0 - destroy
+     */
     public void destroyServletInstance(Servlet s) {
         getInjector().destroy(s);
     }
 
+    /**
+     * Eclipse Jetty 7/8/9.0 - destroy
+     */
     public void destroyFilterInstance(Filter f) {
         getInjector().destroy(f);
     }
 
+    /**
+     * Eclipse Jetty 7/8/9.0 - destroy
+     */
     public void destroyListenerInstance(EventListener f) {
         getInjector().destroy(f);
+    }
+
+    /**
+     * Eclipse Jetty 9.1 - decorate
+     */
+    public Object decorate(Object o) {
+        getInjector().inject(o);
+        return o;
+    }
+
+    /**
+     * Eclipse Jetty 9.1 - destroy
+     */
+    public void destroy(Object o) {
+        getInjector().destroy(o);
     }
 }
