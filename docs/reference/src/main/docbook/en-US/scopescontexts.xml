@@ -357,6 +357,13 @@ public class OrderBuilder {
       <url-pattern>/*</url-pattern>
    </filter-mapping>]]></programlisting>
 
+   <tip>
+      <para>
+         The mapping of the <literal>CDI Conversation Filter</literal> determines when Weld reads the <literal>cid</literal> request parameter. This process forces request body parsing. If your application relies on setting a custom character encoding for the request or parsing the request body
+         itself by reading an <literal>InputStream</literal> or <literal>Reader</literal>, make sure that this is performed in a filter that executes before the CDI Conversation Filter is executed. See <ulink url="http://weld.cdi-spec.org/documentation/#3">this FAQ page for details</ulink>.
+      </para>
+   </tip>
+
       </section>
 
 
