@@ -202,7 +202,8 @@ public class ProxyFactory<T> {
         //proxy name for two interfaces with the same simple name.
         //append the hash code of the bean id to be sure
         final String id = Container.instance().services().get(ContextualStore.class).putIfAbsent(bean);
-        name.append(id.hashCode());
+        int idHash = id.hashCode();
+        name.append(Math.abs(idHash == Integer.MIN_VALUE ? 0 : idHash));
         className = name.toString();
         return className;
     }
