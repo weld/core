@@ -24,12 +24,11 @@ import javax.faces.application.Application;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 
+import org.jboss.weld.environment.servlet.WeldServletLifecycle;
 import org.jboss.weld.environment.servlet.portlet.PortletSupport;
 import org.jboss.weld.environment.servlet.util.ForwardingELResolver;
 import org.jboss.weld.environment.servlet.util.Reflections;
 import org.jboss.weld.environment.servlet.util.TransparentELResolver;
-
-import static org.jboss.weld.environment.servlet.Listener.BEAN_MANAGER_ATTRIBUTE_NAME;
 
 /**
  * @author Pete Muir
@@ -106,7 +105,7 @@ public class WeldApplication extends ForwardingApplication {
             try {
                 if (obj instanceof ServletContext) {
                     final ServletContext ctx = (ServletContext) obj;
-                    final BeanManager tmp = (BeanManager) ctx.getAttribute(BEAN_MANAGER_ATTRIBUTE_NAME);
+                    final BeanManager tmp = (BeanManager) ctx.getAttribute(WeldServletLifecycle.BEAN_MANAGER_ATTRIBUTE_NAME);
                     if (tmp == null) {
                         return null;
                     }

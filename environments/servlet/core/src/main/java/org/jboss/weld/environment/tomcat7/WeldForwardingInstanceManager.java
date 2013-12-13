@@ -11,7 +11,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import javax.naming.NamingException;
-import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContext;
 
 import org.apache.catalina.core.ApplicationContext;
 import org.apache.catalina.core.ApplicationContextFacade;
@@ -74,8 +74,8 @@ public class WeldForwardingInstanceManager extends ForwardingInstanceManager {
         return a;
     }
 
-    public static void replaceInstanceManager(ServletContextEvent sce, WeldManager manager) {
-        StandardContext stdContext = getStandardContext(sce);
+    public static void replaceInstanceManager(ServletContext context, WeldManager manager) {
+        StandardContext stdContext = getStandardContext(context);
         setInstanceManager(stdContext, createInstance(manager, stdContext));
     }
 
@@ -89,11 +89,11 @@ public class WeldForwardingInstanceManager extends ForwardingInstanceManager {
         }
     }
 
-    private static StandardContext getStandardContext(ServletContextEvent sce) {
+    private static StandardContext getStandardContext(ServletContext context) {
         try {
             // Hack into Tomcat to replace the InstanceManager using
             // reflection to access private fields
-            ApplicationContext appContext = (ApplicationContext) getContextFieldValue((ApplicationContextFacade) sce.getServletContext(), ApplicationContextFacade.class);
+            ApplicationContext appContext = (ApplicationContext) getContextFieldValue((ApplicationContextFacade) context, ApplicationContextFacade.class);
             return (StandardContext) getContextFieldValue(appContext, ApplicationContext.class);
         } catch (Exception e) {
             throw new RuntimeException("Cannot get StandardContext from ServletContext", e);
@@ -106,8 +106,8 @@ public class WeldForwardingInstanceManager extends ForwardingInstanceManager {
         return f.get(obj);
     }
 
-    public static void restoreInstanceManager(ServletContextEvent sce) {
-        StandardContext stdContext = getStandardContext(sce);
+    public static void restoreInstanceManager(ServletContext context) {
+        StandardContext stdContext = getStandardContext(context);
         InstanceManager im = getInstanceManager(stdContext);
         if (im instanceof WeldForwardingInstanceManager) {
             setInstanceManager(stdContext, ((WeldForwardingInstanceManager) im).firstProcessor);

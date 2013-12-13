@@ -29,6 +29,6 @@ public abstract class AbstractJettyContainer extends AbstractContainer {
     public static final String INJECTOR_ATTRIBUTE_NAME = "org.jboss.weld.environment.jetty.JettyWeldInjector";
 
     public void destroy(ContainerContext context) {
-        context.getContext().removeAttribute(INJECTOR_ATTRIBUTE_NAME);
+        context.getServletContext().removeAttribute(INJECTOR_ATTRIBUTE_NAME);
     }
 }

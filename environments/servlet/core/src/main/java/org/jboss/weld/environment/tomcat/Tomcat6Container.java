@@ -35,7 +35,7 @@ public class Tomcat6Container extends AbstractContainer {
 
     public void initialize(ContainerContext context) {
         try {
-            WeldForwardingAnnotationProcessor.replaceAnnotationProcessor(context.getEvent(), context.getManager());
+            WeldForwardingAnnotationProcessor.replaceAnnotationProcessor(context.getServletContext(), context.getManager());
             log.info("Tomcat 6 detected, CDI injection will be available in Servlets and Filters. Injection into Listeners is not supported");
         } catch (Exception e) {
             log.error("Unable to replace Tomcat AnnotationProcessor. CDI injection will not be available in Servlets, Filters, or Listeners", e);
@@ -44,6 +44,6 @@ public class Tomcat6Container extends AbstractContainer {
 
     @Override
     public void destroy(ContainerContext context) {
-        WeldForwardingAnnotationProcessor.restoreAnnotationProcessor(context.getEvent());
+        WeldForwardingAnnotationProcessor.restoreAnnotationProcessor(context.getServletContext());
     }
 }

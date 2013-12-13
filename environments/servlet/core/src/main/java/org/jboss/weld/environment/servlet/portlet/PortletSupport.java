@@ -18,7 +18,7 @@ package org.jboss.weld.environment.servlet.portlet;
 
 import javax.enterprise.inject.spi.BeanManager;
 
-import org.jboss.weld.environment.servlet.Listener;
+import org.jboss.weld.environment.servlet.WeldServletLifecycle;
 
 /**
  * Simple portlet support.
@@ -70,6 +70,6 @@ public final class PortletSupport {
      * @return bean manager if found
      */
     public static BeanManager getBeanManager(Object ctx) {
-        return (BeanManager) javax.portlet.PortletContext.class.cast(ctx).getAttribute(Listener.BEAN_MANAGER_ATTRIBUTE_NAME);
+        return (BeanManager) javax.portlet.PortletContext.class.cast(ctx).getAttribute(WeldServletLifecycle.BEAN_MANAGER_ATTRIBUTE_NAME);
     }
 }

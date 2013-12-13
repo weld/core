@@ -45,7 +45,7 @@ public class JettyContainer extends AbstractJettyContainer {
     }
 
     public boolean touch(ContainerContext context) throws Exception {
-        ServletContext sc = context.getContext();
+        ServletContext sc = context.getServletContext();
         String si = sc.getServerInfo();
         int p = si.indexOf("/");
         if (p < 0) {
@@ -63,11 +63,11 @@ public class JettyContainer extends AbstractJettyContainer {
         try {
             Class<?> clazz = Reflections.classForName(JettyWeldInjector.class.getName());
             Object injector = clazz.getConstructor(WeldManager.class).newInstance(context.getManager());
-            context.getContext().setAttribute(INJECTOR_ATTRIBUTE_NAME, injector);
+            context.getServletContext().setAttribute(INJECTOR_ATTRIBUTE_NAME, injector);
 
             Class<?> decoratorClass = Reflections.classForName("org.jboss.weld.environment.jetty.WeldDecorator");
             Method processMethod = decoratorClass.getMethod("process", ServletContext.class);
-            processMethod.invoke(null, context.getContext());
+            processMethod.invoke(null, context.getServletContext());
 
             log.info("Jetty 7.2+ detected, CDI injection will be available in Listeners, Servlets and Filters.");
         } catch (Exception e) {
