@@ -1,23 +1,24 @@
 package org.jboss.weld.environment.tomcat;
 
+import static org.jboss.weld.environment.servlet.util.Reflections.findDeclaredField;
+import static org.jboss.weld.environment.servlet.util.Reflections.findDeclaredMethod;
+import static org.jboss.weld.environment.servlet.util.Reflections.getFieldValue;
+import static org.jboss.weld.environment.servlet.util.Reflections.invokeMethod;
+import static org.jboss.weld.environment.servlet.util.Reflections.setFieldValue;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
+import javax.naming.NamingException;
+import javax.servlet.ServletContext;
+
 import org.apache.AnnotationProcessor;
 import org.apache.catalina.core.ApplicationContext;
 import org.apache.catalina.core.ApplicationContextFacade;
 import org.apache.catalina.core.StandardContext;
 import org.jboss.weld.environment.servlet.util.Reflections;
 import org.jboss.weld.manager.api.WeldManager;
-
-import javax.naming.NamingException;
-import javax.servlet.ServletContextEvent;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
-import static org.jboss.weld.environment.servlet.util.Reflections.findDeclaredField;
-import static org.jboss.weld.environment.servlet.util.Reflections.findDeclaredMethod;
-import static org.jboss.weld.environment.servlet.util.Reflections.getFieldValue;
-import static org.jboss.weld.environment.servlet.util.Reflections.invokeMethod;
-import static org.jboss.weld.environment.servlet.util.Reflections.setFieldValue;
 
 /**
  * @author <a href="mailto:matija.mazi@gmail.com">Matija Mazi</a>
@@ -59,8 +60,8 @@ public class WeldForwardingAnnotationProcessor extends ForwardingAnnotationProce
         secondProcessor.preDestroy(instance);
     }
 
-    public static void replaceAnnotationProcessor(ServletContextEvent sce, WeldManager manager) {
-        StandardContext stdContext = getStandardContext(sce);
+    public static void replaceAnnotationProcessor(ServletContext context, WeldManager manager) {
+        StandardContext stdContext = getStandardContext(context);
         setAnnotationProcessor(stdContext, createInstance(manager, stdContext));
     }
 
@@ -74,10 +75,10 @@ public class WeldForwardingAnnotationProcessor extends ForwardingAnnotationProce
         }
     }
 
-    private static StandardContext getStandardContext(ServletContextEvent sce) {
+    private static StandardContext getStandardContext(ServletContext context) {
         try {
             // Hack into Tomcat to replace the AnnotationProcessor using reflection to access private fields
-            ApplicationContext appContext = (ApplicationContext) getContextFieldValue((ApplicationContextFacade) sce.getServletContext(), ApplicationContextFacade.class);
+            ApplicationContext appContext = (ApplicationContext) getContextFieldValue((ApplicationContextFacade) context, ApplicationContextFacade.class);
             return (StandardContext) getContextFieldValue(appContext, ApplicationContext.class);
         } catch (Exception e) {
             throw new RuntimeException("Cannot get StandardContext from ServletContext", e);
@@ -91,8 +92,8 @@ public class WeldForwardingAnnotationProcessor extends ForwardingAnnotationProce
         return f.get(obj);
     }
 
-    public static void restoreAnnotationProcessor(ServletContextEvent sce) {
-        StandardContext stdContext = getStandardContext(sce);
+    public static void restoreAnnotationProcessor(ServletContext context) {
+        StandardContext stdContext = getStandardContext(context);
         AnnotationProcessor ap = getAnnotationProcessor(stdContext);
         if (ap instanceof WeldForwardingAnnotationProcessor) {
             setAnnotationProcessor(stdContext, ((WeldForwardingAnnotationProcessor) ap).firstProcessor);

@@ -17,11 +17,10 @@
 
 package org.jboss.weld.environment;
 
-import org.jboss.weld.environment.servlet.Listener;
-import org.jboss.weld.manager.api.WeldManager;
-
 import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
+
+import org.jboss.weld.environment.servlet.WeldServletLifecycle;
+import org.jboss.weld.manager.api.WeldManager;
 
 /**
  * Wrap listener arguments.
@@ -29,30 +28,25 @@ import javax.servlet.ServletContextEvent;
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
 public class ContainerContext {
-    private ServletContextEvent event;
-    private ServletContext context;
+
+    private ServletContext servletContext;
+
     private WeldManager manager;
 
-    public ContainerContext(ServletContextEvent event, WeldManager manager) {
-        if (event == null) {
-            throw new IllegalArgumentException("Null servlet context event");
+    public ContainerContext(ServletContext context, WeldManager manager) {
+        if (context == null) {
+            throw new IllegalArgumentException("Null servlet context");
         }
-
-        this.event = event;
-        this.context = event.getServletContext();
+        this.servletContext = context;
         if (manager == null) {
-            manager = (WeldManager) context.getAttribute(Listener.BEAN_MANAGER_ATTRIBUTE_NAME);
+            manager = (WeldManager) context.getAttribute(WeldServletLifecycle.BEAN_MANAGER_ATTRIBUTE_NAME);
         }
-
         this.manager = manager;
     }
 
-    public ServletContextEvent getEvent() {
-        return event;
-    }
 
-    public ServletContext getContext() {
-        return context;
+    public ServletContext getServletContext() {
+        return servletContext;
     }
 
     public WeldManager getManager() {

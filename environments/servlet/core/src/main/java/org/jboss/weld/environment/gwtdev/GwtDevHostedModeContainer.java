@@ -51,12 +51,12 @@ public class GwtDevHostedModeContainer extends AbstractJettyContainer {
         try {
             Class<?> clazz = Reflections.classForName(JettyWeldInjector.class.getName());
             Object injector = clazz.getConstructor(WeldManager.class).newInstance(context.getManager());
-            context.getContext().setAttribute(INJECTOR_ATTRIBUTE_NAME, injector);
+            context.getServletContext().setAttribute(INJECTOR_ATTRIBUTE_NAME, injector);
             log.info("GWTHostedMode detected, JSR-299 injection will be available in Servlets and Filters. Injection into Listeners is not supported.");
 
             Class<?> decoratorClass = getWeldServletHandlerClass();
             Method processMethod = decoratorClass.getMethod("process", ServletContext.class);
-            processMethod.invoke(null, context.getContext());
+            processMethod.invoke(null, context.getServletContext());
         } catch (Exception e) {
             log.error("Unable to create JettyWeldInjector. CDI injection will not be available in Servlets, Filters or Listeners", e);
         }
