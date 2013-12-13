@@ -51,19 +51,19 @@ import org.jboss.weld.servlet.api.ServletListener;
 
 /**
  * WeldServletContainerInitializer
- * 
+ *
  * A javax.servlet.ServletContainerInitializer implementation that boots up
  * the Weld framework. This code is identical to the org.jboss.weld.environment.servlet.Listener.
- * 
- * It should be used in preference to the org.jboss.weld.environment.servlet.Listener with 
+ *
+ * It should be used in preference to the org.jboss.weld.environment.servlet.Listener with
  * servlet-3 compliant containers, because it will ensure that the Weld framework is booted up
- * before any application code is called, and thus injections will succeed for all listeners, 
+ * before any application code is called, and thus injections will succeed for all listeners,
  * servlets, filters etc.
- * 
+ *
  * The org.jboss.weld.environment.servlet.Listener boots up the Weld framework too, but as it
- * is a ServletContextListener, it can be called too late in some containers to be able to inject 
+ * is a ServletContextListener, it can be called too late in some containers to be able to inject
  * other ServletContextListeners.
- * 
+ *
  * @author Jan Bartel
  * @author Pete Muir
  * @author Ales Justin
@@ -104,7 +104,6 @@ public class WeldServletContainerInitializer implements ServletContainerInitiali
     @Override
     public void onStartup(Set<Class<?>> classes, ServletContext context) throws ServletException {
         log.info("WeldServletContainerInitializer onStartup called");
-        new Throwable().printStackTrace();
         ClassLoader classLoader = Reflections.getClassLoader();
 
         URLScanner scanner = createUrlScanner(classLoader, context);
@@ -124,7 +123,8 @@ public class WeldServletContainerInitializer implements ServletContainerInitiali
         bootstrap.startContainer(Environments.SERVLET, deployment).startInitialization();
         WeldManager manager = bootstrap.getManager(deployment.getWebAppBeanDeploymentArchive());
 
-        ContainerContext cc = new ContainerContext(new ServletContextEvent(context), manager);
+        ServletContextEvent fakeEvent = new ServletContextEvent(context);
+        ContainerContext cc = new ContainerContext(fakeEvent, manager);
         StringBuilder dump = new StringBuilder();
         Container container = findContainer(cc, dump);
         if (container == null) {
@@ -154,7 +154,7 @@ public class WeldServletContainerInitializer implements ServletContainerInitiali
         }
 
         bootstrap.deployBeans().validateBeans().endInitialization();
-
+        weldListener.contextInitialized(fakeEvent);
         registerDestroyListener(context);
     }
 
@@ -234,6 +234,9 @@ public class WeldServletContainerInitializer implements ServletContainerInitiali
 
                 if (container != null) {
                     container.destroy(new ContainerContext(sce, null));
+                }
+                if (weldListener != null) {
+                    weldListener.contextDestroyed(sce);
                 }
             }
 
