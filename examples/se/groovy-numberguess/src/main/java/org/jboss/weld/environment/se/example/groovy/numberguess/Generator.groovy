@@ -1,6 +1,6 @@
 /**
  * JBoss, Home of Professional Open Source
- * Copyright 2009, Red Hat, Inc. and/or its affiliates, and individual
+ * Copyright 2013, Red Hat, Inc. and/or its affiliates, and individual
  * contributors by the @authors tag. See the copyright.txt in the
  * distribution for a full listing of individual contributors.
  *
@@ -14,22 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.environment.se.example.numberguess;
+package org.jboss.weld.environment.se.example.groovy.numberguess
 
-import javax.inject.Qualifier;
-import java.lang.annotation.Documented;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
+import javax.enterprise.context.ApplicationScoped
+import javax.enterprise.inject.Produces
 
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.PARAMETER;
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+@ApplicationScoped
+class Generator {
 
-@Target({TYPE, METHOD, PARAMETER, FIELD})
-@Retention(RUNTIME)
-@Documented
-@Qualifier
-public @interface Random {
+    def random = new java.util.Random(System.currentTimeMillis());
+    def maxNumber = 100;
+
+
+    def next() {
+        return getRandom().nextInt(maxNumber);
+    }
+
+    @Produces
+    @MaxNumber
+    def getMaxNumber() {
+        return maxNumber;
+    }
 }
