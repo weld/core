@@ -208,21 +208,18 @@ public class Validator implements Service {
             if (interceptors.size() > 0) {
                 boolean passivationCapabilityCheckRequired = beanManager.isPassivatingScope(classBean.getScope());
                 for (InterceptorMetadata<?> interceptorMetadata : interceptors) {
-                    if (interceptorMetadata.getInterceptorFactory() instanceof CdiInterceptorFactory<?>) {
+                    // in the case of CDI interceptors we only need to additionally validate passivation capability (if required)
+                    if (interceptorMetadata.getInterceptorFactory() instanceof CdiInterceptorFactory<?> && passivationCapabilityCheckRequired) {
                         CdiInterceptorFactory<?> cdiInterceptorFactory = (CdiInterceptorFactory<?>) interceptorMetadata.getInterceptorFactory();
                         Interceptor<?> interceptor = cdiInterceptorFactory.getInterceptor();
 
-                        if (passivationCapabilityCheckRequired) {
-                            boolean isSerializable = (interceptor instanceof InterceptorImpl) ? ((InterceptorImpl<?>) interceptor).isSerializable() : Beans.isPassivationCapableDependency(interceptor);
-                            if (!isSerializable) {
-                                throw ValidatorLogger.LOG.passivatingBeanWithNonserializableInterceptor(classBean, interceptor);
-                            }
+                        boolean isSerializable = (interceptor instanceof InterceptorImpl) ? ((InterceptorImpl<?>) interceptor).isSerializable() : Beans.isPassivationCapableDependency(interceptor);
+                        if (!isSerializable) {
+                            throw ValidatorLogger.LOG.passivatingBeanWithNonserializableInterceptor(classBean, interceptor);
                         }
                         for (InjectionPoint injectionPoint : interceptor.getInjectionPoints()) {
                             Bean<?> resolvedBean = beanManager.resolve(beanManager.getBeans(injectionPoint));
-                            if (passivationCapabilityCheckRequired) {
-                                validateInjectionPointPassivationCapable(injectionPoint, resolvedBean, beanManager);
-                            }
+                            validateInjectionPointPassivationCapable(injectionPoint, resolvedBean, beanManager);
                         }
                     }
                     if (interceptorMetadata.getInterceptorFactory() instanceof ClassMetadataInterceptorFactory<?>) {
