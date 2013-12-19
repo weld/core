@@ -34,6 +34,9 @@ import javax.servlet.http.HttpSessionEvent;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.bean.builtin.BeanManagerProxy;
+import org.jboss.weld.event.ObserverNotifier;
+import org.jboss.weld.literal.DestroyedLiteral;
+import org.jboss.weld.literal.InitializedLiteral;
 import org.jboss.weld.logging.ServletLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.servlet.api.InitParameters;
@@ -57,6 +60,8 @@ import org.jboss.weld.util.servlet.ServletUtils;
  * @author Marko Luksa
  */
 public class WeldInitialListener extends AbstractServletListener {
+
+    private static final String LAZY_CONVERSATION_CONTEXT_PARAM = "org.jboss.weld.context.conversation.lazy";
 
     @Inject
     private BeanManagerImpl beanManager;
@@ -82,7 +87,8 @@ public class WeldInitialListener extends AbstractServletListener {
         HttpContextActivationFilter filter = ServletUtils.getContextActivationFilter(beanManager, ctx);
         final boolean ignoreForwards = getBooleanInitParameter(ctx, InitParameters.CONTEXT_IGNORE_FORWARD, true);
         final boolean ignoreIncludes = getBooleanInitParameter(ctx, InitParameters.CONTEXT_IGNORE_INCLUDE, true);
-        this.lifecycle = new HttpContextLifecycle(beanManager, filter, ignoreForwards, ignoreIncludes);
+        final boolean lazyConversationContext = initLazyConversationContext(beanManager, ctx);
+        this.lifecycle = new HttpContextLifecycle(beanManager, filter, ignoreForwards, ignoreIncludes, lazyConversationContext);
         if (Boolean.valueOf(ctx.getInitParameter(CONVERSATION_FILTER_REGISTERED))) {
             this.lifecycle.setConversationActivationEnabled(false);
         }
@@ -95,6 +101,18 @@ public class WeldInitialListener extends AbstractServletListener {
             return defaultValue;
         }
         return Boolean.valueOf(value);
+    }
+
+    /**
+     * The lazy conversation context can be configured to be enabled or disabled in web.xml. If not configured, the default behavior depends on whether an
+     * observer for the Initialized(ConversationScoped.class) event is present or not. If an observer is present, the lazy conversation context is disabled by
+     * default. Otherwise, it is enabled.
+     */
+    private boolean initLazyConversationContext(BeanManagerImpl manager, ServletContext ctx) {
+        ObserverNotifier notifier = manager.getAccessibleLenientObserverNotifier();
+        boolean noObservers = notifier.resolveObserverMethods(notifier.buildEventResolvable(HttpServletRequest.class, InitializedLiteral.CONVERSATION)).isEmpty()
+                && notifier.resolveObserverMethods(notifier.buildEventResolvable(HttpServletRequest.class, DestroyedLiteral.CONVERSATION)).isEmpty();
+        return getBooleanInitParameter(ctx, LAZY_CONVERSATION_CONTEXT_PARAM, noObservers);
     }
 
     @Override
