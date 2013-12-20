@@ -139,7 +139,7 @@ public class BeanMethods {
 
         @Override
         public void processMethod(EnhancedAnnotatedMethod<?, ? super T> method) {
-            if (isValidTargetClassLifecycleInterceptorMethod(method)) {
+            if (methodHasNoParameters(method)) {
                 if (foundMethod != null) {
                     duplicateMethod(method);
                 }
@@ -147,9 +147,8 @@ public class BeanMethods {
             }
         }
 
-        private boolean isValidTargetClassLifecycleInterceptorMethod(EnhancedAnnotatedMethod<?, ? super T> method) {
-            // TODO: this method actually duplicates code in InterceptorMetadataUtils.isValidTargetClassLifecycleInterceptorMethod
-            return Void.TYPE.equals(method.getJavaClass()) && method.getParameterTypesAsArray().length == 0;
+        private boolean methodHasNoParameters(EnhancedAnnotatedMethod<?, ? super T> method) {
+            return method.getParameterTypesAsArray().length == 0;
         }
 
         @Override
