@@ -76,14 +76,28 @@
         </para>
 
         <para>
-            You also need to explicitly specify the servlet listener (used to boot Weld, and control its interaction
-            with requests) in
+            You also need to explicitly specify two listeners in
             <literal>WEB-INF/web.xml</literal>
             in the web root:
         </para>
+<itemizedlist>
+            <listitem>
+                <para>
+                    <literal>org.jboss.weld.servlet.WeldInitialListener</literal>  need to be registered as the first listener, listens for context/session/request creation/destruction) 
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    <literal>org.jboss.weld.servlet.WeldTerminalListener</literal> as the last one. Listener activates the session context before other listeners accesses it (the listeners are notified in reverse order when a session is being destroyed)
+                </para>
+            </listitem>
+</itemizedlist>
 
         <programlisting role="XML"><![CDATA[<listener>
-   <listener-class>org.jboss.weld.environment.servlet.Listener</listener-class>
+   <listener-class>org.jboss.weld.servlet.WeldInitialListener</listener-class>
+   ...
+   ...
+   <listener-class>org.jboss.weld.servlet.WeldTerminalListener</listener-class>
 </listener>]]></programlisting>
 
         <section>
