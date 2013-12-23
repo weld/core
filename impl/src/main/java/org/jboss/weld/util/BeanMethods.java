@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -131,6 +132,7 @@ public class BeanMethods {
 
         protected List<AnnotatedMethod<? super T>> result = new ArrayList<AnnotatedMethod<? super T>>();
         protected EnhancedAnnotatedMethod<?, ? super T> foundMethod = null;
+        private static final Logger log = Logger.getLogger("AbstractLifecycleEventCallbackMethodListBuilder");
 
         @Override
         public void levelStart(Class<? super T> clazz) {
@@ -139,17 +141,28 @@ public class BeanMethods {
 
         @Override
         public void processMethod(EnhancedAnnotatedMethod<?, ? super T> method) {
-            if (isValidTargetClassLifecycleInterceptorMethod(method)) {
+            if (methodHasNoParameters(method)) {
                 if (foundMethod != null) {
                     duplicateMethod(method);
                 }
                 foundMethod = method;
+                if (!methodReturnTypeIsVoid(method)) {
+                    // not 100% valid target class lifecycle interceptor method, we should warn
+                    log.warning("Method " + method.getJavaMember().getName() + "in the class" + method.getDeclaringType().getJavaClass().getSimpleName()
+                            + "is not an valid target class lifecycle interceptor method, because it is not void.");
+                }
+            } else {
+                log.warning("Method " + method.getJavaMember().getName() + "in the class" + method.getDeclaringType().getJavaClass().getSimpleName()
+                        + "is not an valid target class lifecycle interceptor method. It is not void and contains parameters");
             }
         }
 
-        private boolean isValidTargetClassLifecycleInterceptorMethod(EnhancedAnnotatedMethod<?, ? super T> method) {
-            // TODO: this method actually duplicates code in InterceptorMetadataUtils.isValidTargetClassLifecycleInterceptorMethod
-            return Void.TYPE.equals(method.getJavaClass()) && method.getParameterTypesAsArray().length == 0;
+        private boolean methodReturnTypeIsVoid(EnhancedAnnotatedMethod<?, ? super T> method) {
+            return Void.TYPE.equals(method.getJavaClass());
+        }
+
+        private boolean methodHasNoParameters(EnhancedAnnotatedMethod<?, ? super T> method) {
+            return method.getParameterTypesAsArray().length == 0;
         }
 
         @Override
