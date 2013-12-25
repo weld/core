@@ -619,5 +619,9 @@ public interface BeanLogger extends WeldLogger {
     @Message(id = 1551, value = "A producer field's type cannot be a parameterized type with wildcards. Field {0}", format = Format.MESSAGE_FORMAT)
     DefinitionException producerFieldCannotHaveAWildcardBeanType(Object param1);
 
+    @LogMessage(level = Level.WARN)
+    @Message(id = 1552, value = "An extension ({0}) has a non-static public field ({1}).", format = Format.MESSAGE_FORMAT)
+    void extensionWithNonStaticPublicField(Object param1, Object param2);
+
 
 }
