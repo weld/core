@@ -17,11 +17,14 @@
 package org.jboss.weld.bean.builtin;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Member;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Extension;
 
@@ -29,6 +32,7 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bean.BeanIdentifiers;
 import org.jboss.weld.bean.StringBeanIdentifier;
 import org.jboss.weld.bootstrap.spi.Metadata;
+import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Proxies;
 
@@ -48,8 +52,20 @@ public class ExtensionBean extends AbstractBuiltInBean<Extension> {
         this.instance = instance;
         this.passivationCapable = clazz.isSerializable();
         this.proxiable = Proxies.isTypeProxyable(clazz.getBaseType(), manager.getServices());
+        checkPublicFields(clazz);
     }
 
+    private void checkPublicFields(EnhancedAnnotatedType<Extension> clazz) {
+        for (AnnotatedField<?> field : clazz.getFields()) {
+            Member member = field.getJavaMember();
+            if (Modifier.isPublic(member.getModifiers()) && !Modifier.isStatic(member.getModifiers())) {
+                // warn when an extension has a non-static public field
+                BeanLogger.LOG.extensionWithNonStaticPublicField(clazz.getBaseType(), field.getJavaMember());
+            }
+        }
+    }
+
+    @Override
     public Set<Type> getTypes() {
         return annotatedType.getTypeClosure();
     }
@@ -69,6 +85,7 @@ public class ExtensionBean extends AbstractBuiltInBean<Extension> {
         return instance.getValue();
     }
 
+    @Override
     public void destroy(Extension instance, CreationalContext<Extension> creationalContext) {
         // No-op
     }
