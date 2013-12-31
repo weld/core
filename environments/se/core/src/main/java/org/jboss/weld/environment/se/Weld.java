@@ -220,6 +220,8 @@ public class Weld {
      * Shuts down Weld.
      */
     public void shutdown() {
-        shutdownManager.shutdown();
+        if (shutdownManager != null) {
+            shutdownManager.shutdown();
+        }
     }
 }
