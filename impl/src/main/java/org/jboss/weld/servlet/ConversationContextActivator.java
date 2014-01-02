@@ -24,6 +24,7 @@ import org.jboss.weld.context.ConversationContext;
 import org.jboss.weld.context.http.HttpConversationContext;
 import org.jboss.weld.context.http.HttpRequestContext;
 import org.jboss.weld.context.http.HttpRequestContextImpl;
+import org.jboss.weld.context.http.LazyHttpConversationContextImpl;
 import org.jboss.weld.event.FastEvent;
 import org.jboss.weld.literal.DestroyedLiteral;
 import org.jboss.weld.literal.InitializedLiteral;
@@ -46,6 +47,7 @@ public class ConversationContextActivator {
     private static final String NO_CID = "nocid";
     private static final String CONVERSATION_PROPAGATION = "conversationPropagation";
     private static final String CONVERSATION_PROPAGATION_NONE = "none";
+
     private static final String CONTEXT_ACTIVATED_IN_REQUEST = ConversationContextActivator.class.getName() + "CONTEXT_ACTIVATED_IN_REQUEST";
 
     private final BeanManagerImpl beanManager;
@@ -55,10 +57,13 @@ public class ConversationContextActivator {
     private final FastEvent<HttpServletRequest> conversationInitializedEvent;
     private final FastEvent<HttpServletRequest> conversationDestroyedEvent;
 
-    protected ConversationContextActivator(BeanManagerImpl beanManager) {
+    private final boolean lazy;
+
+    protected ConversationContextActivator(BeanManagerImpl beanManager, boolean lazy) {
         this.beanManager = beanManager;
         conversationInitializedEvent = FastEvent.of(HttpServletRequest.class, beanManager, InitializedLiteral.CONVERSATION);
         conversationDestroyedEvent = FastEvent.of(HttpServletRequest.class, beanManager, DestroyedLiteral.CONVERSATION);
+        this.lazy = lazy;
     }
 
     private HttpConversationContext httpConversationContext() {
@@ -89,18 +94,13 @@ public class ConversationContextActivator {
 
     protected void activateConversationContext(HttpServletRequest request) {
         HttpConversationContext conversationContext = httpConversationContext();
-        String cid = getConversationId(request, httpConversationContext());
-        ConversationLogger.LOG.resumingConversation(cid);
 
         /*
          * Don't try to reactivate the ConversationContext if we have already activated it for this request WELD-877
          */
         if (!isContextActivatedInRequest(request)) {
             setContextActivatedInRequest(request);
-            conversationContext.activate(cid);
-            if (cid == null) { // transient conversation
-                conversationInitializedEvent.fire(request);
-            }
+            activate(conversationContext, request);
         } else {
             /*
              * We may have previously been associated with a ConversationContext, but the reference to that context may have been lost during a Servlet forward
@@ -108,32 +108,24 @@ public class ConversationContextActivator {
              */
             conversationContext.dissociate(request);
             conversationContext.associate(request);
+            activate(conversationContext, request);
+        }
+    }
+
+    private void activate(HttpConversationContext conversationContext, HttpServletRequest request) {
+        if (lazy) {
+            conversationContext.activate();
+        } else {
+            String cid = determineConversationId(request, conversationContext.getParameterName());
             conversationContext.activate(cid);
+            if (cid == null) { // transient conversation
+                conversationInitializedEvent.fire(request);
+            }
         }
     }
 
     protected void associateConversationContext(HttpServletRequest request) {
         httpConversationContext().associate(request);
-    }
-
-    /**
-     * Gets the propagated conversation id parameter from the request
-     *
-     * @return The conversation id (or null if not found)
-     */
-    private static String getConversationId(HttpServletRequest request, ConversationContext conversationContext) {
-        if (request.getParameter(NO_CID) != null) {
-            return null; // ignore cid; WELD-919
-        }
-
-        if (CONVERSATION_PROPAGATION_NONE.equals(request.getParameter(CONVERSATION_PROPAGATION))) {
-            return null; // conversationPropagation=none (CDI-135)
-        }
-
-        String cidName = conversationContext.getParameterName();
-        String cid = request.getParameter(cidName);
-        ConversationLogger.LOG.foundConversationFromRequest(cid);
-        return cid;
     }
 
     private void setContextActivatedInRequest(HttpServletRequest request) {
@@ -152,6 +144,14 @@ public class ConversationContextActivator {
         ConversationContext conversationContext = httpConversationContext();
         if (conversationContext.isActive()) {
             // Only deactivate the context if one is already active, otherwise we get Exceptions
+            if (conversationContext instanceof LazyHttpConversationContextImpl) {
+                LazyHttpConversationContextImpl lazyConversationContext = (LazyHttpConversationContextImpl) conversationContext;
+                if (!lazyConversationContext.isInitialized()) {
+                    // if this lazy conversation has not been touched yet, just deactivate it
+                    lazyConversationContext.deactivate();
+                    return;
+                }
+            }
             boolean isTransient = conversationContext.getCurrentConversation().isTransient();
             if (ConversationLogger.LOG.isTraceEnabled()) {
                 if (isTransient) {
@@ -186,5 +186,23 @@ public class ConversationContextActivator {
             AbstractConversationContext abstractConversationContext = (AbstractConversationContext) httpConversationContext;
             abstractConversationContext.sessionCreated(request);
         }
+    }
+
+    public static String determineConversationId(HttpServletRequest request, String parameterName) {
+        if (request == null) {
+            throw ConversationLogger.LOG.mustCallAssociateBeforeActivate();
+        }
+        if (request.getParameter(NO_CID) != null) {
+            return null; // ignore cid; WELD-919
+        }
+
+        if (CONVERSATION_PROPAGATION_NONE.equals(request.getParameter(CONVERSATION_PROPAGATION))) {
+            return null; // conversationPropagation=none (CDI-135)
+        }
+
+        String cidName = parameterName;
+        String cid = request.getParameter(cidName);
+        ConversationLogger.LOG.foundConversationFromRequest(cid);
+        return cid;
     }
 }

@@ -72,9 +72,9 @@ public class HttpContextLifecycle implements Service {
 
     private final ServletApiAbstraction servletApi;
 
-    public HttpContextLifecycle(BeanManagerImpl beanManager, HttpContextActivationFilter contextActivationFilter, boolean ignoreForwards, boolean ignoreIncludes) {
+    public HttpContextLifecycle(BeanManagerImpl beanManager, HttpContextActivationFilter contextActivationFilter, boolean ignoreForwards, boolean ignoreIncludes, boolean lazyConversationContext) {
         this.beanManager = beanManager;
-        this.conversationContextActivator = new ConversationContextActivator(beanManager);
+        this.conversationContextActivator = new ConversationContextActivator(beanManager, lazyConversationContext);
         this.conversationActivationEnabled = null;
         this.ignoreForwards = ignoreForwards;
         this.ignoreIncludes = ignoreIncludes;

@@ -42,7 +42,7 @@ public class ConversationImpl implements ManagedConversation, Serializable {
     private boolean _transient;
     private long timeout;
 
-    private ReentrantLock concurrencyLock;
+    private final ReentrantLock concurrencyLock;
     private long lastUsed;
 
     private BeanManagerImpl manager;

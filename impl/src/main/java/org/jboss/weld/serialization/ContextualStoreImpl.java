@@ -74,7 +74,7 @@ public class ContextualStoreImpl implements ContextualStore {
      * @return the contextual
      */
     public <C extends Contextual<I>, I> C getContextual(String id) {
-        return getContextual(new StringBeanIdentifier(id));
+        return this.<C, I>getContextual(new StringBeanIdentifier(id));
     }
 
     @Override
