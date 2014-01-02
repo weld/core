@@ -18,10 +18,6 @@ package org.jboss.weld.tests.unit.deployment.structure.resolution;
 
 import static org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider.STATIC_INSTANCE;
 
-import java.util.Set;
-
-import javax.enterprise.inject.spi.Bean;
-
 import org.jboss.weld.Container;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bean.ManagedBean;
@@ -89,7 +85,6 @@ public class AccessibleManagerResolutionTest {
         Assert.assertEquals(1, root.getBeans(Cow.class).size());
         Assert.assertEquals(0, child.getBeans(Cow.class).size());
         child.addAccessibleBeanManager(root);
-        Set<Bean<?>> beans = child.getBeans(Cow.class);
         Assert.assertEquals(1, child.getBeans(Cow.class).size());
         addBean(child, Chicken.class);
         Assert.assertEquals(1, child.getBeans(Chicken.class).size());
@@ -127,13 +122,13 @@ public class AccessibleManagerResolutionTest {
         Assert.assertEquals(1, child1.getBeans(Horse.class).size());
         Assert.assertEquals(1, grandchild.getBeans(Pig.class).size());
         Assert.assertEquals(1, grandchild.getBeans(Chicken.class).size());
-        Assert.assertEquals(1, grandchild.getBeans(Cow.class).size());
+        Assert.assertEquals(0, grandchild.getBeans(Cow.class).size());
         Assert.assertEquals(1, grandchild.getBeans(Horse.class).size());
         Assert.assertEquals(0, grandchild.getBeans(Cat.class).size());
         Assert.assertEquals(1, greatGrandchild.getBeans(Pig.class).size());
-        Assert.assertEquals(1, greatGrandchild.getBeans(Chicken.class).size());
-        Assert.assertEquals(1, greatGrandchild.getBeans(Cow.class).size());
-        Assert.assertEquals(1, greatGrandchild.getBeans(Horse.class).size());
+        Assert.assertEquals(0, greatGrandchild.getBeans(Chicken.class).size());
+        Assert.assertEquals(0, greatGrandchild.getBeans(Cow.class).size());
+        Assert.assertEquals(0, greatGrandchild.getBeans(Horse.class).size());
         Assert.assertEquals(1, greatGrandchild.getBeans(Cat.class).size());
     }
 
@@ -174,9 +169,9 @@ public class AccessibleManagerResolutionTest {
         addBean(child, Chicken.class);
         addBean(grandchild, Pig.class);
         Assert.assertEquals(1, root.getBeans(Pig.class).size());
-        Assert.assertEquals(1, root.getBeans(Chicken.class).size());
+        Assert.assertEquals(0, root.getBeans(Chicken.class).size());
         Assert.assertEquals(1, root.getBeans(Cow.class).size());
-        Assert.assertEquals(1, child.getBeans(Pig.class).size());
+        Assert.assertEquals(0, child.getBeans(Pig.class).size());
         Assert.assertEquals(1, child.getBeans(Chicken.class).size());
         Assert.assertEquals(1, child.getBeans(Cow.class).size());
         Assert.assertEquals(1, grandchild.getBeans(Pig.class).size());

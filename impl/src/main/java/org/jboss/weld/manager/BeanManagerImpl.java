@@ -17,7 +17,6 @@
 package org.jboss.weld.manager;
 
 import static org.jboss.weld.annotated.AnnotatedTypeValidator.validateAnnotatedType;
-import static org.jboss.weld.manager.BeanManagers.buildAccessibleClosure;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 import static org.jboss.weld.util.reflection.Reflections.isCacheable;
 
@@ -440,7 +439,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
             @Override
             public Iterator<T> iterator() {
-                Set<Iterable<T>> iterable = buildAccessibleClosure(BeanManagerImpl.this, transform);
+                Set<Iterable<T>> iterable = BeanManagers.getDirectlyAccessibleComponents(BeanManagerImpl.this, transform);
                 return Iterators.concat(Iterators.transform(iterable.iterator(), IterableToIteratorFunction.<T>instance()));
             }
 
