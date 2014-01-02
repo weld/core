@@ -38,8 +38,8 @@ public class StartMain {
 
     public WeldContainer go() {
         Weld weld = new Weld();
-        WeldContainer container = weld.initialize();
         Runtime.getRuntime().addShutdownHook(new ShutdownHook(weld));
+        WeldContainer container = weld.initialize();
         return container;
     }
 
