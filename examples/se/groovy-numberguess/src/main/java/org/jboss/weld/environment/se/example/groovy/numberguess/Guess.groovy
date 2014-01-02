@@ -1,6 +1,6 @@
 /**
  * JBoss, Home of Professional Open Source
- * Copyright 2009, Red Hat, Inc. and/or its affiliates, and individual
+ * Copyright 2013, Red Hat, Inc. and/or its affiliates, and individual
  * contributors by the @authors tag. See the copyright.txt in the
  * distribution for a full listing of individual contributors.
  *
@@ -14,28 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.environment.se.example.numberguess;
+package org.jboss.weld.environment.se.example.groovy.numberguess;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
 
-@ApplicationScoped
-public class Generator {
-    private static final long serialVersionUID = -7213673465118041882L;
-    private java.util.Random random = new java.util.Random(System.currentTimeMillis());
-    private int maxNumber = 100;
-
-    java.util.Random getRandom() {
-        return random;
-    }
-
-    int next() {
-        return getRandom().nextInt(maxNumber);
-    }
-
-    @Produces
-    @MaxNumber
-    int getMaxNumber() {
-        return maxNumber;
-    }
+class Guess {
+    int guessNumber;
 }
