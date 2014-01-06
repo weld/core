@@ -157,7 +157,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
     public boolean dissociate(R request) {
         if (isAssociated()) {
             try {
-                copyConversationIdGeneratorAndConversationsToSession(request);
+                copyConversationIdGeneratorAndConversationsToSession();
                 this.associated.set(null);
                 return true;
             } finally {
@@ -168,7 +168,11 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
         }
     }
 
-    public void copyConversationIdGeneratorAndConversationsToSession(R request) {
+    public void copyConversationIdGeneratorAndConversationsToSession() {
+        if (!isAssociated()) {
+            return;
+        }
+        final R request = associated.get();
         /*
         * If the session is available, store the conversation id generator and
         * conversations if necessary.
@@ -181,8 +185,8 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
         }
     }
 
-    public void sessionCreated(R request) {
-        copyConversationIdGeneratorAndConversationsToSession(request);
+    public void sessionCreated() {
+        copyConversationIdGeneratorAndConversationsToSession();
     }
 
 
