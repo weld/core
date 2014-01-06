@@ -114,7 +114,7 @@ public class BasicInjectionTarget<T> extends AbstractProducer<T> implements Inje
         return type;
     }
 
-    protected BeanManagerImpl getBeanManager() {
+    public BeanManagerImpl getBeanManager() {
         return beanManager;
     }
 
