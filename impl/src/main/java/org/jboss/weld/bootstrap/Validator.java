@@ -52,6 +52,7 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.EventMetadata;
 import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.spi.InjectionTarget;
 import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.PassivationCapable;
 import javax.enterprise.inject.spi.Producer;
@@ -87,6 +88,7 @@ import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.UnproxyableResolutionException;
 import org.jboss.weld.injection.producer.AbstractMemberProducer;
+import org.jboss.weld.injection.producer.BasicInjectionTarget;
 import org.jboss.weld.interceptor.reader.ClassMetadataInterceptorFactory;
 import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
@@ -217,6 +219,9 @@ public class Validator implements Service {
                         if (!isSerializable) {
                             throw ValidatorLogger.LOG.passivatingBeanWithNonserializableInterceptor(classBean, interceptor);
                         }
+                        if (interceptor instanceof InterceptorImpl) {
+                            beanManager = ((InterceptorImpl<?>) interceptor).getBeanManager();
+                        }
                         for (InjectionPoint injectionPoint : interceptor.getInjectionPoints()) {
                             Bean<?> resolvedBean = beanManager.resolve(beanManager.getBeans(injectionPoint));
                             validateInjectionPointPassivationCapable(injectionPoint, resolvedBean, beanManager);
@@ -227,6 +232,11 @@ public class Validator implements Service {
                         ClassMetadata<?> classMetadata = interceptorMetadata.getInterceptorClass();
                         if (passivationCapabilityCheckRequired && !Reflections.isSerializable(classMetadata.getJavaClass())) {
                             throw ValidatorLogger.LOG.passivatingBeanWithNonserializableInterceptor(this, classMetadata.getJavaClass().getName());
+                        }
+                        // if we can't get to the interceptor's BeanManager, we will use the bean's BM instead
+                        InjectionTarget<?> injectionTarget = factory.getInjectionTarget();
+                        if (injectionTarget instanceof BasicInjectionTarget<?>) {
+                            beanManager = ((BasicInjectionTarget<?>) injectionTarget).getBeanManager();
                         }
                         for (InjectionPoint injectionPoint : factory.getInjectionTarget().getInjectionPoints()) {
                             validateInjectionPoint(injectionPoint, beanManager);
