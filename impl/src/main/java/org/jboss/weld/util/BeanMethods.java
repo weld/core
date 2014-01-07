@@ -43,6 +43,9 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.collections.WeldCollections;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+
 public class BeanMethods {
 
     private BeanMethods() {
@@ -106,7 +109,7 @@ public class BeanMethods {
      * Get all methods of a given kind using a given {@link MethodListBuilder}.
      */
     private static <T, R> R getMethods(EnhancedAnnotatedType<T> type, MethodListBuilder<T, R> builder) {
-        Collection<EnhancedAnnotatedMethod<?, ? super T>> methods = builder.getAllMethods(type);
+        Collection<EnhancedAnnotatedMethod<?, ? super T>> methods = filterOutBridgeMethods(builder.getAllMethods(type));
         for (Class<? super T> clazz = type.getJavaClass(); clazz != null && clazz != Object.class; clazz = clazz
                 .getSuperclass()) {
             builder.levelStart(clazz);
@@ -284,6 +287,23 @@ public class BeanMethods {
     }
 
     public static <T> Collection<EnhancedAnnotatedMethod<?, ? super T>> getObserverMethods(final EnhancedAnnotatedType<T> type) {
-        return type.getEnhancedMethodsWithAnnotatedParameters(Observes.class);
+        return filterOutBridgeMethods(type.getEnhancedMethodsWithAnnotatedParameters(Observes.class));
+    }
+
+    /**
+     * Oracle JDK 8 compiler (unlike prev versions) generates bridge methods which have method and parameter annotations copied from the original method.
+     * However such methods should not become observers, producers, disposers, initializers and lifecycle callbacks.
+     *
+     * @param methods
+     * @return a collection view with bridge methods filtered out
+     * @see http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6695379
+     */
+    public static <T> Collection<EnhancedAnnotatedMethod<?, ? super T>> filterOutBridgeMethods(final Collection<EnhancedAnnotatedMethod<?, ? super T>> methods) {
+        return Collections2.filter(methods, new Predicate<EnhancedAnnotatedMethod<?, ? super T>>() {
+            @Override
+            public boolean apply(EnhancedAnnotatedMethod<?, ? super T> method) {
+                return !method.getJavaMember().isBridge();
+            }
+        });
     }
 }
