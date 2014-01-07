@@ -24,13 +24,13 @@ import static org.jboss.weld.logging.messages.BeanMessage.LOOKED_UP_CLIENT_PROXY
 import static org.jboss.weld.util.cache.LoadingCacheUtils.getCastCacheValue;
 
 import java.lang.reflect.Type;
+import java.util.Collections;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.exceptions.DefinitionException;
-import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.Proxies.TypeInfo;
@@ -112,9 +112,8 @@ public class ClientProxyProvider {
     private static final CacheLoader<RequestedTypeHolder, Object> CREATE_REQUESTED_TYPE_CLOSURE_CLIENT_PROXY = new CacheLoader<ClientProxyProvider.RequestedTypeHolder, Object>() {
         @Override
         public Object load(RequestedTypeHolder input) {
-            Set<Type> requestedTypeClosure = Container.instance().services().get(SharedObjectCache.class).getTypeClosureHolder(input.requestedType).get();
-            if (Proxies.isTypesProxyable(requestedTypeClosure)) {
-                return createClientProxy(input.bean, requestedTypeClosure);
+            if (Proxies.isTypeProxyable(input.requestedType)) {
+                return createClientProxy(input.bean, Collections.singleton(input.requestedType));
             } else {
                 return BEAN_NOT_PROXYABLE_MARKER;
             }
