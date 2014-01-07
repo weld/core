@@ -19,6 +19,7 @@ package org.jboss.weld.bean.proxy;
 import static org.jboss.weld.util.cache.LoadingCacheUtils.getCastCacheValue;
 
 import java.lang.reflect.Type;
+import java.util.Collections;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.Bean;
@@ -26,7 +27,6 @@ import javax.enterprise.inject.spi.Bean;
 import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.logging.BeanLogger;
-import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.Proxies;
@@ -63,9 +63,8 @@ public class ClientProxyProvider {
     private class CreateClientProxyForType extends CacheLoader<RequestedTypeHolder, Object> {
         @Override
         public Object load(RequestedTypeHolder input) {
-            Set<Type> requestedTypeClosure = services().get(SharedObjectCache.class).getTypeClosureHolder(input.requestedType).get();
-            if (Proxies.isTypesProxyable(requestedTypeClosure, services())) {
-                return createClientProxy(input.bean, requestedTypeClosure);
+            if (Proxies.isTypeProxyable(input.requestedType, services())) {
+                return createClientProxy(input.bean, Collections.singleton(input.requestedType));
             } else {
                 return BEAN_NOT_PROXYABLE_MARKER;
             }
