@@ -48,6 +48,14 @@ import com.google.common.collect.Collections2;
 
 public class BeanMethods {
 
+    @SuppressWarnings("rawtypes")
+    private static final Predicate<EnhancedAnnotatedMethod> BRIDGE_METHOD_FILTER_PREDICATE = new Predicate<EnhancedAnnotatedMethod>() {
+        @Override
+        public boolean apply(EnhancedAnnotatedMethod method) {
+            return !method.getJavaMember().isBridge();
+        }
+    };
+
     private BeanMethods() {
     }
 
@@ -299,11 +307,6 @@ public class BeanMethods {
      * @see http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6695379
      */
     public static <T> Collection<EnhancedAnnotatedMethod<?, ? super T>> filterOutBridgeMethods(final Collection<EnhancedAnnotatedMethod<?, ? super T>> methods) {
-        return Collections2.filter(methods, new Predicate<EnhancedAnnotatedMethod<?, ? super T>>() {
-            @Override
-            public boolean apply(EnhancedAnnotatedMethod<?, ? super T> method) {
-                return !method.getJavaMember().isBridge();
-            }
-        });
+        return Collections2.filter(methods, BRIDGE_METHOD_FILTER_PREDICATE);
     }
 }
