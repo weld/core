@@ -27,10 +27,10 @@ import org.jboss.logging.annotations.Message.Format;
 import org.jboss.logging.annotations.MessageLogger;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.DeploymentException;
+import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.exceptions.InconsistentSpecializationException;
 import org.jboss.weld.exceptions.UnproxyableResolutionException;
 import org.jboss.weld.exceptions.UnserializableDependencyException;
-import org.jboss.weld.exceptions.IllegalArgumentException;
 
 /**
  * Log messages for validation related classes.
@@ -94,10 +94,10 @@ public interface ValidatorLogger extends WeldLogger {
     @Message(id = 1401, value = "Two beans cannot specialize the same bean {0}", format = Format.MESSAGE_FORMAT)
     InconsistentSpecializationException beanSpecializedTooManyTimes(Object param1);
 
-    @Message(id = 1402, value = "The bean {0} declared a passivating scope but has a non-serializable interceptor {1}", format = Format.MESSAGE_FORMAT)
+    @Message(id = 1402, value = "The bean {0} declares a passivating scope but has a non-serializable interceptor {1}", format = Format.MESSAGE_FORMAT)
     DeploymentException passivatingBeanWithNonserializableInterceptor(Object param1, Object param2);
 
-    @Message(id = 1403, value = "The bean {0} declared a passivating scope but has non-serializable decorator {1}", format = Format.MESSAGE_FORMAT)
+    @Message(id = 1403, value = "The bean {0} declares a passivating scope but has a non-serializable decorator {1}", format = Format.MESSAGE_FORMAT)
     UnserializableDependencyException passivatingBeanWithNonserializableDecorator(Object param1, Object param2);
 
     @Message(id = 1404, value = "The injection point {0} is annotated with @New which cannot be combined with other qualifiers", format = Format.MESSAGE_FORMAT)
@@ -132,10 +132,10 @@ public interface ValidatorLogger extends WeldLogger {
      * @deprecated Not in use
      */
     @Deprecated
-    @Message(id = 1412, value = "The bean {0} declares passivating scope but the producer returned a non-serializable bean for injection:  {1}", format = Format.MESSAGE_FORMAT)
+    @Message(id = 1412, value = "The bean {0} declares a passivating scope but the producer returned a non-serializable bean for injection:  {1}", format = Format.MESSAGE_FORMAT)
     String nonSerializableBeanInjectedIntoPassivatingBean(Object param1, Object param2);
 
-    @Message(id = 1413, value = "The bean {0} declares passivating scope but has non-passivation-capable dependency {1}", format = Format.MESSAGE_FORMAT)
+    @Message(id = 1413, value = "The bean {0} declares a passivating scope but has a non-passivation-capable dependency {1}", format = Format.MESSAGE_FORMAT)
     UnserializableDependencyException injectionPointHasNonSerializableDependency(Object param1, Object param2);
 
     @Message(id = 1414, value = "Bean name is ambiguous. Name {0} resolves to beans: {1}", format = Format.MESSAGE_FORMAT)
@@ -351,7 +351,7 @@ public interface ValidatorLogger extends WeldLogger {
     DefinitionException eventMetadataInjectedOutsideOfObserver(Object param1);
 
     @LogMessage(level = Level.WARN)
-    @Message(id = 1473, value = "javax.enterprise.inject.spi.Bean implementation {0} declared a normal scope but does not implement javax.enterprise.inject.spi.PassivationCapable. It won'''t be possible to inject this bean into a bean with passivating scope (@SessionScoped, @ConversationScoped). This can be fixed by assigning the Bean implementation a unique id by implementing the PassivationCapable interface.", format = Format.MESSAGE_FORMAT)
+    @Message(id = 1473, value = "javax.enterprise.inject.spi.Bean implementation {0} declared a normal scope but does not implement javax.enterprise.inject.spi.PassivationCapable. It won'''t be possible to inject this bean into a bean with a passivating scope (@SessionScoped, @ConversationScoped). This can be fixed by assigning the Bean implementation a unique id by implementing the PassivationCapable interface.", format = Format.MESSAGE_FORMAT)
     void beanNotPassivationCapable(Object param1);
 
     @Message(id = 1474, value = "Class {0} is on the classpath, but was ignored because a class it references was not found: {1}.\n", format = Format.MESSAGE_FORMAT)
@@ -363,4 +363,6 @@ public interface ValidatorLogger extends WeldLogger {
     @Message(id = 1476, value = "{0} must be @Dependent", format = Format.MESSAGE_FORMAT)
     DefinitionException interceptorMustBeDependent(Object param1);
 
+    @Message(id = 1477, value = "The bean {0} declares a passivating scope but has a(n) {1} with a non-passivation-capable dependency {2}", format = Format.MESSAGE_FORMAT)
+    UnserializableDependencyException interceptorDecoratorInjectionPointHasNonSerializableDependency(Object param1, Object param2, Object param3);
 }

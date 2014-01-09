@@ -224,7 +224,7 @@ public class Validator implements Service {
                         }
                         for (InjectionPoint injectionPoint : interceptor.getInjectionPoints()) {
                             Bean<?> resolvedBean = beanManager.resolve(beanManager.getBeans(injectionPoint));
-                            validateInjectionPointPassivationCapable(injectionPoint, resolvedBean, beanManager);
+                            validateInterceptorDecoratorInjectionPointPassivationCapable(injectionPoint, resolvedBean, beanManager, classBean);
                         }
                     }
                     if (interceptorMetadata.getInterceptorFactory() instanceof ClassMetadataInterceptorFactory<?>) {
@@ -242,7 +242,7 @@ public class Validator implements Service {
                             validateInjectionPoint(injectionPoint, beanManager);
                             if (passivationCapabilityCheckRequired) {
                                 Bean<?> resolvedBean = beanManager.resolve(beanManager.getBeans(injectionPoint));
-                                validateInjectionPointPassivationCapable(injectionPoint, resolvedBean, beanManager);
+                                validateInterceptorDecoratorInjectionPointPassivationCapable(injectionPoint, resolvedBean, beanManager, classBean);
                             }
                         }
                     }
@@ -267,10 +267,13 @@ public class Validator implements Service {
                     throw ValidatorLogger.LOG.passivatingBeanWithNonserializableDecorator(bean, decorator);
                 }
             }
+            if (decorator instanceof DecoratorImpl) {
+                beanManager = ((DecoratorImpl<?>) decorator).getBeanManager();
+            }
             for (InjectionPoint ij : decorator.getInjectionPoints()) {
                 if (!ij.isDelegate()) {
                     Bean<?> resolvedBean = beanManager.resolve(beanManager.getBeans(ij));
-                    validateInjectionPointPassivationCapable(ij, resolvedBean, beanManager);
+                    validateInterceptorDecoratorInjectionPointPassivationCapable(ij, resolvedBean, beanManager, bean);
                 }
             }
         }
@@ -457,15 +460,28 @@ public class Validator implements Service {
         return annotationType.isAnnotationPresent(Scope.class) || annotationType.isAnnotationPresent(NormalScope.class);
     }
 
-    public void validateInjectionPointPassivationCapable(InjectionPoint ij, Bean<?> resolvedBean, BeanManagerImpl beanManager) {
+    private boolean isInjectionPointPassivationCapable(InjectionPoint ij, Bean<?> resolvedBean, BeanManagerImpl beanManager) {
         if (!Beans.isPassivationCapableDependency(resolvedBean)) {
             if (((ij.getMember() instanceof Field) && ij.isTransient())) {
-                return;
+                return true;
             }
             if (ij.getAnnotated() instanceof AnnotatedParameter<?> && ij.getAnnotated().isAnnotationPresent(TransientReference.class)) {
-                return;
+                return true;
             }
+            return false;
+        }
+        return true;
+    }
+
+    public void validateInjectionPointPassivationCapable(InjectionPoint ij, Bean<?> resolvedBean, BeanManagerImpl beanManager) {
+        if (!isInjectionPointPassivationCapable(ij, resolvedBean, beanManager)) {
             throw ValidatorLogger.LOG.injectionPointHasNonSerializableDependency(ij.getBean(), resolvedBean);
+        }
+    }
+
+    public void validateInterceptorDecoratorInjectionPointPassivationCapable(InjectionPoint ij, Bean<?> resolvedBean, BeanManagerImpl beanManager, Bean<?> bean) {
+        if (!isInjectionPointPassivationCapable(ij, resolvedBean, beanManager)) {
+            throw ValidatorLogger.LOG.interceptorDecoratorInjectionPointHasNonSerializableDependency(bean, ij.getBean(), resolvedBean);
         }
     }
 
