@@ -42,9 +42,9 @@ public class MultiwarProjectNameValidationTest {
 
     @Deployment(testable = false)
     public static Archive<?> getDeployment() {
-        WebArchive war1 = ShrinkWrap.create(WebArchive.class).addClass(Alpha.class)
+        WebArchive war1 = ShrinkWrap.create(WebArchive.class).addClasses(Alpha.class, AlphaListener.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
-        WebArchive war2 = ShrinkWrap.create(WebArchive.class).addClass(Bravo.class)
+        WebArchive war2 = ShrinkWrap.create(WebArchive.class).addClasses(Bravo.class, BravoListener.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
         return ShrinkWrap.create(EnterpriseArchive.class).addAsModules(war1, war2);
     }

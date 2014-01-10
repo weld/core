@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.tests.enterprise.validation;
 
-import javax.enterprise.inject.spi.DeploymentException;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.ShouldThrowException;
 import org.jboss.arquillian.junit.Arquillian;
@@ -34,16 +32,16 @@ import org.junit.runner.RunWith;
 /**
  * Similar to {@link MultiwarProjectNameValidationTest}, but verifies that an ambiguous name is detected if the beans can access
  * each other.
- * 
+ *
  * @author Jozef Hartinger
- * 
+ *
  */
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-public class MultiwarProjectNameValidationTest2 {
+public class MultiwarProjectNameValidation2Test {
 
     @Deployment(testable = false)
-    @ShouldThrowException(DeploymentException.class)
+    @ShouldThrowException(Exception.class)
     public static Archive<?> getDeployment() {
         WebArchive war1 = ShrinkWrap.create(WebArchive.class).addClasses(Alpha.class, Bravo.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
