@@ -33,6 +33,7 @@ import static org.jboss.weld.logging.messages.BeanManagerMessage.TOO_MANY_ACTIVI
 import static org.jboss.weld.logging.messages.BeanManagerMessage.UNPROXYABLE_RESOLUTION;
 import static org.jboss.weld.logging.messages.BeanManagerMessage.UNRESOLVABLE_ELEMENT;
 import static org.jboss.weld.manager.BeanManagers.buildAccessibleClosure;
+import static org.jboss.weld.manager.BeanManagers.buildDirectlyAccessibleClosure;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 import static org.jboss.weld.util.reflection.Reflections.isCacheable;
 
@@ -367,7 +368,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         this.beanResolver = new TypeSafeBeanResolver<Bean<?>>(this, createDynamicAccessibleIterable(beanTransform));
         this.decoratorResolver = new TypeSafeDecoratorResolver(this, createDynamicAccessibleIterable(DecoratorTransform.INSTANCE));
         this.interceptorResolver = new TypeSafeInterceptorResolver(this, createDynamicAccessibleIterable(InterceptorTransform.INSTANCE));
-        this.nameBasedResolver = new NameBasedResolver(this, createDynamicAccessibleIterable(beanTransform));
+        this.nameBasedResolver = new NameBasedResolver(this, createDynamicDirectlyAccessibleIterable(beanTransform));
         this.weldELResolver = new WeldELResolver(this);
         this.childActivities = new CopyOnWriteArraySet<BeanManagerImpl>();
         TypeSafeObserverResolver observerResolver = new TypeSafeObserverResolver(this, createDynamicAccessibleIterable(ObserverMethodTransform.INSTANCE));
@@ -387,6 +388,15 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                 return Iterators.concat(Iterators.transform(iterable.iterator(), IterableToIteratorFunction.<T>instance()));
             }
 
+        };
+    }
+
+    private <T> Iterable<T> createDynamicDirectlyAccessibleIterable(final Transform<T> transform) {
+        return new Iterable<T>() {
+            public Iterator<T> iterator() {
+                Set<Iterable<T>> iterable = buildDirectlyAccessibleClosure(BeanManagerImpl.this, transform);
+                return Iterators.concat(Iterators.transform(iterable.iterator(), IterableToIteratorFunction.<T>instance()));
+            }
         };
     }
 
@@ -521,6 +531,10 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     public Iterable<Bean<?>> getAccessibleBeans() {
         return createDynamicAccessibleIterable(new BeanTransform(this));
+    }
+
+    public Iterable<Bean<?>> getDirectlyAccessibleBeans() {
+        return createDynamicDirectlyAccessibleIterable(new BeanTransform(this));
     }
 
     public Iterable<Interceptor<?>> getAccessibleInterceptors() {
@@ -894,6 +908,10 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     public Iterable<String> getAccessibleNamespaces() {
         // TODO Cache this
         return createDynamicAccessibleIterable(new NamespaceTransform());
+    }
+
+    public Iterable<String> getDirectlyAccessibleNamespaces() {
+        return createDynamicDirectlyAccessibleIterable(new NamespaceTransform());
     }
 
     private Set<CurrentActivity> getCurrentActivities() {

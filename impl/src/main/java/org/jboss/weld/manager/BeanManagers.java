@@ -61,4 +61,13 @@ public class BeanManagers {
         }
     }
 
+    public static <T> Set<Iterable<T>> buildDirectlyAccessibleClosure(BeanManagerImpl beanManager, Transform<T> transform) {
+        Set<Iterable<T>> result = new HashSet<Iterable<T>>();
+        result.add(transform.transform(beanManager));
+        for (BeanManagerImpl accessibleBeanManager : beanManager.getAccessibleManagers()) {
+            result.add(transform.transform(accessibleBeanManager));
+        }
+        return result;
+    }
+
 }

@@ -51,6 +51,7 @@ import javax.inject.Scope;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Multimaps;
 import com.google.common.collect.SetMultimap;
+
 import org.jboss.weld.Container;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.AbstractProducerBean;
@@ -136,6 +137,8 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
  * @author Ales Justin
  */
 public class Validator implements Service {
+
+    private static final String ADDITIONAL_BEAN_ARCHIVE_NAME = ".additionalClasses";
 
     private static final LocLogger log = loggerFactory().getLogger(BOOTSTRAP);
 
@@ -456,6 +459,11 @@ public class Validator implements Service {
     }
 
     public void validateBeanNames(BeanManagerImpl beanManager) {
+        // hack for WELD-1584 - do not validate names in the additional archive
+        if (beanManager.getId().endsWith(ADDITIONAL_BEAN_ARCHIVE_NAME)) {
+            return;
+        }
+
         SetMultimap<String, Bean<?>> namedAccessibleBeans = Multimaps.newSetMultimap(new HashMap<String, Collection<Bean<?>>>(), new Supplier<Set<Bean<?>>>() {
 
             public Set<Bean<?>> get() {
@@ -463,14 +471,14 @@ public class Validator implements Service {
             }
 
         });
-        for (Bean<?> bean : beanManager.getAccessibleBeans()) {
+        for (Bean<?> bean : beanManager.getDirectlyAccessibleBeans()) {
             if (bean.getName() != null) {
                 namedAccessibleBeans.put(bean.getName(), bean);
             }
         }
 
-        List<String> accessibleNamespaces = new ArrayList<String>();
-        for (String namespace : beanManager.getAccessibleNamespaces()) {
+        Set<String> accessibleNamespaces = new HashSet<String>();
+        for (String namespace : beanManager.getDirectlyAccessibleNamespaces()) {
             accessibleNamespaces.add(namespace);
         }
 
