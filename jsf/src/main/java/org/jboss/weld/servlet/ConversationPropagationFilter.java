@@ -16,11 +16,7 @@
  */
 package org.jboss.weld.servlet;
 
-import org.jboss.weld.Container;
-import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
-import org.jboss.weld.context.ConversationContext;
-import org.jboss.weld.context.http.HttpConversationContext;
-import org.jboss.weld.jsf.FacesUrlTransformer;
+import java.io.IOException;
 
 import javax.enterprise.context.Conversation;
 import javax.enterprise.context.spi.Context;
@@ -35,7 +31,12 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
-import java.io.IOException;
+
+import org.jboss.weld.Container;
+import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
+import org.jboss.weld.context.ConversationContext;
+import org.jboss.weld.context.http.HttpConversationContext;
+import org.jboss.weld.jsf.FacesUrlTransformer;
 
 /**
  * <p>
@@ -50,7 +51,9 @@ import java.io.IOException;
  * </p>
  *
  * @author Nicklas Karlsson
+ * @deprecated See also WELD-1262 and JBPAPP6-1664
  */
+@Deprecated
 public class ConversationPropagationFilter implements Filter {
     private String contextId;
 
