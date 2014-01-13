@@ -3,7 +3,7 @@
 <suite name="Weld / JBoss AS run of CDI TCK" verbose="0" configfailurepolicy="continue">
 
     <listeners>
-        <listener class-name="org.jboss.cdi.tck.impl.testng.ConfigurationLoggingListener"/>  
+        <listener class-name="org.jboss.cdi.tck.impl.testng.ConfigurationLoggingListener"/>
         <listener class-name="org.jboss.cdi.tck.impl.testng.SingleTestClassMethodInterceptor"/>
         <listener class-name="org.jboss.cdi.tck.impl.testng.ProgressLoggingTestListener"/>
         <!-- The default JUnit XML reporter is disabled -->
@@ -34,6 +34,13 @@
             <!-- Issues in Weld (the RI) -->
 
             <!-- Issues in WildFly -->
+            <!-- WFLY-2654 -->
+            <class name="org.jboss.cdi.tck.interceptors.tests.contract.aroundTimeout.AroundTimeoutInterceptorTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
+
         </classes>
     </test>
 
