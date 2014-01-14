@@ -22,25 +22,54 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.resources.ReflectionCache;
-import org.jboss.weld.resources.spi.AnnotationDiscovery;
 
 /**
- * Basic implementation of {@link AnnotationDiscovery} which uses Java Reflection. This is the fallback option if an annotation
- * index is not available.
+ * Wrapper over {@link ReflectionCache} capable of determining whether a given class
+ * has a given annotation or not, as defined by the CDI 1.1 specification (11.5.6).
  *
  * @author Jozef Hartinger
  *
  */
-public class SimpleAnnotationDiscovery implements AnnotationDiscovery {
+public class RequiredAnnotationDiscovery implements Service {
 
     private final ReflectionCache cache;
 
-    public SimpleAnnotationDiscovery(ReflectionCache cache) {
+    public RequiredAnnotationDiscovery(ReflectionCache cache) {
         this.cache = cache;
     }
 
-    @Override
+    /**
+     * <p>
+     * Indicates whether the given class contains an annotation of the given annotation type.
+     * </p>
+     *
+     * <p>
+     * The set is referred to as <em>M</em> hereafter
+     * </p>
+     *
+     * <p>
+     * The given class is said to contain the given annotation if any of these applies:
+     * </p>
+     *
+     * <ul>
+     * <li>The required annotation or an annotation annotated with the required annotation is present on the class</li>
+     * <li>The required annotation or an annotation annotated with the required annotation, which is annotated with {@link Inherited}, is present on a direct or
+     * indirect superclass of the given class</li>
+     * <li>The required annotation or an annotation annotated with the required annotation is present on a field or method declared by the given class or any
+     * direct or indirect superclass of the given class</li>
+     * <li>The required annotation or an annotation annotated with the required annotation is present on a parameter of a method declared by the given class or
+     * any direct or indirect superclass of the given class</li>
+     * <li>The required annotation or an annotation annotated with the required annotation is present on a constructor declared by the given class</li>
+     * <li>The required annotation or an annotation annotated with the required annotation is present on a parameter of a constructor declared by the given
+     * class</li>
+     * </ul>
+     *
+     * @param javaClass the given class
+     * @param annotation the given annotation type
+     * @return
+     */
     public boolean containsAnnotation(Class<?> javaClass, Class<? extends Annotation> requiredAnnotation) {
         for (Class<?> clazz = javaClass; clazz != null && clazz != Object.class; clazz = clazz.getSuperclass()) {
             // class level annotations

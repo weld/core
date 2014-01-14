@@ -31,14 +31,13 @@ import java.util.Set;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.New;
-import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.enhanced.MethodSignature;
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
-import org.jboss.weld.annotated.slim.backed.BackedAnnotatedType;
+import org.jboss.weld.annotated.slim.SlimAnnotatedTypeContext;
 import org.jboss.weld.bean.AbstractBean;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.DecoratorImpl;
@@ -70,8 +69,7 @@ import com.google.common.collect.Iterables;
 
 public class BeanDeployerEnvironment {
 
-    private final Set<SlimAnnotatedType<?>> annotatedTypes;
-    private final Map<AnnotatedType<?>, Extension> annotatedTypeSource;
+    private final Set<SlimAnnotatedTypeContext<?>> annotatedTypes;
     private final Set<Class<?>> vetoedClasses;
     private final LoadingCache<Class<?>, Set<AbstractClassBean<?>>> classBeanMap;
     private final LoadingCache<WeldMethodKey, Set<ProducerMethod<?, ?>>> producerMethodBeanMap;
@@ -91,8 +89,7 @@ public class BeanDeployerEnvironment {
 
     protected BeanDeployerEnvironment(EjbDescriptors ejbDescriptors, BeanManagerImpl manager) {
         this(
-                new HashSet<SlimAnnotatedType<?>>(),
-                new HashMap<AnnotatedType<?>, Extension>(),
+                new HashSet<SlimAnnotatedTypeContext<?>>(),
                 new HashSet<Class<?>>(),
                 Multimaps.<Class<?>, AbstractClassBean<?>>newConcurrentSetMultimap(),
                 new HashSet<ProducerField<?, ?>>(),
@@ -110,8 +107,7 @@ public class BeanDeployerEnvironment {
     }
 
     protected BeanDeployerEnvironment(
-            Set<SlimAnnotatedType<?>> annotatedTypes,
-            Map<AnnotatedType<?>, Extension> annotatedTypeSource,
+            Set<SlimAnnotatedTypeContext<?>> annotatedTypes,
             Set<Class<?>> vetoedClasses,
             LoadingCache<Class<?>, Set<AbstractClassBean<?>>> classBeanMap,
             Set<ProducerField<?, ?>> producerFields,
@@ -127,7 +123,6 @@ public class BeanDeployerEnvironment {
             Map<InternalEjbDescriptor<?>, EnhancedAnnotatedType<?>> newSessionBeanDescriptorsFromInjectionPoint,
             BeanManagerImpl manager) {
         this.annotatedTypes = annotatedTypes;
-        this.annotatedTypeSource = annotatedTypeSource;
         this.vetoedClasses = vetoedClasses;
         this.classBeanMap = classBeanMap;
         this.producerFields = producerFields;
@@ -146,46 +141,32 @@ public class BeanDeployerEnvironment {
         this.manager = manager;
     }
 
-    public void addAnnotatedType(SlimAnnotatedType<?> annotatedType) {
+    public void addAnnotatedType(SlimAnnotatedTypeContext<?> annotatedType) {
         this.annotatedTypes.add(annotatedType);
     }
 
-    public void addAnnotatedTypes(Collection<SlimAnnotatedType<?>> annotatedTypes) {
+    public void addAnnotatedTypes(Collection<SlimAnnotatedTypeContext<?>> annotatedTypes) {
         this.annotatedTypes.addAll(annotatedTypes);
     }
 
     public void addSyntheticAnnotatedType(SlimAnnotatedType<?> annotatedType, Extension extension) {
-        addAnnotatedType(annotatedType);
-        annotatedTypeSource.put(annotatedType, extension);
+        addAnnotatedType(SlimAnnotatedTypeContext.of(annotatedType, classTransformer, extension));
     }
 
-    public Set<SlimAnnotatedType<?>> getAnnotatedTypes() {
+    public Set<SlimAnnotatedTypeContext<?>> getAnnotatedTypes() {
         return Collections.unmodifiableSet(annotatedTypes);
     }
 
-    public Extension getAnnotatedTypeSource(AnnotatedType<?> annotatedType) {
-        return annotatedTypeSource.get(annotatedType);
-    }
-
-    public void removeAnnotatedType(AnnotatedType<?> annotatedType) {
+    public void removeAnnotatedType(SlimAnnotatedTypeContext<?> annotatedType) {
         annotatedTypes.remove(annotatedType);
     }
 
-    public void removeAnnotatedTypes(Collection<AnnotatedType<?>> annotatedTypes) {
-        for (AnnotatedType<?> annotatedType : annotatedTypes) {
-            removeAnnotatedType(annotatedType);
-        }
+    public void removeAnnotatedTypes(Collection<SlimAnnotatedTypeContext<?>> annotatedTypes) {
+        this.annotatedTypes.removeAll(annotatedTypes);
     }
 
     public void vetoJavaClass(Class<?> javaClass) {
         vetoedClasses.add(javaClass);
-    }
-
-    public void vetoAnnotatedType(AnnotatedType<?> annotatedType) {
-        if (annotatedType instanceof BackedAnnotatedType<?>) {
-            vetoJavaClass(annotatedType.getJavaClass());
-        }
-        removeAnnotatedType(annotatedType);
     }
 
     public boolean isVetoed(Class<?> clazz) {
@@ -449,7 +430,6 @@ public class BeanDeployerEnvironment {
 
     public void cleanup() {
         this.annotatedTypes.clear();
-        this.annotatedTypeSource.clear();
         this.vetoedClasses.clear();
         this.classBeanMap.invalidateAll();
         this.producerMethodBeanMap.invalidateAll();

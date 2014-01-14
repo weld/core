@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.reflection.GenericArrayTypeImpl;
 import org.jboss.weld.util.reflection.ParameterizedTypeImpl;
 import org.jboss.weld.util.reflection.RawType;
@@ -40,6 +41,13 @@ import com.google.common.collect.Iterables;
  * @author Pete Muir
  */
 public class Types {
+
+    public static Function<Type, Class<?>> TYPE_TO_CLASS_FUNCTION = new Function<Type, Class<?>>() {
+        @Override
+        public Class<?> apply(Type input) {
+            return Reflections.getRawType(input);
+        }
+    };
 
     private Types() {
     }
@@ -178,12 +186,18 @@ public class Types {
     }
 
     public static Set<Class<?>> getRawTypes(Set<Type> types) {
-        return ImmutableSet.copyOf(Iterables.transform(types, new Function<Type, Class<?>>() {
-            @Override
-            public Class<?> apply(Type input) {
-                return Reflections.getRawType(input);
-            }
-        }));
+        return ImmutableSet.copyOf(Iterables.transform(types, TYPE_TO_CLASS_FUNCTION));
+    }
+
+    public static Class<?>[] getRawTypes(Type[] types) {
+        if (types.length == 0) {
+            return Arrays2.EMPTY_CLASS_ARRAY;
+        }
+        Class<?>[] result = new Class<?>[types.length];
+        for (int i = 0; i < types.length; i++) {
+            result[i] = TYPE_TO_CLASS_FUNCTION.apply(types[i]);
+        }
+        return result;
     }
 
     /**

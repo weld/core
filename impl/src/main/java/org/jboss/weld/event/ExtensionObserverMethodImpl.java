@@ -33,7 +33,7 @@ import org.jboss.weld.Container;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.bean.RIBean;
-import org.jboss.weld.bootstrap.events.AbstractContainerEvent;
+import org.jboss.weld.bootstrap.events.AbstractAnnotatedTypeRegisteringEvent;
 import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.logging.EventLogger;
@@ -43,9 +43,8 @@ import org.jboss.weld.util.reflection.Reflections;
 import com.google.common.collect.ImmutableSet;
 
 /**
- * An implementation of {@link ObserverMethod} used for events delivered to extensions. An event can obtain an information about the
- * observer method and receiver used for event delivery using {@link AbstractContainerEvent#getObserverMethod()} or
- * {@link AbstractContainerEvent#getReceiver()}, respectively. The observer method does not require contexts to be active.
+ * An implementation of {@link ObserverMethod} used for events delivered to extensions.
+ * The observer method does not require contexts to be active.
  *
  * @author Jozef Hartinger
  *
@@ -93,20 +92,19 @@ public class ExtensionObserverMethodImpl<T, X> extends ObserverMethodImpl<T, X> 
 
     @Override
     protected void preNotify(T event, Object receiver) {
-        if (event instanceof AbstractContainerEvent) {
-            setNotificationContext((AbstractContainerEvent) event, this, receiver);
+        if (event instanceof AbstractAnnotatedTypeRegisteringEvent) {
+            setNotificationContext((AbstractAnnotatedTypeRegisteringEvent) event, this, receiver);
         }
     }
 
     @Override
     protected void postNotify(T event, Object receiver) {
-        if (event instanceof AbstractContainerEvent) {
-            setNotificationContext((AbstractContainerEvent) event, null, null);
+        if (event instanceof AbstractAnnotatedTypeRegisteringEvent) {
+            setNotificationContext((AbstractAnnotatedTypeRegisteringEvent) event, null, null);
         }
     }
 
-    private void setNotificationContext(AbstractContainerEvent event, ObserverMethod<?> observer, Object receiver) {
-        event.setObserverMethod(observer);
+    private void setNotificationContext(AbstractAnnotatedTypeRegisteringEvent event, ObserverMethod<?> observer, Object receiver) {
         event.setReceiver(receiver);
     }
 
@@ -126,7 +124,7 @@ public class ExtensionObserverMethodImpl<T, X> extends ObserverMethodImpl<T, X> 
         }
     }
 
-    public Collection<Class<? extends Annotation>> getRequiredTypeAnnotations() {
+    public Collection<Class<? extends Annotation>> getRequiredAnnotations() {
         return requiredTypeAnnotations;
     }
 }

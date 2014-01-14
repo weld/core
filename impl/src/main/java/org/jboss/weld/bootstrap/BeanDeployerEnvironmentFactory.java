@@ -18,11 +18,8 @@ package org.jboss.weld.bootstrap;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.Extension;
-
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
-import org.jboss.weld.annotated.slim.SlimAnnotatedType;
+import org.jboss.weld.annotated.slim.SlimAnnotatedTypeContext;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.bean.DisposalMethod;
@@ -52,8 +49,7 @@ public class BeanDeployerEnvironmentFactory {
      */
     public static BeanDeployerEnvironment newConcurrentEnvironment(EjbDescriptors ejbDescriptors, BeanManagerImpl manager) {
         return new BeanDeployerEnvironment(
-                Sets.newSetFromMap(new ConcurrentHashMap<SlimAnnotatedType<?>, Boolean>()),
-                new ConcurrentHashMap<AnnotatedType<?>, Extension>(),
+                Sets.newSetFromMap(new ConcurrentHashMap<SlimAnnotatedTypeContext<?>, Boolean>()),
                 Sets.newSetFromMap(new ConcurrentHashMap<Class<?>, Boolean>()),
                 Multimaps.<Class<?>, AbstractClassBean<?>>newConcurrentSetMultimap(),
                 Sets.newSetFromMap(new ConcurrentHashMap<ProducerField<?, ?>, Boolean>()),

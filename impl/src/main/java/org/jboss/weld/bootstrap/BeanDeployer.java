@@ -33,8 +33,10 @@ import javax.enterprise.inject.spi.ProcessBeanAttributes;
 import javax.enterprise.inject.spi.ProcessManagedBean;
 import javax.interceptor.Interceptor;
 
+import org.jboss.weld.Container;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
+import org.jboss.weld.annotated.slim.SlimAnnotatedTypeContext;
 import org.jboss.weld.annotated.slim.SlimAnnotatedTypeStore;
 import org.jboss.weld.bean.AbstractBean;
 import org.jboss.weld.bean.AbstractClassBean;
@@ -52,13 +54,12 @@ import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.resources.spi.ClassFileServices;
 import org.jboss.weld.resources.spi.ResourceLoader;
-import org.jboss.weld.resources.spi.ResourceLoadingException;
 import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.AnnotationApiAbstraction;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.collections.Multimaps;
-import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
 
 import com.google.common.cache.LoadingCache;
@@ -74,8 +75,8 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
     private final ResourceLoader resourceLoader;
     private final SlimAnnotatedTypeStore annotatedTypeStore;
     private final GlobalEnablementBuilder globalEnablementBuilder;
-    private final MissingDependenciesRegistry missingDependenciesRegistry;
     private final AnnotationApiAbstraction annotationApi;
+    private final ClassFileServices classFileServices;
 
     public BeanDeployer(BeanManagerImpl manager, EjbDescriptors ejbDescriptors, ServiceRegistry services) {
         this(manager, ejbDescriptors, services, BeanDeployerEnvironmentFactory.newEnvironment(ejbDescriptors, manager));
@@ -86,53 +87,19 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
         this.resourceLoader = manager.getServices().get(ResourceLoader.class);
         this.annotatedTypeStore = manager.getServices().get(SlimAnnotatedTypeStore.class);
         this.globalEnablementBuilder = manager.getServices().get(GlobalEnablementBuilder.class);
-        this.missingDependenciesRegistry = manager.getServices().get(MissingDependenciesRegistry.class);
         this.annotationApi = manager.getServices().get(AnnotationApiAbstraction.class);
+        this.classFileServices = manager.getServices().get(ClassFileServices.class);
     }
 
-    public BeanDeployer addClass(String className) {
-        Class<?> clazz = loadClass(className);
-        if (clazz != null) {
-            SlimAnnotatedType<?> type = loadAnnotatedType(clazz);
-            if (type != null) {
-                getEnvironment().addAnnotatedType(type);
-            }
+    /**
+     * Loads a given class, creates a {@link SlimAnnotatedTypeContext} for it and stores it in {@link BeanDeployerEnvironment}.
+     */
+    public BeanDeployer addClass(String className, AnnotatedTypeLoader loader) {
+        SlimAnnotatedTypeContext<?> ctx = loader.loadAnnotatedType(className, getManager().getId());
+        if (ctx != null) {
+            getEnvironment().addAnnotatedType(ctx);
         }
         return this;
-    }
-
-    private Class<?> loadClass(String className) {
-        try {
-            return resourceLoader.classForName(className);
-        } catch (ResourceLoadingException e) {
-            handleResourceLoadingException(className, e);
-            return null;
-        }
-    }
-
-    private <T> SlimAnnotatedType<T> loadAnnotatedType(Class<T> clazz) {
-        if (clazz != null && !clazz.isAnnotation()) {
-            try {
-                if (!Beans.isVetoed(clazz)) {   // may throw ArrayStoreException - see bug http://bugs.sun.com/view_bug.do?bug_id=7183985
-                    containerLifecycleEvents.preloadProcessAnnotatedType(clazz);
-                    try {
-                        return classTransformer.getBackedAnnotatedType(clazz, getManager().getId());
-                    } catch (ResourceLoadingException e) {
-                        handleResourceLoadingException(clazz.getName(), e);
-                    }
-                }
-            } catch (ArrayStoreException e) {
-                handleResourceLoadingException(clazz.getName(), e);
-            }
-        }
-        return null;
-    }
-
-    private void handleResourceLoadingException(String className, Throwable e) {
-        String missingDependency = Formats.getNameOfMissingClassLoaderDependency(e);
-        BootstrapLogger.LOG.ignoringClassDueToLoadingError(className, missingDependency);
-        BootstrapLogger.LOG.catchingDebug(e);
-        missingDependenciesRegistry.registerClassWithMissingDependency(className, missingDependency);
     }
 
     private void processPriority(AnnotatedType<?> type) {
@@ -164,29 +131,43 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
     }
 
     public BeanDeployer addClasses(Iterable<String> classes) {
+        AnnotatedTypeLoader loader = createAnnotatedTypeLoader();
         for (String className : classes) {
-            addClass(className);
+            addClass(className, loader);
         }
         return this;
     }
 
-    public void processAnnotatedTypes() {
-        Set<SlimAnnotatedType<?>> classesToBeAdded = new HashSet<SlimAnnotatedType<?>>();
-        Set<AnnotatedType<?>> classesToBeRemoved = new HashSet<AnnotatedType<?>>();
+    protected AnnotatedTypeLoader createAnnotatedTypeLoader() {
+        if (classFileServices != null) {
+            // Since FastProcessAnnotatedTypeResolver is installed after BeanDeployers are created, we need to query deploymentManager's services instead of the manager of this deployer
+            final FastProcessAnnotatedTypeResolver resolver = Container.instance(getManager()).deploymentManager().getServices().get(FastProcessAnnotatedTypeResolver.class);
+            if (resolver != null) {
+                return new FastAnnotatedTypeLoader(getManager(), classTransformer, classFileServices, containerLifecycleEvents, resolver);
+            }
+        }
+        // if FastProcessAnnotatedTypeResolver is not available, fall back to AnnotatedTypeLoader
+        return new AnnotatedTypeLoader(getManager(), classTransformer, containerLifecycleEvents);
+    }
 
-        for (SlimAnnotatedType<?> annotatedType : getEnvironment().getAnnotatedTypes()) {
-            // fire event
-            ProcessAnnotatedTypeImpl<?> event = containerLifecycleEvents.fireProcessAnnotatedType(getManager(), annotatedType, getEnvironment().getAnnotatedTypeSource(annotatedType));
+    public void processAnnotatedTypes() {
+        Set<SlimAnnotatedTypeContext<?>> classesToBeAdded = new HashSet<SlimAnnotatedTypeContext<?>>();
+        Set<SlimAnnotatedTypeContext<?>> classesToBeRemoved = new HashSet<SlimAnnotatedTypeContext<?>>();
+
+        for (SlimAnnotatedTypeContext<?> annotatedTypeContext : getEnvironment().getAnnotatedTypes()) {
+            SlimAnnotatedType<?> annotatedType = annotatedTypeContext.getAnnotatedType();
+            final ProcessAnnotatedTypeImpl<?> event = containerLifecycleEvents.fireProcessAnnotatedType(getManager(), annotatedTypeContext);
+
             // process the result
             if (event != null) {
                 if (event.isVeto()) {
                     getEnvironment().vetoJavaClass(annotatedType.getJavaClass());
-                    classesToBeRemoved.add(annotatedType);
+                    classesToBeRemoved.add(annotatedTypeContext);
                 } else {
                     boolean dirty = event.isDirty();
                     if (dirty) {
-                        classesToBeRemoved.add(annotatedType); // remove the original class
-                        classesToBeAdded.add(event.getResultingAnnotatedType());
+                        classesToBeRemoved.add(annotatedTypeContext); // remove the original class
+                        classesToBeAdded.add(SlimAnnotatedTypeContext.of(event.getResultingAnnotatedType(), classTransformer, annotatedTypeContext.getExtension()));
                     }
                     processPriority(event.getResultingAnnotatedType());
                 }
@@ -199,16 +180,16 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
     }
 
     public void registerAnnotatedTypes() {
-        for (SlimAnnotatedType<?> type : getEnvironment().getAnnotatedTypes()) {
-            annotatedTypeStore.put(type);
+        for (SlimAnnotatedTypeContext<?> ctx : getEnvironment().getAnnotatedTypes()) {
+            annotatedTypeStore.put(ctx.getAnnotatedType());
         }
     }
 
     public void createClassBeans() {
         LoadingCache<Class<?>, Set<SlimAnnotatedType<?>>> otherWeldClasses = Multimaps.newConcurrentSetMultimap();
 
-        for (SlimAnnotatedType<?> annotatedType : getEnvironment().getAnnotatedTypes()) {
-            createClassBean(annotatedType, otherWeldClasses);
+        for (SlimAnnotatedTypeContext<?> ctx : getEnvironment().getAnnotatedTypes()) {
+            createClassBean(ctx.getAnnotatedType(), otherWeldClasses);
         }
         // create session beans
         for (InternalEjbDescriptor<?> ejbDescriptor : getEnvironment().getEjbDescriptors()) {

@@ -59,7 +59,7 @@ import org.jboss.weld.bootstrap.events.AfterTypeDiscoveryImpl;
 import org.jboss.weld.bootstrap.events.BeforeBeanDiscoveryImpl;
 import org.jboss.weld.bootstrap.events.ContainerLifecycleEventPreloader;
 import org.jboss.weld.bootstrap.events.ContainerLifecycleEvents;
-import org.jboss.weld.bootstrap.events.SimpleAnnotationDiscovery;
+import org.jboss.weld.bootstrap.events.RequiredAnnotationDiscovery;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.BootstrapConfiguration;
 import org.jboss.weld.bootstrap.spi.CDI11Deployment;
@@ -115,7 +115,7 @@ import org.jboss.weld.resources.ReflectionCacheFactory;
 import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.resources.SingleThreadScheduledExecutorServiceFactory;
 import org.jboss.weld.resources.WeldClassLoaderResourceLoader;
-import org.jboss.weld.resources.spi.AnnotationDiscovery;
+import org.jboss.weld.resources.spi.ClassFileServices;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ScheduledExecutorServiceFactory;
 import org.jboss.weld.serialization.ContextualStoreImpl;
@@ -270,9 +270,7 @@ public class WeldStartup {
             }
         }
 
-        if (!services.contains(AnnotationDiscovery.class)) {
-            services.add(AnnotationDiscovery.class, new SimpleAnnotationDiscovery(services.get(ReflectionCache.class)));
-        }
+        services.add(RequiredAnnotationDiscovery.class, new RequiredAnnotationDiscovery(services.get(ReflectionCache.class)));
 
         /*
          * Setup Validator
@@ -292,11 +290,26 @@ public class WeldStartup {
         if (preloaderThreadPoolSize > 0) {
             preloader = new ContainerLifecycleEventPreloader(preloaderThreadPoolSize, observerNotificationService.getGlobalLenientObserverNotifier());
         }
-        services.add(ContainerLifecycleEvents.class, new ContainerLifecycleEvents(preloader, services.get(AnnotationDiscovery.class)));
+        services.add(ContainerLifecycleEvents.class, new ContainerLifecycleEvents(preloader, services.get(RequiredAnnotationDiscovery.class)));
         services.add(GlobalEnablementBuilder.class, new GlobalEnablementBuilder());
 
         if (!services.contains(HttpContextActivationFilter.class)) {
             services.add(HttpContextActivationFilter.class, AcceptingHttpContextActivationFilter.INSTANCE);
+        }
+    }
+
+    // needs to be resolved once extension beans are deployed
+    private void installFastProcessAnnotatedTypeResolver(ServiceRegistry services) {
+        ClassFileServices classFileServices = services.get(ClassFileServices.class);
+        if (classFileServices != null) {
+            final GlobalObserverNotifierService observers = services.get(GlobalObserverNotifierService.class);
+            try {
+                final FastProcessAnnotatedTypeResolver resolver = new FastProcessAnnotatedTypeResolver(classFileServices, observers.getAllObserverMethods());
+                services.add(FastProcessAnnotatedTypeResolver.class, resolver);
+            } catch (UnsupportedObserverMethodException e) {
+                BootstrapLogger.LOG.notUsingFastResolver(e.getObserver());
+                return;
+            }
         }
     }
 
@@ -311,6 +324,8 @@ public class WeldStartup {
         ExtensionBeanDeployer extensionBeanDeployer = new ExtensionBeanDeployer(deploymentManager, deployment, bdaMapping, contexts);
         extensionBeanDeployer.addExtensions(extensions);
         extensionBeanDeployer.deployBeans();
+
+        installFastProcessAnnotatedTypeResolver(deploymentManager.getServices());
 
         // Add the Deployment BeanManager Bean to the Deployment BeanManager
         deploymentManager.addBean(new BeanManagerBean(deploymentManager));

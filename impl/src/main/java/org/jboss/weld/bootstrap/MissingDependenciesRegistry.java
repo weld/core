@@ -20,6 +20,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.jboss.weld.bootstrap.api.helpers.AbstractBootstrapService;
+import org.jboss.weld.logging.BootstrapLogger;
+import org.jboss.weld.util.reflection.Formats;
 
 /**
  * Holds information about classes that have missing dependencies (class X references class Y and class Y is not
@@ -37,6 +39,13 @@ public class MissingDependenciesRegistry extends AbstractBootstrapService {
 
     public void registerClassWithMissingDependency(String className, String missingClassName) {
         classToMissingClassMap.put(className, missingClassName);
+    }
+
+    public void handleResourceLoadingException(String className, Throwable e) {
+        String missingDependency = Formats.getNameOfMissingClassLoaderDependency(e);
+        BootstrapLogger.LOG.ignoringClassDueToLoadingError(className, missingDependency);
+        BootstrapLogger.LOG.catchingDebug(e);
+        registerClassWithMissingDependency(className, missingDependency);
     }
 
     public String getMissingDependencyForClass(String className) {

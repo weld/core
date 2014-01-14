@@ -161,14 +161,14 @@ public class BeanDeployment {
         return beanDeploymentArchive;
     }
 
-    protected Iterable<String> loadClasses() {
+    protected Iterable<String> obtainClasses() {
         if (getBeanDeploymentArchive().getBeansXml() != null && getBeanDeploymentArchive().getBeansXml().getBeanDiscoveryMode().equals(BeanDiscoveryMode.NONE)) {
             // if the integrator for some reason ignored the "none" flag make sure we do not process the archive
             return Collections.emptySet();
         }
         Function<Metadata<Filter>, Predicate<String>> filterToPredicateFunction = new Function<Metadata<Filter>, Predicate<String>>() {
 
-            ResourceLoader resourceLoader = beanDeployer.getResourceLoader();
+            final ResourceLoader resourceLoader = beanDeployer.getResourceLoader();
 
             @Override
             public Predicate<String> apply(Metadata<Filter> from) {
@@ -206,7 +206,7 @@ public class BeanDeployment {
     }
 
     public void createClasses() {
-        beanDeployer.addClasses(loadClasses());
+        beanDeployer.addClasses(obtainClasses());
     }
 
     /**
