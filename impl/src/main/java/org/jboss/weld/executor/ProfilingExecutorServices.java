@@ -32,6 +32,7 @@ import com.google.common.util.concurrent.ForwardingExecutorService;
 public class ProfilingExecutorServices implements ExecutorServices {
 
     private class Measurement {
+        private static final int CALLER_STACK_TRACE_ORDER = 3;
         private volatile long start = 0;
         private final int id = executionId.incrementAndGet();
 
@@ -48,7 +49,9 @@ public class ProfilingExecutorServices implements ExecutorServices {
             }
             final long current = System.currentTimeMillis();
             final long time = current - start;
-            BootstrapLogger.LOG.infov("ThreadPool task execution #{0} took {1} ms", id, time);
+            StackTraceElement myCaller = (Thread.currentThread().getStackTrace())[CALLER_STACK_TRACE_ORDER];
+            BootstrapLogger.LOG.infov("ThreadPool task execution with ID #{0} called by {1}.{2}()  took {3} ms", id, myCaller.getClassName(),
+                    myCaller.getMethodName(), time);
             start = 0L;
             executionTimeSum.addAndGet(time);
         }
