@@ -62,7 +62,7 @@ public class BeanIdentifiers {
     }
 
     public static String forSessionBean(EnhancedAnnotatedType<?> type, EjbDescriptor<?> descriptor) {
-        StringBuilder builder = getPrefix(SessionBean.class).append(descriptor.getEjbName());
+        StringBuilder builder = getPrefix(SessionBean.class).append(descriptor.getBeanClass().getName());
         if (!type.isDiscovered()) {
             builder.append(SEPARATOR).append(type.slim().getIdentifier().asString());
         }
@@ -70,7 +70,7 @@ public class BeanIdentifiers {
     }
 
     public static String forNewSessionBean(EjbDescriptor<?> descriptor) {
-        return getPrefix(NewSessionBean.class).append(descriptor.getEjbName()).toString();
+        return getPrefix(NewSessionBean.class).append(descriptor.getBeanClass().getName()).toString();
     }
 
     public static String forProducerField(EnhancedAnnotatedField<?, ?> field, AbstractClassBean<?> declaringBean) {
