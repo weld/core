@@ -54,6 +54,7 @@ public class InternalEjbDescriptor<T> extends ForwardingEjbDescriptor<T> {
     private final EjbDescriptor<T> delegate;
     private final Collection<MethodSignature> removeMethodSignatures;
     private final Set<Class<?>> localBusinessInterfaces;
+    private final Set<Class<?>> remoteBusinessInterfaces;
 
     public InternalEjbDescriptor(EjbDescriptor<T> ejbDescriptor) {
         this.delegate = ejbDescriptor;
@@ -65,6 +66,7 @@ public class InternalEjbDescriptor<T> extends ForwardingEjbDescriptor<T> {
             }
         }
         this.localBusinessInterfaces = ImmutableSet.copyOf(Collections2.transform(getLocalBusinessInterfaces(), BusinessInterfaceDescriptorToClassFunction.INSTANCE));
+        this.remoteBusinessInterfaces = ImmutableSet.copyOf(Collections2.transform(getRemoteBusinessInterfaces(), BusinessInterfaceDescriptorToClassFunction.INSTANCE));
     }
 
     @Override
@@ -90,5 +92,9 @@ public class InternalEjbDescriptor<T> extends ForwardingEjbDescriptor<T> {
 
     public Set<Class<?>> getLocalBusinessInterfacesAsClasses() {
         return localBusinessInterfaces;
+    }
+
+    public Set<Class<?>> getRemoteBusinessInterfacesAsClasses() {
+        return remoteBusinessInterfaces;
     }
 }
