@@ -228,6 +228,7 @@
                                 <jacoco.agent>${jacoco.agent}</jacoco.agent>
                                 <node.address>${node.address}</node.address>
                                 <additional.vm.args>${additional.vm.args}</additional.vm.args>
+                                <org.jboss.remoting-jmx.timeout>360</org.jboss.remoting-jmx.timeout>
                             </systemProperties>
                             <test>${test}</test>
                             <parallel>none</parallel>

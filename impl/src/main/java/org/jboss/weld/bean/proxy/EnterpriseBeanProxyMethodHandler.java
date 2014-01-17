@@ -19,6 +19,7 @@ package org.jboss.weld.bean.proxy;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.util.Set;
 
 import org.jboss.weld.annotated.enhanced.MethodSignature;
 import org.jboss.weld.annotated.enhanced.jlr.MethodSignatureImpl;
@@ -80,7 +81,7 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
     public Object invoke(Object self, Method method, Method proceed, Object[] args) throws Throwable {
         if ("destroy".equals(method.getName()) && Marker.isMarker(0, method, args)) {
             if (bean.getEjbDescriptor().isStateful()) {
-                if(!reference.isRemoved()) {
+                if (!reference.isRemoved()) {
                     reference.remove();
                 }
             }
@@ -113,21 +114,36 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
 
     private Class<?> getBusinessInterface(Method method) {
         Class<?> declaringClass = method.getDeclaringClass();
+        Class<?> businessInterface = null;
+
         if (declaringClass.equals(Object.class)) {
-            return bean.getEjbDescriptor().getObjectInterface();
+            businessInterface = bean.getEjbDescriptor().getObjectInterface();
+        } else {
+            businessInterface = findBusinessInterface(declaringClass, bean.getEjbDescriptor().getLocalBusinessInterfacesAsClasses());
+            if (businessInterface == null) {
+                businessInterface = findBusinessInterface(declaringClass, bean.getEjbDescriptor().getRemoteBusinessInterfacesAsClasses());
+            }
         }
-        if (bean.getEjbDescriptor().getLocalBusinessInterfacesAsClasses().contains(declaringClass)) {
+
+        if (businessInterface == null) {
+            throw new RuntimeException("Unable to locate a business interface declaring " + method);
+        }
+        return businessInterface;
+    }
+
+    private Class<?> findBusinessInterface(Class<?> declaringClass, Set<Class<?>> businessInterfacesClasses) {
+        if (businessInterfacesClasses.contains(declaringClass)) {
             return declaringClass;
         }
         // TODO we can certainly optimize this search algorithm!
-        for (Class<?> view : bean.getEjbDescriptor().getLocalBusinessInterfacesAsClasses()) {
+        for (Class<?> view : businessInterfacesClasses) {
             for (Class<?> currentClass = view; currentClass != Object.class && currentClass != null; currentClass = currentClass.getSuperclass()) {
                 if (currentClass.equals(view)) {
                     return view;
                 }
             }
         }
-        throw new RuntimeException("Unable to locate a business interface declaring " + method);
+        return null;
     }
 
     @SuppressWarnings("unchecked")
