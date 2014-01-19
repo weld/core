@@ -415,9 +415,14 @@ public class ProxyFactory<T> {
         }
         List<DeferredBytecode> initialValueBytecode = new ArrayList<DeferredBytecode>();
 
+
+        ClassMethod staticConstructor = proxyClassType.addMethod(AccessFlag.PUBLIC, "<clinit>", "V");
+
         addFields(proxyClassType, initialValueBytecode);
         addConstructors(proxyClassType, initialValueBytecode);
-        addMethods(proxyClassType);
+        addMethods(proxyClassType, staticConstructor);
+
+        staticConstructor.getCodeAttribute().returnInstruction();
 
         // Additional interfaces whose methods require special handling
         for (Class<?> specialInterface : specialInterfaces) {
@@ -481,12 +486,12 @@ public class ProxyFactory<T> {
 
     }
 
-    protected void addMethods(ClassFile proxyClassType) {
+    protected void addMethods(ClassFile proxyClassType, ClassMethod staticConstructor) {
         // Add all class methods for interception
-        addMethodsFromClass(proxyClassType);
+        addMethodsFromClass(proxyClassType, staticConstructor);
 
         // Add special proxy methods
-        addSpecialMethods(proxyClassType);
+        addSpecialMethods(proxyClassType, staticConstructor);
 
         // Add serialization support methods
         addSerializationSupport(proxyClassType);
@@ -501,7 +506,7 @@ public class ProxyFactory<T> {
         //noop
     }
 
-    protected void addMethodsFromClass(ClassFile proxyClassType) {
+    protected void addMethodsFromClass(ClassFile proxyClassType, ClassMethod staticConstructor) {
         try {
             // Add all methods from the class hierarchy
             Class<?> cls = getBeanType();
@@ -517,7 +522,7 @@ public class ProxyFactory<T> {
                             MethodInformation methodInfo = new RuntimeMethodInformation(method);
                             ClassMethod classMethod = proxyClassType.addMethod(method);
                             addConstructedGuardToMethodBody(classMethod);
-                            createForwardingMethodBody(classMethod, methodInfo);
+                            createForwardingMethodBody(classMethod, methodInfo, staticConstructor);
                             BeanLogger.LOG.addingMethodToProxy(method);
                         } catch (DuplicateMemberException e) {
                             // do nothing. This will happen if superclass methods
@@ -532,7 +537,7 @@ public class ProxyFactory<T> {
                     try {
                         MethodInformation methodInfo = new RuntimeMethodInformation(method);
                         ClassMethod classMethod = proxyClassType.addMethod(method);
-                        createSpecialMethodBody(classMethod, methodInfo);
+                        createSpecialMethodBody(classMethod, methodInfo, staticConstructor);
                         BeanLogger.LOG.addingMethodToProxy(method);
                     } catch (DuplicateMemberException e) {
                     }
@@ -566,8 +571,8 @@ public class ProxyFactory<T> {
 
     }
 
-    protected void createSpecialMethodBody(ClassMethod proxyClassType, MethodInformation method) {
-        createInterceptorBody(proxyClassType, method);
+    protected void createSpecialMethodBody(ClassMethod proxyClassType, MethodInformation method, ClassMethod staticConstructor) {
+        createInterceptorBody(proxyClassType, method, staticConstructor);
     }
 
     /**
@@ -600,8 +605,8 @@ public class ProxyFactory<T> {
         cond.branchEnd(jumpMarker);
     }
 
-    protected void createForwardingMethodBody(ClassMethod classMethod, MethodInformation method) {
-        createInterceptorBody(classMethod, method);
+    protected void createForwardingMethodBody(ClassMethod classMethod, MethodInformation method, ClassMethod staticConstructor) {
+        createInterceptorBody(classMethod, method, staticConstructor);
     }
 
     /**
@@ -616,8 +621,8 @@ public class ProxyFactory<T> {
      * @param method      any JLR method
      * @return the method byte code
      */
-    protected void createInterceptorBody(ClassMethod classMethod, MethodInformation method) {
-        invokeMethodHandler(classMethod, method, true, DEFAULT_METHOD_RESOLVER);
+    protected void createInterceptorBody(ClassMethod classMethod, MethodInformation method, ClassMethod staticConstructor) {
+        invokeMethodHandler(classMethod, method, true, DEFAULT_METHOD_RESOLVER, staticConstructor);
     }
 
     /**
@@ -628,7 +633,7 @@ public class ProxyFactory<T> {
      *                               the method invocation
      * @param bytecodeMethodResolver The resolver that returns the method to invoke
      */
-    protected static void invokeMethodHandler(ClassMethod classMethod, MethodInformation method, boolean addReturnInstruction, BytecodeMethodResolver bytecodeMethodResolver) {
+    protected static void invokeMethodHandler(ClassMethod classMethod, MethodInformation method, boolean addReturnInstruction, BytecodeMethodResolver bytecodeMethodResolver, ClassMethod staticConstructor) {
         // now we need to build the bytecode. The order we do this in is as
         // follows:
         // load methodHandler
@@ -645,7 +650,7 @@ public class ProxyFactory<T> {
         b.aload(0);
         b.getfield(classMethod.getClassFile().getName(), METHOD_HANDLER_FIELD_NAME, DescriptorUtils.classToStringRepresentation(MethodHandler.class));
         b.aload(0);
-        bytecodeMethodResolver.getDeclaredMethod(classMethod, method.getDeclaringClass(), method.getName(), method.getParameterTypes());
+        bytecodeMethodResolver.getDeclaredMethod(classMethod, method.getDeclaringClass(), method.getName(), method.getParameterTypes(), staticConstructor);
         b.aconstNull();
 
         b.iconst(method.getParameterTypes().length);
@@ -697,24 +702,24 @@ public class ProxyFactory<T> {
      *
      * @param proxyClassType the Javassist class description for the proxy type
      */
-    protected void addSpecialMethods(ClassFile proxyClassType) {
+    protected void addSpecialMethods(ClassFile proxyClassType, ClassMethod staticConstructor) {
         try {
             // Add special methods for interceptors
             for (Method method : LifecycleMixin.class.getMethods()) {
                 BeanLogger.LOG.addingMethodToProxy(method);
                 MethodInformation methodInfo = new RuntimeMethodInformation(method);
                 final ClassMethod classMethod = proxyClassType.addMethod(method);
-                createInterceptorBody(classMethod, methodInfo);
+                createInterceptorBody(classMethod, methodInfo, staticConstructor);
             }
             Method getInstanceMethod = TargetInstanceProxy.class.getMethod("getTargetInstance");
             Method getInstanceClassMethod = TargetInstanceProxy.class.getMethod("getTargetClass");
 
             MethodInformation getInstanceMethodInfo = new RuntimeMethodInformation(getInstanceMethod);
-            createInterceptorBody(proxyClassType.addMethod(getInstanceMethod), getInstanceMethodInfo);
+            createInterceptorBody(proxyClassType.addMethod(getInstanceMethod), getInstanceMethodInfo, staticConstructor);
 
 
             MethodInformation getInstanceClassMethodInfo = new RuntimeMethodInformation(getInstanceClassMethod);
-            createInterceptorBody(proxyClassType.addMethod(getInstanceClassMethod), getInstanceClassMethodInfo);
+            createInterceptorBody(proxyClassType.addMethod(getInstanceClassMethod), getInstanceClassMethodInfo, staticConstructor);
 
             Method setMethodHandlerMethod = ProxyObject.class.getMethod("setHandler", MethodHandler.class);
             generateSetMethodHandlerBody(proxyClassType.addMethod(setMethodHandlerMethod));
