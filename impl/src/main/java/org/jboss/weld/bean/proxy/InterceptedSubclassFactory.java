@@ -101,17 +101,17 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
     }
 
     @Override
-    protected void addMethods(ClassFile proxyClassType) {
+    protected void addMethods(ClassFile proxyClassType, ClassMethod staticConstructor) {
         // Add all class methods for interception
-        addMethodsFromClass(proxyClassType);
+        addMethodsFromClass(proxyClassType, staticConstructor);
 
         // Add special proxy methods
-        addSpecialMethods(proxyClassType);
+        addSpecialMethods(proxyClassType, staticConstructor);
 
     }
 
     @Override
-    protected void addMethodsFromClass(ClassFile proxyClassType) {
+    protected void addMethodsFromClass(ClassFile proxyClassType, ClassMethod staticConstructor) {
         try {
             final Set<MethodSignatureImpl> finalMethods = new HashSet<MethodSignatureImpl>();
             // Add all methods from the class hierarchy
@@ -130,7 +130,7 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
 
                             ClassMethod classMethod = proxyClassType.addMethod(method);
                             addConstructedGuardToMethodBody(classMethod);
-                            createForwardingMethodBody(classMethod, methodInfo);
+                            createForwardingMethodBody(classMethod, methodInfo, staticConstructor);
                             BeanLogger.LOG.addingMethodToProxy(method);
                         } catch (DuplicateMemberException e) {
                             // do nothing. This will happen if superclass methods have
@@ -148,7 +148,7 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
                         try {
                             MethodInformation methodInformation = new RuntimeMethodInformation(method);
                             final ClassMethod classMethod = proxyClassType.addMethod(method);
-                            createSpecialMethodBody(classMethod, methodInformation);
+                            createSpecialMethodBody(classMethod, methodInformation, staticConstructor);
                             BeanLogger.LOG.addingMethodToProxy(method);
                         } catch (DuplicateMemberException e) {
                         }
@@ -160,8 +160,8 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
         }
     }
 
-    protected void createForwardingMethodBody(ClassMethod classMethod, MethodInformation method) {
-        createInterceptorBody(classMethod, method, true);
+    protected void createForwardingMethodBody(ClassMethod classMethod, MethodInformation method, ClassMethod staticConstructor) {
+        createInterceptorBody(classMethod, method, true, staticConstructor);
     }
 
     /**
@@ -177,9 +177,9 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
      * @return the method byte code
      */
 
-    protected void createInterceptorBody(ClassMethod method, MethodInformation methodInfo, boolean delegateToSuper) {
+    protected void createInterceptorBody(ClassMethod method, MethodInformation methodInfo, boolean delegateToSuper, ClassMethod staticConstructor) {
 
-        invokeMethodHandler(method, methodInfo, true, DEFAULT_METHOD_RESOLVER, delegateToSuper);
+        invokeMethodHandler(method, methodInfo, true, DEFAULT_METHOD_RESOLVER, delegateToSuper, staticConstructor);
     }
 
     private void createDelegateToSuper(ClassMethod classMethod, MethodInformation method) {
@@ -199,7 +199,7 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
      * @param bytecodeMethodResolver The method resolver
      * @param addProceed
      */
-    protected static void invokeMethodHandler(ClassMethod method, MethodInformation methodInfo, boolean addReturnInstruction, BytecodeMethodResolver bytecodeMethodResolver, boolean addProceed) {
+    protected static void invokeMethodHandler(ClassMethod method, MethodInformation methodInfo, boolean addReturnInstruction, BytecodeMethodResolver bytecodeMethodResolver, boolean addProceed, ClassMethod staticConstructor) {
         // now we need to build the bytecode. The order we do this in is as
         // follows:
         // load methodHandler
@@ -239,10 +239,10 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
             b.branchEnd(invokeSuperDirectly);
         }
         b.aload(0);
-        bytecodeMethodResolver.getDeclaredMethod(method, methodInfo.getDeclaringClass(), methodInfo.getName(), methodInfo.getParameterTypes());
+        bytecodeMethodResolver.getDeclaredMethod(method, methodInfo.getDeclaringClass(), methodInfo.getName(), methodInfo.getParameterTypes(), staticConstructor);
 
         if (addProceed) {
-            bytecodeMethodResolver.getDeclaredMethod(method, method.getClassFile().getName(), methodInfo.getName() + SUPER_DELEGATE_SUFFIX, methodInfo.getParameterTypes());
+            bytecodeMethodResolver.getDeclaredMethod(method, method.getClassFile().getName(), methodInfo.getName() + SUPER_DELEGATE_SUFFIX, methodInfo.getParameterTypes(), staticConstructor);
         } else {
             b.aconstNull();
         }
@@ -295,13 +295,13 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
      *
      * @param proxyClassType the Javassist class description for the proxy type
      */
-    protected void addSpecialMethods(ClassFile proxyClassType) {
+    protected void addSpecialMethods(ClassFile proxyClassType, ClassMethod staticConstructor) {
         try {
             // Add special methods for interceptors
             for (Method method : LifecycleMixin.class.getMethods()) {
                 BeanLogger.LOG.addingMethodToProxy(method);
                 MethodInformation methodInfo = new RuntimeMethodInformation(method);
-                createInterceptorBody(proxyClassType.addMethod(method), methodInfo, false);
+                createInterceptorBody(proxyClassType.addMethod(method), methodInfo, false, staticConstructor);
             }
             Method getInstanceMethod = TargetInstanceProxy.class.getMethod("getTargetInstance");
             Method getInstanceClassMethod = TargetInstanceProxy.class.getMethod("getTargetClass");

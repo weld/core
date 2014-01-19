@@ -20,6 +20,7 @@ package org.jboss.weld.bean.proxy;
 import java.lang.reflect.Method;
 
 import org.jboss.classfilewriter.ClassFile;
+import org.jboss.classfilewriter.ClassMethod;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.logging.BeanLogger;
@@ -47,8 +48,8 @@ public class EnterpriseProxyFactory<T> extends ProxyFactory<T> {
     }
 
     @Override
-    protected void addSpecialMethods(ClassFile proxyClassType) {
-        super.addSpecialMethods(proxyClassType);
+    protected void addSpecialMethods(ClassFile proxyClassType, ClassMethod staticConstructor) {
+        super.addSpecialMethods(proxyClassType, staticConstructor);
 
         // Add methods for the EnterpriseBeanInstance interface
         try {
@@ -56,7 +57,7 @@ public class EnterpriseProxyFactory<T> extends ProxyFactory<T> {
             for (Method method : EnterpriseBeanInstance.class.getMethods()) {
                 BeanLogger.LOG.addingMethodToEnterpriseProxy(method);
                 MethodInformation methodInfo = new RuntimeMethodInformation(method);
-                createInterceptorBody(proxyClassType.addMethod(method), methodInfo);
+                createInterceptorBody(proxyClassType.addMethod(method), methodInfo, staticConstructor);
             }
         } catch (Exception e) {
             throw new WeldException(e);

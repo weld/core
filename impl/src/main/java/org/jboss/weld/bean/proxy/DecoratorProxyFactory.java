@@ -75,13 +75,13 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
      * calls _initMH on the method handler and then stores the result in the
      * methodHandler field as then new methodHandler
      */
-    private void addHandlerInitializerMethod(ClassFile proxyClassType) throws Exception {
+    private void addHandlerInitializerMethod(ClassFile proxyClassType, ClassMethod staticConstructor) throws Exception {
         ClassMethod classMethod = proxyClassType.addMethod(AccessFlag.PRIVATE, INIT_MH_METHOD_NAME, DescriptorUtils.VOID_CLASS_DESCRIPTOR, LJAVA_LANG_OBJECT);
         final CodeAttribute b = classMethod.getCodeAttribute();
         b.aload(0);
         StaticMethodInformation methodInfo = new StaticMethodInformation(INIT_MH_METHOD_NAME, new Class[] { Object.class }, void.class,
                 classMethod.getClassFile().getName());
-        invokeMethodHandler(classMethod, methodInfo, false, DEFAULT_METHOD_RESOLVER);
+        invokeMethodHandler(classMethod, methodInfo, false, DEFAULT_METHOD_RESOLVER, staticConstructor);
         b.checkcast(MethodHandler.class);
         b.putfield(classMethod.getClassFile().getName(), METHOD_HANDLER_FIELD_NAME, DescriptorUtils.classToStringRepresentation(MethodHandler.class));
         b.returnInstruction();
@@ -95,7 +95,7 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
     }
 
     @Override
-    protected void addMethodsFromClass(ClassFile proxyClassType) {
+    protected void addMethodsFromClass(ClassFile proxyClassType, ClassMethod staticConstructor) {
         Method initializerMethod = null;
         int delegateParameterPosition = -1;
         if (delegateInjectionPoint instanceof ParameterInjectionPoint<?, ?>) {
@@ -107,7 +107,7 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
         }
         try {
             if (delegateParameterPosition >= 0) {
-                addHandlerInitializerMethod(proxyClassType);
+                addHandlerInitializerMethod(proxyClassType, staticConstructor);
             }
             Class<?> cls = getBeanType();
             Set<Method> methods = new LinkedHashSet<Method>();
@@ -121,7 +121,7 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
                     }
                     // exclude bridge methods
                     if (Modifier.isAbstract(method.getModifiers())) {
-                         createAbstractMethodCode(proxyClassType.addMethod(method), methodInfo);
+                         createAbstractMethodCode(proxyClassType.addMethod(method), methodInfo, staticConstructor);
                     }
                 }
             }
@@ -174,7 +174,7 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
         return PROXY_SUFFIX;
     }
 
-    private void createAbstractMethodCode(ClassMethod classMethod, MethodInformation method) {
+    private void createAbstractMethodCode(ClassMethod classMethod, MethodInformation method, ClassMethod staticConstructor) {
         if ((delegateField != null) && (!Modifier.isPrivate(delegateField.getModifiers()))) {
             // Call the corresponding method directly on the delegate
             final CodeAttribute b = classMethod.getCodeAttribute();
@@ -197,10 +197,10 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
                 // method handler to call getTargetClass to get the correct class type to
                 // resolve the method with, and then resolves this method
 
-                invokeMethodHandler(classMethod, method, true, TargetInstanceBytecodeMethodResolver.INSTANCE);
+                invokeMethodHandler(classMethod, method, true, TargetInstanceBytecodeMethodResolver.INSTANCE, staticConstructor);
             } else {
                 // if the delegate is private we need to use the method handler
-                createInterceptorBody(classMethod, method);
+                createInterceptorBody(classMethod, method, staticConstructor);
             }
         }
     }
@@ -253,10 +253,10 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
     protected static class TargetInstanceBytecodeMethodResolver implements BytecodeMethodResolver {
         private static final String JAVA_LANG_CLASS_CLASS_NAME = "java.lang.Class";
 
-        public void getDeclaredMethod(ClassMethod classMethod, String declaringClass, String methodName, String[] parameterTypes) {
+        public void getDeclaredMethod(ClassMethod classMethod, String declaringClass, String methodName, String[] parameterTypes, ClassMethod staticConstructor) {
             // get the correct class type to use to resolve the method
             MethodInformation methodInfo = new StaticMethodInformation("getTargetClass", new String[0], LJAVA_LANG_CLASS, TargetInstanceProxy.class.getName());
-            invokeMethodHandler(classMethod, methodInfo, false, DEFAULT_METHOD_RESOLVER);
+            invokeMethodHandler(classMethod, methodInfo, false, DEFAULT_METHOD_RESOLVER, staticConstructor);
             CodeAttribute code = classMethod.getCodeAttribute();
             code.checkcast("java/lang/Class");
             // now we have the class on the stack

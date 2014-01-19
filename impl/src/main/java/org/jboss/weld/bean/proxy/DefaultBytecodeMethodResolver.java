@@ -17,6 +17,9 @@
 
 package org.jboss.weld.bean.proxy;
 
+import java.util.concurrent.atomic.AtomicLong;
+
+import org.jboss.classfilewriter.AccessFlag;
 import org.jboss.classfilewriter.ClassMethod;
 import org.jboss.classfilewriter.code.CodeAttribute;
 import org.jboss.weld.util.bytecode.BytecodeUtils;
@@ -25,15 +28,22 @@ import org.jboss.weld.util.bytecode.BytecodeUtils;
  * A {@link BytecodeMethodResolver} that looks up the method using the
  * reflection API.
  * <p/>
- * TODO: cache the result somehow
  *
  * @author Stuart Douglas
  */
 public class DefaultBytecodeMethodResolver implements BytecodeMethodResolver {
 
+    private static final AtomicLong METHOD_COUNT = new AtomicLong();
 
-    public void getDeclaredMethod(final ClassMethod classMethod, final String declaringClass, final String methodName, final String[] parameterTypes) {
-        final CodeAttribute code =classMethod.getCodeAttribute();
+    private static final String FIELD_NAME = "weld_proxy_field$$$";
+    public static final String LJAVA_LANG_REFLECT_METHOD = "Ljava/lang/reflect/Method;";
+
+    @Override
+    public void getDeclaredMethod(final ClassMethod classMethod, final String declaringClass, final String methodName, final String[] parameterTypes, ClassMethod staticConstructor) {
+
+        String fieldName = FIELD_NAME + METHOD_COUNT.incrementAndGet();
+        staticConstructor.getClassFile().addField(AccessFlag.PRIVATE | AccessFlag.STATIC, fieldName, LJAVA_LANG_REFLECT_METHOD);
+        final CodeAttribute code = staticConstructor.getCodeAttribute();
         BytecodeUtils.pushClassType(code, declaringClass);
         // now we have the class on the stack
         code.ldc(methodName);
@@ -50,6 +60,10 @@ public class DefaultBytecodeMethodResolver implements BytecodeMethodResolver {
             code.aastore();
         }
         code.invokevirtual(Class.class.getName(), "getDeclaredMethod", "(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;");
+        code.putstatic(classMethod.getClassFile().getName(), fieldName, LJAVA_LANG_REFLECT_METHOD);
+
+        CodeAttribute methodCode = classMethod.getCodeAttribute();
+        methodCode.getstatic(classMethod.getClassFile().getName(), fieldName, LJAVA_LANG_REFLECT_METHOD);
 
     }
 }
