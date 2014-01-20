@@ -84,6 +84,7 @@ public abstract class TypeSafeResolver<R extends Resolvable, T, C extends Collec
      */
     public void clear() {
         this.resolved.invalidateAll();
+        this.resolved.cleanUp();
     }
 
     /**
