@@ -23,14 +23,14 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-import org.jboss.weld.bootstrap.api.Service;
+import org.jboss.weld.bootstrap.api.helpers.AbstractBootstrapService;
 
 import com.google.common.base.Objects;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
-public class SlimAnnotatedTypeStoreImpl implements SlimAnnotatedTypeStore, Service {
+public class SlimAnnotatedTypeStoreImpl extends AbstractBootstrapService implements SlimAnnotatedTypeStore {
 
     private final LoadingCache<Class<?>, Set<SlimAnnotatedType<?>>> typesByClass;
 
@@ -64,7 +64,8 @@ public class SlimAnnotatedTypeStoreImpl implements SlimAnnotatedTypeStore, Servi
     }
 
     @Override
-    public void cleanup() {
+    public void cleanupAfterBoot() {
         typesByClass.invalidateAll();
     }
+
 }

@@ -18,17 +18,15 @@ package org.jboss.weld.annotated.slim;
 
 import java.util.Collection;
 
-import javax.enterprise.inject.spi.BeanManager;
-
-import org.jboss.weld.bootstrap.api.Service;
+import org.jboss.weld.bootstrap.api.BootstrapService;
 
 /**
- * Stores {@link SlimAnnotatedType}s and allows them to be retrieved via {@link BeanManager#getAnnotatedTypes(Class)} and {@link BeanManager#getAnnotatedType(Class, String)}.
+ * Stores {@link SlimAnnotatedType}s.
  *
  * @author Jozef Hartinger
  *
  */
-public interface SlimAnnotatedTypeStore extends Service {
+public interface SlimAnnotatedTypeStore extends BootstrapService {
 
     /**
      * Retrieves a previously stored list of {@link SlimAnnotatedType}s that match the given type.
