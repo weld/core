@@ -17,7 +17,7 @@
 
 package org.jboss.weld.environment.servlet.test.lifecycle;
 
-import javax.enterprise.util.AnnotationLiteral;
+import static org.junit.Assert.assertEquals;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
@@ -28,6 +28,7 @@ import org.junit.Test;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
+ * @author Matus Abaffy
  */
 public class HSCycleTestBase {
     protected static WebArchive getBaseDeployment() {
@@ -39,12 +40,9 @@ public class HSCycleTestBase {
         return war;
     }
 
-    @SuppressWarnings("serial")
-    public static final AnnotationLiteral<Lifecycle> LIFECYCLE_LITERAL = new AnnotationLiteral<Lifecycle>() {
-    };
-
     @Test
     public void testCycle(Pinger pinger) throws Exception {
         pinger.ping();
+        assertEquals(2, Pinger.getCalled());
     }
 }

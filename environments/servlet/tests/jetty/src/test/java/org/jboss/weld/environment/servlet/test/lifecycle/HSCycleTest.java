@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2011, Red Hat, Inc., and individual contributors
+ * Copyright 2014, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -17,25 +17,17 @@
 
 package org.jboss.weld.environment.servlet.test.lifecycle;
 
-import java.io.Serializable;
+import static org.jboss.weld.environment.servlet.test.util.JettyDeployments.JETTY_ENV;
 
-import javax.enterprise.context.SessionScoped;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.runner.RunWith;
 
-/**
- * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
- */
-@SuppressWarnings("serial")
-@SessionScoped
-public class Pinger implements Serializable {
-
-    private static int called = 0;
-
-    public void ping() {
-        called++;
-        System.out.println("Pinger-" + System.identityHashCode(this));
-    }
-
-    public static int getCalled() {
-        return called;
+@RunWith(Arquillian.class)
+public class HSCycleTest extends HSCycleTestBase {
+    @Deployment
+    public static WebArchive getDeployment() {
+        return getBaseDeployment().addAsWebInfResource(JETTY_ENV, "jetty-env.xml");
     }
 }

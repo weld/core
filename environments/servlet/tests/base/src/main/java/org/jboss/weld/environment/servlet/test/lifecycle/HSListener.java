@@ -18,6 +18,7 @@
 package org.jboss.weld.environment.servlet.test.lifecycle;
 
 import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.util.AnnotationLiteral;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -46,9 +47,11 @@ public class HSListener implements HttpSessionListener {
         }
     }
 
+    @SuppressWarnings("serial")
     public void sessionCreated(HttpSessionEvent se) {
         // Use a special qualifier to distinguish @Initialized context events
-        getBeanManager().fireEvent(se.getSession(), HSCycleTestBase.LIFECYCLE_LITERAL);
+        getBeanManager().fireEvent(se.getSession(), new AnnotationLiteral<Lifecycle>() {
+        });
     }
 
     public void sessionDestroyed(HttpSessionEvent se) {
