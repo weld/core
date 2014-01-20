@@ -17,7 +17,8 @@
 package org.jboss.weld.injection;
 
 import static org.jboss.weld.util.collections.WeldCollections.immutableList;
-import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
+import static org.jboss.weld.util.collections.WeldCollections.immutableGuavaList;
+import static org.jboss.weld.util.collections.WeldCollections.immutableGuavaSet;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -196,7 +197,7 @@ public class InjectionPointFactory {
                         addFieldInjectionPoint(field, fields, declaringBean, type.getJavaClass(), manager);
                     }
                 }
-                injectableFieldsList.add(0, immutableSet(fields));
+                injectableFieldsList.add(0, immutableGuavaSet(fields));
             }
         } else {
             for (EnhancedAnnotatedType<?> t = type; t != null && !t.getJavaClass().equals(Object.class); t = t
@@ -207,10 +208,10 @@ public class InjectionPointFactory {
                         addFieldInjectionPoint(annotatedField, fields, declaringBean, t.getJavaClass(), manager);
                     }
                 }
-                injectableFieldsList.add(0, immutableSet(fields));
+                injectableFieldsList.add(0, immutableGuavaSet(fields));
             }
         }
-        return immutableList(injectableFieldsList);
+        return immutableGuavaList(injectableFieldsList);
     }
 
     private void addFieldInjectionPoint(EnhancedAnnotatedField<?, ?> annotatedField,

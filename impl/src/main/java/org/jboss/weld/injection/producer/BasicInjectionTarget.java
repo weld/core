@@ -68,7 +68,7 @@ public class BasicInjectionTarget<T> extends AbstractProducer<T> implements Inje
         this.injector = initInjector(type, bean, beanManager);
         this.injector.registerInjectionPoints(injectionPoints);
         this.instantiator = initInstantiator(type, bean, beanManager, injectionPoints);
-        this.injectionPoints = WeldCollections.immutableSet(injectionPoints);
+        this.injectionPoints = WeldCollections.immutableGuavaSet(injectionPoints);
         checkDelegateInjectionPoints();
 
         this.invoker = initInvoker(type);
