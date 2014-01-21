@@ -29,6 +29,7 @@ import java.util.Set;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Vetoed;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.enterprise.inject.spi.Annotated;
@@ -225,6 +226,7 @@ public class WrongExtension implements Extension {
         }
     }
 
+    @Vetoed
     private static class FooInjectionPoint implements InjectionPoint {
 
         @Override
