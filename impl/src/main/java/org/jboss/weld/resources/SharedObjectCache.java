@@ -28,7 +28,6 @@ import org.jboss.weld.bootstrap.api.BootstrapService;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.LazyValueHolder;
 import org.jboss.weld.util.Types;
-import org.jboss.weld.util.collections.ArraySetMultimap;
 import org.jboss.weld.util.collections.WeldCollections;
 
 import com.google.common.cache.CacheBuilder;
@@ -48,6 +47,7 @@ public class SharedObjectCache implements BootstrapService {
     }
 
     private final LoadingCache<Set<?>, Set<?>> sharedSets = CacheBuilder.newBuilder().build(new CacheLoader<Set<?>, Set<?>>() {
+        @Override
         public Set<?> load(Set<?> from) {
             return WeldCollections.immutableSet(from);
         }
@@ -55,15 +55,9 @@ public class SharedObjectCache implements BootstrapService {
 
     private final LoadingCache<Map<?, ?>, Map<?, ?>> sharedMaps = CacheBuilder.newBuilder().build(
             new CacheLoader<Map<?, ?>, Map<?, ?>>() {
+                @Override
                 public Map<?, ?> load(Map<?, ?> from) {
             return WeldCollections.immutableMap(from);
-        }
-    });
-
-    private final LoadingCache<ArraySetMultimap<?, ?>, ArraySetMultimap<?, ?>> sharedMultiMaps = CacheBuilder.newBuilder()
-            .build(new CacheLoader<ArraySetMultimap<?, ?>, ArraySetMultimap<?, ?>>() {
-                public ArraySetMultimap<?, ?> load(ArraySetMultimap<?, ?> from) {
-            return from;
         }
     });
 
@@ -77,6 +71,7 @@ public class SharedObjectCache implements BootstrapService {
 
     private final LoadingCache<Type, Type> resolvedTypes = CacheBuilder.newBuilder().build(new CacheLoader<Type, Type>() {
 
+        @Override
         public Type load(Type from) {
             return Types.getCanonicalType(from);
         }
@@ -90,10 +85,6 @@ public class SharedObjectCache implements BootstrapService {
         return getCastCacheValue(sharedMaps, map);
     }
 
-    public <K, V> ArraySetMultimap<K, V> getSharedMultimap(ArraySetMultimap<K, V> map) {
-        return getCastCacheValue(sharedMultiMaps, map);
-    }
-
     public LazyValueHolder<Set<Type>> getTypeClosureHolder(Type type) {
         return getCacheValue(typeClosureHolders, type);
     }
@@ -102,13 +93,14 @@ public class SharedObjectCache implements BootstrapService {
         return resolvedTypes.getUnchecked(type);
     }
 
+    @Override
     public void cleanupAfterBoot() {
         sharedSets.invalidateAll();
         sharedMaps.invalidateAll();
-        sharedMultiMaps.invalidateAll();
         typeClosureHolders.invalidateAll();
     }
 
+    @Override
     public void cleanup() {
         cleanupAfterBoot();
         resolvedTypes.invalidateAll();

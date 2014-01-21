@@ -23,7 +23,6 @@ import java.util.Set;
 import org.jboss.weld.Container;
 import org.jboss.weld.annotated.enhanced.TypeClosureLazyValueHolder;
 import org.jboss.weld.util.LazyValueHolder;
-import org.jboss.weld.util.collections.ArraySetMultimap;
 
 /**
  * Convenience methods to access the shared object cache
@@ -48,14 +47,6 @@ public class SharedObjectFacade {
         SharedObjectCache cache = getSharedObjectCache(contextId);
         if (cache != null) {
             return Container.instance(contextId).services().get(SharedObjectCache.class).getSharedMap(map);
-        }
-        return map;
-    }
-
-    public static <K, V> ArraySetMultimap<K, V> wrap(String contextId, ArraySetMultimap<K, V> map) {
-        SharedObjectCache cache = getSharedObjectCache(contextId);
-        if (cache != null) {
-            return Container.instance(contextId).services().get(SharedObjectCache.class).getSharedMultimap(map);
         }
         return map;
     }
