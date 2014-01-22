@@ -7,8 +7,6 @@ import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Set;
 
@@ -46,14 +44,17 @@ public class BackedAnnotatedParameter<X> extends BackedAnnotated implements Anno
         return cache.getTypeClosureHolder(RawType.wrap(baseType));
     }
 
+    @Override
     public int getPosition() {
         return position;
     }
 
+    @Override
     public BackedAnnotatedCallable<X, ?> getDeclaringCallable() {
         return declaringCallable;
     }
 
+    @Override
     public <T extends Annotation> T getAnnotation(Class<T> annotationType) {
         for (Annotation annotation : getAnnotations()) {
             if (annotation.annotationType().equals(annotationType)) {
@@ -65,13 +66,7 @@ public class BackedAnnotatedParameter<X> extends BackedAnnotated implements Anno
 
     @Override
     public Set<Annotation> getAnnotations() {
-        if (getDeclaringCallable() instanceof BackedAnnotatedConstructor<?>) {
-            return getReflectionCache().getParameterAnnotationSet((Constructor<?>) getDeclaringCallable().getJavaMember(), position);
-        } else if (getDeclaringCallable() instanceof BackedAnnotatedMethod<?>) {
-            return getReflectionCache().getParameterAnnotationSet((Method) getDeclaringCallable().getJavaMember(), position);
-        } else {
-            throw new IllegalStateException();
-        }
+        return getReflectionCache().getParameterAnnotationSet(this);
     }
 
     @Override
@@ -79,6 +74,7 @@ public class BackedAnnotatedParameter<X> extends BackedAnnotated implements Anno
         return null;
     }
 
+    @Override
     public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
         return getAnnotation(annotationType) != null;
     }
