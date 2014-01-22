@@ -72,9 +72,6 @@ public class WeldCollections {
         if (set instanceof ImmutableSet<?>) {
             return set;
         }
-        if (set instanceof ArraySet<?>) {
-            ArraySet.class.cast(set).trimToSize();
-        }
         return ImmutableSet.copyOf(set);
     }
 
@@ -105,9 +102,6 @@ public class WeldCollections {
         }
         if (list instanceof ImmutableList<?>) {
             return list;
-        }
-        if (list instanceof ArrayList<?>) {
-            ArrayList.class.cast(list).trimToSize();
         }
         return ImmutableList.copyOf(list);
     }
