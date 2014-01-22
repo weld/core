@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.injection;
 
-import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
+import static org.jboss.weld.util.collections.WeldCollections.immutableGuavaSet;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.annotation.Annotation;
@@ -48,7 +48,7 @@ abstract class AbstractCallableInjectionPoint<T, X, S extends Member> implements
         this.declaringBean = declaringBean;
         this.parameters = factory.getParameterInjectionPoints(callable, declaringBean, declaringComponentClass, manager, observerOrDisposer);
         if (observerOrDisposer) {
-            this.injectionPoints = cast(immutableSet(InjectionPoints.filterOutSpecialParameterInjectionPoints(parameters)));
+            this.injectionPoints = cast(immutableGuavaSet(InjectionPoints.filterOutSpecialParameterInjectionPoints(parameters)));
         } else {
             this.injectionPoints = new ListToSet<InjectionPoint>() {
                 @Override

@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.event;
 
-import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
+import static org.jboss.weld.util.collections.WeldCollections.immutableGuavaSet;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -117,8 +117,8 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
             }
             injectionPoints.add(injectionPoint);
         }
-        this.injectionPoints = immutableSet(injectionPoints);
-        this.newInjectionPoints = immutableSet(newInjectionPoints);
+        this.injectionPoints = immutableGuavaSet(injectionPoints);
+        this.newInjectionPoints = immutableGuavaSet(newInjectionPoints);
     }
 
     protected static String createId(final EnhancedAnnotatedMethod<?, ?> observer, final RIBean<?> declaringBean) {
@@ -189,6 +189,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
         }
     }
 
+    @Override
     public Class<X> getBeanClass() {
         return declaringBean.getType();
     }
@@ -197,18 +198,22 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
         return declaringBean;
     }
 
+    @Override
     public Reception getReception() {
         return reception;
     }
 
+    @Override
     public Set<Annotation> getObservedQualifiers() {
         return bindings;
     }
 
+    @Override
     public Type getObservedType() {
         return eventType;
     }
 
+    @Override
     public TransactionPhase getTransactionPhase() {
         return transactionPhase;
     }

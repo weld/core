@@ -1,6 +1,6 @@
 package org.jboss.weld.annotated.slim.unbacked;
 
-import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
+import static org.jboss.weld.util.collections.WeldCollections.immutableGuavaSet;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.io.ObjectInputStream;
@@ -60,32 +60,36 @@ public class UnbackedAnnotatedType<X> extends UnbackedAnnotated implements SlimA
         for (AnnotatedConstructor<X> constructor : source.getConstructors()) {
             constructors.add(UnbackedAnnotatedConstructor.of(constructor, this, cache));
         }
-        this.constructors = immutableSet(constructors);
+        this.constructors = immutableGuavaSet(constructors);
         Set<AnnotatedMethod<? super X>> methods = new HashSet<AnnotatedMethod<? super X>>(source.getMethods().size());
         for (AnnotatedMethod<? super X> originalMethod : source.getMethods()) {
             methods.add(UnbackedAnnotatedMethod.of(originalMethod, this, cache));
         }
-        this.methods = immutableSet(methods);
+        this.methods = immutableGuavaSet(methods);
         Set<AnnotatedField<? super X>> fields = new HashSet<AnnotatedField<? super X>>(source.getFields().size());
         for (AnnotatedField<? super X> originalField : source.getFields()) {
             fields.add(UnbackedAnnotatedField.of(originalField, this, cache));
         }
-        this.fields = immutableSet(fields);
+        this.fields = immutableGuavaSet(fields);
         this.identifier = identifier;
     }
 
+    @Override
     public Class<X> getJavaClass() {
         return javaClass;
     }
 
+    @Override
     public Set<AnnotatedConstructor<X>> getConstructors() {
         return constructors;
     }
 
+    @Override
     public Set<AnnotatedMethod<? super X>> getMethods() {
         return methods;
     }
 
+    @Override
     public Set<AnnotatedField<? super X>> getFields() {
         return fields;
     }

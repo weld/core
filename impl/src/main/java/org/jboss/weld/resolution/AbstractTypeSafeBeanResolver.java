@@ -17,7 +17,7 @@
 package org.jboss.weld.resolution;
 
 import static org.jboss.weld.util.cache.LoadingCacheUtils.getCastCacheValue;
-import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
+import static org.jboss.weld.util.collections.WeldCollections.immutableGuavaSet;
 
 import java.io.Serializable;
 import java.lang.reflect.GenericArrayType;
@@ -68,6 +68,7 @@ public abstract class AbstractTypeSafeBeanResolver<T extends Bean<?>, C extends 
         private BeanDisambiguation() {
         }
 
+        @Override
         public Set<Bean<?>> load(Set<Bean<?>> from) {
             if (from.size() > 1) {
                 Set<Bean<?>> allBeans = new HashSet<Bean<?>>();
@@ -86,7 +87,7 @@ public abstract class AbstractTypeSafeBeanResolver<T extends Bean<?>, C extends 
                     allBeans.add(bean);
                 }
                 if (priorityBeans.isEmpty()) {
-                    return immutableSet(allBeans);
+                    return immutableGuavaSet(allBeans);
                 } else {
                     if (priorityBeans.size() == 1) {
                         return Collections.<Bean<?>>singleton(priorityBeans.iterator().next());
@@ -112,7 +113,7 @@ public abstract class AbstractTypeSafeBeanResolver<T extends Bean<?>, C extends 
                 Integer priority = beanManager.getEnabled().getAlternativePriority(bean.getBeanClass());
                 if (priority == null) {
                     // not all the beans left are alternatives with a priority - we are not able to resolve
-                    return immutableSet(alternatives);
+                    return immutableGuavaSet(alternatives);
                 }
                 if (priority > highestPriority) {
                     highestPriority = priority;
@@ -122,7 +123,7 @@ public abstract class AbstractTypeSafeBeanResolver<T extends Bean<?>, C extends 
                     selectedAlternativesWithHighestPriority.add(bean);
                 }
             }
-            return immutableSet(selectedAlternativesWithHighestPriority);
+            return immutableGuavaSet(selectedAlternativesWithHighestPriority);
         }
 
     }
