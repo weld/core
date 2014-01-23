@@ -28,6 +28,7 @@ import org.jboss.weld.ejb.api.SessionObjectReference;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
+import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
@@ -135,12 +136,10 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
         if (businessInterfacesClasses.contains(declaringClass)) {
             return declaringClass;
         }
-        // TODO we can certainly optimize this search algorithm!
-        for (Class<?> view : businessInterfacesClasses) {
-            for (Class<?> currentClass = view; currentClass != Object.class && currentClass != null; currentClass = currentClass.getSuperclass()) {
-                if (currentClass.equals(view)) {
-                    return view;
-                }
+        // This will likely not work if there is a session bean with more than one view extending/implementing the declaringClass
+        for (Class<?> businessInterface : businessInterfacesClasses) {
+            if (new HierarchyDiscovery(businessInterface).getTypeMap().containsKey(declaringClass)) {
+                return businessInterface;
             }
         }
         return null;
