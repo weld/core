@@ -18,6 +18,7 @@
 package org.jboss.weld.bean.proxy;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 
 import org.jboss.classfilewriter.ClassFile;
 import org.jboss.classfilewriter.ClassMethod;
@@ -26,6 +27,8 @@ import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.util.bytecode.MethodInformation;
 import org.jboss.weld.util.bytecode.RuntimeMethodInformation;
+
+import com.google.common.collect.ImmutableSet;
 
 /**
  * This factory produces client proxies specific for enterprise beans, in
@@ -44,7 +47,8 @@ public class EnterpriseProxyFactory<T> extends ProxyFactory<T> {
      * @param proxiedBeanType the actual enterprise bean
      */
     public EnterpriseProxyFactory(Class<T> proxiedBeanType, SessionBean<T> bean) {
-        super(bean.getBeanManager().getContextId(), proxiedBeanType, bean.getTypes(), bean);
+        super(bean.getBeanManager().getContextId(), proxiedBeanType, ImmutableSet.<Type> builder().addAll(bean.getTypes())
+                .addAll(bean.getEjbDescriptor().getRemoteBusinessInterfacesAsClasses()).build(), bean);
     }
 
     @Override
