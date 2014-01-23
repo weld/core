@@ -24,7 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
+import org.jboss.weld.interceptor.reader.TargetClassInterceptorMetadata;
+import org.jboss.weld.interceptor.spi.metadata.InterceptorClassMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
 
@@ -42,19 +43,21 @@ import com.google.common.collect.ImmutableSet;
  */
 class InterceptionModelImpl<T> implements InterceptionModel<T> {
 
-    private final Map<InterceptionType, List<InterceptorMetadata<?>>> globalInterceptors;
+    private final Map<InterceptionType, List<InterceptorClassMetadata<?>>> globalInterceptors;
 
-    private final Map<InterceptionType, Map<Method, List<InterceptorMetadata<?>>>> methodBoundInterceptors;
+    private final Map<InterceptionType, Map<Method, List<InterceptorClassMetadata<?>>>> methodBoundInterceptors;
 
     private final Set<Method> methodsIgnoringGlobalInterceptors;
 
-    private final Set<InterceptorMetadata<?>> allInterceptors;
+    private final Set<InterceptorClassMetadata<?>> allInterceptors;
 
     private final T interceptedEntity;
 
     private final boolean hasTargetClassInterceptors;
 
     private final boolean hasExternalNonConstructorInterceptors;
+
+    private final TargetClassInterceptorMetadata targetClassInterceptorMetadata;
 
     /**
      *
@@ -64,13 +67,15 @@ class InterceptionModelImpl<T> implements InterceptionModel<T> {
         this.interceptedEntity = builder.getInterceptedEntity();
         this.hasTargetClassInterceptors = builder.isHasTargetClassInterceptors();
         this.hasExternalNonConstructorInterceptors = builder.isHasExternalNonConstructorInterceptors();
-        this.globalInterceptors = ImmutableMap.<InterceptionType, List<InterceptorMetadata<?>>>copyOf(builder.getGlobalInterceptors());
-        this.methodBoundInterceptors = ImmutableMap.<InterceptionType, Map<Method,List<InterceptorMetadata<?>>>>copyOf(builder.getMethodBoundInterceptors());
+        this.globalInterceptors = ImmutableMap.<InterceptionType, List<InterceptorClassMetadata<?>>>copyOf(builder.getGlobalInterceptors());
+        this.methodBoundInterceptors = ImmutableMap.<InterceptionType, Map<Method,List<InterceptorClassMetadata<?>>>>copyOf(builder.getMethodBoundInterceptors());
         this.methodsIgnoringGlobalInterceptors = ImmutableSet.<Method>copyOf(builder.getMethodsIgnoringGlobalInterceptors());
-        this.allInterceptors = ImmutableSet.<InterceptorMetadata<?>>copyOf(builder.getAllInterceptors());
+        this.allInterceptors = ImmutableSet.<InterceptorClassMetadata<?>>copyOf(builder.getAllInterceptors());
+        this.targetClassInterceptorMetadata = builder.getTargetClassInterceptorMetadata();
     }
 
-    public List<InterceptorMetadata<?>> getInterceptors(InterceptionType interceptionType, Method method) {
+    @Override
+    public List<InterceptorClassMetadata<?>> getInterceptors(InterceptionType interceptionType, Method method) {
         if (InterceptionType.AROUND_CONSTRUCT.equals(interceptionType)) {
             throw new IllegalStateException("Cannot use getInterceptors() for @AroundConstruct interceptor lookup. Use getConstructorInvocationInterceptors() instead.");
         }
@@ -87,13 +92,13 @@ class InterceptionModelImpl<T> implements InterceptionModel<T> {
                 return globalInterceptors.get(interceptionType);
             }
         } else {
-            ArrayList<InterceptorMetadata<?>> returnedInterceptors = new ArrayList<InterceptorMetadata<?>>();
+            ArrayList<InterceptorClassMetadata<?>> returnedInterceptors = new ArrayList<InterceptorClassMetadata<?>>();
             if (!methodsIgnoringGlobalInterceptors.contains(method) && globalInterceptors.containsKey(interceptionType)) {
                 returnedInterceptors.addAll(globalInterceptors.get(interceptionType));
             }
-            Map<Method, List<InterceptorMetadata<?>>> map = methodBoundInterceptors.get(interceptionType);
+            Map<Method, List<InterceptorClassMetadata<?>>> map = methodBoundInterceptors.get(interceptionType);
             if (map != null) {
-                List<InterceptorMetadata<?>> list = map.get(method);
+                List<InterceptorClassMetadata<?>> list = map.get(method);
                 if (list != null) {
                     returnedInterceptors.addAll(list);
                 }
@@ -103,16 +108,18 @@ class InterceptionModelImpl<T> implements InterceptionModel<T> {
         return Collections.emptyList();
     }
 
-    public Set<InterceptorMetadata<?>> getAllInterceptors() {
+    @Override
+    public Set<InterceptorClassMetadata<?>> getAllInterceptors() {
         return Collections.unmodifiableSet(allInterceptors);
     }
 
+    @Override
     public T getInterceptedEntity() {
         return this.interceptedEntity;
     }
 
     @Override
-    public List<InterceptorMetadata<?>> getConstructorInvocationInterceptors() {
+    public List<InterceptorClassMetadata<?>> getConstructorInvocationInterceptors() {
         if (globalInterceptors.containsKey(InterceptionType.AROUND_CONSTRUCT)) {
             return globalInterceptors.get(InterceptionType.AROUND_CONSTRUCT);
         }
@@ -132,5 +139,10 @@ class InterceptionModelImpl<T> implements InterceptionModel<T> {
     @Override
     public boolean hasTargetClassInterceptors() {
         return hasTargetClassInterceptors;
+    }
+
+    @Override
+    public TargetClassInterceptorMetadata getTargetClassInterceptorMetadata() {
+        return targetClassInterceptorMetadata;
     }
 }

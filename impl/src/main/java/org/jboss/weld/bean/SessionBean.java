@@ -43,7 +43,6 @@ import org.jboss.weld.ejb.spi.BusinessInterfaceDescriptor;
 import org.jboss.weld.ejb.spi.EjbServices;
 import org.jboss.weld.injection.producer.Instantiator;
 import org.jboss.weld.injection.producer.ejb.SessionBeanProxyInstantiator;
-import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -266,7 +265,7 @@ public class SessionBean<T> extends AbstractClassBean<T> {
     }
 
     protected void registerInterceptors() {
-        InterceptionModel<ClassMetadata<?>> model = beanManager.getInterceptorModelRegistry().get(getAnnotated());
+        InterceptionModel<?> model = beanManager.getInterceptorModelRegistry().get(getAnnotated());
         if (model != null) {
             getBeanManager().getServices().get(EjbServices.class).registerInterceptors(getEjbDescriptor(), new InterceptorBindingsAdapter(model));
         }

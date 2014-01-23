@@ -17,10 +17,10 @@
 
 package org.jboss.weld.interceptor.proxy;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.jboss.weld.interceptor.spi.metadata.MethodMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
 
 /**
@@ -30,13 +30,14 @@ public class SimpleInterceptorInvocation implements InterceptorInvocation {
 
     private Collection<InterceptorMethodInvocation> interceptorMethodInvocations;
 
-    public SimpleInterceptorInvocation(Object instance, InterceptionType interceptionType, Collection<MethodMetadata> interceptorMethods, boolean targetClass) {
+    public SimpleInterceptorInvocation(Object instance, InterceptionType interceptionType, Collection<Method> interceptorMethods, boolean targetClass) {
         interceptorMethodInvocations = new ArrayList<InterceptorMethodInvocation>();
-        for (MethodMetadata method : interceptorMethods) {
+        for (Method method : interceptorMethods) {
             interceptorMethodInvocations.add(new SimpleMethodInvocation(instance, method, targetClass, interceptionType));
         }
     }
 
+    @Override
     public Collection<InterceptorMethodInvocation> getInterceptorMethodInvocations() {
         return interceptorMethodInvocations;
     }

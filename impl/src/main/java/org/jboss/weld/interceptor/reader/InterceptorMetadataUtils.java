@@ -1,30 +1,20 @@
 package org.jboss.weld.interceptor.reader;
 
-import static org.jboss.weld.util.collections.WeldCollections.immutableMap;
-
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.security.AccessController;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.interceptor.InvocationContext;
 
-import org.jboss.weld.annotated.enhanced.MethodSignature;
-import org.jboss.weld.annotated.enhanced.jlr.MethodSignatureImpl;
-import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
-import org.jboss.weld.interceptor.spi.metadata.InterceptorFactory;
-import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
-import org.jboss.weld.interceptor.spi.metadata.MethodMetadata;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
 import org.jboss.weld.interceptor.util.InterceptionTypeRegistry;
-import org.jboss.weld.interceptor.util.InterceptorMetadataException;
 import org.jboss.weld.logging.ValidatorLogger;
-import org.jboss.weld.security.SetAccessibleAction;
+import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.BeanMethods;
+
+import com.google.common.collect.ImmutableMap;
 
 /**
  * @author Marius Bogoevici
@@ -36,19 +26,7 @@ public class InterceptorMetadataUtils {
     private InterceptorMetadataUtils() {
     }
 
-    public static InterceptorMetadata readMetadataForInterceptorClass(InterceptorFactory<?> interceptorReference) {
-        return new DefaultInterceptorMetadata(interceptorReference, buildMethodMap(interceptorReference.getClassMetadata(), false));
-    }
-
-    public static <T> TargetClassInterceptorMetadata readMetadataForTargetClass(ClassMetadata<T> classMetadata) {
-        return new TargetClassInterceptorMetadata(classMetadata, buildMethodMap(classMetadata, true));
-    }
-
-    public static boolean isInterceptorMethod(InterceptionType interceptionType, MethodMetadata method, boolean forTargetClass) {
-        if (!method.getSupportedInterceptionTypes().contains(interceptionType)) {
-            return false;
-        }
-
+    public static boolean isInterceptorMethod(InterceptionType interceptionType, Method method, boolean forTargetClass) {
         if (interceptionType.isLifecycleCallback()) {
             if (forTargetClass) {
                 return isValidTargetClassLifecycleInterceptorMethod(interceptionType, method);
@@ -60,8 +38,7 @@ public class InterceptorMetadataUtils {
         }
     }
 
-    private static boolean isValidTargetClassLifecycleInterceptorMethod(InterceptionType interceptionType, MethodMetadata method) {
-        Method javaMethod = method.getJavaMethod();
+    private static boolean isValidTargetClassLifecycleInterceptorMethod(InterceptionType interceptionType, Method method) {
         /*
          * This check is relaxed (WELD-1399) because we are not able to distinguish a CDI managed bean from
          * an interceptor class bound using @Interceptors.
@@ -80,21 +57,21 @@ public class InterceptorMetadataUtils {
          */
         if (!Void.TYPE.equals(method.getReturnType()) && !Object.class.equals(method.getReturnType())) {
             throw ValidatorLogger.LOG.interceptorMethodDoesNotHaveVoidReturnType(
-                    javaMethod.getName(), javaMethod.getDeclaringClass().getName(),
+                    method.getName(), method.getDeclaringClass().getName(),
                     interceptionType.annotationClassName(), Void.TYPE.getName());
         }
-        Class<?>[] parameterTypes = javaMethod.getParameterTypes();
+        Class<?>[] parameterTypes = method.getParameterTypes();
         if (parameterTypes.length > 1) {
             throw ValidatorLogger.LOG.interceptorMethodDoesNotHaveZeroParameters(
-                    javaMethod.getName(), javaMethod.getDeclaringClass().getName(),
+                    method.getName(), method.getDeclaringClass().getName(),
                     interceptionType.annotationClassName());
         }
-        Class<?>[] exceptionTypes = javaMethod.getExceptionTypes();
+        Class<?>[] exceptionTypes = method.getExceptionTypes();
         if (exceptionTypes.length != 0) {
             for (Class<?> exceptionType : exceptionTypes) {
                 if (!RuntimeException.class.isAssignableFrom(exceptionType)) {
                     ValidatorLogger.LOG.interceptorMethodShouldNotThrowCheckedExceptions(
-                            javaMethod.getName(), javaMethod.getDeclaringClass().getName(),
+                            method.getName(), method.getDeclaringClass().getName(),
                             exceptionType.getName());
                 }
             }
@@ -103,15 +80,14 @@ public class InterceptorMetadataUtils {
         return parameterTypes.length == 0;
     }
 
-    private static boolean isValidInterceptorClassLifecycleInterceptorMethod(InterceptionType interceptionType, MethodMetadata method) {
-        Method javaMethod = method.getJavaMethod();
+    private static boolean isValidInterceptorClassLifecycleInterceptorMethod(InterceptionType interceptionType, Method method) {
         if (!Object.class.equals(method.getReturnType()) && !Void.TYPE.equals(method.getReturnType())) {
             throw ValidatorLogger.LOG.interceptorMethodDoesNotReturnObjectOrVoid(
-                    javaMethod.getName(), javaMethod.getDeclaringClass().getName(),
+                    method.getName(), method.getDeclaringClass().getName(),
                     interceptionType.annotationClassName(), Void.TYPE.getName(), OBJECT_CLASS_NAME);
         }
 
-        Class<?>[] parameterTypes = javaMethod.getParameterTypes();
+        Class<?>[] parameterTypes = method.getParameterTypes();
         if (parameterTypes.length == 0) {
             return false;
         } else if (parameterTypes.length == 1) {
@@ -119,77 +95,50 @@ public class InterceptorMetadataUtils {
                 return true;
             }
             throw ValidatorLogger.LOG.interceptorMethodDoesNotHaveCorrectTypeOfParameter(
-                    javaMethod.getName(), javaMethod.getDeclaringClass().getName(),
+                    method.getName(), method.getDeclaringClass().getName(),
                     interceptionType.annotationClassName(), InvocationContext.class.getName());
         } else {
             throw ValidatorLogger.LOG.interceptorMethodDoesNotHaveExactlyOneParameter(
-                    javaMethod.getName(), javaMethod.getDeclaringClass().getName(),
+                    method.getName(), method.getDeclaringClass().getName(),
                     interceptionType.annotationClassName());
         }
     }
 
-    private static boolean isValidBusinessMethodInterceptorMethod(InterceptionType interceptionType, MethodMetadata method) {
-        Method javaMethod = method.getJavaMethod();
+    private static boolean isValidBusinessMethodInterceptorMethod(InterceptionType interceptionType, Method method) {
         if (!Object.class.equals(method.getReturnType())) {
             throw ValidatorLogger.LOG.interceptorMethodDoesNotReturnObject(
-                    javaMethod.getName(), javaMethod.getDeclaringClass().getName(),
+                    method.getName(), method.getDeclaringClass().getName(),
                     interceptionType.annotationClassName(), OBJECT_CLASS_NAME);
         }
 
-        Class<?>[] parameterTypes = javaMethod.getParameterTypes();
+        Class<?>[] parameterTypes = method.getParameterTypes();
         if (parameterTypes.length != 1) {
             throw ValidatorLogger.LOG.interceptorMethodDoesNotHaveExactlyOneParameter(
-                    javaMethod.getName(), javaMethod.getDeclaringClass().getName(),
+                    method.getName(), method.getDeclaringClass().getName(),
                     interceptionType.annotationClassName());
         }
         if (!InvocationContext.class.isAssignableFrom(parameterTypes[0])) {
             throw ValidatorLogger.LOG.interceptorMethodDoesNotHaveCorrectTypeOfParameter(
-                    javaMethod.getName(), javaMethod.getDeclaringClass().getName(),
+                    method.getName(), method.getDeclaringClass().getName(),
                     interceptionType.annotationClassName(), InvocationContext.class.getName());
         }
         return true;
     }
 
-    static Map<InterceptionType, List<MethodMetadata>> buildMethodMap(ClassMetadata<?> interceptorClass, boolean forTargetClass) {
-        Map<InterceptionType, List<MethodMetadata>> methodMap = new HashMap<InterceptionType, List<MethodMetadata>>();
-        ClassMetadata<?> currentClass = interceptorClass;
-        Set<MethodSignature> foundMethods = new HashSet<MethodSignature>();
-        do {
-            Set<InterceptionType> detectedInterceptorTypes = new HashSet<InterceptionType>();
-
-            for (MethodMetadata method : currentClass.getDeclaredMethods()) {
-                boolean privateMethod = Modifier.isPrivate(method.getJavaMethod().getModifiers());
-                MethodSignature methodSignature = new MethodSignatureImpl(method.getJavaMethod());
-                if (privateMethod || !foundMethods.contains(methodSignature)) {
-                    for (InterceptionType interceptionType : InterceptionTypeRegistry.getSupportedInterceptionTypes()) {
-                        if (isInterceptorMethod(interceptionType, method, forTargetClass)) {
-                            if (detectedInterceptorTypes.contains(interceptionType)) {
-                                throw new InterceptorMetadataException("Same interception type cannot be specified twice on the same class");
-                            }
-                            detectedInterceptorTypes.add(interceptionType);
-
-                            // add method in the list - if it is there already, it means that it has been added by a subclass
-                            // final methods are treated separately, as a final method cannot override another method nor be
-                            // overridden
-                            AccessController.doPrivileged(SetAccessibleAction.of(method.getJavaMethod()));
-
-                            List<MethodMetadata> methodList = methodMap.get(interceptionType);
-                            if (methodList == null) {
-                                methodList = new LinkedList<MethodMetadata>();
-                                methodMap.put(interceptionType, methodList);
-                            }
-                            methodList.add(0, method);
-                        }
-                    }
-                    // the method reference must be added anyway - overridden methods are not taken into consideration
-                    if (!privateMethod) {
-                        foundMethods.add(methodSignature);
-                    }
+    public static Map<InterceptionType, List<Method>> buildMethodMap(EnhancedAnnotatedType<?> type, boolean forTargetClass, BeanManagerImpl manager) {
+        ImmutableMap.Builder<InterceptionType, List<Method>> builder = null;
+        for (InterceptionType interceptionType : InterceptionTypeRegistry.getSupportedInterceptionTypes()) {
+            List<Method> value = BeanMethods.getInterceptorMethods(type, interceptionType, forTargetClass);
+            if (!value.isEmpty()) {
+                if (builder == null) {
+                    builder = ImmutableMap.builder();
                 }
+                builder.put(interceptionType, value);
             }
-            currentClass = currentClass.getSuperclass();
         }
-        while (currentClass != null && !OBJECT_CLASS_NAME.equals(currentClass.getJavaClass().getName()));
-        return immutableMap(methodMap);
+        if (builder == null) {
+            return Collections.emptyMap();
+        }
+        return builder.build();
     }
 }

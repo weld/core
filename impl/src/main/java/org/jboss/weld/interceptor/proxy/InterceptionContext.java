@@ -34,10 +34,8 @@ import java.util.Set;
 import javax.enterprise.context.spi.CreationalContext;
 
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
-import org.jboss.weld.interceptor.reader.TargetClassInterceptorMetadata;
-import org.jboss.weld.interceptor.reader.cache.MetadataCachingReader;
-import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
-import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
+import org.jboss.weld.interceptor.reader.InterceptorMetadataReader;
+import org.jboss.weld.interceptor.spi.metadata.InterceptorClassMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -55,64 +53,56 @@ public class InterceptionContext implements Serializable {
     private static final Set<InterceptionType> CONSTRUCTOR_INTERCEPTION_TYPES = ImmutableSet.of(InterceptionType.AROUND_CONSTRUCT);
     private static final Set<InterceptionType> METHOD_INTERCEPTION_TYPES = ImmutableSet.of(AROUND_INVOKE, AROUND_TIMEOUT, POST_CONSTRUCT, PRE_DESTROY, POST_ACTIVATE, PRE_PASSIVATE);
 
-    public static InterceptionContext forConstructorInterception(InterceptionModel<ClassMetadata<?>> interceptionModel, CreationalContext<?> ctx, BeanManagerImpl manager, SlimAnnotatedType<?> type) {
+    public static InterceptionContext forConstructorInterception(InterceptionModel<?> interceptionModel, CreationalContext<?> ctx, BeanManagerImpl manager, SlimAnnotatedType<?> type) {
         return of(interceptionModel, ctx, manager, CONSTRUCTOR_INTERCEPTION_TYPES, type);
     }
 
-    public static InterceptionContext forNonConstructorInterception(InterceptionModel<ClassMetadata<?>> interceptionModel, CreationalContext<?> ctx, BeanManagerImpl manager, SlimAnnotatedType<?> type) {
+    public static InterceptionContext forNonConstructorInterception(InterceptionModel<?> interceptionModel, CreationalContext<?> ctx, BeanManagerImpl manager, SlimAnnotatedType<?> type) {
         return of(interceptionModel, ctx, manager, METHOD_INTERCEPTION_TYPES, type);
     }
 
-    private static InterceptionContext of(InterceptionModel<ClassMetadata<?>> interceptionModel, CreationalContext<?> ctx, BeanManagerImpl manager, Set<InterceptionType> interceptionTypes, SlimAnnotatedType<?> type) {
-        TargetClassInterceptorMetadata<?> targetClassInterceptorMetadata = manager.getInterceptorMetadataReader().getTargetClassInterceptorMetadata(interceptionModel.getInterceptedEntity());
-        return new InterceptionContext(initInterceptorInstanceMap(interceptionModel, ctx, manager, interceptionTypes), manager, targetClassInterceptorMetadata, interceptionModel, type);
+    private static InterceptionContext of(InterceptionModel<?> interceptionModel, CreationalContext<?> ctx, BeanManagerImpl manager, Set<InterceptionType> interceptionTypes, SlimAnnotatedType<?> type) {
+        return new InterceptionContext(initInterceptorInstanceMap(interceptionModel, ctx, manager, interceptionTypes), manager, interceptionModel, type);
     }
 
     private static final long serialVersionUID = 7500722360133273633L;
 
-    private final transient TargetClassInterceptorMetadata<?> targetClassInterceptorMetadata;
-    private final transient InterceptionModel<ClassMetadata<?>> interceptionModel;
+    private final transient InterceptionModel<?> interceptionModel;
 
     private final Map<Class<?>, Object> interceptorInstances;
     private final BeanManagerImpl manager;
     private final SlimAnnotatedType<?> annotatedType;
 
-    private InterceptionContext(Map<Class<?>, Object> interceptorInstances, BeanManagerImpl manager, TargetClassInterceptorMetadata<?> targetClassInterceptorMetadata, InterceptionModel<ClassMetadata<?>> interceptionModel, SlimAnnotatedType<?> type) {
+    private InterceptionContext(Map<Class<?>, Object> interceptorInstances, BeanManagerImpl manager, InterceptionModel<?> interceptionModel, SlimAnnotatedType<?> type) {
         this.interceptorInstances = interceptorInstances;
         this.manager = manager;
-        this.targetClassInterceptorMetadata = targetClassInterceptorMetadata;
         this.interceptionModel = interceptionModel;
         this.annotatedType = type;
     }
 
     private static Map<Class<?>, Object> initInterceptorInstanceMap(InterceptionModel<?> model, CreationalContext ctx, BeanManagerImpl manager, Set<InterceptionType> interceptionTypes) {
         Map<Class<?>, Object> interceptorInstances = new HashMap<Class<?>, Object>();
-        for (InterceptorMetadata<?> interceptor : model.getAllInterceptors()) {
+        for (InterceptorClassMetadata<?> interceptor : model.getAllInterceptors()) {
             for (InterceptionType interceptionType : interceptionTypes) {
                 if (interceptor.isEligible(interceptionType)) {
-                    interceptorInstances.put(interceptor.getInterceptorClass().getJavaClass(), interceptor.getInterceptorFactory().create(ctx, manager));
+                    interceptorInstances.put(interceptor.getJavaClass(), interceptor.getInterceptorFactory().create(ctx, manager));
                 }
             }
         }
         return immutableMap(interceptorInstances);
     }
 
-    public TargetClassInterceptorMetadata<?> getTargetClassInterceptorMetadata() {
-        return targetClassInterceptorMetadata;
-    }
-
-    public InterceptionModel<ClassMetadata<?>> getInterceptionModel() {
+    public InterceptionModel<?> getInterceptionModel() {
         return interceptionModel;
     }
 
-    public <T> T getInterceptorInstance(InterceptorMetadata<T> interceptorMetadata) {
-        return cast(interceptorInstances.get(interceptorMetadata.getInterceptorClass().getJavaClass()));
+    public <T> T getInterceptorInstance(InterceptorClassMetadata<T> interceptorMetadata) {
+        return cast(interceptorInstances.get(interceptorMetadata.getJavaClass()));
     }
 
     private Object readResolve() throws ObjectStreamException {
-        InterceptionModel<ClassMetadata<?>> interceptionModel = manager.getInterceptorModelRegistry().get(annotatedType);
-        MetadataCachingReader reader = manager.getInterceptorMetadataReader();
-        TargetClassInterceptorMetadata<?> targetClassInterceptorMetadata = reader.getTargetClassInterceptorMetadata(interceptionModel.getInterceptedEntity());
-        return new InterceptionContext(interceptorInstances, manager, targetClassInterceptorMetadata, interceptionModel, annotatedType);
+        InterceptionModel<?> interceptionModel = manager.getInterceptorModelRegistry().get(annotatedType);
+        InterceptorMetadataReader reader = manager.getInterceptorMetadataReader();
+        return new InterceptionContext(interceptorInstances, manager, interceptionModel, annotatedType);
     }
 }

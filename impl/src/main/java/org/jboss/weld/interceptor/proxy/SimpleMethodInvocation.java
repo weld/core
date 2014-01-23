@@ -1,8 +1,9 @@
 package org.jboss.weld.interceptor.proxy;
 
+import java.lang.reflect.Method;
+
 import javax.interceptor.InvocationContext;
 
-import org.jboss.weld.interceptor.spi.metadata.MethodMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
 
 /**
@@ -12,32 +13,30 @@ public class SimpleMethodInvocation implements InterceptorMethodInvocation {
 
     final Object instance;
 
-    final MethodMetadata method;
+    final Method method;
 
     private boolean targetClass;
 
     private InterceptionType interceptionType;
 
-    SimpleMethodInvocation(Object instance, MethodMetadata method, boolean targetClass, InterceptionType interceptionType) {
+    SimpleMethodInvocation(Object instance, Method method, boolean targetClass, InterceptionType interceptionType) {
         this.instance = instance;
         this.method = method;
         this.targetClass = targetClass;
         this.interceptionType = interceptionType;
     }
 
+    @Override
     public Object invoke(InvocationContext invocationContext) throws Exception {
         if (invocationContext != null) {
-            return method.getJavaMethod().invoke(instance, invocationContext);
+            return method.invoke(instance, invocationContext);
         }
         else {
-            return method.getJavaMethod().invoke(instance);
+            return method.invoke(instance);
         }
     }
 
-    public MethodMetadata getMethod() {
-        return method;
-    }
-
+    @Override
     public boolean expectsInvocationContext() {
         return !targetClass || !interceptionType.isLifecycleCallback();
     }

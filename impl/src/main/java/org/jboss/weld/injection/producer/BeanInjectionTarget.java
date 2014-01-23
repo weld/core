@@ -30,7 +30,6 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bean.CustomDecoratorWrapper;
 import org.jboss.weld.bean.DecoratorImpl;
-import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.interceptor.util.InterceptionUtils;
 import org.jboss.weld.logging.BeanLogger;
@@ -104,7 +103,7 @@ public class BeanInjectionTarget<T> extends BasicInjectionTarget<T> {
     public void initializeAfterBeanDiscovery(EnhancedAnnotatedType<T> annotatedType) {
         initializeInterceptionModel(annotatedType);
 
-        InterceptionModel<ClassMetadata<?>> interceptionModel = null;
+        InterceptionModel<?> interceptionModel = null;
         if (isInterceptionCandidate()) {
             interceptionModel = beanManager.getInterceptorModelRegistry().get(getType());
         }
@@ -138,7 +137,7 @@ public class BeanInjectionTarget<T> extends BasicInjectionTarget<T> {
         }
     }
 
-    protected void setupConstructorInterceptionInstantiator(InterceptionModel<ClassMetadata<?>> interceptionModel) {
+    protected void setupConstructorInterceptionInstantiator(InterceptionModel<?> interceptionModel) {
         if (interceptionModel != null && interceptionModel.hasExternalConstructorInterceptors()) {
             setInstantiator(new ConstructorInterceptionInstantiator<T>(getInstantiator(), interceptionModel, getType()));
         }

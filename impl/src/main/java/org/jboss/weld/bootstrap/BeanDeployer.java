@@ -50,7 +50,6 @@ import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.ejb.spi.EjbServices;
 import org.jboss.weld.injection.producer.InterceptionModelInitializer;
-import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -354,7 +353,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
                 if (!getManager().getInterceptorModelRegistry().containsKey(type.slim())) {
                     InterceptionModelInitializer.of(getManager(), type, null).init();
                 }
-                InterceptionModel<ClassMetadata<?>> model = getManager().getInterceptorModelRegistry().get(type.slim());
+                InterceptionModel<?> model = getManager().getInterceptorModelRegistry().get(type.slim());
                 if (model != null) {
                     ejbServices.registerInterceptors(descriptor, new InterceptorBindingsAdapter(model));
                 }

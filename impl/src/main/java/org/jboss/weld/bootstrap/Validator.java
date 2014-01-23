@@ -89,9 +89,8 @@ import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.UnproxyableResolutionException;
 import org.jboss.weld.injection.producer.AbstractMemberProducer;
 import org.jboss.weld.injection.producer.BasicInjectionTarget;
-import org.jboss.weld.interceptor.reader.ClassMetadataInterceptorFactory;
-import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
-import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
+import org.jboss.weld.interceptor.reader.PlainInterceptorFactory;
+import org.jboss.weld.interceptor.spi.metadata.InterceptorClassMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.literal.DecoratedLiteral;
@@ -204,12 +203,12 @@ public class Validator implements Service {
     }
 
     private void validateInterceptors(BeanManagerImpl beanManager, AbstractClassBean<?> classBean) {
-        InterceptionModel<ClassMetadata<?>> interceptionModel = beanManager.getInterceptorModelRegistry().get(classBean.getAnnotated());
+        InterceptionModel<?> interceptionModel = beanManager.getInterceptorModelRegistry().get(classBean.getAnnotated());
         if (interceptionModel != null) {
-            Set<? extends InterceptorMetadata<?>> interceptors = interceptionModel.getAllInterceptors();
+            Set<? extends InterceptorClassMetadata<?>> interceptors = interceptionModel.getAllInterceptors();
             if (interceptors.size() > 0) {
                 boolean passivationCapabilityCheckRequired = beanManager.isPassivatingScope(classBean.getScope());
-                for (InterceptorMetadata<?> interceptorMetadata : interceptors) {
+                for (InterceptorClassMetadata<?> interceptorMetadata : interceptors) {
                     // in the case of CDI interceptors we only need to additionally validate passivation capability (if required)
                     if (interceptorMetadata.getInterceptorFactory() instanceof CdiInterceptorFactory<?> && passivationCapabilityCheckRequired) {
                         CdiInterceptorFactory<?> cdiInterceptorFactory = (CdiInterceptorFactory<?>) interceptorMetadata.getInterceptorFactory();
@@ -227,11 +226,11 @@ public class Validator implements Service {
                             validateInterceptorDecoratorInjectionPointPassivationCapable(injectionPoint, resolvedBean, beanManager, classBean);
                         }
                     }
-                    if (interceptorMetadata.getInterceptorFactory() instanceof ClassMetadataInterceptorFactory<?>) {
-                        ClassMetadataInterceptorFactory<?> factory = (ClassMetadataInterceptorFactory<?>) interceptorMetadata.getInterceptorFactory();
-                        ClassMetadata<?> classMetadata = interceptorMetadata.getInterceptorClass();
-                        if (passivationCapabilityCheckRequired && !Reflections.isSerializable(classMetadata.getJavaClass())) {
-                            throw ValidatorLogger.LOG.passivatingBeanWithNonserializableInterceptor(this, classMetadata.getJavaClass().getName());
+                    if (interceptorMetadata.getInterceptorFactory() instanceof PlainInterceptorFactory<?>) {
+                        PlainInterceptorFactory<?> factory = (PlainInterceptorFactory<?>) interceptorMetadata.getInterceptorFactory();
+                        Class<?> interceptorClass = interceptorMetadata.getJavaClass();
+                        if (passivationCapabilityCheckRequired && !Reflections.isSerializable(interceptorClass)) {
+                            throw ValidatorLogger.LOG.passivatingBeanWithNonserializableInterceptor(this, interceptorClass.getName());
                         }
                         // if we can't get to the interceptor's BeanManager, we will use the bean's BM instead
                         InjectionTarget<?> injectionTarget = factory.getInjectionTarget();

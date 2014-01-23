@@ -15,16 +15,29 @@
  * limitations under the License.
  */
 
-package org.jboss.weld.interceptor.reader;
+package org.jboss.weld.interceptor.spi.metadata;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
 
 /**
- * Allows entities to define their own strategy of reading metadata from an object
+ * Metadata about an interceptor component.
+ *
+ * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
+ * @author Jozef Hartinger
+ *
+ * @param <T> The type (class) of the interceptor bean
  */
-public interface AnnotatedMethodReader<M> {
-    Annotation getAnnotation(Class<? extends Annotation> annotationClass, M methodReference);
+public interface InterceptorClassMetadata<T> extends InterceptorMetadata {
 
-    Method getJavaMethod(M methodReference);
+    /**
+     * Returns an InterceptorFactory capable of creating instances of this interceptor..
+     *
+     * @return the interceptor factory
+     */
+    InterceptorFactory<T> getInterceptorFactory();
+
+    /**
+     * Returns the class of this interceptor.
+     * @return
+     */
+    Class<T> getJavaClass();
 }

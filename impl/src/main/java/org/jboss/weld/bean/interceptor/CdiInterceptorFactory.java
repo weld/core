@@ -21,23 +21,22 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Interceptor;
 
-import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorFactory;
 import org.jboss.weld.manager.BeanManagerImpl;
 
+/**
+ * InterceptorFactory that obtains an interceptor instance using {@link BeanManagerImpl}.
+ *
+ * @author Jozef Hartinger
+ *
+ * @param <T> the type of the interceptor
+ */
 public class CdiInterceptorFactory<T> implements InterceptorFactory<T> {
 
-    private final ClassMetadata<T> classMetadata;
     private final Interceptor<T> interceptor;
 
-    public CdiInterceptorFactory(ClassMetadata<T> classMetadata, Interceptor<T> interceptor) {
-        this.classMetadata = classMetadata;
+    public CdiInterceptorFactory(Interceptor<T> interceptor) {
         this.interceptor = interceptor;
-    }
-
-    @Override
-    public ClassMetadata<T> getClassMetadata() {
-        return classMetadata;
     }
 
     @Override

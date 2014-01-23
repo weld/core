@@ -21,15 +21,19 @@ import javax.enterprise.context.spi.CreationalContext;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
- * Produces instances of interceptors
+ * Produces instances of interceptor classes.
  *
  * @author Jozef Hartinger
  *
- * @param <T>
+ * @param <T> the type of the interceptor class
  */
 public interface InterceptorFactory<T> {
 
-    ClassMetadata<T> getClassMetadata();
-
+    /**
+     * Create a new instance of the interceptor
+     * @param ctx
+     * @param manager
+     * @return
+     */
     T create(CreationalContext<T> ctx, BeanManagerImpl manager);
 }

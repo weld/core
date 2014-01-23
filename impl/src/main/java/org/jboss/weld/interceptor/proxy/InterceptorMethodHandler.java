@@ -6,7 +6,6 @@ import java.security.AccessController;
 
 import org.jboss.weld.bean.proxy.MethodHandler;
 import org.jboss.weld.interceptor.spi.context.InvocationContextFactory;
-import org.jboss.weld.interceptor.spi.metadata.MethodMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
 import org.jboss.weld.interceptor.util.InterceptionUtils;
 import org.jboss.weld.security.SetAccessibleAction;
@@ -26,6 +25,7 @@ public class InterceptorMethodHandler implements MethodHandler, Serializable {
         this.factory = factory;
     }
 
+    @Override
     public Object invoke(Object self, Method thisMethod, Method proceed, Object[] args) throws Throwable {
         AccessController.doPrivileged(SetAccessibleAction.of(thisMethod));
         if (proceed == null) {
@@ -49,7 +49,6 @@ public class InterceptorMethodHandler implements MethodHandler, Serializable {
     }
 
     private boolean isInterceptorMethod(Method method) {
-        MethodMetadata methodMetadata = ctx.getTargetClassInterceptorMetadata().getInterceptorClass().getDeclaredMethod(method);
-        return methodMetadata != null && methodMetadata.isInterceptorMethod();
+        return ctx.getInterceptionModel().getTargetClassInterceptorMetadata().isInterceptorMethod(method);
     }
 }

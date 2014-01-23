@@ -17,15 +17,14 @@
 
 package org.jboss.weld.interceptor.reader;
 
+import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import org.jboss.weld.interceptor.proxy.InterceptorInvocation;
 import org.jboss.weld.interceptor.proxy.SimpleInterceptorInvocation;
-import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
-import org.jboss.weld.interceptor.spi.metadata.MethodMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
 
 
@@ -33,41 +32,29 @@ import org.jboss.weld.interceptor.spi.model.InterceptionType;
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  * @author Jozef Hartinger
  */
-public abstract class AbstractInterceptorMetadata<T> implements InterceptorMetadata<T> {
+public abstract class AbstractInterceptorMetadata implements InterceptorMetadata {
 
-    private final Map<InterceptionType, List<MethodMetadata>> interceptorMethodMap;
+    protected final Map<InterceptionType, List<Method>> interceptorMethodMap;
 
-    private final ClassMetadata<?> classMetadata;
-
-    public AbstractInterceptorMetadata(ClassMetadata<?> classMetadata, Map<InterceptionType, List<MethodMetadata>> interceptorMethodMap) {
-        this.classMetadata = classMetadata;
+    public AbstractInterceptorMetadata(Map<InterceptionType, List<Method>> interceptorMethodMap) {
         this.interceptorMethodMap = interceptorMethodMap;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public ClassMetadata<?> getInterceptorClass() {
-        return classMetadata;
-    }
-
-    public List<MethodMetadata> getInterceptorMethods(InterceptionType interceptionType) {
+    public List<Method> getInterceptorMethods(InterceptionType interceptionType) {
         if (interceptorMethodMap != null) {
-            List<MethodMetadata> methods = interceptorMethodMap.get(interceptionType);
-            return methods == null ? Collections.<MethodMetadata>emptyList() : methods;
+            List<Method> methods = interceptorMethodMap.get(interceptionType);
+            return methods == null ? Collections.<Method>emptyList() : methods;
         } else {
             return Collections.emptyList();
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public boolean isEligible(InterceptionType interceptionType) {
         if (this.interceptorMethodMap == null) {
             return false;
         }
-        List<MethodMetadata> interceptorMethods = this.interceptorMethodMap.get(interceptionType);
+        List<Method> interceptorMethods = this.interceptorMethodMap.get(interceptionType);
         // return true if there are any interceptor methods for this interception type
         return (interceptorMethods != null && !(interceptorMethods.isEmpty()));
     }
