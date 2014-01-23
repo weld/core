@@ -21,9 +21,11 @@ import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.Set;
 
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.spi.ObserverMethod;
 import javax.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.bean.builtin.AbstractFacade;
@@ -31,7 +33,6 @@ import org.jboss.weld.bean.builtin.FacadeInjectionPoint;
 import org.jboss.weld.exceptions.InvalidObjectException;
 import org.jboss.weld.logging.EventLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.resolution.Resolvable;
 import org.jboss.weld.util.Preconditions;
 import org.jboss.weld.util.Types;
 import org.jboss.weld.util.reflection.EventObjectTypeResolverBuilder;
@@ -57,7 +58,7 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
     }
 
     private final transient HierarchyDiscovery injectionPointTypeHierarchy;
-    private transient volatile CachedResolvable cachedResolvable;
+    private transient volatile CachedObservers cachedObservers;
 
     private EventImpl(InjectionPoint injectionPoint, BeanManagerImpl beanManager) {
         super(injectionPoint, null, beanManager);
@@ -77,24 +78,24 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
     @Override
     public void fire(T event) {
         Preconditions.checkArgumentNotNull(event, "event");
-        CachedResolvable resolvable = getEventResolvable(event);
+        CachedObservers observers = getObservers(event);
 
-        EventPacket<T> packet = EventPacket.of(event, resolvable.type, resolvable.resolvable, getQualifiers(), getInjectionPoint());
-        getBeanManager().getGlobalStrictObserverNotifier().fireEvent(packet);
+        EventPacket<T> packet = EventPacket.of(event, observers.type, getQualifiers(), getInjectionPoint());
+        getBeanManager().getGlobalStrictObserverNotifier().notifyObservers(packet, observers.methods);
     }
 
-    private CachedResolvable getEventResolvable(T event) {
-        CachedResolvable cachedResolvable = this.cachedResolvable;
-        if (cachedResolvable != null) {
-            if (cachedResolvable.rawType.equals(event.getClass())) {
-                return cachedResolvable;
+    private CachedObservers getObservers(T event) {
+        CachedObservers cachedObservers = this.cachedObservers;
+        if (cachedObservers != null) {
+            if (cachedObservers.rawType.equals(event.getClass())) {
+                return cachedObservers;
             }
         }
-        Type eventType = getEventType(event);
-        Resolvable resolvable = getBeanManager().getGlobalStrictObserverNotifier().buildEventResolvable(eventType, getQualifiers());
-        cachedResolvable = new CachedResolvable(event.getClass(), eventType, resolvable);
-        this.cachedResolvable = cachedResolvable;
-        return cachedResolvable;
+        final Type eventType = getEventType(event);
+        final Set<ObserverMethod<? super T>> observers = getBeanManager().getGlobalStrictObserverNotifier().resolveObserverMethods(eventType, getQualifiers());
+        cachedObservers = new CachedObservers(event.getClass(), eventType, observers);
+        this.cachedObservers = cachedObservers;
+        return cachedObservers;
     }
 
     @Override
@@ -165,16 +166,15 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
 
     }
 
-    private static class CachedResolvable {
+    private class CachedObservers {
         private final Class<?> rawType;
         private final Type type;
-        private final Resolvable resolvable;
+        private final Set<ObserverMethod<? super T>> methods;
 
-        public CachedResolvable(Class<?> rawType, Type type, Resolvable resolvable) {
+        public CachedObservers(Class<?> rawType, Type type, Set<ObserverMethod<? super T>> methods) {
             this.rawType = rawType;
             this.type = type;
-            this.resolvable = resolvable;
+            this.methods = methods;
         }
     }
-
 }

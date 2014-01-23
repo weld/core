@@ -92,6 +92,11 @@ public class ObserverNotifier {
         return this.<T>resolveObserverMethods(buildEventResolvable(event.getClass(), bindings));
     }
 
+    public <T> Set<ObserverMethod<? super T>> resolveObserverMethods(Type eventType, Set<Annotation> qualifiers) {
+        checkEventObjectType(eventType);
+        return this.<T>resolveObserverMethods(buildEventResolvable(eventType, qualifiers));
+    }
+
     public void fireEvent(Object event, Annotation... qualifiers) {
         fireEvent(event.getClass(), event, qualifiers);
     }
@@ -107,12 +112,12 @@ public class ObserverNotifier {
         notifyObservers(event, resolveObserverMethods(resolvable));
     }
 
-    public <T> void fireEvent(EventPacket<T> packet) {
+    public <T> void fireEvent(Resolvable resolvable, EventPacket<T> packet) {
         checkEventObjectType(packet.getType());
-        notifyObservers(packet, this.<T>resolveObserverMethods(packet.getResolvable()));
+        notifyObservers(packet, this.<T>resolveObserverMethods(resolvable));
     }
 
-    private <T> void notifyObservers(final EventPacket<T> eventPacket, final Set<ObserverMethod<? super T>> observers) {
+    public <T> void notifyObservers(final EventPacket<T> eventPacket, final Set<ObserverMethod<? super T>> observers) {
         currentEventMetadata.push(eventPacket);
         try {
             for (ObserverMethod<? super T> observer : observers) {

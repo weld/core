@@ -25,7 +25,6 @@ import javax.enterprise.inject.spi.EventMetadata;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.literal.AnyLiteral;
-import org.jboss.weld.resolution.Resolvable;
 
 import com.google.common.collect.ImmutableSet;
 
@@ -46,27 +45,25 @@ import com.google.common.collect.ImmutableSet;
  */
 public class EventPacket<T> implements EventMetadata {
 
-    public static <T> EventPacket<T> of(T event, Type eventType, Resolvable resolvable, Set<Annotation> qualifiers, InjectionPoint ip) {
-        return new EventPacket<T>(event, eventType, qualifiers, null, resolvable, ip);
+    public static <T> EventPacket<T> of(T event, Type eventType, Set<Annotation> qualifiers, InjectionPoint ip) {
+        return new EventPacket<T>(event, eventType, qualifiers, null, ip);
     }
-    public static <T> EventPacket<T> of(T event, Resolvable resolvable, Annotation... qualifiers) {
-        return new EventPacket<T>(event, event.getClass(), null, qualifiers, resolvable, null);
+    public static <T> EventPacket<T> of(T event, Annotation... qualifiers) {
+        return new EventPacket<T>(event, event.getClass(), null, qualifiers, null);
     }
 
     private final T payload;
     private final Type type;
-    private final Resolvable resolvable;
     private final InjectionPoint injectionPoint;
 
     private final Set<Annotation> qualifierSet;
     private final Annotation[] qualifierArray;
 
-    private EventPacket(T payload, Type type, Set<Annotation> qualifierSet, Annotation[] qualifierArray, Resolvable resolvable, InjectionPoint injectionPoint) {
+    private EventPacket(T payload, Type type, Set<Annotation> qualifierSet, Annotation[] qualifierArray, InjectionPoint injectionPoint) {
         this.payload = payload;
         this.type = type;
         this.qualifierSet = qualifierSet;
         this.qualifierArray = qualifierArray;
-        this.resolvable = resolvable;
         this.injectionPoint = injectionPoint;
     }
 
@@ -97,9 +94,6 @@ public class EventPacket<T> implements EventMetadata {
         return injectionPoint;
     }
 
-    public Resolvable getResolvable() {
-        return resolvable;
-    }
     @Override
     public String toString() {
         return "EventPacket [payload=" + payload + ", type=" + type + ", qualifiers=" + getQualifiers() + "]";
