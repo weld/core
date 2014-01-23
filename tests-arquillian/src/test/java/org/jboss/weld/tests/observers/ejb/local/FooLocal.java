@@ -19,7 +19,7 @@ package org.jboss.weld.tests.observers.ejb.local;
 import javax.ejb.Local;
 
 @Local
-public interface FooLocal {
+public interface FooLocal extends FooSuperLocal {
 
     public void observeGiraffe(Giraffe giraffe);
 

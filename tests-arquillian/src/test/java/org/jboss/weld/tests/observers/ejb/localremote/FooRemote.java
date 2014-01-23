@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2014, Red Hat, Inc., and individual contributors
+ * Copyright 2010, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,30 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.observers.ejb.remote;
+package org.jboss.weld.tests.observers.ejb.localremote;
 
-import static org.junit.Assert.assertNotNull;
+import javax.ejb.Remote;
 
-import java.util.concurrent.atomic.AtomicInteger;
+@Remote
+public interface FooRemote {
 
-import javax.ejb.Stateless;
-import javax.enterprise.event.Observes;
-
-@Stateless
-public class FooBean implements FooRemote {
-
-    public static AtomicInteger observations = new AtomicInteger(0);
-
-    @Override
-    public void observeGiraffe(@Observes Giraffe giraffe) {
-        assertNotNull(giraffe);
-        observations.incrementAndGet();
-    }
-
-    @Override
-    public void observeSuperGiraffe(@Observes Giraffe giraffe) {
-        assertNotNull(giraffe);
-        observations.incrementAndGet();
-    }
+    public void observeGiraffe(Giraffe giraffe);
 
 }

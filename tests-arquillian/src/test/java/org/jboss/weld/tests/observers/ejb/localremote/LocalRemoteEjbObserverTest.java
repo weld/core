@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.observers.ejb.local;
+package org.jboss.weld.tests.observers.ejb.localremote;
 
 import static org.junit.Assert.assertEquals;
 
@@ -32,15 +32,15 @@ import org.junit.runner.RunWith;
 
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-public class LocalEjbObserverTest {
+public class LocalRemoteEjbObserverTest {
 
     @Deployment
     public static JavaArchive createTestArchive() {
-        return ShrinkWrap.create(BeanArchive.class).addPackage(FooLocal.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class).addPackage(FooRemote.class.getPackage());
     }
 
     @Test
-    public void testRemoteEjbObserverNotified(BeanManager beanManager) {
+    public void testLocalAndRemoteObserversNotified(BeanManager beanManager) {
         FooBean.observations.set(0);
         beanManager.fireEvent(new Giraffe());
         assertEquals(2, FooBean.observations.get());

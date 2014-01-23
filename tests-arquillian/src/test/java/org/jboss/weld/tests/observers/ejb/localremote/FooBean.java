@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.observers.ejb.remote;
+package org.jboss.weld.tests.observers.ejb.localremote;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -24,7 +24,7 @@ import javax.ejb.Stateless;
 import javax.enterprise.event.Observes;
 
 @Stateless
-public class FooBean implements FooRemote {
+public class FooBean implements FooRemote, FooLocal {
 
     public static AtomicInteger observations = new AtomicInteger(0);
 
@@ -35,7 +35,7 @@ public class FooBean implements FooRemote {
     }
 
     @Override
-    public void observeSuperGiraffe(@Observes Giraffe giraffe) {
+    public void observeGiraffeLocal(@Observes Giraffe giraffe) {
         assertNotNull(giraffe);
         observations.incrementAndGet();
     }

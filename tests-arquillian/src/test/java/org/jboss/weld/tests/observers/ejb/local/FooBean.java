@@ -34,4 +34,10 @@ public class FooBean implements FooLocal {
         observations.incrementAndGet();
     }
 
+    @Override
+    public void observeSuperGiraffe(@Observes Giraffe giraffe) {
+        assertNotNull(giraffe);
+        observations.incrementAndGet();
+    }
+
 }
