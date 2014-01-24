@@ -103,7 +103,7 @@ public class BeanInjectionTarget<T> extends BasicInjectionTarget<T> {
     public void initializeAfterBeanDiscovery(EnhancedAnnotatedType<T> annotatedType) {
         initializeInterceptionModel(annotatedType);
 
-        InterceptionModel<?> interceptionModel = null;
+        InterceptionModel interceptionModel = null;
         if (isInterceptionCandidate()) {
             interceptionModel = beanManager.getInterceptorModelRegistry().get(getType());
         }
@@ -137,7 +137,7 @@ public class BeanInjectionTarget<T> extends BasicInjectionTarget<T> {
         }
     }
 
-    protected void setupConstructorInterceptionInstantiator(InterceptionModel<?> interceptionModel) {
+    protected void setupConstructorInterceptionInstantiator(InterceptionModel interceptionModel) {
         if (interceptionModel != null && interceptionModel.hasExternalConstructorInterceptors()) {
             setInstantiator(new ConstructorInterceptionInstantiator<T>(getInstantiator(), interceptionModel, getType()));
         }

@@ -33,7 +33,7 @@ import org.jboss.weld.interceptor.spi.metadata.InterceptorClassMetadata;
  *
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
-public interface InterceptionModel<T> {
+public interface InterceptionModel {
 
     /**
      * Returns the interceptors applicable for the given interception type and method. For resolving {@link AroundConstruct} interceptors use {@link #getConstructorInvocationInterceptors(java.lang.reflect.Constructor)}.
@@ -57,11 +57,6 @@ public interface InterceptionModel<T> {
      * @return all interceptors
      */
     Set<InterceptorClassMetadata<?>> getAllInterceptors();
-
-    /**
-     * @return the intercepted entity
-     */
-    T getInterceptedEntity();
 
     /**
      * Indicates whether the given entity has associated {@link AroundConstruct} interceptors.

@@ -136,7 +136,7 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> imp
         return getProducer().getInjectionPoints();
     }
 
-    public InterceptionModel<?> getInterceptors() {
+    public InterceptionModel getInterceptors() {
         if (isInterceptionCandidate()) {
             return beanManager.getInterceptorModelRegistry().get(getAnnotated());
         } else {

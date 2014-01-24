@@ -269,7 +269,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     /**
      * Interception model
      */
-    private final transient ConcurrentMap<SlimAnnotatedType<?>, InterceptionModel<?>> interceptorModelRegistry = new ConcurrentHashMap<SlimAnnotatedType<?>, InterceptionModel<?>>();
+    private final transient ConcurrentMap<SlimAnnotatedType<?>, InterceptionModel> interceptorModelRegistry = new ConcurrentHashMap<SlimAnnotatedType<?>, InterceptionModel>();
     private final transient InterceptorMetadataReader interceptorMetadataReader = new InterceptorMetadataReader(this);
 
     private final transient ContainerLifecycleEvents containerLifecycleEvents;
@@ -1223,7 +1223,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         }
     }
 
-    public ConcurrentMap<SlimAnnotatedType<?>, InterceptionModel<?>> getInterceptorModelRegistry() {
+    public ConcurrentMap<SlimAnnotatedType<?>, InterceptionModel> getInterceptorModelRegistry() {
         return interceptorModelRegistry;
     }
 

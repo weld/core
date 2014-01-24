@@ -41,7 +41,7 @@ import com.google.common.collect.ImmutableSet;
  *
  * @param <T> the type of the intercepted entity
  */
-class InterceptionModelImpl<T> implements InterceptionModel<T> {
+class InterceptionModelImpl implements InterceptionModel {
 
     private final Map<InterceptionType, List<InterceptorClassMetadata<?>>> globalInterceptors;
 
@@ -51,21 +51,11 @@ class InterceptionModelImpl<T> implements InterceptionModel<T> {
 
     private final Set<InterceptorClassMetadata<?>> allInterceptors;
 
-    private final T interceptedEntity;
-
-    private final boolean hasTargetClassInterceptors;
-
     private final boolean hasExternalNonConstructorInterceptors;
 
     private final TargetClassInterceptorMetadata targetClassInterceptorMetadata;
 
-    /**
-     *
-     * @param builder
-     */
-    InterceptionModelImpl(InterceptionModelBuilder<T> builder) {
-        this.interceptedEntity = builder.getInterceptedEntity();
-        this.hasTargetClassInterceptors = builder.isHasTargetClassInterceptors();
+    InterceptionModelImpl(InterceptionModelBuilder builder) {
         this.hasExternalNonConstructorInterceptors = builder.isHasExternalNonConstructorInterceptors();
         this.globalInterceptors = ImmutableMap.<InterceptionType, List<InterceptorClassMetadata<?>>>copyOf(builder.getGlobalInterceptors());
         this.methodBoundInterceptors = ImmutableMap.<InterceptionType, Map<Method,List<InterceptorClassMetadata<?>>>>copyOf(builder.getMethodBoundInterceptors());
@@ -114,11 +104,6 @@ class InterceptionModelImpl<T> implements InterceptionModel<T> {
     }
 
     @Override
-    public T getInterceptedEntity() {
-        return this.interceptedEntity;
-    }
-
-    @Override
     public List<InterceptorClassMetadata<?>> getConstructorInvocationInterceptors() {
         if (globalInterceptors.containsKey(InterceptionType.AROUND_CONSTRUCT)) {
             return globalInterceptors.get(InterceptionType.AROUND_CONSTRUCT);
@@ -138,7 +123,7 @@ class InterceptionModelImpl<T> implements InterceptionModel<T> {
 
     @Override
     public boolean hasTargetClassInterceptors() {
-        return hasTargetClassInterceptors;
+        return targetClassInterceptorMetadata != null && targetClassInterceptorMetadata != TargetClassInterceptorMetadata.EMPTY_INSTANCE;
     }
 
     @Override

@@ -27,8 +27,8 @@ import javax.enterprise.inject.spi.InterceptionType;
 import javax.enterprise.inject.spi.Interceptor;
 
 import org.jboss.weld.ejb.spi.InterceptorBindings;
-import org.jboss.weld.interceptor.spi.metadata.InterceptorFactory;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorClassMetadata;
+import org.jboss.weld.interceptor.spi.metadata.InterceptorFactory;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.logging.BeanLogger;
 
@@ -37,9 +37,9 @@ import org.jboss.weld.logging.BeanLogger;
  */
 public class InterceptorBindingsAdapter implements InterceptorBindings {
 
-    private InterceptionModel<?> interceptionModel;
+    private InterceptionModel interceptionModel;
 
-    public InterceptorBindingsAdapter(InterceptionModel<?> interceptionModel) {
+    public InterceptorBindingsAdapter(InterceptionModel interceptionModel) {
         if (interceptionModel == null) {
             throw BeanLogger.LOG.interceptionModelNull();
         }

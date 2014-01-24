@@ -49,10 +49,10 @@ import org.jboss.weld.util.reflection.Reflections;
  */
 public class ConstructorInterceptionInstantiator<T> extends ForwardingInstantiator<T> {
 
-    private final InterceptionModel<?> model;
+    private final InterceptionModel model;
     private final SlimAnnotatedType<?> annotatedType;
 
-    public ConstructorInterceptionInstantiator(Instantiator<T> delegate, InterceptionModel<?> model, SlimAnnotatedType<?> type) {
+    public ConstructorInterceptionInstantiator(Instantiator<T> delegate, InterceptionModel model, SlimAnnotatedType<?> type) {
         super(delegate);
         this.model = model;
         this.annotatedType = type;

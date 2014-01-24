@@ -12,6 +12,7 @@ import org.jboss.weld.interceptor.spi.metadata.InterceptorFactory;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
 
+import com.google.common.base.Function;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -29,6 +30,7 @@ public class InterceptorMetadataReader {
     private final BeanManagerImpl manager;
     private final LoadingCache<Class<?>, InterceptorClassMetadata<?>> plainInterceptorMetadataCache;
     private final LoadingCache<Interceptor<?>, InterceptorClassMetadata<?>> cdiInterceptorMetadataCache;
+    private final Function<Interceptor<?>, InterceptorClassMetadata<?>> interceptorToInterceptorMetadataFunction;
 
     public InterceptorMetadataReader(final BeanManagerImpl manager) {
         this.manager = manager;
@@ -50,6 +52,12 @@ public class InterceptorMetadataReader {
                 return CustomInterceptorMetadata.of(key);
             }
         });
+        this.interceptorToInterceptorMetadataFunction = new Function<Interceptor<?>, InterceptorClassMetadata<?>>() {
+            @Override
+            public InterceptorClassMetadata<?> apply(Interceptor<?> input) {
+                return getCdiInterceptorMetadata(input);
+            }
+        };
     }
 
     public <T> InterceptorClassMetadata<T> getPlainInterceptorMetadata(Class<T> clazz) {
@@ -66,6 +74,10 @@ public class InterceptorMetadataReader {
             return interceptorImpl.getInterceptorMetadata();
         }
         return getCastCacheValue(cdiInterceptorMetadataCache, interceptor);
+    }
+
+    public Function<Interceptor<?>, InterceptorClassMetadata<?>> getInterceptorToInterceptorMetadataFunction() {
+        return interceptorToInterceptorMetadataFunction;
     }
 
     public void cleanAfterBoot() {
