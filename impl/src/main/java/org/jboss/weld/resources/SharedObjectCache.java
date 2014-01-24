@@ -27,7 +27,6 @@ import org.jboss.weld.annotated.enhanced.TypeClosureLazyValueHolder;
 import org.jboss.weld.bootstrap.api.BootstrapService;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.LazyValueHolder;
-import org.jboss.weld.util.Types;
 import org.jboss.weld.util.collections.WeldCollections;
 
 import com.google.common.cache.CacheBuilder;
@@ -69,14 +68,6 @@ public class SharedObjectCache implements BootstrapService {
         }
     });
 
-    private final LoadingCache<Type, Type> resolvedTypes = CacheBuilder.newBuilder().build(new CacheLoader<Type, Type>() {
-
-        @Override
-        public Type load(Type from) {
-            return Types.getCanonicalType(from);
-        }
-    });
-
     public <T> Set<T> getSharedSet(Set<T> set) {
         return getCastCacheValue(sharedSets, set);
     }
@@ -89,10 +80,6 @@ public class SharedObjectCache implements BootstrapService {
         return getCacheValue(typeClosureHolders, type);
     }
 
-    public Type getResolvedType(Type type) {
-        return resolvedTypes.getUnchecked(type);
-    }
-
     @Override
     public void cleanupAfterBoot() {
         sharedSets.invalidateAll();
@@ -103,6 +90,5 @@ public class SharedObjectCache implements BootstrapService {
     @Override
     public void cleanup() {
         cleanupAfterBoot();
-        resolvedTypes.invalidateAll();
     }
 }
