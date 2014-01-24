@@ -149,14 +149,15 @@ public class InterceptionModelInitializer<T> {
         if (classBindingAnnotations.size() == 0) {
             return;
         }
-        initLifeCycleInterceptor(InterceptionType.POST_CONSTRUCT, classBindingAnnotations);
-        initLifeCycleInterceptor(InterceptionType.PRE_DESTROY, classBindingAnnotations);
-        initLifeCycleInterceptor(InterceptionType.PRE_PASSIVATE, classBindingAnnotations);
-        initLifeCycleInterceptor(InterceptionType.POST_ACTIVATE, classBindingAnnotations);
+        final Collection<Annotation> qualifiers = classBindingAnnotations.values();
+        initLifeCycleInterceptor(InterceptionType.POST_CONSTRUCT, qualifiers);
+        initLifeCycleInterceptor(InterceptionType.PRE_DESTROY, qualifiers);
+        initLifeCycleInterceptor(InterceptionType.PRE_PASSIVATE, qualifiers);
+        initLifeCycleInterceptor(InterceptionType.POST_ACTIVATE, qualifiers);
     }
 
-    private void initLifeCycleInterceptor(InterceptionType interceptionType, Map<Class<? extends Annotation>, Annotation> classBindingAnnotations) {
-        List<Interceptor<?>> resolvedInterceptors = manager.resolveInterceptors(interceptionType, classBindingAnnotations.values());
+    private void initLifeCycleInterceptor(InterceptionType interceptionType, Collection<Annotation> annotations) {
+        List<Interceptor<?>> resolvedInterceptors = manager.resolveInterceptors(interceptionType, annotations);
         if (!resolvedInterceptors.isEmpty()) {
             builder.intercept(interceptionType, asInterceptorMetadata(resolvedInterceptors));
         }
@@ -200,10 +201,7 @@ public class InterceptionModelInitializer<T> {
         if (constructorBindings.isEmpty()) {
             return;
         }
-        List<Interceptor<?>> constructorBoundInterceptors = manager.resolveInterceptors(InterceptionType.AROUND_CONSTRUCT, constructorBindings);
-        if (!constructorBoundInterceptors.isEmpty()) {
-            builder.intercept(InterceptionType.AROUND_CONSTRUCT, asInterceptorMetadata(constructorBoundInterceptors));
-        }
+        initLifeCycleInterceptor(InterceptionType.AROUND_CONSTRUCT, constructorBindings);
     }
 
     private Collection<Annotation> getMemberBindingAnnotations(Map<Class<? extends Annotation>, Annotation> classBindingAnnotations, Set<Annotation> memberAnnotations) {
@@ -261,7 +259,7 @@ public class InterceptionModelInitializer<T> {
     }
 
     private void initMethodDeclaredEjbInterceptors(AnnotatedMethod<?> method) {
-        Method javaMethod = Reflections.<AnnotatedMethod<T>>cast(method).getJavaMember();
+        Method javaMethod = method.getJavaMember();
 
         boolean excludeClassInterceptors = method.isAnnotationPresent(interceptorsApi.getExcludeClassInterceptorsAnnotationClass());
         if (excludeClassInterceptors) {
