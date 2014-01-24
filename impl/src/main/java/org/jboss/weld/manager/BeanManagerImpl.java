@@ -135,6 +135,7 @@ import org.jboss.weld.resolution.TypeSafeInterceptorResolver;
 import org.jboss.weld.resolution.TypeSafeObserverResolver;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.MemberTransformer;
+import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.Beans;
@@ -408,7 +409,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         this.weldELResolver = new WeldELResolver(this);
         this.childActivities = new CopyOnWriteArraySet<BeanManagerImpl>();
 
-        TypeSafeObserverResolver accessibleObserverResolver = new TypeSafeObserverResolver(getServices().get(MetaAnnotationStore.class), createDynamicAccessibleIterable(ObserverMethodTransform.INSTANCE));
+        TypeSafeObserverResolver accessibleObserverResolver = new TypeSafeObserverResolver(getServices().get(MetaAnnotationStore.class), getServices().get(
+                SharedObjectCache.class), createDynamicAccessibleIterable(ObserverMethodTransform.INSTANCE));
         this.accessibleLenientObserverNotifier = ObserverNotifier.of(contextId, accessibleObserverResolver, getServices(), false);
         GlobalObserverNotifierService globalObserverNotifierService = services.get(GlobalObserverNotifierService.class);
         this.globalLenientObserverNotifier = globalObserverNotifierService.getGlobalLenientObserverNotifier();

@@ -24,6 +24,7 @@ import javax.enterprise.inject.spi.ObserverMethod;
 import org.jboss.weld.bootstrap.events.ProcessAnnotatedTypeEventResolvable;
 import org.jboss.weld.event.ExtensionObserverMethodImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
+import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Observers;
 import org.jboss.weld.util.reflection.Reflections;
@@ -36,11 +37,13 @@ public class TypeSafeObserverResolver extends TypeSafeResolver<Resolvable, Obser
 
     private final MetaAnnotationStore metaAnnotationStore;
     private final AssignabilityRules rules;
+    private final SharedObjectCache sharedObjectCache;
 
-    public TypeSafeObserverResolver(MetaAnnotationStore metaAnnotationStore, Iterable<ObserverMethod<?>> observers) {
+    public TypeSafeObserverResolver(MetaAnnotationStore metaAnnotationStore, SharedObjectCache cache, Iterable<ObserverMethod<?>> observers) {
         super(observers);
         this.metaAnnotationStore = metaAnnotationStore;
         this.rules = EventTypeAssignabilityRules.instance();
+        this.sharedObjectCache = cache;
     }
 
     @Override
@@ -48,7 +51,7 @@ public class TypeSafeObserverResolver extends TypeSafeResolver<Resolvable, Obser
         if (!rules.matches(observer.getObservedType(), resolvable.getTypes())) {
             return false;
         }
-        if (!Beans.containsAllQualifiers(QualifierInstance.qualifiers(metaAnnotationStore, observer.getObservedQualifiers()), resolvable.getQualifiers())) {
+        if (!Beans.containsAllQualifiers(QualifierInstance.qualifiers(metaAnnotationStore, sharedObjectCache, observer.getObservedQualifiers()), resolvable.getQualifiers())) {
             return false;
         }
         if (observer instanceof ExtensionObserverMethodImpl<?, ?>) {

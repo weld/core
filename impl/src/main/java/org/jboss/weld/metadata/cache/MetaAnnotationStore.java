@@ -16,11 +16,13 @@
  */
 package org.jboss.weld.metadata.cache;
 
+import static org.jboss.weld.util.cache.LoadingCacheUtils.getCacheValue;
 import static org.jboss.weld.util.cache.LoadingCacheUtils.getCastCacheValue;
 
 import java.lang.annotation.Annotation;
 
 import org.jboss.weld.bootstrap.api.Service;
+import org.jboss.weld.resolution.QualifierInstance;
 import org.jboss.weld.resources.ClassTransformer;
 
 import com.google.common.cache.CacheBuilder;
@@ -97,6 +99,22 @@ public class MetaAnnotationStore implements Service {
 
     }
 
+    private static class QualifierInstanceFunction extends CacheLoader<Annotation, QualifierInstance> {
+
+        private final MetaAnnotationStore metaAnnotationStore;
+
+        private QualifierInstanceFunction(MetaAnnotationStore metaAnnotationStore) {
+            super();
+            this.metaAnnotationStore = metaAnnotationStore;
+        }
+
+        @Override
+        public QualifierInstance load(Annotation key) throws Exception {
+            return QualifierInstance.of(key, metaAnnotationStore, false);
+        }
+
+    }
+
     // The stereotype models
     private final LoadingCache<Class<Annotation>, StereotypeModel<Annotation>> stereotypes;
     // The scope models
@@ -106,12 +124,15 @@ public class MetaAnnotationStore implements Service {
     // the interceptor bindings
     private final LoadingCache<Class<Annotation>, InterceptorBindingModel<Annotation>> interceptorBindings;
 
+    private final LoadingCache<Annotation, QualifierInstance> qualifierInstanceCache;
+
     public MetaAnnotationStore(ClassTransformer classTransformer) {
         CacheBuilder<Object, Object> cacheBuilder = CacheBuilder.newBuilder();
         this.stereotypes = cacheBuilder.build(new StereotypeFunction(classTransformer));
         this.scopes = cacheBuilder.build(new ScopeFunction(classTransformer));
         this.qualifiers = cacheBuilder.build(new QualifierFunction(classTransformer));
         this.interceptorBindings = cacheBuilder.build(new InterceptorBindingFunction(classTransformer));
+        this.qualifierInstanceCache = cacheBuilder.build(new QualifierInstanceFunction(this));
     }
 
     /**
@@ -165,6 +186,24 @@ public class MetaAnnotationStore implements Service {
     }
 
     /**
+     *
+     * @param interceptorBinding
+     * @return
+     */
+    public <T extends Annotation> InterceptorBindingModel<T> getInterceptorBindingModel(final Class<T> interceptorBinding) {
+        return getCastCacheValue(interceptorBindings, interceptorBinding);
+    }
+
+    /**
+    *
+    * @param annotation
+    * @return the cached qualifier instance for the given annotation instance
+    */
+    public QualifierInstance getCachedQualifierInstance(Annotation annotation) {
+        return getCacheValue(qualifierInstanceCache, annotation);
+    }
+
+    /**
      * Gets a string representation
      *
      * @return A string representation
@@ -178,6 +217,7 @@ public class MetaAnnotationStore implements Service {
         buffer.append("Registered scope type models: ").append(scopes.size()).append(newLine);
         buffer.append("Registered stereotype models: ").append(stereotypes.size()).append(newLine);
         buffer.append("Registered interceptor binding models: ").append(interceptorBindings.size()).append(newLine);
+        buffer.append("Cached qualifier instances: ").append(qualifierInstanceCache.size()).append(newLine);
         return buffer.toString();
     }
 
@@ -186,9 +226,7 @@ public class MetaAnnotationStore implements Service {
         this.scopes.invalidateAll();
         this.stereotypes.invalidateAll();
         this.interceptorBindings.invalidateAll();
+        this.qualifierInstanceCache.invalidateAll();
     }
 
-    public <T extends Annotation> InterceptorBindingModel<T> getInterceptorBindingModel(final Class<T> interceptorBinding) {
-        return getCastCacheValue(interceptorBindings, interceptorBinding);
-    }
 }
