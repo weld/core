@@ -34,7 +34,6 @@ import java.util.Set;
 import javax.enterprise.context.spi.CreationalContext;
 
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
-import org.jboss.weld.interceptor.reader.InterceptorMetadataReader;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorClassMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
@@ -102,7 +101,6 @@ public class InterceptionContext implements Serializable {
 
     private Object readResolve() throws ObjectStreamException {
         InterceptionModel interceptionModel = manager.getInterceptorModelRegistry().get(annotatedType);
-        InterceptorMetadataReader reader = manager.getInterceptorMetadataReader();
         return new InterceptionContext(interceptorInstances, manager, interceptionModel, annotatedType);
     }
 }

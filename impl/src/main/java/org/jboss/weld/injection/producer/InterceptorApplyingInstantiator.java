@@ -22,7 +22,6 @@ import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.bean.proxy.CombinedInterceptorAndDecoratorStackMethodHandler;
 import org.jboss.weld.bean.proxy.ProxyObject;
 import org.jboss.weld.exceptions.DeploymentException;
-import org.jboss.weld.interceptor.proxy.DefaultInvocationContextFactory;
 import org.jboss.weld.interceptor.proxy.InterceptionContext;
 import org.jboss.weld.interceptor.proxy.InterceptorMethodHandler;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
@@ -59,7 +58,7 @@ public class InterceptorApplyingInstantiator<T> extends ForwardingInstantiator<T
 
     protected T applyInterceptors(T instance, InterceptionContext interceptionContext) {
         try {
-            InterceptorMethodHandler methodHandler = new InterceptorMethodHandler(interceptionContext, new DefaultInvocationContextFactory());
+            InterceptorMethodHandler methodHandler = new InterceptorMethodHandler(interceptionContext);
             CombinedInterceptorAndDecoratorStackMethodHandler wrapperMethodHandler = (CombinedInterceptorAndDecoratorStackMethodHandler) ((ProxyObject) instance).getHandler();
             wrapperMethodHandler.setInterceptorMethodHandler(methodHandler);
         } catch (Exception e) {

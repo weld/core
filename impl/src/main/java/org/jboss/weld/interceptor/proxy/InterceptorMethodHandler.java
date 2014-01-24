@@ -5,7 +5,6 @@ import java.lang.reflect.Method;
 import java.security.AccessController;
 
 import org.jboss.weld.bean.proxy.MethodHandler;
-import org.jboss.weld.interceptor.spi.context.InvocationContextFactory;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
 import org.jboss.weld.interceptor.util.InterceptionUtils;
 import org.jboss.weld.security.SetAccessibleAction;
@@ -18,11 +17,9 @@ import org.jboss.weld.security.SetAccessibleAction;
 public class InterceptorMethodHandler implements MethodHandler, Serializable {
 
     private final InterceptionContext ctx;
-    private final InvocationContextFactory factory;
 
-    public InterceptorMethodHandler(InterceptionContext ctx, InvocationContextFactory factory) {
+    public InterceptorMethodHandler(InterceptionContext ctx) {
         this.ctx = ctx;
-        this.factory = factory;
     }
 
     @Override
@@ -45,7 +42,7 @@ public class InterceptorMethodHandler implements MethodHandler, Serializable {
 
     protected Object executeInterception(Object instance, Method method, Object[] args, InterceptionType interceptionType) throws Throwable {
         SimpleInterceptionChain chain = new SimpleInterceptionChain(instance, method, args, interceptionType, ctx);
-        return chain.invokeNextInterceptor(factory.newInvocationContext(chain, instance, method, args));
+        return chain.invokeNextInterceptor(new InterceptorInvocationContext(chain, instance, method, args));
     }
 
     private boolean isInterceptorMethod(Method method) {
