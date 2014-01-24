@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.injection.producer;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -32,10 +30,8 @@ import org.jboss.weld.construction.api.ConstructionHandle;
 import org.jboss.weld.context.CreationalContextImpl;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.interceptor.proxy.InterceptionContext;
-import org.jboss.weld.interceptor.proxy.InterceptorInvocation;
 import org.jboss.weld.interceptor.proxy.InterceptorInvocationContext;
 import org.jboss.weld.interceptor.proxy.SimpleInterceptionChain;
-import org.jboss.weld.interceptor.spi.metadata.InterceptorClassMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -71,12 +67,7 @@ public class ConstructorInterceptionInstantiator<T> extends ForwardingInstantiat
     }
 
     private void registerAroundConstructCallback(CreationalContextImpl<T> ctx, BeanManagerImpl manager) {
-        InterceptionContext interceptionContext = InterceptionContext.forConstructorInterception(model, ctx, manager, annotatedType);
-        // build interceptor invocations
-        final Collection<InterceptorInvocation> interceptorInvocations = new ArrayList<InterceptorInvocation>(model.getConstructorInvocationInterceptors().size());
-        for (InterceptorClassMetadata<?> interceptorMetadata : model.getConstructorInvocationInterceptors()) {
-            interceptorInvocations.add(interceptorMetadata.getInterceptorInvocation(interceptionContext.getInterceptorInstance(interceptorMetadata), InterceptionType.AROUND_CONSTRUCT));
-        }
+        final InterceptionContext interceptionContext = InterceptionContext.forConstructorInterception(model, ctx, manager, annotatedType);
 
         AroundConstructCallback<T> callback = new AroundConstructCallback<T>() {
 
@@ -88,7 +79,7 @@ public class ConstructorInterceptionInstantiator<T> extends ForwardingInstantiat
                  */
                 final AtomicReference<T> target = new AtomicReference<T>();
 
-                SimpleInterceptionChain chain = new SimpleInterceptionChain(interceptorInvocations) {
+                SimpleInterceptionChain chain = new SimpleInterceptionChain(model.getConstructorInvocationInterceptors(), interceptionContext, InterceptionType.AROUND_CONSTRUCT) {
                     @Override
                     protected Object interceptorChainCompleted(InvocationContext invocationCtx) throws Exception {
                         // all the interceptors were invoked, call the constructor now

@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.jboss.weld.interceptor.proxy.InterceptorInvocation;
-import org.jboss.weld.interceptor.proxy.SimpleInterceptorInvocation;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
 

@@ -15,25 +15,35 @@
  * limitations under the License.
  */
 
-package org.jboss.weld.interceptor.proxy;
+package org.jboss.weld.interceptor.reader;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import javax.interceptor.InvocationContext;
+
+import org.jboss.weld.interceptor.proxy.InterceptorInvocation;
+import org.jboss.weld.interceptor.proxy.InterceptorMethodInvocation;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
 
 /**
  * @author Marius Bogoevici
  */
-public class SimpleInterceptorInvocation implements InterceptorInvocation {
+class SimpleInterceptorInvocation implements InterceptorInvocation {
 
-    private Collection<InterceptorMethodInvocation> interceptorMethodInvocations;
+    private final Collection<InterceptorMethodInvocation> interceptorMethodInvocations;
+    private final Object instance;
+    private final boolean targetClass;
+    private final InterceptionType interceptionType;
 
     public SimpleInterceptorInvocation(Object instance, InterceptionType interceptionType, Collection<Method> interceptorMethods, boolean targetClass) {
+        this.instance = instance;
+        this.interceptionType = interceptionType;
+        this.targetClass = targetClass;
         interceptorMethodInvocations = new ArrayList<InterceptorMethodInvocation>();
         for (Method method : interceptorMethods) {
-            interceptorMethodInvocations.add(new SimpleMethodInvocation(instance, method, targetClass, interceptionType));
+            interceptorMethodInvocations.add(new SimpleMethodInvocation(method));
         }
     }
 
@@ -42,4 +52,27 @@ public class SimpleInterceptorInvocation implements InterceptorInvocation {
         return interceptorMethodInvocations;
     }
 
+    class SimpleMethodInvocation implements InterceptorMethodInvocation {
+
+        private final Method method;
+
+        SimpleMethodInvocation(Method method) {
+            this.method = method;
+        }
+
+        @Override
+        public Object invoke(InvocationContext invocationContext) throws Exception {
+            if (invocationContext != null) {
+                return method.invoke(instance, invocationContext);
+            }
+            else {
+                return method.invoke(instance);
+            }
+        }
+
+        @Override
+        public boolean expectsInvocationContext() {
+            return !targetClass || !interceptionType.isLifecycleCallback();
+        }
+    }
 }

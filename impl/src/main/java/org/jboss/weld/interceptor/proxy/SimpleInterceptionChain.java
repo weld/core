@@ -19,11 +19,12 @@ package org.jboss.weld.interceptor.proxy;
 
 import java.lang.reflect.Method;
 import java.security.AccessController;
-import java.util.Collection;
+import java.util.List;
 
 import javax.interceptor.InvocationContext;
 
 import org.jboss.weld.interceptor.chain.AbstractInterceptionChain;
+import org.jboss.weld.interceptor.spi.metadata.InterceptorClassMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
 import org.jboss.weld.security.SetAccessibleAction;
 
@@ -36,12 +37,12 @@ public class SimpleInterceptionChain extends AbstractInterceptionChain {
         super(instance, method, args, interceptionType, ctx);
     }
 
-    public SimpleInterceptionChain(Collection<InterceptorInvocation> interceptorInvocations) {
-        super(interceptorInvocations);
-    }
-
     public SimpleInterceptionChain(InterceptorInvocation interceptorInvocation) {
         super(interceptorInvocation);
+    }
+
+    public SimpleInterceptionChain(List<InterceptorClassMetadata<?>> interceptorMetadata, InterceptionContext ctx, InterceptionType interceptionType) {
+        super(interceptorMetadata, ctx, interceptionType);
     }
 
     @Override
