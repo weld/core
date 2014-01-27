@@ -40,8 +40,11 @@ public class DeploymentVisitor {
     }
 
     public void visit() {
+        Set<BeanDeploymentArchive> seenBeanDeploymentArchives = new HashSet<BeanDeploymentArchive>();
         for (BeanDeploymentArchive archive : deployment.getBeanDeploymentArchives()) {
-            visit(archive, new HashSet<BeanDeploymentArchive>());
+            if (!seenBeanDeploymentArchives.contains(archive)) {
+                visit(archive, seenBeanDeploymentArchives);
+            }
         }
     }
 
