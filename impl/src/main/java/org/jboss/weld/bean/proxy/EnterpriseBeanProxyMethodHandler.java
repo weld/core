@@ -19,6 +19,8 @@ package org.jboss.weld.bean.proxy;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import org.jboss.weld.annotated.enhanced.MethodSignature;
@@ -30,6 +32,8 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.Reflections;
+
+import com.google.common.collect.ImmutableMap;
 
 /**
  * Method handler for enterprise bean client proxies
@@ -48,6 +52,8 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
 
     private final transient SessionBean<T> bean;
 
+    private final transient Map<Class<?>, Class<?>> typeToBusinessInterfaceMap;
+
     /**
      * Constructor
      *
@@ -59,6 +65,12 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
         this.manager = bean.getBeanManager();
         this.beanId = bean.getIdentifier();
         this.reference = bean.createReference();
+
+        Map<Class<?>, Class<?>> typeToBusinessInterfaceMap = new HashMap<Class<?>, Class<?>>();
+        discoverBusinessInterfaces(typeToBusinessInterfaceMap, bean.getEjbDescriptor().getRemoteBusinessInterfacesAsClasses());
+        discoverBusinessInterfaces(typeToBusinessInterfaceMap, bean.getEjbDescriptor().getLocalBusinessInterfacesAsClasses());
+        this.typeToBusinessInterfaceMap = ImmutableMap.copyOf(typeToBusinessInterfaceMap);
+
         BeanLogger.LOG.createdSessionBeanProxy(bean);
     }
 
@@ -120,10 +132,8 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
         if (declaringClass.equals(Object.class)) {
             businessInterface = bean.getEjbDescriptor().getObjectInterface();
         } else {
-            businessInterface = findBusinessInterface(declaringClass, bean.getEjbDescriptor().getLocalBusinessInterfacesAsClasses());
-            if (businessInterface == null) {
-                businessInterface = findBusinessInterface(declaringClass, bean.getEjbDescriptor().getRemoteBusinessInterfacesAsClasses());
-            }
+            // This will likely not work perfectly if there is a session bean with more than one views extending/implementing the declaringClass
+            businessInterface = typeToBusinessInterfaceMap.get(declaringClass);
         }
 
         if (businessInterface == null) {
@@ -132,21 +142,16 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
         return businessInterface;
     }
 
-    private Class<?> findBusinessInterface(Class<?> declaringClass, Set<Class<?>> businessInterfacesClasses) {
-        if (businessInterfacesClasses.contains(declaringClass)) {
-            return declaringClass;
-        }
-        // This will likely not work if there is a session bean with more than one view extending/implementing the declaringClass
-        for (Class<?> businessInterface : businessInterfacesClasses) {
-            if (new HierarchyDiscovery(businessInterface).getTypeMap().containsKey(declaringClass)) {
-                return businessInterface;
-            }
-        }
-        return null;
-    }
-
     @SuppressWarnings("unchecked")
     private Object readResolve() throws ObjectStreamException {
         return new EnterpriseBeanProxyMethodHandler<T>((SessionBean<T>) manager.getPassivationCapableBean(beanId));
+    }
+
+    private void discoverBusinessInterfaces(Map<Class<?>, Class<?>> typeToBusinessInterfaceMap, Set<Class<?>> businessInterfaces) {
+        for (Class<?> businessInterfaceClass : businessInterfaces) {
+            for (Class<?> type : new HierarchyDiscovery(businessInterfaceClass).getTypeMap().keySet()) {
+                typeToBusinessInterfaceMap.put(type, businessInterfaceClass);
+            }
+        }
     }
 }
