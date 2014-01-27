@@ -17,7 +17,6 @@
 package org.jboss.weld.manager;
 
 import static org.jboss.weld.annotated.AnnotatedTypeValidator.validateAnnotatedType;
-import static org.jboss.weld.manager.BeanManagers.buildAccessibleClosure;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 import static org.jboss.weld.util.reflection.Reflections.isCacheable;
 
@@ -233,7 +232,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     * observers deployed in this bean deployment archive activity
     */
     private final transient List<Bean<?>> enabledBeans;
-    private final transient List<Bean<?>> transitiveBeans;
+    // shared beans are accessible from other bean archives (generally all beans except for built-in beans and @New beans)
+    private final transient List<Bean<?>> sharedBeans;
     private final transient List<Decorator<?>> decorators;
     private final transient List<Interceptor<?>> interceptors;
     private final transient List<String> namespaces;
@@ -334,7 +334,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         List<Bean<?>> beans = new CopyOnWriteArrayList<Bean<?>>();
         beans.addAll(parentManager.getBeans());
         List<Bean<?>> transitiveBeans = new CopyOnWriteArrayList<Bean<?>>();
-        beans.addAll(parentManager.getTransitiveBeans());
+        beans.addAll(parentManager.getSharedBeans());
 
         List<ObserverMethod<?>> registeredObservers = new CopyOnWriteArrayList<ObserverMethod<?>>();
         registeredObservers.addAll(parentManager.getObservers());
@@ -379,7 +379,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
             String contextId) {
         this.services = serviceRegistry;
         this.enabledBeans = beans;
-        this.transitiveBeans = transitiveBeans;
+        this.sharedBeans = transitiveBeans;
         this.decorators = decorators;
         this.interceptors = interceptors;
         this.enterpriseBeans = enterpriseBeans;
@@ -440,7 +440,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
             @Override
             public Iterator<T> iterator() {
-                Set<Iterable<T>> iterable = buildAccessibleClosure(BeanManagerImpl.this, transform);
+                Set<Iterable<T>> iterable = BeanManagers.getDirectlyAccessibleComponents(BeanManagerImpl.this, transform);
                 return Iterators.concat(Iterators.transform(iterable.iterator(), IterableToIteratorFunction.<T>instance()));
             }
 
@@ -460,7 +460,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     public void addBean(Bean<?> bean) {
-        addBean(bean, enabledBeans, transitiveBeans);
+        addBean(bean, enabledBeans, sharedBeans);
     }
 
     /**
@@ -475,7 +475,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         }
         // optimize so that we do not modify CopyOnWriteLists for each Bean
         this.enabledBeans.addAll(beanList);
-        this.transitiveBeans.addAll(transitiveBeans);
+        this.sharedBeans.addAll(transitiveBeans);
         for (BeanManagerImpl childActivity : childActivities) {
             childActivity.addBeans(beanList);
         }
@@ -596,8 +596,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         return Collections.unmodifiableList(enabledBeans);
     }
 
-    List<Bean<?>> getTransitiveBeans() {
-        return Collections.unmodifiableList(transitiveBeans);
+    List<Bean<?>> getSharedBeans() {
+        return Collections.unmodifiableList(sharedBeans);
     }
 
     public List<Decorator<?>> getDecorators() {

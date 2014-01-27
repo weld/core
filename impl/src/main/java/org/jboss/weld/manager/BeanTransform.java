@@ -31,7 +31,7 @@ public class BeanTransform implements Transform<Bean<?>> {
         if (beanManager.equals(declaringBeanManager)) {
             return beanManager.getBeans();
         } else {
-            return beanManager.getTransitiveBeans();
+            return beanManager.getSharedBeans();
         }
     }
 
