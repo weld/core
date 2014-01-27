@@ -34,7 +34,7 @@ import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.context.CreationalContextImpl;
 import org.jboss.weld.context.RequestContext;
 import org.jboss.weld.context.unbound.UnboundLiteral;
-import org.jboss.weld.interceptor.spi.metadata.InterceptorMetadata;
+import org.jboss.weld.interceptor.spi.metadata.InterceptorClassMetadata;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
@@ -130,9 +130,9 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
         return getFirstNonPassivationCapableInterceptor() == null;
     }
 
-    private InterceptorMetadata<?> getFirstNonPassivationCapableInterceptor() {
-        for (InterceptorMetadata<?> interceptorMetadata : getBeanManager().getInterceptorModelRegistry().get(getAnnotated()).getAllInterceptors()) {
-            if (!Reflections.isSerializable(interceptorMetadata.getInterceptorClass().getJavaClass())) {
+    private InterceptorClassMetadata<?> getFirstNonPassivationCapableInterceptor() {
+        for (InterceptorClassMetadata<?> interceptorMetadata : getBeanManager().getInterceptorModelRegistry().get(getAnnotated()).getAllInterceptors()) {
+            if (!Reflections.isSerializable(interceptorMetadata.getJavaClass())) {
                 return interceptorMetadata;
             }
         }

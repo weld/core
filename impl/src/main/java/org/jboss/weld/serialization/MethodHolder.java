@@ -22,7 +22,6 @@ import java.security.PrivilegedAction;
 
 import javax.enterprise.inject.spi.AnnotatedMethod;
 
-import org.jboss.weld.interceptor.spi.metadata.MethodMetadata;
 import org.jboss.weld.logging.ReflectionLogger;
 import org.jboss.weld.util.reflection.DeclaredMemberIndexer;
 
@@ -53,10 +52,6 @@ public class MethodHolder extends AbstractSerializableHolder<Method> implements 
 
     public static MethodHolder of(AnnotatedMethod<?> method) {
         return new MethodHolder(method.getJavaMember());
-    }
-
-    public static MethodHolder of(MethodMetadata method) {
-        return new MethodHolder(method.getJavaMethod());
     }
 
     @Override

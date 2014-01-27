@@ -16,9 +16,12 @@
  */
 package org.jboss.weld.util;
 
+import java.lang.reflect.Method;
+import java.security.AccessController;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -36,15 +39,20 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.MethodInjectionPoint;
+import org.jboss.weld.interceptor.reader.InterceptorMetadataUtils;
+import org.jboss.weld.interceptor.spi.model.InterceptionType;
+import org.jboss.weld.interceptor.util.InterceptionTypeRegistry;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.logging.EventLogger;
 import org.jboss.weld.logging.UtilLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.security.SetAccessibleAction;
 import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.collections.WeldCollections;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
+import com.google.common.collect.ImmutableList;
 
 public class BeanMethods {
 
@@ -308,5 +316,50 @@ public class BeanMethods {
      */
     public static <T> Collection<EnhancedAnnotatedMethod<?, ? super T>> filterOutBridgeMethods(final Collection<EnhancedAnnotatedMethod<?, ? super T>> methods) {
         return Collections2.filter(methods, BRIDGE_METHOD_FILTER_PREDICATE);
+    }
+
+    public static <T> List<Method> getInterceptorMethods(EnhancedAnnotatedType<T> type, final InterceptionType interceptionType, final boolean targetClass) {
+        return getMethods(type, new MethodListBuilder<T, List<Method>>() {
+
+            List<Method> methodMetadata = null;
+
+            @Override
+            public Collection<EnhancedAnnotatedMethod<?, ? super T>> getAllMethods(EnhancedAnnotatedType<T> type) {
+                return type.getEnhancedMethods(InterceptionTypeRegistry.getAnnotationClass(interceptionType));
+            }
+
+            @Override
+            public void levelStart(Class<? super T> clazz) {
+            }
+
+            @Override
+            public void processMethod(EnhancedAnnotatedMethod<?, ? super T> method) {
+                final Method javaMethod = method.getJavaMember();
+                if (InterceptorMetadataUtils.isInterceptorMethod(interceptionType, javaMethod, targetClass)) {
+                    if (methodMetadata == null) {
+                        methodMetadata = new LinkedList<Method>();
+                    }
+                    if (System.getSecurityManager() == null) {
+                        javaMethod.setAccessible(true);
+                    } else {
+                        AccessController.doPrivileged(SetAccessibleAction.of(javaMethod));
+                    }
+                    methodMetadata.add(method.getJavaMember());
+                }
+            }
+
+            @Override
+            public void levelFinish() {
+            }
+
+            @Override
+            public List<Method> create() {
+                if (methodMetadata == null) {
+                    return Collections.emptyList();
+                }
+                Collections.reverse(methodMetadata);
+                return ImmutableList.copyOf(methodMetadata);
+            }
+        });
     }
 }

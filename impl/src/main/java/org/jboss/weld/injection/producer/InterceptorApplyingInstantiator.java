@@ -22,10 +22,8 @@ import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.bean.proxy.CombinedInterceptorAndDecoratorStackMethodHandler;
 import org.jboss.weld.bean.proxy.ProxyObject;
 import org.jboss.weld.exceptions.DeploymentException;
-import org.jboss.weld.interceptor.proxy.DefaultInvocationContextFactory;
 import org.jboss.weld.interceptor.proxy.InterceptionContext;
 import org.jboss.weld.interceptor.proxy.InterceptorMethodHandler;
-import org.jboss.weld.interceptor.spi.metadata.ClassMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.manager.BeanManagerImpl;
 
@@ -39,10 +37,10 @@ import org.jboss.weld.manager.BeanManagerImpl;
  */
 public class InterceptorApplyingInstantiator<T> extends ForwardingInstantiator<T> {
 
-    private final InterceptionModel<ClassMetadata<?>> interceptionModel;
+    private final InterceptionModel interceptionModel;
     private final SlimAnnotatedType<T> annotatedType;
 
-    public InterceptorApplyingInstantiator(Instantiator<T> delegate, InterceptionModel<ClassMetadata<?>> model, SlimAnnotatedType<T> type) {
+    public InterceptorApplyingInstantiator(Instantiator<T> delegate, InterceptionModel model, SlimAnnotatedType<T> type) {
         super(delegate);
         this.interceptionModel = model;
         this.annotatedType = type;
@@ -60,7 +58,7 @@ public class InterceptorApplyingInstantiator<T> extends ForwardingInstantiator<T
 
     protected T applyInterceptors(T instance, InterceptionContext interceptionContext) {
         try {
-            InterceptorMethodHandler methodHandler = new InterceptorMethodHandler(interceptionContext, new DefaultInvocationContextFactory());
+            InterceptorMethodHandler methodHandler = new InterceptorMethodHandler(interceptionContext);
             CombinedInterceptorAndDecoratorStackMethodHandler wrapperMethodHandler = (CombinedInterceptorAndDecoratorStackMethodHandler) ((ProxyObject) instance).getHandler();
             wrapperMethodHandler.setInterceptorMethodHandler(methodHandler);
         } catch (Exception e) {

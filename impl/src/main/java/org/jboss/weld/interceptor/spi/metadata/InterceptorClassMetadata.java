@@ -15,18 +15,29 @@
  * limitations under the License.
  */
 
-package org.jboss.weld.interceptor.spi.context;
+package org.jboss.weld.interceptor.spi.metadata;
 
-import java.io.Serializable;
-import java.lang.reflect.Method;
-
-import javax.interceptor.InvocationContext;
 
 /**
- * @author Marius Bogoevici
+ * Metadata about an interceptor component.
+ *
+ * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
+ * @author Jozef Hartinger
+ *
+ * @param <T> The type (class) of the interceptor bean
  */
-public interface InvocationContextFactory extends Serializable {
-    InvocationContext newInvocationContext(InterceptionChain chain, Object o, Method method, Object[] args);
+public interface InterceptorClassMetadata<T> extends InterceptorMetadata {
 
-    InvocationContext newInvocationContext(InterceptionChain chain, Object o, Method method, Object timer);
+    /**
+     * Returns an InterceptorFactory capable of creating instances of this interceptor..
+     *
+     * @return the interceptor factory
+     */
+    InterceptorFactory<T> getInterceptorFactory();
+
+    /**
+     * Returns the class of this interceptor.
+     * @return
+     */
+    Class<T> getJavaClass();
 }
