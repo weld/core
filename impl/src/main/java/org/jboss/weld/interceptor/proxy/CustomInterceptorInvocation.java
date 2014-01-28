@@ -1,7 +1,7 @@
 package org.jboss.weld.interceptor.proxy;
 
-import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import javax.enterprise.inject.spi.InterceptionType;
 import javax.enterprise.inject.spi.Interceptor;
@@ -25,15 +25,18 @@ public class CustomInterceptorInvocation<T> implements InterceptorInvocation {
         this.interceptionType = interceptionType;
     }
 
-    public Collection<InterceptorMethodInvocation> getInterceptorMethodInvocations() {
-        return Collections.<InterceptorMethodInvocation>singleton(new CustomInterceptorMethodInvocation());
+    @Override
+    public List<InterceptorMethodInvocation> getInterceptorMethodInvocations() {
+        return Collections.<InterceptorMethodInvocation>singletonList(new CustomInterceptorMethodInvocation());
     }
 
     private class CustomInterceptorMethodInvocation implements InterceptorMethodInvocation {
+        @Override
         public Object invoke(InvocationContext invocationContext) throws Exception {
             return interceptorBeanInstance.intercept(interceptionType, interceptorInstance, invocationContext);
         }
 
+        @Override
         public boolean expectsInvocationContext() {
             return true;
         }

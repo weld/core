@@ -26,6 +26,8 @@ import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
  * InterceptorFactory that obtains an interceptor instance using {@link BeanManagerImpl}.
+ * <p>
+ * This factory is used for all {@link Interceptor} implementations.
  *
  * @author Jozef Hartinger
  *

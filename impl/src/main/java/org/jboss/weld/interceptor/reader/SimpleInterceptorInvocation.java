@@ -20,6 +20,7 @@ package org.jboss.weld.interceptor.reader;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import javax.interceptor.InvocationContext;
 
@@ -32,7 +33,7 @@ import org.jboss.weld.interceptor.spi.model.InterceptionType;
  */
 class SimpleInterceptorInvocation implements InterceptorInvocation {
 
-    private final Collection<InterceptorMethodInvocation> interceptorMethodInvocations;
+    private final List<InterceptorMethodInvocation> interceptorMethodInvocations;
     private final Object instance;
     private final boolean targetClass;
     private final InterceptionType interceptionType;
@@ -48,7 +49,7 @@ class SimpleInterceptorInvocation implements InterceptorInvocation {
     }
 
     @Override
-    public Collection<InterceptorMethodInvocation> getInterceptorMethodInvocations() {
+    public List<InterceptorMethodInvocation> getInterceptorMethodInvocations() {
         return interceptorMethodInvocations;
     }
 

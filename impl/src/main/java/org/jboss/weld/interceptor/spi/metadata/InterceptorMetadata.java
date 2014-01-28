@@ -35,6 +35,12 @@ public interface InterceptorMetadata {
      */
     boolean isEligible(InterceptionType interceptionType);
 
+    /**
+     * Creates a {@link InterceptorInvocation} object representing invocation of interceptor methods of a given type on a given interceptor instance.
+     * @param interceptorInstance the given instance of the interceptor
+     * @param interceptionType the given interception type
+     * @return
+     */
     InterceptorInvocation getInterceptorInvocation(Object interceptorInstance, InterceptionType interceptionType);
 
 }

@@ -20,11 +20,27 @@ package org.jboss.weld.interceptor.spi.context;
 import javax.interceptor.InvocationContext;
 
 /**
+ * Represents a chain of interceptor methods to be invoked as part of interception of a business/timeout method or a lifecycle event.
+ * <p>
+ * The chain tracks the position of the last-invoked interceptor method internally.
+ *
  * @author Marius Bogoevici
  */
 public interface InterceptionChain {
 
+    /**
+     * Invokes the next interceptor method in the chain. Generally this method should be called once {@link InvocationContext#proceed()} is invoked by the
+     * interceptor.
+     *
+     * @param invocationContext the invocation context to be passed to the interceptor method
+     * @return the value returned by the interceptor
+     * @throws Exception
+     */
     Object invokeNextInterceptor(InvocationContext invocationContext) throws Exception;
 
+    /**
+     * Indicates whether there are not-yet-invoked interceptor methods in the chain.
+     * @return true if the chain has not been completed yet, false otherwise
+     */
     boolean hasNextInterceptor();
 }

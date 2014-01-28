@@ -73,6 +73,10 @@ public interface InterceptionModel {
      */
     boolean hasTargetClassInterceptors();
 
+    /**
+     * Returns the interceptor metadata for the component class of this component.
+     * @return interceptor metadata for the component class
+     */
     TargetClassInterceptorMetadata getTargetClassInterceptorMetadata();
 
 }

@@ -19,6 +19,7 @@ package org.jboss.weld.interceptor.reader;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.InjectionTarget;
+import javax.interceptor.Interceptors;
 
 import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorFactory;
@@ -26,6 +27,8 @@ import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
  * InterceptorFactory that uses an {@link InjectionTarget} as a factory for interceptor instances.
+ * <p>
+ * This factory is used for interceptors that are not CDI beans - interceptors defined using the {@link Interceptors} annotation.
  *
  * @author Jozef Hartinger
  *
