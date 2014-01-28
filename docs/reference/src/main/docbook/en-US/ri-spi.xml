@@ -623,29 +623,53 @@ public interface ResourceLoader extends Service {
         <section>
             <title>AnnotationDiscovery</title>
             <para>
-                An integrator may optionally implement the <literal>AnnotationDiscovery</literal> service.
+                The optional <literal>AnnotationDiscovery</literal> service has been deprecated and is not used by Weld since Weld 2.2.
+                Integrators are encouraged to implement <literal>ClassFileServices</literal> instead.
             </para>
-            <programlisting role="JAVA"><![CDATA[org.jboss.weld.bootstrap.api.Service;
+        </section>
 
-public interface AnnotationDiscovery extends Service {
-    boolean containsAnnotation(Class<?> javaClass, Class<? extends Annotation> annotation);
+        <section id="classFileServices">
+            <title>ClassFileServices</title>
+            <para>
+                Integrators with bytecode-scanning capabilities may implement an optional <literal>ClassFileServices</literal> service.
+            </para>
+
+            <para>
+                Bytecode-scanning is used by some application servers to speed-up deployment. Compared to loading a class using <literal>ClassLoader</literal>,
+                bytecode-scanning usually allows to obtain only a subset of information contained in the Java class file (e.g. annotations, class hierarchy, etc.). 
+                However, this subset is usually loaded much faster. This allows the container to scan all classes initially by a bytecode scanner and then use this
+                limited information to decide which classes need to be fully loaded using <literal>ClassLoader</literal>. 
+                <link linkend="https://github.com/wildfly/jandex">Jandex</link> is an example of a bytecode-scanning utility.
+            </para>
+
+            <para>
+                <literal>ClassFileServices</literal> may be used by an integrator to provide container's bytecode-scanning capabilities to Weld. If present, Weld will try
+                to use the service to avoid loading of classes that do not need to be loaded. These are classes that:
+                <itemizedlist>
+                    <listitem>are not <link linkend="http://docs.jboss.org/cdi/spec/1.1/cdi-spec.html#what_classes_are_beans">CDI managed beans</link> and</listitem>
+                    <listitem>are not assignable to any <literal>ProcessAnnotatedType</literal> observer</listitem>
+                </itemizedlist>
+                This usually yields improved bootstrap performance especially in large deployments with a lot of classes in explicit bean archives.
+            </para>
+
+            <programlisting role="JAVA"><![CDATA[public interface ClassFileServices extends BootstrapService {
+    ClassFileInfo getClassFileInfo(String className);
 }]]></programlisting>
-            <para>
-                The service allows an integrator to expose a fast annotation index obtained by performing byte-level scanning. Weld
-                uses the service at various places to optimize bootstrap performance by avoiding expensive Java Reflection API calls.
-                See the service Javadoc for details on the API contract.
-            </para>
-            <para>
-                The service implementation may also implement <literal>ExtendedAnnotationDiscovery</literal> to allow Weld to discover
-                annotations annotated with a given meta-annotation effectively. Again, implementing this interface is optional and should
-                only be done by an integrator that builds an annotation index.
-            </para>
-                        <programlisting role="JAVA"><![CDATA[public interface ExtendedAnnotationDiscovery extends AnnotationDiscovery {
-    Set<String> getAnnotationsAnnotatedWith(Class<? extends Annotation> annotation);
-}]]></programlisting>
-            <para>
-                If the <literal>AnnotationDiscovery</literal> service is not available, Weld falls back to using Java Reflection API
-            </para>
+
+            <programlisting role="JAVA"><![CDATA[public interface ClassFileInfo {
+    String getClassName();
+    String getSuperclassName();
+    boolean isAnnotationDeclared(Class<? extends Annotation> annotationType);
+    boolean containsAnnotation(Class<? extends Annotation> annotationType);
+    int getModifiers();
+    boolean hasCdiConstructor();
+    boolean isAssignableFrom(Class<?> javaClass);
+    boolean isAssignableTo(Class<?> javaClass);
+    boolean isVetoed();
+    boolean isTopLevelClass();]]></programlisting>
+
+            <para>See the JavaDoc for more details.</para>
+
         </section>
    
     </section>
