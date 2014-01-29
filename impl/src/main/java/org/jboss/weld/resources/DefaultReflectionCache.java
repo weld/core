@@ -21,6 +21,7 @@ import static org.jboss.weld.util.cache.LoadingCacheUtils.getCacheValue;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashSet;
@@ -29,6 +30,7 @@ import java.util.Set;
 import javax.enterprise.context.NormalScope;
 import javax.inject.Scope;
 
+import org.jboss.weld.annotated.slim.backed.BackedAnnotatedParameter;
 import org.jboss.weld.bootstrap.api.helpers.AbstractBootstrapService;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.util.collections.Arrays2;
@@ -69,6 +71,7 @@ public class DefaultReflectionCache extends AbstractBootstrapService implements 
     private final LoadingCache<AnnotatedElement, Annotations> declaredAnnotations;
     private final LoadingCache<Constructor<?>, Annotation[][]> constructorParameterAnnotations;
     private final LoadingCache<Method, Annotation[][]> methodParameterAnnotations;
+    private final LoadingCache<BackedAnnotatedParameter<?>, Set<Annotation>> parameterAnnotationSet;
     private final LoadingCache<Class<?>, Set<Annotation>> backedAnnotatedTypeAnnotations;
     private final LoadingCache<Class<? extends Annotation>, Boolean> isScopeAnnotation;
 
@@ -99,14 +102,28 @@ public class DefaultReflectionCache extends AbstractBootstrapService implements 
                 return input.getParameterAnnotations();
             }
         });
+        this.parameterAnnotationSet = cacheBuilder.build(new CacheLoader<BackedAnnotatedParameter<?>, Set<Annotation>>() {
+            @Override
+            public Set<Annotation> load(BackedAnnotatedParameter<?> parameter) throws Exception {
+                final Member member = parameter.getDeclaringCallable().getJavaMember();
+                if (member instanceof Method) {
+                    return ImmutableSet.copyOf( getParameterAnnotations((Method) member, parameter.getPosition()));
+                } else {
+                    return ImmutableSet.copyOf( getParameterAnnotations((Constructor<?>) member, parameter.getPosition()));
+                }
+            }
+
+        });
         this.backedAnnotatedTypeAnnotations = cacheBuilder.build(new BackedAnnotatedTypeAnnotationsFunction());
         this.isScopeAnnotation = cacheBuilder.build(new IsScopeAnnotationFunction());
     }
 
+    @Override
     public Annotation[] getAnnotations(AnnotatedElement element) {
         return getCacheValue(annotations, element).annotations;
     }
 
+    @Override
     public Annotation[] getDeclaredAnnotations(AnnotatedElement element) {
         return getCacheValue(declaredAnnotations, element).annotations;
     }
@@ -129,6 +146,7 @@ public class DefaultReflectionCache extends AbstractBootstrapService implements 
         methodParameterAnnotations.invalidateAll();
         backedAnnotatedTypeAnnotations.invalidateAll();
         isScopeAnnotation.invalidateAll();
+        parameterAnnotationSet.invalidateAll();
     }
 
     @Override
@@ -142,13 +160,8 @@ public class DefaultReflectionCache extends AbstractBootstrapService implements 
     }
 
     @Override
-    public Set<Annotation> getParameterAnnotationSet(Constructor<?> constructor, int parameterPosition) {
-        return ImmutableSet.copyOf(getParameterAnnotations(constructor, parameterPosition));
-    }
-
-    @Override
-    public Set<Annotation> getParameterAnnotationSet(Method method, int parameterPosition) {
-        return ImmutableSet.copyOf(getParameterAnnotations(method, parameterPosition));
+    public Set<Annotation> getParameterAnnotationSet(BackedAnnotatedParameter<?> parameter) {
+        return getCacheValue(parameterAnnotationSet, parameter);
     }
 
     @Override

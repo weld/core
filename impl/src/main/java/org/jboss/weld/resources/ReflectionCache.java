@@ -23,6 +23,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.Set;
 
+import org.jboss.weld.annotated.slim.backed.BackedAnnotatedParameter;
 import org.jboss.weld.annotated.slim.backed.BackedAnnotatedType;
 import org.jboss.weld.bootstrap.api.Service;
 
@@ -38,11 +39,9 @@ public interface ReflectionCache extends Service {
 
     Annotation[] getParameterAnnotations(Constructor<?> constructor, int parameterPosition);
 
-    Set<Annotation> getParameterAnnotationSet(Constructor<?> constructor, int parameterPosition);
-
     Annotation[] getParameterAnnotations(Method method, int parameterPosition);
 
-    Set<Annotation> getParameterAnnotationSet(Method method, int parameterPosition);
+    Set<Annotation> getParameterAnnotationSet(BackedAnnotatedParameter<?> parameter);
 
     /**
      * Returns the set of annotations for a {@link BackedAnnotatedType}. This are all annotations declared directly on the
