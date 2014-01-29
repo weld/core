@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.tests.enterprise;
 
-import javax.ejb.Stateless;
+import javax.ejb.Stateful;
 
-@Stateless
+@Stateful
 public class Castle {
 
     private boolean pinged;
