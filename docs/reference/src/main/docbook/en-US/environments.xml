@@ -76,31 +76,34 @@
         </para>
 
         <para>
-            You also need to explicitly specify two listeners in
-            <literal>WEB-INF/web.xml</literal>
-            in the web root:
+            You also need to explicitly specify the servlet listener (used to boot Weld, and control its interaction with requests) in WEB-INF/web.xml in the web root:
         </para>
-<itemizedlist>
-            <listitem>
-                <para>
-                    <literal>org.jboss.weld.servlet.WeldInitialListener</literal>  need to be registered as the first listener, listens for context/session/request creation/destruction) 
-                </para>
-            </listitem>
-            <listitem>
-                <para>
-                    <literal>org.jboss.weld.servlet.WeldTerminalListener</literal> as the last one. Listener activates the session context before other listeners accesses it (the listeners are notified in reverse order when a session is being destroyed)
-                </para>
-            </listitem>
-</itemizedlist>
-
         <programlisting role="XML"><![CDATA[<listener>
-   <listener-class>org.jboss.weld.servlet.WeldInitialListener</listener-class>
-   ...
-   ...
-   <listener-class>org.jboss.weld.servlet.WeldTerminalListener</listener-class>
-</listener>]]></programlisting>
+   <listener-class>org.jboss.weld.environment.servlet.Listener</listener-class>
+</listener>
+]]></programlisting>
 
-        <section>
+        <para>
+            Actually you don't have to register this listener in Servlet 3.0 compliant containers which support <literal>javax.servlet.ServletContainerInitializer</literal> service properly (e.g. Tomcat 7.0.50).
+            In this case <literal>org.jboss.weld.environment.servlet.EnhancedListener</literal> will do all the necessary work automatically, and what is more important -
+            injection into Listeners will work on some containers as well (see <xref linkend="tomcat-container"/> and <xref linkend="jetty-container"/> for more info).
+        </para>
+        <para>
+            The downside of <literal>javax.servlet.ServletContainerInitializer</literal> approach is that the Weld listener will be added to the end of the ordered list of discovered listeners.
+            In practice the request and session context will not be active during <literal>ServletRequestListener</literal> and <literal>HttpSessionListener</literal> notifications.
+            Fortunately, it's possible to combine the <literal>EnhancedListener</literal> and the old <literal>Listener</literal> to fix this problem - simply add the old <literal>Listener</literal> to the <literal>web.xml</literal> as mentioned above.
+            Note that it must be defined before the listeners using request and session context.
+        </para>
+        <note>
+          <para>
+              There is quite a special use-case where one more special component must be involved.
+              If you want the session context to be active during <literal>HttpSessionListener.sessionDestroyed()</literal> invocation when the session times out or when all the sessions are destroyed because the deployment is being removed
+              then <literal>org.jboss.weld.servlet.WeldTerminalListener</literal> must be specified as the last one in your <literal>web.xml</literal>.
+              This listener activates the session context before other listeners are invoked (note that the listeners are notified in reverse order when a session is being destroyed).
+          </para>
+          </note>
+
+        <section id="tomcat-container">
             <title>Tomcat</title>
 
             <para>
@@ -136,12 +139,12 @@
             </para>
 
             <para>
-                Weld also supports Servlet injection in Tomcat containers.
+                Weld also supports Servlet and Filter injection in Tomcat containers. Listener injection should also work on Tomcat 7.0.50 and newer versions.
             </para>
 
         </section>
 
-        <section>
+        <section id="jetty-container">
             <title>Jetty</title>
 
             <para>
@@ -200,7 +203,7 @@
             </para>
 
             <para>
-                Weld also supports Servlet and Filter injection in Jetty containers.
+                Weld also supports Servlet and Filter injection in Jetty containers. Listener injection should also work on Jetty 9.1.x and newer versions.
             </para>
 
         </section>
