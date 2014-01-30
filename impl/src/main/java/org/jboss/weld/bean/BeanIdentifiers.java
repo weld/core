@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.bean;
 
+import static org.jboss.weld.serialization.spi.BeanIdentifier.BEAN_ID_SEPARATOR;
+
 import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.Extension;
 
@@ -34,11 +36,10 @@ public class BeanIdentifiers {
     private BeanIdentifiers() {
     }
 
-    public static final String PREFIX = "WELD|";
-    public static final String SEPARATOR = "|";
+    public static final String PREFIX = "WELD" + BEAN_ID_SEPARATOR;
 
     private static StringBuilder getPrefix(Class<?> beanType) {
-        return new StringBuilder(PREFIX).append(beanType.getSimpleName()).append(SEPARATOR);
+        return new StringBuilder(PREFIX).append(beanType.getSimpleName()).append(BEAN_ID_SEPARATOR);
     }
 
     public static String forManagedBean(EnhancedAnnotatedType<?> type) {
@@ -64,7 +65,7 @@ public class BeanIdentifiers {
     public static String forSessionBean(EnhancedAnnotatedType<?> type, EjbDescriptor<?> descriptor) {
         StringBuilder builder = getPrefix(SessionBean.class).append(descriptor.getBeanClass().getName());
         if (!type.isDiscovered()) {
-            builder.append(SEPARATOR).append(type.slim().getIdentifier().asString());
+            builder.append(BEAN_ID_SEPARATOR).append(type.slim().getIdentifier().asString());
         }
         return builder.toString();
     }
@@ -75,7 +76,7 @@ public class BeanIdentifiers {
 
     public static String forProducerField(EnhancedAnnotatedField<?, ?> field, AbstractClassBean<?> declaringBean) {
         StringBuilder sb = getPrefix(ProducerField.class).append(declaringBean.getAnnotated().getIdentifier().asString())
-                .append(SEPARATOR);
+                .append(BEAN_ID_SEPARATOR);
         if (declaringBean.getEnhancedAnnotated().isDiscovered()) {
             sb.append(field.getName());
         } else {
@@ -92,18 +93,18 @@ public class BeanIdentifiers {
     }
 
     public static String forProducerMethod(AnnotatedTypeIdentifier identifier, int memberIndex) {
-        return getPrefix(ProducerMethod.class).append(identifier.asString()).append(SEPARATOR).append(memberIndex).toString();
+        return getPrefix(ProducerMethod.class).append(identifier.asString()).append(BEAN_ID_SEPARATOR).append(memberIndex).toString();
     }
 
     public static String forSyntheticBean(BeanAttributes<?> attributes, Class<?> beanClass) {
-        return getPrefix(AbstractSyntheticBean.class).append(beanClass.getName()).append(SEPARATOR)
+        return getPrefix(AbstractSyntheticBean.class).append(beanClass.getName()).append(BEAN_ID_SEPARATOR)
                 .append(Beans.createBeanAttributesId(attributes)).toString();
     }
 
     public static String forBuiltInBean(BeanManagerImpl manager, Class<?> type, String suffix) {
-        StringBuilder builder = getPrefix(AbstractSyntheticBean.class).append(manager.getId()).append(SEPARATOR).append(type.getSimpleName());
+        StringBuilder builder = getPrefix(AbstractSyntheticBean.class).append(manager.getId()).append(BEAN_ID_SEPARATOR).append(type.getSimpleName());
         if (suffix != null) {
-            builder.append(SEPARATOR).append(suffix);
+            builder.append(BEAN_ID_SEPARATOR).append(suffix);
         }
         return builder.toString();
     }
