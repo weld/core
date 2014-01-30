@@ -17,18 +17,21 @@
 
 package org.jboss.weld.environment.servlet.test.injection;
 
+import static org.jboss.weld.environment.servlet.test.util.JettyDeployments.JETTY_ENV;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.Ignore;
 import org.junit.runner.RunWith;
-
-import static org.jboss.weld.environment.servlet.test.util.JettyDeployments.JETTY_ENV;
 
 /**
  * @author Ales Justin
  */
+@Ignore("Listener injection works on Jetty 9.1+; the default version of Jetty is currently 8.1.x")
 @RunWith(Arquillian.class)
 public class ListenerInjectionTest extends ListenerInjectionTestBase {
+
     @Deployment(testable = false)
     public static WebArchive deployment() {
         return ListenerInjectionTestBase.deployment().addAsWebInfResource(JETTY_ENV, "jetty-env.xml");

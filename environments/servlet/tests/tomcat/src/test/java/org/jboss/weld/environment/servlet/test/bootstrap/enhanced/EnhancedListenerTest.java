@@ -18,15 +18,10 @@ package org.jboss.weld.environment.servlet.test.bootstrap.enhanced;
 
 import static org.jboss.weld.environment.servlet.test.util.TomcatDeployments.CONTEXT_XML;
 
-import javax.servlet.ServletContainerInitializer;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.StringAsset;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.weld.environment.servlet.EnhancedListener;
+import org.jboss.weld.environment.servlet.test.util.TomcatDeployments;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
@@ -34,11 +29,8 @@ public class EnhancedListenerTest extends EnhancedListenerTestBase {
 
     @Deployment
     public static WebArchive deployment() {
-        WebArchive archive = EnhancedListenerTestBase.deployment().add(CONTEXT_XML, "META-INF/context.xml");
-        // WORKAROUND Tomcat embedded and Maven Surefire classloading issue
-        archive.addAsLibrary(ShrinkWrap.create(JavaArchive.class).addClass(EnhancedListener.class)
-                .addAsManifestResource(new StringAsset(EnhancedListener.class.getName()), "services/" + ServletContainerInitializer.class.getName()));
-        return archive;
+        return EnhancedListenerTestBase.deployment().add(CONTEXT_XML, "META-INF/context.xml")
+                .addAsLibrary(TomcatDeployments.createWorkaroundEnhancedListenerArchive());
     }
 
 }
