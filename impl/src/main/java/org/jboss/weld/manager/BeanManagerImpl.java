@@ -150,6 +150,8 @@ import org.jboss.weld.util.reflection.Reflections;
 
 import com.google.common.collect.Iterators;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 /**
  * Implementation of the Bean Manager.
  * <p/>
@@ -945,6 +947,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     @Override
+    @SuppressWarnings("EQ_CHECK_FOR_OPERAND_NOT_COMPATIBLE_WITH_THIS")
     public boolean equals(Object obj) {
         if (obj instanceof ForwardingBeanManager) {
             ForwardingBeanManager proxy = (ForwardingBeanManager) obj;
