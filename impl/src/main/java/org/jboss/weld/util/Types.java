@@ -42,7 +42,7 @@ import com.google.common.collect.Iterables;
  */
 public class Types {
 
-    public static Function<Type, Class<?>> TYPE_TO_CLASS_FUNCTION = new Function<Type, Class<?>>() {
+    public static final Function<Type, Class<?>> TYPE_TO_CLASS_FUNCTION = new Function<Type, Class<?>>() {
         @Override
         public Class<?> apply(Type input) {
             return Reflections.getRawType(input);

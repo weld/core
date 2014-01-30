@@ -238,7 +238,8 @@ public class ProxyFactory<T> {
         //append the hash code of the bean id to be sure
         if (bean != null) {
             final BeanIdentifier id = Container.instance(contextId).services().get(ContextualStore.class).putIfAbsent(bean);
-            name.append(Math.abs(id.hashCode()));
+            int idHash = id.hashCode();
+            name.append(Math.abs(idHash == Integer.MIN_VALUE ? 0 : idHash));
         }
         className = name.toString();
         return className;
