@@ -28,7 +28,7 @@ import javax.enterprise.inject.spi.PassivationCapable;
  */
 public interface Identifier extends Serializable {
 
-    String ID_SEPARATOR = "-";
+    String ID_SEPARATOR = "|";
 
     /**
      * String representation of this identifier. This is required as some parts of the CDI API use String identifiers, for
