@@ -2,7 +2,6 @@ package org.jboss.weld.interceptor.proxy;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
-import java.security.AccessController;
 
 import org.jboss.weld.bean.proxy.MethodHandler;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
@@ -24,7 +23,7 @@ public class InterceptorMethodHandler implements MethodHandler, Serializable {
 
     @Override
     public Object invoke(Object self, Method thisMethod, Method proceed, Object[] args) throws Throwable {
-        AccessController.doPrivileged(SetAccessibleAction.of(thisMethod));
+        SetAccessibleAction.ensureAccessible(thisMethod);
         if (proceed == null) {
             if (thisMethod.getName().equals(InterceptionUtils.POST_CONSTRUCT)) {
                 return executeInterception(self, null, null, InterceptionType.POST_CONSTRUCT);

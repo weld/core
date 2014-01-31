@@ -42,20 +42,24 @@ public abstract class AbstractInterceptionChain implements InterceptionChain {
 
     private final List<InterceptorMethodInvocation> interceptorMethodInvocations;
 
-    private static List<InterceptorMethodInvocation> buildInterceptorMethodInvocations(Object instance, Method method, Object[] args, InterceptionType interceptionType, InterceptionContext ctx) {
+    private static List<InterceptorMethodInvocation> buildInterceptorMethodInvocations(Object instance, Method method, Object[] args,
+            InterceptionType interceptionType, InterceptionContext ctx) {
         List<? extends InterceptorClassMetadata<?>> interceptorList = ctx.getInterceptionModel().getInterceptors(interceptionType, method);
         List<InterceptorMethodInvocation> interceptorInvocations = new ArrayList<InterceptorMethodInvocation>(interceptorList.size());
         for (InterceptorClassMetadata<?> interceptorMetadata : interceptorList) {
-            interceptorInvocations.addAll(interceptorMetadata.getInterceptorInvocation(ctx.getInterceptorInstance(interceptorMetadata), interceptionType).getInterceptorMethodInvocations());
+            interceptorInvocations.addAll(interceptorMetadata.getInterceptorInvocation(ctx.getInterceptorInstance(interceptorMetadata), interceptionType)
+                    .getInterceptorMethodInvocations());
         }
         TargetClassInterceptorMetadata targetClassInterceptorMetadata = ctx.getInterceptionModel().getTargetClassInterceptorMetadata();
         if (targetClassInterceptorMetadata != null && targetClassInterceptorMetadata.isEligible(interceptionType)) {
-            interceptorInvocations.addAll(targetClassInterceptorMetadata.getInterceptorInvocation(instance, interceptionType).getInterceptorMethodInvocations());
+            interceptorInvocations
+                    .addAll(targetClassInterceptorMetadata.getInterceptorInvocation(instance, interceptionType).getInterceptorMethodInvocations());
         }
         return interceptorInvocations;
     }
 
-    private static List<InterceptorMethodInvocation> buildInterceptorMethodInvocations(List<InterceptorClassMetadata<?>> interceptorMetadata, InterceptionContext ctx, InterceptionType interceptionType) {
+    private static List<InterceptorMethodInvocation> buildInterceptorMethodInvocations(List<InterceptorClassMetadata<?>> interceptorMetadata,
+            InterceptionContext ctx, InterceptionType interceptionType) {
         List<InterceptorMethodInvocation> interceptorInvocations = new ArrayList<InterceptorMethodInvocation>(interceptorMetadata.size());
         for (InterceptorClassMetadata<?> metadata : interceptorMetadata) {
             Object interceptorInstance = ctx.getInterceptorInstance(metadata);
@@ -107,7 +111,7 @@ public abstract class AbstractInterceptionChain implements InterceptionChain {
         int oldCurrentPosition = currentPosition;
         try {
             InterceptorMethodInvocation nextInterceptorMethodInvocation = interceptorMethodInvocations.get(currentPosition++);
-            InterceptorLogger.LOG.invokingNextInterceptorInChain(nextInterceptorMethodInvocation.toString());
+            InterceptorLogger.LOG.invokingNextInterceptorInChain(nextInterceptorMethodInvocation);
             if (nextInterceptorMethodInvocation.expectsInvocationContext()) {
                 return nextInterceptorMethodInvocation.invoke(invocationContext);
             } else {
