@@ -18,7 +18,6 @@
 package org.jboss.weld.interceptor.proxy;
 
 import java.lang.reflect.Method;
-import java.security.AccessController;
 import java.util.List;
 
 import javax.interceptor.InvocationContext;
@@ -49,7 +48,7 @@ public class SimpleInterceptionChain extends AbstractInterceptionChain {
     protected Object interceptorChainCompleted(InvocationContext ctx) throws Exception {
         Method method = ctx.getMethod();
         if (method != null) {
-            AccessController.doPrivileged(SetAccessibleAction.of(method));
+            SetAccessibleAction.ensureAccessible(method);
             return method.invoke(ctx.getTarget(), ctx.getParameters());
         } else {
             return null;

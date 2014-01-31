@@ -20,7 +20,6 @@ package org.jboss.weld.bean.proxy;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.security.AccessController;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.Bean;
@@ -36,13 +35,7 @@ public abstract class AbstractBeanInstance implements BeanInstance {
     public Object invoke(Object instance, Method method, Object... arguments) throws Throwable {
         Object result = null;
         try {
-            if(!method.isAccessible()) {
-                if(System.getSecurityManager() != null) {
-                    AccessController.doPrivileged(SetAccessibleAction.of(method));
-                } else {
-                    method.setAccessible(true);
-                }
-            }
+            SetAccessibleAction.ensureAccessible(method);
             result = method.invoke(instance, arguments);
         } catch (InvocationTargetException e) {
             throw e.getCause();
