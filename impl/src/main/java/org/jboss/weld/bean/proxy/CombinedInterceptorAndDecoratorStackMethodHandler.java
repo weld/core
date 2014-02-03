@@ -5,7 +5,6 @@ import static org.jboss.weld.bean.proxy.InterceptionDecorationContext.startInter
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
-import java.security.AccessController;
 import java.util.Set;
 
 import org.jboss.weld.security.SetAccessibleAction;
@@ -32,7 +31,6 @@ public class CombinedInterceptorAndDecoratorStackMethodHandler implements Method
     }
 
     private Set<CombinedInterceptorAndDecoratorStackMethodHandler> getDisabledHandlers() {
-
         return InterceptionDecorationContext.peek();
     }
 
@@ -44,10 +42,11 @@ public class CombinedInterceptorAndDecoratorStackMethodHandler implements Method
                 externalContext = true;
                 startInterceptorContext();
             }
-            if (!getDisabledHandlers().contains(this)) {
+            Set<CombinedInterceptorAndDecoratorStackMethodHandler> disabledHandlers = getDisabledHandlers();
+            if (!disabledHandlers.contains(this)) {
                 try {
 
-                    getDisabledHandlers().add(this);
+                    disabledHandlers.add(this);
                     if (interceptorMethodHandler != null) {
                         if (proceed != null) {
                             return this.interceptorMethodHandler.invoke(outerDecorator != null ? outerDecorator : self, thisMethod, thisMethod, args);
@@ -56,19 +55,15 @@ public class CombinedInterceptorAndDecoratorStackMethodHandler implements Method
                         }
                     } else {
                         if (outerDecorator != null) {
-                            if (!thisMethod.isAccessible()) {
-                                AccessController.doPrivileged(SetAccessibleAction.of(thisMethod));
-                            }
+                            SetAccessibleAction.ensureAccessible(thisMethod);
                             return Reflections.invokeAndUnwrap(outerDecorator, thisMethod, args);
                         }
                     }
                 } finally {
-                    this.getDisabledHandlers().remove(this);
+                    disabledHandlers.remove(this);
                 }
             }
-            if (!proceed.isAccessible()) {
-                AccessController.doPrivileged(SetAccessibleAction.of(proceed));
-            }
+            SetAccessibleAction.ensureAccessible(proceed);
             return Reflections.invokeAndUnwrap(self, proceed, args);
         } finally {
             if (externalContext) {
