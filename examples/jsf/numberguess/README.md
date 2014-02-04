@@ -57,7 +57,7 @@ Tomcat plugin to access the manager application, then start Tomcat:
     <user username="admin" password="" roles="standard,manager-script"/>
 
 To override this username and password, add a `<server>` with id `tomcat` in your
-Maven `settings.xml` file, set the `<username>` and `<password>` elqements to the
+Maven `settings.xml` file, set the `<username>` and `<password>` elements to the
 appropriate values and uncomment the `<server>` element inside the
 tomcat-maven-plugin configuration in the `pom.xml`.
 
@@ -116,16 +116,15 @@ NOTE: This configuration currently does not work on Maven 3.1.x due to class loa
 Using Google App Engine
 -----------------------
 
-First, set up the Eclipse environment:
-
-    mvn clean eclipse:clean eclipse:eclipse -Pgae
-
-Make sure you have the Google App Engine Eclipse plugin installed.
-
-Next, put all the needed resources into the src/main/webapp
+Put all the needed resources into the src/main/webapp using the following command:
 
     mvn war:inplace -Pgae
 
-Now, in Eclipse, you can either run the app locally, or deploy it to Google App Engine.
+Assuming you have the GAE SDK distribution in the directory PATH_TO_GAE/appengine-java-sdk/,
+you can deploy the app using this command:
+
+    PATH_TO_GAE/appengine-java-sdk/bin/dev_appserver.sh src/main/webapp
+
+The application becomes available at <http://localhost:8080/home.jsf>
 
 vim:tw=80
