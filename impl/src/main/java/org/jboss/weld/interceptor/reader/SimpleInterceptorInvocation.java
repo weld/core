@@ -18,8 +18,6 @@
 package org.jboss.weld.interceptor.reader;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import javax.interceptor.InvocationContext;
@@ -27,6 +25,8 @@ import javax.interceptor.InvocationContext;
 import org.jboss.weld.interceptor.proxy.InterceptorInvocation;
 import org.jboss.weld.interceptor.proxy.InterceptorMethodInvocation;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
+
+import com.google.common.collect.ImmutableList;
 
 /**
  * @author Marius Bogoevici
@@ -38,13 +38,20 @@ class SimpleInterceptorInvocation implements InterceptorInvocation {
     private final boolean targetClass;
     private final InterceptionType interceptionType;
 
-    public SimpleInterceptorInvocation(Object instance, InterceptionType interceptionType, Collection<Method> interceptorMethods, boolean targetClass) {
+    public SimpleInterceptorInvocation(Object instance, InterceptionType interceptionType, List<Method> interceptorMethods, boolean targetClass) {
         this.instance = instance;
         this.interceptionType = interceptionType;
         this.targetClass = targetClass;
-        interceptorMethodInvocations = new ArrayList<InterceptorMethodInvocation>();
-        for (Method method : interceptorMethods) {
-            interceptorMethodInvocations.add(new SimpleMethodInvocation(method));
+
+        if (interceptorMethods.size() == 1) {
+            // Very often there will be only one interceptor method
+            interceptorMethodInvocations = ImmutableList.<InterceptorMethodInvocation> of(new SimpleMethodInvocation(interceptorMethods.get(0)));
+        } else {
+            ImmutableList.Builder<InterceptorMethodInvocation> builder = ImmutableList.builder();
+            for (Method method : interceptorMethods) {
+                builder.add(new SimpleMethodInvocation(method));
+            }
+            interceptorMethodInvocations = builder.build();
         }
     }
 
