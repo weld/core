@@ -187,7 +187,7 @@ public class ObserverNotifier {
         }
     }
 
-    private class EventTypeCheck extends CacheLoader<Type, RuntimeException> {
+    private static class EventTypeCheck extends CacheLoader<Type, RuntimeException> {
 
         @Override
         public RuntimeException load(Type eventType) {

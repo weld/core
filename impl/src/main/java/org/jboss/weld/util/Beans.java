@@ -88,6 +88,8 @@ import org.jboss.weld.util.reflection.SessionBeanHierarchyDiscovery;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Sets;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 /**
  * Helper class for bean inspection
  *
@@ -230,7 +232,9 @@ public class Beans {
         } else {
             return Sets.filter(beans, new Predicate<T>() {
                 @Override
+                @SuppressWarnings("NP_PARAMETER_MUST_BE_NONNULL_BUT_MARKED_AS_NULLABLE")
                 public boolean apply(T bean) {
+                    Preconditions.checkArgumentNotNull(bean, "bean");
                     return isBeanEnabled(bean, beanManager.getEnabled());
                 }
             });
