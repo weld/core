@@ -59,33 +59,39 @@ public class WeldBootstrap implements CDI11Bootstrap {
         return weldStartup.startExtensions(extensions);
     }
 
+    @Override
     public synchronized Bootstrap startContainer(Environment environment, Deployment deployment) {
         return startContainer(RegistrySingletonProvider.STATIC_INSTANCE, environment, deployment);
     }
 
+    @Override
     public synchronized Bootstrap startContainer(String contextId, Environment environment, Deployment deployment) {
         weldRuntime = weldStartup.startContainer(contextId, environment, deployment);
         return this;
     }
 
+    @Override
     public synchronized Bootstrap startInitialization() {
         checkInitializationNotAlreadyEnded();
         weldStartup.startInitialization();
         return this;
     }
 
+    @Override
     public synchronized Bootstrap deployBeans() {
         checkInitializationNotAlreadyEnded();
         weldStartup.deployBeans();
         return this;
     }
 
+    @Override
     public synchronized Bootstrap validateBeans() {
         checkInitializationNotAlreadyEnded();
         weldStartup.validateBeans();
         return this;
     }
 
+    @Override
     public synchronized Bootstrap endInitialization() {
         if (weldStartup != null) {
             weldStartup.endInitialization();
@@ -95,11 +101,13 @@ public class WeldBootstrap implements CDI11Bootstrap {
     }
 
 
+    @Override
     public synchronized BeanManagerImpl getManager(BeanDeploymentArchive beanDeploymentArchive) {
         return weldRuntime == null ? null : weldRuntime.getManager(beanDeploymentArchive);
     }
 
 
+    @Override
     public synchronized void shutdown() {
         if (weldRuntime != null) {
             weldRuntime.shutdown();
@@ -108,19 +116,23 @@ public class WeldBootstrap implements CDI11Bootstrap {
     }
 
 
+    @Override
     public BeansXml parse(Iterable<URL> urls) {
         return parse(urls, false);
     }
 
+    @Override
     public BeansXml parse(Iterable<URL> urls, boolean removeDuplicates) {
         return beansXmlParser.parse(urls, removeDuplicates);
     }
 
+    @Override
     public BeansXml parse(URL url) {
         return beansXmlParser.parse(url);
     }
 
 
+    @Override
     public Iterable<Metadata<Extension>> loadExtensions(ClassLoader classLoader) {
         return ServiceLoader.load(Extension.class, classLoader);
     }
