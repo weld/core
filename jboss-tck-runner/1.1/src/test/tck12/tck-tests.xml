@@ -31,6 +31,21 @@
                 </methods>
             </class>
 
+            <!-- CDITCK-386 -->
+            <class name="org.jboss.cdi.tck.tests.extensions.beanManager.bootstrap.unavailable.methods.UnavailableMethodsDuringApplicationInitializationTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
+
+            <!-- CDITCK-389 -->
+            <class name="org.jboss.cdi.tck.tests.interceptors.definition.inheritance.InterceptorBindingInheritanceTest">
+                <methods>
+                    <exclude name="testMethodInterceptorBindingDirectlyInheritedFromSessionBean"/>
+                    <exclude name="testMethodInterceptorBindingIndirectlyInheritedFromSessionBean"/>
+                </methods>
+            </class>
+
             <!-- Issues in Weld (the RI) -->
 
             <!-- Issues in WildFly -->
