@@ -44,7 +44,7 @@ public class SessionHolder {
     }
 
     public static void requestInitialized(HttpServletRequest request) {
-        CURRENT_SESSION.set(request.getSession(false));
+        CURRENT_SESSION.set(request.getSession());
     }
 
     public static void sessionCreated(HttpSession session) {
