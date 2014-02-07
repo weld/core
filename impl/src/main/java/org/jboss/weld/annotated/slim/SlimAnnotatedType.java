@@ -23,6 +23,7 @@ import javax.enterprise.inject.spi.AnnotatedType;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.annotated.Identified;
+import org.jboss.weld.logging.MetadataLogger;
 import org.jboss.weld.resources.ClassTransformer;
 
 /**
@@ -48,7 +49,11 @@ public interface SlimAnnotatedType<T> extends AnnotatedType<T>, Identified<Annot
         }
 
         private Object readResolve() throws ObjectStreamException {
-            return Container.instance(identifier).services().get(ClassTransformer.class).getSlimAnnotatedTypeById(identifier);
+            SlimAnnotatedType<?> type = Container.instance(identifier).services().get(ClassTransformer.class).getSlimAnnotatedTypeById(identifier);
+            if (type == null) {
+                throw MetadataLogger.LOG.annotatedTypeDeserializationFailure(identifier);
+            }
+            return type;
         }
     }
 }
