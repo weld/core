@@ -46,25 +46,40 @@ public class MethodSignatureImpl implements MethodSignature {
         for (int i = 0; i < method.getParameterTypes().length; i++) {
             parameterTypes[i] = method.getParameterTypes()[i].getName();
         }
-
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof MethodSignatureImpl) {
-            MethodSignature that = (MethodSignature) obj;
-            return this.getMethodName().equals(that.getMethodName()) && Arrays.equals(this.getParameterTypes(), that.getParameterTypes());
-        } else {
-            return false;
-        }
     }
 
     @Override
     public int hashCode() {
-        int hashCode = 17;
-        hashCode += methodName.hashCode() * 5;
-        hashCode += Arrays.hashCode(parameterTypes) * 7;
-        return hashCode;
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + methodName.hashCode();
+        result = prime * result + Arrays.hashCode(parameterTypes);
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof MethodSignatureImpl)) {
+            return false;
+        }
+        MethodSignatureImpl other = (MethodSignatureImpl) obj;
+        if (methodName == null) {
+            if (other.methodName != null) {
+                return false;
+            }
+        } else if (!methodName.equals(other.methodName)) {
+            return false;
+        }
+        if (!Arrays.equals(parameterTypes, other.parameterTypes)) {
+            return false;
+        }
+        return true;
     }
 
     public String getMethodName() {
@@ -77,7 +92,7 @@ public class MethodSignatureImpl implements MethodSignature {
 
     @Override
     public String toString() {
-        return new StringBuffer().append("method ").append(getMethodName()).append(Arrays.toString(getParameterTypes()).replace('[', '(').replace(']', ')')).toString();
+        return new StringBuffer().append("method ").append(getMethodName()).append(Arrays.toString(parameterTypes).replace('[', '(').replace(']', ')')).toString();
     }
 
 }
