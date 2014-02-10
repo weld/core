@@ -20,15 +20,12 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.enterprise.inject.spi.AnnotatedMethod;
 
-import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.security.MethodLookupAction;
 import org.jboss.weld.security.SetAccessibleAction;
 import org.jboss.weld.util.annotated.ForwardingAnnotatedMethod;
@@ -50,7 +47,7 @@ public class InvokableAnnotatedMethod<T> extends ForwardingAnnotatedMethod<T> {
     public InvokableAnnotatedMethod(AnnotatedMethod<T> annotatedMethod) {
         this.annotatedMethod = annotatedMethod;
         this.methods = Collections.<Class<?>, Method>singletonMap(annotatedMethod.getJavaMember().getDeclaringClass(), annotatedMethod.getJavaMember());
-        AccessController.doPrivileged(SetAccessibleAction.of(annotatedMethod.getJavaMember())); // TODO: make sure this instance does not leak
+        SetAccessibleAction.ensureAccessible(annotatedMethod.getJavaMember()); // TODO: make sure this instance does not leak
     }
 
     /**
@@ -79,15 +76,8 @@ public class InvokableAnnotatedMethod<T> extends ForwardingAnnotatedMethod<T> {
             // the same method may be written to the map twice, but that is ok
             // lookupMethod is very slow
             Method delegate = annotatedMethod.getJavaMember();
-            try {
-                method = AccessController.doPrivileged(new MethodLookupAction(instance.getClass(), delegate.getName(), delegate.getParameterTypes()));
-                AccessController.doPrivileged(SetAccessibleAction.of(method));
-            } catch (PrivilegedActionException e) {
-                if (e.getCause() instanceof NoSuchMethodException) {
-                    throw (NoSuchMethodException) e.getCause();
-                }
-                throw new WeldException(e.getCause());
-            }
+            method = MethodLookupAction.lookup(instance.getClass(), delegate.getName(), delegate.getParameterTypes());
+            SetAccessibleAction.ensureAccessible(method);
             synchronized (this) {
                 final Map<Class<?>, Method> newMethods = new HashMap<Class<?>, Method>(methods);
                 newMethods.put(instance.getClass(), method);

@@ -24,7 +24,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.security.AccessController;
-import java.security.PrivilegedActionException;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
@@ -35,7 +34,6 @@ import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
-import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.security.GetAccessibleCopyOfMember;
 import org.jboss.weld.security.MethodLookupAction;
@@ -142,16 +140,9 @@ public class MethodInjectionPoint<T, X> extends AbstractCallableInjectionPoint<T
             // the same method may be written to the map twice, but that is ok
             // lookupMethod is very slow
             Method delegate = annotatedMethod.getJavaMember();
-            try {
-                method = AccessController.doPrivileged(new MethodLookupAction(clazz, delegate.getName(), delegate.getParameterTypes()));
-                if (!Modifier.isPublic(method.getModifiers())) {
-                    method = AccessController.doPrivileged(new GetAccessibleCopyOfMember<Method>(method));
-                }
-            } catch (PrivilegedActionException e) {
-                if (e.getCause() instanceof NoSuchMethodException) {
-                    throw (NoSuchMethodException) e.getCause();
-                }
-                throw new WeldException(e.getCause());
+            method = MethodLookupAction.lookup(clazz, delegate.getName(), delegate.getParameterTypes());
+            if (!Modifier.isPublic(method.getModifiers())) {
+                method = AccessController.doPrivileged(new GetAccessibleCopyOfMember<Method>(method));
             }
             final Map<Class<?>, Method> newMethods = ImmutableMap.<Class<?>, Method>builder().putAll(methods).put(clazz, method).build();
             this.methods = newMethods;

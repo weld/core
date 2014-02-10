@@ -81,15 +81,21 @@ public class TargetBeanInstance extends AbstractBeanInstance implements Serializ
     @Override
     public Object invoke(Object instance, Method method, Object... arguments) throws Throwable {
         if (interceptorsHandler != null) {
-            BeanLogger.LOG.invokingInterceptorChain(method.toGenericString(), instance);
+            if (BeanLogger.LOG.isTraceEnabled()) {
+                // Level checking is not a very nice performance optimization - however we don't want to invoke toGenericString() unless really necessary
+                BeanLogger.LOG.invokingInterceptorChain(method.toGenericString(), instance);
+            }
             if (method.getDeclaringClass().isInterface()) {
                 return interceptorsHandler.invoke(instance, method, null, arguments);
             } else {
                 return interceptorsHandler.invoke(instance, method, method, arguments);
             }
         } else {
-            BeanLogger.LOG.invokingMethodDirectly(method.toGenericString(), instance);
+            if (BeanLogger.LOG.isTraceEnabled()) {
+                BeanLogger.LOG.invokingMethodDirectly(method.toGenericString(), instance);
+            }
             return super.invoke(instance, method, arguments);
         }
     }
+
 }
