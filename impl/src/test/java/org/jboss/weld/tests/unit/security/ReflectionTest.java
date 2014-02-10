@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.tests.unit.security;
 
+import static org.junit.Assert.fail;
+
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -199,16 +201,25 @@ public class ReflectionTest {
     }
 
     @Test
-    public void testLookupMethod() throws PrivilegedActionException {
+    public void testLookupMethod() throws PrivilegedActionException, NoSuchMethodException {
         Assert.assertNotNull(AccessController.doPrivileged(new MethodLookupAction(TestObject.class, "rootOfAllEvil", new Class<?>[]{})));
+        Assert.assertNotNull(MethodLookupAction.lookup(TestObject.class, "rootOfAllEvil", new Class<?>[]{}));
     }
 
-    @Test(expected = NoSuchMethodException.class)
+    @Test
     public void testLookupMethodNotFound() throws Throwable {
         try {
             AccessController.doPrivileged(new MethodLookupAction(TestObject.class, "eioota", new Class<?>[] {}));
+            fail();
         } catch (PrivilegedActionException e) {
-            throw e.getCause();
+            if(!(e.getCause() instanceof NoSuchMethodException)) {
+                fail();
+            };
+        }
+        try {
+            MethodLookupAction.lookup(TestObject.class, "eioota", new Class<?>[] {});
+            fail();
+        } catch (NoSuchMethodException e) {
         }
     }
 }

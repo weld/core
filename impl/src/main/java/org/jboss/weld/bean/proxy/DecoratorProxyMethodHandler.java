@@ -18,7 +18,6 @@ package org.jboss.weld.bean.proxy;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.security.AccessController;
 
 import javax.enterprise.inject.spi.Decorator;
 import javax.inject.Inject;
@@ -83,9 +82,7 @@ public class DecoratorProxyMethodHandler extends TargetInstanceProxyMethodHandle
                 }
             }
         }
-        if (!method.isAccessible()) {
-            AccessController.doPrivileged(SetAccessibleAction.of(method));
-        }
+        SetAccessibleAction.ensureAccessible(method);
         return Reflections.invokeAndUnwrap(getTargetInstance(), method, args);
     }
 }
