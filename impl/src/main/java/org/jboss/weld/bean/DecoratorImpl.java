@@ -199,10 +199,10 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
 
     private void checkAbstractMethods() {
         if (isSubclassed()) {
-            for (WeldMethod<?, ?> method : getWeldAnnotated().getWeldMethods()) {
+            for (WeldMethod<?, ? super T> method : getWeldAnnotated().getWeldMethods()) {
                 if (Reflections.isAbstract(((AnnotatedMethod<?>) method).getJavaMember())) {
                     MethodSignature methodSignature = method.getSignature();
-                    if (this.annotatedDelegateItem.getWeldMethod(methodSignature) == null) {
+                    if (this.annotatedDelegateItem.getWeldMethod(methodSignature) == null  && !getWeldAnnotated().isMethodOverridden(method)) {
                         throw new DefinitionException(ABSTRACT_METHOD_MUST_MATCH_DECORATED_TYPE, method.getSignature(), this, getWeldAnnotated().getName());
                     }
                 }
