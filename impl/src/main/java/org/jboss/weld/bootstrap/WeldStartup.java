@@ -125,6 +125,7 @@ import org.jboss.weld.servlet.ServletApiAbstraction;
 import org.jboss.weld.servlet.spi.HttpContextActivationFilter;
 import org.jboss.weld.servlet.spi.helpers.AcceptingHttpContextActivationFilter;
 import org.jboss.weld.transaction.spi.TransactionServices;
+import org.jboss.weld.util.Permissions;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.instantiation.InstantiatorFactory;
@@ -287,7 +288,7 @@ public class WeldStartup {
          */
         ContainerLifecycleEventPreloader preloader = null;
         int preloaderThreadPoolSize = bootstrapConfiguration.getPreloaderThreadPoolSize();
-        if (preloaderThreadPoolSize > 0) {
+        if (preloaderThreadPoolSize > 0 && Permissions.hasPermission(Permissions.MODIFY_THREAD_GROUP)) {
             preloader = new ContainerLifecycleEventPreloader(preloaderThreadPoolSize, observerNotificationService.getGlobalLenientObserverNotifier());
         }
         services.add(ContainerLifecycleEvents.class, new ContainerLifecycleEvents(preloader, services.get(RequiredAnnotationDiscovery.class)));

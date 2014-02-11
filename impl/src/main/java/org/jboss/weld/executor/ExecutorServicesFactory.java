@@ -24,6 +24,7 @@ import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.api.ExecutorServices;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
+import org.jboss.weld.util.Permissions;
 
 public class ExecutorServicesFactory {
 
@@ -51,7 +52,11 @@ public class ExecutorServicesFactory {
 
         final int threadPoolSize = initIntValue(properties, THREAD_POOL_SIZE, DEFAULT_THREAD_POOL_SIZE);
         final boolean debug = initBooleanValue(properties, DEBUG, false);
-        final ThreadPoolType threadPoolType = initThreadPoolType(properties, THREAD_POOL_TYPE, ThreadPoolType.FIXED);
+
+        // do not create ExecutorServices by default if we do not have the "modifyThreadGroup" permission
+        ThreadPoolType defaultType = Permissions.hasPermission(Permissions.MODIFY_THREAD_GROUP) ? ThreadPoolType.FIXED
+                : ThreadPoolType.NONE;
+        final ThreadPoolType threadPoolType = initThreadPoolType(properties, THREAD_POOL_TYPE, defaultType);
         final long threadPoolKeepAliveTime = initLongValue(properties, THREAD_POOL_KEEP_ALIVE_TIME, DEFAULT_KEEP_ALIVE_TIME);
 
         if (debug) {
