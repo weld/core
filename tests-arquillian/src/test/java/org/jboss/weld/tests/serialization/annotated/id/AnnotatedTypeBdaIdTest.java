@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.tests.serialization.annotated.id;
 
+import java.io.IOException;
+
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
@@ -30,6 +32,10 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.weld.annotated.slim.AnnotatedTypeIdentifier;
+import org.jboss.weld.annotated.slim.SlimAnnotatedType.SerializationProxy;
+import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -54,15 +60,28 @@ public class AnnotatedTypeBdaIdTest {
     @Inject
     private CarFactory2 factory2;
 
+    @Inject
+    private BeanManagerImpl manager;
+
     @Deployment
     public static Archive<?> getDeployment() {
         JavaArchive jar1 = ShrinkWrap.create(BeanArchive.class).addClass(CarFactory1.class);
         JavaArchive jar2 = ShrinkWrap.create(BeanArchive.class).addClass(CarFactory2.class);
-        return ShrinkWrap.create(WebArchive.class).addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml").addClass(Car.class).addAsLibraries(jar1, jar2);
+        JavaArchive nonBda = ShrinkWrap.create(JavaArchive.class).addClass(UnknownClass.class);
+        return ShrinkWrap.create(WebArchive.class).addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml").addClasses(Car.class, Utils.class).addAsLibraries(jar1, jar2, nonBda);
     }
 
     @Test
     public void testAnnotatedTypeIdsEqual() {
         Assert.assertEquals(factory1.produce(), factory2.produce());
+    }
+
+    @Test
+    public void testLoadingNotKnownAnnotatedType() throws ClassNotFoundException, IOException {
+        AnnotatedTypeIdentifier identifier = AnnotatedTypeIdentifier.forBackedAnnotatedType(manager.getContextId(), UnknownClass.class, UnknownClass.class, manager.getId());
+        SerializationProxy<?> proxy = new SerializationProxy<Object>(identifier);
+        Object result = Utils.deserialize(Utils.serialize(proxy));
+        Assert.assertNotNull(result);
+        Assert.assertTrue(result instanceof AnnotatedType<?>);
     }
 }

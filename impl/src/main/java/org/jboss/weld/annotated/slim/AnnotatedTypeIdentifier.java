@@ -113,6 +113,10 @@ public class AnnotatedTypeIdentifier implements Identifier {
         return suffix;
     }
 
+    public boolean isModified() {
+        return modified;
+    }
+
     @Override
     public int hashCode() {
         return hashCode;
