@@ -108,7 +108,7 @@ public interface MetadataLogger extends WeldLogger {
     @Message(id = 1121, value = "Member of array type or annotation type must be annotated @NonBinding:  {0}", format = Format.MESSAGE_FORMAT)
     DefinitionException nonBindingMemberTypeException(Object param1);
 
-    @Message(id = 1122, value = "Failed to deserialize annotated type identifier with {0}", format = Format.MESSAGE_FORMAT)
+    @Message(id = 1122, value = "Failed to deserialize annotated type identified with {0}", format = Format.MESSAGE_FORMAT)
     IllegalStateException annotatedTypeDeserializationFailure(AnnotatedTypeIdentifier identifier);
 
 }

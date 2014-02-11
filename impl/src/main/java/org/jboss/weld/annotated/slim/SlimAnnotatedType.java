@@ -24,7 +24,10 @@ import javax.enterprise.inject.spi.AnnotatedType;
 import org.jboss.weld.Container;
 import org.jboss.weld.annotated.Identified;
 import org.jboss.weld.logging.MetadataLogger;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.resources.spi.ResourceLoader;
+import org.jboss.weld.resources.spi.ResourceLoadingException;
 
 /**
  * Marker interface for lightweight implementations of {@link AnnotatedType}.
@@ -51,9 +54,43 @@ public interface SlimAnnotatedType<T> extends AnnotatedType<T>, Identified<Annot
         private Object readResolve() throws ObjectStreamException {
             SlimAnnotatedType<?> type = Container.instance(identifier).services().get(ClassTransformer.class).getSlimAnnotatedTypeById(identifier);
             if (type == null) {
+                type = tryToLoadUnknownBackedAnnotatedType();
+            }
+            if (type == null) {
                 throw MetadataLogger.LOG.annotatedTypeDeserializationFailure(identifier);
             }
             return type;
+        }
+
+        /*
+         * It may in theory happen that an app calls BeanManager.createAnnotatedType() for a previously unknown class on node1 and then
+         * stores this annotated type in session. On node2, this annotated type is not know. We'll try to load it.
+         */
+        private SlimAnnotatedType<?> tryToLoadUnknownBackedAnnotatedType() {
+            if (identifier.getSuffix() != null || identifier.isModified()) {
+                return null; // this is not a backed annotated type
+            }
+            // first, obtain the BeanManager for a given BDA
+            final BeanManagerImpl manager = Container.instance(identifier).activityManager(identifier.getBdaId());
+            if (manager == null) {
+                return null;
+            }
+            // second, try to load the class
+            final ResourceLoader resourceLoader = manager.getServices().get(ResourceLoader.class);
+            Class<?> clazz = null;
+            try {
+                clazz = resourceLoader.classForName(identifier.getClassName());
+            } catch (ResourceLoadingException e) {
+                MetadataLogger.LOG.catchingDebug(e);
+                return null;
+            }
+            // finally, try to load the annotated type
+            try {
+                return manager.getServices().get(ClassTransformer.class).getBackedAnnotatedType(clazz, identifier.getBdaId());
+            } catch (ResourceLoadingException e) {
+                MetadataLogger.LOG.catchingDebug(e);
+                return null;
+            }
         }
     }
 }

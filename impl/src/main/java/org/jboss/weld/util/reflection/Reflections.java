@@ -353,11 +353,20 @@ public class Reflections {
     }
 
     public static boolean isClassLoadable(String className, ResourceLoader resourceLoader) {
+        return loadClass(className, resourceLoader) != null;
+    }
+
+    /**
+     * Tries to load a class using the specified ResourceLoader. Returns null if the class is not found.
+     * @param className
+     * @param resourceLoader
+     * @return the loaded class or null if the given class cannot be loaded
+     */
+    public static <T> Class<T> loadClass(String className, ResourceLoader resourceLoader) {
         try {
-            resourceLoader.classForName(className);
-            return true;
+            return cast(resourceLoader.classForName(className));
         } catch (ResourceLoadingException e) {
-            return false;
+            return null;
         }
     }
 
