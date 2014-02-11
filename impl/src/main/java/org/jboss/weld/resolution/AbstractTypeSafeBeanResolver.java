@@ -41,6 +41,7 @@ import javax.inject.Provider;
 import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.bootstrap.SpecializationAndEnablementRegistry;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.LazyValueHolder;
 import org.jboss.weld.util.reflection.Reflections;
@@ -198,7 +199,8 @@ public abstract class AbstractTypeSafeBeanResolver<T extends Bean<?>, C extends 
         } else {
             rules = BeanTypeAssignabilityRules.instance();
         }
-        return rules.matches(resolvable.getTypes(), bean.getTypes()) && Beans.containsAllQualifiers(resolvable.getQualifiers(), QualifierInstance.qualifiers(beanManager, bean));
+        return rules.matches(resolvable.getTypes(), bean.getTypes())
+                && Beans.containsAllQualifiers(resolvable.getQualifiers(), beanManager.getServices().get(MetaAnnotationStore.class).getQualifierInstances(bean));
     }
 
     @Override
