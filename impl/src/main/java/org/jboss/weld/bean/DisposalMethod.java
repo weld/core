@@ -42,6 +42,7 @@ import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.ParameterInjectionPoint;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.resolution.QualifierInstance;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -66,7 +67,8 @@ public class DisposalMethod<X, T> {
         this.declaringBean = declaringBean;
         EnhancedAnnotatedParameter<?, ? super X> enhancedDisposesParameter = getEnhancedDisposesParameter(enhancedAnnotatedMethod);
         this.disposesParameter = enhancedDisposesParameter.slim();
-        this.qualifiers = QualifierInstance.qualifiers(beanManager, enhancedDisposesParameter.getMetaAnnotations(Qualifier.class));
+        this.qualifiers = beanManager.getServices().get(MetaAnnotationStore.class)
+                .getQualifierInstances(enhancedDisposesParameter.getMetaAnnotations(Qualifier.class));
         checkDisposalMethod(enhancedAnnotatedMethod, declaringBean);
     }
 

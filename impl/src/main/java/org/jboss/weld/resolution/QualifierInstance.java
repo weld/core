@@ -21,24 +21,17 @@ import java.lang.reflect.InvocationTargetException;
 import java.security.AccessController;
 import java.util.Collections;
 import java.util.Map;
-import java.util.Set;
 
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.spi.AnnotatedMethod;
-import javax.enterprise.inject.spi.Bean;
-import javax.inject.Named;
 
-import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.exceptions.WeldException;
-import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.metadata.cache.QualifierModel;
-import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.security.SetAccessibleAction;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 
 /**
  * Optimized representation of a qualifier. JDK annotation proxies are slooow, this class provides significantly
@@ -56,77 +49,12 @@ public class QualifierInstance {
     private final int hashCode;
 
     /**
-     *
      * @param annotation
      * @param store
-     * @return a qualifier instance for the given annotation
+     * @return a new qualifier instance for the given annotation
      */
     public static QualifierInstance of(Annotation annotation, MetaAnnotationStore store) {
-        return getValue(annotation, store, true);
-    }
-
-    /**
-    *
-    * @param annotation
-    * @param store
-    * @param useQualifierInstanceCache
-    * @return a qualifier instance for the given annotation
-    */
-   public static QualifierInstance of(Annotation annotation, MetaAnnotationStore store, boolean useQualifierInstanceCache) {
-       return getValue(annotation, store, useQualifierInstanceCache);
-   }
-
-    /**
-     *
-     * @param beanManager
-     * @param annotations
-     * @return an immutable set of qualifier instances for the given annotations
-     */
-    public static Set<QualifierInstance> qualifiers(final BeanManagerImpl beanManager, final Set<Annotation> annotations) {
-        return qualifiers(beanManager.getServices().get(MetaAnnotationStore.class), beanManager.getServices().get(SharedObjectCache.class), annotations);
-    }
-
-    /**
-     *
-     *
-     * @param store
-     * @param sharedObjectCache
-     * @param reflectionCache
-     * @param annotations
-     * @return an immutable set of qualifier instances for the given annotations
-     */
-    public static Set<QualifierInstance> qualifiers(MetaAnnotationStore store, SharedObjectCache sharedObjectCache,
-            Set<Annotation> annotations) {
-
-        if (annotations == null || annotations.isEmpty()) {
-            return Collections.emptySet();
-        }
-
-        ImmutableSet.Builder<QualifierInstance> builder = ImmutableSet.builder();
-        boolean useSharedCache = (sharedObjectCache != null);
-
-        for (Annotation annotation : annotations) {
-            boolean useQualifierInstanceCache = useQualifierInstanceCache(annotation);
-            if (!useQualifierInstanceCache) {
-                // Don't use shared object cache if there's some qualifier instance which should not be cached
-                useSharedCache = false;
-            }
-            builder.add(getValue(annotation, store, useQualifierInstanceCache));
-        }
-        return useSharedCache ? sharedObjectCache.getSharedSet(builder.build()) : builder.build();
-    }
-
-    /**
-     *
-     * @param beanManager
-     * @param bean
-     * @return an immutable set of qualifier instances for the given bean
-     */
-    public static Set<QualifierInstance> qualifiers(final BeanManagerImpl beanManager, Bean<?> bean) {
-        if(bean instanceof RIBean) {
-            return ((RIBean<?>) bean).getQualifierInstances();
-        }
-        return qualifiers(beanManager, bean.getQualifiers());
+        return new QualifierInstance(annotation.annotationType(), createValues(annotation, store));
     }
 
     private QualifierInstance(final Class<? extends Annotation> annotationClass) {
@@ -208,24 +136,4 @@ public class QualifierInstance {
                 '}';
     }
 
-    /**
-     *
-     * @param annotation
-     * @param store
-     * @param useQualifierInstanceCache
-     * @return a qualifier instance for the given annotation instance
-     */
-    private static QualifierInstance getValue(Annotation annotation, MetaAnnotationStore store, boolean useQualifierInstanceCache) {
-        return useQualifierInstanceCache ? store.getCachedQualifierInstance(annotation)
-                : new QualifierInstance(annotation.annotationType(), createValues(annotation, store));
-    }
-
-    private static boolean useQualifierInstanceCache(Annotation annotation) {
-        if (annotation.annotationType().equals(Named.class)) {
-            // Don't cache @Named with non-default value.
-            Named named = (Named) annotation;
-            return named.value().equals("");
-        }
-        return true;
-    }
 }

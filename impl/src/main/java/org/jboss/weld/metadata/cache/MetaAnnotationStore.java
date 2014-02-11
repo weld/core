@@ -20,14 +20,22 @@ import static org.jboss.weld.util.cache.LoadingCacheUtils.getCacheValue;
 import static org.jboss.weld.util.cache.LoadingCacheUtils.getCastCacheValue;
 
 import java.lang.annotation.Annotation;
+import java.util.Collections;
+import java.util.Set;
 
+import javax.enterprise.inject.spi.Bean;
+import javax.inject.Named;
+
+import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.resolution.QualifierInstance;
 import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.resources.SharedObjectCache;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.google.common.collect.ImmutableSet;
 
 /**
  * Metadata singleton for holding EJB metadata, scope models etc.
@@ -110,7 +118,7 @@ public class MetaAnnotationStore implements Service {
 
         @Override
         public QualifierInstance load(Annotation key) throws Exception {
-            return QualifierInstance.of(key, metaAnnotationStore, false);
+            return QualifierInstance.of(key, metaAnnotationStore);
         }
 
     }
@@ -126,6 +134,8 @@ public class MetaAnnotationStore implements Service {
 
     private final LoadingCache<Annotation, QualifierInstance> qualifierInstanceCache;
 
+    private final SharedObjectCache sharedObjectCache;
+
     public MetaAnnotationStore(ClassTransformer classTransformer) {
         CacheBuilder<Object, Object> cacheBuilder = CacheBuilder.newBuilder();
         this.stereotypes = cacheBuilder.build(new StereotypeFunction(classTransformer));
@@ -133,6 +143,7 @@ public class MetaAnnotationStore implements Service {
         this.qualifiers = cacheBuilder.build(new QualifierFunction(classTransformer));
         this.interceptorBindings = cacheBuilder.build(new InterceptorBindingFunction(classTransformer));
         this.qualifierInstanceCache = cacheBuilder.build(new QualifierInstanceFunction(this));
+        this.sharedObjectCache = classTransformer.getSharedObjectCache();
     }
 
     /**
@@ -195,12 +206,50 @@ public class MetaAnnotationStore implements Service {
     }
 
     /**
-    *
-    * @param annotation
-    * @return the cached qualifier instance for the given annotation instance
-    */
-    public QualifierInstance getCachedQualifierInstance(Annotation annotation) {
-        return getCacheValue(qualifierInstanceCache, annotation);
+     *
+     * @param annotation
+     * @return the qualifier instance for the given annotation, uses cache if possible
+     */
+    public QualifierInstance getQualifierInstance(final Annotation annotation) {
+        return isCacheAllowed(annotation) ? getCacheValue(qualifierInstanceCache, annotation) : QualifierInstance.of(annotation, this);
+    }
+
+    /**
+     *
+     * @param bean
+     * @return the set of qualifier instances for the given bean, uses caches if possible
+     */
+    public Set<QualifierInstance> getQualifierInstances(final Bean<?> bean) {
+        if(bean instanceof RIBean) {
+            return ((RIBean<?>) bean).getQualifierInstances();
+        }
+        return getQualifierInstances(bean.getQualifiers());
+    }
+
+    /**
+     *
+     * @param annotations
+     * @return the set of qualifier instances, uses caches if possible
+     */
+    public Set<QualifierInstance> getQualifierInstances(final Set<Annotation> annotations) {
+
+        if (annotations == null || annotations.isEmpty()) {
+            return Collections.emptySet();
+        }
+
+        ImmutableSet.Builder<QualifierInstance> builder = ImmutableSet.builder();
+        boolean useSharedCache = true;
+
+        for (Annotation annotation : annotations) {
+            if (isCacheAllowed(annotation)) {
+                builder.add(getCacheValue(qualifierInstanceCache, annotation));
+            } else {
+                builder.add(QualifierInstance.of(annotation, this));
+                // Don't use shared object cache if there's some qualifier instance which should not be cached
+                useSharedCache = false;
+            }
+        }
+        return useSharedCache ? sharedObjectCache.getSharedSet(builder.build()) : builder.build();
     }
 
     /**
@@ -227,6 +276,16 @@ public class MetaAnnotationStore implements Service {
         this.stereotypes.invalidateAll();
         this.interceptorBindings.invalidateAll();
         this.qualifierInstanceCache.invalidateAll();
+    }
+
+
+    private static boolean isCacheAllowed(Annotation annotation) {
+        if (annotation.annotationType().equals(Named.class)) {
+            // Don't cache @Named with non-default value.
+            Named named = (Named) annotation;
+            return named.value().equals("");
+        }
+        return true;
     }
 
 }
