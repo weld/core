@@ -26,8 +26,6 @@ import java.util.Map;
 
 import javax.enterprise.inject.spi.AnnotatedMethod;
 
-import org.jboss.weld.security.MethodLookupAction;
-import org.jboss.weld.security.SetAccessibleAction;
 import org.jboss.weld.util.annotated.ForwardingAnnotatedMethod;
 
 /**
@@ -47,7 +45,7 @@ public class InvokableAnnotatedMethod<T> extends ForwardingAnnotatedMethod<T> {
     public InvokableAnnotatedMethod(AnnotatedMethod<T> annotatedMethod) {
         this.annotatedMethod = annotatedMethod;
         this.methods = Collections.<Class<?>, Method>singletonMap(annotatedMethod.getJavaMember().getDeclaringClass(), annotatedMethod.getJavaMember());
-        SetAccessibleAction.ensureAccessible(annotatedMethod.getJavaMember()); // TODO: make sure this instance does not leak
+        SecurityActions.ensureAccessible(annotatedMethod.getJavaMember()); // TODO: make sure this instance does not leak
     }
 
     /**
@@ -76,8 +74,8 @@ public class InvokableAnnotatedMethod<T> extends ForwardingAnnotatedMethod<T> {
             // the same method may be written to the map twice, but that is ok
             // lookupMethod is very slow
             Method delegate = annotatedMethod.getJavaMember();
-            method = MethodLookupAction.lookup(instance.getClass(), delegate.getName(), delegate.getParameterTypes());
-            SetAccessibleAction.ensureAccessible(method);
+            method = SecurityActions.lookupMethod(instance.getClass(), delegate.getName(), delegate.getParameterTypes());
+            SecurityActions.ensureAccessible(method);
             synchronized (this) {
                 final Map<Class<?>, Method> newMethods = new HashMap<Class<?>, Method>(methods);
                 newMethods.put(instance.getClass(), method);

@@ -17,12 +17,7 @@
 package org.jboss.weld.security;
 
 import java.lang.reflect.Method;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
-
-import org.jboss.weld.exceptions.WeldException;
 
 /**
  * Returns a method from the class or any class/interface in the inheritance hierarchy
@@ -31,30 +26,6 @@ import org.jboss.weld.exceptions.WeldException;
  *
  */
 public class MethodLookupAction extends GetDeclaredMethodAction implements PrivilegedExceptionAction<Method> {
-
-    /**
-     * Does not perform {@link PrivilegedAction} unless necessary.
-     *
-     * @param javaClass
-     * @param methodName
-     * @param parameterTypes
-     * @return returns a method from the class or any class/interface in the inheritance hierarchy
-     * @throws NoSuchMethodException
-     */
-    public static Method lookup(Class<?> javaClass, String methodName, Class<?>[] parameterTypes) throws NoSuchMethodException {
-        if (System.getSecurityManager() != null) {
-            try {
-                return AccessController.doPrivileged(new MethodLookupAction(javaClass, methodName, parameterTypes));
-            } catch (PrivilegedActionException e) {
-                if (e.getCause() instanceof NoSuchMethodException) {
-                    throw (NoSuchMethodException) e.getCause();
-                }
-                throw new WeldException(e.getCause());
-            }
-        } else {
-            return lookupMethod(javaClass, methodName, parameterTypes);
-        }
-    }
 
     public MethodLookupAction(Class<?> javaClass, String methodName, Class<?>[] parameterTypes) {
         super(javaClass, methodName, parameterTypes);
@@ -65,7 +36,7 @@ public class MethodLookupAction extends GetDeclaredMethodAction implements Privi
         return lookupMethod(javaClass, methodName, parameterTypes);
     }
 
-    private static Method lookupMethod(Class<?> javaClass, String methodName, Class<?>[] parameterTypes) throws NoSuchMethodException {
+    public static Method lookupMethod(Class<?> javaClass, String methodName, Class<?>[] parameterTypes) throws NoSuchMethodException {
         for (Class<?> inspectedClass = javaClass; inspectedClass != null; inspectedClass = inspectedClass.getSuperclass()) {
             for (Class<?> inspectedInterface : inspectedClass.getInterfaces()) {
                 try {

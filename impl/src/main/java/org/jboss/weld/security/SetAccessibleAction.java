@@ -17,7 +17,6 @@
 package org.jboss.weld.security;
 
 import java.lang.reflect.AccessibleObject;
-import java.security.AccessController;
 import java.security.PrivilegedAction;
 
 public class SetAccessibleAction<T extends AccessibleObject> implements PrivilegedAction<T> {
@@ -28,23 +27,6 @@ public class SetAccessibleAction<T extends AccessibleObject> implements Privileg
 
     public static <T extends AccessibleObject> SetAccessibleAction<T> of(T object, boolean value) {
         return new SetAccessibleAction<T>(object, value);
-    }
-
-    /**
-     * Set the {@code accessible} flag for this accessible object. Does not perform {@link PrivilegedAction} unless necessary.
-     *
-     * @param accessibleObject
-     */
-    public static void ensureAccessible(AccessibleObject accessibleObject) {
-        if (accessibleObject != null) {
-            if (!accessibleObject.isAccessible()) {
-                if (System.getSecurityManager() != null) {
-                    AccessController.doPrivileged(SetAccessibleAction.of(accessibleObject));
-                } else {
-                    accessibleObject.setAccessible(true);
-                }
-            }
-        }
     }
 
     private final T object;

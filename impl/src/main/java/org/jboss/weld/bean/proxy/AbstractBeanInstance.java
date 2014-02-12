@@ -24,7 +24,6 @@ import java.util.Set;
 
 import javax.enterprise.inject.spi.Bean;
 
-import org.jboss.weld.security.SetAccessibleAction;
 import org.jboss.weld.util.Proxies.TypeInfo;
 
 /**
@@ -35,7 +34,7 @@ public abstract class AbstractBeanInstance implements BeanInstance {
     public Object invoke(Object instance, Method method, Object... arguments) throws Throwable {
         Object result = null;
         try {
-            SetAccessibleAction.ensureAccessible(method);
+            SecurityActions.ensureAccessible(method);
             result = method.invoke(instance, arguments);
         } catch (InvocationTargetException e) {
             throw e.getCause();
