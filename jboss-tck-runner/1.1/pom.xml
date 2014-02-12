@@ -148,7 +148,8 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.10</version>
                 <configuration>
-                    <argLine>-Xmx768m</argLine>
+                    <!-- http://bugs.java.com/bugdatabase/view_bug.do?bug_id=4425695 -->
+                    <argLine>-Xmx768m -Dsun.zip.disableMemoryMapping=true</argLine>
                     <forkMode>once</forkMode>
                     <properties>
                         <property>
