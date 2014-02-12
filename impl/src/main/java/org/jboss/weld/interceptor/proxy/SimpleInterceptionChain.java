@@ -25,7 +25,6 @@ import javax.interceptor.InvocationContext;
 import org.jboss.weld.interceptor.chain.AbstractInterceptionChain;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorClassMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
-import org.jboss.weld.security.SetAccessibleAction;
 
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
@@ -48,7 +47,7 @@ public class SimpleInterceptionChain extends AbstractInterceptionChain {
     protected Object interceptorChainCompleted(InvocationContext ctx) throws Exception {
         Method method = ctx.getMethod();
         if (method != null) {
-            SetAccessibleAction.ensureAccessible(method);
+            SecurityActions.ensureAccessible(method);
             return method.invoke(ctx.getTarget(), ctx.getParameters());
         } else {
             return null;

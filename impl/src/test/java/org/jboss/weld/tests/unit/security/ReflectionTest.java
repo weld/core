@@ -203,7 +203,7 @@ public class ReflectionTest {
     @Test
     public void testLookupMethod() throws PrivilegedActionException, NoSuchMethodException {
         Assert.assertNotNull(AccessController.doPrivileged(new MethodLookupAction(TestObject.class, "rootOfAllEvil", new Class<?>[]{})));
-        Assert.assertNotNull(MethodLookupAction.lookup(TestObject.class, "rootOfAllEvil", new Class<?>[]{}));
+        Assert.assertNotNull(MethodLookupAction.lookupMethod(TestObject.class, "rootOfAllEvil", new Class<?>[]{}));
     }
 
     @Test
@@ -217,7 +217,7 @@ public class ReflectionTest {
             };
         }
         try {
-            MethodLookupAction.lookup(TestObject.class, "eioota", new Class<?>[] {});
+            MethodLookupAction.lookupMethod(TestObject.class, "eioota", new Class<?>[] {});
             fail();
         } catch (NoSuchMethodException e) {
         }

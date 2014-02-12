@@ -26,7 +26,6 @@ import org.jboss.weld.annotated.runtime.InvokableAnnotatedMethod;
 import org.jboss.weld.bean.WeldDecorator;
 import org.jboss.weld.interceptor.util.proxy.TargetInstanceProxyMethodHandler;
 import org.jboss.weld.logging.BeanLogger;
-import org.jboss.weld.security.SetAccessibleAction;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextualInstance;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -82,7 +81,7 @@ public class DecoratorProxyMethodHandler extends TargetInstanceProxyMethodHandle
                 }
             }
         }
-        SetAccessibleAction.ensureAccessible(method);
+        SecurityActions.ensureAccessible(method);
         return Reflections.invokeAndUnwrap(getTargetInstance(), method, args);
     }
 }

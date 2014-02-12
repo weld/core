@@ -7,7 +7,6 @@ import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.Set;
 
-import org.jboss.weld.security.SetAccessibleAction;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
@@ -55,7 +54,7 @@ public class CombinedInterceptorAndDecoratorStackMethodHandler implements Method
                         }
                     } else {
                         if (outerDecorator != null) {
-                            SetAccessibleAction.ensureAccessible(thisMethod);
+                            SecurityActions.ensureAccessible(thisMethod);
                             return Reflections.invokeAndUnwrap(outerDecorator, thisMethod, args);
                         }
                     }
@@ -63,7 +62,7 @@ public class CombinedInterceptorAndDecoratorStackMethodHandler implements Method
                     disabledHandlers.remove(this);
                 }
             }
-            SetAccessibleAction.ensureAccessible(proceed);
+            SecurityActions.ensureAccessible(proceed);
             return Reflections.invokeAndUnwrap(self, proceed, args);
         } finally {
             if (externalContext) {

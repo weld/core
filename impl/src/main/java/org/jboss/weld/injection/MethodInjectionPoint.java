@@ -36,7 +36,6 @@ import javax.enterprise.inject.spi.Bean;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.security.GetAccessibleCopyOfMember;
-import org.jboss.weld.security.MethodLookupAction;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -140,7 +139,7 @@ public class MethodInjectionPoint<T, X> extends AbstractCallableInjectionPoint<T
             // the same method may be written to the map twice, but that is ok
             // lookupMethod is very slow
             Method delegate = annotatedMethod.getJavaMember();
-            method = MethodLookupAction.lookup(clazz, delegate.getName(), delegate.getParameterTypes());
+            method = SecurityActions.lookupMethod(clazz, delegate.getName(), delegate.getParameterTypes());
             if (!Modifier.isPublic(method.getModifiers())) {
                 method = AccessController.doPrivileged(new GetAccessibleCopyOfMember<Method>(method));
             }
