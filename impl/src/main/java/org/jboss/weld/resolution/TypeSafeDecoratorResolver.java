@@ -24,6 +24,7 @@ import java.util.Set;
 import javax.enterprise.inject.spi.Decorator;
 
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.util.Beans;
 
 /**
@@ -41,7 +42,8 @@ public class TypeSafeDecoratorResolver extends AbstractTypeSafeBeanResolver<Deco
     @Override
     protected boolean matches(Resolvable resolvable, Decorator<?> bean) {
         return rules.matches(Collections.singleton(bean.getDelegateType()), resolvable.getTypes())
-                && Beans.containsAllQualifiers(QualifierInstance.qualifiers(getBeanManager(), bean.getDelegateQualifiers()), resolvable.getQualifiers())
+                && Beans.containsAllQualifiers(getBeanManager().getServices().get(MetaAnnotationStore.class)
+                        .getQualifierInstances(bean.getDelegateQualifiers()), resolvable.getQualifiers())
                 && getBeanManager().getEnabled().isDecoratorEnabled(bean.getBeanClass());
     }
 

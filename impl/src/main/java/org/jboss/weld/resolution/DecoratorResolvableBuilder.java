@@ -28,7 +28,7 @@ public class DecoratorResolvableBuilder extends ResolvableBuilder {
     @Override
     public Resolvable create() {
         if (qualifiers.size() == 0) {
-            this.qualifierInstances.add(QualifierInstance.of(DefaultLiteral.INSTANCE, getMetaAnnotationStore()));
+            this.qualifierInstances.add(getMetaAnnotationStore().getQualifierInstance(DefaultLiteral.INSTANCE));
         }
         return new ResolvableImpl(rawType, types, mappedQualifiers, declaringBean, qualifierInstances, true);
     }
