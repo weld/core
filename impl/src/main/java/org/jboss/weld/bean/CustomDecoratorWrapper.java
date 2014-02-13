@@ -18,16 +18,13 @@
 package org.jboss.weld.bean;
 
 import java.lang.reflect.Method;
-import java.util.Map;
 
 import javax.enterprise.inject.spi.Decorator;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
-import org.jboss.weld.annotated.enhanced.MethodSignature;
 import org.jboss.weld.annotated.runtime.InvokableAnnotatedMethod;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
-import org.jboss.weld.util.Decorators;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
@@ -40,7 +37,7 @@ public class CustomDecoratorWrapper<T> extends ForwardingDecorator<T> implements
     private final Decorator<T> delegate;
     private final EnhancedAnnotatedType<T> weldClass;
 
-    private Map<MethodSignature, InvokableAnnotatedMethod<?>> decoratorMethods;
+    private final DecoratedMethods decoratedMethods;
 
     public static <T> CustomDecoratorWrapper<T> of(Decorator<T> delegate, BeanManagerImpl beanManager) {
         return new CustomDecoratorWrapper<T>(delegate, beanManager);
@@ -49,7 +46,7 @@ public class CustomDecoratorWrapper<T> extends ForwardingDecorator<T> implements
     private CustomDecoratorWrapper(Decorator<T> delegate, BeanManagerImpl beanManager) {
         this.delegate = delegate;
         this.weldClass = beanManager.getServices().get(ClassTransformer.class).getEnhancedAnnotatedType(Reflections.<Class<T>>cast(delegate.getBeanClass()), beanManager.getId());
-        this.decoratorMethods = Decorators.getDecoratorMethods(beanManager, delegate.getDecoratedTypes(), this.weldClass);
+        this.decoratedMethods = new DecoratedMethods(beanManager, this);
     }
 
     @Override
@@ -57,11 +54,13 @@ public class CustomDecoratorWrapper<T> extends ForwardingDecorator<T> implements
         return delegate;
     }
 
+    @Override
     public EnhancedAnnotatedType<?> getEnhancedAnnotated() {
         return weldClass;
     }
 
+    @Override
     public InvokableAnnotatedMethod<?> getDecoratorMethod(Method method) {
-        return Decorators.findDecoratorMethod(this, decoratorMethods, method);
+        return decoratedMethods.getDecoratedMethod(method);
     }
 }

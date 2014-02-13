@@ -23,13 +23,11 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.BeanAttributes;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
-import org.jboss.weld.annotated.enhanced.MethodSignature;
 import org.jboss.weld.annotated.runtime.InvokableAnnotatedMethod;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.injection.attributes.WeldInjectionPointAttributes;
@@ -52,7 +50,7 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
         return new DecoratorImpl<T>(attributes, clazz, beanManager);
     }
 
-    private Map<MethodSignature, InvokableAnnotatedMethod<?>> decoratorMethods;
+    private DecoratedMethods decoratedMethods;
     private WeldInjectionPointAttributes<?, ?> delegateInjectionPoint;
     private Set<Annotation> delegateBindings;
     private Type delegateType;
@@ -77,7 +75,7 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
         decoratedTypes.retainAll(getTypes());
         decoratedTypes.remove(Serializable.class);
         this.decoratedTypes = SharedObjectCache.instance(beanManager).getSharedSet(decoratedTypes);
-        this.decoratorMethods = Decorators.getDecoratorMethods(beanManager, decoratedTypes, getEnhancedAnnotated());
+        this.decoratedMethods = new DecoratedMethods(beanManager, this);
     }
 
     protected void initDelegateInjectionPoint() {
@@ -96,14 +94,17 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
         delegateTypes.add(delegateType);
     }
 
+    @Override
     public Set<Annotation> getDelegateQualifiers() {
         return delegateBindings;
     }
 
+    @Override
     public Type getDelegateType() {
         return delegateType;
     }
 
+    @Override
     public Set<Type> getDecoratedTypes() {
         return decoratedTypes;
     }
@@ -112,8 +113,9 @@ public class DecoratorImpl<T> extends ManagedBean<T> implements WeldDecorator<T>
         return delegateInjectionPoint;
     }
 
+    @Override
     public InvokableAnnotatedMethod<?> getDecoratorMethod(Method method) {
-        return Decorators.findDecoratorMethod(this, decoratorMethods, method);
+        return decoratedMethods.getDecoratedMethod(method);
     }
 
     @Override
