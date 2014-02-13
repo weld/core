@@ -18,14 +18,10 @@
 package org.jboss.weld.util;
 
 import java.io.Serializable;
-import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
@@ -40,7 +36,6 @@ import javax.inject.Inject;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.enhanced.MethodSignature;
-import org.jboss.weld.annotated.enhanced.jlr.MethodSignatureImpl;
 import org.jboss.weld.annotated.runtime.InvokableAnnotatedMethod;
 import org.jboss.weld.bean.CustomDecoratorWrapper;
 import org.jboss.weld.bean.DecoratorImpl;
@@ -59,6 +54,8 @@ import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.Reflections;
 
+import com.google.common.collect.ImmutableSet;
+
 /**
  * Helper class for {@link javax.enterprise.inject.spi.Decorator} inspections.
  *
@@ -69,34 +66,28 @@ public class Decorators {
     private Decorators() {
     }
 
-    public static Map<MethodSignature, InvokableAnnotatedMethod<?>> getDecoratorMethods(BeanManagerImpl beanManager, Set<Type> decoratedTypes, EnhancedAnnotatedType<?> decoratorClass) {
-        List<EnhancedAnnotatedMethod<?, ?>> decoratedMethods = Decorators.getDecoratedMethods(beanManager, decoratedTypes);
-        Map<MethodSignature, InvokableAnnotatedMethod<?>> decoratorMethods = new HashMap<MethodSignature, InvokableAnnotatedMethod<?>>();
-        for (EnhancedAnnotatedMethod<?, ?> method : decoratorClass.getEnhancedMethods()) {
-            MethodSignatureImpl methodSignature = new MethodSignatureImpl(method);
-            for (EnhancedAnnotatedMethod<?, ?> decoratedMethod : decoratedMethods) {
-                if (new MethodSignatureImpl(decoratedMethod).equals(methodSignature)) {
-                    decoratorMethods.put(methodSignature, InvokableAnnotatedMethod.of(decoratedMethod.slim()));
-                }
-            }
-        }
-        return decoratorMethods;
-    }
-
-    public static List<EnhancedAnnotatedMethod<?, ?>> getDecoratedMethods(BeanManagerImpl beanManager, Set<Type> decoratedTypes) {
-        List<EnhancedAnnotatedMethod<?, ?>> methods = new ArrayList<EnhancedAnnotatedMethod<?, ?>>();
-        for (Type type : decoratedTypes) {
+    /**
+     * Determines the set of {@link InvokableAnnotatedMethod}s representing decorated methods of the specified decorator. A decorated method
+     * is any method declared by a decorated type which is implemented by the decorator.
+     *
+     * @param beanManager the bean manager
+     * @param decorator the specified decorator
+     * @return the set of {@link InvokableAnnotatedMethod}s representing decorated methods of the specified decorator
+     */
+    public static Set<InvokableAnnotatedMethod<?>> getDecoratorMethods(BeanManagerImpl beanManager, WeldDecorator<?> decorator) {
+        ImmutableSet.Builder<InvokableAnnotatedMethod<?>> builder = ImmutableSet.builder();
+        for (Type type : decorator.getDecoratedTypes()) {
             EnhancedAnnotatedType<?> weldClass = getWeldClassOfDecoratedType(beanManager, type);
-            for (EnhancedAnnotatedMethod<?, ?> method : weldClass.getEnhancedMethods()) {
-                if (!methods.contains(method)) {
-                    methods.add(method);
+            for (EnhancedAnnotatedMethod<?, ?> method : weldClass.getDeclaredEnhancedMethods()) {
+                if (decorator.getEnhancedAnnotated().getEnhancedMethod(method.getSignature()) != null) {
+                    builder.add(InvokableAnnotatedMethod.of(method.slim()));
                 }
             }
         }
-        return methods;
+        return builder.build();
     }
 
-    public static EnhancedAnnotatedType<?> getWeldClassOfDecoratedType(BeanManagerImpl beanManager, Type type) {
+    private static EnhancedAnnotatedType<?> getWeldClassOfDecoratedType(BeanManagerImpl beanManager, Type type) {
         if (type instanceof Class<?>) {
             return beanManager.createEnhancedAnnotatedType((Class<?>) type);
         }
@@ -104,29 +95,6 @@ public class Decorators {
             return beanManager.createEnhancedAnnotatedType((Class<?>) ((ParameterizedType) type).getRawType());
         }
         throw new IllegalStateException(BeanLogger.LOG.unableToProcess(type));
-    }
-
-    public static <T> InvokableAnnotatedMethod<?> findDecoratorMethod(WeldDecorator<T> decorator, Map<MethodSignature, InvokableAnnotatedMethod<?>> decoratorMethods, Method method) {
-        // try the signature first, might be simpler
-        MethodSignature key = new MethodSignatureImpl(method);
-        InvokableAnnotatedMethod<?> foundMethod = decoratorMethods.get(key);
-        if (foundMethod != null) {
-            return foundMethod;
-        }
-        // try all methods
-        for (InvokableAnnotatedMethod<?> decoratorMethod : decoratorMethods.values()) {
-            if (method.getParameterTypes().length == decoratorMethod.getParameters().size()
-                    && method.getName().equals(decoratorMethod.getJavaMember().getName())) {
-                boolean parameterMatch = true;
-                for (int i = 0; parameterMatch && i < method.getParameterTypes().length; i++) {
-                    parameterMatch = parameterMatch && decoratorMethod.getJavaMember().getParameterTypes()[i].isAssignableFrom(method.getParameterTypes()[i]);
-                }
-                if (parameterMatch) {
-                    return decoratorMethod;
-                }
-            }
-        }
-        return null;
     }
 
     public static WeldInjectionPointAttributes<?, ?> findDelegateInjectionPoint(AnnotatedType<?> type, Iterable<InjectionPoint> injectionPoints) {
