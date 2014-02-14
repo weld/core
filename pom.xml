@@ -66,7 +66,7 @@
         <shrinkwrap.descriptors.version>1.1.0-beta-1</shrinkwrap.descriptors.version>
         <testng.version>5.10</testng.version>
         <weld.api.version>2.2-SNAPSHOT</weld.api.version>
-        <wildfly.version>8.0.0.Beta1</wildfly.version>
+        <wildfly.version>8.0.0.CR1</wildfly.version>
     </properties>
 
     <modules>
