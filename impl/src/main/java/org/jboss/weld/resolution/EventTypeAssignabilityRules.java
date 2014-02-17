@@ -28,6 +28,8 @@ import java.util.Set;
 import org.jboss.weld.util.Types;
 import org.jboss.weld.util.reflection.Reflections;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 /**
  * Assignability rules for observer method resolution. Serves as a superclass for stricter {@link BeanTypeAssignabilityRules}.
  *
@@ -284,6 +286,7 @@ public class EventTypeAssignabilityRules implements AssignabilityRules {
             return rawType;
         }
 
+        @SuppressWarnings("EI_EXPOSE_REP")
         public Type[] getActualTypeArguments() {
             return actualTypeArguments;
         }

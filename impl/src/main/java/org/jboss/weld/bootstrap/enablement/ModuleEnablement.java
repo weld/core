@@ -18,6 +18,7 @@ package org.jboss.weld.bootstrap.enablement;
 
 import static com.google.common.collect.Sets.union;
 
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.util.Collections;
 import java.util.Comparator;
@@ -135,8 +136,9 @@ public class ModuleEnablement {
         return union(union(localAlternativeClasses, localAlternativeStereotypes), getGlobalAlternatives());
     }
 
-    private static class EnablementComparator<T extends Bean<?>> implements Comparator<T> {
+    private static class EnablementComparator<T extends Bean<?>> implements Comparator<T>, Serializable {
 
+        private static final long serialVersionUID = -4757462262711016985L;
         private final Map<Class<?>, Integer> enabledClasses;
 
         public EnablementComparator(Map<Class<?>, Integer> enabledClasses) {

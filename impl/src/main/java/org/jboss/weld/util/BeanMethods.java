@@ -54,12 +54,16 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 public class BeanMethods {
 
     @SuppressWarnings("rawtypes")
     private static final Predicate<EnhancedAnnotatedMethod> BRIDGE_METHOD_FILTER_PREDICATE = new Predicate<EnhancedAnnotatedMethod>() {
         @Override
+        @SuppressWarnings("NP_PARAMETER_MUST_BE_NONNULL_BUT_MARKED_AS_NULLABLE")
         public boolean apply(EnhancedAnnotatedMethod method) {
+            Preconditions.checkArgumentNotNull(method, "method");
             return !method.getJavaMember().isBridge();
         }
     };

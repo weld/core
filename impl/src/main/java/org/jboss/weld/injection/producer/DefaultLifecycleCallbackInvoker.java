@@ -29,10 +29,13 @@ import org.jboss.weld.interceptor.util.InterceptionUtils;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.security.GetAccessibleCopyOfMember;
 import org.jboss.weld.util.BeanMethods;
+import org.jboss.weld.util.Preconditions;
 
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
 /**
  * If the component is not intercepted this implementation takes care of invoking its lifecycle callback methods. If the
@@ -46,7 +49,9 @@ public class DefaultLifecycleCallbackInvoker<T> implements LifecycleCallbackInvo
 
     private static final Function<AnnotatedMethod<?>, Method> ACCESSIBLE_METHOD_FUNCTION = new Function<AnnotatedMethod<?>, Method>() {
         @Override
+        @SuppressWarnings("NP_PARAMETER_MUST_BE_NONNULL_BUT_MARKED_AS_NULLABLE")
         public Method apply(AnnotatedMethod<?> method) {
+            Preconditions.checkArgumentNotNull(method, "method");
             return AccessController.doPrivileged(new GetAccessibleCopyOfMember<Method>(method.getJavaMember()));
         }
     };

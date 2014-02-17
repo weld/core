@@ -40,7 +40,7 @@ public class UnsafeInstantiator implements Instantiator {
     private Method allocateInstanceMethod = null;
     private Object unsafeInstance = null;
 
-    @SuppressWarnings(value = "DE_MIGHT_IGNORE", justification = "The exception is expected to be ignored.")
+    @SuppressWarnings(value = { "DE_MIGHT_IGNORE", "REC_CATCH_EXCEPTION" }, justification = "The exception is expected to be ignored.")
     private void init() {
         try {
             Class<?> unsafe = Class.forName(REFLECTION_CLASS_NAME);
