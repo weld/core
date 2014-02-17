@@ -19,6 +19,7 @@ package org.jboss.weld.util.bytecode;
 import java.lang.reflect.Method;
 
 import org.jboss.classfilewriter.AccessFlag;
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
 /**
  * Contains all the data that is needed when working with a method in bytecode
@@ -64,6 +65,7 @@ public class RuntimeMethodInformation implements MethodInformation {
         return descriptor;
     }
 
+    @SuppressWarnings("EI_EXPOSE_REP")
     public String[] getParameterTypes() {
         return parameterTypes;
     }

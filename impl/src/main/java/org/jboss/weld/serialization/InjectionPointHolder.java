@@ -29,6 +29,8 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.util.reflection.Reflections;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 /**
  * Serializable holder for {@link InjectionPoint}.
  *
@@ -85,6 +87,7 @@ public class InjectionPointHolder extends AbstractSerializableHolder<InjectionPo
 
         private static final long serialVersionUID = 6952579330771485841L;
 
+        @SuppressWarnings("SE_TRANSIENT_FIELD_NOT_RESTORED")
         private final transient InjectionPoint ip;
 
         public NoopInjectionPointIdentifier(InjectionPoint ip) {

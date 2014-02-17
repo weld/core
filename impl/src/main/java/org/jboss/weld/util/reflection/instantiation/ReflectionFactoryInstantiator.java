@@ -35,7 +35,7 @@ public class ReflectionFactoryInstantiator implements Instantiator {
     private Method generator = null;
     private Object reflectionFactoryInstance = null;
 
-    @SuppressWarnings(value = "DE_MIGHT_IGNORE", justification = "The exception is expected to be ignored.")
+    @SuppressWarnings(value = { "DE_MIGHT_IGNORE", "REC_CATCH_EXCEPTION" }, justification = "The exception is expected to be ignored.")
     private void init() {
         try {
             Class<?> reflectionFactory = Class.forName(REFLECTION_CLASS_NAME);
@@ -52,7 +52,7 @@ public class ReflectionFactoryInstantiator implements Instantiator {
         return generator != null && reflectionFactoryInstance != null;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked","REC_CATCH_EXCEPTION"})
     public <T> T instantiate(Class<T> clazz) {
         try {
             Constructor<T> instanceConstructor = (Constructor<T>) generator.invoke(reflectionFactoryInstance, clazz, Object.class.getDeclaredConstructor());

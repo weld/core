@@ -21,6 +21,8 @@ import java.lang.reflect.Method;
 
 import org.jboss.classfilewriter.AccessFlag;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 public class StaticMethodInformation implements MethodInformation {
     private final String name;
     private final String descriptor;
@@ -48,6 +50,7 @@ public class StaticMethodInformation implements MethodInformation {
         this.modifiers = modifiers;
     }
 
+    @SuppressWarnings("EI_EXPOSE_REP")
     public StaticMethodInformation(String name, String[] parameterTypes, String returnType, String declaringClass) {
         this.name = name;
         this.parameterTypes = parameterTypes;
@@ -75,6 +78,7 @@ public class StaticMethodInformation implements MethodInformation {
         return descriptor;
     }
 
+    @SuppressWarnings("EI_EXPOSE_REP")
     public String[] getParameterTypes() {
         return parameterTypes;
     }
