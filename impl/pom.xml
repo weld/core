@@ -19,6 +19,11 @@
     </licenses>
     <url>http://weld.cdi-spec.org</url>
 
+    <properties>
+        <findbugs.failOnError>false</findbugs.failOnError>
+        <findbugs.threshold>Low</findbugs.threshold>
+    </properties>
+
     <dependencies>
 
         <dependency>
@@ -155,9 +160,10 @@
                         <artifactId>findbugs-maven-plugin</artifactId>
                         <configuration>
                             <effort>Max</effort>
-                            <threshold>Low</threshold>
                             <xmlOutput>true</xmlOutput>
-                            <failOnError>false</failOnError>
+                            <threshold>${findbugs.threshold}</threshold>
+                            <failOnError>${findbugs.failOnError}</failOnError>
+                            <excludeFilterFile>${project.basedir}/findbugsfilter.xml</excludeFilterFile>
                         </configuration>
                         <executions>
                             <execution>
