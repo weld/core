@@ -18,6 +18,7 @@ package org.jboss.weld.util.reflection;
 
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
+import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
@@ -165,7 +166,9 @@ public final class DeclaredMemberIndexer {
         return 0;
     }
 
-    private static class ConstructorComparator implements Comparator<Constructor<?>> {
+    private static class ConstructorComparator implements Comparator<Constructor<?>>, Serializable {
+
+        private static final long serialVersionUID = 4694814949925290433L;
 
         @Override
         public int compare(Constructor<?> c1, Constructor<?> c2) {
@@ -173,7 +176,9 @@ public final class DeclaredMemberIndexer {
         }
     }
 
-    private static class MethodComparator implements Comparator<Method> {
+    private static class MethodComparator implements Comparator<Method>, Serializable {
+
+        private static final long serialVersionUID = -2254993285161908832L;
 
         @Override
         public int compare(Method m1, Method m2) {
@@ -186,7 +191,9 @@ public final class DeclaredMemberIndexer {
         }
     }
 
-    private static class FieldComparator implements Comparator<Field> {
+    private static class FieldComparator implements Comparator<Field>, Serializable {
+
+        private static final long serialVersionUID = -1417596921060498760L;
 
         @Override
         public int compare(Field o1, Field o2) {

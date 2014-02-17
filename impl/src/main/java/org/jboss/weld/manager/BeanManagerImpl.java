@@ -1253,12 +1253,11 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     private static class InstanceInjectionPoint implements InjectionPoint, Serializable {
 
+        private static final long serialVersionUID = -2952474261839554286L;
+
         private static final InjectionPoint INSTANCE = new InstanceInjectionPoint();
 
         private transient Type type;
-        // there are no qualifiers by default
-        // ResolvableBuilder.create() takes care of adding @Default if there is no qualifier selected
-        private transient Set<Annotation> qualifiers = Collections.emptySet();
 
         @Override
         public Type getType() {
@@ -1269,9 +1268,11 @@ public class BeanManagerImpl implements WeldManager, Serializable {
             return type;
         }
 
+        // there are no qualifiers by default
+        // ResolvableBuilder.create() takes care of adding @Default if there is no qualifier selected
         @Override
         public Set<Annotation> getQualifiers() {
-            return qualifiers;
+            return Collections.emptySet();
         }
 
         @Override

@@ -18,6 +18,8 @@ package org.jboss.weld.util.reflection;
 
 import org.jboss.weld.util.collections.Arrays2;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -31,6 +33,7 @@ public class ParameterizedTypeImpl implements ParameterizedType, Serializable {
     private final Type rawType;
     private final Type ownerType;
 
+    @SuppressWarnings("EI_EXPOSE_REP")
     public ParameterizedTypeImpl(Type rawType, Type[] actualTypeArguments, Type ownerType) {
         this.actualTypeArguments = actualTypeArguments;
         this.rawType = rawType;
