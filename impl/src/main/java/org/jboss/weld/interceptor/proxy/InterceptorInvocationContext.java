@@ -31,6 +31,8 @@ import javax.interceptor.InvocationContext;
 
 import org.jboss.weld.interceptor.spi.context.InterceptionChain;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
@@ -127,6 +129,7 @@ public class InterceptorInvocationContext implements InvocationContext {
     }
 
     @Override
+    @SuppressWarnings("EI_EXPOSE_REP")
     public Object[] getParameters() {
         if (this.method != null || this.constructor != null) {
             return parameters;
@@ -178,6 +181,7 @@ public class InterceptorInvocationContext implements InvocationContext {
         }
     }
 
+    @SuppressWarnings("EI_EXPOSE_REP")
     public void setParameters(Object[] params) {
         if (this.method != null || this.constructor != null) {
             // there is no requirement to do anything if params is null
