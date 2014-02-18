@@ -137,15 +137,6 @@
                     <name>incontainer</name>
                 </property>
             </activation>
-            <dependencies>
-
-                <dependency>
-                    <groupId>org.jboss.shrinkwrap.descriptors</groupId>
-                    <artifactId>shrinkwrap-descriptors-impl</artifactId>
-                    <scope>test</scope>
-                </dependency>
-
-            </dependencies>
         </profile>
 
         <profile>
