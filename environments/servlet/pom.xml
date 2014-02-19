@@ -28,8 +28,11 @@
     <properties>
         <jsf.version>2.1</jsf.version>
         <jsf-impl.version>2.1.22</jsf-impl.version>
-        <tomcat.version>6.0.36</tomcat.version>
-        <tomcat7.version>7.0.50</tomcat7.version>
+        <!-- The default Tomcat version -->
+        <tomcat.version>7.0.52</tomcat.version>
+        <!-- The default Tomcat 6.x and 8.x versions -->
+        <tomcat6.version>6.0.36</tomcat6.version>
+        <tomcat8.version>8.0.3</tomcat8.version>
         <jetty6.version>6.1.26</jetty6.version>
         <jetty.version>8.1.14.v20131031</jetty.version>
         <uel.glassfish.version>2.2</uel.glassfish.version>
@@ -58,43 +61,43 @@
             <dependency>
                 <groupId>org.apache.tomcat</groupId>
                 <artifactId>catalina</artifactId>
-                <version>${tomcat.version}</version>
+                <version>${tomcat6.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.apache.tomcat</groupId>
                 <artifactId>jasper</artifactId>
-                <version>${tomcat.version}</version>
+                <version>${tomcat6.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.apache.tomcat</groupId>
                 <artifactId>coyote</artifactId>
-                <version>${tomcat.version}</version>
+                <version>${tomcat6.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.apache.tomcat.embed</groupId>
                 <artifactId>tomcat-embed-core</artifactId>
-                <version>${tomcat7.version}</version>
+                <version>${tomcat.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.apache.tomcat.embed</groupId>
                 <artifactId>tomcat-embed-logging-juli</artifactId>
-                <version>${tomcat7.version}</version>
+                <version>${tomcat.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.apache.tomcat.embed</groupId>
                 <artifactId>tomcat-embed-jasper</artifactId>
-                <version>${tomcat7.version}</version>
+                <version>${tomcat.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.apache.tomcat</groupId>
                 <artifactId>tomcat-catalina</artifactId>
-                <version>${tomcat7.version}</version>
+                <version>${tomcat.version}</version>
             </dependency>
 
             <dependency>
