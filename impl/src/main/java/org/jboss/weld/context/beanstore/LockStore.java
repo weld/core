@@ -23,9 +23,7 @@ import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.jboss.weld.serialization.spi.BeanIdentifier;
-
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
-
 /**
  * Helper class for bean store creation locking.
  *

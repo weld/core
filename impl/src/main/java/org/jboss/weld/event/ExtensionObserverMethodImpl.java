@@ -127,4 +127,24 @@ public class ExtensionObserverMethodImpl<T, X> extends ObserverMethodImpl<T, X> 
     public Collection<Class<? extends Annotation>> getRequiredAnnotations() {
         return requiredTypeAnnotations;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (this == obj) {
+            return true;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        ExtensionObserverMethodImpl<?, ?> that = (ExtensionObserverMethodImpl<?, ?>) obj;
+        return super.equals(that);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 }

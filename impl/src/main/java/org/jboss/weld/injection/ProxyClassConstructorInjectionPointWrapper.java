@@ -44,7 +44,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
 // TODO Needs equals/hashcode
 // TODO Would be clearer to make this either a wrapper or not
 public class ProxyClassConstructorInjectionPointWrapper<T> extends ConstructorInjectionPoint<T> {
-    private ConstructorInjectionPoint<T> originalConstructorInjectionPoint;
+    private final ConstructorInjectionPoint<T> originalConstructorInjectionPoint;
     private final boolean decorator;
     private final int delegateInjectionPointPosition;
     private final Bean<?> bean;
@@ -101,4 +101,35 @@ public class ProxyClassConstructorInjectionPointWrapper<T> extends ConstructorIn
     public AnnotatedConstructor<T> getComponentConstructor() {
         return originalConstructorInjectionPoint.getAnnotated();
     }
+
+
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + ((originalConstructorInjectionPoint == null) ? 0 : originalConstructorInjectionPoint.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        ProxyClassConstructorInjectionPointWrapper<?> other = (ProxyClassConstructorInjectionPointWrapper<?>) obj;
+        if (originalConstructorInjectionPoint == null) {
+            if (other.originalConstructorInjectionPoint != null) {
+                return false;
+            }
+        } else if (!originalConstructorInjectionPoint.equals(other.originalConstructorInjectionPoint)) {
+            return false;
+        }
+        return true;
+    }
+
 }

@@ -41,6 +41,8 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.security.GetAccessibleCopyOfMember;
 import org.jboss.weld.util.reflection.Reflections;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 /**
  * High-level representation of an injected constructor. This class does not need to be serializable because it is never injected.
  *
@@ -49,6 +51,7 @@ import org.jboss.weld.util.reflection.Reflections;
  *
  * @param <T>
  */
+@SuppressWarnings("EQ_DOESNT_OVERRIDE_EQUALS")
 public class ConstructorInjectionPoint<T> extends AbstractCallableInjectionPoint<T, T, Constructor<T>> {
 
     private final AnnotatedConstructor<T> constructor;
@@ -151,5 +154,35 @@ public class ConstructorInjectionPoint<T> extends AbstractCallableInjectionPoint
 
     public AnnotatedConstructor<T> getComponentConstructor() {
         return constructor;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + ((constructor == null) ? 0 : constructor.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        ConstructorInjectionPoint<?> other = (ConstructorInjectionPoint<?>) obj;
+        if (constructor == null) {
+            if (other.constructor != null) {
+                return false;
+            }
+        } else if (!constructor.equals(other.constructor)) {
+            return false;
+        }
+        return true;
     }
 }
