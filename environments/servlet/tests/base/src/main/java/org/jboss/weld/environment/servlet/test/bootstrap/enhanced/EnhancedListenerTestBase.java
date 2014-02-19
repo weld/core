@@ -30,9 +30,9 @@ import org.junit.Test;
  * Verify the <code>org.jboss.weld.environment.servlet.EnhancedListener</code> works correctly on its own, i.e. if the
  * <code>org.jboss.weld.environment.servlet.Listener</code> is not configured in web.xml.
  *
- * Note that Jetty test suite is using both Listener and EnhancedListener for all the tests. However a workaround is required for Tomcat embedded due to Maven
- * Surefire classloading issues. See also <a href="http://maven.apache.org/surefire/maven-surefire-plugin/examples/class-loading.html">Classloading and Forking
- * in Maven Surefire</a>. Therefore this is the only test in Tomcat test suite for EnhancedListener.
+ * Note that the test suite is using both Listener and EnhancedListener for all the tests. For Tomcat prior to 7.0.52 a workaround was required in embedded mode
+ * due to Maven Surefire classloading issues. See also <a href="http://maven.apache.org/surefire/maven-surefire-plugin/examples/class-loading.html">Classloading
+ * and Forking in Maven Surefire</a>.
  *
  * @author Martin Kouba
  */
