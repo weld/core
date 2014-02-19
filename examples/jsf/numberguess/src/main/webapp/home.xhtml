@@ -11,19 +11,19 @@
          <h:form id="numberGuess">
             <div style="color: red">
                <h:messages id="messages" globalOnly="false"/>
-               <h:outputText id="Higher" value="Higher!" rendered="#{game.number gt game.guess and game.guess ne 0}"/>
-               <h:outputText id="Lower" value="Lower!" rendered="#{game.number lt game.guess and game.guess ne 0}"/>
+               <h:outputText id="Higher" value="Higher!" rendered="#{game.guessHigher}"/>
+               <h:outputText id="Lower" value="Lower!" rendered="#{game.guessLower}"/>
             </div>
-    
+
             <div>
                I'm thinking of a number between <span id="numberGuess:smallest">#{game.smallest}</span> and <span id="numberGuess:biggest">#{game.biggest}</span>. You have #{game.remainingGuesses} guesses remaining.
             </div>
-       
+
             <div>
                Your guess:
                <h:inputText id="inputGuess" value="#{game.guess}"
-                  required="true" size="3" disabled="#{game.number eq game.guess}" validator="#{game.validateNumberRange}"/>
-               <h:commandButton id="guessButton" value="Guess" action="#{game.check}" disabled="#{game.number eq game.guess}"/>
+                  required="true" size="3" disabled="#{game.guessCorrect}" validator="#{game.validateNumberRange}"/>
+               <h:commandButton id="guessButton" value="Guess" action="#{game.check}" disabled="#{game.guessCorrect}"/>
             </div>
             <div>
                <h:commandButton id="restartButton" value="Reset" action="#{game.reset}" immediate="true"/>
