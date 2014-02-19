@@ -181,6 +181,7 @@ public class InterceptorInvocationContext implements InvocationContext {
         }
     }
 
+
     @SuppressWarnings("EI_EXPOSE_REP")
     public void setParameters(Object[] params) {
         if (this.method != null || this.constructor != null) {

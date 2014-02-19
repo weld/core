@@ -131,4 +131,24 @@ public class EnhancedAnnotationImpl<T extends Annotation> extends EnhancedAnnota
     public Class<T> getDelegate() {
         return clazz;
     }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (this == obj) {
+            return true;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        EnhancedAnnotationImpl<?> that = cast(obj);
+        return super.equals(that);
+    }
 }

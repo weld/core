@@ -65,6 +65,8 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 import com.google.common.collect.Sets;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 /**
  * Represents an annotated class
  * <p/>
@@ -729,13 +731,16 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
 
     @Override
     public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
         if (this == obj) {
             return true;
         }
-        if (obj instanceof EnhancedAnnotatedTypeImpl<?>) {
-            EnhancedAnnotatedTypeImpl<?> that = cast(obj);
-            return slim.equals(that.slim);
+        if (getClass() != obj.getClass()) {
+            return false;
         }
-        return false;
+        EnhancedAnnotatedTypeImpl<?> that = cast(obj);
+        return slim.equals(that.slim);
     }
 }

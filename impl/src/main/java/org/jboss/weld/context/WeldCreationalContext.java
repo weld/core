@@ -24,10 +24,13 @@ import javax.enterprise.context.spi.CreationalContext;
 import org.jboss.weld.context.api.ContextualInstance;
 import org.jboss.weld.injection.spi.ResourceReference;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 /**
  * @param <T>
  * @author pmuir
  */
+@SuppressWarnings("NM_SAME_SIMPLE_NAME_AS_INTERFACE")
 public interface WeldCreationalContext<T> extends org.jboss.weld.construction.api.WeldCreationalContext<T> {
 
     <S> WeldCreationalContext<S> getCreationalContext(Contextual<S> contextual);

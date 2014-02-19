@@ -321,12 +321,14 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof ObserverMethodImpl<?, ?>) {
-            ObserverMethodImpl<?, ?> that = (ObserverMethodImpl<?, ?>) obj;
-            return this.getId().equals(that.getId());
-        } else {
+        if (obj == null) {
             return false;
         }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        ObserverMethodImpl<?, ?> that = (ObserverMethodImpl<?, ?>) obj;
+        return this.getId().equals(that.getId());
     }
 
     @Override
