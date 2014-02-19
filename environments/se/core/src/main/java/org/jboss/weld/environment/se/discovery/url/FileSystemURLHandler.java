@@ -30,6 +30,7 @@ import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
 import org.jboss.logging.Logger;
+import org.jboss.weld.bootstrap.api.Bootstrap;
 
 /**
  * This class provides file-system orientated scanning
@@ -37,18 +38,26 @@ import org.jboss.logging.Logger;
  * @author Pete Muir
  * @author Marko Luksa
  */
-public class FileSystemURLHandler {
+public class FileSystemURLHandler implements URLHandler {
 
     private static final Logger log = Logger.getLogger(FileSystemURLHandler.class);
     private static final String UNEXPECTED_CLASSLOADER_MESSAGE = "could not invoke JNLPClassLoader#getJarFile(URL) on context class loader, expecting Web Start class loader";
 
-    private static final String CLASS_FILE_EXTENSION = ".class";
+
+    protected static final String CLASS_FILE_EXTENSION = ".class";
     private static final String BEANS_XML = "beans.xml";
 
-    private List<String> discoveredClasses = new ArrayList<String>();
-    private List<URL> discoveredBeansXmlUrls = new ArrayList<URL>();
+    private final List<String> discoveredClasses = new ArrayList<String>();
+    private URL discoveredBeansXmlUrl = null;
+    private final Bootstrap bootstrap;
+    private final String id;
 
-    public void handle(String urlPath) {
+    public FileSystemURLHandler(String id, Bootstrap bootstrap) {
+        this.id = id;
+        this.bootstrap = bootstrap;
+    }
+
+    public BeanArchiveBuilder handle(String urlPath) {
         try {
             log.tracev("scanning: {0}", urlPath);
 
@@ -84,9 +93,10 @@ public class FileSystemURLHandler {
         } catch (IOException ioe) {
             log.warn("could not read entries", ioe);
         }
+        return createBeanArchiveBuilder();
     }
 
-    private void handleArchiveByFile(File file) throws IOException {
+    protected void handleArchiveByFile(File file) throws IOException {
         try {
             log.tracev("archive: {0}", file);
 
@@ -105,7 +115,7 @@ public class FileSystemURLHandler {
         }
     }
 
-    private void handleDirectory(File dir, String path) {
+    protected void handleDirectory(File dir, String path) {
         log.tracev("handling directory: {0}", dir);
 
         File[] files = dir.listFiles();
@@ -125,13 +135,26 @@ public class FileSystemURLHandler {
         }
     }
 
+    public Bootstrap getBootstrap() {
+        return bootstrap;
+    }
+
     protected void addToDiscovered(String name, URL url) {
         if (name.endsWith(CLASS_FILE_EXTENSION)) {
             discoveredClasses.add(filenameToClassname(name));
         } else if (name.endsWith(BEANS_XML)) {
-            discoveredBeansXmlUrls.add(url);
+            if (discoveredBeansXmlUrl == null) {
+                discoveredBeansXmlUrl = url;
+            } else {
+                throw new IllegalArgumentException("There is more than one beans.xml in the archive");
+            }
         }
     }
+
+    public String getId() {
+        return id;
+    }
+
 
     /**
      * Convert a path to a class file to a class name
@@ -144,7 +167,11 @@ public class FileSystemURLHandler {
         return discoveredClasses;
     }
 
-    public List<URL> getDiscoveredBeansXmlUrls() {
-        return discoveredBeansXmlUrls;
+    public URL getDiscoveredBeansXmlUrl() {
+        return discoveredBeansXmlUrl;
+    }
+
+    protected BeanArchiveBuilder createBeanArchiveBuilder() {
+        return new BeanArchiveBuilder(this.getId(), null, discoveredClasses, discoveredBeansXmlUrl, bootstrap);
     }
 }

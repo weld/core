@@ -1,4 +1,4 @@
-/**
+/*
  * JBoss, Home of Professional Open Source
  * Copyright 2009, Red Hat, Inc. and/or its affiliates, and individual
  * contributors by the @authors tag. See the copyright.txt in the
@@ -27,29 +27,29 @@ import java.util.Collections;
 /**
  * An immutable implementation of {@link BeanDeploymentArchive} which must have
  * classes and beans.xml resources added to it via
- * {@link ImmutableBeanDeploymentArchive#ImmutableBeanDeploymentArchive(String, Collection, Collection, List)}
+ * {@link WeldSEBeanDeploymentArchive#ImmutableBeanDeploymentArchive(String, Collection, Collection, List)}
  * or
- * {@link ImmutableBeanDeploymentArchive#ImmutableBeanDeploymentArchive(String, Collection, Collection)}
+ * {@link WeldSEBeanDeploymentArchive#ImmutableBeanDeploymentArchive(String, Collection, Collection)}
  * <p/>
  * See {@link Deployment} for more detailed information on creating deployment
  * structures.
  *
  * @author Pete Muir
  */
-public class ImmutableBeanDeploymentArchive extends AbstractWeldSEBeanDeploymentArchive {
+public class WeldSEBeanDeploymentArchive extends AbstractWeldSEBeanDeploymentArchive {
 
     private final Collection<String> beanClasses;
     private final BeansXml beansXml;
-    private final Collection<BeanDeploymentArchive> beanDeploymentArchives;
+    private Collection<BeanDeploymentArchive> beanDeploymentArchives;
 
-    public ImmutableBeanDeploymentArchive(String id, Collection<String> beanClasses, BeansXml beansXml, Collection<BeanDeploymentArchive> beanDeploymentArchives) {
+    public WeldSEBeanDeploymentArchive(String id, Collection<String> beanClasses, BeansXml beansXml, Collection<BeanDeploymentArchive> beanDeploymentArchives) {
         super(id);
         this.beanClasses = beanClasses;
         this.beansXml = beansXml;
         this.beanDeploymentArchives = beanDeploymentArchives;
     }
 
-    public ImmutableBeanDeploymentArchive(String id, Collection<String> beanClasses, BeansXml beansXml) {
+    public WeldSEBeanDeploymentArchive(String id, Collection<String> beanClasses, BeansXml beansXml) {
         this(id, beanClasses, beansXml, new ArrayList<BeanDeploymentArchive>());
     }
 
@@ -63,5 +63,9 @@ public class ImmutableBeanDeploymentArchive extends AbstractWeldSEBeanDeployment
 
     public BeansXml getBeansXml() {
         return beansXml;
+    }
+
+    public void setBeanDeploymentArchives(Collection<BeanDeploymentArchive> beanDeploymentArchives) {
+        this.beanDeploymentArchives = beanDeploymentArchives;
     }
 }

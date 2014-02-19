@@ -41,6 +41,7 @@ import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.descriptor.api.Descriptor;
 import org.jboss.weld.bootstrap.api.Bootstrap;
+import org.jboss.weld.bootstrap.api.CDI11Bootstrap;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
@@ -77,7 +78,7 @@ public class WeldSEDeployableContainer implements DeployableContainer<WeldSECont
 
         this.weld = new Weld() {
             @Override
-            protected Deployment createDeployment(ResourceLoader resourceLoader, Bootstrap bootstrap) {
+            protected Deployment createDeployment(ResourceLoader resourceLoader, CDI11Bootstrap bootstrap) {
                 return super.createDeployment(loader, bootstrap);
             }
         };

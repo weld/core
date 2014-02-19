@@ -13,6 +13,10 @@
     <name>Weld SE (Core)</name>
 
     <description>Weld support for Java SE</description>
+    
+    <properties>
+        <jandex.version>1.2.0.Beta1</jandex.version>
+    </properties>
 
     <url>http://weld.cdi-spec.org</url>
     <licenses>
@@ -72,6 +76,13 @@
         <dependency>
             <groupId>org.jboss.spec.javax.annotation</groupId>
             <artifactId>jboss-annotations-api_1.2_spec</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss</groupId>
+            <artifactId>jandex</artifactId>
+            <version>${jandex.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
