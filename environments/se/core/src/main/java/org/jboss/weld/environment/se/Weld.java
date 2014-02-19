@@ -1,4 +1,4 @@
-/**
+/*
  * JBoss, Home of Professional Open Source
  * Copyright 2009, Red Hat, Inc. and/or its affiliates, and individual
  * contributors by the @authors tag. See the copyright.txt in the
@@ -17,8 +17,8 @@
 package org.jboss.weld.environment.se;
 
 import java.lang.annotation.Annotation;
-import java.net.URL;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -29,16 +29,20 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 
 import org.jboss.weld.bootstrap.api.Bootstrap;
+import org.jboss.weld.bootstrap.api.CDI11Bootstrap;
 import org.jboss.weld.bootstrap.api.Environments;
-import org.jboss.weld.bootstrap.api.helpers.ForwardingBootstrap;
-import org.jboss.weld.bootstrap.spi.BeansXml;
+import org.jboss.weld.bootstrap.api.TypeDiscoveryConfiguration;
+import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.bootstrap.spi.Metadata;
+import org.jboss.weld.environment.se.discovery.url.DefaultDiscoveryStrategy;
+import org.jboss.weld.environment.se.discovery.url.DiscoveryStrategy;
 import org.jboss.weld.environment.se.discovery.url.WeldSEResourceLoader;
 import org.jboss.weld.environment.se.discovery.url.WeldSEUrlDeployment;
 import org.jboss.weld.environment.se.events.ContainerInitialized;
 import org.jboss.weld.metadata.MetadataImpl;
 import org.jboss.weld.resources.spi.ResourceLoader;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * <p>
@@ -65,6 +69,9 @@ public class Weld {
 
     private static final String BOOTSTRAP_IMPL_CLASS_NAME = "org.jboss.weld.bootstrap.WeldBootstrap";
     private static final String ERROR_LOADING_WELD_BOOTSTRAP_EXC_MESSAGE = "Error loading Weld bootstrap, check that Weld is on the classpath";
+    public static final String JANDEX_INDEX_CLASS = "org.jboss.jandex.Index";
+    private static final String JANDEX_ENABLED_DISCOVERY_STRATEGY_CLASS_STRING = "org.jboss.weld.environment.se.discovery.url.JandexEnabledDiscoveryStrategy";
+
 
     private ShutdownManager shutdownManager;
     private Set<Metadata<Extension>> extensions;
@@ -94,45 +101,14 @@ public class Weld {
             throw new IllegalStateException("Missing beans.xml file in META-INF!");
         }
 
-        final Bootstrap delegate;
+        final CDI11Bootstrap bootstrap;
         try {
-            delegate = (Bootstrap) resourceLoader.classForName(BOOTSTRAP_IMPL_CLASS_NAME).newInstance();
+            bootstrap = (CDI11Bootstrap) resourceLoader.classForName(BOOTSTRAP_IMPL_CLASS_NAME).newInstance();
         } catch (InstantiationException ex) {
             throw new IllegalStateException(ERROR_LOADING_WELD_BOOTSTRAP_EXC_MESSAGE, ex);
         } catch (IllegalAccessException ex) {
             throw new IllegalStateException(ERROR_LOADING_WELD_BOOTSTRAP_EXC_MESSAGE, ex);
         }
-
-        Bootstrap bootstrap = new ForwardingBootstrap() {
-            protected Bootstrap delegate() {
-                return delegate;
-            }
-
-            public BeansXml parse(URL url) {
-                return delegate.parse(url);
-            }
-
-            public BeansXml parse(Iterable<URL> urls) {
-                return delegate.parse(urls);
-            }
-
-            public BeansXml parse(Iterable<URL> urls, boolean removeDuplicates) {
-                return delegate.parse(urls, removeDuplicates);
-            }
-
-            public Iterable<Metadata<Extension>> loadExtensions(ClassLoader classLoader) {
-                Iterable<Metadata<Extension>> iter = delegate.loadExtensions(classLoader);
-                if (extensions != null) {
-                    Set<Metadata<Extension>> set = new HashSet<Metadata<Extension>>(extensions);
-                    for (Metadata<Extension> ext : iter) {
-                        set.add(ext);
-                    }
-                    return set;
-                } else {
-                    return iter;
-                }
-            }
-        };
 
         Deployment deployment = createDeployment(resourceLoader, bootstrap);
         // Set up the container
@@ -155,22 +131,33 @@ public class Weld {
         return container;
     }
 
+    private Iterable<Metadata<Extension>> loadExtensions(ClassLoader classLoader, Bootstrap bootstrap) {
+        Iterable<Metadata<Extension>> iter = bootstrap.loadExtensions(classLoader);
+        if (extensions != null) {
+            Set<Metadata<Extension>> set = new HashSet<Metadata<Extension>>(extensions);
+            for (Metadata<Extension> ext : iter) {
+                set.add(ext);
+            }
+            return set;
+        } else {
+            return iter;
+        }
+    }
+
     /**
      * <p>
-     * Extensions to Weld SE can subclass and override this method to customise
-     * the deployment before weld boots up. For example, to add a custom
+     * Extensions to Weld SE can subclass and override this method to customize the deployment before weld boots up. For example, to add a custom
      * ResourceLoader, you would subclass Weld like so:
      * </p>
      * <p/>
+     *
      * <pre>
-     * public class MyWeld extends Weld
-     * {
-     *    protected Deployment createDeployment()
-     *    {
-     *       Deployment deployment = super.createDeployment();
-     *       deployment.getServices().add(ResourceLoader.class, new MyResourceLoader());
-     *       return deployment;
-     *    }
+     * public class MyWeld extends Weld {
+     *     protected Deployment createDeployment(CDI11Bootstrap bootstrap) {
+     *         Deployment deployment = super.createDeployment(new MyResourceLoader(), bootstrap);
+     *         deployment.getServices().add(ResourceLoader.class);
+     *         return deployment;
+     *     }
      * }
      * </pre>
      * <p/>
@@ -178,12 +165,31 @@ public class Weld {
      * This could then be used as normal:
      * </p>
      * <p/>
+     *
      * <pre>
      * WeldContainer container = new MyWeld().initialize();
      * </pre>
+     *
+     * @param resourceLoader
+     * @param bootstrap
+     * @param strategy strategy of discovering the bean archives
      */
-    protected Deployment createDeployment(ResourceLoader resourceLoader, Bootstrap bootstrap) {
-        return new WeldSEUrlDeployment(resourceLoader, bootstrap);
+    protected Deployment createDeployment(ResourceLoader resourceLoader, CDI11Bootstrap bootstrap) {
+        DiscoveryStrategy strategy = null;
+        Iterable<Metadata<Extension>> loadedExtensions = loadExtensions(WeldSEResourceLoader.getClassLoader(), bootstrap);
+        TypeDiscoveryConfiguration typeDiscoveryConfiguration = bootstrap.startExtensions(loadedExtensions);
+        if (Reflections.isClassLoadable(JANDEX_INDEX_CLASS, resourceLoader)) {
+            Class<?> clazz = Reflections.loadClass(JANDEX_ENABLED_DISCOVERY_STRATEGY_CLASS_STRING, resourceLoader);
+            try {
+                strategy = (DiscoveryStrategy) clazz.getConstructor(ResourceLoader.class, Bootstrap.class, TypeDiscoveryConfiguration.class).newInstance(resourceLoader, bootstrap, typeDiscoveryConfiguration);
+            } catch (Exception e) {
+                throw new IllegalStateException("Unable to instantiate jandex discovery strategy", e);
+            }
+        } else {
+            strategy = new DefaultDiscoveryStrategy(resourceLoader, bootstrap);
+        }
+        Collection<BeanDeploymentArchive> discoverArchives = strategy.discoverArchives();
+        return new WeldSEUrlDeployment(resourceLoader, bootstrap, discoverArchives, loadedExtensions);
     }
 
     /**
