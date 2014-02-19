@@ -16,8 +16,7 @@
  */
 package org.jboss.weld.environment.se.discovery.url;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.Collection;
 
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
@@ -31,26 +30,34 @@ import org.jboss.weld.resources.spi.ResourceLoader;
  */
 public class WeldSEUrlDeployment extends AbstractWeldSEDeployment {
 
-    private final BeanDeploymentArchive beanDeploymentArchive;
+    private final Collection<BeanDeploymentArchive> beanDeploymentArchives;
 
 
-    public WeldSEUrlDeployment(ResourceLoader resourceLoader, Bootstrap bootstrap) {
+    public WeldSEUrlDeployment(ResourceLoader resourceLoader, Bootstrap bootstrap, DiscoveryStrategy discovery)
+            throws UnrecognizedBeansXmlDiscoveryModeException {
         super(bootstrap);
-        this.beanDeploymentArchive = new URLScanner(resourceLoader, bootstrap, RESOURCES).scan();
-        this.beanDeploymentArchive.getServices().add(ResourceLoader.class, resourceLoader);
-
+        beanDeploymentArchives = discovery.discoverArchive();
+        for(BeanDeploymentArchive archive : beanDeploymentArchives) {
+            archive.getServices().add(ResourceLoader.class, resourceLoader);
+        }
     }
 
-    public List<BeanDeploymentArchive> getBeanDeploymentArchives() {
-        return Collections.singletonList(beanDeploymentArchive);
+    public Collection<BeanDeploymentArchive> getBeanDeploymentArchives() {
+        return beanDeploymentArchives;
     }
 
     public BeanDeploymentArchive loadBeanDeploymentArchive(Class<?> beanClass) {
-        return beanDeploymentArchive;
+        // TODO: Make it much better
+        return beanDeploymentArchives.iterator().next();
     }
 
     @Override
     public BeanDeploymentArchive getBeanDeploymentArchive(Class<?> beanClass) {
-        return beanDeploymentArchive;
+        for (BeanDeploymentArchive bda : beanDeploymentArchives) {
+            if (bda.getBeanClasses().contains(beanClass.getName())) {
+                return bda;
+            }
+        }
+        return null;
     }
 }

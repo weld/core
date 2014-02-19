@@ -17,14 +17,17 @@
 package org.jboss.weld.environment.se.discovery.url;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import org.jboss.logging.Logger;
 import org.jboss.weld.bootstrap.api.Bootstrap;
-import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
-import org.jboss.weld.environment.se.discovery.ImmutableBeanDeploymentArchive;
 import org.jboss.weld.resources.spi.ResourceLoader;
+import org.jboss.weld.resources.spi.ResourceLoadingException;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * Scan the classloader
@@ -38,6 +41,10 @@ import org.jboss.weld.resources.spi.ResourceLoader;
  */
 public class URLScanner {
 
+    private static final String JANDEX_ENABLED_FS_URL_HANDLER_CLASS_STRING = "org.jboss.weld.environment.se.discovery.url.JandexEnabledFileSystemURLHandler";
+
+    private static final String JANDEX_INDEX_CLASS = "org.jboss.jandex.Index";
+
     private static final Logger log = Logger.getLogger(URLScanner.class);
 
     private static final String FILE = "file";
@@ -47,6 +54,7 @@ public class URLScanner {
     private final String[] resources;
     private final ResourceLoader resourceLoader;
     private final Bootstrap bootstrap;
+    private Collection<BeanArchiveBuilder> builders = new ArrayList<BeanArchiveBuilder>();
 
     public URLScanner(ResourceLoader resourceLoader, Bootstrap bootstrap, String... resources) {
         this.resources = resources;
@@ -54,19 +62,42 @@ public class URLScanner {
         this.bootstrap = bootstrap;
     }
 
-    public BeanDeploymentArchive scan() {
-        FileSystemURLHandler handler = new FileSystemURLHandler();
+    public Collection<BeanArchiveBuilder> scan() {
+        URLHandler handler = null;
+        int idCounter = 0;
+        boolean jandexEnabled = isJandexEnabled();
         for (String resourceName : resources) {
             // grab all the URLs for this resource
             for (URL url : resourceLoader.getResources(resourceName)) {
+                if (jandexEnabled) {
+                    Class<?> clazz = Reflections.loadClass(JANDEX_ENABLED_FS_URL_HANDLER_CLASS_STRING, resourceLoader);
+                    try {
+                        handler = (URLHandler) clazz.getConstructor(String.class, Bootstrap.class).newInstance(String.valueOf(idCounter++), bootstrap);
+                    } catch (InstantiationException e) {
+                        e.printStackTrace();
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    } catch (IllegalArgumentException e) {
+                        e.printStackTrace();
+                    } catch (InvocationTargetException e) {
+                        e.printStackTrace();
+                    } catch (NoSuchMethodException e) {
+                        e.printStackTrace();
+                    } catch (SecurityException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    handler = new FileSystemURLHandler(String.valueOf(idCounter++), bootstrap);
+                }
                 try {
-                    handler.handle(getUrlPath(resourceName, url));
+                    BeanArchiveBuilder builder = handler.handle(getUrlPath(resourceName, url));
+                    builders.add(builder);
                 } catch (URISyntaxException e) {
                     log.warn("could not read: " + resourceName, e);
                 }
             }
         }
-        return new ImmutableBeanDeploymentArchive("classpath", handler.getDiscoveredClasses(), bootstrap.parse(handler.getDiscoveredBeansXmlUrls(), true));
+        return builders;
     }
 
     private String getUrlPath(String resourceName, URL url) throws URISyntaxException {
@@ -97,6 +128,15 @@ public class URLScanner {
         }
 
         return urlPath;
+    }
+
+    private boolean isJandexEnabled() {
+        try{
+            Class<?> index = resourceLoader.classForName(JANDEX_INDEX_CLASS);
+            return true;
+        } catch (ResourceLoadingException ex) {
+            return false;
+        }
     }
 
     /**
