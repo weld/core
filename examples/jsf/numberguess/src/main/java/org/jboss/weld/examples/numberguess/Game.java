@@ -66,11 +66,11 @@ public class Game implements Serializable {
     }
 
     public void check() {
-        if (guess > number) {
+        if (isGuessHigher()) {
             biggest = guess - 1;
-        } else if (guess < number) {
+        } else if (isGuessLower()) {
             smallest = guess + 1;
-        } else if (guess == number) {
+        } else if (isGuessCorrect()) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Correct!"));
         }
         remainingGuesses--;
@@ -100,5 +100,17 @@ public class Game implements Serializable {
             FacesMessage message = new FacesMessage("Invalid guess");
             context.addMessage(toValidate.getClientId(context), message);
         }
+    }
+
+    public boolean isGuessHigher() {
+        return guess != 0 && guess > number;
+    }
+
+    public boolean isGuessLower() {
+        return guess != 0 && guess < number;
+    }
+
+    public boolean isGuessCorrect() {
+        return guess == number;
     }
 }
