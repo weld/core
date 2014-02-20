@@ -4,7 +4,6 @@
     <artifactId>weld-servlet-parent</artifactId>
     <name>Weld Servlet Parent</name>
     <packaging>pom</packaging>
-    <version>2.2.0-SNAPSHOT</version>
 
     <parent>
         <groupId>org.jboss.weld</groupId>
@@ -28,13 +27,12 @@
     <properties>
         <jsf.version>2.1</jsf.version>
         <jsf-impl.version>2.1.22</jsf-impl.version>
-        <!-- The default Tomcat version -->
         <tomcat.version>7.0.52</tomcat.version>
-        <!-- The default Tomcat 6.x and 8.x versions -->
-        <tomcat6.version>6.0.36</tomcat6.version>
         <tomcat8.version>8.0.3</tomcat8.version>
-        <jetty6.version>6.1.26</jetty6.version>
         <jetty.version>8.1.14.v20131031</jetty.version>
+        <jetty9.version>9.1.0.v20131115</jetty9.version>
+        <!-- Jetty 6 API is used for GWT support only -->
+        <jetty6.version>6.1.26</jetty6.version>
         <uel.glassfish.version>2.2</uel.glassfish.version>
         <!-- Testing deps -->
         <apache.httpclient.version>3.1</apache.httpclient.version>
@@ -57,24 +55,6 @@
                 <groupId>org.glassfish</groupId>
                 <artifactId>javax.faces</artifactId>
                 <version>${jsf-impl.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.tomcat</groupId>
-                <artifactId>catalina</artifactId>
-                <version>${tomcat6.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.tomcat</groupId>
-                <artifactId>jasper</artifactId>
-                <version>${tomcat6.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.tomcat</groupId>
-                <artifactId>coyote</artifactId>
-                <version>${tomcat6.version}</version>
             </dependency>
 
             <dependency>

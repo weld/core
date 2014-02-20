@@ -72,6 +72,31 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-logging-juli</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Make sure this comes before Tomcat's EL on the classpath -->
+        <dependency>
+            <groupId>org.glassfish.web</groupId>
+            <artifactId>el-impl</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-jasper</artifactId>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -140,56 +165,6 @@
         </profile>
 
         <profile>
-            <id>tomcat6</id>
-            <activation>
-                <property>
-                    <name>tomcat</name>
-                    <value>6</value>
-                </property>
-            </activation>
-            <dependencies>
-
-                <dependency>
-                    <groupId>org.jboss.arquillian.container</groupId>
-                    <artifactId>arquillian-tomcat-embedded-6</artifactId>
-                    <scope>test</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.apache.tomcat</groupId>
-                    <artifactId>catalina</artifactId>
-                    <scope>test</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.apache.tomcat</groupId>
-                    <artifactId>coyote</artifactId>
-                    <scope>provided</scope>
-                </dependency>
-
-                <!-- Make sure this comes before Tomcat's EL on the classpath -->
-                <dependency>
-                    <groupId>org.glassfish.web</groupId>
-                    <artifactId>el-impl</artifactId>
-                    <scope>test</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.apache.tomcat</groupId>
-                    <artifactId>jasper</artifactId>
-                    <scope>provided</scope>
-                    <exclusions>
-                        <exclusion>
-                            <groupId>org.apache.tomcat</groupId>
-                            <artifactId>el-api</artifactId>
-                        </exclusion>
-                    </exclusions>
-                </dependency>
-
-            </dependencies>
-        </profile>
-
-        <profile>
             <id>tomcat7</id>
             <activation>
                 <property>
@@ -201,31 +176,6 @@
                 <dependency>
                     <groupId>org.jboss.arquillian.container</groupId>
                     <artifactId>arquillian-tomcat-embedded-7</artifactId>
-                    <scope>test</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.apache.tomcat.embed</groupId>
-                    <artifactId>tomcat-embed-core</artifactId>
-                    <scope>test</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.apache.tomcat.embed</groupId>
-                    <artifactId>tomcat-embed-logging-juli</artifactId>
-                    <scope>test</scope>
-                </dependency>
-
-                <!-- Make sure this comes before Tomcat's EL on the classpath -->
-                <dependency>
-                    <groupId>org.glassfish.web</groupId>
-                    <artifactId>el-impl</artifactId>
-                    <scope>test</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.apache.tomcat.embed</groupId>
-                    <artifactId>tomcat-embed-jasper</artifactId>
                     <scope>test</scope>
                 </dependency>
 
@@ -250,31 +200,6 @@
                 <dependency>
                     <groupId>org.jboss.arquillian.container</groupId>
                     <artifactId>arquillian-tomcat-embedded-8</artifactId>
-                    <scope>test</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.apache.tomcat.embed</groupId>
-                    <artifactId>tomcat-embed-core</artifactId>
-                    <scope>test</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.apache.tomcat.embed</groupId>
-                    <artifactId>tomcat-embed-logging-juli</artifactId>
-                    <scope>test</scope>
-                </dependency>
-
-                <!-- Make sure this comes before Tomcat's EL on the classpath -->
-                <dependency>
-                    <groupId>org.glassfish.web</groupId>
-                    <artifactId>el-impl</artifactId>
-                    <scope>test</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.apache.tomcat.embed</groupId>
-                    <artifactId>tomcat-embed-jasper</artifactId>
                     <scope>test</scope>
                 </dependency>
 
