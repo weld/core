@@ -1,4 +1,4 @@
-package org.jboss.weld.environment.tomcat7;
+package org.jboss.weld.environment.tomcat;
 
 import java.lang.reflect.InvocationTargetException;
 

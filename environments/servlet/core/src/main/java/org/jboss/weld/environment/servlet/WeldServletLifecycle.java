@@ -37,8 +37,7 @@ import org.jboss.weld.environment.servlet.deployment.VFSURLScanner;
 import org.jboss.weld.environment.servlet.services.ServletResourceInjectionServices;
 import org.jboss.weld.environment.servlet.util.Reflections;
 import org.jboss.weld.environment.servlet.util.ServiceLoader;
-import org.jboss.weld.environment.tomcat.Tomcat6Container;
-import org.jboss.weld.environment.tomcat7.Tomcat7Container;
+import org.jboss.weld.environment.tomcat.TomcatContainer;
 import org.jboss.weld.injection.spi.ResourceInjectionServices;
 import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.servlet.api.ServletListener;
@@ -204,7 +203,7 @@ public class WeldServletLifecycle {
         if (container == null) {
             container = checkContainers(cc, dump, Arrays.asList(
             // Needs to be first: gwt-dev jar has tomcat classes but uses jetty
-            GwtDevHostedModeContainer.INSTANCE, Tomcat7Container.INSTANCE, Tomcat6Container.INSTANCE, JettyContainer.INSTANCE));
+            GwtDevHostedModeContainer.INSTANCE, TomcatContainer.INSTANCE, JettyContainer.INSTANCE));
         }
         return container;
     }

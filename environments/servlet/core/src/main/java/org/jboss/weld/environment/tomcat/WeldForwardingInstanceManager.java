@@ -1,4 +1,4 @@
-package org.jboss.weld.environment.tomcat7;
+package org.jboss.weld.environment.tomcat;
 
 import static org.jboss.weld.environment.servlet.util.Reflections.findDeclaredField;
 import static org.jboss.weld.environment.servlet.util.Reflections.findDeclaredMethod;
