@@ -107,6 +107,10 @@
             <title>Tomcat</title>
 
             <para>
+                Since Weld 2.2.0.Final only Tomcat 7 and 8 are supported.
+            </para>
+
+            <para>
                 Tomcat has a read-only JNDI, so Weld can't automatically bind the BeanManager extension SPI. To bind
                 the BeanManager into JNDI, you should populate
                 <literal>META-INF/context.xml</literal>
