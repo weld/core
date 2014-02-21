@@ -34,21 +34,33 @@ import org.jboss.weld.bean.proxy.ProxyObject;
 import org.jboss.weld.injection.producer.BeanInjectionTarget;
 import org.jboss.weld.injection.producer.DefaultInjector;
 import org.jboss.weld.injection.producer.DefaultInstantiator;
+import org.jboss.weld.injection.producer.DefaultLifecycleCallbackInvoker;
 import org.jboss.weld.injection.producer.Injector;
 import org.jboss.weld.injection.producer.Instantiator;
+import org.jboss.weld.injection.producer.LifecycleCallbackInvoker;
 import org.jboss.weld.injection.producer.StatelessSessionBeanInjector;
 import org.jboss.weld.injection.producer.SubclassDecoratorApplyingInstantiator;
 import org.jboss.weld.injection.producer.SubclassedComponentInstantiator;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Types;
-import org.jboss.weld.util.reflection.Reflections;
 
 public class SessionBeanInjectionTarget<T> extends BeanInjectionTarget<T> {
 
+    public static <T> SessionBeanInjectionTarget<T> of(EnhancedAnnotatedType<T> type, SessionBean<T> bean, BeanManagerImpl beanManager) {
+        LifecycleCallbackInvoker<T> invoker = DefaultLifecycleCallbackInvoker.of(type);
+        Injector<T> injector;
+        if (bean.getEjbDescriptor().isStateless()) {
+            injector = new StatelessSessionBeanInjector<T>(type, bean, beanManager);
+        } else {
+            injector = new DefaultInjector<T>(type, bean, beanManager);
+        }
+        return new SessionBeanInjectionTarget<T>(type, bean, beanManager, injector, invoker);
+    }
+
     private final SessionBean<T> bean;
 
-    public SessionBeanInjectionTarget(EnhancedAnnotatedType<T> type, SessionBean<T> bean, BeanManagerImpl beanManager) {
-        super(type, bean, beanManager);
+    private SessionBeanInjectionTarget(EnhancedAnnotatedType<T> type, SessionBean<T> bean, BeanManagerImpl beanManager, Injector<T> injector, LifecycleCallbackInvoker<T> invoker) {
+        super(type, bean, beanManager, injector, invoker);
         this.bean = bean;
     }
 
@@ -66,14 +78,6 @@ public class SessionBeanInjectionTarget<T> extends BeanInjectionTarget<T> {
         } else {
             throw new IllegalArgumentException("Cannot create SessionBeanInjectionTarget for " + bean);
         }
-    }
-
-    @Override
-    protected Injector<T> initInjector(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager) {
-        if (Reflections.<SessionBean<T>>cast(bean).getEjbDescriptor().isStateless()) {
-            return new StatelessSessionBeanInjector<T>(type, bean, beanManager);
-        }
-        return new DefaultInjector<T>(type, bean, beanManager);
     }
 
     @Override

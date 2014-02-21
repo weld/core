@@ -24,12 +24,12 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 
-import org.jboss.weld.util.Preconditions;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.interceptor.util.InterceptionUtils;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.security.GetAccessibleCopyOfMember;
 import org.jboss.weld.util.BeanMethods;
+import org.jboss.weld.util.Preconditions;
 
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
@@ -55,6 +55,10 @@ public class DefaultLifecycleCallbackInvoker<T> implements LifecycleCallbackInvo
             return AccessController.doPrivileged(new GetAccessibleCopyOfMember<Method>(method.getJavaMember()));
         }
     };
+
+    public static <T> DefaultLifecycleCallbackInvoker<T> of(EnhancedAnnotatedType<T> type) {
+        return new DefaultLifecycleCallbackInvoker<T>(type);
+    }
 
     private final List<Method> accessiblePostConstructMethods;
     private final List<Method> accessiblePreDestroyMethods;

@@ -21,7 +21,6 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionTarget;
 import javax.enterprise.inject.spi.Interceptor;
-import javax.interceptor.Interceptors;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bean.SessionBean;
@@ -29,14 +28,12 @@ import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.injection.producer.BasicInjectionTarget;
 import org.jboss.weld.injection.producer.BeanInjectionTarget;
 import org.jboss.weld.injection.producer.DecoratorInjectionTarget;
-import org.jboss.weld.injection.producer.InjectionTargetInitializationContext;
 import org.jboss.weld.injection.producer.InjectionTargetService;
-import org.jboss.weld.injection.producer.LifecycleCallbackInvoker;
 import org.jboss.weld.injection.producer.NonProducibleInjectionTarget;
-import org.jboss.weld.injection.producer.NoopLifecycleCallbackInvoker;
 import org.jboss.weld.injection.producer.ejb.SessionBeanInjectionTarget;
 import org.jboss.weld.injection.spi.InjectionServices;
 import org.jboss.weld.logging.BeanLogger;
+import org.jboss.weld.manager.api.WeldInjectionTarget;
 import org.jboss.weld.manager.api.WeldInjectionTargetFactory;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.Beans;
@@ -65,20 +62,18 @@ public class InjectionTargetFactoryImpl<T> implements WeldInjectionTargetFactory
     }
 
     @Override
-    public InjectionTarget<T> createInjectionTarget(Bean<T> bean) {
+    public WeldInjectionTarget<T> createInjectionTarget(Bean<T> bean) {
         return createInjectionTarget(bean, false);
     }
 
     @Override
-    public InjectionTarget<T> createInterceptorInjectionTarget() {
+    public WeldInjectionTarget<T> createInterceptorInjectionTarget() {
         return createInjectionTarget(null, true);
     }
 
-    private InjectionTarget<T> createInjectionTarget(Bean<T> bean, boolean interceptor) {
+    private WeldInjectionTarget<T> createInjectionTarget(Bean<T> bean, boolean interceptor) {
         try {
-            InjectionTarget<T> injectionTarget = createInjectionTarget(type, bean, interceptor);
-            injectionTargetService.validateProducer(injectionTarget);
-            return injectionTarget;
+            return validate(createInjectionTarget(type, bean, interceptor));
         } catch (Throwable e) {
             throw new IllegalArgumentException(e);
         }
@@ -90,8 +85,8 @@ public class InjectionTargetFactoryImpl<T> implements WeldInjectionTargetFactory
          * Every InjectionTarget, regardless whether it's used within Weld's Bean implementation or requested from extension has
          * to be initialized after beans (interceptors) are deployed.
          */
-        injectionTargetService.addInjectionTargetToBeInitialized(new InjectionTargetInitializationContext<T>(type, injectionTarget));
-        postProcessInjectionTarget(type, injectionTarget);
+        initialize(injectionTarget);
+        postProcess(injectionTarget);
         return injectionTarget;
     }
 
@@ -118,46 +113,51 @@ public class InjectionTargetFactoryImpl<T> implements WeldInjectionTargetFactory
             return new NonProducibleInjectionTarget<T>(type, null, manager);
         }
         if (bean instanceof SessionBean<?>) {
-            return new SessionBeanInjectionTarget<T>(type, (SessionBean<T>) bean, manager);
+            return SessionBeanInjectionTarget.of(type, (SessionBean<T>) bean, manager);
         }
-        if (interceptor){
-            return new InterceptorInjectionTarget<T>(type, manager);
+        if (bean instanceof Interceptor<?> || type.isAnnotationPresent(javax.interceptor.Interceptor.class)) {
+            return BeanInjectionTarget.forCdiInterceptor(type, bean, manager);
         }
-        return new BeanInjectionTarget<T>(type, bean, manager);
+        if (interceptor) {
+            return BasicInjectionTarget.createNonCdiInterceptor(type, manager);
+        }
+        return BeanInjectionTarget.createDefault(type, bean, manager);
     }
 
     protected InjectionTarget<T> createMessageDrivenInjectionTarget() {
+        return prepareInjectionTarget(BasicInjectionTarget.createDefault(type, null, manager));
+    }
+
+    private BasicInjectionTarget<T> initialize(BasicInjectionTarget<T> injectionTarget) {
+        injectionTargetService.addInjectionTargetToBeInitialized(type, injectionTarget);
+        return injectionTarget;
+    }
+
+    private <I extends InjectionTarget<T>> I validate(I injectionTarget) {
+        injectionTargetService.validateProducer(injectionTarget);
+        return injectionTarget;
+    }
+
+    private void postProcess(InjectionTarget<T> injectionTarget) {
+        if (injectionServices != null) {
+            injectionServices.registerInjectionTarget(injectionTarget, type.slim());
+        }
+    }
+
+    /*
+     * Just a shortcut for calling validate, initialize and postProcess
+     */
+    private BasicInjectionTarget<T> prepareInjectionTarget(BasicInjectionTarget<T> injectionTarget) {
         try {
-            InjectionTarget<T> injectionTarget = new BasicInjectionTarget<T>(type, null, manager);
-            postProcessInjectionTarget(type, injectionTarget);
-            injectionTargetService.validateProducer(injectionTarget);
+            postProcess(initialize(validate(injectionTarget)));
             return injectionTarget;
         } catch (Throwable e) {
             throw new IllegalArgumentException(e);
         }
     }
 
-    private <X> void postProcessInjectionTarget(AnnotatedType<X> type, InjectionTarget<X> injectionTarget) {
-        if (injectionServices != null) {
-            injectionServices.registerInjectionTarget(injectionTarget, type);
-        }
-    }
-
-
-    /**
-     * {@link InjectionTarget} for interceptors which do not have associated {@link Interceptor}. These interceptors are a
-     * result of using {@link Interceptors} annotation directly on the target class.
-     *
-     * @author Jozef Hartinger
-     */
-    private static class InterceptorInjectionTarget<T> extends BasicInjectionTarget<T> {
-        public InterceptorInjectionTarget(EnhancedAnnotatedType<T> type, BeanManagerImpl beanManager) {
-            super(type, null, beanManager);
-        }
-
-        @Override
-        protected LifecycleCallbackInvoker<T> initInvoker(EnhancedAnnotatedType<T> type) {
-            return NoopLifecycleCallbackInvoker.getInstance();
-        }
+    @Override
+    public WeldInjectionTarget<T> createNonProducibleInjectionTarget() {
+        return prepareInjectionTarget(new NonProducibleInjectionTarget<T>(type, null, manager));
     }
 }

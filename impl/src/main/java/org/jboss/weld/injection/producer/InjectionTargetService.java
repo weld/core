@@ -8,6 +8,7 @@ import javax.enterprise.inject.spi.Producer;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.ContainerState;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bootstrap.Validator;
 import org.jboss.weld.bootstrap.api.helpers.AbstractBootstrapService;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -42,6 +43,10 @@ public class InjectionTargetService extends AbstractBootstrapService {
             // Schedule validation for deployment problems to be done later
             producersToValidate.add(producer);
         }
+    }
+
+    public <T> void addInjectionTargetToBeInitialized(EnhancedAnnotatedType<T> type, BasicInjectionTarget<T> injectionTarget) {
+        addInjectionTargetToBeInitialized(new InjectionTargetInitializationContext<T>(type, injectionTarget));
     }
 
     public void addInjectionTargetToBeInitialized(InjectionTargetInitializationContext<?> initializationContext) {

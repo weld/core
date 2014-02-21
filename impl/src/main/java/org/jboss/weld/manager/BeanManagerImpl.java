@@ -112,10 +112,13 @@ import org.jboss.weld.injection.attributes.FieldInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.InferringFieldInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.InferringParameterInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.ParameterInjectionPointAttributes;
+import org.jboss.weld.injection.producer.WeldInjectionTargetBuilderImpl;
 import org.jboss.weld.interceptor.reader.InterceptorMetadataReader;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.logging.BeanManagerLogger;
 import org.jboss.weld.logging.BootstrapLogger;
+import org.jboss.weld.manager.api.WeldInjectionTargetBuilder;
+import org.jboss.weld.manager.api.WeldInjectionTargetFactory;
 import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.metadata.cache.InterceptorBindingModel;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
@@ -1432,7 +1435,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
      * be inferred using {@link CDI11Deployment#getBeanDeploymentArchive(Class)}.
      */
     @Override
-    public <T> InjectionTargetFactoryImpl<T> getInjectionTargetFactory(AnnotatedType<T> type) {
+    public <T> WeldInjectionTargetFactory<T> getInjectionTargetFactory(AnnotatedType<T> type) {
         validateAnnotatedType(type);
         BeanManagerImpl manager = BeanManagerLookupService.lookupBeanManager(type.getJavaClass(), this);
         return new InjectionTargetFactoryImpl<T>(type, manager);
@@ -1448,5 +1451,10 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     public <X> MethodProducerFactory<X> getProducerFactory(AnnotatedMethod<? super X> method, Bean<X> declaringBean) {
         BeanManagerImpl manager = BeanManagerLookupService.lookupBeanManager(method.getDeclaringType().getJavaClass(), this);
         return new MethodProducerFactory<X>(method, declaringBean, manager);
+    }
+
+    @Override
+    public <T> WeldInjectionTargetBuilder<T> createInjectionTargetBuilder(AnnotatedType<T> type) {
+        return new WeldInjectionTargetBuilderImpl<T>(type, this);
     }
 }

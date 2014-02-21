@@ -23,8 +23,11 @@ import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.InjectionTarget;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.annotated.slim.SlimAnnotatedType;
+import org.jboss.weld.injection.InjectionContextImpl;
 import org.jboss.weld.injection.ResourceInjection;
 import org.jboss.weld.injection.ResourceInjectionFactory;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -42,6 +45,10 @@ import org.jboss.weld.util.Beans;
  */
 public class ResourceInjector<T> extends DefaultInjector<T> {
 
+    public static <T> ResourceInjector<T> of(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager) {
+        return new ResourceInjector<T>(type, bean, beanManager);
+    }
+
     /**
      * Holds sets of resource injection points per class in type hierarchy
      */
@@ -54,9 +61,14 @@ public class ResourceInjector<T> extends DefaultInjector<T> {
     }
 
     @Override
-    public void inject(T instance, CreationalContext<T> ctx, BeanManagerImpl manager) {
-        // Java EE component environment resource dependencies are injected first
-        Beans.injectEEFields(resourceInjectionsHierarchy, instance, ctx);
-        super.inject(instance, ctx, manager);
+    public void inject(final T instance, final CreationalContext<T> ctx, final BeanManagerImpl manager, final SlimAnnotatedType<T> type, final InjectionTarget<T> injectionTarget) {
+        new InjectionContextImpl<T>(manager, injectionTarget, type, instance) {
+            @Override
+            public void proceed() {
+                // Java EE component environment resource dependencies are injected first
+                Beans.injectEEFields(resourceInjectionsHierarchy, instance, ctx);
+                ResourceInjector.super.inject(instance, ctx, manager, type, injectionTarget);
+            }
+        }.run();
     }
 }

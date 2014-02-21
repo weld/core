@@ -42,16 +42,24 @@ import org.jboss.weld.resources.ClassTransformer;
  */
 public class BeanInjectionTarget<T> extends BasicInjectionTarget<T> {
 
+    public static <T> BeanInjectionTarget<T> createDefault(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager) {
+        return new BeanInjectionTarget<T>(type, bean, beanManager);
+    }
+
+    public static <T> BeanInjectionTarget<T> forCdiInterceptor(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl manager) {
+        return new BeanInjectionTarget<T>(type, bean, manager, DefaultInjector.of(type, bean, manager), NoopLifecycleCallbackInvoker.<T>getInstance());
+    }
+
     private final Bean<T> bean;
 
-    public BeanInjectionTarget(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager) {
-        super(type, bean, beanManager);
+
+    public BeanInjectionTarget(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager, Injector<T> injector, LifecycleCallbackInvoker<T> invoker) {
+        super(type, bean, beanManager, injector, invoker);
         this.bean = bean;
     }
 
-    @Override
-    protected Injector<T> initInjector(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager) {
-        return new ResourceInjector<T>(type, bean, beanManager);
+    public BeanInjectionTarget(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager) {
+        this(type, bean, beanManager, ResourceInjector.of(type, bean, beanManager), DefaultLifecycleCallbackInvoker.of(type));
     }
 
     @Override
@@ -187,15 +195,6 @@ public class BeanInjectionTarget<T> extends BasicInjectionTarget<T> {
             ctx.push(instance);
         }
         return instance;
-    }
-
-    @Override
-    protected LifecycleCallbackInvoker<T> initInvoker(EnhancedAnnotatedType<T> type) {
-        if (isInterceptor()) {
-            return NoopLifecycleCallbackInvoker.getInstance();
-        } else {
-            return new DefaultLifecycleCallbackInvoker<T>(type);
-        }
     }
 
     @Override

@@ -24,11 +24,14 @@ import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
+import javax.enterprise.inject.spi.Interceptor;
+import javax.interceptor.Interceptors;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.manager.api.WeldInjectionTarget;
 import org.jboss.weld.util.collections.WeldCollections;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -44,7 +47,23 @@ import org.jboss.weld.util.reflection.Reflections;
  * @author Pete Muir
  * @author Jozef Hartinger
  */
-public class BasicInjectionTarget<T> extends AbstractProducer<T> implements InjectionTarget<T> {
+public class BasicInjectionTarget<T> extends AbstractProducer<T> implements WeldInjectionTarget<T> {
+
+    public static <T> BasicInjectionTarget<T> create(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager, Injector<T> injector, LifecycleCallbackInvoker<T> invoker) {
+        return new BasicInjectionTarget<T>(type, bean, beanManager, injector, invoker);
+    }
+
+    public static <T> BasicInjectionTarget<T> createDefault(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager) {
+        return new BasicInjectionTarget<T>(type, bean, beanManager);
+    }
+
+    /**
+     * Creates {@link InjectionTarget} for interceptors which do not have associated {@link Interceptor}. These interceptors are a
+     * result of using {@link Interceptors} annotation directly on the target class.
+     */
+    public static <T> BasicInjectionTarget<T> createNonCdiInterceptor(EnhancedAnnotatedType<T> type, BeanManagerImpl beanManager) {
+        return new BasicInjectionTarget<T>(type, null, beanManager, DefaultInjector.of(type, null, beanManager), NoopLifecycleCallbackInvoker.<T>getInstance());
+    }
 
     protected final BeanManagerImpl beanManager;
     private final SlimAnnotatedType<T> type;
@@ -55,23 +74,23 @@ public class BasicInjectionTarget<T> extends AbstractProducer<T> implements Inje
     private final Injector<T> injector;
     private final LifecycleCallbackInvoker<T> invoker;
 
-    public BasicInjectionTarget(EnhancedAnnotatedType<T> type, BeanManagerImpl beanManager) {
-        this(type, null, beanManager);
-    }
-
-    public BasicInjectionTarget(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager) {
+    protected BasicInjectionTarget(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager, Injector<T> injector, LifecycleCallbackInvoker<T> invoker) {
         this.beanManager = beanManager;
         this.type = type.slim();
-        Set<InjectionPoint> injectionPoints = new HashSet<InjectionPoint>();
+        this.injector = injector;
+        this.invoker = invoker;
+
+        final Set<InjectionPoint> injectionPoints = new HashSet<InjectionPoint>();
 
         checkType(type);
-        this.injector = initInjector(type, bean, beanManager);
         this.injector.registerInjectionPoints(injectionPoints);
         this.instantiator = initInstantiator(type, bean, beanManager, injectionPoints);
         this.injectionPoints = WeldCollections.immutableGuavaSet(injectionPoints);
         checkDelegateInjectionPoints();
+    }
 
-        this.invoker = initInvoker(type);
+    protected BasicInjectionTarget(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager) {
+        this(type, bean, beanManager, DefaultInjector.of(type, bean, beanManager), DefaultLifecycleCallbackInvoker.of(type));
     }
 
     protected void checkType(EnhancedAnnotatedType<T> type) {
@@ -149,17 +168,14 @@ public class BasicInjectionTarget<T> extends AbstractProducer<T> implements Inje
         return instantiator;
     }
 
-    protected Injector<T> initInjector(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager) {
-        return new DefaultInjector<T>(type, bean, beanManager);
-    }
-
-    protected LifecycleCallbackInvoker<T> initInvoker(EnhancedAnnotatedType<T> type) {
-        return new DefaultLifecycleCallbackInvoker<T>(type);
-    }
-
     @Override
     public AnnotatedType<T> getAnnotated() {
         return type;
+    }
+
+    @Override
+    public AnnotatedType<T> getAnnotatedType() {
+        return getAnnotated();
     }
 
     public Injector<T> getInjector() {

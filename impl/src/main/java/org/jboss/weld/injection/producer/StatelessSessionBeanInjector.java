@@ -21,8 +21,10 @@ import java.util.Set;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.spi.InjectionTarget;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.injection.DynamicInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -48,12 +50,12 @@ public class StatelessSessionBeanInjector<T> extends DefaultInjector<T> {
     }
 
     @Override
-    public void inject(T instance, CreationalContext<T> ctx, BeanManagerImpl manager) {
+    public void inject(T instance, CreationalContext<T> ctx, BeanManagerImpl manager, SlimAnnotatedType<T> type, InjectionTarget<T> injectionTarget) {
         if (pushDynamicInjectionPoints) {
             currentInjectionPoint.push(new DynamicInjectionPoint(manager));
         }
         try {
-            super.inject(instance, ctx, manager);
+            super.inject(instance, ctx, manager, type, injectionTarget);
         } finally {
             if (pushDynamicInjectionPoints) {
                 currentInjectionPoint.pop();
