@@ -9,21 +9,23 @@ import javax.servlet.http.HttpSession;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.context.AbstractBoundContext;
+import org.jboss.weld.context.beanstore.BeanIdentifierIndexNamingScheme;
 import org.jboss.weld.context.beanstore.NamingScheme;
-import org.jboss.weld.context.beanstore.SimpleNamingScheme;
 import org.jboss.weld.context.beanstore.http.EagerSessionBeanStore;
 import org.jboss.weld.context.beanstore.http.LazySessionBeanStore;
+import org.jboss.weld.serialization.BeanIdentifierIndex;
 
 public class HttpSessionContextImpl extends AbstractBoundContext<HttpServletRequest> implements HttpSessionContext {
 
-    public static final SimpleNamingScheme NAMING_SCHEME = new SimpleNamingScheme(HttpSessionContext.class.getName());
+    // There is no need to store FQCN in a session key
+    static final String INDEX_NAMING_SCHEME_PREFIX = "WELD_S";
 
     private final NamingScheme namingScheme;
     private final String contextId;
 
-    public HttpSessionContextImpl(String contextId) {
+    public HttpSessionContextImpl(String contextId, BeanIdentifierIndex index) {
         super(contextId, true);
-        this.namingScheme = NAMING_SCHEME;
+        this.namingScheme = new BeanIdentifierIndexNamingScheme(INDEX_NAMING_SCHEME_PREFIX, index);
         this.contextId = contextId;
     }
 

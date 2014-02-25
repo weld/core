@@ -118,6 +118,7 @@ import org.jboss.weld.resources.WeldClassLoaderResourceLoader;
 import org.jboss.weld.resources.spi.ClassFileServices;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ScheduledExecutorServiceFactory;
+import org.jboss.weld.serialization.BeanIdentifierIndex;
 import org.jboss.weld.serialization.ContextualStoreImpl;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.serialization.spi.ProxyServices;
@@ -256,6 +257,7 @@ public class WeldStartup {
         services.add(CurrentEventMetadata.class, new CurrentEventMetadata());
         services.add(SpecializationAndEnablementRegistry.class, new SpecializationAndEnablementRegistry());
         services.add(MissingDependenciesRegistry.class, new MissingDependenciesRegistry());
+        services.add(BeanIdentifierIndex.class, new BeanIdentifierIndex());
 
         GlobalObserverNotifierService observerNotificationService = new GlobalObserverNotifierService(services, contextId);
         services.add(GlobalObserverNotifierService.class, observerNotificationService);
@@ -413,6 +415,10 @@ public class WeldStartup {
     }
 
     public void endInitialization() {
+
+        // Build a special index of bean identifiers
+        deploymentManager.getServices().get(BeanIdentifierIndex.class).build(getBeansForBeanIdentifierIndex());
+
         // TODO rebuild the manager accessibility graph if the bdas have changed
         // Register the managers so external requests can handle them
         // clear the TypeSafeResolvers, so data that is only used at startup
@@ -485,8 +491,8 @@ public class WeldStartup {
 
         if (Reflections.isClassLoadable(ServletApiAbstraction.SERVLET_CONTEXT_CLASS_NAME, WeldClassLoaderResourceLoader.INSTANCE)) {
             // Register the Http contexts if not in
-            contexts.add(new ContextHolder<HttpSessionContext>(new HttpSessionContextImpl(contextId), HttpSessionContext.class, HttpLiteral.INSTANCE));
-            contexts.add(new ContextHolder<HttpSessionDestructionContext>(new HttpSessionDestructionContext(contextId), HttpSessionDestructionContext.class, HttpLiteral.INSTANCE));
+            contexts.add(new ContextHolder<HttpSessionContext>(new HttpSessionContextImpl(contextId, services.get(BeanIdentifierIndex.class)), HttpSessionContext.class, HttpLiteral.INSTANCE));
+            contexts.add(new ContextHolder<HttpSessionDestructionContext>(new HttpSessionDestructionContext(contextId, services.get(BeanIdentifierIndex.class)), HttpSessionDestructionContext.class, HttpLiteral.INSTANCE));
             contexts.add(new ContextHolder<HttpConversationContext>(new LazyHttpConversationContextImpl(contextId), HttpConversationContext.class, HttpLiteral.INSTANCE));
             contexts.add(new ContextHolder<HttpRequestContext>(new HttpRequestContextImpl(contextId), HttpRequestContext.class, HttpLiteral.INSTANCE));
         }
@@ -528,5 +534,23 @@ public class WeldStartup {
     public BeanManagerImpl getManager(BeanDeploymentArchive beanDeploymentArchive) {
         BeanDeployment beanDeployment = bdaMapping.getBeanDeployment(beanDeploymentArchive);
         return beanDeployment == null ? null : beanDeployment.getBeanManager().getCurrent();
+    }
+
+
+    /**
+     * Right now we only index all session scoped beans.
+     *
+     * @return the set of beans the index should be built from
+     */
+    private Set<Bean<?>> getBeansForBeanIdentifierIndex() {
+        Set<Bean<?>> beans = new HashSet<Bean<?>>();
+        for (BeanDeployment beanDeployment : getBeanDeployments()) {
+            for (Bean<?> bean : beanDeployment.getBeanManager().getBeans()) {
+                if(bean.getScope().equals(SessionScoped.class)) {
+                    beans.add(bean);
+                }
+            }
+        }
+        return beans;
     }
 }
