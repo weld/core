@@ -28,6 +28,8 @@ import static org.jboss.weld.logging.messages.ServletMessage.ONLY_HTTP_SERVLET_L
 import static org.jboss.weld.logging.messages.ServletMessage.REQUEST_DESTROYED;
 import static org.jboss.weld.logging.messages.ServletMessage.REQUEST_INITIALIZED;
 
+import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletRequestEvent;
 import javax.servlet.http.HttpServletRequest;
@@ -55,9 +57,14 @@ public class WeldListener extends AbstractServletListener {
 
     private static final LocLogger log = loggerFactory().getLogger(SERVLET);
 
+    public static final String CONTEXT_IGNORE_FORWARD = "org.jboss.weld.context.ignore.forward";
+    public static final String CONTEXT_IGNORE_INCLUDE = "org.jboss.weld.context.ignore.include";
+
     private static final String INCLUDE_HEADER = "javax.servlet.include.request_uri";
     private static final String FORWARD_HEADER = "javax.servlet.forward.request_uri";
 
+    private boolean ignoreForwards;
+    private boolean ignoreIncludes;
 
     private transient HttpSessionContext sessionContextCache;
     private transient HttpRequestContext requestContextCache;
@@ -97,7 +104,10 @@ public class WeldListener extends AbstractServletListener {
 
     @Override
     public void requestDestroyed(ServletRequestEvent event) {
-        if (isIncludedRequest(event.getServletRequest()) || isForwardedRequest(event.getServletRequest())) {
+        if (ignoreForwards && isForwardedRequest(event.getServletRequest())) {
+            return;
+        }
+        if (ignoreIncludes && isIncludedRequest(event.getServletRequest())) {
             return;
         }
         log.trace(REQUEST_DESTROYED, event.getServletRequest());
@@ -132,7 +142,10 @@ public class WeldListener extends AbstractServletListener {
 
     @Override
     public void requestInitialized(ServletRequestEvent event) {
-        if (isIncludedRequest(event.getServletRequest()) || isForwardedRequest(event.getServletRequest())) {
+        if (ignoreForwards && isForwardedRequest(event.getServletRequest())) {
+            return;
+        }
+        if (ignoreIncludes && isIncludedRequest(event.getServletRequest())) {
             return;
         }
         log.trace(REQUEST_INITIALIZED, event.getServletRequest());
@@ -171,5 +184,19 @@ public class WeldListener extends AbstractServletListener {
      */
     private boolean isForwardedRequest(ServletRequest request) {
         return request.getAttribute(FORWARD_HEADER) != null;
+    }
+
+    @Override
+    public void contextInitialized(ServletContextEvent sce) {
+        this.ignoreForwards = getBooleanInitParameter(sce.getServletContext(), CONTEXT_IGNORE_FORWARD, true);
+        this.ignoreIncludes = getBooleanInitParameter(sce.getServletContext(), CONTEXT_IGNORE_INCLUDE, true);
+    }
+
+    private boolean getBooleanInitParameter(ServletContext ctx, String parameterName, boolean defaultValue) {
+        String value = ctx.getInitParameter(parameterName);
+        if (value == null) {
+            return defaultValue;
+        }
+        return Boolean.valueOf(value);
     }
 }
