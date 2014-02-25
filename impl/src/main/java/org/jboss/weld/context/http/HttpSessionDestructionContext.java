@@ -1,3 +1,19 @@
+/*
+ * JBoss, Home of Professional Open Source
+ * Copyright 2013, Red Hat, Inc., and individual contributors
+ * by the @authors tag. See the copyright.txt in the distribution for a
+ * full listing of individual contributors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.jboss.weld.context.http;
 
 import java.lang.annotation.Annotation;
@@ -6,7 +22,10 @@ import javax.enterprise.context.SessionScoped;
 import javax.servlet.http.HttpSession;
 
 import org.jboss.weld.context.AbstractBoundContext;
+import org.jboss.weld.context.beanstore.BeanIdentifierIndexNamingScheme;
+import org.jboss.weld.context.beanstore.NamingScheme;
 import org.jboss.weld.context.beanstore.http.EagerSessionBeanStore;
+import org.jboss.weld.serialization.BeanIdentifierIndex;
 
 /**
  * This special http session context is necessary because HttpSessionListeners that are called when a session
@@ -18,16 +37,18 @@ import org.jboss.weld.context.beanstore.http.EagerSessionBeanStore;
  */
 public class HttpSessionDestructionContext extends AbstractBoundContext<HttpSession> {
 
+    private final NamingScheme namingScheme;
 
-    public HttpSessionDestructionContext(String contextId) {
+    public HttpSessionDestructionContext(String contextId, BeanIdentifierIndex index) {
         super(contextId, true);
+        this.namingScheme = new BeanIdentifierIndexNamingScheme(HttpSessionContextImpl.INDEX_NAMING_SCHEME_PREFIX, index);
     }
 
     @Override
     public boolean associate(HttpSession session) {
         if (getBeanStore() == null) {
             // Don't reassociate
-            setBeanStore(new EagerSessionBeanStore(HttpSessionContextImpl.NAMING_SCHEME, session));
+            setBeanStore(new EagerSessionBeanStore(namingScheme, session));
             return true;
         } else {
             return false;
