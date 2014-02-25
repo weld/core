@@ -34,11 +34,16 @@ import org.jboss.weld.bootstrap.api.helpers.ForwardingBootstrap;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.bootstrap.spi.Metadata;
+import org.jboss.weld.environment.se.discovery.url.DefaultDiscoveryStrategy;
+import org.jboss.weld.environment.se.discovery.url.DiscoveryStrategy;
+import org.jboss.weld.environment.se.discovery.url.UnrecognizedBeansXmlDiscoveryModeException;
 import org.jboss.weld.environment.se.discovery.url.WeldSEResourceLoader;
 import org.jboss.weld.environment.se.discovery.url.WeldSEUrlDeployment;
 import org.jboss.weld.environment.se.events.ContainerInitialized;
 import org.jboss.weld.metadata.MetadataImpl;
 import org.jboss.weld.resources.spi.ResourceLoader;
+import org.jboss.weld.resources.spi.ResourceLoadingException;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * <p>
@@ -65,6 +70,9 @@ public class Weld {
 
     private static final String BOOTSTRAP_IMPL_CLASS_NAME = "org.jboss.weld.bootstrap.WeldBootstrap";
     private static final String ERROR_LOADING_WELD_BOOTSTRAP_EXC_MESSAGE = "Error loading Weld bootstrap, check that Weld is on the classpath";
+    private static final String JANDEX_INDEX_CLASS = "org.jboss.jandex.Index";
+    private static final String JANDEX_ENABLED_DISCOVERY_STRATEGY_CLASS_STRING = "org.jboss.weld.environment.se.discovery.url.JandexEnabledDiscoveryStrategy";
+
 
     private ShutdownManager shutdownManager;
     private Set<Metadata<Extension>> extensions;
@@ -134,7 +142,19 @@ public class Weld {
             }
         };
 
-        Deployment deployment = createDeployment(resourceLoader, bootstrap);
+        DiscoveryStrategy strategy = null;
+        if (isJandexEnabled(resourceLoader)) {
+            Class<?> clazz = Reflections.loadClass(JANDEX_ENABLED_DISCOVERY_STRATEGY_CLASS_STRING, resourceLoader);
+            try {
+                strategy = (DiscoveryStrategy) clazz.getConstructor(ResourceLoader.class, Bootstrap.class).newInstance(resourceLoader, bootstrap);
+            } catch (Exception e) {
+                throw new IllegalStateException("Unable to instantiate jandex discovery strategy");
+            }
+        } else {
+            strategy = new DefaultDiscoveryStrategy(resourceLoader, bootstrap);
+        }
+
+        Deployment deployment = createDeployment(resourceLoader, bootstrap, strategy);
         // Set up the container
         bootstrap.startContainer(Environments.SE, deployment);
 
@@ -155,22 +175,29 @@ public class Weld {
         return container;
     }
 
+    private boolean isJandexEnabled(ResourceLoader resourceLoader) {
+        try {
+            Class<?> index = resourceLoader.classForName(JANDEX_INDEX_CLASS);
+            return true;
+        } catch (ResourceLoadingException ex) {
+            return false;
+        }
+    }
+
     /**
      * <p>
-     * Extensions to Weld SE can subclass and override this method to customise
-     * the deployment before weld boots up. For example, to add a custom
+     * Extensions to Weld SE can subclass and override this method to customise the deployment before weld boots up. For example, to add a custom
      * ResourceLoader, you would subclass Weld like so:
      * </p>
      * <p/>
+     * 
      * <pre>
-     * public class MyWeld extends Weld
-     * {
-     *    protected Deployment createDeployment()
-     *    {
-     *       Deployment deployment = super.createDeployment();
-     *       deployment.getServices().add(ResourceLoader.class, new MyResourceLoader());
-     *       return deployment;
-     *    }
+     * public class MyWeld extends Weld {
+     *     protected Deployment createDeployment() {
+     *         Deployment deployment = super.createDeployment();
+     *         deployment.getServices().add(ResourceLoader.class, new MyResourceLoader());
+     *         return deployment;
+     *     }
      * }
      * </pre>
      * <p/>
@@ -178,12 +205,22 @@ public class Weld {
      * This could then be used as normal:
      * </p>
      * <p/>
+     * 
      * <pre>
      * WeldContainer container = new MyWeld().initialize();
      * </pre>
+     * 
+     * @param resourceLoader
+     * @param bootstrap
+     * @param strategy strategy of discovering the bean archives
      */
-    protected Deployment createDeployment(ResourceLoader resourceLoader, Bootstrap bootstrap) {
-        return new WeldSEUrlDeployment(resourceLoader, bootstrap);
+    protected Deployment createDeployment(ResourceLoader resourceLoader, Bootstrap bootstrap, DiscoveryStrategy strategy) {
+        try {
+            return new WeldSEUrlDeployment(resourceLoader, bootstrap, strategy);
+        } catch (UnrecognizedBeansXmlDiscoveryModeException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**
