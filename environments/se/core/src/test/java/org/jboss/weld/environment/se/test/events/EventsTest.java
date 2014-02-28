@@ -14,24 +14,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.environment.se.test;
+package org.jboss.weld.environment.se.test.events;
 
 import static org.junit.Assert.assertFalse;
 
+import javax.enterprise.event.Event;
+
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.BeanArchive;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.environment.se.events.ContainerInitialized;
-import org.jboss.weld.environment.se.test.events.Foo;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * @author Peter Royle
  */
-public class EventsTest extends WeldSETest {
+@RunWith(Arquillian.class)
+public class EventsTest {
+
+    @Deployment
+    public static Archive<?> getDeployment() {
+        return ShrinkWrap.create(BeanArchive.class).addPackage(EventsTest.class.getPackage());
+    }
 
     // forum post check
     @Test
-    public void testEventQualifiersCorrect() {
+    public void testEventQualifiersCorrect(Event<Object> event) {
         Foo.reset();
-        container.event().select(ContainerInitialized.class).fire(new ContainerInitialized());
+        event.select(ContainerInitialized.class).fire(new ContainerInitialized());
         assertFalse(Foo.isObservedEventTest());
     }
 

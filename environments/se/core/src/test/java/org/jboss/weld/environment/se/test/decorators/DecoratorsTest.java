@@ -14,30 +14,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.environment.se.test;
+package org.jboss.weld.environment.se.test.decorators;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import org.jboss.weld.environment.se.test.decorators.AbstractDoor;
-import org.jboss.weld.environment.se.test.decorators.CarDoor;
-import org.jboss.weld.environment.se.test.decorators.CarDoorAlarm;
-import org.jboss.weld.environment.se.test.decorators.HouseDoor;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.BeanArchive;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * @author Peter Royle
  */
-public class DecoratorsTest extends WeldSETest {
+@RunWith(Arquillian.class)
+public class DecoratorsTest {
+
+    @Deployment
+    public static Archive<?> getDeployment() {
+        return ShrinkWrap.create(BeanArchive.class).decorate(CarDoorAlarm.class).addPackage(DecoratorsTest.class.getPackage());
+    }
 
     /**
      * Test that decorators work as expected in SE.
      */
     @Test
-    public void testDecorators() {
+    public void testDecorators(CarDoor carDoor, HouseDoor houseDoor) {
 
-        CarDoor carDoor = container.instance().select(CarDoor.class).get();
         assertNotNull(carDoor);
 
         // the car door is alarmed
@@ -46,7 +53,6 @@ public class DecoratorsTest extends WeldSETest {
         testDoor(carDoor);
         assertTrue(CarDoorAlarm.alarmActivated);
 
-        HouseDoor houseDoor = container.instance().select(HouseDoor.class).get();
         assertNotNull(carDoor);
 
         // the house door is not alarmed

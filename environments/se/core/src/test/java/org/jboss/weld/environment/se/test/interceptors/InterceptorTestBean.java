@@ -14,10 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.environment.se.test.beans;
-
-import org.jboss.weld.environment.se.test.interceptors.Aggregated;
-import org.jboss.weld.environment.se.test.interceptors.Recorded;
+package org.jboss.weld.environment.se.test.interceptors;
 
 import javax.enterprise.context.ApplicationScoped;
 

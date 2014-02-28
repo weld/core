@@ -14,15 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.environment.se.test;
+package org.jboss.weld.environment.se.test.beans.threading;
 
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jboss.weld.environment.se.test.beans.threading.ThreadRunner;
+import javax.enterprise.inject.Instance;
+
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.BeanArchive;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.impl.BeansXml;
+import org.jboss.weld.environment.se.threading.RunnableDecorator;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * Tests for ThreadContext, @ThreadScoped and the RunnableDecorator. The
@@ -30,18 +39,26 @@ import org.junit.Test;
  *
  * @author Peter Royle
  */
-public class ThreadContextTest extends WeldSETest {
+@RunWith(Arquillian.class)
+public class ThreadContextTest {
 
     public static final int NUM_THREADS = 10;
     public static final int NUM_LOOPS = 10;
 
+    @Deployment
+    public static Archive<?> getDeployment() {
+        return ShrinkWrap.create(BeanArchive.class)
+                .addAsManifestResource(new BeansXml().decorators(RunnableDecorator.class), "beans.xml")
+                .addPackage(ThreadContextTest.class.getPackage());
+    }
+
     @Test
-    public void testThreadContext() {
+    public void testThreadContext(Instance<Object> instance) {
 
         List<ThreadRunner> threadRunners = new ArrayList<ThreadRunner>(NUM_THREADS);
         List<Thread> threads = new ArrayList<Thread>(NUM_THREADS);
         for (int threadIdx = 0; threadIdx < NUM_THREADS; threadIdx++) {
-            final ThreadRunner threadRunner = container.instance().select(ThreadRunner.class).get();
+            final ThreadRunner threadRunner = instance.select(ThreadRunner.class).get();
             threadRunner.setName("ThreadRunner thread #" + threadIdx);
 
             Thread thread = new Thread(threadRunner);

@@ -14,39 +14,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.environment.se.test;
+package org.jboss.weld.environment.se.test.interceptors;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import org.jboss.weld.environment.se.test.beans.InterceptorTestBean;
-import org.jboss.weld.environment.se.test.interceptors.AggregatingInterceptor;
-import org.jboss.weld.environment.se.test.interceptors.RecordingInterceptor;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.BeanArchive;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * @author Peter Royle
  */
-public class InterceptorsTest extends WeldSETest {
+@RunWith(Arquillian.class)
+public class InterceptorsTest {
+
+    @Deployment
+    public static Archive<?> getDeployment() {
+        return ShrinkWrap.create(BeanArchive.class).intercept(AggregatingInterceptor.class, RecordingInterceptor.class)
+                .addPackage(InterceptorsTest.class.getPackage());
+    }
 
     /**
      * Test that interceptors work as expected in SE.
      */
     @Test
-    public void testInterceptors() {
+    public void testInterceptors(InterceptorTestBean intTestBean) {
 
-        InterceptorTestBean intTestBean = container.instance().select(InterceptorTestBean.class).get();
         assertNotNull(intTestBean);
 
         intTestBean.doSomethingRecorded();
-        System.out.println(RecordingInterceptor.methodsRecorded);
-        System.out.println(AggregatingInterceptor.methodsCalled);
         assertTrue(RecordingInterceptor.methodsRecorded.contains("doSomethingRecorded"));
 
         intTestBean.doSomethingRecordedAndAggregated();
-        System.out.println(RecordingInterceptor.methodsRecorded);
-        System.out.println(AggregatingInterceptor.methodsCalled);
 
         assertEquals(1, AggregatingInterceptor.methodsCalled);
     }

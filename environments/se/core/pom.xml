@@ -100,6 +100,11 @@
             <artifactId>arquillian-testenricher-cdi</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-core-test-common</artifactId>
+            <scope>test</scope>
+        </dependency>
 
     </dependencies>
 

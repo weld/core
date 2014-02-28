@@ -14,30 +14,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.environment.se.test;
+package org.jboss.weld.environment.se.test.scopes;
 
 
 import static org.junit.Assert.assertEquals;
 
 import javax.enterprise.inject.spi.BeanManager;
 
-import org.jboss.weld.environment.se.test.scopes.Bar;
-import org.jboss.weld.environment.se.test.scopes.Foo;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.BeanArchive;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * @author Peter Royle
  */
-public class ScopesTest extends WeldSETest {
+@RunWith(Arquillian.class)
+public class ScopesTest {
+
+    @Deployment
+    public static Archive<?> getDeployment() {
+        return ShrinkWrap.create(BeanArchive.class).addPackage(ScopesTest.class.getPackage());
+    }
 
     /**
      * Test that decorators work as expected in SE.
      */
     @Test
     // WELD-322
-    public void testScopes() {
-
-        BeanManager manager = container.getBeanManager();
+    public void testScopes(BeanManager manager) {
 
         assertEquals(1, manager.getBeans(Bar.class).size());
         assertEquals(2, manager.getBeans(Foo.class).size());

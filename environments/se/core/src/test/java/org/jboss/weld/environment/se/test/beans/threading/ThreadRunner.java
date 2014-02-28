@@ -16,9 +16,8 @@
  */
 package org.jboss.weld.environment.se.test.beans.threading;
 
-import org.jboss.weld.environment.se.test.ThreadContextTest;
-
 import javax.inject.Inject;
+
 import java.util.ArrayList;
 import java.util.List;
 
