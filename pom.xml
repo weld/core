@@ -339,6 +339,12 @@
 
             <dependency>
                 <groupId>org.jboss.weld</groupId>
+                <artifactId>weld-core-test-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.weld</groupId>
                 <artifactId>weld-core-test</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -537,6 +543,7 @@
             </activation>
             <modules>
                 <module>porting-package/1.1</module>
+                <module>tests-common</module>
                 <module>tests</module>
                 <module>tests-arquillian</module>
                 <module>inject-tck-runner</module>

@@ -34,21 +34,13 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <scope>provided</scope>
-            <!--
-               should be test, but we need junit for compiling
-               AbstractClusterTest
-            -->
+            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.jboss.arquillian.junit</groupId>
             <artifactId>arquillian-junit-container</artifactId>
-            <scope>provided</scope>
-            <!--
-               should be test, but we need shrinkwrap-impl for compiling
-               BeanArchive
-            -->
+            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -60,6 +52,12 @@
             <groupId>org.databene</groupId>
             <artifactId>contiperf</artifactId>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.enterprise</groupId>
+            <artifactId>cdi-api</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -114,13 +112,13 @@
 
         <dependency>
             <groupId>org.jboss.weld</groupId>
-            <artifactId>weld-core-test</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.testng</groupId>
-                    <artifactId>testng</artifactId>
-                </exclusion>
-            </exclusions>
+            <artifactId>weld-core-test-common</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-core-impl</artifactId>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>
