@@ -33,8 +33,8 @@ import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.environment.se.discovery.WeldSEBeanDeploymentArchive;
 import org.jboss.weld.resources.spi.ResourceLoader;
 
-public class JandexEnabledDiscoveryStrategy extends DiscoveryStrategy {
 
+public class JandexEnabledDiscoveryStrategy extends DiscoveryStrategy {
 
     private final Set<DotName> beanDefiningAnnotations = new HashSet<DotName>();
     private CompositeIndex cindex;
