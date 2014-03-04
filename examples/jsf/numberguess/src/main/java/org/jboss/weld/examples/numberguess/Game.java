@@ -66,9 +66,9 @@ public class Game implements Serializable {
     }
 
     public void check() {
-        if (isGuessHigher()) {
+        if (guess > number) {
             biggest = guess - 1;
-        } else if (isGuessLower()) {
+        } else if (guess < number) {
             smallest = guess + 1;
         } else if (isGuessCorrect()) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Correct!"));
