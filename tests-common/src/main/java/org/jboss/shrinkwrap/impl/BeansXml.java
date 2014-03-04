@@ -46,6 +46,11 @@ public class BeansXml implements Asset {
         this(new ArrayList<Class<?>>(), new ArrayList<Class<?>>(), new ArrayList<Class<?>>(), new ArrayList<Class<?>>());
     }
 
+    public BeansXml(BeanDiscoveryMode mode) {
+        this();
+        setBeanDiscoveryMode(mode);
+    }
+
     private BeansXml(List<Class<?>> alternatives, List<Class<?>> interceptors, List<Class<?>> decorators, List<Class<?>> stereotypes) {
         this.alternatives = alternatives;
         this.interceptors = interceptors;
