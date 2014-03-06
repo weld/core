@@ -47,7 +47,7 @@ public class BeanIdentifierIndexNamingScheme extends SimpleNamingScheme {
         try {
             return index.getIdentifier(Integer.valueOf(deprefixed));
         } catch (NumberFormatException e) {
-            throw new IllegalStateException("Unable to deprefix invalid identifier", e);
+            throw new IllegalStateException("Unable to deprefix id:" + id, e);
         }
     }
 

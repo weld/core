@@ -17,6 +17,7 @@
 package org.jboss.weld.serialization;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -30,6 +31,7 @@ import org.jboss.weld.bean.CommonBean;
 import org.jboss.weld.bean.StringBeanIdentifier;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.exceptions.IllegalStateException;
+import org.jboss.weld.logging.SerializationLogger;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.util.Preconditions;
 
@@ -43,14 +45,14 @@ import com.google.common.collect.ImmutableMap;
  */
 public class BeanIdentifierIndex implements Service {
 
-    private BeanIdentifier[] index;
+    private volatile BeanIdentifier[] index;
 
-    private Map<BeanIdentifier, Integer> reverseIndex;
+    private volatile Map<BeanIdentifier, Integer> reverseIndex;
 
     /**
      *
      * @param identifier
-     * @return the index value for the given identifier or null if the index does not contain the given identifier
+     * @return the position for the given bean identifier or null if the index does not contain the given identifier
      */
     public Integer getIndex(BeanIdentifier identifier) {
         checkIsBuilt();
@@ -61,10 +63,13 @@ public class BeanIdentifierIndex implements Service {
     /**
      *
      * @param idx
-     * @return the identifier for the given index
+     * @return the identifier at the specified position
      */
     public BeanIdentifier getIdentifier(int idx) {
         checkIsBuilt();
+        if (idx < 0 || idx >= index.length) {
+            throw SerializationLogger.LOG.unableToGetBeanIdentifier(idx, this);
+        }
         return index[idx];
     }
 
@@ -77,7 +82,7 @@ public class BeanIdentifierIndex implements Service {
      */
     public void build(Set<Bean<?>> beans) {
 
-        if (index != null) {
+        if (isBuilt()) {
             throw new IllegalStateException("BeanIdentifier index is already built!");
         }
 
@@ -118,10 +123,19 @@ public class BeanIdentifierIndex implements Service {
         index = null;
     }
 
+    private boolean isBuilt() {
+        return index != null;
+    }
+
     private void checkIsBuilt() {
-        if (index == null) {
+        if (!isBuilt()) {
             throw new IllegalStateException("BeanIdentifier index not built!");
         }
+    }
+
+    @Override
+    public String toString() {
+        return String.format("BeanIdentifierIndex [index=%s]", Arrays.toString(index));
     }
 
 }
