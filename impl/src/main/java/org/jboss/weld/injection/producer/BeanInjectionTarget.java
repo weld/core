@@ -47,7 +47,7 @@ public class BeanInjectionTarget<T> extends BasicInjectionTarget<T> {
     }
 
     public static <T> BeanInjectionTarget<T> forCdiInterceptor(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl manager) {
-        return new BeanInjectionTarget<T>(type, bean, manager, DefaultInjector.of(type, bean, manager), NoopLifecycleCallbackInvoker.<T>getInstance());
+        return new BeanInjectionTarget<T>(type, bean, manager, ResourceInjector.of(type, bean, manager), NoopLifecycleCallbackInvoker.<T>getInstance());
     }
 
     private final Bean<T> bean;
