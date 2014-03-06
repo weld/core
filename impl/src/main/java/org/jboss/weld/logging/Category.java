@@ -33,6 +33,7 @@ public enum Category {
     BEAN_MANAGER("BeanManager"),
     VALIDATOR("Validator"),
     INTERCEPTOR("Interceptor"),
+    SERIALIZATION("Serialization"),
     ;
 
     private static final String LOG_PREFIX = "org.jboss.weld.";
