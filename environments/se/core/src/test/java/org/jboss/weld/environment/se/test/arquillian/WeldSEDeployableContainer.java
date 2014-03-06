@@ -49,6 +49,8 @@ import org.jboss.weld.resources.spi.ResourceLoader;
 
 public class WeldSEDeployableContainer implements DeployableContainer<WeldSEContainerConfiguration> {
 
+    private static final String PROTOCOL_NAME = "Local";
+
     private Weld weld;
 
     @Inject
@@ -130,7 +132,7 @@ public class WeldSEDeployableContainer implements DeployableContainer<WeldSECont
 
     @Override
     public ProtocolDescription getDefaultProtocol() {
-        return new ProtocolDescription("weld-se");
+        return new ProtocolDescription(PROTOCOL_NAME);
     }
 
     @Override

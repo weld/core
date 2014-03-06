@@ -20,6 +20,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import javax.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -34,6 +36,12 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class DecoratorsTest {
 
+    @Inject
+    private CarDoor carDoor;
+
+    @Inject
+    private HouseDoor houseDoor;
+
     @Deployment
     public static Archive<?> getDeployment() {
         return ShrinkWrap.create(BeanArchive.class).decorate(CarDoorAlarm.class).addPackage(DecoratorsTest.class.getPackage());
@@ -43,7 +51,7 @@ public class DecoratorsTest {
      * Test that decorators work as expected in SE.
      */
     @Test
-    public void testDecorators(CarDoor carDoor, HouseDoor houseDoor) {
+    public void testDecorators() {
 
         assertNotNull(carDoor);
 
