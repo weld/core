@@ -18,6 +18,10 @@ package org.jboss.weld.tests.unit.deployment.structure.resolution;
 
 import static org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider.STATIC_INSTANCE;
 
+import java.util.Collections;
+
+import javax.enterprise.inject.spi.Bean;
+
 import org.jboss.weld.Container;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bean.ManagedBean;
@@ -40,6 +44,7 @@ import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.DefaultResourceLoader;
 import org.jboss.weld.resources.ReflectionCacheFactory;
 import org.jboss.weld.resources.SharedObjectCache;
+import org.jboss.weld.serialization.BeanIdentifierIndex;
 import org.jboss.weld.serialization.ContextualStoreImpl;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.testng.Assert;
@@ -54,11 +59,13 @@ public class AccessibleManagerResolutionTest {
 
     @BeforeMethod
     public void beforeMethod() {
+        BeanIdentifierIndex beanIdentifierIndex = new BeanIdentifierIndex();
+        beanIdentifierIndex.build(Collections.<Bean<?>>emptySet());
         this.typeStore = new TypeStore();
         this.classTransformer = new ClassTransformer(typeStore, new SharedObjectCache(), ReflectionCacheFactory.newInstance(typeStore), RegistrySingletonProvider.STATIC_INSTANCE);
         this.services = new SimpleServiceRegistry();
         this.services.add(MetaAnnotationStore.class, new MetaAnnotationStore(classTransformer));
-        this.services.add(ContextualStore.class, new ContextualStoreImpl(STATIC_INSTANCE));
+        this.services.add(ContextualStore.class, new ContextualStoreImpl(STATIC_INSTANCE, beanIdentifierIndex));
         this.services.add(ClassTransformer.class, classTransformer);
         this.services.add(SharedObjectCache.class, new SharedObjectCache());
         this.services.add(GlobalObserverNotifierService.class, new GlobalObserverNotifierService(services, RegistrySingletonProvider.STATIC_INSTANCE));

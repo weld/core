@@ -24,6 +24,7 @@ import javax.enterprise.inject.spi.PassivationCapable;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.bean.ForwardingBean;
+import org.jboss.weld.serialization.BeanIdentifierIndex;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
@@ -43,18 +44,19 @@ public class SerializableContextualFactory {
     }
 
     @java.lang.SuppressWarnings({ "rawtypes", "unchecked" })
-    public static <C extends Contextual<I>, I> SerializableContextual<C, I> create(String contextId, C contextual, ContextualStore contextualStore) {
+    public static <C extends Contextual<I>, I> SerializableContextual<C, I> create(String contextId, C contextual, ContextualStore contextualStore,
+            BeanIdentifierIndex beanIdentifierIndex) {
         if (contextual instanceof Bean) {
             if (contextual instanceof PassivationCapable) {
-                return new PassivationCapableSerializableBean(contextId, Reflections.<Bean> cast(contextual), contextualStore);
+                return new PassivationCapableSerializableBean(contextId, Reflections.<Bean> cast(contextual), contextualStore, beanIdentifierIndex);
             } else {
-                return new DefaultSerializableBean(contextId, Reflections.<Bean> cast(contextual), contextualStore);
+                return new DefaultSerializableBean(contextId, Reflections.<Bean> cast(contextual), contextualStore, beanIdentifierIndex);
             }
         } else {
             if (contextual instanceof PassivationCapable) {
-                return new PassivationCapableSerializableContextual(contextId, contextual, contextualStore);
+                return new PassivationCapableSerializableContextual(contextId, contextual, contextualStore, beanIdentifierIndex);
             } else {
-                return new DefaultSerializableContextual<C, I>(contextId, contextual, contextualStore);
+                return new DefaultSerializableContextual<C, I>(contextId, contextual, contextualStore, beanIdentifierIndex);
             }
         }
     }
@@ -63,30 +65,42 @@ public class SerializableContextualFactory {
 
         private static final long serialVersionUID = 46941665668478370L;
 
-        // A directly serializable contextual
-        private C serializable;
-
         @SuppressWarnings(value = "SE_TRANSIENT_FIELD_NOT_RESTORED", justification = "A cache which is lazily loaded")
         // A cached, transient version of the contextual
         private transient C cached;
 
-        // the id of a non-serializable, passivation capable contextual
-        private BeanIdentifier id;
+        // Only one of the three fields is used at the same time - directly serializable contextual, bean identifier or index
+        private final C serializable;
+        private final BeanIdentifier identifier;
+        private final Integer identifierIndex;
 
-        private String contextId;
+        private final String contextId;
 
         private transient ContextualStore cachedContextualStore;
 
-        public SerializableContextualHolder(String contextId, C contextual, ContextualStore contextualStore) {
+        private transient BeanIdentifierIndex beanIdentifierIndex;
+
+        SerializableContextualHolder(String contextId, C contextual, ContextualStore contextualStore, BeanIdentifierIndex beanIdentifierIndex) {
             this.contextId = contextId;
             this.cachedContextualStore = contextualStore;
             if (contextual instanceof Serializable) {
                 // the contextual is serializable, so we can just use it
                 this.serializable = contextual;
+                this.identifier = null;
+                this.identifierIndex = null;
             } else {
-                this.id = getId(contextual, contextualStore);
+                this.serializable = null;
+                BeanIdentifier beanIdentifier = getId(contextual, contextualStore);
+                // The index may not be built yet
+                Integer idx = beanIdentifierIndex.isBuilt() ? beanIdentifierIndex.getIndex(beanIdentifier) : null;
+                if (idx != null) {
+                    this.identifierIndex = idx;
+                    this.identifier = null;
+                } else {
+                    this.identifierIndex = null;
+                    this.identifier = beanIdentifier;
+                }
             }
-
             // cache the contextual
             this.cached = contextual;
         }
@@ -102,6 +116,13 @@ public class SerializableContextualFactory {
             return this.cachedContextualStore;
         }
 
+        protected BeanIdentifierIndex getBeanIdentifierIndex() {
+            if (beanIdentifierIndex == null) {
+                beanIdentifierIndex = Container.instance(contextId).services().get(BeanIdentifierIndex.class);
+            }
+            return beanIdentifierIndex;
+        }
+
         protected C get() {
             if (cached == null) {
                 loadContextual();
@@ -111,12 +132,14 @@ public class SerializableContextualFactory {
 
         private void loadContextual() {
             if (serializable != null) {
-                this.cached = serializable;
-            } else if (id != null) {
-                this.cached = getContextualStore().<C, I> getContextual(id);
+                cached = serializable;
+            } else if (identifierIndex != null) {
+                cached = getContextualStore().<C, I> getContextual(getBeanIdentifierIndex().getIdentifier(identifierIndex));
+            } else if (identifier != null) {
+                cached = getContextualStore().<C, I> getContextual(identifier);
             }
-            if (this.cached == null) {
-                throw new IllegalStateException("Error restoring serialized contextual with id " + id);
+            if (cached == null) {
+                throw new IllegalStateException("Error restoring serialized contextual with id " + identifier);
             }
         }
 
@@ -128,8 +151,8 @@ public class SerializableContextualFactory {
 
         private final SerializableContextualHolder<B, I> holder;
 
-        AbstractSerializableBean(String contextId, B bean, ContextualStore contextualStore) {
-            this.holder = new SerializableContextualHolder<B, I>(contextId, bean, contextualStore);
+        AbstractSerializableBean(String contextId, B bean, ContextualStore contextualStore, BeanIdentifierIndex beanIdentifierIndex) {
+            this.holder = new SerializableContextualHolder<B, I>(contextId, bean, contextualStore, beanIdentifierIndex);
         }
 
         @Override
@@ -166,8 +189,8 @@ public class SerializableContextualFactory {
 
         private final SerializableContextualHolder<C, I> holder;
 
-        AbstractSerializableContextual(String contextId, C contextual, ContextualStore contextualStore) {
-            this.holder = new SerializableContextualHolder<C, I>(contextId, contextual, contextualStore);
+        AbstractSerializableContextual(String contextId, C contextual, ContextualStore contextualStore, BeanIdentifierIndex beanIdentifierIndex) {
+            this.holder = new SerializableContextualHolder<C, I>(contextId, contextual, contextualStore, beanIdentifierIndex);
         }
 
         @Override
@@ -200,8 +223,8 @@ public class SerializableContextualFactory {
 
         private static final long serialVersionUID = -5102624795925717767L;
 
-        public DefaultSerializableContextual(String contextId, C contextual, ContextualStore contextualStore) {
-            super(contextId, contextual, contextualStore);
+        public DefaultSerializableContextual(String contextId, C contextual, ContextualStore contextualStore, BeanIdentifierIndex beanIdentifierIndex) {
+            super(contextId, contextual, contextualStore, beanIdentifierIndex);
         }
     }
 
@@ -211,8 +234,8 @@ public class SerializableContextualFactory {
 
         private static final long serialVersionUID = -2753893863961869301L;
 
-        public PassivationCapableSerializableContextual(String contextId, C contextual, ContextualStore contextualStore) {
-            super(contextId, contextual, contextualStore);
+        public PassivationCapableSerializableContextual(String contextId, C contextual, ContextualStore contextualStore, BeanIdentifierIndex beanIdentifierIndex) {
+            super(contextId, contextual, contextualStore, beanIdentifierIndex);
         }
 
         @Override
@@ -225,8 +248,8 @@ public class SerializableContextualFactory {
 
         private static final long serialVersionUID = -8901252027789701049L;
 
-        public DefaultSerializableBean(String contextId, B bean, ContextualStore contextualStore) {
-            super(contextId, bean, contextualStore);
+        public DefaultSerializableBean(String contextId, B bean, ContextualStore contextualStore, BeanIdentifierIndex beanIdentifierIndex) {
+            super(contextId, bean, contextualStore, beanIdentifierIndex);
         }
     }
 
@@ -235,8 +258,8 @@ public class SerializableContextualFactory {
 
         private static final long serialVersionUID = 7458443513156329183L;
 
-        public PassivationCapableSerializableBean(String contextId, B bean, ContextualStore contextualStore) {
-            super(contextId, bean, contextualStore);
+        public PassivationCapableSerializableBean(String contextId, B bean, ContextualStore contextualStore, BeanIdentifierIndex beanIdentifierIndex) {
+            super(contextId, bean, contextualStore, beanIdentifierIndex);
         }
 
         @Override
