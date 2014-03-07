@@ -251,13 +251,14 @@ public class WeldStartup {
         }
         services.add(MemberTransformer.class, new MemberTransformer(services.get(ClassTransformer.class)));
         services.add(MetaAnnotationStore.class, new MetaAnnotationStore(services.get(ClassTransformer.class)));
-        services.add(ContextualStore.class, new ContextualStoreImpl(contextId));
+        BeanIdentifierIndex beanIdentifierIndex = new BeanIdentifierIndex();
+        services.add(BeanIdentifierIndex.class, beanIdentifierIndex);
+        services.add(ContextualStore.class, new ContextualStoreImpl(contextId, beanIdentifierIndex));
         services.add(CurrentInjectionPoint.class, new CurrentInjectionPoint());
         services.add(SLSBInvocationInjectionPoint.class, new SLSBInvocationInjectionPoint());
         services.add(CurrentEventMetadata.class, new CurrentEventMetadata());
         services.add(SpecializationAndEnablementRegistry.class, new SpecializationAndEnablementRegistry());
         services.add(MissingDependenciesRegistry.class, new MissingDependenciesRegistry());
-        services.add(BeanIdentifierIndex.class, new BeanIdentifierIndex());
 
         GlobalObserverNotifierService observerNotificationService = new GlobalObserverNotifierService(services, contextId);
         services.add(GlobalObserverNotifierService.class, observerNotificationService);

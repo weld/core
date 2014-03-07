@@ -118,13 +118,17 @@ public class BeanIdentifierIndex implements Service {
         reverseIndex = builder.build();
     }
 
+    /**
+     *
+     * @return <code>true</code> if the index is built, <code>false</code> otherwise
+     */
+    public boolean isBuilt() {
+        return index != null;
+    }
+
     @Override
     public void cleanup() {
         index = null;
-    }
-
-    private boolean isBuilt() {
-        return index != null;
     }
 
     private void checkIsBuilt() {
