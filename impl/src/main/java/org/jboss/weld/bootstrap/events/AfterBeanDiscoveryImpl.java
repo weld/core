@@ -26,7 +26,6 @@ import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.ObserverMethod;
@@ -42,10 +41,6 @@ import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Observers;
 import org.jboss.weld.util.Preconditions;
-import org.jboss.weld.util.bean.IsolatedForwardingBean;
-import org.jboss.weld.util.bean.IsolatedForwardingDecorator;
-import org.jboss.weld.util.bean.IsolatedForwardingInterceptor;
-import org.jboss.weld.util.bean.WrappedBeanHolder;
 
 public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implements AfterBeanDiscovery {
 
@@ -62,6 +57,7 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
 
     private final SlimAnnotatedTypeStore slimAnnotatedTypeStore;
 
+    @Override
     public void addDefinitionError(Throwable t) {
         getErrors().add(t);
     }
@@ -70,6 +66,7 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
         return Collections.unmodifiableList(getErrors());
     }
 
+    @Override
     public void addBean(Bean<?> bean) {
         processBean(bean);
     }
@@ -96,10 +93,12 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
         containerLifecycleEvents.fireProcessBean(beanManager, bean);
     }
 
+    @Override
     public void addContext(Context context) {
         getBeanManager().addContext(context);
     }
 
+    @Override
     public void addObserverMethod(ObserverMethod<?> observerMethod) {
         BeanManagerImpl manager = getOrCreateBeanDeployment(observerMethod.getBeanClass()).getBeanManager();
         if (Observers.isObserverMethodEnabled(observerMethod, manager)) {
@@ -107,16 +106,6 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
             manager.addObserver(observerMethod);
         }
         getOrCreateBeanDeployment(observerMethod.getBeanClass()).getBeanManager().addObserver(observerMethod);
-    }
-
-    private <T> Bean<T> setBeanAttributes(final Bean<T> bean, final BeanAttributes<T> attributes) {
-        if (bean instanceof Interceptor<?>) {
-            return new IsolatedForwardingInterceptor.Impl<T>(WrappedBeanHolder.of(attributes, (Interceptor<T>) bean));
-        }
-        if (bean instanceof Decorator<?>) {
-            return new IsolatedForwardingDecorator.Impl<T>(WrappedBeanHolder.of(attributes, (Decorator<T>) bean));
-        }
-        return new IsolatedForwardingBean.Impl<T>(WrappedBeanHolder.of(attributes, bean));
     }
 
     @Override
