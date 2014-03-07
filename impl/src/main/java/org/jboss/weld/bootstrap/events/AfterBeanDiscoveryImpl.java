@@ -59,6 +59,7 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
 
     @Override
     public void addDefinitionError(Throwable t) {
+        checkWithinObserverNotification();
         getErrors().add(t);
     }
 
@@ -68,6 +69,7 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
 
     @Override
     public void addBean(Bean<?> bean) {
+        checkWithinObserverNotification();
         processBean(bean);
     }
 
@@ -95,11 +97,13 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
 
     @Override
     public void addContext(Context context) {
+        checkWithinObserverNotification();
         getBeanManager().addContext(context);
     }
 
     @Override
     public void addObserverMethod(ObserverMethod<?> observerMethod) {
+        checkWithinObserverNotification();
         BeanManagerImpl manager = getOrCreateBeanDeployment(observerMethod.getBeanClass()).getBeanManager();
         if (Observers.isObserverMethodEnabled(observerMethod, manager)) {
             ProcessObserverMethodImpl.fire(manager, observerMethod);
@@ -110,12 +114,14 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
 
     @Override
     public <T> AnnotatedType<T> getAnnotatedType(Class<T> type, String id) {
+        checkWithinObserverNotification();
         Preconditions.checkArgumentNotNull(type, TYPE_ARGUMENT_NAME);
         return slimAnnotatedTypeStore.get(type, id);
     }
 
     @Override
     public <T> Iterable<AnnotatedType<T>> getAnnotatedTypes(Class<T> type) {
+        checkWithinObserverNotification();
         Preconditions.checkArgumentNotNull(type, TYPE_ARGUMENT_NAME);
         return cast(slimAnnotatedTypeStore.get(type));
     }

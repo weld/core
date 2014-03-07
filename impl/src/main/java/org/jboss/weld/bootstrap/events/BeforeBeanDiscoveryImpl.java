@@ -49,13 +49,17 @@ public class BeforeBeanDiscoveryImpl extends AbstractAnnotatedTypeRegisteringEve
         super(beanManager, BeforeBeanDiscovery.class, bdaMapping, deployment, contexts);
     }
 
+    @Override
     public void addQualifier(Class<? extends Annotation> bindingType) {
+        checkWithinObserverNotification();
         getTypeStore().add(bindingType, QualifierLiteral.INSTANCE);
         getBeanManager().getServices().get(ClassTransformer.class).clearAnnotationData(bindingType);
         getBeanManager().getServices().get(MetaAnnotationStore.class).clearAnnotationData(bindingType);
     }
 
+    @Override
     public void addInterceptorBinding(Class<? extends Annotation> bindingType, Annotation... bindingTypeDef) {
+        checkWithinObserverNotification();
         TypeStore typeStore = getTypeStore();
         typeStore.add(bindingType, InterceptorBindingTypeLiteral.INSTANCE);
         for (Annotation a : bindingTypeDef) {
@@ -65,7 +69,9 @@ public class BeforeBeanDiscoveryImpl extends AbstractAnnotatedTypeRegisteringEve
         getBeanManager().getServices().get(MetaAnnotationStore.class).clearAnnotationData(bindingType);
     }
 
+    @Override
     public void addScope(Class<? extends Annotation> scopeType, boolean normal, boolean passivating) {
+        checkWithinObserverNotification();
         if (normal) {
             getTypeStore().add(scopeType, new NormalScopeLiteral(passivating));
         } else if (passivating) {
@@ -78,7 +84,9 @@ public class BeforeBeanDiscoveryImpl extends AbstractAnnotatedTypeRegisteringEve
         getBeanManager().getServices().get(ReflectionCache.class).cleanup();
     }
 
+    @Override
     public void addStereotype(Class<? extends Annotation> stereotype, Annotation... stereotypeDef) {
+        checkWithinObserverNotification();
         TypeStore typeStore = getTypeStore();
         typeStore.add(stereotype, StereotypeLiteral.INSTANCE);
         for (Annotation a : stereotypeDef) {
@@ -90,22 +98,26 @@ public class BeforeBeanDiscoveryImpl extends AbstractAnnotatedTypeRegisteringEve
 
     @Override
     public void addAnnotatedType(AnnotatedType<?> source) {
+        checkWithinObserverNotification();
         // TODO: once this method is deprecated as part of CDI-83, log a warning then it is called
         addAnnotatedType(source, null);
     }
 
     @Override
     public void addAnnotatedType(AnnotatedType<?> type, String id) {
+        checkWithinObserverNotification();
         addSyntheticAnnotatedType(type, id);
     }
 
     @Override
     public void addQualifier(AnnotatedType<? extends Annotation> qualifier) {
+        checkWithinObserverNotification();
         addSyntheticAnnotation(qualifier, QualifierLiteral.INSTANCE);
     }
 
     @Override
     public void addInterceptorBinding(AnnotatedType<? extends Annotation> bindingType) {
+        checkWithinObserverNotification();
         addSyntheticAnnotation(bindingType, InterceptorBindingTypeLiteral.INSTANCE);
     }
 
