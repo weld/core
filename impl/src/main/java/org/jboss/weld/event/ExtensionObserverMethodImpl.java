@@ -24,6 +24,7 @@ import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ObserverMethod;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.ProcessSyntheticAnnotatedType;
@@ -33,7 +34,7 @@ import org.jboss.weld.Container;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.bean.RIBean;
-import org.jboss.weld.bootstrap.events.AbstractAnnotatedTypeRegisteringEvent;
+import org.jboss.weld.bootstrap.events.NotificationListener;
 import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.logging.EventLogger;
@@ -92,20 +93,16 @@ public class ExtensionObserverMethodImpl<T, X> extends ObserverMethodImpl<T, X> 
 
     @Override
     protected void preNotify(T event, Object receiver) {
-        if (event instanceof AbstractAnnotatedTypeRegisteringEvent) {
-            setNotificationContext((AbstractAnnotatedTypeRegisteringEvent) event, this, receiver);
+        if (event instanceof NotificationListener) {
+            NotificationListener.class.cast(event).preNotify((Extension) receiver);
         }
     }
 
     @Override
     protected void postNotify(T event, Object receiver) {
-        if (event instanceof AbstractAnnotatedTypeRegisteringEvent) {
-            setNotificationContext((AbstractAnnotatedTypeRegisteringEvent) event, null, null);
+        if (event instanceof NotificationListener) {
+            NotificationListener.class.cast(event).postNotify((Extension) receiver);
         }
-    }
-
-    private void setNotificationContext(AbstractAnnotatedTypeRegisteringEvent event, ObserverMethod<?> observer, Object receiver) {
-        event.setReceiver(receiver);
     }
 
     /*

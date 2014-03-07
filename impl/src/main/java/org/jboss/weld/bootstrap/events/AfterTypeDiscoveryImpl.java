@@ -56,21 +56,25 @@ public class AfterTypeDiscoveryImpl extends AbstractAnnotatedTypeRegisteringEven
 
     @Override
     public List<Class<?>> getAlternatives() {
+        checkWithinObserverNotification();
         return builder.getAlternativeList();
     }
 
     @Override
     public List<Class<?>> getInterceptors() {
+        checkWithinObserverNotification();
         return builder.getInterceptorList();
     }
 
     @Override
     public List<Class<?>> getDecorators() {
+        checkWithinObserverNotification();
         return builder.getDecoratorList();
     }
 
     @Override
     public void addAnnotatedType(AnnotatedType<?> type, String id) {
+        checkWithinObserverNotification();
         addSyntheticAnnotatedType(type, id);
     }
 

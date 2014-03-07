@@ -220,4 +220,6 @@ public interface BootstrapLogger extends WeldLogger {
     @Message(id = Message.NONE , value = "Sending PAT using the fast event resolver: {0}", format = Format.MESSAGE_FORMAT)
     void patFastResolver(SlimAnnotatedType<?> type);
 
+    @Message(id = 143, value = "Container lifecycle event method invoked outside of extension observer method invocation.")
+    IllegalStateException containerLifecycleEventMethodInvokedOutsideObserver();
 }
