@@ -18,7 +18,6 @@ package org.jboss.weld.environment.se;
 
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -32,9 +31,9 @@ import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.CDI11Bootstrap;
 import org.jboss.weld.bootstrap.api.Environments;
 import org.jboss.weld.bootstrap.api.TypeDiscoveryConfiguration;
-import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.bootstrap.spi.Metadata;
+import org.jboss.weld.environment.se.discovery.WeldSEBeanDeploymentArchive;
 import org.jboss.weld.environment.se.discovery.url.DefaultDiscoveryStrategy;
 import org.jboss.weld.environment.se.discovery.url.DiscoveryStrategy;
 import org.jboss.weld.environment.se.discovery.url.WeldSEResourceLoader;
@@ -153,10 +152,8 @@ public class Weld {
      *
      * <pre>
      * public class MyWeld extends Weld {
-     *     protected Deployment createDeployment(CDI11Bootstrap bootstrap) {
-     *         Deployment deployment = super.createDeployment(new MyResourceLoader(), bootstrap);
-     *         deployment.getServices().add(ResourceLoader.class);
-     *         return deployment;
+     *     protected Deployment createDeployment(ResourceLoader resourceLoader, CDI11Bootstrap bootstrap) {
+     *         return super.createDeployment(new MyResourceLoader(), bootstrap);
      *     }
      * }
      * </pre>
@@ -188,7 +185,7 @@ public class Weld {
         } else {
             strategy = new DefaultDiscoveryStrategy(resourceLoader, bootstrap);
         }
-        Collection<BeanDeploymentArchive> discoverArchives = strategy.discoverArchives();
+        Set<WeldSEBeanDeploymentArchive> discoverArchives = strategy.discoverArchives();
         return new WeldSEUrlDeployment(resourceLoader, bootstrap, discoverArchives, loadedExtensions);
     }
 

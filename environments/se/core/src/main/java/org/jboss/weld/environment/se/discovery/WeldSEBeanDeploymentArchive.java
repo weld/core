@@ -16,13 +16,14 @@
  */
 package org.jboss.weld.environment.se.discovery;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.Deployment;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 
 /**
  * An immutable implementation of {@link BeanDeploymentArchive} which must have
@@ -40,9 +41,9 @@ public class WeldSEBeanDeploymentArchive extends AbstractWeldSEBeanDeploymentArc
 
     private final Collection<String> beanClasses;
     private final BeansXml beansXml;
-    private Collection<BeanDeploymentArchive> beanDeploymentArchives;
+    private Set<WeldSEBeanDeploymentArchive> beanDeploymentArchives;
 
-    public WeldSEBeanDeploymentArchive(String id, Collection<String> beanClasses, BeansXml beansXml, Collection<BeanDeploymentArchive> beanDeploymentArchives) {
+    public WeldSEBeanDeploymentArchive(String id, Collection<String> beanClasses, BeansXml beansXml, Set<WeldSEBeanDeploymentArchive> beanDeploymentArchives) {
         super(id);
         this.beanClasses = beanClasses;
         this.beansXml = beansXml;
@@ -50,22 +51,25 @@ public class WeldSEBeanDeploymentArchive extends AbstractWeldSEBeanDeploymentArc
     }
 
     public WeldSEBeanDeploymentArchive(String id, Collection<String> beanClasses, BeansXml beansXml) {
-        this(id, beanClasses, beansXml, new ArrayList<BeanDeploymentArchive>());
+        this(id, beanClasses, beansXml, new HashSet<WeldSEBeanDeploymentArchive>());
     }
 
+    @Override
     public Collection<String> getBeanClasses() {
         return Collections.unmodifiableCollection(beanClasses);
     }
 
+    @Override
     public Collection<BeanDeploymentArchive> getBeanDeploymentArchives() {
-        return Collections.unmodifiableCollection(beanDeploymentArchives);
+        return Collections.<BeanDeploymentArchive>unmodifiableCollection(beanDeploymentArchives);
     }
 
+    @Override
     public BeansXml getBeansXml() {
         return beansXml;
     }
 
-    public void setBeanDeploymentArchives(Collection<BeanDeploymentArchive> beanDeploymentArchives) {
+    public void setBeanDeploymentArchives(Set<WeldSEBeanDeploymentArchive> beanDeploymentArchives) {
         this.beanDeploymentArchives = beanDeploymentArchives;
     }
 }

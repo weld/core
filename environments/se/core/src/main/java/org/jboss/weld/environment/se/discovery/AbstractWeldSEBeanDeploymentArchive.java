@@ -1,4 +1,4 @@
-/**
+/*
  * JBoss, Home of Professional Open Source
  * Copyright 2009, Red Hat, Inc. and/or its affiliates, and individual
  * contributors by the @authors tag. See the copyright.txt in the
@@ -16,13 +16,13 @@
  */
 package org.jboss.weld.environment.se.discovery;
 
+import java.util.Collection;
+import java.util.Collections;
+
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
-
-import java.util.Collection;
-import java.util.Collections;
 
 /**
  * Implements the basic requirements of a {@link BeanDeploymentArchive} (bean
@@ -45,14 +45,17 @@ public abstract class AbstractWeldSEBeanDeploymentArchive implements BeanDeploym
         this.serviceRegistry = new SimpleServiceRegistry();
     }
 
+    @Override
     public Collection<EjbDescriptor<?>> getEjbs() {
         return Collections.emptyList();
     }
 
+    @Override
     public String getId() {
         return id;
     }
 
+    @Override
     public ServiceRegistry getServices() {
         return serviceRegistry;
     }

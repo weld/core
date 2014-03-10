@@ -29,7 +29,6 @@ import org.jboss.jandex.DotName;
 import org.jboss.jandex.IndexView;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.TypeDiscoveryConfiguration;
-import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.environment.se.discovery.WeldSEBeanDeploymentArchive;
 import org.jboss.weld.resources.spi.ResourceLoader;
 
@@ -48,6 +47,7 @@ public class JandexEnabledDiscoveryStrategy extends DiscoveryStrategy {
         }
     }
 
+    @Override
     protected void initialize() {
         List<IndexView> indexes = new ArrayList<IndexView>();
         for (BeanArchiveBuilder builder : getBuilders()) {
@@ -57,7 +57,8 @@ public class JandexEnabledDiscoveryStrategy extends DiscoveryStrategy {
         cindex = CompositeIndex.create(indexes);
     }
 
-    protected BeanDeploymentArchive processAnnotatedDiscovery(BeanArchiveBuilder builder) {
+    @Override
+    protected WeldSEBeanDeploymentArchive processAnnotatedDiscovery(BeanArchiveBuilder builder) {
         Iterator<String> classIterator = builder.getClassIterator();
         while (classIterator.hasNext()) {
             String className = classIterator.next();

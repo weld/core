@@ -17,6 +17,8 @@
 package org.jboss.weld.environment.se.discovery.url;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Set;
 
 import javax.enterprise.inject.spi.Extension;
 
@@ -24,6 +26,7 @@ import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.environment.se.discovery.AbstractWeldSEDeployment;
+import org.jboss.weld.environment.se.discovery.WeldSEBeanDeploymentArchive;
 import org.jboss.weld.resources.spi.ResourceLoader;
 
 /**
@@ -33,10 +36,10 @@ import org.jboss.weld.resources.spi.ResourceLoader;
  */
 public class WeldSEUrlDeployment extends AbstractWeldSEDeployment {
 
-    private final Collection<BeanDeploymentArchive> beanDeploymentArchives;
+    private final Set<WeldSEBeanDeploymentArchive> beanDeploymentArchives;
 
 
-    public WeldSEUrlDeployment(ResourceLoader resourceLoader, Bootstrap bootstrap, Collection<BeanDeploymentArchive> beanDeploymentArchives,
+    public WeldSEUrlDeployment(ResourceLoader resourceLoader, Bootstrap bootstrap, Set<WeldSEBeanDeploymentArchive> beanDeploymentArchives,
             Iterable<Metadata<Extension>> extensions) {
         super(bootstrap, extensions);
         this.beanDeploymentArchives = beanDeploymentArchives;
@@ -45,10 +48,12 @@ public class WeldSEUrlDeployment extends AbstractWeldSEDeployment {
         }
     }
 
+    @Override
     public Collection<BeanDeploymentArchive> getBeanDeploymentArchives() {
-        return beanDeploymentArchives;
+        return Collections.<BeanDeploymentArchive>unmodifiableSet(beanDeploymentArchives);
     }
 
+    @Override
     public BeanDeploymentArchive loadBeanDeploymentArchive(Class<?> beanClass) {
         // TODO: Make it much better
         return beanDeploymentArchives.iterator().next();

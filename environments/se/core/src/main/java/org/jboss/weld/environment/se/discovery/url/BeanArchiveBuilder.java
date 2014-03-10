@@ -39,8 +39,6 @@ class BeanArchiveBuilder {
     private Bootstrap bootstrap;
     private String id;
 
-
-
     public BeanArchiveBuilder(String id, Object index, List<String> classes, URL beansXmlUrl, Bootstrap bootstrap) {
         this.id = id;
         this.index = index;
@@ -63,6 +61,9 @@ class BeanArchiveBuilder {
     }
 
     public WeldSEBeanDeploymentArchive build() {
+        if (id == null) {
+            throw new IllegalStateException("ID not set");
+        }
         return new WeldSEBeanDeploymentArchive(id, classes, getParsedBeansXml());
     }
 
@@ -97,6 +98,4 @@ class BeanArchiveBuilder {
     public Iterator<String> getClassIterator() {
         return classes.iterator();
     }
-
-
 }

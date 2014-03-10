@@ -50,13 +50,12 @@ public class FileSystemURLHandler implements URLHandler {
     private final List<String> discoveredClasses = new ArrayList<String>();
     private URL discoveredBeansXmlUrl = null;
     private final Bootstrap bootstrap;
-    private final String id;
 
-    public FileSystemURLHandler(String id, Bootstrap bootstrap) {
-        this.id = id;
+    public FileSystemURLHandler(Bootstrap bootstrap) {
         this.bootstrap = bootstrap;
     }
 
+    @Override
     public BeanArchiveBuilder handle(String urlPath) {
         try {
             log.tracev("scanning: {0}", urlPath);
@@ -151,11 +150,6 @@ public class FileSystemURLHandler implements URLHandler {
         }
     }
 
-    public String getId() {
-        return id;
-    }
-
-
     /**
      * Convert a path to a class file to a class name
      */
@@ -172,6 +166,6 @@ public class FileSystemURLHandler implements URLHandler {
     }
 
     protected BeanArchiveBuilder createBeanArchiveBuilder() {
-        return new BeanArchiveBuilder(this.getId(), null, discoveredClasses, discoveredBeansXmlUrl, bootstrap);
+        return new BeanArchiveBuilder(null, null, discoveredClasses, discoveredBeansXmlUrl, bootstrap);
     }
 }

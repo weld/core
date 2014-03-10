@@ -16,12 +16,11 @@
  */
 package org.jboss.weld.environment.se.discovery.url;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.jboss.weld.bootstrap.api.Bootstrap;
-import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.environment.se.discovery.AbstractWeldSEDeployment;
 import org.jboss.weld.environment.se.discovery.WeldSEBeanDeploymentArchive;
@@ -38,7 +37,7 @@ public abstract class DiscoveryStrategy {
     private Bootstrap bootstrap;
     private Collection<BeanArchiveBuilder> builders;
     public static final String[] RESOURCES = { AbstractWeldSEDeployment.BEANS_XML };
-    private List<BeanDeploymentArchive> deploymentArchives = new ArrayList<BeanDeploymentArchive>();
+    private Set<WeldSEBeanDeploymentArchive> deploymentArchives = new HashSet<WeldSEBeanDeploymentArchive>();
 
     public DiscoveryStrategy(ResourceLoader resourceLoader, Bootstrap bootstrap) {
         this.resourceLoader = resourceLoader;
@@ -48,23 +47,20 @@ public abstract class DiscoveryStrategy {
     /**
      * Discover and return all the BeanDeploymentArchives found using the URLScanner.scan() method.
      */
-    public Collection<BeanDeploymentArchive> discoverArchives() {
+    public Set<WeldSEBeanDeploymentArchive> discoverArchives() {
         builders = new URLScanner(resourceLoader, bootstrap, AbstractWeldSEDeployment.RESOURCES).scan();
         initialize();
         for (BeanArchiveBuilder builder : builders) {
             BeansXml beansXml = builder.parseBeansXml();
             switch (beansXml.getBeanDiscoveryMode()) {
                 case ALL:
-                    BeanDeploymentArchive archive = processAllDiscovery(builder);
-                    addToArchives(archive);
+                    addToArchives(processAllDiscovery(builder));
                     break;
                 case ANNOTATED:
-                    BeanDeploymentArchive annotatedArchive = processAnnotatedDiscovery(builder);
-                    addToArchives(annotatedArchive);
+                    addToArchives(processAnnotatedDiscovery(builder));
                     break;
                 case NONE:
-                    BeanDeploymentArchive noneArchive = processNoneDiscovery(builder);
-                    addToArchives(noneArchive);
+                    addToArchives(processNoneDiscovery(builder));
                     break;
                 default:
                     throw new IllegalStateException("beans.xml has undefined bean discovery value:" + beansXml.getBeanDiscoveryMode());
@@ -74,9 +70,9 @@ public abstract class DiscoveryStrategy {
         return deploymentArchives;
     }
 
-    private void assignVisibility(List<BeanDeploymentArchive> deploymentArchives) {
-        for (BeanDeploymentArchive archive : deploymentArchives) {
-            ((WeldSEBeanDeploymentArchive) archive).setBeanDeploymentArchives(deploymentArchives);
+    private void assignVisibility(Set<WeldSEBeanDeploymentArchive> deploymentArchives) {
+        for (WeldSEBeanDeploymentArchive archive : deploymentArchives) {
+            archive.setBeanDeploymentArchives(deploymentArchives);
         }
 
     }
@@ -85,7 +81,7 @@ public abstract class DiscoveryStrategy {
         return builders;
     }
 
-    protected void addToArchives(BeanDeploymentArchive bda) {
+    protected void addToArchives(WeldSEBeanDeploymentArchive bda) {
         if (bda != null) {
             deploymentArchives.add(bda);
         }
@@ -103,21 +99,21 @@ public abstract class DiscoveryStrategy {
     /**
      * Processes archive with none-bean-discovery mode and returns the builded BeanDeploymentArchive. Should be overridden by the subclasses.
      */
-    protected BeanDeploymentArchive processNoneDiscovery(BeanArchiveBuilder builder) {
+    protected WeldSEBeanDeploymentArchive processNoneDiscovery(BeanArchiveBuilder builder) {
         return null;
     }
 
     /**
      * Processes archive with annotated-bean-discovery mode and returns the builded BeanDeploymentArchive. Should be overridden by the subclasses.
      */
-    protected BeanDeploymentArchive processAnnotatedDiscovery(BeanArchiveBuilder builder) {
+    protected WeldSEBeanDeploymentArchive processAnnotatedDiscovery(BeanArchiveBuilder builder) {
         return null;
     }
 
     /**
      * Processes archive with all-bean-discovery mode and returns the builded BeanDeploymentArchive.
      */
-    protected BeanDeploymentArchive processAllDiscovery(BeanArchiveBuilder builder) {
+    protected WeldSEBeanDeploymentArchive processAllDiscovery(BeanArchiveBuilder builder) {
         WeldSEBeanDeploymentArchive bda = builder.build();
         return bda;
     }

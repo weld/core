@@ -17,7 +17,7 @@
 package org.jboss.weld.environment.se.discovery.url;
 
 import org.jboss.weld.bootstrap.api.Bootstrap;
-import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
+import org.jboss.weld.environment.se.discovery.WeldSEBeanDeploymentArchive;
 import org.jboss.weld.resources.spi.ResourceLoader;
 
 /**
@@ -30,7 +30,8 @@ public class DefaultDiscoveryStrategy extends DiscoveryStrategy {
         super(resourceLoader, bootstrap);
     }
 
-    protected BeanDeploymentArchive processAnnotatedDiscovery(BeanArchiveBuilder builder) {
+    @Override
+    protected WeldSEBeanDeploymentArchive processAnnotatedDiscovery(BeanArchiveBuilder builder) {
         throw new IllegalStateException("Cannot handle Annotated bean discovery.");
     }
 

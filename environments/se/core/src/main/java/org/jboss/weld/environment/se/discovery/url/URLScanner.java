@@ -41,7 +41,6 @@ import org.jboss.weld.util.reflection.Reflections;
 public class URLScanner {
 
     private static final String UNABLE_TO_CREATE_JANDEX_URL_HANDLER = "Unable to create the URLHandler instance when the jandex is enabled.";
-    private static final String BAD_URI_SYNTAX_EXCEPTION_TEXT = "Could not read URI: ";
     private static final String JANDEX_ENABLED_FS_URL_HANDLER_CLASS_STRING = "org.jboss.weld.environment.se.discovery.url.JandexEnabledFileSystemURLHandler";
     private static final Logger log = Logger.getLogger(URLScanner.class);
     private static final String FILE = "file";
@@ -64,27 +63,27 @@ public class URLScanner {
         for (String resourceName : resources) {
             // grab all the URLs for this resource
             for (URL url : resourceLoader.getResources(resourceName)) {
+                String urlPath;
+                try {
+                    urlPath = getUrlPath(resourceName, url);
+                } catch (URISyntaxException e) {
+                    log.warn("Could not read: " + resourceName, e);
+                    continue;
+                }
+                final String bdaId = getId(urlPath);
                 if (Reflections.isClassLoadable(Weld.JANDEX_INDEX_CLASS, resourceLoader)) {
                     Class<?> clazz = Reflections.loadClass(JANDEX_ENABLED_FS_URL_HANDLER_CLASS_STRING, resourceLoader);
                     try {
-                        handler = (URLHandler) clazz.getConstructor(String.class, Bootstrap.class).newInstance(getUrlPath(resourceName, url).toString(),
-                                bootstrap);
+                        handler = (URLHandler) clazz.getConstructor(Bootstrap.class).newInstance(bootstrap);
                     } catch (Exception ex) {
                         throw new IllegalStateException(UNABLE_TO_CREATE_JANDEX_URL_HANDLER, ex);
                     }
                 } else {
-                    try {
-                        handler = new FileSystemURLHandler(getUrlPath(resourceName, url), bootstrap);
-                    } catch (URISyntaxException e) {
-                        throw new IllegalStateException(BAD_URI_SYNTAX_EXCEPTION_TEXT + resourceName, e);
-                    }
+                    handler = new FileSystemURLHandler(bootstrap);
                 }
-                try {
-                    BeanArchiveBuilder builder = handler.handle(getUrlPath(resourceName, url));
-                    builders.add(builder);
-                } catch (URISyntaxException e) {
-                    throw new IllegalStateException(BAD_URI_SYNTAX_EXCEPTION_TEXT + resourceName, e);
-                }
+                BeanArchiveBuilder builder = handler.handle(urlPath);
+                builder.setId(bdaId);
+                builders.add(builder);
             }
         }
         return builders;
@@ -117,6 +116,14 @@ public class URLScanner {
             }
         }
 
+        return urlPath;
+    }
+
+    private String getId(String urlPath) {
+        final int index = urlPath.lastIndexOf(File.separatorChar);
+        if (index != -1 && index + 1 < urlPath.length()) {
+            return urlPath.substring(index + 1);
+        }
         return urlPath;
     }
 

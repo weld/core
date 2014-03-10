@@ -33,8 +33,8 @@ public class JandexEnabledFileSystemURLHandler extends FileSystemURLHandler {
     private static final Logger log = Logger.getLogger(JandexEnabledFileSystemURLHandler.class);
     private Indexer indexer = new Indexer();
 
-    public JandexEnabledFileSystemURLHandler(String id, Bootstrap bootstrap) {
-        super(id, bootstrap);
+    public JandexEnabledFileSystemURLHandler(Bootstrap bootstrap) {
+        super(bootstrap);
     }
 
     private void addToIndex(URL url) {
@@ -65,7 +65,7 @@ public class JandexEnabledFileSystemURLHandler extends FileSystemURLHandler {
 
     @Override
     protected BeanArchiveBuilder createBeanArchiveBuilder() {
-        return new BeanArchiveBuilder(this.getId(), buildJandexIndex(), getDiscoveredClasses(), getDiscoveredBeansXmlUrl(), getBootstrap());
+        return new BeanArchiveBuilder(null, buildJandexIndex(), getDiscoveredClasses(), getDiscoveredBeansXmlUrl(), getBootstrap());
     }
 
     public Index buildJandexIndex() {
