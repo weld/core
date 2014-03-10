@@ -17,7 +17,11 @@
 package org.jboss.weld.environment.se;
 
 import java.lang.annotation.Annotation;
+import java.net.URL;
+import java.security.AccessController;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -31,9 +35,12 @@ import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.CDI11Bootstrap;
 import org.jboss.weld.bootstrap.api.Environments;
 import org.jboss.weld.bootstrap.api.TypeDiscoveryConfiguration;
+import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
+import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.environment.se.discovery.WeldSEBeanDeploymentArchive;
+import org.jboss.weld.environment.se.discovery.WeldSEClassFileServices;
 import org.jboss.weld.environment.se.discovery.url.DefaultDiscoveryStrategy;
 import org.jboss.weld.environment.se.discovery.url.DiscoveryStrategy;
 import org.jboss.weld.environment.se.discovery.url.WeldSEResourceLoader;
@@ -41,7 +48,9 @@ import org.jboss.weld.environment.se.discovery.url.WeldSEUrlDeployment;
 import org.jboss.weld.environment.se.events.ContainerInitialized;
 import org.jboss.weld.literal.InitializedLiteral;
 import org.jboss.weld.metadata.MetadataImpl;
+import org.jboss.weld.resources.spi.ClassFileServices;
 import org.jboss.weld.resources.spi.ResourceLoader;
+import org.jboss.weld.security.GetSystemPropertyAction;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
@@ -67,14 +76,17 @@ import org.jboss.weld.util.reflection.Reflections;
  */
 public class Weld {
 
+    private static final String JANDEX_ENABLED_DISCOVERY_STRATEGY_CLASS_NAME = "org.jboss.weld.environment.se.discovery.url.JandexEnabledDiscoveryStrategy";
+    public static final String COMPOSITE_ARCHIVE_ENABLEMENT_SYSTEM_PROPERTY = "org.jboss.weld.se.archive.isolation";
     private static final String BOOTSTRAP_IMPL_CLASS_NAME = "org.jboss.weld.bootstrap.WeldBootstrap";
     private static final String ERROR_LOADING_WELD_BOOTSTRAP_EXC_MESSAGE = "Error loading Weld bootstrap, check that Weld is on the classpath";
-    public static final String JANDEX_INDEX_CLASS = "org.jboss.jandex.Index";
-    private static final String JANDEX_ENABLED_DISCOVERY_STRATEGY_CLASS_STRING = "org.jboss.weld.environment.se.discovery.url.JandexEnabledDiscoveryStrategy";
+    public static final String JANDEX_INDEX_CLASS_NAME = "org.jboss.jandex.Index";
+    private static final String JANDEX_ENABLED_DISCOVERY_STRATEGY_CLASS_STRING = JANDEX_ENABLED_DISCOVERY_STRATEGY_CLASS_NAME;
 
 
     private ShutdownManager shutdownManager;
     private Set<Metadata<Extension>> extensions;
+    private DiscoveryStrategy strategy;
 
     /**
      * Add extension explicitly.
@@ -111,9 +123,10 @@ public class Weld {
         }
 
         Deployment deployment = createDeployment(resourceLoader, bootstrap);
+
+
         // Set up the container
         bootstrap.startContainer(Environments.SE, deployment);
-
         // Start the container
         bootstrap.startInitialization();
         bootstrap.deployBeans();
@@ -175,10 +188,9 @@ public class Weld {
      * @param strategy strategy of discovering the bean archives
      */
     protected Deployment createDeployment(ResourceLoader resourceLoader, CDI11Bootstrap bootstrap) {
-        DiscoveryStrategy strategy = null;
         Iterable<Metadata<Extension>> loadedExtensions = loadExtensions(WeldSEResourceLoader.getClassLoader(), bootstrap);
         TypeDiscoveryConfiguration typeDiscoveryConfiguration = bootstrap.startExtensions(loadedExtensions);
-        if (Reflections.isClassLoadable(JANDEX_INDEX_CLASS, resourceLoader)) {
+        if (Reflections.isClassLoadable(JANDEX_INDEX_CLASS_NAME, resourceLoader)) {
             Class<?> clazz = Reflections.loadClass(JANDEX_ENABLED_DISCOVERY_STRATEGY_CLASS_STRING, resourceLoader);
             try {
                 strategy = (DiscoveryStrategy) clazz.getConstructor(ResourceLoader.class, Bootstrap.class, TypeDiscoveryConfiguration.class).newInstance(resourceLoader, bootstrap, typeDiscoveryConfiguration);
@@ -188,30 +200,53 @@ public class Weld {
         } else {
             strategy = new DefaultDiscoveryStrategy(resourceLoader, bootstrap);
         }
-        Set<WeldSEBeanDeploymentArchive> discoverArchives = strategy.discoverArchives();
-        return new WeldSEUrlDeployment(resourceLoader, bootstrap, discoverArchives, loadedExtensions);
+        Set<WeldSEBeanDeploymentArchive> discoveredArchives = strategy.discoverArchives();
+
+        String isolation = AccessController.doPrivileged(new GetSystemPropertyAction(COMPOSITE_ARCHIVE_ENABLEMENT_SYSTEM_PROPERTY));
+        Deployment deployment=null;
+        if (isolation != null && Boolean.valueOf(isolation).equals(Boolean.FALSE)) {
+            WeldSEBeanDeploymentArchive archive = mergeToOne(bootstrap, discoveredArchives);
+            deployment = new WeldSEUrlDeployment(resourceLoader, bootstrap, Collections.singleton(archive), loadedExtensions);
+        } else {
+            deployment=  new WeldSEUrlDeployment(resourceLoader, bootstrap, discoveredArchives, loadedExtensions);
+        }
+
+        if (strategy.getClass().getName().equals(JANDEX_ENABLED_DISCOVERY_STRATEGY_CLASS_NAME)) {
+            ClassFileServices classFileServices = new WeldSEClassFileServices(strategy);
+            deployment.getServices().add(ClassFileServices.class, classFileServices);
+        }
+        return deployment;
     }
 
     /**
-     * Utility method allowing managed instances of beans to provide entry points
-     * for non-managed beans (such as {@link WeldContainer}). Should only called
-     * once Weld has finished booting.
+     * Method merging more BeanDeploymentArchives to one. This covers merging all the beans.xml and all the found classes.
+     */
+    private WeldSEBeanDeploymentArchive mergeToOne(CDI11Bootstrap bootstrap, Collection<WeldSEBeanDeploymentArchive> discoveredArchives) {
+        Set<String> beanClasses = new HashSet<String>();
+        Set<URL> urls = new HashSet<URL>();
+        for (BeanDeploymentArchive archive : discoveredArchives) {
+            beanClasses.addAll(archive.getBeanClasses());
+            urls.add(archive.getBeansXml().getUrl());
+        }
+        BeansXml beansXml = bootstrap.parse(urls, true);
+        WeldSEBeanDeploymentArchive archive = new WeldSEBeanDeploymentArchive("main", beanClasses, beansXml);
+        return archive;
+    }
+
+    /**
+     * Utility method allowing managed instances of beans to provide entry points for non-managed beans (such as {@link WeldContainer}). Should only called once
+     * Weld has finished booting.
      *
-     * @param manager  the BeanManager to use to access the managed instance
-     * @param type     the type of the Bean
+     * @param manager the BeanManager to use to access the managed instance
+     * @param type the type of the Bean
      * @param bindings the bean's qualifiers
      * @return a managed instance of the bean
-     * @throws IllegalArgumentException       if the given type represents a type
-     *                                        variable
-     * @throws IllegalArgumentException       if two instances of the same qualifier
-     *                                        type are given
-     * @throws IllegalArgumentException       if an instance of an annotation that is
-     *                                        not a qualifier type is given
-     * @throws UnsatisfiedResolutionException if no beans can be resolved * @throws
-     *                                        AmbiguousResolutionException if the ambiguous dependency
-     *                                        resolution rules fail
-     * @throws IllegalArgumentException       if the given type is not a bean type of
-     *                                        the given bean
+     * @throws IllegalArgumentException if the given type represents a type variable
+     * @throws IllegalArgumentException if two instances of the same qualifier type are given
+     * @throws IllegalArgumentException if an instance of an annotation that is not a qualifier type is given
+     * @throws UnsatisfiedResolutionException if no beans can be resolved * @throws AmbiguousResolutionException if the ambiguous dependency resolution rules
+     *         fail
+     * @throws IllegalArgumentException if the given type is not a bean type of the given bean
      */
     protected <T> T getInstanceByType(BeanManager manager, Class<T> type, Annotation... bindings) {
         final Bean<?> bean = manager.resolve(manager.getBeans(type, bindings));

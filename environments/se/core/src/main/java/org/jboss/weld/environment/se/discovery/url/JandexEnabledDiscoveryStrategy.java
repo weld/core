@@ -80,4 +80,8 @@ public class JandexEnabledDiscoveryStrategy extends DiscoveryStrategy {
         return false;
     }
 
+    public CompositeIndex getCompositeJandexIndex() {
+        return cindex;
+    }
+
 }
