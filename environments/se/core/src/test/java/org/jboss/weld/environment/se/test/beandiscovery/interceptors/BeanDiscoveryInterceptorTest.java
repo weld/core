@@ -26,6 +26,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.impl.BeansXml;
 import org.jboss.shrinkwrap.impl.BeansXml.BeanDiscoveryMode;
+import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.test.arquillian.WeldSEClassPath;
 import org.jboss.weld.environment.se.test.beandiscovery.Cat;
 import org.jboss.weld.environment.se.test.beandiscovery.Dog;
@@ -42,6 +43,7 @@ public class BeanDiscoveryInterceptorTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
+        System.setProperty(Weld.COMPOSITE_ARCHIVE_ENABLEMENT_SYSTEM_PROPERTY, "true");
         WeldSEClassPath archives = ShrinkWrap.create(WeldSEClassPath.class);
         JavaArchive archive01 = ShrinkWrap.create(BeanArchive.class)
                 .addAsManifestResource(new BeansXml(BeanDiscoveryMode.ALL).interceptors(ScopedInterceptor.class, ClassicInterceptor.class), "beans.xml")
