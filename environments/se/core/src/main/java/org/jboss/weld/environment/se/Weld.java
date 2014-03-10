@@ -17,8 +17,11 @@
 package org.jboss.weld.environment.se;
 
 import java.lang.annotation.Annotation;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -33,8 +36,10 @@ import org.jboss.weld.bootstrap.api.CDI11Bootstrap;
 import org.jboss.weld.bootstrap.api.Environments;
 import org.jboss.weld.bootstrap.api.TypeDiscoveryConfiguration;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
+import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.bootstrap.spi.Metadata;
+import org.jboss.weld.environment.se.discovery.CompositeWeldSeBeanDeploymentArchive;
 import org.jboss.weld.environment.se.discovery.url.DefaultDiscoveryStrategy;
 import org.jboss.weld.environment.se.discovery.url.DiscoveryStrategy;
 import org.jboss.weld.environment.se.discovery.url.WeldSEResourceLoader;
@@ -42,6 +47,7 @@ import org.jboss.weld.environment.se.discovery.url.WeldSEUrlDeployment;
 import org.jboss.weld.environment.se.events.ContainerInitialized;
 import org.jboss.weld.metadata.MetadataImpl;
 import org.jboss.weld.resources.spi.ResourceLoader;
+import org.jboss.weld.security.GetSystemPropertyAction;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
@@ -67,6 +73,7 @@ import org.jboss.weld.util.reflection.Reflections;
  */
 public class Weld {
 
+    private static final String COMPOSITE_ARCHIVE_ENABLEMENT_SYSTEM_PROPERTY = "compositeArchive";
     private static final String BOOTSTRAP_IMPL_CLASS_NAME = "org.jboss.weld.bootstrap.WeldBootstrap";
     private static final String ERROR_LOADING_WELD_BOOTSTRAP_EXC_MESSAGE = "Error loading Weld bootstrap, check that Weld is on the classpath";
     public static final String JANDEX_INDEX_CLASS = "org.jboss.jandex.Index";
@@ -188,30 +195,45 @@ public class Weld {
         } else {
             strategy = new DefaultDiscoveryStrategy(resourceLoader, bootstrap);
         }
-        Collection<BeanDeploymentArchive> discoverArchives = strategy.discoverArchives();
-        return new WeldSEUrlDeployment(resourceLoader, bootstrap, discoverArchives, loadedExtensions);
+        Collection<BeanDeploymentArchive> discoveredArchives = strategy.discoverArchives();
+        String compositeArchive = new GetSystemPropertyAction(COMPOSITE_ARCHIVE_ENABLEMENT_SYSTEM_PROPERTY).run();
+        if ("true".equals(compositeArchive)) {
+            BeanDeploymentArchive archive = mergeToOne(bootstrap, discoveredArchives);
+            return new WeldSEUrlDeployment(resourceLoader, bootstrap, Collections.singletonList(archive), loadedExtensions);
+        } else {
+            return new WeldSEUrlDeployment(resourceLoader, bootstrap, discoveredArchives, loadedExtensions);
+        }
     }
 
     /**
-     * Utility method allowing managed instances of beans to provide entry points
-     * for non-managed beans (such as {@link WeldContainer}). Should only called
-     * once Weld has finished booting.
+     * Method merging more BeanDeploymentArchives to one. This covers merging all the beans.xml and all the found classes.
+     */
+    private BeanDeploymentArchive mergeToOne(CDI11Bootstrap bootstrap, Collection<BeanDeploymentArchive> discoveredArchives) {
+        Collection<String> beanClasses = new ArrayList<String>();
+        Collection<URL> urls = new ArrayList<URL>();
+        for (BeanDeploymentArchive archive : discoveredArchives) {
+            beanClasses.addAll(archive.getBeanClasses());
+            urls.add(archive.getBeansXml().getUrl());
+        }
+        BeansXml beansXml = bootstrap.parse(urls);
+        CompositeWeldSeBeanDeploymentArchive archive = new CompositeWeldSeBeanDeploymentArchive(beansXml.toString(), beansXml, beanClasses);
+        return archive;
+    }
+
+    /**
+     * Utility method allowing managed instances of beans to provide entry points for non-managed beans (such as {@link WeldContainer}). Should only called once
+     * Weld has finished booting.
      *
-     * @param manager  the BeanManager to use to access the managed instance
-     * @param type     the type of the Bean
+     * @param manager the BeanManager to use to access the managed instance
+     * @param type the type of the Bean
      * @param bindings the bean's qualifiers
      * @return a managed instance of the bean
-     * @throws IllegalArgumentException       if the given type represents a type
-     *                                        variable
-     * @throws IllegalArgumentException       if two instances of the same qualifier
-     *                                        type are given
-     * @throws IllegalArgumentException       if an instance of an annotation that is
-     *                                        not a qualifier type is given
-     * @throws UnsatisfiedResolutionException if no beans can be resolved * @throws
-     *                                        AmbiguousResolutionException if the ambiguous dependency
-     *                                        resolution rules fail
-     * @throws IllegalArgumentException       if the given type is not a bean type of
-     *                                        the given bean
+     * @throws IllegalArgumentException if the given type represents a type variable
+     * @throws IllegalArgumentException if two instances of the same qualifier type are given
+     * @throws IllegalArgumentException if an instance of an annotation that is not a qualifier type is given
+     * @throws UnsatisfiedResolutionException if no beans can be resolved * @throws AmbiguousResolutionException if the ambiguous dependency resolution rules
+     *         fail
+     * @throws IllegalArgumentException if the given type is not a bean type of the given bean
      */
     protected <T> T getInstanceByType(BeanManager manager, Class<T> type, Annotation... bindings) {
         final Bean<?> bean = manager.resolve(manager.getBeans(type, bindings));
