@@ -1,4 +1,4 @@
-/**
+/*
  * JBoss, Home of Professional Open Source
  * Copyright 2009, Red Hat, Inc. and/or its affiliates, and individual
  * contributors by the @authors tag. See the copyright.txt in the
@@ -19,12 +19,14 @@ package org.jboss.weld.environment.se.discovery.url;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import org.jboss.logging.Logger;
 import org.jboss.weld.bootstrap.api.Bootstrap;
-import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
-import org.jboss.weld.environment.se.discovery.ImmutableBeanDeploymentArchive;
+import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.resources.spi.ResourceLoader;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * Scan the classloader
@@ -38,8 +40,10 @@ import org.jboss.weld.resources.spi.ResourceLoader;
  */
 public class URLScanner {
 
+    private static final String UNABLE_TO_CREATE_JANDEX_URL_HANDLER = "Unable to create the URLHandler instance when the jandex is enabled.";
+    private static final String BAD_URI_SYNTAX_EXCEPTION_TEXT = "Could not read URI: ";
+    private static final String JANDEX_ENABLED_FS_URL_HANDLER_CLASS_STRING = "org.jboss.weld.environment.se.discovery.url.JandexEnabledFileSystemURLHandler";
     private static final Logger log = Logger.getLogger(URLScanner.class);
-
     private static final String FILE = "file";
     // according to JarURLConnection api doc, the separator is "!/"
     private static final String SEPARATOR = "!/";
@@ -47,6 +51,7 @@ public class URLScanner {
     private final String[] resources;
     private final ResourceLoader resourceLoader;
     private final Bootstrap bootstrap;
+    private Collection<BeanArchiveBuilder> builders = new ArrayList<BeanArchiveBuilder>();
 
     public URLScanner(ResourceLoader resourceLoader, Bootstrap bootstrap, String... resources) {
         this.resources = resources;
@@ -54,19 +59,35 @@ public class URLScanner {
         this.bootstrap = bootstrap;
     }
 
-    public BeanDeploymentArchive scan() {
-        FileSystemURLHandler handler = new FileSystemURLHandler();
+    public Collection<BeanArchiveBuilder> scan() {
+        URLHandler handler = null;
         for (String resourceName : resources) {
             // grab all the URLs for this resource
             for (URL url : resourceLoader.getResources(resourceName)) {
+                if (Reflections.isClassLoadable(Weld.JANDEX_INDEX_CLASS, resourceLoader)) {
+                    Class<?> clazz = Reflections.loadClass(JANDEX_ENABLED_FS_URL_HANDLER_CLASS_STRING, resourceLoader);
+                    try {
+                        handler = (URLHandler) clazz.getConstructor(String.class, Bootstrap.class).newInstance(getUrlPath(resourceName, url).toString(),
+                                bootstrap);
+                    } catch (Exception ex) {
+                        throw new IllegalStateException(UNABLE_TO_CREATE_JANDEX_URL_HANDLER, ex);
+                    }
+                } else {
+                    try {
+                        handler = new FileSystemURLHandler(getUrlPath(resourceName, url), bootstrap);
+                    } catch (URISyntaxException e) {
+                        throw new IllegalStateException(BAD_URI_SYNTAX_EXCEPTION_TEXT + resourceName, e);
+                    }
+                }
                 try {
-                    handler.handle(getUrlPath(resourceName, url));
+                    BeanArchiveBuilder builder = handler.handle(getUrlPath(resourceName, url));
+                    builders.add(builder);
                 } catch (URISyntaxException e) {
-                    log.warn("could not read: " + resourceName, e);
+                    throw new IllegalStateException(BAD_URI_SYNTAX_EXCEPTION_TEXT + resourceName, e);
                 }
             }
         }
-        return new ImmutableBeanDeploymentArchive("classpath", handler.getDiscoveredClasses(), bootstrap.parse(handler.getDiscoveredBeansXmlUrls(), true));
+        return builders;
     }
 
     private String getUrlPath(String resourceName, URL url) throws URISyntaxException {
@@ -99,8 +120,9 @@ public class URLScanner {
         return urlPath;
     }
 
+
     /**
-     * determine resource type (eg: jar, file, bundle)
+     * Determine resource type (eg: jar, file, bundle)
      */
     private String getUrlType(String urlPath) {
         String urlType = FILE;
