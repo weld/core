@@ -477,6 +477,8 @@ public class WeldStartup {
     protected Collection<ContextHolder<? extends Context>> createContexts(ServiceRegistry services) {
         List<ContextHolder<? extends Context>> contexts = new ArrayList<ContextHolder<? extends Context>>();
 
+        BeanIdentifierIndex beanIdentifierIndex = services.get(BeanIdentifierIndex.class);
+
         /*
         * Register a full set of bound and unbound contexts. Although we may not use all of
         * these (e.g. if we are running in a servlet environment) they may be
@@ -484,17 +486,17 @@ public class WeldStartup {
         */
         contexts.add(new ContextHolder<ApplicationContext>(new ApplicationContextImpl(contextId), ApplicationContext.class, UnboundLiteral.INSTANCE));
         contexts.add(new ContextHolder<SingletonContext>(new SingletonContextImpl(contextId), SingletonContext.class, UnboundLiteral.INSTANCE));
-        contexts.add(new ContextHolder<BoundSessionContext>(new BoundSessionContextImpl(contextId), BoundSessionContext.class, BoundLiteral.INSTANCE));
-        contexts.add(new ContextHolder<BoundConversationContext>(new BoundConversationContextImpl(contextId), BoundConversationContext.class, BoundLiteral.INSTANCE));
+        contexts.add(new ContextHolder<BoundSessionContext>(new BoundSessionContextImpl(contextId, beanIdentifierIndex), BoundSessionContext.class, BoundLiteral.INSTANCE));
+        contexts.add(new ContextHolder<BoundConversationContext>(new BoundConversationContextImpl(contextId, beanIdentifierIndex), BoundConversationContext.class, BoundLiteral.INSTANCE));
         contexts.add(new ContextHolder<BoundRequestContext>(new BoundRequestContextImpl(contextId), BoundRequestContext.class, BoundLiteral.INSTANCE));
         contexts.add(new ContextHolder<RequestContext>(new RequestContextImpl(contextId), RequestContext.class, UnboundLiteral.INSTANCE));
         contexts.add(new ContextHolder<DependentContext>(new DependentContextImpl(services.get(ContextualStore.class)), DependentContext.class, UnboundLiteral.INSTANCE));
 
         if (Reflections.isClassLoadable(ServletApiAbstraction.SERVLET_CONTEXT_CLASS_NAME, WeldClassLoaderResourceLoader.INSTANCE)) {
             // Register the Http contexts if not in
-            contexts.add(new ContextHolder<HttpSessionContext>(new HttpSessionContextImpl(contextId, services.get(BeanIdentifierIndex.class)), HttpSessionContext.class, HttpLiteral.INSTANCE));
-            contexts.add(new ContextHolder<HttpSessionDestructionContext>(new HttpSessionDestructionContext(contextId, services.get(BeanIdentifierIndex.class)), HttpSessionDestructionContext.class, HttpLiteral.INSTANCE));
-            contexts.add(new ContextHolder<HttpConversationContext>(new LazyHttpConversationContextImpl(contextId), HttpConversationContext.class, HttpLiteral.INSTANCE));
+            contexts.add(new ContextHolder<HttpSessionContext>(new HttpSessionContextImpl(contextId, beanIdentifierIndex), HttpSessionContext.class, HttpLiteral.INSTANCE));
+            contexts.add(new ContextHolder<HttpSessionDestructionContext>(new HttpSessionDestructionContext(contextId, beanIdentifierIndex), HttpSessionDestructionContext.class, HttpLiteral.INSTANCE));
+            contexts.add(new ContextHolder<HttpConversationContext>(new LazyHttpConversationContextImpl(contextId, beanIdentifierIndex), HttpConversationContext.class, HttpLiteral.INSTANCE));
             contexts.add(new ContextHolder<HttpRequestContext>(new HttpRequestContextImpl(contextId), HttpRequestContext.class, HttpLiteral.INSTANCE));
         }
 
@@ -537,9 +539,8 @@ public class WeldStartup {
         return beanDeployment == null ? null : beanDeployment.getBeanManager().getCurrent();
     }
 
-
     /**
-     * Right now we only index all session scoped beans.
+     * Right now we only index all session and conversation scoped beans.
      *
      * @return the set of beans the index should be built from
      */
@@ -547,7 +548,7 @@ public class WeldStartup {
         Set<Bean<?>> beans = new HashSet<Bean<?>>();
         for (BeanDeployment beanDeployment : getBeanDeployments()) {
             for (Bean<?> bean : beanDeployment.getBeanManager().getBeans()) {
-                if(bean.getScope().equals(SessionScoped.class)) {
+                if (bean.getScope().equals(SessionScoped.class) || bean.getScope().equals(ConversationScoped.class)) {
                     beans.add(bean);
                 }
             }
