@@ -16,11 +16,14 @@
  */
 package org.jboss.weld.environment.se.test.beans;
 
-import org.jboss.weld.environment.se.events.ContainerInitialized;
-
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Destroyed;
+import javax.enterprise.context.Initialized;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.enterprise.inject.spi.Extension;
+
+import org.jboss.weld.environment.se.events.ContainerInitialized;
 
 /**
  * Tests the observing of both built-in and application-specific events.
@@ -32,6 +35,8 @@ public class ObserverTestBean implements Extension {
     private static boolean builtInObserved = false;
     private static boolean customObserved = false;
     private static boolean initObserved = false;
+    private static boolean initializedObserved = false;
+    private static boolean destroyedObserved = false;
 
     // TODO PLM injection isn't supported in extensions
     // @Inject MainTestBean bean;
@@ -54,10 +59,20 @@ public class ObserverTestBean implements Extension {
         //assert this.bean != null;
     }
 
+    public void observeInitialized(@Observes @Initialized(ApplicationScoped.class) Object event) {
+        initializedObserved = event != null;
+    }
+
+    public void observeDestroyed(@Observes @Destroyed(ApplicationScoped.class) Object event) {
+        destroyedObserved = event != null;
+    }
+
     public static void reset() {
         customObserved = false;
         builtInObserved = false;
         initObserved = false;
+        initializedObserved = false;
+        destroyedObserved = false;
     }
 
     /**
@@ -81,4 +96,11 @@ public class ObserverTestBean implements Extension {
         return initObserved;
     }
 
+    public static boolean isInitializedObserved() {
+        return initializedObserved;
+    }
+
+    public static boolean isDestroyedObserved() {
+        return destroyedObserved;
+    }
 }
