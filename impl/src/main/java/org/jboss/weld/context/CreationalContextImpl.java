@@ -45,6 +45,8 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
 
     private static final long serialVersionUID = 7375854583908262422L;
 
+    private static final SerializationProxy SERIALIZATION_PROXY = new SerializationProxy();
+
     @SuppressWarnings(value = "SE_TRANSIENT_FIELD_NOT_RESTORED", justification = "Not needed after initial creation")
     private transient Map<Contextual<?>, Object> incompleteInstances;
     @SuppressWarnings(value = "SE_TRANSIENT_FIELD_NOT_RESTORED", justification = "Not needed after initial creation")
@@ -58,7 +60,7 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
 
     private transient List<ResourceReference<?>> resourceReferences;
 
-    private boolean constructorInterceptionSuppressed;
+    private transient boolean constructorInterceptionSuppressed;
 
     private transient List<AroundConstructCallback<T>> aroundConstructCallbacks;
 
@@ -77,13 +79,20 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
         this.constructorInterceptionSuppressed = false;
     }
 
+    private CreationalContextImpl() {
+        this.contextual = null;
+        this.parentCreationalContext = null;
+        // We can't use immutable empty lists because of some rare scenarios with Instance.get()
+        this.dependentInstances = Collections.synchronizedList(new ArrayList<ContextualInstance<?>>());
+        this.parentDependentInstances = Collections.synchronizedList(new ArrayList<ContextualInstance<?>>());
+    }
+
     public void push(T incompleteInstance) {
         if (incompleteInstances == null) {
             incompleteInstances = new HashMap<Contextual<?>, Object>();
         }
         incompleteInstances.put(contextual, incompleteInstance);
     }
-
 
     public <S> CreationalContextImpl<S> getCreationalContext(Contextual<S> contextual) {
         return new CreationalContextImpl<S>(contextual, incompleteInstances, dependentInstances, this);
@@ -94,7 +103,7 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
     }
 
     public <S> S getIncompleteInstance(Contextual<S> bean) {
-        return incompleteInstances == null ? null : Reflections.<S>cast(incompleteInstances.get(bean));
+        return incompleteInstances == null ? null : Reflections.<S> cast(incompleteInstances.get(bean));
     }
 
     public boolean containsIncompleteInstance(Contextual<?> bean) {
@@ -147,24 +156,23 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
     // Serialization
     protected Object writeReplace() throws ObjectStreamException {
         synchronized (dependentInstances) {
-            for (Iterator<ContextualInstance<?>> iterator = dependentInstances.iterator(); iterator.hasNext(); ) {
+            for (Iterator<ContextualInstance<?>> iterator = dependentInstances.iterator(); iterator.hasNext();) {
                 ContextualInstance<?> instance = iterator.next();
                 if (!(instance.getInstance() instanceof Serializable)) {
                     /*
                      * This non-serializable instance is a dependency of a passivation capable enclosing bean. This means that:
                      *
-                     * 1) The dependency was injected into a transient field, constructor or initializer injection point of the
-                     * enclosing bean instance (otherwise it would not pass deployment validation) and is no longer retained by the
-                     * enclosing bean instance. In that case we can safely destroy the dependent instance now.
+                     * 1) The dependency was injected into a transient field, constructor or initializer injection point of the enclosing bean instance
+                     * (otherwise it would not pass deployment validation) and is no longer retained by the enclosing bean instance. In that case we can safely
+                     * destroy the dependent instance now.
                      *
-                     * 2) Same as above but the enclosing bean instance retained a reference in a field that Weld has no control of.
-                     * If that is the case and the bean class does not implement serialization properly, serialization of the bean
-                     * instance is going to fail anyway so it is safe to destroy the dependent instance now.
+                     * 2) Same as above but the enclosing bean instance retained a reference in a field that Weld has no control of. If that is the case and the
+                     * bean class does not implement serialization properly, serialization of the bean instance is going to fail anyway so it is safe to destroy
+                     * the dependent instance now.
                      *
-                     * 3) Same as above but the bean class implements serialization properly (writeObject) so that it is able to
-                     * reconstruct the state of the injected dependency on activation. If that's the case we would probably won't be
-                     * able to destroy the dependency later on anyway since the identity of the dependent instance would change.
-                     * Destroying it now may be risky in certain circumstances.
+                     * 3) Same as above but the bean class implements serialization properly (writeObject) so that it is able to reconstruct the state of the
+                     * injected dependency on activation. If that's the case we would probably won't be able to destroy the dependency later on anyway since the
+                     * identity of the dependent instance would change. Destroying it now may be risky in certain circumstances.
                      *
                      * @see https://issues.jboss.org/browse/WELD-1076
                      */
@@ -172,6 +180,10 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
                     iterator.remove();
                 }
             }
+        }
+        // Return a serialization proxy for an "empty" instance
+        if (parentCreationalContext == null && dependentInstances.isEmpty() && (parentDependentInstances == null || parentDependentInstances.isEmpty())) {
+            return SERIALIZATION_PROXY;
         }
         return this;
     }
@@ -189,6 +201,7 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
 
     /**
      * Destroys dependent instance
+     *
      * @param instance
      * @return true if the instance was destroyed, false otherwise
      */
@@ -237,4 +250,20 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
         }
         this.aroundConstructCallbacks.add(callback);
     }
+
+    /**
+     *
+     * @author Martin Kouba
+     */
+    private static class SerializationProxy implements Serializable {
+
+        private static final long serialVersionUID = 5261112077771498097L;
+
+        @java.lang.SuppressWarnings("rawtypes")
+        private Object readResolve() throws ObjectStreamException {
+            return new CreationalContextImpl();
+        }
+
+    }
+
 }
