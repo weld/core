@@ -39,6 +39,7 @@ import org.jboss.weld.environment.se.discovery.url.DiscoveryStrategy;
 import org.jboss.weld.environment.se.discovery.url.WeldSEResourceLoader;
 import org.jboss.weld.environment.se.discovery.url.WeldSEUrlDeployment;
 import org.jboss.weld.environment.se.events.ContainerInitialized;
+import org.jboss.weld.literal.InitializedLiteral;
 import org.jboss.weld.metadata.MetadataImpl;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.util.reflection.Reflections;
@@ -119,13 +120,15 @@ public class Weld {
         bootstrap.validateBeans();
         bootstrap.endInitialization();
 
-        // Set up the ShutdownManager for later
-        this.shutdownManager = new ShutdownManager(bootstrap);
+        final BeanManager manager = bootstrap.getManager(deployment.loadBeanDeploymentArchive(WeldContainer.class));
 
-        WeldContainer container = getInstanceByType(bootstrap.getManager(deployment.loadBeanDeploymentArchive(WeldContainer.class)), WeldContainer.class);
+        // Set up the ShutdownManager for later
+        this.shutdownManager = new ShutdownManager(bootstrap, manager);
+
+        WeldContainer container = getInstanceByType(manager, WeldContainer.class);
 
         // notify container initialized
-        container.event().select(ContainerInitialized.class).fire(new ContainerInitialized());
+        container.event().select(ContainerInitialized.class, InitializedLiteral.APPLICATION).fire(new ContainerInitialized());
 
         return container;
     }

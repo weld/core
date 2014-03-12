@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.environment.se.test;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -68,12 +69,15 @@ public class WeldMainTest {
 
         assertTrue(ObserverTestBean.isBuiltInObserved());
         assertTrue(ObserverTestBean.isCustomObserved());
+        assertTrue(ObserverTestBean.isInitializedObserved());
+        assertFalse(ObserverTestBean.isDestroyedObserved());
 
         // moved as per WELD-949
         assertTrue(ObserverTestBean.isInitObserved());
         assertTrue(InitObserverTestBean.isInitObserved());
 
         weld.shutdown();
+        assertTrue(ObserverTestBean.isDestroyedObserved());
     }
 
 }

@@ -16,8 +16,11 @@
  */
 package org.jboss.weld.environment.se;
 
+import javax.enterprise.inject.spi.BeanManager;
+
 import org.jboss.logging.Logger;
 import org.jboss.weld.bootstrap.api.Bootstrap;
+import org.jboss.weld.literal.DestroyedLiteral;
 
 public class ShutdownManager {
 
@@ -26,10 +29,11 @@ public class ShutdownManager {
     private boolean hasShutdownBeenCalled = false;
 
     private final Bootstrap bootstrap;
+    private final BeanManager beanManager;
 
-    ShutdownManager(Bootstrap bootstrap) {
-        super();
+    ShutdownManager(Bootstrap bootstrap, BeanManager beanManager) {
         this.bootstrap = bootstrap;
+        this.beanManager = beanManager;
     }
 
     /**
@@ -40,7 +44,11 @@ public class ShutdownManager {
 
             if (!hasShutdownBeenCalled) {
                 hasShutdownBeenCalled = true;
-                bootstrap.shutdown();
+                try {
+                    beanManager.fireEvent(new Object(), DestroyedLiteral.APPLICATION);
+                } finally {
+                    bootstrap.shutdown();
+                }
             } else {
                 log.debug("Skipping spurious call to shutdown");
                 log.tracev("Spurious call to shutdown from: {0}", Thread.currentThread().getStackTrace());
