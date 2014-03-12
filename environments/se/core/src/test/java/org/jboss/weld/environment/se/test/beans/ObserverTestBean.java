@@ -38,25 +38,19 @@ public class ObserverTestBean implements Extension {
     private static boolean initializedObserved = false;
     private static boolean destroyedObserved = false;
 
-    // TODO PLM injection isn't supported in extensions
-    // @Inject MainTestBean bean;
-
     public ObserverTestBean() {
     }
 
     public void observeBuiltInEvent(@Observes AfterDeploymentValidation after) {
         builtInObserved = true;
-        // assert this.bean == null;
     }
 
     public void observeCustomEvent(@Observes CustomEvent event) {
         customObserved = true;
-        //assert this.bean != null;
     }
 
     public void observeInitEvent(@Observes ContainerInitialized event) {
         initObserved = true;
-        //assert this.bean != null;
     }
 
     public void observeInitialized(@Observes @Initialized(ApplicationScoped.class) Object event) {
