@@ -267,7 +267,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     */
     private final transient Set<BeanManagerImpl> childActivities;
 
-    private final AtomicInteger childIds;
+    private final transient AtomicInteger childIds;
+
     private final String id;
     private final String contextId;
 

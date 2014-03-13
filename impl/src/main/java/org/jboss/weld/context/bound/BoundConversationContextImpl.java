@@ -4,13 +4,17 @@ import org.jboss.weld.context.AbstractConversationContext;
 import org.jboss.weld.context.beanstore.BoundBeanStore;
 import org.jboss.weld.context.beanstore.MapBeanStore;
 import org.jboss.weld.context.beanstore.NamingScheme;
+import org.jboss.weld.serialization.BeanIdentifierIndex;
 
 import java.util.Map;
 
 public class BoundConversationContextImpl extends AbstractConversationContext<BoundRequest, Map<String, Object>> implements BoundConversationContext {
 
-    public BoundConversationContextImpl(String contextId) {
-        super(contextId);
+    // There is no need to store FQCN in a session key
+    private static final String NAMING_SCHEME_PREFIX = "WELD_BC";
+
+    public BoundConversationContextImpl(String contextId, BeanIdentifierIndex beanIdentifierIndex) {
+        super(contextId, beanIdentifierIndex);
     }
 
     @Override
@@ -56,6 +60,11 @@ public class BoundConversationContextImpl extends AbstractConversationContext<Bo
     @Override
     protected Map<String, Object> getSessionFromRequest(BoundRequest request, boolean create) {
         return request.getSessionMap(create);
+    }
+
+    @Override
+    protected String getNamingSchemePrefix() {
+        return NAMING_SCHEME_PREFIX;
     }
 
 }

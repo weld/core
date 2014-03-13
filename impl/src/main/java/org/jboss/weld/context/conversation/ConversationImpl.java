@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.context.conversation;
 
+import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
@@ -39,10 +40,13 @@ public class ConversationImpl implements ManagedConversation, Serializable {
     private static final long serialVersionUID = -5566903049468084035L;
 
     private String id;
+
     private boolean _transient;
+
     private long timeout;
 
-    private final ReentrantLock concurrencyLock;
+    private transient ReentrantLock concurrencyLock;
+
     private long lastUsed;
 
     private BeanManagerImpl manager;
@@ -89,7 +93,7 @@ public class ConversationImpl implements ManagedConversation, Serializable {
     private void notifyConversationContext() {
         ConversationContext context = getActiveConversationContext();
         if (context instanceof AbstractConversationContext) {
-            AbstractConversationContext abstractConversationContext = (AbstractConversationContext) context;
+            AbstractConversationContext<?, ?> abstractConversationContext = (AbstractConversationContext<?, ?>) context;
             abstractConversationContext.conversationPromotedToLongRunning(this);
         }
     }
@@ -199,6 +203,11 @@ public class ConversationImpl implements ManagedConversation, Serializable {
 
     private ConversationContext getActiveConversationContext() {
         return (ConversationContext) manager.getUnwrappedContext(ConversationScoped.class);
+    }
+
+    private Object readResolve() throws ObjectStreamException {
+        this.concurrencyLock = new ReentrantLock();
+        return this;
     }
 
 }

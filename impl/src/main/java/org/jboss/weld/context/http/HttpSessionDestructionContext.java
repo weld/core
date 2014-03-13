@@ -22,7 +22,7 @@ import javax.enterprise.context.SessionScoped;
 import javax.servlet.http.HttpSession;
 
 import org.jboss.weld.context.AbstractBoundContext;
-import org.jboss.weld.context.beanstore.BeanIdentifierIndexNamingScheme;
+import org.jboss.weld.context.beanstore.SimpleBeanIdentifierIndexNamingScheme;
 import org.jboss.weld.context.beanstore.NamingScheme;
 import org.jboss.weld.context.beanstore.http.EagerSessionBeanStore;
 import org.jboss.weld.serialization.BeanIdentifierIndex;
@@ -41,7 +41,7 @@ public class HttpSessionDestructionContext extends AbstractBoundContext<HttpSess
 
     public HttpSessionDestructionContext(String contextId, BeanIdentifierIndex index) {
         super(contextId, true);
-        this.namingScheme = new BeanIdentifierIndexNamingScheme(HttpSessionContextImpl.INDEX_NAMING_SCHEME_PREFIX, index);
+        this.namingScheme = new SimpleBeanIdentifierIndexNamingScheme(HttpSessionContextImpl.NAMING_SCHEME_PREFIX, index);
     }
 
     @Override

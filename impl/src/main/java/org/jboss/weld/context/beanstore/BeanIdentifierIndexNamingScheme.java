@@ -23,18 +23,18 @@ import org.jboss.weld.serialization.BeanIdentifierIndex;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 
 /**
- * A naming scheme which makes use of {@link BeanIdentifierIndex} if possible.
+ * An abstract naming scheme which makes use of {@link BeanIdentifierIndex} if possible.
  *
  * @author Martin Kouba
  */
-public class BeanIdentifierIndexNamingScheme extends SimpleNamingScheme {
+public abstract class BeanIdentifierIndexNamingScheme extends AbstractNamingScheme {
 
     private static final String FALLBACK_FLAG = "F_";
 
     private final BeanIdentifierIndex index;
 
-    public BeanIdentifierIndexNamingScheme(String prefix, BeanIdentifierIndex index) {
-        super(prefix);
+    public BeanIdentifierIndexNamingScheme(String delimiter, BeanIdentifierIndex index) {
+        super(delimiter);
         this.index = index;
     }
 

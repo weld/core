@@ -45,6 +45,7 @@ import org.jboss.weld.context.conversation.ConversationImpl;
 import org.jboss.weld.literal.DestroyedLiteral;
 import org.jboss.weld.logging.ConversationLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.serialization.BeanIdentifierIndex;
 
 
 /**
@@ -73,13 +74,16 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
 
     private final BeanManagerImpl manager;
 
-    public AbstractConversationContext(String contextId) {
+    private final BeanIdentifierIndex beanIdentifierIndex;
+
+    public AbstractConversationContext(String contextId, BeanIdentifierIndex beanIdentifierIndex) {
         super(contextId, true);
         this.parameterName = new AtomicReference<String>(PARAMETER_NAME);
         this.defaultTimeout = new AtomicLong(DEFAULT_TIMEOUT);
         this.concurrentAccessTimeout = new AtomicLong(CONCURRENT_ACCESS_TIMEOUT);
         this.associated = new ThreadLocal<R>();
         this.manager = Container.instance(contextId).deploymentManager();
+        this.beanIdentifierIndex = beanIdentifierIndex;
     }
 
     @Override
@@ -196,7 +200,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
         setRequestAttribute(getRequest(), CURRENT_CONVERSATION_ATTRIBUTE_NAME, conversation);
 
         // Set a temporary bean store, this will be attached at the end of the request if needed
-        NamingScheme namingScheme = new ConversationNamingScheme(ConversationContext.class.getName(), "transient");
+        NamingScheme namingScheme = new ConversationNamingScheme(getNamingSchemePrefix(), "transient", beanIdentifierIndex);
         setBeanStore(createRequestBeanStore(namingScheme, getRequest()));
         setRequestAttribute(getRequest(), ConversationNamingScheme.PARAMETER_NAME, namingScheme);
     }
@@ -204,7 +208,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
     protected void associateRequest(ManagedConversation conversation) {
         setRequestAttribute(getRequest(), CURRENT_CONVERSATION_ATTRIBUTE_NAME, conversation);
 
-        NamingScheme namingScheme = new ConversationNamingScheme(ConversationContext.class.getName(), conversation.getId());
+        NamingScheme namingScheme = new ConversationNamingScheme(getNamingSchemePrefix(), conversation.getId(), beanIdentifierIndex);
         setBeanStore(createRequestBeanStore(namingScheme, getRequest()));
         getBeanStore().attach();
     }
@@ -375,7 +379,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
     protected void destroyConversation(S session, String id) {
         if (session != null) {
             // session can be null as we may have nothing in the session
-            setBeanStore(createSessionBeanStore(new ConversationNamingScheme(ConversationContext.class.getName(), id), session));
+            setBeanStore(createSessionBeanStore(new ConversationNamingScheme(getNamingSchemePrefix(), id, beanIdentifierIndex), session));
             getBeanStore().attach();
             destroy();
             getBeanStore().detach();
@@ -509,6 +513,8 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
     protected abstract BoundBeanStore createSessionBeanStore(NamingScheme namingScheme, S session);
 
     protected abstract S getSessionFromRequest(R request, boolean create);
+
+    protected abstract String getNamingSchemePrefix();
 
     /**
      * Check if the context is currently associated

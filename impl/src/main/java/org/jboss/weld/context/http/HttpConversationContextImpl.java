@@ -8,12 +8,16 @@ import org.jboss.weld.context.beanstore.BoundBeanStore;
 import org.jboss.weld.context.beanstore.NamingScheme;
 import org.jboss.weld.context.beanstore.http.EagerSessionBeanStore;
 import org.jboss.weld.context.beanstore.http.LazySessionBeanStore;
+import org.jboss.weld.serialization.BeanIdentifierIndex;
 import org.jboss.weld.servlet.SessionHolder;
 
 public class HttpConversationContextImpl extends AbstractConversationContext<HttpServletRequest, HttpSession> implements HttpConversationContext {
 
-    public HttpConversationContextImpl(String contextId) {
-        super(contextId);
+    // There is no need to store FQCN in a session key
+    private static final String NAMING_SCHEME_PREFIX = "WELD_C";
+
+    public HttpConversationContextImpl(String contextId, BeanIdentifierIndex beanIdentifierIndex) {
+        super(contextId, beanIdentifierIndex);
     }
 
     @Override
@@ -65,5 +69,10 @@ public class HttpConversationContextImpl extends AbstractConversationContext<Htt
     @Override
     protected HttpSession getSessionFromRequest(HttpServletRequest request, boolean create) {
         return SessionHolder.getSession(request, create);
+    }
+
+    @Override
+    protected String getNamingSchemePrefix() {
+        return NAMING_SCHEME_PREFIX;
     }
 }
