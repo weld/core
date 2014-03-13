@@ -44,9 +44,8 @@ public abstract class DiscoveryStrategy {
         this.bootstrap = bootstrap;
     }
 
-
     /**
-     * Discover and return all the BeanDeploymentArchives found using the URLScanner.scan() method.
+     * Discovers and return all the BeanDeploymentArchives found using the URLScanner.scan() method.
      */
     public Set<WeldSEBeanDeploymentArchive> discoverArchives() {
         builders = new URLScanner(resourceLoader, bootstrap, AbstractWeldSEDeployment.RESOURCES).scan();

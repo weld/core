@@ -23,7 +23,7 @@ import org.jboss.weld.resources.spi.ClassFileInfoException;
 import com.google.common.cache.LoadingCache;
 
 /**
- * A store and the windowd to the main information about the class indexed by jandex in Weld SE.
+ * A store and the access point to the main information about the class that was indexed by jandex in Weld SE.
  *
  * @author Martin Kouba
  * @author Matej Briškár
@@ -56,12 +56,6 @@ public class WeldSEClassFileInfo implements ClassFileInfo {
 
     private static final Logger log = Logger.getLogger(WeldSEClassFileInfo.class);
 
-    /**
-     *
-     * @param className
-     * @param index
-     * @param annotationClassAnnotationsCache
-     */
     public WeldSEClassFileInfo(String className, IndexView index, LoadingCache<DotName, Set<String>> annotationClassAnnotationsCache, ClassLoader classLoader) {
         this.index = index;
         this.annotationClassAnnotationsCache = annotationClassAnnotationsCache;
@@ -174,7 +168,6 @@ public class WeldSEClassFileInfo implements ClassFileInfo {
     }
 
     private String getPackageName(DotName name) {
-        String packageName;
         if (name.isComponentized()) {
             return name.prefix().toString();
         } else {
