@@ -31,6 +31,7 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 
+import org.jboss.logging.Logger;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.CDI11Bootstrap;
 import org.jboss.weld.bootstrap.api.Environments;
@@ -75,6 +76,8 @@ import org.jboss.weld.util.reflection.Reflections;
  */
 public class Weld {
 
+    private static final String SYSTEM_PROPERTY_STRING = "System property ";
+    private static final Logger log = Logger.getLogger(Weld.class);
     private static final String JANDEX_ENABLED_DISCOVERY_STRATEGY_CLASS_NAME = "org.jboss.weld.environment.se.discovery.url.JandexEnabledDiscoveryStrategy";
     public static final String COMPOSITE_ARCHIVE_ENABLEMENT_SYSTEM_PROPERTY = "org.jboss.weld.se.archive.isolation";
     private static final String BOOTSTRAP_IMPL_CLASS_NAME = "org.jboss.weld.bootstrap.WeldBootstrap";
@@ -191,20 +194,26 @@ public class Weld {
             Class<?> clazz = Reflections.loadClass(JANDEX_ENABLED_DISCOVERY_STRATEGY_CLASS_STRING, resourceLoader);
             try {
                 strategy = (DiscoveryStrategy) clazz.getConstructor(ResourceLoader.class, Bootstrap.class, TypeDiscoveryConfiguration.class).newInstance(resourceLoader, bootstrap, typeDiscoveryConfiguration);
+                log.debug("For the deployment, JandexEnabledDiscoveryStrategy is used.");
             } catch (Exception e) {
                 throw new IllegalStateException("Unable to instantiate jandex discovery strategy", e);
             }
         } else {
             strategy = new DefaultDiscoveryStrategy(resourceLoader, bootstrap);
+            log.debug("For the deployment, DefaultDiscoveryStrategy is used.");
         }
         Set<WeldSEBeanDeploymentArchive> discoveredArchives = strategy.discoverArchives();
 
         String isolation = AccessController.doPrivileged(new GetSystemPropertyAction(COMPOSITE_ARCHIVE_ENABLEMENT_SYSTEM_PROPERTY));
         Deployment deployment=null;
         if (isolation != null && Boolean.valueOf(isolation).equals(Boolean.FALSE)) {
+            log.debug(SYSTEM_PROPERTY_STRING + COMPOSITE_ARCHIVE_ENABLEMENT_SYSTEM_PROPERTY
+                    + " is set to false value, so only one bean archive will be created.");
             WeldSEBeanDeploymentArchive archive = mergeToOne(bootstrap, discoveredArchives);
             deployment = new WeldSEUrlDeployment(resourceLoader, bootstrap, Collections.singleton(archive), loadedExtensions);
         } else {
+            log.debug(SYSTEM_PROPERTY_STRING + COMPOSITE_ARCHIVE_ENABLEMENT_SYSTEM_PROPERTY
+                    + " is on default true value, creating multiple bean archives if needed.");
             deployment=  new WeldSEUrlDeployment(resourceLoader, bootstrap, discoveredArchives, loadedExtensions);
         }
 
@@ -216,7 +225,7 @@ public class Weld {
     }
 
     /**
-     * Method merging more BeanDeploymentArchives to one. This covers merging all the beans.xml and all the found classes.
+     * Method merging more BeanDeploymentArchives to one. This covers merging all the beans.xml into one and making a collection of all the found classes.
      */
     private WeldSEBeanDeploymentArchive mergeToOne(CDI11Bootstrap bootstrap, Collection<WeldSEBeanDeploymentArchive> discoveredArchives) {
         Set<String> beanClasses = new HashSet<String>();

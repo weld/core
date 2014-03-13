@@ -32,7 +32,12 @@ import org.jboss.weld.bootstrap.api.TypeDiscoveryConfiguration;
 import org.jboss.weld.environment.se.discovery.WeldSEBeanDeploymentArchive;
 import org.jboss.weld.resources.spi.ResourceLoader;
 
-
+/**
+ * An implementation of {@link DiscoveryStrategy} that is used when the jandex is available. Thanks to the jandex. there is a posibility to support annotated
+ * bean discovery mode.
+ *
+ * @author Matej Briškár
+ */
 public class JandexEnabledDiscoveryStrategy extends DiscoveryStrategy {
 
     private final Set<DotName> beanDefiningAnnotations = new HashSet<DotName>();

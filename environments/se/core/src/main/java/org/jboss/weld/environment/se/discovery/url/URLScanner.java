@@ -58,6 +58,11 @@ public class URLScanner {
         this.bootstrap = bootstrap;
     }
 
+    /**
+     * Scan all the resources and create {@link BeanArchiveBuilder} for each
+     *
+     * @return Collection<BeanArchiveBuilder> collection of the {@link BeanArchiveBuilder}-s that were created.
+     */
     public Collection<BeanArchiveBuilder> scan() {
         URLHandler handler = null;
         for (String resourceName : resources) {
@@ -119,6 +124,9 @@ public class URLScanner {
         return urlPath;
     }
 
+    /**
+     * Create an ID that will be used for the bean archive calculated from the url path.
+     */
     private String getId(String urlPath) {
         final int index = urlPath.lastIndexOf(File.separatorChar);
         if (index != -1 && index + 1 < urlPath.length()) {
