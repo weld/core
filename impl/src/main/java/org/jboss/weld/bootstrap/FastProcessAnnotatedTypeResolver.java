@@ -109,13 +109,10 @@ public class FastProcessAnnotatedTypeResolver extends AbstractBootstrapService {
         }
     }
 
-    private final ClassFileServices classFileInfoServices;
     private final Set<ExtensionObserverMethodImpl<?, ?>> catchAllObservers;
     private final Map<ExtensionObserverMethodImpl<?, ?>, Predicate<ClassFileInfo>> observers;
 
-    public FastProcessAnnotatedTypeResolver(ClassFileServices classFileInfoServices, Iterable<ObserverMethod<?>> observers)
-            throws UnsupportedObserverMethodException {
-        this.classFileInfoServices = classFileInfoServices;
+    public FastProcessAnnotatedTypeResolver(Iterable<ObserverMethod<?>> observers) throws UnsupportedObserverMethodException {
         this.catchAllObservers = Sets.newHashSet();
         this.observers = new LinkedHashMap<ExtensionObserverMethodImpl<?, ?>, Predicate<ClassFileInfo>>();
         for (ObserverMethod<?> o : observers) {
@@ -205,11 +202,11 @@ public class FastProcessAnnotatedTypeResolver extends AbstractBootstrapService {
      * @param className the specified class name
      * @return the set of resolved ProcessAnnotatedType observer methods
      */
-    public Set<ExtensionObserverMethodImpl<?, ?>> resolveProcessAnnotatedTypeObservers(String className) {
+    public Set<ExtensionObserverMethodImpl<?, ?>> resolveProcessAnnotatedTypeObservers(ClassFileServices classFileServices, String className) {
         Set<ExtensionObserverMethodImpl<?, ?>> result = new HashSet<ExtensionObserverMethodImpl<?, ?>>();
         result.addAll(catchAllObservers);
 
-        ClassFileInfo classInfo = classFileInfoServices.getClassFileInfo(className);
+        ClassFileInfo classInfo = classFileServices.getClassFileInfo(className);
         for (Map.Entry<ExtensionObserverMethodImpl<?, ?>, Predicate<ClassFileInfo>> entry : observers.entrySet()) {
             ExtensionObserverMethodImpl<?, ?> observer = entry.getKey();
             if (containsRequiredAnnotation(classInfo, observer) && entry.getValue().apply(classInfo)) {

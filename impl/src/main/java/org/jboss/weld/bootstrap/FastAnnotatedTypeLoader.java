@@ -72,7 +72,7 @@ public class FastAnnotatedTypeLoader extends AnnotatedTypeLoader {
             // secondly, let's resolve PAT observers for this class
             Set<ExtensionObserverMethodImpl<?, ?>> observerMethods = Collections.emptySet();
             if (containerLifecycleEvents.isProcessAnnotatedTypeObserved()) {
-                observerMethods = resolver.resolveProcessAnnotatedTypeObservers(className);
+                observerMethods = resolver.resolveProcessAnnotatedTypeObservers(classFileServices, className);
                 if (!observerMethods.isEmpty()) {
                     // there are PAT observers for this class, register the class now
                     return createContext(className, classFileInfo, observerMethods, bdaId);

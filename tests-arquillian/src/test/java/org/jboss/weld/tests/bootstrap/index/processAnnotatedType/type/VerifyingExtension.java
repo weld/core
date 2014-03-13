@@ -45,10 +45,12 @@ public class VerifyingExtension implements Extension {
     private RequiredAnnotationDiscovery discovery;
     private ClassTransformer transformer;
     private boolean initialized;
+    private ClassFileServices classFileServices;
 
     void init(@Observes BeforeBeanDiscovery event, BeanManager manager) throws Exception {
         ServiceRegistry services = BeanManagerProxy.unwrap(manager).getServices();
-        this.resolver = new FastProcessAnnotatedTypeResolver(services.get(ClassFileServices.class), services.get(GlobalObserverNotifierService.class).getAllObserverMethods());
+        this.classFileServices = services.get(ClassFileServices.class);
+        this.resolver = new FastProcessAnnotatedTypeResolver(services.get(GlobalObserverNotifierService.class).getAllObserverMethods());
         this.notifier = BeanManagerProxy.unwrap(manager).getGlobalLenientObserverNotifier();
         this.discovery = services.get(RequiredAnnotationDiscovery.class);
         this.transformer = services.get(ClassTransformer.class);
@@ -64,7 +66,7 @@ public class VerifyingExtension implements Extension {
 
     private void compareResult(Class<?> javaClass) {
         Set<?> expected = resolve(javaClass);
-        Set<?> actual = resolver.resolveProcessAnnotatedTypeObservers(javaClass.getName());
+        Set<?> actual = resolver.resolveProcessAnnotatedTypeObservers(classFileServices, javaClass.getName());
         if (!expected.equals(actual)) {
             Set<?> notResolved = new HashSet<Object>(expected);
             notResolved.removeAll(actual);

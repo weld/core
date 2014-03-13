@@ -308,7 +308,7 @@ public class WeldStartup {
         if (classFileServices != null) {
             final GlobalObserverNotifierService observers = services.get(GlobalObserverNotifierService.class);
             try {
-                final FastProcessAnnotatedTypeResolver resolver = new FastProcessAnnotatedTypeResolver(classFileServices, observers.getAllObserverMethods());
+                final FastProcessAnnotatedTypeResolver resolver = new FastProcessAnnotatedTypeResolver(observers.getAllObserverMethods());
                 services.add(FastProcessAnnotatedTypeResolver.class, resolver);
             } catch (UnsupportedObserverMethodException e) {
                 BootstrapLogger.LOG.notUsingFastResolver(e.getObserver());
