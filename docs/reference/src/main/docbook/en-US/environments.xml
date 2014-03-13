@@ -325,6 +325,71 @@ public class HelloWorld
         </section>
 
         <section>
+            <title>Bean Discovery Mode in Weld SE</title>
+            <para>
+                CDI 1.1 introduced the <literal>bean-discovery-mode</literal> attribute specified in the <literal>beans.xml</literal> file. The attribute has 3 possible values:
+            <itemizedlist>
+             <listitem>
+                <para>
+                    <literal>all</literal>: all the classes from the archive will be discovered by Weld.
+                </para>
+             </listitem>
+             <listitem>
+                <para>
+                    <literal>annotated</literal>: only the classes that declared bean defining annotation are discovered by Weld.
+                </para>
+             </listitem>
+             <listitem>
+                <para>
+                    <literal>none</literal>: none of the classes from the archive is discovered by Weld.
+                </para>
+             </listitem>
+            </itemizedlist>
+            </para>
+            <para>
+                Bean discovery mode support depends on the <ulink url="https://github.com/wildfly/jandex">jandex</ulink> library availability on the classpath. 
+                The support is summed in the table bellow:
+            </para>
+            <table frame='all'>
+              <tgroup cols='3' align='left' colsep='1' rowsep='1'>
+               <colspec colname='c1'  colwidth="1*"/>
+               <colspec colname='c2'  colwidth="1*"/>
+               <thead>
+                <row>
+                 <entry></entry>
+                 <entry>Jandex available</entry>
+                 <entry>Jandex unavailable</entry>
+                </row>
+               </thead>
+                <tbody>
+                 <row>
+                  <entry>All discovery</entry>
+                  <entry><?dbhtml bgcolor="#66CC00" ?><?dbfo bgcolor="#66CC00" ?>supported</entry>
+                  <entry><?dbhtml bgcolor="#66CC00" ?><?dbfo bgcolor="#66CC00" ?>supported</entry>
+                 </row>
+                 <row>
+                  <entry>Annotated discovery</entry>
+                  <entry><?dbhtml bgcolor="#66CC00" ?><?dbfo bgcolor="#66CC00" ?>supported</entry>
+                  <entry><?dbhtml bgcolor="#CC3333" ?><?dbfo bgcolor="#CC3333" ?>not supported</entry>
+                 </row>
+                 <row>
+                  <entry>None discovery</entry>
+                  <entry><?dbhtml bgcolor="#66CC00" ?><?dbfo bgcolor="#66CC00" ?>supported</entry>
+                  <entry><?dbhtml bgcolor="#66CC00" ?><?dbfo bgcolor="#66CC00" ?>supported</entry>
+                 </row>
+                </tbody>
+              </tgroup>
+            </table> 
+            <para>
+                In case the discovery mode is not supported, <literal>IllegalStateException</literal> is thrown.
+            </para>
+          
+            <para>
+                Here's an example of a simple CDI SE application:
+            </para>
+        </section>
+
+        <section>
 
             <title>Bootstrapping CDI SE</title>
 
@@ -488,8 +553,6 @@ public static void main(String[] args) {
                 <literal>weld-core</literal>
                 jar which just contains the Weld SE classes.
                 Of course in this mode you will need to assemble the classpath yourself.
-                This mode is useful, for example, if you wish to use an alternative <literal>slf4j</literal>
-                log binding.
             </para>
 
             <para>
@@ -503,6 +566,21 @@ public static void main(String[] args) {
 </dependency>
 ]]></programlisting>
 
+        </section>
+
+        <section>
+            <title>Bean archive isolation</title>
+            <para>
+               By default, Weld creates an isolated bean archive instance for each archive being processed. 
+               The consequences of the approach is the ability to enable Alternative/Interceptor/Decorator
+               for one archive only (by enabling it using the beans.xml). 
+            </para>
+            <para>
+               This behaviour can be changed by providing 
+               an <literal>org.jboss.weld.se.archive.isolation</literal> system property with <literal>false</literal> value.
+               After that, all the archives will be merged to a on composite object meaning each Alternative/Interceptor/Decorator enabled
+               in the beans.xml will be enabled for the whole SE application.
+            </para>
         </section>
 
     </section>
