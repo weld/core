@@ -18,11 +18,8 @@ package org.jboss.weld.bootstrap;
 
 import java.util.concurrent.ConcurrentMap;
 
-import javax.enterprise.inject.spi.CDI;
-
 import org.jboss.weld.Container;
 import org.jboss.weld.ContainerState;
-import org.jboss.weld.Weld;
 import org.jboss.weld.bootstrap.events.BeforeShutdownImpl;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.context.ApplicationContext;
@@ -64,14 +61,6 @@ public class WeldRuntime {
                 Container container = Container.instance(contextId);
                 container.setState(ContainerState.SHUTDOWN);
                 container.cleanup();
-                // remove BeanManager references
-                try {
-                    CDI<?> cdi = CDI.current();
-                    if (cdi instanceof Weld) {
-                        ((Weld) cdi).cleanup();
-                    }
-                } catch (java.lang.IllegalStateException ignored) {
-                }
             }
         }
     }

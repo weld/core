@@ -20,16 +20,12 @@ import javax.enterprise.inject.spi.CDI;
 import javax.enterprise.inject.spi.CDIProvider;
 
 import org.jboss.weld.Container;
-import org.jboss.weld.Weld;
+import org.jboss.weld.SimpleCDI;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 public class StaticWeldProvider implements CDIProvider {
 
-    private static class WeldSingleton {
-        private static final Weld WELD_INSTANCE = new EnhancedWeld();
-    }
-
-    private static class EnhancedWeld extends Weld {
+    private static class EnhancedCDI extends SimpleCDI {
 
         @Override
         protected BeanManagerImpl unsatisfiedBeanManager(String callerClassName) {
@@ -46,6 +42,6 @@ public class StaticWeldProvider implements CDIProvider {
 
     @Override
     public CDI<Object> getCDI() {
-        return WeldSingleton.WELD_INSTANCE;
+        return new EnhancedCDI();
     }
 }

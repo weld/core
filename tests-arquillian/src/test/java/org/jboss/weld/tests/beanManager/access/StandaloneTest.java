@@ -25,7 +25,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.weld.Weld;
+import org.jboss.weld.SimpleCDI;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -39,7 +39,7 @@ public class StandaloneTest {
 
     @Test
     public void testStandalone() {
-        CDI<Object> cdi = new Weld();
+        CDI<Object> cdi = new SimpleCDI();
         assertEquals("pong", cdi.select(ScrewDriver.class).get().ping());
     }
 }

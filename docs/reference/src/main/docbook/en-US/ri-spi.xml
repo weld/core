@@ -872,13 +872,13 @@ public interface ResourceLoader extends Service {
             <title><literal>CDIProvider</literal></title>
             <para>
                 CDI 1.1 provides a simplified approach to accessing the BeanManager / CDI container from components that do not support injection. 
-                This is done by the CDI class API. The integrating part can either use <literal>org.jboss.weld.Weld</literal> provided by Weld core
+                This is done by the CDI class API. The integrating part can either use <literal>org.jboss.weld.SimpleCDI</literal> provided by Weld core
                 and register it using <literal>javax.enterprise.inject.spi.CDIProvider</literal> file that is visible to the CDI API classes or use the
                 <literal>CDI.setCDIProvider(CDIProvider provider)</literal> method method early in the deployment.
             </para>
             <para>
                 Alternatively, an integrating part may provide a specialized implementation such as the one provided by
-                <ulink url="https://github.com/weld/as7-weld-subsystem/commit/58183e0b0f5edd28f7f9bc23abc703867175f95d">AS7 integration</ulink>.
+                <ulink url="https://github.com/wildfly/wildfly/blob/master/weld/src/main/java/org/jboss/as/weld/WeldProvider.java">WildFly integration</ulink>.
             </para>
         </section>
         <section>
