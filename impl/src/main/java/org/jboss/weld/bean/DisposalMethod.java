@@ -16,7 +16,9 @@
  */
 package org.jboss.weld.bean;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.Collections;
 import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
@@ -40,6 +42,7 @@ import org.jboss.weld.bootstrap.Validator;
 import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.ParameterInjectionPoint;
+import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
@@ -55,7 +58,7 @@ public class DisposalMethod<X, T> {
     private final MethodInjectionPoint<T, ? super X> disposalMethodInjectionPoint;
     private final AnnotatedParameter<? super X> disposesParameter;
 
-    private final Set<QualifierInstance> qualifiers;
+    private final Set<QualifierInstance> requiredQualifiers;
 
     public static <X, T> DisposalMethod<X, T> of(BeanManagerImpl manager, EnhancedAnnotatedMethod<T, ? super X> method, AbstractClassBean<X> declaringBean) {
         return new DisposalMethod<X, T>(manager, method, declaringBean);
@@ -67,8 +70,7 @@ public class DisposalMethod<X, T> {
         this.declaringBean = declaringBean;
         EnhancedAnnotatedParameter<?, ? super X> enhancedDisposesParameter = getEnhancedDisposesParameter(enhancedAnnotatedMethod);
         this.disposesParameter = enhancedDisposesParameter.slim();
-        this.qualifiers = beanManager.getServices().get(MetaAnnotationStore.class)
-                .getQualifierInstances(enhancedDisposesParameter.getMetaAnnotations(Qualifier.class));
+        this.requiredQualifiers = getRequiredQualifiers(enhancedDisposesParameter);
         checkDisposalMethod(enhancedAnnotatedMethod, declaringBean);
     }
 
@@ -128,8 +130,8 @@ public class DisposalMethod<X, T> {
         return getDisposesParameter().getBaseType();
     }
 
-    public Set<QualifierInstance> getQualifiers() {
-        return qualifiers;
+    public Set<QualifierInstance> getRequiredQualifiers() {
+        return requiredQualifiers;
     }
 
     public AbstractClassBean<X> getDeclaringBean() {
@@ -143,5 +145,19 @@ public class DisposalMethod<X, T> {
 
     public Set<InjectionPoint> getInjectionPoints() {
         return disposalMethodInjectionPoint.getInjectionPoints();
+    }
+
+    /**
+     * A disposer method is bound to a producer if the producer is assignable to the disposed parameter.
+     *
+     * @param enhancedDisposedParameter
+     * @return the set of required qualifiers for the given disposed parameter
+     */
+    private Set<QualifierInstance> getRequiredQualifiers(EnhancedAnnotatedParameter<?, ? super X> enhancedDisposedParameter) {
+        Set<Annotation> disposedParameterQualifiers = enhancedDisposedParameter.getMetaAnnotations(Qualifier.class);
+        if (disposedParameterQualifiers.isEmpty()) {
+            disposedParameterQualifiers = Collections.<Annotation> singleton(DefaultLiteral.INSTANCE);
+        }
+        return beanManager.getServices().get(MetaAnnotationStore.class).getQualifierInstances(disposedParameterQualifiers);
     }
 }
