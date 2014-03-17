@@ -193,19 +193,10 @@
             <id>gae</id>
             <dependencies>
 
-                <!-- Use JSF 1.2, JSF 2 has issues on GAE still -->
-
                 <dependency>
-                    <groupId>javax.faces</groupId>
-                    <artifactId>jsf-api</artifactId>
-                    <version>1.2_13</version>
-                </dependency>
-
-                <dependency>
-                    <groupId>javax.faces</groupId>
-                    <artifactId>jsf-impl</artifactId>
+                    <groupId>org.glassfish</groupId>
+                    <artifactId>javax.faces</artifactId>
                     <scope>runtime</scope>
-                    <version>1.2_13</version>
                 </dependency>
 
                 <dependency>
@@ -215,21 +206,14 @@
                 </dependency>
 
                 <dependency>
-                    <groupId>com.sun.facelets</groupId>
-                    <artifactId>jsf-facelets</artifactId>
-                    <version>1.1.15.B1</version>
-                </dependency>
-
-                <dependency>
                     <groupId>javax.el</groupId>
                     <artifactId>el-api</artifactId>
-                    <version>1.1</version>
+                    <version>2.2</version>
                 </dependency>
 
                 <dependency>
                     <groupId>org.glassfish.web</groupId>
                     <artifactId>el-impl</artifactId>
-                    <version>1.1</version>
                 </dependency>
 
             </dependencies>
