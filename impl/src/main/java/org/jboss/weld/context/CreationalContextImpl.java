@@ -99,7 +99,7 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
     }
 
     public <S> CreationalContextImpl<S> getProducerReceiverCreationalContext(Contextual<S> contextual) {
-        return new CreationalContextImpl<S>(contextual, incompleteInstances, Collections.synchronizedList(new ArrayList<ContextualInstance<?>>()), null);
+        return new CreationalContextImpl<S>(contextual, incompleteInstances != null ? new HashMap<Contextual<?>, Object>(incompleteInstances) : null, Collections.synchronizedList(new ArrayList<ContextualInstance<?>>()), null);
     }
 
     public <S> S getIncompleteInstance(Contextual<S> bean) {
