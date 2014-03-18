@@ -72,6 +72,16 @@
                 </plugins>
             </build>
         </profile>
+        <!-- Runs Weld SE with Jandex on classpath -->
+        <profile>
+            <id>jandex</id>
+            <dependencies>
+                <dependency>
+                    <groupId>org.jboss</groupId>
+                    <artifactId>jandex</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
     </profiles>
 
 </project>

@@ -44,6 +44,7 @@
         <google.guava.version>13.0.1</google.guava.version>
         <htmlunit.version>2.4</htmlunit.version>
         <jacoco.version>0.5.8.201207111220</jacoco.version>
+        <jandex.version>1.2.0.Beta1</jandex.version>
         <javax.activation.version>1.1</javax.activation.version>
         <javax.el.version>3.0.0</javax.el.version>
         <jboss.as7.tck-runner.version>1.0.0.Final</jboss.as7.tck-runner.version>
@@ -440,6 +441,11 @@
                 <version>${log4j.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.jboss</groupId>
+                <artifactId>jandex</artifactId>
+                <version>${jandex.version}</version>
+            </dependency>
         </dependencies>
 
     </dependencyManagement>
