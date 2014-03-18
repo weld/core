@@ -25,6 +25,7 @@ import java.util.Collection;
 import org.jboss.logging.Logger;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.environment.se.Weld;
+import org.jboss.weld.environment.se.util.SEReflections;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -40,7 +41,6 @@ import org.jboss.weld.util.reflection.Reflections;
  */
 public class URLScanner {
 
-    private static final String UNABLE_TO_CREATE_JANDEX_URL_HANDLER = "Unable to create the URLHandler instance when the jandex is enabled.";
     private static final String JANDEX_ENABLED_FS_URL_HANDLER_CLASS_STRING = "org.jboss.weld.environment.se.discovery.url.JandexEnabledFileSystemURLHandler";
     private static final Logger log = Logger.getLogger(URLScanner.class);
     private static final String FILE = "file";
@@ -77,12 +77,7 @@ public class URLScanner {
                 }
                 final String bdaId = getId(urlPath);
                 if (Reflections.isClassLoadable(Weld.JANDEX_INDEX_CLASS_NAME, resourceLoader)) {
-                    Class<?> clazz = Reflections.loadClass(JANDEX_ENABLED_FS_URL_HANDLER_CLASS_STRING, resourceLoader);
-                    try {
-                        handler = (URLHandler) clazz.getConstructor(Bootstrap.class).newInstance(bootstrap);
-                    } catch (Exception ex) {
-                        throw new IllegalStateException(UNABLE_TO_CREATE_JANDEX_URL_HANDLER, ex);
-                    }
+                    handler = SEReflections.newInstance(resourceLoader, JANDEX_ENABLED_FS_URL_HANDLER_CLASS_STRING, bootstrap);
                 } else {
                     handler = new FileSystemURLHandler(bootstrap);
                 }

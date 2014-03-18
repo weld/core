@@ -41,12 +41,12 @@ import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.environment.se.discovery.WeldSEBeanDeploymentArchive;
-import org.jboss.weld.environment.se.discovery.WeldSEClassFileServices;
 import org.jboss.weld.environment.se.discovery.url.DefaultDiscoveryStrategy;
 import org.jboss.weld.environment.se.discovery.url.DiscoveryStrategy;
 import org.jboss.weld.environment.se.discovery.url.WeldSEResourceLoader;
 import org.jboss.weld.environment.se.discovery.url.WeldSEUrlDeployment;
 import org.jboss.weld.environment.se.events.ContainerInitialized;
+import org.jboss.weld.environment.se.util.SEReflections;
 import org.jboss.weld.literal.InitializedLiteral;
 import org.jboss.weld.metadata.MetadataImpl;
 import org.jboss.weld.resources.spi.ClassFileServices;
@@ -80,16 +80,15 @@ public class Weld {
     private static final String SYSTEM_PROPERTY_STRING = "System property ";
     private static final Logger log = Logger.getLogger(Weld.class);
     private static final String JANDEX_ENABLED_DISCOVERY_STRATEGY_CLASS_NAME = "org.jboss.weld.environment.se.discovery.url.JandexEnabledDiscoveryStrategy";
+    private static final String CLASS_FILE_SERVICES_CLASS_NAME = "org.jboss.weld.environment.se.discovery.WeldSEClassFileServices";
     public static final String COMPOSITE_ARCHIVE_ENABLEMENT_SYSTEM_PROPERTY = "org.jboss.weld.se.archive.isolation";
     private static final String BOOTSTRAP_IMPL_CLASS_NAME = "org.jboss.weld.bootstrap.WeldBootstrap";
     private static final String ERROR_LOADING_WELD_BOOTSTRAP_EXC_MESSAGE = "Error loading Weld bootstrap, check that Weld is on the classpath";
     public static final String JANDEX_INDEX_CLASS_NAME = "org.jboss.jandex.Index";
-    private static final String JANDEX_ENABLED_DISCOVERY_STRATEGY_CLASS_STRING = JANDEX_ENABLED_DISCOVERY_STRATEGY_CLASS_NAME;
 
 
     private ShutdownManager shutdownManager;
     private Set<Metadata<Extension>> extensions;
-    private DiscoveryStrategy strategy;
 
     /**
      * Add extension explicitly.
@@ -191,16 +190,11 @@ public class Weld {
      * @param strategy strategy of discovering the bean archives
      */
     protected Deployment createDeployment(ResourceLoader resourceLoader, CDI11Bootstrap bootstrap) {
-        Iterable<Metadata<Extension>> loadedExtensions = loadExtensions(WeldSEResourceLoader.getClassLoader(), bootstrap);
-        TypeDiscoveryConfiguration typeDiscoveryConfiguration = bootstrap.startExtensions(loadedExtensions);
+        final Iterable<Metadata<Extension>> loadedExtensions = loadExtensions(WeldSEResourceLoader.getClassLoader(), bootstrap);
+        final TypeDiscoveryConfiguration typeDiscoveryConfiguration = bootstrap.startExtensions(loadedExtensions);
+        DiscoveryStrategy strategy;
         if (Reflections.isClassLoadable(JANDEX_INDEX_CLASS_NAME, resourceLoader)) {
-            Class<?> clazz = Reflections.loadClass(JANDEX_ENABLED_DISCOVERY_STRATEGY_CLASS_STRING, resourceLoader);
-            try {
-                strategy = (DiscoveryStrategy) clazz.getConstructor(ResourceLoader.class, Bootstrap.class, TypeDiscoveryConfiguration.class).newInstance(resourceLoader, bootstrap, typeDiscoveryConfiguration);
-                log.debug("For the deployment, JandexEnabledDiscoveryStrategy is used.");
-            } catch (Exception e) {
-                throw new IllegalStateException("Unable to instantiate jandex discovery strategy", e);
-            }
+            strategy = SEReflections.newInstance(resourceLoader, JANDEX_ENABLED_DISCOVERY_STRATEGY_CLASS_NAME, resourceLoader, bootstrap, typeDiscoveryConfiguration);
         } else {
             strategy = new DefaultDiscoveryStrategy(resourceLoader, bootstrap);
             log.debug("For the deployment, DefaultDiscoveryStrategy is used.");
@@ -221,7 +215,7 @@ public class Weld {
         }
 
         if (strategy.getClass().getName().equals(JANDEX_ENABLED_DISCOVERY_STRATEGY_CLASS_NAME)) {
-            ClassFileServices classFileServices = new WeldSEClassFileServices(strategy);
+            final ClassFileServices classFileServices = SEReflections.<ClassFileServices>newInstance(resourceLoader, CLASS_FILE_SERVICES_CLASS_NAME, strategy);
             deployment.getServices().add(ClassFileServices.class, classFileServices);
         }
         return deployment;
