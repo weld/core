@@ -32,7 +32,7 @@ public class DefaultDiscoveryStrategy extends DiscoveryStrategy {
 
     @Override
     protected WeldSEBeanDeploymentArchive processAnnotatedDiscovery(BeanArchiveBuilder builder) {
-        throw new IllegalStateException("Cannot handle Annotated bean discovery.");
+        throw new IllegalStateException("bean discovery-mode=\"annotated\" support is disabled. Add org.jboss:jandex to the classpath to enable it.");
     }
 
 }
