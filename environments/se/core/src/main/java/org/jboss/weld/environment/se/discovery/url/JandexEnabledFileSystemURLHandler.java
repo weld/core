@@ -25,13 +25,17 @@ import org.jboss.jandex.Indexer;
 import org.jboss.logging.Logger;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 
-
+/**
+ * An implementation of {@link FileSystemURLHandler} that is filling the {@link BeanArchiveBuilder} also with the jandex index.
+ *
+ * @author Matej Briškár
+ */
 public class JandexEnabledFileSystemURLHandler extends FileSystemURLHandler {
 
     private static final String UNABLE_TO_OPEN_STREAM_MESSAGE = "Could not open the stream on the url when adding to the jandex index.";
     private static final String UNABLE_TO_CLOSE_STREAM_MESSAGE = "Could not close the stream on the url when adding to the jandex index.";
     private static final Logger log = Logger.getLogger(JandexEnabledFileSystemURLHandler.class);
-    private Indexer indexer = new Indexer();
+    private final Indexer indexer = new Indexer();
 
     public JandexEnabledFileSystemURLHandler(Bootstrap bootstrap) {
         super(bootstrap);

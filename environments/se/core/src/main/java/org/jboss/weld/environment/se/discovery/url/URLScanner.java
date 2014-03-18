@@ -50,7 +50,7 @@ public class URLScanner {
     private final String[] resources;
     private final ResourceLoader resourceLoader;
     private final Bootstrap bootstrap;
-    private Collection<BeanArchiveBuilder> builders = new ArrayList<BeanArchiveBuilder>();
+    private final Collection<BeanArchiveBuilder> builders = new ArrayList<BeanArchiveBuilder>();
 
     public URLScanner(ResourceLoader resourceLoader, Bootstrap bootstrap, String... resources) {
         this.resources = resources;
@@ -58,6 +58,11 @@ public class URLScanner {
         this.bootstrap = bootstrap;
     }
 
+    /**
+     * Scan all the resources and create {@link BeanArchiveBuilder} for each
+     *
+     * @return Collection<BeanArchiveBuilder> collection of the {@link BeanArchiveBuilder}-s that were created.
+     */
     public Collection<BeanArchiveBuilder> scan() {
         URLHandler handler = null;
         for (String resourceName : resources) {
@@ -71,7 +76,7 @@ public class URLScanner {
                     continue;
                 }
                 final String bdaId = getId(urlPath);
-                if (Reflections.isClassLoadable(Weld.JANDEX_INDEX_CLASS, resourceLoader)) {
+                if (Reflections.isClassLoadable(Weld.JANDEX_INDEX_CLASS_NAME, resourceLoader)) {
                     Class<?> clazz = Reflections.loadClass(JANDEX_ENABLED_FS_URL_HANDLER_CLASS_STRING, resourceLoader);
                     try {
                         handler = (URLHandler) clazz.getConstructor(Bootstrap.class).newInstance(bootstrap);
@@ -119,6 +124,9 @@ public class URLScanner {
         return urlPath;
     }
 
+    /**
+     * Create an ID that will be used for the bean archive calculated from the url path.
+     */
     private String getId(String urlPath) {
         final int index = urlPath.lastIndexOf(File.separatorChar);
         if (index != -1 && index + 1 < urlPath.length()) {

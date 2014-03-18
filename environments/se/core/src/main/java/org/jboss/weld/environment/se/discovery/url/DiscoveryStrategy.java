@@ -33,11 +33,11 @@ import org.jboss.weld.resources.spi.ResourceLoader;
  */
 public abstract class DiscoveryStrategy {
 
-    private ResourceLoader resourceLoader;
-    private Bootstrap bootstrap;
+    private final ResourceLoader resourceLoader;
+    private final Bootstrap bootstrap;
     private Collection<BeanArchiveBuilder> builders;
     public static final String[] RESOURCES = { AbstractWeldSEDeployment.BEANS_XML };
-    private Set<WeldSEBeanDeploymentArchive> deploymentArchives = new HashSet<WeldSEBeanDeploymentArchive>();
+    private final Set<WeldSEBeanDeploymentArchive> deploymentArchives = new HashSet<WeldSEBeanDeploymentArchive>();
 
     public DiscoveryStrategy(ResourceLoader resourceLoader, Bootstrap bootstrap) {
         this.resourceLoader = resourceLoader;
@@ -45,7 +45,7 @@ public abstract class DiscoveryStrategy {
     }
 
     /**
-     * Discover and return all the BeanDeploymentArchives found using the URLScanner.scan() method.
+     * Discovers and return all the BeanDeploymentArchives found using the URLScanner.scan() method.
      */
     public Set<WeldSEBeanDeploymentArchive> discoverArchives() {
         builders = new URLScanner(resourceLoader, bootstrap, AbstractWeldSEDeployment.RESOURCES).scan();
@@ -116,6 +116,10 @@ public abstract class DiscoveryStrategy {
     protected WeldSEBeanDeploymentArchive processAllDiscovery(BeanArchiveBuilder builder) {
         WeldSEBeanDeploymentArchive bda = builder.build();
         return bda;
+    }
+
+    public ResourceLoader getResourceLoader() {
+        return resourceLoader;
     }
 
 

@@ -14,11 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.environment.se.test.beandiscovery.interceptors;
-
-import static org.junit.Assert.assertEquals;
+package org.jboss.weld.environment.se.test.beandiscovery.decorators;
 
 import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.ShouldThrowException;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -34,54 +33,40 @@ import org.jboss.weld.environment.se.test.beandiscovery.House;
 import org.jboss.weld.environment.se.test.beandiscovery.Plant;
 import org.jboss.weld.environment.se.test.beandiscovery.Stone;
 import org.jboss.weld.environment.se.test.beandiscovery.Tree;
+import org.jboss.weld.exceptions.DeploymentException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-public class BeanDiscoveryInterceptorTest {
+public class BeanDiscoveryDecorator03Test {
 
+    /**
+     * Throw exception because of the decorator ClassicRepresentDecorator not discovered, because it has not a bean defining annotation.
+     */
     @Deployment
+    @ShouldThrowException(DeploymentException.class)
     public static Archive<?> getDeployment() {
         WeldSEClassPath archives = ShrinkWrap.create(WeldSEClassPath.class);
         JavaArchive archive01 = ShrinkWrap.create(BeanArchive.class)
-                .addAsManifestResource(new BeansXml(BeanDiscoveryMode.ALL).interceptors(ScopedInterceptor.class, ClassicInterceptor.class), "beans.xml")
-                .addClasses(Dog.class, Cat.class, ClassicInterceptor.class, ScopedInterceptor.class, InterceptorBindingAnnotation.class);
+                .addAsManifestResource(new BeansXml(BeanDiscoveryMode.ALL).decorators(ClassicRepresentDecorator.class, ScopedRepresentDecorator.class),
+                        "beans.xml")
+                        .addClasses(Dog.class, Cat.class);
         JavaArchive archive02 = ShrinkWrap.create(BeanArchive.class)
-                .addAsManifestResource(new BeansXml(BeanDiscoveryMode.ANNOTATED).interceptors(ScopedInterceptor.class, ClassicInterceptor.class), "beans.xml")
-                .addClasses(Plant.class, Tree.class, Stone.class);
+                .addAsManifestResource(new BeansXml(BeanDiscoveryMode.ANNOTATED).decorators(ClassicRepresentDecorator.class, ScopedRepresentDecorator.class),
+                        "beans.xml")
+                        .addClasses(Plant.class, Tree.class, Stone.class, ClassicRepresentDecorator.class, ScopedRepresentDecorator.class);
         JavaArchive archive03 = ShrinkWrap.create(BeanArchive.class)
-                .addAsManifestResource(new BeansXml(BeanDiscoveryMode.NONE).interceptors(ScopedInterceptor.class, ClassicInterceptor.class), "beans.xml")
-                .addClasses(Flat.class, House.class);
+                .addAsManifestResource(new BeansXml(BeanDiscoveryMode.NONE).decorators(ClassicRepresentDecorator.class, ScopedRepresentDecorator.class),
+                        "beans.xml")
+                        .addClasses(Flat.class, House.class);
         archives.add(archive01);
         archives.add(archive02);
         archives.add(archive03);
         return archives;
     }
 
-
-    /**
-     * Test bean discovery in SE.
-     */
     @Test
-    public void testAllBeanDiscovery(Dog dog) {
-        int classicInterceptorCalls = ClassicInterceptor.called;
-        int scopedInterceptorCalls = ScopedInterceptor.called;
-        dog.bark();
-        assertEquals(classicInterceptorCalls + 1, ClassicInterceptor.called);
-        assertEquals(scopedInterceptorCalls + 1, ScopedInterceptor.called);
-    }
-
-    @Test
-    public void testAnnotatedBeanDiscovery(Plant plant, Tree tree) {
-        int classicInterceptorCalls = ClassicInterceptor.called;
-        int scopedInterceptorCalls = ScopedInterceptor.called;
-        plant.getHeigh();
-        assertEquals(classicInterceptorCalls + 1, ClassicInterceptor.called);
-        assertEquals(scopedInterceptorCalls + 1, ScopedInterceptor.called);
-        tree.grow();
-        assertEquals(classicInterceptorCalls + 1, ClassicInterceptor.called);
-        assertEquals(scopedInterceptorCalls + 1, ScopedInterceptor.called);
-
+    public void testAllBeanDiscovery(Cat cat, Dog dog) {
     }
 
 }
