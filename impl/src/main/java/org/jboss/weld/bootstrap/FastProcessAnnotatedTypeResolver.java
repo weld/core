@@ -26,6 +26,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
+import javax.enterprise.inject.Any;
 import javax.enterprise.inject.spi.ObserverMethod;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 
@@ -117,7 +118,11 @@ public class FastProcessAnnotatedTypeResolver extends AbstractBootstrapService {
         this.observers = new LinkedHashMap<ExtensionObserverMethodImpl<?, ?>, Predicate<ClassFileInfo>>();
         for (ObserverMethod<?> o : observers) {
             if (o instanceof ExtensionObserverMethodImpl<?, ?>) {
-                process((ExtensionObserverMethodImpl<?, ?>) o, o.getObservedType());
+                final Set<Annotation> qualifiers = o.getObservedQualifiers();
+                // only process observer methods with no qualifiers or with @Any
+                if (qualifiers.isEmpty() || (qualifiers.size() == 1 && Any.class.equals(qualifiers.iterator().next().annotationType()))) {
+                    process((ExtensionObserverMethodImpl<?, ?>) o, o.getObservedType());
+                }
             }
         }
     }
