@@ -46,6 +46,7 @@ import org.jboss.weld.environment.se.discovery.url.DiscoveryStrategy;
 import org.jboss.weld.environment.se.discovery.url.WeldSEResourceLoader;
 import org.jboss.weld.environment.se.discovery.url.WeldSEUrlDeployment;
 import org.jboss.weld.environment.se.events.ContainerInitialized;
+import org.jboss.weld.environment.se.logging.WeldSELogger;
 import org.jboss.weld.environment.se.util.SEReflections;
 import org.jboss.weld.literal.InitializedLiteral;
 import org.jboss.weld.metadata.MetadataImpl;
@@ -112,16 +113,16 @@ public class Weld {
         ResourceLoader resourceLoader = new WeldSEResourceLoader();
         // check for beans.xml
         if (resourceLoader.getResource(WeldSEUrlDeployment.BEANS_XML) == null) {
-            throw new IllegalStateException("Missing beans.xml file in META-INF!");
+            throw WeldSELogger.LOG.missingBeansXml();
         }
 
         final CDI11Bootstrap bootstrap;
         try {
             bootstrap = (CDI11Bootstrap) resourceLoader.classForName(BOOTSTRAP_IMPL_CLASS_NAME).newInstance();
         } catch (InstantiationException ex) {
-            throw new IllegalStateException(ERROR_LOADING_WELD_BOOTSTRAP_EXC_MESSAGE, ex);
+            throw WeldSELogger.LOG.errorLoadingWeld();
         } catch (IllegalAccessException ex) {
-            throw new IllegalStateException(ERROR_LOADING_WELD_BOOTSTRAP_EXC_MESSAGE, ex);
+            throw WeldSELogger.LOG.errorLoadingWeld();
         }
 
         Deployment deployment = createDeployment(resourceLoader, bootstrap);
@@ -254,7 +255,7 @@ public class Weld {
     protected <T> T getInstanceByType(BeanManager manager, Class<T> type, Annotation... bindings) {
         final Bean<?> bean = manager.resolve(manager.getBeans(type, bindings));
         if (bean == null) {
-            throw new UnsatisfiedResolutionException("Unable to resolve a bean for " + type + " with bindings " + Arrays.asList(bindings));
+            throw WeldSELogger.LOG.unableToResolveBean(type, Arrays.asList(bindings));
         }
         CreationalContext<?> cc = manager.createCreationalContext(bean);
         return type.cast(manager.getReference(bean, type, cc));
