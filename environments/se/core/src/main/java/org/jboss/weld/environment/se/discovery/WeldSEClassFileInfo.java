@@ -16,9 +16,9 @@ import org.jboss.jandex.DotName;
 import org.jboss.jandex.IndexView;
 import org.jboss.jandex.MethodInfo;
 import org.jboss.logging.Logger;
+import org.jboss.weld.environment.se.logging.WeldSELogger;
 import org.jboss.weld.environment.se.util.SEReflections;
 import org.jboss.weld.resources.spi.ClassFileInfo;
-import org.jboss.weld.resources.spi.ClassFileInfoException;
 
 import com.google.common.cache.LoadingCache;
 
@@ -277,7 +277,7 @@ public class WeldSEClassFileInfo implements ClassFileInfo {
         try {
             clazz = classLoader.loadClass(className);
         } catch (ClassNotFoundException ex) {
-            throw new ClassFileInfoException("Unable to load class " + className); // TODO: localize properly
+            throw WeldSELogger.LOG.unableToLoadClass(className);
         }
         return clazz;
     }
