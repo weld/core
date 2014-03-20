@@ -635,9 +635,9 @@ public interface ResourceLoader extends Service {
             </para>
 
             <para>
-                Bytecode-scanning is used by some application servers to speed-up deployment. Compared to loading a class using <literal>ClassLoader</literal>,
-                bytecode-scanning usually allows to obtain only a subset of information contained in the Java class file (e.g. annotations, class hierarchy, etc.). 
-                However, this subset is usually loaded much faster. This allows the container to scan all classes initially by a bytecode scanner and then use this
+                Bytecode-scanning is used by some application servers to speed up deployment. Compared to loading a class using <literal>ClassLoader</literal>,
+                bytecode-scanning allows to obtain only a subset of the Java class file metadata (e.g. annotations, class hierarchy, etc.)
+                which is usually loaded much faster. This allows the container to scan all classes initially by a bytecode scanner and then use this
                 limited information to decide which classes need to be fully loaded using <literal>ClassLoader</literal>. 
                 <link linkend="https://github.com/wildfly/jandex">Jandex</link> is an example of a bytecode-scanning utility.
             </para>

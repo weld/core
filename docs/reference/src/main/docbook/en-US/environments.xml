@@ -331,12 +331,12 @@ public class HelloWorld
             <itemizedlist>
              <listitem>
                 <para>
-                    <literal>all</literal>: all the classes from the archive will be discovered by Weld.
+                    <literal>all</literal>: all the classes from the archive are discovered by Weld.
                 </para>
              </listitem>
              <listitem>
                 <para>
-                    <literal>annotated</literal>: only the classes that declared bean defining annotation are discovered by Weld.
+                    <literal>annotated</literal>: only the classes that declare a bean defining annotation are discovered by Weld.
                 </para>
              </listitem>
              <listitem>
@@ -348,7 +348,7 @@ public class HelloWorld
             </para>
             <para>
                 Bean discovery mode support depends on the <ulink url="https://github.com/wildfly/jandex">jandex</ulink> library availability on the classpath. 
-                The support is summed in the table bellow:
+                The support is summed up in the table below:
             </para>
             <table frame='all'>
               <tgroup cols='3' align='left' colsep='1' rowsep='1'>
@@ -571,15 +571,15 @@ public static void main(String[] args) {
         <section>
             <title>Bean archive isolation</title>
             <para>
-               By default, Weld creates an isolated bean archive instance for each archive being processed. 
-               The consequences of the approach is the ability to enable Alternative/Interceptor/Decorator
-               for one archive only (by enabling it using the beans.xml). 
+               By default, Weld creates an isolated bean archive instance for each processed archive. 
+               The consequence of this approach is the ability to enable Alternatives/Interceptors/Decorators
+               on a per-archive basis using beans.xml.
             </para>
             <para>
                This behaviour can be changed by providing 
                an <literal>org.jboss.weld.se.archive.isolation</literal> system property with <literal>false</literal> value.
-               After that, all the archives will be merged to a on composite object meaning each Alternative/Interceptor/Decorator enabled
-               in the beans.xml will be enabled for the whole SE application.
+               After that, each Alternative/Interceptor/Decorator enabled in beans.xml of any archive will be enabled for 
+               the whole SE application.
             </para>
         </section>
 
