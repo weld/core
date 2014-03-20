@@ -9,6 +9,8 @@
 		<!-- property name="deploymentExportPath">target/</property-->
 	</engine>
 
+     <defaultProtocol type="jmx-as7" />
+
 	<container qualifier="weld" default="true">
 		<configuration>
 			<property name="enableConversationScope">true</property>
