@@ -1,30 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<arquillian
-    xmlns="http://jboss.org/schema/arquillian"
+<arquillian xmlns="http://jboss.org/schema/arquillian"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://jboss.org/schema/arquillian http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
 
-	<engine>
-		<!-- Uncomment to export test archives for debug purposes -->
-		<!-- property name="deploymentExportPath">target/</property-->
-	</engine>
+    <engine>
+        <!-- Uncomment to export test archives for debug purposes -->
+        <!-- property name="deploymentExportPath">target/</property -->
+    </engine>
 
-     <defaultProtocol type="jmx-as7" />
-
-	<container qualifier="weld" default="true">
-		<configuration>
-			<property name="enableConversationScope">true</property>
-        </configuration>
-	</container>
-
-	<container qualifier="jboss-as-7">
+    <container qualifier="weld" default="true">
         <configuration>
-            <property name="serverConfig">standalone-full.xml</property>
-            <!-- ARQ-649 workaround -->
-            <property name="outputToConsole">false</property>
-            <property name="allowConnectingToRunningServer">true</property>
-            <property name="javaVmArguments">-Xms128m -Xmx768m -XX:MaxPermSize=256m ${jacoco.agent} ${additional.vm.args}</property>
-            <property name="managementAddress">${node.address}</property>
+            <property name="enableConversationScope">true</property>
         </configuration>
-	</container>
+    </container>
 </arquillian>

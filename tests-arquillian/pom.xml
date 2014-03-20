@@ -172,7 +172,7 @@
                         <version>${surefire.plugin.version}</version>
                         <configuration>
                             <systemProperties>
-                                <arquillian.launch>weld</arquillian.launch>
+                                <arquillian.xml>arquillian.xml</arquillian.xml>
                             </systemProperties>
                             <test>${test}</test>
                         </configuration>
@@ -222,7 +222,7 @@
                                 <!-- jboss.server.config.file.name>standalone-full.xml</jboss.server.config.file.name-->
                             </systemPropertyVariables>
                             <systemProperties>
-                                <arquillian.launch>jboss-as-7</arquillian.launch>
+                                <arquillian.xml>wildfly-arquillian.xml</arquillian.xml>
                                 <jacoco.agent>${jacoco.agent}</jacoco.agent>
                                 <node.address>${node.address}</node.address>
                                 <additional.vm.args>${additional.vm.args}</additional.vm.args>
@@ -274,7 +274,7 @@
                         <version>${surefire.plugin.version}</version>
                         <configuration>
                             <systemProperties>
-                                <arquillian.launch>jboss-as-7</arquillian.launch>
+                                <arquillian.xml>wildfly-arquillian.xml</arquillian.xml>
                                 <node.address>${node.address}</node.address>
                             </systemProperties>
                             <test>${test}</test>
