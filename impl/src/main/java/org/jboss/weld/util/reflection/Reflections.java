@@ -367,6 +367,8 @@ public class Reflections {
             return cast(resourceLoader.classForName(className));
         } catch (ResourceLoadingException e) {
             return null;
+        } catch (SecurityException e) {
+            return null;
         }
     }
 
