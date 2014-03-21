@@ -1,4 +1,4 @@
-package org.jboss.weld.tests.beanManager.weld1405;
+package org.jboss.weld.tests.beanManager.predestroy;
 
 import static org.junit.Assert.assertTrue;
 
