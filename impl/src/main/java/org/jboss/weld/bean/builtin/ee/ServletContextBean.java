@@ -17,6 +17,7 @@
 package org.jboss.weld.bean.builtin.ee;
 
 import java.lang.annotation.Annotation;
+import java.security.AccessController;
 
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.spi.CreationalContext;
@@ -26,6 +27,8 @@ import javax.servlet.ServletContext;
 import org.jboss.weld.bean.builtin.AbstractStaticallyDecorableBuiltInBean;
 import org.jboss.weld.logging.ServletLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.security.GetContextClassLoaderAction;
+import org.jboss.weld.servlet.ServletContextService;
 
 /**
  * Built-in bean exposing {@link ServletContext}.
@@ -35,18 +38,21 @@ import org.jboss.weld.manager.BeanManagerImpl;
  */
 public class ServletContextBean extends AbstractStaticallyDecorableBuiltInBean<ServletContext> {
 
-    private static ThreadLocal<ServletContext> servletContext = new ThreadLocal<ServletContext>();
+    private final ServletContextService servletContexts;
 
     public ServletContextBean(BeanManagerImpl beanManager) {
         super(beanManager, ServletContext.class);
+        this.servletContexts = beanManager.getServices().get(ServletContextService.class);
     }
 
     @Override
     protected ServletContext newInstance(InjectionPoint ip, CreationalContext<ServletContext> creationalContext) {
-        if (servletContext.get() == null) {
-            throw ServletLogger.LOG.cannotInjectObjectOutsideOfServletRequest(ServletContext.class.getSimpleName(), null);
+        final ServletContext ctx = servletContexts.getCurrentServletContext();
+        if (ctx == null) {
+            final ClassLoader cl = AccessController.doPrivileged(GetContextClassLoaderAction.INSTANCE);
+            throw ServletLogger.LOG.cannotInjectServletContext(cl, servletContexts);
         }
-        return servletContext.get();
+        return ctx;
     }
 
     @Override
@@ -57,13 +63,5 @@ public class ServletContextBean extends AbstractStaticallyDecorableBuiltInBean<S
     @Override
     public Class<? extends Annotation> getScope() {
         return RequestScoped.class;
-    }
-
-    public static void setServletContext(ServletContext ctx) {
-        servletContext.set(ctx);
-    }
-
-    public static void cleanup() {
-        servletContext.remove();
     }
 }

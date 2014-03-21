@@ -21,7 +21,6 @@ import javax.servlet.ServletRequestListener;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.jboss.weld.bean.builtin.ee.ServletContextBean;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.context.cache.RequestScopedBeanCache;
 import org.jboss.weld.context.http.HttpRequestContext;
@@ -72,6 +71,8 @@ public class HttpContextLifecycle implements Service {
 
     private final ServletApiAbstraction servletApi;
 
+    private final ServletContextService servletContextService;
+
     public HttpContextLifecycle(BeanManagerImpl beanManager, HttpContextActivationFilter contextActivationFilter, boolean ignoreForwards, boolean ignoreIncludes, boolean lazyConversationContext) {
         this.beanManager = beanManager;
         this.conversationContextActivator = new ConversationContextActivator(beanManager, lazyConversationContext);
@@ -86,6 +87,7 @@ public class HttpContextLifecycle implements Service {
         this.sessionInitializedEvent = FastEvent.of(HttpSession.class, beanManager, InitializedLiteral.SESSION);
         this.sessionDestroyedEvent = FastEvent.of(HttpSession.class, beanManager, DestroyedLiteral.SESSION);
         this.servletApi = beanManager.getServices().get(ServletApiAbstraction.class);
+        this.servletContextService = beanManager.getServices().get(ServletContextService.class);
     }
 
     private HttpSessionDestructionContext getSessionDestructionContext() {
@@ -110,6 +112,7 @@ public class HttpContextLifecycle implements Service {
     }
 
     public void contextInitialized(ServletContext ctx) {
+        servletContextService.contextInitialized(ctx);
         applicationInitializedEvent.fire(ctx);
     }
 
@@ -166,8 +169,6 @@ public class HttpContextLifecycle implements Service {
         ServletLogger.LOG.requestInitialized(request);
 
         SessionHolder.requestInitialized(request);
-
-        ServletContextBean.setServletContext(ctx);
 
         getRequestContext().associate(request);
         getSessionContext().associate(request);
@@ -244,7 +245,6 @@ public class HttpContextLifecycle implements Service {
             conversationContextActivator.disassociateConversationContext(request);
 
             SessionHolder.clear();
-            ServletContextBean.cleanup();
         }
     }
 

@@ -123,6 +123,7 @@ import org.jboss.weld.serialization.ContextualStoreImpl;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.serialization.spi.ProxyServices;
 import org.jboss.weld.servlet.ServletApiAbstraction;
+import org.jboss.weld.servlet.ServletContextService;
 import org.jboss.weld.servlet.spi.HttpContextActivationFilter;
 import org.jboss.weld.servlet.spi.helpers.AcceptingHttpContextActivationFilter;
 import org.jboss.weld.transaction.spi.TransactionServices;
@@ -300,6 +301,8 @@ public class WeldStartup {
         if (!services.contains(HttpContextActivationFilter.class)) {
             services.add(HttpContextActivationFilter.class, AcceptingHttpContextActivationFilter.INSTANCE);
         }
+
+        services.add(ServletContextService.class, new ServletContextService());
     }
 
     // needs to be resolved once extension beans are deployed
