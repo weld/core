@@ -73,6 +73,11 @@ public class BeanArchiveImpl extends JavaArchiveImpl implements BeanArchive {
         return covarientReturn();
     }
 
+    public BeanArchive exclude(BeansXml.Exclude... excludes) {
+        descriptor.excludeFilters(excludes);
+        return covarientReturn();
+    }
+
     @Override
     protected BeanArchive covarientReturn() {
         return (BeanArchive) super.covarientReturn();

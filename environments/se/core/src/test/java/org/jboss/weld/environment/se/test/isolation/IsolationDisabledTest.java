@@ -14,6 +14,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.impl.BeansXml;
 import org.jboss.shrinkwrap.impl.BeansXml.BeanDiscoveryMode;
+import org.jboss.shrinkwrap.impl.BeansXml.Exclude;
 import org.jboss.weld.environment.se.test.arquillian.WeldSEClassPath;
 import org.junit.After;
 import static org.junit.Assert.*;
@@ -39,7 +40,10 @@ public class IsolationDisabledTest extends ArchiveIsolationOverrideTestBase {
                 .addAsManifestResource(new BeansXml(BeanDiscoveryMode.ALL)
                         .interceptors(ZoomInterceptor.class)
                         .decorators(CameraDecorator.class)
-                        .alternatives(RangefinderCamera.class), "beans.xml")
+                        .alternatives(RangefinderCamera.class)
+                        .excludeFilters(
+                                Exclude.exact(PinholeCamera.class).ifClassAvailable(DSLR.class)
+                        ), "beans.xml")
                 .addClasses(ZoomInterceptor.class, CameraDecorator.class, RangefinderCamera.class);
 
         JavaArchive archive02 = ShrinkWrap.create(BeanArchive.class)
@@ -77,6 +81,11 @@ public class IsolationDisabledTest extends ArchiveIsolationOverrideTestBase {
         assertTrue(cameras.contains(DSLR.class));
         assertTrue(cameras.contains(RangefinderCamera.class));
         assertEquals(2, cameras.size());
+    }
+
+    @Test
+    public void testExcludeFilters(BeanManager bm) {
+        assertFalse(getBeanClasses(bm, Camera.class).contains(PinholeCamera.class));
     }
     
     private Set<Class<?>> getBeanClasses(BeanManager bm, Type beanType, Annotation... annotations) {
