@@ -153,7 +153,9 @@ public class BeansXml implements Asset {
                 StringBuilder sb = new StringBuilder();
                 sb.append(OPENING_TAG_PREFIX).append(getTagName());
                 appendAttribute(NAME_ATTRIBUTE_NAME, getName(), sb);
-                appendAttribute(VALUE_ATTRIBUTE_NAME, getValue(), sb);
+                if (value != null) {
+                    appendAttribute(VALUE_ATTRIBUTE_NAME, getValue(), sb);
+                }
                 sb.append(TAG_SUFFIX_SELF_CLOSE_NEW_LINE);
                 return sb.toString();
             }
