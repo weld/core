@@ -10,7 +10,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.impl.BeansXml;
 import org.jboss.shrinkwrap.impl.BeansXml.BeanDiscoveryMode;
-import org.jboss.weld.environment.se.test.IsolationDisabledTest;
+import org.jboss.weld.environment.se.test.isolation.ArchiveIsolationOverrideTestBase;
 import org.jboss.weld.environment.se.test.arquillian.WeldSEClassPath;
 import org.jboss.weld.environment.se.test.beandiscovery.Cat;
 import org.jboss.weld.environment.se.test.beandiscovery.Dog;
@@ -23,9 +23,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-public class BeanDiscoveryInterceptor02Test extends IsolationDisabledTest {
+public class BeanDiscoveryInterceptor02Test extends ArchiveIsolationOverrideTestBase {
 
-    @Deployment
+    @Override
+    public boolean isArchiveIsolationEnabled() {
+        return true;
+    }
+    
+    @Deployment(managed = false, name = "main")
     public static Archive<?> getDeployment() {
         WeldSEClassPath archives = ShrinkWrap.create(WeldSEClassPath.class);
         JavaArchive archive01 = ShrinkWrap.create(BeanArchive.class)

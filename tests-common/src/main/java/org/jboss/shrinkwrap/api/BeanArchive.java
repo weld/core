@@ -1,6 +1,7 @@
 package org.jboss.shrinkwrap.api;
 
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.impl.BeansXml;
 
 /**
  * A CDI specific extension to Shrinkwrap to ease Weld testing.
@@ -38,4 +39,12 @@ public interface BeanArchive extends JavaArchive {
      * @return
      */
     BeanArchive stereotype(Class<?>... classes);
+
+    /**
+     * Adds an exclude filter to beans.xml.
+     *
+     * @param excludes
+     * @return
+     */
+    BeanArchive exclude(BeansXml.Exclude... excludes);
 }
