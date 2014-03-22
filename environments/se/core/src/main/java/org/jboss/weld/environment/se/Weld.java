@@ -81,7 +81,7 @@ public class Weld {
     private static final Logger log = Logger.getLogger(Weld.class);
     private static final String JANDEX_ENABLED_DISCOVERY_STRATEGY_CLASS_NAME = "org.jboss.weld.environment.se.discovery.url.JandexEnabledDiscoveryStrategy";
     private static final String CLASS_FILE_SERVICES_CLASS_NAME = "org.jboss.weld.environment.se.discovery.WeldSEClassFileServices";
-    public static final String COMPOSITE_ARCHIVE_ENABLEMENT_SYSTEM_PROPERTY = "org.jboss.weld.se.archive.isolation";
+    public static final String ARCHIVE_ISOLATION_SYSTEM_PROPERTY = "org.jboss.weld.se.archive.isolation";
     private static final String BOOTSTRAP_IMPL_CLASS_NAME = "org.jboss.weld.bootstrap.WeldBootstrap";
     private static final String ERROR_LOADING_WELD_BOOTSTRAP_EXC_MESSAGE = "Error loading Weld bootstrap, check that Weld is on the classpath";
     public static final String JANDEX_INDEX_CLASS_NAME = "org.jboss.jandex.Index";
@@ -201,15 +201,15 @@ public class Weld {
         }
         Set<WeldSEBeanDeploymentArchive> discoveredArchives = strategy.discoverArchives();
 
-        String isolation = AccessController.doPrivileged(new GetSystemPropertyAction(COMPOSITE_ARCHIVE_ENABLEMENT_SYSTEM_PROPERTY));
+        String isolation = AccessController.doPrivileged(new GetSystemPropertyAction(ARCHIVE_ISOLATION_SYSTEM_PROPERTY));
         Deployment deployment=null;
         if (isolation != null && Boolean.valueOf(isolation).equals(Boolean.FALSE)) {
-            log.debug(SYSTEM_PROPERTY_STRING + COMPOSITE_ARCHIVE_ENABLEMENT_SYSTEM_PROPERTY
+            log.debug(SYSTEM_PROPERTY_STRING + ARCHIVE_ISOLATION_SYSTEM_PROPERTY
                     + " is set to false value, so only one bean archive will be created.");
             WeldSEBeanDeploymentArchive archive = mergeToOne(bootstrap, discoveredArchives);
             deployment = new WeldSEUrlDeployment(resourceLoader, bootstrap, Collections.singleton(archive), loadedExtensions);
         } else {
-            log.debug(SYSTEM_PROPERTY_STRING + COMPOSITE_ARCHIVE_ENABLEMENT_SYSTEM_PROPERTY
+            log.debug(SYSTEM_PROPERTY_STRING + ARCHIVE_ISOLATION_SYSTEM_PROPERTY
                     + " is on default true value, creating multiple bean archives if needed.");
             deployment=  new WeldSEUrlDeployment(resourceLoader, bootstrap, discoveredArchives, loadedExtensions);
         }
