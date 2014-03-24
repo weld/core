@@ -24,7 +24,6 @@ import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.environment.se.discovery.AbstractWeldSEDeployment;
 import org.jboss.weld.environment.se.discovery.WeldSEBeanDeploymentArchive;
-import org.jboss.weld.environment.se.logging.WeldSELogger;
 import org.jboss.weld.resources.spi.ResourceLoader;
 
 /**
@@ -64,7 +63,7 @@ public abstract class DiscoveryStrategy {
                     addToArchives(processNoneDiscovery(builder));
                     break;
                 default:
-                    WeldSELogger.LOG.undefinedBeanDiscoveryValue(beansXml.getBeanDiscoveryMode());
+                    throw new IllegalStateException("beans.xml has undefined bean discovery value:" + beansXml.getBeanDiscoveryMode());
             }
         }
         assignVisibility(deploymentArchives);

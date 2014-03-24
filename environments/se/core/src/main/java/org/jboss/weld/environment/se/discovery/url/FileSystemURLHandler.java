@@ -31,7 +31,6 @@ import java.util.zip.ZipFile;
 
 import org.jboss.logging.Logger;
 import org.jboss.weld.bootstrap.api.Bootstrap;
-import org.jboss.weld.environment.se.logging.WeldSELogger;
 
 /**
  * This class provides file-system orientated scanning
@@ -72,15 +71,15 @@ public class FileSystemURLHandler implements URLHandler {
                     ZipFile jarFile = (ZipFile) m.invoke(jnlpClassLoader, new URL(urlPath));
                     urlPath = jarFile.getName();
                 } catch (MalformedURLException mue) {
-                    WeldSELogger.LOG.couldNotReadEntries(urlPath, mue);
+                    log.warn("could not read entries, method JNLPClassLoader#getJarFile(URL) did not return a valid URL", mue);
                 } catch (NoSuchMethodException nsme) {
-                    WeldSELogger.LOG.unexpectedClassLoader(nsme);
+                    log.warn(UNEXPECTED_CLASSLOADER_MESSAGE, nsme);
                 } catch (IllegalArgumentException iarge) {
-                    WeldSELogger.LOG.unexpectedClassLoader(iarge);
+                    log.warn(UNEXPECTED_CLASSLOADER_MESSAGE, iarge);
                 } catch (InvocationTargetException ite) {
-                    WeldSELogger.LOG.jnlpClassLoaderInternalException(ite);
+                    log.warn("JNLPClassLoader#getJarFile(URL) threw exception", ite);
                 } catch (Exception iacce) {
-                    WeldSELogger.LOG.jnlpClassLoaderInvocationException(iacce);
+                    log.warn("could not invoke JNLPClassLoader#getJarFile(URL) on context class loader", iacce);
                 }
             }
 
@@ -111,7 +110,7 @@ public class FileSystemURLHandler implements URLHandler {
             }
             zip.close();
         } catch (ZipException e) {
-            throw WeldSELogger.LOG.cannotHandleFile(file, e);
+            throw new RuntimeException("Error handling file " + file, e);
         }
     }
 
@@ -129,7 +128,7 @@ public class FileSystemURLHandler implements URLHandler {
                 try {
                     addToDiscovered(newPath, child.toURI().toURL());
                 } catch (MalformedURLException e) {
-                    WeldSELogger.LOG.errorLoadingFile(newPath);
+                    log.errorv("Error loading file {0}", newPath);
                 }
             }
         }
@@ -146,7 +145,7 @@ public class FileSystemURLHandler implements URLHandler {
             if (discoveredBeansXmlUrl == null) {
                 discoveredBeansXmlUrl = url;
             } else {
-                WeldSELogger.LOG.tooManyBeansXml();
+                throw new IllegalArgumentException("There is more than one beans.xml in the archive");
             }
         }
     }

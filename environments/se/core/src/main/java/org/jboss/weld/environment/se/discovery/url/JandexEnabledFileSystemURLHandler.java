@@ -22,8 +22,8 @@ import java.net.URL;
 
 import org.jboss.jandex.Index;
 import org.jboss.jandex.Indexer;
+import org.jboss.logging.Logger;
 import org.jboss.weld.bootstrap.api.Bootstrap;
-import org.jboss.weld.environment.se.logging.WeldSELogger;
 
 /**
  * An implementation of {@link FileSystemURLHandler} that is filling the {@link BeanArchiveBuilder} also with the jandex index.
@@ -32,6 +32,9 @@ import org.jboss.weld.environment.se.logging.WeldSELogger;
  */
 public class JandexEnabledFileSystemURLHandler extends FileSystemURLHandler {
 
+    private static final String UNABLE_TO_OPEN_STREAM_MESSAGE = "Could not open the stream on the url when adding to the jandex index.";
+    private static final String UNABLE_TO_CLOSE_STREAM_MESSAGE = "Could not close the stream on the url when adding to the jandex index.";
+    private static final Logger log = Logger.getLogger(JandexEnabledFileSystemURLHandler.class);
     private final Indexer indexer = new Indexer();
 
     public JandexEnabledFileSystemURLHandler(Bootstrap bootstrap) {
@@ -44,14 +47,14 @@ public class JandexEnabledFileSystemURLHandler extends FileSystemURLHandler {
             fs = url.openStream();
             indexer.index(fs);
         } catch (IOException ex) {
-            WeldSELogger.LOG.couldNotOpenStreamForURL(url, ex);
+            log.warn(UNABLE_TO_OPEN_STREAM_MESSAGE, ex);
         } finally {
             try {
                 if (fs != null) {
                     fs.close();
                 }
             } catch (IOException ex) {
-                WeldSELogger.LOG.couldNotCloseStreamForURL(url, ex);
+                log.warn(UNABLE_TO_CLOSE_STREAM_MESSAGE, ex);
             }
         }
     }

@@ -25,7 +25,6 @@ import org.jboss.jandex.IndexView;
 import org.jboss.weld.environment.se.discovery.url.DiscoveryStrategy;
 import org.jboss.weld.environment.se.discovery.url.JandexEnabledDiscoveryStrategy;
 import org.jboss.weld.environment.se.discovery.url.WeldSEResourceLoader;
-import org.jboss.weld.environment.se.logging.WeldSELogger;
 import org.jboss.weld.resources.spi.ClassFileInfo;
 import org.jboss.weld.resources.spi.ClassFileServices;
 
@@ -65,7 +64,7 @@ public class WeldSEClassFileServices implements ClassFileServices {
                         builder.add(annotation.annotationType().getName());
                     }
                 } catch (ClassNotFoundException e) {
-                    throw WeldSELogger.LOG.unableToLoadAnnotation(name.toString());
+                    throw new IllegalStateException(UNABLE_TO_LOAD_ANNOTATION_MESSAGE + name.toString());
                 }
             }
             return builder.build();

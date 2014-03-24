@@ -18,7 +18,6 @@ package org.jboss.weld.environment.se.discovery.url;
 
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.environment.se.discovery.WeldSEBeanDeploymentArchive;
-import org.jboss.weld.environment.se.logging.WeldSELogger;
 import org.jboss.weld.resources.spi.ResourceLoader;
 
 /**
@@ -33,7 +32,7 @@ public class DefaultDiscoveryStrategy extends DiscoveryStrategy {
 
     @Override
     protected WeldSEBeanDeploymentArchive processAnnotatedDiscovery(BeanArchiveBuilder builder) {
-        throw WeldSELogger.LOG.annotatedBeanDiscoveryNotSupported();
+        throw new IllegalStateException("bean discovery-mode=\"annotated\" support is disabled. Add org.jboss:jandex to the classpath to enable it.");
     }
 
 }

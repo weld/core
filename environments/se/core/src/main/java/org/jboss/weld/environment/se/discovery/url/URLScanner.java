@@ -25,7 +25,6 @@ import java.util.Collection;
 import org.jboss.logging.Logger;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.environment.se.Weld;
-import org.jboss.weld.environment.se.logging.WeldSELogger;
 import org.jboss.weld.environment.se.util.SEReflections;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.util.reflection.Reflections;
@@ -73,7 +72,7 @@ public class URLScanner {
                 try {
                     urlPath = getUrlPath(resourceName, url);
                 } catch (URISyntaxException e) {
-                    WeldSELogger.LOG.couldNotReadResource(resourceName, e);
+                    log.warn("Could not read: " + resourceName, e);
                     continue;
                 }
                 final String bdaId = getId(urlPath);
