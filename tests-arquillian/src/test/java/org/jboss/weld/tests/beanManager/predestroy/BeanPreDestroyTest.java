@@ -42,7 +42,7 @@ public class BeanPreDestroyTest {
         SomeBean.destroyCalled = false;
         Set<Bean<?>> beans = beanManager.getBeans(SomeBean.class);
         Bean<SomeBean> bean = Reflections.cast(beanManager.resolve(beans));   
-        CreationalContext<SomeBean> ctx = beanManager.createCreationalContext(null);
+        CreationalContext<SomeBean> ctx = beanManager.createCreationalContext(bean);
         SomeBean instance = (SomeBean) beanManager.getReference(bean, SomeBean.class, ctx);
         bean.destroy(instance, ctx);
         assertTrue(SomeBean.destroyCalled);
