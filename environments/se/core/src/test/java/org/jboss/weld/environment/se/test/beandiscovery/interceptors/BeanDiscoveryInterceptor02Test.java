@@ -30,7 +30,7 @@ public class BeanDiscoveryInterceptor02Test extends ArchiveIsolationOverrideTest
         return true;
     }
     
-    @Deployment(managed = false, name = "main")
+    @Deployment(managed = false)
     public static Archive<?> getDeployment() {
         WeldSEClassPath archives = ShrinkWrap.create(WeldSEClassPath.class);
         JavaArchive archive01 = ShrinkWrap.create(BeanArchive.class)
