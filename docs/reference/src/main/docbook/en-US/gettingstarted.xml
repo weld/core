@@ -195,7 +195,7 @@ $> mvn verify -Darquillian=jbossas-managed-7]]></programlisting>
       </para>
 
       <para>
-         To deploy the examples to GlassFish, you'll a <ulink
+         To deploy the examples to GlassFish, you'll need a <ulink
          url="https://glassfish.dev.java.net/downloads/v3-final.html">GlassFish V3</ulink> release. Select the release
          that ends in either <literal>-unix.sh</literal> or <literal>-windows.exe</literal> depending on your platform.
          After the download is complete, execute the installer. On Linux/Unix, you'll need to first make the script
@@ -330,7 +330,7 @@ $> mvn compile war:exploded tomcat:exploded -Ptomcat]]></programlisting>
          application in an embedded Tomcat 6 container:
       </para>
 
-      <programlisting><![CDATA[$> mvn war:inplace tomcat:run -Ptomcat]]></programlisting>
+      <programlisting><![CDATA[$> mvn war:inplace tomcat6:run -Ptomcat]]></programlisting>
 
       <para>
          The advantage of using the embedded server is that changes to assets in <literal>src/main/webapp</literal> take effect
