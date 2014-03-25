@@ -100,7 +100,8 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
     }
 
     private Set<Bean<?>> getBeans() {
-        return getBeanManager().getBeans(getType(), getQualifiers());
+        Set<Bean<?>> beans = getBeanManager().getBeans(getType(), getQualifiers());
+        return getBeanManager().getBeanResolver().resolve(beans);
     }
 
     public Iterator<T> iterator() {
