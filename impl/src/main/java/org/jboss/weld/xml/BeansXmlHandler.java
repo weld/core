@@ -225,22 +225,27 @@ public class BeansXmlHandler extends DefaultHandler {
             @Override
             public void processStartChildElement(String uri, String localName, String qName, Attributes attributes) {
                 if (isFilterElement(uri, localName)) {
-                    name = interpolate(trim(attributes.getValue(NAME_ATTRIBUTE_QUALIFIED_NAME)));
-                    pattern = interpolate(trim(attributes.getValue(PATTERN_ATTRIBUTE_QUALIFIED_NAME)));
+                    name = interpolateAttributeValue(attributes, NAME_ATTRIBUTE_QUALIFIED_NAME);
+                    pattern = interpolateAttributeValue(attributes, PATTERN_ATTRIBUTE_QUALIFIED_NAME);
                     systemPropertyActivations = new ArrayList<Metadata<SystemPropertyActivation>>();
                     classAvailableActivations = new ArrayList<Metadata<ClassAvailableActivation>>();
                 } else if (isInNamespace(uri)) {
                     if (IF_CLASS_AVAILABLE.equals(localName) || IF_CLASS_NOT_AVAILABLE.equals(localName)) {
-                        String className = interpolate(trim(attributes.getValue(NAME_ATTRIBUTE_QUALIFIED_NAME)));
+                        String className = interpolateAttributeValue(attributes, NAME_ATTRIBUTE_QUALIFIED_NAME);
                         Metadata<ClassAvailableActivation> classAvailableActivation = new XmlMetadata<ClassAvailableActivation>(qName, new ClassAvailableActivationImpl(className, IF_CLASS_NOT_AVAILABLE.equals(localName)), file, locator.getLineNumber());
                         classAvailableActivations.add(classAvailableActivation);
                     } else if (IF_SYSTEM_PROPERTY.equals(localName)) {
-                        String systemPropertyName = interpolate(trim(attributes.getValue(NAME_ATTRIBUTE_QUALIFIED_NAME)));
-                        String systemPropertyValue = interpolate(trim(attributes.getValue(VALUE_ATTRIBUTE_QUALIFIED_NAME)));
+                        String systemPropertyName = interpolateAttributeValue(attributes, NAME_ATTRIBUTE_QUALIFIED_NAME);
+                        String systemPropertyValue = interpolateAttributeValue(attributes, VALUE_ATTRIBUTE_QUALIFIED_NAME);
                         Metadata<SystemPropertyActivation> systemPropertyActivation = new XmlMetadata<SystemPropertyActivation>(qName, new SystemPropertyActivationImpl(systemPropertyName, systemPropertyValue), file, locator.getLineNumber());
                         systemPropertyActivations.add(systemPropertyActivation);
                     }
                 }
+            }
+
+            private String interpolateAttributeValue(Attributes attributes, String qName) {
+                String value = trim(attributes.getValue(qName));
+                return value == null ? null : interpolate(value);
             }
 
             @Override
