@@ -137,7 +137,7 @@
             annotation
             <emphasis>is not</emphasis>
             required at the
-            injection point. The same is true for observer methods (which we'll meet in<xref linkend="events"/>) and
+            injection point. The same is true for observer methods (which we'll meet in <xref linkend="events"/>) and
             disposer methods.
         </para>
     </section>
@@ -146,7 +146,7 @@
         <title>What gets injected</title>
 
         <para>
-            The CDI specification defines a procedure, called<emphasis>typesafe resolution</emphasis>, that the
+            The CDI specification defines a procedure, called <emphasis>typesafe resolution</emphasis>, that the
             container
             follows when identifying the bean to inject to an injection point. This algorithm looks complex at first,
             but
@@ -172,7 +172,7 @@
                 <para>
                     allow the application deployer to select which implementation is appropriate for a particular
                     deployment,
-                    without changes to the client, by enabling or disabling an<emphasis>alternative</emphasis>, or
+                    without changes to the client, by enabling or disabling an <emphasis>alternative</emphasis>, or
                 </para>
             </listitem>
             <listitem>
@@ -289,7 +289,7 @@ PaymentProcessor getPaymentProcessor(@Synchronous PaymentProcessor syncPaymentPr
             </emphasis>
             It's important to understand that a qualifier is like an
             extension of the interface. It does not create a direct dependency to any particular implementation. There
-            may be multiple alternative implementations of<literal>@Asynchronous PaymentProcessor</literal>!
+            may be multiple alternative implementations of <literal>@Asynchronous PaymentProcessor</literal>!
         </para>
 
     </section>
@@ -302,7 +302,7 @@ PaymentProcessor getPaymentProcessor(@Synchronous PaymentProcessor syncPaymentPr
         </title>
 
         <para>Whenever a bean or injection point does not explicitly declare a qualifier, the container assumes the
-            qualifier<literal>@Default</literal>. From time to time, you'll need to declare an injection point without
+            qualifier <literal>@Default</literal>. From time to time, you'll need to declare an injection point without
             specifying a qualifier. There's a qualifier for that too. All beans have the qualifier<literal>
                 @Any</literal>.
             Therefore, by explicitly specifying
@@ -392,7 +392,7 @@ public class SynchronousReliablePaymentProcessor implements PaymentProcessor {
         <para>Alternatives are beans whose implementation is specific to a particular client module or deployment
             scenario. This alternative defines a mock implementation of both
             <literal>@Synchronous PaymentProcessor</literal>
-            and<literal>@Asynchronous PaymentProcessor</literal>, all in one:
+            and <literal>@Asynchronous PaymentProcessor</literal>, all in one:
         </para>
 
         <programlisting role="JAVA"><![CDATA[@Alternative @Synchronous @Asynchronous
@@ -478,7 +478,7 @@ public class MockPaymentProcessor implements PaymentProcessor {
                     enable an
                     <literal>@Alternative</literal>
                     bean that implements the bean type and has the
-                    appropriate qualifier types, using <literal>@Priority</literal>annotation.
+                    appropriate qualifier types, using <literal>@Priority</literal> annotation.
                 </para>
             </listitem>
         </itemizedlist>
@@ -495,7 +495,7 @@ public class MockPaymentProcessor implements PaymentProcessor {
             </listitem>
             <listitem>
                 <para>
-                    disable one of the beans by annotating it<literal>@Alternative</literal>,
+                    disable one of the beans by annotating it <literal>@Alternative</literal>,
                 </para>
             </listitem>
             <listitem>
@@ -537,7 +537,7 @@ public class MockPaymentProcessor implements PaymentProcessor {
 
         <para>
             On the other hand, if you really do have an optional or multivalued injection point, you should change
-            the type of your injection point to<literal>Instance</literal>, as we'll see in<xref linkend="lookup"/>.
+            the type of your injection point to<literal>Instance</literal>, as we'll see in <xref linkend="lookup"/>.
         </para>
 
         <para>
@@ -632,7 +632,7 @@ public class MockPaymentProcessor implements PaymentProcessor {
             </listitem>
             <listitem>
                 <para>
-                    if all else fails, change the scope of the injected bean to<literal>@Dependent</literal>.
+                    if all else fails, change the scope of the injected bean to <literal>@Dependent</literal>.
                 </para>
             </listitem>
         </itemizedlist>
@@ -750,7 +750,7 @@ public class MockPaymentProcessor implements PaymentProcessor {
             Alternatively, we can specify the qualifier dynamically. First, we add the
             <literal>@Any</literal>
             qualifier to
-            the injection point, to suppress the default qualifier. (All beans have the qualifier<literal>@Any</literal>
+            the injection point, to suppress the default qualifier. (All beans have the qualifier <literal>@Any</literal>
             .)
         </para>
 
