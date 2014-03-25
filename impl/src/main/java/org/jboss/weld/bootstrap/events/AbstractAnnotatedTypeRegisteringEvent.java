@@ -38,7 +38,7 @@ public class AbstractAnnotatedTypeRegisteringEvent extends AbstractBeanDiscovery
 
     protected void addSyntheticAnnotatedType(AnnotatedType<?> type, String id) {
         AnnotatedTypeValidator.validateAnnotatedType(type);
-        if (Beans.isVetoed(type)) {
+        if (type.getJavaClass().isAnnotation() || Beans.isVetoed(type)) {
             return;
         }
         storeSyntheticAnnotatedType(getOrCreateBeanDeployment(type.getJavaClass()), type, id);
