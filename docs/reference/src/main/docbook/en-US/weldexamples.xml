@@ -36,80 +36,20 @@
    xsi:schemaLocation="
       http://java.sun.com/xml/ns/javaee
       http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd">
+      
+      <name>numberguess</name>
+      
 </faces-config>]]></programlisting>
 
       <para>
          There's also an empty <literal>beans.xml</literal> file, which tells the container to look for beans in this
-         application and to activate the CDI services.
+         archive and to activate the CDI services.
       </para>
       
       <para>
-         Finally, there's the familiar <literal>web.xml</literal>:
+         Finally, some of the supported servers also need a <literal>web.xml</literal> which is located in 
+         <literal>src/main/webapp-[server]/WEB-INF</literal>.
       </para>
-      
-      <programlistingco>
-         <areaspec>
-            <area id="faces.servlet" coords="10" />
-            <area id="faces.servlet.mapping" coords="16" />
-            <area id="faces.default.suffix" coords="21" />
-            <area id="session.timeout" coords="26" />
-         </areaspec>
-         <programlisting><![CDATA[<web-app version="2.5"
-   xmlns="http://java.sun.com/xml/ns/javaee"
-   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="
-      http://java.sun.com/xml/ns/javaee
-      http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
-   
-   <display-name>weld-jsf-numberguess-war</display-name>
-   <description>Weld JSF numberguess example (war)</description>
-
-   <servlet>
-      <servlet-name>Faces Servlet</servlet-name>
-      <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
-      <load-on-startup>1</load-on-startup>
-   </servlet>
-
-   <servlet-mapping>
-      <servlet-name>Faces Servlet</servlet-name>
-      <url-pattern>*.jsf</url-pattern>
-   </servlet-mapping>
-   
-   <context-param>
-      <param-name>javax.faces.DEFAULT_SUFFIX</param-name>
-      <param-value>.xhtml</param-value>
-   </context-param>
-
-   <session-config>
-      <session-timeout>10</session-timeout>
-   </session-config>
-
-</web-app>]]></programlisting>
-         <calloutlist>
-            <callout arearefs="faces.servlet">
-               <para>
-                  Enable and initialize the JSF servlet
-               </para>
-            </callout>
-            <callout arearefs="faces.servlet.mapping">
-               <para>
-                  Configure requests for URLs ending in <literal>.jsf</literal> to be
-                  handled by JSF
-               </para>
-            </callout>
-            <callout arearefs="faces.default.suffix">
-               <para>
-                  Tell JSF that we will be giving our JSF views (Facelets templates) an
-                  extension of <literal>.xhtml</literal>
-               </para>
-            </callout>
-            <callout arearefs="session.timeout">
-               <para>
-                  Configure a session timeout of 10 minutes
-               </para>
-            </callout>
-         </calloutlist>
-      </programlistingco>
       
       <note>
          <para>
@@ -125,11 +65,11 @@
       <programlistingco>
          <areaspec>
             <area id="template" coords="8" />
-            <area id="statusMessages" coords="12" />
-            <area id="instructions" coords="20" />
-            <area id="guess" coords="27" />
-            <area id="validator" coords="29" />
-            <area id="submit" coords="30" />
+            <area id="statusMessages" coords="13" />
+            <area id="instructions" coords="19" />
+            <area id="guess" coords="24" />
+            <area id="validator" coords="25" />
+            <area id="submit" coords="26" />
          </areaspec>
          <programlisting><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -144,27 +84,22 @@
          <h:form id="numberGuess">
             <div style="color: red">
                <h:messages id="messages" globalOnly="false"/>
-               <h:outputText id="Higher" value="Higher!"
-                  rendered="#{game.number gt game.guess and game.guess ne 0}"/>
-               <h:outputText id="Lower" value="Lower!"
-                  rendered="#{game.number lt game.guess and game.guess ne 0}"/>
+               <h:outputText id="Higher" value="Higher!" rendered="#{game.guessLower}"/>
+               <h:outputText id="Lower" value="Lower!" rendered="#{game.guessHigher}"/>
             </div>
-    
+
             <div>
-               I'm thinking of a number between #{game.smallest} and #{game.biggest}.
-               You have #{game.remainingGuesses} guesses remaining.
+               I'm thinking of a number between <span id="numberGuess:smallest">#{game.smallest}</span> and <span id="numberGuess:biggest">#{game.biggest}</span>. You have #{game.remainingGuesses} guesses remaining.
             </div>
-       
+
             <div>
-               Your guess: 
+               Your guess:
                <h:inputText id="inputGuess" value="#{game.guess}"
-                  size="3" required="true" disabled="#{game.number eq game.guess}"
-                  validator="#{game.validateNumberRange}"/>
-               <h:commandButton id="guessButton" value="Guess" 
-                  action="#{game.check}" disabled="#{game.number eq game.guess}"/>
+                  required="true" size="3" disabled="#{game.guessCorrect}" validator="#{game.validateNumberRange}"/>
+               <h:commandButton id="guessButton" value="Guess" action="#{game.check}" disabled="#{game.guessCorrect}"/>
             </div>
             <div>
-              <h:commandButton id="restartButton" value="Reset" action="#{game.reset}" immediate="true"/>
+               <h:commandButton id="restartButton" value="Reset" action="#{game.reset}" immediate="true"/>
             </div>
          </h:form>
       </ui:define>
@@ -214,7 +149,7 @@
       </programlistingco>
       
       <para>
-         The example exists of 4 classes, the first two of which are qualifiers.  First, there is the
+         The example consists of 4 classes, the first two of which are qualifiers.  First, there is the
          <literal>@Random</literal> qualifier, used for injecting a random number:
       </para>
       
@@ -242,22 +177,26 @@ public @interface MaxNumber {}
       <programlisting role="JAVA"><![CDATA[@ApplicationScoped
 public class Generator implements Serializable {
 
-   private java.util.Random random = new java.util.Random(System.currentTimeMillis());
-   
-   private int maxNumber = 100;
-   
-   java.util.Random getRandom() {
-      return random;
-   }
-   
-   @Produces @Random int next() { 
-      return getRandom().nextInt(maxNumber); 
-   }
-   
-   @Produces @MaxNumber int getMaxNumber() {
-      return maxNumber;
-   }
+    private java.util.Random random = new java.util.Random(System.currentTimeMillis());
 
+    private static final int MAX_NUMBER = 100;
+
+    java.util.Random getRandom() {
+        return random;
+    }
+
+    @Produces
+    @Random
+    int next() {
+        //a number between 1 and 100
+        return getRandom().nextInt(MAX_NUMBER - 1) + 1;
+    }
+
+    @Produces
+    @MaxNumber
+    int getMaxNumber() {
+        return MAX_NUMBER;
+    }
 }]]></programlisting>
 
       <para>
@@ -285,85 +224,102 @@ public class Generator implements Serializable {
       </para>
          
       <programlisting role="JAVA"><![CDATA[import javax.enterprise.inject.Instance;
-
+          
 @Named
 @SessionScoped
 public class Game implements Serializable {
 
-   private int number;
-   private int guess;
-   private int smallest;
-   private int biggest;
-   private int remainingGuesses;
+    private static final int DEFAULT_REMAINING_GUESSES = 10;
 
-   @Inject @MaxNumber private int maxNumber;
-   @Inject @Random Instance<Integer> randomNumber;
-   
-   public Game() {}
-   
-   public void check() {
-      if (guess > number) {
-         biggest = guess - 1;
-      }
-      else if (guess < number) {
-         smallest = guess + 1;
-      }
-      else if (guess == number) {
-         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Correct!"));
-      }
-      remainingGuesses--;
-   }
-   
-   @PostConstruct
-   public void reset() {
-      this.smallest = 0;
-      this.guess = 0;
-      this.remainingGuesses = 10;
-      this.biggest = maxNumber;
-      this.number = randomNumber.get();
-   }
-   
-   public void validateNumberRange(FacesContext context,  UIComponent toValidate, Object value) {
-      if (remainingGuesses <= 0) {
-         FacesMessage message = new FacesMessage("No guesses left!");
-         context.addMessage(toValidate.getClientId(context), message);
-         ((UIInput) toValidate).setValid(false);
-         return;
-      }
-      int input = (Integer) value;
+    private int number;
+    private int guess;
+    private int smallest;
+    private int biggest;
+    private int remainingGuesses;
+    
+    @Inject
+    @MaxNumber
+    private int maxNumber;
+    
+    @Inject
+    @Random
+    private Instance<Integer> randomNumber;
 
-      if (input < smallest || input > biggest) {
-         ((UIInput) toValidate).setValid(false);
+    public Game() {
+    }
 
-         FacesMessage message = new FacesMessage("Invalid guess");
-         context.addMessage(toValidate.getClientId(context), message);
-      }
-   }
+    public int getNumber() {
+        return number;
+    }
 
-   public int getNumber() {
-      return number;
-   }
-   
-   public int getGuess() {
-      return guess;
-   }
-   
-   public void setGuess(int guess) {
-      this.guess = guess;
-   }
-   
-   public int getSmallest() {
-      return smallest;
-   }
-   
-   public int getBiggest() {
-      return biggest;
-   }
-   
-   public int getRemainingGuesses() {
-      return remainingGuesses;
-   }
+    public int getGuess() {
+        return guess;
+    }
 
+    public void setGuess(int guess) {
+        this.guess = guess;
+    }
+
+    public int getSmallest() {
+        return smallest;
+    }
+
+    public int getBiggest() {
+        return biggest;
+    }
+
+    public int getRemainingGuesses() {
+        return remainingGuesses;
+    }
+
+    public void check() {
+        if (guess > number) {
+            biggest = guess - 1;
+        } else if (guess < number) {
+            smallest = guess + 1;
+        } else if (guess == number) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Correct!"));
+        }
+        remainingGuesses--;
+    }
+
+    @PostConstruct
+    public void reset() {
+        this.smallest = 0;
+        this.guess = 0;
+        this.remainingGuesses = DEFAULT_REMAINING_GUESSES;
+        this.biggest = maxNumber;
+        this.number = randomNumber.get();
+    }
+
+    public void validateNumberRange(FacesContext context, UIComponent toValidate, Object value) {
+        if (remainingGuesses <= 0) {
+            FacesMessage message = new FacesMessage("No guesses left!");
+            context.addMessage(toValidate.getClientId(context), message);
+            ((UIInput) toValidate).setValid(false);
+            return;
+        }
+        int input = (Integer) value;
+
+        if (input < smallest || input > biggest) {
+            ((UIInput) toValidate).setValid(false);
+
+            FacesMessage message = new FacesMessage("Invalid guess");
+            context.addMessage(toValidate.getClientId(context), message);
+        }
+    }
+
+    public boolean isGuessHigher() {
+        return guess != 0 && guess > number;
+    }
+
+    public boolean isGuessLower() {
+        return guess != 0 && guess < number;
+    }
+
+    public boolean isGuessCorrect() {
+        return guess == number;
+    }
 }]]></programlisting>
 
       <section id="numberguess-servlet">
@@ -380,7 +336,7 @@ public class Game implements Serializable {
             <para>
                You must also include the jars for JSF, EL, and the common annotations
                (<literal>jsr250-api.jar</literal>), all of which are provided by the Java EE platform (a Java EE
-               application server). Are you starting to appreciate why a Java EE platform is worth using?
+               application server).
             </para>
          </note>
          
@@ -408,7 +364,7 @@ public class Game implements Serializable {
       <title>The numberguess example for Java SE with Swing</title>
 
       <para>
-         This example shows how to use the Weld SE extension to in a
+         This example shows how to use the Weld SE extension in a
          Java SE based Swing application with no EJB or servlet
          dependencies.
          This example can be found in the
@@ -420,33 +376,34 @@ public class Game implements Serializable {
          <title>Creating the Eclipse project</title>
 
          <para>
-            To use the Weld SE numberguess example in Eclipse, you can
-            open the example natively using the
-            <ulink url="http://m2eclipse.sonatype.org/">m2eclipse plugin</ulink>.
+            To use the Weld SE numberguess example in Eclipse, you can either
+            import it as a Maven project if you have the <ulink url="http://m2eclipse.sonatype.org/">m2eclipse plugin</ulink>
+            installed, or generate an Eclipse project and import it.
          </para>
 
          <para>
-            If you have m2eclipse installed, you can open any Maven
+            With m2eclipse installed, you can open any Maven
             project directly. From within Eclipse, select
-            <emphasis>File -> Import... -> Maven Projects</emphasis>. 
+            <emphasis>File -> Import... -> Existing Maven Projects</emphasis>. 
             Then, browse to the location of the Weld SE
-            numberguess example. You should see that Eclipse recognizes the existence of a
-            Maven project.
+            numberguess example. You should see that Eclipse recognizes the Maven project.
          </para>
 
          <para>
-            This will create a project in your workspace called
-            <literal>weld-se-numberguess</literal>.
+            Without m2eclipse plugin, you first have to generate an Eclipse project.
+            Switch into the Weld SE numberguess example folder, then 
+            execute the Maven Eclipse plugin, as follows:
+            <programlisting>mvn eclipse:configure-workspace -Declipse.workspace=/path/to/your/eclipse/workspace</programlisting>
+            and then
+            <programlisting>mvn eclipse:eclipse</programlisting>
+            Then from within Eclipse, select <emphasis>File -> Import... -> Existing Projects into Workspace</emphasis>
+            and browse to the location of the Weld SE numberguess example.
          </para>
-
+            
          <para>
-            If you are not using the m2eclipse plugin, you have to follow
-            different steps to import the project.
-            First, switch into the Weld SE numberguess example, then execute the Maven
-            Eclipse plugin with the jetty
-            profile activated, as follows:
-            </para>
-
+            In both cases, you should now see a project in your workspace called <literal>weld-se-numberguess</literal>.
+         </para>   
+            
          <para>
             It's time to get the example running!
          </para>
@@ -471,7 +428,7 @@ public class Game implements Serializable {
          </mediaobject>
 
          <para>
-            Right click on the project, and choose <emphasis>Run As -> Run As Application</emphasis>:
+            Right click on the project, and choose <emphasis>Run As -> Java Application</emphasis>:
          </para>
 
          <mediaobject>
@@ -541,15 +498,23 @@ public class Game implements Serializable {
 
          <para>
             Let's have a look at the significant code and
-            configuration
-            files that make up this example.
+            configuration files that make up this example.
         </para>
 
         <para>
-            As usual, there is an empty <literal>beans.xml</literal> file in the root
-            package (<literal>src/main/resources/beans.xml</literal>), which 
+            There is an empty <literal>beans.xml</literal> file in the root
+            package (<literal>src/main/resources/META-INF/beans.xml</literal>), which 
             marks this application as a CDI application.
          </para>
+         
+         <note>
+            <para>
+               The <literal>beans.xml</literal> file is no longer required for CDI enablement as of CDI 1.1.
+               CDI is automatically enabled for archives which don't contain <literal>beans.xml</literal> 
+               but contain one or more bean classes with a <emphasis>bean defining annotation</emphasis>, 
+               as described in section <xref linkend="implicit-bean-archive"/>.
+            </para>
+         </note>
 
          <para>
             The game's main logic is located in <literal>Game.java</literal>. 
@@ -561,93 +526,103 @@ public class Game implements Serializable {
             <areaspec>
                <area id="scope" coords="1" />
                <area id="name" coords="2" />
-               <area id="messages1" coords="26" />
-               <area id="validation" coords="41" />
-               <area id="reset" coords="73" />
+               <area id="messages1" coords="47" />
+               <area id="validation" coords="59" />
+               <area id="reset" coords="86" />
              </areaspec>
              <programlisting role="JAVA"><![CDATA[@ApplicationScoped
-public class Game
-{
+public class Game {
+    public static final int MAX_NUM_GUESSES = 10;
 
-   public static final int MAX_NUM_GUESSES = 10;
+    private Integer number;
+    private int guess = 0;
+    private int smallest = 0;
 
-   private Integer number;
-   private int guess = 0;
-   private int smallest = 0;
+    @Inject
+    @MaxNumber
+    private int maxNumber;
 
-   @Inject
-   @MaxNumber
-   private int maxNumber;
+    private int biggest;
+    private int remainingGuesses = MAX_NUM_GUESSES;
+    private boolean validNumberRange = true;
 
-   private int biggest;
-   private int remainingGuesses = MAX_NUM_GUESSES;
-   private boolean validNumberRange = true;
+    @Inject
+    Generator rndGenerator;
 
-   @Inject
-   Generator rndGenerator;
+    public Game() {
+    }
 
-   public Game()
-   {
-   }
+    public int getNumber() {
+        return number;
+    }
 
-   ...
+    public int getGuess() {
+        return guess;
+    }
 
-   public boolean isValidNumberRange()
-   {
-      return validNumberRange;
-   }
+    public void setGuess(int guess) {
+        this.guess = guess;
+    }
 
-   public boolean isGameWon()
-   {
-      return guess == number;
-   }
+    public int getSmallest() {
+        return smallest;
+    }
 
-   public boolean isGameLost()
-   {
-      return guess != number && remainingGuesses <= 0;
-   }
+    public int getBiggest() {
+        return biggest;
+    }
 
-   public boolean check()
-   {
-      boolean result = false;
+    public int getRemainingGuesses() {
+        return remainingGuesses;
+    }
 
-      if (checkNewNumberRangeIsValid())
-      {
-         if (guess > number)
-         {
-            biggest = guess - 1;
-         }
+    public boolean isValidNumberRange() {
+        return validNumberRange;
+    }
 
-         if (guess < number)
-         {
-            smallest = guess + 1;
-         }
+    public boolean isGameWon() {
+        return guess == number;
+    }
 
-         if (guess == number)
-         {
-            result = true;
-         }
+    public boolean isGameLost() {
+        return guess != number && remainingGuesses <= 0;
+    }
 
-         remainingGuesses--;
-      }
+    public boolean check() {
+        boolean result = false;
 
-      return result;
-   }
+        if (checkNewNumberRangeIsValid()) {
+            if (guess > number) {
+                biggest = guess - 1;
+            }
 
-   private boolean checkNewNumberRangeIsValid()
-   {
-      return validNumberRange = ((guess >= smallest) && (guess <= biggest));
-   }
+            if (guess < number) {
+                smallest = guess + 1;
+            }
 
-   @PostConstruct
-   public void reset()
-   {
-      this.smallest = 0;
-      this.guess = 0;
-      this.remainingGuesses = 10;
-      this.biggest = maxNumber;
-      this.number = rndGenerator.next();
-   }
+            if (guess == number) {
+                result = true;
+            }
+
+            remainingGuesses--;
+        }
+
+        return result;
+    }
+
+    private boolean checkNewNumberRangeIsValid() {
+        return validNumberRange = ((guess >= smallest) && (guess <= biggest));
+    }
+
+    @PostConstruct
+    public void reset() {
+        this.smallest = 0;
+        this.guess = 0;
+        this.remainingGuesses = 10;
+        this.biggest = maxNumber;
+        this.number = rndGenerator.next();
+        System.out.println("psst! the number is " + this.number);
+    }
 }]]></programlisting>
             <calloutlist>
                <callout arearefs="scope">
@@ -722,60 +697,45 @@ public class Game
 
          <programlistingco>
          <areaspec>
-            <area id="game" coords="3" />
-            <area id="challenge" coords="6" />
-            <area id="result" coords="17" />
+            <area id="game" coords="2" />
+            <area id="challenge" coords="5" />
+            <area id="result" coords="15" />
          </areaspec>
-         <programlisting role="JAVA"><![CDATA[public class MessageGenerator
-{
-   @Inject
-   private Game game;
+         <programlisting role="JAVA"><![CDATA[public class MessageGenerator {
+    @Inject
+    private Game game;
 
-   public String getChallengeMessage()
-   {
-      StringBuilder challengeMsg = new StringBuilder("I'm thinking of a number between ");
-      challengeMsg.append(game.getSmallest());
-      challengeMsg.append(" and ");
-      challengeMsg.append(game.getBiggest());
-      challengeMsg.append(". Can you guess what it is?");
+    public String getChallengeMessage() {
+        StringBuilder challengeMsg = new StringBuilder("I'm thinking of a number between ");
+        challengeMsg.append(game.getSmallest());
+        challengeMsg.append(" and ");
+        challengeMsg.append(game.getBiggest());
+        challengeMsg.append(". Can you guess what it is?");
 
-      return challengeMsg.toString();
-   }
+        return challengeMsg.toString();
+    }
 
-   public String getResultMessage()
-   {
-      if (game.isGameWon())
-      {
-         return "You guessed it! The number was " + game.getNumber();
-      }
-      else if (game.isGameLost())
-      {
-         return "You are fail! The number was " + game.getNumber();
-      }
-      else if (!game.isValidNumberRange())
-      {
-         return "Invalid number range!";
-      }
-      else if (game.getRemainingGuesses() == Game.MAX_NUM_GUESSES)
-      {
-         return "What is your first guess?";
-      }
-      else
-      {
-         String direction = null;
+    public String getResultMessage() {
+        if (game.isGameWon()) {
+            return "You guessed it! The number was " + game.getNumber();
+        } else if (game.isGameLost()) {
+            return "You are fail! The number was " + game.getNumber();
+        } else if (!game.isValidNumberRange()) {
+            return "Invalid number range!";
+        } else if (game.getRemainingGuesses() == Game.MAX_NUM_GUESSES) {
+            return "What is your first guess?";
+        } else {
+            String direction = null;
 
-         if (game.getGuess() < game.getNumber())
-         {
-            direction = "Higher";
-         }
-         else
-         {
-            direction = "Lower";
-         }
+            if (game.getGuess() < game.getNumber()) {
+                direction = "Higher";
+            } else {
+                direction = "Lower";
+            }
 
-         return direction + "! You have " + game.getRemainingGuesses() + " guesses left.";
-      }
-   }
+            return direction + "! You have " + game.getRemainingGuesses() + " guesses left.";
+        }
+    }
 }]]></programlisting>
                <calloutlist>
                <callout arearefs="game">
@@ -808,76 +768,86 @@ public class Game
             <areaspec>
                <area id="gameIn" coords="5" />
                <area id="messagesIn" coords="8" />
-               <area id="start" coords="11" />
-               <area id="init" coords="23" />
-               <area id="guess1" coords="40" />
-               <area id="replay" coords="48" />
+               <area id="start" coords="10" />
+               <area id="init" coords="19" />
+               <area id="guess1" coords="35" />
+               <area id="replay" coords="53" />
             </areaspec>
             <programlisting role="JAVA"><![CDATA[import javax.enterprise.event.Observes;
+                
+public class NumberGuessFrame extends javax.swing.JFrame {
+    @Inject
+    private Game game;
 
-public class NumberGuessFrame extends javax.swing.JFrame
-{
-   @Inject
-   private Game game;
+    @Inject
+    private MessageGenerator msgGenerator;
 
-   @Inject
-   private MessageGenerator msgGenerator;
+    public void start(@Observes ContainerInitialized event) {
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                initComponents();
+                setVisible(true);
+            }
+        });
+    }
 
-   public void start(@Observes ContainerInitialized event)
-   {
-      java.awt.EventQueue.invokeLater(new Runnable()
-      {
-         public void run()
-         {
-            initComponents();
-            setVisible(true);
-         }
-      });
-   }
+    private void initComponents() {
 
-   private void initComponents()
-   {
+        borderPanel = new javax.swing.JPanel();
+        gamePanel = new javax.swing.JPanel();
+        inputsPanel = new javax.swing.JPanel();
+        buttonPanel = new javax.swing.JPanel();
+        guessButton = new javax.swing.JButton();
+        ...
+        mainLabel.setText(msgGenerator.getChallengeMessage());
+        mainMsgPanel.add(mainLabel);
 
-      buttonPanel = new javax.swing.JPanel();
-      mainMsgPanel = new javax.swing.JPanel();
-      mainLabel = new javax.swing.JLabel();
-      messageLabel = new javax.swing.JLabel();
-      guessText = new javax.swing.JTextField();
-      ...
-      mainLabel.setText(msgGenerator.getChallengeMessage());
-      mainMsgPanel.add(mainLabel);
+        messageLabel.setText(msgGenerator.getResultMessage());
+        mainMsgPanel.add(messageLabel);
+        ...
+    }
 
-      messageLabel.setText(msgGenerator.getResultMessage());
-      mainMsgPanel.add(messageLabel);
-      ...
-   }
+    private void guessButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        int guess = -1;
 
-   private void guessButtonActionPerformed( java.awt.event.ActionEvent evt )
-   {
-      int guess =  Integer.parseInt(guessText.getText());
-      game.setGuess( guess );
-      game.check();
-      refreshUI();
-   }
+        try {
+            guess = Integer.parseInt(guessText.getText());
+        } catch (NumberFormatException nfe) {
+            // noop
+        }
 
-   private void replayBtnActionPerformed(java.awt.event.ActionEvent evt)
-   {
-      game.reset();
-      refreshUI();
-   }
+        game.setGuess(guess);
+        game.check();
+        refreshUI();
 
-   private void refreshUI() {
-      mainLabel.setText( msgGenerator.getChallengeMessage() );
-      messageLabel.setText( msgGenerator.getResultMessage() );
-      guessText.setText( "" );
-      guessesLeftBar.setValue( game.getRemainingGuesses() );
-      guessText.requestFocus();
-   }
+        if (game.isGameWon() || game.isGameLost()) {
+            switchButtons();
+        }
+    }
 
-   // swing components
-   private javax.swing.JPanel borderPanel;
-   ...
-   private javax.swing.JButton replayBtn;
+    private void replayBtnActionPerformed(java.awt.event.ActionEvent evt) {
+        game.reset();
+        refreshUI();
+        switchButtons();
+    }
+
+    private void switchButtons() {
+        CardLayout buttonLyt = (CardLayout) buttonPanel.getLayout();
+        buttonLyt.next(buttonPanel);
+    }
+
+    private void refreshUI() {
+        mainLabel.setText(msgGenerator.getChallengeMessage());
+        messageLabel.setText(msgGenerator.getResultMessage());
+        guessText.setText("");
+        guessesLeftBar.setValue(game.getRemainingGuesses());
+        guessText.requestFocus();
+    }
+
+    // swing components
+    private javax.swing.JPanel borderPanel;
+    ...
+    private javax.swing.JButton replayBtn;
 
 }]]></programlisting>
             <calloutlist>
@@ -937,13 +907,19 @@ public class NumberGuessFrame extends javax.swing.JFrame
                            guesses).
                         </para>
                      </listitem>
+                     <listitem>
+                        <para>
+                           Sets the button's label based on the game state.
+                        </para>
+                     </listitem>
                   </itemizedlist>
                </callout>
                <callout arearefs="replay">
                   <para>
                      <literal>replayBtnActionPerformed</literal> simply calls 
-                     <literal>game.reset()</literal> to start a new game and 
-                     refreshes the messages in the UI.
+                     <literal>game.reset()</literal> to start a new game,
+                     refreshes the messages in the UI and sets the button's 
+                     label based on the game state.
                   </para>
                </callout>
             </calloutlist>
@@ -961,19 +937,19 @@ public class NumberGuessFrame extends javax.swing.JFrame
       </para>
       
       <para>
-         The translator example is built as an ear and contains EJBs. As a result, it's structure is more complex than
+         The translator example is built as an EAR and contains EJBs. As a result, it's structure is more complex than
          the numberguess example.
       </para>
       
       <note>
          <para>
-            Java EE 6, which bundles EJB 3.1, allows you to package EJBs in a war, which will make this structure much
-            simpler! Still, there are other advantages of using an ear.
+            Java EE 6, which bundles EJB 3.1, allows you to package EJBs in a WAR, which will make this structure much
+            simpler! Still, there are other advantages of using an EAR.
          </para>
       </note>
       
       <para>
-         First, let's take a look at the ear aggregator, which is located in the example's <literal>ear</literal> directory. Maven
+         First, let's take a look at the EAR aggregator project, which is located in the example's <literal>ear</literal> directory. Maven
          automatically generates the <literal>application.xml</literal> for us from this plugin configuration:
       </para>
       
@@ -1002,12 +978,12 @@ public class NumberGuessFrame extends javax.swing.JFrame
             <literal>META-INF/application.xml</literal>:
          </para>
          
-         <programlisting role="XML"><![CDATA[<application version="5"
+         <programlisting role="XML"><![CDATA[<application version="6"
    xmlns="http://java.sun.com/xml/ns/javaee" 
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xsi:schemaLocation="
       http://java.sun.com/xml/ns/javaee
-      http://java.sun.com/xml/ns/javaee/application_5.xsd">
+      http://java.sun.com/xml/ns/javaee/application_6.xsd">
 
   <display-name>weld-jsf-translator-ear</display-name>
   <description>The Weld JSF translator example (ear)</description>
@@ -1025,7 +1001,7 @@ public class NumberGuessFrame extends javax.swing.JFrame
       </note>
       
       <para>
-         Next, lets look at the war, which is located in the example's <literal>war</literal> directory. Just as in the
+         Next, lets look at the WAR, which is located in the example's <literal>war</literal> directory. Just as in the
          numberguess example, we have a <literal>faces-config.xml</literal> for JSF 2.0 and a <literal>web.xml</literal>
          (to activate JSF) under WEB-INF, both sourced from <literal>src/main/webapp/WEB-INF</literal>.
       </para>
@@ -1035,7 +1011,7 @@ public class NumberGuessFrame extends javax.swing.JFrame
          which surrounds the form (omitted here for brevity):
       </para>
       
-      <programlisting role="XML"><![CDATA[<h:form id="translator">
+      <programlisting role="XML"><![CDATA[<h:form id="TranslatorMain">
 
    <table>
       <tr align="center" style="font-weight: bold">
@@ -1072,8 +1048,17 @@ public class NumberGuessFrame extends javax.swing.JFrame
          mark the archive as containing beans.
       </para>
       
+      <note>
+         <para>
+            The <literal>beans.xml</literal> file is no longer required for CDI enablement as of CDI 1.1.
+            CDI is automatically enabled for archives which don't contain <literal>beans.xml</literal> 
+            but contain one or more bean classes with a <emphasis>bean defining annotation</emphasis>, 
+            as described in section <xref linkend="implicit-bean-archive"/>.
+         </para>
+      </note>
+      
       <para>
-         We've saved the most interesting bit to last, the code! The project has two simple beans,
+         We've saved the most interesting bit for last, the code! The project has two simple beans,
          <literal>SentenceParser</literal> and <literal>TextTranslator</literal> and two session beans,
          <literal>TranslatorControllerBean</literal> and <literal>SentenceTranslator</literal>. You should be getting
          quite familiar with what a bean looks like by now, so we'll just highlight the most interesting bits here.

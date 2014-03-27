@@ -31,7 +31,7 @@
 
       <itemizedlist>
          <listitem>
-            <para>all beans with the stereotype have defaulted bean EL names, or that</para>
+            <para>all beans with the stereotype have defaulted bean names, or that</para>
          </listitem>
          <listitem>
             <para>all beans with the stereotype are alternatives.</para>
@@ -159,13 +159,12 @@ public @interface Mock {}]]></programlisting>
 
       <programlisting role="JAVA"><![CDATA[@Mock
 public class MockLoginAction extends LoginAction { ... }]]></programlisting>
-<!-- 
-      <programlisting role="JAVA"><![CDATA[<beans>
+
+      <programlisting role="XML"><![CDATA[<beans>
    <alternatives>
       <stereotype>org.mycompany.testing.Mock</stereotype>
    </alternatives>
 </beans>]]></programlisting>
--->
 
    </section>
 
@@ -197,18 +196,14 @@ public @interface AuditableAction {}]]></programlisting>
       <title>Built-in stereotypes</title>
     
       <para>
-         We've already met a standard stereotype defined by the CDI specification: <literal>@Interceptor</literal>.
-      </para>
-    
-      <para>
-         CDI defines one further standard stereotype, <literal>@Model</literal>, which is expected to be used frequently
+         CDI defines one standard stereotype, <literal>@Model</literal>, which is expected to be used frequently
          in web applications:
       </para>
     
 <programlisting role="JAVA"><![CDATA[@Named 
 @RequestScoped 
 @Stereotype 
-@Target({TYPE, METHOD}) 
+@Target({TYPE, METHOD, FIELD}) 
 @Retention(RUNTIME) 
 public @interface Model {}]]></programlisting>
 

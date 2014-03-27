@@ -24,7 +24,7 @@
       We're about to see how to take full advantage of the Java EE platform in an application that uses CDI. We'll also
       briefly meet a set of SPIs that are provided to support portable extensions to CDI. You might not ever need to use
       these SPIs directly, but don't take them for granted. You will likely be using them indirectly, every time you use
-      a third-party extension, such as Seam.
+      a third-party extension, such as <ulink url="http://deltaspike.apache.org/">DeltaSpike</ulink>.
    </para>
   
 <!--
