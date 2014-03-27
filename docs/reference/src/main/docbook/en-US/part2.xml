@@ -8,7 +8,7 @@
    </para>
    
    <para>
-      Weld provides a complete SPI allowing Java EE containers such as JBoss AS, GlassFish and WebLogic to use Weld as their 
+      Weld provides a complete SPI allowing Java EE containers such as WildFly, GlassFish and WebLogic to use Weld as their 
       built-in CDI implementation. Weld also runs in servlet engines like Tomcat and Jetty, or even in a plain Java SE 
       environment.
    </para>

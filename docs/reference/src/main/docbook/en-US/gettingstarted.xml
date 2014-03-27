@@ -7,10 +7,10 @@
    <para>
       Weld comes with a number of examples. We recommend you start with <literal>examples/jsf/numberguess</literal>
       and <literal>examples/jsf/translator</literal>. Numberguess is a web (war) example containing
-      only non-transactional managed beans. This example can be run on a wide range of servers, including JBoss
-      AS, GlassFish, Apache Tomcat, Jetty, Google App Engine, and any compliant Java EE 6 container.
+      only non-transactional managed beans. This example can be run on a wide range of servers, including WildFly
+      , GlassFish, Apache Tomcat, Jetty, Google App Engine, and any compliant Java EE 7 container.
       Translator is an enterprise (ear) example that contains session beans. This example
-      must be run on JBoss AS 7 or better, GlassFish 3 or better, or any compliant Java EE 6 container.
+      must be run on WildFly 8 or better, GlassFish 4 or better, or any compliant Java EE 7 container.
    </para>
 
    <para>
@@ -36,10 +36,10 @@
             <para>a supported runtime environment (minimum versions shown)</para>
             <itemizedlist>
                <listitem>
-                  <para>JBoss AS 7.0.0.Final,</para>
+                  <para>WildFly 8.0.0.Final,</para>
                </listitem>
                <listitem>
-                  <para>GlassFish 3.0,</para>
+                  <para>GlassFish 4.0,</para>
                </listitem>
                <listitem>
                   <para>Apache Tomcat 6 or better (war example only), or</para>
@@ -53,41 +53,41 @@
 
       <para>
          In the next few sections, you'll be using the Maven command (<literal>mvn</literal>) to invoke the Maven project file
-         in each example to compile, assemble and deploy the example to JBoss AS and, for the war example, Apache Tomcat.
-         You can also deploy the generated artifact (war or ear) to any other container that supports Java EE 6, such as
-         GlassFish 3.
+         in each example to compile, assemble and deploy the example to WildFly and, for the war example, Apache Tomcat.
+         You can also deploy the generated artifact (war or ear) to any other container that supports Java EE 7, such as
+         GlassFish 4.
       </para>
 
-      <para>The sections below cover the steps for deploying with Maven in detail. Let's start with JBoss AS.</para>
+      <para>The sections below cover the steps for deploying with Maven in detail. Let's start with WildFly.</para>
 
    </section>
 
    <section id="jbossas">
-      <title>Deploying to JBoss AS</title>
+      <title>Deploying to WildFly</title>
 
       <para>
-         To deploy the examples to JBoss AS, you'll need <ulink url="http://jboss.org/jbossas/">JBoss AS
-         7.0.0.Final</ulink> or above. The good news is
+         To deploy the examples to WildFly, you'll need <ulink url="http://wildfly.org/downloads/">WildFly
+         8.0.0.Final</ulink> or above. The good news is
          that there are no additional modifications you have to make to the server. It's ready to go!
       </para>
 
       <para>
-         After you have downloaded JBoss AS, extract it. (We recommended renaming the folder to include the
+         After you have downloaded WildFly, extract it. (We recommended renaming the folder to include the
          <literal>as</literal> qualifier so it's clear that it's the application server). You can move the extracted
-         folder anywhere you like. Wherever it lays to rest, that's what we'll call the JBoss AS installation
+         folder anywhere you like. Wherever it lays to rest, that's what we'll call the WildFly installation
          directory, or <literal>JBOSS_HOME</literal>.
       </para>
 
-      <programlisting><![CDATA[$> unzip jboss-as-7.1.1.Final.zip
-$> mv jboss-as-7.*/ jboss-as-7]]></programlisting>
+      <programlisting><![CDATA[$> unzip wildfly-8.0.0.Final.zip
+$> mv wildfly-8.*/ wildfly-8]]></programlisting>
 
       <para>
          In order for the build scripts to know where to deploy the example, you have to tell them where to find your
-         JBoss AS installation. Set the  <literal>JBOSS_HOME</literal> environment variable to point to the JBoss AS
+         WildFly installation. Set the  <literal>JBOSS_HOME</literal> environment variable to point to the WildFly
          installation, e.g.:
       </para>
 
-      <programlisting><![CDATA[$> export JBOSS_HOME=/path/to/jboss-as-7]]></programlisting>
+      <programlisting><![CDATA[$> export JBOSS_HOME=/path/to/wildfly-8]]></programlisting>
 
       <para>
          You're now ready to run your first example!
@@ -105,7 +105,7 @@ $> mvn jboss-as:run]]></programlisting>
          <para>
             If you are using Eclipse, you should seriously consider installing the <ulink
             url="http://www.jboss.org/tools">JBoss Tools</ulink> add-ons, which include a wide variety of tooling for
-            CDI and Java EE development, as well as an enhanced JBoss AS server view.
+            CDI and Java EE development, as well as an enhanced WildFly server view.
          </para>
       </note>
 
@@ -117,28 +117,28 @@ $> mvn jboss-as:run]]></programlisting>
 
       <note>
          <para>
-            The Maven JBoss AS plugin includes additional goals for JBoss AS to deploy and undeploy the archive.
+            The Maven WildFly plugin includes additional goals for WildFly to deploy and undeploy the archive.
          </para>
          <itemizedlist>
             <listitem>
                <para>
-                  <literal>mvn jboss-as:deploy</literal> - deploy the example to a running JBoss AS instance
+                  <literal>mvn wildfly:deploy</literal> - deploy the example to a running WildFly instance
                </para>
             </listitem>
             <listitem>
                <para>
-                  <literal>mvn jboss-as:undeploy</literal> - undeploy the example from a running JBoss AS instance
+                  <literal>mvn wildfly:undeploy</literal> - undeploy the example from a running WildFly instance
                </para>
             </listitem>
             <listitem>
                <para>
-                  <literal>mvn jboss-as:redeploy</literal> - redeploys the example
+                  <literal>mvn wildfly:redeploy</literal> - redeploys the example
                </para>
             </listitem>
          </itemizedlist>
 
          <para>
-            For more information on the JBoss AS Maven plugin see the <ulink url="https://docs.jboss.org/jbossas/7/plugins/maven/latest/">plugin documentation</ulink>.
+            For more information on the WildFly Maven plugin see the <ulink url="https://docs.jboss.org/wildfly/plugins/maven/latest/">plugin documentation</ulink>.
          </para>
       </note>
 
@@ -146,7 +146,7 @@ $> mvn jboss-as:run]]></programlisting>
         You can also run functional tests to verify that the example works as expected. Run:
       </para>
 
-      <programlisting><![CDATA[$> mvn verify -Darquillian=jbossas-managed-7]]></programlisting>
+      <programlisting><![CDATA[$> mvn verify -Darquillian=wildfly-managed-8]]></programlisting>
 
       <para>
         You should see the following output:
@@ -181,7 +181,7 @@ $> mvn jboss-as:run]]></programlisting>
       </para>
 
       <programlisting><![CDATA[$> cd examples/jsf/translator/ftest
-$> mvn verify -Darquillian=jbossas-managed-7]]></programlisting>
+$> mvn verify -Darquillian=wildfly-managed-8]]></programlisting>
 
    </section>
 
@@ -189,26 +189,26 @@ $> mvn verify -Darquillian=jbossas-managed-7]]></programlisting>
       <title>Deploying to GlassFish</title>
 
       <para>
-         Deploying to GlassFish should be easy and familiar, right? After all, it's the Java EE 6 reference
+         Deploying to GlassFish should be easy and familiar, right? After all, it's the Java EE 7 reference
          implementation and Weld is the CDI reference implementation, meaning Weld gets bundled with GlassFish.  So
          yes, it's all quite easy and familiar.
       </para>
 
       <para>
          To deploy the examples to GlassFish, you'll need a <ulink
-         url="https://glassfish.dev.java.net/downloads/v3-final.html">GlassFish V3</ulink> release. Select the release
+         url="https://glassfish.java.net/download.html">GlassFish 4.0</ulink> release. Select the release
          that ends in either <literal>-unix.sh</literal> or <literal>-windows.exe</literal> depending on your platform.
          After the download is complete, execute the installer. On Linux/Unix, you'll need to first make the script
          executable.
       </para>
 
-      <programlisting><![CDATA[$> chmod 755 glassfish-v3-unix.sh
-$> ./glassfish-v3-unix.sh]]></programlisting>
+      <programlisting><![CDATA[$> chmod 755 glassfish-4.0-unix.sh
+$> ./glassfish-4.0-unix.sh]]></programlisting>
 
       <para>
          On Windows you can just click on the executable. Follow the instructions in the installer. It will create a
          single domain named <literal>domain1</literal>. You'll use that domain to deploy the example. We recommend that
-         you choose <literal>7070</literal> as the main HTTP port to avoid conflicts with a running instance of JBoss AS
+         you choose <literal>7070</literal> as the main HTTP port to avoid conflicts with a running instance of WildFly
          (or Apache Tomcat).
       </para>
 
@@ -244,7 +244,7 @@ $> mvn glassfish:create-domain]]></programlisting>
       </para>
 
       <para>
-         The reason the same artifact can be deployed to both JBoss AS and GlassFish, without any modifications, is
+         The reason the same artifact can be deployed to both WildFly and GlassFish, without any modifications, is
          because all of the features being used are part of the standard platform. And what a capable platform it has
          become!
       </para>
@@ -280,10 +280,16 @@ $> mvn glassfish:create-domain]]></programlisting>
 
       <para>
         To allow Maven to communicate with Tomcat over HTTP, edit the <literal>conf/tomcat-users.xml</literal> file in
-        your Tomcat installation and add the following line:
+        your Tomcat installation. For Tomcat 6 add the following line:
       </para>
 
       <programlisting role="XML"><![CDATA[<user username="admin" password="" roles="manager"/>]]></programlisting>
+      
+      <para>
+        For Tomcat 7 and higher add the following line:
+      </para>
+
+      <programlisting role="XML"><![CDATA[<user username="admin" password="" roles="manager-script"/>]]></programlisting>
 
       <para>
         Next, start Tomcat. You can either start Tomcat from a Linux shell:

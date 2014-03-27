@@ -4,15 +4,10 @@
     <title>Application servers and environments supported by Weld</title>
 
     <section>
-        <title>Using Weld with JBoss AS</title>
+        <title>Using Weld with WildFly</title>
 
         <para>
-            If you are using JBoss AS 7.0 or better, no additional configuration is required to use Weld (or CDI for that matter).
-            All you need to do is make your application a bean archive by adding
-            <literal>META-INF/beans.xml</literal>
-            to the classpath or
-            <literal>WEB-INF/beans.xml</literal>
-            to the web root.
+            If you are using WildFly 8.0 or better, no additional configuration is required to use Weld (or CDI for that matter).
         </para>
 
         <note>
