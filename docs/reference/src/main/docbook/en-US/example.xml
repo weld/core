@@ -25,7 +25,7 @@ public class Credentials {
 
    <para>This bean is bound to the login prompt in the following JSF form:</para>
 
-   <programlisting role="JAVA"><![CDATA[<h:form>
+   <programlisting role="XML"><![CDATA[<h:form>
    <h:panelGrid columns="2" rendered="#{!login.loggedIn}">
       <f:validateBean>
          <h:outputLabel for="username">Username:</h:outputLabel>

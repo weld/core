@@ -5,7 +5,7 @@
 
    <para>
       Dependency injection enables loose-coupling by allowing the implementation of the injected bean type to vary,
-      either a deployment time or runtime. Events go one step further, allowing beans to interact with no compile
+      either at deployment time or runtime. Events go one step further, allowing beans to interact with no compile
       time dependency at all. Event <emphasis>producers</emphasis> raise events that are delivered to event 
       <emphasis>observers</emphasis> by the container.
    </para>
@@ -50,7 +50,7 @@
       </para>
 
       <programlisting role="JAVA"><![CDATA[@Qualifier
-@Target({FIELD, PARAMETER})
+@Target({METHOD, FIELD, PARAMETER, TYPE})
 @Retention(RUNTIME)
 public @interface Updated {}]]></programlisting>
 
@@ -208,7 +208,7 @@ public @interface Updated {}]]></programlisting>
       <para>An event qualifier type may have annotation members:</para>
 
 <programlisting role="JAVA"><![CDATA[@Qualifier
-@Target({PARAMETER, FIELD})
+@Target({METHOD, FIELD, PARAMETER, TYPE})
 @Retention(RUNTIME)
 public @interface Role {
    RoleType value();
