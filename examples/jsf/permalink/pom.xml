@@ -418,9 +418,9 @@
                 <plugins>
                     <!-- JBoss AS plugin to deploy war -->
                     <plugin>
-                        <groupId>org.jboss.as.plugins</groupId>
-                        <artifactId>jboss-as-maven-plugin</artifactId>
-                        <version>${jboss.as7.version}</version>
+                        <groupId>org.wildfly.plugins</groupId>
+                        <artifactId>wildfly-maven-plugin</artifactId>
+                        <version>${wildfly.plugin.version}</version>
                         <executions>
                             <execution>
                                 <goals>
@@ -447,7 +447,7 @@
         <profile>
             <id>arquillian-wildfly-managed-8</id>
         </profile>
-
+        
         <profile>
             <id>arquillian-wildfly-remote-8</id>
         </profile>

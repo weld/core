@@ -108,7 +108,7 @@
         <jetty.version>8.1.13.v20130916</jetty.version>
         <!-- Override HTMLUnit version -->
         <htmlunit.version>2.8</htmlunit.version>
-        <jboss.as7.plugin.version>7.3.Final</jboss.as7.plugin.version>
+        <wildfly.plugin.version>1.0.1.Final</wildfly.plugin.version>
         <glassfish.plugin.version>2.1</glassfish.plugin.version>
 
         <!-- UEL Impl -->
@@ -284,9 +284,9 @@
                 </plugin>
                 <!-- JBoss AS plugin to deploy war -->
                 <plugin>
-                    <groupId>org.jboss.as.plugins</groupId>
-                    <artifactId>jboss-as-maven-plugin</artifactId>
-                    <version>${jboss.as7.plugin.version}</version>
+                    <groupId>org.wildfly.plugins</groupId>
+                    <artifactId>wildfly-maven-plugin</artifactId>
+                    <version>${wildfly.plugin.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.glassfish.maven.plugin</groupId>
