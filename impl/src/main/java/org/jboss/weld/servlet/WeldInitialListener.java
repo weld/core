@@ -23,6 +23,7 @@
 package org.jboss.weld.servlet;
 
 import static org.jboss.weld.servlet.ConversationFilter.CONVERSATION_FILTER_REGISTERED;
+import static org.jboss.weld.servlet.api.InitParameters.CONVERSATION_CONTEXT_LAZY_PARAM;
 
 import javax.enterprise.inject.spi.CDI;
 import javax.inject.Inject;
@@ -60,8 +61,6 @@ import org.jboss.weld.util.servlet.ServletUtils;
  * @author Marko Luksa
  */
 public class WeldInitialListener extends AbstractServletListener {
-
-    private static final String LAZY_CONVERSATION_CONTEXT_PARAM = "org.jboss.weld.context.conversation.lazy";
 
     @Inject
     private BeanManagerImpl beanManager;
@@ -112,7 +111,7 @@ public class WeldInitialListener extends AbstractServletListener {
         ObserverNotifier notifier = manager.getAccessibleLenientObserverNotifier();
         boolean noObservers = notifier.resolveObserverMethods(notifier.buildEventResolvable(HttpServletRequest.class, InitializedLiteral.CONVERSATION)).isEmpty()
                 && notifier.resolveObserverMethods(notifier.buildEventResolvable(HttpServletRequest.class, DestroyedLiteral.CONVERSATION)).isEmpty();
-        return getBooleanInitParameter(ctx, LAZY_CONVERSATION_CONTEXT_PARAM, noObservers);
+        return getBooleanInitParameter(ctx, CONVERSATION_CONTEXT_LAZY_PARAM, noObservers);
     }
 
     @Override
