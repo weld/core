@@ -32,6 +32,12 @@
             </class>
 
             <!-- Issues in Weld (the RI) -->
+            <!-- WELD-1636 -->
+            <class name="org.jboss.cdi.tck.tests.extensions.annotated.delivery.WithAnnotationsTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
 
             <!-- Issues in WildFly -->
             <!-- WFLY-2654 -->
