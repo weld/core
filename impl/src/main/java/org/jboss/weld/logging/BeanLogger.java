@@ -623,5 +623,8 @@ public interface BeanLogger extends WeldLogger {
     @Message(id = 1552, value = "An extension ({0}) has a non-static public field ({1}).", format = Format.MESSAGE_FORMAT)
     void extensionWithNonStaticPublicField(Object param1, Object param2);
 
+    @LogMessage(level = Level.TRACE)
+    @Message(id = 1553, value = "Proxy activated after passivation for {0}", format = Format.MESSAGE_FORMAT)
+    void activatedSessionBeanProxy(Object param1);
 
 }
