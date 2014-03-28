@@ -50,7 +50,6 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
      * Constructor
      *
      * @param bean the session bean
-     * @param creationalContext
      */
     public EnterpriseBeanProxyMethodHandler(SessionBean<T> bean) {
         this.bean = bean;
@@ -61,7 +60,21 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
     }
 
     /**
-     * Lookups the EJB in the container and executes the method on it
+     * Constructor used by {@link #readResolve()}.
+     *
+     * @param bean      the session bean
+     * @param reference session object reference
+     */
+    public EnterpriseBeanProxyMethodHandler(SessionBean<T> bean, SessionObjectReference reference) {
+        this.bean = bean;
+        this.manager = bean.getBeanManager();
+        this.beanId = bean.getIdentifier();
+        this.reference = reference;
+        BeanLogger.LOG.createdSessionBeanProxy(bean);
+    }
+
+    /**
+     * Looks up the EJB in the container and executes the method on it
      *
      * @param self    the proxy instance.
      * @param method  the overridden method declared in the super class or
@@ -132,6 +145,6 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
 
     @SuppressWarnings("unchecked")
     private Object readResolve() throws ObjectStreamException {
-        return new EnterpriseBeanProxyMethodHandler<T>((SessionBean<T>) manager.getPassivationCapableBean(beanId));
+        return new EnterpriseBeanProxyMethodHandler<T>((SessionBean<T>) manager.getPassivationCapableBean(beanId), reference);
     }
 }
