@@ -1,7 +1,7 @@
 <!DOCTYPE bookinfo PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
    "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd"  [ ]>
 <bookinfo>
-   <title>Weld - CDI Reference Implementation</title>
+   <title>Weld &ndash; CDI Reference Implementation</title>
    <subtitle>
       CDI: Contexts and Dependency Injection for the Java EE platform
    </subtitle>
