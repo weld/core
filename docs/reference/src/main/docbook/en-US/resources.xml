@@ -115,11 +115,11 @@ PaymentService paymentService;]]></programlisting>
             Isn't it nicer and more typesafe to write 
          </para>
          
-            <programlisting>@Inject @CustomerDatabase EntityManager</programlisting> 
+            <programlisting role="JAVA">@Inject @CustomerDatabase EntityManager</programlisting> 
             
          <para>instead of</para>
             
-            <programlisting>@PersistenceContext(unitName="CustomerDatabase") EntityManager</programlisting> 
+            <programlisting role="JAVA">@PersistenceContext(unitName="CustomerDatabase") EntityManager</programlisting> 
             
          <para>
             all over the place?

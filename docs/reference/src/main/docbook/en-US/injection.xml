@@ -785,7 +785,7 @@ extends AnnotationLiteral<Asynchronous> implements Asynchronous {}]]></programli
             method of<literal>Instance</literal>.
         </para>
 
-        <programlisting><![CDATA[Annotation qualifier = synchronously ?
+        <programlisting role="JAVA"><![CDATA[Annotation qualifier = synchronously ?
       new SynchronousQualifier() : new AsynchronousQualifier();
 PaymentProcessor p = anyPaymentProcessor.select(qualifier).get().process(payment);]]></programlisting>
 

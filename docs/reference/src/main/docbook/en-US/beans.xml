@@ -671,7 +671,7 @@ public class RandomNumberGenerator {
             Even in a Unified EL expression:
          </para>
 
-         <programlisting><![CDATA[<p>Your raffle number is #{randomNumber}.</p>]]></programlisting> 
+         <programlisting role="XML"><![CDATA[<p>Your raffle number is #{randomNumber}.</p>]]></programlisting> 
          
          <para>
             A producer method must be a non-abstract method of a managed bean class or session bean class. A producer
