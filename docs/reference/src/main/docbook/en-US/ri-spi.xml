@@ -544,7 +544,7 @@
             The <literal>org.jboss.weld.bootstrap.api.Bootstrap</literal> interface defines the initialization for Weld,
             bean deployment and bean validation. To boot Weld, you must create an instance of
             <literal>org.jboss.weld.bootstrap.WeldBeansBootstrap</literal> (which implements
-            <literal>Boostrap</literal>), tell it about the services in use, and then request the container start.
+            <literal>Bootstrap</literal>), tell it about the services in use, and then request the container start.
          </para>
 
 <programlisting role="JAVA"><![CDATA[public interface Bootstrap {
@@ -1007,7 +1007,7 @@ cc.release();]]></programlisting>
                     by a String <literal>context id</literal>. This allows multiple Weld containers to run at the same time in environments where the TCCL cannot be used to distinguish the containers (e.g. OSGi environment).
                 </para>
                 <para>
-                    The intergrator should:
+                    The integrator should:
                     <itemizedlist>
                         <listitem>implement the new methods</listitem>
                         <listitem>use <literal>WeldBootstrap.startContainer(String contextId, Environment environment, Deployment deployment)</literal> to start Weld</listitem>

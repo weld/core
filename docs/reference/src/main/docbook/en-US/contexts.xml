@@ -181,7 +181,7 @@
    
    /* Start the request, providing a data store which will last the lifetime of the request */
    public void startRequest(Map<String, Object> requestDataStore) {
-      // Associate the store with the context and acticate the context
+      // Associate the store with the context and activate the context
       requestContext.associate(requestDataStore);
       requestContext.activate();
    }
@@ -236,7 +236,7 @@
    public void resumeOrStartConversation(Map<String, Object> requestDataStore, 
                                          Map<String, Object> sessionDataStore, 
                                          String cid) {
-      /* Associate the stores with the context and acticate the context */
+      /* Associate the stores with the context and activate the context */
       * BoundRequest just wraps the two datastores */
       conversationContext.associate(new MutableBoundRequest(requestDataStore, sessionDataStore));
       // Pass the cid in

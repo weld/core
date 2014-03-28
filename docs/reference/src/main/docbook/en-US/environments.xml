@@ -536,9 +536,9 @@ public static void main(String[] args) {
             <title>Setting the Classpath</title>
 
             <para>Weld SE comes packaged as a 'shaded' jar which includes the CDI API,
-                Weld Core and all dependant classes bundled into a single jar. Therefore the
+                Weld Core and all dependent classes bundled into a single jar. Therefore the
                 only Weld jar you need on the classpath, in addition to your application's
-                classes and dependant jars, is the Weld SE jar. If you are working with a pure
+                classes and dependent jars, is the Weld SE jar. If you are working with a pure
                 Java SE application you launch using <literal>java</literal>, this may be simpler
                 for you.
             </para>

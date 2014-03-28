@@ -287,7 +287,7 @@ if (document.isBlog()) blogEvent.select(new AnnotationLiteral<Updated>(){}).fire
       <itemizedlist>
          <listitem>
             <para>
-               <literal>IN_PROGESS</literal> observers are called immediately (default)
+               <literal>IN_PROGRESS</literal> observers are called immediately (default)
             </para>
             <para>
                <literal>AFTER_SUCCESS</literal> observers are called during the after completion phase of the

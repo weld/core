@@ -1001,7 +1001,7 @@ public class NumberGuessFrame extends javax.swing.JFrame {
       </note>
       
       <para>
-         Next, lets look at the WAR, which is located in the example's <literal>war</literal> directory. Just as in the
+         Next, let's look at the WAR, which is located in the example's <literal>war</literal> directory. Just as in the
          numberguess example, we have a <literal>faces-config.xml</literal> for JSF 2.0 and a <literal>web.xml</literal>
          (to activate JSF) under WEB-INF, both sourced from <literal>src/main/webapp/WEB-INF</literal>.
       </para>

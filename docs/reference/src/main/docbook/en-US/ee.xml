@@ -65,7 +65,7 @@ class FacesContextProducer {
 
       <para>
          All managed beans may take advantage of Java EE component environment injection using <literal>@Resource</literal>,
-         <literal>@EJB</literal>, <literal>@PersistenceContext</literal>, <literal>@PeristenceUnit</literal> and
+         <literal>@EJB</literal>, <literal>@PersistenceContext</literal>, <literal>@PersistenceUnit</literal> and
          <literal>@WebServiceRef</literal>. We've already seen a couple of examples of this, though we didn't pay
          much attention at the time:
       </para>
