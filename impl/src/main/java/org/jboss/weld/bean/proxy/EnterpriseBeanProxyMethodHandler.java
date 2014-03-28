@@ -58,24 +58,38 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
      * Constructor
      *
      * @param bean the session bean
-     * @param creationalContext
      */
     public EnterpriseBeanProxyMethodHandler(SessionBean<T> bean) {
+        this(bean, null);
+    }
+
+    /**
+     * Constructor used directly by {@link #readResolve()}.
+     *
+     * @param bean      the session bean
+     * @param reference session object reference
+     */
+    private EnterpriseBeanProxyMethodHandler(SessionBean<T> bean, SessionObjectReference reference) {
         this.bean = bean;
         this.manager = bean.getBeanManager();
         this.beanId = bean.getIdentifier();
-        this.reference = bean.createReference();
 
         Map<Class<?>, Class<?>> typeToBusinessInterfaceMap = new HashMap<Class<?>, Class<?>>();
         discoverBusinessInterfaces(typeToBusinessInterfaceMap, bean.getEjbDescriptor().getRemoteBusinessInterfacesAsClasses());
         discoverBusinessInterfaces(typeToBusinessInterfaceMap, bean.getEjbDescriptor().getLocalBusinessInterfacesAsClasses());
         this.typeToBusinessInterfaceMap = ImmutableMap.copyOf(typeToBusinessInterfaceMap);
 
-        BeanLogger.LOG.createdSessionBeanProxy(bean);
+        if (reference == null) {
+            this.reference = bean.createReference();
+            BeanLogger.LOG.createdSessionBeanProxy(bean);
+        } else {
+            this.reference = reference;
+            BeanLogger.LOG.activatedSessionBeanProxy(bean);
+        }
     }
 
     /**
-     * Lookups the EJB in the container and executes the method on it
+     * Looks up the EJB in the container and executes the method on it
      *
      * @param self    the proxy instance.
      * @param method  the overridden method declared in the super class or
@@ -144,7 +158,7 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
 
     @SuppressWarnings("unchecked")
     private Object readResolve() throws ObjectStreamException {
-        return new EnterpriseBeanProxyMethodHandler<T>((SessionBean<T>) manager.getPassivationCapableBean(beanId));
+        return new EnterpriseBeanProxyMethodHandler<T>((SessionBean<T>) manager.getPassivationCapableBean(beanId), reference);
     }
 
     private void discoverBusinessInterfaces(Map<Class<?>, Class<?>> typeToBusinessInterfaceMap, Set<Class<?>> businessInterfaces) {
