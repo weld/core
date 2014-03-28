@@ -33,7 +33,6 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.Interceptor;
-import javax.inject.Singleton;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.ContainerState;
@@ -533,7 +532,7 @@ public class WeldStartup {
         this.extensions = extensions;
         // TODO: we should fire BeforeBeanDiscovery to allow extensions to register additional scopes
         @SuppressWarnings("unchecked")
-        final Set<Class<? extends Annotation>> scopes = ImmutableSet.of(Dependent.class, RequestScoped.class, ConversationScoped.class, SessionScoped.class, ApplicationScoped.class, Singleton.class);
+        final Set<Class<? extends Annotation>> scopes = ImmutableSet.of(Dependent.class, RequestScoped.class, ConversationScoped.class, SessionScoped.class, ApplicationScoped.class);
         return new TypeDiscoveryConfigurationImpl(scopes);
     }
 
