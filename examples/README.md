@@ -11,23 +11,23 @@ Weld currently comes with a number of examples:
 * `se/numberguess` (the numberguess example for Java SE using Swing)
 * `se/helloworld` (a simple example for Java SE)
 
-Before running the examples, you'll need to ensure your server supports CDI (JBoss AS 7 and
-GlassFish v3 both have built in support, and Weld provides support for Tomcat, Jetty and
+Before running the examples, you'll need to ensure your server supports CDI (WildFly 8 and
+GlassFish v4 both have built in support, and Weld provides support for Tomcat, Jetty and
 Google App Engine). Weld also supports Java SE. 
 
 The examples and Weld are explained in detail in the reference guide, including
-how to deploy the examples to JBoss AS 7, and how to deploy the examples to Tomcat. Most
+how to deploy the examples to WildFly, and how to deploy the examples to Tomcat. Most
 examples also have a README which explains how to run the example on all servers it supports. 
 
 
 Running the functional tests for the JSF examples
 ------------------------------------------------
 
-Weld's JSF examples come with functional tests, which use Selenium to each flow a user can take
-through the GUI of the example.
+Weld's JSF examples come with functional tests, which use Selenium to test each flow a user can 
+take through the GUI of the example.
 
 The functional tests can be run on an individual JSF examples or on all examples. WildFly 8
-must to be installed to run the functional tests. 
+must be installed to run the functional tests. 
 
 Make sure you have set the `JBOSS_HOME` environment property to point to your WildFly distribution.
 
@@ -35,22 +35,22 @@ To run the functional tests:
 
     mvn -Darquillian=wildfly-managed-8 clean verify
 
-You can run the functional tests against all examples (from the `examples` directory`) or against
-an individual example (from it's sub-directory).
+You can run the functional tests against all examples (from the `examples` directory) or against
+an individual example (from its sub-directory).
 
-The jsf/numberguess example can be also tested in a cluster. Follow these steps for a default configuration:
+The` jsf/numberguess` example can also be tested in a cluster. Follow these steps for a default configuration:
 
-1. Create two JBoss AS 7 distributions, so you have, e.g.
+1. Create two WildFly 8 distributions, so you have, e.g.
 
-        /home/foo/testing/node1/jboss-as-7.1.0.Final/
+        /home/foo/testing/node1/wildfly-8.0.0.Final/
 
-    and    
+    and
 
-        /home/foo/testing/node2/jboss-as-7.1.0.Final/
+        /home/foo/testing/node2/wildfly-8.0.0.Final/
 
-2. Configure each of the installations standalone/configuration/standalone/standalone-ha.xml files
+2. Configure each of the installations' `standalone/configuration/standalone-ha.xml` files
 
-    Edit the <interfaces/> element to bind each instance to a different loopback IP address, e.g.
+    Edit the `<interfaces/>` element to bind each instance to a different loopback IP address, e.g.
 
         <loopback-address value="127.0.1.1"/>
 
@@ -58,9 +58,9 @@ The jsf/numberguess example can be also tested in a cluster. Follow these steps 
 
         <loopback-address value="127.0.2.1"/>
        
-3. Run the test suite, modify the node{1,2}.jbossHome properties to match your configuration
+3. Run the test suite, modify the `node{1,2}.jbossHome` properties to match your configuration
 
-        mvn clean verify -Pjboss6cluster -Darquillian=jbossas-cluster-7 -Dnode1.jbossHome=/home/foo/testing/node1/jboss-as-7.1.0.Final/ -Dnode2.jbossHome=/home/foo/testing/node2/jboss-as-7.1.0.Final/
+        mvn clean verify -Pwildfly-cluster -Darquillian=wildfly-cluster-8 -Dnode1.jbossHome=/home/foo/testing/node1/wildfly-8.0.0.Final/ -Dnode2.jbossHome=/home/foo/testing/node2/wildfly-8.0.0.Final/
 
    If you have set up a different addresses in the previous step, you also need to add the following system properties:
 

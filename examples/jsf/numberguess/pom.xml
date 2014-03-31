@@ -66,7 +66,7 @@
 
     <profiles>
         <profile>
-            <id>jboss6cluster</id>
+            <id>wildfly-cluster</id>
             <build>
                 <plugins>
                     <plugin>
@@ -75,7 +75,7 @@
                         <configuration>
                             <webResources>
                                 <resource>
-                                    <directory>src/main/webapp-jboss5-cluster</directory>
+                                    <directory>src/main/webapp-wildfly-cluster</directory>
                                     <filtering>true</filtering>
                                 </resource>
                             </webResources>
@@ -281,10 +281,6 @@
         </profile>
 
         <profile>
-            <id>arquillian-tomcat-embdedded-6</id>
-        </profile>
-
-        <profile>
             <id>arquillian-jetty-embedded-7</id>
         </profile>
 
@@ -333,26 +329,13 @@
                     </filesets>
                     <webResources>
                         <resource>
-                            <directory>src/main/webapp-jboss5</directory>
+                            <directory>src/main/webapp-wildfly</directory>
                             <filtering>true</filtering>
                         </resource>
                     </webResources>
                 </configuration>
             </plugin>
 
-            <plugin>
-                <groupId>org.apache.tomcat.maven</groupId>
-                <artifactId>tomcat6-maven-plugin</artifactId>
-                <configuration>
-                    <path>/${project.build.finalName}</path>
-                    <!--
-                       uncomment to use server configuration override; see
-                       readme.txt for details
-                    -->
-                    <!--<server>tomcat</server>-->
-                    <url>http://localhost:${tomcat.http.port}/manager</url>
-                </configuration>
-            </plugin>
             <plugin>
                 <groupId>org.apache.tomcat.maven</groupId>
                 <artifactId>tomcat7-maven-plugin</artifactId>
