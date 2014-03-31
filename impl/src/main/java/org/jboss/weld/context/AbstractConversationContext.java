@@ -27,6 +27,7 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -144,7 +145,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
             }
 
             if (getSessionAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME, false) == null) {
-                Map<String, ManagedConversation> conversations = new HashMap<String, ManagedConversation>();
+                Map<String, ManagedConversation> conversations = Collections.synchronizedMap(new HashMap<String, ManagedConversation>());
                 setRequestAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME, conversations);
                 setSessionAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME, conversations, false);
             } else {
@@ -297,7 +298,18 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
             }
             setBeanStore(null);
             // Clean up any expired conversations
-            Iterator<Entry<String, ManagedConversation>> entryIterator = getConversationMap().entrySet().iterator();
+            cleanUpExpiredConversations();
+            // deactivate the context
+            super.setActive(false);
+        } else {
+            throw ConversationLogger.LOG.contextNotActive();
+        }
+    }
+
+    private void cleanUpExpiredConversations() {
+        Map<String, ManagedConversation> conversations = getConversationMap();
+        synchronized (conversations) {
+            Iterator<Entry<String, ManagedConversation>> entryIterator = conversations.entrySet().iterator();
             while (entryIterator.hasNext()) {
                 Entry<String, ManagedConversation> entry = entryIterator.next();
                 if (entry.getValue().isTransient()) {
@@ -305,10 +317,6 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
                     entryIterator.remove();
                 }
             }
-            // deactivate the context
-            super.setActive(false);
-        } else {
-            throw ConversationLogger.LOG.contextNotActive();
         }
     }
 
@@ -452,7 +460,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
      * @param name    the name of the attribute
      * @param value   the value of the attribute
      * @param create  if false, the attribute will only be set if the session
-     *                already exists, other wise it will always be set
+     *                already exists, otherwise it will always be set
      * @throws IllegalStateException if create is true, and the session can't be
      *                               created
      */
