@@ -220,19 +220,6 @@
                     </plugin>
 
                    <plugin>
-                       <groupId>org.apache.tomcat.maven</groupId>
-                       <artifactId>tomcat6-maven-plugin</artifactId>
-                       <configuration>
-                           <path>/${project.build.finalName}</path>
-                           <!--
-                              uncomment to use server configuration override; see
-                              readme.txt for details
-                           -->
-                           <!--<server>tomcat</server>-->
-                           <url>http://localhost:${tomcat.http.port}/manager</url>
-                       </configuration>
-                   </plugin>
-                   <plugin>
                       <groupId>org.apache.tomcat.maven</groupId>
                       <artifactId>tomcat7-maven-plugin</artifactId>
                       <configuration>
@@ -434,10 +421,6 @@
                     </plugin>
                 </plugins>
             </build>
-        </profile>
-
-        <profile>
-            <id>arquillian-tomcat-embdedded-6</id>
         </profile>
 
         <profile>
