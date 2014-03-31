@@ -165,9 +165,9 @@
              </thead>
              <tbody>
                 <row>
-                    <entry><literal>debug</literal></entry>
-                    <entry>false</entry>
-                    <entry>If set to true, debug timing information is printed to the standard output.</entry>
+                    <entry><literal>threadPoolType</literal></entry>
+                    <entry><function>FIXED</function></entry>
+                    <entry>The type of the thread pool. Possible values are: <literal>FIXED</literal>, <literal>FIXED_TIMEOUT</literal>, <literal>NONE</literal>, <literal>SINGLE_THREAD</literal></entry>
                 </row>
                 <row>
                     <entry><literal>threadPoolSize</literal></entry>
@@ -176,9 +176,14 @@
                         and deployment.</entry>
                 </row>
                 <row>
-                    <entry><literal>threadPoolType</literal></entry>
-                    <entry><function>FIXED</function></entry>
-                    <entry>The type of the thread pool. Possible values are: <literal>FIXED</literal>, <literal>FIXED_TIMEOUT</literal>, <literal>NONE</literal>, <literal>SINGLE_THREAD</literal></entry>
+                    <entry><literal>threadPoolKeepAliveTime</literal></entry>
+                    <entry>60 seconds</entry>
+                    <entry>Passed to the constructor of the ThreadPoolExecutor class, maximum time that excess idle threads will wait for new tasks before terminating.</entry>
+                </row>
+                <row>
+                    <entry><literal>threadPoolDebug</literal></entry>
+                    <entry>false</entry>
+                    <entry>If set to true, debug timing information is printed to the standard output.</entry>
                 </row>
              </tbody>
              </tgroup>
@@ -198,7 +203,7 @@
       </para>
       <note>
          <para>
-            The main purpose of the non-portable mode is to support some legacy extensions, e.g. Seam Solder. It's highly recommended to use the portable mode whenever possible - non-portable mode may lead to unexpected behaviour during initialization process.
+            The main purpose of the non-portable mode is to support some legacy extensions. It's highly recommended to use the portable mode whenever possible - non-portable mode may lead to unexpected behaviour during initialization process.
          </para>
       </note>
    </section>
