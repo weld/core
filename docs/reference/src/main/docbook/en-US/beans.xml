@@ -174,7 +174,7 @@ public class BookShop
          </para>
 
          <para>
-            A qualifier is a user-defined annotation that is itself annotated <literal>@Qualifer</literal>. A qualifier 
+            A qualifier is a user-defined annotation that is itself annotated <literal>@Qualifier</literal>. A qualifier 
             annotation is an extension of the type system. It lets us disambiguate a type without having to fall back to 
             string-based names. Here's an example of a qualifier annotation:
          </para>
@@ -671,7 +671,7 @@ public class RandomNumberGenerator {
             Even in a Unified EL expression:
          </para>
 
-         <programlisting><![CDATA[<p>Your raffle number is #{randomNumber}.</p>]]></programlisting> 
+         <programlisting role="XML"><![CDATA[<p>Your raffle number is #{randomNumber}.</p>]]></programlisting> 
          
          <para>
             A producer method must be a non-abstract method of a managed bean class or session bean class. A producer

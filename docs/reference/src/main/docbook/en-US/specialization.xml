@@ -203,7 +203,7 @@ public class MockCreditCardPaymentProcessor
 
       <para>
          Furthermore, if the default implementation declares a bean EL name using <literal>@Named</literal>, the name
-         is inherited by the specialized alternative bean.
+         is inherited by the specializing alternative bean.
       </para>
 
    </section>

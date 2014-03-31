@@ -65,7 +65,7 @@ class FacesContextProducer {
 
       <para>
          All managed beans may take advantage of Java EE component environment injection using <literal>@Resource</literal>,
-         <literal>@EJB</literal>, <literal>@PersistenceContext</literal>, <literal>@PeristenceUnit</literal> and
+         <literal>@EJB</literal>, <literal>@PersistenceContext</literal>, <literal>@PersistenceUnit</literal> and
          <literal>@WebServiceRef</literal>. We've already seen a couple of examples of this, though we didn't pay
          much attention at the time:
       </para>
@@ -105,7 +105,7 @@ public class Login implements Serializable {
          injection.
       </para>
 
-      <programlisting role="JAVA"><![CDATA[public class Login extends HttpServlet {
+      <programlisting role="JAVA"><![CDATA[public class LoginServlet extends HttpServlet {
    @Inject Credentials credentials;
    @Inject Login login;
 
@@ -141,7 +141,7 @@ public class Login implements Serializable {
          injection in message-driven beans, which are by nature not contextual objects.
       </para>
 
-      <para>You can even use CDI interceptor bindings for message-driven Beans.</para>
+      <para>You can even use interceptor bindings for message-driven Beans.</para>
 
       <programlisting role="JAVA"><![CDATA[@Transactional @MessageDriven
 public class ProcessOrder implements MessageListener {
@@ -191,34 +191,34 @@ public class OrderResources {
    @Resource(name="jms/OrderQueue")
    private Queue orderQueue;
 
-   @Produces @OrderConnection
+   @Produces @Order
    public Connection createOrderConnection() throws JMSException {
     return connectionFactory.createConnection();
    }
 
-   public void closeOrderConnection(@Disposes @OrderConnection Connection connection)
+   public void closeOrderConnection(@Disposes @Order Connection connection)
          throws JMSException {
       connection.close();
    }
 
-   @Produces @OrderSession
-   public Session createOrderSession(@OrderConnection Connection connection)
+   @Produces @Order
+   public Session createOrderSession(@Order Connection connection)
          throws JMSException {
       return connection.createSession(true, Session.AUTO_ACKNOWLEDGE);
    }
 
-   public void closeOrderSession(@Disposes @OrderSession Session session)
+   public void closeOrderSession(@Disposes @Order Session session)
          throws JMSException {
       session.close();
    }
 
-   @Produces @OrderMessageProducer
-   public MessageProducer createOrderMessageProducer(@OrderSession Session session)
+   @Produces @Order
+   public MessageProducer createOrderMessageProducer(@Order Session session)
          throws JMSException {
       return session.createProducer(orderQueue);
    }
 
-   public void closeOrderMessageProducer(@Disposes @OrderMessageProducer MessageProducer producer)
+   public void closeOrderMessageProducer(@Disposes @Order MessageProducer producer)
          throws JMSException {
       producer.close();
    }
@@ -230,8 +230,8 @@ public class OrderResources {
       </para>
 
       <programlisting role="JAVA"><![CDATA[@Inject Order order;
-@Inject @OrderMessageProducer MessageProducer producer;
-@Inject @OrderSession QueueSession orderSession;
+@Inject @Order MessageProducer producer;
+@Inject @Order Session orderSession;
 
 public void sendMessage() {
    MapMessage msg = orderSession.createMapMessage();
@@ -258,7 +258,7 @@ public void sendMessage(String price) {
    <section id="packaging">
       <title>Packaging and deployment</title>
       <para>
-         CDI doesn't define any special deployment archive. You can package CDI beans in jars, EJB jars or wars&mdash;any
+         CDI doesn't define any special deployment archive. You can package CDI beans in JARs, EJB JARs or WARs&mdash;any
          deployment location in the application classpath. However, the archive must be a "bean archive".
       </para>
       <para>
@@ -282,12 +282,12 @@ public void sendMessage(String price) {
                 </listitem>
                 <listitem>
                     <para>
-                        with no version number or that is an empty file (CDI 1.0 like).
+                        like in CDI 1.0 &ndash; with no version number, or, that is an empty file.
                     </para>
                 </listitem>
             </itemizedlist>
             <para>
-                It behaves just like a CDI 1.0 bean archive - i.e. Weld discovers each Java class, interface or enum in such an archive.
+                It behaves just like a CDI 1.0 bean archive &ndash; i.e. Weld discovers each Java class, interface or enum in such an archive.
             </para>
             <note>
                 <para>
@@ -311,7 +311,7 @@ public void sendMessage(String price) {
             </note>
       </section>
 
-      <section>
+      <section id="implicit-bean-archive">
             <title>Implicit bean archive</title>
             <para>
                 An implicit bean archive is an archive which contains one or more bean classes with a <emphasis>bean defining annotation</emphasis>, or one or more session beans.
@@ -329,7 +329,7 @@ public void sendMessage(String price) {
       <section>
             <title>What archive is not a bean archive</title>
             <para>
-                Although quite obvious let's sum it up:
+                Although quite obvious, let's sum it up:
                 <itemizedlist>
                     <listitem>
                         <para>

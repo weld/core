@@ -19,15 +19,13 @@
 
       <itemizedlist>
          <listitem>
-            <para>the objects to be injected are not required to be instances of beans,</para>
+            <para>the objects to be injected are not required to be instances of beans, or</para>
          </listitem>
          <listitem>
-            <para>the concrete type of the objects to be injected may vary at runtime or</para>
+            <para>the concrete type of the objects to be injected may vary at runtime, or</para>
          </listitem>
          <listitem>
-            <para>
-               the objects require some custom initialization that is not performed by the bean constructor
-            </para>
+            <para>the objects require some custom initialization that is not performed by the bean constructor.</para>
          </listitem>
       </itemizedlist>
 

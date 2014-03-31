@@ -5,26 +5,24 @@
    <title>Interceptors</title>
 
    <para>
-      Interceptor functionality is defined in the Java Interceptors specification. CDI enhances this functionality with 
-      a more sophisticated, semantic, annotation-based approach to binding interceptors to beans.
+      Interceptor functionality is defined in the Java Interceptors specification. 
    </para>
 
    <para>
-      The Interceptors specification defines two kinds of interception points:
+      The Interceptors specification defines three kinds of interception points:
    </para>
   
    <itemizedlist>
       <listitem>
-         <para>business method interception, and</para>
+         <para>business method interception, </para>
       </listitem>
       <listitem>
-         <para>lifecycle callback interception.</para>
+         <para>lifecycle callback interception, and</para>
+      </listitem>
+      <listitem>
+         <para>timeout method interception.</para>
       </listitem>
    </itemizedlist>
-  
-   <para>
-      In addition, the EJB specification defines timeout method interception.
-   </para>
   
    <para>
       A <emphasis>business method interceptor</emphasis> applies to invocations of methods of the bean by clients of the
@@ -328,8 +326,8 @@ public @interface Action { ... }]]></programlisting>
    <section>
       <title>Use of <literal>@Interceptors</literal></title>
   
-      <para>The <literal>@Interceptors</literal> annotation defined by the interceptor specification (and used by the
-      managed bean and EJB specifications) is still supported in CDI.</para>
+      <para>The <literal>@Interceptors</literal> annotation defined by the Interceptors specification (and used by the
+      Managed Beans and EJB specifications) is still supported in CDI.</para>
   
       <programlisting role="JAVA"><![CDATA[@Interceptors({TransactionInterceptor.class, SecurityInterceptor.class})
 public class ShoppingCart {
