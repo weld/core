@@ -45,17 +45,17 @@ public class MessageSenderTest {
 
     @Test
     public void testImpl() throws Exception {
-        String response = getWebServiceResponse("rest/message/Hello");
+        String response = getHttpGETResponse("rest/message/Hello");
         Assert.assertEquals("Decorated Hello", response);
     }
 
     @Test
     public void testFacade() throws Exception {
-        String response = getWebServiceResponse("rest/facade/Hello");
+        String response = getHttpGETResponse("rest/facade/Hello");
         Assert.assertEquals("Decorated Hello", response);
     }
 
-    private String getWebServiceResponse(String urlPath) throws IOException {
+    private String getHttpGETResponse(String urlPath) throws IOException {
         URL url = new URL(base, urlPath);
         BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
         try {
