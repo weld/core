@@ -62,7 +62,7 @@
 
       <para>
         Certain services are only used at bootstrap and need to be cleaned up afterwards in order not to consume memory.
-        A service that implements the specialized <literal>org.jboss.weld.bootstrap.api.BootstrapService</literal> interface receives a <literal>cleanAfterBoot()</literal>
+        A service that implements the specialized <literal>org.jboss.weld.bootstrap.api.BootstrapService</literal> interface receives a <literal>cleanupAfterBoot()</literal>
         method invocation once Weld initialization is finished but before the deployment is put into service.
       </para>
 
@@ -88,12 +88,15 @@
          </para>
          
          <para>
-            The CDI specification discusses <emphasis>Bean Deployment Archives</emphasis> (BDAs)&mdash;archives which
+            The CDI specification discusses <emphasis>Bean Archives</emphasis> (BAs)&mdash;archives which
             are marked as containing beans which should be deployed to the CDI container, and made available for
-            injection and resolution. Weld reuses this description of <emphasis>Bean Deployment Archives</emphasis> in
-            its deployment structure SPI. Each deployment exposes the BDAs which it contains; each BDA may also
-            reference other which it can access. Together, the transitive closure of this graph forms the beans which
-            are deployed in the application.
+            injection and resolution. Weld reuses this description and uses <emphasis>Bean Deployment Archives (BDA)</emphasis> in
+            its deployment structure SPI.
+         </para>
+         <para>
+            Each deployment exposes the containing BDAs that form a graph. A node in the graph represents a BDA. Directed 
+            edges between nodes designate visibility. Visibility is not transitive (i.e. a bean from BDA A can only see beans in BDAs
+            with which A is directly connected by a properly oriented edge).
          </para>
          
          <para>
@@ -279,8 +282,8 @@
          </para>
          
          <para>
-            <literal>EJBServices</literal> is used to resolve local EJBs used to back session beans, and must always be
-            provided in an EE environment.  <literal>EJBServices.resolveEjb(EjbDescriptor ejbDescriptor)</literal>
+            <literal>EjbServices</literal> is used to resolve local EJBs used to back session beans, and must always be
+            provided in an EE environment.  <literal>EjbServices.resolveEjb(EjbDescriptor ejbDescriptor)</literal>
             returns a wrapper&mdash;<literal>SessionObjectReference</literal>&mdash;around the EJB reference. This
             wrapper allows Weld to request a reference that implements the given business interface, and, in the case of
             SFSBs, both request the removal of the EJB from the container and query whether the EJB has been previously
@@ -442,7 +445,7 @@
                         <listitem>@EJB injection point</listitem>
                         <listitem>@WebServiceRef injection point</listitem>
                     </itemizedlist>
-                    Weld calls the <literal>InjectionServices.validateResourceInjectionPoint()</literal> method. That allows the integrator
+                    Weld calls the <literal>InjectionServices.registerInjectionTarget()</literal> method. That allows the integrator
                     to validate resource injection points before the application is deployed.
               </para>
          </section>
@@ -460,69 +463,21 @@
       </section>
       
       <section>
-         <title>Bean Validation Services</title>
-         
-         <para>
-            In order to obtain the default <literal>ValidatorFactory</literal> for the application deployment, the
-            container should provide an implementation of <literal>ValidationServices</literal>.
-         </para>
-
-         <para>
-            <literal>ValidationServices</literal> implementation is optional and should only be provided if the Bean
-            Validation implementation itself does not provide built-in beans.
-         </para>
-
-      </section>
-      
-      <section>
-         <title>Identifying the BDA being addressed</title>
-         
-         <para>
-            When a client makes a request to an application which uses Weld, the request may be addressed at any of the
-            BDAs in the application deployment. To allow Weld to correctly service the request, it needs to know which
-            BDA the request is addressed at.  Where possible, Weld will provide some context, but use of these by the
-            integrator is optional.
-         </para>
-         
-         <note>
-            <para>
-               Most Servlet contains use a classloader-per-war, this may provide
-               a good way to identify the BDA in use for web requests.
-            </para>
-         </note>
-         
-         <para>
-            When Weld needs to identify the BDA, it will use one of these services, depending on what is servicing the
-            request:
-         </para>
-         
-         <variablelist>
-            <varlistentry>
-               <term><literal>ServletServices.getBeanDeploymentArchive(ServletContext ctx)</literal></term>
-               <listitem>
-                  <para>
-                     Identify the war in use. The <literal>ServletContext</literal> is provided for additional context.
-                  </para>
-               </listitem>
-            </varlistentry>
-         </variablelist>
-         
-      </section>
-      
-      <section>
          <title>The bean store</title>
          
          <para>
             Weld uses a map like structure to store bean instances -
-            <literal>org.jboss.weld.context.api.BeanStore</literal>. You may find
-            <literal>org.jboss.weld.context.api.helpers.ConcurrentHashMapBeanStore</literal> useful.
+            <literal>org.jboss.weld.context.beanstore.BeanStore</literal>. You may find
+            <literal>org.jboss.weld.context.beanstore.ConcurrentHashMapBeanStore</literal> useful.
          </para>
 
-<programlisting role="JAVA"><![CDATA[public interface BeanStore {
-    <T> ContextualInstance<T> get(String id);
+<programlisting role="JAVA"><![CDATA[public interface BeanStore{
+    <T> ContextualInstance<T> get(BeanIdentifier id);
     void clear();
-    Collection<String> getContextualIds();
+    Iterator<BeanIdentifier> iterator();
+    boolean contains(BeanIdentifier id);
     <T> void put(String id, ContextualInstance<T> contextualInstance);
+    <T> ContextualInstance<T> remove(BeanIdentifier id);
 }]]></programlisting>
 
       </section>
@@ -532,7 +487,7 @@
          
          <para>
             Weld expects the Application Server or other container to provide the storage for each application's
-            context. The <literal>org.jboss.weld.context.api.BeanStore</literal> should be implemented to provide an
+            context. The <literal>org.jboss.weld.context.beanstore.BeanStore</literal> should be implemented to provide an
             application scoped storage.
          </para>
          
@@ -571,7 +526,7 @@
          <para>
             To initialize the container, you call <literal>Bootstrap.startInitialization()</literal>. Before calling
             <literal>startInitialization()</literal>, you must register any services required by the environment. You
-            can do this by calling, for example, <literal>bootstrap.getServices().add(JpaServices.class, new
+            can do this by calling, for example, <literal>bootstrap.getManager().getServices().add(JpaServices.class, new
             MyJpaServices())</literal>.  You must also provide the application context bean store.
          </para>
          
@@ -607,7 +562,7 @@
             Weld needs to load classes and resources from the classpath at various times. By default, they are loaded
             from the Thread Context ClassLoader if available, if not the same classloader that was used to load Weld,
             however this may not be correct for some environments. If this is case, you can implement
-            <literal>org.jboss.weld.spi.ResourceLoader</literal>.
+            <literal>org.jboss.weld.resources.spi.ResourceLoader</literal>.
          </para>
 
 <programlisting role="JAVA"><![CDATA[import org.jboss.weld.bootstrap.api.Service;
