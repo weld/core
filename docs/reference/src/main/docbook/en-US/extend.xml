@@ -118,6 +118,11 @@ MyBean(MyExtension myExtension) {
          </listitem>
          <listitem>
             <para>
+               <literal>AfterTypeDiscovery</literal>
+            </para>
+         </listitem>
+         <listitem>
+            <para>
                <literal>ProcessInjectionTarget</literal> and <literal>ProcessProducer</literal>
             </para>
          </listitem>
@@ -184,12 +189,19 @@ class MyExtension implements Extension {
 
 class MyExtension implements Extension {
       
-   <T> void processAnnotatedType(@Observes ProcessAnnotatedType<T> pat) {
-      //tell the container to ignore the type if it is annotated @Ignore
-      if ( pat.getAnnotatedType().isAnnotionPresent(Ignore.class) ) pat.veto();   
+   <T> void processAnnotatedType(@Observes @WithAnnotations({Ignore.class}) ProcessAnnotatedType<T> pat) {
+      /* tell the container to ignore the type if it is annotated @Ignore */
+      if ( pat.getAnnotatedType().isAnnotationPresent(Ignore.class) ) pat.veto();   
    } 
    
 }]]></programlisting>
+
+      <note>
+      <title>New in CDI 1.1</title>
+      <para>
+         The <literal>@WithAnnotations</literal> annotation causes the container to deliver the ProcessAnnotatedType events only for the types which contain the specified annotation.
+      </para>
+      </note>
 
       <para>
          The observer method may inject a <literal>BeanManager</literal>
@@ -241,15 +253,14 @@ class MyExtension implements Extension {
    public ELResolver getELResolver();
    public ExpressionFactory wrapExpressionFactory(ExpressionFactory expressionFactory);
    public <T> AnnotatedType<T> createAnnotatedType(Class<T> type);
-   public <T> AnnotatedType<T> getAnnotatedType(Class<T> type, String id);
-   public <T> Iterable<AnnotatedType<T>> getAnnotatedTypes(Class<T> type);
    public <T> InjectionTarget<T> createInjectionTarget(AnnotatedType<T> type);
-   public <X> Producer<?> createProducer(AnnotatedField<? super X> field, Bean<X> declaringBean);
-   public <X> Producer<?> createProducer(AnnotatedMethod<? super X> method, Bean<X> declaringBean);
+   public <T> InjectionTargetFactory<T> getInjectionTargetFactory(AnnotatedType<T> annotatedType);
+   public <X> ProducerFactory<X> getProducerFactory(AnnotatedField<? super X> field, Bean<X> declaringBean);
+   public <X> ProducerFactory<X> getProducerFactory(AnnotatedMethod<? super X> method, Bean<X> declaringBean);
    public <T> BeanAttributes<T> createBeanAttributes(AnnotatedType<T> type);
    public BeanAttributes<?> createBeanAttributes(AnnotatedMember<?> type);
-   public <T> Bean<T> createBean(BeanAttributes<T> attributes, Class<T> beanClass, InjectionTarget<T> injectionTarget);
-   public <T> Bean<T> createBean(BeanAttributes<T> attributes, Class<?> beanClass, Producer<T> producer);
+   public <T> Bean<T> createBean(BeanAttributes<T> attributes, Class<T> beanClass,
+   public <T, X> Bean<T> createBean(BeanAttributes<T> attributes, Class<X> beanClass, ProducerFactory<X> producerFactory);
    public InjectionPoint createInjectionPoint(AnnotatedField<?> field);
    public InjectionPoint createInjectionPoint(AnnotatedParameter<?> parameter);
    public <T extends Extension> T getExtension(Class<T> extensionClass);
@@ -351,22 +362,29 @@ ctx.release();  //clean up dependent objects
          application. There are even <literal>Bean</literal> objects representing interceptors, decorators and
          producer methods.
       </para>
-      
+
       <para>
-         The <literal>Bean</literal> interface exposes all the interesting things we discussed in
+         The <literal>BeanAttributes</literal> interface exposes all the interesting things we discussed in
          <xref linkend="bean-anatomy"/>.
       </para>
-      
-      <programlisting role="JAVA"><![CDATA[public interface Bean<T> extends Contextual<T> {
+
+      <programlisting role="JAVA"><![CDATA[public interface BeanAttributes<T> {
    public Set<Type> getTypes();
    public Set<Annotation> getQualifiers();
    public Class<? extends Annotation> getScope();
    public String getName();
    public Set<Class<? extends Annotation>> getStereotypes();
-   public Class<?> getBeanClass();
    public boolean isAlternative();
-   public boolean isNullable();
+}]]></programlisting>
+
+      <para>
+         The <literal>Bean</literal> interface extends the <literal>BeanAttributes</literal> interface and defines everything the container needs to manage instances of a certain bean.
+      </para>
+    
+      <programlisting role="JAVA"><![CDATA[public interface Bean<T> extends Contextual<T>, BeanAttributes<T> {
+   public Class<?> getBeanClass();
    public Set<InjectionPoint> getInjectionPoints();
+   public boolean isNullable();
 }]]></programlisting>
 
       <para>
@@ -403,6 +421,7 @@ import javax.enterprise.event.Observes;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import javax.enterprise.inject.spi.InjectionPoint;
+...
 
 public class SecurityManagerExtension implements Extension {
     
@@ -513,27 +532,47 @@ public class SecurityManagerExtension implements Extension {
       <programlisting role="JAVA"><![CDATA[import java.lang.reflect.Type;
 import javax.enterprise.inject.spi.Extension;
 import java.lang.annotation.Annotation;
+...
 
 public class QualifiedNameExtension implements Extension {
 
     <X> void processAnnotatedType(@Observes ProcessAnnotatedType<X> pat) {
 
-        // wrap this to override the annotations of the class
+        /* wrap this to override the annotations of the class */
         final AnnotatedType<X> at = pat.getAnnotatedType();
+
+        /* Only wrap AnnotatedTypes for classes with @Named packages */
+        Package pkg = at.getJavaClass().getPackage();
+        if ( !pkg.isAnnotationPresent(Named.class) ) {
+            return;
+        }
+
         AnnotatedType<X> wrapped = new AnnotatedType<X>() {
             
             class NamedLiteral extends AnnotationLiteral<Named>
             implements Named {
                 @Override
                 public String value() {
-                    Package pkg = at.getClass().getPackage();
-                    String unqualifiedName = at.getAnnotation(Named.class).value();
+                    Package pkg = at.getJavaClass().getPackage();
+
+                    String unqualifiedName = "";
+                    if (at.isAnnotationPresent(Named.class)) {
+                        unqualifiedName = at.getAnnotation(Named.class).value();
+                    }
+
+                    if (unqualifiedName.isEmpty()) {
+                        unqualifiedName = Introspector.decapitalize(at.getJavaClass().getSimpleName());
+                    }
+
                     final String qualifiedName;
-                    if (pkg.isAnnotationPresent(Named.class)) {
-                        qualifiedName = pkg.getAnnotation(Named.class).value() + '.' + unqualifiedName;
-                    } else {
+                    if ( pkg.isAnnotationPresent(Named.class) ) {
+                        qualifiedName = pkg.getAnnotation(Named.class).value()
+                            + '.' + unqualifiedName;
+                    }
+                    else {
                         qualifiedName = unqualifiedName;
                     }
+
                     return qualifiedName;
                 }
             }
@@ -572,7 +611,28 @@ public class QualifiedNameExtension implements Extension {
 
             @Override
             public Set<Annotation> getAnnotations() {
-                Set<Annotation> annotations = new HashSet<Annotation>(at.getAnnotations());
+                Set<Annotation> original = at.getAnnotations();
+                Set<Annotation> annotations = new HashSet<Annotation>();
+
+                boolean hasNamed = false;
+
+                for (Annotation annotation : original) {
+                    if (annotation.annotationType().equals(Named.class)) {
+                        annotations.add(getAnnotation(Named.class));
+                        hasNamed = true;
+                    }
+                    else {
+                        annotations.add(annotation);
+                    }
+                }
+
+                if (!hasNamed) {
+                    Package pkg = at.getJavaClass().getPackage();
+                    if (pkg.isAnnotationPresent(Named.class)) {
+                        annotations.add(getAnnotation(Named.class));
+                    }
+                }
+
                 return annotations;
             }
 
@@ -608,14 +668,32 @@ public class QualifiedNameExtension implements Extension {
       
       <programlisting role="JAVA"><![CDATA[import javax.enterprise.inject.spi.Extension;
 import java.lang.annotation.Annotation;
+...
 
 class ServiceAlternativeExtension implements Extension {
       
    <T extends Service> void processAnnotatedType(@Observes ProcessAnnotatedType<T> pat) {
    
       final AnnotatedType<T> type = pat.getAnnotatedType();
-      //if the class implements Service, make it an @Alternative
+
+      /* if the class implements Service, make it an @Alternative */
       AnnotatedType<T> wrapped = new AnnotatedType<T>() {
+
+         class AlternativeLiteral extends AnnotationLiteral<Alternative> implements Alternative {}
+         
+         private final AlternativeLiteral alternativeLiteral = new AlternativeLiteral();
+
+         @Override
+         public <X extends Annotation> X getAnnotation(final Class<X> annType) {
+            return (X) (annType.equals(Alternative.class) ?  alternativeLiteral : type.getAnnotation(annType));
+         }
+
+         @Override
+         public Set<Annotation> getAnnotations() {
+            Set<Annotation> annotations = new HashSet<Annotation>(type.getAnnotations());
+            annotations.add(alternativeLiteral);
+            return annotations;
+         }
          
          @Override
          public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
@@ -623,7 +701,7 @@ class ServiceAlternativeExtension implements Extension {
                true : type.isAnnotationPresent(annotationType);
          }
             
-         //remaining methods of AnnotatedType
+         /* remaining methods of AnnotatedType */
          ...
       }
          
@@ -645,19 +723,19 @@ class ServiceAlternativeExtension implements Extension {
 
        <programlisting role="JAVA"><![CDATA[public interface BeanAttributes<T> {
 
-public Set<Type> getTypes();
+   public Set<Type> getTypes();
 
-public Set<Annotation> getQualifiers();
+   public Set<Annotation> getQualifiers();
 
-public Class<? extends Annotation> getScope();
+   public Class<? extends Annotation> getScope();
 
-public String getName();
+   public String getName();
 
-public Set<Class<? extends Annotation>> getStereotypes();
+   public Set<Class<? extends Annotation>> getStereotypes();
 
-public boolean isAlternative();
+   public boolean isAlternative();
 
-public boolean isNullable();]]></programlisting>
+}]]></programlisting>
 
       <para>
         The <literal>BeanAttributes</literal> interface exposes attributes of a bean. The container fires a <literal>ProcessBeanAttributes</literal> event for each enabled bean, interceptor
@@ -675,7 +753,9 @@ public boolean isNullable();]]></programlisting>
 
     public void addDefinitionError(Throwable t);
 
-    public void veto();]]></programlisting>
+    public void veto();
+
+}]]></programlisting>
 
       <para>The <literal>BeanManager</literal> provides two utility methods for creating the <literal>BeanAttributes</literal> object from scratch:</para>
 
@@ -716,16 +796,16 @@ public class ConfigExtension implements Extension {
 
 	<X> void processInjectionTarget(@Observes ProcessInjectionTarget<X> pit) {
 		
-		//wrap this to intercept the component lifecycle
-	    final InjectionTarget<X> it = pit.getInjectionTarget();
+		  /* wrap this to intercept the component lifecycle */
+	     final InjectionTarget<X> it = pit.getInjectionTarget();
 	    
         final Map<Field, Object> configuredValues = new HashMap<Field, Object>();
         
-        //use this to read annotations of the class and its members
+        /* use this to read annotations of the class and its members */
         AnnotatedType<X> at = pit.getAnnotatedType();
         
-        //read the properties file
-        String propsFileName = at.getClass().getSimpleName() + ".properties";
+        /* read the properties file */
+        String propsFileName = at.getJavaClass().getSimpleName() + ".properties";
         InputStream stream = at.getJavaClass().getResourceAsStream(propsFileName);
         if (stream!=null) {
             
@@ -736,13 +816,13 @@ public class ConfigExtension implements Extension {
                     String fieldName = property.getKey().toString();
                     Object value = property.getValue();
                     try {
-                        Field field = at.getJavaClass().getField(fieldName);
+                        Field field = at.getJavaClass().getDeclaredField(fieldName);
                         field.setAccessible(true);
                         if ( field.getType().isAssignableFrom( value.getClass() ) ) {
                             configuredValues.put(field, value);
                         }
                         else {
-                            //TODO: do type conversion automatically
+                            /* TODO: do type conversion automatically */
                             pit.addDefinitionError( new InjectionException(
                                    "field is not of type String: " + field ) );
                         }
@@ -766,7 +846,7 @@ public class ConfigExtension implements Extension {
             public void inject(X instance, CreationalContext<X> ctx) {
                 it.inject(instance, ctx);
                 
-                //set the values onto the new instance of the component
+                /* set the values onto the new instance of the component */
                 for (Map.Entry<Field, Object> configuredValue: configuredValues.entrySet()) {
                     try {
                         configuredValue.getKey().set(instance, configuredValue.getValue());
@@ -842,26 +922,27 @@ public class ConfigExtension implements Extension {
    </section>
 
     <section>
-        <title>Manipulating interceptors, decorators and alternatives enabled for a bean archive</title>
+        <title>Manipulating interceptors, decorators and alternatives enabled for an application</title>
         <para>
-            For each bean archive Weld fires an event of type <literal>javax.enterprise.inject.spi.ProcessModule</literal>.
+            An event of type <literal>javax.enterprise.inject.spi.AfterTypeDiscovery</literal> is fired when the container has fully completed the type discovery process and before it begins the bean discovery process.
         </para>
 
-        <programlisting role="JAVA"><![CDATA[public interface ProcessModule {
+        <programlisting role="JAVA"><![CDATA[public interface AfterTypeDiscovery {
     public List<Class<?>> getAlternatives();
     public List<Class<?>> getInterceptors();
     public List<Class<?>> getDecorators();
-    public InputStream getBeansXml();
+    public void addAnnotatedType(AnnotatedType<?> type, String id);
 }]]></programlisting>
 
     <para>
-        This event exposes a list of enabled alternatives, interceptors and decorators of a given bean archive. Extensions may manipulate these collections directly
+        This event exposes a list of enabled alternatives, interceptors and decorators. Extensions may manipulate these collections directly
         to add, remove or change the order of the enabled records.
     </para>
 
     <para>
-        In addition, the <filename>beans.xml</filename> file of the given bean archive can be read using the <literal>getBeansXml()</literal> method.
+        In addition, an <literal>AnnotatedType</literal> can be added to the types which will be scanned during bean discovery, with an identifier, which allows multiple annotated types, based on the same underlying type, to be defined.
     </para>
+
     </section>
    
    <section>
