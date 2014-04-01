@@ -5,9 +5,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 
-/**
- *
- */
 @Path("facade/{message}")
 public class RestFacade {
 

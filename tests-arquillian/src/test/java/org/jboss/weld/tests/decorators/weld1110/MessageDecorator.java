@@ -6,7 +6,6 @@ import javax.decorator.Decorator;
 import javax.decorator.Delegate;
 import javax.inject.Inject;
 
-
 @Decorator
 public abstract class MessageDecorator implements MessageSender, Serializable {
 
