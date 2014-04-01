@@ -26,7 +26,9 @@ import java.util.Arrays;
 import java.util.Set;
 
 import org.jboss.weld.util.Types;
+import org.jboss.weld.util.reflection.ParameterizedTypeImpl;
 import org.jboss.weld.util.reflection.Reflections;
+
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 /**
  * Assignability rules for observer method resolution. Serves as a superclass for stricter {@link BeanTypeAssignabilityRules}.
@@ -208,7 +210,12 @@ public class EventTypeAssignabilityRules implements AssignabilityRules {
     protected boolean matches(ActualTypeHolder requiredType, Type otherType) {
         otherType = wrapWithinTypeHolder(otherType);
         if (otherType instanceof ActualTypeHolder) {
-            return matches(requiredType, (ActualTypeHolder) otherType);
+            ActualTypeHolder otherActualType = (ActualTypeHolder) otherType;
+            if (requiredType.getRawType().isArray() && otherActualType.getRawType().isArray()) {
+                return arraysMatch(requiredType, otherActualType);
+            } else {
+                return matches(requiredType, (ActualTypeHolder) otherType);
+            }
         }
         if (otherType instanceof TypeVariable<?>) {
             TypeVariable<?> typeVariable = (TypeVariable<?>) otherType;
@@ -229,6 +236,16 @@ public class EventTypeAssignabilityRules implements AssignabilityRules {
 
     protected boolean matches(ActualTypeHolder requiredType, ActualTypeHolder otherTypeHolder) {
         return requiredType.getBoxedRawType().equals(otherTypeHolder.getBoxedRawType()) && areActualTypeArgumentsMatching(requiredType, otherTypeHolder.getActualTypeArguments());
+    }
+
+    protected boolean arraysMatch(ActualTypeHolder a1, ActualTypeHolder a2) {
+        if (a1.getRawType().getComponentType().isPrimitive() || a2.getRawType().getComponentType().isPrimitive()) {
+            // there is no autoboxing for arrays in Java
+            // therefore, if any of the arrays is an array of primitives, the only way the for the array types
+            // to be equals is this:
+            return a1.getRawType().equals(a2.getRawType());
+        }
+        return isAssignableFrom(a1.getComponentType(), a2.getComponentType());
     }
 
     protected boolean areActualTypeArgumentsMatching(ActualTypeHolder requiredType, Type[] otherActualTypeArguments) {
@@ -291,6 +308,20 @@ public class EventTypeAssignabilityRules implements AssignabilityRules {
 
         private Class<?> getBoxedRawType() {
             return Types.boxedClass(getRawType());
+        }
+
+        /**
+         * Reconstructs array's component type if this holder represents an array. Throws {@link IllegalArgumentException} otherwise.
+         */
+        protected Type getComponentType() {
+            if (!rawType.isArray()) {
+                throw new IllegalArgumentException(rawType + " is not an array type");
+            }
+            if (actualTypeArguments.length == 0) {
+                return rawType.getComponentType();
+            } else {
+                return new ParameterizedTypeImpl(rawType.getComponentType(), actualTypeArguments, null);
+            }
         }
 
         @Override
