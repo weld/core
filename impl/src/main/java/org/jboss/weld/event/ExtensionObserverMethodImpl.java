@@ -54,6 +54,7 @@ public class ExtensionObserverMethodImpl<T, X> extends ObserverMethodImpl<T, X> 
 
     private final Container containerLifecycleEventDeliveryLock;
     private final Set<Class<? extends Annotation>> requiredTypeAnnotations;
+    private volatile Set<Class<? extends Annotation>> requiredScopeTypeAnnotations;
 
     protected ExtensionObserverMethodImpl(EnhancedAnnotatedMethod<T, ? super X> observer, RIBean<X> declaringBean, BeanManagerImpl manager) {
         super(observer, declaringBean, manager);
@@ -123,6 +124,20 @@ public class ExtensionObserverMethodImpl<T, X> extends ObserverMethodImpl<T, X> 
 
     public Collection<Class<? extends Annotation>> getRequiredAnnotations() {
         return requiredTypeAnnotations;
+    }
+
+    public Collection<Class<? extends Annotation>> getRequiredScopeAnnotations() {
+        if (requiredScopeTypeAnnotations == null) {
+            // this init may be performed more than once - which is OK
+            ImmutableSet.Builder<Class<? extends Annotation>> builder = ImmutableSet.builder();
+            for (Class<? extends Annotation> annotation : requiredTypeAnnotations) {
+                if (beanManager.isScope(annotation)) {
+                    builder.add(annotation);
+                }
+            }
+            this.requiredScopeTypeAnnotations = builder.build();
+        }
+        return requiredScopeTypeAnnotations;
     }
 
     @Override

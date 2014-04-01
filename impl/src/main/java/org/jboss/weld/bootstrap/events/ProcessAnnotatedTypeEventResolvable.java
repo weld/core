@@ -169,7 +169,7 @@ public class ProcessAnnotatedTypeEventResolvable implements Resolvable {
 
     protected boolean containsAnnotation(BackedAnnotatedType<?> annotatedType, Collection<Class<? extends Annotation>> requiredAnnotations) {
         for (Class<? extends Annotation> requiredAnnotation : requiredAnnotations) {
-            if (discovery.containsAnnotation(annotatedType.getJavaClass(), requiredAnnotation)) {
+            if (discovery.containsAnnotation(annotatedType, requiredAnnotation)) {
                 return true;
             }
         }

@@ -22,6 +22,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import org.jboss.weld.annotated.slim.backed.BackedAnnotatedType;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.resources.ReflectionCache;
 
@@ -70,14 +71,12 @@ public class RequiredAnnotationDiscovery implements Service {
      * @param annotation the given annotation type
      * @return
      */
-    public boolean containsAnnotation(Class<?> javaClass, Class<? extends Annotation> requiredAnnotation) {
-        for (Class<?> clazz = javaClass; clazz != null && clazz != Object.class; clazz = clazz.getSuperclass()) {
-            // class level annotations
-            if (clazz == javaClass || requiredAnnotation.isAnnotationPresent(Inherited.class)) {
-                if (containsAnnotations(cache.getAnnotations(clazz), requiredAnnotation)) {
-                    return true;
-                }
-            }
+    public boolean containsAnnotation(BackedAnnotatedType<?> annotatedType, Class<? extends Annotation> requiredAnnotation) {
+        // class level annotations
+        if (containsAnnotations(annotatedType.getAnnotations(), requiredAnnotation, true)) {
+            return true;
+        }
+        for (Class<?> clazz = annotatedType.getJavaClass(); clazz != null && clazz != Object.class; clazz = clazz.getSuperclass()) {
             // fields
             for (Field field : clazz.getDeclaredFields()) {
                 if (containsAnnotations(cache.getAnnotations(field), requiredAnnotation)) {
@@ -116,13 +115,29 @@ public class RequiredAnnotationDiscovery implements Service {
 
     private boolean containsAnnotation(Annotation[] annotations, Class<? extends Annotation> requiredAnnotation, boolean checkMetaAnnotations) {
         for (Annotation annotation : annotations) {
-            Class<? extends Annotation> annotationType = annotation.annotationType();
-            if (requiredAnnotation.equals(annotationType)) {
+            if (containsAnnotation(annotation, requiredAnnotation, checkMetaAnnotations)) {
                 return true;
             }
-            if (checkMetaAnnotations && containsAnnotation(cache.getAnnotations(annotationType), requiredAnnotation, false)) {
+        }
+        return false;
+    }
+
+    private boolean containsAnnotations(Iterable<? extends Annotation> annotations, Class<? extends Annotation> requiredAnnotation, boolean checkMetaAnnotations) {
+        for (Annotation annotation : annotations) {
+            if (containsAnnotation(annotation, requiredAnnotation, checkMetaAnnotations)) {
                 return true;
             }
+        }
+        return false;
+    }
+
+    private boolean containsAnnotation(Annotation annotation, Class<? extends Annotation> requiredAnnotation, boolean checkMetaAnnotations) {
+        Class<? extends Annotation> annotationType = annotation.annotationType();
+        if (requiredAnnotation.equals(annotationType)) {
+            return true;
+        }
+        if (checkMetaAnnotations && containsAnnotation(cache.getAnnotations(annotationType), requiredAnnotation, false)) {
+            return true;
         }
         return false;
     }
