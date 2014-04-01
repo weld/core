@@ -16,8 +16,10 @@
  */
 package org.jboss.weld.bootstrap.events;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
 import java.lang.reflect.Type;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -189,15 +191,33 @@ public class ContainerLifecycleEvents extends AbstractBootstrapService {
     private void fireProcessAnnotatedType(ProcessAnnotatedTypeImpl<?> event, Set<ExtensionObserverMethodImpl<?, ?>> observers) {
         List<Throwable> errors = new LinkedList<Throwable>();
         for (ExtensionObserverMethodImpl observer : observers) {
-            try {
-                observer.notify(event);
-            } catch (Throwable e) {
-                errors.add(e);
+            // FastProcessAnnotatedTypeResolver does not consider special scope inheritance rules (see CDI - section 4.1)
+            if (checkScopeInheritanceRules(event.getOriginalAnnotatedType(), observer)) {
+                try {
+                    observer.notify(event);
+                } catch (Throwable e) {
+                    errors.add(e);
+                }
             }
         }
         if (!errors.isEmpty()) {
             throw new DefinitionException(errors);
         }
+    }
+
+    private boolean checkScopeInheritanceRules(SlimAnnotatedType<?> type, ExtensionObserverMethodImpl<?, ?> observer) {
+        Collection<Class<? extends Annotation>> scopes = observer.getRequiredScopeAnnotations();
+        if (!scopes.isEmpty() && scopes.size() == observer.getRequiredScopeAnnotations().size()) {
+            // this check only works if only scope annotations are listed within @WithAnnotations
+            // performing a complete check would be way too expensive - eliminating the benefit of ClassFileServices
+            for (Class<? extends Annotation> annotation : scopes) {
+                if (type.isAnnotationPresent(annotation)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        return true;
     }
 
 
