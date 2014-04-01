@@ -52,8 +52,6 @@ public class WeldServletLifecycle {
 
     public static final String BEAN_MANAGER_ATTRIBUTE_NAME = WeldServletLifecycle.class.getPackage().getName() + "." + BeanManager.class.getName();
 
-    static final String LISTENER_CLASS_FLAG_ATTRIBUTE_NAME = WeldServletLifecycle.class.getPackage().getName() + ".listenerClass";
-
     static final String INSTANCE_ATTRIBUTE_NAME = WeldServletLifecycle.class.getPackage().getName() + ".lifecycleInstance";
 
     private static final Logger log = Logger.getLogger(WeldServletLifecycle.class);

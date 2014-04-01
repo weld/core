@@ -38,6 +38,8 @@ import org.jboss.weld.servlet.api.helpers.ForwardingServletListener;
  */
 public class Listener extends ForwardingServletListener {
 
+    public static final String LISTENER_USED_ATTRIBUTE_NAME = EnhancedListener.class.getPackage().getName() + ".listenerUsed";
+
     private static final Logger log = Logger.getLogger(Listener.class);
 
     private boolean isEnhancedListenerUsed;
@@ -48,8 +50,10 @@ public class Listener extends ForwardingServletListener {
     public void contextInitialized(ServletContextEvent sce) {
         ServletContext context = sce.getServletContext();
         lifecycle = (WeldServletLifecycle) context.getAttribute(WeldServletLifecycle.INSTANCE_ATTRIBUTE_NAME);
-        isEnhancedListenerUsed = lifecycle != null;
-        context.setAttribute(WeldServletLifecycle.LISTENER_CLASS_FLAG_ATTRIBUTE_NAME, this.getClass().getName());
+        if(lifecycle != null) {
+            isEnhancedListenerUsed = true;
+        }
+        context.setAttribute(LISTENER_USED_ATTRIBUTE_NAME, Boolean.TRUE);
         if (isEnhancedListenerUsed) {
             log.info("org.jboss.weld.environment.servlet.EnhancedListener used for ServletContext notifications");
             return;
