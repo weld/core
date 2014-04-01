@@ -108,7 +108,7 @@ public class BeanTypeAssignabilityTest {
         }.getType();
         Type wildcardFooArrayType = new TypeLiteral<Foo<?>[]>() {
         }.getType();
-        Assert.assertTrue("Foo<?>[] should be assignable from Foo<String>[]", getRules().matches(wildcardFooArrayType, stringFooArrayType));
+        Assert.assertFalse("Foo<?>[] should not be assignable from Foo<String>[]", getRules().matches(wildcardFooArrayType, stringFooArrayType));
     }
 
     @Test

@@ -132,4 +132,16 @@ public class BeanTypeAssignabilityRules extends EventTypeAssignabilityRules {
         }
         return false;
     }
+
+    /**
+     * The spec says:
+     * "Array types are considered to match only if their element types are identical."
+     * This does not apply to event - observer resolution.
+     */
+    @Override
+    protected boolean arraysMatch(ActualTypeHolder a1, ActualTypeHolder a2) {
+        return a1.getComponentType().equals(a2.getComponentType());
+    }
+
+
 }

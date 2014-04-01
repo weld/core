@@ -32,12 +32,6 @@
             </class>
 
             <!-- Issues in Weld (the RI) -->
-            <!-- WELD-1639 -->
-            <class name="org.jboss.cdi.tck.tests.event.observer.wildcardAndTypeVariable.ObserverMethodWithParametertizedTypeTest">
-                <methods>
-                    <exclude name="testObserverMethodCanObserveArrayWildcard"/>
-                </methods>
-            </class>
 
             <!-- Issues in WildFly -->
             <!-- WFLY-2654 -->
