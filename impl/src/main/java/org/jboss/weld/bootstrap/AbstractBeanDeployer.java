@@ -164,13 +164,13 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
     }
 
     protected <X> void createProducerMethods(AbstractClassBean<X> declaringBean, WeldClass<X> annotatedClass) {
-        for (WeldMethod<?, ? super X> method : annotatedClass.getDeclaredWeldMethods(Produces.class)) {
+        for (WeldMethod<?, ? super X> method : Beans.getProducerMethods(annotatedClass)) {
             createProducerMethod(declaringBean, method);
         }
     }
 
     protected <X> void createDisposalMethods(AbstractClassBean<X> declaringBean, WeldClass<X> annotatedClass) {
-        for (WeldMethod<?, ? super X> method : annotatedClass.getDeclaredWeldMethodsWithAnnotatedParameters(Disposes.class)) {
+        for (WeldMethod<?, ? super X> method : Beans.getDisposerMethods(annotatedClass)) {
             DisposalMethod<? super X, ?> disposalBean = DisposalMethod.of(manager, method, declaringBean, services);
             disposalBean.initialize(getEnvironment());
             getEnvironment().addDisposesMethod(disposalBean);

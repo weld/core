@@ -42,9 +42,12 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
 
+import com.google.common.base.Predicate;
 import com.google.common.base.Supplier;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
+
 import org.jboss.weld.Container;
 import org.jboss.weld.bean.AbstractReceiverBean;
 import org.jboss.weld.bean.DecoratorImpl;
@@ -106,7 +109,6 @@ import static org.jboss.weld.logging.messages.UtilMessage.TOO_MANY_POST_CONSTRUC
 import static org.jboss.weld.logging.messages.UtilMessage.TOO_MANY_PRE_DESTROY_METHODS;
 import static org.jboss.weld.logging.messages.UtilMessage.UNABLE_TO_FIND_CONSTRUCTOR;
 import static org.jboss.weld.util.reflection.Reflections.EMPTY_ANNOTATIONS;
-import static org.jboss.weld.util.reflection.Reflections.cast;
 
 /**
  * Helper class for bean inspection
@@ -120,6 +122,22 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
 public class Beans {
     // TODO Convert messages
     private static final LocLogger log = loggerFactory().getLogger(BEAN);
+
+    /**
+     * Oracle JDK 8 compiler (unlike prev versions) generates bridge methods which have method and parameter annotations copied from the original method.
+     * However such methods should not become observers, producers, disposers, initializers and lifecycle callbacks.
+     *
+     * This predicate determines true if the given method is not a bridge method.
+     *
+     * @see http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6695379
+     */
+    @SuppressWarnings("rawtypes")
+    private static final Predicate<WeldMethod> BRIDGE_METHOD_FILTER_PREDICATE = new Predicate<WeldMethod>() {
+        @Override
+        public boolean apply(WeldMethod method) {
+            return !method.getJavaMember().isBridge();
+        }
+    };
 
     /**
      * Indicates if a bean's scope type is passivating
@@ -265,7 +283,7 @@ public class Beans {
         WeldClass<? super T> t = type;
         List<WeldMethod<?, ? super T>> methods = new ArrayList<WeldMethod<?, ? super T>>();
         while (!t.getJavaClass().equals(Object.class)) {
-            Collection<WeldMethod<?, ? super T>> declaredMethods = filterOutOverriddenMethods(type, Reflections.<Collection<WeldMethod<?, ? super T>>>cast(t.getDeclaredWeldMethods(PostConstruct.class)));
+            Collection<WeldMethod<?, ? super T>> declaredMethods = filterOutOverriddenAndBridgeMethods(type, Reflections.<Collection<WeldMethod<?, ? super T>>>cast(t.getDeclaredWeldMethods(PostConstruct.class)));
             log.trace(FOUND_POST_CONSTRUCT_METHODS, declaredMethods, type);
             if (declaredMethods.size() > 1) {
                 throw new DefinitionException(TOO_MANY_POST_CONSTRUCT_METHODS, type);
@@ -279,29 +297,30 @@ public class Beans {
         return methods;
     }
 
-    private static <T> Collection<WeldMethod<?, ? super T>> filterOutOverriddenMethods(WeldClass<T> type, Collection<WeldMethod<?, ? super T>> methods) {
-        Collection<WeldMethod<?, ? super T>> notOverriddenMethods = new ArrayList<WeldMethod<?, ? super T>>();
+    private static <T> Collection<WeldMethod<?, ? super T>> filterOutOverriddenAndBridgeMethods(WeldClass<T> type, Collection<WeldMethod<?, ? super T>> methods) {
+        Collection<WeldMethod<?, ? super T>> filteredMethods = new ArrayList<WeldMethod<?, ? super T>>();
         for (WeldMethod<?, ? super T> method : methods) {
-            if (!type.isMethodOverridden(method)) {
-                notOverriddenMethods.add(method);
+            if (!type.isMethodOverridden(method) && BRIDGE_METHOD_FILTER_PREDICATE.apply(method)) {
+                filteredMethods.add(method);
             }
         }
-        return Collections.unmodifiableCollection(notOverriddenMethods);
+        return Collections.unmodifiableCollection(filteredMethods);
     }
 
     public static <T> List<WeldMethod<?, ? super T>> getObserverMethods(WeldClass<T> type) {
         List<WeldMethod<?, ? super T>> observerMethods = new ArrayList<WeldMethod<?, ? super T>>();
         // Keep track of all seen methods so we can ignore overridden methods
-        Multimap<MethodSignature, Package> seenMethods = Multimaps.newSetMultimap(new HashMap<MethodSignature, Collection<Package>>(), new Supplier<Set<Package>>() {
+        Multimap<MethodSignature, Package> seenMethods = Multimaps.newSetMultimap(new HashMap<MethodSignature, Collection<Package>>(),
+                new Supplier<Set<Package>>() {
 
-            public Set<Package> get() {
-                return new HashSet<Package>();
-            }
+                    public Set<Package> get() {
+                        return new HashSet<Package>();
+                    }
 
-        });
+                });
         WeldClass<? super T> t = type;
         while (t != null && !t.getJavaClass().equals(Object.class)) {
-            for (WeldMethod<?, ? super T> method : t.getDeclaredWeldMethods()) {
+            for (WeldMethod<?, ? super T> method : Collections2.filter(t.getDeclaredWeldMethods(), BRIDGE_METHOD_FILTER_PREDICATE)) {
                 if (!isOverridden(method, seenMethods) && !method.getWeldParameters(Observes.class).isEmpty()) {
                     observerMethods.add(method);
                 }
@@ -316,7 +335,7 @@ public class Beans {
         WeldClass<?> t = type;
         List<WeldMethod<?, ? super T>> methods = new ArrayList<WeldMethod<?, ? super T>>();
         while (!t.getJavaClass().equals(Object.class)) {
-            Collection<WeldMethod<?, ? super T>> declaredMethods = filterOutOverriddenMethods(type, Reflections.<Collection<WeldMethod<?, ? super T>>>cast(t.getDeclaredWeldMethods(PreDestroy.class)));
+            Collection<WeldMethod<?, ? super T>> declaredMethods = filterOutOverriddenAndBridgeMethods(type, Reflections.<Collection<WeldMethod<?, ? super T>>>cast(t.getDeclaredWeldMethods(PreDestroy.class)));
             log.trace(FOUND_PRE_DESTROY_METHODS, declaredMethods, type);
             if (declaredMethods.size() > 1) {
                 throw new DefinitionException(TOO_MANY_PRE_DESTROY_METHODS, type);
@@ -413,7 +432,7 @@ public class Beans {
         Class<?> clazz = weldClass.getJavaClass();
         while (clazz != null) {
             ArraySet<MethodInjectionPoint<?, ?>> set = new ArraySet<MethodInjectionPoint<?, ?>>();
-            for (WeldMethod<?, ?> weldMethod : weldClass.getWeldMethods()) {
+            for (WeldMethod<?, ?> weldMethod : Collections2.filter(weldClass.getWeldMethods(), BRIDGE_METHOD_FILTER_PREDICATE)) {
                 if (weldMethod.getJavaMember().getDeclaringClass().equals(clazz)) {
                     processPossibleInitializerMethod(declaringBean, weldClass, weldMethod, seenMethods, set);
                 }
@@ -434,7 +453,7 @@ public class Beans {
         WeldClass<?> clazz = weldClass;
         while (clazz != null && !clazz.getJavaClass().equals(Object.class)) {
             ArraySet<MethodInjectionPoint<?, ?>> set = new ArraySet<MethodInjectionPoint<?, ?>>();
-            Collection declaredWeldMethods = clazz.getDeclaredWeldMethods();
+            Collection declaredWeldMethods = Collections2.filter(clazz.getDeclaredWeldMethods(), BRIDGE_METHOD_FILTER_PREDICATE);
             for (WeldMethod<?, ?> method : (Collection<WeldMethod<?, ?>>) declaredWeldMethods) {
                 processPossibleInitializerMethod(declaringBean, weldClass, method, seenMethods, set);
             }
@@ -849,4 +868,23 @@ public class Beans {
         }
         return null;
     }
+
+    /**
+     *
+     * @param weldClass
+     * @return a set of producer methods, bridge methods are filtered out
+     */
+    public static <T> Collection<WeldMethod<?, ? super T>> getProducerMethods(WeldClass<T> weldClass) {
+        return Collections2.filter(weldClass.getDeclaredWeldMethods(Produces.class), BRIDGE_METHOD_FILTER_PREDICATE);
+    }
+
+    /**
+    *
+    * @param weldClass
+    * @return a set of disposer methods, bridge methods are filtered out
+    */
+    public static <T> Collection<WeldMethod<?, ? super T>> getDisposerMethods(WeldClass<T> weldClass) {
+        return Collections2.filter(weldClass.getDeclaredWeldMethodsWithAnnotatedParameters(Disposes.class), BRIDGE_METHOD_FILTER_PREDICATE);
+    }
+
 }
