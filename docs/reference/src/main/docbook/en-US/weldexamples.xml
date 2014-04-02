@@ -24,18 +24,18 @@
       
       <para>
           All the configuration files for this example are located in <literal>WEB-INF/</literal>, which can be found in
-          the <literal>src/main/webapp</literal> directory of the example. First, we have the JSF 2.0 version of
+          the <literal>src/main/webapp</literal> directory of the example. First, we have the JSF 2.2 version of
           <literal>faces-config.xml</literal>. A standardized version of Facelets is the default view handler in JSF
-          2.0, so there's really nothing that we have to configure. Thus, the configuration consists of only the root
+          2.2, so there's really nothing that we have to configure. Thus, the configuration consists of only the root
           element.
       </para>
       
-      <programlisting role="XML"><![CDATA[<faces-config version="2.0"
-   xmlns="http://java.sun.com/xml/ns/javaee"
+      <programlisting role="XML"><![CDATA[<faces-config version="2.2"
+   xmlns="http://xmlns.jcp.org/xml/ns/javaee"
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xsi:schemaLocation="
-      http://java.sun.com/xml/ns/javaee
-      http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd">
+      http://xmlns.jcp.org/xml/ns/javaee
+      http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd">
       
       <name>numberguess</name>
       
@@ -943,7 +943,7 @@ public class NumberGuessFrame extends javax.swing.JFrame {
       
       <note>
          <para>
-            Java EE 6, which bundles EJB 3.1, allows you to package EJBs in a WAR, which will make this structure much
+            Java EE 7, which bundles EJB 3.2, allows you to package EJBs in a WAR, which will make this structure much
             simpler! Still, there are other advantages of using an EAR.
          </para>
       </note>
@@ -978,12 +978,12 @@ public class NumberGuessFrame extends javax.swing.JFrame {
             <literal>META-INF/application.xml</literal>:
          </para>
          
-         <programlisting role="XML"><![CDATA[<application version="6"
-   xmlns="http://java.sun.com/xml/ns/javaee" 
+         <programlisting role="XML"><![CDATA[<application version="7"
+   xmlns="http://xmlns.jcp.org/xml/ns/javaee" 
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xsi:schemaLocation="
-      http://java.sun.com/xml/ns/javaee
-      http://java.sun.com/xml/ns/javaee/application_6.xsd">
+      http://xmlns.jcp.org/xml/ns/javaee
+      http://xmlns.jcp.org/xml/ns/javaee/application_7.xsd">
 
   <display-name>weld-jsf-translator-ear</display-name>
   <description>The Weld JSF translator example (ear)</description>
@@ -1002,7 +1002,7 @@ public class NumberGuessFrame extends javax.swing.JFrame {
       
       <para>
          Next, let's look at the WAR, which is located in the example's <literal>war</literal> directory. Just as in the
-         numberguess example, we have a <literal>faces-config.xml</literal> for JSF 2.0 and a <literal>web.xml</literal>
+         numberguess example, we have a <literal>faces-config.xml</literal> for JSF 2.2 and a <literal>web.xml</literal>
          (to activate JSF) under WEB-INF, both sourced from <literal>src/main/webapp/WEB-INF</literal>.
       </para>
       

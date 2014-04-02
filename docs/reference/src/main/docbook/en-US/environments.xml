@@ -10,15 +10,6 @@
             If you are using WildFly 8.0 or better, no additional configuration is required to use Weld (or CDI for that matter).
         </para>
 
-        <note>
-            <para>
-                Additionally, Weld Servlet supports JBoss EAP 5.1, to do this use the
-                <literal>jboss5</literal>
-                variant
-                of Weld Servlet.
-            </para>
-        </note>
-
     </section>
 
     <section>
@@ -79,7 +70,7 @@
 ]]></programlisting>
 
         <para>
-            Actually you don't have to register this listener in Servlet 3.0 compliant containers which support <literal>javax.servlet.ServletContainerInitializer</literal> service properly (e.g. Tomcat 7.0.50).
+            Actually you don't have to register this listener in Servlet 3.x compliant containers which support <literal>javax.servlet.ServletContainerInitializer</literal> service properly (e.g. Tomcat 7.0.50).
             In this case <literal>org.jboss.weld.environment.servlet.EnhancedListener</literal> will do all the necessary work automatically, and what is more important -
             injection into Listeners will work on some containers as well (see <xref linkend="tomcat-container"/> and <xref linkend="jetty-container"/> for more info).
         </para>

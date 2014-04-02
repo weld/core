@@ -10,7 +10,7 @@
    </para>
   
    <para>
-      The CDI reference implementation, Weld, is being developed by the <ulink url="http://seamframework.org/Weld/Home#H-MaintainersAndContributors">Weld
+      The CDI reference implementation, Weld, is being developed by the <ulink url="https://github.com/weld/core/graphs/contributors">Weld
       team</ulink>. The team and the CDI spec lead blog at <ulink
       url="http://in.relation.to">in.relation.to</ulink>. This guide was originally based on a series of blog entries
       published there while the specification was being developed. It's probably the best source of information about
@@ -19,7 +19,7 @@
 
    <para>
       We encourage you to follow the <ulink url="https://lists.jboss.org/mailman/listinfo/weld-dev">weld-dev</ulink>
-      mailing list and to get involved in <ulink url="http://seamframework.org/Weld/Development">development</ulink>. If
+      mailing list and to get involved in <ulink url="http://weld.cdi-spec.org/community/">development</ulink>. If
       you are reading this guide, you likely have something to offer.
    </para>
 

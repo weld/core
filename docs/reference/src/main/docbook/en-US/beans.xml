@@ -374,7 +374,7 @@ class MockPaymentProcessor extends PaymentProcessorImpl { ... }]]></programlisti
          <title>Interceptor binding types</title>
 
          <para>
-            You might be familiar with the use of interceptors in EJB 3.0. In Java EE 6, this functionality has
+            You might be familiar with the use of interceptors in EJB 3. Since Java EE 6, this functionality has
             been generalized to work with other managed beans. That's right, you no longer have to make your bean 
             an EJB just to intercept its methods. Holler. So what does CDI have to offer above and beyond that? Well, 
             quite a lot actually. Let's cover some background.
@@ -587,7 +587,7 @@ class ShoppingCart implements Serializable { ... }]]></programlisting>
        
          <para>
             Many beans (including any <literal>@SessionScoped</literal> or <literal>@ApplicationScoped</literal> 
-            beans) are available for concurrent access. Therefore, the concurrency management provided by EJB 3.1 
+            beans) are available for concurrent access. Therefore, the concurrency management provided by EJB 3.2 
             is especially useful. Most session and application scoped beans should be EJBs.
          </para>
        
@@ -604,7 +604,7 @@ class ShoppingCart implements Serializable { ... }]]></programlisting>
 
          <para>
             The point we're trying to make is: use a session bean when you need the services it provides, not just 
-            because you want to use dependency injection, lifecycle management, or interceptors. Java EE 6 provides
+            because you want to use dependency injection, lifecycle management, or interceptors. Java EE 7 provides
             a graduated programming model. It's usually easy to start with an ordinary managed bean, and later turn 
             it into an EJB just by adding one of the following annotations: <literal>@Stateless</literal>, 
             <literal>@Stateful</literal> or <literal>@Singleton</literal>.
@@ -899,11 +899,11 @@ public class Shop {
          </para>
 
          <programlisting role="XML"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://java.sun.com/xml/ns/javaee"
+<beans xmlns="http://xmlns.jcp.org/xml/ns/javaee"
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xsi:schemaLocation="
-      http://java.sun.com/xml/ns/javaee 
-      http://java.sun.com/xml/ns/javaee/beans_1_0.xsd">
+      http://xmlns.jcp.org/xml/ns/javaee 
+      http://xmlns.jcp.org/xml/ns/javaee/beans_1_0.xsd">
 </beans>]]></programlisting> 
 
          <para>

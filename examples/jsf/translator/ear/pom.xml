@@ -52,6 +52,7 @@
                             <contextRoot>/weld-translator</contextRoot>
                         </webModule>
                     </modules>
+                    <version>7</version>
                 </configuration>
             </plugin>
         </plugins>

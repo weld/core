@@ -25,7 +25,7 @@
       </para>
 
       <para>
-         Java EE 6 finally lays down that common definition in the Managed Beans specification. Managed Beans are
+         Java EE 6 finally laid down that common definition in the Managed Beans specification. Managed Beans are
          defined as container-managed objects with minimal programming restrictions, otherwise known by the acronym 
          POJO (Plain Old Java Object). They support a small set of basic services, such as resource injection, lifecycle 
          callbacks and interceptors. Companion specifications, such as EJB and CDI, build on this basic model. But, 
