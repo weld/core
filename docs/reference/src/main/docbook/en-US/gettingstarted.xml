@@ -14,7 +14,7 @@
    </para>
 
    <para>
-      Both examples use JSF 2.0 as the web framework and, as such, can be found in the <literal>examples/jsf</literal>
+      Both examples use JSF 2.2 as the web framework and, as such, can be found in the <literal>examples/jsf</literal>
       directory of the Weld distribution.
    </para>
 
@@ -165,7 +165,7 @@ $> mvn jboss-as:run]]></programlisting>
 
       <note>
          <para>
-            The translator uses session beans, which are packaged in an EJB module within an ear. Java EE 6 will allow
+            The translator uses session beans, which are packaged in an EJB module within an ear. Java EE 7 allows
             session beans to be deployed in war modules, but that's a topic for a later chapter.
          </para>
       </note>

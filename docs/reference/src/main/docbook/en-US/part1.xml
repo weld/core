@@ -12,7 +12,7 @@ tainer, for example, alternative web presentation technologies.
 
    <!-- NOTE synchronize this intro with the intro on http://seamframework.org/Weld -->
    <para>
-      The <ulink url="http://jcp.org/en/jsr/detail?id=299">CDI</ulink> specification defines a set of 
+      The <ulink url="http://jcp.org/en/jsr/detail?id=346">CDI</ulink> specification defines a set of 
       complementary services that help improve the structure of application code. CDI layers an enhanced lifecycle 
       and interaction model over existing Java component types, including managed beans and Enterprise Java Beans. 
       The CDI services provide:
@@ -53,7 +53,7 @@ tainer, for example, alternative web presentation technologies.
       and the Java EE component architecture. But the specification does not limit the use of CDI to the Java EE 
       environment. In the Java SE environment, the services might be provided by a standalone CDI implementation 
       like Weld (see <xref linkend="weld-se"/>), or even by a container that also implements the subset of EJB 
-      defined for embedded usage by the EJB 3.1 specification. CDI is especially useful in the context of web 
+      defined for embedded usage by the EJB 3.2 specification. CDI is especially useful in the context of web 
       application development, but the problems it solves are general development concerns and it is therefore 
       applicable to a wide variety of application.
    </para>
@@ -193,13 +193,13 @@ tainer, for example, alternative web presentation technologies.
       CDI was influenced by a number of existing Java frameworks, including Seam, Guice and Spring. However, CDI has 
       its own, very distinct, character: more typesafe than Seam, more stateful and less XML-centric than Spring, more 
       web and enterprise-application capable than Guice. But it couldn't have been any of these without inspiration from 
-      the frameworks mentioned and <emphasis>lots</emphasis> of collaboration and hard work by the JSR-299 Expert Group
-      (EG).
+      the frameworks mentioned and <emphasis>lots</emphasis> of collaboration and hard work by the JSR-299 and JSR-346 
+      Expert Groups (EG).
    </para>
   
    <para>
-      Finally, CDI is a <ulink url="http://jcp.org">Java Community Process</ulink> (JCP) standard. Java EE 6 requires 
-      that all compliant application servers provide support for JSR-299 (even in the web profile).
+      Finally, CDI is a <ulink url="http://jcp.org">Java Community Process</ulink> (JCP) standard. Java EE 7 requires 
+      that all compliant application servers provide support for JSR-346 (even in the web profile).
    </para>
   
 <!--

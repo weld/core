@@ -270,8 +270,13 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-ejb-plugin</artifactId>
                     <configuration>
-                        <ejbVersion>3.0</ejbVersion>
+                        <ejbVersion>3.2</ejbVersion>
                     </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-ear-plugin</artifactId>
+                    <version>2.9</version>
                 </plugin>
                 <!-- Work around issues encountered with http://jira.codehaus.org/browse/MWAR-187
                     during release -->

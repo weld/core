@@ -8,6 +8,12 @@
    <preface>
       <title>A note about naming and nomenclature</title>
       <para>
+         Throughout this document, mentions of JSR-299 and JSR-346 appear. JSR is a document of a proposed specification
+         used in the Java Community Process (JCP). JSRs are somewhat analogous to RFCs used by IETF. JSR-299 and JSR-346 
+         are the JCP specification names for the 1.0 and 1.1 versions of CDI, respectively.
+      </para>
+      
+      <para>
          Shortly before the final draft of JSR-299 was submitted, the specification changed its name from "Web Beans" to
          "Java Contexts and Dependency Injection for the Java EE platform", abbreviated CDI. For a brief period after
          the renaming, the reference implementation adopted the name "Web Beans". However, this ended up causing more
