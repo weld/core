@@ -26,9 +26,9 @@
         </para>
 
         <programlisting role="JAVA"><![CDATA[public class Checkout {
-        
+
    private final ShoppingCart cart;
-    
+
    @Inject
    public Checkout(ShoppingCart cart) {
       this.cart = cart;
@@ -46,14 +46,14 @@
         </para>
 
         <programlisting role="JAVA"><![CDATA[public class Checkout {
-        
+
    private ShoppingCart cart;
 
    @Inject
    void setShoppingCart(ShoppingCart cart) {
       this.cart = cart;
    }
-    
+
 }]]></programlisting>
 
         <note>
@@ -70,7 +70,7 @@
         <programlisting role="JAVA"><![CDATA[public class Checkout {
 
    private @Inject ShoppingCart cart;
-    
+
 }]]></programlisting>
 
         <note>
@@ -249,7 +249,7 @@ public @interface Asynchronous {}]]></programlisting>
         <para>Using initializer method injection:</para>
 
         <programlisting role="JAVA"><![CDATA[@Inject
-public void setPaymentProcessors(@Synchronous PaymentProcessor syncPaymentProcessor, 
+public void setPaymentProcessors(@Synchronous PaymentProcessor syncPaymentProcessor,
                                  @Asynchronous PaymentProcessor asyncPaymentProcessor) {
    this.syncPaymentProcessor = syncPaymentProcessor;
    this.asyncPaymentProcessor = asyncPaymentProcessor;
@@ -258,7 +258,7 @@ public void setPaymentProcessors(@Synchronous PaymentProcessor syncPaymentProces
         <para>Using constructor injection:</para>
 
         <programlisting role="JAVA"><![CDATA[@Inject
-public Checkout(@Synchronous PaymentProcessor syncPaymentProcessor, 
+public Checkout(@Synchronous PaymentProcessor syncPaymentProcessor,
                 @Asynchronous PaymentProcessor asyncPaymentProcessor) {
    this.syncPaymentProcessor = syncPaymentProcessor;
    this.asyncPaymentProcessor = asyncPaymentProcessor;
@@ -318,7 +318,7 @@ PaymentProcessor getPaymentProcessor(@Synchronous PaymentProcessor syncPaymentPr
 ...
 
 @Inject
-void initServices(@Any Instance<Service> services) { 
+void initServices(@Any Instance<Service> services) {
    for (Service service: services) {
       service.init();
    }
@@ -438,8 +438,7 @@ public class MockPaymentProcessor implements PaymentProcessor {
 
         <para>
             The typesafe resolution algorithm fails when, after considering the qualifier annotations on all beans that
-            implement the bean type of an injection point and filtering out disabled beans (
-            <literal>@Alternative</literal>
+            implement the bean type of an injection point and filtering out disabled beans (<literal>@Alternative</literal>
             beans which are not explicitly enabled), the container is unable to identify exactly one bean to inject. The
             container will abort deployment, informing us of the unsatisfied or ambiguous dependency.
         </para>
@@ -450,7 +449,7 @@ public class MockPaymentProcessor implements PaymentProcessor {
         </para>
 
         <para>
-            To fix an<emphasis>unsatisfied dependency</emphasis>, either:
+            To fix an <emphasis>unsatisfied dependency</emphasis>, either:
         </para>
 
         <itemizedlist>
@@ -484,13 +483,18 @@ public class MockPaymentProcessor implements PaymentProcessor {
         </itemizedlist>
 
         <para>
-            To fix an<emphasis>ambiguous dependency</emphasis>, either:
+            To fix an <emphasis>ambiguous dependency</emphasis>, either:
         </para>
 
         <itemizedlist>
             <listitem>
                 <para>
                     introduce a qualifier to distinguish between the two implementations of the bean type,
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    exclude one of the beans from discovery (either by means of <ulink url="http://docs.jboss.org/cdi/api/1.1/javax/enterprise/inject/Vetoed.html">@Vetoed</ulink> or <literal>beans.xml</literal>),
                 </para>
             </listitem>
             <listitem>
@@ -509,7 +513,7 @@ public class MockPaymentProcessor implements PaymentProcessor {
                     disable one of two
                     <literal>@Alternative</literal>
                     beans that are trying to occupy the same space,
-                    using<literal>beans.xml</literal>.
+                    using <literal>beans.xml</literal>,
                 </para>
             </listitem>
             <listitem>
@@ -517,23 +521,15 @@ public class MockPaymentProcessor implements PaymentProcessor {
                     change priority value of one of two
                     <literal>@Alternative</literal>
                     beans with the <literal>@Priority</literal> if they have the same highest priority value.
-
                 </para>
             </listitem>
         </itemizedlist>
-
-        <para>
-            See
-            <ulink url="http://www.seamframework.org/Documentation/HowDoAResolveAnAmbiguousResolutionExceptionBetweenAProducerMethodAndARawType">this FAQ</ulink>
-            for step-by-step instructions for how to resolve an ambiguous resolution exception between a raw
-            bean type and a producer method that returns the same bean type.
-        </para>
 
         <para>Just remember: "There can be only one."</para>
 
         <para>
             On the other hand, if you really do have an optional or multivalued injection point, you should change
-            the type of your injection point to<literal>Instance</literal>, as we'll see in <xref linkend="lookup"/>.
+            the type of your injection point to <literal>Instance</literal>, as we'll see in <xref linkend="lookup"/>.
         </para>
 
         <para>
@@ -847,8 +843,8 @@ import javax.enterprise.inject.Produces;
 
 class LogFactory {
 
-   @Produces Logger createLogger(InjectionPoint injectionPoint) { 
-      return Logger.getLogger(injectionPoint.getMember().getDeclaringClass().getName()); 
+   @Produces Logger createLogger(InjectionPoint injectionPoint) {
+      return Logger.getLogger(injectionPoint.getMember().getDeclaringClass().getName());
    }
 
 }]]></programlisting>

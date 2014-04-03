@@ -27,8 +27,6 @@ import java.util.ListIterator;
  *
  * @author Jozef Hartinger
  *
- * @see ProcessModuleImpl
- *
  * @param <SOURCE> the source type
  * @param <VIEW> the view type
  */

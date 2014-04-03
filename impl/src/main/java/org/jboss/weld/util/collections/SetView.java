@@ -26,8 +26,6 @@ import java.util.Set;
  *
  * @author Jozef Hartinger
  *
- * @see ProcessModuleImpl
- *
  * @param <SOURCE> the source type
  * @param <VIEW> the view type
  */

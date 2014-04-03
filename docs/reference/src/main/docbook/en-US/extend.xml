@@ -108,11 +108,6 @@ MyBean(MyExtension myExtension) {
          </listitem>
          <listitem>
             <para>
-               <literal>ProcessModule</literal>
-            </para>
-         </listitem>
-         <listitem>
-            <para>
                <literal>ProcessAnnotatedType</literal> and <literal>ProcessSyntheticAnnotatedType</literal>
             </para>
          </listitem>
