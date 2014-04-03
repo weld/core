@@ -431,6 +431,48 @@
             </build>
         </profile>
 
+        <!-- TODO -->
+        <!-- The current version (2.10) of maven-surefire does not support Java 8 properly and higher versions break the build -->
+        <!-- Note that the use of jdk activation would deactivate the default profile, therefore a profiles cleanup is required as well -->
+        <!-- profile>
+            <id>jdk18</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <jdk>[1.8,)</jdk>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <configuration>
+                            <source>1.8</source>
+                            <target>1.8</target>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <version>1.8</version>
+                        <executions>
+                            <execution>
+                                <id>add-test-source</id>
+                                <phase>generate-test-sources</phase>
+                                <goals>
+                                    <goal>add-test-source</goal>
+                                </goals>
+                                <configuration>
+                                    <sources>
+                                        <source>src/test/java8</source>
+                                    </sources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile-->
+
     </profiles>
 
 </project>
