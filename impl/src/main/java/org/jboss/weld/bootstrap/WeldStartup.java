@@ -324,7 +324,6 @@ public class WeldStartup {
             throw BootstrapLogger.LOG.managerNotInitialized();
         }
 
-        // we need to know which BDAs are physical so that we fire ProcessModule for their archives only
         Set<BeanDeployment> physicalBeanDeploymentArchives = new HashSet<BeanDeployment>(getBeanDeployments());
 
         ExtensionBeanDeployer extensionBeanDeployer = new ExtensionBeanDeployer(deploymentManager, deployment, bdaMapping, contexts);
@@ -349,7 +348,6 @@ public class WeldStartup {
             beanDeployment.createClasses();
         }
 
-
         // Re-Read the deployment structure, bdaMapping will be the physical
         // structure, extensions and any classes added using addAnnotatedType
         // outside the physical BDA
@@ -362,7 +360,7 @@ public class WeldStartup {
         AfterTypeDiscoveryImpl.fire(deploymentManager, deployment, bdaMapping, contexts);
 
         for (BeanDeployment beanDeployment : getBeanDeployments()) {
-            beanDeployment.createEnabled();
+            beanDeployment.createEnablement();
         }
     }
 

@@ -210,9 +210,11 @@ public class BeanDeployment {
     }
 
     /**
-     * Initializes Enabled after ProcessModule is fired.
+     * Initializes module enablement.
+     *
+     * @see ModuleEnablement
      */
-    public void createEnabled() {
+    public void createEnablement() {
         GlobalEnablementBuilder builder = beanManager.getServices().get(GlobalEnablementBuilder.class);
         ModuleEnablement enablement = builder.createModuleEnablement(this);
         beanManager.setEnabled(enablement);
