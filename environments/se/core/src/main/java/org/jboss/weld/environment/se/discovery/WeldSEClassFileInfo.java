@@ -40,8 +40,6 @@ public class WeldSEClassFileInfo implements ClassFileInfo {
 
     private static final String PACKAGE_INFO_NAME = "package-info";
 
-    private static final String DOT_SEPARATOR = ".";
-
     private final ClassInfo classInfo;
 
     private final IndexView index;
@@ -126,7 +124,8 @@ public class WeldSEClassFileInfo implements ClassFileInfo {
             return true;
         }
 
-        ClassInfo packageInfo = index.getClassByName(DotName.createSimple(getPackageName(classInfo.name()) + DOT_SEPARATOR + PACKAGE_INFO_NAME));
+        final DotName packageInfoName = DotName.createComponentized(getPackageName(classInfo.name()), PACKAGE_INFO_NAME);
+        ClassInfo packageInfo = index.getClassByName(packageInfoName);
 
         if (packageInfo != null && isAnnotationDeclared(packageInfo, DOT_NAME_VETOED)) {
             return true;
@@ -167,11 +166,15 @@ public class WeldSEClassFileInfo implements ClassFileInfo {
         return false;
     }
 
-    private String getPackageName(DotName name) {
+    private DotName getPackageName(DotName name) {
         if (name.isComponentized()) {
-            return name.prefix().toString();
+            return name.prefix();
         } else {
-            return name.local().substring(0, name.local().lastIndexOf("."));
+            final int lastIndex = name.local().lastIndexOf(".");
+            if (lastIndex == -1) {
+                return name;
+            }
+            return DotName.createSimple(name.local().substring(0, lastIndex));
         }
     }
 
