@@ -24,6 +24,7 @@ import org.jboss.logging.annotations.LogMessage;
 import org.jboss.logging.annotations.Message;
 import org.jboss.logging.annotations.Message.Format;
 import org.jboss.logging.annotations.MessageLogger;
+import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 
 /**
@@ -148,5 +149,8 @@ public interface ContextLogger extends WeldLogger {
     @LogMessage(level = Level.TRACE)
     @Message(id = 222, value = "Loading bean store {0} map from session {1}", format = Format.MESSAGE_FORMAT)
     void loadingBeanStoreMapFromSession(Object param1, Object param2);
+
+    @Message(id = 223, value = "Context.getScope() returned null for {0}", format = Format.MESSAGE_FORMAT)
+    DefinitionException contextHasNullScope(Object param1);
 
 }

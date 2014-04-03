@@ -18,14 +18,17 @@ package org.jboss.weld.bootstrap.events;
 
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
+import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.ObserverMethod;
@@ -38,6 +41,10 @@ import org.jboss.weld.bootstrap.BeanDeploymentArchiveMapping;
 import org.jboss.weld.bootstrap.ContextHolder;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.logging.BeanLogger;
+import org.jboss.weld.logging.ContextLogger;
+import org.jboss.weld.logging.EventLogger;
+import org.jboss.weld.logging.InterceptorLogger;
+import org.jboss.weld.logging.MetadataLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Observers;
 import org.jboss.weld.util.Preconditions;
@@ -59,6 +66,7 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
 
     @Override
     public void addDefinitionError(Throwable t) {
+        Preconditions.checkArgumentNotNull(t, "Throwable t");
         checkWithinObserverNotification();
         getErrors().add(t);
     }
@@ -69,12 +77,13 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
 
     @Override
     public void addBean(Bean<?> bean) {
+        Preconditions.checkArgumentNotNull(bean, "bean");
+        validateBean(bean);
         checkWithinObserverNotification();
         processBean(bean);
     }
 
-    protected <T> void processBean(Bean<T> b) {
-        Bean<T> bean = b;
+    protected <T> void processBean(Bean<T> bean) {
         BeanManagerImpl beanManager = getOrCreateBeanDeployment(bean.getBeanClass()).getBeanManager();
         ExternalBeanAttributesFactory.validateBeanAttributes(bean, beanManager);
         ContainerLifecycleEvents containerLifecycleEvents = beanManager.getServices().get(ContainerLifecycleEvents.class);
@@ -86,8 +95,10 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
             }
         }
         if (bean instanceof Interceptor<?>) {
+            validateInterceptor((Interceptor<?>) bean, beanManager);
             beanManager.addInterceptor((Interceptor<?>) bean);
         } else if (bean instanceof Decorator<?>) {
+            validateDecorator((Decorator<?>) bean, beanManager);
             beanManager.addDecorator(CustomDecoratorWrapper.of((Decorator<?>) bean, beanManager));
         } else {
             beanManager.addBean(bean);
@@ -95,16 +106,90 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
         containerLifecycleEvents.fireProcessBean(beanManager, bean);
     }
 
+    private static void validateBean(Bean<?> bean) {
+        if (bean.getBeanClass() == null) {
+            throw BeanLogger.LOG.beanMethodReturnsNull("getBeanClass", bean);
+        }
+        if (bean.getInjectionPoints() == null) {
+            throw BeanLogger.LOG.beanMethodReturnsNull("getInjectionPoints", bean);
+        }
+    }
+
+    private static void validateInterceptor(Interceptor<?> interceptor, BeanManager beanManager) {
+        Set<Annotation> bindings = interceptor.getInterceptorBindings();
+        if (bindings == null) {
+            throw InterceptorLogger.LOG.nullInterceptorBindings(interceptor);
+        }
+        for (Annotation annotation : bindings) {
+            if (!beanManager.isInterceptorBinding(annotation.annotationType())) {
+                throw MetadataLogger.LOG.notAnInterceptorBinding(annotation, interceptor);
+            }
+        }
+    }
+
+    private static void validateDecorator(Decorator<?> decorator, BeanManager beanManager) {
+        Set<Annotation> qualifiers = decorator.getDelegateQualifiers();
+        if (decorator.getDelegateType() == null) {
+            throw BeanLogger.LOG.decoratorMethodReturnsNull("getDelegateType", decorator);
+        }
+        if (qualifiers == null) {
+            throw BeanLogger.LOG.decoratorMethodReturnsNull("getDelegateQualifiers", decorator);
+        }
+        validateQualifiers(qualifiers, beanManager, decorator);
+        if (decorator.getDecoratedTypes() == null) {
+            throw BeanLogger.LOG.decoratorMethodReturnsNull("getDecoratedTypes", decorator);
+        }
+
+    }
+
+    private static void validateObserverMethod(ObserverMethod<?> observerMethod, BeanManager beanManager) {
+        Set<Annotation> qualifiers = observerMethod.getObservedQualifiers();
+        if (observerMethod.getBeanClass() == null) {
+            throw EventLogger.LOG.observerMethodsMethodReturnsNull("getBeanClass", observerMethod);
+        }
+        if (observerMethod.getObservedType() == null) {
+            throw EventLogger.LOG.observerMethodsMethodReturnsNull("getObservedType", observerMethod);
+        }
+        if (qualifiers == null) {
+            throw EventLogger.LOG.observerMethodsMethodReturnsNull("getObservedQualifiers", observerMethod);
+        }
+        validateQualifiers(qualifiers, beanManager, observerMethod);
+        if (observerMethod.getReception() == null) {
+            throw EventLogger.LOG.observerMethodsMethodReturnsNull("getReception", observerMethod);
+        }
+        if (observerMethod.getTransactionPhase() == null) {
+            throw EventLogger.LOG.observerMethodsMethodReturnsNull("getTransactionPhase", observerMethod);
+        }
+    }
+
+    private static void validateQualifiers(Set<Annotation> qualifiers, BeanManager manager, Object definer) {
+        for (Annotation annotation : qualifiers) {
+            if (!manager.isQualifier(annotation.annotationType())) {
+                throw MetadataLogger.LOG.notAQualifier(annotation.annotationType(), definer);
+            }
+        }
+    }
+
     @Override
     public void addContext(Context context) {
+        Preconditions.checkArgumentNotNull(context, "context");
+        Class<? extends Annotation> scope = context.getScope();
+        if (scope == null) {
+            throw ContextLogger.LOG.contextHasNullScope(context);
+        }
+        if (!getBeanManager().isScope(scope)) {
+            throw MetadataLogger.LOG.contextGetScopeIsNotAScope(scope, context);
+        }
         checkWithinObserverNotification();
         getBeanManager().addContext(context);
     }
 
     @Override
     public void addObserverMethod(ObserverMethod<?> observerMethod) {
+        Preconditions.checkArgumentNotNull(observerMethod, "observerMethod");
         checkWithinObserverNotification();
         BeanManagerImpl manager = getOrCreateBeanDeployment(observerMethod.getBeanClass()).getBeanManager();
+        validateObserverMethod(observerMethod, manager);
         if (Observers.isObserverMethodEnabled(observerMethod, manager)) {
             ProcessObserverMethodImpl.fire(manager, observerMethod);
             manager.addObserver(observerMethod);

@@ -111,4 +111,9 @@ public interface MetadataLogger extends WeldLogger {
     @Message(id = 1122, value = "Failed to deserialize annotated type identified with {0}", format = Format.MESSAGE_FORMAT)
     IllegalStateException annotatedTypeDeserializationFailure(AnnotatedTypeIdentifier identifier);
 
+    @Message(id = 1123, value = "{0} defined on {1} is not an interceptor binding", format = Format.MESSAGE_FORMAT)
+    DefinitionException notAnInterceptorBinding(Object param1, Object param2);
+
+    @Message(id = 1124, value = "Context.getScope() returned {0} which is not a scope annotation. Context: {1}", format = Format.MESSAGE_FORMAT)
+    DefinitionException contextGetScopeIsNotAScope(Object param1, Object param2);
 }
