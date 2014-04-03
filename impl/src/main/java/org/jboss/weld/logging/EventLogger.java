@@ -80,4 +80,7 @@ public interface EventLogger extends WeldLogger {
     @Message(id = 411, value = "Observer method {0} receives events for all annotated types. Consider restricting events using @WithAnnotations or a generic type with bounds.", format = Format.MESSAGE_FORMAT)
     void unrestrictedProcessAnnotatedTypes(Object param1);
 
+    @Message(id = 412, value = "ObserverMethod.{0}() returned null for {1}", format = Format.MESSAGE_FORMAT)
+    DefinitionException observerMethodsMethodReturnsNull(Object param1, Object param2);
+
 }
