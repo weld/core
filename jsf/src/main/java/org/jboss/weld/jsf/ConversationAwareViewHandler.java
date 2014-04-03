@@ -16,17 +16,17 @@
  */
 package org.jboss.weld.jsf;
 
+import java.util.List;
+import java.util.Map;
+
+import javax.faces.application.ViewHandler;
+import javax.faces.application.ViewHandlerWrapper;
+import javax.faces.context.FacesContext;
+
 import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
 import org.jboss.weld.context.ConversationContext;
 import org.jboss.weld.context.http.HttpConversationContext;
-
-import javax.enterprise.context.Conversation;
-import javax.faces.application.ViewHandler;
-import javax.faces.application.ViewHandlerWrapper;
-import javax.faces.context.FacesContext;
-import java.util.List;
-import java.util.Map;
 
 /**
  * <p>
@@ -107,10 +107,10 @@ public class ConversationAwareViewHandler extends ViewHandlerWrapper {
             }
         }
         String actionUrl = super.getActionURL(facesContext, viewId);
-        Conversation conversation = getConversationContext(contextId).getCurrentConversation();
-        if (!getSource().equals(Source.BOOKMARKABLE) && getConversationContext(contextId).isActive() && !conversation.isTransient()) {
+        final ConversationContext ctx = getConversationContext(contextId);
+        if (ctx.isActive() && !getSource().equals(Source.BOOKMARKABLE) && getConversationContext(contextId).isActive() && !ctx.getCurrentConversation().isTransient()) {
             return new FacesUrlTransformer(actionUrl, facesContext)
-                .appendConversationIdIfNecessary(getConversationContext(contextId).getParameterName(), conversation.getId())
+                .appendConversationIdIfNecessary(getConversationContext(contextId).getParameterName(), ctx.getCurrentConversation().getId())
                 .getUrl();
         } else {
             return actionUrl;
