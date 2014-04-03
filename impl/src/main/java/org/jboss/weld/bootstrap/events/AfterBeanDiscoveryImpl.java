@@ -133,10 +133,7 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
         if (decorator.getDelegateType() == null) {
             throw BeanLogger.LOG.decoratorMethodReturnsNull("getDelegateType", decorator);
         }
-        if (qualifiers == null) {
-            throw BeanLogger.LOG.decoratorMethodReturnsNull("getDelegateQualifiers", decorator);
-        }
-        Bindings.validateQualifiers(qualifiers, beanManager, decorator);
+        Bindings.validateQualifiers(qualifiers, beanManager, decorator, "Decorator.getDelegateQualifiers");
         if (decorator.getDecoratedTypes() == null) {
             throw BeanLogger.LOG.decoratorMethodReturnsNull("getDecoratedTypes", decorator);
         }
@@ -151,10 +148,7 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
         if (observerMethod.getObservedType() == null) {
             throw EventLogger.LOG.observerMethodsMethodReturnsNull("getObservedType", observerMethod);
         }
-        if (qualifiers == null) {
-            throw EventLogger.LOG.observerMethodsMethodReturnsNull("getObservedQualifiers", observerMethod);
-        }
-        Bindings.validateQualifiers(qualifiers, beanManager, observerMethod);
+        Bindings.validateQualifiers(qualifiers, beanManager, observerMethod, "ObserverMethod.getObservedQualifiers");
         if (observerMethod.getReception() == null) {
             throw EventLogger.LOG.observerMethodsMethodReturnsNull("getReception", observerMethod);
         }

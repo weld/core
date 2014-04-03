@@ -63,7 +63,11 @@ public class Bindings {
         }
     }
 
-    public static void validateQualifiers(Iterable<Annotation> qualifiers, BeanManager manager, Object definer) {
+    public static void validateQualifiers(Iterable<Annotation> qualifiers, BeanManager manager, Object definer,
+            String nullErrorMessage) {
+        if (qualifiers == null) {
+            throw MetadataLogger.LOG.qualifiersNull(nullErrorMessage, definer);
+        }
         for (Annotation annotation : qualifiers) {
             if (!manager.isQualifier(annotation.annotationType())) {
                 throw MetadataLogger.LOG.notAQualifier(annotation.annotationType(), definer);

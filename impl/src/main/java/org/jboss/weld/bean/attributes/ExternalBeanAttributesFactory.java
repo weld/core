@@ -84,10 +84,7 @@ public class ExternalBeanAttributesFactory {
 
     public static void validateQualifiers(BeanAttributes<?> attributes, BeanManager manager) {
         Set<Annotation> qualifiers = attributes.getQualifiers();
-        if(qualifiers == null) {
-            throw MetadataLogger.LOG.qualifiersNull(attributes);
-        }
-        Bindings.validateQualifiers(qualifiers, manager, attributes);
+        Bindings.validateQualifiers(qualifiers, manager, attributes, "BeanAttributes.getQualifiers");
     }
 
     public static void validateTypes(BeanAttributes<?> attributes, BeanManager manager) {

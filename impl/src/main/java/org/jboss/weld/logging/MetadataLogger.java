@@ -61,8 +61,8 @@ public interface MetadataLogger extends WeldLogger {
     @Message(id = 1106, value = "BeanAttributes.getStereotypes() returned null for {0}", format = Format.MESSAGE_FORMAT)
     DefinitionException stereotypesNull(Object param1);
 
-    @Message(id = 1107, value = "BeanAttributes.getQualifiers() returned null for {0}", format = Format.MESSAGE_FORMAT)
-    DefinitionException qualifiersNull(Object param1);
+    @Message(id = 1107, value = "{0}() returned null for {1}", format = Format.MESSAGE_FORMAT)
+    DefinitionException qualifiersNull(Object param1, Object param2);
 
     @Message(id = 1108, value = "BeanAttributes.getTypes() returned null for {0}", format = Format.MESSAGE_FORMAT)
     DefinitionException typesNull(Object param1);
