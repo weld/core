@@ -30,6 +30,7 @@ import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.BeanManager;
 
 import org.jboss.weld.logging.MetadataLogger;
+import org.jboss.weld.util.Bindings;
 
 /**
  * Creates {@link BeanAttributes} based on BeanAttributes provided by an extension. This class handles creating a safe copy as
@@ -82,14 +83,11 @@ public class ExternalBeanAttributesFactory {
     }
 
     public static void validateQualifiers(BeanAttributes<?> attributes, BeanManager manager) {
-        if(attributes.getQualifiers() == null) {
+        Set<Annotation> qualifiers = attributes.getQualifiers();
+        if(qualifiers == null) {
             throw MetadataLogger.LOG.qualifiersNull(attributes);
         }
-        for (Annotation annotation : attributes.getQualifiers()) {
-            if (!manager.isQualifier(annotation.annotationType())) {
-                throw MetadataLogger.LOG.notAQualifier(annotation.annotationType(), attributes);
-            }
-        }
+        Bindings.validateQualifiers(qualifiers, manager, attributes);
     }
 
     public static void validateTypes(BeanAttributes<?> attributes, BeanManager manager) {

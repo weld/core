@@ -46,6 +46,7 @@ import org.jboss.weld.logging.EventLogger;
 import org.jboss.weld.logging.InterceptorLogger;
 import org.jboss.weld.logging.MetadataLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.Bindings;
 import org.jboss.weld.util.Observers;
 import org.jboss.weld.util.Preconditions;
 
@@ -135,7 +136,7 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
         if (qualifiers == null) {
             throw BeanLogger.LOG.decoratorMethodReturnsNull("getDelegateQualifiers", decorator);
         }
-        validateQualifiers(qualifiers, beanManager, decorator);
+        Bindings.validateQualifiers(qualifiers, beanManager, decorator);
         if (decorator.getDecoratedTypes() == null) {
             throw BeanLogger.LOG.decoratorMethodReturnsNull("getDecoratedTypes", decorator);
         }
@@ -153,20 +154,12 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
         if (qualifiers == null) {
             throw EventLogger.LOG.observerMethodsMethodReturnsNull("getObservedQualifiers", observerMethod);
         }
-        validateQualifiers(qualifiers, beanManager, observerMethod);
+        Bindings.validateQualifiers(qualifiers, beanManager, observerMethod);
         if (observerMethod.getReception() == null) {
             throw EventLogger.LOG.observerMethodsMethodReturnsNull("getReception", observerMethod);
         }
         if (observerMethod.getTransactionPhase() == null) {
             throw EventLogger.LOG.observerMethodsMethodReturnsNull("getTransactionPhase", observerMethod);
-        }
-    }
-
-    private static void validateQualifiers(Set<Annotation> qualifiers, BeanManager manager, Object definer) {
-        for (Annotation annotation : qualifiers) {
-            if (!manager.isQualifier(annotation.annotationType())) {
-                throw MetadataLogger.LOG.notAQualifier(annotation.annotationType(), definer);
-            }
         }
     }
 
@@ -194,7 +187,6 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
             ProcessObserverMethodImpl.fire(manager, observerMethod);
             manager.addObserver(observerMethod);
         }
-        getOrCreateBeanDeployment(observerMethod.getBeanClass()).getBeanManager().addObserver(observerMethod);
     }
 
     @Override
