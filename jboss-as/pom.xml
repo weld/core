@@ -61,25 +61,6 @@
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-dependency-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>copy-dependencies</id>
-                                <phase>process-resources</phase>
-                                <goals>
-                                    <goal>copy-dependencies</goal>
-                                </goals>
-                                <configuration>
-                                    <outputDirectory>${project.build.directory}/dependency/lib</outputDirectory>
-                                    <overWriteSnapshots>true</overWriteSnapshots>
-                                    <stripVersion>true</stripVersion>
-                                    <includeArtifactIds>cdi-api,weld-api,weld-core,weld-core-impl,weld-core-jsf,weld-spi,cdi-tck-ext-lib</includeArtifactIds>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-antrun-plugin</artifactId>
                         <executions>
                             <execution>
@@ -99,7 +80,6 @@
                                             this location for modules -->
                                         <property name="module.dir" value="${jboss.home}/modules/org/jboss/weld" />
                                         <property name="jsf.injection.dir" value="${module.dir}/../as/jsf-injection/main" />
-                                        <property name="library.dir" value="${jboss.home}/standalone/lib/ext" />
 
                                         <!-- Check to see if this version of
                                             AS / WildFly uses a separate weld-core-jsf artifact or not -->
@@ -168,20 +148,6 @@
                                         </copy>
 
                                         <replaceregexp file="${jsf.injection.dir}/module.xml" match="path=&quot;weld-core-jsf.*?&quot;" replace="path=&quot;weld-core-jsf.jar&quot;" byline="true" />
-
-                                        <!-- Copy TCK library needed for TCK
-                                            runs -->
-                                        <condition property="cdi.tck.lib" value="cdi-tck-ext-lib.jar">
-                                            <and>
-                                                <isset property="tck" />
-                                            </and>
-                                        </condition>
-
-                                        <copy todir="${library.dir}" overwrite="true">
-                                            <fileset dir="target/dependency/lib">
-                                                <include name="${cdi.tck.lib}" />
-                                            </fileset>
-                                        </copy>
                                     </tasks>
                                 </configuration>
                             </execution>
@@ -204,6 +170,64 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>install-cdi-tck-ext-lib</id>
+            <activation>
+                <property>
+                    <name>tck</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>install-cdi-tck-ext-lib</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <tasks>
+                                        <copy todir="${env.JBOSS_HOME}/standalone/lib/ext" overwrite="true">
+                                            <fileset dir="target/dependency/lib">
+                                                <include name="cdi-tck-ext-lib.jar" />
+                                            </fileset>
+                                        </copy>
+                                    </tasks>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
+    
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/dependency/lib</outputDirectory>
+                            <overWriteSnapshots>true</overWriteSnapshots>
+                            <stripVersion>true</stripVersion>
+                            <includeArtifactIds>cdi-api,weld-api,weld-core,weld-core-impl,weld-core-jsf,weld-spi,cdi-tck-ext-lib</includeArtifactIds>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
