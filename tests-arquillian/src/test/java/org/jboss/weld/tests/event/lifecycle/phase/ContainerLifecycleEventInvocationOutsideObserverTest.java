@@ -17,13 +17,26 @@
 package org.jboss.weld.tests.event.lifecycle.phase;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.Set;
 
+import javax.enterprise.context.Dependent;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.spi.Context;
+import javax.enterprise.context.spi.Contextual;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.event.Reception;
+import javax.enterprise.event.TransactionPhase;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AfterTypeDiscovery;
 import javax.enterprise.inject.spi.AnnotatedType;
+import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.spi.ObserverMethod;
 import javax.inject.Inject;
 
 import junit.framework.Assert;
@@ -149,17 +162,17 @@ public class ContainerLifecycleEventInvocationOutsideObserverTest {
         final AfterBeanDiscovery event = extension.getAfterBeanDiscovery();
         new Invocation() {
             void execute() {
-                event.addBean(null);
+                event.addBean(new DummyBean());
             }
         }.run();
         new Invocation() {
             void execute() {
-                event.addContext(null);
+                event.addContext(new DummyContext());
             }
         }.run();
         new Invocation() {
             void execute() {
-                event.addObserverMethod(null);
+                event.addObserverMethod(new DummyObserverMethod());
             }
         }.run();
         new Invocation() {
@@ -172,5 +185,119 @@ public class ContainerLifecycleEventInvocationOutsideObserverTest {
                 event.getAnnotatedTypes(ContainerLifecycleEventInvocationOutsideObserverTest.class);
             }
         }.run();
+    }
+    
+    private static class DummyBean implements Bean<Object> {
+
+        @Override
+        public Object create(CreationalContext<Object> creationalContext) {
+            return new Object();
+        }
+
+        @Override
+        public void destroy(Object instance, CreationalContext<Object> creationalContext) {
+        }
+
+        @Override
+        public Set<Type> getTypes() {
+            return Collections.<Type>singleton(Object.class);
+        }
+
+        @Override
+        public Set<Annotation> getQualifiers() {
+            return Collections.emptySet();
+        }
+
+        @Override
+        public Class<? extends Annotation> getScope() {
+            return Dependent.class;
+        }
+
+        @Override
+        public String getName() {
+            return null;
+        }
+
+        @Override
+        public Set<Class<? extends Annotation>> getStereotypes() {
+            return Collections.emptySet();
+        }
+
+        @Override
+        public boolean isAlternative() {
+            return false;
+        }
+
+        @Override
+        public Class<?> getBeanClass() {
+            return Object.class;
+        }
+
+        @Override
+        public Set<InjectionPoint> getInjectionPoints() {
+            return Collections.emptySet();
+        }
+
+        @Override
+        public boolean isNullable() {
+            return false;
+        }
+    }
+
+    private static class DummyContext implements Context {
+
+        @Override
+        public Class<? extends Annotation> getScope() {
+            return RequestScoped.class;
+        }
+
+        @Override
+        public <T> T get(Contextual<T> contextual, CreationalContext<T> creationalContext) {
+            return null;
+        }
+
+        @Override
+        public <T> T get(Contextual<T> contextual) {
+            return null;
+        }
+
+        @Override
+        public boolean isActive() {
+            return false;
+        }
+    }
+
+    private static class DummyObserverMethod implements ObserverMethod<Object> {
+
+        @Override
+        public Class<?> getBeanClass() {
+            return Object.class;
+        }
+
+        @Override
+        public Type getObservedType() {
+            return Object.class;
+        }
+
+        @Override
+        public Set<Annotation> getObservedQualifiers() {
+            return Collections.emptySet();
+        }
+
+        @Override
+        public Reception getReception() {
+            return Reception.ALWAYS;
+        }
+
+        @Override
+        public TransactionPhase getTransactionPhase() {
+            return TransactionPhase.IN_PROGRESS;
+        }
+
+        @Override
+        public void notify(Object event) {
+            // noop
+        }
+        
     }
 }
