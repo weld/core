@@ -1,9 +1,10 @@
 package org.jboss.weld.environment.se.test.beandiscovery.priority;
 
+import static javax.interceptor.Interceptor.Priority.APPLICATION;
+
 import javax.annotation.Priority;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
-import static javax.interceptor.Interceptor.Priority.APPLICATION;
 import javax.interceptor.InvocationContext;
 
 @Priority(APPLICATION)
@@ -17,6 +18,10 @@ public class NormalizingInterceptor {
     public Object equalize(InvocationContext ctx) throws Exception {
         invocations++;
         return ctx.proceed();
+    }
+
+    static void reset() {
+        invocations = 0;
     }
 
 }

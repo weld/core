@@ -14,7 +14,11 @@
  */
 package org.jboss.weld.environment.se.test.beandiscovery.priority;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+
 import javax.enterprise.inject.Instance;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -23,8 +27,6 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.weld.environment.se.test.arquillian.WeldSEClassPath;
 import org.jboss.weld.environment.se.test.isolation.ArchiveIsolationOverrideTestBase;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -57,7 +59,10 @@ public class PriorityTest extends ArchiveIsolationOverrideTestBase {
 
     @Test
     public void test(Instance<SoundSource> srcInstance) {
-        assertTrue(srcInstance.isAmbiguous());
+        NormalizingInterceptor.reset();
+        EqualizingDecorator.reset();
+        assertFalse(srcInstance.isAmbiguous());
+        assertFalse(srcInstance.isUnsatisfied());
         SineWaveGenerator source = srcInstance.select(SineWaveGenerator.class).get();
         source.generateSound();
         assertEquals(1, NormalizingInterceptor.invocations);
