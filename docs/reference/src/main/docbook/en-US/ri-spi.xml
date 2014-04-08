@@ -575,7 +575,7 @@ public interface ResourceLoader extends Service {
 
        </section>
 
-        <section>
+        <section id="annotationDiscovery">
             <title>AnnotationDiscovery</title>
             <para>
                 The optional <literal>AnnotationDiscovery</literal> service has been deprecated and is not used by Weld since Weld 2.2.
@@ -823,12 +823,12 @@ public interface ResourceLoader extends Service {
                 <literal>bootstrap.getBeanManager(beanDeploymentArchive)</literal>  
             </para>
         </section>
-        <section>
+        <section id="cdiProvider">
             <title><literal>CDIProvider</literal></title>
             <para>
                 CDI 1.1 provides a simplified approach to accessing the BeanManager / CDI container from components that do not support injection. 
-                This is done by the CDI class API. The integrating part can either use <literal>org.jboss.weld.SimpleCDI</literal> provided by Weld core
-                and register it using <literal>javax.enterprise.inject.spi.CDIProvider</literal> file that is visible to the CDI API classes or use the
+                This is done by the CDI class API. The integrating part can either use <literal>org.jboss.weld.AbstractCDI</literal> or <literal>org.jboss.weld.SimpleCDI</literal>
+                provided by Weld core and register it using <literal>javax.enterprise.inject.spi.CDIProvider</literal> file that is visible to the CDI API classes or use the
                 <literal>CDI.setCDIProvider(CDIProvider provider)</literal> method method early in the deployment.
             </para>
             <para>
@@ -1019,6 +1019,73 @@ cc.release();]]></programlisting>
                     </tgroup>
                 </table>
             </section>
+        </section>
+        <section>
+            <title>Migration from Weld 2.1 to 2.2</title>
+            <itemizedlist>
+                <listitem>
+                    <para>
+                        The definition of a
+                        <emphasis>bean defining annotation</emphasis>
+                        was altered in CDI 1.2. See the
+                        <ulink url="http://cdi-spec.org">specification</ulink>
+                        for more information.
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>
+                        A new
+                        <ulink
+                            url="http://docs.jboss.org/weld/javadoc/2.2/weld-spi/org/jboss/weld/manager/api/WeldInjectionTargetBuilder.html">
+                            <literal>WeldInjectionTargetBuilder</literal>
+                        </ulink>
+                        SPI was added. The SPI allows an integrator to
+                        obtain a customized
+                        <literal>InjectionTarget</literal>
+                        implementation using the builder pattern.
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>
+                        <link linkend="annotationDiscovery">The AnnotationDiscovery service
+                        </link>
+                        was deprecated in favor of
+                        <link linkend="classFileServices">ClassFileServices</link>
+                        .
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>
+                        <ulink
+                            url="http://docs.jboss.org/weld/javadoc/2.2/weld-spi/org/jboss/weld/bootstrap/api/CDI11Bootstrap.html#startContainer(java.lang.String, org.jboss.weld.bootstrap.api.Environment, org.jboss.weld.bootstrap.spi.Deployment)">
+                            <literal>CDIBootstrap.startContainer()</literal>
+                        </ulink>
+                        method, which allows a container identifier to be
+                        passed as a parameter, was added.
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>
+                        The contract of the
+                        <ulink
+                            url="http://docs.jboss.org/weld/javadoc/2.2/weld-spi/org/jboss/weld/ejb/api/SessionObjectReference.html#getBusinessObject(java.lang.Class)">
+                            <literal>SessionObjectReference.getBusinessObject()
+                            </literal>
+                        </ulink>
+                        method was altered. Weld may now call this method
+                        passing in a remote view of a session bean.
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>
+                        The
+                        <link linkend="cdiProvider">CDI provider implementation
+                        </link>
+                        was reimplemented and is no longer compatible with
+                        the previous version.
+                    </para>
+                </listitem>
+            </itemizedlist>
         </section>
     </section>
 
