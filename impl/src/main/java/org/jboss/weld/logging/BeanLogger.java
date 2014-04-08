@@ -627,4 +627,10 @@ public interface BeanLogger extends WeldLogger {
     @Message(id = 1553, value = "Proxy activated after passivation for {0}", format = Format.MESSAGE_FORMAT)
     void activatedSessionBeanProxy(Object param1);
 
+    @Message(id = 1554, value = "Bean.{0}() returned null for {1}", format = Format.MESSAGE_FORMAT)
+    DefinitionException beanMethodReturnsNull(Object param1, Object param2);
+
+    @Message(id = 1555, value = "Decorator.{0}() returned null for {1}", format = Format.MESSAGE_FORMAT)
+    DefinitionException decoratorMethodReturnsNull(Object param1, Object param2);
+
 }

@@ -24,6 +24,22 @@
         <classes>
 
             <!-- Issues in the TCK -->
+            <!-- CDITCK-407 -->
+            <class name="org.jboss.cdi.tck.tests.context.ContextTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
+            <class name="org.jboss.cdi.tck.tests.context.NormalContextTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
+            <class name="org.jboss.cdi.tck.tests.context.ContextDestroysBeansTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
 
             <!-- Issues in Weld (the RI) -->
 

@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.util;
 
+import java.lang.annotation.Annotation;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -24,6 +25,7 @@ import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.enterprise.inject.spi.AfterTypeDiscovery;
 import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.BeforeShutdown;
 import javax.enterprise.inject.spi.ObserverMethod;
@@ -43,6 +45,7 @@ import javax.enterprise.inject.spi.ProcessSyntheticAnnotatedType;
 import org.jboss.weld.bootstrap.SpecializationAndEnablementRegistry;
 import org.jboss.weld.event.ExtensionObserverMethodImpl;
 import org.jboss.weld.event.ObserverMethodImpl;
+import org.jboss.weld.logging.EventLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -100,5 +103,22 @@ public class Observers {
             return manager.getServices().get(SpecializationAndEnablementRegistry.class).isCandidateForLifecycleEvent(declaringBean);
         }
         return true;
+    }
+
+    public static void validateObserverMethod(ObserverMethod<?> observerMethod, BeanManager beanManager) {
+        Set<Annotation> qualifiers = observerMethod.getObservedQualifiers();
+        if (observerMethod.getBeanClass() == null) {
+            throw EventLogger.LOG.observerMethodsMethodReturnsNull("getBeanClass", observerMethod);
+        }
+        if (observerMethod.getObservedType() == null) {
+            throw EventLogger.LOG.observerMethodsMethodReturnsNull("getObservedType", observerMethod);
+        }
+        Bindings.validateQualifiers(qualifiers, beanManager, observerMethod, "ObserverMethod.getObservedQualifiers");
+        if (observerMethod.getReception() == null) {
+            throw EventLogger.LOG.observerMethodsMethodReturnsNull("getReception", observerMethod);
+        }
+        if (observerMethod.getTransactionPhase() == null) {
+            throw EventLogger.LOG.observerMethodsMethodReturnsNull("getTransactionPhase", observerMethod);
+        }
     }
 }

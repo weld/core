@@ -18,7 +18,10 @@ package org.jboss.weld.util;
 
 import java.lang.annotation.Annotation;
 
+import javax.enterprise.inject.spi.BeanManager;
+
 import org.jboss.weld.logging.BeanManagerLogger;
+import org.jboss.weld.logging.MetadataLogger;
 import org.jboss.weld.metadata.cache.InterceptorBindingModel;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.metadata.cache.QualifierModel;
@@ -57,6 +60,18 @@ public class Bindings {
         QualifierModel<?> model = store.getBindingTypeModel(qualifier.annotationType());
         if (model == null || !model.isValid()) {
             throw BeanManagerLogger.LOG.invalidQualifier(qualifier);
+        }
+    }
+
+    public static void validateQualifiers(Iterable<Annotation> qualifiers, BeanManager manager, Object definer,
+            String nullErrorMessage) {
+        if (qualifiers == null) {
+            throw MetadataLogger.LOG.qualifiersNull(nullErrorMessage, definer);
+        }
+        for (Annotation annotation : qualifiers) {
+            if (!manager.isQualifier(annotation.annotationType())) {
+                throw MetadataLogger.LOG.notAQualifier(annotation.annotationType(), definer);
+            }
         }
     }
 
