@@ -38,7 +38,7 @@ public abstract class AbstractProcessInjectionTarget<T> extends AbstractDefiniti
         ProcessSimpleInjectionTarget<X> processSimpleInjectionTarget = new ProcessSimpleInjectionTarget<X>(beanManager, annotatedType, injectionTarget) {
         };
         processSimpleInjectionTarget.fire();
-        return processSimpleInjectionTarget.getInjectionTarget();
+        return processSimpleInjectionTarget.getInjectionTargetInternal();
     }
 
     protected final AnnotatedType<T> annotatedType;
@@ -48,15 +48,12 @@ public abstract class AbstractProcessInjectionTarget<T> extends AbstractDefiniti
         this.annotatedType = annotatedType;
     }
 
-    public void addDefinitionError(Throwable t) {
-        getErrors().add(t);
-    }
-
     public List<Throwable> getDefinitionErrors() {
         return super.getErrors();
     }
 
     public AnnotatedType<T> getAnnotatedType() {
+        checkWithinObserverNotification();
         return annotatedType;
     }
 

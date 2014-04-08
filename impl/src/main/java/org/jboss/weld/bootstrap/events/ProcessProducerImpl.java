@@ -45,19 +45,18 @@ public class ProcessProducerImpl<T, X> extends AbstractDefinitionContainerEvent 
         this.annotatedMember = annotatedMember;
     }
 
-    public void addDefinitionError(Throwable t) {
-        getErrors().add(t);
-    }
-
     public AnnotatedMember<T> getAnnotatedMember() {
+        checkWithinObserverNotification();
         return annotatedMember;
     }
 
     public Producer<X> getProducer() {
+        checkWithinObserverNotification();
         return bean.getProducer();
     }
 
     public void setProducer(Producer<X> producer) {
+        checkWithinObserverNotification();
         this.bean.setProducer(producer);
     }
 

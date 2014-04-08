@@ -335,7 +335,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
             return true;
         }
         if (event.isDirty()) {
-            bean.setAttributes(ExternalBeanAttributesFactory.<T>of(event.getBeanAttributes(), manager));
+            bean.setAttributes(ExternalBeanAttributesFactory.<T>of(event.getBeanAttributesInternal(), manager));
             bean.checkSpecialization();
         }
         return false;

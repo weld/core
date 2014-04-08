@@ -34,7 +34,7 @@ import org.jboss.weld.resources.ClassTransformer;
  * @author Jozef Hartinger
  */
 @SuppressWarnings("rawtypes")
-public class ProcessAnnotatedTypeImpl<X> implements ProcessAnnotatedType<X>, ContainerEvent {
+public class ProcessAnnotatedTypeImpl<X> extends ContainerEvent implements ProcessAnnotatedType<X> {
 
     private final SlimAnnotatedType<X> originalAnnotatedType;
     private final BeanManagerImpl manager;
@@ -53,6 +53,7 @@ public class ProcessAnnotatedTypeImpl<X> implements ProcessAnnotatedType<X>, Con
 
     @Override
     public AnnotatedType<X> getAnnotatedType() {
+        checkWithinObserverNotification();
         return annotatedType;
     }
 
@@ -74,6 +75,7 @@ public class ProcessAnnotatedTypeImpl<X> implements ProcessAnnotatedType<X>, Con
 
     @Override
     public void setAnnotatedType(AnnotatedType<X> type) {
+        checkWithinObserverNotification();
         if (type == null) {
             throw BootstrapLogger.LOG.annotationTypeNull(this);
         }
@@ -86,6 +88,7 @@ public class ProcessAnnotatedTypeImpl<X> implements ProcessAnnotatedType<X>, Con
 
     @Override
     public void veto() {
+        checkWithinObserverNotification();
         this.veto = true;
     }
 

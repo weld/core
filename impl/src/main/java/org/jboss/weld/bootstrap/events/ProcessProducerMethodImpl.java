@@ -41,6 +41,7 @@ public class ProcessProducerMethodImpl<T, X> extends AbstractProcessProducerBean
     }
 
     public AnnotatedMethod<T> getAnnotatedProducerMethod() {
+        checkWithinObserverNotification();
         if (getBean().getAnnotated() != null) {
             return cast(getBean().getAnnotated());
         } else {

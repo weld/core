@@ -18,6 +18,7 @@ package org.jboss.weld.bootstrap.events;
 
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.Preconditions;
 
 import java.lang.reflect.Type;
 
@@ -28,6 +29,12 @@ public abstract class AbstractDefinitionContainerEvent extends AbstractContainer
 
     protected AbstractDefinitionContainerEvent(BeanManagerImpl beanManager, Type rawType, Type[] actualTypeArguments) {
         super(beanManager, rawType, actualTypeArguments);
+    }
+
+    public void addDefinitionError(Throwable t) {
+        Preconditions.checkArgumentNotNull(t, "Throwable t");
+        checkWithinObserverNotification();
+        getErrors().add(t);
     }
 
     @Override

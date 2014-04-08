@@ -32,11 +32,18 @@ public class ProcessSimpleInjectionTarget<X> extends AbstractProcessInjectionTar
         this.injectionTarget = injectionTarget;
     }
 
+    @Override
     public InjectionTarget<X> getInjectionTarget() {
+        checkWithinObserverNotification();
+        return injectionTarget;
+    }
+
+    InjectionTarget<X> getInjectionTargetInternal() {
         return injectionTarget;
     }
 
     public void setInjectionTarget(InjectionTarget<X> injectionTarget) {
+        checkWithinObserverNotification();
         this.injectionTarget = injectionTarget;
     }
 

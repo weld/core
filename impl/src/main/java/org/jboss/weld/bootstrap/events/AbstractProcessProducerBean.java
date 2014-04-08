@@ -36,19 +36,18 @@ public abstract class AbstractProcessProducerBean<T, X, B extends AbstractProduc
         this.bean = bean;
     }
 
-    public void addDefinitionError(Throwable t) {
-        getErrors().add(t);
-    }
-
     public Annotated getAnnotated() {
+        checkWithinObserverNotification();
         return bean.getAnnotated();
     }
 
     public B getBean() {
+        checkWithinObserverNotification();
         return bean;
     }
 
     public AnnotatedParameter<T> getAnnotatedDisposedParameter() {
+        checkWithinObserverNotification();
         if (getBean().getProducer() instanceof AbstractMemberProducer<?, ?>) {
             AbstractMemberProducer<?, ?> producer = (AbstractMemberProducer<?, ?>) getBean().getProducer();
             if (producer.getDisposalMethod() != null) {

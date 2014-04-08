@@ -55,15 +55,13 @@ public class ProcessObserverMethodImpl<T, X> extends AbstractDefinitionContainer
         this.observerMethod = observerMethod;
     }
 
-    public void addDefinitionError(Throwable t) {
-        getErrors().add(t);
-    }
-
     public AnnotatedMethod<X> getAnnotatedMethod() {
+        checkWithinObserverNotification();
         return beanMethod;
     }
 
     public ObserverMethod<T> getObserverMethod() {
+        checkWithinObserverNotification();
         return observerMethod;
     }
 

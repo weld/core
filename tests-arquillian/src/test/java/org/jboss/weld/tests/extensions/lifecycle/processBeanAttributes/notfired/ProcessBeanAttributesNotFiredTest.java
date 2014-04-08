@@ -17,11 +17,10 @@
 
 package org.jboss.weld.tests.extensions.lifecycle.processBeanAttributes.notfired;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
 
 import java.lang.reflect.Type;
 import java.security.Principal;
-import java.util.Set;
 
 import javax.enterprise.context.Conversation;
 import javax.enterprise.event.Event;
@@ -33,7 +32,6 @@ import javax.enterprise.inject.spi.EventMetadata;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.Interceptor;
-import javax.enterprise.inject.spi.ProcessBeanAttributes;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -65,41 +63,15 @@ public class ProcessBeanAttributesNotFiredTest {
 
     @Test
     public void testProcessBeanAttributesNotFiredForProgrammaticallyAddedBeans() {
-        for (ProcessBeanAttributes<?> event : MyExtension.receivedProcessBeanAttributesEvents) {
-            if (isProgrammaticallyAddedBean(event)) {
-                fail("ProcessBeanAttributes fired for programmatically added bean");
-            }
-        }
+        assertFalse("ProcessBeanAttributes was called for built-in bean", MyExtension.observedNames.contains(MyExtension.PROGRAMMATICALLY_ADDED_BEAN_NAME));
     }
 
     @Test
     public void testProcessBeanAttributesNotFiredForBuiltInBeans() {
-        for (ProcessBeanAttributes<?> event : MyExtension.receivedProcessBeanAttributesEvents) {
-            if (isBuiltInBean(event)) {
-                fail("ProcessBeanAttributes was called for built-in bean " + event.getAnnotated());
-            }
+        final Type[] types = new Type[] {Instance.class, Bean.class, Event.class, EventMetadata.class, InjectionPoint.class, BeanManager.class, Decorator.class, 
+                Interceptor.class, UserTransaction.class, Principal.class, HttpServletRequest.class, HttpSession.class, Conversation.class, ServletContext.class };
+        for (Type type : types) {
+            assertFalse("ProcessBeanAttributes was called for built-in bean " + type, MyExtension.observedTypes.contains(type));
         }
-    }
-
-    private boolean isProgrammaticallyAddedBean(ProcessBeanAttributes<?> event) {
-        return MyExtension.PROGRAMMATICALLY_ADDED_BEAN_NAME.equals(event.getBeanAttributes().getName());
-    }
-
-    private boolean isBuiltInBean(ProcessBeanAttributes<?> event) {
-        Set<Type> types = event.getBeanAttributes().getTypes();
-        return types.contains(Instance.class)
-            || types.contains(Bean.class)
-            || types.contains(Event.class)
-            || types.contains(EventMetadata.class)
-            || types.contains(InjectionPoint.class)
-            || types.contains(BeanManager.class)
-            || types.contains(Decorator.class)
-            || types.contains(Interceptor.class)
-            || types.contains(UserTransaction.class)
-            || types.contains(Principal.class)
-            || types.contains(HttpServletRequest.class)
-            || types.contains(HttpSession.class)
-            || types.contains(Conversation.class)
-            || types.contains(ServletContext.class);
     }
 }
