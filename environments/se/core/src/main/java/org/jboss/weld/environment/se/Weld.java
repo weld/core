@@ -84,7 +84,6 @@ public class Weld {
     private static final String CLASS_FILE_SERVICES_CLASS_NAME = "org.jboss.weld.environment.se.discovery.WeldSEClassFileServices";
     public static final String ARCHIVE_ISOLATION_SYSTEM_PROPERTY = "org.jboss.weld.se.archive.isolation";
     private static final String BOOTSTRAP_IMPL_CLASS_NAME = "org.jboss.weld.bootstrap.WeldBootstrap";
-    private static final String ERROR_LOADING_WELD_BOOTSTRAP_EXC_MESSAGE = "Error loading Weld bootstrap, check that Weld is on the classpath";
     public static final String JANDEX_INDEX_CLASS_NAME = "org.jboss.jandex.Index";
 
 

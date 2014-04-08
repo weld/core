@@ -95,6 +95,7 @@ public interface WeldSELogger extends BasicLogger {
     @Message(id = 18, value = "Unable to resolve a bean for {0} with bindings {1}", format = Format.MESSAGE_FORMAT)
     UnsatisfiedResolutionException unableToResolveBean(Object param1, Object param2);
 
-
+    @Message(id = 19, value = "Jandex index is null in the constructor of class: {0}", format = Format.MESSAGE_FORMAT)
+    IllegalStateException jandexIndexNotCreated(Object param1);
 
 }

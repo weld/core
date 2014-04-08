@@ -42,7 +42,6 @@ import org.jboss.weld.environment.se.logging.WeldSELogger;
 public class FileSystemURLHandler implements URLHandler {
 
     private static final Logger log = Logger.getLogger(FileSystemURLHandler.class);
-    private static final String UNEXPECTED_CLASSLOADER_MESSAGE = "could not invoke JNLPClassLoader#getJarFile(URL) on context class loader, expecting Web Start class loader";
 
 
     protected static final String CLASS_FILE_EXTENSION = ".class";
