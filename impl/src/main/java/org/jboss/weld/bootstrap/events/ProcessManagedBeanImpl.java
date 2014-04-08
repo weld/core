@@ -37,6 +37,7 @@ public class ProcessManagedBeanImpl<X> extends AbstractProcessClassBean<X, Manag
     }
 
     public AnnotatedType<X> getAnnotatedBeanClass() {
+        checkWithinObserverNotification();
         return getBean().getAnnotated();
     }
 

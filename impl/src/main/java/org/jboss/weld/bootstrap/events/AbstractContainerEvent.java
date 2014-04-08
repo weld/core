@@ -23,7 +23,7 @@ import java.util.List;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.reflection.ParameterizedTypeImpl;
 
-public abstract class AbstractContainerEvent implements ContainerEvent {
+public abstract class AbstractContainerEvent extends ContainerEvent {
 
     private final List<Throwable> errors;
     private final BeanManagerImpl beanManager;

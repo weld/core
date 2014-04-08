@@ -33,6 +33,7 @@ public class AfterDeploymentValidationImpl extends AbstractDeploymentContainerEv
     }
 
     public void addDeploymentProblem(Throwable t) {
+        checkWithinObserverNotification();
         getErrors().add(t);
     }
 

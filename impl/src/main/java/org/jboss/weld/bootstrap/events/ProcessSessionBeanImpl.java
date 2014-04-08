@@ -46,10 +46,12 @@ public class ProcessSessionBeanImpl<X> extends AbstractProcessClassBean<Object, 
     }
 
     public String getEjbName() {
+        checkWithinObserverNotification();
         return getBean().getEjbDescriptor().getEjbName();
     }
 
     public SessionBeanType getSessionBeanType() {
+        checkWithinObserverNotification();
         if (getBean().getEjbDescriptor().isStateless()) {
             return SessionBeanType.STATELESS;
         } else if (getBean().getEjbDescriptor().isStateful()) {
@@ -62,6 +64,7 @@ public class ProcessSessionBeanImpl<X> extends AbstractProcessClassBean<Object, 
     }
 
     public AnnotatedType<Object> getAnnotatedBeanClass() {
+        checkWithinObserverNotification();
         return getBean().getAnnotated();
     }
 

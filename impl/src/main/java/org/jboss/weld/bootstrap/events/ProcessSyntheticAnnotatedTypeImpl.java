@@ -38,6 +38,7 @@ public class ProcessSyntheticAnnotatedTypeImpl<T> extends ProcessAnnotatedTypeIm
 
     @Override
     public Extension getSource() {
+        checkWithinObserverNotification();
         return source;
     }
 }

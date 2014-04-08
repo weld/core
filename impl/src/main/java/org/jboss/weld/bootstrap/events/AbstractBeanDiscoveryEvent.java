@@ -22,14 +22,11 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 
 import javax.enterprise.context.spi.Context;
-import javax.enterprise.inject.spi.Extension;
 
 import org.jboss.weld.bootstrap.BeanDeployment;
 import org.jboss.weld.bootstrap.BeanDeploymentArchiveMapping;
 import org.jboss.weld.bootstrap.ContextHolder;
 import org.jboss.weld.bootstrap.spi.Deployment;
-import org.jboss.weld.exceptions.IllegalStateException;
-import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.util.DeploymentStructures;
@@ -37,18 +34,11 @@ import org.jboss.weld.util.DeploymentStructures;
 /**
  * @author pmuir
  */
-public abstract class AbstractBeanDiscoveryEvent extends AbstractDefinitionContainerEvent implements NotificationListener {
+public abstract class AbstractBeanDiscoveryEvent extends AbstractDefinitionContainerEvent {
 
     private final BeanDeploymentArchiveMapping bdaMapping;
     private final Deployment deployment;
     private final Collection<ContextHolder<? extends Context>> contexts;
-
-    /*
-     * The receiver object and the observer method being used for event dispatch at a given time. This information is required
-     * for implementing ProcessSyntheticAnnotatedType properly. The information must be set by an
-     * ObserverMethod implementation before invoking the target observer method and unset once the notification is complete.
-     */
-    private Extension receiver;
 
     public AbstractBeanDiscoveryEvent(BeanManagerImpl beanManager, Type rawType, BeanDeploymentArchiveMapping bdaMapping, Deployment deployment, Collection<ContextHolder<? extends Context>> contexts) {
         super(beanManager, rawType, EMPTY_TYPES);
@@ -78,32 +68,5 @@ public abstract class AbstractBeanDiscoveryEvent extends AbstractDefinitionConta
 
     protected BeanDeployment getOrCreateBeanDeployment(Class<?> clazz) {
         return DeploymentStructures.getOrCreateBeanDeployment(deployment, getBeanManager(), bdaMapping, contexts, clazz);
-    }
-
-    @Override
-    public void preNotify(Extension extension) {
-        this.receiver = extension;
-    }
-
-    @Override
-    public void postNotify(Extension extension) {
-        this.receiver = null;
-    }
-
-    protected Extension getSyntheticAnnotatedTypeSource() {
-        return receiver;
-    }
-
-    /**
-     * Checks that this event is currently being delivered to an extension. Otherwise, {@link IllegalStateException}
-     * is thrown. This guarantees that methods of container lifecycle events are not called outside of extension
-     * observer method invocations.
-     *
-     * @throws IllegalStateException if this method is not called within extension observer method invocation
-     */
-    protected void checkWithinObserverNotification() {
-        if (receiver == null) {
-            throw BootstrapLogger.LOG.containerLifecycleEventMethodInvokedOutsideObserver();
-        }
     }
 }

@@ -19,6 +19,7 @@ package org.jboss.weld.tests.extensions;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AfterDeploymentValidation;
+import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
@@ -59,7 +60,7 @@ public class ExtensionObserver implements Extension {
     private boolean processSessionBean;
     private boolean processAnnotatedType;
 
-    private ProcessProducerMethod<?, ?> processProducerMethodInstance;
+    private AnnotatedParameter<?> producerMethodDisposerParameter;
 
     public void observeAll(@Observes Object event) {
         if (event instanceof BeforeBeanDiscovery) {
@@ -126,7 +127,7 @@ public class ExtensionObserver implements Extension {
 
     public void observeProcessProducerMethod(@Observes ProcessProducerMethod<?, Stable> event) {
         processProducerMethod = true;
-        this.processProducerMethodInstance = event;
+        this.producerMethodDisposerParameter = event.getAnnotatedDisposedParameter();
     }
 
     public void observeProcessProducerField(@Observes ProcessProducerField<?, ?> event) {
@@ -237,8 +238,8 @@ public class ExtensionObserver implements Extension {
         return processProducerMethod;
     }
 
-    public ProcessProducerMethod<?, ?> getProcessProducerMethodInstance() {
-        return processProducerMethodInstance;
+    public AnnotatedParameter<?> getProducerMethodDisposerParameter() {
+        return producerMethodDisposerParameter;
     }
 
     public boolean isProcessSessionBean() {

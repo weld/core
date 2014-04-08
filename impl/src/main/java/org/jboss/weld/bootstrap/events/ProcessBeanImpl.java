@@ -52,15 +52,13 @@ public abstract class ProcessBeanImpl<X> extends AbstractDefinitionContainerEven
         this.annotated = annotated;
     }
 
-    public void addDefinitionError(Throwable t) {
-        getErrors().add(t);
-    }
-
     public Annotated getAnnotated() {
+        checkWithinObserverNotification();
         return annotated;
     }
 
     public Bean<X> getBean() {
+        checkWithinObserverNotification();
         return bean;
     }
 

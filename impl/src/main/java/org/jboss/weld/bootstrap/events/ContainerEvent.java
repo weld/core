@@ -16,11 +16,49 @@
  */
 package org.jboss.weld.bootstrap.events;
 
+import javax.enterprise.inject.spi.Extension;
+
+import org.jboss.weld.exceptions.IllegalStateException;
+import org.jboss.weld.logging.BootstrapLogger;
+
 /**
  * Marker for lifecycle events dispatched by the Weld container.
  *
  * @author Jozef Hartinger
  *
  */
-public interface ContainerEvent {
+public abstract class ContainerEvent implements NotificationListener {
+
+    /*
+     * The receiver object and the observer method being used for event dispatch at a given time. This information is required
+     * for implementing ProcessSyntheticAnnotatedType properly. The information must be set by an
+     * ObserverMethod implementation before invoking the target observer method and unset once the notification is complete.
+     */
+    private Extension receiver;
+
+    @Override
+    public void preNotify(Extension extension) {
+        this.receiver = extension;
+    }
+
+    @Override
+    public void postNotify(Extension extension) {
+        this.receiver = null;
+    }
+
+    protected Extension getReceiver() {
+        return receiver;
+    }
+
+    /**
+     * Checks that this event is currently being delivered to an extension. Otherwise, {@link IllegalStateException} is thrown. This guarantees that methods of
+     * container lifecycle events are not called outside of extension observer method invocations.
+     *
+     * @throws IllegalStateException if this method is not called within extension observer method invocation
+     */
+    protected void checkWithinObserverNotification() {
+        if (receiver == null) {
+            throw BootstrapLogger.LOG.containerLifecycleEventMethodInvokedOutsideObserver();
+        }
+    }
 }

@@ -32,15 +32,13 @@ public abstract class AbstractProcessClassBean<X, B extends AbstractClassBean<X>
         this.bean = bean;
     }
 
-    public void addDefinitionError(Throwable t) {
-        getErrors().add(t);
-    }
-
     public Annotated getAnnotated() {
+        checkWithinObserverNotification();
         return bean.getAnnotated();
     }
 
     public B getBean() {
+        checkWithinObserverNotification();
         return bean;
     }
 

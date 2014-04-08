@@ -45,6 +45,6 @@ public class AbstractAnnotatedTypeRegisteringEvent extends AbstractBeanDiscovery
     }
 
     protected void storeSyntheticAnnotatedType(BeanDeployment deployment, AnnotatedType<?> type, String id) {
-        deployment.getBeanDeployer().addSyntheticClass(type, getSyntheticAnnotatedTypeSource(), id);
+        deployment.getBeanDeployer().addSyntheticClass(type, getReceiver(), id);
     }
 }

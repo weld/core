@@ -53,27 +53,30 @@ public class ProcessBeanAttributesImpl<T> extends AbstractDefinitionContainerEve
 
     @Override
     public Annotated getAnnotated() {
+        checkWithinObserverNotification();
         return annotated;
     }
 
     @Override
     public BeanAttributes<T> getBeanAttributes() {
+        checkWithinObserverNotification();
+        return attributes;
+    }
+
+    public BeanAttributes<T> getBeanAttributesInternal() {
         return attributes;
     }
 
     @Override
     public void setBeanAttributes(BeanAttributes<T> beanAttributes) {
+        checkWithinObserverNotification();
         attributes = beanAttributes;
         dirty = true;
     }
 
     @Override
-    public void addDefinitionError(Throwable t) {
-        getErrors().add(t);
-    }
-
-    @Override
     public void veto() {
+        checkWithinObserverNotification();
         veto = true;
     }
 

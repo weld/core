@@ -21,8 +21,6 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.context.spi.Context;
@@ -66,21 +64,10 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
     private final SlimAnnotatedTypeStore slimAnnotatedTypeStore;
 
     @Override
-    public void addDefinitionError(Throwable t) {
-        Preconditions.checkArgumentNotNull(t, "Throwable t");
-        checkWithinObserverNotification();
-        getErrors().add(t);
-    }
-
-    public List<Throwable> getDefinitionErrors() {
-        return Collections.unmodifiableList(getErrors());
-    }
-
-    @Override
     public void addBean(Bean<?> bean) {
+        checkWithinObserverNotification();
         Preconditions.checkArgumentNotNull(bean, "bean");
         validateBean(bean);
-        checkWithinObserverNotification();
         processBean(bean);
     }
 
@@ -142,6 +129,7 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
 
     @Override
     public void addContext(Context context) {
+        checkWithinObserverNotification();
         Preconditions.checkArgumentNotNull(context, "context");
         Class<? extends Annotation> scope = context.getScope();
         if (scope == null) {
@@ -151,14 +139,13 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
         //  if (!getBeanManager().isScope(scope)) {
         //      throw MetadataLogger.LOG.contextGetScopeIsNotAScope(scope, context);
         //  }
-        checkWithinObserverNotification();
         getBeanManager().addContext(context);
     }
 
     @Override
     public void addObserverMethod(ObserverMethod<?> observerMethod) {
-        Preconditions.checkArgumentNotNull(observerMethod, "observerMethod");
         checkWithinObserverNotification();
+        Preconditions.checkArgumentNotNull(observerMethod, "observerMethod");
         BeanManagerImpl manager = getOrCreateBeanDeployment(observerMethod.getBeanClass()).getBeanManager();
         validateObserverMethod(observerMethod, manager);
         if (Observers.isObserverMethodEnabled(observerMethod, manager)) {

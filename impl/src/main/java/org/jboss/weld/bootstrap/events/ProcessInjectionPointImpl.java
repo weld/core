@@ -39,7 +39,7 @@ public class ProcessInjectionPointImpl<T, X> extends AbstractDefinitionContainer
         if (!event.isDirty()) {
             return attributes;
         } else {
-            return ForwardingFieldInjectionPointAttributes.of(event.getInjectionPoint());
+            return ForwardingFieldInjectionPointAttributes.of(event.getInjectionPointInternal());
         }
     }
 
@@ -50,7 +50,7 @@ public class ProcessInjectionPointImpl<T, X> extends AbstractDefinitionContainer
         if (!event.isDirty()) {
             return attributes;
         } else {
-            return ForwardingParameterInjectionPointAttributes.of(event.getInjectionPoint());
+            return ForwardingParameterInjectionPointAttributes.of(event.getInjectionPointInternal());
         }
     }
 
@@ -64,18 +64,19 @@ public class ProcessInjectionPointImpl<T, X> extends AbstractDefinitionContainer
 
     @Override
     public InjectionPoint getInjectionPoint() {
+        checkWithinObserverNotification();
+        return ip;
+    }
+
+    InjectionPoint getInjectionPointInternal() {
         return ip;
     }
 
     @Override
     public void setInjectionPoint(InjectionPoint injectionPoint) {
+        checkWithinObserverNotification();
         ip = injectionPoint;
         dirty = true;
-    }
-
-    @Override
-    public void addDefinitionError(Throwable t) {
-        getErrors().add(t);
     }
 
     public boolean isDirty() {

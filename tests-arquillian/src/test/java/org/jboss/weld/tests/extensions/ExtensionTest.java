@@ -57,7 +57,7 @@ public class ExtensionTest {
     */
     @Test
     public void testGetNonExistentDisposalMethod(ExtensionObserver extensionObserver) {
-        assertNull(extensionObserver.getProcessProducerMethodInstance().getAnnotatedDisposedParameter());
+        assertNull(extensionObserver.getProducerMethodDisposerParameter());
     }
 
     @Test

@@ -19,11 +19,9 @@ package org.jboss.weld.tests.extensions.lifecycle.processBeanAttributes.notfired
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.context.Dependent;
@@ -39,7 +37,8 @@ public class MyExtension implements Extension {
 
    public static final String PROGRAMMATICALLY_ADDED_BEAN_NAME = "programmaticallyAdded";
 
-    public static List<ProcessBeanAttributes<?>> receivedProcessBeanAttributesEvents = new ArrayList<ProcessBeanAttributes<?>>();
+    static final Set<Type> observedTypes = new HashSet<Type>();
+    static final Set<String> observedNames = new HashSet<String>();
 
     public void addBean(@Observes AfterBeanDiscovery abd) {
         abd.addBean(new Bean<Foo>() {
@@ -100,6 +99,7 @@ public class MyExtension implements Extension {
     }
 
     public void processBeanAttributes(@Observes ProcessBeanAttributes<?> event) {
-        receivedProcessBeanAttributesEvents.add(event);
+        observedTypes.addAll(event.getBeanAttributes().getTypes());
+        observedNames.add(event.getBeanAttributes().getName());
     }
 }

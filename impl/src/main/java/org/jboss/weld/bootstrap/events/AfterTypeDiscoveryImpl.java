@@ -81,7 +81,7 @@ public class AfterTypeDiscoveryImpl extends AbstractAnnotatedTypeRegisteringEven
     @Override
     protected void storeSyntheticAnnotatedType(BeanDeployment deployment, AnnotatedType<?> type, String id) {
         SlimAnnotatedType<?> annotatedType = transformer.getUnbackedAnnotatedType(type, getBeanManager().getId(), id);
-        Extension extension = getSyntheticAnnotatedTypeSource();
+        Extension extension = getReceiver();
         SlimAnnotatedTypeContext<?> annotatedTypeContext = SlimAnnotatedTypeContext.of(annotatedType, transformer, extension);
 
         ProcessAnnotatedTypeImpl<?> event = events.fireProcessAnnotatedType(getBeanManager(), annotatedTypeContext);
