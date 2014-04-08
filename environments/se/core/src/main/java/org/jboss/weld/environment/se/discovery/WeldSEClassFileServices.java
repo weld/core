@@ -42,13 +42,11 @@ import com.google.common.collect.ImmutableSet;
  */
 public class WeldSEClassFileServices implements ClassFileServices {
 
-    private static final String JANDEX_INDEX_IS_NULL_MESSAGE = "Jandex index is null in the constructor of class: ";
     private IndexView index;
     private LoadingCache<DotName, Set<String>> annotationClassAnnotationsCache;
     private final ClassLoader classLoader;
 
     private class AnnotationClassAnnotationLoader extends CacheLoader<DotName, Set<String>> {
-        private static final String UNABLE_TO_LOAD_ANNOTATION_MESSAGE = "Unable to load annotation: ";
 
         @Override
         public Set<String> load(DotName name) throws Exception {
@@ -76,7 +74,7 @@ public class WeldSEClassFileServices implements ClassFileServices {
         JandexEnabledDiscoveryStrategy jandexStrategy = (JandexEnabledDiscoveryStrategy) strategy;
         index = jandexStrategy.getCompositeJandexIndex();
         if (index == null) {
-            throw new IllegalStateException(JANDEX_INDEX_IS_NULL_MESSAGE + ClassFileServices.class.getSimpleName());
+            throw WeldSELogger.LOG.jandexIndexNotCreated(ClassFileServices.class.getSimpleName());
         }
         this.classLoader = WeldSEResourceLoader.getClassLoader();
         this.annotationClassAnnotationsCache = CacheBuilder.newBuilder().build(new AnnotationClassAnnotationLoader());
