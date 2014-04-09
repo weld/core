@@ -48,7 +48,7 @@ public class TypeSafeObserverResolver extends TypeSafeResolver<Resolvable, Obser
         if (!rules.matches(observer.getObservedType(), resolvable.getTypes())) {
             return false;
         }
-        if (!Beans.containsAllQualifiers(metaAnnotationStore.getQualifierInstances(observer.getObservedQualifiers()), resolvable.getQualifiers())) {
+        if (!Beans.containsAllQualifiers(QualifierInstance.of(observer.getObservedQualifiers(), metaAnnotationStore), resolvable.getQualifiers())) {
             return false;
         }
         if (observer instanceof ExtensionObserverMethodImpl<?, ?>) {

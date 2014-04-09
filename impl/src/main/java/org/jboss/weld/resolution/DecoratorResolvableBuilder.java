@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.resolution;
 
-import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 public class DecoratorResolvableBuilder extends ResolvableBuilder {
@@ -28,7 +27,7 @@ public class DecoratorResolvableBuilder extends ResolvableBuilder {
     @Override
     public Resolvable create() {
         if (qualifiers.size() == 0) {
-            this.qualifierInstances.add(getMetaAnnotationStore().getQualifierInstance(DefaultLiteral.INSTANCE));
+            this.qualifierInstances.add(QualifierInstance.DEFAULT);
         }
         return new ResolvableImpl(rawType, types, mappedQualifiers, declaringBean, qualifierInstances, true);
     }
