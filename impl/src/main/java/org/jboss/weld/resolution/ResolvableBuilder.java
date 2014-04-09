@@ -37,7 +37,6 @@ import javax.enterprise.inject.spi.Interceptor;
 import javax.inject.Named;
 import javax.inject.Provider;
 
-import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.literal.NamedLiteral;
 import org.jboss.weld.literal.NewLiteral;
 import org.jboss.weld.logging.BeanManagerLogger;
@@ -89,13 +88,13 @@ public class ResolvableBuilder {
         addQualifiers(injectionPoint.getQualifiers());
         if (mappedQualifiers.containsKey(Named.class) && injectionPoint.getMember() instanceof Field) {
             Named named = (Named) mappedQualifiers.get(Named.class);
-            QualifierInstance qualifierInstance = store.getQualifierInstance(named);
+            QualifierInstance qualifierInstance = QualifierInstance.of(named, store);
             if (named.value().equals("")) {
                 qualifiers.remove(named);
                 qualifierInstances.remove(qualifierInstance);
                 // This is field injection point with an @Named qualifier, with no value specified, we need to assume the name of the field is the value
                 named = new NamedLiteral(injectionPoint.getMember().getName());
-                qualifierInstance = store.getQualifierInstance(named);
+                qualifierInstance = QualifierInstance.of(named, store);
                 qualifiers.add(named);
                 qualifierInstances.add(qualifierInstance);
                 mappedQualifiers.put(Named.class, named);
@@ -130,7 +129,7 @@ public class ResolvableBuilder {
 
     public Resolvable create() {
         if (qualifiers.size() == 0) {
-            this.qualifierInstances.add(store.getQualifierInstance(DefaultLiteral.INSTANCE));
+            this.qualifierInstances.add(QualifierInstance.DEFAULT);
         }
         for (Type type : types) {
             Class<?> rawType = Reflections.getRawType(type);
@@ -161,7 +160,7 @@ public class ResolvableBuilder {
 
     public ResolvableBuilder addQualifier(Annotation qualifier) {
         // Handle the @New qualifier special case
-        QualifierInstance qualifierInstance = store.getQualifierInstance(qualifier);
+        QualifierInstance qualifierInstance = QualifierInstance.of(qualifier, store);
         final Class<? extends Annotation> annotationType = qualifierInstance.getAnnotationClass();
         if (annotationType.equals(New.class)) {
             New newQualifier = New.class.cast(qualifier);
@@ -169,7 +168,7 @@ public class ResolvableBuilder {
                 throw new IllegalStateException("Cannot transform @New when there is no known raw type");
             } else if (newQualifier.value().equals(New.class)) {
                 qualifier = new NewLiteral(rawType);
-                qualifierInstance = store.getQualifierInstance(qualifier);
+                qualifierInstance = QualifierInstance.of(qualifier, store);
             }
         }
 

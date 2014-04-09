@@ -44,14 +44,14 @@ public class Bindings {
         checkQualifier(qualifier1, store);
         checkQualifier(qualifier2, store);
 
-        QualifierInstance q1 = store.getQualifierInstance(qualifier1);
-        QualifierInstance q2 = store.getQualifierInstance(qualifier2);
+        QualifierInstance q1 = QualifierInstance.of(qualifier1, store);
+        QualifierInstance q2 = QualifierInstance.of(qualifier2, store);
         return q1.equals(q2);
     }
 
     public static int getQualifierHashCode(Annotation qualifier, MetaAnnotationStore store) {
         checkQualifier(qualifier, store);
-        return store.getQualifierInstance(qualifier).hashCode();
+        return QualifierInstance.of(qualifier, store).hashCode();
     }
 
     private static void checkQualifier(Annotation qualifier, MetaAnnotationStore store) {
@@ -79,14 +79,14 @@ public class Bindings {
         checkInterceptorBinding(qualifier1, store);
         checkInterceptorBinding(qualifier2, store);
 
-        QualifierInstance q1 = store.getQualifierInstance(qualifier1);
-        QualifierInstance q2 = store.getQualifierInstance(qualifier2);
+        QualifierInstance q1 = QualifierInstance.of(qualifier1, store);
+        QualifierInstance q2 = QualifierInstance.of(qualifier2, store);
         return q1.equals(q2);
     }
 
     public static int getInterceptorBindingHashCode(Annotation qualifier, MetaAnnotationStore store) {
         checkInterceptorBinding(qualifier, store);
-        return store.getQualifierInstance(qualifier).hashCode();
+        return QualifierInstance.of(qualifier, store).hashCode();
     }
 
     private static void checkInterceptorBinding(Annotation qualifier, MetaAnnotationStore store) {

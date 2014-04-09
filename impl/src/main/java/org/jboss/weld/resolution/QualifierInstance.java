@@ -21,14 +21,20 @@ import java.lang.reflect.InvocationTargetException;
 import java.security.AccessController;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Set;
 
 import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Default;
 import javax.enterprise.inject.spi.AnnotatedMethod;
+import javax.enterprise.inject.spi.Bean;
 
+import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.metadata.cache.QualifierModel;
 import org.jboss.weld.security.SetAccessibleAction;
+import org.jboss.weld.util.collections.ArraySet;
+import org.jboss.weld.util.collections.WeldCollections;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableMap;
@@ -43,10 +49,29 @@ import com.google.common.collect.ImmutableMap;
 public class QualifierInstance {
 
     public static final QualifierInstance ANY = new QualifierInstance(Any.class);
+    public static final QualifierInstance DEFAULT = new QualifierInstance(Default.class);
 
     private final Class<? extends Annotation> annotationClass;
     private final Map<AnnotatedMethod<?>, Object> values;
     private final int hashCode;
+
+    public static Set<QualifierInstance> of(Set<Annotation> qualifiers, MetaAnnotationStore store) {
+        if (qualifiers.isEmpty()) {
+            return Collections.emptySet();
+        }
+        final Set<QualifierInstance> ret = new ArraySet<QualifierInstance>();
+        for (Annotation a : qualifiers) {
+            ret.add(QualifierInstance.of(a, store));
+        }
+        return WeldCollections.immutableSet(ret);
+    }
+
+    public static Set<QualifierInstance> of(Bean<?> bean, MetaAnnotationStore store) {
+        if (bean instanceof RIBean<?>) {
+            return ((RIBean<?>) bean).getQualifierInstances();
+        }
+        return of(bean.getQualifiers(), store);
+    }
 
     /**
      * @param annotation

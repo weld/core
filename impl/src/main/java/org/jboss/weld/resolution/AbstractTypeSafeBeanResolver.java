@@ -61,6 +61,7 @@ public abstract class AbstractTypeSafeBeanResolver<T extends Bean<?>, C extends 
     private final BeanManagerImpl beanManager;
     private final LoadingCache<Set<Bean<?>>, Set<Bean<?>>> disambiguatedBeans;
     private final SpecializationAndEnablementRegistry registry;
+    private final MetaAnnotationStore store;
 
     private final LazyValueHolder<Map<Type, ArrayList<T>>> beansByType;
 
@@ -134,6 +135,7 @@ public abstract class AbstractTypeSafeBeanResolver<T extends Bean<?>, C extends 
         this.beanManager = beanManager;
         this.registry = beanManager.getServices().get(SpecializationAndEnablementRegistry.class);
         this.disambiguatedBeans = CacheBuilder.newBuilder().build(new BeanDisambiguation());
+        this.store = beanManager.getServices().get(MetaAnnotationStore.class);
         // beansByType stores a map of a type to all beans that are assignable to
         // that type. This means that it most cases we do not need to loop through
         // every bean in the system when performing resolution
@@ -200,7 +202,7 @@ public abstract class AbstractTypeSafeBeanResolver<T extends Bean<?>, C extends 
             rules = BeanTypeAssignabilityRules.instance();
         }
         return rules.matches(resolvable.getTypes(), bean.getTypes())
-                && Beans.containsAllQualifiers(resolvable.getQualifiers(), beanManager.getServices().get(MetaAnnotationStore.class).getQualifierInstances(bean));
+                && Beans.containsAllQualifiers(resolvable.getQualifiers(), QualifierInstance.of(bean, store));
     }
 
     @Override
@@ -267,5 +269,9 @@ public abstract class AbstractTypeSafeBeanResolver<T extends Bean<?>, C extends 
         super.clear();
         this.disambiguatedBeans.invalidateAll();
         this.beansByType.clear();
+    }
+
+    MetaAnnotationStore getStore() {
+        return store;
     }
 }
