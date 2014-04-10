@@ -28,19 +28,6 @@
             <!-- Issues in Weld (the RI) -->
 
             <!-- Issues in WildFly -->
-            <!-- WFLY-2654 -->
-            <class name="org.jboss.cdi.tck.interceptors.tests.contract.aroundTimeout.AroundTimeoutInterceptorTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
-
-            <!-- TODO add corresponding issue -->
-            <class name="org.jboss.cdi.tck.tests.lookup.injection.non.contextual.WebServiceInjectionIntoNonContextualComponentTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
 
         </classes>
     </test>
