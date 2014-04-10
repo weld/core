@@ -71,6 +71,12 @@
                     <exclude name=".*"/>
                 </methods>
             </class>
+            <!-- CDITCK-406 -->
+            <class name="org.jboss.cdi.tck.tests.extensions.beanManager.bootstrap.unavailable.methods.UnavailableMethodsDuringApplicationInitializationTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
 
             <!-- Issues in Weld (the RI) -->
 
