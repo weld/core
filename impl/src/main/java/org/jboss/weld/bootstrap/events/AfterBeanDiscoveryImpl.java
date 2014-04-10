@@ -21,14 +21,16 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Decorator;
+import javax.enterprise.inject.spi.DefinitionException;
 import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.ObserverMethod;
 import javax.enterprise.inject.spi.PassivationCapable;
@@ -53,40 +55,36 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
     private static final String TYPE_ARGUMENT_NAME = "type";
 
     public static void fire(BeanManagerImpl beanManager, Deployment deployment, BeanDeploymentArchiveMapping bdaMapping, Collection<ContextHolder<? extends Context>> contexts) {
-        new AfterBeanDiscoveryImpl(beanManager, deployment, bdaMapping, contexts).fire();
+        final AfterBeanDiscoveryImpl event = new AfterBeanDiscoveryImpl(beanManager, deployment, bdaMapping, contexts);
+        event.fire();
+        event.finish();
     }
 
-    protected AfterBeanDiscoveryImpl(BeanManagerImpl beanManager, Deployment deployment, BeanDeploymentArchiveMapping bdaMapping, Collection<ContextHolder<? extends Context>> contexts) {
+    private AfterBeanDiscoveryImpl(BeanManagerImpl beanManager, Deployment deployment, BeanDeploymentArchiveMapping bdaMapping, Collection<ContextHolder<? extends Context>> contexts) {
         super(beanManager, AfterBeanDiscovery.class, bdaMapping, deployment, contexts);
         this.slimAnnotatedTypeStore = beanManager.getServices().get(SlimAnnotatedTypeStore.class);
+        this.containerLifecycleEvents = beanManager.getServices().get(ContainerLifecycleEvents.class);
     }
 
     private final SlimAnnotatedTypeStore slimAnnotatedTypeStore;
+    private final ContainerLifecycleEvents containerLifecycleEvents;
+    private final List<Bean<?>> additionalBeans = new LinkedList<Bean<?>>();
+    private final List<ObserverMethod<?>> additionalObservers = new LinkedList<ObserverMethod<?>>();
 
     @Override
     public void addBean(Bean<?> bean) {
         checkWithinObserverNotification();
         Preconditions.checkArgumentNotNull(bean, "bean");
+        ExternalBeanAttributesFactory.validateBeanAttributes(bean, getBeanManager());
         validateBean(bean);
-        processBean(bean);
+        additionalBeans.add(bean);
     }
 
     protected <T> void processBean(Bean<T> bean) {
         BeanManagerImpl beanManager = getOrCreateBeanDeployment(bean.getBeanClass()).getBeanManager();
-        ExternalBeanAttributesFactory.validateBeanAttributes(bean, beanManager);
-        ContainerLifecycleEvents containerLifecycleEvents = beanManager.getServices().get(ContainerLifecycleEvents.class);
-
-        if (bean instanceof PassivationCapable) {
-            PassivationCapable passivationCapable = (PassivationCapable) bean;
-            if (passivationCapable.getId() == null) {
-                throw BeanLogger.LOG.passivationCapableBeanHasNullId(bean);
-            }
-        }
         if (bean instanceof Interceptor<?>) {
-            validateInterceptor((Interceptor<?>) bean, beanManager);
             beanManager.addInterceptor((Interceptor<?>) bean);
         } else if (bean instanceof Decorator<?>) {
-            validateDecorator((Decorator<?>) bean, beanManager);
             beanManager.addDecorator(CustomDecoratorWrapper.of((Decorator<?>) bean, beanManager));
         } else {
             beanManager.addBean(bean);
@@ -94,33 +92,44 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
         containerLifecycleEvents.fireProcessBean(beanManager, bean);
     }
 
-    private static void validateBean(Bean<?> bean) {
+    private void validateBean(Bean<?> bean) {
         if (bean.getBeanClass() == null) {
             throw BeanLogger.LOG.beanMethodReturnsNull("getBeanClass", bean);
         }
         if (bean.getInjectionPoints() == null) {
             throw BeanLogger.LOG.beanMethodReturnsNull("getInjectionPoints", bean);
         }
+        if (bean instanceof PassivationCapable) {
+            PassivationCapable passivationCapable = (PassivationCapable) bean;
+            if (passivationCapable.getId() == null) {
+                throw BeanLogger.LOG.passivationCapableBeanHasNullId(bean);
+            }
+        }
+        if (bean instanceof Interceptor<?>) {
+            validateInterceptor((Interceptor<?>) bean);
+        } else if (bean instanceof Decorator<?>) {
+            validateDecorator((Decorator<?>) bean);
+        }
     }
 
-    private static void validateInterceptor(Interceptor<?> interceptor, BeanManager beanManager) {
+    private void validateInterceptor(Interceptor<?> interceptor) {
         Set<Annotation> bindings = interceptor.getInterceptorBindings();
         if (bindings == null) {
             throw InterceptorLogger.LOG.nullInterceptorBindings(interceptor);
         }
         for (Annotation annotation : bindings) {
-            if (!beanManager.isInterceptorBinding(annotation.annotationType())) {
+            if (!getBeanManager().isInterceptorBinding(annotation.annotationType())) {
                 throw MetadataLogger.LOG.notAnInterceptorBinding(annotation, interceptor);
             }
         }
     }
 
-    private static void validateDecorator(Decorator<?> decorator, BeanManager beanManager) {
+    private void validateDecorator(Decorator<?> decorator) {
         Set<Annotation> qualifiers = decorator.getDelegateQualifiers();
         if (decorator.getDelegateType() == null) {
             throw BeanLogger.LOG.decoratorMethodReturnsNull("getDelegateType", decorator);
         }
-        Bindings.validateQualifiers(qualifiers, beanManager, decorator, "Decorator.getDelegateQualifiers");
+        Bindings.validateQualifiers(qualifiers, getBeanManager(), decorator, "Decorator.getDelegateQualifiers");
         if (decorator.getDecoratedTypes() == null) {
             throw BeanLogger.LOG.decoratorMethodReturnsNull("getDecoratedTypes", decorator);
         }
@@ -146,12 +155,8 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
     public void addObserverMethod(ObserverMethod<?> observerMethod) {
         checkWithinObserverNotification();
         Preconditions.checkArgumentNotNull(observerMethod, "observerMethod");
-        BeanManagerImpl manager = getOrCreateBeanDeployment(observerMethod.getBeanClass()).getBeanManager();
-        validateObserverMethod(observerMethod, manager);
-        if (Observers.isObserverMethodEnabled(observerMethod, manager)) {
-            ProcessObserverMethodImpl.fire(manager, observerMethod);
-            manager.addObserver(observerMethod);
-        }
+        validateObserverMethod(observerMethod, getBeanManager());
+        additionalObservers.add(observerMethod);
     }
 
     @Override
@@ -166,5 +171,25 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
         checkWithinObserverNotification();
         Preconditions.checkArgumentNotNull(type, TYPE_ARGUMENT_NAME);
         return cast(slimAnnotatedTypeStore.get(type));
+    }
+
+    /**
+     * Bean and observer registration is delayed until after all {@link AfterBeanDiscovery} observers are notified.
+     */
+    private void finish() {
+        try {
+            for (Bean<?> bean : additionalBeans) {
+                processBean(bean);
+            }
+            for (ObserverMethod<?> observer : additionalObservers) {
+                BeanManagerImpl manager = getOrCreateBeanDeployment(observer.getBeanClass()).getBeanManager();
+                if (Observers.isObserverMethodEnabled(observer, manager)) {
+                    ProcessObserverMethodImpl.fire(manager, observer);
+                    manager.addObserver(observer);
+                }
+            }
+        } catch (Exception e) {
+            throw new DefinitionException(e);
+        }
     }
 }

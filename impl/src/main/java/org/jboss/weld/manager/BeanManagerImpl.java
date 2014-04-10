@@ -911,6 +911,14 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         return decoratorResolver;
     }
 
+    public TypeSafeInterceptorResolver getInterceptorResolver() {
+        return interceptorResolver;
+    }
+
+    public NameBasedResolver getNameBasedResolver() {
+        return nameBasedResolver;
+    }
+
     /**
      * Get the lenient observer notifier for accessible observer methods. Should never be exposed to an application.
      *

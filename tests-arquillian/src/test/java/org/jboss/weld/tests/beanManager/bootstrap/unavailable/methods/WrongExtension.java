@@ -49,29 +49,20 @@ public class WrongExtension implements Extension {
     private InjectionPoint injectionPoint;
 
     public void observeBeforeBeanDiscovery(@Observes BeforeBeanDiscovery event, BeanManager beanManager) {
-        testUnavailableMethods(beanManager);
+        testAbdMethods(beanManager);
     }
 
     public void observeProcessBean(@Observes ProcessBean<Foo> event, BeanManager beanManager) {
         this.fooBean = event.getBean();
-        testUnavailableMethods(beanManager);
+        testAbdMethods(beanManager);
     }
 
     public void observeAfterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager beanManager) {
-        testUnavailableMethods(beanManager);
+        testAbvMethods(beanManager);
     }
 
     @SuppressWarnings({ "serial" })
-    private void testUnavailableMethods(BeanManager beanManager) {
-
-        if (fooBean != null) {
-            try {
-                beanManager.getReference(fooBean, Foo.class, null);
-                fail("getReference() must not be available");
-            } catch (IllegalStateException e) {
-                // Expected
-            }
-        }
+    private void testAbdMethods(BeanManager beanManager) {
 
         try {
             beanManager.getBeans("foo");
@@ -83,15 +74,6 @@ public class WrongExtension implements Extension {
         try {
             beanManager.getBeans(Foo.class);
             fail("getBeans() must not be available");
-        } catch (IllegalStateException e) {
-            // Expected
-        }
-
-        try {
-            beanManager.getInjectableReference(
-                    beanManager.createInjectionPoint(beanManager.createAnnotatedType(Foo.class).getFields().iterator().next()),
-                    null);
-            fail("getInjectableReference() must not be available");
         } catch (IllegalStateException e) {
             // Expected
         }
@@ -139,6 +121,26 @@ public class WrongExtension implements Extension {
             // Expected
         }
 
+        testAbvMethods(beanManager);
+    }
+
+    private void testAbvMethods(BeanManager beanManager) {
+        if (fooBean != null) {
+            try {
+                beanManager.getReference(fooBean, Foo.class, null);
+                fail("getReference() must not be available");
+            } catch (IllegalStateException e) {
+                // Expected
+            }
+        }
+        try {
+            beanManager.getInjectableReference(
+                    beanManager.createInjectionPoint(beanManager.createAnnotatedType(Foo.class).getFields().iterator().next()),
+                    null);
+            fail("getInjectableReference() must not be available");
+        } catch (IllegalStateException e) {
+            // Expected
+        }
     }
 
     void observeInjectionPoint(@Observes ProcessInjectionPoint<?, ?> event) {

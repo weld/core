@@ -388,7 +388,12 @@ public class WeldStartup {
             beanDeployment.deployBeans(environment);
         }
 
+        getContainer().setState(ContainerState.DISCOVERED);
+
         AfterBeanDiscoveryImpl.fire(deploymentManager, deployment, bdaMapping, contexts);
+
+        // Extensions may have registered beans / observers. We need to flush caches.
+        flushCaches();
 
         // Re-read the deployment structure, bdaMapping will be the physical
         // structure, extensions, classes, and any beans added using addBean
@@ -424,18 +429,11 @@ public class WeldStartup {
         // Register the managers so external requests can handle them
         // clear the TypeSafeResolvers, so data that is only used at startup
         // is not kept around using up memory
-        deploymentManager.getBeanResolver().clear();
-        deploymentManager.getAccessibleLenientObserverNotifier().clear();
-        deploymentManager.getGlobalStrictObserverNotifier().clear();
-        deploymentManager.getGlobalLenientObserverNotifier().clear();
-        deploymentManager.getDecoratorResolver().clear();
+        flushCaches();
         deploymentManager.getServices().cleanupAfterBoot();
         deploymentManager.cleanupAfterBoot();
         for (BeanDeployment beanDeployment : getBeanDeployments()) {
             BeanManagerImpl beanManager = beanDeployment.getBeanManager();
-            beanManager.getBeanResolver().clear();
-            beanManager.getAccessibleLenientObserverNotifier().clear();
-            beanManager.getDecoratorResolver().clear();
             beanManager.getInterceptorMetadataReader().cleanAfterBoot();
             beanManager.getServices().cleanupAfterBoot();
             beanManager.cleanupAfterBoot();
@@ -464,6 +462,24 @@ public class WeldStartup {
         }
 
         getContainer().setState(ContainerState.INITIALIZED);
+    }
+
+    private void flushCaches() {
+        deploymentManager.getBeanResolver().clear();
+        deploymentManager.getAccessibleLenientObserverNotifier().clear();
+        deploymentManager.getGlobalStrictObserverNotifier().clear();
+        deploymentManager.getGlobalLenientObserverNotifier().clear();
+        deploymentManager.getDecoratorResolver().clear();
+        deploymentManager.getInterceptorResolver().clear();
+        deploymentManager.getNameBasedResolver().clear();
+        for (BeanDeployment beanDeployment : getBeanDeployments()) {
+            BeanManagerImpl beanManager = beanDeployment.getBeanManager();
+            beanManager.getBeanResolver().clear();
+            beanManager.getAccessibleLenientObserverNotifier().clear();
+            beanManager.getDecoratorResolver().clear();
+            beanManager.getInterceptorResolver().clear();
+            beanManager.getNameBasedResolver().clear();
+        }
     }
 
     private Collection<BeanDeployment> getBeanDeployments() {

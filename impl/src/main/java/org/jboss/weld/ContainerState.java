@@ -31,6 +31,10 @@ public enum ContainerState {
      */
     STARTING(false),
     /**
+     * The container has finished bean discovery. Beans are not fully initialized yet.
+     */
+    DISCOVERED(false),
+    /**
      * The container has started and beans have been deployed
      */
     DEPLOYED(true),
