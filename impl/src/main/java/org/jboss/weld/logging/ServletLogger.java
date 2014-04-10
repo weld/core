@@ -115,4 +115,12 @@ public interface ServletLogger extends WeldLogger {
     @Message(id = 713, value = "Unable to inject ServletContext. None is associated with {0}, {1}", format = Format.MESSAGE_FORMAT)
     IllegalStateException cannotInjectServletContext(ClassLoader classLoader, ServletContextService service);
 
+    @LogMessage(level = Level.WARN)
+    @Message(id = 714, value = "HttpContextLifecycle guard leak detected. The Servlet container is not fully compliant. The value was {0}", format = Format.MESSAGE_FORMAT)
+    void guardLeak(int value);
+
+    @LogMessage(level = Level.WARN)
+    @Message(id = 715, value = "HttpContextLifecycle guard not set. The Servlet container is not fully compliant.", format = Format.MESSAGE_FORMAT)
+    void guardNotSet();
+
 }

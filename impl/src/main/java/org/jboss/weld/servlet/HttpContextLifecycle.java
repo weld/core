@@ -50,6 +50,9 @@ public class HttpContextLifecycle implements Service {
     private static final String FORWARD_HEADER = "javax.servlet.forward.request_uri";
     private static final String REQUEST_DESTROYED = HttpContextLifecycle.class.getName() + ".request.destroyed";
 
+    private static final String GUARD_PARAMETER_NAME = "org.jboss.weld.context.ignore.guard.marker";
+    private static final Object GUARD_PARAMETER_VALUE = new Object();
+
     private HttpSessionDestructionContext sessionDestructionContextCache;
     private HttpSessionContext sessionContextCache;
     private HttpRequestContext requestContextCache;
@@ -73,7 +76,14 @@ public class HttpContextLifecycle implements Service {
 
     private final ServletContextService servletContextService;
 
-    public HttpContextLifecycle(BeanManagerImpl beanManager, HttpContextActivationFilter contextActivationFilter, boolean ignoreForwards, boolean ignoreIncludes, boolean lazyConversationContext) {
+    private static final ThreadLocal<Counter> nestedInvocationGuard = new ThreadLocal<HttpContextLifecycle.Counter>();
+    private final boolean nestedInvocationGuardEnabled;
+
+    private static class Counter {
+        private int value = 1;
+    }
+
+    public HttpContextLifecycle(BeanManagerImpl beanManager, HttpContextActivationFilter contextActivationFilter, boolean ignoreForwards, boolean ignoreIncludes, boolean lazyConversationContext, boolean nestedInvocationGuardEnabled) {
         this.beanManager = beanManager;
         this.conversationContextActivator = new ConversationContextActivator(beanManager, lazyConversationContext);
         this.conversationActivationEnabled = null;
@@ -88,6 +98,7 @@ public class HttpContextLifecycle implements Service {
         this.sessionDestroyedEvent = FastEvent.of(HttpSession.class, beanManager, DestroyedLiteral.SESSION);
         this.servletApi = beanManager.getServices().get(ServletApiAbstraction.class);
         this.servletContextService = beanManager.getServices().get(ServletContextService.class);
+        this.nestedInvocationGuardEnabled = nestedInvocationGuardEnabled;
     }
 
     private HttpSessionDestructionContext getSessionDestructionContext() {
@@ -156,6 +167,28 @@ public class HttpContextLifecycle implements Service {
     }
 
     public void requestInitialized(HttpServletRequest request, ServletContext ctx) {
+        if (nestedInvocationGuardEnabled) {
+            Counter counter = nestedInvocationGuard.get();
+            Object marker = request.getAttribute(GUARD_PARAMETER_NAME);
+            if (counter != null && marker != null) {
+                // this is a nested invocation, increment the counter and ignore this invocation
+                counter.value++;
+                return;
+            } else {
+                if (counter != null && marker == null) {
+                    /*
+                     * This request has not been processed yet but the guard is set already.
+                     * That indicates, that the guard leaked from a previous request processing - most likely
+                     * the Servlet container did not invoke listener methods symmetrically.
+                     * Log a warning and recover by re-initializing the guard
+                     */
+                    ServletLogger.LOG.guardLeak(counter.value);
+                }
+                // this is the initial (outer) invocation
+                nestedInvocationGuard.set(new Counter());
+                request.setAttribute(GUARD_PARAMETER_NAME, GUARD_PARAMETER_VALUE);
+            }
+        }
         if (ignoreForwards && isForwardedRequest(request)) {
             return;
         }
@@ -199,13 +232,28 @@ public class HttpContextLifecycle implements Service {
     }
 
     public void requestDestroyed(HttpServletRequest request) {
+        if (isRequestDestroyed(request)) {
+            return;
+        }
+        if (nestedInvocationGuardEnabled) {
+            Counter counter = nestedInvocationGuard.get();
+            if (counter != null) {
+                counter.value--;
+                if (counter.value > 0) {
+                    return; // this is a nested invocation, ignore it
+                } else {
+                    nestedInvocationGuard.remove(); // this is the outer invocation
+                    request.removeAttribute(GUARD_PARAMETER_NAME);
+                }
+            } else {
+                ServletLogger.LOG.guardNotSet();
+                return;
+            }
+        }
         if (ignoreForwards && isForwardedRequest(request)) {
             return;
         }
         if (ignoreIncludes && isIncludedRequest(request)) {
-            return;
-        }
-        if (isRequestDestroyed(request)) {
             return;
         }
         if (!contextActivationFilter.accepts(request)) {
