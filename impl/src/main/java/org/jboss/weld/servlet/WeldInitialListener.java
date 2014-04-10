@@ -62,6 +62,8 @@ import org.jboss.weld.util.servlet.ServletUtils;
  */
 public class WeldInitialListener extends AbstractServletListener {
 
+    private static final String CONTEXT_IGNORE_GUARD_PARAMETER = "org.jboss.weld.context.ignore.guard";
+
     @Inject
     private BeanManagerImpl beanManager;
     private HttpContextLifecycle lifecycle;
@@ -84,10 +86,11 @@ public class WeldInitialListener extends AbstractServletListener {
             beanManager = BeanManagerProxy.unwrap(CDI.current().getBeanManager());
         }
         HttpContextActivationFilter filter = ServletUtils.getContextActivationFilter(beanManager, ctx);
-        final boolean ignoreForwards = getBooleanInitParameter(ctx, InitParameters.CONTEXT_IGNORE_FORWARD, true);
-        final boolean ignoreIncludes = getBooleanInitParameter(ctx, InitParameters.CONTEXT_IGNORE_INCLUDE, true);
+        final boolean ignoreForwards = getBooleanInitParameter(ctx, InitParameters.CONTEXT_IGNORE_FORWARD, false);
+        final boolean ignoreIncludes = getBooleanInitParameter(ctx, InitParameters.CONTEXT_IGNORE_INCLUDE, false);
+        final boolean nestedInvocationGuard = getBooleanInitParameter(ctx, CONTEXT_IGNORE_GUARD_PARAMETER, true);
         final boolean lazyConversationContext = initLazyConversationContext(beanManager, ctx);
-        this.lifecycle = new HttpContextLifecycle(beanManager, filter, ignoreForwards, ignoreIncludes, lazyConversationContext);
+        this.lifecycle = new HttpContextLifecycle(beanManager, filter, ignoreForwards, ignoreIncludes, lazyConversationContext, nestedInvocationGuard);
         if (Boolean.valueOf(ctx.getInitParameter(CONVERSATION_FILTER_REGISTERED))) {
             this.lifecycle.setConversationActivationEnabled(false);
         }
