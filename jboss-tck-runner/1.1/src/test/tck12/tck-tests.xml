@@ -24,76 +24,10 @@
         <classes>
 
             <!-- Issues in the TCK -->
-            <!-- CDITCK-407 -->
-            <class name="org.jboss.cdi.tck.tests.context.ContextTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
-            <class name="org.jboss.cdi.tck.tests.context.NormalContextTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
-            <class name="org.jboss.cdi.tck.tests.context.ContextDestroysBeansTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
-            <!-- CDITCK-408 -->
-            <class name="org.jboss.cdi.tck.tests.extensions.container.event.ContainerEventTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
-            <class name="org.jboss.cdi.tck.tests.extensions.container.event.jms.ContainerEventTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
-            <class name="org.jboss.cdi.tck.tests.extensions.container.event.ws.ContainerEventTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
-            <class name="org.jboss.cdi.tck.tests.extensions.processBean.ProcessBeanTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
-            <class name="org.jboss.cdi.tck.tests.extensions.processBean.ProcessSessionBeanTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
-            <class name="org.jboss.cdi.tck.tests.lookup.injection.non.contextual.ContainerEventTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
-            <!-- CDITCK-406 -->
-            <class name="org.jboss.cdi.tck.tests.extensions.beanManager.bootstrap.unavailable.methods.UnavailableMethodsDuringApplicationInitializationTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
 
             <!-- Issues in Weld (the RI) -->
 
             <!-- Issues in WildFly -->
-            <!-- WFLY-2654 -->
-            <class name="org.jboss.cdi.tck.interceptors.tests.contract.aroundTimeout.AroundTimeoutInterceptorTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
-
-            <!-- TODO add corresponding issue -->
-            <class name="org.jboss.cdi.tck.tests.lookup.injection.non.contextual.WebServiceInjectionIntoNonContextualComponentTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
 
         </classes>
     </test>
