@@ -4,6 +4,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePath;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.BeanArchive;
+import org.jboss.shrinkwrap.api.BeanDiscoveryMode;
 import org.jboss.shrinkwrap.impl.base.path.BasicPath;
 import org.jboss.shrinkwrap.impl.base.spec.JavaArchiveImpl;
 
@@ -49,30 +50,35 @@ public class BeanArchiveImpl extends JavaArchiveImpl implements BeanArchive {
     // Required Implementations - BeanArchive ---------------------------------------------||
     //-------------------------------------------------------------------------------------||
 
+    @Override
     public BeanArchive decorate(Class<?>... classes) {
         descriptor.decorators(classes);
         addClasses(classes);
         return covarientReturn();
     }
 
+    @Override
     public BeanArchive intercept(Class<?>... classes) {
         descriptor.interceptors(classes);
         addClasses(classes);
         return covarientReturn();
     }
 
+    @Override
     public BeanArchive alternate(Class<?>... classes) {
         descriptor.alternatives(classes);
         addClasses(classes);
         return covarientReturn();
     }
 
+    @Override
     public BeanArchive stereotype(Class<?>... classes) {
         descriptor.stereotype(classes);
         addClasses(classes);
         return covarientReturn();
     }
 
+    @Override
     public BeanArchive exclude(BeansXml.Exclude... excludes) {
         descriptor.excludeFilters(excludes);
         return covarientReturn();
@@ -81,5 +87,16 @@ public class BeanArchiveImpl extends JavaArchiveImpl implements BeanArchive {
     @Override
     protected BeanArchive covarientReturn() {
         return (BeanArchive) super.covarientReturn();
+    }
+
+    @Override
+    public BeanArchive beanDiscoveryMode(BeanDiscoveryMode mode) {
+        descriptor.setBeanDiscoveryMode(mode);
+        return covarientReturn();
+    }
+
+    @Override
+    public BeanArchive annotated() {
+        return beanDiscoveryMode(BeanDiscoveryMode.ANNOTATED);
     }
 }

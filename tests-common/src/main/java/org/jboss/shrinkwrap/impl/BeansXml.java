@@ -1,13 +1,14 @@
 package org.jboss.shrinkwrap.impl;
 
-import org.jboss.shrinkwrap.api.asset.Asset;
-
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import org.jboss.shrinkwrap.api.BeanDiscoveryMode;
+import org.jboss.shrinkwrap.api.asset.Asset;
 
 public class BeansXml implements Asset {
 
@@ -17,17 +18,6 @@ public class BeansXml implements Asset {
             return BeanDiscoveryMode.NONE;
         }
     };
-
-    public static enum BeanDiscoveryMode {
-
-        NONE("none"), ANNOTATED("annotated"), ALL("all");
-
-        private final String value;
-
-        private BeanDiscoveryMode(String value) {
-            this.value = value;
-        }
-    }
 
     private static final String CLOSING_TAG_PREFIX = "</";
     private static final String OPENING_TAG_PREFIX = "<";
@@ -229,10 +219,11 @@ public class BeansXml implements Asset {
         this.mode = mode;
     }
 
+    @Override
     public InputStream openStream() {
         StringBuilder xml = new StringBuilder();
         xml.append("<beans version=\"1.1\" bean-discovery-mode=\"");
-        xml.append(getBeanDiscoveryMode().value);
+        xml.append(getBeanDiscoveryMode().getValue());
         xml.append("\">\n");
         appendExcludeFilters(excludeFilters, xml);
         appendAlternatives(alternatives, stereotypes, xml);
