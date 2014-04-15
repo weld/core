@@ -130,9 +130,20 @@
             </build>
         </profile>
 
+        <!-- WARNING: Jetty Maven plugin is temporarily unsupported -->
         <profile>
             <id>jetty</id>
             <dependencies>
+
+                <dependency>
+                    <groupId>javax.enterprise</groupId>
+                    <artifactId>cdi-api</artifactId>
+                </dependency>
+
+                <dependency>
+                    <groupId>javax.inject</groupId>
+                    <artifactId>javax.inject</artifactId>
+                </dependency>
 
                 <dependency>
                     <groupId>org.jboss.spec.javax.annotation</groupId>
@@ -143,31 +154,37 @@
                 <dependency>
                     <groupId>org.jboss.weld.servlet</groupId>
                     <artifactId>weld-servlet-core</artifactId>
-                    <scope>test</scope>
+                    <scope>runtime</scope>
                 </dependency>
 
                 <dependency>
                     <groupId>org.glassfish</groupId>
                     <artifactId>javax.faces</artifactId>
-                    <scope>test</scope>
+                    <scope>runtime</scope>
                 </dependency>
 
                 <dependency>
                     <groupId>org.jboss.weld</groupId>
                     <artifactId>weld-core-impl</artifactId>
-                    <scope>test</scope>
+                    <scope>runtime</scope>
                 </dependency>
 
                 <dependency>
                     <groupId>org.jboss.weld</groupId>
                     <artifactId>weld-core-jsf</artifactId>
-                    <scope>test</scope>
+                    <scope>runtime</scope>
                 </dependency>
 
                 <dependency>
                     <groupId>org.glassfish.web</groupId>
                     <artifactId>el-impl</artifactId>
-                    <scope>test</scope>
+                    <scope>runtime</scope>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>javax.el</groupId>
+                            <artifactId>el-api</artifactId>
+                        </exclusion>
+                    </exclusions>
                 </dependency>
 
             </dependencies>
@@ -343,13 +360,15 @@
                     <path>/${project.build.finalName}</path>
                     <!--
                        uncomment to use server configuration override; see
-                       readme.txt for details
+                       readme for details
                     -->
                     <!--<server>tomcat</server>-->
                     <url>http://localhost:${tomcat.http.port}/manager/text</url>
                 </configuration>
             </plugin>
 
+            <!-- This plugin only works for Jetty 7.x and 8.x -->
+            <!-- http://wiki.eclipse.org/Jetty/Feature/Jetty_Maven_Plugin -->
             <plugin>
                 <groupId>org.mortbay.jetty</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>
