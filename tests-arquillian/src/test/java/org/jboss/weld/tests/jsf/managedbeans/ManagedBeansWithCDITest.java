@@ -30,6 +30,7 @@ import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.tests.category.Integration;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -44,6 +45,7 @@ import com.gargoylesoftware.htmlunit.WebClient;
  */
 @Category(Integration.class)
 @RunWith(Arquillian.class)
+@Ignore("WFLY-3259")
 public class ManagedBeansWithCDITest {
 
     @Deployment(testable = false)
