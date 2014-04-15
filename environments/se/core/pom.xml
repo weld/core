@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
         <artifactId>weld-core-parent</artifactId>
         <groupId>org.jboss.weld</groupId>
@@ -57,8 +58,8 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        
-         <dependency>
+
+        <dependency>
             <groupId>org.jboss.logging</groupId>
             <artifactId>jboss-logging-processor</artifactId>
             <scope>provided</scope>
@@ -92,9 +93,9 @@
         </dependency>
 
         <dependency>
-           <groupId>org.jboss.logmanager</groupId>
-           <artifactId>jboss-logmanager</artifactId>
-           <scope>test</scope>
+            <groupId>org.jboss.logmanager</groupId>
+            <artifactId>jboss-logmanager</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -122,6 +123,11 @@
             <artifactId>weld-core-test-common</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>2.1.8</version>
+        </dependency>
 
     </dependencies>
 
@@ -137,6 +143,49 @@
                         </manifest>
                     </archive>
                 </configuration>
+            </plugin>
+	    <!-- There is a problem compiling WeldSELogger with a groovy compiler and there also can't be 
+            2 compilers specified for one pom.xml, so the compilation is splitted: javac for main,groovyc for tests. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>compile</id>
+                        <phase>process-test-sources</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <configuration>
+                            <source>1.6</source>
+                            <target>1.6</target>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>test-compile</id>
+                        <phase>process-test-sources</phase>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                        <configuration>
+                            <compilerId>groovy-eclipse-compiler</compilerId>
+                            <source>1.6</source>
+                            <target>1.6</target>
+                        </configuration>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.codehaus.groovy</groupId>
+                        <artifactId>groovy-eclipse-compiler</artifactId>
+                        <version>2.7.0-01</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.codehaus.groovy</groupId>
+                        <artifactId>groovy-eclipse-batch</artifactId>
+                        <version>2.1.8-01</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>
