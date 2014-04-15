@@ -17,12 +17,14 @@
 package org.jboss.weld.environment.se.discovery.url;
 
 import java.lang.annotation.Annotation;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Target;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.CompositeIndex;
 import org.jboss.jandex.DotName;
@@ -32,6 +34,8 @@ import org.jboss.weld.bootstrap.api.TypeDiscoveryConfiguration;
 import org.jboss.weld.environment.se.discovery.WeldSEBeanDeploymentArchive;
 import org.jboss.weld.resources.spi.ResourceLoader;
 
+import com.google.common.collect.ImmutableSet;
+
 /**
  * An implementation of {@link DiscoveryStrategy} that is used when the jandex is available. Thanks to the jandex. there is a posibility to support annotated
  * bean discovery mode.
@@ -40,16 +44,15 @@ import org.jboss.weld.resources.spi.ResourceLoader;
  */
 public class JandexEnabledDiscoveryStrategy extends DiscoveryStrategy {
 
-    private final Set<DotName> beanDefiningAnnotations = new HashSet<DotName>();
+    private static final int ANNOTATION= 0x00002000;
+
+    private final TypeDiscoveryConfiguration typeDiscoveryConfiguration;
+    private Set<DotName> beanDefiningAnnotations;
     private CompositeIndex cindex;
 
     public JandexEnabledDiscoveryStrategy(ResourceLoader resourceLoader, Bootstrap bootstrap, TypeDiscoveryConfiguration typeDiscoveryConfiguration) {
         super(resourceLoader, bootstrap);
-        Set<Class<? extends Annotation>> knownBeanDefiningAnnotations = typeDiscoveryConfiguration.getKnownBeanDefiningAnnotations();
-        for (Class<? extends Annotation> annotation : knownBeanDefiningAnnotations) {
-            DotName annotationDotName = DotName.createSimple(annotation.getName());
-            beanDefiningAnnotations.add(annotationDotName);
-        }
+        this.typeDiscoveryConfiguration = typeDiscoveryConfiguration;
     }
 
     @Override
@@ -60,6 +63,7 @@ public class JandexEnabledDiscoveryStrategy extends DiscoveryStrategy {
             indexes.add(index);
         }
         cindex = CompositeIndex.create(indexes);
+        beanDefiningAnnotations = buildBeanDefiningAnnotationSet(typeDiscoveryConfiguration, cindex);
     }
 
     @Override
@@ -74,6 +78,43 @@ public class JandexEnabledDiscoveryStrategy extends DiscoveryStrategy {
         }
         WeldSEBeanDeploymentArchive bda = builder.build();
         return bda;
+    }
+
+    private Set<DotName> buildBeanDefiningAnnotationSet(TypeDiscoveryConfiguration typeDiscoveryConfiguration, CompositeIndex index) {
+        ImmutableSet.Builder<DotName> beanDefiningAnnotations = ImmutableSet.builder();
+        for (Class<? extends Annotation> annotation : typeDiscoveryConfiguration.getKnownBeanDefiningAnnotations()) {
+            final DotName annotationDotName = DotName.createSimple(annotation.getName());
+            if (isMetaAnnotation(annotation)) {
+                // find annotations annotated with this meta-annotation
+                for (AnnotationInstance instance : index.getAnnotations(annotationDotName)) {
+                    if (instance.target() instanceof ClassInfo) {
+                        ClassInfo classInfo = (ClassInfo) instance.target();
+                        if ((classInfo.flags() & ANNOTATION) != 0) {
+                            beanDefiningAnnotations.add(classInfo.name());
+                        }
+                    }
+                }
+            } else {
+                beanDefiningAnnotations.add(annotationDotName);
+            }
+        }
+        return beanDefiningAnnotations.build();
+    }
+
+    private boolean isMetaAnnotation(Class<? extends Annotation> annotation) {
+        Target target = annotation.getAnnotation(Target.class);
+        if (target == null) {
+            return false;
+        }
+        if (target.value() == null) {
+            return false;
+        }
+        for (ElementType elementType : target.value()) {
+            if (ElementType.ANNOTATION_TYPE.equals(elementType)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean containsBeanDefiningAnnotation(Set<DotName> annotations) {
