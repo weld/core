@@ -26,9 +26,12 @@ import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.context.NormalScope;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.context.spi.Context;
+import javax.enterprise.inject.Model;
+import javax.enterprise.inject.Stereotype;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.Extension;
@@ -546,8 +549,15 @@ public class WeldStartup {
         this.extensions = extensions;
         // TODO: we should fire BeforeBeanDiscovery to allow extensions to register additional scopes
         @SuppressWarnings("unchecked")
-        final Set<Class<? extends Annotation>> scopes = ImmutableSet.of(Dependent.class, RequestScoped.class, ConversationScoped.class, SessionScoped.class, ApplicationScoped.class);
-        return new TypeDiscoveryConfigurationImpl(scopes);
+        final Set<Class<? extends Annotation>> beanDefiningAnnotations = ImmutableSet.of(
+                // built-in scopes
+                Dependent.class, RequestScoped.class, ConversationScoped.class, SessionScoped.class, ApplicationScoped.class,
+                javax.interceptor.Interceptor.class, javax.decorator.Decorator.class,
+                // built-in stereotype
+                Model.class,
+                // meta-annotations
+                NormalScope.class, Stereotype.class);
+        return new TypeDiscoveryConfigurationImpl(beanDefiningAnnotations);
     }
 
     public BeanManagerImpl getManager(BeanDeploymentArchive beanDeploymentArchive) {
