@@ -6,11 +6,10 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
+import org.jboss.shrinkwrap.api.BeanDiscoveryMode;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.impl.BeansXml;
-import org.jboss.shrinkwrap.impl.BeansXml.BeanDiscoveryMode;
-import org.jboss.weld.environment.se.test.isolation.ArchiveIsolationOverrideTestBase;
 import org.jboss.weld.environment.se.test.arquillian.WeldSEClassPath;
 import org.jboss.weld.environment.se.test.beandiscovery.Cat;
 import org.jboss.weld.environment.se.test.beandiscovery.Dog;
@@ -19,6 +18,7 @@ import org.jboss.weld.environment.se.test.beandiscovery.House;
 import org.jboss.weld.environment.se.test.beandiscovery.Plant;
 import org.jboss.weld.environment.se.test.beandiscovery.Stone;
 import org.jboss.weld.environment.se.test.beandiscovery.Tree;
+import org.jboss.weld.environment.se.test.isolation.ArchiveIsolationOverrideTestBase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -29,7 +29,7 @@ public class BeanDiscoveryDecorator02Test extends ArchiveIsolationOverrideTestBa
     public boolean isArchiveIsolationEnabled() {
         return true;
     }
-    
+
     @Deployment(managed = false)
     public static Archive<?> getDeployment() {
         WeldSEClassPath archives = ShrinkWrap.create(WeldSEClassPath.class);

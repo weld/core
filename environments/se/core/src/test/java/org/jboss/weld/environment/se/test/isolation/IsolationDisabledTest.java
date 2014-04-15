@@ -1,23 +1,28 @@
 package org.jboss.weld.environment.se.test.isolation;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
+import org.jboss.shrinkwrap.api.BeanDiscoveryMode;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.impl.BeansXml;
-import org.jboss.shrinkwrap.impl.BeansXml.BeanDiscoveryMode;
 import org.jboss.shrinkwrap.impl.BeansXml.Exclude;
 import org.jboss.weld.environment.se.test.arquillian.WeldSEClassPath;
 import org.junit.After;
-import static org.junit.Assert.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -35,7 +40,7 @@ public class IsolationDisabledTest extends ArchiveIsolationOverrideTestBase {
     @Deployment(managed = false)
     public static Archive<?> getDeployment() {
         WeldSEClassPath archives = ShrinkWrap.create(WeldSEClassPath.class);
-        
+
         JavaArchive archive01 = ShrinkWrap.create(BeanArchive.class)
                 .addAsManifestResource(new BeansXml(BeanDiscoveryMode.ALL)
                         .interceptors(ZoomInterceptor.class)
@@ -87,7 +92,7 @@ public class IsolationDisabledTest extends ArchiveIsolationOverrideTestBase {
     public void testExcludeFilters(BeanManager bm) {
         assertFalse(getBeanClasses(bm, Camera.class).contains(PinholeCamera.class));
     }
-    
+
     private Set<Class<?>> getBeanClasses(BeanManager bm, Type beanType, Annotation... annotations) {
         Set<Class<?>> classes = new HashSet<Class<?>>();
         for(Bean<?> bean : bm.getBeans(beanType, annotations)) {

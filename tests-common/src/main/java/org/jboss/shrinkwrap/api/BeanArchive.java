@@ -47,4 +47,11 @@ public interface BeanArchive extends JavaArchive {
      * @return
      */
     BeanArchive exclude(BeansXml.Exclude... excludes);
+
+    BeanArchive beanDiscoveryMode(BeanDiscoveryMode mode);
+
+    /**
+     * Sets bean-discovery-mode to annotated
+     */
+    BeanArchive annotated();
 }

@@ -49,7 +49,7 @@ public class PriorityTest extends ArchiveIsolationOverrideTestBase {
         JavaArchive archive01 = ShrinkWrap.create(BeanArchive.class)
                 .addClasses(WhiteNoiseGenerator.class, SoundSource.class, Normalized.class);
 
-        JavaArchive archive02 = ShrinkWrap.create(BeanArchive.class)
+        JavaArchive archive02 = ShrinkWrap.create(BeanArchive.class).annotated()
                 .addClasses(EqualizingDecorator.class, NormalizingInterceptor.class, SineWaveGenerator.class);
 
         archives.add(archive01);

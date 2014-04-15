@@ -21,10 +21,10 @@ import org.jboss.arquillian.container.test.api.ShouldThrowException;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
+import org.jboss.shrinkwrap.api.BeanDiscoveryMode;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.impl.BeansXml;
-import org.jboss.shrinkwrap.impl.BeansXml.BeanDiscoveryMode;
 import org.jboss.weld.environment.se.test.arquillian.WeldSEClassPath;
 import org.jboss.weld.environment.se.test.beandiscovery.Cat;
 import org.jboss.weld.environment.se.test.beandiscovery.Dog;
@@ -54,11 +54,11 @@ public class BeanDiscoveryDecorator03Test {
         JavaArchive archive02 = ShrinkWrap.create(BeanArchive.class)
                 .addAsManifestResource(new BeansXml(BeanDiscoveryMode.ANNOTATED).decorators(ClassicRepresentDecorator.class, ScopedRepresentDecorator.class),
                         "beans.xml")
-                        .addClasses(Plant.class, Tree.class, Stone.class, ClassicRepresentDecorator.class, ScopedRepresentDecorator.class);
+                        .addClasses(Plant.class, Tree.class, Stone.class, ScopedRepresentDecorator.class);
         JavaArchive archive03 = ShrinkWrap.create(BeanArchive.class)
                 .addAsManifestResource(new BeansXml(BeanDiscoveryMode.NONE).decorators(ClassicRepresentDecorator.class, ScopedRepresentDecorator.class),
                         "beans.xml")
-                        .addClasses(Flat.class, House.class);
+                        .addClasses(Flat.class, House.class, ClassicRepresentDecorator.class);
         archives.add(archive01);
         archives.add(archive02);
         archives.add(archive03);
