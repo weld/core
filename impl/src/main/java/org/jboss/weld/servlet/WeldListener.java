@@ -41,6 +41,7 @@ import org.jboss.weld.context.http.HttpConversationContext;
 import org.jboss.weld.context.http.HttpRequestContext;
 import org.jboss.weld.context.http.HttpSessionContext;
 import org.jboss.weld.exceptions.IllegalStateException;
+import org.jboss.weld.logging.messages.ServletMessage;
 import org.jboss.weld.servlet.api.helpers.AbstractServletListener;
 import org.slf4j.cal10n.LocLogger;
 
@@ -59,16 +60,26 @@ public class WeldListener extends AbstractServletListener {
 
     public static final String CONTEXT_IGNORE_FORWARD = "org.jboss.weld.context.ignore.forward";
     public static final String CONTEXT_IGNORE_INCLUDE = "org.jboss.weld.context.ignore.include";
+    public static final String CONTEXT_IGNORE_GUARD = "org.jboss.weld.context.ignore.guard";
 
     private static final String INCLUDE_HEADER = "javax.servlet.include.request_uri";
     private static final String FORWARD_HEADER = "javax.servlet.forward.request_uri";
+    private static final String GUARD_PARAMETER_NAME = "org.jboss.weld.context.ignore.guard.marker";
+    private static final Object GUARD_PARAMETER_VALUE = new Object();
 
     private boolean ignoreForwards;
     private boolean ignoreIncludes;
+    private boolean nestedInvocationGuardEnabled;
 
     private transient HttpSessionContext sessionContextCache;
     private transient HttpRequestContext requestContextCache;
     private transient HttpConversationContext conversationContextCache;
+
+    private static final ThreadLocal<Counter> nestedInvocationGuard = new ThreadLocal<Counter>();
+
+    private static class Counter {
+        private int value = 1;
+    }
 
     private HttpSessionContext sessionContext() {
         if (sessionContextCache == null) {
@@ -104,6 +115,21 @@ public class WeldListener extends AbstractServletListener {
 
     @Override
     public void requestDestroyed(ServletRequestEvent event) {
+        if (nestedInvocationGuardEnabled) {
+            Counter counter = nestedInvocationGuard.get();
+            if (counter != null) {
+                counter.value--;
+                if (counter.value > 0) {
+                    return; // this is a nested invocation, ignore it
+                } else {
+                    nestedInvocationGuard.remove(); // this is the outer invocation
+                    event.getServletRequest().removeAttribute(GUARD_PARAMETER_NAME);
+                }
+            } else {
+                log.warn(ServletMessage.GUARD_NOT_SET);
+                return;
+            }
+        }
         if (ignoreForwards && isForwardedRequest(event.getServletRequest())) {
             return;
         }
@@ -142,6 +168,27 @@ public class WeldListener extends AbstractServletListener {
 
     @Override
     public void requestInitialized(ServletRequestEvent event) {
+        if (nestedInvocationGuardEnabled) {
+            Counter counter = nestedInvocationGuard.get();
+            Object marker = event.getServletRequest().getAttribute(GUARD_PARAMETER_NAME);
+            if (counter != null && marker != null) {
+                // this is a nested invocation, increment the counter and ignore this invocation
+                counter.value++;
+                return;
+            } else {
+                if (counter != null && marker == null) {
+                    /*
+                     * This request has not been processed yet but the guard is set already.
+                     * That indicates, that the guard leaked from a previous request
+                     * processing. Log a warning and recover by re-initializing the guard
+                     */
+                    log.warn(ServletMessage.GUARD_LEAKED, counter.value);
+                }
+                // this is the initial (outer) invocation
+                nestedInvocationGuard.set(new Counter());
+                event.getServletRequest().setAttribute(GUARD_PARAMETER_NAME, GUARD_PARAMETER_VALUE);
+            }
+        }
         if (ignoreForwards && isForwardedRequest(event.getServletRequest())) {
             return;
         }
@@ -188,8 +235,9 @@ public class WeldListener extends AbstractServletListener {
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        this.ignoreForwards = getBooleanInitParameter(sce.getServletContext(), CONTEXT_IGNORE_FORWARD, true);
-        this.ignoreIncludes = getBooleanInitParameter(sce.getServletContext(), CONTEXT_IGNORE_INCLUDE, true);
+        this.ignoreForwards = getBooleanInitParameter(sce.getServletContext(), CONTEXT_IGNORE_FORWARD, false);
+        this.ignoreIncludes = getBooleanInitParameter(sce.getServletContext(), CONTEXT_IGNORE_INCLUDE, false);
+        this.nestedInvocationGuardEnabled = getBooleanInitParameter(sce.getServletContext(), CONTEXT_IGNORE_GUARD, true);
     }
 
     private boolean getBooleanInitParameter(ServletContext ctx, String parameterName, boolean defaultValue) {
