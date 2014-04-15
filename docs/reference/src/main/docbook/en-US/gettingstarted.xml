@@ -42,10 +42,10 @@
                   <para>GlassFish 4.0,</para>
                </listitem>
                <listitem>
-                  <para>Apache Tomcat 6 or better (war example only), or</para>
+                  <para>Apache Tomcat 7 or better (war example only), or</para>
                </listitem>
                <listitem>
-                  <para>Jetty 6 or better (war example only)</para>
+                  <para>Jetty 7 or better (war example only)</para>
                </listitem>
             </itemizedlist>
          </listitem>
@@ -259,17 +259,22 @@ $> mvn glassfish:create-domain]]></programlisting>
          servlet container like Tomcat by embedding a standalone CDI implementation such as Weld.</para>
 
       <para>
-         Weld comes with a servlet listener which bootstraps the CDI environment, registers the <literal>BeanManager</literal>
-         in JNDI and provides injection into servlets. Basically, it emulates some of the work done by the Java EE
-         container. (But you don't get enterprise features such as session beans and container-managed transactions.)
+         Weld comes with servlet integration extension which bootstraps the CDI environment and provides injection into servlets components.
+         Basically, it emulates some of the work done by the Java EE container, but you don't get the enterprise features such as session beans and container-managed transactions.
       </para>
+      <note>
+          <para>
+                Note that due to limitations of servlet containers (e.g. read-only JNDI) your application might require
+                 some additional configuration as well (see <xref linkend="tomcat-container"/> and <xref linkend="jetty-container"/> for more info). 
+          </para>
+      </note>
 
       <para>
-         Let's give the Weld servlet extension a spin on Apache Tomcat. First, you'll need to download Tomcat 6.0.18 or
-         later from <ulink url="http://tomcat.apache.org/download-60.cgi">tomcat.apache.org</ulink> and extract it.
+         Let's give the Weld servlet extension a spin on Apache Tomcat. First, you'll need to download Tomcat 7.0.50 or
+         later from <ulink url="http://tomcat.apache.org/download-70.cgi">tomcat.apache.org</ulink> and extract it.
       </para>
 
-      <programlisting><![CDATA[$> unzip apache-tomcat-6.0.18.zip]]></programlisting>
+      <programlisting><![CDATA[$> unzip apache-tomcat-7.0.53.zip]]></programlisting>
 
       <para>
             The Maven plugin communicates with Tomcat over HTTP, so it doesn't care where you have installed Tomcat.
@@ -280,13 +285,7 @@ $> mvn glassfish:create-domain]]></programlisting>
 
       <para>
         To allow Maven to communicate with Tomcat over HTTP, edit the <literal>conf/tomcat-users.xml</literal> file in
-        your Tomcat installation. For Tomcat 6 add the following line:
-      </para>
-
-      <programlisting role="XML"><![CDATA[<user username="admin" password="" roles="manager"/>]]></programlisting>
-      
-      <para>
-        For Tomcat 7 and higher add the following line:
+        your Tomcat installation. For Tomcat 7 and higher add the following line:
       </para>
 
       <programlisting role="XML"><![CDATA[<user username="admin" password="" roles="manager-script"/>]]></programlisting>
@@ -295,14 +294,14 @@ $> mvn glassfish:create-domain]]></programlisting>
         Next, start Tomcat. You can either start Tomcat from a Linux shell:
       </para>
 
-      <programlisting><![CDATA[$> cd /path/to/apache-tomcat-6
+      <programlisting><![CDATA[$> cd /path/to/apache-tomcat-7
 $> ./bin/start.sh]]></programlisting>
 
       <para>
         a Windows command window:
       </para>
 
-      <programlisting><![CDATA[$> cd c:\path\to\apache-tomcat-6\bin
+      <programlisting><![CDATA[$> cd c:\path\to\apache-tomcat-7\bin
 $> start]]></programlisting>
 
       <para>
@@ -318,13 +317,13 @@ $> start]]></programlisting>
       </para>
 
       <programlisting><![CDATA[$> cd examples/jsf/numberguess
-$> mvn compile war:exploded tomcat:exploded -Ptomcat]]></programlisting>
+$> mvn clean compile war:exploded tomcat7:deploy -Ptomcat]]></programlisting>
 
        <para>
             Once the application is deployed, you can redeploy it using this command:
        </para>
 
-      <programlisting><![CDATA[$> mvn tomcat:redeploy -Ptomcat]]></programlisting>
+      <programlisting><![CDATA[$> mvn tomcat7:redeploy -Ptomcat]]></programlisting>
 
       <para>
          The <literal>-Ptomcat</literal> argument activates the <literal>tomcat</literal> profile defined in the Maven POM
@@ -336,7 +335,7 @@ $> mvn compile war:exploded tomcat:exploded -Ptomcat]]></programlisting>
          application in an embedded Tomcat 6 container:
       </para>
 
-      <programlisting><![CDATA[$> mvn war:inplace tomcat6:run -Ptomcat]]></programlisting>
+      <programlisting><![CDATA[$> mvn war:inplace tomcat7:run -Ptomcat]]></programlisting>
 
       <para>
          The advantage of using the embedded server is that changes to assets in <literal>src/main/webapp</literal> take effect
@@ -351,11 +350,11 @@ $> mvn compile war:exploded tomcat:exploded -Ptomcat]]></programlisting>
          Finally, you can run the functional tests:
       </para>
 
-      <programlisting><![CDATA[$> mvn verify -Darquillian=tomcat-embedded-6 -Ptomcat]]></programlisting>
+      <programlisting><![CDATA[$> mvn verify -Darquillian=tomcat-embedded-7 -Ptomcat]]></programlisting>
 
       <para>
          There are several other Maven goals that you can use if you are hacking on the example, which are documented in
-         the example's <literal>readme.txt</literal> file.
+         the example's <literal>README.md</literal> file.
       </para>
 
    </section>
@@ -364,13 +363,10 @@ $> mvn compile war:exploded tomcat:exploded -Ptomcat]]></programlisting>
       <title>Deploying to Jetty</title>
 
       <!-- subsections? -->
-
-      <para>
-         Support for Jetty in the examples is a more recent addition. Since Jetty is traditionally used with Maven,
-         there are no Ant targets. You must invoke the Maven build directly to deploy the examples to Jetty out of the
-         box. Also, only the <literal>weld-numberguess</literal> example is configured for Jetty support at the time of
-         writing.
-      </para>
+      
+      <warning>
+        <para>Jetty Maven plugin is temporarily unsupported in Weld examples.</para>
+      </warning>
 
       <para>
          If you've read through the entire Tomcat section, then you're all ready to go. The Maven build parallels the
@@ -418,6 +414,12 @@ $> mvn war:inplace jetty:run -Pjetty]]></programlisting>
          files. However, the build does work around these temporary files by excluding them from the packaged war and cleaning
          them during the Maven clean phase.
       </para>
+      
+      <para>
+         Finally, you can run the functional tests:
+      </para>
+
+      <programlisting><![CDATA[$> mvn verify -Darquillian=jetty-embedded-7 -Pjetty]]></programlisting>
 
       <para>
          Now that you have gotten the starter applications deployed on the server of your choice, you probably want to
