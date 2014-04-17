@@ -38,7 +38,7 @@ import org.junit.runner.RunWith
 @RunWith(Arquillian.class)
 class GroovyInterceptorTest {
     @Inject
-    private MySimpleBean bean
+    private MyAplicationScopedBean bean
 
     @Deployment
     static Archive getDeployment() {
@@ -49,6 +49,12 @@ class GroovyInterceptorTest {
     @Test
     void hello() {
         bean.hi()
+        assertEquals true,LoggingInterceptor.intercepted
+    }
+    
+    @Test
+    void helloThroughProxyMethod() {
+        bean.hiProxy()
         assertEquals true,LoggingInterceptor.intercepted
     }
 }
