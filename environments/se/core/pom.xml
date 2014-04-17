@@ -15,6 +15,14 @@
 
     <description>Weld support for Java SE</description>
 
+    <properties>
+        <groovy.version>2.1.8</groovy.version>
+        <groovy.eclipse.compiler.version>2.7.0-01</groovy.eclipse.compiler.version>
+        <groovy.eclipse.batch.version>2.1.8-01</groovy.eclipse.batch.version>
+        <source.version>1.6</source.version>
+        <target.version>1.6</target.version>
+    </properties>
+
     <url>http://weld.cdi-spec.org</url>
     <licenses>
         <license>
@@ -126,7 +134,7 @@
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-all</artifactId>
-            <version>2.1.8</version>
+            <version>${groovy.version}</version>
         </dependency>
 
     </dependencies>
@@ -157,8 +165,8 @@
                             <goal>compile</goal>
                         </goals>
                         <configuration>
-                            <source>1.6</source>
-                            <target>1.6</target>
+                            <source>${source.version}</source>
+                            <target>${target.version}</target>
                         </configuration>
                     </execution>
                     <execution>
@@ -169,8 +177,8 @@
                         </goals>
                         <configuration>
                             <compilerId>groovy-eclipse-compiler</compilerId>
-                            <source>1.6</source>
-                            <target>1.6</target>
+                            <source>${source.version}</source>
+                            <target>${target.version}</target>
                         </configuration>
                     </execution>
                 </executions>
@@ -178,12 +186,12 @@
                     <dependency>
                         <groupId>org.codehaus.groovy</groupId>
                         <artifactId>groovy-eclipse-compiler</artifactId>
-                        <version>2.7.0-01</version>
+                        <version>${groovy.eclipse.compiler.version}</version>
                     </dependency>
                     <dependency>
                         <groupId>org.codehaus.groovy</groupId>
                         <artifactId>groovy-eclipse-batch</artifactId>
-                        <version>2.1.8-01</version>
+                        <version>${groovy.eclipse.batch.version}</version>
                     </dependency>
                 </dependencies>
             </plugin>
