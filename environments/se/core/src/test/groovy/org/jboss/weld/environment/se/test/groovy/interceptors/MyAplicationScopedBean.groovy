@@ -15,12 +15,17 @@
  * limitations under the License.
  */
 package org.jboss.weld.environment.se.test.groovy.interceptors
+import javax.enterprise.context.ApplicationScoped
 
+@ApplicationScoped
+class MyAplicationScopedBean {
 
-@Log
-class MySimpleBean {
-
+    @Log
     def hi() {
         "hi"
+    }
+    
+    def hiProxy() {
+        hi()
     }
 }
