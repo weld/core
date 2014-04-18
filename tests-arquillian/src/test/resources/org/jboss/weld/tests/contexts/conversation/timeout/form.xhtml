@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html">
+    <h:head>
+    </h:head>
+    <h:body>
+
+      <h:form id="form" prependId="false">
+         <h:outputText value="#{javax.enterprise.context.conversation.id}" id="conversationId" />
+         <h:commandButton action="#{controller.beginConversation}" value="Begin" id="buttonBegin"/>
+         <h:commandButton action="#{controller.ping}" value="Ping" id="buttonPing"/>
+         <h:commandButton action="#{controller.makeLongRequest}" value="Long" id="buttonLong"/>
+      </h:form>
+
+   </h:body>
+</html>
