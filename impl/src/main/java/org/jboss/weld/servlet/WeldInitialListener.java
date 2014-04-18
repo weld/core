@@ -95,6 +95,7 @@ public class WeldInitialListener extends AbstractServletListener {
             this.lifecycle.setConversationActivationEnabled(false);
         }
         this.lifecycle.contextInitialized(ctx);
+        ctx.setAttribute(WeldInitialListener.class.getName(), this);
     }
 
     private boolean getBooleanInitParameter(ServletContext ctx, String parameterName, boolean defaultValue) {

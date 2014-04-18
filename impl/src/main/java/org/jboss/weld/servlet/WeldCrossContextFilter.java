@@ -1,5 +1,7 @@
 package org.jboss.weld.servlet;
 
+import java.io.IOException;
+
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -7,7 +9,6 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletRequestEvent;
 import javax.servlet.ServletResponse;
-import java.io.IOException;
 
 /**
  * This class provides support for cross-context dispatching to a web application that's using Weld.
@@ -36,15 +37,19 @@ import java.io.IOException;
  */
 public class WeldCrossContextFilter implements Filter {
    private static final String REQUEST_CONTEXT_KEY = "org.jboss.weld.context.http.HttpRequestContextImpl";
-   private WeldInitialListener listener;
+   private volatile WeldInitialListener listener;
    private FilterConfig config;
 
+   @Override
    public void init(FilterConfig filterConfig) throws ServletException {
-      listener = new WeldInitialListener();
       this.config = filterConfig;
    }
 
+   @Override
    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+       if (listener == null) {
+           listener = (WeldInitialListener) request.getServletContext().getAttribute(WeldInitialListener.class.getName());
+       }
 
       // cross-context means request is dispatched as INCLUDE or FORWARD or ERROR
       boolean crossCtx = request.getAttribute("javax.servlet.include.request_uri") != null
@@ -68,6 +73,7 @@ public class WeldCrossContextFilter implements Filter {
       }
    }
 
+   @Override
    public void destroy() {
    }
 }
