@@ -199,9 +199,7 @@ public class WeldServletLifecycle {
         Iterable<Container> extContainers = ServiceLoader.load(Container.class, getClass().getClassLoader());
         Container container = checkContainers(cc, dump, extContainers);
         if (container == null) {
-            container = checkContainers(cc, dump, Arrays.asList(
-            // Needs to be first: gwt-dev jar has tomcat classes but uses jetty
-            GwtDevHostedModeContainer.INSTANCE, TomcatContainer.INSTANCE, JettyContainer.INSTANCE));
+            container = checkContainers(cc, dump, Arrays.asList(TomcatContainer.INSTANCE, JettyContainer.INSTANCE, GwtDevHostedModeContainer.INSTANCE));
         }
         return container;
     }
