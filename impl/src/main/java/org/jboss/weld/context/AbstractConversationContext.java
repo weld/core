@@ -326,13 +326,10 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
 
     @Override
     public void invalidate() {
+        ManagedConversation currentConversation = getCurrentConversation();
         for (ManagedConversation conversation : getConversations()) {
-            if (conversation != getCurrentConversation()) {
-                if (!conversation.isTransient()) {
-                    if (isExpired(conversation)) {
-                        conversation.end();
-                    }
-                }
+            if (!currentConversation.equals(conversation) && !conversation.isTransient() && isExpired(conversation)) {
+                conversation.end();
             }
         }
     }
