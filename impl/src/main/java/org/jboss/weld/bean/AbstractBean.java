@@ -59,6 +59,7 @@ import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.literal.NamedLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MergedStereotypes;
+import org.jboss.weld.resolution.TypeEqualitySpecializationUtils;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.BeansClosure;
 import org.jboss.weld.util.collections.ArraySet;
@@ -282,9 +283,20 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
         if (getWeldAnnotated().isAnnotationPresent(Named.class) && getSpecializedBean().getName() != null) {
             throw new DefinitionException(NAME_NOT_ALLOWED_ON_SPECIALIZATION, getWeldAnnotated());
         }
-        for (Type type : getSpecializedBean().getTypes()) {
-            if (!getTypes().contains(type)) {
-                throw new DefinitionException(SPECIALIZING_BEAN_MISSING_SPECIALIZED_TYPE, this, type, getSpecializedBean());
+        // TODO the case when the specialized bean is generic and the specializing bean extends just a raw type of it
+        for (Type specializedType : getSpecializedBean().getTypes()) {
+            boolean contains = false;
+            for (Type specializingType : getTypes()) {
+                // In case 'type' is a ParameterizedType, two bean types equivalent in the CDI sense may not be equal in
+                // the java sense. Therefore we have to use our own equality util.
+                if (TypeEqualitySpecializationUtils.areTheSame(specializingType, specializedType)) {
+                    contains = true;
+                    break;
+                }
+            }
+            if (!contains) {
+                throw new DefinitionException(SPECIALIZING_BEAN_MISSING_SPECIALIZED_TYPE, this, specializedType,
+                        getSpecializedBean());
             }
         }
         this.qualifiers.addAll(getSpecializedBean().getQualifiers());
@@ -316,6 +328,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
      * @return The set of binding types
      * @see org.jboss.weld.bean.RIBean#getQualifiers()
      */
+    @Override
     public Set<Annotation> getQualifiers() {
         return qualifiers;
     }
@@ -354,6 +367,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
      * @return The name
      * @see org.jboss.weld.bean.RIBean#getName()
      */
+    @Override
     public String getName() {
         return name;
     }
@@ -364,6 +378,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
      * @return The scope type
      * @see org.jboss.weld.bean.RIBean#getScope()
      */
+    @Override
     public Class<? extends Annotation> getScope() {
         return scope;
     }
@@ -384,6 +399,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
      * @return The set of API types
      * @see org.jboss.weld.bean.RIBean#getTypes()
      */
+    @Override
     public Set<Type> getTypes() {
         return types;
     }
@@ -394,6 +410,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
      * @return True if nullable, false otherwise
      * @see org.jboss.weld.bean.RIBean#isNullable()
      */
+    @Override
     public boolean isNullable() {
         return !isPrimitive();
     }
@@ -413,6 +430,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
         return Dependent.class.equals(getScope());
     }
 
+    @Override
     public boolean isAlternative() {
         return alternative;
     }
@@ -422,6 +440,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
         return getWeldAnnotated().isAnnotationPresent(Specializes.class);
     }
 
+    @Override
     public Set<Class<? extends Annotation>> getStereotypes() {
         return mergedStereotypes.getStereotypes();
     }
