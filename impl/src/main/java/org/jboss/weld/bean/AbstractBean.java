@@ -35,6 +35,7 @@ import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.SpecializationAndEnablementRegistry;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.resolution.TypeEqualitySpecializationUtils;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 
 /**
@@ -122,9 +123,21 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
                 if (isNameDefined && name != null) {
                     throw BeanLogger.LOG.nameNotAllowedOnSpecialization(getAnnotated());
                 }
-                for (Type type : specializedBean.getTypes()) {
-                    if (!getTypes().contains(type)) {
-                        throw BeanLogger.LOG.specializingBeanMissingSpecializedType(this, type, specializedBean);
+                // TODO the case when the specialized bean is generic and the specializing bean extends just a raw type of it
+                for (Type specializedType : specializedBean.getTypes()) {
+                    boolean contains = getTypes().contains(specializedType);
+                    if (!contains) {
+                        for (Type specializingType : getTypes()) {
+                            // In case 'type' is a ParameterizedType, two bean types equivalent in the CDI sense may not be
+                            // equal in the java sense. Therefore we have to use our own equality util.
+                            if (TypeEqualitySpecializationUtils.areTheSame(specializingType, specializedType)) {
+                                contains = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (!contains) {
+                        throw BeanLogger.LOG.specializingBeanMissingSpecializedType(this, specializedType, specializedBean);
                     }
                 }
             }

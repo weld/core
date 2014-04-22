@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.tests.specialization.weld1651;
 
+import javax.inject.Inject;
+
 import junit.framework.Assert;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -24,18 +26,14 @@ import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import javax.inject.Inject;
 
 /**
  * @author Tomas Remes
  */
 
 @RunWith(Arquillian.class)
-@Ignore("WELD-1651")
 public class GenericBeanSpecializationTest {
 
     @Inject
