@@ -31,6 +31,7 @@ import static org.jboss.weld.logging.messages.BeanMessage.USING_NAME;
 import static org.jboss.weld.logging.messages.BeanMessage.USING_SCOPE_FROM_STEREOTYPE;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.HashSet;
@@ -59,6 +60,7 @@ import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.literal.NamedLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MergedStereotypes;
+import org.jboss.weld.resolution.TypeEqualitySpecializationUtils;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.BeansClosure;
 import org.jboss.weld.util.collections.ArraySet;
@@ -282,9 +284,30 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
         if (getWeldAnnotated().isAnnotationPresent(Named.class) && getSpecializedBean().getName() != null) {
             throw new DefinitionException(NAME_NOT_ALLOWED_ON_SPECIALIZATION, getWeldAnnotated());
         }
-        for (Type type : getSpecializedBean().getTypes()) {
-            if (!getTypes().contains(type)) {
-                throw new DefinitionException(SPECIALIZING_BEAN_MISSING_SPECIALIZED_TYPE, this, type, getSpecializedBean());
+
+        // When a specializing bean extends the raw type of a generic superclass, types of the generic superclass are
+        // added into types of the specializing bean because of assignability rules. However, ParameterizedTypes among
+        // these types are NOT types of the specializing bean (that's the way java works)
+        boolean rawInsteadOfGeneric = (this instanceof AbstractClassBean<?>
+                && getSpecializedBean().getBeanClass().getTypeParameters().length > 0
+                && !(((AbstractClassBean<?>) this).getBeanClass().getGenericSuperclass() instanceof ParameterizedType));
+        for (Type specializedType : getSpecializedBean().getTypes()) {
+            if (rawInsteadOfGeneric && specializedType instanceof ParameterizedType) {
+                throw new DefinitionException(SPECIALIZING_BEAN_MISSING_SPECIALIZED_TYPE, this, specializedType, getSpecializedBean());
+            }
+            boolean contains = getTypes().contains(specializedType);
+            if (!contains) {
+                for (Type specializingType : getTypes()) {
+                    // In case 'type' is a ParameterizedType, two bean types equivalent in the CDI sense may not be
+                    // equal in the java sense. Therefore we have to use our own equality util.
+                    if (TypeEqualitySpecializationUtils.areTheSame(specializingType, specializedType)) {
+                        contains = true;
+                        break;
+                    }
+                }
+            }
+            if (!contains) {
+                throw new DefinitionException(SPECIALIZING_BEAN_MISSING_SPECIALIZED_TYPE, this, specializedType, getSpecializedBean());
             }
         }
         this.qualifiers.addAll(getSpecializedBean().getQualifiers());
