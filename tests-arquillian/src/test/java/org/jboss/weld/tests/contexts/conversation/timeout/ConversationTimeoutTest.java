@@ -18,6 +18,7 @@
 package org.jboss.weld.tests.contexts.conversation.timeout;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.net.URL;
@@ -73,7 +74,7 @@ public class ConversationTimeoutTest {
         HtmlPage page = client.getPage(url + "form.jsf");
 
         // Begin conversation
-        HtmlSubmitInput buttonBegin = page.getDocumentElement().getElementById("buttonBegin");
+        HtmlSubmitInput buttonBegin = page.getDocumentElement().getElementById("buttonBeginShort");
         page = buttonBegin.click();
 
         // Wait for conversation to time out
@@ -94,7 +95,7 @@ public class ConversationTimeoutTest {
         HtmlPage page = client.getPage(url + "form.jsf");
 
         // Begin conversation
-        HtmlSubmitInput buttonBegin = page.getDocumentElement().getElementById("buttonBegin");
+        HtmlSubmitInput buttonBegin = page.getDocumentElement().getElementById("buttonBeginLong");
         page = buttonBegin.click();
         String cid = getConversationId(page);
 
@@ -103,6 +104,7 @@ public class ConversationTimeoutTest {
         HtmlSubmitInput buttonLong = page.getDocumentElement().getElementById("buttonLong");
         Page result = buttonLong.click();
 
+        assertFalse("Conversation should not timeout on redirect", TimeoutFilter.NON_EXISTENT_CONVERSATION.equals(result.getWebResponse().getContentAsString().trim()));
         assertTrue(result instanceof HtmlPage);
         assertEquals(200, result.getWebResponse().getStatusCode());
         assertEquals("TEST", ((HtmlPage)result).getTitleText().trim());

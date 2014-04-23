@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jboss.weld.tests.contexts.conversation.timeout;
 
 import java.io.IOException;
@@ -30,7 +29,7 @@ import javax.servlet.annotation.WebFilter;
 import org.jboss.weld.context.NonexistentConversationException;
 
 @WebFilter(urlPatterns = "/*", filterName = "Timeout Filter")
-public class TimeoutFilter implements Filter{
+public class TimeoutFilter implements Filter {
 
     protected static final String NON_EXISTENT_CONVERSATION = "NonexistentConversationException thrown";
 
@@ -39,11 +38,13 @@ public class TimeoutFilter implements Filter{
         try {
             chain.doFilter(request, response);
         } catch (ServletException e) {
-            if(e.getRootCause() instanceof NonexistentConversationException) {
+            if (e.getRootCause() instanceof NonexistentConversationException) {
                 // FacesServlet wraps NonexistentConversationException
                 // Note that status code is already set to 500
                 response.setContentType("text/plain");
                 response.getWriter().print(TimeoutFilter.NON_EXISTENT_CONVERSATION);
+            } else {
+                throw e;
             }
         }
     }
