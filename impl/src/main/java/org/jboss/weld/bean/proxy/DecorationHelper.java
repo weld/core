@@ -123,7 +123,7 @@ public class DecorationHelper<T> {
     }
 
     public DecoratorProxyMethodHandler createMethodHandler(InjectionPoint injectionPoint, CreationalContext<?> creationalContext, Decorator<Object> decorator) {
-        Object decoratorInstance = beanManager.getReference(injectionPoint, decorator, creationalContext);
+        Object decoratorInstance = beanManager.getInjectableReference(injectionPoint, decorator, creationalContext);
         assert previousDelegate != null : "previousDelegate should have been set when calling beanManager.getReference(), but it wasn't!";
         SerializableContextualInstanceImpl<Decorator<Object>, Object> serializableContextualInstance = new SerializableContextualInstanceImpl<Decorator<Object>, Object>(decorator, decoratorInstance, null, contextualStore);
         return new DecoratorProxyMethodHandler(serializableContextualInstance, previousDelegate);

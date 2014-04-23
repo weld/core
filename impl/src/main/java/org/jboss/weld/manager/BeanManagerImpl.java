@@ -42,6 +42,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.el.ELResolver;
 import javax.el.ExpressionFactory;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
@@ -143,6 +144,7 @@ import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Bindings;
 import org.jboss.weld.util.ForwardingBeanManager;
+import org.jboss.weld.util.InjectionPoints;
 import org.jboss.weld.util.Interceptors;
 import org.jboss.weld.util.Preconditions;
 import org.jboss.weld.util.Proxies;
@@ -757,16 +759,29 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         return getReference(bean, requestedType, creationalContext, false);
     }
 
+    /**
+     * The name of this method was misleading, use {@link #getInjectableReference(InjectionPoint, Bean, CreationalContext)} instead.
+     *
+     * @param injectionPoint
+     * @param resolvedBean
+     * @param creationalContext
+     * @return the injectable reference
+     * @deprecated Use {@link #getInjectableReference(InjectionPoint, Bean, CreationalContext)} instead
+     */
+    @Deprecated
+    public Object getReference(InjectionPoint injectionPoint, Bean<?> resolvedBean, CreationalContext<?> creationalContext) {
+        return getInjectableReference(injectionPoint, resolvedBean, creationalContext);
+    }
 
     /**
      * Get a reference, registering the injection point used.
      *
-     * @param injectionPoint    the injection point to register
-     * @param resolvedBean      the bean to get a reference to
+     * @param injectionPoint the injection point to register
+     * @param resolvedBean the bean to get a reference to
      * @param creationalContext the creationalContext
-     * @return
+     * @return the injectable reference
      */
-    public Object getReference(InjectionPoint injectionPoint, Bean<?> resolvedBean, CreationalContext<?> creationalContext) {
+    public Object getInjectableReference(InjectionPoint injectionPoint, Bean<?> resolvedBean, CreationalContext<?> creationalContext) {
         Preconditions.checkArgumentNotNull(resolvedBean, "resolvedBean");
         Preconditions.checkArgumentNotNull(creationalContext, CREATIONAL_CONTEXT);
 
@@ -783,18 +798,37 @@ public class BeanManagerImpl implements WeldManager, Serializable {
             if (injectionPoint != null) {
                 requestedType = injectionPoint.getType();
             }
-            // TODO Can we move this logic to getReference?
-            if (creationalContext instanceof CreationalContextImpl<?>) {
-                CreationalContextImpl<?> wbCreationalContext = (CreationalContextImpl<?>) creationalContext;
-                final Object incompleteInstance = wbCreationalContext.getIncompleteInstance(resolvedBean);
-                if (incompleteInstance != null) {
-                    return incompleteInstance;
-                } else {
-                    return getReference(resolvedBean, requestedType, wbCreationalContext, delegateInjectionPoint);
+
+            if (injectionPoint != null && injectionPoint.getBean() != null) {
+                // For certain combinations of scopes, the container is permitted to optimize an injectable reference lookup
+                // This should also partially solve circular @PostConstruct invocation
+                CreationalContextImpl<?> weldCreationalContext = null;
+                Bean<?> bean = injectionPoint.getBean();
+
+                if (creationalContext instanceof CreationalContextImpl) {
+                    weldCreationalContext = (CreationalContextImpl<?>) creationalContext;
                 }
-            } else {
-                return getReference(resolvedBean, requestedType, creationalContext, delegateInjectionPoint);
+
+                if (weldCreationalContext != null && Dependent.class.equals(bean.getScope()) && isNormalScope(resolvedBean.getScope())) {
+                    bean = findNormalScopedDependant(weldCreationalContext);
+                }
+
+                if (InjectionPoints.isInjectableReferenceLookupOptimizationAllowed(bean, resolvedBean)) {
+                    if (weldCreationalContext != null) {
+                        final Object incompleteInstance = weldCreationalContext.getIncompleteInstance(resolvedBean);
+                        if (incompleteInstance != null) {
+                            return incompleteInstance;
+                        }
+                    }
+                    @java.lang.SuppressWarnings({ "unchecked", "rawtypes" })
+                    final Object existinInstance = getContext(resolvedBean.getScope()).get(Reflections.<Contextual>cast(resolvedBean));
+                    if(existinInstance != null) {
+                        return existinInstance;
+                    }
+                }
             }
+            return getReference(resolvedBean, requestedType, creationalContext, delegateInjectionPoint);
+
         } finally {
             if (registerInjectionPoint) {
                 currentInjectionPoint.pop();
@@ -808,7 +842,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
             return DecorationHelper.peek().getNextDelegate(injectionPoint, creationalContext);
         } else {
             Bean<?> resolvedBean = getBean(new ResolvableBuilder(injectionPoint, this).create());
-            return getReference(injectionPoint, resolvedBean, creationalContext);
+            return getInjectableReference(injectionPoint, resolvedBean, creationalContext);
         }
     }
 
@@ -1465,5 +1499,21 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     @Override
     public <T> WeldInjectionTargetBuilder<T> createInjectionTargetBuilder(AnnotatedType<T> type) {
         return new WeldInjectionTargetBuilderImpl<T>(type, this);
+    }
+
+
+    private Bean<?> findNormalScopedDependant(CreationalContextImpl<?> weldCreationalContext) {
+        CreationalContextImpl<?> parent = weldCreationalContext.getParentCreationalContext();
+        if(parent != null) {
+            if(parent.getContextual() instanceof Bean) {
+                Bean<?> bean = (Bean<?>) parent.getContextual();
+                if(isNormalScope(bean.getScope())) {
+                    return bean;
+                } else {
+                    return findNormalScopedDependant(parent);
+                }
+            }
+        }
+        return null;
     }
 }

@@ -89,7 +89,7 @@ public class FieldInjectionPoint<T, X> extends ForwardingInjectionPointAttribute
                 if (cachedBean == null) {
                     cachedBean = manager.resolve(manager.getBeans(this));
                 }
-                objectToInject = manager.getReference(this, cachedBean, creationalContext);
+                objectToInject = manager.getInjectableReference(this, cachedBean, creationalContext);
             }
             accessibleField.set(instanceToInject, objectToInject);
         } catch (IllegalArgumentException e) {

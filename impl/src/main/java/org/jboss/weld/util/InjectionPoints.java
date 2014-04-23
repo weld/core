@@ -19,7 +19,10 @@ package org.jboss.weld.util;
 import java.util.List;
 import java.util.Set;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.spi.AnnotatedField;
+import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.bean.DecoratorImpl;
@@ -98,4 +101,18 @@ public class InjectionPoints {
             return ParameterInjectionPointImpl.<T, X>silent(ForwardingParameterInjectionPointAttributes.<T, X>of(injectionPoint));
         }
     }
+
+    /**
+     *
+     * @param bean
+     * @param resolvedBean
+     * @return <code>true</code> if the container is permitted to optimize an injectable reference lookup, <code>false</code> otherwise
+     * @see http://docs.jboss.org/cdi/spec/1.2/cdi-spec.html#injectable_reference
+     */
+    public static boolean isInjectableReferenceLookupOptimizationAllowed(Bean<?> bean, Bean<?> resolvedBean) {
+        Preconditions.checkArgumentNotNull(resolvedBean, "resolvedBean");
+        return bean != null && (RequestScoped.class.equals(bean.getScope())
+                || (ApplicationScoped.class.equals(bean.getScope()) && ApplicationScoped.class.equals(resolvedBean.getScope())));
+    }
+
 }
