@@ -73,7 +73,7 @@ public class ParameterInjectionPointImpl<T, X> extends ForwardingInjectionPointA
             if (cachedBean == null) {
                 cachedBean = manager.resolve(manager.getBeans(this));
             }
-            objectToInject = Reflections.<T> cast(manager.getReference(this, cachedBean, creationalContext));
+            objectToInject = Reflections.<T> cast(manager.getInjectableReference(this, cachedBean, creationalContext));
         }
         return objectToInject;
     }
