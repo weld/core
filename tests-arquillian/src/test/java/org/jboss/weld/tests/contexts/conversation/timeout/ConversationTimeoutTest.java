@@ -18,6 +18,8 @@
 package org.jboss.weld.tests.contexts.conversation.timeout;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.net.URL;
 
@@ -32,7 +34,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
-import com.gargoylesoftware.htmlunit.TextPage;
+import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSpan;
@@ -72,39 +74,41 @@ public class ConversationTimeoutTest {
         HtmlPage page = client.getPage(url + "form.jsf");
 
         // Begin conversation
-        HtmlSubmitInput buttonBegin = page.getDocumentElement().getElementById("buttonBegin");
+        HtmlSubmitInput buttonBegin = page.getDocumentElement().getElementById("buttonBeginShort");
         page = buttonBegin.click();
 
         // Wait for conversation to time out
         Thread.sleep(1100);
 
         HtmlSubmitInput buttonPing = page.getDocumentElement().getElementById("buttonPing");
-        TextPage errorPage = buttonPing.click();
+        Page errorPage = buttonPing.click();
 
-        assertEquals(TimeoutFilter.NON_EXISTENT_CONVERSATION, errorPage.getContent().trim());
+        assertEquals(TimeoutFilter.NON_EXISTENT_CONVERSATION, errorPage.getWebResponse().getContentAsString().trim());
     }
 
     @Test
     public void testConversationDoesNotTimeOutOnRedirect() throws Exception {
 
         WebClient client = new WebClient();
-        client.setThrowExceptionOnFailingStatusCode(true);
+        client.setThrowExceptionOnFailingStatusCode(false);
 
         HtmlPage page = client.getPage(url + "form.jsf");
 
         // Begin conversation
-        HtmlSubmitInput buttonBegin = page.getDocumentElement().getElementById("buttonBegin");
+        HtmlSubmitInput buttonBegin = page.getDocumentElement().getElementById("buttonBeginLong");
         page = buttonBegin.click();
         String cid = getConversationId(page);
 
         // Conversation will expire in middle of request but should not timeout
         // JSF does redirect at the end of the request
         HtmlSubmitInput buttonLong = page.getDocumentElement().getElementById("buttonLong");
-        page = buttonLong.click();
+        Page result = buttonLong.click();
 
-        assertEquals(200, page.getWebResponse().getStatusCode());
-        assertEquals("TEST", page.getTitleText().trim());
-        assertEquals(cid, getConversationId(page));
+        assertFalse("Conversation should not timeout on redirect", TimeoutFilter.NON_EXISTENT_CONVERSATION.equals(result.getWebResponse().getContentAsString().trim()));
+        assertTrue(result instanceof HtmlPage);
+        assertEquals(200, result.getWebResponse().getStatusCode());
+        assertEquals("TEST", ((HtmlPage)result).getTitleText().trim());
+        assertEquals(cid, getConversationId((HtmlPage)result));
     }
 
     private String getConversationId(HtmlPage page) {

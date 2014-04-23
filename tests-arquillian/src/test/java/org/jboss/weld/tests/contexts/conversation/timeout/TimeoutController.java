@@ -33,9 +33,9 @@ public class TimeoutController {
     @Inject
     private TimeoutConversationScopedBean bean;
 
-    public void beginConversation() {
+    public void beginConversation(int timeout) {
         conversation.begin();
-        conversation.setTimeout(1000);
+        conversation.setTimeout(timeout);
         bean.setValue("foo");
     }
 
@@ -45,7 +45,8 @@ public class TimeoutController {
 
     public String makeLongRequest() throws IOException {
         try {
-            Thread.sleep(1100);
+            conversation.setTimeout(1000);
+            Thread.sleep(1500);
         } catch (InterruptedException e) {
             throw new IllegalStateException("Unable to sleep thread for long request", e);
         }
