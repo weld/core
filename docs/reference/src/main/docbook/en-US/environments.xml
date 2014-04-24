@@ -570,8 +570,13 @@ public static void main(String[] args) {
         </section>
 
     </section>
+    <section>
+        <title>OSGi</title>
+        <para>
+            Weld supports OSGi environment through Pax CDI. For more information on using Weld in OSGi environment check <ulink url="https://ops4j1.jira.com/wiki/display/PAXCDI/Pax+CDI">Pax CDI documentation</ulink>
+            . In addition, Weld comes with a sample application called Paint which demonstrates how to use CDI with OSGi. Check <code>examples/osgi/README.md</code>
+            for more information.
+        </para>
+    </section>
 
-    <!--
-    vim:et:ts=3:sw=3:tw=120
-    -->
 </chapter>
