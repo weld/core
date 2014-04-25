@@ -1,4 +1,4 @@
-Weld Pain Example
+Weld Paint Example
 ========================
 
 This example demonstrates the use of Weld in OSGi environment.
