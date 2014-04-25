@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -58,6 +59,7 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
     private static class Item implements Comparable<Item> {
 
         private final Class<?> javaClass;
+
         private final Integer priority;
 
         private Item(Class<?> javaClass) {
@@ -121,6 +123,7 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
     }
 
     private abstract static class AbstractEnablementListView extends ListView<Item, Class<?>> {
+
         @Override
         protected ViewProvider<Item, Class<?>> getViewProvider() {
             return ItemViewProvider.ITEM_VIEW_PROVIDER;
@@ -151,7 +154,7 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
     }
 
     public List<Class<?>> getAlternativeList() {
-        sort();
+        initialize();
         return new AbstractEnablementListView() {
             @Override
             protected List<Item> getDelegate() {
@@ -161,7 +164,7 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
     }
 
     public List<Class<?>> getInterceptorList() {
-        sort();
+        initialize();
         return new AbstractEnablementListView() {
             @Override
             protected List<Item> getDelegate() {
@@ -171,7 +174,7 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
     }
 
     public List<Class<?>> getDecoratorList() {
-        sort();
+        initialize();
         return new AbstractEnablementListView() {
             @Override
             protected List<Item> getDelegate() {
@@ -181,21 +184,22 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
     }
 
     /*
-     * cachedAlternativeMap is accessed from a single thread only and the result is safely propagated. Therefore, there is no
-     * need to synchronize access to cachedAlternativeMap.
+     * cachedAlternativeMap is accessed from a single thread only and the result is safely propagated. Therefore, there is no need to synchronize access to
+     * cachedAlternativeMap.
      */
     private Map<Class<?>, Integer> getGlobalAlternativeMap() {
         if (cachedAlternativeMap == null) {
             Map<Class<?>, Integer> map = new HashMap<Class<?>, Integer>();
-            for (Item item : alternatives) {
-                map.put(item.javaClass, item.priority);
+            for (ListIterator<Item> iterator = alternatives.listIterator(); iterator.hasNext();) {
+                Item item = iterator.next();
+                map.put(item.javaClass, iterator.previousIndex());
             }
             cachedAlternativeMap = ImmutableMap.copyOf(map);
         }
         return cachedAlternativeMap;
     }
 
-    private void sort() {
+    private void initialize() {
         if (!sorted) {
             Collections.sort(alternatives);
             Collections.sort(interceptors);
