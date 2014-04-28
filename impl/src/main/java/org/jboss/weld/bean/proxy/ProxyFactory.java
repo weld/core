@@ -535,12 +535,14 @@ public class ProxyFactory<T> {
             }
             for (Class<?> c : additionalInterfaces) {
                 for (Method method : c.getMethods()) {
-                    try {
-                        MethodInformation methodInfo = new RuntimeMethodInformation(method);
-                        ClassMethod classMethod = proxyClassType.addMethod(method);
-                        createSpecialMethodBody(classMethod, methodInfo, staticConstructor);
-                        BeanLogger.LOG.addingMethodToProxy(method);
-                    } catch (DuplicateMemberException e) {
+                    if (!Modifier.isStatic(method.getModifiers())) {
+                        try {
+                            MethodInformation methodInfo = new RuntimeMethodInformation(method);
+                            ClassMethod classMethod = proxyClassType.addMethod(method);
+                            createSpecialMethodBody(classMethod, methodInfo, staticConstructor);
+                            BeanLogger.LOG.addingMethodToProxy(method);
+                        } catch (DuplicateMemberException e) {
+                        }
                     }
                 }
             }
