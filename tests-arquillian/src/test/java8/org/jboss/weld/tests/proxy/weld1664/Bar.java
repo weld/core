@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2012, Red Hat, Inc., and individual contributors
+ * Copyright 2014, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -17,6 +17,9 @@
 
 package org.jboss.weld.tests.proxy.weld1664;
 
-public interface IBar {
-    static void foo() { }
+import javax.enterprise.context.RequestScoped;
+
+@RequestScoped
+public class Bar implements IBar {
+
 }
