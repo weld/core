@@ -52,7 +52,7 @@ public abstract class AbstractDecoratorApplyingInstantiator<T> extends Forwardin
         super(delegate);
         this.bean = bean;
         this.decorators = decorators;
-        ProxyFactory<T> factory = new ProxyFactory<T>(contextId, bean.getBeanClass(), bean.getTypes(), bean);
+        ProxyFactory<T> factory = new ProxyFactory<T>(contextId, bean.getBeanClass(), bean.getTypes(), bean, true);
         // eagerly generate the proxy class
         this.proxyClass = factory.getProxyClass();
     }

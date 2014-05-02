@@ -77,7 +77,7 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
      */
 
     public InterceptedSubclassFactory(String contextId, Class<?> proxiedBeanType, Set<? extends Type> typeClosure, String proxyName, Bean<?> bean, Set<MethodSignature> enhancedMethodSignatures) {
-        super(contextId, proxiedBeanType, typeClosure, proxyName, bean);
+        super(contextId, proxiedBeanType, typeClosure, proxyName, bean, true);
         this.enhancedMethodSignatures = enhancedMethodSignatures;
         this.proxiedBeanType = proxiedBeanType;
     }

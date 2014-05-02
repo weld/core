@@ -114,7 +114,11 @@ public class ProxyFactory<T> {
      * generated from the bean id
      */
     public ProxyFactory(String contextId, Class<?> proxiedBeanType, Set<? extends Type> typeClosure, Bean<?> bean) {
-        this(contextId, proxiedBeanType, typeClosure, getProxyName(contextId, proxiedBeanType, typeClosure, bean), bean);
+        this(contextId, proxiedBeanType, typeClosure, bean, false);
+    }
+
+    public ProxyFactory(String contextId, Class<?> proxiedBeanType, Set<? extends Type> typeClosure, Bean<?> bean, boolean forceSuperClass) {
+        this(contextId, proxiedBeanType, typeClosure, getProxyName(contextId, proxiedBeanType, typeClosure, bean), bean, forceSuperClass);
     }
 
     /**
@@ -126,6 +130,10 @@ public class ProxyFactory<T> {
      * @param proxyName       the name of the proxy class
      */
     public ProxyFactory(String contextId, Class<?> proxiedBeanType, Set<? extends Type> typeClosure, String proxyName, Bean<?> bean) {
+        this(contextId, proxiedBeanType, typeClosure, proxyName, bean, false);
+    }
+
+    public ProxyFactory(String contextId, Class<?> proxiedBeanType, Set<? extends Type> typeClosure, String proxyName, Bean<?> bean, boolean forceSuperClass) {
         this.bean = bean;
         this.contextId = contextId;
         this.proxiedBeanType = proxiedBeanType;
@@ -133,7 +141,7 @@ public class ProxyFactory<T> {
         TypeInfo typeInfo = TypeInfo.of(typeClosure);
         Class<?> superClass = typeInfo.getSuperClass();
         superClass = superClass == null ? Object.class : superClass;
-        if (superClass.equals(Object.class) && additionalInterfaces.isEmpty()) {
+        if (forceSuperClass || (superClass.equals(Object.class) && additionalInterfaces.isEmpty())) {
             // No interface beans must use the bean impl as superclass
             superClass = proxiedBeanType;
         }
