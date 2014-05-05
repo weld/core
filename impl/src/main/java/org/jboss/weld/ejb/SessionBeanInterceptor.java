@@ -47,7 +47,7 @@ public class SessionBeanInterceptor  extends AbstractEJBRequestScopeActivationIn
     public Object aroundInvoke(InvocationContext invocation) throws Exception {
         if (beanManager == null) {
             this.beanManager = obtainBeanManager(invocation);
-            this.ejbRequestContext = getEjbRequestContext();
+            this.ejbRequestContext = super.getEjbRequestContext();
         }
         return super.aroundInvoke(invocation);
     }
