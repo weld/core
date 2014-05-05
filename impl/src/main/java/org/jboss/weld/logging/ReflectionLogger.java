@@ -18,6 +18,8 @@ package org.jboss.weld.logging;
 
 import static org.jboss.weld.logging.WeldLogger.WELD_PROJECT_CODE;
 
+import java.lang.reflect.Method;
+
 import org.jboss.logging.Logger;
 import org.jboss.logging.Logger.Level;
 import org.jboss.logging.annotations.Cause;
@@ -131,5 +133,8 @@ public interface ReflectionLogger extends WeldLogger {
     @LogMessage(level = Level.WARN)
     @Message(id = 621, value = "Interceptor binding {0} with @Target defined as {1} should not be applied on interceptor binding {2} with @Target definition: {3}", format = Format.MESSAGE_FORMAT)
     void invalidInterceptorBindingTargetDeclaration(Object param1, Object param2, Object param3, Object param4);
+
+    @Message(id = 622, value = "IllegalArgumentException invoking {2} on {1} ({0}) with parameters {3}", format = Format.MESSAGE_FORMAT)
+    WeldException illegalArgumentExceptionOnReflectionInvocation(Class<?> clazz, Object instance, Method method, String parameters, @Cause java.lang.IllegalArgumentException cause);
 
 }

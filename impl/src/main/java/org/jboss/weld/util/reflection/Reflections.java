@@ -32,6 +32,7 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.security.AccessController;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,6 +41,7 @@ import java.util.Set;
 import javax.inject.Qualifier;
 
 import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.logging.ReflectionLogger;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
 import org.jboss.weld.security.GetDeclaredMethodsAction;
@@ -411,7 +413,7 @@ public class Reflections {
         try {
             return cast(method.invoke(instance, parameters));
         } catch (IllegalArgumentException e) {
-            throw new WeldException(e);
+            throw ReflectionLogger.LOG.illegalArgumentExceptionOnReflectionInvocation(instance.getClass(), instance, method, Arrays.toString(parameters), e);
         } catch (IllegalAccessException e) {
             throw new WeldException(e);
         } catch (InvocationTargetException e) {
