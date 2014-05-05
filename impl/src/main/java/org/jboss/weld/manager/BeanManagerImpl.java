@@ -96,6 +96,7 @@ import org.jboss.weld.context.CreationalContextImpl;
 import org.jboss.weld.context.PassivatingContextWrapper;
 import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.ejb.EjbDescriptors;
+import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.el.Namespace;
 import org.jboss.weld.el.WeldELResolver;
@@ -1111,7 +1112,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     @Override
     public <T> InjectionTarget<T> createInjectionTarget(EjbDescriptor<T> descriptor) {
         if (descriptor.isMessageDriven()) {
-            AnnotatedType<T> type = createAnnotatedType(descriptor.getBeanClass());
+            InternalEjbDescriptor<T> internalDescriptor = new InternalEjbDescriptor<T>(descriptor);
+            AnnotatedType<T> type = Reflections.cast(createAnnotatedType(internalDescriptor.getImplementationClass()));
             return getLocalInjectionTargetFactory(type).createMessageDrivenInjectionTarget();
         } else {
             InjectionTarget<T> injectionTarget = getBean(descriptor).getProducer();

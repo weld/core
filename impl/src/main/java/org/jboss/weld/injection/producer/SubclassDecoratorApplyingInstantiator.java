@@ -25,6 +25,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.bean.proxy.ProxyObject;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * A wrapper over {@link SubclassedComponentInstantiator} that registers decorators using the enhanced subclass. This is used
@@ -36,8 +37,12 @@ import org.jboss.weld.manager.BeanManagerImpl;
  */
 public class SubclassDecoratorApplyingInstantiator<T> extends AbstractDecoratorApplyingInstantiator<T> {
 
+    public SubclassDecoratorApplyingInstantiator(String contextId, Instantiator<T> delegate, Bean<T> bean, List<Decorator<?>> decorators, Class<? extends T> implementationClass) {
+        super(contextId, delegate, bean, decorators, implementationClass);
+    }
+
     public SubclassDecoratorApplyingInstantiator(String contextId, Instantiator<T> delegate, Bean<T> bean, List<Decorator<?>> decorators) {
-        super(contextId, delegate, bean, decorators);
+        super(contextId, delegate, bean, decorators, Reflections.<Class<T>>cast(bean.getBeanClass()));
     }
 
     @Override

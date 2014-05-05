@@ -19,13 +19,16 @@ package org.jboss.weld.ejb;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Set;
 
 import org.jboss.weld.annotated.enhanced.MethodSignature;
 import org.jboss.weld.annotated.enhanced.jlr.MethodSignatureImpl;
 import org.jboss.weld.ejb.spi.BusinessInterfaceDescriptor;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
+import org.jboss.weld.ejb.spi.SubclassedComponentDescriptor;
 import org.jboss.weld.ejb.spi.helpers.ForwardingEjbDescriptor;
+import org.jboss.weld.util.reflection.Reflections;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
@@ -65,8 +68,15 @@ public class InternalEjbDescriptor<T> extends ForwardingEjbDescriptor<T> {
                 removeMethodSignatures.add(new MethodSignatureImpl(method));
             }
         }
-        this.localBusinessInterfaces = ImmutableSet.copyOf(Collections2.transform(getLocalBusinessInterfaces(), BusinessInterfaceDescriptorToClassFunction.INSTANCE));
-        this.remoteBusinessInterfaces = ImmutableSet.copyOf(Collections2.transform(getRemoteBusinessInterfaces(), BusinessInterfaceDescriptorToClassFunction.INSTANCE));
+        this.localBusinessInterfaces = transformToClasses(getLocalBusinessInterfaces());
+        this.remoteBusinessInterfaces = transformToClasses(getRemoteBusinessInterfaces());
+    }
+
+    private static Set<Class<?>> transformToClasses(Collection<BusinessInterfaceDescriptor<?>> interfaceDescriptors) {
+        if (interfaceDescriptors == null) {
+            return Collections.emptySet();
+        }
+        return ImmutableSet.copyOf(Collections2.transform(interfaceDescriptors, BusinessInterfaceDescriptorToClassFunction.INSTANCE));
     }
 
     @Override
@@ -96,5 +106,16 @@ public class InternalEjbDescriptor<T> extends ForwardingEjbDescriptor<T> {
 
     public Set<Class<?>> getRemoteBusinessInterfacesAsClasses() {
         return remoteBusinessInterfaces;
+    }
+
+    public Class<? extends T> getImplementationClass() {
+        if (delegate instanceof SubclassedComponentDescriptor) {
+            SubclassedComponentDescriptor<T> descriptor = Reflections.<SubclassedComponentDescriptor<T>>cast(delegate);
+            Class<? extends T> implementationClass = descriptor.getComponentSubclass();
+            if (implementationClass != null) {
+                return implementationClass;
+            }
+        }
+        return delegate.getBeanClass();
     }
 }

@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.bean;
 
+import static org.jboss.weld.util.reflection.Reflections.cast;
+
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Collections;
@@ -32,6 +34,7 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.enhanced.MethodSignature;
 import org.jboss.weld.annotated.enhanced.jlr.MethodSignatureImpl;
+import org.jboss.weld.annotated.slim.SlimAnnotatedTypeStore;
 import org.jboss.weld.bean.interceptor.InterceptorBindingsAdapter;
 import org.jboss.weld.bean.proxy.EnterpriseBeanInstance;
 import org.jboss.weld.bean.proxy.Marker;
@@ -47,6 +50,7 @@ import org.jboss.weld.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
+import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.util.BeanMethods;
 import org.jboss.weld.util.reflection.Formats;
@@ -86,7 +90,12 @@ public class SessionBean<T> extends AbstractClassBean<T> {
     protected SessionBean(BeanAttributes<T> attributes, EnhancedAnnotatedType<T> type, InternalEjbDescriptor<T> ejbDescriptor, BeanIdentifier identifier, BeanManagerImpl manager) {
         super(attributes, type, identifier, manager);
         this.ejbDescriptor = ejbDescriptor;
-        setProducer(beanManager.getLocalInjectionTargetFactory(getEnhancedAnnotated()).createInjectionTarget(getEnhancedAnnotated(), this, false));
+        EnhancedAnnotatedType<T> implementationClass = type;
+        if (!ejbDescriptor.getBeanClass().equals(ejbDescriptor.getImplementationClass())) {
+            implementationClass = cast(manager.getServices().get(ClassTransformer.class).getEnhancedAnnotatedType(ejbDescriptor.getImplementationClass(), manager.getId()));
+            manager.getServices().get(SlimAnnotatedTypeStore.class).put(type.slim());
+        }
+        setProducer(beanManager.getLocalInjectionTargetFactory(implementationClass).createInjectionTarget(implementationClass, this, false));
     }
 
     /**
