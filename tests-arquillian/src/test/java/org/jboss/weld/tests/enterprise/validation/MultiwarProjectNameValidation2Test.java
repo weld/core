@@ -40,7 +40,7 @@ import org.junit.runner.RunWith;
  */
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-public class MultiwarProjectNameValidationTest2 {
+public class MultiwarProjectNameValidation2Test {
 
     @Deployment(testable = false)
     @ShouldThrowException(DeploymentException.class)

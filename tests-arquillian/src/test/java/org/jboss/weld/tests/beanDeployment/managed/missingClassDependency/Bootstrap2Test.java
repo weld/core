@@ -31,11 +31,11 @@ import javax.inject.Inject;
 
 @RunWith(Arquillian.class)
 @Category(Integration.class)
-public class BootstrapTest2 {
+public class Bootstrap2Test {
     @Deployment
     public static Archive<?> deploy() {
         return ShrinkWrap.create(BeanArchive.class)
-                .addClass(BootstrapTest2.class)
+                .addClass(Bootstrap2Test.class)
                 .addClasses(Cod.class, Herring.class)
                 ;
     }
