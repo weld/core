@@ -47,7 +47,7 @@ public class AfterTypeDiscoveryTest {
     @Deployment
     public static Archive<?> createTestArchive() {
         return ShrinkWrap.create(BeanArchive.class).addPackage(AfterTypeDiscoveryObserver.class.getPackage())
-                .addAsServiceProvider(Extension.class, AfterTypeDiscoveryObserver.class);
+                .addClass(ActionSequence.class).addAsServiceProvider(Extension.class, AfterTypeDiscoveryObserver.class);
     }
 
     @Inject
