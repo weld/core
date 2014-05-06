@@ -6,8 +6,8 @@ import java.util.Map;
 import javax.enterprise.context.SessionScoped;
 
 import org.jboss.weld.context.AbstractBoundContext;
-import org.jboss.weld.context.beanstore.MapBeanStore;
 import org.jboss.weld.context.beanstore.NamingScheme;
+import org.jboss.weld.context.beanstore.SessionMapBeanStore;
 import org.jboss.weld.context.beanstore.SimpleBeanIdentifierIndexNamingScheme;
 import org.jboss.weld.serialization.BeanIdentifierIndex;
 
@@ -19,7 +19,7 @@ public class BoundSessionContextImpl extends AbstractBoundContext<Map<String, Ob
     private final NamingScheme namingScheme;
 
     public BoundSessionContextImpl(String contextId, BeanIdentifierIndex index) {
-        super(contextId, false);
+        super(contextId, true);
         this.namingScheme = new SimpleBeanIdentifierIndexNamingScheme(NAMING_SCHEME_PREFIX, index);
     }
 
@@ -29,7 +29,7 @@ public class BoundSessionContextImpl extends AbstractBoundContext<Map<String, Ob
 
     public boolean associate(Map<String, Object> storage) {
         if (getBeanStore() == null) {
-            setBeanStore(new MapBeanStore(namingScheme, storage));
+            setBeanStore(new SessionMapBeanStore(namingScheme, storage));
             return true;
         } else {
             return false;

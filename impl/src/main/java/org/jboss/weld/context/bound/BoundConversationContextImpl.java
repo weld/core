@@ -1,12 +1,12 @@
 package org.jboss.weld.context.bound;
 
+import java.util.Map;
+
 import org.jboss.weld.context.AbstractConversationContext;
 import org.jboss.weld.context.beanstore.BoundBeanStore;
-import org.jboss.weld.context.beanstore.MapBeanStore;
 import org.jboss.weld.context.beanstore.NamingScheme;
+import org.jboss.weld.context.beanstore.SessionMapBeanStore;
 import org.jboss.weld.serialization.BeanIdentifierIndex;
-
-import java.util.Map;
 
 public class BoundConversationContextImpl extends AbstractConversationContext<BoundRequest, Map<String, Object>> implements BoundConversationContext {
 
@@ -44,12 +44,12 @@ public class BoundConversationContextImpl extends AbstractConversationContext<Bo
 
     @Override
     protected BoundBeanStore createRequestBeanStore(NamingScheme namingScheme, BoundRequest request) {
-        return new MapBeanStore(namingScheme, request.getSessionMap(false));
+        return new SessionMapBeanStore(namingScheme, request.getSessionMap(false));
     }
 
     @Override
     protected BoundBeanStore createSessionBeanStore(NamingScheme namingScheme, Map<String, Object> session) {
-        return new MapBeanStore(namingScheme, session);
+        return new SessionMapBeanStore(namingScheme, session);
     }
 
     @Override
