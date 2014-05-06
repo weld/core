@@ -145,13 +145,15 @@
 
     <profiles>
 
-        <!-- Default standalone profile using weld-ee-embedded container. Used to run fast embedded tests. -->
+        <!-- Arquillian container adapter profiles -->
+
+        <!-- Weld EE 1.1 - Embedded -->
         <profile>
             <id>default</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <activeByDefault>false</activeByDefault>
                 <property>
-                    <name>default</name>
+                    <name>!incontainer</name>
                 </property>
             </activation>
             <dependencies>
@@ -179,13 +181,14 @@
             </build>
         </profile>
 
-        <!-- InContainer profile using JBoss AS 7 Managed. Runs the full integration test suite, used by e.g. Hudson. -->
+        <!-- WildFly 8.x - Managed -->
         <profile>
             <id>incontainer</id>
             <activation>
                 <activeByDefault>false</activeByDefault>
                 <property>
                     <name>incontainer</name>
+                    <value>true</value>
                 </property>
             </activation>
 
@@ -232,13 +235,14 @@
             </build>
         </profile>
 
-        <!-- InContainer profile using JBoss AS 7 Remote. Runs the full integration test suite, used by e.g. Hudson. -->
+        <!-- WildFly 8.x - Remote -->
         <profile>
             <id>incontainer-remote</id>
             <activation>
                 <activeByDefault>false</activeByDefault>
                 <property>
-                    <name>incontainer-remote</name>
+                    <name>incontainer</name>
+                    <value>remote</value>
                 </property>
             </activation>
 
@@ -280,40 +284,7 @@
             </build>
         </profile>
 
-        <!-- Performance test related profiles -->
-
-        <!-- Standalone performance test profile using weld-ee-embedded container -->
-        <profile>
-            <id>standalone-perf</id>
-            <activation>
-                <property>
-                    <name>standalone-perf</name>
-                </property>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>org.jboss.weld.arquillian.container</groupId>
-                    <artifactId>arquillian-weld-ee-embedded-1.1</artifactId>
-                    <scope>provided</scope>
-                    <!--
-                       should be test, but we need shrinkwrap-impl for compiling
-                       BeanArchive, having this in test scopes override the
-                       shrinkwrap-api scope. ??
-                    -->
-                </dependency>
-            </dependencies>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <test>org.jboss.weld.tests.NormalPerformanceSuite</test>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
+        <!-- Other profiles -->
 
         <profile>
             <id>jacoco</id>
@@ -346,10 +317,7 @@
             </build>
         </profile>
 
-        <!-- TODO -->
-        <!-- The current version (2.10) of maven-surefire does not support Java 8 properly and higher versions break the build -->
-        <!-- Note that the use of jdk activation would deactivate the default profile, therefore a profiles cleanup is required as well -->
-        <!-- profile>
+        <profile>
             <id>jdk18</id>
             <activation>
                 <activeByDefault>false</activeByDefault>
@@ -386,7 +354,7 @@
                     </plugin>
                 </plugins>
             </build>
-        </profile-->
+        </profile>
 
     </profiles>
 
