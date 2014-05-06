@@ -72,9 +72,6 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
         this.serializable = type.isSerializable();
         this.interceptorBindingTypes = Collections.unmodifiableSet(new HashSet<Annotation>(Interceptors.mergeBeanInterceptorBindings(beanManager, getEnhancedAnnotated(), getStereotypes()).values()));
 
-        if (this.interceptorBindingTypes.size() == 0) {
-            throw BeanLogger.LOG.missingBindingOnInterceptor(type.getName());
-        }
         if (Beans.findInterceptorBindingConflicts(beanManager, interceptorBindingTypes)) {
             throw new DeploymentException(BeanLogger.LOG.conflictingInterceptorBindings(getType()));
         }
