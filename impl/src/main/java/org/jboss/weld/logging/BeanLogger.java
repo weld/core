@@ -326,6 +326,11 @@ public interface BeanLogger extends WeldLogger {
     @Message(id = 68, value = "Method {0} must be declared on a business interface of {1}", format = Format.MESSAGE_FORMAT)
     DefinitionException methodNotBusinessMethod(Object param1, Object param2);
 
+    /**
+     * @deprecated Not in use
+     * @see WELD-1668
+     */
+    @Deprecated
     @Message(id = 69, value = "An interceptor must have at least one binding, but {0} has none", format = Format.MESSAGE_FORMAT)
     DeploymentException missingBindingOnInterceptor(Object param1);
 
