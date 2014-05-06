@@ -5,8 +5,9 @@ import java.util.Map;
 
 public class MapBeanStore extends AttributeBeanStore {
 
+    protected transient volatile LockStore lockStore;
+
     private final Map<String, Object> delegate;
-    private transient volatile LockStore lockStore = new LockStore();
 
     public MapBeanStore(NamingScheme namingScheme, Map<String, Object> delegate) {
         super(namingScheme);
