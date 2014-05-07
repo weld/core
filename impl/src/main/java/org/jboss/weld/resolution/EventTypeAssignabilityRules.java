@@ -51,10 +51,7 @@ public class EventTypeAssignabilityRules implements AssignabilityRules {
 
     public static final Type[] EMPTY_TYPES = {};
 
-    public boolean isAssignableTo(Type type1, Type[] types2) {
-        return isAssignableFrom(types2, type1);
-    }
-
+    @Override
     public boolean isAssignableFrom(Type type1, Set<? extends Type> types2) {
         for (Type type2 : types2) {
             if (isAssignableFrom(type1, type2)) {
@@ -64,24 +61,7 @@ public class EventTypeAssignabilityRules implements AssignabilityRules {
         return false;
     }
 
-    public boolean isAssignableFrom(Type type1, Type[] types2) {
-        for (Type type2 : types2) {
-            if (isAssignableFrom(type1, type2)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean isAssignableFrom(Type[] types1, Type type2) {
-        for (Type type : types1) {
-            if (isAssignableFrom(type, type2)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
+    @Override
     public boolean isAssignableFrom(Type type1, Type type2) {
         Type requiredType = wrapWithinTypeHolder(type1);
         if (requiredType instanceof ActualTypeHolder) {
@@ -95,6 +75,28 @@ public class EventTypeAssignabilityRules implements AssignabilityRules {
             return isAssignableFrom((TypeVariable<?>) requiredType, type2);
         }
         return false;
+    }
+
+    protected boolean isAssignableToAll(Type type1, Type[] types2) {
+        return allAreAssignableFrom(types2, type1);
+    }
+
+    protected boolean isAssignableFromAll(Type type1, Type[] types2) {
+        for (Type type2 : types2) {
+            if (!isAssignableFrom(type1, type2)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    protected boolean allAreAssignableFrom(Type[] types1, Type type2) {
+        for (Type type : types1) {
+            if (!isAssignableFrom(type, type2)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     protected boolean isAssignableFrom(ActualTypeHolder requiredType, Type otherType) {
@@ -113,10 +115,11 @@ public class EventTypeAssignabilityRules implements AssignabilityRules {
         if (otherType instanceof WildcardType) {
             WildcardType wildcardType = (WildcardType) otherType;
             for (Type upperBound : wildcardType.getUpperBounds()) {
-                if (isAssignableFrom(requiredType, upperBound)) {
-                    return true;
+                if (!isAssignableFrom(requiredType, upperBound)) {
+                    return false;
                 }
             }
+            return true;
         }
         return false;
     }
@@ -144,13 +147,7 @@ public class EventTypeAssignabilityRules implements AssignabilityRules {
         return true;
     }
 
-    /**
-     * Check whether whether any of the requiredTypes matches a type in beanTypes
-     *
-     * @param requiredTypes the requiredTypes
-     * @param beanTypes     the beanTypes
-     * @return can we assign any type from requiredTypes to beanTypes
-     */
+    @Override
     public boolean matches(Set<Type> requiredTypes, Set<Type> beanTypes) {
         for (Type requiredType : requiredTypes) {
             if (matches(requiredType, beanTypes)) {
@@ -160,6 +157,7 @@ public class EventTypeAssignabilityRules implements AssignabilityRules {
         return false;
     }
 
+    @Override
     public boolean matches(Type requiredType, Set<? extends Type> beanTypes) {
         for (Type beanType : beanTypes) {
             if (matches(requiredType, beanType)) {
@@ -169,6 +167,7 @@ public class EventTypeAssignabilityRules implements AssignabilityRules {
         return false;
     }
 
+    @Override
     public boolean matches(Type requiredType, Type beanType) {
         requiredType = wrapWithinTypeHolder(requiredType);
         if (requiredType instanceof ActualTypeHolder) {
@@ -195,7 +194,7 @@ public class EventTypeAssignabilityRules implements AssignabilityRules {
      * Checks whether the given type is assignable from lower bounds and assignable to upper bounds.
      */
     public boolean isTypeInsideBounds(Type type, Type[] lowerBounds, Type[] upperBounds) {
-        return (lowerBounds.length == 0 || isAssignableFrom(type, lowerBounds)) && (upperBounds.length == 0 || isAssignableTo(type, upperBounds));
+        return (lowerBounds.length == 0 || isAssignableFromAll(type, lowerBounds)) && (upperBounds.length == 0 || isAssignableToAll(type, upperBounds));
     }
 
     public boolean areTypesInsideBounds(Type[] types, Type[] lowerBounds, Type[] upperBounds) {
@@ -226,10 +225,11 @@ public class EventTypeAssignabilityRules implements AssignabilityRules {
         if (otherType instanceof WildcardType) {
             WildcardType wildcardType = (WildcardType) otherType;
             for (Type upperBound : wildcardType.getUpperBounds()) {
-                if (matches(requiredType, upperBound)) {
-                    return true;
+                if (!matches(requiredType, upperBound)) {
+                    return false;
                 }
             }
+            return true;
         }
         return false;
     }
