@@ -28,6 +28,7 @@ import javax.inject.Inject;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.injection.FieldInjectionPoint;
+import org.jboss.weld.injection.InjectionContextImpl;
 import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -64,7 +65,12 @@ public class DefaultInjector<T> implements Injector<T> {
 
     @Override
     public void inject(final T instance, final CreationalContext<T> ctx, final BeanManagerImpl manager, SlimAnnotatedType<T> type, InjectionTarget<T> injectionTarget) {
-        Beans.injectFieldsAndInitializers(instance, ctx, manager, injectableFields, initializerMethods);
+        new InjectionContextImpl<T>(manager, injectionTarget, type, instance) {
+            @Override
+            public void proceed() {
+                Beans.injectFieldsAndInitializers(instance, ctx, manager, injectableFields, initializerMethods);
+            }
+        }.run();
     }
 
     @Override

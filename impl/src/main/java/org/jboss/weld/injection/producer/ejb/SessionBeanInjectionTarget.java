@@ -110,6 +110,13 @@ public class SessionBeanInjectionTarget<T> extends BeanInjectionTarget<T> {
         return result;
     }
 
+    @Override
+    public void inject(T instance, CreationalContext<T> ctx) {
+        // explicitly use bean's AnnotatedType, not InjectionPoint's as this.getAnnotated()
+        // may represent the annotated type for the EJB-container subclass (see SubclassedComponentDescriptor)
+        getInjector().inject(instance, ctx, beanManager, bean.getAnnotated(), this);
+    }
+
     /**
      * This {@link MethodHandler} assures that any method invoked on a decorated {@link SessionBean} is a method that belongs to
      * a bean type of the bean. If the methods belongs to the bean implementation and the bean implementation is not a bean type
