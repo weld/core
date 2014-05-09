@@ -16,40 +16,35 @@
  */
 package org.jboss.weld.tests.specialization.weld1651;
 
-import javax.inject.Inject;
+import static junit.framework.Assert.assertNotNull;
 
-import junit.framework.Assert;
+import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.ArchivePaths;
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
- * @author Tomas Remes
+ * @author Matus Abaffy
  */
-
 @RunWith(Arquillian.class)
-public class GenericBeanSpecializationTest {
+public class AdvancedGenericBeanSpecializationTest {
 
     @Inject
-    MetalFan<Music> fan;
+    SpecializingGenericBean<?, ?> bean;
 
     @Deployment
-    public static WebArchive createWebArchive() {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "generic-specialization-test.war");
-        war.addClasses(GenericBeanSpecializationTest.class, Fan.class, MetalFan.class, Music.class);
-        war.addAsWebInfResource(EmptyAsset.INSTANCE, ArchivePaths.create("beans.xml"));
-        return war;
+    public static Archive<?> createWebArchive() {
+        return ShrinkWrap.create(BeanArchive.class).addClasses(AdvancedGenericBeanSpecializationTest.class, SpecializedGenericBean.class,
+                SpecializingGenericBean.class, Bar.class, Foo.class);
     }
 
     @Test
     public void testGenericBeanSpecialization(){
-        Assert.assertNotNull(fan);
+        assertNotNull(bean);
     }
-
 }
