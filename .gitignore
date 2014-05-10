@@ -23,3 +23,6 @@ examples/jsf/permalink/src/main/webapp/META-INF/MANIFEST.MF
 tests-arquillian/src/test/resources/org/jboss/weld/tests/contexts/conversation/exceptionInPhaseListener/.faces-config.xml.jsfdia
 .externalToolBuilders
 bin
+environments/servlet/tests/gwt/src/main/gwt-unitCache
+environments/servlet/tests/gwt/src/main/webapp/WEB-INF/deploy
+environments/servlet/tests/gwt/src/main/webapp/testi
