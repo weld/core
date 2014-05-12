@@ -21,6 +21,7 @@ import javax.servlet.ServletRequestListener;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.context.cache.RequestScopedBeanCache;
 import org.jboss.weld.context.http.HttpRequestContext;
@@ -76,6 +77,8 @@ public class HttpContextLifecycle implements Service {
 
     private final ServletContextService servletContextService;
 
+    private final Container container;
+
     private static final ThreadLocal<Counter> nestedInvocationGuard = new ThreadLocal<HttpContextLifecycle.Counter>();
     private final boolean nestedInvocationGuardEnabled;
 
@@ -99,6 +102,7 @@ public class HttpContextLifecycle implements Service {
         this.servletApi = beanManager.getServices().get(ServletApiAbstraction.class);
         this.servletContextService = beanManager.getServices().get(ServletContextService.class);
         this.nestedInvocationGuardEnabled = nestedInvocationGuardEnabled;
+        this.container = Container.instance(beanManager);
     }
 
     private HttpSessionDestructionContext getSessionDestructionContext() {
@@ -124,11 +128,15 @@ public class HttpContextLifecycle implements Service {
 
     public void contextInitialized(ServletContext ctx) {
         servletContextService.contextInitialized(ctx);
-        applicationInitializedEvent.fire(ctx);
+        synchronized (container) {
+            applicationInitializedEvent.fire(ctx);
+        }
     }
 
     public void contextDestroyed(ServletContext ctx) {
-        applicationDestroyedEvent.fire(ctx);
+        synchronized (container) {
+            applicationDestroyedEvent.fire(ctx);
+        }
     }
 
     public void sessionCreated(HttpSession session) {
