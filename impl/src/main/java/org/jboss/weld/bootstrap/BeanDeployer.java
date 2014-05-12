@@ -16,8 +16,17 @@
  */
 package org.jboss.weld.bootstrap;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.BootstrapMessage.BEAN_IS_BOTH_INTERCEPTOR_AND_DECORATOR;
+import static org.jboss.weld.logging.messages.BootstrapMessage.IGNORING_CLASS_DUE_TO_LOADING_ERROR;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.decorator.Decorator;
+import javax.enterprise.inject.spi.AnnotatedType;
+import javax.interceptor.Interceptor;
+
 import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.events.ProcessAnnotatedTypeImpl;
@@ -34,17 +43,10 @@ import org.jboss.weld.resources.spi.ResourceLoadingException;
 import org.jboss.weld.util.reflection.Reflections;
 import org.slf4j.cal10n.LocLogger;
 import org.slf4j.ext.XLogger;
+import org.slf4j.ext.XLogger.Level;
 
-import javax.decorator.Decorator;
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.interceptor.Interceptor;
-import java.util.HashSet;
-import java.util.Set;
-
-import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.BootstrapMessage.BEAN_IS_BOTH_INTERCEPTOR_AND_DECORATOR;
-import static org.jboss.weld.logging.messages.BootstrapMessage.IGNORING_CLASS_DUE_TO_LOADING_ERROR;
-import static org.slf4j.ext.XLogger.Level.INFO;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 
 /**
  * @author pmuir
@@ -122,7 +124,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
 
     private void logIgnoredClass(String className, Throwable e) {
         log.info(IGNORING_CLASS_DUE_TO_LOADING_ERROR, className);
-        xlog.catching(INFO, e);
+        xlog.catching(Level.DEBUG, e);
     }
 
     public BeanDeployer addClass(AnnotatedType<?> clazz) {

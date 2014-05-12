@@ -16,11 +16,13 @@
  */
 package org.jboss.weld.resources;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
-import com.google.common.util.concurrent.ExecutionError;
-import com.google.common.util.concurrent.UncheckedExecutionException;
+import static org.jboss.weld.util.cache.LoadingCacheUtils.getCastCacheValue;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+
+import javax.enterprise.inject.spi.AnnotatedType;
+
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.introspector.ForwardingAnnotatedType;
 import org.jboss.weld.introspector.WeldAnnotation;
@@ -33,11 +35,10 @@ import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
 import org.slf4j.Logger;
 
-import javax.enterprise.inject.spi.AnnotatedType;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-
-import static org.jboss.weld.util.cache.LoadingCacheUtils.getCastCacheValue;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import com.google.common.util.concurrent.ExecutionError;
 
 /**
  * @author Pete Muir
@@ -142,42 +143,12 @@ public class ClassTransformer implements Service {
         this.typeStore = typeStore;
     }
 
-    @SuppressWarnings("unchecked")
     public <T> WeldClass<T> loadClass(final Class<T> rawType, final Type baseType) {
-        try {
-            return getCastCacheValue(classes, new TypeHolder<T>(rawType, baseType));
-        } catch (UncheckedExecutionException e) {
-            final Throwable cause = e.getCause();
-            if (cause instanceof NoClassDefFoundError || cause instanceof TypeNotPresentException || cause instanceof ResourceLoadingException || cause instanceof LinkageError) {
-                throw new ResourceLoadingException("Error loading class " + rawType.getName(), cause);
-            } else {
-                if (log.isTraceEnabled()) {
-                    log.trace("Error loading class '" + rawType.getName() + "' : " + cause);
-                }
-                throw e;
-            }
-        }
+        return getWeldClass(classes, new TypeHolder<T>(rawType, baseType));
     }
 
     public <T> WeldClass<T> loadClass(final Class<T> clazz) {
-        try {
-            return getCastCacheValue(classes, new TypeHolder<T>(clazz, clazz));
-        } catch (UncheckedExecutionException e) {
-            final Throwable cause = e.getCause();
-            if (cause instanceof TypeNotPresentException || cause instanceof ResourceLoadingException) {
-                throw new ResourceLoadingException("Error loading class " + clazz.getName(), cause);
-            }
-            log.trace("Exception while loading class '{}' : {}", clazz.getName(), cause);
-            throw e;
-        } catch (ExecutionError e) {
-            // LoadingCache throws ExecutionError if an error was thrown while loading the value
-            final Throwable cause = e.getCause();
-            if (cause instanceof NoClassDefFoundError || cause instanceof LinkageError) {
-                throw new ResourceLoadingException("Error while loading class " + clazz.getName(), cause);
-            }
-            log.trace("Error while loading class '{}' : {}", clazz.getName(), cause);
-            throw e;
-        }
+        return getWeldClass(classes,  new TypeHolder<T>(clazz, clazz));
     }
 
     public void clearAnnotationData(Class<? extends Annotation> annotationClass) {
@@ -210,6 +181,26 @@ public class ClassTransformer implements Service {
         this.annotatedTypes.invalidateAll();
         this.annotations.invalidateAll();
         this.classes.invalidateAll();
+    }
+
+    private <T> WeldClass<T> getWeldClass(LoadingCache<TypeHolder<?>, WeldClass<?>> classes, TypeHolder<T> key) {
+        try {
+            return getCastCacheValue(classes, key);
+        } catch (RuntimeException e) {
+            if (e instanceof TypeNotPresentException || e instanceof ResourceLoadingException) {
+                throw new ResourceLoadingException("Exception while loading class " + key.getRawType().getName(), e);
+            }
+            log.trace("Exception while loading class '{}' : {}", key.getRawType().getName(), e);
+            throw e;
+        } catch (ExecutionError e) {
+            // LoadingCache throws ExecutionError if an error was thrown while loading the value
+            final Throwable cause = e.getCause();
+            if (cause instanceof NoClassDefFoundError || cause instanceof LinkageError) {
+                throw new ResourceLoadingException("Error while loading class " + key.getRawType().getName(), cause);
+            }
+            log.trace("Error while loading class '{}' : {}", key.getRawType().getName(), cause);
+            throw e;
+        }
     }
 
 }
