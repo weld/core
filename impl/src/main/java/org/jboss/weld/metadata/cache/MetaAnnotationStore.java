@@ -16,19 +16,16 @@
  */
 package org.jboss.weld.metadata.cache;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
-import com.google.common.util.concurrent.UncheckedExecutionException;
-import org.jboss.weld.bootstrap.api.Service;
-import org.jboss.weld.exceptions.DefinitionException;
-import org.jboss.weld.exceptions.DeploymentException;
-import org.jboss.weld.exceptions.WeldException;
-import org.jboss.weld.resources.ClassTransformer;
+import static org.jboss.weld.util.cache.LoadingCacheUtils.getCastCacheValue;
 
 import java.lang.annotation.Annotation;
 
-import static org.jboss.weld.util.cache.LoadingCacheUtils.getCastCacheValue;
+import org.jboss.weld.bootstrap.api.Service;
+import org.jboss.weld.resources.ClassTransformer;
+
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 
 /**
  * Metadata singleton for holding EJB metadata, scope models etc.
@@ -190,17 +187,6 @@ public class MetaAnnotationStore implements Service {
     }
 
     public <T extends Annotation> InterceptorBindingModel<T> getInterceptorBindingModel(final Class<T> interceptorBinding) {
-        // Unwrap Definition/Deployment exceptions wrapped in a ComputationException
-        // TODO: generalize this and move to a higher level (MBG)
-        try {
-            return getCastCacheValue(interceptorBindings, interceptorBinding);
-        } catch (UncheckedExecutionException e) {
-            Throwable cause = e.getCause();
-            if (cause instanceof DeploymentException || cause instanceof DefinitionException) {
-                throw (WeldException) cause;
-            } else {
-                throw e;
-            }
-        }
+        return getCastCacheValue(interceptorBindings, interceptorBinding);
     }
 }

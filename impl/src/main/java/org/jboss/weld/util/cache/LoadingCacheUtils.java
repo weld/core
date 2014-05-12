@@ -23,7 +23,6 @@ import java.util.concurrent.ExecutionException;
 import org.jboss.weld.exceptions.WeldException;
 
 import com.google.common.cache.LoadingCache;
-import com.google.common.util.concurrent.ExecutionError;
 import com.google.common.util.concurrent.UncheckedExecutionException;
 
 /**
@@ -37,43 +36,25 @@ public final class LoadingCacheUtils {
     }
 
     /**
-     * Get the cache value for the given key. Wrap possible {@link ExecutionException} and {@link UncheckedExecutionException}.
+     * Get the cache value for the given key. Wrap possible {@link ExecutionException}.
      *
      * @param cache
      * @param key
      * @param <K> Key type
      * @param <V> Value type
      * @return the cache value
-     * @throws WeldException if an expection is thrown while loading the value
-     * @throws ExecutionError if an error is thrown while loading the value
      */
     public static <K, V> V getCacheValue(LoadingCache<K, V> cache, K key) {
-        return getCacheValue(cache, key, true);
-    }
-
-    /**
-     * Get the cache value for the given key. Wrap possible {@link ExecutionException} and {@link UncheckedExecutionException}.
-     *
-     * @param cache
-     * @param key
-     * @param wrapExecutionProblem If <code>true</code>, wrap possible {@link ExecutionException} and
-     *        {@link UncheckedExecutionException}, otherwise {@link UncheckedExecutionException} may be thrown when execution
-     *        problem occurs
-     * @param <K> Key type
-     * @param <V> Value type
-     * @return the cache value
-     * @throws ExecutionError if an error is thrown while loading the value
-     */
-    public static <K, V> V getCacheValue(LoadingCache<K, V> cache, K key, boolean wrapExecutionProblem) {
-
-        if (wrapExecutionProblem) {
-            try {
-                return cache.get(key);
-            } catch (Exception e) {
-                throw new WeldException(UNABLE_TO_LOAD_CACHE_VALUE, e, key);
+        try {
+            return cache.get(key);
+        } catch (ExecutionException e) {
+            throw new WeldException(UNABLE_TO_LOAD_CACHE_VALUE, e.getCause(), key);
+        } catch (UncheckedExecutionException e) {
+            Throwable cause = e.getCause();
+            if (cause instanceof RuntimeException) {
+                throw (RuntimeException) cause;
             }
-        } else {
-            return cache.getUnchecked(key);
+            throw new WeldException(UNABLE_TO_LOAD_CACHE_VALUE, cause, key);
         }
     }
 
@@ -86,30 +67,10 @@ public final class LoadingCacheUtils {
      * @param <K> Key type
      * @param <V> Value type
      * @return the cache value cast to the required type
-     * @throws WeldException if an expection is thrown while loading the value
-     * @throws ExecutionError if an error is thrown while loading the value
-     */
-    public static <T, K, V> T getCastCacheValue(LoadingCache<K, V> cache, Object key) {
-        return getCastCacheValue(cache, key, true);
-    }
-
-    /**
-     * Get and cast the cache value for the given key.
-     *
-     * @param cache
-     * @param key
-     * @param wrapExecutionProblem If <code>true</code>, wrap possible {@link ExecutionException} and
-     *        {@link UncheckedExecutionException}, otherwise {@link UncheckedExecutionException} may be thrown when execution
-     *        problem occurs
-     * @param <T> Required type
-     * @param <K> Key type
-     * @param <V> Value type
-     * @return the cache value cast to the required type
-     * @throws ExecutionError if an error is thrown while loading the value
      */
     @SuppressWarnings("unchecked")
-    public static <T, K, V> T getCastCacheValue(LoadingCache<K, V> cache, Object key, boolean wrapExecutionProblem) {
-        return (T) getCacheValue(cache, (K) key, wrapExecutionProblem);
+    public static <T, K, V> T getCastCacheValue(LoadingCache<K, V> cache, Object key) {
+        return (T) getCacheValue(cache, (K) key);
     }
 
 }
