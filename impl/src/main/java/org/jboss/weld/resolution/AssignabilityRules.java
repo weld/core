@@ -21,19 +21,33 @@ import java.util.Set;
 
 public interface AssignabilityRules {
 
+    /**
+     * Check whether at least one of the types2 is assignable from a type1
+     *
+     * @param type1
+     * @param types2
+     * @return can we assign type1 to some type in types2
+     */
     boolean isAssignableFrom(Type type1, Set<? extends Type> types2);
 
     boolean isAssignableFrom(Type type1, Type type2);
 
     /**
-     * Check whether whether any of the requiredTypes matches a type in beanTypes
+     * Check whether at least one of the requiredTypes matches a type in beanTypes
      *
      * @param requiredTypes the requiredTypes
      * @param beanTypes     the beanTypes
-     * @return can we assign any type from requiredTypes to beanTypes
+     * @return can we assign some type from requiredTypes to some type in beanTypes
      */
     boolean matches(Set<Type> requiredTypes, Set<Type> beanTypes);
 
+    /**
+     * Check whether requiredType matches a type in beanTypes
+     *
+     * @param requiredType the requiredType
+     * @param beanTypes    the beanTypes
+     * @return can we assign requiredType to some type in beanTypes
+     */
     boolean matches(Type requiredType, Set<? extends Type> beanTypes);
 
     boolean matches(Type requiredType, Type beanType);
