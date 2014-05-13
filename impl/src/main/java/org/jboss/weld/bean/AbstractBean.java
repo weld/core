@@ -17,6 +17,7 @@
 package org.jboss.weld.bean;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.Set;
@@ -123,8 +124,17 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
                 if (isNameDefined && name != null) {
                     throw BeanLogger.LOG.nameNotAllowedOnSpecialization(getAnnotated());
                 }
-                // TODO the case when the specialized bean is generic and the specializing bean extends just a raw type of it
+
+                // When a specializing bean extends the raw type of a generic superclass, types of the generic superclass are
+                // added into types of the specializing bean because of assignability rules. However, ParameterizedTypes among
+                // these types are NOT types of the specializing bean (that's the way java works)
+                boolean rawInsteadOfGeneric = (this instanceof AbstractClassBean<?>
+                        && specializedBean.getBeanClass().getTypeParameters().length > 0
+                        && !(((AbstractClassBean<?>) this).getBeanClass().getGenericSuperclass() instanceof ParameterizedType));
                 for (Type specializedType : specializedBean.getTypes()) {
+                    if (rawInsteadOfGeneric && specializedType instanceof ParameterizedType) {
+                        throw BeanLogger.LOG.specializingBeanMissingSpecializedType(this, specializedType, specializedBean);
+                    }
                     boolean contains = getTypes().contains(specializedType);
                     if (!contains) {
                         for (Type specializingType : getTypes()) {
