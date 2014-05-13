@@ -35,13 +35,10 @@ public final class LoadingCacheUtils {
     }
 
     /**
-     * Get the cache value for the given key. Wrap possible {@link ExecutionException} and {@link UncheckedExecutionException}.
+     * Get the cache value for the given key.
      *
      * @param cache
      * @param key
-     * @param wrapExecutionProblem If <code>true</code>, wrap possible {@link ExecutionException} and
-     *        {@link UncheckedExecutionException}, otherwise {@link UncheckedExecutionException} may be thrown when execution
-     *        problem occurs
      * @param <K> Key type
      * @param <V> Value type
      * @return the cache value
@@ -66,9 +63,6 @@ public final class LoadingCacheUtils {
      *
      * @param cache
      * @param key
-     * @param wrapExecutionProblem If <code>true</code>, wrap possible {@link ExecutionException} and
-     *        {@link UncheckedExecutionException}, otherwise {@link UncheckedExecutionException} may be thrown when execution
-     *        problem occurs
      * @param <T> Required type
      * @param <K> Key type
      * @param <V> Value type
