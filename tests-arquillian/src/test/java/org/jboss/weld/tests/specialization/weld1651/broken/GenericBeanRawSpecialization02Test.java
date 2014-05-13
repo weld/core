@@ -24,9 +24,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.weld.tests.specialization.weld1651.Fan;
-import org.jboss.weld.tests.specialization.weld1651.Music;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -34,14 +31,13 @@ import org.junit.runner.RunWith;
  * @author Matus Abaffy
  */
 @RunWith(Arquillian.class)
-@Ignore("Patch for specializing bean extending raw type of generic superclass is still missing")
-public class GenericBeanRawSpecializationTest {
+public class GenericBeanRawSpecialization02Test {
 
     @Deployment
     @ShouldThrowException(DefinitionException.class)
     public static Archive<?> createArchive() {
         return ShrinkWrap.create(BeanArchive.class)
-                .addClasses(Fan.class, RockFan3.class, Music.class);
+                .addClasses(GenericInterface.class, GenericBean.class, SpecializingBean.class);
     }
 
     @Test
