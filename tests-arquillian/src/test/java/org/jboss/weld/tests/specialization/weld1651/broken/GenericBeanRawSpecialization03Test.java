@@ -22,24 +22,24 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.weld.tests.specialization.weld1651.Fan;
-import org.jboss.weld.tests.specialization.weld1651.Music;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
+ * {@link MyRawBean} extends raw version of {@link MyBean}, therefore all type parameters/arguments among supertypes of
+ * {@link MyBean} are "ignored". Especially type argument {@link Number} in the generic definition '{@link MyInterface} extends
+ * {@link MySuperInterface}<{@link Number}>.
+ *
  * @author Matus Abaffy
  */
 @RunWith(Arquillian.class)
-@Ignore("Patch for specializing bean extending raw type of generic superclass is still missing")
-public class GenericBeanRawSpecializationTest {
+public class GenericBeanRawSpecialization03Test {
 
     @Deployment
     @ShouldThrowException(Exception.class)
     public static Archive<?> createArchive() {
-        return ShrinkWrap.create(BeanArchive.class)
-                .addClasses(Fan.class, RockFan3.class, Music.class);
+        return ShrinkWrap.create(BeanArchive.class).addClasses(GenericBeanRawSpecialization03Test.class, MyBean.class,
+                MyRawBean.class, MyInterface.class, MySuperInterface.class);
     }
 
     @Test
