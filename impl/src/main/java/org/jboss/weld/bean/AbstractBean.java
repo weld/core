@@ -31,6 +31,7 @@ import static org.jboss.weld.logging.messages.BeanMessage.USING_NAME;
 import static org.jboss.weld.logging.messages.BeanMessage.USING_SCOPE_FROM_STEREOTYPE;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.HashSet;
@@ -283,15 +284,26 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
         if (getWeldAnnotated().isAnnotationPresent(Named.class) && getSpecializedBean().getName() != null) {
             throw new DefinitionException(NAME_NOT_ALLOWED_ON_SPECIALIZATION, getWeldAnnotated());
         }
-        // TODO the case when the specialized bean is generic and the specializing bean extends just a raw type of it
+        // When a specializing bean extends the raw type of a generic superclass, ParameterizedTypes of the generic superclass
+        // are added into types of the specializing bean because of assignability rules. However, these types are actually
+        // not types of the specializing bean
+        boolean rawInsteadOfGeneric = false;
+        if (this instanceof AbstractClassBean<?> && getSpecializedBean().getBeanClass().getTypeParameters().length > 0
+                && !(((AbstractClassBean<?>) this).getBeanClass().getGenericSuperclass() instanceof ParameterizedType)) {
+            rawInsteadOfGeneric = true;
+        }
         for (Type specializedType : getSpecializedBean().getTypes()) {
             boolean contains = false;
-            for (Type specializingType : getTypes()) {
-                // In case 'type' is a ParameterizedType, two bean types equivalent in the CDI sense may not be equal in
-                // the java sense. Therefore we have to use our own equality util.
-                if (TypeEqualitySpecializationUtils.areTheSame(specializingType, specializedType)) {
-                    contains = true;
-                    break;
+            // if rawInsteadOfGeneric, then searching getTypes() for a ParameterizedType from specializedBean.getTypes()
+            // does not make any sense - even if it was there, it is not a bean type of this specializing bean
+            if (!(rawInsteadOfGeneric && specializedType instanceof ParameterizedType)) {
+                for (Type specializingType : getTypes()) {
+                    // In case 'type' is a ParameterizedType, two bean types equivalent in the CDI sense may not be equal in
+                    // the java sense. Therefore we have to use our own equality util.
+                    if (TypeEqualitySpecializationUtils.areTheSame(specializingType, specializedType)) {
+                        contains = true;
+                        break;
+                    }
                 }
             }
             if (!contains) {

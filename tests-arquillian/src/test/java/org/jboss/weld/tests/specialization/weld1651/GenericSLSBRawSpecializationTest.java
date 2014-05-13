@@ -14,9 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.specialization.weld1651.broken;
+package org.jboss.weld.tests.specialization.weld1651;
 
-import javax.enterprise.inject.spi.DefinitionException;
+import javax.inject.Inject;
+
+import junit.framework.Assert;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.ShouldThrowException;
@@ -24,27 +26,30 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.weld.tests.specialization.weld1651.Fan;
-import org.jboss.weld.tests.specialization.weld1651.Music;
-import org.junit.Ignore;
+import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 /**
  * @author Matus Abaffy
  */
+@Category(Integration.class)
 @RunWith(Arquillian.class)
-@Ignore("Patch for specializing bean extending raw type of generic superclass is still missing")
-public class GenericBeanRawSpecializationTest {
+public class GenericSLSBRawSpecializationTest {
+
+    @Inject
+    LocalInterface slsb;
 
     @Deployment
-    @ShouldThrowException(DefinitionException.class)
+    // SLSB does not contain type SLSB<T> so the deployment should not fail.
     public static Archive<?> createWebArchive() {
         return ShrinkWrap.create(BeanArchive.class)
-                .addClasses(Fan.class, RockFan3.class, Music.class);
+                .addClasses(GenericSLSBRawSpecializationTest.class, SLSB.class, SpecializingSLSB.class, LocalInterface.class);
     }
 
     @Test
     public void testSpecializationOfRawType() {
+        Assert.assertNotNull(slsb);
     }
 }
