@@ -52,16 +52,6 @@ public class EventTypeAssignabilityRules implements AssignabilityRules {
     public static final Type[] EMPTY_TYPES = {};
 
     @Override
-    public boolean isAssignableFrom(Type type1, Set<? extends Type> types2) {
-        for (Type type2 : types2) {
-            if (isAssignableFrom(type1, type2)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
     public boolean isAssignableFrom(Type type1, Type type2) {
         Type requiredType = wrapWithinTypeHolder(type1);
         if (requiredType instanceof ActualTypeHolder) {

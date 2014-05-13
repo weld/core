@@ -56,17 +56,6 @@ public interface Resolvable {
     <A extends Annotation> A getAnnotation(Class<A> annotationType);
 
     /**
-     * Check if this resolvable's type closure includes the clazz passed as an
-     * argument
-     *
-     * @deprecated use {@link AssignabilityRules#isAssignableFrom(Type, Set)} instead.
-     * @param clazz the class to check for
-     * @return true if clazz is present
-     */
-    @Deprecated
-    boolean isAssignableTo(Class<?> clazz);
-
-    /**
      * The types that this resolvable may be assigned to
      *
      * @return

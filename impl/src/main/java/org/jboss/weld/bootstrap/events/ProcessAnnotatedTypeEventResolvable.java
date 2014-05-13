@@ -187,11 +187,6 @@ public class ProcessAnnotatedTypeEventResolvable implements Resolvable {
     }
 
     @Override
-    public boolean isAssignableTo(Class<?> clazz) {
-        return false;
-    }
-
-    @Override
     public Class<?> getJavaClass() {
         return null;
     }

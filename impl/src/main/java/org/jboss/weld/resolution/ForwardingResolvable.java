@@ -26,30 +26,32 @@ public abstract class ForwardingResolvable implements Resolvable {
 
     protected abstract Resolvable delegate();
 
+    @Override
     public Set<QualifierInstance> getQualifiers() {
         return delegate().getQualifiers();
     }
 
+    @Override
     public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
         return delegate().isAnnotationPresent(annotationType);
     }
 
+    @Override
     public Set<Type> getTypes() {
         return delegate().getTypes();
     }
 
-    public boolean isAssignableTo(Class<?> clazz) {
-        return delegate().isAssignableTo(clazz);
-    }
-
+    @Override
     public <A extends Annotation> A getAnnotation(Class<A> annotationType) {
         return delegate().getAnnotation(annotationType);
     }
 
+    @Override
     public Class<?> getJavaClass() {
         return delegate().getJavaClass();
     }
 
+    @Override
     public Bean<?> getDeclaringBean() {
         return delegate().getDeclaringBean();
     }

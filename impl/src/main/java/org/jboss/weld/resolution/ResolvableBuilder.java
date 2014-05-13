@@ -227,36 +227,32 @@ public class ResolvableBuilder {
             this.delegate = delegate;
         }
 
+        @Override
         public Set<QualifierInstance> getQualifiers() {
             return qualifierInstances;
         }
 
+        @Override
         public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
             return mappedQualifiers.containsKey(annotationType);
         }
 
+        @Override
         public Set<Type> getTypes() {
             return typeClosure;
         }
 
-        public boolean isAssignableTo(Class<?> clazz) {
-            AssignabilityRules rules = null;
-            if (isDelegate()) {
-                rules = DelegateInjectionPointAssignabilityRules.instance();
-            } else {
-                rules = BeanTypeAssignabilityRules.instance();
-            }
-            return rules.isAssignableFrom(clazz, typeClosure);
-        }
-
+        @Override
         public <A extends Annotation> A getAnnotation(Class<A> annotationType) {
             return Reflections.<A>cast(mappedQualifiers.get(annotationType));
         }
 
+        @Override
         public Class<?> getJavaClass() {
             return rawType;
         }
 
+        @Override
         public Bean<?> getDeclaringBean() {
             return declaringBean;
         }
@@ -266,6 +262,7 @@ public class ResolvableBuilder {
             return "Types: " + getTypes() + "; Bindings: " + getQualifiers();
         }
 
+        @Override
         public int hashCode() {
             int result = 17;
             result = 31 * result + this.getTypes().hashCode();
@@ -273,6 +270,7 @@ public class ResolvableBuilder {
             return result;
         }
 
+        @Override
         public boolean equals(Object o) {
             if (o instanceof ResolvableImpl) {
                 ResolvableImpl r = (ResolvableImpl) o;

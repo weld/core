@@ -21,15 +21,6 @@ import java.util.Set;
 
 public interface AssignabilityRules {
 
-    /**
-     * Check whether at least one of the types2 is assignable from a type1
-     *
-     * @param type1
-     * @param types2
-     * @return can we assign type1 to some type in types2
-     */
-    boolean isAssignableFrom(Type type1, Set<? extends Type> types2);
-
     boolean isAssignableFrom(Type type1, Type type2);
 
     /**
