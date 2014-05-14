@@ -113,18 +113,30 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
     @Override
     protected void addMethodsFromClass(ClassFile proxyClassType, ClassMethod staticConstructor) {
         try {
-            final Set<MethodSignatureImpl> finalMethods = new HashSet<MethodSignatureImpl>();
+
+            final Set<MethodSignature> finalMethods = new HashSet<MethodSignature>();
+            final Set<MethodSignature> processedBridgeMethods = new HashSet<MethodSignature>();
+
             // Add all methods from the class hierarchy
             Class<?> cls = getBeanType();
             while (cls != null) {
+                Set<MethodSignature> declaredBridgeMethods = new HashSet<MethodSignature>();
                 for (Method method : AccessController.doPrivileged(new GetDeclaredMethodsAction(cls))) {
-                    final MethodSignatureImpl methodSignature = new MethodSignatureImpl(method);
-                    if (!Modifier.isFinal(method.getModifiers()) && enhancedMethodSignatures.contains(methodSignature) && !finalMethods.contains(methodSignature)) {
-                        try {
-                            MethodInformation methodInfo = new RuntimeMethodInformation(method);
-                            MethodInformation delegatingMethodInfo = new StaticMethodInformation(method.getName() + SUPER_DELEGATE_SUFFIX, method.getParameterTypes(), method.getReturnType(), proxyClassType.getName(), Modifier.PRIVATE | (method.getModifiers() & AccessFlag.BRIDGE));
 
-                            ClassMethod delegatingMethod = proxyClassType.addMethod(method.getModifiers() | AccessFlag.SYNTHETIC, method.getName() + SUPER_DELEGATE_SUFFIX, DescriptorUtils.classToStringRepresentation(method.getReturnType()), DescriptorUtils.getParameterTypes(method.getParameterTypes()));
+                    final MethodSignatureImpl methodSignature = new MethodSignatureImpl(method);
+
+                    if (!Modifier.isFinal(method.getModifiers()) && !method.isBridge() && enhancedMethodSignatures.contains(methodSignature)
+                            && !finalMethods.contains(methodSignature) && !processedBridgeMethods.contains(methodSignature)) {
+                        try {
+
+                            MethodInformation methodInfo = new RuntimeMethodInformation(method);
+                            MethodInformation delegatingMethodInfo = new StaticMethodInformation(method.getName() + SUPER_DELEGATE_SUFFIX,
+                                    method.getParameterTypes(), method.getReturnType(), proxyClassType.getName(), Modifier.PRIVATE
+                                            | (method.getModifiers() & AccessFlag.BRIDGE));
+
+                            ClassMethod delegatingMethod = proxyClassType.addMethod(method.getModifiers() | AccessFlag.SYNTHETIC, method.getName()
+                                    + SUPER_DELEGATE_SUFFIX, DescriptorUtils.classToStringRepresentation(method.getReturnType()),
+                                    DescriptorUtils.getParameterTypes(method.getParameterTypes()));
                             delegatingMethod.addCheckedExceptions((Class<? extends Exception>[]) method.getExceptionTypes());
                             createDelegateToSuper(delegatingMethod, delegatingMethodInfo);
 
@@ -132,19 +144,27 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
                             addConstructedGuardToMethodBody(classMethod);
                             createForwardingMethodBody(classMethod, methodInfo, staticConstructor);
                             BeanLogger.LOG.addingMethodToProxy(method);
+
                         } catch (DuplicateMemberException e) {
                             // do nothing. This will happen if superclass methods have
                             // been overridden
                         }
-                    } else if(Modifier.isFinal(method.getModifiers())) {
-                        finalMethods.add(methodSignature);
+                    } else {
+                        if (Modifier.isFinal(method.getModifiers())) {
+                            finalMethods.add(methodSignature);
+                        }
+                        if (method.isBridge()) {
+                            declaredBridgeMethods.add(methodSignature);
+                        }
                     }
                 }
+                processedBridgeMethods.addAll(declaredBridgeMethods);
                 cls = cls.getSuperclass();
             }
             for (Class<?> c : getAdditionalInterfaces()) {
                 for (Method method : c.getMethods()) {
-                    if (enhancedMethodSignatures.contains(new MethodSignatureImpl(method))) {
+                    MethodSignature signature = new MethodSignatureImpl(method);
+                    if (enhancedMethodSignatures.contains(signature) && !processedBridgeMethods.contains(signature)) {
                         try {
                             MethodInformation methodInformation = new RuntimeMethodInformation(method);
                             final ClassMethod classMethod = proxyClassType.addMethod(method);
@@ -152,6 +172,9 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
                             BeanLogger.LOG.addingMethodToProxy(method);
                         } catch (DuplicateMemberException e) {
                         }
+                    }
+                    if (method.isBridge()) {
+                        processedBridgeMethods.add(signature);
                     }
                 }
             }
