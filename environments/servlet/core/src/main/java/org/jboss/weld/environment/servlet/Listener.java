@@ -69,8 +69,8 @@ public class Listener extends ForwardingServletListener {
         if (isEnhancedListenerUsed) {
             return;
         }
-        lifecycle.destroy(sce.getServletContext());
         super.contextDestroyed(sce);
+        lifecycle.destroy(sce.getServletContext());
     }
 
     @Override

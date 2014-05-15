@@ -76,8 +76,8 @@ public class EnhancedListener extends ForwardingServletListener implements Servl
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-        lifecycle.destroy(sce.getServletContext());
         super.contextDestroyed(sce);
+        lifecycle.destroy(sce.getServletContext());
     }
 
     @Override
