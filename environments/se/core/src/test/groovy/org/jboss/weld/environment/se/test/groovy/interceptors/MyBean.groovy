@@ -15,22 +15,16 @@
  * limitations under the License.
  */
 package org.jboss.weld.environment.se.test.groovy.interceptors
+import javax.enterprise.context.ApplicationScoped
 
-import javax.interceptor.AroundInvoke
-import javax.interceptor.Interceptor
-import javax.interceptor.InvocationContext
+class MyBean {
 
-@Interceptor
-@Log
-class LoggingInterceptor {
-    static boolean intercepted = false;
-    @AroundInvoke
-    public Object logMethodEntry(InvocationContext ctx) throws Exception {
-        intercepted=true;
-        return ctx.proceed();
+    @Log
+    def hi() {
+        "hi"
     }
-
-    def static reset() {
-        intercepted = false;
+    
+    def hiProxy() {
+        hi()
     }
 }

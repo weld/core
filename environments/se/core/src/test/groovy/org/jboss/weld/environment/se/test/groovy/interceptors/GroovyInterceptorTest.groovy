@@ -31,14 +31,19 @@ import org.jboss.shrinkwrap.api.asset.EmptyAsset
 import org.jboss.weld.environment.se.test.interceptors.AggregatingInterceptor;
 import org.jboss.weld.environment.se.test.interceptors.InterceptorsTest;
 import org.jboss.weld.environment.se.test.interceptors.RecordingInterceptor;
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 
 
 @RunWith(Arquillian.class)
 class GroovyInterceptorTest {
+
     @Inject
-    private MyAplicationScopedBean bean
+    private MyBean bean
+
+    @Inject
+    private MyAplicationScopedBean applicationScopedBean
 
     @Deployment
     static Archive getDeployment() {
@@ -47,14 +52,32 @@ class GroovyInterceptorTest {
     }
 
     @Test
-    void hello() {
+    void testInterceptedInvocationOnDependentBean() {
+        LoggingInterceptor.reset()
         bean.hi()
         assertEquals true,LoggingInterceptor.intercepted
     }
     
     @Test
-    void helloThroughProxyMethod() {
+    void testNonInterceptedInvocationOnDependentBean() {
+        LoggingInterceptor.reset()
         bean.hiProxy()
+        assertEquals false,LoggingInterceptor.intercepted
+    }
+
+    @Test
+    @Ignore("WELD-1606")
+    void testInterceptedInvocationOnApplicationScopedBean() {
+        LoggingInterceptor.reset()
+        applicationScopedBean.hi()
         assertEquals true,LoggingInterceptor.intercepted
+    }
+    
+    @Test
+    @Ignore("WELD-1606")
+    void testNonInterceptedInvocationOnApplicationScopedBean() {
+        LoggingInterceptor.reset()
+        applicationScopedBean.hiProxy()
+        assertEquals false,LoggingInterceptor.intercepted
     }
 }
