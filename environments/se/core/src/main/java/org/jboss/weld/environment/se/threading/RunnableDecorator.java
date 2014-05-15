@@ -16,12 +16,12 @@
  */
 package org.jboss.weld.environment.se.threading;
 
-import org.jboss.weld.environment.se.WeldSEBeanRegistrant;
-import org.jboss.weld.environment.se.contexts.ThreadContext;
-
 import javax.decorator.Decorator;
 import javax.decorator.Delegate;
 import javax.inject.Inject;
+
+import org.jboss.weld.environment.se.WeldSEBeanRegistrant;
+import org.jboss.weld.environment.se.contexts.ThreadContext;
 
 /**
  * Decorator for all beans which implements Runnable. It intercepts the call
@@ -37,12 +37,20 @@ public class RunnableDecorator implements Runnable {
     @Delegate
     Runnable runnable;
 
+    private final ThreadContext threadContext;
+
+    @Inject
+    public RunnableDecorator(WeldSEBeanRegistrant extension) {
+        this.threadContext = extension.getThreadContext();
+    }
+
+
+
     /**
      * Set up the ThreadContext and delegate.
      */
+    @Override
     public void run() {
-        // set up context for this thread
-        final ThreadContext threadContext = WeldSEBeanRegistrant.THREAD_CONTEXT;
         try {
             threadContext.activate();
             // run the original thread

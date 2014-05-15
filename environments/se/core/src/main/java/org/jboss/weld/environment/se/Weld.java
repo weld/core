@@ -35,7 +35,9 @@ import org.jboss.logging.Logger;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.CDI11Bootstrap;
 import org.jboss.weld.bootstrap.api.Environments;
+import org.jboss.weld.bootstrap.api.SingletonProvider;
 import org.jboss.weld.bootstrap.api.TypeDiscoveryConfiguration;
+import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.Deployment;
@@ -86,9 +88,28 @@ public class Weld {
     private static final String BOOTSTRAP_IMPL_CLASS_NAME = "org.jboss.weld.bootstrap.WeldBootstrap";
     public static final String JANDEX_INDEX_CLASS_NAME = "org.jboss.jandex.Index";
 
+    static {
+        SingletonProvider.initialize(new RegistrySingletonProvider());
+    }
+
 
     private ShutdownManager shutdownManager;
     private Set<Metadata<Extension>> extensions;
+
+    private final String containerId;
+
+    public Weld() {
+        this(RegistrySingletonProvider.STATIC_INSTANCE);
+    }
+
+    /**
+     * Assign a unique ID to this Weld instance. This is required when running multiple Weld containers
+     * at once.
+     * @param containerId the unique ID for this container
+     */
+    public Weld(String containerId) {
+        this.containerId = containerId;
+    }
 
     /**
      * Add extension explicitly.
@@ -128,7 +149,7 @@ public class Weld {
 
 
         // Set up the container
-        bootstrap.startContainer(Environments.SE, deployment);
+        bootstrap.startContainer(containerId, Environments.SE, deployment);
         // Start the container
         bootstrap.startInitialization();
         bootstrap.deployBeans();

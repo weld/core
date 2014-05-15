@@ -22,6 +22,7 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
 
+import org.jboss.weld.bean.builtin.BeanManagerProxy;
 import org.jboss.weld.bootstrap.events.AbstractContainerEvent;
 import org.jboss.weld.environment.se.beans.InstanceManager;
 import org.jboss.weld.environment.se.beans.ParametersFactory;
@@ -35,7 +36,7 @@ import org.jboss.weld.environment.se.threading.RunnableDecorator;
  */
 public class WeldSEBeanRegistrant implements Extension {
 
-    public static ThreadContext THREAD_CONTEXT = null;
+    private ThreadContext threadContext;
 
     public void registerWeldSEBeans(@Observes BeforeBeanDiscovery event, BeanManager manager) {
         if (ignoreEvent(event)) {
@@ -48,17 +49,16 @@ public class WeldSEBeanRegistrant implements Extension {
         event.addAnnotatedType(manager.createAnnotatedType(WeldContainer.class));
     }
 
-    public void registerWeldSEContexts(@Observes AfterBeanDiscovery event) {
+    public void registerWeldSEContexts(@Observes AfterBeanDiscovery event, BeanManager manager) {
         if (ignoreEvent(event)) {
             return;
         }
 
         // set up this thread's bean store
-        final ThreadContext threadContext = new ThreadContext();
+        this.threadContext = new ThreadContext(BeanManagerProxy.unwrap(manager).getContextId());
 
         // activate and add context
         event.addContext(threadContext);
-        THREAD_CONTEXT = threadContext;
     }
 
     /**
@@ -67,5 +67,9 @@ public class WeldSEBeanRegistrant implements Extension {
      */
     private static boolean ignoreEvent(Object event) {
         return !(event instanceof AbstractContainerEvent);
+    }
+
+    public ThreadContext getThreadContext() {
+        return threadContext;
     }
 }
