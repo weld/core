@@ -36,9 +36,12 @@ public class StartMain {
         PARAMETERS = commandLineArgs;
     }
 
+    private ShutdownHook shutdownHook;
+
     public WeldContainer go() {
         Weld weld = new Weld();
-        Runtime.getRuntime().addShutdownHook(new ShutdownHook(weld));
+        shutdownHook = new ShutdownHook(weld);
+        Runtime.getRuntime().addShutdownHook(shutdownHook);
         WeldContainer container = weld.initialize();
         return container;
     }
@@ -58,6 +61,14 @@ public class StartMain {
         return copy;
     }
 
+    /**
+     * Shut down Weld immediately. Removes shutdown hook. Blocks until Weld is completely shut down.
+     */
+    public void shutdownNow() {
+        Runtime.getRuntime().removeShutdownHook(shutdownHook);
+        shutdownHook.run();
+    }
+
     static class ShutdownHook extends Thread {
         private final Weld weld;
 
@@ -65,6 +76,7 @@ public class StartMain {
             this.weld = weld;
         }
 
+        @Override
         public void run() {
             weld.shutdown();
         }
