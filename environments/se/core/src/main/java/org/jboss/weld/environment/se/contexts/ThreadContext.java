@@ -22,10 +22,11 @@
  */
 package org.jboss.weld.environment.se.contexts;
 
+import java.lang.annotation.Annotation;
+
+import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
 import org.jboss.weld.context.AbstractUnboundContext;
 import org.jboss.weld.context.beanstore.HashMapBeanStore;
-
-import java.lang.annotation.Annotation;
 
 /**
  * The thread context. Works with @ThreadScoped beans, maintaining a separate
@@ -36,10 +37,15 @@ import java.lang.annotation.Annotation;
  */
 public class ThreadContext extends AbstractUnboundContext {
 
-    public ThreadContext() {
-        super("STATIC_INSTANCE", false);
+    public ThreadContext(String contextId) {
+        super(contextId, false);
     }
 
+    public ThreadContext() {
+        this(RegistrySingletonProvider.STATIC_INSTANCE);
+    }
+
+    @Override
     public Class<? extends Annotation> getScope() {
         return ThreadScoped.class;
     }
