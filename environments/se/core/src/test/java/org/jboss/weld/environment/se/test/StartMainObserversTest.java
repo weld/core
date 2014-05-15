@@ -25,6 +25,8 @@ import org.jboss.weld.environment.se.WeldContainer;
 import org.jboss.weld.environment.se.test.beans.CustomEvent;
 import org.jboss.weld.environment.se.test.beans.InitObserverTestBean;
 import org.jboss.weld.environment.se.test.beans.ObserverTestBean;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -33,12 +35,19 @@ import org.junit.Test;
  */
 public class StartMainObserversTest {
 
+    private StartMain startMain;
+
+    @Before
+    public void init() {
+        startMain = new StartMain(new String[0]);
+    }
+
     @Test
     public void testObservers() {
         InitObserverTestBean.reset();
         ObserverTestBean.reset();
 
-        WeldContainer container = new StartMain(new String[]{}).go();
+        WeldContainer container = startMain.go();
         BeanManager manager = container.getBeanManager();
         manager.fireEvent(new CustomEvent());
 
@@ -49,4 +58,8 @@ public class StartMainObserversTest {
         assertTrue(InitObserverTestBean.isInitObserved());
     }
 
+    @After
+    public void cleanup() {
+        startMain.shutdownNow();
+    }
 }

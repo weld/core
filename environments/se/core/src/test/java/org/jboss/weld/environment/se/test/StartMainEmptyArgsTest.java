@@ -22,6 +22,8 @@ import org.jboss.weld.environment.se.StartMain;
 import org.jboss.weld.environment.se.WeldContainer;
 import org.jboss.weld.environment.se.test.beans.MainTestBean;
 import org.jboss.weld.environment.se.test.beans.ParametersTestBean;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -29,13 +31,20 @@ import org.junit.Test;
  */
 public class StartMainEmptyArgsTest {
 
+    private StartMain startMain;
+
+    @Before
+    public void init() {
+        startMain = new StartMain(new String[0]);
+    }
+
     /**
      * Test of main method, of class StartMain when no command-line args are
      * provided.
      */
     @Test
     public void testMainEmptyArgs() {
-        WeldContainer container = new StartMain(new String[]{}).go();
+        WeldContainer container = startMain.go();
 
         MainTestBean mainTestBean = container.instance().select(MainTestBean.class).get();
         assertNotNull(mainTestBean);
@@ -45,4 +54,8 @@ public class StartMainEmptyArgsTest {
         assertNotNull(paramsBean.getParameters());
     }
 
+    @After
+    public void cleanup() {
+        startMain.shutdownNow();
+    }
 }

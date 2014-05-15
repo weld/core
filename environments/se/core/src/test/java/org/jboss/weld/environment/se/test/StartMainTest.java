@@ -23,6 +23,8 @@ import org.jboss.weld.environment.se.StartMain;
 import org.jboss.weld.environment.se.WeldContainer;
 import org.jboss.weld.environment.se.test.beans.MainTestBean;
 import org.jboss.weld.environment.se.test.beans.ParametersTestBean;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -32,6 +34,13 @@ public class StartMainTest {
 
     private static String[] ARGS = new String[]{"arg1", "arg2", "arg3"};
 
+    private StartMain startMain;
+
+    @Before
+    public void init() {
+        startMain = new StartMain(ARGS);
+    }
+
     /**
      * Test of main method, of class StartMain. Checks that the beans found in
      * the org.jboss.weld.environment.se.beans package are initialised as
@@ -39,9 +48,7 @@ public class StartMainTest {
      */
     @Test
     public void testMain() {
-        String[] args = ARGS;
-
-        WeldContainer container = new StartMain(args).go();
+        WeldContainer container = startMain.go();
 
         MainTestBean mainTestBean = container.instance().select(MainTestBean.class).get();
         assertNotNull(mainTestBean);
@@ -57,4 +64,8 @@ public class StartMainTest {
         assertEquals(ARGS[2], paramsBean.getParameters().get(2));
     }
 
+    @After
+    public void cleanup() {
+        startMain.shutdownNow();
+    }
 }
