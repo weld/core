@@ -336,6 +336,13 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
         }
     }
 
+    @Override
+    protected void addInterfacesFromTypeClosure(Set<? extends Type> typeClosure, Class<?> proxiedBeanType) {
+        for (Class<?> c : proxiedBeanType.getInterfaces()) {
+            addInterface(c);
+        }
+    }
+
     private static Bytecode generateGetMethodHandlerBody(ClassFile file) {
         Bytecode b = new Bytecode(file.getConstPool(), 3, 2);
         b.add(Opcode.ALOAD_0);

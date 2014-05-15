@@ -120,14 +120,7 @@ public class ProxyFactory<T> {
     public ProxyFactory(Class<?> proxiedBeanType, Set<? extends Type> typeClosure, String proxyName, Bean<?> bean) {
         this.bean = bean;
         this.proxiedBeanType = proxiedBeanType;
-        for (Type type : typeClosure) {
-            Class<?> c = Reflections.getRawType(type);
-            // Ignore no-interface views, they are dealt with proxiedBeanType
-            // (pending redesign)
-            if (c.isInterface()) {
-                addInterface(c);
-            }
-        }
+        addInterfacesFromTypeClosure(typeClosure, proxiedBeanType);
         TypeInfo typeInfo = TypeInfo.of(typeClosure);
         Class<?> superClass = typeInfo.getSuperClass();
         superClass = superClass == null ? Object.class : superClass;
@@ -710,6 +703,17 @@ public class ProxyFactory<T> {
             proxyClassType.addMethod(MethodUtils.makeMethod(setMethodHandlerMethodInfo, setMethodHandlerMethod.getExceptionTypes(), generateSetMethodHandlerBody(proxyClassType), proxyClassType.getConstPool()));
         } catch (Exception e) {
             throw new WeldException(e);
+        }
+    }
+
+    protected void addInterfacesFromTypeClosure(Set<? extends Type> typeClosure, Class<?> proxiedBeanType) {
+        for (Type type : typeClosure) {
+            Class<?> c = Reflections.getRawType(type);
+            // Ignore no-interface views, they are dealt with proxiedBeanType
+            // (pending redesign)
+            if (c.isInterface()) {
+                addInterface(c);
+            }
         }
     }
 
