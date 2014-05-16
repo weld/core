@@ -32,6 +32,7 @@ import org.jboss.weld.manager.api.WeldManager;
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
 public class JettyContainer extends AbstractJettyContainer {
+
     public static Container INSTANCE = new JettyContainer();
 
     private static final String JETTY_REQUIRED_CLASS_NAME = "org.eclipse.jetty.servlet.ServletHandler";
@@ -47,14 +48,15 @@ public class JettyContainer extends AbstractJettyContainer {
     public boolean touch(ContainerContext context) throws Exception {
         ServletContext sc = context.getServletContext();
         String si = sc.getServerInfo();
+        log.debugv("Parsing server info: {0}", si);
         int p = si.indexOf("/");
         if (p < 0) {
             return false;
         }
         String version = si.substring(p + 1);
         String[] split = version.split("\\.");
-        int major = Integer.parseInt(split[0]);
-        int minor = Integer.parseInt(split[1]);
+        int major = parseVersion(split[0]);
+        int minor = parseVersion(split[1]);
         return (major > MAJOR_VERSION || (major == MAJOR_VERSION & minor >= MINOR_VERSION));
     }
 
@@ -72,6 +74,15 @@ public class JettyContainer extends AbstractJettyContainer {
             log.info("Jetty 7.2+ detected, CDI injection will be available in Listeners, Servlets and Filters.");
         } catch (Exception e) {
             log.error("Unable to create JettyWeldInjector. CDI injection will not be available in Servlets, Filters or Listeners", e);
+        }
+    }
+
+    private int parseVersion(String version) {
+        try {
+            return Integer.parseInt(version);
+        } catch (NumberFormatException e) {
+            log.debugv("Unable to parse version string: {0}", version);
+            return -1;
         }
     }
 }
