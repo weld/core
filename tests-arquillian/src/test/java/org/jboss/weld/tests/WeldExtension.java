@@ -15,19 +15,17 @@ public class WeldExtension implements LoadableExtension {
 
     // TODO the managed container class did not change so far, but will likely change soon
     private static final String MANAGED_CONTAINER_CLASS = "org.jboss.as.arquillian.container.managed.ManagedDeployableContainer";
-
+    private static final String REMOTE_CONTAINER_CLASS = "org.jboss.as.arquillian.container.remote.RemoteDeployableContainer";
     private static final String MANAGED_CONTAINER_DEFAULT_EXCEPTION_TRANSFORMER_CLASS = "org.jboss.as.arquillian.container.ExceptionTransformer";
 
     public void register(ExtensionBuilder builder) {
 
         builder.service(AuxiliaryArchiveAppender.class, CategoryArchiveAppender.class);
 
-        if (Validate.classExists(MANAGED_CONTAINER_CLASS)) {
+        if (Validate.classExists(MANAGED_CONTAINER_CLASS) || Validate.classExists(REMOTE_CONTAINER_CLASS)) {
             // Override the default NOOP exception transformer
             builder.override(DeploymentExceptionTransformer.class, getDefaultExceptionTransformerClass(),
                     WildFly8DeploymentExceptionTransformer.class);
-        } else {
-            builder.service(DeploymentExceptionTransformer.class, WeldExceptionTransformer.class);
         }
     }
 

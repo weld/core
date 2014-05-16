@@ -21,22 +21,26 @@ import org.jboss.arquillian.core.spi.LoadableExtension;
 import org.jboss.as.arquillian.container.ExceptionTransformer;
 
 /**
- *
  * @author Martin Kouba
  */
 public class WildFly8Extension implements LoadableExtension {
 
     // TODO the managed container class did not change so far, but will likely change soon
     private static final String MANAGED_CONTAINER_CLASS = "org.jboss.as.arquillian.container.managed.ManagedDeployableContainer";
+    private static final String REMOTE_CONTAINER_CLASS = "org.jboss.as.arquillian.container.remote.RemoteDeployableContainer";
 
     public void register(ExtensionBuilder builder) {
 
-        if (Validate.classExists(MANAGED_CONTAINER_CLASS)) {
+        if (Validate.classExists(MANAGED_CONTAINER_CLASS) || Validate.classExists(REMOTE_CONTAINER_CLASS)) {
+
             // Override the default NOOP exception transformer
             builder.override(DeploymentExceptionTransformer.class, ExceptionTransformer.class,
                     WildFly8DeploymentExceptionTransformer.class);
-            // Observe container start and check EE resources
-            builder.observer(WildFly8EEResourceManager.class);
+
+            if (Validate.classExists(MANAGED_CONTAINER_CLASS)) {
+                // Observe container start and check EE resources
+                builder.observer(WildFly8EEResourceManager.class);
+            }
         }
     }
 
