@@ -1,9 +1,5 @@
 package org.jboss.weld.tck.wildfly8;
 
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.jboss.arquillian.container.spi.event.StartContainer;
 import org.jboss.arquillian.core.api.annotation.Observes;
 import org.jboss.arquillian.core.spi.EventContext;
@@ -13,6 +9,10 @@ import org.jboss.as.controller.client.helpers.ClientConstants;
 import org.jboss.cdi.tck.impl.ConfigurationFactory;
 import org.jboss.dmr.ModelNode;
 import org.jboss.dmr.Property;
+
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Assumptions:
@@ -44,6 +44,7 @@ public class WildFly8EEResourceManager {
             checkJmsQueue(client);
             checkJmsTopic(client);
             checkTestDataSource(client);
+            checkEarSubdeploymentsIsolation(client);
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -205,6 +206,36 @@ public class WildFly8EEResourceManager {
             }
 
             logger.log(Level.INFO, "Test data source added: {0}", testDataSourceJndiName);
+        }
+
+    }
+
+    private void checkEarSubdeploymentsIsolation(ModelControllerClient client) throws IOException {
+
+        ModelNode request = new ModelNode();
+        request.get(ClientConstants.OP).set("read-attribute");
+        request.get("name").set("ear-subdeployments-isolated");
+        request.get(ClientConstants.OP_ADDR).get("subsystem").set("ee");
+
+        ModelNode response = client.execute(new OperationBuilder(request).build());
+        boolean isolated = response.get(ClientConstants.RESULT).asBoolean();
+
+        if (!response.get(ClientConstants.OUTCOME).asString().equals(ClientConstants.SUCCESS)) {
+            throw new RuntimeException("Unable to read ear-subdeployments-isolated attribute: " + response);
+        }
+
+        if (!isolated) {
+            ModelNode writeRequest = new ModelNode();
+            writeRequest.get(ClientConstants.OP).set("write-attribute");
+            writeRequest.get("name").set("ear-subdeployments-isolated");
+            writeRequest.get("value").set("true");
+            writeRequest.get(ClientConstants.OP_ADDR).get("subsystem").set("ee");
+
+            ModelNode writeResponse = client.execute(new OperationBuilder(writeRequest).build());
+
+            if (!response.get(ClientConstants.OUTCOME).asString().equals(ClientConstants.SUCCESS)) {
+                throw new RuntimeException("Unable to write ear-subdeployments-isolated attribute: " + writeResponse);
+            }
         }
 
     }
