@@ -76,15 +76,12 @@ public class URLScanner {
                     WeldSELogger.LOG.couldNotReadResource(resourceName, e);
                     continue;
                 }
-                final String bdaId = getId(urlPath);
                 if (Reflections.isClassLoadable(Weld.JANDEX_INDEX_CLASS_NAME, resourceLoader)) {
                     handler = SEReflections.newInstance(resourceLoader, JANDEX_ENABLED_FS_URL_HANDLER_CLASS_STRING, bootstrap);
                 } else {
                     handler = new FileSystemURLHandler(bootstrap);
                 }
-                BeanArchiveBuilder builder = handler.handle(urlPath);
-                builder.setId(bdaId);
-                builders.add(builder);
+                builders.add(handler.handle(urlPath).setId(getId(urlPath)));
             }
         }
         return builders;
@@ -124,10 +121,6 @@ public class URLScanner {
      * Create an ID that will be used for the bean archive calculated from the url path.
      */
     private String getId(String urlPath) {
-        final int index = urlPath.lastIndexOf(File.separatorChar);
-        if (index != -1 && index + 1 < urlPath.length()) {
-            return urlPath.substring(index + 1);
-        }
         return urlPath;
     }
 
