@@ -71,8 +71,9 @@ class BeanArchiveBuilder {
         return id;
     }
 
-    public void setId(String id) {
+    public BeanArchiveBuilder setId(String id) {
         this.id = id;
+        return this;
     }
 
     public void clearClasses() {
