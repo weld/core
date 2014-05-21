@@ -16,7 +16,17 @@
  */
 package org.jboss.weld.tests.interceptors.visibility.unreachable;
 
-interface MyPackagePrivateInterface {
+import javax.inject.Inject;
 
-    public String drawPanel();
+import org.jboss.weld.tests.interceptors.visibility.MyPanel;
+
+public class Foo {
+
+    @Inject
+    MyPanel myPanel;
+
+    public void testTypecast() {
+        ((MyPackagePrivateInterface) myPanel).drawPanel();
+    }
+
 }

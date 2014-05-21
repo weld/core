@@ -337,7 +337,7 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
     }
 
     @Override
-    protected void addInterfacesFromTypeClosure(Set<? extends Type> typeClosure, Class<?> proxiedBeanType) {
+    protected void addInterfacesFromTypeClosure(Set<? extends Type> typeClosure, Class<?> proxiedBeanType, String proxyName) {
         for (Class<?> c : proxiedBeanType.getInterfaces()) {
             addInterface(c);
         }
