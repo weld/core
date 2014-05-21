@@ -25,7 +25,6 @@ import javax.el.ELResolver;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.spi.Bean;
 
-import org.jboss.weld.bean.proxy.ClientProxyProvider;
 import org.jboss.weld.logging.ElLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 
@@ -105,14 +104,7 @@ public abstract class AbstractWeldELResolver extends ELResolver {
         }
         Class<? extends Annotation> scope = bean.getScope();
         if (!scope.equals(Dependent.class)) {
-            ClientProxyProvider cpp = beanManager.getClientProxyProvider();
-            if (cpp != null) {
-                Object value = cpp.getClientProxy(bean);
-                if (value != null) {
-                    return value;
-                }
-            }
-            return beanManager.getReference(bean, null, beanManager.createCreationalContext(bean), false);
+            return beanManager.getReference(bean, null, beanManager.createCreationalContext(bean), true);
         } else {
             // Need to use a "special" creationalContext that can make sure that we do share dependent instances referenced by the EL Expression
             final ELCreationalContextStack stack = ELCreationalContextStack.getCreationalContextStore(context);
@@ -125,7 +117,7 @@ public abstract class AbstractWeldELResolver extends ELResolver {
                 String beanName = bean.getName();
                 Object value = ctx.getDependentInstanceForExpression(beanName);
                 if (value == null) {
-                    value = getManager(context).getReference(bean, null, ctx, false);
+                    value = getManager(context).getReference(bean, null, ctx, true);
                     ctx.registerDependentInstanceForExpression(beanName, value);
                 }
                 return value;
