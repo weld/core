@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.el.resolver;
 
-import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertEquals;
 
 import javax.el.ELContext;
 import javax.el.ExpressionFactory;
@@ -77,15 +77,15 @@ public class ELResolverTest {
 
         Lager value1 = (Lager) exprFactory.createValueExpression(elContext, "#{lager}", Lager.class).getValue(elContext);
         value1.drink();
-        assertNotSame(Lager.class, value1.getClass());
 
         Lager value2 = (Lager) exprFactory.createValueExpression(elContext, "#{lager}", Lager.class).getValue(elContext);
         value2.drink();
-        assertNotSame(Lager.class, value2.getClass());
 
         Lager value3 = (Lager) exprFactory.createValueExpression(elContext, "#{lager}", Lager.class).getValue(elContext);
         value3.drink();
-        assertNotSame(Lager.class, value3.getClass());
+
+        assertEquals(value1, value2);
+        assertEquals(value2, value3);
     }
 
     /**
