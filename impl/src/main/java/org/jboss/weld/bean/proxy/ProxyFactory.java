@@ -43,6 +43,7 @@ import javassist.bytecode.MethodInfo;
 import javassist.bytecode.Opcode;
 import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyObject;
+
 import org.jboss.weld.Container;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.WeldException;
@@ -69,6 +70,7 @@ import org.slf4j.cal10n.LocLogger;
 
 import static org.jboss.weld.logging.Category.BEAN;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.BeanMessage.PROXY_SKIP_PACKAGE_PRIVATE_INTERFACE;
 import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_BEAN_ACCESS_FAILED;
 import static org.jboss.weld.logging.messages.BeanMessage.PROXY_INSTANTIATION_FAILED;
 import static org.jboss.weld.util.reflection.Reflections.cast;
@@ -120,7 +122,7 @@ public class ProxyFactory<T> {
     public ProxyFactory(Class<?> proxiedBeanType, Set<? extends Type> typeClosure, String proxyName, Bean<?> bean) {
         this.bean = bean;
         this.proxiedBeanType = proxiedBeanType;
-        addInterfacesFromTypeClosure(typeClosure, proxiedBeanType);
+        addInterfacesFromTypeClosure(typeClosure, proxiedBeanType, proxyName);
         TypeInfo typeInfo = TypeInfo.of(typeClosure);
         Class<?> superClass = typeInfo.getSuperClass();
         superClass = superClass == null ? Object.class : superClass;
@@ -706,15 +708,26 @@ public class ProxyFactory<T> {
         }
     }
 
-    protected void addInterfacesFromTypeClosure(Set<? extends Type> typeClosure, Class<?> proxiedBeanType) {
+    protected void addInterfacesFromTypeClosure(Set<? extends Type> typeClosure, Class<?> proxiedBeanType, String proxyName) {
+        String proxyPackage = proxyName.substring(0, proxyName.lastIndexOf("."));
         for (Type type : typeClosure) {
             Class<?> c = Reflections.getRawType(type);
             // Ignore no-interface views, they are dealt with proxiedBeanType
             // (pending redesign)
             if (c.isInterface()) {
+                if (isNonAccessiblePackagePrivateInterface(c, proxyPackage)) {
+                    // Skip non-accessible package-private interfaces otherwise proxy creation will fail
+                    log.debug(PROXY_SKIP_PACKAGE_PRIVATE_INTERFACE, c.getName(), proxiedBeanType.getName());
+                    continue;
+                }
                 addInterface(c);
             }
         }
+    }
+
+    private boolean isNonAccessiblePackagePrivateInterface(Class<?> clazz, String proxyPackage) {
+        return Reflections.isPackagePrivate(clazz.getModifiers())
+                && (clazz.getPackage() == null || !proxyPackage.equals(clazz.getPackage().getName()));
     }
 
     private static Bytecode generateSetMethodHandlerBody(ClassFile file) {
