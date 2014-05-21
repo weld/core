@@ -14,9 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.interceptors.visibility.unreachable;
+package org.jboss.weld.tests.interceptors.visibility;
 
-interface MyPackagePrivateInterface {
+import javax.enterprise.context.ApplicationScoped;
 
-    public String drawPanel();
+@ApplicationScoped
+public class LastPanel implements AnotherPackagePrivateInterface{
+
+    @Override
+    public void anotherDraw() {
+    }
+
+
+
 }
