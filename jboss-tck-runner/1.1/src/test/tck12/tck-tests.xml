@@ -38,6 +38,12 @@
                     <exclude name=".*"/>
                 </methods>
             </class>
+            <!-- CDITCK-417 -->
+            <class name="org.jboss.cdi.tck.tests.extensions.registration.BeanRegistrationByExtensionInEarLibraryTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
 
             <!-- Issues in Weld (the RI) -->
 
