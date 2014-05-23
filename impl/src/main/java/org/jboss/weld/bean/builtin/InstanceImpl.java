@@ -36,7 +36,7 @@ import javax.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.bean.proxy.ProxyMethodHandler;
 import org.jboss.weld.bean.proxy.ProxyObject;
-import org.jboss.weld.context.WeldCreationalContext;
+import org.jboss.weld.context.InternalWeldCreationalContext;
 import org.jboss.weld.exceptions.InvalidObjectException;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.logging.BeanLogger;
@@ -157,8 +157,8 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
 
         // check if this is a dependent instance
         CreationalContext<? super T> ctx = getCreationalContext();
-        if (ctx instanceof WeldCreationalContext<?>) {
-            WeldCreationalContext<? super T> weldCtx = cast(ctx);
+        if (ctx instanceof InternalWeldCreationalContext<?>) {
+            InternalWeldCreationalContext<? super T> weldCtx = cast(ctx);
             weldCtx.destroyDependentInstance(instance);
         }
     }

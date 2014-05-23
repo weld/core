@@ -16,13 +16,13 @@
  */
 package org.jboss.weld.el;
 
-import org.jboss.weld.context.CreationalContextImpl;
+import org.jboss.weld.context.InternalWeldCreationalContextImpl;
 
 import javax.enterprise.context.spi.Contextual;
 import java.util.HashMap;
 import java.util.Map;
 
-class ELCreationalContext<T> extends CreationalContextImpl<T> {
+class ELCreationalContext<T> extends InternalWeldCreationalContextImpl<T> {
 
     private static final long serialVersionUID = -8337917208165841779L;
 

@@ -35,7 +35,7 @@ import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.bean.ManagedBean;
 import org.jboss.weld.context.DependentContext;
 import org.jboss.weld.context.SerializableContextualInstanceImpl;
-import org.jboss.weld.context.WeldCreationalContext;
+import org.jboss.weld.context.InternalWeldCreationalContext;
 import org.jboss.weld.context.api.ContextualInstance;
 import org.jboss.weld.exceptions.UnsupportedOperationException;
 import org.jboss.weld.injection.producer.AbstractMemberProducer;
@@ -67,8 +67,8 @@ public class DependentContextImpl implements DependentContext {
         }
         if (creationalContext != null) {
             T instance = contextual.create(creationalContext);
-            if (creationalContext instanceof WeldCreationalContext<?>) {
-                addDependentInstance(instance, contextual, (WeldCreationalContext<T>) creationalContext);
+            if (creationalContext instanceof InternalWeldCreationalContext<?>) {
+                addDependentInstance(instance, contextual, (InternalWeldCreationalContext<T>) creationalContext);
             }
             return instance;
         } else {
@@ -76,7 +76,7 @@ public class DependentContextImpl implements DependentContext {
         }
     }
 
-    protected <T> void addDependentInstance(T instance, Contextual<T> contextual, WeldCreationalContext<T> creationalContext) {
+    protected <T> void addDependentInstance(T instance, Contextual<T> contextual, InternalWeldCreationalContext<T> creationalContext) {
         // by this we are making sure that the dependent instance has no transitive dependency with @PreDestroy / disposal method
         if (creationalContext.getDependentInstances().isEmpty()) {
             if (contextual instanceof ManagedBean<?> && ! isInterceptorOrDecorator(contextual)) {

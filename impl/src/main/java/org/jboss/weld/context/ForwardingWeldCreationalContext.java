@@ -25,9 +25,9 @@ import javax.enterprise.context.spi.Contextual;
 /**
  * @author pmuir
  */
-public abstract class ForwardingWeldCreationalContext<T> implements WeldCreationalContext<T> {
+public abstract class ForwardingWeldCreationalContext<T> implements InternalWeldCreationalContext<T> {
 
-    protected abstract WeldCreationalContext<T> delegate();
+    protected abstract InternalWeldCreationalContext<T> delegate();
 
     public void push(T incompleteInstance) {
         delegate().push(incompleteInstance);
@@ -41,7 +41,7 @@ public abstract class ForwardingWeldCreationalContext<T> implements WeldCreation
         return delegate().containsIncompleteInstance(bean);
     }
 
-    public <S> WeldCreationalContext<S> getCreationalContext(Contextual<S> Contextual) {
+    public <S> InternalWeldCreationalContext<S> getCreationalContext(Contextual<S> Contextual) {
         return delegate().getCreationalContext(Contextual);
     }
 

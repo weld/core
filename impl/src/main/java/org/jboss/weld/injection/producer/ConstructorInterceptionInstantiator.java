@@ -27,7 +27,7 @@ import javax.interceptor.InvocationContext;
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.construction.api.AroundConstructCallback;
 import org.jboss.weld.construction.api.ConstructionHandle;
-import org.jboss.weld.context.CreationalContextImpl;
+import org.jboss.weld.context.InternalWeldCreationalContextImpl;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.interceptor.proxy.InterceptionContext;
 import org.jboss.weld.interceptor.proxy.InterceptorInvocationContext;
@@ -56,8 +56,8 @@ public class ConstructorInterceptionInstantiator<T> extends ForwardingInstantiat
 
     @Override
     public T newInstance(CreationalContext<T> ctx, BeanManagerImpl manager) {
-        if (ctx instanceof CreationalContextImpl<?>) {
-            CreationalContextImpl<T> weldCtx = Reflections.cast(ctx);
+        if (ctx instanceof InternalWeldCreationalContextImpl<?>) {
+            InternalWeldCreationalContextImpl<T> weldCtx = Reflections.cast(ctx);
             if (!weldCtx.isConstructorInterceptionSuppressed()) {
                 registerAroundConstructCallback(weldCtx, manager);
             }
@@ -66,7 +66,7 @@ public class ConstructorInterceptionInstantiator<T> extends ForwardingInstantiat
         return delegate().newInstance(ctx, manager);
     }
 
-    private void registerAroundConstructCallback(CreationalContextImpl<T> ctx, BeanManagerImpl manager) {
+    private void registerAroundConstructCallback(InternalWeldCreationalContextImpl<T> ctx, BeanManagerImpl manager) {
         final InterceptionContext interceptionContext = InterceptionContext.forConstructorInterception(model, ctx, manager, annotatedType);
 
         AroundConstructCallback<T> callback = new AroundConstructCallback<T>() {

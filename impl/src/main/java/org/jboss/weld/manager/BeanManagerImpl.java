@@ -92,9 +92,9 @@ import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.enablement.ModuleEnablement;
 import org.jboss.weld.bootstrap.events.ContainerLifecycleEvents;
 import org.jboss.weld.bootstrap.spi.CDI11Deployment;
-import org.jboss.weld.context.CreationalContextImpl;
+import org.jboss.weld.context.InternalWeldCreationalContextImpl;
 import org.jboss.weld.context.PassivatingContextWrapper;
-import org.jboss.weld.context.WeldCreationalContext;
+import org.jboss.weld.context.InternalWeldCreationalContext;
 import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
@@ -723,8 +723,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     public Object getReference(Bean<?> bean, Type requestedType, CreationalContext<?> creationalContext, boolean noProxy) {
-        if (creationalContext instanceof CreationalContextImpl<?>) {
-            creationalContext = ((CreationalContextImpl<?>) creationalContext).getCreationalContext(bean);
+        if (creationalContext instanceof InternalWeldCreationalContextImpl<?>) {
+            creationalContext = ((InternalWeldCreationalContextImpl<?>) creationalContext).getCreationalContext(bean);
         }
         if (!noProxy && isProxyRequired(bean)) {
             if (creationalContext != null || getContext(bean.getScope()).get(bean) != null) {
@@ -803,11 +803,11 @@ public class BeanManagerImpl implements WeldManager, Serializable {
             if (injectionPoint != null && injectionPoint.getBean() != null) {
                 // For certain combinations of scopes, the container is permitted to optimize an injectable reference lookup
                 // This should also partially solve circular @PostConstruct invocation
-                CreationalContextImpl<?> weldCreationalContext = null;
+                InternalWeldCreationalContextImpl<?> weldCreationalContext = null;
                 Bean<?> bean = injectionPoint.getBean();
 
-                if (creationalContext instanceof CreationalContextImpl) {
-                    weldCreationalContext = (CreationalContextImpl<?>) creationalContext;
+                if (creationalContext instanceof InternalWeldCreationalContextImpl) {
+                    weldCreationalContext = (InternalWeldCreationalContextImpl<?>) creationalContext;
                 }
 
                 if (weldCreationalContext != null && Dependent.class.equals(bean.getScope()) && isNormalScope(resolvedBean.getScope())) {
@@ -1203,8 +1203,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     @Override
-    public <T> WeldCreationalContext<T> createCreationalContext(Contextual<T> contextual) {
-        return new CreationalContextImpl<T>(contextual);
+    public <T> InternalWeldCreationalContext<T> createCreationalContext(Contextual<T> contextual) {
+        return new InternalWeldCreationalContextImpl<T>(contextual);
     }
 
     @Override
@@ -1504,8 +1504,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
 
-    private Bean<?> findNormalScopedDependant(CreationalContextImpl<?> weldCreationalContext) {
-        CreationalContextImpl<?> parent = weldCreationalContext.getParentCreationalContext();
+    private Bean<?> findNormalScopedDependant(InternalWeldCreationalContextImpl<?> weldCreationalContext) {
+        InternalWeldCreationalContextImpl<?> parent = weldCreationalContext.getParentCreationalContext();
         if(parent != null) {
             if(parent.getContextual() instanceof Bean) {
                 Bean<?> bean = (Bean<?>) parent.getContextual();
