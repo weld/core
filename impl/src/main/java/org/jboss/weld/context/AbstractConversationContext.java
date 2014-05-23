@@ -163,9 +163,9 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
         if (isAssociated()) {
             try {
                 copyConversationIdGeneratorAndConversationsToSession();
-                this.associated.set(null);
                 return true;
             } finally {
+                this.associated.set(null);
                 cleanup();
             }
         } else {

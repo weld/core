@@ -169,7 +169,12 @@ public abstract class AbstractContext implements AlterableContext {
 
     public void cleanup() {
         if (getBeanStore() != null) {
-            getBeanStore().clear();
+            try {
+                getBeanStore().clear();
+            } catch (Exception e) {
+                ContextLogger.LOG.unableToClearBeanStore(getBeanStore());
+                ContextLogger.LOG.catchingDebug(e);
+            }
         }
     }
 
