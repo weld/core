@@ -153,4 +153,8 @@ public interface ContextLogger extends WeldLogger {
     @Message(id = 223, value = "Context.getScope() returned null for {0}", format = Format.MESSAGE_FORMAT)
     DefinitionException contextHasNullScope(Object param1);
 
+    @LogMessage(level = Level.WARN)
+    @Message(id = 224, value = "Unable to clear bean store {0}.", format = Format.MESSAGE_FORMAT)
+    void unableToClearBeanStore(Object beanStore);
+
 }
