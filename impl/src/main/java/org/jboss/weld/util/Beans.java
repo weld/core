@@ -36,6 +36,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.decorator.Decorator;
@@ -450,10 +451,19 @@ public class Beans {
         HierarchyDiscovery beanClassDiscovery = new HierarchyDiscovery(ejbDescriptor.getBeanClass());
         for (BusinessInterfaceDescriptor<?> businessInterfaceDescriptor : ejbDescriptor.getLocalBusinessInterfaces()) {
             // first we need to resolve the local interface
-            Type resolvedLocalInterface = beanClassDiscovery.resolveType(Types.getCanonicalType(businessInterfaceDescriptor
-                    .getInterface()));
+            Type resolvedLocalInterface = beanClassDiscovery.resolveType(Types.getCanonicalType(businessInterfaceDescriptor.getInterface()));
             SessionBeanHierarchyDiscovery interfaceDiscovery = new SessionBeanHierarchyDiscovery(resolvedLocalInterface);
-            typeMap.putAll(interfaceDiscovery.getTypeMap());
+            if (beanClassDiscovery.getTypeMap().containsKey(businessInterfaceDescriptor.getInterface())) {
+                // WELD-1675 Only add types also included in Annotated.getTypeClosure()
+                for (Entry<Class<?>, Type> entry : interfaceDiscovery.getTypeMap().entrySet()) {
+                    if (annotated.getTypeClosure().contains(entry.getValue())) {
+                        typeMap.put(entry.getKey(), entry.getValue());
+                    }
+                }
+            } else {
+                // Session bean class does not implement the business interface and @javax.ejb.Local applied to the session bean class
+                typeMap.putAll(interfaceDiscovery.getTypeMap());
+            }
         }
         if (annotated.isAnnotationPresent(Typed.class)) {
             types.addAll(getTypedTypes(typeMap, annotated.getJavaClass(), annotated.getAnnotation(Typed.class)));
