@@ -18,7 +18,7 @@ package org.jboss.weld.injection;
 
 import javax.enterprise.context.spi.CreationalContext;
 
-import org.jboss.weld.context.WeldCreationalContext;
+import org.jboss.weld.context.InternalWeldCreationalContext;
 import org.jboss.weld.injection.spi.ResourceReference;
 import org.jboss.weld.injection.spi.ResourceReferenceFactory;
 import org.jboss.weld.util.reflection.Reflections;
@@ -42,8 +42,8 @@ abstract class AbstractResourceInjection<T> implements ResourceInjection<T> {
     @Override
     public T getResourceReference(CreationalContext<?> ctx) {
         ResourceReference<T> reference = factory.createResource();
-        if (ctx instanceof WeldCreationalContext<?>) {
-            Reflections.<WeldCreationalContext<?>> cast(ctx).addDependentResourceReference(reference);
+        if (ctx instanceof InternalWeldCreationalContext<?>) {
+            Reflections.<InternalWeldCreationalContext<?>> cast(ctx).addDependentResourceReference(reference);
         }
         return reference.getInstance();
     }

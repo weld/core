@@ -35,7 +35,7 @@ import org.jboss.weld.annotated.enhanced.ConstructorSignature;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedConstructor;
 import org.jboss.weld.construction.api.AroundConstructCallback;
 import org.jboss.weld.construction.api.ConstructionHandle;
-import org.jboss.weld.context.CreationalContextImpl;
+import org.jboss.weld.context.InternalWeldCreationalContextImpl;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.security.GetAccessibleCopyOfMember;
@@ -69,8 +69,8 @@ public class ConstructorInjectionPoint<T> extends AbstractCallableInjectionPoint
         CreationalContext<?> invocationContext = manager.createCreationalContext(null);
         try {
             Object[] parameterValues = getParameterValues(manager, ctx, invocationContext);
-            if (ctx instanceof CreationalContextImpl<?>) {
-                CreationalContextImpl<T> weldCtx = Reflections.cast(ctx);
+            if (ctx instanceof InternalWeldCreationalContextImpl<?>) {
+                InternalWeldCreationalContextImpl<T> weldCtx = Reflections.cast(ctx);
                 return invokeAroundConstructCallbacks(parameterValues, weldCtx);
             } else {
                 return newInstance(parameterValues);
@@ -80,7 +80,7 @@ public class ConstructorInjectionPoint<T> extends AbstractCallableInjectionPoint
         }
     }
 
-    private T invokeAroundConstructCallbacks(Object[] parameters, CreationalContextImpl<T> ctx) {
+    private T invokeAroundConstructCallbacks(Object[] parameters, InternalWeldCreationalContextImpl<T> ctx) {
         final List<AroundConstructCallback<T>> callbacks = ctx.getAroundConstructCallbacks();
         final Iterator<AroundConstructCallback<T>> iterator = callbacks.iterator();
         if (!iterator.hasNext()) {

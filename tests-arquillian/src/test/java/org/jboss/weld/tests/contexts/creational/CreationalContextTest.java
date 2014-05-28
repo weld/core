@@ -30,7 +30,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.weld.context.WeldCreationalContext;
+import org.jboss.weld.context.InternalWeldCreationalContext;
 import org.jboss.weld.context.api.ContextualInstance;
 import org.jboss.weld.util.reflection.Reflections;
 import org.junit.Test;
@@ -51,7 +51,7 @@ public class CreationalContextTest {
         @SuppressWarnings("unused")
         InjectedBean instance = bean.create(cc);
 
-        WeldCreationalContext<InjectedBean> wcc = (WeldCreationalContext<InjectedBean>) cc;
+        InternalWeldCreationalContext<InjectedBean> wcc = (InternalWeldCreationalContext<InjectedBean>) cc;
         assertEquals(4, wcc.getDependentInstances().size());
 
         @SuppressWarnings("serial")

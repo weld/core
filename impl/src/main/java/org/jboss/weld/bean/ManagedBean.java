@@ -31,7 +31,7 @@ import javax.enterprise.inject.spi.Decorator;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
-import org.jboss.weld.context.CreationalContextImpl;
+import org.jboss.weld.context.InternalWeldCreationalContextImpl;
 import org.jboss.weld.context.RequestContext;
 import org.jboss.weld.context.unbound.UnboundLiteral;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorClassMetadata;
@@ -178,8 +178,8 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
         try {
             getProducer().preDestroy(instance);
             // WELD-1010 hack?
-            if (creationalContext instanceof CreationalContextImpl) {
-                ((CreationalContextImpl<T>) creationalContext).release(this, instance);
+            if (creationalContext instanceof InternalWeldCreationalContextImpl) {
+                ((InternalWeldCreationalContextImpl<T>) creationalContext).release(this, instance);
             } else {
                 creationalContext.release();
             }

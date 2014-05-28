@@ -25,8 +25,8 @@ import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.Container;
-import org.jboss.weld.context.CreationalContextImpl;
-import org.jboss.weld.context.WeldCreationalContext;
+import org.jboss.weld.context.InternalWeldCreationalContextImpl;
+import org.jboss.weld.context.InternalWeldCreationalContext;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.injection.EmptyInjectionPoint;
 import org.jboss.weld.logging.BeanLogger;
@@ -54,7 +54,7 @@ public class ContextBeanInstance<T> extends AbstractBeanInstance implements Seri
     // The actual type of the resulting bean instance
     private final Class<?> instanceType;
 
-    private static final ThreadLocal<WeldCreationalContext<?>> currentCreationalContext = new ThreadLocal<WeldCreationalContext<?>>();
+    private static final ThreadLocal<InternalWeldCreationalContext<?>> currentCreationalContext = new ThreadLocal<InternalWeldCreationalContext<?>>();
 
 
     /**
@@ -83,10 +83,10 @@ public class ContextBeanInstance<T> extends AbstractBeanInstance implements Seri
             return existingInstance;
         }
 
-        WeldCreationalContext<T> creationalContext;
-        WeldCreationalContext<?> previousCreationalContext = currentCreationalContext.get();
+        InternalWeldCreationalContext<T> creationalContext;
+        InternalWeldCreationalContext<?> previousCreationalContext = currentCreationalContext.get();
         if (previousCreationalContext == null) {
-            creationalContext = new CreationalContextImpl<T>(bean);
+            creationalContext = new InternalWeldCreationalContextImpl<T>(bean);
         } else {
             creationalContext = previousCreationalContext.getCreationalContext(bean);
         }

@@ -21,19 +21,17 @@ import java.util.List;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 
+import org.jboss.weld.construction.api.WeldCreationalContext;
 import org.jboss.weld.context.api.ContextualInstance;
 import org.jboss.weld.injection.spi.ResourceReference;
-
-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
 /**
  * @param <T>
  * @author pmuir
  */
-@SuppressWarnings("NM_SAME_SIMPLE_NAME_AS_INTERFACE")
-public interface WeldCreationalContext<T> extends org.jboss.weld.construction.api.WeldCreationalContext<T> {
+public interface InternalWeldCreationalContext<T> extends WeldCreationalContext<T> {
 
-    <S> WeldCreationalContext<S> getCreationalContext(Contextual<S> contextual);
+    <S> InternalWeldCreationalContext<S> getCreationalContext(Contextual<S> contextual);
 
     /**
      * The returned {@link CreationalContext} shares nothing but incomplete instances.
@@ -42,7 +40,7 @@ public interface WeldCreationalContext<T> extends org.jboss.weld.construction.ap
      * @return the {@link CreationalContext} for a producer reciever
      * @see WELD-1513
      */
-    <S> WeldCreationalContext<S> getProducerReceiverCreationalContext(Contextual<S> contextual);
+    <S> InternalWeldCreationalContext<S> getProducerReceiverCreationalContext(Contextual<S> contextual);
 
     <S> S getIncompleteInstance(Contextual<S> bean);
 
@@ -55,7 +53,7 @@ public interface WeldCreationalContext<T> extends org.jboss.weld.construction.ap
     /**
      * @return the parent {@link CreationalContext} or null if there isn't any parent.
      */
-    WeldCreationalContext<?> getParentCreationalContext();
+    InternalWeldCreationalContext<?> getParentCreationalContext();
 
     /**
      * @return the {@link Contextual} for which this {@link CreationalContext} is created.

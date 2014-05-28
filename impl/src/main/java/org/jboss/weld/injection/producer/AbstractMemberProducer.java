@@ -32,7 +32,7 @@ import javax.enterprise.inject.spi.Producer;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMember;
 import org.jboss.weld.bean.DisposalMethod;
-import org.jboss.weld.context.WeldCreationalContext;
+import org.jboss.weld.context.InternalWeldCreationalContext;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -117,8 +117,8 @@ public abstract class AbstractMemberProducer<X, T> extends AbstractProducer<T> {
         if (getAnnotated().isStatic()) {
             return null;
         } else {
-            if (productCreationalContext instanceof WeldCreationalContext<?>) {
-                WeldCreationalContext<?> creationalContextImpl = (WeldCreationalContext<?>) productCreationalContext;
+            if (productCreationalContext instanceof InternalWeldCreationalContext<?>) {
+                InternalWeldCreationalContext<?> creationalContextImpl = (InternalWeldCreationalContext<?>) productCreationalContext;
                 final Object incompleteInstance = creationalContextImpl.getIncompleteInstance(getDeclaringBean());
                 if (incompleteInstance != null) {
                     BeanLogger.LOG.circularCall(getAnnotated(), getDeclaringBean());
@@ -155,8 +155,8 @@ public abstract class AbstractMemberProducer<X, T> extends AbstractProducer<T> {
     }
 
     private CreationalContext<X> getReceiverCreationalContext(CreationalContext<T> ctx) {
-        if(ctx instanceof WeldCreationalContext) {
-            return ((WeldCreationalContext<?>)ctx).getProducerReceiverCreationalContext(getDeclaringBean());
+        if(ctx instanceof InternalWeldCreationalContext) {
+            return ((InternalWeldCreationalContext<?>)ctx).getProducerReceiverCreationalContext(getDeclaringBean());
         } else {
             return getBeanManager().createCreationalContext(getDeclaringBean());
         }

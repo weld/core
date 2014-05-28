@@ -41,7 +41,7 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
  * @author Ales Justin
  * @author Jozef Hartinger
  */
-public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreationalContext<T>, Serializable {
+public class InternalWeldCreationalContextImpl<T> implements InternalWeldCreationalContext<T>, Serializable {
 
     private static final long serialVersionUID = 7375854583908262422L;
 
@@ -56,7 +56,7 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
 
     private final List<ContextualInstance<?>> parentDependentInstances;
 
-    private final CreationalContextImpl<?> parentCreationalContext;
+    private final InternalWeldCreationalContextImpl<?> parentCreationalContext;
 
     private transient List<ResourceReference<?>> resourceReferences;
 
@@ -64,12 +64,12 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
 
     private transient List<AroundConstructCallback<T>> aroundConstructCallbacks;
 
-    public CreationalContextImpl(Contextual<T> contextual) {
+    public InternalWeldCreationalContextImpl(Contextual<T> contextual) {
         this(contextual, null, Collections.synchronizedList(new ArrayList<ContextualInstance<?>>()), null);
     }
 
-    private CreationalContextImpl(Contextual<T> contextual, Map<Contextual<?>, Object> incompleteInstances,
-            List<ContextualInstance<?>> parentDependentInstancesStore, CreationalContextImpl<?> parentCreationalContext) {
+    private InternalWeldCreationalContextImpl(Contextual<T> contextual, Map<Contextual<?>, Object> incompleteInstances,
+            List<ContextualInstance<?>> parentDependentInstancesStore, InternalWeldCreationalContextImpl<?> parentCreationalContext) {
         this.incompleteInstances = incompleteInstances;
         this.contextual = contextual;
         // this is direct ref by intention - to track dependencies hierarchy
@@ -79,7 +79,7 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
         this.constructorInterceptionSuppressed = false;
     }
 
-    private CreationalContextImpl() {
+    private InternalWeldCreationalContextImpl() {
         this.contextual = null;
         this.parentCreationalContext = null;
         // We can't use immutable empty lists because of some rare scenarios with Instance.get()
@@ -94,12 +94,12 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
         incompleteInstances.put(contextual, incompleteInstance);
     }
 
-    public <S> CreationalContextImpl<S> getCreationalContext(Contextual<S> contextual) {
-        return new CreationalContextImpl<S>(contextual, incompleteInstances, dependentInstances, this);
+    public <S> InternalWeldCreationalContextImpl<S> getCreationalContext(Contextual<S> contextual) {
+        return new InternalWeldCreationalContextImpl<S>(contextual, incompleteInstances, dependentInstances, this);
     }
 
-    public <S> CreationalContextImpl<S> getProducerReceiverCreationalContext(Contextual<S> contextual) {
-        return new CreationalContextImpl<S>(contextual, incompleteInstances != null ? new HashMap<Contextual<?>, Object>(incompleteInstances) : null, Collections.synchronizedList(new ArrayList<ContextualInstance<?>>()), null);
+    public <S> InternalWeldCreationalContextImpl<S> getProducerReceiverCreationalContext(Contextual<S> contextual) {
+        return new InternalWeldCreationalContextImpl<S>(contextual, incompleteInstances != null ? new HashMap<Contextual<?>, Object>(incompleteInstances) : null, Collections.synchronizedList(new ArrayList<ContextualInstance<?>>()), null);
     }
 
     public <S> S getIncompleteInstance(Contextual<S> bean) {
@@ -142,7 +142,7 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
     /**
      * @return the parent {@link CreationalContext} or null if there isn't any parent.
      */
-    public CreationalContextImpl<?> getParentCreationalContext() {
+    public InternalWeldCreationalContextImpl<?> getParentCreationalContext() {
         return parentCreationalContext;
     }
 
@@ -261,7 +261,7 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
 
         @java.lang.SuppressWarnings("rawtypes")
         private Object readResolve() throws ObjectStreamException {
-            return new CreationalContextImpl();
+            return new InternalWeldCreationalContextImpl();
         }
 
     }

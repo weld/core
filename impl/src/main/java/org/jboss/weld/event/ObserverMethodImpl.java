@@ -46,7 +46,7 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.RIBean;
-import org.jboss.weld.context.CreationalContextImpl;
+import org.jboss.weld.context.InternalWeldCreationalContextImpl;
 import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.ParameterInjectionPoint;
@@ -300,9 +300,9 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
         Context context = beanManager.getContext(declaringBean.getScope());
 
         if (creationalContext != null) {
-            if (creationalContext instanceof CreationalContextImpl<?>) {
+            if (creationalContext instanceof InternalWeldCreationalContextImpl<?>) {
                 // Create child creational context so that a dependent observer may be destroyed after the observer method completes
-                creationalContext = ((CreationalContextImpl<?>) creationalContext).getCreationalContext(declaringBean);
+                creationalContext = ((InternalWeldCreationalContextImpl<?>) creationalContext).getCreationalContext(declaringBean);
             }
             return context.get(declaringBean, creationalContext);
         }

@@ -22,7 +22,7 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.Interceptor;
 
-import org.jboss.weld.context.WeldCreationalContext;
+import org.jboss.weld.context.InternalWeldCreationalContext;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -59,9 +59,9 @@ public abstract class AbstractBuiltInMetadataBean<T> extends AbstractBuiltInBean
 
     protected abstract T newInstance(InjectionPoint ip, CreationalContext<T> creationalContext);
 
-    protected WeldCreationalContext<?> getParentCreationalContext(CreationalContext<?> ctx) {
-        if (ctx instanceof WeldCreationalContext<?>) {
-            WeldCreationalContext<?> parentContext = ((WeldCreationalContext<?>) ctx).getParentCreationalContext();
+    protected InternalWeldCreationalContext<?> getParentCreationalContext(CreationalContext<?> ctx) {
+        if (ctx instanceof InternalWeldCreationalContext<?>) {
+            InternalWeldCreationalContext<?> parentContext = ((InternalWeldCreationalContext<?>) ctx).getParentCreationalContext();
             if (parentContext != null) {
                 return parentContext;
             }

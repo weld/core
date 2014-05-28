@@ -30,7 +30,7 @@ import javax.enterprise.inject.spi.Interceptor;
 
 import org.jboss.weld.bean.BeanIdentifiers;
 import org.jboss.weld.bean.StringBeanIdentifier;
-import org.jboss.weld.context.WeldCreationalContext;
+import org.jboss.weld.context.InternalWeldCreationalContext;
 import org.jboss.weld.literal.InterceptedLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
@@ -57,8 +57,8 @@ public class InterceptedBeanMetadataBean extends BeanMetadataBean {
     protected Bean<?> newInstance(InjectionPoint ip, CreationalContext<Bean<?>> ctx) {
         checkInjectionPoint(ip);
 
-        WeldCreationalContext<?> interceptorContext = getParentCreationalContext(ctx);
-        WeldCreationalContext<?> interceptedBeanContext = getParentCreationalContext(interceptorContext);
+        InternalWeldCreationalContext<?> interceptorContext = getParentCreationalContext(ctx);
+        InternalWeldCreationalContext<?> interceptedBeanContext = getParentCreationalContext(interceptorContext);
         Contextual<?> interceptedContextual = interceptedBeanContext.getContextual();
 
         if (interceptedContextual instanceof Bean<?>) {
