@@ -57,7 +57,6 @@ public class EventTypeAssignabilityRules implements AssignabilityRules {
         if (requiredType instanceof ActualTypeHolder) {
             return isAssignableFrom((ActualTypeHolder) requiredType, type2);
         }
-        // TODO use isAssignableFrom
         if (requiredType instanceof WildcardType) {
             return isAssignableFrom((WildcardType) requiredType, type2);
         }
@@ -80,7 +79,11 @@ public class EventTypeAssignabilityRules implements AssignabilityRules {
         return true;
     }
 
+    /**
+     * Return (type2 <= inf(types1))
+     */
     protected boolean allAreAssignableFrom(Type[] types1, Type type2) {
+        // TODO case when type2 is e.g. a TypeVariable with multiple bounds
         for (Type type : types1) {
             if (!isAssignableFrom(type, type2)) {
                 return false;
@@ -94,22 +97,31 @@ public class EventTypeAssignabilityRules implements AssignabilityRules {
         if (otherType instanceof ActualTypeHolder) {
             return isAssignableFrom(requiredType, (ActualTypeHolder) otherType);
         }
+        // TODO change also method matches(ActualTypeHolder requiredType, Type otherType) - looks quite the same
 
-        // TODO: this doesn't look OK!
         if (otherType instanceof TypeVariable<?>) {
             TypeVariable<?> typeVariable = (TypeVariable<?>) otherType;
-            if (isTypeInsideBounds(requiredType, EMPTY_TYPES, typeVariable.getBounds())) {
-                return true;
-            }
+            // if requiredType has to be assignable from typeVariable T <T extends A & B>, it has to be assignable from at least
+            // one of T's upper bounds
+            return isAssignableFromAtLeastOne(requiredType, typeVariable.getBounds());
         }
         if (otherType instanceof WildcardType) {
             WildcardType wildcardType = (WildcardType) otherType;
-            for (Type upperBound : wildcardType.getUpperBounds()) {
-                if (!isAssignableFrom(requiredType, upperBound)) {
-                    return false;
-                }
+            // wildcard can have only one bound (either upper, or lower, and only ONE!)
+            if (isAssignableFromAtLeastOne(requiredType, wildcardType.getUpperBounds())) {
+                return true;
             }
-            return true;
+            // returns true also if the wildcard is unbounded
+            return isAssignableFromAll(requiredType, wildcardType.getLowerBounds());
+        }
+        return false;
+    }
+
+    protected boolean isAssignableFromAtLeastOne(Type type1, Type[] types2) {
+        for (Type type2 : types2) {
+            if (isAssignableFrom(type1, type2)) {
+                return true;
+            }
         }
         return false;
     }
@@ -123,6 +135,7 @@ public class EventTypeAssignabilityRules implements AssignabilityRules {
     }
 
     protected boolean isAssignableFrom(TypeVariable<?> requiredType, Type beanType) {
+        // TODO protected boolean isAssignableFrom(TypeVariable<?> requiredType, TypeVariable<?> beanType) { }
         return isTypeInsideBounds(beanType, EMPTY_TYPES, requiredType.getBounds());
     }
 
@@ -184,11 +197,14 @@ public class EventTypeAssignabilityRules implements AssignabilityRules {
      * Checks whether the given type is assignable from lower bounds and assignable to upper bounds.
      */
     public boolean isTypeInsideBounds(Type type, Type[] lowerBounds, Type[] upperBounds) {
-        return (lowerBounds.length == 0 || isAssignableFromAll(type, lowerBounds)) && (upperBounds.length == 0 || isAssignableToAll(type, upperBounds));
+        // TODO: review - what if Type is a TypeVariable or Wildcard? What then?
+        return (isAssignableFromAll(type, lowerBounds) && isAssignableToAll(type, upperBounds));
     }
 
+    // TODO: completely wrong!
     public boolean areTypesInsideBounds(Type[] types, Type[] lowerBounds, Type[] upperBounds) {
         for (Type type : types) {
+            // SHI*! none of the 'types' (type variables) 'is inside bounds' as it is under only one of 'upperBounds'
             if (!isTypeInsideBounds(type, lowerBounds, upperBounds)) {
                 return false;
             }
