@@ -1,8 +1,8 @@
-/**
+/*
  * JBoss, Home of Professional Open Source
- * Copyright 2009, Red Hat, Inc. and/or its affiliates, and individual
- * contributors by the @authors tag. See the copyright.txt in the
- * distribution for a full listing of individual contributors.
+ * Copyright 2014, Red Hat, Inc., and individual contributors
+ * by the @authors tag. See the copyright.txt in the distribution for a
+ * full listing of individual contributors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,14 +22,10 @@ import static org.junit.Assert.assertTrue;
 
 import javax.enterprise.inject.spi.BeanManager;
 
-import org.jboss.weld.environment.se.test.WeldSETest;
 import org.jboss.weld.literal.AnyLiteral;
 import org.junit.Test;
 
-/**
- * @author Matus Abaffy
- */
-public class CDIProviderTest extends WeldSETest {
+public abstract class AbstractCDIProviderTest {
 
     @Test
     public void testCDIProvider() {
