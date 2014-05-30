@@ -17,7 +17,9 @@
 package org.jboss.weld.tests.ejb.duplicatenames;
 
 import javax.inject.Inject;
+
 import junit.framework.Assert;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.Testable;
 import org.jboss.arquillian.junit.Arquillian;
@@ -27,11 +29,13 @@ import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-@Ignore("WELD-1680")
+/**
+ *
+ * @see WELD-1680
+ */
 @RunWith(Arquillian.class)
 public class DuplicateEJBNamesDiscoveryTest {
 
