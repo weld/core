@@ -19,7 +19,6 @@ package org.jboss.weld.servlet;
 import javax.enterprise.inject.spi.CDI;
 import javax.enterprise.inject.spi.CDIProvider;
 
-import org.jboss.weld.Container;
 import org.jboss.weld.SimpleCDI;
 import org.jboss.weld.manager.BeanManagerImpl;
 
@@ -33,8 +32,8 @@ public class StaticWeldProvider implements CDIProvider {
              * In certain scenarios we use flat deployment model (weld-se, weld-servlet). In that case
              * we return the only BeanManager we have.
              */
-            if (Container.instance().beanDeploymentArchives().values().size() == 1) {
-                return Container.instance().beanDeploymentArchives().values().iterator().next();
+            if (getContainer().beanDeploymentArchives().values().size() == 1) {
+                return getContainer().beanDeploymentArchives().values().iterator().next();
             }
             return super.unsatisfiedBeanManager(callerClassName);
         }
