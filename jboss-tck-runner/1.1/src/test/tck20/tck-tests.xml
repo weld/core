@@ -24,20 +24,8 @@
         <classes>
 
             <!-- Issues in the spec -->
-            <!-- CDI-437 -->
-            <class name="org.jboss.cdi.tck.tests.lookup.byname.ambiguous.broken.AmbiguousELNamesTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
 
             <!-- Issues in the TCK -->
-            <!-- CDITCK-401 -->
-            <class name="org.jboss.cdi.tck.tests.implementation.producer.method.definition.ProducerMethodDefinitionTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
 
             <!-- Issues in Weld (the RI) -->
 
