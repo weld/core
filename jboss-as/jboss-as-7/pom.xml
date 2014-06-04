@@ -5,13 +5,6 @@
     <packaging>pom</packaging>
     <version>1.1.23-SNAPSHOT</version>
 
-    <parent>
-        <groupId>org.jboss.weld</groupId>
-        <artifactId>weld-core-parent</artifactId>
-        <version>1.1.23-SNAPSHOT</version>
-        <relativePath>../../pom.xml</relativePath>
-    </parent>
-
     <name>JBoss AS7 Updater</name>
 
     <!-- Minimal metadata -->
@@ -28,13 +21,14 @@
 
 
     <properties>
+        <weld.update.version>${project.version}</weld.update.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.jboss.weld</groupId>
             <artifactId>weld-core</artifactId>
-            <version>${project.version}</version>
+            <version>${weld.update.version}</version>
         </dependency>
     </dependencies>
     <profiles>
