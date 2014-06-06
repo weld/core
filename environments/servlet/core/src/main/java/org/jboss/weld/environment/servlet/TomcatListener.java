@@ -16,15 +16,9 @@
  */
 package org.jboss.weld.environment.servlet;
 
-import java.net.URL;
-import java.util.Set;
-
-import javax.naming.Binding;
-import javax.naming.NamingEnumeration;
-import javax.naming.directory.DirContext;
 import javax.servlet.ServletContext;
 
-import org.jboss.logging.Logger;
+import org.jboss.weld.environment.servlet.deployment.TomcatScanner;
 import org.jboss.weld.environment.servlet.deployment.URLScanner;
 
 /**
@@ -32,54 +26,14 @@ import org.jboss.weld.environment.servlet.deployment.URLScanner;
  * Use this if deploying app as packed archive.
  *
  * @author Ales Justin
+ * @deprecated This listener does not work if ServletContainerInitializer is used
  */
+@Deprecated
 public class TomcatListener extends Listener {
-    private static final Logger log = Logger.getLogger(TomcatListener.class);
 
-    protected URLScanner createUrlScanner(ClassLoader classLoader, ServletContext context) {
+    protected URLScanner getUrlScanner(ClassLoader classLoader, ServletContext context) {
         return new TomcatScanner(classLoader);
     }
 
-    private static class TomcatScanner extends URLScanner {
-        private TomcatScanner(ClassLoader classLoader) {
-            super(classLoader);
-        }
 
-        @Override
-        protected void handleURL(URL url, Set<String> classes, Set<URL> urls) {
-            try {
-                Object content = url.getContent();
-                if (content instanceof DirContext) {
-                    recurse((DirContext) content, classes, urls, "");
-                } else {
-                    log.warn("Cannot scan URL, content not javax.naming.Context instance.");
-                }
-            } catch (Exception e) {
-                log.error("Cannot scan URL: " + url, e);
-            }
-        }
-    }
-
-    @SuppressWarnings({"UnusedParameters"})
-    protected static void recurse(DirContext context, Set<String> classes, Set<URL> urls, String prefix) throws Exception {
-        if (prefix.length() > 0) {
-            prefix += ".";
-        }
-
-        NamingEnumeration ne = context.listBindings("");
-        while (ne.hasMoreElements()) {
-            Binding next = (Binding) ne.nextElement();
-            String name = prefix + next.getName();
-            final String classFilenameExtension = ".class";
-            if (name.endsWith(classFilenameExtension)) {
-                classes.add(name.substring(0, name.length() - classFilenameExtension.length()));
-                continue;
-            }
-
-            Object nextObject = next.getObject();
-            if (nextObject instanceof DirContext) {
-                recurse((DirContext) nextObject, classes, urls, name);
-            }
-        }
-    }
 }

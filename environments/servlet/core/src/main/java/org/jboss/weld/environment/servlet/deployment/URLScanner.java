@@ -38,10 +38,13 @@ import org.jboss.logging.Logger;
  * @author Marko Luksa
  */
 public class URLScanner {
+
     private static final Logger log = Logger.getLogger(URLScanner.class);
 
-    private static final String CLASS_FILENAME_EXTENSION = ".class";
+    static final String CLASS_FILENAME_EXTENSION = ".class";
+
     private static final String COULD_NOT_READ = "could not read: ";
+
     // according to JarURLConnection api doc, the separator is "!/"
     private static final String SEPARATOR = "!/";
 
@@ -189,6 +192,10 @@ public class URLScanner {
 
     protected void handleURL(URL url, Set<String> classes, Set<URL> urls) {
         log.warn("Not implemented.");
+    }
+
+    protected boolean isURLHandlingSupported() {
+        return false;
     }
 
     /**

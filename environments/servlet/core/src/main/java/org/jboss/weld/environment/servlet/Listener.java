@@ -20,6 +20,9 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 
 import org.jboss.logging.Logger;
+import org.jboss.weld.environment.servlet.deployment.URLScanner;
+import org.jboss.weld.environment.servlet.deployment.VFSURLScanner;
+import org.jboss.weld.environment.servlet.util.Reflections;
 import org.jboss.weld.servlet.api.ServletListener;
 import org.jboss.weld.servlet.api.helpers.ForwardingServletListener;
 
@@ -60,7 +63,7 @@ public class Listener extends ForwardingServletListener {
         }
         log.info("Initialize Weld using ServletContextListener");
         lifecycle = new WeldServletLifecycle();
-        lifecycle.initialize(context);
+        lifecycle.initialize(context, getUrlScanner(Reflections.getClassLoader(), context));
         super.contextInitialized(sce);
     }
 
@@ -76,6 +79,24 @@ public class Listener extends ForwardingServletListener {
     @Override
     protected ServletListener delegate() {
         return lifecycle.getWeldListener();
+    }
+
+    /**
+     * Get the appropriate scanner. Return null to leave it to defaults.
+     *
+     * @param classLoader the classloader
+     * @param context the servlet context
+     * @return custom url scanner or null if we should use default
+     */
+    protected URLScanner getUrlScanner(ClassLoader classLoader, ServletContext context) {
+        try {
+            // Check if we can use JBoss VFS
+            classLoader.loadClass("org.jboss.virtual.VFS");
+            return new VFSURLScanner(classLoader);
+        }
+        catch (Throwable t) {
+            return null;
+        }
     }
 
 }
