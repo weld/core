@@ -19,16 +19,16 @@ public class ServletDeployment implements CDI11Deployment {
     private final ServiceRegistry services;
     private final Iterable<Metadata<Extension>> extensions;
 
-    public ServletDeployment(ServletContext servletContext, Bootstrap bootstrap) {
-        this.webAppBeanDeploymentArchive = createWebAppBeanDeploymentArchive(servletContext, bootstrap);
+    public ServletDeployment(ServletContext servletContext, Bootstrap bootstrap, URLScanner scanner) {
+        this.webAppBeanDeploymentArchive = createWebAppBeanDeploymentArchive(servletContext, bootstrap, scanner);
         this.beanDeploymentArchives = new ArrayList<BeanDeploymentArchive>();
         this.beanDeploymentArchives.add(webAppBeanDeploymentArchive);
         this.services = new SimpleServiceRegistry();
         this.extensions = bootstrap.loadExtensions(Thread.currentThread().getContextClassLoader());
     }
 
-    protected WebAppBeanDeploymentArchive createWebAppBeanDeploymentArchive(ServletContext servletContext, Bootstrap bootstrap) {
-        return new WebAppBeanDeploymentArchive(servletContext, bootstrap);
+    protected WebAppBeanDeploymentArchive createWebAppBeanDeploymentArchive(ServletContext servletContext, Bootstrap bootstrap, URLScanner scanner) {
+        return new WebAppBeanDeploymentArchive(servletContext, bootstrap, scanner);
     }
 
     public Collection<BeanDeploymentArchive> getBeanDeploymentArchives() {

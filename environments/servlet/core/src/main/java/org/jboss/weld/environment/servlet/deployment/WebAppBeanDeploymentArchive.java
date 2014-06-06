@@ -1,4 +1,4 @@
-/**
+/*
  * JBoss, Home of Professional Open Source
  * Copyright 2008, Red Hat Middleware LLC, and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
@@ -26,6 +26,7 @@ import java.util.Set;
 
 import javax.servlet.ServletContext;
 
+import org.jboss.logging.Logger;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
@@ -36,40 +37,54 @@ import org.jboss.weld.environment.servlet.util.Reflections;
 import org.jboss.weld.environment.servlet.util.Servlets;
 
 /**
- * The means by which Web Beans are discovered on the classpath. This will only
- * discover simple web beans - there is no EJB/Servlet/JPA integration.
+ * The means by which Web Beans are discovered on the classpath. This will only discover simple web beans - there is no EJB/Servlet/JPA integration.
  *
  * @author Peter Royle
  * @author Pete Muir
  * @author Ales Justin
  */
 public class WebAppBeanDeploymentArchive implements BeanDeploymentArchive {
+
+    private static final Logger log = Logger.getLogger(WebAppBeanDeploymentArchive.class);
+
     public static final String META_INF_BEANS_XML = "META-INF/beans.xml";
     public static final String WEB_INF_BEANS_XML = "/WEB-INF/beans.xml";
     public static final String WEB_INF_CLASSES = "/WEB-INF/classes";
+    private static final String SLASH = "/";
+    private static final String DOT = ".";
 
     private final Set<String> classes;
     private final BeansXml beansXml;
     private final ServiceRegistry services;
 
-    public WebAppBeanDeploymentArchive(ServletContext servletContext, Bootstrap bootstrap) {
+    public WebAppBeanDeploymentArchive(ServletContext servletContext, Bootstrap bootstrap, URLScanner scanner) {
         this.services = new SimpleServiceRegistry();
         this.classes = new HashSet<String>();
         Set<URL> urls = new HashSet<URL>();
-        URLScanner scanner = createScanner(servletContext);
-        scanner.scanResources(new String[]{META_INF_BEANS_XML}, classes, urls);
+
+        if (scanner == null) {
+            // Create the default scanner
+            scanner = new URLScanner(Reflections.getClassLoader());
+        }
+
+        scanner.scanResources(new String[] { META_INF_BEANS_XML }, classes, urls);
         try {
             URL beans = servletContext.getResource(WEB_INF_BEANS_XML);
             if (beans != null) {
                 urls.add(beans); // this is consistent with how the JBoss weld.deployer works
                 File webInfClasses = Servlets.getRealFile(servletContext, WEB_INF_CLASSES);
                 if (webInfClasses != null) {
-                    File[] files = {webInfClasses};
+                    File[] files = { webInfClasses };
                     scanner.scanDirectories(files, classes, urls);
                 } else {
-                    URL url = servletContext.getResource(WEB_INF_CLASSES);
-                    if (url != null) {
-                        scanner.scanURLs(new URL[]{url}, classes, urls);
+                    if (scanner.isURLHandlingSupported()) {
+                        URL url = servletContext.getResource(WEB_INF_CLASSES);
+                        if (url != null) {
+                            scanner.scanURLs(new URL[] { url }, classes, urls);
+                        }
+                    } else {
+                        // Make use of ServletContext.getResourcePaths()
+                        handleResourcePath(WEB_INF_CLASSES, classes, servletContext);
                     }
                 }
             }
@@ -77,18 +92,6 @@ public class WebAppBeanDeploymentArchive implements BeanDeploymentArchive {
             throw new IllegalStateException("Error loading resources from servlet context ", e);
         }
         this.beansXml = bootstrap.parse(urls, true);
-    }
-
-    protected URLScanner createScanner(ServletContext context) {
-        URLScanner scanner = (URLScanner) context.getAttribute(URLScanner.class.getName());
-        if (scanner == null) {
-            ClassLoader cl = Reflections.getClassLoader();
-            scanner = new URLScanner(cl);
-        } else {
-            // cleanup
-            context.removeAttribute(URLScanner.class.getName());
-        }
-        return scanner;
     }
 
     public Collection<String> getBeanClasses() {
@@ -114,6 +117,31 @@ public class WebAppBeanDeploymentArchive implements BeanDeploymentArchive {
     public String getId() {
         // Use "flat" to allow us to continue to use ManagerObjectFactory
         return "flat";
+    }
+
+    static void handleResourcePath(String resourcePath, Set<String> classes, ServletContext servletContext) {
+
+        log.debugv("Handling resource path: {0}", resourcePath);
+        Set<String> subpaths = servletContext.getResourcePaths(resourcePath);
+
+        if (subpaths != null && !subpaths.isEmpty()) {
+            for (String subpath : subpaths) {
+                if (subpath.endsWith(SLASH)) {
+                    // Paths indicating subdirectory end with a '/'
+                    handleResourcePath(subpath, classes, servletContext);
+                } else if (subpath.endsWith(URLScanner.CLASS_FILENAME_EXTENSION)) {
+                    // Class file
+                    String className = toClassName(subpath);
+                    classes.add(className);
+                    log.debugv("Class discovered: {0}", className);
+                }
+            }
+        }
+    }
+
+    private static String toClassName(String resourcePath) {
+        // Remove WEB-INF/classes part, suffix and replace slashes with dots
+        return resourcePath.substring(WEB_INF_CLASSES.length() + 1, resourcePath.lastIndexOf(URLScanner.CLASS_FILENAME_EXTENSION)).replace(SLASH, DOT);
     }
 
 }

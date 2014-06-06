@@ -33,7 +33,6 @@ import org.jboss.weld.environment.gwtdev.GwtDevHostedModeContainer;
 import org.jboss.weld.environment.jetty.JettyContainer;
 import org.jboss.weld.environment.servlet.deployment.ServletDeployment;
 import org.jboss.weld.environment.servlet.deployment.URLScanner;
-import org.jboss.weld.environment.servlet.deployment.VFSURLScanner;
 import org.jboss.weld.environment.servlet.services.ServletResourceInjectionServices;
 import org.jboss.weld.environment.servlet.util.Reflections;
 import org.jboss.weld.environment.servlet.util.ServiceLoader;
@@ -83,16 +82,9 @@ public class WeldServletLifecycle {
         }
     }
 
-    void initialize(ServletContext context) {
+    void initialize(ServletContext context, URLScanner scanner) {
 
-        ClassLoader classLoader = Reflections.getClassLoader();
-
-        URLScanner scanner = createUrlScanner(classLoader, context);
-        if (scanner != null) {
-            context.setAttribute(URLScanner.class.getName(), scanner);
-        }
-
-        ServletDeployment deployment = createServletDeployment(context, bootstrap);
+        ServletDeployment deployment = createServletDeployment(context, bootstrap, scanner);
         try {
             deployment.getWebAppBeanDeploymentArchive().getServices().add(
                     ResourceInjectionServices.class, new ServletResourceInjectionServices() {
@@ -166,26 +158,8 @@ public class WeldServletLifecycle {
      * @param bootstrap the bootstrap
      * @return new servlet deployment
      */
-    protected ServletDeployment createServletDeployment(ServletContext context, Bootstrap bootstrap) {
-        return new ServletDeployment(context, bootstrap);
-    }
-
-    /**
-     * Get appropriate scanner. Return null to leave it to defaults.
-     *
-     * @param classLoader the classloader
-     * @param context the servlet context
-     * @return custom url scanner or null if we should use default
-     */
-    protected URLScanner createUrlScanner(ClassLoader classLoader, ServletContext context) {
-        try {
-            // Check if we can use JBoss VFS
-            classLoader.loadClass("org.jboss.virtual.VFS");
-            return new VFSURLScanner(classLoader);
-        }
-        catch (Throwable t) {
-            return null;
-        }
+    protected ServletDeployment createServletDeployment(ServletContext context, Bootstrap bootstrap, URLScanner scanner) {
+        return new ServletDeployment(context, bootstrap, scanner);
     }
 
     /**
