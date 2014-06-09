@@ -211,4 +211,66 @@ public class Types {
         }
         return loadedStereotypes;
     }
+
+    /**
+     * Determines whether the given type is an actual type. A type is considered actual if it is a raw type, a parameterized type
+     * or an array type.
+     *
+     * @param type the given type
+     * @return true if and only if the given type is an actual type
+     */
+    public static boolean isActualType(Type type) {
+        return (type instanceof Class<?>) || (type instanceof ParameterizedType) || (type instanceof GenericArrayType);
+    }
+
+    /**
+     * Determines whether the given type is an array type.
+     *
+     * @param type the given type
+     * @return true if the given type is a subclass of java.lang.Class or implements GenericArrayType
+     */
+    public static boolean isArray(Type type) {
+        return (type instanceof GenericArrayType) || (type instanceof Class<?> && ((Class<?>) type).isArray());
+    }
+
+    /**
+     * Determines the component type for a given array type.
+     *
+     * @param type the given array type
+     * @return the component type of a given array type
+     */
+    public static Type getArrayComponentType(Type type) {
+        if (type instanceof GenericArrayType) {
+            return GenericArrayType.class.cast(type).getGenericComponentType();
+        }
+        if (type instanceof Class<?>) {
+            Class<?> clazz = (Class<?>) type;
+            if (clazz.isArray()) {
+                return clazz.getComponentType();
+            }
+        }
+        throw new IllegalArgumentException("Not an array type " + type);
+    }
+
+    /**
+     * Determines whether the given array only contains unbounded type variables or Object.class.
+     *
+     * @param types the given array of types
+     * @return true if and only if the given array only contains unbounded type variables or Object.class
+     */
+    public static boolean isArrayOfUnboundedTypeVariablesOrObjects(Type[] types) {
+        for (Type type : types) {
+            if (Object.class.equals(type)) {
+                continue;
+            }
+            if (type instanceof TypeVariable<?>) {
+                Type[] bounds = ((TypeVariable<?>) type).getBounds();
+                if (bounds == null || bounds.length == 0 || (bounds.length == 1 && Object.class.equals(bounds[0]))) {
+                    continue;
+                }
+            }
+            return false;
+        }
+        return true;
+    }
 }
