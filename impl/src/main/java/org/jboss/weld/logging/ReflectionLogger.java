@@ -19,6 +19,7 @@ package org.jboss.weld.logging;
 import static org.jboss.weld.logging.WeldLogger.WELD_PROJECT_CODE;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 
 import org.jboss.logging.Logger;
 import org.jboss.logging.Logger.Level;
@@ -136,5 +137,11 @@ public interface ReflectionLogger extends WeldLogger {
 
     @Message(id = 622, value = "IllegalArgumentException invoking {2} on {1} ({0}) with parameters {3}", format = Format.MESSAGE_FORMAT)
     WeldException illegalArgumentExceptionOnReflectionInvocation(Class<?> clazz, Object instance, Method method, String parameters, @Cause java.lang.IllegalArgumentException cause);
+
+    @Message(id = 623, value = "Unknown type {0}.", format = Format.MESSAGE_FORMAT)
+    IllegalArgumentException unknownType(Type type);
+
+    @Message(id = 624, value = "Invalid type argument combination: {0}; {1}.", format = Format.MESSAGE_FORMAT)
+    IllegalArgumentException invalidTypeArgumentCombination(Type type1, Type type2);
 
 }
