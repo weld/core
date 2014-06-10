@@ -67,7 +67,7 @@ public class ResourceInjector<T> extends DefaultInjector<T> {
             public void proceed() {
                 // Java EE component environment resource dependencies are injected first
                 Beans.injectEEFields(resourceInjectionsHierarchy, instance, ctx);
-                ResourceInjector.super.inject(instance, ctx, manager, type, injectionTarget);
+                Beans.injectFieldsAndInitializers(instance, ctx, manager, getInjectableFields(), getInitializerMethods());
             }
         }.run();
     }

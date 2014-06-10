@@ -47,6 +47,8 @@ public class InjectionServicesTest {
         Assert.assertTrue(ijs.isAfter());
         Assert.assertTrue(ijs.isInjectedAfter());
         Assert.assertTrue(ijs.isInjectionTargetCorrect());
+        Assert.assertEquals(ijs.getAroundInjectForFooCalled(), 1);
+        Assert.assertEquals(ijs.getAroundInjectForBarCalled(), 1);
 
         Assert.assertNotNull(foo.getBar());
         Assert.assertEquals("hi!", foo.getMessage());
