@@ -17,7 +17,6 @@
 package org.jboss.weld.tests.unit.bootstrap;
 
 import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
 
 import org.jboss.weld.injection.spi.InjectionContext;
@@ -32,10 +31,17 @@ public class CheckableInjectionServices implements InjectionServices {
     private boolean after = false;
     private boolean injectedAfter = false;
     private boolean injectionTargetCorrect = false;
+    private int aroundInjectForBarCalled;
+    private int aroundInjectForFooCalled;
 
+    @Override
     public <T> void aroundInject(InjectionContext<T> injectionContext) {
         before = true;
+        if (injectionContext.getTarget() instanceof Bar) {
+            aroundInjectForBarCalled++;
+        }
         if (injectionContext.getTarget() instanceof Foo) {
+            aroundInjectForFooCalled++;
             ((Foo) injectionContext.getTarget()).message = "hi!";
             if (injectionContext.getInjectionTarget().getInjectionPoints().size() == 1) {
                 injectionTargetCorrect = injectionContext.getInjectionTarget().getInjectionPoints().iterator().next().getType().equals(Bar.class);
@@ -54,6 +60,8 @@ public class CheckableInjectionServices implements InjectionServices {
         after = false;
         injectedAfter = false;
         injectionTargetCorrect = false;
+        aroundInjectForFooCalled = 0;
+        aroundInjectForBarCalled = 0;
     }
 
     public boolean isBefore() {
@@ -72,6 +80,15 @@ public class CheckableInjectionServices implements InjectionServices {
         return injectionTargetCorrect;
     }
 
+    public int getAroundInjectForBarCalled() {
+        return aroundInjectForBarCalled;
+    }
+
+    public int getAroundInjectForFooCalled() {
+        return aroundInjectForFooCalled;
+    }
+
+    @Override
     public void cleanup() {
     }
 
