@@ -242,7 +242,7 @@ public class CovariantTypesTest {
     @Test
     @SuppressWarnings("all")
     public <A, B, C extends Number, D extends Integer> void testTypeVariableAssignableFromTypeVariable() {
-        final int count = 4;
+        final int count = 5;
         Type[] typeVariables = new Type[count];
         typeVariables[0] = new TypeLiteral<A>() {
         }.getType();
@@ -251,6 +251,8 @@ public class CovariantTypesTest {
         typeVariables[2] = new TypeLiteral<C>() {
         }.getType();
         typeVariables[3] = new TypeLiteral<D>() {
+        }.getType();
+        typeVariables[4] = new TypeLiteral<D[]>() {
         }.getType();
 
         // type variables should only be assignable if they are equal

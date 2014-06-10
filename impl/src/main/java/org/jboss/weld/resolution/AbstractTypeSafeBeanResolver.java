@@ -199,7 +199,7 @@ public abstract class AbstractTypeSafeBeanResolver<T extends Bean<?>, C extends 
         if (resolvable.isDelegate()) {
             rules = DelegateInjectionPointAssignabilityRules.instance();
         } else {
-            rules = BeanTypeAssignabilityRules.instance();
+            rules = BeanTypeAssignabilityRules2.instance();
         }
         return rules.matches(resolvable.getTypes(), bean.getTypes())
                 && Beans.containsAllQualifiers(resolvable.getQualifiers(), QualifierInstance.of(bean, store));
