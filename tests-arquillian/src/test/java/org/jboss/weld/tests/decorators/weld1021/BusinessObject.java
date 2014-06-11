@@ -29,10 +29,6 @@ public class BusinessObject {
     @Inject
     Account account;
 
-    public void print(String msg) {
-        System.out.println("msg = " + msg);
-    }
-
     public void withdraw(int amount) {
         account.withdraw(amount);
     }

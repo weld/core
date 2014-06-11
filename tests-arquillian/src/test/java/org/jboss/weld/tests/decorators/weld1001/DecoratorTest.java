@@ -18,7 +18,6 @@
 package org.jboss.weld.tests.decorators.weld1001;
 
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.OperateOnDeployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -32,20 +31,21 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class DecoratorTest {
 
-    @Deployment(name = "decorator")
-    public static Archive getDeployment() {
+    @Deployment
+    public static Archive<?> getDeployment() {
         return ShrinkWrap.create(BeanArchive.class)
                 .decorate(LargeAmountAccount.class)
                 .addPackage(LargeAmountAccount.class.getPackage());
     }
 
     @Test
-    @OperateOnDeployment("decorator")
     public void testDecorators(BusinessObject bo) throws Exception {
         System.out.println("a_state = " + bo.getState());
+        assert 0 == bo.getState();
         bo.deposit(2011.0);
         bo.withdraw(1509.0);
         System.out.println("a_sum = " + bo.getState());
+        assert 2011 - 1509 == bo.getState();
     }
 
 }
