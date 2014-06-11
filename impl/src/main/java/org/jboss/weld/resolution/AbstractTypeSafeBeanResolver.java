@@ -225,8 +225,7 @@ public abstract class AbstractTypeSafeBeanResolver<T extends Bean<?>, C extends 
                     beans.addAll(getBeans(clazz));
                 }
             } else if (type instanceof GenericArrayType) {
-                GenericArrayType arrayType = (GenericArrayType) type;
-                Class<Object> rawArrayType = Reflections.getRawType(arrayType);
+                Class<Object> rawArrayType = Reflections.getRawType(type);
                 beans.addAll(getBeans(rawArrayType));
             }
         }
