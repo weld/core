@@ -62,8 +62,7 @@ public class WeldCollections {
     }
 
     /**
-     *
-     * @return
+     * Returns an immutable view of a given set. If the given set is empty, a shared instance is returned.
      */
     public static <T> Set<T> immutableGuavaSet(Set<T> set) {
         if (set.isEmpty()) {
@@ -94,7 +93,7 @@ public class WeldCollections {
     }
 
     /**
-     * @return
+     * Returns an immutable view of a given list. If the given list is empty, a shared instance is returned.
      */
     public static <T> List<T> immutableGuavaList(List<T> list) {
         if (list.isEmpty()) {
@@ -107,7 +106,7 @@ public class WeldCollections {
     }
 
     /**
-     * Returns an immutable view of a given map. If the given list is empty, a shared instance is returned.
+     * Returns an immutable view of a given map. If the given map is empty, a shared instance is returned.
      */
     public static <K, V> Map<K, V> immutableMap(Map<K, V> map) {
         if (map.isEmpty()) {
