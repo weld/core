@@ -27,43 +27,43 @@ import javax.enterprise.util.TypeLiteral;
 import junit.framework.Assert;
 
 import org.jboss.weld.resolution.AssignabilityRules;
-import org.jboss.weld.resolution.EventTypeAssignabilityRules;
+import org.jboss.weld.resolution.EventTypeAssignabilityRules2;
 import org.jboss.weld.util.reflection.GenericArrayTypeImpl;
 import org.junit.Test;
 
 
-public class EventTypeAssignabilityTest extends BeanTypeAssignabilityTest {
+@SuppressWarnings("serial")
+public class EventTypeAssignabilityTest {
 
-    @Override
     protected AssignabilityRules getRules() {
-        return EventTypeAssignabilityRules.instance();
+        return EventTypeAssignabilityRules2.instance();
     }
 
     @Test
     public <E> void testTypeVariableMatchesFoo() throws Exception {
         Type fooType = Foo.class;
         Type variableType = new TypeLiteral<E>(){}.getType();
-        Assert.assertTrue("E should be assignable from Foo", EventTypeAssignabilityRules.instance().matches(variableType, fooType));
+        Assert.assertTrue("E should be assignable from Foo", getRules().matches(variableType, fooType));
     }
 
     @Test
     public <E> void testVariableFooMatchesStringFoo() throws Exception {
         Type stringFooType = new TypeLiteral<Foo<String>>(){}.getType();
         Type variableFooType = new TypeLiteral<Foo<E>>(){}.getType();
-        Assert.assertTrue("Foo<E> should be assignable from Foo<String>", EventTypeAssignabilityRules.instance().matches(variableFooType, stringFooType));
+        Assert.assertTrue("Foo<E> should be assignable from Foo<String>", getRules().matches(variableFooType, stringFooType));
     }
 
     @Test
     public <E> void testVariableFooArrayMatchesStringFooArray() throws Exception {
         Type stringFooArrayType = new TypeLiteral<Foo<String>[]>(){}.getType();
         Type variableFooArrayType = new TypeLiteral<Foo<E>[]>(){}.getType();
-        Assert.assertTrue("Foo<E>[] should be assignable from Foo<String>[]", EventTypeAssignabilityRules.instance().matches(variableFooArrayType, stringFooArrayType));
+        Assert.assertTrue("Foo<E>[] should be assignable from Foo<String>[]", getRules().matches(variableFooArrayType, stringFooArrayType));
     }
 
     @Test
     public void testWildcardFooMatchesItself() throws Exception {
         Type type = new TypeLiteral<Foo<?>>(){}.getType();
-        Assert.assertTrue("Foo<?> should be assignable from Foo<?>", EventTypeAssignabilityRules.instance().matches(type, type));
+        Assert.assertTrue("Foo<?> should be assignable from Foo<?>", getRules().matches(type, type));
     }
 
     @Test
@@ -79,7 +79,6 @@ public class EventTypeAssignabilityTest extends BeanTypeAssignabilityTest {
         Assert.assertTrue("Foo<?> should be assignable from Foo<? extends Number>", getRules().matches(wildcardFooType, boundedWildcardFooType));
     }
 
-    @Override
     @Test
     public <F extends Number> void testParameterizedBeanWithBoundedVariableTypeParameter() throws Exception {
         Assert.assertTrue("Foo<F extends Number> should be assignable to Foo",
@@ -107,36 +106,6 @@ public class EventTypeAssignabilityTest extends BeanTypeAssignabilityTest {
         assertTrue("Foo<? extends List> should be assignable from Foo<List<String>>", getRules().matches(observerType1, eventType));
         assertTrue("Foo<?> should be assignable from Foo<List<String>>", getRules().matches(observerType2, eventType));
         assertTrue("Foo<? extends List<String> should be assignable from Foo<List<String>>", getRules().matches(observerType3, eventType));
-    }
-
-    @Test
-    @SuppressWarnings("serial")
-    public void testWildcardMatchesWildcard() {
-        Type eventType1 = new TypeLiteral<Foo<? extends Exception>>() {}.getType();
-        Type eventType2 = new TypeLiteral<Foo<? extends RuntimeException>>() {}.getType();
-        Type eventType3 = new TypeLiteral<Foo<? extends UnsupportedOperationException>>() {}.getType();
-        Type eventType4 = new TypeLiteral<Foo<? super Exception>>() {}.getType();
-        Type observerType1 = new TypeLiteral<Foo<? extends Throwable>>() {}.getType();
-        Type observerType2 = new TypeLiteral<Foo<? extends RuntimeException>>() {}.getType();
-        Type observerType3 = new TypeLiteral<Foo<? super Throwable>>() {}.getType();
-        Type observerType4 = new TypeLiteral<Foo<? super RuntimeException>>() {}.getType();
-
-        assertTrue(getRules().matches(observerType1, eventType1));
-        assertTrue(getRules().matches(observerType1, eventType2));
-        assertTrue(getRules().matches(observerType1, eventType3));
-        assertFalse(getRules().matches(observerType1, eventType4));
-        assertFalse(getRules().matches(observerType2, eventType1));
-        assertTrue(getRules().matches(observerType2, eventType2));
-        assertTrue(getRules().matches(observerType2, eventType3));
-        assertFalse(getRules().matches(observerType2, eventType4));
-        assertFalse(getRules().matches(observerType3, eventType1));
-        assertFalse(getRules().matches(observerType3, eventType2));
-        assertFalse(getRules().matches(observerType3, eventType3));
-        assertTrue(getRules().matches(observerType3, eventType4));
-        assertTrue(getRules().matches(observerType4, eventType1));
-        assertTrue(getRules().matches(observerType4, eventType2));
-        assertFalse(getRules().matches(observerType4, eventType3));
-        assertFalse(getRules().matches(observerType4, eventType4));
     }
 
     @Test
@@ -171,12 +140,109 @@ public class EventTypeAssignabilityTest extends BeanTypeAssignabilityTest {
     }
 
     @Test
-    @Override
     public void testWildcardFooArrayMatchesStringFooArray() throws Exception {
         Type stringFooArrayType = new TypeLiteral<Foo<String>[]>() {
         }.getType();
         Type wildcardFooArrayType = new TypeLiteral<Foo<?>[]>() {
         }.getType();
         Assert.assertTrue("Foo<?>[] should not be assignable from Foo<String>[]", getRules().matches(wildcardFooArrayType, stringFooArrayType));
+    }
+
+    @Test
+    public void testIntegerFooMatchesItself() throws Exception {
+        Type type = new TypeLiteral<Foo<Integer>>() {
+        }.getType();
+        Assert.assertTrue("type should match itself", getRules().matches(type, type));
+    }
+
+    @Test
+    public void testIntegerFooDoesNotMatchStringFoo() throws Exception {
+        Type type1 = new TypeLiteral<Foo<Integer>>() {
+        }.getType();
+        Type type2 = new TypeLiteral<Foo<String>>() {
+        }.getType();
+        Assert.assertFalse("Foo<Integer> should not match Foo<String>", getRules().matches(type1, type2));
+    }
+
+    @Test
+    public void testFooMatchesItself() throws Exception {
+        Type type = Foo.class;
+        Assert.assertTrue("type should match itself", getRules().matches(type, type));
+    }
+
+    @Test
+    public void testParameterizedArrayDoesNotMatchComponentOfArray() throws Exception {
+        Type arrayType = new TypeLiteral<Foo<String>[]>() {
+        }.getType();
+        Type componentType = new TypeLiteral<Foo<String>>() {
+        }.getType();
+        Assert.assertFalse("array type should not match its component type", getRules().matches(arrayType, componentType));
+    }
+
+    @Test
+    public void testParameterizedArrayMatches() throws Exception {
+        Type type = new TypeLiteral<Foo<Integer>[]>() {
+        }.getType();
+        Assert.assertTrue("type should match itself", getRules().matches(type, type));
+    }
+
+    @Test
+    public void testArraysDontMatch() throws Exception {
+        Type type1 = new TypeLiteral<Foo<Integer>[]>() {
+        }.getType();
+        Type type2 = new TypeLiteral<Foo<String>[]>() {
+        }.getType();
+        Assert.assertFalse("Foo<Integer>[] should not match Foo<String>[]", getRules().matches(type1, type2));
+    }
+
+    @Test
+    public void testWildcardFooMatchesStringFoo() throws Exception {
+        Type stringFooType = new TypeLiteral<Foo<String>>() {
+        }.getType();
+        Type wildcardFooType = new TypeLiteral<Foo<?>>() {
+        }.getType();
+        Assert.assertTrue("Foo<?> should be assignable from Foo<String>", getRules().matches(wildcardFooType, stringFooType));
+    }
+
+    @Test
+    public void testStringFooArrayDoesNotMatchWildcardFooArray() throws Exception {
+        Type stringFooArrayType = new TypeLiteral<Foo<String>[]>() {
+        }.getType();
+        Type wildcardFooArrayType = new TypeLiteral<Foo<?>[]>() {
+        }.getType();
+        Assert.assertFalse("Foo<String>[] should not be assignable from Foo<?>[]", getRules().matches(stringFooArrayType, wildcardFooArrayType));
+    }
+
+    @Test
+    public void testRawRequiredTypeMatchesParameterizedBeanWithObjectTypeParameter() throws Exception {
+        Assert.assertTrue("Foo<Object> should be assignable to Foo", getRules().matches(Foo.class, new TypeLiteral<Foo<Object>>() {
+        }.getType()));
+    }
+
+    @Test
+    public <T, S extends Integer> void testArrays() {
+        Assert.assertTrue("int[][] should be assignable to int[][]", getRules().matches(new int[0][].getClass(), new int[0][].getClass()));
+        Assert.assertTrue("Integer[][] should be assignable to Integer[][]", getRules().matches(new Integer[0][].getClass(), new Integer[0][].getClass()));
+        Assert.assertTrue("Integer[][] should be assignable to Number[][]", getRules().matches(new Number[0][].getClass(), new Integer[0][].getClass()));
+        Assert.assertTrue("Integer[][] should be assignable to Number[][]", getRules().matches(new TypeLiteral<T[]>() {}.getType(), new Integer[0][].getClass()));
+        Assert.assertTrue("Integer[][] should be assignable to Number[][]", getRules().matches(new TypeLiteral<T[][]>() {}.getType(), new Integer[0][].getClass()));
+        Assert.assertFalse("Integer[][] should be assignable to Number[][]", getRules().matches(new TypeLiteral<S[]>() {}.getType(), new Integer[0][].getClass()));
+        Assert.assertTrue("Integer[][] should be assignable to Number[][]", getRules().matches(new TypeLiteral<S[][]>() {}.getType(), new Integer[0][].getClass()));
+        Assert.assertFalse("Integer[][] should be assignable to Number[][]", getRules().matches(new TypeLiteral<S[][]>() {}.getType(), new Number[0][].getClass()));
+    }
+
+    @Test
+    public void testArrayBoxing() {
+        /*
+         * This is not explicitly said in the CDI spec however Java SE does not support array boxing so neither should CDI.
+         */
+        Assert.assertFalse("Integer[] should not be assignable to int[]", getRules().matches(new int[0].getClass(), new Integer[0].getClass()));
+        Assert.assertFalse("int[] should not be assignable to Integer[]", getRules().matches(new Integer[0].getClass(), new int[0].getClass()));
+    }
+
+    @Test
+    public <T1 extends Number, T2 extends T1> void testTypeVariableWithTypeVariableBound() {
+        Assert.assertTrue("Number should be assignable to T2 extends T1 extends Number", getRules().matches(new TypeLiteral<T2>() {}.getType(), Number.class));
+        Assert.assertFalse("Number should not be assignable to T2 extends T1 extends Number", getRules().matches(new TypeLiteral<T2>() {}.getType(), Runnable.class));
     }
 }
