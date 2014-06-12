@@ -40,7 +40,7 @@ public class TypeSafeObserverResolver extends TypeSafeResolver<Resolvable, Obser
     public TypeSafeObserverResolver(MetaAnnotationStore metaAnnotationStore, Iterable<ObserverMethod<?>> observers) {
         super(observers);
         this.metaAnnotationStore = metaAnnotationStore;
-        this.rules = EventTypeAssignabilityRules.instance();
+        this.rules = EventTypeAssignabilityRules2.instance();
     }
 
     @Override
