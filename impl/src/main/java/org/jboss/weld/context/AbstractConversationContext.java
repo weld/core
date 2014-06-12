@@ -270,35 +270,34 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
                 throw ConversationLogger.LOG.mustCallAssociateBeforeDeactivate();
             }
 
-            if (getCurrentConversation().isTransient()) {
-                destroy();
-            } else {
-                try {
+            try {
+                if (getCurrentConversation().isTransient()) {
+                    destroy();
+                } else {
                     // Update the conversation timestamp
                     getCurrentConversation().touch();
                     if (!getBeanStore().isAttached()) {
                         /*
-                        * This was a transient conversation at the beginning of the
-                        * request, so we need to update the CID it uses, and attach
-                        * it. We also add it to the conversations the session knows
-                        * about.
-                        */
+                         * This was a transient conversation at the beginning of the request, so we need to update the CID it uses, and attach it. We also add
+                         * it to the conversations the session knows about.
+                         */
                         if (!(getRequestAttribute(getRequest(), ConversationNamingScheme.PARAMETER_NAME) instanceof ConversationNamingScheme)) {
                             throw ConversationLogger.LOG.conversationNamingSchemeNotFound();
                         }
-                        ((ConversationNamingScheme) getRequestAttribute(getRequest(), ConversationNamingScheme.PARAMETER_NAME)).setCid(getCurrentConversation().getId());
+                        ((ConversationNamingScheme) getRequestAttribute(getRequest(), ConversationNamingScheme.PARAMETER_NAME)).setCid(getCurrentConversation()
+                                .getId());
 
                         getBeanStore().attach();
-
                         getConversationMap().put(getCurrentConversation().getId(), getCurrentConversation());
                     }
-                } finally {
-                    getCurrentConversation().unlock();
                 }
+            } finally {
+                // WELD-1690 always try to unlock the current conversation
+                getCurrentConversation().unlock();
             }
             setBeanStore(null);
-            // Clean up any expired conversations
-            cleanUpExpiredConversations();
+            // Clean up any expired/ended conversations
+            cleanUpConversationMap();
             // deactivate the context
             super.setActive(false);
         } else {
@@ -306,7 +305,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
         }
     }
 
-    private void cleanUpExpiredConversations() {
+    private void cleanUpConversationMap() {
         Map<String, ManagedConversation> conversations = getConversationMap();
         synchronized (conversations) {
             Iterator<Entry<String, ManagedConversation>> entryIterator = conversations.entrySet().iterator();
