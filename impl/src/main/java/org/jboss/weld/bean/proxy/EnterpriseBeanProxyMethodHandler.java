@@ -67,7 +67,7 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
      * Constructor used directly by {@link #readResolve()}.
      *
      * @param bean      the session bean
-     * @param reference session object reference
+     * @param reference session object reference or {@code null} to create a new reference
      */
     private EnterpriseBeanProxyMethodHandler(SessionBean<T> bean, SessionObjectReference reference) {
         this.bean = bean;
