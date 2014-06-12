@@ -242,6 +242,11 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
             if (conversation != null && !isExpired(conversation)) {
                 boolean lock = lock(conversation);
                 if (lock) {
+                    // WELD-1690 Don't associate a conversation which was ended (race condition)
+                    if(conversation.isTransient()) {
+                        associateRequestWithNewConversation();
+                        throw ConversationLogger.LOG.noConversationFoundToRestore(cid);
+                    }
                     associateRequest(conversation);
                 } else {
                     // CDI 6.7.4 we must activate a new transient conversation before we throw the exception
