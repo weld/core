@@ -229,7 +229,7 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
         }
         for (AbstractBean<?, ?> specializedBean : specializedBeans) {
             if (!(specializedBean instanceof ManagedBean<?>)) {
-                throw BeanLogger.LOG.specializingBeanMustExtendABean(this);
+                throw BeanLogger.LOG.specializingManagedBeanCanExtendOnlyManagedBeans(this, specializedBean);
             }
         }
     }
