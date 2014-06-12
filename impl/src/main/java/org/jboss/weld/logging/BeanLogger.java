@@ -638,4 +638,7 @@ public interface BeanLogger extends WeldLogger {
     @Message(id = 1555, value = "Decorator.{0}() returned null for {1}", format = Format.MESSAGE_FORMAT)
     DefinitionException decoratorMethodReturnsNull(Object param1, Object param2);
 
+    @Message(id = 1556, value = "Specializing {0} cannot specialize a non-managed bean {1}", format = Format.MESSAGE_FORMAT)
+    DefinitionException specializingManagedBeanCanExtendOnlyManagedBeans(Object param1, Object param2);
+
 }
