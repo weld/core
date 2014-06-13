@@ -28,12 +28,14 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
+
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.inject.Instance;
 
@@ -130,7 +132,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
             }
 
             if (getSessionAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME, false) == null) {
-                Map<String, ManagedConversation> conversations = new HashMap<String, ManagedConversation>();
+                Map<String, ManagedConversation> conversations = Collections.synchronizedMap(new HashMap<String, ManagedConversation>());
                 setRequestAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME, conversations);
                 setSessionAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME, conversations, false);
             } else {
@@ -260,7 +262,18 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
                 }
             }
             setBeanStore(null);
-            // Clean up any expired conversations
+            // Clean up any expired/ended conversations
+            cleanUpConversationMap();
+            // deactivate the context
+            super.setActive(false);
+        } else {
+            throw new IllegalStateException("Context is not active");
+        }
+    }
+
+    private void cleanUpConversationMap() {
+        Map<String, ManagedConversation> conversations = getConversationMap();
+        synchronized (conversations) {
             Iterator<Entry<String, ManagedConversation>> entryIterator = getConversationMap().entrySet().iterator();
             while (entryIterator.hasNext()) {
                 Entry<String, ManagedConversation> entry = entryIterator.next();
@@ -269,10 +282,6 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
                     entryIterator.remove();
                 }
             }
-            // deactivate the context
-            super.setActive(false);
-        } else {
-            throw new IllegalStateException("Context is not active");
         }
     }
 
