@@ -73,7 +73,7 @@ public class WeldApplication extends ForwardingApplication {
     }
 
     private void init() {
-        ExpressionFactory expressionFactory = null;
+        ExpressionFactory expressionFactory = this.expressionFactory;
         BeanManager beanManager = null;
         if (expressionFactory == null && (expressionFactory = application.getExpressionFactory()) != null && (beanManager = beanManager()) != null) {
             elResolver.beanManagerReady(beanManager);
