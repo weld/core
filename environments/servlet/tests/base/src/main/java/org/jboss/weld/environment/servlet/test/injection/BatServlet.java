@@ -1,23 +1,31 @@
 package org.jboss.weld.environment.servlet.test.injection;
 
+import static org.jboss.weld.environment.servlet.test.injection.BatListener.BAT_ATTRIBUTE_NAME;
+
+import java.io.IOException;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
+@SuppressWarnings("serial")
 public class BatServlet extends HttpServlet {
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setStatus(getStatus(req));
-    }
-
-    private int getStatus(HttpServletRequest req) {
-        return req.getAttribute(BatListener.BAT_ATTRIBUTE_NAME) == Boolean.TRUE &&
-                req.getSession().getAttribute(BatListener.BAT_ATTRIBUTE_NAME) == Boolean.TRUE &&
-                req.getSession().getServletContext().getAttribute(BatListener.BAT_ATTRIBUTE_NAME) == Boolean.TRUE
-                ? HttpServletResponse.SC_OK
-                : HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+        String mode = req.getParameter("mode");
+        int status;
+        if("request".equals(mode)) {
+            status = Boolean.TRUE.equals(req.getAttribute(BAT_ATTRIBUTE_NAME))? HttpServletResponse.SC_OK: HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+        } else if("sce".equals(mode)) {
+            status = Boolean.TRUE.equals(req.getServletContext().getAttribute(BAT_ATTRIBUTE_NAME))? HttpServletResponse.SC_OK: HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+        } else if("session".equals(mode)) {
+            status = Boolean.TRUE.equals(req.getSession().getAttribute(BAT_ATTRIBUTE_NAME))? HttpServletResponse.SC_OK: HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+        } else {
+            status = HttpServletResponse.SC_NOT_FOUND;
+        }
+        resp.setStatus(status);
     }
 
 }
