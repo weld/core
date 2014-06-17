@@ -2,6 +2,7 @@ package org.jboss.weld.environment.servlet.test.injection;
 
 import static org.jboss.weld.environment.servlet.test.util.Deployments.baseDeployment;
 import static org.jboss.weld.environment.servlet.test.util.Deployments.extendDefaultWebXml;
+import static org.jboss.weld.environment.servlet.test.util.Deployments.toListener;
 import static org.junit.Assert.assertEquals;
 
 import java.net.URL;
@@ -19,16 +20,41 @@ import org.junit.Test;
 
 public class ListenerInjectionTestBase {
 
-    public static final Asset WEB_XML = new ByteArrayAsset(extendDefaultWebXml("<listener><listener-class>" + BatListener.class.getName() + "</listener-class></listener> <servlet><servlet-name>Bat Servlet</servlet-name><servlet-class>" + BatServlet.class.getName() + "</servlet-class></servlet> <servlet-mapping><servlet-name>Bat Servlet</servlet-name><url-pattern>/bat</url-pattern></servlet-mapping>").getBytes());
-
     public static WebArchive deployment() {
-        return baseDeployment(WEB_XML).addClasses(BatListener.class, BatServlet.class, Sewer.class);
+        StringBuilder listeners = new StringBuilder();
+        listeners.append(toListener(BatRequestListener.class.getName()));
+        listeners.append(toListener(BatSessionListener.class.getName()));
+        listeners.append(toListener(BatServletContextListener.class.getName()));
+        Asset webXml = new ByteArrayAsset(
+                extendDefaultWebXml(
+                        listeners.toString()
+                                + "<servlet><servlet-name>Bat Servlet</servlet-name><servlet-class>"
+                                + BatServlet.class.getName()
+                                + "</servlet-class></servlet> <servlet-mapping><servlet-name>Bat Servlet</servlet-name><url-pattern>/bat</url-pattern></servlet-mapping>")
+                        .getBytes());
+        return baseDeployment(webXml).addClasses(BatRequestListener.class, BatSessionListener.class, BatServletContextListener.class, BatListener.class, BatServlet.class, Sewer.class);
     }
 
     @Test
-    public void testListenerInjection(@ArquillianResource URL baseURL) throws Exception {
+    public void testRequestListenerInjection(@ArquillianResource URL baseURL) throws Exception {
         HttpClient client = new HttpClient();
-        HttpMethod method = new GetMethod(new URL(baseURL, "bat").toExternalForm());
+        HttpMethod method = new GetMethod(new URL(baseURL, "bat?mode=request").toExternalForm());
+        int sc = client.executeMethod(method);
+        assertEquals(HttpServletResponse.SC_OK, sc);
+    }
+
+    @Test
+    public void testSceListenerInjection(@ArquillianResource URL baseURL) throws Exception {
+        HttpClient client = new HttpClient();
+        HttpMethod method = new GetMethod(new URL(baseURL, "bat?mode=sce").toExternalForm());
+        int sc = client.executeMethod(method);
+        assertEquals(HttpServletResponse.SC_OK, sc);
+    }
+
+    @Test
+    public void testSessionListenerInjection(@ArquillianResource URL baseURL) throws Exception {
+        HttpClient client = new HttpClient();
+        HttpMethod method = new GetMethod(new URL(baseURL, "bat?mode=session").toExternalForm());
         int sc = client.executeMethod(method);
         assertEquals(HttpServletResponse.SC_OK, sc);
     }

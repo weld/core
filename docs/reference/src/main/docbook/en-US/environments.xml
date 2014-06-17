@@ -187,13 +187,12 @@
 </resource-env-ref>]]></programlisting>
 
             <para>
-                Jetty only allows you to bind entries to<literal>java:comp/env</literal>, so the BeanManager will be
-                available at
-                <literal>java:comp/env/BeanManager</literal>
+                Jetty only allows you to bind entries to <literal>java:comp/env</literal>, so the BeanManager will be
+                available at <literal>java:comp/env/BeanManager</literal>.
             </para>
 
             <para>
-                Weld also supports Servlet and Filter injection in Jetty containers. Listener injection should also work on Jetty 9.1.x and newer versions.
+                Weld also supports Servlet and Filter injection in Jetty containers. Listener injection should also work on Jetty 9.1.1 and newer versions.
             </para>
 
         </section>

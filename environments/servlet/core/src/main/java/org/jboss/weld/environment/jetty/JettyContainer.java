@@ -23,6 +23,7 @@ import javax.servlet.ServletContext;
 
 import org.jboss.weld.environment.Container;
 import org.jboss.weld.environment.ContainerContext;
+import org.jboss.weld.environment.servlet.EnhancedListener;
 import org.jboss.weld.environment.servlet.util.Reflections;
 import org.jboss.weld.manager.api.WeldManager;
 
@@ -71,7 +72,12 @@ public class JettyContainer extends AbstractJettyContainer {
             Method processMethod = decoratorClass.getMethod("process", ServletContext.class);
             processMethod.invoke(null, context.getServletContext());
 
-            log.info("Jetty 7.2+ detected, CDI injection will be available in Listeners, Servlets and Filters.");
+            if(Boolean.TRUE.equals(context.getServletContext().getAttribute(EnhancedListener.ENHANCED_LISTENER_USED_ATTRIBUTE_NAME))) {
+                // ServletContainerInitializer works on versions prior to 9.1.1 but the listener injection doesn't
+                log.info("Jetty 7.2+ detected, CDI injection will be available in Servlets and Filters. Injection into Listeners should work on Jetty 9.1.1 and newer.");
+            } else {
+                log.info("Jetty 7.2+ detected, CDI injection will be available in Servlets and Filters. Injection into Listeners is not supported.");
+            }
         } catch (Exception e) {
             log.error("Unable to create JettyWeldInjector. CDI injection will not be available in Servlets, Filters or Listeners", e);
         }
@@ -85,4 +91,5 @@ public class JettyContainer extends AbstractJettyContainer {
             return -1;
         }
     }
+
 }

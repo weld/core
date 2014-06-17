@@ -28,7 +28,7 @@ import org.junit.runner.RunWith;
 /**
  * @author Ales Justin
  */
-@Ignore("Listener injection works on Jetty 9.1+; the default version of Jetty is currently 8.1.x")
+@Ignore("Listener injection works on Jetty 9.1.1+; the default version of Jetty is currently 8.1.x")
 @RunWith(Arquillian.class)
 public class ListenerInjectionTest extends ListenerInjectionTestBase {
 
