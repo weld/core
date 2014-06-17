@@ -85,13 +85,23 @@ public class BeanTypeAssignabilityRules extends EventTypeAssignabilityRules {
              * from the lower bound, if any, of the wildcard, or
              */
             TypeVariable<?> beanTypeVariable = (TypeVariable<?>) beanType;
-            if (areTypesInsideBounds(beanTypeVariable.getBounds(), requiredType.getLowerBounds(), requiredType.getUpperBounds())) {
+            // every TV's upper bound has to be assignable from the lower WC's bound, if any
+            if (!areTypesInsideBounds(requiredType.getLowerBounds(), EMPTY_TYPES, beanTypeVariable.getBounds())) {
+         // if (!allAreAssignableFromAll(beanTypeVariable.getBounds(), requiredType.getLowerBounds())) {
+                return false;
+            }
+            if (requiredType.getUpperBounds().length == 0) {
                 return true;
             }
-            if (areTypesInsideBounds(requiredType.getUpperBounds(), EMPTY_TYPES, beanTypeVariable.getBounds())) {
+
+            // if at least one upper bound of the type variable is assignable to the upper bound of the wildcard, it is OK
+            if (isAssignableFromAtLeastOne(requiredType.getUpperBounds()[0], beanTypeVariable.getBounds())) {
                 return true;
             }
-            return false;
+
+            // or the requiredType is UNDER the beanTypeVariable
+            return isAssignableToAll(requiredType.getUpperBounds()[0], beanTypeVariable.getBounds());
+            // return isTypeInsideBounds(requiredType.getUpperBounds()[0], EMPTY_TYPES, beanTypeVariable.getBounds());
         } else {
             /*
              * the required type parameter is a wildcard, the bean type parameter is an actual type and the actual type is
@@ -109,9 +119,10 @@ public class BeanTypeAssignabilityRules extends EventTypeAssignabilityRules {
          * type parameter is assignable to the upper bound, if any, of the bean type parameter.
          */
         if (beanType instanceof TypeVariable<?>) {
-            TypeVariable<?> requiredTypeVariable = requiredType;
             TypeVariable<?> beanTypeVariable = (TypeVariable<?>) beanType;
-            return areTypesInsideBounds(requiredTypeVariable.getBounds(), EMPTY_TYPES, beanTypeVariable.getBounds());
+            // for each upper bound T of the beanType, there is a (at least one) type variable of the requiredType which is
+            // assignable to T
+            return areTypesInsideBounds(requiredType.getBounds(), EMPTY_TYPES, beanTypeVariable.getBounds());
         }
         return false;
     }
