@@ -24,11 +24,15 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Set;
 
+import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.spi.InjectionTarget;
 import javax.enterprise.inject.spi.InterceptionType;
 import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.ObserverMethod;
@@ -36,10 +40,17 @@ import javax.enterprise.inject.spi.ObserverMethod;
 import org.jboss.weld.Container;
 import org.jboss.weld.ContainerState;
 import org.jboss.weld.SystemPropertiesConfiguration;
+import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.spi.BootstrapConfiguration;
+import org.jboss.weld.construction.api.WeldCreationalContext;
+import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.logging.BeanManagerLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.manager.api.WeldInjectionTargetBuilder;
+import org.jboss.weld.manager.api.WeldInjectionTargetFactory;
+import org.jboss.weld.manager.api.WeldManager;
+import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.util.ForwardingBeanManager;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -48,7 +59,7 @@ import org.jboss.weld.util.reflection.Reflections;
  *
  * @author Martin Kouba
  */
-public class BeanManagerProxy extends ForwardingBeanManager {
+public class BeanManagerProxy extends ForwardingBeanManager implements WeldManager {
 
     private static final String GET_BEANS_METHOD_NAME = "getBeans()";
 
@@ -130,6 +141,81 @@ public class BeanManagerProxy extends ForwardingBeanManager {
     public List<Interceptor<?>> resolveInterceptors(InterceptionType type, Annotation... interceptorBindings) {
         checkContainerState("resolveInterceptors()");
         return super.resolveInterceptors(type, interceptorBindings);
+    }
+
+    @Override
+    public WeldManager createActivity() {
+        return delegate().createActivity();
+    }
+
+    @Override
+    public WeldManager setCurrent(Class<? extends Annotation> scopeType) {
+        return delegate().setCurrent(scopeType);
+    }
+
+    @Override
+    public <T> InjectionTarget<T> createInjectionTarget(EjbDescriptor<T> descriptor) {
+        return delegate().createInjectionTarget(descriptor);
+    }
+
+    @Override
+    public <T> Bean<T> getBean(EjbDescriptor<T> descriptor) {
+        return delegate().getBean(descriptor);
+    }
+
+    @Override
+    public <T> EjbDescriptor<T> getEjbDescriptor(String ejbName) {
+        return delegate().getEjbDescriptor(ejbName);
+    }
+
+    @Override
+    public ServiceRegistry getServices() {
+        return delegate().getServices();
+    }
+
+    @Override
+    public WeldManager getCurrent() {
+        return delegate().getCurrent();
+    }
+
+    @Override
+    public <X> InjectionTarget<X> fireProcessInjectionTarget(AnnotatedType<X> type) {
+        return delegate().fireProcessInjectionTarget(type);
+    }
+
+    @Override
+    public <X> InjectionTarget<X> fireProcessInjectionTarget(AnnotatedType<X> annotatedType, InjectionTarget<X> injectionTarget) {
+        return delegate().fireProcessInjectionTarget(annotatedType, injectionTarget);
+    }
+
+    @Override
+    public String getId() {
+        return delegate().getId();
+    }
+
+    @Override
+    public Instance<Object> instance() {
+        return delegate().instance();
+    }
+
+    @Override
+    public Bean<?> getPassivationCapableBean(BeanIdentifier identifier) {
+        return delegate().getPassivationCapableBean(identifier);
+    }
+
+    @Override
+    public <T> WeldInjectionTargetBuilder<T> createInjectionTargetBuilder(AnnotatedType<T> type) {
+        return delegate().createInjectionTargetBuilder(type);
+    }
+
+    @Override
+    public <T> WeldInjectionTargetFactory<T> getInjectionTargetFactory(AnnotatedType<T> annotatedType) {
+        return delegate().getInjectionTargetFactory(annotatedType);
+    }
+
+    @Override
+    public <T> WeldCreationalContext<T> createCreationalContext(Contextual<T> contextual) {
+        return delegate().createCreationalContext(contextual);
     }
 
     protected Object readResolve() throws ObjectStreamException {
