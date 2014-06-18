@@ -67,35 +67,43 @@ public class WeldServletLifecycle {
 
     private Container container;
 
+    // WELD-1665 Bootstrap might be already performed
+    private boolean isBootstrapNeeded = true;
+
     WeldServletLifecycle() {
         try {
             bootstrap = Reflections.newInstance(BOOTSTRAP_IMPL_CLASS_NAME);
-        }
-        catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             throw new IllegalStateException("Error loading Weld bootstrap, check that Weld is on the classpath", e);
         }
         try {
             weldListener = Reflections.newInstance(WELD_LISTENER_CLASS_NAME);
-        }
-        catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             throw new IllegalStateException("Error loading Weld listener, check that Weld is on the classpath", e);
         }
     }
 
     void initialize(ServletContext context, URLScanner scanner) {
 
-        ServletDeployment deployment = createServletDeployment(context, bootstrap, scanner);
-        try {
-            deployment.getWebAppBeanDeploymentArchive().getServices().add(
-                    ResourceInjectionServices.class, new ServletResourceInjectionServices() {
-            });
-        } catch (NoClassDefFoundError e) {
-            // Support GAE
-            log.warn("@Resource injection not available in simple beans");
+        WeldManager manager = (WeldManager) context.getAttribute(BEAN_MANAGER_ATTRIBUTE_NAME);
+        if (manager != null) {
+            isBootstrapNeeded = false;
         }
 
-        bootstrap.startContainer(Environments.SERVLET, deployment).startInitialization();
-        WeldManager manager = bootstrap.getManager(deployment.getWebAppBeanDeploymentArchive());
+        if (isBootstrapNeeded) {
+            ServletDeployment deployment = createServletDeployment(context, bootstrap, scanner);
+            try {
+                deployment.getWebAppBeanDeploymentArchive().getServices().add(ResourceInjectionServices.class, new ServletResourceInjectionServices() {
+                });
+            } catch (NoClassDefFoundError e) {
+                // Support GAE
+                log.warn("@Resource injection not available in simple beans");
+            }
+            bootstrap.startContainer(Environments.SERVLET, deployment).startInitialization();
+            manager = bootstrap.getManager(deployment.getWebAppBeanDeploymentArchive());
+            // Push the manager into the servlet context so we can access in JSF
+            context.setAttribute(BEAN_MANAGER_ATTRIBUTE_NAME, manager);
+        }
 
         ContainerContext containerContext = new ContainerContext(context, manager);
         StringBuilder dump = new StringBuilder();
@@ -107,9 +115,6 @@ public class WeldServletLifecycle {
             container.initialize(containerContext);
             this.container = container;
         }
-
-        // Push the manager into the servlet context so we can access in JSF
-        context.setAttribute(BEAN_MANAGER_ATTRIBUTE_NAME, manager);
 
         if (JspFactory.getDefaultFactory() != null) {
             JspApplicationContext jspApplicationContext = JspFactory.getDefaultFactory().getJspApplicationContext(context);
@@ -128,12 +133,17 @@ public class WeldServletLifecycle {
             context.setAttribute(EXPRESSION_FACTORY_NAME, manager.wrapExpressionFactory(jspApplicationContext.getExpressionFactory()));
         }
 
-        bootstrap.deployBeans().validateBeans().endInitialization();
+        if (isBootstrapNeeded) {
+            bootstrap.deployBeans().validateBeans().endInitialization();
+        }
     }
 
     void destroy(ServletContext context) {
 
-        bootstrap.shutdown();
+        if (isBootstrapNeeded) {
+            // Shutdown only if bootstrap not skipped
+            bootstrap.shutdown();
+        }
 
         if (container != null) {
             container.destroy(new ContainerContext(context, null));
@@ -151,8 +161,7 @@ public class WeldServletLifecycle {
     /**
      * Create servlet deployment.
      *
-     * Can be overridden with custom servlet deployment. e.g. exact resources
-     * listing in restricted env like GAE
+     * Can be overridden with custom servlet deployment. e.g. exact resources listing in restricted env like GAE
      *
      * @param context the servlet context
      * @param bootstrap the bootstrap
@@ -181,9 +190,10 @@ public class WeldServletLifecycle {
     protected Container checkContainers(ContainerContext cc, StringBuilder dump, Iterable<Container> containers) {
         for (Container c : containers) {
             try {
-                if (c.touch(cc)) { return c; }
-            }
-            catch (Throwable t) {
+                if (c.touch(cc)) {
+                    return c;
+                }
+            } catch (Throwable t) {
                 dump.append(c).append("->").append(t.getMessage()).append("\n");
             }
         }
