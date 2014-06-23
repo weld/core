@@ -353,7 +353,6 @@ public class CovariantTypesTest {
         assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(Number.class), b));
         assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(Integer.class), b));
 
-        assertTrue(CovariantTypes.isAssignableFrom(WildcardTypeImpl.defaultInstance(), c));
         assertTrue(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withUpperBound(Runnable.class), c));
         assertTrue(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withUpperBound(Appendable.class), c));
         assertFalse(CovariantTypes.isAssignableFrom(WildcardTypeImpl.withLowerBound(Runnable.class), c));
@@ -411,10 +410,13 @@ public class CovariantTypesTest {
 
     @Test
     @SuppressWarnings("serial")
-    public <A> void testGenericArrayTypeAssignableFromTypeVariable() {
+    public <A, B extends List<Number>> void testGenericArrayTypeAssignableFromTypeVariable() {
         Type a = new TypeLiteral<A>() {
         }.getType();
+        Type b = new TypeLiteral<B>() {
+        }.getType();
         assertFalse(CovariantTypes.isAssignableFrom(new GenericArrayTypeImpl(List.class, Number.class), a));
+        assertFalse(CovariantTypes.isAssignableFrom(new GenericArrayTypeImpl(List.class, Number.class), b));
     }
 
     @Test
