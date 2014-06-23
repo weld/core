@@ -14,14 +14,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.unit.ejb.subclass;
+package org.jboss.weld.mock;
 
-@BarInterceptorBinding
-public class Bar implements BarLocal {
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.MockEjBServices;
+import org.jboss.weld.ejb.spi.EjbDescriptor;
+import org.jboss.weld.ejb.spi.InterceptorBindings;
+
+public class MockEjbServices  extends MockEjBServices {
+
+    private static Set<EjbDescriptor<?>> descriptors = Collections.synchronizedSet(new HashSet<EjbDescriptor<?>>());
 
     @Override
-    public int ping() {
-        return 0;
+    public void registerInterceptors(EjbDescriptor<?> ejbDescriptor, InterceptorBindings interceptorBindings) {
+        descriptors.add(ejbDescriptor);
+    }
+
+    public static Set<EjbDescriptor<?>> getDescriptors() {
+        return descriptors;
     }
 
 }

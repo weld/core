@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.tests.unit.ejb.subclass;
 
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
+
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Collections;
@@ -26,11 +29,12 @@ import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.ejb.spi.BusinessInterfaceDescriptor;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
+import org.jboss.weld.ejb.spi.EjbServices;
 import org.jboss.weld.ejb.spi.SubclassedComponentDescriptor;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.mock.AbstractDeployment;
+import org.jboss.weld.mock.MockEjbServices;
 import org.jboss.weld.util.reflection.Reflections;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import com.google.common.collect.ImmutableSet;
@@ -50,7 +54,7 @@ public class SubclassedComponentDescriptorTest {
         final EjbDescriptor<Foo> fooDescriptor = new EjbDescriptorImpl<Foo>(Foo.class, Foo.class, EnhancedFoo.class);
         final EjbDescriptor<Bar> barDescriptor = new EjbDescriptorImpl<Bar>(Bar.class, BarLocal.class, EnhancedBar.class);
 
-        final BeanDeploymentArchive bda = new BeanDeploymentArchiveImpl("1", Foo.class, Bar.class, BarLocal.class, BarDecorator.class) {
+        final BeanDeploymentArchive bda = new BeanDeploymentArchiveImpl("1", Foo.class, Bar.class, BarLocal.class, BarDecorator.class, BarInterceptor.class, BarInterceptorBinding.class) {
             @Override
             public Collection<EjbDescriptor<?>> getEjbs() {
                 return ImmutableSet.<EjbDescriptor<?>>of(fooDescriptor, barDescriptor);
@@ -62,6 +66,12 @@ public class SubclassedComponentDescriptorTest {
             public BeanDeploymentArchive loadBeanDeploymentArchive(Class<?> beanClass) {
                 return bda;
             }
+            @Override
+            protected void configureServices() {
+                super.configureServices();
+                getServices().add(EjbServices.class, new MockEjbServices());
+            }
+
         };
 
         final TestContainer container = new TestContainer(deployment).startContainer();
@@ -69,14 +79,17 @@ public class SubclassedComponentDescriptorTest {
         Foo foo = (Foo) manager.createInjectionTarget(manager.getEjbDescriptor(Foo.class.getSimpleName())).produce(manager.createCreationalContext(null));
         Bar bar = (Bar) manager.createInjectionTarget(manager.getEjbDescriptor(Bar.class.getSimpleName())).produce(manager.createCreationalContext(null));
 
-        Assert.assertEquals(foo.ping(), 1);
-        Assert.assertEquals(bar.ping(), 3);
+        assertEquals(foo.ping(), 1);
+        assertEquals(bar.ping(), 3);
 
-        Assert.assertTrue(foo instanceof Enhanced);
-        Assert.assertTrue(Reflections.<Enhanced>cast(foo).check());
+        assertTrue(foo instanceof Enhanced);
+        assertTrue(Reflections.<Enhanced>cast(foo).check());
 
-        Assert.assertTrue(bar instanceof Enhanced);
-        Assert.assertTrue(Reflections.<Enhanced>cast(bar).check());
+        assertTrue(bar instanceof Enhanced);
+        assertTrue(Reflections.<Enhanced>cast(bar).check());
+
+        assertEquals(MockEjbServices.getDescriptors().size(), 1);
+        assertEquals(MockEjbServices.getDescriptors().iterator().next().getBeanClass(), Bar.class);
     }
 
     private static class EjbDescriptorImpl<T> implements EjbDescriptor<T>, SubclassedComponentDescriptor<T> {
