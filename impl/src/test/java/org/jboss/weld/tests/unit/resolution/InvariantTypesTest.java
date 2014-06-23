@@ -111,7 +111,7 @@ public class InvariantTypesTest {
         assertTrue(InvariantTypes.isAssignableFrom(new ParameterizedTypeImpl(Map.class, Number.class, String.class), new ParameterizedTypeImpl(Map.class, Number.class, String.class)));
         assertFalse(InvariantTypes.isAssignableFrom(new ParameterizedTypeImpl(Map.class, Number.class, String.class), new ParameterizedTypeImpl(HashMap.class, Number.class, String.class)));
         assertFalse(InvariantTypes.isAssignableFrom(new ParameterizedTypeImpl(Map.class, Number.class, String.class), new ParameterizedTypeImpl(Map.class, Integer.class, String.class)));
-        assertFalse(InvariantTypes.isAssignableFrom(new ParameterizedTypeImpl(Map.class, Number.class, String.class), new ParameterizedTypeImpl(Map.class, Integer.class, Object.class)));
+        assertFalse(InvariantTypes.isAssignableFrom(new ParameterizedTypeImpl(Map.class, Number.class, String.class), new ParameterizedTypeImpl(Map.class, Number.class, Object.class)));
     }
 
     /*
