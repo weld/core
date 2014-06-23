@@ -274,10 +274,11 @@ public class SessionBean<T> extends AbstractClassBean<T> {
     }
 
     protected void registerInterceptors() {
-        InterceptionModel model = beanManager.getInterceptorModelRegistry().get(getAnnotated());
+        InterceptionModel model = beanManager.getInterceptorModelRegistry().get(
+                getBeanManager().getServices().get(ClassTransformer.class)
+                        .getBackedAnnotatedType(ejbDescriptor.getImplementationClass(), getBeanManager().getId()));
         if (model != null) {
             getBeanManager().getServices().get(EjbServices.class).registerInterceptors(getEjbDescriptor(), new InterceptorBindingsAdapter(model));
         }
     }
 }
-

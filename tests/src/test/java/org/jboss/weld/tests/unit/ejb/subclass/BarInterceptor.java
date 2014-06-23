@@ -16,12 +16,18 @@
  */
 package org.jboss.weld.tests.unit.ejb.subclass;
 
+import javax.annotation.Priority;
+import javax.interceptor.AroundInvoke;
+import javax.interceptor.Interceptor;
+import javax.interceptor.InvocationContext;
+
+@Priority(1000)
+@Interceptor
 @BarInterceptorBinding
-public class Bar implements BarLocal {
+public class BarInterceptor {
 
-    @Override
-    public int ping() {
-        return 0;
+    @AroundInvoke
+    public Object alwaysReturnThis(InvocationContext ctx) throws Exception {
+        return ctx.proceed();
     }
-
 }
