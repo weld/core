@@ -119,8 +119,8 @@ public class InvariantTypesTest {
      */
     @Test
     @SuppressWarnings("all")
-    public <A, B, C extends Number, D extends Integer> void testTypeVariableAssignableFromTypeVariable() {
-        final int count = 4;
+    public <A, B, C extends Number, D extends Integer, E extends A> void testTypeVariableAssignableFromTypeVariable() {
+        final int count = 5;
         Type[] typeVariables = new Type[count];
         typeVariables[0] = new TypeLiteral<A>() {
         }.getType();
@@ -129,6 +129,8 @@ public class InvariantTypesTest {
         typeVariables[2] = new TypeLiteral<C>() {
         }.getType();
         typeVariables[3] = new TypeLiteral<D>() {
+        }.getType();
+        typeVariables[4] = new TypeLiteral<E>() {
         }.getType();
 
         // type variables should only be assignable if they are equal
