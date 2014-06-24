@@ -240,8 +240,19 @@ public class CovariantTypes {
         return false;
     }
 
+    /**
+     * Returns <tt>true</tt> if <tt>type2</tt> is a "sub-variable" of <tt>type1</tt>, i.e. if they are equal or if
+     * <tt>type2</tt> (transitively) extends <tt>type1</tt>.
+     */
     private static boolean isAssignableFrom(TypeVariable<?> type1, TypeVariable<?> type2) {
-        return type1.equals(type2);
+        if (type1.equals(type2)) {
+            return true;
+        }
+        // if a type variable extends another type variable, it cannot declare other bounds
+        if (type2.getBounds()[0] instanceof TypeVariable<?>) {
+            return isAssignableFrom(type1, (TypeVariable<?>) type2.getBounds()[0]);
+        }
+        return false;
     }
 
     private static boolean isAssignableFrom(TypeVariable<?> type1, WildcardType type2) {
@@ -271,14 +282,13 @@ public class CovariantTypes {
 
     private static boolean isAssignableFrom(WildcardType type1, TypeVariable<?> type2) {
         if (type1.getLowerBounds().length > 0) {
-            return false;
+            // if (type1.getLowerBounds()[0] instanceof TypeVariable<?>) {
+            //     return isAssignableFrom(type2, (TypeVariable<?>) type1.getLowerBounds()[0]);
+            // }
+            // return false;
+            return isAssignableFrom(type2, type1.getLowerBounds()[0]);
         }
-        for (Type type : type2.getBounds()) {
-            if (isAssignableFrom(type1.getUpperBounds()[0], type)) {
-                return true;
-            }
-        }
-        return false;
+        return isAssignableFrom(type1.getUpperBounds()[0], type2);
     }
 
     private static boolean isAssignableFrom(WildcardType type1, WildcardType type2) {
