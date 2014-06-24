@@ -23,7 +23,6 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
-import java.util.Set;
 
 import org.jboss.weld.logging.ReflectionLogger;
 import org.jboss.weld.util.Types;
@@ -169,7 +168,18 @@ public class CovariantTypes {
      * ParameterizedType
      */
     private static boolean isAssignableFrom(ParameterizedType type1, Class<?> type2) {
-        return isAssignableFrom(Reflections.getRawType(type1), type2);
+        Class<?> rawType1 = Reflections.getRawType(type1);
+
+        // raw types have to be assignable
+        if (!isAssignableFrom(rawType1, type2)) {
+            return false;
+        }
+        // this is a raw type with missing type arguments
+        if (!Types.getCanonicalType(type2).equals(type2)) {
+            return true;
+        }
+
+        return matches(type1, new HierarchyDiscovery(type2));
     }
 
     private static boolean isAssignableFrom(ParameterizedType type1, ParameterizedType type2) {
@@ -180,8 +190,11 @@ public class CovariantTypes {
         if (matches(type1, type2)) {
             return true;
         }
-        final Set<Type> type2Closure = new HierarchyDiscovery(type2).getTypeClosure();
-        for (Type type : type2Closure) {
+        return matches(type1, new HierarchyDiscovery(type2));
+    }
+
+    private static boolean matches(ParameterizedType type1, HierarchyDiscovery type2) {
+        for (Type type : type2.getTypeClosure()) {
             if (type instanceof ParameterizedType && matches(type1, (ParameterizedType) type)) {
                 return true;
             }
@@ -240,8 +253,19 @@ public class CovariantTypes {
         return false;
     }
 
+    /**
+     * Returns <tt>true</tt> if <tt>type2</tt> is a "sub-variable" of <tt>type1</tt>, i.e. if they are equal or if
+     * <tt>type2</tt> (transitively) extends <tt>type1</tt>.
+     */
     private static boolean isAssignableFrom(TypeVariable<?> type1, TypeVariable<?> type2) {
-        return type1.equals(type2);
+        if (type1.equals(type2)) {
+            return true;
+        }
+        // if a type variable extends another type variable, it cannot declare other bounds
+        if (type2.getBounds()[0] instanceof TypeVariable<?>) {
+            return isAssignableFrom(type1, (TypeVariable<?>) type2.getBounds()[0]);
+        }
+        return false;
     }
 
     private static boolean isAssignableFrom(TypeVariable<?> type1, WildcardType type2) {
@@ -271,14 +295,9 @@ public class CovariantTypes {
 
     private static boolean isAssignableFrom(WildcardType type1, TypeVariable<?> type2) {
         if (type1.getLowerBounds().length > 0) {
-            return false;
+            return isAssignableFrom(type2, type1.getLowerBounds()[0]);
         }
-        for (Type type : type2.getBounds()) {
-            if (isAssignableFrom(type1.getUpperBounds()[0], type)) {
-                return true;
-            }
-        }
-        return false;
+        return isAssignableFrom(type1.getUpperBounds()[0], type2);
     }
 
     private static boolean isAssignableFrom(WildcardType type1, WildcardType type2) {
