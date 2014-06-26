@@ -94,17 +94,8 @@ public class EventTypeAssignabilityRules2 extends AbstractAssignabilityRules {
     }
 
     private boolean matches(TypeVariable<?> observedType, Type eventType) {
-        for (Type bound : observedType.getBounds()) {
-            /*
-             * TypeVariable bounds are treated specially - CDI assignability rules are applied.
-             * Standard Java covariant assignability rules are applied to all other types of bounds.
-             * This is not explicitly mentioned in the specification but is implied.
-             */
-            if (bound instanceof TypeVariable<?>) {
-                if (!matches((TypeVariable<?>) bound, eventType)) {
-                    return false;
-                }
-            } else if (!CovariantTypes.isAssignableFrom(bound, eventType)) {
+        for (Type bound : getUppermostTypeVariableBounds(observedType)) {
+            if (!CovariantTypes.isAssignableFrom(bound, eventType)) {
                 return false;
             }
         }
@@ -158,7 +149,7 @@ public class EventTypeAssignabilityRules2 extends AbstractAssignabilityRules {
     }
 
     private boolean parametersMatch(TypeVariable<?> observedParameter, Type eventParameter) {
-        for (Type bound : observedParameter.getBounds()) {
+        for (Type bound : getUppermostTypeVariableBounds(observedParameter)) {
             if (!CovariantTypes.isAssignableFrom(bound, eventParameter)) {
                 return false;
             }

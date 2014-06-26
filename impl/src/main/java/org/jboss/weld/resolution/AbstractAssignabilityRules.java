@@ -17,6 +17,7 @@
 package org.jboss.weld.resolution;
 
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.Set;
 
 import org.jboss.weld.exceptions.UnsupportedOperationException;
@@ -52,5 +53,17 @@ public abstract class AbstractAssignabilityRules implements AssignabilityRules {
             }
         }
         return false;
+    }
+
+    /*
+     * TypeVariable bounds are treated specially - CDI assignability rules are applied.
+     * Standard Java covariant assignability rules are applied to all other types of bounds.
+     * This is not explicitly mentioned in the specification but is implied.
+     */
+    protected Type[] getUppermostTypeVariableBounds(TypeVariable<?> bound) {
+        if (bound.getBounds()[0] instanceof TypeVariable<?>) {
+            return getUppermostTypeVariableBounds((TypeVariable<?>) bound.getBounds()[0]);
+        }
+        return bound.getBounds();
     }
 }

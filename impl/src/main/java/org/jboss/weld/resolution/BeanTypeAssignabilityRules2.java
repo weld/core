@@ -165,7 +165,7 @@ public class BeanTypeAssignabilityRules2 extends AbstractAssignabilityRules {
 
     // TODO: this needs to account for multiple bounds properly (WELD-1684)
     private boolean parametersMatch(WildcardType requiredParameter, TypeVariable<?> beanParameter) {
-        for (Type bound : beanParameter.getBounds()) {
+        for (Type bound : getUppermostTypeVariableBounds(beanParameter)) {
             final Type upperBound = requiredParameter.getUpperBounds()[0];
             if (!CovariantTypes.isAssignableFrom(bound, upperBound) && !CovariantTypes.isAssignableFrom(upperBound, bound)) {
                 return false;
@@ -182,17 +182,8 @@ public class BeanTypeAssignabilityRules2 extends AbstractAssignabilityRules {
 
     // TODO: this needs to account for multiple bounds properly (WELD-1684)
     private boolean parametersMatch(Type requiredParameter, TypeVariable<?> beanParameter) {
-        for (Type bound : beanParameter.getBounds()) {
-            /*
-             * TypeVariable bounds are treated specially - CDI assignability rules are applied.
-             * Standard Java covariant assignability rules are applied to all other types of bounds.
-             * This is not explicitly mentioned in the specification but is implied.
-             */
-            if (bound instanceof TypeVariable<?>) {
-                if (!parametersMatch(requiredParameter, (TypeVariable<?>) bound)) {
-                    return false;
-                }
-            } else if (!CovariantTypes.isAssignableFrom(bound, requiredParameter)) {
+        for (Type bound : getUppermostTypeVariableBounds(beanParameter)) {
+            if (!CovariantTypes.isAssignableFrom(bound, requiredParameter)) {
                 return false;
             }
         }
@@ -201,8 +192,8 @@ public class BeanTypeAssignabilityRules2 extends AbstractAssignabilityRules {
 
     // TODO: this needs to account for multiple bounds properly (WELD-1684)
     private boolean parametersMatch(TypeVariable<?> requiredParameter, TypeVariable<?> beanParameter) {
-        for (Type requiredParameterBound : requiredParameter.getBounds()) {
-            for (Type beanParameterBound : beanParameter.getBounds()) {
+        for (Type requiredParameterBound : getUppermostTypeVariableBounds(requiredParameter)) {
+            for (Type beanParameterBound : getUppermostTypeVariableBounds(beanParameter)) {
                 if (!CovariantTypes.isAssignableFrom(beanParameterBound, requiredParameterBound)) {
                     return false;
                 }
