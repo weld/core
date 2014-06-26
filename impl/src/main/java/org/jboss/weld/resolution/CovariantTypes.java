@@ -47,6 +47,15 @@ public class CovariantTypes {
     private CovariantTypes() {
     }
 
+    public static boolean isAssignableFromAtLeastOne(Type type1, Type[] types2) {
+        for (Type type2 : types2) {
+            if (isAssignableFrom(type1, type2)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static boolean isAssignableFrom(Type type1, Type type2) {
         if (type1 instanceof Class<?>) {
             if (type2 instanceof Class<?>) {
