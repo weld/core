@@ -80,17 +80,17 @@ public class BeanTypeAssignabilityRules2 extends AbstractAssignabilityRules {
      * A parameterized bean type is considered assignable to a raw required type if the raw types
      * are identical and all type parameters of the bean type are either unbounded type variables or
      * java.lang.Object.
-     *
+     * <p>
      * A raw bean type is considered assignable to a parameterized required type if the raw types are
      * identical and all type parameters of the required type are either unbounded type variables or
      * java.lang.Object.
      *
      */
-    private boolean matches(Class<?> requiredType, ParameterizedType beanType) {
-        if (!requiredType.equals(Reflections.getRawType(beanType))) {
+    private boolean matches(Class<?> type1, ParameterizedType type2) {
+        if (!type1.equals(Reflections.getRawType(type2))) {
             return false;
         }
-        return Types.isArrayOfUnboundedTypeVariablesOrObjects(beanType.getActualTypeArguments());
+        return Types.isArrayOfUnboundedTypeVariablesOrObjects(type2.getActualTypeArguments());
     }
 
     /**
