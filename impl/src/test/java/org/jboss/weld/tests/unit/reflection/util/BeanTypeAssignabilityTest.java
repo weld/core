@@ -1,6 +1,9 @@
 package org.jboss.weld.tests.unit.reflection.util;
 
+import java.io.Serializable;
+import java.io.Writer;
 import java.lang.reflect.Type;
+import java.util.Collection;
 import java.util.List;
 
 import javax.enterprise.util.TypeLiteral;
@@ -171,6 +174,9 @@ public class BeanTypeAssignabilityTest {
     public <T1 extends Number, T2 extends T1> void testTypeVariableWithTypeVariableBound() {
         Assert.assertTrue("List<T2 extends T1 extends Number> should be assignable to List<Number>", getRules().matches(new TypeLiteral<List<Number>>() {}.getType(), new TypeLiteral<List<T2>>() {}.getType()));
         Assert.assertFalse("List<T2 extends T1 extends Number> should not be assignable to List<Runnable>", getRules().matches(new TypeLiteral<List<Runnable>>() {}.getType(), new TypeLiteral<List<T2>>() {}.getType()));
+
+        Assert.assertTrue("List<T2 extends T1 extends Number> should be assignable to List<T1 extends Number>", getRules().matches(new TypeLiteral<List<T1>>() {}.getType(), new TypeLiteral<List<T2>>() {}.getType()));
+        Assert.assertTrue("List<T1 extends Number> should be assignable to List<T2 extends T1 extends Number>", getRules().matches(new TypeLiteral<List<T2>>() {}.getType(), new TypeLiteral<List<T1>>() {}.getType()));
     }
 
     @Test
@@ -180,4 +186,50 @@ public class BeanTypeAssignabilityTest {
         Assert.assertFalse("List<T4 extends T3 extends Exception> should not be assignable to List<T5 extends Throwable>", getRules().matches(new TypeLiteral<List<T5>>() {}.getType(), new TypeLiteral<List<T4>>() {}.getType()));
     }
 
+    @Test
+    public <T1 extends Number, T2 extends T1> void testWildcardWithTypeVariableBound() {
+        Assert.assertTrue("List<Number> should be assignable to List<? extends T2 extends T1 extends Number>", getRules().matches(new TypeLiteral<List<? extends T2>>() {}.getType(), new TypeLiteral<List<Number>>() {}.getType()));
+        Assert.assertTrue("List<Integer> should be assignable to List<? extends T2 extends T1 extends Number>", getRules().matches(new TypeLiteral<List<? extends T2>>() {}.getType(), new TypeLiteral<List<Integer>>() {}.getType()));
+        Assert.assertFalse("List<Object> should not be assignable to List<? extends T2 extends T1 extends Number>", getRules().matches(new TypeLiteral<List<? extends T2>>() {}.getType(), new TypeLiteral<List<Object>>() {}.getType()));
+
+        Assert.assertTrue("List<Number> should be assignable to List<? super T2 extends T1 extends Number>", getRules().matches(new TypeLiteral<List<? super T2>>() {}.getType(), new TypeLiteral<List<Number>>() {}.getType()));
+        Assert.assertFalse("List<Integer> should not be assignable to List<? super T2 extends T1 extends Number>", getRules().matches(new TypeLiteral<List<? super T2>>() {}.getType(), new TypeLiteral<List<Integer>>() {}.getType()));
+        Assert.assertTrue("List<Object> should be assignable to List<? super T2 extends T1 extends Number>", getRules().matches(new TypeLiteral<List<? super T2>>() {}.getType(), new TypeLiteral<List<Object>>() {}.getType()));
+    }
+
+    @Test
+    public <T1 extends List<?> & Appendable, T2 extends Writer & Serializable & Collection<?>, T3 extends T2, T4 extends Appendable & Iterable<?>, T5 extends T4> void testTypeVariableWithMultipleBounds() {
+        Assert.assertTrue("List<T4 extends Appendable & Iterable<?>> should be assignable to List<T1 extends List<?> & Appendable>", getRules().matches(new TypeLiteral<List<T1>>() {}.getType(), new TypeLiteral<List<T4>>() {}.getType()));
+        Assert.assertTrue("List<T4 extends Appendable & Iterable<?>> should be assignable to List<T2 extends Writer & Serializable & Collection<?>>", getRules().matches(new TypeLiteral<List<T2>>() {}.getType(), new TypeLiteral<List<T4>>() {}.getType()));
+        Assert.assertTrue("List<T5 extends T4 extends Appendable & Iterable<?>> should be assignable to List<T3 extends T2 extends Writer & Serializable & Collection<?>>", getRules().matches(new TypeLiteral<List<T3>>() {}.getType(), new TypeLiteral<List<T5>>() {}.getType()));
+        // copy & paste with wildcard
+        Assert.assertTrue("List<T4 extends Appendable & Iterable<?>> should be assignable to List<? extends T1 extends List<?> & Appendable>", getRules().matches(new TypeLiteral<List<? extends T1>>() {}.getType(), new TypeLiteral<List<T4>>() {}.getType()));
+        Assert.assertTrue("List<T4 extends Appendable & Iterable<?>> should be assignable to List<? extends T2 extends Writer & Serializable & Collection<?>>", getRules().matches(new TypeLiteral<List<? extends T2>>() {}.getType(), new TypeLiteral<List<T4>>() {}.getType()));
+        Assert.assertTrue("List<T5 extends T4 extends Appendable & Iterable<?>> should be assignable to List<? extends T3 extends T2 extends Writer & Serializable & List<?>>", getRules().matches(new TypeLiteral<List<? extends T3>>() {}.getType(), new TypeLiteral<List<T5>>() {}.getType()));
+
+        Assert.assertFalse("List<T1 extends List<?> & Appendable> should not be assignable to List<T4 extends Appendable & Iterable<?>>", getRules().matches(new TypeLiteral<List<T4>>() {}.getType(), new TypeLiteral<List<T1>>() {}.getType()));
+        Assert.assertFalse("List<T1 extends List<?> & Appendable> should not be assignable to List<T2 extends Writer & Serializable & Collection<?>>", getRules().matches(new TypeLiteral<List<T2>>() {}.getType(), new TypeLiteral<List<T1>>() {}.getType()));
+        Assert.assertFalse("List<T2 extends Writer & Serializable & Collection<?>> should not be assignable to List<T4 extends Appendable & Iterable<?>>", getRules().matches(new TypeLiteral<List<T4>>() {}.getType(), new TypeLiteral<List<T2>>() {}.getType()));
+
+        // neither one type variable has stricter bounds than the other
+        Assert.assertFalse("List<T2 extends Writer & Serializable & Collection<?>> should not be assignable to List<T1 extends List<?> & Appendable>", getRules().matches(new TypeLiteral<List<T1>>() {}.getType(), new TypeLiteral<List<T2>>() {}.getType()));
+        Assert.assertFalse("List<T1 extends List<?> & Appendable> should not be assignable to List<T2 extends Writer & Serializable & Collection<?>>", getRules().matches(new TypeLiteral<List<T2>>() {}.getType(), new TypeLiteral<List<T1>>() {}.getType()));
+        // copy & paste with wildcard
+        Assert.assertFalse("List<T2 extends Writer & Serializable & Collection<?>> should not be assignable to List<? extends T1 extends List<?> & Appendable>", getRules().matches(new TypeLiteral<List<? extends T1>>() {}.getType(), new TypeLiteral<List<T2>>() {}.getType()));
+        Assert.assertFalse("List<T1 extends List<?> & Appendable> should not be assignable to List<? extends T2 extends Writer & Serializable & Collection<?>>", getRules().matches(new TypeLiteral<List<? extends T2>>() {}.getType(), new TypeLiteral<List<T1>>() {}.getType()));
+    }
+
+    // test that java assignability rules are used to compare parameters of parameterized types
+    @Test
+    public <T1, T2 extends T1, T3 extends Collection<T1>, T4 extends Collection<T2>, T5 extends Collection<Number>, T6 extends Collection<Integer>, T7 extends Collection<?>> void testTypeVariableWithParameterizedTypesAsBounds() {
+        Assert.assertTrue("List<T5 extends Collection<Number>> should be assignable to itself", getRules().matches(new TypeLiteral<List<T5>>() {}.getType(), new TypeLiteral<List<T5>>() {}.getType()));
+        Assert.assertFalse("List<T5 extends Collection<Number>> should not be assignable to List<T6 extends Collection<Integer>>", getRules().matches(new TypeLiteral<List<T6>>() {}.getType(), new TypeLiteral<List<T5>>() {}.getType()));
+        Assert.assertFalse("List<T6 extends Collection<Integer>> should not be assignable to List<T5 extends Collection<Number>>", getRules().matches(new TypeLiteral<List<T5>>() {}.getType(), new TypeLiteral<List<T6>>() {}.getType()));
+        Assert.assertFalse("List<T5 extends Collection<Number>> should not be assignable to List<T7 extends Collection<?>>", getRules().matches(new TypeLiteral<List<T7>>() {}.getType(), new TypeLiteral<List<T5>>() {}.getType()));
+
+        Assert.assertTrue("List<T3 extends Collection<T1>> should be assignable to itself", getRules().matches(new TypeLiteral<List<T3>>() {}.getType(), new TypeLiteral<List<T3>>() {}.getType()));
+        Assert.assertFalse("List<T3 extends Collection<T1>> should not be assignable to List<T4 extends Collection<T2 extends T1>>", getRules().matches(new TypeLiteral<List<T4>>() {}.getType(), new TypeLiteral<List<T3>>() {}.getType()));
+        Assert.assertFalse("List<T4 extends Collection<T2 extends T1>> should not be assignable to List<T3 extends Collection<T1>>", getRules().matches(new TypeLiteral<List<T3>>() {}.getType(), new TypeLiteral<List<T4>>() {}.getType()));
+        Assert.assertFalse("List<T3 extends Collection<T1>> should not be assignable to List<T7 extends Collection<?>>", getRules().matches(new TypeLiteral<List<T7>>() {}.getType(), new TypeLiteral<List<T3>>() {}.getType()));
+    }
 }
