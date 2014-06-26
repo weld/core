@@ -173,4 +173,11 @@ public class BeanTypeAssignabilityTest {
         Assert.assertFalse("List<T2 extends T1 extends Number> should not be assignable to List<Runnable>", getRules().matches(new TypeLiteral<List<Runnable>>() {}.getType(), new TypeLiteral<List<T2>>() {}.getType()));
     }
 
+    @Test
+    public <T1 extends Exception, T2 extends T1, T3 extends Exception, T4 extends T3, T5 extends Throwable> void testTypeVariablesWithTypeVariableBounds() {
+        Assert.assertTrue("List<T2 extends T1 extends Exception> should be assignable to List<T4 extends T3 extends Exception>", getRules().matches(new TypeLiteral<List<T4>>() {}.getType(), new TypeLiteral<List<T2>>() {}.getType()));
+        Assert.assertTrue("List<T5 extends Throwable> should be assignable to List<T4 extends T3 extends Exception>", getRules().matches(new TypeLiteral<List<T4>>() {}.getType(), new TypeLiteral<List<T5>>() {}.getType()));
+        Assert.assertFalse("List<T4 extends T3 extends Exception> should not be assignable to List<T5 extends Throwable>", getRules().matches(new TypeLiteral<List<T5>>() {}.getType(), new TypeLiteral<List<T4>>() {}.getType()));
+    }
+
 }
