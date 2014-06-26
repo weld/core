@@ -323,7 +323,7 @@ public class CovariantTypes {
 
     private static boolean isAssignableFrom(GenericArrayType type1, TypeVariable<?> type2) {
         /*
-         * JLS does not allow array types to be used as bounds
+         * JLS does not allow array types to be used as bounds of type variables
          */
         return false;
     }

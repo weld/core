@@ -224,11 +224,11 @@ public class EventTypeAssignabilityTest {
         Assert.assertTrue("int[][] should be assignable to int[][]", getRules().matches(new int[0][].getClass(), new int[0][].getClass()));
         Assert.assertTrue("Integer[][] should be assignable to Integer[][]", getRules().matches(new Integer[0][].getClass(), new Integer[0][].getClass()));
         Assert.assertTrue("Integer[][] should be assignable to Number[][]", getRules().matches(new Number[0][].getClass(), new Integer[0][].getClass()));
-        Assert.assertTrue("Integer[][] should be assignable to Number[][]", getRules().matches(new TypeLiteral<T[]>() {}.getType(), new Integer[0][].getClass()));
-        Assert.assertTrue("Integer[][] should be assignable to Number[][]", getRules().matches(new TypeLiteral<T[][]>() {}.getType(), new Integer[0][].getClass()));
-        Assert.assertFalse("Integer[][] should be assignable to Number[][]", getRules().matches(new TypeLiteral<S[]>() {}.getType(), new Integer[0][].getClass()));
-        Assert.assertTrue("Integer[][] should be assignable to Number[][]", getRules().matches(new TypeLiteral<S[][]>() {}.getType(), new Integer[0][].getClass()));
-        Assert.assertFalse("Integer[][] should be assignable to Number[][]", getRules().matches(new TypeLiteral<S[][]>() {}.getType(), new Number[0][].getClass()));
+        Assert.assertTrue("Integer[][] should be assignable to T[]", getRules().matches(new TypeLiteral<T[]>() {}.getType(), new Integer[0][].getClass()));
+        Assert.assertTrue("Integer[][] should be assignable to T[][]", getRules().matches(new TypeLiteral<T[][]>() {}.getType(), new Integer[0][].getClass()));
+        Assert.assertFalse("Integer[][] should not be assignable to S[] where S extends Integer", getRules().matches(new TypeLiteral<S[]>() {}.getType(), new Integer[0][].getClass()));
+        Assert.assertTrue("Integer[][] should be assignable to S[][] where S extends Integer", getRules().matches(new TypeLiteral<S[][]>() {}.getType(), new Integer[0][].getClass()));
+        Assert.assertFalse("Number[][] should not be assignable to S[][] where S extends Integer", getRules().matches(new TypeLiteral<S[][]>() {}.getType(), new Number[0][].getClass()));
     }
 
     @Test
@@ -243,6 +243,6 @@ public class EventTypeAssignabilityTest {
     @Test
     public <T1 extends Number, T2 extends T1> void testTypeVariableWithTypeVariableBound() {
         Assert.assertTrue("Number should be assignable to T2 extends T1 extends Number", getRules().matches(new TypeLiteral<T2>() {}.getType(), Number.class));
-        Assert.assertFalse("Number should not be assignable to T2 extends T1 extends Number", getRules().matches(new TypeLiteral<T2>() {}.getType(), Runnable.class));
+        Assert.assertFalse("Number should not be assignable to T2 extends T1 extends Runnable", getRules().matches(new TypeLiteral<T2>() {}.getType(), Runnable.class));
     }
 }
