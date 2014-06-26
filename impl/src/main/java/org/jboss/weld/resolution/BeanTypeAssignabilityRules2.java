@@ -28,7 +28,7 @@ import org.jboss.weld.util.reflection.Reflections;
  * Implementation of the Section 5.2.4 of the CDI specification.
  *
  * @author Jozef Hartinger
- *
+ * @author Matus Abaffy
  */
 public class BeanTypeAssignabilityRules2 extends AbstractAssignabilityRules {
 
@@ -160,27 +160,21 @@ public class BeanTypeAssignabilityRules2 extends AbstractAssignabilityRules {
     }
 
     private boolean parametersMatch(WildcardType requiredParameter, Type beanParameter) {
-        return CovariantTypes.isAssignableFrom(requiredParameter, beanParameter);
+        return (matchesLowerBoundsOfWildcard(beanParameter, requiredParameter)
+                && upperBoundsOfWildcardMatch(requiredParameter, beanParameter));
     }
 
-    // TODO: this needs to account for multiple bounds properly (WELD-1684)
     private boolean parametersMatch(WildcardType requiredParameter, TypeVariable<?> beanParameter) {
-        for (Type bound : getUppermostTypeVariableBounds(beanParameter)) {
-            final Type upperBound = requiredParameter.getUpperBounds()[0];
-            if (!CovariantTypes.isAssignableFrom(bound, upperBound) && !CovariantTypes.isAssignableFrom(upperBound, bound)) {
-                return false;
-            }
-            if (requiredParameter.getLowerBounds().length > 0) {
-                final Type lowerBound = requiredParameter.getLowerBounds()[0];
-                if (!CovariantTypes.isAssignableFrom(bound, lowerBound)) {
-                    return false;
-                }
-            }
+        Type[] beanParameterBounds = getUppermostTypeVariableBounds(beanParameter);
+        if (!matchesLowerBoundsOfWildcard(beanParameterBounds, requiredParameter)) {
+            return false;
         }
-        return true;
+
+        Type[] requiredUpperBounds = requiredParameter.getUpperBounds();
+        // upper bound of the type variable is assignable to OR assignable from the upper bound of the wildcard
+        return (boundsMatch(requiredUpperBounds, beanParameterBounds) || boundsMatch(beanParameterBounds, requiredUpperBounds));
     }
 
-    // TODO: this needs to account for multiple bounds properly (WELD-1684)
     private boolean parametersMatch(Type requiredParameter, TypeVariable<?> beanParameter) {
         for (Type bound : getUppermostTypeVariableBounds(beanParameter)) {
             if (!CovariantTypes.isAssignableFrom(bound, requiredParameter)) {
@@ -190,15 +184,7 @@ public class BeanTypeAssignabilityRules2 extends AbstractAssignabilityRules {
         return true;
     }
 
-    // TODO: this needs to account for multiple bounds properly (WELD-1684)
     private boolean parametersMatch(TypeVariable<?> requiredParameter, TypeVariable<?> beanParameter) {
-        for (Type requiredParameterBound : getUppermostTypeVariableBounds(requiredParameter)) {
-            for (Type beanParameterBound : getUppermostTypeVariableBounds(beanParameter)) {
-                if (!CovariantTypes.isAssignableFrom(beanParameterBound, requiredParameterBound)) {
-                    return false;
-                }
-            }
-        }
-        return true;
+        return boundsMatch(getUppermostTypeVariableBounds(beanParameter), getUppermostTypeVariableBounds(requiredParameter));
     }
 }
