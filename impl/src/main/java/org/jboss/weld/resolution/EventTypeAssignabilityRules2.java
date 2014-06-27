@@ -136,7 +136,7 @@ public class EventTypeAssignabilityRules2 extends AbstractAssignabilityRules {
              * to the upper bound, if any, of the wildcard and assignable from the lower bound, if any, of the
              * wildcard, or
              */
-            return CovariantTypes.isAssignableFrom(observedParameter, eventParameter);
+            return parametersMatch((WildcardType) observedParameter, eventParameter);
         }
         if (observedParameter instanceof TypeVariable<?>) {
             /*
@@ -155,5 +155,11 @@ public class EventTypeAssignabilityRules2 extends AbstractAssignabilityRules {
             }
         }
         return true;
+    }
+
+    private boolean parametersMatch(WildcardType observedParameter, Type eventParameter) {
+        return (matchesLowerBoundsOfWildcard(eventParameter, observedParameter)
+                && upperBoundsOfWildcardMatch(observedParameter, eventParameter));
+
     }
 }
