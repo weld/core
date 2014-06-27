@@ -29,6 +29,7 @@ import junit.framework.Assert;
 import org.jboss.weld.resolution.AssignabilityRules;
 import org.jboss.weld.resolution.EventTypeAssignabilityRules2;
 import org.jboss.weld.util.reflection.GenericArrayTypeImpl;
+import org.jboss.weld.util.reflection.WildcardTypeImpl;
 import org.junit.Test;
 
 
@@ -225,5 +226,16 @@ public class EventTypeAssignabilityTest {
     public <T1 extends Number, T2 extends T1> void testTypeVariableWithTypeVariableBound() {
         Assert.assertTrue("Number should be assignable to T2 extends T1 extends Number", getRules().matches(new TypeLiteral<T2>() {}.getType(), Number.class));
         Assert.assertFalse("Number should not be assignable to T2 extends T1 extends Runnable", getRules().matches(new TypeLiteral<T2>() {}.getType(), Runnable.class));
+    }
+
+    @Test
+    public <T1 extends Number, T2 extends T1> void testWildcardWithTypeVariableBound() {
+        Assert.assertTrue("List<Number> should be assignable to List<? extends T2 extends T1 extends Number>", getRules().matches(new TypeLiteral<List<? extends T2>>() {}.getType(), new TypeLiteral<List<Number>>() {}.getType()));
+        Assert.assertTrue("List<Integer> should be assignable to List<? extends T2 extends T1 extends Number>", getRules().matches(new TypeLiteral<List<? extends T2>>() {}.getType(), new TypeLiteral<List<Integer>>() {}.getType()));
+        Assert.assertFalse("List<Object> should not be assignable to List<? extends T2 extends T1 extends Number>", getRules().matches(new TypeLiteral<List<? extends T2>>() {}.getType(), new TypeLiteral<List<Object>>() {}.getType()));
+
+        Assert.assertTrue("List<Number> should be assignable to List<? super T2 extends T1 extends Number>", getRules().matches(new TypeLiteral<List<? super T2>>() {}.getType(), new TypeLiteral<List<Number>>() {}.getType()));
+        Assert.assertFalse("List<Integer> should not be assignable to List<? super T2 extends T1 extends Number>", getRules().matches(new TypeLiteral<List<? super T2>>() {}.getType(), new TypeLiteral<List<Integer>>() {}.getType()));
+        Assert.assertTrue("List<Object> should be assignable to List<? super T2 extends T1 extends Number>", getRules().matches(new TypeLiteral<List<? super T2>>() {}.getType(), new TypeLiteral<List<Object>>() {}.getType()));
     }
 }
