@@ -45,8 +45,8 @@ public class WildcardTypeImpl implements WildcardType {
     private static final Type[] DEFAULT_LOWER_BOUND = new Type[0];
     private static final WildcardType DEFAULT_INSTANCE = new WildcardTypeImpl(DEFAULT_UPPER_BOUND, DEFAULT_LOWER_BOUND);
 
-    private Type[] upperBound;
-    private Type[] lowerBound;
+    private final Type[] upperBound;
+    private final Type[] lowerBound;
 
     private WildcardTypeImpl(Type[] upperBound, Type[] lowerBound) {
         this.upperBound = upperBound;
