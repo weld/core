@@ -15,6 +15,10 @@ public class GenericArrayTypeImpl implements GenericArrayType {
         this.genericComponentType = genericComponentType;
     }
 
+    public GenericArrayTypeImpl(Class<?> rawType, Type... actualTypeArguments) {
+        this.genericComponentType = new ParameterizedTypeImpl(rawType, actualTypeArguments);
+    }
+
     public Type getGenericComponentType() {
         return genericComponentType;
     }
