@@ -61,25 +61,6 @@ public class EventTypeAssignabilityTest {
     }
 
     @Test
-    public void testWildcardFooMatchesItself() throws Exception {
-        Type type = new TypeLiteral<Foo<?>>(){}.getType();
-        Assert.assertTrue("Foo<?> should be assignable from Foo<?>", getRules().matches(type, type));
-    }
-
-    @Test
-    public void testWildcardFooArrayMatchesItself() throws Exception {
-        Type type = new TypeLiteral<Foo<?>[]>(){}.getType();
-        Assert.assertTrue("Foo<?>[] should be assignable from itself", getRules().matches(type, type));
-    }
-
-    @Test
-    public void testWildcardFooMatchesBoundedWildcardFoo() throws Exception {
-        Type boundedWildcardFooType = new TypeLiteral<Foo<? extends Number>>(){}.getType();
-        Type wildcardFooType = new TypeLiteral<Foo<?>>(){}.getType();
-        Assert.assertTrue("Foo<?> should be assignable from Foo<? extends Number>", getRules().matches(wildcardFooType, boundedWildcardFooType));
-    }
-
-    @Test
     public <F extends Number> void testParameterizedBeanWithBoundedVariableTypeParameter() throws Exception {
         Assert.assertTrue("Foo<F extends Number> should be assignable to Foo",
             getRules().matches(
