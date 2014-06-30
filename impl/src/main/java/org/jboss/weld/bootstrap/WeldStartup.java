@@ -519,7 +519,7 @@ public class WeldStartup {
             contexts.add(new ContextHolder<HttpRequestContext>(new HttpRequestContextImpl(contextId), HttpRequestContext.class, HttpLiteral.INSTANCE));
         }
 
-        if (deployment.getServices().contains(EjbServices.class)) {
+        if (isEjbServicesRegistered()) {
             // Register the EJB Request context if EjbServices are available
             contexts.add(new ContextHolder<EjbRequestContext>(new EjbRequestContextImpl(contextId), EjbRequestContext.class, EjbLiteral.INSTANCE));
         }
@@ -580,5 +580,20 @@ public class WeldStartup {
             }
         }
         return beans;
+    }
+
+    private boolean isEjbServicesRegistered() {
+        if(deployment.getServices().contains(EjbServices.class)) {
+            // For backwards compatibility with older integrators that register EjbServices
+            // as a deployment service
+            return true;
+        }
+        // EjbServices is a bean deployment archive service
+        for (BeanDeploymentArchive beanDeploymentArchive : deployment.getBeanDeploymentArchives()) {
+            if (beanDeploymentArchive.getServices().contains(EjbServices.class)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
