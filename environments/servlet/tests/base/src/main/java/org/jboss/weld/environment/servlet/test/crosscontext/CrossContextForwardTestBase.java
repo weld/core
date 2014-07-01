@@ -1,6 +1,8 @@
 package org.jboss.weld.environment.servlet.test.crosscontext;
 
 import static org.jboss.weld.environment.servlet.test.util.Deployments.extendDefaultWebXml;
+import static org.jboss.weld.environment.servlet.test.util.Deployments.toContextParam;
+import static org.jboss.weld.environment.servlet.test.util.Deployments.toServletAndMapping;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
@@ -21,11 +23,14 @@ import com.gargoylesoftware.htmlunit.WebClient;
 
 public class CrossContextForwardTestBase {
 
-    public static final Asset FORWARDING_WEB_XML = new ByteArrayAsset(extendDefaultWebXml("<servlet><servlet-name>Forwarding Servlet</servlet-name><servlet-class>" + ForwardingServlet.class.getName() + "</servlet-class></servlet> <servlet-mapping><servlet-name>Forwarding Servlet</servlet-name><url-pattern>/forwarding</url-pattern></servlet-mapping>").getBytes());
-    public static final Asset INCLUDED_WEB_XML = new ByteArrayAsset(extendDefaultWebXml("<servlet><servlet-name>Included Servlet</servlet-name><servlet-class>" + IncludedServlet.class.getName() + "</servlet-class></servlet> <servlet-mapping><servlet-name>Included Servlet</servlet-name><url-pattern>/included</url-pattern></servlet-mapping>").getBytes());
     protected static final String FIRST = "first";
     protected static final String SECOND = "second";
-    
+    protected static final Asset FORWARDING_WEB_XML = new ByteArrayAsset(extendDefaultWebXml(
+            toServletAndMapping("Forwarding Servlet", ForwardingServlet.class, "/forwarding") + toContextParam("WELD_CONTEXT_ID_KEY", FIRST))
+            .getBytes());
+    protected static final Asset INCLUDED_WEB_XML = new ByteArrayAsset(extendDefaultWebXml(
+            toServletAndMapping("Included Servlet", IncludedServlet.class, "/included") + toContextParam("WELD_CONTEXT_ID_KEY", SECOND)).getBytes());
+
     public static WebArchive createFirstTestArchive() {
          WebArchive war = ShrinkWrap.create(WebArchive.class,"app1.war").addAsWebInfResource(new BeansXml(), "beans.xml").setWebXML(FORWARDING_WEB_XML);
          war.addClass(ForwardingServlet.class);
@@ -37,7 +42,7 @@ public class CrossContextForwardTestBase {
         war.addClass(IncludedServlet.class);
         return war;
     }
-    
+
 
     @Test
     public void testCrossContextForward(@ArquillianResource @OperateOnDeployment(FIRST) URL firstContext) throws IOException {
