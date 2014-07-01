@@ -96,11 +96,11 @@ public abstract class AbstractAssignabilityRules implements AssignabilityRules {
         return true;
     }
 
-    protected boolean matchesLowerBoundsOfWildcard(Type parameter, WildcardType requiredParameter) {
-        return matchesLowerBoundsOfWildcard(new Type[] { parameter }, requiredParameter);
+    protected boolean lowerBoundsOfWildcardMatch(Type parameter, WildcardType requiredParameter) {
+        return lowerBoundsOfWildcardMatch(new Type[] { parameter }, requiredParameter);
     }
 
-    protected boolean matchesLowerBoundsOfWildcard(Type[] beanParameterBounds, WildcardType requiredParameter) {
+    protected boolean lowerBoundsOfWildcardMatch(Type[] beanParameterBounds, WildcardType requiredParameter) {
         if (requiredParameter.getLowerBounds().length > 0) {
             Type[] lowerBounds = requiredParameter.getLowerBounds();
             if (!boundsMatch(beanParameterBounds, lowerBounds)) {
