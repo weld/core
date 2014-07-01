@@ -40,6 +40,22 @@ public class Deployments {
         return "<listener><listener-class>" + listenerClassName + "</listener-class></listener>";
     }
 
+    public static String toServlet(String servletName, Class<?> servletClass) {
+        return "<servlet><servlet-name>" + servletName + "</servlet-name><servlet-class>" + servletClass.getName() + "</servlet-class></servlet>";
+    }
+
+    public static String toServletMapping(String servletName, String urlPattern) {
+        return "<servlet-mapping><servlet-name>" + servletName + "</servlet-name><url-pattern>" + urlPattern + "</url-pattern></servlet-mapping>";
+    }
+
+    public static String toServletAndMapping(String servletName, Class<?> servletClass, String urlPattern) {
+        return toServlet(servletName, servletClass) + toServletMapping(servletName, urlPattern);
+    }
+
+    public static String toContextParam(String name, String value) {
+        return "<context-param><param-name>" + name + "</param-name><param-value>" + value + "</param-value></context-param>";
+    }
+
     /**
      * Inserts the extension into the end of the default web.xml (just before closing web-app)
      *

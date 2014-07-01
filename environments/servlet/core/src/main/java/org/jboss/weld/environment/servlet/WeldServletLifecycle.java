@@ -26,6 +26,7 @@ import javax.servlet.jsp.JspFactory;
 
 import org.jboss.logging.Logger;
 import org.jboss.weld.bootstrap.api.Bootstrap;
+import org.jboss.weld.bootstrap.api.CDI11Bootstrap;
 import org.jboss.weld.bootstrap.api.Environments;
 import org.jboss.weld.environment.Container;
 import org.jboss.weld.environment.ContainerContext;
@@ -51,6 +52,11 @@ public class WeldServletLifecycle {
 
     public static final String BEAN_MANAGER_ATTRIBUTE_NAME = WeldServletLifecycle.class.getPackage().getName() + "." + BeanManager.class.getName();
 
+    /**
+     * Must be synchronized with org.jboss.weld.Container.CONTEXT_ID_KEY
+     */
+    private static final String CONTEXT_ID_KEY = "WELD_CONTEXT_ID_KEY";
+
     static final String INSTANCE_ATTRIBUTE_NAME = WeldServletLifecycle.class.getPackage().getName() + ".lifecycleInstance";
 
     private static final Logger log = Logger.getLogger(WeldServletLifecycle.class);
@@ -61,7 +67,7 @@ public class WeldServletLifecycle {
 
     private static final String EXPRESSION_FACTORY_NAME = "org.jboss.weld.el.ExpressionFactory";
 
-    private final transient Bootstrap bootstrap;
+    private final transient CDI11Bootstrap bootstrap;
 
     private final transient ServletListener weldListener;
 
@@ -99,7 +105,13 @@ public class WeldServletLifecycle {
                 // Support GAE
                 log.warn("@Resource injection not available in simple beans");
             }
-            bootstrap.startContainer(Environments.SERVLET, deployment).startInitialization();
+            String id = context.getInitParameter(CONTEXT_ID_KEY);
+            if(id != null) {
+                bootstrap.startContainer(id, Environments.SERVLET, deployment);
+            } else {
+                bootstrap.startContainer(Environments.SERVLET, deployment);
+            }
+            bootstrap.startInitialization();
             manager = bootstrap.getManager(deployment.getWebAppBeanDeploymentArchive());
             // Push the manager into the servlet context so we can access in JSF
             context.setAttribute(BEAN_MANAGER_ATTRIBUTE_NAME, manager);
