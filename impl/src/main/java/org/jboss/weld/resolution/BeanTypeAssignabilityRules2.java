@@ -160,13 +160,13 @@ public class BeanTypeAssignabilityRules2 extends AbstractAssignabilityRules {
     }
 
     private boolean parametersMatch(WildcardType requiredParameter, Type beanParameter) {
-        return (matchesLowerBoundsOfWildcard(beanParameter, requiredParameter)
+        return (lowerBoundsOfWildcardMatch(beanParameter, requiredParameter)
                 && upperBoundsOfWildcardMatch(requiredParameter, beanParameter));
     }
 
     private boolean parametersMatch(WildcardType requiredParameter, TypeVariable<?> beanParameter) {
         Type[] beanParameterBounds = getUppermostTypeVariableBounds(beanParameter);
-        if (!matchesLowerBoundsOfWildcard(beanParameterBounds, requiredParameter)) {
+        if (!lowerBoundsOfWildcardMatch(beanParameterBounds, requiredParameter)) {
             return false;
         }
 

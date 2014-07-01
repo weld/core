@@ -158,7 +158,7 @@ public class EventTypeAssignabilityRules2 extends AbstractAssignabilityRules {
     }
 
     private boolean parametersMatch(WildcardType observedParameter, Type eventParameter) {
-        return (matchesLowerBoundsOfWildcard(eventParameter, observedParameter)
+        return (lowerBoundsOfWildcardMatch(eventParameter, observedParameter)
                 && upperBoundsOfWildcardMatch(observedParameter, eventParameter));
 
     }
