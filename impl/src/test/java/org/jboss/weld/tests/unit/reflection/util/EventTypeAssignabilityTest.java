@@ -29,7 +29,6 @@ import junit.framework.Assert;
 import org.jboss.weld.resolution.AssignabilityRules;
 import org.jboss.weld.resolution.EventTypeAssignabilityRules2;
 import org.jboss.weld.util.reflection.GenericArrayTypeImpl;
-import org.jboss.weld.util.reflection.WildcardTypeImpl;
 import org.junit.Test;
 
 

@@ -20,7 +20,7 @@ package org.jboss.weld.tests.decorators.generic;
 /**
  * @author Marius Bogoevici
  */
-public class GenericBean<T> implements Decorated<T>, NotDecorated<T> {
+public class GenericBean<T extends String> implements Decorated<T>, NotDecorated<T> {
     static boolean decoratedInvoked;
     static boolean notDecoratedInvoked;
 

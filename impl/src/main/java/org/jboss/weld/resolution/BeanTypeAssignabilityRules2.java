@@ -38,7 +38,7 @@ public class BeanTypeAssignabilityRules2 extends AbstractAssignabilityRules {
         return INSTANCE;
     }
 
-    private BeanTypeAssignabilityRules2() {
+    protected BeanTypeAssignabilityRules2() {
     }
 
     @Override
@@ -116,7 +116,7 @@ public class BeanTypeAssignabilityRules2 extends AbstractAssignabilityRules {
      * Actual type parameters
      */
 
-    private boolean parametersMatch(Type requiredParameter, Type beanParameter) {
+    protected boolean parametersMatch(Type requiredParameter, Type beanParameter) {
         if (Types.isActualType(requiredParameter) && Types.isActualType(beanParameter)) {
             /*
              * the required type parameter and the bean type parameter are actual types with identical raw
@@ -159,12 +159,12 @@ public class BeanTypeAssignabilityRules2 extends AbstractAssignabilityRules {
         return false;
     }
 
-    private boolean parametersMatch(WildcardType requiredParameter, Type beanParameter) {
+    protected boolean parametersMatch(WildcardType requiredParameter, Type beanParameter) {
         return (lowerBoundsOfWildcardMatch(beanParameter, requiredParameter)
                 && upperBoundsOfWildcardMatch(requiredParameter, beanParameter));
     }
 
-    private boolean parametersMatch(WildcardType requiredParameter, TypeVariable<?> beanParameter) {
+    protected boolean parametersMatch(WildcardType requiredParameter, TypeVariable<?> beanParameter) {
         Type[] beanParameterBounds = getUppermostTypeVariableBounds(beanParameter);
         if (!lowerBoundsOfWildcardMatch(beanParameterBounds, requiredParameter)) {
             return false;
@@ -175,7 +175,7 @@ public class BeanTypeAssignabilityRules2 extends AbstractAssignabilityRules {
         return (boundsMatch(requiredUpperBounds, beanParameterBounds) || boundsMatch(beanParameterBounds, requiredUpperBounds));
     }
 
-    private boolean parametersMatch(Type requiredParameter, TypeVariable<?> beanParameter) {
+    protected boolean parametersMatch(Type requiredParameter, TypeVariable<?> beanParameter) {
         for (Type bound : getUppermostTypeVariableBounds(beanParameter)) {
             if (!CovariantTypes.isAssignableFrom(bound, requiredParameter)) {
                 return false;
@@ -184,7 +184,7 @@ public class BeanTypeAssignabilityRules2 extends AbstractAssignabilityRules {
         return true;
     }
 
-    private boolean parametersMatch(TypeVariable<?> requiredParameter, TypeVariable<?> beanParameter) {
+    protected boolean parametersMatch(TypeVariable<?> requiredParameter, TypeVariable<?> beanParameter) {
         return boundsMatch(getUppermostTypeVariableBounds(beanParameter), getUppermostTypeVariableBounds(requiredParameter));
     }
 }
