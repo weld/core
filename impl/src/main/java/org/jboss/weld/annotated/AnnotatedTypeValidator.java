@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.annotated;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.Annotated;
@@ -25,6 +24,7 @@ import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.AnnotatedType;
 
 import org.jboss.weld.logging.MetadataLogger;
+import org.jboss.weld.util.collections.ArraySet;
 
 /**
  * Validates that methods of an {@link Annotated} implementation return sane values.
@@ -80,9 +80,10 @@ public class AnnotatedTypeValidator {
             MetadataLogger.LOG.noConstructor(type);
         }
 
-        Set<Class<?>> hierarchy = new HashSet<Class<?>>();
+        ArraySet<Class<?>> hierarchy = new ArraySet<Class<?>>();
         for (Class<?> clazz = type.getJavaClass(); clazz != null; clazz = clazz.getSuperclass()) {
             hierarchy.add(clazz);
+            hierarchy.addAll(clazz.getInterfaces());
         }
 
         checkMembersBelongToHierarchy(type.getConstructors(), hierarchy, type);
@@ -93,7 +94,7 @@ public class AnnotatedTypeValidator {
     private static void checkMembersBelongToHierarchy(Iterable<? extends AnnotatedMember<?>> members, Set<Class<?>> hierarchy, AnnotatedType<?> type) {
         for (AnnotatedMember<?> member : members) {
             if (!hierarchy.contains(member.getJavaMember().getDeclaringClass())) {
-                MetadataLogger.LOG.notInHierarchy(member.toString(), type.toString());
+                MetadataLogger.LOG.notInHierarchy(member.getJavaMember().getName(), member.toString(), type.getJavaClass().getName(), type.toString());
             }
         }
     }
