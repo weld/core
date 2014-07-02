@@ -25,7 +25,7 @@ import javax.inject.Inject;
  * @author Marius Bogoevici
  */
 @Decorator
-public class PartialDecorator<T> implements Decorated<T> {
+public class PartialDecorator<T extends String> implements Decorated<T> {
 
     @Inject
     @Delegate

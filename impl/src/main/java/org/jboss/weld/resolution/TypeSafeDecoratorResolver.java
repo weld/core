@@ -35,7 +35,7 @@ public class TypeSafeDecoratorResolver extends AbstractTypeSafeBeanResolver<Deco
 
     public TypeSafeDecoratorResolver(BeanManagerImpl manager, Iterable<Decorator<?>> decorators) {
         super(manager, decorators);
-        this.rules = DelegateInjectionPointAssignabilityRules.instance();
+        this.rules = DelegateInjectionPointAssignabilityRules2.instance();
     }
 
     @Override
