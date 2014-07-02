@@ -93,8 +93,8 @@ public interface MetadataLogger extends WeldLogger {
     void noConstructor(Object param1);
 
     @LogMessage(level = Level.WARN)
-    @Message(id = 1117, value = "Member ({0}) does not belong to the actual class hierarchy of the annotatedType ({1})", format = Format.MESSAGE_FORMAT)
-    void notInHierarchy(Object param1, Object param2);
+    @Message(id = 1117, value = "Member {0} ({1}) does not belong to the actual class hierarchy of the annotatedType {2} ({3})", format = Format.MESSAGE_FORMAT)
+    void notInHierarchy(Object memberName, Object member, Object annotatedTypeJavaClassName, Object annotatedType);
 
     @Message(id = 1118, value = "A type variable is not a valid bean type. Bean type {0} of bean {1}", format = Format.MESSAGE_FORMAT)
     DefinitionException typeVariableIsNotAValidBeanType(Object param1, Object param2);
