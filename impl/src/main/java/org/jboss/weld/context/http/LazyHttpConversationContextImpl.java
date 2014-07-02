@@ -76,6 +76,9 @@ public class LazyHttpConversationContextImpl extends HttpConversationContextImpl
             } finally {
                 this.initialized.remove();
             }
+        } else {
+            // Only deactivate the context
+            super.setActive(false);
         }
     }
 
