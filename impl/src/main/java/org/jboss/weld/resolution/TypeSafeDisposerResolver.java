@@ -30,7 +30,7 @@ public class TypeSafeDisposerResolver extends TypeSafeResolver<Resolvable, Dispo
 
     public TypeSafeDisposerResolver(Iterable<DisposalMethod<?, ?>> disposers) {
         super(disposers);
-        this.rules = BeanTypeAssignabilityRules2.instance();
+        this.rules = BeanTypeAssignabilityRules.instance();
     }
 
     @Override

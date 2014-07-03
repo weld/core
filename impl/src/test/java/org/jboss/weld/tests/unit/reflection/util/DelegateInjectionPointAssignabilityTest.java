@@ -23,7 +23,7 @@ import javax.enterprise.util.TypeLiteral;
 import junit.framework.Assert;
 
 import org.jboss.weld.resolution.AssignabilityRules;
-import org.jboss.weld.resolution.DelegateInjectionPointAssignabilityRules2;
+import org.jboss.weld.resolution.DelegateInjectionPointAssignabilityRules;
 import org.junit.Test;
 
 /**
@@ -36,7 +36,7 @@ import org.junit.Test;
 public class DelegateInjectionPointAssignabilityTest {
 
     protected AssignabilityRules getRules() {
-        return DelegateInjectionPointAssignabilityRules2.instance();
+        return DelegateInjectionPointAssignabilityRules.instance();
     }
 
     /*

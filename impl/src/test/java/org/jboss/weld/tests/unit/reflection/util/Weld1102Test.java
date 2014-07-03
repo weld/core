@@ -4,7 +4,7 @@ import javax.enterprise.util.TypeLiteral;
 
 import junit.framework.Assert;
 
-import org.jboss.weld.resolution.BeanTypeAssignabilityRules2;
+import org.jboss.weld.resolution.BeanTypeAssignabilityRules;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -70,6 +70,6 @@ public class Weld1102Test {
     }
 
     private boolean requiredTypeMatchesBeanType(TypeLiteral requiredType, TypeLiteral beanType) {
-        return BeanTypeAssignabilityRules2.instance().matches(requiredType.getType(), beanType.getType());
+        return BeanTypeAssignabilityRules.instance().matches(requiredType.getType(), beanType.getType());
     }
 }

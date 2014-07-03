@@ -126,7 +126,7 @@ import org.jboss.weld.metadata.cache.InterceptorBindingModel;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.metadata.cache.ScopeModel;
 import org.jboss.weld.metadata.cache.StereotypeModel;
-import org.jboss.weld.resolution.BeanTypeAssignabilityRules2;
+import org.jboss.weld.resolution.BeanTypeAssignabilityRules;
 import org.jboss.weld.resolution.DecoratorResolvableBuilder;
 import org.jboss.weld.resolution.InterceptorResolvable;
 import org.jboss.weld.resolution.InterceptorResolvableBuilder;
@@ -754,7 +754,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         Preconditions.checkArgumentNotNull(bean, "bean");
         Preconditions.checkArgumentNotNull(requestedType, "requestedType");
         Preconditions.checkArgumentNotNull(creationalContext, CREATIONAL_CONTEXT);
-        if (!BeanTypeAssignabilityRules2.instance().matches(requestedType, bean.getTypes())) {
+        if (!BeanTypeAssignabilityRules.instance().matches(requestedType, bean.getTypes())) {
             throw BeanManagerLogger.LOG.specifiedTypeNotBeanType(requestedType, bean);
         }
         return getReference(bean, requestedType, creationalContext, false);
