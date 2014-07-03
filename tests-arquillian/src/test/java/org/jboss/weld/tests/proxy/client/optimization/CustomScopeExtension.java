@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2014, Red Hat, Inc., and individual contributors
+ * Copyright 2012, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -16,45 +16,20 @@
  */
 package org.jboss.weld.tests.proxy.client.optimization;
 
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.spi.AfterBeanDiscovery;
+import javax.enterprise.inject.spi.Extension;
 
-@RequestScoped
-public class Alpha {
+public class CustomScopeExtension implements Extension {
 
-    @Inject
-    private Bravo bravo;
+    private final CustomContext context = new CustomContext();
 
-    @Inject
-    private Charlie charlie;
-
-    @Inject
-    private Delta delta;
-
-    @Inject
-    private Echo echo;
-
-    @Inject
-    private Custom custom;
-
-    public Bravo getBravo() {
-        return bravo;
+    void registerContext(@Observes AfterBeanDiscovery event) {
+        event.addContext(context);
     }
 
-    public Charlie getCharlie() {
-        return charlie;
-    }
-
-    public Delta getDelta() {
-        return delta;
-    }
-
-    public Echo getEcho() {
-        return echo;
-    }
-
-    public Custom getCustom() {
-        return custom;
+    public CustomContext getContext() {
+        return context;
     }
 
 }

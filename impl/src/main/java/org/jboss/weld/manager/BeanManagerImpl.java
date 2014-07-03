@@ -821,10 +821,13 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                             return incompleteInstance;
                         }
                     }
-                    @java.lang.SuppressWarnings({ "unchecked", "rawtypes" })
-                    final Object existinInstance = getContext(resolvedBean.getScope()).get(Reflections.<Contextual>cast(resolvedBean));
-                    if(existinInstance != null) {
-                        return existinInstance;
+                    Context context = internalGetContext(resolvedBean.getScope());
+                    if(context != null) {
+                        @java.lang.SuppressWarnings({ "unchecked", "rawtypes" })
+                        final Object existinInstance = context.get(Reflections.<Contextual>cast(resolvedBean));
+                        if(existinInstance != null) {
+                            return existinInstance;
+                        }
                     }
                 }
             }

@@ -111,8 +111,9 @@ public class InjectionPoints {
      */
     public static boolean isInjectableReferenceLookupOptimizationAllowed(Bean<?> bean, Bean<?> resolvedBean) {
         Preconditions.checkArgumentNotNull(resolvedBean, "resolvedBean");
-        return bean != null && (RequestScoped.class.equals(bean.getScope())
-                || (ApplicationScoped.class.equals(bean.getScope()) && ApplicationScoped.class.equals(resolvedBean.getScope())));
+        return bean != null
+                && ((RequestScoped.class.equals(bean.getScope()) && Beans.hasBuiltinScope(resolvedBean)) || (ApplicationScoped.class.equals(bean.getScope()) && ApplicationScoped.class
+                        .equals(resolvedBean.getScope())));
     }
 
 }
