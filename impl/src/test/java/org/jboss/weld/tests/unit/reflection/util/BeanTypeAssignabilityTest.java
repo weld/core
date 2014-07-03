@@ -11,7 +11,7 @@ import javax.enterprise.util.TypeLiteral;
 import junit.framework.Assert;
 
 import org.jboss.weld.resolution.AssignabilityRules;
-import org.jboss.weld.resolution.BeanTypeAssignabilityRules2;
+import org.jboss.weld.resolution.BeanTypeAssignabilityRules;
 import org.jboss.weld.util.reflection.Reflections;
 import org.junit.Test;
 
@@ -23,7 +23,7 @@ import org.junit.Test;
 public class BeanTypeAssignabilityTest {
 
     protected AssignabilityRules getRules() {
-        return BeanTypeAssignabilityRules2.instance();
+        return BeanTypeAssignabilityRules.instance();
     }
 
     @Test

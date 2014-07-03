@@ -21,8 +21,6 @@ import java.util.Set;
 
 public interface AssignabilityRules {
 
-    boolean isAssignableFrom(Type type1, Type type2);
-
     /**
      * Check whether at least one of the requiredTypes matches a type in beanTypes
      *

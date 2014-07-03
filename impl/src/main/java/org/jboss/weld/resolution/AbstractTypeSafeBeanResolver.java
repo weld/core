@@ -197,9 +197,9 @@ public abstract class AbstractTypeSafeBeanResolver<T extends Bean<?>, C extends 
     protected boolean matches(Resolvable resolvable, T bean) {
         AssignabilityRules rules = null;
         if (resolvable.isDelegate()) {
-            rules = DelegateInjectionPointAssignabilityRules2.instance();
+            rules = DelegateInjectionPointAssignabilityRules.instance();
         } else {
-            rules = BeanTypeAssignabilityRules2.instance();
+            rules = BeanTypeAssignabilityRules.instance();
         }
         return rules.matches(resolvable.getTypes(), bean.getTypes())
                 && Beans.containsAllQualifiers(resolvable.getQualifiers(), QualifierInstance.of(bean, store));

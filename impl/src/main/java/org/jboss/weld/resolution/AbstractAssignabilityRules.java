@@ -21,8 +21,6 @@ import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.util.Set;
 
-import org.jboss.weld.exceptions.UnsupportedOperationException;
-
 /**
  * Base class for AssignabilityRules implementations.
  *
@@ -30,11 +28,6 @@ import org.jboss.weld.exceptions.UnsupportedOperationException;
  *
  */
 public abstract class AbstractAssignabilityRules implements AssignabilityRules {
-
-    @Override
-    public boolean isAssignableFrom(Type type1, Type type2) {
-        throw new UnsupportedOperationException("Not supported anymore.");
-    }
 
     @Override
     public boolean matches(Set<Type> requiredTypes, Set<Type> beanTypes) {
