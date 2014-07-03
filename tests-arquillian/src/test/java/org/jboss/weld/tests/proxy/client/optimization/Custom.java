@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2014, Red Hat, Inc., and individual contributors
+ * Copyright 2012, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -16,45 +16,13 @@
  */
 package org.jboss.weld.tests.proxy.client.optimization;
 
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
+import java.io.Serializable;
 
-@RequestScoped
-public class Alpha {
+@SuppressWarnings("serial")
+@CustomScoped
+public class Custom implements Serializable {
 
-    @Inject
-    private Bravo bravo;
-
-    @Inject
-    private Charlie charlie;
-
-    @Inject
-    private Delta delta;
-
-    @Inject
-    private Echo echo;
-
-    @Inject
-    private Custom custom;
-
-    public Bravo getBravo() {
-        return bravo;
-    }
-
-    public Charlie getCharlie() {
-        return charlie;
-    }
-
-    public Delta getDelta() {
-        return delta;
-    }
-
-    public Echo getEcho() {
-        return echo;
-    }
-
-    public Custom getCustom() {
-        return custom;
+    public void ping() {
     }
 
 }

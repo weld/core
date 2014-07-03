@@ -19,6 +19,7 @@ package org.jboss.weld.tests.proxy.client.optimization;
 import static org.junit.Assert.assertNotNull;
 
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit.InSequence;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -30,6 +31,7 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class InjectableReferenceOptimizationRequestTest extends InjectableReferenceOptimizationTestBase {
 
+    @InSequence(2)
     @Test
     public void testRequestScopedBean(Alpha alpha, Golf golf) {
         assertNotNull(alpha);
@@ -47,6 +49,17 @@ public class InjectableReferenceOptimizationRequestTest extends InjectableRefere
         assertNotNull(golf);
         assertIsProxy(golf.getGolf());
         assertIsProxy(golf.getGolf().getGolf());
+        // Don't optimize custom scopes
+        assertNotNull(alpha.getCustom());
+        assertIsProxy(alpha.getCustom());
+    }
+
+    @Test
+    @InSequence(1)
+    public void initCustom(Custom custom) {
+        assertNotNull(custom);
+        // Lazy init @CustomScoped custom
+        custom.ping();
     }
 
 }

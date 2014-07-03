@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2014, Red Hat, Inc., and individual contributors
+ * Copyright 2012, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -16,45 +16,21 @@
  */
 package org.jboss.weld.tests.proxy.client.optimization;
 
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-@RequestScoped
-public class Alpha {
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
-    @Inject
-    private Bravo bravo;
+import javax.enterprise.context.NormalScope;
 
-    @Inject
-    private Charlie charlie;
-
-    @Inject
-    private Delta delta;
-
-    @Inject
-    private Echo echo;
-
-    @Inject
-    private Custom custom;
-
-    public Bravo getBravo() {
-        return bravo;
-    }
-
-    public Charlie getCharlie() {
-        return charlie;
-    }
-
-    public Delta getDelta() {
-        return delta;
-    }
-
-    public Echo getEcho() {
-        return echo;
-    }
-
-    public Custom getCustom() {
-        return custom;
-    }
+@NormalScope(passivating = true)
+@Inherited
+@Target({ TYPE, METHOD, FIELD })
+@Retention(RUNTIME)
+public @interface CustomScoped {
 
 }

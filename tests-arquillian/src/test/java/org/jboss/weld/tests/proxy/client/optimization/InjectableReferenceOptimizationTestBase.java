@@ -20,6 +20,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import javax.enterprise.inject.spi.Extension;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
@@ -36,7 +38,7 @@ public abstract class InjectableReferenceOptimizationTestBase {
     @Deployment
     public static Archive<?> createTestArchive() {
         return ShrinkWrap.create(BeanArchive.class).addClasses(InjectableReferenceOptimizationTestBase.class, Utils.class, Alpha.class, Bravo.class, Charlie.class,
-                Delta.class, Echo.class, Foxtrot.class, Golf.class, Hotel.class, India.class);
+                Delta.class, Echo.class, Foxtrot.class, Golf.class, Hotel.class, India.class, Custom.class, CustomScoped.class, CustomScopeExtension.class).addAsServiceProvider(Extension.class, CustomScopeExtension.class);
     }
 
     protected void assertIsProxy(Object beanInstance) {
