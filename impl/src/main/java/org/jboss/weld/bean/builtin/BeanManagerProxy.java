@@ -261,4 +261,9 @@ public class BeanManagerProxy extends ForwardingBeanManager implements WeldManag
         throw new IllegalArgumentException("Unknown BeanManager " + manager);
     }
 
+    @Override
+    public BeanManagerImpl unwrap() {
+        return delegate();
+    }
+
 }

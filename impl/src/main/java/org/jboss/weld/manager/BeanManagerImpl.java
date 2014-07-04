@@ -1521,4 +1521,9 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         }
         return null;
     }
+
+    @Override
+    public BeanManagerImpl unwrap() {
+        return this;
+    }
 }
