@@ -109,6 +109,17 @@ public class ProxyFactory<T> {
     protected static final String METHOD_HANDLER_FIELD_NAME = "methodHandler";
     private static final String JAVA = "java";
 
+    private static final Set<ProxiedMethodFilter> METHOD_FILTERS;
+
+    static {
+        GroovyMethodFilter groovy = new GroovyMethodFilter();
+        if (groovy.isEnabled()) {
+            METHOD_FILTERS = Collections.<ProxiedMethodFilter>singleton(groovy);
+        } else {
+            METHOD_FILTERS = Collections.emptySet();
+        }
+    }
+
     /**
      * created a new proxy factory from a bean instance. The proxy name is
      * generated from the bean id
@@ -526,7 +537,10 @@ public class ProxyFactory<T> {
 
             while (cls != null) {
                 for (Method method : AccessController.doPrivileged(new GetDeclaredMethodsAction(cls))) {
-                    if (!Modifier.isStatic(method.getModifiers()) && !Modifier.isFinal(method.getModifiers()) && (method.getDeclaringClass() != Object.class || method.getName().equals("toString"))) {
+                    if (!Modifier.isStatic(method.getModifiers()) &&
+                            !Modifier.isFinal(method.getModifiers()) &&
+                            (method.getDeclaringClass() != Object.class || method.getName().equals("toString")) &&
+                            isMethodAccepted(method)) {
                         try {
                             MethodInformation methodInfo = new RuntimeMethodInformation(method);
                             ClassMethod classMethod = proxyClassType.addMethod(method);
@@ -543,7 +557,7 @@ public class ProxyFactory<T> {
             }
             for (Class<?> c : additionalInterfaces) {
                 for (Method method : c.getMethods()) {
-                    if (!Modifier.isStatic(method.getModifiers())) {
+                    if (!Modifier.isStatic(method.getModifiers()) && isMethodAccepted(method)) {
                         try {
                             MethodInformation methodInfo = new RuntimeMethodInformation(method);
                             ClassMethod classMethod = proxyClassType.addMethod(method);
@@ -557,6 +571,15 @@ public class ProxyFactory<T> {
         } catch (Exception e) {
             throw new WeldException(e);
         }
+    }
+
+    private boolean isMethodAccepted(Method method) {
+        for (ProxiedMethodFilter filter : METHOD_FILTERS) {
+            if (!filter.accept(method)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
