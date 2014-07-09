@@ -52,9 +52,4 @@ public class EarSpecializationTest {
     public void testSpecializationVisibility() {
         // tested in VerifyingListener
     }
-
-    @Test
-    public void failingTest() {
-        throw new RuntimeException();
-    }
 }
