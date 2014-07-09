@@ -66,7 +66,6 @@ class GroovyInterceptorTest {
     }
 
     @Test
-    @Ignore("WELD-1606")
     void testInterceptedInvocationOnApplicationScopedBean() {
         LoggingInterceptor.reset()
         applicationScopedBean.hi()
@@ -74,7 +73,6 @@ class GroovyInterceptorTest {
     }
     
     @Test
-    @Ignore("WELD-1606")
     void testNonInterceptedInvocationOnApplicationScopedBean() {
         LoggingInterceptor.reset()
         applicationScopedBean.hiProxy()

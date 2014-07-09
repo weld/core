@@ -17,11 +17,19 @@
 package org.jboss.weld.annotated.enhanced;
 
 import java.io.Serializable;
+import java.lang.reflect.Method;
 
 public interface MethodSignature extends Serializable {
 
     String getMethodName();
 
     String[] getParameterTypes();
+
+    /**
+     * Determines whether this method signature matches the signature of the given method
+     * @param method the given method
+     * @return true iff the method signature represented by this object matches the signature of the given method
+     */
+    boolean matches(Method method);
 
 }

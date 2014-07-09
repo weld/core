@@ -48,6 +48,11 @@ public class MethodSignatureImpl implements MethodSignature {
         }
     }
 
+    public MethodSignatureImpl(String methodName, String... parameterTypes) {
+        this.methodName = methodName;
+        this.parameterTypes = parameterTypes;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -93,6 +98,23 @@ public class MethodSignatureImpl implements MethodSignature {
     @Override
     public String toString() {
         return new StringBuffer().append("method ").append(getMethodName()).append(Arrays.toString(parameterTypes).replace('[', '(').replace(']', ')')).toString();
+    }
+
+    @Override
+    public boolean matches(Method method) {
+        if (!methodName.equals(method.getName())) {
+            return false;
+        }
+        final Class<?>[] methodParameterTypes = method.getParameterTypes();
+        if (methodParameterTypes.length != parameterTypes.length) {
+            return false;
+        }
+        for (int i = 0; i < parameterTypes.length; i++) {
+            if (!parameterTypes[i].equals(methodParameterTypes[i].getName())) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }
