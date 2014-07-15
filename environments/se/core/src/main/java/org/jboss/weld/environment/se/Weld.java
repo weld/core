@@ -249,7 +249,9 @@ public class Weld {
         Set<URL> urls = new HashSet<URL>();
         for (BeanDeploymentArchive archive : discoveredArchives) {
             beanClasses.addAll(archive.getBeanClasses());
-            urls.add(archive.getBeansXml().getUrl());
+            if (archive.getBeansXml() != BeansXml.EMPTY_BEANS_XML) {
+                urls.add(archive.getBeansXml().getUrl());
+            }
         }
         BeansXml beansXml = bootstrap.parse(urls, true);
         WeldSEBeanDeploymentArchive archive = new WeldSEBeanDeploymentArchive("main", beanClasses, beansXml);
