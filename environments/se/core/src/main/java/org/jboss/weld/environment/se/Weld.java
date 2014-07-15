@@ -92,7 +92,6 @@ public class Weld {
         SingletonProvider.initialize(new RegistrySingletonProvider());
     }
 
-
     private ShutdownManager shutdownManager;
     private Set<Metadata<Extension>> extensions;
 
