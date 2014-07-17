@@ -89,9 +89,11 @@ public class Weld {
     public static final String JANDEX_INDEX_CLASS_NAME = "org.jboss.jandex.Index";
 
     static {
+        // First reset the provider to prevent problems it SingletonProvider is already initialized.
+        // TODO: The discovery of SingletonProvider should be improved e. G. by using the Service Provider Mechanism.
+        SingletonProvider.reset();
         SingletonProvider.initialize(new RegistrySingletonProvider());
     }
-
 
     private ShutdownManager shutdownManager;
     private Set<Metadata<Extension>> extensions;
@@ -250,7 +252,9 @@ public class Weld {
         Set<URL> urls = new HashSet<URL>();
         for (BeanDeploymentArchive archive : discoveredArchives) {
             beanClasses.addAll(archive.getBeanClasses());
-            urls.add(archive.getBeansXml().getUrl());
+            if (archive.getBeansXml() != BeansXml.EMPTY_BEANS_XML) {
+                urls.add(archive.getBeansXml().getUrl());
+            }
         }
         BeansXml beansXml = bootstrap.parse(urls, true);
         WeldSEBeanDeploymentArchive archive = new WeldSEBeanDeploymentArchive("main", beanClasses, beansXml);
