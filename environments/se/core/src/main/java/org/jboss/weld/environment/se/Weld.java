@@ -89,7 +89,11 @@ public class Weld {
     public static final String JANDEX_INDEX_CLASS_NAME = "org.jboss.jandex.Index";
 
     static {
-        SingletonProvider.initialize(new RegistrySingletonProvider());
+        if (!(SingletonProvider.instance() instanceof RegistrySingletonProvider)) {
+            // make sure RegistrySingletonProvider is used (required for supporting multiple parallel Weld instances)
+            SingletonProvider.reset();
+            SingletonProvider.initialize(new RegistrySingletonProvider());
+        }
     }
 
     private ShutdownManager shutdownManager;
