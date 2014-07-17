@@ -32,6 +32,7 @@ import org.jboss.weld.context.beanstore.NamingScheme;
 import org.jboss.weld.context.beanstore.SimpleNamingScheme;
 import org.jboss.weld.context.beanstore.http.RequestBeanStore;
 import org.jboss.weld.context.cache.RequestScopedBeanCache;
+import org.jboss.weld.logging.ContextLogger;
 import org.jboss.weld.util.reflection.Reflections;
 
 public class HttpRequestContextImpl extends AbstractBoundContext<HttpServletRequest> implements HttpRequestContext {
@@ -47,13 +48,14 @@ public class HttpRequestContextImpl extends AbstractBoundContext<HttpServletRequ
     }
 
     public boolean associate(HttpServletRequest request) {
-        if (getBeanStore() == null) {
-            setBeanStore(new RequestBeanStore(request, namingScheme));
-            getBeanStore().attach();
-            return true;
-        } else {
-            return false;
+        // At this point the bean store should never be set - see also HttpContextLifecycle#nestedInvocationGuard
+        if (getBeanStore() != null) {
+            ContextLogger.LOG.beanStoreLeakDuringAssociation(this.getClass().getName(), request);
         }
+        // We always associate a new bean store to avoid possible leaks (security threats)
+        setBeanStore(new RequestBeanStore(request, namingScheme));
+        getBeanStore().attach();
+        return true;
     }
 
     @Override
