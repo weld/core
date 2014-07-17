@@ -154,7 +154,16 @@ public interface ContextLogger extends WeldLogger {
     DefinitionException contextHasNullScope(Object param1);
 
     @LogMessage(level = Level.WARN)
-    @Message(id = 224, value = "Unable to clear bean store {0}.", format = Format.MESSAGE_FORMAT)
+    @Message(id = 224, value = "Unable to clear the bean store {0}.", format = Format.MESSAGE_FORMAT)
     void unableToClearBeanStore(Object beanStore);
+
+    /**
+     *
+     * @param context
+     * @param info Some additional info, e.g. HTTP request for HttpSessionContext
+     */
+    @LogMessage(level = Level.WARN)
+    @Message(id = 225, value = "Bean store leak was detected during {0} association: {1}", format = Format.MESSAGE_FORMAT)
+    void beanStoreLeakDuringAssociation(Object context, Object info);
 
 }

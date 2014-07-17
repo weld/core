@@ -9,10 +9,11 @@ import javax.servlet.http.HttpSession;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.context.AbstractBoundContext;
-import org.jboss.weld.context.beanstore.SimpleBeanIdentifierIndexNamingScheme;
 import org.jboss.weld.context.beanstore.NamingScheme;
+import org.jboss.weld.context.beanstore.SimpleBeanIdentifierIndexNamingScheme;
 import org.jboss.weld.context.beanstore.http.EagerSessionBeanStore;
 import org.jboss.weld.context.beanstore.http.LazySessionBeanStore;
+import org.jboss.weld.logging.ContextLogger;
 import org.jboss.weld.serialization.BeanIdentifierIndex;
 
 public class HttpSessionContextImpl extends AbstractBoundContext<HttpServletRequest> implements HttpSessionContext {
@@ -30,13 +31,13 @@ public class HttpSessionContextImpl extends AbstractBoundContext<HttpServletRequ
     }
 
     public boolean associate(HttpServletRequest request) {
-        if (getBeanStore() == null) {
-            // Don't reassociate
-            setBeanStore(new LazySessionBeanStore(request, namingScheme));
-            return true;
-        } else {
-            return false;
+        // At this point the bean store should never be set - see also HttpContextLifecycle.nestedInvocationGuard
+        if (getBeanStore() != null) {
+            ContextLogger.LOG.beanStoreLeakDuringAssociation(this.getClass().getName(), request);
         }
+        // We always associate a new bean store to avoid possible leaks (security threats)
+        setBeanStore(new LazySessionBeanStore(request, namingScheme));
+        return true;
     }
 
     public boolean destroy(HttpSession session) {
@@ -72,4 +73,5 @@ public class HttpSessionContextImpl extends AbstractBoundContext<HttpServletRequ
     protected Conversation getConversation() {
         return Container.instance(contextId).deploymentManager().instance().select(Conversation.class).get();
     }
+
 }
