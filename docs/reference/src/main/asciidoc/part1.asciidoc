@@ -1,0 +1,125 @@
+= Beans
+
+[partintro]
+--
+The http://jcp.org/en/jsr/detail?id=346[CDI] specification defines a set
+of complementary services that help improve the structure of application
+code. CDI layers an enhanced lifecycle and interaction model over
+existing Java component types, including managed beans and Enterprise
+Java Beans. The CDI services provide:
+
+* an improved lifecycle for stateful objects, bound to well-defined
+_contexts_,
+* a typesafe approach to _dependency injection_,
+* object interaction via an _event notification facility_,
+* a better approach to binding _interceptors_ to objects, along with a
+new kind of interceptor, called a _decorator_, that is more appropriate
+for use in solving business problems, and
+* an _SPI_ for developing portable extensions to the container.
+
+The CDI services are a core aspect of the Java EE platform and include
+full support for Java EE modularity and the Java EE component
+architecture. But the specification does not limit the use of CDI to the
+Java EE environment. In the Java SE environment, the services might be
+provided by a standalone CDI implementation like Weld (see <<_cdi_se_module>>), or even
+by a container that also implements the subset of EJB defined for
+embedded usage by the EJB 3.2 specification. CDI is especially useful in
+the context of web application development, but the problems it solves
+are general development concerns and it is therefore applicable to a
+wide variety of application.
+
+An object bound to a lifecycle context is called a bean. CDI includes
+built-in support for several different kinds of bean, including the
+following Java EE component types:
+
+* managed beans, and
+* EJB session beans.
+
+Both managed beans and EJB session beans may inject other beans. But
+some other objects, which are not themselves beans in the sense used
+here, may also have beans injected via CDI. In the Java EE platform, the
+following kinds of component may have beans injected:
+
+* message-driven beans,
+* interceptors,
+* servlets, servlet filters and servlet event listeners,
+* JAX-WS service endpoints and handlers,
+* JAX-RS resources, providers and `javax.ws.rs.core.Application`
+subclasses, and
+* JSP tag handlers and tag library event listeners.
+
+CDI relieves the user of an unfamiliar API of the need to answer the
+following questions:
+
+* What is the lifecycle of this object?
+* How many simultaneous clients can it have?
+* Is it multithreaded?
+* How do I get access to it from a client?
+* Do I need to explicitly destroy it?
+* Where should I keep the reference to it when I'm not currently using
+it?
+* How can I define an alternative implementation, so that the
+implementation can vary at deployment time?
+* How should I go about sharing this object between other objects?
+
+CDI is more than a framework. It's a whole, rich programming model. The
+_theme_ of CDI is _loose-coupling with strong typing_. Let's study what
+that phrase means.
+
+A bean specifies only the type and semantics of other beans it depends
+upon. It need not be aware of the actual lifecycle, concrete
+implementation, threading model or other clients of any bean it
+interacts with. Even better, the concrete implementation, lifecycle and
+threading model of a bean may vary according to the deployment scenario,
+without affecting any client. This loose-coupling makes your code easier
+to maintain.
+
+Events, interceptors and decorators enhance the loose-coupling inherent
+in this model:
+
+* _event notifications_ decouple event producers from event consumers,
+* _interceptors_ decouple technical concerns from business logic, and
+* _decorators_ allow business concerns to be compartmentalized.
+
+What's even more powerful (and comforting) is that CDI provides all
+these facilities in a _typesafe_ way. CDI never relies on string-based
+identifiers to determine how collaborating objects fit together.
+Instead, CDI uses the typing information that is already available in
+the Java object model, augmented using a new programming pattern, called
+_qualifier annotations_, to wire together beans, their dependencies,
+their interceptors and decorators, and their event consumers. Usage of
+XML descriptors is minimized to truly deployment-specific information.
+
+But CDI isn't a restrictive programming model. It doesn't tell you how
+you should to structure your application into layers, how you should
+handle persistence, or what web framework you have to use. You'll have
+to decide those kinds of things for yourself.
+
+CDI even provides a comprehensive SPI, allowing other kinds of object
+defined by future Java EE specifications or by third-party frameworks to
+be cleanly integrated with CDI, take advantage of the CDI services, and
+interact with any other kind of bean.
+
+CDI was influenced by a number of existing Java frameworks, including
+Seam, Guice and Spring. However, CDI has its own, very distinct,
+character: more typesafe than Seam, more stateful and less XML-centric
+than Spring, more web and enterprise-application capable than Guice. But
+it couldn't have been any of these without inspiration from the
+frameworks mentioned and _lots_ of collaboration and hard work by the
+JSR-299 and JSR-346 Expert Groups (EG).
+
+Finally, CDI is a http://jcp.org[Java Community Process] (JCP) standard.
+Java EE 7 requires that all compliant application servers provide
+support for JSR-346 (even in the web profile).
+--
+
+
+include::intro.asciidoc[]
+
+include::beans.asciidoc[]
+
+include::example.asciidoc[]
+
+include::injection.asciidoc[]
+
+include::scopescontexts.asciidoc[]

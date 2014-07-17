@@ -1,0 +1,467 @@
+== Scopes and contexts
+
+So far, we've seen a few examples of _scope type annotations_. The scope
+of a bean determines the lifecycle of instances of the bean. The scope
+also determines which clients refer to which instances of the bean.
+According to the CDI specification, a scope determines:
+
+___________________________________________________________________________
+* When a new instance of any bean with that scope is created
+* When an existing instance of any bean with that scope is destroyed
+* Which injected references refer to any instance of a bean with that
+scope
+___________________________________________________________________________
+
+For example, if we have a session-scoped bean, `CurrentUser`, all beans
+that are called in the context of the same `HttpSession` will see the
+same instance of `CurrentUser`. This instance will be automatically
+created the first time a `CurrentUser` is needed in that session, and
+automatically destroyed when the session ends.
+
+NOTE: JPA entities aren't a great fit for this model. Entities have their
+whole own lifecycle and identity model which just doesn't map naturally
+to the model used in CDI. Therefore, we recommend against treating
+entities as CDI beans. You're certainly going to run into problems if
+you try to give an entity a scope other than the default scope
+`@Dependent`. The client proxy will get in the way if you try to pass an
+injected instance to the JPA `EntityManager`.
+
+=== Scope types
+
+CDI features an _extensible context model_. It's possible to define new
+scopes by creating a new scope type annotation:
+
+[source.JAVA, java]
+----------------------------------
+@ScopeType
+@Retention(RUNTIME)
+@Target({TYPE, METHOD})
+public @interface ClusterScoped {}
+----------------------------------
+
+Of course, that's the easy part of the job. For this scope type to be
+useful, we will also need to define a `Context` object that implements
+the scope! Implementing a `Context` is usually a very technical task,
+intended for framework development only.
+
+We can apply a scope type annotation to a bean implementation class to
+specify the scope of the bean:
+
+[source.JAVA, java]
+-------------------------------------
+@ClusterScoped
+public class SecondLevelCache { ... }
+-------------------------------------
+
+Usually, you'll use one of CDI's built-in scopes.
+
+=== Built-in scopes
+
+CDI defines four built-in scopes:
+
+* `@RequestScoped`
+* `@SessionScoped`
+* `@ApplicationScoped`
+* `@ConversationScoped`
+
+For a web application that uses CDI, any servlet request has access to
+active request, session and application scopes. Furthermore, since CDI
+1.1 the conversation context is active during every servlet request.
+
+The request and application scopes are also active:
+
+* during invocations of EJB remote methods,
+* during invocations of EJB asynchronous methods,
+* during EJB timeouts,
+* during message delivery to a message-driven bean,
+* during web service invocations, and
+* during `@PostConstruct` callback of any bean
+
+If the application tries to invoke a bean with a scope that does not
+have an active context, a `ContextNotActiveException` is thrown by the
+container at runtime.
+
+Managed beans with scope `@SessionScoped` or `@ConversationScoped` must
+be serializable, since the container passivates the HTTP session from
+time to time.
+
+Three of the four built-in scopes should be extremely familiar to every
+Java EE developer, so let's not waste time discussing them here. One of
+the scopes, however, is new.
+
+=== The conversation scope
+
+The conversation scope is a bit like the traditional session scope in
+that it holds state associated with a user of the system, and spans
+multiple requests to the server. However, unlike the session scope, the
+conversation scope:
+
+* is demarcated explicitly by the application, and
+* holds state associated with a particular web browser tab in a web
+application (browsers tend to share domain cookies, and hence the
+session cookie, between tabs, so this is not the case for the session
+scope).
+
+A conversation represents a task—a unit of work from the point of view
+of the user. The conversation context holds state associated with what
+the user is currently working on. If the user is doing multiple things
+at the same time, there are multiple conversations.
+
+The conversation context is active during any servlet request (since CDI
+1.1). Most conversations are destroyed at the end of the request. If a
+conversation should hold state across multiple requests, it must be
+explicitly promoted to a _long-running conversation_.
+
+==== Conversation demarcation
+
+CDI provides a built-in bean for controlling the lifecycle of
+conversations in a CDI application. This bean may be obtained by
+injection:
+
+[source.JAVA, java]
+----------------------------------
+@Inject Conversation conversation;
+----------------------------------
+
+To promote the conversation associated with the current request to a
+long-running conversation, call the `begin()` method from application
+code. To schedule the current long-running conversation context for
+destruction at the end of the current request, call `end()`.
+
+In the following example, a conversation-scoped bean controls the
+conversation with which it is associated:
+
+[source.JAVA, java]
+-----------------------------------------------------------------
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+import javax.persistence.PersistenceContextType.EXTENDED;
+
+@ConversationScoped @Stateful
+public class OrderBuilder {
+   private Order order;
+   private @Inject Conversation conversation;
+   private @PersistenceContext(type = EXTENDED) EntityManager em;
+
+   @Produces public Order getOrder() {
+      return order;
+   }
+
+   public Order createOrder() {
+      order = new Order();
+      conversation.begin();
+      return order;
+   }
+
+   public void addLineItem(Product product, int quantity) {
+      order.add(new LineItem(product, quantity));
+   }
+
+   public void saveOrder(Order order) {
+      em.persist(order);
+      conversation.end();
+   }
+
+   @Remove
+   public void destroy() {}
+}
+-----------------------------------------------------------------
+
+This bean is able to control its own lifecycle through use of the
+`Conversation` API. But some other beans have a lifecycle which depends
+completely upon another object.
+
+==== Conversation propagation
+
+The conversation context automatically propagates with any JSF faces
+request (JSF form submission) or redirect. It does not automatically
+propagate with non-faces requests, for example, navigation via a link.
+
+We can force the conversation to propagate with a non-faces request by
+including the unique identifier of the conversation as a request
+parameter. The CDI specification reserves the request parameter named
+`cid` for this use. The unique identifier of the conversation may be
+obtained from the `Conversation` object, which has the EL bean name
+`javax.enterprise.context.conversation`.
+
+Therefore, the following link propagates the conversation:
+
+[source.XML, xml]
+-----------------------------------------------------------------------------------------
+<a href="/addProduct.jsp?cid=#{javax.enterprise.context.conversation.id}">Add Product</a>
+-----------------------------------------------------------------------------------------
+
+It's probably better to use one of the link components in JSF 2:
+
+[source.XML, xml]
+----------------------------------------------------------------------------
+<h:link outcome="/addProduct.xhtml" value="Add Product">
+   <f:param name="cid" value="#{javax.enterprise.context.conversation.id}"/>
+</h:link>
+----------------------------------------------------------------------------
+
+TIP: The conversation context propagates across redirects, making it very
+easy to implement the common POST-then-redirect pattern, without resort
+to fragile constructs such as a "flash" object. The container
+automatically adds the conversation id to the redirect URL as a request
+parameter.
+
+In certain scenarios it may be desired to suppress propagation of a
+long-running conversation. The `conversationPropagation` request
+parameter (introduced in CDI 1.1) may be used for this purpose. If the
+`conversationPropagation` request parameter has the value `none` , the
+container will not reassociate the existing conversation but will
+instead associate the request with a new transient conversation even
+though the conversation id was propagated.
+
+==== Conversation timeout
+
+The container is permitted to destroy a conversation and all state held
+in its context at any time in order to conserve resources. A CDI
+implementation will normally do this on the basis of some kind of
+timeout—though this is not required by the specification. The timeout is
+the period of inactivity before the conversation is destroyed (as
+opposed to the amount of time the conversation is active).
+
+The `Conversation` object provides a method to set the timeout. This is
+a hint to the container, which is free to ignore the setting.
+
+[source.JAVA, java]
+-----------------------------------------
+conversation.setTimeout(timeoutInMillis);
+-----------------------------------------
+
+==== CDI Conversation filter
+
+The conversation management is not always smooth. For example, if the
+propagated conversation cannot be restored, the
+`javax.enterprise.context.NonexistentConversationException` is thrown.
+Or if there are concurrent requests for a one long-running conversation,
+`javax.enterprise.context.BusyConversationException ` is thrown. For
+such cases, developer has no opportunity to deal with the exception by
+default, as the conversation associated with a Servlet request is
+determined at the beginning of the request before calling any service()
+method of any servlet in the web application, even before calling any of
+the filters in the web application and before the container calls any
+ServletRequestListener or AsyncListener in the web application.
+
+To be allowed to handle the exceptions, a filter defined in the CDI 1.1
+with the name ` CDI
+            Conversation Filter ` can be used. By mapping the
+` CDI Conversation Filter ` in the web.xml just after some other
+filters, we are able to catch the exceptions in them since the ordering
+in the web.xml specifies the ordering in which the filters will be
+called (described in the servlet specification).
+
+In the following example, a filter MyFilter checks for the
+BusyConversationException thrown during the conversation association. In
+the web.xml example, the filter is mapped before the CDI Conversation
+Filter.
+
+[source.JAVA, java]
+---------------------------------------------------------------------------------------------
+public class MyFilter implements Filter {
+...
+
+@Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+      throws IOException, ServletException {
+        try {
+            chain.doFilter(request, response);
+        } catch (BusyConversationException e) {
+            response.setContentType("text/plain");
+            response.getWriter().print("BusyConversationException");
+        }
+    }
+
+...
+---------------------------------------------------------------------------------------------
+
+To make it work, we need to map our MyFilter before the CDI Conversation
+Filter in the web.xml file.
+
+[source.XML, xml]
+--------------------------------------------------------
+<filter-mapping>
+      <filter-name>My Filter</filter-name>
+      <url-pattern>/*</url-pattern>
+   </filter-mapping>
+
+   <filter-mapping>
+      <filter-name>CDI Conversation Filter</filter-name>
+      <url-pattern>/*</url-pattern>
+   </filter-mapping>
+--------------------------------------------------------
+
+TIP: The mapping of the `CDI Conversation Filter` determines when Weld reads
+the `cid` request parameter. This process forces request body parsing.
+If your application relies on setting a custom character encoding for
+the request or parsing the request body itself by reading an
+`InputStream` or `Reader`, make sure that this is performed in a filter
+that executes before the CDI Conversation Filter is executed. See
+http://weld.cdi-spec.org/documentation/#3[this FAQ page for details].
+Alternatively, the lazy conversation context initialization (see below)
+may be used.
+
+==== Lazy and eager conversation context initialization
+
+Conversation context may be initialized lazily or eagerly.
+
+When initialized lazily, the conversation context (no matter if
+transient or long-running) is only initialized when a
+`@ConversationScoped` bean is accessed for the first time. At that
+point, the `cid` parameter is read and the conversation is restored. The
+conversation context may not be initialized at all throughout the
+request processing if no conversation state is accessed. Note that if a
+problem occurs during this delayed initialization, the conversation
+state access (bean method invocation) may result in
+`BusyConversationException` or `NonexistentConversationException` being
+thrown.
+
+When initialized eagerly, the conversation context is initialized at a
+predefined time. Either at the beginning of the request processing
+before any listener, filter or servlet is invoked or, if the
+`CDI Conversation Filter` is mapped, during execution of this filter.
+
+Conversation context initialization mode may be configured using the
+`org.jboss.weld.context.conversation.lazy` init parameter.
+
+[source.XML, xml]
+--------------------------------------------------------------------
+<context-param>
+   <param-name>org.jboss.weld.context.conversation.lazy</param-name>
+   <param-value>true</param-value>
+</context-param>
+--------------------------------------------------------------------
+
+If the init parameter is not set, the following default behavior
+applies:
+
+* If the `CDI Conversation Filter` is mapped, the conversation context is
+initialized eagerly within this filter
+* If an observer for `@Initialized(ConversationScoped.class)` or
+`@Destroyed(ConversationScoped.class)` event exists in the application,
+the conversation context is initialized eagerly
+* Otherwise, the conversation context is initialized lazily
+
+=== The singleton pseudo-scope
+
+In addition to the four built-in scopes, CDI also supports two
+_pseudo-scopes_. The first is the _singleton pseudo-scope_, which we
+specify using the annotation `@Singleton`.
+
+NOTE: Unlike the other scopes, which belong to the package
+`javax.enterprise.context`, the `@Singleton` annotation is defined in
+the package `javax.inject`.
+
+You can guess what "singleton" means here. It means a bean that is
+instantiated once. Unfortunately, there's a little problem with this
+pseudo-scope. Beans with scope `@Singleton` don't have a proxy object.
+Clients hold a direct reference to the singleton instance. So we need to
+consider the case of a client that can be serialized, for example, any
+bean with scope `@SessionScoped` or `@ConversationScoped`, any dependent
+object of a bean with scope `@SessionScoped` or `@ConversationScoped`,
+or any stateful session bean.
+
+Now, if the singleton instance is a simple, immutable, serializable
+object like a string, a number or a date, we probably don't mind too
+much if it gets duplicated via serialization. However, that makes it no
+stop being a true singleton, and we may as well have just declared it
+with the default scope.
+
+There are several ways to ensure that the singleton bean remains a
+singleton when its client gets serialized:
+
+* have the singleton bean implement `writeResolve()` and `readReplace()`
+(as defined by the Java serialization specification),
+* make sure the client keeps only a transient reference to the singleton
+bean, or
+* give the client a reference of type `Instance<X>` where `X` is the
+bean type of the singleton bean.
+
+A fourth, better solution is to instead use `@ApplicationScoped`,
+allowing the container to proxy the bean, and take care of serialization
+problems automatically.
+
+=== The dependent pseudo-scope
+
+Finally, CDI features the so-called _dependent pseudo-scope_. This is
+the default scope for a bean which does not explicitly declare a scope
+type.
+
+For example, this bean has the scope type `@Dependent`:
+
+[source.JAVA, java]
+-------------------------------
+public class Calculator { ... }
+-------------------------------
+
+An instance of a dependent bean is never shared between different
+clients or different injection points. It is strictly a _dependent
+object_ of some other object. It is instantiated when the object it
+belongs to is created, and destroyed when the object it belongs to is
+destroyed.
+
+If a Unified EL expression refers to a dependent bean by EL name, an
+instance of the bean is instantiated every time the expression is
+evaluated. The instance is not reused during any other expression
+evaluation.
+
+NOTE: If you need to access a bean directly by EL name in a JSF page, you
+probably need to give it a scope other than `@Dependent`. Otherwise, any
+value that gets set to the bean by a JSF input will be lost immediately.
+That's why CDI features the `@Model` stereotype; it lets you give a bean
+a name, and set its scope to `@RequestScoped` in one stroke. If you need
+to access a bean that really _has_ to have the scope `@Dependent` from a
+JSF page, inject it into a different bean, and expose it to EL via a
+getter method.
+
+Beans with scope `@Dependent` don't need a proxy object. The client
+holds a direct reference to its instance.
+
+CDI makes it easy to obtain a dependent instance of a bean, even if the
+bean is already declared as a bean with some other scope type.
+
+=== The `@New` qualifier
+
+The built-in qualifier `@New` allows us to obtain a dependent object of
+a specified class.
+
+[source.JAVA, java]
+-----------------------------------
+@Inject @New Calculator calculator;
+-----------------------------------
+
+The class must be a valid managed bean or session bean, but need not be
+an enabled bean.
+
+This works even if `Calculator` is _already_ declared with a different
+scope type, for example:
+
+[source.JAVA, java]
+-------------------------------
+@ConversationScoped
+public class Calculator { ... }
+-------------------------------
+
+So the following injected attributes each get a different instance of
+`Calculator`:
+
+[source.JAVA, java]
+-----------------------------------------
+public class PaymentCalc {
+   @Inject Calculator calculator;
+   @Inject @New Calculator newCalculator;
+}
+-----------------------------------------
+
+The `calculator` field has a conversation-scoped instance of
+`Calculator` injected. The `newCalculator` field has a new instance of
+`Calculator` injected, with a lifecycle that is bound to the owning
+`PaymentCalc`.
+
+This feature is particularly useful with producer methods, as we'll see
+in <<producer_methods>>.
+
+WARNING: The `@New` qualifier was deprecated in CDI 1.1. CDI applications are
+encouraged to inject @Dependent scoped beans instead.

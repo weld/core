@@ -1,0 +1,192 @@
+== Configuration
+
+=== Excluding classes from scanning and deployment
+
+CDI 1.1 allows you to exclude classes in your archive from being
+scanned, having container lifecycle events fired, and being deployed as
+beans. See also
+http://docs.jboss.org/cdi/spec/1.1/cdi-spec.html#bean_discovery[12.4.
+Bean discovery].
+
+NOTE: Weld still supports the original non-portable way of excluding classes
+from discovery. The formal specification can be found in the xsd,
+located at http://jboss.org/schema/weld/beans_1_1.xsd. Unlike Weld, the
+CDI specification does not support regular expression patterns and `!`
+character to invert the activation condition.
+
+All the configuration is done in the `beans.xml` file. For more
+information see <<_packaging_and_deployment>>.
+
+[source.XML, xml]
+------------------------------------------------------------------------------------------------------
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://xmlns.jcp.org/xml/ns/javaee">
+
+    <scan>
+
+        <!-- Don't deploy the classes for the swing app! -->
+        <exclude name="com.acme.swing.**" />
+
+        <!-- Don't include GWT support if GWT is not installed -->
+        <exclude name="com.acme.gwt.**">
+            <if-class-not-available name="com.google.GWT"/>
+        </exclude>
+
+        <!--
+            Exclude types from com.acme.verbose package if the system property verbosity is set to low
+            i.e.
+              java ... -Dverbosity=low
+        -->
+        <exclude name="com.acme.verbose.*">
+            <if-system-property name="verbosity" value="low"/>
+        </exclude>
+
+        <!--
+             Don't include JSF support if Wicket classes are present, and the viewlayer system
+             property is set
+        -->
+        <exclude name="com.acme.jsf.**">
+            <if-class-available name="org.apache.wicket.Wicket"/>
+            <if-system-property name="viewlayer"/>
+        </exclude>
+    </scan>
+
+</beans>
+------------------------------------------------------------------------------------------------------
+
+In this example we show the most common use cases for exercising fine
+control over which classes Weld scans. The first filter excludes all
+types whose package name starts with `com.acme.swing`, and in most cases
+this will be sufficient for your needs.
+
+However, sometimes it's useful to be able to activate the filter
+depending on the environment used. In this case, Weld allows you to
+activate (or deactivate) a filter based on either system properties or
+whether a class is available. The second filter shows the use case of
+disabling scanning of certain classes depending on the capabilities of
+the environment you deploy to - in this case we are excluding GWT
+support (all types whose package name starts with `com.acme.gwt`) if GWT
+is not installed.
+
+NOTE: If you specify just a system property name, Weld will activate the
+filter if that system property has been set (with any value). If you
+also specify the system property value, then Weld will only activate the
+filter if the system property's value matches exactly.
+
+The third filter shows how to exclude all types from a specific package
+(note the `name` attribute has suffix ".*").
+
+The fourth filter shows more a advanced configurations, where we use
+multiple activation conditions to decide whether to activate the filter.
+
+You can combine as many activation conditions as you like (_all_ must be
+true for the filter to be activated). If you want to a filter that is
+active if _any_ of the activation conditions are true, then you need
+multiple identical filters, each with different activation conditions.
+
+=== Concurrent deployment configuration
+
+Weld by default supports concurrent loading and deploying of beans.
+However, in certain deployment scenarios the default setup may not be
+appropriate. Bootstrap configuration may be altered using the
+`org.jboss.weld.bootstrap.properties` file located on the classpath
+(e.g. `WEB-INF/classes/org.jboss.weld.bootstrap.properties` in a web
+archive).
+
+.Concurrent deployment configuration options
+[cols=",,",options="header",]
+|=======================================================================
+|Configuration option |Default value |Description
+|`concurrentDeployment` |true |If set to false, `ConcurrentDeployer` and
+`ConcurrentValidator` will not be used.
+
+|`preloaderThreadPoolSize`
+|`Math.max(1, Runtime.getRuntime().availableProcessors() - 1)` |Weld is
+capable of resolving observer methods for container lifecycle events in
+advance while bean deployer threads are blocked waiting for I/O
+operations (such as classloading). This process is called preloading and
+leads to better CPU utilization and faster application startup time.
+This configuration option specifies the number of threads used for
+preloading. If set to 0, preloading is disabled.
+|=======================================================================
+
+==== Thread pool configuration
+
+For certain types of tasks Weld uses its own thread pool. The thread
+pool is represented by the `ExecutorServices` service. It is possible to
+alter the thread pool configuration in the
+`WEB-INF/classes/org.jboss.weld.executor.properties` file.
+
+.Executor configuration options
+[cols=",,",options="header",]
+|=======================================================================
+|Configuration option |Default value |Description
+|`threadPoolType` |`FIXED` |The type of the thread pool. Possible values
+are: `FIXED`, `FIXED_TIMEOUT`, `NONE`, `SINGLE_THREAD`
+
+|`threadPoolSize` |`Runtime.getRuntime().availableProcessors()` |The
+number of threads to be used for bean loading and deployment.
+
+|`threadPoolKeepAliveTime` |60 seconds |Passed to the constructor of the
+ThreadPoolExecutor class, maximum time that excess idle threads will
+wait for new tasks before terminating.
+
+|`threadPoolDebug` |false |If set to true, debug timing information is
+printed to the standard output.
+|=======================================================================
+
+=== Non-portable mode during application initialization
+
+By default the application initialization is performed in the portable
+mode which denotes specification-compliant behaviour. However it's also
+possible to enable the non-portable mode, in which some definition
+errors and deployment problems do not cause application initialization
+to abort. Currently the non-portable mode allows extension developers to
+call all the `BeanManager`'s methods before the
+`AfterDeploymentValidation` event is fired.
+
+Set the system property `org.jboss.weld.nonPortableMode` to `true` in
+order to enable the non-portable mode during initialization.
+
+NOTE: The main purpose of the non-portable mode is to support some legacy
+extensions. It's highly recommended to use the portable mode whenever
+possible - non-portable mode may lead to unexpected behaviour during
+initialization process.
+
+=== Mapping CDI contexts to HTTP requests
+
+By default, CDI contexts are activated at the beginning of an HTTP
+request processing and deactivated once the processing finishes. This
+may represent an unnecessary overhead in certain situations, for example
+static resource serving).
+
+Weld allows CDI context support to be mapped to a certain subset of
+requests only. A regular expression may be used for filtering HTTP
+requests that should have CDI contexts active during their processing.
+
+[source.XML, xml]
+-----------------------------------------------------------------------------------------------------------
+<web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee/"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+
+    <context-param>
+        <param-name>org.jboss.weld.context.mapping</param-name>
+        <param-value>.*\.html</param-value>
+    </context-param>
+-----------------------------------------------------------------------------------------------------------
+
+=== Bounding the cache size for resolved injection points
+
+Weld caches already resolved injection points in order to resolve them
+faster in the future. There exists a separate type safe resolver for
+beans, decorators, disposers, interceptors and observers. Each of them
+stores resolved injection points in its cache, which maximum size is
+bounded by a default value (common to all of them). You can alter this
+cache upper bound by setting the system property
+`org.jboss.weld.resolution.cacheSize` to a specific number.
+
+[source.JAVA, java]
+------------------------------------------------------------------
+System.setProperty("org.jboss.weld.resolution.cacheSize", "1000");
+------------------------------------------------------------------

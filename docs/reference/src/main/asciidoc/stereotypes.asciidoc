@@ -1,0 +1,182 @@
+== Stereotypes
+
+The CDI specification defines a stereotype as follows:
+
+______________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+In many systems, use of architectural patterns produces a set of
+recurring bean roles. A stereotype allows a framework developer to
+identify such a role and declare some common metadata for beans with
+that role in a central place.
+
+A stereotype encapsulates any combination of:
+
+* a default scope, and
+* a set of interceptor bindings.
+
+A stereotype may also specify that:
+
+* all beans with the stereotype have defaulted bean names, or that
+* all beans with the stereotype are alternatives.
+
+A bean may declare zero, one or multiple stereotypes. Stereotype
+annotations may be applied to a bean class or producer method or field.
+______________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+
+A stereotype is an annotation, annotated `@Stereotype`, that packages
+several other annotations. For instance, the following stereotype
+identifies action classes in some MVC framework:
+
+[source.JAVA, java]
+---------------------------
+@Stereotype
+@Retention(RUNTIME)
+@Target(TYPE)
+...
+public @interface Action {}
+---------------------------
+
+We use the stereotype by applying the annotation to a bean.
+
+[source.JAVA, java]
+--------------------------------
+@Action
+public class LoginAction { ... }
+--------------------------------
+
+Of course, we need to apply some other annotations to our stereotype or
+else it wouldn't be adding much value.
+
+=== Default scope for a stereotype
+
+A stereotype may specify a default scope for beans annotated with the
+stereotype. For example:
+
+[source.JAVA, java]
+---------------------------
+@RequestScoped
+@Stereotype
+@Retention(RUNTIME)
+@Target(TYPE)
+public @interface Action {}
+---------------------------
+
+A particular action may still override this default if necessary:
+
+[source.JAVA, java]
+-----------------------------------------------
+@Dependent @Action
+public class DependentScopedLoginAction { ... }
+-----------------------------------------------
+
+Naturally, overriding a single default isn't much use. But remember,
+stereotypes can define more than just the default scope.
+
+=== Interceptor bindings for stereotypes
+
+A stereotype may specify a set of interceptor bindings to be inherited
+by all beans with that stereotype.
+
+[source.JAVA, java]
+--------------------------------
+@RequestScoped
+@Transactional(requiresNew=true)
+@Secure
+@Stereotype
+@Retention(RUNTIME)
+@Target(TYPE)
+public @interface Action {}
+--------------------------------
+
+This helps us get technical concerns, like transactions and security,
+even further away from the business code!
+
+=== Name defaulting with stereotypes
+
+We can specify that all beans with a certain stereotype have a defaulted
+EL name when a name is not explicitly defined for that bean. All we need
+to do is add an empty `@Named` annotation:
+
+[source.JAVA, java]
+--------------------------------
+@RequestScoped
+@Transactional(requiresNew=true)
+@Secure
+@Named
+@Stereotype
+@Retention(RUNTIME)
+@Target(TYPE)
+public @interface Action {}
+--------------------------------
+
+Now, the `LoginAction` bean will have the defaulted name `loginAction`.
+
+=== Alternative stereotypes
+
+A stereotype can indicate that all beans to which it is applied are
+`@Alternative`s. An _alternative stereotype_ lets us classify beans by
+deployment scenario.
+
+[source.JAVA, java]
+-------------------------
+@Alternative
+@Stereotype
+@Retention(RUNTIME)
+@Target(TYPE)
+public @interface Mock {}
+-------------------------
+
+We can apply an alternative stereotype to a whole set of beans, and
+activate them all with one line of code in `beans.xml`.
+
+[source.JAVA, java]
+--------------------------------------------------------
+@Mock
+public class MockLoginAction extends LoginAction { ... }
+--------------------------------------------------------
+
+[source.XML, xml]
+---------------------------------------------------------
+<beans>
+   <alternatives>
+      <stereotype>org.mycompany.testing.Mock</stereotype>
+   </alternatives>
+</beans>
+---------------------------------------------------------
+
+=== Stereotype stacking
+
+This may blow your mind a bit, but stereotypes may declare other
+stereotypes, which we'll call _stereotype stacking_. You may want to do
+this if you have two distinct stereotypes which are meaningful on their
+own, but in other situation may be meaningful when combined.
+
+Here's an example that combines the `@Action` and `@Auditable`
+stereotypes:
+
+[source.JAVA, java]
+------------------------------------
+@Auditable
+@Action
+@Stereotype
+@Target(TYPE)
+@Retention(RUNTIME)
+public @interface AuditableAction {}
+------------------------------------
+
+=== Built-in stereotypes
+
+CDI defines one standard stereotype, `@Model`, which is expected to be
+used frequently in web applications:
+
+[source.JAVA, java]
+-------------------------------
+@Named
+@RequestScoped
+@Stereotype
+@Target({TYPE, METHOD, FIELD})
+@Retention(RUNTIME)
+public @interface Model {}
+-------------------------------
+
+Instead of using JSF managed beans, just annotate a bean `@Model`, and
+use it directly in your JSF view!

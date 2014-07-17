@@ -1,0 +1,212 @@
+== Context Management
+
+=== Managing the built in contexts
+
+Weld allows you to easily manage the built in contexts by injecting them
+and calling lifecycle methods. Weld defines two types of context,
+_managed_ and _unmanaged_. Managed contexts can be activated (allowing
+bean instances to be retrieved from the context), invalidated
+(scheduling bean instances for destruction) and deactivated (stopping
+bean instances from being retrieved, and if the context has been
+invalidated, causing the bean instances to be destroyed). Unmanaged
+contexts are always active; some may offer the ability to destroy
+instances.
+
+Managed contexts can either be _bound_ or _unbound_. An unbound context
+is scoped to the thread in which it is activated (instances placed in
+the context in one thread are not visible in other threads), and is
+destroyed upon invalidation and deactivation. Bound contexts are
+attached to some external data store (such as the HTTP Session or a
+manually propagated map) by _associating_ the data store with the
+context before calling activate, and dissociating the data store after
+calling activate.
+
+TIP: Weld automatically controls context lifecycle in many scenarios such as
+HTTP requests, EJB remote invocations, and MDB invocations. Many of the
+extensions for CDI offer context lifecycle for other environments, it's
+worth checking to see if there is a suitable extension before deciding
+to manage the context yourself.
+
+Weld provides a number of built in contexts, which are shown in <<_available_contexts_in_weld>>.
+
+[[_available_contexts_in_weld]]
+.Available Contexts in Weld
+[cols=",,,",options="header",]
+|=======================================================================
+|Scope {set:cellbgcolor:}|Qualifiers |Context |Notes
+|`@Dependent` |`@Default` |`DependentContext` |The dependent context is
+unbound and unmanaged
+
+|`@RequestScoped` |`@Unbound` |`RequestContext` |An unbound request
+context, useful for testing
+
+|`@RequestScoped` |`@Bound` |`RequestContext` |A request context bound
+to a manually propagated map, useful for testing or non-Servlet
+environments
+
+|`@Default` |`BoundRequestContext`
+
+|`@RequestScoped` |`@Http` |`RequestContext` |A request context bound to
+a Servlet request, used for any Servlet based request context
+
+|`@Default` |`HttpRequestContext`
+
+|`@RequestScoped` |`@Ejb` |`RequestContext` |A request context bound to
+a an interceptor's invocation context, used for EJB invocations outside
+of Servlet requests
+
+|`@Default` |`EjbRequestContext`
+
+|`@ConversationScoped` |`@Bound` |`ConversationContext` |A conversation
+context bound to two manually propagated maps (one which represents the
+request and one which represents the session), useful for testing or
+non-Servlet environments
+
+|`@Default` |`BoundConversationContext`
+
+|`@ConversationScoped` |`@Http` |`ConversationContext` |A conversation
+context bound to a Servlet request, used for any Servlet based
+conversation context
+
+|`@Default` |`HttpConversationContext`
+
+|`@SessionScoped` |`@Bound` |`SessionContext` |A session context bound
+to a manually propagated map, useful for testing or non-Servlet
+environments
+
+|`@Default` |`BoundSessionContext`
+
+|`@SessionScoped` |`@Http` |`SessionContext` |A session context bound to
+a Servlet request, used for any Servlet based session context
+
+|`@Default` |`HttpSessionContext`
+
+|`@ApplicationScoped` |`@Default` |`ApplicationContext` |An application
+context backed by an application scoped singleton, it is unmanaged and
+unbound but does offer an option to destroy all entries
+
+|`@SingletonScoped` |`@Default` |`SingletonContext` |A singleton context
+backed by an application scoped singleton, it is unmanaged and unbound
+but does offer an option to destroy all entries
+|=======================================================================
+
+Unmanaged contexts offer little of interest in a discussion about
+managing context lifecycles, so from here on in we will concentrate on
+the managed contexts (unmanaged contexts of course play a vital role in
+the functioning of your application and Weld!). As you can see from the
+table above, the managed contexts offer a number of different
+implementations for the same scope; in general, each flavor of context
+for a scope has the same API. We'll walk through a number of common
+lifecycle management scenarios below; armed with this knowledge, and the
+Javadoc, you should be able to work with any of the context
+implementations Weld offers.
+
+We'll start simple with the `BoundRequestContext`, which you might use
+to provide the request scope outside of a Servlet request or EJB
+Invocation.
+
+[source.JAVA, java]
+-------------------------------------------------------------------------------------------------------------
+   /* Inject the BoundRequestContext. */
+   /* Alternatively, you could look this up from the BeanManager */
+   @Inject BoundRequestContext requestContext;
+
+   ...
+
+   /* Start the request, providing a data store which will last the lifetime of the request */
+   public void startRequest(Map<String, Object> requestDataStore) {
+      // Associate the store with the context and activate the context
+      requestContext.associate(requestDataStore);
+      requestContext.activate();
+   }
+
+   /* End the request, providing the same data store as was used to start the request */
+   public void endRequest(Map<String, Object> requestDataStore) {
+      try {
+         /* Invalidate the request (all bean instances will be scheduled for destruction) */
+         requestContext.invalidate();
+         /* Deactivate the request, causing all bean instances to be destroyed (as the context is invalid) */
+         requestContext.deactivate();
+      } finally {
+         /* Ensure that whatever happens we dissociate to prevent any memory leaks */
+         requestContext.dissociate(requestDataStore);
+      }
+   }
+-------------------------------------------------------------------------------------------------------------
+
+The bound session context works in much the same way, excepting that
+invalidating and deactivating the session context causes the any
+conversations in the session to be destroyed as well. The HTTP session
+context and HTTP request context also work similarly, and might be of
+use if you find yourself creating threads from an HTTP request). The
+HTTP session context additionally offers a method which can immediately
+destroy the context.
+
+NOTE: Weld's session contexts are "lazy" and don't require a session to
+actually exist until a bean instance must be written.
+
+The conversation context offers a few more options, which we will walk
+through here.
+
+[source.JAVA, java]
+----------------------------------------------------------------------------------------------------------
+   @Inject BoundConversationContext conversationContext;
+
+   ...
+
+   /* Start a transient conversation */
+   /* Provide a data store which will last the lifetime of the request */
+   /* and one that will last the lifetime of the session */
+   public void startTransientConversation(Map<String, Object> requestDataStore,
+                                          Map<String, Object> sessionDataStore) {
+      resumeOrStartConversation(requestDataStore, sessionDataStore, null);
+   }
+
+   /* Start a transient conversation (if cid is null) or resume a non-transient */
+   /* conversation. Provide a data store which will last the lifetime of the request */
+   /* and one that will last the lifetime of the session */
+   public void resumeOrStartConversation(Map<String, Object> requestDataStore,
+                                         Map<String, Object> sessionDataStore,
+                                         String cid) {
+      /* Associate the stores with the context and activate the context */
+      * BoundRequest just wraps the two datastores */
+      conversationContext.associate(new MutableBoundRequest(requestDataStore, sessionDataStore));
+      // Pass the cid in
+      conversationContext.activate(cid);
+   }
+
+   /* End the conversations, providing the same data store as was used to start */
+   /* the request. Any transient conversations will be destroyed, any newly-promoted */
+   /* conversations will be placed into the session */
+   public void endOrPassivateConversation(Map<String, Object> requestDataStore,
+                                          Map<String, Object> sessionDataStore) {
+      try {
+         /* Invalidate the conversation (all transient conversations will be scheduled for destruction) */
+         conversationContext.invalidate();
+         /* Deactivate the conversation, causing all transient conversations to be destroyed */
+         conversationContext.deactivate();
+      } finally {
+        /* Ensure that whatever happens we dissociate to prevent memory leaks*/
+         conversationContext.dissociate(new MutableBoundRequest(requestDataStore, sessionDataStore));
+      }
+   }
+----------------------------------------------------------------------------------------------------------
+
+The conversation context also offers a number of properties which
+control the behavior of conversation expiration (after this period of
+inactivity the conversation will be ended and destroyed by the
+container), and the duration of lock timeouts (the conversation context
+ensures that a single thread is accessing any bean instances by locking
+access, if a lock can't be obtained after a certain time Weld will error
+rather than continue to wait for the lock). Additionally, you can alter
+the name of the parameter used to transfer the conversation id (by
+default, `cid`).
+
+Weld also introduces the notion of a `ManagedConversation`, which
+extends the `Conversation` interface with the ability to lock, unlock
+and touch (update the last used timestamp) a conversation. Finally, all
+non-transient conversations in a session can be obtained from the
+conversation context, as can the current conversation.
+
+NOTE: Weld's conversations are not assigned ids until they become
+non-transient.

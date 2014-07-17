@@ -1,0 +1,671 @@
+== Dependency injection and programmatic lookup
+
+One of the most significant features of CDI—certainly the most
+recognized—is dependency injection; excuse me, _typesafe_ dependency
+injection.
+
+=== Injection points
+
+The `@Inject` annotation lets us define an injection point that is
+injected during bean instantiation. Injection can occur via three
+different mechanisms.
+
+_Bean constructor_ parameter injection:
+
+[source.JAVA, java]
+---------------------------------------
+public class Checkout {
+
+   private final ShoppingCart cart;
+
+   @Inject
+   public Checkout(ShoppingCart cart) {
+      this.cart = cart;
+   }
+
+}
+---------------------------------------
+
+A bean can only have one injectable constructor.
+
+_Initializer method_ parameter injection:
+
+[source.JAVA, java]
+--------------------------------------------
+public class Checkout {
+
+   private ShoppingCart cart;
+
+   @Inject
+   void setShoppingCart(ShoppingCart cart) {
+      this.cart = cart;
+   }
+
+}
+--------------------------------------------
+
+NOTE: A bean can have multiple initializer methods. If the bean is a session
+bean, the initializer method is not required to be a business method of
+the session bean.
+
+And direct field injection:
+
+[source.JAVA, java]
+-------------------------------------
+public class Checkout {
+
+   private @Inject ShoppingCart cart;
+
+}
+-------------------------------------
+
+NOTE: Getter and setter methods are not required for field injection to work
+(unlike with JSF managed beans).
+
+Dependency injection always occurs when the bean instance is first
+instantiated by the container. Simplifying just a little, things happen
+in this order:
+
+* First, the container calls the bean constructor (the default
+constructor or the one annotated `@Inject`), to obtain an instance of
+the bean.
+* Next, the container initializes the values of all injected fields of
+the bean.
+* Next, the container calls all initializer methods of bean (the call
+order is not portable, don't rely on it).
+* Finally, the `@PostConstruct` method, if any, is called.
+
+(The only complication is that the container might call initializer
+methods declared by a superclass before initializing injected fields
+declared by a subclass.)
+
+NOTE: One major advantage of constructor injection is that it allows the bean
+to be immutable.
+
+CDI also supports parameter injection for some other methods that are
+invoked by the container. For instance, parameter injection is supported
+for producer methods:
+
+[source.JAVA, java]
+------------------------------------------------------
+@Produces Checkout createCheckout(ShoppingCart cart) {
+    return new Checkout(cart);
+}
+------------------------------------------------------
+
+This is a case where the `@Inject` annotation _is not_ required at the
+injection point. The same is true for observer methods (which we'll meet
+in <<_events>>) and disposer methods.
+
+=== What gets injected
+
+The CDI specification defines a procedure, called _typesafe resolution_,
+that the container follows when identifying the bean to inject to an
+injection point. This algorithm looks complex at first, but once you
+understand it, it's really quite intuitive. Typesafe resolution is
+performed at system initialization time, which means that the container
+will inform the developer immediately if a bean's dependencies cannot be
+satisfied.
+
+The purpose of this algorithm is to allow multiple beans to implement
+the same bean type and either:
+
+* allow the client to select which implementation it requires using a
+_qualifier_ or
+* allow the application deployer to select which implementation is
+appropriate for a particular deployment, without changes to the client,
+by enabling or disabling an _alternative_, or
+* allow the beans to be isolated into separate modules.
+
+Obviously, if you have exactly one bean of a given type, and an
+injection point with that same type, then bean A is going to go into
+slot A. That's the simplest possible scenario. When you first start your
+application, you'll likely have lots of those.
+
+But then, things start to get complicated. Let's explore how the
+container determines which bean to inject in more advanced cases. We'll
+start by taking a closer look at qualifiers.
+
+=== Qualifier annotations
+
+If we have more than one bean that implements a particular bean type,
+the injection point can specify exactly which bean should be injected
+using a qualifier annotation. For example, there might be two
+implementations of `PaymentProcessor`:
+
+[source.JAVA, java]
+----------------------------------------------------------------------
+@Synchronous
+public class SynchronousPaymentProcessor implements PaymentProcessor {
+   public void process(Payment payment) { ... }
+}
+----------------------------------------------------------------------
+
+[source.JAVA, java]
+-----------------------------------------------------------------------
+@Asynchronous
+public class AsynchronousPaymentProcessor implements PaymentProcessor {
+   public void process(Payment payment) { ... }
+}
+-----------------------------------------------------------------------
+
+Where `@Synchronous` and `@Asynchronous` are qualifier annotations:
+
+[source.JAVA, java]
+-----------------------------------------
+@Qualifier
+@Retention(RUNTIME)
+@Target({TYPE, METHOD, FIELD, PARAMETER})
+public @interface Synchronous {}
+-----------------------------------------
+
+[source.JAVA, java]
+-----------------------------------------
+@Qualifier
+@Retention(RUNTIME)
+@Target({TYPE, METHOD, FIELD, PARAMETER})
+public @interface Asynchronous {}
+-----------------------------------------
+
+A client bean developer uses the qualifier annotation to specify exactly
+which bean should be injected.
+
+Using field injection:
+
+[source.JAVA, java]
+-------------------------------------------------------------
+@Inject @Synchronous PaymentProcessor syncPaymentProcessor;
+@Inject @Asynchronous PaymentProcessor asyncPaymentProcessor;
+-------------------------------------------------------------
+
+Using initializer method injection:
+
+[source.JAVA, java]
+----------------------------------------------------------------------------------------
+@Inject
+public void setPaymentProcessors(@Synchronous PaymentProcessor syncPaymentProcessor,
+                                 @Asynchronous PaymentProcessor asyncPaymentProcessor) {
+   this.syncPaymentProcessor = syncPaymentProcessor;
+   this.asyncPaymentProcessor = asyncPaymentProcessor;
+}
+----------------------------------------------------------------------------------------
+
+Using constructor injection:
+
+[source.JAVA, java]
+-----------------------------------------------------------------------
+@Inject
+public Checkout(@Synchronous PaymentProcessor syncPaymentProcessor,
+                @Asynchronous PaymentProcessor asyncPaymentProcessor) {
+   this.syncPaymentProcessor = syncPaymentProcessor;
+   this.asyncPaymentProcessor = asyncPaymentProcessor;
+}
+-----------------------------------------------------------------------
+
+Qualifier annotations can also qualify method arguments of producer,
+disposer and observer methods. Combining qualified arguments with
+producer methods is a good way to have an implementation of a bean type
+selected at runtime based on the state of the system:
+
+[source.JAVA, java]
+--------------------------------------------------------------------------------------------
+@Produces
+PaymentProcessor getPaymentProcessor(@Synchronous PaymentProcessor syncPaymentProcessor,
+                                     @Asynchronous PaymentProcessor asyncPaymentProcessor) {
+   return isSynchronous() ? syncPaymentProcessor : asyncPaymentProcessor;
+}
+--------------------------------------------------------------------------------------------
+
+If an injected field or a parameter of a bean constructor or initializer
+method is not explicitly annotated with a qualifier, the default
+qualifier,`@Default`, is assumed.
+
+Now, you may be thinking, _"What's the different between using a
+qualifier and just specifying the exact implementation class you want?"_
+It's important to understand that a qualifier is like an extension of
+the interface. It does not create a direct dependency to any particular
+implementation. There may be multiple alternative implementations of
+`@Asynchronous PaymentProcessor`!
+
+=== The built-in qualifiers `@Default` and `@Any`
+
+Whenever a bean or injection point does not explicitly declare a
+qualifier, the container assumes the qualifier `@Default`. From time to
+time, you'll need to declare an injection point without specifying a
+qualifier. There's a qualifier for that too. All beans have the
+qualifier`
+                @Any`. Therefore, by explicitly specifying `@Any` at an
+injection point, you suppress the default qualifier, without otherwise
+restricting the beans that are eligible for injection.
+
+This is especially useful if you want to iterate over all beans with a
+certain bean type. For example:
+
+[source.JAVA, java]
+----------------------------------------------------
+import javax.enterprise.inject.Instance;
+
+...
+
+@Inject
+void initServices(@Any Instance<Service> services) {
+   for (Service service: services) {
+      service.init();
+   }
+}
+----------------------------------------------------
+
+=== Qualifiers with members
+
+Java annotations can have members. We can use annotation members to
+further discriminate a qualifier. This prevents a potential explosion of
+new annotations. For example, instead of creating several qualifiers
+representing different payment methods, we could aggregate them into a
+single annotation with a member:
+
+[source.JAVA, java]
+-----------------------------------------
+@Qualifier
+@Retention(RUNTIME)
+@Target({METHOD, FIELD, PARAMETER, TYPE})
+public @interface PayBy {
+   PaymentMethod value();
+}
+-----------------------------------------
+
+Then we select one of the possible member values when applying the
+qualifier:
+
+[source.JAVA, java]
+------------------------------------------------------------
+private @Inject @PayBy(CHECK) PaymentProcessor checkPayment;
+------------------------------------------------------------
+
+We can force the container to ignore a member of a qualifier type by
+annotating the member `@Nonbinding`.
+
+[source.JAVA, java]
+-------------------------------------------
+@Qualifier
+@Retention(RUNTIME)
+@Target({METHOD, FIELD, PARAMETER, TYPE})
+public @interface PayBy {
+   PaymentMethod value();
+   @Nonbinding String comment() default "";
+}
+-------------------------------------------
+
+=== Multiple qualifiers
+
+An injection point may specify multiple qualifiers:
+
+[source.JAVA, java]
+---------------------------------------------------------------------
+@Inject @Synchronous @Reliable PaymentProcessor syncPaymentProcessor;
+---------------------------------------------------------------------
+
+Then only a bean which has _both_ qualifier annotations would be
+eligible for injection.
+
+[source.JAVA, java]
+------------------------------------------------------------------------------
+@Synchronous @Reliable
+public class SynchronousReliablePaymentProcessor implements PaymentProcessor {
+   public void process(Payment payment) { ... }
+}
+------------------------------------------------------------------------------
+
+[[alternatives]]
+=== Alternatives
+
+Alternatives are beans whose implementation is specific to a particular
+client module or deployment scenario. This alternative defines a mock
+implementation of both `@Synchronous PaymentProcessor` and
+`@Asynchronous PaymentProcessor`, all in one:
+
+[source.JAVA, java]
+---------------------------------------------------------------
+@Alternative @Synchronous @Asynchronous
+public class MockPaymentProcessor implements PaymentProcessor {
+   public void process(Payment payment) { ... }
+}
+---------------------------------------------------------------
+
+By default, `@Alternative` beans are disabled. We need to _enable_ an
+alternative in the `beans.xml` descriptor of a bean archive to make it
+available for instantiation and injection. However, this activation only
+applies to the beans in that archive. From CDI 1.1 onwards the
+alternative can be enabled for the whole application using `@Priority`
+annotation.
+
+[source.XML, xml]
+---------------------------------------------------------------
+<beans
+   xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="
+      http://xmlns.jcp.org/xml/ns/javaee
+      http://xmlns.jcp.org/xml/ns/javaee/beans_1_1.xsd">
+   <alternatives>
+         <class>org.mycompany.mock.MockPaymentProcessor</class>
+   </alternatives>
+</beans>
+---------------------------------------------------------------
+
+When an ambiguous dependency exists at an injection point, the container
+attempts to resolve the ambiguity by looking for an enabled alternative
+among the beans that could be injected. If there is exactly one enabled
+alternative, that's the bean that will be injected. If there are more
+beans with priority, the one with the highest priority value is
+selected.
+
+=== Fixing unsatisfied and ambiguous dependencies
+
+The typesafe resolution algorithm fails when, after considering the
+qualifier annotations on all beans that implement the bean type of an
+injection point and filtering out disabled beans (`@Alternative` beans
+which are not explicitly enabled), the container is unable to identify
+exactly one bean to inject. The container will abort deployment,
+informing us of the unsatisfied or ambiguous dependency.
+
+During the course of your development, you're going to encounter this
+situation. Let's learn how to resolve it.
+
+To fix an _unsatisfied dependency_, either:
+
+* create a bean which implements the bean type and has all the qualifier
+types of the injection point,
+* make sure that the bean you already have is in the classpath of the
+module with the injection point, or
+* explicitly enable an `@Alternative` bean that implements the bean type
+and has the appropriate qualifier types, using `beans.xml`.
+* enable an `@Alternative` bean that implements the bean type and has
+the appropriate qualifier types, using `@Priority` annotation.
+
+To fix an _ambiguous dependency_, either:
+
+* introduce a qualifier to distinguish between the two implementations
+of the bean type,
+* exclude one of the beans from discovery (either by means of
+http://docs.jboss.org/cdi/api/1.1/javax/enterprise/inject/Vetoed.html[@Vetoed]
+or `beans.xml`),
+* disable one of the beans by annotating it `@Alternative`,
+* move one of the implementations to a module that is not in the
+classpath of the module with the injection point, or
+* disable one of two `@Alternative` beans that are trying to occupy the
+same space, using `beans.xml`,
+* change priority value of one of two `@Alternative` beans with the
+`@Priority` if they have the same highest priority value.
+
+Just remember: "There can be only one."
+
+On the other hand, if you really do have an optional or multivalued
+injection point, you should change the type of your injection point to
+`Instance`, as we'll see in <<_obtaining_a_contextual_instance_by_programmatic_lookup>>.
+
+Now there's one more issue you need to be aware of when using the
+dependency injection service.
+
+=== Client proxies
+
+Clients of an injected bean do not usually hold a direct reference to a
+bean instance, unless the bean is a dependent object (scope
+`@Dependent`).
+
+Imagine that a bean bound to the application scope held a direct
+reference to a bean bound to the request scope. The application-scoped
+bean is shared between many different requests. However, each request
+should see a different instance of the request scoped bean—the current
+one!
+
+Now imagine that a bean bound to the session scope holds a direct
+reference to a bean bound to the application scope. From time to time,
+the session context is serialized to disk in order to use memory more
+efficiently. However, the application scoped bean instance should not be
+serialized along with the session scoped bean! It can get that reference
+any time. No need to hoard it!
+
+Therefore, unless a bean has the default scope `@Dependent`, the
+container must indirect all injected references to the bean through a
+proxy object. This _client proxy_ is responsible for ensuring that the
+bean instance that receives a method invocation is the instance that is
+associated with the current context. The client proxy also allows beans
+bound to contexts such as the session context to be serialized to disk
+without recursively serializing other injected beans.
+
+Unfortunately, due to limitations of the Java language, some Java types
+cannot be proxied by the container. If an injection point declared with
+one of these types resolves to a bean with any scope other than
+`@Dependent`, the container will abort deployment, informing us of the
+problem.
+
+The following Java types cannot be proxied by the container:
+
+* classes which don't have a non-private constructor with no parameters,
+and
+* classes which are declared `final` or have a `final` method,
+* arrays and primitive types.
+
+It's usually very easy to fix an unproxyable dependency problem. If an
+injection point of type `X` results in an unproxyable dependency,
+simply:
+
+* add a constructor with no parameters to`X`,
+* change the type of the injection point to`Instance<X>`,
+* introduce an interface `Y`, implemented by the injected bean, and
+change the type of the injection point to`Y`, or
+* if all else fails, change the scope of the injected bean to
+`@Dependent`.
+
+[NOTE]
+====
+
+Weld also supports a non-standard workaround for this limitation, using
+non-portable JVM APIs:
+
+* Sun, IcedTea, Mac: `Unsafe.allocateInstance()` (The most efficient)
+* IBM, JRockit: `ReflectionFactory.newConstructorForSerialization()`
+
+To enable this workaround, simply put an empty marker file
+`META-INF/org.jboss.weld.enableUnsafeProxies` somewhere on the
+application's classpath.
+====
+
+=== Obtaining a contextual instance by programmatic lookup
+
+In certain situations, injection is not the most convenient way to
+obtain a contextual reference. For example, it may not be used when:
+
+* the bean type or qualifiers vary dynamically at runtime, or
+* depending upon the deployment, there may be no bean which satisfies
+the type and qualifiers, or
+* we would like to iterate over all beans of a certain type.
+
+In these situations, the application may obtain an instance of the
+interface `Instance`, parameterized for the bean type, by injection:
+
+[source.JAVA, java]
+----------------------------------------------------------
+@Inject Instance<PaymentProcessor> paymentProcessorSource;
+----------------------------------------------------------
+
+The `get()` method of `Instance` produces a contextual instance of the
+bean.
+
+[source.JAVA, java]
+--------------------------------------------------
+PaymentProcessor p = paymentProcessorSource.get();
+--------------------------------------------------
+
+Qualifiers can be specified in one of two ways:
+
+* by annotating the `Instance` injection point, or
+* by passing qualifiers to the `select()` of`Event`.
+
+Specifying the qualifiers at the injection point is much, much easier:
+
+[source.JAVA, java]
+------------------------------------------------------------------------
+@Inject @Asynchronous Instance<PaymentProcessor> paymentProcessorSource;
+------------------------------------------------------------------------
+
+Now, the `PaymentProcessor` returned by `get()` will have the qualifier
+`@Asynchronous`.
+
+Alternatively, we can specify the qualifier dynamically. First, we add
+the `@Any` qualifier to the injection point, to suppress the default
+qualifier. (All beans have the qualifier `@Any` .)
+
+[source.JAVA, java]
+---------------------------------------------------------------
+import javax.enterprise.inject.Instance;
+
+...
+
+@Inject @Any Instance<PaymentProcessor> paymentProcessorSource;
+---------------------------------------------------------------
+
+Next, we need to obtain an instance of our qualifier type. Since
+annotations are interfaces, we can't just write `new Asynchronous()`.
+It's also quite tedious to create a concrete implementation of an
+annotation type from scratch. Instead, CDI lets us obtain a qualifier
+instance by subclassing the helper class `AnnotationLiteral`.
+
+[source.JAVA, java]
+------------------------------------------------------------------
+class AsynchronousQualifier
+extends AnnotationLiteral<Asynchronous> implements Asynchronous {}
+------------------------------------------------------------------
+
+In some cases, we can use an anonymous class:
+
+[source.JAVA, java]
+-----------------------------------------------------
+PaymentProcessor p = paymentProcessorSource
+   .select(new AnnotationLiteral<Asynchronous>() {});
+-----------------------------------------------------
+
+However, we can't use an anonymous class to implement a qualifier type
+with members.
+
+Now, finally, we can pass the qualifier to the `select()` method
+of`Instance`.
+
+[source.JAVA, java]
+----------------------------------------------------------------------------------
+Annotation qualifier = synchronously ?
+      new SynchronousQualifier() : new AsynchronousQualifier();
+PaymentProcessor p = anyPaymentProcessor.select(qualifier).get().process(payment);
+----------------------------------------------------------------------------------
+
+=== The `InjectionPoint` object
+
+There are certain kinds of dependent objects (beans with scope
+`@Dependent`) that need to know something about the object or injection
+point into which they are injected in order to be able to do what they
+do. For example:
+
+* The log category for a `Logger` depends upon the class of the object
+that owns it.
+* Injection of a HTTP parameter or header value depends upon what
+parameter or header name was specified at the injection point.
+* Injection of the result of an EL expression evaluation depends upon
+the expression that was specified at the injection point.
+
+A bean with scope `@Dependent` may inject an instance of
+`InjectionPoint` and access metadata relating to the injection point to
+which it belongs.
+
+Let's look at an example. The following code is verbose, and vulnerable
+to refactoring problems:
+
+[source.JAVA, java]
+-------------------------------------------------------
+Logger log = Logger.getLogger(MyClass.class.getName());
+-------------------------------------------------------
+
+This clever little producer method lets you inject a JDK `Logger`
+without explicitly specifying the log category:
+
+[source.JAVA, java]
+----------------------------------------------------------------------------------------
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.Produces;
+
+class LogFactory {
+
+   @Produces Logger createLogger(InjectionPoint injectionPoint) {
+      return Logger.getLogger(injectionPoint.getMember().getDeclaringClass().getName());
+   }
+
+}
+----------------------------------------------------------------------------------------
+
+We can now write:
+
+[source.JAVA, java]
+-------------------
+@Inject Logger log;
+-------------------
+
+Not convinced? Then here's a second example. To inject HTTP parameters,
+we need to define a qualifier type:
+
+[source.JAVA, java]
+-----------------------------------------
+@Qualifier
+@Retention(RUNTIME)
+@Target({TYPE, METHOD, FIELD, PARAMETER})
+public @interface HttpParam {
+   @Nonbinding public String value();
+}
+-----------------------------------------
+
+We would use this qualifier type at injection points as follows:
+
+[source.JAVA, java]
+-----------------------------------------------
+@HttpParam("username") @Inject String username;
+@HttpParam("password") @Inject String password;
+-----------------------------------------------
+
+The following producer method does the work:
+
+[source.JAVA, java]
+--------------------------------------------------------------------------------------------------------------------
+import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.spi.InjectionPoint;
+
+class HttpParams
+
+   @Produces @HttpParam("")
+   String getParamValue(InjectionPoint ip) {
+      ServletRequest request = (ServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+      return request.getParameter(ip.getAnnotated().getAnnotation(HttpParam.class).value());
+   }
+
+}
+--------------------------------------------------------------------------------------------------------------------
+
+Note that acquiring of the request in this example is JSF-centric. For a
+more generic solution you could write your own producer for the request
+and have it injected as a method parameter.
+
+Note also that the `value()` member of the `HttpParam` annotation is
+ignored by the container since it is annotated `@Nonbinding.`
+
+The container provides a built-in bean that implements the
+`InjectionPoint` interface:
+
+[source.JAVA, java]
+------------------------------------------
+public interface InjectionPoint {
+   public Type getType();
+   public Set<Annotation> getQualifiers();
+   public Bean<?> getBean();
+   public Member getMember();
+   public Annotated getAnnotated();
+   public boolean isDelegate();
+   public boolean isTransient();
+}
+------------------------------------------
