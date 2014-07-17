@@ -1,0 +1,202 @@
+[[producer_methods]]
+== Producer methods
+
+Producer methods let us overcome certain limitations that arise when a
+container, instead of the application, is responsible for instantiating
+objects. They're also the easiest way to integrate objects which are not
+beans into the CDI environment.
+
+According to the spec:
+
+_______________________________________________________________________________________________
+A producer method acts as a source of objects to be injected, where:
+
+* the objects to be injected are not required to be instances of beans,
+or
+* the concrete type of the objects to be injected may vary at runtime,
+or
+* the objects require some custom initialization that is not performed
+by the bean constructor.
+_______________________________________________________________________________________________
+
+For example, producer methods let us:
+
+* expose a JPA entity as a bean,
+* expose any JDK class as a bean,
+* define multiple beans, with different scopes or initialization, for
+the same implementation class, or
+* vary the implementation of a bean type at runtime.
+
+In particular, producer methods let us use runtime polymorphism with
+CDI. As we've seen, alternative beans are one solution to the problem of
+deployment-time polymorphism. But once the system is deployed, the CDI
+implementation is fixed. A producer method has no such limitation:
+
+[source.JAVA, java]
+--------------------------------------------------------------------
+import javax.enterprise.inject.Produces;
+
+@SessionScoped
+public class Preferences implements Serializable {
+   private PaymentStrategyType paymentStrategy;
+   ...
+   @Produces @Preferred
+   public PaymentStrategy getPaymentStrategy() {
+       switch (paymentStrategy) {
+           case CREDIT_CARD: return new CreditCardPaymentStrategy();
+           case CHECK: return new CheckPaymentStrategy();
+           case PAYPAL: return new PayPalPaymentStrategy();
+           default: return null;
+       }
+   }
+}
+--------------------------------------------------------------------
+
+Consider an injection point:
+
+[source.JAVA, java]
+---------------------------------------------------
+@Inject @Preferred PaymentStrategy paymentStrategy;
+---------------------------------------------------
+
+This injection point has the same type and qualifier annotations as the
+producer method, so it resolves to the producer method using the usual
+CDI injection rules. The producer method will be called by the container
+to obtain an instance to service this injection point.
+
+=== Scope of a producer method
+
+The scope of the producer method defaults to `@Dependent`, and so it
+will be called _every time_ the container injects this field or any
+other field that resolves to the same producer method. Thus, there could
+be multiple instances of the `PaymentStrategy` object for each user
+session.
+
+To change this behavior, we can add a `@SessionScoped` annotation to the
+method.
+
+[source.JAVA, java]
+---------------------------------------------
+@Produces @Preferred @SessionScoped
+public PaymentStrategy getPaymentStrategy() {
+   ...
+}
+---------------------------------------------
+
+Now, when the producer method is called, the returned `PaymentStrategy`
+will be bound to the session context. The producer method won't be
+called again in the same session.
+
+NOTE: A producer method does _not_ inherit the scope of the bean that declares
+the method. There are two different beans here: the producer method, and
+the bean which declares it. The scope of the producer method determines
+how often the method will be called, and the lifecycle of the objects
+returned by the method. The scope of the bean that declares the producer
+method determines the lifecycle of the object upon which the producer
+method is invoked.
+
+=== Injection into producer methods
+
+There's one potential problem with the code above. The implementations
+of `CreditCardPaymentStrategy` are instantiated using the Java `new`
+operator. Objects instantiated directly by the application can't take
+advantage of dependency injection and don't have interceptors.
+
+If this isn't what we want, we can use dependency injection into the
+producer method to obtain bean instances:
+
+[source.JAVA, java]
+-------------------------------------------------------------------------
+@Produces @Preferred @SessionScoped
+public PaymentStrategy getPaymentStrategy(CreditCardPaymentStrategy ccps,
+                                          CheckPaymentStrategy cps,
+                                          PayPalPaymentStrategy ppps) {
+   switch (paymentStrategy) {
+      case CREDIT_CARD: return ccps;
+      case CHEQUE: return cps;
+      case PAYPAL: return ppps;
+      default: return null;
+   }
+}
+-------------------------------------------------------------------------
+
+Wait, what if `CreditCardPaymentStrategy` is a request-scoped bean? Then
+the producer method has the effect of "promoting" the current request
+scoped instance into session scope. This is almost certainly a bug! The
+request scoped object will be destroyed by the container before the
+session ends, but the reference to the object will be left "hanging" in
+the session scope. This error will _not_ be detected by the container,
+so please take extra care when returning bean instances from producer
+methods!
+
+There's at least three ways we could go about fixing this bug. We could
+change the scope of the `CreditCardPaymentStrategy` implementation, but
+this would affect other clients of that bean. A better option would be
+to change the scope of the producer method to `@Dependent` or
+`@RequestScoped`.
+
+But a more common solution is to use the special `@New` qualifier
+annotation.
+
+=== Use of `@New` with producer methods
+
+Consider the following producer method:
+
+[source.JAVA, java]
+------------------------------------------------------------------------------
+@Produces @Preferred @SessionScoped
+public PaymentStrategy getPaymentStrategy(@New CreditCardPaymentStrategy ccps,
+                                          @New CheckPaymentStrategy cps,
+                                          @New PayPalPaymentStrategy ppps) {
+   switch (paymentStrategy) {
+      case CREDIT_CARD: return ccps;
+      case CHEQUE: return cps;
+      case PAYPAL: return ppps;
+      default: return null;
+   }
+}
+------------------------------------------------------------------------------
+
+Then a new _dependent_ instance of `CreditCardPaymentStrategy` will be
+created, passed to the producer method, returned by the producer method
+and finally bound to the session context. The dependent object won't be
+destroyed until the `Preferences` object is destroyed, at the end of the
+session.
+
+WARNING: The @New qualifier was deprecated in CDI 1.1. CDI applications are
+encouraged to inject @Dependent scoped beans instead.
+
+=== Disposer methods
+
+Some producer methods return objects that require explicit destruction.
+For example, somebody needs to close this JDBC connection:
+
+[source.JAVA, java]
+-------------------------------------------------------------
+@Produces @RequestScoped Connection connect(User user) {
+   return createConnection(user.getId(), user.getPassword());
+}
+-------------------------------------------------------------
+
+Destruction can be performed by a matching _disposer method_, defined by
+the same class as the producer method:
+
+[source.JAVA, java]
+---------------------------------------------
+void close(@Disposes Connection connection) {
+   connection.close();
+}
+---------------------------------------------
+
+The disposer method must have at least one parameter, annotated
+`@Disposes`, with the same type and qualifiers as the producer method.
+The disposer method is called automatically when the context ends (in
+this case, at the end of the request), and this parameter receives the
+object produced by the producer method. If the disposer method has
+additional method parameters, the container will look for a bean that
+satisfies the type and qualifiers of each parameter and pass it to the
+method automatically.
+
+Since CDI 1.1 disposer methods may be used for destroying not only
+objects produced by producer methods but also objects producer by
+_producer fields_.

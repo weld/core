@@ -1,0 +1,21 @@
+== Next steps
+
+A lot of additional information on CDI can be found online. Regardless,
+the CDI specification remains the authority for information on CDI. The
+spec is less than 100 pages and is quite readable (don't worry, it's not
+like your Blu-ray player manual). Of course, it covers many details
+we've skipped over here. The spec is available on the at the JCP website
+(http://jcp.org/en/jsr/detail?id=299[CDI 1.0])
+(http://jcp.org/en/jsr/detail?id=346[CDI 1.1]).
+
+The CDI reference implementation, Weld, is being developed by the
+https://github.com/weld/core/graphs/contributors[Weld team]. The team
+and the CDI spec lead blog at http://in.relation.to[in.relation.to].
+This guide was originally based on a series of blog entries published
+there while the specification was being developed. It's probably the
+best source of information about the future of CDI and Weld.
+
+We encourage you to follow the
+https://lists.jboss.org/mailman/listinfo/weld-dev[weld-dev] mailing list
+and to get involved in http://weld.cdi-spec.org/community/[development].
+If you are reading this guide, you likely have something to offer.

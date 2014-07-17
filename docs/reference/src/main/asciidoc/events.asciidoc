@@ -1,0 +1,359 @@
+== Events
+
+Dependency injection enables loose-coupling by allowing the
+implementation of the injected bean type to vary, either at deployment
+time or runtime. Events go one step further, allowing beans to interact
+with no compile time dependency at all. Event _producers_ raise events
+that are delivered to event _observers_ by the container.
+
+This basic schema might sound like the familiar observer/observable
+pattern, but there are a couple of twists:
+
+* not only are event producers decoupled from observers; observers are
+completely decoupled from producers,
+* observers can specify a combination of "selectors" to narrow the set
+of event notifications they will receive, and
+* observers can be notified immediately, or can specify that delivery of
+the event should be delayed until the end of the current transaction.
+
+The CDI event notification facility uses more or less the same typesafe
+approach that we've already seen with the dependency injection service.
+
+=== Event payload
+
+The event object carries state from producer to consumer. The event
+object is nothing more than an instance of a concrete Java class. (The
+only restriction is that an event type may not contain type variables).
+An event may be assigned qualifiers, which allows observers to
+distinguish it from other events of the same type. The qualifiers
+function like topic selectors, allowing an observer to narrow the set of
+events it observes.
+
+An event qualifier is just a normal qualifier, defined using
+`@Qualifier`. Here's an example:
+
+[source.JAVA, java]
+-----------------------------------------
+@Qualifier
+@Target({METHOD, FIELD, PARAMETER, TYPE})
+@Retention(RUNTIME)
+public @interface Updated {}
+-----------------------------------------
+
+=== Event observers
+
+An _observer method_ is a method of a bean with a parameter annotated
+`@Observes`.
+
+[source.JAVA, java]
+-------------------------------------------------------------------
+public void onAnyDocumentEvent(@Observes Document document) { ... }
+-------------------------------------------------------------------
+
+The annotated parameter is called the _event parameter_. The type of the
+event parameter is the observed _event type_, in this case `Document`.
+The event parameter may also specify qualifiers.
+
+[source.JAVA, java]
+-----------------------------------------------------------------------------
+public void afterDocumentUpdate(@Observes @Updated Document document) { ... }
+-----------------------------------------------------------------------------
+
+An observer method need not specify any event qualifiers—in this case it
+is interested in _only unqualified_ events of a particular type. If it
+does specify qualifiers, it's only interested in events which have those
+qualifiers.
+
+The observer method may have additional parameters, which are injection
+points:
+
+[source.JAVA, java]
+----------------------------------------------------------------------------------------
+public void afterDocumentUpdate(@Observes @Updated Document document, User user) { ... }
+----------------------------------------------------------------------------------------
+
+=== Event producers
+
+Event producers fire events using an instance of the parameterized
+`Event` interface. An instance of this interface is obtained by
+injection:
+
+[source.JAVA, java]
+-------------------------------------------
+@Inject @Any Event<Document> documentEvent;
+-------------------------------------------
+
+A producer raises events by calling the `fire()` method of the `Event`
+interface, passing the event object:
+
+[source.JAVA, java]
+-----------------------------
+documentEvent.fire(document);
+-----------------------------
+
+This particular event will be delivered to every observer method that:
+
+* has an event parameter to which the event object (the `Document`) is
+assignable, and
+* specifies no qualifiers.
+
+The container simply calls all the observer methods, passing the event
+object as the value of the event parameter. If any observer method
+throws an exception, the container stops calling observer methods, and
+the exception is rethrown by the `fire()` method.
+
+Qualifiers can be applied to an event in one of two ways:
+
+* by annotating the `Event` injection point, or
+* by passing qualifiers to the `select()` of `Event`.
+
+Specifying the qualifiers at the injection point is far simpler:
+
+[source.JAVA, java]
+------------------------------------------------------
+@Inject @Updated Event<Document> documentUpdatedEvent;
+------------------------------------------------------
+
+Then, every event fired via this instance of `Event` has the event
+qualifier `@Updated`. The event is delivered to every observer method
+that:
+
+* has an event parameter to which the event object is assignable, and
+* does not have any event qualifier _except_ for the event qualifiers
+that match those specified at the `Event` injection point.
+
+The downside of annotating the injection point is that we can't specify
+the qualifier dynamically. CDI lets us obtain a qualifier instance by
+subclassing the helper class `AnnotationLiteral`. That way, we can pass
+the qualifier to the `select()` method of `Event`.
+
+[source.JAVA, java]
+------------------------------------------------------------------------
+documentEvent.select(new AnnotationLiteral<Updated>(){}).fire(document);
+------------------------------------------------------------------------
+
+Events can have multiple event qualifiers, assembled using any
+combination of annotations at the `Event` injection point and qualifier
+instances passed to the `select()` method.
+
+=== Conditional observer methods
+
+By default, if there is no instance of an observer in the current
+context, the container will instantiate the observer in order to deliver
+an event to it. This behavior isn't always desirable. We may want to
+deliver events only to instances of the observer that already exist in
+the current contexts.
+
+A conditional observer is specified by adding `receive = IF_EXISTS` to
+the `@Observes` annotation.
+
+[source.JAVA, java]
+-----------------------------------------------------------------------------------------------
+public void refreshOnDocumentUpdate(@Observes(receive = IF_EXISTS) @Updated Document d) { ... }
+-----------------------------------------------------------------------------------------------
+
+NOTE: A bean with scope `@Dependent` cannot be a conditional observer, since
+it would never be called!
+
+=== Event qualifiers with members
+
+An event qualifier type may have annotation members:
+
+[source.JAVA, java]
+-----------------------------------------
+@Qualifier
+@Target({METHOD, FIELD, PARAMETER, TYPE})
+@Retention(RUNTIME)
+public @interface Role {
+   RoleType value();
+}
+-----------------------------------------
+
+The member value is used to narrow the messages delivered to the
+observer:
+
+[source.JAVA, java]
+------------------------------------------------------------------------
+public void adminLoggedIn(@Observes @Role(ADMIN) LoggedIn event) { ... }
+------------------------------------------------------------------------
+
+Event qualifier type members may be specified statically by the event
+producer, via annotations at the event notifier injection point:
+
+[source.JAVA, java]
+---------------------------------------------------
+@Inject @Role(ADMIN) Event<LoggedIn> loggedInEvent;
+---------------------------------------------------
+
+Alternatively, the value of the event qualifier type member may be
+determined dynamically by the event producer. We start by writing an
+abstract subclass of `AnnotationLiteral`:
+
+[source.JAVA, java]
+-----------------------------------
+abstract class RoleBinding
+   extends AnnotationLiteral<Role>
+   implements Role {}
+-----------------------------------
+
+The event producer passes an instance of this class to `select()`:
+
+[source.JAVA, java]
+-------------------------------------------------
+documentEvent.select(new RoleBinding() {
+   public void value() { return user.getRole(); }
+}).fire(document);
+-------------------------------------------------
+
+=== Multiple event qualifiers
+
+Event qualifiers may be combined, for example:
+
+[source.JAVA, java]
+-------------------------------------------------------------------------------------------
+@Inject @Blog Event<Document> blogEvent;
+...
+if (document.isBlog()) blogEvent.select(new AnnotationLiteral<Updated>(){}).fire(document);
+-------------------------------------------------------------------------------------------
+
+An observer method is only notified if all the observed qualifiers are
+specified when the event is fired. Assume the following observers in
+this example:
+
+[source.JAVA, java]
+-------------------------------------------------------------------------------
+public void afterBlogUpdate(@Observes @Updated @Blog Document document) { ... }
+-------------------------------------------------------------------------------
+
+[source.JAVA, java]
+-----------------------------------------------------------------------------
+public void afterDocumentUpdate(@Observes @Updated Document document) { ... }
+-----------------------------------------------------------------------------
+
+[source.JAVA, java]
+---------------------------------------------------------------------
+public void onAnyBlogEvent(@Observes @Blog Document document) { ... }
+---------------------------------------------------------------------
+
+[source.JAVA, java]
+---------------------------------------------------------------------
+public void onAnyDocumentEvent(@Observes Document document) { ... }}}
+---------------------------------------------------------------------
+
+All of these observer methods will be notified.
+
+However, if there were also an observer method:
+
+[source.JAVA, java]
+-------------------------------------------------------------------------------------------------
+public void afterPersonalBlogUpdate(@Observes @Updated @Personal @Blog Document document) { ... }
+-------------------------------------------------------------------------------------------------
+
+It would not be notified, as `@Personal` is not a qualifier of the event
+being fired.
+
+=== Transactional observers
+
+Transactional observers receive their event notifications during the
+before or after completion phase of the transaction in which the event
+was raised. For example, the following observer method needs to refresh
+a query result set that is cached in the application context, but only
+when transactions that update the `Category` tree succeed:
+
+[source.JAVA, java]
+----------------------------------------------------------------------------------------------------
+public void refreshCategoryTree(@Observes(during = AFTER_SUCCESS) CategoryUpdateEvent event) { ... }
+----------------------------------------------------------------------------------------------------
+
+There are five kinds of transactional observers:
+
+* `IN_PROGRESS` observers are called immediately (default)
+* `AFTER_SUCCESS` observers are called during the after completion phase
+of the transaction, but only if the transaction completes successfully
+* `AFTER_FAILURE` observers are called during the after completion phase
+of the transaction, but only if the transaction fails to complete
+successfully
+* `AFTER_COMPLETION` observers are called during the after completion
+phase of the transaction
+* `BEFORE_COMPLETION` observers are called during the before completion
+phase of the transaction
+
+Transactional observers are very important in a stateful object model
+because state is often held for longer than a single atomic transaction.
+
+Imagine that we have cached a JPA query result set in the application
+scope:
+
+[source.JAVA, java]
+-------------------------------------------------------------------------------------
+import javax.ejb.Singleton;
+import javax.enterprise.inject.Produces;
+
+@ApplicationScoped @Singleton
+public class Catalog {
+
+   @PersistenceContext EntityManager em;
+
+   List<Product> products;
+
+   @Produces @Catalog
+   List<Product> getCatalog() {
+      if (products==null) {
+         products = em.createQuery("select p from Product p where p.deleted = false")
+            .getResultList();
+      }
+      return products;
+   }
+
+}
+-------------------------------------------------------------------------------------
+
+From time to time, a `Product` is created or deleted. When this occurs,
+we need to refresh the `Product` catalog. But we should wait until
+_after_ the transaction completes successfully before performing this
+refresh!
+
+The bean that creates and deletes `Product`s could raise events, for
+example:
+
+[source.JAVA, java]
+----------------------------------------------------------------------------
+import javax.enterprise.event.Event;
+
+@Stateless
+public class ProductManager {
+   @PersistenceContext EntityManager em;
+   @Inject @Any Event<Product> productEvent;
+
+   public void delete(Product product) {
+      em.delete(product);
+      productEvent.select(new AnnotationLiteral<Deleted>(){}).fire(product);
+   }
+
+   public void persist(Product product) {
+      em.persist(product);
+      productEvent.select(new AnnotationLiteral<Created>(){}).fire(product);
+   }
+   ...
+}
+----------------------------------------------------------------------------
+
+And now `Catalog` can observe the events after successful completion of
+the transaction:
+
+[source.JAVA, java]
+-----------------------------------------------------------------------------------
+import javax.ejb.Singleton;
+
+@ApplicationScoped @Singleton
+public class Catalog {
+   ...
+   void addProduct(@Observes(during = AFTER_SUCCESS) @Created Product product) {
+      products.add(product);
+   }
+
+   void removeProduct(@Observes(during = AFTER_SUCCESS) @Deleted Product product) {
+      products.remove(product);
+   }
+}
+-----------------------------------------------------------------------------------

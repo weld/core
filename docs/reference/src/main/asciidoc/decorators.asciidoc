@@ -1,0 +1,185 @@
+== Decorators
+
+Interceptors are a powerful way to capture and separate concerns which
+are _orthogonal_ to the application (and type system). Any interceptor
+is able to intercept invocations of any Java type. This makes them
+perfect for solving technical concerns such as transaction management,
+security and call logging. However, by nature, interceptors are unaware
+of the actual semantics of the events they intercept. Thus, interceptors
+aren't an appropriate tool for separating business-related concerns.
+
+The reverse is true of _decorators_. A decorator intercepts invocations
+only for a certain Java interface, and is therefore aware of all the
+semantics attached to that interface. Since decorators directly
+implement operations with business semantics, it makes them the perfect
+tool for modeling some kinds of business concerns. It also means that a
+decorator doesn't have the generality of an interceptor. Decorators
+aren't able to solve technical concerns that cut across many disparate
+types. Interceptors and decorators, though similar in many ways, are
+complementary. Let's look at some cases where decorators fit the bill.
+
+Suppose we have an interface that represents accounts:
+
+[source.JAVA, java]
+-------------------------------------------
+public interface Account {
+   public BigDecimal getBalance();
+   public User getOwner();
+   public void withdraw(BigDecimal amount);
+   public void deposit(BigDecimal amount);
+}
+-------------------------------------------
+
+Several different beans in our system implement the `Account` interface.
+However, we have a common legal requirement that; for any kind of
+account, large transactions must be recorded by the system in a special
+log. This is a perfect job for a decorator.
+
+A decorator is a bean (possibly even an abstract class) that implements
+the type it decorates and is annotated `@Decorator`.
+
+[source.JAVA, java]
+-----------------------------------------------
+@Decorator
+public abstract class LargeTransactionDecorator
+      implements Account {
+   ...
+}
+-----------------------------------------------
+
+The decorator implements the methods of the decorated type that it wants
+to intercept.
+
+[source.JAVA, java]
+-----------------------------------------------
+@Decorator
+public abstract class LargeTransactionDecorator
+      implements Account {
+   @Inject @Delegate @Any Account account;
+
+   @PersistenceContext EntityManager em;
+
+   public void withdraw(BigDecimal amount) {
+      ...
+   }
+
+   public void deposit(BigDecimal amount);
+      ...
+   }
+}
+-----------------------------------------------
+
+Unlike other beans, a decorator may be an abstract class. Therefore, if
+there's nothing special the decorator needs to do for a particular
+method of the decorated interface, you don't need to implement that
+method.
+
+Interceptors for a method are called before decorators that apply to the
+method.
+
+=== Delegate object
+
+Decorators have a special injection point, called the _delegate
+injection point_, with the same type as the beans they decorate, and the
+annotation `@Delegate`. There must be exactly one delegate injection
+point, which can be a constructor parameter, initializer method
+parameter or injected field.
+
+[source.JAVA, java]
+-----------------------------------------------
+@Decorator
+public abstract class LargeTransactionDecorator
+      implements Account {
+   @Inject @Delegate @Any Account account;
+   ...
+}
+-----------------------------------------------
+
+A decorator is bound to any bean which:
+
+* has the type of the delegate injection point as a bean type, and
+* has all qualifiers that are declared at the delegate injection point.
+
+This delegate injection point specifies that the decorator is bound to
+all beans that implement `Account`:
+
+[source.JAVA, java]
+---------------------------------------
+@Inject @Delegate @Any Account account;
+---------------------------------------
+
+A delegate injection point may specify any number of qualifier
+annotations. The decorator will only be bound to beans with the same
+qualifiers.
+
+[source.JAVA, java]
+-------------------------------------------
+@Inject @Delegate @Foreign Account account;
+-------------------------------------------
+
+The decorator may invoke the delegate object, which has much the same
+effect as calling `InvocationContext.proceed()` from an interceptor. The
+main difference is that the decorator can invoke _any_ business method
+on the delegate object.
+
+[source.JAVA, java]
+---------------------------------------------------
+@Decorator
+public abstract class LargeTransactionDecorator
+      implements Account {
+   @Inject @Delegate @Any Account account;
+
+   @PersistenceContext EntityManager em;
+
+   public void withdraw(BigDecimal amount) {
+      account.withdraw(amount);
+      if ( amount.compareTo(LARGE_AMOUNT)>0 ) {
+         em.persist( new LoggedWithdrawl(amount) );
+      }
+   }
+
+   public void deposit(BigDecimal amount);
+      account.deposit(amount);
+      if ( amount.compareTo(LARGE_AMOUNT)>0 ) {
+         em.persist( new LoggedDeposit(amount) );
+      }
+   }
+}
+---------------------------------------------------
+
+=== Enabling decorators
+
+By default, all decorators are disabled. We need to _enable_ our
+decorator. We can do it using `beans.xml` descriptor of a bean archive.
+However, this activation only applies to the beans in that archive. From
+CDI 1.1 onwards the decorator can be enabled for the whole application
+using `@Priority` annotation.
+
+[source.XML, xml]
+---------------------------------------------------------------------
+<beans
+   xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="
+      http://xmlns.jcp.org/xml/ns/javaee
+      http://xmlns.jcp.org/xml/ns/javaee/beans_1_1.xsd">
+   <decorators>
+         <class>org.mycompany.myapp.LargeTransactionDecorator</class>
+   </decorators>
+</beans>
+---------------------------------------------------------------------
+
+This declaration serves the same purpose for decorators that the
+`<interceptors>` declaration serves for interceptors:
+
+* it enables us to specify an ordering for decorators in our system,
+ensuring deterministic behavior, and
+* it lets us enable or disable decorator classes at deployment time.
+
+Decorators enabled using `@Priority` are called before decorators
+enabled using `beans.xml`, the lower priority values are called first.
+
+NOTE: Decorators with the `@Priority` that are listed in the `beans.xml`
+descriptor will be called twice in Weld. However, this behaviour is
+non-portable and this combination should not be used as it can behave
+differently in other implementations!

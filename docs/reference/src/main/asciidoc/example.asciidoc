@@ -1,0 +1,162 @@
+== JSF web application example
+
+Let's illustrate these ideas with a full example. We're going to
+implement user login/logout for an application that uses JSF. First,
+we'll define a request-scoped bean to hold the username and password
+entered during login, with constraints defined using annotations from
+the Bean Validation specification:
+
+[source.JAVA, java]
+--------------------------------------------------------------------------
+@Named @RequestScoped
+public class Credentials {
+    private String username;
+    private String password;
+
+    @NotNull @Length(min=3, max=25)
+    public String getUsername() { return username; }
+    public void setUsername(String username) { this.username = username; }
+
+    @NotNull @Length(min=6, max=20)
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
+}
+--------------------------------------------------------------------------
+
+This bean is bound to the login prompt in the following JSF form:
+
+[source.XML, xml]
+------------------------------------------------------------------------------------------
+<h:form>
+   <h:panelGrid columns="2" rendered="#{!login.loggedIn}">
+      <f:validateBean>
+         <h:outputLabel for="username">Username:</h:outputLabel>
+         <h:inputText id="username" value="#{credentials.username}"/>
+         <h:outputLabel for="password">Password:</h:outputLabel>
+         <h:inputSecret id="password" value="#{credentials.password}"/>
+      </f:validateBean>
+   </h:panelGrid>
+   <h:commandButton value="Login" action="#{login.login}" rendered="#{!login.loggedIn}"/>
+   <h:commandButton value="Logout" action="#{login.logout}" rendered="#{login.loggedIn}"/>
+</h:form>
+------------------------------------------------------------------------------------------
+
+Users are represented by a JPA entity:
+
+[source.JAVA, java]
+---------------------------------------------------------------------------
+@Entity
+public class User {
+   private @NotNull @Length(min=3, max=25) @Id String username;
+   private @NotNull @Length(min=6, max=20) String password;
+
+   public String getUsername() { return username; }
+   public void setUsername(String username) { this.username = username; }
+   public String setPassword(String password) { this.password = password; }
+}
+---------------------------------------------------------------------------
+
+(Note that we're also going to need a `persistence.xml` file to
+configure the JPA persistence unit containing `User`.)
+
+The actual work is done by a session-scoped bean that maintains
+information about the currently logged-in user and exposes the `User`
+entity to other beans:
+
+[source.JAVA, java]
+----------------------------------------------------------------------------------------
+@SessionScoped @Named
+public class Login implements Serializable {
+
+   @Inject Credentials credentials;
+   @Inject @UserDatabase EntityManager userDatabase;
+
+   private User user;
+
+   public void login() {
+      List<User> results = userDatabase.createQuery(
+         "select u from User u where u.username = :username and u.password = :password")
+         .setParameter("username", credentials.getUsername())
+         .setParameter("password", credentials.getPassword())
+         .getResultList();
+
+      if (!results.isEmpty()) {
+         user = results.get(0);
+      }
+      else {
+         // perhaps add code here to report a failed login
+      }
+   }
+
+   public void logout() {
+      user = null;
+   }
+
+   public boolean isLoggedIn() {
+      return user != null;
+   }
+
+   @Produces @LoggedIn User getCurrentUser() {
+      return user;
+   }
+
+}
+----------------------------------------------------------------------------------------
+
+`@LoggedIn` and `@UserDatabase` are custom qualifier annotations:
+
+[source.JAVA, java]
+-----------------------------------------
+@Qualifier
+@Retention(RUNTIME)
+@Target({TYPE, METHOD, PARAMETER, FIELD})
+public @interface LoggedIn {}
+-----------------------------------------
+
+[source.JAVA, java]
+-----------------------------------
+@Qualifier
+@Retention(RUNTIME)
+@Target({METHOD, PARAMETER, FIELD})
+public @interface UserDatabase {}
+-----------------------------------
+
+We need an adaptor bean to expose our typesafe `EntityManager`:
+
+[source.JAVA, java]
+-----------------------------------------------
+class UserDatabaseProducer {
+   @Produces @UserDatabase @PersistenceContext
+   static EntityManager userDatabase;
+}
+-----------------------------------------------
+
+Now `DocumentEditor`, or any other bean, can easily inject the current
+user:
+
+[source.JAVA, java]
+-------------------------------------------------------
+public class DocumentEditor {
+   @Inject Document document;
+   @Inject @LoggedIn User currentUser;
+   @Inject @DocumentDatabase EntityManager docDatabase;
+
+   public void save() {
+      document.setCreatedBy(currentUser);
+      docDatabase.persist(document);
+   }
+}
+-------------------------------------------------------
+
+Or we can reference the current user in a JSF view:
+
+[source.XML, xml]
+-------------------------------------------
+<h:panelGroup rendered="#{login.loggedIn}">
+   signed in as #{currentUser.username}
+</h:panelGroup>
+-------------------------------------------
+
+Hopefully, this example gave you a taste of the CDI programming model.
+In the next chapter, we'll explore dependency injection in greater
+depth.

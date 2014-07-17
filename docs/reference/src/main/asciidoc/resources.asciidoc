@@ -1,0 +1,140 @@
+== Java EE component environment resources
+
+Java EE 5 already introduced some limited support for dependency
+injection, in the form of component environment injection. A component
+environment resource is a Java EE component, for example a JDBC
+datasource, JMS queue or topic, JPA persistence context, remote EJB or
+web service.
+
+Naturally, there is now a slight mismatch with the new style of
+dependency injection in CDI. Most notably, component environment
+injection relies on string-based names to qualify ambiguous types, and
+there is no real consistency as to the nature of the names (sometimes a
+JNDI name, sometimes a persistence unit name, sometimes an EJB link,
+sometimes a non-portable "mapped name"). Producer fields turned out to
+be an elegant adaptor to reduce all this complexity to a common model
+and get component environment resources to participate in the CDI system
+just like any other kind of bean.
+
+Fields have a duality in that they can both be the target of Java EE
+component environment injection and be declared as a CDI producer field.
+Therefore, they can define a mapping from a string-based name in the
+component environment, to a combination of type and qualifiers used in
+the world of typesafe injection. We call a producer field that
+represents a reference to an object in the Java EE component environment
+a _resource_.
+
+=== Defining a resource
+
+The CDI specification uses the term _resource_ to refer, generically, to
+any of the following kinds of object which might be available in the
+Java EE component environment:
+
+* JDBC `Datasource`s, JMS `Queue`s, `Topic`s and `ConnectionFactory`s,
+JavaMail `Session`s and other transactional resources including JCA
+connectors,
+* JPA `EntityManager`s and `EntityManagerFactory`s,
+* remote EJBs, and
+* web services.
+
+We declare a resource by annotating a producer field with a component
+environment injection annotation: `@Resource`, `@EJB`,
+`@PersistenceContext`, `@PersistenceUnit` or `@WebServiceRef`.
+
+[source.JAVA, java]
+-----------------------------------------------------------
+@Produces @WebServiceRef(lookup="java:app/service/Catalog")
+Catalog catalog;
+-----------------------------------------------------------
+
+[source.JAVA, java]
+----------------------------------------------------------------------
+@Produces @Resource(lookup="java:global/env/jdbc/CustomerDatasource")
+@CustomerDatabase Datasource customerDatabase;
+----------------------------------------------------------------------
+
+[source.JAVA, java]
+-------------------------------------------------------------------
+@Produces @PersistenceContext(unitName="CustomerDatabase")
+@CustomerDatabase EntityManager customerDatabasePersistenceContext;
+-------------------------------------------------------------------
+
+[source.JAVA, java]
+-----------------------------------------------------------------------
+@Produces @PersistenceUnit(unitName="CustomerDatabase")
+@CustomerDatabase EntityManagerFactory customerDatabasePersistenceUnit;
+-----------------------------------------------------------------------
+
+[source.JAVA, java]
+------------------------------------------------------
+@Produces @EJB(ejbLink="../their.jar#PaymentService")
+PaymentService paymentService;
+------------------------------------------------------
+
+The field may be static (but not final).
+
+A resource declaration really contains two pieces of information:
+
+* the JNDI name, EJB link, persistence unit name, or other metadata
+needed to obtain a reference to the resource from the component
+environment, and
+* the type and qualifiers that we will use to inject the reference into
+our beans.
+
+NOTE: It might feel strange to be declaring resources in Java code. Isn't this
+stuff that might be deployment-specific? Certainly, and that's why it
+makes sense to declare your resources in a class annotated
+`@Alternative`.
+
+=== Typesafe resource injection
+
+These resources can now be injected in the usual way.
+
+[source.JAVA, java]
+------------------------
+@Inject Catalog catalog;
+------------------------
+
+[source.JAVA, java]
+------------------------------------------------------
+@Inject @CustomerDatabase Datasource customerDatabase;
+------------------------------------------------------
+
+[source.JAVA, java]
+----------------------------------------------------------------------
+@Inject @CustomerDatabase EntityManager customerDatabaseEntityManager;
+----------------------------------------------------------------------
+
+[source.JAVA, java]
+------------------------------------------------------------------------------------
+@Inject @CustomerDatabase EntityManagerFactory customerDatabaseEntityManagerFactory;
+------------------------------------------------------------------------------------
+
+[source.JAVA, java]
+--------------------------------------
+@Inject PaymentService paymentService;
+--------------------------------------
+
+The bean type and qualifiers of the resource are determined by the
+producer field declaration.
+
+It might seem like a pain to have to write these extra producer field
+declarations, just to gain an additional level of indirection. You could
+just as well use component environment injection directly, right? But
+remember that you're going to be using resources like the
+`EntityManager` in several different beans. Isn't it nicer and more
+typesafe to write
+
+[source.JAVA, java]
+---------------------------------------
+@Inject @CustomerDatabase EntityManager
+---------------------------------------
+
+instead of
+
+[source.JAVA, java]
+--------------------------------------------------------------
+@PersistenceContext(unitName="CustomerDatabase") EntityManager
+--------------------------------------------------------------
+
+all over the place?

@@ -1,0 +1,334 @@
+== Interceptors
+
+Interceptor functionality is defined in the Java Interceptors
+specification.
+
+The Interceptors specification defines three kinds of interception
+points:
+
+* business method interception,
+* lifecycle callback interception, and
+* timeout method interception (EJB only).
+
+A _business method interceptor_ applies to invocations of methods of the
+bean by clients of the bean:
+
+[source.JAVA, java]
+----------------------------------------------------------------------------------
+public class TransactionInterceptor {
+   @AroundInvoke
+   public Object manageTransaction(InvocationContext ctx) throws Exception { ... }
+}
+----------------------------------------------------------------------------------
+
+A _lifecycle callback interceptor_ applies to invocations of lifecycle
+callbacks by the container:
+
+[source.JAVA, java]
+----------------------------------------------------------------
+public class DependencyInjectionInterceptor {
+   @PostConstruct
+   public void injectDependencies(InvocationContext ctx) { ... }
+}
+----------------------------------------------------------------
+
+An interceptor class may intercept both lifecycle callbacks and business
+methods.
+
+A _timeout method interceptor_ applies to invocations of EJB timeout
+methods by the container:
+
+[source.JAVA, java]
+----------------------------------------------------------------------------------
+public class TimeoutInterceptor {
+   @AroundTimeout
+   public Object manageTransaction(InvocationContext ctx) throws Exception { ... }
+}
+----------------------------------------------------------------------------------
+
+=== Interceptor bindings
+
+Suppose we want to declare that some of our beans are transactional. The
+first thing we need is an _interceptor binding type_ to specify exactly
+which beans we're interested in:
+
+[source.JAVA, java]
+----------------------------------
+@InterceptorBinding
+@Target({METHOD, TYPE})
+@Retention(RUNTIME)
+public @interface Transactional {}
+----------------------------------
+
+Now we can easily specify that our `ShoppingCart` is a transactional
+object:
+
+[source.JAVA, java]
+---------------------------------
+@Transactional
+public class ShoppingCart { ... }
+---------------------------------
+
+Or, if we prefer, we can specify that just one method is transactional:
+
+[source.JAVA, java]
+------------------------------------------------
+public class ShoppingCart {
+   @Transactional public void checkout() { ... }
+}
+------------------------------------------------
+
+=== Implementing interceptors
+
+That's great, but somewhere along the line we're going to have to
+actually implement the interceptor that provides this transaction
+management aspect. All we need to do is create a standard interceptor,
+and annotate it `@Interceptor` and `@Transactional`.
+
+[source.JAVA, java]
+----------------------------------------------------------------------------------
+@Transactional @Interceptor
+public class TransactionInterceptor {
+   @AroundInvoke
+   public Object manageTransaction(InvocationContext ctx) throws Exception { ... }
+}
+----------------------------------------------------------------------------------
+
+Interceptors can take advantage of dependency injection:
+
+[source.JAVA, java]
+-----------------------------------------------------------------------------------
+@Transactional @Interceptor
+public class TransactionInterceptor {
+
+    @Resource UserTransaction transaction;
+
+    @AroundInvoke
+    public Object manageTransaction(InvocationContext ctx) throws Exception { ... }
+
+}
+-----------------------------------------------------------------------------------
+
+Multiple interceptors may use the same interceptor binding type.
+
+=== Enabling interceptors
+
+By default, all interceptors are disabled. We need to _enable_ our
+interceptor. We can do it using `beans.xml` descriptor of a bean
+archive. However, this activation only applies to the beans in that
+archive. From CDI 1.1 onwards the interceptor can be enabled for the
+whole application using `@Priority` annotation.
+
+[source.XML, xml]
+---------------------------------------------------------------
+<beans
+   xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="
+      http://xmlns.jcp.org/xml/ns/javaee
+      http://xmlns.jcp.org/xml/ns/javaee/beans_1_1.xsd">
+   <interceptors>
+      <class>org.mycompany.myapp.TransactionInterceptor</class>
+   </interceptors>
+</beans>
+---------------------------------------------------------------
+
+Whoah! Why the angle bracket stew?
+
+Well, having the XML declaration is actually a _good thing_. It solves
+two problems:
+
+* it enables us to specify an ordering for the interceptors in our
+system, ensuring deterministic behavior, and
+* it lets us enable or disable interceptor classes at deployment time.
+
+Having two interceptors without `@Priority`, we could specify that our
+security interceptor runs before our transaction interceptor.
+
+[source.XML, xml]
+---------------------------------------------------------------
+<beans
+   xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="
+      http://xmlns.jcp.org/xml/ns/javaee
+      http://xmlns.jcp.org/xml/ns/javaee/beans_1_1.xsd">
+   <interceptors>
+      <class>org.mycompany.myapp.SecurityInterceptor</class>
+      <class>org.mycompany.myapp.TransactionInterceptor</class>
+   </interceptors>
+</beans>
+---------------------------------------------------------------
+
+Or we could turn them both off in our test environment by simply not
+mentioning them in `beans.xml`! Ah, so simple.
+
+It gets quite tricky when used along with interceptors annotated with
+`@Priority`. Interceptors enabled using `@Priority` are called before
+interceptors enabled using `beans.xml`, the lower priority values are
+called first.
+
+NOTE: Interceptors with the `@Priority` that are listed in the `beans.xml`
+descriptor will be called twice in Weld. However, this behaviour is
+non-portable and this combination should not be used as it can behave
+differently in other implementations!
+
+=== Interceptor bindings with members
+
+Suppose we want to add some extra information to our `@Transactional`
+annotation:
+
+[source.JAVA, java]
+---------------------------------------
+@InterceptorBinding
+@Target({METHOD, TYPE})
+@Retention(RUNTIME)
+public @interface Transactional {
+   boolean requiresNew() default false;
+}
+---------------------------------------
+
+CDI will use the value of `requiresNew` to choose between two different
+interceptors, `TransactionInterceptor` and
+`RequiresNewTransactionInterceptor`.
+
+[source.JAVA, java]
+----------------------------------------------------------------------------------
+@Transactional(requiresNew = true) @Interceptor
+public class RequiresNewTransactionInterceptor {
+   @AroundInvoke
+   public Object manageTransaction(InvocationContext ctx) throws Exception { ... }
+}
+----------------------------------------------------------------------------------
+
+Now we can use `RequiresNewTransactionInterceptor` like this:
+
+[source.JAVA, java]
+----------------------------------
+@Transactional(requiresNew = true)
+public class ShoppingCart { ... }
+----------------------------------
+
+But what if we only have one interceptor and we want the container to
+ignore the value of `requiresNew` when binding interceptors? Perhaps
+this information is only useful for the interceptor implementation. We
+can use the `@Nonbinding` annotation:
+
+[source.JAVA, java]
+--------------------------------------------------
+@InterceptorBinding
+@Target({METHOD, TYPE})
+@Retention(RUNTIME)
+public @interface Secure {
+   @Nonbinding String[] rolesAllowed() default {};
+}
+--------------------------------------------------
+
+=== Multiple interceptor binding annotations
+
+Usually we use combinations of interceptor bindings types to bind
+multiple interceptors to a bean. For example, the following declaration
+would be used to bind `TransactionInterceptor` and `SecurityInterceptor`
+to the same bean:
+
+[source.JAVA, java]
+--------------------------------------------
+@Secure(rolesAllowed="admin") @Transactional
+public class ShoppingCart { ... }
+--------------------------------------------
+
+However, in very complex cases, an interceptor itself may specify some
+combination of interceptor binding types:
+
+[source.JAVA, java]
+---------------------------------------------------
+@Transactional @Secure @Interceptor
+public class TransactionalSecureInterceptor { ... }
+---------------------------------------------------
+
+Then this interceptor could be bound to the `checkout()` method using
+any one of the following combinations:
+
+[source.JAVA, java]
+--------------------------------------------------------
+public class ShoppingCart {
+   @Transactional @Secure public void checkout() { ... }
+}
+--------------------------------------------------------
+
+[source.JAVA, java]
+------------------------------------------------
+@Secure
+public class ShoppingCart {
+   @Transactional public void checkout() { ... }
+}
+------------------------------------------------
+
+[source.JAVA, java]
+-----------------------------------------
+@Transactional
+public class ShoppingCart {
+   @Secure public void checkout() { ... }
+}
+-----------------------------------------
+
+[source.JAVA, java]
+---------------------------------
+@Transactional @Secure
+public class ShoppingCart {
+   public void checkout() { ... }
+}
+---------------------------------
+
+=== Interceptor binding type inheritance
+
+One limitation of the Java language support for annotations is the lack
+of annotation inheritance. Really, annotations should have reuse built
+in, to allow this kind of thing to work:
+
+[source.JAVA, java]
+--------------------------------------------------------------
+public @interface Action extends Transactional, Secure { ... }
+--------------------------------------------------------------
+
+Well, fortunately, CDI works around this missing feature of Java. We may
+annotate one interceptor binding type with other interceptor binding
+types (termed a _meta-annotation_). The interceptor bindings are
+transitive — any bean with the first interceptor binding inherits the
+interceptor bindings declared as meta-annotations.
+
+[source.JAVA, java]
+--------------------------------
+@Transactional @Secure
+@InterceptorBinding
+@Target(TYPE)
+@Retention(RUNTIME)
+public @interface Action { ... }
+--------------------------------
+
+Now, any bean annotated `@Action` will be bound to both
+`TransactionInterceptor` and `SecurityInterceptor`. (And even
+`TransactionalSecureInterceptor`, if it exists.)
+
+=== Use of `@Interceptors`
+
+The `@Interceptors` annotation defined by the Interceptors specification
+(and used by the Managed Beans and EJB specifications) is still
+supported in CDI.
+
+[source.JAVA, java]
+------------------------------------------------------------------------
+@Interceptors({TransactionInterceptor.class, SecurityInterceptor.class})
+public class ShoppingCart {
+   public void checkout() { ... }
+}
+------------------------------------------------------------------------
+
+However, this approach suffers the following drawbacks:
+
+* the interceptor implementation is hardcoded in business code,
+* interceptors may not be easily disabled at deployment time, and
+* the interceptor ordering is non-global — it is determined by the order
+in which interceptors are listed at the class level.
+
+Therefore, we recommend the use of CDI-style interceptor bindings.
