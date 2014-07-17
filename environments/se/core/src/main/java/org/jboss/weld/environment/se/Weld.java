@@ -89,9 +89,11 @@ public class Weld {
     public static final String JANDEX_INDEX_CLASS_NAME = "org.jboss.jandex.Index";
 
     static {
+        // First reset the provider to prevent problems it SingletonProvider is already initialized.
+        // TODO: The discovery of SingletonProvider should be improved e. G. by using the Service Provider Mechanism.
+        SingletonProvider.reset();
         SingletonProvider.initialize(new RegistrySingletonProvider());
     }
-
 
     private ShutdownManager shutdownManager;
     private Set<Metadata<Extension>> extensions;
