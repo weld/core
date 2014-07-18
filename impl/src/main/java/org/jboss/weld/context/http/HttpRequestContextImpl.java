@@ -22,17 +22,25 @@
  */
 package org.jboss.weld.context.http;
 
+import static org.jboss.weld.logging.Category.CONTEXT;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+
 import org.jboss.weld.context.AbstractBoundContext;
 import org.jboss.weld.context.beanstore.NamingScheme;
 import org.jboss.weld.context.beanstore.SimpleNamingScheme;
 import org.jboss.weld.context.beanstore.http.RequestBeanStore;
 import org.jboss.weld.context.cache.RequestScopedBeanCache;
+import org.jboss.weld.logging.messages.ContextMessage;
+import org.slf4j.cal10n.LocLogger;
 
 import javax.enterprise.context.RequestScoped;
 import javax.servlet.ServletRequest;
+
 import java.lang.annotation.Annotation;
 
 public class HttpRequestContextImpl extends AbstractBoundContext<ServletRequest> implements HttpRequestContext {
+
+    private static final LocLogger log = loggerFactory().getLogger(CONTEXT);
 
     private final NamingScheme namingScheme;
 
@@ -45,13 +53,14 @@ public class HttpRequestContextImpl extends AbstractBoundContext<ServletRequest>
     }
 
     public boolean associate(ServletRequest request) {
-        if (getBeanStore() == null) {
-            setBeanStore(new RequestBeanStore(request, namingScheme));
-            getBeanStore().attach();
-            return true;
-        } else {
-            return false;
-        }
+        // At this point the bean store should never be set - see also WeldListener#nestedInvocationGuard
+       if (getBeanStore() != null) {
+           log.warn(ContextMessage.BEAN_STORE_LEAK_DURING_ASSOCIATION, this.getClass().getName(), request);
+       }
+       // We always associate a new bean store to avoid possible leaks (security threats)
+       setBeanStore(new RequestBeanStore(request, namingScheme));
+       getBeanStore().attach();
+       return true;
     }
 
     @Override
