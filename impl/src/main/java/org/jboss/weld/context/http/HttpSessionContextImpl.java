@@ -1,5 +1,8 @@
 package org.jboss.weld.context.http;
 
+import static org.jboss.weld.logging.Category.CONTEXT;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+
 import org.jboss.weld.Container;
 import org.jboss.weld.context.AbstractBoundContext;
 import org.jboss.weld.context.ManagedConversation;
@@ -7,13 +10,18 @@ import org.jboss.weld.context.beanstore.NamingScheme;
 import org.jboss.weld.context.beanstore.SimpleNamingScheme;
 import org.jboss.weld.context.beanstore.http.EagerSessionBeanStore;
 import org.jboss.weld.context.beanstore.http.LazySessionBeanStore;
+import org.jboss.weld.logging.messages.ContextMessage;
+import org.slf4j.cal10n.LocLogger;
 
 import javax.enterprise.context.SessionScoped;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
 import java.lang.annotation.Annotation;
 
 public class HttpSessionContextImpl extends AbstractBoundContext<HttpServletRequest> implements HttpSessionContext {
+
+    private static final LocLogger log = loggerFactory().getLogger(CONTEXT);
 
     private final NamingScheme namingScheme;
 
@@ -23,13 +31,13 @@ public class HttpSessionContextImpl extends AbstractBoundContext<HttpServletRequ
     }
 
     public boolean associate(HttpServletRequest request) {
-        if (getBeanStore() == null) {
-            // Don't reassociate
-            setBeanStore(new LazySessionBeanStore(request, namingScheme));
-            return true;
-        } else {
-            return false;
+        // At this point the bean store should never be set - see also WeldListener.nestedInvocationGuard
+        if (getBeanStore() != null) {
+            log.warn(ContextMessage.BEAN_STORE_LEAK_DURING_ASSOCIATION, this.getClass().getName(), request);
         }
+        // We always associate a new bean store to avoid possible leaks (security threats)
+        setBeanStore(new LazySessionBeanStore(request, namingScheme));
+        return true;
     }
 
     public boolean destroy(HttpSession session) {
