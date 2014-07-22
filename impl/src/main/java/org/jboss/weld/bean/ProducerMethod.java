@@ -82,7 +82,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
         this.id = createId(method, declaringBean);
         initStereotypes();
         initProducerMethodInjectableParameters();
-        this.proxiable = Proxies.isTypesProxyable(method.getTypeClosure());
+        this.proxiable = Proxies.isTypesProxyable(this);
     }
 
     protected String createId(WeldMethod<T, ? super X> method, AbstractClassBean<X> declaringBean) {

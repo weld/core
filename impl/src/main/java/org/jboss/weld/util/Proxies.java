@@ -28,6 +28,7 @@ import java.util.Set;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.Container;
+import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.exceptions.UnproxyableResolutionException;
 import org.jboss.weld.util.reflection.Reflections;
@@ -152,19 +153,17 @@ public class Proxies {
         return getUnproxyableTypesException(declaringBean) == null;
     }
 
-    /**
-     * Indicates if a set of types are all proxyable
-     *
-     * @param types The types to test
-     * @return True if proxyable, false otherwise
-     */
-    public static boolean isTypesProxyable(Iterable<? extends Type> types) {
-        return getUnproxyableTypesException(types) == null;
-    }
-
     public static UnproxyableResolutionException getUnproxyableTypesException(Bean<?> declaringBean) {
-        if (declaringBean == null)
+        if (declaringBean == null) {
             throw new java.lang.IllegalArgumentException("Null declaring bean!");
+        }
+        if (declaringBean instanceof RIBean<?>) {
+            RIBean<?> riBean = (RIBean<?>) declaringBean;
+            UnproxyableResolutionException constructorException = getUnproxyableClassException(riBean.getType(), declaringBean, true);
+            if (constructorException != null) {
+                return constructorException;
+            }
+        }
 
         return getUnproxyableTypesExceptionInt(declaringBean.getTypes(), declaringBean);
     }
@@ -201,10 +200,33 @@ public class Proxies {
     }
 
     private static UnproxyableResolutionException getUnproxyableClassException(Class<?> clazz, Bean<?> declaringBean) {
+        return getUnproxyableClassException(clazz, declaringBean, !(declaringBean instanceof RIBean<?>));
+    }
+
+    private static UnproxyableResolutionException getUnproxyableClassException(Class<?> clazz, Bean<?> declaringBean, boolean strict) {
         if (clazz.isInterface()) {
             return null;
         }
 
+        if (strict) {
+            UnproxyableResolutionException constructorException = checkConstructor(clazz, declaringBean);
+            if (constructorException != null) {
+                return constructorException;
+            }
+        }
+
+        if (Reflections.isTypeOrAnyMethodFinal(clazz)) {
+            return new UnproxyableResolutionException(NOT_PROXYABLE_FINAL_TYPE_OR_METHOD, clazz, Reflections.getNonPrivateFinalMethodOrType(clazz), getDeclaringBeanInfo(declaringBean));
+        } else if (clazz.isPrimitive()) {
+            return new UnproxyableResolutionException(NOT_PROXYABLE_PRIMITIVE, clazz, getDeclaringBeanInfo(declaringBean));
+        } else if (Reflections.isArrayType(clazz)) {
+            return new UnproxyableResolutionException(NOT_PROXYABLE_ARRAY_TYPE, clazz, getDeclaringBeanInfo(declaringBean));
+        } else {
+            return null;
+        }
+    }
+
+    private static UnproxyableResolutionException checkConstructor(Class<?> clazz, Bean<?> declaringBean) {
         Constructor<?> constructor;
         try {
             constructor = SecureReflections.getDeclaredConstructor(clazz);
@@ -225,15 +247,8 @@ public class Proxies {
             } else {
                 return null;
             }
-        } else if (Reflections.isTypeOrAnyMethodFinal(clazz)) {
-            return new UnproxyableResolutionException(NOT_PROXYABLE_FINAL_TYPE_OR_METHOD, clazz, Reflections.getNonPrivateFinalMethodOrType(clazz), getDeclaringBeanInfo(declaringBean));
-        } else if (clazz.isPrimitive()) {
-            return new UnproxyableResolutionException(NOT_PROXYABLE_PRIMITIVE, clazz, getDeclaringBeanInfo(declaringBean));
-        } else if (Reflections.isArrayType(clazz)) {
-            return new UnproxyableResolutionException(NOT_PROXYABLE_ARRAY_TYPE, clazz, getDeclaringBeanInfo(declaringBean));
-        } else {
-            return null;
         }
+        return null;
     }
 
     private static Object getDeclaringBeanInfo(Bean<?> bean) {

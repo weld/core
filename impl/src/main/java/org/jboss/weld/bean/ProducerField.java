@@ -77,7 +77,7 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field> {
         initTypes();
         initQualifiers();
         initStereotypes();
-        this.proxiable = Proxies.isTypesProxyable(field.getTypeClosure());
+        this.proxiable = Proxies.isTypesProxyable(this);
     }
 
     protected static String createId(WeldField<?, ?> field, AbstractClassBean<?> declaringBean) {

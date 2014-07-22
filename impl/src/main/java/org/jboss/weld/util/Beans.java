@@ -205,7 +205,7 @@ public class Beans {
         if (bean instanceof RIBean<?>) {
             return ((RIBean<?>) bean).isProxyable();
         } else {
-            return Proxies.isTypesProxyable(bean.getTypes());
+            return Proxies.isTypesProxyable(bean);
         }
     }
 

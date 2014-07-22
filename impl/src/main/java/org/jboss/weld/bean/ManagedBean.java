@@ -284,7 +284,7 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
         initTypes();
         initQualifiers();
         initConstructor();
-        this.proxiable = Proxies.isTypesProxyable(getTypes());
+        this.proxiable = Proxies.isTypesProxyable(this);
     }
 
     /**
