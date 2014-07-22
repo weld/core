@@ -67,6 +67,7 @@
         <testng.version>5.10</testng.version>
         <weld.api.version>2.2.SP3</weld.api.version>
         <wildfly.version>8.0.0.Final</wildfly.version>
+        <wildfly.arquillian.version>1.0.0.Alpha1</wildfly.arquillian.version>
     </properties>
 
     <modules>
@@ -292,6 +293,18 @@
                 <groupId>org.wildfly</groupId>
                 <artifactId>wildfly-arquillian-container-remote</artifactId>
                 <version>${wildfly.version}</version>
+            </dependency>
+
+            <!-- WildFly 9.x -->
+            <dependency>
+                <groupId>org.wildfly.arquillian</groupId>
+                <artifactId>wildfly-arquillian-container-managed</artifactId>
+                <version>${wildfly.arquillian.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wildfly.arquillian</groupId>
+                <artifactId>wildfly-arquillian-protocol-jmx</artifactId>
+                <version>${wildfly.arquillian.version}</version>
             </dependency>
 
             <dependency>
