@@ -24,17 +24,30 @@ import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.WithAnnotations;
 import javax.validation.Constraint;
+import java.beans.ConstructorProperties;
 
 public class VerifyingExtension implements Extension {
 
-    private AnnotatedType<Person> type;
+    private AnnotatedType<Person> personType;
+
+    private AnnotatedType<Group> groupType;
 
     void processPerson(@Observes @WithAnnotations(Constraint.class) ProcessAnnotatedType<Person> event) {
-        assertNull(type);
-        this.type = event.getAnnotatedType();
+        assertNull(personType);
+        this.personType = event.getAnnotatedType();
     }
 
-    public AnnotatedType<Person> getType() {
-        return type;
+    void processGroup(@Observes @WithAnnotations(ConstructorProperties.class) ProcessAnnotatedType<Group> event) {
+        assertNull(groupType);
+        this.groupType = event.getAnnotatedType();
+    }
+
+    public AnnotatedType<Person> getPersonType() {
+        return personType;
+
+    }
+
+    public AnnotatedType<Group> getGroupType() {
+        return groupType;
     }
 }
