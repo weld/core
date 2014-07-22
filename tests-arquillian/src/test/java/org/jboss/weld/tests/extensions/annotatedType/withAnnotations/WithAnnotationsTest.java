@@ -50,7 +50,10 @@ public class WithAnnotationsTest {
 
     @Test
     public void test() {
-        assertNotNull(extension.getType());
-        assertEquals(Person.class, extension.getType().getJavaClass());
+        assertNotNull(extension.getPersonType());
+        assertEquals(Person.class, extension.getPersonType().getJavaClass());
+
+        assertNotNull(extension.getGroupType());
+        assertEquals(Group.class, extension.getGroupType().getJavaClass());
     }
 }

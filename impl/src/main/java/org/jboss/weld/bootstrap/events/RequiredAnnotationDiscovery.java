@@ -84,7 +84,7 @@ public class RequiredAnnotationDiscovery implements Service {
                 }
             }
             // constructors
-            for (Constructor<?> constructor : clazz.getConstructors()) {
+            for (Constructor<?> constructor : clazz.getDeclaredConstructors()) {
                 if (containsAnnotations(cache.getAnnotations(constructor), requiredAnnotation)) {
                     return true;
                 }
