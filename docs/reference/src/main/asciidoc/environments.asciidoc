@@ -319,7 +319,7 @@ public class WeldContainer
 ---------------------------------------------------------------
 
 Here's an example application main method which uses this API to
-initialize a bean of type`MyApplicationBean`.
+initialize a bean of type `MyApplicationBean`.
 
 [source.JAVA, java]
 --------------------------------------------------------------
@@ -356,7 +356,7 @@ restrictions on developers regarding the creation and usage of threads.
 Therefore Weld SE provides a custom scope annotation, `@ThreadScoped`,
 and corresponding context implementation which can be used to bind bean
 instances to the current thread. It is intended to be used in scenarios
-where you might otherwise use`ThreadLocal`, and does in fact use
+where you might otherwise use `ThreadLocal`, and does in fact use
 `ThreadLocal` under the hood.
 
 To use the `@ThreadScoped` annotation you need to enable the
