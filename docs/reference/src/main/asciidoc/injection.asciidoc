@@ -450,10 +450,10 @@ It's usually very easy to fix an unproxyable dependency problem. If an
 injection point of type `X` results in an unproxyable dependency,
 simply:
 
-* add a constructor with no parameters to`X`,
+* add a constructor with no parameters to `X`,
 * change the type of the injection point to`Instance<X>`,
 * introduce an interface `Y`, implemented by the injected bean, and
-change the type of the injection point to`Y`, or
+change the type of the injection point to `Y`, or
 * if all else fails, change the scope of the injected bean to
 `@Dependent`.
 
@@ -500,7 +500,7 @@ PaymentProcessor p = paymentProcessorSource.get();
 Qualifiers can be specified in one of two ways:
 
 * by annotating the `Instance` injection point, or
-* by passing qualifiers to the `select()` of`Event`.
+* by passing qualifiers to the `select()` of `Event`.
 
 Specifying the qualifiers at the injection point is much, much easier:
 
@@ -549,7 +549,7 @@ However, we can't use an anonymous class to implement a qualifier type
 with members.
 
 Now, finally, we can pass the qualifier to the `select()` method
-of`Instance`.
+of `Instance`.
 
 [source.JAVA, java]
 ----------------------------------------------------------------------------------
