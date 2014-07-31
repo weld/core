@@ -26,6 +26,7 @@ import org.jboss.weld.environment.ContainerContext;
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
 public abstract class AbstractJettyContainer extends AbstractContainer {
+
     public static final String INJECTOR_ATTRIBUTE_NAME = "org.jboss.weld.environment.jetty.JettyWeldInjector";
 
     public void destroy(ContainerContext context) {

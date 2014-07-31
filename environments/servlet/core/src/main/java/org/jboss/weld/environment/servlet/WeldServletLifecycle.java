@@ -186,15 +186,30 @@ public class WeldServletLifecycle {
     /**
      * Find container env.
      *
-     * @param cc the container context
+     * @param ctx the container context
      * @param dump the exception dump
      * @return valid container or null
      */
-    protected Container findContainer(ContainerContext cc, StringBuilder dump) {
-        Iterable<Container> extContainers = ServiceLoader.load(Container.class, getClass().getClassLoader());
-        Container container = checkContainers(cc, dump, extContainers);
+    protected Container findContainer(ContainerContext ctx, StringBuilder dump) {
+        Container container = null;
+        // 1. Custom container class
+        String containerClass = ctx.getServletContext().getInitParameter(Container.CONTEXT_PARAM_CONTAINER_CLASS);
+        if (containerClass != null) {
+            try {
+                container = Reflections.newInstance(containerClass);
+                log.info("Container detection skipped - custom container class loaded: " + containerClass);
+            } catch (IllegalArgumentException e) {
+                log.warn("Unable to instantiate custom container class: " + containerClass);
+            }
+        }
         if (container == null) {
-            container = checkContainers(cc, dump, Arrays.asList(TomcatContainer.INSTANCE, JettyContainer.INSTANCE, GwtDevHostedModeContainer.INSTANCE));
+            // 2. Service providers
+            Iterable<Container> extContainers = ServiceLoader.load(Container.class, getClass().getClassLoader());
+            container = checkContainers(ctx, dump, extContainers);
+            if (container == null) {
+                // 3. Built-in containers in predefined order
+                container = checkContainers(ctx, dump, Arrays.asList(TomcatContainer.INSTANCE, JettyContainer.INSTANCE, GwtDevHostedModeContainer.INSTANCE));
+            }
         }
         return container;
     }
