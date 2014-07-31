@@ -28,10 +28,13 @@ import org.jboss.weld.environment.servlet.EnhancedListener;
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
 public class TomcatContainer extends AbstractContainer {
+
     public static Container INSTANCE = new TomcatContainer();
 
+    private static final String TOMCAT_REQUIRED_CLASS_NAME = "org.apache.catalina.connector.Request";
+
     protected String classToCheck() {
-        return "org.apache.tomcat.InstanceManager";
+        return TOMCAT_REQUIRED_CLASS_NAME;
     }
 
     public void initialize(ContainerContext context) {

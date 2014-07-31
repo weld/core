@@ -17,6 +17,7 @@
 
 package org.jboss.weld.environment;
 
+
 /**
  * Abstract the web container setup notion.
  * e.g. Tomcat, Jetty, GAE, ...
@@ -24,6 +25,9 @@ package org.jboss.weld.environment;
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
 public interface Container {
+
+    String CONTEXT_PARAM_CONTAINER_CLASS = Container.class.getPackage().getName() + ".container.class";
+
     /**
      * Touch if this container can be used.
      * We should throw an exception if it cannot be used.

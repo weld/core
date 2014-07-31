@@ -36,13 +36,16 @@ public class JettyContainer extends AbstractJettyContainer {
 
     public static Container INSTANCE = new JettyContainer();
 
+    private static final String JETTY_SERVERNAME = "jetty";
+
     private static final String JETTY_REQUIRED_CLASS_NAME = "org.eclipse.jetty.servlet.ServletHandler";
 
     private static final int MAJOR_VERSION = 7;
     private static final int MINOR_VERSION = 2;
 
     protected String classToCheck() {
-        // This is not used anyway - ServletContext.getServerInfo() is parsed instead
+        // This is not used anyway - server implementation classes are hidden from the web application in Jetty by default
+        // Instead ServletContext.getServerInfo() is parsed
         return JETTY_REQUIRED_CLASS_NAME;
     }
 
@@ -50,6 +53,9 @@ public class JettyContainer extends AbstractJettyContainer {
         ServletContext sc = context.getServletContext();
         String si = sc.getServerInfo();
         log.debugv("Parsing server info: {0}", si);
+        if(!si.contains(JETTY_SERVERNAME)) {
+            return false;
+        }
         int p = si.indexOf("/");
         if (p < 0) {
             return false;
