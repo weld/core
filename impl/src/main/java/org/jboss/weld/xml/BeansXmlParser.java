@@ -29,6 +29,7 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.jboss.weld.SystemPropertiesConfiguration;
+import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.BeanDiscoveryMode;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.Filter;
@@ -42,6 +43,8 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
 
+import com.google.common.base.Function;
+
 /**
  * Simple parser for beans.xml
  * <p/>
@@ -53,6 +56,30 @@ import org.xml.sax.SAXNotSupportedException;
 public class BeansXmlParser {
 
     private static final InputSource[] EMPTY_INPUT_SOURCE_ARRAY = new InputSource[0];
+
+    private Function<URL, BeansXml> URL_TO_BEANS_XML_FUNCTION = new Function<URL, BeansXml>() {
+        @Override
+        public BeansXml apply(URL url) {
+            return parse(url);
+        }
+    };
+
+    private static Function<BeanDeploymentArchive, BeansXml> BEAN_ARCHIVE_TO_BEANS_XML_FUNCTION = new Function<BeanDeploymentArchive, BeansXml>() {
+        @Override
+        public BeansXml apply(BeanDeploymentArchive archive) {
+            if (archive == null) {
+                return null;
+            }
+            return archive.getBeansXml();
+        }
+    };
+
+    private static Function<BeansXml, BeansXml> BEANS_XML_IDENTITY_FUNCTION = new Function<BeansXml, BeansXml>() {
+        @Override
+        public BeansXml apply(BeansXml beansXml) {
+            return beansXml;
+        }
+    };
 
     public BeansXml parse(final URL beansXml) {
         SAXParserFactory factory = SAXParserFactory.newInstance();
@@ -113,6 +140,10 @@ public class BeansXmlParser {
     }
 
     public BeansXml parse(Iterable<URL> urls, boolean removeDuplicates) {
+        return merge(urls, URL_TO_BEANS_XML_FUNCTION, removeDuplicates);
+    }
+
+    private <T> BeansXml merge(Iterable<? extends T> items, Function<T, BeansXml> function, boolean removeDuplicates) {
         List<Metadata<String>> alternatives = new ArrayList<Metadata<String>>();
         List<Metadata<String>> alternativeStereotypes = new ArrayList<Metadata<String>>();
         List<Metadata<String>> decorators = new ArrayList<Metadata<String>>();
@@ -120,8 +151,8 @@ public class BeansXmlParser {
         List<Metadata<Filter>> includes = new ArrayList<Metadata<Filter>>();
         List<Metadata<Filter>> excludes = new ArrayList<Metadata<Filter>>();
         URL beansXmlUrl = null;
-        for (URL url : urls) {
-            BeansXml beansXml = parse(url);
+        for (T item : items) {
+            BeansXml beansXml = function.apply(item);
             addTo(alternatives, beansXml.getEnabledAlternativeClasses(), removeDuplicates);
             addTo(alternativeStereotypes, beansXml.getEnabledAlternativeStereotypes(), removeDuplicates);
             addTo(decorators, beansXml.getEnabledDecorators(), removeDuplicates);
@@ -132,7 +163,7 @@ public class BeansXmlParser {
              * provided we are merging the content of multiple XML files, getBeansXml() returns an
              * InputStream representing the last one
              */
-            beansXmlUrl = url;
+            beansXmlUrl = beansXml.getUrl();
         }
         return new BeansXmlImpl(alternatives, alternativeStereotypes, decorators, interceptors, new ScanningImpl(includes, excludes), beansXmlUrl, BeanDiscoveryMode.ALL, null);
     }
@@ -185,5 +216,13 @@ public class BeansXmlParser {
 
     protected BeansXmlHandler getHandler(final URL beansXml) {
         return new BeansXmlHandler(beansXml);
+    }
+
+    public BeansXml mergeExisting(final Iterable<? extends BeanDeploymentArchive> beanArchives, final boolean removeDuplicates) {
+        return merge(beanArchives, BEAN_ARCHIVE_TO_BEANS_XML_FUNCTION, removeDuplicates);
+    }
+
+    public BeansXml mergeExistingDescriptors(final Iterable<BeansXml> beanArchives, final boolean removeDuplicates) {
+        return merge(beanArchives, BEANS_XML_IDENTITY_FUNCTION, removeDuplicates);
     }
 }

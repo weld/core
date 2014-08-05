@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.environment.deployment;
 
-import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -26,6 +25,7 @@ import org.jboss.weld.bootstrap.api.CDI11Bootstrap;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.resources.ManagerObjectFactory;
+import org.jboss.weld.xml.BeansXmlParser;
 
 /**
  *
@@ -79,16 +79,12 @@ public class WeldBeanDeploymentArchive extends AbstractWeldBeanDeploymentArchive
      * @return the "flat" bean deployment archive
      */
     public static <T extends BeanDeploymentArchive> WeldBeanDeploymentArchive merge(CDI11Bootstrap bootstrap, Iterable<T> archives) {
+        BeansXml mergedBeansXml = new BeansXmlParser().mergeExisting(archives, true);
         Set<String> beanClasses = new HashSet<String>();
-        Set<URL> beansXmlUrls = new HashSet<URL>();
         for (BeanDeploymentArchive archive : archives) {
             beanClasses.addAll(archive.getBeanClasses());
-            if (archive.getBeansXml() != BeansXml.EMPTY_BEANS_XML) {
-                beansXmlUrls.add(archive.getBeansXml().getUrl());
-            }
         }
-        BeansXml beansXml = bootstrap.parse(beansXmlUrls, true);
-        return new WeldBeanDeploymentArchive(ManagerObjectFactory.FLAT_BEAN_DEPLOYMENT_ID, beanClasses, beansXml);
+        return new WeldBeanDeploymentArchive(ManagerObjectFactory.FLAT_BEAN_DEPLOYMENT_ID, beanClasses, mergedBeansXml);
     }
 
 }
