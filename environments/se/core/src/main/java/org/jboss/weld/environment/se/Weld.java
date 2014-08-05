@@ -17,7 +17,6 @@
 package org.jboss.weld.environment.se;
 
 import java.lang.annotation.Annotation;
-import java.net.URL;
 import java.security.AccessController;
 import java.util.Arrays;
 import java.util.Collection;
@@ -51,6 +50,7 @@ import org.jboss.weld.environment.se.events.ContainerInitialized;
 import org.jboss.weld.environment.se.logging.WeldSELogger;
 import org.jboss.weld.environment.se.util.SEReflections;
 import org.jboss.weld.literal.InitializedLiteral;
+import org.jboss.weld.metadata.BeansXmlMergeUtil;
 import org.jboss.weld.metadata.MetadataImpl;
 import org.jboss.weld.resources.spi.ClassFileServices;
 import org.jboss.weld.resources.spi.ResourceLoader;
@@ -250,14 +250,12 @@ public class Weld {
      */
     private WeldSEBeanDeploymentArchive mergeToOne(CDI11Bootstrap bootstrap, Collection<WeldSEBeanDeploymentArchive> discoveredArchives) {
         Set<String> beanClasses = new HashSet<String>();
-        Set<URL> urls = new HashSet<URL>();
+        Set<BeansXml> beansXMLs = new HashSet<BeansXml>();
         for (BeanDeploymentArchive archive : discoveredArchives) {
             beanClasses.addAll(archive.getBeanClasses());
-            if (archive.getBeansXml() != BeansXml.EMPTY_BEANS_XML) {
-                urls.add(archive.getBeansXml().getUrl());
-            }
+            beansXMLs.add(archive.getBeansXml());
         }
-        BeansXml beansXml = bootstrap.parse(urls, true);
+        BeansXml beansXml = new BeansXmlMergeUtil().merge(beansXMLs);
         WeldSEBeanDeploymentArchive archive = new WeldSEBeanDeploymentArchive("main", beanClasses, beansXml);
         return archive;
     }

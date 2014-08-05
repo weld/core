@@ -52,7 +52,7 @@ public abstract class DiscoveryStrategy {
         builders = new URLScanner(resourceLoader, bootstrap, AbstractWeldSEDeployment.RESOURCES).scan();
         initialize();
         for (BeanArchiveBuilder builder : builders) {
-            BeansXml beansXml = builder.parseBeansXml();
+            BeansXml beansXml = builder.getParsedBeansXml();
             switch (beansXml.getBeanDiscoveryMode()) {
                 case ALL:
                     addToArchives(processAllDiscovery(builder));

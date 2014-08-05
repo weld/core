@@ -29,14 +29,10 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.jboss.weld.SystemPropertiesConfiguration;
-import org.jboss.weld.bootstrap.spi.BeanDiscoveryMode;
 import org.jboss.weld.bootstrap.spi.BeansXml;
-import org.jboss.weld.bootstrap.spi.Filter;
-import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.logging.XmlLogger;
-import org.jboss.weld.metadata.BeansXmlImpl;
-import org.jboss.weld.metadata.ScanningImpl;
+import org.jboss.weld.metadata.BeansXmlMergeUtil;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotRecognizedException;
@@ -113,50 +109,15 @@ public class BeansXmlParser {
     }
 
     public BeansXml parse(Iterable<URL> urls, boolean removeDuplicates) {
-        List<Metadata<String>> alternatives = new ArrayList<Metadata<String>>();
-        List<Metadata<String>> alternativeStereotypes = new ArrayList<Metadata<String>>();
-        List<Metadata<String>> decorators = new ArrayList<Metadata<String>>();
-        List<Metadata<String>> interceptors = new ArrayList<Metadata<String>>();
-        List<Metadata<Filter>> includes = new ArrayList<Metadata<Filter>>();
-        List<Metadata<Filter>> excludes = new ArrayList<Metadata<Filter>>();
-        URL beansXmlUrl = null;
+        final BeansXmlMergeUtil mergeUtil = new BeansXmlMergeUtil();
+
+        final List<BeansXml> beansXmlsToMerge = new ArrayList<BeansXml>();
         for (URL url : urls) {
-            BeansXml beansXml = parse(url);
-            addTo(alternatives, beansXml.getEnabledAlternativeClasses(), removeDuplicates);
-            addTo(alternativeStereotypes, beansXml.getEnabledAlternativeStereotypes(), removeDuplicates);
-            addTo(decorators, beansXml.getEnabledDecorators(), removeDuplicates);
-            addTo(interceptors, beansXml.getEnabledInterceptors(), removeDuplicates);
-            includes.addAll(beansXml.getScanning().getIncludes());
-            excludes.addAll(beansXml.getScanning().getExcludes());
-            /*
-             * provided we are merging the content of multiple XML files, getBeansXml() returns an
-             * InputStream representing the last one
-             */
-            beansXmlUrl = url;
+            final BeansXml beansXml = parse(url);
+            beansXmlsToMerge.add(beansXml);
         }
-        return new BeansXmlImpl(alternatives, alternativeStereotypes, decorators, interceptors, new ScanningImpl(includes, excludes), beansXmlUrl, BeanDiscoveryMode.ALL, null);
-    }
 
-    private void addTo(List<Metadata<String>> list, List<Metadata<String>> listToAdd, boolean removeDuplicates) {
-        if (removeDuplicates) {
-            List<Metadata<String>> filteredListToAdd = new ArrayList<Metadata<String>>(listToAdd.size());
-            for (Metadata<String> metadata : listToAdd) {
-                if (!alreadyAdded(metadata, list)) {
-                    filteredListToAdd.add(metadata);
-                }
-            }
-            listToAdd = filteredListToAdd;
-        }
-        list.addAll(listToAdd);
-    }
-
-    private boolean alreadyAdded(Metadata<String> metadata, List<Metadata<String>> list) {
-        for (Metadata<String> existing : list) {
-            if (existing.getValue().equals(metadata.getValue())) {
-                return true;
-            }
-        }
-        return false;
+        return mergeUtil.merge(beansXmlsToMerge, removeDuplicates);
     }
 
     private static InputSource[] loadXsds() {
