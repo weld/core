@@ -19,6 +19,8 @@ package org.jboss.weld.environment.deployment.discovery;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -47,12 +49,12 @@ public abstract class AbstractDiscoveryStrategy implements DiscoveryStrategy {
 
     protected BeanArchiveScanner scanner;
 
-    private final Collection<BeanArchiveHandler> handlers;
+    private final List<BeanArchiveHandler> handlers;
 
     public AbstractDiscoveryStrategy(ResourceLoader resourceLoader, Bootstrap bootstrap) {
         this.resourceLoader = resourceLoader;
         this.bootstrap = bootstrap;
-        this.handlers = new HashSet<BeanArchiveHandler>();
+        this.handlers = new LinkedList<BeanArchiveHandler>();
     }
 
     @Override

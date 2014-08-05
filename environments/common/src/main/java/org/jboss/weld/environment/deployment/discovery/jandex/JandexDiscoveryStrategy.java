@@ -64,6 +64,7 @@ public class JandexDiscoveryStrategy extends AbstractDiscoveryStrategy {
     public JandexDiscoveryStrategy(ResourceLoader resourceLoader, Bootstrap bootstrap, TypeDiscoveryConfiguration typeDiscoveryConfiguration) {
         super(resourceLoader, bootstrap);
         this.typeDiscoveryConfiguration = typeDiscoveryConfiguration;
+        registerHandler(new JandexIndexBeanArchiveHandler());
         registerHandler(new JandexFileSystemBeanArchiveHandler());
     }
 

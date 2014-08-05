@@ -22,6 +22,28 @@ To run this example using Maven directly:
 
         mvn -Drun
 
+Running the Example with Jandex
+-------------------------------
+
+Weld SE allows Jandex bytecode scanning utility to be used to speed up deployment.
+To run the example application with Jandex, run:
+
+        mvn clean package -Pjandex -Drun
+
+Running the Example with build-time Jandex index creation
+---------------------------------------------------------
+
+The Jandex index may be created by Maven in the build phase. Weld then finds this
+ready-made index and uses it to discover classes even faster.
+
+To run the example in this configuration, run:
+
+        mvn clean package -Pjandex,jandex-index dependency:copy-dependencies -Dmdep.stripVersion
+        java -cp target/weld-se-numberguess.jar:target/dependency/weld-se.jar:target/dependency/jandex.jar org.jboss.weld.environment.se.StartMain
+
+In the log, you should see a confirmation that existing Jandex index was found and used.
+
+
 Swing Example: Number Guess
 ---------------------------
 Here's an example of a Swing application, Number Guess, similar to the example in chapter 7.

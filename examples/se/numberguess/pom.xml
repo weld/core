@@ -23,11 +23,12 @@
     <dependencies>
         <dependency>
             <groupId>org.jboss.weld.se</groupId>
-            <artifactId>weld-se-core</artifactId>
+            <artifactId>weld-se</artifactId>
         </dependency>
     </dependencies>
 
     <build>
+        <finalName>${project.artifactId}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -81,6 +82,37 @@
                     <artifactId>jandex</artifactId>
                 </dependency>
             </dependencies>
+        </profile>
+        <profile>
+            <id>jandex-index</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jboss.jandex</groupId>
+                        <artifactId>jandex-maven-plugin</artifactId>
+                        <version>1.0.1</version>
+                        <executions>
+                            <execution>
+                                <id>make-index</id>
+                                <goals>
+                                    <goal>jandex</goal>
+                                </goals>
+                                <!-- phase is 'process-classes by default' -->
+                                <configuration>
+                                    <!-- Nothing needed here for simple cases -->
+                                </configuration>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.jboss</groupId>
+                                <artifactId>jandex</artifactId>
+                                <version>${jandex.version}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
     </profiles>
 

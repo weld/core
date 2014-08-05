@@ -16,9 +16,6 @@
  */
 package org.jboss.weld.environment.se.test.beandiscovery;
 
-import javax.enterprise.context.ApplicationScoped;
-
-@ApplicationScoped
-public class Cow {
+public class Apartment {
 
 }

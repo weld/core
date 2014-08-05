@@ -1,6 +1,8 @@
 package org.jboss.weld.environment.logging;
 
 
+import java.net.URL;
+
 import javax.enterprise.inject.UnsatisfiedResolutionException;
 
 import org.jboss.logging.Logger;
@@ -81,5 +83,13 @@ public interface CommonLogger extends WeldEnvironmentLogger {
     @LogMessage(level = Level.INFO)
     @Message(id = 20, value = "Using jandex for bean discovery", format = Format.MESSAGE_FORMAT)
     void usingJandex();
+
+    @LogMessage(level = Level.WARN)
+    @Message(id = 21, value = "Could not close the stream for of the jandex index file for {0}.", format = Format.MESSAGE_FORMAT)
+    void couldNotCloseStreamOfJandexIndex(Object param1, @Cause Throwable cause);
+
+    @LogMessage(level = Level.INFO)
+    @Message(id = 22, value = "Found jandex index at {0}", format = Format.MESSAGE_FORMAT)
+    void foundJandexIndex(URL url);
 
 }
