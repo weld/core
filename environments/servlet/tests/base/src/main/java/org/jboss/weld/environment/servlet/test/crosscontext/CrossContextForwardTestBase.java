@@ -14,7 +14,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.weld.environment.servlet.test.util.BeansXml;
+import org.jboss.shrinkwrap.impl.BeansXml;
 import org.junit.Test;
 
 import com.gargoylesoftware.htmlunit.Page;

@@ -1,12 +1,12 @@
 package org.jboss.weld.environment.servlet.test.bootstrap;
 
+import static org.jboss.weld.environment.servlet.test.bootstrap.EventHolder.events;
+
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
-
-import static org.jboss.weld.environment.servlet.test.bootstrap.EventHolder.events;
 
 public class MyExtension implements Extension {
 

@@ -17,29 +17,41 @@
 package org.jboss.weld.environment.servlet;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Set;
 
 import javax.el.ELContextListener;
 import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.Extension;
 import javax.servlet.ServletContext;
 import javax.servlet.jsp.JspApplicationContext;
 import javax.servlet.jsp.JspFactory;
 
 import org.jboss.logging.Logger;
-import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.CDI11Bootstrap;
 import org.jboss.weld.bootstrap.api.Environments;
+import org.jboss.weld.bootstrap.api.TypeDiscoveryConfiguration;
+import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
+import org.jboss.weld.bootstrap.spi.CDI11Deployment;
+import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.environment.Container;
 import org.jboss.weld.environment.ContainerContext;
+import org.jboss.weld.environment.deployment.WeldBeanDeploymentArchive;
+import org.jboss.weld.environment.deployment.WeldDeployment;
+import org.jboss.weld.environment.deployment.WeldResourceLoader;
+import org.jboss.weld.environment.deployment.discovery.DiscoveryStrategy;
+import org.jboss.weld.environment.deployment.discovery.DiscoveryStrategyFactory;
 import org.jboss.weld.environment.gwtdev.GwtDevHostedModeContainer;
 import org.jboss.weld.environment.jetty.JettyContainer;
-import org.jboss.weld.environment.servlet.deployment.ServletDeployment;
-import org.jboss.weld.environment.servlet.deployment.URLScanner;
+import org.jboss.weld.environment.servlet.deployment.WebAppBeanArchiveScanner;
 import org.jboss.weld.environment.servlet.services.ServletResourceInjectionServices;
 import org.jboss.weld.environment.servlet.util.Reflections;
 import org.jboss.weld.environment.servlet.util.ServiceLoader;
 import org.jboss.weld.environment.tomcat.TomcatContainer;
 import org.jboss.weld.injection.spi.ResourceInjectionServices;
 import org.jboss.weld.manager.api.WeldManager;
+import org.jboss.weld.resources.spi.ClassFileServices;
+import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.servlet.api.ServletListener;
 
 /**
@@ -67,6 +79,8 @@ public class WeldServletLifecycle {
 
     private static final String EXPRESSION_FACTORY_NAME = "org.jboss.weld.el.ExpressionFactory";
 
+    private static final String CONTEXT_PARAM_ARCHIVE_ISOLATION = WeldServletLifecycle.class.getPackage().getName() + ".archive.isolation";
+
     private final transient CDI11Bootstrap bootstrap;
 
     private final transient ServletListener weldListener;
@@ -89,7 +103,7 @@ public class WeldServletLifecycle {
         }
     }
 
-    void initialize(ServletContext context, URLScanner scanner) {
+    void initialize(ServletContext context) {
 
         WeldManager manager = (WeldManager) context.getAttribute(BEAN_MANAGER_ATTRIBUTE_NAME);
         if (manager != null) {
@@ -97,22 +111,31 @@ public class WeldServletLifecycle {
         }
 
         if (isBootstrapNeeded) {
-            ServletDeployment deployment = createServletDeployment(context, bootstrap, scanner);
+            CDI11Deployment deployment = createDeployment(context, bootstrap);
+            ResourceInjectionServices resourceInjectionServices = new ServletResourceInjectionServices() {
+            };
             try {
-                deployment.getWebAppBeanDeploymentArchive().getServices().add(ResourceInjectionServices.class, new ServletResourceInjectionServices() {
-                });
+                for (BeanDeploymentArchive archive : deployment.getBeanDeploymentArchives()) {
+                    archive.getServices().add(ResourceInjectionServices.class, resourceInjectionServices);
+                }
             } catch (NoClassDefFoundError e) {
                 // Support GAE
                 log.warn("@Resource injection not available in simple beans");
             }
             String id = context.getInitParameter(CONTEXT_ID_KEY);
-            if(id != null) {
+            if (id != null) {
                 bootstrap.startContainer(id, Environments.SERVLET, deployment);
             } else {
                 bootstrap.startContainer(Environments.SERVLET, deployment);
             }
             bootstrap.startInitialization();
-            manager = bootstrap.getManager(deployment.getWebAppBeanDeploymentArchive());
+
+            /*
+             * This should work fine as all bean archives share the same classloader. The only difference this can make is per-BDA (CDI 1.0 style) enablement of
+             * alternatives, interceptors and decorators. Nothing we can do about that.
+             */
+            manager = bootstrap.getManager(deployment.getBeanDeploymentArchives().iterator().next());
+
             // Push the manager into the servlet context so we can access in JSF
             context.setAttribute(BEAN_MANAGER_ATTRIBUTE_NAME, manager);
         }
@@ -179,8 +202,33 @@ public class WeldServletLifecycle {
      * @param bootstrap the bootstrap
      * @return new servlet deployment
      */
-    protected ServletDeployment createServletDeployment(ServletContext context, Bootstrap bootstrap, URLScanner scanner) {
-        return new ServletDeployment(context, bootstrap, scanner);
+    protected CDI11Deployment createDeployment(ServletContext context, CDI11Bootstrap bootstrap) {
+
+        ResourceLoader resourceLoader = new WeldResourceLoader();
+
+        final Iterable<Metadata<Extension>> extensions = bootstrap.loadExtensions(WeldResourceLoader.getClassLoader());
+        final TypeDiscoveryConfiguration typeDiscoveryConfiguration = bootstrap.startExtensions(extensions);
+
+        DiscoveryStrategy strategy = DiscoveryStrategyFactory.create(resourceLoader, bootstrap, typeDiscoveryConfiguration, true);
+
+        strategy.setScanner(new WebAppBeanArchiveScanner(resourceLoader, bootstrap, context));
+        Set<WeldBeanDeploymentArchive> beanDeploymentArchives = strategy.performDiscovery();
+
+        String isolation = context.getInitParameter(CONTEXT_PARAM_ARCHIVE_ISOLATION);
+
+        if (isolation != null && Boolean.valueOf(isolation).equals(Boolean.FALSE)) {
+            log.debug("Archive isolation disabled - only one bean archive will be created");
+            beanDeploymentArchives = Collections.singleton(WeldBeanDeploymentArchive.merge(bootstrap, beanDeploymentArchives));
+        } else {
+            log.debug("Archive isolation enabled - creating multiple isolated bean archives if needed");
+        }
+
+        CDI11Deployment deployment = new WeldDeployment(resourceLoader, bootstrap, beanDeploymentArchives, extensions);
+
+        if (strategy.getClassFileServices() != null) {
+            deployment.getServices().add(ClassFileServices.class, strategy.getClassFileServices());
+        }
+        return deployment;
     }
 
     /**

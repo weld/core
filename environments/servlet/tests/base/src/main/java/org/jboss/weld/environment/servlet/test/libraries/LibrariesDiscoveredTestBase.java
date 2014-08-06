@@ -1,17 +1,17 @@
 package org.jboss.weld.environment.servlet.test.libraries;
 
+import static org.jboss.weld.environment.servlet.test.util.Deployments.baseDeployment;
+import static org.junit.Assert.assertNotNull;
+
+import java.util.logging.Logger;
+
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.weld.environment.servlet.test.util.BeansXml;
+import org.jboss.shrinkwrap.impl.BeansXml;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import java.util.logging.Logger;
-
-import static org.jboss.weld.environment.servlet.test.util.Deployments.baseDeployment;
-import static org.junit.Assert.assertNotNull;
 
 @RunWith(Arquillian.class)
 public class LibrariesDiscoveredTestBase {

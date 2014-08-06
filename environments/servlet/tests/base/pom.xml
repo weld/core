@@ -55,6 +55,11 @@
             <artifactId>htmlunit</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-core-test-common</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>

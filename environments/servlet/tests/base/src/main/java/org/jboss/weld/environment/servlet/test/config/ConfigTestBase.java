@@ -17,17 +17,20 @@
 
 package org.jboss.weld.environment.servlet.test.config;
 
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.weld.environment.servlet.test.config.dos.DOSBean;
-import org.jboss.weld.environment.servlet.test.util.BeansXml;
-import org.jboss.weld.environment.servlet.test.util.Deployments;
-import org.junit.Assert;
-import org.junit.Test;
+import java.util.ArrayList;
+import java.util.Set;
 
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
-import java.util.Set;
+
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.shrinkwrap.impl.BeansXml;
+import org.jboss.shrinkwrap.impl.BeansXml.Exclude;
+import org.jboss.weld.environment.servlet.test.config.dos.DOSBean;
+import org.jboss.weld.environment.servlet.test.util.Deployments;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
@@ -35,16 +38,12 @@ import java.util.Set;
 public class ConfigTestBase {
 
     public static WebArchive baseDeployment(final Package... excludedPackages) {
-        BeansXml beansXml = new BeansXml() {
-            protected void appendExternal(StringBuilder xml) {
-                xml.append("<weld:scan>");
-                for (Package pckg : excludedPackages) {
-                    xml.append("<weld:exclude name=\"").append(pckg.getName()).append(".**\"/>");
-                }
-                xml.append("</weld:scan>");
-            }
-        };
-        beansXml.setSchema(BeansXml.FULL_SCHEMA);
+        BeansXml beansXml = new BeansXml();
+        ArrayList<Exclude> filters = new ArrayList<Exclude>();
+        for (Package pckg : excludedPackages) {
+            filters.add(Exclude.match(pckg.getName() + ".**"));
+        }
+        beansXml.excludeFilters(filters.toArray(new Exclude[filters.size()]));
         return Deployments.baseDeployment(beansXml);
     }
 
