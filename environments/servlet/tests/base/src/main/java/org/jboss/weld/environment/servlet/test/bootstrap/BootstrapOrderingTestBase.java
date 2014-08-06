@@ -1,9 +1,10 @@
 package org.jboss.weld.environment.servlet.test.bootstrap;
 
-import org.jboss.shrinkwrap.api.asset.Asset;
-import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Test;
+import static org.jboss.weld.environment.servlet.test.bootstrap.EventHolder.events;
+import static org.jboss.weld.environment.servlet.test.util.Deployments.baseDeployment;
+import static org.jboss.weld.environment.servlet.test.util.Deployments.extendDefaultWebXml;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AfterDeploymentValidation;
@@ -11,11 +12,10 @@ import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
 import javax.servlet.ServletContextEvent;
 
-import static org.jboss.weld.environment.servlet.test.bootstrap.EventHolder.events;
-import static org.jboss.weld.environment.servlet.test.util.Deployments.baseDeployment;
-import static org.jboss.weld.environment.servlet.test.util.Deployments.extendDefaultWebXml;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import org.jboss.shrinkwrap.api.asset.Asset;
+import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.Test;
 
 public class BootstrapOrderingTestBase {
 

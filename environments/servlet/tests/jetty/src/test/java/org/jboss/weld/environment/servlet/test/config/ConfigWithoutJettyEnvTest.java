@@ -23,7 +23,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.weld.environment.servlet.test.util.BeansXml;
+import org.jboss.shrinkwrap.impl.BeansXml;
 import org.jboss.weld.environment.servlet.test.util.Deployments;
 import org.junit.runner.RunWith;
 
@@ -34,14 +34,14 @@ import org.junit.runner.RunWith;
 public class ConfigWithoutJettyEnvTest extends ConfigTestBase {
 
     public static final String DEFAULT_WEB_XML_START = "<web-app>";
-    public static final String DEFAULT_WEB_XML_BODY = 
-        Deployments.toListener("org.jboss.weld.environment.servlet.Listener") + 
+    public static final String DEFAULT_WEB_XML_BODY =
+        Deployments.toListener("org.jboss.weld.environment.servlet.Listener") +
         Deployments.toListener("org.jboss.weld.environment.servlet.BeanManagerResourceBindingListener");
-    
+
     public static final String DEFAULT_WEB_XML_PREFIX = DEFAULT_WEB_XML_START + DEFAULT_WEB_XML_BODY;
     public static final String DEFAULT_WEB_XML_SUFFIX = "</web-app>";
 
-    public static final Asset WEB_XML = 
+    public static final Asset WEB_XML =
         new ByteArrayAsset((DEFAULT_WEB_XML_PREFIX + DEFAULT_WEB_XML_SUFFIX).getBytes());
 
     @Deployment

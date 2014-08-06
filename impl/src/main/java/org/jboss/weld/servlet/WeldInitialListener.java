@@ -25,6 +25,10 @@ package org.jboss.weld.servlet;
 import static org.jboss.weld.servlet.ConversationFilter.CONVERSATION_FILTER_REGISTERED;
 import static org.jboss.weld.servlet.api.InitParameters.CONVERSATION_CONTEXT_LAZY_PARAM;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import javax.enterprise.inject.spi.CDI;
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
@@ -40,6 +44,7 @@ import org.jboss.weld.literal.DestroyedLiteral;
 import org.jboss.weld.literal.InitializedLiteral;
 import org.jboss.weld.logging.ServletLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.manager.BeanManagers;
 import org.jboss.weld.servlet.api.InitParameters;
 import org.jboss.weld.servlet.api.helpers.AbstractServletListener;
 import org.jboss.weld.servlet.spi.HttpContextActivationFilter;
@@ -71,14 +76,13 @@ public class WeldInitialListener extends AbstractServletListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         final ServletContext ctx = sce.getServletContext();
-        // if running in OSGi environment, use the context id obtained from servlet context
+        // First try to use the context id obtained from the servlet context (OSGi, Servlet containers, etc.)
         if (beanManager == null) {
             String contextId = ctx.getInitParameter(Container.CONTEXT_ID_KEY);
             if (contextId != null) {
-                Container instance = Container.instance(contextId);
-                if (instance.beanDeploymentArchives().size() == 1) {
-                    this.beanManager = instance.beanDeploymentArchives().values().iterator().next();
-                }
+                List<BeanManagerImpl> managers = new ArrayList<BeanManagerImpl>(Container.instance(contextId).beanDeploymentArchives().values());
+                Collections.sort(managers, BeanManagers.ID_COMPARATOR);
+                beanManager = managers.get(0);
             }
         }
         // servlet containers may not be able to inject fields in a servlet listener

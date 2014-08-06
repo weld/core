@@ -48,38 +48,14 @@
         </dependency>
 
         <dependency>
-            <groupId>org.jboss.weld</groupId>
-            <artifactId>weld-spi</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>javax.jms</groupId>
-                    <artifactId>jms</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>javax.ejb</groupId>
-                    <artifactId>ejb-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>javax.jta</groupId>
-                    <artifactId>transaction-api</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>org.jboss.weld.environment</groupId>
+            <artifactId>weld-environment-common</artifactId>
         </dependency>
 
         <dependency>
             <groupId>org.jboss.logging</groupId>
             <artifactId>jboss-logging-processor</artifactId>
             <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jboss.logging</groupId>
-            <artifactId>jboss-logging</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jboss.weld</groupId>
-            <artifactId>weld-core-impl</artifactId>
         </dependency>
 
         <dependency>
@@ -96,7 +72,7 @@
         <dependency>
             <groupId>org.jboss</groupId>
             <artifactId>jandex</artifactId>
-            <scope>provided</scope>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -151,7 +127,7 @@
                     </archive>
                 </configuration>
             </plugin>
-	    <!-- There is a problem compiling WeldSELogger with a groovy compiler and there also can't be 
+	    <!-- There is a problem compiling WeldSELogger with a groovy compiler and there also can't be
             2 compilers specified for one pom.xml, so the compilation is splitted: javac for main,groovyc for tests. -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

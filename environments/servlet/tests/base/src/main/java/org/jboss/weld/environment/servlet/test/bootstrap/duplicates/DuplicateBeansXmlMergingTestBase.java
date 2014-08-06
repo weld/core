@@ -22,12 +22,12 @@ import static org.jboss.weld.environment.servlet.test.util.Deployments.baseDeplo
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.weld.environment.servlet.test.util.BeansXml;
+import org.jboss.shrinkwrap.impl.BeansXml;
 import org.junit.Test;
 
 /**
  * Testing that there are no duplicate interceptors added by Weld.
- * 
+ *
  * @author Matej Briskar
  */
 public class DuplicateBeansXmlMergingTestBase {

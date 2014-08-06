@@ -15,7 +15,7 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class CrossContextForwardTest extends CrossContextForwardTestBase {
 
-    
+
     @Deployment(name = CrossContextForwardTestBase.FIRST, testable = false)
     public static WebArchive createFirstTestArchive() {
         return CrossContextForwardTestBase.createFirstTestArchive().addAsWebInfResource(JETTY_ENV, "jetty-env.xml");
@@ -25,8 +25,5 @@ public class CrossContextForwardTest extends CrossContextForwardTestBase {
     public static WebArchive createSecondTestArchive() {
         return CrossContextForwardTestBase.createSecondTestArchive().addAsWebInfResource(JETTY_ENV, "jetty-env.xml");
     }
-
-
-    
 
 }

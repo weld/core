@@ -1,12 +1,12 @@
 package org.jboss.weld.environment.servlet.test.examples;
 
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Test;
-
 import static org.jboss.weld.environment.servlet.test.util.Deployments.baseDeployment;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
+
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.Test;
 
 public class ExampleTestBase {
 
