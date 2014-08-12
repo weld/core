@@ -29,6 +29,7 @@ import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -331,9 +332,18 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
     @Override
     public void invalidate() {
         ManagedConversation currentConversation = getCurrentConversation();
-        for (ManagedConversation conversation : getConversations()) {
-            if (!currentConversation.equals(conversation) && !conversation.isTransient() && isExpired(conversation)) {
-                conversation.end();
+        Map<String, ManagedConversation> conversations = getConversationMap();
+        synchronized (conversations) {
+            Iterator<Entry<String, ManagedConversation>> iterator = conversations.entrySet().iterator();
+            while (iterator.hasNext()) {
+                ManagedConversation conversation = iterator.next().getValue();
+                if (!currentConversation.equals(conversation) && !conversation.isTransient() && isExpired(conversation)) {
+                    // Try to lock the conversation and log warning if not successful - unlocking should not be necessary
+                    if(!conversation.lock(0)) {
+                        ConversationLogger.LOG.endLockedConversation(conversation.getId());
+                    }
+                    conversation.end();
+                }
             }
         }
     }
@@ -421,7 +431,8 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
 
     @Override
     public Collection<ManagedConversation> getConversations() {
-        return getConversationMap().values();
+        // Don't return the map view to avoid concurrency issues
+        return new HashSet<ManagedConversation>(getConversationMap().values());
     }
 
     private void checkIsAssociated() {
