@@ -23,13 +23,17 @@
 package org.jboss.weld.context;
 
 import static org.jboss.weld.context.conversation.ConversationIdGenerator.CONVERSATION_ID_GENERATOR_ATTRIBUTE_NAME;
+import static org.jboss.weld.logging.Category.CONVERSATION;
+import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.ConversationMessage.NO_CONVERSATION_FOUND_TO_RESTORE;
+import static org.jboss.weld.logging.messages.ConversationMessage.END_LOCKED_CONVERSATION;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -46,6 +50,7 @@ import org.jboss.weld.context.beanstore.NamingScheme;
 import org.jboss.weld.context.conversation.ConversationIdGenerator;
 import org.jboss.weld.context.conversation.ConversationImpl;
 import org.jboss.weld.logging.messages.ConversationMessage;
+import org.slf4j.cal10n.LocLogger;
 
 
 /**
@@ -56,6 +61,8 @@ import org.jboss.weld.logging.messages.ConversationMessage;
  * @author George Sapountzis
  */
 public abstract class AbstractConversationContext<R, S> extends AbstractBoundContext<R> implements ConversationContext {
+
+    private static final LocLogger log = loggerFactory().getLogger(CONVERSATION);
 
     private static final String CURRENT_CONVERSATION_ATTRIBUTE_NAME = ConversationContext.class.getName() + ".currentConversation";
     public static final String CONVERSATIONS_ATTRIBUTE_NAME = ConversationContext.class.getName() + ".conversations";
@@ -288,9 +295,18 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
     @Override
     public void invalidate() {
         ManagedConversation currentConversation = getCurrentConversation();
-        for (ManagedConversation conversation : getConversations()) {
-            if (!currentConversation.equals(conversation) && !conversation.isTransient() && isExpired(conversation)) {
-                conversation.end();
+        Map<String, ManagedConversation> conversations = getConversationMap();
+        synchronized (conversations) {
+            Iterator<Entry<String, ManagedConversation>> iterator = conversations.entrySet().iterator();
+            while (iterator.hasNext()) {
+                ManagedConversation conversation = iterator.next().getValue();
+                if (!currentConversation.equals(conversation) && !conversation.isTransient() && isExpired(conversation)) {
+                    // Try to lock the conversation and log warning if not successful - unlocking should not be necessary
+                    if (!conversation.lock(0)) {
+                        log.warn(END_LOCKED_CONVERSATION, conversation.getId());
+                    }
+                    conversation.end();
+                }
             }
         }
     }
@@ -347,7 +363,11 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
     }
 
     public Collection<ManagedConversation> getConversations() {
-        return getConversationMap().values();
+        // Don't return the map view to avoid concurrency issues
+        Map<String, ManagedConversation> conversations = getConversationMap();
+        synchronized (conversations) {
+            return new HashSet<ManagedConversation>(conversations.values());
+        }
     }
 
     private Map<String, ManagedConversation> getConversationMap() {
