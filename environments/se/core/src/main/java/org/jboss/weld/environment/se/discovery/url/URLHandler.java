@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.environment.se.discovery.url;
 
-
 /**
  * Represents a handler for handling the url path to the directory of classes or to the jar files.
  *
@@ -31,4 +30,9 @@ interface URLHandler {
      *         enabled.
      */
     BeanArchiveBuilder handle(String urlPath);
+
+    /**
+     * @return true if the specific URLHandler implementation is able to hande the archrive with the given urlPath.
+     */
+    boolean canHandle(String urlPath);
 }

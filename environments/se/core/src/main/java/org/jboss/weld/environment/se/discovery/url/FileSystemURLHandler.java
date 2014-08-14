@@ -18,8 +18,6 @@ package org.jboss.weld.environment.se.discovery.url;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -31,6 +29,7 @@ import java.util.zip.ZipFile;
 
 import org.jboss.logging.Logger;
 import org.jboss.weld.bootstrap.api.Bootstrap;
+import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.environment.se.logging.WeldSELogger;
 
 /**
@@ -40,49 +39,28 @@ import org.jboss.weld.environment.se.logging.WeldSELogger;
  * @author Marko Luksa
  */
 public class FileSystemURLHandler implements URLHandler {
-
     private static final Logger log = Logger.getLogger(FileSystemURLHandler.class);
 
-
     protected static final String CLASS_FILE_EXTENSION = ".class";
-    private static final String BEANS_XML = "beans.xml";
 
     private final List<String> discoveredClasses = new ArrayList<String>();
-    private URL discoveredBeansXmlUrl = null;
     private final Bootstrap bootstrap;
+    private BeansXml beansXml;
 
-    public FileSystemURLHandler(Bootstrap bootstrap) {
+    public FileSystemURLHandler(Bootstrap bootstrap, BeansXml beansXml) {
         this.bootstrap = bootstrap;
+        this.beansXml = beansXml;
+    }
+
+    @Override
+    public boolean canHandle(String urlPath) {
+        return true;
     }
 
     @Override
     public BeanArchiveBuilder handle(String urlPath) {
         try {
             log.tracev("scanning: {0}", urlPath);
-
-            // WebStart support: get path to local cached copy of remote JAR file
-            if (urlPath.startsWith("http:") || urlPath.startsWith("https:")) {
-                // Class loader should be an instance of com.sun.jnlp.JNLPClassLoader
-                ClassLoader jnlpClassLoader = WeldSEResourceLoader.getClassLoader();
-                try {
-                    // Try to call com.sun.jnlp.JNLPClassLoader#getJarFile(URL) from JDK 6
-                    Method m = jnlpClassLoader.getClass().getMethod("getJarFile", URL.class);
-                    // returns a reference to the local cached copy of the JAR
-                    ZipFile jarFile = (ZipFile) m.invoke(jnlpClassLoader, new URL(urlPath));
-                    urlPath = jarFile.getName();
-                } catch (MalformedURLException mue) {
-                    WeldSELogger.LOG.couldNotReadEntries(urlPath, mue);
-                } catch (NoSuchMethodException nsme) {
-                    WeldSELogger.LOG.unexpectedClassLoader(nsme);
-                } catch (IllegalArgumentException iarge) {
-                    WeldSELogger.LOG.unexpectedClassLoader(iarge);
-                } catch (InvocationTargetException ite) {
-                    WeldSELogger.LOG.jnlpClassLoaderInternalException(ite);
-                } catch (Exception iacce) {
-                    WeldSELogger.LOG.jnlpClassLoaderInvocationException(iacce);
-                }
-            }
-
             File file = new File(urlPath);
             if (file.isDirectory()) {
                 handleDirectory(file, null);
@@ -141,12 +119,6 @@ public class FileSystemURLHandler implements URLHandler {
     protected void addToDiscovered(String name, URL url) {
         if (name.endsWith(CLASS_FILE_EXTENSION)) {
             discoveredClasses.add(filenameToClassname(name));
-        } else if (name.endsWith(BEANS_XML)) {
-            if (discoveredBeansXmlUrl == null) {
-                discoveredBeansXmlUrl = url;
-            } else {
-                WeldSELogger.LOG.tooManyBeansXml();
-            }
         }
     }
 
@@ -161,11 +133,11 @@ public class FileSystemURLHandler implements URLHandler {
         return discoveredClasses;
     }
 
-    public URL getDiscoveredBeansXmlUrl() {
-        return discoveredBeansXmlUrl;
+    public BeansXml getDiscoveredBeansXml() {
+        return beansXml;
     }
 
     protected BeanArchiveBuilder createBeanArchiveBuilder() {
-        return new BeanArchiveBuilder(null, null, discoveredClasses, discoveredBeansXmlUrl, bootstrap);
+        return new BeanArchiveBuilder(null, null, discoveredClasses, beansXml);
     }
 }

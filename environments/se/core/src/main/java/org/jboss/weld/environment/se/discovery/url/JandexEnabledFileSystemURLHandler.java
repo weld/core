@@ -23,6 +23,7 @@ import java.net.URL;
 import org.jboss.jandex.Index;
 import org.jboss.jandex.Indexer;
 import org.jboss.weld.bootstrap.api.Bootstrap;
+import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.environment.se.logging.WeldSELogger;
 
 /**
@@ -34,8 +35,8 @@ public class JandexEnabledFileSystemURLHandler extends FileSystemURLHandler {
 
     private final Indexer indexer = new Indexer();
 
-    public JandexEnabledFileSystemURLHandler(Bootstrap bootstrap) {
-        super(bootstrap);
+    public JandexEnabledFileSystemURLHandler(Bootstrap bootstrap, BeansXml beansXml) {
+        super(bootstrap, beansXml);
     }
 
     private void addToIndex(URL url) {
@@ -66,7 +67,7 @@ public class JandexEnabledFileSystemURLHandler extends FileSystemURLHandler {
 
     @Override
     protected BeanArchiveBuilder createBeanArchiveBuilder() {
-        return new BeanArchiveBuilder(null, buildJandexIndex(), getDiscoveredClasses(), getDiscoveredBeansXmlUrl(), getBootstrap());
+        return new BeanArchiveBuilder(null, buildJandexIndex(), getDiscoveredClasses(), getDiscoveredBeansXml());
     }
 
     public Index buildJandexIndex() {

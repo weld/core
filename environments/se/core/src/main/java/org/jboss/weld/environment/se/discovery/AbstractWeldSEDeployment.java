@@ -26,11 +26,9 @@ import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.bootstrap.spi.Metadata;
 
 /**
- * Implements the basic requirements of a {@link Deployment}. Provides a service
- * registry.
+ * Implements the basic requirements of a {@link Deployment}. Provides a service registry.
  * <p/>
- * Suitable for extension by those who need to build custom {@link Deployment}
- * implementations.
+ * Suitable for extension by those who need to build custom {@link Deployment} implementations.
  *
  * @author Pete Muir
  * @author Ales Justin
@@ -38,7 +36,9 @@ import org.jboss.weld.bootstrap.spi.Metadata;
 public abstract class AbstractWeldSEDeployment implements CDI11Deployment {
 
     public static final String BEANS_XML = "META-INF/beans.xml";
-    public static final String[] RESOURCES = {BEANS_XML};
+    public static final String JANDEX_INDEX_NAME = "META-INF/jandex.idx";
+
+    public static final String[] RESOURCES = { BEANS_XML };
 
     private final ServiceRegistry serviceRegistry;
     private final Iterable<Metadata<Extension>> extensions;
@@ -55,6 +55,4 @@ public abstract class AbstractWeldSEDeployment implements CDI11Deployment {
     public Iterable<Metadata<Extension>> getExtensions() {
         return extensions;
     }
-
-
 }

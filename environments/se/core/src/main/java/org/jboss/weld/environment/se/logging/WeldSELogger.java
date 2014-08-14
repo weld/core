@@ -63,8 +63,9 @@ public interface WeldSELogger extends BasicLogger {
     @Message(id = 8, value = "Error loading file {0}", format = Format.MESSAGE_FORMAT)
     void errorLoadingFile(Object param1);
 
-    @Message(id = 9, value = "There is more than one beans.xml in the archive", format = Format.MESSAGE_FORMAT)
-    IllegalArgumentException tooManyBeansXml();
+    @LogMessage(level = Level.WARN)
+    @Message(id = 9, value = "Could not close the stream for of the jandex index file for {0}.", format = Format.MESSAGE_FORMAT)
+    void couldNotCloseStreamOfJandexIndex(Object param1, @Cause Throwable cause);
 
     @LogMessage(level = Level.WARN)
     @Message(id = 10, value = "Could not open the stream on the url {0} when adding to the jandex index.", format = Format.MESSAGE_FORMAT)
@@ -97,5 +98,4 @@ public interface WeldSELogger extends BasicLogger {
 
     @Message(id = 19, value = "Jandex index is null in the constructor of class: {0}", format = Format.MESSAGE_FORMAT)
     IllegalStateException jandexIndexNotCreated(Object param1);
-
 }
