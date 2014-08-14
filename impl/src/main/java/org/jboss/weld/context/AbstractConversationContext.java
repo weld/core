@@ -432,7 +432,10 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
     @Override
     public Collection<ManagedConversation> getConversations() {
         // Don't return the map view to avoid concurrency issues
-        return new HashSet<ManagedConversation>(getConversationMap().values());
+        Map<String, ManagedConversation> conversations = getConversationMap();
+        synchronized (conversations) {
+            return new HashSet<ManagedConversation>(conversations.values());
+        }
     }
 
     private void checkIsAssociated() {
