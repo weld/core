@@ -92,7 +92,7 @@ contents:
 ---------------------------------------------------------------
 
 and make it available to your deployment by adding this to the bottom
-of`web.xml`:
+of `web.xml`:
 
 [source.XML, xml]
 -------------------------------------------------------------
@@ -163,6 +163,25 @@ deployment by adding this to the bottom of `web.xml`:
 
 Jetty only allows you to bind entries to `java:comp/env`, so the
 BeanManager will be available at `java:comp/env/BeanManager`.
+
+Since Jetty 8 the class `org.eclipse.jetty.servlet.ServletContextHandler.Decorator` is not visible from the web application.
+Therefore, one more step is required - we have to tell Jetty not to hide this system class.  
+
+Simply place the following `jetty-context.xml` file in the WEB-INF dir:
+
+[source.XML, xml]
+-------------------------------------------------------------
+<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure.dtd">
+<Configure class="org.eclipse.jetty.webapp.WebAppContext">
+    <Set name="serverClasses">
+        <Array type="java.lang.String">
+            <Item>-org.eclipse.jetty.servlet.ServletContextHandler.Decorator</Item>
+        </Array>
+    </Set>
+</Configure>
+-------------------------------------------------------------
+
+See also http://www.eclipse.org/jetty/documentation/current/jetty-classloading.html#setting-server-classes[Jetty Classloading documentation].
 
 Weld also supports Servlet and Filter injection in Jetty containers.
 Listener injection should also work on Jetty 9.1.1 and newer versions.
