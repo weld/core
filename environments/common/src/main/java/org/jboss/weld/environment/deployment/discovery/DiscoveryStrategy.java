@@ -2,7 +2,6 @@ package org.jboss.weld.environment.deployment.discovery;
 
 import java.util.Set;
 
-import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.environment.deployment.WeldBeanDeploymentArchive;
 import org.jboss.weld.resources.spi.ClassFileServices;
 
@@ -22,7 +21,7 @@ public interface DiscoveryStrategy {
 
     /**
      *
-     * @return the set of discovered {@link BeanDeploymentArchive}s
+     * @return the set of discovered {@link WeldBeanDeploymentArchive}s
      */
     Set<WeldBeanDeploymentArchive> performDiscovery();
 
