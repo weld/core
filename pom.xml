@@ -34,7 +34,7 @@
         <arquillian.jetty.version>1.0.0.CR2</arquillian.jetty.version>
         <arquillian.glassfish.version>1.0.0.CR1</arquillian.glassfish.version>
         <atinject.tck.version>1</atinject.tck.version>
-        <build.config.version>5</build.config.version>
+        <build.config.version>6</build.config.version>
         <cdi.tck-1-2.version>1.2.1.Final</cdi.tck-1-2.version>
         <cdi.tck-2-0.version>2.0.0-SNAPSHOT</cdi.tck-2-0.version>
         <classfilewriter.version>1.0.4.Final</classfilewriter.version>
