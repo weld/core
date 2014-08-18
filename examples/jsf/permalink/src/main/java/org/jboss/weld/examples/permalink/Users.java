@@ -27,7 +27,7 @@ import java.io.Serializable;
  */
 @SessionScoped
 public class Users implements Serializable {
-    private static long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
     private String username;
 
     public String getUsername() {
