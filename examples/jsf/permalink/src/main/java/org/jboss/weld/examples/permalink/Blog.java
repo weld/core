@@ -162,7 +162,7 @@ public class Blog {
     }
 
     public Set<BlogEntry> getEntriesForPageAsSet() {
-        return new LinkedHashSet(entriesForPage);
+        return new LinkedHashSet<BlogEntry>(entriesForPage);
     }
 
     public int getNumEntriesOnPage() {
