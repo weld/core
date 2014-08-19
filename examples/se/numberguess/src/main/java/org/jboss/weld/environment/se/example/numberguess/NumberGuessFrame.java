@@ -16,18 +16,24 @@
  */
 package org.jboss.weld.environment.se.example.numberguess;
 
-import org.jboss.weld.environment.se.events.ContainerInitialized;
+import java.awt.CardLayout;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
-import java.awt.CardLayout;
+
+import org.jboss.weld.environment.se.events.ContainerInitialized;
 
 /**
  * Swing-based number guess example, main application frame.
  *
  * @author Peter Royle
  */
+@ApplicationScoped
 public class NumberGuessFrame extends javax.swing.JFrame {
+
+    private static final long serialVersionUID = 1L;
+
     @Inject
     private Game game;
 
@@ -46,7 +52,6 @@ public class NumberGuessFrame extends javax.swing.JFrame {
     /**
      * This method is called to initialize the form.
      */
-    @SuppressWarnings("unchecked")
     private void initComponents() {
 
         borderPanel = new javax.swing.JPanel();

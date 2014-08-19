@@ -16,4 +16,4 @@
     limitations under the License.
 
 -->
-<beans></beans>
+<beans xmlns="http://xmlns.jcp.org/xml/ns/javaee" bean-discovery-mode="annotated" version="1.1"/>

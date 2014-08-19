@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.environment.se.example.numberguess;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 /**
@@ -24,6 +25,7 @@ import javax.inject.Inject;
  *
  * @author Peter Royle
  */
+@Dependent
 public class MessageGenerator {
     @Inject
     private Game game;

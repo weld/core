@@ -21,8 +21,7 @@ import javax.enterprise.inject.Produces;
 
 @ApplicationScoped
 public class Generator {
-    private static final long serialVersionUID = -7213673465118041882L;
-    private java.util.Random random = new java.util.Random(System.currentTimeMillis());
+    private final java.util.Random random = new java.util.Random(System.currentTimeMillis());
     private int maxNumber = 100;
 
     java.util.Random getRandom() {
