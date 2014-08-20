@@ -114,41 +114,43 @@ public class DefaultBeanArchiveScanner implements BeanArchiveScanner {
 
             if(ref.lastIndexOf(JAR_URL_SEPARATOR) > 0) {
                 ref = ref.substring(0, ref.lastIndexOf(JAR_URL_SEPARATOR));
-                if (ref.startsWith(PROTOCOL_FILE_PART)) {
-                    ref = ref.substring(PROTOCOL_FILE_PART.length());
-                }
-            } else {
-                log.warnv("Unable to adapt JAR file URL: {0}, using its external form instead", url);
-                ref = url.toExternalForm();
             }
+            return getBeanArchiveReferenceForJar(ref, url);
         } else {
-
-            // WebStart support: get path to local cached copy of remote JAR file
-            if (PROCOTOL_HTTP.equals(url.getProtocol()) || PROCOTOL_HTTPS.equals(url.getProtocol())) {
-                // Class loader should be an instance of com.sun.jnlp.JNLPClassLoader
-                ClassLoader jnlpClassLoader = WeldResourceLoader.getClassLoader();
-                try {
-                    // Try to call com.sun.jnlp.JNLPClassLoader#getJarFile(URL) from JDK 6
-                    Method m = jnlpClassLoader.getClass().getMethod("getJarFile", URL.class);
-                    // returns a reference to the local cached copy of the JAR
-                    ZipFile jarFile = (ZipFile) m.invoke(jnlpClassLoader, url);
-                    ref = jarFile.getName();
-                } catch (NoSuchMethodException nsme) {
-                    CommonLogger.LOG.unexpectedClassLoader(nsme);
-                } catch (IllegalArgumentException iarge) {
-                    CommonLogger.LOG.unexpectedClassLoader(iarge);
-                } catch (InvocationTargetException ite) {
-                    CommonLogger.LOG.jnlpClassLoaderInternalException(ite);
-                } catch (Exception iacce) {
-                    CommonLogger.LOG.jnlpClassLoaderInvocationException(iacce);
-                }
-            }
-
-            if (ref == null) {
-                ref = url.toExternalForm();
-            }
+            log.warnv("Unable to adapt URL: {0}, using its external form instead", url);
+            ref = url.toExternalForm();
         }
         log.debugv("Resolved bean archive reference: {0} for URL: {1}", ref, url);
         return ref;
+    }
+
+    protected String getBeanArchiveReferenceForJar(String path, URL fallback) {
+        // jar:file:
+        if (path.startsWith(PROTOCOL_FILE_PART)) {
+            return path.substring(PROTOCOL_FILE_PART.length());
+        }
+        // jar:http:
+        if (path.startsWith(PROCOTOL_HTTP) || path.startsWith(PROCOTOL_HTTPS)) {
+            // WebStart support: get path to local cached copy of remote JAR file
+            // Class loader should be an instance of com.sun.jnlp.JNLPClassLoader
+            ClassLoader jnlpClassLoader = WeldResourceLoader.getClassLoader();
+            try {
+                // Try to call com.sun.jnlp.JNLPClassLoader#getJarFile(URL) from JDK 6
+                Method m = jnlpClassLoader.getClass().getMethod("getJarFile", URL.class);
+                // returns a reference to the local cached copy of the JAR
+                ZipFile jarFile = (ZipFile) m.invoke(jnlpClassLoader, new URL(path));
+                return jarFile.getName();
+            } catch (NoSuchMethodException nsme) {
+                CommonLogger.LOG.unexpectedClassLoader(nsme);
+            } catch (IllegalArgumentException iarge) {
+                CommonLogger.LOG.unexpectedClassLoader(iarge);
+            } catch (InvocationTargetException ite) {
+                CommonLogger.LOG.jnlpClassLoaderInternalException(ite);
+            } catch (Exception iacce) {
+                CommonLogger.LOG.jnlpClassLoaderInvocationException(iacce);
+            }
+        }
+        log.warnv("Unable to adapt JAR file URL: {0}, using its external form instead", path);
+        return fallback.toExternalForm();
     }
 }
