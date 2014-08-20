@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.tests.unit.resource;
 
-import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.AbstractDeployment;
 import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.BeanDeploymentArchiveImpl;
 import org.jboss.weld.bean.builtin.ee.StaticEEResourceProducerField;
 import org.jboss.weld.bootstrap.WeldBootstrap;
@@ -25,6 +24,7 @@ import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.injection.spi.InjectionServices;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.mock.AbstractDeployment;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

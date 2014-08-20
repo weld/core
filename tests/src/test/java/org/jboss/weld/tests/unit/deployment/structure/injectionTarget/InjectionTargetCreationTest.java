@@ -19,19 +19,14 @@ package org.jboss.weld.tests.unit.deployment.structure.injectionTarget;
 import static org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.AbstractDeployment.transform;
 import static org.testng.Assert.assertNotNull;
 
-import java.util.Collection;
-
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.InjectionTarget;
 
-import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.AbstractDeployment;
+import org.jboss.weld.mock.AbstractDeployment;
 import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.BeanDeploymentArchiveImpl;
 import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.TestContainer;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
-import org.jboss.weld.bootstrap.spi.CDI11Deployment;
 import org.jboss.weld.bootstrap.spi.Deployment;
-import org.jboss.weld.bootstrap.spi.Metadata;
 import org.testng.annotations.Test;
 
 import com.google.common.collect.ImmutableSet;
@@ -49,7 +44,7 @@ public class InjectionTargetCreationTest {
         final FooExtension extension = new FooExtension();
 
         // Create a deployment, that we can use to mirror the structure of one Extension inside a BDA, and one outside
-        Deployment deployment = new AbstractCDI11Deployment(ImmutableSet.of(bda1, bda2), transform(extension)) {
+        Deployment deployment = new AbstractDeployment(ImmutableSet.of(bda1, bda2), transform(extension)) {
 
             public BeanDeploymentArchive loadBeanDeploymentArchive(Class<?> beanClass) {
                 // Return bda2 if it is Observer2. Stick anything else which this test isn't about in bda1
@@ -80,21 +75,5 @@ public class InjectionTargetCreationTest {
          * Verify that the BeanManager for BDA2 (which can see SimpleBean) is used to inject FooTarget
          */
         assertNotNull(instance.getBean());
-    }
-
-    private abstract static class AbstractCDI11Deployment extends AbstractDeployment implements CDI11Deployment {
-
-        public AbstractCDI11Deployment(BeanDeploymentArchive beanDeploymentArchive, Extension... extensions) {
-            super(beanDeploymentArchive, extensions);
-        }
-
-        public AbstractCDI11Deployment(BeanDeploymentArchive... beanDeploymentArchives) {
-            super(beanDeploymentArchives);
-        }
-
-        public AbstractCDI11Deployment(Collection<BeanDeploymentArchive> beanDeploymentArchives,
-                Iterable<Metadata<Extension>> extensions) {
-            super(beanDeploymentArchives, extensions);
-        }
     }
 }
