@@ -59,8 +59,9 @@ public interface CommonLogger extends WeldEnvironmentLogger {
     @Message(id = 13, value = "beans.xml defines unrecognized bean-discovery-mode value: {0}", format = Format.MESSAGE_FORMAT)
     IllegalStateException undefinedBeanDiscoveryValue(Object param1);
 
-    @Message(id = 14, value = "bean-discovery-mode=\"annotated\" support is disabled. Add org.jboss:jandex to the classpath to enable it.", format = Format.MESSAGE_FORMAT)
-    IllegalStateException annotatedBeanDiscoveryNotSupported();
+    @LogMessage(level = Level.INFO)
+    @Message(id = 14, value = "Falling back to Java Reflection for bean-discovery-mode=\"annotated\" discovery. Add org.jboss:jandex to the classpath to speed-up startup.", format = Format.MESSAGE_FORMAT)
+    void reflectionFallback();
 
     @Message(id = 15, value = "Unable to load annotation: {0}", format = Format.MESSAGE_FORMAT)
     IllegalStateException unableToLoadAnnotation(Object param1);
@@ -76,5 +77,9 @@ public interface CommonLogger extends WeldEnvironmentLogger {
 
     @Message(id = 19, value = "Jandex index is null in the constructor of class: {0}", format = Format.MESSAGE_FORMAT)
     IllegalStateException jandexIndexNotCreated(Object param1);
+
+    @LogMessage(level = Level.INFO)
+    @Message(id = 20, value = "Using jandex for bean discovery", format = Format.MESSAGE_FORMAT)
+    void usingJandex();
 
 }

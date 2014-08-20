@@ -28,6 +28,7 @@ import javax.enterprise.inject.Stereotype;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.TypeDiscoveryConfiguration;
 import org.jboss.weld.environment.deployment.WeldBeanDeploymentArchive;
+import org.jboss.weld.environment.logging.CommonLogger;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -39,7 +40,7 @@ import com.google.common.collect.ImmutableList;
  * @author Matej Briškár
  * @author Martin Kouba
  */
-public class ReflectionDiscoveryStrategy extends DefaultDiscoveryStrategy {
+public class ReflectionDiscoveryStrategy extends AbstractDiscoveryStrategy {
 
     private final List<Class<? extends Annotation>> metaAnnotations;
 
@@ -49,10 +50,12 @@ public class ReflectionDiscoveryStrategy extends DefaultDiscoveryStrategy {
         super(resourceLoader, bootstrap);
         this.typeDiscoveryConfiguration = typeDiscoveryConfiguration;
         this.metaAnnotations = ImmutableList.of(Stereotype.class, NormalScope.class);
+        registerHandler(new FileSystemBeanArchiveHandler());
     }
 
     @Override
     protected WeldBeanDeploymentArchive processAnnotatedDiscovery(BeanArchiveBuilder builder) {
+        CommonLogger.LOG.reflectionFallback();
         Iterator<String> classIterator = builder.getClassIterator();
         while (classIterator.hasNext()) {
             String className = classIterator.next();

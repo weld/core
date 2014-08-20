@@ -212,7 +212,7 @@ public class Weld {
 
         Deployment deployment=null;
         // Don't support bean-discovery-mode="annotated" if the jandex is not on the classpath
-        DiscoveryStrategy strategy = DiscoveryStrategyFactory.create(resourceLoader, bootstrap, typeDiscoveryConfiguration, false);
+        DiscoveryStrategy strategy = DiscoveryStrategyFactory.create(resourceLoader, bootstrap, typeDiscoveryConfiguration);
         Set<WeldBeanDeploymentArchive> discoveredArchives = strategy.performDiscovery();
 
         String isolation = AccessController.doPrivileged(new GetSystemPropertyAction(ARCHIVE_ISOLATION_SYSTEM_PROPERTY));

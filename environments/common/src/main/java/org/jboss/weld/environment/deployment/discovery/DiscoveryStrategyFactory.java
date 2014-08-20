@@ -18,6 +18,7 @@ package org.jboss.weld.environment.deployment.discovery;
 
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.TypeDiscoveryConfiguration;
+import org.jboss.weld.environment.logging.CommonLogger;
 import org.jboss.weld.environment.util.Reflections;
 import org.jboss.weld.resources.spi.ResourceLoader;
 
@@ -39,25 +40,15 @@ public final class DiscoveryStrategyFactory {
      * @param resourceLoader
      * @param bootstrap
      * @param typeDiscoveryConfiguration
-     * @param annotatedModeSupportEnabled If <code>true</code> the resulting strategy will support bean-discovery-mode="annotated" even if jandex is not on the
-     *        classpath
      * @return the discovery strategy
      */
-    public static DiscoveryStrategy create(ResourceLoader resourceLoader, Bootstrap bootstrap, TypeDiscoveryConfiguration typeDiscoveryConfiguration,
-            boolean annotatedModeSupportEnabled) {
-
-        DiscoveryStrategy strategy;
+    public static DiscoveryStrategy create(ResourceLoader resourceLoader, Bootstrap bootstrap, TypeDiscoveryConfiguration typeDiscoveryConfiguration) {
 
         if (Reflections.isClassLoadable(JANDEX_INDEX_CLASS_NAME, resourceLoader)) {
-            strategy = Reflections.newInstance(resourceLoader, JANDEX_DISCOVERY_STRATEGY_CLASS_NAME, resourceLoader, bootstrap, typeDiscoveryConfiguration);
-        } else {
-            if (annotatedModeSupportEnabled) {
-                strategy = new ReflectionDiscoveryStrategy(resourceLoader, bootstrap, typeDiscoveryConfiguration);
-            } else {
-                strategy = new DefaultDiscoveryStrategy(resourceLoader, bootstrap);
-            }
+            CommonLogger.LOG.usingJandex();
+            return Reflections.newInstance(resourceLoader, JANDEX_DISCOVERY_STRATEGY_CLASS_NAME, resourceLoader, bootstrap, typeDiscoveryConfiguration);
         }
-        return strategy;
+        return new ReflectionDiscoveryStrategy(resourceLoader, bootstrap, typeDiscoveryConfiguration);
     }
 
 }
