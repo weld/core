@@ -43,6 +43,7 @@ import org.jboss.weld.environment.deployment.discovery.DiscoveryStrategy;
 import org.jboss.weld.environment.deployment.discovery.DiscoveryStrategyFactory;
 import org.jboss.weld.environment.gwtdev.GwtDevHostedModeContainer;
 import org.jboss.weld.environment.jetty.JettyContainer;
+import org.jboss.weld.environment.servlet.deployment.ServletContextBeanArchiveHandler;
 import org.jboss.weld.environment.servlet.deployment.WebAppBeanArchiveScanner;
 import org.jboss.weld.environment.servlet.services.ServletResourceInjectionServices;
 import org.jboss.weld.environment.servlet.util.Reflections;
@@ -210,6 +211,7 @@ public class WeldServletLifecycle {
         final TypeDiscoveryConfiguration typeDiscoveryConfiguration = bootstrap.startExtensions(extensions);
 
         DiscoveryStrategy strategy = DiscoveryStrategyFactory.create(resourceLoader, bootstrap, typeDiscoveryConfiguration, true);
+        strategy.registerHandler(new ServletContextBeanArchiveHandler(context));
 
         strategy.setScanner(new WebAppBeanArchiveScanner(resourceLoader, bootstrap, context));
         Set<WeldBeanDeploymentArchive> beanDeploymentArchives = strategy.performDiscovery();

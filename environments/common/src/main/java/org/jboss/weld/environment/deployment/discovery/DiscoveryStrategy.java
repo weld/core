@@ -20,6 +20,13 @@ public interface DiscoveryStrategy {
     void setScanner(BeanArchiveScanner beanArchiveScanner);
 
     /**
+     * Register additional {@link BeanArchiveHandler} for handling discovered bean archives.
+     *
+     * @param handler the handler
+     */
+    void registerHandler(BeanArchiveHandler handler);
+
+    /**
      *
      * @return the set of discovered {@link WeldBeanDeploymentArchive}s
      */

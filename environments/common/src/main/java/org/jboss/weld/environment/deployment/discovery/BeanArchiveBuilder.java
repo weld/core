@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.environment.deployment.discovery;
 
-import java.net.URL;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -38,8 +37,6 @@ public class BeanArchiveBuilder {
     private final Map<String, Object> attributes;
 
     private final Set<String> classes;
-
-    private URL beansXmlUrl;
 
     private BeansXml beansXml;
 
@@ -99,15 +96,6 @@ public class BeanArchiveBuilder {
 
     public Object getAttribute(String key) {
         return attributes.get(key);
-    }
-
-    public URL getBeansXmlUrl() {
-        return beansXmlUrl;
-    }
-
-    public BeanArchiveBuilder setBeansXmlUrl(URL beansXmlUrl) {
-        this.beansXmlUrl = beansXmlUrl;
-        return this;
     }
 
     public Iterator<String> getClassIterator() {

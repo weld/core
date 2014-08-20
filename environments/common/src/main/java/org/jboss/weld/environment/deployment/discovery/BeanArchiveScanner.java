@@ -16,8 +16,9 @@
  */
 package org.jboss.weld.environment.deployment.discovery;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.Map;
+
+import org.jboss.weld.bootstrap.spi.BeansXml;
 
 /**
  * Scans the application for bean archives.
@@ -30,12 +31,10 @@ import java.util.List;
 public interface BeanArchiveScanner {
 
     /**
-     * Performs scan. The {@link DiscoveryStrategy} may provide some default handlers. However, it's up to the scanner whether it will use the provided handlers
-     * or not.
+     * Scans for bean archives identified by beans.xml files.
      *
-     * @param beanArchiveHandlers The ordered list of provided bean archive handlers
-     * @return the collection of {@link BeanArchiveBuilder}s which will be used for discovery
+     * @return the map of {@link BeansXml} representations mapped to the bean archive reference (the root path of the bean archive)
      */
-    Collection<BeanArchiveBuilder> scan(List<BeanArchiveHandler> beanArchiveHandlers);
+    Map<BeansXml, String> scan();
 
 }

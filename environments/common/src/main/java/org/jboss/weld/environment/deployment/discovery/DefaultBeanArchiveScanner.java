@@ -16,17 +16,21 @@
  */
 package org.jboss.weld.environment.deployment.discovery;
 
+import static org.jboss.weld.environment.util.URLUtils.JAR_URL_SEPARATOR;
+import static org.jboss.weld.environment.util.URLUtils.PROCOTOL_FILE;
+import static org.jboss.weld.environment.util.URLUtils.PROCOTOL_HTTP;
+import static org.jboss.weld.environment.util.URLUtils.PROCOTOL_HTTPS;
+import static org.jboss.weld.environment.util.URLUtils.PROCOTOL_JAR;
+import static org.jboss.weld.environment.util.URLUtils.PROTOCOL_FILE_PART;
+
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.zip.ZipFile;
 
 import org.jboss.logging.Logger;
@@ -47,19 +51,6 @@ public class DefaultBeanArchiveScanner implements BeanArchiveScanner {
 
     private static final Logger log = Logger.getLogger(DefaultBeanArchiveScanner.class);
 
-    static final String PROCOTOL_FILE = "file";
-
-    static final String PROCOTOL_JAR = "jar";
-
-    static final String PROCOTOL_HTTP = "http";
-
-    static final String PROCOTOL_HTTPS = "https";
-
-    private static final String PROTOCOL_FILE_PART = PROCOTOL_FILE + ":";
-
-    // according to JarURLConnection api doc, the separator is "!/"
-    private static final String JAR_URL_SEPARATOR = "!/";
-
     protected final ResourceLoader resourceLoader;
 
     protected final Bootstrap bootstrap;
@@ -75,54 +66,25 @@ public class DefaultBeanArchiveScanner implements BeanArchiveScanner {
     }
 
     @Override
-    public Collection<BeanArchiveBuilder> scan(List<BeanArchiveHandler> beanArchiveHandlers) {
-
-        Collection<BeanArchiveBuilder> beanArchives = new ArrayList<BeanArchiveBuilder>();
-        Map<URL, BeansXml> beansXmlMap = new HashMap<URL, BeansXml>();
+    public Map<BeansXml, String> scan() {
+        Map<BeansXml, String> beansXmlMap = new HashMap<BeansXml, String>();
         // META-INF/beans.xml
         String[] resources = AbstractWeldDeployment.RESOURCES;
 
         // Find all beans.xml files
         for (String resourceName : resources) {
             for (URL beansXmlUrl : resourceLoader.getResources(resourceName)) {
-                beansXmlMap.put(beansXmlUrl, bootstrap.parse(beansXmlUrl));
-            }
-        }
-
-        for (Entry<URL, BeansXml> entry : beansXmlMap.entrySet()) {
-            if (BeanDiscoveryMode.NONE.equals(entry.getValue().getBeanDiscoveryMode())) {
-                // Do not scan bean archives with mode of none
-                continue;
-            }
-            try {
-                String ref = getBeanArchiveReference(entry.getKey());
-                BeanArchiveBuilder builder = handle(ref, beanArchiveHandlers);
-                if (builder != null) {
-                    builder.setId(ref);
-                    builder.setBeansXmlUrl(entry.getKey());
-                    builder.setBeansXml(entry.getValue());
-                    beanArchives.add(builder);
+                BeansXml beansXml = bootstrap.parse(beansXmlUrl);
+                if (accept(beansXml)) {
+                    beansXmlMap.put(beansXml, getBeanArchiveReference(beansXmlUrl));
                 }
-            } catch (URISyntaxException e) {
-                CommonLogger.LOG.couldNotReadResource(entry.getKey(), e);
-                continue;
             }
         }
-        return beanArchives;
+        return beansXmlMap;
     }
 
-    protected BeanArchiveBuilder handle(String reference, List<BeanArchiveHandler> handlers) {
-        BeanArchiveBuilder builder = null;
-        for (BeanArchiveHandler handler : handlers) {
-            builder = handler.handle(reference);
-            if (builder != null) {
-                break;
-            }
-        }
-        if (builder == null) {
-            log.warnv("The bean archive reference {0} cannot be handled by any BeanArchiveHandler: {1}", reference, handlers);
-        }
-        return builder;
+    protected boolean accept(BeansXml beansXml) {
+        return !BeanDiscoveryMode.NONE.equals(beansXml.getBeanDiscoveryMode());
     }
 
     /**
@@ -130,19 +92,25 @@ public class DefaultBeanArchiveScanner implements BeanArchiveScanner {
      * @return
      * @throws URISyntaxException
      */
-    protected String getBeanArchiveReference(URL url) throws URISyntaxException {
+    protected String getBeanArchiveReference(URL url) {
 
         String ref = null;
+        URI uri = null;
+        try {
+            uri = url.toURI();
+        } catch (URISyntaxException e) {
+            CommonLogger.LOG.couldNotReadResource(url, e);
+        }
 
         if(PROCOTOL_FILE.equals(url.getProtocol())) {
             // Adapt file URL, e.g. "file:///home/weld/META-INF/beans.xml" becomes "/home/weld"
-            ref = new File(url.toURI().getSchemeSpecificPart()).getParentFile().getParent();
+            ref = new File(uri.getSchemeSpecificPart()).getParentFile().getParent();
 
         } else if(PROCOTOL_JAR.equals(url.getProtocol())) {
             // Adapt JAR file URL, e.g. "jar:file:/home/duke/duke.jar!/META-INF/beans.xml" becomes "/home/duke/duke.jar"
 
             // The decoded part without protocol part, i.e. without "jar:"
-            ref = url.toURI().getSchemeSpecificPart();
+            ref = uri.getSchemeSpecificPart();
 
             if(ref.lastIndexOf(JAR_URL_SEPARATOR) > 0) {
                 ref = ref.substring(0, ref.lastIndexOf(JAR_URL_SEPARATOR));
@@ -183,7 +151,4 @@ public class DefaultBeanArchiveScanner implements BeanArchiveScanner {
         log.debugv("Resolved bean archive reference: {0} for URL: {1}", ref, url);
         return ref;
     }
-
-
-
 }

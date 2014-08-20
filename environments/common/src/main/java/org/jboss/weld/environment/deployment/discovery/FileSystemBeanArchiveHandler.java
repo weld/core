@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.environment.deployment.discovery;
 
+import static org.jboss.weld.environment.util.URLUtils.PROCOTOL_JAR;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -73,7 +75,7 @@ public class FileSystemBeanArchiveHandler implements BeanArchiveHandler {
         try {
             ZipFile zip = new ZipFile(file);
             Enumeration<? extends ZipEntry> entries = zip.entries();
-            ZipFileEntry entry = new ZipFileEntry(DefaultBeanArchiveScanner.PROCOTOL_JAR + ":" + file.toURI().toURL().toExternalForm() + "!/");
+            ZipFileEntry entry = new ZipFileEntry(PROCOTOL_JAR + ":" + file.toURI().toURL().toExternalForm() + "!/");
             while (entries.hasMoreElements()) {
                 add(entry.setName(entries.nextElement().getName()), builder);
             }

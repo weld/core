@@ -21,7 +21,6 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -36,7 +35,6 @@ import org.jboss.weld.bootstrap.api.TypeDiscoveryConfiguration;
 import org.jboss.weld.environment.deployment.WeldBeanDeploymentArchive;
 import org.jboss.weld.environment.deployment.discovery.AbstractDiscoveryStrategy;
 import org.jboss.weld.environment.deployment.discovery.BeanArchiveBuilder;
-import org.jboss.weld.environment.deployment.discovery.BeanArchiveHandler;
 import org.jboss.weld.environment.deployment.discovery.DiscoveryStrategy;
 import org.jboss.weld.resources.spi.ClassFileServices;
 import org.jboss.weld.resources.spi.ResourceLoader;
@@ -66,6 +64,7 @@ public class JandexDiscoveryStrategy extends AbstractDiscoveryStrategy {
     public JandexDiscoveryStrategy(ResourceLoader resourceLoader, Bootstrap bootstrap, TypeDiscoveryConfiguration typeDiscoveryConfiguration) {
         super(resourceLoader, bootstrap);
         this.typeDiscoveryConfiguration = typeDiscoveryConfiguration;
+        registerHandler(new JandexFileSystemBeanArchiveHandler());
     }
 
     @Override
@@ -96,11 +95,6 @@ public class JandexDiscoveryStrategy extends AbstractDiscoveryStrategy {
             }
         }
         return builder.build();
-    }
-
-    @Override
-    protected List<BeanArchiveHandler> getBeanArchiveHandlers() {
-        return Collections.<BeanArchiveHandler>singletonList(new JandexFileSystemBeanArchiveHandler());
     }
 
     private Set<DotName> buildBeanDefiningAnnotationSet(TypeDiscoveryConfiguration typeDiscoveryConfiguration, CompositeIndex index) {

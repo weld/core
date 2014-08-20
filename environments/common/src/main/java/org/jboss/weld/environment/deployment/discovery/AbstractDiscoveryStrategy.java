@@ -16,11 +16,13 @@
  */
 package org.jboss.weld.environment.deployment.discovery;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 
+import org.jboss.logging.Logger;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.environment.deployment.WeldBeanDeploymentArchive;
@@ -33,8 +35,11 @@ import org.jboss.weld.resources.spi.ResourceLoader;
  *
  * @author Matej Briškár
  * @author Martin Kouba
+ * @author Jozef Hartinger
  */
 public abstract class AbstractDiscoveryStrategy implements DiscoveryStrategy {
+
+    private static final Logger log = Logger.getLogger(AbstractDiscoveryStrategy.class);
 
     protected final ResourceLoader resourceLoader;
 
@@ -42,9 +47,12 @@ public abstract class AbstractDiscoveryStrategy implements DiscoveryStrategy {
 
     protected BeanArchiveScanner scanner;
 
+    private final Collection<BeanArchiveHandler> handlers;
+
     public AbstractDiscoveryStrategy(ResourceLoader resourceLoader, Bootstrap bootstrap) {
         this.resourceLoader = resourceLoader;
         this.bootstrap = bootstrap;
+        this.handlers = new HashSet<BeanArchiveHandler>();
     }
 
     @Override
@@ -59,7 +67,24 @@ public abstract class AbstractDiscoveryStrategy implements DiscoveryStrategy {
             scanner = new DefaultBeanArchiveScanner(resourceLoader, bootstrap);
         }
 
-        Collection<BeanArchiveBuilder> beanArchiveBuilders = scanner.scan(getBeanArchiveHandlers());
+        final Collection<BeanArchiveBuilder> beanArchiveBuilders = new ArrayList<BeanArchiveBuilder>();
+        for (Entry<BeansXml, String> entry : scanner.scan().entrySet()) {
+            String ref = entry.getValue();
+            BeanArchiveBuilder builder = null;
+            for (BeanArchiveHandler handler : handlers) {
+                builder = handler.handle(ref);
+                if (builder != null) {
+                    builder.setId(ref);
+                    builder.setBeansXml(entry.getKey());
+                    beanArchiveBuilders.add(builder);
+                    break;
+                }
+            }
+            if (builder == null) {
+                log.warnv("The bean archive reference {0} cannot be handled by any BeanArchiveHandler: {1}", ref, handlers);
+            }
+        }
+
         beforeDiscovery(beanArchiveBuilders);
         Set<WeldBeanDeploymentArchive> archives = new HashSet<WeldBeanDeploymentArchive>();
 
@@ -139,6 +164,9 @@ public abstract class AbstractDiscoveryStrategy implements DiscoveryStrategy {
         return resourceLoader;
     }
 
-    protected abstract List<BeanArchiveHandler> getBeanArchiveHandlers();
+    @Override
+    public void registerHandler(BeanArchiveHandler handler) {
+        handlers.add(handler);
+    }
 
 }

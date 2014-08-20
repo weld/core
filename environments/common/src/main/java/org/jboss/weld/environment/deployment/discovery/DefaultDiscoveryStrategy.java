@@ -16,9 +16,6 @@
  */
 package org.jboss.weld.environment.deployment.discovery;
 
-import java.util.Collections;
-import java.util.List;
-
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.environment.deployment.WeldBeanDeploymentArchive;
 import org.jboss.weld.environment.logging.CommonLogger;
@@ -35,16 +32,12 @@ public class DefaultDiscoveryStrategy extends AbstractDiscoveryStrategy {
 
     public DefaultDiscoveryStrategy(ResourceLoader resourceLoader, Bootstrap bootstrap) {
         super(resourceLoader, bootstrap);
+        registerHandler(new FileSystemBeanArchiveHandler());
     }
 
     @Override
     protected WeldBeanDeploymentArchive processAnnotatedDiscovery(BeanArchiveBuilder builder) {
         throw CommonLogger.LOG.annotatedBeanDiscoveryNotSupported();
-    }
-
-    @Override
-    protected List<BeanArchiveHandler> getBeanArchiveHandlers() {
-        return Collections.<BeanArchiveHandler>singletonList(new FileSystemBeanArchiveHandler());
     }
 
 }

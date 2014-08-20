@@ -50,6 +50,10 @@ public class ServletContextBeanArchiveHandler implements BeanArchiveHandler {
 
     @Override
     public BeanArchiveBuilder handle(String path) {
+        if (!path.equals(WebAppBeanArchiveScanner.WEB_INF_CLASSES)) {
+            return null;
+        }
+
         BeanArchiveBuilder builder = new BeanArchiveBuilder();
         handleResourcePath(path, path, builder);
         return builder;
