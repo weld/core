@@ -35,6 +35,7 @@ public class ManagerObjectFactory implements ObjectFactory {
      * The id of a bean deployment archive whose BeanManager should be used as a result of a JNDI "java:comp/env/BeanManager" lookup.
      */
     public static final String FLAT_BEAN_DEPLOYMENT_ID = "flat";
+    public static final String WEB_INF_CLASSES = "/WEB-INF/classes";
 
     private final String contextId;
 
@@ -49,7 +50,8 @@ public class ManagerObjectFactory implements ObjectFactory {
     public Object getObjectInstance(Object obj, Name name, Context nameCtx, Hashtable<?, ?> environment) throws Exception {
         if (Container.available(contextId)) {
             for (Entry<BeanDeploymentArchive, BeanManagerImpl> entry : Container.instance(contextId).beanDeploymentArchives().entrySet()) {
-                if (entry.getKey().getId().equals(FLAT_BEAN_DEPLOYMENT_ID)) {
+                BeanDeploymentArchive bda = entry.getKey();
+                if (bda.getId().equals(FLAT_BEAN_DEPLOYMENT_ID) || bda.getId().contains(WEB_INF_CLASSES)) {
                     return entry.getValue().getCurrent();
                 }
             }

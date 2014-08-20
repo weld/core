@@ -70,7 +70,7 @@ public class WebAppBeanArchiveScanner extends DefaultBeanArchiveScanner {
                 URL resourceUrl;
                 resourceUrl = servletContext.getResource(resource);
                 if (beansXmlUrl != null) {
-                    log.warnv("Found both WEB-INF/beans.xml and WEB-INF/classes/META-INF/beans.xml. It's not portable to use both locations at the same time. Weld is going to use {0}.", beansXmlUrl);
+                    log.warnv("Found both WEB-INF/beans.xml and WEB-INF/classes/META-INF/beans.xml. It''s not portable to use both locations at the same time. Weld is going to use {0}.", beansXmlUrl);
                 } else {
                     beansXmlUrl = resourceUrl;
                 }
