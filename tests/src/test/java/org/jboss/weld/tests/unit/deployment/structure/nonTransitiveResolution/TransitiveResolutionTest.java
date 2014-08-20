@@ -22,15 +22,15 @@ import java.util.Collections;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.util.AnnotationLiteral;
 
-import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.AbstractDeployment;
 import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.BeanDeploymentArchiveImpl;
-import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.FlatDeployment;
 import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.TestContainer;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.test.util.Utils;
+import org.jboss.weld.mock.AbstractDeployment;
+import org.jboss.weld.mock.FlatDeployment;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
