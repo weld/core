@@ -99,6 +99,7 @@
         <module>se/numberguess</module>
         <module>se/hello-world</module>
         <module>osgi</module>
+        <module>webstart</module>
     </modules>
 
     <properties>
