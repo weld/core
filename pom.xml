@@ -368,6 +368,12 @@
                 <artifactId>weld-porting-package-tck11</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            
+            <dependency>
+                <groupId>org.jboss.weld.environment</groupId>
+                <artifactId>weld-environment-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>org.jboss.weld.servlet</groupId>
@@ -623,6 +629,7 @@
                 </property>
             </activation>
             <modules>
+                <module>environments/common</module>
                 <module>environments/se/core</module>
                 <module>environments/se/build</module>
                 <module>environments/servlet</module>

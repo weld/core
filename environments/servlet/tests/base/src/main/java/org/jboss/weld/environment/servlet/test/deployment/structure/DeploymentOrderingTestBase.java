@@ -1,21 +1,22 @@
 package org.jboss.weld.environment.servlet.test.deployment.structure;
 
-import org.jboss.shrinkwrap.api.ArchivePaths;
-import org.jboss.shrinkwrap.api.asset.Asset;
-import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.weld.environment.servlet.test.util.BeansXml;
-import org.junit.Test;
+import static org.jboss.weld.environment.servlet.test.util.Deployments.baseDeployment;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
-import java.util.ArrayList;
-import java.util.List;
 
-import static org.jboss.weld.environment.servlet.test.util.Deployments.baseDeployment;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import org.jboss.shrinkwrap.api.ArchivePaths;
+import org.jboss.shrinkwrap.api.asset.Asset;
+import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.shrinkwrap.impl.BeansXml;
+import org.junit.Test;
 
 public class DeploymentOrderingTestBase {
 

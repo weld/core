@@ -1,11 +1,12 @@
 package org.jboss.weld.environment.servlet.test.deployment.structure;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ContainerLifecycleObserver implements Extension {
 
