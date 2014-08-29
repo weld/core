@@ -89,11 +89,16 @@
                         </_exportcontents>
 
                         <Import-Package>
-                            javax.interceptor.*; version="1.0",
                             javax.annotation; version="1.1",
+                            javax.el; version=1.0; resolution:=optional,
+                            javax.faces.*; resolution:=optional,
+                            javax.interceptor.*; version="1.0",
+                            javax.persistence; resolution:=optional,
+                            javax.servlet.*; resolution:=optional,
                             javax.transaction; version="1.1"; resolution:=optional,
-                            javax.el; version=1.0; resolution:=optional, 
-                            *; resolution:=optional,
+                            javax.validation.*; resolution:=optional,
+                            org.jboss.logging.annotations; resolution:=optional,
+                            *;,
                         </Import-Package>
 
                         <Private-Package>
