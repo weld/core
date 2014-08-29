@@ -170,6 +170,8 @@ public class WeldStartup {
             throw BootstrapLogger.LOG.deploymentRequired();
         }
 
+        checkApiVersion();
+
         Container.currentId.set(contextId);
         this.contextId = contextId;
 
@@ -230,6 +232,15 @@ public class WeldStartup {
         Container.currentId.remove();
 
         return new WeldRuntime(contextId, deploymentManager, bdaMapping.getBdaToBeanManagerMap());
+    }
+
+    private void checkApiVersion() {
+        if (Bean.class.getInterfaces().length == 1) {
+            // this means Bean only extends Contextual - since CDI 1.1 Bean also extends BeanAttributes
+            // CDI 1.0 API is detected on classpath - since that would result in obscure exception later, we
+            // throw an appropriate exception right now
+            throw BootstrapLogger.LOG.cdiApiVersionMismatch();
+        }
     }
 
     private void setupInitialServices() {
