@@ -17,12 +17,14 @@
 package org.jboss.weld.tests.resolution.circular.self;
 
 import javax.ejb.Singleton;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 /**
  * @author Kirill Gaevskii
  *
  */
+@Dependent
 @Singleton
 public class SingletonSelfInjectionBean {
     @Inject
