@@ -166,6 +166,8 @@ public class WeldStartup {
     }
 
     public WeldRuntime startContainer(String contextId, Environment environment, Deployment deployment) {
+        checkApiVersion();
+
         if (deployment == null) {
             throw BootstrapLogger.LOG.deploymentRequired();
         }
@@ -230,6 +232,13 @@ public class WeldStartup {
         Container.currentId.remove();
 
         return new WeldRuntime(contextId, deploymentManager, bdaMapping.getBdaToBeanManagerMap());
+    }
+
+    private void checkApiVersion() {
+        Class[] bInterfaces = Bean.class.getInterfaces();
+        if (bInterfaces.length == 1) {
+            throw BootstrapLogger.LOG.wrongCdiApiVersionLoaded();
+        }
     }
 
     private void setupInitialServices() {

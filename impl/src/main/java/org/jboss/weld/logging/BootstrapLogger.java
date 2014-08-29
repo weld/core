@@ -222,4 +222,7 @@ public interface BootstrapLogger extends WeldLogger {
 
     @Message(id = 143, value = "Container lifecycle event method invoked outside of extension observer method invocation.")
     IllegalStateException containerLifecycleEventMethodInvokedOutsideObserver();
+
+    @Message(id = 144, value = "Wrong cdi api version loaded.")
+    IllegalStateException wrongCdiApiVersionLoaded();
 }
