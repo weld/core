@@ -806,27 +806,31 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                 CreationalContextImpl<?> weldCreationalContext = null;
                 Bean<?> bean = injectionPoint.getBean();
 
-                if (creationalContext instanceof CreationalContextImpl) {
-                    weldCreationalContext = (CreationalContextImpl<?>) creationalContext;
-                }
+                // Do not optimize for self injection
+                if(!bean.equals(resolvedBean)) {
 
-                if (weldCreationalContext != null && Dependent.class.equals(bean.getScope()) && isNormalScope(resolvedBean.getScope())) {
-                    bean = findNormalScopedDependant(weldCreationalContext);
-                }
-
-                if (InjectionPoints.isInjectableReferenceLookupOptimizationAllowed(bean, resolvedBean)) {
-                    if (weldCreationalContext != null) {
-                        final Object incompleteInstance = weldCreationalContext.getIncompleteInstance(resolvedBean);
-                        if (incompleteInstance != null) {
-                            return incompleteInstance;
-                        }
+                    if (creationalContext instanceof CreationalContextImpl) {
+                        weldCreationalContext = (CreationalContextImpl<?>) creationalContext;
                     }
-                    Context context = internalGetContext(resolvedBean.getScope());
-                    if(context != null) {
-                        @java.lang.SuppressWarnings({ "unchecked", "rawtypes" })
-                        final Object existinInstance = context.get(Reflections.<Contextual>cast(resolvedBean));
-                        if(existinInstance != null) {
-                            return existinInstance;
+
+                    if (weldCreationalContext != null && Dependent.class.equals(bean.getScope()) && isNormalScope(resolvedBean.getScope())) {
+                        bean = findNormalScopedDependant(weldCreationalContext);
+                    }
+
+                    if (InjectionPoints.isInjectableReferenceLookupOptimizationAllowed(bean, resolvedBean)) {
+                        if (weldCreationalContext != null) {
+                            final Object incompleteInstance = weldCreationalContext.getIncompleteInstance(resolvedBean);
+                            if (incompleteInstance != null) {
+                                return incompleteInstance;
+                            }
+                        }
+                        Context context = internalGetContext(resolvedBean.getScope());
+                        if(context != null) {
+                            @java.lang.SuppressWarnings({ "unchecked", "rawtypes" })
+                            final Object existinInstance = context.get(Reflections.<Contextual>cast(resolvedBean));
+                            if(existinInstance != null) {
+                                return existinInstance;
+                            }
                         }
                     }
                 }
