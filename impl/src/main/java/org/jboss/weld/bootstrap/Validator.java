@@ -144,7 +144,9 @@ public class Validator implements Service {
                 throw new DeploymentException(ue);
             }
         }
-        if (!normalScoped) {
+
+        // Validate all pseudo-scoped beans, except for session beans which are proxied by the EJB container
+        if (!normalScoped && !(bean instanceof SessionBean)) {
             validatePseudoScopedBean(bean, beanManager);
         }
 
@@ -884,7 +886,7 @@ public class Validator implements Service {
 
     /**
      * Checks to make sure that pseudo scoped beans (i.e. @Dependent scoped
-     * beans) have no circular dependencies
+     * beans) have no circular dependencies.
      */
     private static void validatePseudoScopedBean(Bean<?> bean, BeanManagerImpl beanManager) {
         reallyValidatePseudoScopedBean(bean, beanManager, new LinkedHashSet<Object>(), new HashSet<Bean<?>>());
@@ -942,7 +944,7 @@ public class Validator implements Service {
             if (!(bean instanceof AbstractBuiltInBean<?>)) {
                 if (!ij.isDelegate()) {
                     boolean normalScoped = beanManager.isNormalScope(bean.getScope());
-                    if (!normalScoped) {
+                    if (!normalScoped && !(bean instanceof SessionBean)) {
                         reallyValidatePseudoScopedBean(bean, beanManager, dependencyPath, validatedBeans);
                     }
                 }
