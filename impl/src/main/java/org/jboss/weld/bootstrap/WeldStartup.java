@@ -404,6 +404,9 @@ public class WeldStartup {
 
         getContainer().setState(ContainerState.DISCOVERED);
 
+        // Flush caches for BeanManager.getBeans() to be usable in ABD (WELD-1729)
+        flushCaches();
+
         AfterBeanDiscoveryImpl.fire(deploymentManager, deployment, bdaMapping, contexts);
 
         // Extensions may have registered beans / observers. We need to flush caches.
