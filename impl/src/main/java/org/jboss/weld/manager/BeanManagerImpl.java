@@ -1119,9 +1119,9 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     @Override
     public <T> InjectionTarget<T> createInjectionTarget(EjbDescriptor<T> descriptor) {
         if (descriptor.isMessageDriven()) {
-            InternalEjbDescriptor<T> internalDescriptor = new InternalEjbDescriptor<T>(descriptor);
-            AnnotatedType<T> type = Reflections.cast(createAnnotatedType(internalDescriptor.getImplementationClass()));
-            return getLocalInjectionTargetFactory(type).createMessageDrivenInjectionTarget();
+            InternalEjbDescriptor<T> internalDescriptor = InternalEjbDescriptor.of(descriptor);
+            AnnotatedType<T> type = Reflections.cast(createAnnotatedType(internalDescriptor.getBeanClass()));
+            return getLocalInjectionTargetFactory(type).createMessageDrivenInjectionTarget(internalDescriptor);
         } else {
             InjectionTarget<T> injectionTarget = getBean(descriptor).getProducer();
             return injectionTarget;

@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.ejb;
 
+import static org.jboss.weld.util.reflection.Reflections.cast;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -43,6 +45,13 @@ import com.google.common.collect.ImmutableSet;
  */
 public class InternalEjbDescriptor<T> extends ForwardingEjbDescriptor<T> {
 
+    public static <T> InternalEjbDescriptor<T> of(EjbDescriptor<T> ejbDescriptor) {
+        if (ejbDescriptor instanceof InternalEjbDescriptor<?>) {
+            return cast(ejbDescriptor);
+        }
+        return new InternalEjbDescriptor<T>(ejbDescriptor);
+    }
+
     private static class BusinessInterfaceDescriptorToClassFunction implements Function<BusinessInterfaceDescriptor<?>, Class<?>> {
 
         private static final BusinessInterfaceDescriptorToClassFunction INSTANCE = new BusinessInterfaceDescriptorToClassFunction();
@@ -59,7 +68,7 @@ public class InternalEjbDescriptor<T> extends ForwardingEjbDescriptor<T> {
     private final Set<Class<?>> localBusinessInterfaces;
     private final Set<Class<?>> remoteBusinessInterfaces;
 
-    public InternalEjbDescriptor(EjbDescriptor<T> ejbDescriptor) {
+    private InternalEjbDescriptor(EjbDescriptor<T> ejbDescriptor) {
         this.delegate = ejbDescriptor;
         this.objectInterface = findObjectInterface(ejbDescriptor.getLocalBusinessInterfaces());
         removeMethodSignatures = new ArrayList<MethodSignature>();

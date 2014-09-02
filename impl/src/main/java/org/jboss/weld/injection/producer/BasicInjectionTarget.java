@@ -54,7 +54,11 @@ public class BasicInjectionTarget<T> extends AbstractProducer<T> implements Weld
     }
 
     public static <T> BasicInjectionTarget<T> createDefault(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager) {
-        return new BasicInjectionTarget<T>(type, bean, beanManager);
+        return new BasicInjectionTarget<T>(type, bean, beanManager, null);
+    }
+
+    public static <T> BasicInjectionTarget<T> createDefault(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager, Instantiator<T> instantiator) {
+        return new BasicInjectionTarget<T>(type, bean, beanManager, instantiator);
     }
 
     /**
@@ -75,6 +79,10 @@ public class BasicInjectionTarget<T> extends AbstractProducer<T> implements Weld
     private final LifecycleCallbackInvoker<T> invoker;
 
     protected BasicInjectionTarget(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager, Injector<T> injector, LifecycleCallbackInvoker<T> invoker) {
+        this(type, bean, beanManager, injector, invoker, null);
+    }
+
+    protected BasicInjectionTarget(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager, Injector<T> injector, LifecycleCallbackInvoker<T> invoker, Instantiator<T> instantiator) {
         this.beanManager = beanManager;
         this.type = type.slim();
         this.injector = injector;
@@ -84,13 +92,17 @@ public class BasicInjectionTarget<T> extends AbstractProducer<T> implements Weld
 
         checkType(type);
         this.injector.registerInjectionPoints(injectionPoints);
-        this.instantiator = initInstantiator(type, bean, beanManager, injectionPoints);
+        if (instantiator != null) {
+            this.instantiator = instantiator;
+        } else {
+            this.instantiator = initInstantiator(type, bean, beanManager, injectionPoints);
+        }
         this.injectionPoints = WeldCollections.immutableGuavaSet(injectionPoints);
         checkDelegateInjectionPoints();
     }
 
-    protected BasicInjectionTarget(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager) {
-        this(type, bean, beanManager, DefaultInjector.of(type, bean, beanManager), DefaultLifecycleCallbackInvoker.of(type));
+    protected BasicInjectionTarget(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager, Instantiator<T> instantiator) {
+        this(type, bean, beanManager, DefaultInjector.of(type, bean, beanManager), DefaultLifecycleCallbackInvoker.of(type), instantiator);
     }
 
     protected void checkType(EnhancedAnnotatedType<T> type) {

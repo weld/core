@@ -69,7 +69,7 @@ public class EjbDescriptors implements Service, Iterable<InternalEjbDescriptor<?
      * @param ejbDescriptor The EJB descriptor to add
      */
     public <T> void add(EjbDescriptor<T> ejbDescriptor) {
-        InternalEjbDescriptor<T> internalEjbDescriptor = new InternalEjbDescriptor<T>(ejbDescriptor);
+        InternalEjbDescriptor<T> internalEjbDescriptor = InternalEjbDescriptor.of(ejbDescriptor);
         ejbByName.put(ejbDescriptor.getEjbName(), internalEjbDescriptor);
         ejbByClass.put(ejbDescriptor.getBeanClass(), internalEjbDescriptor.getEjbName());
     }

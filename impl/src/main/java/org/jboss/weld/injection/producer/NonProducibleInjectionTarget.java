@@ -42,7 +42,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
 public class NonProducibleInjectionTarget<T> extends BasicInjectionTarget<T> {
 
     public NonProducibleInjectionTarget(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager) {
-        super(type, bean, beanManager);
+        super(type, bean, beanManager, null);
     }
 
     @Override
