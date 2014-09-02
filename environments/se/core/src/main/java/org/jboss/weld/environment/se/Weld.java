@@ -29,7 +29,6 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 
-import org.jboss.logging.Logger;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.CDI11Bootstrap;
 import org.jboss.weld.bootstrap.api.Environments;
@@ -45,6 +44,7 @@ import org.jboss.weld.environment.deployment.discovery.DiscoveryStrategy;
 import org.jboss.weld.environment.deployment.discovery.DiscoveryStrategyFactory;
 import org.jboss.weld.environment.logging.CommonLogger;
 import org.jboss.weld.environment.se.events.ContainerInitialized;
+import org.jboss.weld.environment.se.logging.WeldSELogger;
 import org.jboss.weld.literal.InitializedLiteral;
 import org.jboss.weld.metadata.MetadataImpl;
 import org.jboss.weld.resources.spi.ClassFileServices;
@@ -73,10 +73,6 @@ import org.jboss.weld.security.GetSystemPropertyAction;
  * @author Ales Justin
  */
 public class Weld {
-
-    private static final String SYSTEM_PROPERTY_STRING = "System property ";
-
-    private static final Logger log = Logger.getLogger(Weld.class);
 
     public static final String ARCHIVE_ISOLATION_SYSTEM_PROPERTY = "org.jboss.weld.se.archive.isolation";
 
@@ -218,15 +214,12 @@ public class Weld {
         String isolation = AccessController.doPrivileged(new GetSystemPropertyAction(ARCHIVE_ISOLATION_SYSTEM_PROPERTY));
 
         if (isolation != null && Boolean.valueOf(isolation).equals(Boolean.FALSE)) {
-            log.debug(SYSTEM_PROPERTY_STRING + ARCHIVE_ISOLATION_SYSTEM_PROPERTY
-                    + " is set to false value, so only one bean archive will be created.");
             WeldBeanDeploymentArchive archive = WeldBeanDeploymentArchive.merge(bootstrap, discoveredArchives);
             deployment = new WeldDeployment(resourceLoader, bootstrap, Collections.singleton(archive), loadedExtensions);
         } else {
-            log.debug(SYSTEM_PROPERTY_STRING + ARCHIVE_ISOLATION_SYSTEM_PROPERTY
-                    + " is on default true value, creating multiple bean archives if needed.");
             deployment=  new WeldDeployment(resourceLoader, bootstrap, discoveredArchives, loadedExtensions);
         }
+        WeldSELogger.LOG.multipleIsolation(isolation != null && Boolean.valueOf(isolation));
 
         if(strategy.getClassFileServices() != null) {
             deployment.getServices().add(ClassFileServices.class, strategy.getClassFileServices());
