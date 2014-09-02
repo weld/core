@@ -16,8 +16,26 @@
  */
 package org.jboss.weld.tests.unit.ejb.subclass;
 
+import javax.enterprise.inject.spi.BeanManager;
+import javax.inject.Inject;
+
 
 public class Foo {
+
+    private final BeanManager manager;
+
+    public Foo() {
+        this.manager = null;
+    }
+
+    @Inject
+    public Foo(BeanManager manager) {
+        this.manager = manager;
+    }
+
+    public BeanManager getManager() {
+        return manager;
+    }
 
     public int ping() {
         return 0;

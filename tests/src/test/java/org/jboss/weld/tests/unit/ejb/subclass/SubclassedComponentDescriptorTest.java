@@ -17,6 +17,7 @@
 package org.jboss.weld.tests.unit.ejb.subclass;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
 import java.lang.reflect.Method;
@@ -90,6 +91,9 @@ public class SubclassedComponentDescriptorTest {
 
         assertEquals(MockEjbServices.getDescriptors().size(), 1);
         assertEquals(MockEjbServices.getDescriptors().iterator().next().getBeanClass(), Bar.class);
+
+        assertNotNull(foo.getManager());
+        assertNotNull(bar.getManager());
     }
 
     private static class EjbDescriptorImpl<T> implements EjbDescriptor<T>, SubclassedComponentDescriptor<T> {

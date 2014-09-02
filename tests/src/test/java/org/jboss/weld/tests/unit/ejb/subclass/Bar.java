@@ -16,8 +16,26 @@
  */
 package org.jboss.weld.tests.unit.ejb.subclass;
 
+import javax.enterprise.inject.spi.BeanManager;
+import javax.inject.Inject;
+
 @BarInterceptorBinding
 public class Bar implements BarLocal {
+
+    private final BeanManager manager;
+
+    public Bar() {
+        this.manager = null;
+    }
+
+    @Inject
+    public Bar(BeanManager manager) {
+        this.manager = manager;
+    }
+
+    public BeanManager getManager() {
+        return manager;
+    }
 
     @Override
     public int ping() {
