@@ -34,6 +34,7 @@ import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bean.proxy.CombinedInterceptorAndDecoratorStackMethodHandler;
 import org.jboss.weld.bean.proxy.MethodHandler;
 import org.jboss.weld.bean.proxy.ProxyObject;
+import org.jboss.weld.injection.producer.AbstractInstantiator;
 import org.jboss.weld.injection.producer.BeanInjectionTarget;
 import org.jboss.weld.injection.producer.DefaultInjector;
 import org.jboss.weld.injection.producer.DefaultInstantiator;
@@ -87,7 +88,15 @@ public class SessionBeanInjectionTarget<T> extends BeanInjectionTarget<T> {
     @Override
     protected Instantiator<T> initInstantiator(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager, Set<InjectionPoint> injectionPoints) {
         if (bean instanceof SessionBean<?>) {
-            DefaultInstantiator<T> instantiator = new DefaultInstantiator<T>(getImplementationClass((SessionBean<T>) bean), bean, beanManager);
+            EnhancedAnnotatedType<T> implementationClass = getImplementationClass((SessionBean<T>) bean);
+
+            AbstractInstantiator<T> instantiator = null;
+            if (type.equals(implementationClass)) {
+                instantiator = new DefaultInstantiator<T>(type, bean, beanManager);
+            } else {
+                // Session bean subclassed by the EJB container
+                instantiator = SubclassedComponentInstantiator.forSubclassedEjb(type, implementationClass, bean, beanManager);
+            }
             injectionPoints.addAll(instantiator.getConstructorInjectionPoint().getParameterInjectionPoints());
             return instantiator;
         } else {
@@ -103,7 +112,7 @@ public class SessionBeanInjectionTarget<T> extends BeanInjectionTarget<T> {
         if (!decorators.isEmpty()) {
             Instantiator<T> instantiator = getInstantiator();
             EnhancedAnnotatedType<T> implementationClass = getImplementationClass(getBean());
-            instantiator = new SubclassedComponentInstantiator<T>(implementationClass, getBean(), (DefaultInstantiator<T>) instantiator, beanManager);
+            instantiator = SubclassedComponentInstantiator.forInterceptedDecoratedBean(implementationClass, getBean(), (AbstractInstantiator<T>) instantiator, beanManager);
             instantiator = new SubclassDecoratorApplyingInstantiator<T>(getBeanManager().getContextId(), instantiator, getBean(), decorators, implementationClass.getJavaClass());
             setInstantiator(instantiator);
         }
