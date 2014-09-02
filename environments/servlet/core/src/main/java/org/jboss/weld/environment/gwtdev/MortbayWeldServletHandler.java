@@ -1,7 +1,12 @@
 package org.jboss.weld.environment.gwtdev;
 
+import javax.servlet.Filter;
+import javax.servlet.Servlet;
+import javax.servlet.ServletContext;
+
 import org.jboss.weld.environment.jetty.AbstractJettyContainer;
 import org.jboss.weld.environment.jetty.JettyWeldInjector;
+import org.jboss.weld.environment.servlet.logging.JettyLogger;
 import org.mortbay.jetty.Handler;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.handler.ContextHandler;
@@ -10,17 +15,11 @@ import org.mortbay.jetty.servlet.ServletHandler;
 import org.mortbay.jetty.webapp.WebAppContext;
 import org.mortbay.resource.Resource;
 
-import javax.servlet.Filter;
-import javax.servlet.Servlet;
-import javax.servlet.ServletContext;
-import java.util.logging.Logger;
-
 /**
  * @author <a href="mailto:matija.mazi@gmail.com">Matija Mazi</a>
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
 public class MortbayWeldServletHandler extends ServletHandler {
-    private static final Logger log = Logger.getLogger(MortbayWeldServletHandler.class.getName());
 
     private ServletContext sco;
     private JettyWeldInjector injector;
@@ -50,7 +49,7 @@ public class MortbayWeldServletHandler extends ServletHandler {
             injector = (JettyWeldInjector) sco.getAttribute(AbstractJettyContainer.INJECTOR_ATTRIBUTE_NAME);
         }
         if (injector == null) {
-            log.warning("Can't find Injector in the servlet context so injection is not available for " + injectable);
+            JettyLogger.LOG.cantFindInjector(injectable);
         } else {
             injector.inject(injectable);
         }
@@ -71,7 +70,7 @@ public class MortbayWeldServletHandler extends ServletHandler {
             jettyEnv = webInf.addPath("jetty-env.xml");
         }
         if (jettyEnv == null || !(jettyEnv.exists())) {
-            log.warning("Missing jetty-env.xml, no BeanManager present in JNDI.");
+            JettyLogger.LOG.missingJettyEnv();
         }
     }
 
@@ -88,7 +87,7 @@ public class MortbayWeldServletHandler extends ServletHandler {
         if (wac != null) {
             process(wac, true);
         } else {
-            log.info("Cannot find matching WebApplicationContext, no default CDI support: use jetty-web.xml");
+            JettyLogger.LOG.cantFindWebApplicationContext();
         }
     }
 

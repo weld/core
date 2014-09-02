@@ -21,9 +21,11 @@ import java.lang.reflect.Method;
 
 import javax.servlet.ServletContext;
 
+import org.jboss.logging.Logger;
 import org.jboss.weld.environment.Container;
 import org.jboss.weld.environment.ContainerContext;
 import org.jboss.weld.environment.servlet.EnhancedListener;
+import org.jboss.weld.environment.servlet.logging.JettyLogger;
 import org.jboss.weld.environment.servlet.util.Reflections;
 import org.jboss.weld.manager.api.WeldManager;
 
@@ -33,6 +35,8 @@ import org.jboss.weld.manager.api.WeldManager;
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
 public class JettyContainer extends AbstractJettyContainer {
+
+    protected final Logger log = Logger.getLogger(getClass());
 
     public static Container INSTANCE = new JettyContainer();
 
@@ -80,12 +84,12 @@ public class JettyContainer extends AbstractJettyContainer {
 
             if(Boolean.TRUE.equals(context.getServletContext().getAttribute(EnhancedListener.ENHANCED_LISTENER_USED_ATTRIBUTE_NAME))) {
                 // ServletContainerInitializer works on versions prior to 9.1.1 but the listener injection doesn't
-                log.info("Jetty 7.2+ detected, CDI injection will be available in Servlets and Filters. Injection into Listeners should work on Jetty 9.1.1 and newer.");
+                JettyLogger.LOG.jettyDetectedListenersInjectionIsSupported();
             } else {
-                log.info("Jetty 7.2+ detected, CDI injection will be available in Servlets and Filters. Injection into Listeners is not supported.");
+                JettyLogger.LOG.jettyDetectedListenersInjectionIsNotSupported();
             }
         } catch (Exception e) {
-            log.error("Unable to create JettyWeldInjector. CDI injection will not be available in Servlets, Filters or Listeners", e);
+            JettyLogger.LOG.unableToCreateJettyWeldInjector(e);
         }
     }
 

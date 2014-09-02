@@ -25,7 +25,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequestEvent;
 import javax.servlet.http.HttpSessionEvent;
 
-import org.jboss.logging.Logger;
+import org.jboss.weld.environment.servlet.logging.WeldServletLogger;
 import org.jboss.weld.servlet.api.ServletListener;
 import org.jboss.weld.servlet.api.helpers.ForwardingServletListener;
 
@@ -48,15 +48,13 @@ public class EnhancedListener extends ForwardingServletListener implements Servl
 
     public static final String ENHANCED_LISTENER_USED_ATTRIBUTE_NAME = EnhancedListener.class.getPackage().getName() + ".enhancedListenerUsed";
 
-    private static final Logger log = Logger.getLogger(EnhancedListener.class);
-
     private boolean isOriginalListenerUsed = false;
 
     private WeldServletLifecycle lifecycle;
 
     @Override
     public void onStartup(Set<Class<?>> classes, ServletContext context) throws ServletException {
-        log.info("Initialize Weld using ServletContainerInitializer");
+        WeldServletLogger.LOG.initializeWeldUsingServletContainerInitializer();
         context.setAttribute(ENHANCED_LISTENER_USED_ATTRIBUTE_NAME, Boolean.TRUE);
         lifecycle = new WeldServletLifecycle();
         lifecycle.initialize(context);
@@ -70,7 +68,7 @@ public class EnhancedListener extends ForwardingServletListener implements Servl
         // This listener will be always notified after org.jboss.weld.environment.servlet.Listener (if registered)
         if (Boolean.TRUE.equals(sce.getServletContext().getAttribute(Listener.LISTENER_USED_ATTRIBUTE_NAME))) {
             isOriginalListenerUsed = true;
-            log.info("org.jboss.weld.environment.servlet.Listener used for ServletRequest and HttpSession notifications");
+            WeldServletLogger.LOG.listenerUserForServletRequestAndHttpSessionNotifications();
         }
     }
 

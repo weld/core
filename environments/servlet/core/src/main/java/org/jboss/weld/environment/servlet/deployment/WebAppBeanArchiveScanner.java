@@ -23,10 +23,10 @@ import java.util.Map;
 
 import javax.servlet.ServletContext;
 
-import org.jboss.logging.Logger;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.environment.deployment.discovery.DefaultBeanArchiveScanner;
+import org.jboss.weld.environment.servlet.logging.WeldServletLogger;
 import org.jboss.weld.environment.servlet.util.Servlets;
 import org.jboss.weld.resources.spi.ResourceLoader;
 
@@ -36,8 +36,6 @@ import org.jboss.weld.resources.spi.ResourceLoader;
  * @author Martin Kouba
  */
 public class WebAppBeanArchiveScanner extends DefaultBeanArchiveScanner {
-
-    private static final Logger log = Logger.getLogger(WebAppBeanArchiveScanner.class);
 
     static final String WEB_INF_BEANS_XML = "/WEB-INF/beans.xml";
 
@@ -70,7 +68,7 @@ public class WebAppBeanArchiveScanner extends DefaultBeanArchiveScanner {
                 URL resourceUrl;
                 resourceUrl = servletContext.getResource(resource);
                 if (beansXmlUrl != null) {
-                    log.warnv("Found both WEB-INF/beans.xml and WEB-INF/classes/META-INF/beans.xml. It''s not portable to use both locations at the same time. Weld is going to use {0}.", beansXmlUrl);
+                    WeldServletLogger.LOG.foundBothConfiguration(beansXmlUrl);
                 } else {
                     beansXmlUrl = resourceUrl;
                 }
