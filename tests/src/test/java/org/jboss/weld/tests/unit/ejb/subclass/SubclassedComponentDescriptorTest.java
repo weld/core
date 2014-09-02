@@ -24,6 +24,8 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Collections;
 
+import javax.enterprise.inject.spi.SessionBeanType;
+
 import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.BeanDeploymentArchiveImpl;
 import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.TestContainer;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
@@ -52,13 +54,22 @@ public class SubclassedComponentDescriptorTest {
     @Test
     public void testSubclassedComponentDescriptor() {
 
-        final EjbDescriptor<Foo> fooDescriptor = new EjbDescriptorImpl<Foo>(Foo.class, Foo.class, EnhancedFoo.class);
-        final EjbDescriptor<Bar> barDescriptor = new EjbDescriptorImpl<Bar>(Bar.class, BarLocal.class, EnhancedBar.class);
+        final EjbDescriptor<Foo> fooDescriptor = new EjbDescriptorImpl<Foo>(Foo.class, Foo.class, EnhancedFoo.class, SessionBeanType.STATEFUL);
+        final EjbDescriptor<Bar> barDescriptor = new EjbDescriptorImpl<Bar>(Bar.class, BarLocal.class, EnhancedBar.class, SessionBeanType.STATEFUL);
+        final EjbDescriptor<Baz> bazDescriptor = new EjbDescriptorImpl<Baz>(Baz.class, Baz.class, EnhancedBaz.class, null);
 
-        final BeanDeploymentArchive bda = new BeanDeploymentArchiveImpl("1", Foo.class, Bar.class, BarLocal.class, BarDecorator.class, BarInterceptor.class, BarInterceptorBinding.class) {
+        final BeanDeploymentArchive bda = new BeanDeploymentArchiveImpl("1",
+                Foo.class,
+                Bar.class,
+                BarLocal.class,
+                BarDecorator.class,
+                BarInterceptor.class,
+                BarInterceptorBinding.class,
+                Baz.class
+            ) {
             @Override
             public Collection<EjbDescriptor<?>> getEjbs() {
-                return ImmutableSet.<EjbDescriptor<?>>of(fooDescriptor, barDescriptor);
+                return ImmutableSet.<EjbDescriptor<?>>of(fooDescriptor, barDescriptor, bazDescriptor);
             }
         };
 
@@ -79,9 +90,11 @@ public class SubclassedComponentDescriptorTest {
         final BeanManagerImpl manager = (BeanManagerImpl) container.getBeanManager(bda);
         Foo foo = (Foo) manager.createInjectionTarget(manager.getEjbDescriptor(Foo.class.getSimpleName())).produce(manager.createCreationalContext(null));
         Bar bar = (Bar) manager.createInjectionTarget(manager.getEjbDescriptor(Bar.class.getSimpleName())).produce(manager.createCreationalContext(null));
+        Baz baz = (Baz) manager.createInjectionTarget(manager.getEjbDescriptor(Baz.class.getSimpleName())).produce(manager.createCreationalContext(null));
 
         assertEquals(foo.ping(), 1);
         assertEquals(bar.ping(), 3);
+        assertEquals(baz.ping(), 1);
 
         assertTrue(foo instanceof Enhanced);
         assertTrue(Reflections.<Enhanced>cast(foo).check());
@@ -89,11 +102,15 @@ public class SubclassedComponentDescriptorTest {
         assertTrue(bar instanceof Enhanced);
         assertTrue(Reflections.<Enhanced>cast(bar).check());
 
+        assertTrue(baz instanceof Enhanced);
+        assertTrue(Reflections.<Enhanced>cast(baz).check());
+
         assertEquals(MockEjbServices.getDescriptors().size(), 1);
         assertEquals(MockEjbServices.getDescriptors().iterator().next().getBeanClass(), Bar.class);
 
         assertNotNull(foo.getManager());
         assertNotNull(bar.getManager());
+        assertNotNull(baz.getManager());
     }
 
     private static class EjbDescriptorImpl<T> implements EjbDescriptor<T>, SubclassedComponentDescriptor<T> {
@@ -101,11 +118,13 @@ public class SubclassedComponentDescriptorTest {
         private final Class<? extends T> componentSubclass;
         private final Class<T> beanClass;
         private final Class<?> localInterface;
+        private final SessionBeanType type;
 
-        public EjbDescriptorImpl(Class<T> beanClass, Class<?> localInterface, Class<? extends T> componentSubclass) {
+        public EjbDescriptorImpl(Class<T> beanClass, Class<?> localInterface, Class<? extends T> componentSubclass, SessionBeanType type) {
             this.beanClass = beanClass;
             this.localInterface = localInterface;
             this.componentSubclass = componentSubclass;
+            this.type = type;
         }
 
         @Override
@@ -146,27 +165,27 @@ public class SubclassedComponentDescriptorTest {
 
         @Override
         public boolean isStateless() {
-            return false;
+            return SessionBeanType.STATELESS.equals(type);
         }
 
         @Override
         public boolean isSingleton() {
-            return false;
+            return SessionBeanType.SINGLETON.equals(type);
         }
 
         @Override
         public boolean isStateful() {
-            return true;
+            return SessionBeanType.STATEFUL.equals(type);
         }
 
         @Override
         public boolean isMessageDriven() {
-            return false;
+            return type == null;
         }
 
         @Override
         public boolean isPassivationCapable() {
-            return true;
+            return SessionBeanType.STATEFUL.equals(type);
         }
     }
 }
