@@ -26,13 +26,14 @@ import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 
+import org.jboss.weld.annotated.enhanced.ConstructorSignature;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedConstructor;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.enhanced.MethodSignature;
-import org.jboss.weld.annotated.enhanced.jlr.EnhancedAnnotatedConstructorImpl;
 import org.jboss.weld.annotated.enhanced.jlr.MethodSignatureImpl;
 import org.jboss.weld.bean.proxy.InterceptedSubclassFactory;
 import org.jboss.weld.injection.ConstructorInjectionPoint;
+import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.ProxyClassConstructorInjectionPointWrapper;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
@@ -47,11 +48,27 @@ import org.jboss.weld.util.Beans;
  */
 public class SubclassedComponentInstantiator<T> extends AbstractInstantiator<T> {
 
+    public static <T> SubclassedComponentInstantiator<T> forSubclassedEjb(EnhancedAnnotatedType<T> componentType, EnhancedAnnotatedType<T> subclass, Bean<T> bean, BeanManagerImpl manager) {
+        final EnhancedAnnotatedConstructor<T> componentConstructor = Beans.getBeanConstructor(componentType);
+        final EnhancedAnnotatedConstructor<T> subclassConstructor = findMatchingConstructor(componentConstructor.getSignature(), subclass);
+        final ConstructorInjectionPoint<T> cip = InjectionPointFactory.instance().createConstructorInjectionPoint(bean, componentType.getJavaClass(), subclassConstructor, manager);
+        return new SubclassedComponentInstantiator<T>(cip, componentConstructor.getJavaMember());
+    }
+
+    public static <T> SubclassedComponentInstantiator<T> forInterceptedDecoratedBean(EnhancedAnnotatedType<T> type, Bean<T> bean, AbstractInstantiator<T> delegate, BeanManagerImpl manager) {
+        return new SubclassedComponentInstantiator<T>(type, bean, delegate.getConstructorInjectionPoint(), manager);
+    }
+
+    private static <T> EnhancedAnnotatedConstructor<T> findMatchingConstructor(ConstructorSignature componentConstructor, EnhancedAnnotatedType<T> subclass) {
+        return subclass.getDeclaredEnhancedConstructor(componentConstructor);
+    }
+
     private final ConstructorInjectionPoint<T> proxyClassConstructorInjectionPoint;
     private final Constructor<T> componentClassConstructor;
 
-    public SubclassedComponentInstantiator(EnhancedAnnotatedType<T> type, Bean<T> bean, DefaultInstantiator<T> delegate, BeanManagerImpl manager) {
-        this(type, bean, delegate.getConstructorInjectionPoint(), manager);
+    private SubclassedComponentInstantiator(ConstructorInjectionPoint<T> proxyClassConstructorInjectionPoint, Constructor<T> componentClassConstructor) {
+        this.proxyClassConstructorInjectionPoint = proxyClassConstructorInjectionPoint;
+        this.componentClassConstructor = componentClassConstructor;
     }
 
     protected SubclassedComponentInstantiator(EnhancedAnnotatedType<T> type, Bean<T> bean, ConstructorInjectionPoint<T> originalConstructor, BeanManagerImpl manager) {
@@ -63,9 +80,7 @@ public class SubclassedComponentInstantiator<T> extends AbstractInstantiator<T> 
     protected EnhancedAnnotatedConstructor<T> initEnhancedSubclass(BeanManagerImpl manager, EnhancedAnnotatedType<T> type, Bean<?> bean, ConstructorInjectionPoint<T> originalConstructorInjectionPoint) {
         ClassTransformer transformer = manager.getServices().get(ClassTransformer.class);
         EnhancedAnnotatedType<T> enhancedSubclass = transformer.getEnhancedAnnotatedType(createEnhancedSubclass(type, bean, manager), type.slim().getIdentifier().getBdaId());
-        return EnhancedAnnotatedConstructorImpl.of(enhancedSubclass.getDeclaredEnhancedConstructor(originalConstructorInjectionPoint.getSignature()),
-                enhancedSubclass,
-                transformer);
+        return findMatchingConstructor(originalConstructorInjectionPoint.getSignature(), enhancedSubclass);
     }
 
     protected Class<T> createEnhancedSubclass(AnnotatedType<T> type, Bean<?> bean, BeanManagerImpl manager) {
@@ -103,7 +118,7 @@ public class SubclassedComponentInstantiator<T> extends AbstractInstantiator<T> 
      * Use {@link #getConstructor()} to get the matching component class constructor.
      */
     @Override
-    protected ConstructorInjectionPoint<T> getConstructorInjectionPoint() {
+    public ConstructorInjectionPoint<T> getConstructorInjectionPoint() {
         return proxyClassConstructorInjectionPoint;
     }
 

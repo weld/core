@@ -98,7 +98,7 @@ public class BeanInjectionTarget<T> extends BasicInjectionTarget<T> {
     }
 
     protected void initializeInterceptionModel(EnhancedAnnotatedType<T> annotatedType) {
-        DefaultInstantiator<T> instantiator = (DefaultInstantiator<T>) getInstantiator();
+        AbstractInstantiator<T> instantiator = (AbstractInstantiator<T>) getInstantiator();
         if (instantiator.getConstructorInjectionPoint() == null) {
             return; // this is a non-producible InjectionTarget (only created to inject existing instances)
         }
@@ -131,7 +131,7 @@ public class BeanInjectionTarget<T> extends BasicInjectionTarget<T> {
                 throw new java.lang.IllegalStateException("Unexpected instantiator " + getInstantiator());
             }
             DefaultInstantiator<T> delegate = (DefaultInstantiator<T>) getInstantiator();
-            setInstantiator(new SubclassedComponentInstantiator<T>(annotatedType, getBean(), delegate, beanManager));
+            setInstantiator(SubclassedComponentInstantiator.forInterceptedDecoratedBean(annotatedType, getBean(), delegate, beanManager));
             if (hasDecorators) {
                 setInstantiator(new SubclassDecoratorApplyingInstantiator<T>(getBeanManager().getContextId(), getInstantiator(), getBean(), decorators));
             }

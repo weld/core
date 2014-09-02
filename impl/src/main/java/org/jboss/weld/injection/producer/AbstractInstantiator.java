@@ -28,5 +28,5 @@ public abstract class AbstractInstantiator<T> implements Instantiator<T> {
         return getConstructorInjectionPoint().newInstance(manager, ctx);
     }
 
-    protected abstract ConstructorInjectionPoint<T> getConstructorInjectionPoint();
+    public abstract ConstructorInjectionPoint<T> getConstructorInjectionPoint();
 }
