@@ -20,10 +20,10 @@ import java.util.Set;
 
 import javax.servlet.ServletContext;
 
-import org.jboss.logging.Logger;
 import org.jboss.weld.environment.deployment.discovery.BeanArchiveBuilder;
 import org.jboss.weld.environment.deployment.discovery.BeanArchiveHandler;
 import org.jboss.weld.environment.deployment.discovery.FileSystemBeanArchiveHandler;
+import org.jboss.weld.environment.servlet.logging.WeldServletLogger;
 
 /**
  * Handles the paths to resources within a web application. It's used if a WAR archive is not extracted to the file system.
@@ -31,8 +31,6 @@ import org.jboss.weld.environment.deployment.discovery.FileSystemBeanArchiveHand
  * @author Martin Kouba
  */
 public class ServletContextBeanArchiveHandler implements BeanArchiveHandler {
-
-    private static final Logger log = Logger.getLogger(ServletContextBeanArchiveHandler.class);
 
     private static final String SLASH = "/";
 
@@ -61,7 +59,7 @@ public class ServletContextBeanArchiveHandler implements BeanArchiveHandler {
 
     private void handleResourcePath(String rootPath, String resourcePath, BeanArchiveBuilder builder) {
 
-        log.debugv("Handle resource path: {0}", resourcePath);
+        WeldServletLogger.LOG.debugv("Handle resource path: {0}", resourcePath);
         Set<String> subpaths = servletContext.getResourcePaths(resourcePath);
 
         if (subpaths != null && !subpaths.isEmpty()) {
@@ -73,7 +71,7 @@ public class ServletContextBeanArchiveHandler implements BeanArchiveHandler {
                     // Class file
                     String className = toClassName(rootPath, subpath);
                     builder.addClass(className);
-                    log.tracev("Class discovered: {0}", className);
+                    WeldServletLogger.LOG.tracev("Class discovered: {0}", className);
                 }
             }
         }

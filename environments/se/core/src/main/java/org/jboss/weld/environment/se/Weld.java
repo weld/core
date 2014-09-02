@@ -29,7 +29,6 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 
-import org.jboss.logging.Logger;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.CDI11Bootstrap;
 import org.jboss.weld.bootstrap.api.Environments;
@@ -73,10 +72,6 @@ import org.jboss.weld.security.GetSystemPropertyAction;
  * @author Ales Justin
  */
 public class Weld {
-
-    private static final String SYSTEM_PROPERTY_STRING = "System property ";
-
-    private static final Logger log = Logger.getLogger(Weld.class);
 
     public static final String ARCHIVE_ISOLATION_SYSTEM_PROPERTY = "org.jboss.weld.se.archive.isolation";
 
@@ -218,14 +213,12 @@ public class Weld {
         String isolation = AccessController.doPrivileged(new GetSystemPropertyAction(ARCHIVE_ISOLATION_SYSTEM_PROPERTY));
 
         if (isolation != null && Boolean.valueOf(isolation).equals(Boolean.FALSE)) {
-            log.debug(SYSTEM_PROPERTY_STRING + ARCHIVE_ISOLATION_SYSTEM_PROPERTY
-                    + " is set to false value, so only one bean archive will be created.");
             WeldBeanDeploymentArchive archive = WeldBeanDeploymentArchive.merge(bootstrap, discoveredArchives);
             deployment = new WeldDeployment(resourceLoader, bootstrap, Collections.singleton(archive), loadedExtensions);
+            CommonLogger.LOG.archiveIsolationDisabled();
         } else {
-            log.debug(SYSTEM_PROPERTY_STRING + ARCHIVE_ISOLATION_SYSTEM_PROPERTY
-                    + " is on default true value, creating multiple bean archives if needed.");
             deployment=  new WeldDeployment(resourceLoader, bootstrap, discoveredArchives, loadedExtensions);
+            CommonLogger.LOG.archiveIsolationEnabled();
         }
 
         if(strategy.getClassFileServices() != null) {

@@ -1,8 +1,6 @@
 package org.jboss.weld.environment.jetty;
 
 
-import java.util.logging.Logger;
-
 import javax.servlet.Filter;
 import javax.servlet.Servlet;
 import javax.servlet.ServletContext;
@@ -14,6 +12,7 @@ import org.eclipse.jetty.server.handler.HandlerCollection;
 import org.eclipse.jetty.servlet.ServletHandler;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.webapp.WebAppContext;
+import org.jboss.weld.environment.servlet.logging.JettyLogger;
 
 /**
  * @author <a href="mailto:matija.mazi@gmail.com">Matija Mazi</a>
@@ -22,7 +21,6 @@ import org.eclipse.jetty.webapp.WebAppContext;
  */
 @Deprecated
 public class EclipseWeldServletHandler extends ServletHandler {
-    private static final Logger log = Logger.getLogger(EclipseWeldServletHandler.class.getName());
 
     private ServletContext sco;
     private JettyWeldInjector injector;
@@ -50,7 +48,7 @@ public class EclipseWeldServletHandler extends ServletHandler {
             injector = (JettyWeldInjector) sco.getAttribute(AbstractJettyContainer.INJECTOR_ATTRIBUTE_NAME);
         }
         if (injector == null) {
-            log.warning("Can't find Injector in the servlet context so injection is not available for " + injectable);
+            JettyLogger.LOG.cantFindInjectior(injectable);
         } else {
             injector.inject(injectable);
         }
@@ -71,7 +69,7 @@ public class EclipseWeldServletHandler extends ServletHandler {
             jettyEnv = webInf.addPath("jetty-env.xml");
         }
         if (jettyEnv == null || !(jettyEnv.exists())) {
-            log.warning("Missing jetty-env.xml, no BeanManager present in JNDI.");
+            JettyLogger.LOG.missingJettyEnvXml();
         }
     }
 
@@ -88,7 +86,7 @@ public class EclipseWeldServletHandler extends ServletHandler {
         if (wac != null) {
             process(wac, true);
         } else {
-            log.info("Cannot find matching WebApplicationContext, no default CDI support: use jetty-web.xml");
+            JettyLogger.LOG.cantFindMatchingWebApplicationContext();
         }
     }
 

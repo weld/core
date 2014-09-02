@@ -27,7 +27,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.jsp.JspApplicationContext;
 import javax.servlet.jsp.JspFactory;
 
-import org.jboss.logging.Logger;
 import org.jboss.weld.bootstrap.api.CDI11Bootstrap;
 import org.jboss.weld.bootstrap.api.Environments;
 import org.jboss.weld.bootstrap.api.TypeDiscoveryConfiguration;
@@ -43,8 +42,10 @@ import org.jboss.weld.environment.deployment.discovery.DiscoveryStrategy;
 import org.jboss.weld.environment.deployment.discovery.DiscoveryStrategyFactory;
 import org.jboss.weld.environment.gwtdev.GwtDevHostedModeContainer;
 import org.jboss.weld.environment.jetty.JettyContainer;
+import org.jboss.weld.environment.logging.CommonLogger;
 import org.jboss.weld.environment.servlet.deployment.ServletContextBeanArchiveHandler;
 import org.jboss.weld.environment.servlet.deployment.WebAppBeanArchiveScanner;
+import org.jboss.weld.environment.servlet.logging.WeldServletLogger;
 import org.jboss.weld.environment.servlet.services.ServletResourceInjectionServices;
 import org.jboss.weld.environment.servlet.util.Reflections;
 import org.jboss.weld.environment.servlet.util.ServiceLoader;
@@ -71,8 +72,6 @@ public class WeldServletLifecycle {
     private static final String CONTEXT_ID_KEY = "WELD_CONTEXT_ID_KEY";
 
     static final String INSTANCE_ATTRIBUTE_NAME = WeldServletLifecycle.class.getPackage().getName() + ".lifecycleInstance";
-
-    private static final Logger log = Logger.getLogger(WeldServletLifecycle.class);
 
     private static final String BOOTSTRAP_IMPL_CLASS_NAME = "org.jboss.weld.bootstrap.WeldBootstrap";
 
@@ -121,7 +120,7 @@ public class WeldServletLifecycle {
                 }
             } catch (NoClassDefFoundError e) {
                 // Support GAE
-                log.warn("@Resource injection not available in simple beans");
+                WeldServletLogger.LOG.resourceInjectionNotAvailable();
             }
             String id = context.getInitParameter(CONTEXT_ID_KEY);
             if (id != null) {
@@ -145,8 +144,8 @@ public class WeldServletLifecycle {
         StringBuilder dump = new StringBuilder();
         Container container = findContainer(containerContext, dump);
         if (container == null) {
-            log.info("No supported servlet container detected, CDI injection will NOT be available in Servlets, Filters or Listeners");
-            log.debugv("Exception dump from Container lookup: {0}", dump);
+            WeldServletLogger.LOG.noSupportedServletContainerDetected();
+            WeldServletLogger.LOG.debugv("Exception dump from Container lookup: {0}", dump);
         } else {
             container.initialize(containerContext);
             this.container = container;
@@ -219,10 +218,10 @@ public class WeldServletLifecycle {
         String isolation = context.getInitParameter(CONTEXT_PARAM_ARCHIVE_ISOLATION);
 
         if (isolation != null && Boolean.valueOf(isolation).equals(Boolean.FALSE)) {
-            log.debug("Archive isolation disabled - only one bean archive will be created");
+            CommonLogger.LOG.archiveIsolationDisabled();
             beanDeploymentArchives = Collections.singleton(WeldBeanDeploymentArchive.merge(bootstrap, beanDeploymentArchives));
         } else {
-            log.debug("Archive isolation enabled - creating multiple isolated bean archives if needed");
+            CommonLogger.LOG.archiveIsolationEnabled();
         }
 
         CDI11Deployment deployment = new WeldDeployment(resourceLoader, bootstrap, beanDeploymentArchives, extensions);
@@ -247,9 +246,9 @@ public class WeldServletLifecycle {
         if (containerClass != null) {
             try {
                 container = Reflections.newInstance(containerClass);
-                log.info("Container detection skipped - custom container class loaded: " + containerClass);
+                WeldServletLogger.LOG.containerDetectionSkipped(containerClass);
             } catch (IllegalArgumentException e) {
-                log.warn("Unable to instantiate custom container class: " + containerClass);
+                WeldServletLogger.LOG.unableToInstantiateCustomContainerClass(containerClass);
             }
         }
         if (container == null) {

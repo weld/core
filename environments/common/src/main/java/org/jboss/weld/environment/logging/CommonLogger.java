@@ -92,4 +92,11 @@ public interface CommonLogger extends WeldEnvironmentLogger {
     @Message(id = 22, value = "Found jandex index at {0}", format = Format.MESSAGE_FORMAT)
     void foundJandexIndex(URL url);
 
+    @LogMessage(level = Level.DEBUG)
+    @Message(id = 23, value = "Archive isolation disabled - only one bean archive will be created", format = Format.MESSAGE_FORMAT)
+    void archiveIsolationDisabled();
+
+    @LogMessage(level = Level.DEBUG)
+    @Message(id = 24, value = "Archive isolation enabled - creating multiple isolated bean archives if needed", format = Format.MESSAGE_FORMAT)
+    void archiveIsolationEnabled();
 }
