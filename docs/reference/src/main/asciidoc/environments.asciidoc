@@ -201,7 +201,7 @@ CDI 1.1 introduced the bean discovery mode of `annotated` used for implicit bean
 This mode may bring additional overhead during container bootstrap. Therefore, Weld Servlet supports the use of https://github.com/wildfly/jandex[Jandex] bytecode scanning library to speed up the scanning process. Simply put the http://search.maven.org/#search|gav|1|g%3A%22org.jboss%22%20AND%20a%3A%22jandex%22[jandex.jar] on the classpath. 
 If Jandex is not found on the classpath Weld will use the Java Reflection as a fallback.
 
-In general, an implicit bean archive does not have to contain a beans.xml descriptor. However, such a bean archive is not supported, i.e. it's excluded from discovery.  
+In general, an implicit bean archive does not have to contain a beans.xml descriptor. However, such a bean archive is not supported by Weld Servlet, i.e. it's excluded from discovery.  
 
 NOTE: The bean discovery mode of `annotated` is supported from version 2.2.5.Final. Previous versions processed implicit bean archives in the same way as explicit bean archives.
 
@@ -428,7 +428,7 @@ CDI 1.1 introduced the bean discovery mode of `annotated` used for implicit bean
 Therefore, Weld Servlet supports the use of https://github.com/wildfly/jandex[Jandex] bytecode scanning library to speed up the scanning process. Simply put the http://search.maven.org/#search|gav|1|g%3A%22org.jboss%22%20AND%20a%3A%22jandex%22[jandex.jar] on the classpath.
 If Jandex is not found on the classpath Weld will use the Java Reflection as a fallback.  
 
-In general, an implicit bean archive does not have to contain a beans.xml descriptor. However, such a bean archive is not supported, i.e. it's excluded from discovery.  
+In general, an implicit bean archive does not have to contain a beans.xml descriptor. However, such a bean archive is not supported by Weld SE, i.e. it's excluded from discovery.  
 
 NOTE: The bean discovery mode of `annotated` is supported from version 2.2.0.Final. Previous versions processed implicit bean archives in the same way as explicit bean archives.
 
