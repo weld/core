@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.injection.producer.ejb;
 
-import static org.jboss.weld.util.reflection.Reflections.cast;
-
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.List;
@@ -29,7 +27,6 @@ import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
-import org.jboss.weld.annotated.slim.SlimAnnotatedTypeStore;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bean.proxy.CombinedInterceptorAndDecoratorStackMethodHandler;
 import org.jboss.weld.bean.proxy.MethodHandler;
@@ -46,7 +43,7 @@ import org.jboss.weld.injection.producer.StatelessSessionBeanInjector;
 import org.jboss.weld.injection.producer.SubclassDecoratorApplyingInstantiator;
 import org.jboss.weld.injection.producer.SubclassedComponentInstantiator;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Types;
 
 public class SessionBeanInjectionTarget<T> extends BeanInjectionTarget<T> {
@@ -74,21 +71,10 @@ public class SessionBeanInjectionTarget<T> extends BeanInjectionTarget<T> {
         return bean;
     }
 
-    private static <T> EnhancedAnnotatedType<T> getImplementationClass(SessionBean<T> bean) {
-        if (bean.getEjbDescriptor().getBeanClass().equals(bean.getEjbDescriptor().getImplementationClass())) {
-            // no special implementation class is used
-            return bean.getEnhancedAnnotated();
-        }
-        ClassTransformer transformer = bean.getBeanManager().getServices().get(ClassTransformer.class);
-        EnhancedAnnotatedType<T> implementationClass = cast(transformer.getEnhancedAnnotatedType(bean.getEjbDescriptor().getImplementationClass(), bean.getBeanManager().getId()));
-        bean.getBeanManager().getServices().get(SlimAnnotatedTypeStore.class).put(bean.getAnnotated());
-        return implementationClass;
-    }
-
     @Override
     protected Instantiator<T> initInstantiator(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager, Set<InjectionPoint> injectionPoints) {
         if (bean instanceof SessionBean<?>) {
-            EnhancedAnnotatedType<T> implementationClass = getImplementationClass((SessionBean<T>) bean);
+            EnhancedAnnotatedType<T> implementationClass = Beans.getEjbImplementationClass((SessionBean<T>) bean);
 
             AbstractInstantiator<T> instantiator = null;
             if (type.equals(implementationClass)) {
@@ -111,7 +97,7 @@ public class SessionBeanInjectionTarget<T> extends BeanInjectionTarget<T> {
         List<Decorator<?>> decorators = beanManager.resolveDecorators(getBean().getTypes(), getBean().getQualifiers());
         if (!decorators.isEmpty()) {
             Instantiator<T> instantiator = getInstantiator();
-            EnhancedAnnotatedType<T> implementationClass = getImplementationClass(getBean());
+            EnhancedAnnotatedType<T> implementationClass = Beans.getEjbImplementationClass(getBean());
             instantiator = SubclassedComponentInstantiator.forInterceptedDecoratedBean(implementationClass, getBean(), (AbstractInstantiator<T>) instantiator, beanManager);
             instantiator = new SubclassDecoratorApplyingInstantiator<T>(getBeanManager().getContextId(), instantiator, getBean(), decorators, implementationClass.getJavaClass());
             setInstantiator(instantiator);

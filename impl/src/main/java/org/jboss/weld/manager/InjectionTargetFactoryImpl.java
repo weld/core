@@ -24,12 +24,16 @@ import javax.enterprise.inject.spi.Interceptor;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bean.SessionBean;
+import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.exceptions.IllegalArgumentException;
+import org.jboss.weld.injection.producer.AbstractInstantiator;
 import org.jboss.weld.injection.producer.BasicInjectionTarget;
 import org.jboss.weld.injection.producer.BeanInjectionTarget;
 import org.jboss.weld.injection.producer.DecoratorInjectionTarget;
+import org.jboss.weld.injection.producer.DefaultInstantiator;
 import org.jboss.weld.injection.producer.InjectionTargetService;
 import org.jboss.weld.injection.producer.NonProducibleInjectionTarget;
+import org.jboss.weld.injection.producer.SubclassedComponentInstantiator;
 import org.jboss.weld.injection.producer.ejb.SessionBeanInjectionTarget;
 import org.jboss.weld.injection.spi.InjectionServices;
 import org.jboss.weld.logging.BeanLogger;
@@ -124,8 +128,17 @@ public class InjectionTargetFactoryImpl<T> implements WeldInjectionTargetFactory
         return BeanInjectionTarget.createDefault(type, bean, manager);
     }
 
-    protected InjectionTarget<T> createMessageDrivenInjectionTarget() {
-        return prepareInjectionTarget(BasicInjectionTarget.createDefault(type, null, manager));
+    protected InjectionTarget<T> createMessageDrivenInjectionTarget(InternalEjbDescriptor<T> descriptor) {
+        EnhancedAnnotatedType<T> implementationClass = Beans.getEjbImplementationClass(descriptor, manager, type);
+
+        AbstractInstantiator<T> instantiator = null;
+        if (type.equals(implementationClass)) {
+            instantiator = new DefaultInstantiator<T>(type, null, manager);
+        } else {
+            // Session bean subclassed by the EJB container
+            instantiator = SubclassedComponentInstantiator.forSubclassedEjb(type, implementationClass, null, manager);
+        }
+        return prepareInjectionTarget(BasicInjectionTarget.createDefault(type, null, manager, instantiator));
     }
 
     private BasicInjectionTarget<T> initialize(BasicInjectionTarget<T> injectionTarget) {
