@@ -74,7 +74,7 @@ destroyed).
 
 ==== Tomcat
 
-Since Weld 2.2.0.Final only Tomcat 7 and 8 are supported.
+Since version 2.2.0.Final only Tomcat 7 and 8 are supported.
 
 Tomcat has a read-only JNDI, so Weld can't automatically bind the
 BeanManager extension SPI. To bind the BeanManager into JNDI, you should
@@ -112,7 +112,7 @@ Listener injection should also work on Tomcat 7.0.50 and newer versions.
 
 ==== Jetty
 
-Since Weld 2.0.2.Final only Jetty 7, 8 and 9 are supported.
+Since version 2.0.2.Final only Jetty 7, 8 and 9 are supported.
 
 To bind the BeanManager into JNDI, you should either populate
 `WEB-INF/jetty-env.xml` with the following contents:
@@ -186,6 +186,25 @@ See also http://www.eclipse.org/jetty/documentation/current/jetty-classloading.h
 Weld also supports Servlet and Filter injection in Jetty containers.
 Listener injection should also work on Jetty 9.1.1 and newer versions.
 
+==== Bean Archive Isolation
+
+By default, bean archive isolation is enabled. It means that alternatives, interceptors and decorators can be selected/enabled for a bean archive by using a beans.xml descriptor.
+
+This behaviour can be changed by setting the servlet initialization parameter `org.jboss.weld.environment.servlet.archive.isolation` to false.
+In this case, Weld will use a "flat" deployment structure - all bean classes share the same bean archive and all beans.xml descriptors are automatically merged into one. Thus alternatives, interceptors and decorators selected/enabled for a bean archive will be enabled for the whole application.
+
+NOTE: Bean archive isolation is supported (and enabled by default) from version 2.2.5.Final. Previous versions only operated with the "flat" deployment structure.   
+
+==== Implicit Bean Archive Support
+
+CDI 1.1 introduced the bean discovery mode of `annotated` used for implicit bean archives (see also <<packaging-and-deployment>>). 
+This mode may bring additional overhead during container bootstrap. Therefore, Weld Servlet supports the use of https://github.com/wildfly/jandex[Jandex] bytecode scanning library to speed up the scanning process. Simply put the http://search.maven.org/#search|gav|1|g%3A%22org.jboss%22%20AND%20a%3A%22jandex%22[jandex.jar] on the classpath. 
+If Jandex is not found on the classpath Weld will use the Java Reflection as a fallback.
+
+In general, an implicit bean archive does not have to contain a beans.xml descriptor. However, such a bean archive is not supported by Weld Servlet, i.e. it's excluded from discovery.  
+
+NOTE: The bean discovery mode of `annotated` is supported from version 2.2.5.Final. Previous versions processed implicit bean archives in the same way as explicit bean archives.
+
 === Java SE
 
 In addition to improved integration of the Enterprise Java stack, the
@@ -248,34 +267,6 @@ public class HelloWorld
    }
 }
 ------------------------------------------------------------------------------------------------------
-
-==== Bean Discovery Mode in Weld SE
-
-CDI 1.1 introduced the `bean-discovery-mode` attribute specified in the
-`beans.xml` file. The attribute has 3 possible values:
-
-* `all`: all the classes from the archive are discovered by Weld.
-* `annotated`: only the classes that declare a bean defining annotation
-are discovered by Weld.
-* `none`: none of the classes from the archive is discovered by Weld.
-
-Bean discovery mode support depends on the
-https://github.com/wildfly/jandex[jandex] library availability on the
-classpath. The support is summed up in the table below:
-
-.Discovery modes supported
-[cols=",,",options="header"]
-|=============================================
-| |Jandex available |Jandex unavailable
-|All discovery |supported {set:cellbgcolor:#66CC00}|supported
-|Annotated discovery {set:cellbgcolor:}  |supported {set:cellbgcolor:#66CC00}|not supported {set:cellbgcolor:#CC3333}
-|None discovery {set:cellbgcolor:} |supported {set:cellbgcolor:#66CC00}|supported
-|=============================================
-
-In case the discovery mode is not supported, `IllegalStateException` is
-thrown.
-
-Here's an example of a simple CDI SE application:
 
 ==== Bootstrapping CDI SE
 
@@ -423,17 +414,23 @@ declare a dependency such as:
 </dependency>
 ---------------------------------------
 
-==== Bean archive isolation
+==== Bean Archive Isolation
 
-By default, Weld creates an isolated bean archive instance for each
-processed archive. The consequence of this approach is the ability to
-enable Alternatives/Interceptors/Decorators on a per-archive basis using
-beans.xml.
+By default, bean archive isolation is enabled. It means that alternatives, interceptors and decorators can be selected/enabled for a bean archive by using a beans.xml descriptor.
 
-This behaviour can be changed by providing an
-`org.jboss.weld.se.archive.isolation` system property with `false`
-value. After that, each Alternative/Interceptor/Decorator enabled in
-beans.xml of any archive will be enabled for the whole SE application.
+This behaviour can be changed by providing a system property `org.jboss.weld.se.archive.isolation` with value of `false`. In this case, Weld will use a "flat" deployment structure - all bean classes share the same bean archive and all beans.xml descriptors are automatically merged into one. Thus alternatives, interceptors and decorators selected/enabled for a bean archive will be enabled for the whole application. 
+
+NOTE: Bean archive isolation is supported (and enabled by default) from version 2.2.0.Final. Previous versions only operated with the "flat" deployment structure.   
+
+==== Implicit Bean Archive Support
+
+CDI 1.1 introduced the bean discovery mode of `annotated` used for implicit bean archives (see also <<packaging-and-deployment>>). This mode may bring additional overhead during container bootstrap. 
+Therefore, Weld Servlet supports the use of https://github.com/wildfly/jandex[Jandex] bytecode scanning library to speed up the scanning process. Simply put the http://search.maven.org/#search|gav|1|g%3A%22org.jboss%22%20AND%20a%3A%22jandex%22[jandex.jar] on the classpath.
+If Jandex is not found on the classpath Weld will use the Java Reflection as a fallback.  
+
+In general, an implicit bean archive does not have to contain a beans.xml descriptor. However, such a bean archive is not supported by Weld SE, i.e. it's excluded from discovery.  
+
+NOTE: The bean discovery mode of `annotated` is supported from version 2.2.0.Final. Previous versions processed implicit bean archives in the same way as explicit bean archives.
 
 === OSGi
 
