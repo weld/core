@@ -7,6 +7,7 @@ import org.jboss.logging.Logger.Level;
 import org.jboss.logging.annotations.Cause;
 import org.jboss.logging.annotations.LogMessage;
 import org.jboss.logging.annotations.Message;
+import org.jboss.logging.annotations.Message.Format;
 import org.jboss.logging.annotations.MessageLogger;
 
 /**
@@ -14,6 +15,7 @@ import org.jboss.logging.annotations.MessageLogger;
  *
  * @author Matej Briškár
  * @author Martin Kouba
+ * @author Kirill Gaevskii
  */
 @MessageLogger(projectCode = "WELD-SE-")
 public interface WeldSELogger extends BasicLogger {
@@ -31,5 +33,9 @@ public interface WeldSELogger extends BasicLogger {
     @LogMessage(level = Level.DEBUG)
     @Message(id = 1, value = CATCHING_MARKER)
     void catchingDebug(@Cause Throwable throwable);
+
+    @LogMessage(level = Level.DEBUG)
+    @Message(id = 2, value = "System property org.jboss.weld.se.archive.isolation is set to {0}.", format = Format.MESSAGE_FORMAT)
+    void multipleIsolation(Object param1);
 
 }

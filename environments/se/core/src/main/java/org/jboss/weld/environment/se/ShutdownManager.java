@@ -51,7 +51,7 @@ public class ShutdownManager {
                 }
             } else {
                 log.debug("Skipping spurious call to shutdown");
-                log.tracev("Spurious call to shutdown from: {0}", Thread.currentThread().getStackTrace());
+                log.tracev("Spurious call to shutdown from: {0}", (Object[]) Thread.currentThread().getStackTrace());
             }
         }
     }

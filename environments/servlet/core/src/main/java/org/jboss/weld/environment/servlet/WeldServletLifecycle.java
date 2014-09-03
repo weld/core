@@ -45,6 +45,7 @@ import org.jboss.weld.environment.gwtdev.GwtDevHostedModeContainer;
 import org.jboss.weld.environment.jetty.JettyContainer;
 import org.jboss.weld.environment.servlet.deployment.ServletContextBeanArchiveHandler;
 import org.jboss.weld.environment.servlet.deployment.WebAppBeanArchiveScanner;
+import org.jboss.weld.environment.servlet.logging.WeldServletLogger;
 import org.jboss.weld.environment.servlet.services.ServletResourceInjectionServices;
 import org.jboss.weld.environment.servlet.util.Reflections;
 import org.jboss.weld.environment.servlet.util.ServiceLoader;
@@ -121,7 +122,7 @@ public class WeldServletLifecycle {
                 }
             } catch (NoClassDefFoundError e) {
                 // Support GAE
-                log.warn("@Resource injection not available in simple beans");
+                WeldServletLogger.LOG.resourceInjectionNotAvailable();
             }
             String id = context.getInitParameter(CONTEXT_ID_KEY);
             if (id != null) {
@@ -145,7 +146,7 @@ public class WeldServletLifecycle {
         StringBuilder dump = new StringBuilder();
         Container container = findContainer(containerContext, dump);
         if (container == null) {
-            log.info("No supported servlet container detected, CDI injection will NOT be available in Servlets, Filters or Listeners");
+            WeldServletLogger.LOG.noSupportedServletContainerDetected();
             log.debugv("Exception dump from Container lookup: {0}", dump);
         } else {
             container.initialize(containerContext);
@@ -247,9 +248,9 @@ public class WeldServletLifecycle {
         if (containerClass != null) {
             try {
                 container = Reflections.newInstance(containerClass);
-                log.info("Container detection skipped - custom container class loaded: " + containerClass);
+                WeldServletLogger.LOG.containerDetectionSkipped(containerClass);
             } catch (IllegalArgumentException e) {
-                log.warn("Unable to instantiate custom container class: " + containerClass);
+                WeldServletLogger.LOG.unableToInstantiateCustomContainerClass(containerClass);
             }
         }
         if (container == null) {

@@ -26,7 +26,7 @@ import javax.naming.Reference;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import org.jboss.logging.Logger;
+import org.jboss.weld.environment.servlet.logging.WeldServletLogger;
 
 /**
  * Emulates the behavior of the naming resource binding that is typically done
@@ -37,8 +37,6 @@ import org.jboss.logging.Logger;
  * @author Christian Sadilek <csadilek@redhat.com>
  */
 public class BeanManagerResourceBindingListener implements ServletContextListener {
-    private static final Logger log = Logger.getLogger(BeanManagerResourceBindingListener.class);
-
     private static final String RESOURCES_CONTEXT = "java:comp/env";
     private static final String BEAN_MANAGER_JNDI_NAME = "BeanManager";
     private static final String QUALIFIED_BEAN_MANAGER_JNDI_NAME = RESOURCES_CONTEXT + "/" + BEAN_MANAGER_JNDI_NAME;
@@ -60,16 +58,16 @@ public class BeanManagerResourceBindingListener implements ServletContextListene
                             break;
                         }
                     } catch (Exception e) {
-                        log.info("Problem when iterating through " + RESOURCES_CONTEXT, e);
+                        WeldServletLogger.LOG.problemWhenInterating(RESOURCES_CONTEXT, e);
                     }
                 }
             } catch (NamingException e) {
-                log.infov("Could not read context {0}: Trying to create it!", RESOURCES_CONTEXT);
+                WeldServletLogger.LOG.couldNotReadContext(RESOURCES_CONTEXT);
                 try {
                     Context compCtx = (Context) ctx.lookup("java:comp");
                     compCtx.createSubcontext("env");
                 } catch (Exception ex) {
-                    log.errorv("Could not create context: {0}", RESOURCES_CONTEXT);
+                    WeldServletLogger.LOG.couldntCreateContext(RESOURCES_CONTEXT);
                 }
             }
 
@@ -79,7 +77,7 @@ public class BeanManagerResourceBindingListener implements ServletContextListene
                     ctx.rebind(QUALIFIED_BEAN_MANAGER_JNDI_NAME,
                             new Reference(BeanManager.class.getName(), BEAN_MANAGER_OBJECT_FACTORY, null));
                     bound = true;
-                    log.infov("BeanManager reference bound to {0}", QUALIFIED_BEAN_MANAGER_JNDI_NAME);
+                    WeldServletLogger.LOG.beanManagerReferenceBoundTo(QUALIFIED_BEAN_MANAGER_JNDI_NAME);
                 } catch (NamingException e) {
                     throw new RuntimeException("Could not bind BeanManager reference to JNDI: " + e.getExplanation()
                             + " \n"
@@ -98,9 +96,9 @@ public class BeanManagerResourceBindingListener implements ServletContextListene
             try {
                 InitialContext ctx = new InitialContext();
                 ctx.unbind(QUALIFIED_BEAN_MANAGER_JNDI_NAME);
-                log.info("Successfully unbound BeanManager reference.");
+                WeldServletLogger.LOG.successfullyUnboundBeanManagerReference();
             } catch (NamingException e) {
-                log.warn("Failed to unbind BeanManager reference!");
+                WeldServletLogger.LOG.failedToUnbindBeanManagerReference();
             }
         }
     }
