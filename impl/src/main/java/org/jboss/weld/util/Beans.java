@@ -458,7 +458,7 @@ public class Beans {
         ArraySet<Type> types = new ArraySet<Type>();
         // session beans
         Map<Class<?>, Type> typeMap = new LinkedHashMap<Class<?>, Type>();
-        HierarchyDiscovery beanClassDiscovery = new HierarchyDiscovery(ejbDescriptor.getBeanClass());
+        HierarchyDiscovery beanClassDiscovery = HierarchyDiscovery.forNormalizedType(ejbDescriptor.getBeanClass());
         for (BusinessInterfaceDescriptor<?> businessInterfaceDescriptor : ejbDescriptor.getLocalBusinessInterfaces()) {
             // first we need to resolve the local interface
             Type resolvedLocalInterface = beanClassDiscovery.resolveType(Types.getCanonicalType(businessInterfaceDescriptor.getInterface()));

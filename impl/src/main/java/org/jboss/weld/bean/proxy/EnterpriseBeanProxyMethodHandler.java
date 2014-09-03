@@ -163,7 +163,7 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
 
     private void discoverBusinessInterfaces(Map<Class<?>, Class<?>> typeToBusinessInterfaceMap, Set<Class<?>> businessInterfaces) {
         for (Class<?> businessInterfaceClass : businessInterfaces) {
-            for (Class<?> type : new HierarchyDiscovery(businessInterfaceClass).getTypeMap().keySet()) {
+            for (Class<?> type : HierarchyDiscovery.forNormalizedType(businessInterfaceClass).getTypeMap().keySet()) {
                 typeToBusinessInterfaceMap.put(type, businessInterfaceClass);
             }
         }

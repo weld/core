@@ -28,7 +28,6 @@ import java.util.Set;
 import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.reflection.GenericArrayTypeImpl;
 import org.jboss.weld.util.reflection.ParameterizedTypeImpl;
-import org.jboss.weld.util.reflection.RawType;
 import org.jboss.weld.util.reflection.Reflections;
 
 import com.google.common.base.Function;
@@ -157,10 +156,6 @@ public class Types {
         if (type instanceof Class<?>) {
             Class<?> clazz = (Class<?>) type;
             return getCanonicalType(clazz);
-        }
-        if (type instanceof RawType<?>) {
-            RawType<?> rawType = (RawType<?>) type;
-            return rawType.getType();
         }
         return type;
     }

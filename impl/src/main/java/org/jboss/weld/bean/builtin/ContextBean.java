@@ -27,7 +27,7 @@ public class ContextBean<T extends Context> extends AbstractBuiltInBean<T> {
     public ContextBean(ContextHolder<T> contextHolder, BeanManagerImpl beanManager) {
         super(new StringBeanIdentifier(BeanIdentifiers.forBuiltInBean(beanManager, contextHolder.getType(), null)), beanManager, contextHolder.getType());
         this.context = contextHolder.getContext();
-        this.types = new HierarchyDiscovery(contextHolder.getType()).getTypeClosure();
+        this.types = HierarchyDiscovery.forNormalizedType(contextHolder.getType()).getTypeClosure();
         this.qualifiers = contextHolder.getQualifiers();
     }
 

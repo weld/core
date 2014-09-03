@@ -39,7 +39,7 @@ public class ClassHierarchyTest {
         expectedTypes.add(newParameterizedType(Bar.class, Integer.class));
         expectedTypes.add(newParameterizedType(Foo.class, Integer.class));
 
-        HierarchyDiscovery discovery = new HierarchyDiscovery(Baz.class);
+        HierarchyDiscovery discovery = HierarchyDiscovery.forNormalizedType(Baz.class);
         Types.assertTypeSetMatches(expectedTypes, discovery.getTypeClosure());
     }
 
@@ -54,7 +54,7 @@ public class ClassHierarchyTest {
                         t(Alpha.class,
                                 t(Map.class, t(Alpha.class, String.class),
                                         t(List.class, t(Set.class, t(Comparable.class, Serializable.class))))))));
-        HierarchyDiscovery discovery = new HierarchyDiscovery(Bravo.class);
+        HierarchyDiscovery discovery = HierarchyDiscovery.forNormalizedType(Bravo.class);
         Types.assertTypeSetMatches(expectedTypes, discovery.getTypeClosure());
     }
 

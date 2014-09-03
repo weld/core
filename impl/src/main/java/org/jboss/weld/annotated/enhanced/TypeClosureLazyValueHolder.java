@@ -34,23 +34,12 @@ public class TypeClosureLazyValueHolder extends LazyValueHolder<Set<Type>> {
 
     private final Type type;
 
-    private final Set<Type> types;
-
     public TypeClosureLazyValueHolder(Type type) {
         this.type = type;
-        this.types = null;
-    }
-
-    public TypeClosureLazyValueHolder(Set<Type> types) {
-        this.type = null;
-        this.types = types;
     }
 
     @Override
     protected Set<Type> computeValue() {
-        if (types != null) {
-            return types;
-        }
         return immutableSet(new HierarchyDiscovery(type).getTypeClosure());
     }
 

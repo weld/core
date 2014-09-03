@@ -17,9 +17,7 @@ import org.jboss.weld.exceptions.InvalidObjectException;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.resources.ReflectionCache;
 import org.jboss.weld.resources.SharedObjectCache;
-import org.jboss.weld.util.LazyValueHolder;
 import org.jboss.weld.util.reflection.Formats;
-import org.jboss.weld.util.reflection.RawType;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
@@ -37,11 +35,6 @@ public class BackedAnnotatedParameter<X> extends BackedAnnotated implements Anno
         super(baseType, sharedObjectCache);
         this.position = position;
         this.declaringCallable = declaringCallable;
-    }
-
-    @Override
-    protected LazyValueHolder<Set<Type>> initTypeClosure(Type baseType, SharedObjectCache cache) {
-        return cache.getTypeClosureHolder(RawType.wrap(baseType));
     }
 
     @Override

@@ -29,6 +29,7 @@ import org.jboss.weld.security.GetDeclaredConstructorsAction;
 import org.jboss.weld.security.GetDeclaredFieldsAction;
 import org.jboss.weld.security.GetDeclaredMethodsAction;
 import org.jboss.weld.util.LazyValueHolder;
+import org.jboss.weld.util.Types;
 import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
@@ -65,6 +66,11 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
         this.fields = new BackedAnnotatedFields();
         this.methods = new BackedAnnotatedMethods();
         this.identifier = AnnotatedTypeIdentifier.forBackedAnnotatedType(contextId, rawType, baseType, bdaId);
+    }
+
+    @Override
+    protected LazyValueHolder<Set<Type>> initTypeClosure(Type baseType, SharedObjectCache cache) {
+        return cache.getTypeClosureHolder(Types.getCanonicalType(baseType));
     }
 
     @Override

@@ -16,13 +16,10 @@
  */
 package org.jboss.weld.resources;
 
-import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Set;
 
 import org.jboss.weld.Container;
-import org.jboss.weld.annotated.enhanced.TypeClosureLazyValueHolder;
-import org.jboss.weld.util.LazyValueHolder;
 
 /**
  * Convenience methods to access the shared object cache
@@ -49,14 +46,6 @@ public class SharedObjectFacade {
             return Container.instance(contextId).services().get(SharedObjectCache.class).getSharedMap(map);
         }
         return map;
-    }
-
-    public static LazyValueHolder<Set<Type>> getTypeClosureHolder(String contextId,Type type) {
-        SharedObjectCache cache = getSharedObjectCache(contextId);
-        if (cache != null) {
-            return cache.getTypeClosureHolder(type);
-        }
-        return new TypeClosureLazyValueHolder(type);
     }
 
     // this may return null in a test environment

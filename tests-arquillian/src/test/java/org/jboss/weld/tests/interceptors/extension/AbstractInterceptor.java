@@ -35,7 +35,7 @@ import java.util.Set;
 public abstract class AbstractInterceptor<T> implements Interceptor<T> {
 
     public Set<Type> getTypes() {
-        return new HierarchyDiscovery(getBeanClass()).getTypeClosure();
+        return HierarchyDiscovery.forNormalizedType(getBeanClass()).getTypeClosure();
     }
 
     public Set<Annotation> getQualifiers() {

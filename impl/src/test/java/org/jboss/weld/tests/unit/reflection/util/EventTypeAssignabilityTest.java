@@ -110,7 +110,7 @@ public class EventTypeAssignabilityTest {
         Type type1 = new GenericArrayTypeImpl(new TypeLiteral<List<?>>() {
         }.getType());
         Type type2 = new List[0].getClass();
-        assertTrue(getRules().matches(type1, type2));
+        assertTrue(getRules().matches(type2, type1));
     }
 
     @Test

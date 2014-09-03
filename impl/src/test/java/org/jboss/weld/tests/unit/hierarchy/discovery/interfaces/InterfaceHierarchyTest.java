@@ -39,7 +39,7 @@ public class InterfaceHierarchyTest {
         expectedTypes.add(newParameterizedType(Alpha.class, Integer.class));
         expectedTypes.add(newParameterizedType(Zulu.class, String.class, Integer.class));
 
-        HierarchyDiscovery discovery = new HierarchyDiscovery(DeltaImpl.class);
+        HierarchyDiscovery discovery = HierarchyDiscovery.forNormalizedType(DeltaImpl.class);
         assertTypeSetMatches(expectedTypes, discovery.getTypeClosure());
     }
 }
