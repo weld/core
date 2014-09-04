@@ -103,8 +103,12 @@ public class BeanInjectionTarget<T> extends BasicInjectionTarget<T> {
             return; // this is a non-producible InjectionTarget (only created to inject existing instances)
         }
         if (isInterceptionCandidate() && !beanManager.getInterceptorModelRegistry().containsKey(getType())) {
-            new InterceptionModelInitializer<T>(beanManager, annotatedType, instantiator.getConstructorInjectionPoint().getAnnotated(), getBean()).init();
+            buildInterceptionModel(annotatedType, instantiator);
         }
+    }
+
+    protected void buildInterceptionModel(EnhancedAnnotatedType<T> annotatedType, AbstractInstantiator<T> instantiator) {
+        new InterceptionModelInitializer<T>(beanManager, annotatedType, instantiator.getConstructorInjectionPoint().getAnnotated(), getBean()).init();
     }
 
     @Override

@@ -26,6 +26,7 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
 
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedConstructor;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bean.proxy.CombinedInterceptorAndDecoratorStackMethodHandler;
@@ -38,6 +39,7 @@ import org.jboss.weld.injection.producer.DefaultInstantiator;
 import org.jboss.weld.injection.producer.DefaultLifecycleCallbackInvoker;
 import org.jboss.weld.injection.producer.Injector;
 import org.jboss.weld.injection.producer.Instantiator;
+import org.jboss.weld.injection.producer.InterceptionModelInitializer;
 import org.jboss.weld.injection.producer.LifecycleCallbackInvoker;
 import org.jboss.weld.injection.producer.StatelessSessionBeanInjector;
 import org.jboss.weld.injection.producer.SubclassDecoratorApplyingInstantiator;
@@ -107,6 +109,16 @@ public class SessionBeanInjectionTarget<T> extends BeanInjectionTarget<T> {
          * We only take care of @AroundConstructor interception. The EJB container deals with the other types of interception.
          */
         setupConstructorInterceptionInstantiator(beanManager.getInterceptorModelRegistry().get(getType()));
+    }
+
+    @Override
+    protected void buildInterceptionModel(EnhancedAnnotatedType<T> annotatedType, AbstractInstantiator<T> instantiator) {
+        /*
+         * instantiator.getConstructorInjectionPoint() may represent the constructor of the SessionBean subclass which may not have annotations applied
+         * Therefore, use the component class constructor instead of the one from subclass.
+         */
+        EnhancedAnnotatedConstructor<T> constructor = annotatedType.getDeclaredEnhancedConstructor(instantiator.getConstructorInjectionPoint().getSignature());
+        new InterceptionModelInitializer<T>(beanManager, annotatedType, constructor, getBean()).init();
     }
 
     @Override
