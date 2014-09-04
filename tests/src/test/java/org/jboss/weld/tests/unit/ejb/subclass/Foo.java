@@ -29,6 +29,7 @@ public class Foo {
     }
 
     @Inject
+    @BarInterceptorBinding
     public Foo(BeanManager manager) {
         this.manager = manager;
     }

@@ -34,10 +34,13 @@ import org.jboss.weld.ejb.spi.BusinessInterfaceDescriptor;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.ejb.spi.EjbServices;
 import org.jboss.weld.ejb.spi.SubclassedComponentDescriptor;
+import org.jboss.weld.injection.producer.ejb.SessionBeanInjectionTarget;
+import org.jboss.weld.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.mock.AbstractDeployment;
 import org.jboss.weld.mock.MockEjbServices;
 import org.jboss.weld.util.reflection.Reflections;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.google.common.collect.ImmutableSet;
@@ -51,9 +54,10 @@ import com.google.common.collect.ImmutableSet;
  */
 public class SubclassedComponentDescriptorTest {
 
-    @Test
-    public void testSubclassedComponentDescriptor() {
+    private BeanManagerImpl manager;
 
+    @BeforeClass
+    public void prepareContainer() {
         final EjbDescriptor<Foo> fooDescriptor = new EjbDescriptorImpl<Foo>(Foo.class, Foo.class, EnhancedFoo.class, SessionBeanType.STATEFUL);
         final EjbDescriptor<Bar> barDescriptor = new EjbDescriptorImpl<Bar>(Bar.class, BarLocal.class, EnhancedBar.class, SessionBeanType.STATEFUL);
         final EjbDescriptor<Baz> bazDescriptor = new EjbDescriptorImpl<Baz>(Baz.class, Baz.class, EnhancedBaz.class, null);
@@ -87,7 +91,11 @@ public class SubclassedComponentDescriptorTest {
         };
 
         final TestContainer container = new TestContainer(deployment).startContainer();
-        final BeanManagerImpl manager = (BeanManagerImpl) container.getBeanManager(bda);
+        manager = (BeanManagerImpl) container.getBeanManager(bda);
+    }
+
+    @Test
+    public void testSubclassedComponentDescriptor() {
         Foo foo = (Foo) manager.createInjectionTarget(manager.getEjbDescriptor(Foo.class.getSimpleName())).produce(manager.createCreationalContext(null));
         Bar bar = (Bar) manager.createInjectionTarget(manager.getEjbDescriptor(Bar.class.getSimpleName())).produce(manager.createCreationalContext(null));
         Baz baz = (Baz) manager.createInjectionTarget(manager.getEjbDescriptor(Baz.class.getSimpleName())).produce(manager.createCreationalContext(null));
@@ -105,12 +113,21 @@ public class SubclassedComponentDescriptorTest {
         assertTrue(baz instanceof Enhanced);
         assertTrue(Reflections.<Enhanced>cast(baz).check());
 
-        assertEquals(MockEjbServices.getDescriptors().size(), 1);
-        assertEquals(MockEjbServices.getDescriptors().iterator().next().getBeanClass(), Bar.class);
-
         assertNotNull(foo.getManager());
         assertNotNull(bar.getManager());
         assertNotNull(baz.getManager());
+
+        assertEquals(MockEjbServices.getDescriptors().size(), 2);
+        assertTrue(MockEjbServices.getDescriptors().contains(manager.getEjbDescriptor(Foo.class.getSimpleName())));
+        assertTrue(MockEjbServices.getDescriptors().contains(manager.getEjbDescriptor(Bar.class.getSimpleName())));
+    }
+
+    @Test
+    public void testInterceptionModelForConstructor() {
+        SessionBeanInjectionTarget<?> it = (SessionBeanInjectionTarget<?>) manager.createInjectionTarget(manager.getEjbDescriptor(Foo.class.getSimpleName()));
+        InterceptionModel model = manager.getInterceptorModelRegistry().get(it.getAnnotated());
+        assertNotNull(model);
+        assertTrue(model.hasExternalConstructorInterceptors());
     }
 
     private static class EjbDescriptorImpl<T> implements EjbDescriptor<T>, SubclassedComponentDescriptor<T> {

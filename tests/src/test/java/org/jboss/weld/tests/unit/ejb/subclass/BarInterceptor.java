@@ -17,6 +17,7 @@
 package org.jboss.weld.tests.unit.ejb.subclass;
 
 import javax.annotation.Priority;
+import javax.interceptor.AroundConstruct;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
@@ -25,6 +26,15 @@ import javax.interceptor.InvocationContext;
 @Interceptor
 @BarInterceptorBinding
 public class BarInterceptor {
+
+    @AroundConstruct
+    public void aroundConstruct(InvocationContext ctx) {
+        try {
+            ctx.proceed();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @AroundInvoke
     public Object alwaysReturnThis(InvocationContext ctx) throws Exception {
