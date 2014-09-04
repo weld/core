@@ -404,6 +404,9 @@ public class WeldStartup {
 
         getContainer().setState(ContainerState.DISCOVERED);
 
+        // Fix attempt for WELD-1729
+        flushCaches();
+
         AfterBeanDiscoveryImpl.fire(deploymentManager, deployment, bdaMapping, contexts);
 
         // Extensions may have registered beans / observers. We need to flush caches.
