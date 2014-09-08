@@ -23,6 +23,7 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.builtin.ExtensionBean;
+import org.jboss.weld.experimental.Priority;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
@@ -45,10 +46,19 @@ public class ObserverFactory {
      */
     public static <T, X> ObserverMethodImpl<T, X> create(EnhancedAnnotatedMethod<T, ? super X> method, RIBean<X> declaringBean, BeanManagerImpl manager) {
         ObserverMethodImpl<T, X> result = null;
+        Priority priority = method.getEnhancedParameters(Observes.class).get(0).getAnnotation(Priority.class);
         if (declaringBean instanceof ExtensionBean) {
-            result = new ExtensionObserverMethodImpl<T, X>(method, declaringBean, manager);
+            if(priority != null) {
+                result = new PrioritizedExtensionObserverMethodImpl<T, X>(method, declaringBean, manager, priority.value());
+            } else {
+                result = new ExtensionObserverMethodImpl<T, X>(method, declaringBean, manager);
+            }
         } else {
-            result = new ObserverMethodImpl<T, X>(method, declaringBean, manager);
+            if(priority != null) {
+                result = new PrioritizedObserverMethodImpl<T, X>(method, declaringBean, manager, priority.value());
+            } else {
+                result = new ObserverMethodImpl<T, X>(method, declaringBean, manager);
+            }
         }
         return result;
     }
@@ -63,4 +73,5 @@ public class ObserverFactory {
         EnhancedAnnotatedParameter<?, ?> parameter = observer.getEnhancedParameters(Observes.class).iterator().next();
         return parameter.getAnnotation(Observes.class).during();
     }
+
 }

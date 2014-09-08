@@ -16,8 +16,18 @@
  */
 package org.jboss.weld.tests.event.observer.transactional;
 
-import static javax.enterprise.event.TransactionPhase.*;
+import static javax.enterprise.event.TransactionPhase.AFTER_COMPLETION;
+import static javax.enterprise.event.TransactionPhase.AFTER_FAILURE;
+import static javax.enterprise.event.TransactionPhase.AFTER_SUCCESS;
+import static javax.enterprise.event.TransactionPhase.BEFORE_COMPLETION;
+import static javax.enterprise.event.TransactionPhase.IN_PROGRESS;
+import static org.jboss.weld.tests.event.observer.transactional.DogAgent.EVENT_FIRED;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import javax.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -25,8 +35,6 @@ import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
-import static org.jboss.weld.tests.event.observer.transactional.DogAgent.EVENT_FIRED;
-import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -47,11 +55,11 @@ public class TransactionalObserversTest {
                 .addPackage(TransactionalObserversTest.class.getPackage())
                 .addClass(Utils.class);
     }
-    
+
     @Inject
     @Tame
     private PomeranianInterface dog;
-    
+
     @Inject
     private Agent dogAgent;
 
@@ -73,6 +81,8 @@ public class TransactionalObserversTest {
         dogAgent.sendInTransaction(new Bark());
         assertTrue(Actions.startsWith(IN_PROGRESS, EVENT_FIRED, BEFORE_COMPLETION));
         assertTrue(Actions.precedes(BEFORE_COMPLETION, AFTER_SUCCESS, AFTER_COMPLETION));
+        assertTrue(Actions.precedes(AFTER_SUCCESS + "100", AFTER_SUCCESS, AFTER_COMPLETION));
+        assertTrue(Actions.precedes(AFTER_SUCCESS + "1", AFTER_SUCCESS + "100"));
         assertFalse(Actions.contains(AFTER_FAILURE));
     }
 

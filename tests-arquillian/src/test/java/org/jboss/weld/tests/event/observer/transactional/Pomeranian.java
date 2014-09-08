@@ -16,14 +16,21 @@
  */
 package org.jboss.weld.tests.event.observer.transactional;
 
+import static javax.ejb.TransactionManagementType.BEAN;
+import static javax.enterprise.event.TransactionPhase.AFTER_COMPLETION;
+import static javax.enterprise.event.TransactionPhase.AFTER_FAILURE;
+import static javax.enterprise.event.TransactionPhase.AFTER_SUCCESS;
+import static javax.enterprise.event.TransactionPhase.BEFORE_COMPLETION;
+import static javax.enterprise.event.TransactionPhase.IN_PROGRESS;
+
 import java.io.Serializable;
-import java.util.logging.Logger;
+
 import javax.ejb.Stateful;
 import javax.ejb.TransactionManagement;
-import static javax.ejb.TransactionManagementType.BEAN;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
-import static javax.enterprise.event.TransactionPhase.*;
+
+import org.jboss.weld.experimental.Priority;
 
 @Stateful
 @TransactionManagement(BEAN)
@@ -32,38 +39,31 @@ import static javax.enterprise.event.TransactionPhase.*;
 @SuppressWarnings("serial")
 public class Pomeranian implements PomeranianInterface, Serializable {
 
-    private static final Logger log = Logger.getLogger(Pomeranian.class.getName());
-
     @Override
     public void observeInProgress(@Observes(during = IN_PROGRESS) Bark event) {
         Actions.add(IN_PROGRESS);
     }
 
-    /**
-     * Observes a String event only after the transaction is completed.
-     *
-     * @param someEvent
-     */
     @Override
     public void observeAfterCompletion(@Observes(during = AFTER_COMPLETION) Bark someEvent) {
         Actions.add(AFTER_COMPLETION);
     }
 
-    /**
-     * Observes an Integer event if the transaction is successfully completed.
-     *
-     * @param event
-     */
     @Override
     public void observeAfterSuccess(@Observes(during = AFTER_SUCCESS) Bark event) {
         Actions.add(AFTER_SUCCESS);
     }
 
-    /**
-     * Observes a Float event only if the transaction failed.
-     *
-     * @param event
-     */
+    @Override
+    public void observeAfterSuccessWithHighPriority(@Priority(1) @Observes(during = AFTER_SUCCESS) Bark event) {
+        Actions.add(AFTER_SUCCESS + "1");
+    }
+
+    @Override
+    public void observeAfterSuccessWithLowPriority(@Priority(100) @Observes(during = AFTER_SUCCESS) Bark event) {
+        Actions.add(AFTER_SUCCESS + "100");
+    }
+
     @Override
     public void observeAfterFailure(@Observes(during = AFTER_FAILURE) Bark event) {
         Actions.add(AFTER_FAILURE);
@@ -73,7 +73,7 @@ public class Pomeranian implements PomeranianInterface, Serializable {
     public void observeBeforeCompletion(@Observes(during = BEFORE_COMPLETION) Bark event) {
         Actions.add(BEFORE_COMPLETION);
     }
-    
+
     @Override
     public void observeAndFail(@Observes(during=BEFORE_COMPLETION) @Gnarly Bark event) throws FooException {
         Actions.add(BEFORE_COMPLETION);

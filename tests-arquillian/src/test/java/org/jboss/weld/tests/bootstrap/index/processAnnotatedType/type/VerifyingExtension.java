@@ -17,6 +17,7 @@
 package org.jboss.weld.tests.bootstrap.index.processAnnotatedType.type;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.event.Observes;
@@ -65,7 +66,8 @@ public class VerifyingExtension implements Extension {
     }
 
     private void compareResult(Class<?> javaClass) {
-        Set<?> expected = resolve(javaClass);
+        @SuppressWarnings({ "rawtypes", "unchecked" })
+        Set<?> expected = new HashSet(resolve(javaClass));
         Set<?> actual = resolver.resolveProcessAnnotatedTypeObservers(classFileServices, javaClass.getName());
         if (!expected.equals(actual)) {
             Set<?> notResolved = new HashSet<Object>(expected);
@@ -76,7 +78,7 @@ public class VerifyingExtension implements Extension {
         }
     }
 
-    private <T> Set<ObserverMethod<? super T>> resolve(Class<?> javaClass) {
+    private <T> List<ObserverMethod<? super T>> resolve(Class<?> javaClass) {
         Resolvable resolvable = ProcessAnnotatedTypeEventResolvable.forProcessAnnotatedType(transformer.getBackedAnnotatedType(javaClass, "foo"), discovery);
         return notifier.<T>resolveObserverMethods(resolvable);
     }

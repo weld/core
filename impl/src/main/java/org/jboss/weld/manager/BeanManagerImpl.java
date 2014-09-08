@@ -528,7 +528,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     @Override
     public <T> Set<ObserverMethod<? super T>> resolveObserverMethods(T event, Annotation... bindings) {
-        return globalStrictObserverNotifier.resolveObserverMethods(event, bindings);
+        // TODO temp workaround
+        return WeldCollections.immutableGuavaSet(new HashSet<ObserverMethod<? super T>>(globalStrictObserverNotifier.resolveObserverMethods(event, bindings)));
     }
 
     public void addInterceptor(Interceptor<?> bean) {
