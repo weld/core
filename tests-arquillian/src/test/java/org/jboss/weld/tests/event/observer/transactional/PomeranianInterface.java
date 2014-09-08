@@ -35,15 +35,19 @@ public interface PomeranianInterface {
     void observeAfterCompletion(Bark event);
 
     /**
-     * Observes a Float event only if the transaction failed.
+     * Observes a Float event only if the transaction commited.
      *
      * @param event
      */
     void observeAfterSuccess(Bark event);
 
+    void observeAfterSuccessWithHighPriority(Bark event);
+
+    void observeAfterSuccessWithLowPriority(Bark event);
+
     void observeAfterFailure(Bark event);
 
     void observeBeforeCompletion(Bark event);
-    
+
     void observeAndFail(Bark event) throws FooException;
 }

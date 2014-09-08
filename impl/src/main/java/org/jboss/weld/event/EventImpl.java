@@ -21,7 +21,7 @@ import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.Set;
+import java.util.List;
 
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.spi.InjectionPoint;
@@ -92,7 +92,7 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
             }
         }
         final Type eventType = getEventType(event);
-        final Set<ObserverMethod<? super T>> observers = getBeanManager().getGlobalStrictObserverNotifier().resolveObserverMethods(eventType, getQualifiers());
+        final List<ObserverMethod<? super T>> observers = getBeanManager().getGlobalStrictObserverNotifier().resolveObserverMethods(eventType, getQualifiers());
         cachedObservers = new CachedObservers(event.getClass(), eventType, observers);
         this.cachedObservers = cachedObservers;
         return cachedObservers;
@@ -169,9 +169,9 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
     private class CachedObservers {
         private final Class<?> rawType;
         private final Type type;
-        private final Set<ObserverMethod<? super T>> methods;
+        private final List<ObserverMethod<? super T>> methods;
 
-        public CachedObservers(Class<?> rawType, Type type, Set<ObserverMethod<? super T>> methods) {
+        public CachedObservers(Class<?> rawType, Type type, List<ObserverMethod<? super T>> methods) {
             this.rawType = rawType;
             this.type = type;
             this.methods = methods;

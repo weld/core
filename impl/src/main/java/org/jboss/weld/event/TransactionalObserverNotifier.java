@@ -16,10 +16,14 @@
  */
 package org.jboss.weld.event;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.enterprise.event.TransactionPhase;
 import javax.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
+import org.jboss.weld.event.TransactionNotificationSynchronization.TransactionNotification;
 import org.jboss.weld.resolution.TypeSafeObserverResolver;
 import org.jboss.weld.transaction.spi.TransactionServices;
 
@@ -27,7 +31,6 @@ import org.jboss.weld.transaction.spi.TransactionServices;
  * {@link ObserverNotifier} with support for transactional observer methods.
  *
  * @author Jozef Hartinger
- *
  */
 public class TransactionalObserverNotifier extends ObserverNotifier {
 
@@ -41,16 +44,29 @@ public class TransactionalObserverNotifier extends ObserverNotifier {
     }
 
     @Override
-    protected <T> void notifyObserver(final EventPacket<T> event, final ObserverMethod<? super T> observer) {
-        if (immediateDispatch(observer)) {
-            super.notifyObserver(event, observer);
-        } else {
-            deferNotification(event, observer);
-        }
-    }
+    public <T> void notifyObservers(EventPacket<T> eventPacket, List<ObserverMethod<? super T>> observers) {
 
-    private boolean immediateDispatch(ObserverMethod<?> observer) {
-        return TransactionPhase.IN_PROGRESS.equals(observer.getTransactionPhase()) || transactionServices == null || !transactionServices.isTransactionActive();
+        if(transactionServices == null || !transactionServices.isTransactionActive()) {
+            // Transaction is not active - no deferred notifications
+            super.notifyObservers(eventPacket, observers);
+        } else {
+            List<TransactionNotificationSynchronization.TransactionNotification> notifications = new ArrayList<TransactionNotificationSynchronization.TransactionNotification>();
+            currentEventMetadata.push(eventPacket);
+            try {
+                for (ObserverMethod<? super T> observer : observers) {
+                    if(TransactionPhase.IN_PROGRESS.equals(observer.getTransactionPhase())) {
+                        super.notifyObserver(eventPacket, observer);
+                    } else {
+                        deferNotification(eventPacket, observer, notifications);
+                    }
+                }
+            } finally {
+                currentEventMetadata.pop();
+            }
+            if (!notifications.isEmpty()) {
+                transactionServices.registerSynchronization(new TransactionNotificationSynchronization(notifications));
+            }
+        }
     }
 
     /**
@@ -59,18 +75,17 @@ public class TransactionalObserverNotifier extends ObserverNotifier {
      *
      * @param eventPacket The event object
      */
-    private <T> void deferNotification(final EventPacket<T> packet, final ObserverMethod<? super T> observer) {
+    private <T> void deferNotification(final EventPacket<T> packet, final ObserverMethod<? super T> observer, final List<TransactionNotificationSynchronization.TransactionNotification> notifications) {
         DeferredEventNotification<T> deferredEvent = new DeferredEventNotification<T>(contextId, packet, observer, currentEventMetadata);
         TransactionPhase transactionPhase = observer.getTransactionPhase();
-
         if (transactionPhase.equals(TransactionPhase.BEFORE_COMPLETION)) {
-            transactionServices.registerSynchronization(new TransactionSynchronizedRunnable(deferredEvent, true));
+            notifications.add(new TransactionNotification(deferredEvent, true));
         } else if (transactionPhase.equals(TransactionPhase.AFTER_COMPLETION)) {
-            transactionServices.registerSynchronization(new TransactionSynchronizedRunnable(deferredEvent, false));
+            notifications.add(new TransactionNotification(deferredEvent, false));
         } else if (transactionPhase.equals(TransactionPhase.AFTER_SUCCESS)) {
-            transactionServices.registerSynchronization(new TransactionSynchronizedRunnable(deferredEvent, Status.SUCCESS));
+            notifications.add(new TransactionNotification(deferredEvent, Status.SUCCESS));
         } else if (transactionPhase.equals(TransactionPhase.AFTER_FAILURE)) {
-            transactionServices.registerSynchronization(new TransactionSynchronizedRunnable(deferredEvent, Status.FAILURE));
+            notifications.add(new TransactionNotification(deferredEvent, Status.FAILURE));
         }
     }
 }

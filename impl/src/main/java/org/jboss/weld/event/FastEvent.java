@@ -18,6 +18,7 @@ package org.jboss.weld.event;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.event.Event;
@@ -71,7 +72,7 @@ public class FastEvent<T> {
     /**
      * Determines whether any of the resolved observer methods is either extension-provided or contains an injection point with {@link EventMetadata} type.
      */
-    private static boolean isMetadataRequired(Set<? extends ObserverMethod<?>> resolvedObserverMethods) {
+    private static boolean isMetadataRequired(List<? extends ObserverMethod<?>> resolvedObserverMethods) {
         for (ObserverMethod<?> observer : resolvedObserverMethods) {
             if (observer instanceof ObserverMethodImpl<?, ?>) {
                 ObserverMethodImpl<?, ?> observerImpl = (ObserverMethodImpl<?, ?>) observer;
@@ -104,7 +105,7 @@ public class FastEvent<T> {
      * @return
      */
     public static <T> FastEvent<T> of(Class<T> type, BeanManagerImpl manager, ObserverNotifier notifier, Annotation... qualifiers) {
-        Set<ObserverMethod<? super T>> resolvedObserverMethods = notifier.<T> resolveObserverMethods(notifier.buildEventResolvable(type, qualifiers));
+        List<ObserverMethod<? super T>> resolvedObserverMethods = notifier.<T> resolveObserverMethods(notifier.buildEventResolvable(type, qualifiers));
         if (isMetadataRequired(resolvedObserverMethods)) {
             EventMetadata metadata = new EventMetadataImpl(type, qualifiers);
             CurrentEventMetadata metadataService = manager.getServices().get(CurrentEventMetadata.class);
@@ -114,9 +115,9 @@ public class FastEvent<T> {
         }
     }
 
-    private final Set<ObserverMethod<? super T>> resolvedObserverMethods;
+    private final List<ObserverMethod<? super T>> resolvedObserverMethods;
 
-    private FastEvent(Set<ObserverMethod<? super T>> resolvedObserverMethods) {
+    private FastEvent(List<ObserverMethod<? super T>> resolvedObserverMethods) {
         this.resolvedObserverMethods = resolvedObserverMethods;
     }
 
@@ -131,7 +132,7 @@ public class FastEvent<T> {
         private final EventMetadata metadata;
         private final CurrentEventMetadata metadataService;
 
-        private FastEventWithMetadataPropagation(Set<ObserverMethod<? super T>> resolvedObserverMethods, EventMetadata metadata,
+        private FastEventWithMetadataPropagation(List<ObserverMethod<? super T>> resolvedObserverMethods, EventMetadata metadata,
                 CurrentEventMetadata metadataService) {
             super(resolvedObserverMethods);
             this.metadata = metadata;
