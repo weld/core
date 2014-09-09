@@ -95,14 +95,14 @@ public class JandexIndexBeanArchiveHandler implements BeanArchiveHandler {
             final IndexReader indexFileReader = new IndexReader(indexFileStream);
             index = indexFileReader.read();
         } catch (IllegalArgumentException e) {
-            CommonLogger.LOG.debugv("Jandex index at {} is not valid", indexUrlString);
+            CommonLogger.LOG.warnv("Jandex index at {} is not valid", indexUrlString);
         } catch (UnsupportedVersion e) {
-            CommonLogger.LOG.debugv("Version of Jandex index at {} is not supported", indexUrlString);
+            CommonLogger.LOG.warnv("Version of Jandex index at {} is not supported", indexUrlString);
         } catch (FileNotFoundException ignore) {
             // There is no index available.
             CommonLogger.LOG.tracev("No Jandex index found at {}", indexUrlString);
         } catch (IOException ioe) {
-            CommonLogger.LOG.debugv("Cannot load Jandex index at {}", indexUrlString);
+            CommonLogger.LOG.warnv("Cannot load Jandex index at {}", indexUrlString);
             CommonLogger.LOG.catchingDebug(ioe);
         } finally {
             if (indexFileStream != null) {
