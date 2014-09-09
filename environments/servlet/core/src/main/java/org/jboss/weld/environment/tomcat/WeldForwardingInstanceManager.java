@@ -17,6 +17,7 @@ import org.apache.catalina.core.ApplicationContext;
 import org.apache.catalina.core.ApplicationContextFacade;
 import org.apache.catalina.core.StandardContext;
 import org.apache.tomcat.InstanceManager;
+import org.jboss.weld.environment.servlet.logging.TomcatLogger;
 import org.jboss.weld.manager.api.WeldManager;
 
 /**
@@ -26,7 +27,6 @@ import org.jboss.weld.manager.api.WeldManager;
  * @author <a href="mailto:matija.mazi@gmail.com">Matija Mazi</a>
  */
 public class WeldForwardingInstanceManager extends ForwardingInstanceManager {
-    private static final String NEITHER_FIELD_NOR_SETTER_FOUND_FOR_INSTANCE_MANAGER = "neither field nor setter found for instanceManager";
     private static final String INSTANCE_MANAGER_FIELD_NAME = "instanceManager";
     private final InstanceManager firstProcessor;
     private final InstanceManager secondProcessor;
@@ -85,7 +85,7 @@ public class WeldForwardingInstanceManager extends ForwardingInstanceManager {
             InstanceManager weldProcessor = new WeldInstanceManager(manager);
             return new WeldForwardingInstanceManager(getInstanceManager(stdContext), weldProcessor);
         } catch (Exception e) {
-            throw new RuntimeException("Cannot create WeldForwardingAnnotationProcessor", e);
+            throw TomcatLogger.LOG.cannotCreatWeldForwardingAnnotationProcessor(e);
         }
     }
 
@@ -96,7 +96,7 @@ public class WeldForwardingInstanceManager extends ForwardingInstanceManager {
             ApplicationContext appContext = (ApplicationContext) getContextFieldValue((ApplicationContextFacade) context, ApplicationContextFacade.class);
             return (StandardContext) getContextFieldValue(appContext, ApplicationContext.class);
         } catch (Exception e) {
-            throw new RuntimeException("Cannot get StandardContext from ServletContext", e);
+            throw TomcatLogger.LOG.cannotGetStandardContext(e);
         }
     }
 
@@ -124,7 +124,7 @@ public class WeldForwardingInstanceManager extends ForwardingInstanceManager {
         if (field != null) {
             return getFieldValue(field, stdContext, InstanceManager.class);
         }
-        throw new RuntimeException(NEITHER_FIELD_NOR_SETTER_FOUND_FOR_INSTANCE_MANAGER);
+        throw TomcatLogger.LOG.neitherFieldNorSetterFound();
     }
 
     private static void setInstanceManager(StandardContext stdContext, InstanceManager instanceManager) {
@@ -139,7 +139,7 @@ public class WeldForwardingInstanceManager extends ForwardingInstanceManager {
             setFieldValue(field, stdContext, instanceManager);
             return;
         }
-        throw new RuntimeException(NEITHER_FIELD_NOR_SETTER_FOUND_FOR_INSTANCE_MANAGER);
+        throw TomcatLogger.LOG.neitherFieldNorSetterFound();
     }
 
 }

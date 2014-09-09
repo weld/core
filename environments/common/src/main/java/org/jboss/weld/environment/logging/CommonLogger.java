@@ -16,8 +16,11 @@ import org.jboss.weld.resources.spi.ClassFileInfoException;
 
 /**
  *
+ * Message IDs: 000002 - 000099
+ *
  * @author Matej Briškár
  * @author Martin Kouba
+ * @author Kirill Gaevskii
  */
 @MessageLogger(projectCode = WeldEnvironmentLogger.WELD_ENV_PROJECT_CODE)
 public interface CommonLogger extends WeldEnvironmentLogger {
@@ -99,4 +102,13 @@ public interface CommonLogger extends WeldEnvironmentLogger {
     @LogMessage(level = Level.DEBUG)
     @Message(id = 24, value = "Archive isolation enabled - creating multiple isolated bean archives if needed", format = Format.MESSAGE_FORMAT)
     void archiveIsolationEnabled();
+
+    @Message(id = 25, value = "Index for name: {0} not found.", format = Format.MESSAGE_FORMAT)
+    IllegalStateException indexForNameNotFound(Object param1);
+
+    @Message(id = 26, value = "Unable to instantiate {0} using parameters: {1}.", format = Format.MESSAGE_FORMAT)
+    IllegalStateException unableToInstantiate(Object param1, Object param2, @Cause Throwable cause);
+
+    @Message(id = 27, value = "Unable to find constructor for of {0} accepting parameters: {1}.", format = Format.MESSAGE_FORMAT)
+    IllegalStateException unableToFindConstructor(Object param1, Object param2);
 }

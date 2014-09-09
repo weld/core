@@ -59,7 +59,7 @@ public class JandexClassFileInfo implements ClassFileInfo {
         this.annotationClassAnnotationsCache = annotationClassAnnotationsCache;
         this.classInfo = index.getClassByName(DotName.createSimple(className));
         if (this.classInfo == null) {
-            throw new IllegalStateException("Index for name: " + className + " not found");
+            throw CommonLogger.LOG.indexForNameNotFound(className);
         }
         this.isVetoed = isVetoedTypeOrPackage();
         this.hasCdiConstructor = this.classInfo.hasNoArgsConstructor() || hasInjectConstructor();

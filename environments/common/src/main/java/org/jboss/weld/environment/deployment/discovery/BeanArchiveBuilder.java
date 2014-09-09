@@ -24,6 +24,7 @@ import java.util.Set;
 
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.environment.deployment.WeldBeanDeploymentArchive;
+import org.jboss.weld.util.Preconditions;
 
 /**
  * A class used to store information about the bean archive and to build the {@link org.jboss.weld.environment.deployment.WeldBeanDeploymentArchive}
@@ -52,9 +53,7 @@ public class BeanArchiveBuilder {
      * @return the bean deployment archive
      */
     public WeldBeanDeploymentArchive build() {
-        if (id == null) {
-            throw new IllegalStateException("ID must be set");
-        }
+        Preconditions.checkArgumentNotNull(id, "id");
         return new WeldBeanDeploymentArchive(id, classes, getBeansXml());
     }
 

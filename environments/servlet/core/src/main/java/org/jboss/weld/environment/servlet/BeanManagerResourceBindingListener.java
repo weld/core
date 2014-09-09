@@ -79,15 +79,11 @@ public class BeanManagerResourceBindingListener implements ServletContextListene
                     bound = true;
                     WeldServletLogger.LOG.beanManagerReferenceBoundTo(QUALIFIED_BEAN_MANAGER_JNDI_NAME);
                 } catch (NamingException e) {
-                    throw new RuntimeException("Could not bind BeanManager reference to JNDI: " + e.getExplanation()
-                            + " \n"
-                            + "If the naming context is read-only, you may need to use a configuration to"
-                            + "bind the BeanManager instead, such as Tomcat's context.xml or Jetty's jetty-web.xml.");
+                    throw WeldServletLogger.LOG.couldNotBindBeanManagerReferenceToJNDI(e.getExplanation());
                 }
             }
         } catch (NamingException e) {
-            throw new RuntimeException("Could not create InitialContext to bind BeanManager reference in JNDI: "
-                    + e.getExplanation());
+            throw WeldServletLogger.LOG.couldNotCreateInitialContext(e.getExplanation());
         }
     }
 

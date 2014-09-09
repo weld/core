@@ -21,6 +21,7 @@ import javax.servlet.ServletContext;
 
 import org.jboss.weld.environment.servlet.WeldServletLifecycle;
 import org.jboss.weld.manager.api.WeldManager;
+import org.jboss.weld.util.Preconditions;
 
 /**
  * Wrap listener arguments.
@@ -34,9 +35,8 @@ public class ContainerContext {
     private WeldManager manager;
 
     public ContainerContext(ServletContext context, WeldManager manager) {
-        if (context == null) {
-            throw new IllegalArgumentException("Null servlet context");
-        }
+        Preconditions.checkArgumentNotNull(context, "servlet context");
+
         this.servletContext = context;
         if (manager == null) {
             manager = (WeldManager) context.getAttribute(WeldServletLifecycle.BEAN_MANAGER_ATTRIBUTE_NAME);

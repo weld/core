@@ -7,6 +7,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
+import org.jboss.weld.environment.logging.CommonLogger;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
 
@@ -65,7 +66,7 @@ public final class Reflections {
             final Constructor<T> constructor = findConstructor(clazz, parameters);
             return constructor.newInstance(parameters);
         } catch (Exception e) {
-            throw new IllegalStateException("Unable to instantiate " + className + " using parameters: " + Arrays.toString(parameters), e);
+            throw CommonLogger.LOG.unableToInstantiate(className, Arrays.toString(parameters), e);
         }
     }
 
@@ -126,7 +127,7 @@ public final class Reflections {
                 return cast(constructor);
             }
         }
-        throw new IllegalStateException("Unable to find constructor for of " + clazz + " accepting parameters: " + Arrays.toString(parameters));
+        throw CommonLogger.LOG.unableToFindConstructor(clazz, Arrays.toString(parameters));
     }
 
     private static boolean containsAnnotations(Annotation[] annotations, Class<? extends Annotation> requiredAnnotation) {
