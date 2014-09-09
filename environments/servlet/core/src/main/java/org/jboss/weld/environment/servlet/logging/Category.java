@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2010, Red Hat, Inc., and individual contributors
+ * Copyright 2014, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,30 +14,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.jboss.weld.environment;
-
-import org.jboss.weld.environment.servlet.util.Reflections;
+package org.jboss.weld.environment.servlet.logging;
 
 /**
- * Abstract container.
+ * @author Kirill Gaevskii
  *
- * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
-public abstract class AbstractContainer implements Container {
+public enum Category {
 
-    /**
-     * Get class name to check is we can use this container.
-     *
-     * @return the class name to check
-     */
-    protected abstract String classToCheck();
+    WELDSERVLET("WeldServlet"),
+    JETTY("Jetty"),
+    TOMCAT("Tomcat");
 
-    public boolean touch(ContainerContext context) throws Exception {
-        Reflections.classForName(classToCheck());
-        return true;
+    private static final String LOG_PREFIX = "org.jboss.weld.environment.servlet";
+
+    private final String name;
+
+    Category(String name) {
+        this.name = createName(name);
     }
 
-    public void destroy(ContainerContext context) {
+    String getName() {
+        return name;
+    }
+
+    private static String createName(String name) {
+        return new StringBuilder().append(LOG_PREFIX).append(name).toString();
     }
 }

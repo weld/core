@@ -21,6 +21,7 @@ import org.jboss.weld.environment.AbstractContainer;
 import org.jboss.weld.environment.Container;
 import org.jboss.weld.environment.ContainerContext;
 import org.jboss.weld.environment.servlet.EnhancedListener;
+import org.jboss.weld.environment.servlet.logging.TomcatLogger;
 
 /**
  * Tomcat 7.x and 8.x container.
@@ -41,12 +42,12 @@ public class TomcatContainer extends AbstractContainer {
         try {
             WeldForwardingInstanceManager.replaceInstanceManager(context.getServletContext(), context.getManager());
             if(Boolean.TRUE.equals(context.getServletContext().getAttribute(EnhancedListener.ENHANCED_LISTENER_USED_ATTRIBUTE_NAME))) {
-                log.info("Tomcat 7+ detected, CDI injection will be available in Servlets, Filters and Listeners.");
+                TomcatLogger.LOG.allInjectionsAvailable();
             } else {
-                log.info("Tomcat 7+ detected, CDI injection will be available in Servlets and Filters. Injection into Listeners is not supported.");
+                TomcatLogger.LOG.listenersInjectionsNotAvailable();
             }
         } catch (Exception e) {
-            log.error("Unable to replace Tomcat 7 AnnotationProcessor. CDI injection will not be available in Servlets, Filters, or Listeners", e);
+            TomcatLogger.LOG.unableToReplaceTomcat(e);
         }
     }
 }
