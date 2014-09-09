@@ -29,6 +29,7 @@ import org.jboss.jandex.UnsupportedVersion;
 import org.jboss.weld.environment.deployment.discovery.BeanArchiveBuilder;
 import org.jboss.weld.environment.deployment.discovery.BeanArchiveHandler;
 import org.jboss.weld.environment.logging.CommonLogger;
+import org.jboss.weld.util.Preconditions;
 
 /**
  * This class uses a Jandex-Index ("META-INF/jandex.idx") to scan the the archive. If no index is available the {@link JandexIndexBeanArchiveHandler#handle(String)}
@@ -65,9 +66,7 @@ public class JandexIndexBeanArchiveHandler implements BeanArchiveHandler {
     }
 
     private Index getIndex(final String urlPath) {
-        if (urlPath == null) {
-            throw new IllegalArgumentException("urlPath must not be null");
-        }
+        Preconditions.checkArgumentNotNull(urlPath, "urlPath");
 
         if (indexCacheUrlPath == null || !indexCacheUrlPath.equals(urlPath)) {
             Index newIndex = loadJandexIndex(urlPath);

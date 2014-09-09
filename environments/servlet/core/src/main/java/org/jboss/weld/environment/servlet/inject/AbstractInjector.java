@@ -25,6 +25,7 @@ import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.InjectionTarget;
 
 import org.jboss.weld.manager.api.WeldManager;
+import org.jboss.weld.util.Preconditions;
 
 /**
  * Provides support for Weld injection into servlets, servlet filters etc.
@@ -38,9 +39,7 @@ public abstract class AbstractInjector {
     private final Map<Class<?>, InjectionTarget<?>> cache = new WeakHashMap<Class<?>, InjectionTarget<?>>();
 
     protected AbstractInjector(WeldManager manager) {
-        if (manager == null) {
-            throw new IllegalArgumentException("Null manager");
-        }
+        Preconditions.checkArgumentNotNull(manager, "manager");
         this.manager = manager;
     }
 
