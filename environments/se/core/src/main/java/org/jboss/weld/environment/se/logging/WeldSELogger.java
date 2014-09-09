@@ -17,4 +17,5 @@ import org.jboss.weld.environment.logging.WeldEnvironmentLogger;
 @MessageLogger(projectCode = WeldEnvironmentLogger.WELD_ENV_PROJECT_CODE)
 public interface WeldSELogger extends WeldEnvironmentLogger {
     WeldSELogger LOG = Logger.getMessageLogger(WeldSELogger.class, Category.BOOTSTRAP.getName());
+
 }

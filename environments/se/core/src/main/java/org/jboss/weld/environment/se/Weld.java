@@ -44,7 +44,6 @@ import org.jboss.weld.environment.deployment.discovery.DiscoveryStrategy;
 import org.jboss.weld.environment.deployment.discovery.DiscoveryStrategyFactory;
 import org.jboss.weld.environment.logging.CommonLogger;
 import org.jboss.weld.environment.se.events.ContainerInitialized;
-import org.jboss.weld.environment.se.logging.WeldSELogger;
 import org.jboss.weld.literal.InitializedLiteral;
 import org.jboss.weld.metadata.MetadataImpl;
 import org.jboss.weld.resources.spi.ClassFileServices;
@@ -221,7 +220,6 @@ public class Weld {
             deployment=  new WeldDeployment(resourceLoader, bootstrap, discoveredArchives, loadedExtensions);
             CommonLogger.LOG.archiveIsolationEnabled();
         }
-        WeldSELogger.LOG.multipleIsolation(isolation != null && Boolean.valueOf(isolation));
 
         if(strategy.getClassFileServices() != null) {
             deployment.getServices().add(ClassFileServices.class, strategy.getClassFileServices());

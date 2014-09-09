@@ -75,4 +75,7 @@ public interface JettyLogger extends WeldEnvironmentLogger {
     @LogMessage(level = Level.INFO)
     @Message(id = 1209, value = "Cannot find matching WebApplicationContext, no default CDI support: use jetty-web.xml")
     void cantFindMatchingWebApplicationContext();
+
+    @Message(id = 1210, value = "No such Jetty injector found in servlet context attributes.")
+    IllegalStateException noSuchJettyInjectorFound();
 }

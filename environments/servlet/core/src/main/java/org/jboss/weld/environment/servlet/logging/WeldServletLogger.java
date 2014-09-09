@@ -99,4 +99,43 @@ public interface WeldServletLogger extends WeldEnvironmentLogger {
     @LogMessage(level = Level.ERROR)
     @Message(id = 1015, value = "Could not create context: {0}.", format = Format.MESSAGE_FORMAT)
     void couldntCreateContext(Object param1);
+
+    @Message(id = 1016, value = "Error loading resources from servlet context.")
+    IllegalStateException errorLoadingResources(@Cause Throwable cause);
+
+    @Message(id = 1017, value = "Exception fetching BeanManager instance!")
+    IllegalStateException exceptionFetchingBeanManager(@Cause Throwable cause);
+
+    @Message(id = 1018, value = "Not in a servlet or portlet environment!")
+    IllegalStateException notInAServletOrPortlet();
+
+    @Message(id = 1019, value = "Error creating JNDI context")
+    IllegalStateException errorCreatingJNDIContext(@Cause Throwable cause);
+
+    @Message(id = 1020, value = "Cannot instantiate instance of {0} with no-argument constructor.", format = Format.MESSAGE_FORMAT)
+    IllegalStateException cannotInstantiateInstance(Object param1, @Cause Throwable cause);
+
+    @Message(id = 1021, value = "Cannot load class for {0}.", format = Format.MESSAGE_FORMAT)
+    IllegalStateException cannotLoadClass(Object param1, @Cause Throwable cause);
+
+    @Message(id = 1022, value = "No ServiceLoader class available!")
+    IllegalStateException noServiceLoaderClassAvailable();
+
+    @Message(id = 1023, value = "No load method available on ServiceLoader - {0}.", format = Format.MESSAGE_FORMAT)
+    IllegalStateException noLoadMethodAvailableOnServiceLoader(Object param1, @Cause Throwable cause);
+
+    @Message(id = 1024, value = "Could not bind BeanManager reference to JNDI: {0}\nIf the naming context is read-only, you may need to use a configuration to bind the BeanManager instead, such as Tomcat's context.xml or Jetty's jetty-web.xml.", format = Format.MESSAGE_FORMAT)
+    RuntimeException couldNotBindBeanManagerReferenceToJNDI(Object param1);
+
+    @Message(id = 1025, value = "Could not create InitialContext to bind BeanManager reference in JNDI: {0}.", format = Format.MESSAGE_FORMAT)
+    RuntimeException couldNotCreateInitialContext(Object param1);
+
+    @Message(id = 1026, value = "Error loading Weld bootstrap, check that Weld is on the classpath.")
+    IllegalStateException errorLoadingWeldBootstrap(@Cause Throwable cause);
+
+    @Message(id = 1027, value = "Error loading Weld listener, check that Weld is on the classpath.")
+    IllegalStateException errorLoadingWeldListener(@Cause Throwable cause);
+
+    @Message(id = 1028, value = "Error loading Weld ELContext Listener, check that Weld is on the classpath.")
+    IllegalStateException errorLoadingWeldELContextListener(@Cause Throwable cause);
 }

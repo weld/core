@@ -29,6 +29,8 @@ import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
+import org.jboss.weld.environment.servlet.logging.JettyLogger;
+
 /**
  * Jetty Eclipse Weld support.
  *
@@ -58,7 +60,7 @@ public class WeldDecorator implements ServletContextHandler.Decorator {
         if (injector == null) {
             JettyWeldInjector jwi = (JettyWeldInjector) servletContext.getAttribute(AbstractJettyContainer.INJECTOR_ATTRIBUTE_NAME);
             if (jwi == null) {
-                throw new IllegalArgumentException("No such Jetty injector found in servlet context attributes.");
+                throw JettyLogger.LOG.noSuchJettyInjectorFound();
             }
             injector = jwi;
         }

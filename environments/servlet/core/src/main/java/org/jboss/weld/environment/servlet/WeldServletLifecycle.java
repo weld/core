@@ -94,12 +94,12 @@ public class WeldServletLifecycle {
         try {
             bootstrap = Reflections.newInstance(BOOTSTRAP_IMPL_CLASS_NAME);
         } catch (IllegalArgumentException e) {
-            throw new IllegalStateException("Error loading Weld bootstrap, check that Weld is on the classpath", e);
+            throw WeldServletLogger.LOG.errorLoadingWeldBootstrap(e);
         }
         try {
             weldListener = Reflections.newInstance(WELD_LISTENER_CLASS_NAME);
         } catch (IllegalArgumentException e) {
-            throw new IllegalStateException("Error loading Weld listener, check that Weld is on the classpath", e);
+            throw WeldServletLogger.LOG.errorLoadingWeldListener(e);
         }
     }
 
@@ -161,7 +161,7 @@ public class WeldServletLifecycle {
             try {
                 jspApplicationContext.addELContextListener(Reflections.<ELContextListener> newInstance("org.jboss.weld.el.WeldELContextListener"));
             } catch (IllegalArgumentException e) {
-                throw new IllegalStateException("Error loading Weld ELContext Listener, check that Weld is on the classpath", e);
+                throw WeldServletLogger.LOG.errorLoadingWeldELContextListener(e);
             }
 
             // Push the wrapped expression factory into the servlet context so that Tomcat or Jetty can hook it in using a container code

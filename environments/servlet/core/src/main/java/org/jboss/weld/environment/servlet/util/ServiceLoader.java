@@ -17,6 +17,7 @@
 
 package org.jboss.weld.environment.servlet.util;
 
+import org.jboss.weld.environment.servlet.logging.WeldServletLogger;
 import org.jboss.weld.bootstrap.spi.Metadata;
 
 import java.lang.reflect.Method;
@@ -56,13 +57,13 @@ public class ServiceLoader {
         }
 
         if (clazz == null) {
-            throw new IllegalArgumentException("No ServiceLoader class available!");
+            throw WeldServletLogger.LOG.noServiceLoaderClassAvailable();
         }
 
         try {
             loadMethod = clazz.getDeclaredMethod("load", Class.class, ClassLoader.class);
         } catch (Exception e) {
-            throw new IllegalArgumentException("No load method available on ServiceLoader - " + clazz, e);
+            throw WeldServletLogger.LOG.noLoadMethodAvailableOnServiceLoader(clazz, e);
         }
     }
 

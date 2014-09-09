@@ -46,4 +46,13 @@ public interface TomcatLogger extends WeldEnvironmentLogger {
     @LogMessage(level = Level.ERROR)
     @Message(id = 1102, value = "Unable to replace Tomcat 7 AnnotationProcessor. CDI injection will not be available in Servlets, Filters, or Listeners.")
     void unableToReplaceTomcat(@Cause Throwable cause);
+
+    @Message(id = 1103, value = "Cannot create WeldForwardingAnnotationProcessor.")
+    RuntimeException cannotCreatWeldForwardingAnnotationProcessor(@Cause Throwable cause);
+
+    @Message(id = 1104, value = "Cannot get StandardContext from ServletContext.")
+    RuntimeException cannotGetStandardContext(@Cause Throwable cause);
+
+    @Message(id = 1105, value = "Neither field nor setter found for instanceManager.")
+    RuntimeException neitherFieldNorSetterFound();
 }

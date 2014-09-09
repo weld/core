@@ -25,6 +25,7 @@ import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 
 import org.jboss.weld.environment.servlet.WeldServletLifecycle;
+import org.jboss.weld.environment.servlet.logging.WeldServletLogger;
 import org.jboss.weld.environment.servlet.portlet.PortletSupport;
 import org.jboss.weld.environment.servlet.util.ForwardingELResolver;
 import org.jboss.weld.environment.servlet.util.Reflections;
@@ -120,10 +121,10 @@ public class WeldApplication extends ForwardingApplication {
                     notFound = true;
                 }
             } catch (Throwable t) {
-                throw new IllegalStateException("Exception fetching BeanManager instance!", t);
+                throw WeldServletLogger.LOG.exceptionFetchingBeanManager(t);
             }
             if (notFound) {
-                throw new IllegalStateException("Not in a servlet or portlet environment!");
+                throw WeldServletLogger.LOG.notInAServletOrPortlet();
             }
         }
         return beanManager;

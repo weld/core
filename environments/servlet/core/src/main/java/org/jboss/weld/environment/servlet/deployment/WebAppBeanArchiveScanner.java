@@ -87,7 +87,7 @@ public class WebAppBeanArchiveScanner extends DefaultBeanArchiveScanner {
                 }
             }
         } catch (MalformedURLException e) {
-            throw new IllegalStateException("Error loading resources from servlet context ", e);
+            throw WeldServletLogger.LOG.errorLoadingResources(e);
         }
         return beansXmlMap;
     }
