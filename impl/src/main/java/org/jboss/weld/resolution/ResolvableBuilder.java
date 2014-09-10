@@ -17,7 +17,9 @@
 package org.jboss.weld.resolution;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
+import java.lang.reflect.Executable;
+import java.lang.reflect.Member;
+import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.Collection;
@@ -30,6 +32,7 @@ import java.util.Set;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.New;
+import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
@@ -86,14 +89,27 @@ public class ResolvableBuilder {
     public ResolvableBuilder(InjectionPoint injectionPoint, final BeanManagerImpl manager) {
         this(injectionPoint.getType(), manager);
         addQualifiers(injectionPoint.getQualifiers());
-        if (mappedQualifiers.containsKey(Named.class) && injectionPoint.getMember() instanceof Field) {
+        if (mappedQualifiers.containsKey(Named.class)) {
             Named named = (Named) mappedQualifiers.get(Named.class);
             QualifierInstance qualifierInstance = QualifierInstance.of(named, store);
             if (named.value().equals("")) {
                 qualifiers.remove(named);
                 qualifierInstances.remove(qualifierInstance);
-                // This is field injection point with an @Named qualifier, with no value specified, we need to assume the name of the field is the value
-                named = new NamedLiteral(injectionPoint.getMember().getName());
+
+                // WELD-1739
+                // This is an injection point with an @Named qualifier, with no value specified, we need to assume the name of the field or parameter is the
+                // value
+                Member member = injectionPoint.getMember();
+                if (member instanceof Executable) {
+                    // Method or constructor injection
+                    Executable executable = (Executable) member;
+                    AnnotatedParameter<?> annotatedParameter = (AnnotatedParameter<?>) injectionPoint.getAnnotated();
+                    Parameter parameter = executable.getParameters()[annotatedParameter.getPosition()];
+                    named = new NamedLiteral(parameter.getName());
+                } else {
+                    named = new NamedLiteral(injectionPoint.getMember().getName());
+                }
+
                 qualifierInstance = QualifierInstance.of(named, store);
                 qualifiers.add(named);
                 qualifierInstances.add(qualifierInstance);

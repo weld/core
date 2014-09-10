@@ -19,6 +19,7 @@ package org.jboss.weld.bootstrap;
 import static org.jboss.weld.util.Types.buildClassNameMap;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Executable;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -304,9 +305,24 @@ public class Validator implements Service {
         if (ij.getType() instanceof TypeVariable<?>) {
             throw ValidatorLogger.LOG.injectionPointWithTypeVariable(ij);
         }
-        if (!(ij.getMember() instanceof Field) && ij.getAnnotated().isAnnotationPresent(Named.class) && ij.getAnnotated().getAnnotation(Named.class).value().equals("")) {
-            throw ValidatorLogger.LOG.nonFieldInjectionPointCannotUseNamed(ij);
+
+        // WELD-1739
+        if (ij.getMember() instanceof Executable && ij.getAnnotated().isAnnotationPresent(Named.class)
+                && ij.getAnnotated().getAnnotation(Named.class).value().equals("")) {
+
+            Executable executable = (Executable) ij.getMember();
+            AnnotatedParameter<?> annotatedParameter = (AnnotatedParameter<?>) ij.getAnnotated();
+
+            if (!executable.getParameters()[annotatedParameter.getPosition()].isNamePresent()) {
+                // No parameters info available
+                throw ValidatorLogger.LOG.nonFieldInjectionPointCannotUseNamed(ij);
+            }
         }
+        // if (!(ij.getMember() instanceof Field) && ij.getAnnotated().isAnnotationPresent(Named.class) &&
+        // ij.getAnnotated().getAnnotation(Named.class).value().equals("")) {
+        // throw ValidatorLogger.LOG.nonFieldInjectionPointCannotUseNamed(ij);
+        // }
+
         if (ij.getAnnotated().isAnnotationPresent(Produces.class)) {
             if (bean != null) {
                 throw BeanLogger.LOG.injectedFieldCannotBeProducer(ij.getAnnotated(), bean);
