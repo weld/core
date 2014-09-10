@@ -145,8 +145,8 @@ public class Validator implements Service {
             }
         }
 
-        // Validate all pseudo-scoped beans, except for session beans which are proxied by the EJB container
-        if (!normalScoped && !(bean instanceof SessionBean)) {
+        // Validate all pseudo-scoped beans, except for built-in beans and session beans which are proxied by the EJB container
+        if (!normalScoped && !(bean instanceof AbstractBuiltInBean) && !(bean instanceof SessionBean)) {
             validatePseudoScopedBean(bean, beanManager);
         }
 
@@ -934,9 +934,6 @@ public class Validator implements Service {
         dependencyPath.remove(bean);
     }
 
-    /**
-     * finds pseudo beans and adds them to the list of beans to be validated
-     */
     private static void validatePseudoScopedInjectionPoint(InjectionPoint ij, BeanManagerImpl beanManager, Set<Object> dependencyPath, Set<Bean<?>> validatedBeans) {
         Set<Bean<?>> resolved = beanManager.getBeans(ij);
         Bean<?> bean = beanManager.resolve(resolved);
