@@ -10,15 +10,15 @@ public class SessionBeanHierarchyDiscovery extends HierarchyDiscovery {
         super(Types.getCanonicalType(type));
     }
 
-    protected void discoverFromClass(Class<?> clazz) {
+    protected void discoverFromClass(Class<?> clazz, boolean rawGeneric) {
         /*
          * If the type is a class then super types are discovered but not interfaces.
          * If the type is an interface then its super interfaces are discovered.
          */
         if (clazz.getSuperclass() != null) {
-            discoverTypes(processAndResolveType(clazz.getGenericSuperclass(), clazz.getSuperclass()));
+            discoverTypes(processAndResolveType(clazz.getGenericSuperclass(), clazz.getSuperclass()), rawGeneric);
         } else if (clazz.isInterface()) {
-            discoverInterfaces(clazz);
+            discoverInterfaces(clazz, rawGeneric);
         }
     }
 }

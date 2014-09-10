@@ -90,7 +90,7 @@ public class HierarchyDiscovery {
         this.types = new HashMap<Class<?>, Type>();
         this.resolver = resolver;
         this.resolvedTypeVariables = resolver.getResolvedTypeVariables();
-        discoverTypes(type);
+        discoverTypes(type, false);
     }
 
     public Set<Type> getTypeClosure() {
@@ -101,11 +101,16 @@ public class HierarchyDiscovery {
         return types;
     }
 
-    protected void discoverTypes(Type type) {
+    protected void discoverTypes(Type type, boolean rawGeneric) {
+        if (!rawGeneric) {
+            rawGeneric = Types.isRawGenericType(type);
+        }
         if (type instanceof Class<?>) {
             Class<?> clazz = (Class<?>) type;
             this.types.put(clazz, clazz);
-            discoverFromClass(clazz);
+            discoverFromClass(clazz, rawGeneric);
+        } else if (rawGeneric) {
+            discoverTypes(Reflections.getRawType(type), rawGeneric);
         } else if (type instanceof GenericArrayType) {
             GenericArrayType arrayType = (GenericArrayType) type;
             Type genericComponentType = arrayType.getGenericComponentType();
@@ -113,7 +118,7 @@ public class HierarchyDiscovery {
             if (rawComponentType != null) {
                 Class<?> arrayClass = Array.newInstance(rawComponentType, 0).getClass();
                 this.types.put(arrayClass, type);
-                discoverFromClass(arrayClass);
+                discoverFromClass(arrayClass, rawGeneric);
             }
         } else if (type instanceof ParameterizedType) {
             ParameterizedType parameterizedType = (ParameterizedType) type;
@@ -122,25 +127,25 @@ public class HierarchyDiscovery {
                 Class<?> clazz = (Class<?>) rawType;
                 processTypeVariables(clazz.getTypeParameters(), parameterizedType.getActualTypeArguments());
                 this.types.put(clazz, type);
-                discoverFromClass(clazz);
+                discoverFromClass(clazz, rawGeneric);
             }
         }
     }
 
-    protected void discoverFromClass(Class<?> clazz) {
+    protected void discoverFromClass(Class<?> clazz, boolean rawGeneric) {
         if (clazz.getSuperclass() != null) {
-            discoverTypes(processAndResolveType(clazz.getGenericSuperclass(), clazz.getSuperclass()));
+            discoverTypes(processAndResolveType(clazz.getGenericSuperclass(), clazz.getSuperclass()), rawGeneric);
         }
-        discoverInterfaces(clazz);
+        discoverInterfaces(clazz, rawGeneric);
     }
 
-    protected void discoverInterfaces(Class<?> clazz) {
+    protected void discoverInterfaces(Class<?> clazz, boolean rawGeneric) {
         Type[] genericInterfaces = clazz.getGenericInterfaces();
         Class<?>[] interfaces = clazz.getInterfaces();
         if (genericInterfaces.length == interfaces.length) {
             // this branch should execute every time!
             for (int i = 0; i < interfaces.length; i++) {
-                discoverTypes(processAndResolveType(genericInterfaces[i], interfaces[i]));
+                discoverTypes(processAndResolveType(genericInterfaces[i], interfaces[i]), rawGeneric);
             }
         }
     }

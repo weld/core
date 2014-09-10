@@ -134,10 +134,11 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
              * Examining the hierarchy of the specified type did not help. This may still be one of the cases when combining the
              * event type and the specified type reveals the actual values for type variables. Let's try that.
              */
+            Type canonicalEventType = Types.getCanonicalType(event.getClass());
             TypeResolver objectTypeResolver = new EventObjectTypeResolverBuilder(injectionPointTypeHierarchy.getResolver()
-                    .getResolvedTypeVariables(), new HierarchyDiscovery(event.getClass()).getResolver()
+                    .getResolvedTypeVariables(), new HierarchyDiscovery(canonicalEventType).getResolver()
                     .getResolvedTypeVariables()).build();
-            resolvedType = objectTypeResolver.resolveType(Types.getCanonicalType(event.getClass()));
+            resolvedType = objectTypeResolver.resolveType(canonicalEventType);
         }
         return resolvedType;
     }

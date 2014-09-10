@@ -268,4 +268,16 @@ public class Types {
         }
         return true;
     }
+
+    public static boolean isRawGenericType(Type type) {
+        if (!(type instanceof Class<?>)) {
+            return false;
+        }
+        Class<?> clazz = (Class<?>) type;
+        if (clazz.isArray()) {
+            Class<?> componentType = clazz.getComponentType();
+            return isRawGenericType(componentType);
+        }
+        return clazz.getTypeParameters().length > 0;
+    }
 }

@@ -36,7 +36,7 @@ public class EventTypeResolutionTest {
 
     public static Type resolveType(Type selectedType, Class<?> eventObjectType) {
         HierarchyDiscovery selectedTypeHierarchy = new HierarchyDiscovery(selectedType);
-        HierarchyDiscovery eventTypeHierarchy = new HierarchyDiscovery(eventObjectType);
+        HierarchyDiscovery eventTypeHierarchy = HierarchyDiscovery.forNormalizedType(eventObjectType);
         TypeResolver resolver = new EventObjectTypeResolverBuilder(selectedTypeHierarchy.getResolver()
                 .getResolvedTypeVariables(), eventTypeHierarchy.getResolver().getResolvedTypeVariables()).build();
         return resolver.resolveType(Types.getCanonicalType(eventObjectType));
