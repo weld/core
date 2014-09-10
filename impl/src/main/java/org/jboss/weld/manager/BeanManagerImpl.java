@@ -149,6 +149,7 @@ import org.jboss.weld.util.InjectionPoints;
 import org.jboss.weld.util.Interceptors;
 import org.jboss.weld.util.Preconditions;
 import org.jboss.weld.util.Proxies;
+import org.jboss.weld.util.Types;
 import org.jboss.weld.util.collections.IterableToIteratorFunction;
 import org.jboss.weld.util.collections.WeldCollections;
 import org.jboss.weld.util.reflection.Reflections;
@@ -666,7 +667,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     @Override
     public void fireEvent(Object event, Annotation... qualifiers) {
         Preconditions.checkArgumentNotNull(event, "event");
-        Resolvable resolvable = globalStrictObserverNotifier.buildEventResolvable(event.getClass(), qualifiers);
+        Type eventType = Types.getCanonicalType(event.getClass());
+        Resolvable resolvable = globalStrictObserverNotifier.buildEventResolvable(eventType, qualifiers);
         EventPacket<?> packet = EventPacket.of(event, qualifiers);
         globalStrictObserverNotifier.fireEvent(resolvable, packet);
     }
