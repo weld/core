@@ -17,6 +17,8 @@
 
 package org.jboss.weld.interceptor.spi.model;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Set;
@@ -78,5 +80,17 @@ public interface InterceptionModel {
      * @return interceptor metadata for the component class
      */
     TargetClassInterceptorMetadata getTargetClassInterceptorMetadata();
+
+    /**
+     *
+     * @return class-level interceptor bindings
+     */
+    Set<Annotation> getClassInterceptorBindings();
+
+    /**
+     * @param method
+     * @return method/constructor interceptor bindings
+     */
+    Set<Annotation> getMemberInterceptorBindings(Member member);
 
 }

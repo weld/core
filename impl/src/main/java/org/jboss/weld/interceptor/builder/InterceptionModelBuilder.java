@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.interceptor.builder;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -56,6 +59,10 @@ public class InterceptionModelBuilder {
 
     private TargetClassInterceptorMetadata targetClassInterceptorMetadata;
 
+    private final Map<Member, Set<Annotation>> memberInterceptorBindings = new HashMap<Member, Set<Annotation>>();
+
+    private Set<Annotation> classInterceptorBindings;
+
     /**
      * @return an immutable {@link InterceptionModel} instance
      */
@@ -65,7 +72,7 @@ public class InterceptionModelBuilder {
         return new InterceptionModelImpl(this);
     }
 
-    public void intercept(javax.enterprise.inject.spi.InterceptionType interceptionType, Method method, Collection<InterceptorClassMetadata<?>> interceptors) {
+    public void interceptMethod(javax.enterprise.inject.spi.InterceptionType interceptionType, Method method, Collection<InterceptorClassMetadata<?>> interceptors, Set<Annotation> interceptorBindings) {
         checkModelNotBuilt();
         InterceptionType weldInterceptionType = InterceptionType.valueOf(interceptionType);
         if (weldInterceptionType.isLifecycleCallback()) {
@@ -82,9 +89,14 @@ public class InterceptionModelBuilder {
         }
         interceptorsList.addAll(interceptors);
         intercept(weldInterceptionType, interceptorsList);
+
+        if(interceptorBindings != null) {
+            // WELD-1742 Associate method interceptor bindings
+            memberInterceptorBindings.put(method, interceptorBindings);
+        }
     }
 
-    public void intercept(javax.enterprise.inject.spi.InterceptionType interceptionType, Collection<InterceptorClassMetadata<?>> interceptors) {
+    public void interceptGlobal(javax.enterprise.inject.spi.InterceptionType interceptionType, Constructor<?> constructor, Collection<InterceptorClassMetadata<?>> interceptors, Set<Annotation> interceptorBindings) {
         checkModelNotBuilt();
         InterceptionType weldInterceptionType = InterceptionType.valueOf(interceptionType);
 
@@ -95,6 +107,11 @@ public class InterceptionModelBuilder {
         }
         interceptorsList.addAll(interceptors);
         intercept(weldInterceptionType, interceptorsList);
+
+        if(constructor != null) {
+            // WELD-1742 Associate constructor interceptor bindings
+            memberInterceptorBindings.put(constructor, interceptorBindings);
+        }
     }
 
     private void intercept(InterceptionType interceptionType, Collection<InterceptorClassMetadata<?>> interceptors) {
@@ -141,6 +158,18 @@ public class InterceptionModelBuilder {
 
     public void setTargetClassInterceptorMetadata(TargetClassInterceptorMetadata targetClassInterceptorMetadata) {
         this.targetClassInterceptorMetadata = targetClassInterceptorMetadata;
+    }
+
+    Collection<Annotation> getClassInterceptorBindings() {
+        return classInterceptorBindings;
+    }
+
+    public void setClassInterceptorBindings(Set<Annotation> classInterceptorBindings) {
+        this.classInterceptorBindings = classInterceptorBindings;
+    }
+
+    Map<Member, Set<Annotation>> getMemberInterceptorBindings() {
+        return memberInterceptorBindings;
     }
 
 }
