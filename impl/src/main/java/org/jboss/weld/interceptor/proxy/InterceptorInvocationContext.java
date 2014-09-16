@@ -18,6 +18,7 @@
 package org.jboss.weld.interceptor.proxy;
 
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -27,8 +28,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.interceptor.InvocationContext;
-
+import org.jboss.weld.experimental.ExperimentalInvocationContext;
 import org.jboss.weld.interceptor.spi.context.InterceptionChain;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
@@ -36,7 +36,7 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
-public class InterceptorInvocationContext implements InvocationContext {
+public class InterceptorInvocationContext implements ExperimentalInvocationContext {
 
     private final Map<String, Object> contextData;
 
@@ -51,6 +51,8 @@ public class InterceptorInvocationContext implements InvocationContext {
     private final Object timer;
 
     private final Constructor<?> constructor;
+
+    private final Set<Annotation> interceptorBindings;
 
     private static final Map<Class<?>, Set<Class<?>>> WIDENING_TABLE;
 
@@ -92,23 +94,23 @@ public class InterceptorInvocationContext implements InvocationContext {
         return new HashSet<Class<?>>(Arrays.asList(classes));
     }
 
-    public InterceptorInvocationContext(InterceptionChain interceptionChain, Object target, Method targetMethod, Object[] parameters) {
-        this(interceptionChain, target, targetMethod, null, parameters, null);
+    public InterceptorInvocationContext(InterceptionChain interceptionChain, Object target, Method targetMethod, Object[] parameters, Set<Annotation> interceptorBindings) {
+        this(interceptionChain, target, targetMethod, null, parameters, null, interceptorBindings);
     }
 
-    public InterceptorInvocationContext(InterceptionChain interceptionChain, Object target, Method targetMethod, Object timer) {
-        this(interceptionChain, target, targetMethod, null, null, timer);
+    public InterceptorInvocationContext(InterceptionChain interceptionChain, Object target, Method targetMethod, Object timer, Set<Annotation> interceptorBindings) {
+        this(interceptionChain, target, targetMethod, null, null, timer, interceptorBindings);
     }
 
-    public InterceptorInvocationContext(InterceptionChain interceptionChain, Constructor<?> constructor, Object[] parameters, Map<String, Object> contextData) {
-        this(interceptionChain, null, null, constructor, parameters, null, contextData);
+    public InterceptorInvocationContext(InterceptionChain interceptionChain, Constructor<?> constructor, Object[] parameters, Map<String, Object> contextData, Set<Annotation> interceptorBindings) {
+        this(interceptionChain, null, null, constructor, parameters, null, contextData, interceptorBindings);
     }
 
-    private InterceptorInvocationContext(InterceptionChain interceptionChain, Object target, Method method, Constructor<?> constructor, Object[] parameters, Object timer) {
-        this(interceptionChain, target, method, constructor, parameters, timer, new HashMap<String, Object>());
+    private InterceptorInvocationContext(InterceptionChain interceptionChain, Object target, Method method, Constructor<?> constructor, Object[] parameters, Object timer, Set<Annotation> interceptorBindings) {
+        this(interceptionChain, target, method, constructor, parameters, timer, new HashMap<String, Object>(), interceptorBindings);
     }
 
-    private InterceptorInvocationContext(InterceptionChain interceptionChain, Object target, Method method, Constructor<?> constructor, Object[] parameters, Object timer, Map<String, Object> contextData) {
+    private InterceptorInvocationContext(InterceptionChain interceptionChain, Object target, Method method, Constructor<?> constructor, Object[] parameters, Object timer, Map<String, Object> contextData, Set<Annotation> interceptorBindings) {
         this.interceptionChain = interceptionChain;
         this.target = target;
         this.method = method;
@@ -116,6 +118,7 @@ public class InterceptorInvocationContext implements InvocationContext {
         this.parameters = parameters;
         this.timer = timer;
         this.contextData = contextData;
+        this.interceptorBindings = interceptorBindings;
     }
 
     @Override
@@ -263,5 +266,10 @@ public class InterceptorInvocationContext implements InvocationContext {
     @Override
     public Constructor<?> getConstructor() {
         return constructor;
+    }
+
+    @Override
+    public Set<Annotation> getInterceptorBindings() {
+        return interceptorBindings;
     }
 }

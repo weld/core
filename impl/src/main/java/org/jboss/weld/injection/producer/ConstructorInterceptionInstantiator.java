@@ -31,6 +31,7 @@ import org.jboss.weld.context.CreationalContextImpl;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.interceptor.proxy.InterceptionContext;
 import org.jboss.weld.interceptor.proxy.InterceptorInvocationContext;
+import org.jboss.weld.interceptor.proxy.InterceptorMethodHandler;
 import org.jboss.weld.interceptor.proxy.SimpleInterceptionChain;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
@@ -89,12 +90,15 @@ public class ConstructorInterceptionInstantiator<T> extends ForwardingInstantiat
                     }
                 };
 
-                InterceptorInvocationContext invocationCtx = new InterceptorInvocationContext(chain, constructor.getJavaMember(), parameters, data) {
+                InterceptorInvocationContext invocationCtx = new InterceptorInvocationContext(chain, constructor.getJavaMember(), parameters, data, model.getMemberInterceptorBindings(getConstructor())) {
                     @Override
                     public Object getTarget() {
                         return target.get();
                     }
                 };
+
+                // WELD-1742 Associate bean constructor interceptor bindings
+                invocationCtx.getContextData().put(InterceptorMethodHandler.INTERCEPTOR_BINDINGS_KEY, model.getMemberInterceptorBindings(getConstructor()));
 
                 try {
                     chain.invokeNextInterceptor(invocationCtx);

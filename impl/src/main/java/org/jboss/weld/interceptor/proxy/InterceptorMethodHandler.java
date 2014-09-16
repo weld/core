@@ -1,7 +1,9 @@
 package org.jboss.weld.interceptor.proxy;
 
 import java.io.Serializable;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.Set;
 
 import org.jboss.weld.bean.proxy.MethodHandler;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
@@ -13,6 +15,8 @@ import org.jboss.weld.interceptor.util.InterceptionUtils;
  * @author Jozef Hartinger
  */
 public class InterceptorMethodHandler implements MethodHandler, Serializable {
+
+    public static final String INTERCEPTOR_BINDINGS_KEY = "org.jboss.weld.interceptor.bindings";
 
     private final InterceptionContext ctx;
 
@@ -40,7 +44,25 @@ public class InterceptorMethodHandler implements MethodHandler, Serializable {
 
     protected Object executeInterception(Object instance, Method method, Object[] args, InterceptionType interceptionType) throws Throwable {
         SimpleInterceptionChain chain = new SimpleInterceptionChain(instance, method, args, interceptionType, ctx);
-        return chain.invokeNextInterceptor(new InterceptorInvocationContext(chain, instance, method, args));
+
+        // WELD-1742 Associate method interceptor bindings
+        Set<Annotation> interceptorBindings = null;
+        switch (interceptionType) {
+            case AROUND_INVOKE:
+            case AROUND_TIMEOUT:
+                interceptorBindings = ctx.getInterceptionModel().getMemberInterceptorBindings(method);
+                break;
+            case POST_CONSTRUCT:
+            case PRE_DESTROY:
+                interceptorBindings = ctx.getInterceptionModel().getClassInterceptorBindings();
+                break;
+            default:
+                throw new IllegalStateException("Invalid interception type");
+        }
+        InterceptorInvocationContext invocationContext = new InterceptorInvocationContext(chain, instance, method, args, interceptorBindings);
+        invocationContext.getContextData().put(INTERCEPTOR_BINDINGS_KEY, interceptorBindings);
+
+        return chain.invokeNextInterceptor(invocationContext);
     }
 
     private boolean isInterceptorMethod(Method method) {
