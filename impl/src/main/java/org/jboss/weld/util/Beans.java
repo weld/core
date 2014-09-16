@@ -96,10 +96,7 @@ import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SessionBeanHierarchyDiscovery;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Sets;
-
-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+import com.google.common.collect.ImmutableSet;
 
 /**
  * Helper class for bean inspection
@@ -227,27 +224,25 @@ public class Beans {
     }
 
     /**
-     * Retains only beans which have deployment type X.
-     * <p/>
-     * The deployment type X is
+     * Retains only beans which are enabled.
      *
      * @param beans The beans to filter
-     * @param beanManager the bean manager
-     * @return The filtered beans
+     * @param beanManager The bean manager
+     * @param registry
+     * @return An immutable set of enabled beans
      */
     public static <T extends Bean<?>> Set<T> removeDisabledBeans(Set<T> beans, final BeanManagerImpl beanManager,
             final SpecializationAndEnablementRegistry registry) {
         if (beans.size() == 0) {
             return beans;
         } else {
-            return Sets.filter(beans, new Predicate<T>() {
-                @Override
-                @SuppressWarnings("NP_PARAMETER_MUST_BE_NONNULL_BUT_MARKED_AS_NULLABLE")
-                public boolean apply(T bean) {
-                    Preconditions.checkArgumentNotNull(bean, "bean");
-                    return isBeanEnabled(bean, beanManager.getEnabled());
+            ImmutableSet.Builder<T> builder = ImmutableSet.builder();
+            for (T bean : beans) {
+                if (isBeanEnabled(bean, beanManager.getEnabled())) {
+                    builder.add(bean);
                 }
-            });
+            }
+            return builder.build();
         }
     }
 
