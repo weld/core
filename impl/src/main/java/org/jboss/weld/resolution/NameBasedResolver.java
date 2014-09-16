@@ -30,7 +30,6 @@ import org.jboss.weld.util.Beans;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import com.google.common.collect.ImmutableSet;
 
 /**
  * Implementation of name based bean resolution
@@ -58,8 +57,7 @@ public class NameBasedResolver {
                     matchedBeans.add(bean);
                 }
             }
-            //noinspection unchecked
-            return ImmutableSet.copyOf((Iterable<Bean<?>>) Beans.removeDisabledBeans(matchedBeans, beanManager, registry));
+            return Beans.removeDisabledBeans(matchedBeans, beanManager, registry);
         }
 
     }
