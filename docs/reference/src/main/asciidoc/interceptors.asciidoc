@@ -1,3 +1,4 @@
+[[interceptors]]
 == Interceptors
 
 Interceptor functionality is defined in the Java Interceptors

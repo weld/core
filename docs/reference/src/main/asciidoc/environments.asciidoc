@@ -1,3 +1,4 @@
+[[environments]]
 == Application servers and environments supported by Weld
 
 === Using Weld with WildFly

@@ -1,3 +1,4 @@
+[[gettingstarted]]
 == Getting started with Weld
 
 Weld comes with a number of examples. We recommend you start with

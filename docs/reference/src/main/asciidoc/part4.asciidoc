@@ -1,3 +1,4 @@
+[[part-4]]
 = CDI and the Java EE ecosystem
 
 [partintro]

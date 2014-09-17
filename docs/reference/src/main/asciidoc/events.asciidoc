@@ -1,3 +1,4 @@
+[[events]]
 == Events
 
 Dependency injection enables loose-coupling by allowing the

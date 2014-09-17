@@ -1,3 +1,4 @@
+[[part-3]]
 = Loose coupling with strong typing
 
 [partintro]

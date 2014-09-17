@@ -1,3 +1,4 @@
+[[part-2]]
 = Getting Start with Weld, the CDI Reference Implementation
 
 [partintro]
