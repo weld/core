@@ -1,3 +1,4 @@
+[[configure]]
 == Configuration
 
 === Excluding classes from scanning and deployment

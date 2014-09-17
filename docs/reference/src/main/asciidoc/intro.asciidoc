@@ -1,3 +1,4 @@
+[[intro]]
 == Introduction
 
 So you're keen to get started writing your first bean? Or perhaps you're

@@ -1,3 +1,4 @@
+[[ri-spi]]
 [appendix]
 == Integrating Weld into other environments
 

@@ -1,3 +1,4 @@
+[[ee]]
 == Java EE integration
 
 CDI is fully integrated into the Java EE environment. Beans have access

@@ -1,3 +1,4 @@
+[[contexts]]
 == Context Management
 
 === Managing the built in contexts

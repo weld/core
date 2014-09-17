@@ -1,3 +1,4 @@
+[[resources]]
 == Java EE component environment resources
 
 Java EE 5 already introduced some limited support for dependency

@@ -1,3 +1,4 @@
+[[specialization]]
 == Specialization, inheritance and alternatives
 
 When you first start developing with CDI, you'll likely be dealing only

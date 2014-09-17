@@ -1,3 +1,4 @@
+[[stereotypes]]
 == Stereotypes
 
 The CDI specification defines a stereotype as follows:
