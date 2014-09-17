@@ -40,9 +40,12 @@ import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.exceptions.InvalidObjectException;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.logging.BeanLogger;
+import org.jboss.weld.logging.BeanManagerLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resolution.Resolvable;
 import org.jboss.weld.resolution.ResolvableBuilder;
+import org.jboss.weld.resolution.TypeSafeBeanResolver;
+import org.jboss.weld.util.collections.WeldCollections;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -59,33 +62,30 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
 
     private static final long serialVersionUID = -376721889693284887L;
 
+    private final Set<Bean<?>> beans;
+
     public static <I> Instance<I> of(InjectionPoint injectionPoint, CreationalContext<I> creationalContext,
             BeanManagerImpl beanManager) {
         return new InstanceImpl<I>(injectionPoint, creationalContext, beanManager);
     }
 
-    private InstanceImpl(InjectionPoint injectionPoint, CreationalContext<? super T> creationalContext,
-            BeanManagerImpl beanManager) {
+    private InstanceImpl(InjectionPoint injectionPoint, CreationalContext<? super T> creationalContext, BeanManagerImpl beanManager) {
         super(injectionPoint, creationalContext, beanManager);
+
+        // Perform typesafe resolution, and possibly attempt to resolve the ambiguity
+        Resolvable resolvable = new ResolvableBuilder(getType(), getBeanManager()).addQualifiers(getQualifiers())
+                .setDeclaringBean(getInjectionPoint().getBean()).create();
+        TypeSafeBeanResolver beanResolver = getBeanManager().getBeanResolver();
+        this.beans = beanResolver.resolve(beanResolver.resolve(resolvable, Reflections.isCacheable(getQualifiers())));
     }
 
     public T get() {
-        Resolvable resolvable = new ResolvableBuilder(getType(), getBeanManager()).addQualifiers(getQualifiers())
-                .setDeclaringBean(getInjectionPoint().getBean()).create();
-        Bean<?> bean = getBeanManager().getBean(resolvable);
-        return getBeanInstance(bean);
-    }
-
-    private T getBeanInstance(Bean<?> bean) {
-        // Generate a correct injection point for the bean, we do this by taking the original injection point and adjusting the
-        // qualifiers and type
-        InjectionPoint ip = new DynamicLookupInjectionPoint(getInjectionPoint(), getType(), getQualifiers());
-        CurrentInjectionPoint currentInjectionPoint = getBeanManager().getServices().get(CurrentInjectionPoint.class);
-        try {
-            currentInjectionPoint.push(ip);
-            return Reflections.<T> cast(getBeanManager().getReference(bean, getType(), getCreationalContext()));
-        } finally {
-            currentInjectionPoint.pop();
+        if (isUnsatisfied()) {
+            throw BeanManagerLogger.LOG.unresolvableElement("Type: " + getType() + "; Qualifiers: " + getQualifiers());
+        } else if (isAmbiguous()) {
+            throw BeanManagerLogger.LOG.ambiguousBeansForDependency(WeldCollections.toMultiRowString(beans));
+        } else {
+            return getBeanInstance(beans.iterator().next());
         }
     }
 
@@ -99,21 +99,16 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
         return Formats.formatAnnotations(getQualifiers()) + " Instance<" + Formats.formatType(getType()) + ">";
     }
 
-    private Set<Bean<?>> getBeans() {
-        Set<Bean<?>> beans = getBeanManager().getBeans(getType(), getQualifiers());
-        return getBeanManager().getBeanResolver().resolve(beans);
-    }
-
     public Iterator<T> iterator() {
-        return new InstanceImplIterator(getBeans());
+        return new InstanceImplIterator(beans);
     }
 
     public boolean isAmbiguous() {
-        return getBeans().size() > 1;
+        return beans.size() > 1;
     }
 
     public boolean isUnsatisfied() {
-        return getBeans().size() == 0;
+        return beans.isEmpty();
     }
 
     public Instance<T> select(Annotation... qualifiers) {
@@ -160,6 +155,19 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
         if (ctx instanceof WeldCreationalContext<?>) {
             WeldCreationalContext<? super T> weldCtx = cast(ctx);
             weldCtx.destroyDependentInstance(instance);
+        }
+    }
+
+    private T getBeanInstance(Bean<?> bean) {
+        // Generate a correct injection point for the bean, we do this by taking the original injection point and adjusting the
+        // qualifiers and type
+        InjectionPoint ip = new DynamicLookupInjectionPoint(getInjectionPoint(), getType(), getQualifiers());
+        CurrentInjectionPoint currentInjectionPoint = getBeanManager().getServices().get(CurrentInjectionPoint.class);
+        try {
+            currentInjectionPoint.push(ip);
+            return Reflections.<T> cast(getBeanManager().getReference(bean, getType(), getCreationalContext()));
+        } finally {
+            currentInjectionPoint.pop();
         }
     }
 
