@@ -1,3 +1,4 @@
+[[injection]]
 == Dependency injection and programmatic lookup
 
 One of the most significant features of CDI—certainly the most

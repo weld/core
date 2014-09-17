@@ -1,3 +1,4 @@
+[[scopescontexts]]
 == Scopes and contexts
 
 So far, we've seen a few examples of _scope type annotations_. The scope

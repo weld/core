@@ -1,3 +1,4 @@
+[[example]]
 == JSF web application example
 
 Let's illustrate these ideas with a full example. We're going to

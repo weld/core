@@ -1,3 +1,4 @@
+[[part-5]]
 = Weld Reference Guide
 
 [partintro]

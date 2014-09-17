@@ -1,3 +1,4 @@
+[[beanscdi]]
 == More about beans
 
 A bean is usually an application class that contains business logic. It

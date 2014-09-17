@@ -1,3 +1,4 @@
+[[extend]]
 == Portable extensions
 
 CDI is intended to be a foundation for frameworks, extensions and

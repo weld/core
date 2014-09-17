@@ -1,3 +1,4 @@
+[[weldexamples]]
 == Diving into the Weld examples
 
 It's time to pull the covers back and dive into the internals of Weld
