@@ -45,7 +45,7 @@ public abstract class BeanIdentifierIndexNamingScheme extends AbstractNamingSche
             return new StringBeanIdentifier(deprefixed.substring(FALLBACK_FLAG.length()));
         }
         try {
-            return index.getIdentifier(Integer.valueOf(deprefixed));
+            return index.getIdentifier(Integer.parseInt(deprefixed));
         } catch (NumberFormatException e) {
             throw new IllegalStateException("Unable to deprefix id:" + id, e);
         }
