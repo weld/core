@@ -39,7 +39,7 @@
         <cdi.tck-2-0.version>2.0.0-SNAPSHOT</cdi.tck-2-0.version>
         <classfilewriter.version>1.0.4.Final</classfilewriter.version>
         <contiperf.version>1.06</contiperf.version>
-        <findbugs-maven-plugin.version>2.5.1</findbugs-maven-plugin.version>
+        <findbugs-maven-plugin.version>3.0.0</findbugs-maven-plugin.version>
         <glassfish.el.version>2.1.2-b04</glassfish.el.version>
         <google.guava.version>13.0.1</google.guava.version>
         <htmlunit.version>2.4</htmlunit.version>
