@@ -98,7 +98,7 @@ public class ExecutorServicesFactory {
         }
         String value = properties.getProperty(property);
         try {
-            return Integer.valueOf(value);
+            return Integer.parseInt(value);
         } catch (NumberFormatException e) {
             throw BootstrapLogger.LOG.invalidThreadPoolSize(value);
         }
@@ -110,7 +110,7 @@ public class ExecutorServicesFactory {
         }
         String value = properties.getProperty(property);
         try {
-            return Long.valueOf(value);
+            return Long.parseLong(value);
         } catch (NumberFormatException e) {
             throw BootstrapLogger.LOG.invalidPropertyValue(property, value);
         }
@@ -120,7 +120,7 @@ public class ExecutorServicesFactory {
         if (properties == null || properties.get(property) == null) {
             return defaultValue;
         }
-        return Boolean.valueOf(properties.getProperty(property));
+        return Boolean.parseBoolean(properties.getProperty(property));
     }
 
     private static ThreadPoolType initThreadPoolType(Properties properties, String property, ThreadPoolType defaultValue) {

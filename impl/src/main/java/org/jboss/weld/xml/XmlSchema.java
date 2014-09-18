@@ -23,7 +23,7 @@ public enum XmlSchema {
     CDI10("beans_1_0.xsd", BeanManager.class.getClassLoader()), CDI11("beans_1_1.xsd", BeanManager.class.getClassLoader()), WELD11("weld_1_1.xsd", BeansXmlParser.class.getClassLoader());
 
     private final String fileName;
-    private final ClassLoader classLoader;
+    private final transient ClassLoader classLoader;
 
     private XmlSchema(String fileName, ClassLoader classLoader) {
         this.fileName = fileName;
