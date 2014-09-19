@@ -420,4 +420,16 @@ public class Reflections {
             throw e.getCause();
         }
     }
+
+    /**
+     * Triggers loading of declaring class (if any) of the given class recursively.
+     * If the class cannot be loaded, the underlying {@link LinkageError} is propagated.
+     * @param class the given class
+     * @throws LinkageError or its subclass if a declaring class cannot be loaded
+     */
+    public static void checkDeclaringClassLoadable(Class<?> c) {
+        for (Class<?> clazz = c; clazz != null; clazz = clazz.getDeclaringClass()) {
+            // noop, the loop triggers loading of the declaring classes
+        }
+    }
 }

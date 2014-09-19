@@ -20,9 +20,6 @@ import static org.jboss.weld.util.cache.LoadingCacheUtils.getCacheValue;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Member;
-import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -30,7 +27,6 @@ import java.util.Set;
 import javax.enterprise.context.NormalScope;
 import javax.inject.Scope;
 
-import org.jboss.weld.annotated.slim.backed.BackedAnnotatedParameter;
 import org.jboss.weld.bootstrap.api.helpers.AbstractBootstrapService;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.util.collections.Arrays2;
@@ -69,9 +65,6 @@ public class DefaultReflectionCache extends AbstractBootstrapService implements 
 
     private final LoadingCache<AnnotatedElement, Annotations> annotations;
     private final LoadingCache<AnnotatedElement, Annotations> declaredAnnotations;
-    private final LoadingCache<Constructor<?>, Annotation[][]> constructorParameterAnnotations;
-    private final LoadingCache<Method, Annotation[][]> methodParameterAnnotations;
-    private final LoadingCache<BackedAnnotatedParameter<?>, Set<Annotation>> parameterAnnotationSet;
     private final LoadingCache<Class<?>, Set<Annotation>> backedAnnotatedTypeAnnotations;
     private final LoadingCache<Class<? extends Annotation>, Boolean> isScopeAnnotation;
 
@@ -90,30 +83,6 @@ public class DefaultReflectionCache extends AbstractBootstrapService implements 
                 return new Annotations(internalGetDeclaredAnnotations(input));
             }
         });
-        this.constructorParameterAnnotations = cacheBuilder.build(new CacheLoader<Constructor<?>, Annotation[][]>() {
-            @Override
-            public Annotation[][] load(Constructor<?> input) {
-                return input.getParameterAnnotations();
-            }
-        });
-        this.methodParameterAnnotations = cacheBuilder.build(new CacheLoader<Method, Annotation[][]>() {
-            @Override
-            public Annotation[][] load(Method input) {
-                return input.getParameterAnnotations();
-            }
-        });
-        this.parameterAnnotationSet = cacheBuilder.build(new CacheLoader<BackedAnnotatedParameter<?>, Set<Annotation>>() {
-            @Override
-            public Set<Annotation> load(BackedAnnotatedParameter<?> parameter) throws Exception {
-                final Member member = parameter.getDeclaringCallable().getJavaMember();
-                if (member instanceof Method) {
-                    return ImmutableSet.copyOf( getParameterAnnotations((Method) member, parameter.getPosition()));
-                } else {
-                    return ImmutableSet.copyOf( getParameterAnnotations((Constructor<?>) member, parameter.getPosition()));
-                }
-            }
-
-        });
         this.backedAnnotatedTypeAnnotations = cacheBuilder.build(new BackedAnnotatedTypeAnnotationsFunction());
         this.isScopeAnnotation = cacheBuilder.build(new IsScopeAnnotationFunction());
     }
@@ -129,24 +98,11 @@ public class DefaultReflectionCache extends AbstractBootstrapService implements 
     }
 
     @Override
-    public Annotation[] getParameterAnnotations(Constructor<?> constructor, int parameterPosition) {
-        return getCacheValue(constructorParameterAnnotations, constructor)[parameterPosition];
-    }
-
-    @Override
-    public Annotation[] getParameterAnnotations(Method method, int parameterPosition) {
-        return getCacheValue(methodParameterAnnotations, method)[parameterPosition];
-    }
-
-    @Override
     public void cleanupAfterBoot() {
         annotations.invalidateAll();
         declaredAnnotations.invalidateAll();
-        constructorParameterAnnotations.invalidateAll();
-        methodParameterAnnotations.invalidateAll();
         backedAnnotatedTypeAnnotations.invalidateAll();
         isScopeAnnotation.invalidateAll();
-        parameterAnnotationSet.invalidateAll();
     }
 
     @Override
@@ -157,11 +113,6 @@ public class DefaultReflectionCache extends AbstractBootstrapService implements 
     @Override
     public Set<Annotation> getDeclaredAnnotationSet(AnnotatedElement element) {
         return getCacheValue(declaredAnnotations, element).annotationSet;
-    }
-
-    @Override
-    public Set<Annotation> getParameterAnnotationSet(BackedAnnotatedParameter<?> parameter) {
-        return getCacheValue(parameterAnnotationSet, parameter);
     }
 
     @Override
