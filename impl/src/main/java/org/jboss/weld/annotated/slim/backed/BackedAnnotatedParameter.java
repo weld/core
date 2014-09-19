@@ -84,7 +84,7 @@ public class BackedAnnotatedParameter<X> extends BackedAnnotated implements Anno
 
     @Override
     public Set<Annotation> getAnnotations() {
-        return getReflectionCache().getAnnotationSet(parameter);
+        return getReflectionCache().getAnnotations(parameter);
     }
 
     @Override
