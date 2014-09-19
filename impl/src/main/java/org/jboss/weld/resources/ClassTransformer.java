@@ -40,6 +40,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
 import org.jboss.weld.util.AnnotatedTypes;
+import org.jboss.weld.util.reflection.Reflections;
 
 import com.google.common.base.Objects;
 import com.google.common.cache.CacheBuilder;
@@ -80,6 +81,8 @@ public class ClassTransformer implements BootstrapService {
     private class TransformClassToBackedAnnotatedType extends CacheLoader<TypeHolder<?>, BackedAnnotatedType<?>> {
         @Override
         public BackedAnnotatedType<?> load(TypeHolder<?> typeHolder) {
+            // make sure declaring class (if any) is loadable before loading this class
+            Reflections.checkDeclaringClassLoadable(typeHolder.getRawType());
             BackedAnnotatedType<?> type = BackedAnnotatedType.of(typeHolder.getRawType(), typeHolder.getBaseType(), cache,
                     reflectionCache, contextId, typeHolder.getBdaId());
             return updateLookupTable(type);

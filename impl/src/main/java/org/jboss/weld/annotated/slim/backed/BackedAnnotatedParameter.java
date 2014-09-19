@@ -7,32 +7,52 @@ import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Type;
+import java.lang.reflect.Executable;
+import java.lang.reflect.Parameter;
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.AnnotatedCallable;
 import javax.enterprise.inject.spi.AnnotatedParameter;
 
 import org.jboss.weld.exceptions.InvalidObjectException;
+import org.jboss.weld.experimental.ExperimentalAnnotatedParameter;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.resources.ReflectionCache;
 import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.util.reflection.Formats;
 
+import com.google.common.collect.ImmutableList;
+
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
 @SuppressWarnings(value = { "SE_BAD_FIELD", "SE_NO_SUITABLE_CONSTRUCTOR", "SE_NO_SERIALVERSIONID" }, justification = "False positive from FindBugs - serialization is handled by SerializationProxy.")
-public class BackedAnnotatedParameter<X> extends BackedAnnotated implements AnnotatedParameter<X>, Serializable {
+public class BackedAnnotatedParameter<X> extends BackedAnnotated implements AnnotatedParameter<X>, ExperimentalAnnotatedParameter<X>, Serializable {
 
-    public static <X> AnnotatedParameter<X> of(Type baseType, Annotation[] annotations, int position, BackedAnnotatedCallable<X, ?> declaringCallable, SharedObjectCache sharedObjectCache) {
-        return new BackedAnnotatedParameter<X>(baseType, annotations, position, declaringCallable, sharedObjectCache);
+    public static <X> List<AnnotatedParameter<X>> forExecutable(Executable executable, BackedAnnotatedCallable<X, ?> declaringCallable, SharedObjectCache cache) {
+        final Parameter[] parameters = executable.getParameters();
+        if (parameters.length == 0) {
+            return Collections.emptyList();
+        }
+        ImmutableList.Builder<AnnotatedParameter<X>> builder = ImmutableList.builder();
+        for (int i = 0; i < parameters.length; i++) {
+            builder.add(BackedAnnotatedParameter.of(parameters[i], i, declaringCallable, cache));
+        }
+        return builder.build();
     }
 
+    public static <X> AnnotatedParameter<X> of(Parameter parameter, int position, BackedAnnotatedCallable<X, ?> declaringCallable, SharedObjectCache sharedObjectCache) {
+        return new BackedAnnotatedParameter<X>(parameter, position, declaringCallable, sharedObjectCache);
+    }
+
+    private final Parameter parameter;
     private final int position;
     private final BackedAnnotatedCallable<X, ?> declaringCallable;
 
-    public BackedAnnotatedParameter(Type baseType, Annotation[] annotations, int position, BackedAnnotatedCallable<X, ?> declaringCallable, SharedObjectCache sharedObjectCache) {
-        super(baseType, sharedObjectCache);
+    private BackedAnnotatedParameter(Parameter parameter, int position, BackedAnnotatedCallable<X, ?> declaringCallable, SharedObjectCache sharedObjectCache) {
+        super(parameter.getParameterizedType(), sharedObjectCache);
+        this.parameter = parameter;
         this.position = position;
         this.declaringCallable = declaringCallable;
     }
@@ -40,6 +60,11 @@ public class BackedAnnotatedParameter<X> extends BackedAnnotated implements Anno
     @Override
     public int getPosition() {
         return position;
+    }
+
+    @Override
+    public Parameter getJavaParameter() {
+        return parameter;
     }
 
     @Override
@@ -59,7 +84,7 @@ public class BackedAnnotatedParameter<X> extends BackedAnnotated implements Anno
 
     @Override
     public Set<Annotation> getAnnotations() {
-        return getReflectionCache().getParameterAnnotationSet(this);
+        return getReflectionCache().getAnnotationSet(parameter);
     }
 
     @Override
@@ -76,8 +101,7 @@ public class BackedAnnotatedParameter<X> extends BackedAnnotated implements Anno
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((declaringCallable == null) ? 0 : declaringCallable.hashCode());
-        result = prime * result + position;
+        result = prime * result + ((parameter == null) ? 0 : parameter.hashCode());
         return result;
     }
 
@@ -93,14 +117,11 @@ public class BackedAnnotatedParameter<X> extends BackedAnnotated implements Anno
             return false;
         }
         BackedAnnotatedParameter<?> other = (BackedAnnotatedParameter<?>) obj;
-        if (declaringCallable == null) {
-            if (other.declaringCallable != null) {
+        if (parameter == null) {
+            if (other.parameter != null) {
                 return false;
             }
-        } else if (!declaringCallable.equals(other.declaringCallable)) {
-            return false;
-        }
-        if (position != other.position) {
+        } else if (!parameter.equals(other.parameter)) {
             return false;
         }
         return true;

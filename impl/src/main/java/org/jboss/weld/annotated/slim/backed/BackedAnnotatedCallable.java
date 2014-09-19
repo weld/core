@@ -16,7 +16,9 @@
  */
 package org.jboss.weld.annotated.slim.backed;
 
-import java.lang.reflect.Member;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Executable;
 import java.lang.reflect.Type;
 import java.util.List;
 
@@ -25,20 +27,71 @@ import javax.enterprise.inject.spi.AnnotatedParameter;
 
 import org.jboss.weld.resources.SharedObjectCache;
 
-public abstract class BackedAnnotatedCallable<X, M extends Member> extends BackedAnnotatedMember<X> implements AnnotatedCallable<X> {
+public abstract class BackedAnnotatedCallable<X, E extends Executable> extends BackedAnnotatedMember<X> implements AnnotatedCallable<X> {
 
     private final List<AnnotatedParameter<X>> parameters;
+    private final E executable;
 
-    public BackedAnnotatedCallable(M member, Type baseType, BackedAnnotatedType<X> declaringType, SharedObjectCache sharedObjectCache) {
+    public BackedAnnotatedCallable(E executable, Type baseType, BackedAnnotatedType<X> declaringType, SharedObjectCache sharedObjectCache) {
         super(baseType, declaringType, sharedObjectCache);
-        this.parameters = initParameters(member, sharedObjectCache);
+        this.executable = executable;
+        this.parameters = initParameters(executable, sharedObjectCache);
     }
 
-    protected abstract List<AnnotatedParameter<X>> initParameters(M member, SharedObjectCache sharedObjectCache);
+    protected List<AnnotatedParameter<X>> initParameters(E member, SharedObjectCache sharedObjectCache) {
+        return BackedAnnotatedParameter.forExecutable(member, this, sharedObjectCache);
+    }
+
+    @Override
+    public E getJavaMember() {
+        return executable;
+    }
 
     @Override
     public List<AnnotatedParameter<X>> getParameters() {
         return parameters;
     }
 
+    public <T extends Annotation> T getAnnotation(Class<T> annotationType) {
+        return executable.getAnnotation(annotationType);
+    }
+
+    @Override
+    protected AnnotatedElement getAnnotatedElement() {
+        return executable;
+    }
+
+    public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
+        return executable.isAnnotationPresent(annotationType);
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((executable == null) ? 0 : executable.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        BackedAnnotatedCallable<?, ?> other = (BackedAnnotatedCallable<?, ?>) obj;
+        if (executable == null) {
+            if (other.executable != null) {
+                return false;
+            }
+        } else if (!executable.equals(other.executable)) {
+            return false;
+        }
+        return true;
+    }
 }
