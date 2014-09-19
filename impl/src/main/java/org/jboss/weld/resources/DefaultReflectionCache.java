@@ -20,7 +20,6 @@ import static org.jboss.weld.util.cache.LoadingCacheUtils.getCacheValue;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -29,7 +28,6 @@ import javax.inject.Scope;
 
 import org.jboss.weld.bootstrap.api.helpers.AbstractBootstrapService;
 import org.jboss.weld.metadata.TypeStore;
-import org.jboss.weld.util.collections.Arrays2;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -48,54 +46,31 @@ public class DefaultReflectionCache extends AbstractBootstrapService implements 
         return element.getDeclaredAnnotations();
     }
 
-    private static class Annotations {
-        private final Annotation[] annotations;
-        private final Set<Annotation> annotationSet;
-
-        public Annotations(Annotation[] annotations) {
-            if (annotations.length == 0) {
-                this.annotations = Arrays2.EMPTY_ANNOTATION_ARRAY;
-                this.annotationSet = Collections.emptySet();
-            } else {
-                this.annotations = annotations;
-                this.annotationSet = ImmutableSet.copyOf(annotations);
-            }
-        }
-    }
-
-    private final LoadingCache<AnnotatedElement, Annotations> annotations;
-    private final LoadingCache<AnnotatedElement, Annotations> declaredAnnotations;
+    private final LoadingCache<AnnotatedElement, Set<Annotation>> annotations;
+    private final LoadingCache<AnnotatedElement, Set<Annotation>> declaredAnnotations;
     private final LoadingCache<Class<?>, Set<Annotation>> backedAnnotatedTypeAnnotations;
     private final LoadingCache<Class<? extends Annotation>, Boolean> isScopeAnnotation;
 
     public DefaultReflectionCache(TypeStore store) {
         this.store = store;
         CacheBuilder<Object, Object> cacheBuilder = CacheBuilder.newBuilder();
-        this.annotations = cacheBuilder.build(new CacheLoader<AnnotatedElement, Annotations>() {
+        this.annotations = cacheBuilder.build(new CacheLoader<AnnotatedElement, Set<Annotation>>() {
             @Override
-            public Annotations load(AnnotatedElement input) {
-                return new Annotations(internalGetAnnotations(input));
+            public Set<Annotation> load(AnnotatedElement input) {
+                return ImmutableSet.copyOf(internalGetAnnotations(input));
             }
         });
-        this.declaredAnnotations = cacheBuilder.build(new CacheLoader<AnnotatedElement, Annotations>() {
+        this.declaredAnnotations = cacheBuilder.build(new CacheLoader<AnnotatedElement, Set<Annotation>>() {
             @Override
-            public Annotations load(AnnotatedElement input) {
-                return new Annotations(internalGetDeclaredAnnotations(input));
+            public Set<Annotation> load(AnnotatedElement input) {
+                return ImmutableSet.copyOf(internalGetDeclaredAnnotations(input));
             }
         });
         this.backedAnnotatedTypeAnnotations = cacheBuilder.build(new BackedAnnotatedTypeAnnotationsFunction());
         this.isScopeAnnotation = cacheBuilder.build(new IsScopeAnnotationFunction());
     }
 
-    @Override
-    public Annotation[] getAnnotations(AnnotatedElement element) {
-        return getCacheValue(annotations, element).annotations;
-    }
 
-    @Override
-    public Annotation[] getDeclaredAnnotations(AnnotatedElement element) {
-        return getCacheValue(declaredAnnotations, element).annotations;
-    }
 
     @Override
     public void cleanupAfterBoot() {
@@ -106,13 +81,13 @@ public class DefaultReflectionCache extends AbstractBootstrapService implements 
     }
 
     @Override
-    public Set<Annotation> getAnnotationSet(AnnotatedElement element) {
-        return getCacheValue(annotations, element).annotationSet;
+    public Set<Annotation> getAnnotations(AnnotatedElement element) {
+        return getCacheValue(annotations, element);
     }
 
     @Override
-    public Set<Annotation> getDeclaredAnnotationSet(AnnotatedElement element) {
-        return getCacheValue(declaredAnnotations, element).annotationSet;
+    public Set<Annotation> getDeclaredAnnotations(AnnotatedElement element) {
+        return getCacheValue(declaredAnnotations, element);
     }
 
     @Override
@@ -124,7 +99,7 @@ public class DefaultReflectionCache extends AbstractBootstrapService implements 
 
         @Override
         public Set<Annotation> load(Class<?> javaClass) {
-            Set<Annotation> annotations = getAnnotationSet(javaClass);
+            Set<Annotation> annotations = getAnnotations(javaClass);
             boolean scopeFound = false;
             for (Annotation annotation : annotations) {
                 boolean isScope = getCacheValue(isScopeAnnotation, annotation.annotationType());

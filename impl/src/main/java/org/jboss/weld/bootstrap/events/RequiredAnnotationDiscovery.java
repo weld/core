@@ -73,7 +73,7 @@ public class RequiredAnnotationDiscovery implements Service {
      */
     public boolean containsAnnotation(BackedAnnotatedType<?> annotatedType, Class<? extends Annotation> requiredAnnotation) {
         // class level annotations
-        if (containsAnnotations(annotatedType.getAnnotations(), requiredAnnotation, true)) {
+        if (containsAnnotation(annotatedType.getAnnotations(), requiredAnnotation, true)) {
             return true;
         }
         for (Class<?> clazz = annotatedType.getJavaClass(); clazz != null && clazz != Object.class; clazz = clazz.getSuperclass()) {
@@ -122,7 +122,11 @@ public class RequiredAnnotationDiscovery implements Service {
         return false;
     }
 
-    private boolean containsAnnotations(Iterable<? extends Annotation> annotations, Class<? extends Annotation> requiredAnnotation, boolean checkMetaAnnotations) {
+    private boolean containsAnnotations(Iterable<? extends Annotation> annotations, Class<? extends Annotation> requiredAnnotation) {
+        return containsAnnotation(annotations, requiredAnnotation, true);
+    }
+
+    private boolean containsAnnotation(Iterable<? extends Annotation> annotations, Class<? extends Annotation> requiredAnnotation, boolean checkMetaAnnotations) {
         for (Annotation annotation : annotations) {
             if (containsAnnotation(annotation, requiredAnnotation, checkMetaAnnotations)) {
                 return true;

@@ -26,13 +26,9 @@ import org.jboss.weld.bootstrap.api.Service;
 
 public interface ReflectionCache extends Service {
 
-    Annotation[] getAnnotations(AnnotatedElement element);
+    Set<Annotation> getAnnotations(AnnotatedElement element);
 
-    Set<Annotation> getAnnotationSet(AnnotatedElement element);
-
-    Annotation[] getDeclaredAnnotations(AnnotatedElement element);
-
-    Set<Annotation> getDeclaredAnnotationSet(AnnotatedElement element);
+    Set<Annotation> getDeclaredAnnotations(AnnotatedElement element);
 
     /**
      * Returns the set of annotations for a {@link BackedAnnotatedType}. This are all annotations declared directly on the

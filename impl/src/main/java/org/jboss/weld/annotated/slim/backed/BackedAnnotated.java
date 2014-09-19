@@ -33,6 +33,6 @@ public abstract class BackedAnnotated extends BaseAnnotated {
 
     @Override
     public Set<Annotation> getAnnotations() {
-        return getReflectionCache().getAnnotationSet(getAnnotatedElement());
+        return getReflectionCache().getAnnotations(getAnnotatedElement());
     }
 }
