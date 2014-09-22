@@ -25,8 +25,8 @@ package org.jboss.weld.context;
 import static org.jboss.weld.context.conversation.ConversationIdGenerator.CONVERSATION_ID_GENERATOR_ATTRIBUTE_NAME;
 import static org.jboss.weld.logging.Category.CONVERSATION;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
-import static org.jboss.weld.logging.messages.ConversationMessage.NO_CONVERSATION_FOUND_TO_RESTORE;
 import static org.jboss.weld.logging.messages.ConversationMessage.END_LOCKED_CONVERSATION;
+import static org.jboss.weld.logging.messages.ConversationMessage.NO_CONVERSATION_FOUND_TO_RESTORE;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.annotation.Annotation;
@@ -242,7 +242,8 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
                 throw new IllegalStateException("Must call associate() before calling deactivate()");
             }
 
-            if (getCurrentConversation().isTransient()) {
+            if (getCurrentConversation().isTransient() && getRequestAttribute(getRequest(), ConversationNamingScheme.PARAMETER_NAME) != null) {
+                // WELD-1746 Don't destroy ended conversations - these must be destroyed in a synchronized block - see also cleanUpConversationMap()
                 destroy();
             } else {
                 try {
@@ -281,7 +282,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
     private void cleanUpConversationMap() {
         Map<String, ManagedConversation> conversations = getConversationMap();
         synchronized (conversations) {
-            Iterator<Entry<String, ManagedConversation>> entryIterator = getConversationMap().entrySet().iterator();
+            Iterator<Entry<String, ManagedConversation>> entryIterator = conversations.entrySet().iterator();
             while (entryIterator.hasNext()) {
                 Entry<String, ManagedConversation> entry = entryIterator.next();
                 if (entry.getValue().isTransient()) {
