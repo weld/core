@@ -20,6 +20,8 @@ import static org.jboss.weld.util.cache.LoadingCacheUtils.getCacheValue;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -28,6 +30,8 @@ import javax.inject.Scope;
 
 import org.jboss.weld.bootstrap.api.helpers.AbstractBootstrapService;
 import org.jboss.weld.metadata.TypeStore;
+import org.jboss.weld.util.Annotations;
+import org.jboss.weld.util.reflection.Reflections;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -37,6 +41,18 @@ import com.google.common.collect.ImmutableSet;
 public class DefaultReflectionCache extends AbstractBootstrapService implements ReflectionCache {
 
     private final TypeStore store;
+    private final CacheLoader<AnnotatedElement, Set<Annotation>> ANNOTATIONS_FUNCTION = new CacheLoader<AnnotatedElement, Set<Annotation>>() {
+        @Override
+        public Set<Annotation> load(AnnotatedElement input) {
+            return ImmutableSet.copyOf(internalGetAnnotations(input));
+        }
+    };
+    private final CacheLoader<AnnotatedElement, Set<Annotation>> DECLARED_ANNOTATIONS_FUNCTION = new CacheLoader<AnnotatedElement, Set<Annotation>>() {
+        @Override
+        public Set<Annotation> load(AnnotatedElement input) {
+            return ImmutableSet.copyOf(internalGetDeclaredAnnotations(input));
+        }
+    };
 
     protected Annotation[] internalGetAnnotations(AnnotatedElement element) {
         return element.getAnnotations();
@@ -49,35 +65,23 @@ public class DefaultReflectionCache extends AbstractBootstrapService implements 
     private final LoadingCache<AnnotatedElement, Set<Annotation>> annotations;
     private final LoadingCache<AnnotatedElement, Set<Annotation>> declaredAnnotations;
     private final LoadingCache<Class<?>, Set<Annotation>> backedAnnotatedTypeAnnotations;
-    private final LoadingCache<Class<? extends Annotation>, Boolean> isScopeAnnotation;
+    private final LoadingCache<Class<? extends Annotation>, AnnotationClass<?>> annotationClasses;
 
     public DefaultReflectionCache(TypeStore store) {
         this.store = store;
         CacheBuilder<Object, Object> cacheBuilder = CacheBuilder.newBuilder();
-        this.annotations = cacheBuilder.build(new CacheLoader<AnnotatedElement, Set<Annotation>>() {
-            @Override
-            public Set<Annotation> load(AnnotatedElement input) {
-                return ImmutableSet.copyOf(internalGetAnnotations(input));
-            }
-        });
-        this.declaredAnnotations = cacheBuilder.build(new CacheLoader<AnnotatedElement, Set<Annotation>>() {
-            @Override
-            public Set<Annotation> load(AnnotatedElement input) {
-                return ImmutableSet.copyOf(internalGetDeclaredAnnotations(input));
-            }
-        });
+        this.annotations = cacheBuilder.build(ANNOTATIONS_FUNCTION);
+        this.declaredAnnotations = cacheBuilder.build(DECLARED_ANNOTATIONS_FUNCTION);
         this.backedAnnotatedTypeAnnotations = cacheBuilder.build(new BackedAnnotatedTypeAnnotationsFunction());
-        this.isScopeAnnotation = cacheBuilder.build(new IsScopeAnnotationFunction());
+        this.annotationClasses =  cacheBuilder.build(new AnnotationClassFunction());
     }
-
-
 
     @Override
     public void cleanupAfterBoot() {
         annotations.invalidateAll();
         declaredAnnotations.invalidateAll();
         backedAnnotatedTypeAnnotations.invalidateAll();
-        isScopeAnnotation.invalidateAll();
+        annotationClasses.invalidateAll();
     }
 
     @Override
@@ -102,7 +106,7 @@ public class DefaultReflectionCache extends AbstractBootstrapService implements 
             Set<Annotation> annotations = getAnnotations(javaClass);
             boolean scopeFound = false;
             for (Annotation annotation : annotations) {
-                boolean isScope = getCacheValue(isScopeAnnotation, annotation.annotationType());
+                boolean isScope = getAnnotationClass(annotation.annotationType()).isScope();
                 if (isScope && scopeFound) {
                     // there are at least two scopes, we need to choose one using scope inheritance rules (4.1)
                     return applyScopeInheritanceRules(annotations, javaClass);
@@ -117,7 +121,7 @@ public class DefaultReflectionCache extends AbstractBootstrapService implements 
         public Set<Annotation> applyScopeInheritanceRules(Set<Annotation> annotations, Class<?> javaClass) {
             Set<Annotation> result = new HashSet<Annotation>();
             for (Annotation annotation : annotations) {
-                if (!getCacheValue(isScopeAnnotation, annotation.annotationType())) {
+                if (!getAnnotationClass(annotation.annotationType()).isScope()) {
                     result.add(annotation);
                 }
             }
@@ -129,7 +133,7 @@ public class DefaultReflectionCache extends AbstractBootstrapService implements 
             for (Class<?> clazz = javaClass; clazz != null && clazz != Object.class; clazz = clazz.getSuperclass()) {
                 Set<Annotation> scopes = new HashSet<Annotation>();
                 for (Annotation annotation : getDeclaredAnnotations(clazz)) {
-                    if (getCacheValue(isScopeAnnotation, annotation.annotationType())) {
+                    if (getAnnotationClass(annotation.annotationType()).isScope()) {
                         scopes.add(annotation);
                     }
                 }
@@ -141,17 +145,58 @@ public class DefaultReflectionCache extends AbstractBootstrapService implements 
         }
     }
 
-    private class IsScopeAnnotationFunction extends CacheLoader<Class<? extends Annotation>, Boolean> {
+    private class AnnotationClassFunction extends CacheLoader<Class<? extends Annotation>, AnnotationClass<?>> {
+        @Override
+        public AnnotationClass<?> load(Class<? extends Annotation> input) {
+            boolean scope = input.isAnnotationPresent(NormalScope.class) || input.isAnnotationPresent(Scope.class) || store.isExtraScope(input);
+            Method repeatableAnnotationAccessor = Annotations.getRepeatableAnnotationAccessor(input);
+            Set<Annotation> metaAnnotations = ImmutableSet.copyOf(internalGetAnnotations(input));
+            return new AnnotationClassImpl<>(scope, repeatableAnnotationAccessor, metaAnnotations);
+        }
+    }
+
+    private static class AnnotationClassImpl<T extends Annotation> implements AnnotationClass<T> {
+
+        private final boolean scope;
+        private final Method repeatableAnnotationAccessor;
+        private final Set<Annotation> metaAnnotations;
+
+        public AnnotationClassImpl(boolean scope, Method repeatableAnnotationAccessor, Set<Annotation> metaAnnotations) {
+            this.scope = scope;
+            this.repeatableAnnotationAccessor = repeatableAnnotationAccessor;
+            this.metaAnnotations = metaAnnotations;
+        }
 
         @Override
-        public Boolean load(Class<? extends Annotation> input) {
-            if (input.isAnnotationPresent(NormalScope.class)) {
-                return true;
-            }
-            if (input.isAnnotationPresent(Scope.class)) {
-                return true;
-            }
-            return store.isExtraScope(input);
+        public Set<Annotation> getMetaAnnotations() {
+            return metaAnnotations;
         }
+
+        @Override
+        public boolean isScope() {
+            return scope;
+        }
+
+        @Override
+        public boolean isRepeatableAnnotationContainer() {
+            return repeatableAnnotationAccessor != null;
+        }
+
+        @Override
+        public Annotation[] getRepeatableAnnotations(Annotation annotation) {
+            if (!isRepeatableAnnotationContainer()) {
+                throw new IllegalStateException("Not a repeatable annotation container " + annotation);
+            }
+            try {
+                return (Annotation[]) repeatableAnnotationAccessor.invoke(annotation);
+            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                throw new RuntimeException("Error reading repeatable annotations on " + annotation.annotationType(), e);
+            }
+        }
+    }
+
+    @Override
+    public <T extends Annotation> AnnotationClass<T> getAnnotationClass(Class<T> clazz) {
+        return Reflections.cast(getCacheValue(annotationClasses, clazz));
     }
 }

@@ -282,22 +282,7 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
         this.declaredMethodsByAnnotatedParameters.trimToSize();
 
         ArraySetMultimap<Class<? extends Annotation>, Annotation> declaredMetaAnnotationMap = new ArraySetMultimap<Class<? extends Annotation>, Annotation>();
-        for (Annotation declaredAnnotation : declaredAnnotationMap.values()) {
-
-            // WELD-1310 Include synthetic annotations
-            SlimAnnotatedType<?> syntheticAnnotationAnnotatedType = classTransformer
-                    .getSyntheticAnnotationAnnotatedType(declaredAnnotation.annotationType());
-            if (syntheticAnnotationAnnotatedType == null) {
-                addMetaAnnotations(declaredMetaAnnotationMap, declaredAnnotation, classTransformer.getReflectionCache()
-                        .getAnnotations(declaredAnnotation.annotationType()), true);
-            } else {
-                addMetaAnnotations(declaredMetaAnnotationMap, declaredAnnotation,
-                        syntheticAnnotationAnnotatedType.getAnnotations(), true);
-            }
-
-            addMetaAnnotations(declaredMetaAnnotationMap, declaredAnnotation, classTransformer.getTypeStore().get(declaredAnnotation.annotationType()), true);
-            declaredMetaAnnotationMap.putSingleElement(declaredAnnotation.annotationType(), declaredAnnotation);
-        }
+        processMetaAnnotations(declaredMetaAnnotationMap, declaredAnnotationMap.values(), classTransformer, true);
         this.declaredMetaAnnotationMap = immutableMap(declaredMetaAnnotationMap);
         this.overriddenMethods = getOverriddenMethods(this, methodsTemp);
 

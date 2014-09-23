@@ -33,7 +33,6 @@ import javax.interceptor.InvocationContext;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bean.interceptor.CdiInterceptorFactory;
-import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.interceptor.proxy.InterceptorInvocation;
 import org.jboss.weld.interceptor.proxy.InterceptorInvocationContext;
@@ -42,10 +41,8 @@ import org.jboss.weld.interceptor.reader.InterceptorMetadataImpl;
 import org.jboss.weld.interceptor.reader.InterceptorMetadataUtils;
 import org.jboss.weld.interceptor.spi.context.InterceptionChain;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorClassMetadata;
-import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.logging.ReflectionLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.ForwardingInvocationContext;
 import org.jboss.weld.util.Interceptors;
 import org.jboss.weld.util.collections.Arrays2;
@@ -71,10 +68,6 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
         this.interceptorMetadata = initInterceptorMetadata();
         this.serializable = type.isSerializable();
         this.interceptorBindingTypes = Collections.unmodifiableSet(new HashSet<Annotation>(Interceptors.mergeBeanInterceptorBindings(beanManager, getEnhancedAnnotated(), getStereotypes()).values()));
-
-        if (Beans.findInterceptorBindingConflicts(beanManager, interceptorBindingTypes)) {
-            throw new DeploymentException(BeanLogger.LOG.conflictingInterceptorBindings(getType()));
-        }
     }
 
     @SuppressWarnings("unchecked")

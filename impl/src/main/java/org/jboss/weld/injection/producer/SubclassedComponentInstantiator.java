@@ -23,7 +23,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.AnnotatedMethod;
-import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.annotated.enhanced.ConstructorSignature;
@@ -83,7 +82,7 @@ public class SubclassedComponentInstantiator<T> extends AbstractInstantiator<T> 
         return findMatchingConstructor(originalConstructorInjectionPoint.getSignature(), enhancedSubclass);
     }
 
-    protected Class<T> createEnhancedSubclass(AnnotatedType<T> type, Bean<?> bean, BeanManagerImpl manager) {
+    protected Class<T> createEnhancedSubclass(EnhancedAnnotatedType<T> type, Bean<?> bean, BeanManagerImpl manager) {
         Set<MethodSignature> enhancedMethodSignatures = new HashSet<MethodSignature>();
         for (AnnotatedMethod<?> method : Beans.getInterceptableMethods(type)) {
             enhancedMethodSignatures.add(new MethodSignatureImpl(method));
