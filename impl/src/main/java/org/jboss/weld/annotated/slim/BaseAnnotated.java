@@ -4,7 +4,9 @@ import java.lang.reflect.Type;
 
 import javax.enterprise.inject.spi.Annotated;
 
-public abstract class BaseAnnotated implements Annotated {
+import org.jboss.weld.experimental.ExperimentalAnnotated;
+
+public abstract class BaseAnnotated implements Annotated, ExperimentalAnnotated {
 
     private final Type baseType;
 
