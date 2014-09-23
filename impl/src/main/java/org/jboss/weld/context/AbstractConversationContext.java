@@ -277,7 +277,8 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
             }
 
             try {
-                if (getCurrentConversation().isTransient()) {
+                if (getCurrentConversation().isTransient() && getRequestAttribute(getRequest(), ConversationNamingScheme.PARAMETER_NAME) != null) {
+                    // WELD-1746 Don't destroy ended conversations - these must be destroyed in a synchronized block - see also cleanUpConversationMap()
                     destroy();
                 } else {
                     // Update the conversation timestamp
