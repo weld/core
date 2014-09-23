@@ -19,8 +19,6 @@ package org.jboss.weld.tests.interceptors.generic;
 import java.util.Collection;
 import java.util.List;
 
-import javax.enterprise.inject.spi.AnnotatedMethod;
-
 import junit.framework.Assert;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -62,8 +60,8 @@ public class SimpleWeldClassTest
         EnhancedAnnotatedType<StringProcessor> weldClass = new ClassTransformer(ts, new SharedObjectCache(), ReflectionCacheFactory.newInstance(ts), RegistrySingletonProvider.STATIC_INSTANCE).getEnhancedAnnotatedType(StringProcessor.class, AnnotatedTypeIdentifier.NULL_BDA_ID);
         Collection<EnhancedAnnotatedMethod<?, ? super StringProcessor>> methods = weldClass.getEnhancedMethods();
         //assert methods.size() == 2;
-        List<AnnotatedMethod<?>> interceptableMethods = Beans.getInterceptableMethods(weldClass);
-        Assert.assertEquals(4, interceptableMethods.size());
+        List<EnhancedAnnotatedMethod<?, ?>> interceptableMethods = Beans.getInterceptableMethods(weldClass);
+        Assert.assertEquals(3, interceptableMethods.size());
     }
 
 }

@@ -22,6 +22,7 @@ import static org.jboss.weld.util.reflection.Reflections.EMPTY_ANNOTATIONS;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -37,6 +38,7 @@ import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.logging.ReflectionLogger;
 import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.resources.ReflectionCache;
 import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.collections.ArraySetMultimap;
 import org.jboss.weld.util.collections.Arrays2;
@@ -117,20 +119,7 @@ public abstract class AbstractEnhancedAnnotated<T, S> implements EnhancedAnnotat
         }
         this.annotationMap = immutableMap(annotationMap);
         ArraySetMultimap<Class<? extends Annotation>, Annotation> metaAnnotationMap = new ArraySetMultimap<Class<? extends Annotation>, Annotation>();
-        for (Annotation annotation : annotationMap.values()) {
-
-            // WELD-1310 Include synthetic annotations
-            SlimAnnotatedType<?> syntheticAnnotationAnnotatedType = classTransformer
-                    .getSyntheticAnnotationAnnotatedType(annotation.annotationType());
-            if (syntheticAnnotationAnnotatedType == null) {
-                addMetaAnnotations(metaAnnotationMap, annotation,
-                        classTransformer.getReflectionCache().getAnnotations(annotation.annotationType()), false);
-            } else {
-                addMetaAnnotations(metaAnnotationMap, annotation, syntheticAnnotationAnnotatedType.getAnnotations(), false);
-            }
-
-            addMetaAnnotations(metaAnnotationMap, annotation, classTransformer.getTypeStore().get(annotation.annotationType()), false);
-        }
+        processMetaAnnotations(metaAnnotationMap, annotationMap.values(), classTransformer, false);
         this.metaAnnotationMap = metaAnnotationMap;
 
         if (declaredAnnotationMap == null) {
@@ -141,6 +130,33 @@ public abstract class AbstractEnhancedAnnotated<T, S> implements EnhancedAnnotat
         } else {
             this.actualTypeArguments = Arrays2.EMPTY_TYPE_ARRAY;
         }
+    }
+
+    protected void processMetaAnnotations(ArraySetMultimap<Class<? extends Annotation>, Annotation> metaAnnotationMap, Collection<Annotation> annotations, ClassTransformer classTransformer, boolean declared) {
+        for (Annotation annotation : annotations) {
+            processMetaAnnotations(metaAnnotationMap, annotation, classTransformer, declared);
+        }
+    }
+
+    protected void processMetaAnnotations(ArraySetMultimap<Class<? extends Annotation>, Annotation> metaAnnotationMap, Annotation[] annotations, ClassTransformer classTransformer, boolean declared) {
+        for (Annotation annotation : annotations) {
+            processMetaAnnotations(metaAnnotationMap, annotation, classTransformer, declared);
+        }
+    }
+
+    protected void processMetaAnnotations(ArraySetMultimap<Class<? extends Annotation>, Annotation> metaAnnotationMap, Annotation annotation, ClassTransformer classTransformer, boolean declared) {
+        // WELD-1310 Include synthetic annotations
+        SlimAnnotatedType<?> syntheticAnnotationAnnotatedType = classTransformer.getSyntheticAnnotationAnnotatedType(annotation.annotationType());
+        if (syntheticAnnotationAnnotatedType != null) {
+            addMetaAnnotations(metaAnnotationMap, annotation, syntheticAnnotationAnnotatedType.getAnnotations(), declared);
+        } else {
+            addMetaAnnotations(metaAnnotationMap, annotation, classTransformer.getReflectionCache().getAnnotations(annotation.annotationType()), declared);
+            ReflectionCache.AnnotationClass<?> annotationClass = classTransformer.getReflectionCache().getAnnotationClass(annotation.annotationType());
+            if (annotationClass.isRepeatableAnnotationContainer()) {
+                processMetaAnnotations(metaAnnotationMap, annotationClass.getRepeatableAnnotations(annotation), classTransformer, declared);
+            }
+        }
+        addMetaAnnotations(metaAnnotationMap, annotation, classTransformer.getTypeStore().get(annotation.annotationType()), declared);
     }
 
     public Class<T> getJavaClass() {

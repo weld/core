@@ -18,19 +18,19 @@ package org.jboss.weld.util;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.AnnotatedType;
+import javax.interceptor.InterceptorBinding;
 
-import org.jboss.weld.exceptions.DefinitionException;
-import org.jboss.weld.exceptions.DeploymentException;
-import org.jboss.weld.logging.BeanLogger;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.logging.BeanManagerLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
+
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 
 /**
  * Helper class for working with interceptors and interceptor bindings.
@@ -96,36 +96,28 @@ public class Interceptors {
     /**
      * Merge class-level interceptor bindings with interceptor bindings inherited from interceptor bindings and stereotypes.
      */
-    public static Map<Class<? extends Annotation>, Annotation> mergeBeanInterceptorBindings(BeanManagerImpl beanManager, AnnotatedType<?> clazz, Collection<Class<? extends Annotation>> stereotypes) {
-        Set<Annotation> classBindingAnnotations = flattenInterceptorBindings(beanManager, filterInterceptorBindings(beanManager, clazz.getAnnotations()), true, false);
+    public static Multimap<Class<? extends Annotation>, Annotation> mergeBeanInterceptorBindings(BeanManagerImpl beanManager, EnhancedAnnotatedType<?> clazz, Collection<Class<? extends Annotation>> stereotypes) {
+        Set<Annotation> rawBindings = clazz.getMetaAnnotations(InterceptorBinding.class);
+        Set<Annotation> classBindingAnnotations = flattenInterceptorBindings(beanManager, filterInterceptorBindings(beanManager, rawBindings), true, false);
         Set<Annotation> inheritedBindingAnnotations = new HashSet<Annotation>();
-        inheritedBindingAnnotations.addAll(flattenInterceptorBindings(beanManager, filterInterceptorBindings(beanManager, clazz.getAnnotations()), false, true));
+        inheritedBindingAnnotations.addAll(flattenInterceptorBindings(beanManager, filterInterceptorBindings(beanManager, rawBindings), false, true));
         for (Class<? extends Annotation> annotation : stereotypes) {
             inheritedBindingAnnotations.addAll(flattenInterceptorBindings(beanManager, filterInterceptorBindings(beanManager, beanManager.getStereotypeDefinition(annotation)), true, true));
         }
-        try {
-            return mergeBeanInterceptorBindings(beanManager, clazz, classBindingAnnotations, inheritedBindingAnnotations);
-        } catch (DeploymentException e) {
-            throw new DefinitionException(BeanLogger.LOG.conflictingInterceptorBindings(clazz.getJavaClass()));
-        }
+        return mergeBeanInterceptorBindings(beanManager, clazz, classBindingAnnotations, inheritedBindingAnnotations);
     }
 
     /**
      * Merge class-level interceptor bindings with interceptor bindings inherited from interceptor bindings and stereotypes.
      */
-    public static Map<Class<? extends Annotation>, Annotation> mergeBeanInterceptorBindings(BeanManagerImpl beanManager, AnnotatedType<?> clazz, Collection<Annotation> classBindingAnnotations,
+    public static Multimap<Class<? extends Annotation>, Annotation> mergeBeanInterceptorBindings(BeanManagerImpl beanManager, AnnotatedType<?> clazz, Collection<Annotation> classBindingAnnotations,
             Collection<Annotation> inheritedBindingAnnotations) {
 
-        Map<Class<? extends Annotation>, Annotation> mergedBeanBindings = new HashMap<Class<? extends Annotation>, Annotation>();
-        // conflict detection
-        Map<Class<? extends Annotation>, Annotation> acceptedInheritedBindingTypes = new HashMap<Class<? extends Annotation>, Annotation>();
+        Multimap<Class<? extends Annotation>, Annotation> mergedBeanBindings = HashMultimap.create();
+        Set<Annotation> acceptedInheritedBindings = new HashSet<Annotation>();
 
         // add all class-level interceptor bindings (these have precedence)
         for (Annotation bindingAnnotation : classBindingAnnotations) {
-            if (mergedBeanBindings.containsKey(bindingAnnotation.annotationType())) {
-                // not possible in Java, but we never know what extension-provided AnnotatedType returns
-                throw new DeploymentException(BeanLogger.LOG.conflictingInterceptorBindings(clazz.getJavaClass()));
-            }
             mergedBeanBindings.put(bindingAnnotation.annotationType(), bindingAnnotation);
         }
         // add inherited interceptor bindings
@@ -133,18 +125,12 @@ public class Interceptors {
             Class<? extends Annotation> bindingAnnotationType = bindingAnnotation.annotationType();
             // replace the previous interceptor binding with current binding
 
-            Annotation previousValue = mergedBeanBindings.get(bindingAnnotationType);
-            if (previousValue == null) {
-                mergedBeanBindings.put(bindingAnnotationType, bindingAnnotation);
-                acceptedInheritedBindingTypes.put(bindingAnnotationType, bindingAnnotation);
-            } else {
-                // check for conflicts
-                if (acceptedInheritedBindingTypes.containsKey(bindingAnnotationType)
-                        && !beanManager.getServices().get(MetaAnnotationStore.class).getInterceptorBindingModel(bindingAnnotationType)
-                                .isEqual(previousValue, bindingAnnotation, true)) {
-                    throw new DeploymentException(BeanLogger.LOG.conflictingInterceptorBindings(clazz.getJavaClass()));
-                }
+            if (!mergedBeanBindings.containsKey(bindingAnnotationType)) {
+                acceptedInheritedBindings.add(bindingAnnotation);
             }
+        }
+        for (Annotation bindingAnnotation : acceptedInheritedBindings) {
+            mergedBeanBindings.put(bindingAnnotation.annotationType(), bindingAnnotation);
         }
         return mergedBeanBindings;
     }

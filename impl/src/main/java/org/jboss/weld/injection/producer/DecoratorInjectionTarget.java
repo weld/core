@@ -22,7 +22,6 @@ import java.security.AccessController;
 import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
@@ -75,7 +74,7 @@ public class DecoratorInjectionTarget<T> extends BeanInjectionTarget<T> {
             final WeldInjectionPointAttributes<?, ?> delegateInjectionPoint = Decorators.findDelegateInjectionPoint(type, injectionPoints);
             return new SubclassedComponentInstantiator<T>(type, bean, originalConstructor, beanManager) {
                 @Override
-                protected Class<T> createEnhancedSubclass(AnnotatedType<T> type, Bean<?> bean, BeanManagerImpl manager) {
+                protected Class<T> createEnhancedSubclass(EnhancedAnnotatedType<T> type, Bean<?> bean, BeanManagerImpl manager) {
                     return new DecoratorProxyFactory<T>(manager.getContextId(), type.getJavaClass(), delegateInjectionPoint, bean).getProxyClass();
                 }
             };
