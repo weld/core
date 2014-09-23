@@ -42,7 +42,6 @@ public class TypeSafeInterceptorResolver extends TypeSafeResolver<InterceptorRes
     @Override
     protected boolean matches(InterceptorResolvable resolvable, Interceptor<?> bean) {
         return bean.intercepts(resolvable.getInterceptionType())
-                && bean.getInterceptorBindings().size() > 0
                 && Beans.containsAllInterceptionBindings(bean.getInterceptorBindings(), resolvable.getQualifiers(), getManager())
                 && manager.getEnabled().isInterceptorEnabled(bean.getBeanClass());
     }

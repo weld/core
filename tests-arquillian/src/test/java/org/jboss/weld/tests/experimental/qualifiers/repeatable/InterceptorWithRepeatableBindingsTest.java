@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2011, Red Hat, Inc. and/or its affiliates, and individual
- * contributors by the @authors tag. See the copyright.txt in the
- * distribution for a full listing of individual contributors.
+ * Copyright 2014, Red Hat, Inc., and individual contributors
+ * by the @authors tag. See the copyright.txt in the distribution for a
+ * full listing of individual contributors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,32 +14,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.interceptors.binding.inheritance.broken;
+package org.jboss.weld.tests.experimental.qualifiers.repeatable;
 
-import javax.enterprise.inject.spi.DefinitionException;
+import javax.inject.Inject;
+
+import junit.framework.Assert;
 
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.ShouldThrowException;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-@Ignore("needs to be reviewed in light of CDI-471")
-public class ConflictingInterceptorBindingTest {
+public class InterceptorWithRepeatableBindingsTest {
+
+    @Inject
+    private InterceptedBean bean;
 
     @Deployment
-    @ShouldThrowException(DefinitionException.class)
-    public static JavaArchive getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).addPackage(ConflictingInterceptorBindingTest.class.getPackage());
+    public static Archive<?> getDeployment() {
+        return ShrinkWrap.create(BeanArchive.class).intercept(IncrementingInterceptor.class).addPackage(InterceptorWithRepeatableBindingsTest.class.getPackage());
     }
 
     @Test
-    public void test()
-    {
+    public void testMultipleInterceptorBindings() {
+        Assert.assertEquals(0, bean.foo());
+        Assert.assertEquals(0, bean.foobar());
+        Assert.assertEquals(1, bean.foobarbaz());
     }
 }

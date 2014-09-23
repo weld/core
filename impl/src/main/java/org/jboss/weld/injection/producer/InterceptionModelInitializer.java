@@ -24,19 +24,18 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-import javax.enterprise.inject.spi.AnnotatedConstructor;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InterceptionType;
 import javax.enterprise.inject.spi.Interceptor;
 import javax.interceptor.ExcludeClassInterceptors;
+import javax.interceptor.InterceptorBinding;
 
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedConstructor;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.exceptions.DeploymentException;
@@ -52,7 +51,9 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.reflection.Reflections;
 
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Multimap;
 
 /**
  * Initializes {@link InterceptionModel} for a {@link Bean} or a non-contextual component.
@@ -72,16 +73,16 @@ public class InterceptionModelInitializer<T> {
     private final InterceptorMetadataReader reader;
     private final EnhancedAnnotatedType<T> annotatedType;
     private final Set<Class<? extends Annotation>> stereotypes;
-    private final AnnotatedConstructor<T> constructor;
+    private final EnhancedAnnotatedConstructor<T> constructor;
 
     private final InterceptorsApiAbstraction interceptorsApi;
     private final EJBApiAbstraction ejbApi;
 
-    private List<AnnotatedMethod<?>> businessMethods;
+    private List<EnhancedAnnotatedMethod<?, ?>> businessMethods;
     private final InterceptionModelBuilder builder;
     private boolean hasSerializationOrInvocationInterceptorMethods;
 
-    public InterceptionModelInitializer(BeanManagerImpl manager, EnhancedAnnotatedType<T> annotatedType, AnnotatedConstructor<T> constructor, Bean<?> bean) {
+    public InterceptionModelInitializer(BeanManagerImpl manager, EnhancedAnnotatedType<T> annotatedType, EnhancedAnnotatedConstructor<T> constructor, Bean<?> bean) {
         this.constructor = constructor;
         this.manager = manager;
         this.reader = manager.getInterceptorMetadataReader();
@@ -131,13 +132,13 @@ public class InterceptionModelInitializer<T> {
     }
 
     private void initCdiInterceptors() {
-        Map<Class<? extends Annotation>, Annotation> classBindingAnnotations = getClassInterceptorBindings();
+        Multimap<Class<? extends Annotation>, Annotation> classBindingAnnotations = getClassInterceptorBindings();
         initCdiLifecycleInterceptors(classBindingAnnotations);
         initCdiConstructorInterceptors(classBindingAnnotations);
         initCdiBusinessMethodInterceptors(classBindingAnnotations);
     }
 
-    private Map<Class<? extends Annotation>, Annotation> getClassInterceptorBindings() {
+    private Multimap<Class<? extends Annotation>, Annotation> getClassInterceptorBindings() {
         return mergeBeanInterceptorBindings(manager, annotatedType, stereotypes);
     }
 
@@ -145,7 +146,7 @@ public class InterceptionModelInitializer<T> {
      * CDI lifecycle interceptors
      */
 
-    private void initCdiLifecycleInterceptors(Map<Class<? extends Annotation>, Annotation> classBindingAnnotations) {
+    private void initCdiLifecycleInterceptors(Multimap<Class<? extends Annotation>, Annotation> classBindingAnnotations) {
         if (classBindingAnnotations.size() == 0) {
             return;
         }
@@ -167,9 +168,9 @@ public class InterceptionModelInitializer<T> {
      * CDI business method interceptors
      */
 
-    private void initCdiBusinessMethodInterceptors(Map<Class<? extends Annotation>, Annotation> classBindingAnnotations) {
-        for (AnnotatedMethod<?> method : businessMethods) {
-            initCdiBusinessMethodInterceptor(method, getMemberBindingAnnotations(classBindingAnnotations, method.getAnnotations()));
+    private void initCdiBusinessMethodInterceptors(Multimap<Class<? extends Annotation>, Annotation> classBindingAnnotations) {
+        for (EnhancedAnnotatedMethod<?, ?> method : businessMethods) {
+            initCdiBusinessMethodInterceptor(method, getMemberBindingAnnotations(classBindingAnnotations, method.getMetaAnnotations(InterceptorBinding.class)));
         }
     }
 
@@ -196,17 +197,17 @@ public class InterceptionModelInitializer<T> {
      * CDI @AroundConstruct interceptors
      */
 
-    private void initCdiConstructorInterceptors(Map<Class<? extends Annotation>, Annotation> classBindingAnnotations) {
-        Collection<Annotation> constructorBindings = getMemberBindingAnnotations(classBindingAnnotations, constructor.getAnnotations());
+    private void initCdiConstructorInterceptors(Multimap<Class<? extends Annotation>, Annotation> classBindingAnnotations) {
+        Collection<Annotation> constructorBindings = getMemberBindingAnnotations(classBindingAnnotations, constructor.getMetaAnnotations(InterceptorBinding.class));
         if (constructorBindings.isEmpty()) {
             return;
         }
         initLifeCycleInterceptor(InterceptionType.AROUND_CONSTRUCT, constructorBindings);
     }
 
-    private Collection<Annotation> getMemberBindingAnnotations(Map<Class<? extends Annotation>, Annotation> classBindingAnnotations, Set<Annotation> memberAnnotations) {
+    private Collection<Annotation> getMemberBindingAnnotations(Multimap<Class<? extends Annotation>, Annotation> classBindingAnnotations, Set<Annotation> memberAnnotations) {
         Set<Annotation> methodBindingAnnotations = flattenInterceptorBindings(manager, filterInterceptorBindings(manager, memberAnnotations), true, true);
-        return mergeMethodInterceptorBindings(classBindingAnnotations, methodBindingAnnotations).values();
+        return mergeMemberInterceptorBindings(classBindingAnnotations, methodBindingAnnotations).values();
     }
 
     /*
@@ -295,26 +296,27 @@ public class InterceptionModelInitializer<T> {
      * Merges bean interceptor bindings (including inherited ones) with method interceptor bindings. Method interceptor bindings
      * override bean interceptor bindings. The bean binding map is not modified - a copy is used.
      */
-    protected Map<Class<? extends Annotation>, Annotation> mergeMethodInterceptorBindings(Map<Class<? extends Annotation>, Annotation> beanBindings,
+    protected Multimap<Class<? extends Annotation>, Annotation> mergeMemberInterceptorBindings(Multimap<Class<? extends Annotation>, Annotation> beanBindings,
             Collection<Annotation> methodBindingAnnotations) {
 
-        Map<Class<? extends Annotation>, Annotation> mergedBeanBindings = new HashMap<Class<? extends Annotation>, Annotation>(beanBindings);
-        // conflict detection
-        Set<Class<? extends Annotation>> processedBindingTypes = new HashSet<Class<? extends Annotation>>();
+        Multimap<Class<? extends Annotation>, Annotation> mergedBeanBindings = HashMultimap.create(beanBindings);
+        Multimap<Class<? extends Annotation>, Annotation> methodBindings = HashMultimap.create();
 
         for (Annotation methodBinding : methodBindingAnnotations) {
-            Class<? extends Annotation> methodBindingType = methodBinding.annotationType();
-            if (processedBindingTypes.contains(methodBindingType)) {
-                throw new DeploymentException(BeanLogger.LOG.conflictingInterceptorBindings(annotatedType));
-            }
-            processedBindingTypes.add(methodBindingType);
-            // override bean interceptor binding
-            mergedBeanBindings.put(methodBindingType, methodBinding);
+            methodBindings.put(methodBinding.annotationType(), methodBinding);
+        }
+        for (Class<? extends Annotation> key : methodBindings.keySet()) {
+            mergedBeanBindings.replaceValues(key, methodBindings.get(key));
         }
         return mergedBeanBindings;
     }
 
     private List<InterceptorClassMetadata<?>> asInterceptorMetadata(List<Interceptor<?>> interceptors) {
         return Lists.transform(interceptors, reader.getInterceptorToInterceptorMetadataFunction());
+    }
+
+    @Override
+    public String toString() {
+        return "InterceptionModelInitializer for " + annotatedType.getJavaClass();
     }
 }

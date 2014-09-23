@@ -23,6 +23,7 @@ import java.util.Set;
 
 import org.jboss.weld.annotated.slim.backed.BackedAnnotatedType;
 import org.jboss.weld.bootstrap.api.Service;
+import org.jboss.weld.metadata.TypeStore;
 
 public interface ReflectionCache extends Service {
 
@@ -40,4 +41,38 @@ public interface ReflectionCache extends Service {
      */
     Set<Annotation> getBackedAnnotatedTypeAnnotationSet(Class<?> javaClass);
 
+    <T extends Annotation> AnnotationClass<T> getAnnotationClass(Class<T> clazz);
+
+    /**
+     * Represents cached metadata about an annotation class. Compared to {@link TypeStore} this class holds
+     * low-level metadata such as whether this annotation is a container for repeatable annotations.
+     *
+     * @author Jozef Hartinger
+     *
+     * @param <T> type the type of the annotation
+     */
+    interface AnnotationClass<T extends Annotation> {
+
+        /**
+         * @return the set of meta-annotations this annotation class is annotated with
+         */
+        Set<Annotation> getMetaAnnotations();
+
+        /**
+         * @return true iff this annotation represents a scope annotation
+         */
+        boolean isScope();
+
+        /**
+         * @return true iff this annotation represents a container for repeatable annotations
+         */
+        boolean isRepeatableAnnotationContainer();
+
+        /**
+         * Retrieves repeatable annotations held by this container annotation instance.
+         * @return repeatable annotations held by this container annotation instance
+         * @throws IllegalStateException if this annotation class is not a repeatable annotation container
+         */
+        Annotation[] getRepeatableAnnotations(Annotation annotation);
+    }
 }

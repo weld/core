@@ -31,7 +31,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -64,6 +63,7 @@ import javax.inject.Inject;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotated;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedConstructor;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.slim.SlimAnnotatedTypeStore;
 import org.jboss.weld.bean.AbstractProducerBean;
@@ -84,7 +84,6 @@ import org.jboss.weld.interceptor.util.InterceptionTypeRegistry;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.logging.UtilLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.metadata.cache.InterceptorBindingModel;
 import org.jboss.weld.metadata.cache.MergedStereotypes;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.resolution.QualifierInstance;
@@ -167,9 +166,9 @@ public class Beans {
         }
     }
 
-    public static List<AnnotatedMethod<?>> getInterceptableMethods(AnnotatedType<?> type) {
-        List<AnnotatedMethod<?>> annotatedMethods = new ArrayList<AnnotatedMethod<?>>();
-        for (AnnotatedMethod<?> annotatedMethod : type.getMethods()) {
+    public static List<EnhancedAnnotatedMethod<?, ?>> getInterceptableMethods(EnhancedAnnotatedType<?> type) {
+        List<EnhancedAnnotatedMethod<?, ?>> annotatedMethods = new ArrayList<EnhancedAnnotatedMethod<?, ?>>();
+        for (EnhancedAnnotatedMethod<?, ?> annotatedMethod : type.getEnhancedMethods()) {
             boolean businessMethod = !annotatedMethod.isStatic() && !annotatedMethod.isAnnotationPresent(Inject.class)
                     && !annotatedMethod.getJavaMember().isBridge();
 
@@ -205,22 +204,6 @@ public class Beans {
             Set<QualifierInstance> existingBindings, BeanManagerImpl manager) {
         final Set<QualifierInstance> expected = manager.extractInterceptorBindingsForQualifierInstance(QualifierInstance.of(expectedBindings, manager.getServices().get(MetaAnnotationStore.class)));
         return manager.extractInterceptorBindingsForQualifierInstance(existingBindings).containsAll(expected);
-    }
-
-    public static boolean findInterceptorBindingConflicts(BeanManagerImpl manager, Set<Annotation> bindings) {
-        Map<Class<? extends Annotation>, Annotation> foundAnnotations = new HashMap<Class<? extends Annotation>, Annotation>();
-        for (Annotation binding : bindings) {
-            if (foundAnnotations.containsKey(binding.annotationType())) {
-                InterceptorBindingModel<?> bindingType = manager.getServices().get(MetaAnnotationStore.class)
-                        .getInterceptorBindingModel(binding.annotationType());
-                if (!bindingType.isEqual(binding, foundAnnotations.get(binding.annotationType()), false)) {
-                    return true;
-                }
-            } else {
-                foundAnnotations.put(binding.annotationType(), binding);
-            }
-        }
-        return false;
     }
 
     /**

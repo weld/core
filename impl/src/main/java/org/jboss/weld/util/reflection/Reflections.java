@@ -432,4 +432,21 @@ public class Reflections {
             // noop, the loop triggers loading of the declaring classes
         }
     }
+
+    /**
+     * Searches for a declared method with a given name. If the class declares multiple methods with the given name,
+     * there is no guarantee as of which methods is returned. Null is returned if the class does not declare a method
+     * with the given name.
+     * @param clazz the given class
+     * @param methodName the given method name
+     * @return method method with the given name declared by the given class or null if no such method exists
+     */
+    public static Method findDeclaredMethodByName(Class<?> clazz, String methodName) {
+        for (Method method : clazz.getDeclaredMethods()) {
+            if (methodName.equals(method.getName())) {
+                return method;
+            }
+        }
+        return null;
+    }
 }
