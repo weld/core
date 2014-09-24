@@ -99,4 +99,18 @@ public class InterceptionDecorationContext {
     public static void startInterceptorContext() {
         push(null);
     }
+
+    /**
+     * Pushes the given context to the stack if the given context is not on top of the stack already.
+     * If push happens, the caller is responsible for calling {@link #endInterceptorContext()} after the invocation finishes.
+     * @param context the given context
+     * @return true if the given context was pushed to the top of the stack, false if the given context was on top already
+     */
+    public static boolean pushIfNotOnTop(Set<CombinedInterceptorAndDecoratorStackMethodHandler> context) {
+        if (empty() || peek() != context) { // == used intentionally instead of equals
+            push(context);
+            return true;
+        }
+        return false;
+    }
 }

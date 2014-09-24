@@ -20,9 +20,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.interceptor.InvocationContext;
 
+import org.jboss.weld.bean.proxy.CombinedInterceptorAndDecoratorStackMethodHandler;
+import org.jboss.weld.bean.proxy.InterceptionDecorationContext;
 import org.jboss.weld.interceptor.proxy.InterceptionContext;
 import org.jboss.weld.interceptor.proxy.InterceptorInvocation;
 import org.jboss.weld.interceptor.proxy.InterceptorMethodInvocation;
@@ -39,8 +42,8 @@ import org.jboss.weld.logging.InterceptorLogger;
 public abstract class AbstractInterceptionChain implements InterceptionChain {
 
     private int currentPosition;
-
     private final List<InterceptorMethodInvocation> interceptorMethodInvocations;
+    private final Set<CombinedInterceptorAndDecoratorStackMethodHandler> currentInterceptionContext;
 
     private static List<InterceptorMethodInvocation> buildInterceptorMethodInvocations(Object instance, Method method, Object[] args,
             InterceptionType interceptionType, InterceptionContext ctx) {
@@ -84,6 +87,11 @@ public abstract class AbstractInterceptionChain implements InterceptionChain {
     private AbstractInterceptionChain(List<InterceptorMethodInvocation> interceptorMethodInvocations) {
         this.currentPosition = 0;
         this.interceptorMethodInvocations = interceptorMethodInvocations;
+        if (InterceptionDecorationContext.empty()) {
+            this.currentInterceptionContext = null;
+        } else {
+            this.currentInterceptionContext = InterceptionDecorationContext.peek();
+        }
     }
 
     @Override
@@ -93,7 +101,7 @@ public abstract class AbstractInterceptionChain implements InterceptionChain {
             if (hasNextInterceptor()) {
                 return invokeNext(invocationContext);
             } else {
-                return interceptorChainCompleted(invocationContext);
+                return finish(invocationContext);
             }
         } catch (InvocationTargetException e) {
             Throwable cause = e.getCause();
@@ -124,6 +132,24 @@ public abstract class AbstractInterceptionChain implements InterceptionChain {
             }
         } finally {
             currentPosition = oldCurrentPosition;
+        }
+    }
+
+    private Object finish(InvocationContext ctx) throws Exception {
+        if (currentInterceptionContext == null) {
+            return interceptorChainCompleted(ctx);
+        }
+        /*
+         * Make sure that the right interception context is on top of the stack before invoking the component.
+         * See WELD-1538 for details
+         */
+        final boolean pushed = InterceptionDecorationContext.pushIfNotOnTop(currentInterceptionContext);
+        try {
+            return interceptorChainCompleted(ctx);
+        } finally {
+            if (pushed) {
+                InterceptionDecorationContext.endInterceptorContext();
+            }
         }
     }
 
