@@ -661,7 +661,7 @@ public class Validator implements Service {
 
         SpecializationAndEnablementRegistry registry = beanManager.getServices().get(SpecializationAndEnablementRegistry.class);
         for (String name : namedAccessibleBeans.keySet()) {
-            Set<Bean<?>> resolvedBeans = beanManager.getBeanResolver().resolve(Beans.removeDisabledBeans(namedAccessibleBeans.get(name), beanManager, registry));
+            Set<Bean<?>> resolvedBeans = beanManager.getBeanResolver().<Object>resolve(Beans.removeDisabledBeans(namedAccessibleBeans.get(name), beanManager, registry));
             if (resolvedBeans.size() > 1) {
                 throw ValidatorLogger.LOG.ambiguousElName(name, resolvedBeans);
             }
