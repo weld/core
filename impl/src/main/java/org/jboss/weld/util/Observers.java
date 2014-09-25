@@ -45,6 +45,7 @@ import javax.enterprise.inject.spi.ProcessSyntheticAnnotatedType;
 import org.jboss.weld.bootstrap.SpecializationAndEnablementRegistry;
 import org.jboss.weld.event.ExtensionObserverMethodImpl;
 import org.jboss.weld.event.ObserverMethodImpl;
+import org.jboss.weld.experimental.ExperimentalProcessObserverMethod;
 import org.jboss.weld.logging.EventLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.reflection.Reflections;
@@ -88,6 +89,7 @@ public class Observers {
         types.add(ProcessManagedBean.class);
         types.add(ProcessProducerMethod.class);
         types.add(ProcessProducerField.class);
+        types.add(ExperimentalProcessObserverMethod.class);
         CONTAINER_LIFECYCLE_EVENT_TYPES = Collections.unmodifiableSet(types);
 
     }
@@ -105,7 +107,13 @@ public class Observers {
         return true;
     }
 
-    public static void validateObserverMethod(ObserverMethod<?> observerMethod, BeanManager beanManager) {
+    /**
+     * Validates given external observer method.
+     * @param observerMethod the given observer method
+     * @param beanManager
+     * @param originalObserverMethod observer method replaced by given observer method (this parameter is optional)
+     */
+    public static void validateObserverMethod(ObserverMethod<?> observerMethod, BeanManager beanManager, ObserverMethod<?> originalObserverMethod) {
         Set<Annotation> qualifiers = observerMethod.getObservedQualifiers();
         if (observerMethod.getBeanClass() == null) {
             throw EventLogger.LOG.observerMethodsMethodReturnsNull("getBeanClass", observerMethod);
@@ -119,6 +127,9 @@ public class Observers {
         }
         if (observerMethod.getTransactionPhase() == null) {
             throw EventLogger.LOG.observerMethodsMethodReturnsNull("getTransactionPhase", observerMethod);
+        }
+        if (originalObserverMethod != null && (!observerMethod.getBeanClass().equals(originalObserverMethod.getBeanClass()))) {
+            throw EventLogger.LOG.beanClassMismatch(originalObserverMethod, observerMethod);
         }
     }
 }

@@ -18,6 +18,8 @@ package org.jboss.weld.logging;
 
 import static org.jboss.weld.logging.WeldLogger.WELD_PROJECT_CODE;
 
+import javax.enterprise.inject.spi.ObserverMethod;
+
 import org.jboss.logging.Logger;
 import org.jboss.logging.Logger.Level;
 import org.jboss.logging.annotations.LogMessage;
@@ -82,5 +84,8 @@ public interface EventLogger extends WeldLogger {
 
     @Message(id = 412, value = "ObserverMethod.{0}() returned null for {1}", format = Format.MESSAGE_FORMAT)
     DefinitionException observerMethodsMethodReturnsNull(Object param1, Object param2);
+
+    @Message(id = 413, value = "{0} cannot be replaced by an observer method with a different bean class {1}", format = Format.MESSAGE_FORMAT)
+    DefinitionException beanClassMismatch(ObserverMethod<?> originalObserverMethod, ObserverMethod<?> observerMethod);
 
 }

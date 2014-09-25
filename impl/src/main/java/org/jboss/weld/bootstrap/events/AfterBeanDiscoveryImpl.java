@@ -155,7 +155,7 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
     public void addObserverMethod(ObserverMethod<?> observerMethod) {
         checkWithinObserverNotification();
         Preconditions.checkArgumentNotNull(observerMethod, "observerMethod");
-        validateObserverMethod(observerMethod, getBeanManager());
+        validateObserverMethod(observerMethod, getBeanManager(), null);
         additionalObservers.add(observerMethod);
     }
 
@@ -184,8 +184,10 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
             for (ObserverMethod<?> observer : additionalObservers) {
                 BeanManagerImpl manager = getOrCreateBeanDeployment(observer.getBeanClass()).getBeanManager();
                 if (Observers.isObserverMethodEnabled(observer, manager)) {
-                    ProcessObserverMethodImpl.fire(manager, observer);
-                    manager.addObserver(observer);
+                    ObserverMethod<?> processedObserver = containerLifecycleEvents.fireProcessObserverMethod(manager, observer);
+                    if (processedObserver != null) {
+                        manager.addObserver(processedObserver);
+                    }
                 }
             }
         } catch (Exception e) {

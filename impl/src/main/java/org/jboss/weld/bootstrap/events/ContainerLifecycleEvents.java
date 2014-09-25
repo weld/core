@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.Annotated;
+import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanAttributes;
@@ -49,6 +50,7 @@ import org.jboss.weld.bean.ProducerMethod;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bootstrap.api.helpers.AbstractBootstrapService;
 import org.jboss.weld.event.ExtensionObserverMethodImpl;
+import org.jboss.weld.event.ObserverMethodImpl;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.injection.attributes.FieldInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.ParameterInjectionPointAttributes;
@@ -273,10 +275,19 @@ public class ContainerLifecycleEvents extends AbstractBootstrapService {
         return injectionPointAttributes;
     }
 
-    public void fireProcessObserverMethod(BeanManagerImpl beanManager, ObserverMethod<?> observer) {
+    public <T, X> ObserverMethod<T> fireProcessObserverMethod(BeanManagerImpl beanManager, ObserverMethodImpl<T, X> observer) {
+        return fireProcessObserverMethod(beanManager, observer.getMethod().getAnnotated(), observer);
+    }
+
+    public <T> ObserverMethod<T> fireProcessObserverMethod(BeanManagerImpl beanManager, ObserverMethod<T> observer) {
+        return fireProcessObserverMethod(beanManager, null, observer);
+    }
+
+    private <T, X> ObserverMethod<T> fireProcessObserverMethod(BeanManagerImpl beanManager, AnnotatedMethod<X> beanMethod, ObserverMethod<T> observerMethod) {
         if (isProcessObserverMethodObserved()) {
-            ProcessObserverMethodImpl.fire(beanManager, observer);
+            return ProcessObserverMethodImpl.fire(beanManager, beanMethod, observerMethod);
         }
+        return observerMethod;
     }
 
     public void fireProcessProducer(BeanManagerImpl beanManager, AbstractProducerBean<?, ?, Member> bean) {

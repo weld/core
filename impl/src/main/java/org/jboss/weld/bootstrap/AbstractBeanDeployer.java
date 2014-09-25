@@ -22,6 +22,7 @@ import java.util.Set;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.BeanAttributes;
+import javax.enterprise.inject.spi.ObserverMethod;
 import javax.enterprise.inject.spi.ProcessProducerField;
 import javax.enterprise.inject.spi.ProcessProducerMethod;
 
@@ -52,7 +53,6 @@ import org.jboss.weld.bean.builtin.ee.StaticEEResourceProducerField;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.events.ContainerLifecycleEvents;
 import org.jboss.weld.bootstrap.events.ProcessBeanAttributesImpl;
-import org.jboss.weld.bootstrap.events.ProcessObserverMethodImpl;
 import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.event.ObserverFactory;
@@ -160,8 +160,10 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
         for (ObserverInitializationContext<?, ?> observerInitializer : getEnvironment().getObservers()) {
             if (Observers.isObserverMethodEnabled(observerInitializer.getObserver(), manager)) {
                 BootstrapLogger.LOG.foundObserverMethod(observerInitializer.getObserver());
-                ProcessObserverMethodImpl.fire(manager, observerInitializer.getObserver());
-                manager.addObserver(observerInitializer.getObserver());
+                ObserverMethod<?> processedObserver = containerLifecycleEvents.fireProcessObserverMethod(manager, observerInitializer.getObserver());
+                if (processedObserver != null) {
+                    manager.addObserver(processedObserver);
+                }
             }
         }
         return this;
