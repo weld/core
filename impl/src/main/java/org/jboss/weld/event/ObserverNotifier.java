@@ -21,11 +21,18 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
+import org.jboss.weld.experimental.Prioritized;
 import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.logging.UtilLogger;
 import org.jboss.weld.resolution.Resolvable;
@@ -35,6 +42,7 @@ import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.transaction.spi.TransactionServices;
 import org.jboss.weld.util.Observers;
 import org.jboss.weld.util.Types;
+import org.jboss.weld.util.collections.WeldCollections;
 import org.jboss.weld.util.reflection.Reflections;
 
 import com.google.common.cache.CacheBuilder;
@@ -87,12 +95,12 @@ public class ObserverNotifier {
         }
     }
 
-    public <T> Set<ObserverMethod<? super T>> resolveObserverMethods(T event, Annotation... bindings) {
+    public <T> List<ObserverMethod<? super T>> resolveObserverMethods(T event, Annotation... bindings) {
         checkEventObjectType(event);
         return this.<T>resolveObserverMethods(buildEventResolvable(event.getClass(), bindings));
     }
 
-    public <T> Set<ObserverMethod<? super T>> resolveObserverMethods(Type eventType, Set<Annotation> qualifiers) {
+    public <T> List<ObserverMethod<? super T>> resolveObserverMethods(Type eventType, Set<Annotation> qualifiers) {
         checkEventObjectType(eventType);
         return this.<T>resolveObserverMethods(buildEventResolvable(eventType, qualifiers));
     }
@@ -117,7 +125,7 @@ public class ObserverNotifier {
         notifyObservers(packet, this.<T>resolveObserverMethods(resolvable));
     }
 
-    public <T> void notifyObservers(final EventPacket<T> eventPacket, final Set<ObserverMethod<? super T>> observers) {
+    public <T> void notifyObservers(final EventPacket<T> eventPacket, final List<ObserverMethod<? super T>> observers) {
         currentEventMetadata.push(eventPacket);
         try {
             for (ObserverMethod<? super T> observer : observers) {
@@ -128,7 +136,7 @@ public class ObserverNotifier {
         }
     }
 
-    private <T> void notifyObservers(final T event, final Set<ObserverMethod<? super T>> observers) {
+    private <T> void notifyObservers(final T event, final List<ObserverMethod<? super T>> observers) {
         for (ObserverMethod<? super T> observer : observers) {
             notifyObserver(event, observer);
         }
@@ -155,8 +163,34 @@ public class ObserverNotifier {
             .create();
     }
 
-    public <T> Set<ObserverMethod<? super T>> resolveObserverMethods(Resolvable resolvable) {
-        return cast(resolver.resolve(resolvable, true));
+    public <T> List<ObserverMethod<? super T>> resolveObserverMethods(Resolvable resolvable) {
+
+        // TODO ? cache ordered observer methods
+        Set<ObserverMethod<?>> observerMethods = new HashSet<ObserverMethod<?>>(resolver.resolve(resolvable, true));
+        List<ObserverMethod<?>> orderedObserverMethods = new ArrayList<ObserverMethod<?>>();
+
+        for (Iterator<ObserverMethod<?>> iterator = observerMethods.iterator(); iterator.hasNext();) {
+            ObserverMethod<?> observerMethod = iterator.next();
+            if(observerMethod instanceof Prioritized) {
+                iterator.remove();
+                orderedObserverMethods.add(observerMethod);
+            }
+        }
+
+        // TODO use single final instance of comparator
+        Collections.sort(orderedObserverMethods, new Comparator<ObserverMethod<?>>() {
+            @Override
+            public int compare(ObserverMethod<?> o1, ObserverMethod<?> o2) {
+                Prioritized p1 = (Prioritized) o1;
+                Prioritized p2 = (Prioritized) o2;
+                return p1.getPriority() == p2.getPriority() ? 0 : (p1.getPriority() < p2.getPriority() ? -1 : 1) ;
+            }
+        });
+
+        // TODO the order in which observer methods without @Priority are called is not defined
+        orderedObserverMethods.addAll(observerMethods);
+
+        return cast(WeldCollections.immutableGuavaList(orderedObserverMethods));
     }
 
     public void clear() {
