@@ -17,16 +17,19 @@
 
 package org.jboss.weld.bootstrap.events;
 
-import org.jboss.weld.event.ObserverMethodImpl;
-import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.util.reflection.Reflections;
+import static org.jboss.weld.util.Observers.validateObserverMethod;
+
+import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.List;
 
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.ObserverMethod;
 import javax.enterprise.inject.spi.ProcessObserverMethod;
-import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.List;
+
+import org.jboss.weld.experimental.ExperimentalProcessObserverMethod;
+import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.Preconditions;
 
 /**
  * Implementation of the event used to notify observers for each observer
@@ -34,24 +37,29 @@ import java.util.List;
  *
  * @author David Allen
  */
-public class ProcessObserverMethodImpl<T, X> extends AbstractDefinitionContainerEvent implements ProcessObserverMethod<T, X> {
+public class ProcessObserverMethodImpl<T, X> extends AbstractDefinitionContainerEvent implements ProcessObserverMethod<T, X>, ExperimentalProcessObserverMethod<T, X> {
 
-    public static <T, X> void fire(BeanManagerImpl beanManager, ObserverMethodImpl<T, X> observer) {
-        new ProcessObserverMethodImpl<T, X>(beanManager, Reflections.<AnnotatedMethod<X>>cast(observer.getMethod().getAnnotated()), observer) {
-        }.fire();
-    }
-
-    public static <T> void fire(BeanManagerImpl beanManager, ObserverMethod<T> observer) {
-        new ProcessObserverMethodImpl<T, Object>(beanManager, null, observer) {
-        }.fire();
+    public static <T, X> ObserverMethod<T> fire(BeanManagerImpl beanManager, AnnotatedMethod<X> beanMethod, ObserverMethod<T> observerMethod) {
+        ProcessObserverMethodImpl<T, X> event = new ProcessObserverMethodImpl<T, X>(beanManager, beanMethod, observerMethod) {};
+        event.fire();
+        if (event.vetoed) {
+            return null;
+        }
+        if (event.isDirty()) {
+            return event.observerMethod;
+        }
+        return observerMethod;
     }
 
     private final AnnotatedMethod<X> beanMethod;
-    private final ObserverMethod<T> observerMethod;
+    private final ObserverMethod<T> initialObserverMethod;
+    private ObserverMethod<T> observerMethod;
+    private boolean vetoed;
 
-    public ProcessObserverMethodImpl(BeanManagerImpl beanManager, AnnotatedMethod<X> beanMethod, ObserverMethod<T> observerMethod) {
-        super(beanManager, ProcessObserverMethod.class, new Type[]{observerMethod.getObservedType(), observerMethod.getBeanClass()});
+    private ProcessObserverMethodImpl(BeanManagerImpl beanManager, AnnotatedMethod<X> beanMethod, ObserverMethod<T> observerMethod) {
+        super(beanManager, ExperimentalProcessObserverMethod.class, new Type[]{observerMethod.getObservedType(), observerMethod.getBeanClass()});
         this.beanMethod = beanMethod;
+        this.initialObserverMethod = observerMethod;
         this.observerMethod = observerMethod;
     }
 
@@ -67,6 +75,24 @@ public class ProcessObserverMethodImpl<T, X> extends AbstractDefinitionContainer
 
     public List<Throwable> getDefinitionErrors() {
         return Collections.unmodifiableList(getErrors());
+    }
+
+    @Override
+    public void setObserverMethod(ObserverMethod<T> observerMethod) {
+        Preconditions.checkArgumentNotNull(observerMethod, "observerMethod");
+        checkWithinObserverNotification();
+        validateObserverMethod(observerMethod, getBeanManager(), initialObserverMethod);
+        this.observerMethod = observerMethod;
+    }
+
+    @Override
+    public void veto() {
+        checkWithinObserverNotification();
+        vetoed = true;
+    }
+
+    public boolean isDirty() {
+        return observerMethod != initialObserverMethod;
     }
 
 }
