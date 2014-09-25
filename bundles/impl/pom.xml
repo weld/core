@@ -56,7 +56,7 @@
                 </executions>
                 <configuration>
                     <createSourcesJar>true</createSourcesJar>
-                    <createDependencyReducedPom>false</createDependencyReducedPom>
+                    <promoteTransitiveDependencies>true</promoteTransitiveDependencies>
                     <artifactSet>
                         <includes>
                             <include>org.jboss.weld:weld-core-impl</include>
