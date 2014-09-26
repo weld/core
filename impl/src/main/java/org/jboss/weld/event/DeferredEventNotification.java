@@ -38,17 +38,23 @@ public class DeferredEventNotification<T> implements Runnable {
     private final CurrentEventMetadata currentEventMetadata;
     private final String contextId;
 
+    private final Status status;
+    private final boolean before;
+
     /**
      * Creates a new deferred event notifier.
      *
      * @param observer The observer to be notified
      * @param eventPacket    The event being fired
      */
-    public DeferredEventNotification(String contextId, EventPacket<T> eventPacket, ObserverMethod<? super T> observer, CurrentEventMetadata currentEventMetadata) {
+    public DeferredEventNotification(String contextId, EventPacket<T> eventPacket, ObserverMethod<? super T> observer,
+            CurrentEventMetadata currentEventMetadata, Status status, boolean before) {
         this.contextId = contextId;
         this.observer = observer;
         this.eventPacket = eventPacket;
         this.currentEventMetadata = currentEventMetadata;
+        this.status = status;
+        this.before = before;
     }
 
     public void run() {
@@ -72,6 +78,14 @@ public class DeferredEventNotification<T> implements Runnable {
             EventLogger.LOG.asyncObserverFailure(eventPacket);
             EventLogger.LOG.catchingDebug(e);
         }
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public boolean isBefore() {
+        return before;
     }
 
     @Override

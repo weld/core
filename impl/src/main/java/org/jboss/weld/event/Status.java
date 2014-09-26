@@ -17,6 +17,11 @@
 
 package org.jboss.weld.event;
 
+import static javax.transaction.Status.STATUS_COMMITTED;
+
+import javax.enterprise.event.TransactionPhase;
+import javax.transaction.Synchronization;
+
 /**
  * An enumeration of the possible outcomes for a transaction.  This is used
  * to keep track of whether an observer wants to see all events regardless of
@@ -26,5 +31,46 @@ package org.jboss.weld.event;
  * @author David Allen
  */
 public enum Status {
-    ALL, SUCCESS, FAILURE
+
+
+    ALL {
+        @Override
+        public boolean matches(int status) {
+            return true;
+        }
+    },
+    SUCCESS {
+        @Override
+        public boolean matches(int status) {
+            return status == STATUS_COMMITTED;
+        }
+    },
+    FAILURE {
+        @Override
+        public boolean matches(int status) {
+            return status != STATUS_COMMITTED;
+        }
+    };
+
+    /**
+     * Indicates whether the given status code passed in during {@link Synchronization#beforeCompletion()} or {@link Synchronization#afterCompletion(int)}
+     * matches this status.
+     * @param status the given status code
+     * @return true if the status code matches
+     */
+    public abstract boolean matches(int status);
+
+    public static Status valueOf(TransactionPhase transactionPhase) {
+        if (transactionPhase == TransactionPhase.BEFORE_COMPLETION || transactionPhase == TransactionPhase.AFTER_COMPLETION) {
+            return Status.ALL;
+        }
+        if (transactionPhase == TransactionPhase.AFTER_SUCCESS) {
+            return Status.SUCCESS;
+        }
+        if (transactionPhase == TransactionPhase.AFTER_FAILURE) {
+            return Status.FAILURE;
+        }
+        throw new IllegalArgumentException("Unknown transaction phase " + transactionPhase);
+    }
+
 }

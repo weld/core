@@ -16,13 +16,19 @@
  */
 package org.jboss.weld.resolution;
 
+import java.io.Serializable;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.weld.bootstrap.events.ProcessAnnotatedTypeEventResolvable;
 import org.jboss.weld.event.ExtensionObserverMethodImpl;
+import org.jboss.weld.experimental.ExperimentalObserverMethod;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Observers;
@@ -32,7 +38,20 @@ import org.jboss.weld.util.reflection.Reflections;
  * @author pmuir
  * @author Jozef Hartinger
  */
-public class TypeSafeObserverResolver extends TypeSafeResolver<Resolvable, ObserverMethod<?>, Set<ObserverMethod<?>>> {
+public class TypeSafeObserverResolver extends TypeSafeResolver<Resolvable, ObserverMethod<?>, List<ObserverMethod<?>>> {
+
+    private static class ObserverMethodComparator implements Comparator<ObserverMethod<?>>, Serializable {
+
+        private static final long serialVersionUID = 1L;
+        private static ObserverMethodComparator INSTANCE = new ObserverMethodComparator();
+
+        @Override
+        public int compare(ObserverMethod<?> o1, ObserverMethod<?> o2) {
+            ExperimentalObserverMethod<?> eom1 = (ExperimentalObserverMethod<?>) o1;
+            ExperimentalObserverMethod<?> eom2 = (ExperimentalObserverMethod<?>) o2;
+            return eom1.getPriority() - eom2.getPriority();
+        }
+    };
 
     private final MetaAnnotationStore metaAnnotationStore;
     private final AssignabilityRules rules;
@@ -79,8 +98,10 @@ public class TypeSafeObserverResolver extends TypeSafeResolver<Resolvable, Obser
     }
 
     @Override
-    protected Set<ObserverMethod<?>> sortResult(Set<ObserverMethod<?>> matched) {
-        return matched;
+    protected List<ObserverMethod<?>> sortResult(Set<ObserverMethod<?>> matched) {
+        List<ObserverMethod<?>> observers = new ArrayList<>(matched);
+        Collections.sort(observers, ObserverMethodComparator.INSTANCE);
+        return observers;
     }
 
     public MetaAnnotationStore getMetaAnnotationStore() {

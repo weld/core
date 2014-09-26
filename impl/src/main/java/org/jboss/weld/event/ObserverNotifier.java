@@ -21,18 +21,12 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
-import org.jboss.weld.experimental.Prioritized;
 import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.logging.UtilLogger;
 import org.jboss.weld.resolution.Resolvable;
@@ -42,7 +36,6 @@ import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.transaction.spi.TransactionServices;
 import org.jboss.weld.util.Observers;
 import org.jboss.weld.util.Types;
-import org.jboss.weld.util.collections.WeldCollections;
 import org.jboss.weld.util.reflection.Reflections;
 
 import com.google.common.cache.CacheBuilder;
@@ -164,33 +157,7 @@ public class ObserverNotifier {
     }
 
     public <T> List<ObserverMethod<? super T>> resolveObserverMethods(Resolvable resolvable) {
-
-        // TODO ? cache ordered observer methods
-        Set<ObserverMethod<?>> observerMethods = new HashSet<ObserverMethod<?>>(resolver.resolve(resolvable, true));
-        List<ObserverMethod<?>> orderedObserverMethods = new ArrayList<ObserverMethod<?>>();
-
-        for (Iterator<ObserverMethod<?>> iterator = observerMethods.iterator(); iterator.hasNext();) {
-            ObserverMethod<?> observerMethod = iterator.next();
-            if(observerMethod instanceof Prioritized) {
-                iterator.remove();
-                orderedObserverMethods.add(observerMethod);
-            }
-        }
-
-        // TODO use single final instance of comparator
-        Collections.sort(orderedObserverMethods, new Comparator<ObserverMethod<?>>() {
-            @Override
-            public int compare(ObserverMethod<?> o1, ObserverMethod<?> o2) {
-                Prioritized p1 = (Prioritized) o1;
-                Prioritized p2 = (Prioritized) o2;
-                return p1.getPriority() == p2.getPriority() ? 0 : (p1.getPriority() < p2.getPriority() ? -1 : 1) ;
-            }
-        });
-
-        // TODO the order in which observer methods without @Priority are called is not defined
-        orderedObserverMethods.addAll(observerMethods);
-
-        return cast(WeldCollections.immutableGuavaList(orderedObserverMethods));
+        return cast(resolver.resolve(resolvable, true));
     }
 
     public void clear() {

@@ -47,6 +47,8 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.context.CreationalContextImpl;
+import org.jboss.weld.experimental.ExperimentalObserverMethod;
+import org.jboss.weld.experimental.Priority;
 import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.ParameterInjectionPoint;
@@ -68,7 +70,7 @@ import org.jboss.weld.util.reflection.HierarchyDiscovery;
  * @author Jozef Hartinger
  * @author Marko Luksa
  */
-public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
+public class ObserverMethodImpl<T, X> implements ExperimentalObserverMethod<T> {
 
     public static final String ID_PREFIX = ObserverMethodImpl.class.getPackage().getName();
 
@@ -85,6 +87,8 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
 
     private final Set<WeldInjectionPointAttributes<?, ?>> injectionPoints;
     private final Set<WeldInjectionPointAttributes<?, ?>> newInjectionPoints;
+
+    private final int priority;
 
     /**
      * Creates an Observer which describes and encapsulates an observer method (8.5).
@@ -119,6 +123,12 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
         }
         this.injectionPoints = immutableGuavaSet(injectionPoints);
         this.newInjectionPoints = immutableGuavaSet(newInjectionPoints);
+        Priority priority = eventParameter.getAnnotation(Priority.class);
+        if (priority == null) {
+            this.priority = ExperimentalObserverMethod.DEFAULT_PRIORITY;
+        } else {
+            this.priority = priority.value();
+        }
     }
 
     protected static String createId(final EnhancedAnnotatedMethod<?, ?> observer, final RIBean<?> declaringBean) {
@@ -334,5 +344,10 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
     @Override
     public int hashCode() {
         return getId().hashCode();
+    }
+
+    @Override
+    public int getPriority() {
+        return priority;
     }
 }

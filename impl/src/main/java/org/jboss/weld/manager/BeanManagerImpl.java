@@ -154,6 +154,7 @@ import org.jboss.weld.util.collections.IterableToIteratorFunction;
 import org.jboss.weld.util.collections.WeldCollections;
 import org.jboss.weld.util.reflection.Reflections;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterators;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
@@ -528,8 +529,12 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     @Override
     public <T> Set<ObserverMethod<? super T>> resolveObserverMethods(T event, Annotation... bindings) {
-        // TODO temp workaround
-        return WeldCollections.immutableGuavaSet(new HashSet<ObserverMethod<? super T>>(globalStrictObserverNotifier.resolveObserverMethods(event, bindings)));
+        return ImmutableSet.copyOf(globalStrictObserverNotifier.resolveObserverMethods(event, bindings));
+    }
+
+    // TODO: this should make it to the API
+    public <T> List<ObserverMethod<? super T>> resolveObserverMethodsInOrder(T event, Annotation... bindings) {
+        return globalStrictObserverNotifier.resolveObserverMethods(event, bindings);
     }
 
     public void addInterceptor(Interceptor<?> bean) {

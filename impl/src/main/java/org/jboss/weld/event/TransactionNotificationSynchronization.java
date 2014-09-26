@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.event;
 
-import static javax.transaction.Status.STATUS_COMMITTED;
-
 import java.util.List;
 
 import javax.transaction.Synchronization;
@@ -29,13 +27,13 @@ import javax.transaction.Synchronization;
  */
 public class TransactionNotificationSynchronization implements Synchronization {
 
-    private final List<TransactionNotification> notifications;
+    private final List<DeferredEventNotification<?>> notifications;
 
     /**
      *
      * @param notifications The ordered list of notifications
      */
-    public TransactionNotificationSynchronization(List<TransactionNotification> notifications) {
+    public TransactionNotificationSynchronization(List<DeferredEventNotification<?>> notifications) {
         this.notifications = notifications;
     }
 
@@ -45,10 +43,8 @@ public class TransactionNotificationSynchronization implements Synchronization {
      * @see javax.transaction.Synchronization#afterCompletion(int)
      */
     public void afterCompletion(int status) {
-        for (TransactionNotification notification : notifications) {
-            if (!notification.isBefore()
-                    && ((notification.getStatus() == Status.SUCCESS && status == STATUS_COMMITTED)
-                            || (notification.getStatus() == Status.FAILURE && status != STATUS_COMMITTED) || (notification.getStatus() == Status.ALL))) {
+        for (DeferredEventNotification<?> notification : notifications) {
+            if (!notification.isBefore() && notification.getStatus().matches(status)) {
                 notification.run();
             }
         }
@@ -60,44 +56,10 @@ public class TransactionNotificationSynchronization implements Synchronization {
      * @see javax.transaction.Synchronization#beforeCompletion()
      */
     public void beforeCompletion() {
-        for (TransactionNotification notification : notifications) {
+        for (DeferredEventNotification<?> notification : notifications) {
             if (notification.isBefore()) {
                 notification.run();
             }
         }
-    }
-
-    static class TransactionNotification {
-
-        private final Status status;
-        private final Runnable task;
-        private final boolean before;
-
-        public TransactionNotification(Runnable task, boolean before) {
-            this(task, Status.ALL, before);
-        }
-
-        public TransactionNotification(Runnable task, Status desiredStatus) {
-            this(task, desiredStatus, false); // Status is only applicable after the transaction
-        }
-
-        private TransactionNotification(Runnable task, Status status, boolean before) {
-            this.task = task;
-            this.status = status;
-            this.before = before;
-        }
-
-        public Status getStatus() {
-            return status;
-        }
-
-        public void run() {
-            task.run();
-        }
-
-        public boolean isBefore() {
-            return before;
-        }
-
     }
 }
