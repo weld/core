@@ -99,7 +99,7 @@ public abstract class AbstractInterceptionChain implements InterceptionChain {
 
         try {
             if (hasNextInterceptor()) {
-                return invokeNext(invocationContext);
+                return invokeNextWithContextCheck(invocationContext);
             } else {
                 return finish(invocationContext);
             }
@@ -115,29 +115,9 @@ public abstract class AbstractInterceptionChain implements InterceptionChain {
         }
     }
 
-    protected Object invokeNext(InvocationContext invocationContext) throws Exception {
-        int oldCurrentPosition = currentPosition;
-        try {
-            InterceptorMethodInvocation nextInterceptorMethodInvocation = interceptorMethodInvocations.get(currentPosition++);
-            InterceptorLogger.LOG.invokingNextInterceptorInChain(nextInterceptorMethodInvocation);
-            if (nextInterceptorMethodInvocation.expectsInvocationContext()) {
-                return nextInterceptorMethodInvocation.invoke(invocationContext);
-            } else {
-                nextInterceptorMethodInvocation.invoke(null);
-                while (hasNextInterceptor()) {
-                    nextInterceptorMethodInvocation = interceptorMethodInvocations.get(currentPosition++);
-                    nextInterceptorMethodInvocation.invoke(null);
-                }
-                return null;
-            }
-        } finally {
-            currentPosition = oldCurrentPosition;
-        }
-    }
-
-    private Object finish(InvocationContext ctx) throws Exception {
+    private Object invokeNextWithContextCheck(InvocationContext invocationContext) throws Exception {
         if (currentInterceptionContext == null) {
-            return interceptorChainCompleted(ctx);
+            return invokeNext(invocationContext);
         }
         /*
          * Make sure that the right interception context is on top of the stack before invoking the component.
@@ -145,7 +125,7 @@ public abstract class AbstractInterceptionChain implements InterceptionChain {
          */
         final boolean pushed = InterceptionDecorationContext.pushIfNotOnTop(currentInterceptionContext);
         try {
-            return interceptorChainCompleted(ctx);
+            return invokeNext(invocationContext);
         } finally {
             if (pushed) {
                 InterceptionDecorationContext.endInterceptorContext();
@@ -153,10 +133,67 @@ public abstract class AbstractInterceptionChain implements InterceptionChain {
         }
     }
 
+    protected Object invokeNext(InvocationContext invocationContext) throws Exception {
+        return new RunInInterceptionContext() {
+            @Override
+            protected Object doWork(InvocationContext ctx) throws Exception {
+                int oldCurrentPosition = currentPosition;
+                try {
+                    InterceptorMethodInvocation nextInterceptorMethodInvocation = interceptorMethodInvocations.get(currentPosition++);
+                    InterceptorLogger.LOG.invokingNextInterceptorInChain(nextInterceptorMethodInvocation);
+                    if (nextInterceptorMethodInvocation.expectsInvocationContext()) {
+                        return nextInterceptorMethodInvocation.invoke(invocationContext);
+                    } else {
+                        nextInterceptorMethodInvocation.invoke(null);
+                        while (hasNextInterceptor()) {
+                            nextInterceptorMethodInvocation = interceptorMethodInvocations.get(currentPosition++);
+                            nextInterceptorMethodInvocation.invoke(null);
+                        }
+                        return null;
+                    }
+                } finally {
+                    currentPosition = oldCurrentPosition;
+                }
+            }
+        }.run(invocationContext);
+    }
+
+    private Object finish(InvocationContext ctx) throws Exception {
+        return new RunInInterceptionContext() {
+            @Override
+            protected Object doWork(InvocationContext ctx) throws Exception {
+                return interceptorChainCompleted(ctx);
+            }
+        }.run(ctx);
+    }
+
     protected abstract Object interceptorChainCompleted(InvocationContext invocationContext) throws Exception;
 
     @Override
     public boolean hasNextInterceptor() {
         return currentPosition < interceptorMethodInvocations.size();
+    }
+
+    private abstract class RunInInterceptionContext {
+
+        protected abstract Object doWork(InvocationContext ctx) throws Exception;
+
+        public Object run(InvocationContext ctx) throws Exception {
+            if (currentInterceptionContext == null) {
+                return doWork(ctx);
+            }
+            /*
+             * Make sure that the right interception context is on top of the stack before invoking the component or next interceptor.
+             * See WELD-1538 for details
+             */
+            final boolean pushed = InterceptionDecorationContext.pushIfNotOnTop(currentInterceptionContext);
+            try {
+                return doWork(ctx);
+            } finally {
+                if (pushed) {
+                    InterceptionDecorationContext.endInterceptorContext();
+                }
+            }
+        }
     }
 }
