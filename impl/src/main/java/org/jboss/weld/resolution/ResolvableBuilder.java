@@ -159,9 +159,11 @@ public class ResolvableBuilder {
     }
 
     public ResolvableBuilder addQualifier(Annotation qualifier) {
-        // Handle the @New qualifier special case
+
         QualifierInstance qualifierInstance = QualifierInstance.of(qualifier, store);
         final Class<? extends Annotation> annotationType = qualifierInstance.getAnnotationClass();
+
+        // Handle the @New qualifier special case
         if (annotationType.equals(New.class)) {
             New newQualifier = New.class.cast(qualifier);
             if (newQualifier.value().equals(New.class) && rawType == null) {
@@ -172,7 +174,7 @@ public class ResolvableBuilder {
             }
         }
 
-        checkQualifier(qualifier, qualifierInstance, annotationType);
+        checkQualifier(qualifier, annotationType);
         this.qualifiers.add(qualifier);
         this.qualifierInstances.add(qualifierInstance);
         this.mappedQualifiers.put(annotationType, qualifier);
@@ -200,13 +202,22 @@ public class ResolvableBuilder {
         return this;
     }
 
-    protected void checkQualifier(Annotation qualifier, final QualifierInstance qualifierInstance, Class<? extends Annotation> annotationType) {
+    protected void checkQualifier(Annotation qualifier, Class<? extends Annotation> annotationType) {
         if (!store.getBindingTypeModel(annotationType).isValid()) {
             throw BeanManagerLogger.LOG.invalidQualifier(qualifier);
         }
-        if (qualifierInstances.contains(qualifierInstance)) {
+        if (isAnnotationTypePresent(annotationType)) {
             throw BeanManagerLogger.LOG.duplicateQualifiers(qualifiers);
         }
+    }
+
+    protected boolean isAnnotationTypePresent(Class<? extends Annotation> annotationType) {
+        for (QualifierInstance instance : qualifierInstances) {
+            if (instance.getAnnotationClass().equals(annotationType)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     protected static class ResolvableImpl implements Resolvable {

@@ -40,8 +40,11 @@ import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableMap;
 
 /**
- * Optimized representation of a qualifier. JDK annotation proxies are slooow, this class provides significantly
- * faster equals/hashCode methods, that also correctly handle non binding attributes.
+ * Optimized representation of a qualifier. JDK annotation proxies are slooow, this class provides significantly faster equals/hashCode methods, that also
+ * correctly handle non binding attributes.
+ *
+ * Note that Weld is using this representation for interceptor bindings as well. See also
+ * {@link org.jboss.weld.manager.BeanManagerImpl#resolveInterceptors(javax.enterprise.inject.spi.InterceptionType, java.util.Collection)}
  *
  * @author Stuart Douglas
  * @author Martin Kouba
@@ -79,7 +82,8 @@ public class QualifierInstance {
      * @return a new qualifier instance for the given annotation
      */
     public static QualifierInstance of(Annotation annotation, MetaAnnotationStore store) {
-        return new QualifierInstance(annotation.annotationType(), createValues(annotation, store));
+        final Class<? extends Annotation> annotationClass = annotation.annotationType();
+        return new QualifierInstance(annotationClass, createValues(annotation, annotationClass, store));
     }
 
     private QualifierInstance(final Class<? extends Annotation> annotationClass) {
@@ -92,9 +96,8 @@ public class QualifierInstance {
         this.hashCode = Objects.hashCode(annotationClass, values);
     }
 
-    private static Map<AnnotatedMethod<?>, Object> createValues(final Annotation instance, final MetaAnnotationStore store) {
+    private static Map<AnnotatedMethod<?>, Object> createValues(final Annotation annotationInstance, final Class<? extends Annotation> annotationClass, final MetaAnnotationStore store) {
 
-        final Class<? extends Annotation> annotationClass = instance.annotationType();
         final QualifierModel<? extends Annotation> model = store.getBindingTypeModel(annotationClass);
 
         if(model.getAnnotatedAnnotation().getMethods().size() == 0) {
@@ -111,7 +114,7 @@ public class QualifierInstance {
                     } else {
                         method.getJavaMember().setAccessible(true);
                     }
-                    builder.put(method, method.getJavaMember().invoke(instance));
+                    builder.put(method, method.getJavaMember().invoke(annotationInstance));
                 } catch (IllegalAccessException e) {
                     throw new WeldException(e);
                 } catch (InvocationTargetException e) {
