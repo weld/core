@@ -27,7 +27,7 @@ import org.jboss.classfilewriter.ClassMethod;
  *
  * @author Stuart Douglas
  */
-public interface BytecodeMethodResolver {
+abstract class BytecodeMethodResolver {
 
-    void getDeclaredMethod(ClassMethod classMethod, String declaringClass, String methodName, String[] parameterTypes, ClassMethod staticConstructor);
+    abstract void getDeclaredMethod(ClassMethod classMethod, String declaringClass, String methodName, String[] parameterTypes, ClassMethod staticConstructor);
 }
