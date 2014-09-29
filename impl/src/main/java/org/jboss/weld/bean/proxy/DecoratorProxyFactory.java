@@ -250,10 +250,10 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
 
     }
 
-    protected static class TargetInstanceBytecodeMethodResolver implements BytecodeMethodResolver {
+    protected static class TargetInstanceBytecodeMethodResolver extends BytecodeMethodResolver {
         private static final String JAVA_LANG_CLASS_CLASS_NAME = "java.lang.Class";
 
-        public void getDeclaredMethod(ClassMethod classMethod, String declaringClass, String methodName, String[] parameterTypes, ClassMethod staticConstructor) {
+        void getDeclaredMethod(ClassMethod classMethod, String declaringClass, String methodName, String[] parameterTypes, ClassMethod staticConstructor) {
             // get the correct class type to use to resolve the method
             MethodInformation methodInfo = new StaticMethodInformation("getTargetClass", new String[0], LJAVA_LANG_CLASS, TargetInstanceProxy.class.getName());
             invokeMethodHandler(classMethod, methodInfo, false, DEFAULT_METHOD_RESOLVER, staticConstructor);
