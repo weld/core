@@ -416,8 +416,11 @@ public class Beans {
                 if (!store.getBindingTypeModel(qualifier.annotationType()).isValid()) {
                     throw UtilLogger.LOG.annotationNotQualifier(qualifier);
                 }
-                if (checkedNewQualifiers.contains(qualifier)) {
-                    throw UtilLogger.LOG.redundantQualifier(qualifier, Arrays.asList(newQualifiers));
+                final Class<? extends Annotation> annotationType = qualifier.annotationType();
+                for (Annotation annotation : checkedNewQualifiers) {
+                    if(annotationType.equals(annotation.annotationType())) {
+                        throw UtilLogger.LOG.redundantQualifier(qualifier, Arrays.toString(newQualifiers));
+                    }
                 }
                 checkedNewQualifiers.add(qualifier);
             }

@@ -41,11 +41,11 @@ public class InterceptorResolvableBuilder extends ResolvableBuilder {
     private InterceptionType interceptionType;
 
     @Override
-    protected void checkQualifier(Annotation qualifier,final QualifierInstance qualifierInstance, Class<? extends  Annotation> annotationType) {
+    protected void checkQualifier(Annotation qualifier, Class<? extends  Annotation> annotationType) {
         if (!getMetaAnnotationStore().getInterceptorBindingModel(annotationType).isValid()) {
             throw BeanManagerLogger.LOG.interceptorResolutionWithNonbindingType(qualifier);
         }
-        if (qualifierInstances.contains(qualifierInstance)) {
+        if (isAnnotationTypePresent(annotationType)) {
             throw BeanManagerLogger.LOG.duplicateInterceptorBinding(qualifiers);
         }
     }
