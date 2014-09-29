@@ -16,6 +16,10 @@
  */
 package org.jboss.weld.resolution;
 
+import static org.jboss.weld.logging.messages.BeanManagerMessage.DUPLICATE_INTERCEPTOR_BINDING;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.INTERCEPTOR_BINDINGS_EMPTY;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.INTERCEPTOR_RESOLUTION_WITH_NONBINDING_TYPE;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Map;
@@ -28,10 +32,6 @@ import org.jboss.weld.Container;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
-
-import static org.jboss.weld.logging.messages.BeanManagerMessage.DUPLICATE_INTERCEPTOR_BINDING;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.INTERCEPTOR_BINDINGS_EMPTY;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.INTERCEPTOR_RESOLUTION_WITH_NONBINDING_TYPE;
 
 public class InterceptorResolvableBuilder extends ResolvableBuilder {
 
@@ -48,11 +48,11 @@ public class InterceptorResolvableBuilder extends ResolvableBuilder {
     private InterceptionType interceptionType;
 
     @Override
-    protected void checkQualifier(Annotation qualifier,final QualifierInstance qualifierInstance, Class<? extends  Annotation> annotationType) {
+    protected void checkQualifier(Annotation qualifier, Class<? extends  Annotation> annotationType) {
         if (!Container.instance().services().get(MetaAnnotationStore.class).getInterceptorBindingModel(annotationType).isValid()) {
             throw new IllegalArgumentException(INTERCEPTOR_RESOLUTION_WITH_NONBINDING_TYPE, qualifier);
         }
-        if (qualifierInstances.contains(qualifierInstance)) {
+        if (isAnnotationTypePresent(annotationType)) {
             throw new IllegalArgumentException(DUPLICATE_INTERCEPTOR_BINDING, qualifiers);
         }
     }

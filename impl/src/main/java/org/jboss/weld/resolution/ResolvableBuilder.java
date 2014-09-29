@@ -16,6 +16,10 @@
  */
 package org.jboss.weld.resolution;
 
+import static org.jboss.weld.logging.messages.BeanManagerMessage.DUPLICATE_QUALIFIERS;
+import static org.jboss.weld.logging.messages.BeanManagerMessage.INVALID_QUALIFIER;
+import static org.jboss.weld.logging.messages.ResolutionMessage.CANNOT_EXTRACT_RAW_TYPE;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
@@ -41,10 +45,6 @@ import org.jboss.weld.literal.NewLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.util.reflection.Reflections;
-
-import static org.jboss.weld.logging.messages.BeanManagerMessage.DUPLICATE_QUALIFIERS;
-import static org.jboss.weld.logging.messages.BeanManagerMessage.INVALID_QUALIFIER;
-import static org.jboss.weld.logging.messages.ResolutionMessage.CANNOT_EXTRACT_RAW_TYPE;
 
 public class ResolvableBuilder {
 
@@ -136,9 +136,11 @@ public class ResolvableBuilder {
     }
 
     public ResolvableBuilder addQualifier(Annotation qualifier) {
-        // Handle the @New qualifier special case
+
         QualifierInstance qualifierInstance = new QualifierInstance(qualifier, store);
         final Class<? extends Annotation> annotationType = qualifierInstance.getAnnotationClass();
+
+        // Handle the @New qualifier special case
         if (annotationType.equals(New.class)) {
             New newQualifier = New.class.cast(qualifier);
             if (newQualifier.value().equals(New.class) && rawType == null) {
@@ -158,7 +160,7 @@ public class ResolvableBuilder {
             }
         }
 
-        checkQualifier(qualifier, qualifierInstance, annotationType);
+        checkQualifier(qualifier, annotationType);
         this.qualifiers.add(qualifier);
         this.qualifierInstances.add(qualifierInstance);
         this.mappedQualifiers.put(annotationType, qualifier);
@@ -186,13 +188,22 @@ public class ResolvableBuilder {
         return this;
     }
 
-    protected void checkQualifier(Annotation qualifier, final QualifierInstance qualifierInstance, Class<? extends Annotation> annotationType) {
+    protected void checkQualifier(Annotation qualifier, Class<? extends Annotation> annotationType) {
         if (!store.getBindingTypeModel(annotationType).isValid()) {
             throw new IllegalArgumentException(INVALID_QUALIFIER, qualifier);
         }
-        if (qualifierInstances.contains(qualifierInstance)) {
+        if (isAnnotationTypePresent(annotationType)) {
             throw new IllegalArgumentException(DUPLICATE_QUALIFIERS, qualifiers);
         }
+    }
+
+    protected boolean isAnnotationTypePresent(Class<? extends Annotation> annotationType) {
+        for (QualifierInstance instance : qualifierInstances) {
+            if (instance.getAnnotationClass().equals(annotationType)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     protected static class ResolvableImpl implements Resolvable {
