@@ -47,6 +47,7 @@ import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.builtin.BeanManagerBean;
 import org.jboss.weld.bean.builtin.BeanManagerImplBean;
 import org.jboss.weld.bean.builtin.ContextBean;
+import org.jboss.weld.bean.proxy.ProtectionDomainCache;
 import org.jboss.weld.bean.proxy.util.SimpleProxyServices;
 import org.jboss.weld.bootstrap.api.Environment;
 import org.jboss.weld.bootstrap.api.Service;
@@ -316,6 +317,7 @@ public class WeldStartup {
         }
 
         services.add(ServletContextService.class, new ServletContextService());
+        services.add(ProtectionDomainCache.class, new ProtectionDomainCache());
     }
 
     // needs to be resolved once extension beans are deployed
