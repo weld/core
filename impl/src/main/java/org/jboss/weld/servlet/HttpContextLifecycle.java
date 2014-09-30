@@ -276,7 +276,7 @@ public class HttpContextLifecycle implements Service {
              * if this request has been switched to async then do not invalidate the context now
              * as it will be invalidated at the end of the async operation.
              */
-            if (!servletApi.isAsyncSupported() || !request.isAsyncStarted()) {
+            if (!servletApi.isAsyncSupported() || !servletApi.isAsyncStarted(request)) {
                 getRequestContext().invalidate();
             }
             getRequestContext().deactivate();

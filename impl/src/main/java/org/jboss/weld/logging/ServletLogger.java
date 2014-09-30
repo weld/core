@@ -123,4 +123,8 @@ public interface ServletLogger extends WeldLogger {
     @Message(id = 715, value = "HttpContextLifecycle guard not set. The Servlet container is not fully compliant.", format = Format.MESSAGE_FORMAT)
     void guardNotSet();
 
+    @LogMessage(level = Level.INFO)
+    @Message(id = 716, value = "Running in Servlet 2.x environment. Asynchronous request support is disabled.")
+    void servlet2Environment();
+
 }
