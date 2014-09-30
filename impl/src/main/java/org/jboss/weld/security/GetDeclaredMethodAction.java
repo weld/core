@@ -21,6 +21,10 @@ import java.security.PrivilegedExceptionAction;
 
 public class GetDeclaredMethodAction extends AbstractReflectionAction implements PrivilegedExceptionAction<Method> {
 
+    public static GetDeclaredMethodAction of(Class<?> javaClass, String methodName, Class<?>... parameterTypes) {
+        return new GetDeclaredMethodAction(javaClass, methodName, parameterTypes);
+    }
+
     protected final String methodName;
     protected final Class<?>[] parameterTypes;
 

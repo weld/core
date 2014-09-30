@@ -50,6 +50,7 @@ import org.jboss.weld.interceptor.util.proxy.TargetInstanceProxy;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.security.GetDeclaredConstructorsAction;
 import org.jboss.weld.security.GetDeclaredMethodsAction;
+import org.jboss.weld.security.GetProtectionDomainAction;
 import org.jboss.weld.security.NewInstanceAction;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.serialization.spi.ContextualStore;
@@ -451,10 +452,13 @@ public class ProxyFactory<T> {
         // TODO: change the ProxyServices SPI to allow the container to figure out
         // which PD to use
 
+        ProtectionDomain domain = AccessController.doPrivileged(new GetProtectionDomainAction(proxiedBeanType));
 
-        ProtectionDomain domain = proxiedBeanType.getProtectionDomain();
         if (proxiedBeanType.getPackage() == null || proxiedBeanType.equals(Object.class)) {
             domain = ProxyFactory.class.getProtectionDomain();
+        } else if (System.getSecurityManager() != null) {
+            ProtectionDomainCache cache = Container.instance(contextId).services().get(ProtectionDomainCache.class);
+            domain = cache.getProtectionDomainForProxy(domain);
         }
         Class<T> proxyClass = cast(ClassFileUtils.toClass(proxyClassType, classLoader, domain));
         BeanLogger.LOG.createdProxyClass(proxyClass, Arrays.toString(proxyClass.getInterfaces()));

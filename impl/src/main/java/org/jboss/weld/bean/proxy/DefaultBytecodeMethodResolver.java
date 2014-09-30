@@ -17,11 +17,14 @@
 
 package org.jboss.weld.bean.proxy;
 
+import java.lang.reflect.Method;
+import java.security.AccessController;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.jboss.classfilewriter.AccessFlag;
 import org.jboss.classfilewriter.ClassMethod;
 import org.jboss.classfilewriter.code.CodeAttribute;
+import org.jboss.weld.security.GetDeclaredMethodAction;
 import org.jboss.weld.util.bytecode.BytecodeUtils;
 
 /**
@@ -59,7 +62,9 @@ public class DefaultBytecodeMethodResolver implements BytecodeMethodResolver {
             // and store it in the array
             code.aastore();
         }
-        code.invokevirtual(Class.class.getName(), "getDeclaredMethod", "(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;");
+        code.invokestatic(GetDeclaredMethodAction.class.getName(), "of", "(Ljava/lang/Class;Ljava/lang/String;[Ljava/lang/Class;)Lorg/jboss/weld/security/GetDeclaredMethodAction;");
+        code.invokestatic(AccessController.class.getName(), "doPrivileged", "(Ljava/security/PrivilegedAction;)Ljava/lang/Object;");
+        code.checkcast(Method.class);
         code.putstatic(classMethod.getClassFile().getName(), fieldName, LJAVA_LANG_REFLECT_METHOD);
 
         CodeAttribute methodCode = classMethod.getCodeAttribute();

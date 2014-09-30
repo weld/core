@@ -39,6 +39,7 @@ import org.jboss.weld.injection.ParameterInjectionPoint;
 import org.jboss.weld.injection.attributes.WeldInjectionPointAttributes;
 import org.jboss.weld.interceptor.util.proxy.TargetInstanceProxy;
 import org.jboss.weld.logging.BeanLogger;
+import org.jboss.weld.security.GetDeclaredMethodAction;
 import org.jboss.weld.security.GetDeclaredMethodsAction;
 import org.jboss.weld.util.bytecode.BytecodeUtils;
 import org.jboss.weld.util.bytecode.DescriptorUtils;
@@ -273,7 +274,9 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
                 // and store it in the array
                 code.aastore();
             }
-            code.invokevirtual(JAVA_LANG_CLASS_CLASS_NAME, "getDeclaredMethod", "(" + LJAVA_LANG_STRING + "[" + LJAVA_LANG_CLASS + ")" + LJAVA_LANG_REFLECT_METHOD);
+            code.invokestatic(GetDeclaredMethodAction.class.getName(), "of", "(Ljava/lang/Class;Ljava/lang/String;[Ljava/lang/Class;)Lorg/jboss/weld/security/GetDeclaredMethodAction;");
+            code.invokestatic(AccessController.class.getName(), "doPrivileged", "(Ljava/security/PrivilegedAction;)Ljava/lang/Object;");
+            code.checkcast(Method.class);
         }
 
         static final TargetInstanceBytecodeMethodResolver INSTANCE = new TargetInstanceBytecodeMethodResolver();
