@@ -43,6 +43,14 @@ To run the example in this configuration, run:
 
 In the log, you should see a confirmation that existing Jandex index was found and used.
 
+Running the Example with SecurityManager enabled
+------------------------------------------------
+
+There is a simple ready-made policy file named numberguess.policy
+To run the example with SecurityManager enabled, run:
+
+        mvn clean package dependency:copy-dependencies -Dmdep.stripVersion
+        java -Djava.security.manager -Djava.security.policy=numberguess.policy -cp target/weld-se-numberguess.jar:target/dependency/weld-se.jar org.jboss.weld.environment.se.StartMain
 
 Swing Example: Number Guess
 ---------------------------
