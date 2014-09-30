@@ -48,9 +48,9 @@ public class RepeatableAnnotationTest {
     @Test
     public void testGetAnnotationsByType(BeanManager manager) {
         ExperimentalAnnotated type = (ExperimentalAnnotated) manager.createAnnotatedType(DummyClass.class);
-        assertArrayEquals(DummyClass.class.getAnnotationsByType(RepeatableAnnotation.class), type.getAnnotationsByType(RepeatableAnnotation.class));
-        assertArrayEquals(DummyClass.class.getAnnotationsByType(RepeatableAnnotation.Container.class), type.getAnnotationsByType(RepeatableAnnotation.Container.class));
-        assertArrayEquals(DummyClass.class.getAnnotationsByType(Named.class), type.getAnnotationsByType(Named.class));
-        assertArrayEquals(DummyClass.class.getAnnotationsByType(Default.class), type.getAnnotationsByType(Default.class));
+        assertArrayEquals(DummyClass.class.getAnnotationsByType(RepeatableAnnotation.class), type.getAnnotationsByType(RepeatableAnnotation.class).toArray());
+        assertArrayEquals(DummyClass.class.getAnnotationsByType(RepeatableAnnotation.Container.class), type.getAnnotationsByType(RepeatableAnnotation.Container.class).toArray());
+        assertArrayEquals(DummyClass.class.getAnnotationsByType(Named.class), type.getAnnotationsByType(Named.class).toArray());
+        assertArrayEquals(DummyClass.class.getAnnotationsByType(Default.class), type.getAnnotationsByType(Default.class).toArray());
     }
 }

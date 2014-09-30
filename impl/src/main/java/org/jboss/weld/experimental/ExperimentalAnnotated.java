@@ -19,12 +19,15 @@ package org.jboss.weld.experimental;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Repeatable;
 import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.Objects;
+import java.util.Set;
 
 import javax.enterprise.inject.spi.Annotated;
+
+import org.jboss.weld.util.collections.Arrays2;
 
 /**
  * This API is experimental and will change! All the methods declared by this interface are supposed to be moved to {@link Annotated}.
@@ -44,14 +47,12 @@ public interface ExperimentalAnnotated extends Annotated {
      * @return all this element's annotations for the specified annotation type if associated with this element, else an array of length zero
      */
     @SuppressWarnings("unchecked")
-    default <T extends Annotation> T[] getAnnotationsByType(Class<T> annotationClass) {
+    default <T extends Annotation> Set<T> getAnnotationsByType(Class<T> annotationClass) {
         Objects.requireNonNull(annotationClass, "annotationClass");
         // first, delegate to getAnnotation()
         final T annotation = getAnnotation(annotationClass);
         if (annotation != null) {
-            T[] result = (T[]) Array.newInstance(annotationClass, 1);
-            result[0] = annotation;
-            return result;
+            return Collections.singleton(annotation);
         }
         // second, check if this annotation is repeatable
         final Repeatable repeatable = annotationClass.getAnnotation(Repeatable.class);
@@ -67,12 +68,12 @@ public interface ExperimentalAnnotated extends Annotated {
                     throw new RuntimeException(e); // TODO
                 }
                 try {
-                    return (T[]) value.invoke(container);
+                    return Arrays2.asSet((T[]) value.invoke(container));
                 } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
                     throw new RuntimeException(e); // TODO
                 }
             }
         }
-        return (T[]) Array.newInstance(annotationClass, 0);
+        return Collections.emptySet();
     }
 }
