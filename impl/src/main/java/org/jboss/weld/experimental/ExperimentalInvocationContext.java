@@ -36,6 +36,13 @@ public interface ExperimentalInvocationContext extends InvocationContext {
      *
      * @return a set of interceptor bindings
      */
+    <T extends Annotation> Set<T> getInterceptorBindingsByType(Class<T> annotationType);
+
+    /**
+     * The returning set may be empty if only interceptors using the {@link Interceptors} annotation are associated.
+     *
+     * @return a set of interceptor bindings
+     */
     Set<Annotation> getInterceptorBindings();
 
 }

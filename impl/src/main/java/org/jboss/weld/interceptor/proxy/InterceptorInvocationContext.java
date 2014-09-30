@@ -30,6 +30,7 @@ import java.util.Set;
 
 import org.jboss.weld.experimental.ExperimentalInvocationContext;
 import org.jboss.weld.interceptor.spi.context.InterceptionChain;
+import org.jboss.weld.util.Preconditions;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
@@ -266,6 +267,19 @@ public class InterceptorInvocationContext implements ExperimentalInvocationConte
     @Override
     public Constructor<?> getConstructor() {
         return constructor;
+    }
+
+    @Override
+    @java.lang.SuppressWarnings("unchecked")
+    public <T extends Annotation> Set<T> getInterceptorBindingsByType(Class<T> annotationType) {
+        Preconditions.checkArgumentNotNull(annotationType, "annotationType");
+        Set<T> result = new HashSet<>();
+        for (Annotation interceptorBinding : interceptorBindings) {
+            if (interceptorBinding.annotationType().equals(annotationType)) {
+                result.add((T) interceptorBinding);
+            }
+        }
+        return result;
     }
 
     @Override
