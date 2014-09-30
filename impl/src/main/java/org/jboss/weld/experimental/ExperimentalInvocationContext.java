@@ -23,9 +23,11 @@ import javax.interceptor.Interceptors;
 import javax.interceptor.InvocationContext;
 
 /**
- * Prototype for CDI-468.
+ * This API is experimental and will change! All the methods declared by this interface are supposed to be moved to {@link InvocationContext}.
  *
  * @author Martin Kouba
+ * @see CDI-468
+ *
  */
 public interface ExperimentalInvocationContext extends InvocationContext {
 

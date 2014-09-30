@@ -16,9 +16,10 @@
  */
 package org.jboss.weld.experimental;
 
-
 /**
- * TODO An optional interface - we don't want to force users to specify priority if not needed
+ * This API is experimental and will change!
+ *
+ * An optional interface - we don't want to force users to specify priority if not needed.
  */
 public interface Prioritized {
 

@@ -23,11 +23,12 @@ import java.lang.reflect.Parameter;
 import javax.enterprise.inject.spi.AnnotatedParameter;
 
 /**
- * Prototype for CDI-481
+ * This API is experimental and will change! All the methods declared by this interface are supposed to be moved to {@link AnnotatedParameter}.
  *
  * All the methods declared by this interface should be moved to AnnotatedParameter.
  *
  * @author Jozef Hartinger
+ * @see CDI-481
  *
  * @param <X>
  */

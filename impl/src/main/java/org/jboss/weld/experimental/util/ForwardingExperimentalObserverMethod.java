@@ -26,6 +26,14 @@ import javax.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.weld.experimental.ExperimentalObserverMethod;
 
+/**
+ * This API is experimental and will change!
+ *
+ * This is a forwarding implementation of {@link ExperimentalObserverMethod}.
+ *
+ * @author Jozef Hartinger
+ *
+ */
 public class ForwardingExperimentalObserverMethod<T> implements ExperimentalObserverMethod<T> {
 
     private final ObserverMethod<T> delegate;
@@ -33,6 +41,7 @@ public class ForwardingExperimentalObserverMethod<T> implements ExperimentalObse
     public ForwardingExperimentalObserverMethod(ObserverMethod<T> delegate) {
         this.delegate = delegate;
     }
+
     protected ObserverMethod<T> delegate() {
         return delegate;
     }
@@ -74,6 +83,7 @@ public class ForwardingExperimentalObserverMethod<T> implements ExperimentalObse
         }
         return ExperimentalObserverMethod.DEFAULT_PRIORITY;
     }
+
     @Override
     public int hashCode() {
         return delegate().hashCode();
@@ -86,6 +96,7 @@ public class ForwardingExperimentalObserverMethod<T> implements ExperimentalObse
         }
         return delegate().equals(obj);
     }
+
     @Override
     public String toString() {
         return delegate().toString();

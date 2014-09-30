@@ -18,6 +18,7 @@ package org.jboss.weld.experimental;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Repeatable;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -26,16 +27,22 @@ import java.util.Objects;
 import javax.enterprise.inject.spi.Annotated;
 
 /**
- * Prototype for WELD-1743
- *
- * All the methods declared by this interface should be moved to Annotated.
+ * This API is experimental and will change! All the methods declared by this interface are supposed to be moved to {@link Annotated}.
  *
  * @author Jozef Hartinger
+ *
+ * @see WELD-1743
  *
  * @param <X>
  */
 public interface ExperimentalAnnotated extends Annotated {
 
+    /**
+     * Equivalent of {@link AnnotatedElement#getAnnotationsByType(Class)}.
+     *
+     * @param annotationClass the Class object corresponding to the annotation type
+     * @return all this element's annotations for the specified annotation type if associated with this element, else an array of length zero
+     */
     @SuppressWarnings("unchecked")
     default <T extends Annotation> T[] getAnnotationsByType(Class<T> annotationClass) {
         Objects.requireNonNull(annotationClass, "annotationClass");

@@ -20,13 +20,12 @@ import javax.enterprise.inject.spi.ObserverMethod;
 import javax.interceptor.Interceptor;
 
 /**
- * Prototype for WELD-1728
- *
- * All the methods declared by this interface should be moved to ObserverMethod.
+ * This API is experimental and will change! All the methods declared by this interface are supposed to be moved to {@link ObserverMethod}.
  *
  * @author Jozef Hartinger
+ * @see WELD-1728
  *
- * @param <X>
+ * @param <T> the event type
  */
 public interface ExperimentalObserverMethod<T> extends ObserverMethod<T>, Prioritized {
 
