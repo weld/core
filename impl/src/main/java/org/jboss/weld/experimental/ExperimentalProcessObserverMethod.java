@@ -35,10 +35,16 @@ public interface ExperimentalProcessObserverMethod<T, X> extends ProcessObserver
      *
      * @param observer
      */
-    public void setObserverMethod(ObserverMethod<T> observerMethod);
+    void setObserverMethod(ObserverMethod<T> observerMethod);
 
     /**
      * Forces the container to ignore the observer method.
      */
-    public void veto();
+    void veto();
+
+    /**
+     * Temporarilly overriden return type
+     */
+    @Override
+    ExperimentalObserverMethod<T> getObserverMethod();
 }
