@@ -29,7 +29,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.ListIterator;
 
-import com.google.common.base.Preconditions;
+import org.jboss.weld.util.Preconditions;
 
 /**
  *

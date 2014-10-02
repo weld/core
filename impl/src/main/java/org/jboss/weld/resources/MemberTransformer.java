@@ -21,6 +21,7 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.reflect.Member;
 import java.util.Collection;
+import java.util.Objects;
 
 import javax.enterprise.inject.spi.AnnotatedConstructor;
 import javax.enterprise.inject.spi.AnnotatedField;
@@ -44,7 +45,6 @@ import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.reflection.Reflections;
 
-import com.google.common.base.Objects;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -67,7 +67,7 @@ public class MemberTransformer implements BootstrapService {
         public MemberKey(EnhancedAnnotatedType<X> type, A member) {
             this.type = type;
             this.member = member;
-            this.hashCode = Objects.hashCode(type, member);
+            this.hashCode = Objects.hash(type, member);
         }
 
         @Override
@@ -79,7 +79,7 @@ public class MemberTransformer implements BootstrapService {
         public boolean equals(Object obj) {
             if (obj instanceof MemberKey) {
                 MemberKey<?, ?> that = (MemberKey<?, ?>) obj;
-                return Objects.equal(this.type, that.type) && Objects.equal(this.member, that.member);
+                return Objects.equals(this.type, that.type) && Objects.equals(this.member, that.member);
             }
             return false;
         }

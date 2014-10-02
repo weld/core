@@ -20,12 +20,12 @@ package org.jboss.weld.annotated.slim;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.util.Collections;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.jboss.weld.bootstrap.api.helpers.AbstractBootstrapService;
 
-import com.google.common.base.Objects;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -46,7 +46,7 @@ public class SlimAnnotatedTypeStoreImpl extends AbstractBootstrapService impleme
     @Override
     public <X> SlimAnnotatedType<X> get(Class<X> type, String suffix) {
         for (SlimAnnotatedType<X> annotatedType : get(type)) {
-            if (Objects.equal(annotatedType.getIdentifier().getSuffix(), suffix)) {
+            if (Objects.equals(annotatedType.getIdentifier().getSuffix(), suffix)) {
                 return annotatedType;
             }
         }

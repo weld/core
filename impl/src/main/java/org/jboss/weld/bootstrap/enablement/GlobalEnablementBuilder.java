@@ -29,6 +29,8 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
+import javax.enterprise.inject.spi.Extension;
+
 import org.jboss.weld.bootstrap.BeanDeployment;
 import org.jboss.weld.bootstrap.api.helpers.AbstractBootstrapService;
 import org.jboss.weld.bootstrap.spi.BeansXml;
@@ -45,8 +47,6 @@ import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-
-import javax.enterprise.inject.spi.Extension;
 
 /**
  * This service gathers globally enabled interceptors, decorators and alternatives and builds a list of each.

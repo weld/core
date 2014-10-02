@@ -19,13 +19,12 @@ package org.jboss.weld.serialization;
 import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.Objects;
 
 import javax.enterprise.inject.spi.AnnotatedMethod;
 
 import org.jboss.weld.logging.ReflectionLogger;
 import org.jboss.weld.util.reflection.DeclaredMemberIndexer;
-
-import com.google.common.base.Objects;
 
 /**
  * Serializable holder for {@link Method}.
@@ -78,7 +77,7 @@ public class MethodHolder extends AbstractSerializableHolder<Method> implements 
         }
 
         MethodHolder that = (MethodHolder) o;
-        return Objects.equal(get(), that.get());
+        return Objects.equals(get(), that.get());
     }
 
     @Override

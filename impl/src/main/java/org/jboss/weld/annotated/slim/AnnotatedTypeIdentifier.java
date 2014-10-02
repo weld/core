@@ -16,9 +16,8 @@
  */
 package org.jboss.weld.annotated.slim;
 
-import static com.google.common.base.Objects.equal;
-
 import java.lang.reflect.Type;
+import java.util.Objects;
 
 import javax.enterprise.inject.New;
 import javax.enterprise.inject.spi.AnnotatedType;
@@ -30,8 +29,6 @@ import org.jboss.weld.annotated.slim.unbacked.UnbackedAnnotatedType;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.Types;
-
-import com.google.common.base.Objects;
 
 /**
  * An identifier for a an {@link AnnotatedType} The identifier is composed of four parts:
@@ -87,7 +84,7 @@ public class AnnotatedTypeIdentifier implements Identifier {
         this.className = className;
         this.suffix = suffix;
         this.modified = modified;
-        this.hashCode = Objects.hashCode(contextId, bdaId, className, suffix, modified);
+        this.hashCode = Objects.hash(contextId, bdaId, className, suffix, modified);
     }
 
     private static String getTypeId(Type type) {
@@ -129,8 +126,8 @@ public class AnnotatedTypeIdentifier implements Identifier {
         }
         if (obj instanceof AnnotatedTypeIdentifier) {
             AnnotatedTypeIdentifier they = (AnnotatedTypeIdentifier) obj;
-            return equal(bdaId, they.bdaId) && equal(className, they.className)
-                    && equal(suffix, they.suffix) && equal(modified, they.modified) && equal(contextId, they.contextId);
+            return Objects.equals(bdaId, they.bdaId) && Objects.equals(className, they.className)
+                    && Objects.equals(suffix, they.suffix) && Objects.equals(modified, they.modified) && Objects.equals(contextId, they.contextId);
         }
         return false;
     }
