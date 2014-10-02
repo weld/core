@@ -7,6 +7,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.AnnotatedConstructor;
@@ -20,8 +21,6 @@ import org.jboss.weld.exceptions.InvalidObjectException;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.util.reflection.Formats;
-
-import com.google.common.base.Objects;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
@@ -126,7 +125,7 @@ public class UnbackedAnnotatedType<X> extends UnbackedAnnotated implements SlimA
         }
         if (obj instanceof UnbackedAnnotatedType<?>) {
             UnbackedAnnotatedType<?> that = cast(obj);
-            return Objects.equal(this.identifier, that.identifier);
+            return Objects.equals(this.identifier, that.identifier);
         }
         return false;
     }

@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import org.jboss.weld.bootstrap.BeanDeployment;
@@ -43,7 +44,6 @@ import org.jboss.weld.util.collections.ListView;
 import org.jboss.weld.util.collections.ViewProvider;
 
 import com.google.common.base.Function;
-import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -96,7 +96,7 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
             }
             if (obj instanceof Item) {
                 Item that = (Item) obj;
-                return Objects.equal(javaClass, that.javaClass);
+                return Objects.equals(javaClass, that.javaClass);
             }
             return false;
         }
