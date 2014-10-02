@@ -12,6 +12,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.AnnotatedConstructor;
@@ -29,8 +30,6 @@ import org.jboss.weld.util.Types;
 import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
-
-import com.google.common.base.Objects;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 @SuppressWarnings(value = { "SE_BAD_FIELD", "SE_NO_SUITABLE_CONSTRUCTOR", "SE_BAD_FIELD_STORE", "SE_NO_SERIALVERSIONID" }, justification = "False positive from FindBugs - serialization is handled by SerializationProxy.")
@@ -120,7 +119,7 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
         }
         if (obj instanceof BackedAnnotatedType<?>) {
             BackedAnnotatedType<?> that = cast(obj);
-            return Objects.equal(this.identifier, that.identifier);
+            return Objects.equals(this.identifier, that.identifier);
         }
         return false;
     }

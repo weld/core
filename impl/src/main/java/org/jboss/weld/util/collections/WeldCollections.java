@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -27,7 +28,6 @@ import java.util.concurrent.ConcurrentMap;
 
 import org.jboss.weld.util.reflection.Reflections;
 
-import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -150,9 +150,14 @@ public class WeldCollections {
         if (collection.isEmpty()) {
             return "(empty collection)";
         }
-        StringBuilder sb = new StringBuilder("\n  - ");
-        Joiner.on(",\n  - ").appendTo(sb, collection);
-        return sb.toString();
+        StringBuilder builder = new StringBuilder("\n  - ");
+        for (Iterator<?> iterator = collection.iterator(); iterator.hasNext();) {
+            builder.append(iterator.next());
+            if (iterator.hasNext()) {
+                builder.append(",\n  - ");
+            }
+        }
+        return builder.toString();
     }
 
     /**

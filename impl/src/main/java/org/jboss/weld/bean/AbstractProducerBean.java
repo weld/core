@@ -38,10 +38,9 @@ import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.Defaults;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
-
-import com.google.common.base.Defaults;
 
 /**
  * The implicit producer bean
@@ -141,7 +140,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
             if (injectionPoint != null) {
                 Class<?> injectionPointRawType = Reflections.getRawType(injectionPoint.getType());
                 if (injectionPointRawType.isPrimitive()) {
-                    return cast(Defaults.defaultValue(injectionPointRawType));
+                    return cast(Defaults.getJlsDefaultValue(injectionPointRawType));
                 }
             }
         }

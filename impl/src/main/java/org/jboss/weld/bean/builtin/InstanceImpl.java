@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.bean.builtin;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.io.ObjectInputStream;
@@ -49,6 +48,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resolution.Resolvable;
 import org.jboss.weld.resolution.ResolvableBuilder;
 import org.jboss.weld.resolution.TypeSafeBeanResolver;
+import org.jboss.weld.util.Preconditions;
 import org.jboss.weld.util.collections.WeldCollections;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
@@ -147,7 +147,7 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
 
     @Override
     public void destroy(T instance) {
-        checkNotNull(instance);
+        Preconditions.checkNotNull(instance);
         // Attempt to destroy instance which is either a client proxy or a dependent session bean proxy
         if (instance instanceof ProxyObject) {
             ProxyObject proxy = (ProxyObject) instance;

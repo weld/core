@@ -45,13 +45,13 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.LazyValueHolder;
+import org.jboss.weld.util.Primitives;
 import org.jboss.weld.util.reflection.Reflections;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.primitives.Primitives;
 
 /**
  * @author pmuir
