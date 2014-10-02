@@ -45,11 +45,10 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resolution.Resolvable;
 import org.jboss.weld.resolution.ResolvableBuilder;
 import org.jboss.weld.resolution.TypeSafeBeanResolver;
+import org.jboss.weld.util.Preconditions;
 import org.jboss.weld.util.collections.WeldCollections;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
-
-import com.google.common.base.Preconditions;
 
 /**
  * Helper implementation for Instance for getting instances
