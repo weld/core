@@ -27,8 +27,6 @@ import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.metadata.cache.QualifierModel;
 import org.jboss.weld.resolution.QualifierInstance;
 
-import com.google.common.base.Preconditions;
-
 /**
  * Utility methods for working with qualifiers and interceptor bindings.
  *
