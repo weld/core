@@ -51,4 +51,8 @@ public abstract class ForwardingApplicationFactory extends ApplicationFactory {
         return delegate().toString();
     }
 
+    @Override
+    public ApplicationFactory getWrapped() {
+        return delegate();
+    }
 }
