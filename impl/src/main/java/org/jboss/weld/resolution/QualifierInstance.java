@@ -21,6 +21,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.security.AccessController;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.enterprise.inject.Any;
@@ -36,7 +37,6 @@ import org.jboss.weld.security.SetAccessibleAction;
 import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.collections.WeldCollections;
 
-import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableMap;
 
 /**
@@ -89,7 +89,7 @@ public class QualifierInstance {
     private QualifierInstance(Class<? extends Annotation> annotationClass, Map<AnnotatedMethod<?>, Object> values) {
         this.annotationClass = annotationClass;
         this.values = values;
-        this.hashCode = Objects.hashCode(annotationClass, values);
+        this.hashCode = Objects.hash(annotationClass, values);
     }
 
     private static Map<AnnotatedMethod<?>, Object> createValues(final Annotation instance, final MetaAnnotationStore store) {

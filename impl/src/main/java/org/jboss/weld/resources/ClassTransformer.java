@@ -21,6 +21,7 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -42,7 +43,6 @@ import org.jboss.weld.resources.spi.ResourceLoadingException;
 import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.reflection.Reflections;
 
-import com.google.common.base.Objects;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -125,14 +125,14 @@ public class ClassTransformer implements BootstrapService {
         public boolean equals(Object obj) {
             if (obj instanceof TypeHolder<?>) {
                 TypeHolder<?> that = (TypeHolder<?>) obj;
-                return Objects.equal(this.getBaseType(), that.getBaseType()) && Objects.equal(this.getBdaId(), that.getBdaId());
+                return Objects.equals(this.getBaseType(), that.getBaseType()) && Objects.equals(this.getBdaId(), that.getBdaId());
             }
             return false;
         }
 
         @Override
         public int hashCode() {
-            return Objects.hashCode(this.getBaseType(), this.getBdaId());
+            return Objects.hash(this.getBaseType(), this.getBdaId());
         }
 
         @Override
