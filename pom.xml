@@ -23,6 +23,10 @@
 
 
     <properties>
+        <!-- Plugin version overrides -->
+        <release.version>2.5</release.version>
+        <scm.plugin.version>1.9.1</scm.plugin.version>
+
         <!-- Dependency versions. KEEP IN ALPHABETICAL ORDER-->
         <apache.httpclient.version>3.1</apache.httpclient.version>
         <arquillian.version>1.0.2.Final</arquillian.version>
@@ -556,6 +560,11 @@
                             </pluginExecutions>
                         </lifecycleMappingMetadata>
                     </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-scm-plugin</artifactId>
+                    <version>${scm.plugin.version}</version>
                 </plugin>
 
             </plugins>
