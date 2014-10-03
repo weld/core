@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.resolution;
 
-import static org.jboss.weld.util.cache.LoadingCacheUtils.getCastCacheValue;
 import static org.jboss.weld.util.collections.WeldCollections.immutableGuavaSet;
 
 import java.io.Serializable;
@@ -32,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.Function;
 
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
@@ -45,11 +45,10 @@ import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.LazyValueHolder;
 import org.jboss.weld.util.Primitives;
+import org.jboss.weld.util.cache.ComputingCache;
+import org.jboss.weld.util.cache.ComputingCacheBuilder;
 import org.jboss.weld.util.reflection.Reflections;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableSet;
 
 /**
@@ -59,19 +58,19 @@ import com.google.common.collect.ImmutableSet;
 public abstract class AbstractTypeSafeBeanResolver<T extends Bean<?>, C extends Collection<T>> extends TypeSafeResolver<Resolvable, T, C> {
 
     private final BeanManagerImpl beanManager;
-    private final LoadingCache<Set<Bean<?>>, Set<Bean<?>>> disambiguatedBeans;
+    private final ComputingCache<Set<Bean<?>>, Set<Bean<?>>> disambiguatedBeans;
     private final SpecializationAndEnablementRegistry registry;
     private final MetaAnnotationStore store;
 
     private final LazyValueHolder<Map<Type, ArrayList<T>>> beansByType;
 
-    public class BeanDisambiguation extends CacheLoader<Set<Bean<?>>, Set<Bean<?>>> {
+    public class BeanDisambiguation implements Function<Set<Bean<?>>, Set<Bean<?>>> {
 
         private BeanDisambiguation() {
         }
 
         @Override
-        public Set<Bean<?>> load(Set<Bean<?>> from) {
+        public Set<Bean<?>> apply(Set<Bean<?>> from) {
             if (from.size() > 1) {
                 Set<Bean<?>> allBeans = new HashSet<Bean<?>>();
                 // beans that are themselves alternatives or their defining bean is an alternative
@@ -134,7 +133,7 @@ public abstract class AbstractTypeSafeBeanResolver<T extends Bean<?>, C extends 
         super(beans);
         this.beanManager = beanManager;
         this.registry = beanManager.getServices().get(SpecializationAndEnablementRegistry.class);
-        this.disambiguatedBeans = CacheBuilder.newBuilder().build(new BeanDisambiguation());
+        this.disambiguatedBeans = ComputingCacheBuilder.newBuilder().build(new BeanDisambiguation());
         this.store = beanManager.getServices().get(MetaAnnotationStore.class);
         // beansByType stores a map of a type to all beans that are assignable to
         // that type. This means that it most cases we do not need to loop through
@@ -260,13 +259,13 @@ public abstract class AbstractTypeSafeBeanResolver<T extends Bean<?>, C extends 
         //noinspection unchecked
         beans = ImmutableSet.copyOf(beans);
         //noinspection SuspiciousMethodCalls
-        return getCastCacheValue(disambiguatedBeans, beans);
+        return disambiguatedBeans.getCastValue(beans);
     }
 
     @Override
     public void clear() {
         super.clear();
-        this.disambiguatedBeans.invalidateAll();
+        this.disambiguatedBeans.clear();
         this.beansByType.clear();
     }
 

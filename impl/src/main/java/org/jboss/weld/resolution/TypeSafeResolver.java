@@ -16,19 +16,17 @@
  */
 package org.jboss.weld.resolution;
 
-import static org.jboss.weld.util.cache.LoadingCacheUtils.getCacheValue;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 
+import org.jboss.weld.util.cache.ComputingCache;
+import org.jboss.weld.util.cache.ComputingCacheBuilder;
 import org.jboss.weld.util.collections.WeldCollections;
-
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 
 /**
  * Implementation of type safe bean resolution
@@ -39,7 +37,7 @@ import com.google.common.cache.LoadingCache;
  */
 public abstract class TypeSafeResolver<R extends Resolvable, T, C extends Collection<T>> {
 
-    private static class ResolvableToBeanCollection<R extends Resolvable, T, C extends Collection<T>> extends CacheLoader<R, C> {
+    private static class ResolvableToBeanCollection<R extends Resolvable, T, C extends Collection<T>> implements Function<R, C> {
 
         private final TypeSafeResolver<R, T, C> resolver;
 
@@ -47,7 +45,7 @@ public abstract class TypeSafeResolver<R extends Resolvable, T, C extends Collec
             this.resolver = resolver;
         }
 
-        public C load(R from) {
+        public C apply(R from) {
             return resolver.makeResultImmutable(resolver.sortResult(resolver.filterResult(resolver.findMatching(from))));
         }
 
@@ -64,7 +62,7 @@ public abstract class TypeSafeResolver<R extends Resolvable, T, C extends Collec
     }
 
     // The resolved injection points
-    private final LoadingCache<R, C> resolved;
+    private final ComputingCache<R, C> resolved;
     // The beans to search
     private final Iterable<? extends T> allBeans;
     private final ResolvableToBeanCollection<R, T, C> resolverFunction;
@@ -75,7 +73,7 @@ public abstract class TypeSafeResolver<R extends Resolvable, T, C extends Collec
      */
     public TypeSafeResolver(Iterable<? extends T> allBeans) {
         this.resolverFunction = new ResolvableToBeanCollection<R, T, C>(this);
-        this.resolved = CacheBuilder.newBuilder().maximumSize(RESOLVED_CACHE_UPPER_BOUND).build(resolverFunction);
+        this.resolved = ComputingCacheBuilder.newBuilder().setMaxSize(RESOLVED_CACHE_UPPER_BOUND).build(resolverFunction);
         this.allBeans = allBeans;
     }
 
@@ -83,8 +81,7 @@ public abstract class TypeSafeResolver<R extends Resolvable, T, C extends Collec
      * Reset all cached resolutions
      */
     public void clear() {
-        this.resolved.invalidateAll();
-        this.resolved.cleanUp();
+        this.resolved.clear();
     }
 
     /**
@@ -96,9 +93,9 @@ public abstract class TypeSafeResolver<R extends Resolvable, T, C extends Collec
     public C resolve(R resolvable, boolean cache) {
         R wrappedResolvable = wrap(resolvable);
         if (cache) {
-            return getCacheValue(resolved, wrappedResolvable);
+            return resolved.getValue(wrappedResolvable);
         } else {
-            return resolverFunction.load(wrappedResolvable);
+            return resolverFunction.apply(wrappedResolvable);
         }
     }
 
@@ -150,7 +147,7 @@ public abstract class TypeSafeResolver<R extends Resolvable, T, C extends Collec
     }
 
     public boolean isCached(R resolvable) {
-        return resolved.getIfPresent(wrap(resolvable)) != null;
+        return resolved.getValueIfPresent(wrap(resolvable)) != null;
     }
 
     /**

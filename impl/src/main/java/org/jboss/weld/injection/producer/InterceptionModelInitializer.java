@@ -49,6 +49,7 @@ import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.logging.ValidatorLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.Functions;
 import org.jboss.weld.util.reflection.Reflections;
 
 import com.google.common.collect.HashMultimap;
@@ -320,7 +321,7 @@ public class InterceptionModelInitializer<T> {
     }
 
     private List<InterceptorClassMetadata<?>> asInterceptorMetadata(List<Interceptor<?>> interceptors) {
-        return Lists.transform(interceptors, reader.getInterceptorToInterceptorMetadataFunction());
+        return Lists.transform(interceptors, Functions.toGuavaFunction(reader.getInterceptorToInterceptorMetadataFunction()));
     }
 
     @Override
