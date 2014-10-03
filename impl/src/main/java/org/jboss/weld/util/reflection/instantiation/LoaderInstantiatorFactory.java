@@ -17,12 +17,10 @@
 
 package org.jboss.weld.util.reflection.instantiation;
 
-import static org.jboss.weld.util.cache.LoadingCacheUtils.getCacheValue;
+import java.util.function.Function;
 
-import com.google.common.base.Function;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
+import org.jboss.weld.util.cache.ComputingCache;
+import org.jboss.weld.util.cache.ComputingCacheBuilder;
 
 /**
  * Instantiator factory per loader.
@@ -33,7 +31,7 @@ public class LoaderInstantiatorFactory extends AbstractInstantiatorFactory imple
 
     private volatile Boolean enabled;
 
-    private final LoadingCache<ClassLoader, Boolean> cached = CacheBuilder.newBuilder().build(CacheLoader.from(this));
+    private final ComputingCache<ClassLoader, Boolean> cached = ComputingCacheBuilder.newBuilder().build(this);
 
     public boolean useInstantiators() {
         final ClassLoader tccl = Thread.currentThread().getContextClassLoader();
@@ -53,11 +51,11 @@ public class LoaderInstantiatorFactory extends AbstractInstantiatorFactory imple
             return enabled;
         }
 
-        return getCacheValue(cached, tccl);
+        return cached.getValue(tccl);
     }
 
     public void cleanup() {
-        cached.invalidateAll();
+        cached.clear();
     }
 
     public Boolean apply(ClassLoader tccl) {

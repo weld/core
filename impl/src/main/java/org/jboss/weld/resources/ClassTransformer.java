@@ -24,6 +24,7 @@ import java.lang.reflect.Type;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.function.Function;
 
 import javax.enterprise.inject.spi.AnnotatedType;
 
@@ -41,6 +42,8 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
 import org.jboss.weld.util.AnnotatedTypes;
+import org.jboss.weld.util.cache.ComputingCache;
+import org.jboss.weld.util.cache.ComputingCacheBuilder;
 import org.jboss.weld.util.reflection.Reflections;
 
 import com.google.common.cache.CacheBuilder;
@@ -60,9 +63,9 @@ public class ClassTransformer implements BootstrapService {
         return manager.getServices().get(ClassTransformer.class);
     }
 
-    private class TransformClassToWeldAnnotation extends CacheLoader<Class<? extends Annotation>, EnhancedAnnotation<?>> {
+    private class TransformClassToWeldAnnotation implements Function<Class<? extends Annotation>, EnhancedAnnotation<?>> {
         @Override
-        public EnhancedAnnotation<?> load(Class<? extends Annotation> from) {
+        public EnhancedAnnotation<?> apply(Class<? extends Annotation> from) {
 
             SlimAnnotatedType<? extends Annotation> slimAnnotatedType = syntheticAnnotationsAnnotatedTypes.get(from);
 
@@ -78,9 +81,9 @@ public class ClassTransformer implements BootstrapService {
         }
     }
 
-    private class TransformClassToBackedAnnotatedType extends CacheLoader<TypeHolder<?>, BackedAnnotatedType<?>> {
+    private class TransformClassToBackedAnnotatedType implements Function<TypeHolder<?>, BackedAnnotatedType<?>> {
         @Override
-        public BackedAnnotatedType<?> load(TypeHolder<?> typeHolder) {
+        public BackedAnnotatedType<?> apply(TypeHolder<?> typeHolder) {
             // make sure declaring class (if any) is loadable before loading this class
             Reflections.checkDeclaringClassLoadable(typeHolder.getRawType());
             BackedAnnotatedType<?> type = BackedAnnotatedType.of(typeHolder.getRawType(), typeHolder.getBaseType(), cache,
@@ -89,8 +92,7 @@ public class ClassTransformer implements BootstrapService {
         }
     }
 
-    private class TransformSlimAnnotatedTypeToEnhancedAnnotatedType extends
-            CacheLoader<SlimAnnotatedType<?>, EnhancedAnnotatedType<?>> {
+    private class TransformSlimAnnotatedTypeToEnhancedAnnotatedType extends CacheLoader<SlimAnnotatedType<?>, EnhancedAnnotatedType<?>> {
         @Override
         public EnhancedAnnotatedType<?> load(SlimAnnotatedType<?> annotatedType) {
             return EnhancedAnnotatedTypeImpl.of(annotatedType, ClassTransformer.this);
@@ -146,9 +148,9 @@ public class ClassTransformer implements BootstrapService {
 
     private final ConcurrentMap<AnnotatedTypeIdentifier, SlimAnnotatedType<?>> slimAnnotatedTypesById;
 
-    private final LoadingCache<TypeHolder<?>, BackedAnnotatedType<?>> backedAnnotatedTypes;
+    private final ComputingCache<TypeHolder<?>, BackedAnnotatedType<?>> backedAnnotatedTypes;
     private final LoadingCache<SlimAnnotatedType<?>, EnhancedAnnotatedType<?>> enhancedAnnotatedTypes;
-    private final LoadingCache<Class<? extends Annotation>, EnhancedAnnotation<?>> annotations;
+    private final ComputingCache<Class<? extends Annotation>, EnhancedAnnotation<?>> annotations;
 
     private final TypeStore typeStore;
     private final SharedObjectCache cache;
@@ -159,11 +161,11 @@ public class ClassTransformer implements BootstrapService {
     public ClassTransformer(TypeStore typeStore, SharedObjectCache cache, ReflectionCache reflectionCache, String contextId) {
         this.contextId = contextId;
 
-        CacheBuilder<Object, Object> defaultBuilder = CacheBuilder.newBuilder();
+        ComputingCacheBuilder defaultBuilder = ComputingCacheBuilder.newBuilder();
         // if an AnnotatedType reference is not retained by a Bean we are not going to need it at runtime and can therefore drop
         // it immediately
-        this.backedAnnotatedTypes = CacheBuilder.newBuilder().weakValues().build(new TransformClassToBackedAnnotatedType());
-        this.enhancedAnnotatedTypes = defaultBuilder.build(new TransformSlimAnnotatedTypeToEnhancedAnnotatedType());
+        this.backedAnnotatedTypes = ComputingCacheBuilder.newBuilder().setWeakValues().build(new TransformClassToBackedAnnotatedType());
+        this.enhancedAnnotatedTypes = CacheBuilder.newBuilder().build(new TransformSlimAnnotatedTypeToEnhancedAnnotatedType());
         this.annotations = defaultBuilder.build(new TransformClassToWeldAnnotation());
         this.typeStore = typeStore;
         this.cache = cache;
@@ -175,7 +177,7 @@ public class ClassTransformer implements BootstrapService {
 
     public <T> BackedAnnotatedType<T> getBackedAnnotatedType(final Class<T> rawType, final Type baseType, final String bdaId) {
         try {
-            return getCastCacheValue(backedAnnotatedTypes, new TypeHolder<T>(rawType, baseType, bdaId));
+            return backedAnnotatedTypes.getCastValue(new TypeHolder<T>(rawType, baseType, bdaId));
         } catch (RuntimeException e) {
             if (e instanceof TypeNotPresentException || e instanceof ResourceLoadingException) {
                 BootstrapLogger.LOG.exceptionWhileLoadingClass(rawType.getName(), e);
@@ -251,7 +253,7 @@ public class ClassTransformer implements BootstrapService {
     }
 
     public <T extends Annotation> EnhancedAnnotation<T> getEnhancedAnnotation(final Class<T> clazz) {
-        return getCastCacheValue(annotations, clazz);
+        return annotations.getCastValue(clazz);
     }
 
     public void clearAnnotationData(Class<? extends Annotation> annotationClass) {
@@ -283,11 +285,11 @@ public class ClassTransformer implements BootstrapService {
     @Override
     public void cleanupAfterBoot() {
         this.enhancedAnnotatedTypes.invalidateAll();
-        this.annotations.invalidateAll();
-        for (BackedAnnotatedType<?> annotatedType : backedAnnotatedTypes.asMap().values()) {
+        this.annotations.clear();
+        for (BackedAnnotatedType<?> annotatedType : backedAnnotatedTypes.getAllPresent().values()) {
             annotatedType.clear();
         }
-        this.backedAnnotatedTypes.invalidateAll();
+        this.backedAnnotatedTypes.clear();
     }
 
     @Override

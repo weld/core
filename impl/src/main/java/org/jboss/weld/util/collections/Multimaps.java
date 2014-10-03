@@ -20,10 +20,10 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
+import java.util.function.Function;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
+import org.jboss.weld.util.cache.ComputingCache;
+import org.jboss.weld.util.cache.ComputingCacheBuilder;
 
 /**
  * Multimap utilities.
@@ -36,11 +36,11 @@ public class Multimaps {
     private Multimaps() {
     }
 
-    private static final CacheBuilder<Object, Object> CACHE_BUILDER = CacheBuilder.newBuilder();
+    private static final ComputingCacheBuilder CACHE_BUILDER = ComputingCacheBuilder.newBuilder();
 
-    private static class ConcurrentSetMultimapValueSupplier<K, V> extends CacheLoader<K, Set<V>> {
+    private static class ConcurrentSetMultimapValueSupplier<K, V> implements Function<K, Set<V>> {
         @Override
-        public Set<V> load(K input) {
+        public Set<V> apply(K input) {
             return Collections.synchronizedSet(new HashSet<V>());
         }
     }
@@ -48,7 +48,7 @@ public class Multimaps {
     /**
      * Creates a {@link ConcurrentMap} instance whose values are populated with synchronized HashSet instances.
      */
-    public static <K, V> LoadingCache<K, Set<V>> newConcurrentSetMultimap() {
+    public static <K, V> ComputingCache<K, Set<V>> newConcurrentSetMultimap() {
         return CACHE_BUILDER.build(new ConcurrentSetMultimapValueSupplier<K, V>());
     }
 }

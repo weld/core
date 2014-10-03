@@ -28,6 +28,7 @@ import com.google.common.util.concurrent.UncheckedExecutionException;
  * Guava loading cache utilities.
  *
  * @author Martin Kouba
+ * @deprecated Remove once WELD-1756 is resolved
  */
 public final class LoadingCacheUtils {
 
