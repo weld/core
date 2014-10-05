@@ -135,7 +135,7 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
     @Override
     protected void addFields(final ClassFile proxyClassType, List<DeferredBytecode> initialValueBytecode) {
         super.addFields(proxyClassType, initialValueBytecode);
-        if (CACHEABLE_SCOPES.contains(getBean().getScope())) {
+        if (useCache()) {
             try {
                 proxyClassType.addField(AccessFlag.TRANSIENT | AccessFlag.PRIVATE, CACHE_FIELD, LJAVA_LANG_THREAD_LOCAL);
                 initialValueBytecode.add(new DeferredBytecode() {
@@ -205,7 +205,7 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
 
         final Class<? extends Annotation> scope = getBean().getScope();
 
-        if (CACHEABLE_SCOPES.contains(scope)) {
+        if (useCache()) {
             loadCacheableBeanInstance(classMethod.getClassFile(), methodInfo, b);
         } else {
             loadBeanInstance(classMethod.getClassFile(), methodInfo, b);
@@ -353,7 +353,10 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
 
     @Override
     protected String getProxyNameSuffix() {
-        return CLIENT_PROXY_SUFFIX;
+        return (useCache() ? "Caching" : "") + CLIENT_PROXY_SUFFIX;
     }
 
+    private boolean useCache() {
+        return CACHEABLE_SCOPES.contains(getBean().getScope());
+    }
 }
