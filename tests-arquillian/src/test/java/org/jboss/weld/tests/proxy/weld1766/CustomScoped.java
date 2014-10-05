@@ -14,22 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.proxy.weld9999;
+package org.jboss.weld.tests.proxy.weld1766;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.AfterBeanDiscovery;
-import javax.enterprise.inject.spi.Extension;
+import javax.enterprise.context.NormalScope;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
-public class CustomScopeExtension implements Extension {
+import static java.lang.annotation.ElementType.*;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-    private final CustomContext context = new CustomContext();
-
-    void registerContext(@Observes AfterBeanDiscovery event) {
-        event.addContext(context);
-    }
-
-    public CustomContext getContext() {
-        return context;
-    }
+@NormalScope(passivating = true)
+@Inherited
+@Target({ TYPE, METHOD, FIELD })
+@Retention(RUNTIME)
+public @interface CustomScoped {
 
 }

@@ -1,4 +1,4 @@
-package org.jboss.weld.tests.proxy.weld9999;
+package org.jboss.weld.tests.proxy.weld1766;
 
 import javax.inject.Qualifier;
 import java.lang.annotation.Retention;
@@ -10,5 +10,5 @@ import static java.lang.annotation.ElementType.*;
 @Qualifier
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ METHOD, FIELD, PARAMETER, TYPE })
-public @interface Qualifier1 {
+public @interface Qualifier2 {
 }

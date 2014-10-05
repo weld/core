@@ -1,4 +1,4 @@
-package org.jboss.weld.tests.proxy.weld9999;
+package org.jboss.weld.tests.proxy.weld1766;
 
 import java.io.Serializable;
 
