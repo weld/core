@@ -139,7 +139,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
             if (injectionPoint != null) {
                 Class<?> injectionPointRawType = Reflections.getRawType(injectionPoint.getType());
                 if (injectionPointRawType.isPrimitive()) {
-                    return cast(Defaults.getJslDefaultValue(injectionPointRawType));
+                    return cast(Defaults.getJlsDefaultValue(injectionPointRawType));
                 }
             }
         }

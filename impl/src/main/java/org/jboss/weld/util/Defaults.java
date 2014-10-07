@@ -27,7 +27,7 @@ import com.google.common.collect.ImmutableMap;
  */
 public final class Defaults {
 
-    private static final Map<Class<?>, Object> JSL_PRIMITIVE_DEFAULT_VALUES;
+    private static final Map<Class<?>, Object> JLS_PRIMITIVE_DEFAULT_VALUES;
 
     private Defaults() {
     }
@@ -43,7 +43,7 @@ public final class Defaults {
         put(values, float.class, 0f);
         put(values, double.class, 0d);
         // TODO Use the appropriate immutable map replacement (and possibly builder)
-        JSL_PRIMITIVE_DEFAULT_VALUES = ImmutableMap.copyOf(values);
+        JLS_PRIMITIVE_DEFAULT_VALUES = ImmutableMap.copyOf(values);
     }
 
     private static <T> void put(Map<Class<?>, Object> map, Class<T> type, T value) {
@@ -51,17 +51,17 @@ public final class Defaults {
     }
 
     /**
-     * See also JSL8, 4.12.5 Initial Values of Variables.
+     * See also JLS8, 4.12.5 Initial Values of Variables.
      *
      * @param type
      * @return the default value for the given type as defined by JLS
      */
     @SuppressWarnings("unchecked")
-    public static <T> T getJslDefaultValue(Class<T> type) {
+    public static <T> T getJlsDefaultValue(Class<T> type) {
         if(!type.isPrimitive()) {
            return null;
         }
-        return (T) JSL_PRIMITIVE_DEFAULT_VALUES.get(type);
+        return (T) JLS_PRIMITIVE_DEFAULT_VALUES.get(type);
     }
 
 }
