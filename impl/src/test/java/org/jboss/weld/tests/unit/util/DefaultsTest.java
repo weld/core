@@ -31,16 +31,16 @@ public class DefaultsTest {
 
     @Test
     public void testJslDefaultValues() {
-        assertNull(Defaults.getJslDefaultValue(String.class));
-        assertNull(Defaults.getJslDefaultValue(Long.class));
-        assertFalse(Defaults.getJslDefaultValue(boolean.class));
-        assertTrue(Defaults.getJslDefaultValue(long.class) == 0L);
-        assertTrue(Defaults.getJslDefaultValue(double.class) == 0d);
-        assertTrue(Defaults.getJslDefaultValue(int.class) == 0);
-        assertTrue(Defaults.getJslDefaultValue(float.class) == 0f);
-        assertTrue(Defaults.getJslDefaultValue(short.class) == (short) 0);
-        assertTrue(Defaults.getJslDefaultValue(byte.class) == (byte) 0);
-        assertTrue(Defaults.getJslDefaultValue(char.class) == '\u0000');
+        assertNull(Defaults.getJlsDefaultValue(String.class));
+        assertNull(Defaults.getJlsDefaultValue(Long.class));
+        assertFalse(Defaults.getJlsDefaultValue(boolean.class));
+        assertTrue(Defaults.getJlsDefaultValue(long.class) == 0L);
+        assertTrue(Defaults.getJlsDefaultValue(double.class) == 0d);
+        assertTrue(Defaults.getJlsDefaultValue(int.class) == 0);
+        assertTrue(Defaults.getJlsDefaultValue(float.class) == 0f);
+        assertTrue(Defaults.getJlsDefaultValue(short.class) == (short) 0);
+        assertTrue(Defaults.getJlsDefaultValue(byte.class) == (byte) 0);
+        assertTrue(Defaults.getJlsDefaultValue(char.class) == '\u0000');
     }
 
 }
