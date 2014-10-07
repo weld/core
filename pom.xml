@@ -39,7 +39,7 @@
         <build.config.version>7</build.config.version>
         <cdi.tck-1-2.version>1.2.2.Final</cdi.tck-1-2.version>
         <cdi.tck-2-0.version>2.0.0-SNAPSHOT</cdi.tck-2-0.version>
-	<checkstyle.version>2.12.1</checkstyle.version>
+        <checkstyle.version>2.13</checkstyle.version>
         <classfilewriter.version>1.0.4.Final</classfilewriter.version>
         <contiperf.version>1.06</contiperf.version>
         <findbugs-maven-plugin.version>3.0.0</findbugs-maven-plugin.version>
@@ -532,6 +532,13 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
+                <configuration>
+                    <configLocation>weld-checkstyle/checkstyle.xml</configLocation>
+                    <suppressionsLocation>weld-checkstyle/checkstyle-suppressions.xml</suppressionsLocation>
+                    <consoleOutput>true</consoleOutput>
+                    <failsOnError>false</failsOnError>
+                    <useFile />
+                </configuration>
             </plugin>
             <!-- m2e Config -->
             <plugin>

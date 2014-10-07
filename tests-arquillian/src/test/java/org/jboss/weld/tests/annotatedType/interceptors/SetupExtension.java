@@ -14,9 +14,7 @@ import javax.enterprise.inject.spi.Extension;
 import org.jboss.weld.util.annotated.ForwardingAnnotatedMethod;
 import org.jboss.weld.util.annotated.ForwardingAnnotatedType;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.Sets;
+import com.google.common.collect.ImmutableSet;
 
 public class SetupExtension implements Extension {
 
@@ -55,7 +53,17 @@ public class SetupExtension implements Extension {
             @Override
             @SuppressWarnings({ "unchecked", "rawtypes" })
             public Set<AnnotatedMethod<? super Box>> getMethods() {
-                return Sets.newHashSet(Collections2.transform(delegate().getMethods(), new MethodWrappingFunction()));
+                // We don't use stream API due to odd generics issues
+                ImmutableSet.Builder builder = ImmutableSet.builder();
+                Set<AnnotatedMethod<? super Box>> annotatedMethods = delegate().getMethods();
+                for (final AnnotatedMethod<? super Box> annotatedMethod : annotatedMethods) {
+                    builder.add(new NoAnnotationMethodWrapper() {
+                        protected AnnotatedMethod<? super Box> delegate() {
+                            return annotatedMethod;
+                        }
+                    });
+                }
+                return builder.build();
             }
         };
 
@@ -78,18 +86,7 @@ public class SetupExtension implements Extension {
         public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
             return false;
         }
+
     }
 
-    private static class MethodWrappingFunction<T> implements Function<AnnotatedMethod<T>, AnnotatedMethod<T>> {
-        @Override
-        public AnnotatedMethod<T> apply(final AnnotatedMethod<T> input) {
-            return new NoAnnotationMethodWrapper<T>() {
-
-                @Override
-                protected AnnotatedMethod<T> delegate() {
-                    return input;
-                }
-            };
-        }
-    }
 }

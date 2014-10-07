@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -50,24 +51,9 @@ import org.jboss.weld.security.SetAccessibleAction;
 import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.collections.WeldCollections;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
 
-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
-
 public class BeanMethods {
-
-    @SuppressWarnings("rawtypes")
-    private static final Predicate<EnhancedAnnotatedMethod> BRIDGE_METHOD_FILTER_PREDICATE = new Predicate<EnhancedAnnotatedMethod>() {
-
-        @Override
-        @SuppressWarnings("NP_PARAMETER_MUST_BE_NONNULL_BUT_MARKED_AS_NULLABLE")
-        public boolean apply(EnhancedAnnotatedMethod method) {
-            Preconditions.checkArgumentNotNull(method, "method");
-            return !method.getJavaMember().isBridge();
-        }
-    };
 
     private BeanMethods() {
     }
@@ -320,7 +306,7 @@ public class BeanMethods {
      * @see http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6695379
      */
     public static <T> Collection<EnhancedAnnotatedMethod<?, ? super T>> filterOutBridgeMethods(final Collection<EnhancedAnnotatedMethod<?, ? super T>> methods) {
-        return Collections2.filter(methods, BRIDGE_METHOD_FILTER_PREDICATE);
+        return methods.stream().filter(m -> !m.getJavaMember().isBridge()).collect(Collectors.toList());
     }
 
     public static <T> List<Method> getInterceptorMethods(EnhancedAnnotatedType<T> type, final InterceptionType interceptionType, final boolean targetClass) {

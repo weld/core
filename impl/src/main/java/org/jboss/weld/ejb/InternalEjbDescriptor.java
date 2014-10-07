@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.jboss.weld.annotated.enhanced.MethodSignature;
 import org.jboss.weld.annotated.enhanced.jlr.MethodSignatureImpl;
@@ -32,8 +33,6 @@ import org.jboss.weld.ejb.spi.SubclassedComponentDescriptor;
 import org.jboss.weld.ejb.spi.helpers.ForwardingEjbDescriptor;
 import org.jboss.weld.util.reflection.Reflections;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableSet;
 
 /**
@@ -50,16 +49,6 @@ public class InternalEjbDescriptor<T> extends ForwardingEjbDescriptor<T> {
             return cast(ejbDescriptor);
         }
         return new InternalEjbDescriptor<T>(ejbDescriptor);
-    }
-
-    private static class BusinessInterfaceDescriptorToClassFunction implements Function<BusinessInterfaceDescriptor<?>, Class<?>> {
-
-        private static final BusinessInterfaceDescriptorToClassFunction INSTANCE = new BusinessInterfaceDescriptorToClassFunction();
-
-        @Override
-        public Class<?> apply(BusinessInterfaceDescriptor<?> input) {
-            return input.getInterface();
-        }
     }
 
     private final Class<?> objectInterface;
@@ -85,7 +74,7 @@ public class InternalEjbDescriptor<T> extends ForwardingEjbDescriptor<T> {
         if (interfaceDescriptors == null) {
             return Collections.emptySet();
         }
-        return ImmutableSet.copyOf(Collections2.transform(interfaceDescriptors, BusinessInterfaceDescriptorToClassFunction.INSTANCE));
+        return ImmutableSet.copyOf(interfaceDescriptors.stream().map(d -> d.getInterface()).collect(Collectors.toSet()));
     }
 
     @Override
