@@ -32,7 +32,7 @@ import com.google.common.collect.ImmutableMap;
  * @param <V>
  * @see ConcurrentHashMap#computeIfAbsent(Object, Function)
  */
-class MapBackedComputingCache<K, V> extends AbstractComputingCache<K, V> {
+class MapBackedComputingCache<K, V> extends AbstractMapBackedComputingCache<K, V> {
 
     private final ConcurrentHashMap<K, V> map;
 

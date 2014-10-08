@@ -35,7 +35,7 @@ import com.google.common.collect.ImmutableMap;
  * @param <V>
  * @see ConcurrentHashMap#compute(Object, BiFunction)
  */
-class WeakValueMapBackedComputingCache<K, V> extends AbstractComputingCache<K, V> {
+class WeakValueMapBackedComputingCache<K, V> extends AbstractMapBackedComputingCache<K, V> {
 
     private final BiFunction<K, WeakReference<V>, WeakReference<V>> remappingFunction;
 
@@ -52,13 +52,13 @@ class WeakValueMapBackedComputingCache<K, V> extends AbstractComputingCache<K, V
         this.remappingFunction = new WeakValueFunctionWrapper<K, V>(computingFunction, this);
     }
 
-      @Override
+    @Override
     public V getValueIfPresent(K key) {
         WeakReference<V> reference = map.get(key);
         return reference != null ? reference.get() : null;
     }
 
-      @Override
+    @Override
     public Map<K, V> getAllPresent() {
         ImmutableMap.Builder<K, V> builder = ImmutableMap.builder();
         for (Entry<K, WeakReference<V>> entry : map.entrySet()) {
