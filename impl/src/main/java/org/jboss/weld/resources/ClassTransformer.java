@@ -49,7 +49,6 @@ import org.jboss.weld.util.reflection.Reflections;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import com.google.common.util.concurrent.ExecutionError;
 
 /**
  * @author Pete Muir
@@ -184,13 +183,11 @@ public class ClassTransformer implements BootstrapService {
                 throw new ResourceLoadingException("Exception while loading class " + rawType.getName(), e);
             }
             throw e;
-        } catch (ExecutionError e) {
-            // LoadingCache throws ExecutionError if an error was thrown while loading the value
-            final Throwable cause = e.getCause();
-            if(cause instanceof NoClassDefFoundError || cause instanceof LinkageError) {
-                throw new ResourceLoadingException("Error while loading class " + rawType.getName(), cause);
+        } catch (Error e) {
+            if(e instanceof NoClassDefFoundError || e instanceof LinkageError) {
+                throw new ResourceLoadingException("Error while loading class " + rawType.getName(), e);
             }
-            BootstrapLogger.LOG.errorWhileLoadingClass(rawType.getName(), cause);
+            BootstrapLogger.LOG.errorWhileLoadingClass(rawType.getName(), e);
             throw e;
         }
     }

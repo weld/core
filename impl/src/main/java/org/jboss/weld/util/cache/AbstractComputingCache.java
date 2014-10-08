@@ -16,16 +16,17 @@
  */
 package org.jboss.weld.util.cache;
 
-import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
 
 /**
+ * An abstract {@link ComputingCache} which may remove all cache entries if the max size limit exceeded. Subclasses should always perform the max size check
+ * during computation and throw {@link MaxSizeExceededException} if appropriate.
  *
  * @author Martin Kouba
  */
 abstract class AbstractComputingCache<K, V> implements ComputingCache<K, V> {
 
-    protected final Long maxSize;
+    private final Long maxSize;
 
     /**
      *
@@ -55,19 +56,12 @@ abstract class AbstractComputingCache<K, V> implements ComputingCache<K, V> {
         return (T) getValue((K) key);
     }
 
-    @Override
-    public long size() {
-        return getMap().size();
-    }
-
-    @Override
-    public void clear() {
-        getMap().clear();
-    }
-
-    @Override
-    public void invalidate(Object key) {
-        getMap().remove(key);
+    /**
+     *
+     * @return the max size limit
+     */
+    protected Long getMaxSize() {
+        return maxSize;
     }
 
     /**
@@ -76,11 +70,6 @@ abstract class AbstractComputingCache<K, V> implements ComputingCache<K, V> {
      * @return the value for the given key
      */
     protected abstract V computeIfNeeded(K key);
-
-    /**
-     * @return the underlying map
-     */
-    protected abstract ConcurrentMap<K, ?> getMap();
 
     /**
      * A default computing function wrapper which performs max size limit check during computation.
@@ -109,6 +98,14 @@ abstract class AbstractComputingCache<K, V> implements ComputingCache<K, V> {
 
     }
 
+    /**
+     * An abstract computing function wrapper.
+     *
+     * @author Martin Kouba
+     *
+     * @param <K>
+     * @param <V>
+     */
     abstract static class FunctionWrapper<K, V> {
 
         protected final Function<K, V> computingFunction;
@@ -137,6 +134,7 @@ abstract class AbstractComputingCache<K, V> implements ComputingCache<K, V> {
     }
 
     /**
+     * This exception should be thrown when the max size limit exceeded.
      *
      * @author Martin Kouba
      */
