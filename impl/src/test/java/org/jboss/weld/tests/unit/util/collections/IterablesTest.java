@@ -73,7 +73,21 @@ public class IterablesTest {
 
     @Test
     public void testIterators() {
-
+        List<String> list1 = new ArrayList<String>();
+        List<String> list2 = new ArrayList<String>();
+        list1.add("bla");
+        list2.add("foo");
+        list2.add("baz");
+        Iterator<Iterator<? extends String>> iterablesIterator = Iterables.iterators(ImmutableList.of(list2, list1));
+        assertTrue(iterablesIterator.hasNext());
+        Iterator<? extends String> iterator = iterablesIterator.next();
+        assertEquals(list2.get(0), iterator.next());
+        assertEquals(list2.get(1), iterator.next());
+        assertFalse(iterator.hasNext());
+        iterator = iterablesIterator.next();
+        assertEquals(list1.get(0), iterator.next());
+        assertFalse(iterator.hasNext());
+        assertFalse(iterablesIterator.hasNext());
     }
 
 }

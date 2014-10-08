@@ -61,15 +61,15 @@ public final class Iterables {
      * @return an iterator over iterators from the given iterable of iterables
      */
     public static <T> Iterator<Iterator<? extends T>> iterators(Iterable<? extends Iterable<? extends T>> iterables) {
-        final Iterator<? extends Iterable<? extends T>> iterableIterator = iterables.iterator();
+        final Iterator<? extends Iterable<? extends T>> iterator = iterables.iterator();
         return new Iterator<Iterator<? extends T>>() {
             @Override
             public boolean hasNext() {
-                return iterableIterator.hasNext();
+                return iterator.hasNext();
             }
             @Override
             public Iterator<? extends T> next() {
-                return iterableIterator.next().iterator();
+                return iterator.next().iterator();
             }
         };
     }

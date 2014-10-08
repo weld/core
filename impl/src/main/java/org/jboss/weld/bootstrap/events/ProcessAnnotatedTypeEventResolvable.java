@@ -38,9 +38,8 @@ import org.jboss.weld.annotated.slim.backed.BackedAnnotatedType;
 import org.jboss.weld.annotated.slim.unbacked.UnbackedAnnotatedType;
 import org.jboss.weld.resolution.QualifierInstance;
 import org.jboss.weld.resolution.Resolvable;
+import org.jboss.weld.util.collections.Sets;
 import org.jboss.weld.util.reflection.ParameterizedTypeImpl;
-
-import com.google.common.collect.Sets;
 
 /**
  * For {@link ProcessAnnotatedType} we need a special {@link Resolvable} in order to support {@link WithAnnotations} properly.

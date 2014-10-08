@@ -39,7 +39,6 @@ import org.jboss.weld.util.Types;
 import org.jboss.weld.util.reflection.Reflections;
 
 import com.google.common.base.Predicate;
-import com.google.common.collect.Sets;
 
 /**
  * ProcessAnnotatedType observer method resolver. It uses {@link ClassFileServices} for resolution and thus entirely avoids loading the classes which speeds up
@@ -114,7 +113,7 @@ public class FastProcessAnnotatedTypeResolver extends AbstractBootstrapService {
     private final Map<ExtensionObserverMethodImpl<?, ?>, Predicate<ClassFileInfo>> observers;
 
     public FastProcessAnnotatedTypeResolver(Iterable<ObserverMethod<?>> observers) throws UnsupportedObserverMethodException {
-        this.catchAllObservers = Sets.newHashSet();
+        this.catchAllObservers = new HashSet<>();
         this.observers = new LinkedHashMap<ExtensionObserverMethodImpl<?, ?>, Predicate<ClassFileInfo>>();
         for (ObserverMethod<?> o : observers) {
             if (o instanceof ExtensionObserverMethodImpl<?, ?>) {

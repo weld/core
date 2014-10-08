@@ -18,6 +18,7 @@ package org.jboss.weld.bootstrap;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -42,7 +43,6 @@ import org.jboss.weld.util.collections.WeldCollections;
 
 import com.google.common.collect.Multimaps;
 import com.google.common.collect.SetMultimap;
-import com.google.common.collect.Sets;
 
 /**
  * Processes validation of beans, decorators and interceptors in parallel.
@@ -61,7 +61,7 @@ public class ConcurrentValidator extends Validator {
     @Override
     public void validateBeans(Collection<? extends Bean<?>> beans, final BeanManagerImpl manager) {
         final List<RuntimeException> problems = new CopyOnWriteArrayList<RuntimeException>();
-        final Set<CommonBean<?>> specializedBeans = Sets.newSetFromMap(new ConcurrentHashMap<CommonBean<?>, Boolean>());
+        final Set<CommonBean<?>> specializedBeans = Collections.newSetFromMap(new ConcurrentHashMap<CommonBean<?>, Boolean>());
 
         executor.invokeAllAndCheckForExceptions(new IterativeWorkerTaskFactory<Bean<?>>(beans) {
             protected void doWork(Bean<?> bean) {
@@ -89,7 +89,7 @@ public class ConcurrentValidator extends Validator {
 
     @Override
     public void validateDecorators(Collection<? extends Decorator<?>> decorators, final BeanManagerImpl manager) {
-        final Set<CommonBean<?>> specializedBeans = Sets.newSetFromMap(new ConcurrentHashMap<CommonBean<?>, Boolean>());
+        final Set<CommonBean<?>> specializedBeans = Collections.newSetFromMap(new ConcurrentHashMap<CommonBean<?>, Boolean>());
 
         executor.invokeAllAndCheckForExceptions(new IterativeWorkerTaskFactory<Decorator<?>>(decorators) {
             protected void doWork(Decorator<?> decorator) {

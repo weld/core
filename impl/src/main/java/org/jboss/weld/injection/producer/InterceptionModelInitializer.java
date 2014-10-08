@@ -23,8 +23,10 @@ import static org.jboss.weld.util.Interceptors.mergeBeanInterceptorBindings;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.enterprise.inject.spi.AnnotatedConstructor;
 import javax.enterprise.inject.spi.AnnotatedMethod;
@@ -49,12 +51,10 @@ import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.logging.ValidatorLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
-import org.jboss.weld.util.Functions;
 import org.jboss.weld.util.reflection.Reflections;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 
 /**
@@ -290,7 +290,7 @@ public class InterceptionModelInitializer<T> {
     }
 
     private List<InterceptorClassMetadata<?>> getMethodDeclaredInterceptorMetadatas(Class<?>[] methodDeclaredInterceptors) {
-        List<InterceptorClassMetadata<?>> list = Lists.newLinkedList();
+        List<InterceptorClassMetadata<?>> list = new LinkedList<>();
         for (Class<?> clazz : methodDeclaredInterceptors) {
             list.add(reader.getPlainInterceptorMetadata(clazz));
         }
@@ -321,7 +321,7 @@ public class InterceptionModelInitializer<T> {
     }
 
     private List<InterceptorClassMetadata<?>> asInterceptorMetadata(List<Interceptor<?>> interceptors) {
-        return Lists.transform(interceptors, Functions.toGuavaFunction(reader.getInterceptorToInterceptorMetadataFunction()));
+        return interceptors.stream().map((interceptor) -> this.reader.getCdiInterceptorMetadata(interceptor)).collect(Collectors.toList());
     }
 
     @Override
