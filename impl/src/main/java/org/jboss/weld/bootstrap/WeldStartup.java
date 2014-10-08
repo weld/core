@@ -185,6 +185,8 @@ public class WeldStartup {
         setupInitialServices();
         registry.addAll(initialServices.entrySet());
 
+        new AdditionalServiceLoader(deployment).loadAdditionalServices(registry);
+
         if (!registry.contains(ResourceLoader.class)) {
             registry.add(ResourceLoader.class, DefaultResourceLoader.INSTANCE);
         }
@@ -200,15 +202,15 @@ public class WeldStartup {
         if (!registry.contains(BootstrapConfiguration.class)) {
             registry.add(BootstrapConfiguration.class, new FileBasedBootstrapConfiguration(DefaultResourceLoader.INSTANCE));
         }
+        addImplementationServices(registry);
+
 
         verifyServices(registry, environment.getRequiredDeploymentServices());
-
         if (!registry.contains(TransactionServices.class)) {
             BootstrapLogger.LOG.jtaUnavailable();
         }
 
         this.deployment = deployment;
-        addImplementationServices(registry);
         this.environment = environment;
         this.deploymentManager = BeanManagerImpl.newRootManager(contextId, "deployment", registry);
 
