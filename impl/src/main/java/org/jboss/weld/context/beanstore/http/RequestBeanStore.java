@@ -45,7 +45,7 @@ public class RequestBeanStore extends AttributeBeanStore {
 
     @Override
     protected Collection<String> getAttributeNames() {
-        return new EnumerationList<String>(Reflections.<Enumeration<String>>cast(request.getAttributeNames()));
+        return new EnumerationList<>(Reflections.<Enumeration<String>>cast(request.getAttributeNames()));
     }
 
     @Override

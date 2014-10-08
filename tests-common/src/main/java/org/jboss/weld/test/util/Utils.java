@@ -83,7 +83,7 @@ public class Utils {
             name = clazz.getPackage().getName().replace(".", "/") + "/" + name;
         }
         try {
-            return new EnumerationList<URL>(clazz.getClassLoader().getResources(name));
+            return new EnumerationList<>(clazz.getClassLoader().getResources(name));
         } catch (IOException e) {
             throw new RuntimeException("Error loading resource from classloader" + name, e);
         }

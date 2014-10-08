@@ -45,7 +45,7 @@ public abstract class AbstractSessionBeanStore extends AttributeBeanStore {
         if (session == null) {
             return emptyList();
         } else {
-            return new EnumerationList<String>(Reflections.<Enumeration<String>>cast(session.getAttributeNames()));
+            return new EnumerationList<>(Reflections.<Enumeration<String>>cast(session.getAttributeNames()));
         }
     }
 

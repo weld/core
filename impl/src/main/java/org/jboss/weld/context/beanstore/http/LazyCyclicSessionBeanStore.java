@@ -16,17 +16,18 @@
  */
 package org.jboss.weld.context.beanstore.http;
 
-import org.jboss.weld.context.beanstore.NamingScheme;
-import org.jboss.weld.util.collections.EnumerationList;
-import org.jboss.weld.util.reflection.Reflections;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.jboss.weld.context.beanstore.NamingScheme;
+import org.jboss.weld.util.collections.EnumerationList;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * This session bean store knows how to handle cyclic bean creation.
@@ -78,7 +79,7 @@ public class LazyCyclicSessionBeanStore extends LazySessionBeanStore {
             names.addAll(map.keySet());
             HttpSession session = getSessionIfExists();
             if (session != null) {
-                names.addAll(new EnumerationList<String>(Reflections.<Enumeration<String>>cast(session.getAttributeNames())));
+                names.addAll(new EnumerationList<>(Reflections.<Enumeration<String>>cast(session.getAttributeNames())));
             }
             return names;
         }

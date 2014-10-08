@@ -55,7 +55,7 @@ public abstract class AbstractClassLoaderResourceLoader implements ResourceLoade
     @Override
     public Collection<URL> getResources(String name) {
         try {
-            return new EnumerationList<URL>(classLoader().getResources(name));
+            return new EnumerationList<>(classLoader().getResources(name));
         } catch (IOException e) {
             throw new ResourceLoadingException("Error loading resource " + name, e);
         }
