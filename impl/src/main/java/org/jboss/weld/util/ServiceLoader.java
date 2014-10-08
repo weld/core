@@ -16,10 +16,7 @@
  */
 package org.jboss.weld.util;
 
-import org.jboss.weld.bootstrap.spi.Metadata;
-import org.jboss.weld.metadata.FileMetadata;
-
-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+import static java.util.logging.Level.WARNING;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -29,14 +26,19 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import static java.util.logging.Level.WARNING;
+import org.jboss.weld.bootstrap.spi.Metadata;
+import org.jboss.weld.metadata.FileMetadata;
+import org.jboss.weld.resources.ClassLoaderResourceLoader;
+import org.jboss.weld.resources.spi.ResourceLoader;
+import org.jboss.weld.resources.spi.ResourceLoadingException;
+
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
 /**
  * This class handles looking up service providers on the class path. It
@@ -96,6 +98,13 @@ public class ServiceLoader<S> implements Iterable<Metadata<S>> {
         if (loader == null) {
             loader = service.getClassLoader();
         }
+        return new ServiceLoader<S>(service, new ClassLoaderResourceLoader(loader));
+    }
+
+    public static <S> ServiceLoader<S> load(Class<S> service, ResourceLoader loader) {
+        if (loader == null) {
+            return load(service, service.getClassLoader());
+        }
         return new ServiceLoader<S>(service, loader);
     }
 
@@ -126,11 +135,11 @@ public class ServiceLoader<S> implements Iterable<Metadata<S>> {
 
     private final String serviceFile;
     private Class<S> expectedType;
-    private final ClassLoader loader;
+    private final ResourceLoader loader;
 
     private Set<Metadata<S>> providers;
 
-    private ServiceLoader(Class<S> service, ClassLoader loader) {
+    private ServiceLoader(Class<S> service, ResourceLoader loader) {
         this.loader = loader;
         this.serviceFile = SERVICES + "/" + service.getName();
         this.expectedType = service;
@@ -155,16 +164,7 @@ public class ServiceLoader<S> implements Iterable<Metadata<S>> {
     }
 
     private List<URL> loadServiceFiles() {
-        List<URL> serviceFiles = new ArrayList<URL>();
-        try {
-            Enumeration<URL> serviceFileEnumerator = loader.getResources(serviceFile);
-            while (serviceFileEnumerator.hasMoreElements()) {
-                serviceFiles.add(serviceFileEnumerator.nextElement());
-            }
-        } catch (IOException e) {
-            throw new RuntimeException("Could not load resources from " + serviceFile, e);
-        }
-        return serviceFiles;
+        return new ArrayList<URL>(loader.getResources(serviceFile));
     }
 
     @SuppressWarnings(value = "OS_OPEN_STREAM", justification = "False positive")
@@ -222,12 +222,12 @@ public class ServiceLoader<S> implements Iterable<Metadata<S>> {
         Class<?> clazz = null;
         Class<? extends S> serviceClass = null;
         try {
-            clazz = loader.loadClass(serviceClassName);
+            clazz = loader.classForName(serviceClassName);
             serviceClass = clazz.asSubclass(expectedType);
-        } catch (ClassNotFoundException e) {
+        } catch (ResourceLoadingException e) {
             log.warning("Could not load service class " + serviceClassName);
         } catch (ClassCastException e) {
-            throw new RuntimeException("Service class " + serviceClassName + " didn't implement the Extension interface");
+            throw new RuntimeException("Service class " + serviceClassName + " didn't implement the required interface");
         }
         return serviceClass;
     }
