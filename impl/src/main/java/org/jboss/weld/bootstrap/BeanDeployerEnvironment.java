@@ -61,10 +61,9 @@ import org.jboss.weld.resolution.TypeSafeDisposerResolver;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.InjectionPoints;
 import org.jboss.weld.util.cache.ComputingCache;
+import org.jboss.weld.util.collections.Iterables;
 import org.jboss.weld.util.collections.Multimaps;
 import org.jboss.weld.util.reflection.Reflections;
-
-import com.google.common.collect.Iterables;
 
 public class BeanDeployerEnvironment {
 

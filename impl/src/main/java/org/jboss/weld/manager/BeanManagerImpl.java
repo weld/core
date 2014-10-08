@@ -150,12 +150,11 @@ import org.jboss.weld.util.Interceptors;
 import org.jboss.weld.util.Preconditions;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.Types;
-import org.jboss.weld.util.collections.IterableToIteratorFunction;
+import org.jboss.weld.util.collections.Iterators;
 import org.jboss.weld.util.collections.WeldCollections;
 import org.jboss.weld.util.reflection.Reflections;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterators;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
@@ -437,7 +436,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                 for (BeanManagerImpl manager : managers) {
                     result.add(transform.transform(manager));
                 }
-                return Iterators.concat(Iterators.transform(result.iterator(), IterableToIteratorFunction.<T>instance()));
+                return Iterators.concat(Iterators.transform(result.iterator(), (iterable) -> iterable.iterator()));
             }
         };
     }
@@ -451,8 +450,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
             @Override
             public Iterator<T> iterator() {
-                Set<Iterable<T>> iterable = BeanManagers.getDirectlyAccessibleComponents(BeanManagerImpl.this, transform);
-                return Iterators.concat(Iterators.transform(iterable.iterator(), IterableToIteratorFunction.<T>instance()));
+                Set<Iterable<T>> iterables = BeanManagers.getDirectlyAccessibleComponents(BeanManagerImpl.this, transform);
+                return Iterators.concat(Iterators.transform(iterables.iterator(), (iterable) -> iterable.iterator()));
             }
 
         };

@@ -28,9 +28,7 @@ import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.resolution.TypeSafeObserverResolver;
-
-import com.google.common.base.Function;
-import com.google.common.collect.Iterators;
+import org.jboss.weld.util.collections.Iterators;
 
 /**
  * Hosts a {@link ObserverNotifier} that uses the global {@link TypeSafeObserverResolver} which has access to every enabled
@@ -41,13 +39,6 @@ import com.google.common.collect.Iterators;
  *
  */
 public class GlobalObserverNotifierService implements BootstrapService {
-
-    private static class BeanManagerToObserverMethodIterable implements Function <BeanManagerImpl, Iterator<ObserverMethod<?>>> {
-        @Override
-        public Iterator<ObserverMethod<?>> apply(BeanManagerImpl manager) {
-            return manager.getObservers().iterator();
-        }
-    }
 
     private final Set<BeanManagerImpl> beanManagers;
     private final ObserverNotifier globalLenientObserverNotifier;
@@ -65,7 +56,8 @@ public class GlobalObserverNotifierService implements BootstrapService {
         return new Iterable<ObserverMethod<?>>() {
             @Override
             public Iterator<ObserverMethod<?>> iterator() {
-                Iterator<Iterator<ObserverMethod<?>>> observerMethodIterators = Iterators.transform(beanManagers.iterator(), new BeanManagerToObserverMethodIterable());
+                Iterator<Iterator<ObserverMethod<?>>> observerMethodIterators = Iterators
+                        .transform(beanManagers.iterator(), (beanManager) -> beanManager.getObservers().iterator());
                 return Iterators.concat(observerMethodIterators);
             }
         };
