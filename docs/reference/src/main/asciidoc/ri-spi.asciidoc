@@ -70,6 +70,7 @@ Weld uses a generic-typed service registry to allow services to be
 registered. All services implement the `Service` interface. The service
 registry allows services to be added and retrieved.
 
+[[deployment-structure]]
 ==== Deployment structure
 
 An application is often comprised of a number of modules. For example, a
@@ -531,6 +532,22 @@ public interface ClassFileInfo {
 -----------------------------------------------------------------------------
 
 See the JavaDoc for more details.
+
+==== Registering services
+
+The standard way for an integrator to provide Service implementations is via
+the <<deployment-structure,deployment structure>>. Alternatively, services may be registered
+using the link:http://docs.oracle.com/javase/7/docs/api/java/util/ServiceLoader.html[ServiceLoader]
+mechanism. This is useful e.g. for a library running
+in `weld-servlet` environment. Such library may provide `TransactionServices` implementation
+which would not otherwise be provided by `weld-servlet`.
+
+A service implementation should be listed in a file named `META-INF/services/org.jboss.weld.bootstrap.api.Service`
+
+A service implementation can override another service implementation. The priority of a service
+implementation is determined from the `javax.annotation.Priority` annotation. Service implementations with
+higher priority have precedence. A service implementation that does not define priority explicitly
+is given implicit priority of 4500.
 
 === The contract with the container
 
