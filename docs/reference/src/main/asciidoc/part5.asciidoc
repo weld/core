@@ -16,7 +16,7 @@ portable extensions to CDI.
 
 If you want to get started quickly using Weld (and, in turn, CDI) with
 WildFly, GlassFish or Tomcat and experiment with one of the examples,
-take a look at <<_getting_started_with_weld>>. Otherwise read on for a
+take a look at <<gettingstarted>>. Otherwise read on for a
 exhaustive discussion of using Weld in all the environments and application
 servers it supports and the Weld extensions.
 --

@@ -96,7 +96,7 @@ for producer methods:
 
 This is a case where the `@Inject` annotation _is not_ required at the
 injection point. The same is true for observer methods (which we'll meet
-in <<_events>>) and disposer methods.
+in <<events>>) and disposer methods.
 
 === What gets injected
 
