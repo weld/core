@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2012, Red Hat, Inc., and individual contributors
+ * Copyright 2014, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -16,7 +16,13 @@
  */
 package org.jboss.weld.tests.proxy.weld1766;
 
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.spi.Extension;
+import javax.inject.Inject;
+
 import junit.framework.Assert;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -25,17 +31,11 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.Extension;
-import javax.inject.Inject;
-
 /**
- * Tests for https://issues.jboss.org/browse/CDI-9999
- * 
+ * Tests for https://issues.jboss.org/browse/WELD-1766
+ *
  * @author Marcel Kolsteren
- * 
+ *
  */
 @RunWith(Arquillian.class)
 public class ProducerProxyTest {
@@ -45,9 +45,6 @@ public class ProducerProxyTest {
         return ShrinkWrap.create(BeanArchive.class).addPackage(ProducerProxyTest.class.getPackage())
                 .addAsServiceProvider(Extension.class, CustomScopeExtension.class);
     }
-
-    @Inject
-    private BeanManager manager;
 
     @Inject
     @Qualifier1
