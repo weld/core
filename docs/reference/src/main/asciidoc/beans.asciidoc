@@ -121,7 +121,7 @@ NOTE: The bean types of a session bean include local interfaces and the bean
 class local view (if any). EJB remote interfaces are not considered bean
 types of a session bean. You can't inject an EJB using its remote
 interface unless you define a _resource_, which we'll meet in
-<<_java_ee_component_environment_resources>>.
+<<resources>>.
 
 Bean types may be restricted to an explicit set by annotating the bean
 with the `@Typed` annotation and listing the classes that should be bean
@@ -202,7 +202,7 @@ it has the default qualifier, `@Default`.
 That's not quite the end of the story. CDI also defines a simple
 _resolution rule_ that helps the container decide what to do if there is
 more than one bean that satisfies a particular contract. We'll get into
-the details in <<_dependency_injection_and_programmatic_lookup>>.
+the details in <<injection>>.
 
 ==== Scope
 
@@ -234,7 +234,7 @@ special scope called the _dependent pseudo-scope_. Beans with this scope
 live to serve the object into which they were injected, which means
 their lifecycle is bound to the lifecycle of that object.
 
-We'll talk more about scopes in <<_scopes_and_contexts>>.
+We'll talk more about scopes in <<scopescontexts>>.
 
 ==== EL name
 
@@ -366,7 +366,7 @@ is disabled. We can enable an interceptor using the CDI deployment
 descriptor `META-INF/beans.xml` of the jar or Java EE module. This is
 also where we specify the interceptor ordering.
 
-We'll discuss interceptors, and their cousins, decorators, in <<_interceptors>> and <<_decorators>>.
+We'll discuss interceptors, and their cousins, decorators, in <<interceptors>> and <<decorators>>.
 
 === What kinds of classes are beans?
 
@@ -612,5 +612,5 @@ A producer field is really just a shortcut that lets us avoid writing a
 useless getter method. However, in addition to convenience, producer
 fields serve a specific purpose as an adaptor for Java EE component
 environment injection, but to learn more about that, you'll have to wait
-until <<_java_ee_component_environment_resources>>. Because we can't wait to get
+until <<resources>>. Because we can't wait to get
 to work on some examples.
