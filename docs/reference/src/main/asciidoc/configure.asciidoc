@@ -16,7 +16,7 @@ CDI specification does not support regular expression patterns and `!`
 character to invert the activation condition.
 
 All the configuration is done in the `beans.xml` file. For more
-information see <<_packaging_and_deployment>>.
+information see <<packaging-and-deployment>>.
 
 [source.XML, xml]
 ------------------------------------------------------------------------------------------------------
