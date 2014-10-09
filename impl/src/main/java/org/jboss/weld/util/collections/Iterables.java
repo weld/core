@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Iterator;
 
 /**
+ * Static utility methods for {@link Iterable}.
  *
  * @author Martin Kouba
  */
@@ -29,6 +30,7 @@ public final class Iterables {
     }
 
     /**
+     * Add all elements in the iterable to the collection.
      *
      * @param target
      * @param iterable
@@ -42,6 +44,7 @@ public final class Iterables {
     }
 
     /**
+     * Combine the iterables into a single one.
      *
      * @param iterables
      * @return a single combined iterable

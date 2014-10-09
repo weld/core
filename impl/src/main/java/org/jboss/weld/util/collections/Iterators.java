@@ -24,6 +24,7 @@ import java.util.function.Function;
 import org.jboss.weld.util.Preconditions;
 
 /**
+ * Static utility methods for {@link Iterator}.
  *
  * @author Martin Kouba
  */
@@ -33,6 +34,7 @@ public final class Iterators {
     }
 
     /**
+     * Add all elements in the iterator to the collection.
      *
      * @param target
      * @param iterator
@@ -48,6 +50,7 @@ public final class Iterators {
     }
 
     /**
+     * Combine the iterators into a single one.
      *
      * @param iterators An iterator of iterators
      * @return a single combined iterator
@@ -97,11 +100,6 @@ public final class Iterators {
         };
     }
 
-    /**
-     *
-     *
-     * @param <E>
-     */
     private static class CombinedIterator<E> implements Iterator<E> {
 
         private final Iterator<? extends Iterator<? extends E>> iterators;

@@ -27,6 +27,7 @@ import java.util.Set;
 import com.google.common.collect.ImmutableList;
 
 /**
+ * Static utility methods for {@link Set}.
  *
  * @author Martin Kouba
  */
