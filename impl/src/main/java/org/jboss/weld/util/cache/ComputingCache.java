@@ -21,6 +21,9 @@ import java.util.Map;
 /**
  * A simple abstraction for computing cache.
  *
+ * Implementations are not required to support recursive computations. A cache client must be aware that such computations may result in livelocks, inifinite
+ * loops and other undesired situations.
+ *
  * @author Martin Kouba
  */
 public interface ComputingCache<K, V> {
