@@ -65,7 +65,8 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
 
     private static final Set<Class<? extends Annotation>> CACHEABLE_SCOPES;
 
-    public static final String CLIENT_PROXY_SUFFIX = "ClientProxy";
+    private static final String CACHING_CLIENT_PROXY_SUFFIX = "ClientProxy";
+    private static final String NON_CACHING_CLIENT_PROXY_SUFFIX = "NonCachingClientProxy";
 
     private static final String CACHE_FIELD = "BEAN_INSTANCE_CACHE";
 
@@ -202,8 +203,6 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
 
         final ExceptionHandler start = b.exceptionBlockStart(Throwable.class.getName());
         b.invokestatic(INTERCEPTION_DECORATION_CONTEXT_CLASS_NAME, START_INTERCEPTOR_CONTEXT_METHOD_NAME, EMPTY_PARENTHESES + DescriptorUtils.VOID_CLASS_DESCRIPTOR);
-
-        final Class<? extends Annotation> scope = getBean().getScope();
 
         if (useCache()) {
             loadCacheableBeanInstance(classMethod.getClassFile(), methodInfo, b);
@@ -353,7 +352,11 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
 
     @Override
     protected String getProxyNameSuffix() {
-        return (useCache() ? "Caching" : "") + CLIENT_PROXY_SUFFIX;
+        if (useCache()) {
+            return CACHING_CLIENT_PROXY_SUFFIX;
+        } else {
+            return NON_CACHING_CLIENT_PROXY_SUFFIX;
+        }
     }
 
     private boolean useCache() {
