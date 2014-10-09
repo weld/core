@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.annotated;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -25,7 +26,6 @@ import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.AnnotatedType;
 
 import org.jboss.weld.logging.MetadataLogger;
-import org.jboss.weld.util.collections.WeldCollections;
 
 /**
  * Validates that methods of an {@link Annotated} implementation return sane values.
@@ -84,7 +84,7 @@ public class AnnotatedTypeValidator {
         Set<Class<?>> hierarchy = new HashSet<Class<?>>();
         for (Class<?> clazz = type.getJavaClass(); clazz != null; clazz = clazz.getSuperclass()) {
             hierarchy.add(clazz);
-            WeldCollections.addAll(hierarchy, clazz.getInterfaces());
+            Collections.addAll(hierarchy, clazz.getInterfaces());
         }
 
         checkMembersBelongToHierarchy(type.getConstructors(), hierarchy, type);

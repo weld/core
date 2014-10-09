@@ -159,17 +159,4 @@ public class WeldCollections {
         return builder.toString();
     }
 
-    /**
-     *
-     * @param collection
-     * @param elements
-     * @return <tt>true</tt> if the collection changed as a result of the call
-     */
-    public static <E> boolean addAll(Collection<E> collection, E... elements) {
-        boolean modified = false;
-        for (E element : elements) {
-            modified = modified | collection.add(element);
-        }
-        return modified;
-    }
 }
