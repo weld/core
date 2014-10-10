@@ -7,9 +7,10 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jboss.weld.servlet</groupId>
-    <artifactId>weld-servlet</artifactId>
+    <artifactId>weld-servlet-shaded</artifactId>
     <packaging>jar</packaging>
     <name>Weld Servlet (Uber Jar)</name>
+    <description>This jar bundles all the bits of Weld and CDI required for running in a Servlet container.</description>
     <url>http://weld.cdi-spec.org</url>
     <licenses>
         <license>

@@ -381,7 +381,7 @@
 
             <dependency>
                 <groupId>org.jboss.weld.servlet</groupId>
-                <artifactId>weld-servlet</artifactId>
+                <artifactId>weld-servlet-shaded</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -393,7 +393,7 @@
 
             <dependency>
                 <groupId>org.jboss.weld.se</groupId>
-                <artifactId>weld-se</artifactId>
+                <artifactId>weld-se-shaded</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
