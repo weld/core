@@ -56,11 +56,14 @@ public class EnhancedListener extends ForwardingServletListener implements Servl
     public void onStartup(Set<Class<?>> classes, ServletContext context) throws ServletException {
         WeldServletLogger.LOG.initializeWeldUsingServletContainerInitializer();
         context.setAttribute(ENHANCED_LISTENER_USED_ATTRIBUTE_NAME, Boolean.TRUE);
-        lifecycle = new WeldServletLifecycle();
-        lifecycle.initialize(context);
-        context.setAttribute(WeldServletLifecycle.INSTANCE_ATTRIBUTE_NAME, lifecycle);
-        context.addListener(this);
-        super.contextInitialized(new ServletContextEvent(context));
+        WeldServletLifecycle lifecycle = new WeldServletLifecycle();
+        // If not initialized properly, don't register itself as a listener
+        if(lifecycle.initialize(context)) {
+            this.lifecycle = lifecycle;
+            context.setAttribute(WeldServletLifecycle.INSTANCE_ATTRIBUTE_NAME, lifecycle);
+            context.addListener(this);
+            super.contextInitialized(new ServletContextEvent(context));
+        }
     }
 
     @Override
