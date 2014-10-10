@@ -103,7 +103,12 @@ public class WeldServletLifecycle {
         }
     }
 
-    void initialize(ServletContext context) {
+    /**
+     *
+     * @param context
+     * @return <code>true</code> if initialized properly, <code>false</code> otherwise
+     */
+    boolean initialize(ServletContext context) {
 
         WeldManager manager = (WeldManager) context.getAttribute(BEAN_MANAGER_ATTRIBUTE_NAME);
         if (manager != null) {
@@ -111,7 +116,15 @@ public class WeldServletLifecycle {
         }
 
         if (isBootstrapNeeded) {
+
             CDI11Deployment deployment = createDeployment(context, bootstrap);
+
+            if (deployment.getBeanDeploymentArchives().isEmpty()) {
+                // Skip initialization - there is no bean archive in the deployment
+                CommonLogger.LOG.initSkippedNoBeanArchiveFound();
+                return false;
+            }
+
             ResourceInjectionServices resourceInjectionServices = new ServletResourceInjectionServices() {
             };
             try {
@@ -171,6 +184,7 @@ public class WeldServletLifecycle {
         if (isBootstrapNeeded) {
             bootstrap.deployBeans().validateBeans().endInitialization();
         }
+        return true;
     }
 
     void destroy(ServletContext context) {
