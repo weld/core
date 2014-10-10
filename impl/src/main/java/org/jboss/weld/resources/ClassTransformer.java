@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.resources;
 
-import static org.jboss.weld.util.cache.LoadingCacheUtils.getCastCacheValue;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.annotation.Annotation;
@@ -45,10 +44,6 @@ import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.cache.ComputingCache;
 import org.jboss.weld.util.cache.ComputingCacheBuilder;
 import org.jboss.weld.util.reflection.Reflections;
-
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 
 /**
  * @author Pete Muir
@@ -91,9 +86,9 @@ public class ClassTransformer implements BootstrapService {
         }
     }
 
-    private class TransformSlimAnnotatedTypeToEnhancedAnnotatedType extends CacheLoader<SlimAnnotatedType<?>, EnhancedAnnotatedType<?>> {
+    private class TransformSlimAnnotatedTypeToEnhancedAnnotatedType implements Function<SlimAnnotatedType<?>, EnhancedAnnotatedType<?>> {
         @Override
-        public EnhancedAnnotatedType<?> load(SlimAnnotatedType<?> annotatedType) {
+        public EnhancedAnnotatedType<?> apply(SlimAnnotatedType<?> annotatedType) {
             return EnhancedAnnotatedTypeImpl.of(annotatedType, ClassTransformer.this);
         }
     }
@@ -148,7 +143,7 @@ public class ClassTransformer implements BootstrapService {
     private final ConcurrentMap<AnnotatedTypeIdentifier, SlimAnnotatedType<?>> slimAnnotatedTypesById;
 
     private final ComputingCache<TypeHolder<?>, BackedAnnotatedType<?>> backedAnnotatedTypes;
-    private final LoadingCache<SlimAnnotatedType<?>, EnhancedAnnotatedType<?>> enhancedAnnotatedTypes;
+    private final ComputingCache<SlimAnnotatedType<?>, EnhancedAnnotatedType<?>> enhancedAnnotatedTypes;
     private final ComputingCache<Class<? extends Annotation>, EnhancedAnnotation<?>> annotations;
 
     private final TypeStore typeStore;
@@ -164,7 +159,7 @@ public class ClassTransformer implements BootstrapService {
         // if an AnnotatedType reference is not retained by a Bean we are not going to need it at runtime and can therefore drop
         // it immediately
         this.backedAnnotatedTypes = ComputingCacheBuilder.newBuilder().setWeakValues().build(new TransformClassToBackedAnnotatedType());
-        this.enhancedAnnotatedTypes = CacheBuilder.newBuilder().build(new TransformSlimAnnotatedTypeToEnhancedAnnotatedType());
+        this.enhancedAnnotatedTypes = ComputingCacheBuilder.newBuilder().buildReentrant(new TransformSlimAnnotatedTypeToEnhancedAnnotatedType());
         this.annotations = defaultBuilder.build(new TransformClassToWeldAnnotation());
         this.typeStore = typeStore;
         this.cache = cache;
@@ -246,7 +241,7 @@ public class ClassTransformer implements BootstrapService {
     }
 
     public <T> EnhancedAnnotatedType<T> getEnhancedAnnotatedType(SlimAnnotatedType<T> annotatedType) {
-        return getCastCacheValue(enhancedAnnotatedTypes, annotatedType);
+        return cast(enhancedAnnotatedTypes.getValue(annotatedType));
     }
 
     public <T extends Annotation> EnhancedAnnotation<T> getEnhancedAnnotation(final Class<T> clazz) {
@@ -281,7 +276,7 @@ public class ClassTransformer implements BootstrapService {
 
     @Override
     public void cleanupAfterBoot() {
-        this.enhancedAnnotatedTypes.invalidateAll();
+        this.enhancedAnnotatedTypes.clear();
         this.annotations.clear();
         for (BackedAnnotatedType<?> annotatedType : backedAnnotatedTypes.getAllPresent().values()) {
             annotatedType.clear();
