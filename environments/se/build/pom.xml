@@ -8,9 +8,10 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jboss.weld.se</groupId>
-    <artifactId>weld-se</artifactId>
+    <artifactId>weld-se-shaded</artifactId>
     <packaging>jar</packaging>
     <name>Weld SE (Uber Jar)</name>
+    <description>This jar bundles all the bits of Weld and CDI required for Java SE.</description>
     <url>http://weld.cdi-spec.org</url>
     <licenses>
         <license>

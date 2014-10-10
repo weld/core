@@ -26,13 +26,13 @@ containers. For enterprise features such as these, you should really be
 looking at a Java EE application server.
 
 Weld can be used as a library in an web application that is deployed to
-a Servlet container. You should place `weld-servlet.jar` within the
-`WEB-INF/lib` directory relative to the web root. `weld-servlet.jar` is
+a Servlet container. You should place `weld-servlet-shaded.jar` within the
+`WEB-INF/lib` directory relative to the web root. `weld-servlet-shaded.jar` is
 an "uber-jar", meaning it bundles all the bits of Weld and CDI required
 for running in a Servlet container, for your convenience. Alternatively,
 you can use its component jars. A list of transitive dependencies can be
 found in the `META-INF/DEPENDENCIES.txt` file inside the
-`weld-servlet.jar` artifact.
+`weld-servlet-shaded.jar` artifact.
 
 You also need to explicitly specify the servlet listener (used to boot
 Weld, and control its interaction with requests) in WEB-INF/web.xml in
@@ -401,7 +401,7 @@ working with a pure Java SE application you launch using `java`, this
 may be simpler for you.
 
 If you prefer to work with individual dependencies, then you can use the
-`weld-core` jar which just contains the Weld SE classes. Of course in
+`weld-se-core` jar which just contains the Weld SE classes. Of course in
 this mode you will need to assemble the classpath yourself.
 
 If you work with a dependency management solution such as Maven you can
@@ -411,7 +411,7 @@ declare a dependency such as:
 ---------------------------------------
 <dependency>
    <groupId>org.jboss.weld.se</groupId>
-   <artifactId>weld-se</artifactId>
+   <artifactId>weld-se-shaded</artifactId>
 </dependency>
 ---------------------------------------
 
