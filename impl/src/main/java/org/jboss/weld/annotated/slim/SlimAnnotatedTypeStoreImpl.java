@@ -17,30 +17,21 @@
 package org.jboss.weld.annotated.slim;
 
 
-import static org.jboss.weld.util.reflection.Reflections.cast;
-
 import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.jboss.weld.bootstrap.api.helpers.AbstractBootstrapService;
-
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
+import org.jboss.weld.util.cache.ComputingCache;
+import org.jboss.weld.util.cache.ComputingCacheBuilder;
 
 public class SlimAnnotatedTypeStoreImpl extends AbstractBootstrapService implements SlimAnnotatedTypeStore {
 
-    private final LoadingCache<Class<?>, Set<SlimAnnotatedType<?>>> typesByClass;
+    private final ComputingCache<Class<?>, Set<SlimAnnotatedType<?>>> typesByClass;
 
     public SlimAnnotatedTypeStoreImpl() {
-        this.typesByClass = CacheBuilder.newBuilder().build(new CacheLoader<Class<?>, Set<SlimAnnotatedType<?>>>() {
-            @Override
-            public Set<SlimAnnotatedType<?>> load(Class<?> input) {
-                return new CopyOnWriteArraySet<SlimAnnotatedType<?>>();
-            }
-        });
+        this.typesByClass = ComputingCacheBuilder.newBuilder().build((x) -> new CopyOnWriteArraySet<SlimAnnotatedType<?>>());
     }
 
     @Override
@@ -55,17 +46,17 @@ public class SlimAnnotatedTypeStoreImpl extends AbstractBootstrapService impleme
 
     @Override
     public <X> Set<SlimAnnotatedType<X>> get(Class<X> type) {
-        return cast(Collections.unmodifiableSet(typesByClass.getUnchecked(type)));
+        return Collections.unmodifiableSet(typesByClass.getCastValue(type));
     }
 
     @Override
     public <X> void put(SlimAnnotatedType<X> type) {
-        typesByClass.getUnchecked(type.getJavaClass()).add(type);
+        typesByClass.getValue(type.getJavaClass()).add(type);
     }
 
     @Override
     public void cleanupAfterBoot() {
-        typesByClass.invalidateAll();
+        typesByClass.clear();
     }
 
 }
