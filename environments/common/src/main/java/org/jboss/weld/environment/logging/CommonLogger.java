@@ -111,4 +111,8 @@ public interface CommonLogger extends WeldEnvironmentLogger {
 
     @Message(id = 27, value = "Unable to find constructor for of {0} accepting parameters: {1}.", format = Format.MESSAGE_FORMAT)
     IllegalStateException unableToFindConstructor(Object param1, Object param2);
+
+    @LogMessage(level = Level.INFO)
+    @Message(id = 28, value = "Weld initialization skipped - no bean archive found")
+    void initSkippedNoBeanArchiveFound();
 }
