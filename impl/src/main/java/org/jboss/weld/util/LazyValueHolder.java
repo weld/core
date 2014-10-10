@@ -44,5 +44,9 @@ public abstract class LazyValueHolder<T> implements ValueHolder<T> {
         }
     }
 
+    public boolean isAvailable() {
+        return value != null;
+    }
+
     protected abstract T computeValue();
 }
