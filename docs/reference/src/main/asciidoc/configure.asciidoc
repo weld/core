@@ -193,3 +193,9 @@ cache upper bound by setting the system property
 ------------------------------------------------------------------
 System.setProperty("org.jboss.weld.resolution.cacheSize", "1000");
 ------------------------------------------------------------------
+
+=== Dump client proxies objects to files
+
+Weld can dump client proxies of a beans to files for debugging purposes
+by setting the system property `org.jboss.weld.proxy.dump` to a
+required path.
