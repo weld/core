@@ -19,11 +19,15 @@ package org.jboss.weld.bean.proxy;
 
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.ProtectionDomain;
@@ -452,6 +456,21 @@ public class ProxyFactory<T> {
         // TODO: change the ProxyServices SPI to allow the container to figure out
         // which PD to use
 
+        String dumpPathString = System.getProperty("org.jboss.weld.proxy.dump");
+        if (dumpPathString != null && !dumpPathString.isEmpty()) {
+            File dumpPath = new File(dumpPathString);
+
+            if (dumpPath.isDirectory()) {
+                dumpToFile(dumpPath, proxyClassName, proxyClassType.toBytecode());
+            } else {
+                if (dumpPath.mkdir()) {
+                    dumpToFile(dumpPath, proxyClassName, proxyClassType.toBytecode());
+                } else {
+                    BeanLogger.LOG.directoryCannotBeCreated(dumpPath.toString(), proxyClassName);
+                }
+            }
+        }
+
         ProtectionDomain domain = AccessController.doPrivileged(new GetProtectionDomainAction(proxiedBeanType));
 
         if (proxiedBeanType.getPackage() == null || proxiedBeanType.equals(Object.class)) {
@@ -463,6 +482,15 @@ public class ProxyFactory<T> {
         Class<T> proxyClass = cast(ClassFileUtils.toClass(proxyClassType, classLoader, domain));
         BeanLogger.LOG.createdProxyClass(proxyClass, Arrays.toString(proxyClass.getInterfaces()));
         return proxyClass;
+    }
+
+    private void dumpToFile(File dumpPath, String fileName, byte[] data) {
+        File dumpFile = new File(dumpPath, fileName + ".class");
+        try {
+            Files.write(dumpFile.toPath(), data, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+        } catch(IOException e) {
+            throw BeanLogger.LOG.beanCannotBeDumped(fileName, e);
+        }
     }
 
     /**
