@@ -641,4 +641,10 @@ public interface BeanLogger extends WeldLogger {
     @Message(id = 1556, value = "Specializing {0} cannot specialize a non-managed bean {1}", format = Format.MESSAGE_FORMAT)
     DefinitionException specializingManagedBeanCanExtendOnlyManagedBeans(Object param1, Object param2);
 
+    @Message(id = 1557, value = "Not able to dump the proxy class file for {0}.", format = Format.MESSAGE_FORMAT)
+    WeldException beanCannotBeDumped(Object param1, @Cause Throwable cause);
+
+    @LogMessage(level = Level.WARN)
+    @Message(id = 1558, value = "Not able to create directory {0} to dump the proxy class file for {1}.", format = Format.MESSAGE_FORMAT)
+    void directoryCannotBeCreated(Object param1, Object param2);
 }
