@@ -47,7 +47,7 @@ public class WildFly8DeploymentExceptionTransformer implements DeploymentExcepti
         // exception and sometimes AS7 exception itself
         @SuppressWarnings("unchecked")
         List<Throwable> throwableList = ExceptionUtils.getThrowableList(throwable);
-        if (throwableList.size() < 1)
+        if (throwableList.isEmpty())
             return throwable;
 
         Throwable root = null;
@@ -62,10 +62,10 @@ public class WildFly8DeploymentExceptionTransformer implements DeploymentExcepti
             return root;
         }
         if (isFragmentFound(DEPLOYMENT_EXCEPTION_FRAGMENTS, root)) {
-            return new DeploymentException(root);
+            return new DeploymentException(root.getMessage());
         }
         if (isFragmentFound(DEFINITION_EXCEPTION_FRAGMENTS, root)) {
-            return new DefinitionException(root);
+            return new DefinitionException(root.getMessage());
         }
         return throwable;
     }
