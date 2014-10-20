@@ -131,12 +131,11 @@ import org.jboss.weld.servlet.spi.HttpContextActivationFilter;
 import org.jboss.weld.servlet.spi.helpers.AcceptingHttpContextActivationFilter;
 import org.jboss.weld.transaction.spi.TransactionServices;
 import org.jboss.weld.util.Permissions;
+import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.instantiation.InstantiatorFactory;
 import org.jboss.weld.util.reflection.instantiation.LoaderInstantiatorFactory;
-
-import com.google.common.collect.ImmutableSet;
 
 /**
  * Common bootstrapping functionality that is run at application startup and
@@ -566,7 +565,6 @@ public class WeldStartup {
     public TypeDiscoveryConfiguration startExtensions(Iterable<Metadata<Extension>> extensions) {
         this.extensions = extensions;
         // TODO: we should fire BeforeBeanDiscovery to allow extensions to register additional scopes
-        @SuppressWarnings("unchecked")
         final Set<Class<? extends Annotation>> beanDefiningAnnotations = ImmutableSet.of(
                 // built-in scopes
                 Dependent.class, RequestScoped.class, ConversationScoped.class, SessionScoped.class, ApplicationScoped.class,

@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.jboss.weld.util.Types;
-import org.jboss.weld.util.collections.ArraySet;
+import org.jboss.weld.util.collections.ImmutableSet;
 
 /**
  * Utility class that discovers transitive type closure of a given type.
@@ -77,6 +77,7 @@ public class HierarchyDiscovery {
     private final Map<Class<?>, Type> types;
     private final Map<TypeVariable<?>, Type> resolvedTypeVariables;
     private final TypeResolver resolver;
+    private final Set<Type> typeClosure;
 
     /**
      * Constructs a new {@link HierarchyDiscovery} instance.
@@ -91,10 +92,11 @@ public class HierarchyDiscovery {
         this.resolver = resolver;
         this.resolvedTypeVariables = resolver.getResolvedTypeVariables();
         discoverTypes(type, false);
+        this.typeClosure = ImmutableSet.copyOf(types.values());
     }
 
     public Set<Type> getTypeClosure() {
-        return new ArraySet<Type>(this.types.values());
+        return typeClosure;
     }
 
     public Map<Class<?>, Type> getTypeMap() {

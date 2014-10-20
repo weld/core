@@ -16,12 +16,9 @@
  */
 package org.jboss.weld.event;
 
-import static org.jboss.weld.util.collections.WeldCollections.immutableGuavaSet;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -58,6 +55,7 @@ import org.jboss.weld.logging.EventLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.util.Observers;
+import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 
 /**
@@ -110,8 +108,8 @@ public class ObserverMethodImpl<T, X> implements ExperimentalObserverMethod<T> {
         this.reception = observesAnnotation.notifyObserver();
         transactionPhase = ObserverFactory.getTransactionalPhase(observer);
 
-        Set<WeldInjectionPointAttributes<?, ?>> injectionPoints = new HashSet<WeldInjectionPointAttributes<?, ?>>();
-        Set<WeldInjectionPointAttributes<?, ?>> newInjectionPoints = new HashSet<WeldInjectionPointAttributes<?, ?>>();
+        ImmutableSet.Builder<WeldInjectionPointAttributes<?, ?>> injectionPoints = ImmutableSet.builder();
+        ImmutableSet.Builder<WeldInjectionPointAttributes<?, ?>> newInjectionPoints = ImmutableSet.builder();
         for (ParameterInjectionPoint<?, ?> injectionPoint : observerMethod.getParameterInjectionPoints()) {
             if (injectionPoint instanceof SpecialParameterInjectionPoint) {
                 continue;
@@ -121,8 +119,8 @@ public class ObserverMethodImpl<T, X> implements ExperimentalObserverMethod<T> {
             }
             injectionPoints.add(injectionPoint);
         }
-        this.injectionPoints = immutableGuavaSet(injectionPoints);
-        this.newInjectionPoints = immutableGuavaSet(newInjectionPoints);
+        this.injectionPoints = injectionPoints.build();
+        this.newInjectionPoints = newInjectionPoints.build();
         Priority priority = eventParameter.getAnnotation(Priority.class);
         if (priority == null) {
             this.priority = ExperimentalObserverMethod.DEFAULT_PRIORITY;

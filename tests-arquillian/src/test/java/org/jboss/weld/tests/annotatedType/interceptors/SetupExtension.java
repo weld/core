@@ -13,8 +13,7 @@ import javax.enterprise.inject.spi.Extension;
 
 import org.jboss.weld.util.annotated.ForwardingAnnotatedMethod;
 import org.jboss.weld.util.annotated.ForwardingAnnotatedType;
-
-import com.google.common.collect.ImmutableSet;
+import org.jboss.weld.util.collections.ImmutableSet;
 
 public class SetupExtension implements Extension {
 

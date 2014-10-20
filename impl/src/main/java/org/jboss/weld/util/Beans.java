@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.util;
 
-import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.io.Serializable;
@@ -90,12 +89,10 @@ import org.jboss.weld.resolution.QualifierInstance;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.spi.ClassFileInfo;
 import org.jboss.weld.util.bytecode.BytecodeUtils;
-import org.jboss.weld.util.collections.ArraySet;
+import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SessionBeanHierarchyDiscovery;
-
-import com.google.common.collect.ImmutableSet;
 
 /**
  * Helper class for bean inspection
@@ -212,20 +209,19 @@ public class Beans {
      * @param beans The beans to filter
      * @param beanManager The bean manager
      * @param registry
-     * @return An immutable set of enabled beans
+     * @return a mutable set of enabled beans
      */
     public static <T extends Bean<?>> Set<T> removeDisabledBeans(Set<T> beans, final BeanManagerImpl beanManager,
             final SpecializationAndEnablementRegistry registry) {
         if (beans.size() == 0) {
             return beans;
         } else {
-            ImmutableSet.Builder<T> builder = ImmutableSet.builder();
-            for (T bean : beans) {
-                if (isBeanEnabled(bean, beanManager.getEnabled())) {
-                    builder.add(bean);
+            for (Iterator<T> iterator = beans.iterator(); iterator.hasNext();) {
+                if (!isBeanEnabled(iterator.next(), beanManager.getEnabled())) {
+                    iterator.remove();
                 }
             }
-            return builder.build();
+            return beans;
         }
     }
 
@@ -415,14 +411,14 @@ public class Beans {
     public static Set<Type> getTypes(EnhancedAnnotated<?, ?> annotated) {
         // array and primitive types require special treatment
         if (annotated.getJavaClass().isArray() || annotated.getJavaClass().isPrimitive()) {
-            return new ArraySet<Type>(annotated.getBaseType(), Object.class);
+            return ImmutableSet.<Type>builder().addAll(annotated.getBaseType(), Object.class).build();
         } else {
             if (annotated.isAnnotationPresent(Typed.class)) {
-                return new ArraySet<Type>(getTypedTypes(Reflections.buildTypeMap(annotated.getTypeClosure()),
-                        annotated.getJavaClass(), annotated.getAnnotation(Typed.class)));
+                return ImmutableSet.<Type>builder().addAll(getTypedTypes(Reflections.buildTypeMap(annotated.getTypeClosure()),
+                        annotated.getJavaClass(), annotated.getAnnotation(Typed.class))).build();
             } else {
                 if (annotated.getJavaClass().isInterface()) {
-                    return new ArraySet<Type>(annotated.getTypeClosure(), Object.class);
+                    return ImmutableSet.<Type>builder().addAll(annotated.getTypeClosure()).add(Object.class).build();
                 }
                 return annotated.getTypeClosure();
             }
@@ -433,7 +429,7 @@ public class Beans {
      * Bean types of a session bean.
      */
     public static <T> Set<Type> getTypes(EnhancedAnnotated<T, ?> annotated, EjbDescriptor<T> ejbDescriptor) {
-        ArraySet<Type> types = new ArraySet<Type>();
+        ImmutableSet.Builder<Type> types = ImmutableSet.builder();
         // session beans
         Map<Class<?>, Type> typeMap = new LinkedHashMap<Class<?>, Type>();
         HierarchyDiscovery beanClassDiscovery = HierarchyDiscovery.forNormalizedType(ejbDescriptor.getBeanClass());
@@ -459,7 +455,7 @@ public class Beans {
             typeMap.put(Object.class, Object.class);
             types.addAll(typeMap.values());
         }
-        return immutableSet(types);
+        return types.build();
     }
 
     /**

@@ -39,9 +39,9 @@ import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.logging.ReflectionLogger;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.ReflectionCache;
-import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.collections.ArraySetMultimap;
 import org.jboss.weld.util.collections.Arrays2;
+import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
@@ -196,11 +196,11 @@ public abstract class AbstractEnhancedAnnotated<T, S> implements EnhancedAnnotat
     }
 
     public Set<Annotation> getAnnotations() {
-        return Collections.unmodifiableSet(new ArraySet<Annotation>(annotationMap.values()));
+        return ImmutableSet.copyOf(annotationMap.values());
     }
 
     public Set<Annotation> getMetaAnnotations(Class<? extends Annotation> metaAnnotationType) {
-        return Collections.unmodifiableSet(new ArraySet<Annotation>(metaAnnotationMap.get(metaAnnotationType)));
+        return ImmutableSet.copyOf(metaAnnotationMap.get(metaAnnotationType));
     }
 
     @Deprecated

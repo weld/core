@@ -24,15 +24,14 @@ import java.lang.reflect.WildcardType;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.jboss.weld.util.collections.Arrays2;
+import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.reflection.GenericArrayTypeImpl;
 import org.jboss.weld.util.reflection.ParameterizedTypeImpl;
 import org.jboss.weld.util.reflection.Reflections;
 
 import com.google.common.base.Function;
-import com.google.common.collect.ImmutableSet;
 
 /**
  * Utility class for Types
@@ -181,7 +180,7 @@ public class Types {
     }
 
     public static Set<Class<?>> getRawTypes(Set<Type> types) {
-        return ImmutableSet.copyOf(types.stream().map(t -> Reflections.getRawType(t)).collect(Collectors.toSet()));
+        return types.stream().map(t -> Reflections.getRawType(t)).collect(ImmutableSet.collector());
     }
 
     public static Class<?>[] getRawTypes(Type[] types) {

@@ -51,4 +51,16 @@ public class Preconditions {
             throw new NullPointerException();
         }
     }
+
+    public static void checkArgument(boolean condition, Object argument) {
+        if (!condition) {
+            throw new IllegalArgumentException("Illegal argument " + ((argument == null) ? "null" : argument.toString()));
+        }
+    }
+
+    public static void checkArgument(boolean condition, String message) {
+        if (!condition) {
+            throw new IllegalArgumentException(message);
+        }
+    }
 }
