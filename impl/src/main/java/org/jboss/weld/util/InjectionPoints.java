@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.util;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -34,7 +35,7 @@ import org.jboss.weld.injection.attributes.ForwardingFieldInjectionPointAttribut
 import org.jboss.weld.injection.attributes.ForwardingParameterInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.SpecialParameterInjectionPoint;
 import org.jboss.weld.injection.attributes.WeldInjectionPointAttributes;
-import org.jboss.weld.util.collections.ArraySet;
+import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
@@ -48,15 +49,15 @@ public class InjectionPoints {
     }
 
     public static <T extends WeldInjectionPointAttributes<?, ?>> Set<T> flattenInjectionPoints(List<? extends Set<T>> fieldInjectionPoints) {
-        ArraySet<T> injectionPoints = new ArraySet<T>();
+        Set<T> injectionPoints = new HashSet<T>();
         for (Set<T> i : fieldInjectionPoints) {
             injectionPoints.addAll(i);
         }
-        return injectionPoints.trimToSize();
+        return injectionPoints;
     }
 
     public static Set<ParameterInjectionPoint<?, ?>> flattenParameterInjectionPoints(List<Set<MethodInjectionPoint<?, ?>>> methodInjectionPoints) {
-        ArraySet<ParameterInjectionPoint<?, ?>> injectionPoints = new ArraySet<ParameterInjectionPoint<?, ?>>();
+        Set<ParameterInjectionPoint<?, ?>> injectionPoints = new HashSet<ParameterInjectionPoint<?, ?>>();
         for (Set<MethodInjectionPoint<?, ?>> i : methodInjectionPoints) {
             for (MethodInjectionPoint<?, ?> method : i) {
                 for (ParameterInjectionPoint<?, ?> parameter : method.getParameterInjectionPoints()) {
@@ -64,18 +65,18 @@ public class InjectionPoints {
                 }
             }
         }
-        return injectionPoints.trimToSize();
+        return injectionPoints;
     }
 
-    public static <X> Set<ParameterInjectionPoint<?, X>> filterOutSpecialParameterInjectionPoints(List<ParameterInjectionPoint<?, X>> injectionPoints) {
-        ArraySet<ParameterInjectionPoint<?, X>> filtered = new ArraySet<ParameterInjectionPoint<?, X>>();
+    public static <X> Set<InjectionPoint> filterOutSpecialParameterInjectionPoints(List<ParameterInjectionPoint<?, X>> injectionPoints) {
+        ImmutableSet.Builder<InjectionPoint> filtered = ImmutableSet.builder();
         for (ParameterInjectionPoint<?, X> parameter : injectionPoints) {
             if (parameter instanceof SpecialParameterInjectionPoint) {
                 continue;
             }
             filtered.add(parameter);
         }
-        return filtered.trimToSize();
+        return filtered.build();
     }
 
     public static InjectionPoint getDelegateInjectionPoint(javax.enterprise.inject.spi.Decorator<?> decorator) {

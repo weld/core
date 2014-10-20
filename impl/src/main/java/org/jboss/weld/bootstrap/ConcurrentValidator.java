@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -129,7 +130,7 @@ public class ConcurrentValidator extends Validator {
         final SpecializationAndEnablementRegistry registry = beanManager.getServices().get(SpecializationAndEnablementRegistry.class);
         executor.invokeAllAndCheckForExceptions(new IterativeWorkerTaskFactory<String>(namedAccessibleBeans.keySet()) {
             protected void doWork(String name) {
-                Set<Bean<?>> resolvedBeans = beanManager.getBeanResolver().<Object>resolve(Beans.removeDisabledBeans(namedAccessibleBeans.get(name), beanManager, registry));
+                Set<Bean<?>> resolvedBeans = beanManager.getBeanResolver().<Object>resolve(Beans.removeDisabledBeans(new HashSet<>(namedAccessibleBeans.get(name)), beanManager, registry));
                 if (resolvedBeans.size() > 1) {
                     throw ValidatorLogger.LOG.ambiguousElName(name, WeldCollections.toMultiRowString(resolvedBeans));
                 }

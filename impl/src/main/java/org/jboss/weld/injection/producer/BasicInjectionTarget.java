@@ -32,7 +32,7 @@ import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.api.WeldInjectionTarget;
-import org.jboss.weld.util.collections.WeldCollections;
+import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
@@ -97,7 +97,7 @@ public class BasicInjectionTarget<T> extends AbstractProducer<T> implements Weld
         } else {
             this.instantiator = initInstantiator(type, bean, beanManager, injectionPoints);
         }
-        this.injectionPoints = WeldCollections.immutableGuavaSet(injectionPoints);
+        this.injectionPoints = ImmutableSet.copyOf(injectionPoints);
         checkDelegateInjectionPoints();
     }
 

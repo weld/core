@@ -19,7 +19,6 @@ package org.jboss.weld;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.annotation.Annotation;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -29,8 +28,7 @@ import javax.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.bean.builtin.BeanManagerProxy;
 import org.jboss.weld.logging.BeanManagerLogger;
-
-import com.google.common.collect.ImmutableSet;
+import org.jboss.weld.util.collections.ImmutableSet;
 
 /**
  * Abstract implementation of CDI which forwards all Instance methods to a delegate. Furthermore, it allows the calling class to be identified
@@ -46,11 +44,11 @@ public abstract class AbstractCDI<T> extends CDI<T> {
     protected final Set<String> subclassNames;
 
     public AbstractCDI() {
-        Set<String> names = new HashSet<String>();
+        ImmutableSet.Builder<String> names = ImmutableSet.builder();
         for (Class<?> clazz = getClass(); clazz != CDI.class; clazz = clazz.getSuperclass()) {
             names.add(clazz.getName());
         }
-        this.subclassNames = ImmutableSet.copyOf(names);
+        this.subclassNames = names.build();
     }
 
     @Override

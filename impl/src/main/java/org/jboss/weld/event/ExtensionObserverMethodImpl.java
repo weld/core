@@ -39,9 +39,8 @@ import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.logging.EventLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.reflection.Reflections;
-
-import com.google.common.collect.ImmutableSet;
 
 /**
  * An implementation of {@link ObserverMethod} used for events delivered to extensions.
@@ -66,7 +65,7 @@ public class ExtensionObserverMethodImpl<T, X> extends ObserverMethodImpl<T, X> 
         EnhancedAnnotatedParameter<?, ? super X> eventParameter = observer.getEnhancedParameters(Observes.class).get(0);
         WithAnnotations annotation = eventParameter.getAnnotation(WithAnnotations.class);
         if (annotation != null) {
-            return ImmutableSet.<Class<? extends Annotation>>copyOf(annotation.value());
+            return ImmutableSet.<Class<? extends Annotation>>of(annotation.value());
         }
         return Collections.emptySet();
     }
