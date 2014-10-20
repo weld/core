@@ -22,7 +22,7 @@ package org.jboss.weld.environment.se;
  * a WeldContainer SE app which makes use of the ContainerInitialized event.
  * Something like:
  * <code>
- * java -cp weld-se.jar:my-app.jar org.jboss.weld.environment.se.StartMain arg1 arg2
+ * java -cp weld-se-shaded.jar:my-app.jar org.jboss.weld.environment.se.StartMain arg1 arg2
  * </code>
  *
  * @author Peter Royle
