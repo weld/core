@@ -16,11 +16,8 @@
  */
 package org.jboss.weld.metadata.cache;
 
-import static org.jboss.weld.util.collections.WeldCollections.immutableGuavaSet;
-
 import java.lang.annotation.Annotation;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.AnnotatedMethod;
@@ -28,6 +25,7 @@ import javax.enterprise.util.Nonbinding;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotation;
+import org.jboss.weld.util.collections.ImmutableSet;
 
 /**
  * Common functionality for qualifiers and interceptor bindings.
@@ -55,11 +53,11 @@ public abstract class AbstractBindingModel<T extends Annotation> extends Annotat
         if (enhancedMethods.isEmpty()) {
             this.nonBindingMembers = Collections.emptySet();
         } else {
-            Set<AnnotatedMethod<?>> nonBindingMembers = new HashSet<AnnotatedMethod<?>>();
+            ImmutableSet.Builder<AnnotatedMethod<?>> nonBindingMembers = ImmutableSet.builder();
             for (EnhancedAnnotatedMethod<?, ?> method : enhancedMethods) {
                 nonBindingMembers.add(method.slim());
             }
-            this.nonBindingMembers = immutableGuavaSet(nonBindingMembers);
+            this.nonBindingMembers = nonBindingMembers.build();
         }
     }
 

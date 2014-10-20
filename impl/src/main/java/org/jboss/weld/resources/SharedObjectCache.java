@@ -27,6 +27,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.LazyValueHolder;
 import org.jboss.weld.util.cache.ComputingCache;
 import org.jboss.weld.util.cache.ComputingCacheBuilder;
+import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.collections.WeldCollections;
 
 /**
@@ -44,7 +45,7 @@ public class SharedObjectCache implements BootstrapService {
     private final ComputingCache<Set<?>, Set<?>> sharedSets = ComputingCacheBuilder.newBuilder().build(new Function<Set<?>, Set<?>>() {
         @Override
         public Set<?> apply(Set<?> from) {
-            return WeldCollections.immutableSet(from);
+            return ImmutableSet.copyOf(from);
         }
     });
 

@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.bean;
 
-import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
-
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -32,6 +30,7 @@ import javax.enterprise.inject.spi.InjectionTargetFactory;
 
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
@@ -49,7 +48,7 @@ public class SyntheticDecorator<T> extends SyntheticClassBean<T> implements Deco
     public SyntheticDecorator(BeanAttributes<T> attributes, Class<T> beanClass, InjectionTargetFactory<T> factory, BeanManagerImpl manager) {
         super(attributes, beanClass, factory, manager);
         this.delegate = identifyDelegateInjectionPoint(getInjectionPoints());
-        this.decoratedTypes = immutableSet((getDecoratedTypes(attributes.getTypes())));
+        this.decoratedTypes = ImmutableSet.copyOf(getDecoratedTypes(attributes.getTypes()));
     }
 
     protected InjectionPoint identifyDelegateInjectionPoint(Set<InjectionPoint> injectionPoints) {

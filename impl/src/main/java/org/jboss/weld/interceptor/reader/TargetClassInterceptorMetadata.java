@@ -23,8 +23,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
-
-import com.google.common.collect.ImmutableSet;
+import org.jboss.weld.util.collections.ImmutableSet;
 
 /**
  * Component's target class interceptor metadata. This class is immutable.
