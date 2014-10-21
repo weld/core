@@ -31,6 +31,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.enterprise.context.Dependent;
@@ -115,7 +116,6 @@ import org.jboss.weld.util.reflection.Reflections;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
-import com.google.common.collect.Multiset.Entry;
 import com.google.common.collect.SetMultimap;
 
 /**
@@ -489,9 +489,9 @@ public class Validator implements Service {
 
     public void validateSpecialization(BeanManagerImpl manager) {
         SpecializationAndEnablementRegistry registry = manager.getServices().get(SpecializationAndEnablementRegistry.class);
-        for (Entry<AbstractBean<?, ?>> entry : registry.getBeansSpecializedInAnyDeploymentAsMultiset().entrySet()) {
-            if (entry.getCount() > 1) {
-                throw ValidatorLogger.LOG.beanSpecializedTooManyTimes(entry.getElement());
+        for (Entry<AbstractBean<?, ?>, Long> entry : registry.getBeansSpecializedInAnyDeploymentAsMap().entrySet()) {
+            if (entry.getValue() > 1) {
+                throw ValidatorLogger.LOG.beanSpecializedTooManyTimes(entry.getKey());
             }
         }
     }
