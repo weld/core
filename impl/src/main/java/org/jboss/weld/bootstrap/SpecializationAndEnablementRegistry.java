@@ -22,9 +22,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.LongAdder;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.enterprise.inject.spi.Bean;
 
@@ -38,9 +41,8 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.cache.ComputingCache;
 import org.jboss.weld.util.cache.ComputingCacheBuilder;
 
-import com.google.common.collect.ConcurrentHashMultiset;
-import com.google.common.collect.Multiset;
-import com.google.common.collect.Multisets;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 
 /**
  * Holds information about specialized beans.
@@ -88,7 +90,9 @@ public class SpecializationAndEnablementRegistry extends AbstractBootstrapServic
             }
             if (result != null) {
                 if (isEnabledInAnyBeanDeployment(specializingBean)) {
-                    specializedBeansSet.addAll(result);
+                    for (AbstractBean<?, ?> specializedBean : result) {
+                        specializedBeansMap.computeIfAbsent(specializedBean, (key) -> new LongAdder()).increment();
+                    }
                 }
                 return result;
             }
@@ -113,7 +117,7 @@ public class SpecializationAndEnablementRegistry extends AbstractBootstrapServic
     // maps specializing beans to the set of specialized beans
     private final ComputingCache<Bean<?>, Set<? extends AbstractBean<?, ?>>> specializedBeans;
     // fast lookup structure that allows us to figure out if a given bean is specialized in any of the bean deployments
-    private final Multiset<AbstractBean<?, ?>> specializedBeansSet = ConcurrentHashMultiset.create();
+    private final ConcurrentHashMap<AbstractBean<?, ?>, LongAdder> specializedBeansMap = new ConcurrentHashMap<AbstractBean<?,?>, LongAdder>();
 
     public SpecializationAndEnablementRegistry() {
         ComputingCacheBuilder cacheBuilder = ComputingCacheBuilder.newBuilder();
@@ -145,13 +149,18 @@ public class SpecializationAndEnablementRegistry extends AbstractBootstrapServic
         if (noLongerSpecializedBeans != null) {
             specializedBeans.invalidate(bean);
             for (AbstractBean<?, ?> noLongerSpecializedBean : noLongerSpecializedBeans) {
-                specializedBeansSet.remove(noLongerSpecializedBean);
+                // We should never get null here but just to be sure
+                LongAdder count = specializedBeansMap.get(noLongerSpecializedBean);
+                if (count != null) {
+                    count.decrement();
+                }
             }
         }
     }
 
     public boolean isSpecializedInAnyBeanDeployment(Bean<?> bean) {
-        return specializedBeansSet.contains(bean);
+        LongAdder count = specializedBeansMap.get(bean);
+        return count != null && count.longValue() > 0;
     }
 
     public boolean isEnabledInAnyBeanDeployment(Bean<?> bean) {
@@ -195,14 +204,20 @@ public class SpecializationAndEnablementRegistry extends AbstractBootstrapServic
         specializedBeanResolvers.clear();
         environmentByManager.clear();
         specializedBeans.clear();
-        specializedBeansSet.clear();
+        specializedBeansMap.clear();
     }
 
     public Set<AbstractBean<?, ?>> getBeansSpecializedInAnyDeployment() {
-        return specializedBeansSet.elementSet();
+        return ImmutableSet.copyOf(specializedBeansMap.keySet());
     }
 
-    public Multiset<AbstractBean<?, ?>> getBeansSpecializedInAnyDeploymentAsMultiset() {
-        return Multisets.unmodifiableMultiset(specializedBeansSet);
+    public Map<AbstractBean<?, ?>, Long> getBeansSpecializedInAnyDeploymentAsMap() {
+        return ImmutableMap.copyOf(specializedBeansMap
+                .entrySet()
+                .stream()
+                .collect(
+                        Collectors.toMap((Entry<AbstractBean<?, ?>, LongAdder> entry) -> entry.getKey(), (Entry<AbstractBean<?, ?>, LongAdder> entry) -> entry
+                                .getValue().longValue())));
     }
+
 }
