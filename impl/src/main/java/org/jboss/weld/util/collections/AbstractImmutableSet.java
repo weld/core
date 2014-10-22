@@ -20,6 +20,8 @@ import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.Spliterator;
+import java.util.Spliterators;
 
 import org.jboss.weld.util.Preconditions;
 
@@ -151,5 +153,10 @@ abstract class AbstractImmutableSet<T> implements Set<T> {
 
     boolean equals(Set<?> that) {
         return this.size() == that.size() && that.containsAll(this);
+    }
+
+    @Override
+    public Spliterator<T> spliterator() {
+        return Spliterators.spliterator(this, Spliterator.DISTINCT | Spliterator.IMMUTABLE | Spliterator.NONNULL);
     }
 }
