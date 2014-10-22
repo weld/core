@@ -65,7 +65,6 @@ public final class ImmutableHashSet<T> extends AbstractImmutableSet<T> implement
 
     private final Object[] table;
     private final int size;
-    private final int mask;
     private final int hashCode;
 
     public ImmutableHashSet(Set<T> data) {
@@ -73,8 +72,7 @@ public final class ImmutableHashSet<T> extends AbstractImmutableSet<T> implement
         Preconditions.checkArgument(!data.isEmpty(), data);
         Preconditions.checkArgument(data.size() < MAX_SIZE, "Collection too large: " + data.size());
         this.size = data.size();
-        this.mask = tableSize(size) - 1;
-        this.table = new Object[mask + 1];
+        this.table = new Object[tableSize(size)];
         for (T element : data) {
             storeElement(element);
         }
@@ -97,7 +95,7 @@ public final class ImmutableHashSet<T> extends AbstractImmutableSet<T> implement
     }
 
     private int getTableIndex(int hashCode) {
-        return hashCode & mask;
+        return hashCode & table.length - 1;
     }
 
     private void storeElement(T element) {
