@@ -42,7 +42,6 @@ import org.jboss.weld.util.cache.ComputingCache;
 import org.jboss.weld.util.cache.ComputingCacheBuilder;
 import org.jboss.weld.util.collections.ImmutableMap;
 import org.jboss.weld.util.collections.ImmutableSet;
-
 /**
  * Holds information about specialized beans.
  *
@@ -219,7 +218,7 @@ public class SpecializationAndEnablementRegistry extends AbstractBootstrapServic
         for (Entry<AbstractBean<?, ?>, AtomicLong> entry : entrySet ) {
             resultingMap.put(entry.getKey(), entry.getValue().longValue());
         }
-        
+
         return ImmutableMap.copyOf(resultingMap);
     }
 }

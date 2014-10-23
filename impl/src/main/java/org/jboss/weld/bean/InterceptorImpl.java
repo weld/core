@@ -68,7 +68,8 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
         super(attributes, type, new StringBeanIdentifier(forInterceptor(type)), beanManager);
         this.interceptorMetadata = initInterceptorMetadata();
         this.serializable = type.isSerializable();
-        this.interceptorBindingTypes = Collections.unmodifiableSet(new HashSet<Annotation>(Interceptors.mergeBeanInterceptorBindings(beanManager, getEnhancedAnnotated(), getStereotypes()).values()));
+        Set<Annotation> interceptorBindingTypesSet = new HashSet<Annotation>(Interceptors.mergeBeanInterceptorBindings(beanManager, getEnhancedAnnotated(), getStereotypes()).values());
+        this.interceptorBindingTypes = Collections.unmodifiableSet(interceptorBindingTypesSet);
 
         if (Beans.findInterceptorBindingConflicts(beanManager, interceptorBindingTypes)) {
             throw new DeploymentException(BeanLogger.LOG.conflictingInterceptorBindings(getType()));

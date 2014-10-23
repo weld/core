@@ -32,6 +32,7 @@ import org.jboss.weld.logging.BeanManagerLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 
+
 /**
  * Helper class for working with interceptors and interceptor bindings.
  * @author Jozef Hartinger

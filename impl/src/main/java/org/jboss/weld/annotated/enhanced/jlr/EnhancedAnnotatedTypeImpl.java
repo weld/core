@@ -54,16 +54,15 @@ import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.collections.ArraySetMultimap;
 import org.jboss.weld.util.collections.Arrays2;
-import org.jboss.weld.util.collections.HashSetSupplier;
 import org.jboss.weld.util.collections.ImmutableSet;
+import org.jboss.weld.util.collections.Multimap;
+import org.jboss.weld.util.collections.Multimaps;
+import org.jboss.weld.util.collections.SetMultimap;
 import org.jboss.weld.util.collections.Sets;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
 
 import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Multimaps;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
@@ -324,8 +323,7 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
     protected Set<EnhancedAnnotatedMethod<?, ? super T>> getOverriddenMethods(EnhancedAnnotatedType<T> annotatedType,
             Set<EnhancedAnnotatedMethod<?, ? super T>> methods, boolean skipOverridingBridgeMethods) {
         Set<EnhancedAnnotatedMethod<?, ? super T>> overriddenMethods = new HashSet<EnhancedAnnotatedMethod<?, ? super T>>();
-        Multimap<MethodSignature, Package> seenMethods = Multimaps.newSetMultimap(new HashMap<MethodSignature, Collection<Package>>(),
-                HashSetSupplier.<Package> instance());
+        Multimap<MethodSignature, Package> seenMethods = new SetMultimap<>();
         for (Class<? super T> clazz = annotatedType.getJavaClass(); clazz != null && clazz != Object.class; clazz = clazz.getSuperclass()) {
             for (EnhancedAnnotatedMethod<?, ? super T> method : methods) {
                 if (method.getJavaMember().getDeclaringClass().equals(clazz)) {
@@ -343,7 +341,7 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
     }
 
     protected Multimap<Class<? extends Annotation>, EnhancedAnnotatedMethod<?, ? super T>> buildAnnotatedMethodMultimap(Set<EnhancedAnnotatedMethod<?, ? super T>> effectiveMethods) {
-        Multimap<Class<? extends Annotation>, EnhancedAnnotatedMethod<?, ? super T>> result = HashMultimap.create();
+        Multimap<Class<? extends Annotation>, EnhancedAnnotatedMethod<?, ? super T>> result = new SetMultimap<>();
         for (EnhancedAnnotatedMethod<?, ? super T> method : effectiveMethods) {
             for (Class<? extends Annotation> annotation : MAPPED_METHOD_ANNOTATIONS) {
                 if (method.isAnnotationPresent(annotation)) {
@@ -355,7 +353,7 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
     }
 
     protected Multimap<Class<? extends Annotation>, EnhancedAnnotatedMethod<?, ? super T>> buildAnnotatedParameterMethodMultimap(Set<EnhancedAnnotatedMethod<?, ? super T>> effectiveMethods) {
-        Multimap<Class<? extends Annotation>, EnhancedAnnotatedMethod<?, ? super T>> result = HashMultimap.create();
+        Multimap<Class<? extends Annotation>, EnhancedAnnotatedMethod<?, ? super T>> result = new SetMultimap<>();
         for (EnhancedAnnotatedMethod<?, ? super T> method : effectiveMethods) {
             for (Class<? extends Annotation> annotation : MAPPED_METHOD_PARAMETER_ANNOTATIONS) {
                 if (!method.getEnhancedParameters(annotation).isEmpty()) {
