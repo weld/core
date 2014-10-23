@@ -25,9 +25,7 @@ import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.inject.Scope;
 
 import org.jboss.weld.bootstrap.api.Service;
-
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.SetMultimap;
+import org.jboss.weld.util.collections.SetMultimap;
 
 /**
  * This class requires happens-before action between {@link #add(Class, Annotation)}
@@ -44,7 +42,7 @@ public class TypeStore implements Service {
     private final Set<Class<? extends Annotation>> extraScopes;
 
     public TypeStore() {
-        this.extraAnnotations = HashMultimap.create();
+        this.extraAnnotations = new SetMultimap<>();
         this.extraScopes = new HashSet<Class<? extends Annotation>>();
     }
 

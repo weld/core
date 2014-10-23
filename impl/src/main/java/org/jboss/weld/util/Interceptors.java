@@ -28,9 +28,8 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.logging.BeanManagerLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
-
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
+import org.jboss.weld.util.collections.Multimap;
+import org.jboss.weld.util.collections.SetMultimap;
 
 /**
  * Helper class for working with interceptors and interceptor bindings.
@@ -113,7 +112,7 @@ public class Interceptors {
     public static Multimap<Class<? extends Annotation>, Annotation> mergeBeanInterceptorBindings(BeanManagerImpl beanManager, AnnotatedType<?> clazz, Collection<Annotation> classBindingAnnotations,
             Collection<Annotation> inheritedBindingAnnotations) {
 
-        Multimap<Class<? extends Annotation>, Annotation> mergedBeanBindings = HashMultimap.create();
+        Multimap<Class<? extends Annotation>, Annotation> mergedBeanBindings = new SetMultimap<>();
         Set<Annotation> acceptedInheritedBindings = new HashSet<Annotation>();
 
         // add all class-level interceptor bindings (these have precedence)

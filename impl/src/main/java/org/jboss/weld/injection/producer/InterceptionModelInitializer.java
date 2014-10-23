@@ -51,11 +51,9 @@ import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.logging.ValidatorLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
-import org.jboss.weld.util.collections.ImmutableSet;
+import org.jboss.weld.util.collections.Multimap;
+import org.jboss.weld.util.collections.SetMultimap;
 import org.jboss.weld.util.reflection.Reflections;
-
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
 
 /**
  * Initializes {@link InterceptionModel} for a {@link Bean} or a non-contextual component.
@@ -137,7 +135,7 @@ public class InterceptionModelInitializer<T> {
         Multimap<Class<? extends Annotation>, Annotation> classBindingAnnotations = getClassInterceptorBindings();
 
         // WELD-1742 Set class level interceptor bindings
-        Set<Annotation> bindings = ImmutableSet.copyOf(classBindingAnnotations.values());
+        Set<Annotation> bindings = classBindingAnnotations.uniqueValues();
         builder.setClassInterceptorBindings(bindings);
         initCdiLifecycleInterceptors(bindings);
         initCdiConstructorInterceptors(classBindingAnnotations);
@@ -216,7 +214,7 @@ public class InterceptionModelInitializer<T> {
 
     private Set<Annotation> getMemberBindingAnnotations(Multimap<Class<? extends Annotation>, Annotation> classBindingAnnotations, Set<Annotation> memberAnnotations) {
         Set<Annotation> methodBindingAnnotations = flattenInterceptorBindings(manager, filterInterceptorBindings(manager, memberAnnotations), true, true);
-        return ImmutableSet.copyOf(mergeMemberInterceptorBindings(classBindingAnnotations, methodBindingAnnotations).values());
+        return mergeMemberInterceptorBindings(classBindingAnnotations, methodBindingAnnotations).uniqueValues();
     }
 
     /*
@@ -308,8 +306,8 @@ public class InterceptionModelInitializer<T> {
     protected Multimap<Class<? extends Annotation>, Annotation> mergeMemberInterceptorBindings(Multimap<Class<? extends Annotation>, Annotation> beanBindings,
             Set<Annotation> methodBindingAnnotations) {
 
-        Multimap<Class<? extends Annotation>, Annotation> mergedBeanBindings = HashMultimap.create(beanBindings);
-        Multimap<Class<? extends Annotation>, Annotation> methodBindings = HashMultimap.create();
+        Multimap<Class<? extends Annotation>, Annotation> mergedBeanBindings = new SetMultimap<>(beanBindings);
+        Multimap<Class<? extends Annotation>, Annotation> methodBindings = new SetMultimap<>();
 
         for (Annotation methodBinding : methodBindingAnnotations) {
             methodBindings.put(methodBinding.annotationType(), methodBinding);
