@@ -22,6 +22,7 @@ import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 
 import org.jboss.weld.Container;
+import org.jboss.weld.bean.CommonBean;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.context.api.ContextualInstance;
 import org.jboss.weld.context.beanstore.BeanStore;
@@ -183,6 +184,10 @@ public abstract class AbstractContext implements AlterableContext {
     }
 
     protected BeanIdentifier getId(Contextual<?> contextual) {
+        if (contextual instanceof CommonBean<?>) {
+            // There is not need to call ContextualStore.putIfAbsent() because it's called for all PassivationCapable beans during deployment
+            return ((CommonBean<?>) contextual).getIdentifier();
+        }
         return serviceRegistry.get(ContextualStore.class).putIfAbsent(contextual);
     }
 
