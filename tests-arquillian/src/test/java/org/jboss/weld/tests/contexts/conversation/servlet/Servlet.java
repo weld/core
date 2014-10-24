@@ -88,18 +88,18 @@ public class Servlet extends HttpServlet {
     }
 
     private void printInfo(PrintWriter writer) {
-        writer.append("message: " + message.getValue());
-        writer.append("\n");
-        writer.append("cid: [" + conversation.getId());
-        writer.append("]");
-        writer.append("\n");
-        writer.append("transient: " + conversation.isTransient());
-        writer.append("\n");
+        writer.append("message: ").append(message.getValue());
+        writer.append('\n');
+        writer.append("cid: [").append(conversation.getId());
+        writer.append(']');
+        writer.append('\n');
+        writer.append("transient: ").append(Boolean.toString(conversation.isTransient()));
+        writer.append('\n');
     }
 
     private void printSessionIds(PrintWriter writer, Set<String> ids) {
         for (String id : ids) {
-            writer.append("<" + id + ">");
+            writer.append('<').append(id).append('>');
         }
     }
     
