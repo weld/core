@@ -29,6 +29,7 @@ import org.jboss.weld.literal.InitializedLiteral;
 import org.jboss.weld.logging.ConversationLogger;
 import org.jboss.weld.logging.ServletLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.Consumer;
 
 /**
  * This component takes care of activation/deactivation of the conversation context for a servlet request.
@@ -54,12 +55,20 @@ public class ConversationContextActivator {
     private final FastEvent<HttpServletRequest> conversationInitializedEvent;
     private final FastEvent<HttpServletRequest> conversationDestroyedEvent;
 
+    private final Consumer<HttpServletRequest> lazyInitializationCallback;
+
     private final boolean lazy;
 
     protected ConversationContextActivator(BeanManagerImpl beanManager, boolean lazy) {
         this.beanManager = beanManager;
         conversationInitializedEvent = FastEvent.of(HttpServletRequest.class, beanManager, InitializedLiteral.CONVERSATION);
         conversationDestroyedEvent = FastEvent.of(HttpServletRequest.class, beanManager, DestroyedLiteral.CONVERSATION);
+        lazyInitializationCallback = lazy ? new Consumer<HttpServletRequest>() {
+            @Override
+            public void accept(HttpServletRequest input) {
+                conversationInitializedEvent.fire(input);
+            }
+        } : null;
         this.lazy = lazy;
     }
 
@@ -102,9 +111,11 @@ public class ConversationContextActivator {
         }
     }
 
-    private void activate(HttpConversationContext conversationContext, HttpServletRequest request) {
-        if (lazy) {
-            conversationContext.activate();
+    private void activate(HttpConversationContext conversationContext, final HttpServletRequest request) {
+        if (lazy && conversationContext instanceof LazyHttpConversationContextImpl) {
+            LazyHttpConversationContextImpl lazyConversationContext = (LazyHttpConversationContextImpl) conversationContext;
+            // Activation API should be improved so that it's possible to pass a callback for later execution
+            lazyConversationContext.activate(lazyInitializationCallback);
         } else {
             String cid = determineConversationId(request, conversationContext.getParameterName());
             conversationContext.activate(cid);

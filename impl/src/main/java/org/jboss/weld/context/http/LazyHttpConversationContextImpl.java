@@ -16,14 +16,17 @@
  */
 package org.jboss.weld.context.http;
 
+
 import javax.enterprise.context.BusyConversationException;
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.context.NonexistentConversationException;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.jboss.weld.logging.ConversationLogger;
 import org.jboss.weld.serialization.BeanIdentifierIndex;
 import org.jboss.weld.servlet.ConversationContextActivator;
+import org.jboss.weld.util.Consumer;
 
 /**
  * An implementation of {@link HttpConversationContext} that is capable of lazy initialization. By default, the context is associated with a request and the active flag
@@ -38,11 +41,28 @@ import org.jboss.weld.servlet.ConversationContextActivator;
  */
 public class LazyHttpConversationContextImpl extends HttpConversationContextImpl {
 
+    private final ThreadLocal<Consumer<HttpServletRequest>> initializationCallback;
+
     private final ThreadLocal<Object> initialized;
 
     public LazyHttpConversationContextImpl(String contextId, BeanIdentifierIndex beanIdentifierIndex) {
         super(contextId, beanIdentifierIndex);
         this.initialized = new ThreadLocal<Object>();
+        this.initializationCallback = new ThreadLocal<Consumer<HttpServletRequest>>();
+    }
+
+    /**
+     *
+     * @param initializationCallback This callback will be executed during initialization
+     */
+    public void activate(Consumer<HttpServletRequest> initializationCallback) {
+        activate();
+        if (initializationCallback != null) {
+            this.initializationCallback.set(initializationCallback);
+        } else {
+            // For the case the deactivation was not performed properly
+            this.initializationCallback.set(null);
+        }
     }
 
     @Override
@@ -70,15 +90,19 @@ public class LazyHttpConversationContextImpl extends HttpConversationContextImpl
 
     @Override
     public void deactivate() {
-        if (isInitialized()) {
-            try {
-                super.deactivate();
-            } finally {
-                this.initialized.remove();
+        try {
+            if (isInitialized()) {
+                try {
+                    super.deactivate();
+                } finally {
+                    this.initialized.set(null);
+                }
+            } else {
+                // Only deactivate the context
+                super.setActive(false);
             }
-        } else {
-            // Only deactivate the context
-            super.setActive(false);
+        } finally {
+            this.initializationCallback.set(null);
         }
     }
 
@@ -93,7 +117,15 @@ public class LazyHttpConversationContextImpl extends HttpConversationContextImpl
     @Override
     protected void checkContextInitialized() {
         if (!isInitialized()) {
-            initialize(ConversationContextActivator.determineConversationId(getRequest(), getParameterName()));
+            HttpServletRequest request = getRequest();
+            String cid = ConversationContextActivator.determineConversationId(request, getParameterName());
+            initialize(cid);
+            if (cid == null) { // transient conversation
+                Consumer<HttpServletRequest> callback = initializationCallback.get();
+                if(callback != null) {
+                    callback.accept(request);
+                }
+            }
         }
     }
 }
