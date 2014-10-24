@@ -102,9 +102,11 @@ public class ConversationContextActivator {
         }
     }
 
-    private void activate(HttpConversationContext conversationContext, HttpServletRequest request) {
-        if (lazy) {
-            conversationContext.activate();
+    private void activate(HttpConversationContext conversationContext, final HttpServletRequest request) {
+        if (lazy && conversationContext instanceof LazyHttpConversationContextImpl) {
+            LazyHttpConversationContextImpl lazyConversationContext = (LazyHttpConversationContextImpl) conversationContext;
+            // Activation API should be improved so that it's possible to pass a callback for later execution
+            lazyConversationContext.activate(() -> conversationInitializedEvent.fire(request));
         } else {
             String cid = determineConversationId(request, conversationContext.getParameterName());
             conversationContext.activate(cid);
