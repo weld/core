@@ -16,14 +16,11 @@
  */
 package org.jboss.weld.util.collections;
 
-import java.lang.reflect.Array;
+import java.util.AbstractSet;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.Spliterator;
 import java.util.Spliterators;
-
-import org.jboss.weld.util.Preconditions;
 
 /**
  * Common implementation for all immutable set implementations.
@@ -33,7 +30,7 @@ import org.jboss.weld.util.Preconditions;
  *
  * @param <T> the element type
  */
-abstract class AbstractImmutableSet<T> implements Set<T> {
+abstract class AbstractImmutableSet<T> extends AbstractSet<T> implements Set<T> {
 
     @Override
     public boolean add(T e) {
@@ -78,58 +75,6 @@ abstract class AbstractImmutableSet<T> implements Set<T> {
             }
         }
         return true;
-    }
-
-    private void fill(Object[] array) {
-        Preconditions.checkNotNull(array);
-        int i = 0;
-        for (Iterator<T> iterator = iterator(); iterator.hasNext();) {
-            array[i++] = iterator.next();
-        }
-        /*
-         * If this set fits in the specified array with room to spare (i.e., the array has more elements than this set), the element in the array immediately
-         * following the end of the set is set to null.
-         */
-        if (array.length > i) {
-            array[i] = null;
-        }
-    }
-
-    @Override
-    public Object[] toArray() {
-        Object[] array = new Object[size()];
-        fill(array);
-        return array;
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public <AT> AT[] toArray(AT[] array) {
-        if (array.length < size()) {
-            array = (AT[]) Array.newInstance(array.getClass().getComponentType(), size());
-        }
-        fill(array);
-        return array;
-    }
-
-    public String toString() {
-        if (isEmpty()) {
-            return "[]";
-        }
-        final Iterator<T> iterator = iterator();
-        final StringBuilder builder = new StringBuilder("[");
-        while (true) {
-            T next = iterator.next();
-            if (next == this) {
-                builder.append("(this Collection)");
-            } else {
-                builder.append(next);
-            }
-            if (!iterator.hasNext()) {
-                return builder.append(']').toString();
-            }
-            builder.append(", ");
-        }
     }
 
     @Override

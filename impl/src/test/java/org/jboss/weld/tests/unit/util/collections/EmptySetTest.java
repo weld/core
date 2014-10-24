@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tests.unit.util.collections;
 
-public class EmptySetTest extends AbstractImmutableTinySetTest {
+public class EmptySetTest extends AbstractImmutableSetTest {
 
     private static final String[] DATA = new String[0];
 

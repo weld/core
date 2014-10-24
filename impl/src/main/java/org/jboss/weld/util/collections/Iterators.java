@@ -30,6 +30,24 @@ import org.jboss.weld.util.Preconditions;
  */
 public final class Iterators {
 
+    private static final Iterator<Object> EMPTY_ITERATOR = new Iterator<Object>() {
+
+        @Override
+        public boolean hasNext() {
+            return false;
+        }
+
+        @Override
+        public Object next() {
+            throw new NoSuchElementException();
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException("remove");
+        }
+    };
+
     private Iterators() {
     }
 
@@ -81,23 +99,9 @@ public final class Iterators {
      *
      * @return an empty iterator
      */
+    @SuppressWarnings("unchecked")
     public static <T> Iterator<T> emptyIterator() {
-        return new Iterator<T>() {
-            @Override
-            public boolean hasNext() {
-                return false;
-            }
-
-            @Override
-            public T next() {
-                throw new NoSuchElementException();
-            }
-
-            @Override
-            public void remove() {
-                throw new IllegalStateException();
-            }
-        };
+        return (Iterator<T>) EMPTY_ITERATOR;
     }
 
     private static class CombinedIterator<E> implements Iterator<E> {
