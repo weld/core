@@ -38,11 +38,28 @@ import org.jboss.weld.servlet.ConversationContextActivator;
  */
 public class LazyHttpConversationContextImpl extends HttpConversationContextImpl {
 
+    private final ThreadLocal<Runnable> initializationCallback;
+
     private final ThreadLocal<Object> initialized;
 
     public LazyHttpConversationContextImpl(String contextId, BeanIdentifierIndex beanIdentifierIndex) {
         super(contextId, beanIdentifierIndex);
         this.initialized = new ThreadLocal<Object>();
+        this.initializationCallback = new ThreadLocal<>();
+    }
+
+    /**
+     *
+     * @param initializationCallback This callback will be executed during initialization
+     */
+    public void activate(Runnable initializationCallback) {
+        activate();
+        if (initializationCallback != null) {
+            this.initializationCallback.set(initializationCallback);
+        } else {
+            // For the case the deactivation was not performed properly
+            this.initializationCallback.set(null);
+        }
     }
 
     @Override
@@ -66,19 +83,29 @@ public class LazyHttpConversationContextImpl extends HttpConversationContextImpl
     protected void initialize(String cid) {
         this.initialized.set(Boolean.TRUE);
         super.initialize(cid);
+        if (cid == null) { // transient conversation
+            Runnable callback = initializationCallback.get();
+            if(callback != null) {
+                callback.run();
+            }
+        }
     }
 
     @Override
     public void deactivate() {
-        if (isInitialized()) {
-            try {
-                super.deactivate();
-            } finally {
-                this.initialized.remove();
+        try {
+            if (isInitialized()) {
+                try {
+                    super.deactivate();
+                } finally {
+                    this.initialized.set(null);
+                }
+            } else {
+                // Only deactivate the context
+                super.setActive(false);
             }
-        } else {
-            // Only deactivate the context
-            super.setActive(false);
+        } finally {
+            this.initializationCallback.set(null);
         }
     }
 

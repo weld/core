@@ -557,4 +557,5 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
     protected R getRequest() {
         return associated.get();
     }
+
 }
