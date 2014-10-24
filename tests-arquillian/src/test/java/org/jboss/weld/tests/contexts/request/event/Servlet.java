@@ -34,9 +34,9 @@ public class Servlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.getWriter().append("Initialized requests:" + observer.getInitializedRequestCount().get());
-        resp.getWriter().append("\n");
-        resp.getWriter().append("Destroyed requests:" + observer.getDestroyedRequestCount().get());
+        resp.getWriter().append("Initialized requests:").append(Integer.toString(observer.getInitializedRequestCount().get()));
+        resp.getWriter().append('\n');
+        resp.getWriter().append("Destroyed requests:").append(Integer.toString(observer.getDestroyedRequestCount().get()));
         resp.setContentType("text/plain");
     }
 

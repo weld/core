@@ -96,7 +96,7 @@ public class NameBasedResolver {
     public String toString() {
         StringBuilder buffer = new StringBuilder();
         buffer.append("Resolver\n");
-        buffer.append("Resolved names points: " + resolvedNames.size() + "\n");
+        buffer.append("Resolved names points: ").append(resolvedNames.size()).append('\n');
         return buffer.toString();
     }
 
