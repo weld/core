@@ -45,9 +45,9 @@ public class Servlet extends HttpServlet {
                 throw new RuntimeException("@Destroyed(SessionScoped.class) called before the session context was actually destroyed");
             }
         }
-        resp.getWriter().append("Initialized sessions:" + observer.getInitializedSessionCount().get());
-        resp.getWriter().append("\n");
-        resp.getWriter().append("Destroyed sessions:" + observer.getDestroyedSessionCount().get());
+        resp.getWriter().append("Initialized sessions:").append(Integer.toString(observer.getInitializedSessionCount().get()));
+        resp.getWriter().append('\n');
+        resp.getWriter().append("Destroyed sessions:").append(Integer.toString(observer.getDestroyedSessionCount().get()));
         resp.setContentType("text/plain");
     }
 }

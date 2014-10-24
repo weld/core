@@ -191,7 +191,7 @@ public abstract class AbstractMemberProducer<X, T> extends AbstractProducer<T> {
         } else {
                 result.append(getBean());
             }
-            result.append(" declared on " + getDeclaringBean());
+            result.append(" declared on ").append(getDeclaringBean());
         }
         return result.toString();
     }

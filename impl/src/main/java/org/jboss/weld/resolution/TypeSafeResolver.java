@@ -160,9 +160,9 @@ public abstract class TypeSafeResolver<R extends Resolvable, T, C extends Collec
      */
     @Override
     public String toString() {
-        StringBuilder buffer = new StringBuilder();
-        buffer.append("Resolver\n");
-        buffer.append("Resolved injection points: " + resolved.size() + "\n");
-        return buffer.toString();
+        StringBuilder sb = new StringBuilder();
+        sb.append("Resolver\n");
+        sb.append("Resolved injection points: ").append(resolved.size()).append('\n');
+        return sb.toString();
     }
 }
