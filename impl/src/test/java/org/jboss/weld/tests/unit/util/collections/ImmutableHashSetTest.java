@@ -32,7 +32,7 @@ import org.junit.Test;
  * @see WELD-1753
  *
  */
-public class ImmutableHashSetTest extends AbstractImmutableTinySetTest {
+public class ImmutableHashSetTest extends AbstractImmutableSetTest {
 
     private static final String[] DATA = new String[] { "alpha", "bravo", "charlie", "delta", "echo" };
 

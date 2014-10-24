@@ -73,19 +73,6 @@ abstract class ImmutableTinySet<T> extends AbstractImmutableSet<T> {
 
         private static final long serialVersionUID = 1L;
         private static final EmptySet INSTANCE = new EmptySet();
-        private static final Object[] EMPTY_ARRAY = new Object[0];
-        private static final Iterator<Object> EMPTY_ITERATOR = new Iterator<Object>() {
-
-            @Override
-            public boolean hasNext() {
-                return false;
-            }
-
-            @Override
-            public Object next() {
-                throw new NoSuchElementException();
-            }
-        };
 
         @SuppressWarnings("unchecked")
         static <T> Set<T> instance() {
@@ -117,12 +104,12 @@ abstract class ImmutableTinySet<T> extends AbstractImmutableSet<T> {
 
         @Override
         public Iterator<Object> iterator() {
-            return EMPTY_ITERATOR;
+            return Iterators.emptyIterator();
         }
 
         @Override
         public Object[] toArray() {
-            return EMPTY_ARRAY;
+            return Arrays2.EMPTY_ARRAY;
         }
 
         @Override
@@ -171,6 +158,11 @@ abstract class ImmutableTinySet<T> extends AbstractImmutableSet<T> {
             Preconditions.checkNotNull(set);
             Preconditions.checkArgument(set.size() == 1, set);
             this.element = set.iterator().next();
+        }
+
+        Singleton(T element) {
+            Preconditions.checkNotNull(element);
+            this.element = element;
         }
 
         @Override
