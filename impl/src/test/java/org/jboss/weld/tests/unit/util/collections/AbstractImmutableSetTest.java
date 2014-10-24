@@ -37,7 +37,7 @@ import org.junit.Test;
  * @see WELD-1753
  *
  */
-public abstract class AbstractImmutableTinySetTest {
+public abstract class AbstractImmutableSetTest {
 
     protected abstract String[] getData();
 

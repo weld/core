@@ -71,7 +71,7 @@ public class IteratorsTest {
         try {
             Iterators.emptyIterator().remove();
             fail();
-        } catch (IllegalStateException e) {
+        } catch (UnsupportedOperationException e) {
             // Expected
         }
     }
