@@ -21,12 +21,12 @@ import static org.jboss.weld.environment.util.Reflections.hasBeanDefiningMetaAnn
 import java.lang.annotation.Annotation;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.enterprise.context.NormalScope;
 import javax.enterprise.inject.Stereotype;
 
 import org.jboss.weld.bootstrap.api.Bootstrap;
-import org.jboss.weld.bootstrap.api.TypeDiscoveryConfiguration;
 import org.jboss.weld.environment.deployment.WeldBeanDeploymentArchive;
 import org.jboss.weld.environment.logging.CommonLogger;
 import org.jboss.weld.resources.spi.ResourceLoader;
@@ -44,11 +44,8 @@ public class ReflectionDiscoveryStrategy extends AbstractDiscoveryStrategy {
 
     private final List<Class<? extends Annotation>> metaAnnotations;
 
-    private final TypeDiscoveryConfiguration typeDiscoveryConfiguration;
-
-    public ReflectionDiscoveryStrategy(ResourceLoader resourceLoader, Bootstrap bootstrap, TypeDiscoveryConfiguration typeDiscoveryConfiguration) {
-        super(resourceLoader, bootstrap);
-        this.typeDiscoveryConfiguration = typeDiscoveryConfiguration;
+    public ReflectionDiscoveryStrategy(ResourceLoader resourceLoader, Bootstrap bootstrap, Set<Class<? extends Annotation>> initialBeanDefiningAnnotations) {
+        super(resourceLoader, bootstrap, initialBeanDefiningAnnotations);
         this.metaAnnotations = ImmutableList.of(Stereotype.class, NormalScope.class);
         registerHandler(new FileSystemBeanArchiveHandler());
     }
@@ -60,15 +57,15 @@ public class ReflectionDiscoveryStrategy extends AbstractDiscoveryStrategy {
         while (classIterator.hasNext()) {
             String className = classIterator.next();
             Class<?> clazz = Reflections.loadClass(className, resourceLoader);
-            if (!hasBeanDefiningAnnotation(clazz, typeDiscoveryConfiguration)) {
+            if (!hasBeanDefiningAnnotation(clazz, initialBeanDefiningAnnotations)) {
                 classIterator.remove();
             }
         }
         return builder.build();
     }
 
-    private boolean hasBeanDefiningAnnotation(Class<?> clazz, TypeDiscoveryConfiguration typeDiscoveryConfiguration) {
-        for (Class<? extends Annotation> beanDefiningAnnotation : typeDiscoveryConfiguration.getKnownBeanDefiningAnnotations()) {
+    private boolean hasBeanDefiningAnnotation(Class<?> clazz, Set<Class<? extends Annotation>> initialBeanDefiningAnnotations) {
+        for (Class<? extends Annotation> beanDefiningAnnotation : initialBeanDefiningAnnotations) {
             if (clazz.isAnnotationPresent(beanDefiningAnnotation)) {
                 return true;
             }

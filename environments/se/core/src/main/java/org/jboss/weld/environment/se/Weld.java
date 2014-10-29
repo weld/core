@@ -43,12 +43,15 @@ import org.jboss.weld.environment.deployment.WeldResourceLoader;
 import org.jboss.weld.environment.deployment.discovery.DiscoveryStrategy;
 import org.jboss.weld.environment.deployment.discovery.DiscoveryStrategyFactory;
 import org.jboss.weld.environment.logging.CommonLogger;
+import org.jboss.weld.environment.se.contexts.ThreadScoped;
 import org.jboss.weld.environment.se.events.ContainerInitialized;
 import org.jboss.weld.literal.InitializedLiteral;
 import org.jboss.weld.metadata.MetadataImpl;
 import org.jboss.weld.resources.spi.ClassFileServices;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.security.GetSystemPropertyAction;
+
+import com.google.common.collect.ImmutableSet;
 
 /**
  * <p>
@@ -206,8 +209,12 @@ public class Weld {
         final TypeDiscoveryConfiguration typeDiscoveryConfiguration = bootstrap.startExtensions(loadedExtensions);
 
         Deployment deployment=null;
-        // Don't support bean-discovery-mode="annotated" if the jandex is not on the classpath
-        DiscoveryStrategy strategy = DiscoveryStrategyFactory.create(resourceLoader, bootstrap, typeDiscoveryConfiguration);
+        DiscoveryStrategy strategy = DiscoveryStrategyFactory.create(
+                resourceLoader,
+                bootstrap,
+                ImmutableSet.<Class<? extends Annotation>> builder().addAll(typeDiscoveryConfiguration.getKnownBeanDefiningAnnotations())
+                        // Add ThreadScoped manually as Weld SE doesn't support implicit bean archives without beans.xml
+                        .add(ThreadScoped.class).build());
         Set<WeldBeanDeploymentArchive> discoveredArchives = strategy.performDiscovery();
 
         String isolation = AccessController.doPrivileged(new GetSystemPropertyAction(ARCHIVE_ISOLATION_SYSTEM_PROPERTY));

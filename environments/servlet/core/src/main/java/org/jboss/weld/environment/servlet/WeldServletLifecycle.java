@@ -223,7 +223,7 @@ public class WeldServletLifecycle {
         final Iterable<Metadata<Extension>> extensions = bootstrap.loadExtensions(WeldResourceLoader.getClassLoader());
         final TypeDiscoveryConfiguration typeDiscoveryConfiguration = bootstrap.startExtensions(extensions);
 
-        DiscoveryStrategy strategy = DiscoveryStrategyFactory.create(resourceLoader, bootstrap, typeDiscoveryConfiguration);
+        DiscoveryStrategy strategy = DiscoveryStrategyFactory.create(resourceLoader, bootstrap, typeDiscoveryConfiguration.getKnownBeanDefiningAnnotations());
         strategy.registerHandler(new ServletContextBeanArchiveHandler(context));
 
         strategy.setScanner(new WebAppBeanArchiveScanner(resourceLoader, bootstrap, context));
