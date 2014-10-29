@@ -16,14 +16,14 @@
  */
 package org.jboss.weld.environment.se.test.beans.threading;
 
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 
 /**
  * An application-scoped (singleton) counter.
  *
  * @author Peter Royle
  */
-@Singleton
+@ApplicationScoped
 public class SingletonCounter extends Counter {
 
 }

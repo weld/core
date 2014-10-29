@@ -31,7 +31,6 @@ import org.jboss.jandex.CompositeIndex;
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.IndexView;
 import org.jboss.weld.bootstrap.api.Bootstrap;
-import org.jboss.weld.bootstrap.api.TypeDiscoveryConfiguration;
 import org.jboss.weld.environment.deployment.WeldBeanDeploymentArchive;
 import org.jboss.weld.environment.deployment.discovery.AbstractDiscoveryStrategy;
 import org.jboss.weld.environment.deployment.discovery.BeanArchiveBuilder;
@@ -53,17 +52,14 @@ public class JandexDiscoveryStrategy extends AbstractDiscoveryStrategy {
 
     private static final int ANNOTATION= 0x00002000;
 
-    private final TypeDiscoveryConfiguration typeDiscoveryConfiguration;
-
     private Set<DotName> beanDefiningAnnotations;
 
     private CompositeIndex cindex;
 
     private JandexClassFileServices classFileServices;
 
-    public JandexDiscoveryStrategy(ResourceLoader resourceLoader, Bootstrap bootstrap, TypeDiscoveryConfiguration typeDiscoveryConfiguration) {
-        super(resourceLoader, bootstrap);
-        this.typeDiscoveryConfiguration = typeDiscoveryConfiguration;
+    public JandexDiscoveryStrategy(ResourceLoader resourceLoader, Bootstrap bootstrap, Set<Class<? extends Annotation>> initialBeanDefiningAnnotations) {
+        super(resourceLoader, bootstrap, initialBeanDefiningAnnotations);
         registerHandler(new JandexIndexBeanArchiveHandler());
         registerHandler(new JandexFileSystemBeanArchiveHandler());
     }
@@ -81,7 +77,7 @@ public class JandexDiscoveryStrategy extends AbstractDiscoveryStrategy {
             indexes.add(index);
         }
         cindex = CompositeIndex.create(indexes);
-        beanDefiningAnnotations = buildBeanDefiningAnnotationSet(typeDiscoveryConfiguration, cindex);
+        beanDefiningAnnotations = buildBeanDefiningAnnotationSet(initialBeanDefiningAnnotations, cindex);
         classFileServices = new JandexClassFileServices(this);
     }
 
@@ -98,9 +94,9 @@ public class JandexDiscoveryStrategy extends AbstractDiscoveryStrategy {
         return builder.build();
     }
 
-    private Set<DotName> buildBeanDefiningAnnotationSet(TypeDiscoveryConfiguration typeDiscoveryConfiguration, CompositeIndex index) {
+    private Set<DotName> buildBeanDefiningAnnotationSet(Set<Class<? extends Annotation>> initialBeanDefiningAnnotations, CompositeIndex index) {
         ImmutableSet.Builder<DotName> beanDefiningAnnotations = ImmutableSet.builder();
-        for (Class<? extends Annotation> annotation : typeDiscoveryConfiguration.getKnownBeanDefiningAnnotations()) {
+        for (Class<? extends Annotation> annotation : initialBeanDefiningAnnotations) {
             final DotName annotationDotName = DotName.createSimple(annotation.getName());
             if (isMetaAnnotation(annotation)) {
                 // find annotations annotated with this meta-annotation

@@ -16,12 +16,13 @@
  */
 package org.jboss.weld.environment.se.test.beans.threading;
 
-import javax.inject.Inject;
+import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
 /**
  * An bean which implements Runnable and therefore can be run in a separate thread.
@@ -31,6 +32,7 @@ import static org.junit.Assert.assertEquals;
  *
  * @author Peter Royle
  */
+@Dependent
 public class ThreadRunner implements Runnable {
 
     // an application scoped counter
