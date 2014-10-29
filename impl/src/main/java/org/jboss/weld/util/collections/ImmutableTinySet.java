@@ -35,7 +35,7 @@ import org.jboss.weld.util.reflection.Reflections;
  *
  * @param <T>
  */
-abstract class ImmutableTinySet<T> extends AbstractImmutableSet<T> {
+abstract class ImmutableTinySet<T> extends ImmutableSet<T> {
 
     private static abstract class AbstractIterator<T> implements Iterator<T> {
 
