@@ -20,25 +20,24 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
+import org.jboss.shrinkwrap.api.BeanDiscoveryMode;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.impl.BeansXml;
 import org.jboss.weld.environment.se.threading.RunnableDecorator;
 import org.junit.runner.RunWith;
 
 /**
- * Tests for ThreadContext, @ThreadScoped and the RunnableDecorator. The
- * decorator is enabled in the META-INF/beans.xml of the test resources.
  *
- * @author Peter Royle
+ * @see WELD-1778
  */
 @RunWith(Arquillian.class)
-public class ThreadContextTest extends AbstractThreadContextTest {
+public class ThreadContextImplicitBeanArchiveTest extends AbstractThreadContextTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
         return ShrinkWrap.create(BeanArchive.class)
-                .addAsManifestResource(new BeansXml().decorators(RunnableDecorator.class), "beans.xml")
-                .addPackage(ThreadContextTest.class.getPackage());
+                .addAsManifestResource(new BeansXml(BeanDiscoveryMode.ANNOTATED).decorators(RunnableDecorator.class), "beans.xml")
+                .addClasses(Counter.class, SingletonCounter.class, ThreadCounter.class, ThreadRunner.class);
     }
 
 }

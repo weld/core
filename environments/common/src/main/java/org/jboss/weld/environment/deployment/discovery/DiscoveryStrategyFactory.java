@@ -16,8 +16,10 @@
  */
 package org.jboss.weld.environment.deployment.discovery;
 
+import java.lang.annotation.Annotation;
+import java.util.Set;
+
 import org.jboss.weld.bootstrap.api.Bootstrap;
-import org.jboss.weld.bootstrap.api.TypeDiscoveryConfiguration;
 import org.jboss.weld.environment.logging.CommonLogger;
 import org.jboss.weld.environment.util.Reflections;
 import org.jboss.weld.resources.spi.ResourceLoader;
@@ -39,16 +41,16 @@ public final class DiscoveryStrategyFactory {
      *
      * @param resourceLoader
      * @param bootstrap
-     * @param typeDiscoveryConfiguration
+     * @param initialBeanDefiningAnnotations
      * @return the discovery strategy
      */
-    public static DiscoveryStrategy create(ResourceLoader resourceLoader, Bootstrap bootstrap, TypeDiscoveryConfiguration typeDiscoveryConfiguration) {
+    public static DiscoveryStrategy create(ResourceLoader resourceLoader, Bootstrap bootstrap, Set<Class<? extends Annotation>> initialBeanDefiningAnnotations) {
 
         if (Reflections.isClassLoadable(JANDEX_INDEX_CLASS_NAME, resourceLoader)) {
             CommonLogger.LOG.usingJandex();
-            return Reflections.newInstance(resourceLoader, JANDEX_DISCOVERY_STRATEGY_CLASS_NAME, resourceLoader, bootstrap, typeDiscoveryConfiguration);
+            return Reflections.newInstance(resourceLoader, JANDEX_DISCOVERY_STRATEGY_CLASS_NAME, resourceLoader, bootstrap, initialBeanDefiningAnnotations);
         }
-        return new ReflectionDiscoveryStrategy(resourceLoader, bootstrap, typeDiscoveryConfiguration);
+        return new ReflectionDiscoveryStrategy(resourceLoader, bootstrap, initialBeanDefiningAnnotations);
     }
 
 }

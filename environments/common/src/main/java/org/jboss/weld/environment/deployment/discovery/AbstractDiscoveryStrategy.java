@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.environment.deployment.discovery;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -47,14 +48,23 @@ public abstract class AbstractDiscoveryStrategy implements DiscoveryStrategy {
 
     protected final Bootstrap bootstrap;
 
+    protected final Set<Class<? extends Annotation>> initialBeanDefiningAnnotations;
+
     protected BeanArchiveScanner scanner;
 
     private final List<BeanArchiveHandler> handlers;
 
-    public AbstractDiscoveryStrategy(ResourceLoader resourceLoader, Bootstrap bootstrap) {
+    /**
+     *
+     * @param resourceLoader
+     * @param bootstrap
+     * @param initialBeanDefiningAnnotations
+     */
+    public AbstractDiscoveryStrategy(ResourceLoader resourceLoader, Bootstrap bootstrap, Set<Class<? extends Annotation>> initialBeanDefiningAnnotations) {
         this.resourceLoader = resourceLoader;
         this.bootstrap = bootstrap;
         this.handlers = new LinkedList<BeanArchiveHandler>();
+        this.initialBeanDefiningAnnotations = initialBeanDefiningAnnotations;
     }
 
     @Override
