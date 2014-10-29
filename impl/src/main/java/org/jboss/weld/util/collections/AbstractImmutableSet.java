@@ -82,21 +82,13 @@ abstract class AbstractImmutableSet<T> extends AbstractSet<T> implements Set<T> 
         if (this == obj) {
             return true;
         }
-        if (obj instanceof AbstractImmutableSet<?>) {
-            // all our immutable set implementations have fast hashcode
-            AbstractImmutableSet<?> that = (AbstractImmutableSet<?>) obj;
-            if (hashCode() != that.hashCode()) {
-                return false;
-            }
-            return equals(that);
-        }
         if (obj instanceof Set<?>) {
-            return equals((Set<?>) obj);
+            return equalsSet((Set<?>) obj);
         }
         return false;
     }
 
-    boolean equals(Set<?> that) {
+    boolean equalsSet(Set<?> that) {
         return this.size() == that.size() && that.containsAll(this);
     }
 

@@ -42,9 +42,9 @@ import java.util.stream.Collector;
  *
  * @param <T> the type of elements
  */
-public final class ImmutableSet<T> {
+public abstract class ImmutableSet<T> extends AbstractImmutableSet<T> {
 
-    private ImmutableSet() {
+    ImmutableSet() {
     }
 
     /**
