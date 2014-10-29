@@ -145,10 +145,9 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
         if (scope == null) {
             throw ContextLogger.LOG.contextHasNullScope(context);
         }
-        // TODO: re-enable this once Mojarra is fixed - https://java.net/jira/browse/JAVASERVERFACES-3240
-        //  if (!getBeanManager().isScope(scope)) {
-        //      throw MetadataLogger.LOG.contextGetScopeIsNotAScope(scope, context);
-        //  }
+        if (!getBeanManager().isScope(scope)) {
+            throw MetadataLogger.LOG.contextGetScopeIsNotAScope(scope, context);
+        }
         getBeanManager().addContext(context);
     }
 
