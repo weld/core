@@ -25,15 +25,15 @@ import org.jboss.weld.util.Preconditions;
 
 /**
  * Immutable {@link Set} implementation. This implementation uses open addressing with linear probing and a table size of the nearest power of two so that load
- * factor is within (0.3, 0.6]. The implementation is inspired by Guava's ImmutableSet implementation.
+ * factor is below 0.75. The implementation is inspired by Guava's ImmutableSet implementation.
  *
  * @author Jozef Hartinger
  *
  * @param <T> the element type
  */
-public final class ImmutableHashSet<T> extends AbstractImmutableSet<T> implements Serializable {
+public final class ImmutableHashSet<T> extends ImmutableSet<T> implements Serializable {
 
-    private static final float LOAD_FACTOR = 0.6f;
+    private static final float LOAD_FACTOR = 0.75f;
     private static final int MAX_SIZE = (int) Math.floor((1 << 30) * LOAD_FACTOR);
 
     private class IteratorImpl implements Iterator<T> {
@@ -81,17 +81,11 @@ public final class ImmutableHashSet<T> extends AbstractImmutableSet<T> implement
 
     private static int tableSize(int dataSize) {
         int candidate = Integer.highestOneBit(dataSize) << 1;
-        if (((float) dataSize / candidate) > LOAD_FACTOR) {
+        if (candidate * LOAD_FACTOR < dataSize) {
             return Integer.highestOneBit(dataSize) << 2;
         } else {
             return candidate;
         }
-    }
-
-    private static int hash(Object object) {
-        int hashCode = object.hashCode();
-        hashCode ^= (hashCode >>> 20) ^ (hashCode >>> 12);
-        return hashCode ^ (hashCode >>> 7) ^ (hashCode >>> 4);
     }
 
     private int getTableIndex(int hashCode) {
@@ -99,7 +93,7 @@ public final class ImmutableHashSet<T> extends AbstractImmutableSet<T> implement
     }
 
     private void storeElement(T element) {
-        for (int i = hash(element);; i++) {
+        for (int i = element.hashCode();; i++) {
             int index = getTableIndex(i);
             if (table[index] == null) {
                 table[index] = element;
@@ -118,7 +112,7 @@ public final class ImmutableHashSet<T> extends AbstractImmutableSet<T> implement
         if (o == null) {
             return false;
         }
-        for (int i = hash(o);; i++) {
+        for (int i = o.hashCode();; i++) {
             Object item = table[getTableIndex(i)];
             if (item == null) {
                 return false;
@@ -127,6 +121,25 @@ public final class ImmutableHashSet<T> extends AbstractImmutableSet<T> implement
                 return true;
             }
         }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj instanceof AbstractImmutableSet<?>) {
+            // all our immutable set implementations have fast hashcode
+            AbstractImmutableSet<?> that = (AbstractImmutableSet<?>) obj;
+            if (hashCode() != that.hashCode()) {
+                return false;
+            }
+            return equalsSet(that);
+        }
+        if (obj instanceof Set<?>) {
+            return equalsSet((Set<?>) obj);
+        }
+        return false;
     }
 
     @Override
