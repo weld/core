@@ -32,8 +32,7 @@ import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.util.Annotations;
 import org.jboss.weld.util.cache.ComputingCache;
 import org.jboss.weld.util.cache.ComputingCacheBuilder;
-
-import com.google.common.collect.ImmutableSet;
+import org.jboss.weld.util.collections.ImmutableSet;
 
 public class DefaultReflectionCache extends AbstractBootstrapService implements ReflectionCache {
 
@@ -41,13 +40,13 @@ public class DefaultReflectionCache extends AbstractBootstrapService implements 
     private final Function<AnnotatedElement, Set<Annotation>> ANNOTATIONS_FUNCTION = new Function<AnnotatedElement, Set<Annotation>>() {
         @Override
         public Set<Annotation> apply(AnnotatedElement input) {
-            return ImmutableSet.copyOf(internalGetAnnotations(input));
+            return ImmutableSet.of(internalGetAnnotations(input));
         }
     };
     private final Function<AnnotatedElement, Set<Annotation>> DECLARED_ANNOTATIONS_FUNCTION = new Function<AnnotatedElement, Set<Annotation>>() {
         @Override
         public Set<Annotation> apply(AnnotatedElement input) {
-            return ImmutableSet.copyOf(internalGetDeclaredAnnotations(input));
+            return ImmutableSet.of(internalGetDeclaredAnnotations(input));
         }
     };
 
@@ -116,14 +115,14 @@ public class DefaultReflectionCache extends AbstractBootstrapService implements 
         }
 
         public Set<Annotation> applyScopeInheritanceRules(Set<Annotation> annotations, Class<?> javaClass) {
-            Set<Annotation> result = new HashSet<Annotation>();
+            ImmutableSet.Builder<Annotation> result = ImmutableSet.builder();
             for (Annotation annotation : annotations) {
                 if (!getAnnotationClass(annotation.annotationType()).isScope()) {
                     result.add(annotation);
                 }
             }
             result.addAll(findTopLevelScopeDefinitions(javaClass));
-            return ImmutableSet.copyOf(result);
+            return result.build();
         }
 
         public Set<Annotation> findTopLevelScopeDefinitions(Class<?> javaClass) {
@@ -147,7 +146,7 @@ public class DefaultReflectionCache extends AbstractBootstrapService implements 
         public AnnotationClass<?> apply(Class<? extends Annotation> input) {
             boolean scope = input.isAnnotationPresent(NormalScope.class) || input.isAnnotationPresent(Scope.class) || store.isExtraScope(input);
             Method repeatableAnnotationAccessor = Annotations.getRepeatableAnnotationAccessor(input);
-            Set<Annotation> metaAnnotations = ImmutableSet.copyOf(internalGetAnnotations(input));
+            Set<Annotation> metaAnnotations = ImmutableSet.of(internalGetAnnotations(input));
             return new AnnotationClassImpl<>(scope, repeatableAnnotationAccessor, metaAnnotations);
         }
     }

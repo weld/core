@@ -29,7 +29,6 @@ import org.jboss.weld.util.reflection.Reflections;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 
 /**
  * Collection utilities.
@@ -49,31 +48,14 @@ public class WeldCollections {
      * an instance of {@link ArraySet}, it is trimmed.
      */
     public static <T> Set<T> immutableSet(Set<T> set) {
-        if (set.isEmpty()) {
-            return Collections.emptySet();
-        }
-        if (set instanceof ImmutableSet<?>) {
+        if (set instanceof AbstractImmutableSet<?>) {
             return set;
         }
-        if (set instanceof ArraySet<?>) {
-            ArraySet.class.cast(set).trimToSize();
+        if (set.isEmpty()) {
+            return Collections.emptySet();
         }
         return Collections.unmodifiableSet(set);
     }
-
-    /**
-     * Returns an immutable view of a given set. If the given set is empty, a shared instance is returned.
-     */
-    public static <T> Set<T> immutableGuavaSet(Set<T> set) {
-        if (set.isEmpty()) {
-            return Collections.emptySet();
-        }
-        if (set instanceof ImmutableSet<?>) {
-            return set;
-        }
-        return ImmutableSet.copyOf(set);
-    }
-
 
     /**
      * Returns an immutable view of a given list. If the given list is empty, a shared instance is returned. If the given list

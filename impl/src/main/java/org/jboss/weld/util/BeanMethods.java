@@ -48,7 +48,7 @@ import org.jboss.weld.logging.EventLogger;
 import org.jboss.weld.logging.UtilLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.security.SetAccessibleAction;
-import org.jboss.weld.util.collections.ArraySet;
+import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.collections.WeldCollections;
 
 import com.google.common.collect.ImmutableList;
@@ -194,7 +194,7 @@ public class BeanMethods {
     private static class InitializerMethodListBuilder<T> implements MethodListBuilder<T, List<Set<MethodInjectionPoint<?, ?>>>> {
 
         private final List<Set<MethodInjectionPoint<?, ?>>> result = new ArrayList<Set<MethodInjectionPoint<?, ?>>>();
-        private Set<MethodInjectionPoint<?, ?>> currentLevel = null;
+        private ImmutableSet.Builder<MethodInjectionPoint<?, ?>> currentLevel = null;
 
         private final EnhancedAnnotatedType<T> type;
         private final BeanManagerImpl manager;
@@ -213,7 +213,7 @@ public class BeanMethods {
 
         @Override
         public void levelStart(Class<? super T> clazz) {
-            currentLevel = new ArraySet<MethodInjectionPoint<?, ?>>();
+            currentLevel = ImmutableSet.builder();
         }
 
         @Override
@@ -237,7 +237,7 @@ public class BeanMethods {
 
         @Override
         public void levelFinish() {
-            result.add(currentLevel);
+            result.add(currentLevel.build());
         }
 
         @Override

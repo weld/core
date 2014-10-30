@@ -30,8 +30,7 @@ import javax.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.injection.attributes.WeldInjectionPointAttributes;
 import org.jboss.weld.manager.BeanManagerImpl;
-
-import com.google.common.collect.ImmutableSet;
+import org.jboss.weld.util.collections.ImmutableSet;
 
 /**
  * An optimized internal facility for dispatching events.
@@ -161,7 +160,7 @@ public class FastEvent<T> {
 
         private EventMetadataImpl(Type type, Annotation... qualifiers) {
             this.type = type;
-            this.qualifiers = ImmutableSet.copyOf(qualifiers);
+            this.qualifiers = ImmutableSet.of(qualifiers);
         }
 
         @Override

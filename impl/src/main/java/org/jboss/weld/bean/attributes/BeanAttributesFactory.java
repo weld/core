@@ -45,6 +45,7 @@ import org.jboss.weld.metadata.cache.MergedStereotypes;
 import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.collections.ArraySet;
+import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
@@ -54,7 +55,7 @@ import org.jboss.weld.util.reflection.Reflections;
  */
 public class BeanAttributesFactory {
 
-    private static final Set<Annotation> DEFAULT_QUALIFIERS = Collections.unmodifiableSet(new ArraySet<Annotation>(AnyLiteral.INSTANCE, DefaultLiteral.INSTANCE).trimToSize());
+    private static final Set<Annotation> DEFAULT_QUALIFIERS = ImmutableSet.of(AnyLiteral.INSTANCE, DefaultLiteral.INSTANCE);
 
     private BeanAttributesFactory() {
     }

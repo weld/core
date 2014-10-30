@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.jboss.weld.annotated.enhanced.MethodSignature;
 import org.jboss.weld.annotated.enhanced.jlr.MethodSignatureImpl;
@@ -31,9 +30,8 @@ import org.jboss.weld.ejb.spi.BusinessInterfaceDescriptor;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.ejb.spi.SubclassedComponentDescriptor;
 import org.jboss.weld.ejb.spi.helpers.ForwardingEjbDescriptor;
+import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.reflection.Reflections;
-
-import com.google.common.collect.ImmutableSet;
 
 /**
  * More powerful version of {@link EjbDescriptor} that exposes Maps for some
@@ -74,7 +72,7 @@ public class InternalEjbDescriptor<T> extends ForwardingEjbDescriptor<T> {
         if (interfaceDescriptors == null) {
             return Collections.emptySet();
         }
-        return ImmutableSet.copyOf(interfaceDescriptors.stream().map(d -> d.getInterface()).collect(Collectors.toSet()));
+        return interfaceDescriptors.stream().map(d -> d.getInterface()).collect(ImmutableSet.collector());
     }
 
     @Override

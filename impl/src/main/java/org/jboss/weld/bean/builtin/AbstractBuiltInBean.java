@@ -17,7 +17,6 @@
 package org.jboss.weld.bean.builtin;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.Set;
 
@@ -32,8 +31,7 @@ import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.util.collections.Arrays2;
-
-import com.google.common.collect.ImmutableSet;
+import org.jboss.weld.util.collections.ImmutableSet;
 
 public abstract class AbstractBuiltInBean<T> extends RIBean<T> {
 
@@ -99,7 +97,7 @@ public abstract class AbstractBuiltInBean<T> extends RIBean<T> {
         private static final Set<Annotation> DEFAULT_QUALIFIERS = Arrays2.asSet(DefaultLiteral.INSTANCE, AnyLiteral.INSTANCE);
 
         public BuiltInBeanAttributes(Class<T> type) {
-            super(Collections.<Class<? extends Annotation>> emptySet(), false, null, DEFAULT_QUALIFIERS, ImmutableSet.<Type>of(type, Object.class), Dependent.class);
+            super(Collections.<Class<? extends Annotation>> emptySet(), false, null, DEFAULT_QUALIFIERS, ImmutableSet.of(Object.class, type), Dependent.class);
         }
     }
 
