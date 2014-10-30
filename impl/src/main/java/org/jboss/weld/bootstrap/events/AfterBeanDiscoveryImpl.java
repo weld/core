@@ -146,7 +146,7 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
             throw ContextLogger.LOG.contextHasNullScope(context);
         }
         if (!getBeanManager().isScope(scope)) {
-            throw MetadataLogger.LOG.contextGetScopeIsNotAScope(scope, context);
+            MetadataLogger.LOG.contextGetScopeIsNotAScope(scope, context);
         }
         getBeanManager().addContext(context);
     }
