@@ -44,7 +44,6 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MergedStereotypes;
 import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.util.Beans;
-import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -159,7 +158,7 @@ public class BeanAttributesFactory {
             if (qualifiers.isEmpty()) {
                 this.qualifiers = DEFAULT_QUALIFIERS;
             } else {
-                ArraySet<Annotation> normalizedQualifiers = new ArraySet<Annotation>(qualifiers.size() + 2);
+                Set<Annotation> normalizedQualifiers = new HashSet<Annotation>(qualifiers.size() + 2);
                 if (qualifiers.size() == 1) {
                     if (qualifiers.iterator().next().annotationType().equals(Named.class)) {
                         normalizedQualifiers.add(DefaultLiteral.INSTANCE);

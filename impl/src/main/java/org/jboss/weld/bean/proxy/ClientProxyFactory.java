@@ -25,8 +25,6 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -53,6 +51,7 @@ import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.bytecode.DeferredBytecode;
 import org.jboss.weld.util.bytecode.DescriptorUtils;
 import org.jboss.weld.util.bytecode.MethodInformation;
+import org.jboss.weld.util.collections.ImmutableSet;
 
 /**
  * Proxy factory that generates client proxies, it uses optimizations that
@@ -63,7 +62,7 @@ import org.jboss.weld.util.bytecode.MethodInformation;
  */
 public class ClientProxyFactory<T> extends ProxyFactory<T> {
 
-    private static final Set<Class<? extends Annotation>> CACHEABLE_SCOPES;
+    private static final Set<Class<? extends Annotation>> CACHEABLE_SCOPES = ImmutableSet.of(RequestScoped.class, ConversationScoped.class, SessionScoped.class, ApplicationScoped.class);
 
     private static final String CACHING_CLIENT_PROXY_SUFFIX = "ClientProxy";
     private static final String NON_CACHING_CLIENT_PROXY_SUFFIX = "NonCachingClientProxy";
@@ -91,15 +90,6 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
 
     private volatile Field beanIdField;
     private volatile Field threadLocalCacheField;
-
-    static {
-        Set<Class<? extends Annotation>> scopes = new HashSet<Class<? extends Annotation>>();
-        scopes.add(RequestScoped.class);
-        scopes.add(ConversationScoped.class);
-        scopes.add(SessionScoped.class);
-        scopes.add(ApplicationScoped.class);
-        CACHEABLE_SCOPES = Collections.unmodifiableSet(scopes);
-    }
 
     public ClientProxyFactory(String contextId, Class<?> proxiedBeanType, Set<? extends Type> typeClosure, Bean<?> bean) {
         super(contextId, proxiedBeanType, typeClosure, bean);

@@ -47,8 +47,8 @@ public class WeldCollections {
      * Returns an immutable view of a given set. If the given set is empty, a shared instance is returned. If the given set is
      * an instance of {@link ArraySet}, it is trimmed.
      */
-    public static <T> Set<T> immutableSet(Set<T> set) {
-        if (set instanceof AbstractImmutableSet<?>) {
+    public static <T> Set<T> immutableSetView(Set<T> set) {
+        if (set instanceof ImmutableSet<?>) {
             return set;
         }
         if (set.isEmpty()) {

@@ -134,7 +134,7 @@ public abstract class TypeSafeResolver<R extends Resolvable, T, C extends Collec
             return cast(WeldCollections.immutableList((List<?>) result));
         }
         if (result instanceof Set<?>) {
-            return cast(WeldCollections.immutableSet((Set<?>) result));
+            return cast(WeldCollections.immutableSetView((Set<?>) result));
         }
         throw new IllegalArgumentException("result");
     }

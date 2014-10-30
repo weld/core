@@ -17,8 +17,6 @@
 package org.jboss.weld.util;
 
 import java.lang.annotation.Annotation;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
@@ -48,6 +46,7 @@ import org.jboss.weld.event.ObserverMethodImpl;
 import org.jboss.weld.experimental.ExperimentalProcessObserverMethod;
 import org.jboss.weld.logging.EventLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
@@ -58,40 +57,34 @@ public class Observers {
     /*
      * Contains all container lifecycle event types
      */
-    public static final Set<Class<?>> CONTAINER_LIFECYCLE_EVENT_TYPES;
+    public static final Set<Class<?>> CONTAINER_LIFECYCLE_EVENT_CANONICAL_SUPERTYPES = ImmutableSet.of(
+            BeforeBeanDiscovery.class,
+            AfterTypeDiscovery.class,
+            AfterBeanDiscovery.class,
+            AfterDeploymentValidation.class,
+            BeforeShutdown.class,
+            ProcessAnnotatedType.class,
+            ProcessInjectionPoint.class,
+            ProcessInjectionTarget.class,
+            ProcessProducer.class,
+            ProcessBeanAttributes.class,
+            ProcessBean.class,
+            ProcessObserverMethod.class);
     /*
      * Contains only top superinterfaces of each chain of container lifecycle event types.
      */
-    public static final Set<Class<?>> CONTAINER_LIFECYCLE_EVENT_CANONICAL_SUPERTYPES;
+    public static final Set<Class<?>> CONTAINER_LIFECYCLE_EVENT_TYPES = ImmutableSet.<Class<?>>builder()
+            .addAll(CONTAINER_LIFECYCLE_EVENT_CANONICAL_SUPERTYPES)
+            .addAll(
+                    ProcessSyntheticAnnotatedType.class,
+                    ProcessSessionBean.class,
+                    ProcessManagedBean.class,
+                    ProcessProducerMethod.class,
+                    ProcessProducerField.class,
+                    ExperimentalProcessObserverMethod.class
+            ).build();
 
     private Observers() {
-    }
-
-    static {
-        Set<Class<?>> canonicalSupertypes = new HashSet<Class<?>>();
-        canonicalSupertypes.add(BeforeBeanDiscovery.class);
-        canonicalSupertypes.add(AfterTypeDiscovery.class);
-        canonicalSupertypes.add(AfterBeanDiscovery.class);
-        canonicalSupertypes.add(AfterDeploymentValidation.class);
-        canonicalSupertypes.add(BeforeShutdown.class);
-        canonicalSupertypes.add(ProcessAnnotatedType.class);
-        canonicalSupertypes.add(ProcessInjectionPoint.class);
-        canonicalSupertypes.add(ProcessInjectionTarget.class);
-        canonicalSupertypes.add(ProcessProducer.class);
-        canonicalSupertypes.add(ProcessBeanAttributes.class);
-        canonicalSupertypes.add(ProcessBean.class);
-        canonicalSupertypes.add(ProcessObserverMethod.class);
-        CONTAINER_LIFECYCLE_EVENT_CANONICAL_SUPERTYPES = Collections.unmodifiableSet(canonicalSupertypes);
-
-        Set<Class<?>> types = new HashSet<Class<?>>(CONTAINER_LIFECYCLE_EVENT_CANONICAL_SUPERTYPES);
-        types.add(ProcessSyntheticAnnotatedType.class);
-        types.add(ProcessSessionBean.class);
-        types.add(ProcessManagedBean.class);
-        types.add(ProcessProducerMethod.class);
-        types.add(ProcessProducerField.class);
-        types.add(ExperimentalProcessObserverMethod.class);
-        CONTAINER_LIFECYCLE_EVENT_TYPES = Collections.unmodifiableSet(types);
-
     }
 
     public static boolean isContainerLifecycleObserverMethod(ObserverMethod<?> method) {
