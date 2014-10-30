@@ -108,7 +108,7 @@ class InterceptionModelImpl implements InterceptionModel {
 
     @Override
     public Set<InterceptorClassMetadata<?>> getAllInterceptors() {
-        return Collections.unmodifiableSet(allInterceptors);
+        return allInterceptors;
     }
 
     @Override

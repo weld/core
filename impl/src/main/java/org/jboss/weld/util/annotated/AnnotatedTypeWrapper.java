@@ -17,26 +17,25 @@
 package org.jboss.weld.util.annotated;
 
 import java.lang.annotation.Annotation;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.AnnotatedType;
 
+import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.reflection.Reflections;
 
 public class AnnotatedTypeWrapper<T> extends ForwardingAnnotatedType<T> {
 
-    private AnnotatedType<T> delegate;
-    private Set<Annotation> annotations;
+    private final AnnotatedType<T> delegate;
+    private final Set<Annotation> annotations;
 
     public AnnotatedTypeWrapper(AnnotatedType<T> delegate, Annotation... additionalAnnotations) {
         this.delegate = delegate;
-        this.annotations = new HashSet<Annotation>(delegate.getAnnotations());
+        ImmutableSet.Builder<Annotation> builder = ImmutableSet.<Annotation>builder().addAll(delegate.getAnnotations());
         for (Annotation annotation : additionalAnnotations) {
-            this.annotations.add(annotation);
+            builder.add(annotation);
         }
-        this.annotations = Collections.unmodifiableSet(this.annotations);
+        this.annotations = builder.build();
     }
 
     @Override

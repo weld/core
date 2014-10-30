@@ -18,7 +18,6 @@ package org.jboss.weld.event;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -147,11 +146,11 @@ public class ObserverMethodImpl<T, X> implements ExperimentalObserverMethod<T> {
     }
 
     public Set<WeldInjectionPointAttributes<?, ?>> getInjectionPoints() {
-        return Collections.unmodifiableSet(injectionPoints);
+        return injectionPoints;
     }
 
     public Set<WeldInjectionPointAttributes<?, ?>> getNewInjectionPoints() {
-        return Collections.unmodifiableSet(newInjectionPoints);
+        return newInjectionPoints;
     }
 
     /**

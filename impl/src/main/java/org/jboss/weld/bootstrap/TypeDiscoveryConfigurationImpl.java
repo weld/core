@@ -16,19 +16,18 @@
  */
 package org.jboss.weld.bootstrap;
 
-import static java.util.Collections.unmodifiableSet;
-
 import java.lang.annotation.Annotation;
 import java.util.Set;
 
 import org.jboss.weld.bootstrap.api.TypeDiscoveryConfiguration;
+import org.jboss.weld.util.collections.ImmutableSet;
 
 public class TypeDiscoveryConfigurationImpl implements TypeDiscoveryConfiguration {
 
     private final Set<Class<? extends Annotation>> beanDefiningAnnotations;
 
     protected TypeDiscoveryConfigurationImpl(Set<Class<? extends Annotation>> beanDefiningAnnotations) {
-        this.beanDefiningAnnotations = unmodifiableSet(beanDefiningAnnotations);
+        this.beanDefiningAnnotations = ImmutableSet.copyOf(beanDefiningAnnotations);
     }
 
     @Override

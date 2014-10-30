@@ -42,6 +42,7 @@ import org.jboss.weld.resources.ReflectionCache;
 import org.jboss.weld.util.collections.ArraySetMultimap;
 import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.collections.ImmutableSet;
+import org.jboss.weld.util.collections.WeldCollections;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
@@ -97,6 +98,7 @@ public abstract class AbstractEnhancedAnnotated<T, S> implements EnhancedAnnotat
     private final Class<T> rawType;
     private final Type[] actualTypeArguments;
     private final Annotated delegate;
+    private final Set<Annotation> annotations;
 
     /**
      * Constructor
@@ -130,6 +132,7 @@ public abstract class AbstractEnhancedAnnotated<T, S> implements EnhancedAnnotat
         } else {
             this.actualTypeArguments = Arrays2.EMPTY_TYPE_ARRAY;
         }
+        this.annotations = ImmutableSet.copyOf(this.annotationMap.values());
     }
 
     protected void processMetaAnnotations(ArraySetMultimap<Class<? extends Annotation>, Annotation> metaAnnotationMap, Collection<Annotation> annotations, ClassTransformer classTransformer, boolean declared) {
@@ -174,7 +177,7 @@ public abstract class AbstractEnhancedAnnotated<T, S> implements EnhancedAnnotat
                 interfaces.add(t);
             }
         }
-        return Collections.unmodifiableSet(interfaces);
+        return WeldCollections.immutableSetView(interfaces);
     }
 
     public abstract S getDelegate();
@@ -196,7 +199,7 @@ public abstract class AbstractEnhancedAnnotated<T, S> implements EnhancedAnnotat
     }
 
     public Set<Annotation> getAnnotations() {
-        return ImmutableSet.copyOf(annotationMap.values());
+        return annotations;
     }
 
     public Set<Annotation> getMetaAnnotations(Class<? extends Annotation> metaAnnotationType) {
@@ -205,8 +208,9 @@ public abstract class AbstractEnhancedAnnotated<T, S> implements EnhancedAnnotat
 
     @Deprecated
     public Set<Annotation> getQualifiers() {
-        if (getMetaAnnotations(Qualifier.class).size() > 0) {
-            return Collections.unmodifiableSet(getMetaAnnotations(Qualifier.class));
+        Set<Annotation> qualifiers = getMetaAnnotations(Qualifier.class);
+        if (qualifiers.size() > 0) {
+            return WeldCollections.immutableSetView(qualifiers);
         } else {
             return DEFAULT_QUALIFIERS;
         }

@@ -17,7 +17,7 @@
 package org.jboss.weld.annotated.enhanced.jlr;
 
 import static org.jboss.weld.util.collections.WeldCollections.immutableMap;
-import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
+import static org.jboss.weld.util.collections.WeldCollections.immutableSetView;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -51,7 +51,6 @@ import org.jboss.weld.annotated.slim.backed.BackedAnnotatedType;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
 import org.jboss.weld.interceptor.util.InterceptionTypeRegistry;
 import org.jboss.weld.resources.ClassTransformer;
-import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.collections.ArraySetMultimap;
 import org.jboss.weld.util.collections.HashSetSupplier;
 import org.jboss.weld.util.collections.ImmutableSet;
@@ -202,7 +201,6 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
                 }
             }
             this.declaredFields = new HashSet<EnhancedAnnotatedField<?, ? super T>>(declaredFieldsTemp);
-            fieldsTemp = new ArraySet<EnhancedAnnotatedField<?, ? super T>>(fieldsTemp).trimToSize();
             this.annotatedFields.trimToSize();
         }
         this.fields = fieldsTemp;
@@ -250,7 +248,7 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
                     }
                 }
             }
-            this.declaredMethods = new ArraySet<EnhancedAnnotatedMethod<?, ? super T>>(declaredMethodsTemp);
+            this.declaredMethods = new HashSet<>(declaredMethodsTemp);
         } else {
             for (AnnotatedMethod<? super T> method : annotatedType.getMethods()) {
                 EnhancedAnnotatedMethod<?, ? super T> enhancedMethod = EnhancedAnnotatedMethodImpl.of(method, this, classTransformer);
@@ -271,7 +269,7 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
                     }
                 }
             }
-            this.declaredMethods = new ArraySet<EnhancedAnnotatedMethod<?, ? super T>>(declaredMethodsTemp);
+            this.declaredMethods = ImmutableSet.copyOf(declaredMethodsTemp);
         }
 
         this.declaredAnnotatedMethods.trimToSize();
@@ -320,7 +318,7 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
                 }
             }
         }
-        return immutableSet(overriddenMethods);
+        return immutableSetView(overriddenMethods);
     }
 
     protected Multimap<Class<? extends Annotation>, EnhancedAnnotatedMethod<?, ? super T>> buildAnnotatedMethodMultimap(Set<EnhancedAnnotatedMethod<?, ? super T>> effectiveMethods) {

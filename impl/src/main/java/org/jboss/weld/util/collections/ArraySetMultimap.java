@@ -20,6 +20,7 @@ package org.jboss.weld.util.collections;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -31,7 +32,7 @@ import java.util.Set;
  * @author David Allen
  */
 public class ArraySetMultimap<K, V> extends AbstractMap<K, List<V>> {
-    private ArraySet<Map.Entry<K, List<V>>> entrySet = new ArraySet<Map.Entry<K, List<V>>>();
+    private Set<Map.Entry<K, List<V>>> entrySet = new HashSet<Map.Entry<K, List<V>>>();
 
     public ArraySetMultimap() {
 

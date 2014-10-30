@@ -137,8 +137,9 @@ public class InterceptionModelInitializer<T> {
         Multimap<Class<? extends Annotation>, Annotation> classBindingAnnotations = getClassInterceptorBindings();
 
         // WELD-1742 Set class level interceptor bindings
-        builder.setClassInterceptorBindings(ImmutableSet.copyOf(classBindingAnnotations.values()));
-        initCdiLifecycleInterceptors(classBindingAnnotations);
+        Set<Annotation> bindings = ImmutableSet.copyOf(classBindingAnnotations.values());
+        builder.setClassInterceptorBindings(bindings);
+        initCdiLifecycleInterceptors(bindings);
         initCdiConstructorInterceptors(classBindingAnnotations);
         initCdiBusinessMethodInterceptors(classBindingAnnotations);
     }
@@ -151,11 +152,10 @@ public class InterceptionModelInitializer<T> {
      * CDI lifecycle interceptors
      */
 
-    private void initCdiLifecycleInterceptors(Multimap<Class<? extends Annotation>, Annotation> classBindingAnnotations) {
-        if (classBindingAnnotations.size() == 0) {
+    private void initCdiLifecycleInterceptors(Set<Annotation> qualifiers) {
+        if (qualifiers.isEmpty()) {
             return;
         }
-        final Set<Annotation> qualifiers = ImmutableSet.copyOf(classBindingAnnotations.values());
         initLifeCycleInterceptor(InterceptionType.POST_CONSTRUCT, null, qualifiers);
         initLifeCycleInterceptor(InterceptionType.PRE_DESTROY, null, qualifiers);
         initLifeCycleInterceptor(InterceptionType.PRE_PASSIVATE, null, qualifiers);

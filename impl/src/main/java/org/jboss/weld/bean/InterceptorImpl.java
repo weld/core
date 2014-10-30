@@ -22,8 +22,6 @@ import static org.jboss.weld.bean.BeanIdentifiers.forInterceptor;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.BeanAttributes;
@@ -46,6 +44,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.ForwardingInvocationContext;
 import org.jboss.weld.util.Interceptors;
 import org.jboss.weld.util.collections.Arrays2;
+import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.reflection.Formats;
 
 /**
@@ -67,7 +66,7 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
         super(attributes, type, new StringBeanIdentifier(forInterceptor(type)), beanManager);
         this.interceptorMetadata = initInterceptorMetadata();
         this.serializable = type.isSerializable();
-        this.interceptorBindingTypes = Collections.unmodifiableSet(new HashSet<Annotation>(Interceptors.mergeBeanInterceptorBindings(beanManager, getEnhancedAnnotated(), getStereotypes()).values()));
+        this.interceptorBindingTypes = ImmutableSet.copyOf(Interceptors.mergeBeanInterceptorBindings(beanManager, getEnhancedAnnotated(), getStereotypes()).values());
     }
 
     @SuppressWarnings("unchecked")

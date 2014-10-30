@@ -17,7 +17,6 @@
 package org.jboss.weld.annotated.slim;
 
 
-import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -25,6 +24,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import org.jboss.weld.bootstrap.api.helpers.AbstractBootstrapService;
 import org.jboss.weld.util.cache.ComputingCache;
 import org.jboss.weld.util.cache.ComputingCacheBuilder;
+import org.jboss.weld.util.collections.WeldCollections;
 
 public class SlimAnnotatedTypeStoreImpl extends AbstractBootstrapService implements SlimAnnotatedTypeStore {
 
@@ -46,7 +46,7 @@ public class SlimAnnotatedTypeStoreImpl extends AbstractBootstrapService impleme
 
     @Override
     public <X> Set<SlimAnnotatedType<X>> get(Class<X> type) {
-        return Collections.unmodifiableSet(typesByClass.getCastValue(type));
+        return WeldCollections.immutableSetView(typesByClass.getCastValue(type));
     }
 
     @Override
