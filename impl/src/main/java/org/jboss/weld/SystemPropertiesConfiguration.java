@@ -21,6 +21,7 @@ import java.security.AccessController;
 
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.security.GetBooleanSystemPropertyAction;
+import org.jboss.weld.security.GetSystemPropertyAction;
 
 /**
  *
@@ -40,38 +41,38 @@ public final class SystemPropertiesConfiguration {
 
     private boolean nonPortableModeEnabled;
 
-    private final File proxieDumpPath;
+    private final File proxyDumpPath;
 
     private SystemPropertiesConfiguration() {
         xmlValidationDisabled = initBooleanSystemProperty(DISABLE_XML_VALIDATION_KEY, false);
         nonPortableModeEnabled = initBooleanSystemProperty(NON_PORTABLE_MODE_KEY, false);
 
-        String dumpPathString = System.getProperty(CLIENT_PROXY_DUMP_PATH);
+        String dumpPathString = AccessController.doPrivileged(new GetSystemPropertyAction(CLIENT_PROXY_DUMP_PATH));
         if (dumpPathString != null && !dumpPathString.isEmpty()) {
             File tmp = new File(dumpPathString);
             if (!tmp.isDirectory() && !tmp.mkdirs()) {
                 BeanLogger.LOG.directoryCannotBeCreated(tmp.toString());
-                proxieDumpPath = null;
+                proxyDumpPath = null;
             } else {
-                proxieDumpPath = new File(dumpPathString);
+                proxyDumpPath = new File(dumpPathString);
             }
         } else {
-            proxieDumpPath = null;
+            proxyDumpPath = null;
         }
     }
 
     /**
      * @return the directory for client proxy dumping
      */
-    public File getProxieDumpPath() {
-        return proxieDumpPath;
+    public File getProxyDumpPath() {
+        return proxyDumpPath;
     }
 
     /**
      * @return true if client proxy dumping is enabled
      */
     public boolean isProxyDumpEnabled() {
-        return proxieDumpPath != null;
+        return proxyDumpPath != null;
     }
 
     /**
