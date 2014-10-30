@@ -114,6 +114,7 @@ public interface MetadataLogger extends WeldLogger {
     @Message(id = 1123, value = "{0} defined on {1} is not an interceptor binding", format = Format.MESSAGE_FORMAT)
     DefinitionException notAnInterceptorBinding(Object param1, Object param2);
 
+    @LogMessage(level = Level.WARN)
     @Message(id = 1124, value = "Context.getScope() returned {0} which is not a scope annotation. Context: {1}", format = Format.MESSAGE_FORMAT)
-    DefinitionException contextGetScopeIsNotAScope(Object param1, Object param2);
+    void contextGetScopeIsNotAScope(Object param1, Object param2);
 }
