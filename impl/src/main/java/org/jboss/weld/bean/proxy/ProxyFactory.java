@@ -458,7 +458,7 @@ public class ProxyFactory<T> {
         // which PD to use
 
         if (SystemPropertiesConfiguration.INSTANCE.isProxyDumpEnabled()) {
-            dumpToFile(SystemPropertiesConfiguration.INSTANCE.getProxieDumpPath(), proxyClassName, proxyClassType.toBytecode());
+            dumpToFile(SystemPropertiesConfiguration.INSTANCE.getProxyDumpPath(), proxyClassName, proxyClassType.toBytecode());
         }
 
         ProtectionDomain domain = AccessController.doPrivileged(new GetProtectionDomainAction(proxiedBeanType));
