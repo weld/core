@@ -16,9 +16,12 @@
  */
 package org.jboss.weld.context.http;
 
+import java.util.function.Consumer;
+
 import javax.enterprise.context.BusyConversationException;
 import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.context.NonexistentConversationException;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.jboss.weld.logging.ConversationLogger;
@@ -38,21 +41,20 @@ import org.jboss.weld.servlet.ConversationContextActivator;
  */
 public class LazyHttpConversationContextImpl extends HttpConversationContextImpl {
 
-    private final ThreadLocal<Runnable> initializationCallback;
+    private ThreadLocal<Consumer<HttpServletRequest>> initializationCallback;
 
     private final ThreadLocal<Object> initialized;
 
     public LazyHttpConversationContextImpl(String contextId, BeanIdentifierIndex beanIdentifierIndex) {
         super(contextId, beanIdentifierIndex);
         this.initialized = new ThreadLocal<Object>();
-        this.initializationCallback = new ThreadLocal<>();
     }
 
     /**
      *
      * @param initializationCallback This callback will be executed during initialization
      */
-    public void activate(Runnable initializationCallback) {
+    public void activate(Consumer<HttpServletRequest> initializationCallback) {
         activate();
         if (initializationCallback != null) {
             this.initializationCallback.set(initializationCallback);
@@ -83,12 +85,6 @@ public class LazyHttpConversationContextImpl extends HttpConversationContextImpl
     protected void initialize(String cid) {
         this.initialized.set(Boolean.TRUE);
         super.initialize(cid);
-        if (cid == null) { // transient conversation
-            Runnable callback = initializationCallback.get();
-            if(callback != null) {
-                callback.run();
-            }
-        }
     }
 
     @Override
@@ -120,7 +116,15 @@ public class LazyHttpConversationContextImpl extends HttpConversationContextImpl
     @Override
     protected void checkContextInitialized() {
         if (!isInitialized()) {
-            initialize(ConversationContextActivator.determineConversationId(getRequest(), getParameterName()));
+            HttpServletRequest request = getRequest();
+            String cid = ConversationContextActivator.determineConversationId(request, getParameterName());
+            initialize(cid);
+            if (cid == null) { // transient conversation
+                Consumer<HttpServletRequest> callback = initializationCallback.get();
+                if(callback != null) {
+                    callback.accept(request);
+                }
+            }
         }
     }
 }
