@@ -32,6 +32,7 @@ import javax.enterprise.context.spi.CreationalContext;
 import org.jboss.weld.construction.api.AroundConstructCallback;
 import org.jboss.weld.context.api.ContextualInstance;
 import org.jboss.weld.injection.spi.ResourceReference;
+import org.jboss.weld.util.collections.WeldCollections;
 import org.jboss.weld.util.reflection.Reflections;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
@@ -150,7 +151,7 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
      * Returns an unmodifiable list of dependent instances.
      */
     public List<ContextualInstance<?>> getDependentInstances() {
-        return Collections.unmodifiableList(dependentInstances);
+        return WeldCollections.immutableListView(dependentInstances);
     }
 
     // Serialization

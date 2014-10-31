@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.injection.producer;
 
-import static org.jboss.weld.util.collections.WeldCollections.immutableGuavaList;
-
 import java.util.List;
 import java.util.Set;
 
@@ -32,6 +30,7 @@ import org.jboss.weld.injection.ResourceInjection;
 import org.jboss.weld.injection.ResourceInjectionFactory;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.collections.ImmutableList;
 
 /**
  * {@link Injector} that adds support for resource field and setter injection.
@@ -56,7 +55,7 @@ public class ResourceInjector<T> extends DefaultInjector<T> {
 
     protected ResourceInjector(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager) {
         super(type, bean, beanManager);
-        this.resourceInjectionsHierarchy = immutableGuavaList(ResourceInjectionFactory.instance().getResourceInjections(bean, type,
+        this.resourceInjectionsHierarchy = ImmutableList.copyOf(ResourceInjectionFactory.instance().getResourceInjections(bean, type,
                 beanManager));
     }
 

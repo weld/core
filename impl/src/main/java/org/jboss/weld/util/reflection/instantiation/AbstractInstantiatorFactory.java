@@ -19,7 +19,7 @@ package org.jboss.weld.util.reflection.instantiation;
 
 import java.util.List;
 
-import com.google.common.collect.ImmutableList;
+import org.jboss.weld.util.collections.ImmutableList;
 
 /**
  * Abstract instantiator factory.

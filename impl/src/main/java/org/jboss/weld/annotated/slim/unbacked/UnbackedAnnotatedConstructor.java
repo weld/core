@@ -1,7 +1,5 @@
 package org.jboss.weld.annotated.slim.unbacked;
 
-import static org.jboss.weld.util.collections.WeldCollections.immutableList;
-
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
@@ -19,6 +17,7 @@ import org.jboss.weld.exceptions.InvalidObjectException;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.util.AnnotatedTypes;
+import org.jboss.weld.util.collections.ImmutableList;
 import org.jboss.weld.util.reflection.Formats;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
@@ -43,7 +42,7 @@ public class UnbackedAnnotatedConstructor<X> extends UnbackedAnnotatedMember<X> 
             parameters.add(new UnbackedAnnotatedParameter<X>(originalParameter.getBaseType(), originalParameter.getTypeClosure(), cache.getSharedSet(originalParameter.getAnnotations()),
                     originalParameter.getPosition(), this));
         }
-        this.parameters = immutableList(parameters);
+        this.parameters = ImmutableList.copyOf(parameters);
     }
 
     public Constructor<X> getJavaMember() {

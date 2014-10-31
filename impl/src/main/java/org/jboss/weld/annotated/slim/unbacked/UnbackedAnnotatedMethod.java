@@ -1,6 +1,5 @@
 package org.jboss.weld.annotated.slim.unbacked;
 
-import static org.jboss.weld.util.collections.WeldCollections.immutableList;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.io.ObjectInputStream;
@@ -20,6 +19,7 @@ import org.jboss.weld.exceptions.InvalidObjectException;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.util.AnnotatedTypes;
+import org.jboss.weld.util.collections.ImmutableList;
 import org.jboss.weld.util.reflection.Formats;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
@@ -45,7 +45,7 @@ public class UnbackedAnnotatedMethod<X> extends UnbackedAnnotatedMember<X> imple
             parameters.add(new UnbackedAnnotatedParameter<X>(originalParameter.getBaseType(), originalParameter.getTypeClosure(), cache.getSharedSet(originalParameter.getAnnotations()),
                     originalParameter.getPosition(), this));
         }
-        this.parameters = immutableList(parameters);
+        this.parameters = ImmutableList.copyOf(parameters);
     }
 
     public Method getJavaMember() {

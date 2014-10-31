@@ -27,7 +27,6 @@ import java.util.Set;
 
 import org.jboss.weld.util.reflection.Reflections;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 /**
@@ -61,30 +60,17 @@ public class WeldCollections {
      * Returns an immutable view of a given list. If the given list is empty, a shared instance is returned. If the given list
      * is an instance of {@link ArrayList}, it is trimmed.
      */
-    public static <T> List<T> immutableList(List<T> list) {
-        if (list.isEmpty()) {
-            return Collections.emptyList();
-        }
+    public static <T> List<T> immutableListView(List<T> list) {
         if (list instanceof ImmutableList<?>) {
             return list;
+        }
+        if (list.isEmpty()) {
+            return ImmutableTinyList.EmptyList.instance();
         }
         if (list instanceof ArrayList<?>) {
             ArrayList.class.cast(list).trimToSize();
         }
         return Collections.unmodifiableList(list);
-    }
-
-    /**
-     * Returns an immutable view of a given list. If the given list is empty, a shared instance is returned.
-     */
-    public static <T> List<T> immutableGuavaList(List<T> list) {
-        if (list.isEmpty()) {
-            return Collections.emptyList();
-        }
-        if (list instanceof ImmutableList<?>) {
-            return list;
-        }
-        return ImmutableList.copyOf(list);
     }
 
     /**

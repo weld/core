@@ -26,10 +26,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.jboss.weld.util.collections.ImmutableList;
 import org.jboss.weld.util.collections.Iterators;
 import org.junit.Test;
-
-import com.google.common.collect.ImmutableList;
 
 public class IteratorsTest {
 

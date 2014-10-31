@@ -20,7 +20,6 @@ package org.jboss.weld.bootstrap.events;
 import static org.jboss.weld.util.Observers.validateObserverMethod;
 
 import java.lang.reflect.Type;
-import java.util.Collections;
 import java.util.List;
 
 import javax.enterprise.inject.spi.AnnotatedMethod;
@@ -31,6 +30,7 @@ import org.jboss.weld.experimental.ExperimentalObserverMethod;
 import org.jboss.weld.experimental.ExperimentalProcessObserverMethod;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Preconditions;
+import org.jboss.weld.util.collections.WeldCollections;
 
 /**
  * Implementation of the event used to notify observers for each observer
@@ -75,7 +75,7 @@ public class ProcessObserverMethodImpl<T, X> extends AbstractDefinitionContainer
     }
 
     public List<Throwable> getDefinitionErrors() {
-        return Collections.unmodifiableList(getErrors());
+        return WeldCollections.immutableListView(getErrors());
     }
 
     @Override

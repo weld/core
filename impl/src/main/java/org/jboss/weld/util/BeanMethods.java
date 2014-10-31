@@ -48,10 +48,8 @@ import org.jboss.weld.logging.EventLogger;
 import org.jboss.weld.logging.UtilLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.security.SetAccessibleAction;
+import org.jboss.weld.util.collections.ImmutableList;
 import org.jboss.weld.util.collections.ImmutableSet;
-import org.jboss.weld.util.collections.WeldCollections;
-
-import com.google.common.collect.ImmutableList;
 
 public class BeanMethods {
 
@@ -171,7 +169,7 @@ public class BeanMethods {
         @Override
         public List<AnnotatedMethod<? super T>> create() {
             Collections.reverse(result);
-            return WeldCollections.immutableList(result);
+            return ImmutableList.copyOf(result);
         }
 
         /**
@@ -243,7 +241,7 @@ public class BeanMethods {
         @Override
         public List<Set<MethodInjectionPoint<?, ?>>> create() {
             Collections.reverse(result); // because we want methods that are lower in the hierarchy to be called first
-            return WeldCollections.immutableGuavaList(result);
+            return ImmutableList.copyOf(result);
         }
     }
 

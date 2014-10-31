@@ -21,9 +21,8 @@ import org.jboss.weld.experimental.ExperimentalAnnotatedParameter;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.resources.ReflectionCache;
 import org.jboss.weld.resources.SharedObjectCache;
+import org.jboss.weld.util.collections.ImmutableList;
 import org.jboss.weld.util.reflection.Formats;
-
-import com.google.common.collect.ImmutableList;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 

@@ -607,19 +607,19 @@ public class BeanManagerImpl implements WeldManager, Serializable {
      * @return The list of known beans
      */
     public List<Bean<?>> getBeans() {
-        return Collections.unmodifiableList(enabledBeans);
+        return WeldCollections.immutableListView(enabledBeans);
     }
 
     List<Bean<?>> getSharedBeans() {
-        return Collections.unmodifiableList(sharedBeans);
+        return WeldCollections.immutableListView(sharedBeans);
     }
 
     public List<Decorator<?>> getDecorators() {
-        return Collections.unmodifiableList(decorators);
+        return WeldCollections.immutableListView(decorators);
     }
 
     public List<Interceptor<?>> getInterceptors() {
-        return Collections.unmodifiableList(interceptors);
+        return WeldCollections.immutableListView(interceptors);
     }
 
     public Iterable<Bean<?>> getAccessibleBeans() {

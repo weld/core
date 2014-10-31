@@ -25,8 +25,7 @@ import javax.interceptor.InvocationContext;
 import org.jboss.weld.interceptor.proxy.InterceptorInvocation;
 import org.jboss.weld.interceptor.proxy.InterceptorMethodInvocation;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
-
-import com.google.common.collect.ImmutableList;
+import org.jboss.weld.util.collections.ImmutableList;
 
 /**
  * @author Marius Bogoevici

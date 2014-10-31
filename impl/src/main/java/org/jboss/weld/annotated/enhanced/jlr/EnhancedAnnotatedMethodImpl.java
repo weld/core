@@ -16,13 +16,12 @@
  */
 package org.jboss.weld.annotated.enhanced.jlr;
 
-import static org.jboss.weld.util.collections.WeldCollections.immutableList;
+import static org.jboss.weld.util.collections.WeldCollections.immutableListView;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -81,7 +80,7 @@ public class EnhancedAnnotatedMethodImpl<T, X> extends AbstractEnhancedAnnotated
             EnhancedAnnotatedParameter<?, X> parameter = EnhancedAnnotatedParameterImpl.of(annotatedParameter, this, classTransformer);
             parameters.add(parameter);
         }
-        this.parameters = immutableList(parameters);
+        this.parameters = immutableListView(parameters);
 
         String propertyName = Reflections.getPropertyName(getDelegate());
         if (propertyName == null) {
@@ -99,7 +98,7 @@ public class EnhancedAnnotatedMethodImpl<T, X> extends AbstractEnhancedAnnotated
     }
 
     public List<EnhancedAnnotatedParameter<?, X>> getEnhancedParameters() {
-        return Collections.unmodifiableList(parameters);
+        return parameters;
     }
 
     public Class<?>[] getParameterTypesAsArray() {
@@ -135,7 +134,7 @@ public class EnhancedAnnotatedMethodImpl<T, X> extends AbstractEnhancedAnnotated
     }
 
     public List<AnnotatedParameter<X>> getParameters() {
-        return Collections.unmodifiableList(Reflections.<List<AnnotatedParameter<X>>>cast(parameters));
+        return Reflections.<List<AnnotatedParameter<X>>>cast(parameters);
     }
 
     public boolean isGeneric() {
