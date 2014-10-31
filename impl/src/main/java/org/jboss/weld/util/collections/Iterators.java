@@ -18,6 +18,7 @@ package org.jboss.weld.util.collections;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.ListIterator;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
 
@@ -30,7 +31,7 @@ import org.jboss.weld.util.Preconditions;
  */
 public final class Iterators {
 
-    private static final Iterator<Object> EMPTY_ITERATOR = new Iterator<Object>() {
+    private static final ListIterator<Object> EMPTY_ITERATOR = new ListIterator<Object>() {
 
         @Override
         public boolean hasNext() {
@@ -45,6 +46,36 @@ public final class Iterators {
         @Override
         public void remove() {
             throw new UnsupportedOperationException("remove");
+        }
+
+        @Override
+        public boolean hasPrevious() {
+            return false;
+        }
+
+        @Override
+        public Object previous() {
+            throw new NoSuchElementException();
+        }
+
+        @Override
+        public int nextIndex() {
+            return 0;
+        }
+
+        @Override
+        public int previousIndex() {
+            return -1;
+        }
+
+        @Override
+        public void set(Object e) {
+            throw new UnsupportedOperationException("set");
+        }
+
+        @Override
+        public void add(Object e) {
+            throw new UnsupportedOperationException("add");
         }
     };
 
@@ -100,8 +131,8 @@ public final class Iterators {
      * @return an empty iterator
      */
     @SuppressWarnings("unchecked")
-    public static <T> Iterator<T> emptyIterator() {
-        return (Iterator<T>) EMPTY_ITERATOR;
+    public static <T> ListIterator<T> emptyIterator() {
+        return (ListIterator<T>) EMPTY_ITERATOR;
     }
 
     private static class CombinedIterator<E> implements Iterator<E> {

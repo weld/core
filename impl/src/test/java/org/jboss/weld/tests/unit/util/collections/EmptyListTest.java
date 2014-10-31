@@ -16,31 +16,23 @@
  */
 package org.jboss.weld.tests.unit.util.collections;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.List;
 
-import org.jboss.weld.util.collections.ImmutableSet;
+import org.junit.Assert;
+import org.junit.Test;
 
-/**
- * Common tests for Weld {@link Set} implementations.
- *
- * @author Jozef Hartinger
- * @see WELD-1753
- *
- */
-public abstract class AbstractImmutableSetTest extends AbstractImmutableCollectionTest<Set<String>> {
+public class EmptyListTest extends AbstractImmutableListTest {
 
-    @Override
-    protected Set<String> getCollection() {
-        return ImmutableSet.of(getData());
+    private static final String[] DATA = new String[0];
+
+    protected String[] getData() {
+        return DATA;
     }
 
+    @Test
     @Override
-    protected Set<String> getDefaultCollection() {
-        Set<String> result = new LinkedHashSet<>();
-        for (String item : getData()) {
-            result.add(item);
-        }
-        return result;
+    public void testSubList() {
+        List<String> subList = getCollection().subList(0, 0);
+        Assert.assertTrue(subList.isEmpty());
     }
 }
