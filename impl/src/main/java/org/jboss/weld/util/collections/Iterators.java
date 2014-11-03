@@ -22,6 +22,7 @@ import java.util.ListIterator;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
 
+import org.jboss.weld.exceptions.UnsupportedOperationException;
 import org.jboss.weld.util.Preconditions;
 
 /**
@@ -208,4 +209,85 @@ public final class Iterators {
         }
     }
 
+    /**
+     * Abstract iterator implementation that tracks current index. This implementation is useful for collection implementations
+     * with well-known size and random access to elements where its {@link IndexIterator#getElement(int)} may use a switch/case
+     * construct to return the corresponding element.
+     *
+     * @author Jozef Hartinger
+     *
+     * @param <E> the element type
+     */
+    abstract static class IndexIterator<E> implements ListIterator<E> {
+
+        private int position;
+        private final int size;
+
+        IndexIterator(int size, int position) {
+            this.size = size;
+            this.position = position;
+        }
+
+        IndexIterator(int size) {
+            this(size, 0);
+        }
+
+        @Override
+        public boolean hasNext() {
+            return position < size;
+        }
+
+        @Override
+        public E next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+            return getElement(position++);
+        }
+
+        @Override
+        public boolean hasPrevious() {
+            return position > 0;
+        }
+
+        @Override
+        public E previous() {
+            if (!hasPrevious()) {
+                throw new NoSuchElementException();
+            }
+            return getElement(--position);
+        }
+
+        @Override
+        public int nextIndex() {
+            return position;
+        }
+
+        @Override
+        public int previousIndex() {
+            return position -1;
+        }
+
+        /**
+         * Returns the element identified by the given index.
+         * @param index the given index
+         * @return element identified by the given index
+         */
+        abstract E getElement(int index);
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void set(E e) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void add(E e) {
+            throw new UnsupportedOperationException();
+        }
+    }
 }

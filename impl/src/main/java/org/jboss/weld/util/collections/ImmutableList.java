@@ -60,10 +60,13 @@ public abstract class ImmutableList<E> extends AbstractImmutableList<E> {
     }
 
     @SafeVarargs
+    @SuppressWarnings("unchecked")
     private static <T> List<T> ofInternal(Object... elements) {
         switch (elements.length) {
             case 0:
                 return ImmutableTinyList.EmptyList.instance();
+            case 1:
+                return new ImmutableTinyList.Singleton<T>((T) elements[0]);
             default:
                 return new ImmutableArrayList<T>(checkElementsNotNull(elements));
         }

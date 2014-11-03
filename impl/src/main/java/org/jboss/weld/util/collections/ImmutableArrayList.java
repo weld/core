@@ -18,16 +18,13 @@ package org.jboss.weld.util.collections;
 
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.NoSuchElementException;
 import java.util.RandomAccess;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.Consumer;
 
-import org.jboss.weld.exceptions.UnsupportedOperationException;
 import org.jboss.weld.util.Preconditions;
 
 /**
@@ -44,67 +41,15 @@ class ImmutableArrayList<E> extends ImmutableList<E> implements RandomAccess, Se
 
     private final Object[] elements;
 
-    private class ListIteratorImpl implements ListIterator<E> {
+    private class ListIteratorImpl extends Iterators.IndexIterator<E> {
 
-        private int position;
-
-        private ListIteratorImpl() {
-            this.position = -1;
-        }
-
-        private ListIteratorImpl(int position) {
-            this.position = position - 1;
+        ListIteratorImpl(int index) {
+            super(size(), index);
         }
 
         @Override
-        public boolean hasNext() {
-            return position < elements.length - 1;
-        }
-
-        @Override
-        public E next() {
-            if (!hasNext()) {
-                throw new NoSuchElementException();
-            }
-            return get(++position);
-        }
-
-        @Override
-        public boolean hasPrevious() {
-            return position > -1;
-        }
-
-        @Override
-        public E previous() {
-            if (!hasPrevious()) {
-                throw new NoSuchElementException();
-            }
-            return get(position--);
-        }
-
-        @Override
-        public int nextIndex() {
-            return position + 1;
-        }
-
-        @Override
-        public int previousIndex() {
-            return position;
-        }
-
-        @Override
-        public void remove() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void set(E e) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void add(E e) {
-            throw new UnsupportedOperationException();
+        E getElement(int index) {
+            return get(index);
         }
     }
 
@@ -156,16 +101,6 @@ class ImmutableArrayList<E> extends ImmutableList<E> implements RandomAccess, Se
             }
         }
         return -1;
-    }
-
-    @Override
-    public Iterator<E> iterator() {
-        return listIterator();
-    }
-
-    @Override
-    public ListIterator<E> listIterator() {
-        return new ListIteratorImpl();
     }
 
     @Override

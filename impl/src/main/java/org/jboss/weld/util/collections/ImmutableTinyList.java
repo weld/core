@@ -18,7 +18,6 @@ package org.jboss.weld.util.collections;
 
 import java.io.ObjectStreamException;
 import java.io.Serializable;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.RandomAccess;
@@ -28,6 +27,7 @@ import java.util.function.Consumer;
 
 /**
  * {@link List} implementations optimized for tiny number of elements
+ *
  * @author Jozef Hartinger
  *
  * @param <E> the element type
@@ -36,6 +36,7 @@ abstract class ImmutableTinyList<E> extends ImmutableList<E> implements RandomAc
 
     /**
      * Shared empty list implementation
+     *
      * @author Jozef Hartinger
      *
      */
@@ -66,16 +67,6 @@ abstract class ImmutableTinyList<E> extends ImmutableList<E> implements RandomAc
         @Override
         public int lastIndexOf(Object o) {
             return -1;
-        }
-
-        @Override
-        public Iterator<Object> iterator() {
-            return Iterators.emptyIterator();
-        }
-
-        @Override
-        public ListIterator<Object> listIterator() {
-            return Iterators.emptyIterator();
         }
 
         @Override
@@ -135,6 +126,83 @@ abstract class ImmutableTinyList<E> extends ImmutableList<E> implements RandomAc
         @Override
         public void forEach(Consumer<Object> action) {
             // noop
+        }
+    }
+
+    static class Singleton<E> extends ImmutableTinyList<E> implements Serializable {
+
+        private static final long serialVersionUID = 1L;
+
+        private class SingletonIterator extends Iterators.IndexIterator<E> {
+
+            SingletonIterator(int index) {
+                super(size(), index);
+            }
+
+            @Override
+            E getElement(int index) {
+                return element;
+            }
+        }
+
+        private final E element;
+
+        Singleton(E element) {
+            this.element = element;
+        }
+
+        @Override
+        public int indexOf(Object o) {
+            if (o != null && o.equals(o)) {
+                return 0;
+            }
+            return -1;
+        }
+
+        @Override
+        public int lastIndexOf(Object o) {
+            return indexOf(o);
+        }
+
+        @Override
+        public ListIterator<E> listIterator(int index) {
+            if (index == 0 || index == 1) {
+                return new SingletonIterator(index);
+            }
+            throw new IndexOutOfBoundsException(String.valueOf(index));
+        }
+
+        @Override
+        public List<E> subList(int fromIndex, int toIndex) {
+            if (fromIndex < 0 || fromIndex > toIndex) {
+                throw new IndexOutOfBoundsException(String.valueOf(fromIndex));
+            }
+            if (toIndex > size()) {
+                throw new IndexOutOfBoundsException(String.valueOf(toIndex));
+            }
+            if (fromIndex == toIndex) {
+                return ImmutableTinyList.EmptyList.instance();
+            } else {
+                return this;
+            }
+        }
+
+        @Override
+        public int hashCode() {
+            return 31 + element.hashCode();
+        }
+
+        @Override
+        public E get(int index) {
+            if (index == 0) {
+                return element;
+            }
+            throw new IndexOutOfBoundsException(String.valueOf(index));
+        }
+
+        @Override
+        public int size() {
+            return 1;
         }
     }
 }

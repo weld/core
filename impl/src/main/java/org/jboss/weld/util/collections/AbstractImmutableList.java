@@ -19,6 +19,8 @@ package org.jboss.weld.util.collections;
 import java.util.AbstractList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Iterator;
+import java.util.ListIterator;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.Predicate;
@@ -89,6 +91,16 @@ abstract class AbstractImmutableList<E> extends AbstractList<E> {
     @Override
     public boolean removeIf(Predicate<? super E> filter) {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Iterator<E> iterator() {
+        return listIterator(0);
+    }
+
+    @Override
+    public ListIterator<E> listIterator() {
+        return listIterator(0);
     }
 
     @Override

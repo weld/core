@@ -37,32 +37,6 @@ import org.jboss.weld.util.reflection.Reflections;
  */
 abstract class ImmutableTinySet<T> extends ImmutableSet<T> {
 
-    private static abstract class AbstractIterator<T> implements Iterator<T> {
-
-        private int position;
-        private final int size;
-
-        private AbstractIterator(Set<T> set) {
-            this.size = set.size();
-        }
-
-        @Override
-        public boolean hasNext() {
-            return position < size;
-        }
-
-        @Override
-        public T next() {
-            if (!hasNext()) {
-                throw new NoSuchElementException();
-            }
-            return getElement(position++);
-        }
-
-        abstract T getElement(int position);
-
-    }
-
     /**
      * Shared instance representing an empty set.
      *
@@ -185,7 +159,7 @@ abstract class ImmutableTinySet<T> extends ImmutableSet<T> {
 
         @Override
         public Iterator<T> iterator() {
-            return new AbstractIterator<T>(this) {
+            return new Iterators.IndexIterator<T>(this.size()) {
                 @Override
                 T getElement(int position) {
                     return element;
@@ -235,7 +209,7 @@ abstract class ImmutableTinySet<T> extends ImmutableSet<T> {
 
         @Override
         public Iterator<T> iterator() {
-            return new AbstractIterator<T>(this) {
+            return new Iterators.IndexIterator<T>(this.size()) {
                 @Override
                 T getElement(int position) {
                     switch (position) {
@@ -294,7 +268,7 @@ abstract class ImmutableTinySet<T> extends ImmutableSet<T> {
 
         @Override
         public Iterator<T> iterator() {
-            return new AbstractIterator<T>(this) {
+            return new Iterators.IndexIterator<T>(this.size()) {
                 @Override
                 T getElement(int position) {
                     switch (position) {
