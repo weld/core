@@ -55,7 +55,7 @@ abstract class ImmutableTinyList<E> extends ImmutableList<E> implements RandomAc
 
         @Override
         public int indexOf(Object o) {
-            if (o != null && o.equals(o)) {
+            if (o != null && o.equals(element)) {
                 return 0;
             }
             return -1;

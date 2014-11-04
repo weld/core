@@ -94,6 +94,8 @@ public abstract class AbstractImmutableListTest extends AbstractImmutableCollect
             Assert.assertEquals(i, list.indexOf(getData()[i]));
             Assert.assertEquals(i, list.lastIndexOf(getData()[i]));
         }
+        Assert.assertEquals(-1, list.indexOf("qux"));
+        Assert.assertEquals(-1, list.lastIndexOf("qux"));
     }
 
     @Test

@@ -173,9 +173,8 @@ public abstract class ImmutableList<E> extends AbstractImmutableList<E> {
         }
 
         @Override
-        @SuppressWarnings("unchecked")
         public List<T> build() {
-            return (ImmutableList<T>) of(list.toArray());
+            return ImmutableList.ofInternal(list.toArray());
         }
     }
 
