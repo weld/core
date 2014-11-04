@@ -21,8 +21,6 @@ package org.jboss.weld.interceptor.proxy;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -31,6 +29,9 @@ import java.util.Set;
 import org.jboss.weld.experimental.ExperimentalInvocationContext;
 import org.jboss.weld.interceptor.spi.context.InterceptionChain;
 import org.jboss.weld.util.Preconditions;
+import org.jboss.weld.util.Primitives;
+import org.jboss.weld.util.collections.ImmutableMap;
+import org.jboss.weld.util.collections.ImmutableSet;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
@@ -57,42 +58,16 @@ public class InterceptorInvocationContext implements ExperimentalInvocationConte
 
     private static final Map<Class<?>, Set<Class<?>>> WIDENING_TABLE;
 
-    private static final Map<Class<?>, Class<?>> WRAPPER_CLASSES;
-    private static final Map<Class<?>, Class<?>> REVERSE_WRAPPER_CLASSES;
-
     static {
-        Map<Class<?>, Class<?>> wrapperClasses = new HashMap<Class<?>, Class<?>>();
-        wrapperClasses.put(boolean.class, Boolean.class);
-        wrapperClasses.put(byte.class, Byte.class);
-        wrapperClasses.put(char.class, Character.class);
-        wrapperClasses.put(short.class, Short.class);
-        wrapperClasses.put(int.class, Integer.class);
-        wrapperClasses.put(long.class, Long.class);
-        wrapperClasses.put(float.class, Float.class);
-        wrapperClasses.put(double.class, Double.class);
+        ImmutableMap.Builder<Class<?>, Set<Class<?>>> builder = ImmutableMap.builder();
+        builder.put(byte.class, ImmutableSet.of(short.class, int.class, long.class, float.class, double.class));
+        builder.put(short.class, ImmutableSet.of(int.class, long.class, float.class, double.class));
+        builder.put(char.class, ImmutableSet.of(int.class, long.class, float.class, double.class));
+        builder.put(int.class, ImmutableSet.of(long.class, float.class, double.class));
+        builder.put(long.class, ImmutableSet.of(float.class, double.class));
+        builder.put(float.class, ImmutableSet.of(double.class));
+        WIDENING_TABLE = builder.build();
 
-        WRAPPER_CLASSES = Collections.unmodifiableMap(wrapperClasses);
-
-        Map<Class<?>, Class<?>> reverseWrapperClasses = new HashMap<Class<?>, Class<?>>();
-        for (Map.Entry<Class<?>, Class<?>> classEntry : wrapperClasses.entrySet()) {
-            reverseWrapperClasses.put(classEntry.getValue(), classEntry.getKey());
-        }
-
-        REVERSE_WRAPPER_CLASSES = Collections.unmodifiableMap(reverseWrapperClasses);
-
-        Map<Class<?>, Set<Class<?>>> wideningTable = new HashMap<Class<?>, Set<Class<?>>>();
-        wideningTable.put(byte.class, setOf(short.class, int.class, long.class, float.class, double.class));
-        wideningTable.put(short.class, setOf(int.class, long.class, float.class, double.class));
-        wideningTable.put(char.class, setOf(int.class, long.class, float.class, double.class));
-        wideningTable.put(int.class, setOf(long.class, float.class, double.class));
-        wideningTable.put(long.class, setOf(float.class, double.class));
-        wideningTable.put(float.class, Collections.<Class<?>>singleton(double.class));
-        WIDENING_TABLE = Collections.unmodifiableMap(wideningTable);
-
-    }
-
-    private static Set<Class<?>> setOf(Class<?>... classes) {
-        return new HashSet<Class<?>>(Arrays.asList(classes));
     }
 
     public InterceptorInvocationContext(InterceptionChain interceptionChain, Object target, Method targetMethod, Object[] parameters, Set<Annotation> interceptorBindings) {
@@ -169,23 +144,6 @@ public class InterceptorInvocationContext implements ExperimentalInvocationConte
         return WIDENING_TABLE.containsKey(argumentClass) && WIDENING_TABLE.get(argumentClass).contains(targetClass);
     }
 
-    private static Class<?> getWrapperClass(Class<?> primitiveClass) {
-        if (!WRAPPER_CLASSES.containsKey(primitiveClass)) {
-            return primitiveClass;
-        } else {
-            return WRAPPER_CLASSES.get(primitiveClass);
-        }
-    }
-
-    private static Class<?> getPrimitiveClass(Class<?> wrapperClass) {
-        if (!REVERSE_WRAPPER_CLASSES.containsKey(wrapperClass)) {
-            return wrapperClass;
-        } else {
-            return REVERSE_WRAPPER_CLASSES.get(wrapperClass);
-        }
-    }
-
-
     @SuppressWarnings("EI_EXPOSE_REP")
     public void setParameters(Object[] params) {
         if (this.method != null || this.constructor != null) {
@@ -220,7 +178,7 @@ public class InterceptorInvocationContext implements ExperimentalInvocationConte
                                 }
                             } else {
                                 //boxing+widening reference
-                                Class<?> boxedArgumentClass = getWrapperClass(newArgumentClass);
+                                Class<?> boxedArgumentClass = Primitives.wrap(newArgumentClass);
                                 if (!methodParameterClass.isAssignableFrom(boxedArgumentClass)) {
                                     throwIAE(i, methodParameterClass, newArgumentClass);
                                 }
@@ -229,7 +187,7 @@ public class InterceptorInvocationContext implements ExperimentalInvocationConte
                             // argument is non-primitive
                             if (methodParameterClass.isPrimitive()) {
                                 // unboxing+widening primitive
-                                Class<?> unboxedClass = getPrimitiveClass(newArgumentClass);
+                                Class<?> unboxedClass = Primitives.unwrap(newArgumentClass);
 
                                 if (!unboxedClass.equals(methodParameterClass) && !isWideningPrimitive(unboxedClass, methodParameterClass)) {
                                     throwIAE(i, methodParameterClass, newArgumentClass);

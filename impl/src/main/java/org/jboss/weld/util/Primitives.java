@@ -22,7 +22,7 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.common.collect.ImmutableMap;
+import org.jboss.weld.util.collections.ImmutableMap;
 
 /**
  *
@@ -52,7 +52,6 @@ public final class Primitives {
         put(primitiveToWrapper, wrapperToPrimitive, float.class, Float.class);
         put(primitiveToWrapper, wrapperToPrimitive, byte.class, Byte.class);
 
-        // TODO Use the appropriate immutable map replacement (and possibly builder)
         PRIMITIVE_TO_WRAPPER = ImmutableMap.copyOf(primitiveToWrapper);
         WRAPPER_TO_PRIMITIVE = ImmutableMap.copyOf(wrapperToPrimitive);
     }

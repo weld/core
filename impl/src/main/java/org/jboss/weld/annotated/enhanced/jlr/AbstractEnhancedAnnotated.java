@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.annotated.enhanced.jlr;
 
-import static org.jboss.weld.util.collections.WeldCollections.immutableMap;
+import static org.jboss.weld.util.collections.WeldCollections.immutableMapView;
 import static org.jboss.weld.util.reflection.Reflections.EMPTY_ANNOTATIONS;
 
 import java.lang.annotation.Annotation;
@@ -119,7 +119,7 @@ public abstract class AbstractEnhancedAnnotated<T, S> implements EnhancedAnnotat
         if (annotationMap == null) {
             throw ReflectionLogger.LOG.annotationMapNull();
         }
-        this.annotationMap = immutableMap(annotationMap);
+        this.annotationMap = immutableMapView(annotationMap);
         ArraySetMultimap<Class<? extends Annotation>, Annotation> metaAnnotationMap = new ArraySetMultimap<Class<? extends Annotation>, Annotation>();
         processMetaAnnotations(metaAnnotationMap, annotationMap.values(), classTransformer, false);
         this.metaAnnotationMap = metaAnnotationMap;

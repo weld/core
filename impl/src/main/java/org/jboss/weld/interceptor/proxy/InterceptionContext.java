@@ -22,7 +22,6 @@ import static org.jboss.weld.interceptor.spi.model.InterceptionType.POST_ACTIVAT
 import static org.jboss.weld.interceptor.spi.model.InterceptionType.POST_CONSTRUCT;
 import static org.jboss.weld.interceptor.spi.model.InterceptionType.PRE_DESTROY;
 import static org.jboss.weld.interceptor.spi.model.InterceptionType.PRE_PASSIVATE;
-import static org.jboss.weld.util.collections.WeldCollections.immutableMap;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.io.ObjectStreamException;
@@ -39,6 +38,7 @@ import org.jboss.weld.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.collections.ImmutableSet;
+import org.jboss.weld.util.collections.WeldCollections;
 
 /**
  * Holds interceptor metadata and interceptor instances throughout the lifecycle of the intercepted instance.
@@ -87,7 +87,7 @@ public class InterceptionContext implements Serializable {
                 }
             }
         }
-        return immutableMap(interceptorInstances);
+        return WeldCollections.immutableMapView(interceptorInstances);
     }
 
     public InterceptionModel getInterceptionModel() {

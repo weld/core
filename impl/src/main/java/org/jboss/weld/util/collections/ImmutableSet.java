@@ -26,6 +26,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 
+import org.jboss.weld.util.Preconditions;
+
 /**
  * Weld's immutable set implementation. Instances returned from methods of this class may use different strategies to achieve good performance / memory
  * consumption balance.
@@ -57,6 +59,7 @@ public abstract class ImmutableSet<T> extends AbstractImmutableSet<T> {
      */
     @SuppressWarnings("unchecked")
     public static <T> Set<T> copyOf(Collection<? extends T> collection) {
+        Preconditions.checkNotNull(collection);
         if (collection instanceof AbstractImmutableSet<?>) {
             return (Set<T>) collection;
         }
@@ -74,6 +77,7 @@ public abstract class ImmutableSet<T> extends AbstractImmutableSet<T> {
      */
     @SafeVarargs
     public static <T> Set<T> of(T... elements) {
+        Preconditions.checkNotNull(elements);
         return ImmutableSet.<T> builder().addAll(elements).build();
     }
 

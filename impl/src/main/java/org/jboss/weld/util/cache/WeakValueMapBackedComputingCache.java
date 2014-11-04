@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import com.google.common.collect.ImmutableMap;
+import org.jboss.weld.util.collections.ImmutableMap;
 
 /**
  * A {@link ComputingCache} backed by a {@link ConcurrentHashMap}. Values stored in the cache are wrapped in a {@link WeakReference}.
