@@ -21,7 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
 
-import com.google.common.collect.ImmutableMap;
+import org.jboss.weld.util.collections.WeldCollections;
 
 /**
  * A {@link ComputingCache} backed by a {@link ConcurrentHashMap}.
@@ -56,7 +56,7 @@ class MapBackedComputingCache<K, V> extends AbstractMapBackedComputingCache<K, V
 
     @Override
     public Map<K, V> getAllPresent() {
-        return ImmutableMap.copyOf(map);
+        return WeldCollections.immutableMapView(map);
     }
 
     protected V computeIfNeeded(K key) {

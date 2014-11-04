@@ -20,12 +20,11 @@ package org.jboss.weld.interceptor.util;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
 import org.jboss.weld.logging.InterceptorLogger;
+import org.jboss.weld.util.collections.ImmutableMap;
 
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
@@ -38,16 +37,15 @@ public final class InterceptionTypeRegistry {
     }
 
     static {
-        final Map<InterceptionType, Class<? extends Annotation>> interceptionAnnotationClasses = new HashMap<InterceptionType, Class<? extends Annotation>>();
-
+        ImmutableMap.Builder<InterceptionType, Class<? extends Annotation>> builder = ImmutableMap.builder();
         for (InterceptionType interceptionType : InterceptionType.values()) {
             try {
-                interceptionAnnotationClasses.put(interceptionType, (Class<? extends Annotation>) InterceptionTypeRegistry.class.getClassLoader().loadClass(interceptionType.annotationClassName()));
+                builder.put(interceptionType, (Class<? extends Annotation>) InterceptionTypeRegistry.class.getClassLoader().loadClass(interceptionType.annotationClassName()));
             } catch (Exception e) {
                 InterceptorLogger.LOG.interceptorAnnotationClassNotFound(interceptionType.annotationClassName());
             }
         }
-        INTERCEPTOR_ANNOTATION_CLASSES = Collections.unmodifiableMap(interceptionAnnotationClasses);
+        INTERCEPTOR_ANNOTATION_CLASSES = builder.build();
 
     }
 

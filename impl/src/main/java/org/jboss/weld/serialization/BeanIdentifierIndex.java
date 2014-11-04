@@ -34,8 +34,7 @@ import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.logging.SerializationLogger;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.util.Preconditions;
-
-import com.google.common.collect.ImmutableMap;
+import org.jboss.weld.util.collections.ImmutableMap;
 
 /**
  * The index holds identifiers for the specified set of beans (note that only instances of {@link CommonBean} and implementations of {@link PassivationCapable}

@@ -27,6 +27,7 @@ import java.util.Map;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 
 import org.jboss.weld.util.annotated.ForwardingAnnotatedMethod;
+import org.jboss.weld.util.collections.WeldCollections;
 
 /**
  * An implementation of {@link AnnotatedMethod} used at runtime for invoking Java methods.
@@ -79,7 +80,7 @@ public class InvokableAnnotatedMethod<T> extends ForwardingAnnotatedMethod<T> {
             synchronized (this) {
                 final Map<Class<?>, Method> newMethods = new HashMap<Class<?>, Method>(methods);
                 newMethods.put(instance.getClass(), method);
-                this.methods = Collections.unmodifiableMap(newMethods);
+                this.methods = WeldCollections.immutableMapView(newMethods);
             }
         }
         return cast(method.invoke(instance, parameters));

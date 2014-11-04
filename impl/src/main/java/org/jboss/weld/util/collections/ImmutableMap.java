@@ -20,13 +20,18 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jboss.weld.util.Preconditions;
+
 /**
  * Weld's immutable map implementation.
  *
  * @author Jozef Hartinger
  *
  */
-public class ImmutableMap {
+public abstract class ImmutableMap<K, V> extends AbstractImmutableMap<K, V> {
+
+    ImmutableMap() {
+    }
 
     /**
      * Creates an immutable map. A copy of the given map is used. As a result, it is safe to modify the source map afterwards.
@@ -35,6 +40,7 @@ public class ImmutableMap {
      * @return an immutable map
      */
     public static <K, V> Map<K, V> copyOf(Map<K, V> map) {
+        Preconditions.checkNotNull(map);
         return ImmutableMap.<K, V> builder().putAll(map).build();
     }
 

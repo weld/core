@@ -33,7 +33,7 @@ import org.jboss.weld.util.Preconditions;
  * @param <K> the key type
  * @param <V> the value type
  */
-class ImmutableMapEntry<K, V> extends AbstractImmutableMap<K, V> implements Entry<K, V>, Serializable {
+class ImmutableMapEntry<K, V> extends ImmutableMap<K, V> implements Entry<K, V>, Serializable {
 
     private static final long serialVersionUID = 1L;
 

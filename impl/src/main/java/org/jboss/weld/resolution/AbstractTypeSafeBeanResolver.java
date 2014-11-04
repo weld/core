@@ -46,6 +46,7 @@ import org.jboss.weld.util.Primitives;
 import org.jboss.weld.util.cache.ComputingCache;
 import org.jboss.weld.util.cache.ComputingCacheBuilder;
 import org.jboss.weld.util.collections.ImmutableSet;
+import org.jboss.weld.util.collections.WeldCollections;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
@@ -151,7 +152,7 @@ public abstract class AbstractTypeSafeBeanResolver<T extends Bean<?>, C extends 
                     mapBean(map, bean);
                 }
                 trimArrayListsToSize(map);
-                return Collections.unmodifiableMap(map);
+                return WeldCollections.immutableMapView(map);
             }
 
             private void mapBean(Map<Type, ArrayList<T>> map, T bean) {

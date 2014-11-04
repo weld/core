@@ -16,10 +16,9 @@
  */
 package org.jboss.weld.util;
 
-import java.util.HashMap;
 import java.util.Map;
 
-import com.google.common.collect.ImmutableMap;
+import org.jboss.weld.util.collections.ImmutableMap;
 
 /**
  *
@@ -33,21 +32,16 @@ public final class Defaults {
     }
 
     static {
-        Map<Class<?>, Object> values = new HashMap<>();
-        put(values, boolean.class, false);
-        put(values, char.class, '\u0000');
-        put(values, byte.class, (byte) 0);
-        put(values, short.class, (short) 0);
-        put(values, int.class, 0);
-        put(values, long.class, 0L);
-        put(values, float.class, 0f);
-        put(values, double.class, 0d);
-        // TODO Use the appropriate immutable map replacement (and possibly builder)
-        JLS_PRIMITIVE_DEFAULT_VALUES = ImmutableMap.copyOf(values);
-    }
-
-    private static <T> void put(Map<Class<?>, Object> map, Class<T> type, T value) {
-        map.put(type, value);
+        ImmutableMap.Builder<Class<?>, Object> builder = ImmutableMap.builder();
+        builder.put(boolean.class, false);
+        builder.put(char.class, '\u0000');
+        builder.put(byte.class, (byte) 0);
+        builder.put(short.class, (short) 0);
+        builder.put(int.class, 0);
+        builder.put(long.class, 0L);
+        builder.put(float.class, 0f);
+        builder.put(double.class, 0d);
+        JLS_PRIMITIVE_DEFAULT_VALUES = builder.build();
     }
 
     /**

@@ -52,6 +52,7 @@ public abstract class ImmutableList<E> extends AbstractImmutableList<E> {
      */
     @SafeVarargs
     public static <T> List<T> of(T... elements) {
+        Preconditions.checkNotNull(elements);
         return ofInternal(elements);
     }
 
@@ -63,6 +64,7 @@ public abstract class ImmutableList<E> extends AbstractImmutableList<E> {
      * @return an immutable list
      */
     public static <T> List<T> copyOf(T[] elements) {
+        Preconditions.checkNotNull(elements);
         return ofInternal(elements.clone());
     }
 
@@ -74,6 +76,7 @@ public abstract class ImmutableList<E> extends AbstractImmutableList<E> {
      * @return an immutable list
      */
     public static <T> List<T> copyOf(Collection<T> source) {
+        Preconditions.checkNotNull(source);
         if (source instanceof ImmutableList<?>) {
             return (ImmutableList<T>) source;
         }

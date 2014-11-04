@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.annotated.enhanced.jlr;
 
-import static org.jboss.weld.util.collections.WeldCollections.immutableMap;
+import static org.jboss.weld.util.collections.WeldCollections.immutableMapView;
 import static org.jboss.weld.util.collections.WeldCollections.immutableSetView;
 
 import java.lang.annotation.Annotation;
@@ -277,7 +277,7 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
 
         ArraySetMultimap<Class<? extends Annotation>, Annotation> declaredMetaAnnotationMap = new ArraySetMultimap<Class<? extends Annotation>, Annotation>();
         processMetaAnnotations(declaredMetaAnnotationMap, declaredAnnotationMap.values(), classTransformer, true);
-        this.declaredMetaAnnotationMap = immutableMap(declaredMetaAnnotationMap);
+        this.declaredMetaAnnotationMap = immutableMapView(declaredMetaAnnotationMap);
         this.overriddenMethods = getOverriddenMethods(this, methodsTemp);
 
         // WELD-1548 remove all overriden methods except for those which are overriden by a bridge method

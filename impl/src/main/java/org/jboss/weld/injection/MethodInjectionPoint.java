@@ -36,8 +36,7 @@ import javax.enterprise.inject.spi.Bean;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.security.GetAccessibleCopyOfMember;
-
-import com.google.common.collect.ImmutableMap;
+import org.jboss.weld.util.collections.ImmutableMap;
 
 /**
  * High-level representation of an injected method. This class does not need to be serializable because it is never injected.

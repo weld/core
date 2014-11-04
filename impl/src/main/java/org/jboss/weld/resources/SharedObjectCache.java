@@ -27,8 +27,8 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.LazyValueHolder;
 import org.jboss.weld.util.cache.ComputingCache;
 import org.jboss.weld.util.cache.ComputingCacheBuilder;
+import org.jboss.weld.util.collections.ImmutableMap;
 import org.jboss.weld.util.collections.ImmutableSet;
-import org.jboss.weld.util.collections.WeldCollections;
 
 /**
  * Allows classes to share Maps/Sets to conserve memory.
@@ -53,7 +53,7 @@ public class SharedObjectCache implements BootstrapService {
             new Function<Map<?, ?>, Map<?, ?>>() {
                 @Override
                 public Map<?, ?> apply(Map<?, ?> from) {
-            return WeldCollections.immutableMap(from);
+            return ImmutableMap.copyOf(from);
         }
     });
 

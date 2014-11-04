@@ -41,12 +41,12 @@ import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
 import org.jboss.weld.util.Preconditions;
 import org.jboss.weld.util.collections.ImmutableList;
+import org.jboss.weld.util.collections.ImmutableMap;
 import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.collections.ListView;
 import org.jboss.weld.util.collections.ViewProvider;
 
 import com.google.common.base.Function;
-import com.google.common.collect.ImmutableMap;
 
 /**
  * This service gathers globally enabled interceptors, decorators and alternatives and builds a list of each.

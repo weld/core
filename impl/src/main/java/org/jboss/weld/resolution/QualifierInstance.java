@@ -34,9 +34,8 @@ import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.metadata.cache.QualifierModel;
 import org.jboss.weld.security.SetAccessibleAction;
+import org.jboss.weld.util.collections.ImmutableMap;
 import org.jboss.weld.util.collections.ImmutableSet;
-
-import com.google.common.collect.ImmutableMap;
 
 /**
  * Optimized representation of a qualifier. JDK annotation proxies are slooow, this class provides significantly
