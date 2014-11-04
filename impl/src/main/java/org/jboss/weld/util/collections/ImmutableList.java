@@ -18,6 +18,7 @@ package org.jboss.weld.util.collections;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BiConsumer;
@@ -76,6 +77,9 @@ public abstract class ImmutableList<E> extends AbstractImmutableList<E> {
         if (source instanceof ImmutableList<?>) {
             return (ImmutableList<T>) source;
         }
+        if (source.isEmpty()) {
+            return Collections.emptyList();
+        }
         return ofInternal(source.toArray());
     }
 
@@ -83,7 +87,7 @@ public abstract class ImmutableList<E> extends AbstractImmutableList<E> {
     private static <T> List<T> ofInternal(Object[] elements) {
         switch (elements.length) {
             case 0:
-                return ImmutableTinyList.EmptyList.instance();
+                return Collections.emptyList();
             case 1:
                 return new ImmutableTinyList.Singleton<T>((T) elements[0]);
             default:
@@ -125,7 +129,7 @@ public abstract class ImmutableList<E> extends AbstractImmutableList<E> {
 
         Builder<T> addAll(@SuppressWarnings("unchecked") T... items);
 
-        ImmutableList<T> build();
+        List<T> build();
     }
 
     private static class BuilderImpl<T> implements Builder<T> {
@@ -170,12 +174,12 @@ public abstract class ImmutableList<E> extends AbstractImmutableList<E> {
 
         @Override
         @SuppressWarnings("unchecked")
-        public ImmutableList<T> build() {
+        public List<T> build() {
             return (ImmutableList<T>) of(list.toArray());
         }
     }
 
-    private static class ImmutableListCollector<T> implements Collector<T, BuilderImpl<T>, ImmutableList<T>> {
+    private static class ImmutableListCollector<T> implements Collector<T, BuilderImpl<T>, List<T>> {
 
         private static final ImmutableListCollector<Object> INSTANCE = new ImmutableListCollector<>();
         private static final Set<Characteristics> CHARACTERISTICS = ImmutableSet.of();
@@ -198,7 +202,7 @@ public abstract class ImmutableList<E> extends AbstractImmutableList<E> {
         }
 
         @Override
-        public Function<BuilderImpl<T>, ImmutableList<T>> finisher() {
+        public Function<BuilderImpl<T>, List<T>> finisher() {
             return (builder) -> builder.build();
         }
 

@@ -16,14 +16,11 @@
  */
 package org.jboss.weld.util.collections;
 
-import java.io.ObjectStreamException;
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.RandomAccess;
-import java.util.Spliterator;
-import java.util.Spliterators;
-import java.util.function.Consumer;
 
 /**
  * {@link List} implementations optimized for tiny number of elements
@@ -33,101 +30,6 @@ import java.util.function.Consumer;
  * @param <E> the element type
  */
 abstract class ImmutableTinyList<E> extends ImmutableList<E> implements RandomAccess {
-
-    /**
-     * Shared empty list implementation
-     *
-     * @author Jozef Hartinger
-     *
-     */
-    static class EmptyList extends ImmutableTinyList<Object> implements Serializable {
-
-        private static final long serialVersionUID = 1L;
-
-        private static final EmptyList INSTANCE = new EmptyList();
-
-        @SuppressWarnings("unchecked")
-        static <T> ImmutableList<T> instance() {
-            return (ImmutableList<T>) INSTANCE;
-        }
-
-        private EmptyList() {
-        }
-
-        @Override
-        public boolean isEmpty() {
-            return true;
-        }
-
-        @Override
-        public int indexOf(Object o) {
-            return -1;
-        }
-
-        @Override
-        public int lastIndexOf(Object o) {
-            return -1;
-        }
-
-        @Override
-        public ListIterator<Object> listIterator(int index) {
-            if (index == 0) {
-                return Iterators.emptyIterator();
-            }
-            throw new IndexOutOfBoundsException(String.valueOf(index));
-        }
-
-        @Override
-        public List<Object> subList(int fromIndex, int toIndex) {
-            if (fromIndex != 0) {
-                throw new IndexOutOfBoundsException(String.valueOf(fromIndex));
-            }
-            if (toIndex != 0) {
-                throw new IndexOutOfBoundsException(String.valueOf(toIndex));
-            }
-            return this;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (o instanceof List<?>) {
-                return ((List<?>) o).isEmpty();
-            }
-            return false;
-        }
-
-        @Override
-        public int hashCode() {
-            return 1;
-        }
-
-        @Override
-        public Object get(int index) {
-            throw new IndexOutOfBoundsException(String.valueOf(index));
-        }
-
-        @Override
-        public int size() {
-            return 0;
-        }
-
-        private Object readResolve() throws ObjectStreamException {
-            return INSTANCE;
-        }
-
-        @Override
-        public Spliterator<Object> spliterator() {
-            return Spliterators.emptySpliterator();
-        }
-
-        @Override
-        public void forEach(Consumer<Object> action) {
-            // noop
-        }
-    }
 
     static class Singleton<E> extends ImmutableTinyList<E> implements Serializable {
 
@@ -181,7 +83,7 @@ abstract class ImmutableTinyList<E> extends ImmutableList<E> implements RandomAc
                 throw new IndexOutOfBoundsException(String.valueOf(toIndex));
             }
             if (fromIndex == toIndex) {
-                return ImmutableTinyList.EmptyList.instance();
+                return Collections.emptyList();
             } else {
                 return this;
             }

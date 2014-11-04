@@ -17,6 +17,7 @@
 package org.jboss.weld.util.collections;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
@@ -31,54 +32,6 @@ import org.jboss.weld.util.Preconditions;
  * @author Martin Kouba
  */
 public final class Iterators {
-
-    private static final ListIterator<Object> EMPTY_ITERATOR = new ListIterator<Object>() {
-
-        @Override
-        public boolean hasNext() {
-            return false;
-        }
-
-        @Override
-        public Object next() {
-            throw new NoSuchElementException();
-        }
-
-        @Override
-        public void remove() {
-            throw new UnsupportedOperationException("remove");
-        }
-
-        @Override
-        public boolean hasPrevious() {
-            return false;
-        }
-
-        @Override
-        public Object previous() {
-            throw new NoSuchElementException();
-        }
-
-        @Override
-        public int nextIndex() {
-            return 0;
-        }
-
-        @Override
-        public int previousIndex() {
-            return -1;
-        }
-
-        @Override
-        public void set(Object e) {
-            throw new UnsupportedOperationException("set");
-        }
-
-        @Override
-        public void add(Object e) {
-            throw new UnsupportedOperationException("add");
-        }
-    };
 
     private Iterators() {
     }
@@ -127,15 +80,6 @@ public final class Iterators {
         };
     }
 
-    /**
-     *
-     * @return an empty iterator
-     */
-    @SuppressWarnings("unchecked")
-    public static <T> ListIterator<T> emptyIterator() {
-        return (ListIterator<T>) EMPTY_ITERATOR;
-    }
-
     private static class CombinedIterator<E> implements Iterator<E> {
 
         private final Iterator<? extends Iterator<? extends E>> iterators;
@@ -146,7 +90,7 @@ public final class Iterators {
 
         CombinedIterator(Iterator<? extends Iterator<? extends E>> iterators) {
             this.iterators = iterators;
-            this.current = emptyIterator();
+            this.current = Collections.emptyIterator();
         }
 
         @Override

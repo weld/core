@@ -65,7 +65,7 @@ public class WeldCollections {
             return list;
         }
         if (list.isEmpty()) {
-            return ImmutableTinyList.EmptyList.instance();
+            return Collections.emptyList();
         }
         if (list instanceof ArrayList<?>) {
             ArrayList.class.cast(list).trimToSize();

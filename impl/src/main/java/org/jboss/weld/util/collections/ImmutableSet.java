@@ -17,6 +17,7 @@
 package org.jboss.weld.util.collections;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.function.BiConsumer;
@@ -58,6 +59,9 @@ public abstract class ImmutableSet<T> extends AbstractImmutableSet<T> {
     public static <T> Set<T> copyOf(Collection<? extends T> collection) {
         if (collection instanceof AbstractImmutableSet<?>) {
             return (Set<T>) collection;
+        }
+        if (collection.isEmpty()) {
+            return Collections.emptySet();
         }
         return ImmutableSet.<T> builder().addAll(collection).build();
     }
@@ -157,7 +161,7 @@ public abstract class ImmutableSet<T> extends AbstractImmutableSet<T> {
         public Set<T> build() {
             switch (set.size()) {
                 case 0:
-                    return ImmutableTinySet.EmptySet.instance();
+                    return Collections.emptySet();
                 case 1:
                     return new ImmutableTinySet.Singleton<T>(set);
                 case 2:

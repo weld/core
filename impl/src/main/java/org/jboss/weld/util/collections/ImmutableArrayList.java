@@ -18,6 +18,7 @@ package org.jboss.weld.util.collections;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.RandomAccess;
@@ -114,7 +115,7 @@ class ImmutableArrayList<E> extends ImmutableList<E> implements RandomAccess, Se
         checkIndex(fromIndex);
         checkIndex(toIndex - 1);
         if (fromIndex == toIndex) {
-            return ImmutableTinyList.EmptyList.instance();
+            return Collections.emptyList();
         }
         return new ImmutableArrayList<E>(Arrays.copyOfRange(this.elements, fromIndex, toIndex));
     }

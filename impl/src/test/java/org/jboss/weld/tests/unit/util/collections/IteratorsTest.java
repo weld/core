@@ -19,12 +19,10 @@ package org.jboss.weld.tests.unit.util.collections;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import org.jboss.weld.util.collections.ImmutableList;
 import org.jboss.weld.util.collections.Iterators;
@@ -56,23 +54,6 @@ public class IteratorsTest {
         assertEquals(list2.get(1), iterator.next());
         assertEquals(list1.get(0), iterator.next());
         assertFalse(iterator.hasNext());
-    }
-
-    @Test
-    public void testEmptyIterator() {
-        assertFalse(Iterators.emptyIterator().hasNext());
-        try {
-            Iterators.emptyIterator().next();
-            fail();
-        } catch (NoSuchElementException e) {
-            // Expected
-        }
-        try {
-            Iterators.emptyIterator().remove();
-            fail();
-        } catch (UnsupportedOperationException e) {
-            // Expected
-        }
     }
 
     @Test

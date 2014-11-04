@@ -16,15 +16,12 @@
  */
 package org.jboss.weld.util.collections;
 
-import java.io.ObjectStreamException;
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
 import org.jboss.weld.util.Preconditions;
-import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * Contains {@link Set} implementations optimized for tiny number of elements. These implementations do not use hashing. {@link Set#contains(Object)} is o(n)
@@ -36,85 +33,6 @@ import org.jboss.weld.util.reflection.Reflections;
  * @param <T>
  */
 abstract class ImmutableTinySet<T> extends ImmutableSet<T> {
-
-    /**
-     * Shared instance representing an empty set.
-     *
-     * @author Jozef Hartinger
-     *
-     */
-    static class EmptySet extends ImmutableTinySet<Object> implements Serializable {
-
-        private static final long serialVersionUID = 1L;
-        private static final EmptySet INSTANCE = new EmptySet();
-
-        @SuppressWarnings("unchecked")
-        static <T> Set<T> instance() {
-            return (Set<T>) INSTANCE;
-        }
-
-        private EmptySet() {
-        }
-
-        @Override
-        public int size() {
-            return 0;
-        }
-
-        @Override
-        public boolean isEmpty() {
-            return true;
-        }
-
-        @Override
-        public boolean contains(Object o) {
-            return false;
-        }
-
-        @Override
-        public boolean containsAll(Collection<?> c) {
-            return false;
-        }
-
-        @Override
-        public Iterator<Object> iterator() {
-            return Iterators.emptyIterator();
-        }
-
-        @Override
-        public Object[] toArray() {
-            return Arrays2.EMPTY_ARRAY;
-        }
-
-        @Override
-        public <T> T[] toArray(T[] a) {
-            Preconditions.checkNotNull(a);
-            if (a.length > 0) {
-                a[0] = null;
-            }
-            return a;
-        }
-
-        @Override
-        public int hashCode() {
-            return 0;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj) {
-                return true;
-            }
-            if (obj instanceof Set<?> && Reflections.<Set<?>> cast(obj).isEmpty()) {
-                return true;
-            }
-            return false;
-        }
-
-        private Object readResolve() throws ObjectStreamException {
-            return INSTANCE;
-        }
-    }
 
     /**
      * {@link Set} implementation that represents a set containing a single element.
