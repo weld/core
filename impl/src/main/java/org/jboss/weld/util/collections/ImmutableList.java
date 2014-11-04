@@ -42,16 +42,36 @@ public abstract class ImmutableList<E> extends AbstractImmutableList<E> {
     ImmutableList() {
     }
 
+    /**
+     * Creates an immutable list that consists of the given elements. This method should only be used in the varargs form. If there is a need to create
+     * an immutable list of an array of elements, {@link #copyOf(Object[])} should be used instead.
+     *
+     * @param elements the given elements
+     * @return an immutable list
+     */
     @SafeVarargs
     public static <T> List<T> of(T... elements) {
         return ofInternal(elements);
     }
 
-    @SafeVarargs
-    public static <T> List<T> copyOf(T... elements) {
+    /**
+     * Creates an immutable list that consists of the elements in the given array. A copy of the given array is used which means
+     * that any modifications to the given array will not affect the immutable list.
+     *
+     * @param elements the given array of elements
+     * @return an immutable list
+     */
+    public static <T> List<T> copyOf(T[] elements) {
         return ofInternal(elements.clone());
     }
 
+    /**
+     * Creates an immutable list that consists of the elements in the given collection. If the given collection is already an immutable list,
+     * it is returned directly.
+     *
+     * @param source the given collection
+     * @return an immutable list
+     */
     public static <T> List<T> copyOf(Collection<T> source) {
         if (source instanceof ImmutableList<?>) {
             return (ImmutableList<T>) source;
@@ -59,9 +79,8 @@ public abstract class ImmutableList<E> extends AbstractImmutableList<E> {
         return ofInternal(source.toArray());
     }
 
-    @SafeVarargs
     @SuppressWarnings("unchecked")
-    private static <T> List<T> ofInternal(Object... elements) {
+    private static <T> List<T> ofInternal(Object[] elements) {
         switch (elements.length) {
             case 0:
                 return ImmutableTinyList.EmptyList.instance();
@@ -150,13 +169,9 @@ public abstract class ImmutableList<E> extends AbstractImmutableList<E> {
         }
 
         @Override
+        @SuppressWarnings("unchecked")
         public ImmutableList<T> build() {
-            switch (list.size()) {
-                case 0:
-                    return ImmutableTinyList.EmptyList.instance();
-                default:
-                    return new ImmutableArrayList<T>(list.toArray());
-            }
+            return (ImmutableList<T>) of(list.toArray());
         }
     }
 
