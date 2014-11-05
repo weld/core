@@ -30,9 +30,8 @@ import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.environment.deployment.WeldBeanDeploymentArchive;
 import org.jboss.weld.environment.logging.CommonLogger;
 import org.jboss.weld.resources.spi.ResourceLoader;
+import org.jboss.weld.util.collections.ImmutableList;
 import org.jboss.weld.util.reflection.Reflections;
-
-import com.google.common.collect.ImmutableList;
 
 /**
  * This implementation supports bean-discovery-mode="annotated" and makes use of reflection to detect a class with a bean defining annotation.

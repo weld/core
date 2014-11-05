@@ -20,10 +20,9 @@ import java.util.Map;
 
 import junit.framework.Assert;
 
+import org.jboss.weld.util.Preconditions;
 import org.jboss.weld.util.collections.ImmutableMap;
 import org.junit.Test;
-
-import com.google.common.base.Preconditions;
 
 /**
  * Common tests for Weld's Map implementations
@@ -39,7 +38,7 @@ public abstract class AbstractImmutableMapTest {
     private final Map<?, ?> immutableMap;
 
     protected AbstractImmutableMapTest(Object[] keys, Object[] values) {
-        Preconditions.checkArgument(keys.length == values.length);
+        Preconditions.checkArgument(keys.length == values.length, values);
         this.keys = keys;
         this.values = values;
         final ImmutableMap.Builder<Object, Object> builder = ImmutableMap.builder();

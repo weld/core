@@ -1,8 +1,7 @@
 package org.jboss.weld.metadata;
 
-import com.google.common.base.Predicate;
-
 import java.util.Collection;
+import java.util.function.Predicate;
 
 public class ScanningPredicate<T> implements Predicate<T> {
 
@@ -14,19 +13,19 @@ public class ScanningPredicate<T> implements Predicate<T> {
         this.excludes = excludes;
     }
 
-    public boolean apply(T input) {
+    public boolean test(T input) {
         // Initial state - all classes are included if no includes are specified
         boolean apply = includes.isEmpty();
 
         for (Predicate<T> include : includes) {
             // If any include matches, we should include the class
-            if (include.apply(input)) {
+            if (include.test(input)) {
                 apply = true;
             }
         }
         for (Predicate<T> exclude : excludes) {
             // If any exclude matches, we exclude the class - we can then short-circuit
-            if (exclude.apply(input)) {
+            if (exclude.test(input)) {
                 return false;
             }
         }

@@ -100,12 +100,6 @@
             <groupId>org.jboss</groupId>
             <artifactId>jboss-vfs</artifactId>
         </dependency>
-
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-        </dependency>
-
     </dependencies>
 
     <!-- SCM and distribution management -->

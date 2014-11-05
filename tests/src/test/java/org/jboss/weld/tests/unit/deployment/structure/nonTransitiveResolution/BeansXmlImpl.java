@@ -1,19 +1,18 @@
 package org.jboss.weld.tests.unit.deployment.structure.nonTransitiveResolution;
 
-import com.google.common.base.Function;
+import static java.util.Collections.emptyList;
+import static org.jboss.weld.bootstrap.spi.Scanning.EMPTY_SCANNING;
+
+import java.net.URL;
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.jboss.weld.bootstrap.spi.BeanDiscoveryMode;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.bootstrap.spi.Scanning;
 import org.jboss.weld.metadata.MetadataImpl;
-
-import java.net.URL;
-import java.util.List;
-
-import static com.google.common.collect.Lists.transform;
-import static java.util.Collections.emptyList;
-import static org.jboss.weld.bootstrap.spi.Scanning.EMPTY_SCANNING;
 
 public class BeansXmlImpl implements BeansXml {
 
@@ -34,22 +33,22 @@ public class BeansXmlImpl implements BeansXml {
 
     public BeansXmlImpl(List<String> alternativeClasses, List<String> alternativeStereotypes, List<String> decorators, List<String> interceptors) {
         if (alternativeClasses != null) {
-            this.alternativeClasses = transform(alternativeClasses, new AddMetadataFunction<String>());
+            this.alternativeClasses = alternativeClasses.stream().map(new AddMetadataFunction<String>()).collect(Collectors.toList());
         } else {
             this.alternativeClasses = emptyList();
         }
         if (alternativeStereotypes != null) {
-            this.alternativeStereotypes = transform(alternativeStereotypes, new AddMetadataFunction<String>());
+            this.alternativeStereotypes = alternativeStereotypes.stream().map(new AddMetadataFunction<String>()).collect(Collectors.toList());
         } else {
             this.alternativeStereotypes = emptyList();
         }
         if (decorators != null) {
-            this.decorators = transform(decorators, new AddMetadataFunction<String>());
+            this.decorators = decorators.stream().map(new AddMetadataFunction<String>()).collect(Collectors.toList());
         } else {
             this.decorators = emptyList();
         }
         if (interceptors != null) {
-            this.interceptors = transform(interceptors, new AddMetadataFunction<String>());
+            this.interceptors = interceptors.stream().map(new AddMetadataFunction<String>()).collect(Collectors.toList());
         } else {
             this.interceptors = emptyList();
         }

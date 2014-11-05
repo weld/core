@@ -27,8 +27,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Supplier;
 
-import com.google.common.collect.ImmutableList;
-
 /**
  * An abstract {@link Multimap} backed by a {@link Map}.
  *

@@ -24,14 +24,13 @@ import java.lang.reflect.WildcardType;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.reflection.GenericArrayTypeImpl;
 import org.jboss.weld.util.reflection.ParameterizedTypeImpl;
 import org.jboss.weld.util.reflection.Reflections;
-
-import com.google.common.base.Function;
 
 /**
  * Utility class for Types

@@ -86,6 +86,14 @@ public abstract class ImmutableList<E> extends AbstractImmutableList<E> {
         return ofInternal(source.toArray());
     }
 
+    public static <T> List<T> copyOf(Iterable<T> source) {
+        Preconditions.checkNotNull(source);
+        if (source instanceof Collection<?>) {
+            return copyOf((Collection<T>) source);
+        }
+        return ImmutableList.<T>builder().addAll(source).build();
+    }
+
     @SuppressWarnings("unchecked")
     private static <T> List<T> ofInternal(Object[] elements) {
         switch (elements.length) {
