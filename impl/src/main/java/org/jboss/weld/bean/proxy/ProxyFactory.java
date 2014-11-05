@@ -69,10 +69,9 @@ import org.jboss.weld.util.bytecode.DeferredBytecode;
 import org.jboss.weld.util.bytecode.DescriptorUtils;
 import org.jboss.weld.util.bytecode.MethodInformation;
 import org.jboss.weld.util.bytecode.RuntimeMethodInformation;
+import org.jboss.weld.util.collections.Sets;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.instantiation.InstantiatorFactory;
-
-import com.google.common.collect.Sets;
 
 /**
  * Main factory to produce proxy classes and instances for Weld beans. This

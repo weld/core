@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.bootstrap.enablement;
 
-import static com.google.common.collect.Lists.transform;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.annotation.Annotation;
@@ -28,6 +27,8 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.jboss.weld.bootstrap.BeanDeployment;
 import org.jboss.weld.bootstrap.api.helpers.AbstractBootstrapService;
@@ -45,8 +46,6 @@ import org.jboss.weld.util.collections.ImmutableMap;
 import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.collections.ListView;
 import org.jboss.weld.util.collections.ViewProvider;
-
-import com.google.common.base.Function;
 
 /**
  * This service gathers globally enabled interceptors, decorators and alternatives and builds a list of each.
@@ -224,14 +223,14 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
         moduleDecoratorsBuilder.addAll(getDecoratorList());
 
         if (beansXml != null) {
-            List<Class<?>> localInterceptors = transform(checkForDuplicates(beansXml.getEnabledInterceptors(), ValidatorLogger.INTERCEPTOR_SPECIFIED_TWICE_CALLBACK), loader);
+            List<Class<?>> localInterceptors = checkForDuplicates(beansXml.getEnabledInterceptors(), ValidatorLogger.INTERCEPTOR_SPECIFIED_TWICE_CALLBACK).stream().map(loader).collect(Collectors.toList());
             moduleInterceptorsBuilder.addAll(localInterceptors);
 
-            List<Class<?>> localDecorators = transform(checkForDuplicates(beansXml.getEnabledDecorators(), ValidatorLogger.DECORATOR_SPECIFIED_TWICE_CALLBACK), loader);
+            List<Class<?>> localDecorators = checkForDuplicates(beansXml.getEnabledDecorators(), ValidatorLogger.DECORATOR_SPECIFIED_TWICE_CALLBACK).stream().map(loader).collect(Collectors.toList());
             moduleDecoratorsBuilder.addAll(localDecorators);
 
-            alternativeClasses = ImmutableSet.copyOf(transform(checkForDuplicates(beansXml.getEnabledAlternativeClasses(), ValidatorLogger.ALTERNATIVE_CLASS_SPECIFIED_MULTIPLE_TIMES_CALLBACK), loader));
-            alternativeStereotypes = cast(ImmutableSet.copyOf(transform(checkForDuplicates(beansXml.getEnabledAlternativeStereotypes(), ValidatorLogger.ALTERNATIVE_STEREOTYPE_SPECIFIED_MULTIPLE_TIMES_CALLBACK), loader)));
+            alternativeClasses = checkForDuplicates(beansXml.getEnabledAlternativeClasses(), ValidatorLogger.ALTERNATIVE_CLASS_SPECIFIED_MULTIPLE_TIMES_CALLBACK).stream().map(loader).collect(ImmutableSet.collector());
+            alternativeStereotypes = cast(checkForDuplicates(beansXml.getEnabledAlternativeStereotypes(), ValidatorLogger.ALTERNATIVE_STEREOTYPE_SPECIFIED_MULTIPLE_TIMES_CALLBACK).stream().map(loader).collect(ImmutableSet.collector()));
         } else {
             alternativeClasses = Collections.emptySet();
             alternativeStereotypes = Collections.emptySet();

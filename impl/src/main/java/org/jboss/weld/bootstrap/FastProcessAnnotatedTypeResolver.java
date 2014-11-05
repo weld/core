@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.spi.ObserverMethod;
@@ -37,8 +38,6 @@ import org.jboss.weld.resources.spi.ClassFileInfo;
 import org.jboss.weld.resources.spi.ClassFileServices;
 import org.jboss.weld.util.Types;
 import org.jboss.weld.util.reflection.Reflections;
-
-import com.google.common.base.Predicate;
 
 /**
  * ProcessAnnotatedType observer method resolver. It uses {@link ClassFileServices} for resolution and thus entirely avoids loading the classes which speeds up
@@ -62,7 +61,7 @@ public class FastProcessAnnotatedTypeResolver extends AbstractBootstrapService {
         }
 
         @Override
-        public boolean apply(ClassFileInfo input) {
+        public boolean test(ClassFileInfo input) {
             return type.getName().equals(input.getClassName());
         }
     }
@@ -76,7 +75,7 @@ public class FastProcessAnnotatedTypeResolver extends AbstractBootstrapService {
         }
 
         @Override
-        public boolean apply(ClassFileInfo input) {
+        public boolean test(ClassFileInfo input) {
             return input.isAssignableTo(type);
         }
     }
@@ -99,9 +98,9 @@ public class FastProcessAnnotatedTypeResolver extends AbstractBootstrapService {
         }
 
         @Override
-        public boolean apply(ClassFileInfo input) {
+        public boolean test(ClassFileInfo input) {
             for (Predicate<ClassFileInfo> predicate : predicates) {
-                if (!predicate.apply(input)) {
+                if (!predicate.test(input)) {
                     return false;
                 }
             }
@@ -213,7 +212,7 @@ public class FastProcessAnnotatedTypeResolver extends AbstractBootstrapService {
         ClassFileInfo classInfo = classFileServices.getClassFileInfo(className);
         for (Map.Entry<ExtensionObserverMethodImpl<?, ?>, Predicate<ClassFileInfo>> entry : observers.entrySet()) {
             ExtensionObserverMethodImpl<?, ?> observer = entry.getKey();
-            if (containsRequiredAnnotation(classInfo, observer) && entry.getValue().apply(classInfo)) {
+            if (containsRequiredAnnotation(classInfo, observer) && entry.getValue().test(classInfo)) {
                 result.add(observer);
             }
         }

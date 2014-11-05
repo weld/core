@@ -31,7 +31,7 @@ import java.util.Set;
 public interface Multimap<K, V> {
 
     /**
-     * Unlike <code>com.google.common.collect.Multimap#size()</code> this method returns the number of key-value mappings.
+     * Unlike Guava's<code>Multimap#size()</code> this method returns the number of key-value mappings.
      *
      * @return the number of key-value mappings
      */

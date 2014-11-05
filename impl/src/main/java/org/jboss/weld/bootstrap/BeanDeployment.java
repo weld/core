@@ -16,13 +16,13 @@
  */
 package org.jboss.weld.bootstrap;
 
-import static com.google.common.collect.Collections2.filter;
-import static com.google.common.collect.Collections2.transform;
 import static java.util.Collections.emptyList;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.spi.Context;
 
@@ -78,9 +78,6 @@ import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.instantiation.DefaultInstantiatorFactory;
 import org.jboss.weld.util.reflection.instantiation.InstantiatorFactory;
 import org.jboss.weld.ws.WSApiAbstraction;
-
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
 
 /**
  * @author Pete Muir
@@ -195,10 +192,10 @@ public class BeanDeployment {
             * Take a copy of the transformed collection, this means that the
             * filter predicate is only built once per filter predicate
             */
-            Collection<Predicate<String>> includes = new ArrayList<Predicate<String>>(transform(includeFilters, filterToPredicateFunction));
-            Collection<Predicate<String>> excludes = new ArrayList<Predicate<String>>(transform(excludeFilters, filterToPredicateFunction));
+            Collection<Predicate<String>> includes = includeFilters.stream().map(filterToPredicateFunction).collect(Collectors.toList());
+            Collection<Predicate<String>> excludes = excludeFilters.stream().map(filterToPredicateFunction).collect(Collectors.toList());
             Predicate<String> filters = new ScanningPredicate<String>(includes, excludes);
-            classNames = filter(beanDeploymentArchive.getBeanClasses(), filters);
+            classNames = beanDeploymentArchive.getBeanClasses().stream().filter(filters).collect(Collectors.toList());
         } else {
             classNames = beanDeploymentArchive.getBeanClasses();
         }

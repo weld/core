@@ -42,8 +42,6 @@ import org.jboss.weld.util.cache.ComputingCache;
 import org.jboss.weld.util.cache.ComputingCacheBuilder;
 import org.jboss.weld.util.collections.ImmutableSet;
 
-import com.google.common.collect.ImmutableMap;
-
 /**
  * Holds information about specialized beans.
  *
@@ -212,12 +210,12 @@ public class SpecializationAndEnablementRegistry extends AbstractBootstrapServic
     }
 
     public Map<AbstractBean<?, ?>, Long> getBeansSpecializedInAnyDeploymentAsMap() {
-        return ImmutableMap.copyOf(specializedBeansMap
+        return specializedBeansMap
                 .entrySet()
                 .stream()
                 .collect(
                         Collectors.toMap((Entry<AbstractBean<?, ?>, LongAdder> entry) -> entry.getKey(), (Entry<AbstractBean<?, ?>, LongAdder> entry) -> entry
-                                .getValue().longValue())));
+                                .getValue().longValue()));
     }
 
 }

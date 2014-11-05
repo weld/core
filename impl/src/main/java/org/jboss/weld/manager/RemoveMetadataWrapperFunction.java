@@ -1,6 +1,7 @@
 package org.jboss.weld.manager;
 
-import com.google.common.base.Function;
+import java.util.function.Function;
+
 import org.jboss.weld.bootstrap.spi.Metadata;
 
 public class RemoveMetadataWrapperFunction<T> implements Function<Metadata<T>, T> {

@@ -46,7 +46,7 @@ public final class Sets {
     }
 
     /**
-     * This is a replacement for Guava {@link com.google.common.collect.Sets#union(Set, Set)}.
+     * This is a replacement for Guava's Sets#union(Set, Set).
      *
      * @param set1
      * @param set2

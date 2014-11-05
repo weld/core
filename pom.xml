@@ -44,7 +44,6 @@
         <contiperf.version>1.06</contiperf.version>
         <findbugs-maven-plugin.version>3.0.0</findbugs-maven-plugin.version>
         <glassfish.el.version>2.1.2-b04</glassfish.el.version>
-        <google.guava.version>13.0.1</google.guava.version>
         <htmlunit.version>2.4</htmlunit.version>
         <jacoco.version>0.5.8.201207111220</jacoco.version>
         <jandex.version>1.2.1.Final</jandex.version>
@@ -89,12 +88,6 @@
                 <groupId>commons-httpclient</groupId>
                 <artifactId>commons-httpclient</artifactId>
                 <version>${apache.httpclient.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava</artifactId>
-                <version>${google.guava.version}</version>
             </dependency>
 
             <dependency>

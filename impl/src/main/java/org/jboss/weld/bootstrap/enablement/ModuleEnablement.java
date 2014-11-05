@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.bootstrap.enablement;
 
-import static com.google.common.collect.Sets.union;
+import static org.jboss.weld.util.collections.Sets.union;
 
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
