@@ -16,10 +16,14 @@
  */
 package org.jboss.weld.util.cache;
 
+import java.util.Iterator;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.jboss.weld.util.LazyValueHolder;
 import org.jboss.weld.util.ValueHolder;
@@ -35,40 +39,34 @@ import org.jboss.weld.util.ValueHolder;
  * @see ValueHolder
  * @see LazyValueHolder
  */
-class ReentrantMapBackedComputingCache<K, V> implements ComputingCache<K, V> {
+class ReentrantMapBackedComputingCache<K, V> implements ComputingCache<K, V>, Iterable<V> {
 
-    private final ConcurrentMap<K, LazyValueHolder<V>> map;
-    private final Function<K, V> computingFunction;
+    private final ConcurrentMap<K, ValueHolder<V>> map;
     private final Long maxSize;
+    private final Function<K, ValueHolder<V>> function;
 
     ReentrantMapBackedComputingCache(Function<K, V> computingFunction, Long maxSize) {
+        this(computingFunction, LazyValueHolder::forSupplier, maxSize);
+    }
+
+    ReentrantMapBackedComputingCache(Function<K, V> computingFunction, Function<Supplier<V>, ValueHolder<V>> valueHolderFunction, Long maxSize) {
         this.map = new ConcurrentHashMap<>();
-        this.computingFunction = computingFunction;
         this.maxSize = maxSize;
+        this.function = (key) -> valueHolderFunction.apply(() -> computingFunction.apply(key));
     }
 
     @Override
     public V getValue(final K key) {
-        LazyValueHolder<V> value = map.get(key);
+        ValueHolder<V> value = map.get(key);
         if (value == null) {
-            value = new LazyValueHolder<V>() {
-                @Override
-                protected V computeValue() {
-                    return computingFunction.apply(key);
-                }
-            };
-            LazyValueHolder<V> previous = map.putIfAbsent(key, value);
+            value = function.apply(key);
+            ValueHolder<V> previous = map.putIfAbsent(key, value);
             if (previous != null) {
                 value = previous;
-            } else {
-                // finally, check that we are not over the bound
-                if (maxSize != null && size() > maxSize) {
-                    synchronized (this) { // so that we do not call clear() once
-                        if (size() > maxSize) {
-                            clear();
-                        }
-                    }
-                }
+            }
+            // finally, check that we are not over the bound
+            if (maxSize != null && size() > maxSize) {
+                clear();
             }
         }
         return value.get();
@@ -82,11 +80,11 @@ class ReentrantMapBackedComputingCache<K, V> implements ComputingCache<K, V> {
 
     @Override
     public V getValueIfPresent(K key) {
-        LazyValueHolder<V> value = map.get(key);
-        if (value == null || !value.isAvailable()) {
+        ValueHolder<V> value = map.get(key);
+        if (value == null) {
             return null;
         }
-        return value.get();
+        return value.getIfPresent();
     }
 
     @Override
@@ -105,12 +103,56 @@ class ReentrantMapBackedComputingCache<K, V> implements ComputingCache<K, V> {
     }
 
     @Override
-    public Map<K, V> getAllPresent() {
-        throw new UnsupportedOperationException("This implementation does not support map view.");
+    public Iterable<V> getAllPresentValues() {
+        return this;
     }
 
     @Override
     public String toString() {
         return map.toString();
+    }
+
+    @Override
+    public void forEachValue(Consumer<? super V> consumer) {
+        for (ValueHolder<V> valueHolder : map.values()) {
+            V value = valueHolder.getIfPresent();
+            if (value != null) {
+                consumer.accept(value);
+            }
+        }
+    }
+
+    @Override
+    public Iterator<V> iterator() {
+        return new Iterator<V>() {
+
+            private final Iterator<ValueHolder<V>> delegate = map.values().iterator();
+            private V next = findNext();
+
+            @Override
+            public boolean hasNext() {
+                return next != null;
+            }
+
+            private V findNext() {
+                while (delegate.hasNext()) {
+                    V next = delegate.next().getIfPresent();
+                    if (next != null) {
+                        return next;
+                    }
+                }
+                return null;
+            }
+
+            @Override
+            public V next() {
+                if (!hasNext()) {
+                    throw new NoSuchElementException();
+                }
+                V current = next;
+                this.next = findNext();
+                return current;
+            }
+        };
     }
 }

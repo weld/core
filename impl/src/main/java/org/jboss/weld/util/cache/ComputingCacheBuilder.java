@@ -17,10 +17,9 @@
 package org.jboss.weld.util.cache;
 
 import java.lang.ref.WeakReference;
-import java.util.Map;
 import java.util.function.Function;
 
-import org.jboss.weld.util.ValueHolder;
+import org.jboss.weld.util.WeakLazyValueHolder;
 
 /**
  * A builder for {@link ComputingCache} instances.
@@ -72,33 +71,8 @@ public final class ComputingCacheBuilder {
      */
     public <K, V> ComputingCache<K, V> build(Function<K, V> computingFunction) {
         if (weakValues) {
-            return new WeakValueMapBackedComputingCache<K, V>(maxSize, computingFunction);
-        }
-        return new MapBackedComputingCache<>(maxSize, computingFunction);
-    }
-
-    /**
-     * Builds a {@link ComputingCache} that works around the {@link Map#computeIfAbsent(Object, Function)} reentrancy
-     * problem.
-     * <p>
-     * {@link Map#computeIfAbsent(Object, Function)} is not reentrant i.e. it cannot be called from within other
-     * computeIfAbsent call. Reentrancy is however often useful when, for example, traversing class hierarchies.
-     * </p>
-     * <p>
-     * We work around this limitation by creating and returning {@link ValueHolder} instance which computes the value lazily.
-     * Since the value is computed outside of {@link Map#computeIfAbsent(Object, Function)}, we do not hit the reentrancy
-     * problem. At the same time both creating new {@link ValueHolder} and performing the computation are guaranteed to be done
-     * only once for a given key.
-     * </p>
-     *
-     * @param computingFunction the given computing function
-     * @return a new ComputingCache instance
-     */
-    public <K, V> ComputingCache<K, V> buildReentrant(Function<K, V> computingFunction) {
-        if (weakValues) {
-            throw new IllegalStateException("Combining reentrant cache with weak values is not supported");
+            return new ReentrantMapBackedComputingCache<>(computingFunction, WeakLazyValueHolder::forSupplier, maxSize);
         }
         return new ReentrantMapBackedComputingCache<>(computingFunction, maxSize);
     }
-
 }

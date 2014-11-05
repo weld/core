@@ -16,8 +16,12 @@
  */
 package org.jboss.weld.tests.unit.util.cache;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.jboss.weld.util.cache.ComputingCache;
 import org.jboss.weld.util.cache.ComputingCacheBuilder;
+import org.jboss.weld.util.collections.Iterables;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,16 +38,30 @@ public class ReentrantComputingCacheTest {
 
     @Before
     public void init() {
-        cache = ComputingCacheBuilder.newBuilder().buildReentrant(
+        cache = ComputingCacheBuilder.newBuilder().build(
                 (x) -> x.getInterfaces().length + ((x.getSuperclass() == null) ? 0 : countInterfaces(x.getSuperclass())));
     }
 
-    public int countInterfaces(Class<?> clazz) {
+    private int countInterfaces(Class<?> clazz) {
         return cache.getValue(clazz);
     }
 
     @Test
     public void testReentrantComputingCache() {
         Assert.assertEquals(2, countInterfaces(Integer.class));
+    }
+
+    @Test
+    public void testGetAllPresentValues() {
+        ComputingCache<String, String> cache = ComputingCacheBuilder.newBuilder().build(x -> x);
+        cache.getValue("foo");
+        cache.getValue("bar");
+        cache.getValue("baz");
+        Set<String> values = new HashSet<>();
+        Iterables.addAll(values, cache.getAllPresentValues());
+        Assert.assertEquals(3, values.size());
+        Assert.assertTrue(values.contains("foo"));
+        Assert.assertTrue(values.contains("bar"));
+        Assert.assertTrue(values.contains("baz"));
     }
 }

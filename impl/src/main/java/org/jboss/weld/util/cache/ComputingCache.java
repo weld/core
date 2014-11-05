@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.util.cache;
 
-import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * A simple abstraction for computing cache.
@@ -71,6 +71,12 @@ public interface ComputingCache<K, V> {
      *
      * @return an immutable map of entries
      */
-    Map<K, V> getAllPresent();
+    Iterable<V> getAllPresentValues();
+
+    /**
+     * Performs the given action for each cached value.
+     * @param consumer the given action
+     */
+    void forEachValue(Consumer<? super V> consumer);
 
 }

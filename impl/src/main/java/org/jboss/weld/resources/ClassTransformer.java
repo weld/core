@@ -159,7 +159,7 @@ public class ClassTransformer implements BootstrapService {
         // if an AnnotatedType reference is not retained by a Bean we are not going to need it at runtime and can therefore drop
         // it immediately
         this.backedAnnotatedTypes = ComputingCacheBuilder.newBuilder().setWeakValues().build(new TransformClassToBackedAnnotatedType());
-        this.enhancedAnnotatedTypes = ComputingCacheBuilder.newBuilder().buildReentrant(new TransformSlimAnnotatedTypeToEnhancedAnnotatedType());
+        this.enhancedAnnotatedTypes = ComputingCacheBuilder.newBuilder().build(new TransformSlimAnnotatedTypeToEnhancedAnnotatedType());
         this.annotations = defaultBuilder.build(new TransformClassToWeldAnnotation());
         this.typeStore = typeStore;
         this.cache = cache;
@@ -278,9 +278,7 @@ public class ClassTransformer implements BootstrapService {
     public void cleanupAfterBoot() {
         this.enhancedAnnotatedTypes.clear();
         this.annotations.clear();
-        for (BackedAnnotatedType<?> annotatedType : backedAnnotatedTypes.getAllPresent().values()) {
-            annotatedType.clear();
-        }
+        backedAnnotatedTypes.forEachValue((type -> type.clear()));
         this.backedAnnotatedTypes.clear();
     }
 
