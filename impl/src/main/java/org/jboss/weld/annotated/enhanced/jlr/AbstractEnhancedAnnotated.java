@@ -39,8 +39,8 @@ import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.logging.ReflectionLogger;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.collections.ArraySet;
-import org.jboss.weld.util.collections.ArraySetMultimap;
 import org.jboss.weld.util.collections.Arrays2;
+import org.jboss.weld.util.collections.SetMultimap;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
@@ -88,23 +88,16 @@ public abstract class AbstractEnhancedAnnotated<T, S> implements EnhancedAnnotat
         return annotationMap;
     }
 
-
-    protected static void addMetaAnnotations(ArraySetMultimap<Class<? extends Annotation>, Annotation> metaAnnotationMap, Annotation annotation, Annotation[] metaAnnotations, boolean declared) {
+    protected static void addMetaAnnotations(SetMultimap<Class<? extends Annotation>, Annotation> metaAnnotationMap, Annotation annotation, Iterable<Annotation> metaAnnotations, boolean declared) {
         for (Annotation metaAnnotation : metaAnnotations) {
             addMetaAnnotation(metaAnnotationMap, annotation, metaAnnotation.annotationType(), declared);
         }
     }
 
-    protected static void addMetaAnnotations(ArraySetMultimap<Class<? extends Annotation>, Annotation> metaAnnotationMap, Annotation annotation, Iterable<Annotation> metaAnnotations, boolean declared) {
-        for (Annotation metaAnnotation : metaAnnotations) {
-            addMetaAnnotation(metaAnnotationMap, annotation, metaAnnotation.annotationType(), declared);
-        }
-    }
-
-    private static void addMetaAnnotation(ArraySetMultimap<Class<? extends Annotation>, Annotation> metaAnnotationMap, Annotation annotation, Class<? extends Annotation> metaAnnotationType, boolean declared) {
+    private static void addMetaAnnotation(SetMultimap<Class<? extends Annotation>, Annotation> metaAnnotationMap, Annotation annotation, Class<? extends Annotation> metaAnnotationType, boolean declared) {
         // Only map meta-annotations we are interested in
         if (declared ? MAPPED_DECLARED_METAANNOTATIONS.contains(metaAnnotationType) : MAPPED_METAANNOTATIONS.contains(metaAnnotationType)) {
-            metaAnnotationMap.putSingleElement(metaAnnotationType, annotation);
+            metaAnnotationMap.put(metaAnnotationType, annotation);
         }
     }
 
@@ -112,7 +105,7 @@ public abstract class AbstractEnhancedAnnotated<T, S> implements EnhancedAnnotat
     private final Map<Class<? extends Annotation>, Annotation> annotationMap;
     // The meta-annotation map (annotation type -> set of annotations containing
     // meta-annotation) of the item
-    private final ArraySetMultimap<Class<? extends Annotation>, Annotation> metaAnnotationMap;
+    private final SetMultimap<Class<? extends Annotation>, Annotation> metaAnnotationMap;
 
     private final Class<T> rawType;
     private final Type[] actualTypeArguments;
@@ -138,7 +131,7 @@ public abstract class AbstractEnhancedAnnotated<T, S> implements EnhancedAnnotat
             throw ReflectionLogger.LOG.annotationMapNull();
         }
         this.annotationMap = immutableMap(annotationMap);
-        ArraySetMultimap<Class<? extends Annotation>, Annotation> metaAnnotationMap = new ArraySetMultimap<Class<? extends Annotation>, Annotation>();
+        SetMultimap<Class<? extends Annotation>, Annotation> metaAnnotationMap = SetMultimap.newSetMultimap();
         for (Annotation annotation : annotationMap.values()) {
 
             // WELD-1310 Include synthetic annotations
@@ -146,7 +139,7 @@ public abstract class AbstractEnhancedAnnotated<T, S> implements EnhancedAnnotat
                     .getSyntheticAnnotationAnnotatedType(annotation.annotationType());
             if (syntheticAnnotationAnnotatedType == null) {
                 addMetaAnnotations(metaAnnotationMap, annotation,
-                        classTransformer.getReflectionCache().getAnnotations(annotation.annotationType()), false);
+                        classTransformer.getReflectionCache().getAnnotationSet(annotation.annotationType()), false);
             } else {
                 addMetaAnnotations(metaAnnotationMap, annotation, syntheticAnnotationAnnotatedType.getAnnotations(), false);
             }
