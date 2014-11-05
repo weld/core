@@ -27,4 +27,7 @@ public interface ValueHolder<T> {
 
     T get();
 
+    default T getIfPresent() {
+        throw new UnsupportedOperationException();
+    }
 }

@@ -118,7 +118,7 @@ public class SpecializationAndEnablementRegistry extends AbstractBootstrapServic
     public SpecializationAndEnablementRegistry() {
         ComputingCacheBuilder cacheBuilder = ComputingCacheBuilder.newBuilder();
         this.specializedBeanResolvers = cacheBuilder.build(new SpecializedBeanResolverForBeanManager());
-        this.specializedBeans = ComputingCacheBuilder.newBuilder().buildReentrant(new BeansSpecializedByBean());
+        this.specializedBeans = ComputingCacheBuilder.newBuilder().build(new BeansSpecializedByBean());
     }
 
     /**

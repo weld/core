@@ -415,11 +415,11 @@ public class BeanDeployerEnvironment {
     }
 
     public Iterable<AbstractClassBean<?>> getClassBeans() {
-        return Iterables.concat(classBeanMap.getAllPresent().values());
+        return Iterables.concat(classBeanMap.getAllPresentValues());
     }
 
     public Iterable<ProducerMethod<?, ?>> getProducerMethodBeans() {
-        return Iterables.concat(producerMethodBeanMap.getAllPresent().values());
+        return Iterables.concat(producerMethodBeanMap.getAllPresentValues());
     }
 
     public Set<ProducerField<?, ?>> getProducerFields() {
