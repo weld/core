@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 
 import org.jboss.weld.util.Supplier;
@@ -179,6 +180,28 @@ abstract class AbstractMultimap<K, V, C extends Collection<V>> implements Multim
         @Override
         public V setValue(V value) {
             throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public int hashCode() {
+            return (key == null ? 0 : key.hashCode()) ^ (value == null ? 0 : value.hashCode());
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (!(o instanceof Map.Entry)) {
+                return false;
+            }
+            Map.Entry<?, ?> e = (Map.Entry<?, ?>) o;
+            return Objects.equals(key, e.getKey()) && Objects.equals(value, e.getValue());
+        }
+
+        @Override
+        public String toString() {
+            return key + "=" + value;
         }
 
     }
