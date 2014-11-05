@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.servlet;
 
+import java.util.function.Consumer;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -54,12 +56,15 @@ public class ConversationContextActivator {
     private final FastEvent<HttpServletRequest> conversationInitializedEvent;
     private final FastEvent<HttpServletRequest> conversationDestroyedEvent;
 
+    private final Consumer<HttpServletRequest> lazyInitializationCallback;
+
     private final boolean lazy;
 
     protected ConversationContextActivator(BeanManagerImpl beanManager, boolean lazy) {
         this.beanManager = beanManager;
         conversationInitializedEvent = FastEvent.of(HttpServletRequest.class, beanManager, InitializedLiteral.CONVERSATION);
         conversationDestroyedEvent = FastEvent.of(HttpServletRequest.class, beanManager, DestroyedLiteral.CONVERSATION);
+        lazyInitializationCallback = lazy ? (HttpServletRequest t) -> conversationInitializedEvent.fire(t) : null;
         this.lazy = lazy;
     }
 
@@ -102,9 +107,11 @@ public class ConversationContextActivator {
         }
     }
 
-    private void activate(HttpConversationContext conversationContext, HttpServletRequest request) {
-        if (lazy) {
-            conversationContext.activate();
+    private void activate(HttpConversationContext conversationContext, final HttpServletRequest request) {
+        if (lazy && conversationContext instanceof LazyHttpConversationContextImpl) {
+            LazyHttpConversationContextImpl lazyConversationContext = (LazyHttpConversationContextImpl) conversationContext;
+            // Activation API should be improved so that it's possible to pass a callback for later execution
+            lazyConversationContext.activate(lazyInitializationCallback);
         } else {
             String cid = determineConversationId(request, conversationContext.getParameterName());
             conversationContext.activate(cid);
