@@ -323,7 +323,7 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
     protected Set<EnhancedAnnotatedMethod<?, ? super T>> getOverriddenMethods(EnhancedAnnotatedType<T> annotatedType,
             Set<EnhancedAnnotatedMethod<?, ? super T>> methods, boolean skipOverridingBridgeMethods) {
         Set<EnhancedAnnotatedMethod<?, ? super T>> overriddenMethods = new HashSet<EnhancedAnnotatedMethod<?, ? super T>>();
-        Multimap<MethodSignature, Package> seenMethods = new SetMultimap<>();
+        Multimap<MethodSignature, Package> seenMethods = SetMultimap.newSetMultimap();
         for (Class<? super T> clazz = annotatedType.getJavaClass(); clazz != null && clazz != Object.class; clazz = clazz.getSuperclass()) {
             for (EnhancedAnnotatedMethod<?, ? super T> method : methods) {
                 if (method.getJavaMember().getDeclaringClass().equals(clazz)) {
@@ -341,7 +341,7 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
     }
 
     protected Multimap<Class<? extends Annotation>, EnhancedAnnotatedMethod<?, ? super T>> buildAnnotatedMethodMultimap(Set<EnhancedAnnotatedMethod<?, ? super T>> effectiveMethods) {
-        Multimap<Class<? extends Annotation>, EnhancedAnnotatedMethod<?, ? super T>> result = new SetMultimap<>();
+        Multimap<Class<? extends Annotation>, EnhancedAnnotatedMethod<?, ? super T>> result = SetMultimap.newSetMultimap();
         for (EnhancedAnnotatedMethod<?, ? super T> method : effectiveMethods) {
             for (Class<? extends Annotation> annotation : MAPPED_METHOD_ANNOTATIONS) {
                 if (method.isAnnotationPresent(annotation)) {
@@ -353,7 +353,7 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
     }
 
     protected Multimap<Class<? extends Annotation>, EnhancedAnnotatedMethod<?, ? super T>> buildAnnotatedParameterMethodMultimap(Set<EnhancedAnnotatedMethod<?, ? super T>> effectiveMethods) {
-        Multimap<Class<? extends Annotation>, EnhancedAnnotatedMethod<?, ? super T>> result = new SetMultimap<>();
+        Multimap<Class<? extends Annotation>, EnhancedAnnotatedMethod<?, ? super T>> result = SetMultimap.newSetMultimap();
         for (EnhancedAnnotatedMethod<?, ? super T> method : effectiveMethods) {
             for (Class<? extends Annotation> annotation : MAPPED_METHOD_PARAMETER_ANNOTATIONS) {
                 if (!method.getEnhancedParameters(annotation).isEmpty()) {

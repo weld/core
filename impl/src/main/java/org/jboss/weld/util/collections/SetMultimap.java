@@ -16,12 +16,14 @@
  */
 package org.jboss.weld.util.collections;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import org.jboss.weld.util.Supplier;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A {@link Multimap} whose collections of values are backed by a {@link Set}.
@@ -38,8 +40,8 @@ public class SetMultimap<K, V> extends AbstractMultimap<K, V, Set<V>> {
     /**
      * Creates a new instance backed by a {@link HashMap} and {@link HashSet}.
      */
-    public SetMultimap() {
-        this(new Supplier<Map<K, Set<V>>>() {
+    public static <K, V> SetMultimap<K, V> newSetMultimap() {
+        return new SetMultimap<K, V>(new Supplier<Map<K, Set<V>>>() {
             @Override
             public HashMap<K, Set<V>> get() {
                 return new HashMap<K, Set<V>>();
@@ -58,8 +60,8 @@ public class SetMultimap<K, V> extends AbstractMultimap<K, V, Set<V>> {
      *
      * @param multimap
      */
-    public SetMultimap(Multimap<K, V> multimap) {
-        this(new Supplier<Map<K, Set<V>>>() {
+    public static <K, V> SetMultimap<K, V> newSetMultimap(Multimap<K, V> multimap) {
+        return new SetMultimap<K, V>(new Supplier<Map<K, Set<V>>>() {
             @Override
             public HashMap<K, Set<V>> get() {
                 return new HashMap<K, Set<V>>();
@@ -73,12 +75,29 @@ public class SetMultimap<K, V> extends AbstractMultimap<K, V, Set<V>> {
     }
 
     /**
+     * Creates a new instance backed by a {@link ConcurrentHashMap} and synchronized {@link HashSet}.
+     */
+    public static <K, V> SetMultimap<K, V> newConcurrentSetMultimap() {
+        return new SetMultimap<K, V>(new Supplier<Map<K, Set<V>>>() {
+            @Override
+            public ConcurrentHashMap<K, Set<V>> get() {
+                return new ConcurrentHashMap<K, Set<V>>();
+            }
+        }, new Supplier<Set<V>>() {
+            @Override
+            public Set<V> get() {
+                return Collections.synchronizedSet(new HashSet<V>());
+            }
+        }, null);
+    }
+
+    /**
      *
      * @param mapSupplier
      * @param collectionSupplier
      * @param multimap
      */
-    public SetMultimap(Supplier<Map<K, Set<V>>> mapSupplier, Supplier<Set<V>> collectionSupplier, Multimap<K, V> multimap) {
+    private SetMultimap(Supplier<Map<K, Set<V>>> mapSupplier, Supplier<Set<V>> collectionSupplier, Multimap<K, V> multimap) {
         super(mapSupplier, collectionSupplier, multimap);
     }
 

@@ -32,7 +32,7 @@ import org.jboss.weld.bootstrap.BeanDeployerEnvironment.WeldMethodKey;
 import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.util.collections.Multimaps;
+import org.jboss.weld.util.collections.SetMultimap;
 
 public class BeanDeployerEnvironmentFactory {
 
@@ -47,12 +47,10 @@ public class BeanDeployerEnvironmentFactory {
      * Creates a new threadsafe BeanDeployerEnvironment instance. These instances are used by {@link ConcurrentBeanDeployer} during bootstrap.
      */
     public static BeanDeployerEnvironment newConcurrentEnvironment(EjbDescriptors ejbDescriptors, BeanManagerImpl manager) {
-        return new BeanDeployerEnvironment(
-                Collections.newSetFromMap(new ConcurrentHashMap<SlimAnnotatedTypeContext<?>, Boolean>()),
-                Collections.newSetFromMap(new ConcurrentHashMap<Class<?>, Boolean>()),
-                Multimaps.<Class<?>, AbstractClassBean<?>>newConcurrentSetMultimap(),
+        return new BeanDeployerEnvironment(Collections.newSetFromMap(new ConcurrentHashMap<SlimAnnotatedTypeContext<?>, Boolean>()),
+                Collections.newSetFromMap(new ConcurrentHashMap<Class<?>, Boolean>()), SetMultimap.<Class<?>, AbstractClassBean<?>> newConcurrentSetMultimap(),
                 Collections.newSetFromMap(new ConcurrentHashMap<ProducerField<?, ?>, Boolean>()),
-                Multimaps.<WeldMethodKey, ProducerMethod<?, ?>>newConcurrentSetMultimap(),
+                SetMultimap.<WeldMethodKey, ProducerMethod<?, ?>> newConcurrentSetMultimap(),
                 Collections.newSetFromMap(new ConcurrentHashMap<RIBean<?>, Boolean>()),
                 Collections.newSetFromMap(new ConcurrentHashMap<ObserverInitializationContext<?, ?>, Boolean>()),
                 Collections.newSetFromMap(new ConcurrentHashMap<DisposalMethod<?, ?>, Boolean>()),

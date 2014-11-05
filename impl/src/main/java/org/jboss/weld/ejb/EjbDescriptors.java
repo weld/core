@@ -46,7 +46,7 @@ public class EjbDescriptors implements Service, Iterable<InternalEjbDescriptor<?
      */
     public EjbDescriptors() {
         this.ejbByName = new HashMap<String, InternalEjbDescriptor<?>>();
-        this.ejbByClass = new SetMultimap<>();
+        this.ejbByClass = SetMultimap.newSetMultimap();
     }
 
     /**

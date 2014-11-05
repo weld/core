@@ -57,8 +57,7 @@ import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.AnnotationApiAbstraction;
 import org.jboss.weld.util.Beans;
-import org.jboss.weld.util.cache.ComputingCache;
-import org.jboss.weld.util.collections.Multimaps;
+import org.jboss.weld.util.collections.SetMultimap;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
@@ -183,7 +182,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
     }
 
     public void createClassBeans() {
-        ComputingCache<Class<?>, Set<SlimAnnotatedType<?>>> otherWeldClasses = Multimaps.newConcurrentSetMultimap();
+        SetMultimap<Class<?>, SlimAnnotatedType<?>> otherWeldClasses = SetMultimap.newSetMultimap();
 
         for (SlimAnnotatedTypeContext<?> ctx : getEnvironment().getAnnotatedTypes()) {
             createClassBean(ctx.getAnnotatedType(), otherWeldClasses);
@@ -194,8 +193,9 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
                 continue;
             }
             if (ejbDescriptor.isSingleton() || ejbDescriptor.isStateful() || ejbDescriptor.isStateless()) {
-                if (otherWeldClasses.getValueIfPresent(ejbDescriptor.getBeanClass()) != null) {
-                    for (SlimAnnotatedType<?> annotatedType : otherWeldClasses.getValue(ejbDescriptor.getBeanClass())) {
+                Set<SlimAnnotatedType<?>> classes = otherWeldClasses.get(ejbDescriptor.getBeanClass());
+                if (!classes.isEmpty()) {
+                    for (SlimAnnotatedType<?> annotatedType : classes) {
                         EnhancedAnnotatedType<?> weldClass = classTransformer.getEnhancedAnnotatedType(annotatedType);
                         createSessionBean(ejbDescriptor, Reflections.<EnhancedAnnotatedType> cast(weldClass));
                     }
@@ -206,8 +206,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
         }
     }
 
-    protected void createClassBean(SlimAnnotatedType<?> annotatedType,
-            ComputingCache<Class<?>, Set<SlimAnnotatedType<?>>> otherWeldClasses) {
+    protected void createClassBean(SlimAnnotatedType<?> annotatedType, SetMultimap<Class<?>, SlimAnnotatedType<?>> otherWeldClasses) {
         boolean managedBeanOrDecorator = !getEnvironment().getEjbDescriptors().contains(annotatedType.getJavaClass()) && Beans.isTypeManagedBeanOrDecoratorOrInterceptor(annotatedType);
         if (managedBeanOrDecorator) {
             containerLifecycleEvents.preloadProcessInjectionTarget(annotatedType.getJavaClass());
@@ -234,7 +233,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
                 BootstrapLogger.LOG.annotatedTypeNotRegisteredAsBeanDueToMissingAppropriateConstructor(annotatedType.getJavaClass().getName(),
                         scopeClass.getSimpleName());
             }
-            otherWeldClasses.getValue(annotatedType.getJavaClass()).add(annotatedType);
+            otherWeldClasses.put(annotatedType.getJavaClass(), annotatedType);
         }
     }
 

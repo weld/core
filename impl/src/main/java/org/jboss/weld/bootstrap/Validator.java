@@ -621,7 +621,7 @@ public class Validator implements Service {
     }
 
     public void validateBeanNames(BeanManagerImpl beanManager) {
-        SetMultimap<String, Bean<?>> namedAccessibleBeans = new SetMultimap<>();
+        SetMultimap<String, Bean<?>> namedAccessibleBeans = SetMultimap.newSetMultimap();
         for (Bean<?> bean : beanManager.getAccessibleBeans()) {
             if (bean.getName() != null) {
                 namedAccessibleBeans.put(bean.getName(), bean);
@@ -702,7 +702,7 @@ public class Validator implements Service {
             Map<String, Class<?>> loadedClasses = buildClassNameMap(beanManager.getEnabled().getAlternativeClasses());
 
             // lookup structure for validation of alternatives
-            Multimap<Class<?>, Bean<?>> beansByClass = new SetMultimap<>();
+            Multimap<Class<?>, Bean<?>> beansByClass = SetMultimap.newSetMultimap();
             for (Bean<?> bean : beanManager.getAccessibleBeans()) {
                 if (!(bean instanceof NewBean)) {
                     beansByClass.put(bean.getBeanClass(), bean);
