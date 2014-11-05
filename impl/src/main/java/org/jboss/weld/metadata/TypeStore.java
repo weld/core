@@ -42,7 +42,7 @@ public class TypeStore implements Service {
     private final Set<Class<? extends Annotation>> extraScopes;
 
     public TypeStore() {
-        this.extraAnnotations = new SetMultimap<>();
+        this.extraAnnotations = SetMultimap.newSetMultimap();
         this.extraScopes = new HashSet<Class<? extends Annotation>>();
     }
 

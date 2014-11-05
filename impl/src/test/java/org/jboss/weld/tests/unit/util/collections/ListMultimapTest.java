@@ -89,7 +89,7 @@ public class ListMultimapTest {
 
     @Test
     public void testMultimapFromMultimap() {
-        Multimap<String, Integer> multimap = new SetMultimap<>();
+        Multimap<String, Integer> multimap = SetMultimap.newSetMultimap();
         multimap.putAll("foo", Arrays.asList(1,2,3,4));
         assertEquals(4, multimap.values().size());
         ListMultimap<String, Integer> copy = new ListMultimap<>(multimap);

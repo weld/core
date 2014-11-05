@@ -72,7 +72,7 @@ public class EnhancedAnnotationImpl<T extends Annotation> extends EnhancedAnnota
         super(annotatedType, annotationMap, declaredAnnotationMap, classTransformer);
         this.clazz = annotatedType.getJavaClass();
         members = new HashSet<EnhancedAnnotatedMethod<?, ?>>();
-        annotatedMembers = new SetMultimap<>();
+        annotatedMembers = SetMultimap.newSetMultimap();
         for (AnnotatedMethod<? super T> annotatedMethod : annotatedType.getMethods()) {
             EnhancedAnnotatedMethod<?, ? super T> enhancedAnnotatedMethod = EnhancedAnnotatedMethodImpl.of(annotatedMethod, this, classTransformer);
             members.add(enhancedAnnotatedMethod);

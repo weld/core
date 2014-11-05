@@ -306,8 +306,8 @@ public class InterceptionModelInitializer<T> {
     protected Multimap<Class<? extends Annotation>, Annotation> mergeMemberInterceptorBindings(Multimap<Class<? extends Annotation>, Annotation> beanBindings,
             Set<Annotation> methodBindingAnnotations) {
 
-        Multimap<Class<? extends Annotation>, Annotation> mergedBeanBindings = new SetMultimap<>(beanBindings);
-        Multimap<Class<? extends Annotation>, Annotation> methodBindings = new SetMultimap<>();
+        Multimap<Class<? extends Annotation>, Annotation> mergedBeanBindings = SetMultimap.newSetMultimap(beanBindings);
+        Multimap<Class<? extends Annotation>, Annotation> methodBindings = SetMultimap.newSetMultimap();
 
         for (Annotation methodBinding : methodBindingAnnotations) {
             methodBindings.put(methodBinding.annotationType(), methodBinding);

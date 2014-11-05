@@ -112,7 +112,7 @@ public class Interceptors {
     public static Multimap<Class<? extends Annotation>, Annotation> mergeBeanInterceptorBindings(BeanManagerImpl beanManager, AnnotatedType<?> clazz, Collection<Annotation> classBindingAnnotations,
             Collection<Annotation> inheritedBindingAnnotations) {
 
-        Multimap<Class<? extends Annotation>, Annotation> mergedBeanBindings = new SetMultimap<>();
+        Multimap<Class<? extends Annotation>, Annotation> mergedBeanBindings = SetMultimap.newSetMultimap();
         Set<Annotation> acceptedInheritedBindings = new HashSet<Annotation>();
 
         // add all class-level interceptor bindings (these have precedence)

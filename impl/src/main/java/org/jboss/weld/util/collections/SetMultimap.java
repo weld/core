@@ -16,10 +16,12 @@
  */
 package org.jboss.weld.util.collections;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
 /**
@@ -37,8 +39,8 @@ public class SetMultimap<K, V> extends AbstractMultimap<K, V, Set<V>> {
     /**
      * Creates a new instance backed by a {@link HashMap} and {@link HashSet}.
      */
-    public SetMultimap() {
-        this(HashMap::new, HashSet::new, null);
+    public static <K, V> SetMultimap<K, V> newSetMultimap() {
+        return new SetMultimap<K, V>(HashMap::new, HashSet::new, null);
     }
 
     /**
@@ -47,8 +49,15 @@ public class SetMultimap<K, V> extends AbstractMultimap<K, V, Set<V>> {
      *
      * @param multimap
      */
-    public SetMultimap(Multimap<K, V> multimap) {
-        this(HashMap::new, HashSet::new, multimap);
+    public static <K, V> SetMultimap<K, V> newSetMultimap(Multimap<K, V> multimap) {
+        return new SetMultimap<K, V>(HashMap::new, HashSet::new, multimap);
+    }
+
+    /**
+     * Creates a new instance backed by a {@link ConcurrentHashMap} and synchronized {@link HashSet}.
+     */
+    public static <K, V> SetMultimap<K, V> newConcurrentSetMultimap() {
+        return new SetMultimap<K, V>(ConcurrentHashMap::new, () -> Collections.synchronizedSet(new HashSet<>()), null);
     }
 
     /**
@@ -57,7 +66,7 @@ public class SetMultimap<K, V> extends AbstractMultimap<K, V, Set<V>> {
      * @param collectionSupplier
      * @param multimap
      */
-    public SetMultimap(Supplier<Map<K, Set<V>>> mapSupplier, Supplier<Set<V>> collectionSupplier, Multimap<K, V> multimap) {
+    private SetMultimap(Supplier<Map<K, Set<V>>> mapSupplier, Supplier<Set<V>> collectionSupplier, Multimap<K, V> multimap) {
         super(mapSupplier, collectionSupplier, multimap);
     }
 

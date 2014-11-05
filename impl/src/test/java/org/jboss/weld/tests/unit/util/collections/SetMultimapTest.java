@@ -36,7 +36,7 @@ public class SetMultimapTest {
     @Test
     public void testDefaultBehaviour() {
 
-        SetMultimap<String, Integer> setMultimap = new SetMultimap<>();
+        SetMultimap<String, Integer> setMultimap = SetMultimap.newSetMultimap();
 
         assertTrue(setMultimap.put("foo", 1));
         assertFalse(setMultimap.put("foo", 1));
@@ -86,10 +86,10 @@ public class SetMultimapTest {
 
     @Test
     public void testSetMultimapFromMultimap() {
-        SetMultimap<String, Integer> setMultimap = new SetMultimap<>();
+        SetMultimap<String, Integer> setMultimap = SetMultimap.newSetMultimap();
         setMultimap.putAll("foo", Arrays.asList(1,2,3,4));
         assertEquals(4, setMultimap.values().size());
-        SetMultimap<String, Integer> copy = new SetMultimap<>(setMultimap);
+        SetMultimap<String, Integer> copy = SetMultimap.newSetMultimap(setMultimap);
         assertEquals(4, copy.values().size());
         assertTrue(copy.containsKey("foo"));
         setMultimap.clear();
