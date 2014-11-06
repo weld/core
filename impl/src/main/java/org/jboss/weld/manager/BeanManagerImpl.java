@@ -37,7 +37,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.el.ELResolver;
@@ -203,15 +202,14 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     * archive
     */
     private transient volatile ModuleEnablement enabled;
-    private final transient Set<CurrentActivity> currentActivities;
 
 
     /*
-    * Activity scoped services
+    * Bean Archive scoped services
     * *************************
     */
 
-    /* These services are scoped to this activity only, but use data
+    /* These services are scoped to this bean archive only, but use data
     * structures that are transitive accessible from other bean deployment
     * archives
     */
@@ -231,13 +229,13 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     private final transient ObserverNotifier globalStrictObserverNotifier;
 
     /*
-    * Activity scoped data structures
+    * Bean archive scoped data structures
     * ********************************
     */
 
-    /* These data structures are scoped to this bean deployment archive activity
+    /* These data structures are scoped to this bean deployment archive
     * only and represent the beans, decorators, interceptors, namespaces and
-    * observers deployed in this bean deployment archive activity
+    * observers deployed in this bean deployment archive
     */
     private final transient List<Bean<?>> enabledBeans;
     // shared beans are accessible from other bean archives (generally all beans except for built-in beans and @New beans)
@@ -254,21 +252,15 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     /*
      * Data structure representing all managers *accessible* from this bean
-     * deployment archive activity
+     * deployment archive
      */
     private final transient Set<BeanManagerImpl> managers;
 
     /*
     * These data structures represent the managers *accessible* from this bean
-    * deployment archive activity
+    * deployment archive
     */
     private final transient HashSet<BeanManagerImpl> accessibleManagers;
-
-    /*
-    * This data structures represents child activities for this activity, it is
-    * not transitively accessible
-    */
-    private final transient Set<BeanManagerImpl> childActivities;
 
     private final transient AtomicInteger childIds;
 
@@ -305,7 +297,6 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                 new ConcurrentHashMap<EjbDescriptor<?>, SessionBean<?>>(),
                 new ClientProxyProvider(contextId),
                 contexts,
-                new CopyOnWriteArraySet<CurrentActivity>(),
                 ModuleEnablement.EMPTY_ENABLEMENT,
                 id,
                 new AtomicInteger(),
@@ -325,48 +316,11 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                 rootManager.getEnterpriseBeans(),
                 rootManager.getClientProxyProvider(),
                 rootManager.getContexts(),
-                new CopyOnWriteArraySet<CurrentActivity>(),
                 ModuleEnablement.EMPTY_ENABLEMENT,
                 id,
                 new AtomicInteger(),
                 rootManager.managers,
                 rootManager.contextId);
-    }
-
-    /**
-     * Create a new child manager
-     *
-     * @param parentManager the parent manager
-     * @return new child manager
-     */
-    public static BeanManagerImpl newChildActivityManager(BeanManagerImpl parentManager) {
-        List<Bean<?>> beans = new CopyOnWriteArrayList<Bean<?>>();
-        beans.addAll(parentManager.getBeans());
-        List<Bean<?>> transitiveBeans = new CopyOnWriteArrayList<Bean<?>>();
-        beans.addAll(parentManager.getSharedBeans());
-
-        List<ObserverMethod<?>> registeredObservers = new CopyOnWriteArrayList<ObserverMethod<?>>();
-        registeredObservers.addAll(parentManager.getObservers());
-        List<String> namespaces = new CopyOnWriteArrayList<String>();
-        namespaces.addAll(parentManager.getNamespaces());
-
-        return new BeanManagerImpl(
-                parentManager.getServices(),
-                beans,
-                transitiveBeans,
-                parentManager.getDecorators(),
-                parentManager.getInterceptors(),
-                registeredObservers,
-                namespaces,
-                parentManager.getEnterpriseBeans(),
-                parentManager.getClientProxyProvider(),
-                parentManager.getContexts(),
-                parentManager.getCurrentActivities(),
-                parentManager.getEnabled(),
-                new StringBuilder().append(parentManager.getChildIds().incrementAndGet()).toString(),
-                parentManager.getChildIds(),
-                parentManager.managers,
-                parentManager.contextId);
     }
 
     private BeanManagerImpl(
@@ -380,7 +334,6 @@ public class BeanManagerImpl implements WeldManager, Serializable {
             Map<EjbDescriptor<?>, SessionBean<?>> enterpriseBeans,
             ClientProxyProvider clientProxyProvider,
             Map<Class<? extends Annotation>, List<Context>> contexts,
-            Set<CurrentActivity> currentActivities,
             ModuleEnablement enabled,
             String id,
             AtomicInteger childIds,
@@ -394,7 +347,6 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         this.enterpriseBeans = enterpriseBeans;
         this.clientProxyProvider = clientProxyProvider;
         this.contexts = contexts;
-        this.currentActivities = currentActivities;
         this.observers = observers;
         this.enabled = enabled;
         this.namespaces = namespaces;
@@ -415,7 +367,6 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         this.interceptorResolver = new TypeSafeInterceptorResolver(this, createDynamicGlobalIterable(InterceptorTransform.INSTANCE));
         this.nameBasedResolver = new NameBasedResolver(this, createDynamicAccessibleIterable(beanTransform));
         this.weldELResolver = new WeldELResolver(this);
-        this.childActivities = new CopyOnWriteArraySet<BeanManagerImpl>();
 
         TypeSafeObserverResolver accessibleObserverResolver = new TypeSafeObserverResolver(getServices().get(MetaAnnotationStore.class), createDynamicAccessibleIterable(ObserverMethodTransform.INSTANCE));
         this.accessibleLenientObserverNotifier = ObserverNotifier.of(contextId, accessibleObserverResolver, getServices(), false);
@@ -485,9 +436,6 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         // optimize so that we do not modify CopyOnWriteLists for each Bean
         this.enabledBeans.addAll(beanList);
         this.sharedBeans.addAll(transitiveBeans);
-        for (BeanManagerImpl childActivity : childActivities) {
-            childActivity.addBeans(beanList);
-        }
     }
 
     private void addBean(Bean<?> bean, List<Bean<?>> beanList, List<Bean<?>> transitiveBeans) {
@@ -655,9 +603,6 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     public void addObserver(ObserverMethod<?> observer) {
         //checkEventType(observer.getObservedType());
         observers.add(observer);
-        for (BeanManagerImpl childActivity : childActivities) {
-            childActivity.addObserver(observer);
-        }
     }
 
     /**
@@ -1026,39 +971,17 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     @Override
     public BeanManagerImpl createActivity() {
-        BeanManagerImpl childActivity = newChildActivityManager(this);
-        childActivities.add(childActivity);
-        Container.instance(contextId).addActivity(childActivity);
-        return childActivity;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public BeanManagerImpl setCurrent(Class<? extends Annotation> scopeType) {
-        if (!isNormalScope(scopeType)) {
-            throw new IllegalArgumentException(BeanManagerLogger.LOG.nonNormalScope(scopeType));
-        }
-        currentActivities.add(new CurrentActivity(getContext(scopeType), this));
-        return this;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public BeanManagerImpl getCurrent() {
-        CurrentActivity activeCurrentActivity = null;
-        for (CurrentActivity currentActivity : currentActivities) {
-            if (currentActivity.getContext().isActive()) {
-                if (activeCurrentActivity == null) {
-                    activeCurrentActivity = currentActivity;
-                }
-                else {
-                    throw BeanManagerLogger.LOG.tooManyActivities(WeldCollections.toMultiRowString(currentActivities));
-                }
-            }
-        }
-        if (activeCurrentActivity == null) {
-            return this;
-        } else {
-            return activeCurrentActivity.getManager();
-        }
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -1090,10 +1013,6 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     public Iterable<String> getAccessibleNamespaces() {
         // TODO Cache this
         return createDynamicAccessibleIterable(new NamespaceTransform());
-    }
-
-    private Set<CurrentActivity> getCurrentActivities() {
-        return currentActivities;
     }
 
     @Override
@@ -1264,10 +1183,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         this.managers.clear();
         this.beanResolver.clear();
         this.enabledBeans.clear();
-        this.childActivities.clear();
         this.clientProxyProvider.clear();
         this.contexts.clear();
-        this.currentActivities.clear();
         this.decoratorResolver.clear();
         this.decorators.clear();
         this.enterpriseBeans.clear();
