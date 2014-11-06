@@ -59,7 +59,7 @@ public abstract class AbstractFacade<T, X> {
     }
 
     protected BeanManagerImpl getBeanManager() {
-        return beanManager.getCurrent();
+        return beanManager;
     }
 
     protected Set<Annotation> getQualifiers() {

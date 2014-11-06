@@ -56,7 +56,7 @@ public class ManagerObjectFactory implements ObjectFactory {
             for (Entry<BeanDeploymentArchive, BeanManagerImpl> entry : Container.instance(contextId).beanDeploymentArchives().entrySet()) {
                 BeanDeploymentArchive bda = entry.getKey();
                 if (bda.getId().equals(FLAT_BEAN_DEPLOYMENT_ID) || bda.getId().contains(WEB_INF_CLASSES_FILE_PATH) || bda.getId().contains(WEB_INF_CLASSES)) {
-                    return entry.getValue().getCurrent();
+                    return entry.getValue();
                 }
             }
             throw BeanManagerLogger.LOG.cannotLocateBeanManager();

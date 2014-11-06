@@ -156,22 +156,24 @@ public class Container {
     }
 
     /**
-     * Get the activity manager for a given key
+     * Get the BeanManager for a given key
      *
      * @param key
      * @return
      */
-    public BeanManagerImpl activityManager(String key) {
+    public BeanManagerImpl getBeanManager(String key) {
         return managers.get(key);
     }
 
     /**
-     * Add an activity
-     *
-     * @param manager
-     * @return
+     * @deprecated Use {@link #getBeanManager(String)} instead
      */
-    public String addActivity(BeanManagerImpl manager) {
+    @Deprecated
+    public BeanManagerImpl activityManager(String key) {
+        return getBeanManager(key);
+    }
+
+    private String addBeanManager(BeanManagerImpl manager) {
         String id = manager.getId();
         if (manager.getId() == null) {
             throw BeanManagerLogger.LOG.nullBeanManagerId();
@@ -197,7 +199,7 @@ public class Container {
     public void putBeanDeployments(BeanDeploymentArchiveMapping bdaMapping) {
         for (Entry<BeanDeploymentArchive, BeanManagerImpl> entry : bdaMapping.getBdaToBeanManagerMap().entrySet()) {
             beanDeploymentArchives.put(entry.getKey(), entry.getValue());
-            addActivity(entry.getValue());
+            addBeanManager(entry.getValue());
         }
     }
 

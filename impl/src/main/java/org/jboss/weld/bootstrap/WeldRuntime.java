@@ -44,8 +44,7 @@ public class WeldRuntime {
     }
 
     public BeanManagerImpl getManager(BeanDeploymentArchive beanDeploymentArchive) {
-        BeanManagerImpl beanManager = bdaToBeanManagerMap.get(beanDeploymentArchive);
-        return beanManager == null ? null : beanManager.getCurrent();
+        return bdaToBeanManagerMap.get(beanDeploymentArchive);
     }
 
     public void shutdown() {

@@ -35,7 +35,7 @@ public class BeanManagerImplBean extends AbstractBuiltInBean<BeanManagerImpl> {
     }
 
     public BeanManagerImpl create(CreationalContext<BeanManagerImpl> creationalContext) {
-        return getBeanManager().getCurrent();
+        return getBeanManager();
     }
 
     @Override

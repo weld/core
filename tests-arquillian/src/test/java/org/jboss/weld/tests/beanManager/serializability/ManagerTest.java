@@ -16,6 +16,18 @@
  */
 package org.jboss.weld.tests.beanManager.serializability;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.enterprise.context.Dependent;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -28,17 +40,6 @@ import org.jboss.weld.test.util.Utils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.inject.Inject;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 @RunWith(Arquillian.class)
 public class ManagerTest {
@@ -122,20 +123,5 @@ public class ManagerTest {
         Assert.assertEquals(
                 deserializedRootManager.getBeans(Foo.class).iterator().next(),
                 beanManager.getBeans(Foo.class).iterator().next());
-    }
-
-    @Test
-    public void testChildManagerSerializability() throws Exception {
-        BeanManagerImpl childManager = beanManager.createActivity();
-        Bean<?> dummyBean = new DummyBean();
-        childManager.addBean(dummyBean);
-        String childManagerId = childManager.getId();
-        BeanManagerImpl deserializedChildManager = (BeanManagerImpl) Utils.deserialize(Utils.serialize(childManager));
-        Assert.assertEquals(childManagerId, deserializedChildManager.getId());
-        Assert.assertEquals(1, childManager.getBeans(Dummy.class).size());
-        Assert.assertEquals(1, deserializedChildManager.getBeans(Dummy.class).size());
-        Assert.assertEquals(
-                deserializedChildManager.getBeans(Dummy.class).iterator().next(),
-                childManager.getBeans(Dummy.class).iterator().next());
     }
 }
