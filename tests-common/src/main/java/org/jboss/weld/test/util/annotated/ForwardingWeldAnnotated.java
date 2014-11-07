@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.util.annotated;
+package org.jboss.weld.test.util.annotated;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -23,6 +23,7 @@ import java.util.Set;
 import javax.enterprise.inject.spi.Annotated;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotated;
+import org.jboss.weld.util.annotated.ForwardingAnnotated;
 
 /**
  * Provides an abstraction for delegating access to an annotated item
