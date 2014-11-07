@@ -27,6 +27,13 @@
 
             <!-- Issues in the TCK -->
 
+            <!-- CDITCK-457 -->
+            <class name="org.jboss.cdi.tck.tests.context.passivating.dependency.resource.webservice.WebResourcePassivationCapableDependencyTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
+
             <!-- Issues in Weld (the RI) -->
 
             <!-- Issues in WildFly -->
