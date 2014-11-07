@@ -16,26 +16,27 @@
  */
 package org.jboss.weld.tests.specialization.weld802;
 
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.ArchivePaths;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.jboss.shrinkwrap.api.asset.StringAsset;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.shrinkwrap.impl.BeansXml;
-import org.jboss.weld.tests.category.Integration;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.junit.runner.RunWith;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.Extension;
 import javax.inject.Inject;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.ArchivePaths;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.shrinkwrap.impl.BeansXml;
+import org.jboss.weld.test.util.annotated.ForwardingWeldAnnotated;
+import org.jboss.weld.test.util.annotated.ForwardingWeldClass;
+import org.jboss.weld.tests.category.Integration;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
 
 /**
  * @author Ales Justin
@@ -63,7 +64,7 @@ public class CustomWeldClassTest {
      */
     public static JavaArchive createJavaArchive() {
         JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "test.jar");
-        jar.addClasses(CustomExtension.class, Foo.class, Bar.class);
+        jar.addClasses(CustomExtension.class, Foo.class, Bar.class, ForwardingWeldClass.class, ForwardingWeldAnnotated.class);
         jar.addAsServiceProvider(Extension.class, CustomExtension.class);
         jar.addAsManifestResource(BeansXml.SUPPRESSOR, "beans.xml");
         return jar;

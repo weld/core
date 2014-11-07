@@ -24,8 +24,7 @@ import javax.enterprise.inject.spi.Extension;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bean.builtin.BeanManagerProxy;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.resources.ClassTransformer;
-import org.jboss.weld.util.annotated.ForwardingWeldClass;
+import org.jboss.weld.test.util.annotated.ForwardingWeldClass;
 
 /**
  * @author Ales Justin

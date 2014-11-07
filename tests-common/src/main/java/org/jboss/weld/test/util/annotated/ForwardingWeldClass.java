@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.util.annotated;
+package org.jboss.weld.test.util.annotated;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
