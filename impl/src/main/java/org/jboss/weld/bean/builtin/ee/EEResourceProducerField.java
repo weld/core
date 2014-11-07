@@ -55,10 +55,11 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T> {
         private transient T instance;
         private final CreationalContext<T> creationalContext;
 
-        private EEResourceCallable(BeanManagerImpl beanManager, ProducerField<?, T> producerField, CreationalContext<T> creationalContext) {
+        private EEResourceCallable(BeanManagerImpl beanManager, ProducerField<?, T> producerField, CreationalContext<T> creationalContext, T instance) {
             super(beanManager);
             this.beanId = producerField.getIdentifier();
             this.creationalContext = creationalContext;
+            this.instance = instance;
         }
 
         public T call() throws Exception {
@@ -129,10 +130,12 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T> {
 
     @Override
     public T create(CreationalContext<T> creationalContext) {
-        if (Reflections.isFinal(rawType) || Serializable.class.isAssignableFrom(rawType)) {
-            return createUnderlying(creationalContext);
+        final T beanInstance = createUnderlying(creationalContext);
+        if (Reflections.isFinal(rawType) || Serializable.class.isAssignableFrom(beanInstance.getClass())) {
+            return beanInstance;
         } else {
-            BeanInstance proxyBeanInstance = new EnterpriseTargetBeanInstance(getTypes(), new CallableMethodHandler(new EEResourceCallable<T>(getBeanManager(), this, creationalContext)));
+            BeanInstance proxyBeanInstance = new EnterpriseTargetBeanInstance(getTypes(), new CallableMethodHandler(new EEResourceCallable<T>(getBeanManager(),
+                    this, creationalContext, beanInstance)));
             return proxyFactory.create(proxyBeanInstance);
         }
     }
