@@ -130,18 +130,18 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T> {
 
     @Override
     public T create(CreationalContext<T> creationalContext) {
-        final T beanInstance = createUnderlying(creationalContext);
+        final T beanInstance = getProducer().produce(creationalContext);
         if (Reflections.isFinal(rawType) || Serializable.class.isAssignableFrom(beanInstance.getClass())) {
-            return beanInstance;
+            return checkReturnValue(beanInstance);
         } else {
             BeanInstance proxyBeanInstance = new EnterpriseTargetBeanInstance(getTypes(), new CallableMethodHandler(new EEResourceCallable<T>(getBeanManager(),
                     this, creationalContext, beanInstance)));
-            return proxyFactory.create(proxyBeanInstance);
+            return checkReturnValue(proxyFactory.create(proxyBeanInstance));
         }
     }
 
     /**
-     * Access to the underlying producer field
+     * Access to the underlying producer field, performs return value check.
      */
     private T createUnderlying(CreationalContext<T> creationalContext) {
         return super.create(creationalContext);
