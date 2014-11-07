@@ -20,7 +20,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import javax.interceptor.InvocationContext;
 
@@ -43,7 +42,7 @@ public abstract class AbstractInterceptionChain implements InterceptionChain {
 
     private int currentPosition;
     private final List<InterceptorMethodInvocation> interceptorMethodInvocations;
-    private final Set<CombinedInterceptorAndDecoratorStackMethodHandler> currentInterceptionContext;
+    private final CombinedInterceptorAndDecoratorStackMethodHandler currentInterceptionContext;
 
     private static List<InterceptorMethodInvocation> buildInterceptorMethodInvocations(Object instance, Method method, Object[] args,
             InterceptionType interceptionType, InterceptionContext ctx) {
@@ -87,11 +86,7 @@ public abstract class AbstractInterceptionChain implements InterceptionChain {
     private AbstractInterceptionChain(List<InterceptorMethodInvocation> interceptorMethodInvocations) {
         this.currentPosition = 0;
         this.interceptorMethodInvocations = interceptorMethodInvocations;
-        if (InterceptionDecorationContext.empty()) {
-            this.currentInterceptionContext = null;
-        } else {
-            this.currentInterceptionContext = InterceptionDecorationContext.peek();
-        }
+        this.currentInterceptionContext = InterceptionDecorationContext.peekIfNotEmpty();
     }
 
     @Override
@@ -123,7 +118,7 @@ public abstract class AbstractInterceptionChain implements InterceptionChain {
          * Make sure that the right interception context is on top of the stack before invoking the component.
          * See WELD-1538 for details
          */
-        final boolean pushed = InterceptionDecorationContext.pushIfNotOnTop(currentInterceptionContext);
+        final boolean pushed = InterceptionDecorationContext.startIfNotOnTop(currentInterceptionContext);
         try {
             return invokeNext(invocationContext);
         } finally {
@@ -186,7 +181,7 @@ public abstract class AbstractInterceptionChain implements InterceptionChain {
              * Make sure that the right interception context is on top of the stack before invoking the component or next interceptor.
              * See WELD-1538 for details
              */
-            final boolean pushed = InterceptionDecorationContext.pushIfNotOnTop(currentInterceptionContext);
+            final boolean pushed = InterceptionDecorationContext.startIfNotOnTop(currentInterceptionContext);
             try {
                 return doWork(ctx);
             } finally {
