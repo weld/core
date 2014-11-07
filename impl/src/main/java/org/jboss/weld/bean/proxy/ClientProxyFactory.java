@@ -74,7 +74,7 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
     private static final String HASH_CODE_METHOD = "hashCode";
     private static final String EMPTY_PARENTHESES = "()";
     private static final String END_INTERCEPTOR_CONTEXT_METHOD_NAME = "endInterceptorContext";
-    private static final String START_INTERCEPTOR_CONTEXT_METHOD_NAME = "startInterceptorContext";
+    private static final String START_INTERCEPTOR_CONTEXT_METHOD_NAME = "startInterceptorContextIfNotEmpty";
 
     /**
      * It is possible although very unlikely that two different beans will end up with the same proxy class
@@ -191,8 +191,11 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
         // we use a try-catch block in order to make sure that endInterceptorContext() is invoked regardless whether
         // the method has succeeded or not
 
+        b.invokestatic(INTERCEPTION_DECORATION_CONTEXT_CLASS_NAME, START_INTERCEPTOR_CONTEXT_METHOD_NAME, EMPTY_PARENTHESES + DescriptorUtils.BOOLEAN_CLASS_DESCRIPTOR);
+        // store the outcome some that we know later whether to end the context or not
+        b.istore(getLocalVariableIndex(classMethod, 0));
+
         final ExceptionHandler start = b.exceptionBlockStart(Throwable.class.getName());
-        b.invokestatic(INTERCEPTION_DECORATION_CONTEXT_CLASS_NAME, START_INTERCEPTOR_CONTEXT_METHOD_NAME, EMPTY_PARENTHESES + DescriptorUtils.VOID_CLASS_DESCRIPTOR);
 
         if (useCache()) {
             loadCacheableBeanInstance(classMethod.getClassFile(), methodInfo, b);
@@ -213,7 +216,7 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
         }
 
         // end the interceptor context, everything was fine
-        b.invokestatic(INTERCEPTION_DECORATION_CONTEXT_CLASS_NAME, END_INTERCEPTOR_CONTEXT_METHOD_NAME, EMPTY_PARENTHESES + DescriptorUtils.VOID_CLASS_DESCRIPTOR);
+        endInterceptionContextIfStarted(b, classMethod);
 
         // jump over the catch block
         BranchEnd gotoEnd = b.gotoInstruction();
@@ -221,7 +224,10 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
         // create catch block
         b.exceptionBlockEnd(start);
         b.exceptionHandlerStart(start);
-        b.invokestatic(INTERCEPTION_DECORATION_CONTEXT_CLASS_NAME, END_INTERCEPTOR_CONTEXT_METHOD_NAME, EMPTY_PARENTHESES + DescriptorUtils.VOID_CLASS_DESCRIPTOR);
+
+        // end the interceptor context if there was an exception
+        endInterceptionContextIfStarted(b, classMethod);
+
         b.athrow();
 
         // update the correct address to jump over the catch block
@@ -351,5 +357,30 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
 
     private boolean useCache() {
         return CACHEABLE_SCOPES.contains(getBean().getScope());
+    }
+
+    /**
+     * Gets the index of a local variable (the first index after method parameters). Indexes start with 0.
+     */
+    private static int getLocalVariableIndex(ClassMethod method, int i) {
+        int index = method.isStatic() ? 0 : 1;
+        for (String type : method.getParameters()) {
+            if (type.equals(DescriptorUtils.DOUBLE_CLASS_DESCRIPTOR) || type.equals(DescriptorUtils.LONG_CLASS_DESCRIPTOR)) {
+                index += 2;
+            } else {
+                index++;
+            }
+        }
+        return index + i;
+    }
+
+    /**
+     * Ends interception context if it was previously stated. This is indicated by a local variable with index 0.
+     */
+    private static void endInterceptionContextIfStarted(CodeAttribute b, ClassMethod method) {
+        b.iload(getLocalVariableIndex(method, 0));
+        final BranchEnd conditional = b.ifeq();
+        b.invokestatic(INTERCEPTION_DECORATION_CONTEXT_CLASS_NAME, END_INTERCEPTOR_CONTEXT_METHOD_NAME, EMPTY_PARENTHESES + DescriptorUtils.VOID_CLASS_DESCRIPTOR);
+        b.branchEnd(conditional);
     }
 }

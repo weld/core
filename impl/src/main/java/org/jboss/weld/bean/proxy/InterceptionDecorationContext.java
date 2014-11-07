@@ -101,6 +101,22 @@ public class InterceptionDecorationContext {
     }
 
     /**
+     * This is called by client proxies. Calling a method on a client proxy means that we left the interception context of the calling bean. Therefore,
+     * client proxies call this method to start a new interception context of the called (possibly intercepted) bean. If however there is not interception context
+     * at the time the proxy is called (meaning the caller is not intercepted), there is no need to create new interception context. This is an optimization as the
+     * first startInterceptorContext call is expensive.
+     *
+     * The caller of this method is required to call {@link #endInterceptorContext()} if and only if this method returns true.
+     */
+    public static boolean startInterceptorContextIfNotEmpty() {
+        if (empty()) {
+            return false;
+        }
+        startInterceptorContext();
+        return true;
+    }
+
+    /**
      * Pushes the given context to the stack if the given context is not on top of the stack already.
      * If push happens, the caller is responsible for calling {@link #endInterceptorContext()} after the invocation finishes.
      * @param context the given context
