@@ -27,7 +27,7 @@ public class AlphaInterceptor {
     @AroundInvoke
     public Object intercept(InvocationContext ctx) throws Exception {
         Foo target = (Foo) ctx.getTarget();
-        return ((int) ctx.proceed()) + 10 + target.bar();
+        return ((Integer) ctx.proceed()) + 10 + target.bar();
     }
 
 }

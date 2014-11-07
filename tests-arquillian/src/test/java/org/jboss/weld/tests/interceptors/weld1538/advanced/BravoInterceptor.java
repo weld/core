@@ -26,7 +26,7 @@ public class BravoInterceptor {
 
     @AroundInvoke
     public Object intercept(InvocationContext ctx) throws Exception {
-        return ((int) ctx.proceed()) + 1;
+        return ((Integer) ctx.proceed()) + 1;
     }
 
 }
