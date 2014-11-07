@@ -105,12 +105,12 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
                 AccessController.doPrivileged(SetAccessibleAction.of(f));
                 beanIdField = f;
             }
-            if (threadLocalCacheField == null && isUsingUnsafeInstantiators()) {
+            if (threadLocalCacheField == null && isUsingUnsafeInstantiators() && useCache()) {
                 final Field f = AccessController.doPrivileged(new GetDeclaredFieldAction(instance.getClass(),  CACHE_FIELD));
                 AccessController.doPrivileged(SetAccessibleAction.of(f));
                 threadLocalCacheField = f;
             }
-            if(isUsingUnsafeInstantiators()) {
+            if (isUsingUnsafeInstantiators() && useCache()) {
                 threadLocalCacheField.set(instance, new ThreadLocal());
             }
 
