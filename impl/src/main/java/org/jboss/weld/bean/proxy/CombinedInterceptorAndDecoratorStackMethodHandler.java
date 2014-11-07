@@ -1,12 +1,11 @@
 package org.jboss.weld.bean.proxy;
 
 import static org.jboss.weld.bean.proxy.InterceptionDecorationContext.endInterceptorContext;
-import static org.jboss.weld.bean.proxy.InterceptionDecorationContext.startInterceptorContext;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
-import java.util.Set;
 
+import org.jboss.weld.exceptions.UnsupportedOperationException;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
@@ -16,10 +15,26 @@ import org.jboss.weld.util.reflection.Reflections;
  */
 public class CombinedInterceptorAndDecoratorStackMethodHandler implements MethodHandler, Serializable {
 
+    public static final CombinedInterceptorAndDecoratorStackMethodHandler NULL_INSTANCE = new CombinedInterceptorAndDecoratorStackMethodHandler() {
+        @Override
+        public void setInterceptorMethodHandler(MethodHandler interceptorMethodHandler) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void setOuterDecorator(Object outerDecorator) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Object invoke(Object self, Method thisMethod, Method proceed, Object[] args) throws Throwable {
+            throw new UnsupportedOperationException();
+        }
+    };
+
     private MethodHandler interceptorMethodHandler;
 
     private Object outerDecorator;
-
 
     public void setInterceptorMethodHandler(MethodHandler interceptorMethodHandler) {
         this.interceptorMethodHandler = interceptorMethodHandler;
@@ -29,53 +44,28 @@ public class CombinedInterceptorAndDecoratorStackMethodHandler implements Method
         this.outerDecorator = outerDecorator;
     }
 
-    private Set<CombinedInterceptorAndDecoratorStackMethodHandler> getDisabledHandlers() {
-        return InterceptionDecorationContext.peek();
-    }
-
     public Object invoke(Object self, Method thisMethod, Method proceed, Object[] args) throws Throwable {
-        boolean externalContext = false;
 
-        try {
-            if (InterceptionDecorationContext.empty()) {
-                externalContext = true;
-                startInterceptorContext();
-            }
-            Set<CombinedInterceptorAndDecoratorStackMethodHandler> disabledHandlers = getDisabledHandlers();
-            if (!disabledHandlers.contains(this)) {
-                try {
-
-                    disabledHandlers.add(this);
-                    if (interceptorMethodHandler != null) {
-                        if (proceed != null) {
-                            return this.interceptorMethodHandler.invoke(outerDecorator != null ? outerDecorator : self, thisMethod, thisMethod, args);
-                        } else {
-                            return this.interceptorMethodHandler.invoke(self, thisMethod, null, args);
-                        }
+        if (InterceptionDecorationContext.startIfNotOnTop(this)) {
+            try {
+                if (interceptorMethodHandler != null) {
+                    if (proceed != null) {
+                        return this.interceptorMethodHandler.invoke(outerDecorator != null ? outerDecorator : self, thisMethod, thisMethod, args);
                     } else {
-                        if (outerDecorator != null) {
-                            SecurityActions.ensureAccessible(thisMethod);
-                            return Reflections.invokeAndUnwrap(outerDecorator, thisMethod, args);
-                        }
+                        return this.interceptorMethodHandler.invoke(self, thisMethod, null, args);
                     }
-                } finally {
-                    disabledHandlers.remove(this);
+                } else {
+                    if (outerDecorator != null) {
+                        SecurityActions.ensureAccessible(thisMethod);
+                        return Reflections.invokeAndUnwrap(outerDecorator, thisMethod, args);
+                    }
                 }
-            }
-            SecurityActions.ensureAccessible(proceed);
-            return Reflections.invokeAndUnwrap(self, proceed, args);
-        } finally {
-            if (externalContext) {
+            } finally {
                 endInterceptorContext();
             }
         }
-    }
-
-    public boolean isDisabledHandler() {
-        if (InterceptionDecorationContext.empty()) {
-            return false;
-        }
-        return getDisabledHandlers().contains(this);
+        SecurityActions.ensureAccessible(proceed);
+        return Reflections.invokeAndUnwrap(self, proceed, args);
     }
 
     public MethodHandler getInterceptorMethodHandler() {
@@ -84,5 +74,9 @@ public class CombinedInterceptorAndDecoratorStackMethodHandler implements Method
 
     public Object getOuterDecorator() {
         return outerDecorator;
+    }
+
+    public boolean isDisabledHandler() {
+        return this == InterceptionDecorationContext.peekIfNotEmpty();
     }
 }

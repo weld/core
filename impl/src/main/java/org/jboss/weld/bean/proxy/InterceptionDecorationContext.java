@@ -17,11 +17,9 @@
 
 package org.jboss.weld.bean.proxy;
 
-import java.util.ArrayList;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.EmptyStackException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * A class that holds the interception (and decoration) contexts which are currently in progress.
@@ -37,67 +35,42 @@ import java.util.Set;
  * @author Marius Bogoevici
  */
 public class InterceptionDecorationContext {
-    private static ThreadLocal<List<Set<CombinedInterceptorAndDecoratorStackMethodHandler>>> interceptionContexts = new ThreadLocal<List<Set<CombinedInterceptorAndDecoratorStackMethodHandler>>>();
+    private static ThreadLocal<Deque<CombinedInterceptorAndDecoratorStackMethodHandler>> interceptionContexts = new ThreadLocal<Deque<CombinedInterceptorAndDecoratorStackMethodHandler>>();
 
     private InterceptionDecorationContext() {
     }
 
-    private static Set<CombinedInterceptorAndDecoratorStackMethodHandler> pop() {
-        List<Set<CombinedInterceptorAndDecoratorStackMethodHandler>> stack = interceptionContexts.get();
-        if (stack == null) {
-            throw new EmptyStackException();
-        } else {
-            try {
-                return stack.remove(stack.size() - 1);
-            } finally {
-                if (stack.isEmpty()) {
-                    interceptionContexts.remove();
-                }
-            }
-        }
+    /**
+     * Peeks the current top of the stack.
+     * @return the current top of the stack
+     * @throws EmptyStackException
+     */
+    public static CombinedInterceptorAndDecoratorStackMethodHandler peek() {
+        return peek(interceptionContexts.get());
     }
 
-    private static Set<CombinedInterceptorAndDecoratorStackMethodHandler> push(Set<CombinedInterceptorAndDecoratorStackMethodHandler> item) {
-        List<Set<CombinedInterceptorAndDecoratorStackMethodHandler>> stack = interceptionContexts.get();
-        if (stack == null) {
-            stack = new ArrayList<Set<CombinedInterceptorAndDecoratorStackMethodHandler>>();
-            interceptionContexts.set(stack);
+    /**
+     * Peeks the current top of the stack or returns null if the stack is empty
+     * @return the current top of the stack or returns null if the stack is empty
+     */
+    public static CombinedInterceptorAndDecoratorStackMethodHandler peekIfNotEmpty() {
+        Deque<CombinedInterceptorAndDecoratorStackMethodHandler> stack = interceptionContexts.get();
+        if (empty(stack)) {
+            return null;
         }
-        stack.add(item);
-        return item;
+        return peek(stack);
     }
 
-    public static Set<CombinedInterceptorAndDecoratorStackMethodHandler> peek() {
-        List<Set<CombinedInterceptorAndDecoratorStackMethodHandler>> stack = interceptionContexts.get();
-        if (stack == null) {
-            throw new EmptyStackException();
-        } else {
-            int last = stack.size() - 1;
-            Set<CombinedInterceptorAndDecoratorStackMethodHandler> result = stack.get(last);
-            if (result == null) {
-                result = new HashSet<CombinedInterceptorAndDecoratorStackMethodHandler>();
-                stack.set(last, result);
-            }
-            return result;
-        }
-    }
-
+    /**
+     * Indicates whether the stack is empty.
+     */
     public static boolean empty() {
-        List<Set<CombinedInterceptorAndDecoratorStackMethodHandler>> stack = interceptionContexts.get();
-        if (stack == null) {
-            return true;
-        } else {
-            return stack.isEmpty();
-        }
+        return empty(interceptionContexts.get());
     }
 
 
     public static void endInterceptorContext() {
-        pop();
-    }
-
-    public static void startInterceptorContext() {
-        push(null);
+        pop(interceptionContexts.get());
     }
 
     /**
@@ -109,10 +82,11 @@ public class InterceptionDecorationContext {
      * The caller of this method is required to call {@link #endInterceptorContext()} if and only if this method returns true.
      */
     public static boolean startInterceptorContextIfNotEmpty() {
-        if (empty()) {
+        Deque<CombinedInterceptorAndDecoratorStackMethodHandler> stack = interceptionContexts.get();
+        if (empty(stack)) {
             return false;
         }
-        startInterceptorContext();
+        push(interceptionContexts.get(), CombinedInterceptorAndDecoratorStackMethodHandler.NULL_INSTANCE);
         return true;
     }
 
@@ -122,11 +96,50 @@ public class InterceptionDecorationContext {
      * @param context the given context
      * @return true if the given context was pushed to the top of the stack, false if the given context was on top already
      */
-    public static boolean pushIfNotOnTop(Set<CombinedInterceptorAndDecoratorStackMethodHandler> context) {
-        if (empty() || peek() != context) { // == used intentionally instead of equals
-            push(context);
+    public static boolean startIfNotOnTop(CombinedInterceptorAndDecoratorStackMethodHandler context) {
+        Deque<CombinedInterceptorAndDecoratorStackMethodHandler> stack = interceptionContexts.get();
+        if (empty(stack) || peek(stack) != context) { // == used intentionally instead of equals
+            push(stack, context);
             return true;
         }
         return false;
+    }
+
+    private static CombinedInterceptorAndDecoratorStackMethodHandler pop(Deque<CombinedInterceptorAndDecoratorStackMethodHandler> stack) {
+        if (stack == null) {
+            throw new EmptyStackException();
+        } else {
+            try {
+                return stack.removeFirst();
+            } finally {
+                if (stack.isEmpty()) {
+                    interceptionContexts.remove();
+                }
+            }
+        }
+    }
+
+    private static void push(Deque<CombinedInterceptorAndDecoratorStackMethodHandler> stack, CombinedInterceptorAndDecoratorStackMethodHandler item) {
+        if (stack == null) {
+            stack = new ArrayDeque<CombinedInterceptorAndDecoratorStackMethodHandler>();
+            interceptionContexts.set(stack);
+        }
+        stack.addFirst(item);
+    }
+
+    private static CombinedInterceptorAndDecoratorStackMethodHandler peek(Deque<CombinedInterceptorAndDecoratorStackMethodHandler> stack) {
+        if (stack == null) {
+            throw new EmptyStackException();
+        } else {
+            return stack.peekFirst();
+        }
+    }
+
+    private static boolean empty(Deque<CombinedInterceptorAndDecoratorStackMethodHandler> stack) {
+        if (stack == null) {
+            return true;
+        } else {
+            return stack.isEmpty();
+        }
     }
 }
