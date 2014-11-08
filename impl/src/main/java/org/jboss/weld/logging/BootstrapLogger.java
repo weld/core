@@ -94,13 +94,6 @@ public interface BootstrapLogger extends WeldLogger {
     @Message(id = 114, value = "Must start the container with a deployment")
     IllegalArgumentException deploymentRequired();
 
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 115, value = "No application context BeanStore set")
-    String beanStoreMissing();
-
     @Message(id = 116, value = "Manager has not been initialized")
     IllegalStateException managerNotInitialized();
 
@@ -113,20 +106,6 @@ public interface BootstrapLogger extends WeldLogger {
     @LogMessage(level = Level.INFO)
     @Message(id = 119, value = "Not generating any bean definitions from {0} because of underlying class loading error: Type {1} not found.  If this is unexpected, enable DEBUG logging to see the full error.", format = Format.MESSAGE_FORMAT)
     void ignoringClassDueToLoadingError(Object param1, Object param2);
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 120, value = "Enums have already been injected")
-    String enumsAlreadyInjected();
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 122, value = "Unable to create InjectionTarget for {0}", format = Format.MESSAGE_FORMAT)
-    String enumInjectionTargetNotCreated(Object param1);
 
     @Message(id = 123, value = "Error loading {0} defined in {1}", format = Format.MESSAGE_FORMAT)
     DeploymentException errorLoadingBeansXmlEntry(Object param1, Object param2, @Cause Throwable cause);
@@ -148,22 +127,8 @@ public interface BootstrapLogger extends WeldLogger {
     @Message(id = 128, value = "Invalid value for property {0}: {1}", format = Format.MESSAGE_FORMAT)
     DeploymentException invalidPropertyValue(Object param1, Object param2);
 
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 129, value = "Two AnnotatedType implementations with the same id: {0}, {1}, {2}", format = Format.MESSAGE_FORMAT)
-    String duplicateAnnotatedTypeId(Object param1, Object param2, Object param3);
-
     @Message(id = 130, value = "Cannot replace AnnotatedType for {0} with AnnotatedType for {1}", format = Format.MESSAGE_FORMAT)
     IllegalArgumentException annotatedTypeJavaClassMismatch(Object param1, Object param2);
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 131, value = "Priority {0} specified at {1} is outside of the recommended range (0 - 3099)", format = Format.MESSAGE_FORMAT)
-    String priorityOutsideOfRecommendedRange(Object param1, Object param2);
 
     @LogMessage(level = Level.DEBUG)
     @Message(id = 132, value = "Disabled alternative (ignored): {0}", format = Format.MESSAGE_FORMAT)
@@ -194,7 +159,7 @@ public interface BootstrapLogger extends WeldLogger {
     void errorWhileLoadingClass(Object param1, Object param2);
 
     @LogMessage(level = Logger.Level.WARN)
-    @Message(id = 139, value = "Ignoring portable extension class {0} because of underlying class loading error: Type {1} not found. Enable DEBUG logging level to see the full error." , format = Format.MESSAGE_FORMAT)
+    @Message(id = 139, value = "Ignoring portable extension class {0} because of underlying class loading error: Type {1} not found. Enable DEBUG logging level to see the full error.", format = Format.MESSAGE_FORMAT)
     void ignoringExtensionClassDueToLoadingError(String className, String missingDependency);
 
     @Message(id = 140, value = "Calling Bootstrap method after container has already been initialized. For correct order, see CDI11Bootstrap's documentation.")
@@ -209,15 +174,15 @@ public interface BootstrapLogger extends WeldLogger {
     void exceptionLoadingAnnotatedType(String message);
 
     @LogMessage(level = Logger.Level.TRACE)
-    @Message(id = Message.NONE , value = "No PAT observers resolved for {0}. Skipping.", format = Format.MESSAGE_FORMAT)
+    @Message(id = Message.NONE, value = "No PAT observers resolved for {0}. Skipping.", format = Format.MESSAGE_FORMAT)
     void patSkipped(SlimAnnotatedType<?> type);
 
     @LogMessage(level = Logger.Level.TRACE)
-    @Message(id = Message.NONE , value = "Sending PAT using the default event resolver: {0}", format = Format.MESSAGE_FORMAT)
+    @Message(id = Message.NONE, value = "Sending PAT using the default event resolver: {0}", format = Format.MESSAGE_FORMAT)
     void patDefaultResolver(SlimAnnotatedType<?> type);
 
     @LogMessage(level = Logger.Level.TRACE)
-    @Message(id = Message.NONE , value = "Sending PAT using the fast event resolver: {0}", format = Format.MESSAGE_FORMAT)
+    @Message(id = Message.NONE, value = "Sending PAT using the fast event resolver: {0}", format = Format.MESSAGE_FORMAT)
     void patFastResolver(SlimAnnotatedType<?> type);
 
     @Message(id = 143, value = "Container lifecycle event method invoked outside of extension observer method invocation.")

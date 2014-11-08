@@ -58,25 +58,11 @@ public interface BeanManagerLogger extends WeldLogger {
     @Message(id = 1305, value = "The given type {0} is not a type of the bean {1}", format = Format.MESSAGE_FORMAT)
     IllegalArgumentException specifiedTypeNotBeanType(Object param1, Object param2);
 
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 1306, value = "Attempting to inject an unproxyable normal scoped bean {0} into {1}", format = Format.MESSAGE_FORMAT)
-    String unproxyableResolution(Object param1, Object param2);
-
     @Message(id = 1307, value = "Unable to resolve any beans of type {0} with qualifiers {1}", format = Format.MESSAGE_FORMAT)
     UnsatisfiedResolutionException unresolvableType(Object param1, Object param2);
 
     @Message(id = 1308, value = "Unable to resolve any beans for {0}", format = Format.MESSAGE_FORMAT)
     UnsatisfiedResolutionException unresolvableElement(Object param1);
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 1309, value = "Normal scoped bean {0} is not proxyable", format = Format.MESSAGE_FORMAT)
-    String notProxyable(Object param1);
 
     @Message(id = 1310, value = "No decorator types were specified in the set")
     IllegalArgumentException noDecoratorTypes();
@@ -108,41 +94,6 @@ public interface BeanManagerLogger extends WeldLogger {
     @Message(id = 1319, value = "Bean manager ID must not be null")
     IllegalArgumentException nullBeanManagerId();
 
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 1320, value = "Cannot inject into a non-contextual type:  {0}", format = Format.MESSAGE_FORMAT)
-    String injectionOnNonContextual(Object param1);
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 1321, value = "Bean constructor was not found before but appears to be found now")
-    String missingBeanConstructorFound();
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 1322, value = "Error invoking post construct method {0}", format = Format.MESSAGE_FORMAT)
-    String errorInvokingPostConstruct(Object param1);
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 1323, value = "Error invoking pre-destroy method {0}", format = Format.MESSAGE_FORMAT)
-    String errorInvokingPreDestroy(Object param1);
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 1324, value = "Argument bean must not be null")
-    String nullBeanArgument();
-
     @Message(id = 1325, value = "No instance of an extension {0} registered with the deployment", format = Format.MESSAGE_FORMAT)
     IllegalArgumentException noInstanceOfExtension(Object param1);
 
@@ -170,18 +121,6 @@ public interface BeanManagerLogger extends WeldLogger {
     @Message(id = 1333, value = "BeanManager method {0} is not available after shutdown", format = Format.MESSAGE_FORMAT)
     IllegalStateException methodNotAvailableAfterShutdown(Object param1);
 
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 1334, value = "Argument beanType must not be null")
-    String nullBeanTypeArgument();
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 1335, value = "Argument creationalContext must not be null")
-    String nullCreationalContextArgument();
+    // Last message id used was 1335
 
 }
