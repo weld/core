@@ -273,9 +273,7 @@ public class AnnotatedTypes {
             builder.append('(');
             Method[] declaredMethods = AccessController.doPrivileged(new GetDeclaredMethodsAction(a.annotationType()));
             List<Method> methods = new ArrayList<Method>(declaredMethods.length);
-            for (Method m : declaredMethods) {
-                methods.add(m);
-            }
+            Collections.addAll(methods, declaredMethods);
             Collections.sort(methods, MethodComparator.INSTANCE);
 
             for (int i = 0; i < methods.size(); ++i) {
