@@ -33,20 +33,20 @@ public class InterceptorMethodHandler implements MethodHandler, Serializable {
         SecurityActions.ensureAccessible(thisMethod);
         if (proceed == null) {
             if (thisMethod.getName().equals(InterceptionUtils.POST_CONSTRUCT)) {
-                return executeInterception(self, null, null, InterceptionType.POST_CONSTRUCT);
+                return executeInterception(self, null, null, null, InterceptionType.POST_CONSTRUCT);
             } else if (thisMethod.getName().equals(InterceptionUtils.PRE_DESTROY)) {
-                return executeInterception(self, null, null, InterceptionType.PRE_DESTROY);
+                return executeInterception(self, null, null, null, InterceptionType.PRE_DESTROY);
             }
         } else {
             if (isInterceptorMethod(thisMethod)) {
                 return proceed.invoke(self, args);
             }
-            return executeInterception(self, thisMethod, args, InterceptionType.AROUND_INVOKE);
+            return executeInterception(self, thisMethod, proceed, args, InterceptionType.AROUND_INVOKE);
         }
         return null;
     }
 
-    protected Object executeInterception(Object instance, Method method, Object[] args, InterceptionType interceptionType) throws Throwable {
+    protected Object executeInterception(Object instance, Method method, Method proceed, Object[] args, InterceptionType interceptionType) throws Throwable {
         List<InterceptorMethodInvocation> chain = null;
         if (method != null) {
             chain = cachedChains.get(method);
@@ -60,7 +60,7 @@ public class InterceptorMethodHandler implements MethodHandler, Serializable {
         } else {
             chain = ctx.buildInterceptorMethodInvocations(instance, null, interceptionType);
         }
-        return new WeldInvocationContext(instance, method, args, chain).proceed();
+        return new WeldInvocationContext(instance, method, proceed, args, chain).proceed();
     }
 
     private boolean isInterceptorMethod(Method method) {

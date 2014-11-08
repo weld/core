@@ -41,6 +41,7 @@ public class SimpleInvocationContext implements InvocationContext {
 
     private final Map<String, Object> contextData;
     private final Method method;
+    private final Method proceed;
     private Object[] parameters;
     private final Object target;
     private final Object timer;
@@ -60,17 +61,18 @@ public class SimpleInvocationContext implements InvocationContext {
 
     }
 
-    public SimpleInvocationContext(Object target, Method targetMethod, Object[] parameters) {
-        this(target, targetMethod, null, parameters, null, new HashMap<String, Object>());
+    public SimpleInvocationContext(Object target, Method targetMethod, Method proceed, Object[] parameters) {
+        this(target, targetMethod, proceed, null, parameters, null, new HashMap<String, Object>());
     }
 
     public SimpleInvocationContext(Constructor<?> constructor, Object[] parameters, Map<String, Object> contextData) {
-        this(null, null, constructor, parameters, null, contextData);
+        this(null, null, null, constructor, parameters, null, contextData);
     }
 
-    private SimpleInvocationContext(Object target, Method method, Constructor<?> constructor, Object[] parameters, Object timer, Map<String, Object> contextData) {
+    private SimpleInvocationContext(Object target, Method method, Method proceed, Constructor<?> constructor, Object[] parameters, Object timer, Map<String, Object> contextData) {
         this.target = target;
         this.method = method;
+        this.proceed = proceed;
         this.constructor = constructor;
         this.parameters = parameters;
         this.timer = timer;
@@ -199,10 +201,9 @@ public class SimpleInvocationContext implements InvocationContext {
 
     @Override
     public Object proceed() throws Exception {
-        Method method = getMethod();
-        if (method != null) {
-            SecurityActions.ensureAccessible(method);
-            return method.invoke(getTarget(), getParameters());
+        if (proceed != null) {
+            SecurityActions.ensureAccessible(proceed);
+            return proceed.invoke(getTarget(), getParameters());
         } else {
             return null;
         }

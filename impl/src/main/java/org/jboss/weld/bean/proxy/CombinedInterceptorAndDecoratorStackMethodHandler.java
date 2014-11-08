@@ -50,7 +50,12 @@ public class CombinedInterceptorAndDecoratorStackMethodHandler implements Method
             try {
                 if (interceptorMethodHandler != null) {
                     if (proceed != null) {
-                        return this.interceptorMethodHandler.invoke(outerDecorator != null ? outerDecorator : self, thisMethod, thisMethod, args);
+                        if (outerDecorator == null) {
+                            // use WeldSubclass.method$$super() as proceed
+                            return this.interceptorMethodHandler.invoke(self, thisMethod, proceed, args);
+                        } else {
+                            return this.interceptorMethodHandler.invoke(outerDecorator, thisMethod, thisMethod, args);
+                        }
                     } else {
                         return this.interceptorMethodHandler.invoke(self, thisMethod, null, args);
                     }
