@@ -44,7 +44,6 @@ import org.jboss.weld.util.bytecode.BytecodeUtils;
 import org.jboss.weld.util.bytecode.DescriptorUtils;
 import org.jboss.weld.util.bytecode.MethodInformation;
 import org.jboss.weld.util.bytecode.RuntimeMethodInformation;
-import org.jboss.weld.util.bytecode.StaticMethodInformation;
 
 /**
  * Factory for producing subclasses that are used by the combined interceptors and decorators stack.
@@ -130,15 +129,12 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
                         try {
 
                             MethodInformation methodInfo = new RuntimeMethodInformation(method);
-                            MethodInformation delegatingMethodInfo = new StaticMethodInformation(method.getName() + SUPER_DELEGATE_SUFFIX,
-                                    method.getParameterTypes(), method.getReturnType(), proxyClassType.getName(), Modifier.PRIVATE
-                                            | (method.getModifiers() & AccessFlag.BRIDGE));
-
-                            ClassMethod delegatingMethod = proxyClassType.addMethod(method.getModifiers() | AccessFlag.SYNTHETIC, method.getName()
+                            int modifiers = (method.getModifiers() | AccessFlag.SYNTHETIC | AccessFlag.PRIVATE) & ~AccessFlag.PUBLIC & ~AccessFlag.PROTECTED;
+                            ClassMethod delegatingMethod = proxyClassType.addMethod(modifiers, method.getName()
                                     + SUPER_DELEGATE_SUFFIX, DescriptorUtils.classToStringRepresentation(method.getReturnType()),
                                     DescriptorUtils.getParameterTypes(method.getParameterTypes()));
                             delegatingMethod.addCheckedExceptions((Class<? extends Exception>[]) method.getExceptionTypes());
-                            createDelegateToSuper(delegatingMethod, delegatingMethodInfo);
+                            createDelegateToSuper(delegatingMethod, methodInfo);
 
                             ClassMethod classMethod = proxyClassType.addMethod(method);
                             addConstructedGuardToMethodBody(classMethod);
