@@ -44,9 +44,7 @@ public class OrangeBean implements Bean<Orange> {
     @SuppressWarnings("unchecked")
     private <T> Set<T> immutableSet(T... items) {
         Set<T> set = new HashSet<T>();
-        for (T item : items) {
-            set.add(item);
-        }
+        Collections.addAll(set, items);
         return Collections.unmodifiableSet(set);
     }
 

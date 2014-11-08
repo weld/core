@@ -17,6 +17,7 @@
 package org.jboss.weld.tests.unit.util.collections;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -41,9 +42,7 @@ public abstract class AbstractImmutableListTest extends AbstractImmutableCollect
     @Override
     protected List<String> getDefaultCollection() {
         List<String> result = new ArrayList<>();
-        for (String item : getData()) {
-            result.add(item);
-        }
+        Collections.addAll(result, getData());
         return result;
     }
 

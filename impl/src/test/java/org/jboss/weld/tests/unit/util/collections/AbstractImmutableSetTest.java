@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.tests.unit.util.collections;
 
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -38,9 +39,7 @@ public abstract class AbstractImmutableSetTest extends AbstractImmutableCollecti
     @Override
     protected Set<String> getDefaultCollection() {
         Set<String> result = new LinkedHashSet<>();
-        for (String item : getData()) {
-            result.add(item);
-        }
+        Collections.addAll(result, getData());
         return result;
     }
 }
