@@ -1,7 +1,11 @@
 package org.jboss.weld.interceptor.proxy;
 
+import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.jboss.weld.bean.proxy.MethodHandler;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
@@ -14,10 +18,14 @@ import org.jboss.weld.interceptor.util.InterceptionUtils;
  */
 public class InterceptorMethodHandler implements MethodHandler, Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     private final InterceptionContext ctx;
+    private final transient ConcurrentMap<Method, List<InterceptorMethodInvocation>> cachedChains;
 
     public InterceptorMethodHandler(InterceptionContext ctx) {
         this.ctx = ctx;
+        this.cachedChains = new ConcurrentHashMap<Method, List<InterceptorMethodInvocation>>();
     }
 
     @Override
@@ -39,11 +47,27 @@ public class InterceptorMethodHandler implements MethodHandler, Serializable {
     }
 
     protected Object executeInterception(Object instance, Method method, Object[] args, InterceptionType interceptionType) throws Throwable {
-        SimpleInterceptionChain chain = new SimpleInterceptionChain(instance, method, args, interceptionType, ctx);
-        return chain.invokeNextInterceptor(new InterceptorInvocationContext(chain, instance, method, args));
+        List<InterceptorMethodInvocation> chain = null;
+        if (method != null) {
+            chain = cachedChains.get(method);
+            if (chain == null) {
+                chain = ctx.buildInterceptorMethodInvocations(instance, method, interceptionType);
+                List<InterceptorMethodInvocation> old = cachedChains.putIfAbsent(method, chain);
+                if (old != null) {
+                    chain = old;
+                }
+            }
+        } else {
+            chain = ctx.buildInterceptorMethodInvocations(instance, null, interceptionType);
+        }
+        return new WeldInvocationContext(instance, method, args, chain).proceed();
     }
 
     private boolean isInterceptorMethod(Method method) {
         return ctx.getInterceptionModel().getTargetClassInterceptorMetadata().isInterceptorMethod(method);
+    }
+
+    private Object readResolve() throws ObjectStreamException {
+        return new InterceptorMethodHandler(ctx);
     }
 }

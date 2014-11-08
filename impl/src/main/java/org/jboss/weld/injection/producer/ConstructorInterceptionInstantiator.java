@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.injection.producer;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -30,10 +31,9 @@ import org.jboss.weld.construction.api.ConstructionHandle;
 import org.jboss.weld.context.CreationalContextImpl;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.interceptor.proxy.InterceptionContext;
-import org.jboss.weld.interceptor.proxy.InterceptorInvocationContext;
-import org.jboss.weld.interceptor.proxy.SimpleInterceptionChain;
+import org.jboss.weld.interceptor.proxy.InterceptorMethodInvocation;
+import org.jboss.weld.interceptor.proxy.WeldInvocationContext;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
-import org.jboss.weld.interceptor.spi.model.InterceptionType;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -79,17 +79,17 @@ public class ConstructorInterceptionInstantiator<T> extends ForwardingInstantiat
                  */
                 final AtomicReference<T> target = new AtomicReference<T>();
 
-                SimpleInterceptionChain chain = new SimpleInterceptionChain(model.getConstructorInvocationInterceptors(), interceptionContext, InterceptionType.AROUND_CONSTRUCT) {
+                List<InterceptorMethodInvocation> chain = interceptionContext.buildInterceptorMethodInvocationsForConstructorInterception();
+                InvocationContext invocationContext = new WeldInvocationContext(constructor.getJavaMember(), parameters, data, chain) {
+
                     @Override
-                    protected Object interceptorChainCompleted(InvocationContext invocationCtx) throws Exception {
+                    protected Object interceptorChainCompleted() throws Exception {
                         // all the interceptors were invoked, call the constructor now
-                        T instance = handle.proceed(invocationCtx.getParameters(), invocationCtx.getContextData());
+                        T instance = handle.proceed(getParameters(), getContextData());
                         target.set(instance);
                         return null;
                     }
-                };
 
-                InterceptorInvocationContext invocationCtx = new InterceptorInvocationContext(chain, constructor.getJavaMember(), parameters, data) {
                     @Override
                     public Object getTarget() {
                         return target.get();
@@ -97,10 +97,10 @@ public class ConstructorInterceptionInstantiator<T> extends ForwardingInstantiat
                 };
 
                 try {
-                    chain.invokeNextInterceptor(invocationCtx);
+                    invocationContext.proceed();
                 } catch (RuntimeException e) {
                     throw e;
-                } catch (Throwable e) {
+                } catch (Exception e) {
                     throw new WeldException(e);
                 }
                 return target.get();
