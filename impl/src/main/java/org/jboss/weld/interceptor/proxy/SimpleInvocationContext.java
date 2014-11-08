@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2009, Red Hat, Inc. and/or its affiliates, and individual
- * contributors by the @authors tag. See the copyright.txt in the
- * distribution for a full listing of individual contributors.
+ * Copyright 2014, Red Hat, Inc., and individual contributors
+ * by the @authors tag. See the copyright.txt in the distribution for a
+ * full listing of individual contributors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,87 +14,67 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jboss.weld.interceptor.proxy;
 
-
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.jboss.weld.experimental.ExperimentalInvocationContext;
-import org.jboss.weld.interceptor.spi.context.InterceptionChain;
-import org.jboss.weld.util.Preconditions;
+import javax.interceptor.InvocationContext;
+
 import org.jboss.weld.util.Primitives;
-import org.jboss.weld.util.collections.ImmutableMap;
 import org.jboss.weld.util.collections.ImmutableSet;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
 /**
+ * Simple {@link InvocationContext} implementation whose {@link #proceed()} invokes the target method directly without calling any interceptors. If this is not
+ * a method interception, a call to {@link #proceed()} always returns null.
+ *
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
+ * @author Jozef Hartinger
  */
-public class InterceptorInvocationContext implements ExperimentalInvocationContext {
+public class SimpleInvocationContext implements InvocationContext {
 
     private final Map<String, Object> contextData;
-
     private final Method method;
-
     private Object[] parameters;
-
     private final Object target;
-
-    private final InterceptionChain interceptionChain;
-
     private final Object timer;
-
     private final Constructor<?> constructor;
-
-    private final Set<Annotation> interceptorBindings;
 
     private static final Map<Class<?>, Set<Class<?>>> WIDENING_TABLE;
 
     static {
-        ImmutableMap.Builder<Class<?>, Set<Class<?>>> builder = ImmutableMap.builder();
-        builder.put(byte.class, ImmutableSet.of(short.class, int.class, long.class, float.class, double.class));
-        builder.put(short.class, ImmutableSet.of(int.class, long.class, float.class, double.class));
-        builder.put(char.class, ImmutableSet.of(int.class, long.class, float.class, double.class));
-        builder.put(int.class, ImmutableSet.of(long.class, float.class, double.class));
-        builder.put(long.class, ImmutableSet.of(float.class, double.class));
-        builder.put(float.class, ImmutableSet.of(double.class));
-        WIDENING_TABLE = builder.build();
+        Map<Class<?>, Set<Class<?>>> wideningTable = new HashMap<Class<?>, Set<Class<?>>>();
+        wideningTable.put(byte.class, ImmutableSet.<Class<?>> of(short.class, int.class, long.class, float.class, double.class));
+        wideningTable.put(short.class, ImmutableSet.<Class<?>> of(int.class, long.class, float.class, double.class));
+        wideningTable.put(char.class, ImmutableSet.<Class<?>> of(int.class, long.class, float.class, double.class));
+        wideningTable.put(int.class, ImmutableSet.<Class<?>> of(long.class, float.class, double.class));
+        wideningTable.put(long.class, ImmutableSet.<Class<?>> of(float.class, double.class));
+        wideningTable.put(float.class, Collections.<Class<?>> singleton(double.class));
+        WIDENING_TABLE = Collections.unmodifiableMap(wideningTable);
 
     }
 
-    public InterceptorInvocationContext(InterceptionChain interceptionChain, Object target, Method targetMethod, Object[] parameters, Set<Annotation> interceptorBindings) {
-        this(interceptionChain, target, targetMethod, null, parameters, null, interceptorBindings);
+    public SimpleInvocationContext(Object target, Method targetMethod, Object[] parameters) {
+        this(target, targetMethod, null, parameters, null, new HashMap<String, Object>());
     }
 
-    public InterceptorInvocationContext(InterceptionChain interceptionChain, Object target, Method targetMethod, Object timer, Set<Annotation> interceptorBindings) {
-        this(interceptionChain, target, targetMethod, null, null, timer, interceptorBindings);
+    public SimpleInvocationContext(Constructor<?> constructor, Object[] parameters, Map<String, Object> contextData) {
+        this(null, null, constructor, parameters, null, contextData);
     }
 
-    public InterceptorInvocationContext(InterceptionChain interceptionChain, Constructor<?> constructor, Object[] parameters, Map<String, Object> contextData, Set<Annotation> interceptorBindings) {
-        this(interceptionChain, null, null, constructor, parameters, null, contextData, interceptorBindings);
-    }
-
-    private InterceptorInvocationContext(InterceptionChain interceptionChain, Object target, Method method, Constructor<?> constructor, Object[] parameters, Object timer, Set<Annotation> interceptorBindings) {
-        this(interceptionChain, target, method, constructor, parameters, timer, new HashMap<String, Object>(), interceptorBindings);
-    }
-
-    private InterceptorInvocationContext(InterceptionChain interceptionChain, Object target, Method method, Constructor<?> constructor, Object[] parameters, Object timer, Map<String, Object> contextData, Set<Annotation> interceptorBindings) {
-        this.interceptionChain = interceptionChain;
+    private SimpleInvocationContext(Object target, Method method, Constructor<?> constructor, Object[] parameters, Object timer, Map<String, Object> contextData) {
         this.target = target;
         this.method = method;
         this.constructor = constructor;
         this.parameters = parameters;
         this.timer = timer;
         this.contextData = contextData;
-        this.interceptorBindings = interceptorBindings;
     }
 
     @Override
@@ -122,17 +102,6 @@ public class InterceptorInvocationContext implements ExperimentalInvocationConte
         return target;
     }
 
-    @Override
-    public Object proceed() throws Exception {
-        try {
-            return interceptionChain.invokeNextInterceptor(this);
-        } catch (Exception e) {
-            throw e;
-        } catch (Throwable t) {
-            throw new InterceptorException(t);
-        }
-    }
-
     /**
      * Checks that the targetClass is widening the argument class
      *
@@ -157,14 +126,14 @@ public class InterceptorInvocationContext implements ExperimentalInvocationConte
                 parameterTypes = constructor.getParameterTypes();
             }
             if (parameterTypes.length != newParametersCount) {
-                throw new IllegalArgumentException("Wrong number of parameters: method has " + parameterTypes.length
-                        + ", attempting to set " + newParametersCount + (params != null ? "" : " (argument was null)"));
+                throw new IllegalArgumentException("Wrong number of parameters: method has " + parameterTypes.length + ", attempting to set "
+                        + newParametersCount + (params != null ? "" : " (argument was null)"));
             }
             if (params != null) {
                 for (int i = 0; i < params.length; i++) {
                     Class<?> methodParameterClass = parameterTypes[i];
                     if (params[i] != null) {
-                        //identity ok
+                        // identity ok
                         Class<? extends Object> newArgumentClass = params[i].getClass();
                         if (newArgumentClass.equals(methodParameterClass)) {
                             break;
@@ -172,12 +141,12 @@ public class InterceptorInvocationContext implements ExperimentalInvocationConte
                         if (newArgumentClass.isPrimitive()) {
                             // argument is primitive - never actually a case for interceptors
                             if (methodParameterClass.isPrimitive()) {
-                                //widening primitive
+                                // widening primitive
                                 if (!isWideningPrimitive(newArgumentClass, methodParameterClass)) {
                                     throwIAE(i, methodParameterClass, newArgumentClass);
                                 }
                             } else {
-                                //boxing+widening reference
+                                // boxing+widening reference
                                 Class<?> boxedArgumentClass = Primitives.wrap(newArgumentClass);
                                 if (!methodParameterClass.isAssignableFrom(boxedArgumentClass)) {
                                     throwIAE(i, methodParameterClass, newArgumentClass);
@@ -193,7 +162,7 @@ public class InterceptorInvocationContext implements ExperimentalInvocationConte
                                     throwIAE(i, methodParameterClass, newArgumentClass);
                                 }
                             } else {
-                                //widening reference
+                                // widening reference
                                 if (!methodParameterClass.isAssignableFrom(newArgumentClass)) {
                                     throwIAE(i, methodParameterClass, newArgumentClass);
                                 }
@@ -214,7 +183,8 @@ public class InterceptorInvocationContext implements ExperimentalInvocationConte
     }
 
     private void throwIAE(int i, Class<?> methodParameterClass, Class<? extends Object> newArgumentClass) {
-        throw new IllegalArgumentException("Incompatible parameter type on position: " + i + " :" + newArgumentClass + " (expected type was " + methodParameterClass.getName() + ")");
+        throw new IllegalArgumentException("Incompatible parameter type on position: " + i + " :" + newArgumentClass + " (expected type was "
+                + methodParameterClass.getName() + ")");
     }
 
     @Override
@@ -228,20 +198,13 @@ public class InterceptorInvocationContext implements ExperimentalInvocationConte
     }
 
     @Override
-    @java.lang.SuppressWarnings("unchecked")
-    public <T extends Annotation> Set<T> getInterceptorBindingsByType(Class<T> annotationType) {
-        Preconditions.checkArgumentNotNull(annotationType, "annotationType");
-        Set<T> result = new HashSet<>();
-        for (Annotation interceptorBinding : interceptorBindings) {
-            if (interceptorBinding.annotationType().equals(annotationType)) {
-                result.add((T) interceptorBinding);
-            }
+    public Object proceed() throws Exception {
+        Method method = getMethod();
+        if (method != null) {
+            SecurityActions.ensureAccessible(method);
+            return method.invoke(getTarget(), getParameters());
+        } else {
+            return null;
         }
-        return result;
-    }
-
-    @Override
-    public Set<Annotation> getInterceptorBindings() {
-        return interceptorBindings;
     }
 }
