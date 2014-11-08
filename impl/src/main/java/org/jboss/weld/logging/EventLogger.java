@@ -39,20 +39,13 @@ public interface EventLogger extends WeldLogger {
 
     EventLogger LOG = Logger.getMessageLogger(EventLogger.class, Category.EVENT.getName());
 
-    @LogMessage(level=Level.DEBUG)
+    @LogMessage(level = Level.DEBUG)
     @Message(id = 400, value = "Sending event {0} directly to observer {1}", format = Format.MESSAGE_FORMAT)
     void asyncFire(Object param1, Object param2);
 
-    @LogMessage(level=Level.ERROR)
+    @LogMessage(level = Level.ERROR)
     @Message(id = 401, value = "Failure while notifying an observer of event {0}", format = Format.MESSAGE_FORMAT)
     void asyncObserverFailure(Object param1);
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 402, value = "Sending event {0} asynchronously to transactional observer {1}", format = Format.MESSAGE_FORMAT)
-    String asyncTxFire(Object param1, Object param2);
 
     @Message(id = 403, value = "Proxy required")
     InvalidObjectException proxyRequired();
@@ -78,7 +71,7 @@ public interface EventLogger extends WeldLogger {
     @Message(id = 410, value = "Observer method {0} cannot define @WithAnnotations", format = Format.MESSAGE_FORMAT)
     DefinitionException invalidWithAnnotations(Object param1);
 
-    @LogMessage(level=Level.WARN)
+    @LogMessage(level = Level.WARN)
     @Message(id = 411, value = "Observer method {0} receives events for all annotated types. Consider restricting events using @WithAnnotations or a generic type with bounds.", format = Format.MESSAGE_FORMAT)
     void unrestrictedProcessAnnotatedTypes(Object param1);
 

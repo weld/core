@@ -35,13 +35,6 @@ public interface ElLogger extends WeldLogger {
 
     ElLogger LOG = Logger.getMessageLogger(ElLogger.class, Category.EL.getName());
 
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 1000, value = "Error resolving property {0} against base {1}", format = Format.MESSAGE_FORMAT)
-    String resolutionError(Object param1, Object param2);
-
     @Message(id = 1001, value = "Cannot pass null expressionFactory")
     IllegalArgumentException nullExpressionFactory();
 
