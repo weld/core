@@ -27,18 +27,23 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.io.ObjectStreamException;
 import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
 
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
+import org.jboss.weld.interceptor.reader.TargetClassInterceptorMetadata;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorClassMetadata;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
 import org.jboss.weld.manager.BeanManagerImpl;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 /**
@@ -102,5 +107,31 @@ public class InterceptionContext implements Serializable {
     private Object readResolve() throws ObjectStreamException {
         InterceptionModel interceptionModel = manager.getInterceptorModelRegistry().get(annotatedType);
         return new InterceptionContext(interceptorInstances, manager, interceptionModel, annotatedType);
+    }
+
+    public List<InterceptorMethodInvocation> buildInterceptorMethodInvocations(Object instance, Method method, InterceptionType interceptionType) {
+        List<? extends InterceptorClassMetadata<?>> interceptorList = interceptionModel.getInterceptors(interceptionType, method);
+        List<InterceptorMethodInvocation> interceptorInvocations = new ArrayList<InterceptorMethodInvocation>(interceptorList.size());
+        for (InterceptorClassMetadata<?> interceptorMetadata : interceptorList) {
+            interceptorInvocations.addAll(interceptorMetadata.getInterceptorInvocation(getInterceptorInstance(interceptorMetadata), interceptionType)
+                    .getInterceptorMethodInvocations());
+        }
+        TargetClassInterceptorMetadata targetClassInterceptorMetadata = getInterceptionModel().getTargetClassInterceptorMetadata();
+        if (targetClassInterceptorMetadata != null && targetClassInterceptorMetadata.isEligible(interceptionType)) {
+            interceptorInvocations
+                    .addAll(targetClassInterceptorMetadata.getInterceptorInvocation(instance, interceptionType).getInterceptorMethodInvocations());
+        }
+        return ImmutableList.copyOf(interceptorInvocations);
+    }
+
+    public List<InterceptorMethodInvocation> buildInterceptorMethodInvocationsForConstructorInterception() {
+        List<? extends InterceptorClassMetadata<?>> interceptorList = interceptionModel.getConstructorInvocationInterceptors();
+        List<InterceptorMethodInvocation> interceptorInvocations = new ArrayList<InterceptorMethodInvocation>(interceptorList.size());
+        for (InterceptorClassMetadata<?> metadata : interceptorList) {
+            Object interceptorInstance = getInterceptorInstance(metadata);
+            InterceptorInvocation invocation = metadata.getInterceptorInvocation(interceptorInstance, InterceptionType.AROUND_CONSTRUCT);
+            interceptorInvocations.addAll(invocation.getInterceptorMethodInvocations());
+        }
+        return ImmutableList.copyOf(interceptorInvocations);
     }
 }
