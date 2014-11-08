@@ -72,8 +72,8 @@ public class WeldInvocationContext extends ForwardingInvocationContext {
         this(new SimpleInvocationContext(constructor, parameters, contextData), chain);
     }
 
-    public WeldInvocationContext(Object target, Method targetMethod, Object[] parameters, List<InterceptorMethodInvocation> chain) {
-        this(new SimpleInvocationContext(target, targetMethod, parameters), chain);
+    public WeldInvocationContext(Object target, Method targetMethod, Method proceed, Object[] parameters, List<InterceptorMethodInvocation> chain) {
+        this(new SimpleInvocationContext(target, targetMethod, proceed, parameters), chain);
     }
 
     public WeldInvocationContext(InvocationContext delegate, List<InterceptorMethodInvocation> chain) {
