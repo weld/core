@@ -17,6 +17,7 @@
 package org.jboss.weld.test.util.annotated;
 
 import java.lang.reflect.Type;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -36,16 +37,12 @@ class TestTypeClosureBuilder {
             c = c.getSuperclass();
         }
         while (c != null);
-        for (Class<?> i : beanType.getInterfaces()) {
-            types.add(i);
-        }
+        Collections.addAll(types, beanType.getInterfaces());
         return this;
     }
 
     public TestTypeClosureBuilder addInterfaces(Class<?> beanType) {
-        for (Class<?> i : beanType.getInterfaces()) {
-            types.add(i);
-        }
+        Collections.addAll(types, beanType.getInterfaces());
         return this;
     }
 

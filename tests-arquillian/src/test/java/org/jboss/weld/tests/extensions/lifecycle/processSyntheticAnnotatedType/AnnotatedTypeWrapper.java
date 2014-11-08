@@ -34,9 +34,7 @@ public class AnnotatedTypeWrapper<T> extends ForwardingAnnotatedType<T> {
     public AnnotatedTypeWrapper(AnnotatedType<T> delegate, Annotation... annotations) {
         this.delegate = delegate;
         this.annotations = new HashSet<Annotation>(delegate.getAnnotations());
-        for (Annotation annotation : annotations) {
-            this.annotations.add(annotation);
-        }
+        Collections.addAll(this.annotations, annotations);
     }
 
     @Override

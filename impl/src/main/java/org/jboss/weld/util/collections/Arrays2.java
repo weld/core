@@ -20,6 +20,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -45,9 +46,7 @@ public class Arrays2 {
 
     public static <T> Set<T> asSet(T... array) {
         Set<T> result = new HashSet<T>(array.length);
-        for (T a : array) {
-            result.add(a);
-        }
+        Collections.addAll(result, array);
         return result;
     }
 
