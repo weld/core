@@ -44,7 +44,7 @@ import org.jboss.classfilewriter.code.BranchEnd;
 import org.jboss.classfilewriter.code.CodeAttribute;
 import org.jboss.weld.Container;
 import org.jboss.weld.bean.proxy.util.SerializableClientProxy;
-import org.jboss.weld.context.cache.RequestScopedBeanCache;
+import org.jboss.weld.context.cache.RequestScopedCache;
 import org.jboss.weld.security.GetDeclaredFieldAction;
 import org.jboss.weld.security.SetAccessibleAction;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
@@ -256,7 +256,7 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
      */
     private void loadCacheableBeanInstance(ClassFile file, MethodInformation methodInfo, CodeAttribute b) {
         //first we need to see if the scope is active
-        b.invokestatic(RequestScopedBeanCache.class.getName(), "isActive", EMPTY_PARENTHESES + DescriptorUtils.BOOLEAN_CLASS_DESCRIPTOR);
+        b.invokestatic(RequestScopedCache.class.getName(), "isActive", EMPTY_PARENTHESES + DescriptorUtils.BOOLEAN_CLASS_DESCRIPTOR);
         //if it is not active we just get the bean directly
 
         final BranchEnd returnInstruction = b.ifeq();
@@ -280,7 +280,7 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
         b.dupX1();
         b.swap();
         b.invokevirtual(ThreadLocal.class.getName(), "set", "(" + LJAVA_LANG_OBJECT + ")" + DescriptorUtils.VOID_CLASS_DESCRIPTOR);
-        b.invokestatic(RequestScopedBeanCache.class.getName(), "addItem", "(" + LJAVA_LANG_THREAD_LOCAL + ")" + DescriptorUtils.VOID_CLASS_DESCRIPTOR);
+        b.invokestatic(RequestScopedCache.class.getName(), "addItem", "(" + LJAVA_LANG_THREAD_LOCAL + ")" + DescriptorUtils.VOID_CLASS_DESCRIPTOR);
         final BranchEnd endOfIfStatement = b.gotoInstruction();
         b.branchEnd(returnInstruction);
         loadBeanInstance(file, methodInfo, b);
