@@ -59,11 +59,12 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
     private static final String COMBINED_INTERCEPTOR_AND_DECORATOR_STACK_METHOD_HANDLER_CLASS_NAME = CombinedInterceptorAndDecoratorStackMethodHandler.class.getName();
 
     private final Set<MethodSignature> enhancedMethodSignatures;
+    private final Set<MethodSignature> interceptedMethodSignatures;
 
     private final Class<?> proxiedBeanType;
 
-    public InterceptedSubclassFactory(String contextId, Class<?> proxiedBeanType, Set<? extends Type> typeClosure, Bean<?> bean, Set<MethodSignature> enhancedMethodSignatures) {
-        this(contextId, proxiedBeanType, typeClosure, getProxyName(contextId, proxiedBeanType, typeClosure, bean), bean, enhancedMethodSignatures);
+    public InterceptedSubclassFactory(String contextId, Class<?> proxiedBeanType, Set<? extends Type> typeClosure, Bean<?> bean, Set<MethodSignature> enhancedMethodSignatures, Set<MethodSignature> interceptedMethodSignatures) {
+        this(contextId, proxiedBeanType, typeClosure, getProxyName(contextId, proxiedBeanType, typeClosure, bean), bean, enhancedMethodSignatures, interceptedMethodSignatures);
     }
 
     /**
@@ -75,9 +76,10 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
      * @param enhancedMethodSignatures a restricted set of methods that need to be intercepted
      */
 
-    public InterceptedSubclassFactory(String contextId, Class<?> proxiedBeanType, Set<? extends Type> typeClosure, String proxyName, Bean<?> bean, Set<MethodSignature> enhancedMethodSignatures) {
+    public InterceptedSubclassFactory(String contextId, Class<?> proxiedBeanType, Set<? extends Type> typeClosure, String proxyName, Bean<?> bean, Set<MethodSignature> enhancedMethodSignatures, Set<MethodSignature> interceptedMethodSignatures) {
         super(contextId, proxiedBeanType, typeClosure, proxyName, bean, true);
         this.enhancedMethodSignatures = enhancedMethodSignatures;
+        this.interceptedMethodSignatures = interceptedMethodSignatures;
         this.proxiedBeanType = proxiedBeanType;
     }
 
@@ -128,18 +130,45 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
                             && !finalMethods.contains(methodSignature) && !processedBridgeMethods.contains(methodSignature)) {
                         try {
 
-                            MethodInformation methodInfo = new RuntimeMethodInformation(method);
+                            // create delegate-to-super method
+                            final MethodInformation methodInfo = new RuntimeMethodInformation(method);
                             int modifiers = (method.getModifiers() | AccessFlag.SYNTHETIC | AccessFlag.PRIVATE) & ~AccessFlag.PUBLIC & ~AccessFlag.PROTECTED;
-                            ClassMethod delegatingMethod = proxyClassType.addMethod(modifiers, method.getName()
-                                    + SUPER_DELEGATE_SUFFIX, DescriptorUtils.classToStringRepresentation(method.getReturnType()),
+                            ClassMethod delegatingMethod = proxyClassType.addMethod(modifiers, method.getName() + SUPER_DELEGATE_SUFFIX, DescriptorUtils.classToStringRepresentation(method.getReturnType()),
                                     DescriptorUtils.getParameterTypes(method.getParameterTypes()));
                             delegatingMethod.addCheckedExceptions((Class<? extends Exception>[]) method.getExceptionTypes());
                             createDelegateToSuper(delegatingMethod, methodInfo);
 
-                            ClassMethod classMethod = proxyClassType.addMethod(method);
-                            addConstructedGuardToMethodBody(classMethod);
-                            createForwardingMethodBody(classMethod, methodInfo, staticConstructor);
-                            BeanLogger.LOG.addingMethodToProxy(method);
+                            if (interceptedMethodSignatures.contains(methodSignature)) {
+                                // this method is intercepted
+                                // override a subclass method to delegate to method handler
+                                ClassMethod classMethod = proxyClassType.addMethod(method);
+                                addConstructedGuardToMethodBody(classMethod);
+                                createForwardingMethodBody(classMethod, methodInfo, staticConstructor);
+                                BeanLogger.LOG.addingMethodToProxy(method);
+                            } else {
+                                // this method is not intercepted
+                                // we still need to override and push InterceptionDecorationContext stack to prevent full interception
+                                ClassMethod classMethod = proxyClassType.addMethod(method);
+                                new RunWithinInterceptionDecorationContextGenerator(classMethod) {
+
+                                    @Override
+                                    void doWork(CodeAttribute b, ClassMethod method) {
+                                        // build the bytecode that invokes the super class method directly
+                                        b.aload(0);
+                                        // create the method invocation
+                                        b.loadMethodParameters();
+                                        b.invokespecial(methodInfo.getDeclaringClass(), methodInfo.getName(), methodInfo.getDescriptor());
+                                        // leave the result on top of the stack
+                                    }
+
+                                    @Override
+                                    void doReturn(CodeAttribute b, ClassMethod method) {
+                                        // assumes doWork() result is on top of the stack
+                                        b.returnInstruction();
+                                    }
+                                }.runStartIfNotOnTop();
+                            }
+
 
                         } catch (DuplicateMemberException e) {
                             // do nothing. This will happen if superclass methods have

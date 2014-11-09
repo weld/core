@@ -23,7 +23,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.AnnotatedMethod;
-import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.annotated.enhanced.ConstructorSignature;
@@ -31,13 +30,18 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedConstructor;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.enhanced.MethodSignature;
 import org.jboss.weld.annotated.enhanced.jlr.MethodSignatureImpl;
+import org.jboss.weld.annotated.slim.SlimAnnotatedType;
+import org.jboss.weld.annotated.slim.SlimAnnotatedTypeStore;
 import org.jboss.weld.bean.proxy.InterceptedSubclassFactory;
 import org.jboss.weld.injection.ConstructorInjectionPoint;
 import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.ProxyClassConstructorInjectionPointWrapper;
+import org.jboss.weld.interceptor.spi.model.InterceptionModel;
+import org.jboss.weld.interceptor.spi.model.InterceptionType;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.collections.WeldCollections;
 
 /**
  * Instantiates an enhanced subclass of a given component class. This class is thread-safe.
@@ -83,11 +87,23 @@ public class SubclassedComponentInstantiator<T> extends AbstractInstantiator<T> 
         return findMatchingConstructor(originalConstructorInjectionPoint.getSignature(), enhancedSubclass);
     }
 
-    protected Class<T> createEnhancedSubclass(AnnotatedType<T> type, Bean<?> bean, BeanManagerImpl manager) {
+    protected Class<T> createEnhancedSubclass(EnhancedAnnotatedType<T> type, Bean<?> bean, BeanManagerImpl manager) {
+        Set<InterceptionModel> models = getInterceptionModelsForType(type, manager, bean);
         Set<MethodSignature> enhancedMethodSignatures = new HashSet<MethodSignature>();
+        Set<MethodSignature> interceptedMethodSignatures = (models == null) ? enhancedMethodSignatures : new HashSet<MethodSignature>();
+
         for (AnnotatedMethod<?> method : Beans.getInterceptableMethods(type)) {
-            enhancedMethodSignatures.add(new MethodSignatureImpl(method));
+            enhancedMethodSignatures.add(MethodSignatureImpl.of(method));
+            if (models != null) {
+                for (InterceptionModel model : models) {
+                    if (!model.getInterceptors(InterceptionType.AROUND_INVOKE, method.getJavaMember()).isEmpty()) {
+                        interceptedMethodSignatures.add(MethodSignatureImpl.of(method));
+                        break;
+                    }
+                }
+            }
         }
+
         Set<Type> types = null;
         if (bean == null) {
             // TODO we may need to really discover types here
@@ -95,7 +111,22 @@ public class SubclassedComponentInstantiator<T> extends AbstractInstantiator<T> 
         } else {
             types = bean.getTypes();
         }
-        return new InterceptedSubclassFactory<T>(manager.getContextId(), type.getJavaClass(), types, bean, enhancedMethodSignatures).getProxyClass();
+        return new InterceptedSubclassFactory<T>(manager.getContextId(), type.getJavaClass(), types, bean, enhancedMethodSignatures, interceptedMethodSignatures).getProxyClass();
+    }
+
+    private Set<InterceptionModel> getInterceptionModelsForType(EnhancedAnnotatedType<T> type, BeanManagerImpl manager, Bean<?> bean) {
+        // if the bean has decorators consider all methods as intercepted
+        // TODO - reduce this to decorated types only
+        if (bean != null && !manager.resolveDecorators(bean.getTypes(), bean.getQualifiers()).isEmpty()) {
+            return null;
+        }
+        SlimAnnotatedTypeStore store = manager.getServices().get(SlimAnnotatedTypeStore.class);
+        Set<InterceptionModel> models = new HashSet<InterceptionModel>();
+        WeldCollections.addIfNotNull(models, manager.getInterceptorModelRegistry().get(type.slim()));
+        for (SlimAnnotatedType<?> slimType : store.get(type.getJavaClass())) {
+            WeldCollections.addIfNotNull(models, manager.getInterceptorModelRegistry().get(slimType));
+        }
+        return models;
     }
 
     @Override
