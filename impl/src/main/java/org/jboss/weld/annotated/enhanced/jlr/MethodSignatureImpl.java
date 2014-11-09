@@ -21,11 +21,19 @@ import java.util.Arrays;
 
 import javax.enterprise.inject.spi.AnnotatedMethod;
 
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.MethodSignature;
 import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.reflection.Reflections;
 
 public class MethodSignatureImpl implements MethodSignature {
+
+    public static MethodSignature of(AnnotatedMethod<?> method) {
+        if (method instanceof EnhancedAnnotatedMethod<?, ?>) {
+            return Reflections.<EnhancedAnnotatedMethod<?, ?>>cast(method).getSignature();
+        }
+        return new MethodSignatureImpl(method);
+    }
 
     private static final long serialVersionUID = 870948075030895317L;
 
