@@ -23,7 +23,7 @@ import javax.servlet.http.HttpSession;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.api.Service;
-import org.jboss.weld.context.cache.RequestScopedBeanCache;
+import org.jboss.weld.context.cache.RequestScopedCache;
 import org.jboss.weld.context.http.HttpRequestContext;
 import org.jboss.weld.context.http.HttpRequestContextImpl;
 import org.jboss.weld.context.http.HttpSessionContext;
@@ -151,7 +151,7 @@ public class HttpContextLifecycle implements Service {
         deactivateSessionDestructionContext(session);
         boolean destroyed = getSessionContext().destroy(session);
         SessionHolder.clear();
-        RequestScopedBeanCache.endRequest();
+        RequestScopedCache.endRequest();
         if (destroyed) {
             // we are outside of a request (the session timed out) and therefore the session was destroyed immediately
             // we can fire the @Destroyed(SessionScoped.class) event immediately
