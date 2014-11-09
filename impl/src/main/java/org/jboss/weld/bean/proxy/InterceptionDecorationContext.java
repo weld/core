@@ -81,7 +81,7 @@ public class InterceptionDecorationContext {
      *
      * The caller of this method is required to call {@link #endInterceptorContext()} if and only if this method returns true.
      */
-    public static boolean startInterceptorContextIfNotEmpty() {
+    public static boolean startIfNotEmpty() {
         Deque<CombinedInterceptorAndDecoratorStackMethodHandler> stack = interceptionContexts.get();
         if (empty(stack)) {
             return false;
