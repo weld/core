@@ -4,7 +4,7 @@ import org.jboss.weld.context.AbstractBoundContext;
 import org.jboss.weld.context.beanstore.MapBeanStore;
 import org.jboss.weld.context.beanstore.NamingScheme;
 import org.jboss.weld.context.beanstore.SimpleNamingScheme;
-import org.jboss.weld.context.cache.RequestScopedBeanCache;
+import org.jboss.weld.context.cache.RequestScopedCache;
 
 import javax.enterprise.context.RequestScoped;
 import java.lang.annotation.Annotation;
@@ -36,13 +36,13 @@ public class BoundRequestContextImpl extends AbstractBoundContext<Map<String, Ob
     @Override
     public void activate() {
         super.activate();
-        RequestScopedBeanCache.beginRequest();
+        RequestScopedCache.beginRequest();
     }
 
     @Override
     public void deactivate() {
         try {
-            RequestScopedBeanCache.endRequest();
+            RequestScopedCache.endRequest();
         } finally {
             super.deactivate();
         }
