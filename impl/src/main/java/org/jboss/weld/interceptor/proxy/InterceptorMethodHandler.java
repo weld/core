@@ -12,6 +12,7 @@ import java.util.concurrent.ConcurrentMap;
 import org.jboss.weld.bean.proxy.MethodHandler;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
 import org.jboss.weld.interceptor.util.InterceptionUtils;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * @author Marius Bogoevici
@@ -33,7 +34,7 @@ public class InterceptorMethodHandler implements MethodHandler, Serializable {
 
     @Override
     public Object invoke(Object self, Method thisMethod, Method proceed, Object[] args) throws Throwable {
-        SecurityActions.ensureAccessible(thisMethod);
+        SecurityActions.ensureAccessible(proceed);
         if (proceed == null) {
             if (thisMethod.getName().equals(InterceptionUtils.POST_CONSTRUCT)) {
                 return executeInterception(self, null, null, null, InterceptionType.POST_CONSTRUCT);
@@ -50,24 +51,33 @@ public class InterceptorMethodHandler implements MethodHandler, Serializable {
     }
 
     protected Object executeInterception(Object instance, Method method, Method proceed, Object[] args, InterceptionType interceptionType) throws Throwable {
-        List<InterceptorMethodInvocation> chain = null;
-        Set<Annotation> interceptorBindings = null;
+        CachedInterceptionChain chain = getInterceptionChain(instance, method, interceptionType);
+        if (chain.chain.isEmpty()) {
+            // shortcut if there are no interceptors
+            if (proceed == null) {
+                return null;
+            } else {
+                return Reflections.invokeAndUnwrap(instance, proceed, args);
+            }
+        } else {
+            return new WeldInvocationContext(instance, method, proceed, args, chain.chain, chain.interceptorBindings).proceed();
+        }
+    }
+
+    private CachedInterceptionChain getInterceptionChain(Object instance, Method method, InterceptionType interceptionType) {
         if (method != null) {
             CachedInterceptionChain cachedChain = cachedChains.get(method);
             if (cachedChain == null) {
-                cachedChain = new CachedInterceptionChain(ctx.buildInterceptorMethodInvocations(instance, method, interceptionType), ctx.getInterceptionModel().getMemberInterceptorBindings(method));
+                cachedChain = new CachedInterceptionChain(ctx.buildInterceptorMethodInvocations(instance, method, interceptionType), ctx.getInterceptionModel()
+                        .getMemberInterceptorBindings(method));
                 CachedInterceptionChain old = cachedChains.putIfAbsent(method, cachedChain);
                 if (old != null) {
                     cachedChain = old;
                 }
             }
-            chain = cachedChain.chain;
-            interceptorBindings = cachedChain.interceptorBindings;
-        } else {
-            chain = ctx.buildInterceptorMethodInvocations(instance, null, interceptionType);
-            interceptorBindings = ctx.getInterceptionModel().getClassInterceptorBindings();
+            return cachedChain;
         }
-        return new WeldInvocationContext(instance, method, proceed, args, chain, interceptorBindings).proceed();
+        return new CachedInterceptionChain(ctx.buildInterceptorMethodInvocations(instance, null, interceptionType), ctx.getInterceptionModel().getClassInterceptorBindings());
     }
 
     private boolean isInterceptorMethod(Method method) {
