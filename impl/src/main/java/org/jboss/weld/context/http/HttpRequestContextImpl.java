@@ -31,7 +31,7 @@ import org.jboss.weld.context.AbstractBoundContext;
 import org.jboss.weld.context.beanstore.NamingScheme;
 import org.jboss.weld.context.beanstore.SimpleNamingScheme;
 import org.jboss.weld.context.beanstore.http.RequestBeanStore;
-import org.jboss.weld.context.cache.RequestScopedBeanCache;
+import org.jboss.weld.context.cache.RequestScopedCache;
 import org.jboss.weld.logging.ContextLogger;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -61,13 +61,13 @@ public class HttpRequestContextImpl extends AbstractBoundContext<HttpServletRequ
     @Override
     public void activate() {
         super.activate();
-        RequestScopedBeanCache.beginRequest();
+        RequestScopedCache.beginRequest();
     }
 
     @Override
     public void deactivate() {
         try {
-            RequestScopedBeanCache.endRequest();
+            RequestScopedCache.endRequest();
         } finally {
             super.deactivate();
         }
