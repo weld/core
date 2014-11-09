@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentMap;
 import org.jboss.weld.bean.proxy.MethodHandler;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
 import org.jboss.weld.interceptor.util.InterceptionUtils;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * @author Marius Bogoevici
@@ -30,7 +31,7 @@ public class InterceptorMethodHandler implements MethodHandler, Serializable {
 
     @Override
     public Object invoke(Object self, Method thisMethod, Method proceed, Object[] args) throws Throwable {
-        SecurityActions.ensureAccessible(thisMethod);
+        SecurityActions.ensureAccessible(proceed);
         if (proceed == null) {
             if (thisMethod.getName().equals(InterceptionUtils.POST_CONSTRUCT)) {
                 return executeInterception(self, null, null, null, InterceptionType.POST_CONSTRUCT);
@@ -47,9 +48,22 @@ public class InterceptorMethodHandler implements MethodHandler, Serializable {
     }
 
     protected Object executeInterception(Object instance, Method method, Method proceed, Object[] args, InterceptionType interceptionType) throws Throwable {
-        List<InterceptorMethodInvocation> chain = null;
+        List<InterceptorMethodInvocation> chain = getInterceptionChain(instance, method, interceptionType);
+        if (chain.isEmpty()) {
+            // shortcut if there are no interceptors
+            if (proceed == null) {
+                return null;
+            } else {
+                return Reflections.invokeAndUnwrap(instance, proceed, args);
+            }
+        } else {
+            return new WeldInvocationContext(instance, method, proceed, args, chain).proceed();
+        }
+    }
+
+    private List<InterceptorMethodInvocation> getInterceptionChain(Object instance, Method method, InterceptionType interceptionType) {
         if (method != null) {
-            chain = cachedChains.get(method);
+            List<InterceptorMethodInvocation> chain = cachedChains.get(method);
             if (chain == null) {
                 chain = ctx.buildInterceptorMethodInvocations(instance, method, interceptionType);
                 List<InterceptorMethodInvocation> old = cachedChains.putIfAbsent(method, chain);
@@ -57,10 +71,10 @@ public class InterceptorMethodHandler implements MethodHandler, Serializable {
                     chain = old;
                 }
             }
+            return chain;
         } else {
-            chain = ctx.buildInterceptorMethodInvocations(instance, null, interceptionType);
+            return ctx.buildInterceptorMethodInvocations(instance, null, interceptionType);
         }
-        return new WeldInvocationContext(instance, method, proceed, args, chain).proceed();
     }
 
     private boolean isInterceptorMethod(Method method) {

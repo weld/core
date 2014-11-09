@@ -202,7 +202,6 @@ public class SimpleInvocationContext implements InvocationContext {
     @Override
     public Object proceed() throws Exception {
         if (proceed != null) {
-            SecurityActions.ensureAccessible(proceed);
             return proceed.invoke(getTarget(), getParameters());
         } else {
             return null;
