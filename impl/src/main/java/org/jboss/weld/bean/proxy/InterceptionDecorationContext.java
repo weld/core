@@ -113,6 +113,16 @@ public class InterceptionDecorationContext {
             interceptionContexts.remove();
             valid = false;
         }
+
+        public int size() {
+            return elements.size();
+        }
+
+        @Override
+        public String toString() {
+            return "Stack [valid=" + valid + ", cached=" + !removeWhenEmpty + ", elements=" + elements + "]";
+        }
+
     }
 
     private InterceptionDecorationContext() {
