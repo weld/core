@@ -26,6 +26,7 @@ import javax.interceptor.InvocationContext;
 
 import org.jboss.weld.bean.proxy.CombinedInterceptorAndDecoratorStackMethodHandler;
 import org.jboss.weld.bean.proxy.InterceptionDecorationContext;
+import org.jboss.weld.bean.proxy.InterceptionDecorationContext.Stack;
 import org.jboss.weld.logging.InterceptorLogger;
 import org.jboss.weld.util.ForwardingInvocationContext;
 
@@ -41,45 +42,32 @@ import org.jboss.weld.util.ForwardingInvocationContext;
  */
 public class WeldInvocationContext extends ForwardingInvocationContext {
 
-    private abstract class RunInInterceptionContext {
-
-        protected abstract Object doWork() throws Exception;
-
-        public Object run() throws Exception {
-            if (currentInterceptionContext == null) {
-                return doWork();
-            }
-            /*
-             * Make sure that the right interception context is on top of the stack before invoking the component or next interceptor. See WELD-1538 for details
-             */
-            final boolean pushed = InterceptionDecorationContext.startIfNotOnTop(currentInterceptionContext);
-            try {
-                return doWork();
-            } finally {
-                if (pushed) {
-                    InterceptionDecorationContext.endInterceptorContext();
-                }
-            }
-        }
-    }
-
     private int position;
     private final List<InterceptorMethodInvocation> chain;
-    private final CombinedInterceptorAndDecoratorStackMethodHandler currentInterceptionContext;
+    private final CombinedInterceptorAndDecoratorStackMethodHandler interceptionContext;
     private final InvocationContext delegate;
+    /*
+     * The current InterceptionDecorationContext. It may be null for e.g. lifecycle interception.
+     */
+    private final Stack stack;
 
     public WeldInvocationContext(Constructor<?> constructor, Object[] parameters, Map<String, Object> contextData, List<InterceptorMethodInvocation> chain) {
-        this(new SimpleInvocationContext(constructor, parameters, contextData), chain);
+        this(new SimpleInvocationContext(constructor, parameters, contextData), chain, null);
     }
 
-    public WeldInvocationContext(Object target, Method targetMethod, Method proceed, Object[] parameters, List<InterceptorMethodInvocation> chain) {
-        this(new SimpleInvocationContext(target, targetMethod, proceed, parameters), chain);
+    public WeldInvocationContext(Object target, Method targetMethod, Method proceed, Object[] parameters, List<InterceptorMethodInvocation> chain, Stack stack) {
+        this(new SimpleInvocationContext(target, targetMethod, proceed, parameters), chain, stack);
     }
 
     public WeldInvocationContext(InvocationContext delegate, List<InterceptorMethodInvocation> chain) {
+        this(delegate, chain, InterceptionDecorationContext.getStack());
+    }
+
+    public WeldInvocationContext(InvocationContext delegate, List<InterceptorMethodInvocation> chain, Stack stack) {
         this.delegate = delegate;
         this.chain = chain;
-        this.currentInterceptionContext = InterceptionDecorationContext.peekIfNotEmpty();
+        this.stack = stack;
+        this.interceptionContext = (stack == null) ? null : stack.peek();
     }
 
     @Override
@@ -92,37 +80,23 @@ public class WeldInvocationContext extends ForwardingInvocationContext {
     }
 
     protected Object invokeNext() throws Exception {
-        return new RunInInterceptionContext() {
-            @Override
-            protected Object doWork() throws Exception {
-                int oldCurrentPosition = position;
-                try {
-                    InterceptorMethodInvocation nextInterceptorMethodInvocation = chain.get(position++);
-                    InterceptorLogger.LOG.invokingNextInterceptorInChain(nextInterceptorMethodInvocation);
-                    if (nextInterceptorMethodInvocation.expectsInvocationContext()) {
-                        return nextInterceptorMethodInvocation.invoke(WeldInvocationContext.this);
-                    } else {
-                        nextInterceptorMethodInvocation.invoke(null);
-                        while (hasNextInterceptor()) {
-                            nextInterceptorMethodInvocation = chain.get(position++);
-                            nextInterceptorMethodInvocation.invoke(null);
-                        }
-                        return null;
-                    }
-                } finally {
-                    position = oldCurrentPosition;
+        int oldCurrentPosition = position;
+        try {
+            InterceptorMethodInvocation nextInterceptorMethodInvocation = chain.get(position++);
+            InterceptorLogger.LOG.invokingNextInterceptorInChain(nextInterceptorMethodInvocation);
+            if (nextInterceptorMethodInvocation.expectsInvocationContext()) {
+                return nextInterceptorMethodInvocation.invoke(WeldInvocationContext.this);
+            } else {
+                nextInterceptorMethodInvocation.invoke(null);
+                while (hasNextInterceptor()) {
+                    nextInterceptorMethodInvocation = chain.get(position++);
+                    nextInterceptorMethodInvocation.invoke(null);
                 }
+                return null;
             }
-        }.run();
-    }
-
-    private Object finish() throws Exception {
-        return new RunInInterceptionContext() {
-            @Override
-            protected Object doWork() throws Exception {
-                return interceptorChainCompleted();
-            }
-        }.run();
+        } finally {
+            position = oldCurrentPosition;
+        }
     }
 
     protected Object interceptorChainCompleted() throws Exception {
@@ -131,11 +105,20 @@ public class WeldInvocationContext extends ForwardingInvocationContext {
 
     @Override
     public Object proceed() throws Exception {
+        boolean pushed = false;
+        /*
+         * No need to push the context for the first interceptor as the current context
+         * was set by CombinedInterceptorAndDecoratorStackMethodHandler
+         */
+        if (stack != null && position != 0) {
+            pushed = stack.startIfNotOnTop(interceptionContext);
+        }
+
         try {
             if (hasNextInterceptor()) {
                 return invokeNext();
             } else {
-                return finish();
+                return interceptorChainCompleted();
             }
         } catch (InvocationTargetException e) {
             Throwable cause = e.getCause();
@@ -146,6 +129,10 @@ public class WeldInvocationContext extends ForwardingInvocationContext {
                 throw (Exception) cause;
             }
             throw new RuntimeException(cause);
+        } finally {
+            if (pushed) {
+                stack.end();
+            }
         }
     }
 }

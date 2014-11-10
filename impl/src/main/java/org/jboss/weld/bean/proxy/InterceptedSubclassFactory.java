@@ -17,6 +17,8 @@
 
 package org.jboss.weld.bean.proxy;
 
+import static org.jboss.weld.util.bytecode.DescriptorUtils.classToStringRepresentation;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
@@ -34,6 +36,7 @@ import org.jboss.classfilewriter.code.BranchEnd;
 import org.jboss.classfilewriter.code.CodeAttribute;
 import org.jboss.weld.annotated.enhanced.MethodSignature;
 import org.jboss.weld.annotated.enhanced.jlr.MethodSignatureImpl;
+import org.jboss.weld.bean.proxy.InterceptionDecorationContext.Stack;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.interceptor.proxy.LifecycleMixin;
 import org.jboss.weld.interceptor.util.proxy.TargetInstanceProxy;
@@ -57,6 +60,7 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
     private static final String SUPER_DELEGATE_SUFFIX = "$$super";
 
     private static final String COMBINED_INTERCEPTOR_AND_DECORATOR_STACK_METHOD_HANDLER_CLASS_NAME = CombinedInterceptorAndDecoratorStackMethodHandler.class.getName();
+    private static final String[] INVOKE_METHOD_PARAMETERS = new String[] { classToStringRepresentation(Stack.class), LJAVA_LANG_OBJECT, LJAVA_LANG_REFLECT_METHOD, LJAVA_LANG_REFLECT_METHOD, "[" + LJAVA_LANG_OBJECT  };
 
     private final Set<MethodSignature> enhancedMethodSignatures;
     private final Set<MethodSignature> interceptedMethodSignatures;
@@ -268,6 +272,7 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
         final CodeAttribute b = method.getCodeAttribute();
         b.aload(0);
         b.getfield(method.getClassFile().getName(), METHOD_HANDLER_FIELD_NAME, DescriptorUtils.classToStringRepresentation(MethodHandler.class));
+        b.checkcast(StackAwareMethodHandler.class.getName());
 
         // this is a self invocation optimisation
         // test to see if this is a self invocation, and if so invokespecial the
@@ -275,17 +280,26 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
         if (addProceed) {
             b.dup();
             b.checkcast(COMBINED_INTERCEPTOR_AND_DECORATOR_STACK_METHOD_HANDLER_CLASS_NAME);
-            b.invokevirtual(COMBINED_INTERCEPTOR_AND_DECORATOR_STACK_METHOD_HANDLER_CLASS_NAME, "isDisabledHandler", "()" + DescriptorUtils.BOOLEAN_CLASS_DESCRIPTOR);
+
+            // get the Stack
+            b.invokestatic(InterceptionDecorationContext.class.getName(), "getStack", "()" + DescriptorUtils.classToStringRepresentation(Stack.class));
+            b.dupX1(); // Handler, Stack -> Stack, Handler, Stack
+            b.invokevirtual(COMBINED_INTERCEPTOR_AND_DECORATOR_STACK_METHOD_HANDLER_CLASS_NAME, "isDisabledHandler", "(" + DescriptorUtils.classToStringRepresentation(Stack.class) + ")" + DescriptorUtils.BOOLEAN_CLASS_DESCRIPTOR);
+
             b.iconst(0);
             BranchEnd invokeSuperDirectly = b.ifIcmpeq();
             // now build the bytecode that invokes the super class method
+            b.pop2(); // pop Stack and Handler
             b.aload(0);
             // create the method invocation
             b.loadMethodParameters();
             b.invokespecial(methodInfo.getDeclaringClass(), methodInfo.getName(), methodInfo.getDescriptor());
             b.returnInstruction();
             b.branchEnd(invokeSuperDirectly);
+        } else {
+            b.aconstNull();
         }
+
         b.aload(0);
         bytecodeMethodResolver.getDeclaredMethod(method, methodInfo.getDeclaringClass(), methodInfo.getName(), methodInfo.getParameterTypes(), staticConstructor);
 
@@ -318,7 +332,7 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
         }
         // now we have all our arguments on the stack
         // lets invoke the method
-        b.invokeinterface(MethodHandler.class.getName(), "invoke", "(" + LJAVA_LANG_OBJECT + LJAVA_LANG_REFLECT_METHOD + LJAVA_LANG_REFLECT_METHOD + "[" + LJAVA_LANG_OBJECT + ")" + LJAVA_LANG_OBJECT);
+        b.invokeinterface(StackAwareMethodHandler.class.getName(), "invoke", LJAVA_LANG_OBJECT, INVOKE_METHOD_PARAMETERS);
         if (addReturnInstruction) {
             // now we need to return the appropriate type
             if (methodInfo.getReturnType().equals(DescriptorUtils.VOID_CLASS_DESCRIPTOR)) {

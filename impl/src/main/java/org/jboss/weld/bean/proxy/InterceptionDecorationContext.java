@@ -22,6 +22,7 @@ import java.util.Deque;
 import java.util.EmptyStackException;
 
 import org.jboss.weld.context.cache.RequestScopedCache;
+import org.jboss.weld.context.cache.RequestScopedItem;
 
 /**
  * A class that holds the interception (and decoration) contexts which are currently in progress.
@@ -39,11 +40,14 @@ import org.jboss.weld.context.cache.RequestScopedCache;
 public class InterceptionDecorationContext {
     private static ThreadLocal<Stack> interceptionContexts = new ThreadLocal<Stack>();
 
-    private static class Stack {
+    public static class Stack implements RequestScopedItem {
         private final boolean removeWhenEmpty;
         private final Deque<CombinedInterceptorAndDecoratorStackMethodHandler> elements;
+        private final ThreadLocal<Stack> interceptionContexts;
+        private boolean valid;
 
-        private Stack() {
+        private Stack(ThreadLocal<Stack> interceptionContexts) {
+            this.interceptionContexts = interceptionContexts;
             this.elements = new ArrayDeque<CombinedInterceptorAndDecoratorStackMethodHandler>();
             /*
              * Setting / removing of a thread-local is much more expensive compared to get. Therefore,
@@ -52,11 +56,62 @@ public class InterceptionDecorationContext {
              * If it is not, the performance characteristics are similar to explicitly removing the thread-local
              * once the stack gets empty.
              */
-            this.removeWhenEmpty = !RequestScopedCache.addItemIfActive(interceptionContexts);
+            this.removeWhenEmpty = !RequestScopedCache.addItemIfActive(this);
+            this.valid = true;
         }
 
         private boolean shouldRemove() {
             return removeWhenEmpty && elements.isEmpty();
+        }
+
+        /**
+         * Pushes the given context to the stack if the given context is not on top of the stack already.
+         * If push happens, the caller is responsible for calling {@link #endInterceptorContext()} after the invocation finishes.
+         * @param context the given context
+         * @return true if the given context was pushed to the top of the stack, false if the given context was on top already
+         */
+        public boolean startIfNotOnTop(CombinedInterceptorAndDecoratorStackMethodHandler context) {
+            checkState();
+            if (elements.isEmpty() || peek() != context) {
+                push(context);
+                return true;
+            }
+            return false;
+        }
+
+        public void end() {
+            pop();
+        }
+
+        private void push(CombinedInterceptorAndDecoratorStackMethodHandler item) {
+            checkState();
+            elements.addFirst(item);
+        }
+
+        public CombinedInterceptorAndDecoratorStackMethodHandler peek() {
+            checkState();
+            return elements.peekFirst();
+        }
+
+        private CombinedInterceptorAndDecoratorStackMethodHandler pop() {
+            checkState();
+            CombinedInterceptorAndDecoratorStackMethodHandler top = elements.removeFirst();
+            if (shouldRemove()) {
+                invalidate();
+            }
+            return top;
+        }
+
+        private void checkState() {
+            if (!valid) {
+                throw new IllegalStateException("This InterceptionDecorationContext is no longer valid.");
+            }
+        }
+
+        @Override
+        public void invalidate() {
+            interceptionContexts.remove();
+            valid = false;
         }
     }
 
@@ -78,10 +133,10 @@ public class InterceptionDecorationContext {
      */
     public static CombinedInterceptorAndDecoratorStackMethodHandler peekIfNotEmpty() {
         Stack stack = interceptionContexts.get();
-        if (empty(stack)) {
+        if (stack == null) {
             return null;
         }
-        return peek(stack);
+        return stack.peek();
     }
 
     /**
@@ -109,7 +164,7 @@ public class InterceptionDecorationContext {
         if (empty(stack)) {
             return false;
         }
-        push(interceptionContexts.get(), CombinedInterceptorAndDecoratorStackMethodHandler.NULL_INSTANCE);
+        stack.push(CombinedInterceptorAndDecoratorStackMethodHandler.NULL_INSTANCE);
         return true;
     }
 
@@ -120,41 +175,35 @@ public class InterceptionDecorationContext {
      * @return true if the given context was pushed to the top of the stack, false if the given context was on top already
      */
     public static boolean startIfNotOnTop(CombinedInterceptorAndDecoratorStackMethodHandler context) {
+        return getStack().startIfNotOnTop(context);
+    }
+
+    /**
+     * Gets the current Stack. If the stack is not set, a new empty instance is created and set.
+     * @return
+     */
+    public static Stack getStack() {
         Stack stack = interceptionContexts.get();
-        if (empty(stack) || peek(stack) != context) { // == used intentionally instead of equals
-            push(stack, context);
-            return true;
+        if (stack == null) {
+            stack = new Stack(interceptionContexts);
+            interceptionContexts.set(stack);
         }
-        return false;
+        return stack;
     }
 
     private static CombinedInterceptorAndDecoratorStackMethodHandler pop(Stack stack) {
         if (stack == null) {
             throw new EmptyStackException();
         } else {
-            try {
-                return stack.elements.removeFirst();
-            } finally {
-                if (stack.shouldRemove()) {
-                    interceptionContexts.remove();
-                }
-            }
+            return stack.pop();
         }
-    }
-
-    private static void push(Stack stack, CombinedInterceptorAndDecoratorStackMethodHandler item) {
-        if (stack == null) {
-            stack = new Stack();
-            interceptionContexts.set(stack);
-        }
-        stack.elements.addFirst(item);
     }
 
     private static CombinedInterceptorAndDecoratorStackMethodHandler peek(Stack stack) {
         if (stack == null) {
             throw new EmptyStackException();
         } else {
-            return stack.elements.peekFirst();
+            return stack.peek();
         }
     }
 
