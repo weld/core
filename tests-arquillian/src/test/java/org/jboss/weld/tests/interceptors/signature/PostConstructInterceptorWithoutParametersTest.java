@@ -38,13 +38,13 @@ public class PostConstructInterceptorWithoutParametersTest extends AbstractSigna
     public static Archive<?> deploy() {
         return ShrinkWrap.create(BeanArchive.class)
                 .intercept(MyInterceptor.class)
-                .addClasses(AbstractSignatureTestBase.class, Lifecycle.class, InterceptedBean.class);
+                .addClasses(AbstractSignatureTestBase.class, Lifecycle.class, LifecycleInterceptedBean.class);
     }
 
     @Test
     public void testDeploymentFails() {
         MyInterceptor.invoked = false;
-        getBean(InterceptedBean.class);
+        getBean(LifecycleInterceptedBean.class);
         assertNotInvoked(MyInterceptor.invoked);
     }
 
