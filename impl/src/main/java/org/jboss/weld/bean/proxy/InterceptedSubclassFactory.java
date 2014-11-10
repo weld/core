@@ -133,16 +133,16 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
                     if (!Modifier.isFinal(method.getModifiers()) && !method.isBridge() && enhancedMethodSignatures.contains(methodSignature)
                             && !finalMethods.contains(methodSignature) && !processedBridgeMethods.contains(methodSignature)) {
                         try {
-
-                            // create delegate-to-super method
                             final MethodInformation methodInfo = new RuntimeMethodInformation(method);
-                            int modifiers = (method.getModifiers() | AccessFlag.SYNTHETIC | AccessFlag.PRIVATE) & ~AccessFlag.PUBLIC & ~AccessFlag.PROTECTED;
-                            ClassMethod delegatingMethod = proxyClassType.addMethod(modifiers, method.getName() + SUPER_DELEGATE_SUFFIX, DescriptorUtils.classToStringRepresentation(method.getReturnType()),
-                                    DescriptorUtils.getParameterTypes(method.getParameterTypes()));
-                            delegatingMethod.addCheckedExceptions((Class<? extends Exception>[]) method.getExceptionTypes());
-                            createDelegateToSuper(delegatingMethod, methodInfo);
 
                             if (interceptedMethodSignatures.contains(methodSignature)) {
+                                // create delegate-to-super method
+                                int modifiers = (method.getModifiers() | AccessFlag.SYNTHETIC | AccessFlag.PRIVATE) & ~AccessFlag.PUBLIC & ~AccessFlag.PROTECTED;
+                                ClassMethod delegatingMethod = proxyClassType.addMethod(modifiers, method.getName() + SUPER_DELEGATE_SUFFIX, DescriptorUtils.classToStringRepresentation(method.getReturnType()),
+                                        DescriptorUtils.getParameterTypes(method.getParameterTypes()));
+                                delegatingMethod.addCheckedExceptions((Class<? extends Exception>[]) method.getExceptionTypes());
+                                createDelegateToSuper(delegatingMethod, methodInfo);
+
                                 // this method is intercepted
                                 // override a subclass method to delegate to method handler
                                 ClassMethod classMethod = proxyClassType.addMethod(method);
