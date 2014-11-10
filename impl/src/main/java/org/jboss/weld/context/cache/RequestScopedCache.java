@@ -48,26 +48,17 @@ public class RequestScopedCache {
         cache.add(item);
     }
 
-    public static void addItem(final ThreadLocal<?> item) {
-        addItem(CACHE.get(), item);
-    }
-
-    /**
-     * Registers the given item to be removed at the end of the request or does nothing
-     * if the cache is not active.
-     * @param item the given item
-     * @return true iff the item was registered
-     */
-    public static boolean addItemIfActive(final ThreadLocal<?> item) {
+    public static boolean addItemIfActive(final RequestScopedItem item) {
         final List<RequestScopedItem> cache = CACHE.get();
         if (cache != null) {
-            addItem(cache, item);
+            cache.add(item);
             return true;
         }
         return false;
     }
 
-    private static void addItem(List<RequestScopedItem> cache, final ThreadLocal<?> item) {
+    public static void addItem(final ThreadLocal<?> item) {
+        final List<RequestScopedItem> cache = CACHE.get();
         checkCacheForAdding(cache);
         cache.add(new RequestScopedItem() {
             public void invalidate() {

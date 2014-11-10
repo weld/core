@@ -101,7 +101,7 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
              * We use a wrapper InvocationContext for the purpose of executing the chain of
              * interceptor methods of this interceptor.
              */
-            return new WeldInvocationContext(ctx, methodInvocations, interceptorBindings).proceed();
+            return new WeldInvocationContext(ctx, methodInvocations, interceptorBindings, null).proceed();
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
