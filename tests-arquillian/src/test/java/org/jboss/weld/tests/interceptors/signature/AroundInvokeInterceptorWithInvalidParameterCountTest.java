@@ -42,7 +42,7 @@ public class AroundInvokeInterceptorWithInvalidParameterCountTest {
     public static Archive<?> deploy() {
         return ShrinkWrap.create(BeanArchive.class)
                 .intercept(MyInterceptor.class)
-                .addClasses(Intercept.class, InterceptedBean.class);
+                .addClasses(Intercept.class, MethodInterceptedBean.class);
     }
 
     @Test

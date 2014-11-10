@@ -42,7 +42,7 @@ public class PostConstructInterceptorWithInvalidParameterTypeTest {
         return ShrinkWrap.create(BeanArchive.class)
                 .intercept(MyInterceptor.class)
                 .addClass(PostConstructInterceptorWithInvalidParameterTypeTest.class)
-                .addClasses(Lifecycle.class, InterceptedBean.class);
+                .addClasses(Lifecycle.class, LifecycleInterceptedBean.class);
     }
 
     @Test

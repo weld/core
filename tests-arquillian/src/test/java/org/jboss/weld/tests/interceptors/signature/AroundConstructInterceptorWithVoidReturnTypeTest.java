@@ -39,13 +39,13 @@ public class AroundConstructInterceptorWithVoidReturnTypeTest extends AbstractSi
     public static Archive<?> deploy() {
         return ShrinkWrap.create(BeanArchive.class)
                 .intercept(MyInterceptor.class)
-                .addClasses(AbstractSignatureTestBase.class, Lifecycle.class, InterceptedBean.class);
+                .addClasses(AbstractSignatureTestBase.class, Lifecycle.class, LifecycleInterceptedBean.class);
     }
 
     @Test
     public void testInterceptor() {
         MyInterceptor.invoked = false;
-        getBean(InterceptedBean.class);
+        getBean(LifecycleInterceptedBean.class);
         assertInvoked(MyInterceptor.invoked);
     }
 
