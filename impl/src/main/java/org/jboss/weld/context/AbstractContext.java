@@ -27,7 +27,7 @@ import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.context.api.ContextualInstance;
 import org.jboss.weld.context.beanstore.BeanStore;
 import org.jboss.weld.context.beanstore.LockedBean;
-import org.jboss.weld.context.cache.RequestScopedBeanCache;
+import org.jboss.weld.context.cache.RequestScopedCache;
 import org.jboss.weld.logging.ContextLogger;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.serialization.spi.ContextualStore;
@@ -130,7 +130,7 @@ public abstract class AbstractContext implements AlterableContext {
         BeanIdentifier id = getId(contextual);
         ContextualInstance<?> beanInstance = getBeanStore().remove(id);
         if (beanInstance != null) {
-            RequestScopedBeanCache.invalidate();
+            RequestScopedCache.invalidate();
             destroyContextualInstance(beanInstance);
         }
     }

@@ -24,7 +24,7 @@ import java.lang.reflect.Constructor;
 
 import javax.interceptor.InvocationContext;
 
-import org.jboss.weld.interceptor.proxy.InterceptorInvocationContext;
+import org.jboss.weld.interceptor.proxy.WeldInvocationContext;
 import org.jboss.weld.test.util.ActionSequence;
 
 public abstract class AbstractInterceptor {
@@ -34,8 +34,8 @@ public abstract class AbstractInterceptor {
     }
 
     protected void checkConstructor(InvocationContext ctx, Class<?> expectedDeclaringClass) {
-        assertTrue(ctx instanceof InterceptorInvocationContext);
-        InterceptorInvocationContext weldContext = (InterceptorInvocationContext) ctx;
+        assertTrue(ctx instanceof WeldInvocationContext);
+        WeldInvocationContext weldContext = (WeldInvocationContext) ctx;
         Constructor<?> constructor = weldContext.getConstructor();
         assertNotNull(constructor);
         assertEquals(expectedDeclaringClass, constructor.getDeclaringClass());

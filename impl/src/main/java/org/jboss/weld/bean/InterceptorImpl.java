@@ -24,6 +24,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.BeanAttributes;
@@ -35,18 +36,15 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bean.interceptor.CdiInterceptorFactory;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.WeldException;
-import org.jboss.weld.interceptor.proxy.InterceptorInvocation;
-import org.jboss.weld.interceptor.proxy.InterceptorInvocationContext;
-import org.jboss.weld.interceptor.proxy.SimpleInterceptionChain;
+import org.jboss.weld.interceptor.proxy.InterceptorMethodInvocation;
+import org.jboss.weld.interceptor.proxy.WeldInvocationContext;
 import org.jboss.weld.interceptor.reader.InterceptorMetadataImpl;
 import org.jboss.weld.interceptor.reader.InterceptorMetadataUtils;
-import org.jboss.weld.interceptor.spi.context.InterceptionChain;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorClassMetadata;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.logging.ReflectionLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
-import org.jboss.weld.util.ForwardingInvocationContext;
 import org.jboss.weld.util.Interceptors;
 import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.reflection.Formats;
@@ -95,41 +93,20 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
     @Override
     public Object intercept(InterceptionType type, T instance, final InvocationContext ctx) {
         final org.jboss.weld.interceptor.spi.model.InterceptionType interceptionType = org.jboss.weld.interceptor.spi.model.InterceptionType.valueOf(type.name());
-        final InterceptorInvocation invocation = interceptorMetadata.getInterceptorInvocation(instance, interceptionType);
+        final List<InterceptorMethodInvocation> methodInvocations = interceptorMetadata.getInterceptorInvocation(instance, interceptionType).getInterceptorMethodInvocations();
 
         try {
-            if (ctx instanceof InterceptorInvocationContext || invocation.getInterceptorMethodInvocations().size() < 2) {
-                return new SimpleInterceptionChain(invocation).invokeNextInterceptor(ctx);
-            } else {
-                /*
-                 * Calling Interceptor.intercept() may result in multiple interceptor method invocations (provided the interceptor class
-                 * interceptor methods on superclasses). This requires cooperation with InvocationContext.
-                 *
-                 * If the InvocationContext used is our InterceptorInvocationContext or if there is no more than 1 InterceptorMethodInvocation
-                 * then no special treatment is required. Otherwise, we use a wrapper InvocationTarget for the purpose of executing the chain of
-                 * interceptor methods of this interceptor.
-                 */
-                final InterceptionChain chain = new SimpleInterceptionChain(invocation) {
-                    @Override
-                    protected Object interceptorChainCompleted(InvocationContext context) throws Exception {
-                        return ctx.proceed(); // done with the inner chain, let the outer chain proceed
-                    }
-                };
-                return chain.invokeNextInterceptor(new ForwardingInvocationContext() {
-                    @Override
-                    protected InvocationContext delegate() {
-                        return ctx;
-                    }
-
-                    @Override
-                    public Object proceed() throws Exception {
-                        return chain.invokeNextInterceptor(this);
-                    }
-                });
-            }
+            /*
+             * Calling Interceptor.intercept() may result in multiple interceptor method invocations (provided the interceptor class
+             * interceptor methods on superclasses). This requires cooperation with InvocationContext.
+             *
+             * We use a wrapper InvocationContext for the purpose of executing the chain of
+             * interceptor methods of this interceptor.
+             */
+            return new WeldInvocationContext(ctx, methodInvocations).proceed();
         } catch (RuntimeException e) {
             throw e;
-        } catch (Throwable e) {
+        } catch (Exception e) {
             throw new WeldException(e);
         }
     }

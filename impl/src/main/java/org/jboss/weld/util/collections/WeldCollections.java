@@ -167,4 +167,11 @@ public class WeldCollections {
         }
         return modified;
     }
+
+    public static <T> boolean addIfNotNull(Collection<T> collection, T element) {
+        if (element == null) {
+            return false;
+        }
+        return collection.add(element);
+    }
 }
