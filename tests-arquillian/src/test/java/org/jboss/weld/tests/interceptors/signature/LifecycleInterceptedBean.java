@@ -17,14 +17,21 @@
 
 package org.jboss.weld.tests.interceptors.signature;
 
+import junit.framework.Assert;
+
+import org.jboss.weld.bean.proxy.InterceptionDecorationContext;
+import org.jboss.weld.bean.proxy.InterceptionDecorationContext.Stack;
+
 /**
  * @author <a href="mailto:mluksa@redhat.com">Marko Luksa</a>
  */
-@Intercept
 @Lifecycle
-public class InterceptedBean {
+public class LifecycleInterceptedBean {
 
     public String foo() {
+        Stack stack = InterceptionDecorationContext.getStack();
+        Assert.assertNotNull(stack);
+        Assert.assertEquals(1, stack.size());
         return "foo";
     }
 }

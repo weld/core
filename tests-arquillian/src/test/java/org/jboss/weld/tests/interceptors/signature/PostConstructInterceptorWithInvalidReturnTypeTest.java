@@ -43,7 +43,7 @@ public class PostConstructInterceptorWithInvalidReturnTypeTest {
         return ShrinkWrap.create(BeanArchive.class)
                 .intercept(MyInterceptor.class)
                 .addClass(PostConstructInterceptorWithInvalidReturnTypeTest.class)  // must add so MyInterceptor is detected properly
-                .addClasses(Lifecycle.class, InterceptedBean.class);
+                .addClasses(Lifecycle.class, LifecycleInterceptedBean.class);
     }
 
     @Test
