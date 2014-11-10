@@ -202,7 +202,7 @@ public class SimpleInvocationContext implements InvocationContext {
     @Override
     public Object proceed() throws Exception {
         if (proceed != null) {
-            return proceed.invoke(getTarget(), getParameters());
+            return proceed.invoke(target, parameters);
         } else {
             return null;
         }
