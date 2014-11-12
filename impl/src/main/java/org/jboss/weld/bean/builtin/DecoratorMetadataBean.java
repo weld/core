@@ -68,7 +68,7 @@ public class DecoratorMetadataBean extends AbstractBuiltInMetadataBean<Decorator
         }
 
         @Override
-        protected Decorator<T> delegate() {
+        public Decorator<T> delegate() {
             return (Decorator<T>) holder.get();
         }
     }
