@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.bean.proxy;
 
-import static org.jboss.weld.util.bytecode.DescriptorUtils.BOOLEAN_CLASS_DESCRIPTOR;
 import static org.jboss.weld.util.bytecode.DescriptorUtils.DOUBLE_CLASS_DESCRIPTOR;
 import static org.jboss.weld.util.bytecode.DescriptorUtils.LONG_CLASS_DESCRIPTOR;
 import static org.jboss.weld.util.bytecode.DescriptorUtils.VOID_CLASS_DESCRIPTOR;
@@ -27,6 +26,7 @@ import org.jboss.classfilewriter.ClassMethod;
 import org.jboss.classfilewriter.code.BranchEnd;
 import org.jboss.classfilewriter.code.CodeAttribute;
 import org.jboss.classfilewriter.code.ExceptionHandler;
+import org.jboss.weld.bean.proxy.InterceptionDecorationContext.Stack;
 
 /**
  * Generates bytecode that wraps {@link #doWork(CodeAttribute, ClassMethod)} within {@link InterceptionDecorationContext#startInterceptorContextIfNotEmpty()}
@@ -41,10 +41,12 @@ abstract class RunWithinInterceptionDecorationContextGenerator {
     static final String INTERCEPTION_DECORATION_CONTEXT_CLASS_NAME = InterceptionDecorationContext.class.getName();
     static final String START_INTERCEPTOR_CONTEXT_IF_NOT_EMPTY_METHOD_NAME = "startIfNotEmpty";
     static final String START_INTERCEPTOR_CONTEXT_IF_NOT_ON_TOP_METHOD_NAME = "startIfNotOnTop";
-    static final String START_INTERCEPTOR_CONTEXT_IF_NOT_ON_TOP_METHOD_SIGNATURE = getMethodDescriptor(
-            new String[] { classToStringRepresentation(CombinedInterceptorAndDecoratorStackMethodHandler.class) }, BOOLEAN_CLASS_DESCRIPTOR);
-    static final String END_INTERCEPTOR_CONTEXT_METHOD_NAME = "endInterceptorContext";
+    static final String END_INTERCEPTOR_CONTEXT_METHOD_NAME = "end";
+    private static final String STACK_DESCRIPTOR = classToStringRepresentation(Stack.class);
     private static final String EMPTY_PARENTHESES = "()";
+    private static final String RETURNS_STACK_DESCRIPTOR = EMPTY_PARENTHESES + STACK_DESCRIPTOR;
+    static final String START_INTERCEPTOR_CONTEXT_IF_NOT_ON_TOP_METHOD_SIGNATURE = getMethodDescriptor(
+            new String[] { classToStringRepresentation(CombinedInterceptorAndDecoratorStackMethodHandler.class) }, STACK_DESCRIPTOR);
 
     private final ClassMethod classMethod;
     private final CodeAttribute b;
@@ -58,9 +60,8 @@ abstract class RunWithinInterceptionDecorationContextGenerator {
     abstract void doReturn(CodeAttribute b, ClassMethod method);
 
     void startIfNotEmpty(CodeAttribute b, ClassMethod method) {
-        b.invokestatic(INTERCEPTION_DECORATION_CONTEXT_CLASS_NAME, START_INTERCEPTOR_CONTEXT_IF_NOT_EMPTY_METHOD_NAME, EMPTY_PARENTHESES
-                + BOOLEAN_CLASS_DESCRIPTOR);
-        // store the outcome some that we know later whether to end the context or not
+        b.invokestatic(INTERCEPTION_DECORATION_CONTEXT_CLASS_NAME, START_INTERCEPTOR_CONTEXT_IF_NOT_EMPTY_METHOD_NAME, RETURNS_STACK_DESCRIPTOR);
+        // store the outcome so that we know later whether to end the context or not
         storeToLocalVariable(0);
     }
 
@@ -77,8 +78,7 @@ abstract class RunWithinInterceptionDecorationContextGenerator {
         final BranchEnd endOfIfStatement = b.gotoInstruction();
         b.branchEnd(handlerNull);
         // else started = false
-        b.pop(); // pop null value out of the stack
-        b.iconst(0);
+        // keeping null handler on top of stack
         b.branchEnd(endOfIfStatement);
 
         storeToLocalVariable(0);
@@ -114,10 +114,15 @@ abstract class RunWithinInterceptionDecorationContextGenerator {
      * Ends interception context if it was previously stated. This is indicated by a local variable with index 0.
      */
     void endIfStarted(CodeAttribute b, ClassMethod method) {
-        b.iload(getLocalVariableIndex(0));
-        final BranchEnd conditional = b.ifeq();
-        b.invokestatic(INTERCEPTION_DECORATION_CONTEXT_CLASS_NAME, END_INTERCEPTOR_CONTEXT_METHOD_NAME, EMPTY_PARENTHESES + VOID_CLASS_DESCRIPTOR);
-        b.branchEnd(conditional);
+        b.aload(getLocalVariableIndex(0));
+        b.dup();
+        final BranchEnd ifnotnull = b.ifnull();
+        b.checkcast(Stack.class);
+        b.invokevirtual(Stack.class.getName(), END_INTERCEPTOR_CONTEXT_METHOD_NAME, EMPTY_PARENTHESES + VOID_CLASS_DESCRIPTOR);
+        BranchEnd ifnull = b.gotoInstruction();
+        b.branchEnd(ifnotnull);
+        b.pop(); // remove null Stack
+        b.branchEnd(ifnull);
     }
 
     /**
@@ -144,7 +149,7 @@ abstract class RunWithinInterceptionDecorationContextGenerator {
     }
 
     void storeToLocalVariable(int i) {
-        b.istore(getLocalVariableIndex(0));
+        b.astore(getLocalVariableIndex(0));
     }
 
     /**

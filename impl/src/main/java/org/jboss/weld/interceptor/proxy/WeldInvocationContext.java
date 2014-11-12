@@ -29,6 +29,7 @@ import java.util.Set;
 import javax.interceptor.InvocationContext;
 
 import org.jboss.weld.bean.proxy.CombinedInterceptorAndDecoratorStackMethodHandler;
+import org.jboss.weld.bean.proxy.InterceptionDecorationContext;
 import org.jboss.weld.bean.proxy.InterceptionDecorationContext.Stack;
 import org.jboss.weld.experimental.ExperimentalInvocationContext;
 import org.jboss.weld.logging.InterceptorLogger;
@@ -49,24 +50,22 @@ public class WeldInvocationContext extends ForwardingInvocationContext implement
 
     private int position;
     private final List<InterceptorMethodInvocation> chain;
-    private final CombinedInterceptorAndDecoratorStackMethodHandler interceptionContext;
+    private final CombinedInterceptorAndDecoratorStackMethodHandler currentHandler;
     private final InvocationContext delegate;
     private final Set<Annotation> interceptorBindings;
-    private final Stack stack;
 
     public WeldInvocationContext(Constructor<?> constructor, Object[] parameters, Map<String, Object> contextData, List<InterceptorMethodInvocation> chain, Set<Annotation> interceptorBindings) {
         this(new SimpleInvocationContext(constructor, parameters, contextData), chain, interceptorBindings, null);
     }
 
-    public WeldInvocationContext(Object target, Method targetMethod, Method proceed, Object[] parameters, List<InterceptorMethodInvocation> chain, Set<Annotation> interceptorBindings, Stack stack) {
-        this(new SimpleInvocationContext(target, targetMethod, proceed, parameters), chain, interceptorBindings, stack);
+    public WeldInvocationContext(Object target, Method targetMethod, Method proceed, Object[] parameters, List<InterceptorMethodInvocation> chain, Set<Annotation> interceptorBindings, CombinedInterceptorAndDecoratorStackMethodHandler currentHandler) {
+        this(new SimpleInvocationContext(target, targetMethod, proceed, parameters), chain, interceptorBindings, currentHandler);
     }
 
-    public WeldInvocationContext(InvocationContext delegate, List<InterceptorMethodInvocation> chain, Set<Annotation> interceptorBindings, Stack stack) {
+    public WeldInvocationContext(InvocationContext delegate, List<InterceptorMethodInvocation> chain, Set<Annotation> interceptorBindings, CombinedInterceptorAndDecoratorStackMethodHandler currentHandler) {
         this.delegate = delegate;
         this.chain = chain;
-        this.stack = stack;
-        this.interceptionContext = (stack == null) ? null : stack.peek();
+        this.currentHandler = currentHandler;
         if (interceptorBindings == null) {
             this.interceptorBindings = Collections.<Annotation>emptySet();
         } else {
@@ -110,13 +109,14 @@ public class WeldInvocationContext extends ForwardingInvocationContext implement
 
     @Override
     public Object proceed() throws Exception {
-        boolean pushed = false;
+        Stack stack = null;
         /*
          * No need to push the context for the first interceptor as the current context
          * was set by CombinedInterceptorAndDecoratorStackMethodHandler
          */
-        if (stack != null && position != 0) {
-            pushed = stack.startIfNotOnTop(interceptionContext);
+
+        if (currentHandler != null && position != 0) {
+            stack = InterceptionDecorationContext.startIfNotOnTop(currentHandler);
         }
 
         try {
@@ -135,7 +135,7 @@ public class WeldInvocationContext extends ForwardingInvocationContext implement
             }
             throw new RuntimeException(cause);
         } finally {
-            if (pushed) {
+            if (stack != null) {
                 stack.end();
             }
         }
