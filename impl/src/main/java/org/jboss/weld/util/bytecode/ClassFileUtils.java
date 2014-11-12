@@ -88,10 +88,10 @@ public class ClassFileUtils {
             Object[] args;
             if (domain == null) {
                 method = defineClass1;
-                args = new Object[]{ct.getName(), b, 0, Integer.valueOf(b.length)};
+                args = new Object[]{ct.getName(), b, 0, b.length};
             } else {
                 method = defineClass2;
-                args = new Object[]{ct.getName(), b, 0, Integer.valueOf(b.length), domain};
+                args = new Object[]{ct.getName(), b, 0, b.length, domain};
             }
 
             return toClass2(method, loader, args);

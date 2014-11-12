@@ -16,7 +16,7 @@ public abstract class AbstractManagedContext extends AbstractContext implements 
 
     public boolean isActive() {
         Boolean active = this.active.get();
-        return active == null ? false : active.booleanValue();
+        return active == null ? false : active;
     }
 
     protected void setActive(boolean active) {
@@ -33,7 +33,7 @@ public abstract class AbstractManagedContext extends AbstractContext implements 
 
     public boolean isValid() {
         Boolean valid = this.valid.get();
-        return valid == null ? true : valid.booleanValue();
+        return valid == null ? true : valid;
     }
 
     public void deactivate() {
