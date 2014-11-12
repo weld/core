@@ -36,7 +36,7 @@ import javax.interceptor.InvocationContext;
  */
 public abstract class IsolatedForwardingInterceptor<T> extends IsolatedForwardingBean<T> implements Interceptor<T> {
 
-    protected abstract Interceptor<T> delegate();
+    public abstract Interceptor<T> delegate();
 
     @Override
     public Set<Annotation> getInterceptorBindings() {
@@ -61,7 +61,7 @@ public abstract class IsolatedForwardingInterceptor<T> extends IsolatedForwardin
         }
 
         @Override
-        protected Interceptor<T> delegate() {
+        public Interceptor<T> delegate() {
             return cartridge.getBean();
         }
 

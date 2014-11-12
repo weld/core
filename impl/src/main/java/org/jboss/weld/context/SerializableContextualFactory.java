@@ -24,6 +24,7 @@ import javax.enterprise.inject.spi.PassivationCapable;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.bean.ForwardingBean;
+import org.jboss.weld.bean.WrappedContextual;
 import org.jboss.weld.serialization.BeanIdentifierIndex;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.serialization.spi.ContextualStore;
@@ -145,7 +146,7 @@ public class SerializableContextualFactory {
 
     }
 
-    private abstract static class AbstractSerializableBean<B extends Bean<I>, I> extends ForwardingBean<I> implements SerializableContextual<B, I> {
+    private abstract static class AbstractSerializableBean<B extends Bean<I>, I> extends ForwardingBean<I> implements SerializableContextual<B, I>, WrappedContextual<I> {
 
         private static final long serialVersionUID = 7594992948498685840L;
 
@@ -161,7 +162,7 @@ public class SerializableContextualFactory {
         }
 
         @Override
-        protected Bean<I> delegate() {
+        public Bean<I> delegate() {
             return get();
         }
 
@@ -183,7 +184,7 @@ public class SerializableContextualFactory {
     }
 
     private abstract static class AbstractSerializableContextual<C extends Contextual<I>, I> extends ForwardingContextual<I> implements
-            SerializableContextual<C, I> {
+            SerializableContextual<C, I>, WrappedContextual<I> {
 
         private static final long serialVersionUID = 107855630671709443L;
 
@@ -194,7 +195,7 @@ public class SerializableContextualFactory {
         }
 
         @Override
-        protected Contextual<I> delegate() {
+        public Contextual<I> delegate() {
             return get();
         }
 

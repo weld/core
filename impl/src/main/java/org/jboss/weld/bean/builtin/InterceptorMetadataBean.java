@@ -68,7 +68,7 @@ public class InterceptorMetadataBean extends AbstractBuiltInMetadataBean<Interce
         }
 
         @Override
-        protected Interceptor<T> delegate() {
+        public Interceptor<T> delegate() {
             return (Interceptor<T>) holder.get();
         }
     }

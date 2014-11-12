@@ -38,7 +38,7 @@ public class SerializableForwardingBean<T> extends ForwardingBean<T> implements 
     }
 
     @Override
-    protected Bean<T> delegate() {
+    public Bean<T> delegate() {
         return holder.get();
     }
 }

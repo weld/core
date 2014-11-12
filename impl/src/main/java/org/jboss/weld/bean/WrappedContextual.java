@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2008, Red Hat, Inc., and individual contributors
+ * Copyright 2014, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -16,28 +16,14 @@
  */
 package org.jboss.weld.bean;
 
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanAttributes;
-
-import org.jboss.weld.util.bean.IsolatedForwardingBean;
+import javax.enterprise.context.spi.Contextual;
 
 /**
- * A delegating bean
+ * Marker interface indicating that this Contextual wraps another contextual.
  *
- * @param <T>
- * @author Pete Muir
+ * @author Jozef Hartinger
  */
-public abstract class ForwardingBean<T> extends IsolatedForwardingBean<T> {
+public interface WrappedContextual<T> extends Contextual<T> {
 
-    public abstract Bean<T> delegate();
-
-    @Override
-    public String toString() {
-        return "ForwardingBean " + getName() + " for " + delegate().toString();
-    }
-
-    @Override
-    protected BeanAttributes<T> attributes() {
-        return delegate();
-    }
+    Contextual<T> delegate();
 }

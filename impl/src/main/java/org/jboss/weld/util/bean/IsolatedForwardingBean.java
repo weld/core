@@ -24,6 +24,7 @@ import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.ProcessBeanAttributes;
 
+import org.jboss.weld.bean.WrappedContextual;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
@@ -35,9 +36,9 @@ import org.jboss.weld.util.reflection.Reflections;
  * @author Jozef Hartinger
  *
  */
-public abstract class IsolatedForwardingBean<T> extends ForwardingBeanAttributes<T> implements Bean<T> {
+public abstract class IsolatedForwardingBean<T> extends ForwardingBeanAttributes<T> implements Bean<T>, WrappedContextual<T> {
 
-    protected abstract Bean<T> delegate();
+    public abstract Bean<T> delegate();
 
     @Override
     public T create(CreationalContext<T> creationalContext) {
@@ -90,7 +91,7 @@ public abstract class IsolatedForwardingBean<T> extends ForwardingBeanAttributes
         }
 
         @Override
-        protected Bean<T> delegate() {
+        public Bean<T> delegate() {
             return cartridge.getBean();
         }
 
