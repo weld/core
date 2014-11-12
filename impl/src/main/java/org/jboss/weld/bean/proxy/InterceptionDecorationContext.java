@@ -167,25 +167,30 @@ public class InterceptionDecorationContext {
      * at the time the proxy is called (meaning the caller is not intercepted), there is no need to create new interception context. This is an optimization as the
      * first startInterceptorContext call is expensive.
      *
-     * The caller of this method is required to call {@link #endInterceptorContext()} if and only if this method returns true.
+     * If this method returns a non-null value, the caller of this method is required to call {@link Stack#end()} on the returned value.
      */
-    public static boolean startIfNotEmpty() {
+    public static Stack startIfNotEmpty() {
         Stack stack = interceptionContexts.get();
         if (empty(stack)) {
-            return false;
+            return null;
         }
         stack.push(CombinedInterceptorAndDecoratorStackMethodHandler.NULL_INSTANCE);
-        return true;
+        return stack;
     }
 
     /**
      * Pushes the given context to the stack if the given context is not on top of the stack already.
-     * If push happens, the caller is responsible for calling {@link #endInterceptorContext()} after the invocation finishes.
+     * If this method return a non-null value, the caller is responsible for calling {@link #endInterceptorContext()}
+     * after the invocation finishes.
      * @param context the given context
      * @return true if the given context was pushed to the top of the stack, false if the given context was on top already
      */
-    public static boolean startIfNotOnTop(CombinedInterceptorAndDecoratorStackMethodHandler context) {
-        return getStack().startIfNotOnTop(context);
+    public static Stack startIfNotOnTop(CombinedInterceptorAndDecoratorStackMethodHandler context) {
+        Stack stack = getStack();
+        if (stack.startIfNotOnTop(context)) {
+            return stack;
+        }
+        return null;
     }
 
     /**
