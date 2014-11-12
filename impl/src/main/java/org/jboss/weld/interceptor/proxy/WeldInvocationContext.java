@@ -44,30 +44,25 @@ public class WeldInvocationContext extends ForwardingInvocationContext {
 
     private int position;
     private final List<InterceptorMethodInvocation> chain;
-    private final CombinedInterceptorAndDecoratorStackMethodHandler interceptionContext;
+    private final CombinedInterceptorAndDecoratorStackMethodHandler currentHandler;
     private final InvocationContext delegate;
-    /*
-     * The current InterceptionDecorationContext. It may be null for e.g. lifecycle interception.
-     */
-    private final Stack stack;
 
     public WeldInvocationContext(Constructor<?> constructor, Object[] parameters, Map<String, Object> contextData, List<InterceptorMethodInvocation> chain) {
         this(new SimpleInvocationContext(constructor, parameters, contextData), chain, null);
     }
 
-    public WeldInvocationContext(Object target, Method targetMethod, Method proceed, Object[] parameters, List<InterceptorMethodInvocation> chain, Stack stack) {
-        this(new SimpleInvocationContext(target, targetMethod, proceed, parameters), chain, stack);
+    public WeldInvocationContext(Object target, Method targetMethod, Method proceed, Object[] parameters, List<InterceptorMethodInvocation> chain, CombinedInterceptorAndDecoratorStackMethodHandler currentHandler) {
+        this(new SimpleInvocationContext(target, targetMethod, proceed, parameters), chain, currentHandler);
     }
 
     public WeldInvocationContext(InvocationContext delegate, List<InterceptorMethodInvocation> chain) {
-        this(delegate, chain, InterceptionDecorationContext.getStack());
+        this(delegate, chain, null);
     }
 
-    public WeldInvocationContext(InvocationContext delegate, List<InterceptorMethodInvocation> chain, Stack stack) {
+    public WeldInvocationContext(InvocationContext delegate, List<InterceptorMethodInvocation> chain, CombinedInterceptorAndDecoratorStackMethodHandler currentHandler) {
         this.delegate = delegate;
         this.chain = chain;
-        this.stack = stack;
-        this.interceptionContext = (stack == null) ? null : stack.peek();
+        this.currentHandler = currentHandler;
     }
 
     @Override
@@ -105,13 +100,14 @@ public class WeldInvocationContext extends ForwardingInvocationContext {
 
     @Override
     public Object proceed() throws Exception {
-        boolean pushed = false;
+        Stack stack = null;
         /*
          * No need to push the context for the first interceptor as the current context
          * was set by CombinedInterceptorAndDecoratorStackMethodHandler
          */
-        if (stack != null && position != 0) {
-            pushed = stack.startIfNotOnTop(interceptionContext);
+
+        if (currentHandler != null && position != 0) {
+            stack = InterceptionDecorationContext.startIfNotOnTop(currentHandler);
         }
 
         try {
@@ -130,7 +126,7 @@ public class WeldInvocationContext extends ForwardingInvocationContext {
             }
             throw new RuntimeException(cause);
         } finally {
-            if (pushed) {
+            if (stack != null) {
                 stack.end();
             }
         }
