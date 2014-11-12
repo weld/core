@@ -35,7 +35,7 @@ import javax.enterprise.inject.spi.ProcessBeanAttributes;
  */
 public abstract class IsolatedForwardingDecorator<T> extends IsolatedForwardingBean<T> implements Decorator<T> {
 
-    protected abstract Decorator<T> delegate();
+    public abstract Decorator<T> delegate();
 
     @Override
     public Type getDelegateType() {
@@ -60,7 +60,7 @@ public abstract class IsolatedForwardingDecorator<T> extends IsolatedForwardingB
         }
 
         @Override
-        protected Decorator<T> delegate() {
+        public Decorator<T> delegate() {
             return cartridge.getBean();
         }
 

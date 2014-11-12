@@ -24,7 +24,7 @@ import org.jboss.weld.util.bean.IsolatedForwardingDecorator;
 public abstract class ForwardingDecorator<T> extends IsolatedForwardingDecorator<T> {
 
     @Override
-    protected abstract Decorator<T> delegate();
+    public abstract Decorator<T> delegate();
 
     @Override
     protected BeanAttributes<T> attributes() {

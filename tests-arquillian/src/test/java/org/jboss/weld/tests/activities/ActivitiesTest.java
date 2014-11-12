@@ -16,20 +16,12 @@
  */
 package org.jboss.weld.tests.activities;
 
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.BeanArchive;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.weld.bean.ForwardingBean;
-import org.jboss.weld.literal.AnyLiteral;
-import org.jboss.weld.literal.DefaultLiteral;
-import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.test.util.Utils;
-import org.jboss.weld.util.collections.Arrays2;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Member;
+import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.Context;
@@ -45,12 +37,21 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.ObserverMethod;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Member;
-import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.BeanArchive;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.weld.bean.ForwardingBean;
+import org.jboss.weld.literal.AnyLiteral;
+import org.jboss.weld.literal.DefaultLiteral;
+import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.test.util.Utils;
+import org.jboss.weld.util.collections.Arrays2;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * Spec version: 20090519
@@ -254,7 +255,7 @@ public class ActivitiesTest {
         childActivity.addBean(new ForwardingBean<Cow>() {
 
             @Override
-            protected Bean<Cow> delegate() {
+            public Bean<Cow> delegate() {
                 return bean;
             }
 
