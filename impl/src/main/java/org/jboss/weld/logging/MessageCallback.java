@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2013, Red Hat, Inc., and individual contributors
+ * Copyright 2014, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -16,25 +16,26 @@
  */
 package org.jboss.weld.logging;
 
-import org.jboss.logging.annotations.LogMessage;
 import org.jboss.logging.annotations.Message;
 
 /**
- * JBoss Logging is not using message keys and so it's not possible to reference the log message (a logger method annotated with {@link LogMessage} and
- * {@link Message}) and use it as a method parameter or construct it lazily. This callback should be used to work around this limitation.
+ * JBoss Logging is not using message keys and so it's not possible to reference the message (a message method annotated with {@link Message}) and use it as a
+ * method parameter or construct it lazily. This callback should be used to work around this limitation.
  *
  * Note that the method parameters are not checked and so the invocation may result in {@link ArrayIndexOutOfBoundsException}.
  *
  * @author Martin Kouba
- * @see LogMessage
+ * @param <T> The type of the return value (either {@link String} or {@link Throwable})
+ * @see Message
  */
-public interface LogMessageCallback {
+public interface MessageCallback<T> {
 
     /**
-     * Invokes the logger method.
+     * Constructs the message or Throwable.
      *
      * @param params
+     * @return the return value
      */
-    void log(Object... params);
+    T construct(Object... params);
 
 }
