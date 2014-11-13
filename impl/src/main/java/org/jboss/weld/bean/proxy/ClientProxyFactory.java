@@ -40,6 +40,7 @@ import org.jboss.classfilewriter.ClassMethod;
 import org.jboss.classfilewriter.DuplicateMemberException;
 import org.jboss.classfilewriter.code.BranchEnd;
 import org.jboss.classfilewriter.code.CodeAttribute;
+import org.jboss.classfilewriter.util.DescriptorUtils;
 import org.jboss.weld.Container;
 import org.jboss.weld.bean.proxy.util.SerializableClientProxy;
 import org.jboss.weld.context.cache.RequestScopedCache;
@@ -47,8 +48,8 @@ import org.jboss.weld.security.GetDeclaredFieldAction;
 import org.jboss.weld.security.SetAccessibleAction;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.serialization.spi.ContextualStore;
+import org.jboss.weld.util.bytecode.BytecodeUtils;
 import org.jboss.weld.util.bytecode.DeferredBytecode;
-import org.jboss.weld.util.bytecode.DescriptorUtils;
 import org.jboss.weld.util.bytecode.MethodInformation;
 import org.jboss.weld.util.collections.ImmutableSet;
 
@@ -130,7 +131,7 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
                         codeAttribute.aload(0);
                         codeAttribute.newInstruction(ThreadLocal.class.getName());
                         codeAttribute.dup();
-                        codeAttribute.invokespecial(ThreadLocal.class.getName(), INIT_METHOD_NAME, EMPTY_PARENTHESES + DescriptorUtils.VOID_CLASS_DESCRIPTOR);
+                        codeAttribute.invokespecial(ThreadLocal.class.getName(), INIT_METHOD_NAME, EMPTY_PARENTHESES + BytecodeUtils.VOID_CLASS_DESCRIPTOR);
                         codeAttribute.putfield(proxyClassType.getName(), CACHE_FIELD, LJAVA_LANG_THREAD_LOCAL);
                     }
                 });
@@ -153,7 +154,7 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
         b.aload(0);
         b.getfield(proxyClassType.getName(), BEAN_ID_FIELD, BeanIdentifier.class);
         b.ldc(getContextId());
-        b.invokespecial(SerializableClientProxy.class.getName(), INIT_METHOD_NAME, "(" + LBEAN_IDENTIFIER + LJAVA_LANG_STRING + ")" + DescriptorUtils.VOID_CLASS_DESCRIPTOR);
+        b.invokespecial(SerializableClientProxy.class.getName(), INIT_METHOD_NAME, "(" + LBEAN_IDENTIFIER + LJAVA_LANG_STRING + ")" + BytecodeUtils.VOID_CLASS_DESCRIPTOR);
         b.returnInstruction();
     }
 
@@ -246,7 +247,7 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
      */
     private void loadCacheableBeanInstance(ClassFile file, MethodInformation methodInfo, CodeAttribute b) {
         //first we need to see if the scope is active
-        b.invokestatic(RequestScopedCache.class.getName(), "isActive", EMPTY_PARENTHESES + DescriptorUtils.BOOLEAN_CLASS_DESCRIPTOR);
+        b.invokestatic(RequestScopedCache.class.getName(), "isActive", EMPTY_PARENTHESES + BytecodeUtils.BOOLEAN_CLASS_DESCRIPTOR);
         //if it is not active we just get the bean directly
 
         final BranchEnd returnInstruction = b.ifeq();
@@ -269,8 +270,8 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
         b.getfield(file.getName(), CACHE_FIELD, LJAVA_LANG_THREAD_LOCAL);
         b.dupX1();
         b.swap();
-        b.invokevirtual(ThreadLocal.class.getName(), "set", "(" + LJAVA_LANG_OBJECT + ")" + DescriptorUtils.VOID_CLASS_DESCRIPTOR);
-        b.invokestatic(RequestScopedCache.class.getName(), "addItem", "(" + LJAVA_LANG_THREAD_LOCAL + ")" + DescriptorUtils.VOID_CLASS_DESCRIPTOR);
+        b.invokevirtual(ThreadLocal.class.getName(), "set", "(" + LJAVA_LANG_OBJECT + ")" + BytecodeUtils.VOID_CLASS_DESCRIPTOR);
+        b.invokestatic(RequestScopedCache.class.getName(), "addItem", "(" + LJAVA_LANG_THREAD_LOCAL + ")" + BytecodeUtils.VOID_CLASS_DESCRIPTOR);
         final BranchEnd endOfIfStatement = b.gotoInstruction();
         b.branchEnd(returnInstruction);
         loadBeanInstance(file, methodInfo, b);
@@ -280,7 +281,7 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
 
     private void loadBeanInstance(ClassFile file, MethodInformation methodInfo, CodeAttribute b) {
         b.aload(0);
-        b.getfield(file.getName(), "methodHandler", DescriptorUtils.classToStringRepresentation(MethodHandler.class));
+        b.getfield(file.getName(), "methodHandler", DescriptorUtils.makeDescriptor(MethodHandler.class));
         //pass null arguments to methodHandler.invoke
         b.aload(0);
         b.aconstNull();
@@ -300,12 +301,12 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
      */
     @Override
     protected void generateHashCodeMethod(ClassFile proxyClassType) {
-        final ClassMethod method = proxyClassType.addMethod(AccessFlag.PUBLIC, HASH_CODE_METHOD, DescriptorUtils.INT_CLASS_DESCRIPTOR);
+        final ClassMethod method = proxyClassType.addMethod(AccessFlag.PUBLIC, HASH_CODE_METHOD, BytecodeUtils.INT_CLASS_DESCRIPTOR);
         final CodeAttribute b = method.getCodeAttribute();
         // MyProxyName.class.hashCode()
         b.loadClass(proxyClassType.getName());
         // now we have the class object on top of the stack
-        b.invokevirtual("java.lang.Object", HASH_CODE_METHOD, EMPTY_PARENTHESES + DescriptorUtils.INT_CLASS_DESCRIPTOR);
+        b.invokevirtual("java.lang.Object", HASH_CODE_METHOD, EMPTY_PARENTHESES + BytecodeUtils.INT_CLASS_DESCRIPTOR);
         // now we have the hashCode
         b.returnInstruction();
     }
@@ -319,7 +320,7 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
      */
     @Override
     protected void generateEqualsMethod(ClassFile proxyClassType) {
-        ClassMethod method = proxyClassType.addMethod(AccessFlag.PUBLIC, "equals", DescriptorUtils.BOOLEAN_CLASS_DESCRIPTOR, LJAVA_LANG_OBJECT);
+        ClassMethod method = proxyClassType.addMethod(AccessFlag.PUBLIC, "equals", BytecodeUtils.BOOLEAN_CLASS_DESCRIPTOR, LJAVA_LANG_OBJECT);
         CodeAttribute b = method.getCodeAttribute();
         b.aload(1);
         b.instanceofInstruction(proxyClassType.getName());
@@ -345,7 +346,7 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
     private static int getLocalVariableIndex(ClassMethod method, int i) {
         int index = method.isStatic() ? 0 : 1;
         for (String type : method.getParameters()) {
-            if (type.equals(DescriptorUtils.DOUBLE_CLASS_DESCRIPTOR) || type.equals(DescriptorUtils.LONG_CLASS_DESCRIPTOR)) {
+            if (type.equals(BytecodeUtils.DOUBLE_CLASS_DESCRIPTOR) || type.equals(BytecodeUtils.LONG_CLASS_DESCRIPTOR)) {
                 index += 2;
             } else {
                 index++;

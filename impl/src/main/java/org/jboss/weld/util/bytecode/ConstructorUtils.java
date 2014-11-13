@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.util.bytecode;
 
+import static org.jboss.classfilewriter.util.DescriptorUtils.methodDescriptor;
+
 import java.util.List;
 
 import org.jboss.classfilewriter.AccessFlag;
@@ -39,7 +41,7 @@ public class ConstructorUtils {
      * adds a constructor that calls super()
      */
     public static void addDefaultConstructor(ClassFile file, List<DeferredBytecode> initialValueBytecode, final boolean useUnsafeInstantiators) {
-        addConstructor(DescriptorUtils.VOID_CLASS_DESCRIPTOR, new String[0], new String[0], file, initialValueBytecode, useUnsafeInstantiators);
+        addConstructor(BytecodeUtils.VOID_CLASS_DESCRIPTOR, new String[0], new String[0], file, initialValueBytecode, useUnsafeInstantiators);
     }
 
     /**
@@ -72,12 +74,12 @@ public class ConstructorUtils {
             b.aload(0);
             b.loadMethodParameters();
             // now we have the parameters on the stack
-            b.invokespecial(file.getSuperclass(), initMethodName, DescriptorUtils.getMethodDescriptor(params, returnType));
+            b.invokespecial(file.getSuperclass(), initMethodName, methodDescriptor(params, returnType));
             if(!useUnsafeInstantiators) {
                 // now set constructed to true
                 b.aload(0);
                 b.iconst(1);
-                b.putfield(file.getName(), ProxyFactory.CONSTRUCTED_FLAG_NAME, DescriptorUtils.BOOLEAN_CLASS_DESCRIPTOR);
+                b.putfield(file.getName(), ProxyFactory.CONSTRUCTED_FLAG_NAME, BytecodeUtils.BOOLEAN_CLASS_DESCRIPTOR);
             }
             b.returnInstruction();
         }  catch (DuplicateMemberException e) {
