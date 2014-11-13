@@ -42,51 +42,44 @@ public interface ValidatorLogger extends WeldLogger {
 
     ValidatorLogger LOG = Logger.getMessageLogger(ValidatorLogger.class, Category.VALIDATOR.getName());
 
-    LogMessageCallback INJECTION_INTO_NON_DEPENDENT_BEAN_CALLBACK = new LogMessageCallback() {
+    MessageCallback<DefinitionException> INJECTION_INTO_DISPOSER_METHOD = new MessageCallback<DefinitionException>() {
         @Override
-        public String invoke(Object... params) {
-            return ValidatorLogger.LOG.injectionIntoNonDependentBean(params[0]);
-        }
-    };
-
-    LogMessageCallback INJECTION_INTO_DISPOSER_METHOD_CALLBACK = new LogMessageCallback() {
-        @Override
-        public String invoke(Object... params) {
+        public DefinitionException construct(Object... params) {
             return ValidatorLogger.LOG.injectionIntoDisposerMethod(params[0]);
         }
     };
 
-    LogMessageCallback INJECTION_INTO_NON_BEAN_CALLBACK = new LogMessageCallback() {
+    MessageCallback<DefinitionException> INJECTION_INTO_NON_BEAN = new MessageCallback<DefinitionException>() {
         @Override
-        public String invoke(Object... params) {
+        public DefinitionException construct(Object... params) {
             return ValidatorLogger.LOG.injectionIntoNonBean(params[0]);
         }
     };
 
-    LogMessageCallback INTERCEPTOR_SPECIFIED_TWICE_CALLBACK = new LogMessageCallback() {
+    MessageCallback<DeploymentException> INTERCEPTOR_SPECIFIED_TWICE = new MessageCallback<DeploymentException>() {
         @Override
-        public String invoke(Object... params) {
+        public DeploymentException construct(Object... params) {
             return ValidatorLogger.LOG.interceptorSpecifiedTwice(params[0], params[1], params[2]);
         }
     };
 
-    LogMessageCallback DECORATOR_SPECIFIED_TWICE_CALLBACK = new LogMessageCallback() {
+    MessageCallback<DeploymentException> DECORATOR_SPECIFIED_TWICE = new MessageCallback<DeploymentException>() {
         @Override
-        public String invoke(Object... params) {
+        public DeploymentException construct(Object... params) {
             return ValidatorLogger.LOG.decoratorSpecifiedTwice(params[0], params[1], params[2]);
         }
     };
 
-    LogMessageCallback ALTERNATIVE_CLASS_SPECIFIED_MULTIPLE_TIMES_CALLBACK = new LogMessageCallback() {
+    MessageCallback<DeploymentException> ALTERNATIVE_CLASS_SPECIFIED_MULTIPLE_TIMES = new MessageCallback<DeploymentException>() {
         @Override
-        public String invoke(Object... params) {
-            return ValidatorLogger.LOG.alternativeClassSpecifiedMultipleTimes(params[0]);
+        public DeploymentException construct(Object... params) {
+            return ValidatorLogger.LOG.alternativeClassSpecifiedMultipleTimes(params[0], params[1], params[2]);
         }
     };
 
-    LogMessageCallback ALTERNATIVE_STEREOTYPE_SPECIFIED_MULTIPLE_TIMES_CALLBACK = new LogMessageCallback() {
+    MessageCallback<DeploymentException> ALTERNATIVE_STEREOTYPE_SPECIFIED_MULTIPLE_TIMES = new MessageCallback<DeploymentException>() {
         @Override
-        public String invoke(Object... params) {
+        public DeploymentException construct(Object... params) {
             return ValidatorLogger.LOG.alternativeStereotypeSpecifiedMultipleTimes(params[0], params[1], params[2]);
         }
     };
@@ -104,10 +97,10 @@ public interface ValidatorLogger extends WeldLogger {
     DefinitionException newWithQualifiers(Object param1);
 
     @Message(id = 1405, value = "Cannot inject {0} in a class which isn't a bean", format = Format.MESSAGE_FORMAT)
-    String injectionIntoNonBean(Object param1);
+    DefinitionException injectionIntoNonBean(Object param1);
 
     @Message(id = 1406, value = "Cannot inject {0} in a non @Dependent scoped bean", format = Format.MESSAGE_FORMAT)
-    String injectionIntoNonDependentBean(Object param1);
+    DefinitionException injectionIntoNonDependentBean(Object param1);
 
     @Message(id = 1407, value = "Cannot declare an injection point with a type variable: {0}", format = Format.MESSAGE_FORMAT)
     DefinitionException injectionPointWithTypeVariable(Object param1);
@@ -145,13 +138,13 @@ public interface ValidatorLogger extends WeldLogger {
     DeploymentException beanNameIsPrefix(Object param1);
 
     @Message(id = 1416, value = "Enabled interceptor class {0} specified twice:\n  - {1},\n  - {2}", format = Format.MESSAGE_FORMAT)
-    String interceptorSpecifiedTwice(Object param1, Object param2, Object param3);
+    DeploymentException interceptorSpecifiedTwice(Object param1, Object param2, Object param3);
 
     @Message(id = 1417, value = "Enabled interceptor class {0} does not match an interceptor bean: the class is not found, or not annotated with @Interceptor and still not registered through a portable extension, or not annotated with @Dependent inside an implicit bean archive", format = Format.MESSAGE_FORMAT)
     DeploymentException interceptorClassDoesNotMatchInterceptorBean(Object param1);
 
     @Message(id = 1418, value = "Enabled decorator class {0} specified twice:\n  - {1},\n  - {2}", format = Format.MESSAGE_FORMAT)
-    String decoratorSpecifiedTwice(Object param1, Object param2, Object param3);
+    DeploymentException decoratorSpecifiedTwice(Object param1, Object param2, Object param3);
 
     @Message(id = 1419, value = "Enabled decorator class {0} is not the bean class of at least one decorator bean (detected decorator beans: {1})", format = Format.MESSAGE_FORMAT)
     DeploymentException decoratorClassNotBeanClassOfDecorator(Object param1, Object param2);
@@ -160,7 +153,7 @@ public interface ValidatorLogger extends WeldLogger {
     DeploymentException alternativeStereotypeNotStereotype(Object param1);
 
     @Message(id = 1421, value = "Cannot enable the same alternative stereotype {0} in beans.xml:\n  - {1},\n  - {2}", format = Format.MESSAGE_FORMAT)
-    String alternativeStereotypeSpecifiedMultipleTimes(Object param1, Object param2, Object param3);
+    DeploymentException alternativeStereotypeSpecifiedMultipleTimes(Object param1, Object param2, Object param3);
 
     @Message(id = 1422, value = "Enabled alternative {0} is not an alternative", format = Format.MESSAGE_FORMAT)
     DeploymentException alternativeBeanClassNotAnnotated(Object param1);
@@ -280,8 +273,8 @@ public interface ValidatorLogger extends WeldLogger {
     @Message(id = 1456, value = "Argument {0} must not be null", format = Format.MESSAGE_FORMAT)
     IllegalArgumentException argumentNull(Object param1);
 
-    @Message(id = 1457, value = "Cannot enable the same alternative class {0} in beans.xml", format = Format.MESSAGE_FORMAT)
-    String alternativeClassSpecifiedMultipleTimes(Object param1);
+    @Message(id = 1457, value = "Cannot enable the same alternative class {0} in beans.xml:\n  - {1},\n  - {2}", format = Format.MESSAGE_FORMAT)
+    DeploymentException alternativeClassSpecifiedMultipleTimes(Object param1, Object param2, Object param3);
 
     /**
      * @deprecated Not in use
@@ -325,7 +318,7 @@ public interface ValidatorLogger extends WeldLogger {
     UnserializableDependencyException builtinBeanWithNonserializableDecorator(Object param1, Object param2);
 
     @Message(id = 1466, value = "Cannot inject {0} in a disposer method", format = Format.MESSAGE_FORMAT)
-    String injectionIntoDisposerMethod(Object param1);
+    DefinitionException injectionIntoDisposerMethod(Object param1);
 
     @Message(id = 1467, value = "Method {0} defined on class {1} is not defined according to the specification. It is annotated with @{2} but it does not return {3} or {4}.", format = Format.MESSAGE_FORMAT)
     DefinitionException interceptorMethodDoesNotReturnObjectOrVoid(Object param1, Object param2, Object param3, Object param4, Object param5);

@@ -34,7 +34,7 @@ import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.logging.BootstrapLogger;
-import org.jboss.weld.logging.LogMessageCallback;
+import org.jboss.weld.logging.MessageCallback;
 import org.jboss.weld.logging.ValidatorLogger;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
@@ -224,14 +224,16 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
         moduleDecoratorsBuilder.addAll(getDecoratorList());
 
         if (beansXml != null) {
-            List<Class<?>> localInterceptors = transform(checkForDuplicates(beansXml.getEnabledInterceptors(), ValidatorLogger.INTERCEPTOR_SPECIFIED_TWICE_CALLBACK), loader);
+
+            List<Class<?>> localInterceptors = transform(checkForDuplicates(beansXml.getEnabledInterceptors(), ValidatorLogger.INTERCEPTOR_SPECIFIED_TWICE), loader);
             moduleInterceptorsBuilder.addAll(localInterceptors);
 
-            List<Class<?>> localDecorators = transform(checkForDuplicates(beansXml.getEnabledDecorators(), ValidatorLogger.DECORATOR_SPECIFIED_TWICE_CALLBACK), loader);
+            List<Class<?>> localDecorators = transform(checkForDuplicates(beansXml.getEnabledDecorators(), ValidatorLogger.DECORATOR_SPECIFIED_TWICE), loader);
             moduleDecoratorsBuilder.addAll(localDecorators);
 
-            alternativeClasses = ImmutableSet.copyOf(transform(checkForDuplicates(beansXml.getEnabledAlternativeClasses(), ValidatorLogger.ALTERNATIVE_CLASS_SPECIFIED_MULTIPLE_TIMES_CALLBACK), loader));
-            alternativeStereotypes = cast(ImmutableSet.copyOf(transform(checkForDuplicates(beansXml.getEnabledAlternativeStereotypes(), ValidatorLogger.ALTERNATIVE_STEREOTYPE_SPECIFIED_MULTIPLE_TIMES_CALLBACK), loader)));
+            alternativeClasses = ImmutableSet.copyOf(transform(checkForDuplicates(beansXml.getEnabledAlternativeClasses(), ValidatorLogger.ALTERNATIVE_CLASS_SPECIFIED_MULTIPLE_TIMES), loader));
+            alternativeStereotypes = cast(ImmutableSet.copyOf(transform(checkForDuplicates(beansXml.getEnabledAlternativeStereotypes(), ValidatorLogger.ALTERNATIVE_STEREOTYPE_SPECIFIED_MULTIPLE_TIMES), loader)));
+
         } else {
             alternativeClasses = Collections.emptySet();
             alternativeStereotypes = Collections.emptySet();
@@ -242,12 +244,12 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
         return new ModuleEnablement(moduleInterceptorsBuilder.build(), moduleDecoratorsBuilder.build(), globalAlternatives, alternativeClasses, alternativeStereotypes);
     }
 
-    private static <T> List<Metadata<T>> checkForDuplicates(List<Metadata<T>> list, LogMessageCallback messageCallback) {
+    private static <T> List<Metadata<T>> checkForDuplicates(List<Metadata<T>> list, MessageCallback<DeploymentException> messageCallback) {
         Map<T, Metadata<T>> map = new HashMap<T, Metadata<T>>();
         for (Metadata<T> item : list) {
             Metadata<T> previousOccurrence = map.put(item.getValue(), item);
             if (previousOccurrence != null) {
-                throw new DeploymentException(messageCallback.invoke(item.getValue(), item, previousOccurrence));
+                throw messageCallback.construct(item.getValue(), item, previousOccurrence);
             }
         }
         return list;

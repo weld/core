@@ -104,7 +104,7 @@ public class ConcurrentValidator extends Validator {
             protected void doWork(ObserverInitializationContext<?, ?> observerMethod) {
                 for (InjectionPoint ip : observerMethod.getObserver().getInjectionPoints()) {
                     validateInjectionPointForDefinitionErrors(ip, ip.getBean(), beanManager);
-                    validateMetadataInjectionPoint(ip, null, ValidatorLogger.INJECTION_INTO_NON_BEAN_CALLBACK);
+                    validateMetadataInjectionPoint(ip, null, ValidatorLogger.INJECTION_INTO_NON_BEAN);
                     validateInjectionPointForDeploymentProblems(ip, ip.getBean(), beanManager);
                 }
             }
