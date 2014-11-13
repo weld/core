@@ -23,6 +23,7 @@ import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -34,6 +35,7 @@ import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.logging.BootstrapLogger;
+import org.jboss.weld.logging.LogMessageCallback;
 import org.jboss.weld.logging.MessageCallback;
 import org.jboss.weld.logging.ValidatorLogger;
 import org.jboss.weld.resources.spi.ResourceLoader;
@@ -76,8 +78,8 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
         public int compareTo(Item o) {
             if (priority.equals(o.priority)) {
                 /*
-                 * The spec does not specify what happens if two records have the same priority. Instead of giving random
-                 * results, we compare the records based on their class name lexicographically.
+                 * The spec does not specify what happens if two records have the same priority. Instead of giving random results, we compare the records based
+                 * on their class name lexicographically.
                  */
                 return javaClass.getName().compareTo(o.javaClass.getName());
             }
@@ -214,26 +216,35 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
 
         BeansXml beansXml = deployment.getBeanDeploymentArchive().getBeansXml();
 
-        ImmutableList.Builder<Class<?>> moduleInterceptorsBuilder = ImmutableList.<Class<?>> builder();
-        ImmutableList.Builder<Class<?>> moduleDecoratorsBuilder = ImmutableList.<Class<?>> builder();
-
         Set<Class<?>> alternativeClasses = null;
         Set<Class<? extends Annotation>> alternativeStereotypes = null;
 
-        moduleInterceptorsBuilder.addAll(getInterceptorList());
-        moduleDecoratorsBuilder.addAll(getDecoratorList());
+        List<Class<?>> globallyEnabledInterceptors = getInterceptorList();
+        List<Class<?>> globallyEnabledDecorators = getDecoratorList();
+
+        ImmutableList.Builder<Class<?>> moduleInterceptorsBuilder = ImmutableList.<Class<?>> builder();
+        moduleInterceptorsBuilder.addAll(globallyEnabledInterceptors);
+
+        ImmutableList.Builder<Class<?>> moduleDecoratorsBuilder = ImmutableList.<Class<?>> builder();
+        moduleDecoratorsBuilder.addAll(globallyEnabledDecorators);
 
         if (beansXml != null) {
 
-            List<Class<?>> localInterceptors = transform(checkForDuplicates(beansXml.getEnabledInterceptors(), ValidatorLogger.INTERCEPTOR_SPECIFIED_TWICE), loader);
-            moduleInterceptorsBuilder.addAll(localInterceptors);
+            checkForDuplicates(beansXml.getEnabledInterceptors(), ValidatorLogger.INTERCEPTOR_SPECIFIED_TWICE);
+            checkForDuplicates(beansXml.getEnabledDecorators(), ValidatorLogger.DECORATOR_SPECIFIED_TWICE);
+            checkForDuplicates(beansXml.getEnabledAlternativeClasses(), ValidatorLogger.ALTERNATIVE_CLASS_SPECIFIED_MULTIPLE_TIMES);
+            checkForDuplicates(beansXml.getEnabledAlternativeStereotypes(), ValidatorLogger.ALTERNATIVE_STEREOTYPE_SPECIFIED_MULTIPLE_TIMES);
 
-            List<Class<?>> localDecorators = transform(checkForDuplicates(beansXml.getEnabledDecorators(), ValidatorLogger.DECORATOR_SPECIFIED_TWICE), loader);
-            moduleDecoratorsBuilder.addAll(localDecorators);
+            List<Class<?>> interceptorClasses = transform(beansXml.getEnabledInterceptors(), loader);
+            moduleInterceptorsBuilder.addAll(filter(interceptorClasses, globallyEnabledInterceptors, ValidatorLogger.INTERCEPTOR_ENABLED_FOR_APP_AND_ARCHIVE,
+                    deployment));
 
-            alternativeClasses = ImmutableSet.copyOf(transform(checkForDuplicates(beansXml.getEnabledAlternativeClasses(), ValidatorLogger.ALTERNATIVE_CLASS_SPECIFIED_MULTIPLE_TIMES), loader));
-            alternativeStereotypes = cast(ImmutableSet.copyOf(transform(checkForDuplicates(beansXml.getEnabledAlternativeStereotypes(), ValidatorLogger.ALTERNATIVE_STEREOTYPE_SPECIFIED_MULTIPLE_TIMES), loader)));
+            List<Class<?>> decoratorClasses = transform(beansXml.getEnabledDecorators(), loader);
+            moduleDecoratorsBuilder.addAll(filter(decoratorClasses, globallyEnabledDecorators, ValidatorLogger.DECORATOR_ENABLED_FOR_APP_AND_ARCHIVE,
+                    deployment));
 
+            alternativeClasses = ImmutableSet.copyOf(transform(beansXml.getEnabledAlternativeClasses(), loader));
+            alternativeStereotypes = cast(ImmutableSet.copyOf(transform(beansXml.getEnabledAlternativeStereotypes(), loader)));
         } else {
             alternativeClasses = Collections.emptySet();
             alternativeStereotypes = Collections.emptySet();
@@ -241,10 +252,23 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
 
         Map<Class<?>, Integer> globalAlternatives = getGlobalAlternativeMap();
 
-        return new ModuleEnablement(moduleInterceptorsBuilder.build(), moduleDecoratorsBuilder.build(), globalAlternatives, alternativeClasses, alternativeStereotypes);
+        return new ModuleEnablement(moduleInterceptorsBuilder.build(), moduleDecoratorsBuilder.build(), globalAlternatives, alternativeClasses,
+                alternativeStereotypes);
     }
 
-    private static <T> List<Metadata<T>> checkForDuplicates(List<Metadata<T>> list, MessageCallback<DeploymentException> messageCallback) {
+    @Override
+    public void cleanupAfterBoot() {
+        alternatives.clear();
+        interceptors.clear();
+        decorators.clear();
+    }
+
+    @Override
+    public String toString() {
+        return "GlobalEnablementBuilder [alternatives=" + alternatives + ", interceptors=" + interceptors + ", decorators=" + decorators + "]";
+    }
+
+    private <T> void checkForDuplicates(List<Metadata<T>> list, MessageCallback<DeploymentException> messageCallback) {
         Map<T, Metadata<T>> map = new HashMap<T, Metadata<T>>();
         for (Metadata<T> item : list) {
             Metadata<T> previousOccurrence = map.put(item.getValue(), item);
@@ -252,7 +276,27 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
                 throw messageCallback.construct(item.getValue(), item, previousOccurrence);
             }
         }
-        return list;
+    }
+
+    /**
+     * Filter out interceptors and decorators which are also enabled globally.
+     *
+     * @param enabledClasses
+     * @param globallyEnabledClasses
+     * @param logMessageCallback
+     * @param deployment
+     * @return the filtered list
+     */
+    private <T> List<Class<?>> filter(List<Class<?>> enabledClasses, List<Class<?>> globallyEnabledClasses, LogMessageCallback logMessageCallback,
+            BeanDeployment deployment) {
+        for (Iterator<Class<?>> iterator = enabledClasses.iterator(); iterator.hasNext();) {
+            Class<?> enabledClass = iterator.next();
+            if (globallyEnabledClasses.contains(enabledClass)) {
+                logMessageCallback.log(enabledClass, deployment.getBeanDeploymentArchive().getId());
+                iterator.remove();
+            }
+        }
+        return enabledClasses;
     }
 
     private static class ClassLoader implements Function<Metadata<String>, Class<?>> {
@@ -275,15 +319,4 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
         }
     }
 
-    @Override
-    public void cleanupAfterBoot() {
-        alternatives.clear();
-        interceptors.clear();
-        decorators.clear();
-    }
-
-    @Override
-    public String toString() {
-        return "GlobalEnablementBuilder [alternatives=" + alternatives + ", interceptors=" + interceptors + ", decorators=" + decorators + "]";
-    }
 }
