@@ -20,6 +20,7 @@ package org.jboss.weld.util.bytecode;
 import java.lang.reflect.Method;
 
 import org.jboss.classfilewriter.AccessFlag;
+import org.jboss.classfilewriter.util.DescriptorUtils;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
@@ -37,8 +38,8 @@ public class StaticMethodInformation implements MethodInformation {
 
     public StaticMethodInformation(String name, Class<?>[] parameterTypes, Class<?> returnType, String declaringClass, int modifiers) {
         this.name = name;
-        this.parameterTypes = DescriptorUtils.getParameterTypes(parameterTypes);
-        this.returnType = DescriptorUtils.classToStringRepresentation(returnType);
+        this.parameterTypes = DescriptorUtils.parameterDescriptors(parameterTypes);
+        this.returnType = DescriptorUtils.makeDescriptor(returnType);
         this.declaringClass = declaringClass;
         StringBuilder builder = new StringBuilder("(");
         for (String p : this.parameterTypes) {

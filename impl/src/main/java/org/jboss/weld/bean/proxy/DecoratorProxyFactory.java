@@ -33,6 +33,7 @@ import org.jboss.classfilewriter.AccessFlag;
 import org.jboss.classfilewriter.ClassFile;
 import org.jboss.classfilewriter.ClassMethod;
 import org.jboss.classfilewriter.code.CodeAttribute;
+import org.jboss.classfilewriter.util.DescriptorUtils;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.injection.FieldInjectionPoint;
 import org.jboss.weld.injection.ParameterInjectionPoint;
@@ -42,7 +43,6 @@ import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.security.GetDeclaredMethodAction;
 import org.jboss.weld.security.GetDeclaredMethodsAction;
 import org.jboss.weld.util.bytecode.BytecodeUtils;
-import org.jboss.weld.util.bytecode.DescriptorUtils;
 import org.jboss.weld.util.bytecode.MethodInformation;
 import org.jboss.weld.util.bytecode.RuntimeMethodInformation;
 import org.jboss.weld.util.bytecode.StaticMethodInformation;
@@ -77,14 +77,14 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
      * methodHandler field as then new methodHandler
      */
     private void addHandlerInitializerMethod(ClassFile proxyClassType, ClassMethod staticConstructor) throws Exception {
-        ClassMethod classMethod = proxyClassType.addMethod(AccessFlag.PRIVATE, INIT_MH_METHOD_NAME, DescriptorUtils.VOID_CLASS_DESCRIPTOR, LJAVA_LANG_OBJECT);
+        ClassMethod classMethod = proxyClassType.addMethod(AccessFlag.PRIVATE, INIT_MH_METHOD_NAME, BytecodeUtils.VOID_CLASS_DESCRIPTOR, LJAVA_LANG_OBJECT);
         final CodeAttribute b = classMethod.getCodeAttribute();
         b.aload(0);
         StaticMethodInformation methodInfo = new StaticMethodInformation(INIT_MH_METHOD_NAME, new Class[] { Object.class }, void.class,
                 classMethod.getClassFile().getName());
         invokeMethodHandler(classMethod, methodInfo, false, DEFAULT_METHOD_RESOLVER, staticConstructor);
         b.checkcast(MethodHandler.class);
-        b.putfield(classMethod.getClassFile().getName(), METHOD_HANDLER_FIELD_NAME, DescriptorUtils.classToStringRepresentation(MethodHandler.class));
+        b.putfield(classMethod.getClassFile().getName(), METHOD_HANDLER_FIELD_NAME, DescriptorUtils.makeDescriptor(MethodHandler.class));
         b.returnInstruction();
         BeanLogger.LOG.createdMethodHandlerInitializerForDecoratorProxy(getBeanType());
 
@@ -181,7 +181,7 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
             final CodeAttribute b = classMethod.getCodeAttribute();
             // load the delegate field
             b.aload(0);
-            b.getfield(classMethod.getClassFile().getName(), delegateField.getName(), DescriptorUtils.classToStringRepresentation(delegateField.getType()));
+            b.getfield(classMethod.getClassFile().getName(), delegateField.getName(), DescriptorUtils.makeDescriptor(delegateField.getType()));
             // load the parameters
             b.loadMethodParameters();
             // invoke the delegate method
@@ -230,7 +230,7 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
                 actualDelegateParameterPosition = localVariables;
             }
             Class<?> type = initializerMethodInfo.getMethod().getParameterTypes()[i];
-            BytecodeUtils.addLoadInstruction(b, DescriptorUtils.classToStringRepresentation(type), localVariables);
+            BytecodeUtils.addLoadInstruction(b, DescriptorUtils.makeDescriptor(type), localVariables);
             if (type == long.class || type == double.class) {
                 localVariables = localVariables + 2;
             } else {
@@ -244,7 +244,7 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
         // now we need to call _initMH
         b.aload(0); // load this
         b.aload(actualDelegateParameterPosition); // load the delegate
-        b.invokevirtual(classMethod.getClassFile().getName(), INIT_MH_METHOD_NAME, "(" + LJAVA_LANG_OBJECT + ")" + DescriptorUtils.VOID_CLASS_DESCRIPTOR);
+        b.invokevirtual(classMethod.getClassFile().getName(), INIT_MH_METHOD_NAME, "(" + LJAVA_LANG_OBJECT + ")" + BytecodeUtils.VOID_CLASS_DESCRIPTOR);
         // return the object from the top of the stack that we got from calling
         // the superclass method earlier
         b.returnInstruction();

@@ -16,11 +16,11 @@
  */
 package org.jboss.weld.bean.proxy;
 
-import static org.jboss.weld.util.bytecode.DescriptorUtils.DOUBLE_CLASS_DESCRIPTOR;
-import static org.jboss.weld.util.bytecode.DescriptorUtils.LONG_CLASS_DESCRIPTOR;
-import static org.jboss.weld.util.bytecode.DescriptorUtils.VOID_CLASS_DESCRIPTOR;
-import static org.jboss.weld.util.bytecode.DescriptorUtils.classToStringRepresentation;
-import static org.jboss.weld.util.bytecode.DescriptorUtils.getMethodDescriptor;
+import static org.jboss.classfilewriter.util.DescriptorUtils.makeDescriptor;
+import static org.jboss.classfilewriter.util.DescriptorUtils.methodDescriptor;
+import static org.jboss.weld.util.bytecode.BytecodeUtils.DOUBLE_CLASS_DESCRIPTOR;
+import static org.jboss.weld.util.bytecode.BytecodeUtils.LONG_CLASS_DESCRIPTOR;
+import static org.jboss.weld.util.bytecode.BytecodeUtils.VOID_CLASS_DESCRIPTOR;
 
 import org.jboss.classfilewriter.ClassMethod;
 import org.jboss.classfilewriter.code.BranchEnd;
@@ -42,11 +42,11 @@ abstract class RunWithinInterceptionDecorationContextGenerator {
     static final String START_INTERCEPTOR_CONTEXT_IF_NOT_EMPTY_METHOD_NAME = "startIfNotEmpty";
     static final String START_INTERCEPTOR_CONTEXT_IF_NOT_ON_TOP_METHOD_NAME = "startIfNotOnTop";
     static final String END_INTERCEPTOR_CONTEXT_METHOD_NAME = "end";
-    private static final String STACK_DESCRIPTOR = classToStringRepresentation(Stack.class);
+    private static final String STACK_DESCRIPTOR = makeDescriptor(Stack.class);
     private static final String EMPTY_PARENTHESES = "()";
     private static final String RETURNS_STACK_DESCRIPTOR = EMPTY_PARENTHESES + STACK_DESCRIPTOR;
-    static final String START_INTERCEPTOR_CONTEXT_IF_NOT_ON_TOP_METHOD_SIGNATURE = getMethodDescriptor(
-            new String[] { classToStringRepresentation(CombinedInterceptorAndDecoratorStackMethodHandler.class) }, STACK_DESCRIPTOR);
+    static final String START_INTERCEPTOR_CONTEXT_IF_NOT_ON_TOP_METHOD_SIGNATURE = methodDescriptor(
+            new String[] { makeDescriptor(CombinedInterceptorAndDecoratorStackMethodHandler.class) }, STACK_DESCRIPTOR);
 
     private final ClassMethod classMethod;
     private final CodeAttribute b;
@@ -67,7 +67,7 @@ abstract class RunWithinInterceptionDecorationContextGenerator {
 
     void startIfNotOnTop(CodeAttribute b, ClassMethod method) {
         b.aload(0);
-        b.getfield(method.getClassFile().getName(), ProxyFactory.METHOD_HANDLER_FIELD_NAME, classToStringRepresentation(MethodHandler.class));
+        b.getfield(method.getClassFile().getName(), ProxyFactory.METHOD_HANDLER_FIELD_NAME, makeDescriptor(MethodHandler.class));
         b.dup();
 
         // if handler != null (may happen inside constructor calls)
