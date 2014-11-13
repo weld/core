@@ -37,7 +37,7 @@ public class LambdaBean {
         data.add(1);
         data.add(10);
         data.add(5);
-        Collections.sort(data, (d1, d2) -> d1.compareTo(d2));
+        Collections.sort(data, Integer::compareTo);
         return data;
     }
 
@@ -46,7 +46,7 @@ public class LambdaBean {
         data.add(1);
         data.add(10);
         data.add(5);
-        return data.stream().sorted((d1, d2) -> d1.compareTo(d2)).map(i -> i.toString()).collect(Collectors.toList());
+        return data.stream().sorted(Integer::compareTo).map(Object::toString).collect(Collectors.toList());
     }
 
     public List<Integer> lambdaAsInstanceMethod() {
@@ -54,7 +54,7 @@ public class LambdaBean {
         data.add(1);
         data.add(10);
         data.add(5);
-        return data.stream().sorted((d1, d2) -> d1.compareTo(d2)).map(d -> plusOne(d)).filter(d -> d > limit)
+        return data.stream().sorted(Integer::compareTo).map(this::plusOne).filter(d -> d > limit)
                 .collect(Collectors.toList());
     }
 
@@ -63,7 +63,7 @@ public class LambdaBean {
         data.add(1);
         data.add(10);
         data.add(5);
-        return data.stream().sorted((d1, d2) -> d1.compareTo(d2)).map(d -> toNull(d)).collect(Collectors.toList());
+        return data.stream().sorted(Integer::compareTo).map(this::toNull).collect(Collectors.toList());
     }
 
     private int plusOne(int value) {

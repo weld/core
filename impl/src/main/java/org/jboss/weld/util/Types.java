@@ -39,12 +39,7 @@ import org.jboss.weld.util.reflection.Reflections;
  */
 public class Types {
 
-    public static final Function<Type, Class<?>> TYPE_TO_CLASS_FUNCTION = new Function<Type, Class<?>>() {
-        @Override
-        public Class<?> apply(Type input) {
-            return Reflections.getRawType(input);
-        }
-    };
+    public static final Function<Type, Class<?>> TYPE_TO_CLASS_FUNCTION = Reflections::getRawType;
 
     private Types() {
     }
@@ -179,7 +174,7 @@ public class Types {
     }
 
     public static Set<Class<?>> getRawTypes(Set<Type> types) {
-        return types.stream().map(t -> Reflections.getRawType(t)).collect(ImmutableSet.collector());
+        return types.stream().map(Reflections::getRawType).collect(ImmutableSet.collector());
     }
 
     public static Class<?>[] getRawTypes(Type[] types) {

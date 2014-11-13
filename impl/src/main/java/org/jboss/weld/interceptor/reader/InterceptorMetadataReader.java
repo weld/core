@@ -49,12 +49,7 @@ public class InterceptorMetadataReader {
                 return CustomInterceptorMetadata.of(key);
             }
         });
-        this.interceptorToInterceptorMetadataFunction = new Function<Interceptor<?>, InterceptorClassMetadata<?>>() {
-            @Override
-            public InterceptorClassMetadata<?> apply(Interceptor<?> input) {
-                return getCdiInterceptorMetadata(input);
-            }
-        };
+        this.interceptorToInterceptorMetadataFunction = InterceptorMetadataReader.this::getCdiInterceptorMetadata;
     }
 
     public <T> InterceptorClassMetadata<T> getPlainInterceptorMetadata(Class<T> clazz) {

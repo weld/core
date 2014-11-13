@@ -64,7 +64,7 @@ public class ConversationContextActivator {
         this.beanManager = beanManager;
         conversationInitializedEvent = FastEvent.of(HttpServletRequest.class, beanManager, InitializedLiteral.CONVERSATION);
         conversationDestroyedEvent = FastEvent.of(HttpServletRequest.class, beanManager, DestroyedLiteral.CONVERSATION);
-        lazyInitializationCallback = lazy ? (HttpServletRequest t) -> conversationInitializedEvent.fire(t) : null;
+        lazyInitializationCallback = lazy ? conversationInitializedEvent::fire : null;
         this.lazy = lazy;
     }
 
