@@ -25,6 +25,16 @@ import org.jboss.classfilewriter.code.CodeAttribute;
  */
 public class BytecodeUtils {
 
+    public static final String VOID_CLASS_DESCRIPTOR = "V";
+    public static final String BYTE_CLASS_DESCRIPTOR = "B";
+    public static final String CHAR_CLASS_DESCRIPTOR = "C";
+    public static final String DOUBLE_CLASS_DESCRIPTOR = "D";
+    public static final String FLOAT_CLASS_DESCRIPTOR = "F";
+    public static final String INT_CLASS_DESCRIPTOR = "I";
+    public static final String LONG_CLASS_DESCRIPTOR = "J";
+    public static final String SHORT_CLASS_DESCRIPTOR = "S";
+    public static final String BOOLEAN_CLASS_DESCRIPTOR = "Z";
+
     private static final String TYPE = "TYPE";
     private static final String LJAVA_LANG_CLASS = "Ljava/lang/Class;";
 

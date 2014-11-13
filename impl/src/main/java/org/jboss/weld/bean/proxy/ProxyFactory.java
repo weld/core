@@ -17,6 +17,8 @@
 
 package org.jboss.weld.bean.proxy;
 
+import static org.jboss.classfilewriter.util.DescriptorUtils.isPrimitive;
+import static org.jboss.classfilewriter.util.DescriptorUtils.isWide;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.io.File;
@@ -46,6 +48,8 @@ import org.jboss.classfilewriter.ClassMethod;
 import org.jboss.classfilewriter.DuplicateMemberException;
 import org.jboss.classfilewriter.code.BranchEnd;
 import org.jboss.classfilewriter.code.CodeAttribute;
+import org.jboss.classfilewriter.util.Boxing;
+import org.jboss.classfilewriter.util.DescriptorUtils;
 import org.jboss.weld.Container;
 import org.jboss.weld.SystemPropertiesConfiguration;
 import org.jboss.weld.exceptions.DefinitionException;
@@ -61,12 +65,10 @@ import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.serialization.spi.ProxyServices;
 import org.jboss.weld.util.Proxies.TypeInfo;
-import org.jboss.weld.util.bytecode.Boxing;
 import org.jboss.weld.util.bytecode.BytecodeUtils;
 import org.jboss.weld.util.bytecode.ClassFileUtils;
 import org.jboss.weld.util.bytecode.ConstructorUtils;
 import org.jboss.weld.util.bytecode.DeferredBytecode;
-import org.jboss.weld.util.bytecode.DescriptorUtils;
 import org.jboss.weld.util.bytecode.MethodInformation;
 import org.jboss.weld.util.bytecode.RuntimeMethodInformation;
 import org.jboss.weld.util.collections.ArraySet;
@@ -503,7 +505,7 @@ public class ProxyFactory<T> {
                         for (int i = 0; i < exceptions.length; ++i) {
                             exceptions[i] = constructor.getExceptionTypes()[i].getName();
                         }
-                        ConstructorUtils.addConstructor(DescriptorUtils.VOID_CLASS_DESCRIPTOR, DescriptorUtils.getParameterTypes(constructor.getParameterTypes()), exceptions, proxyClassType, initialValueBytecode, isUsingUnsafeInstantiators());
+                        ConstructorUtils.addConstructor(BytecodeUtils.VOID_CLASS_DESCRIPTOR, DescriptorUtils.parameterDescriptors(constructor.getParameterTypes()), exceptions, proxyClassType, initialValueBytecode, isUsingUnsafeInstantiators());
                     }
                 }
                 if (!constructorFound) {
@@ -523,7 +525,7 @@ public class ProxyFactory<T> {
         proxyClassType.addField(AccessFlag.PRIVATE, METHOD_HANDLER_FIELD_NAME, MethodHandler.class);
         if(!isUsingUnsafeInstantiators()) {
             // field used to indicate that super() has been called
-            proxyClassType.addField(AccessFlag.PRIVATE, CONSTRUCTED_FLAG_NAME, DescriptorUtils.BOOLEAN_CLASS_DESCRIPTOR);
+            proxyClassType.addField(AccessFlag.PRIVATE, CONSTRUCTED_FLAG_NAME, BytecodeUtils.BOOLEAN_CLASS_DESCRIPTOR);
         }
 
     }
@@ -648,7 +650,7 @@ public class ProxyFactory<T> {
         // now create the conditional
         final CodeAttribute cond = classMethod.getCodeAttribute();
         cond.aload(0);
-        cond.getfield(classMethod.getClassFile().getName(), CONSTRUCTED_FLAG_NAME, DescriptorUtils.BOOLEAN_CLASS_DESCRIPTOR);
+        cond.getfield(classMethod.getClassFile().getName(), CONSTRUCTED_FLAG_NAME, BytecodeUtils.BOOLEAN_CLASS_DESCRIPTOR);
 
         // jump if the proxy constructor has finished
         BranchEnd jumpMarker = cond.ifne();
@@ -704,7 +706,7 @@ public class ProxyFactory<T> {
         // add an appropriate return instruction
         final CodeAttribute b = classMethod.getCodeAttribute();
         b.aload(0);
-        b.getfield(classMethod.getClassFile().getName(), METHOD_HANDLER_FIELD_NAME, DescriptorUtils.classToStringRepresentation(MethodHandler.class));
+        b.getfield(classMethod.getClassFile().getName(), METHOD_HANDLER_FIELD_NAME, DescriptorUtils.makeDescriptor(MethodHandler.class));
         b.aload(0);
         bytecodeMethodResolver.getDeclaredMethod(classMethod, method.getDeclaringClass(), method.getName(), method.getParameterTypes(), staticConstructor);
         b.aconstNull();
@@ -721,10 +723,10 @@ public class ProxyFactory<T> {
             // load the parameter value
             BytecodeUtils.addLoadInstruction(b, typeString, localVariableCount);
             // box the parameter if necessary
-            Boxing.boxIfNecessary(b, typeString);
+            Boxing.boxIfNessesary(b, typeString);
             // and store it in the array
             b.aastore();
-            if (DescriptorUtils.isWide(typeString)) {
+            if (isWide(typeString)) {
                 localVariableCount = localVariableCount + 2;
             } else {
                 localVariableCount++;
@@ -736,9 +738,9 @@ public class ProxyFactory<T> {
                 LJAVA_LANG_REFLECT_METHOD, LJAVA_LANG_REFLECT_METHOD, "[" + LJAVA_LANG_OBJECT });
         if (addReturnInstruction) {
             // now we need to return the appropriate type
-            if (method.getReturnType().equals(DescriptorUtils.VOID_CLASS_DESCRIPTOR)) {
+            if (method.getReturnType().equals(BytecodeUtils.VOID_CLASS_DESCRIPTOR)) {
                 b.returnInstruction();
-            } else if(DescriptorUtils.isPrimitive(method.getReturnType())) {
+            } else if(isPrimitive(method.getReturnType())) {
                 Boxing.unbox(b, method.getReturnType());
                 b.returnInstruction();
             } else {
@@ -791,14 +793,14 @@ public class ProxyFactory<T> {
         final CodeAttribute b = method.getCodeAttribute();
         b.aload(0);
         b.aload(1);
-        b.putfield(method.getClassFile().getName(), METHOD_HANDLER_FIELD_NAME, DescriptorUtils.classToStringRepresentation(MethodHandler.class));
+        b.putfield(method.getClassFile().getName(), METHOD_HANDLER_FIELD_NAME, DescriptorUtils.makeDescriptor(MethodHandler.class));
         b.returnInstruction();
     }
 
     private static void generateGetMethodHandlerBody(ClassMethod method) {
         final CodeAttribute b = method.getCodeAttribute();
         b.aload(0);
-        b.getfield(method.getClassFile().getName(), METHOD_HANDLER_FIELD_NAME, DescriptorUtils.classToStringRepresentation(MethodHandler.class));
+        b.getfield(method.getClassFile().getName(), METHOD_HANDLER_FIELD_NAME, DescriptorUtils.makeDescriptor(MethodHandler.class));
         b.returnInstruction();
     }
 
@@ -811,19 +813,19 @@ public class ProxyFactory<T> {
      * however the proxy is directly created without calling the constructor
      */
     private void addConstructorsForBeanWithPrivateConstructors(ClassFile proxyClassType) {
-        ClassMethod ctor = proxyClassType.addMethod(AccessFlag.PUBLIC, INIT_METHOD_NAME, DescriptorUtils.VOID_CLASS_DESCRIPTOR, LJAVA_LANG_BYTE);
+        ClassMethod ctor = proxyClassType.addMethod(AccessFlag.PUBLIC, INIT_METHOD_NAME, BytecodeUtils.VOID_CLASS_DESCRIPTOR, LJAVA_LANG_BYTE);
         CodeAttribute b = ctor.getCodeAttribute();
         b.aload(0);
         b.aconstNull();
         b.aconstNull();
-        b.invokespecial(proxyClassType.getName(), INIT_METHOD_NAME, "(" + LJAVA_LANG_BYTE + LJAVA_LANG_BYTE + ")" + DescriptorUtils.VOID_CLASS_DESCRIPTOR);
+        b.invokespecial(proxyClassType.getName(), INIT_METHOD_NAME, "(" + LJAVA_LANG_BYTE + LJAVA_LANG_BYTE + ")" + BytecodeUtils.VOID_CLASS_DESCRIPTOR);
         b.returnInstruction();
 
-        ctor = proxyClassType.addMethod(AccessFlag.PUBLIC, INIT_METHOD_NAME, DescriptorUtils.VOID_CLASS_DESCRIPTOR, LJAVA_LANG_BYTE, LJAVA_LANG_BYTE);
+        ctor = proxyClassType.addMethod(AccessFlag.PUBLIC, INIT_METHOD_NAME, BytecodeUtils.VOID_CLASS_DESCRIPTOR, LJAVA_LANG_BYTE, LJAVA_LANG_BYTE);
         b = ctor.getCodeAttribute();
         b.aload(0);
         b.aconstNull();
-        b.invokespecial(proxyClassType.getName(), INIT_METHOD_NAME, "(" + LJAVA_LANG_BYTE + ")" + DescriptorUtils.VOID_CLASS_DESCRIPTOR);
+        b.invokespecial(proxyClassType.getName(), INIT_METHOD_NAME, "(" + LJAVA_LANG_BYTE + ")" + BytecodeUtils.VOID_CLASS_DESCRIPTOR);
         b.returnInstruction();
     }
 
