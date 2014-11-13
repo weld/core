@@ -214,7 +214,7 @@ public class SpecializationAndEnablementRegistry extends AbstractBootstrapServic
                 .entrySet()
                 .stream()
                 .collect(
-                        Collectors.toMap((Entry<AbstractBean<?, ?>, LongAdder> entry) -> entry.getKey(), (Entry<AbstractBean<?, ?>, LongAdder> entry) -> entry
+                        Collectors.toMap(Entry<AbstractBean<?, ?>, LongAdder>::getKey, (Entry<AbstractBean<?, ?>, LongAdder> entry) -> entry
                                 .getValue().longValue()));
     }
 

@@ -56,12 +56,7 @@ public class BeansXmlParser {
 
     private static final InputSource[] EMPTY_INPUT_SOURCE_ARRAY = new InputSource[0];
 
-    private Function<URL, BeansXml> URL_TO_BEANS_XML_FUNCTION = new Function<URL, BeansXml>() {
-        @Override
-        public BeansXml apply(URL url) {
-            return parse(url);
-        }
-    };
+    private Function<URL, BeansXml> URL_TO_BEANS_XML_FUNCTION = BeansXmlParser.this::parse;
 
     private static Function<BeanDeploymentArchive, BeansXml> BEAN_ARCHIVE_TO_BEANS_XML_FUNCTION = new Function<BeanDeploymentArchive, BeansXml>() {
         @Override

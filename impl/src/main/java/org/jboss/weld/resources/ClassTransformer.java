@@ -278,7 +278,7 @@ public class ClassTransformer implements BootstrapService {
     public void cleanupAfterBoot() {
         this.enhancedAnnotatedTypes.clear();
         this.annotations.clear();
-        backedAnnotatedTypes.forEachValue((type -> type.clear()));
+        backedAnnotatedTypes.forEachValue((BackedAnnotatedType::clear));
         this.backedAnnotatedTypes.clear();
     }
 
