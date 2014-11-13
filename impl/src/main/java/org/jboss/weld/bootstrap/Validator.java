@@ -98,7 +98,7 @@ import org.jboss.weld.literal.DecoratedLiteral;
 import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.literal.InterceptedLiteral;
 import org.jboss.weld.logging.BeanLogger;
-import org.jboss.weld.logging.LogMessageCallback;
+import org.jboss.weld.logging.MessageCallback;
 import org.jboss.weld.logging.ValidatorLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
@@ -184,7 +184,7 @@ public class Validator implements Service {
                     for (InjectionPoint ip : producer.getDisposalMethod().getInjectionPoints()) {
                         // pass the producer bean instead of the disposal method bean
                         validateInjectionPointForDefinitionErrors(ip, null, beanManager);
-                        validateMetadataInjectionPoint(ip, null, ValidatorLogger.INJECTION_INTO_DISPOSER_METHOD_CALLBACK);
+                        validateMetadataInjectionPoint(ip, null, ValidatorLogger.INJECTION_INTO_DISPOSER_METHOD);
                         validateEventMetadataInjectionPoint(ip);
                         validateInjectionPointForDeploymentProblems(ip, null, beanManager);
                     }
@@ -284,7 +284,7 @@ public class Validator implements Service {
      */
     public void validateInjectionPoint(InjectionPoint ij, BeanManagerImpl beanManager) {
         validateInjectionPointForDefinitionErrors(ij, ij.getBean(), beanManager);
-        validateMetadataInjectionPoint(ij, ij.getBean(), ValidatorLogger.INJECTION_INTO_NON_DEPENDENT_BEAN_CALLBACK);
+        validateMetadataInjectionPoint(ij, ij.getBean(), ValidatorLogger.INJECTION_INTO_NON_BEAN);
         validateEventMetadataInjectionPoint(ij);
         validateInjectionPointForDeploymentProblems(ij, ij.getBean(), beanManager);
     }
@@ -295,7 +295,6 @@ public class Validator implements Service {
     public void validateInjectionPointForDefinitionErrors(InjectionPoint ij, Bean<?> bean, BeanManagerImpl beanManager) {
         if (ij.getAnnotated().getAnnotation(New.class) != null && ij.getQualifiers().size() > 1) {
             throw ValidatorLogger.LOG.newWithQualifiers(ij);
-            // throw new DefinitionException(NEW_WITH_QUALIFIERS, ij);
         }
         if (ij.getType() instanceof TypeVariable<?>) {
             throw ValidatorLogger.LOG.injectionPointWithTypeVariable(ij);
@@ -338,18 +337,18 @@ public class Validator implements Service {
         }
     }
 
-    public void validateMetadataInjectionPoint(InjectionPoint ij, Bean<?> bean, LogMessageCallback messageCallback) {
+    public void validateMetadataInjectionPoint(InjectionPoint ij, Bean<?> bean, MessageCallback<DefinitionException> messageCallback) {
         // metadata injection points
         if (ij.getType().equals(InjectionPoint.class) && bean == null) {
-            throw new DefinitionException(messageCallback.invoke(ij));
+            throw messageCallback.construct(ij);
         }
         if (ij.getType().equals(InjectionPoint.class) && !Dependent.class.equals(bean.getScope())) {
-            throw new DefinitionException(ValidatorLogger.LOG.injectionIntoNonDependentBean(ij));
+            throw ValidatorLogger.LOG.injectionIntoNonDependentBean(ij);
         }
         Class<?> rawType = Reflections.getRawType(ij.getType());
         if (Bean.class.equals(rawType) || Interceptor.class.equals(rawType) || Decorator.class.equals(rawType)) {
             if (bean == null) {
-                throw new DefinitionException(messageCallback.invoke(ij));
+                throw messageCallback.construct(ij);
             }
             if (bean instanceof AbstractClassBean<?>) {
                 checkBeanMetadataInjectionPoint(bean, ij, AnnotatedTypes.getDeclaringAnnotatedType(ij.getAnnotated()).getBaseType());
@@ -769,7 +768,7 @@ public class Validator implements Service {
         for (ObserverInitializationContext<?, ?> omi : observers) {
             for (InjectionPoint ip : omi.getObserver().getInjectionPoints()) {
                 validateInjectionPointForDefinitionErrors(ip, ip.getBean(), beanManager);
-                validateMetadataInjectionPoint(ip, null, ValidatorLogger.INJECTION_INTO_NON_DEPENDENT_BEAN_CALLBACK);
+                validateMetadataInjectionPoint(ip, null, ValidatorLogger.INJECTION_INTO_NON_BEAN);
                 validateInjectionPointForDeploymentProblems(ip, ip.getBean(), beanManager);
             }
         }
@@ -805,7 +804,7 @@ public class Validator implements Service {
         Type typeArgument = parameterizedType.getActualTypeArguments()[0];
 
         if (bean == null) {
-            throw new DefinitionException(ValidatorLogger.LOG.injectionIntoNonBean(ip));
+            throw ValidatorLogger.LOG.injectionIntoNonBean(ip);
         }
         /*
          * If an Interceptor instance is injected into a bean instance other than an interceptor instance, the container
