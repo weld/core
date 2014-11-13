@@ -54,6 +54,10 @@ public interface ValidatorLogger extends WeldLogger {
 
     MessageCallback<DeploymentException> ALTERNATIVE_STEREOTYPE_SPECIFIED_MULTIPLE_TIMES = (t) -> ValidatorLogger.LOG.alternativeStereotypeSpecifiedMultipleTimes(t[0], t[1], t[2]);
 
+    LogMessageCallback INTERCEPTOR_ENABLED_FOR_APP_AND_ARCHIVE = (t) -> ValidatorLogger.LOG.interceptorEnabledForApplicationAndBeanArchive(t[0], t[1]);
+
+    LogMessageCallback DECORATOR_ENABLED_FOR_APP_AND_ARCHIVE = (t) -> ValidatorLogger.LOG.decoratorEnabledForApplicationAndBeanArchive(t[0], t[1]);
+
     @Message(id = 1401, value = "Two beans cannot specialize the same bean {0}", format = Format.MESSAGE_FORMAT)
     InconsistentSpecializationException beanSpecializedTooManyTimes(Object param1);
 
@@ -251,4 +255,13 @@ public interface ValidatorLogger extends WeldLogger {
 
     @Message(id = 1477, value = "The bean {0} declares a passivating scope but has a(n) {1} with a non-passivation-capable dependency {2}", format = Format.MESSAGE_FORMAT)
     UnserializableDependencyException interceptorDecoratorInjectionPointHasNonSerializableDependency(Object param1, Object param2, Object param3);
+
+    @LogMessage(level = Level.WARN)
+    @Message(id = 1478, value = "Interceptor {0} is enabled for the application and for the bean archive {1}. It will only be invoked in the @Priority part of the chain.", format = Format.MESSAGE_FORMAT)
+    void interceptorEnabledForApplicationAndBeanArchive(Object interceptor, Object beanArchive);
+
+    @LogMessage(level = Level.WARN)
+    @Message(id = 1479, value = "Decorator {0} is enabled for the application and for the bean archive {1}. It will only be invoked in the @Priority part of the chain.", format = Format.MESSAGE_FORMAT)
+    void decoratorEnabledForApplicationAndBeanArchive(Object decorator, Object beanArchive);
+
 }
