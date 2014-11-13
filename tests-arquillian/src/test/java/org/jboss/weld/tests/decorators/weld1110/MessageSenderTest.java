@@ -57,11 +57,8 @@ public class MessageSenderTest {
 
     private String getHttpGETResponse(String urlPath) throws IOException {
         URL url = new URL(base, urlPath);
-        BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
-        try {
+        try (BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()))) {
             return in.readLine();
-        } finally {
-            in.close();
         }
     }
 }
