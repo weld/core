@@ -48,15 +48,12 @@ public class Weld1418Test {
         String cid;
         HttpURLConnection conn = (HttpURLConnection) new URL(baseUrl + "servlet/startConversation?value=" + VALUE).openConnection();
         try {
-            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            try {
+            try (BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
                 cid = in.readLine();
                 makeRequest(new URL(baseUrl + "servlet/shortRequest"));
 
                 while (in.readLine() != null) { // just wait for the first request to end
                 }
-            } finally {
-                in.close();
             }
         } finally {
             conn.disconnect();
@@ -73,8 +70,7 @@ public class Weld1418Test {
         String cid;
         HttpURLConnection conn = (HttpURLConnection) new URL(baseUrl + "servlet/startConversation?sleep=500&value=" + VALUE).openConnection();
         try {
-            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            try {
+            try (BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
                 cid = in.readLine();
 
                 String value = makeRequest(new URL(baseUrl + "servlet/getValue?cid=" + cid));
@@ -83,8 +79,6 @@ public class Weld1418Test {
                 }
 
                 assertEquals(VALUE, value);
-            } finally {
-                in.close();
             }
         } finally {
             conn.disconnect();
@@ -95,11 +89,8 @@ public class Weld1418Test {
     private String makeRequest(URL url) throws IOException {
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         try {
-            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            try {
+            try (BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
                 return in.readLine();
-            } finally {
-                in.close();
             }
         } finally {
             conn.disconnect();
