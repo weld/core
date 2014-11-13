@@ -19,15 +19,15 @@ package org.jboss.weld.bean.proxy;
 
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
-import java.nio.file.Files;
-import java.nio.file.StandardOpenOption;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.ProtectionDomain;
@@ -475,11 +475,27 @@ public class ProxyFactory<T> {
     }
 
     private void dumpToFile(File dumpPath, String fileName, byte[] data) {
-        File dumpFile = new File(dumpPath, fileName + ".class");
+        BufferedOutputStream dumpStream = null;
+        FileOutputStream dumpFileStream = null;
+        File classFile = new File(dumpPath, fileName + ".class");
         try {
-            Files.write(dumpFile.toPath(), data, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
-        } catch(IOException e) {
+            if (classFile.isFile()) {
+                if (!classFile.delete()) {
+                    throw new IOException("Can not to remove file: " + classFile.getName());
+                }
+            }
+            dumpFileStream = new FileOutputStream(classFile);
+            dumpStream = new BufferedOutputStream(dumpFileStream);
+            dumpStream.write(data);
+        } catch (IOException e) {
             BeanLogger.LOG.beanCannotBeDumped(fileName, e);
+        } finally {
+            try {
+                dumpStream.close();
+                dumpFileStream.close();
+            } catch (IOException e) {
+                BeanLogger.LOG.beanCannotBeDumped(fileName, e);
+            }
         }
     }
 
@@ -733,7 +749,7 @@ public class ProxyFactory<T> {
         // now we have all our arguments on the stack
         // lets invoke the method
         b.invokeinterface(MethodHandler.class.getName(), "invoke", LJAVA_LANG_OBJECT, new String[] { LJAVA_LANG_OBJECT,
-                LJAVA_LANG_REFLECT_METHOD, LJAVA_LANG_REFLECT_METHOD, "[" + LJAVA_LANG_OBJECT });
+            LJAVA_LANG_REFLECT_METHOD, LJAVA_LANG_REFLECT_METHOD, "[" + LJAVA_LANG_OBJECT });
         if (addReturnInstruction) {
             // now we need to return the appropriate type
             if (method.getReturnType().equals(DescriptorUtils.VOID_CLASS_DESCRIPTOR)) {
