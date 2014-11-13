@@ -110,9 +110,7 @@ public class QualifierInstance {
                         method.getJavaMember().setAccessible(true);
                     }
                     builder.put(method, method.getJavaMember().invoke(instance));
-                } catch (IllegalAccessException e) {
-                    throw new WeldException(e);
-                } catch (InvocationTargetException e) {
+                } catch (IllegalAccessException | InvocationTargetException e) {
                     throw new WeldException(e);
                 }
             }

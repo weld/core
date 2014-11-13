@@ -90,9 +90,7 @@ public class BeansXmlParser {
         SAXParser parser;
         try {
             parser = factory.newSAXParser();
-        } catch (SAXException e) {
-            throw XmlLogger.LOG.configurationError(e);
-        } catch (ParserConfigurationException e) {
+        } catch (SAXException | ParserConfigurationException e) {
             throw XmlLogger.LOG.configurationError(e);
         }
         InputStream beansXmlInputStream = null;
@@ -108,11 +106,7 @@ public class BeansXmlParser {
             try {
                 parser.setProperty("http://java.sun.com/xml/jaxp/properties/schemaLanguage", "http://www.w3.org/2001/XMLSchema");
                 parser.setProperty("http://java.sun.com/xml/jaxp/properties/schemaSource", loadXsds());
-            } catch (IllegalArgumentException e) {
-                // No op, we just don't validate the XML
-            } catch (SAXNotRecognizedException e) {
-                // No op, we just don't validate the XML
-            } catch (SAXNotSupportedException e) {
+            } catch (IllegalArgumentException | SAXNotRecognizedException | SAXNotSupportedException e) {
                 // No op, we just don't validate the XML
             }
 

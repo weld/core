@@ -55,9 +55,7 @@ public class WeldResourceLoader implements ResourceLoader {
                 obj = obj.getSuperclass();
             }
             return clazz;
-        } catch (ClassNotFoundException e) {
-            throw new ResourceLoadingException(e);
-        } catch (LinkageError e) {
+        } catch (ClassNotFoundException | LinkageError e) {
             throw new ResourceLoadingException(e);
         }
     }
