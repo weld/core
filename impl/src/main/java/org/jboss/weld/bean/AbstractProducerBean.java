@@ -16,43 +16,6 @@
  */
 package org.jboss.weld.bean;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
-import org.jboss.weld.Container;
-import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
-import org.jboss.weld.bootstrap.api.ServiceRegistry;
-import org.jboss.weld.exceptions.DefinitionException;
-import org.jboss.weld.exceptions.IllegalProductException;
-import org.jboss.weld.exceptions.WeldException;
-import org.jboss.weld.injection.CurrentInjectionPoint;
-import org.jboss.weld.introspector.WeldMember;
-import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.metadata.cache.MetaAnnotationStore;
-import org.jboss.weld.util.Beans;
-import org.jboss.weld.util.reflection.Reflections;
-import org.slf4j.cal10n.LocLogger;
-
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.NormalScope;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.Producer;
-import javax.inject.Inject;
-import javax.inject.Scope;
-import java.io.Serializable;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Member;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
-import java.lang.reflect.WildcardType;
-import java.util.HashSet;
-import java.util.Set;
-
 import static org.jboss.weld.logging.Category.BEAN;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.BeanMessage.NON_SERIALIZABLE_CONSTRUCTOR_PARAM_INJECTION_ERROR;
@@ -70,6 +33,45 @@ import static org.jboss.weld.logging.messages.BeanMessage.USING_DEFAULT_SCOPE;
 import static org.jboss.weld.logging.messages.BeanMessage.USING_SCOPE;
 import static org.jboss.weld.util.cache.LoadingCacheUtils.getCacheValue;
 import static org.jboss.weld.util.reflection.Reflections.cast;
+
+import java.io.Serializable;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Member;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.lang.reflect.WildcardType;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.enterprise.context.Dependent;
+import javax.enterprise.context.NormalScope;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.spi.Producer;
+import javax.inject.Inject;
+import javax.inject.Scope;
+
+import org.jboss.weld.Container;
+import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
+import org.jboss.weld.bootstrap.api.ServiceRegistry;
+import org.jboss.weld.exceptions.DefinitionException;
+import org.jboss.weld.exceptions.IllegalProductException;
+import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.injection.CurrentInjectionPoint;
+import org.jboss.weld.introspector.WeldMember;
+import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.metadata.cache.MetaAnnotationStore;
+import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.reflection.Reflections;
+import org.slf4j.cal10n.LocLogger;
+
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 
 /**
  * The implicit producer bean
@@ -219,7 +221,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
      *
      * @param instance The instance to validate
      */
-    protected void checkReturnValue(T instance) {
+    protected T checkReturnValue(T instance) {
         if (instance == null) {
             if (!isDependent()) {
                 throw new IllegalProductException(NULL_NOT_ALLOWED_FROM_PRODUCER, getProducer());
@@ -251,6 +253,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
                 }
             }
         }
+        return instance;
     }
 
     @Override
@@ -305,8 +308,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
      */
     public T create(final CreationalContext<T> creationalContext) {
         T instance = getProducer().produce(creationalContext);
-        checkReturnValue(instance);
-        return instance;
+        return checkReturnValue(instance);
     }
 
     protected abstract class AbstractProducer implements Producer<T> {
