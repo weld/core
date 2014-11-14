@@ -6,8 +6,8 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>weld-porting-package-tck11</artifactId>
-    <name>Weld Porting Package for the CDI TCK 1.1</name>
+    <artifactId>weld-porting-package-tck</artifactId>
+    <name>Weld Porting Package for the CDI TCK 2.0</name>
 
     <licenses>
         <license>
@@ -38,7 +38,7 @@
         <dependency>
             <groupId>org.jboss.cdi.tck</groupId>
             <artifactId>cdi-tck-api</artifactId>
-            <version>${cdi.tck-1-2.version}</version>
+            <version>${cdi.tck-2-0.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>javax.el</groupId>

@@ -37,7 +37,7 @@
         <arquillian.glassfish.version>1.0.0.CR1</arquillian.glassfish.version>
         <atinject.tck.version>1</atinject.tck.version>
         <build.config.version>7</build.config.version>
-        <cdi.tck-1-2.version>1.2.2.Final</cdi.tck-1-2.version>
+        <cdi.tck-1-2.version>1.2.3.Final</cdi.tck-1-2.version>
         <cdi.tck-2-0.version>2.0.0-SNAPSHOT</cdi.tck-2-0.version>
         <checkstyle.version>2.13</checkstyle.version>
         <classfilewriter.version>1.0.5.Final</classfilewriter.version>
@@ -362,7 +362,7 @@
 
             <dependency>
                 <groupId>org.jboss.weld</groupId>
-                <artifactId>weld-porting-package-tck11</artifactId>
+                <artifactId>weld-porting-package-tck</artifactId>
                 <version>${project.version}</version>
             </dependency>
             
@@ -436,7 +436,7 @@
             <dependency>
                 <groupId>org.jboss.cdi.tck</groupId>
                 <artifactId>cdi-tck-ext-lib</artifactId>
-                <version>${cdi.tck-1-2.version}</version>
+                <version>${cdi.tck-2-0.version}</version>
             </dependency>
 
             <dependency>
@@ -572,7 +572,7 @@
                 </property>
             </activation>
             <modules>
-                <module>porting-package/1.1</module>
+                <module>porting-package</module>
                 <module>tests-common</module>
                 <module>tests</module>
                 <module>tests-arquillian</module>
@@ -588,7 +588,7 @@
                 </property>
             </activation>
             <modules>
-                <module>jboss-tck-runner/1.1</module>
+                <module>jboss-tck-runner</module>
             </modules>
         </profile>
         <profile>
