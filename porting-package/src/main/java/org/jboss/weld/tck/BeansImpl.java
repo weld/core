@@ -21,8 +21,10 @@ import org.jboss.jsr299.tck.spi.Beans;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.ObjectStreamClass;
 
 /**
  * Implements the Beans SPI for the TCK specifically for the JBoss RI.
@@ -40,13 +42,45 @@ public class BeansImpl implements Beans {
     public byte[] serialize(Object instance) throws IOException {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream(bytes);
-        out.writeObject(instance);
-        return bytes.toByteArray();
+        try {
+            out.writeObject(instance);
+            return bytes.toByteArray();
+        } finally {
+            if (out != null) {
+                out.close();
+            }
+        }
     }
 
     public Object deserialize(byte[] bytes) throws IOException, ClassNotFoundException {
-        ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bytes));
-        return in.readObject();
+        TCCLObjectInputStream in = new TCCLObjectInputStream(new ByteArrayInputStream(bytes));
+        try {
+            return in.readObject();
+        } finally {
+            if (in != null) {
+                in.close();
+            }
+        }
     }
+
+    private static class TCCLObjectInputStream extends ObjectInputStream {
+
+        private final ClassLoader classLoader;
+
+        public TCCLObjectInputStream(InputStream in) throws IOException {
+            super(in);
+            this.classLoader = Thread.currentThread().getContextClassLoader();
+        }
+
+        @Override
+        protected Class<?> resolveClass(ObjectStreamClass desc) throws IOException, ClassNotFoundException {
+            try {
+                String name = desc.getName();
+                return Class.forName(name, false, classLoader);
+            } catch (ClassNotFoundException e) {
+                return super.resolveClass(desc);
+            }
+        }
+}
 
 }
