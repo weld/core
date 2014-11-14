@@ -140,10 +140,8 @@ public class DefaultBeanArchiveScanner implements BeanArchiveScanner {
                 // returns a reference to the local cached copy of the JAR
                 ZipFile jarFile = (ZipFile) m.invoke(jnlpClassLoader, new URL(path));
                 return jarFile.getName();
-            } catch (NoSuchMethodException nsme) {
+            } catch (NoSuchMethodException | IllegalArgumentException nsme) {
                 CommonLogger.LOG.unexpectedClassLoader(nsme);
-            } catch (IllegalArgumentException iarge) {
-                CommonLogger.LOG.unexpectedClassLoader(iarge);
             } catch (InvocationTargetException ite) {
                 CommonLogger.LOG.jnlpClassLoaderInternalException(ite);
             } catch (Exception iacce) {

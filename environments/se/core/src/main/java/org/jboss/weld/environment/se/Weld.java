@@ -133,9 +133,7 @@ public class Weld {
         final CDI11Bootstrap bootstrap;
         try {
             bootstrap = (CDI11Bootstrap) resourceLoader.classForName(BOOTSTRAP_IMPL_CLASS_NAME).newInstance();
-        } catch (InstantiationException ex) {
-            throw CommonLogger.LOG.errorLoadingWeld();
-        } catch (IllegalAccessException ex) {
+        } catch (InstantiationException | IllegalAccessException ex) {
             throw CommonLogger.LOG.errorLoadingWeld();
         }
 

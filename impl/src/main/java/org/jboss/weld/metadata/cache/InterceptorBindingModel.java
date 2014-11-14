@@ -144,11 +144,7 @@ public class InterceptorBindingModel<T extends Annotation> extends AbstractBindi
                         if (!thisValue.equals(thatValue)) {
                             return false;
                         }
-                    } catch (IllegalArgumentException e) {
-                        throw new WeldException(e);
-                    } catch (IllegalAccessException e) {
-                        throw new WeldException(e);
-                    } catch (InvocationTargetException e) {
+                    } catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
                         throw new WeldException(e);
                     }
 

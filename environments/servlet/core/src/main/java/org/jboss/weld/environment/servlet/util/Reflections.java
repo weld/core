@@ -36,9 +36,7 @@ public abstract class Reflections {
     public static <T> T newInstance(String className) {
         try {
             return Reflections.<T>classForName(className).newInstance();
-        } catch (InstantiationException e) {
-            throw WeldServletLogger.LOG.cannotInstantiateInstance(className, e);
-        } catch (IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
             throw WeldServletLogger.LOG.cannotInstantiateInstance(className, e);
         }
     }
@@ -54,9 +52,7 @@ public abstract class Reflections {
             } else {
                 return (Class<T>) Class.forName(name);
             }
-        } catch (ClassNotFoundException e) {
-            throw WeldServletLogger.LOG.cannotLoadClass(name, e);
-        } catch (LinkageError e) {
+        } catch (ClassNotFoundException | LinkageError e) {
             throw WeldServletLogger.LOG.cannotLoadClass(name, e);
         }
     }

@@ -243,15 +243,7 @@ public class ServiceLoader<S> implements Iterable<Metadata<S>> {
             return null;
         } catch (InvocationTargetException e) {
             throw new RuntimeException(ERROR_INSTANTIATING + serviceClass, e.getCause());
-        } catch (IllegalArgumentException e) {
-            throw new RuntimeException(ERROR_INSTANTIATING + serviceClass, e);
-        } catch (InstantiationException e) {
-            throw new RuntimeException(ERROR_INSTANTIATING + serviceClass, e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(ERROR_INSTANTIATING + serviceClass, e);
-        } catch (SecurityException e) {
-            throw new RuntimeException(ERROR_INSTANTIATING + serviceClass, e);
-        } catch (NoSuchMethodException e) {
+        } catch (IllegalArgumentException | InstantiationException | IllegalAccessException | SecurityException | NoSuchMethodException e) {
             throw new RuntimeException(ERROR_INSTANTIATING + serviceClass, e);
         }
     }

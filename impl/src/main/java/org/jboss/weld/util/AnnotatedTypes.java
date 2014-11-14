@@ -283,13 +283,7 @@ public class AnnotatedTypes {
                     builder.append(method.getName());
                     builder.append('=');
                     builder.append(value.toString());
-                } catch (NullPointerException e) {
-                    throwRE(a, method, e);
-                } catch (IllegalArgumentException e) {
-                    throwRE(a, method, e);
-                } catch (IllegalAccessException e) {
-                    throwRE(a, method, e);
-                } catch (InvocationTargetException e) {
+                } catch (NullPointerException | IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
                     throwRE(a, method, e);
                 }
                 if (i + 1 != methods.size()) {
