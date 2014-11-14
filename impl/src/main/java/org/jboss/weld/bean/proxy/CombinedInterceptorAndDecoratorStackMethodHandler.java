@@ -1,11 +1,11 @@
 package org.jboss.weld.bean.proxy;
 
-import static org.jboss.weld.bean.proxy.InterceptionDecorationContext.endInterceptorContext;
-
 import java.io.Serializable;
 import java.lang.reflect.Method;
 
+import org.jboss.weld.bean.proxy.InterceptionDecorationContext.Stack;
 import org.jboss.weld.exceptions.UnsupportedOperationException;
+import org.jboss.weld.interceptor.proxy.InterceptorMethodHandler;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
@@ -13,11 +13,11 @@ import org.jboss.weld.util.reflection.Reflections;
  *
  * @author Marius Bogoevici
  */
-public class CombinedInterceptorAndDecoratorStackMethodHandler implements MethodHandler, Serializable {
+public class CombinedInterceptorAndDecoratorStackMethodHandler implements StackAwareMethodHandler, Serializable {
 
     public static final CombinedInterceptorAndDecoratorStackMethodHandler NULL_INSTANCE = new CombinedInterceptorAndDecoratorStackMethodHandler() {
         @Override
-        public void setInterceptorMethodHandler(MethodHandler interceptorMethodHandler) {
+        public void setInterceptorMethodHandler(InterceptorMethodHandler interceptorMethodHandler) {
             throw new UnsupportedOperationException();
         }
 
@@ -32,11 +32,11 @@ public class CombinedInterceptorAndDecoratorStackMethodHandler implements Method
         }
     };
 
-    private MethodHandler interceptorMethodHandler;
+    private InterceptorMethodHandler interceptorMethodHandler;
 
     private Object outerDecorator;
 
-    public void setInterceptorMethodHandler(MethodHandler interceptorMethodHandler) {
+    public void setInterceptorMethodHandler(InterceptorMethodHandler interceptorMethodHandler) {
         this.interceptorMethodHandler = interceptorMethodHandler;
     }
 
@@ -44,15 +44,28 @@ public class CombinedInterceptorAndDecoratorStackMethodHandler implements Method
         this.outerDecorator = outerDecorator;
     }
 
+    @Override
     public Object invoke(Object self, Method thisMethod, Method proceed, Object[] args) throws Throwable {
+        return invoke(null, self, thisMethod, proceed, args);
+    }
 
-        if (InterceptionDecorationContext.startIfNotOnTop(this)) {
+    @Override
+    public Object invoke(Stack stack, Object self, Method thisMethod, Method proceed, Object[] args) throws Throwable {
+        if (stack == null) {
+            stack = InterceptionDecorationContext.getStack();
+        }
+        if (stack.startIfNotOnTop(this)) {
             try {
                 if (interceptorMethodHandler != null) {
                     if (proceed != null) {
-                        return this.interceptorMethodHandler.invoke(outerDecorator != null ? outerDecorator : self, thisMethod, thisMethod, args);
+                        if (outerDecorator == null) {
+                            // use WeldSubclass.method$$super() as proceed
+                            return this.interceptorMethodHandler.invoke(stack, self, thisMethod, proceed, args);
+                        } else {
+                            return this.interceptorMethodHandler.invoke(stack, outerDecorator, thisMethod, thisMethod, args);
+                        }
                     } else {
-                        return this.interceptorMethodHandler.invoke(self, thisMethod, null, args);
+                        return this.interceptorMethodHandler.invoke(stack, self, thisMethod, null, args);
                     }
                 } else {
                     if (outerDecorator != null) {
@@ -61,14 +74,14 @@ public class CombinedInterceptorAndDecoratorStackMethodHandler implements Method
                     }
                 }
             } finally {
-                endInterceptorContext();
+                stack.end();
             }
         }
         SecurityActions.ensureAccessible(proceed);
         return Reflections.invokeAndUnwrap(self, proceed, args);
     }
 
-    public MethodHandler getInterceptorMethodHandler() {
+    public InterceptorMethodHandler getInterceptorMethodHandler() {
         return interceptorMethodHandler;
     }
 
@@ -78,5 +91,9 @@ public class CombinedInterceptorAndDecoratorStackMethodHandler implements Method
 
     public boolean isDisabledHandler() {
         return this == InterceptionDecorationContext.peekIfNotEmpty();
+    }
+
+    public boolean isDisabledHandler(Stack stack) {
+        return this == stack.peek();
     }
 }

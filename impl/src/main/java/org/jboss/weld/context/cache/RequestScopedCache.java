@@ -21,14 +21,15 @@ import java.util.List;
 
 /**
  * Caches beans over the life of a request, to allow for efficient bean lookups from proxies.
+ * Besides, can hold any ThreadLocals to be removed at the end of the request.
  *
  * @author Stuart Douglas
  */
-public class RequestScopedBeanCache {
+public class RequestScopedCache {
 
     private static final ThreadLocal<List<RequestScopedItem>> CACHE = new ThreadLocal<List<RequestScopedItem>>();
 
-    private RequestScopedBeanCache() {
+    private RequestScopedCache() {
     }
 
     public static boolean isActive() {
@@ -47,7 +48,16 @@ public class RequestScopedBeanCache {
         cache.add(item);
     }
 
-    public static void addItem(final ThreadLocal item) {
+    public static boolean addItemIfActive(final RequestScopedItem item) {
+        final List<RequestScopedItem> cache = CACHE.get();
+        if (cache != null) {
+            cache.add(item);
+            return true;
+        }
+        return false;
+    }
+
+    public static void addItem(final ThreadLocal<?> item) {
         final List<RequestScopedItem> cache = CACHE.get();
         checkCacheForAdding(cache);
         cache.add(new RequestScopedItem() {

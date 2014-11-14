@@ -17,6 +17,10 @@
 
 package org.jboss.weld.bean.proxy;
 
+import static org.jboss.classfilewriter.util.DescriptorUtils.isPrimitive;
+import static org.jboss.classfilewriter.util.DescriptorUtils.isWide;
+import static org.jboss.classfilewriter.util.DescriptorUtils.makeDescriptor;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
@@ -32,19 +36,19 @@ import org.jboss.classfilewriter.ClassMethod;
 import org.jboss.classfilewriter.DuplicateMemberException;
 import org.jboss.classfilewriter.code.BranchEnd;
 import org.jboss.classfilewriter.code.CodeAttribute;
+import org.jboss.classfilewriter.util.Boxing;
+import org.jboss.classfilewriter.util.DescriptorUtils;
 import org.jboss.weld.annotated.enhanced.MethodSignature;
 import org.jboss.weld.annotated.enhanced.jlr.MethodSignatureImpl;
+import org.jboss.weld.bean.proxy.InterceptionDecorationContext.Stack;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.interceptor.proxy.LifecycleMixin;
 import org.jboss.weld.interceptor.util.proxy.TargetInstanceProxy;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.security.GetDeclaredMethodsAction;
-import org.jboss.weld.util.bytecode.Boxing;
 import org.jboss.weld.util.bytecode.BytecodeUtils;
-import org.jboss.weld.util.bytecode.DescriptorUtils;
 import org.jboss.weld.util.bytecode.MethodInformation;
 import org.jboss.weld.util.bytecode.RuntimeMethodInformation;
-import org.jboss.weld.util.bytecode.StaticMethodInformation;
 
 /**
  * Factory for producing subclasses that are used by the combined interceptors and decorators stack.
@@ -58,13 +62,15 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
     private static final String SUPER_DELEGATE_SUFFIX = "$$super";
 
     private static final String COMBINED_INTERCEPTOR_AND_DECORATOR_STACK_METHOD_HANDLER_CLASS_NAME = CombinedInterceptorAndDecoratorStackMethodHandler.class.getName();
+    private static final String[] INVOKE_METHOD_PARAMETERS = new String[] { makeDescriptor(Stack.class), LJAVA_LANG_OBJECT, LJAVA_LANG_REFLECT_METHOD, LJAVA_LANG_REFLECT_METHOD, "[" + LJAVA_LANG_OBJECT  };
 
     private final Set<MethodSignature> enhancedMethodSignatures;
+    private final Set<MethodSignature> interceptedMethodSignatures;
 
     private final Class<?> proxiedBeanType;
 
-    public InterceptedSubclassFactory(String contextId, Class<?> proxiedBeanType, Set<? extends Type> typeClosure, Bean<?> bean, Set<MethodSignature> enhancedMethodSignatures) {
-        this(contextId, proxiedBeanType, typeClosure, getProxyName(contextId, proxiedBeanType, typeClosure, bean), bean, enhancedMethodSignatures);
+    public InterceptedSubclassFactory(String contextId, Class<?> proxiedBeanType, Set<? extends Type> typeClosure, Bean<?> bean, Set<MethodSignature> enhancedMethodSignatures, Set<MethodSignature> interceptedMethodSignatures) {
+        this(contextId, proxiedBeanType, typeClosure, getProxyName(contextId, proxiedBeanType, typeClosure, bean), bean, enhancedMethodSignatures, interceptedMethodSignatures);
     }
 
     /**
@@ -76,9 +82,10 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
      * @param enhancedMethodSignatures a restricted set of methods that need to be intercepted
      */
 
-    public InterceptedSubclassFactory(String contextId, Class<?> proxiedBeanType, Set<? extends Type> typeClosure, String proxyName, Bean<?> bean, Set<MethodSignature> enhancedMethodSignatures) {
+    public InterceptedSubclassFactory(String contextId, Class<?> proxiedBeanType, Set<? extends Type> typeClosure, String proxyName, Bean<?> bean, Set<MethodSignature> enhancedMethodSignatures, Set<MethodSignature> interceptedMethodSignatures) {
         super(contextId, proxiedBeanType, typeClosure, proxyName, bean, true);
         this.enhancedMethodSignatures = enhancedMethodSignatures;
+        this.interceptedMethodSignatures = interceptedMethodSignatures;
         this.proxiedBeanType = proxiedBeanType;
     }
 
@@ -128,22 +135,46 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
                     if (!Modifier.isFinal(method.getModifiers()) && !method.isBridge() && enhancedMethodSignatures.contains(methodSignature)
                             && !finalMethods.contains(methodSignature) && !processedBridgeMethods.contains(methodSignature)) {
                         try {
+                            final MethodInformation methodInfo = new RuntimeMethodInformation(method);
 
-                            MethodInformation methodInfo = new RuntimeMethodInformation(method);
-                            MethodInformation delegatingMethodInfo = new StaticMethodInformation(method.getName() + SUPER_DELEGATE_SUFFIX,
-                                    method.getParameterTypes(), method.getReturnType(), proxyClassType.getName(), Modifier.PRIVATE
-                                            | (method.getModifiers() & AccessFlag.BRIDGE));
+                            if (interceptedMethodSignatures.contains(methodSignature)) {
+                                // create delegate-to-super method
+                                int modifiers = (method.getModifiers() | AccessFlag.SYNTHETIC | AccessFlag.PRIVATE) & ~AccessFlag.PUBLIC & ~AccessFlag.PROTECTED;
+                                ClassMethod delegatingMethod = proxyClassType.addMethod(modifiers, method.getName() + SUPER_DELEGATE_SUFFIX, DescriptorUtils.makeDescriptor(method.getReturnType()),
+                                        DescriptorUtils.parameterDescriptors(method.getParameterTypes()));
+                                delegatingMethod.addCheckedExceptions((Class<? extends Exception>[]) method.getExceptionTypes());
+                                createDelegateToSuper(delegatingMethod, methodInfo);
 
-                            ClassMethod delegatingMethod = proxyClassType.addMethod(method.getModifiers() | AccessFlag.SYNTHETIC, method.getName()
-                                    + SUPER_DELEGATE_SUFFIX, DescriptorUtils.classToStringRepresentation(method.getReturnType()),
-                                    DescriptorUtils.getParameterTypes(method.getParameterTypes()));
-                            delegatingMethod.addCheckedExceptions((Class<? extends Exception>[]) method.getExceptionTypes());
-                            createDelegateToSuper(delegatingMethod, delegatingMethodInfo);
+                                // this method is intercepted
+                                // override a subclass method to delegate to method handler
+                                ClassMethod classMethod = proxyClassType.addMethod(method);
+                                addConstructedGuardToMethodBody(classMethod);
+                                createForwardingMethodBody(classMethod, methodInfo, staticConstructor);
+                                BeanLogger.LOG.addingMethodToProxy(method);
+                            } else {
+                                // this method is not intercepted
+                                // we still need to override and push InterceptionDecorationContext stack to prevent full interception
+                                ClassMethod classMethod = proxyClassType.addMethod(method);
+                                new RunWithinInterceptionDecorationContextGenerator(classMethod) {
 
-                            ClassMethod classMethod = proxyClassType.addMethod(method);
-                            addConstructedGuardToMethodBody(classMethod);
-                            createForwardingMethodBody(classMethod, methodInfo, staticConstructor);
-                            BeanLogger.LOG.addingMethodToProxy(method);
+                                    @Override
+                                    void doWork(CodeAttribute b, ClassMethod method) {
+                                        // build the bytecode that invokes the super class method directly
+                                        b.aload(0);
+                                        // create the method invocation
+                                        b.loadMethodParameters();
+                                        b.invokespecial(methodInfo.getDeclaringClass(), methodInfo.getName(), methodInfo.getDescriptor());
+                                        // leave the result on top of the stack
+                                    }
+
+                                    @Override
+                                    void doReturn(CodeAttribute b, ClassMethod method) {
+                                        // assumes doWork() result is on top of the stack
+                                        b.returnInstruction();
+                                    }
+                                }.runStartIfNotOnTop();
+                            }
+
 
                         } catch (DuplicateMemberException e) {
                             // do nothing. This will happen if superclass methods have
@@ -242,7 +273,8 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
         // add an appropriate return instruction
         final CodeAttribute b = method.getCodeAttribute();
         b.aload(0);
-        b.getfield(method.getClassFile().getName(), METHOD_HANDLER_FIELD_NAME, DescriptorUtils.classToStringRepresentation(MethodHandler.class));
+        b.getfield(method.getClassFile().getName(), METHOD_HANDLER_FIELD_NAME, DescriptorUtils.makeDescriptor(MethodHandler.class));
+        b.checkcast(StackAwareMethodHandler.class.getName());
 
         // this is a self invocation optimisation
         // test to see if this is a self invocation, and if so invokespecial the
@@ -250,17 +282,26 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
         if (addProceed) {
             b.dup();
             b.checkcast(COMBINED_INTERCEPTOR_AND_DECORATOR_STACK_METHOD_HANDLER_CLASS_NAME);
-            b.invokevirtual(COMBINED_INTERCEPTOR_AND_DECORATOR_STACK_METHOD_HANDLER_CLASS_NAME, "isDisabledHandler", "()" + DescriptorUtils.BOOLEAN_CLASS_DESCRIPTOR);
+
+            // get the Stack
+            b.invokestatic(InterceptionDecorationContext.class.getName(), "getStack", "()" + DescriptorUtils.makeDescriptor(Stack.class));
+            b.dupX1(); // Handler, Stack -> Stack, Handler, Stack
+            b.invokevirtual(COMBINED_INTERCEPTOR_AND_DECORATOR_STACK_METHOD_HANDLER_CLASS_NAME, "isDisabledHandler", "(" + DescriptorUtils.makeDescriptor(Stack.class) + ")" + BytecodeUtils.BOOLEAN_CLASS_DESCRIPTOR);
+
             b.iconst(0);
             BranchEnd invokeSuperDirectly = b.ifIcmpeq();
             // now build the bytecode that invokes the super class method
+            b.pop2(); // pop Stack and Handler
             b.aload(0);
             // create the method invocation
             b.loadMethodParameters();
             b.invokespecial(methodInfo.getDeclaringClass(), methodInfo.getName(), methodInfo.getDescriptor());
             b.returnInstruction();
             b.branchEnd(invokeSuperDirectly);
+        } else {
+            b.aconstNull();
         }
+
         b.aload(0);
         bytecodeMethodResolver.getDeclaredMethod(method, methodInfo.getDeclaringClass(), methodInfo.getName(), methodInfo.getParameterTypes(), staticConstructor);
 
@@ -282,10 +323,10 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
             // load the parameter value
             BytecodeUtils.addLoadInstruction(b, typeString, localVariableCount);
             // box the parameter if necessary
-            Boxing.boxIfNecessary(b, typeString);
+            Boxing.boxIfNessesary(b, typeString);
             // and store it in the array
             b.aastore();
-            if (DescriptorUtils.isWide(typeString)) {
+            if (isWide(typeString)) {
                 localVariableCount = localVariableCount + 2;
             } else {
                 localVariableCount++;
@@ -293,12 +334,12 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
         }
         // now we have all our arguments on the stack
         // lets invoke the method
-        b.invokeinterface(MethodHandler.class.getName(), "invoke", "(" + LJAVA_LANG_OBJECT + LJAVA_LANG_REFLECT_METHOD + LJAVA_LANG_REFLECT_METHOD + "[" + LJAVA_LANG_OBJECT + ")" + LJAVA_LANG_OBJECT);
+        b.invokeinterface(StackAwareMethodHandler.class.getName(), "invoke", LJAVA_LANG_OBJECT, INVOKE_METHOD_PARAMETERS);
         if (addReturnInstruction) {
             // now we need to return the appropriate type
-            if (methodInfo.getReturnType().equals(DescriptorUtils.VOID_CLASS_DESCRIPTOR)) {
+            if (methodInfo.getReturnType().equals(BytecodeUtils.VOID_CLASS_DESCRIPTOR)) {
                 b.returnInstruction();
-            } else if (DescriptorUtils.isPrimitive(methodInfo.getReturnType())) {
+            } else if (isPrimitive(methodInfo.getReturnType())) {
                 Boxing.unbox(b,method.getReturnType());
                 b.returnInstruction();
             } else {
@@ -344,7 +385,7 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
     private static void generateGetMethodHandlerBody(ClassMethod method) {
         final CodeAttribute b = method.getCodeAttribute();
         b.aload(0);
-        b.getfield(method.getClassFile().getName(), METHOD_HANDLER_FIELD_NAME, DescriptorUtils.classToStringRepresentation(MethodHandler.class));
+        b.getfield(method.getClassFile().getName(), METHOD_HANDLER_FIELD_NAME, DescriptorUtils.makeDescriptor(MethodHandler.class));
         b.returnInstruction();
     }
 
@@ -364,7 +405,7 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
         final CodeAttribute b = method.getCodeAttribute();
         b.aload(0);
         b.aload(1);
-        b.putfield(method.getClassFile().getName(), METHOD_HANDLER_FIELD_NAME, DescriptorUtils.classToStringRepresentation(MethodHandler.class));
+        b.putfield(method.getClassFile().getName(), METHOD_HANDLER_FIELD_NAME, DescriptorUtils.makeDescriptor(MethodHandler.class));
         b.returnInstruction();
     }
 

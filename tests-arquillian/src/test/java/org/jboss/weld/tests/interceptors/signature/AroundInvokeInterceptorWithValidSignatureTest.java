@@ -39,13 +39,13 @@ public class AroundInvokeInterceptorWithValidSignatureTest extends AbstractSigna
     public static Archive<?> deploy() {
         return ShrinkWrap.create(BeanArchive.class)
                 .intercept(MyInterceptor.class)
-                .addClasses(AbstractSignatureTestBase.class, Intercept.class, InterceptedBean.class);
+                .addClasses(AbstractSignatureTestBase.class, Intercept.class, MethodInterceptedBean.class);
     }
 
     @Test
-    public void testInterceptor() {
+    public void testInterceptor() throws NoSuchMethodException, SecurityException {
         MyInterceptor.invoked = false;
-        InterceptedBean bean = getBean(InterceptedBean.class);
+        MethodInterceptedBean bean = getBean(MethodInterceptedBean.class);
         bean.foo();
         assertInvoked(MyInterceptor.invoked);
     }
