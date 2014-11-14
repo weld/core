@@ -175,6 +175,7 @@
                         <configuration>
                             <excludes>
                                 <exclude>org.jboss.weld.tests.*</exclude>
+                                <exclude>org.jboss.weld.logging.*</exclude>
                             </excludes>
                         </configuration>
                         <executions>
