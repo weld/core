@@ -185,12 +185,12 @@ public abstract class ImmutableSet<T> extends AbstractImmutableSet<T> {
 
         @Override
         public Supplier<BuilderImpl<T>> supplier() {
-            return () -> new BuilderImpl<T>();
+            return BuilderImpl::new;
         }
 
         @Override
         public BiConsumer<BuilderImpl<T>, T> accumulator() {
-            return (builder, item) -> builder.add(item);
+            return BuilderImpl::add;
         }
 
         @Override
@@ -202,7 +202,7 @@ public abstract class ImmutableSet<T> extends AbstractImmutableSet<T> {
 
         @Override
         public Function<BuilderImpl<T>, Set<T>> finisher() {
-            return (builder) -> builder.build();
+            return BuilderImpl::build;
         }
 
         @Override

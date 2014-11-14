@@ -386,7 +386,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                 for (BeanManagerImpl manager : managers) {
                     result.add(transform.transform(manager));
                 }
-                return Iterators.concat(Iterators.transform(result.iterator(), (iterable) -> iterable.iterator()));
+                return Iterators.concat(Iterators.transform(result.iterator(), Iterable::iterator));
             }
         };
     }
@@ -401,7 +401,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
             @Override
             public Iterator<T> iterator() {
                 Set<Iterable<T>> iterables = BeanManagers.getDirectlyAccessibleComponents(BeanManagerImpl.this, transform);
-                return Iterators.concat(Iterators.transform(iterables.iterator(), (iterable) -> iterable.iterator()));
+                return Iterators.concat(Iterators.transform(iterables.iterator(), Iterable::iterator));
             }
 
         };

@@ -50,11 +50,7 @@ public class RequestScopedBeanCache {
     public static void addItem(final ThreadLocal item) {
         final List<RequestScopedItem> cache = CACHE.get();
         checkCacheForAdding(cache);
-        cache.add(new RequestScopedItem() {
-            public void invalidate() {
-                item.remove();
-            }
-        });
+        cache.add(item::remove);
     }
 
     public static void beginRequest() {

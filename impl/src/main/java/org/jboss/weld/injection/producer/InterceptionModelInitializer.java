@@ -319,7 +319,7 @@ public class InterceptionModelInitializer<T> {
     }
 
     private List<InterceptorClassMetadata<?>> asInterceptorMetadata(List<Interceptor<?>> interceptors) {
-        return interceptors.stream().map((interceptor) -> this.reader.getCdiInterceptorMetadata(interceptor)).collect(Collectors.toList());
+        return interceptors.stream().map(this.reader::getCdiInterceptorMetadata).collect(Collectors.toList());
     }
 
     @Override
