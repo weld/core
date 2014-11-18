@@ -39,6 +39,7 @@ public final class Sets {
      * @param elements
      * @return
      */
+    @SafeVarargs
     public static <E> HashSet<E> newHashSet(E... elements) {
         HashSet<E> set = new HashSet<>(elements.length);
         Collections.addAll(set, elements);
