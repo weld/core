@@ -36,6 +36,6 @@ public @interface Binding {
     
     public enum Type
     {
-        ALPHA, BRAVO, CHARLIE, DELTA, ECHO;
+        ALPHA, BRAVO, CHARLIE, DELTA, ECHO
     }
 }

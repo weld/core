@@ -34,8 +34,6 @@ public class TestObject extends SuperTestObject {
     public TestObject() {
     }
 
-    ;
-
     public TestObject(Integer test) {
     }
 

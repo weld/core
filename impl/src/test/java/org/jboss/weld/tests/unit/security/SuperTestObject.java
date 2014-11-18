@@ -20,5 +20,4 @@ public class SuperTestObject {
     protected void rootOfAllEvil() {
     }
 
-    ;
 }

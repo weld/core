@@ -214,7 +214,7 @@ public class ReflectionTest {
         } catch (PrivilegedActionException e) {
             if(!(e.getCause() instanceof NoSuchMethodException)) {
                 fail();
-            };
+            }
         }
         try {
             MethodLookupAction.lookupMethod(TestObject.class, "eioota", new Class<?>[] {});
