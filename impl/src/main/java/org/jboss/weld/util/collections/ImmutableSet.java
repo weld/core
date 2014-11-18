@@ -195,9 +195,7 @@ public abstract class ImmutableSet<T> extends AbstractImmutableSet<T> {
 
         @Override
         public BinaryOperator<BuilderImpl<T>> combiner() {
-            return (builder1, builder2) -> {
-                return builder1.addAll(builder2);
-            };
+            return (builder1, builder2) -> builder1.addAll(builder2);
         }
 
         @Override
