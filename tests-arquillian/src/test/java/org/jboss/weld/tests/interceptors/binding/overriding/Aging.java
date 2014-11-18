@@ -38,6 +38,6 @@ public @interface Aging {
     
     public enum Speed
     {
-        FAST, SLOW;
+        FAST, SLOW
     }
 }

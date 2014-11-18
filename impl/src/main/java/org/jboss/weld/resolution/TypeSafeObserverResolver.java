@@ -51,7 +51,7 @@ public class TypeSafeObserverResolver extends TypeSafeResolver<Resolvable, Obser
             ExperimentalObserverMethod<?> eom2 = (ExperimentalObserverMethod<?>) o2;
             return eom1.getPriority() - eom2.getPriority();
         }
-    };
+    }
 
     private final MetaAnnotationStore metaAnnotationStore;
     private final AssignabilityRules rules;

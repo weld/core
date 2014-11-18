@@ -55,7 +55,7 @@ public class ClientProxyProvider {
                 return BEAN_NOT_PROXYABLE_MARKER;
             }
         }
-    };
+    }
 
     private class CreateClientProxyForType implements Function<RequestedTypeHolder, Object> {
         @Override

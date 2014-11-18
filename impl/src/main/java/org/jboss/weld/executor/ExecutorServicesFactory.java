@@ -140,6 +140,6 @@ public class ExecutorServicesFactory {
      * @author Martin Kouba
      */
     public enum ThreadPoolType {
-        FIXED, FIXED_TIMEOUT, NONE, SINGLE_THREAD ;
+        FIXED, FIXED_TIMEOUT, NONE, SINGLE_THREAD
     }
 }

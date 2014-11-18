@@ -15,6 +15,4 @@ public class QuxProducer {
         return true;
     }
 
-    ;
-
 }
