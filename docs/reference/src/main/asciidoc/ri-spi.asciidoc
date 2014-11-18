@@ -380,31 +380,6 @@ In order to obtain the `Principal` representing the current caller
 identity, the container should provide an implementation of
 `SecurityServices`.
 
-==== The bean store
-
-Weld uses a map like structure to store bean instances -
-`org.jboss.weld.context.beanstore.BeanStore`. You may find
-`org.jboss.weld.context.beanstore.ConcurrentHashMapBeanStore` useful.
-
-[source.JAVA, java]
-----------------------------------------------------------------------
-public interface BeanStore{
-    <T> ContextualInstance<T> get(BeanIdentifier id);
-    void clear();
-    Iterator<BeanIdentifier> iterator();
-    boolean contains(BeanIdentifier id);
-    <T> void put(String id, ContextualInstance<T> contextualInstance);
-    <T> ContextualInstance<T> remove(BeanIdentifier id);
-}
-----------------------------------------------------------------------
-
-==== The application context
-
-Weld expects the Application Server or other container to provide the
-storage for each application's context. The
-`org.jboss.weld.context.beanstore.BeanStore` should be implemented to
-provide an application scoped storage.
-
 ==== Initialization and shutdown
 
 The `org.jboss.weld.bootstrap.api.Bootstrap` interface defines the
