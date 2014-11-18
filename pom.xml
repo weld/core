@@ -366,7 +366,7 @@
 
             <dependency>
                 <groupId>org.jboss.weld</groupId>
-                <artifactId>weld-porting-package-tck11</artifactId>
+                <artifactId>weld-porting-package-tck</artifactId>
                 <version>${project.version}</version>
             </dependency>
             
@@ -569,7 +569,7 @@
                 </property>
             </activation>
             <modules>
-                <module>porting-package/1.1</module>
+                <module>porting-package</module>
                 <module>tests-common</module>
                 <module>tests</module>
                 <module>tests-arquillian</module>
@@ -585,7 +585,7 @@
                 </property>
             </activation>
             <modules>
-                <module>jboss-tck-runner/1.1</module>
+                <module>jboss-tck-runner</module>
             </modules>
         </profile>
         <profile>
