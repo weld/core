@@ -3,10 +3,10 @@
         <artifactId>weld-core-parent</artifactId>
         <groupId>org.jboss.weld</groupId>
         <version>2.2.7-SNAPSHOT</version>
-        <relativePath>../../pom.xml</relativePath>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>weld-jboss-runner-tck11</artifactId>
+    <artifactId>weld-jboss-runner-tck</artifactId>
     <name>CDI TCK runner (1.1, 1.2) for Weld (WildFly)</name>
     <description>Aggregates dependencies and runs the CDI TCK (both standalone and on WildFly)</description>
 
@@ -58,7 +58,7 @@
 
         <dependency>
             <groupId>org.jboss.weld</groupId>
-            <artifactId>weld-porting-package-tck11</artifactId>
+            <artifactId>weld-porting-package-tck</artifactId>
         </dependency>
 
         <dependency>
@@ -135,7 +135,7 @@
                         </goals>
                         <configuration>
                             <includeGroupIds>org.jboss.weld</includeGroupIds>
-                            <includeArtifactIds>weld-porting-package-tck11</includeArtifactIds>
+                            <includeArtifactIds>weld-porting-package-tck</includeArtifactIds>
                             <stripVersion>true</stripVersion>
                             <overWriteReleases>true</overWriteReleases>
                             <outputDirectory>${project.build.directory}/dependency/lib</outputDirectory>
