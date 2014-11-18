@@ -122,13 +122,13 @@ public class ThreadLocalTestCase {
             mapRemove.setAccessible(true);
             Object[] table = (Object[]) (Object[]) internalTableField.get(map);
             if (table != null) {
-                for (int j = 0; j < table.length; ++j) {
-                    if (table[j] != null) {
-                        Object key = ((Reference<?>) table[j]).get();
-                        Field valueField = table[j].getClass().getDeclaredField("value");
+                for (Object aTable : table) {
+                    if (aTable != null) {
+                        Object key = ((Reference<?>) aTable).get();
+                        Field valueField = aTable.getClass().getDeclaredField("value");
 
                         valueField.setAccessible(true);
-                        Object value = valueField.get(table[j]);
+                        Object value = valueField.get(aTable);
                         values.put(key, value);
                     }
                 }

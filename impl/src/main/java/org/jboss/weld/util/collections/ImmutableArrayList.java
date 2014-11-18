@@ -74,8 +74,8 @@ class ImmutableArrayList<E> extends ImmutableList<E> implements RandomAccess, Se
     @Override
     public boolean contains(Object o) {
         Preconditions.checkNotNull(o);
-        for (int i = 0; i < elements.length; i++) {
-            if (o.equals(elements[i])) {
+        for (Object element : elements) {
+            if (o.equals(element)) {
                 return true;
             }
         }

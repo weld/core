@@ -335,12 +335,11 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
         ManagedConversation currentConversation = getCurrentConversation();
         Map<String, ManagedConversation> conversations = getConversationMap();
         synchronized (conversations) {
-            Iterator<Entry<String, ManagedConversation>> iterator = conversations.entrySet().iterator();
-            while (iterator.hasNext()) {
-                ManagedConversation conversation = iterator.next().getValue();
+            for (Entry<String, ManagedConversation> stringManagedConversationEntry : conversations.entrySet()) {
+                ManagedConversation conversation = stringManagedConversationEntry.getValue();
                 if (!currentConversation.equals(conversation) && !conversation.isTransient() && isExpired(conversation)) {
                     // Try to lock the conversation and log warning if not successful - unlocking should not be necessary
-                    if(!conversation.lock(0)) {
+                    if (!conversation.lock(0)) {
                         ConversationLogger.LOG.endLockedConversation(conversation.getId());
                     }
                     conversation.end();
