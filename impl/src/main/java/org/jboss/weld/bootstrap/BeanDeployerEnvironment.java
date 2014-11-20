@@ -53,6 +53,7 @@ import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
 import org.jboss.weld.bean.builtin.ExtensionBean;
+import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.injection.attributes.WeldInjectionPointAttributes;
@@ -134,7 +135,7 @@ public class BeanDeployerEnvironment {
         this.decorators = decorators;
         this.interceptors = interceptors;
         this.ejbDescriptors = ejbDescriptors;
-        this.disposalMethodResolver = new TypeSafeDisposerResolver(allDisposalBeans);
+        this.disposalMethodResolver = new TypeSafeDisposerResolver(allDisposalBeans, manager.getServices().get(WeldConfiguration.class));
         this.classTransformer = manager.getServices().get(ClassTransformer.class);
         this.newManagedBeanClasses = newManagedBeanClasses;
         this.newSessionBeanDescriptorsFromInjectionPoint = newSessionBeanDescriptorsFromInjectionPoint;

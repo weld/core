@@ -40,6 +40,7 @@ import javax.inject.Provider;
 
 import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.bootstrap.SpecializationAndEnablementRegistry;
+import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.util.Beans;
@@ -131,7 +132,7 @@ public abstract class AbstractTypeSafeBeanResolver<T extends Bean<?>, C extends 
     }
 
     public AbstractTypeSafeBeanResolver(BeanManagerImpl beanManager, final Iterable<T> beans) {
-        super(beans);
+        super(beans, beanManager.getServices().get(WeldConfiguration.class));
         this.beanManager = beanManager;
         this.registry = beanManager.getServices().get(SpecializationAndEnablementRegistry.class);
         this.disambiguatedBeans = CacheBuilder.newBuilder().build(new BeanDisambiguation());
