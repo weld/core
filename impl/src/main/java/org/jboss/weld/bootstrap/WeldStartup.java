@@ -68,7 +68,8 @@ import org.jboss.weld.bootstrap.spi.BootstrapConfiguration;
 import org.jboss.weld.bootstrap.spi.CDI11Deployment;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.bootstrap.spi.Metadata;
-import org.jboss.weld.bootstrap.spi.helpers.FileBasedBootstrapConfiguration;
+import org.jboss.weld.config.ConfigurationKey;
+import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.context.ApplicationContext;
 import org.jboss.weld.context.DependentContext;
 import org.jboss.weld.context.RequestContext;
@@ -189,8 +190,13 @@ public class WeldStartup {
         if (!registry.contains(ResourceLoader.class)) {
             registry.add(ResourceLoader.class, DefaultResourceLoader.INSTANCE);
         }
+
+        // Weld configuration - must be set after the ResourceLoader fallback
+        WeldConfiguration configuration = new WeldConfiguration(registry.get(BootstrapConfiguration.class), deployment);
+        registry.add(WeldConfiguration.class, configuration);
+
         if (!registry.contains(InstantiatorFactory.class)) {
-            registry.add(InstantiatorFactory.class, new LoaderInstantiatorFactory());
+            registry.add(InstantiatorFactory.class, new LoaderInstantiatorFactory(configuration));
         }
         if (!registry.contains(ScheduledExecutorServiceFactory.class)) {
             registry.add(ScheduledExecutorServiceFactory.class, new SingleThreadScheduledExecutorServiceFactory());
@@ -198,11 +204,8 @@ public class WeldStartup {
         if (!registry.contains(ProxyServices.class)) {
             registry.add(ProxyServices.class, new SimpleProxyServices());
         }
-        if (!registry.contains(BootstrapConfiguration.class)) {
-            registry.add(BootstrapConfiguration.class, new FileBasedBootstrapConfiguration(DefaultResourceLoader.INSTANCE));
-        }
-        addImplementationServices(registry);
 
+        addImplementationServices(registry);
 
         verifyServices(registry, environment.getRequiredDeploymentServices());
         if (!registry.contains(TransactionServices.class)) {
@@ -284,7 +287,7 @@ public class WeldStartup {
          */
         ExecutorServices executor = services.get(ExecutorServices.class);
         if (executor == null) {
-            executor = ExecutorServicesFactory.create(DefaultResourceLoader.INSTANCE);
+            executor = ExecutorServicesFactory.create(DefaultResourceLoader.INSTANCE, services.get(WeldConfiguration.class));
             if (executor != null) {
                 services.add(ExecutorServices.class, executor);
             }
@@ -295,8 +298,8 @@ public class WeldStartup {
         /*
          * Setup Validator
          */
-        BootstrapConfiguration bootstrapConfiguration = services.get(BootstrapConfiguration.class);
-        if (bootstrapConfiguration.isConcurrentDeploymentEnabled() && services.contains(ExecutorServices.class)) {
+        WeldConfiguration configuration = services.get(WeldConfiguration.class);
+        if (configuration.getBooleanProperty(ConfigurationKey.CONCURRENT_DEPLOYMENT) && services.contains(ExecutorServices.class)) {
             services.add(Validator.class, new ConcurrentValidator(executor));
         } else {
             services.add(Validator.class, new Validator());
@@ -306,7 +309,7 @@ public class WeldStartup {
          * Preloader for container lifecycle events
          */
         ContainerLifecycleEventPreloader preloader = null;
-        int preloaderThreadPoolSize = bootstrapConfiguration.getPreloaderThreadPoolSize();
+        int preloaderThreadPoolSize = configuration.getIntegerProperty(ConfigurationKey.PRELOADER_THREAD_POOL_SIZE);
         if (preloaderThreadPoolSize > 0 && Permissions.hasPermission(Permissions.MODIFY_THREAD_GROUP)) {
             preloader = new ContainerLifecycleEventPreloader(preloaderThreadPoolSize, observerNotificationService.getGlobalLenientObserverNotifier());
         }

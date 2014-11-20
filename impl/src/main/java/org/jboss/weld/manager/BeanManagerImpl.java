@@ -68,7 +68,6 @@ import javax.enterprise.inject.spi.ProducerFactory;
 import javax.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.Container;
-import org.jboss.weld.SystemPropertiesConfiguration;
 import org.jboss.weld.annotated.AnnotatedTypeValidator;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMember;
@@ -92,6 +91,8 @@ import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.enablement.ModuleEnablement;
 import org.jboss.weld.bootstrap.events.ContainerLifecycleEvents;
 import org.jboss.weld.bootstrap.spi.CDI11Deployment;
+import org.jboss.weld.config.ConfigurationKey;
+import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.context.CreationalContextImpl;
 import org.jboss.weld.context.PassivatingContextWrapper;
 import org.jboss.weld.context.WeldCreationalContext;
@@ -369,7 +370,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         this.nameBasedResolver = new NameBasedResolver(this, createDynamicAccessibleIterable(beanTransform));
         this.weldELResolver = new WeldELResolver(this);
 
-        TypeSafeObserverResolver accessibleObserverResolver = new TypeSafeObserverResolver(getServices().get(MetaAnnotationStore.class), createDynamicAccessibleIterable(ObserverMethodTransform.INSTANCE));
+        TypeSafeObserverResolver accessibleObserverResolver = new TypeSafeObserverResolver(getServices().get(MetaAnnotationStore.class),
+                createDynamicAccessibleIterable(ObserverMethodTransform.INSTANCE), getServices().get(WeldConfiguration.class));
         this.accessibleLenientObserverNotifier = ObserverNotifier.of(contextId, accessibleObserverResolver, getServices(), false);
         GlobalObserverNotifierService globalObserverNotifierService = services.get(GlobalObserverNotifierService.class);
         this.globalLenientObserverNotifier = globalObserverNotifierService.getGlobalLenientObserverNotifier();
@@ -752,7 +754,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                 requestedType = injectionPoint.getType();
             }
 
-            if (SystemPropertiesConfiguration.INSTANCE.isInjectableReferenceOptimizationEnabled() && injectionPoint != null && injectionPoint.getBean() != null) {
+            if (injectionPoint != null && injectionPoint.getBean() != null
+                    && getServices().get(WeldConfiguration.class).getBooleanProperty(ConfigurationKey.INJECTABLE_REFERENCE_OPTIMIZATION)) {
                 // For certain combinations of scopes, the container is permitted to optimize an injectable reference lookup
                 // This should also partially solve circular @PostConstruct invocation
                 CreationalContextImpl<?> weldCreationalContext = null;

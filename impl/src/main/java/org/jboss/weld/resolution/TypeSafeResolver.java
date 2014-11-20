@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 
+import org.jboss.weld.config.ConfigurationKey;
+import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.util.cache.ComputingCache;
 import org.jboss.weld.util.cache.ComputingCacheBuilder;
 import org.jboss.weld.util.collections.ImmutableList;
@@ -52,29 +54,18 @@ public abstract class TypeSafeResolver<R extends Resolvable, T, C extends Collec
 
     }
 
-    /*
-     * https://issues.jboss.org/browse/WELD-1323
-     */
-    private static final long RESOLVED_CACHE_UPPER_BOUND;
-    private static final long DEFAULT_RESOLVED_CACHE_UPPER_BOUND = 0x100000L;
-
-    static {
-        RESOLVED_CACHE_UPPER_BOUND = Long.getLong("org.jboss.weld.resolution.cacheSize", DEFAULT_RESOLVED_CACHE_UPPER_BOUND);
-    }
-
     // The resolved injection points
     private final ComputingCache<R, C> resolved;
     // The beans to search
     private final Iterable<? extends T> allBeans;
     private final ResolvableToBeanCollection<R, T, C> resolverFunction;
 
-
     /**
      * Constructor
      */
-    public TypeSafeResolver(Iterable<? extends T> allBeans) {
+    public TypeSafeResolver(Iterable<? extends T> allBeans, WeldConfiguration configuration) {
         this.resolverFunction = new ResolvableToBeanCollection<R, T, C>(this);
-        this.resolved = ComputingCacheBuilder.newBuilder().setMaxSize(RESOLVED_CACHE_UPPER_BOUND).build(resolverFunction);
+        this.resolved = ComputingCacheBuilder.newBuilder().setMaxSize(configuration.getLongProperty(ConfigurationKey.RESOLUTION_CACHE_SIZE)).build(resolverFunction);
         this.allBeans = allBeans;
     }
 

@@ -51,7 +51,7 @@ import org.jboss.classfilewriter.code.CodeAttribute;
 import org.jboss.classfilewriter.util.Boxing;
 import org.jboss.classfilewriter.util.DescriptorUtils;
 import org.jboss.weld.Container;
-import org.jboss.weld.SystemPropertiesConfiguration;
+import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.interceptor.proxy.LifecycleMixin;
@@ -98,6 +98,8 @@ public class ProxyFactory<T> {
     private final Bean<?> bean;
     private final Class<?> proxiedBeanType;
     private final String contextId;
+
+    private final WeldConfiguration configuration;
 
     public static final String CONSTRUCTED_FLAG_NAME = "constructed";
 
@@ -156,6 +158,7 @@ public class ProxyFactory<T> {
         this.bean = bean;
         this.contextId = contextId;
         this.proxiedBeanType = proxiedBeanType;
+        this.configuration = Container.instance(contextId).deploymentManager().getServices().get(WeldConfiguration.class);
         addInterfacesFromTypeClosure(typeClosure, proxiedBeanType);
         TypeInfo typeInfo = TypeInfo.of(typeClosure);
         Class<?> superClass = typeInfo.getSuperClass();
@@ -458,9 +461,8 @@ public class ProxyFactory<T> {
         // TODO: change the ProxyServices SPI to allow the container to figure out
         // which PD to use
 
-        if (SystemPropertiesConfiguration.INSTANCE.isProxyDumpEnabled()) {
-            dumpToFile(SystemPropertiesConfiguration.INSTANCE.getProxyDumpPath(), proxyClassName, proxyClassType.toBytecode());
-        }
+        // Dump proxy type bytecode if necessary
+        dumpToFile(proxyClassName, proxyClassType.toBytecode());
 
         ProtectionDomain domain = AccessController.doPrivileged(new GetProtectionDomainAction(proxiedBeanType));
 
@@ -475,11 +477,15 @@ public class ProxyFactory<T> {
         return proxyClass;
     }
 
-    private void dumpToFile(File dumpPath, String fileName, byte[] data) {
-        File dumpFile = new File(dumpPath, fileName + ".class");
+    private void dumpToFile(String fileName, byte[] data) {
+        File proxyDumpFilePath = configuration.getProxyDumpFilePath();
+        if (proxyDumpFilePath == null) {
+            return;
+        }
+        File dumpFile = new File(proxyDumpFilePath, fileName + ".class");
         try {
             Files.write(dumpFile.toPath(), data, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
-        } catch(IOException e) {
+        } catch (IOException e) {
             BeanLogger.LOG.beanCannotBeDumped(fileName, e);
         }
     }
