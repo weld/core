@@ -19,6 +19,7 @@ package org.jboss.weld.bootstrap;
 import static com.google.common.collect.Collections2.filter;
 import static com.google.common.collect.Collections2.transform;
 import static java.util.Collections.emptyList;
+import static org.jboss.weld.config.ConfigurationKey.CONCURRENT_DEPLOYMENT;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -51,9 +52,9 @@ import org.jboss.weld.bootstrap.enablement.GlobalEnablementBuilder;
 import org.jboss.weld.bootstrap.enablement.ModuleEnablement;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.BeanDiscoveryMode;
-import org.jboss.weld.bootstrap.spi.BootstrapConfiguration;
 import org.jboss.weld.bootstrap.spi.Filter;
 import org.jboss.weld.bootstrap.spi.Metadata;
+import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.ejb.spi.EjbServices;
@@ -113,7 +114,7 @@ public class BeanDeployment {
 
         InstantiatorFactory factory = registry.get(InstantiatorFactory.class);
         if (factory == null) {
-            registry.add(InstantiatorFactory.class, new DefaultInstantiatorFactory(resourceLoader));
+            registry.add(InstantiatorFactory.class, new DefaultInstantiatorFactory(resourceLoader, registry.get(WeldConfiguration.class)));
         }
 
         ServiceRegistry services = new SimpleServiceRegistry();
@@ -135,7 +136,7 @@ public class BeanDeployment {
             ejbDescriptors.addAll(beanDeploymentArchive.getEjbs());
         }
 
-        if (services.get(BootstrapConfiguration.class).isConcurrentDeploymentEnabled() && services.contains(ExecutorServices.class)) {
+        if (services.get(WeldConfiguration.class).getBooleanProperty(CONCURRENT_DEPLOYMENT) && services.contains(ExecutorServices.class)) {
             beanDeployer = new ConcurrentBeanDeployer(beanManager, ejbDescriptors, deploymentServices);
         } else {
             beanDeployer = new BeanDeployer(beanManager, ejbDescriptors, deploymentServices);

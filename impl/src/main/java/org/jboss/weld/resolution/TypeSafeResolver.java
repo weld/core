@@ -24,6 +24,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.jboss.weld.config.ConfigurationKey;
+import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.util.collections.WeldCollections;
 
 import com.google.common.cache.CacheBuilder;
@@ -69,13 +71,12 @@ public abstract class TypeSafeResolver<R extends Resolvable, T, C extends Collec
     private final Iterable<? extends T> allBeans;
     private final ResolvableToBeanCollection<R, T, C, F> resolverFunction;
 
-
     /**
      * Constructor
      */
-    public TypeSafeResolver(Iterable<? extends T> allBeans) {
+    public TypeSafeResolver(Iterable<? extends T> allBeans, WeldConfiguration configuration) {
         this.resolverFunction = new ResolvableToBeanCollection<R, T, C, F>(this);
-        this.resolved = CacheBuilder.newBuilder().maximumSize(RESOLVED_CACHE_UPPER_BOUND).build(resolverFunction);
+        this.resolved = CacheBuilder.newBuilder().maximumSize(configuration.getLongProperty(ConfigurationKey.RESOLUTION_CACHE_SIZE)).build(resolverFunction);
         this.allBeans = allBeans;
     }
 

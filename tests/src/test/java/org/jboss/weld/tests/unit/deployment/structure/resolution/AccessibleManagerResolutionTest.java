@@ -33,6 +33,7 @@ import org.jboss.weld.bootstrap.SpecializationAndEnablementRegistry;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
 import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
+import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.event.GlobalObserverNotifierService;
 import org.jboss.weld.injection.producer.InjectionTargetService;
@@ -68,6 +69,7 @@ public class AccessibleManagerResolutionTest {
         this.services.add(ContextualStore.class, new ContextualStoreImpl(STATIC_INSTANCE, beanIdentifierIndex));
         this.services.add(ClassTransformer.class, classTransformer);
         this.services.add(SharedObjectCache.class, new SharedObjectCache());
+        this.services.add(WeldConfiguration.class, new WeldConfiguration(null,  new MockDeployment(services)));
         this.services.add(GlobalObserverNotifierService.class, new GlobalObserverNotifierService(services, RegistrySingletonProvider.STATIC_INSTANCE));
         this.services.add(InjectionTargetService.class, new InjectionTargetService(BeanManagerImpl.newRootManager(STATIC_INSTANCE, "foo", services)));
         this.services.add(SpecializationAndEnablementRegistry.class, new SpecializationAndEnablementRegistry());

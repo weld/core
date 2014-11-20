@@ -19,6 +19,7 @@ package org.jboss.weld.resolution;
 import java.util.Set;
 
 import org.jboss.weld.bean.DisposalMethod;
+import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.util.Beans;
 
 /**
@@ -28,8 +29,8 @@ public class TypeSafeDisposerResolver extends TypeSafeResolver<Resolvable, Dispo
 
     private final AssignabilityRules rules;
 
-    public TypeSafeDisposerResolver(Iterable<DisposalMethod<?, ?>> disposers) {
-        super(disposers);
+    public TypeSafeDisposerResolver(Iterable<DisposalMethod<?, ?>> disposers, WeldConfiguration configuration) {
+        super(disposers, configuration);
         this.rules = BeanTypeAssignabilityRules.instance();
     }
 

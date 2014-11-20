@@ -16,48 +16,24 @@
  */
 package org.jboss.weld.executor;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.Properties;
-
+import org.jboss.weld.config.ConfigurationKey;
+import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.api.ExecutorServices;
 import org.jboss.weld.resources.spi.ResourceLoader;
-import org.jboss.weld.resources.spi.ResourceLoadingException;
 import org.jboss.weld.util.Permissions;
 
 public class ExecutorServicesFactory {
 
-    public static final int DEFAULT_THREAD_POOL_SIZE = Runtime.getRuntime().availableProcessors();
-    /**
-     * Default keep-alive time in seconds
-     */
-    public static final long DEFAULT_KEEP_ALIVE_TIME = 60;
-    private static final String CONFIGURATION_FILE = "org.jboss.weld.executor.properties";
-
-    private static final String THREAD_POOL_SIZE = "threadPoolSize";
-    private static final String DEBUG = "threadPoolDebug";
-    private static final String THREAD_POOL_TYPE = "threadPoolType";
-    private static final String THREAD_POOL_KEEP_ALIVE_TIME = "threadPoolKeepAliveTime";
-
     private ExecutorServicesFactory() {
     }
 
-    public static ExecutorServices create(ResourceLoader loader) {
-        URL configuration = loader.getResource(CONFIGURATION_FILE);
-        Properties properties = null;
-        if (configuration != null) {
-            properties = loadProperties(configuration);
-        }
+    public static ExecutorServices create(ResourceLoader loader, WeldConfiguration configuration) {
 
-        final int threadPoolSize = initIntValue(properties, THREAD_POOL_SIZE, DEFAULT_THREAD_POOL_SIZE);
-        final boolean debug = initBooleanValue(properties, DEBUG, false);
-
-        // do not create ExecutorServices by default if we do not have the "modifyThreadGroup" permission
-        ThreadPoolType defaultType = Permissions.hasPermission(Permissions.MODIFY_THREAD_GROUP) ? ThreadPoolType.FIXED
-                : ThreadPoolType.NONE;
-        final ThreadPoolType threadPoolType = initThreadPoolType(properties, THREAD_POOL_TYPE, defaultType);
-        final long threadPoolKeepAliveTime = initLongValue(properties, THREAD_POOL_KEEP_ALIVE_TIME, DEFAULT_KEEP_ALIVE_TIME);
+        final int threadPoolSize = configuration.getIntegerProperty(ConfigurationKey.EXECUTOR_THREAD_POOL_SIZE);
+        final boolean debug = configuration.getBooleanProperty(ConfigurationKey.EXECUTOR_THREAD_POOL_DEBUG);
+        final ThreadPoolType threadPoolType = initThreadPoolType(configuration);
+        final long threadPoolKeepAliveTime = configuration.getLongProperty(ConfigurationKey.EXECUTOR_THREAD_POOL_KEEP_ALIVE_TIME);
 
         if (debug) {
             return enableDebugMode(constructExecutorServices(threadPoolType, threadPoolSize, threadPoolKeepAliveTime));
@@ -68,10 +44,14 @@ public class ExecutorServicesFactory {
 
     private static ExecutorServices constructExecutorServices(ThreadPoolType type, int threadPoolSize, long threadPoolKeepAliveTime) {
         switch (type) {
-            case NONE: return null;
-            case SINGLE_THREAD: return new SingleThreadExecutorServices();
-            case FIXED_TIMEOUT: return new TimingOutFixedThreadPoolExecutorServices(threadPoolSize, threadPoolKeepAliveTime);
-            default: return new FixedThreadPoolExecutorServices(threadPoolSize);
+            case NONE:
+                return null;
+            case SINGLE_THREAD:
+                return new SingleThreadExecutorServices();
+            case FIXED_TIMEOUT:
+                return new TimingOutFixedThreadPoolExecutorServices(threadPoolSize, threadPoolKeepAliveTime);
+            default:
+                return new FixedThreadPoolExecutorServices(threadPoolSize);
         }
     }
 
@@ -82,56 +62,19 @@ public class ExecutorServicesFactory {
         return new ProfilingExecutorServices(executor);
     }
 
-    private static Properties loadProperties(URL url) {
-        Properties properties = new Properties();
-        try {
-            properties.load(url.openStream());
-        } catch (IOException e) {
-            throw new ResourceLoadingException(e);
-        }
-        return properties;
-    }
+    private static ThreadPoolType initThreadPoolType(WeldConfiguration configuration) {
 
-    private static int initIntValue(Properties properties, String property, int defaultValue) {
-        if (properties == null || properties.get(property) == null) {
-            return defaultValue;
-        }
-        String value = properties.getProperty(property);
-        try {
-            return Integer.parseInt(value);
-        } catch (NumberFormatException e) {
-            throw BootstrapLogger.LOG.invalidThreadPoolSize(value);
-        }
-    }
+        String threadPoolTypeString = configuration.getStringProperty(ConfigurationKey.EXECUTOR_THREAD_POOL_TYPE);
 
-    private static long initLongValue(Properties properties, String property, long defaultValue) {
-        if (properties == null || properties.get(property) == null) {
-            return defaultValue;
-        }
-        String value = properties.getProperty(property);
-        try {
-            return Long.parseLong(value);
-        } catch (NumberFormatException e) {
-            throw BootstrapLogger.LOG.invalidPropertyValue(property, value);
-        }
-    }
-
-    private static boolean initBooleanValue(Properties properties, String property, boolean defaultValue) {
-        if (properties == null || properties.get(property) == null) {
-            return defaultValue;
-        }
-        return Boolean.parseBoolean(properties.getProperty(property));
-    }
-
-    private static ThreadPoolType initThreadPoolType(Properties properties, String property, ThreadPoolType defaultValue) {
-        if (properties == null || properties.get(property) == null) {
-            return defaultValue;
-        }
-        String value = properties.getProperty(property);
-        try {
-            return ThreadPoolType.valueOf(value);
-        } catch (Exception e) {
-            throw BootstrapLogger.LOG.invalidThreadPoolType(value);
+        if (threadPoolTypeString.isEmpty()) {
+            // do not create ExecutorServices by default if we do not have the "modifyThreadGroup" permission
+            return Permissions.hasPermission(Permissions.MODIFY_THREAD_GROUP) ? ThreadPoolType.FIXED : ThreadPoolType.NONE;
+        } else {
+            try {
+                return ThreadPoolType.valueOf(threadPoolTypeString);
+            } catch (Exception e) {
+                throw BootstrapLogger.LOG.invalidThreadPoolType(threadPoolTypeString);
+            }
         }
     }
 
@@ -140,6 +83,6 @@ public class ExecutorServicesFactory {
      * @author Martin Kouba
      */
     public enum ThreadPoolType {
-        FIXED, FIXED_TIMEOUT, NONE, SINGLE_THREAD ;
+        FIXED, FIXED_TIMEOUT, NONE, SINGLE_THREAD;
     }
 }
