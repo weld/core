@@ -35,17 +35,22 @@ public final class SystemPropertiesConfiguration {
 
     public static final String CLIENT_PROXY_DUMP_PATH = "org.jboss.weld.proxy.dump";
 
+    public static final String INJECTABLE_REFERENCE_OPTIMIZATION = "org.jboss.weld.injectableReferenceOptimization";
+
     public static final SystemPropertiesConfiguration INSTANCE = new SystemPropertiesConfiguration();
 
-    private boolean xmlValidationDisabled;
+    private final boolean xmlValidationDisabled;
 
-    private boolean nonPortableModeEnabled;
+    private final boolean nonPortableModeEnabled;
 
     private final File proxyDumpPath;
+
+    private final boolean injectableReferenceOptimization;
 
     private SystemPropertiesConfiguration() {
         xmlValidationDisabled = initBooleanSystemProperty(DISABLE_XML_VALIDATION_KEY, false);
         nonPortableModeEnabled = initBooleanSystemProperty(NON_PORTABLE_MODE_KEY, false);
+        injectableReferenceOptimization = initBooleanSystemProperty(INJECTABLE_REFERENCE_OPTIMIZATION, false);
 
         String dumpPathString = AccessController.doPrivileged(new GetSystemPropertyAction(CLIENT_PROXY_DUMP_PATH));
         if (dumpPathString != null && !dumpPathString.isEmpty()) {
@@ -91,6 +96,13 @@ public final class SystemPropertiesConfiguration {
      */
     public boolean isNonPortableModeEnabled() {
         return nonPortableModeEnabled;
+    }
+
+    /**
+     * @return <code>true</code> if the injectable reference lookup optimization is enabled, <code>false</code> otherwise
+     */
+    public boolean isInjectableReferenceOptimizationEnabled() {
+        return injectableReferenceOptimization;
     }
 
     private boolean initBooleanSystemProperty(String key, boolean defaultValue) {
