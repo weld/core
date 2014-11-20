@@ -69,6 +69,7 @@ import javax.enterprise.inject.spi.ProducerFactory;
 import javax.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.Container;
+import org.jboss.weld.SystemPropertiesConfiguration;
 import org.jboss.weld.annotated.AnnotatedTypeValidator;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMember;
@@ -802,14 +803,14 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                 requestedType = injectionPoint.getType();
             }
 
-            if (injectionPoint != null && injectionPoint.getBean() != null) {
+            if (SystemPropertiesConfiguration.INSTANCE.isInjectableReferenceOptimizationEnabled() && injectionPoint != null && injectionPoint.getBean() != null) {
                 // For certain combinations of scopes, the container is permitted to optimize an injectable reference lookup
                 // This should also partially solve circular @PostConstruct invocation
                 CreationalContextImpl<?> weldCreationalContext = null;
                 Bean<?> bean = injectionPoint.getBean();
 
                 // Do not optimize for self injection
-                if(!bean.equals(resolvedBean)) {
+                if (!bean.equals(resolvedBean)) {
 
                     if (creationalContext instanceof CreationalContextImpl) {
                         weldCreationalContext = (CreationalContextImpl<?>) creationalContext;
@@ -827,10 +828,10 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                             }
                         }
                         Context context = internalGetContext(resolvedBean.getScope());
-                        if(context != null) {
+                        if (context != null) {
                             @java.lang.SuppressWarnings({ "unchecked", "rawtypes" })
-                            final Object existinInstance = context.get(Reflections.<Contextual>cast(resolvedBean));
-                            if(existinInstance != null) {
+                            final Object existinInstance = context.get(Reflections.<Contextual> cast(resolvedBean));
+                            if (existinInstance != null) {
                                 return existinInstance;
                             }
                         }

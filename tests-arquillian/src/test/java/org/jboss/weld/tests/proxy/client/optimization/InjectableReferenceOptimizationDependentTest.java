@@ -20,6 +20,7 @@ import static org.junit.Assert.assertNotNull;
 
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.junit.InSequence;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -28,6 +29,8 @@ import org.junit.runner.RunWith;
  * @author Martin Kouba
  * @see WELD-1659
  */
+//We have to ignore this test until we have a solution to set/unset system properties for the JVM of the managed container
+@Ignore("WELD-1789")
 @RunWith(Arquillian.class)
 public class InjectableReferenceOptimizationDependentTest extends InjectableReferenceOptimizationTestBase {
 
