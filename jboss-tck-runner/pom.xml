@@ -210,7 +210,7 @@
             <activation>
                 <activeByDefault>false</activeByDefault>
                 <property>
-                    <name>tck12</name>
+                    <name>!tck20</name>
                 </property>
             </activation>
             <properties>
@@ -236,7 +236,7 @@
             <activation>
                 <activeByDefault>false</activeByDefault>
                 <property>
-                    <name>!tck12</name>
+                    <name>tck20</name>
                 </property>
             </activation>
             <properties>
