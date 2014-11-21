@@ -33,7 +33,8 @@ import java.util.concurrent.TimeUnit;
  */
 public class Timer {
 
-    private static final long DEFAULT_SLEEP_INTERVAL = 50l;
+    private static final long DEFAULT_SLEEP_INTERVAL = 50L;
+    private static final int DEFAULT_CAPACITY = 5;
 
     private static final ResolutionLogic DEFAULT_RESOLUTION_LOGIC = ResolutionLogic.DISJUNCTION;
 
@@ -137,7 +138,7 @@ public class Timer {
         if (condition != null) {
 
             if (stopConditions == null) {
-                stopConditions = new ArrayList<StopCondition>(5);
+                stopConditions = new ArrayList<StopCondition>(DEFAULT_CAPACITY);
             } else if (clear) {
                 clearStopConditions();
             }
@@ -245,8 +246,9 @@ public class Timer {
     }
 
     private void checkConfiguration() {
-        if (delay < 0 || sleepInterval < 0 || delay < sleepInterval)
+        if (delay < 0 || sleepInterval < 0 || delay < sleepInterval) {
             throw new IllegalStateException("Invalid timer configuration");
+        }
     }
 
     private boolean hasConditionsSatisfied() {
@@ -261,19 +263,19 @@ public class Timer {
     }
 
     private boolean hasAtLeastOneConditionsSatisfied() {
-
         for (StopCondition condition : stopConditions) {
-            if (condition.isSatisfied())
+            if (condition.isSatisfied()) {
                 return true;
+            }
         }
         return false;
     }
 
     private boolean hasAllConditionsSatisfied() {
-
         for (StopCondition condition : stopConditions) {
-            if (!condition.isSatisfied())
+            if (!condition.isSatisfied()) {
                 return false;
+            }
         }
         return true;
     }
@@ -285,12 +287,12 @@ public class Timer {
     /**
      *
      */
-    public static interface StopCondition {
+    public interface StopCondition {
 
         /**
          * @return <code>true</code> if stop condition satisfied, <code>false</code> otherwise
          */
-        public boolean isSatisfied();
+        boolean isSatisfied();
 
     }
 
