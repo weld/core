@@ -16,11 +16,14 @@
  */
 package org.jboss.weld.tests.resolution.circular.resource;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+//This is really a strange use-case, definitely not portable, nor recommended
+@ApplicationScoped
 public class Baz {
 
     @Produces

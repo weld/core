@@ -20,10 +20,10 @@ import javax.enterprise.inject.Produces;
 import javax.xml.ws.WebServiceRef;
 
 public class ResourceProducer {
-	
+
     @True
-	@Produces
-	@WebServiceRef(value=TranslatorEndpointService.class)
-	Translator translator;
+    @Produces
+    @WebServiceRef(value=TranslatorEndpointService.class)
+    Translator translator;
 
 }
