@@ -140,7 +140,7 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T> {
 
     @Override
     public T create(CreationalContext<T> creationalContext) {
-        final T beanInstance = getProducer().produce(creationalContext);
+        final T beanInstance = produceInstance(creationalContext);
         if (Reflections.isFinal(getWeldAnnotated().getJavaClass()) || Serializable.class.isAssignableFrom(beanInstance.getClass())) {
             return checkReturnValue(beanInstance);
         } else {
@@ -170,6 +170,20 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T> {
     @Override
     public String toString() {
         return "Resource " + super.toString();
+    }
+
+    /**
+     * Don't check the return value, treat static fields in a special way.
+     *
+     * @param creationalContext
+     * @return the produced instance
+     */
+    private T produceInstance(CreationalContext<T> creationalContext) {
+        if (getWeldAnnotated().isStatic()) {
+            return Reflections.<T>cast(Beans.resolveEEResource(getBeanManager(), injectionPoint));
+        } else {
+            return getProducer().produce(creationalContext);
+        }
     }
 
 }
