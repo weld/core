@@ -40,12 +40,7 @@ public class ThreadPool {
     }
 
     public Future<Object> submit(final InvocationContext ctx) {
-        return executor.submit(new Callable<Object>() {
-            @Override
-            public Object call() throws Exception {
-                return ctx.proceed();
-            }
-        });
+        return executor.submit(ctx::proceed);
     }
 
     @PreDestroy

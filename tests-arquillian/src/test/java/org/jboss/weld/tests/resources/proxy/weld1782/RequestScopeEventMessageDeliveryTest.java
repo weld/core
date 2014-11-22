@@ -60,21 +60,13 @@ public class RequestScopeEventMessageDeliveryTest {
 
         producer.sendTopicMessage();
 
-        new Timer().setDelay(5, TimeUnit.SECONDS).addStopCondition(new Timer.StopCondition() {
-            public boolean isSatisfied() {
-                return AbstractMessageListener.getProcessedMessages() >= 1;
-            }
-        }).start();
+        new Timer().setDelay(5, TimeUnit.SECONDS).addStopCondition(() -> AbstractMessageListener.getProcessedMessages() >= 1).start();
 
         assertEquals(1, AbstractMessageListener.getProcessedMessages());
         assertTrue(AbstractMessageListener.isInitializedEventObserver());
 
         // wait for the request scope for the message delivery to be destroyed and verify that the event was delivered
-        new Timer().setDelay(5, TimeUnit.SECONDS).addStopCondition(new Timer.StopCondition() {
-            public boolean isSatisfied() {
-                return observer.isDestroyedCalled();
-            }
-        }).start();
+        new Timer().setDelay(5, TimeUnit.SECONDS).addStopCondition(observer::isDestroyedCalled).start();
         assertTrue(observer.isDestroyedCalled());
     }
 }

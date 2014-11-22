@@ -25,12 +25,7 @@ import org.jboss.weld.manager.api.WeldManager;
 
 public class BeanManagers {
 
-    public static final Comparator<WeldManager> ID_COMPARATOR = new Comparator<WeldManager>() {
-        @Override
-        public int compare(WeldManager m1, WeldManager m2) {
-            return m1.getId().compareTo(m2.getId());
-        }
-    };
+    public static final Comparator<WeldManager> ID_COMPARATOR = (m1, m2) -> m1.getId().compareTo(m2.getId());
 
     private BeanManagers() {
     }
