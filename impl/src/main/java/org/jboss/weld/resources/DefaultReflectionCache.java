@@ -37,18 +37,8 @@ import org.jboss.weld.util.collections.ImmutableSet;
 public class DefaultReflectionCache extends AbstractBootstrapService implements ReflectionCache {
 
     private final TypeStore store;
-    private final Function<AnnotatedElement, Set<Annotation>> ANNOTATIONS_FUNCTION = new Function<AnnotatedElement, Set<Annotation>>() {
-        @Override
-        public Set<Annotation> apply(AnnotatedElement input) {
-            return ImmutableSet.of(internalGetAnnotations(input));
-        }
-    };
-    private final Function<AnnotatedElement, Set<Annotation>> DECLARED_ANNOTATIONS_FUNCTION = new Function<AnnotatedElement, Set<Annotation>>() {
-        @Override
-        public Set<Annotation> apply(AnnotatedElement input) {
-            return ImmutableSet.of(internalGetDeclaredAnnotations(input));
-        }
-    };
+    private final Function<AnnotatedElement, Set<Annotation>> ANNOTATIONS_FUNCTION = input -> ImmutableSet.of(internalGetAnnotations(input));
+    private final Function<AnnotatedElement, Set<Annotation>> DECLARED_ANNOTATIONS_FUNCTION = input -> ImmutableSet.of(internalGetDeclaredAnnotations(input));
 
     protected Annotation[] internalGetAnnotations(AnnotatedElement element) {
         return element.getAnnotations();

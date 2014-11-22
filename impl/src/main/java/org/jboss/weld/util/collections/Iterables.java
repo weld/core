@@ -50,12 +50,7 @@ public final class Iterables {
      * @return a single combined iterable
      */
     public static <T> Iterable<T> concat(final Iterable<? extends Iterable<? extends T>> iterables) {
-        return new Iterable<T>() {
-            @Override
-            public Iterator<T> iterator() {
-                return Iterators.concat(iterators(iterables));
-            }
-        };
+        return () -> Iterators.concat(iterators(iterables));
     }
 
     /**

@@ -58,22 +58,14 @@ public class BeansXmlParser {
 
     private Function<URL, BeansXml> URL_TO_BEANS_XML_FUNCTION = BeansXmlParser.this::parse;
 
-    private static Function<BeanDeploymentArchive, BeansXml> BEAN_ARCHIVE_TO_BEANS_XML_FUNCTION = new Function<BeanDeploymentArchive, BeansXml>() {
-        @Override
-        public BeansXml apply(BeanDeploymentArchive archive) {
-            if (archive == null) {
-                return null;
-            }
-            return archive.getBeansXml();
+    private static Function<BeanDeploymentArchive, BeansXml> BEAN_ARCHIVE_TO_BEANS_XML_FUNCTION = archive -> {
+        if (archive == null) {
+            return null;
         }
+        return archive.getBeansXml();
     };
 
-    private static Function<BeansXml, BeansXml> BEANS_XML_IDENTITY_FUNCTION = new Function<BeansXml, BeansXml>() {
-        @Override
-        public BeansXml apply(BeansXml beansXml) {
-            return beansXml;
-        }
-    };
+    private static Function<BeansXml, BeansXml> BEANS_XML_IDENTITY_FUNCTION = beansXml -> beansXml;
 
     public BeansXml parse(final URL beansXml) {
         SAXParserFactory factory = SAXParserFactory.newInstance();
