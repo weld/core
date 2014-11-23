@@ -150,7 +150,7 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
         // we use a try-catch block in order to make sure that endInterceptorContext() is invoked regardless whether
         // the method has succeeded or not
 
-        new RunWithinInterceptionDecorationContextGenerator(classMethod) {
+        new RunWithinInterceptionDecorationContextGenerator(classMethod, this) {
 
             @Override
             void doWork(CodeAttribute b, ClassMethod classMethod) {

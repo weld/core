@@ -155,7 +155,7 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
                                 // this method is not intercepted
                                 // we still need to override and push InterceptionDecorationContext stack to prevent full interception
                                 ClassMethod classMethod = proxyClassType.addMethod(method);
-                                new RunWithinInterceptionDecorationContextGenerator(classMethod) {
+                                new RunWithinInterceptionDecorationContextGenerator(classMethod, this) {
 
                                     @Override
                                     void doWork(CodeAttribute b, ClassMethod method) {
@@ -253,7 +253,7 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
      * @param bytecodeMethodResolver The method resolver
      * @param addProceed
      */
-    protected static void invokeMethodHandler(ClassMethod method, MethodInformation methodInfo, boolean addReturnInstruction, BytecodeMethodResolver bytecodeMethodResolver, boolean addProceed, ClassMethod staticConstructor) {
+    protected void invokeMethodHandler(ClassMethod method, MethodInformation methodInfo, boolean addReturnInstruction, BytecodeMethodResolver bytecodeMethodResolver, boolean addProceed, ClassMethod staticConstructor) {
         // now we need to build the bytecode. The order we do this in is as
         // follows:
         // load methodHandler
@@ -273,15 +273,13 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
         // add an appropriate return instruction
         final CodeAttribute b = method.getCodeAttribute();
         b.aload(0);
-        b.getfield(method.getClassFile().getName(), METHOD_HANDLER_FIELD_NAME, DescriptorUtils.makeDescriptor(MethodHandler.class));
-        b.checkcast(StackAwareMethodHandler.class.getName());
+        getMethodHandlerField(method.getClassFile(), b);
 
         // this is a self invocation optimisation
         // test to see if this is a self invocation, and if so invokespecial the
         // superclass method directly
         if (addProceed) {
             b.dup();
-            b.checkcast(COMBINED_INTERCEPTOR_AND_DECORATOR_STACK_METHOD_HANDLER_CLASS_NAME);
 
             // get the Stack
             b.invokestatic(InterceptionDecorationContext.class.getName(), "getStack", "()" + DescriptorUtils.makeDescriptor(Stack.class));
@@ -402,5 +400,10 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
     @Override
     protected boolean isCreatingProxy() {
         return false;
+    }
+
+    @Override
+    protected Class<? extends MethodHandler> getMethodHandlerType() {
+        return CombinedInterceptorAndDecoratorStackMethodHandler.class;
     }
 }
