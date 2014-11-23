@@ -198,7 +198,7 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
                 // method handler to call getTargetClass to get the correct class type to
                 // resolve the method with, and then resolves this method
 
-                invokeMethodHandler(classMethod, method, true, TargetInstanceBytecodeMethodResolver.INSTANCE, staticConstructor);
+                invokeMethodHandler(classMethod, method, true, TARGET_INSTANCE_BYTECODE_METHOD_RESOLVER, staticConstructor);
             } else {
                 // if the delegate is private we need to use the method handler
                 createInterceptorBody(classMethod, method, staticConstructor);
@@ -251,7 +251,7 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
 
     }
 
-    protected static class TargetInstanceBytecodeMethodResolver implements BytecodeMethodResolver {
+    protected class TargetInstanceBytecodeMethodResolver implements BytecodeMethodResolver {
         private static final String JAVA_LANG_CLASS_CLASS_NAME = "java.lang.Class";
 
         public void getDeclaredMethod(ClassMethod classMethod, String declaringClass, String methodName, String[] parameterTypes, ClassMethod staticConstructor) {
@@ -279,7 +279,8 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
             code.checkcast(Method.class);
         }
 
-        static final TargetInstanceBytecodeMethodResolver INSTANCE = new TargetInstanceBytecodeMethodResolver();
     }
+
+    private final TargetInstanceBytecodeMethodResolver TARGET_INSTANCE_BYTECODE_METHOD_RESOLVER = new TargetInstanceBytecodeMethodResolver();
 
 }

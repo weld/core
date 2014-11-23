@@ -40,7 +40,6 @@ import org.jboss.classfilewriter.ClassMethod;
 import org.jboss.classfilewriter.DuplicateMemberException;
 import org.jboss.classfilewriter.code.BranchEnd;
 import org.jboss.classfilewriter.code.CodeAttribute;
-import org.jboss.classfilewriter.util.DescriptorUtils;
 import org.jboss.weld.Container;
 import org.jboss.weld.bean.proxy.util.SerializableClientProxy;
 import org.jboss.weld.context.cache.RequestScopedCache;
@@ -140,6 +139,11 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
             }
         }
         proxyClassType.addField(AccessFlag.VOLATILE | AccessFlag.PRIVATE, BEAN_ID_FIELD, BeanIdentifier.class);
+    }
+
+    @Override
+    protected Class<? extends MethodHandler> getMethodHandlerType() {
+        return ProxyMethodHandler.class;
     }
 
     @Override
@@ -281,17 +285,9 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
 
     private void loadBeanInstance(ClassFile file, MethodInformation methodInfo, CodeAttribute b) {
         b.aload(0);
-        b.getfield(file.getName(), "methodHandler", DescriptorUtils.makeDescriptor(MethodHandler.class));
-        //pass null arguments to methodHandler.invoke
-        b.aload(0);
-        b.aconstNull();
-        b.aconstNull();
-        b.aconstNull();
-
-        // now we have all our arguments on the stack
+        getMethodHandlerField(file, b);
         // lets invoke the method
-        b.invokeinterface(MethodHandler.class.getName(), "invoke", "("+ LJAVA_LANG_OBJECT + LJAVA_LANG_REFLECT_METHOD + LJAVA_LANG_REFLECT_METHOD + "[" + LJAVA_LANG_OBJECT + ")" + LJAVA_LANG_OBJECT);
-
+        b.invokevirtual(ProxyMethodHandler.class.getName(), "getInstance", EMPTY_PARENTHESES + LJAVA_LANG_OBJECT);
         b.checkcast(methodInfo.getDeclaringClass());
     }
 

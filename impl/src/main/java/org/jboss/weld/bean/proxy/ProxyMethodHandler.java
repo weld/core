@@ -116,4 +116,12 @@ public class ProxyMethodHandler implements MethodHandler, Serializable {
         }
         return bean;
     }
+
+    /**
+     * Returns the underlying instance.
+     * @return the underlying instance
+     */
+    public Object getInstance() {
+        return beanInstance.getInstance();
+    }
 }
