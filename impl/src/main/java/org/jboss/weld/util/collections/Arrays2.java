@@ -37,11 +37,11 @@ public class Arrays2 {
     private Arrays2() {
     }
 
-    public static final boolean containsAll(Object[] array, Object... values) {
+    public static boolean containsAll(Object[] array, Object... values) {
         return Arrays.asList(array).containsAll(Arrays.asList(values));
     }
 
-    public static final boolean unorderedEquals(Object[] array, Object... values) {
+    public static boolean unorderedEquals(Object[] array, Object... values) {
         return containsAll(array, values) && array.length == values.length;
     }
 

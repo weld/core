@@ -25,7 +25,7 @@ public class Duck {
         fly();
     }
 
-    private final void fly() {
+    private void fly() {
     }
 
     public void swim() {

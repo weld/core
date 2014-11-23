@@ -24,7 +24,7 @@ import javax.enterprise.context.ApplicationScoped;
  */
 @ApplicationScoped
 public class ScopedClass {
-    private final void privateMethod() {
+    private void privateMethod() {
 
     }
 
