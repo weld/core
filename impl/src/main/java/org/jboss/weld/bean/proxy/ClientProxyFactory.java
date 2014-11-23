@@ -18,7 +18,6 @@
 package org.jboss.weld.bean.proxy;
 
 import java.io.ObjectStreamException;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -28,21 +27,15 @@ import java.security.PrivilegedActionException;
 import java.util.List;
 import java.util.Set;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.ConversationScoped;
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.context.SessionScoped;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.classfilewriter.AccessFlag;
 import org.jboss.classfilewriter.ClassFile;
 import org.jboss.classfilewriter.ClassMethod;
-import org.jboss.classfilewriter.DuplicateMemberException;
 import org.jboss.classfilewriter.code.BranchEnd;
 import org.jboss.classfilewriter.code.CodeAttribute;
 import org.jboss.weld.Container;
 import org.jboss.weld.bean.proxy.util.SerializableClientProxy;
-import org.jboss.weld.context.cache.RequestScopedCache;
 import org.jboss.weld.security.GetDeclaredFieldAction;
 import org.jboss.weld.security.SetAccessibleAction;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
@@ -50,7 +43,6 @@ import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.bytecode.BytecodeUtils;
 import org.jboss.weld.util.bytecode.DeferredBytecode;
 import org.jboss.weld.util.bytecode.MethodInformation;
-import org.jboss.weld.util.collections.ImmutableSet;
 
 /**
  * Proxy factory that generates client proxies, it uses optimizations that
@@ -61,12 +53,7 @@ import org.jboss.weld.util.collections.ImmutableSet;
  */
 public class ClientProxyFactory<T> extends ProxyFactory<T> {
 
-    private static final Set<Class<? extends Annotation>> CACHEABLE_SCOPES = ImmutableSet.of(RequestScoped.class, ConversationScoped.class, SessionScoped.class, ApplicationScoped.class);
-
-    private static final String CACHING_CLIENT_PROXY_SUFFIX = "ClientProxy";
-    private static final String NON_CACHING_CLIENT_PROXY_SUFFIX = "NonCachingClientProxy";
-
-    private static final String CACHE_FIELD = "BEAN_INSTANCE_CACHE";
+    private static final String CLIENT_PROXY_SUFFIX = "ClientProxy";
 
     private static final String HASH_CODE_METHOD = "hashCode";
     private static final String EMPTY_PARENTHESES = "()";
@@ -84,7 +71,6 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
     private final BeanIdentifier beanId;
 
     private volatile Field beanIdField;
-    private volatile Field threadLocalCacheField;
 
     public ClientProxyFactory(String contextId, Class<?> proxiedBeanType, Set<? extends Type> typeClosure, Bean<?> bean) {
         super(contextId, proxiedBeanType, typeClosure, bean);
@@ -100,15 +86,6 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
                 AccessController.doPrivileged(SetAccessibleAction.of(f));
                 beanIdField = f;
             }
-            if (isUsingUnsafeInstantiators() && useCache()) {
-                if (threadLocalCacheField == null) {
-                    final Field f = AccessController.doPrivileged(new GetDeclaredFieldAction(instance.getClass(),  CACHE_FIELD));
-                    AccessController.doPrivileged(SetAccessibleAction.of(f));
-                    threadLocalCacheField = f;
-                }
-                threadLocalCacheField.set(instance, new ThreadLocal());
-            }
-
             beanIdField.set(instance, beanId);
             return instance;
         } catch (IllegalAccessException e) {
@@ -121,23 +98,6 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
     @Override
     protected void addFields(final ClassFile proxyClassType, List<DeferredBytecode> initialValueBytecode) {
         super.addFields(proxyClassType, initialValueBytecode);
-        if (useCache()) {
-            try {
-                proxyClassType.addField(AccessFlag.TRANSIENT | AccessFlag.PRIVATE, CACHE_FIELD, LJAVA_LANG_THREAD_LOCAL);
-                initialValueBytecode.add(new DeferredBytecode() {
-                    public void apply(final CodeAttribute codeAttribute) {
-
-                        codeAttribute.aload(0);
-                        codeAttribute.newInstruction(ThreadLocal.class.getName());
-                        codeAttribute.dup();
-                        codeAttribute.invokespecial(ThreadLocal.class.getName(), INIT_METHOD_NAME, EMPTY_PARENTHESES + BytecodeUtils.VOID_CLASS_DESCRIPTOR);
-                        codeAttribute.putfield(proxyClassType.getName(), CACHE_FIELD, LJAVA_LANG_THREAD_LOCAL);
-                    }
-                });
-            } catch (DuplicateMemberException e) {
-                throw new RuntimeException(e);
-            }
-        }
         proxyClassType.addField(AccessFlag.VOLATILE | AccessFlag.PRIVATE, BEAN_ID_FIELD, BeanIdentifier.class);
     }
 
@@ -194,11 +154,7 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
 
             @Override
             void doWork(CodeAttribute b, ClassMethod classMethod) {
-                if (useCache()) {
-                    loadCacheableBeanInstance(classMethod.getClassFile(), methodInfo, b);
-                } else {
-                    loadBeanInstance(classMethod.getClassFile(), methodInfo, b);
-                }
+                loadBeanInstance(classMethod.getClassFile(), methodInfo, b);
                 //now we should have the target bean instance on top of the stack
                 // we need to dup it so we still have it to compare to the return value
                 b.dup();
@@ -245,44 +201,6 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
         }.runStartIfNotEmpty();
     }
 
-    /**
-     * If the bean is part of a well known scope then this code caches instances in a thread local for the life of the
-     * request, as a performance enhancement.
-     */
-    private void loadCacheableBeanInstance(ClassFile file, MethodInformation methodInfo, CodeAttribute b) {
-        //first we need to see if the scope is active
-        b.invokestatic(RequestScopedCache.class.getName(), "isActive", EMPTY_PARENTHESES + BytecodeUtils.BOOLEAN_CLASS_DESCRIPTOR);
-        //if it is not active we just get the bean directly
-
-        final BranchEnd returnInstruction = b.ifeq();
-        //get the bean from the cache
-        b.aload(0);
-        b.getfield(file.getName(), CACHE_FIELD, LJAVA_LANG_THREAD_LOCAL);
-        b.invokevirtual(ThreadLocal.class.getName(), "get", EMPTY_PARENTHESES + LJAVA_LANG_OBJECT);
-        b.dup();
-        final BranchEnd createNewInstance = b.ifnull();
-        //so we have a not-null bean instance in the cache
-        b.checkcast(methodInfo.getDeclaringClass());
-        final BranchEnd loadedFromCache = b.gotoInstruction();
-        b.branchEnd(createNewInstance);
-        //we need to get a bean instance and cache it
-        //first clear the null off the top of the stack
-        b.pop();
-        loadBeanInstance(file, methodInfo, b);
-        b.dup();
-        b.aload(0);
-        b.getfield(file.getName(), CACHE_FIELD, LJAVA_LANG_THREAD_LOCAL);
-        b.dupX1();
-        b.swap();
-        b.invokevirtual(ThreadLocal.class.getName(), "set", "(" + LJAVA_LANG_OBJECT + ")" + BytecodeUtils.VOID_CLASS_DESCRIPTOR);
-        b.invokestatic(RequestScopedCache.class.getName(), "addItem", "(" + LJAVA_LANG_THREAD_LOCAL + ")" + BytecodeUtils.VOID_CLASS_DESCRIPTOR);
-        final BranchEnd endOfIfStatement = b.gotoInstruction();
-        b.branchEnd(returnInstruction);
-        loadBeanInstance(file, methodInfo, b);
-        b.branchEnd(endOfIfStatement);
-        b.branchEnd(loadedFromCache);
-    }
-
     private void loadBeanInstance(ClassFile file, MethodInformation methodInfo, CodeAttribute b) {
         b.aload(0);
         getMethodHandlerField(file, b);
@@ -325,31 +243,6 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
 
     @Override
     protected String getProxyNameSuffix() {
-        if (useCache()) {
-            return CACHING_CLIENT_PROXY_SUFFIX;
-        } else {
-            return NON_CACHING_CLIENT_PROXY_SUFFIX;
-        }
+        return CLIENT_PROXY_SUFFIX;
     }
-
-    private boolean useCache() {
-        return CACHEABLE_SCOPES.contains(getBean().getScope());
-    }
-
-    /**
-     * Gets the index of a local variable (the first index after method parameters). Indexes start with 0.
-     */
-    private static int getLocalVariableIndex(ClassMethod method, int i) {
-        int index = method.isStatic() ? 0 : 1;
-        for (String type : method.getParameters()) {
-            if (type.equals(BytecodeUtils.DOUBLE_CLASS_DESCRIPTOR) || type.equals(BytecodeUtils.LONG_CLASS_DESCRIPTOR)) {
-                index += 2;
-            } else {
-                index++;
-            }
-        }
-        return index + i;
-    }
-
-
 }
