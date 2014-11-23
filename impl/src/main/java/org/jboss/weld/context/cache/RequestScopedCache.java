@@ -57,14 +57,17 @@ public class RequestScopedCache {
         return false;
     }
 
-    public static void addItem(final ThreadLocal<?> item) {
+    public static boolean addItemIfActive(final ThreadLocal<?> item) {
         final List<RequestScopedItem> cache = CACHE.get();
-        checkCacheForAdding(cache);
-        cache.add(new RequestScopedItem() {
-            public void invalidate() {
-                item.remove();
-            }
-        });
+        if (cache != null) {
+            cache.add(new RequestScopedItem() {
+                public void invalidate() {
+                    item.remove();
+                }
+            });
+            return true;
+        }
+        return false;
     }
 
     public static void beginRequest() {
