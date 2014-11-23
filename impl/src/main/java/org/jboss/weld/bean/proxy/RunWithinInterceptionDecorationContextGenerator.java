@@ -50,10 +50,12 @@ abstract class RunWithinInterceptionDecorationContextGenerator {
 
     private final ClassMethod classMethod;
     private final CodeAttribute b;
+    private final ProxyFactory<?> factory;
 
-    RunWithinInterceptionDecorationContextGenerator(ClassMethod classMethod) {
+    RunWithinInterceptionDecorationContextGenerator(ClassMethod classMethod, ProxyFactory<?> factory) {
         this.classMethod = classMethod;
         this.b = classMethod.getCodeAttribute();
+        this.factory = factory;
     }
 
     abstract void doWork(CodeAttribute b, ClassMethod method);
@@ -67,7 +69,7 @@ abstract class RunWithinInterceptionDecorationContextGenerator {
 
     void startIfNotOnTop(CodeAttribute b, ClassMethod method) {
         b.aload(0);
-        b.getfield(method.getClassFile().getName(), ProxyFactory.METHOD_HANDLER_FIELD_NAME, makeDescriptor(MethodHandler.class));
+        factory.getMethodHandlerField(method.getClassFile(), b);
         b.dup();
 
         // if handler != null (may happen inside constructor calls)
