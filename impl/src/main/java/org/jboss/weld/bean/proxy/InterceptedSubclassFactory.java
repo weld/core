@@ -382,13 +382,6 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
         }
     }
 
-    private static void generateGetMethodHandlerBody(ClassMethod method) {
-        final CodeAttribute b = method.getCodeAttribute();
-        b.aload(0);
-        b.getfield(method.getClassFile().getName(), METHOD_HANDLER_FIELD_NAME, DescriptorUtils.makeDescriptor(MethodHandler.class));
-        b.returnInstruction();
-    }
-
     private static void generateGetTargetInstanceBody(ClassMethod method) {
         final CodeAttribute b = method.getCodeAttribute();
         b.aload(0);
@@ -398,14 +391,6 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
     private static void generateGetTargetClassBody(ClassMethod method) {
         final CodeAttribute b = method.getCodeAttribute();
         BytecodeUtils.pushClassType(b, method.getClassFile().getSuperclass());
-        b.returnInstruction();
-    }
-
-    private static void generateSetMethodHandlerBody(ClassMethod method) {
-        final CodeAttribute b = method.getCodeAttribute();
-        b.aload(0);
-        b.aload(1);
-        b.putfield(method.getClassFile().getName(), METHOD_HANDLER_FIELD_NAME, DescriptorUtils.makeDescriptor(MethodHandler.class));
         b.returnInstruction();
     }
 

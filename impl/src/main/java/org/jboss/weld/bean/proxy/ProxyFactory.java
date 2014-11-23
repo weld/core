@@ -791,7 +791,7 @@ public class ProxyFactory<T> {
         }
     }
 
-    private void generateSetMethodHandlerBody(ClassMethod method) {
+    protected void generateSetMethodHandlerBody(ClassMethod method) {
         final CodeAttribute b = method.getCodeAttribute();
         b.aload(0);
         b.aload(1);
@@ -800,7 +800,7 @@ public class ProxyFactory<T> {
         b.returnInstruction();
     }
 
-    private void generateGetMethodHandlerBody(ClassMethod method) {
+    protected void generateGetMethodHandlerBody(ClassMethod method) {
         final CodeAttribute b = method.getCodeAttribute();
         b.aload(0);
         getMethodHandlerField(method.getClassFile(), b);
