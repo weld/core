@@ -253,14 +253,15 @@ public class ObserverMethodImpl<T, X> implements ExperimentalObserverMethod<T> {
         if (observerMethod.getAnnotated().isStatic()) {
             sendEvent(event, null, beanManager.createCreationalContext(declaringBean));
         } else {
-            CreationalContext<X> creationalContext;
-            if (reception.equals(Reception.IF_EXISTS)) {
-                creationalContext = null;
-            } else {
+            CreationalContext<X> creationalContext = null;
+            if (!observerMethod.getInjectionPoints().isEmpty()) {
                 creationalContext = beanManager.createCreationalContext(declaringBean);
             }
-
             Object receiver = getReceiverIfExists(creationalContext);
+            if (receiver == null && creationalContext == null && reception != Reception.IF_EXISTS) {
+                creationalContext = beanManager.createCreationalContext(declaringBean);
+                receiver = getReceiverIfExists(creationalContext);
+            }
             if (receiver != null) {
                 sendEvent(event, receiver, creationalContext);
             }
