@@ -34,7 +34,7 @@ public class ThreadLocalTestCase {
         container.startContainer();
         BeanManager manager = getBeanManager(container);
 
-        Bean<? extends Object> testBean = manager.resolve(manager.getBeans(ThreadLocalTestCase.class));
+        Bean<?> testBean = manager.resolve(manager.getBeans(ThreadLocalTestCase.class));
 
         try {
             manager.getReference(
