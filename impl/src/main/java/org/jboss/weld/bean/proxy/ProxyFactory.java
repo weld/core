@@ -536,12 +536,15 @@ public class ProxyFactory<T> {
     protected void addFields(ClassFile proxyClassType, List<DeferredBytecode> initialValueBytecode) {
         // The field representing the underlying instance or special method
         // handling
-        proxyClassType.addField(AccessFlag.PRIVATE, METHOD_HANDLER_FIELD_NAME, MethodHandler.class);
+        proxyClassType.addField(AccessFlag.PRIVATE, METHOD_HANDLER_FIELD_NAME, getMethodHandlerType());
         if(!isUsingUnsafeInstantiators()) {
             // field used to indicate that super() has been called
             proxyClassType.addField(AccessFlag.PRIVATE, CONSTRUCTED_FLAG_NAME, BytecodeUtils.BOOLEAN_CLASS_DESCRIPTOR);
         }
+    }
 
+    protected Class<? extends MethodHandler> getMethodHandlerType() {
+        return MethodHandler.class;
     }
 
     protected void addMethods(ClassFile proxyClassType, ClassMethod staticConstructor) {
@@ -705,7 +708,7 @@ public class ProxyFactory<T> {
      *                               the method invocation
      * @param bytecodeMethodResolver The resolver that returns the method to invoke
      */
-    protected static void invokeMethodHandler(ClassMethod classMethod, MethodInformation method, boolean addReturnInstruction, BytecodeMethodResolver bytecodeMethodResolver, ClassMethod staticConstructor) {
+    protected void invokeMethodHandler(ClassMethod classMethod, MethodInformation method, boolean addReturnInstruction, BytecodeMethodResolver bytecodeMethodResolver, ClassMethod staticConstructor) {
         // now we need to build the bytecode. The order we do this in is as
         // follows:
         // load methodHandler
@@ -720,7 +723,7 @@ public class ProxyFactory<T> {
         // add an appropriate return instruction
         final CodeAttribute b = classMethod.getCodeAttribute();
         b.aload(0);
-        b.getfield(classMethod.getClassFile().getName(), METHOD_HANDLER_FIELD_NAME, DescriptorUtils.makeDescriptor(MethodHandler.class));
+        getMethodHandlerField(classMethod.getClassFile(), b);
         b.aload(0);
         bytecodeMethodResolver.getDeclaredMethod(classMethod, method.getDeclaringClass(), method.getName(), method.getParameterTypes(), staticConstructor);
         b.aconstNull();
@@ -803,18 +806,19 @@ public class ProxyFactory<T> {
         }
     }
 
-    private static void generateSetMethodHandlerBody(ClassMethod method) {
+    private void generateSetMethodHandlerBody(ClassMethod method) {
         final CodeAttribute b = method.getCodeAttribute();
         b.aload(0);
         b.aload(1);
-        b.putfield(method.getClassFile().getName(), METHOD_HANDLER_FIELD_NAME, DescriptorUtils.makeDescriptor(MethodHandler.class));
+        b.checkcast(getMethodHandlerType());
+        b.putfield(method.getClassFile().getName(), METHOD_HANDLER_FIELD_NAME, DescriptorUtils.makeDescriptor(getMethodHandlerType()));
         b.returnInstruction();
     }
 
-    private static void generateGetMethodHandlerBody(ClassMethod method) {
+    private void generateGetMethodHandlerBody(ClassMethod method) {
         final CodeAttribute b = method.getCodeAttribute();
         b.aload(0);
-        b.getfield(method.getClassFile().getName(), METHOD_HANDLER_FIELD_NAME, DescriptorUtils.makeDescriptor(MethodHandler.class));
+        getMethodHandlerField(method.getClassFile(), b);
         b.returnInstruction();
     }
 
@@ -878,4 +882,7 @@ public class ProxyFactory<T> {
         return instantiatorFactory != null;
     }
 
+    protected void getMethodHandlerField(ClassFile file, CodeAttribute b) {
+        b.getfield(file.getName(), METHOD_HANDLER_FIELD_NAME, DescriptorUtils.makeDescriptor(getMethodHandlerType()));
+    }
 }
