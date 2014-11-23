@@ -39,7 +39,7 @@ public class InjectionServicesTest {
 
         BeanManager manager = getBeanManager(container);
 
-        Bean<? extends Object> bean = manager.resolve(manager.getBeans(Foo.class));
+        Bean<?> bean = manager.resolve(manager.getBeans(Foo.class));
         ijs.reset();
         Foo foo = (Foo) manager.getReference(bean, Foo.class, manager.createCreationalContext(bean));
 

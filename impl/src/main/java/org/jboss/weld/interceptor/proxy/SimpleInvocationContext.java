@@ -136,7 +136,7 @@ public class SimpleInvocationContext implements InvocationContext {
                     Class<?> methodParameterClass = parameterTypes[i];
                     if (params[i] != null) {
                         // identity ok
-                        Class<? extends Object> newArgumentClass = params[i].getClass();
+                        Class<?> newArgumentClass = params[i].getClass();
                         if (newArgumentClass.equals(methodParameterClass)) {
                             break;
                         }
@@ -184,7 +184,7 @@ public class SimpleInvocationContext implements InvocationContext {
         }
     }
 
-    private void throwIAE(int i, Class<?> methodParameterClass, Class<? extends Object> newArgumentClass) {
+    private void throwIAE(int i, Class<?> methodParameterClass, Class<?> newArgumentClass) {
         throw new IllegalArgumentException("Incompatible parameter type on position: " + i + " :" + newArgumentClass + " (expected type was "
                 + methodParameterClass.getName() + ")");
     }
