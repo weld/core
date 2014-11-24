@@ -33,6 +33,7 @@ import javax.enterprise.inject.spi.Bean;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.collections.Arrays2;
 
 /**
  * {@link MethodInjectionPoint} that delegates to a static method.
@@ -102,6 +103,13 @@ class StaticMethodInjectionPoint<T, X> extends AbstractCallableInjectionPoint<T,
      * @return The object array of looked up values
      */
     protected Object[] getParameterValues(Object specialVal, BeanManagerImpl manager, CreationalContext<?> ctx, CreationalContext<?> invocationContext) {
+        if (getParameterInjectionPoints().isEmpty()) {
+            if (specialInjectionPointIndex == -1) {
+                return Arrays2.EMPTY_ARRAY;
+            } else {
+                return new Object[] { specialVal };
+            }
+        }
         Object[] parameterValues = new Object[getParameterInjectionPoints().size()];
         Iterator<ParameterInjectionPoint<?, X>> iterator = getParameterInjectionPoints().iterator();
         for (int i = 0; i < parameterValues.length; i++) {
