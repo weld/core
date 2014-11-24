@@ -86,6 +86,8 @@ public class ObserverMethodImpl<T, X> implements ExperimentalObserverMethod<T> {
     private final Set<WeldInjectionPointAttributes<?, ?>> newInjectionPoints;
 
     private final int priority;
+    // this turned out to be noticeable faster than observerMethod.getAnnotated().isStatic()
+    private final boolean isStatic;
 
     /**
      * Creates an Observer which describes and encapsulates an observer method (8.5).
@@ -126,6 +128,7 @@ public class ObserverMethodImpl<T, X> implements ExperimentalObserverMethod<T> {
         } else {
             this.priority = priority.value();
         }
+        this.isStatic = observer.isStatic();
     }
 
     protected static String createId(final EnhancedAnnotatedMethod<?, ?> observer, final RIBean<?> declaringBean) {
@@ -250,13 +253,13 @@ public class ObserverMethodImpl<T, X> implements ExperimentalObserverMethod<T> {
      * @param event The event to notify observer with
      */
     protected void sendEvent(final T event) {
-        if (observerMethod.getAnnotated().isStatic()) {
-            sendEvent(event, null, beanManager.createCreationalContext(declaringBean));
+        CreationalContext<X> creationalContext = null;
+        if (!observerMethod.getInjectionPoints().isEmpty()) {
+            creationalContext = beanManager.createCreationalContext(declaringBean);
+        }
+        if (isStatic) {
+            sendEvent(event, null, creationalContext);
         } else {
-            CreationalContext<X> creationalContext = null;
-            if (!observerMethod.getInjectionPoints().isEmpty()) {
-                creationalContext = beanManager.createCreationalContext(declaringBean);
-            }
             Object receiver = getReceiverIfExists(creationalContext);
             if (receiver == null && creationalContext == null && reception != Reception.IF_EXISTS) {
                 creationalContext = beanManager.createCreationalContext(declaringBean);
