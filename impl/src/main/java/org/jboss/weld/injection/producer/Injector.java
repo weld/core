@@ -24,8 +24,8 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
 
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
-import org.jboss.weld.injection.FieldInjectionPoint;
 import org.jboss.weld.injection.MethodInjectionPoint;
+import org.jboss.weld.injection.FieldInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 /**

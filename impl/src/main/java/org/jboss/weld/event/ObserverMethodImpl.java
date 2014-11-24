@@ -47,8 +47,8 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.context.CreationalContextImpl;
-import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.MethodInjectionPoint;
+import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.ParameterInjectionPoint;
 import org.jboss.weld.injection.attributes.SpecialParameterInjectionPoint;
 import org.jboss.weld.injection.attributes.WeldInjectionPointAttributes;
@@ -135,7 +135,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
 
     protected MethodInjectionPoint<T, ? super X> initMethodInjectionPoint(EnhancedAnnotatedMethod<T, ? super X> observer, RIBean<X> declaringBean,
             BeanManagerImpl manager) {
-        return InjectionPointFactory.instance().createMethodInjectionPoint(observer, declaringBean, declaringBean.getBeanClass(), true, manager);
+        return InjectionPointFactory.instance().createMethodInjectionPoint(observer, declaringBean, declaringBean.getBeanClass(), Observes.class, manager);
     }
 
     public Set<WeldInjectionPointAttributes<?, ?>> getInjectionPoints() {
@@ -264,13 +264,9 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
     protected void sendEvent(T event, Object receiver, CreationalContext<?> creationalContext) {
         try {
             preNotify(event, receiver);
-            if (receiver == null) {
-                observerMethod.invokeWithSpecialValue(null, Observes.class, event, beanManager, creationalContext, ObserverException.class);
-            } else {
-                // As we are working with the contextual instance, we may not have the
-                // actual object, but a container proxy (e.g. EJB)
-                observerMethod.invokeOnInstanceWithSpecialValue(receiver, Observes.class, event, beanManager, creationalContext, ObserverException.class);
-            }
+            // As we are working with the contextual instance, we may not have the
+            // actual object, but a container proxy (e.g. EJB)
+            observerMethod.invoke(receiver, event, beanManager, creationalContext, ObserverException.class);
         } finally {
             postNotify(event, receiver);
             if (creationalContext != null) {
