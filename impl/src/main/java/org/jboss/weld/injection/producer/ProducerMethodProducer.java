@@ -33,8 +33,8 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.bean.DisposalMethod;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.exceptions.DefinitionException;
-import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.MethodInjectionPoint;
+import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.security.GetMethodAction;
 
@@ -52,7 +52,7 @@ public abstract class ProducerMethodProducer<X, T> extends AbstractMemberProduce
 
     public ProducerMethodProducer(EnhancedAnnotatedMethod<T, ? super X> enhancedAnnotatedMethod, DisposalMethod<?, ?> disposalMethod) {
         super(enhancedAnnotatedMethod, disposalMethod);
-        this.method = InjectionPointFactory.instance().createMethodInjectionPoint(enhancedAnnotatedMethod, getBean(), enhancedAnnotatedMethod.getDeclaringType().getJavaClass(), false, getBeanManager());
+        this.method = InjectionPointFactory.instance().createMethodInjectionPoint(enhancedAnnotatedMethod, getBean(), enhancedAnnotatedMethod.getDeclaringType().getJavaClass(), null, getBeanManager());
         checkProducerMethod(enhancedAnnotatedMethod);
         checkDelegateInjectionPoints();
     }
@@ -92,11 +92,7 @@ public abstract class ProducerMethodProducer<X, T> extends AbstractMemberProduce
 
     @Override
     protected T produce(Object receiver, CreationalContext<T> ctx) {
-        if (receiver != null) {
-            return method.invokeOnInstance(receiver, getBeanManager(), ctx, CreationException.class);
-        } else {
-            return method.invoke(null, getBeanManager(), ctx, CreationException.class);
-        }
+        return method.invoke(receiver, null, getBeanManager(), ctx, CreationException.class);
     }
 
     @Override

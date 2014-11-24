@@ -39,8 +39,8 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.annotated.enhanced.MethodSignature;
 import org.jboss.weld.bootstrap.Validator;
-import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.MethodInjectionPoint;
+import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.ParameterInjectionPoint;
 import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.logging.BeanLogger;
@@ -65,7 +65,7 @@ public class DisposalMethod<X, T> {
     }
 
     protected DisposalMethod(BeanManagerImpl beanManager, EnhancedAnnotatedMethod<T, ? super X> enhancedAnnotatedMethod, AbstractClassBean<X> declaringBean) {
-        this.disposalMethodInjectionPoint = InjectionPointFactory.instance().createMethodInjectionPoint(enhancedAnnotatedMethod, declaringBean, declaringBean.getBeanClass(), true, beanManager);
+        this.disposalMethodInjectionPoint = InjectionPointFactory.instance().createMethodInjectionPoint(enhancedAnnotatedMethod, declaringBean, declaringBean.getBeanClass(), Disposes.class, beanManager);
         this.beanManager = beanManager;
         this.declaringBean = declaringBean;
         EnhancedAnnotatedParameter<?, ? super X> enhancedDisposesParameter = getEnhancedDisposesParameter(enhancedAnnotatedMethod);
@@ -88,11 +88,7 @@ public class DisposalMethod<X, T> {
     }
 
     public void invokeDisposeMethod(Object receiver, Object instance, CreationalContext<?> creationalContext) {
-        if (receiver == null) {
-            disposalMethodInjectionPoint.invokeWithSpecialValue(null, Disposes.class, instance, beanManager, creationalContext, IllegalArgumentException.class);
-        } else {
-            disposalMethodInjectionPoint.invokeOnInstanceWithSpecialValue(receiver, Disposes.class, instance, beanManager, creationalContext, IllegalArgumentException.class);
-        }
+        disposalMethodInjectionPoint.invoke(receiver, instance, beanManager, creationalContext, IllegalArgumentException.class);
     }
 
     private void checkDisposalMethod(EnhancedAnnotatedMethod<T, ? super X> enhancedAnnotatedMethod, AbstractClassBean<X> declaringBean) {

@@ -27,8 +27,8 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.bean.DecoratorImpl;
-import org.jboss.weld.injection.FieldInjectionPoint;
 import org.jboss.weld.injection.MethodInjectionPoint;
+import org.jboss.weld.injection.FieldInjectionPoint;
 import org.jboss.weld.injection.ParameterInjectionPoint;
 import org.jboss.weld.injection.ParameterInjectionPointImpl;
 import org.jboss.weld.injection.attributes.ForwardingFieldInjectionPointAttributes;
