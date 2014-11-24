@@ -31,6 +31,6 @@ This will start the Paint application. For now with only a single paintable shap
 
 6. Deploy Square and Triangle bundles
 
-        bundle:install -s file:///path/to/weld/examples/osgi/paint-square/target/weld-osgi-paint-core.jar
+        bundle:install -s file:///path/to/weld/examples/osgi/paint-square/target/weld-osgi-paint-square.jar
         bundle:install -s file:///path/to/weld/examples/osgi/paint-triangle/target/weld-osgi-paint-triangle.jar
 
