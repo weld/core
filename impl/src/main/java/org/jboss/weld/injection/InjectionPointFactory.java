@@ -16,10 +16,11 @@
  */
 package org.jboss.weld.injection;
 
-import static org.jboss.weld.util.collections.WeldCollections.immutableList;
 import static org.jboss.weld.util.collections.WeldCollections.immutableGuavaList;
 import static org.jboss.weld.util.collections.WeldCollections.immutableGuavaSet;
+import static org.jboss.weld.util.collections.WeldCollections.immutableList;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -174,9 +175,12 @@ public class InjectionPointFactory {
     }
 
     public <T, X> MethodInjectionPoint<T, X> createMethodInjectionPoint(EnhancedAnnotatedMethod<T, X> enhancedMethod,
-            Bean<?> declaringBean, Class<?> declaringComponentClass, boolean observerOrDisposer, BeanManagerImpl manager) {
-        return new MethodInjectionPoint<T, X>(enhancedMethod, declaringBean, declaringComponentClass, observerOrDisposer, this,
-                manager);
+            Bean<?> declaringBean, Class<?> declaringComponentClass, Class<? extends Annotation> specialParameterMarker, BeanManagerImpl manager) {
+        if (enhancedMethod.isStatic()) {
+            return new StaticMethodInjectionPoint<T, X>(enhancedMethod, declaringBean, declaringComponentClass, specialParameterMarker, this, manager);
+        } else {
+            return new VirtualMethodInjectionPoint<T, X>(enhancedMethod, declaringBean, declaringComponentClass, specialParameterMarker, this, manager);
+        }
     }
 
     /*

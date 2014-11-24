@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.util;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -26,8 +27,8 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.bean.DecoratorImpl;
-import org.jboss.weld.injection.FieldInjectionPoint;
 import org.jboss.weld.injection.MethodInjectionPoint;
+import org.jboss.weld.injection.FieldInjectionPoint;
 import org.jboss.weld.injection.ParameterInjectionPoint;
 import org.jboss.weld.injection.ParameterInjectionPointImpl;
 import org.jboss.weld.injection.attributes.ForwardingFieldInjectionPointAttributes;
@@ -56,7 +57,7 @@ public class InjectionPoints {
     }
 
     public static Set<ParameterInjectionPoint<?, ?>> flattenParameterInjectionPoints(List<Set<MethodInjectionPoint<?, ?>>> methodInjectionPoints) {
-        ArraySet<ParameterInjectionPoint<?, ?>> injectionPoints = new ArraySet<ParameterInjectionPoint<?, ?>>();
+        Set<ParameterInjectionPoint<?, ?>> injectionPoints = new HashSet<ParameterInjectionPoint<?, ?>>();
         for (Set<MethodInjectionPoint<?, ?>> i : methodInjectionPoints) {
             for (MethodInjectionPoint<?, ?> method : i) {
                 for (ParameterInjectionPoint<?, ?> parameter : method.getParameterInjectionPoints()) {
@@ -64,7 +65,7 @@ public class InjectionPoints {
                 }
             }
         }
-        return injectionPoints.trimToSize();
+        return injectionPoints;
     }
 
     public static <X> Set<ParameterInjectionPoint<?, X>> filterOutSpecialParameterInjectionPoints(List<ParameterInjectionPoint<?, X>> injectionPoints) {

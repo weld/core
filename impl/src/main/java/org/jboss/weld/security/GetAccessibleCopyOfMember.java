@@ -33,15 +33,19 @@ public class GetAccessibleCopyOfMember<T extends AccessibleObject & Member> impl
         this.originalMember = originalMember;
     }
 
-    @Override
-    public T run() {
-        T copy = copyMember();
+    public static <T extends AccessibleObject & Member> T of(T member) {
+        T copy = copyMember(member);
         copy.setAccessible(true);
         return copy;
     }
 
+    @Override
+    public T run() {
+        return of(originalMember);
+    }
+
     @SuppressWarnings("unchecked")
-    private T copyMember() {
+    private static <T extends AccessibleObject & Member> T copyMember(T originalMember) {
         Class<?> declaringClass = originalMember.getDeclaringClass();
         try {
             if (originalMember instanceof Field) {
@@ -59,15 +63,15 @@ public class GetAccessibleCopyOfMember<T extends AccessibleObject & Member> impl
         throw new IllegalArgumentException(UNABLE_TO_OBTAIN_AN_ACCESSIBLE_COPY_OF + originalMember);
     }
 
-    private Field copyField(Field field, Class<?> declaringClass) throws NoSuchFieldException {
+    private static Field copyField(Field field, Class<?> declaringClass) throws NoSuchFieldException {
         return declaringClass.getDeclaredField(field.getName());
     }
 
-    private Method copyMethod(Method method, Class<?> declaringClass) throws NoSuchMethodException {
+    private static Method copyMethod(Method method, Class<?> declaringClass) throws NoSuchMethodException {
         return declaringClass.getDeclaredMethod(method.getName(), method.getParameterTypes());
     }
 
-    private Constructor<?> copyConstructor(Constructor<?> constructor, Class<?> declaringClass) throws NoSuchMethodException {
+    private static Constructor<?> copyConstructor(Constructor<?> constructor, Class<?> declaringClass) throws NoSuchMethodException {
         return declaringClass.getDeclaredConstructor(constructor.getParameterTypes());
     }
 }

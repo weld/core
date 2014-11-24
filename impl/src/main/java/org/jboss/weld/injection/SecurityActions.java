@@ -23,6 +23,7 @@ import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 
 import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.security.GetAccessibleCopyOfMember;
 import org.jboss.weld.security.MethodLookupAction;
 import org.jboss.weld.security.SetAccessibleAction;
 
@@ -77,4 +78,11 @@ final class SecurityActions {
         }
     }
 
+    static Method getAccessibleCopyOfMethod(Method method) {
+        if (System.getSecurityManager() != null) {
+            return AccessController.doPrivileged(new GetAccessibleCopyOfMember<Method>(method));
+        } else {
+            return GetAccessibleCopyOfMember.of(method);
+        }
+    }
 }

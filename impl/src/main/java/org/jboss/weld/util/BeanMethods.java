@@ -37,8 +37,8 @@ import javax.inject.Inject;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
-import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.MethodInjectionPoint;
+import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.interceptor.reader.InterceptorMetadataUtils;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
 import org.jboss.weld.interceptor.util.InterceptionTypeRegistry;
@@ -47,12 +47,12 @@ import org.jboss.weld.logging.EventLogger;
 import org.jboss.weld.logging.UtilLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.security.SetAccessibleAction;
-import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.collections.WeldCollections;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
@@ -208,7 +208,7 @@ public class BeanMethods {
     private static class InitializerMethodListBuilder<T> implements MethodListBuilder<T, List<Set<MethodInjectionPoint<?, ?>>>> {
 
         private final List<Set<MethodInjectionPoint<?, ?>>> result = new ArrayList<Set<MethodInjectionPoint<?, ?>>>();
-        private Set<MethodInjectionPoint<?, ?>> currentLevel = null;
+        private ImmutableSet.Builder<MethodInjectionPoint<?, ?>> currentLevel = null;
 
         private final EnhancedAnnotatedType<T> type;
         private final BeanManagerImpl manager;
@@ -227,7 +227,7 @@ public class BeanMethods {
 
         @Override
         public void levelStart(Class<? super T> clazz) {
-            currentLevel = new ArraySet<MethodInjectionPoint<?, ?>>();
+            currentLevel = ImmutableSet.builder();
         }
 
         @Override
@@ -244,14 +244,14 @@ public class BeanMethods {
                 }
                 if (!method.isStatic()) {
                     currentLevel.add(InjectionPointFactory.instance().createMethodInjectionPoint(method, declaringBean,
-                            type.getJavaClass(), false, manager));
+                            type.getJavaClass(), null, manager));
                 }
             }
         }
 
         @Override
         public void levelFinish() {
-            result.add(currentLevel);
+            result.add(currentLevel.build());
         }
 
         @Override
