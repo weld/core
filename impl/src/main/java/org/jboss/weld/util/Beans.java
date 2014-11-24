@@ -75,8 +75,8 @@ import org.jboss.weld.bootstrap.enablement.ModuleEnablement;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.ejb.spi.BusinessInterfaceDescriptor;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
-import org.jboss.weld.injection.FieldInjectionPoint;
 import org.jboss.weld.injection.MethodInjectionPoint;
+import org.jboss.weld.injection.FieldInjectionPoint;
 import org.jboss.weld.injection.ResourceInjection;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
 import org.jboss.weld.interceptor.util.InterceptionTypeRegistry;
@@ -370,7 +370,7 @@ public class Beans {
     public static <T> void callInitializers(T instance, CreationalContext<T> creationalContext, BeanManagerImpl manager,
             Iterable<? extends MethodInjectionPoint<?, ?>> initializerMethods) {
         for (MethodInjectionPoint<?, ?> initializer : initializerMethods) {
-            initializer.invoke(instance, manager, creationalContext, CreationException.class);
+            initializer.invoke(instance, null, manager, creationalContext, CreationException.class);
         }
     }
 

@@ -228,7 +228,7 @@ public class BeanMethods {
                 }
                 if (!method.isStatic()) {
                     currentLevel.add(InjectionPointFactory.instance().createMethodInjectionPoint(method, declaringBean,
-                            type.getJavaClass(), false, manager));
+                            type.getJavaClass(), null, manager));
                 }
             }
         }
