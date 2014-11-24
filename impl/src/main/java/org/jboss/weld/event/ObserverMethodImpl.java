@@ -47,8 +47,8 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.context.CreationalContextImpl;
-import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.InjectionPointFactory;
+import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.ParameterInjectionPoint;
 import org.jboss.weld.injection.attributes.SpecialParameterInjectionPoint;
 import org.jboss.weld.injection.attributes.WeldInjectionPointAttributes;
@@ -86,6 +86,9 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
     private final Set<WeldInjectionPointAttributes<?, ?>> injectionPoints;
     private final Set<WeldInjectionPointAttributes<?, ?>> newInjectionPoints;
 
+    // this turned out to be noticeable faster than observerMethod.getAnnotated().isStatic()
+    private final boolean isStatic;
+
     /**
      * Creates an Observer which describes and encapsulates an observer method (8.5).
      *
@@ -119,6 +122,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
         }
         this.injectionPoints = immutableGuavaSet(injectionPoints);
         this.newInjectionPoints = immutableGuavaSet(newInjectionPoints);
+        this.isStatic = observer.isStatic();
     }
 
     protected static String createId(final EnhancedAnnotatedMethod<?, ?> observer, final RIBean<?> declaringBean) {
@@ -243,13 +247,13 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
      * @param event The event to notify observer with
      */
     protected void sendEvent(final T event) {
-        if (observerMethod.getAnnotated().isStatic()) {
-            sendEvent(event, null, beanManager.createCreationalContext(declaringBean));
+        CreationalContext<X> creationalContext = null;
+        if (!observerMethod.getInjectionPoints().isEmpty()) {
+            creationalContext = beanManager.createCreationalContext(declaringBean);
+        }
+        if (isStatic) {
+            sendEvent(event, null, creationalContext);
         } else {
-            CreationalContext<X> creationalContext = null;
-            if (!observerMethod.getInjectionPoints().isEmpty()) {
-                creationalContext = beanManager.createCreationalContext(declaringBean);
-            }
             Object receiver = getReceiverIfExists(creationalContext);
             if (receiver == null && creationalContext == null && reception != Reception.IF_EXISTS) {
                 creationalContext = beanManager.createCreationalContext(declaringBean);
