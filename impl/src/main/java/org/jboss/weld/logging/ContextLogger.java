@@ -166,4 +166,8 @@ public interface ContextLogger extends WeldLogger {
     @Message(id = 225, value = "Bean store leak was detected during {0} association: {1}", format = Format.MESSAGE_FORMAT)
     void beanStoreLeakDuringAssociation(Object context, Object info);
 
+    @LogMessage(level = Level.WARN)
+    @Message(id = 226, value = "Error caught in {0} when calling attach on {1} - destroying context. Caused by: {2}", format = Format.MESSAGE_FORMAT)
+    void destroyingContextAfterBeanStoreAttachError(Object context, Object beanStore, String cause);
+
 }
