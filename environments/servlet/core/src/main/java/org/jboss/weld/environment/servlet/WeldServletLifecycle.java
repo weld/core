@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.environment.servlet;
 
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
@@ -24,6 +26,7 @@ import javax.el.ELContextListener;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 import javax.servlet.ServletContext;
+import javax.servlet.ServletRegistration.Dynamic;
 import javax.servlet.jsp.JspApplicationContext;
 import javax.servlet.jsp.JspFactory;
 
@@ -50,11 +53,19 @@ import org.jboss.weld.environment.servlet.services.ServletResourceInjectionServi
 import org.jboss.weld.environment.servlet.util.Reflections;
 import org.jboss.weld.environment.servlet.util.ServiceLoader;
 import org.jboss.weld.environment.tomcat.TomcatContainer;
+import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.injection.spi.ResourceInjectionServices;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.api.WeldManager;
+import org.jboss.weld.metadata.MetadataImpl;
+import org.jboss.weld.probe.Probe;
+import org.jboss.weld.probe.ProbeExtension;
+import org.jboss.weld.probe.ProbeServlet;
 import org.jboss.weld.resources.spi.ClassFileServices;
 import org.jboss.weld.resources.spi.ResourceLoader;
+import org.jboss.weld.security.NewInstanceAction;
 import org.jboss.weld.servlet.api.ServletListener;
+import org.jboss.weld.util.collections.ImmutableSet;
 
 /**
  *
@@ -80,6 +91,9 @@ public class WeldServletLifecycle {
     private static final String EXPRESSION_FACTORY_NAME = "org.jboss.weld.el.ExpressionFactory";
 
     private static final String CONTEXT_PARAM_ARCHIVE_ISOLATION = WeldServletLifecycle.class.getPackage().getName() + ".archive.isolation";
+
+    // TODO this context param is used to activate probe
+    private static final String CONTEXT_PARAM_DEBUG = WeldServletLifecycle.class.getPackage().getName() + ".debug";
 
     private final transient CDI11Bootstrap bootstrap;
 
@@ -110,6 +124,13 @@ public class WeldServletLifecycle {
      */
     boolean initialize(ServletContext context) {
 
+        // TODO create a new probe if required
+        Probe probe = null;
+        if(Boolean.valueOf(context.getInitParameter(CONTEXT_PARAM_DEBUG))) {
+            WeldServletLogger.LOG.debugModeEnabled();
+            probe = new Probe();
+        }
+
         WeldManager manager = (WeldManager) context.getAttribute(BEAN_MANAGER_ATTRIBUTE_NAME);
         if (manager != null) {
             isBootstrapNeeded = false;
@@ -117,7 +138,7 @@ public class WeldServletLifecycle {
 
         if (isBootstrapNeeded) {
 
-            CDI11Deployment deployment = createDeployment(context, bootstrap);
+            CDI11Deployment deployment = createDeployment(context, bootstrap, probe);
 
             if (deployment.getBeanDeploymentArchives().isEmpty()) {
                 // Skip initialization - there is no bean archive in the deployment
@@ -135,6 +156,12 @@ public class WeldServletLifecycle {
                 // Support GAE
                 WeldServletLogger.LOG.resourceInjectionNotAvailable();
             }
+
+            // TODO register probe service
+            if(probe != null) {
+                deployment.getServices().add(Probe.class, probe);
+            }
+
             String id = context.getInitParameter(CONTEXT_ID_KEY);
             if (id != null) {
                 bootstrap.startContainer(id, Environments.SERVLET, deployment);
@@ -183,6 +210,19 @@ public class WeldServletLifecycle {
 
         if (isBootstrapNeeded) {
             bootstrap.deployBeans().validateBeans().endInitialization();
+
+            // TODO init probe
+            if (probe != null) {
+                Dynamic registration = context.addServlet("Weld Probe Servlet", ProbeServlet.class);
+                registration.setLoadOnStartup(1);
+                registration.addMapping(ProbeServlet.DEFAULT_URL_PATTERN);
+                WeldManager unwrapped = manager.unwrap();
+                if (unwrapped instanceof BeanManagerImpl) {
+                    probe.intitialize((BeanManagerImpl) unwrapped);
+                } else {
+                    throw new IllegalStateException("Unsupported BeanManager implementation found");
+                }
+            }
         }
         return true;
     }
@@ -216,11 +256,25 @@ public class WeldServletLifecycle {
      * @param bootstrap the bootstrap
      * @return new servlet deployment
      */
-    protected CDI11Deployment createDeployment(ServletContext context, CDI11Bootstrap bootstrap) {
+    protected CDI11Deployment createDeployment(ServletContext context, CDI11Bootstrap bootstrap, Probe probe) {
 
         ResourceLoader resourceLoader = new WeldResourceLoader();
 
-        final Iterable<Metadata<Extension>> extensions = bootstrap.loadExtensions(WeldResourceLoader.getClassLoader());
+        final Iterable<Metadata<Extension>> extensions;
+        if (probe == null) {
+            extensions = bootstrap.loadExtensions(WeldResourceLoader.getClassLoader());
+        } else {
+            // TODO add probe extension
+            ProbeExtension probeExtension;
+            try {
+                probeExtension = AccessController.doPrivileged(NewInstanceAction.of(ProbeExtension.class));
+            } catch (PrivilegedActionException e) {
+                throw new WeldException(e);
+            }
+            extensions = ImmutableSet.<Metadata<Extension>> builder().add(new MetadataImpl<Extension>(probeExtension, "n/a"))
+                    .addAll(bootstrap.loadExtensions(WeldResourceLoader.getClassLoader())).build();
+        }
+
         final TypeDiscoveryConfiguration typeDiscoveryConfiguration = bootstrap.startExtensions(extensions);
 
         DiscoveryStrategy strategy = DiscoveryStrategyFactory.create(resourceLoader, bootstrap, typeDiscoveryConfiguration.getKnownBeanDefiningAnnotations());

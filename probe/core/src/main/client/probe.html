@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Weld Probe</title>
+${head}
+</head>
+<body>
+
+   <script type="text/x-handlebars">
+        <div id="logo">
+            <h1><img src="${contextPath}weld_logo_200x.png" alt="Weld logo" />&nbsp; <small>Probe</small></h1>
+        </div>
+        <ul class="nav nav-pills" role="tablist">
+            <li>{{#link-to 'deployment'}}Deployment{{/link-to}}</li>
+            <li>{{#link-to 'beanList'}}Beans{{/link-to}}</li>
+            <li>{{#link-to 'observerList'}}Observer methods{{/link-to}}</li>
+            <li>{{#link-to 'contexts'}}Contexts{{/link-to}}</li>
+            <li>{{#link-to 'invocationList'}}Invocation trees{{/link-to}}</li>
+        </ul>
+        {{outlet}}
+        <footer>
+            Build ${project.version}
+        </footer>
+    </script>
+
+    <script
+        type="text/x-handlebars"
+        data-template-name="deployment">
+
+        <h2>Deployment</h2>
+
+        <h3>Bean Archives</h3>
+
+        <table class="table table-bordered table-striped">
+            <col width="6%">
+            <col width="47%">
+            <col width="47%">
+            <tr>
+                <th></th>
+                <th>Identifier</th>
+                <th>Bean Discovery Mode</th>
+            </tr>
+            {{#each bdas}}
+            <tr>
+                <td>{{increment _view.contentIndex}}</td>
+                <td>
+                    {{#link-to 'beanList' (query-params bda=id)}}{{bdaId}}{{/link-to}}
+                </td>
+                <td>{{beanDiscoveryMode}}</td>
+            </tr>
+            {{/each}}
+        </table>
+
+        <h3>Configuration</h3>
+
+        <table class="table table-bordered table-striped">
+            <col width="6%">
+            <col width="47%">
+            <col width="47%">
+            <tr>
+                <th></th>
+                <th>Key</th>
+                <th>Value</th>
+            </tr>
+            {{#each configuration}}
+            <tr>
+                <td>{{increment _view.contentIndex}}</td>
+                <td>{{name}}</td>
+                <td>{{value}}</td>
+            </tr>
+            {{/each}}
+        </table>
+
+    </script>
+
+   <script
+        type="text/x-handlebars"
+        data-template-name="beanList">
+
+        <h2>Beans</h2>
+
+        {{#if bdaId}}
+        <p>Bean Deployment Archive: <strong>{{bdaId}}</strong> <button class="btn btn-default" type="button" {{action 'clearBda'}}>Unselect</button></p>
+        {{/if}}
+
+        <div class="btn-line">
+            &nbsp;<button {{action 'clearFilters'}} class="btn btn-default">Clear filters</button>
+            <div class="total pull-left">Total: {{total}}</div>
+            <ul class="pagination no-margin pull-left">
+            {{#each pages}}
+                <li class="{{unbound active}}">{{#link-to 'beanList' (query-params page=index)}}{{index}}{{/link-to}}</li>
+            {{/each}}
+            </ul>
+        </div>
+
+        <table class="table table-bordered table-striped">
+            <tr>
+                <th></th>
+                <th>Kind {{view 'select' content=beanKinds value=kind prompt="-- ANY --" class="form-control"}}</th>
+                <th>
+                    Scope
+                    <form {{action "filter" on="submit"}}>
+                        {{input value=scope class="form-control" placeholder="Contains"}}
+                    </form>
+                </th>
+                <th>
+                    Bean class
+                    <form {{action "filter" on="submit"}}>
+                        {{input value=beanClass class="form-control" placeholder="Contains"}}
+                    </form>
+                </th>
+                <th>
+                    Bean types (w/o java.lang.Object)
+                    <form {{action "filter" on="submit"}}>
+                        {{input value=beanType class="form-control" placeholder="Any contains"}}
+                    </form>
+                </th>
+                <th>
+                    Qualifiers (w/o javax.enterprise.inject.Any)
+                    <form {{action "filter" on="submit"}}>
+                        {{input value=qualifier class="form-control" placeholder="Any contains"}}
+                    </form>
+                </th>
+            </tr>
+            {{#each data}}
+            <tr>
+                <td>{{increment _view.contentIndex}}</td>
+                <td><span class="{{unbound kind}} boxed">{{unbound kind}}</span></td>
+                <td>{{unbound scope}}</td>
+                <td>
+                    {{#link-to 'beanDetail' id}}{{unbound beanClass}}{{/link-to}}
+                </td>
+                <td>
+                    {{eachItemOnNewLine types}}
+                </td>
+                <td>
+                    {{eachItemOnNewLine qualifiers}}
+                </td>
+            </tr>
+            {{/each}}
+        </table>
+
+    </script>
+
+    <script
+        type="text/x-handlebars"
+        data-template-name="beanDetail">
+
+        <h2>Bean detail</h2>
+
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <form class="form-horizontal">
+                    {{#if bdaIdName}}
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Bean Deployment Archive:</label>
+                         <div class="col-sm-10">
+                            <p class="form-control-static">{{#link-to 'beanList' (query-params bda=bdaId)}}{{bdaIdName}}{{/link-to}}</p>
+                        </div>
+                    </div>
+                    {{/if}}
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Kind:</label>
+                         <div class="col-sm-10">
+                            <p class="form-control-static"><span {{bind-attr class=kindClass}}>{{kind}}</span></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Bean Class:</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static">{{beanClass}}</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Scope:</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static">{{scope}}</p>
+                        </div>
+                    </div>
+                    {{#if name}}
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Name:</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static">{{name}}</p>
+                        </div>
+                    </div>
+                    {{/if}}
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Is Alternative:</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static">{{#if isAlternative}}true{{else}}false{{/if}}</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Bean Types:</label>
+                        <div class="col-sm-10">
+                            {{#each types}}
+                            <p class="form-control-static">{{this}}</p>
+                            {{/each}}
+                            <span class="help-block">class java.lang.Object</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Qualifiers:</label>
+                        <div class="col-sm-10">
+                            {{#each qualifiers}}
+                            <p class="form-control-static">{{this}}</p>
+                            {{/each}}
+                            <span class="help-block">javax.enterprise.inject.Any</span>
+                        </div>
+                    </div>
+                    {{#if stereotypes}}
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Stereotypes:</label>
+                        <div class="col-sm-10">
+                            {{#each stereotypes}}
+                            <p class="form-control-static">{{this}}</p>
+                            {{/each}}
+                        </div>
+                    </div>
+                    {{/if}}
+                    {{#if ejbName}}
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">EJB Name:</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static">{{ejbName}}</p>
+                        </div>
+                    </div>
+                    {{/if}}
+                    {{#if sessionBeanType}}
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Session Bean Type:</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static">{{sessionBeanType}}</p>
+                        </div>
+                    </div>
+                    {{/if}}
+                    {{#if declaringBean}}
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Declaring Bean:</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static"><span class="{{unbound declaringBean.kind}} boxed">{{declaringBean.kind}}</span> {{#link-to 'beanDetail' declaringBean.id}}{{declaringBean.beanClass}}{{/link-to}}</p>
+                        </div>
+                    </div>
+                    {{/if}}
+                    {{#if producerMethod}}
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Producer Method:</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static">{{producerMethod}}</p>
+                        </div>
+                    </div>
+                    {{/if}}
+                    {{#if producerField}}
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Producer Field:</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static">{{producerField}}</p>
+                        </div>
+                    </div>
+                    {{/if}}
+                    {{#if disposalMethod}}
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Disposal Method:</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static">{{disposalMethod}}</p>
+                        </div>
+                    </div>
+                    {{/if}}
+                    {{#if declaredObservers}}
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Declared Observers:</label>
+                        <div class="col-sm-10">
+                            {{#each declaredObservers}}
+                            <p class="form-control-static">
+                                <span class="{{unbound reception}} boxed">{{unbound reception}}</span>
+                                <span class="{{unbound txPhase}} boxed">{{unbound txPhase}}</span>
+                                {{#link-to 'observerDetail' id}}{{observedType}}{{/link-to}}
+                            </p>
+                            {{/each}}
+                        </div>
+                    </div>
+                    {{/if}}
+                    {{#if declaredProducers}}
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Declared Producers:</label>
+                        <div class="col-sm-10">
+                            {{#each declaredProducers}}
+                            <p class="form-control-static">
+                                <span class="{{unbound kind}} boxed">{{unbound kind}}</span>
+                                {{#link-to 'beanDetail' id}}
+                                    {{#if producerInfo}}{{unbound producerInfo}}{{else}}Unknown{{/if}}
+                                {{/link-to}}
+                            </p>
+                            {{/each}}
+                        </div>
+                    </div>
+                    {{/if}}
+                </form>
+            </div>
+        </div>
+
+        <h3>Dependency graph</h3>
+        <div>
+            <label>
+                {{input type="checkbox" name="transientDependencies" checked=transientDependencies}} Transient dependencies
+            </label>
+        </div>
+        <div>
+            <label>
+                {{input type="checkbox" name="transientDependents" checked=transientDependents}} Transient dependents
+            </label>
+        </div>
+        <div>
+            <label>
+                {{input type="checkbox" name="injectionPointInfo" checked=injectionPointInfo}} Injection point info
+            </label>
+        </div>
+
+        {{view Probe.DependencyGraph contentBinding="model" beanId=id routeRefresh=routeRefresh}}
+
+    </script>
+
+   <script
+        type="text/x-handlebars"
+        data-template-name="observerList">
+
+        <h2>Observer methods</h2>
+
+        <div class="btn-line">
+            &nbsp;<button {{action 'clearFilters'}} class="btn btn-default">Clear filters</button>
+            <div class="total pull-left">Total: {{total}}</div>
+            <ul class="pagination no-margin pull-left">
+            {{#each pages}}
+                <li class="{{unbound active}}">{{#link-to 'beanList' (query-params page=index)}}{{index}}{{/link-to}}</li>
+            {{/each}}
+            </ul>
+        </div>
+
+        <table class="table table-bordered table-striped">
+            <tr>
+                <th></th>
+                <th>
+                    Declaring Bean (or Bean Class if N/A)
+                    <form {{action "filter" on="submit"}}>
+                        {{input value=beanClass class="form-control" placeholder="Contains"}}
+                    </form>
+                </th>
+                <th>
+                    Observed Type
+                    <form {{action "filter" on="submit"}}>
+                        {{input value=observedType class="form-control" placeholder="Contains"}}
+                    </form>
+                </th>
+                <th>
+                    Qualifiers
+                    <form {{action "filter" on="submit"}}>
+                        {{input value=qualifier class="form-control" placeholder="Any contains"}}
+                    </form>
+                </th>
+                <th>Reception {{view 'select' content=receptions value=reception prompt="-- ANY --" class="form-control"}}</th>
+                <th>Transaction Phase {{view 'select' content=txPhases value=txPhase prompt="-- ANY --" class="form-control"}}</th>
+            </tr>
+            {{#each data}}
+            <tr>
+                <td>{{increment _view.contentIndex}}</td>
+                <td>
+                    {{#if declaringBean}}
+                        {{#link-to 'beanDetail' declaringBean.id}}{{unbound declaringBean.beanClass}}{{/link-to}}
+                    {{else}}
+                        {{unbound beanClass}}
+                    {{/if}}
+                </td>
+                <td>
+                    {{#link-to 'observerDetail' id}}{{unbound observedType}}{{/link-to}}
+                </td>
+                <td>
+                    {{eachItemOnNewLine qualifiers}}
+                </td>
+                <td>
+                    <span class="{{unbound reception}} boxed">{{unbound reception}}</span>
+                </td>
+                <td>
+                    <span class="{{unbound txPhase}} boxed">{{unbound txPhase}}</span>
+                </td>
+            </tr>
+            {{/each}}
+        </table>
+
+    </script>
+
+    <script
+        type="text/x-handlebars"
+        data-template-name="observerDetail">
+
+        <h2>Observer method detail</h2>
+
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <form class="form-horizontal">
+                    {{#if declaringBean}}
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Declaring Bean:</label>
+                         <div class="col-sm-10">
+                            <p class="form-control-static"><span class="{{unbound declaringBean.kind}} boxed">{{unbound declaringBean.kind}}</span> {{#link-to 'beanDetail' declaringBean.id}}{{declaringBean.beanClass}}{{/link-to}}</p>
+                        </div>
+                    </div>
+                    {{else}}
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Bean Class:</label>
+                         <div class="col-sm-10">
+                            <p class="form-control-static">{{beanClass}}</p>
+                        </div>
+                    </div>
+                    {{/if}}
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Observed Type:</label>
+                         <div class="col-sm-10">
+                            <p class="form-control-static">{{observedType}}</p>
+                        </div>
+                    </div>
+                    {{#if qualifiers}}
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Qualifiers:</label>
+                        <div class="col-sm-10">
+                            {{#each qualifiers}}
+                            <p class="form-control-static">{{this}}</p>
+                            {{/each}}
+                            <span class="help-block">javax.enterprise.inject.Any</span>
+                        </div>
+                    </div>
+                    {{/if}}
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Reception:</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static"><span class="{{unbound reception}} boxed">{{unbound reception}}</span></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Transaction Phase:</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static"><span class="{{unbound txPhase}} boxed">{{unbound txPhase}}</span></p>
+                        </div>
+                    </div>
+                    {{#if annotatedMethod}}
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Annotated Method:</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static">{{annotatedMethod}}</p>
+                        </div>
+                    </div>
+                    {{/if}}
+                </form>
+            </div>
+        </div>
+
+    </script>
+
+    <script
+        type="text/x-handlebars"
+        data-template-name="contexts">
+
+        <h2>Contexts</h2>
+
+        <div class="btn-line">
+            <button {{action 'refreshContexts'}} class="btn btn-default">Refresh</button>
+        </div>
+
+        {{#each}}
+        <h3>{{unbound scope}}</h3>
+
+        <table class="table table-bordered table-striped">
+            <tr>
+                <th>Bean</th>
+                <th>Instance</th>
+            </tr>
+            {{#each instances}}
+            <tr>
+                <td>{{#link-to 'beanDetail' id}}{{unbound beanClass}}{{/link-to}}</td>
+                <td>{{#link-to 'contextInstance' id}}{{unbound asString}}{{/link-to}}</td>
+            <tr>
+            {{/each}}
+        </table>
+
+      {{/each}}
+
+    </script>
+
+    <script
+      type="text/x-handlebars"
+      data-template-name="contextInstance">
+
+      <h2>Context instance</h2>
+
+      <div class="panel panel-default">
+        <div class="panel-body">
+            <form class="form-horizontal">
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Bean Class:</label>
+                    <div class="col-sm-10">
+                        <p class="form-control-static">{{#link-to 'beanDetail' id}}{{unbound beanClass}}{{/link-to}}</p>
+                    </div>
+            </div>
+       </form>
+        </div>
+      </div>
+
+      <h3>Properties</h3>
+
+      <div class="panel panel-default">
+        <div class="panel-body">
+            <form class="form-horizontal">
+                {{#each properties}}
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">{{name}}:</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static">{{value}}</p>
+                        </div>
+                </div>
+                {{/each}}
+            </form>
+        </div>
+      </div>
+
+    </script>
+
+    <script
+      type="text/x-handlebars"
+      data-template-name="invocationList">
+      <h2>Invocation Trees - Entry Points</h2>
+
+      <div class="btn-line">
+            &nbsp;<button {{action 'refreshData'}} class="btn btn-default">Refresh</button>
+            <button {{action 'clearFilters'}} class="btn btn-default">Clear filters</button>
+            <button {{action 'clearInvocations'}} class="btn btn-default">Clear data</button>
+            <div class="total pull-left">Total: {{total}}</div>
+            <ul class="pagination no-margin pull-left">
+            {{#each pages}}
+                <li class="{{unbound active}}">{{#link-to 'invocationList' (query-params page=index)}}{{index}}{{/link-to}}</li>
+            {{/each}}
+            </ul>
+        </div>
+
+       <table class="table table-bordered table-striped">
+            <tr>
+                <th></th>
+                <th>Intercepted Bean
+                    <form {{action "filter" on="submit"}}>
+                        {{input value=beanClass class="form-control" placeholder="Contains"}}
+                    </form>
+                </th>
+                <th>Method Name
+                    <form {{action "filter" on="submit"}}>
+                        {{input value=methodName class="form-control" placeholder="Contains"}}
+                    </form>
+                </th>
+                <th>Start</th>
+                <th>Time</th>
+            </tr>
+            {{#each data}}
+            <tr>
+                <td>{{increment _view.contentIndex}}</td>
+                <td>
+                    {{#link-to 'beanDetail' interceptedBean.id}}{{interceptedBean.beanClass}}{{/link-to}}
+                </td>
+                <td>
+                    {{#link-to 'invocationDetail' id}}{{unbound methodName}}{{/link-to}}
+                </td>
+                <td>
+                    {{unbound start}}
+                </td>
+                <td>
+                    {{unbound time}} ms
+                </td>
+            </tr>
+            {{/each}}
+    </table>
+
+   </script>
+
+   <script
+      type="text/x-handlebars"
+      data-template-name="invocationDetail">
+      <h2>Invocation Tree</h2>
+
+      <div class="btn-line">
+        Start: <strong>{{transformed.children.0.startFull}}</strong>
+      </div>
+
+      {{view Probe.InvocationTree contentBinding="model"}}
+
+    </script>
+
+   ${scripts}
+
+</body>
+</html>

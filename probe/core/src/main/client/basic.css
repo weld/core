@@ -1,0 +1,117 @@
+body {
+  margin: 25px;
+  font-family: sans;
+}
+
+h1 small {
+  font-weight: bold;
+}
+
+h1, h2, h3, h4 {
+  font-family: sans;
+}
+
+footer {
+  margin-top: 2em;
+  border-top: 1px solid silver;
+  color: silver;
+}
+
+#logo {
+  margin-bottom: 2em;
+}
+
+.node text {
+  font-weight: bold;
+}
+
+.injection-point-info {
+  cursor: pointer;
+}
+
+.circle-root {
+  fill: red;
+}
+
+.cirle-producer {
+  fill: lightsteelblue;
+}
+
+.circle-observer {
+  fill: orange;
+}
+
+.circle-regular {
+  fill: steelblue;
+}
+
+.stroke-producer {
+  stroke: lightsteelblue;
+}
+
+.stroke-observer {
+  fill: orange;
+  stroke: orange;
+}
+
+.link {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 2px;
+}
+
+svg {
+  width: 100%;
+  padding: 0px;
+  margin: 0px;
+  display: block;
+  border: 1px solid #dddddd;
+}
+
+.btn-line {
+  margin-bottom: 15px;
+}
+
+.no-margin {
+  margin: 0;
+}
+
+/* Override the bootstrap defaults */
+div.form-group {
+  margin-bottom: 0px;
+}
+
+.INTERCEPTOR, .DECORATOR {
+  background-color: Tomato;
+}
+
+.EXTENSION {
+  background-color: CornflowerBlue;
+}
+
+.SYNTHETIC {
+  background-color: LightGray;
+}
+
+.MANAGED, .SESSION, .PRODUCER_METHOD, .PRODUCER_FIELD, .RESOURCE {
+  background-color: LightGreen;
+}
+
+.ALWAYS, .IF.EXISTS {
+  background-color: #ddc;
+}
+
+.IN_PROGRESS, .BEFORE_COMPLETION, .AFTER_COMPLETION, .AFTER_SUCCESS,
+  .AFTER_FAILURE {
+  background-color: #ddd;
+}
+
+.boxed {
+  font-weight: bold;
+  padding: 7px;
+  border-radius: 4px 4px 4px 4px;
+}
+
+div.total {
+  padding: 6px 12px;
+}

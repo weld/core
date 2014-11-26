@@ -257,8 +257,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     private transient Set<Bean<?>> beanSet = Collections.synchronizedSet(new HashSet<Bean<?>>());
 
     /*
-     * Data structure representing all managers *accessible* from this bean
-     * deployment archive
+     * Data structure representing all managers from this deployment
      */
     private final transient Set<BeanManagerImpl> managers;
 
