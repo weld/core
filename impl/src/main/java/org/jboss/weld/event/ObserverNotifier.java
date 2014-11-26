@@ -96,6 +96,11 @@ public class ObserverNotifier {
         return this.<T>resolveObserverMethods(buildEventResolvable(eventType, qualifiers));
     }
 
+    public <T> ResolvedObservers<T> resolveObservers(Type eventType, Set<Annotation> qualifiers) {
+        checkEventObjectType(eventType);
+        return ResolvedObservers.of(resolveObserverMethods(buildEventResolvable(eventType, qualifiers)));
+    }
+
     public void fireEvent(Object event, Annotation... qualifiers) {
         fireEvent(event.getClass(), event, qualifiers);
     }
