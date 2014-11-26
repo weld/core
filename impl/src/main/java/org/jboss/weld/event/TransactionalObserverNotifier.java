@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.event;
 
+import java.util.Set;
+
 import javax.enterprise.event.TransactionPhase;
 import javax.enterprise.inject.spi.ObserverMethod;
 
@@ -40,19 +42,6 @@ public class TransactionalObserverNotifier extends ObserverNotifier {
         this.transactionServices = services.get(TransactionServices.class);
     }
 
-    @Override
-    protected <T> void notifyObserver(final EventPacket<T> event, final ObserverMethod<? super T> observer) {
-        if (immediateDispatch(observer)) {
-            super.notifyObserver(event, observer);
-        } else {
-            deferNotification(event, observer);
-        }
-    }
-
-    private boolean immediateDispatch(ObserverMethod<?> observer) {
-        return TransactionPhase.IN_PROGRESS.equals(observer.getTransactionPhase()) || transactionServices == null || !transactionServices.isTransactionActive();
-    }
-
     /**
      * Defers an event for processing in a later phase of the current
      * transaction.
@@ -71,6 +60,21 @@ public class TransactionalObserverNotifier extends ObserverNotifier {
             transactionServices.registerSynchronization(new TransactionSynchronizedRunnable(deferredEvent, Status.SUCCESS));
         } else if (transactionPhase.equals(TransactionPhase.AFTER_FAILURE)) {
             transactionServices.registerSynchronization(new TransactionSynchronizedRunnable(deferredEvent, Status.FAILURE));
+        }
+    }
+
+    @Override
+    protected <T> void notifyTransactionObservers(Set<ObserverMethod<? super T>> observers, T event, EventPacket<T> metadata) {
+        if (observers.isEmpty()) {
+            return;
+        }
+        if (transactionServices == null || !transactionServices.isTransactionActive()) {
+            // Transaction is not active - no deferred notifications
+            notifySyncObservers(observers, event, metadata);
+        } else {
+            for (ObserverMethod<? super T> observer : observers) {
+                deferNotification(metadata, observer);
+            }
         }
     }
 }
