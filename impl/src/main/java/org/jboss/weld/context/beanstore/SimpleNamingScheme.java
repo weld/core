@@ -36,7 +36,7 @@ public class SimpleNamingScheme extends AbstractNamingScheme {
      */
     public SimpleNamingScheme(String prefix) {
         super("#");
-        if (prefix.indexOf(getDelimiter()) >= 0) {
+        if (prefix.contains(getDelimiter())) {
             throw ContextLogger.LOG.delimiterInPrefix(getDelimiter(), prefix);
         }
         this.prefix = prefix;
