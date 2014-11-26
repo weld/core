@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.event;
 
+import javax.enterprise.inject.spi.EventMetadata;
 import javax.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.weld.Container;
@@ -34,7 +35,8 @@ public class DeferredEventNotification<T> implements Runnable {
     // The observer
     protected final ObserverMethod<? super T> observer;
     // The event object
-    protected final EventPacket<T> eventPacket;
+    private final T event;
+    protected final EventMetadata metadata;
     private final CurrentEventMetadata currentEventMetadata;
     private final String contextId;
 
@@ -42,25 +44,27 @@ public class DeferredEventNotification<T> implements Runnable {
      * Creates a new deferred event notifier.
      *
      * @param observer The observer to be notified
-     * @param eventPacket    The event being fired
+     * @param metadata    The event being fired
      */
-    public DeferredEventNotification(String contextId, EventPacket<T> eventPacket, ObserverMethod<? super T> observer, CurrentEventMetadata currentEventMetadata) {
+    public DeferredEventNotification(String contextId, T event, EventMetadata metadata, ObserverMethod<? super T> observer,
+            CurrentEventMetadata currentEventMetadata) {
         this.contextId = contextId;
         this.observer = observer;
-        this.eventPacket = eventPacket;
+        this.event = event;
+        this.metadata = metadata;
         this.currentEventMetadata = currentEventMetadata;
     }
 
     public void run() {
         try {
-            EventLogger.LOG.asyncFire(eventPacket, observer);
+            EventLogger.LOG.asyncFire(metadata, observer);
             new RunInRequest(contextId) {
 
                 @Override
                 protected void execute() {
-                    currentEventMetadata.push(eventPacket);
+                    currentEventMetadata.push(metadata);
                     try {
-                        observer.notify(eventPacket.getPayload());
+                        observer.notify(event);
                     } finally {
                         currentEventMetadata.pop();
                     }
@@ -69,14 +73,14 @@ public class DeferredEventNotification<T> implements Runnable {
             }.run();
 
         } catch (Exception e) {
-            EventLogger.LOG.asyncObserverFailure(eventPacket);
+            EventLogger.LOG.asyncObserverFailure(metadata);
             EventLogger.LOG.catchingDebug(e);
         }
     }
 
     @Override
     public String toString() {
-        return "Deferred event [" + eventPacket.getPayload() + "] for [" + observer + "]";
+        return "Deferred event [" + event + "] for [" + observer + "]";
     }
 
     private abstract static class RunInRequest {
