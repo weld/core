@@ -42,32 +42,6 @@ public class TransactionalObserverNotifier extends ObserverNotifier {
         this.transactionServices = services.get(TransactionServices.class);
     }
 
-    @Override
-    public <T> void notifyObservers(EventPacket<T> eventPacket, List<ObserverMethod<? super T>> observers) {
-
-        if(transactionServices == null || !transactionServices.isTransactionActive()) {
-            // Transaction is not active - no deferred notifications
-            super.notifyObservers(eventPacket, observers);
-        } else {
-            List<DeferredEventNotification<?>> notifications = new ArrayList<DeferredEventNotification<?>>();
-            currentEventMetadata.push(eventPacket);
-            try {
-                for (ObserverMethod<? super T> observer : observers) {
-                    if(TransactionPhase.IN_PROGRESS.equals(observer.getTransactionPhase())) {
-                        super.notifyObserver(eventPacket, observer);
-                    } else {
-                        deferNotification(eventPacket, observer, notifications);
-                    }
-                }
-            } finally {
-                currentEventMetadata.pop();
-            }
-            if (!notifications.isEmpty()) {
-                transactionServices.registerSynchronization(new TransactionNotificationSynchronization(notifications));
-            }
-        }
-    }
-
     /**
      * Defers an event for processing in a later phase of the current
      * transaction.
@@ -79,5 +53,22 @@ public class TransactionalObserverNotifier extends ObserverNotifier {
         boolean before = transactionPhase.equals(TransactionPhase.BEFORE_COMPLETION);
         Status status = Status.valueOf(transactionPhase);
         notifications.add(new DeferredEventNotification<T>(contextId, packet, observer, currentEventMetadata, status, before));
+    }
+
+    @Override
+    protected <T> void notifyTransactionObservers(List<ObserverMethod<? super T>> observers, T event, EventPacket<T> metadata) {
+        if (observers.isEmpty()) {
+            return;
+        }
+        if (transactionServices == null || !transactionServices.isTransactionActive()) {
+            // Transaction is not active - no deferred notifications
+            notifySyncObservers(observers, event, metadata);
+        } else {
+            List<DeferredEventNotification<?>> notifications = new ArrayList<DeferredEventNotification<?>>();
+            for (ObserverMethod<? super T> observer : observers) {
+                deferNotification(metadata, observer, notifications);
+            }
+            transactionServices.registerSynchronization(new TransactionNotificationSynchronization(notifications));
+        }
     }
 }
