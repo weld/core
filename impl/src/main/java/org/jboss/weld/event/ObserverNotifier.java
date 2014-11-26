@@ -103,34 +103,17 @@ public class ObserverNotifier {
     public void fireEvent(Type eventType, Object event, Annotation... qualifiers) {
         checkEventObjectType(eventType);
         // we use the array of qualifiers for resolution so that we can catch duplicate qualifiers
-        notifyObservers(event, resolveObserverMethods(buildEventResolvable(eventType, qualifiers)));
+        notify(resolveObserverMethods(buildEventResolvable(eventType, qualifiers)), event, null);
     }
 
     public void fireEvent(Object event, Resolvable resolvable) {
         checkEventObjectType(event);
-        notifyObservers(event, resolveObserverMethods(resolvable));
+        notify(resolveObserverMethods(resolvable), event, null);
     }
 
     public <T> void fireEvent(Resolvable resolvable, EventPacket<T> packet) {
         checkEventObjectType(packet.getType());
-        notifyObservers(packet, this.<T>resolveObserverMethods(resolvable));
-    }
-
-    public <T> void notifyObservers(final EventPacket<T> eventPacket, final List<ObserverMethod<? super T>> observers) {
-        currentEventMetadata.push(eventPacket);
-        try {
-            for (ObserverMethod<? super T> observer : observers) {
-                notifyObserver(eventPacket, observer);
-            }
-        } finally {
-            currentEventMetadata.pop();
-        }
-    }
-
-    private <T> void notifyObservers(final T event, final List<ObserverMethod<? super T>> observers) {
-        for (ObserverMethod<? super T> observer : observers) {
-            notifyObserver(event, observer);
-        }
+        notify(this.<T>resolveObserverMethods(resolvable), packet.getPayload(), packet);
     }
 
     public Resolvable buildEventResolvable(Type eventType, Set<Annotation> qualifiers) {
@@ -163,14 +146,6 @@ public class ObserverNotifier {
         if (eventTypeCheckCache != null) {
             eventTypeCheckCache.clear();
         }
-    }
-
-    protected <T> void notifyObserver(final EventPacket<T> eventPacket, final ObserverMethod<? super T> observer) {
-        notifyObserver(eventPacket.getPayload(), observer);
-    }
-
-    protected <T> void notifyObserver(final T event, final ObserverMethod<? super T> observer) {
-        observer.notify(event);
     }
 
     public void checkEventObjectType(Object event) {
@@ -211,5 +186,37 @@ public class ObserverNotifier {
             }
             return NO_EXCEPTION_MARKER;
         }
+    }
+
+    public <T> void notify(List<ObserverMethod<? super T>> observers, T event, EventPacket<T> metadata) {
+        notify(ResolvedObservers.of(observers), event, metadata);
+    }
+
+    public <T> void notify(ResolvedObservers<T> observers, T event, EventPacket<T> metadata) {
+        // TODO we obviously need to move filtering to the resolution time
+        notifySyncObservers(observers.getImmediateObservers(), event, metadata);
+        notifyTransactionObservers(observers.getTransactionObservers(), event, metadata);
+    }
+
+    protected <T> void notifySyncObservers(List<ObserverMethod<? super T>> observers, T event, EventPacket<T> metadata) {
+        if (observers.isEmpty()) {
+            return;
+        }
+        if (metadata != null) {
+            currentEventMetadata.push(metadata);
+        }
+        try {
+            for (ObserverMethod<? super T> observer : observers) {
+                observer.notify(event); // TODO wrap with ObserverException
+            }
+        } finally {
+            if (metadata != null) {
+                currentEventMetadata.pop();
+            }
+        }
+    }
+
+    protected <T> void notifyTransactionObservers(List<ObserverMethod<? super T>> observers, T event, EventPacket<T> metadata) {
+        notifySyncObservers(observers, event, metadata); // no transaction support
     }
 }
