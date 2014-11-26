@@ -81,7 +81,7 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
         CachedObservers observers = getObservers(event);
 
         EventPacket<T> packet = EventPacket.of(event, observers.type, getQualifiers(), getInjectionPoint());
-        getBeanManager().getGlobalStrictObserverNotifier().notifyObservers(packet, observers.methods);
+        getBeanManager().getGlobalStrictObserverNotifier().notify(observers.methods, event, packet);
     }
 
     private CachedObservers getObservers(T event) {
