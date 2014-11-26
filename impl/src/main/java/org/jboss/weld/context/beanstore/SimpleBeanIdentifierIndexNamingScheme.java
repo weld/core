@@ -35,7 +35,7 @@ public class SimpleBeanIdentifierIndexNamingScheme extends BeanIdentifierIndexNa
      */
     public SimpleBeanIdentifierIndexNamingScheme(String prefix, BeanIdentifierIndex index) {
         super("#", index);
-        if (prefix.indexOf(getDelimiter()) >= 0) {
+        if (prefix.contains(getDelimiter())) {
             throw ContextLogger.LOG.delimiterInPrefix(getDelimiter(), prefix);
         }
         this.prefix = prefix;
