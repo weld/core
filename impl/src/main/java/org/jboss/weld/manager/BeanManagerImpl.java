@@ -38,6 +38,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import javax.el.ELResolver;
 import javax.el.ExpressionFactory;
@@ -383,10 +384,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         return new Iterable<T>() {
             @Override
             public Iterator<T> iterator() {
-                Set<Iterable<T>> result = new HashSet<Iterable<T>>();
-                for (BeanManagerImpl manager : managers) {
-                    result.add(transform.transform(manager));
-                }
+                Set<Iterable<T>> result = managers.stream().map(transform::transform).collect(Collectors.toSet());
                 return Iterators.concat(Iterators.transform(result.iterator(), Iterable::iterator));
             }
         };

@@ -19,6 +19,7 @@ package org.jboss.weld.util;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
@@ -50,9 +51,7 @@ public class InjectionPoints {
 
     public static <T extends WeldInjectionPointAttributes<?, ?>> Set<T> flattenInjectionPoints(List<? extends Set<T>> fieldInjectionPoints) {
         Set<T> injectionPoints = new HashSet<T>();
-        for (Set<T> i : fieldInjectionPoints) {
-            injectionPoints.addAll(i);
-        }
+        fieldInjectionPoints.forEach(injectionPoints::addAll);
         return injectionPoints;
     }
 
@@ -60,9 +59,7 @@ public class InjectionPoints {
         Set<ParameterInjectionPoint<?, ?>> injectionPoints = new HashSet<ParameterInjectionPoint<?, ?>>();
         for (Set<MethodInjectionPoint<?, ?>> i : methodInjectionPoints) {
             for (MethodInjectionPoint<?, ?> method : i) {
-                for (ParameterInjectionPoint<?, ?> parameter : method.getParameterInjectionPoints()) {
-                    injectionPoints.add(parameter);
-                }
+                injectionPoints.addAll(method.getParameterInjectionPoints().stream().collect(Collectors.toList()));
             }
         }
         return injectionPoints;

@@ -52,9 +52,7 @@ public class DestroyingDependentInstanceTest {
         for (int i = 0; i < 10; i++) {
             createdComponents.add(instance.get());
         }
-        for (Component component : createdComponents) {
-            instance.destroy(component);
-        }
+        createdComponents.forEach(instance::destroy);
         assertEquals(createdComponents, Component.getDestroyedComponents());
     }
 

@@ -20,6 +20,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
@@ -63,10 +64,8 @@ public class CreationalContextTest {
                 add(Delta.class);
             }
         };
-        Set<Class<?>> actualDependentInstanceClasses = new HashSet<Class<?>>();
-        for (ContextualInstance<?> dependency : wcc.getDependentInstances()) {
-            actualDependentInstanceClasses.add(dependency.getInstance().getClass());
-        }
+        Set<Class<?>> actualDependentInstanceClasses = wcc.getDependentInstances().stream()
+                .map(dependency -> dependency.getInstance().getClass()).collect(Collectors.toSet());
         assertEquals(expectedDependentInstanceClasses, actualDependentInstanceClasses);
     }
 }

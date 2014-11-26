@@ -178,9 +178,7 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
      */
     private void finish() {
         try {
-            for (Bean<?> bean : additionalBeans) {
-                processBean(bean);
-            }
+            additionalBeans.forEach(this::processBean);
             for (ObserverMethod<?> observer : additionalObservers) {
                 BeanManagerImpl manager = getOrCreateBeanDeployment(observer.getBeanClass()).getBeanManager();
                 if (Observers.isObserverMethodEnabled(observer, manager)) {

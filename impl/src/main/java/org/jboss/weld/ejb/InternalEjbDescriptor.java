@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.jboss.weld.annotated.enhanced.MethodSignature;
 import org.jboss.weld.annotated.enhanced.jlr.MethodSignatureImpl;
@@ -60,9 +61,8 @@ public class InternalEjbDescriptor<T> extends ForwardingEjbDescriptor<T> {
         this.objectInterface = findObjectInterface(ejbDescriptor.getLocalBusinessInterfaces());
         removeMethodSignatures = new ArrayList<MethodSignature>();
         if (ejbDescriptor.getRemoveMethods() != null) {
-            for (Method method : ejbDescriptor.getRemoveMethods()) {
-                removeMethodSignatures.add(new MethodSignatureImpl(method));
-            }
+            removeMethodSignatures.addAll(ejbDescriptor.getRemoveMethods().stream().map(MethodSignatureImpl::new)
+                    .collect(Collectors.toList()));
         }
         this.localBusinessInterfaces = transformToClasses(getLocalBusinessInterfaces());
         this.remoteBusinessInterfaces = transformToClasses(getRemoteBusinessInterfaces());

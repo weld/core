@@ -79,9 +79,7 @@ public class CustomNonAlterableContext implements Context {
 
     public void deactivate() {
         active = false;
-        for (Contextual<?> contextual : storage.keySet()) {
-            destroy(contextual);
-        }
+        storage.keySet().forEach(this::destroy);
     }
 
     @SuppressWarnings("unchecked")

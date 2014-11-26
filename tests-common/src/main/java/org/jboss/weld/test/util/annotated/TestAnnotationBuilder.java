@@ -40,16 +40,12 @@ class TestAnnotationBuilder {
     }
 
     public TestAnnotationBuilder addAll(Set<Annotation> annotations) {
-        for (Annotation annotation : annotations) {
-            add(annotation);
-        }
+        annotations.forEach(this::add);
         return this;
     }
 
     public TestAnnotationBuilder addAll(TestAnnotationStore annotations) {
-        for (Annotation annotation : annotations.getAnnotations()) {
-            add(annotation);
-        }
+        annotations.getAnnotations().forEach(this::add);
         return this;
     }
 

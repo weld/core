@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.interceptor.InvocationContext;
 
@@ -145,12 +146,8 @@ public class WeldInvocationContext extends ForwardingInvocationContext implement
     @java.lang.SuppressWarnings("unchecked")
     public <T extends Annotation> Set<T> getInterceptorBindingsByType(Class<T> annotationType) {
         Preconditions.checkArgumentNotNull(annotationType, "annotationType");
-        Set<T> result = new HashSet<>();
-        for (Annotation interceptorBinding : interceptorBindings) {
-            if (interceptorBinding.annotationType().equals(annotationType)) {
-                result.add((T) interceptorBinding);
-            }
-        }
+        Set<T> result = interceptorBindings.stream().filter(interceptorBinding -> interceptorBinding.annotationType()
+                .equals(annotationType)).map(interceptorBinding -> (T) interceptorBinding).collect(Collectors.toSet());
         return result;
     }
 

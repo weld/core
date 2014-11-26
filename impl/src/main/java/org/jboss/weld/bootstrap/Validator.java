@@ -450,11 +450,9 @@ public class Validator implements Service {
                 logScopeOnInjectionPointWarning(ij, annotation);
             }
         } else {
-            for (Annotation annotation : annotated.getAnnotations()) {
-                if (hasScopeMetaAnnotation(annotation)) {
-                    logScopeOnInjectionPointWarning(ij, annotation);
-                }
-            }
+            annotated.getAnnotations().stream().filter(annotation -> hasScopeMetaAnnotation(annotation)).forEach(annotation -> {
+                logScopeOnInjectionPointWarning(ij, annotation);
+            });
         }
     }
 

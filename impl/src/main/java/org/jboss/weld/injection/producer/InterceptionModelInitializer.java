@@ -224,9 +224,7 @@ public class InterceptionModelInitializer<T> {
     private void initEjbInterceptors() {
         initClassDeclaredEjbInterceptors();
         initConstructorDeclaredEjbInterceptors();
-        for (AnnotatedMethod<?> method : businessMethods) {
-            initMethodDeclaredEjbInterceptors(method);
-        }
+        businessMethods.forEach(this::initMethodDeclaredEjbInterceptors);
     }
 
     /*

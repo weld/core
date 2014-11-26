@@ -114,9 +114,7 @@ abstract class AbstractMultimap<K, V, C extends Collection<V>> implements Multim
     @Override
     public Set<V> uniqueValues() {
         ImmutableSet.Builder<V> builder = ImmutableSet.builder();
-        for (C values : map.values()) {
-            builder.addAll(values);
-        }
+        map.values().forEach(builder::addAll);
         return builder.build();
     }
 

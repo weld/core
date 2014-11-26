@@ -115,9 +115,7 @@ public class Proxies {
 
         public static TypeInfo of(Set<? extends Type> types) {
             TypeInfo typeInfo = new TypeInfo();
-            for (Type type : types) {
-                typeInfo.add(type);
-            }
+            types.forEach(typeInfo::add);
             return typeInfo;
         }
 

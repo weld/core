@@ -59,24 +59,18 @@ public class ExampleTest {
         for (AnnotatedConstructor<Bean> ctor : type.getConstructors()) {
             assertNoAnnotations(ctor);
 
-            for (AnnotatedParameter<Bean> param : ctor.getParameters()) {
-                assertNoAnnotations(param);
-            }
+            ctor.getParameters().forEach(this::assertNoAnnotations);
         }
 
         Assert.assertEquals(1, type.getMethods().size());
         for (AnnotatedMethod<? super Bean> method : type.getMethods()) {
             assertNoAnnotations(method);
 
-            for (AnnotatedParameter<? super Bean> param : method.getParameters()) {
-                assertNoAnnotations(param);
-            }
+            method.getParameters().forEach(this::assertNoAnnotations);
         }
 
         Assert.assertEquals(1, type.getFields().size());
-        for (AnnotatedField<? super Bean> field : type.getFields()) {
-            assertNoAnnotations(field);
-        }
+        type.getFields().forEach(this::assertNoAnnotations);
     }
 
     private void assertNoAnnotations(Annotated annotated) {

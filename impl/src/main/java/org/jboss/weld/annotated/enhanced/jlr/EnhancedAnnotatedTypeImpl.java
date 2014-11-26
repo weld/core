@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Disposes;
@@ -75,10 +76,8 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
     private static final Set<Class<? extends Annotation>> MAPPED_METHOD_ANNOTATIONS;
 
     static {
-        Set<Class<? extends Annotation>> annotations = new HashSet<Class<? extends Annotation>>();
-        for (InterceptionType interceptionType : InterceptionTypeRegistry.getSupportedInterceptionTypes()) {
-            annotations.add(InterceptionTypeRegistry.getAnnotationClass(interceptionType));
-        }
+        Set<Class<? extends Annotation>> annotations = InterceptionTypeRegistry.getSupportedInterceptionTypes()
+                .stream().map(InterceptionTypeRegistry::getAnnotationClass).collect(Collectors.toSet());
         annotations.add(Inject.class);
         MAPPED_METHOD_ANNOTATIONS = ImmutableSet.copyOf(annotations);
     }
