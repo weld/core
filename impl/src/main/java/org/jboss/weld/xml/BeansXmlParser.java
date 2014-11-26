@@ -24,6 +24,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -156,12 +157,8 @@ public class BeansXmlParser {
 
     private void addTo(List<Metadata<String>> list, List<Metadata<String>> listToAdd, boolean removeDuplicates) {
         if (removeDuplicates) {
-            List<Metadata<String>> filteredListToAdd = new ArrayList<Metadata<String>>(listToAdd.size());
-            for (Metadata<String> metadata : listToAdd) {
-                if (!alreadyAdded(metadata, list)) {
-                    filteredListToAdd.add(metadata);
-                }
-            }
+            List<Metadata<String>> filteredListToAdd = new ArrayList<>(listToAdd.size());
+            filteredListToAdd.addAll(listToAdd.stream().filter(metadata -> !alreadyAdded(metadata, list)).collect(Collectors.toList()));
             listToAdd = filteredListToAdd;
         }
         list.addAll(listToAdd);

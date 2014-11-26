@@ -72,11 +72,9 @@ public abstract class AnnotationModel<T extends Annotation> {
      */
     protected void initValid(EnhancedAnnotation<T> annotatedAnnotation) {
         this.valid = false;
-        for (Class<? extends Annotation> annotationType : getMetaAnnotationTypes()) {
-            if (annotatedAnnotation.isAnnotationPresent(annotationType)) {
-                this.valid = true;
-            }
-        }
+        getMetaAnnotationTypes().stream().filter(annotationType -> annotatedAnnotation.isAnnotationPresent(annotationType)).forEach(annotationType -> {
+            this.valid = true;
+        });
     }
 
     protected void check(EnhancedAnnotation<T> annotatedAnnotation) {

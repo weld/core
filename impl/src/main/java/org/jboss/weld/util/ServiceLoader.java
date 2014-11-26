@@ -158,9 +158,7 @@ public class ServiceLoader<S> implements Iterable<Metadata<S>> {
     public void reload() {
         providers = new HashSet<Metadata<S>>();
 
-        for (URL serviceFile : loadServiceFiles()) {
-            loadServiceFile(serviceFile);
-        }
+        loadServiceFiles().forEach(this::loadServiceFile);
     }
 
     private List<URL> loadServiceFiles() {

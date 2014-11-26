@@ -56,10 +56,8 @@ public class TransactionNotificationSynchronization implements Synchronization {
      * @see javax.transaction.Synchronization#beforeCompletion()
      */
     public void beforeCompletion() {
-        for (DeferredEventNotification<?> notification : notifications) {
-            if (notification.isBefore()) {
-                notification.run();
-            }
-        }
+        notifications.stream().filter(notification -> notification.isBefore()).forEach(notification -> {
+            notification.run();
+        });
     }
 }

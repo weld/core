@@ -39,6 +39,7 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.enterprise.inject.spi.Bean;
 
@@ -251,10 +252,7 @@ public class ProxyFactory<T> {
 
     private static String createCompoundProxyName(String contextId, Bean<?> bean, TypeInfo typeInfo, StringBuilder name) {
         String className;
-        final List<String> interfaces = new ArrayList<String>();
-        for (Class<?> type : typeInfo.getInterfaces()) {
-            interfaces.add(type.getSimpleName());
-        }
+        final List<String> interfaces = typeInfo.getInterfaces().stream().map(Class::getSimpleName).collect(Collectors.toList());
         Collections.sort(interfaces);
         for (final String iface : interfaces) {
             name.append(iface);

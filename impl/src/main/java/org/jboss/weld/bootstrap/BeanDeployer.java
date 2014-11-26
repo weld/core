@@ -304,9 +304,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
     }
 
     public void createNewBeans() {
-        for (EnhancedAnnotatedType<?> clazz : getEnvironment().getNewManagedBeanClasses()) {
-            createNewManagedBean(clazz);
-        }
+        getEnvironment().getNewManagedBeanClasses().forEach(BeanDeployer.this::createNewManagedBean);
         for (Entry<InternalEjbDescriptor<?>, EnhancedAnnotatedType<?>> entry : getEnvironment().getNewSessionBeanDescriptorsFromInjectionPoint().entrySet()) {
             InternalEjbDescriptor<?> descriptor = entry.getKey();
             createNewSessionBean(descriptor, BeanAttributesFactory.forSessionBean(entry.getValue(), descriptor, getManager()), entry.getValue());

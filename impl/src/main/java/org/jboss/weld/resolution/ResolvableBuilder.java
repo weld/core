@@ -210,9 +210,7 @@ public class ResolvableBuilder {
     }
 
     public ResolvableBuilder addQualifiers(Collection<Annotation> qualifiers) {
-        for (Annotation qualifier : qualifiers) {
-            addQualifier(qualifier);
-        }
+        qualifiers.forEach(this::addQualifier);
         return this;
     }
 

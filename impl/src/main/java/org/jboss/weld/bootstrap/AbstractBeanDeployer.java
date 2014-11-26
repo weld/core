@@ -124,9 +124,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
     }
 
     public AbstractBeanDeployer<E> fireBeanEvents() {
-        for (RIBean<?> bean : getEnvironment().getBeans()) {
-            fireBeanEvents(bean);
-        }
+        getEnvironment().getBeans().forEach(this::fireBeanEvents);
         return this;
     }
 

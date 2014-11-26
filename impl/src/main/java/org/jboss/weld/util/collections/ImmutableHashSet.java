@@ -73,9 +73,7 @@ public final class ImmutableHashSet<T> extends ImmutableSet<T> implements Serial
         Preconditions.checkArgument(data.size() < MAX_SIZE, "Collection too large: " + data.size());
         this.size = data.size();
         this.table = new Object[tableSize(size)];
-        for (T element : data) {
-            storeElement(element);
-        }
+        data.forEach(this::storeElement);
         this.hashCode = data.hashCode();
     }
 

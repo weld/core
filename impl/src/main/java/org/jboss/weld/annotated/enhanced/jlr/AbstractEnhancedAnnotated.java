@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.AnnotatedType;
@@ -171,12 +172,8 @@ public abstract class AbstractEnhancedAnnotated<T, S> implements EnhancedAnnotat
     }
 
     public Set<Type> getInterfaceClosure() {
-        Set<Type> interfaces = new HashSet<Type>();
-        for (Type t : getTypeClosure()) {
-            if (Reflections.getRawType(t).isInterface()) {
-                interfaces.add(t);
-            }
-        }
+        Set<Type> interfaces = getTypeClosure().stream().
+                filter(t -> Reflections.getRawType(t).isInterface()).collect(Collectors.toSet());
         return WeldCollections.immutableSetView(interfaces);
     }
 

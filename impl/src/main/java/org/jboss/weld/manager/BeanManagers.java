@@ -19,6 +19,7 @@ package org.jboss.weld.manager;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.jboss.weld.manager.api.WeldManager;
 
@@ -33,9 +34,7 @@ public class BeanManagers {
     public static <T> Set<Iterable<T>> getDirectlyAccessibleComponents(BeanManagerImpl beanManager, Transform<T> transform) {
         Set<Iterable<T>> result = new HashSet<Iterable<T>>();
         result.add(transform.transform(beanManager));
-        for (BeanManagerImpl accessibleBeanManager : beanManager.getAccessibleManagers()) {
-            result.add(transform.transform(accessibleBeanManager));
-        }
+        result.addAll(beanManager.getAccessibleManagers().stream().map(transform::transform).collect(Collectors.toList()));
         return result;
     }
 }

@@ -8,6 +8,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
@@ -94,11 +95,8 @@ public class IsolationDisabledTest extends ArchiveIsolationOverrideTestBase {
     }
 
     private Set<Class<?>> getBeanClasses(BeanManager bm, Type beanType, Annotation... annotations) {
-        Set<Class<?>> classes = new HashSet<Class<?>>();
-        for(Bean<?> bean : bm.getBeans(beanType, annotations)) {
-            classes.add(bean.getBeanClass());
-        }
-        return classes;
+        return bm.getBeans(beanType, annotations).stream().map(Bean::getBeanClass).collect(Collectors.toSet());
+
     }
 
 }

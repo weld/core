@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
@@ -55,13 +56,11 @@ public abstract class MockAnnotatedCallable<X> extends MockAnnotatedMember<X> im
         int size = getDelegate().getParameters().size();
         List<AnnotatedParameter<X>> params = new ArrayList<AnnotatedParameter<X>>(size);
         if (size > 0) {
-            for (AnnotatedParameter<X> param : getDelegate().getParameters()) {
-                params.add(new MockAnnotatedParameter<X>(param, this));
-            }
+            params.addAll(getDelegate().getParameters().stream()
+                    .map(param -> new MockAnnotatedParameter<>(param, this)).collect(Collectors.toList()));
         }
         return params;
     }
-
     public List<AnnotatedParameter<X>> getParameters() {
         return parameters;
     }

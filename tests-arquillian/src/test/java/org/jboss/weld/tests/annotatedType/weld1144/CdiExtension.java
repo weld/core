@@ -5,6 +5,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AnnotatedConstructor;
@@ -22,13 +23,10 @@ public class CdiExtension implements Extension {
         final AnnotatedType<T> annotatedType = processAnnotatedType.getAnnotatedType();
 
         // Replace each field with (theoretically) an identical field
-        final Set<AnnotatedField<? super T>> processedFields = new HashSet<AnnotatedField<? super T>>();
+        final Set<AnnotatedField<? super T>> processedFields = annotatedType.getFields().stream().map(MyAnnotatedField::new).collect(Collectors.toSet());
 
-        for (final AnnotatedField<? super T> annotatedField : annotatedType.getFields()) {
-            // Use 'annotatedField' instead of 'new AnnotatedField' and the code works:
+        // Use 'annotatedField' instead of 'new AnnotatedField' and the code works:
 //            processedFields.add( annotatedField ); if ( true ) { continue; }
-            processedFields.add(new MyAnnotatedField<T>(annotatedField));
-        }
 
         processAnnotatedType.setAnnotatedType(new MyAnnotatedType<T>(processedFields, annotatedType));
     }

@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.jboss.weld.bean.builtin.BeanManagerProxy;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
@@ -53,11 +54,8 @@ public class SimpleCDI extends AbstractCDI<Object> {
             }
             Set<BeanManagerImpl> managers = new HashSet<BeanManagerImpl>();
             for (Map.Entry<BeanDeploymentArchive, BeanManagerImpl> entry : container.beanDeploymentArchives().entrySet()) {
-                for (String className : entry.getKey().getBeanClasses()) {
-                    if (className.equals(callerClassName)) {
-                        managers.add(entry.getValue());
-                    }
-                }
+                managers.addAll(entry.getKey().getBeanClasses().stream().filter(className -> className.equals(callerClassName))
+                        .map(className -> entry.getValue()).collect(Collectors.toList()));
             }
 
             if (managers.size() == 1) {

@@ -48,9 +48,7 @@ public class AnnotatedTypeEjbExtension implements Extension {
     public void overrideLatheAnnotations(@Observes ProcessAnnotatedType<Lathe> event) throws SecurityException, NoSuchMethodException {
         if (!event.getAnnotatedType().isAnnotationPresent(SmallLathe.class) && !event.getAnnotatedType().isAnnotationPresent(BigLathe.class)) {
             TestAnnotatedTypeBuilder<Lathe> builder = new TestAnnotatedTypeBuilder<Lathe>(Lathe.class);
-            for (Annotation a : event.getAnnotatedType().getAnnotations()) {
-                builder.addToClass(a);
-            }
+            event.getAnnotatedType().getAnnotations().forEach(builder::addToClass);
             Method method = Lathe.class.getMethod("doWork");
             builder.addToMethod(method, new AnnotationLiteral<ConveyorShaft>() {
             });

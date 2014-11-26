@@ -51,9 +51,7 @@ public class TargetClassInterceptorMetadata extends AbstractInterceptorMetadata 
 
     private Set<Method> initInterceptorMethods(Map<InterceptionType, List<Method>> interceptorMethodMap) {
         ImmutableSet.Builder<Method> builder = ImmutableSet.builder();
-        for (List<Method> methodList : interceptorMethodMap.values()) {
-            builder.addAll(methodList);
-        }
+        interceptorMethodMap.values().forEach(builder::addAll);
         return builder.build();
     }
 
