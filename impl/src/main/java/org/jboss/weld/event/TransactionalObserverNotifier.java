@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.enterprise.event.TransactionPhase;
+import javax.enterprise.inject.spi.EventMetadata;
 import javax.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
@@ -46,17 +47,17 @@ public class TransactionalObserverNotifier extends ObserverNotifier {
      * Defers an event for processing in a later phase of the current
      * transaction.
      *
-     * @param eventPacket The event object
+     * @param metadata The event object
      */
-    private <T> void deferNotification(final EventPacket<T> packet, final ObserverMethod<? super T> observer, final List<DeferredEventNotification<?>> notifications) {
+    private <T> void deferNotification(T event, final EventMetadata metadata, final ObserverMethod<? super T> observer, final List<DeferredEventNotification<?>> notifications) {
         TransactionPhase transactionPhase = observer.getTransactionPhase();
         boolean before = transactionPhase.equals(TransactionPhase.BEFORE_COMPLETION);
         Status status = Status.valueOf(transactionPhase);
-        notifications.add(new DeferredEventNotification<T>(contextId, packet, observer, currentEventMetadata, status, before));
+        notifications.add(new DeferredEventNotification<T>(contextId, event, metadata, observer, currentEventMetadata, status, before));
     }
 
     @Override
-    protected <T> void notifyTransactionObservers(List<ObserverMethod<? super T>> observers, T event, EventPacket<T> metadata) {
+    protected <T> void notifyTransactionObservers(List<ObserverMethod<? super T>> observers, T event, EventMetadata metadata) {
         if (observers.isEmpty()) {
             return;
         }
@@ -66,7 +67,7 @@ public class TransactionalObserverNotifier extends ObserverNotifier {
         } else {
             List<DeferredEventNotification<?>> notifications = new ArrayList<DeferredEventNotification<?>>();
             for (ObserverMethod<? super T> observer : observers) {
-                deferNotification(metadata, observer, notifications);
+                deferNotification(event, metadata, observer, notifications);
             }
             transactionServices.registerSynchronization(new TransactionNotificationSynchronization(notifications));
         }

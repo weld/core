@@ -21,11 +21,10 @@ import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.List;
 
 import javax.enterprise.event.Event;
+import javax.enterprise.inject.spi.EventMetadata;
 import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.ObserverMethod;
 import javax.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.bean.builtin.AbstractFacade;
@@ -80,22 +79,21 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
         Preconditions.checkArgumentNotNull(event, "event");
         CachedObservers observers = getObservers(event);
 
-        EventPacket<T> packet = EventPacket.of(event, observers.type, getQualifiers(), getInjectionPoint());
-        getBeanManager().getGlobalStrictObserverNotifier().notify(observers.methods, event, packet);
+        // we can do lenient here as the event type is checked within #getObservers()
+        getBeanManager().getGlobalLenientObserverNotifier().notify(observers.observers, event, observers.metadata);
     }
 
     private CachedObservers getObservers(T event) {
         CachedObservers cachedObservers = this.cachedObservers;
-        if (cachedObservers != null) {
-            if (cachedObservers.rawType.equals(event.getClass())) {
-                return cachedObservers;
-            }
+        if (cachedObservers != null && cachedObservers.rawType.equals(event.getClass())) {
+            return cachedObservers;
         }
         final Type eventType = getEventType(event);
-        final List<ObserverMethod<? super T>> observers = getBeanManager().getGlobalStrictObserverNotifier().resolveObserverMethods(eventType, getQualifiers());
-        cachedObservers = new CachedObservers(event.getClass(), eventType, observers);
-        this.cachedObservers = cachedObservers;
-        return cachedObservers;
+        // this performs type check
+        final ResolvedObservers<T> observers = getBeanManager().getGlobalStrictObserverNotifier().resolveObservers(eventType, getQualifiers());
+        final EventMetadata metadata = new EventMetadataImpl(eventType, getInjectionPoint(), getQualifiers());
+        cachedObservers = new CachedObservers(event.getClass(), observers, metadata);
+        return this.cachedObservers = cachedObservers;
     }
 
     @Override
@@ -169,13 +167,13 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
 
     private class CachedObservers {
         private final Class<?> rawType;
-        private final Type type;
-        private final List<ObserverMethod<? super T>> methods;
+        private final ResolvedObservers<T> observers;
+        private final EventMetadata metadata;
 
-        public CachedObservers(Class<?> rawType, Type type, List<ObserverMethod<? super T>> methods) {
+        private CachedObservers(Class<?> rawType, ResolvedObservers<T> observers, EventMetadata metadata) {
             this.rawType = rawType;
-            this.type = type;
-            this.methods = methods;
+            this.observers = observers;
+            this.metadata = metadata;
         }
     }
 }
