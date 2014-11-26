@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 
+import javax.enterprise.inject.spi.EventMetadata;
 import javax.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
@@ -193,17 +194,17 @@ public class ObserverNotifier {
         }
     }
 
-    public <T> void notify(List<ObserverMethod<? super T>> observers, T event, EventPacket<T> metadata) {
+    public <T> void notify(List<ObserverMethod<? super T>> observers, T event, EventMetadata metadata) {
         notify(ResolvedObservers.of(observers), event, metadata);
     }
 
-    public <T> void notify(ResolvedObservers<T> observers, T event, EventPacket<T> metadata) {
+    public <T> void notify(ResolvedObservers<T> observers, T event, EventMetadata metadata) {
         // TODO we obviously need to move filtering to the resolution time
         notifySyncObservers(observers.getImmediateObservers(), event, metadata);
         notifyTransactionObservers(observers.getTransactionObservers(), event, metadata);
     }
 
-    protected <T> void notifySyncObservers(List<ObserverMethod<? super T>> observers, T event, EventPacket<T> metadata) {
+    protected <T> void notifySyncObservers(List<ObserverMethod<? super T>> observers, T event, EventMetadata metadata) {
         if (observers.isEmpty()) {
             return;
         }
@@ -221,7 +222,7 @@ public class ObserverNotifier {
         }
     }
 
-    protected <T> void notifyTransactionObservers(List<ObserverMethod<? super T>> observers, T event, EventPacket<T> metadata) {
+    protected <T> void notifyTransactionObservers(List<ObserverMethod<? super T>> observers, T event, EventMetadata metadata) {
         notifySyncObservers(observers, event, metadata); // no transaction support
     }
 }

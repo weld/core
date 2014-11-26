@@ -23,6 +23,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
 import javax.enterprise.event.Event;
+import javax.enterprise.inject.spi.EventMetadata;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.util.TypeLiteral;
 
@@ -78,9 +79,8 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
         Preconditions.checkArgumentNotNull(event, "event");
         CachedObservers observers = getObservers(event);
 
-        EventPacket<T> packet = EventPacket.of(event, observers.type, getQualifiers(), getInjectionPoint());
         // we can do lenient here as the event type is checked within #getObservers()
-        getBeanManager().getGlobalLenientObserverNotifier().notify(observers.observers, event, packet);
+        getBeanManager().getGlobalLenientObserverNotifier().notify(observers.observers, event, observers.metadata);
     }
 
     private CachedObservers getObservers(T event) {
@@ -91,7 +91,8 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
         final Type eventType = getEventType(event);
         // this performs type check
         final ResolvedObservers<T> observers = getBeanManager().getGlobalStrictObserverNotifier().resolveObservers(eventType, getQualifiers());
-        cachedObservers = new CachedObservers(event.getClass(), eventType, observers);
+        final EventMetadata metadata = new EventMetadataImpl(eventType, getInjectionPoint(), getQualifiers());
+        cachedObservers = new CachedObservers(event.getClass(), observers, metadata);
         return this.cachedObservers = cachedObservers;
     }
 
@@ -166,13 +167,13 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
 
     private class CachedObservers {
         private final Class<?> rawType;
-        private final Type type;
         private final ResolvedObservers<T> observers;
+        private final EventMetadata metadata;
 
-        public CachedObservers(Class<?> rawType, Type type, ResolvedObservers<T> observers) {
+        private CachedObservers(Class<?> rawType, ResolvedObservers<T> observers, EventMetadata metadata) {
             this.rawType = rawType;
-            this.type = type;
             this.observers = observers;
+            this.metadata = metadata;
         }
     }
 }
