@@ -308,12 +308,13 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
             } finally {
                 // WELD-1690 always try to unlock the current conversation
                 getCurrentConversation().unlock();
+                // WELD-1802
+                setBeanStore(null);
+                // Clean up any expired/ended conversations
+                cleanUpConversationMap();
+                // deactivate the context
+                super.setActive(false);
             }
-            setBeanStore(null);
-            // Clean up any expired/ended conversations
-            cleanUpConversationMap();
-            // deactivate the context
-            super.setActive(false);
         } else {
             throw ConversationLogger.LOG.contextNotActive();
         }
