@@ -80,7 +80,7 @@ public class VerifyingExtension implements Extension {
 
     private <T> List<ObserverMethod<? super T>> resolve(Class<?> javaClass) {
         Resolvable resolvable = ProcessAnnotatedTypeEventResolvable.forProcessAnnotatedType(transformer.getBackedAnnotatedType(javaClass, "foo"), discovery);
-        return notifier.<T>resolveObserverMethods(resolvable);
+        return notifier.<T>resolveObserverMethods(resolvable).getAllObservers();
     }
 
     public boolean isInitialized() {

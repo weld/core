@@ -478,12 +478,12 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     @Override
     public <T> Set<ObserverMethod<? super T>> resolveObserverMethods(T event, Annotation... bindings) {
-        return ImmutableSet.copyOf(globalStrictObserverNotifier.resolveObserverMethods(event, bindings));
+        return ImmutableSet.copyOf(globalStrictObserverNotifier.resolveObserverMethods(event, bindings).getAllObservers());
     }
 
     // TODO: this should make it to the API
     public <T> List<ObserverMethod<? super T>> resolveObserverMethodsInOrder(T event, Annotation... bindings) {
-        return globalStrictObserverNotifier.resolveObserverMethods(event, bindings);
+        return globalStrictObserverNotifier.resolveObserverMethods(event, bindings).getAllObservers();
     }
 
     public void addInterceptor(Interceptor<?> bean) {
