@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.resolution;
 
+import static org.jboss.weld.util.reflection.Reflections.cast;
+
 import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -24,12 +26,12 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
-import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.weld.bootstrap.events.ProcessAnnotatedTypeEventResolvable;
 import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.event.ExtensionObserverMethodImpl;
+import org.jboss.weld.event.ResolvedObservers;
 import org.jboss.weld.experimental.ExperimentalObserverMethod;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.util.Beans;
@@ -40,7 +42,7 @@ import org.jboss.weld.util.reflection.Reflections;
  * @author pmuir
  * @author Jozef Hartinger
  */
-public class TypeSafeObserverResolver extends TypeSafeResolver<Resolvable, ObserverMethod<?>, List<ObserverMethod<?>>, List<Interceptor<?>>> {
+public class TypeSafeObserverResolver extends TypeSafeResolver<Resolvable, ObserverMethod<?>, List<ObserverMethod<?>>, ResolvedObservers<?>> {
 
     private static class ObserverMethodComparator implements Comparator<ObserverMethod<?>>, Serializable {
 
@@ -104,6 +106,11 @@ public class TypeSafeObserverResolver extends TypeSafeResolver<Resolvable, Obser
         List<ObserverMethod<?>> observers = new ArrayList<>(matched);
         Collections.sort(observers, ObserverMethodComparator.INSTANCE);
         return observers;
+    }
+
+    @Override
+    protected ResolvedObservers<?> makeResultImmutable(List<ObserverMethod<?>> result) {
+        return ResolvedObservers.of(cast(result));
     }
 
     public MetaAnnotationStore getMetaAnnotationStore() {

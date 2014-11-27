@@ -44,6 +44,12 @@ public class EventMetadataImpl implements EventMetadata {
         this.qualifiers = ImmutableSet.<Annotation> builder().addAll(qualifiers).add(AnyLiteral.INSTANCE).build();
     }
 
+    EventMetadataImpl(Type type, InjectionPoint injectionPoint, Annotation[] qualifiers) {
+        this.type = type;
+        this.injectionPoint = injectionPoint;
+        this.qualifiers = ImmutableSet.<Annotation> builder().addAll(qualifiers).add(AnyLiteral.INSTANCE).build();
+    }
+
     @Override
     public Set<Annotation> getQualifiers() {
         return qualifiers;
