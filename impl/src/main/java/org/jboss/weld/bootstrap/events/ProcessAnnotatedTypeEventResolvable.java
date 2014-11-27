@@ -177,16 +177,6 @@ public class ProcessAnnotatedTypeEventResolvable implements Resolvable {
     }
 
     @Override
-    public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
-        return false;
-    }
-
-    @Override
-    public <A extends Annotation> A getAnnotation(Class<A> annotationType) {
-        return null;
-    }
-
-    @Override
     public Class<?> getJavaClass() {
         return null;
     }
