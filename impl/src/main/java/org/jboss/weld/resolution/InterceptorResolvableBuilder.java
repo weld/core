@@ -19,7 +19,6 @@ package org.jboss.weld.resolution;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collection;
-import java.util.Map;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.Bean;
@@ -41,12 +40,12 @@ public class InterceptorResolvableBuilder extends ResolvableBuilder {
     private InterceptionType interceptionType;
 
     @Override
-    protected void checkQualifier(Annotation qualifier, Class<? extends  Annotation> annotationType) {
+    protected void checkQualifier(Annotation qualifier, QualifierInstance qualifierInstance, Class<? extends  Annotation> annotationType) {
         if (!getMetaAnnotationStore().getInterceptorBindingModel(annotationType).isValid()) {
             throw BeanManagerLogger.LOG.interceptorResolutionWithNonbindingType(qualifier);
         }
-        if (isAnnotationTypePresent(annotationType)) {
-            throw BeanManagerLogger.LOG.duplicateInterceptorBinding(qualifiers);
+        if (annotationTypes.contains(annotationType)) {
+            throw BeanManagerLogger.LOG.duplicateInterceptorBinding(qualifier);
         }
     }
 
@@ -93,18 +92,18 @@ public class InterceptorResolvableBuilder extends ResolvableBuilder {
 
     @Override
     public InterceptorResolvable create() {
-        if (qualifiers.size() == 0) {
+        if (qualifierInstances.isEmpty()) {
             throw BeanManagerLogger.LOG.interceptorBindingsEmpty();
         }
-        return new InterceptorResolvableImpl(rawType, types, mappedQualifiers, declaringBean, interceptionType, qualifierInstances);
+        return new InterceptorResolvableImpl(rawType, types, declaringBean, interceptionType, qualifierInstances);
     }
 
 
     private static class InterceptorResolvableImpl extends ResolvableImpl implements InterceptorResolvable {
         private final InterceptionType interceptionType;
 
-        private InterceptorResolvableImpl(Class<?> rawType, Set<Type> typeClosure, Map<Class<? extends Annotation>, Annotation> mappedQualifiers, Bean<?> declaringBean, InterceptionType interceptionType, final Set<QualifierInstance> instances) {
-            super(rawType, typeClosure, mappedQualifiers, declaringBean, instances, false);
+        private InterceptorResolvableImpl(Class<?> rawType, Set<Type> typeClosure, Bean<?> declaringBean, InterceptionType interceptionType, final Set<QualifierInstance> instances) {
+            super(rawType, typeClosure, declaringBean, instances, false);
             this.interceptionType = interceptionType;
         }
 
