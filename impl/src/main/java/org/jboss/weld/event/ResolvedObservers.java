@@ -26,9 +26,15 @@ import java.util.Set;
 import javax.enterprise.event.TransactionPhase;
 import javax.enterprise.inject.spi.ObserverMethod;
 
+import com.google.common.collect.ImmutableSet;
+
 public class ResolvedObservers<T> {
 
-    private static final ResolvedObservers<Object> EMPTY = new ResolvedObservers<Object>(Collections.<ObserverMethod<? super Object>>emptySet(), Collections.<ObserverMethod<? super Object>>emptySet());
+    private static final ResolvedObservers<Object> EMPTY = new ResolvedObservers<Object>(Collections.<ObserverMethod<? super Object>>emptySet(), Collections.<ObserverMethod<? super Object>>emptySet()) {
+        public boolean isEmpty() {
+            return true;
+        }
+    };
 
     @SuppressWarnings("unchecked")
     public static <T> ResolvedObservers<T> of(Set<ObserverMethod<? super T>> observers) {
@@ -61,5 +67,16 @@ public class ResolvedObservers<T> {
 
     Set<ObserverMethod<? super T>> getTransactionObservers() {
         return transactionObservers;
+    }
+
+    public boolean isEmpty() {
+        return false;
+    }
+
+    /**
+     * Returns all observer methods.
+     */
+    public Set<ObserverMethod<? super T>> getAllObservers() {
+        return ImmutableSet.<ObserverMethod<? super T>>builder().addAll(immediateObservers).addAll(transactionObservers).build();
     }
 }

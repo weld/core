@@ -30,7 +30,7 @@ import org.jboss.weld.util.Beans;
 /**
  * @author <a href="mailto:mariusb@redhat.com">Marius Bogoevici</a>
  */
-public class TypeSafeInterceptorResolver extends TypeSafeResolver<InterceptorResolvable, Interceptor<?>, List<Interceptor<?>>> {
+public class TypeSafeInterceptorResolver extends TypeSafeResolver<InterceptorResolvable, Interceptor<?>, List<Interceptor<?>>, List<Interceptor<?>>> {
 
     private final BeanManagerImpl manager;
 

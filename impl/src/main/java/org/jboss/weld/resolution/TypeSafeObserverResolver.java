@@ -23,6 +23,7 @@ import javax.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.weld.bootstrap.events.ProcessAnnotatedTypeEventResolvable;
 import org.jboss.weld.event.ExtensionObserverMethodImpl;
+import org.jboss.weld.event.ResolvedObservers;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Observers;
@@ -32,7 +33,7 @@ import org.jboss.weld.util.reflection.Reflections;
  * @author pmuir
  * @author Jozef Hartinger
  */
-public class TypeSafeObserverResolver extends TypeSafeResolver<Resolvable, ObserverMethod<?>, Set<ObserverMethod<?>>> {
+public class TypeSafeObserverResolver extends TypeSafeResolver<Resolvable, ObserverMethod<?>, Set<ObserverMethod<?>>, ResolvedObservers<?>> {
 
     private final MetaAnnotationStore metaAnnotationStore;
     private final AssignabilityRules rules;
@@ -81,6 +82,12 @@ public class TypeSafeObserverResolver extends TypeSafeResolver<Resolvable, Obser
     @Override
     protected Set<ObserverMethod<?>> sortResult(Set<ObserverMethod<?>> matched) {
         return matched;
+    }
+
+    @Override
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    protected ResolvedObservers<?> makeResultImmutable(Set<ObserverMethod<?>> result) {
+        return ResolvedObservers.of(Reflections.<Set>cast(result));
     }
 
     public MetaAnnotationStore getMetaAnnotationStore() {

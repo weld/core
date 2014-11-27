@@ -24,7 +24,7 @@ import org.jboss.weld.util.Beans;
 /**
  * @author pmuir
  */
-public class TypeSafeDisposerResolver extends TypeSafeResolver<Resolvable, DisposalMethod<?, ?>, Set<DisposalMethod<?, ?>>> {
+public class TypeSafeDisposerResolver extends TypeSafeResolver<Resolvable, DisposalMethod<?, ?>, Set<DisposalMethod<?, ?>>, Set<DisposalMethod<?, ?>>> {
 
     private final AssignabilityRules rules;
 

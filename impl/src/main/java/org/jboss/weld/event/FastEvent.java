@@ -19,17 +19,12 @@ package org.jboss.weld.event;
 import static org.jboss.weld.util.Observers.isEventMetadataRequired;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.Set;
 
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.spi.EventMetadata;
-import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.weld.manager.BeanManagerImpl;
-
-import com.google.common.collect.ImmutableSet;
 
 /**
  * An optimized internal facility for dispatching events.
@@ -47,8 +42,7 @@ import com.google.common.collect.ImmutableSet;
  * <ul>
  * <li>Event type and qualifiers must be known at FastEvent construction time. The actual type of the event object passed to the {@link #fire(Object)} method is
  * not considered for observer method resolution.</li>
- * <li>Events dispatched using FastEvent are always delivered immediately. If an observer method is transactional it will be notified immediately and not during
- * the matching transaction phase.</li>
+ * <li>Events dispatched using FastEvent are always delivered immediately. If an observer method is transactional it will not be notified</li>
  * <li>FastEvent is not serializable</li>
  * </ul>
  *
@@ -79,9 +73,9 @@ public class FastEvent<T> {
      * @return
      */
     public static <T> FastEvent<T> of(Class<T> type, BeanManagerImpl manager, ObserverNotifier notifier, Annotation... qualifiers) {
-        Set<ObserverMethod<? super T>> resolvedObserverMethods = notifier.<T> resolveObserverMethods(notifier.buildEventResolvable(type, qualifiers));
-        if (isEventMetadataRequired(resolvedObserverMethods)) {
-            EventMetadata metadata = new EventMetadataImpl(type, qualifiers);
+        ResolvedObservers<T> resolvedObserverMethods = notifier.<T> resolveObserverMethods(notifier.buildEventResolvable(type, qualifiers));
+        if (isEventMetadataRequired(resolvedObserverMethods.getImmediateObservers())) {
+            EventMetadata metadata = new EventMetadataImpl(type, null, qualifiers);
             CurrentEventMetadata metadataService = manager.getServices().get(CurrentEventMetadata.class);
             return new FastEventWithMetadataPropagation<T>(resolvedObserverMethods, metadata, metadataService);
         } else {
@@ -89,14 +83,14 @@ public class FastEvent<T> {
         }
     }
 
-    private final Set<ObserverMethod<? super T>> resolvedObserverMethods;
+    private final ResolvedObservers<T> resolvedObserverMethods;
 
-    private FastEvent(Set<ObserverMethod<? super T>> resolvedObserverMethods) {
+    private FastEvent(ResolvedObservers<T> resolvedObserverMethods) {
         this.resolvedObserverMethods = resolvedObserverMethods;
     }
 
     public void fire(T event) {
-        for (ObserverMethod<? super T> observer : resolvedObserverMethods) {
+        for (ObserverMethod<? super T> observer : resolvedObserverMethods.getImmediateObservers()) {
             observer.notify(event);
         }
     }
@@ -106,7 +100,7 @@ public class FastEvent<T> {
         private final EventMetadata metadata;
         private final CurrentEventMetadata metadataService;
 
-        private FastEventWithMetadataPropagation(Set<ObserverMethod<? super T>> resolvedObserverMethods, EventMetadata metadata,
+        private FastEventWithMetadataPropagation(ResolvedObservers<T> resolvedObserverMethods, EventMetadata metadata,
                 CurrentEventMetadata metadataService) {
             super(resolvedObserverMethods);
             this.metadata = metadata;
@@ -125,32 +119,6 @@ public class FastEvent<T> {
                     metadataService.pop();
                 }
             }
-        }
-    }
-
-    private static class EventMetadataImpl implements EventMetadata {
-
-        private final Set<Annotation> qualifiers;
-        private final Type type;
-
-        private EventMetadataImpl(Type type, Annotation... qualifiers) {
-            this.type = type;
-            this.qualifiers = ImmutableSet.copyOf(qualifiers);
-        }
-
-        @Override
-        public Set<Annotation> getQualifiers() {
-            return qualifiers;
-        }
-
-        @Override
-        public InjectionPoint getInjectionPoint() {
-            return null;
-        }
-
-        @Override
-        public Type getType() {
-            return type;
         }
     }
 }

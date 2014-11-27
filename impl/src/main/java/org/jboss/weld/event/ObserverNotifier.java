@@ -88,19 +88,18 @@ public class ObserverNotifier {
         }
     }
 
-    public <T> Set<ObserverMethod<? super T>> resolveObserverMethods(T event, Annotation... bindings) {
+    public <T> ResolvedObservers<T> resolveObserverMethods(T event, Annotation... bindings) {
         checkEventObjectType(event);
         return this.<T>resolveObserverMethods(buildEventResolvable(event.getClass(), bindings));
     }
 
-    public <T> Set<ObserverMethod<? super T>> resolveObserverMethods(Type eventType, Set<Annotation> qualifiers) {
+    public <T> ResolvedObservers<T> resolveObserverMethods(Type eventType, Set<Annotation> qualifiers) {
         checkEventObjectType(eventType);
         return this.<T>resolveObserverMethods(buildEventResolvable(eventType, qualifiers));
     }
 
-    public <T> ResolvedObservers<T> resolveObservers(Type eventType, Set<Annotation> qualifiers) {
-        checkEventObjectType(eventType);
-        return ResolvedObservers.of(this.<T>resolveObserverMethods(buildEventResolvable(eventType, qualifiers)));
+    public <T> ResolvedObservers<T> resolveObserverMethods(Resolvable resolvable) {
+        return cast(resolver.resolve(resolvable, true));
     }
 
     public void fireEvent(Object event, Annotation... qualifiers) {
@@ -142,10 +141,6 @@ public class ObserverNotifier {
             .addQualifiers(qualifiers)
             .addQualifierIfAbsent(AnyLiteral.INSTANCE)
             .create();
-    }
-
-    public <T> Set<ObserverMethod<? super T>> resolveObserverMethods(Resolvable resolvable) {
-        return cast(resolver.resolve(resolvable, true));
     }
 
     public void clear() {
