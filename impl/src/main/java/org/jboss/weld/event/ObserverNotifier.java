@@ -28,8 +28,8 @@ import javax.enterprise.inject.spi.EventMetadata;
 import javax.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
-import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.logging.UtilLogger;
+import org.jboss.weld.resolution.QualifierInstance;
 import org.jboss.weld.resolution.Resolvable;
 import org.jboss.weld.resolution.ResolvableBuilder;
 import org.jboss.weld.resolution.TypeSafeObserverResolver;
@@ -131,7 +131,7 @@ public class ObserverNotifier {
             .addTypes(typeClosure)
             .addType(Object.class)
             .addQualifiers(qualifiers)
-            .addQualifierIfAbsent(AnyLiteral.INSTANCE)
+            .addQualifierUnchecked(QualifierInstance.ANY)
             .create();
     }
 
@@ -141,7 +141,7 @@ public class ObserverNotifier {
             .addTypes(sharedObjectCache.getTypeClosureHolder(eventType).get())
             .addType(Object.class)
             .addQualifiers(qualifiers)
-            .addQualifierIfAbsent(AnyLiteral.INSTANCE)
+            .addQualifierUnchecked(QualifierInstance.ANY)
             .create();
     }
 
