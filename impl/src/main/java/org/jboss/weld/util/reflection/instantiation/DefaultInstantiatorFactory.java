@@ -35,6 +35,7 @@ public class DefaultInstantiatorFactory extends AbstractInstantiatorFactory {
         this.loader = resourceLoader;
     }
 
+    @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "DC_DOUBLECHECK", justification = "Field is volatile")
     public boolean useInstantiators() {
         if (enabled == null) {
             synchronized (this) {
