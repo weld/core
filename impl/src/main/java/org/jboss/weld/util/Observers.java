@@ -28,6 +28,7 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.BeforeShutdown;
+import javax.enterprise.inject.spi.EventMetadata;
 import javax.enterprise.inject.spi.ObserverMethod;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.ProcessBean;
@@ -119,6 +120,27 @@ public class Observers {
         }
         if (observerMethod.getTransactionPhase() == null) {
             throw EventLogger.LOG.observerMethodsMethodReturnsNull("getTransactionPhase", observerMethod);
+        }
+    }
+
+    /**
+     * Determines whether any of the resolved observer methods is either extension-provided or contains an injection point with {@link EventMetadata} type.
+     */
+    public static boolean isEventMetadataRequired(Set<? extends ObserverMethod<?>> resolvedObserverMethods) {
+        for (ObserverMethod<?> observer : resolvedObserverMethods) {
+            if (isEventMetadataRequired(observer)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean isEventMetadataRequired(ObserverMethod<?> observer) {
+        if (observer instanceof ObserverMethodImpl<?, ?>) {
+            ObserverMethodImpl<?, ?> observerImpl = (ObserverMethodImpl<?, ?>) observer;
+            return observerImpl.isEventMetadataRequired();
+        } else {
+            return true;
         }
     }
 }
