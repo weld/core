@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.event;
 
-import static org.jboss.weld.util.Observers.isEventMetadataRequired;
-
 import java.lang.annotation.Annotation;
 
 import javax.enterprise.event.Event;
@@ -74,7 +72,7 @@ public class FastEvent<T> {
      */
     public static <T> FastEvent<T> of(Class<T> type, BeanManagerImpl manager, ObserverNotifier notifier, Annotation... qualifiers) {
         ResolvedObservers<T> resolvedObserverMethods = notifier.<T> resolveObserverMethods(notifier.buildEventResolvable(type, qualifiers));
-        if (isEventMetadataRequired(resolvedObserverMethods.getImmediateObservers())) {
+        if (resolvedObserverMethods.isMetadataRequired()) {
             EventMetadata metadata = new EventMetadataImpl(type, null, qualifiers);
             CurrentEventMetadata metadataService = manager.getServices().get(CurrentEventMetadata.class);
             return new FastEventWithMetadataPropagation<T>(resolvedObserverMethods, metadata, metadataService);
