@@ -120,14 +120,11 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
 
     @Override
     public boolean associate(R request) {
-        if (this.associated.get() == null) {
             this.associated.set(request);
             /*
             * We need to delay attaching the bean store until activate() is called
             * so that we can attach the correct conversation id
-            */
-
-            /*
+            *
             * We may need access to the conversation id generator and
             * conversations. If the session already exists, we can load it from
             * there, otherwise we can create a new conversation id generator and
@@ -152,11 +149,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
             } else {
                 setRequestAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME, getSessionAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME, true));
             }
-
             return true;
-        } else {
-            return false;
-        }
     }
 
     @Override
@@ -222,17 +215,15 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
 
     @Override
     public void activate(String cid) {
-        if (!isActive()) {
-            if (!isAssociated()) {
-                throw ConversationLogger.LOG.mustCallAssociateBeforeActivate();
-            }
-            // Activate the context
-            super.setActive(true);
-
-            initialize(cid);
-        } else {
-            throw ConversationLogger.LOG.contextAlreadyActive();
+        if (!isAssociated()) {
+            throw ConversationLogger.LOG.mustCallAssociateBeforeActivate();
         }
+        if (!isActive()) {
+            super.setActive(true);
+        } else {
+            ConversationLogger.LOG.contextAlreadyActive(getRequest());
+        }
+        initialize(cid);
     }
 
     protected void initialize(String cid) {
