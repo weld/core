@@ -24,6 +24,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
+import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.weld.bootstrap.events.ProcessAnnotatedTypeEventResolvable;
@@ -39,7 +40,7 @@ import org.jboss.weld.util.reflection.Reflections;
  * @author pmuir
  * @author Jozef Hartinger
  */
-public class TypeSafeObserverResolver extends TypeSafeResolver<Resolvable, ObserverMethod<?>, List<ObserverMethod<?>>> {
+public class TypeSafeObserverResolver extends TypeSafeResolver<Resolvable, ObserverMethod<?>, List<ObserverMethod<?>>, List<Interceptor<?>>> {
 
     private static class ObserverMethodComparator implements Comparator<ObserverMethod<?>>, Serializable {
 
