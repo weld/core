@@ -25,11 +25,12 @@ import java.util.List;
 import javax.enterprise.event.TransactionPhase;
 import javax.enterprise.inject.spi.ObserverMethod;
 
+import org.jboss.weld.util.Observers;
 import org.jboss.weld.util.collections.ImmutableList;
 
 public class ResolvedObservers<T> {
 
-    private static final ResolvedObservers<Object> EMPTY = new ResolvedObservers<Object>(Collections.emptyList(), Collections.emptyList()) {
+    private static final ResolvedObservers<Object> EMPTY = new ResolvedObservers<Object>(Collections.emptyList(), Collections.emptyList(), false) {
         public boolean isEmpty() {
             return true;
         }
@@ -40,6 +41,7 @@ public class ResolvedObservers<T> {
         if (observers.isEmpty()) {
             return (ResolvedObservers<T>) EMPTY;
         }
+        boolean metadataRequired = false;
         List<ObserverMethod<? super T>> immediateObservers = new ArrayList<ObserverMethod<? super T>>();
         List<ObserverMethod<? super T>> transactionObservers = new ArrayList<ObserverMethod<? super T>>();
         for (ObserverMethod<? super T> observer : observers) {
@@ -48,16 +50,21 @@ public class ResolvedObservers<T> {
             } else {
                 transactionObservers.add(observer);
             }
+            if (!metadataRequired && Observers.isEventMetadataRequired(observer)) {
+                metadataRequired = true;
+            }
         }
-        return new ResolvedObservers<>(copyOf(immediateObservers), copyOf(transactionObservers));
+        return new ResolvedObservers<>(copyOf(immediateObservers), copyOf(transactionObservers), metadataRequired);
     }
 
     private final List<ObserverMethod<? super T>> immediateObservers;
     private final List<ObserverMethod<? super T>> transactionObservers;
+    private final boolean metadataRequired;
 
-    private ResolvedObservers(List<ObserverMethod<? super T>> immediateObservers, List<ObserverMethod<? super T>> transactionObservers) {
+    private ResolvedObservers(List<ObserverMethod<? super T>> immediateObservers, List<ObserverMethod<? super T>> transactionObservers, boolean metadataRequired) {
         this.immediateObservers = immediateObservers;
         this.transactionObservers = transactionObservers;
+        this.metadataRequired = metadataRequired;
     }
 
     List<ObserverMethod<? super T>> getImmediateObservers() {
@@ -66,6 +73,10 @@ public class ResolvedObservers<T> {
 
     List<ObserverMethod<? super T>> getTransactionObservers() {
         return transactionObservers;
+    }
+
+    boolean isMetadataRequired() {
+        return metadataRequired;
     }
 
     public boolean isEmpty() {
