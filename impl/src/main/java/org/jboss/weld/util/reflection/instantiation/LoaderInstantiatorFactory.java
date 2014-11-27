@@ -40,6 +40,7 @@ public class LoaderInstantiatorFactory extends AbstractInstantiatorFactory imple
         super(configuration);
     }
 
+    @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "DC_DOUBLECHECK", justification = "Field is volatile")
     public boolean useInstantiators() {
         final ClassLoader tccl = Thread.currentThread().getContextClassLoader();
 
