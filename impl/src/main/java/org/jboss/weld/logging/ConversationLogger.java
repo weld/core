@@ -234,8 +234,9 @@ public interface ConversationLogger extends WeldLogger {
     @Message(id = 334, value = "Must call associate() before calling deactivate()", format = Format.MESSAGE_FORMAT)
     IllegalStateException mustCallAssociateBeforeDeactivate();
 
-    @Message(id = 335, value = "Context is already active", format = Format.MESSAGE_FORMAT)
-    IllegalStateException contextAlreadyActive();
+    @LogMessage(level = Level.WARN)
+    @Message(id = 335, value = "Conversation context is already active, most likely it was not cleaned up properly during previous request processing: {0}", format = Format.MESSAGE_FORMAT)
+    void contextAlreadyActive(Object request);
 
     @Message(id = 336, value = "Context is not active", format = Format.MESSAGE_FORMAT)
     IllegalStateException contextNotActive();
