@@ -16,19 +16,18 @@
  */
 package org.jboss.weld.event;
 
+import static org.jboss.weld.util.Observers.isEventMetadataRequired;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.event.Event;
-import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.EventMetadata;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.ObserverMethod;
-import javax.enterprise.util.TypeLiteral;
 
-import org.jboss.weld.injection.attributes.WeldInjectionPointAttributes;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.collections.ImmutableSet;
 
@@ -64,30 +63,6 @@ import org.jboss.weld.util.collections.ImmutableSet;
  */
 public class FastEvent<T> {
 
-    @SuppressWarnings("serial")
-    private static final Type EVENT_METADATA_INSTANCE_TYPE = new TypeLiteral<Instance<EventMetadata>>() {
-    }.getType();
-
-    /**
-     * Determines whether any of the resolved observer methods is either extension-provided or contains an injection point with {@link EventMetadata} type.
-     */
-    private static boolean isMetadataRequired(List<? extends ObserverMethod<?>> resolvedObserverMethods) {
-        for (ObserverMethod<?> observer : resolvedObserverMethods) {
-            if (observer instanceof ObserverMethodImpl<?, ?>) {
-                ObserverMethodImpl<?, ?> observerImpl = (ObserverMethodImpl<?, ?>) observer;
-                for (WeldInjectionPointAttributes<?, ?> ip : observerImpl.getInjectionPoints()) {
-                    Type type = ip.getType();
-                    if (EventMetadata.class.equals(type) || EVENT_METADATA_INSTANCE_TYPE.equals(type)) {
-                        return true;
-                    }
-                }
-            } else {
-                return true;
-            }
-        }
-        return false;
-    }
-
     /**
      * Same as {@link #of(Class, BeanManagerImpl, Annotation...)}, just the accessible lenient observer notifier is used for observer method resolution
      */
@@ -105,7 +80,7 @@ public class FastEvent<T> {
      */
     public static <T> FastEvent<T> of(Class<T> type, BeanManagerImpl manager, ObserverNotifier notifier, Annotation... qualifiers) {
         List<ObserverMethod<? super T>> resolvedObserverMethods = notifier.<T> resolveObserverMethods(notifier.buildEventResolvable(type, qualifiers));
-        if (isMetadataRequired(resolvedObserverMethods)) {
+        if (isEventMetadataRequired(resolvedObserverMethods)) {
             EventMetadata metadata = new EventMetadataImpl(type, qualifiers);
             CurrentEventMetadata metadataService = manager.getServices().get(CurrentEventMetadata.class);
             return new FastEventWithMetadataPropagation<T>(resolvedObserverMethods, metadata, metadataService);
