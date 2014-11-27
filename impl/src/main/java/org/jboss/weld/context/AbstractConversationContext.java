@@ -25,6 +25,7 @@ package org.jboss.weld.context;
 import static org.jboss.weld.context.conversation.ConversationIdGenerator.CONVERSATION_ID_GENERATOR_ATTRIBUTE_NAME;
 import static org.jboss.weld.logging.Category.CONVERSATION;
 import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
+import static org.jboss.weld.logging.messages.ConversationMessage.CONTEXT_ALREADY_ACTIVE;
 import static org.jboss.weld.logging.messages.ConversationMessage.END_LOCKED_CONVERSATION;
 import static org.jboss.weld.logging.messages.ConversationMessage.NO_CONVERSATION_FOUND_TO_RESTORE;
 import static org.jboss.weld.util.reflection.Reflections.cast;
@@ -113,14 +114,11 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
     }
 
     public boolean associate(R request) {
-        if (this.associated.get() == null) {
             this.associated.set(request);
             /*
             * We need to delay attaching the bean store until activate() is called
             * so that we can attach the correct conversation id
-            */
-
-            /*
+            *
             * We may need access to the conversation id generator and
             * conversations. If the session already exists, we can load it from
             * there, otherwise we can create a new conversation id generator and
@@ -145,11 +143,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
             } else {
                 setRequestAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME, getSessionAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME, true));
             }
-
             return true;
-        } else {
-            return false;
-        }
     }
 
     public boolean dissociate(R request) {
@@ -200,37 +194,35 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
     }
 
     public void activate(String cid) {
-        if (getBeanStore() == null) {
-            if (!isAssociated()) {
-                throw new IllegalStateException("Must call associate() before calling activate()");
-            }
-            // Activate the context
+        if (!isAssociated()) {
+            throw new IllegalStateException("Must call associate() before calling activate()");
+        }
+        if (isActive()) {
+            log.warn(CONTEXT_ALREADY_ACTIVE, getRequest());
+        } else {
             super.setActive(true);
-
-            // Attach the conversation
-            // WELD-1315 Don't try to restore the long-running conversation if cid param is empty
-            if (cid != null && !cid.isEmpty()) {
-                ManagedConversation conversation = getConversation(cid);
-                if (conversation != null && !isExpired(conversation)) {
-                    boolean lock = conversation.lock(getConcurrentAccessTimeout());
-                    if (lock) {
-                        associateRequest(cid);
-                    } else {
-                        // Associate the request with a new transient conversation
-                        associateRequest();
-                        throw new BusyConversationException(ConversationMessage.CONVERSATION_LOCK_TIMEDOUT, cid);
-                    }
+        }
+        // Attach the conversation
+        // WELD-1315 Don't try to restore the long-running conversation if cid param is empty
+        if (cid != null && !cid.isEmpty()) {
+            ManagedConversation conversation = getConversation(cid);
+            if (conversation != null && !isExpired(conversation)) {
+                boolean lock = conversation.lock(getConcurrentAccessTimeout());
+                if (lock) {
+                    associateRequest(cid);
                 } else {
-                    // CDI 6.7.4 we must activate a new transient conversation before we throw the exception
+                    // Associate the request with a new transient conversation
                     associateRequest();
-                    // Make sure that the conversation already exists
-                    throw new NonexistentConversationException(NO_CONVERSATION_FOUND_TO_RESTORE, cid);
+                    throw new BusyConversationException(ConversationMessage.CONVERSATION_LOCK_TIMEDOUT, cid);
                 }
             } else {
+                // CDI 6.7.4 we must activate a new transient conversation before we throw the exception
                 associateRequest();
+                // Make sure that the conversation already exists
+                throw new NonexistentConversationException(NO_CONVERSATION_FOUND_TO_RESTORE, cid);
             }
         } else {
-            throw new IllegalStateException("Context is already active");
+            associateRequest();
         }
     }
 
