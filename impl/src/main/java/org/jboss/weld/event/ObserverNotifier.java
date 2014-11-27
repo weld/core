@@ -103,23 +103,26 @@ public class ObserverNotifier {
     }
 
     public void fireEvent(Object event, Annotation... qualifiers) {
-        fireEvent(event.getClass(), event, qualifiers);
+        fireEvent(event.getClass(), event, null, qualifiers);
+    }
+
+    public void fireEvent(Object event, EventMetadata metadata, Annotation... qualifiers) {
+        fireEvent(event.getClass(), event, metadata, qualifiers);
     }
 
     public void fireEvent(Type eventType, Object event, Annotation... qualifiers) {
+        fireEvent(eventType, event, null, qualifiers);
+    }
+
+    public void fireEvent(Type eventType, Object event, EventMetadata metadata, Annotation... qualifiers) {
         checkEventObjectType(eventType);
         // we use the array of qualifiers for resolution so that we can catch duplicate qualifiers
-        notify(resolveObserverMethods(buildEventResolvable(eventType, qualifiers)), event, null);
+        notify(resolveObserverMethods(buildEventResolvable(eventType, qualifiers)), event, metadata);
     }
 
     public void fireEvent(Object event, Resolvable resolvable) {
         checkEventObjectType(event);
         notify(resolveObserverMethods(resolvable), event, null);
-    }
-
-    public <T> void fireEvent(Resolvable resolvable, EventPacket<T> packet) {
-        checkEventObjectType(packet.getType());
-        notify(this.<T>resolveObserverMethods(resolvable), packet.getPayload(), packet);
     }
 
     public Resolvable buildEventResolvable(Type eventType, Set<Annotation> qualifiers) {
