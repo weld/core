@@ -37,17 +37,17 @@ import com.google.common.cache.LoadingCache;
  * @author Marius Bogoevici
  * @author Ales Justin
  */
-public abstract class TypeSafeResolver<R extends Resolvable, T, C extends Collection<T>> {
+public abstract class TypeSafeResolver<R extends Resolvable, T, C extends Collection<T>, F> {
 
-    private static class ResolvableToBeanCollection<R extends Resolvable, T, C extends Collection<T>> extends CacheLoader<R, C> {
+    private static class ResolvableToBeanCollection<R extends Resolvable, T, C extends Collection<T>, F> extends CacheLoader<R, F> {
 
-        private final TypeSafeResolver<R, T, C> resolver;
+        private final TypeSafeResolver<R, T, C, F> resolver;
 
-        private ResolvableToBeanCollection(TypeSafeResolver<R, T, C> resolver) {
+        private ResolvableToBeanCollection(TypeSafeResolver<R, T, C, F> resolver) {
             this.resolver = resolver;
         }
 
-        public C load(R from) {
+        public F load(R from) {
             return resolver.makeResultImmutable(resolver.sortResult(resolver.filterResult(resolver.findMatching(from))));
         }
 
@@ -64,17 +64,17 @@ public abstract class TypeSafeResolver<R extends Resolvable, T, C extends Collec
     }
 
     // The resolved injection points
-    private final LoadingCache<R, C> resolved;
+    private final LoadingCache<R, F> resolved;
     // The beans to search
     private final Iterable<? extends T> allBeans;
-    private final ResolvableToBeanCollection<R, T, C> resolverFunction;
+    private final ResolvableToBeanCollection<R, T, C, F> resolverFunction;
 
 
     /**
      * Constructor
      */
     public TypeSafeResolver(Iterable<? extends T> allBeans) {
-        this.resolverFunction = new ResolvableToBeanCollection<R, T, C>(this);
+        this.resolverFunction = new ResolvableToBeanCollection<R, T, C, F>(this);
         this.resolved = CacheBuilder.newBuilder().maximumSize(RESOLVED_CACHE_UPPER_BOUND).build(resolverFunction);
         this.allBeans = allBeans;
     }
@@ -93,7 +93,7 @@ public abstract class TypeSafeResolver<R extends Resolvable, T, C extends Collec
      * @param resolvable The resolving criteria
      * @return An unmodifiable set of matching beans
      */
-    public C resolve(R resolvable, boolean cache) {
+    public F resolve(R resolvable, boolean cache) {
         R wrappedResolvable = wrap(resolvable);
         if (cache) {
             return getCacheValue(resolved, wrappedResolvable);
@@ -132,7 +132,7 @@ public abstract class TypeSafeResolver<R extends Resolvable, T, C extends Collec
 
     protected abstract boolean matches(R resolvable, T t);
 
-    protected C makeResultImmutable(C result) {
+    protected F makeResultImmutable(C result) {
         if (result instanceof List<?>) {
             return cast(WeldCollections.immutableList((List<?>) result));
         }

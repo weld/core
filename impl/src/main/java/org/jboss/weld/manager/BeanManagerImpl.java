@@ -529,7 +529,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     @Override
     public <T> Set<ObserverMethod<? super T>> resolveObserverMethods(T event, Annotation... bindings) {
-        return globalStrictObserverNotifier.resolveObserverMethods(event, bindings);
+        return globalStrictObserverNotifier.resolveObserverMethods(event, bindings).getAllObservers();
     }
 
     public void addInterceptor(Interceptor<?> bean) {
