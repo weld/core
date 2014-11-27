@@ -124,18 +124,9 @@ public class Observers {
     }
 
     /**
-     * Determines whether any of the resolved observer methods is either extension-provided or contains an injection point with {@link EventMetadata} type.
+     * Determines whether the given observer method is either extension-provided or contains an injection point with {@link EventMetadata} type.
      */
-    public static boolean isEventMetadataRequired(Set<? extends ObserverMethod<?>> resolvedObserverMethods) {
-        for (ObserverMethod<?> observer : resolvedObserverMethods) {
-            if (isEventMetadataRequired(observer)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private static boolean isEventMetadataRequired(ObserverMethod<?> observer) {
+    public static boolean isEventMetadataRequired(ObserverMethod<?> observer) {
         if (observer instanceof ObserverMethodImpl<?, ?>) {
             ObserverMethodImpl<?, ?> observerImpl = (ObserverMethodImpl<?, ?>) observer;
             return observerImpl.isEventMetadataRequired();

@@ -198,7 +198,9 @@ public class ObserverNotifier {
     }
 
     public <T> void notify(ResolvedObservers<T> observers, T event, EventMetadata metadata) {
-        // TODO we obviously need to move filtering to the resolution time
+        if (!observers.isMetadataRequired()) {
+            metadata = null;
+        }
         notifySyncObservers(observers.getImmediateObservers(), event, metadata);
         notifyTransactionObservers(observers.getTransactionObservers(), event, metadata);
     }
