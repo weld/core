@@ -56,6 +56,7 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Decorator;
+import javax.enterprise.inject.spi.EventMetadata;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
@@ -102,7 +103,7 @@ import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.el.Namespace;
 import org.jboss.weld.el.WeldELResolver;
 import org.jboss.weld.el.WeldExpressionFactory;
-import org.jboss.weld.event.EventPacket;
+import org.jboss.weld.event.EventMetadataImpl;
 import org.jboss.weld.event.GlobalObserverNotifierService;
 import org.jboss.weld.event.ObserverNotifier;
 import org.jboss.weld.exceptions.DefinitionException;
@@ -620,9 +621,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     public void fireEvent(Object event, Annotation... qualifiers) {
         Preconditions.checkArgumentNotNull(event, "event");
         Type eventType = Types.getCanonicalType(event.getClass());
-        Resolvable resolvable = globalStrictObserverNotifier.buildEventResolvable(eventType, qualifiers);
-        EventPacket<?> packet = EventPacket.of(event, qualifiers);
-        globalStrictObserverNotifier.fireEvent(resolvable, packet);
+        EventMetadata metadata = new EventMetadataImpl(eventType, null, qualifiers);
+        globalStrictObserverNotifier.fireEvent(event, metadata, qualifiers);
     }
 
     /**
