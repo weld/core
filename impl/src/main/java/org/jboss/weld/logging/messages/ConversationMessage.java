@@ -16,10 +16,11 @@
  */
 package org.jboss.weld.logging.messages;
 
+import org.jboss.weld.logging.MessageId;
+
 import ch.qos.cal10n.BaseName;
 import ch.qos.cal10n.Locale;
 import ch.qos.cal10n.LocaleData;
-import org.jboss.weld.logging.MessageId;
 
 @BaseName("org.jboss.weld.messages.conversation")
 @LocaleData({
@@ -62,6 +63,7 @@ public enum ConversationMessage {
     @MessageId("000321")NO_CONVERSATION_FOUND_TO_RESTORE,
     @MessageId("000322")CONVERSATION_LOCK_TIMEDOUT,
     @MessageId("000323")END_LOCKED_CONVERSATION,
+    @MessageId("000324")CONTEXT_ALREADY_ACTIVE,
     ;
 
 }
