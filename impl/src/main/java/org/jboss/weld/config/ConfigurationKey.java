@@ -81,6 +81,8 @@ public enum ConfigurationKey {
      * Weld caches already resolved injection points in order to resolve them faster in the future. There exists a separate type safe resolver for beans,
      * decorators, disposers, interceptors and observers. Each of them stores resolved injection points in its cache, which maximum size is bounded by a default
      * value (common to all of them).
+     *
+     * @see <a href="https://issues.jboss.org/browse/WELD-1323">WELD-1323</a>
      */
     RESOLUTION_CACHE_SIZE("org.jboss.weld.resolution.cacheSize", 0x100000L),
 
