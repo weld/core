@@ -103,7 +103,7 @@ class StaticMethodInjectionPoint<T, X> extends AbstractCallableInjectionPoint<T,
      * @return The object array of looked up values
      */
     protected Object[] getParameterValues(Object specialVal, BeanManagerImpl manager, CreationalContext<?> ctx, CreationalContext<?> invocationContext) {
-        if (getParameterInjectionPoints().isEmpty()) {
+        if (getInjectionPoints().isEmpty()) {
             if (specialInjectionPointIndex == -1) {
                 return Arrays2.EMPTY_ARRAY;
             } else {
