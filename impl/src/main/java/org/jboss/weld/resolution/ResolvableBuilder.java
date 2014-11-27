@@ -24,9 +24,7 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import javax.enterprise.event.Event;
@@ -58,7 +56,6 @@ public class ResolvableBuilder {
     protected final Set<Type> types;
     protected final Set<Annotation> qualifiers;
     protected final Set<QualifierInstance> qualifierInstances;
-    protected final Map<Class<? extends Annotation>, Annotation> mappedQualifiers;
     protected Bean<?> declaringBean;
     private final MetaAnnotationStore store;
     protected boolean delegate;
@@ -67,7 +64,6 @@ public class ResolvableBuilder {
         this.store = store;
         this.types = new HashSet<Type>();
         this.qualifiers = new HashSet<Annotation>();
-        this.mappedQualifiers = new HashMap<Class<? extends Annotation>, Annotation>();
         this.qualifierInstances = new HashSet<QualifierInstance>();
     }
 
@@ -88,34 +84,7 @@ public class ResolvableBuilder {
 
     public ResolvableBuilder(InjectionPoint injectionPoint, final BeanManagerImpl manager) {
         this(injectionPoint.getType(), manager);
-        addQualifiers(injectionPoint.getQualifiers());
-        if (mappedQualifiers.containsKey(Named.class)) {
-            Named named = (Named) mappedQualifiers.get(Named.class);
-            QualifierInstance qualifierInstance = QualifierInstance.of(named, store);
-            if (named.value().equals("")) {
-                qualifiers.remove(named);
-                qualifierInstances.remove(qualifierInstance);
-
-                // WELD-1739
-                // This is an injection point with an @Named qualifier, with no value specified, we need to assume the name of the field or parameter is the
-                // value
-                Member member = injectionPoint.getMember();
-                if (member instanceof Executable) {
-                    // Method or constructor injection
-                    Executable executable = (Executable) member;
-                    AnnotatedParameter<?> annotatedParameter = (AnnotatedParameter<?>) injectionPoint.getAnnotated();
-                    Parameter parameter = executable.getParameters()[annotatedParameter.getPosition()];
-                    named = new NamedLiteral(parameter.getName());
-                } else {
-                    named = new NamedLiteral(injectionPoint.getMember().getName());
-                }
-
-                qualifierInstance = QualifierInstance.of(named, store);
-                qualifiers.add(named);
-                qualifierInstances.add(qualifierInstance);
-                mappedQualifiers.put(Named.class, named);
-            }
-        }
+        addQualifiers(injectionPoint.getQualifiers(), injectionPoint);
         setDeclaringBean(injectionPoint.getBean());
         this.delegate = injectionPoint.isDelegate();
     }
@@ -175,9 +144,13 @@ public class ResolvableBuilder {
     }
 
     public ResolvableBuilder addQualifier(Annotation qualifier) {
-        // Handle the @New qualifier special case
+        return addQualifier(qualifier, null);
+    }
+
+    private ResolvableBuilder addQualifier(Annotation qualifier, InjectionPoint injectionPoint) {
         QualifierInstance qualifierInstance = QualifierInstance.of(qualifier, store);
         final Class<? extends Annotation> annotationType = qualifierInstance.getAnnotationClass();
+        // Handle the @New qualifier special case
         if (annotationType.equals(New.class)) {
             New newQualifier = New.class.cast(qualifier);
             if (newQualifier.value().equals(New.class) && rawType == null) {
@@ -186,12 +159,32 @@ public class ResolvableBuilder {
                 qualifier = new NewLiteral(rawType);
                 qualifierInstance = QualifierInstance.of(qualifier, store);
             }
+        } else if (injectionPoint != null && annotationType.equals(Named.class)) {
+            Named named = (Named) qualifier;
+            if (named.value().equals("")) {
+                // WELD-1739
+                // This is an injection point with an @Named qualifier, with no value specified, we need to assume the name of the field or parameter is the
+                // value
+                Member member = injectionPoint.getMember();
+                if (member instanceof Executable) {
+                    // Method or constructor injection
+                    Executable executable = (Executable) member;
+                    AnnotatedParameter<?> annotatedParameter = (AnnotatedParameter<?>) injectionPoint.getAnnotated();
+                    Parameter parameter = executable.getParameters()[annotatedParameter.getPosition()];
+                    named = new NamedLiteral(parameter.getName());
+                } else {
+                    named = new NamedLiteral(injectionPoint.getMember().getName());
+                }
+
+                qualifier = named;
+                qualifierInstance = QualifierInstance.of(named, store);
+
+            }
         }
 
         checkQualifier(qualifier, qualifierInstance, annotationType);
         this.qualifiers.add(qualifier);
         this.qualifierInstances.add(qualifierInstance);
-        this.mappedQualifiers.put(annotationType, qualifier);
         return this;
     }
 
@@ -210,8 +203,12 @@ public class ResolvableBuilder {
     }
 
     public ResolvableBuilder addQualifiers(Collection<Annotation> qualifiers) {
+        return addQualifiers(qualifiers, null);
+    }
+
+    private ResolvableBuilder addQualifiers(Collection<Annotation> qualifiers, InjectionPoint injectionPoint) {
         for (Annotation qualifier : qualifiers) {
-            addQualifier(qualifier);
+            addQualifier(qualifier, injectionPoint);
         }
         return this;
     }
