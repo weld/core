@@ -90,7 +90,7 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
         }
         final Type eventType = getEventType(event);
         // this performs type check
-        final ResolvedObservers<T> observers = getBeanManager().getGlobalStrictObserverNotifier().resolveObservers(eventType, getQualifiers());
+        final ResolvedObservers<T> observers = getBeanManager().getGlobalStrictObserverNotifier().resolveObserverMethods(eventType, getQualifiers());
         final EventMetadata metadata = new EventMetadataImpl(eventType, getInjectionPoint(), getQualifiers());
         cachedObservers = new CachedObservers(event.getClass(), observers, metadata);
         return this.cachedObservers = cachedObservers;

@@ -25,9 +25,15 @@ import java.util.List;
 import javax.enterprise.event.TransactionPhase;
 import javax.enterprise.inject.spi.ObserverMethod;
 
+import org.jboss.weld.util.collections.ImmutableList;
+
 public class ResolvedObservers<T> {
 
-    private static final ResolvedObservers<Object> EMPTY = new ResolvedObservers<>(Collections.emptyList(), Collections.emptyList());
+    private static final ResolvedObservers<Object> EMPTY = new ResolvedObservers<Object>(Collections.emptyList(), Collections.emptyList()) {
+        public boolean isEmpty() {
+            return true;
+        }
+    };
 
     @SuppressWarnings("unchecked")
     public static <T> ResolvedObservers<T> of(List<ObserverMethod<? super T>> observers) {
@@ -60,5 +66,18 @@ public class ResolvedObservers<T> {
 
     List<ObserverMethod<? super T>> getTransactionObservers() {
         return transactionObservers;
+    }
+
+    public boolean isEmpty() {
+        return false;
+    }
+
+    /**
+     * Returns all observer methods. First part of the list consists of the ordered sequence of {@link TransactionPhase#IN_PROGRESS} observers followed by
+     * an ordered sequence of transactional observers.
+     * TODO: we may need to preserve ordering of the entire list
+     */
+    public List<ObserverMethod<? super T>> getAllObservers() {
+        return ImmutableList.<ObserverMethod<? super T>>builder().addAll(immediateObservers).addAll(transactionObservers).build();
     }
 }
