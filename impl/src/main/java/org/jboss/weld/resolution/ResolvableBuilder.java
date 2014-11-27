@@ -160,18 +160,18 @@ public class ResolvableBuilder {
                 }
             }
         }
-        return new ResolvableImpl(rawType, types, mappedQualifiers, declaringBean, qualifierInstances, delegate);
+        return new ResolvableImpl(rawType, types, declaringBean, qualifierInstances, delegate);
     }
 
     private Resolvable createFacade(Class<?> rawType) {
         Set<Type> types = Collections.<Type>singleton(rawType);
-        return new ResolvableImpl(rawType, types, mappedQualifiers, declaringBean, ANY_SINGLETON, delegate);
+        return new ResolvableImpl(rawType, types, declaringBean, ANY_SINGLETON, delegate);
     }
 
     // just as facade but we keep the qualifiers so that we can recognize Bean from @Intercepted Bean.
     private Resolvable createMetadataProvider(Class<?> rawType) {
         Set<Type> types = Collections.<Type>singleton(rawType);
-        return new ResolvableImpl(rawType, types, mappedQualifiers, declaringBean, qualifierInstances, delegate);
+        return new ResolvableImpl(rawType, types, declaringBean, qualifierInstances, delegate);
     }
 
     public ResolvableBuilder addQualifier(Annotation qualifier) {
@@ -228,14 +228,12 @@ public class ResolvableBuilder {
     protected static class ResolvableImpl implements Resolvable {
 
         private final Set<QualifierInstance> qualifierInstances;
-        private final Map<Class<? extends Annotation>, Annotation> mappedQualifiers;
         private final Set<Type> typeClosure;
         private final Class<?> rawType;
         private final Bean<?> declaringBean;
         private final boolean delegate;
 
-        protected ResolvableImpl(Class<?> rawType, Set<Type> typeClosure, Map<Class<? extends Annotation>, Annotation> mappedQualifiers, Bean<?> declaringBean, final Set<QualifierInstance> qualifierInstances, boolean delegate) {
-            this.mappedQualifiers = mappedQualifiers;
+        protected ResolvableImpl(Class<?> rawType, Set<Type> typeClosure, Bean<?> declaringBean, final Set<QualifierInstance> qualifierInstances, boolean delegate) {
             this.typeClosure = typeClosure;
             this.rawType = rawType;
             this.declaringBean = declaringBean;
@@ -249,18 +247,8 @@ public class ResolvableBuilder {
         }
 
         @Override
-        public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
-            return mappedQualifiers.containsKey(annotationType);
-        }
-
-        @Override
         public Set<Type> getTypes() {
             return typeClosure;
-        }
-
-        @Override
-        public <A extends Annotation> A getAnnotation(Class<A> annotationType) {
-            return Reflections.<A>cast(mappedQualifiers.get(annotationType));
         }
 
         @Override

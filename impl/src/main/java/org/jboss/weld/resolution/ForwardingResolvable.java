@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.resolution;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Set;
 
@@ -32,18 +31,8 @@ public abstract class ForwardingResolvable implements Resolvable {
     }
 
     @Override
-    public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
-        return delegate().isAnnotationPresent(annotationType);
-    }
-
-    @Override
     public Set<Type> getTypes() {
         return delegate().getTypes();
-    }
-
-    @Override
-    public <A extends Annotation> A getAnnotation(Class<A> annotationType) {
-        return delegate().getAnnotation(annotationType);
     }
 
     @Override

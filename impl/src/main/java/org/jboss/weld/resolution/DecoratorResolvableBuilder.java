@@ -29,7 +29,7 @@ public class DecoratorResolvableBuilder extends ResolvableBuilder {
         if (qualifiers.size() == 0) {
             this.qualifierInstances.add(QualifierInstance.DEFAULT);
         }
-        return new ResolvableImpl(rawType, types, mappedQualifiers, declaringBean, qualifierInstances, true);
+        return new ResolvableImpl(rawType, types, declaringBean, qualifierInstances, true);
     }
 
 }
