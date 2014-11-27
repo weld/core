@@ -30,11 +30,14 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.event.Reception;
 import javax.enterprise.event.TransactionPhase;
 import javax.enterprise.inject.Disposes;
+import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.New;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.EventMetadata;
 import javax.enterprise.inject.spi.ObserverMethod;
 import javax.enterprise.inject.spi.WithAnnotations;
+import javax.enterprise.util.TypeLiteral;
 import javax.inject.Inject;
 import javax.inject.Qualifier;
 
@@ -69,6 +72,9 @@ import org.jboss.weld.util.reflection.HierarchyDiscovery;
  */
 public class ObserverMethodImpl<T, X> implements ExperimentalObserverMethod<T> {
 
+    @SuppressWarnings("serial")
+    private static final Type EVENT_METADATA_INSTANCE_TYPE = new TypeLiteral<Instance<EventMetadata>>() {
+    }.getType();
     public static final String ID_PREFIX = ObserverMethodImpl.class.getPackage().getName();
 
     public static final String ID_SEPARATOR = "-";
@@ -88,6 +94,7 @@ public class ObserverMethodImpl<T, X> implements ExperimentalObserverMethod<T> {
     private final int priority;
     // this turned out to be noticeable faster than observerMethod.getAnnotated().isStatic()
     private final boolean isStatic;
+    private final boolean eventMetadataRequired;
 
     /**
      * Creates an Observer which describes and encapsulates an observer method (8.5).
@@ -129,6 +136,17 @@ public class ObserverMethodImpl<T, X> implements ExperimentalObserverMethod<T> {
             this.priority = priority.value();
         }
         this.isStatic = observer.isStatic();
+        this.eventMetadataRequired = initMetadataRequired(this.injectionPoints);
+    }
+
+    private static boolean initMetadataRequired(Set<WeldInjectionPointAttributes<?, ?>> injectionPoints) {
+        for (WeldInjectionPointAttributes<?, ?> ip : injectionPoints) {
+            Type type = ip.getType();
+            if (EventMetadata.class.equals(type) || EVENT_METADATA_INSTANCE_TYPE.equals(type)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     protected static String createId(final EnhancedAnnotatedMethod<?, ?> observer, final RIBean<?> declaringBean) {
@@ -346,5 +364,9 @@ public class ObserverMethodImpl<T, X> implements ExperimentalObserverMethod<T> {
     @Override
     public int getPriority() {
         return priority;
+    }
+
+    public boolean isEventMetadataRequired() {
+        return eventMetadataRequired;
     }
 }
