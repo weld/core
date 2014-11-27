@@ -33,27 +33,39 @@ import com.google.common.collect.ImmutableSet;
  * @author Jozef Hartinger
  *
  */
-public class EventMetadataImpl implements EventMetadata {
+public final class EventMetadataImpl implements EventMetadata {
 
     private final Type type;
     private final InjectionPoint injectionPoint;
     private final Set<Annotation> qualifiers;
+    private final Annotation[] qualifierArray;
 
-    EventMetadataImpl(Type type, InjectionPoint injectionPoint, Set<Annotation> qualifiers) {
-        this.type = type;
-        this.injectionPoint = injectionPoint;
-        this.qualifiers = ImmutableSet.<Annotation> builder().addAll(qualifiers).add(AnyLiteral.INSTANCE).build();
+    public EventMetadataImpl(Type type, InjectionPoint injectionPoint, Set<Annotation> qualifiers) {
+        this(type, injectionPoint, qualifiers, null);
     }
 
-    EventMetadataImpl(Type type, InjectionPoint injectionPoint, Annotation[] qualifiers) {
+    public EventMetadataImpl(Type type, InjectionPoint injectionPoint, Annotation[] qualifiers) {
+        this(type, injectionPoint, null, qualifiers);
+    }
+
+    private EventMetadataImpl(Type type, InjectionPoint injectionPoint, Set<Annotation> qualifiers, Annotation[] qualifierArray) {
         this.type = type;
         this.injectionPoint = injectionPoint;
-        this.qualifiers = ImmutableSet.<Annotation> builder().add(qualifiers).add(AnyLiteral.INSTANCE).build();
+        this.qualifiers = qualifiers;
+        this.qualifierArray = qualifierArray;
     }
 
     @Override
     public Set<Annotation> getQualifiers() {
-        return qualifiers;
+        ImmutableSet.Builder<Annotation> builder = ImmutableSet.<Annotation> builder();
+        builder.add(AnyLiteral.INSTANCE);
+        if (qualifiers != null) {
+            return builder.addAll(qualifiers).build();
+        } else if (qualifierArray != null) {
+            return builder.add(qualifierArray).build();
+        } else {
+            throw new IllegalStateException();
+        }
     }
 
     @Override
