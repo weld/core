@@ -54,7 +54,6 @@ public class ResolvableBuilder {
 
     protected Class<?> rawType;
     protected final Set<Type> types;
-    protected final Set<Annotation> qualifiers;
     protected final Set<QualifierInstance> qualifierInstances;
     protected Bean<?> declaringBean;
     private final MetaAnnotationStore store;
@@ -63,7 +62,6 @@ public class ResolvableBuilder {
     public ResolvableBuilder(final MetaAnnotationStore store) {
         this.store = store;
         this.types = new HashSet<Type>();
-        this.qualifiers = new HashSet<Annotation>();
         this.qualifierInstances = new HashSet<QualifierInstance>();
     }
 
@@ -113,7 +111,7 @@ public class ResolvableBuilder {
     }
 
     public Resolvable create() {
-        if (qualifiers.size() == 0) {
+        if (qualifierInstances.isEmpty()) {
             this.qualifierInstances.add(QualifierInstance.DEFAULT);
         }
         for (Type type : types) {
@@ -183,7 +181,6 @@ public class ResolvableBuilder {
         }
 
         checkQualifier(qualifier, qualifierInstance, annotationType);
-        this.qualifiers.add(qualifier);
         this.qualifierInstances.add(qualifierInstance);
         return this;
     }
@@ -216,10 +213,10 @@ public class ResolvableBuilder {
 
     protected void checkQualifier(Annotation qualifier, final QualifierInstance qualifierInstance, Class<? extends Annotation> annotationType) {
         if (!store.getBindingTypeModel(annotationType).isValid()) {
-            throw BeanManagerLogger.LOG.invalidQualifier(qualifier);
+            throw BeanManagerLogger.LOG.invalidQualifier(qualifierInstance);
         }
         if (qualifierInstances.contains(qualifierInstance)) {
-            throw BeanManagerLogger.LOG.duplicateQualifiers(qualifiers);
+            throw BeanManagerLogger.LOG.duplicateQualifiers(qualifierInstances);
         }
     }
 
@@ -274,6 +271,9 @@ public class ResolvableBuilder {
 
         @Override
         public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
             if (o instanceof ResolvableImpl) {
                 ResolvableImpl r = (ResolvableImpl) o;
                 return this.getTypes().equals(r.getTypes()) && this.qualifierInstances.equals(r.qualifierInstances);

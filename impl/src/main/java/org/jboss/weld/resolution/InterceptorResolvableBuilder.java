@@ -45,7 +45,7 @@ public class InterceptorResolvableBuilder extends ResolvableBuilder {
             throw BeanManagerLogger.LOG.interceptorResolutionWithNonbindingType(qualifier);
         }
         if (qualifierInstances.contains(qualifierInstance)) {
-            throw BeanManagerLogger.LOG.duplicateInterceptorBinding(qualifiers);
+            throw BeanManagerLogger.LOG.duplicateInterceptorBinding(qualifierInstances);
         }
     }
 
@@ -92,7 +92,7 @@ public class InterceptorResolvableBuilder extends ResolvableBuilder {
 
     @Override
     public InterceptorResolvable create() {
-        if (qualifiers.size() == 0) {
+        if (qualifierInstances.isEmpty()) {
             throw BeanManagerLogger.LOG.interceptorBindingsEmpty();
         }
         return new InterceptorResolvableImpl(rawType, types, declaringBean, interceptionType, qualifierInstances);
