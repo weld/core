@@ -188,10 +188,11 @@ public class ResolvableBuilder {
         return this;
     }
 
-    public ResolvableBuilder addQualifierIfAbsent(Annotation qualifier) {
-        if (!qualifiers.contains(qualifier)) {
-            addQualifier(qualifier);
-        }
+    /**
+     * Adds a given qualifier without any checks. This method should be used with care.
+     */
+    public ResolvableBuilder addQualifierUnchecked(QualifierInstance qualifier) {
+        this.qualifierInstances.add(qualifier);
         return this;
     }
 
