@@ -50,7 +50,7 @@ public class QualifierInstance {
     public static final QualifierInstance DEFAULT = new QualifierInstance(Default.class);
 
     private final Class<? extends Annotation> annotationClass;
-    private final Map<AnnotatedMethod<?>, Object> values;
+    private final Map<String, Object> values;
     private final int hashCode;
 
     public static Set<QualifierInstance> of(Set<Annotation> qualifiers, MetaAnnotationStore store) {
@@ -88,16 +88,16 @@ public class QualifierInstance {
     }
 
     private QualifierInstance(final Class<? extends Annotation> annotationClass) {
-        this(annotationClass, Collections.<AnnotatedMethod<?>, Object>emptyMap());
+        this(annotationClass, Collections.<String, Object>emptyMap());
     }
 
-    private QualifierInstance(Class<? extends Annotation> annotationClass, Map<AnnotatedMethod<?>, Object> values) {
+    private QualifierInstance(Class<? extends Annotation> annotationClass, Map<String, Object> values) {
         this.annotationClass = annotationClass;
         this.values = values;
         this.hashCode = Objects.hash(annotationClass, values);
     }
 
-    private static Map<AnnotatedMethod<?>, Object> createValues(final Annotation instance, final MetaAnnotationStore store) {
+    private static Map<String, Object> createValues(final Annotation instance, final MetaAnnotationStore store) {
 
         final Class<? extends Annotation> annotationClass = instance.annotationType();
         final QualifierModel<? extends Annotation> model = store.getBindingTypeModel(annotationClass);
@@ -106,7 +106,7 @@ public class QualifierInstance {
             return Collections.emptyMap();
         }
 
-        final ImmutableMap.Builder<AnnotatedMethod<?>, Object> builder = ImmutableMap.builder();
+        final ImmutableMap.Builder<String, Object> builder = ImmutableMap.builder();
 
         for (final AnnotatedMethod<?> method : model.getAnnotatedAnnotation().getMethods()) {
             if(!model.getNonBindingMembers().contains(method)) {
@@ -116,7 +116,7 @@ public class QualifierInstance {
                     } else {
                         method.getJavaMember().setAccessible(true);
                     }
-                    builder.put(method, method.getJavaMember().invoke(instance));
+                    builder.put(method.getJavaMember().getName(), method.getJavaMember().invoke(instance));
                 } catch (IllegalAccessException e) {
                     throw new WeldException(e);
                 } catch (InvocationTargetException e) {
