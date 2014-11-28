@@ -26,34 +26,34 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.weld.config.ConfigurationKey;
 import org.jboss.weld.tests.category.Integration;
+import org.jboss.weld.tests.util.PropertiesBuilder;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-public class ConfigurationKeyHasDifferentValuesTest extends AbstractPropertiesFileConfigTest {
+public class ConfigurationKeyHasDifferentValuesTest {
 
     @ShouldThrowException(org.jboss.weld.exceptions.IllegalStateException.class)
     @Deployment
     public static Archive<?> createTestArchive() {
 
         BeanArchive ejbJar = ShrinkWrap.create(BeanArchive.class);
-        ejbJar.addClass(DummySessionBean.class).addAsResource(
-                createPropertiesFileAsset("org.jboss.weld.bootstrap.concurrentDeployment=false"), "weld.properties");
+        ejbJar.addClass(DummySessionBean.class)
+                .addAsResource(PropertiesBuilder.newBuilder().set(ConfigurationKey.CONCURRENT_DEPLOYMENT.get(), "false").build(), "weld.properties");
 
         WebArchive war1 = Testable.archiveToTest(ShrinkWrap
                 .create(WebArchive.class)
-                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
-                .addAsWebInfResource(createPropertiesFileAsset("org.jboss.weld.bootstrap.concurrentDeployment=true"),
-                        "classes/weld.properties"));
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml"))
+                .addAsResource(PropertiesBuilder.newBuilder().set(ConfigurationKey.CONCURRENT_DEPLOYMENT.get(), "true").build(), "weld.properties");
 
         WebArchive war2 = ShrinkWrap
                 .create(WebArchive.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
-                .addAsWebInfResource(createPropertiesFileAsset("org.jboss.weld.bootstrap.concurrentDeployment=false"),
-                        "classes/weld.properties");
+                .addAsResource(PropertiesBuilder.newBuilder().set(ConfigurationKey.CONCURRENT_DEPLOYMENT.get(), "false").build(), "weld.properties");
 
         return ShrinkWrap.create(EnterpriseArchive.class).addAsModules(ejbJar, war1, war2);
     }

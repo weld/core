@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2014, Red Hat, Inc., and individual contributors
+ * Copyright 2012, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,20 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.config.files;
 
-import org.jboss.shrinkwrap.api.asset.StringAsset;
+package org.jboss.weld.tests.util;
 
-public abstract class AbstractPropertiesFileConfigTest {
+import org.jboss.arquillian.container.spi.client.container.DeploymentExceptionTransformer;
+import org.jboss.weld.exceptions.DeploymentException;
 
-    protected static StringAsset createPropertiesFileAsset(String... lines) {
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < lines.length; i++) {
-            builder.append(lines[i]);
-            builder.append("\n");
+/**
+ * Exception transformer to work around aquillian issue
+ *
+ * @author Stuart Douglas
+ */
+public class WeldExceptionTransformer implements DeploymentExceptionTransformer {
+    public Throwable transform(final Throwable throwable) {
+        if(throwable == null) {
+            return new DeploymentException(new Exception());
         }
-        return new StringAsset(builder.toString());
+        return throwable;
     }
-
-
 }
