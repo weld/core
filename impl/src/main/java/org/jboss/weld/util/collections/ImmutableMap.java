@@ -45,6 +45,16 @@ public abstract class ImmutableMap<K, V> extends AbstractImmutableMap<K, V> {
     }
 
     /**
+     * Creates an immutable singleton instance.
+     * @param key
+     * @param value
+     * @return
+     */
+    public static <K, V> Map<K, V> of(K key, V value) {
+        return new ImmutableMapEntry<K, V>(key, value);
+    }
+
+    /**
      * Creates a new empty builder for building immutable map.
      *
      * @return a new empty builder
