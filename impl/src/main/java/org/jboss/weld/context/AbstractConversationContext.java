@@ -45,7 +45,6 @@ import org.jboss.weld.context.beanstore.NamingScheme;
 import org.jboss.weld.context.conversation.ConversationIdGenerator;
 import org.jboss.weld.context.conversation.ConversationImpl;
 import org.jboss.weld.literal.DestroyedLiteral;
-import org.jboss.weld.logging.ContextLogger;
 import org.jboss.weld.logging.ConversationLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.serialization.BeanIdentifierIndex;
@@ -286,15 +285,8 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
                         ((ConversationNamingScheme) getRequestAttribute(getRequest(), ConversationNamingScheme.PARAMETER_NAME)).setCid(getCurrentConversation()
                                 .getId());
 
-                        try {
-                            getBeanStore().attach();
-                            getConversationMap().put(getCurrentConversation().getId(), getCurrentConversation());
-                        } catch (Exception cause) {
-                            // possible session not found error..
-                            ContextLogger.LOG.destroyingContextAfterBeanStoreAttachError(this, getBeanStore(), cause.getMessage());
-                            ContextLogger.LOG.catchingDebug(cause);
-                            destroy();
-                        }
+                        getBeanStore().attach();
+                        getConversationMap().put(getCurrentConversation().getId(), getCurrentConversation());
                     }
                 }
             } finally {
