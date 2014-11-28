@@ -49,6 +49,7 @@ class StaticMethodInjectionPoint<T, X> extends AbstractCallableInjectionPoint<T,
     private final int specialInjectionPointIndex;
     private final AnnotatedMethod<X> annotatedMethod;
     final Method accessibleMethod;
+    private final boolean hasTransientReferenceParameter;
 
     StaticMethodInjectionPoint(EnhancedAnnotatedMethod<T, X> enhancedMethod, Bean<?> declaringBean, Class<?> declaringComponentClass,
             Class<? extends Annotation> specialParameterMarker, InjectionPointFactory factory, BeanManagerImpl manager) {
@@ -56,6 +57,7 @@ class StaticMethodInjectionPoint<T, X> extends AbstractCallableInjectionPoint<T,
         this.accessibleMethod = SecurityActions.getAccessibleCopyOfMethod(enhancedMethod.getJavaMember());
         this.annotatedMethod = enhancedMethod.slim();
         this.specialInjectionPointIndex = initSpecialInjectionPointIndex(enhancedMethod, specialParameterMarker);
+        this.hasTransientReferenceParameter = initHasTransientReference(enhancedMethod.getEnhancedParameters());
     }
 
     private static <X> int initSpecialInjectionPointIndex(EnhancedAnnotatedMethod<?, X> enhancedMethod, Class<? extends Annotation> specialParameterMarker) {
@@ -69,14 +71,23 @@ class StaticMethodInjectionPoint<T, X> extends AbstractCallableInjectionPoint<T,
         return parameters.get(0).getPosition();
     }
 
+    private static boolean initHasTransientReference(List<? extends EnhancedAnnotatedParameter<?, ?>> parameters) {
+        for (EnhancedAnnotatedParameter<?, ?> parameter : parameters) {
+            if (parameter.isAnnotationPresent(TransientReference.class)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public T invoke(Object receiver, Object specialValue, BeanManagerImpl manager, CreationalContext<?> ctx,
             Class<? extends RuntimeException> exceptionTypeToThrow) {
-        CreationalContext<?> invocationContext = null;
-        if (!getInjectionPoints().isEmpty()) {
-            invocationContext = manager.createCreationalContext(null);
+        CreationalContext<?> transientReferenceContext = null;
+        if (hasTransientReferenceParameter) {
+            transientReferenceContext = manager.createCreationalContext(null);
         }
         try {
-            return cast(getMethod(receiver).invoke(receiver, getParameterValues(specialValue, manager, ctx, invocationContext)));
+            return cast(getMethod(receiver).invoke(receiver, getParameterValues(specialValue, manager, ctx, transientReferenceContext)));
         } catch (IllegalArgumentException e) {
             rethrowException(e, exceptionTypeToThrow);
         } catch (SecurityException e) {
@@ -88,8 +99,8 @@ class StaticMethodInjectionPoint<T, X> extends AbstractCallableInjectionPoint<T,
         } catch (NoSuchMethodException e) {
             rethrowException(e, exceptionTypeToThrow);
         } finally {
-            if (invocationContext != null) {
-                invocationContext.release();
+            if (hasTransientReferenceParameter) {
+                transientReferenceContext.release();
             }
         }
         return null;
@@ -102,7 +113,7 @@ class StaticMethodInjectionPoint<T, X> extends AbstractCallableInjectionPoint<T,
      * @param manager The Bean manager
      * @return The object array of looked up values
      */
-    protected Object[] getParameterValues(Object specialVal, BeanManagerImpl manager, CreationalContext<?> ctx, CreationalContext<?> invocationContext) {
+    protected Object[] getParameterValues(Object specialVal, BeanManagerImpl manager, CreationalContext<?> ctx, CreationalContext<?> transientReferenceContext) {
         if (getInjectionPoints().isEmpty()) {
             if (specialInjectionPointIndex == -1) {
                 return Arrays2.EMPTY_ARRAY;
@@ -117,7 +128,7 @@ class StaticMethodInjectionPoint<T, X> extends AbstractCallableInjectionPoint<T,
             if (i == specialInjectionPointIndex) {
                 parameterValues[i] = specialVal;
             } else if (param.getAnnotated().isAnnotationPresent(TransientReference.class)) {
-                parameterValues[i] = param.getValueToInject(manager, invocationContext);
+                parameterValues[i] = param.getValueToInject(manager, transientReferenceContext);
             } else {
                 parameterValues[i] = param.getValueToInject(manager, ctx);
             }
