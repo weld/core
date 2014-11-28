@@ -1,4 +1,4 @@
-package org.jboss.weld.tests;
+package org.jboss.weld.tests.util;
 
 import org.jboss.arquillian.container.spi.client.container.DeploymentExceptionTransformer;
 import org.jboss.arquillian.container.test.spi.client.deployment.AuxiliaryArchiveAppender;

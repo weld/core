@@ -33,25 +33,26 @@ import org.jboss.weld.config.ConfigurationKey;
 import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.tests.category.Integration;
+import org.jboss.weld.tests.util.PropertiesBuilder;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-public class UnsafeEnabledTest extends AbstractPropertiesFileConfigTest {
+public class UnsafeEnabledTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
 
         BeanArchive ejbJar = ShrinkWrap.create(BeanArchive.class);
-        ejbJar.addClass(DummySessionBean.class).addAsResource(
-                createPropertiesFileAsset("org.jboss.weld.proxy.unsafe=true"), "weld.properties");
+        ejbJar.addClass(DummySessionBean.class)
+                .addAsResource(PropertiesBuilder.newBuilder().set(ConfigurationKey.PROXY_UNSAFE.get(), "true").build(), "weld.properties");
 
         WebArchive war1 = Testable.archiveToTest(ShrinkWrap
                 .create(WebArchive.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
-                .addClasses(UnsafeEnabledTest.class, AbstractPropertiesFileConfigTest.class, UnproxyableBean.class));
+                .addClasses(UnsafeEnabledTest.class, UnproxyableBean.class));
 
         return ShrinkWrap.create(EnterpriseArchive.class).addAsModules(ejbJar, war1);
     }
