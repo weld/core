@@ -28,6 +28,7 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.Bean;
+import javax.inject.Named;
 
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.exceptions.WeldException;
@@ -82,6 +83,9 @@ public class QualifierInstance {
             return ANY;
         } else if (Default.class == annotationType) {
             return DEFAULT;
+        } else if (Named.class == annotationType) {
+            Named named = (Named) annotation;
+            return new QualifierInstance(annotationType, ImmutableMap.of("value", named.value()));
         } else {
             return new QualifierInstance(annotationType, createValues(annotation, store));
         }
