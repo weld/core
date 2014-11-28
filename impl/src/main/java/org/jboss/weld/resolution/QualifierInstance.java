@@ -28,6 +28,7 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.Bean;
+import javax.inject.Named;
 
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.exceptions.WeldException;
@@ -50,7 +51,7 @@ public class QualifierInstance {
     public static final QualifierInstance DEFAULT = new QualifierInstance(Default.class);
 
     private final Class<? extends Annotation> annotationClass;
-    private final Map<AnnotatedMethod<?>, Object> values;
+    private final Map<String, Object> values;
     private final int hashCode;
 
     public static Set<QualifierInstance> of(Set<Annotation> qualifiers, MetaAnnotationStore store) {
@@ -77,20 +78,30 @@ public class QualifierInstance {
      * @return a new qualifier instance for the given annotation
      */
     public static QualifierInstance of(Annotation annotation, MetaAnnotationStore store) {
-        return new QualifierInstance(annotation.annotationType(), createValues(annotation, store));
+        Class<? extends Annotation> annotationType = annotation.annotationType();
+        if (Any.class == annotationType) {
+            return ANY;
+        } else if (Default.class == annotationType) {
+            return DEFAULT;
+        } else if (Named.class == annotationType) {
+            Named named = (Named) annotation;
+            return new QualifierInstance(annotationType, ImmutableMap.of("value", named.value()));
+        } else {
+            return new QualifierInstance(annotationType, createValues(annotation, store));
+        }
     }
 
     private QualifierInstance(final Class<? extends Annotation> annotationClass) {
-        this(annotationClass, Collections.<AnnotatedMethod<?>, Object>emptyMap());
+        this(annotationClass, Collections.<String, Object>emptyMap());
     }
 
-    private QualifierInstance(Class<? extends Annotation> annotationClass, Map<AnnotatedMethod<?>, Object> values) {
+    private QualifierInstance(Class<? extends Annotation> annotationClass, Map<String, Object> values) {
         this.annotationClass = annotationClass;
         this.values = values;
         this.hashCode = Objects.hash(annotationClass, values);
     }
 
-    private static Map<AnnotatedMethod<?>, Object> createValues(final Annotation instance, final MetaAnnotationStore store) {
+    private static Map<String, Object> createValues(final Annotation instance, final MetaAnnotationStore store) {
 
         final Class<? extends Annotation> annotationClass = instance.annotationType();
         final QualifierModel<? extends Annotation> model = store.getBindingTypeModel(annotationClass);
@@ -99,7 +110,7 @@ public class QualifierInstance {
             return Collections.emptyMap();
         }
 
-        final ImmutableMap.Builder<AnnotatedMethod<?>, Object> builder = ImmutableMap.builder();
+        final ImmutableMap.Builder<String, Object> builder = ImmutableMap.builder();
 
         for (final AnnotatedMethod<?> method : model.getAnnotatedAnnotation().getMethods()) {
             if(!model.getNonBindingMembers().contains(method)) {
@@ -109,7 +120,7 @@ public class QualifierInstance {
                     } else {
                         method.getJavaMember().setAccessible(true);
                     }
-                    builder.put(method, method.getJavaMember().invoke(instance));
+                    builder.put(method.getJavaMember().getName(), method.getJavaMember().invoke(instance));
                 } catch (IllegalAccessException e) {
                     throw new WeldException(e);
                 } catch (InvocationTargetException e) {
@@ -152,10 +163,9 @@ public class QualifierInstance {
 
     @Override
     public String toString() {
-        return "QualifierInstance{" +
+        return "QualifierInstance {" +
                 "annotationClass=" + annotationClass +
                 ", values=" + values +
-                ", hashCode=" + hashCode +
                 '}';
     }
 
