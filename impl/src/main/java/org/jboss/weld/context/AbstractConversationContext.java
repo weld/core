@@ -45,6 +45,7 @@ import org.jboss.weld.context.beanstore.NamingScheme;
 import org.jboss.weld.context.conversation.ConversationIdGenerator;
 import org.jboss.weld.context.conversation.ConversationImpl;
 import org.jboss.weld.literal.DestroyedLiteral;
+import org.jboss.weld.logging.ContextLogger;
 import org.jboss.weld.logging.ConversationLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.serialization.BeanIdentifierIndex;
@@ -294,19 +295,26 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
                         ((ConversationNamingScheme) getRequestAttribute(getRequest(), ConversationNamingScheme.PARAMETER_NAME)).setCid(getCurrentConversation()
                                 .getId());
 
-                        getBeanStore().attach();
-                        getConversationMap().put(getCurrentConversation().getId(), getCurrentConversation());
+                        try {
+                            getBeanStore().attach();
+                            getConversationMap().put(getCurrentConversation().getId(), getCurrentConversation());
+                        } catch (Exception e) {
+                            // possible session not found error..
+                            ContextLogger.LOG.destroyingContextAfterBeanStoreAttachError(this, getBeanStore());
+                            destroy();
+                        }
                     }
                 }
             } finally {
                 // WELD-1690 always try to unlock the current conversation
                 getCurrentConversation().unlock();
+                // WELD-1802
+                setBeanStore(null);
+                // Clean up any expired/ended conversations
+                cleanUpConversationMap();
+                // deactivate the context
+                super.setActive(false);
             }
-            setBeanStore(null);
-            // Clean up any expired/ended conversations
-            cleanUpConversationMap();
-            // deactivate the context
-            super.setActive(false);
         } else {
             throw ConversationLogger.LOG.contextNotActive();
         }
