@@ -14,13 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.config.files;
+package org.jboss.weld.tests.config;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.OperateOnDeployment;
 import org.jboss.arquillian.container.test.api.Testable;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -28,21 +30,36 @@ import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.config.ConfigurationKey;
 import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.tests.category.Integration;
+import org.jboss.weld.tests.config.files.DummySessionBean;
 import org.jboss.weld.tests.util.PropertiesBuilder;
+import org.jboss.weld.tests.util.SystemPropertiesLoader;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-public class PropertiesFilesConfigTest {
+public class CombinedPropertiesFilesConfigTest {
 
-    @Deployment
+    private final static String JAR_DEPLOYMENT = "loader";
+    private final static String WAR_DEPLOYMENT = "test";
+
+    @Deployment(testable = false, order = 0, name = JAR_DEPLOYMENT)
+    public static Archive<?> createSystemPropertiesLoaderArchive() {
+        JavaArchive testDeployment = ShrinkWrap.create(BeanArchive.class).addClasses(SystemPropertiesLoader.class, PropertiesBuilder.class);
+        PropertiesBuilder.newBuilder().set(ConfigurationKey.CONCURRENT_DEPLOYMENT.get(), "true").set(ConfigurationKey.PRELOADER_THREAD_POOL_SIZE.get(), "10")
+                .set(ConfigurationKey.RESOLUTION_CACHE_SIZE.get(), "500").set(ConfigurationKey.PROXY_UNSAFE.get(), "true")
+                .addAsSystemProperties(testDeployment);
+        return testDeployment;
+    }
+
+    @Deployment(order = 1, name = WAR_DEPLOYMENT)
     public static Archive<?> createTestArchive() {
 
         BeanArchive ejbJar = ShrinkWrap.create(BeanArchive.class);
@@ -55,9 +72,8 @@ public class PropertiesFilesConfigTest {
         WebArchive war1 = Testable.archiveToTest(ShrinkWrap
                 .create(WebArchive.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
-                .addClasses(PropertiesFilesConfigTest.class)
+                .addClasses(CombinedPropertiesFilesConfigTest.class)
                 .addAsResource(PropertiesBuilder.newBuilder()
-                                .set(ConfigurationKey.CONCURRENT_DEPLOYMENT.get(), "false")
                                 .set(ConfigurationKey.PRELOADER_THREAD_POOL_SIZE.get(), "5")
                                 .set(ConfigurationKey.EXECUTOR_THREAD_POOL_TYPE.get(), "FIXED_TIMEOUT")
                                 .build(),
@@ -67,7 +83,6 @@ public class PropertiesFilesConfigTest {
                 .create(WebArchive.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addAsResource(PropertiesBuilder.newBuilder()
-                                .set(ConfigurationKey.CONCURRENT_DEPLOYMENT.get(), "false")
                                 .set(ConfigurationKey.PRELOADER_THREAD_POOL_SIZE.get(), "5")
                                 .set(ConfigurationKey.RESOLUTION_CACHE_SIZE.get(), "1000")
                                 .build(),
@@ -80,7 +95,8 @@ public class PropertiesFilesConfigTest {
     BeanManagerImpl beanManager;
 
     @Test
-    public void testConfiguration() {
+    @OperateOnDeployment(WAR_DEPLOYMENT)
+    public void testWeldPropertiesFilePriorityInConfiguration() {
         WeldConfiguration configuration = beanManager.getServices().get(WeldConfiguration.class);
         // Multiple definitions but the same values
         assertEquals(false, configuration.getBooleanProperty(ConfigurationKey.CONCURRENT_DEPLOYMENT));
@@ -88,9 +104,23 @@ public class PropertiesFilesConfigTest {
         // Unique values
         assertEquals("FIXED_TIMEOUT", configuration.getStringProperty(ConfigurationKey.EXECUTOR_THREAD_POOL_TYPE));
         assertEquals(Long.valueOf(1000), configuration.getLongProperty(ConfigurationKey.RESOLUTION_CACHE_SIZE));
+    }
+
+    @Test
+    @OperateOnDeployment(WAR_DEPLOYMENT)
+    public void testDefault() {
+        WeldConfiguration configuration = beanManager.getServices().get(WeldConfiguration.class);
         // Default value
         assertEquals(ConfigurationKey.NON_PORTABLE_MODE.getDefaultValue(),
                 configuration.getBooleanProperty(ConfigurationKey.NON_PORTABLE_MODE));
     }
 
+    @Test
+    @OperateOnDeployment(WAR_DEPLOYMENT)
+    public void testSystemProperties() {
+        // property defined only in weld.properties and not loaded as system property
+        assertNull(System.getProperty(ConfigurationKey.EXECUTOR_THREAD_POOL_TYPE.get()));
+        //property loaded only as system property
+        assertEquals("true", System.getProperty(ConfigurationKey.PROXY_UNSAFE.get()));
+    }
 }

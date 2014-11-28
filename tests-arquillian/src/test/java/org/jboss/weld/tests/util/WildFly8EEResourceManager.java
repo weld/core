@@ -1,4 +1,4 @@
-package org.jboss.weld.tests;
+package org.jboss.weld.tests.util;
 
 import java.io.IOException;
 import java.util.logging.Level;
