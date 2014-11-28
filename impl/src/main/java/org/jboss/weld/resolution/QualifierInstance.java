@@ -159,10 +159,9 @@ public class QualifierInstance {
 
     @Override
     public String toString() {
-        return "QualifierInstance{" +
+        return "QualifierInstance {" +
                 "annotationClass=" + annotationClass +
                 ", values=" + values +
-                ", hashCode=" + hashCode +
                 '}';
     }
 
