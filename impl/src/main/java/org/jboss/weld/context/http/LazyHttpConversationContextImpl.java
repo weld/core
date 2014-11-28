@@ -67,14 +67,13 @@ public class LazyHttpConversationContextImpl extends HttpConversationContextImpl
 
     @Override
     public void activate() {
+        if (!isAssociated()) {
+            throw ConversationLogger.LOG.mustCallAssociateBeforeActivate();
+        }
         if (!isActive()) {
-            if (!isAssociated()) {
-                throw ConversationLogger.LOG.mustCallAssociateBeforeActivate();
-            }
-            // Activate the context
             super.setActive(true);
         } else {
-            throw ConversationLogger.LOG.contextAlreadyActive();
+            ConversationLogger.LOG.contextAlreadyActive(getRequest());
         }
     }
 
