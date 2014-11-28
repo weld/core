@@ -77,7 +77,14 @@ public class QualifierInstance {
      * @return a new qualifier instance for the given annotation
      */
     public static QualifierInstance of(Annotation annotation, MetaAnnotationStore store) {
-        return new QualifierInstance(annotation.annotationType(), createValues(annotation, store));
+        Class<? extends Annotation> annotationType = annotation.annotationType();
+        if (Any.class == annotationType) {
+            return ANY;
+        } else if (Default.class == annotationType) {
+            return DEFAULT;
+        } else {
+            return new QualifierInstance(annotationType, createValues(annotation, store));
+        }
     }
 
     private QualifierInstance(final Class<? extends Annotation> annotationClass) {
