@@ -39,6 +39,7 @@ import org.jboss.weld.context.CreationalContextImpl;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.security.GetAccessibleCopyOfMember;
+import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.reflection.Reflections;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
@@ -66,9 +67,12 @@ public class ConstructorInjectionPoint<T> extends AbstractCallableInjectionPoint
     }
 
     public T newInstance(BeanManagerImpl manager, CreationalContext<?> ctx) {
-        CreationalContext<?> invocationContext = manager.createCreationalContext(null);
+        CreationalContext<?> transientReferenceContext = null;
+        if (hasTransientReferenceParameter) {
+            transientReferenceContext = manager.createCreationalContext(null);
+        }
         try {
-            Object[] parameterValues = getParameterValues(manager, ctx, invocationContext);
+            Object[] parameterValues = getParameterValues(manager, ctx, transientReferenceContext);
             if (ctx instanceof CreationalContextImpl<?>) {
                 CreationalContextImpl<T> weldCtx = Reflections.cast(ctx);
                 return invokeAroundConstructCallbacks(parameterValues, weldCtx);
@@ -76,16 +80,18 @@ public class ConstructorInjectionPoint<T> extends AbstractCallableInjectionPoint
                 return newInstance(parameterValues);
             }
         } finally {
-            invocationContext.release();
+            if (hasTransientReferenceParameter) {
+                transientReferenceContext.release();
+            }
         }
     }
 
     private T invokeAroundConstructCallbacks(Object[] parameters, CreationalContextImpl<T> ctx) {
         final List<AroundConstructCallback<T>> callbacks = ctx.getAroundConstructCallbacks();
-        final Iterator<AroundConstructCallback<T>> iterator = callbacks.iterator();
-        if (!iterator.hasNext()) {
+        if (callbacks.isEmpty()) {
             return newInstance(parameters);
         }
+        final Iterator<AroundConstructCallback<T>> iterator = callbacks.iterator();
         return invokeAroundConstructCallback(iterator.next(), new ConstructionHandle<T>() {
             @Override
             public T proceed(Object[] parameters, Map<String, Object> data) {
@@ -130,13 +136,16 @@ public class ConstructorInjectionPoint<T> extends AbstractCallableInjectionPoint
      * @param manager The Bean manager
      * @return The object array of looked up values
      */
-    public Object[] getParameterValues(BeanManagerImpl manager, CreationalContext<?> ctx, CreationalContext<?> invocationContext) {
+    public Object[] getParameterValues(BeanManagerImpl manager, CreationalContext<?> ctx, CreationalContext<?> transientReference) {
+        if (getInjectionPoints().isEmpty()) {
+            return Arrays2.EMPTY_ARRAY;
+        }
         Object[] parameterValues = new Object[getParameterInjectionPoints().size()];
         Iterator<ParameterInjectionPoint<?, T>> iterator = getParameterInjectionPoints().iterator();
         for (int i = 0; i < parameterValues.length; i++) {
             ParameterInjectionPoint<?, ?> param = iterator.next();
             if (param.getAnnotated().isAnnotationPresent(TransientReference.class)) {
-                parameterValues[i] = param.getValueToInject(manager, invocationContext);
+                parameterValues[i] = param.getValueToInject(manager, transientReference);
             } else {
                 parameterValues[i] = param.getValueToInject(manager, ctx);
             }
