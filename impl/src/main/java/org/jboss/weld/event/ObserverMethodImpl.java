@@ -25,7 +25,6 @@ import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.event.ObserverException;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.Reception;
 import javax.enterprise.event.TransactionPhase;
@@ -50,6 +49,7 @@ import org.jboss.weld.experimental.ExperimentalObserverMethod;
 import org.jboss.weld.experimental.Priority;
 import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.MethodInjectionPoint;
+import org.jboss.weld.injection.ObserverMethodInvocationStrategy;
 import org.jboss.weld.injection.ParameterInjectionPoint;
 import org.jboss.weld.injection.attributes.SpecialParameterInjectionPoint;
 import org.jboss.weld.injection.attributes.WeldInjectionPointAttributes;
@@ -96,6 +96,8 @@ public class ObserverMethodImpl<T, X> implements ExperimentalObserverMethod<T> {
     private final boolean isStatic;
     private final boolean eventMetadataRequired;
 
+    private final ObserverMethodInvocationStrategy notificationStrategy;
+
     /**
      * Creates an Observer which describes and encapsulates an observer method (8.5).
      *
@@ -137,6 +139,7 @@ public class ObserverMethodImpl<T, X> implements ExperimentalObserverMethod<T> {
         }
         this.isStatic = observer.isStatic();
         this.eventMetadataRequired = initMetadataRequired(this.injectionPoints);
+        this.notificationStrategy = ObserverMethodInvocationStrategy.of(observerMethod, beanManager);
     }
 
     private static boolean initMetadataRequired(Set<WeldInjectionPointAttributes<?, ?>> injectionPoints) {
@@ -271,20 +274,25 @@ public class ObserverMethodImpl<T, X> implements ExperimentalObserverMethod<T> {
      * @param event The event to notify observer with
      */
     protected void sendEvent(final T event) {
-        CreationalContext<X> creationalContext = null;
-        if (!observerMethod.getInjectionPoints().isEmpty()) {
-            creationalContext = beanManager.createCreationalContext(declaringBean);
-        }
         if (isStatic) {
-            sendEvent(event, null, creationalContext);
+            sendEvent(event, null, null);
         } else {
-            Object receiver = getReceiverIfExists(creationalContext);
-            if (receiver == null && creationalContext == null && reception != Reception.IF_EXISTS) {
-                creationalContext = beanManager.createCreationalContext(declaringBean);
-                receiver = getReceiverIfExists(creationalContext);
-            }
-            if (receiver != null) {
-                sendEvent(event, receiver, creationalContext);
+            CreationalContext<X> creationalContext = null;
+            try {
+                Object receiver = getReceiverIfExists(null);
+                if (receiver == null && reception != Reception.IF_EXISTS) {
+                    // creational context is created only if we need it for obtaining receiver
+                    // ObserverInvocationStrategy takes care of creating CC for parameters, if needed
+                    creationalContext = beanManager.createCreationalContext(declaringBean);
+                    receiver = getReceiverIfExists(creationalContext);
+                }
+                if (receiver != null) {
+                    sendEvent(event, receiver, creationalContext);
+                }
+            } finally {
+                if (creationalContext != null) {
+                    creationalContext.release();
+                }
             }
         }
     }
@@ -294,7 +302,7 @@ public class ObserverMethodImpl<T, X> implements ExperimentalObserverMethod<T> {
             preNotify(event, receiver);
             // As we are working with the contextual instance, we may not have the
             // actual object, but a container proxy (e.g. EJB)
-            observerMethod.invoke(receiver, event, beanManager, creationalContext, ObserverException.class);
+            notificationStrategy.notify(receiver, observerMethod, event, beanManager, creationalContext);
         } finally {
             postNotify(event, receiver);
             if (creationalContext != null) {
