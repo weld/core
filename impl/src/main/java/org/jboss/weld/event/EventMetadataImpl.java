@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2013, Red Hat, Inc., and individual contributors
+ * Copyright 2014, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -20,7 +20,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Set;
 
-import javax.enterprise.event.Event;
 import javax.enterprise.inject.spi.EventMetadata;
 import javax.enterprise.inject.spi.InjectionPoint;
 
@@ -28,59 +27,39 @@ import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.util.collections.ImmutableSet;
 
 /**
- * <p>
- * An event packet consisting of:
- * </p>
- *
- * <ul>
- * <li>event payload</li>
- * <li>event type</li>
- * <li>event qualifiers</li>
- * <li>{@link InjectionPoint} representing the injected {@link Event}</li>
- * </ul>
+ * Simple {@link EventMetadata} implementation.
  *
  * @author Jozef Hartinger
  *
  */
-public class EventPacket<T> implements EventMetadata {
+public final class EventMetadataImpl implements EventMetadata {
 
-    public static <T> EventPacket<T> of(T event, Type eventType, Set<Annotation> qualifiers, InjectionPoint ip) {
-        return new EventPacket<T>(event, eventType, qualifiers, null, ip);
-    }
-    public static <T> EventPacket<T> of(T event, Annotation... qualifiers) {
-        return new EventPacket<T>(event, event.getClass(), null, qualifiers, null);
-    }
-
-    private final T payload;
     private final Type type;
     private final InjectionPoint injectionPoint;
-
-    private final Set<Annotation> qualifierSet;
+    private final Set<Annotation> qualifiers;
     private final Annotation[] qualifierArray;
 
-    private EventPacket(T payload, Type type, Set<Annotation> qualifierSet, Annotation[] qualifierArray, InjectionPoint injectionPoint) {
-        this.payload = payload;
+    public EventMetadataImpl(Type type, InjectionPoint injectionPoint, Set<Annotation> qualifiers) {
+        this(type, injectionPoint, qualifiers, null);
+    }
+
+    public EventMetadataImpl(Type type, InjectionPoint injectionPoint, Annotation[] qualifiers) {
+        this(type, injectionPoint, null, qualifiers);
+    }
+
+    private EventMetadataImpl(Type type, InjectionPoint injectionPoint, Set<Annotation> qualifiers, Annotation[] qualifierArray) {
         this.type = type;
-        this.qualifierSet = qualifierSet;
-        this.qualifierArray = qualifierArray;
         this.injectionPoint = injectionPoint;
-    }
-
-    public T getPayload() {
-        return payload;
-    }
-
-    @Override
-    public Type getType() {
-        return type;
+        this.qualifiers = qualifiers;
+        this.qualifierArray = qualifierArray;
     }
 
     @Override
     public Set<Annotation> getQualifiers() {
-        ImmutableSet.Builder<Annotation> builder = ImmutableSet.<Annotation>builder();
+        ImmutableSet.Builder<Annotation> builder = ImmutableSet.<Annotation> builder();
         builder.add(AnyLiteral.INSTANCE);
-        if (qualifierSet != null) {
-            return builder.addAll(qualifierSet).build();
+        if (qualifiers != null) {
+            return builder.addAll(qualifiers).build();
         } else if (qualifierArray != null) {
             return builder.addAll(qualifierArray).build();
         } else {
@@ -94,7 +73,12 @@ public class EventPacket<T> implements EventMetadata {
     }
 
     @Override
+    public Type getType() {
+        return type;
+    }
+
+    @Override
     public String toString() {
-        return "EventPacket [payload=" + payload + ", type=" + type + ", qualifiers=" + getQualifiers() + "]";
+        return "EventMetadataImpl [type=" + type + ", qualifiers=" + qualifiers + ", injectionPoint=" + injectionPoint + "]";
     }
 }

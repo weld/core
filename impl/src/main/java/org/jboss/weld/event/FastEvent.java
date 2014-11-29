@@ -17,20 +17,12 @@
 package org.jboss.weld.event;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.List;
-import java.util.Set;
 
 import javax.enterprise.event.Event;
-import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.EventMetadata;
-import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.ObserverMethod;
-import javax.enterprise.util.TypeLiteral;
 
-import org.jboss.weld.injection.attributes.WeldInjectionPointAttributes;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.util.collections.ImmutableSet;
 
 /**
  * An optimized internal facility for dispatching events.
@@ -48,8 +40,7 @@ import org.jboss.weld.util.collections.ImmutableSet;
  * <ul>
  * <li>Event type and qualifiers must be known at FastEvent construction time. The actual type of the event object passed to the {@link #fire(Object)} method is
  * not considered for observer method resolution.</li>
- * <li>Events dispatched using FastEvent are always delivered immediately. If an observer method is transactional it will be notified immediately and not during
- * the matching transaction phase.</li>
+ * <li>Events dispatched using FastEvent are always delivered immediately. If an observer method is transactional it will not be notified</li>
  * <li>FastEvent is not serializable</li>
  * </ul>
  *
@@ -63,30 +54,6 @@ import org.jboss.weld.util.collections.ImmutableSet;
  * @param <T> event type
  */
 public class FastEvent<T> {
-
-    @SuppressWarnings("serial")
-    private static final Type EVENT_METADATA_INSTANCE_TYPE = new TypeLiteral<Instance<EventMetadata>>() {
-    }.getType();
-
-    /**
-     * Determines whether any of the resolved observer methods is either extension-provided or contains an injection point with {@link EventMetadata} type.
-     */
-    private static boolean isMetadataRequired(List<? extends ObserverMethod<?>> resolvedObserverMethods) {
-        for (ObserverMethod<?> observer : resolvedObserverMethods) {
-            if (observer instanceof ObserverMethodImpl<?, ?>) {
-                ObserverMethodImpl<?, ?> observerImpl = (ObserverMethodImpl<?, ?>) observer;
-                for (WeldInjectionPointAttributes<?, ?> ip : observerImpl.getInjectionPoints()) {
-                    Type type = ip.getType();
-                    if (EventMetadata.class.equals(type) || EVENT_METADATA_INSTANCE_TYPE.equals(type)) {
-                        return true;
-                    }
-                }
-            } else {
-                return true;
-            }
-        }
-        return false;
-    }
 
     /**
      * Same as {@link #of(Class, BeanManagerImpl, Annotation...)}, just the accessible lenient observer notifier is used for observer method resolution
@@ -104,9 +71,9 @@ public class FastEvent<T> {
      * @return
      */
     public static <T> FastEvent<T> of(Class<T> type, BeanManagerImpl manager, ObserverNotifier notifier, Annotation... qualifiers) {
-        List<ObserverMethod<? super T>> resolvedObserverMethods = notifier.<T> resolveObserverMethods(notifier.buildEventResolvable(type, qualifiers));
-        if (isMetadataRequired(resolvedObserverMethods)) {
-            EventMetadata metadata = new EventMetadataImpl(type, qualifiers);
+        ResolvedObservers<T> resolvedObserverMethods = notifier.<T> resolveObserverMethods(notifier.buildEventResolvable(type, qualifiers));
+        if (resolvedObserverMethods.isMetadataRequired()) {
+            EventMetadata metadata = new EventMetadataImpl(type, null, qualifiers);
             CurrentEventMetadata metadataService = manager.getServices().get(CurrentEventMetadata.class);
             return new FastEventWithMetadataPropagation<T>(resolvedObserverMethods, metadata, metadataService);
         } else {
@@ -114,14 +81,14 @@ public class FastEvent<T> {
         }
     }
 
-    private final List<ObserverMethod<? super T>> resolvedObserverMethods;
+    private final ResolvedObservers<T> resolvedObserverMethods;
 
-    private FastEvent(List<ObserverMethod<? super T>> resolvedObserverMethods) {
+    private FastEvent(ResolvedObservers<T> resolvedObserverMethods) {
         this.resolvedObserverMethods = resolvedObserverMethods;
     }
 
     public void fire(T event) {
-        for (ObserverMethod<? super T> observer : resolvedObserverMethods) {
+        for (ObserverMethod<? super T> observer : resolvedObserverMethods.getImmediateObservers()) {
             observer.notify(event);
         }
     }
@@ -131,7 +98,7 @@ public class FastEvent<T> {
         private final EventMetadata metadata;
         private final CurrentEventMetadata metadataService;
 
-        private FastEventWithMetadataPropagation(List<ObserverMethod<? super T>> resolvedObserverMethods, EventMetadata metadata,
+        private FastEventWithMetadataPropagation(ResolvedObservers<T> resolvedObserverMethods, EventMetadata metadata,
                 CurrentEventMetadata metadataService) {
             super(resolvedObserverMethods);
             this.metadata = metadata;
@@ -150,32 +117,6 @@ public class FastEvent<T> {
                     metadataService.pop();
                 }
             }
-        }
-    }
-
-    private static class EventMetadataImpl implements EventMetadata {
-
-        private final Set<Annotation> qualifiers;
-        private final Type type;
-
-        private EventMetadataImpl(Type type, Annotation... qualifiers) {
-            this.type = type;
-            this.qualifiers = ImmutableSet.of(qualifiers);
-        }
-
-        @Override
-        public Set<Annotation> getQualifiers() {
-            return qualifiers;
-        }
-
-        @Override
-        public InjectionPoint getInjectionPoint() {
-            return null;
-        }
-
-        @Override
-        public Type getType() {
-            return type;
         }
     }
 }

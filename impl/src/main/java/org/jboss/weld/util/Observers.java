@@ -26,6 +26,7 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.BeforeShutdown;
+import javax.enterprise.inject.spi.EventMetadata;
 import javax.enterprise.inject.spi.ObserverMethod;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.ProcessBean;
@@ -123,6 +124,18 @@ public class Observers {
         }
         if (originalObserverMethod != null && (!observerMethod.getBeanClass().equals(originalObserverMethod.getBeanClass()))) {
             throw EventLogger.LOG.beanClassMismatch(originalObserverMethod, observerMethod);
+        }
+    }
+
+    /**
+     * Determines whether the given observer method is either extension-provided or contains an injection point with {@link EventMetadata} type.
+     */
+    public static boolean isEventMetadataRequired(ObserverMethod<?> observer) {
+        if (observer instanceof ObserverMethodImpl<?, ?>) {
+            ObserverMethodImpl<?, ?> observerImpl = (ObserverMethodImpl<?, ?>) observer;
+            return observerImpl.isEventMetadataRequired();
+        } else {
+            return true;
         }
     }
 }
