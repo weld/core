@@ -43,7 +43,7 @@ import org.jboss.weld.util.collections.Arrays2;
  * @param <T>
  * @param <X>
  */
-class StaticMethodInjectionPoint<T, X> extends AbstractCallableInjectionPoint<T, X, Method> implements MethodInjectionPoint<T, X> {
+class StaticMethodInjectionPoint<T, X> extends MethodInjectionPoint<T, X> {
 
     // TODO transient reference mask instead of looking up annotations
     private final int specialInjectionPointIndex;
@@ -87,7 +87,17 @@ class StaticMethodInjectionPoint<T, X> extends AbstractCallableInjectionPoint<T,
             transientReferenceContext = manager.createCreationalContext(null);
         }
         try {
-            return cast(getMethod(receiver).invoke(receiver, getParameterValues(specialValue, manager, ctx, transientReferenceContext)));
+            return invoke(receiver, getParameterValues(specialValue, manager, ctx, transientReferenceContext), exceptionTypeToThrow);
+        } finally {
+            if (hasTransientReferenceParameter) {
+                transientReferenceContext.release();
+            }
+        }
+    }
+
+    public T invoke(Object receiver, Object[] parameters, Class<? extends RuntimeException> exceptionTypeToThrow) {
+        try {
+            return cast(getMethod(receiver).invoke(receiver, parameters));
         } catch (IllegalArgumentException e) {
             rethrowException(e, exceptionTypeToThrow);
         } catch (SecurityException e) {
@@ -98,10 +108,6 @@ class StaticMethodInjectionPoint<T, X> extends AbstractCallableInjectionPoint<T,
             rethrowException(e, exceptionTypeToThrow);
         } catch (NoSuchMethodException e) {
             rethrowException(e, exceptionTypeToThrow);
-        } finally {
-            if (hasTransientReferenceParameter) {
-                transientReferenceContext.release();
-            }
         }
         return null;
     }
