@@ -16,13 +16,13 @@
  */
 package org.jboss.weld.injection;
 
-import java.util.List;
-import java.util.Set;
+import java.lang.reflect.Method;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.AnnotatedMethod;
-import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.spi.Bean;
 
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedCallable;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
@@ -33,7 +33,12 @@ import org.jboss.weld.manager.BeanManagerImpl;
  * @param <T> the return type of the method
  * @param <X> the type of the class that declared the method
  */
-public interface MethodInjectionPoint<T, X> {
+public abstract class MethodInjectionPoint<T, X> extends AbstractCallableInjectionPoint<T, X, Method> {
+
+    protected MethodInjectionPoint(EnhancedAnnotatedCallable<T, X, Method> callable, Bean<?> declaringBean, Class<?> declaringComponentClass,
+            boolean observerOrDisposer, InjectionPointFactory factory, BeanManagerImpl manager) {
+        super(callable, declaringBean, declaringComponentClass, observerOrDisposer, factory, manager);
+    }
 
     /**
      * Invokes the method.
@@ -45,11 +50,10 @@ public interface MethodInjectionPoint<T, X> {
      * @param exceptionTypeToThrow exception type to be used to wrap potential exceptions within
      * @return the value returned from the method
      */
-    T invoke(Object receiver, Object specialValue, BeanManagerImpl manager, CreationalContext<?> ctx, Class<? extends RuntimeException> exceptionTypeToThrow);
+    public abstract T invoke(Object receiver, Object specialValue, BeanManagerImpl manager, CreationalContext<?> ctx, Class<? extends RuntimeException> exceptionTypeToThrow);
 
-    AnnotatedMethod<X> getAnnotated();
+    abstract T invoke(Object receiver, Object[] parameters, Class<? extends RuntimeException> exceptionTypeToThrow);
 
-    List<ParameterInjectionPoint<?, X>> getParameterInjectionPoints();
-
-    Set<InjectionPoint> getInjectionPoints();
+    @Override
+    public abstract AnnotatedMethod<X> getAnnotated();
 }
