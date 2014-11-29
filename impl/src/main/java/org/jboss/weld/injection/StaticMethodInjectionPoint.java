@@ -49,7 +49,6 @@ class StaticMethodInjectionPoint<T, X> extends MethodInjectionPoint<T, X> {
     private final int specialInjectionPointIndex;
     private final AnnotatedMethod<X> annotatedMethod;
     final Method accessibleMethod;
-    private final boolean hasTransientReferenceParameter;
 
     StaticMethodInjectionPoint(EnhancedAnnotatedMethod<T, X> enhancedMethod, Bean<?> declaringBean, Class<?> declaringComponentClass,
             Class<? extends Annotation> specialParameterMarker, InjectionPointFactory factory, BeanManagerImpl manager) {
@@ -57,7 +56,6 @@ class StaticMethodInjectionPoint<T, X> extends MethodInjectionPoint<T, X> {
         this.accessibleMethod = SecurityActions.getAccessibleCopyOfMethod(enhancedMethod.getJavaMember());
         this.annotatedMethod = enhancedMethod.slim();
         this.specialInjectionPointIndex = initSpecialInjectionPointIndex(enhancedMethod, specialParameterMarker);
-        this.hasTransientReferenceParameter = initHasTransientReference(enhancedMethod.getEnhancedParameters());
     }
 
     private static <X> int initSpecialInjectionPointIndex(EnhancedAnnotatedMethod<?, X> enhancedMethod, Class<? extends Annotation> specialParameterMarker) {
@@ -69,15 +67,6 @@ class StaticMethodInjectionPoint<T, X> extends MethodInjectionPoint<T, X> {
             throw new org.jboss.weld.exceptions.IllegalArgumentException("Not a disposer nor observer method: " + enhancedMethod);
         }
         return parameters.get(0).getPosition();
-    }
-
-    private static boolean initHasTransientReference(List<? extends EnhancedAnnotatedParameter<?, ?>> parameters) {
-        for (EnhancedAnnotatedParameter<?, ?> parameter : parameters) {
-            if (parameter.isAnnotationPresent(TransientReference.class)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public T invoke(Object receiver, Object specialValue, BeanManagerImpl manager, CreationalContext<?> ctx,
