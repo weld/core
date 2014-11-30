@@ -23,6 +23,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentMap;
 
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -173,5 +174,22 @@ public class WeldCollections {
             return false;
         }
         return collection.add(element);
+    }
+
+    /**
+     * Utility method for working with maps. Unlike {@link Map#putIfAbsent(Object, Object)} this method always returns the value that ends up store in the map
+     * which is either the old value (if any was present) or the new value (if it was stored in the map).
+     *
+     * @param map the map
+     * @param key the key
+     * @param value the value
+     * @return the value that ends up store in the map which is either the old value (if any was present) or the new value (if it was stored in the map)
+     */
+    public static <K, V> V putIfAbsent(ConcurrentMap<K, V> map, K key, V value) {
+        V old = map.putIfAbsent(key, value);
+        if (old != null) {
+            return old;
+        }
+        return value;
     }
 }
