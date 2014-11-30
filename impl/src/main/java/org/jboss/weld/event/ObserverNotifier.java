@@ -213,7 +213,7 @@ public class ObserverNotifier {
         }
         try {
             for (ObserverMethod<? super T> observer : observers) {
-                observer.notify(event); // TODO wrap with ObserverException
+                observer.notify(event);
             }
         } finally {
             if (metadata != null) {
