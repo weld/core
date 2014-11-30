@@ -57,5 +57,4 @@ public class EventBean extends AbstractFacadeBean<Event<?>> {
     protected Type getDefaultType() {
         return DEFAULT_TYPE;
     }
-
 }

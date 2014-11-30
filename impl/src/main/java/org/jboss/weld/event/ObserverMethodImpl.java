@@ -45,6 +45,7 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.context.CreationalContextImpl;
+import org.jboss.weld.experimental.ExperimentalEventMetadata;
 import org.jboss.weld.experimental.ExperimentalObserverMethod;
 import org.jboss.weld.experimental.Priority;
 import org.jboss.weld.injection.InjectionPointFactory;
@@ -145,7 +146,7 @@ public class ObserverMethodImpl<T, X> implements ExperimentalObserverMethod<T> {
     private static boolean initMetadataRequired(Set<WeldInjectionPointAttributes<?, ?>> injectionPoints) {
         for (WeldInjectionPointAttributes<?, ?> ip : injectionPoints) {
             Type type = ip.getType();
-            if (EventMetadata.class.equals(type) || EVENT_METADATA_INSTANCE_TYPE.equals(type)) {
+            if (EventMetadata.class.equals(type) || ExperimentalEventMetadata.class.equals(type) || EVENT_METADATA_INSTANCE_TYPE.equals(type)) {
                 return true;
             }
         }

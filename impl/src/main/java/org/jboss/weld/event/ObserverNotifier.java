@@ -22,6 +22,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.ForkJoinPool;
 import java.util.function.Function;
 
 import javax.enterprise.inject.spi.EventMetadata;
@@ -204,6 +206,7 @@ public class ObserverNotifier {
         notifyTransactionObservers(observers.getTransactionObservers(), event, metadata);
     }
 
+
     protected <T> void notifySyncObservers(List<ObserverMethod<? super T>> observers, T event, EventMetadata metadata) {
         if (observers.isEmpty()) {
             return;
@@ -224,5 +227,21 @@ public class ObserverNotifier {
 
     protected <T> void notifyTransactionObservers(List<ObserverMethod<? super T>> observers, T event, EventMetadata metadata) {
         notifySyncObservers(observers, event, metadata); // no transaction support
+    }
+
+    public <T, U extends T> CompletionStage<U> notifyAsync(ResolvedObservers<T> observers, U event, EventMetadata metadata) {
+        if (!observers.isMetadataRequired()) {
+            metadata = null;
+        }
+        notifyTransactionObservers(observers.getTransactionObservers(), event, metadata);
+        return notifyAsyncObservers(observers.getImmediateObservers(), event, metadata);
+    }
+
+    public <T, U extends T> CompletionStage<U> notifyAsyncObservers(List<ObserverMethod<? super T>> observers, U event, EventMetadata metadata) {
+        // for now we just use ForkJoinPool.commonPool()
+        return new AsyncEventDeliveryStage<>(() -> {
+            notifySyncObservers(observers, event, metadata);
+            return event;
+        }, ForkJoinPool.commonPool()); // TODO use executorservices
     }
 }

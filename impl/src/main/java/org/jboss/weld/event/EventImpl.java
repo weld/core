@@ -24,6 +24,7 @@ import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Map;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.enterprise.event.Event;
@@ -34,6 +35,7 @@ import javax.enterprise.util.TypeLiteral;
 import org.jboss.weld.bean.builtin.AbstractFacade;
 import org.jboss.weld.bean.builtin.FacadeInjectionPoint;
 import org.jboss.weld.exceptions.InvalidObjectException;
+import org.jboss.weld.experimental.ExperimentalEvent;
 import org.jboss.weld.logging.EventLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Preconditions;
@@ -51,8 +53,9 @@ import org.jboss.weld.util.reflection.TypeResolver;
  * @see javax.enterprise.event.Event
  */
 @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_NO_SUITABLE_CONSTRUCTOR", justification = "Uses SerializationProxy")
-public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T>, Serializable {
+public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements ExperimentalEvent<T>, Serializable {
 
+    private static final String EVENT_ARGUMENT_NAME = "event";
     private static final String SUBTYPE_ARGUMENT_NAME = "subtype";
     private static final long serialVersionUID = 656782657242515455L;
     private static final int DEFAULT_CACHE_CAPACITY = 4;
@@ -83,10 +86,18 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
 
     @Override
     public void fire(T event) {
-        Preconditions.checkArgumentNotNull(event, "event");
+        Preconditions.checkArgumentNotNull(event, EVENT_ARGUMENT_NAME);
         CachedObservers observers = getObservers(event);
         // we can do lenient here as the event type is checked within #getObservers()
         getBeanManager().getGlobalLenientObserverNotifier().notify(observers.observers, event, observers.metadata);
+    }
+
+    @Override
+    public <U extends T> CompletionStage<U> fireAsync(U event) {
+        Preconditions.checkArgumentNotNull(event, EVENT_ARGUMENT_NAME);
+        CachedObservers observers = getObservers(event);
+        // we can do lenient here as the event type is checked within #getObservers()
+        return getBeanManager().getGlobalLenientObserverNotifier().notifyAsync(observers.observers, event, observers.metadata);
     }
 
     private CachedObservers getObservers(T event) {
