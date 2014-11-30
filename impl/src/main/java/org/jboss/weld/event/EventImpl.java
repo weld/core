@@ -16,11 +16,15 @@
  */
 package org.jboss.weld.event;
 
+import static org.jboss.weld.util.collections.WeldCollections.putIfAbsent;
+
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.spi.EventMetadata;
@@ -57,11 +61,13 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
     }
 
     private final transient HierarchyDiscovery injectionPointTypeHierarchy;
-    private transient volatile CachedObservers cachedObservers;
+    private transient volatile CachedObservers lastCachedObservers;
+    private final transient Map<Class<?>, CachedObservers> cachedObservers;
 
     private EventImpl(InjectionPoint injectionPoint, BeanManagerImpl beanManager) {
         super(injectionPoint, null, beanManager);
         this.injectionPointTypeHierarchy = new HierarchyDiscovery(getType());
+        this.cachedObservers = new ConcurrentHashMap<Class<?>, CachedObservers>(4);
     }
 
     /**
@@ -78,22 +84,32 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
     public void fire(T event) {
         Preconditions.checkArgumentNotNull(event, "event");
         CachedObservers observers = getObservers(event);
-
         // we can do lenient here as the event type is checked within #getObservers()
         getBeanManager().getGlobalLenientObserverNotifier().notify(observers.observers, event, observers.metadata);
     }
 
     private CachedObservers getObservers(T event) {
-        CachedObservers cachedObservers = this.cachedObservers;
-        if (cachedObservers != null && cachedObservers.rawType.equals(event.getClass())) {
-            return cachedObservers;
+        Class<?> runtimeType = event.getClass();
+        CachedObservers lastResolvedObservers = this.lastCachedObservers;
+        // fast track for cases when the same type is used repeatedly
+        if (lastResolvedObservers != null && lastResolvedObservers.rawType.equals(runtimeType)) {
+            return lastResolvedObservers;
         }
-        final Type eventType = getEventType(event);
+        lastResolvedObservers = cachedObservers.get(runtimeType);
+        if (lastResolvedObservers == null) {
+            // this is not atomic and less elegant than computeIfAbsent but is faster and atomicity does not really matter here
+            // as createCachedObservers() does not have any side effects
+            lastResolvedObservers = putIfAbsent(cachedObservers, runtimeType, createCachedObservers(runtimeType));
+        }
+        return this.lastCachedObservers = lastResolvedObservers;
+    }
+
+    private CachedObservers createCachedObservers(Class<?> runtimeType) {
+        final Type eventType = getEventType(runtimeType);
         // this performs type check
         final ResolvedObservers<T> observers = getBeanManager().getGlobalStrictObserverNotifier().resolveObserverMethods(eventType, getQualifiers());
         final EventMetadata metadata = new EventMetadataImpl(eventType, getInjectionPoint(), getQualifiers());
-        cachedObservers = new CachedObservers(event.getClass(), observers, metadata);
-        return this.cachedObservers = cachedObservers;
+        return new CachedObservers(runtimeType, observers, metadata);
     }
 
     @Override
@@ -119,8 +135,8 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
                 getBeanManager());
     }
 
-    protected Type getEventType(T event) {
-        Type resolvedType = event.getClass();
+    protected Type getEventType(Class<?> runtimeType) {
+        Type resolvedType = runtimeType;
         if (Types.containsUnresolvedTypeVariableOrWildcard(resolvedType)) {
             /*
              * If the container is unable to resolve the parameterized type of the event object, it uses the specified type to infer the parameterized type of the event types.
@@ -132,7 +148,7 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
              * Examining the hierarchy of the specified type did not help. This may still be one of the cases when combining the
              * event type and the specified type reveals the actual values for type variables. Let's try that.
              */
-            Type canonicalEventType = Types.getCanonicalType(event.getClass());
+            Type canonicalEventType = Types.getCanonicalType(runtimeType);
             TypeResolver objectTypeResolver = new EventObjectTypeResolverBuilder(injectionPointTypeHierarchy.getResolver()
                     .getResolvedTypeVariables(), new HierarchyDiscovery(canonicalEventType).getResolver()
                     .getResolvedTypeVariables()).build();
