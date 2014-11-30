@@ -39,11 +39,30 @@ public class WildFly8EEResourceManager {
 
             // Then check resources
             ModelControllerClient client = ModelControllerClient.Factory.create("localhost", 9990);
-            checkJmsQueue(client);
-            checkJmsTopic(client);
+            if (isJmsSubsystemActive(client)) {
+                checkJmsQueue(client);
+                checkJmsTopic(client);
+            } else {
+                /*
+                 * JMS subsystem may not be installed (e.g. when debugging against standalone.xml)
+                 * If this happens, do not attempt to install Queue/Topic as that always fails
+                 */
+                logger.log(Level.WARNING, "JMS subsystem not installed. Skipping test Queue/Topic installation.");
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private boolean isJmsSubsystemActive(ModelControllerClient client) throws IOException {
+        ModelNode request = new ModelNode();
+        request.get(ClientConstants.OP).set("read-resource");
+        request.get("recursive").set(true);
+        ModelNode address = request.get(ClientConstants.OP_ADDR);
+        address.add("subsystem", "messaging");
+
+        ModelNode response = client.execute(new OperationBuilder(request).build());
+        return response.get(ClientConstants.OUTCOME).asString().equals(ClientConstants.SUCCESS);
     }
 
     /**
