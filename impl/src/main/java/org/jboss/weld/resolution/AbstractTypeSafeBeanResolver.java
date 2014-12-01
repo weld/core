@@ -54,7 +54,7 @@ import org.jboss.weld.util.reflection.Reflections;
  * @author pmuir
  * @author alesj
  */
-public abstract class AbstractTypeSafeBeanResolver<T extends Bean<?>, C extends Collection<T>> extends TypeSafeResolver<Resolvable, T, C> {
+public abstract class AbstractTypeSafeBeanResolver<T extends Bean<?>, C extends Collection<T>> extends TypeSafeResolver<Resolvable, T, C, C> {
 
     private final BeanManagerImpl beanManager;
     private final ComputingCache<Set<Bean<?>>, Set<Bean<?>>> disambiguatedBeans;

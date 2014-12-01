@@ -43,7 +43,7 @@ import org.jboss.weld.util.collections.Arrays2;
  * @param <T>
  * @param <X>
  */
-class StaticMethodInjectionPoint<T, X> extends AbstractCallableInjectionPoint<T, X, Method> implements MethodInjectionPoint<T, X> {
+class StaticMethodInjectionPoint<T, X> extends MethodInjectionPoint<T, X> {
 
     // TODO transient reference mask instead of looking up annotations
     private final int specialInjectionPointIndex;
@@ -71,12 +71,22 @@ class StaticMethodInjectionPoint<T, X> extends AbstractCallableInjectionPoint<T,
 
     public T invoke(Object receiver, Object specialValue, BeanManagerImpl manager, CreationalContext<?> ctx,
             Class<? extends RuntimeException> exceptionTypeToThrow) {
-        CreationalContext<?> invocationContext = null;
-        if (!getInjectionPoints().isEmpty()) {
-            invocationContext = manager.createCreationalContext(null);
+        CreationalContext<?> transientReferenceContext = null;
+        if (hasTransientReferenceParameter) {
+            transientReferenceContext = manager.createCreationalContext(null);
         }
         try {
-            return cast(getMethod(receiver).invoke(receiver, getParameterValues(specialValue, manager, ctx, invocationContext)));
+            return invoke(receiver, getParameterValues(specialValue, manager, ctx, transientReferenceContext), exceptionTypeToThrow);
+        } finally {
+            if (hasTransientReferenceParameter) {
+                transientReferenceContext.release();
+            }
+        }
+    }
+
+    public T invoke(Object receiver, Object[] parameters, Class<? extends RuntimeException> exceptionTypeToThrow) {
+        try {
+            return cast(getMethod(receiver).invoke(receiver, parameters));
         } catch (IllegalArgumentException e) {
             rethrowException(e, exceptionTypeToThrow);
         } catch (SecurityException e) {
@@ -87,10 +97,6 @@ class StaticMethodInjectionPoint<T, X> extends AbstractCallableInjectionPoint<T,
             rethrowException(e, exceptionTypeToThrow);
         } catch (NoSuchMethodException e) {
             rethrowException(e, exceptionTypeToThrow);
-        } finally {
-            if (invocationContext != null) {
-                invocationContext.release();
-            }
         }
         return null;
     }
@@ -102,7 +108,7 @@ class StaticMethodInjectionPoint<T, X> extends AbstractCallableInjectionPoint<T,
      * @param manager The Bean manager
      * @return The object array of looked up values
      */
-    protected Object[] getParameterValues(Object specialVal, BeanManagerImpl manager, CreationalContext<?> ctx, CreationalContext<?> invocationContext) {
+    protected Object[] getParameterValues(Object specialVal, BeanManagerImpl manager, CreationalContext<?> ctx, CreationalContext<?> transientReferenceContext) {
         if (getInjectionPoints().isEmpty()) {
             if (specialInjectionPointIndex == -1) {
                 return Arrays2.EMPTY_ARRAY;
@@ -117,7 +123,7 @@ class StaticMethodInjectionPoint<T, X> extends AbstractCallableInjectionPoint<T,
             if (i == specialInjectionPointIndex) {
                 parameterValues[i] = specialVal;
             } else if (param.getAnnotated().isAnnotationPresent(TransientReference.class)) {
-                parameterValues[i] = param.getValueToInject(manager, invocationContext);
+                parameterValues[i] = param.getValueToInject(manager, transientReferenceContext);
             } else {
                 parameterValues[i] = param.getValueToInject(manager, ctx);
             }

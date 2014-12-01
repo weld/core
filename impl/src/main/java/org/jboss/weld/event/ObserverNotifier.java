@@ -24,11 +24,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 
+import javax.enterprise.inject.spi.EventMetadata;
 import javax.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
-import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.logging.UtilLogger;
+import org.jboss.weld.resolution.QualifierInstance;
 import org.jboss.weld.resolution.Resolvable;
 import org.jboss.weld.resolution.ResolvableBuilder;
 import org.jboss.weld.resolution.TypeSafeObserverResolver;
@@ -86,51 +87,41 @@ public class ObserverNotifier {
         }
     }
 
-    public <T> List<ObserverMethod<? super T>> resolveObserverMethods(T event, Annotation... bindings) {
+    public <T> ResolvedObservers<T> resolveObserverMethods(T event, Annotation... bindings) {
         checkEventObjectType(event);
         return this.<T>resolveObserverMethods(buildEventResolvable(event.getClass(), bindings));
     }
 
-    public <T> List<ObserverMethod<? super T>> resolveObserverMethods(Type eventType, Set<Annotation> qualifiers) {
+    public <T> ResolvedObservers<T> resolveObserverMethods(Type eventType, Set<Annotation> qualifiers) {
         checkEventObjectType(eventType);
         return this.<T>resolveObserverMethods(buildEventResolvable(eventType, qualifiers));
     }
 
+    public <T> ResolvedObservers<T> resolveObserverMethods(Resolvable resolvable) {
+        return cast(resolver.resolve(resolvable, true));
+    }
+
     public void fireEvent(Object event, Annotation... qualifiers) {
-        fireEvent(event.getClass(), event, qualifiers);
+        fireEvent(event.getClass(), event, null, qualifiers);
+    }
+
+    public void fireEvent(Object event, EventMetadata metadata, Annotation... qualifiers) {
+        fireEvent(event.getClass(), event, metadata, qualifiers);
     }
 
     public void fireEvent(Type eventType, Object event, Annotation... qualifiers) {
+        fireEvent(eventType, event, null, qualifiers);
+    }
+
+    public void fireEvent(Type eventType, Object event, EventMetadata metadata, Annotation... qualifiers) {
         checkEventObjectType(eventType);
         // we use the array of qualifiers for resolution so that we can catch duplicate qualifiers
-        notifyObservers(event, resolveObserverMethods(buildEventResolvable(eventType, qualifiers)));
+        notify(resolveObserverMethods(buildEventResolvable(eventType, qualifiers)), event, metadata);
     }
 
     public void fireEvent(Object event, Resolvable resolvable) {
         checkEventObjectType(event);
-        notifyObservers(event, resolveObserverMethods(resolvable));
-    }
-
-    public <T> void fireEvent(Resolvable resolvable, EventPacket<T> packet) {
-        checkEventObjectType(packet.getType());
-        notifyObservers(packet, this.<T>resolveObserverMethods(resolvable));
-    }
-
-    public <T> void notifyObservers(final EventPacket<T> eventPacket, final List<ObserverMethod<? super T>> observers) {
-        currentEventMetadata.push(eventPacket);
-        try {
-            for (ObserverMethod<? super T> observer : observers) {
-                notifyObserver(eventPacket, observer);
-            }
-        } finally {
-            currentEventMetadata.pop();
-        }
-    }
-
-    private <T> void notifyObservers(final T event, final List<ObserverMethod<? super T>> observers) {
-        for (ObserverMethod<? super T> observer : observers) {
-            notifyObserver(event, observer);
-        }
+        notify(resolveObserverMethods(resolvable), event, null);
     }
 
     public Resolvable buildEventResolvable(Type eventType, Set<Annotation> qualifiers) {
@@ -140,7 +131,7 @@ public class ObserverNotifier {
             .addTypes(typeClosure)
             .addType(Object.class)
             .addQualifiers(qualifiers)
-            .addQualifierIfAbsent(AnyLiteral.INSTANCE)
+            .addQualifierUnchecked(QualifierInstance.ANY)
             .create();
     }
 
@@ -150,12 +141,8 @@ public class ObserverNotifier {
             .addTypes(sharedObjectCache.getTypeClosureHolder(eventType).get())
             .addType(Object.class)
             .addQualifiers(qualifiers)
-            .addQualifierIfAbsent(AnyLiteral.INSTANCE)
+            .addQualifierUnchecked(QualifierInstance.ANY)
             .create();
-    }
-
-    public <T> List<ObserverMethod<? super T>> resolveObserverMethods(Resolvable resolvable) {
-        return cast(resolver.resolve(resolvable, true));
     }
 
     public void clear() {
@@ -163,14 +150,6 @@ public class ObserverNotifier {
         if (eventTypeCheckCache != null) {
             eventTypeCheckCache.clear();
         }
-    }
-
-    protected <T> void notifyObserver(final EventPacket<T> eventPacket, final ObserverMethod<? super T> observer) {
-        notifyObserver(eventPacket.getPayload(), observer);
-    }
-
-    protected <T> void notifyObserver(final T event, final ObserverMethod<? super T> observer) {
-        observer.notify(event);
     }
 
     public void checkEventObjectType(Object event) {
@@ -211,5 +190,39 @@ public class ObserverNotifier {
             }
             return NO_EXCEPTION_MARKER;
         }
+    }
+
+    public <T> void notify(List<ObserverMethod<? super T>> observers, T event, EventMetadata metadata) {
+        notify(ResolvedObservers.of(observers), event, metadata);
+    }
+
+    public <T> void notify(ResolvedObservers<T> observers, T event, EventMetadata metadata) {
+        if (!observers.isMetadataRequired()) {
+            metadata = null;
+        }
+        notifySyncObservers(observers.getImmediateObservers(), event, metadata);
+        notifyTransactionObservers(observers.getTransactionObservers(), event, metadata);
+    }
+
+    protected <T> void notifySyncObservers(List<ObserverMethod<? super T>> observers, T event, EventMetadata metadata) {
+        if (observers.isEmpty()) {
+            return;
+        }
+        if (metadata != null) {
+            currentEventMetadata.push(metadata);
+        }
+        try {
+            for (ObserverMethod<? super T> observer : observers) {
+                observer.notify(event); // TODO wrap with ObserverException
+            }
+        } finally {
+            if (metadata != null) {
+                currentEventMetadata.pop();
+            }
+        }
+    }
+
+    protected <T> void notifyTransactionObservers(List<ObserverMethod<? super T>> observers, T event, EventMetadata metadata) {
+        notifySyncObservers(observers, event, metadata); // no transaction support
     }
 }

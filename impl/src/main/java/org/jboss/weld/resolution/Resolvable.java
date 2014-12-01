@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.resolution;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Set;
 
@@ -37,23 +36,6 @@ public interface Resolvable {
      * @return the bindings
      */
     Set<QualifierInstance> getQualifiers();
-
-    /**
-     * Check if an annotation is present
-     *
-     * @param annotationType the annotation type to look for
-     * @return true if it is present
-     */
-    boolean isAnnotationPresent(Class<? extends Annotation> annotationType);
-
-    /**
-     * Get the instance of the Annotation
-     *
-     * @param <A>            the type of the annotation
-     * @param annotationType the type of the annotation
-     * @return the annotation instance
-     */
-    <A extends Annotation> A getAnnotation(Class<A> annotationType);
 
     /**
      * The types that this resolvable may be assigned to
