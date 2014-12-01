@@ -71,6 +71,8 @@ public class RequestScopedCache {
     }
 
     public static void beginRequest() {
+        // if the previous request was not ended properly for some reason, make sure it is ended now
+        endRequest();
         CACHE.set(new LinkedList<RequestScopedItem>());
     }
 
@@ -80,8 +82,8 @@ public class RequestScopedCache {
      */
     public static void endRequest() {
         final List<RequestScopedItem> result = CACHE.get();
-        CACHE.remove();
         if (result != null) {
+            CACHE.remove();
             for (final RequestScopedItem item : result) {
                 item.invalidate();
             }
