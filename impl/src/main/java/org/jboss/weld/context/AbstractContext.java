@@ -74,7 +74,7 @@ public abstract class AbstractContext implements AlterableContext {
             throw new ContextNotActiveException();
         }
         checkContextInitialized();
-        BeanStore beanStore = getBeanStore();
+        final BeanStore beanStore = getBeanStore();
         if (beanStore == null) {
             return null;
         }
@@ -98,7 +98,7 @@ public abstract class AbstractContext implements AlterableContext {
                 T instance = contextual.create(creationalContext);
                 if (instance != null) {
                     beanInstance = new SerializableContextualInstanceImpl<Contextual<T>, T>(contextual, instance, creationalContext, serviceRegistry.get(ContextualStore.class));
-                    getBeanStore().put(id, beanInstance);
+                    beanStore.put(id, beanInstance);
                 }
                 return instance;
             } finally {
@@ -125,11 +125,12 @@ public abstract class AbstractContext implements AlterableContext {
         if (contextual == null) {
             throw ContextLogger.LOG.contextualIsNull();
         }
-        if (getBeanStore() == null) {
+        final BeanStore beanStore = getBeanStore();
+        if (beanStore == null) {
             throw ContextLogger.LOG.noBeanStoreAvailable(this);
         }
         BeanIdentifier id = getId(contextual);
-        ContextualInstance<?> beanInstance = getBeanStore().remove(id);
+        ContextualInstance<?> beanInstance = beanStore.remove(id);
         if (beanInstance != null) {
             RequestScopedCache.invalidate();
             destroyContextualInstance(beanInstance);
@@ -137,10 +138,11 @@ public abstract class AbstractContext implements AlterableContext {
     }
 
     private <T> ContextualInstance<T> getContextualInstance(BeanIdentifier id) {
-        if (getBeanStore() == null) {
+        final BeanStore beanStore = getBeanStore();
+        if (beanStore == null) {
             throw ContextLogger.LOG.noBeanStoreAvailable(this);
         }
-        return getBeanStore().get(id);
+        return beanStore.get(id);
     }
 
     private <T> void destroyContextualInstance(ContextualInstance<T> instance) {
@@ -153,13 +155,14 @@ public abstract class AbstractContext implements AlterableContext {
      */
     protected void destroy() {
         ContextLogger.LOG.contextCleared(this);
-        if (getBeanStore() == null) {
+        final BeanStore beanStore = getBeanStore();
+        if (beanStore == null) {
             throw ContextLogger.LOG.noBeanStoreAvailable(this);
         }
-        for (BeanIdentifier id : getBeanStore()) {
+        for (BeanIdentifier id : beanStore) {
             destroyContextualInstance(getContextualInstance(id));
         }
-        getBeanStore().clear();
+        beanStore.clear();
     }
 
     /**
@@ -170,11 +173,12 @@ public abstract class AbstractContext implements AlterableContext {
     protected abstract BeanStore getBeanStore();
 
     public void cleanup() {
-        if (getBeanStore() != null) {
+        final BeanStore beanStore = getBeanStore();
+        if (beanStore != null) {
             try {
-                getBeanStore().clear();
+                beanStore.clear();
             } catch (Exception e) {
-                ContextLogger.LOG.unableToClearBeanStore(getBeanStore());
+                ContextLogger.LOG.unableToClearBeanStore(beanStore);
                 ContextLogger.LOG.catchingDebug(e);
             }
         }
