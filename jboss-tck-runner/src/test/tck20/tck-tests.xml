@@ -44,21 +44,8 @@
             </class>
 
             <!-- Issues in the TCK -->
-            <!-- CDITCK-421 -->
-            <class name="org.jboss.cdi.tck.interceptors.tests.contract.aroundInvoke.AroundInvokeAccessInterceptorTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
-
-            <class name="org.jboss.cdi.tck.interceptors.tests.contract.aroundTimeout.AroundTimeoutInterceptorTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
-
-            <!-- CDITCK-454 -->
-            <class name="org.jboss.cdi.tck.tests.deployment.discovery.BeanDiscoveryTest">
+            <!-- CDI-437 -->
+            <class name="org.jboss.cdi.tck.tests.lookup.byname.ambiguous.broken.AmbiguousELNamesTest">
                 <methods>
                     <exclude name=".*"/>
                 </methods>
