@@ -126,6 +126,13 @@ public class SubclassedComponentInstantiator<T> extends AbstractInstantiator<T> 
         for (SlimAnnotatedType<?> slimType : store.get(type.getJavaClass())) {
             WeldCollections.addIfNotNull(models, manager.getInterceptorModelRegistry().get(slimType));
         }
+        for (InterceptionModel model : models) {
+            if (model.hasTargetClassInterceptors() && model.getTargetClassInterceptorMetadata().isEligible(InterceptionType.AROUND_INVOKE)) {
+                // this means that all methods are intercepted
+                // returning null here means that all methods will be overridden and will delegate to MethodHandler
+                return null;
+            }
+        }
         return models;
     }
 
