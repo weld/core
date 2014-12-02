@@ -1,6 +1,128 @@
 [[configure]]
 == Configuration
 
+=== Weld configuration
+
+Weld can be configured per application through the set of properties. All the supported configuration properties are described in the following subsections.
+
+Each configuration property can be specified (by priority in descending order):
+
+. In a properties file named `weld.properties`
+. As a system property
+. By a bootstrap configuration provided by an integrator
+
+If a configuration key is set in multiple sources (e.g. as a system property and in a properties file), the value from the source with higher priority is taken, other values are ignored. Unsupported configuration keys are ignored. If an invalid configuration property value is set, the container automatically detects the problem and treats it as a deployment problem. 
+
+==== Concurrent deployment configuration
+
+By default Weld supports concurrent loading and deploying of beans.
+However, in certain deployment scenarios the default setup may not be
+appropriate.
+
+.Supported configuration properties
+[cols=",,",options="header",]
+|=======================================================================
+|Configuration key |Default value |Description
+|`org.jboss.weld.bootstrap.concurrentDeployment` |true |If set to false, `ConcurrentDeployer` and
+`ConcurrentValidator` will not be used.
+
+|`org.jboss.weld.bootstrap.preloaderThreadPoolSize`
+|`Math.max(1, Runtime.getRuntime().availableProcessors() - 1)` |Weld is
+capable of resolving observer methods for container lifecycle events in
+advance while bean deployer threads are blocked waiting for I/O
+operations (such as classloading). This process is called preloading and
+leads to better CPU utilization and faster application startup time.
+This configuration option specifies the number of threads used for
+preloading. If set to 0, preloading is disabled.
+|=======================================================================
+
+NOTE: The bootstrap configuration may be altered using the deprecated `org.jboss.weld.bootstrap.properties` file located on the classpath (e.g. `WEB-INF/classes/org.jboss.weld.bootstrap.properties` in a web archive). The keys are `concurrentDeployment` and `preloaderThreadPoolSize`.
+
+==== Thread pool configuration
+
+For certain types of tasks Weld uses its own thread pool. The thread
+pool is represented by the `ExecutorServices` service. 
+
+.Supported configuration properties
+[cols=",,",options="header",]
+|=======================================================================
+|Configuration key |Default value |Description
+|`org.jboss.weld.executor.threadPoolType` |`FIXED` |The type of the thread pool. Possible values
+are: `FIXED`, `FIXED_TIMEOUT`, `NONE`, `SINGLE_THREAD`
+
+|`org.jboss.weld.executor.threadPoolSize` |`Runtime.getRuntime().availableProcessors()` |The
+number of threads to be used for bean loading and deployment.
+
+|`org.jboss.weld.executor.threadPoolKeepAliveTime` |60 seconds |Passed to the constructor of the
+ThreadPoolExecutor class, maximum time that excess idle threads will
+wait for new tasks before terminating.
+
+|`org.jboss.weld.executor.threadPoolDebug` |false |If set to true, debug timing information is
+printed to the standard output.
+|=======================================================================
+
+NOTE: It's possible to alter the thread pool configuration using the deprecated `org.jboss.weld.executor.properties` file located on the classpath. The keys are `threadPoolType`, `threadPoolSize`, `threadPoolKeepAliveTime` and `threadPoolDebug`.
+
+==== Non-portable mode during application initialization
+
+By default the application initialization is performed in the portable
+mode which denotes specification-compliant behaviour. However it's also
+possible to enable the non-portable mode, in which some definition
+errors and deployment problems do not cause application initialization
+to abort. Currently the non-portable mode allows extension developers to
+call all the `BeanManager`'s methods before the
+`AfterDeploymentValidation` event is fired.
+
+.Supported configuration properties
+[cols=",,",options="header",]
+|=======================================================================
+|Configuration key |Default value |Description
+|`org.jboss.weld.nonPortableMode` |false|If set to `true`, the non-portable mode is enabled.
+|=======================================================================
+
+NOTE: The main purpose of the non-portable mode is to support some legacy
+extensions. It's highly recommended to use the portable mode whenever
+possible - non-portable mode may lead to unexpected behaviour during
+initialization process.
+
+==== Bounding the cache size for resolved injection points
+
+Weld caches already resolved injection points in order to resolve them
+faster in the future. A separate type-safe resolver exists for
+beans, decorators, disposers, interceptors and observers. Each of them
+stores resolved injection points in its cache, which maximum size is
+bounded by a default value (common to all of them).
+
+.Supported configuration properties
+[cols=",,",options="header",]
+|=======================================================================
+|Configuration key |Default value |Description
+|`org.jboss.weld.resolution.cacheSize` |1000|The upper bound of the cache.
+|=======================================================================
+
+==== Debugging generated bytecode
+
+For debugging purposes, it's possible to dump the generated bytecode of client proxies and enhanced subclasses to the filesystem.
+
+.Supported configuration properties
+[cols=",,",options="header",]
+|=======================================================================
+|Configuration key |Default value |Description
+|`org.jboss.weld.proxy.dump` ||The file path where the files should be stored.
+|=======================================================================
+
+==== Injectable reference lookup optimization
+
+For certain combinations of scopes, the container is permitted to optimize an injectable reference lookup. Enabling this feature brings some performance boost but causes `javax.enterprise.context.spi.AlterableContext.destroy()` not to work properly for `@ApplicationScoped` and `@RequestScoped` beans. Therefore, the optimization is disabled by default.
+
+.Supported configuration properties
+[cols=",,",options="header",]
+|=======================================================================
+|Configuration key |Default value |Description
+|`org.jboss.weld.injection.injectableReferenceOptimization` |false |If set to `true`, the optimization is enabled.
+|=======================================================================
+
+
 === Excluding classes from scanning and deployment
 
 CDI 1.1 allows you to exclude classes in your archive from being
@@ -85,74 +207,6 @@ true for the filter to be activated). If you want to a filter that is
 active if _any_ of the activation conditions are true, then you need
 multiple identical filters, each with different activation conditions.
 
-=== Concurrent deployment configuration
-
-Weld by default supports concurrent loading and deploying of beans.
-However, in certain deployment scenarios the default setup may not be
-appropriate. Bootstrap configuration may be altered using the
-`org.jboss.weld.bootstrap.properties` file located on the classpath
-(e.g. `WEB-INF/classes/org.jboss.weld.bootstrap.properties` in a web
-archive).
-
-.Concurrent deployment configuration options
-[cols=",,",options="header",]
-|=======================================================================
-|Configuration option |Default value |Description
-|`concurrentDeployment` |true |If set to false, `ConcurrentDeployer` and
-`ConcurrentValidator` will not be used.
-
-|`preloaderThreadPoolSize`
-|`Math.max(1, Runtime.getRuntime().availableProcessors() - 1)` |Weld is
-capable of resolving observer methods for container lifecycle events in
-advance while bean deployer threads are blocked waiting for I/O
-operations (such as classloading). This process is called preloading and
-leads to better CPU utilization and faster application startup time.
-This configuration option specifies the number of threads used for
-preloading. If set to 0, preloading is disabled.
-|=======================================================================
-
-==== Thread pool configuration
-
-For certain types of tasks Weld uses its own thread pool. The thread
-pool is represented by the `ExecutorServices` service. It is possible to
-alter the thread pool configuration in the
-`WEB-INF/classes/org.jboss.weld.executor.properties` file.
-
-.Executor configuration options
-[cols=",,",options="header",]
-|=======================================================================
-|Configuration option |Default value |Description
-|`threadPoolType` |`FIXED` |The type of the thread pool. Possible values
-are: `FIXED`, `FIXED_TIMEOUT`, `NONE`, `SINGLE_THREAD`
-
-|`threadPoolSize` |`Runtime.getRuntime().availableProcessors()` |The
-number of threads to be used for bean loading and deployment.
-
-|`threadPoolKeepAliveTime` |60 seconds |Passed to the constructor of the
-ThreadPoolExecutor class, maximum time that excess idle threads will
-wait for new tasks before terminating.
-
-|`threadPoolDebug` |false |If set to true, debug timing information is
-printed to the standard output.
-|=======================================================================
-
-=== Non-portable mode during application initialization
-
-By default the application initialization is performed in the portable
-mode which denotes specification-compliant behaviour. However it's also
-possible to enable the non-portable mode, in which some definition
-errors and deployment problems do not cause application initialization
-to abort. Currently the non-portable mode allows extension developers to
-call all the `BeanManager`'s methods before the
-`AfterDeploymentValidation` event is fired.
-
-Set the system property `org.jboss.weld.nonPortableMode` to `true` in
-order to enable the non-portable mode during initialization.
-
-NOTE: The main purpose of the non-portable mode is to support some legacy
-extensions. It's highly recommended to use the portable mode whenever
-possible - non-portable mode may lead to unexpected behaviour during
-initialization process.
 
 === Mapping CDI contexts to HTTP requests
 
@@ -178,24 +232,3 @@ xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/
 
 </web-app>
 -----------------------------------------------------------------------------------------------------------
-
-=== Bounding the cache size for resolved injection points
-
-Weld caches already resolved injection points in order to resolve them
-faster in the future. There exists a separate type safe resolver for
-beans, decorators, disposers, interceptors and observers. Each of them
-stores resolved injection points in its cache, which maximum size is
-bounded by a default value (common to all of them). You can alter this
-cache upper bound by setting the system property
-`org.jboss.weld.resolution.cacheSize` to a specific number.
-
-[source.JAVA, java]
-------------------------------------------------------------------
-System.setProperty("org.jboss.weld.resolution.cacheSize", "1000");
-------------------------------------------------------------------
-
-=== Debugging generated bytecode
-
-Weld may dump generated client proxies and enhanced subclasses to the filesystem debugging purposes.
-This can be done by setting the system property `org.jboss.weld.proxy.dump` to a filesystem path where
-the files should be stored (e.g. `-Dorg.jboss.weld.proxy.dump=/tmp/debug`).
