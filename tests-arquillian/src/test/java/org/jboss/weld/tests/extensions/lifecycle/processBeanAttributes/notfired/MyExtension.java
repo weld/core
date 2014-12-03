@@ -59,7 +59,7 @@ public class MyExtension implements Extension {
 
             @Override
             public Set<Type> getTypes() {
-                return new HashSet<Type>(Arrays.asList(getBeanClass()));
+                return new HashSet<Type>(Collections.singletonList(getBeanClass()));
             }
 
             @Override
