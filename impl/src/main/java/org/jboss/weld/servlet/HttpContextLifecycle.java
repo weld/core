@@ -23,6 +23,8 @@ import javax.servlet.http.HttpSession;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.api.Service;
+import org.jboss.weld.context.BoundContext;
+import org.jboss.weld.context.ManagedContext;
 import org.jboss.weld.context.cache.RequestScopedCache;
 import org.jboss.weld.context.http.HttpRequestContext;
 import org.jboss.weld.context.http.HttpRequestContextImpl;
@@ -279,24 +281,21 @@ public class HttpContextLifecycle implements Service {
             if (!servletApi.isAsyncSupported() || !servletApi.isAsyncStarted(request)) {
                 getRequestContext().invalidate();
             }
-            getRequestContext().deactivate();
+
+            safelyDeactivate(getRequestContext(),  request);
             // fire @Destroyed(RequestScoped.class)
             requestDestroyedEvent.fire(request);
-            getSessionContext().deactivate();
+
+            safelyDeactivate(getSessionContext(), request);
             // fire @Destroyed(SessionScoped.class)
             if (!getSessionContext().isValid()) {
                 sessionDestroyedEvent.fire((HttpSession) request.getAttribute(HTTP_SESSION));
             }
         } finally {
-            getRequestContext().dissociate(request);
-
+            safelyDissociate(getRequestContext(), request);
             // WFLY-1533 Underlying HTTP session may be invalid
-            try {
-                getSessionContext().dissociate(request);
-            } catch (Exception e) {
-                ServletLogger.LOG.unableToDissociateContext(getSessionContext(), request);
-                ServletLogger.LOG.catchingDebug(e);
-            }
+            safelyDissociate(getSessionContext(), request);
+
             // Catch block is inside the activator method so that we're able to log the context
             conversationContextActivator.disassociateConversationContext(request);
 
@@ -310,6 +309,10 @@ public class HttpContextLifecycle implements Service {
 
     public void setConversationActivationEnabled(boolean conversationActivationEnabled) {
         this.conversationActivationEnabled = conversationActivationEnabled;
+    }
+
+    @Override
+    public void cleanup() {
     }
 
     /**
@@ -338,7 +341,22 @@ public class HttpContextLifecycle implements Service {
         return request.getAttribute(REQUEST_DESTROYED) != null;
     }
 
-    @Override
-    public void cleanup() {
+    private <T> void safelyDissociate(BoundContext<T> context, T storage) {
+        try {
+            context.dissociate(storage);
+        } catch(Exception e) {
+            ServletLogger.LOG.unableToDissociateContext(context, storage);
+            ServletLogger.LOG.catchingDebug(e);
+        }
     }
+
+    private void safelyDeactivate(ManagedContext context, HttpServletRequest request) {
+        try {
+            context.deactivate();
+        } catch(Exception e) {
+            ServletLogger.LOG.unableToDeactivateContext(context, request);
+            ServletLogger.LOG.catchingDebug(e);
+        }
+    }
+
 }

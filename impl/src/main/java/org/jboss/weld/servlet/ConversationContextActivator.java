@@ -142,30 +142,35 @@ public class ConversationContextActivator {
     }
 
     protected void deactivateConversationContext(HttpServletRequest request) {
-        ConversationContext conversationContext = httpConversationContext();
-        if (conversationContext.isActive()) {
-            // Only deactivate the context if one is already active, otherwise we get Exceptions
-            if (conversationContext instanceof LazyHttpConversationContextImpl) {
-                LazyHttpConversationContextImpl lazyConversationContext = (LazyHttpConversationContextImpl) conversationContext;
-                if (!lazyConversationContext.isInitialized()) {
-                    // if this lazy conversation has not been touched yet, just deactivate it
-                    lazyConversationContext.deactivate();
-                    return;
+        try {
+            ConversationContext conversationContext = httpConversationContext();
+            if (conversationContext.isActive()) {
+                // Only deactivate the context if one is already active, otherwise we get Exceptions
+                if (conversationContext instanceof LazyHttpConversationContextImpl) {
+                    LazyHttpConversationContextImpl lazyConversationContext = (LazyHttpConversationContextImpl) conversationContext;
+                    if (!lazyConversationContext.isInitialized()) {
+                        // if this lazy conversation has not been touched yet, just deactivate it
+                        lazyConversationContext.deactivate();
+                        return;
+                    }
                 }
-            }
-            boolean isTransient = conversationContext.getCurrentConversation().isTransient();
-            if (ConversationLogger.LOG.isTraceEnabled()) {
+                boolean isTransient = conversationContext.getCurrentConversation().isTransient();
+                if (ConversationLogger.LOG.isTraceEnabled()) {
+                    if (isTransient) {
+                        ConversationLogger.LOG.cleaningUpTransientConversation();
+                    } else {
+                        ConversationLogger.LOG.cleaningUpConversation(conversationContext.getCurrentConversation().getId());
+                    }
+                }
+                conversationContext.invalidate();
+                conversationContext.deactivate();
                 if (isTransient) {
-                    ConversationLogger.LOG.cleaningUpTransientConversation();
-                } else {
-                    ConversationLogger.LOG.cleaningUpConversation(conversationContext.getCurrentConversation().getId());
+                    conversationDestroyedEvent.fire(request);
                 }
             }
-            conversationContext.invalidate();
-            conversationContext.deactivate();
-            if (isTransient) {
-                conversationDestroyedEvent.fire(request);
-            }
+        } catch (Exception e) {
+            ServletLogger.LOG.unableToDeactivateContext(httpConversationContext(), request);
+            ServletLogger.LOG.catchingDebug(e);
         }
     }
 
