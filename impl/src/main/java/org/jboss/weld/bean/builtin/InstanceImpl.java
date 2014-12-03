@@ -110,7 +110,7 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
      */
     @Override
     public String toString() {
-        return Formats.formatAnnotations(getQualifiers()) + " Instance<" + Formats.formatType(getType()) + ">";
+        return Formats.formatAnnotations(getQualifiers()) + " Instance<" + Formats.formatType(getType()) + '>';
     }
 
     public Iterator<T> iterator() {

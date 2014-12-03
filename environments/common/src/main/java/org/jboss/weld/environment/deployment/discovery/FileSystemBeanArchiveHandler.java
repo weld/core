@@ -75,7 +75,7 @@ public class FileSystemBeanArchiveHandler implements BeanArchiveHandler {
         try {
             ZipFile zip = new ZipFile(file);
             Enumeration<? extends ZipEntry> entries = zip.entries();
-            ZipFileEntry entry = new ZipFileEntry(PROCOTOL_JAR + ":" + file.toURI().toURL().toExternalForm() + "!/");
+            ZipFileEntry entry = new ZipFileEntry(PROCOTOL_JAR + ':' + file.toURI().toURL().toExternalForm() + "!/");
             while (entries.hasMoreElements()) {
                 add(entry.setName(entries.nextElement().getName()), builder);
             }
@@ -99,7 +99,7 @@ public class FileSystemBeanArchiveHandler implements BeanArchiveHandler {
         for (File child : files) {
 
             if(entry.getName() != null ) {
-                entry.setPath(entry.getName() + "/" + child.getName());
+                entry.setPath(entry.getName() + '/' + child.getName());
             } else {
                 entry.setPath(child.getName());
             }

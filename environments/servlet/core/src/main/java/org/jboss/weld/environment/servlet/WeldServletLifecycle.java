@@ -64,7 +64,7 @@ import org.jboss.weld.servlet.api.ServletListener;
  */
 public class WeldServletLifecycle {
 
-    public static final String BEAN_MANAGER_ATTRIBUTE_NAME = WeldServletLifecycle.class.getPackage().getName() + "." + BeanManager.class.getName();
+    public static final String BEAN_MANAGER_ATTRIBUTE_NAME = WeldServletLifecycle.class.getPackage().getName() + '.' + BeanManager.class.getName();
 
     /**
      * Must be synchronized with org.jboss.weld.Container.CONTEXT_ID_KEY
@@ -284,7 +284,7 @@ public class WeldServletLifecycle {
                     return c;
                 }
             } catch (Throwable t) {
-                dump.append(c).append("->").append(t.getMessage()).append("\n");
+                dump.append(c).append("->").append(t.getMessage()).append('\n');
             }
         }
         return null;

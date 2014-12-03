@@ -65,8 +65,8 @@ public class Formats {
             return "-";
         }
         return member.getDeclaringClass().getName()
-            + "." + (member instanceof Constructor<?> ? "<init>" : member.getName())
-            + "(" + getFileName(member.getDeclaringClass()) + ":" + getLineNumber(member) + ")";
+            + '.' + (member instanceof Constructor<?> ? "<init>" : member.getName())
+            + '(' + getFileName(member.getDeclaringClass()) + ':' + getLineNumber(member) + ')';
     }
 
     private static int getLineNumber(Member member) {
@@ -102,7 +102,7 @@ public class Formats {
         @Override
         public String apply(Object from, int position) {
             if (position > 0) {
-                return " " + (from == null ? NULL : from.toString());
+                return ' ' + (from == null ? NULL : from.toString());
             } else {
                 return from == null ? NULL : from.toString();
             }
@@ -125,7 +125,7 @@ public class Formats {
 
         @Override
         public String apply(Annotation from, int position) {
-            return spaceDelimiterFunction().apply("@" + from.annotationType().getSimpleName(), position);
+            return spaceDelimiterFunction().apply('@' + from.annotationType().getSimpleName(), position);
         }
 
     };
@@ -185,21 +185,21 @@ public class Formats {
 
     public static String addSpaceIfNeeded(String string) {
         if (string.length() > 0) {
-            return string + " ";
+            return string + ' ';
         } else {
             return string;
         }
     }
 
     public static String formatAsFormalParameterList(Iterable<? extends AnnotatedParameter<?>> parameters) {
-        return "(" + formatIterable(parameters, new Function<AnnotatedParameter<?>>() {
+        return '(' + formatIterable(parameters, new Function<AnnotatedParameter<?>>() {
 
             @Override
             public String apply(AnnotatedParameter<?> from, int position) {
                 return commaDelimiterFunction().apply(formatParameter(from), position);
             }
 
-        }) + ")";
+        }) + ')';
     }
 
     public static String formatParameter(AnnotatedParameter<?> parameter) {
@@ -374,10 +374,10 @@ public class Formats {
         StringBuilder builder = new StringBuilder();
         builder.append(major);
         if (minor != null) {
-            builder.append(".").append(minor);
+            builder.append('.').append(minor);
         }
         if (minor != null && micro != null) {
-            builder.append(".").append(micro);
+            builder.append('.').append(micro);
         }
         if (qualifier != null) {
             builder.append(" (");
@@ -386,7 +386,7 @@ public class Formats {
             } else {
                 builder.append(qualifier);
             }
-            builder.append(")");
+            builder.append(')');
         }
         return builder.toString();
     }
@@ -398,32 +398,32 @@ public class Formats {
     public static String formatSimpleClassName(Class<?> javaClass) {
         String simpleName = javaClass.getSimpleName();
         StringBuilder builder = new StringBuilder(simpleName.length() + 2);
-        builder.append("[");
+        builder.append('[');
         builder.append(simpleName);
-        builder.append("]");
+        builder.append(']');
         return builder.toString();
     }
 
     public static String formatAnnotatedType(AnnotatedType<?> type) {
-        return Formats.formatSimpleClassName(type) + " " + Formats.addSpaceIfNeeded(Formats.formatModifiers(type.getJavaClass().getModifiers()))
+        return Formats.formatSimpleClassName(type) + ' ' + Formats.addSpaceIfNeeded(Formats.formatModifiers(type.getJavaClass().getModifiers()))
                 + Formats.formatAnnotations(type.getAnnotations()) + " class " + type.getJavaClass().getName() + Formats.formatActualTypeArguments(type.getBaseType());
     }
 
     public static String formatAnnotatedConstructor(AnnotatedConstructor<?> constructor) {
-        return Formats.formatSimpleClassName(constructor) + " " + Formats.addSpaceIfNeeded(Formats.formatAnnotations(constructor.getAnnotations()))
+        return Formats.formatSimpleClassName(constructor) + ' ' + Formats.addSpaceIfNeeded(Formats.formatAnnotations(constructor.getAnnotations()))
                 + Formats.addSpaceIfNeeded(Formats.formatModifiers(constructor.getJavaMember().getModifiers())) + constructor.getDeclaringType().getJavaClass().getName()
                 + Formats.formatAsFormalParameterList(constructor.getParameters());
     }
 
     public static String formatAnnotatedField(AnnotatedField<?> field) {
-        return Formats.formatSimpleClassName(field) + " " + Formats.addSpaceIfNeeded(Formats.formatAnnotations(field.getAnnotations()))
-                + Formats.addSpaceIfNeeded(Formats.formatModifiers(field.getJavaMember().getModifiers())) + field.getDeclaringType().getJavaClass().getName() + "."
+        return Formats.formatSimpleClassName(field) + ' ' + Formats.addSpaceIfNeeded(Formats.formatAnnotations(field.getAnnotations()))
+                + Formats.addSpaceIfNeeded(Formats.formatModifiers(field.getJavaMember().getModifiers())) + field.getDeclaringType().getJavaClass().getName() + '.'
                 + field.getJavaMember().getName();
     }
 
     public static String formatAnnotatedMethod(AnnotatedMethod<?> method) {
-        return Formats.formatSimpleClassName(method) + " " + Formats.addSpaceIfNeeded(Formats.formatAnnotations(method.getAnnotations()))
-                + Formats.addSpaceIfNeeded(Formats.formatModifiers(method.getJavaMember().getModifiers())) + method.getDeclaringType().getJavaClass().getName() + "."
+        return Formats.formatSimpleClassName(method) + ' ' + Formats.addSpaceIfNeeded(Formats.formatAnnotations(method.getAnnotations()))
+                + Formats.addSpaceIfNeeded(Formats.formatModifiers(method.getJavaMember().getModifiers())) + method.getDeclaringType().getJavaClass().getName() + '.'
                 + method.getJavaMember().getName() + Formats.formatAsFormalParameterList(method.getParameters());
     }
 

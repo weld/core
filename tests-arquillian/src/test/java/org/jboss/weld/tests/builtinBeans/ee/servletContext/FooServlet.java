@@ -39,7 +39,7 @@ public class FooServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("text/plain");
         try {
-            resp.getWriter().write(ctx.getContextPath() + ";" + sharedBean.getContextPath());
+            resp.getWriter().write(ctx.getContextPath() + ';' + sharedBean.getContextPath());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

@@ -230,7 +230,7 @@ public class ProxyFactory<T> {
                 //this bean has interfaces that the base type is not assignable to
                 //which can happen with some creative use of the SPI
                 //interface only bean.
-                StringBuilder name = new StringBuilder(typeInfo.getSuperClass().getSimpleName() + "$");
+                StringBuilder name = new StringBuilder(typeInfo.getSuperClass().getSimpleName() + '$');
                 className = createCompoundProxyName(contextId, bean, typeInfo, name) + PROXY_SUFFIX;
             } else {
                 className = typeInfo.getSuperClass().getSimpleName() + PROXY_SUFFIX;
@@ -743,7 +743,7 @@ public class ProxyFactory<T> {
         // now we have all our arguments on the stack
         // lets invoke the method
         b.invokeinterface(MethodHandler.class.getName(), "invoke", LJAVA_LANG_OBJECT, new String[] { LJAVA_LANG_OBJECT,
-                LJAVA_LANG_REFLECT_METHOD, LJAVA_LANG_REFLECT_METHOD, "[" + LJAVA_LANG_OBJECT });
+                LJAVA_LANG_REFLECT_METHOD, LJAVA_LANG_REFLECT_METHOD, '[' + LJAVA_LANG_OBJECT });
         if (addReturnInstruction) {
             // now we need to return the appropriate type
             if (method.getReturnType().equals(BytecodeUtils.VOID_CLASS_DESCRIPTOR)) {
@@ -827,14 +827,14 @@ public class ProxyFactory<T> {
         b.aload(0);
         b.aconstNull();
         b.aconstNull();
-        b.invokespecial(proxyClassType.getName(), INIT_METHOD_NAME, "(" + LJAVA_LANG_BYTE + LJAVA_LANG_BYTE + ")" + BytecodeUtils.VOID_CLASS_DESCRIPTOR);
+        b.invokespecial(proxyClassType.getName(), INIT_METHOD_NAME, '(' + LJAVA_LANG_BYTE + LJAVA_LANG_BYTE + ')' + BytecodeUtils.VOID_CLASS_DESCRIPTOR);
         b.returnInstruction();
 
         ctor = proxyClassType.addMethod(AccessFlag.PUBLIC, INIT_METHOD_NAME, BytecodeUtils.VOID_CLASS_DESCRIPTOR, LJAVA_LANG_BYTE, LJAVA_LANG_BYTE);
         b = ctor.getCodeAttribute();
         b.aload(0);
         b.aconstNull();
-        b.invokespecial(proxyClassType.getName(), INIT_METHOD_NAME, "(" + LJAVA_LANG_BYTE + ")" + BytecodeUtils.VOID_CLASS_DESCRIPTOR);
+        b.invokespecial(proxyClassType.getName(), INIT_METHOD_NAME, '(' + LJAVA_LANG_BYTE + ')' + BytecodeUtils.VOID_CLASS_DESCRIPTOR);
         b.returnInstruction();
     }
 

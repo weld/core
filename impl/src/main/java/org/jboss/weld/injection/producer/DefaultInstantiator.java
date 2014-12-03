@@ -68,7 +68,7 @@ public class DefaultInstantiator<T> extends AbstractInstantiator<T> {
 
     @Override
     public String toString() {
-        return "SimpleInstantiator [constructor=" + constructor.getMember() + "]";
+        return "SimpleInstantiator [constructor=" + constructor.getMember() + ']';
     }
 
     @Override

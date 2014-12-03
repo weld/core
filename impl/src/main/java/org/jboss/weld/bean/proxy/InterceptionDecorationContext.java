@@ -127,7 +127,7 @@ public class InterceptionDecorationContext {
 
         @Override
         public String toString() {
-            return "Stack [valid=" + valid + ", cached=" + !removeWhenEmpty + ", elements=" + elements + "]";
+            return "Stack [valid=" + valid + ", cached=" + !removeWhenEmpty + ", elements=" + elements + ']';
         }
 
     }

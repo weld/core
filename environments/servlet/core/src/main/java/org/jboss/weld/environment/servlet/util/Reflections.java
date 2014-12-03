@@ -127,7 +127,7 @@ public abstract class Reflections {
                 message.append(i > 0 ? "," : "").append(args[i]);
             }
         }
-        message.append("]");
+        message.append(']');
         return message.toString();
     }
 

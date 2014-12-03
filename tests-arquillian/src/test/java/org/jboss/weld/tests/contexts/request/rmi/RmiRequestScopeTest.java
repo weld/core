@@ -73,7 +73,7 @@ public class RmiRequestScopeTest {
             // the remote view fully qualified class name
             final String viewClassName = Bridge.class.getName();
             // let's do the lookup
-            return (Bridge) context.lookup("ejb:" + appName + "/" + moduleName + "/" + distinctName + "/" + beanName + "!" + viewClassName);
+            return (Bridge) context.lookup("ejb:" + appName + '/' + moduleName + '/' + distinctName + '/' + beanName + '!' + viewClassName);
         } catch (NamingException e) {
             throw new RuntimeException(e);
         }

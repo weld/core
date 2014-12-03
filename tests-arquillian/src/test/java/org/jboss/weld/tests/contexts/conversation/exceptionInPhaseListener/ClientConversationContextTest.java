@@ -116,7 +116,7 @@ public class ClientConversationContextTest {
     }
 
     protected String getPath(String viewId, String cid) {
-        return getPath(viewId) + "?" + CID_REQUEST_PARAMETER_NAME + "=" + cid;
+        return getPath(viewId) + '?' + CID_REQUEST_PARAMETER_NAME + '=' + cid;
     }
 
     protected String getPath(String viewId) {

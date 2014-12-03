@@ -19,9 +19,9 @@ public class XmlMetadata<T> extends FileMetadata<T> {
     @Override
     public String getLocation() {
         if (getValue() != null) {
-            return "<" + qName + ">" + getValue() + "</" + qName + "> in " + getFile().toString() + "@" + getLineNumber();
+            return '<' + qName + '>' + getValue() + "</" + qName + "> in " + getFile().toString() + '@' + getLineNumber();
         } else {
-            return "<" + qName + " /> in " + getFile().toString() + "@" + getLineNumber();
+            return '<' + qName + " /> in " + getFile().toString() + '@' + getLineNumber();
         }
     }
 

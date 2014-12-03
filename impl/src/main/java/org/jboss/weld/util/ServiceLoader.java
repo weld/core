@@ -141,7 +141,7 @@ public class ServiceLoader<S> implements Iterable<Metadata<S>> {
 
     private ServiceLoader(Class<S> service, ResourceLoader loader) {
         this.loader = loader;
-        this.serviceFile = SERVICES + "/" + service.getName();
+        this.serviceFile = SERVICES + '/' + service.getName();
         this.expectedType = service;
     }
 

@@ -123,7 +123,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
 
     @Override
     public String toString() {
-        return "Producer Method [" + Formats.formatType(getAnnotated().getBaseType()) + "] with qualifiers [" + Formats.formatAnnotations(getQualifiers()) + "] declared as [" + getAnnotated() + "]";
+        return "Producer Method [" + Formats.formatType(getAnnotated().getBaseType()) + "] with qualifiers [" + Formats.formatAnnotations(getQualifiers()) + "] declared as [" + getAnnotated() + ']';
     }
 
     @Override

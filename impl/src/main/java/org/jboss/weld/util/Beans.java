@@ -540,9 +540,9 @@ public class Beans {
     public static String createBeanAttributesId(BeanAttributes<?> attributes) {
         StringBuilder builder = new StringBuilder();
         builder.append(attributes.getName());
-        builder.append(",");
+        builder.append(',');
         builder.append(attributes.getScope().getName());
-        builder.append(",");
+        builder.append(',');
         builder.append(attributes.isAlternative());
         builder.append(AnnotatedTypes.createAnnotationCollectionId(attributes.getQualifiers()));
         builder.append(createTypeCollectionId(attributes.getStereotypes()));
@@ -557,14 +557,14 @@ public class Beans {
         StringBuilder builder = new StringBuilder();
         List<? extends Type> sortedTypes = new ArrayList<Type>(types);
         Collections.sort(sortedTypes, TypeComparator.INSTANCE);
-        builder.append("[");
+        builder.append('[');
         for (Iterator<? extends Type> iterator = sortedTypes.iterator(); iterator.hasNext();) {
             builder.append(createTypeId(iterator.next()));
             if (iterator.hasNext()) {
-                builder.append(",");
+                builder.append(',');
             }
         }
-        builder.append("]");
+        builder.append(']');
         return builder.toString();
     }
 
@@ -579,14 +579,14 @@ public class Beans {
             ParameterizedType parameterizedType = (ParameterizedType) type;
             StringBuilder builder = new StringBuilder();
             builder.append(createTypeId(parameterizedType.getRawType()));
-            builder.append("<");
+            builder.append('<');
             for (int i = 0; i < parameterizedType.getActualTypeArguments().length; i++) {
                 builder.append(createTypeId(parameterizedType.getActualTypeArguments()[i]));
                 if (i != parameterizedType.getActualTypeArguments().length - 1) {
-                    builder.append(",");
+                    builder.append(',');
                 }
             }
-            builder.append(">");
+            builder.append('>');
             return builder.toString();
         }
         if (type instanceof TypeVariable<?>) {

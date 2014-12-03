@@ -94,7 +94,7 @@ public class DeferredEventNotification<T> implements Runnable {
 
     @Override
     public String toString() {
-        return "Deferred event [" + event + "] for [" + observer + "]";
+        return "Deferred event [" + event + "] for [" + observer + ']';
     }
 
     private abstract static class RunInRequest {

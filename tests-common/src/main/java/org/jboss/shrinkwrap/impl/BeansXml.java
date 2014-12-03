@@ -256,7 +256,7 @@ public class BeansXml implements Asset {
     }
 
     private static void appendAttribute(String name, String value, StringBuilder xml) {
-        xml.append(" ").append(name).append("=\"").append(value).append("\"");
+        xml.append(' ').append(name).append("=\"").append(value).append('"');
     }
 
     private static void appendAlternatives(List<Class<?>> alternatives, List<Class<?>> stereotypes, StringBuilder xml) {

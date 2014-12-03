@@ -82,7 +82,7 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Experim
      */
     @Override
     public String toString() {
-        return Formats.formatAnnotations(getQualifiers()) + " Event<" + Formats.formatType(getType()) + ">";
+        return Formats.formatAnnotations(getQualifiers()) + " Event<" + Formats.formatType(getType()) + '>';
     }
 
     @Override

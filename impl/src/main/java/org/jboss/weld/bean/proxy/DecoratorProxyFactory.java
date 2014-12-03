@@ -244,7 +244,7 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
         // now we need to call _initMH
         b.aload(0); // load this
         b.aload(actualDelegateParameterPosition); // load the delegate
-        b.invokevirtual(classMethod.getClassFile().getName(), INIT_MH_METHOD_NAME, "(" + LJAVA_LANG_OBJECT + ")" + BytecodeUtils.VOID_CLASS_DESCRIPTOR);
+        b.invokevirtual(classMethod.getClassFile().getName(), INIT_MH_METHOD_NAME, '(' + LJAVA_LANG_OBJECT + ')' + BytecodeUtils.VOID_CLASS_DESCRIPTOR);
         // return the object from the top of the stack that we got from calling
         // the superclass method earlier
         b.returnInstruction();

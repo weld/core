@@ -33,7 +33,7 @@ public class ConversationNamingScheme extends BeanIdentifierIndexNamingScheme {
 
     @Override
     protected String getPrefix() {
-        return prefixBase + "." + cid;
+        return prefixBase + '.' + cid;
     }
 
 }

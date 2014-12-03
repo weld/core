@@ -18,9 +18,9 @@ public class FileMetadata<T> implements Metadata<T> {
 
     public String getLocation() {
         if (value != null) {
-            return file.toString() + "@" + lineNumber + "[" + value + "]";
+            return file.toString() + '@' + lineNumber + '[' + value + ']';
         } else {
-            return file.toString() + "@" + lineNumber;
+            return file.toString() + '@' + lineNumber;
         }
     }
 

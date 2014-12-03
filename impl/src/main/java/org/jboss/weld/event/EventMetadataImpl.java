@@ -87,6 +87,6 @@ public final class EventMetadataImpl implements ExperimentalEventMetadata {
 
     @Override
     public String toString() {
-        return "EventMetadataImpl [type=" + type + ", qualifiers=" + qualifiers + ", injectionPoint=" + injectionPoint + ", isAsync=" + isAsync + "]";
+        return "EventMetadataImpl [type=" + type + ", qualifiers=" + qualifiers + ", injectionPoint=" + injectionPoint + ']';
     }
 }

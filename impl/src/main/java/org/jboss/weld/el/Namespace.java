@@ -81,7 +81,7 @@ public class Namespace {
     }
 
     public String qualifyName(String suffix) {
-        return qualifiedName == null ? suffix : qualifiedName + "." + suffix;
+        return qualifiedName == null ? suffix : qualifiedName + '.' + suffix;
     }
 
     @Override

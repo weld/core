@@ -69,6 +69,6 @@ public class CdiInterceptorFactory<T> implements InterceptorFactory<T> {
 
     @Override
     public String toString() {
-        return "CdiInterceptorFactory [interceptor=" + interceptor + "]";
+        return "CdiInterceptorFactory [interceptor=" + interceptor + ']';
     }
 }

@@ -50,6 +50,6 @@ public class WeldSEClassPathImpl extends JavaArchiveImpl implements WeldSEClassP
 
     @Override
     public String toString() {
-        return "WeldSEClassPathImpl [archives=" + archives + "]";
+        return "WeldSEClassPathImpl [archives=" + archives + ']';
     }
 }

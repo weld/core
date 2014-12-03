@@ -91,7 +91,7 @@ public class BeansXmlHandler extends DefaultHandler {
 
         @Override
         public String toString() {
-            return "<" + localName + " />";
+            return '<' + localName + " />";
         }
 
         protected boolean isInNamespace(String namespace) {

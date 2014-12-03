@@ -39,7 +39,7 @@ import org.jboss.weld.environment.servlet.logging.WeldServletLogger;
 public class BeanManagerResourceBindingListener implements ServletContextListener {
     private static final String RESOURCES_CONTEXT = "java:comp/env";
     private static final String BEAN_MANAGER_JNDI_NAME = "BeanManager";
-    private static final String QUALIFIED_BEAN_MANAGER_JNDI_NAME = RESOURCES_CONTEXT + "/" + BEAN_MANAGER_JNDI_NAME;
+    private static final String QUALIFIED_BEAN_MANAGER_JNDI_NAME = RESOURCES_CONTEXT + '/' + BEAN_MANAGER_JNDI_NAME;
     private static final String BEAN_MANAGER_OBJECT_FACTORY = "org.jboss.weld.resources.ManagerObjectFactory";
 
     private boolean bound = false;
