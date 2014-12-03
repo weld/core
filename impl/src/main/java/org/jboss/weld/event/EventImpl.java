@@ -89,7 +89,7 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Experim
         Preconditions.checkArgumentNotNull(event, EVENT_ARGUMENT_NAME);
         CachedObservers observers = getObservers(event);
         // we can do lenient here as the event type is checked within #getObservers()
-        getBeanManager().getGlobalLenientObserverNotifier().notify(observers.observers, event, observers.metadata);
+        getBeanManager().getGlobalLenientObserverNotifier().notify(observers.observers, event, observers.syncMetadata);
     }
 
     @Override
@@ -97,7 +97,7 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Experim
         Preconditions.checkArgumentNotNull(event, EVENT_ARGUMENT_NAME);
         CachedObservers observers = getObservers(event);
         // we can do lenient here as the event type is checked within #getObservers()
-        return getBeanManager().getGlobalLenientObserverNotifier().notifyAsync(observers.observers, event, observers.metadata);
+        return getBeanManager().getGlobalLenientObserverNotifier().notifyAsync(observers.observers, event, observers.asyncMetadata);
     }
 
     private CachedObservers getObservers(T event) {
@@ -120,8 +120,9 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Experim
         final Type eventType = getEventType(runtimeType);
         // this performs type check
         final ResolvedObservers<T> observers = getBeanManager().getGlobalStrictObserverNotifier().resolveObserverMethods(eventType, getQualifiers());
-        final EventMetadata metadata = new EventMetadataImpl(eventType, getInjectionPoint(), getQualifiers());
-        return new CachedObservers(runtimeType, observers, metadata);
+        final EventMetadata syncMetadata = new EventMetadataImpl(eventType, getInjectionPoint(), getQualifiers(), false);
+        final EventMetadata asyncMetadata = new EventMetadataImpl(eventType, getInjectionPoint(), getQualifiers(), true);
+        return new CachedObservers(runtimeType, observers, syncMetadata, asyncMetadata);
     }
 
     @Override
@@ -196,12 +197,14 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Experim
     private class CachedObservers {
         private final Class<?> rawType;
         private final ResolvedObservers<T> observers;
-        private final EventMetadata metadata;
+        private final EventMetadata syncMetadata;
+        private final EventMetadata asyncMetadata;
 
-        private CachedObservers(Class<?> rawType, ResolvedObservers<T> observers, EventMetadata metadata) {
+        private CachedObservers(Class<?> rawType, ResolvedObservers<T> observers, EventMetadata syncMetadata, EventMetadata asyncMetadata) {
             this.rawType = rawType;
             this.observers = observers;
-            this.metadata = metadata;
+            this.syncMetadata = syncMetadata;
+            this.asyncMetadata = asyncMetadata;
         }
     }
 }

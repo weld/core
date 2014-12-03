@@ -16,12 +16,17 @@
  */
 package org.jboss.weld.bean.builtin;
 
+import java.lang.reflect.Type;
+import java.util.Set;
+
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.EventMetadata;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.event.CurrentEventMetadata;
+import org.jboss.weld.experimental.ExperimentalEventMetadata;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.collections.ImmutableSet;
 
 /**
  * Built-in bean for event metadata.
@@ -30,6 +35,8 @@ import org.jboss.weld.manager.BeanManagerImpl;
  *
  */
 public class EventMetadataBean extends AbstractStaticallyDecorableBuiltInBean<EventMetadata> {
+
+    private static final Set<Type> TYPES = ImmutableSet.<Type>of(ExperimentalEventMetadata.class, EventMetadata.class, Object.class);
 
     private final CurrentEventMetadata currentEventMetadata;
 
@@ -45,6 +52,11 @@ public class EventMetadataBean extends AbstractStaticallyDecorableBuiltInBean<Ev
     @Override
     protected EventMetadata newInstance(InjectionPoint ip, CreationalContext<EventMetadata> creationalContext) {
         return currentEventMetadata.peek();
+    }
+
+    @Override
+    public Set<Type> getTypes() {
+        return TYPES;
     }
 
     @Override

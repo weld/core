@@ -23,6 +23,7 @@ import java.util.Set;
 import javax.enterprise.inject.spi.EventMetadata;
 import javax.enterprise.inject.spi.InjectionPoint;
 
+import org.jboss.weld.experimental.ExperimentalEventMetadata;
 import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.util.collections.ImmutableSet;
 
@@ -32,26 +33,28 @@ import org.jboss.weld.util.collections.ImmutableSet;
  * @author Jozef Hartinger
  *
  */
-public final class EventMetadataImpl implements EventMetadata {
+public final class EventMetadataImpl implements ExperimentalEventMetadata {
 
     private final Type type;
     private final InjectionPoint injectionPoint;
     private final Set<Annotation> qualifiers;
     private final Annotation[] qualifierArray;
+    private final boolean isAsync;
 
-    public EventMetadataImpl(Type type, InjectionPoint injectionPoint, Set<Annotation> qualifiers) {
-        this(type, injectionPoint, qualifiers, null);
+    public EventMetadataImpl(Type type, InjectionPoint injectionPoint, Set<Annotation> qualifiers, boolean isAsync) {
+        this(type, injectionPoint, qualifiers, null, isAsync);
     }
 
     public EventMetadataImpl(Type type, InjectionPoint injectionPoint, Annotation[] qualifiers) {
-        this(type, injectionPoint, null, qualifiers);
+        this(type, injectionPoint, null, qualifiers, false);
     }
 
-    private EventMetadataImpl(Type type, InjectionPoint injectionPoint, Set<Annotation> qualifiers, Annotation[] qualifierArray) {
+    private EventMetadataImpl(Type type, InjectionPoint injectionPoint, Set<Annotation> qualifiers, Annotation[] qualifierArray, boolean isAsync) {
         this.type = type;
         this.injectionPoint = injectionPoint;
         this.qualifiers = qualifiers;
         this.qualifierArray = qualifierArray;
+        this.isAsync = isAsync;
     }
 
     @Override
@@ -78,7 +81,12 @@ public final class EventMetadataImpl implements EventMetadata {
     }
 
     @Override
+    public boolean isAsync() {
+        return isAsync;
+    }
+
+    @Override
     public String toString() {
-        return "EventMetadataImpl [type=" + type + ", qualifiers=" + qualifiers + ", injectionPoint=" + injectionPoint + "]";
+        return "EventMetadataImpl [type=" + type + ", qualifiers=" + qualifiers + ", injectionPoint=" + injectionPoint + ", isAsync=" + isAsync + "]";
     }
 }
