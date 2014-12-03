@@ -18,9 +18,6 @@ package org.jboss.weld.logging;
 
 import static org.jboss.weld.logging.WeldLogger.WELD_PROJECT_CODE;
 
-import javax.enterprise.context.spi.Context;
-import javax.servlet.http.HttpServletRequest;
-
 import org.jboss.logging.Logger;
 import org.jboss.logging.Logger.Level;
 import org.jboss.logging.annotations.Cause;
@@ -60,8 +57,8 @@ public interface ServletLogger extends WeldLogger {
     void webXmlMappingPatternIgnored(String pattern);
 
     @LogMessage(level = Level.WARN)
-    @Message(id = 712, value = "Unable to dissociate context {0} when destroying request {1}", format = Format.MESSAGE_FORMAT)
-    void unableToDissociateContext(Context context, HttpServletRequest request);
+    @Message(id = 712, value = "Unable to dissociate context {0} from the storage {1}", format = Format.MESSAGE_FORMAT)
+    void unableToDissociateContext(Object context, Object storage);
 
     @Message(id = 713, value = "Unable to inject ServletContext. None is associated with {0}, {1}", format = Format.MESSAGE_FORMAT)
     IllegalStateException cannotInjectServletContext(ClassLoader classLoader, ServletContextService service);
@@ -77,5 +74,9 @@ public interface ServletLogger extends WeldLogger {
     @LogMessage(level = Level.INFO)
     @Message(id = 716, value = "Running in Servlet 2.x environment. Asynchronous request support is disabled.")
     void servlet2Environment();
+
+    @LogMessage(level = Level.WARN)
+    @Message(id = 717, value = "Unable to deactivate context {0} when destroying request {1}", format = Format.MESSAGE_FORMAT)
+    void unableToDeactivateContext(Object context, Object request);
 
 }
