@@ -25,6 +25,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.EnumMap;
 
 import org.jboss.weld.interceptor.reader.TargetClassInterceptorMetadata;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorClassMetadata;
@@ -50,9 +51,9 @@ public class InterceptionModelBuilder {
 
     private final Set<InterceptorClassMetadata<?>> allInterceptors = new LinkedHashSet<InterceptorClassMetadata<?>>();
 
-    private final Map<InterceptionType, List<InterceptorClassMetadata<?>>> globalInterceptors = new HashMap<InterceptionType, List<InterceptorClassMetadata<?>>>();
+    private final Map<InterceptionType, List<InterceptorClassMetadata<?>>> globalInterceptors = new EnumMap<InterceptionType, List<InterceptorClassMetadata<?>>>(InterceptionType.class);
 
-    private final Map<InterceptionType, Map<Method, List<InterceptorClassMetadata<?>>>> methodBoundInterceptors = new HashMap<InterceptionType, Map<Method, List<InterceptorClassMetadata<?>>>>();
+    private final Map<InterceptionType, Map<Method, List<InterceptorClassMetadata<?>>>> methodBoundInterceptors = new EnumMap<InterceptionType, Map<Method, List<InterceptorClassMetadata<?>>>>(InterceptionType.class);
 
     private TargetClassInterceptorMetadata targetClassInterceptorMetadata;
 
