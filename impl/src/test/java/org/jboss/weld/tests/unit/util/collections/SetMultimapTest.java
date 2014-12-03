@@ -21,6 +21,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -65,7 +66,7 @@ public class SetMultimapTest {
         assertEquals(5, barValues.size());
         assertTrue(barValues.containsAll(Arrays.asList(1, 42, 5, 6, 7)));
 
-        Set<Integer> replaced = setMultimap.replaceValues("foo", Arrays.asList(1000));
+        Set<Integer> replaced = setMultimap.replaceValues("foo", Collections.singletonList(1000));
         assertEquals(3, replaced.size());
         fooValues = setMultimap.get("foo");
         assertEquals(1, fooValues.size());
