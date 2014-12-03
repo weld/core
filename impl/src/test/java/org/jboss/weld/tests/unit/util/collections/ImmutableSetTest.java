@@ -42,4 +42,19 @@ public class ImmutableSetTest {
         Assert.assertTrue(set.contains("barbar"));
         Assert.assertTrue(set.contains("bazbaz"));
     }
+
+    @Test
+    public void testAddAll() {
+        Set<String> set = ImmutableSet.<String>builder().addAll(new String[] { "foo", "bar", "baz" }).build();
+        Assert.assertEquals(3, set.size());
+        Assert.assertTrue(set.contains("foo"));
+        Assert.assertTrue(set.contains("bar"));
+        Assert.assertTrue(set.contains("baz"));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAddNull() {
+        String foo = null;
+        ImmutableSet.<String>builder().add(foo).build();
+    }
 }
