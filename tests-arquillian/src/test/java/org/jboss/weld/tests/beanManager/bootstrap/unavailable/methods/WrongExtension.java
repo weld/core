@@ -101,7 +101,7 @@ public class WrongExtension implements Extension {
         }
 
         try {
-            beanManager.resolveDecorators(new HashSet<Type>(Arrays.asList(Foo.class)));
+            beanManager.resolveDecorators(new HashSet<Type>(Collections.singletonList(Foo.class)));
             fail("resolveDecorators() must not be available");
         } catch (IllegalStateException e) {
             // Expected
@@ -164,7 +164,7 @@ public class WrongExtension implements Extension {
         beanManager.resolve(null);
         beanManager.resolveObserverMethods(new Foo());
         beanManager.resolveInterceptors(InterceptionType.AROUND_INVOKE, new AnnotationLiteral<Transactional>() { });
-        beanManager.resolveDecorators(new HashSet<Type>(Arrays.asList(Foo.class)));
+        beanManager.resolveDecorators(new HashSet<Type>(Collections.singletonList(Foo.class)));
         beanManager.validate(injectionPoint);
         beanManager.getPassivationCapableBean("foo");
     }

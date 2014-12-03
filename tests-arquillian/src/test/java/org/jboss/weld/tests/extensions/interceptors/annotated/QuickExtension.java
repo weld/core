@@ -18,6 +18,7 @@ package org.jboss.weld.tests.extensions.interceptors.annotated;
 
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -63,9 +64,8 @@ public class QuickExtension implements Extension {
                 if ("dirty".equals(method.getJavaMember().getName())) {
                     methods.add(new ForwardingAnnotatedMethod<Quick>() {
 
-                        private Set<Annotation> annotations = new HashSet<Annotation>(Arrays
-                                .asList(new AnnotationLiteral<Nonbinding>() {
-                                }));
+                        private Set<Annotation> annotations = new HashSet<Annotation>(Collections.singletonList(new AnnotationLiteral<Nonbinding>() {
+                        }));
 
                         @Override
                         protected AnnotatedMethod<Quick> delegate() {

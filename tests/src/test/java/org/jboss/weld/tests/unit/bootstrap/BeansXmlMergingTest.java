@@ -19,6 +19,7 @@ package org.jboss.weld.tests.unit.bootstrap;
 
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Collections;
 
 import org.jboss.weld.bootstrap.WeldBootstrap;
 import org.jboss.weld.bootstrap.spi.BeansXml;
@@ -58,7 +59,7 @@ public class BeansXmlMergingTest {
         WeldBootstrap weldBootstrap = new WeldBootstrap();
 
         URL url = getClass().getResource("/org/jboss/weld/tests/unit/bootstrap/xml/beans3.xml");
-        BeansXml beansXml = weldBootstrap.parse(Arrays.asList(url), true);
+        BeansXml beansXml = weldBootstrap.parse(Collections.singletonList(url), true);
 
         assertEquals(2, beansXml.getEnabledAlternativeStereotypes().size());
         assertEquals(2, beansXml.getEnabledAlternativeClasses().size());

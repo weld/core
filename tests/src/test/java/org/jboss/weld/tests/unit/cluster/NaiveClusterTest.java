@@ -16,6 +16,13 @@
  */
 package org.jboss.weld.tests.unit.cluster;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+
+import javax.enterprise.context.Conversation;
+import javax.enterprise.inject.spi.Bean;
+
 import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.TestContainer;
 import org.jboss.weld.context.bound.BoundConversationContext;
 import org.jboss.weld.context.bound.BoundRequest;
@@ -24,21 +31,16 @@ import org.jboss.weld.mock.cluster.AbstractClusterTest;
 import org.jboss.weld.test.util.Utils;
 import org.testng.annotations.Test;
 
-import javax.enterprise.context.Conversation;
-import javax.enterprise.inject.spi.Bean;
-import java.util.Arrays;
-import java.util.Collection;
-
 public class NaiveClusterTest extends AbstractClusterTest {
 
     @Test(description = "A simple test to check session replication, doesn't carefully check if a bean ids are correct")
     public void testSimpleSessionReplication() throws Exception {
 
-        TestContainer container1 = bootstrapContainer(1, Arrays.<Class<?>>asList(Foo.class));
+        TestContainer container1 = bootstrapContainer(1, Collections.<Class<?>>singletonList(Foo.class));
         BeanManagerImpl beanManager1 = getBeanManager(container1);
         Bean<?> fooBean1 = beanManager1.resolve(beanManager1.getBeans(Foo.class));
 
-        TestContainer container2 = bootstrapContainer(2, Arrays.<Class<?>>asList(Foo.class));
+        TestContainer container2 = bootstrapContainer(2, Collections.<Class<?>>singletonList(Foo.class));
         BeanManagerImpl beanManager2 = getBeanManager(container2);
         Bean<?> fooBean2 = beanManager2.resolve(beanManager2.getBeans(Foo.class));
 
@@ -61,10 +63,10 @@ public class NaiveClusterTest extends AbstractClusterTest {
     @Test(description = "A simple test to check conversation replication")
     public void testConversationReplication() throws Exception {
 
-        TestContainer container1 = bootstrapContainer(1, Arrays.<Class<?>>asList(Baz.class));
+        TestContainer container1 = bootstrapContainer(1, Collections.<Class<?>>singletonList(Baz.class));
         BeanManagerImpl beanManager1 = getBeanManager(container1);
 
-        TestContainer container2 = bootstrapContainer(2, Arrays.<Class<?>>asList(Baz.class));
+        TestContainer container2 = bootstrapContainer(2, Collections.<Class<?>>singletonList(Baz.class));
         BeanManagerImpl beanManager2 = getBeanManager(container2);
 
         use(1);
