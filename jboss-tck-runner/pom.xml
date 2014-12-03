@@ -625,7 +625,6 @@
                         <configuration>
                             <excludes>
                                 <exclude>org.jboss.cdi.tck.*</exclude>
-                                <exclude>org.jboss.weld.logging.*</exclude>
                             </excludes>
                             <propertyName>jacoco.agent</propertyName>
                         </configuration>

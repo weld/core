@@ -218,7 +218,6 @@
                         <configuration>
                             <excludes>
                                 <exclude>org.jboss.weld.tests.unit.*</exclude>
-                                <exclude>org.jboss.weld.logging.*</exclude>
                             </excludes>
                         </configuration>
                         <executions>
