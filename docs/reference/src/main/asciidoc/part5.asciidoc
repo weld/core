@@ -23,8 +23,8 @@ servers it supports and the Weld extensions.
 
 include::environments.asciidoc[]
 
-include::contexts.asciidoc[]
-
 include::configure.asciidoc[]
+
+include::contexts.asciidoc[]
 
 include::ri-spi.asciidoc[]
