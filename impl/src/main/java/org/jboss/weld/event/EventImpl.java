@@ -55,6 +55,7 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
 
     private static final String SUBTYPE_ARGUMENT_NAME = "subtype";
     private static final long serialVersionUID = 656782657242515455L;
+    private static final int DEFAULT_CACHE_CAPACITY = 4;
 
     public static <E> EventImpl<E> of(InjectionPoint injectionPoint, BeanManagerImpl beanManager) {
         return new EventImpl<E>(injectionPoint, beanManager);
@@ -67,7 +68,7 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
     private EventImpl(InjectionPoint injectionPoint, BeanManagerImpl beanManager) {
         super(injectionPoint, null, beanManager);
         this.injectionPointTypeHierarchy = new HierarchyDiscovery(getType());
-        this.cachedObservers = new ConcurrentHashMap<Class<?>, CachedObservers>(4);
+        this.cachedObservers = new ConcurrentHashMap<Class<?>, CachedObservers>(DEFAULT_CACHE_CAPACITY);
     }
 
     /**

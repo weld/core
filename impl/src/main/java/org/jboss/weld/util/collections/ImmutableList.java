@@ -132,7 +132,7 @@ public abstract class ImmutableList<E> extends AbstractImmutableList<E> {
         return new BuilderImpl<T>();
     }
 
-    public static interface Builder<T> {
+    public interface Builder<T> {
 
         Builder<T> add(T item);
 

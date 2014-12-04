@@ -33,8 +33,9 @@ import org.jboss.weld.util.Preconditions;
  */
 public final class ImmutableHashSet<T> extends ImmutableSet<T> implements Serializable {
 
+    private static final int MAX_CAPACITY = 30;
     private static final float LOAD_FACTOR = 0.75f;
-    private static final int MAX_SIZE = (int) Math.floor((1 << 30) * LOAD_FACTOR);
+    private static final int MAX_SIZE = (int) Math.floor((1 << MAX_CAPACITY) * LOAD_FACTOR);
 
     private class IteratorImpl implements Iterator<T> {
 

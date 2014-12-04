@@ -122,6 +122,7 @@ class ImmutableMapEntry<K, V> extends ImmutableMap<K, V> implements Entry<K, V>,
     }
 
     @Override
+    @SuppressWarnings("checkstyle:multiplestringliterals")
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(key == this ? "(this Map)" : key);

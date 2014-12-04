@@ -63,7 +63,7 @@ public abstract class ImmutableMap<K, V> extends AbstractImmutableMap<K, V> {
         return new HashMapBuilder<K, V>();
     }
 
-    public static interface Builder<K, V> {
+    public interface Builder<K, V> {
 
         Builder<K, V> put(K key, V value);
 
