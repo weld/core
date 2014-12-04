@@ -16,10 +16,11 @@
  */
 package org.jboss.weld.logging.messages;
 
+import org.jboss.weld.logging.MessageId;
+
 import ch.qos.cal10n.BaseName;
 import ch.qos.cal10n.Locale;
 import ch.qos.cal10n.LocaleData;
-import org.jboss.weld.logging.MessageId;
 
 @BaseName("org.jboss.weld.messages.servlet")
 @LocaleData({
@@ -46,4 +47,6 @@ public enum ServletMessage {
     @MessageId("000714")GUARD_LEAKED,
     @MessageId("000715")GUARD_NOT_SET,
 
+    @MessageId("000716")UNABLE_TO_DISSOCIATE_CONTEXT,
+    @MessageId("000717")UNABLE_TO_DEACTIVATE_CONTEXT,
 }

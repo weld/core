@@ -27,6 +27,8 @@ import static org.jboss.weld.logging.LoggerFactory.loggerFactory;
 import static org.jboss.weld.logging.messages.ServletMessage.ONLY_HTTP_SERVLET_LIFECYCLE_DEFINED;
 import static org.jboss.weld.logging.messages.ServletMessage.REQUEST_DESTROYED;
 import static org.jboss.weld.logging.messages.ServletMessage.REQUEST_INITIALIZED;
+import static org.jboss.weld.logging.messages.ServletMessage.UNABLE_TO_DEACTIVATE_CONTEXT;
+import static org.jboss.weld.logging.messages.ServletMessage.UNABLE_TO_DISSOCIATE_CONTEXT;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -36,6 +38,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSessionEvent;
 
 import org.jboss.weld.Container;
+import org.jboss.weld.context.BoundContext;
+import org.jboss.weld.context.ManagedContext;
 import org.jboss.weld.context.cache.RequestScopedBeanCache;
 import org.jboss.weld.context.http.HttpConversationContext;
 import org.jboss.weld.context.http.HttpRequestContext;
@@ -44,6 +48,8 @@ import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.logging.messages.ServletMessage;
 import org.jboss.weld.servlet.api.helpers.AbstractServletListener;
 import org.slf4j.cal10n.LocLogger;
+import org.slf4j.ext.XLogger;
+import org.slf4j.ext.XLogger.Level;
 
 /**
  * The Weld listener
@@ -57,6 +63,7 @@ import org.slf4j.cal10n.LocLogger;
 public class WeldListener extends AbstractServletListener {
 
     private static final LocLogger log = loggerFactory().getLogger(SERVLET);
+    private static final XLogger xLog = loggerFactory().getXLogger(SERVLET);
 
     public static final String CONTEXT_IGNORE_FORWARD = "org.jboss.weld.context.ignore.forward";
     public static final String CONTEXT_IGNORE_INCLUDE = "org.jboss.weld.context.ignore.include";
@@ -144,8 +151,8 @@ public class WeldListener extends AbstractServletListener {
 
                 try {
                     requestContext().invalidate();
-                    requestContext().deactivate();
-                    sessionContext().deactivate();
+                    safelyDeactivate(requestContext(), request);
+                    safelyDeactivate(sessionContext(), request);
                     /*
                     * The conversation context is invalidated and deactivated in the
                     * WeldPhaseListener, however if an exception is thrown by the action
@@ -153,12 +160,12 @@ public class WeldListener extends AbstractServletListener {
                     * happens!
                     */
                     if (conversationContext().isActive()) {
-                        conversationContext().deactivate();
+                        safelyDeactivate(conversationContext(), request);
                     }
                 } finally {
-                    requestContext().dissociate(request);
-                    sessionContext().dissociate(request);
-                    conversationContext().dissociate(request);
+                    safelyDissociate(requestContext(), request);
+                    safelyDissociate(sessionContext(), request);
+                    safelyDissociate(conversationContext(), request);
                 }
             } else {
                 throw new IllegalStateException(ONLY_HTTP_SERVLET_LIFECYCLE_DEFINED);
@@ -246,5 +253,23 @@ public class WeldListener extends AbstractServletListener {
             return defaultValue;
         }
         return Boolean.valueOf(value);
+    }
+
+    private <T> void safelyDissociate(BoundContext<T> context, T storage) {
+        try {
+            context.dissociate(storage);
+        } catch (Exception e) {
+            log.warn(UNABLE_TO_DISSOCIATE_CONTEXT, context, storage);
+            xLog.throwing(Level.DEBUG, e);
+        }
+    }
+
+    private void safelyDeactivate(ManagedContext context, HttpServletRequest request) {
+        try {
+            context.deactivate();
+        } catch (Exception e) {
+            log.warn(UNABLE_TO_DEACTIVATE_CONTEXT, context, request);
+            xLog.throwing(Level.DEBUG, e);
+        }
     }
 }
