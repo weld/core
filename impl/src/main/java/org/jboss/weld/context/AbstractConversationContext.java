@@ -209,6 +209,11 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
             if (conversation != null && !isExpired(conversation)) {
                 boolean lock = conversation.lock(getConcurrentAccessTimeout());
                 if (lock) {
+                    // WELD-1690 Don't associate a conversation which was ended (race condition)
+                    if(conversation.isTransient()) {
+                        associateRequest();
+                        throw new NonexistentConversationException(NO_CONVERSATION_FOUND_TO_RESTORE, cid);
+                    }
                     associateRequest(cid);
                 } else {
                     // Associate the request with a new transient conversation
@@ -233,40 +238,39 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
             if (!isAssociated()) {
                 throw new IllegalStateException("Must call associate() before calling deactivate()");
             }
-
-            if (getCurrentConversation().isTransient() && getRequestAttribute(getRequest(), ConversationNamingScheme.PARAMETER_NAME) != null) {
-                // WELD-1746 Don't destroy ended conversations - these must be destroyed in a synchronized block - see also cleanUpConversationMap()
-                destroy();
-            } else {
-                try {
+            try {
+                if (getCurrentConversation().isTransient() && getRequestAttribute(getRequest(), ConversationNamingScheme.PARAMETER_NAME) != null) {
+                    // WELD-1746 Don't destroy ended conversations - these must be destroyed in a synchronized block - see also cleanUpConversationMap()
+                    destroy();
+                } else {
                     // Update the conversation timestamp
                     getCurrentConversation().touch();
                     if (!getBeanStore().isAttached()) {
                         /*
-                        * This was a transient conversation at the beginning of the
-                        * request, so we need to update the CID it uses, and attach
-                        * it. We also add it to the conversations the session knows
-                        * about.
-                        */
+                         * This was a transient conversation at the beginning of the request, so we need to update the CID it uses, and attach it. We also add
+                         * it to the conversations the session knows about.
+                         */
                         if (!(getRequestAttribute(getRequest(), ConversationNamingScheme.PARAMETER_NAME) instanceof ConversationNamingScheme)) {
-                            throw new IllegalStateException("Unable to find ConversationNamingScheme in the request, this conversation wasn't transient at the start of the request");
+                            throw new IllegalStateException(
+                                    "Unable to find ConversationNamingScheme in the request, this conversation wasn't transient at the start of the request");
                         }
-                        ((ConversationNamingScheme) getRequestAttribute(getRequest(), ConversationNamingScheme.PARAMETER_NAME)).setCid(getCurrentConversation().getId());
+                        ((ConversationNamingScheme) getRequestAttribute(getRequest(), ConversationNamingScheme.PARAMETER_NAME)).setCid(getCurrentConversation()
+                                .getId());
 
                         getBeanStore().attach();
 
                         getConversationMap().put(getCurrentConversation().getId(), getCurrentConversation());
                     }
-                } finally {
-                    // WELD-1690 always try to unlock the current conversation
-                    getCurrentConversation().unlock();
-                    // WELD-1802
-                    setBeanStore(null);
-                    // Clean up any expired/ended conversations
-                    cleanUpConversationMap();
-                    // deactivate the context
-                    super.setActive(false);
                 }
+            } finally {
+                // WELD-1690 always try to unlock the current conversation
+                getCurrentConversation().unlock();
+                // WELD-1802
+                setBeanStore(null);
+                // Clean up any expired/ended conversations
+                cleanUpConversationMap();
+                // deactivate the context
+                super.setActive(false);
             }
         } else {
             throw new IllegalStateException("Context is not active");
