@@ -77,6 +77,7 @@ abstract class AbstractImmutableSet<T> extends AbstractSet<T> implements Set<T> 
         return true;
     }
 
+    @SuppressWarnings("checkstyle:equalshashcode")
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {

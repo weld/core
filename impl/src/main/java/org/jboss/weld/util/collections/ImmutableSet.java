@@ -107,7 +107,7 @@ public abstract class ImmutableSet<T> extends AbstractImmutableSet<T> {
      *
      * @param <T> the type of elements
      */
-    public static interface Builder<T> {
+    public interface Builder<T> {
 
         Builder<T> add(T item);
 
