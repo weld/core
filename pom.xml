@@ -9,7 +9,7 @@
     <parent>
         <groupId>org.jboss.weld</groupId>
         <artifactId>weld-parent</artifactId>
-        <version>31</version>
+        <version>32</version>
     </parent>
 
     <prerequisites>
@@ -36,11 +36,10 @@
         <arquillian.jetty.version>1.0.0.CR2</arquillian.jetty.version>
         <arquillian.glassfish.version>1.0.0.CR1</arquillian.glassfish.version>
         <atinject.tck.version>1</atinject.tck.version>
-        <build.config.version>7</build.config.version>
+        <build.config.version>9</build.config.version>
         <bundle.plugin.version>2.5.3</bundle.plugin.version>
         <cdi.tck-1-2.version>1.2.3.Final</cdi.tck-1-2.version>
         <cdi.tck-2-0.version>2.0.0.Alpha1</cdi.tck-2-0.version>
-        <checkstyle.version>2.13</checkstyle.version>
         <classfilewriter.version>1.0.5.Final</classfilewriter.version>
         <contiperf.version>1.06</contiperf.version>
         <findbugs-maven-plugin.version>3.0.0</findbugs-maven-plugin.version>
@@ -526,13 +525,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
-                <configuration>
-                    <configLocation>weld-checkstyle/checkstyle.xml</configLocation>
-                    <suppressionsLocation>weld-checkstyle/checkstyle-suppressions.xml</suppressionsLocation>
-                    <consoleOutput>true</consoleOutput>
-                    <failsOnError>false</failsOnError>
-                    <useFile />
-                </configuration>
             </plugin>
             <!-- m2e Config -->
             <plugin>
