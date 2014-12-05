@@ -23,6 +23,7 @@ import javax.enterprise.inject.spi.DeploymentException;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.jboss.arquillian.container.spi.client.container.DeploymentExceptionTransformer;
+import org.jboss.weld.exceptions.IllegalStateException;
 
 /**
  * TEMPORARY WORKAROUND - temporary replacement for NOOP {@link org.jboss.as.arquillian.container.ExceptionTransformer} used by
@@ -42,13 +43,15 @@ public class WildFly8DeploymentExceptionTransformer implements DeploymentExcepti
 
     private static final String[] DEFINITION_EXCEPTION_FRAGMENTS = new String[] { "org.jboss.weld.exceptions.DefinitionException" };
 
+    private static final String[] ISE_EXCEPTION_FRAGMENTS = new String[] { "org.jboss.weld.exceptions.IllegalStateException" };
+
     public Throwable transform(Throwable throwable) {
 
         // Arquillian sometimes returns InvocationException with nested AS7
         // exception and sometimes AS7 exception itself
         @SuppressWarnings("unchecked")
         List<Throwable> throwableList = ExceptionUtils.getThrowableList(throwable);
-        if (throwableList.size() < 1)
+        if (throwableList.isEmpty())
             return throwable;
 
         Throwable root = null;
@@ -59,14 +62,17 @@ public class WildFly8DeploymentExceptionTransformer implements DeploymentExcepti
             root = ExceptionUtils.getRootCause(throwable);
         }
 
-        if (root instanceof DeploymentException || root instanceof DefinitionException) {
+        if (root instanceof DeploymentException || root instanceof DefinitionException || root instanceof IllegalStateException) {
             return root;
         }
         if (isFragmentFound(DEPLOYMENT_EXCEPTION_FRAGMENTS, root)) {
-            return new DeploymentException(root);
+            return new DeploymentException(root.getMessage());
         }
         if (isFragmentFound(DEFINITION_EXCEPTION_FRAGMENTS, root)) {
-            return new DefinitionException(root);
+            return new DefinitionException(root.getMessage());
+        }
+        if (isFragmentFound(ISE_EXCEPTION_FRAGMENTS, root)) {
+            return new IllegalStateException(root.getMessage());
         }
         return throwable;
     }

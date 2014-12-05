@@ -19,6 +19,8 @@ package org.jboss.weld.util.reflection.instantiation;
 
 import java.util.List;
 
+import org.jboss.weld.config.WeldConfiguration;
+
 import com.google.common.collect.Lists;
 
 /**
@@ -27,11 +29,23 @@ import com.google.common.collect.Lists;
  * @author Ales Justin
  */
 public abstract class AbstractInstantiatorFactory implements InstantiatorFactory {
+
     protected static final String MARKER = "META-INF/org.jboss.weld.enableUnsafeProxies";
 
-    // create new instance for every deployment,
-    // making sure isAvailable is properly checked against security, etc
-    private final List<Instantiator> instantiators = Lists.newArrayList(new UnsafeInstantiator(), new ReflectionFactoryInstantiator());
+    protected volatile Boolean enabled;
+
+    protected final WeldConfiguration configuration;
+
+    private Instantiator instantiator;
+
+    private final List<Instantiator> instantiators;
+
+    public AbstractInstantiatorFactory(WeldConfiguration configuration) {
+        this.configuration = configuration;
+        // create new instance for every deployment,
+        // making sure isAvailable is properly checked against security, etc
+        this.instantiators = Lists.newArrayList(new UnsafeInstantiator(), new ReflectionFactoryInstantiator());
+    }
 
     protected boolean checkInstantiator() {
         for (Instantiator i : instantiators) {
@@ -42,8 +56,6 @@ public abstract class AbstractInstantiatorFactory implements InstantiatorFactory
         }
         return false;
     }
-
-    private Instantiator instantiator;
 
     public Instantiator getInstantiator() {
         return instantiator;

@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.util.reflection.instantiation;
 
+import org.jboss.weld.config.ConfigurationKey;
+import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.resources.spi.ResourceLoader;
 
 /**
@@ -25,18 +27,20 @@ import org.jboss.weld.resources.spi.ResourceLoader;
  * @author Ales Justin
  */
 public class DefaultInstantiatorFactory extends AbstractInstantiatorFactory {
-    private volatile Boolean enabled;
+
     private final ResourceLoader loader;
 
-    public DefaultInstantiatorFactory(ResourceLoader resourceLoader) {
+    public DefaultInstantiatorFactory(ResourceLoader resourceLoader, WeldConfiguration configuration) {
+        super(configuration);
         this.loader = resourceLoader;
     }
 
+    @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "DC_DOUBLECHECK", justification = "Field is volatile")
     public boolean useInstantiators() {
         if (enabled == null) {
             synchronized (this) {
                 if (enabled == null) {
-                    boolean tmp = loader.getResource(MARKER) != null;
+                    boolean tmp = configuration.getBooleanProperty(ConfigurationKey.PROXY_UNSAFE) || loader.getResource(MARKER) != null;
 
                     if (tmp) {
                         tmp = checkInstantiator();

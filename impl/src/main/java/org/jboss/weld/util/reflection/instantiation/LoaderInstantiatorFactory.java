@@ -19,6 +19,9 @@ package org.jboss.weld.util.reflection.instantiation;
 
 import static org.jboss.weld.util.cache.LoadingCacheUtils.getCacheValue;
 
+import org.jboss.weld.config.ConfigurationKey;
+import org.jboss.weld.config.WeldConfiguration;
+
 import com.google.common.base.Function;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -31,10 +34,13 @@ import com.google.common.cache.LoadingCache;
  */
 public class LoaderInstantiatorFactory extends AbstractInstantiatorFactory implements Function<ClassLoader, Boolean> {
 
-    private volatile Boolean enabled;
-
     private final LoadingCache<ClassLoader, Boolean> cached = CacheBuilder.newBuilder().build(CacheLoader.from(this));
 
+    public LoaderInstantiatorFactory(WeldConfiguration configuration) {
+        super(configuration);
+    }
+
+    @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "DC_DOUBLECHECK", justification = "Field is volatile")
     public boolean useInstantiators() {
         final ClassLoader tccl = Thread.currentThread().getContextClassLoader();
 
@@ -42,7 +48,7 @@ public class LoaderInstantiatorFactory extends AbstractInstantiatorFactory imple
             if (enabled == null) {
                 synchronized (this) {
                     if (enabled == null) {
-                        boolean tmp = (getClass().getResource(MARKER) != null);
+                        boolean tmp = configuration.getBooleanProperty(ConfigurationKey.PROXY_UNSAFE) || (getClass().getResource(MARKER) != null);
                         if (tmp) {
                             tmp = checkInstantiator();
                         }
@@ -61,6 +67,6 @@ public class LoaderInstantiatorFactory extends AbstractInstantiatorFactory imple
     }
 
     public Boolean apply(ClassLoader tccl) {
-        return (tccl.getResource(MARKER) != null) && checkInstantiator();
+        return (configuration.getBooleanProperty(ConfigurationKey.PROXY_UNSAFE) || tccl.getResource(MARKER) != null) && checkInstantiator();
     }
 }

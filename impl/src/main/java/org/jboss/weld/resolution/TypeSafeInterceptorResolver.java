@@ -24,6 +24,7 @@ import java.util.Set;
 
 import javax.enterprise.inject.spi.Interceptor;
 
+import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
 
@@ -35,7 +36,7 @@ public class TypeSafeInterceptorResolver extends TypeSafeResolver<InterceptorRes
     private final BeanManagerImpl manager;
 
     public TypeSafeInterceptorResolver(BeanManagerImpl manager, Iterable<Interceptor<?>> interceptors) {
-        super(interceptors);
+        super(interceptors, manager.getServices().get(WeldConfiguration.class));
         this.manager = manager;
     }
 

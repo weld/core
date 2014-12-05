@@ -28,12 +28,12 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.jboss.weld.SystemPropertiesConfiguration;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.BeanDiscoveryMode;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.Filter;
 import org.jboss.weld.bootstrap.spi.Metadata;
+import org.jboss.weld.config.SystemPropertiesConfiguration;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.logging.XmlLogger;
 import org.jboss.weld.metadata.BeansXmlImpl;

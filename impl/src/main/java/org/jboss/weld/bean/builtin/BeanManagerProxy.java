@@ -39,9 +39,9 @@ import javax.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.ContainerState;
-import org.jboss.weld.SystemPropertiesConfiguration;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
-import org.jboss.weld.bootstrap.spi.BootstrapConfiguration;
+import org.jboss.weld.config.ConfigurationKey;
+import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.construction.api.WeldCreationalContext;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.exceptions.IllegalStateException;
@@ -71,11 +71,7 @@ public class BeanManagerProxy extends ForwardingBeanManager implements WeldManag
 
     public BeanManagerProxy(BeanManagerImpl manager) {
         this.manager = manager;
-        if (SystemPropertiesConfiguration.INSTANCE.isNonPortableModeEnabled()) {
-            this.nonPortableMode = true;
-        } else {
-            this.nonPortableMode = manager.getServices().get(BootstrapConfiguration.class).isNonPortableModeEnabled();
-        }
+        this.nonPortableMode = manager.getServices().get(WeldConfiguration.class).getBooleanProperty(ConfigurationKey.NON_PORTABLE_MODE);
     }
 
     @Override

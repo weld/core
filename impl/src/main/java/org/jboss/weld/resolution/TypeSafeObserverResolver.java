@@ -22,6 +22,7 @@ import java.util.Set;
 import javax.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.weld.bootstrap.events.ProcessAnnotatedTypeEventResolvable;
+import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.event.ExtensionObserverMethodImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.util.Beans;
@@ -37,8 +38,8 @@ public class TypeSafeObserverResolver extends TypeSafeResolver<Resolvable, Obser
     private final MetaAnnotationStore metaAnnotationStore;
     private final AssignabilityRules rules;
 
-    public TypeSafeObserverResolver(MetaAnnotationStore metaAnnotationStore, Iterable<ObserverMethod<?>> observers) {
-        super(observers);
+    public TypeSafeObserverResolver(MetaAnnotationStore metaAnnotationStore, Iterable<ObserverMethod<?>> observers, WeldConfiguration configuration) {
+        super(observers, configuration);
         this.metaAnnotationStore = metaAnnotationStore;
         this.rules = EventTypeAssignabilityRules.instance();
     }
