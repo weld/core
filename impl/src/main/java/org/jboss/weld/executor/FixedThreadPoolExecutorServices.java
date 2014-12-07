@@ -28,7 +28,7 @@ import org.jboss.weld.logging.BootstrapLogger;
  * @author Jozef Hartinger
  *
  */
-public class FixedThreadPoolExecutorServices extends AbstractExecutorServices {
+public class FixedThreadPoolExecutorServices extends AbstractManagedExecutorServices {
 
     private final int threadPoolSize;
 

@@ -50,6 +50,8 @@ public class ExecutorServicesFactory {
                 return new SingleThreadExecutorServices();
             case FIXED_TIMEOUT:
                 return new TimingOutFixedThreadPoolExecutorServices(threadPoolSize, threadPoolKeepAliveTime);
+            case COMMON:
+                return new CommonForkJoinPoolExecutorServices();
             default:
                 return new FixedThreadPoolExecutorServices(threadPoolSize);
         }
@@ -83,6 +85,6 @@ public class ExecutorServicesFactory {
      * @author Martin Kouba
      */
     public enum ThreadPoolType {
-        FIXED, FIXED_TIMEOUT, NONE, SINGLE_THREAD
+        FIXED, FIXED_TIMEOUT, NONE, SINGLE_THREAD, COMMON
     }
 }

@@ -11,7 +11,7 @@ Each configuration property can be specified (by priority in descending order):
 . As a system property
 . By a bootstrap configuration provided by an integrator
 
-If a configuration key is set in multiple sources (e.g. as a system property and in a properties file), the value from the source with higher priority is taken, other values are ignored. Unsupported configuration keys are ignored. If an invalid configuration property value is set, the container automatically detects the problem and treats it as a deployment problem. 
+If a configuration key is set in multiple sources (e.g. as a system property and in a properties file), the value from the source with higher priority is taken, other values are ignored. Unsupported configuration keys are ignored. If an invalid configuration property value is set, the container automatically detects the problem and treats it as a deployment problem.
 
 ==== Concurrent deployment configuration
 
@@ -41,21 +41,35 @@ NOTE: The bootstrap configuration may be altered using the deprecated `org.jboss
 ==== Thread pool configuration
 
 For certain types of tasks Weld uses its own thread pool. The thread
-pool is represented by the `ExecutorServices` service. 
+pool is represented by the `ExecutorServices` service.
+
+First of all, let's see what types of thread pools are available:
+
+[cols=",",options="header",]
+|==========================================
+|Thread pool type|Description
+|`FIXED`|Uses a fixed number of threads. The number of threads remains the same throughout the application.
+|`FIXED_TIMEOUT`|Uses a fixed number of threads. A thread will be stopped after a configured period of inactivity.
+|`SINGLE_THREAD`|A single-threaded thread pool
+|`NONE`|No executor is used by Weld
+|`COMMON`|The default ForkJoinPool.commonPool() is used by Weld. See https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ForkJoinPool.html#commonPool--[link] for more details
+|==========================================
+
+Now let's see how to configure Weld to use a particular thread pool type:
 
 .Supported configuration properties
 [cols=",,",options="header",]
 |=======================================================================
 |Configuration key |Default value |Description
 |`org.jboss.weld.executor.threadPoolType` |`FIXED` |The type of the thread pool. Possible values
-are: `FIXED`, `FIXED_TIMEOUT`, `NONE`, `SINGLE_THREAD`
+are: `FIXED`, `FIXED_TIMEOUT`, `NONE`, `SINGLE_THREAD` and `COMMON`
 
 |`org.jboss.weld.executor.threadPoolSize` |`Runtime.getRuntime().availableProcessors()` |The
-number of threads to be used for bean loading and deployment.
+number of threads to be used for bean loading and deployment. Only used by `FIXED` and `FIXED_TIMEOUT`.
 
 |`org.jboss.weld.executor.threadPoolKeepAliveTime` |60 seconds |Passed to the constructor of the
 ThreadPoolExecutor class, maximum time that excess idle threads will
-wait for new tasks before terminating.
+wait for new tasks before terminating. Only used by `FIXED_TIMEOUT`.
 
 |`org.jboss.weld.executor.threadPoolDebug` |false |If set to true, debug timing information is
 printed to the standard output.

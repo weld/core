@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2012, Red Hat, Inc., and individual contributors
+ * Copyright 2014, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -21,21 +21,18 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 
 import org.jboss.weld.exceptions.DeploymentException;
-import org.jboss.weld.logging.BootstrapLogger;
+import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.manager.api.ExecutorServices;
 
 /**
- * Common functionality for {@link ExecutorServices}.
+ * Common implementation of {@link ExecutorServices}
  *
  * @author Jozef Hartinger
  *
  */
 public abstract class AbstractExecutorServices implements ExecutorServices {
-
-    private static final long SHUTDOWN_TIMEOUT = 60L;
 
     @Override
     public <T> List<Future<T>> invokeAllAndCheckForExceptions(Collection<? extends Callable<T>> tasks) {
@@ -57,38 +54,17 @@ public abstract class AbstractExecutorServices implements ExecutorServices {
                 result.get();
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
-                throw new DeploymentException(e);
+                throw new WeldException(e);
             } catch (ExecutionException e) {
                 Throwable cause = e.getCause();
                 if (cause instanceof RuntimeException) {
                     throw RuntimeException.class.cast(cause);
                 } else {
-                    throw new DeploymentException(cause);
+                    throw new WeldException(cause);
                 }
             }
         }
         return futures;
-    }
-
-    public void cleanup() {
-        getTaskExecutor().shutdown();
-        try {
-            // Wait a while for existing tasks to terminate
-            if (!getTaskExecutor().awaitTermination(SHUTDOWN_TIMEOUT, TimeUnit.SECONDS)) {
-                getTaskExecutor().shutdownNow(); // Cancel currently executing tasks
-                // Wait a while for tasks to respond to being cancelled
-                if (!getTaskExecutor().awaitTermination(SHUTDOWN_TIMEOUT, TimeUnit.SECONDS)) {
-                    // Log the error here
-                    BootstrapLogger.LOG.timeoutShuttingDownThreadPool(getTaskExecutor(), this);
-                    // log.warn(BootstrapMessage.TIMEOUT_SHUTTING_DOWN_THREAD_POOL, getTaskExecutor(), this);
-                }
-            }
-        } catch (InterruptedException ie) {
-            // (Re-)Cancel if current thread also interrupted
-            getTaskExecutor().shutdownNow();
-            // Preserve interrupt status
-            Thread.currentThread().interrupt();
-        }
     }
 
     protected abstract int getThreadPoolSize();

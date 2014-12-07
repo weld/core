@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2012, Red Hat, Inc., and individual contributors
+ * Copyright 2014, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -17,29 +17,29 @@
 package org.jboss.weld.executor;
 
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
+import java.util.concurrent.ForkJoinPool;
 
 /**
- * @author pmuir
+ * Wrapper for {@link ForkJoinPool#commonPool()}. This {@link ExecutorService} implementation ignores threadPoolSize and threadPoolKeepAliveTime configuration
+ * options.
+ *
+ * @author Jozef Hartinger
+ *
  */
-public class SingleThreadExecutorServices extends AbstractManagedExecutorServices {
+public class CommonForkJoinPoolExecutorServices extends AbstractExecutorServices {
 
-    private final transient ExecutorService taskExecutor = Executors.newSingleThreadExecutor();
-
-
-    /**
-     * Provides access to the executor service used for asynchronous tasks.
-     *
-     * @return the ExecutorService for this manager
-     */
+    @Override
     public ExecutorService getTaskExecutor() {
-        return taskExecutor;
+        return ForkJoinPool.commonPool();
     }
 
+    @Override
+    public void cleanup() {
+        // noop
+    }
 
     @Override
     protected int getThreadPoolSize() {
-        return 1;
+        return ForkJoinPool.getCommonPoolParallelism();
     }
 }
