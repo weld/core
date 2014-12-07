@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.environment.se;
 
+import static org.jboss.weld.config.ConfigurationKey.EXECUTOR_THREAD_POOL_TYPE;
+import static org.jboss.weld.executor.ExecutorServicesFactory.ThreadPoolType.COMMON;
+
 import java.lang.annotation.Annotation;
 import java.security.AccessController;
 import java.util.Arrays;
@@ -37,6 +40,8 @@ import org.jboss.weld.bootstrap.api.TypeDiscoveryConfiguration;
 import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.bootstrap.spi.Metadata;
+import org.jboss.weld.configuration.spi.ExternalConfiguration;
+import org.jboss.weld.configuration.spi.helpers.ExternalConfigurationBuilder;
 import org.jboss.weld.environment.deployment.WeldBeanDeploymentArchive;
 import org.jboss.weld.environment.deployment.WeldDeployment;
 import org.jboss.weld.environment.deployment.WeldResourceLoader;
@@ -141,6 +146,9 @@ public class Weld {
 
         Deployment deployment = createDeployment(resourceLoader, bootstrap);
 
+        // weld-se uses CommonForkJoinPoolExecutorServices by default
+        ExternalConfiguration configuration = new ExternalConfigurationBuilder().add(EXECUTOR_THREAD_POOL_TYPE.get(), COMMON.toString()).build();
+        deployment.getServices().add(ExternalConfiguration.class, configuration);
 
         // Set up the container
         bootstrap.startContainer(containerId, Environments.SE, deployment);
