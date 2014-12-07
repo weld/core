@@ -209,7 +209,7 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
         synchronized (dependentInstances) {
             for (Iterator<ContextualInstance<?>> iterator = dependentInstances.iterator(); iterator.hasNext();) {
                 ContextualInstance<?> contextualInstance = iterator.next();
-                if (contextualInstance.getInstance().equals(instance)) {
+                if (contextualInstance.getInstance() == instance) {
                     iterator.remove();
                     destroy(contextualInstance);
                     return true;
