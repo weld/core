@@ -26,6 +26,7 @@ import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executor;
 
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.spi.EventMetadata;
@@ -95,9 +96,20 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Experim
     @Override
     public <U extends T> CompletionStage<U> fireAsync(U event) {
         Preconditions.checkArgumentNotNull(event, EVENT_ARGUMENT_NAME);
+        return fireAsyncInternal(event, null);
+    }
+
+    @Override
+    public <U extends T> CompletionStage<U> fireAsync(U event, Executor executor) {
+        Preconditions.checkArgumentNotNull(event, EVENT_ARGUMENT_NAME);
+        Preconditions.checkArgumentNotNull(executor, "executor");
+        return fireAsyncInternal(event, executor);
+    }
+
+    private <U extends T> CompletionStage<U> fireAsyncInternal(U event, Executor executor) {
         CachedObservers observers = getObservers(event);
         // we can do lenient here as the event type is checked within #getObservers()
-        return getBeanManager().getGlobalLenientObserverNotifier().notifyAsync(observers.observers, event, observers.asyncMetadata);
+        return getBeanManager().getGlobalLenientObserverNotifier().notifyAsync(observers.observers, event, observers.asyncMetadata, executor);
     }
 
     private CachedObservers getObservers(T event) {

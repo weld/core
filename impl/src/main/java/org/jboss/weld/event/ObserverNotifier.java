@@ -237,18 +237,21 @@ public class ObserverNotifier {
         notifySyncObservers(observers, event, metadata); // no transaction support
     }
 
-    public <T, U extends T> CompletionStage<U> notifyAsync(ResolvedObservers<T> observers, U event, EventMetadata metadata) {
+    public <T, U extends T> CompletionStage<U> notifyAsync(ResolvedObservers<T> observers, U event, EventMetadata metadata, Executor executor) {
         if (!observers.isMetadataRequired()) {
             metadata = null;
         }
         notifyTransactionObservers(observers.getTransactionObservers(), event, metadata);
-        return notifyAsyncObservers(observers.getImmediateObservers(), event, metadata);
+        return notifyAsyncObservers(observers.getImmediateObservers(), event, metadata, executor);
     }
 
-    public <T, U extends T> CompletionStage<U> notifyAsyncObservers(List<ObserverMethod<? super T>> observers, U event, EventMetadata metadata) {
+    public <T, U extends T> CompletionStage<U> notifyAsyncObservers(List<ObserverMethod<? super T>> observers, U event, EventMetadata metadata, Executor executor) {
+        if (executor == null) {
+            executor = asyncEventExecutor;
+        }
         return new AsyncEventDeliveryStage<>(() -> {
             notifySyncObservers(observers, event, metadata);
             return event;
-        }, asyncEventExecutor);
+        }, executor);
     }
 }

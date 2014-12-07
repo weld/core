@@ -17,6 +17,7 @@
 package org.jboss.weld.experimental;
 
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.Executor;
 
 import javax.enterprise.event.Event;
 import javax.enterprise.event.TransactionPhase;
@@ -56,4 +57,13 @@ public interface ExperimentalEvent<T> extends Event<T> {
      * @return completion stage which allows additional actions to be bound to the asynchronous event dispatch
      */
     <U extends T> CompletionStage<U> fireAsync(U event);
+
+    /**
+     * Same as {@link #fireAsync(Object)} but allows an executor, which is used for asynchronous event delivery, to be specified.
+     * @param event the event object
+     * @param executor the executor to be used for asynchronous event delivery
+     * @throws IllegalArgumentException if the runtime type of the event object contains a type variable
+     * @return completion stage which allows additional actions to be bound to the asynchronous event dispatch
+     */
+    <U extends T> CompletionStage<U> fireAsync(U event, Executor executor);
 }
