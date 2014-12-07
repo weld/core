@@ -61,7 +61,11 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
 
     private static final long serialVersionUID = -376721889693284887L;
 
-    private final Set<Bean<?>> beans;
+    private final transient Set<Bean<?>> allBeans;
+    private final transient Bean<?> bean;
+
+    private final transient CurrentInjectionPoint currentInjectionPoint;
+    private final transient InjectionPoint ip;
 
     public static <I> Instance<I> of(InjectionPoint injectionPoint, CreationalContext<I> creationalContext,
             BeanManagerImpl beanManager) {
@@ -75,16 +79,26 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
         Resolvable resolvable = new ResolvableBuilder(getType(), getBeanManager()).addQualifiers(getQualifiers())
                 .setDeclaringBean(getInjectionPoint().getBean()).create();
         TypeSafeBeanResolver beanResolver = getBeanManager().getBeanResolver();
-        this.beans = beanResolver.resolve(beanResolver.resolve(resolvable, Reflections.isCacheable(getQualifiers())));
+        this.allBeans = beanResolver.resolve(beanResolver.resolve(resolvable, Reflections.isCacheable(getQualifiers())));
+        // optimization for the most common path - non-null bean means we are not unsatisfied not ambiguous
+        if (allBeans.size() == 1) {
+            this.bean = allBeans.iterator().next();
+        } else {
+            this.bean = null;
+        }
+        this.currentInjectionPoint = beanManager.getServices().get(CurrentInjectionPoint.class);
+        // Generate a correct injection point for the bean, we do this by taking the original injection point and adjusting the
+        // qualifiers and type
+        this.ip = new DynamicLookupInjectionPoint(getInjectionPoint(), getType(), getQualifiers());
     }
 
     public T get() {
-        if (isUnsatisfied()) {
+        if (bean != null) {
+            return getBeanInstance(bean);
+        } else if (isUnsatisfied()) {
             throw BeanManagerLogger.LOG.unresolvableElement("Type: " + getType() + "; Qualifiers: " + getQualifiers());
-        } else if (isAmbiguous()) {
-            throw BeanManagerLogger.LOG.ambiguousBeansForDependency(WeldCollections.toMultiRowString(beans));
         } else {
-            return getBeanInstance(beans.iterator().next());
+            throw BeanManagerLogger.LOG.ambiguousBeansForDependency(WeldCollections.toMultiRowString(allBeans));
         }
     }
 
@@ -99,15 +113,15 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
     }
 
     public Iterator<T> iterator() {
-        return new InstanceImplIterator(beans);
+        return new InstanceImplIterator(allBeans);
     }
 
     public boolean isAmbiguous() {
-        return beans.size() > 1;
+        return allBeans.size() > 1;
     }
 
     public boolean isUnsatisfied() {
-        return beans.isEmpty();
+        return allBeans.isEmpty();
     }
 
     public Instance<T> select(Annotation... qualifiers) {
@@ -158,13 +172,9 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
     }
 
     private T getBeanInstance(Bean<?> bean) {
-        // Generate a correct injection point for the bean, we do this by taking the original injection point and adjusting the
-        // qualifiers and type
-        InjectionPoint ip = new DynamicLookupInjectionPoint(getInjectionPoint(), getType(), getQualifiers());
-        CurrentInjectionPoint currentInjectionPoint = getBeanManager().getServices().get(CurrentInjectionPoint.class);
         try {
             currentInjectionPoint.push(ip);
-            return Reflections.<T> cast(getBeanManager().getReference(bean, getType(), getCreationalContext()));
+            return Reflections.<T> cast(getBeanManager().getReference(bean, getType(), getCreationalContext(), false));
         } finally {
             currentInjectionPoint.pop();
         }
