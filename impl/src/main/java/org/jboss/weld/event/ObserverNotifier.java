@@ -21,8 +21,10 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ForkJoinPool;
 import java.util.function.Function;
 
@@ -31,6 +33,7 @@ import javax.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.logging.UtilLogger;
+import org.jboss.weld.manager.api.ExecutorServices;
 import org.jboss.weld.resolution.QualifierInstance;
 import org.jboss.weld.resolution.Resolvable;
 import org.jboss.weld.resolution.ResolvableBuilder;
@@ -76,6 +79,7 @@ public class ObserverNotifier {
     private final boolean strict;
     protected final CurrentEventMetadata currentEventMetadata;
     private final ComputingCache<Type, RuntimeException> eventTypeCheckCache;
+    private final Executor asyncEventExecutor;
 
     protected ObserverNotifier(TypeSafeObserverResolver resolver, ServiceRegistry services, boolean strict) {
         this.resolver = resolver;
@@ -87,6 +91,10 @@ public class ObserverNotifier {
         } else {
             eventTypeCheckCache = null; // not necessary
         }
+        // fall back to FJP.commonPool() if ExecutorServices are not installed
+        // TODO: use ServiceRegistry.getOptional()
+        Optional<Executor> executor = Optional.ofNullable(services.get(ExecutorServices.class)).map((e) -> e.getTaskExecutor());
+        this.asyncEventExecutor = executor.orElse(ForkJoinPool.commonPool());
     }
 
     public <T> ResolvedObservers<T> resolveObserverMethods(T event, Annotation... bindings) {
@@ -238,10 +246,9 @@ public class ObserverNotifier {
     }
 
     public <T, U extends T> CompletionStage<U> notifyAsyncObservers(List<ObserverMethod<? super T>> observers, U event, EventMetadata metadata) {
-        // for now we just use ForkJoinPool.commonPool()
         return new AsyncEventDeliveryStage<>(() -> {
             notifySyncObservers(observers, event, metadata);
             return event;
-        }, ForkJoinPool.commonPool()); // TODO use executorservices
+        }, asyncEventExecutor);
     }
 }
