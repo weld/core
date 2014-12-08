@@ -21,7 +21,6 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executor;
@@ -92,9 +91,7 @@ public class ObserverNotifier {
             eventTypeCheckCache = null; // not necessary
         }
         // fall back to FJP.commonPool() if ExecutorServices are not installed
-        // TODO: use ServiceRegistry.getOptional()
-        Optional<Executor> executor = Optional.ofNullable(services.get(ExecutorServices.class)).map((e) -> e.getTaskExecutor());
-        this.asyncEventExecutor = executor.orElse(ForkJoinPool.commonPool());
+        this.asyncEventExecutor = services.getOptional(ExecutorServices.class).map((e) -> e.getTaskExecutor()).orElse(ForkJoinPool.commonPool());
     }
 
     public <T> ResolvedObservers<T> resolveObserverMethods(T event, Annotation... bindings) {
