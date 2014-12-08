@@ -32,7 +32,7 @@ import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.BootstrapConfiguration;
 import org.jboss.weld.bootstrap.spi.Deployment;
-import org.jboss.weld.bootstrap.spi.ExternalConfiguration;
+import org.jboss.weld.configuration.spi.ExternalConfiguration;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.logging.ConfigurationLogger;
@@ -67,6 +67,7 @@ import org.jboss.weld.util.collections.ImmutableMap;
  * @see BootstrapConfiguration
  * @see ConfigurationKey
  */
+@SuppressWarnings("deprecation")
 public class WeldConfiguration implements Service {
 
     public static final String CONFIGURATION_FILE = "weld.properties";
@@ -84,9 +85,9 @@ public class WeldConfiguration implements Service {
      * @param bootstrapConfiguration
      * @param deployment
      */
-    public WeldConfiguration(BootstrapConfiguration bootstrapConfiguration, Deployment deployment) {
+    public WeldConfiguration(BootstrapConfiguration bootstrapConfiguration, ExternalConfiguration externalConfiguration, Deployment deployment) {
         Preconditions.checkArgumentNotNull(deployment, "deployment");
-        this.properties = init(bootstrapConfiguration, deployment);
+        this.properties = init(bootstrapConfiguration, externalConfiguration, deployment);
         this.proxyDumpFilePath = initProxyDumpFilePath();
         ConfigurationLogger.LOG.configurationInitialized(properties);
     }
@@ -183,7 +184,7 @@ public class WeldConfiguration implements Service {
         }
     }
 
-    private Map<ConfigurationKey, Object> init(BootstrapConfiguration bootstrapConfiguration, Deployment deployment) {
+    private Map<ConfigurationKey, Object> init(BootstrapConfiguration bootstrapConfiguration, ExternalConfiguration externalConfiguration, Deployment deployment) {
         Map<ConfigurationKey, Object> properties = new EnumMap<ConfigurationKey, Object>(ConfigurationKey.class);
 
         // 1. Properties files
@@ -209,6 +210,8 @@ public class WeldConfiguration implements Service {
         merge(properties, getObsoleteSystemProperties());
 
         // 3. Integrator SPI
+        // ExternalConfiguration.getConfigurationProperties() map has precedence
+        merge(properties, processExternalConfiguration(externalConfiguration));
         merge(properties, processBootstrapConfiguration(bootstrapConfiguration));
 
         return properties;
@@ -340,17 +343,19 @@ public class WeldConfiguration implements Service {
             handleKey(found, ConfigurationKey.CONCURRENT_DEPLOYMENT, bootstrapConfiguration.isConcurrentDeploymentEnabled());
             handleKey(found, ConfigurationKey.PRELOADER_THREAD_POOL_SIZE, bootstrapConfiguration.getPreloaderThreadPoolSize());
             handleKey(found, ConfigurationKey.NON_PORTABLE_MODE, bootstrapConfiguration.isNonPortableModeEnabled());
-
-            // ExternalConfiguration.getConfigurationProperties() map has precedence
-            if (bootstrapConfiguration instanceof ExternalConfiguration) {
-                ExternalConfiguration externalConfiguration = (ExternalConfiguration) bootstrapConfiguration;
-                for (Entry<String, Object> entry : externalConfiguration.getConfigurationProperties().entrySet()) {
-                    handleStringKey(found, entry.getKey(), entry.getValue());
-                }
-            }
-            return found;
         }
         return Collections.emptyMap();
+    }
+
+    private Map<ConfigurationKey, Object> processExternalConfiguration(ExternalConfiguration externalConfiguration) {
+        if (externalConfiguration == null) {
+            return Collections.emptyMap();
+        }
+        Map<ConfigurationKey, Object> found =  new EnumMap<ConfigurationKey, Object>(ConfigurationKey.class);
+        for (Entry<String, Object> entry : externalConfiguration.getConfigurationProperties().entrySet()) {
+            handleStringKey(found, entry.getKey(), entry.getValue());
+        }
+        return found;
     }
 
     /**

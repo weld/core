@@ -70,6 +70,7 @@ import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.config.ConfigurationKey;
 import org.jboss.weld.config.WeldConfiguration;
+import org.jboss.weld.configuration.spi.ExternalConfiguration;
 import org.jboss.weld.context.ApplicationContext;
 import org.jboss.weld.context.DependentContext;
 import org.jboss.weld.context.RequestContext;
@@ -146,6 +147,7 @@ import org.jboss.weld.util.reflection.instantiation.LoaderInstantiatorFactory;
  * @author Ales Justin
  * @author Marko Luksa
  */
+@SuppressWarnings("deprecation")
 public class WeldStartup {
 
     static {
@@ -192,7 +194,7 @@ public class WeldStartup {
         }
 
         // Weld configuration - must be set after the ResourceLoader fallback
-        WeldConfiguration configuration = new WeldConfiguration(registry.get(BootstrapConfiguration.class), deployment);
+        WeldConfiguration configuration = new WeldConfiguration(registry.get(BootstrapConfiguration.class), registry.get(ExternalConfiguration.class), deployment);
         registry.add(WeldConfiguration.class, configuration);
 
         if (!registry.contains(InstantiatorFactory.class)) {
