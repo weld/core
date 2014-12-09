@@ -24,7 +24,7 @@ import javax.faces.application.ApplicationFactory;
  * @author pmuir
  * @author alesj
  */
-public class WeldApplicationFactory extends ForwardingApplicationFactory {
+public class WeldApplicationFactory extends ApplicationFactory {
 
     private final ApplicationFactory applicationFactory;
 
@@ -34,7 +34,6 @@ public class WeldApplicationFactory extends ForwardingApplicationFactory {
         this.applicationFactory = applicationFactory;
     }
 
-    @Override
     protected ApplicationFactory delegate() {
         return applicationFactory;
     }
@@ -55,7 +54,27 @@ public class WeldApplicationFactory extends ForwardingApplicationFactory {
     public void setApplication(Application application) {
         synchronized (this) {
             this.application = null; // invalidate the instance, so it picks up new application
-            super.setApplication(application);
+            delegate().setApplication(application);
         }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return delegate().equals(obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return delegate().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return delegate().toString();
+    }
+
+    @Override
+    public ApplicationFactory getWrapped() {
+        return delegate();
     }
 }
