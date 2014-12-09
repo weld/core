@@ -21,6 +21,7 @@ import javax.el.ELResolver;
 import javax.el.ExpressionFactory;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.faces.application.Application;
+import javax.faces.application.ApplicationWrapper;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 
@@ -36,7 +37,7 @@ import org.jboss.weld.environment.servlet.util.TransparentELResolver;
  * @author Dan Allen
  * @author Ales Justin
  */
-public class WeldApplication extends ForwardingApplication {
+public class WeldApplication extends ApplicationWrapper {
     /**
      * The BeanManager may not have been initialized at the time JSF is initializing. Therefore,
      * we stick in a ForwardingELResolver that delegates to the BeanManager ELResolver, which will
@@ -68,31 +69,25 @@ public class WeldApplication extends ForwardingApplication {
     public WeldApplication(Application application) {
         this.application = application;
         // QUESTION should the context listener be registered in init() instead?
-        application.addELContextListener(Reflections.<ELContextListener>newInstance("org.jboss.weld.el.WeldELContextListener"));
+        super.addELContextListener(Reflections.<ELContextListener> newInstance("org.jboss.weld.el.WeldELContextListener"));
         elResolver = new LazyBeanManagerIntegrationELResolver();
-        application.addELResolver(elResolver);
+        super.addELResolver(elResolver);
     }
 
     private void init() {
         ExpressionFactory expressionFactory = this.expressionFactory;
         BeanManager beanManager = null;
-        if (expressionFactory == null && (expressionFactory = application.getExpressionFactory()) != null && (beanManager = beanManager()) != null) {
+        if (expressionFactory == null && (expressionFactory = super.getExpressionFactory()) != null && (beanManager = beanManager()) != null) {
             elResolver.beanManagerReady(beanManager);
             this.expressionFactory = beanManager.wrapExpressionFactory(expressionFactory);
         }
     }
 
     @Override
-    protected Application delegate() {
-        init();
-        return application;
-    }
-
-    @Override
     public ExpressionFactory getExpressionFactory() {
         init();
         if (expressionFactory == null) {
-            return application.getExpressionFactory();
+            return super.getExpressionFactory();
         } else {
             return expressionFactory;
         }
@@ -128,6 +123,11 @@ public class WeldApplication extends ForwardingApplication {
             }
         }
         return beanManager;
+    }
+
+    @Override
+    public Application getWrapped() {
+        return application;
     }
 
 }
