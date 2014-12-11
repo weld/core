@@ -41,7 +41,7 @@ public class InterceptionDecorationContext {
     private static ThreadLocal<Stack> interceptionContexts = new ThreadLocal<Stack>();
 
     public static class Stack implements RequestScopedItem {
-        private final boolean removeWhenEmpty;
+        private boolean removeWhenEmpty;
         private final Deque<CombinedInterceptorAndDecoratorStackMethodHandler> elements;
         private final ThreadLocal<Stack> interceptionContexts;
         private boolean valid;
@@ -96,9 +96,7 @@ public class InterceptionDecorationContext {
         private CombinedInterceptorAndDecoratorStackMethodHandler pop() {
             checkState();
             CombinedInterceptorAndDecoratorStackMethodHandler top = elements.removeFirst();
-            if (shouldRemove()) {
-                invalidate();
-            }
+            removeIfEmpty();
             return top;
         }
 
@@ -110,8 +108,21 @@ public class InterceptionDecorationContext {
 
         @Override
         public void invalidate() {
-            interceptionContexts.remove();
-            valid = false;
+            /*
+             * This cached item is being invalidated.
+             * It does not necessarily mean that the request is being destroyed - it may just be the case that it is being flushed in the middle
+             * of a request (e.g. for AlterableContext.destroy()).
+             * Therefore, we cannot remove IDC now but we just set removeWhenEmpty flag and let it remove itself once the stack gets empty.
+             */
+            removeWhenEmpty = true;
+            removeIfEmpty();
+        }
+
+        private void removeIfEmpty() {
+            if (removeWhenEmpty && elements.isEmpty()) {
+                interceptionContexts.remove();
+                valid = false;
+            }
         }
 
         public int size() {
