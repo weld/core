@@ -16,12 +16,12 @@
  */
 package org.jboss.weld.environment.se;
 
-import org.jboss.weld.environment.se.beans.InstanceManager;
-
-import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
+
+import org.jboss.weld.environment.se.beans.InstanceManager;
+import org.jboss.weld.experimental.ExperimentalEvent;
 
 /**
  * Provides convenient access to beans and events, particularly helpful when
@@ -62,7 +62,7 @@ public class WeldContainer {
      * weld.event().select(Bar.class).fire(new Bar());
      * </code>
      */
-    public Event<Object> event() {
+    public ExperimentalEvent<Object> event() {
         return instanceManager.getEvents();
     }
 
