@@ -46,15 +46,31 @@ public class CombinedInterceptorAndDecoratorStackMethodHandler implements StackA
 
     @Override
     public Object invoke(Object self, Method thisMethod, Method proceed, Object[] args) throws Throwable {
-        return invoke(null, self, thisMethod, proceed, args);
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Object invoke(Stack stack, Object self, Method thisMethod, Method proceed, Object[] args) throws Throwable {
         if (stack == null) {
+            /*
+             * This is a lifecycle callback invocation.
+             * 1) Lifecycle callback interception is never suppressed by IDC
+             * 2) Interception of methods called by lifecycle callbacks is suppressed
+             */
             stack = InterceptionDecorationContext.getStack();
+            return invoke(stack, self, thisMethod, proceed, args, true, stack.startIfNotOnTop(this));
+        } else {
+            /*
+             * This is an around-invoke interception
+             * Interceptors are invoked as long as the current IDC is not suppressed.
+             */
+            boolean intercept = stack.startIfNotOnTop(this);
+            return invoke(stack, self, thisMethod, proceed, args, intercept, intercept);
         }
-        if (stack.startIfNotOnTop(this)) {
+    }
+
+    public Object invoke(Stack stack, Object self, Method thisMethod, Method proceed, Object[] args, boolean intercept, boolean popStack) throws Throwable {
+        if (intercept) {
             try {
                 if (interceptorMethodHandler != null) {
                     if (proceed != null) {
@@ -74,7 +90,9 @@ public class CombinedInterceptorAndDecoratorStackMethodHandler implements StackA
                     }
                 }
             } finally {
-                stack.end();
+                if (popStack) {
+                    stack.end();
+                }
             }
         }
         SecurityActions.ensureAccessible(proceed);

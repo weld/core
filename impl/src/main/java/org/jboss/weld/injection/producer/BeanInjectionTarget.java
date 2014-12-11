@@ -31,7 +31,6 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bean.CustomDecoratorWrapper;
 import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
-import org.jboss.weld.interceptor.util.InterceptionUtils;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
@@ -60,24 +59,6 @@ public class BeanInjectionTarget<T> extends BasicInjectionTarget<T> {
 
     public BeanInjectionTarget(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager) {
         this(type, bean, beanManager, ResourceInjector.of(type, bean, beanManager), DefaultLifecycleCallbackInvoker.of(type));
-    }
-
-    @Override
-    public void postConstruct(T instance) {
-        if (getInstantiator().hasInterceptorSupport()) {
-            InterceptionUtils.executePostConstruct(instance);
-        } else {
-            super.postConstruct(instance);
-        }
-    }
-
-    @Override
-    public void preDestroy(T instance) {
-        if (getInstantiator().hasInterceptorSupport()) {
-            InterceptionUtils.executePredestroy(instance);
-        } else {
-            super.preDestroy(instance);
-        }
     }
 
     @Override

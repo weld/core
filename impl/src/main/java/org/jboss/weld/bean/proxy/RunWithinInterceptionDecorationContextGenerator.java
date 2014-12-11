@@ -74,7 +74,6 @@ abstract class RunWithinInterceptionDecorationContextGenerator {
 
         // if handler != null (may happen inside constructor calls)
         final BranchEnd handlerNull = b.ifnull();
-        b.checkcast(CombinedInterceptorAndDecoratorStackMethodHandler.class.getName());
         b.invokestatic(INTERCEPTION_DECORATION_CONTEXT_CLASS_NAME, START_INTERCEPTOR_CONTEXT_IF_NOT_ON_TOP_METHOD_NAME,
                 START_INTERCEPTOR_CONTEXT_IF_NOT_ON_TOP_METHOD_SIGNATURE);
         final BranchEnd endOfIfStatement = b.gotoInstruction();

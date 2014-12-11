@@ -66,7 +66,7 @@ public class InterceptorMethodHandler implements StackAwareMethodHandler, Serial
                 return Reflections.invokeAndUnwrap(instance, proceed, args);
             }
         } else {
-            return new WeldInvocationContext(instance, method, proceed, args, chain.interceptorMethods, chain.interceptorBindings, stack.peek()).proceed();
+            return new WeldInvocationContext(instance, method, proceed, args, chain.interceptorMethods, chain.interceptorBindings, stack).proceed();
         }
     }
 
