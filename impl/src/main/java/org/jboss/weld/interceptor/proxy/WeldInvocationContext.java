@@ -51,8 +51,8 @@ public class WeldInvocationContext extends ForwardingInvocationContext {
         this(new SimpleInvocationContext(constructor, parameters, contextData), chain, null);
     }
 
-    public WeldInvocationContext(Object target, Method targetMethod, Method proceed, Object[] parameters, List<InterceptorMethodInvocation> chain, CombinedInterceptorAndDecoratorStackMethodHandler currentHandler) {
-        this(new SimpleInvocationContext(target, targetMethod, proceed, parameters), chain, currentHandler);
+    public WeldInvocationContext(Object target, Method targetMethod, Method proceed, Object[] parameters, List<InterceptorMethodInvocation> chain, Stack stack) {
+        this(new SimpleInvocationContext(target, targetMethod, proceed, parameters), chain, (stack == null) ? null : stack.peek());
     }
 
     public WeldInvocationContext(InvocationContext delegate, List<InterceptorMethodInvocation> chain) {
