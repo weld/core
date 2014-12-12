@@ -20,6 +20,7 @@ import java.lang.reflect.Constructor;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 
+import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
@@ -54,7 +55,9 @@ public class SessionBeanProxyInstantiator<T> implements Instantiator<T> {
     public T newInstance(CreationalContext<T> ctx, BeanManagerImpl manager) {
         try {
             T instance = AccessController.doPrivileged(NewInstanceAction.of(proxyClass));
-            ctx.push(instance);
+            if(!bean.getScope().equals(Dependent.class)) {
+                ctx.push(instance);
+            }
             ProxyFactory.setBeanInstance(bean.getBeanManager().getContextId(), instance, createEnterpriseTargetBeanInstance(), bean);
             return instance;
         } catch (PrivilegedActionException e) {
