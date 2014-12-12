@@ -26,7 +26,9 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.weld.config.ConfigurationKey;
 import org.jboss.weld.test.util.Utils;
+import org.jboss.weld.tests.util.PropertiesBuilder;
 
 /**
  *
@@ -37,8 +39,15 @@ public abstract class InjectableReferenceOptimizationTestBase {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        return ShrinkWrap.create(BeanArchive.class).addClasses(InjectableReferenceOptimizationTestBase.class, Utils.class, Alpha.class, Bravo.class, Charlie.class,
-                Delta.class, Echo.class, Foxtrot.class, Golf.class, Hotel.class, India.class, Custom.class, CustomScoped.class, CustomContext.class, CustomScopeExtension.class).addAsServiceProvider(Extension.class, CustomScopeExtension.class);
+        return ShrinkWrap
+                .create(BeanArchive.class)
+                .addClasses(InjectableReferenceOptimizationTestBase.class, Utils.class, Alpha.class, Bravo.class,
+                        Charlie.class, Delta.class, Echo.class, Foxtrot.class, Golf.class, Hotel.class, India.class,
+                        Custom.class, CustomScoped.class, CustomContext.class, CustomScopeExtension.class)
+                .addAsServiceProvider(Extension.class, CustomScopeExtension.class)
+                .addAsResource(
+                        PropertiesBuilder.newBuilder().set(ConfigurationKey.INJECTABLE_REFERENCE_OPTIMIZATION.get(), "true")
+                                .build(), "weld.properties");
     }
 
     protected void assertIsProxy(Object beanInstance) {
