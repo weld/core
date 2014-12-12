@@ -27,6 +27,7 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.Decorator;
+import javax.enterprise.inject.spi.InjectionTarget;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
@@ -34,7 +35,10 @@ import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.context.CreationalContextImpl;
 import org.jboss.weld.context.RequestContext;
 import org.jboss.weld.context.unbound.UnboundLiteral;
+import org.jboss.weld.injection.producer.BasicInjectionTarget;
 import org.jboss.weld.interceptor.spi.metadata.InterceptorClassMetadata;
+import org.jboss.weld.interceptor.spi.model.InterceptionModel;
+import org.jboss.weld.interceptor.spi.model.InterceptionType;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
@@ -58,6 +62,11 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
 
     private boolean passivationCapableBean;
     private boolean passivationCapableDependency;
+    /*
+     * tracks whether this bean has a @PostConstruct callbacks
+     * if it does not, we can skip activating/deactivating @RequestScoped context during creation
+     */
+    private boolean hasPostConstructCallback;
 
     /**
      * Creates a simple, annotation defined Web Bean
@@ -149,7 +158,7 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
         T instance = getProducer().produce(creationalContext);
         getProducer().inject(instance, creationalContext);
 
-        if (beanManager.isContextActive(RequestScoped.class)) {
+        if (!hasPostConstructCallback || beanManager.isContextActive(RequestScoped.class)) {
             getProducer().postConstruct(instance);
         } else {
             /*
@@ -263,5 +272,25 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
         final Bean<?> bean = beanManager.resolve(beanManager.getBeans(RequestContext.class, UnboundLiteral.INSTANCE));
         final CreationalContext<?> ctx = beanManager.createCreationalContext(bean);
         return (RequestContext) beanManager.getReference(bean, RequestContext.class, ctx);
+    }
+
+    @Override
+    public void setProducer(InjectionTarget<T> producer) {
+        super.setProducer(producer);
+        this.hasPostConstructCallback = initHasPostConstructCallback(producer);
+    }
+
+    private boolean initHasPostConstructCallback(InjectionTarget<T> producer) {
+        if (producer instanceof BasicInjectionTarget<?>) {
+            BasicInjectionTarget<?> weldProducer = (BasicInjectionTarget<?>) producer;
+            final InterceptionModel interceptors = getInterceptors();
+            if (interceptors == null || interceptors.getInterceptors(InterceptionType.POST_CONSTRUCT, null).isEmpty()) {
+                if (!weldProducer.getLifecycleCallbackInvoker().hasPostConstructMethods()) {
+                    return false;
+                }
+            }
+        }
+        // otherwise we assume there is a post construct callback, just to be safe
+        return true;
     }
 }
