@@ -16,43 +16,25 @@
  */
 package org.jboss.weld.tests.ejb.dependent.stateful;
 
-import javax.inject.Inject;
-
-import junit.framework.Assert;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.weld.config.ConfigurationKey;
 import org.jboss.weld.tests.category.Integration;
-import org.jboss.weld.tests.util.PropertiesBuilder;
-import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 /**
- * See http://lists.jboss.org/pipermail/cdi-dev/2014-December/005800.html for details
- * @author Steve Millidge
  *
+ * @author Steve Millidge
+ * @author Martin Kouba
  */
 @RunWith(Arquillian.class)
 @Category(Integration.class)
-public class DependentStatefulSessionBeanNotSharedTest {
-
-    @Inject
-    private Injection injection;
+public class DependentSessionBeanNotSharedOptimDisabledTest extends DependentSessionBeanNotSharedTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(WebArchive.class).addPackage(DependentStatefulSessionBeanNotSharedTest.class.getPackage()).addAsResource(
-                PropertiesBuilder.newBuilder().set(ConfigurationKey.INJECTABLE_REFERENCE_OPTIMIZATION.get(), "false")
-                .build(), "weld.properties");
+        return getDeployment(true);
     }
 
-    @Test
-    public void testDependentStatefulSessionBeanNotSharedBetweenInjectionPoints() {
-        Assert.assertEquals("init", injection.invokeStatefulService());
-    }
 }
