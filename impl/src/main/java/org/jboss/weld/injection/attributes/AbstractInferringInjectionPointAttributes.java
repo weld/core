@@ -25,6 +25,7 @@ import java.util.Set;
 import javax.decorator.Delegate;
 import javax.enterprise.inject.spi.Bean;
 
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotated;
 import org.jboss.weld.serialization.BeanHolder;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.Reflections;
@@ -38,8 +39,9 @@ public abstract class AbstractInferringInjectionPointAttributes<T, S> implements
     private final BeanHolder<?> bean;
     private final Set<Annotation> qualifiers;
     private final TypeAttribute typeAttribute;
+    private final boolean delegate;
 
-    public AbstractInferringInjectionPointAttributes(String contextId, Bean<?> bean, Set<Annotation> qualifiers, Class<?> declaringComponentClass) {
+    public AbstractInferringInjectionPointAttributes(EnhancedAnnotated<?, ?> annotatedElement, String contextId, Bean<?> bean, Set<Annotation> qualifiers, Class<?> declaringComponentClass) {
         this.bean = BeanHolder.of(contextId, bean);
         this.qualifiers = qualifiers;
         if (bean == null) {
@@ -47,6 +49,7 @@ public abstract class AbstractInferringInjectionPointAttributes<T, S> implements
         } else {
             this.typeAttribute = new BeanInjectionPointTypeAttribute();
         }
+        this.delegate = annotatedElement.isAnnotationPresent(Delegate.class);
     }
 
     @Override
@@ -66,7 +69,7 @@ public abstract class AbstractInferringInjectionPointAttributes<T, S> implements
 
     @Override
     public boolean isDelegate() {
-        return getAnnotated().isAnnotationPresent(Delegate.class);
+        return delegate;
     }
 
     @Override

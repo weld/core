@@ -44,7 +44,7 @@ public class InferringParameterInjectionPointAttributes<T, X> extends AbstractIn
     private final AnnotatedParameter<X> parameter;
 
     protected InferringParameterInjectionPointAttributes(EnhancedAnnotatedParameter<T, X> parameter, Bean<?> bean, Class<?> declaringComponentClass, BeanManagerImpl manager) {
-        super(manager.getContextId(), bean, SharedObjectCache.instance(manager).getSharedSet(parameter.getQualifiers()), declaringComponentClass);
+        super(parameter, manager.getContextId(), bean, SharedObjectCache.instance(manager).getSharedSet(parameter.getQualifiers()), declaringComponentClass);
         this.parameter = parameter.slim();
     }
 
