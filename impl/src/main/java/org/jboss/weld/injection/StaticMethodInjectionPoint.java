@@ -122,7 +122,7 @@ class StaticMethodInjectionPoint<T, X> extends MethodInjectionPoint<T, X> {
             ParameterInjectionPoint<?, ?> param = iterator.next();
             if (i == specialInjectionPointIndex) {
                 parameterValues[i] = specialVal;
-            } else if (param.getAnnotated().isAnnotationPresent(TransientReference.class)) {
+            } else if (hasTransientReferenceParameter && param.getAnnotated().isAnnotationPresent(TransientReference.class)) {
                 parameterValues[i] = param.getValueToInject(manager, transientReferenceContext);
             } else {
                 parameterValues[i] = param.getValueToInject(manager, ctx);
