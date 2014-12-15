@@ -16,6 +16,13 @@
  */
 package org.jboss.weld.tests.unit.cluster;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+
+import javax.enterprise.context.Conversation;
+import javax.enterprise.inject.spi.Bean;
+
 import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.TestContainer;
 import org.jboss.weld.context.bound.BoundConversationContext;
 import org.jboss.weld.context.bound.BoundRequest;
@@ -23,12 +30,6 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.mock.cluster.AbstractClusterTest;
 import org.jboss.weld.test.util.Utils;
 import org.testng.annotations.Test;
-
-import javax.enterprise.context.Conversation;
-import javax.enterprise.inject.spi.Bean;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 
 public class NaiveClusterTest extends AbstractClusterTest {
 
@@ -173,7 +174,8 @@ public class NaiveClusterTest extends AbstractClusterTest {
         container2.stopContainer();
     }
 
-    @Test
+    // WELD-1818
+    @Test(enabled = false)
     public void testVariableBeanDeploymentStructure() throws Exception {
         // NB This is not a valid deployment scenario for a cluster, but it does allow us to test bean ids neatly!
         Collection<Class<?>> classes1 = Arrays.<Class<?>>asList(Stable.class, Horse.class, Fodder.class);
