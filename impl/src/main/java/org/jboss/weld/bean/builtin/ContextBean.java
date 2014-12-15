@@ -39,10 +39,6 @@ public class ContextBean<T extends Context> extends AbstractBuiltInBean<T> {
         return context;
     }
 
-    public void destroy(T instance, CreationalContext<T> creationalContext) {
-        // No-op, this bean is just exposing stuff
-    }
-
     @Override
     public Set<Annotation> getQualifiers() {
         return qualifiers;

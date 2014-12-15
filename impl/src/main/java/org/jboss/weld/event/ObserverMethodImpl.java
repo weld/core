@@ -23,7 +23,6 @@ import java.util.Set;
 
 import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.context.Dependent;
-import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.Reception;
@@ -43,6 +42,7 @@ import javax.inject.Qualifier;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.bean.AbstractClassBean;
+import org.jboss.weld.bean.ContextualInstance;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.context.CreationalContextImpl;
 import org.jboss.weld.experimental.ExperimentalEventMetadata;
@@ -331,17 +331,15 @@ public class ObserverMethodImpl<T, X> implements ExperimentalObserverMethod<T> {
 
     protected Object getReceiver(CreationalContext<X> creationalContext) {
 
-        Context context = beanManager.getContext(declaringBean.getScope());
-
         if (creationalContext != null) {
             if (creationalContext instanceof CreationalContextImpl<?>) {
                 // Create child creational context so that a dependent observer may be destroyed after the observer method completes
                 creationalContext = ((CreationalContextImpl<?>) creationalContext).getCreationalContext(declaringBean);
             }
-            return context.get(declaringBean, creationalContext);
+            return ContextualInstance.get(declaringBean, beanManager, creationalContext);
         }
         // Conditional observer - no creational context is required
-        return context.get(declaringBean);
+        return ContextualInstance.getIfExists(declaringBean, beanManager);
     }
 
     @Override

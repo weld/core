@@ -48,10 +48,6 @@ public class BeanManagerBean extends AbstractBuiltInBean<BeanManagerProxy> {
         return TYPES;
     }
 
-    public void destroy(BeanManagerProxy instance, CreationalContext<BeanManagerProxy> creationalContext) {
-        // No-op
-    }
-
     @Override
     public String toString() {
         return "Built-in Bean [javax.enterprise.inject.spi.BeanManager] with qualifiers [@Default]";

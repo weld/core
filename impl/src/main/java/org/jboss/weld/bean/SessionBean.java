@@ -151,6 +151,7 @@ public class SessionBean<T> extends AbstractClassBean<T> {
 
     @Override
     public void destroy(T instance, CreationalContext<T> creationalContext) {
+        super.destroy(instance, creationalContext);
         if (instance == null) {
             throw BeanLogger.LOG.cannotDestroyNullBean(this);
         }

@@ -185,6 +185,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
     }
 
     public void destroy(T instance, CreationalContext<T> creationalContext) {
+        super.destroy(instance, creationalContext);
         try {
             getProducer().dispose(instance);
         } catch (Exception e) {

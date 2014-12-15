@@ -57,11 +57,6 @@ public class HttpServletRequestBean extends AbstractStaticallyDecorableBuiltInBe
     }
 
     @Override
-    public void destroy(HttpServletRequest instance, CreationalContext<HttpServletRequest> creationalContext) {
-        // noop
-    }
-
-    @Override
     public Class<? extends Annotation> getScope() {
         return RequestScoped.class;
     }

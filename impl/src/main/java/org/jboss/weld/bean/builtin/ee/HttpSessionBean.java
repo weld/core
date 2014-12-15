@@ -51,11 +51,6 @@ public class HttpSessionBean extends AbstractStaticallyDecorableBuiltInBean<Http
     }
 
     @Override
-    public void destroy(HttpSession instance, CreationalContext<HttpSession> creationalContext) {
-        // noop
-    }
-
-    @Override
     public Class<? extends Annotation> getScope() {
         return SessionScoped.class;
     }
