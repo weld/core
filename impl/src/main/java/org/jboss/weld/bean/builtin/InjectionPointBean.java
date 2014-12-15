@@ -50,10 +50,6 @@ public class InjectionPointBean extends AbstractStaticallyDecorableBuiltInBean<I
         return ip;
     }
 
-    public void destroy(InjectionPoint instance, CreationalContext<InjectionPoint> creationalContext) {
-
-    }
-
     @Override
     public String toString() {
         return "Implicit Bean [javax.enterprise.inject.spi.InjectionPoint] with qualifiers [@Default]";

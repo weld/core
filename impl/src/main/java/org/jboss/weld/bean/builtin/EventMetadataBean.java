@@ -39,10 +39,6 @@ public class EventMetadataBean extends AbstractStaticallyDecorableBuiltInBean<Ev
     }
 
     @Override
-    public void destroy(EventMetadata instance, CreationalContext<EventMetadata> creationalContext) {
-    }
-
-    @Override
     protected EventMetadata newInstance(InjectionPoint ip, CreationalContext<EventMetadata> creationalContext) {
         return currentEventMetadata.peek();
     }

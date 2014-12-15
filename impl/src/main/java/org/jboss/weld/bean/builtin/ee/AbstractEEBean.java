@@ -40,8 +40,4 @@ public abstract class AbstractEEBean<T> extends AbstractStaticallyDecorableBuilt
     protected T newInstance(InjectionPoint ip, CreationalContext<T> creationalContext) {
         return proxy;
     }
-
-    public void destroy(T instance, CreationalContext<T> creationalContext) {
-        // no-op
-    }
 }

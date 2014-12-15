@@ -194,7 +194,6 @@ public class ClientProxyProvider {
             throw BeanLogger.LOG.beanIdCreationFailed(bean);
         }
         BeanInstance beanInstance = new ContextBeanInstance<T>(bean, id, contextId);
-        beanInstance = CachedBeanInstance.wrapIfCacheable(bean, beanInstance);
         TypeInfo typeInfo = TypeInfo.of(types);
         T proxy = new ClientProxyFactory<T>(contextId, typeInfo.getSuperClass(), types, bean).create(beanInstance);
         BeanLogger.LOG.createdNewClientProxyType(proxy.getClass(), bean, id);

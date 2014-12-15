@@ -77,6 +77,7 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.bean.AbstractProducerBean;
+import org.jboss.weld.bean.ContextualInstance;
 import org.jboss.weld.bean.NewBean;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.SessionBean;
@@ -742,7 +743,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
             creationalContext = ((CreationalContextImpl<?>) creationalContext).getCreationalContext(bean);
         }
         if (!noProxy && isProxyRequired(bean)) {
-            if (creationalContext != null || getContext(bean.getScope()).get(bean) != null) {
+            if (creationalContext != null || ContextualInstance.getIfExists(bean, this) != null) {
                 if (requestedType == null) {
                     return clientProxyProvider.getClientProxy(bean);
                 } else {
@@ -752,7 +753,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                 return null;
             }
         } else {
-            return getContext(bean.getScope()).get(Reflections.<Contextual>cast(bean), creationalContext);
+            return ContextualInstance.get(bean, this, creationalContext);
         }
     }
 

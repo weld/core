@@ -47,6 +47,7 @@ public abstract class AbstractFacadeBean<T> extends AbstractDecorableBuiltInBean
     }
 
     public void destroy(T instance, CreationalContext<T> creationalContext) {
+        super.destroy(instance, creationalContext);
         creationalContext.release();
     }
 

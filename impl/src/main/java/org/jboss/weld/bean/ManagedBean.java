@@ -184,6 +184,7 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
      */
     @Override
     public void destroy(T instance, CreationalContext<T> creationalContext) {
+        super.destroy(instance, creationalContext);
         try {
             getProducer().preDestroy(instance);
             // WELD-1010 hack?

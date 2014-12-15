@@ -47,10 +47,6 @@ public class BeanManagerImplBean extends AbstractBuiltInBean<BeanManagerImpl> {
         return TYPES;
     }
 
-    public void destroy(BeanManagerImpl instance, CreationalContext<BeanManagerImpl> creationalContext) {
-        // No-op
-    }
-
     @Override
     public String toString() {
         return "Built-in Bean [org.jboss.weld.manager.BeanManagerImpl] with qualifiers [@Default]";

@@ -45,11 +45,6 @@ public abstract class AbstractBuiltInMetadataBean<T> extends AbstractBuiltInBean
     }
 
     @Override
-    public void destroy(T instance, CreationalContext<T> creationalContext) {
-        // noop
-    }
-
-    @Override
     public T create(CreationalContext<T> creationalContext) {
         InjectionPoint ip = cip.peek();
         if (ip == null || EmptyInjectionPoint.INSTANCE.equals(ip)) {
