@@ -25,6 +25,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AnnotatedType;
@@ -147,6 +149,9 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
         }
         if (!getBeanManager().isScope(scope)) {
             MetadataLogger.LOG.contextGetScopeIsNotAScope(scope, context);
+        }
+        if (scope == ApplicationScoped.class || scope == Dependent.class) {
+            throw ContextLogger.LOG.cannotRegisterContext(scope, context);
         }
         getBeanManager().addContext(context);
     }
