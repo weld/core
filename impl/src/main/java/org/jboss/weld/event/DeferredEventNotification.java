@@ -22,6 +22,7 @@ import javax.enterprise.inject.spi.ObserverMethod;
 import org.jboss.weld.Container;
 import org.jboss.weld.context.RequestContext;
 import org.jboss.weld.context.unbound.UnboundLiteral;
+import org.jboss.weld.injection.ThreadLocalStack.ThreadLocalStackReference;
 import org.jboss.weld.logging.EventLogger;
 
 /**
@@ -67,11 +68,11 @@ public class DeferredEventNotification<T> implements Runnable {
 
                 @Override
                 protected void execute() {
-                    currentEventMetadata.push(metadata);
+                    final ThreadLocalStackReference<EventMetadata> stack = currentEventMetadata.pushIfNotNull(metadata);
                     try {
                         observer.notify(event);
                     } finally {
-                        currentEventMetadata.pop();
+                        stack.pop();
                     }
                 }
 
