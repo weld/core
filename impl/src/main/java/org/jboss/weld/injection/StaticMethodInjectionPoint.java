@@ -22,7 +22,6 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.enterprise.context.spi.CreationalContext;
@@ -117,9 +116,9 @@ class StaticMethodInjectionPoint<T, X> extends MethodInjectionPoint<T, X> {
             }
         }
         Object[] parameterValues = new Object[getParameterInjectionPoints().size()];
-        Iterator<ParameterInjectionPoint<?, X>> iterator = getParameterInjectionPoints().iterator();
+        List<ParameterInjectionPoint<?, X>> parameters = getParameterInjectionPoints();
         for (int i = 0; i < parameterValues.length; i++) {
-            ParameterInjectionPoint<?, ?> param = iterator.next();
+            ParameterInjectionPoint<?, ?> param = parameters.get(i);
             if (i == specialInjectionPointIndex) {
                 parameterValues[i] = specialVal;
             } else if (hasTransientReferenceParameter && param.getAnnotated().isAnnotationPresent(TransientReference.class)) {
