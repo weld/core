@@ -114,6 +114,7 @@ import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.exceptions.InjectionException;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.injection.EmptyInjectionPoint;
+import org.jboss.weld.injection.ThreadLocalStack.ThreadLocalStackReference;
 import org.jboss.weld.injection.attributes.FieldInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.InferringFieldInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.InferringParameterInjectionPointAttributes;
@@ -289,6 +290,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     private final transient ContainerLifecycleEvents containerLifecycleEvents;
 
     private final transient SpecializationAndEnablementRegistry registry;
+    private final transient CurrentInjectionPoint currentInjectionPoint;
 
     /**
      * Create a new, root, manager
@@ -431,6 +433,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         globalObserverNotifierService.registerBeanManager(this);
         this.containerLifecycleEvents = serviceRegistry.get(ContainerLifecycleEvents.class);
         this.registry = getServices().get(SpecializationAndEnablementRegistry.class);
+        this.currentInjectionPoint = getServices().get(CurrentInjectionPoint.class);
     }
 
     private <T> Iterable<T> createDynamicGlobalIterable(final Transform<T> transform) {
@@ -571,18 +574,12 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     public Set<Bean<?>> getBeans(InjectionPoint injectionPoint) {
         boolean registerInjectionPoint = isRegisterableInjectionPoint(injectionPoint);
-        CurrentInjectionPoint currentInjectionPoint = null;
-        if (registerInjectionPoint) {
-            currentInjectionPoint = services.get(CurrentInjectionPoint.class);
-            currentInjectionPoint.push(injectionPoint);
-        }
+        final ThreadLocalStackReference<InjectionPoint> stack =  currentInjectionPoint.pushConditionally(injectionPoint, registerInjectionPoint);
         try {
             // We always cache, we assume that people don't use inline annotation literal declarations, a little risky but FAQd
             return beanResolver.resolve(new ResolvableBuilder(injectionPoint, this).create(), true);
         } finally {
-            if (registerInjectionPoint) {
-                currentInjectionPoint.pop();
-            }
+            stack.pop();
         }
     }
 
@@ -776,12 +773,11 @@ public class BeanManagerImpl implements WeldManager, Serializable {
             throw BeanManagerLogger.LOG.specifiedTypeNotBeanType(requestedType, bean);
         }
         // Ensure that there is no injection point associated
-        final CurrentInjectionPoint currentInjectionPoint = services.get(CurrentInjectionPoint.class);
-        currentInjectionPoint.push(EmptyInjectionPoint.INSTANCE);
+        final ThreadLocalStackReference<InjectionPoint> stack = currentInjectionPoint.push(EmptyInjectionPoint.INSTANCE);
         try {
             return getReference(bean, requestedType, creationalContext, false);
         } finally {
-             currentInjectionPoint.pop();
+             stack.pop();
         }
     }
 
@@ -814,11 +810,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         boolean registerInjectionPoint = isRegisterableInjectionPoint(injectionPoint);
         boolean delegateInjectionPoint = injectionPoint != null && injectionPoint.isDelegate();
 
-        CurrentInjectionPoint currentInjectionPoint = null;
-        if (registerInjectionPoint) {
-            currentInjectionPoint = services.get(CurrentInjectionPoint.class);
-            currentInjectionPoint.push(injectionPoint);
-        }
+        final ThreadLocalStackReference<InjectionPoint> stack = currentInjectionPoint.pushConditionally(injectionPoint, registerInjectionPoint);
         try {
             Type requestedType = null;
             if (injectionPoint != null) {
@@ -864,9 +856,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
             return getReference(resolvedBean, requestedType, creationalContext, delegateInjectionPoint);
 
         } finally {
-            if (registerInjectionPoint) {
-                currentInjectionPoint.pop();
-            }
+            stack.pop();
         }
     }
 

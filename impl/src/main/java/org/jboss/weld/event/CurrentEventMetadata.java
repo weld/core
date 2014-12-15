@@ -18,7 +18,12 @@ package org.jboss.weld.event;
 
 import javax.enterprise.inject.spi.EventMetadata;
 
-import org.jboss.weld.injection.ThreadLocalStackService;
+import org.jboss.weld.bootstrap.api.Service;
+import org.jboss.weld.injection.ThreadLocalStack;
 
-public class CurrentEventMetadata extends ThreadLocalStackService<EventMetadata> {
+public class CurrentEventMetadata extends ThreadLocalStack<EventMetadata> implements Service {
+
+    @Override
+    public void cleanup() {
+    }
 }

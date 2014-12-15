@@ -22,6 +22,7 @@ import javax.enterprise.event.Event;
 import javax.enterprise.inject.spi.EventMetadata;
 import javax.enterprise.inject.spi.ObserverMethod;
 
+import org.jboss.weld.injection.ThreadLocalStack.ThreadLocalStackReference;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
@@ -107,15 +108,11 @@ public class FastEvent<T> {
 
         @Override
         public void fire(T event) {
-            if (metadata != null) {
-                metadataService.push(metadata);
-            }
+            final ThreadLocalStackReference<EventMetadata> stack = metadataService.pushIfNotNull(metadata);
             try {
                 super.fire(event);
             } finally {
-                if (metadata != null) {
-                    metadataService.pop();
-                }
+                stack.pop();
             }
         }
     }

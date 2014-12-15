@@ -25,6 +25,7 @@ import org.jboss.weld.Container;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.injection.EmptyInjectionPoint;
 import org.jboss.weld.injection.SLSBInvocationInjectionPoint;
+import org.jboss.weld.injection.ThreadLocalStack.ThreadLocalStackReference;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.serialization.InjectionPointHolder;
 
@@ -55,16 +56,17 @@ public class InjectionPointPropagatingEnterpriseTargetBeanInstance extends Enter
 
     @Override
     public Object invoke(Object instance, Method method, Object... arguments) throws Throwable {
+        ThreadLocalStackReference<InjectionPoint> stack = null;
         if (injectionPointHolder != null) {
-            slsbInvocationInjectionPoint.push(injectionPointHolder.get());
+            stack = slsbInvocationInjectionPoint.push(injectionPointHolder.get());
         } else {
-            slsbInvocationInjectionPoint.push(EmptyInjectionPoint.INSTANCE);
+            stack = slsbInvocationInjectionPoint.push(EmptyInjectionPoint.INSTANCE);
         }
 
         try {
             return super.invoke(instance, method, arguments);
         } finally {
-            slsbInvocationInjectionPoint.pop();
+            stack.pop();
         }
     }
 

@@ -27,6 +27,7 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.injection.DynamicInjectionPoint;
+import org.jboss.weld.injection.ThreadLocalStack.ThreadLocalStackReference;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
@@ -51,14 +52,15 @@ public class StatelessSessionBeanInjector<T> extends DefaultInjector<T> {
 
     @Override
     public void inject(T instance, CreationalContext<T> ctx, BeanManagerImpl manager, SlimAnnotatedType<T> type, InjectionTarget<T> injectionTarget) {
+        ThreadLocalStackReference<InjectionPoint> stack = null;
         if (pushDynamicInjectionPoints) {
-            currentInjectionPoint.push(new DynamicInjectionPoint(manager));
+            stack = currentInjectionPoint.push(new DynamicInjectionPoint(manager));
         }
         try {
             super.inject(instance, ctx, manager, type, injectionTarget);
         } finally {
             if (pushDynamicInjectionPoints) {
-                currentInjectionPoint.pop();
+                stack.pop();
             }
         }
     }

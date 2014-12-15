@@ -23,12 +23,14 @@ import java.io.Serializable;
 
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.context.CreationalContextImpl;
 import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.injection.EmptyInjectionPoint;
+import org.jboss.weld.injection.ThreadLocalStack.ThreadLocalStackReference;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.serialization.spi.ContextualStore;
@@ -92,12 +94,12 @@ public class ContextBeanInstance<T> extends AbstractBeanInstance implements Seri
         }
         final CurrentInjectionPoint currentInjectionPoint = container.services().get(CurrentInjectionPoint.class);
         currentCreationalContext.set(creationalContext);
+        // Ensure that there is no injection point associated
+        final ThreadLocalStackReference<InjectionPoint> stack = currentInjectionPoint.push(EmptyInjectionPoint.INSTANCE);
         try {
-            // Ensure that there is no injection point associated
-            currentInjectionPoint.push(EmptyInjectionPoint.INSTANCE);
             return context.get(bean, creationalContext);
         } finally {
-            currentInjectionPoint.pop();
+            stack.pop();
             if (previousCreationalContext == null) {
                 currentCreationalContext.remove();
             } else {

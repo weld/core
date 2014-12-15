@@ -27,6 +27,7 @@ import javax.enterprise.inject.spi.EventMetadata;
 import javax.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
+import org.jboss.weld.injection.ThreadLocalStack.ThreadLocalStackReference;
 import org.jboss.weld.logging.UtilLogger;
 import org.jboss.weld.resolution.QualifierInstance;
 import org.jboss.weld.resolution.Resolvable;
@@ -205,17 +206,13 @@ public class ObserverNotifier {
         if (observers.isEmpty()) {
             return;
         }
-        if (metadata != null) {
-            currentEventMetadata.push(metadata);
-        }
+        final ThreadLocalStackReference<EventMetadata> stack = currentEventMetadata.pushIfNotNull(metadata);
         try {
             for (ObserverMethod<? super T> observer : observers) {
                 observer.notify(event);
             }
         } finally {
-            if (metadata != null) {
-                currentEventMetadata.pop();
-            }
+            stack.pop();
         }
     }
 

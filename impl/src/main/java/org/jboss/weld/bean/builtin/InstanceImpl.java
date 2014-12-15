@@ -39,6 +39,7 @@ import org.jboss.weld.bean.proxy.ProxyObject;
 import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.exceptions.InvalidObjectException;
 import org.jboss.weld.injection.CurrentInjectionPoint;
+import org.jboss.weld.injection.ThreadLocalStack.ThreadLocalStackReference;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.logging.BeanManagerLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -173,11 +174,11 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
     }
 
     private T getBeanInstance(Bean<?> bean) {
+        final ThreadLocalStackReference<InjectionPoint> stack = currentInjectionPoint.push(ip);
         try {
-            currentInjectionPoint.push(ip);
             return Reflections.<T> cast(getBeanManager().getReference(bean, getType(), getCreationalContext(), false));
         } finally {
-            currentInjectionPoint.pop();
+            stack.pop();
         }
     }
 
