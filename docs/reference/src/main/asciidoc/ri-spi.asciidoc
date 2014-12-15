@@ -254,7 +254,7 @@ removed.
 `EjbInjectionServices.registerEjbInjectionPoint(InjectionPoint injectionPoint)`
 registers an `@EJB` injection point (on a managed bean) and returns a
 `ResourceReferenceFactory` as explained above. This service is not
-required if the implementation of <<_injection_services> takes care of `@EJB` injection.
+required if the implementation of <<_injection_services>> takes care of `@EJB` injection.
 
 NOTE: `EJBInjectionServices.resolveEjb(InjectionPoint ij)`, which allows
 `@EJB` injection point to be resolved without prior registration was
