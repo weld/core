@@ -141,9 +141,9 @@ public class ConstructorInjectionPoint<T> extends AbstractCallableInjectionPoint
             return Arrays2.EMPTY_ARRAY;
         }
         Object[] parameterValues = new Object[getParameterInjectionPoints().size()];
-        Iterator<ParameterInjectionPoint<?, T>> iterator = getParameterInjectionPoints().iterator();
+        List<ParameterInjectionPoint<?, T>> parameters = getParameterInjectionPoints();
         for (int i = 0; i < parameterValues.length; i++) {
-            ParameterInjectionPoint<?, ?> param = iterator.next();
+            ParameterInjectionPoint<?, ?> param = parameters.get(i);
             if (hasTransientReferenceParameter && param.getAnnotated().isAnnotationPresent(TransientReference.class)) {
                 parameterValues[i] = param.getValueToInject(manager, transientReference);
             } else {
