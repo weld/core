@@ -177,12 +177,15 @@ public class InterceptionDecorationContext {
      * If this method returns a non-null value, the caller of this method is required to call {@link Stack#end()} on the returned value.
      */
     public static Stack startIfNotEmpty() {
-        Stack stack = interceptionContexts.get();
-        if (empty(stack)) {
+        Stack stack = getStack();
+        if (!stack.elements.isEmpty()) {
+            stack.push(CombinedInterceptorAndDecoratorStackMethodHandler.NULL_INSTANCE);
+            return stack;
+        } else {
+            // if RequestScopedCache is not active, remove now to prevent ThreadLocal leak
+            stack.removeIfEmpty();
             return null;
         }
-        stack.push(CombinedInterceptorAndDecoratorStackMethodHandler.NULL_INSTANCE);
-        return stack;
     }
 
     /**
