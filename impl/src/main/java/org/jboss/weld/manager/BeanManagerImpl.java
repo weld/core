@@ -291,7 +291,11 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     private final transient ContainerLifecycleEvents containerLifecycleEvents;
 
     private final transient SpecializationAndEnablementRegistry registry;
+    /*
+     * Stuff that is used often thus we cache it here to reduce service lookups
+     */
     private final transient CurrentInjectionPoint currentInjectionPoint;
+    private final transient boolean clientProxyOptimization;
 
     /**
      * Create a new, root, manager
@@ -435,6 +439,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         this.containerLifecycleEvents = serviceRegistry.get(ContainerLifecycleEvents.class);
         this.registry = getServices().get(SpecializationAndEnablementRegistry.class);
         this.currentInjectionPoint = getServices().get(CurrentInjectionPoint.class);
+        this.clientProxyOptimization = getServices().get(WeldConfiguration.class).getBooleanProperty(ConfigurationKey.INJECTABLE_REFERENCE_OPTIMIZATION);
     }
 
     private <T> Iterable<T> createDynamicGlobalIterable(final Transform<T> transform) {
@@ -818,8 +823,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                 requestedType = injectionPoint.getType();
             }
 
-            if (injectionPoint != null && injectionPoint.getBean() != null
-                    && getServices().get(WeldConfiguration.class).getBooleanProperty(ConfigurationKey.INJECTABLE_REFERENCE_OPTIMIZATION)) {
+            if (clientProxyOptimization && injectionPoint != null && injectionPoint.getBean() != null) {
                 // For certain combinations of scopes, the container is permitted to optimize an injectable reference lookup
                 // This should also partially solve circular @PostConstruct invocation
                 CreationalContextImpl<?> weldCreationalContext = null;
