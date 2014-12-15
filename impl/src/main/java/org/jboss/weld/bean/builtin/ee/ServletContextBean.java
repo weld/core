@@ -56,11 +56,6 @@ public class ServletContextBean extends AbstractStaticallyDecorableBuiltInBean<S
     }
 
     @Override
-    public void destroy(ServletContext instance, CreationalContext<ServletContext> creationalContext) {
-        // noop
-    }
-
-    @Override
     public Class<? extends Annotation> getScope() {
         return RequestScoped.class;
     }

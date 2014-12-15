@@ -86,11 +86,6 @@ public class ExtensionBean extends AbstractBuiltInBean<Extension> {
     }
 
     @Override
-    public void destroy(Extension instance, CreationalContext<Extension> creationalContext) {
-        // No-op
-    }
-
-    @Override
     public Class<? extends Annotation> getScope() {
         return ApplicationScoped.class;
     }

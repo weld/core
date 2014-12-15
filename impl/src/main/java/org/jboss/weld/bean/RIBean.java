@@ -19,6 +19,7 @@ package org.jboss.weld.bean;
 import java.util.Set;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.PassivationCapable;
 
@@ -38,10 +39,12 @@ public abstract class RIBean<T> extends CommonBean<T> implements PassivationCapa
     protected final BeanManagerImpl beanManager;
     private boolean initialized;
     private volatile Set<QualifierInstance> qualifiers;
+    private ContextualInstanceStrategy<T> contextualInstanceStrategy;
 
     protected RIBean(BeanAttributes<T> attributes, BeanIdentifier identifier, BeanManagerImpl beanManager) {
         super(attributes, identifier);
         this.beanManager = beanManager;
+        this.contextualInstanceStrategy = ContextualInstanceStrategy.create(attributes, beanManager);
     }
 
     public BeanManagerImpl getBeanManager() {
@@ -107,5 +110,20 @@ public abstract class RIBean<T> extends CommonBean<T> implements PassivationCapa
             qualifiers = beanManager.getServices().get(MetaAnnotationStore.class).getQualifierInstances(getQualifiers());
         }
         return qualifiers;
+    }
+
+    public ContextualInstanceStrategy<T> getContextualInstanceStrategy() {
+        return contextualInstanceStrategy;
+    }
+
+    @Override
+    public void setAttributes(BeanAttributes<T> attributes) {
+        super.setAttributes(attributes);
+        this.contextualInstanceStrategy = ContextualInstanceStrategy.create(attributes, beanManager);
+    }
+
+    @Override
+    public void destroy(T instance, CreationalContext<T> creationalContext) {
+        contextualInstanceStrategy.destroy(this);
     }
 }

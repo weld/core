@@ -22,11 +22,11 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 
-import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.Container;
+import org.jboss.weld.bean.ContextualInstance;
 import org.jboss.weld.context.CreationalContextImpl;
 import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.injection.CurrentInjectionPoint;
@@ -80,9 +80,7 @@ public class ContextBeanInstance<T> extends AbstractBeanInstance implements Seri
     }
 
     public T getInstance() {
-        Context context = manager.getContext(bean.getScope());
-
-        T existingInstance = context.get(bean);
+        T existingInstance = ContextualInstance.getIfExists(bean, manager);
         if (existingInstance != null) {
             return existingInstance;
         }
@@ -98,7 +96,7 @@ public class ContextBeanInstance<T> extends AbstractBeanInstance implements Seri
         // Ensure that there is no injection point associated
         final ThreadLocalStackReference<InjectionPoint> stack = currentInjectionPoint.push(EmptyInjectionPoint.INSTANCE);
         try {
-            return context.get(bean, creationalContext);
+            return ContextualInstance.get(bean, manager, creationalContext);
         } finally {
             stack.pop();
             if (previousCreationalContext == null) {
