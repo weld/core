@@ -48,6 +48,10 @@ public class ThreadPool {
         });
     }
 
+    public <T> Future<T> submit(final Callable<T> callable) {
+        return executor.submit(callable);
+    }
+
     @PreDestroy
     public void tearDown() {
         executor.shutdown();
