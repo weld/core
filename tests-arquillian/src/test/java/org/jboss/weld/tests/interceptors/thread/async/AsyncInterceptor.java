@@ -14,41 +14,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.interceptors.thread;
+package org.jboss.weld.tests.interceptors.thread.async;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import javax.annotation.PreDestroy;
-import javax.enterprise.context.ApplicationScoped;
+import javax.annotation.Priority;
+import javax.enterprise.inject.spi.DefinitionException;
 import javax.inject.Inject;
+import javax.interceptor.AroundInvoke;
+import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 
-@ApplicationScoped
-public class ThreadPool {
+import org.jboss.weld.tests.interceptors.thread.ThreadPool;
 
-    private ExecutorService executor;
-
-    public ThreadPool() {
-    }
+@Async
+@Interceptor
+@Priority(Interceptor.Priority.LIBRARY_BEFORE + 100)
+public class AsyncInterceptor {
 
     @Inject
-    public void init() {
-        this.executor = Executors.newSingleThreadExecutor();
-    }
+    private ThreadPool pool;
 
-    public Future<Object> submit(final InvocationContext ctx) {
-        return executor.submit(ctx::proceed);
-    }
-
-    public <T> Future<T> submit(final Callable<T> callable) {
-        return executor.submit(callable);
-    }
-
-    @PreDestroy
-    public void tearDown() {
-        executor.shutdown();
+    @AroundInvoke
+    public Object intercept(final InvocationContext ctx) throws Exception {
+        final Class<?> returnType = ctx.getMethod().getReturnType();
+        if (returnType == void.class) {
+            pool.submit(ctx);
+            return null;
+        } else if (returnType == Future.class) {
+            return pool.submit(() -> AsyncResult.unwrap(ctx.proceed()));
+        } else {
+            throw new DefinitionException("Invalid return type " + returnType);
+        }
     }
 }
