@@ -232,7 +232,7 @@ public class ServletConversationTest {
     }
 
     protected String getCid(String content) {
-        return content.substring(content.indexOf("cid: [") + 6, content.indexOf("]"));
+        return content.substring(content.indexOf("cid: [") + 6, content.indexOf(']'));
     }
 
     protected String getPath(String viewId, String cid) {

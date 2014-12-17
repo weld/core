@@ -28,7 +28,7 @@ public class TransactionalInterceptor {
 
     @AroundInvoke
     public Object intercept(InvocationContext ctx) throws Exception {
-        ActionSequence.addAction(TransactionalInterceptor.class.getName().toString());
+        ActionSequence.addAction(TransactionalInterceptor.class.getName());
         return ctx.proceed();
     }
 
