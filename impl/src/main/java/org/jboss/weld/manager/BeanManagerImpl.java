@@ -992,7 +992,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     // Serialization
 
     protected Object readResolve() throws ObjectStreamException {
-        return Container.instance(contextId).activityManager(id);
+        return Container.instance(contextId).getBeanManager(id);
     }
 
     public ClientProxyProvider getClientProxyProvider() {

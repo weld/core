@@ -71,7 +71,7 @@ public interface SlimAnnotatedType<T> extends AnnotatedType<T>, Identified<Annot
                 return null; // this is not a backed annotated type
             }
             // first, obtain the BeanManager for a given BDA
-            final BeanManagerImpl manager = Container.instance(identifier).activityManager(identifier.getBdaId());
+            final BeanManagerImpl manager = Container.instance(identifier).getBeanManager(identifier.getBdaId());
             if (manager == null) {
                 return null;
             }
