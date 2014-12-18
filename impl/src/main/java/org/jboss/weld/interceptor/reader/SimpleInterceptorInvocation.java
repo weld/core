@@ -82,5 +82,10 @@ class SimpleInterceptorInvocation implements InterceptorInvocation {
         public boolean expectsInvocationContext() {
             return !targetClass || !interceptionType.isLifecycleCallback();
         }
+
+        @Override
+        public String toString() {
+            return "SimpleMethodInvocation [method=" + method + ']';
+        }
     }
 }

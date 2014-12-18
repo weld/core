@@ -1,11 +1,16 @@
 package org.jboss.weld.interceptor.proxy;
 
+import static org.jboss.weld.interceptor.proxy.AroundInvokeInvocationContext.create;
+
 import java.io.ObjectStreamException;
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+
+import javax.interceptor.InvocationContext;
 
 import org.jboss.weld.bean.proxy.InterceptionDecorationContext;
 import org.jboss.weld.bean.proxy.InterceptionDecorationContext.Stack;
@@ -62,8 +67,23 @@ public class InterceptorMethodHandler implements StackAwareMethodHandler, Serial
             } else {
                 return Reflections.invokeAndUnwrap(instance, proceed, args);
             }
+        }
+        if (InterceptionType.AROUND_INVOKE == interceptionType) {
+            return executeAroundInvoke(instance, method, proceed, args, chain, stack);
         } else {
-            return new WeldInvocationContext(instance, method, proceed, args, chain, stack).proceed();
+            return executeLifecycleInterception(instance, method, proceed, args, chain, stack);
+        }
+    }
+    protected Object executeLifecycleInterception(Object instance, Method method, Method proceed, Object[] args, List<InterceptorMethodInvocation> chain, Stack stack) throws Throwable {
+        return new WeldInvocationContext(instance, method, proceed, args, chain, stack).proceed();
+    }
+
+    protected Object executeAroundInvoke(Object instance, Method method, Method proceed, Object[] args, List<InterceptorMethodInvocation> chain, Stack stack) throws Throwable {
+        InvocationContext ctx = create(instance, method, proceed, args, chain, stack);
+        try {
+            return chain.get(0).invoke(ctx);
+        } catch (InvocationTargetException e) {
+            throw e.getCause();
         }
     }
 
