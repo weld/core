@@ -449,4 +449,23 @@ public class Reflections {
         }
         return null;
     }
+
+    /**
+     * Unwraps the given {@link InvocationTargetException}. {@link Error} and {@link Exception} are unwrapped right away, {@link Throwable} is wrapped
+     * within {@link WeldException}. This method never returns - it always throws the unwrapped cause instead. The return type matches the throws part of
+     * the signature just to simplify usage.
+     * @param the given exception
+     * @return
+     * @throws Exception unwrapped cause of {@link InvocationTargetException}
+     */
+    public static Exception unwrapInvocationTargetException(InvocationTargetException e) throws Exception {
+        Throwable cause = e.getCause();
+        if (cause instanceof Error) {
+            throw (Error) cause;
+        } else if (cause instanceof Exception) {
+            throw (Exception) cause;
+        } else {
+            throw new WeldException(cause);
+        }
+    }
 }

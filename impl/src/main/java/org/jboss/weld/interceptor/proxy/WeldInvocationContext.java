@@ -55,11 +55,11 @@ public class WeldInvocationContext extends ForwardingInvocationContext implement
     private final Set<Annotation> interceptorBindings;
 
     public WeldInvocationContext(Constructor<?> constructor, Object[] parameters, Map<String, Object> contextData, List<InterceptorMethodInvocation> chain, Set<Annotation> interceptorBindings) {
-        this(new SimpleInvocationContext(constructor, parameters, contextData), chain, interceptorBindings, null);
+        this(new SimpleInvocationContext(constructor, parameters, contextData, interceptorBindings), chain, interceptorBindings, null);
     }
 
     public WeldInvocationContext(Object target, Method targetMethod, Method proceed, Object[] parameters, List<InterceptorMethodInvocation> chain, Set<Annotation> interceptorBindings, Stack stack) {
-        this(new SimpleInvocationContext(target, targetMethod, proceed, parameters), chain, interceptorBindings, (stack == null) ? null : stack.peek());
+        this(new SimpleInvocationContext(target, targetMethod, proceed, parameters, interceptorBindings), chain, interceptorBindings, (stack == null) ? null : stack.peek());
     }
 
     public WeldInvocationContext(InvocationContext delegate, List<InterceptorMethodInvocation> chain, Set<Annotation> interceptorBindings, CombinedInterceptorAndDecoratorStackMethodHandler currentHandler) {
