@@ -33,7 +33,7 @@ footer {
   fill: red;
 }
 
-.cirle-producer {
+.circle-producer {
   fill: lightsteelblue;
 }
 
@@ -90,6 +90,10 @@ div.form-group {
 }
 
 .SYNTHETIC {
+  background-color: LightBlue;
+}
+
+.BUILT_IN {
   background-color: LightGray;
 }
 

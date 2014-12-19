@@ -220,7 +220,7 @@ final class Components {
      */
     static enum BeanKind {
 
-        MANAGED, SESSION, PRODUCER_METHOD, PRODUCER_FIELD, RESOURCE, SYNTHETIC, INTERCEPTOR, DECORATOR, EXTENSION, ;
+        MANAGED, SESSION, PRODUCER_METHOD, PRODUCER_FIELD, RESOURCE, SYNTHETIC, INTERCEPTOR, DECORATOR, EXTENSION, BUILT_IN;
 
         static BeanKind from(Bean<?> bean) {
             if (bean instanceof ForwardingBean) {
@@ -231,8 +231,7 @@ final class Components {
 
             if (bean instanceof SessionBean) {
                 return SESSION;
-            }
-            if (bean instanceof ManagedBean) {
+            } else if (bean instanceof ManagedBean) {
                 if (bean instanceof Decorator) {
                     return DECORATOR;
                 } else if (bean instanceof Interceptor) {
@@ -248,6 +247,8 @@ final class Components {
                 return PRODUCER_METHOD;
             } else if (bean instanceof ExtensionBean) {
                 return EXTENSION;
+            } else if (bean instanceof AbstractBuiltInBean<?>) {
+                return BUILT_IN;
             } else {
                 return SYNTHETIC;
             }

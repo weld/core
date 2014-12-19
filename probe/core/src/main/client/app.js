@@ -4,7 +4,8 @@
 var restUrlBase = '${rest.url.base}';
 
 var beanKinds = [ 'MANAGED', 'SESSION', 'PRODUCER_METHOD', 'PRODUCER_FIELD',
-    'RESOURCE', 'SYNTHETIC', 'INTERCEPTOR', 'DECORATOR', 'EXTENSION' ];
+    'RESOURCE', 'SYNTHETIC', 'INTERCEPTOR', 'DECORATOR', 'EXTENSION',
+    'BUILT_IN' ];
 
 var receptions = [ 'ALWAYS', 'IF_EXISTS' ];
 
@@ -540,59 +541,41 @@ Probe.DependencyGraph = Ember.View
           linkLabel.append("circle").attr("r", 8).style("fill",
               "silver");
           linkLabel
-              .append("svg:text")
-              .attr("class", "nodetext injection-point-info")
-              .style("fill", "black")
-              .style("font-size", "90%")
-              .each(
+              .append("title")
+              .text(
                   function(d) {
-                    var text = d3.select(this);
-                    if (!d.dependencies) {
-                      return;
+                    if (d.dependencies.length == 1) {
+                      return getInjectionPointInfo(d,
+                          false);
+                    } else {
+                      return 'Multiple injection points found, click to show details.';
                     }
-                    for (var i = 0; i < d.dependencies.length; i++) {
-                      // Injection point info
-                      var qualifiers = "";
-                      var requiredType = "";
-                      if (d.dependencies[i].qualifiers) {
-                        for (var j = 0; j < d.dependencies[i].qualifiers.length; j++) {
-                          qualifiers += d.dependencies[i].qualifiers[j]
-                              + " ";
-                        }
-                      }
-                      if (d.dependencies[i].requiredType) {
-                        requiredType += d.dependencies[i].requiredType;
-                      }
-                      // text
-                      // .append("tspan")
-                      // // .attr("x", 0)
-                      // .attr("dy", i * 15)
-                      // .attr(
-                      // "text-anchor",
-                      // function() {
-                      // if (!d.source.isDependent
-                      // && d.target.isRoot) {
-                      // return "end";
-                      // }
-                      // }).style(
-                      // "font-weight",
-                      // "bold").text(
-                      // qualifiers);
-                      text
-                          .append("tspan")
-                          .attr("x", 10)
-                          .attr("dy", i * 15)
-                          .attr(
-                              "text-anchor",
-                              function() {
-                                if (!d.source.isDependent
-                                    && d.target.isRoot) {
-                                  return "end";
-                                }
-                              }).text(
-                              requiredType);
-                    }
+                    return getInjectionPointInfo(d);
                   });
+          linkLabel.append("svg:text").attr("class",
+              "nodetext injection-point-info").style("fill",
+              "black").style("font-size", "90%").each(
+              function(d) {
+                var text = d3.select(this);
+                if (!d.dependencies) {
+                  return;
+                }
+                var desc;
+                if (d.dependencies.length == 1) {
+                  desc = d.dependencies[0].requiredType;
+                } else {
+                  desc = '(' + d.dependencies.length + ')';
+                }
+                text.append("tspan").attr("x", 10).attr("dy",
+                    15).attr(
+                    "text-anchor",
+                    function() {
+                      if (!d.source.isDependent
+                          && d.target.isRoot) {
+                        return "end";
+                      }
+                    }).text(desc);
+              });
         }
 
         var node_drag = d3.behavior.drag().on("dragstart", dragstart)
@@ -623,40 +606,18 @@ Probe.DependencyGraph = Ember.View
         }
 
         // Injection point info dialog
-        svg
-            .selectAll("text.injection-point-info")
-            .on(
-                "click",
-                function(d, i) {
-                  if (!d.dependencies) {
-                    return;
-                  }
-                  var description = '';
-                  for (var i = 0; i < d.dependencies.length; i++) {
-                    // Injection point info
-                    var qualifiers = "";
-                    var requiredType = "";
-                    if (d.dependencies[i].qualifiers) {
-                      for (var j = 0; j < d.dependencies[i].qualifiers.length; j++) {
-                        qualifiers += d.dependencies[i].qualifiers[j]
-                            + " ";
-                      }
-                    }
-                    if (d.dependencies[i].requiredType) {
-                      requiredType += d.dependencies[i].requiredType;
-                    }
-                    description += 'Required Type: '
-                        + requiredType + '\n';
-                    description += 'Qualifiers: '
-                        + qualifiers + '\n';
-                  }
-                  // TODO use modal dialog
-                  alert(description);
-                });
+        svg.selectAll("text.injection-point-info").on("click",
+            function(d, i) {
+              // TODO use modal dialog
+              alert(getInjectionPointInfo(d, true));
+            });
 
         var node = svg.selectAll("g.node").data(nodes).enter().append(
             "svg:g").attr("class", "node").call(node_drag);
 
+        node.append("title").text(function(d) {
+          return d.kind;
+        });
         node.append("circle").attr("r", 12).attr(
             "class",
             function(d) {
@@ -717,6 +678,32 @@ Probe.DependencyGraph = Ember.View
       }
     });
 
+function getInjectionPointInfo(d, addIndex) {
+  if (!d.dependencies) {
+    return '';
+  }
+  var description = '';
+  for (var j = 0; j < d.dependencies.length; j++) {
+    // Injection point info
+    var qualifiers = "";
+    var requiredType = "";
+    if (d.dependencies[j].qualifiers) {
+      for (var k = 0; k < d.dependencies[j].qualifiers.length; k++) {
+        qualifiers += d.dependencies[j].qualifiers[k] + " ";
+      }
+    }
+    if (d.dependencies[j].requiredType) {
+      requiredType += d.dependencies[j].requiredType;
+    }
+    if (addIndex) {
+      description += (j + 1) + '. ';
+    }
+    description += qualifiers;
+    description += ' ' + requiredType + '\n';
+    return description;
+  }
+}
+
 Probe.InvocationTree = Ember.View
     .extend({
 
@@ -744,15 +731,15 @@ Probe.InvocationTree = Ember.View
         var svg = element.append("svg").attr("height",
             height + margin.top + margin.bottom);
 
-     // Type markers
-        svg.append("defs").selectAll("marker").data(
-            [ "invocation" ]).enter().append("marker")
-            .attr("id", function(d) {
+        // Type markers
+        svg.append("defs").selectAll("marker").data([ "invocation" ])
+            .enter().append("marker").attr("id", function(d) {
               return d;
             }).attr("viewBox", "0 -5 10 10").attr("refX", 14).attr(
                 "refY", 0).attr("markerWidth", 6).attr(
-                "markerHeight", 6).attr("orient", "auto").style("fill", "gray")
-            .append("path").attr("d", "M0,-5L7,0L0,5");
+                "markerHeight", 6).attr("orient", "auto")
+            .style("fill", "gray").append("path").attr("d",
+                "M0,-5L7,0L0,5");
 
         var g = svg.append("g").attr("transform",
             "translate(" + margin.left + "," + margin.top + ")");
@@ -862,11 +849,9 @@ Probe.InvocationTree = Ember.View
                   || d.target.type == "OBSERVER") {
                 return "5,5";
               }
-            })
-            .attr("marker-end", function(d) {
-              return "url(#invocation)";
-            })
-            .attr(
+            }).attr("marker-end", function(d) {
+          return "url(#invocation)";
+        }).attr(
             "class",
             function(d) {
               if (d.target.type == "PRODUCER"
