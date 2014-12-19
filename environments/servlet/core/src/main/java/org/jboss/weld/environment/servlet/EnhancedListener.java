@@ -48,9 +48,9 @@ public class EnhancedListener extends ForwardingServletListener implements Servl
 
     public static final String ENHANCED_LISTENER_USED_ATTRIBUTE_NAME = EnhancedListener.class.getPackage().getName() + ".enhancedListenerUsed";
 
-    private boolean isOriginalListenerUsed = false;
+    private volatile boolean isOriginalListenerUsed = false;
 
-    private WeldServletLifecycle lifecycle;
+    private volatile WeldServletLifecycle lifecycle;
 
     @Override
     public void onStartup(Set<Class<?>> classes, ServletContext context) throws ServletException {
@@ -58,7 +58,7 @@ public class EnhancedListener extends ForwardingServletListener implements Servl
         context.setAttribute(ENHANCED_LISTENER_USED_ATTRIBUTE_NAME, Boolean.TRUE);
         WeldServletLifecycle lifecycle = new WeldServletLifecycle();
         // If not initialized properly, don't register itself as a listener
-        if(lifecycle.initialize(context)) {
+        if (lifecycle.initialize(context)) {
             this.lifecycle = lifecycle;
             context.setAttribute(WeldServletLifecycle.INSTANCE_ATTRIBUTE_NAME, lifecycle);
             context.addListener(this);
@@ -77,6 +77,10 @@ public class EnhancedListener extends ForwardingServletListener implements Servl
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
+        if (isOriginalListenerUsed) {
+            // Do not shutdown Weld if org.jboss.weld.environment.servlet.Listener is registered
+            return;
+        }
         super.contextDestroyed(sce);
         lifecycle.destroy(sce.getServletContext());
     }
