@@ -181,6 +181,8 @@ public class Weld {
 
     private final Set<PackInfo> packages;
 
+    private boolean running;
+
     public Weld() {
         this(RegistrySingletonProvider.STATIC_INSTANCE);
     }
@@ -499,6 +501,7 @@ public class Weld {
      * @see #setDiscoveryEnabled(boolean)
      */
     public WeldContainer initialize() {
+        running = true;
         final ResourceLoader resourceLoader = new WeldResourceLoader();
 
         // If also building a synthetic bean archive the check for beans.xml is not necessary
@@ -538,6 +541,7 @@ public class Weld {
      * Shuts down all the containers initialized by this builder.
      */
     public void shutdown() {
+        running = false;
         if (!initializedContainers.isEmpty()) {
             for (WeldContainer container : initializedContainers.values()) {
                 container.shutdown();
@@ -653,6 +657,24 @@ public class Weld {
 
     private boolean isSyntheticBeanArchiveRequired() {
         return !beanClasses.isEmpty() || !packages.isEmpty();
+    }
+
+    /**
+     * Returns true if this Weld has been shut down.
+     * @see Weld#shutdown
+     * @return if this Weld has been shut down.
+     */
+    public boolean isNotRunning() {
+        return !running;
+   }
+
+    /**
+     * Checks if the Weld is started.
+     * @see Weld#initialize()
+     * @return
+     */
+    public boolean isRunning() {
+           return running;
     }
 
     private Iterable<Metadata<Extension>> getExtensions(ClassLoader classLoader, Bootstrap bootstrap) {

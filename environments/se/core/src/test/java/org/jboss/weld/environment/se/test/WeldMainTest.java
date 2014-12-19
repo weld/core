@@ -80,4 +80,21 @@ public class WeldMainTest {
         assertTrue(ObserverTestBean.isDestroyedObserved());
     }
 
+    @Test
+    public void testLifeCicle() {
+        Weld weld = new Weld();
+        assertTrue(weld.isNotRunning());
+        assertFalse(weld.isRunning());
+
+        weld.initialize();
+
+        assertTrue(weld.isRunning());
+        assertFalse(weld.isNotRunning());
+
+        weld.shutdown();
+
+        assertFalse(weld.isRunning());
+        assertTrue(weld.isNotRunning());
+
+    }
 }
