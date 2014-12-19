@@ -61,7 +61,6 @@ final class Queries {
      * @return the page of data
      */
     static <T, F extends Filters<T>> Page<T> find(List<T> data, int page, F filters) {
-        int total = data.size();
         if (filters != null) {
             ProbeLogger.LOG.filtersApplied(filters);
             for (Iterator<T> iterator = data.iterator(); iterator.hasNext();) {
@@ -79,14 +78,14 @@ final class Queries {
             lastIdx++;
         }
         if (lastIdx == 1) {
-            return new Page<T>(1, lastIdx, total, data);
+            return new Page<T>(1, lastIdx, data.size(), data);
         }
         int start = (page - 1) * DEFAULT_PAGE_SIZE;
         int end = start + DEFAULT_PAGE_SIZE;
         if (end > data.size()) {
             end = data.size();
         }
-        return new Page<T>(page, lastIdx, total, data.subList(start, end));
+        return new Page<T>(page, lastIdx, data.size(), data.subList(start, end));
     }
 
     /**

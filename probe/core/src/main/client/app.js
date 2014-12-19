@@ -96,19 +96,29 @@ Probe.BeanListRoute = Ember.Route.extend({
     },
     kind : {
       refreshModel : true
+    },
+    bda : {
+      refreshModel : true
     }
   },
   setupController : function(controller, model) {
     this._super(controller, model);
     controller.set("pages", buildPages(model.page, model.lastPage));
+    controller.set("cache", cache);
   },
   model : function(params) {
     var query = '', filters = '', page = '';
-    filters = appendToFilters(filters, 'bda', params.bda);
     filters = appendToFilters(filters, 'scope', params.scope);
     filters = appendToFilters(filters, 'beanClass', params.beanClass);
     filters = appendToFilters(filters, 'beanType', params.beanType);
     filters = appendToFilters(filters, 'qualifier', params.qualifier);
+    if (params.bda) {
+      cache.bdas.forEach(function(bda) {
+        if (bda.id == params.bda) {
+          filters = appendToFilters(filters, 'bda', bda.id);
+        }
+      });
+    }
     if (params.kind) {
       beanKinds.forEach(function(kind) {
         if (kind == params.kind) {
@@ -330,8 +340,7 @@ Probe.BeanListController = Ember.ObjectController.extend({
     this.set('initialized', true);
     this.set('beanKinds', beanKinds);
   },
-  bda : '',
-  bdaId : '',
+  bda : null,
   kind : null,
   scope : '',
   beanClass : '',
@@ -340,27 +349,15 @@ Probe.BeanListController = Ember.ObjectController.extend({
   page : 1,
   queryParams : [ 'bda', 'kind', 'scope', 'beanClass', 'beanType',
       'qualifier', 'page' ],
-  onBdaChanged : function() {
-    var newBda = this.get('bda');
-    if (newBda != null && newBda != undefined && newBda != '') {
-      this.set('bdaId', findBeanDeploymentArchive(cache.bdas, this
-          .get('bda')));
-    }
-  }.observes('bda'),
   actions : {
     clearFilters : function() {
-      this.set('bda', '');
-      this.set('bdaId', '');
+      this.set('page', 1);
+      this.set('bda', null);
       this.set('scope', '');
       this.set('beanClass', '');
       this.set('beanType', '');
       this.set('qualifier', '');
       this.set('kind', null);
-      this.send("refreshData");
-    },
-    clearBda : function() {
-      this.set('bda', '');
-      this.set('bdaId', null);
       this.send("refreshData");
     },
     filter : function() {

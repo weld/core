@@ -8,20 +8,24 @@ ${head}
 <body>
 
    <script type="text/x-handlebars">
-        <div id="logo">
+        <div class="container-fluid">
+        <div id="logo" class="row">
             <h1><img src="${contextPath}weld_logo_200x.png" alt="Weld logo" />&nbsp; <small>Probe</small></h1>
         </div>
-        <ul class="nav nav-pills" role="tablist">
-            <li>{{#link-to 'deployment'}}Deployment{{/link-to}}</li>
-            <li>{{#link-to 'beanList'}}Beans{{/link-to}}</li>
-            <li>{{#link-to 'observerList'}}Observer methods{{/link-to}}</li>
-            <li>{{#link-to 'contexts'}}Contexts{{/link-to}}</li>
-            <li>{{#link-to 'invocationList'}}Invocation trees{{/link-to}}</li>
-        </ul>
+        <div id="menu" class="row">
+            <ul class="nav nav-pills" role="tablist">
+                <li>{{#link-to 'deployment'}}Deployment{{/link-to}}</li>
+                <li>{{#link-to 'beanList'}}Beans{{/link-to}}</li>
+                <li>{{#link-to 'observerList'}}Observer methods{{/link-to}}</li>
+                <li>{{#link-to 'contexts'}}Contexts{{/link-to}}</li>
+                <li>{{#link-to 'invocationList'}}Invocation trees{{/link-to}}</li>
+            </ul>
+        </div>
         {{outlet}}
         <footer>
             Build ${project.version}
         </footer>
+        </div>
     </script>
 
     <script
@@ -80,13 +84,21 @@ ${head}
 
         <h2>Beans</h2>
 
-        {{#if bdaId}}
-        <p>Bean Deployment Archive: <strong>{{bdaId}}</strong> <button class="btn btn-default" type="button" {{action 'clearBda'}}>Unselect</button></p>
-        {{/if}}
+        <p>
+            <label>Bean Archive:</label>
+            {{view "select"
+                value=bda
+                content=cache.bdas
+                optionValuePath="content.id"
+                optionLabelPath="content.bdaId"
+                prompt="-- ANY --"
+                class="form-control form-control-auto-width"
+            }}
+        </p>
 
         <div class="btn-line">
             &nbsp;<button {{action 'clearFilters'}} class="btn btn-default">Clear filters</button>
-            <div class="total pull-left">Total: {{total}}</div>
+            <div class="total pull-left">Total found: {{total}}</div>
             <ul class="pagination no-margin pull-left">
             {{#each pages}}
                 <li class="{{unbound active}}">{{#link-to 'beanList' (query-params page=index)}}{{index}}{{/link-to}}</li>
@@ -154,46 +166,46 @@ ${head}
                 <form class="form-horizontal">
                     {{#if bdaIdName}}
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Bean Deployment Archive:</label>
+                        <label class="col-sm-2">Bean Deployment Archive:</label>
                          <div class="col-sm-10">
                             <p class="form-control-static">{{#link-to 'beanList' (query-params bda=bdaId)}}{{bdaIdName}}{{/link-to}}</p>
                         </div>
                     </div>
                     {{/if}}
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Kind:</label>
+                        <label class="col-sm-2">Kind:</label>
                          <div class="col-sm-10">
                             <p class="form-control-static"><span {{bind-attr class=kindClass}}>{{kind}}</span></p>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Bean Class:</label>
+                        <label class="col-sm-2">Bean Class:</label>
                         <div class="col-sm-10">
                             <p class="form-control-static">{{beanClass}}</p>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Scope:</label>
+                        <label class="col-sm-2">Scope:</label>
                         <div class="col-sm-10">
                             <p class="form-control-static">{{scope}}</p>
                         </div>
                     </div>
                     {{#if name}}
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Name:</label>
+                        <label class="col-sm-2">Name:</label>
                         <div class="col-sm-10">
                             <p class="form-control-static">{{name}}</p>
                         </div>
                     </div>
                     {{/if}}
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Is Alternative:</label>
+                        <label class="col-sm-2">Is Alternative:</label>
                         <div class="col-sm-10">
                             <p class="form-control-static">{{#if isAlternative}}true{{else}}false{{/if}}</p>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Bean Types:</label>
+                        <label class="col-sm-2">Bean Types:</label>
                         <div class="col-sm-10">
                             {{#each types}}
                             <p class="form-control-static">{{this}}</p>
@@ -202,7 +214,7 @@ ${head}
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Qualifiers:</label>
+                        <label class="col-sm-2">Qualifiers:</label>
                         <div class="col-sm-10">
                             {{#each qualifiers}}
                             <p class="form-control-static">{{this}}</p>
@@ -212,7 +224,7 @@ ${head}
                     </div>
                     {{#if stereotypes}}
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Stereotypes:</label>
+                        <label class="col-sm-2">Stereotypes:</label>
                         <div class="col-sm-10">
                             {{#each stereotypes}}
                             <p class="form-control-static">{{this}}</p>
@@ -222,7 +234,7 @@ ${head}
                     {{/if}}
                     {{#if ejbName}}
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">EJB Name:</label>
+                        <label class="col-sm-2">EJB Name:</label>
                         <div class="col-sm-10">
                             <p class="form-control-static">{{ejbName}}</p>
                         </div>
@@ -230,7 +242,7 @@ ${head}
                     {{/if}}
                     {{#if sessionBeanType}}
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Session Bean Type:</label>
+                        <label class="col-sm-2">Session Bean Type:</label>
                         <div class="col-sm-10">
                             <p class="form-control-static">{{sessionBeanType}}</p>
                         </div>
@@ -238,7 +250,7 @@ ${head}
                     {{/if}}
                     {{#if declaringBean}}
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Declaring Bean:</label>
+                        <label class="col-sm-2">Declaring Bean:</label>
                         <div class="col-sm-10">
                             <p class="form-control-static"><span class="{{unbound declaringBean.kind}} boxed">{{declaringBean.kind}}</span> {{#link-to 'beanDetail' declaringBean.id}}{{declaringBean.beanClass}}{{/link-to}}</p>
                         </div>
@@ -246,7 +258,7 @@ ${head}
                     {{/if}}
                     {{#if producerMethod}}
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Producer Method:</label>
+                        <label class="col-sm-2">Producer Method:</label>
                         <div class="col-sm-10">
                             <p class="form-control-static">{{producerMethod}}</p>
                         </div>
@@ -254,7 +266,7 @@ ${head}
                     {{/if}}
                     {{#if producerField}}
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Producer Field:</label>
+                        <label class="col-sm-2">Producer Field:</label>
                         <div class="col-sm-10">
                             <p class="form-control-static">{{producerField}}</p>
                         </div>
@@ -262,7 +274,7 @@ ${head}
                     {{/if}}
                     {{#if disposalMethod}}
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Disposal Method:</label>
+                        <label class="col-sm-2">Disposal Method:</label>
                         <div class="col-sm-10">
                             <p class="form-control-static">{{disposalMethod}}</p>
                         </div>
@@ -270,7 +282,7 @@ ${head}
                     {{/if}}
                     {{#if declaredObservers}}
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Declared Observers:</label>
+                        <label class="col-sm-2">Declared Observers:</label>
                         <div class="col-sm-10">
                             {{#each declaredObservers}}
                             <p class="form-control-static">
@@ -284,7 +296,7 @@ ${head}
                     {{/if}}
                     {{#if declaredProducers}}
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Declared Producers:</label>
+                        <label class="col-sm-2">Declared Producers:</label>
                         <div class="col-sm-10">
                             {{#each declaredProducers}}
                             <p class="form-control-static">
@@ -330,7 +342,7 @@ ${head}
 
         <div class="btn-line">
             &nbsp;<button {{action 'clearFilters'}} class="btn btn-default">Clear filters</button>
-            <div class="total pull-left">Total: {{total}}</div>
+            <div class="total pull-left">Total found: {{total}}</div>
             <ul class="pagination no-margin pull-left">
             {{#each pages}}
                 <li class="{{unbound active}}">{{#link-to 'beanList' (query-params page=index)}}{{index}}{{/link-to}}</li>
@@ -401,28 +413,28 @@ ${head}
                 <form class="form-horizontal">
                     {{#if declaringBean}}
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Declaring Bean:</label>
+                        <label class="col-sm-2">Declaring Bean:</label>
                          <div class="col-sm-10">
                             <p class="form-control-static"><span class="{{unbound declaringBean.kind}} boxed">{{unbound declaringBean.kind}}</span> {{#link-to 'beanDetail' declaringBean.id}}{{declaringBean.beanClass}}{{/link-to}}</p>
                         </div>
                     </div>
                     {{else}}
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Bean Class:</label>
+                        <label class="col-sm-2">Bean Class:</label>
                          <div class="col-sm-10">
                             <p class="form-control-static">{{beanClass}}</p>
                         </div>
                     </div>
                     {{/if}}
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Observed Type:</label>
+                        <label class="col-sm-2">Observed Type:</label>
                          <div class="col-sm-10">
                             <p class="form-control-static">{{observedType}}</p>
                         </div>
                     </div>
                     {{#if qualifiers}}
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Qualifiers:</label>
+                        <label class="col-sm-2">Qualifiers:</label>
                         <div class="col-sm-10">
                             {{#each qualifiers}}
                             <p class="form-control-static">{{this}}</p>
@@ -432,20 +444,20 @@ ${head}
                     </div>
                     {{/if}}
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Reception:</label>
+                        <label class="col-sm-2">Reception:</label>
                         <div class="col-sm-10">
                             <p class="form-control-static"><span class="{{unbound reception}} boxed">{{unbound reception}}</span></p>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Transaction Phase:</label>
+                        <label class="col-sm-2">Transaction Phase:</label>
                         <div class="col-sm-10">
                             <p class="form-control-static"><span class="{{unbound txPhase}} boxed">{{unbound txPhase}}</span></p>
                         </div>
                     </div>
                     {{#if annotatedMethod}}
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Annotated Method:</label>
+                        <label class="col-sm-2">Annotated Method:</label>
                         <div class="col-sm-10">
                             <p class="form-control-static">{{annotatedMethod}}</p>
                         </div>
@@ -497,7 +509,7 @@ ${head}
         <div class="panel-body">
             <form class="form-horizontal">
             <div class="form-group">
-                <label class="col-sm-2 control-label">Bean Class:</label>
+                <label class="col-sm-2">Bean Class:</label>
                     <div class="col-sm-10">
                         <p class="form-control-static">{{#link-to 'beanDetail' id}}{{unbound beanClass}}{{/link-to}}</p>
                     </div>
@@ -513,7 +525,7 @@ ${head}
             <form class="form-horizontal">
                 {{#each properties}}
                 <div class="form-group">
-                    <label class="col-sm-2 control-label">{{name}}:</label>
+                    <label class="col-sm-2">{{name}}:</label>
                         <div class="col-sm-10">
                             <p class="form-control-static">{{value}}</p>
                         </div>
@@ -534,7 +546,7 @@ ${head}
             &nbsp;<button {{action 'refreshData'}} class="btn btn-default">Refresh</button>
             <button {{action 'clearFilters'}} class="btn btn-default">Clear filters</button>
             <button {{action 'clearInvocations'}} class="btn btn-default">Clear data</button>
-            <div class="total pull-left">Total: {{total}}</div>
+            <div class="total pull-left">Total found: {{total}}</div>
             <ul class="pagination no-margin pull-left">
             {{#each pages}}
                 <li class="{{unbound active}}">{{#link-to 'invocationList' (query-params page=index)}}{{index}}{{/link-to}}</li>

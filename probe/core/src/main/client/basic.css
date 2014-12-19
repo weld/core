@@ -119,3 +119,7 @@ div.form-group {
 div.total {
   padding: 6px 12px;
 }
+
+.form-control-auto-width {
+  width: auto;
+}
