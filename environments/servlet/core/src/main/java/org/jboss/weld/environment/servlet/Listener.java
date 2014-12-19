@@ -40,19 +40,14 @@ public class Listener extends ForwardingServletListener {
 
     public static final String LISTENER_USED_ATTRIBUTE_NAME = EnhancedListener.class.getPackage().getName() + ".listenerUsed";
 
-    private boolean isEnhancedListenerUsed;
-
-    private WeldServletLifecycle lifecycle;
+    private volatile WeldServletLifecycle lifecycle;
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         ServletContext context = sce.getServletContext();
         lifecycle = (WeldServletLifecycle) context.getAttribute(WeldServletLifecycle.INSTANCE_ATTRIBUTE_NAME);
-        if(lifecycle != null) {
-            isEnhancedListenerUsed = true;
-        }
         context.setAttribute(LISTENER_USED_ATTRIBUTE_NAME, Boolean.TRUE);
-        if (isEnhancedListenerUsed) {
+        if (lifecycle != null) {
             WeldServletLogger.LOG.enhancedListenerUsedForNotifications();
             return;
         }
@@ -64,10 +59,12 @@ public class Listener extends ForwardingServletListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-        if (isEnhancedListenerUsed || lifecycle == null) {
+        super.contextDestroyed(sce);
+        if (lifecycle == null) {
+            // This should never happen
+            WeldServletLogger.LOG.noServletLifecycleToDestroy();
             return;
         }
-        super.contextDestroyed(sce);
         lifecycle.destroy(sce.getServletContext());
     }
 
