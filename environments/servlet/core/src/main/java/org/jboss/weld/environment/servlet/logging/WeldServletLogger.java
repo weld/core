@@ -138,4 +138,8 @@ public interface WeldServletLogger extends WeldEnvironmentLogger {
 
     @Message(id = 1028, value = "Error loading Weld ELContext Listener, check that Weld is on the classpath.")
     IllegalStateException errorLoadingWeldELContextListener(@Cause Throwable cause);
+
+    @LogMessage(level = Level.WARN)
+    @Message(id = 1029, value = "org.jboss.weld.environment.servlet.Listener is in an inconsistent state - Weld Servlet cannot be shut down properly")
+    void noServletLifecycleToDestroy();
 }
