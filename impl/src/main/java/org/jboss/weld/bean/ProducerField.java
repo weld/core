@@ -121,7 +121,7 @@ public class ProducerField<X, T> extends AbstractProducerBean<X, T, Field> {
 
     @Override
     public String toString() {
-        return "Producer Field [" + Formats.formatType(getAnnotated().getBaseType()) + "] with qualifiers [" + Formats.formatAnnotations(getQualifiers()) + "] declared as [" + getAnnotated() + "]";
+        return "Producer Field [" + Formats.formatType(getAnnotated().getBaseType()) + "] with qualifiers [" + Formats.formatAnnotations(getQualifiers()) + "] declared as [" + getAnnotated() + ']';
     }
 
     @Override

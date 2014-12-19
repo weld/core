@@ -52,6 +52,6 @@ public class FixedThreadPoolExecutorServices extends AbstractManagedExecutorServ
 
     @Override
     public String toString() {
-        return "FixedThreadPoolExecutorServices [threadPoolSize=" + threadPoolSize + "]";
+        return "FixedThreadPoolExecutorServices [threadPoolSize=" + threadPoolSize + ']';
     }
 }

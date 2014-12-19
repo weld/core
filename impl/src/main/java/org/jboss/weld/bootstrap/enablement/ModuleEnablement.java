@@ -155,6 +155,6 @@ public class ModuleEnablement {
 
     @Override
     public String toString() {
-        return "ModuleEnablement [interceptors=" + interceptors + ", decorators=" + decorators + ", alternatives=" + getAllAlternatives() + "]";
+        return "ModuleEnablement [interceptors=" + interceptors + ", decorators=" + decorators + ", alternatives=" + getAllAlternatives() + ']';
     }
 }

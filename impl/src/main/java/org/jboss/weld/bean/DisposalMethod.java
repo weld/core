@@ -136,7 +136,7 @@ public class DisposalMethod<X, T> {
 
     @Override
     public String toString() {
-        return "Disposer method [" + getDisposesParameter().getDeclaringCallable() + "]";
+        return "Disposer method [" + getDisposesParameter().getDeclaringCallable() + ']';
     }
 
     public Set<InjectionPoint> getInjectionPoints() {

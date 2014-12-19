@@ -27,7 +27,7 @@ public class BlogFormatter {
     @Produces
     @FormattedBlog(name = "Barry")
     public String format() {
-        return "+" + content + "+";
+        return '+' + content + '+';
     }
 
 }

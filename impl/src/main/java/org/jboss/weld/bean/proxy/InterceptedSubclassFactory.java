@@ -62,7 +62,7 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
     private static final String SUPER_DELEGATE_SUFFIX = "$$super";
 
     private static final String COMBINED_INTERCEPTOR_AND_DECORATOR_STACK_METHOD_HANDLER_CLASS_NAME = CombinedInterceptorAndDecoratorStackMethodHandler.class.getName();
-    private static final String[] INVOKE_METHOD_PARAMETERS = new String[] { makeDescriptor(Stack.class), LJAVA_LANG_OBJECT, LJAVA_LANG_REFLECT_METHOD, LJAVA_LANG_REFLECT_METHOD, "[" + LJAVA_LANG_OBJECT  };
+    private static final String[] INVOKE_METHOD_PARAMETERS = new String[] { makeDescriptor(Stack.class), LJAVA_LANG_OBJECT, LJAVA_LANG_REFLECT_METHOD, LJAVA_LANG_REFLECT_METHOD, '[' + LJAVA_LANG_OBJECT  };
 
     private final Set<MethodSignature> enhancedMethodSignatures;
     private final Set<MethodSignature> interceptedMethodSignatures;
@@ -284,7 +284,7 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
             // get the Stack
             b.invokestatic(InterceptionDecorationContext.class.getName(), "getStack", "()" + DescriptorUtils.makeDescriptor(Stack.class));
             b.dupX1(); // Handler, Stack -> Stack, Handler, Stack
-            b.invokevirtual(COMBINED_INTERCEPTOR_AND_DECORATOR_STACK_METHOD_HANDLER_CLASS_NAME, "isDisabledHandler", "(" + DescriptorUtils.makeDescriptor(Stack.class) + ")" + BytecodeUtils.BOOLEAN_CLASS_DESCRIPTOR);
+            b.invokevirtual(COMBINED_INTERCEPTOR_AND_DECORATOR_STACK_METHOD_HANDLER_CLASS_NAME, "isDisabledHandler", '(' + DescriptorUtils.makeDescriptor(Stack.class) + ')' + BytecodeUtils.BOOLEAN_CLASS_DESCRIPTOR);
 
             b.iconst(0);
             BranchEnd invokeSuperDirectly = b.ifIcmpeq();

@@ -89,6 +89,6 @@ public class ImmutableBeanAttributes<T> implements BeanAttributes<T> {
 
     @Override
     public String toString() {
-        return "BeanAttributes with types [" + Formats.formatTypes(types) + "] and qualifiers [" + Formats.formatAnnotations(getQualifiers()) + "]";
+        return "BeanAttributes with types [" + Formats.formatTypes(types) + "] and qualifiers [" + Formats.formatAnnotations(getQualifiers()) + ']';
     }
 }

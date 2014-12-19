@@ -287,9 +287,9 @@ public class ClientConversationContextTest {
         StringBuilder builder = new StringBuilder(url.toString());
         builder.append(viewId);
         if (cid != null) {
-            builder.append("?");
+            builder.append('?');
             builder.append(CID_REQUEST_PARAMETER_NAME);
-            builder.append("=");
+            builder.append('=');
             builder.append(cid);
         }
         return builder.toString();

@@ -37,6 +37,6 @@ public class TypeDiscoveryConfigurationImpl implements TypeDiscoveryConfiguratio
 
     @Override
     public String toString() {
-        return "TypeDiscoveryConfigurationImpl [beanDefiningAnnotations=" + beanDefiningAnnotations + "]";
+        return "TypeDiscoveryConfigurationImpl [beanDefiningAnnotations=" + beanDefiningAnnotations + ']';
     }
 }

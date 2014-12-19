@@ -8,7 +8,7 @@ public class Utils {
     public static final String BEANS_XML_HEADER =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                     "<beans xmlns=\"http://java.sun.com/xml/ns/javaee\" " +
-                    "xmlns:weld=\"http://jboss.org/schema/weld/beans\"" + ">";
+                    "xmlns:weld=\"http://jboss.org/schema/weld/beans\"" + '>';
 
     public static final String BEANS_XML_FOOTER = "</beans>";
 

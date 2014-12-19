@@ -70,6 +70,6 @@ public class ServletContextService implements Service {
 
     @Override
     public String toString() {
-        return "ServletContextService [" + servletContexts + "]";
+        return "ServletContextService [" + servletContexts + ']';
     }
 }

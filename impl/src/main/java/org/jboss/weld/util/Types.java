@@ -92,14 +92,14 @@ public class Types {
         if (type instanceof ParameterizedType) {
             ParameterizedType pt = (ParameterizedType) type;
             StringBuilder builder = new StringBuilder(getTypeId(pt.getRawType()));
-            builder.append("<");
+            builder.append('<');
             for (int i = 0; i < pt.getActualTypeArguments().length; i++) {
                 if (i > 0) {
-                    builder.append(",");
+                    builder.append(',');
                 }
                 builder.append(getTypeId(pt.getActualTypeArguments()[i]));
             }
-            builder.append(">");
+            builder.append('>');
             return builder.toString();
         }
         if (type instanceof GenericArrayType) {

@@ -82,13 +82,13 @@ public class ParameterizedTypeImpl implements ParameterizedType, Serializable {
         StringBuilder sb = new StringBuilder();
         sb.append(rawType);
         if (actualTypeArguments.length > 0) {
-            sb.append("<");
+            sb.append('<');
             for (Type actualType : actualTypeArguments) {
                 sb.append(actualType);
-                sb.append(",");
+                sb.append(',');
             }
             sb.delete(sb.length() - 1, sb.length());
-            sb.append(">");
+            sb.append('>');
         }
         return sb.toString();
     }

@@ -946,7 +946,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
      */
     @Override
     public String toString() {
-        return "Weld BeanManager for " + getId() + " [bean count=" + getBeans().size() + "]";
+        return "Weld BeanManager for " + getId() + " [bean count=" + getBeans().size() + ']';
     }
 
     @Override

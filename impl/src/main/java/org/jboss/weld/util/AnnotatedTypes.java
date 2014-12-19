@@ -207,7 +207,7 @@ public class AnnotatedTypes {
 
         builder.append(clazz.getName());
         builder.append(createAnnotationCollectionId(annotations));
-        builder.append("{");
+        builder.append('{');
 
         // now deal with the fields
         List<AnnotatedField<? super X>> sortedFields = new ArrayList<AnnotatedField<? super X>>();
@@ -241,7 +241,7 @@ public class AnnotatedTypes {
                 builder.append(SEPARATOR);
             }
         }
-        builder.append("}");
+        builder.append('}');
 
         return builder.toString();
     }
@@ -352,7 +352,7 @@ public class AnnotatedTypes {
 
     public static <X> String createParameterListId(List<AnnotatedParameter<X>> parameters) {
         StringBuilder builder = new StringBuilder();
-        builder.append("(");
+        builder.append('(');
         for (int i = 0; i < parameters.size(); ++i) {
             AnnotatedParameter<X> ap = parameters.get(i);
             builder.append(createParameterId(ap));
@@ -360,7 +360,7 @@ public class AnnotatedTypes {
                 builder.append(',');
             }
         }
-        builder.append(")");
+        builder.append(')');
         return builder.toString();
     }
 

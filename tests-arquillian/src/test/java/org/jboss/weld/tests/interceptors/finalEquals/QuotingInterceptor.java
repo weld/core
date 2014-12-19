@@ -29,6 +29,6 @@ import javax.interceptor.InvocationContext;
 public class QuotingInterceptor {
     @AroundInvoke
     public Object intercept(InvocationContext context) throws Exception {
-        return "\"" + context.proceed() + "\"";
+        return "\"" + context.proceed() + '"';
     }
 }

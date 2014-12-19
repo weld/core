@@ -88,7 +88,7 @@ public class ServletConversationTest {
         {
             TextPage page = client.getPage(getPath("/display", cid));
             assertTrue(page.getContent().contains("message: Hello"));
-            assertTrue(page.getContent().contains("cid: [" + cid + "]"));
+            assertTrue(page.getContent().contains("cid: [" + cid + ']'));
             assertTrue(page.getContent().contains("transient: false"));
         }
 
@@ -96,7 +96,7 @@ public class ServletConversationTest {
         {
             TextPage page = client.getPage(getPath("/set", cid) + "&message=Hi");
             assertTrue(page.getContent().contains("message: Hi"));
-            assertTrue(page.getContent().contains("cid: [" + cid + "]"));
+            assertTrue(page.getContent().contains("cid: [" + cid + ']'));
             assertTrue(page.getContent().contains("transient: false"));
         }
 
@@ -104,7 +104,7 @@ public class ServletConversationTest {
         {
             TextPage page = client.getPage(getPath("/display", cid));
             assertTrue(page.getContent().contains("message: Hi"));
-            assertTrue(page.getContent().contains("cid: [" + cid + "]"));
+            assertTrue(page.getContent().contains("cid: [" + cid + ']'));
             assertTrue(page.getContent().contains("transient: false"));
         }
 
@@ -143,7 +143,7 @@ public class ServletConversationTest {
             TextPage page = getFirstMatchingElement(form, HtmlSubmitInput.class, "submit").click();
 
             assertTrue(page.getContent().contains("message: Hola!"));
-            assertTrue(page.getContent().contains("cid: [" + cid + "]"));
+            assertTrue(page.getContent().contains("cid: [" + cid + ']'));
             assertTrue(page.getContent().contains("transient: false"));
         }
 
@@ -151,7 +151,7 @@ public class ServletConversationTest {
         {
             TextPage page = client.getPage(getPath("/display", cid));
             assertTrue(page.getContent().contains("message: Hola!"));
-            assertTrue(page.getContent().contains("cid: [" + cid + "]"));
+            assertTrue(page.getContent().contains("cid: [" + cid + ']'));
             assertTrue(page.getContent().contains("transient: false"));
         }
     }
@@ -208,12 +208,12 @@ public class ServletConversationTest {
         {
             TextPage page = client.getPage(getPath("/listConversationsDestroyedWhileBeingAssociated", null));
             assertTrue(page.getContent().contains("ConversationsDestroyedWhileBeingAssociated:"));
-            assertTrue(page.getContent().contains("<" + cid1 + ">"));
+            assertTrue(page.getContent().contains('<' + cid1 + '>'));
         }
         {
             TextPage page = client.getPage(getPath("/listConversationsDestroyedWhileBeingDisassociated", null));
             assertTrue(page.getContent().contains("ConversationsDestroyedWhileBeingDisassociated:"));
-            assertTrue(page.getContent().contains("<" + cid2 + ">"));
+            assertTrue(page.getContent().contains('<' + cid2 + '>'));
         }
 
         // Verify that the conversation 1 cannot be associated
@@ -240,9 +240,9 @@ public class ServletConversationTest {
         builder.append("/servlet");
         builder.append(viewId);
         if (cid != null) {
-            builder.append("?");
+            builder.append('?');
             builder.append("cid");
-            builder.append("=");
+            builder.append('=');
             builder.append(cid);
         }
         return builder.toString();

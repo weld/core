@@ -81,7 +81,7 @@ public class Utils {
         if (name.startsWith("/")) {
             name = name.substring(1);
         } else {
-            name = clazz.getPackage().getName().replace(".", "/") + "/" + name;
+            name = clazz.getPackage().getName().replace(".", "/") + '/' + name;
         }
         try {
             return new EnumerationList<>(clazz.getClassLoader().getResources(name));

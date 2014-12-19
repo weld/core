@@ -186,7 +186,7 @@ public class SimpleInvocationContext implements InvocationContext {
 
     private void throwIAE(int i, Class<?> methodParameterClass, Class<?> newArgumentClass) {
         throw new IllegalArgumentException("Incompatible parameter type on position: " + i + " :" + newArgumentClass + " (expected type was "
-                + methodParameterClass.getName() + ")");
+                + methodParameterClass.getName() + ')');
     }
 
     @Override

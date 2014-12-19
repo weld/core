@@ -89,6 +89,6 @@ public class InterceptorMetadataImpl<T> extends AbstractInterceptorMetadata impl
 
     @Override
     public String toString() {
-        return "InterceptorMetadataImpl [javaClass=" + javaClass + "]";
+        return "InterceptorMetadataImpl [javaClass=" + javaClass + ']';
     }
 }

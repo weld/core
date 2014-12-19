@@ -118,7 +118,7 @@ public class ClientProxyFactory<T> extends ProxyFactory<T> {
         b.aload(0);
         b.getfield(proxyClassType.getName(), BEAN_ID_FIELD, BeanIdentifier.class);
         b.ldc(getContextId());
-        b.invokespecial(SerializableClientProxy.class.getName(), INIT_METHOD_NAME, "(" + LBEAN_IDENTIFIER + LJAVA_LANG_STRING + ")" + BytecodeUtils.VOID_CLASS_DESCRIPTOR);
+        b.invokespecial(SerializableClientProxy.class.getName(), INIT_METHOD_NAME, '(' + LBEAN_IDENTIFIER + LJAVA_LANG_STRING + ')' + BytecodeUtils.VOID_CLASS_DESCRIPTOR);
         b.returnInstruction();
     }
 

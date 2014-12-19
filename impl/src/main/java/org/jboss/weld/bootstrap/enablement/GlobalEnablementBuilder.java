@@ -104,7 +104,7 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
 
         @Override
         public String toString() {
-            return "[Class=" + javaClass + ", priority=" + priority + "]";
+            return "[Class=" + javaClass + ", priority=" + priority + ']';
         }
     }
 
@@ -264,7 +264,7 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
 
     @Override
     public String toString() {
-        return "GlobalEnablementBuilder [alternatives=" + alternatives + ", interceptors=" + interceptors + ", decorators=" + decorators + "]";
+        return "GlobalEnablementBuilder [alternatives=" + alternatives + ", interceptors=" + interceptors + ", decorators=" + decorators + ']';
     }
 
     private <T> void checkForDuplicates(List<Metadata<T>> list, MessageCallback<DeploymentException> messageCallback) {

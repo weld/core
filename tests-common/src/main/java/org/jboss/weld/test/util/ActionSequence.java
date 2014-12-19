@@ -142,7 +142,7 @@ public final class ActionSequence {
             String actionId = iterator.next();
             csv.append(actionId);
             if (iterator.hasNext()) {
-                csv.append(",");
+                csv.append(',');
             }
         }
         return csv.toString();

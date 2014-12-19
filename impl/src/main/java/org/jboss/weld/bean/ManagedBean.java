@@ -251,7 +251,7 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
 
     @Override
     public String toString() {
-        return "Managed Bean [" + getBeanClass().toString() + "] with qualifiers [" + Formats.formatAnnotations(getQualifiers()) + "]";
+        return "Managed Bean [" + getBeanClass().toString() + "] with qualifiers [" + Formats.formatAnnotations(getQualifiers()) + ']';
     }
 
     @Override

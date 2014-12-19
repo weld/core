@@ -43,7 +43,7 @@ public class CustomInterceptorMetadata<T> implements InterceptorClassMetadata<T>
 
     @Override
     public String toString() {
-        return "CustomInterceptorMetadata [" + getJavaClass().getName() + "]";
+        return "CustomInterceptorMetadata [" + getJavaClass().getName() + ']';
     }
 
     @Override

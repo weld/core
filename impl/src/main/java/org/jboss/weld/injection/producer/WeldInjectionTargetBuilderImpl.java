@@ -109,7 +109,7 @@ public class WeldInjectionTargetBuilderImpl<T> implements WeldInjectionTargetBui
         } else if (interceptorsEnabled && decorationEnabled) {
             return new BeanInjectionTarget<T>(type, bean, manager, injector, invoker);
         }
-        throw new IllegalStateException("Unsupported combination: [interceptorsEnabled=" + interceptorsEnabled + ", decorationEnabled=" + decorationEnabled + "]");
+        throw new IllegalStateException("Unsupported combination: [interceptorsEnabled=" + interceptorsEnabled + ", decorationEnabled=" + decorationEnabled + ']');
     }
 
     private Injector<T> buildInjector() {

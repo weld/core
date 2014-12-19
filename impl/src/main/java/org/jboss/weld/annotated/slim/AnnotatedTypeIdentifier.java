@@ -150,7 +150,7 @@ public class AnnotatedTypeIdentifier implements Identifier {
     @Override
     public String toString() {
         return "AnnotatedTypeIdentifier [contextId=" + contextId + ", bdaId=" + bdaId + ", className=" + className + ", suffix=" + suffix + ", modified="
-                + modified + "]";
+                + modified + ']';
     }
 
 

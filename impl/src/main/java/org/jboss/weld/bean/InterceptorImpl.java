@@ -140,6 +140,6 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
 
     @Override
     public String toString() {
-        return "Interceptor [" + getBeanClass() + " intercepts " + Formats.formatAnnotations(getInterceptorBindings()) + "]";
+        return "Interceptor [" + getBeanClass() + " intercepts " + Formats.formatAnnotations(getInterceptorBindings()) + ']';
     }
 }

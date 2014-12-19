@@ -31,7 +31,7 @@ import org.jboss.weld.annotated.slim.unbacked.UnbackedAnnotatedType;
 
 public class FooExtension implements Extension {
 
-    public static final String FOO_ID = FooExtension.class.getName() + "." + Foo.class.getName();
+    public static final String FOO_ID = FooExtension.class.getName() + '.' + Foo.class.getName();
 
     void registerAnotherFoo(@Observes BeforeBeanDiscovery event, BeanManager manager) {
         event.addAnnotatedType(manager.createAnnotatedType(Foo.class), FOO_ID);
