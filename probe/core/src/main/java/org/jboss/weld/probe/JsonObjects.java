@@ -73,7 +73,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.enterprise.context.ContextNotActiveException;
@@ -111,6 +110,13 @@ import org.jboss.weld.util.reflection.Formats;
  */
 final class JsonObjects {
 
+    private static final Comparator<BeanDeploymentArchive> bdaComparator = new Comparator<BeanDeploymentArchive>() {
+        @Override
+        public int compare(BeanDeploymentArchive o1, BeanDeploymentArchive o2) {
+            return o1.getId().compareTo(o2.getId());
+        }
+    };
+
     private JsonObjects() {
     }
 
@@ -132,14 +138,16 @@ final class JsonObjects {
         Map<BeanDeploymentArchive, BeanManagerImpl> beanDeploymentArchivesMap = Container.instance(beanManager).beanDeploymentArchives();
         JsonObjectBuilder deploymentBuilder = Json.newObjectBuilder();
 
-        JsonArrayBuilder bdasBuilder = Json.newArrayBuilder();
         // BEAN DEPLOYMENT ARCHIVES
-        for (Entry<BeanDeploymentArchive, BeanManagerImpl> entry : beanDeploymentArchivesMap.entrySet()) {
+        JsonArrayBuilder bdasBuilder = Json.newArrayBuilder();
+        List<BeanDeploymentArchive> bdas = new ArrayList<BeanDeploymentArchive>(beanDeploymentArchivesMap.keySet());
+        Collections.sort(bdas, bdaComparator);
+        for (BeanDeploymentArchive bda : bdas) {
             JsonObjectBuilder bdaBuilder = Json.newObjectBuilder();
-            String id = entry.getKey().getId();
+            String id = bda.getId();
             bdaBuilder.add(BDA_ID, id);
             bdaBuilder.add(ID, Components.getId(id));
-            BeansXml beansXml = entry.getKey().getBeansXml();
+            BeansXml beansXml = bda.getBeansXml();
             if (beansXml != null) {
                 bdaBuilder.add(BEAN_DISCOVERY_MODE, beansXml.getBeanDiscoveryMode().toString());
             }
@@ -147,8 +155,8 @@ final class JsonObjects {
         }
         deploymentBuilder.add(BDAS, bdasBuilder);
 
-        JsonArrayBuilder configBuilder = Json.newArrayBuilder();
         // CONFIGURATION
+        JsonArrayBuilder configBuilder = Json.newArrayBuilder();
         WeldConfiguration configuration = beanManager.getServices().get(WeldConfiguration.class);
         for (ConfigurationKey key : ConfigurationKey.values()) {
             Object defaultValue = key.getDefaultValue();
@@ -260,13 +268,13 @@ final class JsonObjects {
             if (producerBean.getProducer() instanceof ProducerMethodProducer) {
                 ProducerMethodProducer<?, ?> producer = (ProducerMethodProducer<?, ?>) producerBean.getProducer();
                 if (producer.getDisposalMethod() != null) {
-                    beanBuilder.add(DISPOSAL_METHOD, producer.getDisposalMethod().getAnnotated().getJavaMember().toGenericString());
+                    beanBuilder.add(DISPOSAL_METHOD, annotatedMethodToString(producer.getDisposalMethod().getAnnotated(), bean.getBeanClass()));
                 }
-                beanBuilder.add(PRODUCER_METHOD, ((AnnotatedMethod<?>) producer.getAnnotated()).getJavaMember().toGenericString());
+                beanBuilder.add(PRODUCER_METHOD, annotatedMethodToString((AnnotatedMethod<?>) producer.getAnnotated(), bean.getBeanClass()));
             } else if (producerBean.getProducer() instanceof ProducerFieldProducer) {
                 ProducerFieldProducer<?, ?> producer = (ProducerFieldProducer<?, ?>) producerBean.getProducer();
                 if (producer.getDisposalMethod() != null) {
-                    beanBuilder.add(DISPOSAL_METHOD, producer.getDisposalMethod().getAnnotated().getJavaMember().toGenericString());
+                    beanBuilder.add(DISPOSAL_METHOD, annotatedMethodToString(producer.getDisposalMethod().getAnnotated(), bean.getBeanClass()));
                 }
                 beanBuilder.add(PRODUCER_FIELD, producer.getAnnotated().getJavaMember().toGenericString());
             }
@@ -290,8 +298,7 @@ final class JsonObjects {
                     JsonObjectBuilder observerBuilder = createSimpleObserverJson(observerMethodImpl, probe);
                     observerBuilder.add(RECEPTION, observerMethodImpl.getReception().toString());
                     observerBuilder.add(TX_PHASE, observerMethodImpl.getTransactionPhase().toString());
-                    // observerBuilder.add(ANNOTATED_METHOD,
-                    // observerMethodImpl.getMethod().getAnnotated().getJavaMember().toGenericString())
+                    // observerBuilder.add(ANNOTATED_METHOD, annotatedMethodToString(observerMethodImpl.getMethod().getAnnotated(), bean.getBeanClass()));
                     declaredObservers.add(observerBuilder);
                 }
             }
@@ -310,7 +317,7 @@ final class JsonObjects {
                     JsonObjectBuilder producerBuilder = createSimpleBeanJson(candidate, probe);
                     if (producerBean.getProducer() instanceof ProducerMethodProducer) {
                         ProducerMethodProducer<?, ?> producer = (ProducerMethodProducer<?, ?>) producerBean.getProducer();
-                        producerBuilder.add(PRODUCER_INFO, ((AnnotatedMethod<?>) producer.getAnnotated()).getJavaMember().toGenericString());
+                        producerBuilder.add(PRODUCER_INFO, annotatedMethodToString((AnnotatedMethod<?>) producer.getAnnotated(), bean.getBeanClass()));
                     } else if (producerBean.getProducer() instanceof ProducerFieldProducer) {
                         ProducerFieldProducer<?, ?> producer = (ProducerFieldProducer<?, ?>) producerBean.getProducer();
                         producerBuilder.add(PRODUCER_INFO, producer.getAnnotated().getJavaMember().toGenericString());
@@ -476,7 +483,7 @@ final class JsonObjects {
         JsonObjectBuilder observerBuilder = createBasicObserverJson(observerMethod, probe);
         if (observerMethod instanceof ObserverMethodImpl) {
             ObserverMethodImpl<?, ?> observerMethodImpl = (ObserverMethodImpl<?, ?>) observerMethod;
-            observerBuilder.add(ANNOTATED_METHOD, observerMethodImpl.getMethod().getAnnotated().getJavaMember().toGenericString());
+            observerBuilder.add(ANNOTATED_METHOD, annotatedMethodToString(observerMethodImpl.getMethod().getAnnotated(), observerMethodImpl.getBeanClass()));
         }
         return observerBuilder.build();
     }
@@ -627,6 +634,22 @@ final class JsonObjects {
 
     static String createPageJson(Page<?> page, JsonArrayBuilder data) {
         return Json.newObjectBuilder().add(PAGE, page.getIdx()).add(LAST_PAGE, page.getLastIdx()).add(TOTAL, page.getTotal()).add(DATA, data).build();
+    }
+
+    static String annotatedMethodToString(AnnotatedMethod<?> method, Class<?> beanClass) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(Formats.addSpaceIfNeeded(Formats.formatAnnotations(method.getAnnotations())));
+        builder.append(Formats.formatModifiers(method.getJavaMember().getModifiers()));
+        builder.append(' ');
+        builder.append(method.getJavaMember().getReturnType().getName());
+        builder.append(' ');
+        if (!beanClass.getName().equals(method.getDeclaringType().getJavaClass().getName())) {
+            builder.append(method.getDeclaringType().getJavaClass().getName());
+            builder.append('.');
+        }
+        builder.append(method.getJavaMember().getName());
+        builder.append(Formats.formatAsFormalParameterList(method.getParameters()));
+        return builder.toString();
     }
 
 }

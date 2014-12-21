@@ -187,10 +187,14 @@ Probe.ObserverListRoute = Ember.Route
         txPhase : {
           refreshModel : true
         },
+        kind : {
+          refreshModel : true
+        },
       },
       setupController : function(controller, model) {
         this._super(controller, model);
         controller.set("pages", buildPages(model.page, model.lastPage));
+        controller.set("cache", cache);
       },
       model : function(params) {
         var query = '', filters = '', page = '';
@@ -207,6 +211,13 @@ Probe.ObserverListRoute = Ember.Route
             if (reception == params.reception) {
               filters = appendToFilters(filters, 'reception',
                   reception);
+            }
+          });
+        }
+        if (params.kind) {
+          beanKinds.forEach(function(kind) {
+            if (kind == params.kind) {
+              filters = appendToFilters(filters, 'kind', kind);
             }
           });
         }
@@ -382,6 +393,7 @@ Probe.ObserverListController = Ember.ObjectController.extend({
     this.set('initialized', true);
     this.set('receptions', receptions);
     this.set('txPhases', txPhases);
+    this.set('beanKinds', beanKinds);
   },
   observedType : '',
   beanClass : '',
@@ -389,15 +401,17 @@ Probe.ObserverListController = Ember.ObjectController.extend({
   txPhase : null,
   qualifier : '',
   declaringBean : '',
+  kind : null,
   page : 1,
   queryParams : [ 'observedType', 'beanClass', 'reception', 'txPhase',
-      'declaringBean', 'qualifier', 'page' ],
+      'declaringBean', 'qualifier', 'page', 'kind' ],
   actions : {
     clearFilters : function() {
       this.set('observedType', '');
       this.set('beanClass', '');
       this.set('reception', null);
       this.set('txPhase', null);
+      this.set('kind', null);
       this.set('declaringBean', '');
       this.set('qualifier', '');
       this.send("refreshData");
@@ -435,6 +449,20 @@ Probe.InvocationDetailController = Ember.ObjectController.extend({});
 
 Ember.Handlebars.registerBoundHelper('increment', function(integer) {
   return integer + 1;
+});
+
+Ember.Handlebars.registerBoundHelper('at', function() {
+  return '@';
+});
+
+Ember.Handlebars.registerBoundHelper('substr', function(text, limit) {
+  if (text.length > limit) {
+    var start = text.length - limit - 3;
+    var end = text.length;
+    return '...' + text.substring(start, end);
+  } else {
+    return text;
+  }
 });
 
 Ember.Handlebars.registerBoundHelper('eachItemOnNewLine', function(items,

@@ -219,7 +219,7 @@ ${head}
                             {{#each qualifiers}}
                             <p class="form-control-static">{{this}}</p>
                             {{/each}}
-                            <span class="help-block">javax.enterprise.inject.Any</span>
+                            <span class="help-block">{{at}}Any</span>
                         </div>
                     </div>
                     {{#if stereotypes}}
@@ -353,6 +353,7 @@ ${head}
         <table class="table table-bordered table-striped">
             <tr>
                 <th></th>
+                <th>Declaring Bean Kind {{view 'select' content=beanKinds value=kind prompt="-- ANY --" class="form-control"}}</th>
                 <th>
                     Declaring Bean (or Bean Class if N/A)
                     <form {{action "filter" on="submit"}}>
@@ -377,15 +378,16 @@ ${head}
             {{#each data}}
             <tr>
                 <td>{{increment _view.contentIndex}}</td>
+                <td>{{#if declaringBean}}<span class="{{unbound declaringBean.kind}} boxed">{{unbound declaringBean.kind}}</span>{{/if}}</td>
                 <td>
                     {{#if declaringBean}}
-                        {{#link-to 'beanDetail' declaringBean.id}}{{unbound declaringBean.beanClass}}{{/link-to}}
+                        {{#link-to 'beanDetail' declaringBean.id}}{{substr declaringBean.beanClass 60}}{{/link-to}}
                     {{else}}
                         {{unbound beanClass}}
                     {{/if}}
                 </td>
                 <td>
-                    {{#link-to 'observerDetail' id}}{{unbound observedType}}{{/link-to}}
+                    {{#link-to 'observerDetail' id}}{{substr observedType 60}}{{/link-to}}
                 </td>
                 <td>
                     {{eachItemOnNewLine qualifiers}}
@@ -439,7 +441,6 @@ ${head}
                             {{#each qualifiers}}
                             <p class="form-control-static">{{this}}</p>
                             {{/each}}
-                            <span class="help-block">javax.enterprise.inject.Any</span>
                         </div>
                     </div>
                     {{/if}}

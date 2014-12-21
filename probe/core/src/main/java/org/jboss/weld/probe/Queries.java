@@ -37,6 +37,7 @@ import javax.enterprise.event.TransactionPhase;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.ObserverMethod;
 
+import org.jboss.weld.event.ObserverMethodImpl;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.probe.Components.BeanKind;
 
@@ -267,12 +268,24 @@ final class Queries {
 
         private TransactionPhase txPhase;
 
+        private BeanKind declaringBeanKind;
+
         ObserverFilters(Probe probe) {
             super(probe);
         }
 
         @Override
         boolean test(ObserverMethod<?> observer) {
+            if (declaringBeanKind != null) {
+                if (observer instanceof ObserverMethodImpl) {
+                    ObserverMethodImpl<?, ?> observerMethodImpl = (ObserverMethodImpl<?, ?>) observer;
+                    if (!declaringBeanKind.equals(BeanKind.from(observerMethodImpl.getDeclaringBean()))) {
+                        return false;
+                    }
+                } else {
+                    return false;
+                }
+            }
             return testEquals(reception, observer.getReception()) && testEquals(txPhase, observer.getTransactionPhase())
                     && testContainsIgnoreCase(beanClass, observer.getBeanClass()) && testContainsIgnoreCase(observedType, observer.getObservedType())
                     && testAnyContains(qualifier, observer.getObservedQualifiers());
@@ -280,7 +293,9 @@ final class Queries {
 
         @Override
         void processFilter(String name, String value) {
-            if (BEAN_CLASS.equals(name)) {
+            if (KIND.equals(name)) {
+                declaringBeanKind = BeanKind.from(value);
+            } else if (BEAN_CLASS.equals(name)) {
                 beanClass = value;
             } else if (OBSERVED_TYPE.equals(name)) {
                 observedType = value;

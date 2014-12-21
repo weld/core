@@ -136,7 +136,10 @@ public class Probe implements Service {
                         putBean(id, bean);
                     }
                 } else {
-                    putBean(contextualStore, manager, bean);
+                    if (manager.isBeanEnabled(bean)) {
+                        // Make sure the bean is truly enabled
+                        putBean(contextualStore, manager, bean);
+                    }
                 }
             }
             for (Interceptor<?> interceptor : manager.getInterceptors()) {
