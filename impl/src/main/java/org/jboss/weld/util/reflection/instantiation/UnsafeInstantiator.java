@@ -47,7 +47,7 @@ public class UnsafeInstantiator implements Instantiator {
             Field accessor = AccessController.doPrivileged(new GetDeclaredFieldAction(unsafe, "theUnsafe"));
             AccessController.doPrivileged(SetAccessibleAction.of(accessor));
             unsafeInstance = accessor.get(null);
-            allocateInstanceMethod = AccessController.doPrivileged(new GetDeclaredMethodAction(unsafe, "allocateInstance", Class.class));
+            allocateInstanceMethod = AccessController.doPrivileged(GetDeclaredMethodAction.of(unsafe, "allocateInstance", Class.class));
         } catch (Exception e) {
             // OK to fail
         }

@@ -17,12 +17,24 @@
 package org.jboss.weld.security;
 
 import java.lang.reflect.Method;
+import java.security.PrivilegedAction;
 import java.security.PrivilegedExceptionAction;
 
-public class GetDeclaredMethodAction extends AbstractReflectionAction implements PrivilegedExceptionAction<Method> {
+import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.logging.ReflectionLogger;
 
-    public static GetDeclaredMethodAction of(Class<?> javaClass, String methodName, Class<?>... parameterTypes) {
-        return new GetDeclaredMethodAction(javaClass, methodName, parameterTypes);
+public abstract class GetDeclaredMethodAction extends AbstractReflectionAction {
+
+    public static PrivilegedExceptionAction<Method> of(Class<?> javaClass, String methodName, Class<?>... parameterTypes) {
+        return new ExceptionAction(javaClass, methodName, parameterTypes);
+    }
+
+    /**
+     * Returns {@link PrivilegedAction} instead of {@link PrivilegedExceptionAction}. If {@link NoSuchMethodException} is thrown
+     * it is wrapped within {@link WeldException} using {@link ReflectionLogger#noSuchMethodWrapper(NoSuchMethodException, String)}.
+     */
+    public static PrivilegedAction<Method> wrapException(Class<?> javaClass, String methodName, Class<?>... parameterTypes) {
+        return new WrappingAction(javaClass, methodName, parameterTypes);
     }
 
     protected final String methodName;
@@ -34,8 +46,29 @@ public class GetDeclaredMethodAction extends AbstractReflectionAction implements
         this.parameterTypes = parameterTypes;
     }
 
-    @Override
     public Method run() throws NoSuchMethodException {
         return javaClass.getDeclaredMethod(methodName, parameterTypes);
+    }
+
+    private static class ExceptionAction extends GetDeclaredMethodAction implements PrivilegedExceptionAction<Method> {
+        public ExceptionAction(Class<?> javaClass, String methodName, Class<?>[] parameterTypes) {
+            super(javaClass, methodName, parameterTypes);
+        }
+    }
+
+    private static class WrappingAction extends GetDeclaredMethodAction implements PrivilegedAction<Method> {
+
+        public WrappingAction(Class<?> javaClass, String methodName, Class<?>[] parameterTypes) {
+            super(javaClass, methodName, parameterTypes);
+        }
+
+        @Override
+        public Method run() {
+            try {
+                return super.run();
+            } catch (NoSuchMethodException e) {
+                throw ReflectionLogger.LOG.noSuchMethodWrapper(e, e.getMessage());
+            }
+        }
     }
 }
