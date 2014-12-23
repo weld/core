@@ -274,7 +274,7 @@ public class DecoratorProxyFactory<T> extends ProxyFactory<T> {
                 // and store it in the array
                 code.aastore();
             }
-            code.invokestatic(GetDeclaredMethodAction.class.getName(), "of", "(Ljava/lang/Class;Ljava/lang/String;[Ljava/lang/Class;)Lorg/jboss/weld/security/GetDeclaredMethodAction;");
+            code.invokestatic(GetDeclaredMethodAction.class.getName(), "wrapException", "(Ljava/lang/Class;Ljava/lang/String;[Ljava/lang/Class;)Ljava/security/PrivilegedAction;");
             code.invokestatic(AccessController.class.getName(), "doPrivileged", "(Ljava/security/PrivilegedAction;)Ljava/lang/Object;");
             code.checkcast(Method.class);
         }

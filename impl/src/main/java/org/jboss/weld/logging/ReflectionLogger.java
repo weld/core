@@ -144,4 +144,7 @@ public interface ReflectionLogger extends WeldLogger {
     @Message(id = 624, value = "Invalid type argument combination: {0}; {1}.", format = Format.MESSAGE_FORMAT)
     IllegalArgumentException invalidTypeArgumentCombination(Type type1, Type type2);
 
+    @Message(id = 625, value = "Unable to locate method: {0}", format = Format.MESSAGE_FORMAT)
+    WeldException noSuchMethodWrapper(@Cause NoSuchMethodException cause, String message);
+
 }
