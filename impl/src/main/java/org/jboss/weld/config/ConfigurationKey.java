@@ -108,6 +108,11 @@ public enum ConfigurationKey {
      */
     INJECTABLE_REFERENCE_OPTIMIZATION("org.jboss.weld.injection.injectableReferenceOptimization", false),
 
+    /**
+     * A regular expression - bean class matching this pattern is excluded from monitoring.
+     */
+    PROBE_INVOCATION_MONITOR_EXCLUDE("org.jboss.weld.probe.invocationMonitorExclude", ""),
+
     ;
 
     /**

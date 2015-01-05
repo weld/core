@@ -54,4 +54,7 @@ public interface ProbeLogger extends BasicLogger {
     @Message(id = 5, value = "Probe is not properly initialized")
     IllegalStateException probeNotInitialized();
 
+    @LogMessage(level = Level.DEBUG)
+    @Message(id = 6, value = "{0} is excluded from monitoring", format = Format.MESSAGE_FORMAT)
+    void invocationMonitorNotAssociated(Object beanClass);
 }

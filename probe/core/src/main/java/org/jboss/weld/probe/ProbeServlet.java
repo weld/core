@@ -80,6 +80,8 @@ public class ProbeServlet extends HttpServlet {
 
     private static final int DEFAULT_BUFFER = 1024 * 8;
 
+    private static final String PATH_META_INF_CLIENT = "/META-INF/client/";
+
     private static final long serialVersionUID = -881168492978480911L;
 
     @Inject
@@ -312,7 +314,7 @@ public class ProbeServlet extends HttpServlet {
         StringWriter writer = new StringWriter();
         BufferedReader reader = null;
         try {
-            InputStream in = ProbeServlet.class.getResourceAsStream("/META-INF/client/" + resourceName);
+            InputStream in = ProbeServlet.class.getResourceAsStream(PATH_META_INF_CLIENT + resourceName);
             if (in == null) {
                 return null;
             }
@@ -340,7 +342,7 @@ public class ProbeServlet extends HttpServlet {
     }
 
     private boolean writeResource(String resourceName, OutputStream out) {
-        InputStream in = ProbeServlet.class.getResourceAsStream("/META-INF/client/" + resourceName);
+        InputStream in = ProbeServlet.class.getResourceAsStream(PATH_META_INF_CLIENT + resourceName);
         if (in == null) {
             return false;
         }

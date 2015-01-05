@@ -16,9 +16,9 @@ ${head}
             <ul class="nav nav-pills" role="tablist">
                 <li>{{#link-to 'deployment'}}Deployment{{/link-to}}</li>
                 <li>{{#link-to 'beanList'}}Beans{{/link-to}}</li>
-                <li>{{#link-to 'observerList'}}Observer methods{{/link-to}}</li>
+                <li>{{#link-to 'observerList'}}Observer Methods{{/link-to}}</li>
                 <li>{{#link-to 'contexts'}}Contexts{{/link-to}}</li>
-                <li>{{#link-to 'invocationList'}}Invocation trees{{/link-to}}</li>
+                <li>{{#link-to 'invocationList'}}Invocation Trees{{/link-to}}</li>
             </ul>
         </div>
         {{outlet}}
@@ -159,7 +159,7 @@ ${head}
         type="text/x-handlebars"
         data-template-name="beanDetail">
 
-        <h2>Bean detail</h2>
+        <h2>Bean Detail</h2>
 
         <div class="panel panel-default">
             <div class="panel-body">
@@ -313,7 +313,7 @@ ${head}
             </div>
         </div>
 
-        <h3>Dependency graph</h3>
+        <h3>Dependency Graph</h3>
         <div>
             <label>
                 {{input type="checkbox" name="transientDependencies" checked=transientDependencies}} Transient dependencies
@@ -338,7 +338,7 @@ ${head}
         type="text/x-handlebars"
         data-template-name="observerList">
 
-        <h2>Observer methods</h2>
+        <h2>Observer Methods</h2>
 
         <div class="btn-line">
             &nbsp;<button {{action 'clearFilters'}} class="btn btn-default">Clear filters</button>
@@ -408,7 +408,7 @@ ${head}
         type="text/x-handlebars"
         data-template-name="observerDetail">
 
-        <h2>Observer method detail</h2>
+        <h2>Observer Method Detail</h2>
 
         <div class="panel panel-default">
             <div class="panel-body">
@@ -504,7 +504,7 @@ ${head}
       type="text/x-handlebars"
       data-template-name="contextInstance">
 
-      <h2>Context instance</h2>
+      <h2>Context Instance</h2>
 
       <div class="panel panel-default">
         <div class="panel-body">

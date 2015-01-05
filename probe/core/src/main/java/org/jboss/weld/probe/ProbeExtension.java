@@ -21,6 +21,7 @@ import java.lang.reflect.AnnotatedType;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import javax.decorator.Decorator;
 import javax.enterprise.event.Observes;
@@ -32,6 +33,9 @@ import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessBeanAttributes;
 import javax.interceptor.Interceptor;
 
+import org.jboss.weld.config.ConfigurationKey;
+import org.jboss.weld.config.WeldConfiguration;
+import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.util.bean.ForwardingBeanAttributes;
 import org.jboss.weld.util.collections.ImmutableSet;
 
@@ -47,10 +51,15 @@ import org.jboss.weld.util.collections.ImmutableSet;
  */
 public class ProbeExtension implements Extension {
 
+    private volatile Pattern invocationMonitorExcludePattern;
+
     public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery event, BeanManager beanManager) {
         event.addAnnotatedType(beanManager.createAnnotatedType(Monitored.class), Monitored.class.getName());
         event.addAnnotatedType(beanManager.createAnnotatedType(MonitoredComponent.class), MonitoredComponent.class.getName());
         event.addAnnotatedType(beanManager.createAnnotatedType(InvocationMonitor.class), InvocationMonitor.class.getName());
+        WeldManager weldManager = (WeldManager) beanManager;
+        String exclude = weldManager.getServices().get(WeldConfiguration.class).getStringProperty(ConfigurationKey.PROBE_INVOCATION_MONITOR_EXCLUDE);
+        invocationMonitorExcludePattern = exclude.isEmpty() ? null : Pattern.compile(exclude);
     }
 
     public <T> void processBeanAttributes(@Observes ProcessBeanAttributes<T> event) {
@@ -78,8 +87,13 @@ public class ProbeExtension implements Extension {
         Type baseType = annotated.getBaseType();
         if (baseType instanceof Class) {
             Class<?> beanClass = (Class<?>) baseType;
+
             if (Modifier.isFinal(beanClass.getModifiers())) {
                 // Final classes may not have an interceptor
+                return false;
+            }
+            if (invocationMonitorExcludePattern != null && invocationMonitorExcludePattern.matcher(beanClass.getName()).matches()) {
+                ProbeLogger.LOG.invocationMonitorNotAssociated(beanClass.getName());
                 return false;
             }
         }

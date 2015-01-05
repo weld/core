@@ -79,6 +79,7 @@ import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Default;
+import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.ObserverMethod;
@@ -276,7 +277,7 @@ final class JsonObjects {
                 if (producer.getDisposalMethod() != null) {
                     beanBuilder.add(DISPOSAL_METHOD, annotatedMethodToString(producer.getDisposalMethod().getAnnotated(), bean.getBeanClass()));
                 }
-                beanBuilder.add(PRODUCER_FIELD, producer.getAnnotated().getJavaMember().toGenericString());
+                beanBuilder.add(PRODUCER_FIELD, annotatedFieldToString(producer.getAnnotated(), bean.getBeanClass()));
             }
         }
         // DEPENDENCIES
@@ -320,7 +321,7 @@ final class JsonObjects {
                         producerBuilder.add(PRODUCER_INFO, annotatedMethodToString((AnnotatedMethod<?>) producer.getAnnotated(), bean.getBeanClass()));
                     } else if (producerBean.getProducer() instanceof ProducerFieldProducer) {
                         ProducerFieldProducer<?, ?> producer = (ProducerFieldProducer<?, ?>) producerBean.getProducer();
-                        producerBuilder.add(PRODUCER_INFO, producer.getAnnotated().getJavaMember().toGenericString());
+                        producerBuilder.add(PRODUCER_INFO, annotatedFieldToString(producer.getAnnotated(), bean.getBeanClass()));
                     }
                     declaredProducers.add(producerBuilder);
                 }
@@ -649,6 +650,21 @@ final class JsonObjects {
         }
         builder.append(method.getJavaMember().getName());
         builder.append(Formats.formatAsFormalParameterList(method.getParameters()));
+        return builder.toString();
+    }
+
+    static String annotatedFieldToString(AnnotatedField<?> field, Class<?> beanClass) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(Formats.addSpaceIfNeeded(Formats.formatAnnotations(field.getAnnotations())));
+        builder.append(Formats.formatModifiers(field.getJavaMember().getModifiers()));
+        builder.append(' ');
+        builder.append(field.getJavaMember().getType().getName());
+        builder.append(' ');
+        if (!beanClass.getName().equals(field.getDeclaringType().getJavaClass().getName())) {
+            builder.append(field.getDeclaringType().getJavaClass().getName());
+            builder.append('.');
+        }
+        builder.append(field.getJavaMember().getName());
         return builder.toString();
     }
 
