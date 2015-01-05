@@ -117,6 +117,7 @@ public class ProbeServlet extends HttpServlet {
             }
 
             String contentType = detectContentType(resourceName);
+            setHeaders(resp, contentType);
 
             if (IMG_PNG.equals(contentType)) {
                 if (!writeResource(resourceName, resp.getOutputStream())) {
@@ -131,12 +132,12 @@ public class ProbeServlet extends HttpServlet {
                 content = content.replace("${contextPath}", req.getContextPath() + req.getServletPath() + SLASH);
                 resp.getWriter().append(content);
             }
-            setHeaders(resp, contentType);
-
             // Originally, some API info was provided by the root resource
             // resp.getWriter().append(JsonObjects.createRootJson());
 
         } else {
+
+            setHeaders(resp, resourcePath);
 
             if (DEPLOYMENT.equals(resourcePath)) {
                 // Deployment info
@@ -216,7 +217,6 @@ public class ProbeServlet extends HttpServlet {
             } else {
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND);
             }
-            setHeaders(resp, resourcePath);
         }
     }
 
