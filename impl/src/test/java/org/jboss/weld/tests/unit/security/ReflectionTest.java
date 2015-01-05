@@ -118,13 +118,13 @@ public class ReflectionTest {
 
     @Test
     public void testGetDeclaredMethod() throws PrivilegedActionException {
-        Assert.assertNotNull(AccessController.doPrivileged(new GetDeclaredMethodAction(TestObject.class, "publicTest", new Class<?>[]{String.class})));
+        Assert.assertNotNull(AccessController.doPrivileged(GetDeclaredMethodAction.of(TestObject.class, "publicTest", new Class<?>[]{String.class})));
     }
 
     @Test(expected = NoSuchMethodException.class)
     public void testGetDeclaredMethodNotFound() throws Throwable {
         try {
-            AccessController.doPrivileged(new GetDeclaredMethodAction(TestObject.class, "xpublicTest", new Class<?>[]{String.class}));
+            AccessController.doPrivileged(GetDeclaredMethodAction.of(TestObject.class, "xpublicTest", new Class<?>[]{String.class}));
         } catch (PrivilegedActionException e) {
             throw e.getCause();
         }
