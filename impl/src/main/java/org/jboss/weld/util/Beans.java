@@ -26,6 +26,7 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+import java.lang.reflect.WildcardType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -76,12 +77,13 @@ import org.jboss.weld.bootstrap.enablement.ModuleEnablement;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.ejb.spi.BusinessInterfaceDescriptor;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
-import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.FieldInjectionPoint;
+import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.ResourceInjection;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
 import org.jboss.weld.interceptor.util.InterceptionTypeRegistry;
 import org.jboss.weld.logging.BeanLogger;
+import org.jboss.weld.logging.MetadataLogger;
 import org.jboss.weld.logging.UtilLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.InterceptorBindingModel;
@@ -430,7 +432,9 @@ public class Beans {
     }
 
     /**
-     * Bean types from an annotated element
+     * Illegal bean types are ignored except fo array and primitive types and unless {@link Typed} is used.
+     *
+     * @return the set of bean types from an annotated element
      */
     public static Set<Type> getTypes(EnhancedAnnotated<?, ?> annotated) {
         // array and primitive types require special treatment
@@ -442,9 +446,9 @@ public class Beans {
                         annotated.getJavaClass(), annotated.getAnnotation(Typed.class)));
             } else {
                 if (annotated.getJavaClass().isInterface()) {
-                    return new ArraySet<Type>(annotated.getTypeClosure(), Object.class);
+                    return omitIllegalBeanTypes(annotated.getTypeClosure(), annotated).add(Object.class).build();
                 }
-                return annotated.getTypeClosure();
+                return omitIllegalBeanTypes(annotated.getTypeClosure(), annotated).build();
             }
         }
     }
@@ -664,4 +668,44 @@ public class Beans {
         manager.getServices().get(SlimAnnotatedTypeStore.class).put(implementationClass.slim());
         return implementationClass;
     }
+
+    static ImmutableSet.Builder<Type> omitIllegalBeanTypes(Set<Type> types, EnhancedAnnotated<?, ?> annotated) {
+        ImmutableSet.Builder<Type> builder = ImmutableSet.builder();
+        for (Type type : types) {
+            if (isIllegalBeanType(type)) {
+                MetadataLogger.LOG.illegalBeanTypeIgnored(type, annotated);
+            } else {
+                builder.add(type);
+            }
+        }
+        return builder;
+    }
+
+    /**
+     *
+     * @param beanType
+     * @return <code>true</code> if the given type is not a legal bean type, <code>false</code> otherwise
+     */
+    public static boolean isIllegalBeanType(Type beanType) {
+        boolean result = false;
+        if (beanType instanceof TypeVariable<?>) {
+            result = true;
+        } else if (beanType instanceof ParameterizedType) {
+            ParameterizedType parameterizedType = (ParameterizedType) beanType;
+            for (Type typeArgument : parameterizedType.getActualTypeArguments()) {
+                if (typeArgument instanceof TypeVariable<?>) {
+                    // Parameterized type with type variable is legal
+                    continue;
+                } else if (typeArgument instanceof WildcardType || isIllegalBeanType(typeArgument)) {
+                    result = true;
+                    break;
+                }
+            }
+        } else if (beanType instanceof GenericArrayType) {
+            GenericArrayType arrayType = (GenericArrayType) beanType;
+            result = isIllegalBeanType(arrayType.getGenericComponentType());
+        }
+        return result;
+    }
+
 }

@@ -17,12 +17,15 @@
 package org.jboss.weld.tests.unit.util;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.enterprise.inject.Instance;
 import javax.enterprise.util.TypeLiteral;
@@ -33,7 +36,7 @@ import org.testng.annotations.Test;
 public class BeansTest {
 
     private static final String SIGNATURE = "[java.lang.Object,java.lang.Object,java.util.List<java.lang.String>,java.util.Map<java.lang.Integer,java.lang.String>,java.util.Map<java.lang.Integer,java.lang.String>,javax.enterprise.inject.Instance<java.lang.Integer>]";
-    
+
     @SuppressWarnings("serial")
     @Test
     public void testTypeCollectionSignature() {
@@ -50,4 +53,26 @@ public class BeansTest {
         types.add(Object.class);
         assertEquals(SIGNATURE, Beans.createTypeCollectionId(types));
     }
+
+    @SuppressWarnings("serial")
+    @Test
+    public <T> void testIsIllegalBeanType() {
+        assertFalse(Beans.isIllegalBeanType(new TypeLiteral<List<String>>() {
+        }.getType()));
+        assertTrue(Beans.isIllegalBeanType(new TypeLiteral<List<?>>() {
+        }.getType()));
+        assertTrue(Beans.isIllegalBeanType(new TypeLiteral<List<Set<?>>>() {
+        }.getType()));
+        assertFalse(Beans.isIllegalBeanType(new TypeLiteral<List<Set<T>>>() {
+        }.getType()));
+        assertFalse(Beans.isIllegalBeanType(new TypeLiteral<Map<Integer, T>>() {
+        }.getType()));
+        assertTrue(Beans.isIllegalBeanType(new TypeLiteral<Map<Integer, ?>>() {
+        }.getType()));
+        assertTrue(Beans.isIllegalBeanType(new TypeLiteral<List<?>[]>() {
+        }.getType()));
+        assertFalse(Beans.isIllegalBeanType(new TypeLiteral<Instance<Integer>[]>() {
+        }.getType()));
+    }
+
 }
