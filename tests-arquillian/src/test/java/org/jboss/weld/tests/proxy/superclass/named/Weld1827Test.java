@@ -9,7 +9,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -17,7 +16,6 @@ import org.junit.runner.RunWith;
  * @author Yann Diorcet
  * @see https://issues.jboss.org/browse/WELD-1827
  */
-@Ignore("WELD-1827")
 @RunWith(Arquillian.class)
 public class Weld1827Test {
 
