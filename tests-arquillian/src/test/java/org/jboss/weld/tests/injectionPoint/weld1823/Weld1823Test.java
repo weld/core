@@ -43,7 +43,7 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 @Category(Integration.class)
 @Ignore("WELD-1823")
-public class Weld1823 {
+public class Weld1823Test {
 
     @Deployment(testable = false)
     public static Archive<?> deploy() {
