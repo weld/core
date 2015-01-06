@@ -117,4 +117,9 @@ public interface MetadataLogger extends WeldLogger {
     @LogMessage(level = Level.WARN)
     @Message(id = 1124, value = "Context.getScope() returned {0} which is not a scope annotation. Context: {1}", format = Format.MESSAGE_FORMAT)
     void contextGetScopeIsNotAScope(Object param1, Object param2);
+
+    @LogMessage(level = Level.WARN)
+    @Message(id = 1125, value = "Illegal bean type {0} ignored on {1}", format = Format.MESSAGE_FORMAT)
+    void illegalBeanTypeIgnored(Object type, Object annotated);
+
 }
