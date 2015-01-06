@@ -129,20 +129,8 @@ public class Validator implements Service {
         for (InjectionPoint ij : bean.getInjectionPoints()) {
             validateInjectionPoint(ij, beanManager);
         }
-        boolean normalScoped = beanManager.isNormalScope(bean.getScope());
-        /*
-         * Named beans are validated eagerly. If a bean is not named, it is validated for proxyability based on discovered
-         * injection points.
-         */
-        if (normalScoped && bean.getName() != null && !Beans.isBeanProxyable(bean, beanManager)) {
-            UnproxyableResolutionException ue = Proxies.getUnproxyableTypesException(bean, beanManager.getServices());
-            if (ue != null) {
-                throw new DeploymentException(ue);
-            }
-        }
-
         // Validate all pseudo-scoped beans, except for built-in beans and session beans which are proxied by the EJB container
-        if (!normalScoped && !(bean instanceof AbstractBuiltInBean) && !(bean instanceof SessionBean)) {
+        if (!beanManager.isNormalScope(bean.getScope()) && !(bean instanceof AbstractBuiltInBean) && !(bean instanceof SessionBean)) {
             validatePseudoScopedBean(bean, beanManager);
         }
 
