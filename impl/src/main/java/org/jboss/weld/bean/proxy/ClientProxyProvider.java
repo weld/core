@@ -19,7 +19,6 @@ package org.jboss.weld.bean.proxy;
 import static org.jboss.weld.util.cache.LoadingCacheUtils.getCastCacheValue;
 
 import java.lang.reflect.Type;
-import java.util.Collections;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.Bean;
@@ -31,10 +30,12 @@ import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.Proxies.TypeInfo;
+import org.jboss.weld.util.reflection.Reflections;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.google.common.collect.ImmutableSet;
 
 /**
  * A proxy pool for holding scope adaptors (client proxies)
@@ -63,11 +64,28 @@ public class ClientProxyProvider {
     private class CreateClientProxyForType extends CacheLoader<RequestedTypeHolder, Object> {
         @Override
         public Object load(RequestedTypeHolder input) {
-            if (Proxies.isTypeProxyable(input.requestedType, services())) {
-                return createClientProxy(input.bean, Collections.singleton(input.requestedType));
-            } else {
-                return BEAN_NOT_PROXYABLE_MARKER;
+            // first, collect all interfaces
+            ImmutableSet.Builder<Type> types = ImmutableSet.builder();
+            for (Type type : input.bean.getTypes()) {
+                if (Reflections.getRawType(type).isInterface()) {
+                    types.add(type);
+                }
             }
+            // if the requested type if proxyable use requested type + bean interfaces
+            if (Proxies.isTypeProxyable(input.requestedType, services())) {
+                return createClientProxy(input.bean, types.add(input.requestedType).build());
+            }
+            /*
+             * Requested type is not proxyable. Check whether a proxyable subtype exists within the set of
+             * bean types that we could use instead.
+             */
+            Class<?> requestedRawType = Reflections.getRawType(input.requestedType);
+            for (Type type : input.bean.getTypes()) {
+                if (requestedRawType.isAssignableFrom(Reflections.getRawType(type)) && Proxies.isTypeProxyable(type, services())) {
+                    return createClientProxy(input.bean, types.add(type).build());
+                }
+            }
+            return BEAN_NOT_PROXYABLE_MARKER;
         }
     }
 
