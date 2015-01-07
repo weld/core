@@ -280,4 +280,31 @@ public class Types {
         }
         return clazz.getTypeParameters().length > 0;
     }
+
+    /**
+     *
+     * @param beanType
+     * @return <code>true</code> if the given type is not a legal bean type, <code>false</code> otherwise
+     */
+    public static boolean isIllegalBeanType(Type beanType) {
+        boolean result = false;
+        if (beanType instanceof TypeVariable<?>) {
+            result = true;
+        } else if (beanType instanceof ParameterizedType) {
+            ParameterizedType parameterizedType = (ParameterizedType) beanType;
+            for (Type typeArgument : parameterizedType.getActualTypeArguments()) {
+                if (typeArgument instanceof TypeVariable<?>) {
+                    // Parameterized type with type variable is legal
+                    continue;
+                } else if (typeArgument instanceof WildcardType || isIllegalBeanType(typeArgument)) {
+                    result = true;
+                    break;
+                }
+            }
+        } else if (beanType instanceof GenericArrayType) {
+            GenericArrayType arrayType = (GenericArrayType) beanType;
+            result = isIllegalBeanType(arrayType.getGenericComponentType());
+        }
+        return result;
+    }
 }
