@@ -21,6 +21,8 @@ public class HttpSessionContextImpl extends AbstractBoundContext<HttpServletRequ
     // There is no need to store FQCN in a session key
     static final String NAMING_SCHEME_PREFIX = "WELD_S";
 
+    static final String KEY_BEAN_ID_INDEX_HASH = NAMING_SCHEME_PREFIX + "_HASH";
+
     private final NamingScheme namingScheme;
     private final String contextId;
 
@@ -37,6 +39,7 @@ public class HttpSessionContextImpl extends AbstractBoundContext<HttpServletRequ
         }
         // We always associate a new bean store to avoid possible leaks (security threats)
         setBeanStore(new LazySessionBeanStore(request, namingScheme));
+        checkBeanIdentifierIndexConsistency(request);
         return true;
     }
 
@@ -72,6 +75,23 @@ public class HttpSessionContextImpl extends AbstractBoundContext<HttpServletRequ
 
     protected Conversation getConversation() {
         return Container.instance(contextId).deploymentManager().instance().select(Conversation.class).get();
+    }
+
+    private void checkBeanIdentifierIndexConsistency(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            BeanIdentifierIndex index = getServiceRegistry().get(BeanIdentifierIndex.class);
+            if (index != null && index.isBuilt()) {
+                Object hash = session.getAttribute(KEY_BEAN_ID_INDEX_HASH);
+                if (hash != null) {
+                    if (!index.getIndexHash().equals(hash)) {
+                        throw ContextLogger.LOG.beanIdentifierIndexInconsistencyDetected();
+                    }
+                } else {
+                    session.setAttribute(KEY_BEAN_ID_INDEX_HASH, index.getIndexHash());
+                }
+            }
+        }
     }
 
 }

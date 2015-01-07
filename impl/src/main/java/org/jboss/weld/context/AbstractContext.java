@@ -42,8 +42,6 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
  *
  * @author Nicklas Karlsson
  * @author Pete Muir
- * @see org.jboss.weld.contexts.SharedContext
- * @see org.jboss.weld.context.BasicContext
  */
 public abstract class AbstractContext implements AlterableContext {
 
