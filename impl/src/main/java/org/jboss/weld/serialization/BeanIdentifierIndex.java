@@ -49,6 +49,8 @@ public class BeanIdentifierIndex implements Service {
 
     private volatile Map<BeanIdentifier, Integer> reverseIndex;
 
+    private volatile Integer indexHash;
+
     /**
      *
      * @param identifier
@@ -71,6 +73,16 @@ public class BeanIdentifierIndex implements Service {
             throw SerializationLogger.LOG.unableToGetBeanIdentifier(idx, this);
         }
         return index[idx];
+    }
+
+    /**
+     * The index hash is used to detect possible inconsistencies in distributed environments.
+     *
+     * @return the index hash
+     * @see Arrays#hashCode(Object[])
+     */
+    public Integer getIndexHash() {
+        return indexHash;
     }
 
     /**
@@ -116,6 +128,8 @@ public class BeanIdentifierIndex implements Service {
             builder.put(index[i], i);
         }
         reverseIndex = builder.build();
+
+        indexHash = Arrays.hashCode(index);
     }
 
     /**
