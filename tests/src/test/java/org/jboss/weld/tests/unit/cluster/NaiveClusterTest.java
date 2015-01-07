@@ -174,12 +174,35 @@ public class NaiveClusterTest extends AbstractClusterTest {
         container2.stopContainer();
     }
 
-    // WELD-1818
-    @Test(enabled = false)
+    @Test(expectedExceptions = IllegalStateException.class)
     public void testVariableBeanDeploymentStructure() throws Exception {
-        // NB This is not a valid deployment scenario for a cluster, but it does allow us to test bean ids neatly!
         Collection<Class<?>> classes1 = Arrays.<Class<?>>asList(Stable.class, Horse.class, Fodder.class);
         Collection<Class<?>> classes2 = Arrays.<Class<?>>asList(Stable.class, Horse.class, Fodder.class, Foo.class);
+        TestContainer container1 = bootstrapContainer(1, classes1);
+        BeanManagerImpl beanManager1 = getBeanManager(container1);
+        Bean<?> stableBean1 = beanManager1.resolve(beanManager1.getBeans(Stable.class));
+        TestContainer container2 = bootstrapContainer(2, classes2);
+
+        use(1);
+        // Set a value into Foo1
+        Stable stable1 = (Stable) beanManager1.getReference(stableBean1, Stable.class, beanManager1.createCreationalContext(stableBean1));
+        stable1.getFodder().setAmount(10);
+        stable1.getHorse().setName("George");
+
+        try {
+            replicateSession(1, container1, 2, container2);
+        } finally {
+            use(1);
+            container1.stopContainer();
+            use(2);
+            container2.stopContainer();
+        }
+    }
+
+    @Test
+    public void testSessionReplication() throws Exception {
+        Collection<Class<?>> classes1 = Arrays.<Class<?>>asList(Stable.class, Horse.class, Fodder.class);
+        Collection<Class<?>> classes2 = Arrays.<Class<?>>asList(Stable.class, Horse.class, Fodder.class);
         TestContainer container1 = bootstrapContainer(1, classes1);
         BeanManagerImpl beanManager1 = getBeanManager(container1);
         Bean<?> stableBean1 = beanManager1.resolve(beanManager1.getBeans(Stable.class));
