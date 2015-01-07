@@ -42,6 +42,13 @@ public class WeldBeanDeploymentArchive extends AbstractWeldBeanDeploymentArchive
 
     private Set<WeldBeanDeploymentArchive> accessibleBeanDeploymentArchives;
 
+    /**
+     *
+     * @param id
+     * @param beanClasses The collection should be mutable
+     * @param beansXml
+     * @param beanDeploymentArchives
+     */
     public WeldBeanDeploymentArchive(String id, Collection<String> beanClasses, BeansXml beansXml, Set<WeldBeanDeploymentArchive> beanDeploymentArchives) {
         super(id);
         this.beanClasses = beanClasses;
@@ -70,6 +77,14 @@ public class WeldBeanDeploymentArchive extends AbstractWeldBeanDeploymentArchive
 
     public void setAccessibleBeanDeploymentArchives(Set<WeldBeanDeploymentArchive> beanDeploymentArchives) {
         this.accessibleBeanDeploymentArchives = beanDeploymentArchives;
+    }
+
+    /**
+     *
+     * @param className
+     */
+    void addBeanClass(String className) {
+        this.beanClasses.add(className);
     }
 
     /**
