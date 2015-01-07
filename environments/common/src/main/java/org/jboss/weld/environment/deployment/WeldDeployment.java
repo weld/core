@@ -1,4 +1,4 @@
-/**
+/*
  * JBoss, Home of Professional Open Source
  * Copyright 2009, Red Hat, Inc. and/or its affiliates, and individual
  * contributors by the @authors tag. See the copyright.txt in the
@@ -18,6 +18,9 @@ package org.jboss.weld.environment.deployment;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.Extension;
@@ -30,29 +33,49 @@ import org.jboss.weld.resources.spi.ResourceLoader;
 /**
  *
  * @author Peter Royle
+ * @author Martin Kouba
  */
 public class WeldDeployment extends AbstractWeldDeployment {
 
+    public static final String ADDITIONAL_BDA_ID_SUFFIX = ".additional";
+
     private final Set<WeldBeanDeploymentArchive> beanDeploymentArchives;
 
+    private final Map<ClassLoader, WeldBeanDeploymentArchive> additionalBeanDeploymentArchives;
+
+    private final ResourceLoader resourceLoader;
+
+    /**
+     *
+     * @param resourceLoader
+     * @param bootstrap
+     * @param beanDeploymentArchives The set should be mutable so that additional bean deployment archives can be eventually added
+     * @param extensions
+     */
     public WeldDeployment(ResourceLoader resourceLoader, Bootstrap bootstrap, Set<WeldBeanDeploymentArchive> beanDeploymentArchives,
             Iterable<Metadata<Extension>> extensions) {
         super(bootstrap, extensions);
+        this.resourceLoader = resourceLoader;
         this.beanDeploymentArchives = beanDeploymentArchives;
-        for(BeanDeploymentArchive archive : beanDeploymentArchives) {
+        this.additionalBeanDeploymentArchives = new HashMap<ClassLoader, WeldBeanDeploymentArchive>();
+        for (BeanDeploymentArchive archive : beanDeploymentArchives) {
             archive.getServices().add(ResourceLoader.class, resourceLoader);
         }
     }
 
     @Override
     public Collection<BeanDeploymentArchive> getBeanDeploymentArchives() {
-        return Collections.<BeanDeploymentArchive>unmodifiableSet(beanDeploymentArchives);
+        return Collections.<BeanDeploymentArchive> unmodifiableSet(beanDeploymentArchives);
     }
 
     @Override
     public BeanDeploymentArchive loadBeanDeploymentArchive(Class<?> beanClass) {
-        // TODO: Make it much better
-        return beanDeploymentArchives.iterator().next();
+        if (beanDeploymentArchives.size() == 1) {
+            // There's only one bean archive or isolation is disabled - additional bean deployment archive does not make much sense
+            return beanDeploymentArchives.iterator().next();
+        }
+        BeanDeploymentArchive bda = getBeanDeploymentArchive(beanClass);
+        return bda != null ? bda : createAdditionalBeanDeploymentArchiveIfNeeded(beanClass);
     }
 
     @Override
@@ -64,4 +87,41 @@ public class WeldDeployment extends AbstractWeldDeployment {
         }
         return null;
     }
+
+    protected BeanDeploymentArchive createAdditionalBeanDeploymentArchiveIfNeeded(Class<?> beanClass) {
+        WeldBeanDeploymentArchive additionalBda = additionalBeanDeploymentArchives.get(beanClass.getClassLoader());
+        if (additionalBda != null) {
+            additionalBda.addBeanClass(beanClass.getName());
+        } else {
+            additionalBda = createAdditionalBeanDeploymentArchive(beanClass);
+        }
+        return additionalBda;
+    }
+
+    /**
+     * Additional bean deployment archives are used for extentions, synthetic annotated types and beans which do not come from a bean archive.
+     *
+     * @param beanClass
+     * @return the additional bean deployment archive
+     */
+    protected WeldBeanDeploymentArchive createAdditionalBeanDeploymentArchive(Class<?> beanClass) {
+        // At this time only the initial bean class is known
+        Set<String> beanClasses = new HashSet<String>();
+        beanClasses.add(beanClass.getName());
+
+        WeldBeanDeploymentArchive additionalBda = new WeldBeanDeploymentArchive(beanClass.getClassLoader().getClass().getName() + "@"
+                + System.identityHashCode(beanClass.getClassLoader()) + ADDITIONAL_BDA_ID_SUFFIX, beanClasses, null);
+        additionalBda.getServices().add(ResourceLoader.class, resourceLoader);
+        additionalBda.getServices().addAll(getServices().entrySet());
+        beanDeploymentArchives.add(additionalBda);
+
+        // Set visibility - by default all bean archives see each other
+        for (WeldBeanDeploymentArchive archive : beanDeploymentArchives) {
+            archive.setAccessibleBeanDeploymentArchives(beanDeploymentArchives);
+        }
+
+        additionalBeanDeploymentArchives.put(beanClass.getClassLoader(), additionalBda);
+        return additionalBda;
+    }
+
 }

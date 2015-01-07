@@ -22,7 +22,6 @@ import static org.jboss.weld.executor.ExecutorServicesFactory.ThreadPoolType.COM
 import java.lang.annotation.Annotation;
 import java.security.AccessController;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -227,8 +226,9 @@ public class Weld {
         String isolation = AccessController.doPrivileged(new GetSystemPropertyAction(ARCHIVE_ISOLATION_SYSTEM_PROPERTY));
 
         if (isolation != null && Boolean.valueOf(isolation).equals(Boolean.FALSE)) {
-            WeldBeanDeploymentArchive archive = WeldBeanDeploymentArchive.merge(bootstrap, discoveredArchives);
-            deployment = new WeldDeployment(resourceLoader, bootstrap, Collections.singleton(archive), loadedExtensions);
+            Set<WeldBeanDeploymentArchive> archives = new HashSet<WeldBeanDeploymentArchive>();
+            archives.add(WeldBeanDeploymentArchive.merge(bootstrap, discoveredArchives));
+            deployment = new WeldDeployment(resourceLoader, bootstrap, archives, loadedExtensions);
             CommonLogger.LOG.archiveIsolationDisabled();
         } else {
             deployment=  new WeldDeployment(resourceLoader, bootstrap, discoveredArchives, loadedExtensions);
