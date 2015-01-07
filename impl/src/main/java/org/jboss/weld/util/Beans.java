@@ -25,7 +25,6 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
-import java.lang.reflect.WildcardType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -422,9 +421,9 @@ public class Beans {
                         annotated.getJavaClass(), annotated.getAnnotation(Typed.class))).build();
             } else {
                 if (annotated.getJavaClass().isInterface()) {
-                    return omitIllegalBeanTypes(annotated.getTypeClosure(), annotated).add(Object.class).build();
+                    return getLegalBeanTypes(annotated.getTypeClosure(), annotated, Object.class);
                 }
-                return omitIllegalBeanTypes(annotated.getTypeClosure(), annotated).build();
+                return getLegalBeanTypes(annotated.getTypeClosure(), annotated);
             }
         }
     }
@@ -645,43 +644,36 @@ public class Beans {
         return implementationClass;
     }
 
+    /**
+     *
+     * @param types The initial set of types
+     * @param annotated
+     * @param additionalTypes Types to add to the initial set
+     * @return the set of legal bean types
+     */
+    static Set<Type> getLegalBeanTypes(Set<Type> types, EnhancedAnnotated<?, ?> annotated, Type... additionalTypes) {
+        if (additionalTypes != null && additionalTypes.length > 0) {
+            // Micro-optimization is not possible
+            return omitIllegalBeanTypes(types, annotated).addAll(additionalTypes).build();
+        }
+        for (Type type : types) {
+            if (Types.isIllegalBeanType(type)) {
+                return omitIllegalBeanTypes(types, annotated).build();
+            }
+        }
+        return types;
+    }
+
     static ImmutableSet.Builder<Type> omitIllegalBeanTypes(Set<Type> types, EnhancedAnnotated<?, ?> annotated) {
         ImmutableSet.Builder<Type> builder = ImmutableSet.builder();
         for (Type type : types) {
-            if (isIllegalBeanType(type)) {
+            if (Types.isIllegalBeanType(type)) {
                 MetadataLogger.LOG.illegalBeanTypeIgnored(type, annotated);
             } else {
                 builder.add(type);
             }
         }
         return builder;
-    }
-
-    /**
-     *
-     * @param beanType
-     * @return <code>true</code> if the given type is not a legal bean type, <code>false</code> otherwise
-     */
-    public static boolean isIllegalBeanType(Type beanType) {
-        boolean result = false;
-        if (beanType instanceof TypeVariable<?>) {
-            result = true;
-        } else if (beanType instanceof ParameterizedType) {
-            ParameterizedType parameterizedType = (ParameterizedType) beanType;
-            for (Type typeArgument : parameterizedType.getActualTypeArguments()) {
-                if (typeArgument instanceof TypeVariable<?>) {
-                    // Parameterized type with type variable is legal
-                    continue;
-                } else if (typeArgument instanceof WildcardType || isIllegalBeanType(typeArgument)) {
-                    result = true;
-                    break;
-                }
-            }
-        } else if (beanType instanceof GenericArrayType) {
-            GenericArrayType arrayType = (GenericArrayType) beanType;
-            result = isIllegalBeanType(arrayType.getGenericComponentType());
-        }
-        return result;
     }
 
 }
