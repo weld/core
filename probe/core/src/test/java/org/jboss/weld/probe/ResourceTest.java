@@ -22,22 +22,20 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-public class ResourcePathTest {
+public class ResourceTest {
 
     @Test
     public void testResourceDefinitions() {
-        assertEquals(1, ResourcePath.ROOT.getParts().length);
-        assertEquals(1, ResourcePath.BEANS.getParts().length);
-        assertEquals(2, ResourcePath.BEAN.getParts().length);
+        assertEquals(1, Resource.BEANS.getParts().length);
+        assertEquals(2, Resource.BEAN.getParts().length);
     }
 
     @Test
-    public void testResourcePathMatches() {
-        assertTrue(ResourcePath.ROOT.matches(new String[] {"simple.css"}));
-        assertFalse(ResourcePath.ROOT.matches(new String[] {"simple"}));
-        assertFalse(ResourcePath.ROOT.matches(new String[] {"foo", "bar"}));
-        assertTrue(ResourcePath.BEANS.matches(new String[] {"beans"}));
-        assertFalse(ResourcePath.BEANS.matches(new String[] {"beans", "foo", "instance"}));
+    public void testResourceMatches() {
+        assertTrue(Resource.CLIENT_RESOURCE.matches(new String[] { "client", "simple.css" }));
+        assertFalse(Resource.CLIENT_RESOURCE.matches(new String[] { "client", "simple" }));
+        assertTrue(Resource.BEANS.matches(new String[] { "beans" }));
+        assertFalse(Resource.BEANS.matches(new String[] { "beans", "foo", "instance" }));
     }
 
 }

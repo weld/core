@@ -199,7 +199,6 @@ final class Components {
         private final InjectionPoint injectionPoint;
 
         public Dependency(Bean<?> resolvedBean, InjectionPoint injectionPoint) {
-            super();
             this.bean = resolvedBean;
             this.injectionPoint = injectionPoint;
         }

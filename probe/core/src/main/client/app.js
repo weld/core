@@ -575,7 +575,6 @@ Probe.DependencyGraph = Ember.View
                     } else {
                       return 'Multiple injection points found, click to show details.';
                     }
-                    return getInjectionPointInfo(d);
                   });
           linkLabel.append("svg:text").attr("class",
               "nodetext injection-point-info").style("fill",
@@ -631,11 +630,15 @@ Probe.DependencyGraph = Ember.View
         }
 
         // Injection point info dialog
-        svg.selectAll("text.injection-point-info").on("click",
-            function(d, i) {
-              // TODO use modal dialog
-              alert(getInjectionPointInfo(d, true));
-            });
+        svg
+            .selectAll("text.injection-point-info")
+            .on(
+                "click",
+                function(d, i) {
+                  $('div#ipInfoModal div.modal-body').html(getInjectionPointInfoHtml(
+                      d, true));
+                  $('div#ipInfoModal').modal('show');
+                });
 
         var node = svg.selectAll("g.node").data(nodes).enter().append(
             "svg:g").attr("class", "node").call(node_drag);
@@ -703,7 +706,7 @@ Probe.DependencyGraph = Ember.View
       }
     });
 
-function getInjectionPointInfo(d, addIndex) {
+function getInjectionPointInfo(d) {
   if (!d.dependencies) {
     return '';
   }
@@ -720,14 +723,34 @@ function getInjectionPointInfo(d, addIndex) {
     if (d.dependencies[j].requiredType) {
       requiredType += d.dependencies[j].requiredType;
     }
-    if (addIndex) {
-      description += (j + 1) + '. ';
-    }
     description += qualifiers;
-    description += ' ' + requiredType + '\n';
+    description += ' ' + requiredType;
     return description;
   }
 }
+
+function getInjectionPointInfoHtml(d) {
+    if (!d.dependencies) {
+      return '';
+    }
+    var description = '<ul>';
+    for (var j = 0; j < d.dependencies.length; j++) {
+      // Injection point info
+      var qualifiers = "";
+      var requiredType = "";
+      if (d.dependencies[j].qualifiers) {
+        for (var k = 0; k < d.dependencies[j].qualifiers.length; k++) {
+          qualifiers += d.dependencies[j].qualifiers[k] + " ";
+        }
+      }
+      if (d.dependencies[j].requiredType) {
+        requiredType += '<strong>' + d.dependencies[j].requiredType + '</strong>';
+      }
+      description += '<li>' + qualifiers + ' ' + requiredType + '</li>';
+    }
+    description += '</ul>';
+    return description;
+  }
 
 Probe.InvocationTree = Ember.View
     .extend({

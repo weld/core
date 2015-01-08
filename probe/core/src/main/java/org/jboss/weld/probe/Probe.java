@@ -52,15 +52,7 @@ import org.jboss.weld.serialization.spi.ContextualStore;
  */
 public class Probe implements Service {
 
-    private volatile Map<Bean<?>, String> beanToId;
-
-    private volatile Map<String, Bean<?>> idToBean;
-
-    private volatile Map<Bean<?>, BeanManagerImpl> beanToManager;
-
-    private volatile Map<String, ObserverMethod<?>> idToObserver;
-
-    private volatile Map<ObserverMethod<?>, String> observerToId;
+    private volatile Mappings mappings;
 
     private final ConcurrentMap<Integer, Invocation> invocations;
 
@@ -77,7 +69,7 @@ public class Probe implements Service {
             @Override
             public int compare(Bean<?> o1, Bean<?> o2) {
                 if (o1.getBeanClass().equals(o2.getBeanClass())) {
-                    return beanToId.get(o1).compareTo(beanToId.get(o2));
+                    return mappings.getBeanToId().get(o1).compareTo(mappings.getBeanToId().get(o2));
                 }
                 return o1.getBeanClass().getName().compareTo(o2.getBeanClass().getName());
             }
@@ -86,7 +78,7 @@ public class Probe implements Service {
             @Override
             public int compare(ObserverMethod<?> o1, ObserverMethod<?> o2) {
                 if (o1.getBeanClass().equals(o2.getBeanClass())) {
-                    return observerToId.get(o1).compareTo(observerToId.get(o2));
+                    return mappings.getObserverToId().get(o1).compareTo(mappings.getObserverToId().get(o2));
                 }
                 return o1.getBeanClass().getName().compareTo(o2.getBeanClass().getName());
             }
@@ -99,69 +91,10 @@ public class Probe implements Service {
      * @param beanManager
      */
     public void intitialize(BeanManagerImpl beanManager) {
-
         if (isInitialized()) {
             throw new IllegalStateException("Probe already initialized!");
         }
-
-        beanToId = new HashMap<Bean<?>, String>();
-        idToBean = new HashMap<String, Bean<?>>();
-        beanToManager = new HashMap<Bean<?>, BeanManagerImpl>();
-        idToObserver = new HashMap<String, ObserverMethod<?>>();
-        observerToId = new HashMap<ObserverMethod<?>, String>();
-
-        ContextualStore contextualStore = beanManager.getServices().get(ContextualStore.class);
-        Map<BeanDeploymentArchive, BeanManagerImpl> beanDeploymentArchivesMap = Container.instance(beanManager).beanDeploymentArchives();
-
-        for (Entry<BeanDeploymentArchive, BeanManagerImpl> entry : beanDeploymentArchivesMap.entrySet()) {
-
-            ProbeLogger.LOG.processingBeanDeploymentArchive(entry.getKey().getId());
-            BeanManagerImpl manager = entry.getValue();
-
-            // Beans, interceptors, decorators
-            for (Bean<?> bean : manager.getBeans()) {
-                // Treat extension and built-in beans as one entity so that the dependency graph is more meaningful
-                // E.g. Weld registers a separate InstanceBean for every bean deployment archive, from the user point of view
-                // there's only one Instance bean though
-                if (bean instanceof ExtensionBean) {
-                    // ExtensionBean does not include BeanManager in its BeanIdentifier
-                    ExtensionBean extensionBean = (ExtensionBean) bean;
-                    if (!idToBean.containsValue(extensionBean)) {
-                        putBean(Components.getId(extensionBean.getIdentifier()), manager, extensionBean);
-                    }
-                } else if (bean instanceof AbstractBuiltInBean<?>) {
-                    // Built-in beans are identified by the set of types
-                    String id = Components.getBuiltinBeanId((AbstractBuiltInBean<?>) bean);
-                    if (!idToBean.containsKey(id)) {
-                        putBean(id, bean);
-                    }
-                } else {
-                    if (manager.isBeanEnabled(bean)) {
-                        // Make sure the bean is truly enabled
-                        putBean(contextualStore, manager, bean);
-                    }
-                }
-            }
-            for (Interceptor<?> interceptor : manager.getInterceptors()) {
-                putBean(contextualStore, manager, interceptor);
-            }
-            for (Decorator<?> decorator : manager.getDecorators()) {
-                putBean(contextualStore, manager, decorator);
-            }
-
-            // Observers
-            int customObservers = 0;
-            for (ObserverMethod<?> observerMethod : manager.getObservers()) {
-                if (observerMethod instanceof ObserverMethodImpl) {
-                    ObserverMethodImpl<?, ?> observerMethodImpl = (ObserverMethodImpl<?, ?>) observerMethod;
-                    putObserver(Components.getId(observerMethodImpl.getId()), observerMethodImpl);
-                } else {
-                    // Custom observer methods
-                    putObserver(Components.getId("" + customObservers++), observerMethod);
-                }
-            }
-        }
-
+        mappings = new Mappings(beanManager);
     }
 
     /**
@@ -169,7 +102,7 @@ public class Probe implements Service {
      * @return <code>true</code> if initialized, <code>false</code> otherwise
      */
     public boolean isInitialized() {
-        return idToBean != null;
+        return mappings != null;
     }
 
     /**
@@ -178,7 +111,7 @@ public class Probe implements Service {
      */
     List<Bean<?>> getBeans() {
         checkInitialized();
-        List<Bean<?>> data = new ArrayList<Bean<?>>(idToBean.values());
+        List<Bean<?>> data = new ArrayList<Bean<?>>(mappings.getIdToBean().values());
         Collections.sort(data, beanComparator);
         return data;
     }
@@ -190,7 +123,7 @@ public class Probe implements Service {
      */
     String getBeanId(Bean<?> bean) {
         checkInitialized();
-        return beanToId.get(bean);
+        return mappings.getBeanToId().get(bean);
     }
 
     /**
@@ -200,7 +133,7 @@ public class Probe implements Service {
      */
     Bean<?> getBean(String id) {
         checkInitialized();
-        return idToBean.get(id);
+        return mappings.getIdToBean().get(id);
     }
 
     /**
@@ -210,7 +143,7 @@ public class Probe implements Service {
      */
     BeanManagerImpl getBeanManager(Bean<?> bean) {
         checkInitialized();
-        return beanToManager.get(bean);
+        return mappings.getBeanToManager().get(bean);
     }
 
     /**
@@ -219,7 +152,7 @@ public class Probe implements Service {
      */
     List<ObserverMethod<?>> getObservers() {
         checkInitialized();
-        List<ObserverMethod<?>> data = new ArrayList<ObserverMethod<?>>(idToObserver.values());
+        List<ObserverMethod<?>> data = new ArrayList<ObserverMethod<?>>(mappings.getIdToObserver().values());
         Collections.sort(data, observerComparator);
         return data;
     }
@@ -231,7 +164,7 @@ public class Probe implements Service {
      */
     String getObserverId(ObserverMethod<?> observerMethod) {
         checkInitialized();
-        return observerToId.get(observerMethod);
+        return mappings.getObserverToId().get(observerMethod);
     }
 
     /**
@@ -241,7 +174,7 @@ public class Probe implements Service {
      */
     ObserverMethod<?> getObserver(String id) {
         checkInitialized();
-        return idToObserver.get(id);
+        return mappings.getIdToObserver().get(id);
     }
 
     /**
@@ -291,43 +224,152 @@ public class Probe implements Service {
         return size;
     }
 
-    private void putBean(ContextualStore contextualStore, Bean<?> bean) {
-        putBean(Components.getId(contextualStore.putIfAbsent(bean)), bean);
-    }
-
-    private void putBean(String id, Bean<?> bean) {
-        idToBean.put(id, bean);
-        beanToId.put(bean, id);
-    }
-
-    private void putBean(String id, BeanManagerImpl manager, Bean<?> bean) {
-        putBean(id, bean);
-        beanToManager.put(bean, manager);
-    }
-
-    private void putBean(ContextualStore contextualStore, BeanManagerImpl manager, Bean<?> bean) {
-        putBean(contextualStore, bean);
-        beanToManager.put(bean, manager);
-    }
-
-    private void putObserver(String id, ObserverMethod<?> observerMethod) {
-        idToObserver.put(id, observerMethod);
-        observerToId.put(observerMethod, id);
-    }
-
     @Override
     public void cleanup() {
-        idToBean.clear();
-        beanToId.clear();
-        beanToManager.clear();
-        idToObserver.clear();
-        observerToId.clear();
+        if(mappings != null) {
+            mappings.clear();
+        }
     }
 
     private void checkInitialized() {
         if (!isInitialized()) {
             throw ProbeLogger.LOG.probeNotInitialized();
         }
+    }
+
+    /**
+     *
+     * TODO make all data immutable
+     *
+     * @author Martin Kouba
+     */
+    private static class Mappings {
+
+        private final Map<Bean<?>, String> beanToId;
+
+        private final Map<String, Bean<?>> idToBean;
+
+        private final Map<Bean<?>, BeanManagerImpl> beanToManager;
+
+        private final Map<String, ObserverMethod<?>> idToObserver;
+
+        private final Map<ObserverMethod<?>, String> observerToId;
+
+        Mappings(BeanManagerImpl beanManager) {
+
+            beanToId = new HashMap<Bean<?>, String>();
+            idToBean = new HashMap<String, Bean<?>>();
+            beanToManager = new HashMap<Bean<?>, BeanManagerImpl>();
+            idToObserver = new HashMap<String, ObserverMethod<?>>();
+            observerToId = new HashMap<ObserverMethod<?>, String>();
+
+            ContextualStore contextualStore = beanManager.getServices().get(ContextualStore.class);
+            Map<BeanDeploymentArchive, BeanManagerImpl> beanDeploymentArchivesMap = Container.instance(beanManager).beanDeploymentArchives();
+
+            for (Entry<BeanDeploymentArchive, BeanManagerImpl> entry : beanDeploymentArchivesMap.entrySet()) {
+
+                ProbeLogger.LOG.processingBeanDeploymentArchive(entry.getKey().getId());
+                BeanManagerImpl manager = entry.getValue();
+
+                // Beans
+                for (Bean<?> bean : manager.getBeans()) {
+                    // Treat extension and built-in beans as one entity so that the dependency graph is more meaningful
+                    // E.g. Weld registers a separate InstanceBean for every bean deployment archive, from the user point of view
+                    // there's only one Instance bean though
+                    if (bean instanceof ExtensionBean) {
+                        // ExtensionBean does not include BeanManager in its BeanIdentifier
+                        ExtensionBean extensionBean = (ExtensionBean) bean;
+                        if (!idToBean.containsValue(extensionBean)) {
+                            putBean(Components.getId(extensionBean.getIdentifier()), manager, extensionBean);
+                        }
+                    } else if (bean instanceof AbstractBuiltInBean<?>) {
+                        // Built-in beans are identified by the set of types
+                        String id = Components.getBuiltinBeanId((AbstractBuiltInBean<?>) bean);
+                        if (!idToBean.containsKey(id)) {
+                            putBean(id, bean);
+                        }
+                    } else {
+                        if (manager.isBeanEnabled(bean)) {
+                            // Make sure the bean is truly enabled
+                            putBean(contextualStore, manager, bean);
+                        }
+                    }
+                }
+                // Interceptors
+                for (Interceptor<?> interceptor : manager.getInterceptors()) {
+                    putBean(contextualStore, manager, interceptor);
+                }
+                // Decorators
+                for (Decorator<?> decorator : manager.getDecorators()) {
+                    putBean(contextualStore, manager, decorator);
+                }
+                // Observers
+                int customObservers = 0;
+                for (ObserverMethod<?> observerMethod : manager.getObservers()) {
+                    if (observerMethod instanceof ObserverMethodImpl) {
+                        ObserverMethodImpl<?, ?> observerMethodImpl = (ObserverMethodImpl<?, ?>) observerMethod;
+                        putObserver(Components.getId(observerMethodImpl.getId()), observerMethodImpl);
+                    } else {
+                        // Custom observer methods
+                        putObserver(Components.getId("" + customObservers++), observerMethod);
+                    }
+                }
+            }
+
+        }
+
+        Map<Bean<?>, String> getBeanToId() {
+            return beanToId;
+        }
+
+        Map<String, Bean<?>> getIdToBean() {
+            return idToBean;
+        }
+
+        Map<Bean<?>, BeanManagerImpl> getBeanToManager() {
+            return beanToManager;
+        }
+
+        Map<String, ObserverMethod<?>> getIdToObserver() {
+            return idToObserver;
+        }
+
+        Map<ObserverMethod<?>, String> getObserverToId() {
+            return observerToId;
+        }
+
+        private void putBean(ContextualStore contextualStore, Bean<?> bean) {
+            putBean(Components.getId(contextualStore.putIfAbsent(bean)), bean);
+        }
+
+        private void putBean(String id, Bean<?> bean) {
+            idToBean.put(id, bean);
+            beanToId.put(bean, id);
+        }
+
+        private void putBean(String id, BeanManagerImpl manager, Bean<?> bean) {
+            putBean(id, bean);
+            beanToManager.put(bean, manager);
+        }
+
+        private void putBean(ContextualStore contextualStore, BeanManagerImpl manager, Bean<?> bean) {
+            putBean(contextualStore, bean);
+            beanToManager.put(bean, manager);
+        }
+
+        private void putObserver(String id, ObserverMethod<?> observerMethod) {
+            idToObserver.put(id, observerMethod);
+            observerToId.put(observerMethod, id);
+        }
+
+        void clear() {
+            idToBean.clear();
+            beanToId.clear();
+            beanToManager.clear();
+            idToObserver.clear();
+            observerToId.clear();
+        }
+
     }
 
 }

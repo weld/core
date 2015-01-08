@@ -37,4 +37,10 @@ public class JsonTest {
         assertEquals("{\"foo\":\"bar\",\"baz\":[\"qux\"]}", Json.newObjectBuilder().add("foo", "bar").add("baz", Json.newArrayBuilder().add("qux")).build());
     }
 
+    @Test
+    public void testIgnoreEmptyBuilders() {
+        assertEquals("[true]", Json.newArrayBuilder().setIgnoreEmptyBuilders(true).add(true).add(Json.newObjectBuilder().add("foo", Json.newObjectBuilder()))
+                .setIgnoreEmptyBuilders(true).build());
+    }
+
 }

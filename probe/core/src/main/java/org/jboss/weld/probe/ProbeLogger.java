@@ -37,8 +37,8 @@ public interface ProbeLogger extends BasicLogger {
     ProbeLogger LOG = Logger.getMessageLogger(ProbeLogger.class, "org.jboss.weld.probe.Probe");
 
     @LogMessage(level = Level.DEBUG)
-    @Message(id = 1, value = "Resource path {0} matched for {1}", format = Format.MESSAGE_FORMAT)
-    void resourcePathMatched(Object resource, String pathInfo);
+    @Message(id = 1, value = "Resource {0} matched for {1}", format = Format.MESSAGE_FORMAT)
+    void resourceMatched(Object resource, String pathInfo);
 
     @LogMessage(level = Level.INFO)
     @Message(id = 2, value = "Processing bean deployment archive: {0}", format = Format.MESSAGE_FORMAT)
@@ -58,4 +58,7 @@ public interface ProbeLogger extends BasicLogger {
     @LogMessage(level = Level.DEBUG)
     @Message(id = 6, value = "{0} is excluded from monitoring", format = Format.MESSAGE_FORMAT)
     void invocationMonitorNotAssociated(Object beanClass);
+
+    @Message(id = 7, value = "Probe Servlet is not able to operate - missing {0}", format = Format.MESSAGE_FORMAT)
+    IllegalStateException probeServletUnableToOperate(Class<?> component);
 }

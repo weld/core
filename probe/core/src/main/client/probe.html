@@ -37,10 +37,10 @@ ${head}
         <h3>Bean Archives</h3>
 
         <table class="table table-bordered table-striped">
-            <col width="6%">
+            <col width="3%">
             <col width="47%">
             <col width="13%">
-            <col width="34%">
+            <col width="37%">
             <tr>
                 <th></th>
                 <th>Identifier</th>
@@ -51,7 +51,7 @@ ${head}
             <tr>
                 <td>{{increment _view.contentIndex}}</td>
                 <td>
-                    {{#link-to 'beanList' (query-params bda=id)}}{{bdaId}}{{/link-to}}
+                    {{#link-to 'beanList' (query-params bda=id) title='Click to show beans'}}{{bdaId}}{{/link-to}}
                 </td>
                 <td>{{beanDiscoveryMode}}</td>
                 <td>
@@ -92,7 +92,7 @@ ${head}
             {{/each}}
         </table>
 
-        <h3>Configuration</h3>
+        <h3>Weld Configuration</h3>
 
         <table class="table table-bordered table-striped">
             <col width="6%">
@@ -352,21 +352,34 @@ ${head}
         <h3>Dependency Graph</h3>
         <div>
             <label>
-                {{input type="checkbox" name="transientDependencies" checked=transientDependencies}} Transient dependencies
+                {{input type="checkbox" name="transientDependencies" checked=transientDependencies}} Transient Dependencies
             </label>
         </div>
         <div>
             <label>
-                {{input type="checkbox" name="transientDependents" checked=transientDependents}} Transient dependents
+                {{input type="checkbox" name="transientDependents" checked=transientDependents}} Transient Dependents
             </label>
         </div>
         <div>
             <label>
-                {{input type="checkbox" name="injectionPointInfo" checked=injectionPointInfo}} Injection point info
+                {{input type="checkbox" name="injectionPointInfo" checked=injectionPointInfo}} Injection Points Info
             </label>
         </div>
 
         {{view Probe.DependencyGraph contentBinding="model" beanId=id routeRefresh=routeRefresh}}
+
+        <div class="modal" id="ipInfoModal" tabindex="-1" role="dialog" aria-labelledby="ipInfoModalTitle" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-margin">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="ipInfoModalTitle">Injection Points Info</h4>
+                    </div>
+                    <div class="modal-body">
+                    </div>
+                </div>
+            </div>
+        </div>
 
     </script>
 

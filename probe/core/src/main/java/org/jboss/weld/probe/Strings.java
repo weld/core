@@ -76,6 +76,7 @@ final class Strings {
     static final String TOTAL = "total";
     static final String LAST_PAGE = "lastPage";
     static final String DATA = "data";
+    static final String FILTERS = "filters";
 
     // Internet media types
     static final String APPLICATION_JSON = "application/json";
@@ -94,6 +95,15 @@ final class Strings {
     static final String SUFFIX_PNG = "png";
 
     static final String SLASH = "/";
+
+    static final String PARAM_TRANSIENT_DEPENDENCIES = "transientDependencies";
+    static final String PARAM_TRANSIENT_DEPENDENTS = "transientDependents";
+
+    static final String FILE_CLIENT_HTML = "probe.html";
+    static final String PATH_META_INF_CLIENT = "/META-INF/client/";
+
+    static final String RESOURCE_PARAM_START = "{";
+    static final String RESOURCE_PARAM_END = "}";
 
     private Strings() {
     }

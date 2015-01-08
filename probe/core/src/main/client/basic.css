@@ -135,3 +135,7 @@ ul.plain-list li {
 .no-margin {
   margin: 0px;
 }
+
+.modal-dialog-margin {
+    margin-top: 25%;
+}

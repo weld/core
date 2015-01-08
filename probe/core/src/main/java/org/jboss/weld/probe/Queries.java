@@ -49,14 +49,14 @@ import org.jboss.weld.probe.Components.BeanKind;
 final class Queries {
 
     // TODO change to higher value, low value for dev purpose only
-    static final int DEFAULT_PAGE_SIZE = 20;
+    static final int DEFAULT_PAGE_SIZE = 30;
 
     private Queries() {
     }
 
     /**
      *
-     * @param data Mutable list of data
+     * @param data
      * @param page
      * @param filters
      * @return the page of data
