@@ -59,30 +59,6 @@
       </resource>
     </resources>
 
-    <plugins>
-      <!-- WORKAROUND - remove once the global checkstyle configuration is updated -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-        <configuration>
-          <configLocation>checkstyle.xml</configLocation>
-          <suppressionsLocation>checkstyle-suppressions.xml</suppressionsLocation>
-          <consoleOutput>true</consoleOutput>
-          <failsOnError>false</failsOnError>
-          <useFile />
-        </configuration>
-        <executions>
-          <execution>
-            <id>check-style</id>
-            <phase>compile</phase>
-            <goals>
-              <goal>checkstyle</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-
   </build>
 
   <profiles>

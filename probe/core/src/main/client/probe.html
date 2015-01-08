@@ -39,11 +39,13 @@ ${head}
         <table class="table table-bordered table-striped">
             <col width="6%">
             <col width="47%">
-            <col width="47%">
+            <col width="13%">
+            <col width="34%">
             <tr>
                 <th></th>
                 <th>Identifier</th>
                 <th>Bean Discovery Mode</th>
+                <th>Enablement</th>
             </tr>
             {{#each bdas}}
             <tr>
@@ -52,6 +54,40 @@ ${head}
                     {{#link-to 'beanList' (query-params bda=id)}}{{bdaId}}{{/link-to}}
                 </td>
                 <td>{{beanDiscoveryMode}}</td>
+                <td>
+                    {{#if enablement.interceptors}}
+                        <div class="no-margin">
+                            <strong>Interceptors:</strong> {{enablement.interceptors.length}}
+                            <ul class="plain-list no-margin">
+                                {{#each enablement.interceptors}}
+                                <li>{{this}}</li>
+                                {{/each}}
+                            </ul>
+
+                        <div>
+                    {{/if}}
+                    {{#if enablement.decorators}}
+                        <div class="no-margin">
+                            <strong>Decorators:</strong> {{enablement.decorators.length}}
+                            <ul class="plain-list no-margin">
+                                {{#each enablement.decorators}}
+                                <li>{{this}}</li>
+                                {{/each}}
+                            </ul>
+
+                        <div>
+                    {{/if}}
+                    {{#if enablement.alternatives}}
+                        <div class="no-margin">
+                            <strong>Alternatives:</strong> {{enablement.alternatives.length}}
+                            <ul class="plain-list no-margin">
+                                {{#each enablement.alternatives}}
+                                <li>{{this}}</li>
+                                {{/each}}
+                            </ul>
+                        <div>
+                    {{/if}}
+                </td>
             </tr>
             {{/each}}
         </table>

@@ -123,3 +123,15 @@ div.total {
 .form-control-auto-width {
   width: auto;
 }
+
+ul.plain-list {
+  padding: 0px;
+}
+
+ul.plain-list li {
+  list-style: none;'
+}
+
+.no-margin {
+  margin: 0px;
+}

@@ -30,6 +30,7 @@ import org.jboss.weld.exceptions.IllegalStateException;
  *
  * @author Martin Kouba
  */
+@SuppressWarnings("checkstyle:magicnumber")
 @MessageLogger(projectCode = "PROBE-")
 public interface ProbeLogger extends BasicLogger {
 

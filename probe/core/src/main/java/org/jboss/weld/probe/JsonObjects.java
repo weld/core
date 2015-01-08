@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.probe;
 
+import static org.jboss.weld.probe.Strings.ALTERNATIVES;
 import static org.jboss.weld.probe.Strings.ANNOTATED_METHOD;
 import static org.jboss.weld.probe.Strings.AS_STRING;
 import static org.jboss.weld.probe.Strings.BDAS;
@@ -28,13 +29,16 @@ import static org.jboss.weld.probe.Strings.DATA;
 import static org.jboss.weld.probe.Strings.DECLARED_OBSERVERS;
 import static org.jboss.weld.probe.Strings.DECLARED_PRODUCERS;
 import static org.jboss.weld.probe.Strings.DECLARING_BEAN;
+import static org.jboss.weld.probe.Strings.DECORATORS;
 import static org.jboss.weld.probe.Strings.DEPENDENCIES;
 import static org.jboss.weld.probe.Strings.DEPENDENTS;
 import static org.jboss.weld.probe.Strings.DISPOSAL_METHOD;
 import static org.jboss.weld.probe.Strings.EJB_NAME;
+import static org.jboss.weld.probe.Strings.ENABLEMENT;
 import static org.jboss.weld.probe.Strings.ID;
 import static org.jboss.weld.probe.Strings.INSTANCES;
 import static org.jboss.weld.probe.Strings.INTERCEPTED_BEAN;
+import static org.jboss.weld.probe.Strings.INTERCEPTORS;
 import static org.jboss.weld.probe.Strings.IS_ALTERNATIVE;
 import static org.jboss.weld.probe.Strings.KIND;
 import static org.jboss.weld.probe.Strings.LAST_PAGE;
@@ -89,6 +93,7 @@ import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
 import org.jboss.weld.bootstrap.WeldBootstrap;
+import org.jboss.weld.bootstrap.enablement.ModuleEnablement;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.config.ConfigurationKey;
@@ -152,6 +157,25 @@ final class JsonObjects {
             if (beansXml != null) {
                 bdaBuilder.add(BEAN_DISCOVERY_MODE, beansXml.getBeanDiscoveryMode().toString());
             }
+            // Enablement - interceptors, decorators, alternatives
+            JsonObjectBuilder enablementBuilder = Json.newObjectBuilder().setIgnoreEmptyBuilders(true);
+            ModuleEnablement enablement = beanDeploymentArchivesMap.get(bda).getEnabled();
+            JsonArrayBuilder interceptors = Json.newArrayBuilder();
+            for (Class<?> interceptor : enablement.getInterceptors()) {
+                interceptors.add(interceptor.getName());
+            }
+            enablementBuilder.add(INTERCEPTORS, interceptors);
+            JsonArrayBuilder decorators = Json.newArrayBuilder();
+            for (Class<?> decorator : enablement.getDecorators()) {
+                decorators.add(decorator.getName());
+            }
+            enablementBuilder.add(DECORATORS, decorators);
+            JsonArrayBuilder alternatives = Json.newArrayBuilder();
+            for (Class<?> alternative : enablement.getAllAlternatives()) {
+                alternatives.add(alternative.getName());
+            }
+            enablementBuilder.add(ALTERNATIVES, alternatives);
+            bdaBuilder.add(ENABLEMENT, enablementBuilder);
             bdasBuilder.add(bdaBuilder);
         }
         deploymentBuilder.add(BDAS, bdasBuilder);
