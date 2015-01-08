@@ -24,6 +24,7 @@ import java.util.Set;
 
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.CDI;
+import javax.enterprise.inject.spi.Unmanaged;
 import javax.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.bean.builtin.BeanManagerProxy;
@@ -40,15 +41,17 @@ import org.jboss.weld.util.collections.ImmutableSet;
  */
 public abstract class AbstractCDI<T> extends CDI<T> {
 
+    // CDI API / IMPL classes calling CDI.current()
     // used for caller detection
-    protected final Set<String> subclassNames;
+    protected final Set<String> knownClassNames;
 
     public AbstractCDI() {
         ImmutableSet.Builder<String> names = ImmutableSet.builder();
         for (Class<?> clazz = getClass(); clazz != CDI.class; clazz = clazz.getSuperclass()) {
             names.add(clazz.getName());
         }
-        this.subclassNames = names.build();
+        names.add(Unmanaged.class.getName());
+        this.knownClassNames = names.build();
     }
 
     @Override
@@ -98,7 +101,7 @@ public abstract class AbstractCDI<T> extends CDI<T> {
         boolean outerSubclassReached = false;
         for (StackTraceElement element : Thread.currentThread().getStackTrace()) {
             // the method call that leads to the first invocation of this class or its subclass is considered the caller
-            if (!subclassNames.contains(element.getClassName())) {
+            if (!knownClassNames.contains(element.getClassName())) {
                 if (outerSubclassReached) {
                     return element.getClassName();
                 }
