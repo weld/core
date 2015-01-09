@@ -120,7 +120,10 @@ public abstract class ContextualInstanceStrategy<T> {
             }
             synchronized (this) {
                 if (value == null) {
-                    this.value = instance = super.getIfExists(bean, manager);
+                    instance = super.getIfExists(bean, manager);
+                    if (instance != null) {
+                        this.value = instance;
+                    }
                 }
                 return instance;
             }
@@ -133,7 +136,7 @@ public abstract class ContextualInstanceStrategy<T> {
                 return instance;
             }
             synchronized (this) {
-                if (value == null) {
+                if ((instance = value) == null) {
                     this.value = instance = super.get(bean, manager, ctx);
                 }
                 return instance;
