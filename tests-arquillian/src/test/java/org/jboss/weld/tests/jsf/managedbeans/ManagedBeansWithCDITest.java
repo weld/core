@@ -45,7 +45,6 @@ import com.gargoylesoftware.htmlunit.WebClient;
  */
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-@Ignore("WFLY-3259")
 public class ManagedBeansWithCDITest {
 
     @Deployment(testable = false)
