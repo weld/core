@@ -113,6 +113,7 @@ import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.exceptions.InjectionException;
 import org.jboss.weld.injection.CurrentInjectionPoint;
+import org.jboss.weld.injection.EmptyInjectionPoint;
 import org.jboss.weld.injection.ThreadLocalStack.ThreadLocalStackReference;
 import org.jboss.weld.injection.attributes.FieldInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.InferringFieldInjectionPointAttributes;
@@ -714,7 +715,13 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         if (!BeanTypeAssignabilityRules.instance().matches(requestedType, bean.getTypes())) {
             throw BeanManagerLogger.LOG.specifiedTypeNotBeanType(requestedType, bean);
         }
-        return getReference(bean, requestedType, creationalContext, false);
+        // Ensure that there is no injection point associated
+        final ThreadLocalStackReference<InjectionPoint> stack = currentInjectionPoint.push(EmptyInjectionPoint.INSTANCE);
+        try {
+            return getReference(bean, requestedType, creationalContext, false);
+        } finally {
+             stack.pop();
+        }
     }
 
     /**
