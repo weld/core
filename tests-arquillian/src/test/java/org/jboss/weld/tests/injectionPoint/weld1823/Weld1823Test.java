@@ -32,7 +32,6 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.tests.category.Integration;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -42,7 +41,7 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Arquillian.class)
 @Category(Integration.class)
-@Ignore("WELD-1823")
+//@Ignore("WELD-1823")
 public class Weld1823Test {
 
     @Deployment(testable = false)

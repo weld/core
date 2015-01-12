@@ -30,6 +30,6 @@ public class CDIBean2Producer {
         if (ip != null) {
             throw new RuntimeException("InjectionPoint exists when producing CDIBean2: " + ip.toString());
         }
-        return new CDIBean2();
+        return new CDIBean2(null);
     }
 }

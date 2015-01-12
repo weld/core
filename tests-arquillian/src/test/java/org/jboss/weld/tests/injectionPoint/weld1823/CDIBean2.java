@@ -20,7 +20,12 @@ package org.jboss.weld.tests.injectionPoint.weld1823;
  *@author Emily Jiang
  */
 public class CDIBean2 {
+
     private String data;
+
+    public CDIBean2(String data) {
+        this.data = data;
+    }
 
     public String getData() {
         return data;
