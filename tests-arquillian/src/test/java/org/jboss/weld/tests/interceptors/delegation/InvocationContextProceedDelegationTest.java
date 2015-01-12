@@ -33,7 +33,6 @@ import org.junit.runner.RunWith;
  *
  * @author Martin Kouba
  */
-@Ignore("WELD-1538")
 @RunWith(Arquillian.class)
 public class InvocationContextProceedDelegationTest {
 
