@@ -302,7 +302,7 @@ enum Resource {
         if (builder != null) {
             parts.add(builder.toString());
         }
-        return parts.toArray(new String[parts.size()]);
+        return parts.isEmpty() ? null : parts.toArray(new String[parts.size()]);
     }
 
     static String detectContentType(String resourceName) {

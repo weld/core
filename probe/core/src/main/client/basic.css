@@ -129,13 +129,13 @@ ul.plain-list {
 }
 
 ul.plain-list li {
-  list-style: none;'
+  list-style: none;
 }
 
 .no-margin {
   margin: 0px;
 }
 
-.modal-dialog-margin {
-    margin-top: 25%;
+.modal-dialog-center {
+  margin-top: 25%;
 }

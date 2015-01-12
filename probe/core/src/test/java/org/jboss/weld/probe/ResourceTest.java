@@ -20,6 +20,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
+
 import org.junit.Test;
 
 public class ResourceTest {
@@ -36,6 +38,13 @@ public class ResourceTest {
         assertFalse(Resource.CLIENT_RESOURCE.matches(new String[] { "client", "simple" }));
         assertTrue(Resource.BEANS.matches(new String[] { "beans" }));
         assertFalse(Resource.BEANS.matches(new String[] { "beans", "foo", "instance" }));
+    }
+
+    @Test
+    public void testSplitPath() {
+        assertTrue(Arrays.equals(null, Resource.splitPath("/")));
+        assertTrue(Arrays.equals(new String[] { "client", "probe.css" }, Resource.splitPath("/client/probe.css")));
+        assertTrue(Arrays.equals(new String[] { "bean", "12", "instance" }, Resource.splitPath("/bean/12/instance")));
     }
 
 }

@@ -74,9 +74,10 @@
         <env>production</env>
         <rest.url.base>${contextPath}</rest.url.base>
         <head>&lt;link rel="stylesheet" type="text/css"
-          href="${contextPath}probe.css" /&gt;</head>
+          href="${contextPath}client/probe.css" /&gt;</head>
         <scripts>&lt;script type="text/javascript"
-          src="${contextPath}probe.js" /&gt;&lt;/script&gt;</scripts>
+          src="${contextPath}client/probe.js" /&gt;&lt;/script&gt;</scripts>
+        <logo.path>${contextPath}client/</logo.path>
       </properties>
 
       <build>
@@ -139,12 +140,14 @@
       </activation>
       <properties>
         <env>development</env>
-        <contextPath></contextPath>
-        <!-- Override this property  -->
+        <!-- Override this property -->
         <rest.url.base>http://localhost:8080/weld-numberguess/weld-probe/</rest.url.base>
         <head>
           &lt;link rel="stylesheet" type="text/css"
           href="bootstrap.min-3.3.1.css"
+          /&gt;
+          &lt;link rel="stylesheet" type="text/css"
+          href="bootstrap-theme.min-3.3.1.css"
           /&gt;
           &lt;link rel="stylesheet" type="text/css"
           href="basic.css" /&gt; </head>
@@ -165,6 +168,7 @@
           src="moment.min-2.8.4.js"&gt;&lt;/script&gt;
           &lt;script type="text/javascript"
           src="app.js"&gt;&lt;/script&gt; </scripts>
+         <logo.path></logo.path>
       </properties>
     </profile>
 

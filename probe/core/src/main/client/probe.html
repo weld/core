@@ -10,7 +10,7 @@ ${head}
    <script type="text/x-handlebars">
         <div class="container-fluid">
         <div id="logo" class="row">
-            <h1><img src="${contextPath}weld_logo_200x.png" alt="Weld logo" />&nbsp; <small>Probe</small></h1>
+            <h1><img src="${logo.path}weld_logo_200x.png" alt="Weld logo" />&nbsp; <small>Probe</small></h1>
         </div>
         <div id="menu" class="row">
             <ul class="nav nav-pills" role="tablist">
@@ -369,7 +369,7 @@ ${head}
         {{view Probe.DependencyGraph contentBinding="model" beanId=id routeRefresh=routeRefresh}}
 
         <div class="modal" id="ipInfoModal" tabindex="-1" role="dialog" aria-labelledby="ipInfoModalTitle" aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-dialog-margin">
+            <div class="modal-dialog modal-lg modal-dialog-center">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
