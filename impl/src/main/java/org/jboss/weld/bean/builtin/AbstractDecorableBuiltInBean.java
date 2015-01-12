@@ -26,6 +26,7 @@ import org.jboss.weld.bean.BeanIdentifiers;
 import org.jboss.weld.bean.DecorableBean;
 import org.jboss.weld.bean.StringBeanIdentifier;
 import org.jboss.weld.injection.CurrentInjectionPoint;
+import org.jboss.weld.injection.EmptyInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Decorators;
 
@@ -47,7 +48,6 @@ public abstract class AbstractDecorableBuiltInBean<T> extends AbstractBuiltInBea
     @Override
     public T create(CreationalContext<T> creationalContext) {
         InjectionPoint ip = getInjectionPoint(cip);
-
         List<Decorator<?>> decorators = getDecorators(ip);
         T instance = newInstance(ip, creationalContext);
         if (decorators.isEmpty()) {
@@ -63,7 +63,8 @@ public abstract class AbstractDecorableBuiltInBean<T> extends AbstractBuiltInBea
     protected abstract Class<T> getProxyClass();
 
     protected InjectionPoint getInjectionPoint(CurrentInjectionPoint cip) {
-        return cip.peek();
+        InjectionPoint ip = cip.peek();
+        return EmptyInjectionPoint.INSTANCE.equals(ip) ? null : ip;
     }
 
     @Override

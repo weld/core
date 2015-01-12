@@ -24,6 +24,7 @@ import javax.enterprise.inject.spi.Interceptor;
 
 import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.injection.CurrentInjectionPoint;
+import org.jboss.weld.injection.EmptyInjectionPoint;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
@@ -51,7 +52,7 @@ public abstract class AbstractBuiltInMetadataBean<T> extends AbstractBuiltInBean
     @Override
     public T create(CreationalContext<T> creationalContext) {
         InjectionPoint ip = cip.peek();
-        if (ip == null) {
+        if (ip == null || EmptyInjectionPoint.INSTANCE.equals(ip)) {
             throw BeanLogger.LOG.dynamicLookupOfBuiltInNotAllowed(toString());
         }
         return newInstance(ip, creationalContext);
