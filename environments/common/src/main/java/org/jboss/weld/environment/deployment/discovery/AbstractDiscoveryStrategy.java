@@ -22,13 +22,13 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import org.jboss.logging.Logger;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.environment.deployment.WeldBeanDeploymentArchive;
+import org.jboss.weld.environment.deployment.discovery.BeanArchiveScanner.ScanResult;
 import org.jboss.weld.environment.logging.CommonLogger;
 import org.jboss.weld.exceptions.UnsupportedOperationException;
 import org.jboss.weld.resources.spi.ClassFileServices;
@@ -80,14 +80,14 @@ public abstract class AbstractDiscoveryStrategy implements DiscoveryStrategy {
         }
 
         final Collection<BeanArchiveBuilder> beanArchiveBuilders = new ArrayList<BeanArchiveBuilder>();
-        for (Entry<BeansXml, String> entry : scanner.scan().entrySet()) {
-            String ref = entry.getValue();
+        for (ScanResult scanResult : scanner.scan().values()) {
+            final String ref = scanResult.getBeanArchiveRef();
             BeanArchiveBuilder builder = null;
             for (BeanArchiveHandler handler : handlers) {
                 builder = handler.handle(ref);
                 if (builder != null) {
                     builder.setId(ref);
-                    builder.setBeansXml(entry.getKey());
+                    builder.setBeansXml(scanResult.getBeansXml());
                     beanArchiveBuilders.add(builder);
                     break;
                 }
