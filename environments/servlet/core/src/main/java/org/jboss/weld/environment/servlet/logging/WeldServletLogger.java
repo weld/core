@@ -142,4 +142,8 @@ public interface WeldServletLogger extends WeldEnvironmentLogger {
     @LogMessage(level = Level.WARN)
     @Message(id = 1029, value = "org.jboss.weld.environment.servlet.Listener is in an inconsistent state - Weld Servlet cannot be shut down properly")
     void noServletLifecycleToDestroy();
+
+    @LogMessage(level = Level.DEBUG)
+    @Message(id = 1030, value = "Cannot load class using the supplied TCCL: {0}", format = Format.MESSAGE_FORMAT)
+    void cannotLoadClassUsingTccl(String className);
 }
