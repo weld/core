@@ -27,5 +27,14 @@ public interface WeldEnvironmentLogger extends BasicLogger {
     @Message(id = 0, value = CATCHING_MARKER)
     void catchingDebug(@Cause Throwable throwable);
 
+    /**
+     * Replacement for <code>org.slf4j.ext.XLogger.throwing(Level.TRACE, e)</code>.
+     *
+     * @param throwable
+     */
+    @LogMessage(level = Level.TRACE)
+    @Message(id = 0, value = CATCHING_MARKER)
+    void catchingTrace(@Cause Throwable throwable);
+
 
 }

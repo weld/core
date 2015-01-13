@@ -1,4 +1,4 @@
-/**
+/*
  * JBoss, Home of Professional Open Source
  * Copyright 2008, Red Hat Middleware LLC, and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
@@ -22,7 +22,6 @@ import java.lang.reflect.Method;
 
 import org.jboss.weld.environment.servlet.logging.WeldServletLogger;
 
-
 /**
  * Reflection utilities
  *
@@ -35,7 +34,7 @@ public abstract class Reflections {
 
     public static <T> T newInstance(String className) {
         try {
-            return Reflections.<T>classForName(className).newInstance();
+            return Reflections.<T> classForName(className).newInstance();
         } catch (InstantiationException e) {
             throw WeldServletLogger.LOG.cannotInstantiateInstance(className, e);
         } catch (IllegalAccessException e) {
@@ -43,32 +42,31 @@ public abstract class Reflections {
         }
     }
 
-
     @SuppressWarnings("unchecked")
     public static <T> Class<T> classForName(String name) {
-
-        try {
-            final ClassLoader tccl = Thread.currentThread().getContextClassLoader();
-            if (tccl != null) {
+        final ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+        if (tccl != null) {
+            try {
                 return (Class<T>) tccl.loadClass(name);
-            } else {
-                return (Class<T>) Class.forName(name);
+            } catch (Exception e) {
+                WeldServletLogger.LOG.cannotLoadClassUsingTccl(name);
+                WeldServletLogger.LOG.catchingTrace(e);
             }
-        } catch (ClassNotFoundException e) {
-            throw WeldServletLogger.LOG.cannotLoadClass(name, e);
-        } catch (LinkageError e) {
+        }
+        try {
+            return (Class<T>) Class.forName(name);
+        } catch (Exception e) {
             throw WeldServletLogger.LOG.cannotLoadClass(name, e);
         }
     }
 
     /**
-     * Search the class hierarchy for a method with the given name and arguments.
-     * Will return the nearest match, starting with the class specified and
-     * searching up the hierarchy.
+     * Search the class hierarchy for a method with the given name and arguments. Will return the nearest match, starting with the class specified and searching
+     * up the hierarchy.
      *
      * @param clazz The class to search
-     * @param name  The name of the method to search for
-     * @param args  The arguments of the method to search for
+     * @param name The name of the method to search for
+     * @param args The arguments of the method to search for
      * @return The method found, or null if no method is found
      */
     public static Method findDeclaredMethod(Class<?> clazz, String name, Class<?>... args) {
@@ -83,12 +81,11 @@ public abstract class Reflections {
     }
 
     /**
-     * Search the class hierarchy for a field with the given name. Will return
-     * the nearest match, starting with the class specified and searching up the
+     * Search the class hierarchy for a field with the given name. Will return the nearest match, starting with the class specified and searching up the
      * hierarchy.
      *
      * @param clazz The class to search
-     * @param name  The name of the field to search for
+     * @param name The name of the field to search for
      * @return The field found, or null if no field is found
      */
     public static Field findDeclaredField(Class<?> clazz, String name) {
