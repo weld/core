@@ -59,8 +59,8 @@ public class WebAppBeanArchiveScanner extends DefaultBeanArchiveScanner {
     }
 
     @Override
-    public Map<BeansXml, String> scan() {
-        Map<BeansXml, String> beansXmlMap = super.scan();
+    public Map<URL, ScanResult> scan() {
+        Map<URL, ScanResult> beansXmlMap = super.scan();
         try {
             // WEB-INF/classes
             URL beansXmlUrl = null;
@@ -79,10 +79,10 @@ public class WebAppBeanArchiveScanner extends DefaultBeanArchiveScanner {
                 if (accept(beansXml)) {
                     File webInfClasses = Servlets.getRealFile(servletContext, WEB_INF_CLASSES);
                     if (webInfClasses != null) {
-                        beansXmlMap.put(beansXml, webInfClasses.getPath());
+                        beansXmlMap.put(beansXmlUrl, new ScanResult(beansXml, webInfClasses.getPath()));
                     } else {
                         // The WAR is not extracted to the file system - make use of ServletContext.getResourcePaths()
-                        beansXmlMap.put(beansXml, WEB_INF_CLASSES);
+                        beansXmlMap.put(beansXmlUrl, new ScanResult(beansXml, WEB_INF_CLASSES));
                     }
                 }
             }

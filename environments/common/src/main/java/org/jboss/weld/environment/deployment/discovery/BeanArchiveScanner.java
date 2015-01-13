@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.environment.deployment.discovery;
 
+import java.net.URL;
 import java.util.Map;
 
 import org.jboss.weld.bootstrap.spi.BeansXml;
@@ -29,12 +30,28 @@ import org.jboss.weld.bootstrap.spi.BeansXml;
  * @author Martin Kouba
  */
 public interface BeanArchiveScanner {
+    public static class ScanResult {
+        private final String beanArchiveRef;
+        private final BeansXml beansXml;
+
+        public ScanResult(final BeansXml beansXml, final String beanArchiveRef) {
+            this.beansXml = beansXml;
+            this.beanArchiveRef = beanArchiveRef;
+        }
+
+        public String getBeanArchiveRef() {
+            return beanArchiveRef;
+        }
+
+        public BeansXml getBeansXml() {
+            return beansXml;
+        }
+    }
 
     /**
      * Scans for bean archives identified by beans.xml files.
      *
-     * @return the map of {@link BeansXml} representations mapped to the bean archive reference (the root path of the bean archive)
+     * @return the map of {@link ScanResult} representations mapped by url of the beans xml.
      */
-    Map<BeansXml, String> scan();
-
+    Map<URL, ScanResult> scan();
 }

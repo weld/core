@@ -39,6 +39,7 @@ import org.jboss.weld.bootstrap.spi.BeanDiscoveryMode;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.environment.deployment.AbstractWeldDeployment;
 import org.jboss.weld.environment.deployment.WeldResourceLoader;
+import org.jboss.weld.environment.deployment.discovery.BeanArchiveScanner.ScanResult;
 import org.jboss.weld.environment.logging.CommonLogger;
 import org.jboss.weld.resources.spi.ResourceLoader;
 
@@ -66,17 +67,17 @@ public class DefaultBeanArchiveScanner implements BeanArchiveScanner {
     }
 
     @Override
-    public Map<BeansXml, String> scan() {
-        Map<BeansXml, String> beansXmlMap = new HashMap<BeansXml, String>();
+    public Map<URL, ScanResult> scan() {
+        final Map<URL, ScanResult>  beansXmlMap = new HashMap<URL, ScanResult> ();
         // META-INF/beans.xml
-        String[] resources = AbstractWeldDeployment.RESOURCES;
+        final String[] resources = AbstractWeldDeployment.RESOURCES;
 
         // Find all beans.xml files
         for (String resourceName : resources) {
             for (URL beansXmlUrl : resourceLoader.getResources(resourceName)) {
-                BeansXml beansXml = bootstrap.parse(beansXmlUrl);
+                final BeansXml beansXml = bootstrap.parse(beansXmlUrl);
                 if (accept(beansXml)) {
-                    beansXmlMap.put(beansXml, getBeanArchiveReference(beansXmlUrl));
+                    beansXmlMap.put(beansXmlUrl, new ScanResult(beansXml, getBeanArchiveReference(beansXmlUrl)));
                 }
             }
         }
