@@ -1,14 +1,16 @@
 package org.jboss.weld.injection;
 
-import javax.enterprise.inject.spi.Annotated;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.InjectionPoint;
+import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.Set;
+
+import javax.enterprise.inject.spi.Annotated;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.InjectionPoint;
 
 public class EmptyInjectionPoint implements InjectionPoint, Serializable {
 
@@ -47,4 +49,7 @@ public class EmptyInjectionPoint implements InjectionPoint, Serializable {
         return false;
     }
 
+    private Object readResolve() throws ObjectStreamException {
+        return INSTANCE;
+    }
 }
