@@ -37,22 +37,15 @@ public class BeanDiscoveryInjectionTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        WeldSEClassPath archives = ShrinkWrap.create(WeldSEClassPath.class);
         JavaArchive archive01 = ShrinkWrap.create(BeanArchive.class).addAsManifestResource(new BeansXml(BeanDiscoveryMode.ALL), "beans.xml")
                 .addClasses(Dog.class, Cat.class, Cow.class);
         JavaArchive archive02 = ShrinkWrap.create(BeanArchive.class).addAsManifestResource(new BeansXml(BeanDiscoveryMode.ANNOTATED), "beans.xml")
                 .addClasses(Plant.class, Tree.class, Stone.class);
         JavaArchive archive03 = ShrinkWrap.create(BeanArchive.class).addAsManifestResource(new BeansXml(BeanDiscoveryMode.NONE), "beans.xml")
                 .addClasses(Flat.class, House.class);
-        archives.add(archive01);
-        archives.add(archive02);
-        archives.add(archive03);
-        return archives;
+        return ShrinkWrap.create(WeldSEClassPath.class).add(archive01, archive02, archive03);
     }
 
-    /**
-     * Test bean discovery in SE.
-     */
     @Test
     public void testAllBeanDiscovery(BeanManager manager) {
         assertEquals(1, manager.getBeans(Dog.class).size());
@@ -72,7 +65,4 @@ public class BeanDiscoveryInjectionTest {
         assertEquals(0, manager.getBeans(Flat.class).size());
         assertEquals(0, manager.getBeans(House.class).size());
     }
-
-
-
 }
