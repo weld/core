@@ -254,6 +254,12 @@ final class Queries {
             }
         }
 
+        @Override
+        public String toString() {
+            return String.format("BeanFilters [kind=%s, beanClass=%s, beanType=%s, qualifier=%s, scope=%s, bda=%s]", kind, beanClass, beanType, qualifier,
+                    scope, bda);
+        }
+
     }
 
     static class ObserverFilters extends Filters<ObserverMethod<?>> {
@@ -316,6 +322,12 @@ final class Queries {
             }
         }
 
+        @Override
+        public String toString() {
+            return String.format("ObserverFilters [beanClass=%s, observedType=%s, qualifier=%s, reception=%s, txPhase=%s, declaringBeanKind=%s]", beanClass,
+                    observedType, qualifier, reception, txPhase, declaringBeanKind);
+        }
+
     }
 
     static class InvocationsFilters extends Filters<Invocation> {
@@ -341,6 +353,11 @@ final class Queries {
             } else if (METHOD_NAME.equals(name)) {
                 methodName = value;
             }
+        }
+
+        @Override
+        public String toString() {
+            return String.format("InvocationsFilters [beanClass=%s, methodName=%s]", beanClass, methodName);
         }
 
     }

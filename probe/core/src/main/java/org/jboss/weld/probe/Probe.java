@@ -45,7 +45,7 @@ import org.jboss.weld.serialization.spi.ContextualStore;
  * Probe is a per deployment service.
  *
  * <p>
- * An integrator is required to register this service if appropriate.
+ * An integrator is required to register this service and call {@link #initialize(BeanManagerImpl)} if appropriate.
  * </p>
  *
  * @author Martin Kouba
@@ -90,7 +90,7 @@ public class Probe implements Service {
      *
      * @param beanManager
      */
-    public void intitialize(BeanManagerImpl beanManager) {
+    public void initialize(BeanManagerImpl beanManager) {
         if (isInitialized()) {
             throw new IllegalStateException("Probe already initialized!");
         }
@@ -226,7 +226,7 @@ public class Probe implements Service {
 
     @Override
     public void cleanup() {
-        if(mappings != null) {
+        if (mappings != null) {
             mappings.clear();
         }
     }
