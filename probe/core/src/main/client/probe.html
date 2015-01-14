@@ -177,13 +177,13 @@ ${head}
                 <td><span class="{{unbound kind}} boxed">{{unbound kind}}</span></td>
                 <td>{{unbound scope}}</td>
                 <td>
-                    {{#link-to 'beanDetail' id}}{{unbound beanClass}}{{/link-to}}
+                    {{#link-to 'beanDetail' id title=beanClass}}{{substr beanClass 60}}{{/link-to}}
                 </td>
                 <td>
-                    {{eachItemOnNewLine types}}
+                    {{eachListItem types 60}}
                 </td>
                 <td>
-                    {{eachItemOnNewLine qualifiers}}
+                    {{eachListItem qualifiers 60}}
                 </td>
             </tr>
             {{/each}}
@@ -394,7 +394,7 @@ ${head}
             <div class="total pull-left">Total found: {{total}}</div>
             <ul class="pagination no-margin pull-left">
             {{#each pages}}
-                <li class="{{unbound active}}">{{#link-to 'beanList' (query-params page=index)}}{{index}}{{/link-to}}</li>
+                <li class="{{unbound active}}">{{#link-to 'observerList' (query-params page=index)}}{{index}}{{/link-to}}</li>
             {{/each}}
             </ul>
         </div>
@@ -427,19 +427,19 @@ ${head}
             {{#each data}}
             <tr>
                 <td>{{increment _view.contentIndex}}</td>
-                <td>{{#if declaringBean}}<span class="{{unbound declaringBean.kind}} boxed">{{unbound declaringBean.kind}}</span>{{/if}}</td>
+                <td>{{#if declaringBean}}<span class="{{unbound declaringBean.kind}} boxed">{{unbound declaringBean.kind}}</span>{{else}}N/A{{/if}}</td>
                 <td>
                     {{#if declaringBean}}
-                        {{#link-to 'beanDetail' declaringBean.id}}{{substr declaringBean.beanClass 60}}{{/link-to}}
+                        {{#link-to 'beanDetail' declaringBean.id title=declaringBean.beanClass}}{{substr declaringBean.beanClass 60}}{{/link-to}}
                     {{else}}
                         {{unbound beanClass}}
                     {{/if}}
                 </td>
                 <td>
-                    {{#link-to 'observerDetail' id}}{{substr observedType 60}}{{/link-to}}
+                    {{#link-to 'observerDetail' id title=observedType}}{{substr observedType 60}}{{/link-to}}
                 </td>
                 <td>
-                    {{eachItemOnNewLine qualifiers}}
+                    {{eachListItem qualifiers 60}}
                 </td>
                 <td>
                     <span class="{{unbound reception}} boxed">{{unbound reception}}</span>

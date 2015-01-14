@@ -113,9 +113,8 @@ final class Components {
     /**
      *
      * @param bean
-     * @param beans
-     * @param beanManager
-     * @return
+     * @param probe
+     * @return the set of dependents
      */
     static Set<Dependency> getDependents(Bean<?> bean, Probe probe) {
         Set<Dependency> dependents = new HashSet<Dependency>();
@@ -131,11 +130,18 @@ final class Components {
             Set<InjectionPoint> injectionPoints = candidate.getInjectionPoints();
             if (injectionPoints != null && !injectionPoints.isEmpty()) {
                 for (InjectionPoint injectionPoint : injectionPoints) {
+
                     // At this point unsatisfied or ambiguous dependency should not exits
                     Bean<?> candidateDependency = beanManager.resolve(beanManager.getBeans(injectionPoint.getType(),
                             injectionPoint.getQualifiers().toArray(new Annotation[injectionPoint.getQualifiers().size()])));
-                    // Not sure if it is safe
-                    if (bean.equals(candidateDependency)) {
+                    boolean satisfies = false;
+
+                    if (isBuiltinBeanButNotExtension(candidateDependency)) {
+                        satisfies = bean.equals(probe.getBean(Components.getBuiltinBeanId((AbstractBuiltInBean<?>) candidateDependency)));
+                    } else {
+                        satisfies = bean.equals(candidateDependency);
+                    }
+                    if (satisfies) {
                         dependents.add(new Dependency(candidate, injectionPoint));
                     }
                 }
@@ -148,16 +154,21 @@ final class Components {
      *
      * @param bean
      * @param beanManager
-     * @return
+     * @param probe
+     * @return the set of dependencies
      */
-    static Set<Dependency> getDependencies(Bean<?> bean, BeanManager beanManager) {
+    static Set<Dependency> getDependencies(Bean<?> bean, BeanManager beanManager, Probe probe) {
         Set<Dependency> dependencies = new HashSet<Dependency>();
         Set<InjectionPoint> injectionPoints = bean.getInjectionPoints();
         if (injectionPoints != null && !injectionPoints.isEmpty()) {
             for (InjectionPoint injectionPoint : injectionPoints) {
                 // At this point unsatisfied or ambiguous dependency should not exits
-                dependencies.add(new Dependency(beanManager.resolve(beanManager.getBeans(injectionPoint.getType(),
-                        injectionPoint.getQualifiers().toArray(new Annotation[injectionPoint.getQualifiers().size()]))), injectionPoint));
+                Bean<?> dependency = beanManager.resolve(beanManager.getBeans(injectionPoint.getType(),
+                        injectionPoint.getQualifiers().toArray(new Annotation[injectionPoint.getQualifiers().size()])));
+                if (isBuiltinBeanButNotExtension(dependency)) {
+                    dependency = probe.getBean(Components.getBuiltinBeanId((AbstractBuiltInBean<?>) dependency));
+                }
+                dependencies.add(new Dependency(dependency, injectionPoint));
             }
         }
         return dependencies;
@@ -186,6 +197,16 @@ final class Components {
             return SessionBeanType.SINGLETON;
         }
         throw new IllegalStateException("Not a session bean");
+    }
+
+    /**
+     * Built-in beans require a special treatment.
+     *
+     * @param bean
+     * @return <code>true</code> if the bean is a built-in bean but not an extension, <code>false</code> otherwise
+     */
+    static boolean isBuiltinBeanButNotExtension(Bean<?> bean) {
+        return bean instanceof AbstractBuiltInBean<?> && !(bean instanceof ExtensionBean);
     }
 
     /**

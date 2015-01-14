@@ -386,11 +386,11 @@ final class JsonObjects {
         if (beanManager == null) {
             return null;
         }
-        JsonArrayBuilder dependenciesBuilder = Json.newArrayBuilder();
+        JsonArrayBuilder dependenciesBuilder = Json.newArrayBuilder().setIgnoreEmptyBuilders(true);
 
-        for (Dependency dep : Components.getDependencies(bean, beanManager)) {
-            // Workaround for built-in beans
-            if (dep.getBean() instanceof AbstractBuiltInBean<?>) {
+        for (Dependency dep : Components.getDependencies(bean, beanManager, probe)) {
+            // Workaround for built-in beans - these are identified by the set of types
+            if (Components.isBuiltinBeanButNotExtension(dep.getBean())) {
                 dependenciesBuilder.add(createDependency(probe.getBean(Components.getBuiltinBeanId((AbstractBuiltInBean<?>) dep.getBean())), dep, probe));
                 continue;
             }
@@ -418,11 +418,11 @@ final class JsonObjects {
      */
     static JsonArrayBuilder createDependents(Bean<?> parent, Bean<?> bean, Probe probe, boolean isTransient) {
 
-        JsonArrayBuilder dependentsBuilder = Json.newArrayBuilder();
+        JsonArrayBuilder dependentsBuilder = Json.newArrayBuilder().setIgnoreEmptyBuilders(true);
 
         for (Dependency dependent : Components.getDependents(bean, probe)) {
-            // Workaround for built-in beans
-            if (dependent.getBean() instanceof AbstractBuiltInBean<?>) {
+            // Workaround for built-in beans - these are identified by the set of types
+            if (Components.isBuiltinBeanButNotExtension(dependent.getBean())) {
                 dependentsBuilder.add(createDependency(probe.getBean(Components.getBuiltinBeanId((AbstractBuiltInBean<?>) dependent.getBean())), dependent,
                         probe));
                 continue;
@@ -619,7 +619,7 @@ final class JsonObjects {
 
     private static JsonObjectBuilder createDependency(Bean<?> bean, Dependency dependency, Probe probe) {
         JsonObjectBuilder builder = createSimpleBeanJson(bean, probe);
-        if (dependency != null) {
+        if (bean != null && dependency != null) {
             builder.add(REQUIRED_TYPE, dependency.getInjectionPoint().getType().toString()).add(QUALIFIERS,
                     createQualifiers(dependency.getInjectionPoint().getQualifiers(), false));
         }

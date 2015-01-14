@@ -457,9 +457,7 @@ Ember.Handlebars.registerBoundHelper('at', function() {
 
 Ember.Handlebars.registerBoundHelper('substr', function(text, limit) {
   if (text.length > limit) {
-    var start = text.length - limit - 3;
-    var end = text.length;
-    return '...' + text.substring(start, end);
+    return abbreviate(text, limit);
   } else {
     return text;
   }
@@ -473,6 +471,23 @@ Ember.Handlebars.registerBoundHelper('eachItemOnNewLine', function(items,
       ret += Handlebars.Utils.escapeExpression(items[i]) + '<br/>';
     }
   }
+  return new Handlebars.SafeString(ret);
+});
+
+Ember.Handlebars.registerBoundHelper('eachListItem', function(items, limit,
+    options) {
+  var ret = '<ul class="plain-list no-margin">';
+  if (items) {
+    for (var i = 0; i < items.length; i++) {
+      var text = Handlebars.Utils.escapeExpression(items[i]);
+      ret += "<li title='";
+      ret += text;
+      ret += "'>";
+      ret += text.length > limit ? abbreviate(text, limit) : text;
+      ret += '</li>';
+    }
+  }
+  ret += '</ul>';
   return new Handlebars.SafeString(ret);
 });
 
@@ -630,15 +645,13 @@ Probe.DependencyGraph = Ember.View
         }
 
         // Injection point info dialog
-        svg
-            .selectAll("text.injection-point-info")
-            .on(
-                "click",
-                function(d, i) {
-                  $('div#ipInfoModal div.modal-body').html(getInjectionPointInfoHtml(
-                      d, true));
-                  $('div#ipInfoModal').modal('show');
-                });
+        svg.selectAll("text.injection-point-info").on(
+            "click",
+            function(d, i) {
+              $('div#ipInfoModal div.modal-body').html(
+                  getInjectionPointInfoHtml(d, true));
+              $('div#ipInfoModal').modal('show');
+            });
 
         var node = svg.selectAll("g.node").data(nodes).enter().append(
             "svg:g").attr("class", "node").call(node_drag);
@@ -730,27 +743,28 @@ function getInjectionPointInfo(d) {
 }
 
 function getInjectionPointInfoHtml(d) {
-    if (!d.dependencies) {
-      return '';
-    }
-    var description = '<ul>';
-    for (var j = 0; j < d.dependencies.length; j++) {
-      // Injection point info
-      var qualifiers = "";
-      var requiredType = "";
-      if (d.dependencies[j].qualifiers) {
-        for (var k = 0; k < d.dependencies[j].qualifiers.length; k++) {
-          qualifiers += d.dependencies[j].qualifiers[k] + " ";
-        }
-      }
-      if (d.dependencies[j].requiredType) {
-        requiredType += '<strong>' + d.dependencies[j].requiredType + '</strong>';
-      }
-      description += '<li>' + qualifiers + ' ' + requiredType + '</li>';
-    }
-    description += '</ul>';
-    return description;
+  if (!d.dependencies) {
+    return '';
   }
+  var description = '<ul>';
+  for (var j = 0; j < d.dependencies.length; j++) {
+    // Injection point info
+    var qualifiers = "";
+    var requiredType = "";
+    if (d.dependencies[j].qualifiers) {
+      for (var k = 0; k < d.dependencies[j].qualifiers.length; k++) {
+        qualifiers += d.dependencies[j].qualifiers[k] + " ";
+      }
+    }
+    if (d.dependencies[j].requiredType) {
+      requiredType += '<strong>' + d.dependencies[j].requiredType
+          + '</strong>';
+    }
+    description += '<li>' + qualifiers + ' ' + requiredType + '</li>';
+  }
+  description += '</ul>';
+  return description;
+}
 
 Probe.InvocationTree = Ember.View
     .extend({
@@ -1127,4 +1141,10 @@ function getRootNode(invocation, parent) {
   node.parent = null;
   node.children = [ transformInvocation(invocation, parent) ];
   return node;
+}
+
+function abbreviate(text, limit) {
+  var start = text.length - limit + 3;
+  var end = text.length;
+  return '...' + text.substring(start, end);
 }

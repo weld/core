@@ -273,7 +273,7 @@ public class Probe implements Service {
 
                 // Beans
                 for (Bean<?> bean : manager.getBeans()) {
-                    // Treat extension and built-in beans as one entity so that the dependency graph is more meaningful
+                    // Treat built-in beans (except for extensions) as one entity so that the dependency graph is more meaningful
                     // E.g. Weld registers a separate InstanceBean for every bean deployment archive, from the user point of view
                     // there's only one Instance bean though
                     if (bean instanceof ExtensionBean) {
