@@ -39,12 +39,13 @@ import com.gargoylesoftware.htmlunit.WebClient;
 
 /**
  * Verifies that a non-CDI web module with JSF works fine when a different module of an EAR is CDI-enabled.
- * 
+ *
  * @see WFLY-3196
  *
  */
 @Category(Integration.class)
 @RunWith(Arquillian.class)
+@Ignore("WELD-1839")
 public class ManagedBeansWithCDITest {
 
     @Deployment(testable = false)
