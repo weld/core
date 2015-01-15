@@ -111,4 +111,14 @@ public class ELResolverTest {
         ELContext ctx = EL.createELContext(beanManager);
         EL.EXPRESSION_FACTORY.createValueExpression(ctx, "#{orderBean.orderId}", Object.class).getValue(ctx);
     }
+
+    @Test
+    public void testCompoundName(BeanManagerImpl beanManager) {
+        ELContext ctx = EL.createELContext(beanManager);
+        Object bean = EL.EXPRESSION_FACTORY.createValueExpression(ctx, "#{com.acme.settings}", Object.class).getValue(ctx);
+        Assert.assertTrue(bean instanceof MyBean);
+        Object foo = EL.EXPRESSION_FACTORY.createValueExpression(ctx, "#{com.acme.settings.foo}", Object.class).getValue(ctx);
+        Assert.assertTrue(foo instanceof String);
+        Assert.assertEquals("foo", foo);
+    }
 }
