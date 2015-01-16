@@ -585,8 +585,20 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     protected void registerBeanNamespace(Bean<?> bean) {
-        if (bean.getName() != null && bean.getName().indexOf('.') > 0) {
-            namespaces.add(bean.getName().substring(0, bean.getName().lastIndexOf('.')));
+        if (bean.getName() != null) {
+            String[] parts = bean.getName().split("\\.");
+            if (parts.length > 1) {
+                for (int i = 0; i < parts.length - 1; i++) {
+                    StringBuilder builder = new StringBuilder();
+                    for (int j = 0; j <= i; j++) {
+                        if (j > 0) {
+                            builder.append('.');
+                        }
+                        builder.append(parts[j]);
+                    }
+                    namespaces.add(builder.toString());
+                }
+            }
         }
     }
 
