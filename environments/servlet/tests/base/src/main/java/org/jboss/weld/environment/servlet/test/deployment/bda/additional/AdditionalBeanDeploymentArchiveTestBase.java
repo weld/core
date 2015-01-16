@@ -58,7 +58,7 @@ public abstract class AdditionalBeanDeploymentArchiveTestBase {
         assertEquals(3, beanDeploymentArchivesMap.size());
         boolean additionalBdaFound = false;
         for (BeanDeploymentArchive bda : beanDeploymentArchivesMap.keySet()) {
-            if (bda.getId().endsWith(WeldDeployment.ADDITIONAL_BDA_ID_SUFFIX)) {
+            if (bda.getId().equals(WeldDeployment.ADDITIONAL_BDA_ID)) {
                 additionalBdaFound = true;
                 break;
             }
