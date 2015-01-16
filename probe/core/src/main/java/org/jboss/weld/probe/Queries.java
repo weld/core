@@ -74,6 +74,9 @@ final class Queries {
         if (data.isEmpty()) {
             return new Page<T>(0, 0, 0, Collections.emptyList());
         }
+        if (page > 1 && (((page - 1) * DEFAULT_PAGE_SIZE) >= data.size())) {
+            page = 1;
+        }
         int lastIdx = data.size() / DEFAULT_PAGE_SIZE;
         if (data.size() % DEFAULT_PAGE_SIZE > 0) {
             lastIdx++;

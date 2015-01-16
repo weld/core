@@ -8,19 +8,31 @@ ${head}
 <body>
 
    <script type="text/x-handlebars">
-        <div class="container-fluid">
-        <div id="logo" class="row">
-            <h1><img src="${logo.path}weld_logo_200x.png" alt="Weld logo" />&nbsp; <small>Probe</small></h1>
+        <div id="navigation-menu" class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#menu" aria-expanded="false" aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#" title="Weld Probe"><img src="${logo.path}weld_icon_48x.png" alt="Weld logo" /></a>
+                </div>
+                <div id="menu" class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav">
+                        <li>{{#link-to 'deployment'}}Deployment{{/link-to}}</li>
+                        <li>{{#link-to 'beanList'}}Beans{{/link-to}}</li>
+                        <li>{{#link-to 'observerList'}}Observer Methods{{/link-to}}</li>
+                        <li>{{#link-to 'contexts'}}Contexts{{/link-to}}</li>
+                        <li>{{#link-to 'invocationList'}}Invocation Trees{{/link-to}}</li>
+                    </ul>
+                </div>
+            </div>
         </div>
-        <div id="menu" class="row">
-            <ul class="nav nav-pills" role="tablist">
-                <li>{{#link-to 'deployment'}}Deployment{{/link-to}}</li>
-                <li>{{#link-to 'beanList'}}Beans{{/link-to}}</li>
-                <li>{{#link-to 'observerList'}}Observer Methods{{/link-to}}</li>
-                <li>{{#link-to 'contexts'}}Contexts{{/link-to}}</li>
-                <li>{{#link-to 'invocationList'}}Invocation Trees{{/link-to}}</li>
-            </ul>
-        </div>
+        <div class="container-fluid content">
         {{outlet}}
         <footer>
             Build ${project.version}
@@ -32,9 +44,9 @@ ${head}
         type="text/x-handlebars"
         data-template-name="deployment">
 
-        <h2>Deployment</h2>
+        <h1>Deployment</h1>
 
-        <h3>Bean Archives</h3>
+        <h2>Bean Archives</h2>
 
         <table class="table table-bordered table-striped">
             <col width="3%">
@@ -92,7 +104,7 @@ ${head}
             {{/each}}
         </table>
 
-        <h3>Weld Configuration</h3>
+        <h2>Weld Configuration</h2>
 
         <table class="table table-bordered table-striped">
             <col width="6%">
@@ -118,7 +130,7 @@ ${head}
         type="text/x-handlebars"
         data-template-name="beanList">
 
-        <h2>Beans</h2>
+        <h1>Beans</h1>
 
         <p>
             <label>Bean Archive:</label>
@@ -134,7 +146,7 @@ ${head}
 
         <div class="btn-line">
             &nbsp;<button {{action 'clearFilters'}} class="btn btn-default">Clear filters</button>
-            <div class="total pull-left">Total found: {{total}}</div>
+            <div class="total pull-left">Found: {{total}}</div>
             <ul class="pagination no-margin pull-left">
             {{#each pages}}
                 <li class="{{unbound active}}">{{#link-to 'beanList' (query-params page=index)}}{{index}}{{/link-to}}</li>
@@ -189,59 +201,68 @@ ${head}
             {{/each}}
         </table>
 
+        <div class="btn-line">
+            <div class="total pull-left">Found: {{total}}</div>
+            <ul class="pagination no-margin">
+            {{#each pages}}
+                <li class="{{unbound active}}">{{#link-to 'beanList' (query-params page=index)}}{{index}}{{/link-to}}</li>
+            {{/each}}
+            </ul>
+        </div>
+
     </script>
 
     <script
         type="text/x-handlebars"
         data-template-name="beanDetail">
 
-        <h2>Bean Detail</h2>
+        <h1>Bean Detail</h1>
 
         <div class="panel panel-default">
             <div class="panel-body">
                 <form class="form-horizontal">
                     {{#if bdaIdName}}
                     <div class="form-group">
-                        <label class="col-sm-2">Bean Deployment Archive:</label>
+                        <label class="col-sm-2 control-label">Bean Deployment Archive:</label>
                          <div class="col-sm-10">
                             <p class="form-control-static">{{#link-to 'beanList' (query-params bda=bdaId)}}{{bdaIdName}}{{/link-to}}</p>
                         </div>
                     </div>
                     {{/if}}
                     <div class="form-group">
-                        <label class="col-sm-2">Kind:</label>
+                        <label class="col-sm-2 control-label">Kind:</label>
                          <div class="col-sm-10">
                             <p class="form-control-static"><span {{bind-attr class=kindClass}}>{{kind}}</span></p>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-2">Bean Class:</label>
+                        <label class="col-sm-2 control-label">Bean Class:</label>
                         <div class="col-sm-10">
                             <p class="form-control-static">{{beanClass}}</p>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-2">Scope:</label>
+                        <label class="col-sm-2 control-label">Scope:</label>
                         <div class="col-sm-10">
                             <p class="form-control-static">{{scope}}</p>
                         </div>
                     </div>
                     {{#if name}}
                     <div class="form-group">
-                        <label class="col-sm-2">Name:</label>
+                        <label class="col-sm-2 control-label">Name:</label>
                         <div class="col-sm-10">
                             <p class="form-control-static">{{name}}</p>
                         </div>
                     </div>
                     {{/if}}
                     <div class="form-group">
-                        <label class="col-sm-2">Is Alternative:</label>
+                        <label class="col-sm-2 control-label">Is Alternative:</label>
                         <div class="col-sm-10">
                             <p class="form-control-static">{{#if isAlternative}}true{{else}}false{{/if}}</p>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-2">Bean Types:</label>
+                        <label class="col-sm-2 control-label">Bean Types:</label>
                         <div class="col-sm-10">
                             {{#each types}}
                             <p class="form-control-static">{{this}}</p>
@@ -250,7 +271,7 @@ ${head}
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-2">Qualifiers:</label>
+                        <label class="col-sm-2 control-label">Qualifiers:</label>
                         <div class="col-sm-10">
                             {{#each qualifiers}}
                             <p class="form-control-static">{{this}}</p>
@@ -260,7 +281,7 @@ ${head}
                     </div>
                     {{#if stereotypes}}
                     <div class="form-group">
-                        <label class="col-sm-2">Stereotypes:</label>
+                        <label class="col-sm-2 control-label">Stereotypes:</label>
                         <div class="col-sm-10">
                             {{#each stereotypes}}
                             <p class="form-control-static">{{this}}</p>
@@ -270,7 +291,7 @@ ${head}
                     {{/if}}
                     {{#if ejbName}}
                     <div class="form-group">
-                        <label class="col-sm-2">EJB Name:</label>
+                        <label class="col-sm-2 control-label">EJB Name:</label>
                         <div class="col-sm-10">
                             <p class="form-control-static">{{ejbName}}</p>
                         </div>
@@ -278,7 +299,7 @@ ${head}
                     {{/if}}
                     {{#if sessionBeanType}}
                     <div class="form-group">
-                        <label class="col-sm-2">Session Bean Type:</label>
+                        <label class="col-sm-2 control-label">Session Bean Type:</label>
                         <div class="col-sm-10">
                             <p class="form-control-static">{{sessionBeanType}}</p>
                         </div>
@@ -286,7 +307,7 @@ ${head}
                     {{/if}}
                     {{#if declaringBean}}
                     <div class="form-group">
-                        <label class="col-sm-2">Declaring Bean:</label>
+                        <label class="col-sm-2 control-label">Declaring Bean:</label>
                         <div class="col-sm-10">
                             <p class="form-control-static"><span class="{{unbound declaringBean.kind}} boxed">{{declaringBean.kind}}</span> {{#link-to 'beanDetail' declaringBean.id}}{{declaringBean.beanClass}}{{/link-to}}</p>
                         </div>
@@ -294,7 +315,7 @@ ${head}
                     {{/if}}
                     {{#if producerMethod}}
                     <div class="form-group">
-                        <label class="col-sm-2">Producer Method:</label>
+                        <label class="col-sm-2 control-label">Producer Method:</label>
                         <div class="col-sm-10">
                             <p class="form-control-static">{{producerMethod}}</p>
                         </div>
@@ -302,7 +323,7 @@ ${head}
                     {{/if}}
                     {{#if producerField}}
                     <div class="form-group">
-                        <label class="col-sm-2">Producer Field:</label>
+                        <label class="col-sm-2 control-label">Producer Field:</label>
                         <div class="col-sm-10">
                             <p class="form-control-static">{{producerField}}</p>
                         </div>
@@ -310,7 +331,7 @@ ${head}
                     {{/if}}
                     {{#if disposalMethod}}
                     <div class="form-group">
-                        <label class="col-sm-2">Disposal Method:</label>
+                        <label class="col-sm-2 control-label">Disposal Method:</label>
                         <div class="col-sm-10">
                             <p class="form-control-static">{{disposalMethod}}</p>
                         </div>
@@ -318,7 +339,7 @@ ${head}
                     {{/if}}
                     {{#if declaredObservers}}
                     <div class="form-group">
-                        <label class="col-sm-2">Declared Observers:</label>
+                        <label class="col-sm-2 control-label">Declared Observers:</label>
                         <div class="col-sm-10">
                             {{#each declaredObservers}}
                             <p class="form-control-static">
@@ -332,7 +353,7 @@ ${head}
                     {{/if}}
                     {{#if declaredProducers}}
                     <div class="form-group">
-                        <label class="col-sm-2">Declared Producers:</label>
+                        <label class="col-sm-2 control-label">Declared Producers:</label>
                         <div class="col-sm-10">
                             {{#each declaredProducers}}
                             <p class="form-control-static">
@@ -349,7 +370,7 @@ ${head}
             </div>
         </div>
 
-        <h3>Dependency Graph</h3>
+        <h2>Dependency Graph</h2>
         <div>
             <label>
                 {{input type="checkbox" name="transientDependencies" checked=transientDependencies}} Transient Dependencies
@@ -387,11 +408,11 @@ ${head}
         type="text/x-handlebars"
         data-template-name="observerList">
 
-        <h2>Observer Methods</h2>
+        <h1>Observer Methods</h1>
 
         <div class="btn-line">
             &nbsp;<button {{action 'clearFilters'}} class="btn btn-default">Clear filters</button>
-            <div class="total pull-left">Total found: {{total}}</div>
+            <div class="total pull-left">Found: {{total}}</div>
             <ul class="pagination no-margin pull-left">
             {{#each pages}}
                 <li class="{{unbound active}}">{{#link-to 'observerList' (query-params page=index)}}{{index}}{{/link-to}}</li>
@@ -451,41 +472,50 @@ ${head}
             {{/each}}
         </table>
 
+        <div class="btn-line">
+            <div class="total pull-left">Found: {{total}}</div>
+            <ul class="pagination no-margin">
+            {{#each pages}}
+                <li class="{{unbound active}}">{{#link-to 'observerList' (query-params page=index)}}{{index}}{{/link-to}}</li>
+            {{/each}}
+            </ul>
+        </div>
+
     </script>
 
     <script
         type="text/x-handlebars"
         data-template-name="observerDetail">
 
-        <h2>Observer Method Detail</h2>
+        <h1>Observer Method Detail</h1>
 
         <div class="panel panel-default">
             <div class="panel-body">
                 <form class="form-horizontal">
                     {{#if declaringBean}}
                     <div class="form-group">
-                        <label class="col-sm-2">Declaring Bean:</label>
+                        <label class="col-sm-2 control-label">Declaring Bean:</label>
                          <div class="col-sm-10">
                             <p class="form-control-static"><span class="{{unbound declaringBean.kind}} boxed">{{unbound declaringBean.kind}}</span> {{#link-to 'beanDetail' declaringBean.id}}{{declaringBean.beanClass}}{{/link-to}}</p>
                         </div>
                     </div>
                     {{else}}
                     <div class="form-group">
-                        <label class="col-sm-2">Bean Class:</label>
+                        <label class="col-sm-2 control-label">Bean Class:</label>
                          <div class="col-sm-10">
                             <p class="form-control-static">{{beanClass}}</p>
                         </div>
                     </div>
                     {{/if}}
                     <div class="form-group">
-                        <label class="col-sm-2">Observed Type:</label>
+                        <label class="col-sm-2 control-label">Observed Type:</label>
                          <div class="col-sm-10">
                             <p class="form-control-static">{{observedType}}</p>
                         </div>
                     </div>
                     {{#if qualifiers}}
                     <div class="form-group">
-                        <label class="col-sm-2">Qualifiers:</label>
+                        <label class="col-sm-2 control-label">Qualifiers:</label>
                         <div class="col-sm-10">
                             {{#each qualifiers}}
                             <p class="form-control-static">{{this}}</p>
@@ -494,20 +524,20 @@ ${head}
                     </div>
                     {{/if}}
                     <div class="form-group">
-                        <label class="col-sm-2">Reception:</label>
+                        <label class="col-sm-2 control-label">Reception:</label>
                         <div class="col-sm-10">
                             <p class="form-control-static"><span class="{{unbound reception}} boxed">{{unbound reception}}</span></p>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-2">Transaction Phase:</label>
+                        <label class="col-sm-2 control-label">Transaction Phase:</label>
                         <div class="col-sm-10">
                             <p class="form-control-static"><span class="{{unbound txPhase}} boxed">{{unbound txPhase}}</span></p>
                         </div>
                     </div>
                     {{#if annotatedMethod}}
                     <div class="form-group">
-                        <label class="col-sm-2">Annotated Method:</label>
+                        <label class="col-sm-2 control-label">Annotated Method:</label>
                         <div class="col-sm-10">
                             <p class="form-control-static">{{annotatedMethod}}</p>
                         </div>
@@ -523,14 +553,14 @@ ${head}
         type="text/x-handlebars"
         data-template-name="contexts">
 
-        <h2>Contexts</h2>
+        <h1>Contexts</h1>
 
         <div class="btn-line">
             <button {{action 'refreshContexts'}} class="btn btn-default">Refresh</button>
         </div>
 
         {{#each}}
-        <h3>{{unbound scope}}</h3>
+        <h2>{{unbound scope}}</h2>
 
         <table class="table table-bordered table-striped">
             <tr>
@@ -553,13 +583,17 @@ ${head}
       type="text/x-handlebars"
       data-template-name="contextInstance">
 
-      <h2>Context Instance</h2>
+      <h1>Context Instance</h1>
+
+      <div class="btn-line">
+            &nbsp;<button {{action 'refreshData'}} class="btn btn-default">Refresh</button>
+      </div>
 
       <div class="panel panel-default">
         <div class="panel-body">
             <form class="form-horizontal">
             <div class="form-group">
-                <label class="col-sm-2">Bean Class:</label>
+                <label class="col-sm-2 control-label">Bean Class:</label>
                     <div class="col-sm-10">
                         <p class="form-control-static">{{#link-to 'beanDetail' id}}{{unbound beanClass}}{{/link-to}}</p>
                     </div>
@@ -568,14 +602,14 @@ ${head}
         </div>
       </div>
 
-      <h3>Properties</h3>
+      <h2>Properties</h2>
 
       <div class="panel panel-default">
         <div class="panel-body">
             <form class="form-horizontal">
                 {{#each properties}}
                 <div class="form-group">
-                    <label class="col-sm-2">{{name}}:</label>
+                    <label class="col-sm-2 control-label">{{name}}:</label>
                         <div class="col-sm-10">
                             <p class="form-control-static">{{value}}</p>
                         </div>
@@ -590,23 +624,28 @@ ${head}
     <script
       type="text/x-handlebars"
       data-template-name="invocationList">
-      <h2>Invocation Trees - Entry Points</h2>
+      <h1>Invocation Trees</h1>
 
       <div class="btn-line">
             &nbsp;<button {{action 'refreshData'}} class="btn btn-default">Refresh</button>
             <button {{action 'clearFilters'}} class="btn btn-default">Clear filters</button>
             <button {{action 'clearInvocations'}} class="btn btn-default">Clear data</button>
-            <div class="total pull-left">Total found: {{total}}</div>
+            <div class="total pull-left">Found: {{total}}</div>
             <ul class="pagination no-margin pull-left">
             {{#each pages}}
                 <li class="{{unbound active}}">{{#link-to 'invocationList' (query-params page=index)}}{{index}}{{/link-to}}</li>
             {{/each}}
             </ul>
-        </div>
+       </div>
 
        <table class="table table-bordered table-striped">
             <tr>
-                <th></th>
+                <th rowspan="2"></th>
+                <th colspan="2">Entry Point</th>
+                <th rowspan="2">Start</th>
+                <th rowspan="2">Time</th>
+            </tr>
+            <tr>
                 <th>Intercepted Bean
                     <form {{action "filter" on="submit"}}>
                         {{input value=beanClass class="form-control" placeholder="Contains"}}
@@ -617,8 +656,6 @@ ${head}
                         {{input value=methodName class="form-control" placeholder="Contains"}}
                     </form>
                 </th>
-                <th>Start</th>
-                <th>Time</th>
             </tr>
             {{#each data}}
             <tr>
@@ -637,14 +674,23 @@ ${head}
                 </td>
             </tr>
             {{/each}}
-    </table>
+        </table>
+
+        <div class="btn-line">
+            <div class="total pull-left">Found: {{total}}</div>
+            <ul class="pagination no-margin">
+            {{#each pages}}
+                <li class="{{unbound active}}">{{#link-to 'invocationList' (query-params page=index)}}{{index}}{{/link-to}}</li>
+            {{/each}}
+            </ul>
+        </div>
 
    </script>
 
    <script
       type="text/x-handlebars"
       data-template-name="invocationDetail">
-      <h2>Invocation Tree</h2>
+      <h1>Invocation Trees / Detail</h1>
 
       <div class="btn-line">
         Start: <strong>{{transformed.children.0.startFull}}</strong>

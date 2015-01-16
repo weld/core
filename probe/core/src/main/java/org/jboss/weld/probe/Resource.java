@@ -222,18 +222,11 @@ enum Resource {
 
     private final String[] parts;
 
-    private final String defaultContentType;
-
     private final Handler handler;
 
     Resource(String path, Handler handler) {
-        this(path, handler, Strings.APPLICATION_JSON);
-    }
-
-    Resource(String path, Handler handler, String contentType) {
         this.parts = splitPath(path);
         this.handler = handler;
-        this.defaultContentType = contentType;
     }
 
     protected void handle(BeanManagerImpl beanManager, Probe probe, HttpMethod method, String[] pathInfoParts, HttpServletRequest req, HttpServletResponse resp)
@@ -262,10 +255,6 @@ enum Resource {
         return true;
     }
 
-    private boolean isParam(String part) {
-        return part.startsWith(RESOURCE_PARAM_START) && part.endsWith(RESOURCE_PARAM_END);
-    }
-
     /**
      *
      * @return the parts of the path
@@ -274,12 +263,8 @@ enum Resource {
         return parts;
     }
 
-    /**
-     *
-     * @return
-     */
-    String getDefaultContentType() {
-        return defaultContentType;
+    static boolean isParam(String part) {
+        return part.startsWith(RESOURCE_PARAM_START) && part.endsWith(RESOURCE_PARAM_END);
     }
 
     static String[] splitPath(String path) {
@@ -386,7 +371,7 @@ enum Resource {
         }
 
         static void setCorsHeaders(HttpServletResponse resp) {
-            // Support cross-site HTTP requests
+            // Support cross-site HTTP requests - we want to support external HTML5 clients
             // See https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS
             resp.setHeader("Access-Control-Allow-Origin", "*");
             resp.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE");

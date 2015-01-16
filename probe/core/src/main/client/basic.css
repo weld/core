@@ -3,22 +3,26 @@ body {
   font-family: sans;
 }
 
-h1 small {
-  font-weight: bold;
-}
-
 h1, h2, h3, h4 {
   font-family: sans;
+}
+
+h1 {
+  font-size: 30px;
+}
+
+h2 {
+    font-size: 24px;
+}
+
+h3 {
+    font-size: 18px;
 }
 
 footer {
   margin-top: 2em;
   border-top: 1px solid silver;
   color: silver;
-}
-
-#logo {
-  margin-bottom: 2em;
 }
 
 .node text {
@@ -138,4 +142,23 @@ ul.plain-list li {
 
 .modal-dialog-center {
   margin-top: 25%;
+}
+
+#navigation-menu a.active {
+  background-color: #337ab7;
+  color: #fff;
+  background-image: none;
+  border-radius: 3px;
+}
+
+#navigation-menu .navbar-brand {
+  padding: 5px 20px 5px 15px;
+}
+
+#navigation-menu a:HOVER {
+ text-decoration: underline;
+}
+
+div.content {
+  padding: 30px 10px 10px 10px;
 }

@@ -24,6 +24,16 @@ var Probe = Ember.Application.create({
 // debugMode : true
 });
 
+Probe.ResetScroll = Ember.Mixin.create({
+  activate : function() {
+    this._super();
+    window.scrollTo(0, 0);
+  },
+  afterModel : function() {
+    window.scrollTo(0, 0);
+  }
+});
+
 Probe.Router.map(function() {
   this.route('deployment', {
     path : '/'
@@ -89,7 +99,7 @@ Probe.DeploymentRoute = Ember.Route.extend({
   }
 });
 
-Probe.BeanListRoute = Ember.Route.extend({
+Probe.BeanListRoute = Ember.Route.extend(Probe.ResetScroll, {
   queryParams : {
     page : {
       refreshModel : true
@@ -176,76 +186,84 @@ Probe.BeanDetailRoute = Ember.Route.extend({
 });
 
 Probe.ObserverListRoute = Ember.Route
-    .extend({
-      queryParams : {
-        page : {
-          refreshModel : true
-        },
-        reception : {
-          refreshModel : true
-        },
-        txPhase : {
-          refreshModel : true
-        },
-        kind : {
-          refreshModel : true
-        },
-      },
-      setupController : function(controller, model) {
-        this._super(controller, model);
-        controller.set("pages", buildPages(model.page, model.lastPage));
-        controller.set("cache", cache);
-      },
-      model : function(params) {
-        var query = '', filters = '', page = '';
-        filters = appendToFilters(filters, 'beanClass',
-            params.beanClass);
-        filters = appendToFilters(filters, 'observedType',
-            params.observedType);
-        filters = appendToFilters(filters, 'qualifier',
-            params.qualifier);
-        filters = appendToFilters(filters, 'declaringBean',
-            params.declaringBean);
-        if (params.reception) {
-          receptions.forEach(function(reception) {
-            if (reception == params.reception) {
-              filters = appendToFilters(filters, 'reception',
-                  reception);
+    .extend(
+        Probe.ResetScroll,
+        {
+          queryParams : {
+            page : {
+              refreshModel : true
+            },
+            reception : {
+              refreshModel : true
+            },
+            txPhase : {
+              refreshModel : true
+            },
+            kind : {
+              refreshModel : true
+            },
+          },
+          setupController : function(controller, model) {
+            this._super(controller, model);
+            controller.set("pages", buildPages(model.page,
+                model.lastPage));
+            controller.set("cache", cache);
+          },
+          model : function(params) {
+            var query = '', filters = '', page = '';
+            filters = appendToFilters(filters, 'beanClass',
+                params.beanClass);
+            filters = appendToFilters(filters, 'observedType',
+                params.observedType);
+            filters = appendToFilters(filters, 'qualifier',
+                params.qualifier);
+            filters = appendToFilters(filters, 'declaringBean',
+                params.declaringBean);
+            if (params.reception) {
+              receptions.forEach(function(reception) {
+                if (reception == params.reception) {
+                  filters = appendToFilters(filters,
+                      'reception', reception);
+                }
+              });
             }
-          });
-        }
-        if (params.kind) {
-          beanKinds.forEach(function(kind) {
-            if (kind == params.kind) {
-              filters = appendToFilters(filters, 'kind', kind);
+            if (params.kind) {
+              beanKinds.forEach(function(kind) {
+                if (kind == params.kind) {
+                  filters = appendToFilters(filters, 'kind',
+                      kind);
+                }
+              });
             }
-          });
-        }
-        if (params.txPhase) {
-          txPhases.forEach(function(txPhase) {
-            if (txPhase == params.txPhase) {
-              filters = appendToFilters(filters, 'txPhase',
-                  txPhase);
+            if (params.txPhase) {
+              txPhases.forEach(function(txPhase) {
+                if (txPhase == params.txPhase) {
+                  filters = appendToFilters(filters,
+                      'txPhase', txPhase);
+                }
+              });
             }
-          });
-        }
-        query = appendToQuery(query, 'filters', filters);
-        if (params.page) {
-          query = appendToQuery(query, 'page', params.page);
-        }
-        return $.getJSON(restUrlBase + 'observers' + query).done(
-            function(data) {
-              return data;
-            }).fail(function(jqXHR, textStatus, errorThrown) {
-          alert('Unable to get JSON data: ' + textStatus);
+            query = appendToQuery(query, 'filters', filters);
+            if (params.page) {
+              query = appendToQuery(query, 'page', params.page);
+            }
+            return $
+                .getJSON(restUrlBase + 'observers' + query)
+                .done(function(data) {
+                  return data;
+                })
+                .fail(
+                    function(jqXHR, textStatus, errorThrown) {
+                      alert('Unable to get JSON data: '
+                          + textStatus);
+                    });
+          },
+          actions : {
+            refreshData : function() {
+              this.refresh();
+            }
+          }
         });
-      },
-      actions : {
-        refreshData : function() {
-          this.refresh();
-        }
-      }
-    });
 
 Probe.ObserverDetailRoute = Ember.Route.extend({
   model : function(params) {
@@ -281,10 +299,15 @@ Probe.ContextInstanceRoute = Ember.Route.extend({
         }).fail(function(jqXHR, textStatus, errorThrown) {
           alert('Unable to get JSON data: ' + textStatus);
         });
+  },
+  actions : {
+    refreshData : function() {
+      this.refresh();
+    }
   }
 });
 
-Probe.InvocationListRoute = Ember.Route.extend({
+Probe.InvocationListRoute = Ember.Route.extend(Probe.ResetScroll, {
   queryParams : {
     page : {
       refreshModel : true
@@ -400,19 +423,18 @@ Probe.ObserverListController = Ember.ObjectController.extend({
   reception : null,
   txPhase : null,
   qualifier : '',
-  declaringBean : '',
   kind : null,
   page : 1,
   queryParams : [ 'observedType', 'beanClass', 'reception', 'txPhase',
-      'declaringBean', 'qualifier', 'page', 'kind' ],
+      'qualifier', 'page', 'kind' ],
   actions : {
     clearFilters : function() {
+      this.set('page', 1);
       this.set('observedType', '');
       this.set('beanClass', '');
       this.set('reception', null);
       this.set('txPhase', null);
       this.set('kind', null);
-      this.set('declaringBean', '');
       this.set('qualifier', '');
       this.send("refreshData");
     },
@@ -433,6 +455,7 @@ Probe.InvocationListController = Ember.ObjectController.extend({
   queryParams : [ 'beanClass', 'methodName', 'page' ],
   actions : {
     clearFilters : function() {
+      this.set('page', 1);
       this.set('beanClass', '');
       this.set('methodName', '');
       this.send('refreshData');
@@ -988,8 +1011,8 @@ function findNodesDependencies(bean, nodes, rootId) {
       fixed : (bean.id == rootId)
     };
     if (nodes[bean.id].isRoot) {
-      nodes[bean.id].x = 150;
-      nodes[bean.id].y = 150;
+      nodes[bean.id].x = 300;
+      nodes[bean.id].y = 100;
     }
   }
   if (bean.dependencies) {

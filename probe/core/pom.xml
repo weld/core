@@ -67,7 +67,7 @@
       <id>production</id>
       <activation>
         <property>
-          <name>production</name>
+          <name>!development</name>
         </property>
       </activation>
       <properties>
@@ -118,7 +118,7 @@
                       <directory>${project.basedir}/target/client</directory>
                       <includes>
                         <include>probe.html</include>
-                        <include>weld_logo_200x.png</include>
+                        <include>*.png</include>
                       </includes>
                     </resource>
                   </resources>
@@ -135,7 +135,7 @@
       <id>development</id>
       <activation>
         <property>
-          <name>!production</name>
+          <name>development</name>
         </property>
       </activation>
       <properties>
