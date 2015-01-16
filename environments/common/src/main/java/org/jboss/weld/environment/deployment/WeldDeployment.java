@@ -18,9 +18,7 @@ package org.jboss.weld.environment.deployment;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.Extension;
@@ -37,13 +35,13 @@ import org.jboss.weld.resources.spi.ResourceLoader;
  */
 public class WeldDeployment extends AbstractWeldDeployment {
 
-    public static final String ADDITIONAL_BDA_ID_SUFFIX = ".additional";
+    public static final String ADDITIONAL_BDA_ID = WeldDeployment.class.getName() + ".additional";
 
     private final Set<WeldBeanDeploymentArchive> beanDeploymentArchives;
 
-    private final Map<ClassLoader, WeldBeanDeploymentArchive> additionalBeanDeploymentArchives;
-
     private final ResourceLoader resourceLoader;
+
+    private WeldBeanDeploymentArchive additionalBeanDeploymentArchive = null;
 
     /**
      *
@@ -57,7 +55,6 @@ public class WeldDeployment extends AbstractWeldDeployment {
         super(bootstrap, extensions);
         this.resourceLoader = resourceLoader;
         this.beanDeploymentArchives = beanDeploymentArchives;
-        this.additionalBeanDeploymentArchives = new HashMap<ClassLoader, WeldBeanDeploymentArchive>();
         for (BeanDeploymentArchive archive : beanDeploymentArchives) {
             archive.getServices().add(ResourceLoader.class, resourceLoader);
         }
@@ -89,13 +86,12 @@ public class WeldDeployment extends AbstractWeldDeployment {
     }
 
     protected BeanDeploymentArchive createAdditionalBeanDeploymentArchiveIfNeeded(Class<?> beanClass) {
-        WeldBeanDeploymentArchive additionalBda = additionalBeanDeploymentArchives.get(beanClass.getClassLoader());
-        if (additionalBda != null) {
-            additionalBda.addBeanClass(beanClass.getName());
+        if (additionalBeanDeploymentArchive == null) {
+            additionalBeanDeploymentArchive = createAdditionalBeanDeploymentArchive(beanClass);
         } else {
-            additionalBda = createAdditionalBeanDeploymentArchive(beanClass);
+            additionalBeanDeploymentArchive.addBeanClass(beanClass.getName());
         }
-        return additionalBda;
+        return additionalBeanDeploymentArchive;
     }
 
     /**
@@ -109,8 +105,7 @@ public class WeldDeployment extends AbstractWeldDeployment {
         Set<String> beanClasses = new HashSet<String>();
         beanClasses.add(beanClass.getName());
 
-        WeldBeanDeploymentArchive additionalBda = new WeldBeanDeploymentArchive(beanClass.getClassLoader().getClass().getName() + "@"
-                + System.identityHashCode(beanClass.getClassLoader()) + ADDITIONAL_BDA_ID_SUFFIX, beanClasses, null);
+        WeldBeanDeploymentArchive additionalBda = new WeldBeanDeploymentArchive(ADDITIONAL_BDA_ID, beanClasses, null);
         additionalBda.getServices().add(ResourceLoader.class, resourceLoader);
         additionalBda.getServices().addAll(getServices().entrySet());
         beanDeploymentArchives.add(additionalBda);
@@ -119,8 +114,6 @@ public class WeldDeployment extends AbstractWeldDeployment {
         for (WeldBeanDeploymentArchive archive : beanDeploymentArchives) {
             archive.setAccessibleBeanDeploymentArchives(beanDeploymentArchives);
         }
-
-        additionalBeanDeploymentArchives.put(beanClass.getClassLoader(), additionalBda);
         return additionalBda;
     }
 
