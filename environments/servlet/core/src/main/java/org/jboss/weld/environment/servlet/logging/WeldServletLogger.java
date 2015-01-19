@@ -130,9 +130,6 @@ public interface WeldServletLogger extends WeldEnvironmentLogger {
     @Message(id = 1025, value = "Could not create InitialContext to bind BeanManager reference in JNDI: {0}.", format = Format.MESSAGE_FORMAT)
     RuntimeException couldNotCreateInitialContext(Object param1);
 
-    @Message(id = 1026, value = "Error loading Weld bootstrap, check that Weld is on the classpath.")
-    IllegalStateException errorLoadingWeldBootstrap(@Cause Throwable cause);
-
     @Message(id = 1027, value = "Error loading Weld listener, check that Weld is on the classpath.")
     IllegalStateException errorLoadingWeldListener(@Cause Throwable cause);
 
@@ -143,7 +140,4 @@ public interface WeldServletLogger extends WeldEnvironmentLogger {
     @Message(id = 1029, value = "org.jboss.weld.environment.servlet.Listener is in an inconsistent state - Weld Servlet cannot be shut down properly")
     void noServletLifecycleToDestroy();
 
-    @LogMessage(level = Level.DEBUG)
-    @Message(id = 1030, value = "Cannot load class using the supplied TCCL: {0}", format = Format.MESSAGE_FORMAT)
-    void cannotLoadClassUsingTccl(String className);
 }

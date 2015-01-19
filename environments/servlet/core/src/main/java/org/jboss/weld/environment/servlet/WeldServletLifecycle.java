@@ -20,19 +20,20 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
 
-import javax.el.ELContextListener;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 import javax.servlet.ServletContext;
 import javax.servlet.jsp.JspApplicationContext;
 import javax.servlet.jsp.JspFactory;
 
+import org.jboss.weld.bootstrap.WeldBootstrap;
 import org.jboss.weld.bootstrap.api.CDI11Bootstrap;
 import org.jboss.weld.bootstrap.api.Environments;
 import org.jboss.weld.bootstrap.api.TypeDiscoveryConfiguration;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.CDI11Deployment;
 import org.jboss.weld.bootstrap.spi.Metadata;
+import org.jboss.weld.el.WeldELContextListener;
 import org.jboss.weld.environment.Container;
 import org.jboss.weld.environment.ContainerContext;
 import org.jboss.weld.environment.deployment.WeldBeanDeploymentArchive;
@@ -47,13 +48,14 @@ import org.jboss.weld.environment.servlet.deployment.ServletContextBeanArchiveHa
 import org.jboss.weld.environment.servlet.deployment.WebAppBeanArchiveScanner;
 import org.jboss.weld.environment.servlet.logging.WeldServletLogger;
 import org.jboss.weld.environment.servlet.services.ServletResourceInjectionServices;
-import org.jboss.weld.environment.servlet.util.Reflections;
 import org.jboss.weld.environment.servlet.util.ServiceLoader;
 import org.jboss.weld.environment.tomcat.TomcatContainer;
+import org.jboss.weld.environment.util.Reflections;
 import org.jboss.weld.injection.spi.ResourceInjectionServices;
 import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.resources.spi.ClassFileServices;
 import org.jboss.weld.resources.spi.ResourceLoader;
+import org.jboss.weld.servlet.WeldInitialListener;
 import org.jboss.weld.servlet.api.ServletListener;
 
 /**
@@ -66,16 +68,7 @@ public class WeldServletLifecycle {
 
     public static final String BEAN_MANAGER_ATTRIBUTE_NAME = WeldServletLifecycle.class.getPackage().getName() + "." + BeanManager.class.getName();
 
-    /**
-     * Must be synchronized with org.jboss.weld.Container.CONTEXT_ID_KEY
-     */
-    private static final String CONTEXT_ID_KEY = "WELD_CONTEXT_ID_KEY";
-
     static final String INSTANCE_ATTRIBUTE_NAME = WeldServletLifecycle.class.getPackage().getName() + ".lifecycleInstance";
-
-    private static final String BOOTSTRAP_IMPL_CLASS_NAME = "org.jboss.weld.bootstrap.WeldBootstrap";
-
-    private static final String WELD_LISTENER_CLASS_NAME = "org.jboss.weld.servlet.WeldInitialListener";
 
     private static final String EXPRESSION_FACTORY_NAME = "org.jboss.weld.el.ExpressionFactory";
 
@@ -85,22 +78,17 @@ public class WeldServletLifecycle {
 
     private final transient ServletListener weldListener;
 
+    private final transient ResourceLoader resourceLoader;
+
     private Container container;
 
     // WELD-1665 Bootstrap might be already performed
     private boolean isBootstrapNeeded = true;
 
     WeldServletLifecycle() {
-        try {
-            bootstrap = Reflections.newInstance(BOOTSTRAP_IMPL_CLASS_NAME);
-        } catch (IllegalArgumentException e) {
-            throw WeldServletLogger.LOG.errorLoadingWeldBootstrap(e);
-        }
-        try {
-            weldListener = Reflections.newInstance(WELD_LISTENER_CLASS_NAME);
-        } catch (IllegalArgumentException e) {
-            throw WeldServletLogger.LOG.errorLoadingWeldListener(e);
-        }
+        resourceLoader = new WeldResourceLoader();
+        bootstrap = new WeldBootstrap();
+        weldListener = new WeldInitialListener();
     }
 
     /**
@@ -117,7 +105,7 @@ public class WeldServletLifecycle {
 
         if (isBootstrapNeeded) {
 
-            CDI11Deployment deployment = createDeployment(context, bootstrap);
+           final CDI11Deployment deployment = createDeployment(context, bootstrap);
 
             if (deployment.getBeanDeploymentArchives().isEmpty()) {
                 // Skip initialization - there is no bean archive in the deployment
@@ -135,7 +123,8 @@ public class WeldServletLifecycle {
                 // Support GAE
                 WeldServletLogger.LOG.resourceInjectionNotAvailable();
             }
-            String id = context.getInitParameter(CONTEXT_ID_KEY);
+
+            String id = context.getInitParameter(org.jboss.weld.Container.CONTEXT_ID_KEY);
             if (id != null) {
                 bootstrap.startContainer(id, Environments.SERVLET, deployment);
             } else {
@@ -172,8 +161,8 @@ public class WeldServletLifecycle {
 
             // Register ELContextListener with JSP
             try {
-                jspApplicationContext.addELContextListener(Reflections.<ELContextListener> newInstance("org.jboss.weld.el.WeldELContextListener"));
-            } catch (IllegalArgumentException e) {
+                jspApplicationContext.addELContextListener(new WeldELContextListener());
+            } catch (Exception e) {
                 throw WeldServletLogger.LOG.errorLoadingWeldELContextListener(e);
             }
 
@@ -218,8 +207,6 @@ public class WeldServletLifecycle {
      */
     protected CDI11Deployment createDeployment(ServletContext context, CDI11Bootstrap bootstrap) {
 
-        ResourceLoader resourceLoader = new WeldResourceLoader();
-
         final Iterable<Metadata<Extension>> extensions = bootstrap.loadExtensions(WeldResourceLoader.getClassLoader());
         final TypeDiscoveryConfiguration typeDiscoveryConfiguration = bootstrap.startExtensions(extensions);
 
@@ -259,9 +246,9 @@ public class WeldServletLifecycle {
         String containerClass = ctx.getServletContext().getInitParameter(Container.CONTEXT_PARAM_CONTAINER_CLASS);
         if (containerClass != null) {
             try {
-                container = Reflections.newInstance(containerClass);
+                container = SecurityActions.newInstance(Reflections.classForName(resourceLoader, containerClass));
                 WeldServletLogger.LOG.containerDetectionSkipped(containerClass);
-            } catch (IllegalArgumentException e) {
+            } catch (Exception e) {
                 WeldServletLogger.LOG.unableToInstantiateCustomContainerClass(containerClass);
             }
         }
@@ -277,14 +264,14 @@ public class WeldServletLifecycle {
         return container;
     }
 
-    protected Container checkContainers(ContainerContext cc, StringBuilder dump, Iterable<Container> containers) {
-        for (Container c : containers) {
+    protected Container checkContainers(ContainerContext containerContext, StringBuilder dump, Iterable<Container> containers) {
+        for (Container container : containers) {
             try {
-                if (c.touch(cc)) {
-                    return c;
+                if (container.touch(resourceLoader, containerContext)) {
+                    return container;
                 }
             } catch (Throwable t) {
-                dump.append(c).append("->").append(t.getMessage()).append("\n");
+                dump.append(container).append("->").append(t.getMessage()).append("\n");
             }
         }
         return null;

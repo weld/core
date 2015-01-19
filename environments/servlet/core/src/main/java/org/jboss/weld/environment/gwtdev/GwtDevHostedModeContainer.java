@@ -26,10 +26,9 @@ import org.jboss.weld.environment.ContainerContext;
 import org.jboss.weld.environment.jetty.AbstractJettyContainer;
 import org.jboss.weld.environment.jetty.JettyWeldInjector;
 import org.jboss.weld.environment.servlet.logging.JettyLogger;
-import org.jboss.weld.environment.servlet.util.Reflections;
-import org.jboss.weld.manager.api.WeldManager;
 
 /**
+ *
  *
  */
 public class GwtDevHostedModeContainer extends AbstractJettyContainer {
@@ -50,9 +49,7 @@ public class GwtDevHostedModeContainer extends AbstractJettyContainer {
     public void initialize(ContainerContext context) {
         // Try pushing a Jetty Injector into the servlet context
         try {
-            Class<?> clazz = Reflections.classForName(JettyWeldInjector.class.getName());
-            Object injector = clazz.getConstructor(WeldManager.class).newInstance(context.getManager());
-            context.getServletContext().setAttribute(INJECTOR_ATTRIBUTE_NAME, injector);
+            context.getServletContext().setAttribute(INJECTOR_ATTRIBUTE_NAME, new JettyWeldInjector(context.getManager()));
             JettyLogger.LOG.gwtHostedModeDetected();
 
             Class<?> decoratorClass = getWeldServletHandlerClass();
