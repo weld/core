@@ -14,16 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.environment.servlet;
+package org.jboss.weld.environment.deployment.discovery;
 
-import java.lang.reflect.Method;
+import java.lang.reflect.Constructor;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 
 import org.jboss.weld.exceptions.WeldException;
-import org.jboss.weld.security.MethodLookupAction;
-import org.jboss.weld.security.NewInstanceAction;
+import org.jboss.weld.security.GetConstructorAction;
 
 /**
  *
@@ -35,37 +34,17 @@ final class SecurityActions {
     }
 
     /**
-     *
-     * @param javaClass
-     * @return a new instance of the given class
-     * @throws InstantiationException
-     * @throws IllegalAccessException
-     */
-    static <T> T newInstance(Class<T> javaClass) throws InstantiationException, IllegalAccessException {
-        if (System.getSecurityManager() != null) {
-            try {
-                return AccessController.doPrivileged(NewInstanceAction.of(javaClass));
-            } catch (PrivilegedActionException e) {
-                throw new WeldException(e.getCause());
-            }
-        } else {
-            return javaClass.newInstance();
-        }
-    }
-
-    /**
      * Does not perform {@link PrivilegedAction} unless necessary.
      *
      * @param javaClass
-     * @param methodName
      * @param parameterTypes
-     * @return a method from the class or any class/interface in the inheritance hierarchy
+     * @return a declared constructor
      * @throws NoSuchMethodException
      */
-    static Method lookupMethod(Class<?> javaClass, String methodName, Class<?>[] parameterTypes) throws NoSuchMethodException {
+    static <T> Constructor<T> getConstructor(Class<T> javaClass, Class<?>... parameterTypes) throws NoSuchMethodException {
         if (System.getSecurityManager() != null) {
             try {
-                return AccessController.doPrivileged(new MethodLookupAction(javaClass, methodName, parameterTypes));
+                return AccessController.doPrivileged(GetConstructorAction.of(javaClass, parameterTypes));
             } catch (PrivilegedActionException e) {
                 if (e.getCause() instanceof NoSuchMethodException) {
                     throw (NoSuchMethodException) e.getCause();
@@ -73,7 +52,7 @@ final class SecurityActions {
                 throw new WeldException(e.getCause());
             }
         } else {
-            return MethodLookupAction.lookupMethod(javaClass, methodName, parameterTypes);
+            return javaClass.getConstructor(parameterTypes);
         }
     }
 

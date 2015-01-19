@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.environment.servlet.jsf;
 
-import javax.el.ELContextListener;
 import javax.el.ELResolver;
 import javax.el.ExpressionFactory;
 import javax.enterprise.inject.spi.BeanManager;
@@ -25,11 +24,11 @@ import javax.faces.application.ApplicationWrapper;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 
+import org.jboss.weld.el.WeldELContextListener;
 import org.jboss.weld.environment.servlet.WeldServletLifecycle;
 import org.jboss.weld.environment.servlet.logging.WeldServletLogger;
 import org.jboss.weld.environment.servlet.portlet.PortletSupport;
 import org.jboss.weld.environment.servlet.util.ForwardingELResolver;
-import org.jboss.weld.environment.servlet.util.Reflections;
 import org.jboss.weld.environment.servlet.util.TransparentELResolver;
 
 /**
@@ -68,8 +67,7 @@ public class WeldApplication extends ApplicationWrapper {
 
     public WeldApplication(Application application) {
         this.application = application;
-        // QUESTION should the context listener be registered in init() instead?
-        super.addELContextListener(Reflections.<ELContextListener> newInstance("org.jboss.weld.el.WeldELContextListener"));
+        super.addELContextListener(new WeldELContextListener());
         elResolver = new LazyBeanManagerIntegrationELResolver();
         super.addELResolver(elResolver);
     }

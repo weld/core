@@ -21,7 +21,7 @@ import java.security.PrivilegedExceptionAction;
 
 public class GetDeclaredFieldAction extends AbstractReflectionAction implements PrivilegedExceptionAction<Field> {
 
-    private final String fieldName;
+    protected final String fieldName;
 
     public GetDeclaredFieldAction(Class<?> javaClass, String fieldName) {
         super(javaClass);
