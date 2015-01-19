@@ -74,9 +74,6 @@ public interface CommonLogger extends WeldEnvironmentLogger {
     @Message(id = 16, value = "Missing beans.xml file in META-INF", format = Format.MESSAGE_FORMAT)
     IllegalStateException missingBeansXml();
 
-    @Message(id = 17, value = "Error loading Weld bootstrap, check that Weld is on the classpath", format = Format.MESSAGE_FORMAT)
-    IllegalStateException errorLoadingWeld();
-
     @Message(id = 18, value = "Unable to resolve a bean for {0} with bindings {1}", format = Format.MESSAGE_FORMAT)
     UnsatisfiedResolutionException unableToResolveBean(Object param1, Object param2);
 
@@ -109,10 +106,14 @@ public interface CommonLogger extends WeldEnvironmentLogger {
     @Message(id = 26, value = "Unable to instantiate {0} using parameters: {1}.", format = Format.MESSAGE_FORMAT)
     IllegalStateException unableToInstantiate(Object param1, Object param2, @Cause Throwable cause);
 
-    @Message(id = 27, value = "Unable to find constructor for of {0} accepting parameters: {1}.", format = Format.MESSAGE_FORMAT)
-    IllegalStateException unableToFindConstructor(Object param1, Object param2);
-
     @LogMessage(level = Level.INFO)
     @Message(id = 28, value = "Weld initialization skipped - no bean archive found")
     void initSkippedNoBeanArchiveFound();
+
+    @Message(id = 29, value = "Cannot load class for {0}.", format = Format.MESSAGE_FORMAT)
+    IllegalStateException cannotLoadClass(Object param1, @Cause Throwable cause);
+
+    @LogMessage(level = Level.DEBUG)
+    @Message(id = 30, value = "Cannot load class using the ResourceLoader: {0}", format = Format.MESSAGE_FORMAT)
+    void cannotLoadClassUsingResourceLoader(String className);
 }

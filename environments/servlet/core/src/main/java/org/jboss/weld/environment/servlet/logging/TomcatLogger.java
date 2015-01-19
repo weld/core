@@ -21,6 +21,7 @@ import org.jboss.logging.Logger.Level;
 import org.jboss.logging.annotations.Cause;
 import org.jboss.logging.annotations.LogMessage;
 import org.jboss.logging.annotations.Message;
+import org.jboss.logging.annotations.Message.Format;
 import org.jboss.logging.annotations.MessageLogger;
 import org.jboss.weld.environment.logging.WeldEnvironmentLogger;
 
@@ -29,7 +30,6 @@ import org.jboss.weld.environment.logging.WeldEnvironmentLogger;
  * Message IDs: 001100 - 001199
  *
  * @author Kirill Gaevskii
- *
 */
 @MessageLogger(projectCode = WeldEnvironmentLogger.WELD_ENV_PROJECT_CODE)
 public interface TomcatLogger extends WeldEnvironmentLogger {
@@ -53,6 +53,15 @@ public interface TomcatLogger extends WeldEnvironmentLogger {
     @Message(id = 1104, value = "Cannot get StandardContext from ServletContext.")
     RuntimeException cannotGetStandardContext(@Cause Throwable cause);
 
-    @Message(id = 1105, value = "Neither field nor setter found for instanceManager.")
-    RuntimeException neitherFieldNorSetterFound();
+    @Message(id = 1105, value = "Neither field nor getter/setter found for instanceManager.")
+    RuntimeException neitherFieldNorGetterSetterFound();
+
+    @Message(id = 1106, value = "Exception invoking method {0} on object {1}, using arguments {2}", format = Format.MESSAGE_FORMAT)
+    RuntimeException errorInvokingMethod(String method, Object obj, Object... args);
+
+    @Message(id = 1107, value = "Exception reading field {0} on object {1}", format = Format.MESSAGE_FORMAT)
+    RuntimeException errorReadingField(String field, Object obj);
+
+    @Message(id = 1108, value = "Exception writing field {0} on object {1}, new value: {2}", format = Format.MESSAGE_FORMAT)
+    RuntimeException errorWritingField(String field, Object obj, Object value);
 }

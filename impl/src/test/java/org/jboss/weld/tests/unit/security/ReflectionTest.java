@@ -24,6 +24,7 @@ import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 
+import org.jboss.weld.security.FieldLookupAction;
 import org.jboss.weld.security.GetConstructorAction;
 import org.jboss.weld.security.GetConstructorsAction;
 import org.jboss.weld.security.GetDeclaredConstructorAction;
@@ -222,4 +223,28 @@ public class ReflectionTest {
         } catch (NoSuchMethodException e) {
         }
     }
+
+    @Test
+    public void testLookupField() throws PrivilegedActionException, NoSuchFieldException {
+        Assert.assertNotNull(AccessController.doPrivileged(new FieldLookupAction(TestObject.class, "privateField")));
+        Assert.assertNotNull(FieldLookupAction.lookupField(TestObject.class, "privateField"));
+    }
+
+    @Test
+    public void testLookupFieldNotFound() throws Throwable {
+        try {
+            AccessController.doPrivileged(new FieldLookupAction(TestObject.class, "eioota"));
+            fail();
+        } catch (PrivilegedActionException e) {
+            if(!(e.getCause() instanceof NoSuchFieldException)) {
+                fail();
+            }
+        }
+        try {
+            FieldLookupAction.lookupField(TestObject.class, "eioota");
+            fail();
+        } catch (NoSuchFieldException e) {
+        }
+    }
+
 }

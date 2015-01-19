@@ -17,6 +17,8 @@
 
 package org.jboss.weld.environment;
 
+import org.jboss.weld.resources.spi.ResourceLoader;
+
 
 /**
  * Abstract the web container setup notion.
@@ -32,11 +34,12 @@ public interface Container {
      * Touch if this container can be used.
      * We should throw an exception if it cannot be used.
      *
+     * @param resourceLoader the ResourceLoader to use for class-availability testing
      * @param context the container context
      * @return true if touch was successful, false or exception otherwise
      * @throws Exception for any error
      */
-    boolean touch(ContainerContext context) throws Exception;
+    boolean touch(ResourceLoader resourceLoader, ContainerContext context) throws Exception;
 
     /**
      * Initialize web container.
