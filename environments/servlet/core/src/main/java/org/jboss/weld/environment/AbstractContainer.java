@@ -17,7 +17,8 @@
 
 package org.jboss.weld.environment;
 
-import org.jboss.weld.environment.servlet.util.Reflections;
+import org.jboss.weld.environment.util.Reflections;
+import org.jboss.weld.resources.spi.ResourceLoader;
 
 /**
  * Abstract container.
@@ -33,8 +34,8 @@ public abstract class AbstractContainer implements Container {
      */
     protected abstract String classToCheck();
 
-    public boolean touch(ContainerContext context) throws Exception {
-        Reflections.classForName(classToCheck());
+    public boolean touch(ResourceLoader resourceLoader, ContainerContext context) throws Exception {
+        Reflections.classForName(resourceLoader, classToCheck());
         return true;
     }
 

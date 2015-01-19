@@ -17,16 +17,12 @@
 
 package org.jboss.weld.environment.jetty;
 
-import java.lang.reflect.Method;
-
 import javax.servlet.ServletContext;
 
 import org.jboss.weld.environment.Container;
 import org.jboss.weld.environment.ContainerContext;
 import org.jboss.weld.environment.servlet.EnhancedListener;
 import org.jboss.weld.environment.servlet.logging.JettyLogger;
-import org.jboss.weld.environment.servlet.util.Reflections;
-import org.jboss.weld.manager.api.WeldManager;
 
 /**
  * Jetty 7.2+, 8.x and 9.x container.
@@ -71,14 +67,8 @@ public class JettyContainer extends AbstractJettyContainer {
     public void initialize(ContainerContext context) {
         // Try pushing a Jetty Injector into the servlet context
         try {
-            Class<?> clazz = Reflections.classForName(JettyWeldInjector.class.getName());
-            Object injector = clazz.getConstructor(WeldManager.class).newInstance(context.getManager());
-            context.getServletContext().setAttribute(INJECTOR_ATTRIBUTE_NAME, injector);
-
-            Class<?> decoratorClass = Reflections.classForName("org.jboss.weld.environment.jetty.WeldDecorator");
-            Method processMethod = decoratorClass.getMethod("process", ServletContext.class);
-            processMethod.invoke(null, context.getServletContext());
-
+            context.getServletContext().setAttribute(INJECTOR_ATTRIBUTE_NAME, new JettyWeldInjector(context.getManager()));
+            WeldDecorator.process(context.getServletContext());
             if(Boolean.TRUE.equals(context.getServletContext().getAttribute(EnhancedListener.ENHANCED_LISTENER_USED_ATTRIBUTE_NAME))) {
                 // ServletContainerInitializer works on versions prior to 9.1.1 but the listener injection doesn't
                 JettyLogger.LOG.jettyDetectedListenersInjectionIsSupported();

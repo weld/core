@@ -31,6 +31,7 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 
+import org.jboss.weld.bootstrap.WeldBootstrap;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.CDI11Bootstrap;
 import org.jboss.weld.bootstrap.api.Environments;
@@ -81,8 +82,6 @@ public class Weld {
 
     public static final String ARCHIVE_ISOLATION_SYSTEM_PROPERTY = "org.jboss.weld.se.archive.isolation";
 
-    private static final String BOOTSTRAP_IMPL_CLASS_NAME = "org.jboss.weld.bootstrap.WeldBootstrap";
-
     static {
         if (!(SingletonProvider.instance() instanceof RegistrySingletonProvider)) {
             // make sure RegistrySingletonProvider is used (required for supporting multiple parallel Weld instances)
@@ -128,22 +127,14 @@ public class Weld {
      * @return weld container
      */
     public WeldContainer initialize() {
-        ResourceLoader resourceLoader = new WeldResourceLoader();
+        final ResourceLoader resourceLoader = new WeldResourceLoader();
         // check for beans.xml
         if (resourceLoader.getResource(WeldDeployment.BEANS_XML) == null) {
             throw CommonLogger.LOG.missingBeansXml();
         }
 
-        final CDI11Bootstrap bootstrap;
-        try {
-            bootstrap = (CDI11Bootstrap) resourceLoader.classForName(BOOTSTRAP_IMPL_CLASS_NAME).newInstance();
-        } catch (InstantiationException ex) {
-            throw CommonLogger.LOG.errorLoadingWeld();
-        } catch (IllegalAccessException ex) {
-            throw CommonLogger.LOG.errorLoadingWeld();
-        }
-
-        Deployment deployment = createDeployment(resourceLoader, bootstrap);
+        final CDI11Bootstrap bootstrap = new WeldBootstrap();
+        final Deployment deployment = createDeployment(resourceLoader, bootstrap);
 
         // weld-se uses CommonForkJoinPoolExecutorServices by default
         ExternalConfiguration configuration = new ExternalConfigurationBuilder().add(EXECUTOR_THREAD_POOL_TYPE.get(), COMMON.toString()).build();
