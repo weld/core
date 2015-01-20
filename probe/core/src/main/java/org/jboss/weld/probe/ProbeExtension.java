@@ -77,6 +77,7 @@ public class ProbeExtension implements Extension {
                     return beanAttributes;
                 }
             });
+            ProbeLogger.LOG.monitoringStereotypeAdded(event.getAnnotated());
         }
     }
 

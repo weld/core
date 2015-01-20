@@ -16,11 +16,13 @@
  */
 package org.jboss.weld.probe;
 
+import static org.jboss.weld.probe.Strings.ACCESSIBLE_BDAS;
 import static org.jboss.weld.probe.Strings.ALTERNATIVES;
 import static org.jboss.weld.probe.Strings.ANNOTATED_METHOD;
 import static org.jboss.weld.probe.Strings.AS_STRING;
 import static org.jboss.weld.probe.Strings.BDAS;
 import static org.jboss.weld.probe.Strings.BDA_ID;
+import static org.jboss.weld.probe.Strings.BEANS;
 import static org.jboss.weld.probe.Strings.BEAN_CLASS;
 import static org.jboss.weld.probe.Strings.BEAN_DISCOVERY_MODE;
 import static org.jboss.weld.probe.Strings.CHILDREN;
@@ -149,7 +151,7 @@ final class JsonObjects {
         List<BeanDeploymentArchive> bdas = new ArrayList<BeanDeploymentArchive>(beanDeploymentArchivesMap.keySet());
         Collections.sort(bdas, bdaComparator);
         for (BeanDeploymentArchive bda : bdas) {
-            JsonObjectBuilder bdaBuilder = Json.newObjectBuilder();
+            JsonObjectBuilder bdaBuilder = Json.newObjectBuilder().setIgnoreEmptyBuilders(true);
             String id = bda.getId();
             bdaBuilder.add(BDA_ID, id);
             bdaBuilder.add(ID, Components.getId(id));
@@ -176,6 +178,21 @@ final class JsonObjects {
             }
             enablementBuilder.add(ALTERNATIVES, alternatives);
             bdaBuilder.add(ENABLEMENT, enablementBuilder);
+            // Accessible BDAs
+            BeanManagerImpl manager = beanDeploymentArchivesMap.get(bda);
+            JsonArrayBuilder accesibleBdasBuilder = Json.newArrayBuilder();
+            for (BeanManagerImpl accesible : manager.getAccessibleManagers()) {
+                accesibleBdasBuilder.add(Components.getId(accesible.getId()));
+            }
+            bdaBuilder.add(ACCESSIBLE_BDAS, accesibleBdasBuilder);
+            List<Bean<?>> enabledBeans = manager.getBeans();
+            int count = 0;
+            for (Bean<?> bean : enabledBeans) {
+                if (!Components.isBuiltinBeanButNotExtension(bean)) {
+                    count++;
+                }
+            }
+            bdaBuilder.add(BEANS, count);
             bdasBuilder.add(bdaBuilder);
         }
         deploymentBuilder.add(BDAS, bdasBuilder);
@@ -535,7 +552,7 @@ final class JsonObjects {
         JsonObjectBuilder observerBuilder = Json.newObjectBuilder();
         observerBuilder.add(ID, probe.getObserverId(observerMethod));
         observerBuilder.add(BEAN_CLASS, observerMethod.getBeanClass().getName());
-        observerBuilder.add(OBSERVED_TYPE, observerMethod.getObservedType().toString());
+        observerBuilder.add(OBSERVED_TYPE, Formats.formatType(observerMethod.getObservedType(), false));
         return observerBuilder;
     }
 
@@ -645,9 +662,9 @@ final class JsonObjects {
                     // Omit javax.enterprise.inject.Any
                     continue;
                 }
+                // Remove package from @Any
                 builder.add("@" + qualifier.annotationType().getSimpleName());
-            }
-            if (Default.class.equals(qualifier.annotationType())) {
+            } else if (Default.class.equals(qualifier.annotationType())) {
                 // Remove package from @Default
                 builder.add("@" + qualifier.annotationType().getSimpleName());
             } else {

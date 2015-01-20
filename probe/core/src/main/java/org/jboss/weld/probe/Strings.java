@@ -71,6 +71,8 @@ final class Strings {
     static final String INTERCEPTORS = "interceptors";
     static final String DECORATORS = "decorators";
     static final String ALTERNATIVES = "alternatives";
+    static final String ACCESSIBLE_BDAS = "accessibleBdas";
+    static final String BEANS = "beans";
 
     static final String PAGE = "page";
     static final String TOTAL = "total";
@@ -81,11 +83,17 @@ final class Strings {
     // Internet media types
     static final String APPLICATION_JSON = "application/json";
     static final String APPLICATION_JAVASCRIPT = "application/javascript";
+    // otf, ttf fonts
+    static final String APPLICATION_FONT_SFNT = "application/font-sfnt";
+    static final String APPLICATION_FONT_WOFF = "application/font-woff";
+    // eot
+    static final String APPLICATION_FONT_MS = "application/vnd.ms-fontobject";
     static final String TEXT_JAVASCRIPT = "text/javascript";
     static final String TEXT_CSS = "text/css";
     static final String TEXT_HTML = "text/html";
     static final String TEXT_PLAIN = "text/plain";
-    static final String IMG_PNG = "img/png";
+    static final String IMG_PNG = "image/png";
+    static final String IMG_SVG = "image/svg+xml";
 
     static final String ENCODING_UTF8 = "UTF-8";
 
@@ -93,6 +101,11 @@ final class Strings {
     static final String SUFFIX_CSS = "css";
     static final String SUFFIX_JS = "js";
     static final String SUFFIX_PNG = "png";
+    static final String SUFFIX_TTF = "ttf";
+    static final String SUFFIX_OTF = "otf";
+    static final String SUFFIX_EOT = "eot";
+    static final String SUFFIX_SVG = "svg";
+    static final String SUFFIX_WOFF = "woff";
 
     static final String SLASH = "/";
 
