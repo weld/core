@@ -236,7 +236,7 @@ final class JsonObjects {
             if (Object.class.equals(type)) {
                 continue;
             }
-            typesBuilder.add(type.toString());
+            typesBuilder.add(Formats.formatType(type, false));
         }
         beanBuilder.add(TYPES, typesBuilder);
         // QUALIFIERS

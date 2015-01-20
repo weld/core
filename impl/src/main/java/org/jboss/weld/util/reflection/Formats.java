@@ -18,6 +18,7 @@ package org.jboss.weld.util.reflection;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Member;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
@@ -46,6 +47,7 @@ public class Formats {
 
     private static final String SNAPSHOT = "SNAPSHOT";
     private static final String NULL = "null";
+    private static final String SQUARE_BRACKETS = "[]";
 
     private Formats() {
     }
@@ -149,15 +151,36 @@ public class Formats {
     }
 
     public static String formatType(Type baseType) {
+        return formatType(baseType, true);
+    }
+
+    public static String formatType(Type baseType, boolean simpleNames) {
         if (baseType == null) {
             return NULL;
-        } else {
-            Class<?> rawType = Reflections.getRawType(baseType);
-            if (rawType != null) {
-                return rawType.getSimpleName() + formatActualTypeArguments(Reflections.getActualTypeArguments(baseType));
-            } else {
-                return baseType.toString();
+        }
+        if (baseType instanceof Class<?>) {
+            Class<?> clazz = (Class<?>) baseType;
+            if (clazz.isArray()) {
+                return formatType(clazz.getComponentType(), simpleNames) + SQUARE_BRACKETS;
             }
+            return getClassName(clazz, simpleNames);
+        }
+        if (baseType instanceof ParameterizedType) {
+            ParameterizedType parameterizedType = (ParameterizedType) baseType;
+            return getClassName((Class<?>) parameterizedType.getRawType(), simpleNames) + formatActualTypeArguments(parameterizedType.getActualTypeArguments());
+        }
+        if (baseType instanceof GenericArrayType) {
+            GenericArrayType gat = (GenericArrayType) baseType;
+            return formatType(gat.getGenericComponentType(), simpleNames) + SQUARE_BRACKETS;
+        }
+        return baseType.toString();
+    }
+
+    private static String getClassName(Class<?> clazz, boolean simpleNames) {
+        if (simpleNames) {
+            return clazz.getSimpleName();
+        } else {
+            return clazz.getName();
         }
     }
 
@@ -288,11 +311,15 @@ public class Formats {
     }
 
     public static String formatActualTypeArguments(Type[] actualTypeArguments) {
+        return formatActualTypeArguments(actualTypeArguments, true);
+    }
+
+    public static String formatActualTypeArguments(Type[] actualTypeArguments, boolean simpleNames) {
         return wrapIfNecessary(formatIterable(actualTypeArguments, new Function<Type>() {
 
             @Override
             public String apply(Type from, int position) {
-                return commaDelimiterFunction().apply(formatType(from), position);
+                return commaDelimiterFunction().apply(formatType(from, simpleNames), position);
             }
 
         }), "<", ">");
