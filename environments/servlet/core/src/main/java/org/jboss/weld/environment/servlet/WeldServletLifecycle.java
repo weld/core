@@ -132,10 +132,6 @@ public class WeldServletLifecycle {
         Service probeService = null;
         final ResourceLoader resourceLoader = new WeldResourceLoader();
 
-        if (isDevModeEnabled) {
-            WeldServletLogger.LOG.developmentModeEnabled();
-        }
-
         WeldManager manager = (WeldManager) context.getAttribute(BEAN_MANAGER_ATTRIBUTE_NAME);
         if (manager != null) {
             isBootstrapNeeded = false;

@@ -54,6 +54,7 @@ public class ProbeExtension implements Extension {
     private volatile Pattern invocationMonitorExcludePattern;
 
     public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery event, BeanManager beanManager) {
+        ProbeLogger.LOG.developmentModeEnabled();
         event.addAnnotatedType(beanManager.createAnnotatedType(Monitored.class), Monitored.class.getName());
         event.addAnnotatedType(beanManager.createAnnotatedType(MonitoredComponent.class), MonitoredComponent.class.getName());
         event.addAnnotatedType(beanManager.createAnnotatedType(InvocationMonitor.class), InvocationMonitor.class.getName());

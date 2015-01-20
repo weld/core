@@ -147,13 +147,9 @@ public interface WeldServletLogger extends WeldEnvironmentLogger {
     @Message(id = 1030, value = "Cannot load class using the supplied TCCL: {0}", format = Format.MESSAGE_FORMAT)
     void cannotLoadClassUsingTccl(String className);
 
-    @LogMessage(level = Level.WARN)
-    @Message(id = 1031, value = "\n=====================================\n\n Weld Development Mode: ENABLED \n\n=====================================")
-    void developmentModeEnabled();
-
-    @Message(id = 1032, value = "Unable to initialize the Probe component: {0}", format = Format.MESSAGE_FORMAT)
+    @Message(id = 1031, value = "Unable to initialize the Probe component: {0}", format = Format.MESSAGE_FORMAT)
     IllegalStateException unableToInitializeProbeComponent(Object component, @Cause Throwable cause);
 
-    @Message(id = 1033, value = "Development mode is enabled but the following Probe component is not found on the classpath: {0}", format = Format.MESSAGE_FORMAT)
+    @Message(id = 1032, value = "Development mode is enabled but the following Probe component is not found on the classpath: {0}", format = Format.MESSAGE_FORMAT)
     IllegalStateException probeComponentNotFoundOnClasspath(Object component);
 }
