@@ -12,11 +12,11 @@ h1 {
 }
 
 h2 {
-    font-size: 24px;
+  font-size: 24px;
 }
 
 h3 {
-    font-size: 18px;
+  font-size: 18px;
 }
 
 footer {
@@ -144,10 +144,19 @@ ul.plain-list li {
   margin-top: 25%;
 }
 
-#navigation-menu a.active {
+#navigation-menu a.active, #navigation-menu li.active a.dropdown-toggle
+  {
   background-color: #337ab7;
   color: #fff;
   background-image: none;
+  border-radius: 3px;
+}
+
+a.nav-link {
+  padding: 5px 8px 5px 4px;
+  margin-right: 5px;
+  background-image: none;
+  /*border: 1px solid silver;*/
   border-radius: 3px;
 }
 
@@ -156,9 +165,13 @@ ul.plain-list li {
 }
 
 #navigation-menu a:HOVER {
- text-decoration: underline;
+  text-decoration: underline;
 }
 
 div.content {
   padding: 30px 10px 10px 10px;
+}
+
+.table > tbody > tr > th.with-rowspan {
+  vertical-align: middle;
 }

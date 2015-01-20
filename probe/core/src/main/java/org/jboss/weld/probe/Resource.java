@@ -16,10 +16,14 @@
  */
 package org.jboss.weld.probe;
 
+import static org.jboss.weld.probe.Strings.APPLICATION_FONT_MS;
+import static org.jboss.weld.probe.Strings.APPLICATION_FONT_SFNT;
+import static org.jboss.weld.probe.Strings.APPLICATION_FONT_WOFF;
 import static org.jboss.weld.probe.Strings.ENCODING_UTF8;
 import static org.jboss.weld.probe.Strings.FILE_CLIENT_HTML;
 import static org.jboss.weld.probe.Strings.FILTERS;
 import static org.jboss.weld.probe.Strings.IMG_PNG;
+import static org.jboss.weld.probe.Strings.IMG_SVG;
 import static org.jboss.weld.probe.Strings.PAGE;
 import static org.jboss.weld.probe.Strings.PARAM_TRANSIENT_DEPENDENCIES;
 import static org.jboss.weld.probe.Strings.PARAM_TRANSIENT_DEPENDENTS;
@@ -29,9 +33,14 @@ import static org.jboss.weld.probe.Strings.RESOURCE_PARAM_END;
 import static org.jboss.weld.probe.Strings.RESOURCE_PARAM_START;
 import static org.jboss.weld.probe.Strings.SLASH;
 import static org.jboss.weld.probe.Strings.SUFFIX_CSS;
+import static org.jboss.weld.probe.Strings.SUFFIX_EOT;
 import static org.jboss.weld.probe.Strings.SUFFIX_HTML;
 import static org.jboss.weld.probe.Strings.SUFFIX_JS;
+import static org.jboss.weld.probe.Strings.SUFFIX_OTF;
 import static org.jboss.weld.probe.Strings.SUFFIX_PNG;
+import static org.jboss.weld.probe.Strings.SUFFIX_SVG;
+import static org.jboss.weld.probe.Strings.SUFFIX_TTF;
+import static org.jboss.weld.probe.Strings.SUFFIX_WOFF;
 import static org.jboss.weld.probe.Strings.TEXT_CSS;
 import static org.jboss.weld.probe.Strings.TEXT_HTML;
 import static org.jboss.weld.probe.Strings.TEXT_JAVASCRIPT;
@@ -188,7 +197,7 @@ enum Resource {
     /**
      * A default HTML client resource.
      */
-    CLIENT_RESOURCE("/client/{\\w+\\.\\w+}", new Handler() {
+    CLIENT_RESOURCE("/client/{[a-zA-Z_0-9-]+\\.\\w+}", new Handler() {
         @Override
         protected void handle(BeanManagerImpl beanManager, Probe probe, HttpMethod method, String[] pathInfoParts, HttpServletRequest req,
                 HttpServletResponse resp) throws IOException {
@@ -202,18 +211,17 @@ enum Resource {
             String contentType = detectContentType(resourceName);
             setHeaders(resp, contentType);
 
-            if (IMG_PNG.equals(contentType)) {
-                if (!IOUtils.writeResource(resourceName, resp.getOutputStream())) {
-                    resp.sendError(HttpServletResponse.SC_NOT_FOUND);
-                }
-            } else {
-                // All other content types are text-based
+            if (isTextBasedContenType(contentType)) {
                 String content = IOUtils.getResourceAsString(resourceName);
                 if (content == null) {
                     resp.sendError(HttpServletResponse.SC_NOT_FOUND);
                 }
                 content = content.replace("${contextPath}", req.getContextPath() + req.getServletPath() + SLASH);
                 resp.getWriter().append(content);
+            } else {
+                if (!IOUtils.writeResource(resourceName, resp.getOutputStream())) {
+                    resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+                }
             }
         }
     }), ;
@@ -299,9 +307,22 @@ enum Resource {
             return TEXT_JAVASCRIPT;
         } else if (resourceName.endsWith(SUFFIX_PNG)) {
             return IMG_PNG;
+        } else if (resourceName.endsWith(SUFFIX_TTF) || resourceName.endsWith(SUFFIX_OTF)) {
+            return APPLICATION_FONT_SFNT;
+        } else if (resourceName.endsWith(SUFFIX_EOT)) {
+            return APPLICATION_FONT_MS;
+        } else if (resourceName.endsWith(SUFFIX_WOFF)) {
+            return APPLICATION_FONT_WOFF;
+        } else if (resourceName.endsWith(SUFFIX_SVG)) {
+            return IMG_SVG;
         } else {
             return TEXT_PLAIN;
         }
+    }
+
+    static boolean isTextBasedContenType(String contentType) {
+        return !(IMG_PNG.equals(contentType) || APPLICATION_FONT_SFNT.equals(contentType) || APPLICATION_FONT_WOFF.equals(contentType) || APPLICATION_FONT_MS
+                .equals(contentType));
     }
 
     abstract static class Handler {

@@ -35,8 +35,14 @@ Probe.ResetScroll = Ember.Mixin.create({
 });
 
 Probe.Router.map(function() {
-  this.route('deployment', {
+  this.route('beanArchives', {
     path : '/'
+  });
+  this.route('beanArchive', {
+    path : '/bda/:id'
+  });
+  this.route('configuration', {
+    path : '/config'
   });
   this.resource('beanList', {
     path : '/beans'
@@ -70,8 +76,12 @@ Probe.ApplicationView = Ember.View.extend({
   currentPathDidChange : function() {
     // Workaround to highlight the active tab
     Ember.run.next(this, function() {
-      this.$("ul.nav li:has(>a.active)").addClass('active');
-      this.$("ul.nav li:not(:has(>a.active))").removeClass('active');
+      this.$("ul.nav li:has(a.active)").addClass('active');
+      this.$("ul.nav li:not(:has(a.active))").removeClass('active');
+      // Submenu
+      this.$("ul.dropdown-menu li:has(>a.active)").addClass('active');
+      this.$("ul.dropdown-menu li:not(:has(>a.active))").removeClass(
+          'active');
     });
   }.observes('controller.currentPath')
 });
@@ -86,6 +96,7 @@ Probe.ApplicationRoute = Ember.Route.extend({
     return $.getJSON(restUrlBase + 'deployment').done(function(data) {
       cache.bdas = data.bdas;
       cache.configuration = data.configuration;
+      buildBdaGraphData(cache);
       return data;
     }).fail(function(jqXHR, textStatus, errorThrown) {
       alert('Unable to get JSON data: ' + textStatus);
@@ -93,7 +104,19 @@ Probe.ApplicationRoute = Ember.Route.extend({
   }
 });
 
-Probe.DeploymentRoute = Ember.Route.extend({
+Probe.BeanArchivesRoute = Ember.Route.extend({
+  model : function() {
+    return cache;
+  }
+});
+
+Probe.BeanArchiveRoute = Ember.Route.extend({
+  model : function(params) {
+    return findBeanDeploymentArchive(cache.bdas, params.id);
+  }
+});
+
+Probe.ConfigurationRoute = Ember.Route.extend({
   model : function() {
     return cache;
   }
@@ -153,7 +176,7 @@ Probe.BeanListRoute = Ember.Route.extend(Probe.ResetScroll, {
   }
 });
 
-Probe.BeanDetailRoute = Ember.Route.extend({
+Probe.BeanDetailRoute = Ember.Route.extend(Probe.ResetScroll, {
   setupController : function(controller, model) {
     this._super(controller, model);
     // A bean kind css class binding
@@ -163,7 +186,7 @@ Probe.BeanDetailRoute = Ember.Route.extend({
     this.set("beanId", params.id);
     return $.getJSON(restUrlBase + 'beans/' + params.id).done(
         function(data) {
-          data.bdaIdName = findBeanDeploymentArchive(cache.bdas,
+          data.bdaIdName = findBeanDeploymentArchiveId(cache.bdas,
               data['bdaId']);
           buildDependencyGraphData(data, params.id)
           return data;
@@ -265,7 +288,7 @@ Probe.ObserverListRoute = Ember.Route
           }
         });
 
-Probe.ObserverDetailRoute = Ember.Route.extend({
+Probe.ObserverDetailRoute = Ember.Route.extend(Probe.ResetScroll, {
   model : function(params) {
     return $.getJSON(restUrlBase + 'observers/' + params.id).done(
         function(data) {
@@ -291,7 +314,7 @@ Probe.ContextsRoute = Ember.Route.extend({
   }
 });
 
-Probe.ContextInstanceRoute = Ember.Route.extend({
+Probe.ContextInstanceRoute = Ember.Route.extend(Probe.ResetScroll, {
   model : function(params) {
     return $.getJSON(restUrlBase + 'beans/' + params.id + '/instance')
         .done(function(data) {
@@ -353,7 +376,7 @@ Probe.InvocationListRoute = Ember.Route.extend(Probe.ResetScroll, {
   }
 });
 
-Probe.InvocationDetailRoute = Ember.Route.extend({
+Probe.InvocationDetailRoute = Ember.Route.extend(Probe.ResetScroll, {
   model : function(params) {
     return $.getJSON(restUrlBase + 'invocations/' + params.id).done(
         function(data) {
@@ -366,7 +389,11 @@ Probe.InvocationDetailRoute = Ember.Route.extend({
 
 // CONTROLLERS
 
-Probe.DeploymentController = Ember.ObjectController.extend({});
+Probe.BeanArchivesController = Ember.ObjectController.extend({});
+
+Probe.BeanArchiveController = Ember.ObjectController.extend({});
+
+Probe.ConfigurationController = Ember.ObjectController.extend({});
 
 Probe.BeanListController = Ember.ObjectController.extend({
   init : function() {
@@ -540,15 +567,13 @@ Probe.DependencyGraph = Ember.View
           bottom : 20,
           left : 120
         }
-        // TODO auto width
-        // var width = 1280 - margin.right - margin.left;
+        // TODO responsive design
         var width = 1280;
         var height = 600 - margin.top - margin.bottom;
 
         var nodes = d3.values(data.nodes);
         var links = data.links;
 
-        // D3 force layout
         var force = d3.layout.force().nodes(nodes).links(links).size(
             [ width, height ]).gravity(.05).linkDistance(450)
             .charge(-500).on("tick", tick).start();
@@ -644,8 +669,6 @@ Probe.DependencyGraph = Ember.View
             .on("drag", dragmove).on("dragend", dragend);
 
         function dragstart(d, i) {
-          // stops the force auto positioning before you start
-          // dragging
           force.stop()
         }
 
@@ -654,14 +677,10 @@ Probe.DependencyGraph = Ember.View
           d.py += d3.event.dy;
           d.x += d3.event.dx;
           d.y += d3.event.dy;
-          // this is the key to make it work together with updating
-          // both px,py,x,y on d !
           tick();
         }
 
         function dragend(d, i) {
-          // set the node to fixed so the force doesn't include the
-          // node in its auto positioning stuff
           d.fixed = true;
           tick();
           force.resume();
@@ -694,12 +713,6 @@ Probe.DependencyGraph = Ember.View
               }
               return "circle-regular";
             });
-
-        // node.append("svg:text").attr("class", "nodetext")
-        // .attr("dx", 15).attr("dy", "-1em")
-        // .style("fill", "gray").text(function(d) {
-        // return d.kind;
-        // });
 
         node.append("a").attr("xlink:href", function(d) {
           return "#/bean/" + d.id;
@@ -799,6 +812,7 @@ Probe.InvocationTree = Ember.View
           alert("No data to render!");
         }
 
+        // TODO responsive design
         var margin = {
           top : 120,
           right : 120,
@@ -806,7 +820,6 @@ Probe.InvocationTree = Ember.View
           left : 120
         }, width = 1280 - margin.right - margin.left, height = 1600
             - margin.top - margin.bottom;
-        // TODO height should be set dynamically
 
         var i = 0;
         var tree = d3.layout.tree().size([ height, width ]);
@@ -834,7 +847,7 @@ Probe.InvocationTree = Ember.View
             .links(nodes);
         var idx = nodes.length;
 
-        // Normalize for fixed-depth.
+        // Normalize for fixed-depth
         nodes.forEach(function(d) {
           idx--;
           if (d.depth == 0) {
@@ -952,13 +965,181 @@ Probe.InvocationTree = Ember.View
       }
     });
 
+Probe.BdaGraph = Ember.View
+    .extend({
+      didInsertElement : function() {
+
+        var data = this.get('content');
+        if (!data) {
+          alert("No data to render!");
+          return;
+        }
+
+        var margin = {
+          top : 20,
+          right : 120,
+          bottom : 20,
+          left : 120
+        }
+        // TODO responsive design
+        var width = 1280;
+        var height = 600 - margin.top - margin.bottom;
+
+        var nodes = d3.values(data.nodes);
+        var links = data.links;
+
+        // D3 force layout
+        var force = d3.layout.force().nodes(nodes).links(links).size(
+            [ width, height ]).gravity(.05).linkDistance(250)
+            .charge(-500).on("tick", tick).start();
+
+        var elementId = this.get('elementId');
+        var element = d3.select('#' + elementId);
+        var svg = element.append("svg").attr("height",
+            height + margin.top + margin.bottom).attr("width",
+            width);
+
+        // Arrow marker
+        var marker = svg.append("svg:defs").selectAll("marker").data(
+            [ "end" ]).enter().append("svg:marker").attr("id",
+            String).attr("viewBox", "0 -5 10 10").attr("refX", 22)
+            .attr("refY", -1.5).attr("markerWidth", 6).attr(
+                "markerHeight", 6).attr("orient", "auto")
+            .append("svg:path").attr("d", "M0,-5L10,0L0,5");
+
+        // add the links and the arrows
+        var path = svg.append("svg:g").selectAll("path").data(
+            force.links()).enter().append("svg:path").attr("class",
+            "link").attr("marker-end", "url(#end)");
+
+        var node_drag = d3.behavior.drag().on("dragstart", dragstart)
+            .on("drag", dragmove).on("dragend", dragend);
+
+        function dragstart(d, i) {
+          force.stop()
+        }
+
+        function dragmove(d, i) {
+          d.px += d3.event.dx;
+          d.py += d3.event.dy;
+          d.x += d3.event.dx;
+          d.y += d3.event.dy;
+          tick();
+        }
+
+        function dragend(d, i) {
+          d.fixed = true;
+          tick();
+          force.resume();
+        }
+
+        var node = svg.selectAll("g.node").data(nodes).enter().append(
+            "svg:g").attr("class", "node").call(node_drag);
+
+        node.append("title").text(function(d) {
+            return d.bdaId;
+          });
+
+        node.append("circle").attr("r", 16).attr("class",
+            "circle-regular");
+
+        var text = node.append("svg:text").attr("dx", function(d) {
+          return d.idx > 8 ? "-10": "-5";
+        }).attr("dy",
+            "5").style("fill", "white").text(function(d) {
+          return d.idx + 1;
+        });
+
+        node
+            .on(
+                'mouseover',
+                function(d) {
+                  path.style('stroke', function(l) {
+                    if (d === l.source) {
+                      return 'LightGreen';
+                    } else if (d === l.target) {
+                      return 'Tomato';
+                    } else {
+                      return '#fafafa';
+                    }
+                  });
+                  path
+                      .style(
+                          'stroke-opacity',
+                          function(l) {
+                            return (d === l.source || d === l.target) ? 1
+                                : 0;
+                          });
+                  path
+                      .attr(
+                          "marker-end",
+                          function(l) {
+                            return (d === l.source || d === l.target) ? 'url(#end)'
+                                : '';
+                          });
+//                  text.style('fill', '#333').text(
+//                      function(d) {
+//                        return (d.idx + 1)
+//                            + '  '
+//                            + abbreviate(d.bdaId,
+//                                40);
+//                      });
+                }).on('mouseout', function() {
+              path.style('stroke', function(l) {
+                return '#ccc';
+              });
+              path.attr('marker-end', function(l) {
+                return 'url(#end)';
+              });
+              path.style('stroke-opacity', function(l) {
+                return 1;
+              });
+//              text.style('fill', 'white').text(function(d) {
+//                return d.idx + 1;
+//              });
+            });
+
+        force.on("tick", tick);
+
+        function tick() {
+          path
+              .attr(
+                  "d",
+                  function(d) {
+                    var dx = d.target.x - d.source.x, dy = d.target.y
+                        - d.source.y, dr = Math.sqrt(dx
+                        * dx + dy * dy);
+                    return "M" + d.source.x + ","
+                        + d.source.y + "A" + dr + ","
+                        + dr + " 0 0,1 " + d.target.x
+                        + "," + d.target.y;
+                  });
+          node.attr("transform", function(d) {
+            return "translate(" + d.x + "," + d.y + ")";
+          });
+        }
+
+      }
+    });
+
 // UTILS
+
+function findBeanDeploymentArchiveId(bdas, id) {
+  if (bdas) {
+    for (var i = 0; i < bdas.length; i++) {
+      if (bdas[i].id == id) {
+        return bdas[i].bdaId;
+      }
+    }
+  }
+  return null;
+}
 
 function findBeanDeploymentArchive(bdas, id) {
   if (bdas) {
     for (var i = 0; i < bdas.length; i++) {
       if (bdas[i].id == id) {
-        return bdas[i].bdaId;
+        return bdas[i];
       }
     }
   }
@@ -1122,6 +1303,64 @@ function buildDependencyGraphData(data, id) {
   data.nodes = nodes;
   data.links = links;
   console.log('Build dependency graph data [links: ' + links.length + ']');
+}
+
+/**
+ *
+ * @param data
+ *            BeanDetailRoute data
+ */
+function buildBdaGraphData(data) {
+  // Create nodes
+  var nodes = new Object();
+  findNodesBdas(data.bdas, nodes);
+  // Create links
+  var links = new Array();
+  findLinksBdas(data.bdas, links, nodes);
+  data.nodes = nodes;
+  data.links = links;
+  console.log('Build BDA graph data [links: ' + links.length + ']');
+}
+
+function findNodesBdas(bdas, nodes) {
+  if (bdas) {
+    bdas.forEach(function(bda, index, array) {
+      if (!nodes[bda.id]) {
+        nodes[bda.id] = {
+          id : bda.id,
+          bdaId : bda.bdaId,
+          idx : index,
+        }
+      }
+    });
+  }
+}
+
+function findLinksBdas(bdas, links, nodes) {
+  if (bdas) {
+    bdas.forEach(function(bda) {
+      bda.accessibleBdas.forEach(function(accessible) {
+        if (bda.id == accessible) {
+          return;
+        }
+        // First check identical links
+        var found;
+        for (var i = 0; i < links.length; i++) {
+          if ((links[i].source == nodes[bda.id])
+              && (links[i].target == nodes[accessible])) {
+            found = links[i];
+            break;
+          }
+        }
+        if (!found) {
+          links.push({
+            source : nodes[bda.id],
+            target : nodes[accessible],
+          });
+        }
+      });
+    });
+  }
 }
 
 /**

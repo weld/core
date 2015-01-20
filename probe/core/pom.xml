@@ -52,7 +52,18 @@
         <targetPath>${project.basedir}/target/client</targetPath>
         <excludes>
           <exclude>wro.xml</exclude>
+          <exclude>fontawesome-webfont.*</exclude>
+          <exclude>FontAwesome.otf</exclude>
         </excludes>
+      </resource>
+      <resource>
+        <directory>src/main/client</directory>
+        <filtering>false</filtering>
+        <targetPath>${project.basedir}/target/client</targetPath>
+        <includes>
+          <include>fontawesome-webfont.*</include>
+          <include>FontAwesome.otf</include>
+        </includes>
       </resource>
       <resource>
         <directory>src/main/resources</directory>
@@ -77,7 +88,7 @@
           href="${contextPath}client/probe.css" /&gt;</head>
         <scripts>&lt;script type="text/javascript"
           src="${contextPath}client/probe.js" /&gt;&lt;/script&gt;</scripts>
-        <logo.path>${contextPath}client/</logo.path>
+        <client.resource.path>${contextPath}client/</client.resource.path>
       </properties>
 
       <build>
@@ -121,6 +132,13 @@
                         <include>*.png</include>
                       </includes>
                     </resource>
+                    <resource>
+                      <directory>${project.basedir}/src/main/client</directory>
+                      <includes>
+                        <include>fontawesome-webfont.*</include>
+                        <include>FontAwesome.otf</include>
+                      </includes>
+                    </resource>
                   </resources>
                 </configuration>
               </execution>
@@ -150,7 +168,10 @@
           href="bootstrap-theme.min-3.3.1.css"
           /&gt;
           &lt;link rel="stylesheet" type="text/css"
-          href="basic.css" /&gt; </head>
+          href="basic.css" /&gt;
+          &lt;link rel="stylesheet" type="text/css"
+          href="font-awesome.min-4.2.0.css" /&gt;
+           </head>
         <scripts>
           &lt;script type="text/javascript"
           src="d3.min-3.5.2.js"
@@ -168,7 +189,7 @@
           src="moment.min-2.8.4.js"&gt;&lt;/script&gt;
           &lt;script type="text/javascript"
           src="app.js"&gt;&lt;/script&gt; </scripts>
-         <logo.path></logo.path>
+         <client.resource.path></client.resource.path>
       </properties>
     </profile>
 

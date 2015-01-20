@@ -65,4 +65,9 @@ public interface ProbeLogger extends BasicLogger {
     @LogMessage(level = Level.INFO)
     @Message(id = 8, value = "\n=====================================\n\n Weld Development Mode: ENABLED \n\n=====================================")
     void developmentModeEnabled();
+
+    @LogMessage(level = Level.DEBUG)
+    @Message(id = 9, value = "@MonitoredComponent stereotype added to {0}", format = Format.MESSAGE_FORMAT)
+    void monitoringStereotypeAdded(Object bean);
+
 }

@@ -19,11 +19,17 @@ ${head}
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="#" title="Weld Probe"><img src="${logo.path}weld_icon_48x.png" alt="Weld logo" /></a>
+                    <a class="navbar-brand" href="#" title="Weld Probe"><img src="${client.resource.path}weld_icon_48x.png" alt="Weld logo" /></a>
                 </div>
                 <div id="menu" class="collapse navbar-collapse">
                     <ul class="nav navbar-nav">
-                        <li>{{#link-to 'deployment'}}Deployment{{/link-to}}</li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Deployment <span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li>{{#link-to 'beanArchives'}}Bean Archives{{/link-to}}</li>
+                                <li>{{#link-to 'configuration'}}Configuration{{/link-to}}</li>
+                            </ul>
+                        </li>
                         <li>{{#link-to 'beanList'}}Beans{{/link-to}}</li>
                         <li>{{#link-to 'observerList'}}Observer Methods{{/link-to}}</li>
                         <li>{{#link-to 'contexts'}}Contexts{{/link-to}}</li>
@@ -42,69 +48,106 @@ ${head}
 
     <script
         type="text/x-handlebars"
-        data-template-name="deployment">
+        data-template-name="beanArchives">
 
-        <h1>Deployment</h1>
-
-        <h2>Bean Archives</h2>
+        <h1>Bean Archives</h1>
 
         <table class="table table-bordered table-striped">
             <col width="3%">
-            <col width="47%">
-            <col width="13%">
-            <col width="37%">
+            <col width="12%">
+            <col width="55%">
+            <col width="15%">
+            <col width="15%">
             <tr>
-                <th></th>
+                <th>Index</th>
+                <th>Actions</th>
                 <th>Identifier</th>
                 <th>Bean Discovery Mode</th>
-                <th>Enablement</th>
+                <th>Number of Beans <i class="fa fa-lg fa-info-circle" title="Without built-in, inteceptors and decorators"></i></th>
             </tr>
             {{#each bdas}}
             <tr>
                 <td>{{increment _view.contentIndex}}</td>
+                <td><i class="fa fa-search"></i> {{#link-to 'beanArchive' id class='nav-link'}}Detail{{/link-to}} <i class="fa fa-filter"></i>{{#link-to 'beanList' (query-params bda=id) class='nav-link'}}Filter beans{{/link-to}}</td>
                 <td>
-                    {{#link-to 'beanList' (query-params bda=id) title='Click to show beans'}}{{bdaId}}{{/link-to}}
+                    {{bdaId}}
                 </td>
                 <td>{{beanDiscoveryMode}}</td>
-                <td>
-                    {{#if enablement.interceptors}}
-                        <div class="no-margin">
-                            <strong>Interceptors:</strong> {{enablement.interceptors.length}}
-                            <ul class="plain-list no-margin">
-                                {{#each enablement.interceptors}}
-                                <li>{{this}}</li>
-                                {{/each}}
-                            </ul>
-
-                        <div>
-                    {{/if}}
-                    {{#if enablement.decorators}}
-                        <div class="no-margin">
-                            <strong>Decorators:</strong> {{enablement.decorators.length}}
-                            <ul class="plain-list no-margin">
-                                {{#each enablement.decorators}}
-                                <li>{{this}}</li>
-                                {{/each}}
-                            </ul>
-
-                        <div>
-                    {{/if}}
-                    {{#if enablement.alternatives}}
-                        <div class="no-margin">
-                            <strong>Alternatives:</strong> {{enablement.alternatives.length}}
-                            <ul class="plain-list no-margin">
-                                {{#each enablement.alternatives}}
-                                <li>{{this}}</li>
-                                {{/each}}
-                            </ul>
-                        <div>
-                    {{/if}}
-                </td>
+                <td>{{beans}}</td>
             </tr>
             {{/each}}
         </table>
 
-        <h2>Weld Configuration</h2>
+        <h2>Accessibility Graph</h2>
+
+        {{view Probe.BdaGraph contentBinding="model" routeRefresh=routeRefresh}}
+
+    </script>
+
+    <script
+        type="text/x-handlebars"
+        data-template-name="beanArchive">
+
+        <h1>Bean Archive</h1>
+
+        <div class="btn-line"><i class="fa fa-filter"></i>{{#link-to 'beanList' (query-params bda=id) class='nav-link'}}Filter beans{{/link-to}}</div>
+
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Identifier:</label>
+                         <div class="col-sm-10">
+                            <p class="form-control-static">{{bdaId}}</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Bean Discovery Mode:</label>
+                         <div class="col-sm-10">
+                            <p class="form-control-static">{{beanDiscoveryMode}}</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Enabled Interceptors:</label>
+                        <div class="col-sm-10">
+                            {{#if enablement.interceptors}}
+                            {{#each enablement.interceptors}}
+                            <p class="form-control-static">{{this}}</p>
+                            {{/each}}
+                            {{/if}}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Enabled Decorators:</label>
+                        <div class="col-sm-10">
+                            {{#if enablement.decorators}}
+                            {{#each enablement.decorators}}
+                            <p class="form-control-static">{{this}}</p>
+                            {{/each}}
+                            {{/if}}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Selected Alternatives:</label>
+                        <div class="col-sm-10">
+                            {{#if enablement.alternatives}}
+                            {{#each enablement.alternatives}}
+                            <p class="form-control-static">{{this}}</p>
+                            {{/each}}
+                            {{/if}}
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </script>
+
+    <script
+        type="text/x-handlebars"
+        data-template-name="configuration">
+
+        <h1>Weld Configuration</h1>
 
         <table class="table table-bordered table-striped">
             <col width="6%">
@@ -146,7 +189,7 @@ ${head}
 
         <div class="btn-line">
             &nbsp;<button {{action 'clearFilters'}} class="btn btn-default">Clear filters</button>
-            <div class="total pull-left">Found: {{total}}</div>
+            <div class="total pull-left">Total Found: {{total}}</div>
             <ul class="pagination no-margin pull-left">
             {{#each pages}}
                 <li class="{{unbound active}}">{{#link-to 'beanList' (query-params page=index)}}{{index}}{{/link-to}}</li>
@@ -165,19 +208,19 @@ ${head}
                     </form>
                 </th>
                 <th>
-                    Bean class
+                    Bean class <i class="fa fa-lg fa-info-circle" title="Click to show the bean detail"></i>
                     <form {{action "filter" on="submit"}}>
                         {{input value=beanClass class="form-control" placeholder="Contains"}}
                     </form>
                 </th>
                 <th>
-                    Bean types (w/o java.lang.Object)
+                    Bean types <i class="fa fa-lg fa-info-circle" title="Without java.lang.Object"></i>
                     <form {{action "filter" on="submit"}}>
                         {{input value=beanType class="form-control" placeholder="Any contains"}}
                     </form>
                 </th>
                 <th>
-                    Qualifiers (w/o javax.enterprise.inject.Any)
+                    Qualifiers <i class="fa fa-lg fa-info-circle" title="Without javax.enterprise.inject.Any"></i>
                     <form {{action "filter" on="submit"}}>
                         {{input value=qualifier class="form-control" placeholder="Any contains"}}
                     </form>
@@ -202,7 +245,7 @@ ${head}
         </table>
 
         <div class="btn-line">
-            <div class="total pull-left">Found: {{total}}</div>
+            <div class="total pull-left">Total Found: {{total}}</div>
             <ul class="pagination no-margin">
             {{#each pages}}
                 <li class="{{unbound active}}">{{#link-to 'beanList' (query-params page=index)}}{{index}}{{/link-to}}</li>
@@ -225,7 +268,11 @@ ${head}
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Bean Deployment Archive:</label>
                          <div class="col-sm-10">
-                            <p class="form-control-static">{{#link-to 'beanList' (query-params bda=bdaId)}}{{bdaIdName}}{{/link-to}}</p>
+                            <p class="form-control-static">
+                                <i class="fa fa-search"></i>{{#link-to 'beanArchive' bdaId class='nav-link'}}Detail{{/link-to}}
+                                <i class="fa fa-filter"></i>{{#link-to 'beanList' (query-params bda=bdaId) class='nav-link'}}Filter beans{{/link-to}}
+                                {{bdaIdName}}
+                            </p>
                         </div>
                     </div>
                     {{/if}}
@@ -309,7 +356,7 @@ ${head}
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Declaring Bean:</label>
                         <div class="col-sm-10">
-                            <p class="form-control-static"><span class="{{unbound declaringBean.kind}} boxed">{{declaringBean.kind}}</span> {{#link-to 'beanDetail' declaringBean.id}}{{declaringBean.beanClass}}{{/link-to}}</p>
+                            <p class="form-control-static"><span class="{{unbound declaringBean.kind}} boxed">{{declaringBean.kind}}</span> <i class="fa fa-search"></i> {{#link-to 'beanDetail' declaringBean.id}}{{declaringBean.beanClass}}{{/link-to}}</p>
                         </div>
                     </div>
                     {{/if}}
@@ -345,7 +392,7 @@ ${head}
                             <p class="form-control-static">
                                 <span class="{{unbound reception}} boxed">{{unbound reception}}</span>
                                 <span class="{{unbound txPhase}} boxed">{{unbound txPhase}}</span>
-                                {{#link-to 'observerDetail' id}}{{observedType}}{{/link-to}}
+                                <i class="fa fa-search"></i> {{#link-to 'observerDetail' id}}{{observedType}}{{/link-to}}
                             </p>
                             {{/each}}
                         </div>
@@ -358,7 +405,7 @@ ${head}
                             {{#each declaredProducers}}
                             <p class="form-control-static">
                                 <span class="{{unbound kind}} boxed">{{unbound kind}}</span>
-                                {{#link-to 'beanDetail' id}}
+                                <i class="fa fa-search"></i> {{#link-to 'beanDetail' id}}
                                     {{#if producerInfo}}{{unbound producerInfo}}{{else}}Unknown{{/if}}
                                 {{/link-to}}
                             </p>
@@ -412,7 +459,7 @@ ${head}
 
         <div class="btn-line">
             &nbsp;<button {{action 'clearFilters'}} class="btn btn-default">Clear filters</button>
-            <div class="total pull-left">Found: {{total}}</div>
+            <div class="total pull-left">Total Found: {{total}}</div>
             <ul class="pagination no-margin pull-left">
             {{#each pages}}
                 <li class="{{unbound active}}">{{#link-to 'observerList' (query-params page=index)}}{{index}}{{/link-to}}</li>
@@ -422,28 +469,31 @@ ${head}
 
         <table class="table table-bordered table-striped">
             <tr>
-                <th></th>
-                <th>Declaring Bean Kind {{view 'select' content=beanKinds value=kind prompt="-- ANY --" class="form-control"}}</th>
-                <th>
-                    Declaring Bean (or Bean Class if N/A)
-                    <form {{action "filter" on="submit"}}>
-                        {{input value=beanClass class="form-control" placeholder="Contains"}}
-                    </form>
-                </th>
-                <th>
-                    Observed Type
+                <th rowspan="2"></th>
+                <th colspan="2">Declaring Bean</th>
+                <th rowspan="2" class="with-rowspan">
+                    Observed Type <i class="fa fa-lg fa-info-circle" title="Click to show the observer method detail"></i>
                     <form {{action "filter" on="submit"}}>
                         {{input value=observedType class="form-control" placeholder="Contains"}}
                     </form>
                 </th>
-                <th>
+                <th rowspan="2" class="with-rowspan">
                     Qualifiers
                     <form {{action "filter" on="submit"}}>
                         {{input value=qualifier class="form-control" placeholder="Any contains"}}
                     </form>
                 </th>
-                <th>Reception {{view 'select' content=receptions value=reception prompt="-- ANY --" class="form-control"}}</th>
-                <th>Transaction Phase {{view 'select' content=txPhases value=txPhase prompt="-- ANY --" class="form-control"}}</th>
+                <th rowspan="2" class="with-rowspan">Reception {{view 'select' content=receptions value=reception prompt="-- ANY --" class="form-control"}}</th>
+                <th rowspan="2" class="with-rowspan">Transaction Phase {{view 'select' content=txPhases value=txPhase prompt="-- ANY --" class="form-control"}}</th>
+            </tr>
+            <tr>
+                <th>Kind {{view 'select' content=beanKinds value=kind prompt="-- ANY --" class="form-control"}}</th>
+                <th>
+                    Bean Class <i class="fa fa-lg fa-info-circle" title="Or ObserverMethod.getBeanClass() if declaring bean not available"></i>
+                    <form {{action "filter" on="submit"}}>
+                        {{input value=beanClass class="form-control" placeholder="Contains"}}
+                    </form>
+                </th>
             </tr>
             {{#each data}}
             <tr>
@@ -473,7 +523,7 @@ ${head}
         </table>
 
         <div class="btn-line">
-            <div class="total pull-left">Found: {{total}}</div>
+            <div class="total pull-left">Total Found: {{total}}</div>
             <ul class="pagination no-margin">
             {{#each pages}}
                 <li class="{{unbound active}}">{{#link-to 'observerList' (query-params page=index)}}{{index}}{{/link-to}}</li>
@@ -496,7 +546,7 @@ ${head}
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Declaring Bean:</label>
                          <div class="col-sm-10">
-                            <p class="form-control-static"><span class="{{unbound declaringBean.kind}} boxed">{{unbound declaringBean.kind}}</span> {{#link-to 'beanDetail' declaringBean.id}}{{declaringBean.beanClass}}{{/link-to}}</p>
+                            <p class="form-control-static"><span class="{{unbound declaringBean.kind}} boxed">{{unbound declaringBean.kind}}</span> <i class="fa fa-search"></i> {{#link-to 'beanDetail' declaringBean.id}}{{declaringBean.beanClass}}{{/link-to}}</p>
                         </div>
                     </div>
                     {{else}}
@@ -630,7 +680,7 @@ ${head}
             &nbsp;<button {{action 'refreshData'}} class="btn btn-default">Refresh</button>
             <button {{action 'clearFilters'}} class="btn btn-default">Clear filters</button>
             <button {{action 'clearInvocations'}} class="btn btn-default">Clear data</button>
-            <div class="total pull-left">Found: {{total}}</div>
+            <div class="total pull-left">Total Found: {{total}}</div>
             <ul class="pagination no-margin pull-left">
             {{#each pages}}
                 <li class="{{unbound active}}">{{#link-to 'invocationList' (query-params page=index)}}{{index}}{{/link-to}}</li>
@@ -646,12 +696,12 @@ ${head}
                 <th rowspan="2">Time</th>
             </tr>
             <tr>
-                <th>Intercepted Bean
+                <th>Intercepted Bean <i class="fa fa-lg fa-info-circle" title="Click to show the intercepted bean detail"></i>
                     <form {{action "filter" on="submit"}}>
                         {{input value=beanClass class="form-control" placeholder="Contains"}}
                     </form>
                 </th>
-                <th>Method Name
+                <th>Method Name <i class="fa fa-lg fa-info-circle" title="Click to show the invocation tree detail"></i>
                     <form {{action "filter" on="submit"}}>
                         {{input value=methodName class="form-control" placeholder="Contains"}}
                     </form>
@@ -677,7 +727,7 @@ ${head}
         </table>
 
         <div class="btn-line">
-            <div class="total pull-left">Found: {{total}}</div>
+            <div class="total pull-left">Total Found: {{total}}</div>
             <ul class="pagination no-margin">
             {{#each pages}}
                 <li class="{{unbound active}}">{{#link-to 'invocationList' (query-params page=index)}}{{index}}{{/link-to}}</li>
