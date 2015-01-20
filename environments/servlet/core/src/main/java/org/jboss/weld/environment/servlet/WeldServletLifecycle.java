@@ -94,7 +94,7 @@ public class WeldServletLifecycle {
     private static final String CONTEXT_PARAM_ARCHIVE_ISOLATION = WeldServletLifecycle.class.getPackage().getName() + ".archive.isolation";
 
     // This context param is used to activate the development mode
-    private static final String CONTEXT_PARAM_DEV_MODE = WeldServletLifecycle.class.getPackage().getName() + ".development";
+    private static final String CONTEXT_PARAM_DEV_MODE = "org.jboss.weld.development";
 
     private final transient CDI11Bootstrap bootstrap;
 
