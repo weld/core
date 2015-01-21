@@ -38,6 +38,8 @@ public class BeanIdentifiers {
 
     public static final String PREFIX = "WELD" + BEAN_ID_SEPARATOR;
 
+    public static final String PREFIX_BUILDER = "BUILDER" + BEAN_ID_SEPARATOR;
+
     private static StringBuilder getPrefix(Class<?> beanType) {
         return new StringBuilder(PREFIX).append(beanType.getSimpleName()).append(BEAN_ID_SEPARATOR);
     }
@@ -117,5 +119,10 @@ public class BeanIdentifiers {
 
     public static String forExtension(EnhancedAnnotatedType<?> type) {
         return getPrefix(Extension.class).append(type.slim().getIdentifier().asString()).toString();
+    }
+
+    public static String forBuilderBean(BeanAttributes<?> attributes, Class<?> beanClass) {
+        return new StringBuilder(PREFIX_BUILDER).append(beanClass.getName()).append(BEAN_ID_SEPARATOR)
+                .append(Beans.createBeanAttributesId(attributes)).toString();
     }
 }

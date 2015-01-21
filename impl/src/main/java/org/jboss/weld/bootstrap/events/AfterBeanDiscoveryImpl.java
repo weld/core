@@ -33,6 +33,7 @@ import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.DefinitionException;
+import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.ObserverMethod;
 import javax.enterprise.inject.spi.PassivationCapable;
@@ -43,6 +44,8 @@ import org.jboss.weld.bean.attributes.ExternalBeanAttributesFactory;
 import org.jboss.weld.bootstrap.BeanDeploymentArchiveMapping;
 import org.jboss.weld.bootstrap.ContextHolder;
 import org.jboss.weld.bootstrap.spi.Deployment;
+import org.jboss.weld.experimental.BeanBuilder;
+import org.jboss.weld.experimental.ExperimentalAfterBeanDiscovery;
 import org.jboss.weld.experimental.util.ForwardingExperimentalObserverMethod;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.logging.ContextLogger;
@@ -53,25 +56,27 @@ import org.jboss.weld.util.Bindings;
 import org.jboss.weld.util.Observers;
 import org.jboss.weld.util.Preconditions;
 
-public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implements AfterBeanDiscovery {
+public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implements ExperimentalAfterBeanDiscovery {
 
     private static final String TYPE_ARGUMENT_NAME = "type";
 
-    public static void fire(BeanManagerImpl beanManager, Deployment deployment, BeanDeploymentArchiveMapping bdaMapping, Collection<ContextHolder<? extends Context>> contexts) {
+    public static void fire(BeanManagerImpl beanManager, Deployment deployment, BeanDeploymentArchiveMapping bdaMapping,
+            Collection<ContextHolder<? extends Context>> contexts) {
         final AfterBeanDiscoveryImpl event = new AfterBeanDiscoveryImpl(beanManager, deployment, bdaMapping, contexts);
         event.fire();
         event.finish();
     }
 
-    private AfterBeanDiscoveryImpl(BeanManagerImpl beanManager, Deployment deployment, BeanDeploymentArchiveMapping bdaMapping, Collection<ContextHolder<? extends Context>> contexts) {
-        super(beanManager, AfterBeanDiscovery.class, bdaMapping, deployment, contexts);
+    private AfterBeanDiscoveryImpl(BeanManagerImpl beanManager, Deployment deployment, BeanDeploymentArchiveMapping bdaMapping,
+            Collection<ContextHolder<? extends Context>> contexts) {
+        super(beanManager, ExperimentalAfterBeanDiscovery.class, bdaMapping, deployment, contexts);
         this.slimAnnotatedTypeStore = beanManager.getServices().get(SlimAnnotatedTypeStore.class);
         this.containerLifecycleEvents = beanManager.getServices().get(ContainerLifecycleEvents.class);
     }
 
     private final SlimAnnotatedTypeStore slimAnnotatedTypeStore;
     private final ContainerLifecycleEvents containerLifecycleEvents;
-    private final List<Bean<?>> additionalBeans = new LinkedList<Bean<?>>();
+    private final List<BeanRegistration> additionalBeans = new LinkedList<BeanRegistration>();
     private final List<ObserverMethod<?>> additionalObservers = new LinkedList<ObserverMethod<?>>();
 
     @Override
@@ -80,11 +85,69 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
         Preconditions.checkArgumentNotNull(bean, "bean");
         ExternalBeanAttributesFactory.validateBeanAttributes(bean, getBeanManager());
         validateBean(bean);
-        additionalBeans.add(bean);
+        additionalBeans.add(new BeanRegistration(bean));
     }
 
-    protected <T> void processBean(Bean<T> bean) {
-        BeanManagerImpl beanManager = getOrCreateBeanDeployment(bean.getBeanClass()).getBeanManager();
+    @Override
+    public void addContext(Context context) {
+        checkWithinObserverNotification();
+        Preconditions.checkArgumentNotNull(context, "context");
+        Class<? extends Annotation> scope = context.getScope();
+        if (scope == null) {
+            throw ContextLogger.LOG.contextHasNullScope(context);
+        }
+        if (!getBeanManager().isScope(scope)) {
+            MetadataLogger.LOG.contextGetScopeIsNotAScope(scope, context);
+        }
+        if (scope == ApplicationScoped.class || scope == Dependent.class) {
+            throw ContextLogger.LOG.cannotRegisterContext(scope, context);
+        }
+        getBeanManager().addContext(context);
+    }
+
+    @Override
+    public void addObserverMethod(ObserverMethod<?> observerMethod) {
+        checkWithinObserverNotification();
+        Preconditions.checkArgumentNotNull(observerMethod, "observerMethod");
+        validateObserverMethod(observerMethod, getBeanManager(), null);
+        additionalObservers.add(new ForwardingExperimentalObserverMethod<>(observerMethod));
+    }
+
+    @Override
+    public <T> AnnotatedType<T> getAnnotatedType(Class<T> type, String id) {
+        checkWithinObserverNotification();
+        Preconditions.checkArgumentNotNull(type, TYPE_ARGUMENT_NAME);
+        return slimAnnotatedTypeStore.get(type, id);
+    }
+
+    @Override
+    public <T> Iterable<AnnotatedType<T>> getAnnotatedTypes(Class<T> type) {
+        checkWithinObserverNotification();
+        Preconditions.checkArgumentNotNull(type, TYPE_ARGUMENT_NAME);
+        return cast(slimAnnotatedTypeStore.get(type));
+    }
+
+    @Override
+    public <T> BeanBuilder<T> addBean() {
+        Class<? extends Extension> extensionClass = getReceiver().getClass();
+        BeanManagerImpl beanManager = getOrCreateBeanDeployment(extensionClass).getBeanManager();
+        BeanBuilderImpl<T> builder = new BeanBuilderImpl<T>(beanManager, extensionClass);
+        additionalBeans.add(new BeanRegistration(builder, beanManager));
+        return builder;
+    }
+
+    @Override
+    public <T> BeanBuilder<T> beanBuilder() {
+        Class<? extends Extension> extensionClass = getReceiver().getClass();
+        return new BeanBuilderImpl<T>(getOrCreateBeanDeployment(extensionClass).getBeanManager(), extensionClass);
+    }
+
+    protected <T> void processBeanRegistration(BeanRegistration registration) {
+        Bean<?> bean = registration.getBean();
+        BeanManagerImpl beanManager = registration.getBeanManager();
+        if (beanManager == null) {
+            beanManager = getOrCreateBeanDeployment(bean.getBeanClass()).getBeanManager();
+        }
         if (bean instanceof Interceptor<?>) {
             beanManager.addInterceptor((Interceptor<?>) bean);
         } else if (bean instanceof Decorator<?>) {
@@ -139,52 +202,13 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
 
     }
 
-    @Override
-    public void addContext(Context context) {
-        checkWithinObserverNotification();
-        Preconditions.checkArgumentNotNull(context, "context");
-        Class<? extends Annotation> scope = context.getScope();
-        if (scope == null) {
-            throw ContextLogger.LOG.contextHasNullScope(context);
-        }
-        if (!getBeanManager().isScope(scope)) {
-            MetadataLogger.LOG.contextGetScopeIsNotAScope(scope, context);
-        }
-        if (scope == ApplicationScoped.class || scope == Dependent.class) {
-            throw ContextLogger.LOG.cannotRegisterContext(scope, context);
-        }
-        getBeanManager().addContext(context);
-    }
-
-    @Override
-    public void addObserverMethod(ObserverMethod<?> observerMethod) {
-        checkWithinObserverNotification();
-        Preconditions.checkArgumentNotNull(observerMethod, "observerMethod");
-        validateObserverMethod(observerMethod, getBeanManager(), null);
-        additionalObservers.add(new ForwardingExperimentalObserverMethod<>(observerMethod));
-    }
-
-    @Override
-    public <T> AnnotatedType<T> getAnnotatedType(Class<T> type, String id) {
-        checkWithinObserverNotification();
-        Preconditions.checkArgumentNotNull(type, TYPE_ARGUMENT_NAME);
-        return slimAnnotatedTypeStore.get(type, id);
-    }
-
-    @Override
-    public <T> Iterable<AnnotatedType<T>> getAnnotatedTypes(Class<T> type) {
-        checkWithinObserverNotification();
-        Preconditions.checkArgumentNotNull(type, TYPE_ARGUMENT_NAME);
-        return cast(slimAnnotatedTypeStore.get(type));
-    }
-
     /**
      * Bean and observer registration is delayed until after all {@link AfterBeanDiscovery} observers are notified.
      */
     private void finish() {
         try {
-            for (Bean<?> bean : additionalBeans) {
-                processBean(bean);
+            for (BeanRegistration registration : additionalBeans) {
+                processBeanRegistration(registration);
             }
             for (ObserverMethod<?> observer : additionalObservers) {
                 BeanManagerImpl manager = getOrCreateBeanDeployment(observer.getBeanClass()).getBeanManager();
@@ -199,4 +223,31 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
             throw new DefinitionException(e);
         }
     }
+
+    private static class BeanRegistration {
+
+        private final Bean<?> bean;
+
+        private final BeanBuilderImpl<?> builder;
+
+        BeanRegistration(Bean<?> bean) {
+            this.bean = bean;
+            this.builder = null;
+        }
+
+        BeanRegistration(BeanBuilderImpl<?> builder, BeanManagerImpl beanManager) {
+            this.builder = builder;
+            this.bean = null;
+        }
+
+        public Bean<?> getBean() {
+            return bean != null ? bean : builder.build();
+        }
+
+        protected BeanManagerImpl getBeanManager() {
+            return builder != null ? builder.getBeanManager() : null;
+        }
+
+    }
+
 }
