@@ -321,6 +321,12 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <configuration>
                     <warSourceExcludes>WEB-INF/classes/**,WEB-INF/lib/**</warSourceExcludes>
+                    <webResources>
+                        <resource>
+                            <directory>src/main/webapp-wildfly</directory>
+                            <filtering>true</filtering>
+                        </resource>
+                    </webResources>
                 </configuration>
             </plugin>
             <plugin>
@@ -344,12 +350,6 @@
                             <followSymlinks>false</followSymlinks>
                         </fileset>
                     </filesets>
-                    <webResources>
-                        <resource>
-                            <directory>src/main/webapp-wildfly</directory>
-                            <filtering>true</filtering>
-                        </resource>
-                    </webResources>
                 </configuration>
             </plugin>
 
