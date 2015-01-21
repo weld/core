@@ -138,23 +138,23 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Experim
     }
 
     @Override
-    public Event<T> select(Annotation... qualifiers) {
+    public ExperimentalEvent<T> select(Annotation... qualifiers) {
         return selectEvent(this.getType(), qualifiers);
     }
 
     @Override
-    public <U extends T> Event<U> select(Class<U> subtype, Annotation... qualifiers) {
+    public <U extends T> ExperimentalEvent<U> select(Class<U> subtype, Annotation... qualifiers) {
         Preconditions.checkArgumentNotNull(subtype, SUBTYPE_ARGUMENT_NAME);
         return selectEvent(subtype, qualifiers);
     }
 
     @Override
-    public <U extends T> Event<U> select(TypeLiteral<U> subtype, Annotation... qualifiers) {
+    public <U extends T> ExperimentalEvent<U> select(TypeLiteral<U> subtype, Annotation... qualifiers) {
         Preconditions.checkArgumentNotNull(subtype, SUBTYPE_ARGUMENT_NAME);
         return selectEvent(subtype.getType(), qualifiers);
     }
 
-    private <U extends T> Event<U> selectEvent(Type subtype, Annotation[] newQualifiers) {
+    private <U extends T> ExperimentalEvent<U> selectEvent(Type subtype, Annotation[] newQualifiers) {
         getBeanManager().getGlobalStrictObserverNotifier().checkEventObjectType(subtype);
         return new EventImpl<U>(new FacadeInjectionPoint(getBeanManager(), getInjectionPoint(), subtype, getQualifiers(), newQualifiers),
                 getBeanManager());
