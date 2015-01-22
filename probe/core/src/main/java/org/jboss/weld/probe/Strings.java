@@ -67,6 +67,7 @@ final class Strings {
     static final String REMOVED_INVOCATIONS = "removedInvocations";
     static final String CHILDREN = "children";
     static final String INTERCEPTED_BEAN = "interceptedBean";
+    static final String DECLARING_CLASS = "declaringClass";
     static final String ENABLEMENT = "enablement";
     static final String INTERCEPTORS = "interceptors";
     static final String DECORATORS = "decorators";
