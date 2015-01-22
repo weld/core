@@ -53,8 +53,8 @@ public interface TomcatLogger extends WeldEnvironmentLogger {
     @Message(id = 1104, value = "Cannot get StandardContext from ServletContext.")
     RuntimeException cannotGetStandardContext(@Cause Throwable cause);
 
-    @Message(id = 1105, value = "Neither field nor getter/setter found for instanceManager.")
-    RuntimeException neitherFieldNorGetterSetterFound();
+    @Message(id = 1105, value = "Neither field nor getter/setter found for instanceManager on {0}", format = Format.MESSAGE_FORMAT)
+    RuntimeException neitherFieldNorGetterSetterFound(Class<?> standardContextClass);
 
     @Message(id = 1106, value = "Exception invoking method {0} on object {1}, using arguments {2}", format = Format.MESSAGE_FORMAT)
     RuntimeException errorInvokingMethod(String method, Object obj, Object... args);

@@ -142,17 +142,18 @@ public class WeldForwardingInstanceManager extends ForwardingInstanceManager {
         } catch (NoSuchFieldException e1) {
             // Field not found
         }
-        throw TomcatLogger.LOG.neitherFieldNorGetterSetterFound();
+        throw TomcatLogger.LOG.neitherFieldNorGetterSetterFound(stdContext.getClass());
     }
 
     private static void setInstanceManager(StandardContext stdContext, InstanceManager instanceManager) {
         try {
-            Method method = SecurityActions.lookupMethod(stdContext.getClass(), INSTANCE_MANAGER_SETTER_NAME);
+            Method method = SecurityActions.lookupMethod(stdContext.getClass(), INSTANCE_MANAGER_SETTER_NAME, InstanceManager.class);
             SecurityActions.ensureAccessible(method);
             try {
                 method.invoke(stdContext, instanceManager);
+                return;
             } catch (Exception e) {
-                TomcatLogger.LOG.errorInvokingMethod(method.getName(), stdContext, Arrays2.EMPTY_ARRAY);
+                TomcatLogger.LOG.errorInvokingMethod(method.getName(), stdContext, instanceManager);
             }
         } catch (NoSuchMethodException e1) {
             // Getter/setter not found
@@ -162,13 +163,14 @@ public class WeldForwardingInstanceManager extends ForwardingInstanceManager {
             SecurityActions.ensureAccessible(field);
             try {
                 field.set(stdContext, instanceManager);
+                return;
             } catch (Exception e) {
                 TomcatLogger.LOG.errorWritingField(field.getName(), stdContext, instanceManager);
             }
         } catch (NoSuchFieldException e1) {
             // Field not found
         }
-        throw TomcatLogger.LOG.neitherFieldNorGetterSetterFound();
+        throw TomcatLogger.LOG.neitherFieldNorGetterSetterFound(stdContext.getClass());
     }
 
 }
