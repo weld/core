@@ -78,10 +78,6 @@ Probe.ApplicationView = Ember.View.extend({
     Ember.run.next(this, function() {
       this.$("ul.nav li:has(a.active)").addClass('active');
       this.$("ul.nav li:not(:has(a.active))").removeClass('active');
-      // Submenu
-      this.$("ul.dropdown-menu li:has(>a.active)").addClass('active');
-      this.$("ul.dropdown-menu li:not(:has(>a.active))").removeClass(
-          'active');
     });
   }.observes('controller.currentPath')
 });
