@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.environment.deployment.discovery;
 
+import static org.jboss.weld.environment.util.Reflections.cast;
+import static org.jboss.weld.environment.util.Reflections.classForName;
+
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.Set;
@@ -49,8 +52,8 @@ public final class DiscoveryStrategyFactory {
         if (Reflections.isClassLoadable(resourceLoader, JANDEX_INDEX_CLASS_NAME)) {
             CommonLogger.LOG.usingJandex();
             try {
-                return Reflections.cast(SecurityActions.getConstructor(Reflections.classForName(resourceLoader, JANDEX_DISCOVERY_STRATEGY_CLASS_NAME),
-                        ResourceLoader.class, Bootstrap.class, Set.class).newInstance(resourceLoader, bootstrap, initialBeanDefiningAnnotations));
+                return cast(classForName(resourceLoader, JANDEX_DISCOVERY_STRATEGY_CLASS_NAME).getConstructor(ResourceLoader.class, Bootstrap.class, Set.class)
+                        .newInstance(resourceLoader, bootstrap, initialBeanDefiningAnnotations));
             } catch (Exception e) {
                 throw CommonLogger.LOG.unableToInstantiate(JANDEX_DISCOVERY_STRATEGY_CLASS_NAME,
                         Arrays.toString(new Object[] { resourceLoader, bootstrap, initialBeanDefiningAnnotations }), e);
