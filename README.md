@@ -26,3 +26,23 @@ Then, run the upgrade script
 > $ mvn package -Pupdate-jboss-as -f jboss-as/pom.xml -Dweld.update.version=${weld.version}
 
 where ${weld.version} is the version of Weld you want to use
+
+Running integration tests and the TCK on WildFly 8.2
+----------------------------------------------------
+
+Follow the steps above to set the JBOSS_HOME environment property and to upgrade Weld
+within WildFly. Then, run:
+
+> $ mvn clean verify -Dincontainer -f tests-arquillian/pom.xml
+
+> $ mvn clean verify -Dincontainer -f jboss-tck-runner/pom.xml
+
+Running integration tests and the TCK on WildFly 9.x
+----------------------------------------------------
+
+Follow the steps above to set the JBOSS_HOME environment property and to upgrade Weld
+within WildFly. Then, run:
+
+> $ mvn clean verify -Dincontainer=wildfly9 -f tests-arquillian/pom.xml
+
+> $ mvn clean verify -Dincontainer=wildfly9 -f jboss-tck-runner/pom.xml
