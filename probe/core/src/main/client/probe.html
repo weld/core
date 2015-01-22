@@ -23,13 +23,8 @@ ${head}
                 </div>
                 <div id="menu" class="collapse navbar-collapse">
                     <ul class="nav navbar-nav">
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Deployment <span class="caret"></span></a>
-                            <ul class="dropdown-menu" role="menu">
-                                <li>{{#link-to 'beanArchives'}}Bean Archives{{/link-to}}</li>
-                                <li>{{#link-to 'configuration'}}Configuration{{/link-to}}</li>
-                            </ul>
-                        </li>
+                        <li>{{#link-to 'beanArchives'}}Bean Archives{{/link-to}}</li>
+                        <li>{{#link-to 'configuration'}}Configuration{{/link-to}}</li>
                         <li>{{#link-to 'beanList'}}Beans{{/link-to}}</li>
                         <li>{{#link-to 'observerList'}}Observer Methods{{/link-to}}</li>
                         <li>{{#link-to 'contexts'}}Contexts{{/link-to}}</li>
@@ -266,7 +261,7 @@ ${head}
                 <form class="form-horizontal">
                     {{#if bdaIdName}}
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Bean Deployment Archive:</label>
+                        <label class="col-sm-2 control-label">Bean Archive:</label>
                          <div class="col-sm-10">
                             <p class="form-control-static">
                                 <i class="fa fa-search"></i>{{#link-to 'beanArchive' bdaId class='nav-link'}}Detail{{/link-to}}
@@ -614,8 +609,8 @@ ${head}
 
         <table class="table table-bordered table-striped">
             <tr>
-                <th>Bean</th>
-                <th>Instance</th>
+                <th>Bean <i class="fa fa-lg fa-info-circle" title="Link to bean detail"></i></th>
+                <th>Instance <i class="fa fa-lg fa-info-circle" title="Link to contextual instance detail"></i></th>
             </tr>
             {{#each instances}}
             <tr>
@@ -645,7 +640,7 @@ ${head}
             <div class="form-group">
                 <label class="col-sm-2 control-label">Bean Class:</label>
                     <div class="col-sm-10">
-                        <p class="form-control-static">{{#link-to 'beanDetail' id}}{{unbound beanClass}}{{/link-to}}</p>
+                        <p class="form-control-static"><i class="fa fa-search"></i> {{#link-to 'beanDetail' id}}{{beanClass}}{{/link-to}}</p>
                     </div>
             </div>
        </form>
@@ -692,8 +687,8 @@ ${head}
             <tr>
                 <th rowspan="2"></th>
                 <th colspan="2">Entry Point</th>
-                <th rowspan="2">Start</th>
-                <th rowspan="2">Time</th>
+                <th rowspan="2" class="with-rowspan">Start</th>
+                <th rowspan="2" class="with-rowspan">Time</th>
             </tr>
             <tr>
                 <th>Intercepted Bean <i class="fa fa-lg fa-info-circle" title="Click to show the intercepted bean detail"></i>
