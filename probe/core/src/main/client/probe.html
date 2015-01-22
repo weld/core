@@ -691,7 +691,7 @@ ${head}
                 <th rowspan="2" class="with-rowspan">Time</th>
             </tr>
             <tr>
-                <th>Intercepted Bean <i class="fa fa-lg fa-info-circle" title="Click to show the intercepted bean detail"></i>
+                <th>Intercepted Bean <i class="fa fa-lg fa-info-circle" title="Or the declaring class if the bean is not available. Click to show the intercepted bean detail"></i>
                     <form {{action "filter" on="submit"}}>
                         {{input value=beanClass class="form-control" placeholder="Contains"}}
                     </form>
@@ -706,7 +706,7 @@ ${head}
             <tr>
                 <td>{{increment _view.contentIndex}}</td>
                 <td>
-                    {{#link-to 'beanDetail' interceptedBean.id}}{{interceptedBean.beanClass}}{{/link-to}}
+                    {{#if interceptedBean}}{{#link-to 'beanDetail' interceptedBean.id}}{{interceptedBean.beanClass}}{{/link-to}}{{else}}{{declaringClass}}{{/if}}
                 </td>
                 <td>
                     {{#link-to 'invocationDetail' id}}{{unbound methodName}}{{/link-to}}

@@ -73,7 +73,11 @@ public class InvocationMonitor implements Serializable {
                 builder = builder.newChild();
                 invocations.set(builder);
             }
-            builder.setInterceptedBean(interceptedBean);
+            if (interceptedBean != null) {
+                builder.setInterceptedBean(interceptedBean);
+            } else {
+                builder.setDeclaringClassName(ctx.getMethod().getDeclaringClass().getName());
+            }
             builder.guessType(ctx);
             builder.setStart(System.currentTimeMillis());
             builder.setMethodName(ctx.getMethod().getName());

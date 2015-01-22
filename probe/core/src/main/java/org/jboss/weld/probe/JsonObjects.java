@@ -32,6 +32,7 @@ import static org.jboss.weld.probe.Strings.DATA;
 import static org.jboss.weld.probe.Strings.DECLARED_OBSERVERS;
 import static org.jboss.weld.probe.Strings.DECLARED_PRODUCERS;
 import static org.jboss.weld.probe.Strings.DECLARING_BEAN;
+import static org.jboss.weld.probe.Strings.DECLARING_CLASS;
 import static org.jboss.weld.probe.Strings.DECORATORS;
 import static org.jboss.weld.probe.Strings.DEPENDENCIES;
 import static org.jboss.weld.probe.Strings.DEPENDENTS;
@@ -480,7 +481,11 @@ final class JsonObjects {
         if (invocation.getEntryPointId() != null) {
             invocationBuilder.add(ID, invocation.getEntryPointId());
         }
-        invocationBuilder.add(INTERCEPTED_BEAN, createSimpleBeanJson(invocation.getInterceptedBean(), probe));
+        if (invocation.getInterceptedBean() != null) {
+            invocationBuilder.add(INTERCEPTED_BEAN, createSimpleBeanJson(invocation.getInterceptedBean(), probe));
+        } else {
+            invocationBuilder.add(DECLARING_CLASS, invocation.getDeclaringClassName());
+        }
         invocationBuilder.add(METHOD_NAME, invocation.getMethodName());
         invocationBuilder.add(START, invocation.getStart());
         invocationBuilder.add(TIME, invocation.getDuration());

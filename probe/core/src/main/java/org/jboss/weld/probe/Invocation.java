@@ -44,6 +44,11 @@ public final class Invocation {
     private final Bean<?> interceptedBean;
 
     /**
+     * If there is no intercepted bean we use the name of the declaring class
+     */
+    private final String declaringClassName;
+
+    /**
      * Start time in ms
      */
     private final long start;
@@ -63,16 +68,18 @@ public final class Invocation {
      *
      * @param entryPointId
      * @param isEntryPoint
-     * @param bean
+     * @param interceptedBean
+     * @param declaringClassName
      * @param start
      * @param duration
      * @param methodName
      * @param children
      * @param type
      */
-    public Invocation(Integer entryPointId, Bean<?> bean, long start, long duration, String methodName, List<Invocation> children, Type type) {
+    public Invocation(Integer entryPointId, Bean<?> interceptedBean, String declaringClassName,  long start, long duration, String methodName, List<Invocation> children, Type type) {
         this.entryPointId = entryPointId;
-        this.interceptedBean = bean;
+        this.interceptedBean = interceptedBean;
+        this.declaringClassName = declaringClassName;
         this.start = start;
         this.duration = duration;
         this.methodName = methodName;
@@ -90,6 +97,10 @@ public final class Invocation {
 
     public Bean<?> getInterceptedBean() {
         return interceptedBean;
+    }
+
+    protected String getDeclaringClassName() {
+        return declaringClassName;
     }
 
     public long getStart() {
@@ -155,6 +166,8 @@ public final class Invocation {
 
         private Bean<?> interceptedBean;
 
+        private String declaringClassName;
+
         private long start;
 
         private long duration;
@@ -183,6 +196,11 @@ public final class Invocation {
 
         Builder setInterceptedBean(Bean<?> bean) {
             this.interceptedBean = bean;
+            return this;
+        }
+
+        Builder setDeclaringClassName(String declaringClassName) {
+            this.declaringClassName = declaringClassName;
             return this;
         }
 
@@ -252,7 +270,7 @@ public final class Invocation {
                     invocations.add(builder.build());
                 }
             }
-            return new Invocation(entryPointId, interceptedBean, start, duration, methodName, invocations, type);
+            return new Invocation(entryPointId, interceptedBean, declaringClassName, start, duration, methodName, invocations, type);
         }
 
     }
