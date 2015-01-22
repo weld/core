@@ -35,7 +35,7 @@ import org.jboss.weld.resources.spi.ResourceLoader;
  */
 public class WeldDeployment extends AbstractWeldDeployment {
 
-    public static final String ADDITIONAL_BDA_ID = WeldDeployment.class.getName() + ".additional";
+    public static final String ADDITIONAL_BDA_ID = WeldDeployment.class.getName() + ".additionalClasses";
 
     private final Set<WeldBeanDeploymentArchive> beanDeploymentArchives;
 

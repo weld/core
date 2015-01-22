@@ -118,6 +118,8 @@ final class Strings {
     static final String RESOURCE_PARAM_START = "{";
     static final String RESOURCE_PARAM_END = "}";
 
+    static final String ADDITIONAL_BDA_SUFFIX = ".additionalClasses";
+
     private Strings() {
     }
 

@@ -17,6 +17,7 @@
 package org.jboss.weld.probe;
 
 import static org.jboss.weld.probe.Strings.ACCESSIBLE_BDAS;
+import static org.jboss.weld.probe.Strings.ADDITIONAL_BDA_SUFFIX;
 import static org.jboss.weld.probe.Strings.ALTERNATIVES;
 import static org.jboss.weld.probe.Strings.ANNOTATED_METHOD;
 import static org.jboss.weld.probe.Strings.AS_STRING;
@@ -120,8 +121,11 @@ final class JsonObjects {
 
     private static final Comparator<BeanDeploymentArchive> bdaComparator = new Comparator<BeanDeploymentArchive>() {
         @Override
-        public int compare(BeanDeploymentArchive o1, BeanDeploymentArchive o2) {
-            return o1.getId().compareTo(o2.getId());
+        public int compare(BeanDeploymentArchive bda1, BeanDeploymentArchive bda2) {
+            // Additional bean archive should have the lowest priority when sorting
+            // This suffix is supported by WildFly and Weld Servlet
+            int result = Boolean.compare(bda1.getId().endsWith(ADDITIONAL_BDA_SUFFIX), bda2.getId().endsWith(ADDITIONAL_BDA_SUFFIX));
+            return result == 0 ? bda1.getId().compareTo(bda2.getId()) : result;
         }
     };
 
