@@ -28,6 +28,7 @@ import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanAttributes;
+import javax.inject.Singleton;
 
 import org.jboss.weld.context.cache.RequestScopedCache;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -62,7 +63,7 @@ public abstract class ContextualInstanceStrategy<T> {
     }
 
     public static <T> ContextualInstanceStrategy<T> create(BeanAttributes<T> bean, BeanManagerImpl manager) {
-        if (ApplicationScoped.class == bean.getScope()) {
+        if (ApplicationScoped.class == bean.getScope() || Singleton.class == bean.getScope()) {
             return new ApplicationScopedContextualInstanceStrategy<T>();
         } else if (CachingContextualInstanceStrategy.CACHEABLE_SCOPES.contains(bean.getScope())) {
             return new CachingContextualInstanceStrategy<T>();
