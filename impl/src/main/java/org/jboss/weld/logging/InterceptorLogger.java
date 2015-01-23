@@ -46,4 +46,11 @@ public interface InterceptorLogger extends WeldLogger {
 
     @Message(id = 1702, value = "Interceptor.getInterceptorBindings() returned null for {0}", format = Format.MESSAGE_FORMAT)
     DefinitionException nullInterceptorBindings(Object param1);
+
+    @LogMessage(level = Level.WARN)
+    @Message(id = 1703, value = "Unable to determine the @Intercepted Bean<?> for {0}", format= Format.MESSAGE_FORMAT)
+    void unableToDetermineInterceptedBean(Object injectionPoint);
+
+    @Message(id = 1704, value = "@Intercepted Bean<?> can only be injected into an interceptor: {0}", format= Format.MESSAGE_FORMAT)
+    IllegalArgumentException interceptedBeanCanOnlyBeInjectedIntoInterceptor(Object injectionPoint);
 }
