@@ -114,6 +114,10 @@ div.form-group {
   background-color: #ddd;
 }
 
+.priority {
+  background-color: #dda;
+}
+
 .boxed {
   font-weight: bold;
   padding: 7px;

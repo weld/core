@@ -284,4 +284,33 @@ final class Components {
 
     }
 
+    /**
+     * Priority ranges, as defined in {@link javax.interceptor.Interceptor.PRIORITY}
+     * @author Jozef Hartinger
+     *
+     */
+    static enum PriorityRange {
+        PLATFORM_BEFORE, LIBRARY_BEFORE, APPLICATION, LIBRARY_AFTER, PLATFORM_AFTER, UNKNOWN;
+
+        @SuppressWarnings("magicnumber")
+        static PriorityRange of(int priority) {
+            if (priority < 0 || priority >= 5000) {
+                return UNKNOWN;
+            }
+            if (priority >= 4000) {
+                return PLATFORM_AFTER;
+            }
+            if (priority >= 3000) {
+                return LIBRARY_AFTER;
+            }
+            if (priority >= 2000) {
+                return APPLICATION;
+            }
+            if (priority >= 1000) {
+                return LIBRARY_BEFORE;
+            }
+            return PLATFORM_BEFORE;
+        }
+    }
+
 }

@@ -53,6 +53,8 @@ final class Strings {
     static final String OBSERVED_TYPE = "observedType";
     static final String RECEPTION = "reception";
     static final String TX_PHASE = "txPhase";
+    static final String PRIORITY = "priority";
+    static final String PRIORITY_RANGE = "priorityRange";
     static final String ANNOTATED_METHOD = "annotatedMethod";
     static final String VALUE = "value";
     static final String PROPERTIES = "properties";
