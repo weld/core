@@ -537,6 +537,30 @@ ${head}
         <div class="panel panel-default">
             <div class="panel-body">
                 <form class="form-horizontal">
+                    {{#if annotatedMethod}}
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Annotated Method:</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static">{{annotatedMethod}}</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Observed Type:</label>
+                         <div class="col-sm-10">
+                            <p class="form-control-static">{{observedType}}</p>
+                        </div>
+                    </div>
+                    {{/if}}
+                    {{#if qualifiers}}
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Qualifiers:</label>
+                        <div class="col-sm-10">
+                            {{#each qualifiers}}
+                            <p class="form-control-static">{{this}}</p>
+                            {{/each}}
+                        </div>
+                    </div>
+                    {{/if}}
                     {{#if declaringBean}}
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Declaring Bean:</label>
@@ -549,22 +573,6 @@ ${head}
                         <label class="col-sm-2 control-label">Bean Class:</label>
                          <div class="col-sm-10">
                             <p class="form-control-static">{{beanClass}}</p>
-                        </div>
-                    </div>
-                    {{/if}}
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">Observed Type:</label>
-                         <div class="col-sm-10">
-                            <p class="form-control-static">{{observedType}}</p>
-                        </div>
-                    </div>
-                    {{#if qualifiers}}
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">Qualifiers:</label>
-                        <div class="col-sm-10">
-                            {{#each qualifiers}}
-                            <p class="form-control-static">{{this}}</p>
-                            {{/each}}
                         </div>
                     </div>
                     {{/if}}
@@ -588,14 +596,6 @@ ${head}
                             <p class="form-control-static"><span class="{{unbound txPhase}} boxed">{{unbound txPhase}}</span></p>
                         </div>
                     </div>
-                    {{#if annotatedMethod}}
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">Annotated Method:</label>
-                        <div class="col-sm-10">
-                            <p class="form-control-static">{{annotatedMethod}}</p>
-                        </div>
-                    </div>
-                    {{/if}}
                 </form>
             </div>
         </div>
