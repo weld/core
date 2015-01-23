@@ -109,10 +109,6 @@ public class ObserverNotifier {
         return cast(resolver.resolve(resolvable, true));
     }
 
-    public void fireEvent(Object event, Annotation... qualifiers) {
-        fireEvent(event.getClass(), event, null, qualifiers);
-    }
-
     public void fireEvent(Object event, EventMetadata metadata, Annotation... qualifiers) {
         fireEvent(event.getClass(), event, metadata, qualifiers);
     }
