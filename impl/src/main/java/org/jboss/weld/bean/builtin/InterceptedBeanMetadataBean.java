@@ -32,6 +32,7 @@ import org.jboss.weld.bean.BeanIdentifiers;
 import org.jboss.weld.bean.StringBeanIdentifier;
 import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.literal.InterceptedLiteral;
+import org.jboss.weld.logging.InterceptorLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.util.bean.SerializableForwardingBean;
@@ -69,13 +70,14 @@ public class InterceptedBeanMetadataBean extends BeanMetadataBean {
                 return SerializableForwardingBean.of(getBeanManager().getContextId(), bean);
             }
         } else {
-            throw new IllegalArgumentException("Unable to determine @Intercepted Bean<?> for this interceptor.");
+            InterceptorLogger.LOG.unableToDetermineInterceptedBean(ip);
+            return null;
         }
     }
 
     protected void checkInjectionPoint(InjectionPoint ip) {
         if (!(ip.getBean() instanceof Interceptor<?>)) {
-            throw new IllegalArgumentException("@Intercepted Bean<?> can only be injected into an interceptor.");
+            throw InterceptorLogger.LOG.interceptedBeanCanOnlyBeInjectedIntoInterceptor(ip);
         }
     }
 
