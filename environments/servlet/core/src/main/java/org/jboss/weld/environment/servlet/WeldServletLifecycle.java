@@ -105,7 +105,7 @@ public class WeldServletLifecycle {
 
         if (isBootstrapNeeded) {
 
-           final CDI11Deployment deployment = createDeployment(context, bootstrap);
+            final CDI11Deployment deployment = createDeployment(context, bootstrap);
 
             if (deployment.getBeanDeploymentArchives().isEmpty()) {
                 // Skip initialization - there is no bean archive in the deployment
@@ -243,13 +243,15 @@ public class WeldServletLifecycle {
     protected Container findContainer(ContainerContext ctx, StringBuilder dump) {
         Container container = null;
         // 1. Custom container class
-        String containerClass = ctx.getServletContext().getInitParameter(Container.CONTEXT_PARAM_CONTAINER_CLASS);
-        if (containerClass != null) {
+        String containerClassName = ctx.getServletContext().getInitParameter(Container.CONTEXT_PARAM_CONTAINER_CLASS);
+        if (containerClassName != null) {
             try {
-                container = SecurityActions.newInstance(Reflections.classForName(resourceLoader, containerClass));
-                WeldServletLogger.LOG.containerDetectionSkipped(containerClass);
+                Class<Container> containerClass = Reflections.classForName(resourceLoader, containerClassName);
+                container = SecurityActions.newInstance(containerClass);
+                WeldServletLogger.LOG.containerDetectionSkipped(containerClassName);
             } catch (Exception e) {
-                WeldServletLogger.LOG.unableToInstantiateCustomContainerClass(containerClass);
+                WeldServletLogger.LOG.unableToInstantiateCustomContainerClass(containerClassName);
+                WeldServletLogger.LOG.catchingDebug(e);
             }
         }
         if (container == null) {

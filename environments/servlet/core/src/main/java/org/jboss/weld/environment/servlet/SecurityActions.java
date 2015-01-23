@@ -16,13 +16,10 @@
  */
 package org.jboss.weld.environment.servlet;
 
-import java.lang.reflect.Method;
 import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 
 import org.jboss.weld.exceptions.WeldException;
-import org.jboss.weld.security.MethodLookupAction;
 import org.jboss.weld.security.NewInstanceAction;
 
 /**
@@ -50,30 +47,6 @@ final class SecurityActions {
             }
         } else {
             return javaClass.newInstance();
-        }
-    }
-
-    /**
-     * Does not perform {@link PrivilegedAction} unless necessary.
-     *
-     * @param javaClass
-     * @param methodName
-     * @param parameterTypes
-     * @return a method from the class or any class/interface in the inheritance hierarchy
-     * @throws NoSuchMethodException
-     */
-    static Method lookupMethod(Class<?> javaClass, String methodName, Class<?>[] parameterTypes) throws NoSuchMethodException {
-        if (System.getSecurityManager() != null) {
-            try {
-                return AccessController.doPrivileged(new MethodLookupAction(javaClass, methodName, parameterTypes));
-            } catch (PrivilegedActionException e) {
-                if (e.getCause() instanceof NoSuchMethodException) {
-                    throw (NoSuchMethodException) e.getCause();
-                }
-                throw new WeldException(e.getCause());
-            }
-        } else {
-            return MethodLookupAction.lookupMethod(javaClass, methodName, parameterTypes);
         }
     }
 
