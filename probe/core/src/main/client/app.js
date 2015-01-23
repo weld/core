@@ -7,6 +7,8 @@ var beanKinds = [ 'MANAGED', 'SESSION', 'PRODUCER_METHOD', 'PRODUCER_FIELD',
     'RESOURCE', 'SYNTHETIC', 'INTERCEPTOR', 'DECORATOR', 'EXTENSION',
     'BUILT_IN' ];
 
+var observerDeclaringBeanKinds = [ 'MANAGED', 'SESSION', 'EXTENSION', 'BUILT_IN' ];
+
 var receptions = [ 'ALWAYS', 'IF_EXISTS' ];
 
 var txPhases = [ 'IN_PROGRESS', 'BEFORE_COMPLETION', 'AFTER_COMPLETION',
@@ -439,7 +441,7 @@ Probe.ObserverListController = Ember.ObjectController.extend({
     this.set('initialized', true);
     this.set('receptions', receptions);
     this.set('txPhases', txPhases);
-    this.set('beanKinds', beanKinds);
+    this.set('beanKinds', observerDeclaringBeanKinds);
   },
   observedType : '',
   beanClass : '',
