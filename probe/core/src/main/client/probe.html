@@ -568,6 +568,14 @@ ${head}
                         </div>
                     </div>
                     {{/if}}
+                    {{#if priority}}
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Priority:</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static"><span class="priority boxed">{{priority}} ({{priorityRange}})</span></p>
+                        </div>
+                    </div>
+                    {{/if}}
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Reception:</label>
                         <div class="col-sm-10">

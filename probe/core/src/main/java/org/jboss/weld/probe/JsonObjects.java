@@ -50,6 +50,8 @@ import static org.jboss.weld.probe.Strings.METHOD_NAME;
 import static org.jboss.weld.probe.Strings.NAME;
 import static org.jboss.weld.probe.Strings.OBSERVED_TYPE;
 import static org.jboss.weld.probe.Strings.PAGE;
+import static org.jboss.weld.probe.Strings.PRIORITY;
+import static org.jboss.weld.probe.Strings.PRIORITY_RANGE;
 import static org.jboss.weld.probe.Strings.PRODUCER_FIELD;
 import static org.jboss.weld.probe.Strings.PRODUCER_INFO;
 import static org.jboss.weld.probe.Strings.PRODUCER_METHOD;
@@ -103,6 +105,7 @@ import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.config.ConfigurationKey;
 import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.event.ObserverMethodImpl;
+import org.jboss.weld.experimental.Prioritized;
 import org.jboss.weld.injection.producer.ProducerFieldProducer;
 import org.jboss.weld.injection.producer.ProducerMethodProducer;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -553,6 +556,11 @@ final class JsonObjects {
         if (observerMethod instanceof ObserverMethodImpl) {
             ObserverMethodImpl<?, ?> observerMethodImpl = (ObserverMethodImpl<?, ?>) observerMethod;
             observerBuilder.add(DECLARING_BEAN, createSimpleBeanJson(observerMethodImpl.getDeclaringBean(), probe));
+        }
+        if (observerMethod instanceof Prioritized) {
+            final int priority = Prioritized.class.cast(observerMethod).getPriority();
+            observerBuilder.add(PRIORITY, priority);
+            observerBuilder.add(PRIORITY_RANGE, Components.PriorityRange.of(priority).toString());
         }
         return observerBuilder;
     }
