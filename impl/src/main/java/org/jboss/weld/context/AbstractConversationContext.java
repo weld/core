@@ -44,10 +44,12 @@ import org.jboss.weld.context.beanstore.ConversationNamingScheme;
 import org.jboss.weld.context.beanstore.NamingScheme;
 import org.jboss.weld.context.conversation.ConversationIdGenerator;
 import org.jboss.weld.context.conversation.ConversationImpl;
+import org.jboss.weld.event.FastEvent;
 import org.jboss.weld.literal.DestroyedLiteral;
 import org.jboss.weld.logging.ConversationLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.serialization.BeanIdentifierIndex;
+import org.jboss.weld.util.LazyValueHolder;
 
 
 /**
@@ -77,6 +79,12 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
     private final BeanManagerImpl manager;
 
     private final BeanIdentifierIndex beanIdentifierIndex;
+    private final LazyValueHolder<FastEvent<String>> conversationDestroyedEvent = new LazyValueHolder<FastEvent<String>>() {
+        @Override
+        protected FastEvent<String> computeValue() {
+            return FastEvent.of(String.class, manager, manager.getGlobalLenientObserverNotifier(), DestroyedLiteral.CONVERSATION);
+        }
+    };
 
     public AbstractConversationContext(String contextId, BeanIdentifierIndex beanIdentifierIndex) {
         super(contextId, true);
@@ -395,7 +403,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
             destroy();
             getBeanStore().detach();
             setBeanStore(null);
-            manager.getGlobalLenientObserverNotifier().fireEvent(id, DestroyedLiteral.CONVERSATION);
+            conversationDestroyedEvent.get().fire(id);
         }
     }
 

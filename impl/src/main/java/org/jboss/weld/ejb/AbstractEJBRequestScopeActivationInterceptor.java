@@ -22,9 +22,11 @@ import javax.interceptor.InvocationContext;
 
 import org.jboss.weld.context.RequestContext;
 import org.jboss.weld.context.ejb.EjbRequestContext;
+import org.jboss.weld.event.FastEvent;
 import org.jboss.weld.literal.DestroyedLiteral;
 import org.jboss.weld.literal.InitializedLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.LazyValueHolder;
 
 /**
  * Interceptor for ensuring the request context is active during requests to EJBs.
@@ -40,6 +42,20 @@ import org.jboss.weld.manager.BeanManagerImpl;
 public abstract class AbstractEJBRequestScopeActivationInterceptor implements Serializable {
     private static final long serialVersionUID = 7327757031821596782L;
 
+    private static final Object EVENT = new Object();
+    private final LazyValueHolder<FastEvent<Object>> requestInitializedEvent = new LazyValueHolder<FastEvent<Object>>() {
+        @Override
+        protected FastEvent<Object> computeValue() {
+            return FastEvent.of(Object.class, getBeanManager(), getBeanManager().getGlobalLenientObserverNotifier(), InitializedLiteral.REQUEST);
+        }
+    };
+    private final LazyValueHolder<FastEvent<Object>> requestDestroyedEvent = new LazyValueHolder<FastEvent<Object>>() {
+        @Override
+        protected FastEvent<Object> computeValue() {
+            return FastEvent.of(Object.class, getBeanManager(), getBeanManager().getGlobalLenientObserverNotifier(), DestroyedLiteral.REQUEST);
+        }
+    };
+
     public Object aroundInvoke(InvocationContext invocation) throws Exception {
 
         if (isRequestContextActive()) {
@@ -51,7 +67,7 @@ public abstract class AbstractEJBRequestScopeActivationInterceptor implements Se
                 requestContext.activate();
                 try {
                     // An event with qualifier @Initialized(RequestScoped.class) is fired when the request context is initialized
-                    getBeanManager().getGlobalLenientObserverNotifier().fireEvent(new Object(), InitializedLiteral.REQUEST);
+                    requestInitializedEvent.get().fire(EVENT);
                     return invocation.proceed();
                 } finally {
                     requestContext.invalidate();
@@ -60,7 +76,7 @@ public abstract class AbstractEJBRequestScopeActivationInterceptor implements Se
             } finally {
                 requestContext.dissociate(invocation);
                 // An event with qualifier @Destroyed(RequestScoped.class) when the request context is destroyed
-                getBeanManager().getGlobalLenientObserverNotifier().fireEvent(new Object(), DestroyedLiteral.REQUEST);
+                requestDestroyedEvent.get().fire(EVENT);
             }
         }
     }
