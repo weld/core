@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.util;
 
-import java.io.Serializable;
 import java.util.function.Supplier;
 
 /**
@@ -24,15 +23,10 @@ import java.util.function.Supplier;
  *
  * @author Stuart Douglas
  */
-public abstract class LazyValueHolder<T> implements ValueHolder<T>, Serializable {
-
-    private static final long serialVersionUID = 1L;
+public abstract class LazyValueHolder<T> implements ValueHolder<T> {
 
     public static <T> LazyValueHolder<T> forSupplier(Supplier<T> supplier) {
         return new LazyValueHolder<T>() {
-
-            private static final long serialVersionUID = 1L;
-
             @Override
             protected T computeValue() {
                 return supplier.get();
@@ -40,7 +34,7 @@ public abstract class LazyValueHolder<T> implements ValueHolder<T>, Serializable
         };
     }
 
-    private transient volatile T value;
+    private volatile T value;
 
     public T get() {
         T valueCopy = value;
