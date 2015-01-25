@@ -34,7 +34,7 @@ public abstract class LazyValueHolder<T> implements ValueHolder<T> {
         };
     }
 
-    private volatile T value;
+    private transient volatile T value;
 
     public T get() {
         T valueCopy = value;
@@ -65,4 +65,15 @@ public abstract class LazyValueHolder<T> implements ValueHolder<T> {
     }
 
     protected abstract T computeValue();
+
+    /**
+     * {@link LazyValueHolder} that implements {@link java.io.Serializable}.
+     * @author Jozef Hartinger
+     *
+     * @param <T> the lazily-computed type
+     */
+    public abstract static class Serializable<T> extends LazyValueHolder<T> implements java.io.Serializable {
+
+        private static final long serialVersionUID = 1L;
+    }
 }

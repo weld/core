@@ -43,13 +43,15 @@ public abstract class AbstractEJBRequestScopeActivationInterceptor implements Se
     private static final long serialVersionUID = 7327757031821596782L;
 
     private static final Object EVENT = new Object();
-    private final LazyValueHolder<FastEvent<Object>> requestInitializedEvent = new LazyValueHolder<FastEvent<Object>>() {
+    private final LazyValueHolder<FastEvent<Object>> requestInitializedEvent = new LazyValueHolder.Serializable<FastEvent<Object>>() {
+        private static final long serialVersionUID = 1L;
         @Override
         protected FastEvent<Object> computeValue() {
             return FastEvent.of(Object.class, getBeanManager(), getBeanManager().getGlobalLenientObserverNotifier(), InitializedLiteral.REQUEST);
         }
     };
-    private final LazyValueHolder<FastEvent<Object>> requestDestroyedEvent = new LazyValueHolder<FastEvent<Object>>() {
+    private final LazyValueHolder<FastEvent<Object>> requestDestroyedEvent = new LazyValueHolder.Serializable<FastEvent<Object>>() {
+        private static final long serialVersionUID = 1L;
         @Override
         protected FastEvent<Object> computeValue() {
             return FastEvent.of(Object.class, getBeanManager(), getBeanManager().getGlobalLenientObserverNotifier(), DestroyedLiteral.REQUEST);
