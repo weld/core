@@ -16,18 +16,14 @@
  */
 package org.jboss.weld.util;
 
-import java.io.Serializable;
-
 /**
  * Represents a lazily computed value.
  *
  * @author Stuart Douglas
  */
-public abstract class LazyValueHolder<T> implements ValueHolder<T>, Serializable {
+public abstract class LazyValueHolder<T> implements ValueHolder<T> {
 
-    private static final long serialVersionUID = 1L;
-
-    private transient volatile T value;
+    private volatile T value;
 
     public T get() {
         T valueCopy = value;
