@@ -14,6 +14,8 @@ var receptions = [ 'ALWAYS', 'IF_EXISTS' ];
 var txPhases = [ 'IN_PROGRESS', 'BEFORE_COMPLETION', 'AFTER_COMPLETION',
     'AFTER_FAILURE', 'AFTER_SUCCESS' ];
 
+var additionalBdaSuffix = '.additionalClasses';
+
 var cache = new Object();
 
 var Probe = Ember.Application.create({
@@ -94,7 +96,6 @@ Probe.ApplicationRoute = Ember.Route.extend({
     return $.getJSON(restUrlBase + 'deployment').done(function(data) {
       cache.bdas = data.bdas;
       cache.configuration = data.configuration;
-      buildBdaGraphData(cache);
       return data;
     }).fail(function(jqXHR, textStatus, errorThrown) {
       alert('Unable to get JSON data: ' + textStatus);
@@ -104,7 +105,30 @@ Probe.ApplicationRoute = Ember.Route.extend({
 
 Probe.BeanArchivesRoute = Ember.Route.extend({
   model : function() {
-    return cache;
+    var data = new Object();
+    var hideAddBda = this.get('hideAddBda');
+    if(hideAddBda == null) {
+    	hideAddBda = true;
+    }
+    if (hideAddBda) {
+      data.filteredBdas = new Array();
+      cache.bdas.forEach(function(bda, index, array) {
+        if (!isAdditionalBda(bda.bdaId)) {
+          data.filteredBdas.push(bda);
+        }
+      });
+    } else {
+      data.filteredBdas = cache.bdas;
+    }
+    buildBdaGraphData(data, hideAddBda);
+    return data;
+  },
+  actions : {
+    settingHasChanged : function() {
+      this.set("hideAddBda", this.controller.get('hideAddBda'));
+      this.refresh();
+      this.controller.set('routeRefresh', new Date());
+    }
   }
 });
 
@@ -387,7 +411,12 @@ Probe.InvocationDetailRoute = Ember.Route.extend(Probe.ResetScroll, {
 
 // CONTROLLERS
 
-Probe.BeanArchivesController = Ember.ObjectController.extend({});
+Probe.BeanArchivesController = Ember.ObjectController.extend({
+  hideAddBda : true,
+  onSettingsChanged : function() {
+    this.send("settingHasChanged");
+  }.observes('hideAddBda')
+});
 
 Probe.BeanArchiveController = Ember.ObjectController.extend({});
 
@@ -965,6 +994,11 @@ Probe.InvocationTree = Ember.View
 
 Probe.BdaGraph = Ember.View
     .extend({
+
+      dataChanged : function() {
+        this.rerender();
+      }.observes('routeRefresh'),
+
       didInsertElement : function() {
 
         var data = this.get('content');
@@ -1035,16 +1069,19 @@ Probe.BdaGraph = Ember.View
             "svg:g").attr("class", "node").call(node_drag);
 
         node.append("title").text(function(d) {
-            return d.bdaId;
-          });
+          return d.bdaId;
+        });
 
-        node.append("circle").attr("r", 16).attr("class",
-            "circle-regular");
+        node.append("circle").attr("r", 16).attr(
+            "class",
+            function(d) {
+              return isAdditionalBda(d.bdaId) ? "circle-bda-add"
+                  : "circle-bda";
+            });
 
         var text = node.append("svg:text").attr("dx", function(d) {
-          return d.idx > 8 ? "-10": "-5";
-        }).attr("dy",
-            "5").style("fill", "white").text(function(d) {
+          return d.idx > 8 ? "-10" : "-5";
+        }).attr("dy", "5").style("fill", "black").text(function(d) {
           return d.idx + 1;
         });
 
@@ -1075,13 +1112,13 @@ Probe.BdaGraph = Ember.View
                             return (d === l.source || d === l.target) ? 'url(#end)'
                                 : '';
                           });
-//                  text.style('fill', '#333').text(
-//                      function(d) {
-//                        return (d.idx + 1)
-//                            + '  '
-//                            + abbreviate(d.bdaId,
-//                                40);
-//                      });
+                  // text.style('fill', '#333').text(
+                  // function(d) {
+                  // return (d.idx + 1)
+                  // + ' '
+                  // + abbreviate(d.bdaId,
+                  // 40);
+                  // });
                 }).on('mouseout', function() {
               path.style('stroke', function(l) {
                 return '#ccc';
@@ -1092,9 +1129,9 @@ Probe.BdaGraph = Ember.View
               path.style('stroke-opacity', function(l) {
                 return 1;
               });
-//              text.style('fill', 'white').text(function(d) {
-//                return d.idx + 1;
-//              });
+              // text.style('fill', 'white').text(function(d) {
+              // return d.idx + 1;
+              // });
             });
 
         force.on("tick", tick);
@@ -1306,15 +1343,16 @@ function buildDependencyGraphData(data, id) {
 /**
  *
  * @param data
- *            BeanDetailRoute data
+ *            BeanArchivesRoute data
+ * @param hideAddBda
  */
-function buildBdaGraphData(data) {
+function buildBdaGraphData(data, hideAddBda) {
   // Create nodes
   var nodes = new Object();
-  findNodesBdas(data.bdas, nodes);
+  findNodesBdas(data.filteredBdas, nodes);
   // Create links
   var links = new Array();
-  findLinksBdas(data.bdas, links, nodes);
+  findLinksBdas(data.filteredBdas, links, nodes, hideAddBda);
   data.nodes = nodes;
   data.links = links;
   console.log('Build BDA graph data [links: ' + links.length + ']');
@@ -1334,30 +1372,34 @@ function findNodesBdas(bdas, nodes) {
   }
 }
 
-function findLinksBdas(bdas, links, nodes) {
+function findLinksBdas(bdas, links, nodes, hideAddBda) {
   if (bdas) {
-    bdas.forEach(function(bda) {
-      bda.accessibleBdas.forEach(function(accessible) {
-        if (bda.id == accessible) {
-          return;
-        }
-        // First check identical links
-        var found;
-        for (var i = 0; i < links.length; i++) {
-          if ((links[i].source == nodes[bda.id])
-              && (links[i].target == nodes[accessible])) {
-            found = links[i];
-            break;
-          }
-        }
-        if (!found) {
-          links.push({
-            source : nodes[bda.id],
-            target : nodes[accessible],
-          });
-        }
-      });
-    });
+    bdas
+        .forEach(function(bda) {
+          bda.accessibleBdas
+              .forEach(function(accessible) {
+                if (bda.id == accessible
+                    || (hideAddBda && isAdditionalBda(findBeanDeploymentArchiveId(
+                        cache.bdas, accessible)))) {
+                  return;
+                }
+                // First check identical links
+                var found;
+                for (var i = 0; i < links.length; i++) {
+                  if ((links[i].source == nodes[bda.id])
+                      && (links[i].target == nodes[accessible])) {
+                    found = links[i];
+                    break;
+                  }
+                }
+                if (!found) {
+                  links.push({
+                    source : nodes[bda.id],
+                    target : nodes[accessible],
+                  });
+                }
+              });
+        });
   }
 }
 
@@ -1407,4 +1449,9 @@ function abbreviate(text, limit) {
   var start = text.length - limit + 3;
   var end = text.length;
   return '...' + text.substring(start, end);
+}
+
+function isAdditionalBda(bdaId) {
+  return bdaId.indexOf(additionalBdaSuffix, bdaId.length
+      - additionalBdaSuffix.length) !== -1;
 }
