@@ -47,12 +47,18 @@ ${head}
 
         <h1>Bean Archives</h1>
 
+         <div class="btn-line">
+            <label>
+                {{input type="checkbox" name="hideAddBda" checked=hideAddBda}} Hide Additional Bean Archives <i class="fa fa-lg fa-info-circle" title="These synthetic bean archives are created for beans and extensions which do not belong to any regular bean archive"></i>
+            </label>
+        </div>
+
         <table class="table table-bordered table-striped">
             <col width="3%">
             <col width="12%">
-            <col width="55%">
-            <col width="15%">
-            <col width="15%">
+            <col width="57%">
+            <col width="14%">
+            <col width="14%">
             <tr>
                 <th>Index</th>
                 <th>Actions</th>
@@ -60,7 +66,7 @@ ${head}
                 <th>Bean Discovery Mode</th>
                 <th>Number of Beans <i class="fa fa-lg fa-info-circle" title="Without built-in, inteceptors and decorators"></i></th>
             </tr>
-            {{#each bdas}}
+            {{#each filteredBdas}}
             <tr>
                 <td>{{increment _view.contentIndex}}</td>
                 <td><i class="fa fa-search"></i> {{#link-to 'beanArchive' id class='nav-link'}}Detail{{/link-to}} <i class="fa fa-filter"></i>{{#link-to 'beanList' (query-params bda=id) class='nav-link'}}Filter beans{{/link-to}}</td>
@@ -74,6 +80,11 @@ ${head}
         </table>
 
         <h2>Accessibility Graph</h2>
+
+        <ul class="plain-list leg-list">
+            <li><div class="leg-circle leg-circle-bda">1</div> Application Bean Archive</li>
+            <li><div class="leg-circle leg-circle-bda leg-circle-bda-add">2</div> Additional Bean Archive</li>
+        </ul>
 
         {{view Probe.BdaGraph contentBinding="model" routeRefresh=routeRefresh}}
 

@@ -41,6 +41,14 @@ footer {
   fill: lightsteelblue;
 }
 
+.circle-bda {
+  fill: CornflowerBlue;
+}
+
+.circle-bda-add {
+  fill: LightBlue;
+}
+
 .circle-observer {
   fill: orange;
 }
@@ -176,6 +184,27 @@ div.content {
   padding: 30px 10px 10px 10px;
 }
 
-.table > tbody > tr > th.with-rowspan {
+.table>tbody>tr>th.with-rowspan {
   vertical-align: middle;
+}
+
+.leg-circle {
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.leg-circle-bda {
+  background: none repeat scroll 0 0 CornflowerBlue;
+  width: 30px;
+  height: 30px;
+  padding: 5px 5px 5px 10px;
+  font-weight: bold;
+}
+
+.leg-circle-bda-add {
+  background: none repeat scroll 0 0 LightBlue;
+}
+
+.leg-list li {
+  margin-bottom: 5px;
 }
