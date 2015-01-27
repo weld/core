@@ -16,10 +16,8 @@
 
     <properties>
         <groovy.version>2.1.8</groovy.version>
-        <groovy.eclipse.compiler.version>2.7.0-01</groovy.eclipse.compiler.version>
-        <groovy.eclipse.batch.version>2.1.8-01</groovy.eclipse.batch.version>
-        <source.version>1.6</source.version>
-        <target.version>1.6</target.version>
+        <groovy.eclipse.compiler.version>2.9.1-01</groovy.eclipse.compiler.version>
+        <groovy.eclipse.batch.version>2.3.7-01</groovy.eclipse.batch.version>
     </properties>
 
     <url>http://weld.cdi-spec.org</url>
@@ -133,6 +131,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
                 <executions>
                     <execution>
                         <id>compile</id>
@@ -141,8 +140,8 @@
                             <goal>compile</goal>
                         </goals>
                         <configuration>
-                            <source>${source.version}</source>
-                            <target>${target.version}</target>
+                            <source>${maven.compiler.source}</source>
+                            <target>${maven.compiler.source}</target>
                         </configuration>
                     </execution>
                     <execution>
@@ -153,8 +152,8 @@
                         </goals>
                         <configuration>
                             <compilerId>groovy-eclipse-compiler</compilerId>
-                            <source>${source.version}</source>
-                            <target>${target.version}</target>
+                            <source>${maven.compiler.source}</source>
+                            <target>${maven.compiler.source}</target>
                         </configuration>
                     </execution>
                 </executions>
