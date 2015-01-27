@@ -185,7 +185,7 @@ ${head}
             <label>Bean Archive:</label>
             {{view "select"
                 value=bda
-                content=cache.bdas
+                content=cache.filterBdas
                 optionValuePath="content.id"
                 optionLabelPath="content.bdaId"
                 prompt="-- ANY --"
@@ -220,13 +220,13 @@ ${head}
                     </form>
                 </th>
                 <th>
-                    Bean types <i class="fa fa-lg fa-info-circle" title="Without java.lang.Object"></i>
+                    Bean types <i class="fa fa-lg fa-info-circle" title="The set does not contain java.lang.Object"></i>
                     <form {{action "filter" on="submit"}}>
                         {{input value=beanType class="form-control" placeholder="Any FQN contains"}}
                     </form>
                 </th>
                 <th>
-                    Qualifiers <i class="fa fa-lg fa-info-circle" title="Without javax.enterprise.inject.Any"></i>
+                    Qualifiers <i class="fa fa-lg fa-info-circle" title="The set does not contain javax.enterprise.inject.Any"></i>
                     <form {{action "filter" on="submit"}}>
                         {{input value=qualifier class="form-control" placeholder="Any contains"}}
                     </form>

@@ -17,6 +17,8 @@ var txPhases = [ 'IN_PROGRESS', 'BEFORE_COMPLETION', 'AFTER_COMPLETION',
 
 var additionalBdaSuffix = '.additionalClasses';
 
+var markerFilterAddBdas = "probe-filterAdditionalBdas";
+
 var cache = new Object();
 
 var Probe = Ember.Application.create({
@@ -96,6 +98,13 @@ Probe.ApplicationRoute = Ember.Route.extend({
   model : function() {
     return $.getJSON(restUrlBase + 'deployment').done(function(data) {
       cache.bdas = data.bdas;
+      // Copy bdas for filtering purpose
+      cache.filterBdas = cache.bdas.slice(0);
+      // Add marker to filter additional archives
+      cache.filterBdas.unshift({
+        "id" : markerFilterAddBdas,
+        "bdaId" : "Only application bean archives (hide beans from additional bean archives)",
+      });
       cache.configuration = data.configuration;
       return data;
     }).fail(function(jqXHR, textStatus, errorThrown) {
@@ -169,7 +178,7 @@ Probe.BeanListRoute = Ember.Route.extend(Probe.ResetScroll, {
     filters = appendToFilters(filters, 'beanType', params.beanType);
     filters = appendToFilters(filters, 'qualifier', params.qualifier);
     if (params.bda) {
-      cache.bdas.forEach(function(bda) {
+      cache.filterBdas.forEach(function(bda) {
         if (bda.id == params.bda) {
           filters = appendToFilters(filters, 'bda', bda.id);
         }
@@ -429,7 +438,7 @@ Probe.BeanListController = Ember.ObjectController.extend({
     this.set('initialized', true);
     this.set('beanKinds', beanKinds);
   },
-  bda : null,
+  bda : markerFilterAddBdas,
   kind : null,
   scope : '',
   beanClass : '',
@@ -569,8 +578,8 @@ Ember.Handlebars.registerBoundHelper('abbr', function(text, limit, addTitle) {
   var escaped = Handlebars.Utils.escapeExpression(text);
   if (escaped.length > limit) {
     var ret = addTitle ? '<span title="' + text + '">' : '';
-    ret += escaped.charAt(0) === '@' ? abbreviateAnnotation(escaped,
-        true) : abbreviateType(escaped, true);
+    ret += escaped.charAt(0) === '@' ? abbreviateAnnotation(escaped, true)
+        : abbreviateType(escaped, true);
     ret += '</span>';
     escaped = ret;
   }
@@ -685,7 +694,9 @@ Probe.DependencyGraph = Ember.View
                 }
                 var desc;
                 if (d.dependencies.length == 1) {
-                  desc = abbreviateType(d.dependencies[0].requiredType, false);
+                  desc = abbreviateType(
+                      d.dependencies[0].requiredType,
+                      false);
                 } else {
                   desc = '(' + d.dependencies.length + ')';
                 }
@@ -1481,7 +1492,7 @@ function abbreviateType(type, htmlOutput) {
       }
     }
   }
-  if(htmlOutput) {
+  if (htmlOutput) {
     result += ' <i class="fa fa-compress abbreviated"></i>';
   }
   return result;
@@ -1517,7 +1528,7 @@ function abbreviateAnnotation(annotation, htmlOutput) {
       }
     }
   }
-  if(htmlOutput) {
+  if (htmlOutput) {
     result += ' <i class="fa fa-compress abbreviated"></i>';
   }
   return result;
