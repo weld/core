@@ -22,6 +22,7 @@ import static org.jboss.weld.probe.Strings.APPLICATION_FONT_WOFF;
 import static org.jboss.weld.probe.Strings.ENCODING_UTF8;
 import static org.jboss.weld.probe.Strings.FILE_CLIENT_HTML;
 import static org.jboss.weld.probe.Strings.FILTERS;
+import static org.jboss.weld.probe.Strings.IMG_ICO;
 import static org.jboss.weld.probe.Strings.IMG_PNG;
 import static org.jboss.weld.probe.Strings.IMG_SVG;
 import static org.jboss.weld.probe.Strings.PAGE;
@@ -35,6 +36,7 @@ import static org.jboss.weld.probe.Strings.SLASH;
 import static org.jboss.weld.probe.Strings.SUFFIX_CSS;
 import static org.jboss.weld.probe.Strings.SUFFIX_EOT;
 import static org.jboss.weld.probe.Strings.SUFFIX_HTML;
+import static org.jboss.weld.probe.Strings.SUFFIX_ICO;
 import static org.jboss.weld.probe.Strings.SUFFIX_JS;
 import static org.jboss.weld.probe.Strings.SUFFIX_OTF;
 import static org.jboss.weld.probe.Strings.SUFFIX_PNG;
@@ -75,7 +77,7 @@ enum Resource {
         @Override
         protected void handleGet(BeanManagerImpl beanManager, Probe probe, String[] pathInfoParts, HttpServletRequest req, HttpServletResponse resp)
                 throws IOException {
-            resp.getWriter().append(JsonObjects.createDeploymentJson(beanManager));
+            resp.getWriter().append(JsonObjects.createDeploymentJson(beanManager, probe));
         }
     }),
     /**
@@ -315,13 +317,15 @@ enum Resource {
             return APPLICATION_FONT_WOFF;
         } else if (resourceName.endsWith(SUFFIX_SVG)) {
             return IMG_SVG;
+        }  else if (resourceName.endsWith(SUFFIX_ICO)) {
+            return IMG_ICO;
         } else {
             return TEXT_PLAIN;
         }
     }
 
     static boolean isTextBasedContenType(String contentType) {
-        return !(IMG_PNG.equals(contentType) || APPLICATION_FONT_SFNT.equals(contentType) || APPLICATION_FONT_WOFF.equals(contentType) || APPLICATION_FONT_MS
+        return !(IMG_PNG.equals(contentType) || IMG_ICO.equals(contentType) || APPLICATION_FONT_SFNT.equals(contentType) || APPLICATION_FONT_WOFF.equals(contentType) || APPLICATION_FONT_MS
                 .equals(contentType));
     }
 

@@ -97,6 +97,7 @@ final class Strings {
     static final String TEXT_PLAIN = "text/plain";
     static final String IMG_PNG = "image/png";
     static final String IMG_SVG = "image/svg+xml";
+    static final String IMG_ICO = " image/x-icon";
 
     static final String ENCODING_UTF8 = "UTF-8";
 
@@ -109,6 +110,7 @@ final class Strings {
     static final String SUFFIX_EOT = "eot";
     static final String SUFFIX_SVG = "svg";
     static final String SUFFIX_WOFF = "woff";
+    static final String SUFFIX_ICO = "ico";
 
     static final String SLASH = "/";
 
@@ -122,6 +124,7 @@ final class Strings {
     static final String RESOURCE_PARAM_END = "}";
 
     static final String ADDITIONAL_BDA_SUFFIX = ".additionalClasses";
+    static final String WEB_INF_CLASSES = "WEB-INF/classes";
 
     private Strings() {
     }

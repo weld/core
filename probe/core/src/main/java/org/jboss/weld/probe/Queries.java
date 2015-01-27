@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.probe;
 
+import static org.jboss.weld.probe.Strings.ADDITIONAL_BDA_SUFFIX;
 import static org.jboss.weld.probe.Strings.BDA;
 import static org.jboss.weld.probe.Strings.BEAN_CLASS;
 import static org.jboss.weld.probe.Strings.BEAN_TYPE;
@@ -211,6 +212,8 @@ final class Queries {
 
     static class BeanFilters extends Filters<Bean<?>> {
 
+        private static final String FILTER_ADDITIONAL_BDAS_MARKER = "probe-filterAdditionalBdas";
+
         private BeanKind kind;
 
         private String beanClass;
@@ -231,8 +234,17 @@ final class Queries {
         public boolean test(Bean<?> bean) {
             if (bda != null) {
                 BeanManagerImpl beanManagerImpl = probe.getBeanManager(bean);
-                if (beanManagerImpl == null || !Components.getId(beanManagerImpl.getId()).equals(bda)) {
+                if (beanManagerImpl == null) {
                     return false;
+                }
+                if (FILTER_ADDITIONAL_BDAS_MARKER.equals(bda)) {
+                    if (beanManagerImpl.getId().endsWith(ADDITIONAL_BDA_SUFFIX)) {
+                        return false;
+                    }
+                } else {
+                    if (!Components.getId(beanManagerImpl.getId()).equals(bda)) {
+                        return false;
+                    }
                 }
             }
             return testEquals(kind, BeanKind.from(bean)) && testContainsIgnoreCase(beanClass, bean.getBeanClass())

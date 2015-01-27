@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <title>Weld Probe</title>
+<link rel="shortcut icon" type="image/x-icon" href="${client.resource.path}weld_icon_32x.ico" />
 ${head}
 </head>
 <body>
@@ -47,12 +48,18 @@ ${head}
 
         <h1>Bean Archives</h1>
 
+         <div class="btn-line">
+            <label>
+                {{input type="checkbox" name="hideAddBda" checked=hideAddBda}} Hide Additional Bean Archives <i class="fa fa-lg fa-info-circle" title="These synthetic bean archives are created for beans and extensions which do not belong to any regular bean archive"></i>
+            </label>
+        </div>
+
         <table class="table table-bordered table-striped">
             <col width="3%">
             <col width="12%">
-            <col width="55%">
-            <col width="15%">
-            <col width="15%">
+            <col width="57%">
+            <col width="14%">
+            <col width="14%">
             <tr>
                 <th>Index</th>
                 <th>Actions</th>
@@ -60,7 +67,7 @@ ${head}
                 <th>Bean Discovery Mode</th>
                 <th>Number of Beans <i class="fa fa-lg fa-info-circle" title="Without built-in, inteceptors and decorators"></i></th>
             </tr>
-            {{#each bdas}}
+            {{#each filteredBdas}}
             <tr>
                 <td>{{increment _view.contentIndex}}</td>
                 <td><i class="fa fa-search"></i> {{#link-to 'beanArchive' id class='nav-link'}}Detail{{/link-to}} <i class="fa fa-filter"></i>{{#link-to 'beanList' (query-params bda=id) class='nav-link'}}Filter beans{{/link-to}}</td>
@@ -74,6 +81,11 @@ ${head}
         </table>
 
         <h2>Accessibility Graph</h2>
+
+        <ul class="plain-list leg-list">
+            <li><div class="leg-circle leg-circle-bda">1</div> Application Bean Archive</li>
+            <li><div class="leg-circle leg-circle-bda leg-circle-bda-add">2</div> Additional Bean Archive</li>
+        </ul>
 
         {{view Probe.BdaGraph contentBinding="model" routeRefresh=routeRefresh}}
 
@@ -174,7 +186,7 @@ ${head}
             <label>Bean Archive:</label>
             {{view "select"
                 value=bda
-                content=cache.bdas
+                content=cache.filterBdas
                 optionValuePath="content.id"
                 optionLabelPath="content.bdaId"
                 prompt="-- ANY --"
@@ -205,17 +217,17 @@ ${head}
                 <th>
                     Bean class <i class="fa fa-lg fa-info-circle" title="Click to show the bean detail"></i>
                     <form {{action "filter" on="submit"}}>
-                        {{input value=beanClass class="form-control" placeholder="Contains"}}
+                        {{input value=beanClass class="form-control" placeholder="FQN Contains"}}
                     </form>
                 </th>
                 <th>
-                    Bean types <i class="fa fa-lg fa-info-circle" title="Without java.lang.Object"></i>
+                    Bean types <i class="fa fa-lg fa-info-circle" title="The set does not contain java.lang.Object"></i>
                     <form {{action "filter" on="submit"}}>
-                        {{input value=beanType class="form-control" placeholder="Any contains"}}
+                        {{input value=beanType class="form-control" placeholder="Any FQN contains"}}
                     </form>
                 </th>
                 <th>
-                    Qualifiers <i class="fa fa-lg fa-info-circle" title="Without javax.enterprise.inject.Any"></i>
+                    Qualifiers <i class="fa fa-lg fa-info-circle" title="The set does not contain javax.enterprise.inject.Any"></i>
                     <form {{action "filter" on="submit"}}>
                         {{input value=qualifier class="form-control" placeholder="Any contains"}}
                     </form>
@@ -225,15 +237,15 @@ ${head}
             <tr>
                 <td>{{increment _view.contentIndex}}</td>
                 <td><span class="{{unbound kind}} boxed">{{unbound kind}}</span></td>
-                <td>{{unbound scope}}</td>
+                <td>{{abbr scope 30 true}}</td>
                 <td>
-                    {{#link-to 'beanDetail' id title=beanClass}}{{substr beanClass 60}}{{/link-to}}
+                    {{#link-to 'beanDetail' id title=beanClass}}{{abbr beanClass 50}}{{/link-to}}
                 </td>
                 <td>
-                    {{eachListItem types 60}}
+                    {{eachLiAbbr types 50}}
                 </td>
                 <td>
-                    {{eachListItem qualifiers 60}}
+                    {{eachLiAbbr qualifiers 40}}
                 </td>
             </tr>
             {{/each}}
@@ -496,16 +508,16 @@ ${head}
                 <td>{{#if declaringBean}}<span class="{{unbound declaringBean.kind}} boxed">{{unbound declaringBean.kind}}</span>{{else}}N/A{{/if}}</td>
                 <td>
                     {{#if declaringBean}}
-                        {{#link-to 'beanDetail' declaringBean.id title=declaringBean.beanClass}}{{substr declaringBean.beanClass 60}}{{/link-to}}
+                        {{#link-to 'beanDetail' declaringBean.id title=declaringBean.beanClass}}{{abbr declaringBean.beanClass 50}}{{/link-to}}
                     {{else}}
                         {{unbound beanClass}}
                     {{/if}}
                 </td>
                 <td>
-                    {{#link-to 'observerDetail' id title=observedType}}{{substr observedType 60}}{{/link-to}}
+                    {{#link-to 'observerDetail' id title=observedType}}{{abbr observedType 50}}{{/link-to}}
                 </td>
                 <td>
-                    {{eachListItem qualifiers 60}}
+                    {{eachLiAbbr qualifiers 60}}
                 </td>
                 <td>
                     <span class="{{unbound reception}} boxed">{{unbound reception}}</span>

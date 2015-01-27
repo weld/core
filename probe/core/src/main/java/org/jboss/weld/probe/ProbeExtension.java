@@ -26,6 +26,7 @@ import java.util.regex.Pattern;
 import javax.decorator.Decorator;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.Annotated;
+import javax.enterprise.inject.spi.AnnotatedMember;
 import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
@@ -65,7 +66,7 @@ public class ProbeExtension implements Extension {
 
     public <T> void processBeanAttributes(@Observes ProcessBeanAttributes<T> event) {
         final BeanAttributes<T> beanAttributes = event.getBeanAttributes();
-        if (isApplied(event.getAnnotated(), beanAttributes)) {
+        if (isMonitored(event.getAnnotated(), beanAttributes)) {
             event.setBeanAttributes(new ForwardingBeanAttributes<T>() {
                 @Override
                 public Set<Class<? extends Annotation>> getStereotypes() {
@@ -81,21 +82,26 @@ public class ProbeExtension implements Extension {
         }
     }
 
-    private <T> boolean isApplied(Annotated annotated, BeanAttributes<T> beanAttributes) {
+    private <T> boolean isMonitored(Annotated annotated, BeanAttributes<T> beanAttributes) {
         if (annotated.isAnnotationPresent(Interceptor.class) || annotated.isAnnotationPresent(Decorator.class)) {
             // Omit interceptors and decorators
             return false;
         }
-        Type baseType = annotated.getBaseType();
-        if (baseType instanceof Class) {
-            Class<?> beanClass = (Class<?>) baseType;
-
-            if (Modifier.isFinal(beanClass.getModifiers())) {
+        final Type type;
+        if (annotated instanceof AnnotatedMember) {
+            // AnnotatedField or AnnotatedMethod
+            type = ((AnnotatedMember<?>) annotated).getDeclaringType().getBaseType();
+        } else {
+            type = annotated.getBaseType();
+        }
+        if (type instanceof Class) {
+            final Class<?> clazz = (Class<?>) type;
+            if (Modifier.isFinal(clazz.getModifiers())) {
                 // Final classes may not have an interceptor
                 return false;
             }
-            if (invocationMonitorExcludePattern != null && invocationMonitorExcludePattern.matcher(beanClass.getName()).matches()) {
-                ProbeLogger.LOG.invocationMonitorNotAssociated(beanClass.getName());
+            if (invocationMonitorExcludePattern != null && invocationMonitorExcludePattern.matcher(clazz.getName()).matches()) {
+                ProbeLogger.LOG.invocationMonitorNotAssociated(clazz.getName());
                 return false;
             }
         }

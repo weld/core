@@ -7,12 +7,17 @@ var beanKinds = [ 'MANAGED', 'SESSION', 'PRODUCER_METHOD', 'PRODUCER_FIELD',
     'RESOURCE', 'SYNTHETIC', 'INTERCEPTOR', 'DECORATOR', 'EXTENSION',
     'BUILT_IN' ];
 
-var observerDeclaringBeanKinds = [ 'MANAGED', 'SESSION', 'EXTENSION', 'BUILT_IN' ];
+var observerDeclaringBeanKinds = [ 'MANAGED', 'SESSION', 'EXTENSION',
+    'BUILT_IN' ];
 
 var receptions = [ 'ALWAYS', 'IF_EXISTS' ];
 
 var txPhases = [ 'IN_PROGRESS', 'BEFORE_COMPLETION', 'AFTER_COMPLETION',
     'AFTER_FAILURE', 'AFTER_SUCCESS' ];
+
+var additionalBdaSuffix = '.additionalClasses';
+
+var markerFilterAddBdas = "probe-filterAdditionalBdas";
 
 var cache = new Object();
 
@@ -93,8 +98,14 @@ Probe.ApplicationRoute = Ember.Route.extend({
   model : function() {
     return $.getJSON(restUrlBase + 'deployment').done(function(data) {
       cache.bdas = data.bdas;
+      // Copy bdas for filtering purpose
+      cache.filterBdas = cache.bdas.slice(0);
+      // Add marker to filter additional archives
+      cache.filterBdas.unshift({
+        "id" : markerFilterAddBdas,
+        "bdaId" : "Only application bean archives - filter out beans from additional bean archives",
+      });
       cache.configuration = data.configuration;
-      buildBdaGraphData(cache);
       return data;
     }).fail(function(jqXHR, textStatus, errorThrown) {
       alert('Unable to get JSON data: ' + textStatus);
@@ -104,7 +115,30 @@ Probe.ApplicationRoute = Ember.Route.extend({
 
 Probe.BeanArchivesRoute = Ember.Route.extend({
   model : function() {
-    return cache;
+    var data = new Object();
+    var hideAddBda = this.get('hideAddBda');
+    if (hideAddBda == null) {
+      hideAddBda = true;
+    }
+    if (hideAddBda) {
+      data.filteredBdas = new Array();
+      cache.bdas.forEach(function(bda, index, array) {
+        if (!isAdditionalBda(bda.bdaId)) {
+          data.filteredBdas.push(bda);
+        }
+      });
+    } else {
+      data.filteredBdas = cache.bdas;
+    }
+    buildBdaGraphData(data, hideAddBda);
+    return data;
+  },
+  actions : {
+    settingHasChanged : function() {
+      this.set("hideAddBda", this.controller.get('hideAddBda'));
+      this.refresh();
+      this.controller.set('routeRefresh', new Date());
+    }
   }
 });
 
@@ -144,7 +178,7 @@ Probe.BeanListRoute = Ember.Route.extend(Probe.ResetScroll, {
     filters = appendToFilters(filters, 'beanType', params.beanType);
     filters = appendToFilters(filters, 'qualifier', params.qualifier);
     if (params.bda) {
-      cache.bdas.forEach(function(bda) {
+      cache.filterBdas.forEach(function(bda) {
         if (bda.id == params.bda) {
           filters = appendToFilters(filters, 'bda', bda.id);
         }
@@ -387,7 +421,12 @@ Probe.InvocationDetailRoute = Ember.Route.extend(Probe.ResetScroll, {
 
 // CONTROLLERS
 
-Probe.BeanArchivesController = Ember.ObjectController.extend({});
+Probe.BeanArchivesController = Ember.ObjectController.extend({
+  hideAddBda : true,
+  onSettingsChanged : function() {
+    this.send("settingHasChanged");
+  }.observes('hideAddBda')
+});
 
 Probe.BeanArchiveController = Ember.ObjectController.extend({});
 
@@ -399,7 +438,7 @@ Probe.BeanListController = Ember.ObjectController.extend({
     this.set('initialized', true);
     this.set('beanKinds', beanKinds);
   },
-  bda : null,
+  bda : markerFilterAddBdas,
   kind : null,
   scope : '',
   beanClass : '',
@@ -511,32 +550,40 @@ Ember.Handlebars.registerBoundHelper('substr', function(text, limit) {
   }
 });
 
-Ember.Handlebars.registerBoundHelper('eachItemOnNewLine', function(items,
-    options) {
-  var ret = '';
-  if (items) {
-    for (var i = 0; i < items.length; i++) {
-      ret += Handlebars.Utils.escapeExpression(items[i]) + '<br/>';
-    }
-  }
-  return new Handlebars.SafeString(ret);
-});
+Ember.Handlebars.registerBoundHelper('eachLiAbbr',
+    function(types, limit, options) {
+      var ret = '<ul class="plain-list no-margin">';
+      if (types) {
+        for (var i = 0; i < types.length; i++) {
+          var text = Handlebars.Utils.escapeExpression(types[i]);
+          if (text.length > limit) {
+            ret += '<li title="';
+            ret += text;
+            ret += '">';
+            ret += text.charAt(0) === '@' ? abbreviateAnnotation(
+                text, true) : abbreviateType(text, true);
+            ret += '</li>';
+          } else {
+            ret += "<li>";
+            ret += text;
+            ret += "</li>";
+          }
+        }
+      }
+      ret += '</ul>';
+      return new Handlebars.SafeString(ret);
+    });
 
-Ember.Handlebars.registerBoundHelper('eachListItem', function(items, limit,
-    options) {
-  var ret = '<ul class="plain-list no-margin">';
-  if (items) {
-    for (var i = 0; i < items.length; i++) {
-      var text = Handlebars.Utils.escapeExpression(items[i]);
-      ret += "<li title='";
-      ret += text;
-      ret += "'>";
-      ret += text.length > limit ? abbreviate(text, limit) : text;
-      ret += '</li>';
-    }
+Ember.Handlebars.registerBoundHelper('abbr', function(text, limit, addTitle) {
+  var escaped = Handlebars.Utils.escapeExpression(text);
+  if (escaped.length > limit) {
+    var ret = addTitle ? '<span title="' + text + '">' : '';
+    ret += escaped.charAt(0) === '@' ? abbreviateAnnotation(escaped, true)
+        : abbreviateType(escaped, true);
+    ret += '</span>';
+    escaped = ret;
   }
-  ret += '</ul>';
-  return new Handlebars.SafeString(ret);
+  return new Handlebars.SafeString(escaped);
 });
 
 // VIEWS
@@ -647,7 +694,9 @@ Probe.DependencyGraph = Ember.View
                 }
                 var desc;
                 if (d.dependencies.length == 1) {
-                  desc = d.dependencies[0].requiredType;
+                  desc = abbreviateType(
+                      d.dependencies[0].requiredType,
+                      false);
                 } else {
                   desc = '(' + d.dependencies.length + ')';
                 }
@@ -697,7 +746,7 @@ Probe.DependencyGraph = Ember.View
             "svg:g").attr("class", "node").call(node_drag);
 
         node.append("title").text(function(d) {
-          return d.kind;
+          return d.beanClass;
         });
         node.append("circle").attr("r", 12).attr(
             "class",
@@ -716,7 +765,7 @@ Probe.DependencyGraph = Ember.View
           return "#/bean/" + d.id;
         }).append("svg:text").attr("dx", 15).attr("dy", "0.2em").style(
             "fill", "#428bca").text(function(d) {
-          return d.beanClass;
+          return abbreviateType(d.beanClass, false);
         });
 
         force.on("tick", tick);
@@ -965,6 +1014,11 @@ Probe.InvocationTree = Ember.View
 
 Probe.BdaGraph = Ember.View
     .extend({
+
+      dataChanged : function() {
+        this.rerender();
+      }.observes('routeRefresh'),
+
       didInsertElement : function() {
 
         var data = this.get('content');
@@ -1035,16 +1089,19 @@ Probe.BdaGraph = Ember.View
             "svg:g").attr("class", "node").call(node_drag);
 
         node.append("title").text(function(d) {
-            return d.bdaId;
-          });
+          return d.bdaId;
+        });
 
-        node.append("circle").attr("r", 16).attr("class",
-            "circle-regular");
+        node.append("circle").attr("r", 16).attr(
+            "class",
+            function(d) {
+              return isAdditionalBda(d.bdaId) ? "circle-bda-add"
+                  : "circle-bda";
+            });
 
         var text = node.append("svg:text").attr("dx", function(d) {
-          return d.idx > 8 ? "-10": "-5";
-        }).attr("dy",
-            "5").style("fill", "white").text(function(d) {
+          return d.idx > 8 ? "-10" : "-5";
+        }).attr("dy", "5").style("fill", "black").text(function(d) {
           return d.idx + 1;
         });
 
@@ -1075,13 +1132,6 @@ Probe.BdaGraph = Ember.View
                             return (d === l.source || d === l.target) ? 'url(#end)'
                                 : '';
                           });
-//                  text.style('fill', '#333').text(
-//                      function(d) {
-//                        return (d.idx + 1)
-//                            + '  '
-//                            + abbreviate(d.bdaId,
-//                                40);
-//                      });
                 }).on('mouseout', function() {
               path.style('stroke', function(l) {
                 return '#ccc';
@@ -1092,9 +1142,6 @@ Probe.BdaGraph = Ember.View
               path.style('stroke-opacity', function(l) {
                 return 1;
               });
-//              text.style('fill', 'white').text(function(d) {
-//                return d.idx + 1;
-//              });
             });
 
         force.on("tick", tick);
@@ -1306,15 +1353,16 @@ function buildDependencyGraphData(data, id) {
 /**
  *
  * @param data
- *            BeanDetailRoute data
+ *            BeanArchivesRoute data
+ * @param hideAddBda
  */
-function buildBdaGraphData(data) {
+function buildBdaGraphData(data, hideAddBda) {
   // Create nodes
   var nodes = new Object();
-  findNodesBdas(data.bdas, nodes);
+  findNodesBdas(data.filteredBdas, nodes);
   // Create links
   var links = new Array();
-  findLinksBdas(data.bdas, links, nodes);
+  findLinksBdas(data.filteredBdas, links, nodes, hideAddBda);
   data.nodes = nodes;
   data.links = links;
   console.log('Build BDA graph data [links: ' + links.length + ']');
@@ -1334,30 +1382,34 @@ function findNodesBdas(bdas, nodes) {
   }
 }
 
-function findLinksBdas(bdas, links, nodes) {
+function findLinksBdas(bdas, links, nodes, hideAddBda) {
   if (bdas) {
-    bdas.forEach(function(bda) {
-      bda.accessibleBdas.forEach(function(accessible) {
-        if (bda.id == accessible) {
-          return;
-        }
-        // First check identical links
-        var found;
-        for (var i = 0; i < links.length; i++) {
-          if ((links[i].source == nodes[bda.id])
-              && (links[i].target == nodes[accessible])) {
-            found = links[i];
-            break;
-          }
-        }
-        if (!found) {
-          links.push({
-            source : nodes[bda.id],
-            target : nodes[accessible],
-          });
-        }
-      });
-    });
+    bdas
+        .forEach(function(bda) {
+          bda.accessibleBdas
+              .forEach(function(accessible) {
+                if (bda.id == accessible
+                    || (hideAddBda && isAdditionalBda(findBeanDeploymentArchiveId(
+                        cache.bdas, accessible)))) {
+                  return;
+                }
+                // First check identical links
+                var found;
+                for (var i = 0; i < links.length; i++) {
+                  if ((links[i].source == nodes[bda.id])
+                      && (links[i].target == nodes[accessible])) {
+                    found = links[i];
+                    break;
+                  }
+                }
+                if (!found) {
+                  links.push({
+                    source : nodes[bda.id],
+                    target : nodes[accessible],
+                  });
+                }
+              });
+        });
   }
 }
 
@@ -1407,4 +1459,77 @@ function abbreviate(text, limit) {
   var start = text.length - limit + 3;
   var end = text.length;
   return '...' + text.substring(start, end);
+}
+
+function isAdditionalBda(bdaId) {
+  return bdaId.indexOf(additionalBdaSuffix, bdaId.length
+      - additionalBdaSuffix.length) !== -1;
+}
+
+/**
+ * This only works if the type represents either a raw type or a parameterized
+ * type with actual type params represented as simple names.
+ *
+ * @param type
+ * @param addStyle
+ * @returns {String}
+ */
+function abbreviateType(type, htmlOutput) {
+  var parts = type.split('.');
+  var result = '';
+  var lastIdx = parts.length - 1;
+  for (var i = 0; i < parts.length; i++) {
+    if (i === lastIdx) {
+      result += parts[i];
+    } else {
+      if (i === 0 && htmlOutput) {
+        result += '<span class="abbreviated">';
+      }
+      result += parts[i].charAt(0);
+      result += '.';
+      if (i === (lastIdx - 1) && htmlOutput) {
+        result += '</span>';
+      }
+    }
+  }
+  if (htmlOutput) {
+    result += ' <i class="fa fa-compress abbreviated"></i>';
+  }
+  return result;
+}
+
+/**
+ * This only returns the abbreviated annotation type, params are omitted.
+ *
+ * @param annotation
+ * @param htmlOutput
+ * @returns {String}
+ */
+function abbreviateAnnotation(annotation, htmlOutput) {
+  var result = '@';
+  if (annotation.indexOf('(') !== -1) {
+    annotation = annotation.substring(1, annotation.indexOf('('));
+  } else {
+    annotation = annotation.substr(1);
+  }
+  var parts = annotation.split('.');
+  var lastIdx = parts.length - 1;
+  for (var i = 0; i < parts.length; i++) {
+    if (i === lastIdx) {
+      result += parts[i];
+    } else {
+      if (i === 0 && htmlOutput) {
+        result += '<span class="abbreviated">';
+      }
+      result += parts[i].charAt(0);
+      result += '.';
+      if (i === (lastIdx - 1) && htmlOutput) {
+        result += '</span>';
+      }
+    }
+  }
+  if (htmlOutput) {
+    result += ' <i class="fa fa-compress abbreviated"></i>';
+  }
+  return result;
 }

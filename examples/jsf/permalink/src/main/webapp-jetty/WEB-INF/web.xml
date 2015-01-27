@@ -28,15 +28,20 @@
       http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 
    <display-name>Weld Permalink Example (Servlet Environment)</display-name>
-   
+
    <listener>
       <listener-class>org.jboss.weld.environment.servlet.Listener</listener-class>
    </listener>
-   
+
    <listener>
       <listener-class>com.sun.faces.config.ConfigureListener</listener-class>
    </listener> 
-   
+
+   <context-param>
+      <param-name>org.jboss.weld.development</param-name>
+      <param-value>true</param-value>
+   </context-param>
+
    <context-param>
       <param-name>facelets.DEVELOPMENT</param-name>
       <param-value>true</param-value>
