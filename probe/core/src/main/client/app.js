@@ -103,7 +103,7 @@ Probe.ApplicationRoute = Ember.Route.extend({
       // Add marker to filter additional archives
       cache.filterBdas.unshift({
         "id" : markerFilterAddBdas,
-        "bdaId" : "Only application bean archives (hide beans from additional bean archives)",
+        "bdaId" : "Only application bean archives - filter out beans from additional bean archives",
       });
       cache.configuration = data.configuration;
       return data;

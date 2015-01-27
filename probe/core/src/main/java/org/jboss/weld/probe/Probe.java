@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.probe;
 
+import static org.jboss.weld.probe.Strings.ADDITIONAL_BDA_SUFFIX;
+import static org.jboss.weld.probe.Strings.WEB_INF_CLASSES;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -60,6 +63,8 @@ public class Probe implements Service {
 
     private final Comparator<ObserverMethod<?>> observerComparator;
 
+    private final Comparator<BeanDeploymentArchive> bdaComparator;
+
     /**
      * Create a partially initialized instance.
      */
@@ -81,6 +86,25 @@ public class Probe implements Service {
                     return mappings.getObserverToId().get(o1).compareTo(mappings.getObserverToId().get(o2));
                 }
                 return o1.getBeanClass().getName().compareTo(o2.getBeanClass().getName());
+            }
+        };
+        this.bdaComparator = new Comparator<BeanDeploymentArchive>() {
+            @Override
+            public int compare(BeanDeploymentArchive bda1, BeanDeploymentArchive bda2) {
+                // Ids containing "WEB-INF/classes" have the highest priority
+                int result = Boolean.compare(bda2.getId().contains(WEB_INF_CLASSES), bda1.getId().contains(WEB_INF_CLASSES));
+                if (result == 0) {
+                    // Additional bean archive should have the lowest priority when sorting
+                    // This suffix is supported by WildFly and Weld Servlet
+                    result = Boolean.compare(bda1.getId().endsWith(ADDITIONAL_BDA_SUFFIX), bda2.getId().endsWith(ADDITIONAL_BDA_SUFFIX));
+                    if (result == 0) {
+                        // Then order by number of enabled beans
+                        result = Components.getNumberOfEnabledBeans(mappings.getBdaToManager().get(bda2)).compareTo(
+                                Components.getNumberOfEnabledBeans(mappings.getBdaToManager().get(bda1)));
+                    }
+                }
+                // Unles decided compare the ids lexicographically
+                return result == 0 ? bda1.getId().compareTo(bda2.getId()) : result;
             }
         };
     }
@@ -224,6 +248,14 @@ public class Probe implements Service {
         return size;
     }
 
+    /**
+     *
+     * @return the comparator for BDAs
+     */
+    Comparator<BeanDeploymentArchive> getBdaComparator() {
+        return bdaComparator;
+    }
+
     @Override
     public void cleanup() {
         if (mappings != null) {
@@ -255,6 +287,8 @@ public class Probe implements Service {
 
         private final Map<ObserverMethod<?>, String> observerToId;
 
+        private final Map<BeanDeploymentArchive, BeanManagerImpl> bdaToManager;
+
         Mappings(BeanManagerImpl beanManager) {
 
             beanToId = new HashMap<Bean<?>, String>();
@@ -264,9 +298,9 @@ public class Probe implements Service {
             observerToId = new HashMap<ObserverMethod<?>, String>();
 
             ContextualStore contextualStore = beanManager.getServices().get(ContextualStore.class);
-            Map<BeanDeploymentArchive, BeanManagerImpl> beanDeploymentArchivesMap = Container.instance(beanManager).beanDeploymentArchives();
+            bdaToManager = Container.instance(beanManager).beanDeploymentArchives();
 
-            for (Entry<BeanDeploymentArchive, BeanManagerImpl> entry : beanDeploymentArchivesMap.entrySet()) {
+            for (Entry<BeanDeploymentArchive, BeanManagerImpl> entry : bdaToManager.entrySet()) {
 
                 ProbeLogger.LOG.processingBeanDeploymentArchive(entry.getKey().getId());
                 BeanManagerImpl manager = entry.getValue();
@@ -336,6 +370,10 @@ public class Probe implements Service {
 
         Map<ObserverMethod<?>, String> getObserverToId() {
             return observerToId;
+        }
+
+        Map<BeanDeploymentArchive, BeanManagerImpl> getBdaToManager() {
+            return bdaToManager;
         }
 
         private void putBean(ContextualStore contextualStore, Bean<?> bean) {

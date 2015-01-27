@@ -17,7 +17,6 @@
 package org.jboss.weld.probe;
 
 import static org.jboss.weld.probe.Strings.ACCESSIBLE_BDAS;
-import static org.jboss.weld.probe.Strings.ADDITIONAL_BDA_SUFFIX;
 import static org.jboss.weld.probe.Strings.ALTERNATIVES;
 import static org.jboss.weld.probe.Strings.ANNOTATED_METHOD;
 import static org.jboss.weld.probe.Strings.AS_STRING;
@@ -123,16 +122,6 @@ import org.jboss.weld.util.reflection.Formats;
  */
 final class JsonObjects {
 
-    private static final Comparator<BeanDeploymentArchive> bdaComparator = new Comparator<BeanDeploymentArchive>() {
-        @Override
-        public int compare(BeanDeploymentArchive bda1, BeanDeploymentArchive bda2) {
-            // Additional bean archive should have the lowest priority when sorting
-            // This suffix is supported by WildFly and Weld Servlet
-            int result = Boolean.compare(bda1.getId().endsWith(ADDITIONAL_BDA_SUFFIX), bda2.getId().endsWith(ADDITIONAL_BDA_SUFFIX));
-            return result == 0 ? bda1.getId().compareTo(bda2.getId()) : result;
-        }
-    };
-
     private JsonObjects() {
     }
 
@@ -149,7 +138,7 @@ final class JsonObjects {
      * @param beanManager
      * @return the root resource representation
      */
-    static String createDeploymentJson(BeanManagerImpl beanManager) {
+    static String createDeploymentJson(BeanManagerImpl beanManager, Probe probe) {
 
         Map<BeanDeploymentArchive, BeanManagerImpl> beanDeploymentArchivesMap = Container.instance(beanManager).beanDeploymentArchives();
         JsonObjectBuilder deploymentBuilder = Json.newObjectBuilder();
@@ -157,7 +146,7 @@ final class JsonObjects {
         // BEAN DEPLOYMENT ARCHIVES
         JsonArrayBuilder bdasBuilder = Json.newArrayBuilder();
         List<BeanDeploymentArchive> bdas = new ArrayList<BeanDeploymentArchive>(beanDeploymentArchivesMap.keySet());
-        Collections.sort(bdas, bdaComparator);
+        Collections.sort(bdas, probe.getBdaComparator());
         for (BeanDeploymentArchive bda : bdas) {
             JsonObjectBuilder bdaBuilder = Json.newObjectBuilder().setIgnoreEmptyBuilders(true);
             String id = bda.getId();
@@ -193,14 +182,7 @@ final class JsonObjects {
                 accesibleBdasBuilder.add(Components.getId(accesible.getId()));
             }
             bdaBuilder.add(ACCESSIBLE_BDAS, accesibleBdasBuilder);
-            List<Bean<?>> enabledBeans = manager.getBeans();
-            int count = 0;
-            for (Bean<?> bean : enabledBeans) {
-                if (!Components.isBuiltinBeanButNotExtension(bean)) {
-                    count++;
-                }
-            }
-            bdaBuilder.add(BEANS, count);
+            bdaBuilder.add(BEANS, Components.getNumberOfEnabledBeans(manager));
             bdasBuilder.add(bdaBuilder);
         }
         deploymentBuilder.add(BDAS, bdasBuilder);

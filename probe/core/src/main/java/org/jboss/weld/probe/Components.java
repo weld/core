@@ -19,6 +19,7 @@ package org.jboss.weld.probe;
 import java.io.UnsupportedEncodingException;
 import java.lang.annotation.Annotation;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -207,6 +208,22 @@ final class Components {
      */
     static boolean isBuiltinBeanButNotExtension(Bean<?> bean) {
         return bean instanceof AbstractBuiltInBean<?> && !(bean instanceof ExtensionBean);
+    }
+
+    /**
+     *
+     * @param manager
+     * @return the number of enabled beans, without built-in, extensions, interceptors, decorators
+     */
+    static Integer getNumberOfEnabledBeans(BeanManagerImpl manager) {
+        List<Bean<?>> enabledBeans = manager.getBeans();
+        int count = 0;
+        for (Bean<?> bean : enabledBeans) {
+            if (!Components.isBuiltinBeanButNotExtension(bean)) {
+                count++;
+            }
+        }
+        return count;
     }
 
     /**

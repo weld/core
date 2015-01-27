@@ -75,7 +75,7 @@ enum Resource {
         @Override
         protected void handleGet(BeanManagerImpl beanManager, Probe probe, String[] pathInfoParts, HttpServletRequest req, HttpServletResponse resp)
                 throws IOException {
-            resp.getWriter().append(JsonObjects.createDeploymentJson(beanManager));
+            resp.getWriter().append(JsonObjects.createDeploymentJson(beanManager, probe));
         }
     }),
     /**
