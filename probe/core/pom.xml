@@ -54,6 +54,8 @@
           <exclude>wro.xml</exclude>
           <exclude>fontawesome-webfont.*</exclude>
           <exclude>FontAwesome.otf</exclude>
+          <exclude>*.png</exclude>
+          <exclude>*.ico</exclude>
         </excludes>
       </resource>
       <resource>
@@ -63,6 +65,8 @@
         <includes>
           <include>fontawesome-webfont.*</include>
           <include>FontAwesome.otf</include>
+          <include>*.png</include>
+          <include>*.ico</include>
         </includes>
       </resource>
       <resource>
@@ -130,6 +134,7 @@
                       <includes>
                         <include>probe.html</include>
                         <include>*.png</include>
+                        <include>*.ico</include>
                       </includes>
                     </resource>
                     <resource>
