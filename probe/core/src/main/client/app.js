@@ -7,7 +7,8 @@ var beanKinds = [ 'MANAGED', 'SESSION', 'PRODUCER_METHOD', 'PRODUCER_FIELD',
     'RESOURCE', 'SYNTHETIC', 'INTERCEPTOR', 'DECORATOR', 'EXTENSION',
     'BUILT_IN' ];
 
-var observerDeclaringBeanKinds = [ 'MANAGED', 'SESSION', 'EXTENSION', 'BUILT_IN' ];
+var observerDeclaringBeanKinds = [ 'MANAGED', 'SESSION', 'EXTENSION',
+    'BUILT_IN' ];
 
 var receptions = [ 'ALWAYS', 'IF_EXISTS' ];
 
@@ -107,8 +108,8 @@ Probe.BeanArchivesRoute = Ember.Route.extend({
   model : function() {
     var data = new Object();
     var hideAddBda = this.get('hideAddBda');
-    if(hideAddBda == null) {
-    	hideAddBda = true;
+    if (hideAddBda == null) {
+      hideAddBda = true;
     }
     if (hideAddBda) {
       data.filteredBdas = new Array();
@@ -540,32 +541,40 @@ Ember.Handlebars.registerBoundHelper('substr', function(text, limit) {
   }
 });
 
-Ember.Handlebars.registerBoundHelper('eachItemOnNewLine', function(items,
-    options) {
-  var ret = '';
-  if (items) {
-    for (var i = 0; i < items.length; i++) {
-      ret += Handlebars.Utils.escapeExpression(items[i]) + '<br/>';
-    }
-  }
-  return new Handlebars.SafeString(ret);
-});
+Ember.Handlebars.registerBoundHelper('eachLiAbbr',
+    function(types, limit, options) {
+      var ret = '<ul class="plain-list no-margin">';
+      if (types) {
+        for (var i = 0; i < types.length; i++) {
+          var text = Handlebars.Utils.escapeExpression(types[i]);
+          if (text.length > limit) {
+            ret += '<li title="';
+            ret += text;
+            ret += '">';
+            ret += text.charAt(0) === '@' ? abbreviateAnnotation(
+                text, true) : abbreviateType(text, true);
+            ret += '</li>';
+          } else {
+            ret += "<li>";
+            ret += text;
+            ret += "</li>";
+          }
+        }
+      }
+      ret += '</ul>';
+      return new Handlebars.SafeString(ret);
+    });
 
-Ember.Handlebars.registerBoundHelper('eachListItem', function(items, limit,
-    options) {
-  var ret = '<ul class="plain-list no-margin">';
-  if (items) {
-    for (var i = 0; i < items.length; i++) {
-      var text = Handlebars.Utils.escapeExpression(items[i]);
-      ret += "<li title='";
-      ret += text;
-      ret += "'>";
-      ret += text.length > limit ? abbreviate(text, limit) : text;
-      ret += '</li>';
-    }
+Ember.Handlebars.registerBoundHelper('abbr', function(text, limit, addTitle) {
+  var escaped = Handlebars.Utils.escapeExpression(text);
+  if (escaped.length > limit) {
+    var ret = addTitle ? '<span title="' + text + '">' : '';
+    ret += escaped.charAt(0) === '@' ? abbreviateAnnotation(escaped,
+        true) : abbreviateType(escaped, true);
+    ret += '</span>';
+    escaped = ret;
   }
-  ret += '</ul>';
-  return new Handlebars.SafeString(ret);
+  return new Handlebars.SafeString(escaped);
 });
 
 // VIEWS
@@ -676,7 +685,7 @@ Probe.DependencyGraph = Ember.View
                 }
                 var desc;
                 if (d.dependencies.length == 1) {
-                  desc = d.dependencies[0].requiredType;
+                  desc = abbreviateType(d.dependencies[0].requiredType, false);
                 } else {
                   desc = '(' + d.dependencies.length + ')';
                 }
@@ -726,7 +735,7 @@ Probe.DependencyGraph = Ember.View
             "svg:g").attr("class", "node").call(node_drag);
 
         node.append("title").text(function(d) {
-          return d.kind;
+          return d.beanClass;
         });
         node.append("circle").attr("r", 12).attr(
             "class",
@@ -745,7 +754,7 @@ Probe.DependencyGraph = Ember.View
           return "#/bean/" + d.id;
         }).append("svg:text").attr("dx", 15).attr("dy", "0.2em").style(
             "fill", "#428bca").text(function(d) {
-          return d.beanClass;
+          return abbreviateType(d.beanClass, false);
         });
 
         force.on("tick", tick);
@@ -1112,13 +1121,6 @@ Probe.BdaGraph = Ember.View
                             return (d === l.source || d === l.target) ? 'url(#end)'
                                 : '';
                           });
-                  // text.style('fill', '#333').text(
-                  // function(d) {
-                  // return (d.idx + 1)
-                  // + ' '
-                  // + abbreviate(d.bdaId,
-                  // 40);
-                  // });
                 }).on('mouseout', function() {
               path.style('stroke', function(l) {
                 return '#ccc';
@@ -1129,9 +1131,6 @@ Probe.BdaGraph = Ember.View
               path.style('stroke-opacity', function(l) {
                 return 1;
               });
-              // text.style('fill', 'white').text(function(d) {
-              // return d.idx + 1;
-              // });
             });
 
         force.on("tick", tick);
@@ -1454,4 +1453,72 @@ function abbreviate(text, limit) {
 function isAdditionalBda(bdaId) {
   return bdaId.indexOf(additionalBdaSuffix, bdaId.length
       - additionalBdaSuffix.length) !== -1;
+}
+
+/**
+ * This only works if the type represents either a raw type or a parameterized
+ * type with actual type params represented as simple names.
+ *
+ * @param type
+ * @param addStyle
+ * @returns {String}
+ */
+function abbreviateType(type, htmlOutput) {
+  var parts = type.split('.');
+  var result = '';
+  var lastIdx = parts.length - 1;
+  for (var i = 0; i < parts.length; i++) {
+    if (i === lastIdx) {
+      result += parts[i];
+    } else {
+      if (i === 0 && htmlOutput) {
+        result += '<span class="abbreviated">';
+      }
+      result += parts[i].charAt(0);
+      result += '.';
+      if (i === (lastIdx - 1) && htmlOutput) {
+        result += '</span>';
+      }
+    }
+  }
+  if(htmlOutput) {
+    result += ' <i class="fa fa-compress abbreviated"></i>';
+  }
+  return result;
+}
+
+/**
+ * This only returns the abbreviated annotation type, params are omitted.
+ *
+ * @param annotation
+ * @param htmlOutput
+ * @returns {String}
+ */
+function abbreviateAnnotation(annotation, htmlOutput) {
+  var result = '@';
+  if (annotation.indexOf('(') !== -1) {
+    annotation = annotation.substring(1, annotation.indexOf('('));
+  } else {
+    annotation = annotation.substr(1);
+  }
+  var parts = annotation.split('.');
+  var lastIdx = parts.length - 1;
+  for (var i = 0; i < parts.length; i++) {
+    if (i === lastIdx) {
+      result += parts[i];
+    } else {
+      if (i === 0 && htmlOutput) {
+        result += '<span class="abbreviated">';
+      }
+      result += parts[i].charAt(0);
+      result += '.';
+      if (i === (lastIdx - 1) && htmlOutput) {
+        result += '</span>';
+      }
+    }
+  }
+  if(htmlOutput) {
+    result += ' <i class="fa fa-compress abbreviated"></i>';
+  }
+  return result;
 }

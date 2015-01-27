@@ -189,8 +189,8 @@ div.content {
 }
 
 .leg-circle {
-    border-radius: 50%;
-    display: inline-block;
+  border-radius: 50%;
+  display: inline-block;
 }
 
 .leg-circle-bda {
@@ -207,4 +207,8 @@ div.content {
 
 .leg-list li {
   margin-bottom: 5px;
+}
+
+.abbreviated {
+  color: gray;
 }
