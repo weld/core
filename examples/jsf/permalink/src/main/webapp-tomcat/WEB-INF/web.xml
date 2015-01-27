@@ -28,7 +28,12 @@
       http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 
    <display-name>Weld Permalink Example (Servlet Environment)</display-name>
-   
+
+   <context-param>
+      <param-name>org.jboss.weld.development</param-name>
+      <param-value>true</param-value>
+   </context-param>
+
    <context-param>
       <param-name>facelets.DEVELOPMENT</param-name>
       <param-value>true</param-value>
