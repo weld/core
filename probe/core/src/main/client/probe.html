@@ -216,13 +216,13 @@ ${head}
                 <th>
                     Bean class <i class="fa fa-lg fa-info-circle" title="Click to show the bean detail"></i>
                     <form {{action "filter" on="submit"}}>
-                        {{input value=beanClass class="form-control" placeholder="Contains"}}
+                        {{input value=beanClass class="form-control" placeholder="FQN Contains"}}
                     </form>
                 </th>
                 <th>
                     Bean types <i class="fa fa-lg fa-info-circle" title="Without java.lang.Object"></i>
                     <form {{action "filter" on="submit"}}>
-                        {{input value=beanType class="form-control" placeholder="Any contains"}}
+                        {{input value=beanType class="form-control" placeholder="Any FQN contains"}}
                     </form>
                 </th>
                 <th>
@@ -236,15 +236,15 @@ ${head}
             <tr>
                 <td>{{increment _view.contentIndex}}</td>
                 <td><span class="{{unbound kind}} boxed">{{unbound kind}}</span></td>
-                <td>{{unbound scope}}</td>
+                <td>{{abbr scope 30 true}}</td>
                 <td>
-                    {{#link-to 'beanDetail' id title=beanClass}}{{substr beanClass 60}}{{/link-to}}
+                    {{#link-to 'beanDetail' id title=beanClass}}{{abbr beanClass 50}}{{/link-to}}
                 </td>
                 <td>
-                    {{eachListItem types 60}}
+                    {{eachLiAbbr types 50}}
                 </td>
                 <td>
-                    {{eachListItem qualifiers 60}}
+                    {{eachLiAbbr qualifiers 40}}
                 </td>
             </tr>
             {{/each}}
@@ -507,16 +507,16 @@ ${head}
                 <td>{{#if declaringBean}}<span class="{{unbound declaringBean.kind}} boxed">{{unbound declaringBean.kind}}</span>{{else}}N/A{{/if}}</td>
                 <td>
                     {{#if declaringBean}}
-                        {{#link-to 'beanDetail' declaringBean.id title=declaringBean.beanClass}}{{substr declaringBean.beanClass 60}}{{/link-to}}
+                        {{#link-to 'beanDetail' declaringBean.id title=declaringBean.beanClass}}{{abbr declaringBean.beanClass 50}}{{/link-to}}
                     {{else}}
                         {{unbound beanClass}}
                     {{/if}}
                 </td>
                 <td>
-                    {{#link-to 'observerDetail' id title=observedType}}{{substr observedType 60}}{{/link-to}}
+                    {{#link-to 'observerDetail' id title=observedType}}{{abbr observedType 50}}{{/link-to}}
                 </td>
                 <td>
-                    {{eachListItem qualifiers 60}}
+                    {{eachLiAbbr qualifiers 60}}
                 </td>
                 <td>
                     <span class="{{unbound reception}} boxed">{{unbound reception}}</span>

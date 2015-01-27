@@ -654,7 +654,7 @@ final class JsonObjects {
     private static JsonObjectBuilder createDependency(Bean<?> bean, Dependency dependency, Probe probe) {
         JsonObjectBuilder builder = createSimpleBeanJson(bean, probe);
         if (bean != null && dependency != null) {
-            builder.add(REQUIRED_TYPE, dependency.getInjectionPoint().getType().toString()).add(QUALIFIERS,
+            builder.add(REQUIRED_TYPE, Formats.formatType(dependency.getInjectionPoint().getType(), false)).add(QUALIFIERS,
                     createQualifiers(dependency.getInjectionPoint().getQualifiers(), false));
         }
         return builder;
