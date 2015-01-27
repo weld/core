@@ -3,18 +3,23 @@
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
    version="2.5">
-   
+
    <display-name>Weld Numberguess example</display-name>
-   
+
+   <context-param>
+      <param-name>org.jboss.weld.development</param-name>
+      <param-value>true</param-value>
+   </context-param>
+
    <context-param>
       <param-name>javax.faces.DEFAULT_SUFFIX</param-name>
       <param-value>.xhtml</param-value>
    </context-param>
-   
+
    <listener>
       <listener-class>org.jboss.weld.environment.servlet.Listener</listener-class>
    </listener>
-      
+
    <listener>
       <listener-class>com.sun.faces.config.ConfigureListener</listener-class>
    </listener> 

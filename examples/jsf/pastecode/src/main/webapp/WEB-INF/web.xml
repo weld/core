@@ -6,6 +6,10 @@
             http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" version="3.1">
   <display-name>Weld PasteCode example</display-name>
   <context-param>
+      <param-name>org.jboss.weld.development</param-name>
+      <param-value>true</param-value>
+  </context-param>
+  <context-param>
     <param-name>javax.faces.DEFAULT_SUFFIX</param-name>
     <param-value>.xhtml</param-value>
   </context-param>
