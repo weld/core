@@ -1,0 +1,28 @@
+[[devmode]]
+== Development Mode
+
+This mode enables some built-in tools which facilitate the development of CDI applications.  
+
+=== Enablement
+
+To enable the Development Mode set the Servlet initialization parameter `org.jboss.weld.development` to `true`.
+
+[source.XML, xml]
+-----------------------------------------------------------------------------------------------------------
+<web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee/"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+
+    <context-param>
+        <param-name>org.jboss.weld.development</param-name>
+        <param-value>true</param-value>
+    </context-param>
+
+</web-app>
+-----------------------------------------------------------------------------------------------------------
+
+=== Tools
+
+==== Probe
+
+This tool allows to inspect the application components in the runtime. The Probe consists of the REST API and the default (single-page application) client. Therefore it's only available in a web application. Right now, the integration is provided for WildFly (unofficial patch), Tomcat and Jetty (Weld Servlet). The default client is available at `http://{YOUR_HOST}/{YOUR_APPLICATION}/weld-probe`, i.e. `http://localhost:8080/weld-numberguess/weld-probe`.
