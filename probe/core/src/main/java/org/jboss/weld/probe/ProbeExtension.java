@@ -25,6 +25,7 @@ import java.util.regex.Pattern;
 
 import javax.decorator.Decorator;
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.AnnotatedMember;
 import javax.enterprise.inject.spi.BeanAttributes;
@@ -34,6 +35,7 @@ import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessBeanAttributes;
 import javax.interceptor.Interceptor;
 
+import org.jboss.weld.bean.builtin.BeanManagerProxy;
 import org.jboss.weld.config.ConfigurationKey;
 import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.manager.api.WeldManager;
@@ -53,6 +55,7 @@ import org.jboss.weld.util.collections.ImmutableSet;
 public class ProbeExtension implements Extension {
 
     private volatile Pattern invocationMonitorExcludePattern;
+    private volatile ProbeObserver probeObserver;
 
     public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery event, BeanManager beanManager) {
         ProbeLogger.LOG.developmentModeEnabled();
@@ -108,4 +111,12 @@ public class ProbeExtension implements Extension {
         return true;
     }
 
+    public void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager manager) {
+        probeObserver = new ProbeObserver(BeanManagerProxy.unwrap(manager));
+        event.addObserverMethod(probeObserver);
+    }
+
+    public ProbeObserver getProbeObserver() {
+        return probeObserver;
+    }
 }

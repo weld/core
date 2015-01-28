@@ -130,6 +130,10 @@ final class Strings {
     static final String IS_PREFIX = "is";
     static final String SET_PREFIX = "set";
 
+    static final String CONTAINER = "CONTAINER";
+    static final String CONTAINER_EVENT = "containerEvent";
+    static final String EVENT_INFO = "eventInfo";
+
     private Strings() {
     }
 

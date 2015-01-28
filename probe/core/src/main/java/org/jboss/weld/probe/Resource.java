@@ -59,6 +59,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.probe.Queries.BeanFilters;
+import org.jboss.weld.probe.Queries.EventsFilters;
 import org.jboss.weld.probe.Queries.Filters;
 import org.jboss.weld.probe.Queries.InvocationsFilters;
 import org.jboss.weld.probe.Queries.ObserverFilters;
@@ -194,6 +195,24 @@ enum Resource {
             } else {
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND);
             }
+        }
+    }),
+    /**
+     * The event bus
+     */
+    EVENTS("/events", new Handler() {
+        @Override
+        protected void handleGet(BeanManagerImpl beanManager, Probe probe, String[] pathInfoParts, HttpServletRequest req, HttpServletResponse resp)
+                throws IOException {
+            ProbeObserver observer = beanManager.getExtension(ProbeExtension.class).getProbeObserver();
+            resp.getWriter().append(JsonObjects.createEventsJson(Queries.find(observer.getEvents(), getPage(req), initFilters(req, new EventsFilters(probe))), probe));
+        }
+
+        @Override
+        protected void handleDelete(BeanManagerImpl beanManager, Probe probe, String[] pathInfoParts, HttpServletRequest req, HttpServletResponse resp)
+                throws IOException {
+            ProbeObserver observer = beanManager.getExtension(ProbeExtension.class).getProbeObserver();
+            resp.getWriter().append(Json.newObjectBuilder().add("removedEvents", observer.clear()).build());
         }
     }),
     /**

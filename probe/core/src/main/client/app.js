@@ -12,6 +12,8 @@ var beanKinds = [ 'MANAGED', 'SESSION', 'PRODUCER_METHOD', 'PRODUCER_FIELD',
 var observerDeclaringBeanKinds = [ 'MANAGED', 'SESSION', 'EXTENSION',
         'BUILT_IN' ];
 
+var eventKinds = [ 'APPLICATION', 'CONTAINER' ];
+
 var receptions = [ 'ALWAYS', 'IF_EXISTS' ];
 
 var txPhases = [ 'IN_PROGRESS', 'BEFORE_COMPLETION', 'AFTER_COMPLETION',
@@ -68,6 +70,9 @@ Probe.Router.map(function() {
     });
     this.route('invocationDetail', {
         path : '/invocation/:id'
+    });
+    this.route('events', {
+        path : '/events'
     });
 });
 
@@ -417,6 +422,52 @@ Probe.InvocationDetailRoute = Ember.Route.extend(Probe.ResetScroll, {
     }
 });
 
+Probe.EventsRoute = Ember.Route.extend(Probe.ResetScroll, {
+    queryParams : {
+        page : {
+            refreshModel : true
+        },
+        kind : {
+            refreshModel : true
+        }
+    },
+    setupController : function(controller, model) {
+        this._super(controller, model);
+        controller.set("pages", buildPages(model.page, model.lastPage));
+    },
+    model : function(params) {
+        var query = '', filters = '', page = '';
+        filters = appendToFilters(filters, 'eventInfo', params.eventInfo);
+        filters = appendToFilters(filters, 'type', params.type);
+        filters = appendToFilters(filters, 'qualifiers', params.qualifiers);
+        if (params.kind) {
+            filters = appendToFilters(filters, 'kind', params.kind);
+        }
+        query = appendToQuery(query, 'filters', filters);
+        if (params.page) {
+            query = appendToQuery(query, 'page', params.page);
+        }
+        return $.getJSON(restUrlBase + 'events' + query).done(function(data) {
+            data.transformed = getRootNode(data, null);
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            alert('Unable to get JSON data: ' + textStatus);
+        });
+    },
+    actions : {
+        refreshData : function() {
+            this.refresh();
+        },
+        clearEvents : function() {
+            var route = this;
+            $.ajax(restUrlBase + 'events', {
+                'type' : 'DELETE'
+            }).then(function(data) {
+                route.refresh();
+            });
+        },
+    }
+});
+
 // CONTROLLERS
 
 Probe.BeanArchivesController = Ember.ObjectController.extend({
@@ -531,6 +582,32 @@ Probe.InvocationListController = Ember.ObjectController.extend({
 });
 
 Probe.InvocationDetailController = Ember.ObjectController.extend({});
+
+Probe.EventsController = Ember.ObjectController.extend({
+    init : function() {
+        this._super();
+        this.set('initialized', true);
+        this.set('eventKinds', eventKinds);
+    },
+    eventInfo : '',
+    type : '',
+    qualifiers : '',
+    page : 1,
+    kind : 'APPLICATION',
+    queryParams : [ 'eventInfo', 'type', 'qualifiers', 'page', 'kind' ],
+    actions : {
+        clearFilters : function() {
+            this.set('eventInfo', '');
+            this.set('type', '');
+            this.set('qualifiers', '');
+            this.set('kind', 'APPLICATION');
+            this.send('refreshData');
+        },
+        filter : function() {
+            this.send('refreshData');
+        }
+    },
+});
 
 // HELPERS
 

@@ -41,6 +41,7 @@ import javax.enterprise.inject.spi.ObserverMethod;
 import org.jboss.weld.event.ObserverMethodImpl;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.probe.Components.BeanKind;
+import org.jboss.weld.probe.ProbeObserver.EventInfo;
 
 /**
  * A few utility methods and classes to support simple querying (filtering and pagination).
@@ -389,6 +390,39 @@ final class Queries {
             return String.format("InvocationsFilters [beanClass=%s, methodName=%s]", beanClass, methodName);
         }
 
+    }
+
+    static class EventsFilters extends Filters<EventInfo> {
+
+        private boolean container;
+        private String eventInfo;
+        private String type;
+        private String qualifiers;
+
+        EventsFilters(Probe probe) {
+            super(probe);
+        }
+
+        @Override
+        boolean test(EventInfo event) {
+            return testContainsIgnoreCase(eventInfo, event.eventString) &&
+                    testContainsIgnoreCase(type, event.type) &&
+                    testContainsIgnoreCase(qualifiers, event.qualifiers) &&
+                    container == event.containerEvent;
+        }
+
+        @Override
+        void processFilter(String name, String value) {
+            if (Strings.EVENT_INFO.equals(name)) {
+                this.eventInfo = value;
+            } else if (Strings.TYPE.equals(name)) {
+                this.type = value;
+            } else if (Strings.QUALIFIERS.equals(name)) {
+                this.qualifiers = value;
+            } else if (Strings.KIND.equals(name)) {
+                container = "CONTAINER".equalsIgnoreCase(value);
+            }
+        }
     }
 
 }
