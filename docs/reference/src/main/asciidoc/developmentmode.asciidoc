@@ -1,7 +1,7 @@
 [[devmode]]
 == Development Mode
 
-This mode enables some built-in tools which facilitate the development of CDI applications.  
+Weld comes with a special mode for application development. When the Development mode is enabled, certain built-in tools, which facilitate the development of CDI applications, are available.
 
 === Enablement
 
@@ -26,3 +26,5 @@ xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/
 ==== Probe
 
 This tool allows to inspect the application components in the runtime. The Probe consists of the REST API and the default (single-page application) client. Therefore it's only available in a web application. Right now, the integration is provided for WildFly (unofficial patch), Tomcat and Jetty (Weld Servlet). The default client is available at `http://{YOUR_HOST}/{YOUR_APPLICATION}/weld-probe`, i.e. `http://localhost:8080/weld-numberguess/weld-probe`.
+
+NOTE: The development mode should be used in production as it may have negative impact on the performance of the application. Make sure to disable the development mode before deploying to production.
