@@ -97,6 +97,7 @@ import org.jboss.weld.Container;
 import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
+import org.jboss.weld.bean.proxy.ProxyObject;
 import org.jboss.weld.bootstrap.WeldBootstrap;
 import org.jboss.weld.bootstrap.enablement.ModuleEnablement;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
@@ -560,7 +561,11 @@ final class JsonObjects {
             JsonObjectBuilder builder = createSimpleBeanJson(bean, probe);
 
             JsonArrayBuilder propertiesBuilder = Json.newArrayBuilder();
-            BeanInfo bi = java.beans.Introspector.getBeanInfo(contextualInstance.getClass());
+            Class<?> definingClass = contextualInstance.getClass();
+            if (ProxyObject.class.isAssignableFrom(definingClass)) {
+                definingClass = definingClass.getSuperclass();
+            }
+            BeanInfo bi = java.beans.Introspector.getBeanInfo(definingClass);
             PropertyDescriptor[] properties = bi.getPropertyDescriptors();
 
             for (PropertyDescriptor propertyDescriptor : properties) {
