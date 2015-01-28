@@ -38,6 +38,7 @@ import static org.jboss.weld.probe.Strings.DEPENDENTS;
 import static org.jboss.weld.probe.Strings.DISPOSAL_METHOD;
 import static org.jboss.weld.probe.Strings.EJB_NAME;
 import static org.jboss.weld.probe.Strings.ENABLEMENT;
+import static org.jboss.weld.probe.Strings.EVENT_INFO;
 import static org.jboss.weld.probe.Strings.ID;
 import static org.jboss.weld.probe.Strings.INSTANCES;
 import static org.jboss.weld.probe.Strings.INTERCEPTED_BEAN;
@@ -113,6 +114,7 @@ import org.jboss.weld.probe.Components.BeanKind;
 import org.jboss.weld.probe.Components.Dependency;
 import org.jboss.weld.probe.Json.JsonArrayBuilder;
 import org.jboss.weld.probe.Json.JsonObjectBuilder;
+import org.jboss.weld.probe.ProbeObserver.EventInfo;
 import org.jboss.weld.probe.Queries.Page;
 import org.jboss.weld.util.reflection.Formats;
 
@@ -711,6 +713,22 @@ final class JsonObjects {
         }
         builder.append(field.getJavaMember().getName());
         return builder.toString();
+    }
+
+    static JsonObjectBuilder createEventJson(EventInfo event) {
+        JsonObjectBuilder builder = Json.newObjectBuilder();
+        builder.add(TYPE, Formats.formatType(event.type, false));
+        builder.add(QUALIFIERS, createQualifiers(event.qualifiers, true));
+        builder.add(EVENT_INFO, event.eventString);
+        return builder;
+    }
+
+    static String createEventsJson(Page<EventInfo> page, Probe probe) {
+        JsonArrayBuilder eventsBuilder = Json.newArrayBuilder();
+        for (EventInfo event : page.getData()) {
+            eventsBuilder.add(createEventJson(event));
+        }
+        return createPageJson(page, eventsBuilder);
     }
 
 }

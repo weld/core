@@ -30,6 +30,7 @@ ${head}
                         <li>{{#link-to 'observerList'}}Observer Methods{{/link-to}}</li>
                         <li>{{#link-to 'contexts'}}Contexts{{/link-to}}</li>
                         <li>{{#link-to 'invocationList'}}Invocation Trees{{/link-to}}</li>
+                        <li>{{#link-to 'events'}}Events{{/link-to}}</li>
                     </ul>
                 </div>
             </div>
@@ -777,6 +778,67 @@ ${head}
 
     </script>
 
+    <script
+      type="text/x-handlebars"
+      data-template-name="events">
+        <h1>Fired events</h1>
+
+        <div class="btn-line">
+            &nbsp;<button {{action 'refreshData'}} class="btn btn-default">Refresh</button>
+            <button {{action 'clearFilters'}} class="btn btn-default">Clear filters</button>
+            <button {{action 'clearEvents'}} class="btn btn-default">Clear data</button>
+            <div class="total pull-left">Total Found: {{total}}</div>
+            <ul class="pagination no-margin pull-left">
+            {{#each pages}}
+                <li class="{{unbound active}}">{{#link-to 'events' (query-params page=index)}}{{index}}{{/link-to}}</li>
+            {{/each}}
+            </ul>
+        </div>
+
+        <table class="table table-bordered table-striped">
+            <tr>
+                <th/>
+                <th>Kind {{view 'select' content=eventKinds value=kind class="form-control"}}</th>
+                <th>
+                    Event <i class="fa fa-lg fa-info-circle" title="eventPayload.toString()"></i>
+                    <form {{action "filter" on="submit"}}>
+                        {{input value=eventInfo class="form-control" placeholder="Contains"}}
+                    </form>
+                </th>
+                <th>
+                    Event type
+                    <form {{action "filter" on="submit"}}>
+                        {{input value=type class="form-control" placeholder="Contains"}}
+                    </form>
+                </th>
+                <th>
+                    Event qualifiers
+                    <form {{action "filter" on="submit"}}>
+                        {{input value=qualifiers class="form-control" placeholder="Any contains"}}
+                    </form>
+                </th>
+            </tr>
+            {{#each data}}
+            <tr>
+                <td>{{increment _view.contentIndex}}</td>
+                <td>
+                <td>{{eventInfo}}</td>
+                <td>{{abbr type 20 true}}</td>
+                <td>{{eachLiAbbr qualifiers 20}}</td>
+            </tr>
+            {{/each}}
+        </table>
+
+        <div class="btn-line">
+            <div class="total pull-left">Total Found: {{total}}</div>
+            <ul class="pagination no-margin">
+            {{#each pages}}
+                <li class="{{unbound active}}">{{#link-to 'events' (query-params page=index)}}{{index}}{{/link-to}}</li>
+            {{/each}}
+            </ul>
+        </div>
+
+   </script>
    ${scripts}
 
 </body>
