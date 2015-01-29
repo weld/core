@@ -58,7 +58,7 @@ import org.jboss.weld.serialization.spi.BeanIdentifier;
 final class Components {
 
     @SuppressWarnings("rawtypes")
-    static final Class[] INSPECTABLE_SCOPES = { ApplicationScoped.class, SessionScoped.class, ConversationScoped.class };
+    static final Class[] INSPECTABLE_SCOPES = { ApplicationScoped.class, SessionScoped.class };
 
     private Components() {
     }
