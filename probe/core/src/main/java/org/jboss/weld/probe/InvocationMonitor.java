@@ -43,6 +43,10 @@ public class InvocationMonitor implements Serializable {
 
     private static final long serialVersionUID = -5245789370968148511L;
 
+    private static final ThreadLocal<Invocation.Builder> invocations = new ThreadLocal<Invocation.Builder>();
+
+    private static final AtomicInteger invocationIdGenerator = new AtomicInteger(0);
+
     @Intercepted
     @Inject
     private Bean<?> interceptedBean;
@@ -50,16 +54,18 @@ public class InvocationMonitor implements Serializable {
     @Inject
     private BeanManagerImpl beanManager;
 
-    private static final ThreadLocal<Invocation.Builder> invocations = new ThreadLocal<Invocation.Builder>();
-
-    private final AtomicInteger invocationIdGenerator;
-
-    public InvocationMonitor() {
-        invocationIdGenerator = new AtomicInteger(0);
-    }
+    private volatile Probe probe = null;
 
     @AroundInvoke
     public Object monitor(InvocationContext ctx) throws Exception {
+
+        if(probe == null) {
+            synchronized (this) {
+                if(probe == null) {
+                    probe = beanManager.getServices().get(Probe.class);
+                }
+            }
+        }
 
         Invocation.Builder builder = invocations.get();
         boolean entryPoint = false;
@@ -87,8 +93,7 @@ public class InvocationMonitor implements Serializable {
 
             builder.setDuration(System.nanoTime() - start);
             if (entryPoint) {
-                // TODO cache Probe reference
-                beanManager.getServices().get(Probe.class).addInvocation(builder.build());
+                probe.addInvocation(builder.build());
             } else {
                 invocations.set(builder.getParent());
             }
