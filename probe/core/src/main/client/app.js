@@ -254,6 +254,9 @@ Probe.ObserverListRoute = Ember.Route.extend(Probe.ResetScroll,
             kind : {
                 refreshModel : true
             },
+            bda : {
+                refreshModel : true
+            }
         },
         setupController : function(controller, model) {
             this._super(controller, model);
@@ -287,6 +290,13 @@ Probe.ObserverListRoute = Ember.Route.extend(Probe.ResetScroll,
                 txPhases.forEach(function(txPhase) {
                     if (txPhase == params.txPhase) {
                         filters = appendToFilters(filters, 'txPhase', txPhase);
+                    }
+                });
+            }
+            if (params.bda) {
+                cache.filterBdas.forEach(function(bda) {
+                    if (bda.id == params.bda) {
+                        filters = appendToFilters(filters, 'bda', bda.id);
                     }
                 });
             }
@@ -470,6 +480,7 @@ Probe.ObserverListController = Ember.ObjectController.extend({
         this.set('txPhases', txPhases);
         this.set('beanKinds', observerDeclaringBeanKinds);
     },
+    bda : markerFilterAddBdas,
     observedType : '',
     beanClass : '',
     reception : null,
@@ -477,11 +488,12 @@ Probe.ObserverListController = Ember.ObjectController.extend({
     qualifier : '',
     kind : null,
     page : 1,
-    queryParams : [ 'observedType', 'beanClass', 'reception', 'txPhase',
+    queryParams : [ 'bda', 'observedType', 'beanClass', 'reception', 'txPhase',
             'qualifier', 'page', 'kind' ],
     actions : {
         clearFilters : function() {
             this.set('page', 1);
+            this.set('bda', null);
             this.set('observedType', '');
             this.set('beanClass', '');
             this.set('reception', null);

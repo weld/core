@@ -145,6 +145,8 @@ final class Queries {
 
         private static final String SEPARATOR = ":";
 
+        protected static final String FILTER_ADDITIONAL_BDAS_MARKER = "probe-filterAdditionalBdas";
+
         protected final Probe probe;
 
         public Filters(Probe probe) {
@@ -208,11 +210,38 @@ final class Queries {
             return false;
         }
 
+        /**
+         *
+         * @param bda
+         * @param bean
+         * @return true if the bda is null or the id of the BDA for the given bean equals to the value
+         */
+        boolean testBda(String bda, Bean<?> bean) {
+            if (bda == null) {
+                return true;
+            }
+            if (bean == null) {
+                return false;
+            }
+            BeanManagerImpl beanManagerImpl = probe.getBeanManager(bean);
+            if (beanManagerImpl == null) {
+                return false;
+            }
+            if (FILTER_ADDITIONAL_BDAS_MARKER.equals(bda)) {
+                if (beanManagerImpl.getId().endsWith(ADDITIONAL_BDA_SUFFIX)) {
+                    return false;
+                }
+            } else {
+                if (!Components.getId(beanManagerImpl.getId()).equals(bda)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
     }
 
     static class BeanFilters extends Filters<Bean<?>> {
-
-        private static final String FILTER_ADDITIONAL_BDAS_MARKER = "probe-filterAdditionalBdas";
 
         private BeanKind kind;
 
@@ -232,22 +261,7 @@ final class Queries {
 
         @Override
         public boolean test(Bean<?> bean) {
-            if (bda != null) {
-                BeanManagerImpl beanManagerImpl = probe.getBeanManager(bean);
-                if (beanManagerImpl == null) {
-                    return false;
-                }
-                if (FILTER_ADDITIONAL_BDAS_MARKER.equals(bda)) {
-                    if (beanManagerImpl.getId().endsWith(ADDITIONAL_BDA_SUFFIX)) {
-                        return false;
-                    }
-                } else {
-                    if (!Components.getId(beanManagerImpl.getId()).equals(bda)) {
-                        return false;
-                    }
-                }
-            }
-            return testEquals(kind, BeanKind.from(bean)) && testContainsIgnoreCase(beanClass, bean.getBeanClass())
+            return testBda(bda, bean) && testEquals(kind, BeanKind.from(bean)) && testContainsIgnoreCase(beanClass, bean.getBeanClass())
                     && testContainsIgnoreCase(scope, bean.getScope()) && testAnyContains(beanType, bean.getTypes())
                     && testAnyContains(qualifier, bean.getQualifiers());
         }
@@ -291,25 +305,23 @@ final class Queries {
 
         private BeanKind declaringBeanKind;
 
+        private String bda;
+
         ObserverFilters(Probe probe) {
             super(probe);
         }
 
         @Override
         boolean test(ObserverMethod<?> observer) {
-            if (declaringBeanKind != null) {
-                if (observer instanceof ObserverMethodImpl) {
-                    ObserverMethodImpl<?, ?> observerMethodImpl = (ObserverMethodImpl<?, ?>) observer;
-                    if (!declaringBeanKind.equals(BeanKind.from(observerMethodImpl.getDeclaringBean()))) {
-                        return false;
-                    }
-                } else {
-                    return false;
-                }
+            final Bean<?> declaringBean;
+            if (observer instanceof ObserverMethodImpl) {
+                declaringBean = ((ObserverMethodImpl<?, ?>) observer).getDeclaringBean();
+            } else {
+                declaringBean = null;
             }
-            return testEquals(reception, observer.getReception()) && testEquals(txPhase, observer.getTransactionPhase())
-                    && testContainsIgnoreCase(beanClass, observer.getBeanClass()) && testContainsIgnoreCase(observedType, observer.getObservedType())
-                    && testAnyContains(qualifier, observer.getObservedQualifiers());
+            return testBda(bda, declaringBean) && testEquals(declaringBeanKind, BeanKind.from(declaringBean)) && testEquals(reception, observer.getReception())
+                    && testEquals(txPhase, observer.getTransactionPhase()) && testContainsIgnoreCase(beanClass, observer.getBeanClass())
+                    && testContainsIgnoreCase(observedType, observer.getObservedType()) && testAnyContains(qualifier, observer.getObservedQualifiers());
         }
 
         @Override
@@ -334,13 +346,15 @@ final class Queries {
                         txPhase = phase;
                     }
                 }
+            } else if (BDA.equals(name)) {
+                bda = value;
             }
         }
 
         @Override
         public String toString() {
-            return String.format("ObserverFilters [beanClass=%s, observedType=%s, qualifier=%s, reception=%s, txPhase=%s, declaringBeanKind=%s]", beanClass,
-                    observedType, qualifier, reception, txPhase, declaringBeanKind);
+            return String.format("ObserverFilters [beanClass=%s, observedType=%s, qualifier=%s, reception=%s, txPhase=%s, declaringBeanKind=%s, bda=%s]",
+                    beanClass, observedType, qualifier, reception, txPhase, declaringBeanKind, bda);
         }
 
     }

@@ -464,6 +464,18 @@ ${head}
 
         <h1>Observer Methods</h1>
 
+        <p>
+            <label>Bean Archive:</label>
+            {{view "select"
+                value=bda
+                content=cache.filterBdas
+                optionValuePath="content.id"
+                optionLabelPath="content.bdaId"
+                prompt="-- ANY --"
+                class="form-control form-control-auto-width"
+            }}
+        </p>
+
         <div class="btn-line">
             &nbsp;<button {{action 'clearFilters'}} class="btn btn-default">Clear filters</button>
             <div class="total pull-left">Total Found: {{total}}</div>
