@@ -20,6 +20,7 @@ import org.jboss.weld.environment.se.beans.InstanceManager;
 
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.Vetoed;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 
@@ -35,6 +36,7 @@ import javax.inject.Inject;
  * @author Peter Royle
  * @see Weld
  */
+@Vetoed
 public class WeldContainer {
 
     private final InstanceManager instanceManager;

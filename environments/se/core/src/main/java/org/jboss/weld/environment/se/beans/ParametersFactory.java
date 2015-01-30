@@ -16,15 +16,17 @@
  */
 package org.jboss.weld.environment.se.beans;
 
-import org.jboss.weld.environment.se.StartMain;
-import org.jboss.weld.environment.se.bindings.Parameters;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.Vetoed;
+
+import org.jboss.weld.environment.se.StartMain;
+import org.jboss.weld.environment.se.bindings.Parameters;
 
 /**
  * The simple bean that will hold the command line arguments and make them
@@ -33,6 +35,7 @@ import java.util.List;
  *
  * @author Peter Royle
  */
+@Vetoed
 @ApplicationScoped
 public class ParametersFactory {
     private String[] args;

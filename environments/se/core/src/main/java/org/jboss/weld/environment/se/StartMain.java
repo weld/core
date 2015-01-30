@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.environment.se;
 
+import javax.enterprise.inject.Vetoed;
+
 
 /**
  * This is the main class that can be called from the command line for
@@ -29,6 +31,7 @@ package org.jboss.weld.environment.se;
  * @author Pete Muir
  * @author Ales Justin
  */
+@Vetoed
 public class StartMain {
     public static String[] PARAMETERS;
 

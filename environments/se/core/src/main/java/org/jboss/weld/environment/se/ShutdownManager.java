@@ -16,12 +16,14 @@
  */
 package org.jboss.weld.environment.se;
 
+import javax.enterprise.inject.Vetoed;
 import javax.enterprise.inject.spi.BeanManager;
 
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.environment.se.logging.WeldSELogger;
 import org.jboss.weld.literal.DestroyedLiteral;
 
+@Vetoed
 public class ShutdownManager {
 
     private boolean hasShutdownBeenCalled = false;

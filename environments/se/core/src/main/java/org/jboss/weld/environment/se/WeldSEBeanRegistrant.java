@@ -16,8 +16,14 @@
  */
 package org.jboss.weld.environment.se;
 
+import java.lang.annotation.Annotation;
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Vetoed;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
+import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
@@ -28,12 +34,14 @@ import org.jboss.weld.environment.se.beans.InstanceManager;
 import org.jboss.weld.environment.se.beans.ParametersFactory;
 import org.jboss.weld.environment.se.contexts.ThreadContext;
 import org.jboss.weld.environment.se.threading.RunnableDecorator;
+import org.jboss.weld.util.annotated.ForwardingAnnotatedType;
 
 /**
  * Explicitly registers all of the 'built-in' Java SE related beans and contexts.
  *
  * @author Peter Royle
  */
+@Vetoed
 public class WeldSEBeanRegistrant implements Extension {
 
     private ThreadContext threadContext;
@@ -43,10 +51,15 @@ public class WeldSEBeanRegistrant implements Extension {
             return;
         }
 
-        event.addAnnotatedType(manager.createAnnotatedType(ParametersFactory.class));
-        event.addAnnotatedType(manager.createAnnotatedType(InstanceManager.class));
-        event.addAnnotatedType(manager.createAnnotatedType(RunnableDecorator.class));
-        event.addAnnotatedType(manager.createAnnotatedType(WeldContainer.class));
+        VetoedSuppressedAnnotatedType<ParametersFactory> parametersFactory = new VetoedSuppressedAnnotatedType<ParametersFactory>(manager.createAnnotatedType(ParametersFactory.class));
+        VetoedSuppressedAnnotatedType<InstanceManager> instanceManager = new VetoedSuppressedAnnotatedType<InstanceManager>(manager.createAnnotatedType(InstanceManager.class));
+        VetoedSuppressedAnnotatedType<RunnableDecorator> runnableDecorator = new VetoedSuppressedAnnotatedType<RunnableDecorator>(manager.createAnnotatedType(RunnableDecorator.class));
+        VetoedSuppressedAnnotatedType<WeldContainer> weldContainer = new VetoedSuppressedAnnotatedType<WeldContainer>(manager.createAnnotatedType(WeldContainer.class));
+
+        event.addAnnotatedType(parametersFactory);
+        event.addAnnotatedType(instanceManager);
+        event.addAnnotatedType(runnableDecorator);
+        event.addAnnotatedType(weldContainer);
     }
 
     public void registerWeldSEContexts(@Observes AfterBeanDiscovery event, BeanManager manager) {
@@ -71,5 +84,47 @@ public class WeldSEBeanRegistrant implements Extension {
 
     public ThreadContext getThreadContext() {
         return threadContext;
+    }
+
+    private class VetoedSuppressedAnnotatedType<T> extends ForwardingAnnotatedType<T> {
+
+        private final AnnotatedType<T> annotatedType;
+
+        public VetoedSuppressedAnnotatedType(AnnotatedType<T> annotatedType) {
+            this.annotatedType = annotatedType;
+        }
+
+        @Override
+        public <A extends Annotation> A getAnnotation(Class<A> annotationType) {
+            if (annotationType == Vetoed.class) {
+                return null;
+            }
+            return annotatedType.getAnnotation(annotationType);
+        }
+
+        @Override
+        public Set<Annotation> getAnnotations() {
+            Set<Annotation> annotations = new HashSet<Annotation>();
+            for (Annotation a : annotatedType.getAnnotations()) {
+                if (a.annotationType() != Vetoed.class) {
+                    annotations.add(a);
+                }
+            }
+            return annotations;
+        }
+
+        @Override
+        public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
+            if (annotationType == Vetoed.class) {
+                return false;
+            }
+            return annotatedType.isAnnotationPresent(annotationType);
+        }
+
+        @Override
+        public AnnotatedType<T> delegate() {
+            return annotatedType;
+        }
+
     }
 }
