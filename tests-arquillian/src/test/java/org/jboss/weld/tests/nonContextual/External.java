@@ -25,7 +25,6 @@ import javax.inject.Inject;
 public class External {
 
     public External() {
-        // TODO Auto-generated constructor stub
     }
 
     @Inject
