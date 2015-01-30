@@ -56,7 +56,7 @@ public class ReflectionDiscoveryStrategy extends AbstractDiscoveryStrategy {
         while (classIterator.hasNext()) {
             String className = classIterator.next();
             Class<?> clazz = Reflections.loadClass(className, resourceLoader);
-            if (!hasBeanDefiningAnnotation(clazz, initialBeanDefiningAnnotations)) {
+            if (clazz == null || !hasBeanDefiningAnnotation(clazz, initialBeanDefiningAnnotations)) {
                 classIterator.remove();
             }
         }

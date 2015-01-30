@@ -17,6 +17,7 @@
 package org.jboss.weld.environment.se;
 
 import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.Vetoed;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 
@@ -35,6 +36,7 @@ import org.jboss.weld.experimental.ExperimentalEvent;
  * @author Peter Royle
  * @see Weld
  */
+@Vetoed
 public class WeldContainer {
 
     private final InstanceManager instanceManager;
