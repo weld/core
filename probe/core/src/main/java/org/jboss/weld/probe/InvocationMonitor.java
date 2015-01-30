@@ -16,7 +16,12 @@
  */
 package org.jboss.weld.probe;
 
+import static org.jboss.weld.probe.Strings.GET_PREFIX;
+import static org.jboss.weld.probe.Strings.IS_PREFIX;
+import static org.jboss.weld.probe.Strings.SET_PREFIX;
+
 import java.io.Serializable;
+import java.lang.reflect.Method;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.Priority;
@@ -28,6 +33,8 @@ import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 
+import org.jboss.weld.config.ConfigurationKey;
+import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
@@ -56,15 +63,21 @@ public class InvocationMonitor implements Serializable {
 
     private volatile Probe probe = null;
 
+    private volatile Boolean skipJavaBeanProperties;
+
     @AroundInvoke
     public Object monitor(InvocationContext ctx) throws Exception {
 
-        if(probe == null) {
-            synchronized (this) {
-                if(probe == null) {
-                    probe = beanManager.getServices().get(Probe.class);
-                }
-            }
+        if (probe == null) {
+            initProbe();
+        }
+        if (skipJavaBeanProperties == null) {
+            initSkipJavaBeanProperties();
+        }
+
+        if (skipJavaBeanProperties && isJavaBeanPropertyAccessor(ctx.getMethod())) {
+            // Skip JavaBean accessor methods
+            return ctx.proceed();
         }
 
         Invocation.Builder builder = invocations.get();
@@ -104,6 +117,30 @@ public class InvocationMonitor implements Serializable {
                 invocations.remove();
             }
         }
+    }
+
+    private synchronized void initProbe() {
+        if (probe == null) {
+            probe = beanManager.getServices().get(Probe.class);
+        }
+    }
+
+    private synchronized void initSkipJavaBeanProperties() {
+        if (skipJavaBeanProperties == null) {
+            skipJavaBeanProperties = beanManager.getServices().get(WeldConfiguration.class)
+                    .getBooleanProperty(ConfigurationKey.PROBE_INVOCATION_MONITOR_SKIP_JAVABEAN_PROPERTIES);
+        }
+    }
+
+    private boolean isJavaBeanPropertyAccessor(Method method) {
+        if (method.getParameterCount() == 0) {
+            // Getter
+            return method.getName().startsWith(GET_PREFIX) || method.getName().startsWith(IS_PREFIX);
+        } else if (method.getParameterCount() == 1) {
+            // Setter
+            return method.getName().startsWith(SET_PREFIX);
+        }
+        return false;
     }
 
 }

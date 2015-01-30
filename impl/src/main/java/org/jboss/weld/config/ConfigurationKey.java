@@ -109,9 +109,14 @@ public enum ConfigurationKey {
     INJECTABLE_REFERENCE_OPTIMIZATION("org.jboss.weld.injection.injectableReferenceOptimization", false),
 
     /**
-     * A regular expression - bean class matching this pattern is excluded from monitoring.
+     * A regular expression - types matching this pattern is excluded from monitoring.
      */
-    PROBE_INVOCATION_MONITOR_EXCLUDE("org.jboss.weld.probe.invocationMonitorExclude", ""),
+    PROBE_INVOCATION_MONITOR_EXCLUDE_TYPE("org.jboss.weld.probe.invocationMonitor.excludeType", ""),
+
+    /**
+     * If set to <code>true</code> the JavaBean accessor methods are not monitored.
+     */
+    PROBE_INVOCATION_MONITOR_SKIP_JAVABEAN_PROPERTIES("org.jboss.weld.probe.invocationMonitor.skipJavaBeanProperties", true),
 
     ;
 

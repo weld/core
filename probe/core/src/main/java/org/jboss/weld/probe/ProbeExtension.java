@@ -60,7 +60,7 @@ public class ProbeExtension implements Extension {
         event.addAnnotatedType(beanManager.createAnnotatedType(MonitoredComponent.class), MonitoredComponent.class.getName());
         event.addAnnotatedType(beanManager.createAnnotatedType(InvocationMonitor.class), InvocationMonitor.class.getName());
         WeldManager weldManager = (WeldManager) beanManager;
-        String exclude = weldManager.getServices().get(WeldConfiguration.class).getStringProperty(ConfigurationKey.PROBE_INVOCATION_MONITOR_EXCLUDE);
+        String exclude = weldManager.getServices().get(WeldConfiguration.class).getStringProperty(ConfigurationKey.PROBE_INVOCATION_MONITOR_EXCLUDE_TYPE);
         invocationMonitorExcludePattern = exclude.isEmpty() ? null : Pattern.compile(exclude);
     }
 
