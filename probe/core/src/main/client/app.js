@@ -651,12 +651,12 @@ Ember.Handlebars.registerBoundHelper('eachLiAbbr',
         return new Handlebars.SafeString(ret);
     });
 
-Ember.Handlebars.registerBoundHelper('abbr', function(text, limit, addTitle) {
+Ember.Handlebars.registerBoundHelper('abbr', function(text, limit, addTitle, suppresshtmlOutput) {
     var escaped = Handlebars.Utils.escapeExpression(text);
     if (escaped.length > limit) {
         var ret = addTitle ? '<span title="' + text + '">' : '';
-        ret += escaped.charAt(0) === '@' ? abbreviateAnnotation(escaped, true)
-            : abbreviateType(escaped, true);
+        ret += escaped.charAt(0) === '@' ? abbreviateAnnotation(escaped, !suppresshtmlOutput)
+            : abbreviateType(escaped, !suppresshtmlOutput);
         ret += '</span>';
         escaped = ret;
     }
