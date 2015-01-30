@@ -41,7 +41,7 @@ public class WebAppBeanArchiveScanner extends DefaultBeanArchiveScanner {
 
     static final String WEB_INF_CLASSES_BEANS_XML = "/WEB-INF/classes/META-INF/beans.xml";
 
-    static final String[] RESOURCES = {WEB_INF_BEANS_XML, WEB_INF_CLASSES_BEANS_XML};
+    static final String[] RESOURCES = { WEB_INF_BEANS_XML, WEB_INF_CLASSES_BEANS_XML };
 
     static final String WEB_INF_CLASSES = "/WEB-INF/classes";
 
@@ -67,13 +67,14 @@ public class WebAppBeanArchiveScanner extends DefaultBeanArchiveScanner {
             for (String resource : RESOURCES) {
                 URL resourceUrl;
                 resourceUrl = servletContext.getResource(resource);
-                if (beansXmlUrl != null) {
-                    WeldServletLogger.LOG.foundBothConfiguration(beansXmlUrl);
-                } else {
-                    beansXmlUrl = resourceUrl;
+                if (resourceUrl != null) {
+                    if (beansXmlUrl != null) {
+                        WeldServletLogger.LOG.foundBothConfiguration(beansXmlUrl);
+                    } else {
+                        beansXmlUrl = resourceUrl;
+                    }
                 }
             }
-
             if (beansXmlUrl != null) {
                 BeansXml beansXml = bootstrap.parse(beansXmlUrl);
                 if (accept(beansXml)) {
