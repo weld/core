@@ -26,6 +26,7 @@ import static org.jboss.weld.probe.Strings.BEANS;
 import static org.jboss.weld.probe.Strings.BEAN_CLASS;
 import static org.jboss.weld.probe.Strings.BEAN_DISCOVERY_MODE;
 import static org.jboss.weld.probe.Strings.CHILDREN;
+import static org.jboss.weld.probe.Strings.CLASS;
 import static org.jboss.weld.probe.Strings.CONFIGURATION;
 import static org.jboss.weld.probe.Strings.DATA;
 import static org.jboss.weld.probe.Strings.DECLARED_OBSERVERS;
@@ -46,9 +47,11 @@ import static org.jboss.weld.probe.Strings.INTERCEPTORS;
 import static org.jboss.weld.probe.Strings.IS_ALTERNATIVE;
 import static org.jboss.weld.probe.Strings.KIND;
 import static org.jboss.weld.probe.Strings.LAST_PAGE;
+import static org.jboss.weld.probe.Strings.METHOD;
 import static org.jboss.weld.probe.Strings.METHOD_NAME;
 import static org.jboss.weld.probe.Strings.NAME;
 import static org.jboss.weld.probe.Strings.OBSERVED_TYPE;
+import static org.jboss.weld.probe.Strings.OBSERVERS;
 import static org.jboss.weld.probe.Strings.PAGE;
 import static org.jboss.weld.probe.Strings.PRIORITY;
 import static org.jboss.weld.probe.Strings.PRIORITY_RANGE;
@@ -715,18 +718,31 @@ final class JsonObjects {
         return builder.toString();
     }
 
-    static JsonObjectBuilder createEventJson(EventInfo event) {
+    static JsonObjectBuilder createEventJson(EventInfo event, Probe probe) {
         JsonObjectBuilder builder = Json.newObjectBuilder();
         builder.add(TYPE, Formats.formatType(event.type, false));
         builder.add(QUALIFIERS, createQualifiers(event.qualifiers, true));
         builder.add(EVENT_INFO, event.eventString);
+        JsonArrayBuilder observersBuilder = Json.newArrayBuilder();
+        for (ObserverMethod<?> observer : event.observers) {
+           JsonObjectBuilder b = Json.newObjectBuilder()
+                    .add(CLASS, observer.getBeanClass().getName())
+                    .add(ID, probe.getObserverId(observer));
+           if (observer instanceof ObserverMethodImpl<?, ?>) {
+               ObserverMethodImpl<?, ?> weldObserver = (ObserverMethodImpl<?, ?>) observer;
+               AnnotatedMethod<?> method = weldObserver.getMethod().getAnnotated();
+               b.add(METHOD, method.getJavaMember().getName() + Formats.formatAsFormalParameterList(method.getParameters()));
+           }
+           observersBuilder.add(b);
+        }
+        builder.add(OBSERVERS, observersBuilder);
         return builder;
     }
 
     static String createEventsJson(Page<EventInfo> page, Probe probe) {
         JsonArrayBuilder eventsBuilder = Json.newArrayBuilder();
         for (EventInfo event : page.getData()) {
-            eventsBuilder.add(createEventJson(event));
+            eventsBuilder.add(createEventJson(event, probe));
         }
         return createPageJson(page, eventsBuilder);
     }

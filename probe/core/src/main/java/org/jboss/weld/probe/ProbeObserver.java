@@ -34,8 +34,11 @@ import javax.interceptor.Interceptor;
 import javax.servlet.http.HttpServletRequest;
 
 import org.jboss.weld.event.CurrentEventMetadata;
+import org.jboss.weld.event.ObserverNotifier;
+import org.jboss.weld.event.ResolvedObservers;
 import org.jboss.weld.experimental.Prioritized;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.collections.ImmutableList;
 
 /**
  * Catch-all observer with low priority (called first) that captures all events within the application and keeps information about them.
@@ -54,22 +57,15 @@ class ProbeObserver implements ObserverMethod<Object>, Prioritized {
         final Set<Annotation> qualifiers;
         final String eventString;
         final InjectionPoint injectionPoint;
+        final List<ObserverMethod<?>> observers;
 
-        private EventInfo(Type type, Set<Annotation> qualifiers, Object event, InjectionPoint injectionPoint) {
+        private EventInfo(Type type, Set<Annotation> qualifiers, Object event, InjectionPoint injectionPoint, List<ObserverMethod<?>> observers, boolean containerEvent) {
             this.type = type;
             this.qualifiers = qualifiers;
             this.injectionPoint = injectionPoint;
-            this.containerEvent = initContainerEvent(qualifiers);
+            this.containerEvent = containerEvent;
             this.eventString = initEventString(event, containerEvent);
-        }
-
-        private boolean initContainerEvent(Set<Annotation> qualifiers) {
-            for (Annotation annotation : qualifiers) {
-                if (annotation.annotationType().equals(Initialized.class) || annotation.annotationType().equals(Destroyed.class)) {
-                    return true;
-                }
-            }
-            return false;
+            this.observers = observers;
         }
 
         /*
@@ -92,9 +88,11 @@ class ProbeObserver implements ObserverMethod<Object>, Prioritized {
 
     private final List<EventInfo> events = Collections.synchronizedList(new ArrayList<EventInfo>());
     private final CurrentEventMetadata currentEventMetadata;
+    private final BeanManagerImpl manager;
 
     ProbeObserver(BeanManagerImpl manager) {
         this.currentEventMetadata = manager.getServices().get(CurrentEventMetadata.class);
+        this.manager = manager;
     }
 
     @Override
@@ -125,8 +123,23 @@ class ProbeObserver implements ObserverMethod<Object>, Prioritized {
     @Override
     public void notify(Object event) {
         EventMetadata metadata = currentEventMetadata.peek();
-        EventInfo info = new EventInfo(metadata.getType(), metadata.getQualifiers(), event, metadata.getInjectionPoint());
+        boolean containerEvent = isContainerEvent(metadata.getQualifiers());
+        List<ObserverMethod<?>> observers = resolveObservers(metadata, containerEvent);
+        EventInfo info = new EventInfo(metadata.getType(), metadata.getQualifiers(), event, metadata.getInjectionPoint(), observers, containerEvent);
         events.add(0, info);
+    }
+
+    private List<ObserverMethod<?>> resolveObservers(EventMetadata metadata, boolean containerEvent) {
+        List<ObserverMethod<?>> observers = new ArrayList<ObserverMethod<?>>();
+        final ObserverNotifier notifier = (containerEvent) ? manager.getAccessibleLenientObserverNotifier() : manager.getGlobalLenientObserverNotifier();
+        ResolvedObservers<?> resolvedObservers = notifier.resolveObserverMethods(metadata.getType(), metadata.getQualifiers());
+        for (ObserverMethod<?> observer : resolvedObservers.getAllObservers()) {
+            // do not show ProbeObserver
+            if (getBeanClass() != observer.getBeanClass()) {
+                observers.add(observer);
+            }
+        }
+        return ImmutableList.copyOf(observers);
     }
 
     @Override
@@ -154,5 +167,14 @@ class ProbeObserver implements ObserverMethod<Object>, Prioritized {
             events.clear();
             return count;
         }
+    }
+
+    private boolean isContainerEvent(Set<Annotation> qualifiers) {
+        for (Annotation annotation : qualifiers) {
+            if (annotation.annotationType() == Initialized.class || annotation.annotationType() == Destroyed.class) {
+                return true;
+            }
+        }
+        return false;
     }
 }

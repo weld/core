@@ -817,6 +817,9 @@ ${head}
                         {{input value=qualifiers class="form-control" placeholder="Any contains"}}
                     </form>
                 </th>
+                <th>
+                    Resolved observers
+                </th>
             </tr>
             {{#each data}}
             <tr>
@@ -825,6 +828,17 @@ ${head}
                 <td>{{eventInfo}}</td>
                 <td>{{abbr type 20 true}}</td>
                 <td>{{eachLiAbbr qualifiers 20}}</td>
+                <td>
+                    <ul class="plain-list no-margin">
+                        {{#each observers}}
+                            <li>
+                                {{#link-to 'observerDetail' id title=class}}
+                                    {{abbr class 20 false true}}{{#if method}}.{{method}}{{/if}}
+                                {{/link-to}}
+                            </li>
+                    {{/each}}
+                    </ul>
+                </td>
             </tr>
             {{/each}}
         </table>
