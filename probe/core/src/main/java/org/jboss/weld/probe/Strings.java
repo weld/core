@@ -126,6 +126,10 @@ final class Strings {
     static final String ADDITIONAL_BDA_SUFFIX = ".additionalClasses";
     static final String WEB_INF_CLASSES = "WEB-INF/classes";
 
+    static final String GET_PREFIX = "get";
+    static final String IS_PREFIX = "is";
+    static final String SET_PREFIX = "set";
+
     private Strings() {
     }
 
