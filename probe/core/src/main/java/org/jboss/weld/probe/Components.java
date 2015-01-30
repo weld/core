@@ -260,6 +260,9 @@ final class Components {
         MANAGED, SESSION, PRODUCER_METHOD, PRODUCER_FIELD, RESOURCE, SYNTHETIC, INTERCEPTOR, DECORATOR, EXTENSION, BUILT_IN;
 
         static BeanKind from(Bean<?> bean) {
+            if(bean == null) {
+                return null;
+            }
             if (bean instanceof ForwardingBean) {
                 // Unwrap the forwarding implementation
                 ForwardingBean<?> forwarding = (ForwardingBean<?>) bean;
