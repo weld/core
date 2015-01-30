@@ -52,6 +52,14 @@ To run the example with SecurityManager enabled, run:
         mvn clean package dependency:copy-dependencies -Dmdep.stripVersion
         java -Djava.security.manager -Djava.security.policy=numberguess.policy -cp target/weld-se-numberguess.jar:target/dependency/weld-se-shaded.jar org.jboss.weld.environment.se.StartMain
 
+Runnig the Example with shaded maven plugin (fat-jar)
+-----------------------------------------------------
+
+This profile provides the capability to package the artifact in a fat-jar (single jar), including all dependencies:
+
+        mvn clean package -P shaded
+        java -jar ./target/weld-se-numberguess.jar
+
 Swing Example: Number Guess
 ---------------------------
 Here's an example of a Swing application, Number Guess, similar to the example in chapter 7.

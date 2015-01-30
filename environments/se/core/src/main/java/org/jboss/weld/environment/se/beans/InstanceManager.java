@@ -18,6 +18,7 @@ package org.jboss.weld.environment.se.beans;
 
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.Vetoed;
 import javax.inject.Inject;
 
 import org.jboss.weld.environment.se.WeldContainer;
@@ -32,6 +33,7 @@ import org.jboss.weld.experimental.ExperimentalEvent;
  * @author Ales Justin
  * @see WeldContainer
  */
+@Vetoed
 public class InstanceManager {
 
     @Inject @Any
