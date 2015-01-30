@@ -105,11 +105,11 @@ div.form-group {
   background-color: LightBlue;
 }
 
-.BUILT_IN {
+.BUILT_IN, .CONTAINER {
   background-color: LightGray;
 }
 
-.MANAGED, .SESSION, .PRODUCER_METHOD, .PRODUCER_FIELD, .RESOURCE {
+.MANAGED, .SESSION, .PRODUCER_METHOD, .PRODUCER_FIELD, .RESOURCE, .APPLICATION {
   background-color: LightGreen;
 }
 

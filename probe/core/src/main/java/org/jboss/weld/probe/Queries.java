@@ -17,9 +17,11 @@
 package org.jboss.weld.probe;
 
 import static org.jboss.weld.probe.Strings.ADDITIONAL_BDA_SUFFIX;
+import static org.jboss.weld.probe.Strings.APPLICATION;
 import static org.jboss.weld.probe.Strings.BDA;
 import static org.jboss.weld.probe.Strings.BEAN_CLASS;
 import static org.jboss.weld.probe.Strings.BEAN_TYPE;
+import static org.jboss.weld.probe.Strings.CONTAINER;
 import static org.jboss.weld.probe.Strings.KIND;
 import static org.jboss.weld.probe.Strings.METHOD_NAME;
 import static org.jboss.weld.probe.Strings.OBSERVED_TYPE;
@@ -394,7 +396,7 @@ final class Queries {
 
     static class EventsFilters extends Filters<EventInfo> {
 
-        private boolean container;
+        private Boolean container;
         private String eventInfo;
         private String type;
         private String qualifiers;
@@ -408,7 +410,7 @@ final class Queries {
             return testContainsIgnoreCase(eventInfo, event.eventString) &&
                     testContainsIgnoreCase(type, event.type) &&
                     testContainsIgnoreCase(qualifiers, event.qualifiers) &&
-                    container == event.containerEvent;
+                    (container == null || container == event.containerEvent);
         }
 
         @Override
@@ -420,7 +422,11 @@ final class Queries {
             } else if (Strings.QUALIFIERS.equals(name)) {
                 this.qualifiers = value;
             } else if (Strings.KIND.equals(name)) {
-                container = "CONTAINER".equalsIgnoreCase(value);
+                if (CONTAINER.equalsIgnoreCase(value)) {
+                    container = true;
+                } else if (APPLICATION.equalsIgnoreCase(value)) {
+                    container = false;
+                }
             }
         }
     }

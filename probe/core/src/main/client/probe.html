@@ -798,7 +798,7 @@ ${head}
         <table class="table table-bordered table-striped">
             <tr>
                 <th/>
-                <th>Kind {{view 'select' content=eventKinds value=kind class="form-control"}}</th>
+                <th>Kind {{view 'select' content=eventKinds value=kind prompt="-- ANY --" class="form-control"}}</th>
                 <th>
                     Event <i class="fa fa-lg fa-info-circle" title="eventPayload.toString()"></i>
                     <form {{action "filter" on="submit"}}>
@@ -824,7 +824,7 @@ ${head}
             {{#each data}}
             <tr>
                 <td>{{increment _view.contentIndex}}</td>
-                <td>
+                <td><span class="{{unbound kind}} boxed">{{unbound kind}}</span></td>
                 <td>{{eventInfo}}</td>
                 <td>{{abbr type 20 true}}</td>
                 <td>{{eachLiAbbr qualifiers 20}}</td>
