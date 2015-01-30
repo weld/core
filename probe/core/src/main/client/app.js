@@ -814,11 +814,11 @@ function getInjectionPointInfoHtml(d) {
         var requiredType = "";
         if (d.dependencies[j].qualifiers) {
             for (var k = 0; k < d.dependencies[j].qualifiers.length; k++) {
-                qualifiers += d.dependencies[j].qualifiers[k] + " ";
+                qualifiers += Handlebars.Utils.escapeExpression(d.dependencies[j].qualifiers[k]) + " ";
             }
         }
         if (d.dependencies[j].requiredType) {
-            requiredType += '<strong>' + d.dependencies[j].requiredType
+            requiredType += '<strong>' + Handlebars.Utils.escapeExpression(d.dependencies[j].requiredType)
                 + '</strong>';
         }
         description += '<li>' + qualifiers + ' ' + requiredType + '</li>';
