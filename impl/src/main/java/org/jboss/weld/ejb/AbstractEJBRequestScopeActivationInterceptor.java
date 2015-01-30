@@ -22,6 +22,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.interceptor.InvocationContext;
 
 import org.jboss.weld.context.ejb.EjbRequestContext;
+import org.jboss.weld.event.ContextEvent;
 import org.jboss.weld.event.FastEvent;
 import org.jboss.weld.literal.DestroyedLiteral;
 import org.jboss.weld.literal.InitializedLiteral;
@@ -42,7 +43,9 @@ import org.jboss.weld.util.LazyValueHolder;
 public abstract class AbstractEJBRequestScopeActivationInterceptor implements Serializable {
     private static final long serialVersionUID = 7327757031821596782L;
 
-    private static final Object EVENT = new Object();
+    private static final Object INITIALIZED_EVENT = new ContextEvent("Request context initialized for EJB invocation");
+    private static final Object DESTROYED_EVENT = new ContextEvent("Request context destroyed after EJB invocation");
+
     private final LazyValueHolder<FastEvent<Object>> requestInitializedEvent = new LazyValueHolder.Serializable<FastEvent<Object>>() {
         private static final long serialVersionUID = 1L;
         @Override
@@ -69,7 +72,7 @@ public abstract class AbstractEJBRequestScopeActivationInterceptor implements Se
                 requestContext.activate();
                 try {
                     // An event with qualifier @Initialized(RequestScoped.class) is fired when the request context is initialized
-                    requestInitializedEvent.get().fire(EVENT);
+                    requestInitializedEvent.get().fire(INITIALIZED_EVENT);
                     return invocation.proceed();
                 } finally {
                     requestContext.invalidate();
@@ -78,7 +81,7 @@ public abstract class AbstractEJBRequestScopeActivationInterceptor implements Se
             } finally {
                 requestContext.dissociate(invocation);
                 // An event with qualifier @Destroyed(RequestScoped.class) when the request context is destroyed
-                requestDestroyedEvent.get().fire(EVENT);
+                requestDestroyedEvent.get().fire(DESTROYED_EVENT);
             }
         }
     }
