@@ -593,14 +593,14 @@ Probe.EventsController = Ember.ObjectController.extend({
     type : '',
     qualifiers : '',
     page : 1,
-    kind : 'APPLICATION',
+    kind : '',
     queryParams : [ 'eventInfo', 'type', 'qualifiers', 'page', 'kind' ],
     actions : {
         clearFilters : function() {
             this.set('eventInfo', '');
             this.set('type', '');
             this.set('qualifiers', '');
-            this.set('kind', 'APPLICATION');
+            this.set('kind', '');
             this.send('refreshData');
         },
         filter : function() {

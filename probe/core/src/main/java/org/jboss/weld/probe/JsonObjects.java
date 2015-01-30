@@ -19,6 +19,7 @@ package org.jboss.weld.probe;
 import static org.jboss.weld.probe.Strings.ACCESSIBLE_BDAS;
 import static org.jboss.weld.probe.Strings.ALTERNATIVES;
 import static org.jboss.weld.probe.Strings.ANNOTATED_METHOD;
+import static org.jboss.weld.probe.Strings.APPLICATION;
 import static org.jboss.weld.probe.Strings.AS_STRING;
 import static org.jboss.weld.probe.Strings.BDAS;
 import static org.jboss.weld.probe.Strings.BDA_ID;
@@ -28,6 +29,7 @@ import static org.jboss.weld.probe.Strings.BEAN_DISCOVERY_MODE;
 import static org.jboss.weld.probe.Strings.CHILDREN;
 import static org.jboss.weld.probe.Strings.CLASS;
 import static org.jboss.weld.probe.Strings.CONFIGURATION;
+import static org.jboss.weld.probe.Strings.CONTAINER;
 import static org.jboss.weld.probe.Strings.DATA;
 import static org.jboss.weld.probe.Strings.DECLARED_OBSERVERS;
 import static org.jboss.weld.probe.Strings.DECLARED_PRODUCERS;
@@ -723,6 +725,7 @@ final class JsonObjects {
         builder.add(TYPE, Formats.formatType(event.type, false));
         builder.add(QUALIFIERS, createQualifiers(event.qualifiers, true));
         builder.add(EVENT_INFO, event.eventString);
+        builder.add(KIND, (event.containerEvent ? CONTAINER : APPLICATION).toUpperCase());
         JsonArrayBuilder observersBuilder = Json.newArrayBuilder();
         for (ObserverMethod<?> observer : event.observers) {
            JsonObjectBuilder b = Json.newObjectBuilder()
