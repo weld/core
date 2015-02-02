@@ -27,7 +27,6 @@ import static org.jboss.weld.probe.Strings.BEANS;
 import static org.jboss.weld.probe.Strings.BEAN_CLASS;
 import static org.jboss.weld.probe.Strings.BEAN_DISCOVERY_MODE;
 import static org.jboss.weld.probe.Strings.CHILDREN;
-import static org.jboss.weld.probe.Strings.CLASS;
 import static org.jboss.weld.probe.Strings.CONFIGURATION;
 import static org.jboss.weld.probe.Strings.CONTAINER;
 import static org.jboss.weld.probe.Strings.DATA;
@@ -728,15 +727,13 @@ final class JsonObjects {
         builder.add(KIND, (event.containerEvent ? CONTAINER : APPLICATION).toUpperCase());
         JsonArrayBuilder observersBuilder = Json.newArrayBuilder();
         for (ObserverMethod<?> observer : event.observers) {
-           JsonObjectBuilder b = Json.newObjectBuilder()
-                    .add(CLASS, observer.getBeanClass().getName())
-                    .add(ID, probe.getObserverId(observer));
-           if (observer instanceof ObserverMethodImpl<?, ?>) {
-               ObserverMethodImpl<?, ?> weldObserver = (ObserverMethodImpl<?, ?>) observer;
-               AnnotatedMethod<?> method = weldObserver.getMethod().getAnnotated();
-               b.add(METHOD, method.getJavaMember().getName() + Formats.formatAsFormalParameterList(method.getParameters()));
-           }
-           observersBuilder.add(b);
+            JsonObjectBuilder b = createSimpleObserverJson(observer, probe);
+            if (observer instanceof ObserverMethodImpl<?, ?>) {
+                ObserverMethodImpl<?, ?> weldObserver = (ObserverMethodImpl<?, ?>) observer;
+                AnnotatedMethod<?> method = weldObserver.getMethod().getAnnotated();
+                b.add(METHOD, method.getJavaMember().getName() + Formats.formatAsFormalParameterList(method.getParameters()));
+            }
+            observersBuilder.add(b);
         }
         builder.add(OBSERVERS, observersBuilder);
         return builder;

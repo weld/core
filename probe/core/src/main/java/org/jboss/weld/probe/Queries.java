@@ -429,6 +429,11 @@ final class Queries {
                 }
             }
         }
+
+        @Override
+        public String toString() {
+            return String.format("EventsFilters [container=%s, eventInfo=%s, type=%s, qualifiers=%s]", container, eventInfo, type, qualifiers);
+        }
     }
 
 }

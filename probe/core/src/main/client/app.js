@@ -448,7 +448,7 @@ Probe.EventsRoute = Ember.Route.extend(Probe.ResetScroll, {
             query = appendToQuery(query, 'page', params.page);
         }
         return $.getJSON(restUrlBase + 'events' + query).done(function(data) {
-            data.transformed = getRootNode(data, null);
+            return data;
         }).fail(function(jqXHR, textStatus, errorThrown) {
             alert('Unable to get JSON data: ' + textStatus);
         });
@@ -593,14 +593,15 @@ Probe.EventsController = Ember.ObjectController.extend({
     type : '',
     qualifiers : '',
     page : 1,
-    kind : '',
+    kind : null,
     queryParams : [ 'eventInfo', 'type', 'qualifiers', 'page', 'kind' ],
     actions : {
         clearFilters : function() {
             this.set('eventInfo', '');
             this.set('type', '');
             this.set('qualifiers', '');
-            this.set('kind', '');
+            this.set('page', 1);
+            this.set('kind', null);
             this.send('refreshData');
         },
         filter : function() {

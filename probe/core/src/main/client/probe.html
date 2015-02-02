@@ -832,8 +832,8 @@ ${head}
                     <ul class="plain-list no-margin">
                         {{#each observers}}
                             <li>
-                                {{#link-to 'observerDetail' id title=class}}
-                                    {{abbr class 20 false true}}{{#if method}}.{{method}}{{/if}}
+                                {{#link-to 'observerDetail' id title=beanClass}}
+                                    {{abbr beanClass 20 false true}}{{#if method}}.{{method}}{{/if}}
                                 {{/link-to}}
                             </li>
                     {{/each}}
