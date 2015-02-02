@@ -40,6 +40,9 @@ public class CustomSingletonContext implements Context {
     @SuppressWarnings("unchecked")
     @Override
     public synchronized <T> T get(Contextual<T> contextual, CreationalContext<T> creationalContext) {
+        if (creationalContext == null) {
+            return null; // simulates DeltaSpike's behavior
+        }
         Bean<T> bean = (Bean<T>) contextual;
         if (beans.containsKey(bean.getBeanClass())) {
             return (T) beans.get(bean.getBeanClass()).instance;
