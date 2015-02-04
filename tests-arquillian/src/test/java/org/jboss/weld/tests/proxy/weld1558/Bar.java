@@ -25,7 +25,11 @@ public class Bar {
 
         @RequestScoped
         static class Foo {
-            String parent = "Bar";
+            private final String parent = "Bar";
+
+            public String getParent() {
+                return parent;
+            }
         }
 
     }

@@ -44,7 +44,7 @@ public class StaticNestedClassesProxyTest {
 
     @Test
     public void test() {
-        assertEquals("Baz", bazFoo.parent);
-        assertEquals("Bar", barFoo.parent);
+        assertEquals("Baz", bazFoo.getParent());
+        assertEquals("Bar", barFoo.getParent());
     }
 }
