@@ -18,6 +18,7 @@ package org.jboss.weld.tests.interceptors.thread.async;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -57,6 +58,6 @@ public class AsyncInterceptorTest {
 
     @Test
     public void testWithInterceptor() throws Exception {
-        Assert.assertEquals(Integer.valueOf(3), bean.invokeAsyncWithOtherInterceptors(0).get());
+        Assert.assertEquals(Integer.valueOf(3), bean.invokeAsyncWithOtherInterceptors(0).get(5, TimeUnit.SECONDS));
     }
 }
