@@ -24,6 +24,7 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.ShouldThrowException;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -38,7 +39,7 @@ public class PerDeploymentInstantiatorWOTest extends AbstractPerDeploymentInstan
     @Deployment
     @ShouldThrowException(DeploymentException.class)
     public static Archive<?> getDeploymentWO() {
-        return getDeployment();
+        return getDeployment().addAsResource(new StringAsset("org.jboss.weld.proxy.unsafe=false"), "weld.properties");
     }
 
     @Inject
