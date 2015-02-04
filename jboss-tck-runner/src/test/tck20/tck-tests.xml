@@ -4,7 +4,7 @@
 
     <listeners>
         <listener class-name="org.jboss.cdi.tck.impl.testng.ConfigurationLoggingListener"/>
-        <listener class-name="org.jboss.cdi.tck.impl.testng.SingleTestClassMethodInterceptor"/>
+        <listener class-name="org.jboss.weld.tck.WeldMethodInterceptor"/>
         <listener class-name="org.jboss.cdi.tck.impl.testng.ProgressLoggingTestListener"/>
         <!-- The default JUnit XML reporter is disabled -->
         <listener class-name="org.testng.reporters.SuiteHTMLReporter"/>
