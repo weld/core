@@ -54,6 +54,7 @@
 
     <properties>
         <osgi.version>${project.version}</osgi.version>
+        <parsedVersion.osgiVersion>${project.version}</parsedVersion.osgiVersion>
     </properties>
 
     <build>
@@ -85,6 +86,7 @@
                             org.jboss.weld.manager;
                             org.jboss.weld.servlet;
                             org.jboss.weld.util;
+                            org.jboss.weld.security;
                             version=${osgi.version}
                         </_exportcontents>
 
