@@ -66,7 +66,9 @@ public class FireAsyncWithExecutorTest {
             }
         });
         request.fireAsync(new Request(), executor);
-        Assert.assertEquals(FireAsyncWithExecutorTest.class.getName(), SYNCHRONIZER.poll(2, TimeUnit.SECONDS).getThread().getName());
+        final Response response = SYNCHRONIZER.poll(5, TimeUnit.SECONDS);
+        Assert.assertNotNull(response);
+        Assert.assertEquals(FireAsyncWithExecutorTest.class.getName(), response.getThread().getName());
     }
 
     public static void receiveRequest(@Observes Request request, Event<Response> event) {
