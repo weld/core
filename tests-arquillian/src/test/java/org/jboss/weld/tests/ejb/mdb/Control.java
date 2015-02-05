@@ -16,11 +16,14 @@
  */
 package org.jboss.weld.tests.ejb.mdb;
 
+import java.util.concurrent.CountDownLatch;
+
 import javax.ejb.MessageDrivenContext;
 import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class Control {
+    private final CountDownLatch latch = new CountDownLatch(1);
     private volatile boolean messageDelivered;
     private volatile boolean contextSet;
 
@@ -30,6 +33,11 @@ public class Control {
 
     public void setMessageDelivered(boolean messageDelivered) {
         this.messageDelivered = messageDelivered;
+        latch.countDown();
+    }
+
+    public CountDownLatch getLatch() {
+        return latch;
     }
 
     public void setContext(MessageDrivenContext context) {

@@ -25,6 +25,7 @@ import javax.jms.Session;
 import javax.naming.InitialContext;
 
 import junit.framework.Assert;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -66,8 +67,7 @@ public class EJBTest {
         QueueSender sender = session.createSender(queue);
         sender.send(session.createTextMessage(MESSAGE));
 
-        // TODO: rewrite to use CountDownLatch, avoid Thread.sleep in tests
-        Thread.sleep(1000);
+        control.getLatch().await();
         Assert.assertTrue(control.isMessageDelivered());
         Assert.assertTrue(control.isContextSet());
     }
