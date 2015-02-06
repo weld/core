@@ -17,17 +17,17 @@
 package org.jboss.weld.probe;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedType;
-import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.Set;
 import java.util.regex.Pattern;
 
 import javax.decorator.Decorator;
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.UnproxyableResolutionException;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.AnnotatedMember;
+import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
@@ -39,6 +39,7 @@ import org.jboss.weld.bean.builtin.BeanManagerProxy;
 import org.jboss.weld.config.ConfigurationKey;
 import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.manager.api.WeldManager;
+import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.bean.ForwardingBeanAttributes;
 import org.jboss.weld.util.collections.ImmutableSet;
 
@@ -67,9 +68,10 @@ public class ProbeExtension implements Extension {
         invocationMonitorExcludePattern = exclude.isEmpty() ? null : Pattern.compile(exclude);
     }
 
-    public <T> void processBeanAttributes(@Observes ProcessBeanAttributes<T> event) {
+    public <T> void processBeanAttributes(@Observes ProcessBeanAttributes<T> event, BeanManager beanManager) {
         final BeanAttributes<T> beanAttributes = event.getBeanAttributes();
-        if (isMonitored(event.getAnnotated(), beanAttributes)) {
+        final WeldManager weldManager = (WeldManager) beanManager;
+        if (isMonitored(event.getAnnotated(), beanAttributes, weldManager)) {
             event.setBeanAttributes(new ForwardingBeanAttributes<T>() {
                 @Override
                 public Set<Class<? extends Annotation>> getStereotypes() {
@@ -85,7 +87,7 @@ public class ProbeExtension implements Extension {
         }
     }
 
-    private <T> boolean isMonitored(Annotated annotated, BeanAttributes<T> beanAttributes) {
+    private <T> boolean isMonitored(Annotated annotated, BeanAttributes<T> beanAttributes, WeldManager weldManager) {
         if (annotated.isAnnotationPresent(Interceptor.class) || annotated.isAnnotationPresent(Decorator.class)) {
             // Omit interceptors and decorators
             return false;
@@ -97,14 +99,17 @@ public class ProbeExtension implements Extension {
         } else {
             type = annotated.getBaseType();
         }
+        UnproxyableResolutionException unproxyableException = Proxies.getUnproxyableTypeException(type, weldManager.getServices());
+        if (unproxyableException != null) {
+            // A bean with an interceptor must be a proxyable
+            ProbeLogger.LOG.invocationMonitorNotAssociatedNonProxyableType(type);
+            ProbeLogger.LOG.catchingTrace(unproxyableException);
+            return false;
+        }
         if (type instanceof Class) {
             final Class<?> clazz = (Class<?>) type;
-            if (Modifier.isFinal(clazz.getModifiers())) {
-                // Final classes may not have an interceptor
-                return false;
-            }
             if (invocationMonitorExcludePattern != null && invocationMonitorExcludePattern.matcher(clazz.getName()).matches()) {
-                ProbeLogger.LOG.invocationMonitorNotAssociated(clazz.getName());
+                ProbeLogger.LOG.invocationMonitorNotAssociatedExcluded(clazz.getName());
                 return false;
             }
         }

@@ -36,6 +36,12 @@ public interface ProbeLogger extends BasicLogger {
 
     ProbeLogger LOG = Logger.getMessageLogger(ProbeLogger.class, "org.jboss.weld.probe.Probe");
 
+    String CATCHING_MARKER = "Catching";
+
+    @LogMessage(level = Level.TRACE)
+    @Message(id = 0, value = CATCHING_MARKER)
+    void catchingTrace(@Cause Throwable throwable);
+
     @LogMessage(level = Level.DEBUG)
     @Message(id = 1, value = "Resource {0} matched for {1}", format = Format.MESSAGE_FORMAT)
     void resourceMatched(Object resource, String pathInfo);
@@ -56,8 +62,8 @@ public interface ProbeLogger extends BasicLogger {
     IllegalStateException probeNotInitialized();
 
     @LogMessage(level = Level.DEBUG)
-    @Message(id = 6, value = "{0} is excluded from monitoring", format = Format.MESSAGE_FORMAT)
-    void invocationMonitorNotAssociated(Object beanClass);
+    @Message(id = 6, value = "{0} not monitored - excluded", format = Format.MESSAGE_FORMAT)
+    void invocationMonitorNotAssociatedExcluded(Object beanClass);
 
     @Message(id = 7, value = "Probe Servlet is not able to operate - missing {0}", format = Format.MESSAGE_FORMAT)
     IllegalStateException probeServletUnableToOperate(Class<?> component);
@@ -69,5 +75,10 @@ public interface ProbeLogger extends BasicLogger {
     @LogMessage(level = Level.DEBUG)
     @Message(id = 9, value = "@MonitoredComponent stereotype added to {0}", format = Format.MESSAGE_FORMAT)
     void monitoringStereotypeAdded(Object bean);
+
+    @LogMessage(level = Level.DEBUG)
+    @Message(id = 10, value = "{0} not monitored - non-proxyable type", format = Format.MESSAGE_FORMAT)
+    void invocationMonitorNotAssociatedNonProxyableType(Object type);
+
 
 }
