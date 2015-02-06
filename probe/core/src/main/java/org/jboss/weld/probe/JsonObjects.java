@@ -565,6 +565,7 @@ final class JsonObjects {
     static String createContextualInstanceJson(Bean<?> bean, Object contextualInstance, Probe probe) {
         try {
             JsonObjectBuilder builder = createSimpleBeanJson(bean, probe);
+            builder.add(SCOPE, "@" + (Components.isBuiltinScope(bean.getScope()) ? bean.getScope().getSimpleName() : bean.getScope().getName()));
 
             JsonArrayBuilder propertiesBuilder = Json.newArrayBuilder();
             Class<?> definingClass = contextualInstance.getClass();
