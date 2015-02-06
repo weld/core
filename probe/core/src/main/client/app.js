@@ -220,11 +220,22 @@ Probe.BeanDetailRoute = Ember.Route.extend(Probe.ResetScroll, {
     },
     model : function(params) {
         this.set("beanId", params.id);
-        return $.getJSON(restUrlBase + 'beans/' + params.id).done(
+        if (this.get("transientDependencies")) {
+            this.set("transientDependencies", true);
+        }
+        if (this.get("transientDependents")) {
+            this.set("transientDependents", true);
+        }
+        var route = this;
+        return $.getJSON(
+            restUrlBase + 'beans/' + params.id
+                + '?transientDependencies=true&transientDependents=true').done(
             function(data) {
                 data.bdaIdName = findBeanDeploymentArchiveId(cache.bdas,
                     data['bdaId']);
-                buildDependencyGraphData(data, params.id)
+                buildDependencyGraphData(data, params.id, route
+                    .get("transientDependencies"), route
+                    .get("transientDependents"))
                 return data;
             }).fail(function(jqXHR, textStatus, errorThrown) {
             alert('Unable to get JSON data: ' + textStatus);
@@ -238,7 +249,9 @@ Probe.BeanDetailRoute = Ember.Route.extend(Probe.ResetScroll, {
                 .get('transientDependents'));
             // Rebuild dependency graph data
             var data = this.get('controller.model');
-            buildDependencyGraphData(data, data.id);
+            buildDependencyGraphData(data, data.id, this.controller
+                .get('transientDependencies'), this.controller
+                .get('transientDependents'));
             this.controller.set('routeRefresh', new Date());
         }
     }
@@ -909,11 +922,15 @@ function getInjectionPointInfoHtml(d) {
         var requiredType = "";
         if (d.dependencies[j].qualifiers) {
             for (var k = 0; k < d.dependencies[j].qualifiers.length; k++) {
-                qualifiers += Handlebars.Utils.escapeExpression(d.dependencies[j].qualifiers[k]) + " ";
+                qualifiers += Handlebars.Utils
+                    .escapeExpression(d.dependencies[j].qualifiers[k])
+                    + " ";
             }
         }
         if (d.dependencies[j].requiredType) {
-            requiredType += '<strong>' + Handlebars.Utils.escapeExpression(d.dependencies[j].requiredType)
+            requiredType += '<strong>'
+                + Handlebars.Utils
+                    .escapeExpression(d.dependencies[j].requiredType)
                 + '</strong>';
         }
         description += '<li>' + qualifiers + ' ' + requiredType + '</li>';
@@ -1253,7 +1270,7 @@ function appendToQuery(query, key, value) {
     return query;
 }
 
-function findNodesDependencies(bean, nodes, rootId) {
+function findNodesDependencies(bean, nodes, rootId, transientDependencies) {
     if (!nodes[bean.id]) {
         nodes[bean.id] = {
             id : bean.id,
@@ -1268,14 +1285,18 @@ function findNodesDependencies(bean, nodes, rootId) {
             nodes[bean.id].y = 100;
         }
     }
+    if (rootId == null && !transientDependencies) {
+        return;
+    }
     if (bean.dependencies) {
         bean.dependencies.forEach(function(dependency) {
-            findNodesDependencies(dependency, nodes);
+            findNodesDependencies(dependency, nodes, null,
+                transientDependencies);
         });
     }
 }
 
-function findLinksDependencies(bean, links, nodes) {
+function findLinksDependencies(bean, links, nodes, transientDependencies) {
     if (bean.dependencies) {
         bean.dependencies.forEach(function(dependency) {
 
@@ -1304,12 +1325,15 @@ function findLinksDependencies(bean, links, nodes) {
                     dependencies : [ info ],
                 });
             }
-            findLinksDependencies(dependency, links, nodes);
+            if (transientDependencies) {
+                findLinksDependencies(dependency, links, nodes,
+                    transientDependencies);
+            }
         });
     }
 }
 
-function findNodesDependents(bean, nodes, rootId) {
+function findNodesDependents(bean, nodes, rootId, transientDependents) {
     if (!nodes[bean.id]) {
         nodes[bean.id] = {
             id : bean.id,
@@ -1318,14 +1342,17 @@ function findNodesDependents(bean, nodes, rootId) {
             isDependent : true
         };
     }
+    if (rootId == null && !transientDependents) {
+        return;
+    }
     if (bean.dependents) {
         bean.dependents.forEach(function(dependent) {
-            findNodesDependents(dependent, nodes);
+            findNodesDependents(dependent, nodes, null, transientDependents);
         });
     }
 }
 
-function findLinksDependents(bean, links, nodes) {
+function findLinksDependents(bean, links, nodes, transientDependents) {
     if (bean.dependents) {
         bean.dependents.forEach(function(dependent) {
             // Injection point info
@@ -1353,7 +1380,10 @@ function findLinksDependents(bean, links, nodes) {
                     dependencies : [ info ],
                 });
             }
-            findLinksDependents(dependent, links, nodes);
+            if (transientDependents) {
+                findLinksDependents(dependent, links, nodes,
+                    transientDependents);
+            }
         });
     }
 }
@@ -1363,15 +1393,16 @@ function findLinksDependents(bean, links, nodes) {
  * @param data
  *            BeanDetailRoute data
  */
-function buildDependencyGraphData(data, id) {
+function buildDependencyGraphData(data, id, transientDependencies,
+    transientDependents) {
     // Create nodes
     var nodes = new Object();
-    findNodesDependencies(data, nodes, id);
-    findNodesDependents(data, nodes, id);
+    findNodesDependencies(data, nodes, id, transientDependencies);
+    findNodesDependents(data, nodes, id, transientDependents);
     // Create links
     var links = new Array();
-    findLinksDependencies(data, links, nodes);
-    findLinksDependents(data, links, nodes);
+    findLinksDependencies(data, links, nodes, transientDependencies);
+    findLinksDependents(data, links, nodes, transientDependents);
     data.nodes = nodes;
     data.links = links;
     console.log('Build dependency graph data [links: ' + links.length + ']');

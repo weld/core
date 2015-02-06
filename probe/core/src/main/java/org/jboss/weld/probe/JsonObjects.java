@@ -354,7 +354,7 @@ final class JsonObjects {
             beanBuilder.add(DEPENDENCIES, dependencies);
         }
         // DEPENDENTS
-        JsonArrayBuilder dependents = createDependents(null, bean, probe, transientDependencies);
+        JsonArrayBuilder dependents = createDependents(null, bean, probe, transientDependents);
         if (dependents != null) {
             beanBuilder.add(DEPENDENTS, dependents);
         }
@@ -482,10 +482,12 @@ final class JsonObjects {
                 dependenciesBuilder.add(createDependency(dep.getBean(), dep, probe));
                 continue;
             }
+
+            JsonObjectBuilder dependency = createDependency(dep.getBean(), dep, probe);
+            dependenciesBuilder.add(dependency);
+
             if (isTransient) {
-                dependenciesBuilder.add(createDependencies(bean, dep.getBean(), probe, true));
-            } else {
-                dependenciesBuilder.add(createDependency(dep.getBean(), dep, probe));
+                dependency.add(DEPENDENCIES, createDependencies(bean, dep.getBean(), probe, true));
             }
         }
         return dependenciesBuilder.isEmpty() ? null : dependenciesBuilder;
@@ -515,10 +517,12 @@ final class JsonObjects {
                 dependentsBuilder.add(createDependency(dependent.getBean(), dependent, probe));
                 continue;
             }
+
+            JsonObjectBuilder dependency = createDependency(dependent.getBean(), dependent, probe);
+            dependentsBuilder.add(dependency);
+
             if (isTransient) {
-                dependentsBuilder.add(createDependents(bean, dependent.getBean(), probe, true));
-            } else {
-                dependentsBuilder.add(createDependency(dependent.getBean(), dependent, probe));
+                dependency.add(DEPENDENTS, createDependents(bean, dependent.getBean(), probe, true));
             }
         }
         return dependentsBuilder.isEmpty() ? null : dependentsBuilder;
