@@ -115,36 +115,44 @@ ${head}
                             <p class="form-control-static">{{beanDiscoveryMode}}</p>
                         </div>
                     </div>
+                    {{#if enablement.interceptors}}
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Enabled Interceptors:</label>
                         <div class="col-sm-10">
-                            {{#if enablement.interceptors}}
                             {{#each enablement.interceptors}}
-                            <p class="form-control-static">{{this}}</p>
+                            <p class="form-control-static">{{increment _view.contentIndex}}.
+                            <i class="fa fa-search"></i>{{#link-to 'beanDetail' id class='nav-link'}}{{beanClass}}{{/link-to}}
+                            </p>
                             {{/each}}
-                            {{/if}}
+                            <hr/>
                         </div>
                     </div>
+                    {{/if}}
+                    {{#if enablement.decorators}}
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Enabled Decorators:</label>
                         <div class="col-sm-10">
-                            {{#if enablement.decorators}}
                             {{#each enablement.decorators}}
-                            <p class="form-control-static">{{this}}</p>
+                            <p class="form-control-static">{{increment _view.contentIndex}}.
+                            <i class="fa fa-search"></i>{{#link-to 'beanDetail' id class='nav-link'}}{{beanClass}}{{/link-to}}
+                            </p>
                             {{/each}}
-                            {{/if}}
+                            <hr/>
                         </div>
                     </div>
+                    {{/if}}
+                    {{#if enablement.alternatives}}
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Selected Alternatives:</label>
                         <div class="col-sm-10">
-                            {{#if enablement.alternatives}}
                             {{#each enablement.alternatives}}
-                            <p class="form-control-static">{{this}}</p>
+                            <p class="form-control-static">{{increment _view.contentIndex}}.
+                            <i class="fa fa-search"></i>{{#link-to 'beanDetail' id class='nav-link'}}{{beanClass}}{{/link-to}}
+                            </p>
                             {{/each}}
-                            {{/if}}
                         </div>
                     </div>
+                    {{/if}}
                 </form>
             </div>
         </div>
@@ -416,6 +424,27 @@ ${head}
                                 <i class="fa fa-search"></i> {{#link-to 'beanDetail' id}}
                                     {{#if producerInfo}}{{unbound producerInfo}}{{else}}Unknown{{/if}}
                                 {{/link-to}}
+                            </p>
+                            {{/each}}
+                        </div>
+                    </div>
+                    {{/if}}
+                    {{#if enablement.priority}}
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Globally {{#if isAlternative}}Selected{{else}}Enabled{{/if}} - Priority:</label>
+                            <div class="col-sm-10">
+                                <p class="form-control-static"><span class="priority boxed">{{enablement.priority}} ({{enablement.priorityRange}})</span></p>
+                            </div>
+                        </div>
+                    </div>
+                    {{/if}}
+                    {{#if enablement.bdas}}
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Enabled for Bean Archives:</label>
+                        <div class="col-sm-10">
+                            {{#each enablement.bdas}}
+                            <p class="form-control-static">
+                                <i class="fa fa-search"></i>{{#link-to 'beanArchive' id class='nav-link'}}{{unbound bdaId}}{{/link-to}}
                             </p>
                             {{/each}}
                         </div>

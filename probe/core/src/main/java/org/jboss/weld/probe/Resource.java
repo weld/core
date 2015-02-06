@@ -102,7 +102,7 @@ enum Resource {
             if (bean != null) {
                 resp.getWriter().append(
                         JsonObjects.createFullBeanJson(bean, Boolean.valueOf(req.getParameter(PARAM_TRANSIENT_DEPENDENCIES)),
-                                Boolean.valueOf(req.getParameter(PARAM_TRANSIENT_DEPENDENTS)), probe));
+                                Boolean.valueOf(req.getParameter(PARAM_TRANSIENT_DEPENDENTS)), beanManager, probe));
             } else {
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND);
             }

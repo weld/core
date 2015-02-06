@@ -83,6 +83,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -120,6 +121,8 @@ import org.jboss.weld.probe.Json.JsonArrayBuilder;
 import org.jboss.weld.probe.Json.JsonObjectBuilder;
 import org.jboss.weld.probe.ProbeObserver.EventInfo;
 import org.jboss.weld.probe.Queries.Page;
+import org.jboss.weld.util.AnnotationApiAbstraction;
+import org.jboss.weld.util.collections.Sets;
 import org.jboss.weld.util.reflection.Formats;
 
 /**
@@ -155,10 +158,7 @@ final class JsonObjects {
         List<BeanDeploymentArchive> bdas = new ArrayList<BeanDeploymentArchive>(beanDeploymentArchivesMap.keySet());
         Collections.sort(bdas, probe.getBdaComparator());
         for (BeanDeploymentArchive bda : bdas) {
-            JsonObjectBuilder bdaBuilder = Json.newObjectBuilder().setIgnoreEmptyBuilders(true);
-            String id = bda.getId();
-            bdaBuilder.add(BDA_ID, id);
-            bdaBuilder.add(ID, Components.getId(id));
+            JsonObjectBuilder bdaBuilder = createSimpleBdaJson(bda.getId());
             BeansXml beansXml = bda.getBeansXml();
             if (beansXml != null) {
                 bdaBuilder.add(BEAN_DISCOVERY_MODE, beansXml.getBeanDiscoveryMode().toString());
@@ -168,17 +168,20 @@ final class JsonObjects {
             ModuleEnablement enablement = beanDeploymentArchivesMap.get(bda).getEnabled();
             JsonArrayBuilder interceptors = Json.newArrayBuilder();
             for (Class<?> interceptor : enablement.getInterceptors()) {
-                interceptors.add(interceptor.getName());
+                interceptors.add(createSimpleBeanJson(findEnabledBean(interceptor, BeanKind.INTERCEPTOR, probe), probe));
             }
             enablementBuilder.add(INTERCEPTORS, interceptors);
             JsonArrayBuilder decorators = Json.newArrayBuilder();
             for (Class<?> decorator : enablement.getDecorators()) {
-                decorators.add(decorator.getName());
+                decorators.add(createSimpleBeanJson(findEnabledBean(decorator, BeanKind.DECORATOR, probe), probe));
             }
             enablementBuilder.add(DECORATORS, decorators);
             JsonArrayBuilder alternatives = Json.newArrayBuilder();
-            for (Class<?> alternative : enablement.getAllAlternatives()) {
-                alternatives.add(alternative.getName());
+            for (Class<?> clazz : Sets.union(enablement.getAlternativeClasses(), enablement.getGlobalAlternatives())) {
+                alternatives.add(createSimpleBeanJson(findAlternativeBean(clazz, probe), probe));
+            }
+            for (Class<? extends Annotation> stereotype : enablement.getAlternativeStereotypes()) {
+                alternatives.add(createSimpleBeanJson(findAlternativeStereotypeBean(stereotype, probe), probe));
             }
             enablementBuilder.add(ALTERNATIVES, alternatives);
             bdaBuilder.add(ENABLEMENT, enablementBuilder);
@@ -217,6 +220,33 @@ final class JsonObjects {
         deploymentBuilder.add(CONFIGURATION, configBuilder);
 
         return deploymentBuilder.build();
+    }
+
+    static Bean<?> findEnabledBean(Class<?> beanClass, BeanKind kind, Probe probe) {
+        for (Bean<?> bean : probe.getBeans()) {
+            if (kind.equals(BeanKind.from(bean)) && beanClass.equals(bean.getBeanClass())) {
+                return bean;
+            }
+        }
+        return null;
+    }
+
+    static Bean<?> findAlternativeBean(Class<?> beanClass, Probe probe) {
+        for (Bean<?> bean : probe.getBeans()) {
+            if (bean.isAlternative() && beanClass.equals(bean.getBeanClass())) {
+                return bean;
+            }
+        }
+        return null;
+    }
+
+    static Bean<?> findAlternativeStereotypeBean(Class<? extends Annotation> stereotype, Probe probe) {
+        for (Bean<?> bean : probe.getBeans()) {
+            if (bean.isAlternative() && bean.getStereotypes().contains(stereotype)) {
+                return bean;
+            }
+        }
+        return null;
     }
 
     /**
@@ -273,7 +303,7 @@ final class JsonObjects {
      * @param probe
      * @return the full bean representation
      */
-    static String createFullBeanJson(Bean<?> bean, boolean transientDependencies, boolean transientDependents, Probe probe) {
+    static String createFullBeanJson(Bean<?> bean, boolean transientDependencies, boolean transientDependents, BeanManagerImpl beanManager, Probe probe) {
         JsonObjectBuilder beanBuilder = createBasicBeanJson(bean, probe).setIgnoreEmptyBuilders(true);
         // NAME
         if (bean.getName() != null) {
@@ -367,7 +397,46 @@ final class JsonObjects {
         }
         beanBuilder.add(DECLARED_PRODUCERS, declaredProducers);
 
+        // ENABLEMENT
+        BeanKind kind = BeanKind.from(bean);
+        if (BeanKind.INTERCEPTOR.equals(kind) || BeanKind.DECORATOR.equals(kind) || bean.isAlternative()) {
+            JsonObjectBuilder enablementBuilder = Json.newObjectBuilder();
+            AnnotationApiAbstraction annotationApi = beanManager.getServices().get(AnnotationApiAbstraction.class);
+            Object priority = bean.getBeanClass().getAnnotation(annotationApi.PRIORITY_ANNOTATION_CLASS);
+            if (priority != null) {
+                int priorityValue = annotationApi.getPriority(priority);
+                enablementBuilder.add(PRIORITY, priorityValue);
+                enablementBuilder.add(PRIORITY_RANGE, Components.PriorityRange.of(priorityValue).toString());
+            } else {
+                JsonArrayBuilder bdasBuilder = Json.newArrayBuilder();
+                Collection<BeanManagerImpl> beanManagers = Container.instance(beanManager).beanDeploymentArchives().values();
+                for (BeanManagerImpl manager : beanManagers) {
+                    ModuleEnablement enablement = manager.getEnabled();
+                    if ((BeanKind.INTERCEPTOR.equals(kind) && enablement.isInterceptorEnabled(bean.getBeanClass()))
+                            || (BeanKind.DECORATOR.equals(kind) && enablement.isDecoratorEnabled(bean.getBeanClass()))
+                            || isSelectedAlternative(enablement, bean)) {
+                        bdasBuilder.add(createSimpleBdaJson(manager.getId()));
+                    }
+                }
+                enablementBuilder.add(BDAS, bdasBuilder);
+            }
+            beanBuilder.add(ENABLEMENT, enablementBuilder);
+        }
         return beanBuilder.build();
+    }
+
+    private static boolean isSelectedAlternative(ModuleEnablement enablement, Bean<?> bean) {
+        if (bean.isAlternative()) {
+            if (enablement.isEnabledAlternativeClass(bean.getBeanClass())) {
+                return true;
+            }
+            for (Class<? extends Annotation> stereotype : bean.getStereotypes()) {
+                if (enablement.isEnabledAlternativeStereotype(stereotype)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -380,7 +449,7 @@ final class JsonObjects {
     static JsonObjectBuilder createSimpleBeanJson(Bean<?> bean, Probe probe) {
         JsonObjectBuilder builder = Json.newObjectBuilder();
         builder.add(ID, probe.getBeanId(bean));
-        builder.add(KIND, Components.BeanKind.from(bean).toString());
+        builder.add(KIND, BeanKind.from(bean).toString());
         builder.add(BEAN_CLASS, bean.getBeanClass().getName());
         return builder;
     }
@@ -746,6 +815,13 @@ final class JsonObjects {
             eventsBuilder.add(createEventJson(event, probe));
         }
         return createPageJson(page, eventsBuilder);
+    }
+
+    static JsonObjectBuilder createSimpleBdaJson(String bdaId) {
+        JsonObjectBuilder bdaBuilder = Json.newObjectBuilder().setIgnoreEmptyBuilders(true);
+        bdaBuilder.add(BDA_ID, bdaId);
+        bdaBuilder.add(ID, Components.getId(bdaId));
+        return bdaBuilder;
     }
 
 }
