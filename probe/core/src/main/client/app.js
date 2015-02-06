@@ -350,6 +350,11 @@ Probe.ContextsRoute = Ember.Route.extend({
 });
 
 Probe.ContextInstanceRoute = Ember.Route.extend(Probe.ResetScroll, {
+    setupController : function(controller, model) {
+        this._super(controller, model);
+        // A bean kind css class binding
+        controller.set("kindClass", model.kind + ' boxed');
+    },
     model : function(params) {
         return $.getJSON(restUrlBase + 'beans/' + params.id + '/instance')
             .done(function(data) {
