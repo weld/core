@@ -99,8 +99,12 @@ public final class Invocation {
         return interceptedBean;
     }
 
-    protected String getDeclaringClassName() {
+    public String getDeclaringClassName() {
         return declaringClassName;
+    }
+
+    public String getBeanClass() {
+        return interceptedBean != null ? interceptedBean.getBeanClass().getName() : declaringClassName;
     }
 
     public long getStart() {
