@@ -371,8 +371,7 @@ final class Queries {
 
         @Override
         boolean test(Invocation invocation) {
-            return testContainsIgnoreCase(beanClass, invocation.getInterceptedBean().getBeanClass())
-                    && testContainsIgnoreCase(methodName, invocation.getMethodName());
+            return testContainsIgnoreCase(beanClass, invocation.getBeanClass()) && testContainsIgnoreCase(methodName, invocation.getMethodName());
         }
 
         @Override
