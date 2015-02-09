@@ -14,7 +14,6 @@ import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.spi.ResourceLoader;
-import org.jboss.weld.util.reflection.instantiation.InstantiatorFactory;
 
 /**
  * A Deployment visitor which can find the transitive closure of Bean Deployment Archives
@@ -50,7 +49,6 @@ public class DeploymentVisitor {
 
     private BeanDeployment visit(BeanDeploymentArchive bda, Set<BeanDeploymentArchive> seenBeanDeploymentArchives) {
         copyService(bda, ResourceLoader.class);
-        copyService(bda, InstantiatorFactory.class);
         // Check that the required services are specified
         WeldStartup.verifyServices(bda.getServices(), environment.getRequiredBeanDeploymentArchiveServices());
 
