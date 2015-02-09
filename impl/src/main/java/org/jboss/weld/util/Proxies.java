@@ -221,7 +221,7 @@ public class Proxies {
         } else if (Modifier.isPrivate(constructor.getModifiers())) {
             InstantiatorFactory factory = services.get(InstantiatorFactory.class);
             if (factory == null || !(factory.useInstantiators())) {
-                return new UnproxyableResolutionException(ValidatorLogger.LOG.notProxyablePrivateConstructor(clazz, constructor, getDeclaringBeanInfo(declaringBean)));
+                return new UnproxyableResolutionException(ValidatorLogger.LOG.notProxyablePrivateConstructor(clazz.getName(), constructor, getDeclaringBeanInfo(declaringBean)));
             } else {
                 return null;
             }
