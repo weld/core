@@ -48,6 +48,7 @@ import org.jboss.weld.bean.builtin.BeanManagerBean;
 import org.jboss.weld.bean.builtin.BeanManagerImplBean;
 import org.jboss.weld.bean.builtin.ContextBean;
 import org.jboss.weld.bean.proxy.ProtectionDomainCache;
+import org.jboss.weld.bean.proxy.ProxyInstantiator;
 import org.jboss.weld.bean.proxy.util.SimpleProxyServices;
 import org.jboss.weld.bootstrap.api.Environment;
 import org.jboss.weld.bootstrap.api.Service;
@@ -133,8 +134,6 @@ import org.jboss.weld.transaction.spi.TransactionServices;
 import org.jboss.weld.util.Permissions;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
-import org.jboss.weld.util.reflection.instantiation.InstantiatorFactory;
-import org.jboss.weld.util.reflection.instantiation.LoaderInstantiatorFactory;
 
 import com.google.common.collect.ImmutableSet;
 
@@ -196,9 +195,6 @@ public class WeldStartup {
         WeldConfiguration configuration = new WeldConfiguration(registry, deployment);
         registry.add(WeldConfiguration.class, configuration);
 
-        if (!registry.contains(InstantiatorFactory.class)) {
-            registry.add(InstantiatorFactory.class, new LoaderInstantiatorFactory(configuration));
-        }
         if (!registry.contains(ScheduledExecutorServiceFactory.class)) {
             registry.add(ScheduledExecutorServiceFactory.class, new SingleThreadScheduledExecutorServiceFactory());
         }
@@ -265,6 +261,7 @@ public class WeldStartup {
     }
 
     private void addImplementationServices(ServiceRegistry services) {
+        final WeldConfiguration configuration = services.get(WeldConfiguration.class);
         services.add(SlimAnnotatedTypeStore.class, new SlimAnnotatedTypeStoreImpl());
         if (services.get(ClassTransformer.class) == null) {
             throw new IllegalStateException(ClassTransformer.class.getSimpleName() + " not installed.");
@@ -288,7 +285,7 @@ public class WeldStartup {
          */
         ExecutorServices executor = services.get(ExecutorServices.class);
         if (executor == null) {
-            executor = ExecutorServicesFactory.create(DefaultResourceLoader.INSTANCE, services.get(WeldConfiguration.class));
+            executor = ExecutorServicesFactory.create(DefaultResourceLoader.INSTANCE, configuration);
             if (executor != null) {
                 services.add(ExecutorServices.class, executor);
             }
@@ -299,7 +296,6 @@ public class WeldStartup {
         /*
          * Setup Validator
          */
-        WeldConfiguration configuration = services.get(WeldConfiguration.class);
         if (configuration.getBooleanProperty(ConfigurationKey.CONCURRENT_DEPLOYMENT) && services.contains(ExecutorServices.class)) {
             services.add(Validator.class, new ConcurrentValidator(executor));
         } else {
@@ -323,6 +319,8 @@ public class WeldStartup {
 
         services.add(ServletContextService.class, new ServletContextService());
         services.add(ProtectionDomainCache.class, new ProtectionDomainCache());
+
+        services.add(ProxyInstantiator.class, ProxyInstantiator.Factory.create(configuration));
     }
 
     // needs to be resolved once extension beans are deployed

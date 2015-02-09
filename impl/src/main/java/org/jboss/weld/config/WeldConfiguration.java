@@ -101,6 +101,8 @@ public class WeldConfiguration implements Service {
 
     private static final String EXTERNAL_CONFIGURATION_CLASS_NAME = "org.jboss.weld.configuration.spi.ExternalConfiguration";
 
+    private static final String UNSAFE_PROXIES_MARKER = "META-INF/org.jboss.weld.enableUnsafeProxies";
+
     private final Map<ConfigurationKey, Object> properties;
 
     private final File proxyDumpFilePath;
@@ -234,6 +236,11 @@ public class WeldConfiguration implements Service {
                                 .put("threadPoolDebug", ConfigurationKey.EXECUTOR_THREAD_POOL_DEBUG)
                                 .put("threadPoolType", ConfigurationKey.EXECUTOR_THREAD_POOL_TYPE)
                                 .put("threadPoolKeepAliveTime", ConfigurationKey.EXECUTOR_THREAD_POOL_KEEP_ALIVE_TIME).build()), EXECUTOR_CONFIGURATION_FILE);
+
+        // META-INF/org.jboss.weld.enableUnsafeProxies
+        if (!findPropertiesFiles(deployment, UNSAFE_PROXIES_MARKER).isEmpty()) {
+            merge(properties, ImmutableMap.<ConfigurationKey, Object>of(ConfigurationKey.PROXY_UNSAFE, true), UNSAFE_PROXIES_MARKER);
+        }
 
         // 2. System properties
         merge(properties, getSystemProperties(), SYSTEM_PROPETIES);

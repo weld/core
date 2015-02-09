@@ -76,8 +76,6 @@ import org.jboss.weld.util.AnnotationApiAbstraction;
 import org.jboss.weld.util.JtaApiAbstraction;
 import org.jboss.weld.util.collections.WeldCollections;
 import org.jboss.weld.util.reflection.Reflections;
-import org.jboss.weld.util.reflection.instantiation.DefaultInstantiatorFactory;
-import org.jboss.weld.util.reflection.instantiation.InstantiatorFactory;
 import org.jboss.weld.ws.WSApiAbstraction;
 
 import com.google.common.base.Function;
@@ -110,11 +108,6 @@ public class BeanDeployment {
         if (resourceLoader == null) {
             resourceLoader = DefaultResourceLoader.INSTANCE;
             registry.add(ResourceLoader.class, resourceLoader);
-        }
-
-        InstantiatorFactory factory = registry.get(InstantiatorFactory.class);
-        if (factory == null) {
-            registry.add(InstantiatorFactory.class, new DefaultInstantiatorFactory(resourceLoader, registry.get(WeldConfiguration.class)));
         }
 
         ServiceRegistry services = new SimpleServiceRegistry();

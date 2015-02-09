@@ -17,7 +17,6 @@
 package org.jboss.weld.util;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.security.AccessController;
@@ -29,13 +28,13 @@ import java.util.Set;
 
 import javax.enterprise.inject.spi.Bean;
 
+import org.jboss.weld.bean.proxy.ProxyInstantiator;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.exceptions.UnproxyableResolutionException;
 import org.jboss.weld.logging.UtilLogger;
 import org.jboss.weld.logging.ValidatorLogger;
 import org.jboss.weld.security.GetDeclaredConstructorAction;
 import org.jboss.weld.util.reflection.Reflections;
-import org.jboss.weld.util.reflection.instantiation.InstantiatorFactory;
 
 /**
  * Utilities for working with Javassist proxies
@@ -205,38 +204,29 @@ public class Proxies {
             return null;
         }
 
-        Constructor<?> constructor;
+        Constructor<?> constructor = null;
         try {
             constructor = AccessController.doPrivileged(GetDeclaredConstructorAction.of(clazz));
         } catch (PrivilegedActionException e) {
-            InstantiatorFactory factory = services.get(InstantiatorFactory.class);
-            if (factory == null || !(factory.useInstantiators())) {
-                return ValidatorLogger.LOG.notProxyableNoConstructor(clazz, getDeclaringBeanInfo(declaringBean));
-            } else {
-                return null;
-            }
         }
-        if (constructor == null) {
-            return ValidatorLogger.LOG.notProxyableNoConstructor(clazz, getDeclaringBeanInfo(declaringBean));
-        } else if (Modifier.isPrivate(constructor.getModifiers())) {
-            InstantiatorFactory factory = services.get(InstantiatorFactory.class);
-            if (factory == null || !(factory.useInstantiators())) {
-                return new UnproxyableResolutionException(ValidatorLogger.LOG.notProxyablePrivateConstructor(clazz, constructor, getDeclaringBeanInfo(declaringBean)));
-            } else {
-                return null;
-            }
-        } else if (Reflections.isTypeOrAnyMethodFinal(clazz)) {
-            return ValidatorLogger.LOG.notProxyableFinalTypeOrMethod(clazz, Reflections.getNonPrivateFinalMethodOrType(clazz), getDeclaringBeanInfo(declaringBean));
-        } else if (clazz.isPrimitive()) {
+
+        if (clazz.isPrimitive()) {
             return ValidatorLogger.LOG.notProxyablePrimitive(clazz, getDeclaringBeanInfo(declaringBean));
         } else if (Reflections.isArrayType(clazz)) {
             return ValidatorLogger.LOG.notProxyableArrayType(clazz, getDeclaringBeanInfo(declaringBean));
-        } else {
-            return null;
+        } else if (Reflections.isTypeOrAnyMethodFinal(clazz)) {
+            return ValidatorLogger.LOG.notProxyableFinalTypeOrMethod(clazz, Reflections.getNonPrivateFinalMethodOrType(clazz), getDeclaringBeanInfo(declaringBean));
         }
+
+        UnproxyableResolutionException exception = services.get(ProxyInstantiator.class).validateNoargConstructor(constructor, clazz, declaringBean);
+        if (exception != null) {
+            return exception;
+        }
+
+        return null;
     }
 
-    private static Object getDeclaringBeanInfo(Bean<?> bean) {
+    public static Object getDeclaringBeanInfo(Bean<?> bean) {
         return (bean != null) ? bean : "<unknown javax.enterprise.inject.spi.Bean instance>";
     }
 }

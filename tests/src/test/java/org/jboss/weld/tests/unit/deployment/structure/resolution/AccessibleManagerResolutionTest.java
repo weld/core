@@ -27,6 +27,8 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bean.ManagedBean;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.attributes.BeanAttributesFactory;
+import org.jboss.weld.bean.proxy.DefaultProxyInstantiator;
+import org.jboss.weld.bean.proxy.ProxyInstantiator;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironmentFactory;
 import org.jboss.weld.bootstrap.SpecializationAndEnablementRegistry;
@@ -74,6 +76,7 @@ public class AccessibleManagerResolutionTest {
         this.services.add(InjectionTargetService.class, new InjectionTargetService(BeanManagerImpl.newRootManager(STATIC_INSTANCE, "foo", services)));
         this.services.add(SpecializationAndEnablementRegistry.class, new SpecializationAndEnablementRegistry());
         this.services.add(InterceptorsApiAbstraction.class, new InterceptorsApiAbstraction(DefaultResourceLoader.INSTANCE));
+        this.services.add(ProxyInstantiator.class, DefaultProxyInstantiator.INSTANCE);
     }
 
     private <T> void addBean(BeanManagerImpl manager, Class<T> c) {
