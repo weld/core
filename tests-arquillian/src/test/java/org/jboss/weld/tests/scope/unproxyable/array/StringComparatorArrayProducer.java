@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2013, Red Hat, Inc., and individual contributors
+ * Copyright 2015, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,23 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.proxy.instantiator.unsafe;
+package org.jboss.weld.tests.scope.unproxyable.array;
 
-import javax.inject.Inject;
+import java.util.Comparator;
 
-public class DependentBar {
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Produces;
 
-    @Inject
-    NormalScopedFoo foo;
+public class StringComparatorArrayProducer {
 
-    @Inject
-    NormalScopedBaz baz;
-
-    public NormalScopedFoo getFoo() {
-        return foo;
-    }
-
-    public NormalScopedBaz getBaz() {
-        return baz;
+    @Produces
+    @RequestScoped
+    public Comparator<String>[] produce() {
+        return new StringComparator[0];
     }
 }

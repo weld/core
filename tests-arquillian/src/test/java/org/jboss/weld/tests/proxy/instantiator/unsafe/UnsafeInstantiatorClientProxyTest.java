@@ -24,7 +24,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -40,7 +39,7 @@ public class UnsafeInstantiatorClientProxyTest {
     }
 
     @Test
-    public void testClientProxy(DependentBar bar) {
+    public void testNoConstructorForProxy(DependentBar bar) {
         assertNotNull(bar);
         // The proxy is not null
         assertNotNull(bar.getFoo());
@@ -52,5 +51,12 @@ public class UnsafeInstantiatorClientProxyTest {
         String id = bar.getFoo().ping();
         assertNotNull(id);
         assertEquals("Et voila!", id);
+    }
+
+    @Test
+    public void testPrivateConstructorForProxy(DependentBar bar) {
+        assertNotNull(bar);
+        assertNotNull(bar.getBaz());
+        assertEquals("baz", bar.getBaz().ping());
     }
 }

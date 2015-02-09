@@ -17,6 +17,7 @@
 package org.jboss.weld.util;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.security.AccessController;
@@ -173,13 +174,8 @@ public class Proxies {
 
 
     public static UnproxyableResolutionException getUnproxyableTypeException(Type type, Bean<?> declaringBean, ServiceRegistry services) {
-        if (type instanceof Class<?>) {
-            return getUnproxyableClassException((Class<?>) type, declaringBean, services);
-        } else if (type instanceof ParameterizedType) {
-            Type rawType = ((ParameterizedType) type).getRawType();
-            if (rawType instanceof Class<?>) {
-                return getUnproxyableClassException((Class<?>) rawType, declaringBean, services);
-            }
+        if (type instanceof Class<?> || type instanceof ParameterizedType || type instanceof GenericArrayType) {
+            return getUnproxyableClassException(Reflections.getRawType(type), declaringBean, services);
         }
         return ValidatorLogger.LOG.notProxyableUnknown(type, getDeclaringBeanInfo(declaringBean));
     }
