@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.config;
 
+import org.jboss.weld.bean.proxy.ProxyInstantiator;
+
 /**
  * This enum lists all the supported configuration keys.
  *
@@ -94,6 +96,19 @@ public enum ConfigurationKey {
     /**
      * Weld supports a non-standard workaround to be able to create client proxies for Java types that cannot be proxied by the container, using non-portable
      * JVM APIs.
+     */
+    RELAXED_CONSTRUCTION("org.jboss.weld.construction.relaxed", false),
+
+    /**
+     * Allows {@link ProxyInstantiator} to be selected explicitly. This is only intended for testing purposes and should never be set by an application.
+     */
+    PROXY_INSTANTIATOR("org.jboss.weld.proxy.instantiator", ""),
+
+    /**
+     * Weld supports a non-standard workaround to be able to create client proxies for Java types that cannot be proxied by the container, using non-portable
+     * JVM APIs.
+     *
+     * @deprecated this option is deprecated. RELAXED_CONSTRUCTION should be used instead
      */
     PROXY_UNSAFE("org.jboss.weld.proxy.unsafe", false),
 

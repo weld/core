@@ -54,7 +54,7 @@ public class CombinedPropertiesFilesConfigTest {
     public static Archive<?> createSystemPropertiesLoaderArchive() {
         JavaArchive testDeployment = ShrinkWrap.create(BeanArchive.class).addClasses(SystemPropertiesLoader.class, PropertiesBuilder.class);
         PropertiesBuilder.newBuilder().set(ConfigurationKey.CONCURRENT_DEPLOYMENT.get(), "true").set(ConfigurationKey.PRELOADER_THREAD_POOL_SIZE.get(), "10")
-                .set(ConfigurationKey.RESOLUTION_CACHE_SIZE.get(), "500").set(ConfigurationKey.PROXY_UNSAFE.get(), "true")
+                .set(ConfigurationKey.RESOLUTION_CACHE_SIZE.get(), "500").set(ConfigurationKey.RELAXED_CONSTRUCTION.get(), "true")
                 .addAsSystemProperties(testDeployment);
         return testDeployment;
     }
@@ -121,6 +121,6 @@ public class CombinedPropertiesFilesConfigTest {
         // property defined only in weld.properties and not loaded as system property
         assertNull(System.getProperty(ConfigurationKey.EXECUTOR_THREAD_POOL_TYPE.get()));
         //property loaded only as system property
-        assertEquals("true", System.getProperty(ConfigurationKey.PROXY_UNSAFE.get()));
+        assertEquals("true", System.getProperty(ConfigurationKey.RELAXED_CONSTRUCTION.get()));
     }
 }
