@@ -16,7 +16,7 @@
  */
 package org.jboss.weld.tck;
 
-import static org.jboss.weld.config.ConfigurationKey.PROXY_UNSAFE;
+import static org.jboss.weld.config.ConfigurationKey.RELAXED_CONSTRUCTION;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -45,7 +45,7 @@ import com.google.common.collect.ImmutableSet;
 public class WeldMethodInterceptor extends SingleTestClassMethodInterceptor {
 
     private static final String ADDITIONAL_VM_ARGS_PROPERTY = "additional.vm.args";
-    private static final Set<String> UNSAFE_PROXY_EXCLUDED_CLASSES;
+    private static final Set<String> RELAXED_CONSTRUCTION_EXCLUDED_TESTS;
     private static final Logger LOG = Logger.getLogger(WeldMethodInterceptor.class.getName());
 
     static {
@@ -53,25 +53,25 @@ public class WeldMethodInterceptor extends SingleTestClassMethodInterceptor {
         builder.add(UnproxyableManagedBeanTest.class.getName());
         builder.add(BeanConstructorWithParametersTest.class.getName());
         builder.add(PrivateConstructorTest.class.getName());
-        UNSAFE_PROXY_EXCLUDED_CLASSES = builder.build();
+        RELAXED_CONSTRUCTION_EXCLUDED_TESTS = builder.build();
     }
 
     private boolean isUnsafeProxyModeEnabled() {
         String additional = System.getProperty(ADDITIONAL_VM_ARGS_PROPERTY, "");
-        if (additional.contains(PROXY_UNSAFE.get()) && !additional.contains(PROXY_UNSAFE.get() + '=' + false)) {
+        if (additional.contains(RELAXED_CONSTRUCTION.get()) && !additional.contains(RELAXED_CONSTRUCTION.get() + '=' + false)) {
             return true;
         }
-        return Boolean.valueOf(System.getProperty(ConfigurationKey.PROXY_UNSAFE.get(), "false"));
+        return Boolean.valueOf(System.getProperty(ConfigurationKey.RELAXED_CONSTRUCTION.get(), "false"));
     }
 
     @Override
     public List<IMethodInstance> intercept(List<IMethodInstance> methods, ITestContext context) {
         if (isUnsafeProxyModeEnabled()) {
             // exclude certain tests
-            LOG.log(Level.INFO, "Unsafe proxy mode enabled");
+            LOG.log(Level.INFO, "Relaxed construction mode enabled");
             methods = new ArrayList<IMethodInstance>(methods);
             for (Iterator<IMethodInstance> iterator = methods.iterator(); iterator.hasNext();) {
-                if (UNSAFE_PROXY_EXCLUDED_CLASSES.contains(iterator.next().getMethod().getRealClass().getName())) {
+                if (RELAXED_CONSTRUCTION_EXCLUDED_TESTS.contains(iterator.next().getMethod().getRealClass().getName())) {
                     iterator.remove();
                 }
             }

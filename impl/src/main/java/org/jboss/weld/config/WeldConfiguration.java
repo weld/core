@@ -239,7 +239,7 @@ public class WeldConfiguration implements Service {
 
         // META-INF/org.jboss.weld.enableUnsafeProxies
         if (!findPropertiesFiles(deployment, UNSAFE_PROXIES_MARKER).isEmpty()) {
-            merge(properties, ImmutableMap.<ConfigurationKey, Object>of(ConfigurationKey.PROXY_UNSAFE, true), UNSAFE_PROXIES_MARKER);
+            merge(properties, ImmutableMap.<ConfigurationKey, Object>of(ConfigurationKey.RELAXED_CONSTRUCTION, true), UNSAFE_PROXIES_MARKER);
         }
 
         // 2. System properties

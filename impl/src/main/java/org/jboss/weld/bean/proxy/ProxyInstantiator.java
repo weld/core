@@ -25,6 +25,7 @@ import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.config.ConfigurationKey;
 import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.exceptions.UnproxyableResolutionException;
+import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.resources.ClassLoaderResourceLoader;
 import org.jboss.weld.util.reflection.Reflections;
@@ -86,13 +87,21 @@ public interface ProxyInstantiator extends Service {
          * @param configuration
          * @return
          */
+        @SuppressWarnings("deprecation")
         public static ProxyInstantiator create(WeldConfiguration configuration) {
             ProxyInstantiator result = DefaultProxyInstantiator.INSTANCE;
-            if (configuration.getBooleanProperty(ConfigurationKey.PROXY_UNSAFE)) {
+            final String instantiator = configuration.getStringProperty(ConfigurationKey.PROXY_INSTANTIATOR);
+            if (!instantiator.isEmpty()) {
+                try {
+                    result = newInstance(instantiator);
+                } catch (Exception e) {
+                    throw new WeldException(e);
+                }
+            } else if (configuration.getBooleanProperty(ConfigurationKey.RELAXED_CONSTRUCTION) || configuration.getBooleanProperty(ConfigurationKey.PROXY_UNSAFE)) {
                 for (String implementation : IMPLEMENTATIONS) {
                     // use the first suitable implementation
                     try {
-                        result = (ProxyInstantiator) Reflections.loadClass(implementation, new ClassLoaderResourceLoader(ProxyInstantiator.class.getClassLoader())).newInstance();
+                        result = newInstance(implementation);
                         break;
                     } catch (Exception e) {
                         BootstrapLogger.LOG.catchingDebug(e);
@@ -103,6 +112,13 @@ public interface ProxyInstantiator extends Service {
             }
             BootstrapLogger.LOG.debugv("Using instantiator: {0}", result.getClass().getName());
             return result;
+        }
+
+        private static ProxyInstantiator newInstance(String implementation) throws InstantiationException, IllegalAccessException {
+            if (DefaultProxyInstantiator.class.getName().equals(implementation)) {
+                return DefaultProxyInstantiator.INSTANCE;
+            }
+            return (ProxyInstantiator) Reflections.loadClass(implementation, new ClassLoaderResourceLoader(ProxyInstantiator.class.getClassLoader())).newInstance();
         }
     }
 }

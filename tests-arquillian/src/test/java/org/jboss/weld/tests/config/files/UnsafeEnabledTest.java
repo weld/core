@@ -47,7 +47,7 @@ public class UnsafeEnabledTest {
 
         BeanArchive ejbJar = ShrinkWrap.create(BeanArchive.class);
         ejbJar.addClass(DummySessionBean.class)
-                .addAsResource(PropertiesBuilder.newBuilder().set(ConfigurationKey.PROXY_UNSAFE.get(), "true").build(), "weld.properties");
+                .addAsResource(PropertiesBuilder.newBuilder().set(ConfigurationKey.RELAXED_CONSTRUCTION.get(), "true").build(), "weld.properties");
 
         WebArchive war1 = Testable.archiveToTest(ShrinkWrap
                 .create(WebArchive.class)
@@ -66,7 +66,7 @@ public class UnsafeEnabledTest {
     @Test
     public void testConfiguration() {
         WeldConfiguration configuration = beanManager.getServices().get(WeldConfiguration.class);
-        assertEquals(true, configuration.getBooleanProperty(ConfigurationKey.PROXY_UNSAFE));
+        assertEquals(true, configuration.getBooleanProperty(ConfigurationKey.RELAXED_CONSTRUCTION));
         unproxyable.ping();
     }
 
