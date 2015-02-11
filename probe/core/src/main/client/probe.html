@@ -191,21 +191,23 @@ ${head}
 
         <h1>Beans</h1>
 
-        <p>
-            <label>Bean Archive:</label>
-            {{view "select"
-                value=bda
-                content=cache.filterBdas
-                optionValuePath="content.id"
-                optionLabelPath="content.bdaId"
-                prompt="-- ANY --"
-                class="form-control form-control-auto-width"
-            }}
-        </p>
+        <div class="btn-line form-control-like">
+            <form {{action "filter" on="submit"}} class="form-inline">
+                <label class="control-label">Bean Archive:</label>
+                {{view "select"
+                    value=bda
+                    content=cache.filterBdas
+                    optionValuePath="content.id"
+                    optionLabelPath="content.bdaId"
+                    prompt="-- ANY --"
+                    class="form-control form-control-auto-width"
+                }}
+            </form>
+        </div>
 
         <div class="btn-line">
             &nbsp;<button {{action 'clearFilters'}} class="btn btn-default">Clear filters</button>
-            <div class="total pull-left">Total Found: {{total}}</div>
+            <div class="form-control-like pull-left">Total Found: {{total}}</div>
             <ul class="pagination no-margin pull-left">
             {{#each pages}}
                 <li class="{{unbound active}}">{{#link-to 'beanList' (query-params page=index)}}{{index}}{{/link-to}}</li>
@@ -261,7 +263,7 @@ ${head}
         </table>
 
         <div class="btn-line">
-            <div class="total pull-left">Total Found: {{total}}</div>
+            <div class="form-control-like pull-left">Total Found: {{total}}</div>
             <ul class="pagination no-margin">
             {{#each pages}}
                 <li class="{{unbound active}}">{{#link-to 'beanList' (query-params page=index)}}{{index}}{{/link-to}}</li>
@@ -494,21 +496,23 @@ ${head}
 
         <h1>Observer Methods</h1>
 
-        <p>
-            <label>Bean Archive:</label>
-            {{view "select"
-                value=bda
-                content=cache.filterBdas
-                optionValuePath="content.id"
-                optionLabelPath="content.bdaId"
-                prompt="-- ANY --"
-                class="form-control form-control-auto-width"
-            }}
-        </p>
+        <div class="btn-line form-control-like">
+            <form {{action "filter" on="submit"}} class="form-inline">
+                <label class="control-label">Bean Archive:</label>
+                {{view "select"
+                    value=bda
+                    content=cache.filterBdas
+                    optionValuePath="content.id"
+                    optionLabelPath="content.bdaId"
+                    prompt="-- ANY --"
+                    class="form-control form-control-auto-width"
+                }}
+            </form>
+        </div>
 
         <div class="btn-line">
             &nbsp;<button {{action 'clearFilters'}} class="btn btn-default">Clear filters</button>
-            <div class="total pull-left">Total Found: {{total}}</div>
+            <div class="form-control-like pull-left">Total Found: {{total}}</div>
             <ul class="pagination no-margin pull-left">
             {{#each pages}}
                 <li class="{{unbound active}}">{{#link-to 'observerList' (query-params page=index)}}{{index}}{{/link-to}}</li>
@@ -572,7 +576,7 @@ ${head}
         </table>
 
         <div class="btn-line">
-            <div class="total pull-left">Total Found: {{total}}</div>
+            <div class="form-control-like pull-left">Total Found: {{total}}</div>
             <ul class="pagination no-margin">
             {{#each pages}}
                 <li class="{{unbound active}}">{{#link-to 'observerList' (query-params page=index)}}{{index}}{{/link-to}}</li>
@@ -745,11 +749,19 @@ ${head}
       data-template-name="invocationList">
       <h1>Invocation Trees</h1>
 
+      <div class="btn-line form-control-like">
+        <form {{action "filter" on="submit"}} class="form-inline">
+            <label class="control-label">Search:</label>
+            {{input value=search class="form-control form-control-auto-width" placeholder="Class or method contains"}}
+            <i class="fa fa-lg fa-info-circle" title="Search the whole invocation trees"></i>
+        </form>
+      </div>
+
       <div class="btn-line">
             &nbsp;<button {{action 'refreshData'}} class="btn btn-default">Refresh</button>
             <button {{action 'clearFilters'}} class="btn btn-default">Clear filters</button>
             <button {{action 'clearInvocations'}} class="btn btn-default">Clear data</button>
-            <div class="total pull-left">Total Found: {{total}}</div>
+            <div class="form-control-like pull-left">Total Found: {{total}}</div>
             <ul class="pagination no-margin pull-left">
             {{#each pages}}
                 <li class="{{unbound active}}">{{#link-to 'invocationList' (query-params page=index)}}{{index}}{{/link-to}}</li>
@@ -796,7 +808,7 @@ ${head}
         </table>
 
         <div class="btn-line">
-            <div class="total pull-left">Total Found: {{total}}</div>
+            <div class="form-control-like pull-left">Total Found: {{total}}</div>
             <ul class="pagination no-margin">
             {{#each pages}}
                 <li class="{{unbound active}}">{{#link-to 'invocationList' (query-params page=index)}}{{index}}{{/link-to}}</li>
@@ -828,7 +840,7 @@ ${head}
             &nbsp;<button {{action 'refreshData'}} class="btn btn-default">Refresh</button>
             <button {{action 'clearFilters'}} class="btn btn-default">Clear filters</button>
             <button {{action 'clearEvents'}} class="btn btn-default">Clear data</button>
-            <div class="total pull-left">Total Found: {{total}}</div>
+            <div class="form-control-like pull-left">Total Found: {{total}}</div>
             <ul class="pagination no-margin pull-left">
             {{#each pages}}
                 <li class="{{unbound active}}">{{#link-to 'events' (query-params page=index)}}{{index}}{{/link-to}}</li>
@@ -885,7 +897,7 @@ ${head}
         </table>
 
         <div class="btn-line">
-            <div class="total pull-left">Total Found: {{total}}</div>
+            <div class="form-control-like pull-left">Total Found: {{total}}</div>
             <ul class="pagination no-margin">
             {{#each pages}}
                 <li class="{{unbound active}}">{{#link-to 'events' (query-params page=index)}}{{index}}{{/link-to}}</li>

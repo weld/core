@@ -397,6 +397,7 @@ Probe.InvocationListRoute = Ember.Route.extend(Probe.ResetScroll, {
         var query = '', filters = '', page = '';
         filters = appendToFilters(filters, 'beanClass', params.beanClass);
         filters = appendToFilters(filters, 'methodName', params.methodName);
+        filters = appendToFilters(filters, 'search', params.search);
         query = appendToQuery(query, 'filters', filters);
         if (params.page) {
             query = appendToQuery(query, 'page', params.page);
@@ -584,13 +585,15 @@ Probe.InvocationListController = Ember.ObjectController.extend({
     },
     beanClass : '',
     methodName : '',
+    search : '',
     page : 1,
-    queryParams : [ 'beanClass', 'methodName', 'page' ],
+    queryParams : [ 'beanClass', 'methodName', 'search', 'page' ],
     actions : {
         clearFilters : function() {
             this.set('page', 1);
             this.set('beanClass', '');
             this.set('methodName', '');
+            this.set('search', '');
             this.send('refreshData');
         },
         filter : function() {
