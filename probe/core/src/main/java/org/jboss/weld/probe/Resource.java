@@ -26,6 +26,7 @@ import static org.jboss.weld.probe.Strings.IMG_ICO;
 import static org.jboss.weld.probe.Strings.IMG_PNG;
 import static org.jboss.weld.probe.Strings.IMG_SVG;
 import static org.jboss.weld.probe.Strings.PAGE;
+import static org.jboss.weld.probe.Strings.PAGE_SIZE;
 import static org.jboss.weld.probe.Strings.PARAM_TRANSIENT_DEPENDENCIES;
 import static org.jboss.weld.probe.Strings.PARAM_TRANSIENT_DEPENDENTS;
 import static org.jboss.weld.probe.Strings.PATH_META_INF_CLIENT;
@@ -88,7 +89,8 @@ enum Resource {
         @Override
         protected void handleGet(BeanManagerImpl beanManager, Probe probe, String[] pathInfoParts, HttpServletRequest req, HttpServletResponse resp)
                 throws IOException {
-            resp.getWriter().append(JsonObjects.createBeansJson(Queries.find(probe.getBeans(), getPage(req), initFilters(req, new BeanFilters(probe))), probe));
+            resp.getWriter().append(JsonObjects
+                    .createBeansJson(Queries.find(probe.getBeans(), getPage(req), getPageSize(req), initFilters(req, new BeanFilters(probe))), probe));
         }
     }),
     /**
@@ -136,7 +138,8 @@ enum Resource {
         protected void handleGet(BeanManagerImpl beanManager, Probe probe, String[] pathInfoParts, HttpServletRequest req, HttpServletResponse resp)
                 throws IOException {
             resp.getWriter().append(
-                    JsonObjects.createObserversJson(Queries.find(probe.getObservers(), getPage(req), initFilters(req, new ObserverFilters(probe))), probe));
+                    JsonObjects.createObserversJson(
+                            Queries.find(probe.getObservers(), getPage(req), getPageSize(req), initFilters(req, new ObserverFilters(probe))), probe));
         }
     }),
     /**
@@ -172,7 +175,8 @@ enum Resource {
         protected void handleGet(BeanManagerImpl beanManager, Probe probe, String[] pathInfoParts, HttpServletRequest req, HttpServletResponse resp)
                 throws IOException {
             resp.getWriter().append(
-                    JsonObjects.createInvocationsJson(Queries.find(probe.getInvocations(), getPage(req), initFilters(req, new InvocationsFilters(probe))),
+                    JsonObjects.createInvocationsJson(
+                            Queries.find(probe.getInvocations(), getPage(req), getPageSize(req), initFilters(req, new InvocationsFilters(probe))),
                             probe));
         }
 
@@ -205,7 +209,8 @@ enum Resource {
         protected void handleGet(BeanManagerImpl beanManager, Probe probe, String[] pathInfoParts, HttpServletRequest req, HttpServletResponse resp)
                 throws IOException {
             ProbeObserver observer = beanManager.getExtension(ProbeExtension.class).getProbeObserver();
-            resp.getWriter().append(JsonObjects.createEventsJson(Queries.find(observer.getEvents(), getPage(req), initFilters(req, new EventsFilters(probe))), probe));
+            resp.getWriter().append(JsonObjects
+                    .createEventsJson(Queries.find(observer.getEvents(), getPage(req), getPageSize(req), initFilters(req, new EventsFilters(probe))), probe));
         }
 
         @Override
@@ -245,7 +250,7 @@ enum Resource {
                 }
             }
         }
-    }), ;
+    }),;
 
     // --- Instance variables
 
@@ -264,7 +269,6 @@ enum Resource {
     }
 
     /**
-     *
      * @param pathInfo
      * @return <code>true</code> if the resource matches the given path, <code>false</code> otherwise
      */
@@ -285,7 +289,6 @@ enum Resource {
     }
 
     /**
-     *
      * @return the parts of the path
      */
     String[] getParts() {
@@ -336,7 +339,7 @@ enum Resource {
             return APPLICATION_FONT_WOFF;
         } else if (resourceName.endsWith(SUFFIX_SVG)) {
             return IMG_SVG;
-        }  else if (resourceName.endsWith(SUFFIX_ICO)) {
+        } else if (resourceName.endsWith(SUFFIX_ICO)) {
             return IMG_ICO;
         } else {
             return TEXT_PLAIN;
@@ -344,7 +347,8 @@ enum Resource {
     }
 
     static boolean isTextBasedContenType(String contentType) {
-        return !(IMG_PNG.equals(contentType) || IMG_ICO.equals(contentType) || APPLICATION_FONT_SFNT.equals(contentType) || APPLICATION_FONT_WOFF.equals(contentType) || APPLICATION_FONT_MS
+        return !(IMG_PNG.equals(contentType) || IMG_ICO.equals(contentType) || APPLICATION_FONT_SFNT.equals(contentType) || APPLICATION_FONT_WOFF
+                .equals(contentType) || APPLICATION_FONT_MS
                 .equals(contentType));
     }
 
@@ -392,6 +396,20 @@ enum Resource {
                 return Integer.valueOf(pageParam);
             } catch (NumberFormatException e) {
                 return 1;
+            }
+        }
+
+        protected int getPageSize(HttpServletRequest req) {
+            String pageSizeParam = req.getParameter(PAGE_SIZE);
+            if (pageSizeParam == null) {
+                return Queries.DEFAULT_PAGE_SIZE;
+            } else {
+                try {
+                    int result = Integer.valueOf(pageSizeParam);
+                    return result > 0 ? result : 0 ;
+                } catch (NumberFormatException e) {
+                    return 0;
+                }
             }
         }
 
