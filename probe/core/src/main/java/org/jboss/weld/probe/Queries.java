@@ -59,49 +59,52 @@ final class Queries {
     }
 
     /**
-     *
      * @param data
      * @param page
      * @param filters
      * @return the page of data
      */
-    static <T, F extends Filters<T>> Page<T> find(List<T> data, int page, F filters) {
+    static <T, F extends Filters<T>> Page<T> find(List<T> data, int page, int pageSize, F filters) {
+
         if (filters != null) {
             ProbeLogger.LOG.filtersApplied(filters);
-            for (Iterator<T> iterator = data.iterator(); iterator.hasNext();) {
+            for (Iterator<T> iterator = data.iterator(); iterator.hasNext(); ) {
                 T element = iterator.next();
                 if (!filters.test(element)) {
                     iterator.remove();
                 }
             }
         }
-        if (data.isEmpty()) {
-            return new Page<T>(0, 0, 0, Collections.emptyList());
+        if (pageSize == 0) {
+            return new Page<T>(page, 1, data.size(), data);
+        } else {
+            if (data.isEmpty()) {
+                return new Page<T>(0, 0, 0, Collections.emptyList());
+            }
+            if (page > 1 && (((page - 1) * pageSize) >= data.size())) {
+                page = 1;
+            }
+            int lastIdx = data.size() / pageSize;
+            if (data.size() % pageSize > 0) {
+                lastIdx++;
+            }
+            if (lastIdx == 1) {
+                return new Page<T>(1, lastIdx, data.size(), data);
+            }
+            int start = (page - 1) * pageSize;
+            int end = start + pageSize;
+            if (end > data.size()) {
+                end = data.size();
+            }
+            return new Page<T>(page, lastIdx, data.size(), data.subList(start, end));
         }
-        if (page > 1 && (((page - 1) * DEFAULT_PAGE_SIZE) >= data.size())) {
-            page = 1;
-        }
-        int lastIdx = data.size() / DEFAULT_PAGE_SIZE;
-        if (data.size() % DEFAULT_PAGE_SIZE > 0) {
-            lastIdx++;
-        }
-        if (lastIdx == 1) {
-            return new Page<T>(1, lastIdx, data.size(), data);
-        }
-        int start = (page - 1) * DEFAULT_PAGE_SIZE;
-        int end = start + DEFAULT_PAGE_SIZE;
-        if (end > data.size()) {
-            end = data.size();
-        }
-        return new Page<T>(page, lastIdx, data.size(), data.subList(start, end));
     }
 
     /**
      * A data page abstraction.
      *
-     * @author Martin Kouba
-     *
      * @param <T>
+     * @author Martin Kouba
      */
     static class Page<T> {
 
@@ -139,10 +142,8 @@ final class Queries {
     }
 
     /**
-     *
-     * @author Martin Kouba
-     *
      * @param <T>
+     * @author Martin Kouba
      */
     abstract static class Filters<T> {
 
@@ -176,7 +177,6 @@ final class Queries {
         abstract void processFilter(String name, String value);
 
         /**
-         *
          * @param filter
          * @param value
          * @return true if the filter is null or equals to the value
@@ -186,7 +186,6 @@ final class Queries {
         }
 
         /**
-         *
          * @param filter
          * @param value
          * @return true if the filter is null or the value's {@link Object#toString()} contains the filter
@@ -196,7 +195,6 @@ final class Queries {
         }
 
         /**
-         *
          * @param filter
          * @param value
          * @return true if the filter is null or any of the value's {@link Object#toString()} contains the filter
@@ -214,7 +212,6 @@ final class Queries {
         }
 
         /**
-         *
          * @param bda
          * @param bean
          * @return true if the bda is null or the id of the BDA for the given bean equals to the value

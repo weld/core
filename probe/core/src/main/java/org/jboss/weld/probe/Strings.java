@@ -78,6 +78,7 @@ final class Strings {
     static final String BEANS = "beans";
 
     static final String PAGE = "page";
+    static final String PAGE_SIZE = "pageSize";
     static final String TOTAL = "total";
     static final String LAST_PAGE = "lastPage";
     static final String DATA = "data";
