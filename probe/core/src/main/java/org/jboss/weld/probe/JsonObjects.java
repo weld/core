@@ -68,6 +68,7 @@ import static org.jboss.weld.probe.Strings.SESSION_BEAN_TYPE;
 import static org.jboss.weld.probe.Strings.START;
 import static org.jboss.weld.probe.Strings.STEREOTYPES;
 import static org.jboss.weld.probe.Strings.TIME;
+import static org.jboss.weld.probe.Strings.TIMESTAMP;
 import static org.jboss.weld.probe.Strings.TOTAL;
 import static org.jboss.weld.probe.Strings.TX_PHASE;
 import static org.jboss.weld.probe.Strings.TYPE;
@@ -799,6 +800,7 @@ final class JsonObjects {
         builder.add(QUALIFIERS, createQualifiers(event.qualifiers, true));
         builder.add(EVENT_INFO, event.eventString);
         builder.add(KIND, (event.containerEvent ? CONTAINER : APPLICATION).toUpperCase());
+        builder.add(TIMESTAMP, event.timestamp);
         JsonArrayBuilder observersBuilder = Json.newArrayBuilder();
         for (ObserverMethod<?> observer : event.observers) {
             JsonObjectBuilder b = createSimpleObserverJson(observer, probe);

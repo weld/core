@@ -80,5 +80,8 @@ public interface ProbeLogger extends BasicLogger {
     @Message(id = 10, value = "{0} not monitored - non-proxyable type", format = Format.MESSAGE_FORMAT)
     void invocationMonitorNotAssociatedNonProxyableType(Object type);
 
+    @LogMessage(level = Level.DEBUG)
+    @Message(id = 11, value = "Event {0} not monitored - excluded", format = Format.MESSAGE_FORMAT)
+    void eventExcluded(Object type);
 
 }

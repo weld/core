@@ -109,7 +109,8 @@ public enum ConfigurationKey {
     INJECTABLE_REFERENCE_OPTIMIZATION("org.jboss.weld.injection.injectableReferenceOptimization", false),
 
     /**
-     * A regular expression - types matching this pattern is excluded from monitoring.
+     * A regular expression - if the base type for an AnnotatedType or a declaring type for an AnnotatedMember matches this pattern it's excluded from
+     * monitoring, i.e. the invocation monitor interceptor is not associated.
      */
     PROBE_INVOCATION_MONITOR_EXCLUDE_TYPE("org.jboss.weld.probe.invocationMonitor.excludeType", ""),
 
@@ -117,6 +118,11 @@ public enum ConfigurationKey {
      * If set to <code>true</code> the JavaBean accessor methods are not monitored.
      */
     PROBE_INVOCATION_MONITOR_SKIP_JAVABEAN_PROPERTIES("org.jboss.weld.probe.invocationMonitor.skipJavaBeanProperties", true),
+
+    /**
+     * A regular expression - if a runtime class of the event object matches this pattern it's excluded from monitoring.
+     */
+    PROBE_EVENT_MONITOR_EXCLUDE_TYPE("org.jboss.weld.probe.eventMonitor.excludeType", ""),
 
     ;
 
