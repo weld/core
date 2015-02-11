@@ -28,6 +28,7 @@ import static org.jboss.weld.probe.Strings.OBSERVED_TYPE;
 import static org.jboss.weld.probe.Strings.QUALIFIER;
 import static org.jboss.weld.probe.Strings.RECEPTION;
 import static org.jboss.weld.probe.Strings.SCOPE;
+import static org.jboss.weld.probe.Strings.SEARCH;
 import static org.jboss.weld.probe.Strings.TX_PHASE;
 
 import java.util.Collection;
@@ -192,7 +193,7 @@ final class Queries {
          * @return true if the filter is null or the value's {@link Object#toString()} contains the filter
          */
         boolean testContainsIgnoreCase(String filter, Object value) {
-            return filter == null || value.toString().toLowerCase().contains(filter.toLowerCase());
+            return filter == null || containsIgnoreCase(filter, value);
         }
 
         /**
@@ -240,6 +241,16 @@ final class Queries {
                 }
             }
             return true;
+        }
+
+        /**
+         *
+         * @param filter
+         * @param value
+         * @return true if the value's {@link Object#toString()} contains the filter
+         */
+        boolean containsIgnoreCase(String filter, Object value) {
+            return value.toString().toLowerCase().contains(filter.toLowerCase());
         }
 
     }
@@ -368,13 +379,16 @@ final class Queries {
 
         private String methodName;
 
+        private String search;
+
         InvocationsFilters(Probe probe) {
             super(probe);
         }
 
         @Override
         boolean test(Invocation invocation) {
-            return testContainsIgnoreCase(beanClass, invocation.getBeanClass()) && testContainsIgnoreCase(methodName, invocation.getMethodName());
+            return testSearch(search, invocation) && testContainsIgnoreCase(beanClass, invocation.getBeanClass())
+                    && testContainsIgnoreCase(methodName, invocation.getMethodName());
         }
 
         @Override
@@ -383,12 +397,31 @@ final class Queries {
                 beanClass = value;
             } else if (METHOD_NAME.equals(name)) {
                 methodName = value;
+            } else if (SEARCH.equals(name)) {
+                search = value;
             }
+        }
+
+        boolean testSearch(String search, Invocation invocation) {
+            if (search == null) {
+                return true;
+            }
+            if (containsIgnoreCase(search, invocation.getBeanClass()) || containsIgnoreCase(search, invocation.getMethodName())) {
+                return true;
+            }
+            if (invocation.hasChildren()) {
+                for (Invocation child : invocation.getChildren()) {
+                    if (testSearch(search, child)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
         @Override
         public String toString() {
-            return String.format("InvocationsFilters [beanClass=%s, methodName=%s]", beanClass, methodName);
+            return String.format("InvocationsFilters [beanClass=%s, methodName=%s, search=%s]", beanClass, methodName, search);
         }
 
     }
@@ -406,10 +439,8 @@ final class Queries {
 
         @Override
         boolean test(EventInfo event) {
-            return testContainsIgnoreCase(eventInfo, event.eventString) &&
-                    testContainsIgnoreCase(type, event.type) &&
-                    testContainsIgnoreCase(qualifiers, event.qualifiers) &&
-                    (container == null || container == event.containerEvent);
+            return testContainsIgnoreCase(eventInfo, event.eventString) && testContainsIgnoreCase(type, event.type)
+                    && testContainsIgnoreCase(qualifiers, event.qualifiers) && (container == null || container == event.containerEvent);
         }
 
         @Override
