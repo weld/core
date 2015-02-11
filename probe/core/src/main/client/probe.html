@@ -858,6 +858,7 @@ ${head}
                         {{input value=qualifiers class="form-control" placeholder="Any contains"}}
                     </form>
                 </th>
+                <th>Timestamp</th>
                 <th>
                     Resolved observers
                 </th>
@@ -869,6 +870,7 @@ ${head}
                 <td>{{eventInfo}}</td>
                 <td>{{abbr type 20 true}}</td>
                 <td>{{eachLiAbbr qualifiers 20}}</td>
+                <td><span title="{{unbound tsLong}}">{{tsShort}}</span></td>
                 <td>
                     <ul class="plain-list no-margin">
                         {{#each observers}}
