@@ -77,6 +77,7 @@ final class Strings {
     static final String ACCESSIBLE_BDAS = "accessibleBdas";
     static final String BEANS = "beans";
     static final String SEARCH = "search";
+    static final String TIMESTAMP = "ts";
 
     static final String PAGE = "page";
     static final String PAGE_SIZE = "pageSize";

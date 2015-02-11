@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import javax.enterprise.context.Destroyed;
 import javax.enterprise.context.Initialized;
@@ -39,6 +40,7 @@ import org.jboss.weld.event.ResolvedObservers;
 import org.jboss.weld.experimental.Prioritized;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.collections.ImmutableList;
+import org.jboss.weld.util.reflection.Formats;
 
 /**
  * Catch-all observer with low priority (called first) that captures all events within the application and keeps information about them.
@@ -50,6 +52,8 @@ class ProbeObserver implements ObserverMethod<Object>, Prioritized {
 
     private static final int PRIORITY_OFFSET = 100;
 
+    private final Pattern excludePattern;
+
     static class EventInfo {
 
         final boolean containerEvent;
@@ -58,14 +62,17 @@ class ProbeObserver implements ObserverMethod<Object>, Prioritized {
         final String eventString;
         final InjectionPoint injectionPoint;
         final List<ObserverMethod<?>> observers;
+        final long timestamp;
 
-        private EventInfo(Type type, Set<Annotation> qualifiers, Object event, InjectionPoint injectionPoint, List<ObserverMethod<?>> observers, boolean containerEvent) {
+        private EventInfo(Type type, Set<Annotation> qualifiers, Object event, InjectionPoint injectionPoint, List<ObserverMethod<?>> observers,
+                boolean containerEvent, long timestamp) {
             this.type = type;
             this.qualifiers = qualifiers;
             this.injectionPoint = injectionPoint;
             this.containerEvent = containerEvent;
             this.eventString = initEventString(event, containerEvent);
             this.observers = observers;
+            this.timestamp = timestamp;
         }
 
         /*
@@ -90,9 +97,10 @@ class ProbeObserver implements ObserverMethod<Object>, Prioritized {
     private final CurrentEventMetadata currentEventMetadata;
     private final BeanManagerImpl manager;
 
-    ProbeObserver(BeanManagerImpl manager) {
+    ProbeObserver(BeanManagerImpl manager, Pattern excludePattern) {
         this.currentEventMetadata = manager.getServices().get(CurrentEventMetadata.class);
         this.manager = manager;
+        this.excludePattern = excludePattern;
     }
 
     @Override
@@ -123,9 +131,13 @@ class ProbeObserver implements ObserverMethod<Object>, Prioritized {
     @Override
     public void notify(Object event) {
         EventMetadata metadata = currentEventMetadata.peek();
+        if (excludePattern != null && excludePattern.matcher(Formats.formatType(metadata.getType(), false)).matches()) {
+            ProbeLogger.LOG.eventExcluded(metadata.getType());
+            return;
+        }
         boolean containerEvent = isContainerEvent(metadata.getQualifiers());
         List<ObserverMethod<?>> observers = resolveObservers(metadata, containerEvent);
-        EventInfo info = new EventInfo(metadata.getType(), metadata.getQualifiers(), event, metadata.getInjectionPoint(), observers, containerEvent);
+        EventInfo info = new EventInfo(metadata.getType(), metadata.getQualifiers(), event, metadata.getInjectionPoint(), observers, containerEvent, System.currentTimeMillis());
         events.add(0, info);
     }
 
@@ -149,6 +161,7 @@ class ProbeObserver implements ObserverMethod<Object>, Prioritized {
 
     /**
      * Returns a mutable copy of the captured event information.
+     *
      * @return mutable copy of the captured event information
      */
     public List<EventInfo> getEvents() {
@@ -159,6 +172,7 @@ class ProbeObserver implements ObserverMethod<Object>, Prioritized {
 
     /**
      * Clear the state
+     *
      * @return the number of captured events before the state is cleared.
      */
     public int clear() {

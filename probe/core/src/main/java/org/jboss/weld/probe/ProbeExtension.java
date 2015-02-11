@@ -38,6 +38,7 @@ import javax.interceptor.Interceptor;
 import org.jboss.weld.bean.builtin.BeanManagerProxy;
 import org.jboss.weld.config.ConfigurationKey;
 import org.jboss.weld.config.WeldConfiguration;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.bean.ForwardingBeanAttributes;
@@ -60,11 +61,11 @@ public class ProbeExtension implements Extension {
 
     public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery event, BeanManager beanManager) {
         ProbeLogger.LOG.developmentModeEnabled();
-        event.addAnnotatedType(beanManager.createAnnotatedType(Monitored.class), Monitored.class.getName());
-        event.addAnnotatedType(beanManager.createAnnotatedType(MonitoredComponent.class), MonitoredComponent.class.getName());
-        event.addAnnotatedType(beanManager.createAnnotatedType(InvocationMonitor.class), InvocationMonitor.class.getName());
-        WeldManager weldManager = (WeldManager) beanManager;
-        String exclude = weldManager.getServices().get(WeldConfiguration.class).getStringProperty(ConfigurationKey.PROBE_INVOCATION_MONITOR_EXCLUDE_TYPE);
+        BeanManagerImpl manager = BeanManagerProxy.unwrap(beanManager);
+        event.addAnnotatedType(manager.createAnnotatedType(Monitored.class), Monitored.class.getName());
+        event.addAnnotatedType(manager.createAnnotatedType(MonitoredComponent.class), MonitoredComponent.class.getName());
+        event.addAnnotatedType(manager.createAnnotatedType(InvocationMonitor.class), InvocationMonitor.class.getName());
+        String exclude = manager.getServices().get(WeldConfiguration.class).getStringProperty(ConfigurationKey.PROBE_INVOCATION_MONITOR_EXCLUDE_TYPE);
         invocationMonitorExcludePattern = exclude.isEmpty() ? null : Pattern.compile(exclude);
     }
 
@@ -117,7 +118,9 @@ public class ProbeExtension implements Extension {
     }
 
     public void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager manager) {
-        probeObserver = new ProbeObserver(BeanManagerProxy.unwrap(manager));
+        WeldManager weldManager = (WeldManager) manager;
+        String exclude = weldManager.getServices().get(WeldConfiguration.class).getStringProperty(ConfigurationKey.PROBE_EVENT_MONITOR_EXCLUDE_TYPE);
+        probeObserver = new ProbeObserver(BeanManagerProxy.unwrap(manager), exclude.isEmpty() ? null : Pattern.compile(exclude));
         event.addObserverMethod(probeObserver);
     }
 

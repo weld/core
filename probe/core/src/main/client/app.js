@@ -466,9 +466,16 @@ Probe.EventsRoute = Ember.Route.extend(Probe.ResetScroll, {
         if (params.page) {
             query = appendToQuery(query, 'page', params.page);
         }
-        return $.getJSON(restUrlBase + 'events' + query).done(function(data) {
-            return data;
-        }).fail(function(jqXHR, textStatus, errorThrown) {
+        return $.getJSON(restUrlBase + 'events' + query).done(
+            function(data) {
+                data.data.forEach(function(event) {
+                    event['tsShort'] = moment(event['ts']).format(
+                        'HH:mm:ss.SSS');
+                    event['tsLong'] = moment(event['ts']).format(
+                        'YYYY-MM-DD HH:mm:ss.SSS');
+                });
+                return data;
+            }).fail(function(jqXHR, textStatus, errorThrown) {
             alert('Unable to get JSON data: ' + textStatus);
         });
     },
@@ -673,17 +680,19 @@ Ember.Handlebars.registerBoundHelper('eachLiAbbr',
         return new Handlebars.SafeString(ret);
     });
 
-Ember.Handlebars.registerBoundHelper('abbr', function(text, limit, addTitle, suppresshtmlOutput) {
-    var escaped = Handlebars.Utils.escapeExpression(text);
-    if (escaped.length > limit) {
-        var ret = addTitle ? '<span title="' + text + '">' : '';
-        ret += escaped.charAt(0) === '@' ? abbreviateAnnotation(escaped, !suppresshtmlOutput)
-            : abbreviateType(escaped, !suppresshtmlOutput);
-        ret += '</span>';
-        escaped = ret;
-    }
-    return new Handlebars.SafeString(escaped);
-});
+Ember.Handlebars.registerBoundHelper('abbr',
+    function(text, limit, addTitle, suppresshtmlOutput) {
+        var escaped = Handlebars.Utils.escapeExpression(text);
+        if (escaped.length > limit) {
+            var ret = addTitle ? '<span title="' + text + '">' : '';
+            ret += escaped.charAt(0) === '@' ? abbreviateAnnotation(escaped,
+                !suppresshtmlOutput) : abbreviateType(escaped,
+                !suppresshtmlOutput);
+            ret += '</span>';
+            escaped = ret;
+        }
+        return new Handlebars.SafeString(escaped);
+    });
 
 // VIEWS
 
