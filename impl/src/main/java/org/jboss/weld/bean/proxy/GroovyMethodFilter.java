@@ -44,7 +44,8 @@ public class GroovyMethodFilter implements ProxiedMethodFilter {
                 new MethodSignatureImpl("getProperty", String.class.getName()),
                 new MethodSignatureImpl("setProperty", String.class.getName(), Object.class.getName()),
                 new MethodSignatureImpl("getMetaClass"),
-                new MethodSignatureImpl("setMetaClass", "groovy.lang.MetaClass"));
+                new MethodSignatureImpl("setMetaClass", "groovy.lang.MetaClass"),
+                new MethodSignatureImpl("$getStaticMetaClass"));
     }
 
     @Override
