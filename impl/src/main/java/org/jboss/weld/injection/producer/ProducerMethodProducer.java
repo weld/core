@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.injection.producer;
 
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
@@ -33,10 +34,11 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.bean.DisposalMethod;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.exceptions.DefinitionException;
-import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.InjectionPointFactory;
+import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.security.GetMethodAction;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * {@link Producer} implementation for producer methods.
@@ -65,18 +67,16 @@ public abstract class ProducerMethodProducer<X, T> extends AbstractMemberProduce
             throw BeanLogger.LOG.inconsistentAnnotationsOnMethod(PRODUCER_ANNOTATION, "@Observes", this.method);
         } else if (method.getEnhancedParameters(Disposes.class).size() > 0) {
             throw BeanLogger.LOG.inconsistentAnnotationsOnMethod(PRODUCER_ANNOTATION, "@Disposes", this.method);
-        } else if (getDeclaringBean() instanceof SessionBean<?>) {
+        } else if (getDeclaringBean() instanceof SessionBean<?> && !Modifier.isStatic(method.slim().getJavaMember().getModifiers())) {
             boolean methodDeclaredOnTypes = false;
             // TODO use annotated item?
             for (Type type : getDeclaringBean().getTypes()) {
-                // TODO: deal with parameterized types!
-                if (type instanceof Class<?>) {
-                    try {
-                        AccessController.doPrivileged(new GetMethodAction((Class<?>) type, method.getName(), method.getParameterTypesAsArray()));
-                        methodDeclaredOnTypes = true;
-                        break;
-                    } catch (PrivilegedActionException ignored) {
-                    }
+                Class<?> clazz = Reflections.getRawType(type);
+                try {
+                    AccessController.doPrivileged(new GetMethodAction(clazz, method.getName(), method.getParameterTypesAsArray()));
+                    methodDeclaredOnTypes = true;
+                    break;
+                } catch (PrivilegedActionException ignored) {
                 }
             }
             if (!methodDeclaredOnTypes) {
