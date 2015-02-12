@@ -486,4 +486,10 @@ public interface BeanLogger extends WeldLogger {
     @LogMessage(level = Level.WARN)
     @Message(id = 1558, value = "Unable to create directory {0} to dump the proxy classes.", format = Format.MESSAGE_FORMAT)
     void directoryCannotBeCreated(Object param1);
+
+    @Message(id = 1559, value = "Bean builder {0} does not define a create lifecycle callback.", format = Format.MESSAGE_FORMAT)
+    DefinitionException beanBuilderInvalidCreateCallback(Object param1);
+
+    @Message(id = 1560, value = "Bean builder {0} does not define a destroy lifecycle callback.", format = Format.MESSAGE_FORMAT)
+    DefinitionException beanBuilderInvalidDestroyCallback(Object param1);
 }

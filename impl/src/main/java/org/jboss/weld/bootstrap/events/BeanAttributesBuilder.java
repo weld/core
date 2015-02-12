@@ -26,6 +26,7 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.spi.BeanAttributes;
 
+import org.jboss.weld.bean.attributes.ImmutableBeanAttributes;
 import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.util.Preconditions;
@@ -64,10 +65,10 @@ public abstract class BeanAttributesBuilder<T, B> {
 
     /**
      *
-     * @return
+     * @return the bean attributes
      */
     public BeanAttributes<T> build() {
-        return new ImmutableBeanAttributes<T>(name, qualifiers, scope, stereotypes, types, alternative);
+        return new ImmutableBeanAttributes<T>(ImmutableSet.copyOf(stereotypes), alternative, name, ImmutableSet.copyOf(qualifiers), ImmutableSet.copyOf(types), scope);
     }
 
     public B addType(Type type) {
@@ -141,82 +142,15 @@ public abstract class BeanAttributesBuilder<T, B> {
         return self();
     }
 
+    public B alternative() {
+        return alternative(true);
+    }
+
     public B alternative(boolean value) {
         this.alternative = value;
         return self();
     }
 
     protected abstract B self();
-
-    /**
-     *
-     * @author Martin Kouba
-     *
-     * @param <T>
-     */
-    static class ImmutableBeanAttributes<T> implements BeanAttributes<T> {
-
-        private final String name;
-
-        private final Set<Annotation> qualifiers;
-
-        private final Class<? extends Annotation> scope;
-
-        private final Set<Class<? extends Annotation>> stereotypes;
-
-        private final Set<Type> types;
-
-        private final boolean alternative;
-
-        /**
-         *
-         * @param name
-         * @param qualifiers
-         * @param scope
-         * @param stereotypes
-         * @param types
-         * @param alternative
-         */
-        ImmutableBeanAttributes(String name, Set<Annotation> qualifiers, Class<? extends Annotation> scope, Set<Class<? extends Annotation>> stereotypes,
-                Set<Type> types, boolean alternative) {
-            this.name = name;
-            this.qualifiers = ImmutableSet.copyOf(qualifiers);
-            this.scope = scope;
-            this.stereotypes = ImmutableSet.copyOf(stereotypes);
-            this.types = ImmutableSet.copyOf(types);
-            this.alternative = alternative;
-        }
-
-        @Override
-        public Set<Type> getTypes() {
-            return types;
-        }
-
-        @Override
-        public Set<Annotation> getQualifiers() {
-            return qualifiers;
-        }
-
-        @Override
-        public Class<? extends Annotation> getScope() {
-            return scope;
-        }
-
-        @Override
-        public String getName() {
-            return name;
-        }
-
-        @Override
-        public Set<Class<? extends Annotation>> getStereotypes() {
-            return stereotypes;
-        }
-
-        @Override
-        public boolean isAlternative() {
-            return alternative;
-        }
-
-    }
 
 }
