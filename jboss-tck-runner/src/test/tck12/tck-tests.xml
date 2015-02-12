@@ -44,13 +44,6 @@
             </class>
 
             <!-- Issues in the TCK -->
-            <!-- CDITCK-457 -->
-            <class name="org.jboss.cdi.tck.tests.context.passivating.dependency.resource.webservice.WebResourcePassivationCapableDependencyTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
-            
             <!-- changes in Weld 3 which were not reflected in TCK yet -->
             <class name="org.jboss.cdi.tck.tests.event.fires.FireEventTest">
                 <methods>
