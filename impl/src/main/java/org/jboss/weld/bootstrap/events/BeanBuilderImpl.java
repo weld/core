@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.bootstrap.events;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -24,6 +25,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.AnnotatedType;
@@ -35,8 +37,14 @@ import javax.enterprise.inject.spi.InjectionTarget;
 import javax.enterprise.inject.spi.PassivationCapable;
 
 import org.jboss.weld.bean.BeanIdentifiers;
+import org.jboss.weld.bootstrap.BeanDeployment;
+import org.jboss.weld.bootstrap.BeanDeploymentArchiveMapping;
+import org.jboss.weld.bootstrap.ContextHolder;
+import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.experimental.BeanBuilder;
+import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.DeploymentStructures;
 import org.jboss.weld.util.Preconditions;
 import org.jboss.weld.util.bean.ForwardingBeanAttributes;
 import org.jboss.weld.util.collections.ImmutableSet;
@@ -52,7 +60,9 @@ public final class BeanBuilderImpl<T> extends BeanAttributesBuilder<T, BeanBuild
 
     private static final String CALLBACK_PARAM = "callback";
 
-    private final BeanManagerImpl beanManager;
+    private final DeploymentFinder deploymentFinder;
+
+    private BeanManagerImpl beanManager;
 
     private String id;
 
@@ -66,15 +76,19 @@ public final class BeanBuilderImpl<T> extends BeanAttributesBuilder<T, BeanBuild
 
     /**
      *
-     * @param beanManager
      * @param extensionClass
+     * @param bdaMapping
+     * @param deployment
+     * @param contexts
+     * @param deploymentManager
      */
-    public BeanBuilderImpl(BeanManagerImpl beanManager, Class<? extends Extension> extensionClass) {
+    public BeanBuilderImpl(Class<? extends Extension> extensionClass, BeanDeploymentArchiveMapping bdaMapping, Deployment deployment,
+            Collection<ContextHolder<? extends Context>> contexts, BeanManagerImpl deploymentManager) {
         super();
         Preconditions.checkArgumentNotNull(beanManager, "beanManager");
         Preconditions.checkArgumentNotNull(extensionClass, "extensionClass");
-        this.beanManager = beanManager;
-        this.beanClass = extensionClass;
+        this.deploymentFinder = new DeploymentFinder(bdaMapping, deployment, contexts, deploymentManager);
+        beanClass(extensionClass);
         this.injectionPoints = new HashSet<InjectionPoint>();
     }
 
@@ -120,6 +134,7 @@ public final class BeanBuilderImpl<T> extends BeanAttributesBuilder<T, BeanBuild
     public BeanBuilder<T> beanClass(Class<?> beanClass) {
         Preconditions.checkArgumentNotNull(beanClass, "beanClass");
         this.beanClass = beanClass;
+        this.beanManager = deploymentFinder.getOrCreateBeanDeployment(beanClass).getBeanManager();
         return this;
     }
 
@@ -198,13 +213,17 @@ public final class BeanBuilderImpl<T> extends BeanAttributesBuilder<T, BeanBuild
     }
 
     void validate() {
-        if (createCallback == null || destroyCallback == null) {
-            throw getTodoException();
+        if (createCallback == null) {
+            throw BeanLogger.LOG.beanBuilderInvalidCreateCallback(this);
+        }
+        if (destroyCallback == null) {
+            throw BeanLogger.LOG.beanBuilderInvalidDestroyCallback(this);
         }
     }
 
-    private IllegalStateException getTodoException() {
-        return new IllegalStateException();
+    @Override
+    public String toString() {
+        return String.format("BeanBuilderImpl [id=%s, beanClass=%s, qualifiers=%s, types=%s]", id, beanClass, qualifiers, types);
     }
 
     /**
@@ -356,6 +375,30 @@ public final class BeanBuilderImpl<T> extends BeanAttributesBuilder<T, BeanBuild
             } else {
                 destroy.accept(instance, ctx);
             }
+        }
+
+    }
+
+    static class DeploymentFinder {
+
+        private final BeanDeploymentArchiveMapping bdaMapping;
+
+        private final Deployment deployment;
+
+        private final Collection<ContextHolder<? extends Context>> contexts;
+
+        private final BeanManagerImpl deploymentManager;
+
+        DeploymentFinder(BeanDeploymentArchiveMapping bdaMapping, Deployment deployment, Collection<ContextHolder<? extends Context>> contexts,
+                BeanManagerImpl deploymentManager) {
+            this.bdaMapping = bdaMapping;
+            this.deployment = deployment;
+            this.contexts = contexts;
+            this.deploymentManager = deploymentManager;
+        }
+
+        BeanDeployment getOrCreateBeanDeployment(Class<?> clazz) {
+            return DeploymentStructures.getOrCreateBeanDeployment(deployment, deploymentManager, bdaMapping, contexts, clazz);
         }
 
     }

@@ -61,6 +61,14 @@ public abstract class AbstractBeanDiscoveryEvent extends AbstractDefinitionConta
         return deployment;
     }
 
+    /**
+     *
+     * @return the contexts
+     */
+    protected Collection<ContextHolder<? extends Context>> getContexts() {
+        return contexts;
+    }
+
     protected TypeStore getTypeStore() {
         return getDeployment().getServices().get(TypeStore.class);
     }

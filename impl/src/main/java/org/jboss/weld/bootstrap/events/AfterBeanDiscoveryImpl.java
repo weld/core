@@ -33,7 +33,6 @@ import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.DefinitionException;
-import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.ObserverMethod;
 import javax.enterprise.inject.spi.PassivationCapable;
@@ -129,17 +128,14 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
 
     @Override
     public <T> BeanBuilder<T> addBean() {
-        Class<? extends Extension> extensionClass = getReceiver().getClass();
-        BeanManagerImpl beanManager = getOrCreateBeanDeployment(extensionClass).getBeanManager();
-        BeanBuilderImpl<T> builder = new BeanBuilderImpl<T>(beanManager, extensionClass);
-        additionalBeans.add(new BeanRegistration(builder, beanManager));
+        BeanBuilderImpl<T> builder = new BeanBuilderImpl<T>(getReceiver().getClass(), getBeanDeployments(), getDeployment(), getContexts(), getBeanManager());
+        additionalBeans.add(new BeanRegistration(builder));
         return builder;
     }
 
     @Override
     public <T> BeanBuilder<T> beanBuilder() {
-        Class<? extends Extension> extensionClass = getReceiver().getClass();
-        return new BeanBuilderImpl<T>(getOrCreateBeanDeployment(extensionClass).getBeanManager(), extensionClass);
+        return new BeanBuilderImpl<T>(getReceiver().getClass(), getBeanDeployments(), getDeployment(), getContexts(), getBeanManager());
     }
 
     protected <T> void processBeanRegistration(BeanRegistration registration) {
@@ -235,7 +231,7 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
             this.builder = null;
         }
 
-        BeanRegistration(BeanBuilderImpl<?> builder, BeanManagerImpl beanManager) {
+        BeanRegistration(BeanBuilderImpl<?> builder) {
             this.builder = builder;
             this.bean = null;
         }
