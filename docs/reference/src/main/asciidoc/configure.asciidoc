@@ -13,6 +13,25 @@ Each configuration property can be specified (by priority in descending order):
 
 If a configuration key is set in multiple sources (e.g. as a system property and in a properties file), the value from the source with higher priority is taken, other values are ignored. Unsupported configuration keys are ignored. If an invalid configuration property value is set, the container automatically detects the problem and treats it as a deployment problem. 
 
+[[relaxedConstruction]]
+==== Relaxed construction
+
+CDI requires that beans that are normal-scoped, intercepted or decorated always define a no-argument constructor.
+This requirement applies even if the bean already defines an `@Inject` annotated constructor with parameters.
+This is purely a technical requirement implied by how Java allocates class instances.
+
+Weld is however able to operate fine even if this requirement is not met.
+Weld uses special non-portable JVM APIs that allow it to allocate proxy instances without calling proxy's constructor.
+This mode is not enabled by default. It can be enabled using the following configuration option:
+
+.Supported configuration properties
+[cols=",,",options="header",]
+|=======================================================================
+|Configuration key |Default value |Description
+|`org.jboss.weld.construction.relaxed` |false|If set to `true`, then requirements on bean constructors are relaxed.
+|=======================================================================
+
+
 ==== Concurrent deployment configuration
 
 By default Weld supports concurrent loading and deploying of beans.

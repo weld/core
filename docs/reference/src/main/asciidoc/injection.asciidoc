@@ -460,16 +460,8 @@ change the type of the injection point to `Y`, or
 
 [NOTE]
 ====
-
-Weld also supports a non-standard workaround for this limitation, using
-non-portable JVM APIs:
-
-* Sun, IcedTea, Mac: `Unsafe.allocateInstance()` (The most efficient)
-* IBM, JRockit: `ReflectionFactory.newConstructorForSerialization()`
-
-To enable this workaround, simply put an empty marker file
-`META-INF/org.jboss.weld.enableUnsafeProxies` somewhere on the
-application's classpath.
+Weld also supports a non-standard workaround for this limitation.
+See <<relaxedConstruction,the Configuration chapter>> for more information.
 ====
 
 === Obtaining a contextual instance by programmatic lookup
