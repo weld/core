@@ -85,8 +85,11 @@ public final class BeanBuilderImpl<T> extends BeanAttributesBuilder<T, BeanBuild
     public BeanBuilderImpl(Class<? extends Extension> extensionClass, BeanDeploymentArchiveMapping bdaMapping, Deployment deployment,
             Collection<ContextHolder<? extends Context>> contexts, BeanManagerImpl deploymentManager) {
         super();
-        Preconditions.checkArgumentNotNull(beanManager, "beanManager");
         Preconditions.checkArgumentNotNull(extensionClass, "extensionClass");
+        Preconditions.checkArgumentNotNull(bdaMapping, "bdaMapping");
+        Preconditions.checkArgumentNotNull(deployment, "deployment");
+        Preconditions.checkArgumentNotNull(contexts, "contexts");
+        Preconditions.checkArgumentNotNull(deploymentManager, "deploymentManager");
         this.deploymentFinder = new DeploymentFinder(bdaMapping, deployment, contexts, deploymentManager);
         beanClass(extensionClass);
         this.injectionPoints = new HashSet<InjectionPoint>();
@@ -119,8 +122,13 @@ public final class BeanBuilderImpl<T> extends BeanAttributesBuilder<T, BeanBuild
             injectionTarget.preDestroy(i);
             c.release();
         });
+        return read(beanManager.createBeanAttributes(type));
+    }
 
-        final BeanAttributes<T> beanAttributes = beanManager.createBeanAttributes(type);
+    @Override
+    public BeanBuilder<T> read(BeanAttributes<T> beanAttributes) {
+        Preconditions.checkArgumentNotNull(beanAttributes, "beanAttributes");
+
         scope(beanAttributes.getScope());
         name(beanAttributes.getName());
         alternative(beanAttributes.isAlternative());
