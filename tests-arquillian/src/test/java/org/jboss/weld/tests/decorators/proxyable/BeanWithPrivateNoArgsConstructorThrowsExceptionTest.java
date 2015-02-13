@@ -24,6 +24,9 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.weld.bean.proxy.DefaultProxyInstantiator;
+import org.jboss.weld.config.ConfigurationKey;
+import org.jboss.weld.tests.util.PropertiesBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -33,16 +36,20 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Arquillian.class)
 public class BeanWithPrivateNoArgsConstructorThrowsExceptionTest {
-    
+
     @ShouldThrowException(DeploymentException.class)
     @Deployment
     public static Archive<?> deploy() {
         return ShrinkWrap.create(BeanArchive.class)
                 .decorate(DecoratorBean.class)
                 .addClass(DecoratedBean.class)
-                .addClass(BeanWithPrivateNoArgsConstructor.class);
+                .addClass(BeanWithPrivateNoArgsConstructor.class)
+                .addAsResource(
+                        PropertiesBuilder.newBuilder()
+                                .set(ConfigurationKey.PROXY_INSTANTIATOR.get(), DefaultProxyInstantiator.class.getName())
+                                .build(), "weld.properties");
     }
-    
+
     @Test
     public void testDeploymentFails() {
     }

@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2013, Red Hat, Inc., and individual contributors
+ * Copyright 2015, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -16,32 +16,20 @@
  */
 package org.jboss.weld.tests.proxy.instantiator.unsafe;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
+import javax.annotation.Priority;
+import javax.interceptor.AroundInvoke;
+import javax.interceptor.Interceptor;
+import javax.interceptor.InvocationContext;
 
-@RequestScoped
-public class NormalScopedFoo implements NormalScopedFooInterface {
+@Interceptor
+@AlphaBinding
+@Priority(Interceptor.Priority.APPLICATION)
+public class AlphaInterceptor {
 
-    private String id = "Et";
+    static final String MARKER = "intercepted";
 
-    @Inject
-    public NormalScopedFoo(BeanManager beanManager) {
-        id+= " voila";
-    }
-
-    @PostConstruct
-    public void init() {
-        id+= "!";
-    }
-
-    @AlphaBinding
-    public String ping() {
-        return id;
-    }
-
-    public String getClassName() {
-        return this.getClass().getName();
+    @AroundInvoke
+    public Object intercept(InvocationContext ctx) throws Exception {
+        return MARKER + ctx.proceed();
     }
 }

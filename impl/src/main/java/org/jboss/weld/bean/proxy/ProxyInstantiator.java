@@ -92,10 +92,12 @@ public interface ProxyInstantiator extends Service {
             ProxyInstantiator result = DefaultProxyInstantiator.INSTANCE;
             final String instantiator = configuration.getStringProperty(ConfigurationKey.PROXY_INSTANTIATOR);
             if (!instantiator.isEmpty()) {
-                try {
-                    result = newInstance(instantiator);
-                } catch (Exception e) {
-                    throw new WeldException(e);
+                if (!DefaultProxyInstantiator.class.getName().equals(instantiator)) {
+                    try {
+                        result = newInstance(instantiator);
+                    } catch (Exception e) {
+                        throw new WeldException(e);
+                    }
                 }
             } else if (configuration.getBooleanProperty(ConfigurationKey.RELAXED_CONSTRUCTION) || configuration.getBooleanProperty(ConfigurationKey.PROXY_UNSAFE)) {
                 for (String implementation : IMPLEMENTATIONS) {
@@ -118,7 +120,11 @@ public interface ProxyInstantiator extends Service {
             if (DefaultProxyInstantiator.class.getName().equals(implementation)) {
                 return DefaultProxyInstantiator.INSTANCE;
             }
-            return (ProxyInstantiator) Reflections.loadClass(implementation, new ClassLoaderResourceLoader(ProxyInstantiator.class.getClassLoader())).newInstance();
+            Class<? extends ProxyInstantiator> clazz = Reflections.loadClass(implementation, new ClassLoaderResourceLoader(ProxyInstantiator.class.getClassLoader()));
+            if (clazz == null) {
+                throw new WeldException("Unable to load ProxyInstantiator implementation: " + implementation);
+            }
+            return clazz.newInstance();
         }
     }
 }

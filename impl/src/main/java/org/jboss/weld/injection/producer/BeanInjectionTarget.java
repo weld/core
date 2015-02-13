@@ -30,6 +30,7 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bean.CustomDecoratorWrapper;
 import org.jboss.weld.bean.DecoratorImpl;
+import org.jboss.weld.bean.proxy.ProxyInstantiator;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -137,6 +138,9 @@ public class BeanInjectionTarget<T> extends BasicInjectionTarget<T> {
     }
 
     protected void checkNoArgsConstructor(EnhancedAnnotatedType<T> type) {
+        if (!beanManager.getServices().get(ProxyInstantiator.class).isUsingConstructor()) {
+            return;
+        }
         EnhancedAnnotatedConstructor<T> constructor = type.getNoArgsEnhancedConstructor();
         if (constructor == null) {
             throw BeanLogger.LOG.decoratedHasNoNoargsConstructor(this);
