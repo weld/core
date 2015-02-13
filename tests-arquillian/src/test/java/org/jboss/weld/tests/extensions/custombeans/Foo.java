@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.tests.extensions.custombeans;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Model;
 import javax.enterprise.inject.spi.BeanManager;
@@ -24,6 +26,8 @@ import javax.inject.Inject;
 @Model
 public class Foo {
 
+    private static AtomicLong idGenerator = new AtomicLong(0);
+
     private Long id;
 
     @Inject
@@ -31,7 +35,7 @@ public class Foo {
 
     @PostConstruct
     public void postConstruct() {
-        id = System.currentTimeMillis();
+        id = idGenerator.incrementAndGet();
     }
 
     public void ping() {

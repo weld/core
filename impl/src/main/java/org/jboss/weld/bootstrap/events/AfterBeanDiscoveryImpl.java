@@ -142,7 +142,11 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
         Bean<?> bean = registration.getBean();
         BeanManagerImpl beanManager = registration.getBeanManager();
         if (beanManager == null) {
+            // Get the bean manager for beans added via ABD#addBean()
             beanManager = getOrCreateBeanDeployment(bean.getBeanClass()).getBeanManager();
+        } else {
+            // Also validate the bean produced by a builder
+            validateBean(bean);
         }
         if (bean instanceof Interceptor<?>) {
             beanManager.addInterceptor((Interceptor<?>) bean);

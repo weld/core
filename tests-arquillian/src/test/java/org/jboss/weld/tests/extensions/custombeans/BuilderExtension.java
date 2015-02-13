@@ -16,8 +16,10 @@
  */
 package org.jboss.weld.tests.extensions.custombeans;
 
+import java.util.Collections;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
@@ -43,10 +45,16 @@ public class BuilderExtension implements Extension {
 
         AnnotatedType<Foo> annotatedType = beanManager.createAnnotatedType(Foo.class);
 
-        // Read from AT, change the name
-        event.<Foo> addBean().read(annotatedType).name("bar");
+        // Read from bean attributes, change the name and remove @Model stereotype
+        // Note that we have to set the scope manually as it's initialized to @RequestScoped through the bean attributes
+        event.<Foo> addBean().beanClass(Foo.class).read(beanManager.createBeanAttributes(annotatedType)).name("bar")
+                .stereotypes(Collections.emptySet()).scope(Dependent.class).produceWith(() -> {
+                    Foo foo = new Foo();
+                    foo.postConstruct();
+                    return foo;
+                });
 
-        // Detached builder, read from AT, add qualifier
+        // Detached builder, read from AT, add qualifier, set id
         BeanBuilder<Foo> builder = event.<Foo> beanBuilder().read(annotatedType);
         builder.id("BAZinga").addQualifier(Juicy.Literal.INSTANCE);
         event.addBean(builder.build());

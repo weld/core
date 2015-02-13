@@ -17,11 +17,13 @@
 package org.jboss.weld.tests.extensions.custombeans;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
 
+import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
@@ -57,10 +59,15 @@ public class BeanBuilderTest {
     public void testCustomBean(BeanManager beanManager) throws Exception {
         Set<Bean<?>> beans = beanManager.getBeans("bar");
         assertEquals(1, beans.size());
+        Bean<Foo> fooBean = (Bean<Foo>) beans.iterator().next();
+        assertEquals(Dependent.class, fooBean.getScope());
+        Foo foo1 = (Foo) beanManager.getReference(fooBean, Foo.class, beanManager.createCreationalContext(fooBean));
+        Foo foo2 = (Foo) beanManager.getReference(fooBean, Foo.class, beanManager.createCreationalContext(fooBean));
+        assertFalse(foo1.getId().equals(foo2.getId()));
 
         beans = beanManager.getBeans(Foo.class, Juicy.Literal.INSTANCE);
         assertEquals(1, beans.size());
-        Bean<Foo> fooBean = (Bean<Foo>) beans.iterator().next();
+        fooBean = (Bean<Foo>) beans.iterator().next();
         Foo foo = (Foo) beanManager.getReference(fooBean, Foo.class, beanManager.createCreationalContext(fooBean));
         foo.ping();
 
