@@ -18,7 +18,7 @@
 package org.jboss.weld.bean.proxy;
 
 import java.security.AccessController;
-import java.security.PrivilegedActionException;
+import java.security.PrivilegedAction;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
@@ -29,10 +29,9 @@ import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.context.SerializableContextualInstanceImpl;
-import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.security.NewInstanceAction;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -40,7 +39,7 @@ import org.jboss.weld.util.reflection.Reflections;
  * @author Marius Bogoevici
  * @author Ales Justin
  */
-public class DecorationHelper<T> {
+public class DecorationHelper<T> implements PrivilegedAction<T> {
     private static ThreadLocal<Stack<DecorationHelper<?>>> helperStackHolder = new ThreadLocal<Stack<DecorationHelper<?>>>() {
         @Override
         protected Stack<DecorationHelper<?>> initialValue() {
@@ -58,9 +57,10 @@ public class DecorationHelper<T> {
 
     private int counter;
 
-    private BeanManagerImpl beanManager;
+    private final BeanManagerImpl beanManager;
     private final ContextualStore contextualStore;
     private final Bean<?> bean;
+    private final ProxyInstantiator instantiator;
 
     List<Decorator<?>> decorators;
 
@@ -72,6 +72,7 @@ public class DecorationHelper<T> {
         this.decorators = new LinkedList<Decorator<?>>(decorators);
         this.proxyClassForDecorator = proxyClassForDecorator;
         this.bean = bean;
+        this.instantiator = beanManager.getServices().get(ProxyInstantiator.class);
         counter = 0;
     }
 
@@ -103,23 +104,13 @@ public class DecorationHelper<T> {
     }
 
     private T createProxy(InjectionPoint injectionPoint, CreationalContext<?> creationalContext) {
-        try {
-            T proxy = AccessController.doPrivileged(NewInstanceAction.of(proxyClassForDecorator));
-            TargetBeanInstance newTargetBeanInstance = new TargetBeanInstance(targetBeanInstance);
-            Decorator<Object> decorator = Reflections.cast(decorators.get(counter++));
-            DecoratorProxyMethodHandler methodHandler = createMethodHandler(injectionPoint, creationalContext, decorator);
-            newTargetBeanInstance.setInterceptorsHandler(methodHandler);
-            ProxyFactory.setBeanInstance(beanManager.getContextId(), proxy, newTargetBeanInstance, bean);
-            return proxy;
-        } catch (PrivilegedActionException e) {
-            if (e.getCause() instanceof InstantiationException) {
-                throw new WeldException(BeanLogger.LOG.proxyInstantiationFailed(this), e.getCause());
-            } else if (e.getCause() instanceof IllegalAccessException) {
-                throw new WeldException(BeanLogger.LOG.proxyInstantiationBeanAccessFailed(this), e.getCause());
-            } else {
-                throw new WeldException(e.getCause());
-            }
-        }
+        final T proxy =  (System.getSecurityManager() == null) ? run() : AccessController.doPrivileged(this);
+        TargetBeanInstance newTargetBeanInstance = new TargetBeanInstance(targetBeanInstance);
+        Decorator<Object> decorator = Reflections.cast(decorators.get(counter++));
+        DecoratorProxyMethodHandler methodHandler = createMethodHandler(injectionPoint, creationalContext, decorator);
+        newTargetBeanInstance.setInterceptorsHandler(methodHandler);
+        ProxyFactory.setBeanInstance(beanManager.getContextId(), proxy, newTargetBeanInstance, bean);
+        return proxy;
     }
 
     public DecoratorProxyMethodHandler createMethodHandler(InjectionPoint injectionPoint, CreationalContext<?> creationalContext, Decorator<Object> decorator) {
@@ -127,6 +118,17 @@ public class DecorationHelper<T> {
         assert previousDelegate != null : "previousDelegate should have been set when calling beanManager.getReference(), but it wasn't!";
         SerializableContextualInstanceImpl<Decorator<Object>, Object> serializableContextualInstance = new SerializableContextualInstanceImpl<Decorator<Object>, Object>(decorator, decoratorInstance, null, contextualStore);
         return new DecoratorProxyMethodHandler(serializableContextualInstance, previousDelegate);
+    }
+
+    @Override
+    public T run() {
+        try {
+            return instantiator.newInstance(proxyClassForDecorator);
+        } catch (InstantiationException e) {
+            throw new DefinitionException(BeanLogger.LOG.proxyInstantiationFailed(this), e.getCause());
+        } catch (IllegalAccessException e) {
+            throw new DefinitionException(BeanLogger.LOG.proxyInstantiationBeanAccessFailed(this), e.getCause());
+        }
     }
 
 }
