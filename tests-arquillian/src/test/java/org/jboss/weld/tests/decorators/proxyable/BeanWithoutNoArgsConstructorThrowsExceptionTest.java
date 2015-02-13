@@ -24,18 +24,21 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.weld.bean.proxy.DefaultProxyInstantiator;
+import org.jboss.weld.config.ConfigurationKey;
+import org.jboss.weld.tests.util.PropertiesBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
- * Tests that the correct exception is thrown for a decorated bean that 
+ * Tests that the correct exception is thrown for a decorated bean that
  * has no public default constructor.
- * 
+ *
  * Addresses WELD-1436
  */
 @RunWith(Arquillian.class)
 public class BeanWithoutNoArgsConstructorThrowsExceptionTest {
-    
+
     @ShouldThrowException(DeploymentException.class)
     @Deployment
     public static Archive<?> deploy() {
@@ -43,9 +46,13 @@ public class BeanWithoutNoArgsConstructorThrowsExceptionTest {
                 .decorate(DecoratorBean.class)
                 .addClass(DecoratedBean.class)
                 .addClass(Foo.class)
-                .addClass(BeanWithoutNoArgsConstructor.class);
+                .addClass(BeanWithoutNoArgsConstructor.class)
+                .addAsResource(
+                        PropertiesBuilder.newBuilder()
+                                .set(ConfigurationKey.PROXY_INSTANTIATOR.get(), DefaultProxyInstantiator.class.getName())
+                                .build(), "weld.properties");
     }
-    
+
     @Test
     public void testDeploymentFails() {
     }

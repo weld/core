@@ -46,11 +46,11 @@ public class UnsafeInstantiatorClientProxyTest {
         // Verify the proxy delegates method invocation to the underlying bean instance
         String className = bar.getFoo().getClassName();
         assertNotNull(className);
-        assertEquals(NormalScopedFoo.class.getName(), className);
+        assertEquals(NormalScopedFoo.class.getName() + "$Proxy$_$$_WeldSubclass", className);
         // Verify bean constructor and @PostConstruct callback are called
         String id = bar.getFoo().ping();
         assertNotNull(id);
-        assertEquals("Et voila!", id);
+        assertEquals(AlphaInterceptor.MARKER + FooDecorator1.MARKER + FooDecorator2.MARKER + "Et voila!", id);
     }
 
     @Test
