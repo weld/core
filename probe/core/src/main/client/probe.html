@@ -28,7 +28,14 @@ ${head}
                         <li>{{#link-to 'configuration'}}Configuration{{/link-to}}</li>
                         <li>{{#link-to 'beanList'}}Beans{{/link-to}}</li>
                         <li>{{#link-to 'observerList'}}Observer Methods{{/link-to}}</li>
-                        <li>{{#link-to 'contexts'}}Contexts{{/link-to}}</li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Contexts <span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                {{#each contexts}}
+                                <li>{{#link-to 'context' id}}{{scope}}{{/link-to}}</li>
+                                {{/each}}
+                            </ul>
+                        </li>
                         <li>{{#link-to 'invocationList'}}Invocation Trees{{/link-to}}</li>
                         <li>{{#link-to 'events'}}Events{{/link-to}}</li>
                     </ul>
@@ -192,7 +199,7 @@ ${head}
         <h1>Beans</h1>
 
         <div class="btn-line form-control-like">
-            <form {{action "filter" on="submit"}} class="form-inline">
+            <form class="form-inline">
                 <label class="control-label">Bean Archive:</label>
                 {{view "select"
                     value=bda
@@ -497,7 +504,7 @@ ${head}
         <h1>Observer Methods</h1>
 
         <div class="btn-line form-control-like">
-            <form {{action "filter" on="submit"}} class="form-inline">
+            <form class="form-inline">
                 <label class="control-label">Bean Archive:</label>
                 {{view "select"
                     value=bda
@@ -662,31 +669,48 @@ ${head}
 
     <script
         type="text/x-handlebars"
-        data-template-name="contexts">
+        data-template-name="context">
 
-        <h1>Contexts</h1>
+        <h1>Context - {{scope}}</h1>
+
+        {{#if cids}}
+        <div class="btn-line">
+            <form class="form-inline">
+                <label class="control-label">Long-running conversation: </label>
+                {{view "select"
+                    value=cid
+                    content=cids
+                    prompt="-- NONE SELECTED --"
+                    class="form-control form-control-auto-width"
+                }}
+            </form>
+        </div>
+        {{/if}}
 
         <div class="btn-line">
-            <button {{action 'refreshContexts'}} class="btn btn-default">Refresh</button>
+            <button {{action 'refreshData'}} class="btn btn-default">Refresh</button>
         </div>
-
-        {{#each}}
-        <h2>{{unbound scope}}</h2>
 
         <table class="table table-bordered table-striped">
             <tr>
                 <th>Bean <i class="fa fa-lg fa-info-circle" title="Link to bean detail"></i></th>
                 <th>Instance <i class="fa fa-lg fa-info-circle" title="Link to contextual instance detail"></i></th>
             </tr>
+            {{#with this as parentThis}}
             {{#each instances}}
             <tr>
-                <td>{{#link-to 'beanDetail' id}}{{unbound beanClass}}{{/link-to}}</td>
-                <td>{{#link-to 'contextInstance' id}}{{unbound asString}}{{/link-to}}</td>
+                <td>{{#link-to 'beanDetail' id}}{{beanClass}}{{/link-to}}</td>
+                <td>
+                {{#if parentThis.cid}}
+                {{#link-to 'contextInstance' id (query-params cid=parentThis.cid)}}{{asString}}{{/link-to}}
+                {{else}}
+                {{#link-to 'contextInstance' id}}{{asString}}{{/link-to}}
+                {{/if}}
+                </td>
             <tr>
             {{/each}}
+            {{/with}}
         </table>
-
-      {{/each}}
 
     </script>
 

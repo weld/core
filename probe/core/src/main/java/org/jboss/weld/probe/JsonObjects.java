@@ -27,8 +27,10 @@ import static org.jboss.weld.probe.Strings.BEANS;
 import static org.jboss.weld.probe.Strings.BEAN_CLASS;
 import static org.jboss.weld.probe.Strings.BEAN_DISCOVERY_MODE;
 import static org.jboss.weld.probe.Strings.CHILDREN;
+import static org.jboss.weld.probe.Strings.CIDS;
 import static org.jboss.weld.probe.Strings.CONFIGURATION;
 import static org.jboss.weld.probe.Strings.CONTAINER;
+import static org.jboss.weld.probe.Strings.CONTEXTS;
 import static org.jboss.weld.probe.Strings.DATA;
 import static org.jboss.weld.probe.Strings.DECLARED_OBSERVERS;
 import static org.jboss.weld.probe.Strings.DECLARED_PRODUCERS;
@@ -87,11 +89,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.enterprise.context.ContextNotActiveException;
+import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Default;
@@ -99,6 +104,8 @@ import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.ObserverMethod;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.bean.AbstractProducerBean;
@@ -111,6 +118,8 @@ import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.config.ConfigurationKey;
 import org.jboss.weld.config.WeldConfiguration;
+import org.jboss.weld.context.AbstractConversationContext;
+import org.jboss.weld.context.ManagedConversation;
 import org.jboss.weld.event.ObserverMethodImpl;
 import org.jboss.weld.experimental.Prioritized;
 import org.jboss.weld.injection.producer.ProducerFieldProducer;
@@ -182,7 +191,12 @@ final class JsonObjects {
                 alternatives.add(createSimpleBeanJson(findAlternativeBean(clazz, probe), probe));
             }
             for (Class<? extends Annotation> stereotype : enablement.getAlternativeStereotypes()) {
-                alternatives.add(createSimpleBeanJson(findAlternativeStereotypeBean(stereotype, probe), probe));
+                Set<Bean<?>> beans = findAlternativeStereotypeBeans(stereotype, probe);
+                if (!beans.isEmpty()) {
+                    for (Bean<?> bean : beans) {
+                        alternatives.add(createSimpleBeanJson(bean, probe));
+                    }
+                }
             }
             enablementBuilder.add(ALTERNATIVES, alternatives);
             bdaBuilder.add(ENABLEMENT, enablementBuilder);
@@ -220,6 +234,9 @@ final class JsonObjects {
         }
         deploymentBuilder.add(CONFIGURATION, configBuilder);
 
+        // INSPECTABLE CONTEXTS
+        deploymentBuilder.add(CONTEXTS, createContextsJson(beanManager, probe));
+
         return deploymentBuilder.build();
     }
 
@@ -241,13 +258,14 @@ final class JsonObjects {
         return null;
     }
 
-    static Bean<?> findAlternativeStereotypeBean(Class<? extends Annotation> stereotype, Probe probe) {
+    static Set<Bean<?>> findAlternativeStereotypeBeans(Class<? extends Annotation> stereotype, Probe probe) {
+        Set<Bean<?>> beans = new HashSet<Bean<?>>();
         for (Bean<?> bean : probe.getBeans()) {
             if (bean.isAlternative() && bean.getStereotypes().contains(stereotype)) {
-                return bean;
+                beans.add(bean);
             }
         }
-        return null;
+        return beans;
     }
 
     /**
@@ -676,19 +694,44 @@ final class JsonObjects {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    static String createContextsJson(BeanManagerImpl beanManager, Probe probe) {
+    static JsonArrayBuilder createContextsJson(BeanManagerImpl beanManager, Probe probe) {
         JsonArrayBuilder contexts = Json.newArrayBuilder();
-        for (int i = 0; i < Components.INSPECTABLE_SCOPES.length; i++) {
-            contexts.add(createContextJson(Components.INSPECTABLE_SCOPES[i], beanManager, probe));
+        for (Entry<String, Class<? extends Annotation>> entry : Components.INSPECTABLE_SCOPES.entrySet()) {
+            contexts.add(createSimpleContextJson(entry.getKey(), entry.getValue()));
         }
-        return contexts.build();
+        return contexts;
     }
 
-    static JsonObjectBuilder createContextJson(Class<? extends Annotation> scope, BeanManagerImpl beanManager, Probe probe) {
+    static JsonObjectBuilder createSimpleContextJson(String id, Class<? extends Annotation> scope) {
         JsonObjectBuilder builder = Json.newObjectBuilder();
         builder.add(SCOPE, scope.getName());
+        builder.add(ID, id);
+        return builder;
+    }
+
+    static JsonObjectBuilder createContextJson(String id, Class<? extends Annotation> scope, BeanManagerImpl beanManager, Probe probe, HttpServletRequest req) {
+        JsonObjectBuilder builder = createSimpleContextJson(id, scope).setIgnoreEmptyBuilders(true);
+
         builder.add(INSTANCES, inspectContext(scope, beanManager, probe));
+
+        if (ConversationScoped.class.equals(scope)) {
+            HttpSession session = req.getSession(false);
+            if (session != null) {
+                // Get all available conversation ids
+                Object conversationsAttribute = session.getAttribute(AbstractConversationContext.CONVERSATIONS_ATTRIBUTE_NAME);
+                if (conversationsAttribute != null && conversationsAttribute instanceof Map) {
+                    @SuppressWarnings("unchecked")
+                    Map<String, ManagedConversation> conversationsMap = (Map<String, ManagedConversation>) conversationsAttribute;
+                    if (!conversationsMap.isEmpty()) {
+                        JsonArrayBuilder cidsBuilder = Json.newArrayBuilder();
+                        for (String cid : conversationsMap.keySet()) {
+                            cidsBuilder.add(cid);
+                        }
+                        builder.add(CIDS, cidsBuilder);
+                    }
+                }
+            }
+        }
         return builder;
     }
 

@@ -59,8 +59,8 @@ Probe.Router.map(function() {
     this.route('observerDetail', {
         path : '/observers/:id'
     });
-    this.route('contexts', {
-        path : '/contexts'
+    this.route('context', {
+        path : '/context/:id'
     });
     this.resource("contextInstance", {
         path : "/contexts/:id"
@@ -82,8 +82,8 @@ Probe.ApplicationView = Ember.View.extend({
     currentPathDidChange : function() {
         // Workaround to highlight the active tab
         Ember.run.next(this, function() {
-            this.$("ul.nav li:has(a.active)").addClass('active');
-            this.$("ul.nav li:not(:has(a.active))").removeClass('active');
+            this.$("ul.nav > li:has(a.active)").addClass('active');
+            this.$("ul.nav > li:not(:has(a.active))").removeClass('active');
         });
     }.observes('controller.currentPath')
 });
@@ -347,16 +347,21 @@ Probe.ObserverDetailRoute = Ember.Route.extend(Probe.ResetScroll, {
     }
 });
 
-Probe.ContextsRoute = Ember.Route.extend({
-    model : function() {
-        return $.getJSON(restUrlBase + 'contexts').done(function(data) {
+Probe.ContextRoute = Ember.Route.extend(Probe.ResetScroll, {
+    model : function(params) {
+        var url = restUrlBase + 'contexts/' + params.id;
+        if (this.get('cid')) {
+            url += '?cid=' + this.get('cid');
+        }
+        return $.getJSON(url).done(function(data) {
             return data;
         }).fail(function(jqXHR, textStatus, errorThrown) {
             alert('Unable to get JSON data: ' + textStatus);
         });
     },
     actions : {
-        refreshContexts : function() {
+        refreshData : function(paramName) {
+            this.set('cid', this.get('controller.cid'));
             this.refresh();
         }
     }
@@ -369,12 +374,15 @@ Probe.ContextInstanceRoute = Ember.Route.extend(Probe.ResetScroll, {
         controller.set("kindClass", model.kind + ' boxed');
     },
     model : function(params) {
-        return $.getJSON(restUrlBase + 'beans/' + params.id + '/instance')
-            .done(function(data) {
-                return data;
-            }).fail(function(jqXHR, textStatus, errorThrown) {
-                alert('Unable to get JSON data: ' + textStatus);
-            });
+        var url = restUrlBase + 'beans/' + params.id + '/instance';
+        if (params.cid) {
+            url = url + '?cid=' + params.cid;
+        }
+        return $.getJSON(url).done(function(data) {
+            return data;
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            alert('Unable to get JSON data: ' + textStatus);
+        });
     },
     actions : {
         refreshData : function() {
@@ -636,6 +644,18 @@ Probe.EventsController = Ember.ObjectController.extend({
             this.send('refreshData');
         }
     },
+});
+
+Probe.ContextController = Ember.ObjectController.extend({
+    cid : null,
+    onCidChanged : function() {
+        this.send('refreshData');
+    }.observes('cid')
+});
+
+Probe.ContextInstanceController = Ember.ObjectController.extend({
+    cid : null,
+    queryParams : [ 'cid' ],
 });
 
 // HELPERS

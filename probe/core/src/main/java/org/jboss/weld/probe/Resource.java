@@ -50,6 +50,7 @@ import static org.jboss.weld.probe.Strings.TEXT_JAVASCRIPT;
 import static org.jboss.weld.probe.Strings.TEXT_PLAIN;
 
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -164,7 +165,24 @@ enum Resource {
         @Override
         protected void handleGet(BeanManagerImpl beanManager, Probe probe, String[] pathInfoParts, HttpServletRequest req, HttpServletResponse resp)
                 throws IOException {
-            resp.getWriter().append(JsonObjects.createContextsJson(beanManager, probe));
+            resp.getWriter().append(JsonObjects.createContextsJson(beanManager, probe).build());
+        }
+    }),
+    /**
+     * A collection of inspectable contexts.
+     */
+    CONTEXT("/contexts/{[a-zA-Z_0]+}", new Handler() {
+        @Override
+        protected void handleGet(BeanManagerImpl beanManager, Probe probe, String[] pathInfoParts, HttpServletRequest req, HttpServletResponse resp)
+                throws IOException {
+            final String id = pathInfoParts[1];
+            final Class<? extends Annotation> scope = Components.INSPECTABLE_SCOPES.get(id);
+            if (scope != null) {
+                resp.getWriter().append(JsonObjects.createContextJson(id, scope, beanManager, probe, req).build());
+            } else {
+                resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+            }
+
         }
     }),
     /**

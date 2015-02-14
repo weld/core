@@ -20,6 +20,7 @@ import java.io.UnsupportedEncodingException;
 import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -49,6 +50,7 @@ import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
+import org.jboss.weld.util.collections.ImmutableMap;
 
 /**
  * A few utility methods and classes related to CDI components.
@@ -57,8 +59,8 @@ import org.jboss.weld.serialization.spi.BeanIdentifier;
  */
 final class Components {
 
-    @SuppressWarnings("rawtypes")
-    static final Class[] INSPECTABLE_SCOPES = { ApplicationScoped.class, SessionScoped.class };
+    static final Map<String, Class<? extends Annotation>> INSPECTABLE_SCOPES = ImmutableMap.<String, Class<? extends Annotation>> builder().put("application", ApplicationScoped.class)
+            .put("session", SessionScoped.class).put("conversation", ConversationScoped.class).build();
 
     private Components() {
     }
@@ -180,13 +182,12 @@ final class Components {
                 || ConversationScoped.class.equals(scope);
     }
 
+    static boolean isInspectableScope(String id) {
+        return INSPECTABLE_SCOPES.containsKey(id);
+    }
+
     static boolean isInspectableScope(Class<? extends Annotation> scope) {
-        for (int i = 0; i < INSPECTABLE_SCOPES.length; i++) {
-            if (INSPECTABLE_SCOPES[i].equals(scope)) {
-                return true;
-            }
-        }
-        return false;
+        return INSPECTABLE_SCOPES.containsValue(scope);
     }
 
     static SessionBeanType getSessionBeanType(EjbDescriptor<?> ejbDescriptor) {
@@ -260,7 +261,7 @@ final class Components {
         MANAGED, SESSION, PRODUCER_METHOD, PRODUCER_FIELD, RESOURCE, SYNTHETIC, INTERCEPTOR, DECORATOR, EXTENSION, BUILT_IN;
 
         static BeanKind from(Bean<?> bean) {
-            if(bean == null) {
+            if (bean == null) {
                 return null;
             }
             if (bean instanceof ForwardingBean) {
@@ -306,6 +307,7 @@ final class Components {
 
     /**
      * Priority ranges, as defined in {@link javax.interceptor.Interceptor.PRIORITY}
+     *
      * @author Jozef Hartinger
      *
      */
