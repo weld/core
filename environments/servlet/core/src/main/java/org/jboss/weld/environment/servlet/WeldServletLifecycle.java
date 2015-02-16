@@ -53,6 +53,7 @@ import org.jboss.weld.environment.tomcat.TomcatContainer;
 import org.jboss.weld.environment.util.Reflections;
 import org.jboss.weld.injection.spi.ResourceInjectionServices;
 import org.jboss.weld.manager.api.WeldManager;
+import org.jboss.weld.resources.ManagerObjectFactory;
 import org.jboss.weld.resources.spi.ClassFileServices;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.servlet.WeldInitialListener;
@@ -133,10 +134,20 @@ public class WeldServletLifecycle {
             bootstrap.startInitialization();
 
             /*
-             * This should work fine as all bean archives share the same classloader. The only difference this can make is per-BDA (CDI 1.0 style) enablement of
-             * alternatives, interceptors and decorators. Nothing we can do about that.
+             * Determine the BeanManager used for example for EL resolution - this should work fine as all bean archives share the same classloader. The only
+             * difference this can make is per-BDA (CDI 1.0 style) enablement of alternatives, interceptors and decorators. Nothing we can do about that.
+             *
+             * First try to find the bean archive for WEB-INF/classes. If not found, take the first one available.
              */
-            manager = bootstrap.getManager(deployment.getBeanDeploymentArchives().iterator().next());
+            for (BeanDeploymentArchive bda : deployment.getBeanDeploymentArchives()) {
+                if (bda.getId().contains(ManagerObjectFactory.WEB_INF_CLASSES_FILE_PATH) || bda.getId().contains(ManagerObjectFactory.WEB_INF_CLASSES)) {
+                    manager = bootstrap.getManager(bda);
+                    break;
+                }
+            }
+            if (manager == null) {
+                manager = bootstrap.getManager(deployment.getBeanDeploymentArchives().iterator().next());
+            }
 
             // Push the manager into the servlet context so we can access in JSF
             context.setAttribute(BEAN_MANAGER_ATTRIBUTE_NAME, manager);
