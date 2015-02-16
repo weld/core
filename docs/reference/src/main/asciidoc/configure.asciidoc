@@ -28,9 +28,10 @@ This mode is not enabled by default. It can be enabled using the following confi
 [cols=",,",options="header",]
 |=======================================================================
 |Configuration key |Default value |Description
-|`org.jboss.weld.construction.relaxed` |false|If set to `true`, then requirements on bean constructors are relaxed.
+|`org.jboss.weld.construction.relaxed` |false (true in weld-se)|If set to `true`, then requirements on bean constructors are relaxed.
 |=======================================================================
 
+Note that relaxed construction is enabled by default in <<weld-se,Weld SE>>.
 
 ==== Concurrent deployment configuration
 

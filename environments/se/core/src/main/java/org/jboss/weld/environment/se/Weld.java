@@ -41,6 +41,7 @@ import org.jboss.weld.bootstrap.api.TypeDiscoveryConfiguration;
 import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.bootstrap.spi.Metadata;
+import org.jboss.weld.config.ConfigurationKey;
 import org.jboss.weld.configuration.spi.ExternalConfiguration;
 import org.jboss.weld.configuration.spi.helpers.ExternalConfigurationBuilder;
 import org.jboss.weld.environment.deployment.WeldBeanDeploymentArchive;
@@ -138,8 +139,12 @@ public class Weld {
         final CDI11Bootstrap bootstrap = new WeldBootstrap();
         final Deployment deployment = createDeployment(resourceLoader, bootstrap);
 
-        // weld-se uses CommonForkJoinPoolExecutorServices by default
-        ExternalConfiguration configuration = new ExternalConfigurationBuilder().add(EXECUTOR_THREAD_POOL_TYPE.get(), COMMON.toString()).build();
+        ExternalConfiguration configuration = new ExternalConfigurationBuilder()
+            // weld-se uses CommonForkJoinPoolExecutorServices by default
+            .add(EXECUTOR_THREAD_POOL_TYPE.get(), COMMON.toString())
+            // weld-se uses relaxed construction by default
+            .add(ConfigurationKey.RELAXED_CONSTRUCTION.get(), true)
+            .build();
         deployment.getServices().add(ExternalConfiguration.class, configuration);
 
         // Set up the container
