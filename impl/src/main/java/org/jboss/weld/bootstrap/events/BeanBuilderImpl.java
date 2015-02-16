@@ -58,7 +58,7 @@ import org.jboss.weld.util.reflection.Formats;
  */
 public final class BeanBuilderImpl<T> extends BeanAttributesBuilder<T, BeanBuilder<T>> implements BeanBuilder<T> {
 
-    private final String CALLBACK_PARAM = "callback";
+    private static final String CALLBACK_PARAM = "callback";
 
     private final DeploymentFinder deploymentFinder;
 
