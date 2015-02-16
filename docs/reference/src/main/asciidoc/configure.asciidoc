@@ -136,6 +136,21 @@ For certain combinations of scopes, the container is permitted to optimize an in
 |`org.jboss.weld.injection.injectableReferenceOptimization` |false |If set to `true`, the optimization is enabled.
 |=======================================================================
 
+[[config-dev-mode]]
+==== Development Mode
+
+The monitoring features of the development mode may have negative impact on the performance of the application. The following configuration properties allow to specify the set of components which will be monitored.
+
+.Supported configuration properties
+[cols=",,",options="header",]
+|=======================================================================
+|Configuration key |Default value |Description
+|`org.jboss.weld.probe.invocationMonitor.excludeType` |'' |A regular expression. If a non-empty string and the base type for an AnnotatedType or a declaring type for an AnnotatedMember matches this pattern the type is excluded from monitoring.
+|`org.jboss.weld.probe.invocationMonitor.skipJavaBeanProperties` |'true' |If set to `true`, the JavaBean accessor methods are not monitored.
+|`org.jboss.weld.probe.eventMonitor.excludeType` |'' |A regular expression. If a non-empty string  and the runtime class of the event object matches this pattern the event is excluded from monitoring.
+|=======================================================================
+
+TIP: To disable the monitoring entirely set `org.jboss.weld.probe.invocationMonitor.excludeType` and `org.jboss.weld.probe.eventMonitor.excludeType` properties to `.*`.
 
 === Excluding classes from scanning and deployment
 
