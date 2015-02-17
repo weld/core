@@ -47,7 +47,7 @@ public class BuilderExtension implements Extension {
 
         // Read from bean attributes, change the name and remove @Model stereotype
         // Note that we have to set the scope manually as it's initialized to @RequestScoped through the bean attributes
-        event.<Foo> addBean().beanClass(Foo.class).read(beanManager.createBeanAttributes(annotatedType)).name("bar")
+        event.addBean().beanClass(Foo.class).read(beanManager.createBeanAttributes(annotatedType)).name("bar")
                 .stereotypes(Collections.emptySet()).scope(Dependent.class).produceWith(() -> {
                     Foo foo = new Foo();
                     foo.postConstruct();
@@ -55,16 +55,16 @@ public class BuilderExtension implements Extension {
                 });
 
         // Detached builder, read from AT, add qualifier, set id
-        BeanBuilder<Foo> builder = event.<Foo> beanBuilder().read(annotatedType);
+        BeanBuilder<Foo> builder = event.beanBuilder().read(annotatedType);
         builder.id("BAZinga").addQualifier(Juicy.Literal.INSTANCE);
         event.addBean(builder.build());
 
         // Test simple produceWith callback
-        event.<Integer> addBean().addType(Integer.class).addQualifier(Random.Literal.INSTANCE)
+        event.addBean().addType(Integer.class).addQualifier(Random.Literal.INSTANCE)
                 .produceWith(() -> new java.util.Random().nextInt(1000)).disposeWith((i) -> DISPOSED.set(true));
 
         // Test produceWith callback with Instance<Object> param
-        event.<Long> addBean().addType(Long.class).addQualifier(AnotherRandom.Literal.INSTANCE)
+        event.addBean().addType(Long.class).addQualifier(AnotherRandom.Literal.INSTANCE)
                 .produceWith((i) -> i.select(Foo.class, Juicy.Literal.INSTANCE).get().getId() * 2);
     }
 }
