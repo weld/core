@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.bootstrap.events;
 
+import static org.jboss.weld.util.reflection.Reflections.cast;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -105,12 +107,12 @@ public final class BeanBuilderImpl<T> extends BeanAttributesBuilder<T, BeanBuild
     }
 
     @Override
-    public BeanBuilder<T> read(AnnotatedType<T> type) {
+    public <U extends T> BeanBuilder<U> read(AnnotatedType<U> type) {
         Preconditions.checkArgumentNotNull(type, "type");
 
         beanClass(type.getJavaClass());
 
-        final InjectionTarget<T> injectionTarget = beanManager.getInjectionTargetFactory(type).createInjectionTarget(null);
+        final InjectionTarget<T> injectionTarget = cast(beanManager.getInjectionTargetFactory(type).createInjectionTarget(null));
         injectionPoints(injectionTarget.getInjectionPoints());
         createWith(c -> {
             T instance = injectionTarget.produce(c);
@@ -122,11 +124,11 @@ public final class BeanBuilderImpl<T> extends BeanAttributesBuilder<T, BeanBuild
             injectionTarget.preDestroy(i);
             c.release();
         });
-        return read(beanManager.createBeanAttributes(type));
+        return cast(read(beanManager.createBeanAttributes(type)));
     }
 
     @Override
-    public BeanBuilder<T> read(BeanAttributes<T> beanAttributes) {
+    public BeanBuilder<T> read(BeanAttributes<?> beanAttributes) {
         Preconditions.checkArgumentNotNull(beanAttributes, "beanAttributes");
 
         scope(beanAttributes.getScope());
@@ -170,32 +172,32 @@ public final class BeanBuilderImpl<T> extends BeanAttributesBuilder<T, BeanBuild
         return this;
     }
 
-    public BeanBuilder<T> createWith(Function<CreationalContext<T>, T> callback) {
+    public <U extends T> BeanBuilder<U> createWith(Function<CreationalContext<U>, U> callback) {
         Preconditions.checkArgumentNotNull(callback, CALLBACK_PARAM);
-        this.createCallback = CreateCallback.fromCreateWith(callback);
-        return this;
+        this.createCallback = cast(CreateCallback.fromCreateWith(callback));
+        return cast(this);
     }
 
     @Override
-    public BeanBuilder<T> produceWith(Function<Instance<Object>, T> callback) {
+    public <U extends T> BeanBuilder<U> produceWith(Function<Instance<Object>, U> callback) {
         Preconditions.checkArgumentNotNull(callback, CALLBACK_PARAM);
-        this.createCallback = CreateCallback.fromProduceWith(callback);
+        this.createCallback = cast(CreateCallback.fromProduceWith(callback));
         if (this.destroyCallback == null) {
             this.destroyCallback = new DestroyCallback<T>((i) -> {
             });
         }
-        return null;
+        return cast(this);
     }
 
     @Override
-    public BeanBuilder<T> produceWith(Supplier<T> callback) {
+    public <U extends T> BeanBuilder<U> produceWith(Supplier<U> callback) {
         Preconditions.checkArgumentNotNull(callback, CALLBACK_PARAM);
-        this.createCallback = CreateCallback.fromProduceWith(callback);
+        this.createCallback = cast(CreateCallback.fromProduceWith(callback));
         if (this.destroyCallback == null) {
             this.destroyCallback = new DestroyCallback<T>((i) -> {
             });
         }
-        return this;
+        return cast(this);
     }
 
     public BeanBuilder<T> destroyWith(BiConsumer<T, CreationalContext<T>> callback) {
