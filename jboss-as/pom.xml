@@ -44,6 +44,11 @@
             <version>${weld.update.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.jboss.weld.probe</groupId>
+            <artifactId>weld-probe-core</artifactId>
+            <version>${weld.update.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.jboss.weld</groupId>
             <artifactId>weld-core-jsf</artifactId>
             <version>${weld.update.version}</version>
@@ -117,6 +122,7 @@ JBOSS_HOME: ${jboss.home}
                                         <!-- otherwise, use the old artifact
                                             (weld-core) -->
                                         <property name="weld.core.file" value="weld-core.jar" />
+                                        <property name="weld.probe.file" value="weld-probe-core.jar" />
 
                                         <delete>
                                             <fileset dir="${module.dir}/core/main" includes="*.jar" />
@@ -132,10 +138,12 @@ JBOSS_HOME: ${jboss.home}
                                         <copy todir="${module.dir}/core/main" overwrite="true">
                                             <fileset dir="target/dependency/lib">
                                                 <include name="${weld.core.file}" />
+                                                <include name="${weld.probe.file}" />
                                             </fileset>
                                         </copy>
 
-                                        <replaceregexp file="${module.dir}/core/main/module.xml" match="path=&quot;.*?&quot;" replace="path=&quot;${weld.core.file}&quot;" byline="true" />
+                                        <replaceregexp file="${module.dir}/core/main/module.xml" match="path=&quot;weld-core-impl.*?&quot;" replace="path=&quot;${weld.core.file}&quot;" byline="true" />
+                                        <replaceregexp file="${module.dir}/core/main/module.xml" match="path=&quot;weld-probe-core.*?&quot;" replace="path=&quot;${weld.probe.file}&quot;" byline="true" />
 
                                         <copy todir="${module.dir}/spi/main" overwrite="true">
                                             <fileset dir="target/dependency/lib">
@@ -236,7 +244,7 @@ JBOSS_HOME: ${jboss.home}
                             <outputDirectory>${project.build.directory}/dependency/lib</outputDirectory>
                             <overWriteSnapshots>true</overWriteSnapshots>
                             <stripVersion>true</stripVersion>
-                            <includeArtifactIds>cdi-api,weld-api,weld-core,weld-core-impl,weld-core-jsf,weld-spi,cdi-tck-ext-lib</includeArtifactIds>
+                            <includeArtifactIds>cdi-api,weld-api,weld-core,weld-core-impl,weld-core-jsf,weld-spi,cdi-tck-ext-lib,weld-probe-core</includeArtifactIds>
                         </configuration>
                     </execution>
                 </executions>
