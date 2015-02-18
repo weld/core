@@ -3,7 +3,7 @@
     <parent>
         <artifactId>weld-examples-parent</artifactId>
         <groupId>org.jboss.weld.examples</groupId>
-        <version>3.0.0-SNAPSHOT</version>
+        <version>3.0.0.Alpha5</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -44,8 +44,7 @@
                                 </goals>
                                 <configuration>
                                     <transformers>
-                                        <transformer
-                                            implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                        <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                             <mainClass>org.jboss.weld.environment.se.StartMain</mainClass>
                                         </transformer>
                                     </transformers>
