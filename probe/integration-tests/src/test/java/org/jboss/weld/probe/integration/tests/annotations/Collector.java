@@ -41,7 +41,7 @@ public @interface Collector {
 
         private static final long serialVersionUID = 1L;
 
-        private String value;
+        private final String value;
 
         public CollectorLiteral(String value){
             this.value = value;

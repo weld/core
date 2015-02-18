@@ -18,14 +18,15 @@ package org.jboss.weld.probe.integration.tests;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
-import static org.jboss.weld.probe.integration.tests.JSONTestUtil.BEAN_DISCOVERY_MODE;
+import static org.jboss.weld.probe.Strings.BEAN_DISCOVERY_MODE;
 import static org.jboss.weld.probe.integration.tests.JSONTestUtil.DEPLOYMENT_PATH;
 import static org.jboss.weld.probe.integration.tests.JSONTestUtil.getDeploymentByName;
 
 import java.io.IOException;
 import java.net.URL;
 
-import com.google.gson.JsonObject;
+import javax.json.JsonObject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -50,14 +51,14 @@ public class ProbeDeploymentsTest extends ProbeIntegrationTest {
         return ShrinkWrap.create(WebArchive.class, TEST_ARCHIVE_NAME + ".war")
                 .addAsWebInfResource(ProbeDeploymentsTest.class.getPackage(), "web.xml", "web.xml")
                 .addAsWebInfResource(ProbeDeploymentsTest.class.getPackage(), "beans.xml", "beans.xml")
-                .addPackage(ProbeDeploymentsTest.class.getPackage());
+                .addClass(ProbeDeploymentsTest.class);
     }
 
     @Test
     public void testDeploymentEndpoint() throws IOException {
         JsonObject testArchive = getDeploymentByName(DEPLOYMENT_PATH, TEST_ARCHIVE_NAME, url);
         assertNotNull("Cannot find test archive in Probe deployments!", testArchive);
-        assertEquals("ALL", testArchive.get(BEAN_DISCOVERY_MODE).getAsString());
+        assertEquals("ALL", testArchive.getString(BEAN_DISCOVERY_MODE));
     }
 
 }

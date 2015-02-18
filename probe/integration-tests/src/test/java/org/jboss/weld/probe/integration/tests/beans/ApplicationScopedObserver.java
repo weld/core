@@ -14,19 +14,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.probe.integration.tests;
+package org.jboss.weld.probe.integration.tests.beans;
 
-import javax.enterprise.inject.Model;
-import javax.inject.Inject;
+import java.util.Properties;
 
-@Model
-public class ModelBean {
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
+import javax.enterprise.event.Reception;
+import javax.enterprise.event.TransactionPhase;
 
-    @Inject
-    SessionScopedBean session;
+import org.jboss.weld.probe.integration.tests.annotations.Collector;
 
-    public void simpleCall() {
-        session.doSomething();
+@ApplicationScoped
+public class ApplicationScopedObserver {
+
+    public void listen(@Observes @Collector("A") String action) {
+    }
+
+    public void listen1(@Observes @Collector("B") String action) {
+    }
+
+    public void listen2(@Observes @Collector("A") @Collector("B") String action) {
+    }
+
+    public void listen3(@Observes(notifyObserver = Reception.IF_EXISTS, during = TransactionPhase.BEFORE_COMPLETION) Properties properties) {
     }
 
 }

@@ -17,14 +17,15 @@
 package org.jboss.weld.probe.integration.tests;
 
 import static junit.framework.Assert.assertTrue;
-import static org.jboss.weld.probe.integration.tests.JSONTestUtil.BEAN_CLASS;
+import static org.jboss.weld.probe.Strings.BEAN_CLASS;
 
 import java.io.IOException;
 import java.net.URL;
 
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+
 import com.gargoylesoftware.htmlunit.WebClient;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 
 public class ProbeIntegrationTest {
 
@@ -45,17 +46,20 @@ public class ProbeIntegrationTest {
             String arrayItem = jsonArray.get(i).toString();
             // we have an JSONArray
             if (arrayItem.startsWith("[")) {
-                found = checkStringInArrayRecursively(expectedValue, key, jsonArray.get(i).getAsJsonArray(), found);
+                found = checkStringInArrayRecursively(expectedValue, key, jsonArray.getJsonArray(i), found);
                 // we have an JSONObject
             } else if (arrayItem.startsWith("{")) {
-                JsonObject jsonObject = jsonArray.get(i).getAsJsonObject();
+                JsonObject jsonObject = jsonArray.getJsonObject(i);
                 if (jsonObject.entrySet().toString().contains(key)) {
                     found = jsonObject.get(key).toString().contains(expectedValue);
                     if (found) {
                         return found;
                     }
                 } else {
-                    found = checkStringInArrayRecursively(expectedValue, key, jsonObject.getAsJsonArray(), found);
+                    JsonArray array = jsonArray.getJsonObject(i).getJsonArray(key);
+                    if (array != null) {
+                        found = checkStringInArrayRecursively(expectedValue, key, array, found);
+                    }
                 }
                 // we have some simple object
             } else {

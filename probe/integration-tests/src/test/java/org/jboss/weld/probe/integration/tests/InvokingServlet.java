@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.jboss.weld.probe.integration.tests.beans.ModelBean;
+
 @WebServlet("/test")
 public class InvokingServlet extends HttpServlet {
 

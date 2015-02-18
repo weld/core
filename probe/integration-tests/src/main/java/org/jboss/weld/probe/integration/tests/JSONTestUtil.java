@@ -16,34 +16,31 @@
  */
 package org.jboss.weld.probe.integration.tests;
 
+import static org.jboss.weld.probe.Strings.BDAS;
+import static org.jboss.weld.probe.Strings.BDA_ID;
+import static org.jboss.weld.probe.Strings.BEAN_CLASS;
+import static org.jboss.weld.probe.Strings.DATA;
+import static org.jboss.weld.probe.Strings.ID;
+
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+import javax.json.JsonValue;
 
 import com.gargoylesoftware.htmlunit.WebClient;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 
 public class JSONTestUtil {
 
-    public static final String DATA = "data";
-    public static final String ID = "id";
-    public static final String BDAS = "bdas";
-    public static final String BDA_ID = "bdaId";
-    public static final String KIND = "kind";
-    public static final String SCOPE = "scope";
-    public static final String QUALIFIERS = "qualifiers";
-    public static final String TYPES = "types";
-    public static final String DEPENDENTS = "dependents";
-    public static final String DEPENDENCIES = "dependencies";
-    public static final String BEAN_CLASS = "beanClass";
-    public static final String METHOD_NAME = "methodName";
-    public static final String EVENT_INFO = "eventInfo";
-    public static final String INSTANCES = "instances";
-    public static final String BEAN_DISCOVERY_MODE = "beanDiscoveryMode";
     public static final String DEPLOYMENT_PATH = "weld-probe/deployment";
     public static final String INVOCATIONS_PATH = "weld-probe/invocations";
     public static final String EVENTS_PATH = "weld-probe/events";
+    public static final String OBSERVERS_PATH = "weld-probe/observers";
     public static final String BEANS_PATH = "weld-probe/beans";
     public static final String SESSION_CONTEXTS_PATH = "weld-probe/contexts/session";
     public static final String APPLICATION_CONTEXTS_PATH = "weld-probe/contexts/application";
@@ -62,19 +59,18 @@ public class JSONTestUtil {
             client = new WebClient();
         }
 
-        Gson gson = new Gson();
-        JsonObject jsonObject = gson.fromJson(client.getPage(url.toString().concat(path)).getWebResponse().getContentAsString(), JsonObject.class);
-        return jsonObject;
+        JsonReader jsonReader = Json.createReader(client.getPage(url.toString().concat(path)).getWebResponse().getContentAsStream());
+        return jsonReader.readObject();
     }
 
     public static JsonObject getDeploymentByName(String path, String name, URL url) throws IOException {
         JsonObject deploymentJSON = getPageAsJSONObject(path, url);
-        JsonArray deployments = deploymentJSON.getAsJsonArray(BDAS);
+        JsonArray deployments = deploymentJSON.getJsonArray(BDAS);
         JsonObject result = null;
         for (int i = 0; i < deployments.size(); i++) {
-            String bdaId = deployments.get(i).getAsJsonObject().get(BDA_ID).getAsString();
+            String bdaId = deployments.getJsonObject(i).get(BDA_ID).toString();
             if (bdaId.contains(name)) {
-                result = deployments.get(i).getAsJsonObject();
+                result = deployments.getJsonObject(i);
             }
         }
         return result;
@@ -82,12 +78,12 @@ public class JSONTestUtil {
 
     public static JsonObject getBeanDetail(String path, Class clazz, URL url) throws IOException {
         JsonObject beans = getPageAsJSONObject(path, url);
-        JsonArray beansArray = beans.getAsJsonArray(DATA);
+        JsonArray beansArray = beans.getJsonArray(DATA);
         String id = null;
         for (int i = 0; i < beansArray.size(); i++) {
-            JsonObject bean = beansArray.get(i).getAsJsonObject();
-            if (bean.get(BEAN_CLASS).getAsString().equals(clazz.getName())) {
-                id = bean.get(ID).getAsString();
+            JsonObject bean = beansArray.getJsonObject(i);
+            if (bean.getString(BEAN_CLASS).equals(clazz.getName())) {
+                id = bean.getString(ID);
             }
         }
 
@@ -99,11 +95,30 @@ public class JSONTestUtil {
         }
     }
 
-    public static enum BeanType {
+    public static List<JsonObject> getAllJsonObjectsByClass(Class clazz, JsonArray array) {
+        List<JsonObject> result = new ArrayList<>();
 
+        for (JsonValue jsonElement : array) {
+            if (((JsonObject) jsonElement).getString(BEAN_CLASS).equals(clazz.getName())) {
+                result.add(((JsonObject)jsonElement));
+            }
+        }
+        return result;
+    }
+
+    public static enum BeanType {
         MANAGED,
         INTERCEPTOR,
-        DECORATOR;
+        DECORATOR,
+        PRODUCER_FIELD,
+        PRODUCER_METHOD,
+        SESSION;
     }
+
+    public static enum SessionBeanType {
+        STATEFUL,
+        STATELESS;
+    }
+
 
 }

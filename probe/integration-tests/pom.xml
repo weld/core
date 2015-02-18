@@ -15,13 +15,14 @@
     <version>3.0.0-SNAPSHOT</version>
 
     <properties>
-        <gson.version>2.3.1</gson.version>
+        <json.version>1.0.4</json.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.jboss.weld.probe</groupId>
@@ -33,6 +34,10 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>org.jboss.spec.javax.ejb</groupId>
+            <artifactId>jboss-ejb-api_3.1_spec</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.jboss.arquillian.junit</groupId>
             <artifactId>arquillian-junit-container</artifactId>
         </dependency>
@@ -41,9 +46,10 @@
             <artifactId>shrinkwrap-impl-base</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>${gson.version}</version>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.json</artifactId>
+            <version>${json.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jboss.spec.javax.servlet</groupId>
@@ -109,15 +115,13 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
-                            <systemPropertyVariables>
-                                <!-- jboss.server.config.file.name>standalone-full.xml</jboss.server.config.file.name-->
-                            </systemPropertyVariables>
                             <systemProperties>
                                 <arquillian.xml>arquillian.xml</arquillian.xml>
                                 <jacoco.agent>${jacoco.agent}</jacoco.agent>
                                 <additional.vm.args>${additional.vm.args}</additional.vm.args>
                                 <org.jboss.remoting-jmx.timeout>360</org.jboss.remoting-jmx.timeout>
                             </systemProperties>
+                            <test>${test}</test>
                             <parallel>none</parallel>
                         </configuration>
                     </plugin>
@@ -161,6 +165,7 @@
                             <systemProperties>
                                 <arquillian.xml>arquillian.xml</arquillian.xml>
                             </systemProperties>
+                            <test>${test}</test>
                             <parallel>none</parallel>
                         </configuration>
                     </plugin>
