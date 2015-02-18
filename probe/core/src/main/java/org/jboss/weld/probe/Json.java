@@ -21,17 +21,18 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.jboss.weld.util.Preconditions;
 
 /**
- * A simple JSON generator.
+ * Simple JSON generator. A third-party library is not used intentionally - we don't need any other dependencies.
  *
  * @author Martin Kouba
  */
-class Json {
+final class Json {
 
     private static final String NAME = "name";
     private static final String OBJECT_START = "{";
@@ -47,12 +48,39 @@ class Json {
     private Json() {
     }
 
-    public static JsonArrayBuilder newArrayBuilder() {
-        return new JsonArrayBuilder();
+    /**
+     * @return the new JSON array builder, empty builders are not ignored
+     */
+    static JsonArrayBuilder arrayBuilder() {
+        return new JsonArrayBuilder(false);
     }
 
-    public static JsonObjectBuilder newObjectBuilder() {
-        return new JsonObjectBuilder();
+    /**
+     *
+     * @param ignoreEmptyBuilders
+     * @return the new JSON array builder
+     * @see JsonBuilder#ignoreEmptyBuilders
+     */
+    static JsonArrayBuilder arrayBuilder(boolean ignoreEmptyBuilders) {
+        return new JsonArrayBuilder(ignoreEmptyBuilders);
+    }
+
+    /**
+     *
+     * @return the new JSON object builder, empty builders are not ignored
+     */
+    static JsonObjectBuilder objectBuilder() {
+        return new JsonObjectBuilder(false);
+    }
+
+    /**
+     *
+     * @param ignoreEmptyBuilders
+     * @return the new JSON object builder
+     * @see JsonBuilder#ignoreEmptyBuilders
+     */
+    static JsonObjectBuilder objectBuilder(boolean ignoreEmptyBuilders) {
+        return new JsonObjectBuilder(ignoreEmptyBuilders);
     }
 
     /**
@@ -67,6 +95,14 @@ class Json {
 
         /**
          *
+         * @param ignoreEmptyBuilders If set to true all empty builders added to this builder will be ignored during {@link #build()}
+         */
+        JsonBuilder(boolean ignoreEmptyBuilders) {
+            this.ignoreEmptyBuilders = ignoreEmptyBuilders;
+        }
+
+        /**
+         *
          * @return <code>true</code> if there are no elements/properties, <code>false</code> otherwise
          */
         abstract boolean isEmpty();
@@ -76,16 +112,6 @@ class Json {
          * @return a string representation
          */
         abstract String build();
-
-        /**
-         *
-         * @param value If set to true all empty builders will be ignored from now on
-         * @return self
-         */
-        T setIgnoreEmptyBuilders(boolean value) {
-            this.ignoreEmptyBuilders = value;
-            return self();
-        }
 
         /**
          *
@@ -127,7 +153,8 @@ class Json {
 
         private final List<Object> values;
 
-        private JsonArrayBuilder() {
+        private JsonArrayBuilder(boolean ignoreEmptyBuilders) {
+            super(ignoreEmptyBuilders);
             this.values = new ArrayList<Object>();
         }
 
@@ -162,7 +189,7 @@ class Json {
         }
 
         private void addInternal(Object value) {
-            if (!isIgnored(value)) {
+            if (value != null) {
                 values.add(value);
             }
         }
@@ -174,12 +201,16 @@ class Json {
         String build() {
             StringBuilder builder = new StringBuilder();
             builder.append(ARRAY_START);
-            for (Iterator<Object> iterator = values.iterator(); iterator.hasNext();) {
+            int idx = 0;
+            for (ListIterator<Object> iterator = values.listIterator(); iterator.hasNext();) {
                 Object value = iterator.next();
-                appendValue(builder, value);
-                if (iterator.hasNext()) {
+                if(isIgnored(value)) {
+                    continue;
+                }
+                if (++idx > 1) {
                     builder.append(ENTRY_SEPARATOR);
                 }
+                appendValue(builder, value);
             }
             builder.append(ARRAY_END);
             return builder.toString();
@@ -201,7 +232,8 @@ class Json {
 
         private final Map<String, Object> properties;
 
-        private JsonObjectBuilder() {
+        private JsonObjectBuilder(boolean ignoreEmptyBuilders) {
+            super(ignoreEmptyBuilders);
             this.properties = new LinkedHashMap<String, Object>();
         }
 
@@ -237,7 +269,7 @@ class Json {
 
         private void addInternal(String name, Object value) {
             Preconditions.checkArgumentNotNull(name, NAME);
-            if (!isIgnored(value)) {
+            if (value != null) {
                 properties.put(name, value);
             }
         }
@@ -252,14 +284,18 @@ class Json {
         String build() {
             StringBuilder builder = new StringBuilder();
             builder.append(OBJECT_START);
+            int idx = 0;
             for (Iterator<Entry<String, Object>> iterator = properties.entrySet().iterator(); iterator.hasNext();) {
                 Entry<String, Object> entry = iterator.next();
+                if(isIgnored(entry.getValue())) {
+                    continue;
+                }
+                if (++idx > 1) {
+                    builder.append(ENTRY_SEPARATOR);
+                }
                 appendStringValue(builder, entry.getKey());
                 builder.append(NAME_VAL_SEPARATOR);
                 appendValue(builder, entry.getValue());
-                if (iterator.hasNext()) {
-                    builder.append(ENTRY_SEPARATOR);
-                }
             }
             builder.append(OBJECT_END);
             return builder.toString();

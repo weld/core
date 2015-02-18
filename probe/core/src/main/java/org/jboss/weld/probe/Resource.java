@@ -201,7 +201,7 @@ enum Resource {
         @Override
         protected void handleDelete(BeanManagerImpl beanManager, Probe probe, String[] pathInfoParts, HttpServletRequest req, HttpServletResponse resp)
                 throws IOException {
-            resp.getWriter().append(Json.newObjectBuilder().add(REMOVED_INVOCATIONS, probe.clearInvocations()).build());
+            resp.getWriter().append(Json.objectBuilder().add(REMOVED_INVOCATIONS, probe.clearInvocations()).build());
         }
     }),
     /**
@@ -235,7 +235,7 @@ enum Resource {
         protected void handleDelete(BeanManagerImpl beanManager, Probe probe, String[] pathInfoParts, HttpServletRequest req, HttpServletResponse resp)
                 throws IOException {
             ProbeObserver observer = beanManager.getExtension(ProbeExtension.class).getProbeObserver();
-            resp.getWriter().append(Json.newObjectBuilder().add("removedEvents", observer.clear()).build());
+            resp.getWriter().append(Json.objectBuilder().add("removedEvents", observer.clear()).build());
         }
     }),
     /**

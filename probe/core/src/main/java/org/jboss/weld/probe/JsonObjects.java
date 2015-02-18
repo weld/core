@@ -76,7 +76,6 @@ import static org.jboss.weld.probe.Strings.TX_PHASE;
 import static org.jboss.weld.probe.Strings.TYPE;
 import static org.jboss.weld.probe.Strings.TYPES;
 import static org.jboss.weld.probe.Strings.VALUE;
-import static org.jboss.weld.probe.Strings.WELD_VERSION;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -112,7 +111,6 @@ import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
 import org.jboss.weld.bean.proxy.ProxyObject;
-import org.jboss.weld.bootstrap.WeldBootstrap;
 import org.jboss.weld.bootstrap.enablement.ModuleEnablement;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.BeansXml;
@@ -147,24 +145,16 @@ final class JsonObjects {
 
     /**
      *
-     * @return
-     */
-    static String createRootJson() {
-        return Json.newObjectBuilder().add(WELD_VERSION, Formats.version(WeldBootstrap.class.getPackage())).build();
-    }
-
-    /**
-     *
      * @param beanManager
      * @return the root resource representation
      */
     static String createDeploymentJson(BeanManagerImpl beanManager, Probe probe) {
 
         Map<BeanDeploymentArchive, BeanManagerImpl> beanDeploymentArchivesMap = Container.instance(beanManager).beanDeploymentArchives();
-        JsonObjectBuilder deploymentBuilder = Json.newObjectBuilder();
+        JsonObjectBuilder deploymentBuilder = Json.objectBuilder();
 
         // BEAN DEPLOYMENT ARCHIVES
-        JsonArrayBuilder bdasBuilder = Json.newArrayBuilder();
+        JsonArrayBuilder bdasBuilder = Json.arrayBuilder();
         List<BeanDeploymentArchive> bdas = new ArrayList<BeanDeploymentArchive>(beanDeploymentArchivesMap.keySet());
         Collections.sort(bdas, probe.getBdaComparator());
         for (BeanDeploymentArchive bda : bdas) {
@@ -174,19 +164,19 @@ final class JsonObjects {
                 bdaBuilder.add(BEAN_DISCOVERY_MODE, beansXml.getBeanDiscoveryMode().toString());
             }
             // Enablement - interceptors, decorators, alternatives
-            JsonObjectBuilder enablementBuilder = Json.newObjectBuilder().setIgnoreEmptyBuilders(true);
+            JsonObjectBuilder enablementBuilder = Json.objectBuilder(true);
             ModuleEnablement enablement = beanDeploymentArchivesMap.get(bda).getEnabled();
-            JsonArrayBuilder interceptors = Json.newArrayBuilder();
+            JsonArrayBuilder interceptors = Json.arrayBuilder();
             for (Class<?> interceptor : enablement.getInterceptors()) {
                 interceptors.add(createSimpleBeanJson(findEnabledBean(interceptor, BeanKind.INTERCEPTOR, probe), probe));
             }
             enablementBuilder.add(INTERCEPTORS, interceptors);
-            JsonArrayBuilder decorators = Json.newArrayBuilder();
+            JsonArrayBuilder decorators = Json.arrayBuilder();
             for (Class<?> decorator : enablement.getDecorators()) {
                 decorators.add(createSimpleBeanJson(findEnabledBean(decorator, BeanKind.DECORATOR, probe), probe));
             }
             enablementBuilder.add(DECORATORS, decorators);
-            JsonArrayBuilder alternatives = Json.newArrayBuilder();
+            JsonArrayBuilder alternatives = Json.arrayBuilder();
             for (Class<?> clazz : Sets.union(enablement.getAlternativeClasses(), enablement.getGlobalAlternatives())) {
                 alternatives.add(createSimpleBeanJson(findAlternativeBean(clazz, probe), probe));
             }
@@ -202,7 +192,7 @@ final class JsonObjects {
             bdaBuilder.add(ENABLEMENT, enablementBuilder);
             // Accessible BDAs
             BeanManagerImpl manager = beanDeploymentArchivesMap.get(bda);
-            JsonArrayBuilder accesibleBdasBuilder = Json.newArrayBuilder();
+            JsonArrayBuilder accesibleBdasBuilder = Json.arrayBuilder();
             for (BeanManagerImpl accesible : manager.getAccessibleManagers()) {
                 accesibleBdasBuilder.add(Components.getId(accesible.getId()));
             }
@@ -213,7 +203,7 @@ final class JsonObjects {
         deploymentBuilder.add(BDAS, bdasBuilder);
 
         // CONFIGURATION
-        JsonArrayBuilder configBuilder = Json.newArrayBuilder();
+        JsonArrayBuilder configBuilder = Json.arrayBuilder();
         WeldConfiguration configuration = beanManager.getServices().get(WeldConfiguration.class);
         for (ConfigurationKey key : ConfigurationKey.values()) {
             Object defaultValue = key.getDefaultValue();
@@ -230,7 +220,7 @@ final class JsonObjects {
                 // Unsupported property type
                 continue;
             }
-            configBuilder.add(Json.newObjectBuilder().add(NAME, key.get()).add(VALUE, value.toString()));
+            configBuilder.add(Json.objectBuilder().add(NAME, key.get()).add(VALUE, value.toString()));
         }
         deploymentBuilder.add(CONFIGURATION, configBuilder);
 
@@ -274,7 +264,7 @@ final class JsonObjects {
      * @return the collection of all beans, using basic representation
      */
     static String createBeansJson(Page<Bean<?>> page, Probe probe) {
-        JsonArrayBuilder beansBuilder = Json.newArrayBuilder();
+        JsonArrayBuilder beansBuilder = Json.arrayBuilder();
         for (Bean<?> bean : page.getData()) {
             beansBuilder.add(createBasicBeanJson(bean, probe));
         }
@@ -293,7 +283,7 @@ final class JsonObjects {
         // SCOPE
         beanBuilder.add(SCOPE, "@" + (Components.isBuiltinScope(bean.getScope()) ? bean.getScope().getSimpleName() : bean.getScope().getName()));
         // BEAN TYPES
-        JsonArrayBuilder typesBuilder = Json.newArrayBuilder();
+        JsonArrayBuilder typesBuilder = Json.arrayBuilder();
         for (Type type : sortTypes(bean.getTypes())) {
             // Omit java.lang.Object
             if (Object.class.equals(type)) {
@@ -323,14 +313,14 @@ final class JsonObjects {
      * @return the full bean representation
      */
     static String createFullBeanJson(Bean<?> bean, boolean transientDependencies, boolean transientDependents, BeanManagerImpl beanManager, Probe probe) {
-        JsonObjectBuilder beanBuilder = createBasicBeanJson(bean, probe).setIgnoreEmptyBuilders(true);
+        JsonObjectBuilder beanBuilder = createBasicBeanJson(bean, probe);
         // NAME
         if (bean.getName() != null) {
             beanBuilder.add(NAME, bean.getName());
         }
         // STEREOTYPES
         if (bean.getStereotypes() != null && !bean.getStereotypes().isEmpty()) {
-            JsonArrayBuilder stereotypesBuilder = Json.newArrayBuilder();
+            JsonArrayBuilder stereotypesBuilder = Json.arrayBuilder();
             for (Class<?> stereotype : bean.getStereotypes()) {
                 stereotypesBuilder.add(stereotype.getName());
             }
@@ -378,7 +368,7 @@ final class JsonObjects {
             beanBuilder.add(DEPENDENTS, dependents);
         }
         // DECLARED OBSERVERS
-        JsonArrayBuilder declaredObservers = Json.newArrayBuilder();
+        JsonArrayBuilder declaredObservers = Json.arrayBuilder();
         for (ObserverMethod<?> observerMethod : probe.getObservers()) {
             if (observerMethod instanceof ObserverMethodImpl) {
                 ObserverMethodImpl<?, ?> observerMethodImpl = (ObserverMethodImpl<?, ?>) observerMethod;
@@ -394,7 +384,7 @@ final class JsonObjects {
         beanBuilder.add(DECLARED_OBSERVERS, declaredObservers);
 
         // DECLARED PRODUCERS
-        JsonArrayBuilder declaredProducers = Json.newArrayBuilder();
+        JsonArrayBuilder declaredProducers = Json.arrayBuilder();
         for (Bean<?> candidate : probe.getBeans()) {
             BeanKind kind = BeanKind.from(candidate);
             if ((BeanKind.PRODUCER_FIELD.equals(kind) || BeanKind.PRODUCER_METHOD.equals(kind) || BeanKind.RESOURCE.equals(kind))
@@ -419,7 +409,7 @@ final class JsonObjects {
         // ENABLEMENT
         BeanKind kind = BeanKind.from(bean);
         if (BeanKind.INTERCEPTOR.equals(kind) || BeanKind.DECORATOR.equals(kind) || bean.isAlternative()) {
-            JsonObjectBuilder enablementBuilder = Json.newObjectBuilder();
+            JsonObjectBuilder enablementBuilder = Json.objectBuilder();
             AnnotationApiAbstraction annotationApi = beanManager.getServices().get(AnnotationApiAbstraction.class);
             Object priority = bean.getBeanClass().getAnnotation(annotationApi.PRIORITY_ANNOTATION_CLASS);
             if (priority != null) {
@@ -427,7 +417,7 @@ final class JsonObjects {
                 enablementBuilder.add(PRIORITY, priorityValue);
                 enablementBuilder.add(PRIORITY_RANGE, Components.PriorityRange.of(priorityValue).toString());
             } else {
-                JsonArrayBuilder bdasBuilder = Json.newArrayBuilder();
+                JsonArrayBuilder bdasBuilder = Json.arrayBuilder();
                 Collection<BeanManagerImpl> beanManagers = Container.instance(beanManager).beanDeploymentArchives().values();
                 for (BeanManagerImpl manager : beanManagers) {
                     ModuleEnablement enablement = manager.getEnabled();
@@ -466,7 +456,7 @@ final class JsonObjects {
      * @return the simple bean representation
      */
     static JsonObjectBuilder createSimpleBeanJson(Bean<?> bean, Probe probe) {
-        JsonObjectBuilder builder = Json.newObjectBuilder();
+        JsonObjectBuilder builder = Json.objectBuilder(true);
         builder.add(ID, probe.getBeanId(bean));
         builder.add(KIND, BeanKind.from(bean).toString());
         builder.add(BEAN_CLASS, bean.getBeanClass().getName());
@@ -488,7 +478,7 @@ final class JsonObjects {
         if (beanManager == null) {
             return null;
         }
-        JsonArrayBuilder dependenciesBuilder = Json.newArrayBuilder().setIgnoreEmptyBuilders(true);
+        JsonArrayBuilder dependenciesBuilder = Json.arrayBuilder(true);
 
         for (Dependency dep : Components.getDependencies(bean, beanManager, probe)) {
             // Workaround for built-in beans - these are identified by the set of types
@@ -522,7 +512,7 @@ final class JsonObjects {
      */
     static JsonArrayBuilder createDependents(Bean<?> parent, Bean<?> bean, Probe probe, boolean isTransient) {
 
-        JsonArrayBuilder dependentsBuilder = Json.newArrayBuilder().setIgnoreEmptyBuilders(true);
+        JsonArrayBuilder dependentsBuilder = Json.arrayBuilder(true);
 
         for (Dependency dependent : Components.getDependents(bean, probe)) {
             // Workaround for built-in beans - these are identified by the set of types
@@ -553,7 +543,7 @@ final class JsonObjects {
      * @return the collection of all observer methods, using basic representation
      */
     static String createInvocationsJson(Page<Invocation> page, Probe probe) {
-        JsonArrayBuilder invocationsBuilder = Json.newArrayBuilder();
+        JsonArrayBuilder invocationsBuilder = Json.arrayBuilder();
         for (Invocation invocation : page.getData()) {
             invocationsBuilder.add(createBasicInvocationJson(invocation, probe));
         }
@@ -561,7 +551,7 @@ final class JsonObjects {
     }
 
     static JsonObjectBuilder createBasicInvocationJson(Invocation invocation, Probe probe) {
-        JsonObjectBuilder invocationBuilder = Json.newObjectBuilder();
+        JsonObjectBuilder invocationBuilder = Json.objectBuilder();
         if (invocation.getEntryPointId() != null) {
             invocationBuilder.add(ID, invocation.getEntryPointId());
         }
@@ -586,7 +576,7 @@ final class JsonObjects {
         JsonObjectBuilder invocationBuilder = createBasicInvocationJson(invocation, probe);
         invocationBuilder.add(TYPE, invocation.getType().toString());
         if (invocation.hasChildren()) {
-            JsonArrayBuilder childrenBuilder = Json.newArrayBuilder();
+            JsonArrayBuilder childrenBuilder = Json.arrayBuilder();
             for (Invocation child : invocation.getChildren()) {
                 childrenBuilder.add(createFullInvocationJson(child, probe));
             }
@@ -601,7 +591,7 @@ final class JsonObjects {
      * @return the collection of all observer methods, using basic representation
      */
     static String createObserversJson(Page<ObserverMethod<?>> page, Probe probe) {
-        JsonArrayBuilder observersBuilder = Json.newArrayBuilder();
+        JsonArrayBuilder observersBuilder = Json.arrayBuilder();
         for (ObserverMethod<?> observerMethod : page.getData()) {
             observersBuilder.add(createBasicObserverJson(observerMethod, probe));
         }
@@ -628,7 +618,7 @@ final class JsonObjects {
         observerBuilder.add(RECEPTION, observerMethod.getReception().toString());
         observerBuilder.add(TX_PHASE, observerMethod.getTransactionPhase().toString());
         if (!observerMethod.getObservedQualifiers().isEmpty()) {
-            JsonArrayBuilder qualifiersBuilder = Json.newArrayBuilder();
+            JsonArrayBuilder qualifiersBuilder = Json.arrayBuilder();
             for (Annotation qualifier : observerMethod.getObservedQualifiers()) {
                 qualifiersBuilder.add(qualifier.toString());
             }
@@ -647,7 +637,7 @@ final class JsonObjects {
     }
 
     static JsonObjectBuilder createSimpleObserverJson(ObserverMethod<?> observerMethod, Probe probe) {
-        JsonObjectBuilder observerBuilder = Json.newObjectBuilder();
+        JsonObjectBuilder observerBuilder = Json.objectBuilder();
         observerBuilder.add(ID, probe.getObserverId(observerMethod));
         observerBuilder.add(BEAN_CLASS, observerMethod.getBeanClass().getName());
         observerBuilder.add(OBSERVED_TYPE, Formats.formatType(observerMethod.getObservedType(), false));
@@ -659,7 +649,7 @@ final class JsonObjects {
             JsonObjectBuilder builder = createSimpleBeanJson(bean, probe);
             builder.add(SCOPE, "@" + (Components.isBuiltinScope(bean.getScope()) ? bean.getScope().getSimpleName() : bean.getScope().getName()));
 
-            JsonArrayBuilder propertiesBuilder = Json.newArrayBuilder();
+            JsonArrayBuilder propertiesBuilder = Json.arrayBuilder();
             Class<?> definingClass = contextualInstance.getClass();
             if (ProxyObject.class.isAssignableFrom(definingClass)) {
                 definingClass = definingClass.getSuperclass();
@@ -682,7 +672,7 @@ final class JsonObjects {
                 } catch (InvocationTargetException e) {
                     value = toString(e);
                 }
-                propertiesBuilder.add(Json.newObjectBuilder().add(NAME, propertyDescriptor.getDisplayName())
+                propertiesBuilder.add(Json.objectBuilder().add(NAME, propertyDescriptor.getDisplayName())
                         .add(VALUE, value != null ? value.toString() : "null"));
             }
             builder.add(PROPERTIES, propertiesBuilder);
@@ -695,7 +685,7 @@ final class JsonObjects {
     }
 
     static JsonArrayBuilder createContextsJson(BeanManagerImpl beanManager, Probe probe) {
-        JsonArrayBuilder contexts = Json.newArrayBuilder();
+        JsonArrayBuilder contexts = Json.arrayBuilder();
         for (Entry<String, Class<? extends Annotation>> entry : Components.INSPECTABLE_SCOPES.entrySet()) {
             contexts.add(createSimpleContextJson(entry.getKey(), entry.getValue()));
         }
@@ -703,14 +693,14 @@ final class JsonObjects {
     }
 
     static JsonObjectBuilder createSimpleContextJson(String id, Class<? extends Annotation> scope) {
-        JsonObjectBuilder builder = Json.newObjectBuilder();
+        JsonObjectBuilder builder = Json.objectBuilder(true);
         builder.add(SCOPE, scope.getName());
         builder.add(ID, id);
         return builder;
     }
 
     static JsonObjectBuilder createContextJson(String id, Class<? extends Annotation> scope, BeanManagerImpl beanManager, Probe probe, HttpServletRequest req) {
-        JsonObjectBuilder builder = createSimpleContextJson(id, scope).setIgnoreEmptyBuilders(true);
+        JsonObjectBuilder builder = createSimpleContextJson(id, scope);
 
         builder.add(INSTANCES, inspectContext(scope, beanManager, probe));
 
@@ -723,7 +713,7 @@ final class JsonObjects {
                     @SuppressWarnings("unchecked")
                     Map<String, ManagedConversation> conversationsMap = (Map<String, ManagedConversation>) conversationsAttribute;
                     if (!conversationsMap.isEmpty()) {
-                        JsonArrayBuilder cidsBuilder = Json.newArrayBuilder();
+                        JsonArrayBuilder cidsBuilder = Json.arrayBuilder();
                         for (String cid : conversationsMap.keySet()) {
                             cidsBuilder.add(cid);
                         }
@@ -742,12 +732,12 @@ final class JsonObjects {
         } catch (ContextNotActiveException e) {
             return null;
         }
-        JsonArrayBuilder builder = Json.newArrayBuilder();
+        JsonArrayBuilder builder = Json.arrayBuilder();
         for (Bean<?> bean : probe.getBeans()) {
             if (bean.getScope().equals(scope)) {
                 Object contextualInstance = context.get(bean);
                 if (contextualInstance != null) {
-                    JsonObjectBuilder instanceBuilder = Json.newObjectBuilder();
+                    JsonObjectBuilder instanceBuilder = Json.objectBuilder();
                     instanceBuilder.add(ID, probe.getBeanId(bean));
                     instanceBuilder.add(BEAN_CLASS, bean.getBeanClass().getName());
                     instanceBuilder.add(AS_STRING, contextualInstance.toString());
@@ -783,7 +773,7 @@ final class JsonObjects {
     }
 
     static JsonArrayBuilder createQualifiers(Set<Annotation> qualifiers, boolean skipAny) {
-        JsonArrayBuilder builder = Json.newArrayBuilder();
+        JsonArrayBuilder builder = Json.arrayBuilder();
         for (Annotation qualifier : qualifiers) {
             if (Any.class.equals(qualifier.annotationType())) {
                 if (skipAny) {
@@ -803,7 +793,7 @@ final class JsonObjects {
     }
 
     static String createPageJson(Page<?> page, JsonArrayBuilder data) {
-        return Json.newObjectBuilder().add(PAGE, page.getIdx()).add(LAST_PAGE, page.getLastIdx()).add(TOTAL, page.getTotal()).add(DATA, data).build();
+        return Json.objectBuilder().add(PAGE, page.getIdx()).add(LAST_PAGE, page.getLastIdx()).add(TOTAL, page.getTotal()).add(DATA, data).build();
     }
 
     static String annotatedMethodToString(AnnotatedMethod<?> method, Class<?> beanClass) {
@@ -838,13 +828,13 @@ final class JsonObjects {
     }
 
     static JsonObjectBuilder createEventJson(EventInfo event, Probe probe) {
-        JsonObjectBuilder builder = Json.newObjectBuilder();
+        JsonObjectBuilder builder = Json.objectBuilder();
         builder.add(TYPE, Formats.formatType(event.type, false));
         builder.add(QUALIFIERS, createQualifiers(event.qualifiers, true));
         builder.add(EVENT_INFO, event.eventString);
         builder.add(KIND, (event.containerEvent ? CONTAINER : APPLICATION).toUpperCase());
         builder.add(TIMESTAMP, event.timestamp);
-        JsonArrayBuilder observersBuilder = Json.newArrayBuilder();
+        JsonArrayBuilder observersBuilder = Json.arrayBuilder();
         for (ObserverMethod<?> observer : event.observers) {
             JsonObjectBuilder b = createSimpleObserverJson(observer, probe);
             if (observer instanceof ObserverMethodImpl<?, ?>) {
@@ -859,7 +849,7 @@ final class JsonObjects {
     }
 
     static String createEventsJson(Page<EventInfo> page, Probe probe) {
-        JsonArrayBuilder eventsBuilder = Json.newArrayBuilder();
+        JsonArrayBuilder eventsBuilder = Json.arrayBuilder();
         for (EventInfo event : page.getData()) {
             eventsBuilder.add(createEventJson(event, probe));
         }
@@ -867,7 +857,7 @@ final class JsonObjects {
     }
 
     static JsonObjectBuilder createSimpleBdaJson(String bdaId) {
-        JsonObjectBuilder bdaBuilder = Json.newObjectBuilder().setIgnoreEmptyBuilders(true);
+        JsonObjectBuilder bdaBuilder = Json.objectBuilder(true);
         bdaBuilder.add(BDA_ID, bdaId);
         bdaBuilder.add(ID, Components.getId(bdaId));
         return bdaBuilder;
