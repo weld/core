@@ -14,23 +14,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.probe.integration.tests;
+package org.jboss.weld.probe.integration.tests.beans;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
+import java.io.Serializable;
 
-import org.jboss.weld.probe.integration.tests.annotations.Collector;
+import javax.decorator.Decorator;
+import javax.decorator.Delegate;
+import javax.enterprise.inject.Any;
+import javax.inject.Inject;
 
-@ApplicationScoped
-public class ApplicationScopedObserver {
+@Decorator
+public class TestDecorator implements DecoratedInterface, Serializable {
 
+    private static final long serialVersionUID = -288060710833519754L;
 
-    public void listen(@Observes @Collector("A") String action){
-    }
+    @Inject
+    @Delegate
+    @Any
+    private DecoratedInterface delegate;
 
-    public void listen1(@Observes @Collector("B") String action){
-    }
+    @Override
+    public String testMethod() {
 
-    public void listen2(@Observes @Collector("A") @Collector("B") String action){
+        return delegate.testMethod() + " and " + TestDecorator.class.getSimpleName();
     }
 }

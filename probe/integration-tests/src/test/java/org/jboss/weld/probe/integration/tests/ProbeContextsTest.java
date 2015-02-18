@@ -18,10 +18,10 @@ package org.jboss.weld.probe.integration.tests;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
+import static org.jboss.weld.probe.Strings.BEAN_CLASS;
+import static org.jboss.weld.probe.Strings.INSTANCES;
+import static org.jboss.weld.probe.Strings.SCOPE;
 import static org.jboss.weld.probe.integration.tests.JSONTestUtil.APPLICATION_CONTEXTS_PATH;
-import static org.jboss.weld.probe.integration.tests.JSONTestUtil.BEAN_CLASS;
-import static org.jboss.weld.probe.integration.tests.JSONTestUtil.INSTANCES;
-import static org.jboss.weld.probe.integration.tests.JSONTestUtil.SCOPE;
 import static org.jboss.weld.probe.integration.tests.JSONTestUtil.SESSION_CONTEXTS_PATH;
 import static org.jboss.weld.probe.integration.tests.JSONTestUtil.getPageAsJSONObject;
 
@@ -30,15 +30,18 @@ import java.net.URL;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.SessionScoped;
+import javax.json.JsonObject;
 
 import com.gargoylesoftware.htmlunit.WebClient;
-import com.google.gson.JsonObject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.probe.integration.tests.annotations.Collector;
+import org.jboss.weld.probe.integration.tests.beans.ApplicationScopedObserver;
+import org.jboss.weld.probe.integration.tests.beans.ModelBean;
+import org.jboss.weld.probe.integration.tests.beans.SessionScopedBean;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -59,6 +62,7 @@ public class ProbeContextsTest extends ProbeIntegrationTest {
                 .addAsWebInfResource(ProbeContextsTest.class.getPackage(), "web.xml", "web.xml")
                 .addAsWebInfResource(ProbeContextsTest.class.getPackage(), "beans.xml", "beans.xml")
                 .addPackage(ProbeContextsTest.class.getPackage())
+                .addPackage(ModelBean.class.getPackage())
                 .addPackage(Collector.class.getPackage());
     }
 
@@ -67,10 +71,9 @@ public class ProbeContextsTest extends ProbeIntegrationTest {
         WebClient client = invokeSimpleAction(url);
         JsonObject sessionContext = getPageAsJSONObject(SESSION_CONTEXTS_PATH, url, client);
 
-        assertEquals(SessionScoped.class.getName(), sessionContext.get(SCOPE).getAsString());
-        assertTrue("Cannot find initialized context for " + sessionContext.get(SCOPE),
-                checkStringInArrayRecursively(SessionScopedBean.class.getName(), BEAN_CLASS, sessionContext.getAsJsonArray(INSTANCES), false));
-
+        assertEquals(SessionScoped.class.getName(), sessionContext.getString(SCOPE));
+        assertTrue("Cannot find initialized context for " + sessionContext.getString(SCOPE),
+                checkStringInArrayRecursively(SessionScopedBean.class.getName(), BEAN_CLASS, sessionContext.getJsonArray(INSTANCES), false));
     }
 
     @Test
@@ -78,10 +81,9 @@ public class ProbeContextsTest extends ProbeIntegrationTest {
         WebClient client = invokeSimpleAction(url);
         JsonObject applicationContext = getPageAsJSONObject(APPLICATION_CONTEXTS_PATH, url, client);
 
-        assertEquals(ApplicationScoped.class.getName(),applicationContext.get(SCOPE).getAsString());
-        assertTrue("Cannot find initialized context for " + applicationContext.get(SCOPE),
-                checkStringInArrayRecursively(ApplicationScopedObserver.class.getName(), BEAN_CLASS, applicationContext.getAsJsonArray(INSTANCES), false));
-
+        assertEquals(ApplicationScoped.class.getName(), applicationContext.getString(SCOPE));
+        assertTrue("Cannot find initialized context for " + applicationContext.getString(SCOPE),
+                checkStringInArrayRecursively(ApplicationScopedObserver.class.getName(), BEAN_CLASS, applicationContext.getJsonArray(INSTANCES), false));
     }
 
 

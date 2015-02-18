@@ -17,23 +17,27 @@
 package org.jboss.weld.probe.integration.tests;
 
 import static junit.framework.Assert.assertTrue;
-import static org.jboss.weld.probe.integration.tests.JSONTestUtil.DATA;
-import static org.jboss.weld.probe.integration.tests.JSONTestUtil.EVENT_INFO;
-import static org.jboss.weld.probe.integration.tests.JSONTestUtil.QUALIFIERS;
+import static org.jboss.weld.probe.Strings.DATA;
+import static org.jboss.weld.probe.Strings.EVENT_INFO;
+import static org.jboss.weld.probe.Strings.QUALIFIERS;
 import static org.jboss.weld.probe.integration.tests.JSONTestUtil.getPageAsJSONObject;
 
 import java.io.IOException;
 import java.net.URL;
 
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+
 import com.gargoylesoftware.htmlunit.WebClient;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.probe.integration.tests.annotations.Collector;
+import org.jboss.weld.probe.integration.tests.beans.ModelBean;
+import org.jboss.weld.probe.integration.tests.beans.SessionScopedBean;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -41,6 +45,7 @@ import org.junit.runner.RunWith;
  * @author Tomas Remes
  */
 @RunWith(Arquillian.class)
+@RunAsClient
 public class ProbeEventsTest extends ProbeIntegrationTest {
 
     @ArquillianResource
@@ -54,6 +59,7 @@ public class ProbeEventsTest extends ProbeIntegrationTest {
                 .addAsWebInfResource(ProbeEventsTest.class.getPackage(), "web.xml", "web.xml")
                 .addAsWebInfResource(ProbeEventsTest.class.getPackage(), "beans.xml", "beans.xml")
                 .addPackage(ProbeEventsTest.class.getPackage())
+                .addPackage(ModelBean.class.getPackage())
                 .addPackage(Collector.class.getPackage());
     }
 
@@ -61,7 +67,7 @@ public class ProbeEventsTest extends ProbeIntegrationTest {
     public void testEventsEndpoint() throws IOException {
         WebClient client = invokeSimpleAction(url);
         JsonObject events = getPageAsJSONObject(JSONTestUtil.EVENTS_PATH + "?filters=kind:APPLICATION", url, client);
-        JsonArray eventsData = events.getAsJsonArray(DATA);
+        JsonArray eventsData = events.getJsonArray(DATA);
         assertTrue("No events found !", eventsData.size() > 0);
 
         //check events

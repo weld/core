@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.probe.integration.tests;
+package org.jboss.weld.probe.integration.tests.beans;
 
 import java.io.Serializable;
 
@@ -34,6 +34,9 @@ public class SessionScopedBean implements Serializable {
 
     @Inject
     Event<String> event;
+
+    @Inject
+    DecoratedInterface decoratedInterface;
 
     @TestInterceptorBinding
     public void doSomething() {

@@ -17,23 +17,25 @@
 package org.jboss.weld.probe.integration.tests;
 
 import static junit.framework.Assert.assertTrue;
-import static org.jboss.weld.probe.integration.tests.JSONTestUtil.DATA;
+import static org.jboss.weld.probe.Strings.DATA;
+import static org.jboss.weld.probe.Strings.METHOD_NAME;
 import static org.jboss.weld.probe.integration.tests.JSONTestUtil.INVOCATIONS_PATH;
-import static org.jboss.weld.probe.integration.tests.JSONTestUtil.METHOD_NAME;
 import static org.jboss.weld.probe.integration.tests.JSONTestUtil.getPageAsJSONObject;
 
 import java.io.IOException;
 import java.net.URL;
 
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+
 import com.gargoylesoftware.htmlunit.WebClient;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.probe.integration.tests.annotations.Collector;
+import org.jboss.weld.probe.integration.tests.beans.ModelBean;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -54,6 +56,7 @@ public class ProbeInvocationsTest extends ProbeIntegrationTest {
                 .addAsWebInfResource(ProbeInvocationsTest.class.getPackage(), "web.xml", "web.xml")
                 .addAsWebInfResource(ProbeInvocationsTest.class.getPackage(), "beans.xml", "beans.xml")
                 .addPackage(ProbeInvocationsTest.class.getPackage())
+                .addPackage(ModelBean.class.getPackage())
                 .addPackage(Collector.class.getPackage());
     }
 
@@ -61,7 +64,7 @@ public class ProbeInvocationsTest extends ProbeIntegrationTest {
     public void testInvocationsEndpoint() throws IOException {
         WebClient client = invokeSimpleAction(url);
         JsonObject invocations = getPageAsJSONObject(INVOCATIONS_PATH, url, client);
-        JsonArray invocationData = invocations.getAsJsonArray(DATA);
+        JsonArray invocationData = invocations.getJsonArray(DATA);
         assertTrue("No invocations in invocation tree!", invocationData.size() > 0);
         assertTrue(checkStringInArrayRecursively("service", METHOD_NAME, invocationData, false));
     }
