@@ -47,7 +47,7 @@ import com.google.common.collect.ImmutableMap;
  * Represents an immutable per-deployment Weld configuration.
  *
  * <p>
- * Each property may be set in three different sources:
+ * Each property may be set in three different sources (by priority in descending order):
  * </p>
  * <ol>
  * <li>Bootstrap configuration provided by an integrator</li>
@@ -56,13 +56,28 @@ import com.google.common.collect.ImmutableMap;
  * </ol>
  *
  * <p>
- * For backwards compatibility:
+ * For backwards compatibility there are some obsolete sources:
  * </p>
  * <ul>
  * <li>properties files <code>org.jboss.weld.executor.properties</code> and <code>org.jboss.weld.bootstrap.properties</code> are also loaded for some
  * configuration keys,</li>
  * <li>some system properties with obsolete keys are considered</li>
  * </ul>
+ *
+ * <p>
+ * If a configuration key is set in multiple sources (e.g. as a system property and in a <code>weld.properties</code> file), the value from the source with
+ * higher priority is taken, other values are ignored.
+ * </p>
+ *
+ * <p>
+ * If a configuration key is set multiple times in the same source (e.g. different <code>weld.properties</code> files) and the values are different, the
+ * container automatically detects the problem and treats it as a deployment problem.
+ * </p>
+ *
+ * <p>
+ * Unsupported configuration keys are ignored. If an invalid value is set, the container automatically detects the problem and treats it as a deployment
+ * problem.
+ * </p>
  *
  * @author Martin Kouba
  * @see BootstrapConfiguration
@@ -76,6 +91,12 @@ public class WeldConfiguration implements Service {
     private static final String EXECUTOR_CONFIGURATION_FILE = "org.jboss.weld.executor.properties";
 
     private static final String BOOTSTRAP_CONFIGURATION_FILE = "org.jboss.weld.bootstrap.properties";
+
+    private static final String UNSAFE_PROXIES_MARKER = "META-INF/org.jboss.weld.enableUnsafeProxies";
+
+    private static final String SYSTEM_PROPETIES = "system properties";
+
+    private static final String OBSOLETE_SYSTEM_PROPETIES = "obsolete system properties";
 
     private final Map<ConfigurationKey, Object> properties;
 
@@ -149,11 +170,17 @@ public class WeldConfiguration implements Service {
         }
     }
 
-    static void merge(Map<ConfigurationKey, Object> original, Map<ConfigurationKey, Object> toMerge) {
+    /**
+     * Merge two maps of configuration properties. If the original contains a mapping for the same key, the new mapping is ignored.
+     *
+     * @param original
+     * @param toMerge
+     */
+    static void merge(Map<ConfigurationKey, Object> original, Map<ConfigurationKey, Object> toMerge, String mergedSourceDescription) {
         for (Entry<ConfigurationKey, Object> entry : toMerge.entrySet()) {
             Object existing = original.get(entry.getKey());
             if (existing != null) {
-                ConfigurationLogger.LOG.configurationKeyAlreadySet(entry.getKey(), existing, entry.getValue());
+                ConfigurationLogger.LOG.configurationKeyAlreadySet(entry.getKey(), existing, entry.getValue(), mergedSourceDescription);
             } else {
                 original.put(entry.getKey(), entry.getValue());
             }
@@ -186,29 +213,33 @@ public class WeldConfiguration implements Service {
     }
 
     private Map<ConfigurationKey, Object> init(BootstrapConfiguration bootstrapConfiguration, ExternalConfiguration externalConfiguration, Deployment deployment) {
-        Map<ConfigurationKey, Object> properties = new EnumMap<ConfigurationKey, Object>(ConfigurationKey.class);
 
         // 1. Properties files
         // weld.properties
-        merge(properties, readFileProperties(findPropertiesFiles(deployment, CONFIGURATION_FILE)));
+        Map<ConfigurationKey, Object> properties = readFileProperties(findPropertiesFiles(deployment, CONFIGURATION_FILE));
         // org.jboss.weld.bootstrap.properties
         merge(properties,
-                readObsoleteFileProperties(findPropertiesFiles(deployment, BOOTSTRAP_CONFIGURATION_FILE), ImmutableMap.of("concurrentDeployment",
-                        ConfigurationKey.CONCURRENT_DEPLOYMENT, "preloaderThreadPoolSize", ConfigurationKey.PRELOADER_THREAD_POOL_SIZE)));
+                readObsoleteFileProperties(
+                        findPropertiesFiles(deployment, BOOTSTRAP_CONFIGURATION_FILE),
+                        ImmutableMap.<String, ConfigurationKey> builder().put("concurrentDeployment", ConfigurationKey.CONCURRENT_DEPLOYMENT)
+                                .put("preloaderThreadPoolSize", ConfigurationKey.PRELOADER_THREAD_POOL_SIZE).build()), BOOTSTRAP_CONFIGURATION_FILE);
         // org.jboss.weld.executor.properties
         merge(properties,
-                readObsoleteFileProperties(findPropertiesFiles(deployment, EXECUTOR_CONFIGURATION_FILE), ImmutableMap.of("threadPoolSize",
-                        ConfigurationKey.EXECUTOR_THREAD_POOL_SIZE, "threadPoolDebug", ConfigurationKey.EXECUTOR_THREAD_POOL_DEBUG, "threadPoolType",
-                        ConfigurationKey.EXECUTOR_THREAD_POOL_TYPE, "threadPoolKeepAliveTime", ConfigurationKey.EXECUTOR_THREAD_POOL_KEEP_ALIVE_TIME)));
+                readObsoleteFileProperties(
+                        findPropertiesFiles(deployment, EXECUTOR_CONFIGURATION_FILE),
+                        ImmutableMap.<String, ConfigurationKey> builder().put("threadPoolSize", ConfigurationKey.EXECUTOR_THREAD_POOL_SIZE)
+                                .put("threadPoolDebug", ConfigurationKey.EXECUTOR_THREAD_POOL_DEBUG)
+                                .put("threadPoolType", ConfigurationKey.EXECUTOR_THREAD_POOL_TYPE)
+                                .put("threadPoolKeepAliveTime", ConfigurationKey.EXECUTOR_THREAD_POOL_KEEP_ALIVE_TIME).build()), EXECUTOR_CONFIGURATION_FILE);
 
         // 2. System properties
-        merge(properties, getSystemProperties());
-        merge(properties, getObsoleteSystemProperties());
+        merge(properties, getSystemProperties(), SYSTEM_PROPETIES);
+        merge(properties, getObsoleteSystemProperties(), OBSOLETE_SYSTEM_PROPETIES);
 
         // 3. Integrator SPI
         // ExternalConfiguration.getConfigurationProperties() map has precedence
-        merge(properties, processExternalConfiguration(externalConfiguration));
-        merge(properties, processBootstrapConfiguration(bootstrapConfiguration));
+        merge(properties, processExternalConfiguration(externalConfiguration), ExternalConfiguration.class.getSimpleName());
+        merge(properties, processBootstrapConfiguration(bootstrapConfiguration), BootstrapConfiguration.class.getSimpleName());
 
         return properties;
     }
@@ -255,6 +286,8 @@ public class WeldConfiguration implements Service {
     }
 
     /**
+     * Iterate through the {@link ConfigurationKey#values()} and try to get a system property for every key. The value is automatically converted - a runtime
+     * exception may be thrown during conversion.
      *
      * @return all the properties set as system properties
      */
@@ -263,13 +296,14 @@ public class WeldConfiguration implements Service {
         for (ConfigurationKey key : ConfigurationKey.values()) {
             String property = getSystemProperty(key.get());
             if (property != null) {
-                found.put(key, key.convertValue(property));
+                processKeyValue(found, key, property);
             }
         }
         return found;
     }
 
     /**
+     * Try to get a system property for obsolete keys. The value is automatically converted - a runtime exception may be thrown during conversion.
      *
      * @return all the properties whose system property keys were different in previous versions
      */
@@ -277,6 +311,7 @@ public class WeldConfiguration implements Service {
         Map<ConfigurationKey, Object> found = new EnumMap<ConfigurationKey, Object>(ConfigurationKey.class);
         String concurrentDeployment = getSystemProperty("org.jboss.weld.bootstrap.properties.concurrentDeployment");
         if (concurrentDeployment != null) {
+            processKeyValue(found, ConfigurationKey.CONCURRENT_DEPLOYMENT, concurrentDeployment);
             found.put(ConfigurationKey.CONCURRENT_DEPLOYMENT, ConfigurationKey.CONCURRENT_DEPLOYMENT.convertValue(concurrentDeployment));
         }
         String preloaderThreadPoolSize = getSystemProperty("org.jboss.weld.bootstrap.properties.preloaderThreadPoolSize");
@@ -287,21 +322,19 @@ public class WeldConfiguration implements Service {
     }
 
     /**
+     * Read the set of property files. Keys and Values are automatically validated and converted.
      *
      * @param resourceLoader
      * @return all the properties from the weld.properties file
      */
     @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "DMI_COLLECTION_OF_URLS", justification = "Only local URLs involved")
     private Map<ConfigurationKey, Object> readFileProperties(Set<URL> files) {
-        if (files.isEmpty()) {
-            return Collections.emptyMap();
-        }
         Map<ConfigurationKey, Object> found = new EnumMap<ConfigurationKey, Object>(ConfigurationKey.class);
         for (URL file : files) {
             ConfigurationLogger.LOG.readingPropertiesFile(file);
             Properties fileProperties = loadProperties(file);
             for (String name : fileProperties.stringPropertyNames()) {
-                handleStringKey(found, name, fileProperties.getProperty(name));
+                processKeyValue(found, name, fileProperties.getProperty(name));
             }
         }
         return found;
@@ -314,15 +347,12 @@ public class WeldConfiguration implements Service {
         }
         Map<ConfigurationKey, Object> found = new EnumMap<ConfigurationKey, Object>(ConfigurationKey.class);
         for (URL file : files) {
+            ConfigurationLogger.LOG.readingPropertiesFile(file);
             Properties fileProperties = loadProperties(file);
             for (String name : fileProperties.stringPropertyNames()) {
                 ConfigurationKey key = nameToKeyMap.get(name);
                 if (key != null) {
-                    Object value = key.convertValue(fileProperties.getProperty(name));
-                    Object previous = found.put(key, value);
-                    if (previous != null && !previous.equals(value)) {
-                        throw ConfigurationLogger.LOG.configurationKeyHasDifferentValues(key, previous, value);
-                    }
+                    processKeyValue(found, key, fileProperties.getProperty(name));
                 } else {
                     ConfigurationLogger.LOG.unsupportedConfigurationKeyFound(name + " in " + fileProperties);
                 }
@@ -334,11 +364,11 @@ public class WeldConfiguration implements Service {
     private Map<ConfigurationKey, Object> processBootstrapConfiguration(BootstrapConfiguration bootstrapConfiguration) {
         if (bootstrapConfiguration != null) {
 
-            Map<ConfigurationKey, Object> found =  new EnumMap<ConfigurationKey, Object>(ConfigurationKey.class);
+            Map<ConfigurationKey, Object> found = new EnumMap<ConfigurationKey, Object>(ConfigurationKey.class);
 
-            handleKey(found, ConfigurationKey.CONCURRENT_DEPLOYMENT, bootstrapConfiguration.isConcurrentDeploymentEnabled());
-            handleKey(found, ConfigurationKey.PRELOADER_THREAD_POOL_SIZE, bootstrapConfiguration.getPreloaderThreadPoolSize());
-            handleKey(found, ConfigurationKey.NON_PORTABLE_MODE, bootstrapConfiguration.isNonPortableModeEnabled());
+            processKeyValue(found, ConfigurationKey.CONCURRENT_DEPLOYMENT, bootstrapConfiguration.isConcurrentDeploymentEnabled());
+            processKeyValue(found, ConfigurationKey.PRELOADER_THREAD_POOL_SIZE, bootstrapConfiguration.getPreloaderThreadPoolSize());
+            processKeyValue(found, ConfigurationKey.NON_PORTABLE_MODE, bootstrapConfiguration.isNonPortableModeEnabled());
         }
         return Collections.emptyMap();
     }
@@ -347,20 +377,25 @@ public class WeldConfiguration implements Service {
         if (externalConfiguration == null) {
             return Collections.emptyMap();
         }
-        Map<ConfigurationKey, Object> found =  new EnumMap<ConfigurationKey, Object>(ConfigurationKey.class);
+        Map<ConfigurationKey, Object> found = new EnumMap<ConfigurationKey, Object>(ConfigurationKey.class);
         for (Entry<String, Object> entry : externalConfiguration.getConfigurationProperties().entrySet()) {
-            handleStringKey(found, entry.getKey(), entry.getValue());
+            processKeyValue(found, entry.getKey(), entry.getValue());
         }
         return found;
     }
 
     /**
+     * Process the given key and value. First validate the value and check if there's no different value for the same key in the same source - invalid and
+     * different values are treated as a deployment problem.
      *
      * @param properties
      * @param key
      * @param value
      */
-    private void handleKey(Map<ConfigurationKey, Object> properties, ConfigurationKey key, Object value) {
+    private void processKeyValue(Map<ConfigurationKey, Object> properties, ConfigurationKey key, Object value) {
+        if (value instanceof String) {
+            value = key.convertValue((String) value);
+        }
         if (key.isValidValue(value)) {
             Object previous = properties.put(key, value);
             if (previous != null && !previous.equals(value)) {
@@ -372,15 +407,17 @@ public class WeldConfiguration implements Service {
     }
 
     /**
+     * Process the given string key and value. First try to convert the <code>stringKey</code> - unsupported keys are ignored. Then delegate to
+     * {@link #processKeyValue(Map, ConfigurationKey, Object)}.
      *
      * @param properties
      * @param stringKey
      * @param value
      */
-    private void handleStringKey(Map<ConfigurationKey, Object> properties, String stringKey, Object value) {
+    private void processKeyValue(Map<ConfigurationKey, Object> properties, String stringKey, Object value) {
         ConfigurationKey key = ConfigurationKey.fromString(stringKey);
         if (key != null) {
-            handleKey(properties, key, (value instanceof String ? key.convertValue((String) value) : value));
+            processKeyValue(properties, key, value);
         } else {
             ConfigurationLogger.LOG.unsupportedConfigurationKeyFound(stringKey);
         }

@@ -47,8 +47,8 @@ public interface ConfigurationLogger extends WeldLogger {
     void configurationInitialized(Object configuration);
 
     @LogMessage(level = Level.DEBUG)
-    @Message(id = 1903, value = "Configuration key {0} already set to {1} in a source with higher priority, value {2} is ignored", format = Format.MESSAGE_FORMAT)
-    void configurationKeyAlreadySet(Object configurationKey, Object value, Object ignoredValue);
+    @Message(id = 1903, value = "Configuration key {0} already set to {1} in a source with higher priority, value {2} from {3} is ignored", format = Format.MESSAGE_FORMAT)
+    void configurationKeyAlreadySet(Object configurationKey, Object value, Object ignoredValue, String mergedSourceDescription);
 
     @LogMessage(level = Level.WARN)
     @Message(id = 1904, value = "Unsupported configuration key found and ignored: {0}", format = Format.MESSAGE_FORMAT)
