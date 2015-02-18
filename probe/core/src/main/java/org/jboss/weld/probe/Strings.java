@@ -21,72 +21,81 @@ package org.jboss.weld.probe;
  *
  * @author Martin Kouba
  */
-final class Strings {
+public final class Strings {
 
-    static final String WELD_VERSION = "weldVersion";
-    static final String ID = "id";
-    static final String BDA_ID = "bdaId";
-    static final String BDA = "bda";
-    static final String BEAN_DISCOVERY_MODE = "beanDiscoveryMode";
-    static final String BDAS = "bdas";
-    static final String CONFIGURATION = "configuration";
-    static final String SCOPE = "scope";
-    static final String TYPES = "types";
-    static final String TYPE = "type";
-    static final String QUALIFIER = "qualifier";
-    static final String QUALIFIERS = "qualifiers";
-    static final String NAME = "name";
-    static final String STEREOTYPES = "stereotypes";
-    static final String KIND = "kind";
-    static final String IS_ALTERNATIVE = "isAlternative";
-    static final String EJB_NAME = "ejbName";
-    static final String SESSION_BEAN_TYPE = "sessionBeanType";
-    static final String DEPENDENCIES = "dependencies";
-    static final String DEPENDENTS = "dependents";
-    static final String DECLARING_BEAN = "declaringBean";
-    static final String DISPOSAL_METHOD = "disposalMethod";
-    static final String PRODUCER_METHOD = "producerMethod";
-    static final String PRODUCER_FIELD = "producerField";
-    static final String PRODUCER_INFO = "producerInfo";
-    static final String BEAN_CLASS = "beanClass";
-    static final String BEAN_TYPE = "beanType";
-    static final String OBSERVED_TYPE = "observedType";
-    static final String RECEPTION = "reception";
-    static final String TX_PHASE = "txPhase";
-    static final String PRIORITY = "priority";
-    static final String PRIORITY_RANGE = "priorityRange";
-    static final String ANNOTATED_METHOD = "annotatedMethod";
-    static final String VALUE = "value";
-    static final String PROPERTIES = "properties";
-    static final String INSTANCES = "instances";
-    static final String AS_STRING = "asString";
-    static final String REQUIRED_TYPE = "requiredType";
-    static final String METHOD_NAME = "methodName";
-    static final String START = "start";
-    static final String TIME = "time";
-    static final String DECLARED_OBSERVERS = "declaredObservers";
-    static final String DECLARED_PRODUCERS = "declaredProducers";
-    static final String REMOVED_INVOCATIONS = "removedInvocations";
-    static final String CHILDREN = "children";
-    static final String INTERCEPTED_BEAN = "interceptedBean";
-    static final String DECLARING_CLASS = "declaringClass";
-    static final String ENABLEMENT = "enablement";
-    static final String INTERCEPTORS = "interceptors";
-    static final String DECORATORS = "decorators";
-    static final String ALTERNATIVES = "alternatives";
-    static final String ACCESSIBLE_BDAS = "accessibleBdas";
-    static final String BEANS = "beans";
-    static final String SEARCH = "search";
-    static final String TIMESTAMP = "ts";
-    static final String CONTEXTS = "contexts";
-    static final String CIDS = "cids";
+    public static final String ID = "id";
+    public static final String BDA_ID = "bdaId";
+    public static final String BDA = "bda";
+    public static final String BEAN_DISCOVERY_MODE = "beanDiscoveryMode";
+    public static final String BDAS = "bdas";
+    public static final String CONFIGURATION = "configuration";
+    public static final String SCOPE = "scope";
+    public static final String TYPES = "types";
+    public static final String TYPE = "type";
+    public static final String QUALIFIER = "qualifier";
+    public static final String QUALIFIERS = "qualifiers";
+    public static final String NAME = "name";
+    public static final String STEREOTYPES = "stereotypes";
+    public static final String KIND = "kind";
+    public static final String IS_ALTERNATIVE = "isAlternative";
+    public static final String EJB_NAME = "ejbName";
+    public static final String SESSION_BEAN_TYPE = "sessionBeanType";
+    public static final String DEPENDENCIES = "dependencies";
+    public static final String DEPENDENTS = "dependents";
+    public static final String DECLARING_BEAN = "declaringBean";
+    public static final String DISPOSAL_METHOD = "disposalMethod";
+    public static final String PRODUCER_METHOD = "producerMethod";
+    public static final String PRODUCER_FIELD = "producerField";
+    public static final String PRODUCER_INFO = "producerInfo";
+    public static final String BEAN_CLASS = "beanClass";
+    public static final String BEAN_TYPE = "beanType";
+    public static final String OBSERVED_TYPE = "observedType";
+    public static final String RECEPTION = "reception";
+    public static final String TX_PHASE = "txPhase";
+    public static final String PRIORITY = "priority";
+    public static final String PRIORITY_RANGE = "priorityRange";
+    public static final String ANNOTATED_METHOD = "annotatedMethod";
+    public static final String VALUE = "value";
+    public static final String PROPERTIES = "properties";
+    public static final String INSTANCES = "instances";
+    public static final String AS_STRING = "asString";
+    public static final String REQUIRED_TYPE = "requiredType";
+    public static final String METHOD_NAME = "methodName";
+    public static final String START = "start";
+    public static final String TIME = "time";
+    public static final String DECLARED_OBSERVERS = "declaredObservers";
+    public static final String DECLARED_PRODUCERS = "declaredProducers";
+    public static final String REMOVED_INVOCATIONS = "removedInvocations";
+    public static final String CHILDREN = "children";
+    public static final String INTERCEPTED_BEAN = "interceptedBean";
+    public static final String DECLARING_CLASS = "declaringClass";
+    public static final String ENABLEMENT = "enablement";
+    public static final String INTERCEPTORS = "interceptors";
+    public static final String DECORATORS = "decorators";
+    public static final String ALTERNATIVES = "alternatives";
+    public static final String ACCESSIBLE_BDAS = "accessibleBdas";
+    public static final String BEANS = "beans";
+    public static final String SEARCH = "search";
+    public static final String TIMESTAMP = "ts";
+    public static final String CONTEXTS = "contexts";
+    public static final String CIDS = "cids";
+    public static final String CONTAINER = "container";
+    public static final String CONTAINER_EVENT = "containerEvent";
+    public static final String EVENT_INFO = "eventInfo";
+    public static final String OBSERVERS = "observers";
+    public static final String METHOD = "method";
+    public static final String CLASS = "class";
+    public static final String APPLICATION = "application";
 
-    static final String PAGE = "page";
-    static final String PAGE_SIZE = "pageSize";
-    static final String TOTAL = "total";
-    static final String LAST_PAGE = "lastPage";
-    static final String DATA = "data";
-    static final String FILTERS = "filters";
+    public static final String PAGE = "page";
+    public static final String PAGE_SIZE = "pageSize";
+    public static final String TOTAL = "total";
+    public static final String LAST_PAGE = "lastPage";
+    public static final String DATA = "data";
+    public static final String FILTERS = "filters";
+
+    public static final String PARAM_TRANSIENT_DEPENDENCIES = "transientDependencies";
+    public static final String PARAM_TRANSIENT_DEPENDENTS = "transientDependents";
 
     // Internet media types
     static final String APPLICATION_JSON = "application/json";
@@ -119,9 +128,6 @@ final class Strings {
 
     static final String SLASH = "/";
 
-    static final String PARAM_TRANSIENT_DEPENDENCIES = "transientDependencies";
-    static final String PARAM_TRANSIENT_DEPENDENTS = "transientDependents";
-
     static final String FILE_CLIENT_HTML = "probe.html";
     static final String PATH_META_INF_CLIENT = "/META-INF/client/";
 
@@ -134,14 +140,6 @@ final class Strings {
     static final String GET_PREFIX = "get";
     static final String IS_PREFIX = "is";
     static final String SET_PREFIX = "set";
-
-    static final String CONTAINER = "container";
-    static final String CONTAINER_EVENT = "containerEvent";
-    static final String EVENT_INFO = "eventInfo";
-    static final String OBSERVERS = "observers";
-    static final String METHOD = "method";
-    static final String CLASS = "class";
-    static final String APPLICATION = "application";
 
     private Strings() {
     }
