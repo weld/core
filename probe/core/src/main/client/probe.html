@@ -255,9 +255,9 @@ ${head}
             <tr>
                 <td>{{increment _view.contentIndex}}</td>
                 <td><span class="{{unbound kind}} boxed">{{unbound kind}}</span></td>
-                <td>{{abbr scope 30 true}}</td>
+                <td>{{abbr scope 30}}</td>
                 <td>
-                    {{#link-to 'beanDetail' id title=beanClass}}{{abbr beanClass 50}}{{/link-to}}
+                    {{#link-to 'beanDetail' id}}{{abbr beanClass 50}}{{/link-to}}
                 </td>
                 <td>
                     {{eachLiAbbr types 50}}
@@ -561,16 +561,16 @@ ${head}
                 <td>{{#if declaringBean}}<span class="{{unbound declaringBean.kind}} boxed">{{unbound declaringBean.kind}}</span>{{else}}N/A{{/if}}</td>
                 <td>
                     {{#if declaringBean}}
-                        {{#link-to 'beanDetail' declaringBean.id title=declaringBean.beanClass}}{{abbr declaringBean.beanClass 50}}{{/link-to}}
+                        {{#link-to 'beanDetail' declaringBean.id}}{{abbr declaringBean.beanClass 50}}{{/link-to}}
                     {{else}}
                         {{unbound beanClass}}
                     {{/if}}
                 </td>
                 <td>
-                    {{#link-to 'observerDetail' id title=observedType}}{{abbr observedType 50}}{{/link-to}}
+                    {{#link-to 'observerDetail' id}}{{abbr observedType 50}}{{/link-to}}
                 </td>
                 <td>
-                    {{eachLiAbbr qualifiers 60}}
+                    {{eachLiAbbr qualifiers 50}}
                 </td>
                 <td>
                     <span class="{{unbound reception}} boxed">{{unbound reception}}</span>
@@ -816,7 +816,7 @@ ${head}
             <tr>
                 <td>{{increment _view.contentIndex}}</td>
                 <td>
-                    {{#if interceptedBean}}{{#link-to 'beanDetail' interceptedBean.id}}{{interceptedBean.beanClass}}{{/link-to}}{{else}}{{declaringClass}}{{/if}}
+                    {{#if interceptedBean}}{{#link-to 'beanDetail' interceptedBean.id}}{{abbr interceptedBean.beanClass 50}}{{/link-to}}{{else}}{{abbr declaringClass 50}}{{/if}}
                 </td>
                 <td>
                     {{#link-to 'invocationDetail' id}}{{unbound methodName}}{{/link-to}}
@@ -904,18 +904,14 @@ ${head}
                 <td>{{increment _view.contentIndex}}</td>
                 <td><span class="{{unbound kind}} boxed">{{unbound kind}}</span></td>
                 <td>{{eventInfo}}</td>
-                <td>{{abbr type 20 true}}</td>
+                <td>{{abbr type 20}}</td>
                 <td>{{eachLiAbbr qualifiers 20}}</td>
                 <td><span title="{{unbound tsLong}}">{{tsShort}}</span></td>
                 <td>
                     <ul class="plain-list no-margin">
                         {{#each observers}}
-                            <li>
-                                {{#link-to 'observerDetail' id title=beanClass}}
-                                    {{abbr beanClass 20 false true}}{{#if method}}.{{method}}{{/if}}
-                                {{/link-to}}
-                            </li>
-                    {{/each}}
+                            <li>{{#link-to 'observerDetail' id}}{{abbr beanClass 20 suppressHtml=true}}{{#if method}}.{{method}}{{/if}}{{/link-to}}</li>
+                        {{/each}}
                     </ul>
                 </td>
             </tr>

@@ -687,7 +687,7 @@ Ember.Handlebars.registerBoundHelper('eachLiAbbr',
                     ret += text;
                     ret += '">';
                     ret += text.charAt(0) === '@' ? abbreviateAnnotation(text,
-                        true) : abbreviateType(text, true);
+                        true, false) : abbreviateType(text, true, false);
                     ret += '</li>';
                 } else {
                     ret += "<li>";
@@ -700,15 +700,19 @@ Ember.Handlebars.registerBoundHelper('eachLiAbbr',
         return new Handlebars.SafeString(ret);
     });
 
+/*
+ * This helper takes two params: text and limit. Furthermore it's possible to specify optional hash arguments: title and suppressHtml.
+ */
 Ember.Handlebars.registerBoundHelper('abbr',
-    function(text, limit, addTitle, suppresshtmlOutput) {
+    function(text, limit, options) {
+        var addTitle = options.hash.title || true;
+        var suppresshtmlOutput = options.hash.suppressHtml || false;
         var escaped = Handlebars.Utils.escapeExpression(text);
         if (escaped.length > limit) {
-            var ret = addTitle ? '<span title="' + text + '">' : '';
+            var ret = '';
             ret += escaped.charAt(0) === '@' ? abbreviateAnnotation(escaped,
-                !suppresshtmlOutput) : abbreviateType(escaped,
-                !suppresshtmlOutput);
-            ret += '</span>';
+                !suppresshtmlOutput, addTitle) : abbreviateType(escaped,
+                !suppresshtmlOutput, addTitle);
             escaped = ret;
         }
         return new Handlebars.SafeString(escaped);
@@ -818,7 +822,7 @@ Probe.DependencyGraph = Ember.View
                             var desc;
                             if (d.dependencies.length == 1) {
                                 desc = abbreviateType(
-                                    d.dependencies[0].requiredType, false);
+                                    d.dependencies[0].requiredType, false, false);
                             } else {
                                 desc = '(' + d.dependencies.length + ')';
                             }
@@ -886,7 +890,7 @@ Probe.DependencyGraph = Ember.View
                 return "#/bean/" + d.id;
             }).append("svg:text").attr("dx", 15).attr("dy", "0.2em").style(
                 "fill", "#428bca").text(function(d) {
-                return abbreviateType(d.beanClass, false);
+                return abbreviateType(d.beanClass, false, false);
             });
 
             force.on("tick", tick);
@@ -1561,31 +1565,38 @@ function isAdditionalBda(bdaId) {
  * type with actual type params represented as simple names.
  *
  * @param type
- * @param addStyle
+ * @param htmlOutput
+ * @param title
  * @returns {String}
  */
-function abbreviateType(type, htmlOutput) {
+function abbreviateType(type, htmlOutput, title) {
     var parts = type.split('.');
-    var result = '';
+    var ret = '';
     var lastIdx = parts.length - 1;
+    if (htmlOutput && title) {
+        ret += ' <span title="'+type+'">';
+    }
     for (var i = 0; i < parts.length; i++) {
         if (i === lastIdx) {
-            result += parts[i];
+            ret += parts[i];
         } else {
             if (i === 0 && htmlOutput) {
-                result += '<span class="abbreviated">';
+                ret += '<span class="abbreviated">';
             }
-            result += parts[i].charAt(0);
-            result += '.';
+            ret += parts[i].charAt(0);
+            ret += '.';
             if (i === (lastIdx - 1) && htmlOutput) {
-                result += '</span>';
+                ret += '</span>';
             }
         }
     }
     if (htmlOutput) {
-        result += ' <i class="fa fa-compress abbreviated"></i>';
+        if(title) {
+            ret += '</span>';
+        }
+        ret += ' <i class="fa fa-compress abbreviated"></i>';
     }
-    return result;
+    return ret;
 }
 
 /**
@@ -1593,10 +1604,11 @@ function abbreviateType(type, htmlOutput) {
  *
  * @param annotation
  * @param htmlOutput
+ * @param title
  * @returns {String}
  */
-function abbreviateAnnotation(annotation, htmlOutput) {
-    var result = '@';
+function abbreviateAnnotation(annotation, htmlOutput, title) {
+    var ret = (htmlOutput && title) ? ' <span title="'+annotation+'">@' : '@';
     if (annotation.indexOf('(') !== -1) {
         annotation = annotation.substring(1, annotation.indexOf('('));
     } else {
@@ -1606,20 +1618,23 @@ function abbreviateAnnotation(annotation, htmlOutput) {
     var lastIdx = parts.length - 1;
     for (var i = 0; i < parts.length; i++) {
         if (i === lastIdx) {
-            result += parts[i];
+            ret += parts[i];
         } else {
             if (i === 0 && htmlOutput) {
-                result += '<span class="abbreviated">';
+                ret += '<span class="abbreviated">';
             }
-            result += parts[i].charAt(0);
-            result += '.';
+            ret += parts[i].charAt(0);
+            ret += '.';
             if (i === (lastIdx - 1) && htmlOutput) {
-                result += '</span>';
+                ret += '</span>';
             }
         }
     }
     if (htmlOutput) {
-        result += ' <i class="fa fa-compress abbreviated"></i>';
+        if(title) {
+            ret += '</span>';
+        }
+        ret += ' <i class="fa fa-compress abbreviated"></i>';
     }
-    return result;
+    return ret;
 }
