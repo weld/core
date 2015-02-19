@@ -84,4 +84,8 @@ public interface ProbeLogger extends BasicLogger {
     @Message(id = 11, value = "Event {0} not monitored - excluded", format = Format.MESSAGE_FORMAT)
     void eventExcluded(Object type);
 
+    @LogMessage(level = Level.DEBUG)
+    @Message(id = 12, value = "{0} monitoring limit {1} exceed - some old data were removed", format = Format.MESSAGE_FORMAT)
+    void monitoringLimitExceeded(Object monitor, Object limit);
+
 }

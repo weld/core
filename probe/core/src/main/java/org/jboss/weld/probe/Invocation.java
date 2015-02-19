@@ -37,9 +37,9 @@ import javax.interceptor.InvocationContext;
 public final class Invocation {
 
     /**
-     * Optional, only entry points have id
+     * A unique idx of an entry point (optional)
      */
-    private final Integer entryPointId;
+    private final Integer entryPointIdx;
 
     private final Bean<?> interceptedBean;
 
@@ -66,7 +66,7 @@ public final class Invocation {
 
     /**
      *
-     * @param entryPointId
+     * @param entryPointIdx
      * @param isEntryPoint
      * @param interceptedBean
      * @param declaringClassName
@@ -76,8 +76,8 @@ public final class Invocation {
      * @param children
      * @param type
      */
-    public Invocation(Integer entryPointId, Bean<?> interceptedBean, String declaringClassName,  long start, long duration, String methodName, List<Invocation> children, Type type) {
-        this.entryPointId = entryPointId;
+    public Invocation(Integer entryPointIdx, Bean<?> interceptedBean, String declaringClassName,  long start, long duration, String methodName, List<Invocation> children, Type type) {
+        this.entryPointIdx = entryPointIdx;
         this.interceptedBean = interceptedBean;
         this.declaringClassName = declaringClassName;
         this.start = start;
@@ -87,12 +87,12 @@ public final class Invocation {
         this.type = type;
     }
 
-    public Integer getEntryPointId() {
-        return entryPointId;
+    public Integer getEntryPointIdx() {
+        return entryPointIdx;
     }
 
     public boolean isEntryPoint() {
-        return entryPointId != null;
+        return entryPointIdx != null;
     }
 
     public Bean<?> getInterceptedBean() {
@@ -139,6 +139,15 @@ public final class Invocation {
 
     static enum Comparators implements Comparator<Invocation> {
 
+        /**
+         * Note that this can only be used for entry points!
+         */
+        ENTRY_POINT_IDX {
+            @Override
+            public int compare(Invocation o1, Invocation o2) {
+                return o2.getEntryPointIdx().compareTo(o1.getEntryPointIdx());
+            }
+        },
         START {
             @Override
             public int compare(Invocation o1, Invocation o2) {
@@ -166,7 +175,7 @@ public final class Invocation {
      */
     static class Builder {
 
-        private Integer entryPointId;
+        private Integer entryPointIdx;
 
         private Bean<?> interceptedBean;
 
@@ -184,8 +193,8 @@ public final class Invocation {
 
         private Builder parent;
 
-        static Builder newBuilder(Integer id) {
-            return new Builder(id);
+        static Builder newBuilder(Integer idx) {
+            return new Builder(idx);
         }
 
         Builder newChild() {
@@ -194,8 +203,8 @@ public final class Invocation {
             return child;
         }
 
-        private Builder(Integer id) {
-            this.entryPointId = id;
+        private Builder(Integer idx) {
+            this.entryPointIdx = idx;
         }
 
         Builder setInterceptedBean(Bean<?> bean) {
@@ -274,7 +283,7 @@ public final class Invocation {
                     invocations.add(builder.build());
                 }
             }
-            return new Invocation(entryPointId, interceptedBean, declaringClassName, start, duration, methodName, invocations, type);
+            return new Invocation(entryPointIdx, interceptedBean, declaringClassName, start, duration, methodName, invocations, type);
         }
 
     }

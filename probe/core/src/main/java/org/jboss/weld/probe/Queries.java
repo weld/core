@@ -54,7 +54,7 @@ import org.jboss.weld.probe.ProbeObserver.EventInfo;
 final class Queries {
 
     // TODO change to higher value, low value for dev purpose only
-    static final int DEFAULT_PAGE_SIZE = 30;
+    static final int DEFAULT_PAGE_SIZE = 50;
 
     private Queries() {
     }

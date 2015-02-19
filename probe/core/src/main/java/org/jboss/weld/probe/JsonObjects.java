@@ -552,8 +552,8 @@ final class JsonObjects {
 
     static JsonObjectBuilder createBasicInvocationJson(Invocation invocation, Probe probe) {
         JsonObjectBuilder invocationBuilder = Json.objectBuilder();
-        if (invocation.getEntryPointId() != null) {
-            invocationBuilder.add(ID, invocation.getEntryPointId());
+        if (invocation.getEntryPointIdx() != null) {
+            invocationBuilder.add(ID, invocation.getEntryPointIdx());
         }
         if (invocation.getInterceptedBean() != null) {
             invocationBuilder.add(INTERCEPTED_BEAN, createSimpleBeanJson(invocation.getInterceptedBean(), probe));

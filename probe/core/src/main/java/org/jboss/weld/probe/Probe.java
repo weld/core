@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -54,6 +55,9 @@ import org.jboss.weld.serialization.spi.ContextualStore;
  * @author Martin Kouba
  */
 public class Probe implements Service {
+
+    // If needed make this configurable
+    private static final int DEFAULT_INVOCATIONS_LIMIT = 5000;
 
     private volatile Mappings mappings;
 
@@ -210,7 +214,20 @@ public class Probe implements Service {
         if (!invocation.isEntryPoint()) {
             throw new IllegalStateException("Invocation is not an entry point!");
         }
-        invocations.put(invocation.getEntryPointId(), invocation);
+        // Remove some old data if the limit is exceeded
+        if (invocations.size() > DEFAULT_INVOCATIONS_LIMIT) {
+            synchronized (this) {
+                if (invocations.size() > DEFAULT_INVOCATIONS_LIMIT) {
+                    Set<Integer> keySet = invocations.keySet();
+                    List<Integer> sorted = new ArrayList<Integer>(keySet);
+                    Collections.sort(sorted, Collections.reverseOrder());
+                    if (keySet.removeAll(sorted.subList(DEFAULT_INVOCATIONS_LIMIT / 2, sorted.size()))) {
+                        ProbeLogger.LOG.monitoringLimitExceeded(Invocation.class.getSimpleName(), DEFAULT_INVOCATIONS_LIMIT);
+                    }
+                }
+            }
+        }
+        invocations.put(invocation.getEntryPointIdx(), invocation);
     }
 
     /**
@@ -220,7 +237,7 @@ public class Probe implements Service {
     public List<Invocation> getInvocations() {
         checkInitialized();
         List<Invocation> sorted = new ArrayList<Invocation>(invocations.values());
-        Collections.sort(sorted, Invocation.Comparators.START_AND_DURATION);
+        Collections.sort(sorted, Invocation.Comparators.ENTRY_POINT_IDX);
         return sorted;
     }
 

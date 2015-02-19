@@ -50,6 +50,9 @@ import org.jboss.weld.util.reflection.Formats;
  */
 class ProbeObserver implements ObserverMethod<Object>, Prioritized {
 
+    // If needed make this configurable
+    private static final int DEFAULT_EVENTS_LIMIT = 5000;
+
     private static final int PRIORITY_OFFSET = 100;
 
     private final Pattern excludePattern;
@@ -137,7 +140,18 @@ class ProbeObserver implements ObserverMethod<Object>, Prioritized {
         }
         boolean containerEvent = isContainerEvent(metadata.getQualifiers());
         List<ObserverMethod<?>> observers = resolveObservers(metadata, containerEvent);
-        EventInfo info = new EventInfo(metadata.getType(), metadata.getQualifiers(), event, metadata.getInjectionPoint(), observers, containerEvent, System.currentTimeMillis());
+        EventInfo info = new EventInfo(metadata.getType(), metadata.getQualifiers(), event, metadata.getInjectionPoint(), observers, containerEvent,
+                System.currentTimeMillis());
+
+        // Remove some old data if the limit is exceeded
+        if (events.size() > DEFAULT_EVENTS_LIMIT) {
+            synchronized (this) {
+                if (events.size() > DEFAULT_EVENTS_LIMIT) {
+                    events.subList(DEFAULT_EVENTS_LIMIT / 2, events.size()).clear();
+                    ProbeLogger.LOG.monitoringLimitExceeded(EventInfo.class.getSimpleName(), DEFAULT_EVENTS_LIMIT);
+                }
+            }
+        }
         events.add(0, info);
     }
 
