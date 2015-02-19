@@ -1053,11 +1053,20 @@ Probe.InvocationTree = Ember.View.extend({
             return "circle-regular";
         });
 
-        nodeEnter.append("a").attr("xlink:href", function(d) {
-            return d.interceptedBean ? '#/bean/' + d.interceptedBean.id : '';
+        nodeEnter.filter(function(d) {
+            return d.interceptedBean;
+        }).append("a").attr("xlink:href", function(d) {
+            return '#/bean/' + d.interceptedBean.id;
         }).append("text").attr("dy", -14).style("fill", "#428bca").text(
             function(d) {
-                return d.interceptedBean ? d.interceptedBean.beanClass : '';
+                return d.interceptedBean.beanClass;
+            });
+
+        nodeEnter.filter(function(d) {
+            return d.declaringClass;
+        }).append("text").attr("dy", -14).text(
+            function(d) {
+                return d.declaringClass;
             });
 
         // Declare the links
@@ -1516,6 +1525,7 @@ function findLinksBdas(bdas, links, nodes, hideAddBda) {
 function transformInvocation(invocation, parent) {
     var node = new Object();
     node.interceptedBean = invocation.interceptedBean;
+    node.declaringClass = invocation.declaringClass;
     node.methodName = invocation.methodName;
     node.type = invocation.type;
     if (parent == null) {
