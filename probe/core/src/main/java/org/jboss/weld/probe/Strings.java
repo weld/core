@@ -141,6 +141,8 @@ public final class Strings {
     static final String IS_PREFIX = "is";
     static final String SET_PREFIX = "set";
 
+    static final String HTTP_HEADER_CACHE_CONTROL = "Cache-Control";
+
     private Strings() {
     }
 

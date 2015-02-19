@@ -22,6 +22,7 @@ import static org.jboss.weld.probe.Strings.APPLICATION_FONT_WOFF;
 import static org.jboss.weld.probe.Strings.ENCODING_UTF8;
 import static org.jboss.weld.probe.Strings.FILE_CLIENT_HTML;
 import static org.jboss.weld.probe.Strings.FILTERS;
+import static org.jboss.weld.probe.Strings.HTTP_HEADER_CACHE_CONTROL;
 import static org.jboss.weld.probe.Strings.IMG_ICO;
 import static org.jboss.weld.probe.Strings.IMG_PNG;
 import static org.jboss.weld.probe.Strings.IMG_SVG;
@@ -255,6 +256,11 @@ enum Resource {
             String contentType = detectContentType(resourceName);
             setHeaders(resp, contentType);
 
+            if(isCachableContentType(contentType)) {
+                // Set Cache-Control header - 24 hours
+                resp.setHeader(HTTP_HEADER_CACHE_CONTROL, "max-age=86400");
+            }
+
             if (isTextBasedContenType(contentType)) {
                 String content = IOUtils.getResourceAsString(resourceName);
                 if (content == null) {
@@ -362,6 +368,10 @@ enum Resource {
         } else {
             return TEXT_PLAIN;
         }
+    }
+
+    static boolean isCachableContentType(String contentType) {
+        return TEXT_CSS.equals(contentType) || TEXT_JAVASCRIPT.equals(contentType) || IMG_ICO.equals(contentType) || IMG_PNG.equals(contentType) || IMG_SVG.equals(contentType);
     }
 
     static boolean isTextBasedContenType(String contentType) {
