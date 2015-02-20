@@ -21,6 +21,7 @@ import java.io.Serializable;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.BeanAttributes;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
@@ -93,6 +94,22 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T> {
         return new EEResourceProducerField<X, T>(attributes, field, declaringBean, disposalMethod, manager, services);
     }
 
+    /**
+     *
+     * @param beanManager
+     * @param field
+     * @return <code>true</code> if the given field is annotated with an EE resource annotation, <code>false</code> otherwise
+     */
+    public static boolean isEEResourceProducerField(BeanManagerImpl beanManager, AnnotatedField<?> field) {
+        EJBApiAbstraction ejbApiAbstraction = beanManager.getServices().get(EJBApiAbstraction.class);
+        PersistenceApiAbstraction persistenceApiAbstraction = beanManager.getServices().get(PersistenceApiAbstraction.class);
+        WSApiAbstraction wsApiAbstraction = beanManager.getServices().get(WSApiAbstraction.class);
+        return field.isAnnotationPresent(ejbApiAbstraction.EJB_ANNOTATION_CLASS) || field.isAnnotationPresent(ejbApiAbstraction.RESOURCE_ANNOTATION_CLASS)
+                || field.isAnnotationPresent(persistenceApiAbstraction.PERSISTENCE_UNIT_ANNOTATION_CLASS)
+                || field.isAnnotationPresent(persistenceApiAbstraction.PERSISTENCE_CONTEXT_ANNOTATION_CLASS)
+                || field.isAnnotationPresent(wsApiAbstraction.WEB_SERVICE_REF_ANNOTATION_CLASS);
+    }
+
     private ProxyFactory<T> proxyFactory;
 
     private final Class<T> rawType;
@@ -116,14 +133,7 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T> {
         if (getName() != null) {
             throw BeanLogger.LOG.namedResourceProducerField(this);
         }
-        EJBApiAbstraction ejbApiAbstraction = beanManager.getServices().get(EJBApiAbstraction.class);
-        PersistenceApiAbstraction persistenceApiAbstraction = beanManager.getServices().get(PersistenceApiAbstraction.class);
-        WSApiAbstraction wsApiAbstraction = beanManager.getServices().get(WSApiAbstraction.class);
-        if (!(getAnnotated().isAnnotationPresent(ejbApiAbstraction.RESOURCE_ANNOTATION_CLASS)
-                || getAnnotated().isAnnotationPresent(persistenceApiAbstraction.PERSISTENCE_CONTEXT_ANNOTATION_CLASS)
-                || getAnnotated().isAnnotationPresent(persistenceApiAbstraction.PERSISTENCE_UNIT_ANNOTATION_CLASS)
-                || getAnnotated().isAnnotationPresent(ejbApiAbstraction.EJB_ANNOTATION_CLASS)
-                || getAnnotated().isAnnotationPresent(wsApiAbstraction.WEB_SERVICE_REF_ANNOTATION_CLASS))) {
+        if (!isEEResourceProducerField(beanManager, getAnnotated())) {
             throw BeanLogger.LOG.invalidResourceProducerField(getAnnotated());
         }
     }
