@@ -53,20 +53,17 @@ import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.events.ContainerLifecycleEvents;
 import org.jboss.weld.bootstrap.events.ProcessBeanAttributesImpl;
 import org.jboss.weld.bootstrap.events.ProcessObserverMethodImpl;
-import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.event.ObserverFactory;
 import org.jboss.weld.event.ObserverMethodImpl;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.persistence.PersistenceApiAbstraction;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.BeanMethods;
 import org.jboss.weld.util.Observers;
 import org.jboss.weld.util.collections.WeldCollections;
 import org.jboss.weld.util.reflection.Reflections;
-import org.jboss.weld.ws.WSApiAbstraction;
 
 /**
  * @author Pete Muir
@@ -225,7 +222,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
         BeanAttributes<T> attributes = BeanAttributesFactory.forBean(field, getManager());
         DisposalMethod<X, ?> disposalMethod = resolveDisposalMethod(attributes, declaringBean);
         ProducerField<X, T> bean;
-        if (isEEResourceProducerField(field)) {
+        if (EEResourceProducerField.isEEResourceProducerField(manager, field)) {
             if (field.isStatic()) {
                 bean = StaticEEResourceProducerField.of(attributes, field, declaringBean, disposalMethod, manager, services);
             } else {
@@ -301,13 +298,6 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
         slimAnnotatedTypeStore.put(type.slim());
         BeanAttributes<T> attributes = Reflections.cast(BeanAttributesFactory.forNewSessionBean(originalAttributes, type.getJavaClass()));
         getEnvironment().addSessionBean(NewSessionBean.of(attributes, ejbDescriptor, manager));
-    }
-
-    protected boolean isEEResourceProducerField(EnhancedAnnotatedField<?, ?> field) {
-        EJBApiAbstraction ejbApiAbstraction = manager.getServices().get(EJBApiAbstraction.class);
-        PersistenceApiAbstraction persistenceApiAbstraction = manager.getServices().get(PersistenceApiAbstraction.class);
-        WSApiAbstraction wsApiAbstraction = manager.getServices().get(WSApiAbstraction.class);
-        return field.isAnnotationPresent(ejbApiAbstraction.EJB_ANNOTATION_CLASS) || field.isAnnotationPresent(ejbApiAbstraction.RESOURCE_ANNOTATION_CLASS) || field.isAnnotationPresent(persistenceApiAbstraction.PERSISTENCE_UNIT_ANNOTATION_CLASS) || field.isAnnotationPresent(persistenceApiAbstraction.PERSISTENCE_CONTEXT_ANNOTATION_CLASS) || field.isAnnotationPresent(wsApiAbstraction.WEB_SERVICE_REF_ANNOTATION_CLASS);
     }
 
     public E getEnvironment() {
