@@ -215,8 +215,8 @@ public interface BeanLogger extends WeldLogger {
     @Message(id = 39, value = "@Typed class {0} not present in the set of bean types of {1} [{2}]", format = Format.MESSAGE_FORMAT)
     DefinitionException typedClassNotInHierarchy(Object param1, Object param2, Object types);
 
-    @Message(id = 40, value = "All stereotypes must specify the same scope OR a scope must be specified on {0}", format = Format.MESSAGE_FORMAT)
-    DefinitionException multipleScopesFoundFromStereotypes(Object param1);
+    @Message(id = 40, value = "All stereotypes must specify the same scope or the bean must declare a scope - declaring class: {0}, declared stereotypes [{1}], possible scopes {2}{3}", format = Format.MESSAGE_FORMAT)
+    DefinitionException multipleScopesFoundFromStereotypes(Object param1, Object stereotypes, Object possibleScopes, String stack);
 
     @Message(id = 41, value = "Cannot put name on specializing and specialized class {0}", format = Format.MESSAGE_FORMAT)
     DefinitionException nameNotAllowedOnSpecialization(Object param1);

@@ -31,6 +31,7 @@ import javax.inject.Scope;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotated;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
+import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMember;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
@@ -44,6 +45,7 @@ import org.jboss.weld.metadata.cache.MergedStereotypes;
 import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.collections.ArraySet;
+import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
@@ -94,9 +96,11 @@ public class BeanAttributesFactory {
         private Set<Type> types;
         private Class<? extends Annotation> scope;
         private BeanManagerImpl manager;
+        protected final EnhancedAnnotated<T, ?> annotated;
 
         private BeanAttributesBuilder(EnhancedAnnotated<T, ?> annotated, InternalEjbDescriptor<T> descriptor, BeanManagerImpl manager) {
             this.manager = manager;
+            this.annotated = annotated;
             initStereotypes(annotated, manager);
             initAlternative(annotated);
             initName(annotated);
@@ -226,7 +230,18 @@ public class BeanAttributesFactory {
                 this.scope = possibleScopes.iterator().next().annotationType();
                 return true;
             } else if (possibleScopes.size() > 1) {
-                throw BeanLogger.LOG.multipleScopesFoundFromStereotypes(mergedStereotypes);
+                String stack;
+                Class<?> declaringClass;
+                if (annotated instanceof EnhancedAnnotatedMember) {
+                    EnhancedAnnotatedMember<?, ?, ?> member = (EnhancedAnnotatedMember<?, ?, ?>) annotated;
+                    declaringClass = member.getDeclaringType().getJavaClass();
+                    stack = "\n  at " + Formats.formatAsStackTraceElement(member.getJavaMember());
+                } else {
+                    declaringClass = annotated.getJavaClass();
+                    stack = "";
+                }
+                throw BeanLogger.LOG.multipleScopesFoundFromStereotypes(Formats.formatType(declaringClass, false),
+                        Formats.formatTypes(mergedStereotypes.getStereotypes(), false), possibleScopes, stack);
             } else {
                 return false;
             }

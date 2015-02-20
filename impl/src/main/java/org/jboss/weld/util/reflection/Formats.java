@@ -19,6 +19,7 @@ package org.jboss.weld.util.reflection;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -52,6 +53,7 @@ public class Formats {
 
     private static final String SNAPSHOT = "SNAPSHOT";
     private static final String NULL = "null";
+    private static final String SQUARE_BRACKETS = "[]";
 
     private static final String BCEL_CLASS_PARSER_FQCN = "com.sun.org.apache.bcel.internal.classfile.ClassParser";
     private static final String BCEL_JAVA_CLASS_FQCN = "com.sun.org.apache.bcel.internal.classfile.JavaClass";
@@ -89,6 +91,10 @@ public class Formats {
             // Throwing an exception here would hide the original exception.
             return "-";
         }
+        return formatAsStackTraceElement(member);
+    }
+
+    public static String formatAsStackTraceElement(Member member) {
         return member.getDeclaringClass().getName()
             + "." + (member instanceof Constructor<?> ? INIT_METHOD_NAME : member.getName())
             + "(" + getFileName(member.getDeclaringClass()) + ":" + getLineNumber(member) + ")";
@@ -265,27 +271,52 @@ public class Formats {
     }
 
     public static String formatType(Type baseType) {
+        return formatType(baseType, true);
+    }
+
+    public static String formatType(Type baseType, boolean simpleNames) {
         if (baseType == null) {
             return NULL;
-        } else {
-            Class<?> rawType = Reflections.getRawType(baseType);
-            if (rawType != null) {
-                return rawType.getSimpleName() + formatActualTypeArguments(Reflections.getActualTypeArguments(baseType));
-            } else {
-                return baseType.toString();
+        }
+        if (baseType instanceof Class<?>) {
+            Class<?> clazz = (Class<?>) baseType;
+            if (clazz.isArray()) {
+                return formatType(clazz.getComponentType(), simpleNames) + SQUARE_BRACKETS;
             }
+            return getClassName(clazz, simpleNames);
+        }
+        if (baseType instanceof ParameterizedType) {
+            ParameterizedType parameterizedType = (ParameterizedType) baseType;
+            return getClassName((Class<?>) parameterizedType.getRawType(), simpleNames) + formatActualTypeArguments(parameterizedType.getActualTypeArguments());
+        }
+        if (baseType instanceof GenericArrayType) {
+            GenericArrayType gat = (GenericArrayType) baseType;
+            return formatType(gat.getGenericComponentType(), simpleNames) + SQUARE_BRACKETS;
+        }
+        return baseType.toString();
+    }
+
+    private static String getClassName(Class<?> clazz, boolean simpleNames) {
+        if (simpleNames) {
+            return clazz.getSimpleName();
+        } else {
+            return clazz.getName();
         }
     }
 
-    public static String formatTypes(Iterable<? extends Type> baseTypes) {
+    public static String formatTypes(Iterable<? extends Type> baseTypes, final boolean simpleNames) {
         return formatIterable(baseTypes, new Function<Type>() {
 
             @Override
             public String apply(Type from, int position) {
-                return commaDelimiterFunction().apply(formatType(from), position);
+                return commaDelimiterFunction().apply(formatType(from, simpleNames), position);
             }
 
         });
+    }
+
+    public static String formatTypes(Iterable<? extends Type> baseTypes) {
+        return formatTypes(baseTypes, true);
     }
 
     public static String formatBusinessInterfaceDescriptors(Iterable<? extends BusinessInterfaceDescriptor<?>> businessInterfaceDescriptors) {
