@@ -71,7 +71,13 @@ public class Formats {
     private Formats() {
     }
 
-    // see WELD-1454
+    /**
+     * See also WELD-1454.
+     *
+     * @param ij
+     * @param resourceLoader If null, the line number will not be available
+     * @return the formatted string
+     */
     public static String formatAsStackTraceElement(InjectionPoint ij, ResourceLoader resourceLoader) {
         Member member;
         if (ij.getAnnotated() instanceof AnnotatedField) {
@@ -106,7 +112,7 @@ public class Formats {
      */
     public static int getLineNumber(Member member, ResourceLoader resourceLoader) {
 
-        if (!(member instanceof Method || member instanceof Constructor)) {
+        if (resourceLoader == null || !(member instanceof Method || member instanceof Constructor)) {
             // We are not able to get this info for fields
             return 0;
         }
