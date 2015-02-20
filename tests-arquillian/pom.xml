@@ -121,6 +121,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.jboss.weld.module</groupId>
+            <artifactId>weld-jta</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.wildfly</groupId>
             <artifactId>wildfly-arquillian-common</artifactId>
             <scope>test</scope>

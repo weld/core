@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.event;
+package org.jboss.weld.jta;
 
 import javax.enterprise.inject.spi.EventMetadata;
 import javax.enterprise.inject.spi.ObserverMethod;
@@ -22,6 +22,7 @@ import javax.enterprise.inject.spi.ObserverMethod;
 import org.jboss.weld.Container;
 import org.jboss.weld.context.RequestContext;
 import org.jboss.weld.context.unbound.UnboundLiteral;
+import org.jboss.weld.event.CurrentEventMetadata;
 import org.jboss.weld.injection.ThreadLocalStack.ThreadLocalStackReference;
 import org.jboss.weld.logging.EventLogger;
 
@@ -31,7 +32,7 @@ import org.jboss.weld.logging.EventLogger;
  * @author David Allen
  * @author Jozef Hartinger
  */
-public class DeferredEventNotification<T> implements Runnable {
+class DeferredEventNotification<T> implements Runnable {
 
     // The observer
     protected final ObserverMethod<? super T> observer;

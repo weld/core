@@ -54,6 +54,11 @@
             <version>${weld.update.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.jboss.weld.module</groupId>
+            <artifactId>weld-jta</artifactId>
+            <version>${weld.update.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.jboss.cdi.tck</groupId>
             <artifactId>cdi-tck-ext-lib</artifactId>
         </dependency>
@@ -100,9 +105,10 @@ JBOSS_HOME: ${jboss.home}
                                         <property name="module.dir" value="${jboss.home}/modules/org/jboss/weld" />
                                         <property name="jsf.injection.dir" value="${module.dir}/../as/jsf-injection/main" />
 
-                                        <property name="weld.core.file" value="weld-core-impl.jar" />
-                                        <property name="weld.probe.file" value="weld-probe-core.jar" />
-                                        <property name="weld.jsf.file" value="weld-jsf.jar" />
+                                        <property name="weld.core.file" value="weld-core-impl.jar"/>
+                                        <property name="weld.probe.file" value="weld-probe-core.jar"/>
+                                        <property name="weld.jsf.file" value="weld-jsf.jar"/>
+                                        <property name="weld.jta.file" value="weld-jta.jar"/>
 
                                         <delete>
                                             <fileset dir="${module.dir}/core/main" includes="*.jar" />
@@ -118,12 +124,18 @@ JBOSS_HOME: ${jboss.home}
                                         <copy todir="${module.dir}/core/main" overwrite="true">
                                             <fileset dir="target/dependency/lib">
                                                 <include name="${weld.core.file}" />
+                                                <include name="${weld.jta.file}" />
                                                 <include name="${weld.probe.file}" />
                                             </fileset>
                                         </copy>
 
                                         <replaceregexp file="${module.dir}/core/main/module.xml" match="path=&quot;weld-core-impl.*?&quot;" replace="path=&quot;${weld.core.file}&quot;" byline="true" />
                                         <replaceregexp file="${module.dir}/core/main/module.xml" match="path=&quot;weld-probe-core.*?&quot;" replace="path=&quot;${weld.probe.file}&quot;" byline="true" />
+                                        <replaceregexp 
+                                            file="${module.dir}/core/main/module.xml" 
+                                            match="^(.*)(&lt;resource-root path=&quot;weld-core-impl.jar&quot;/&gt;).*$"
+                                            replace="\1\2\&lt;resource-root path=&quot;weld-jta.jar&quot;/&gt;"
+                                            byline="true" />
 
                                         <copy todir="${module.dir}/spi/main" overwrite="true">
                                             <fileset dir="target/dependency/lib">
@@ -223,7 +235,7 @@ JBOSS_HOME: ${jboss.home}
                             <outputDirectory>${project.build.directory}/dependency/lib</outputDirectory>
                             <overWriteSnapshots>true</overWriteSnapshots>
                             <stripVersion>true</stripVersion>
-                            <includeArtifactIds>cdi-api,weld-api,weld-core,weld-core-impl,weld-jsf,weld-spi,cdi-tck-ext-lib,weld-probe-core</includeArtifactIds>
+                            <includeArtifactIds>cdi-api,weld-api,weld-core,weld-core-impl,weld-jsf,weld-jta,weld-spi,cdi-tck-ext-lib,weld-probe-core</includeArtifactIds>
                         </configuration>
                     </execution>
                 </executions>

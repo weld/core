@@ -131,6 +131,7 @@ import org.jboss.weld.metadata.cache.InterceptorBindingModel;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.metadata.cache.ScopeModel;
 import org.jboss.weld.metadata.cache.StereotypeModel;
+import org.jboss.weld.module.ObserverNotifierFactory;
 import org.jboss.weld.resolution.BeanTypeAssignabilityRules;
 import org.jboss.weld.resolution.DecoratorResolvableBuilder;
 import org.jboss.weld.resolution.InterceptorResolvable;
@@ -380,7 +381,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
         TypeSafeObserverResolver accessibleObserverResolver = new TypeSafeObserverResolver(getServices().get(MetaAnnotationStore.class),
                 createDynamicAccessibleIterable(ObserverMethodTransform.INSTANCE), getServices().get(WeldConfiguration.class));
-        this.accessibleLenientObserverNotifier = ObserverNotifier.of(contextId, accessibleObserverResolver, getServices(), false);
+        this.accessibleLenientObserverNotifier = getServices().get(ObserverNotifierFactory.class).create(contextId, accessibleObserverResolver, getServices(), false);
         GlobalObserverNotifierService globalObserverNotifierService = services.get(GlobalObserverNotifierService.class);
         this.globalLenientObserverNotifier = globalObserverNotifierService.getGlobalLenientObserverNotifier();
         this.globalStrictObserverNotifier = globalObserverNotifierService.getGlobalStrictObserverNotifier();

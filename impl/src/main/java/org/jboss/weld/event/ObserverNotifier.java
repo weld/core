@@ -39,7 +39,6 @@ import org.jboss.weld.resolution.Resolvable;
 import org.jboss.weld.resolution.ResolvableBuilder;
 import org.jboss.weld.resolution.TypeSafeObserverResolver;
 import org.jboss.weld.resources.SharedObjectCache;
-import org.jboss.weld.transaction.spi.TransactionServices;
 import org.jboss.weld.util.Observers;
 import org.jboss.weld.util.Types;
 import org.jboss.weld.util.cache.ComputingCache;
@@ -56,21 +55,6 @@ import org.jboss.weld.util.reflection.Reflections;
  *
  */
 public class ObserverNotifier {
-
-    /**
-     *
-     * @param resolver
-     * @param services
-     * @param strict indicates whether event type should be performed or not
-     * @return ObserverNotifier instance
-     */
-    public static ObserverNotifier of(String contextId, TypeSafeObserverResolver resolver, ServiceRegistry services, boolean strict) {
-        if (services.contains(TransactionServices.class)) {
-            return new TransactionalObserverNotifier(contextId, resolver, services, strict);
-        } else {
-            return new ObserverNotifier(resolver, services, strict);
-        }
-    }
 
     private static final RuntimeException NO_EXCEPTION_MARKER = new RuntimeException();
 
