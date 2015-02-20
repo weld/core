@@ -91,6 +91,7 @@ import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.spi.ClassFileInfo;
 import org.jboss.weld.util.bytecode.BytecodeUtils;
 import org.jboss.weld.util.collections.ImmutableSet;
+import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.util.reflection.SessionBeanHierarchyDiscovery;
@@ -471,7 +472,7 @@ public class Beans {
             if (tmp != null) {
                 types.add(tmp);
             } else {
-                throw BeanLogger.LOG.typedClassNotInHierarchy(specifiedClass.getName(), rawType);
+                throw BeanLogger.LOG.typedClassNotInHierarchy(specifiedClass.getName(), rawType, Formats.formatTypes(typeClosure.values()));
             }
         }
         types.add(Object.class);
