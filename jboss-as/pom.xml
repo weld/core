@@ -100,29 +100,9 @@ JBOSS_HOME: ${jboss.home}
                                         <property name="module.dir" value="${jboss.home}/modules/org/jboss/weld" />
                                         <property name="jsf.injection.dir" value="${module.dir}/../as/jsf-injection/main" />
 
-                                        <!-- Check to see if this version of
-                                            AS / WildFly uses a separate weld-core-jsf artifact or not -->
-                                        <pathconvert property="weld.jsf.path" pathsep=" " setonempty="false">
-                                            <path>
-                                                <fileset dir="${jsf.injection.dir}" includes="weld-core-jsf*.jar" />
-                                            </path>
-                                        </pathconvert>
-                                        <!-- weld-core-impl is the right core
-                                            artifact if weld-core-jsf is used by the application server -->
-                                        <condition property="weld.core.file" value="weld-core-impl.jar">
-                                            <and>
-                                                <isset property="weld.jsf.path" />
-                                            </and>
-                                        </condition>
-                                        <condition property="weld.jsf.file" value="weld-core-jsf.jar">
-                                            <and>
-                                                <isset property="weld.jsf.path" />
-                                            </and>
-                                        </condition>
-                                        <!-- otherwise, use the old artifact
-                                            (weld-core) -->
-                                        <property name="weld.core.file" value="weld-core.jar" />
+                                        <property name="weld.core.file" value="weld-core-impl.jar" />
                                         <property name="weld.probe.file" value="weld-probe-core.jar" />
+                                        <property name="weld.jsf.file" value="weld-core-jsf.jar" />
 
                                         <delete>
                                             <fileset dir="${module.dir}/core/main" includes="*.jar" />
@@ -161,8 +141,6 @@ JBOSS_HOME: ${jboss.home}
 
                                         <replaceregexp file="${module.dir}/api/main/module.xml" match="path=&quot;.*?&quot;" replace="path=&quot;weld-api.jar&quot;" byline="true" />
 
-                                        <!-- Update the weld-core-jsf artifact
-                                            (this one is only used post WF 8.0.0.Alpha1) -->
                                         <copy todir="${jsf.injection.dir}" overwrite="true">
                                             <fileset dir="target/dependency/lib">
                                                 <include name="${weld.jsf.file}" />
