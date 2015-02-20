@@ -27,8 +27,6 @@ import java.util.List;
 
 import javax.enterprise.inject.spi.BeanManager;
 
-import org.jboss.weld.resources.ClassLoaderResourceLoader;
-import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.security.GetDeclaredConstructorsAction;
 import org.jboss.weld.security.GetDeclaredMethodsAction;
 import org.jboss.weld.util.reflection.Formats;
@@ -44,17 +42,16 @@ public class FormatsTest {
     public void testGetLineNumber() throws NoSuchMethodException, SecurityException {
 
         Class<Bean> beanClass = Bean.class;
-        ResourceLoader resourceLoader = new ClassLoaderResourceLoader(Bean.class.getClassLoader());
 
         // Initializers
-        assertLineFound(findMethod(beanClass, "init", Vanilla.class), resourceLoader);
-        assertLineFound(findMethod(beanClass, "foo", Vanilla.class, BeanManager.class, List.class), resourceLoader);
+        assertLineFound(findMethod(beanClass, "init", Vanilla.class));
+        assertLineFound(findMethod(beanClass, "foo", Vanilla.class, BeanManager.class, List.class));
         // Constructors
-        assertLineFound(findConstructor(beanClass, Vanilla.class), resourceLoader);
+        assertLineFound(findConstructor(beanClass, Vanilla.class));
     }
 
-    void assertLineFound(Member member, ResourceLoader resourceLoader) {
-        int line = Formats.getLineNumber(member, resourceLoader);
+    void assertLineFound(Member member) {
+        int line = Formats.getLineNumber(member);
         // We can't test the exact line as it doesn't seem to be precise and portable
         // E.g. for methods it's declaration line + 1 and for constructors it's declaration line
         assertTrue("Line: " + line, line > 0);
