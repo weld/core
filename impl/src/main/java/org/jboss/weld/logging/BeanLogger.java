@@ -212,8 +212,8 @@ public interface BeanLogger extends WeldLogger {
     @Message(id = 38, value = "A bean class that is not a decorator has an injection point annotated @Delegate\n  at injection point {0}\n  at {1}", format = Format.MESSAGE_FORMAT)
     DefinitionException delegateNotOnDecorator(Object ip, Object stackElement);
 
-    @Message(id = 39, value = "@Typed class {0} is not present in the type hierarchy {1}", format = Format.MESSAGE_FORMAT)
-    DefinitionException typedClassNotInHierarchy(Object param1, Object param2);
+    @Message(id = 39, value = "@Typed class {0} not present in the set of bean types of {1} [{2}]", format = Format.MESSAGE_FORMAT)
+    DefinitionException typedClassNotInHierarchy(Object param1, Object param2, Object types);
 
     @Message(id = 40, value = "All stereotypes must specify the same scope OR a scope must be specified on {0}", format = Format.MESSAGE_FORMAT)
     DefinitionException multipleScopesFoundFromStereotypes(Object param1);
