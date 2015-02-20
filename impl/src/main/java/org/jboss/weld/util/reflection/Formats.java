@@ -91,6 +91,10 @@ public class Formats {
             // Throwing an exception here would hide the original exception.
             return "-";
         }
+        return formatAsStackTraceElement(member);
+    }
+
+    public static String formatAsStackTraceElement(Member member) {
         return member.getDeclaringClass().getName()
             + "." + (member instanceof Constructor<?> ? INIT_METHOD_NAME : member.getName())
             + "(" + getFileName(member.getDeclaringClass()) + ":" + getLineNumber(member) + ")";
@@ -300,15 +304,19 @@ public class Formats {
         }
     }
 
-    public static String formatTypes(Iterable<? extends Type> baseTypes) {
+    public static String formatTypes(Iterable<? extends Type> baseTypes, boolean simpleNames) {
         return formatIterable(baseTypes, new Function<Type>() {
 
             @Override
             public String apply(Type from, int position) {
-                return commaDelimiterFunction().apply(formatType(from), position);
+                return commaDelimiterFunction().apply(formatType(from, simpleNames), position);
             }
 
         });
+    }
+
+    public static String formatTypes(Iterable<? extends Type> baseTypes) {
+        return formatTypes(baseTypes, true);
     }
 
     public static String formatBusinessInterfaceDescriptors(Iterable<? extends BusinessInterfaceDescriptor<?>> businessInterfaceDescriptors) {
