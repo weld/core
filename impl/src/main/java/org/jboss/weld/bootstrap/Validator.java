@@ -101,7 +101,6 @@ import org.jboss.weld.logging.MessageCallback;
 import org.jboss.weld.logging.ValidatorLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
-import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.BeanMethods;
 import org.jboss.weld.util.Beans;
@@ -361,7 +360,7 @@ public class Validator implements Service {
                 ij,
                 Formats.formatAnnotations(ij.getQualifiers()),
                 Formats.formatInjectionPointType(ij.getType()),
-                Formats.formatAsStackTraceElement(ij, beanManager.getServices().get(ResourceLoader.class)),
+                Formats.formatAsStackTraceElement(ij),
                 getUnsatisfiedDependenciesAdditionalInfo(ij, beanManager));
         }
         if (resolvedBeans.size() > 1) {
@@ -369,7 +368,7 @@ public class Validator implements Service {
                 ij,
                 Formats.formatAnnotations(ij.getQualifiers()),
                 Formats.formatInjectionPointType(ij.getType()),
-                Formats.formatAsStackTraceElement(ij, beanManager.getServices().get(ResourceLoader.class)),
+                Formats.formatAsStackTraceElement(ij),
                 WeldCollections.toMultiRowString(resolvedBeans));
         }
         // Account for the case this is disabled decorator
