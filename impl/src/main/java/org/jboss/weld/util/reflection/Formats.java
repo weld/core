@@ -123,11 +123,11 @@ public class Formats {
         }
 
         String classFile = member.getDeclaringClass().getName().replace('.', '/');
-        ClassLoaderResourceLoader memberResourceLoader = new ClassLoaderResourceLoader(member.getDeclaringClass().getClassLoader());
+        ClassLoaderResourceLoader classFileResourceLoader = new ClassLoaderResourceLoader(member.getDeclaringClass().getClassLoader());
         InputStream in = null;
 
         try {
-            URL classFileUrl = memberResourceLoader.getResource(classFile + ".class");
+            URL classFileUrl = classFileResourceLoader.getResource(classFile + ".class");
 
             if (classFileUrl == null) {
                 // The class file is not available
