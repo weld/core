@@ -38,7 +38,8 @@ import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.classfilewriter.util.DescriptorUtils;
 import org.jboss.weld.ejb.spi.BusinessInterfaceDescriptor;
-import org.jboss.weld.resources.spi.ResourceLoader;
+import org.jboss.weld.resources.ClassLoaderResourceLoader;
+import org.jboss.weld.resources.WeldClassLoaderResourceLoader;
 
 /**
  * Utility class to produce friendly names e.g. for debugging
@@ -69,8 +70,13 @@ public class Formats {
     private Formats() {
     }
 
-    // see WELD-1454
-    public static String formatAsStackTraceElement(InjectionPoint ij, ResourceLoader resourceLoader) {
+    /**
+     * See also WELD-1454.
+     *
+     * @param ij
+     * @return the formatted string
+     */
+    public static String formatAsStackTraceElement(InjectionPoint ij) {
         Member member;
         if (ij.getAnnotated() instanceof AnnotatedField) {
             AnnotatedField<?> annotatedField = (AnnotatedField<?>) ij.getAnnotated();
@@ -85,7 +91,7 @@ public class Formats {
         }
         return member.getDeclaringClass().getName()
             + "." + (member instanceof Constructor<?> ? INIT_METHOD_NAME : member.getName())
-            + "(" + getFileName(member.getDeclaringClass()) + ":" + getLineNumber(member, resourceLoader) + ")";
+            + "(" + getFileName(member.getDeclaringClass()) + ":" + getLineNumber(member) + ")";
     }
 
     /**
@@ -102,23 +108,24 @@ public class Formats {
      * @param resourceLoader
      * @return the line number or 0 if it's not possible to find it
      */
-    public static int getLineNumber(Member member, ResourceLoader resourceLoader) {
+    public static int getLineNumber(Member member) {
 
         if (!(member instanceof Method || member instanceof Constructor)) {
             // We are not able to get this info for fields
             return 0;
         }
 
-        if (!Reflections.isClassLoadable(BCEL_JAVA_CLASS_FQCN, resourceLoader)) {
+        if (!Reflections.isClassLoadable(BCEL_JAVA_CLASS_FQCN, WeldClassLoaderResourceLoader.INSTANCE)) {
             // Apache BCEL classes not on the classpath
             return 0;
         }
 
         String classFile = member.getDeclaringClass().getName().replace('.', '/');
+        ClassLoaderResourceLoader classFileResourceLoader = new ClassLoaderResourceLoader(member.getDeclaringClass().getClassLoader());
         InputStream in = null;
 
         try {
-            URL classFileUrl = resourceLoader.getResource(classFile + ".class");
+            URL classFileUrl = classFileResourceLoader.getResource(classFile + ".class");
 
             if (classFileUrl == null) {
                 // The class file is not available
@@ -126,10 +133,10 @@ public class Formats {
             }
             in = classFileUrl.openStream();
 
-            Class<?> classParserClass = Reflections.loadClass(BCEL_CLASS_PARSER_FQCN, resourceLoader);
-            Class<?> javaClassClass = Reflections.loadClass(BCEL_JAVA_CLASS_FQCN, resourceLoader);
-            Class<?> methodClass = Reflections.loadClass(BCEL_METHOD_FQCN, resourceLoader);
-            Class<?> lntClass = Reflections.loadClass(BCEL_LINE_NUMBER_TABLE_FQCN, resourceLoader);
+            Class<?> classParserClass = Reflections.loadClass(BCEL_CLASS_PARSER_FQCN, WeldClassLoaderResourceLoader.INSTANCE);
+            Class<?> javaClassClass = Reflections.loadClass(BCEL_JAVA_CLASS_FQCN, WeldClassLoaderResourceLoader.INSTANCE);
+            Class<?> methodClass = Reflections.loadClass(BCEL_METHOD_FQCN, WeldClassLoaderResourceLoader.INSTANCE);
+            Class<?> lntClass = Reflections.loadClass(BCEL_LINE_NUMBER_TABLE_FQCN, WeldClassLoaderResourceLoader.INSTANCE);
 
             Object parser = classParserClass.getConstructor(InputStream.class, String.class).newInstance(in, classFile);
             Object javaClass = classParserClass.getMethod(BCEL_M_PARSE).invoke(parser);
