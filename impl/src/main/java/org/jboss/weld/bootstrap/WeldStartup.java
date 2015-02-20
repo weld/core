@@ -101,6 +101,7 @@ import org.jboss.weld.context.unbound.SingletonContextImpl;
 import org.jboss.weld.context.unbound.UnboundLiteral;
 import org.jboss.weld.ejb.spi.EjbServices;
 import org.jboss.weld.event.CurrentEventMetadata;
+import org.jboss.weld.event.DefaultObserverNotifierFactory;
 import org.jboss.weld.event.GlobalObserverNotifierService;
 import org.jboss.weld.executor.ExecutorServicesFactory;
 import org.jboss.weld.injection.CurrentInjectionPoint;
@@ -113,6 +114,7 @@ import org.jboss.weld.manager.BeanManagerLookupService;
 import org.jboss.weld.manager.api.ExecutorServices;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
+import org.jboss.weld.module.ObserverNotifierFactory;
 import org.jboss.weld.module.WeldModules;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.DefaultResourceLoader;
@@ -282,9 +284,6 @@ public class WeldStartup {
         services.add(SpecializationAndEnablementRegistry.class, new SpecializationAndEnablementRegistry());
         services.add(MissingDependenciesRegistry.class, new MissingDependenciesRegistry());
 
-        GlobalObserverNotifierService observerNotificationService = new GlobalObserverNotifierService(services, contextId);
-        services.add(GlobalObserverNotifierService.class, observerNotificationService);
-
         /*
          * Setup ExecutorServices
          */
@@ -307,6 +306,22 @@ public class WeldStartup {
             services.add(Validator.class, new Validator());
         }
 
+        services.add(GlobalEnablementBuilder.class, new GlobalEnablementBuilder());
+        if (!services.contains(HttpContextActivationFilter.class)) {
+            services.add(HttpContextActivationFilter.class, AcceptingHttpContextActivationFilter.INSTANCE);
+        }
+        services.add(ServletContextService.class, new ServletContextService());
+        services.add(ProtectionDomainCache.class, new ProtectionDomainCache());
+
+        services.add(ProxyInstantiator.class, ProxyInstantiator.Factory.create(configuration));
+
+        services.add(ObserverNotifierFactory.class, DefaultObserverNotifierFactory.INSTANCE);
+
+        modules.postServiceRegistration(contextId, services);
+
+        GlobalObserverNotifierService observerNotificationService = new GlobalObserverNotifierService(services, contextId);
+        services.add(GlobalObserverNotifierService.class, observerNotificationService);
+
         /*
          * Preloader for container lifecycle events
          */
@@ -316,17 +331,6 @@ public class WeldStartup {
             preloader = new ContainerLifecycleEventPreloader(preloaderThreadPoolSize, observerNotificationService.getGlobalLenientObserverNotifier());
         }
         services.add(ContainerLifecycleEvents.class, new ContainerLifecycleEvents(preloader, services.get(RequiredAnnotationDiscovery.class)));
-        services.add(GlobalEnablementBuilder.class, new GlobalEnablementBuilder());
-
-        if (!services.contains(HttpContextActivationFilter.class)) {
-            services.add(HttpContextActivationFilter.class, AcceptingHttpContextActivationFilter.INSTANCE);
-        }
-
-        services.add(ServletContextService.class, new ServletContextService());
-        services.add(ProtectionDomainCache.class, new ProtectionDomainCache());
-
-        services.add(ProxyInstantiator.class, ProxyInstantiator.Factory.create(configuration));
-        modules.postServiceRegistration(contextId, services);
     }
 
     // needs to be resolved once extension beans are deployed

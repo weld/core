@@ -14,10 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.bean.builtin.ee;
+package org.jboss.weld.jta;
 
 import javax.transaction.UserTransaction;
 
+import org.jboss.weld.bean.builtin.ee.AbstractEEBean;
+import org.jboss.weld.bean.builtin.ee.AbstractEECallable;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.transaction.spi.TransactionServices;
@@ -25,7 +27,7 @@ import org.jboss.weld.transaction.spi.TransactionServices;
 /**
  * @author pmuir
  */
-public class UserTransactionBean extends AbstractEEBean<UserTransaction> {
+class UserTransactionBean extends AbstractEEBean<UserTransaction> {
 
     private static class UserTransactionCallable extends AbstractEECallable<UserTransaction> {
 
@@ -46,7 +48,7 @@ public class UserTransactionBean extends AbstractEEBean<UserTransaction> {
 
     }
 
-    public UserTransactionBean(BeanManagerImpl beanManager) {
+    UserTransactionBean(BeanManagerImpl beanManager) {
         super(UserTransaction.class, new UserTransactionCallable(beanManager), beanManager);
     }
 

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.jboss.weld.event;
+package org.jboss.weld.jta;
 
 import static javax.transaction.Status.STATUS_COMMITTED;
 
@@ -30,7 +30,7 @@ import javax.transaction.Synchronization;
  *
  * @author David Allen
  */
-public enum Status {
+enum Status {
 
 
     ALL {

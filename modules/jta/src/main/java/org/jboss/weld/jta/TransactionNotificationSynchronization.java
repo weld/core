@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.event;
+package org.jboss.weld.jta;
 
 import java.util.List;
 
@@ -25,7 +25,7 @@ import javax.transaction.Synchronization;
  *
  * @author David Allen
  */
-public class TransactionNotificationSynchronization implements Synchronization {
+class TransactionNotificationSynchronization implements Synchronization {
 
     private final List<DeferredEventNotification<?>> notifications;
 

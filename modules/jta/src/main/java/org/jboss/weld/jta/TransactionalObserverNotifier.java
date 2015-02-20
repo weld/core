@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.event;
+package org.jboss.weld.jta;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +24,8 @@ import javax.enterprise.inject.spi.EventMetadata;
 import javax.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
+import org.jboss.weld.event.ObserverNotifier;
+import org.jboss.weld.module.ObserverNotifierFactory;
 import org.jboss.weld.resolution.TypeSafeObserverResolver;
 import org.jboss.weld.transaction.spi.TransactionServices;
 
@@ -32,12 +34,19 @@ import org.jboss.weld.transaction.spi.TransactionServices;
  *
  * @author Jozef Hartinger
  */
-public class TransactionalObserverNotifier extends ObserverNotifier {
+class TransactionalObserverNotifier extends ObserverNotifier {
+
+    static final ObserverNotifierFactory FACTORY = new ObserverNotifierFactory() {
+        @Override
+        public ObserverNotifier create(String contextId, TypeSafeObserverResolver resolver, ServiceRegistry services, boolean strict) {
+            return new TransactionalObserverNotifier(contextId, resolver, services, strict);
+        }
+    };
 
     private final TransactionServices transactionServices;
     private final String contextId;
 
-    protected TransactionalObserverNotifier(String contextId, TypeSafeObserverResolver resolver, ServiceRegistry services, boolean strict) {
+    TransactionalObserverNotifier(String contextId, TypeSafeObserverResolver resolver, ServiceRegistry services, boolean strict) {
         super(resolver, services, strict);
         this.contextId = contextId;
         this.transactionServices = services.get(TransactionServices.class);
