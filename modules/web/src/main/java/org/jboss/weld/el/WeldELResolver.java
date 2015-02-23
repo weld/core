@@ -16,24 +16,33 @@
  */
 package org.jboss.weld.el;
 
-import org.jboss.weld.manager.BeanManagerImpl;
-
 import javax.el.ELContext;
+
+import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.LazyValueHolder;
 
 /**
  * @author pmuir
+ * @author Jozef Hartinger
  */
 public class WeldELResolver extends AbstractWeldELResolver {
 
     private final BeanManagerImpl beanManager;
+    private final LazyValueHolder<Namespace> rootNamespace;
 
-    public WeldELResolver(BeanManagerImpl beanManager) {
-        this.beanManager = beanManager;
+    public WeldELResolver(BeanManagerImpl manager) {
+        this.beanManager = manager;
+        this.rootNamespace = LazyValueHolder.forSupplier(() -> new Namespace(manager.getAccessibleNamespaces()));
     }
 
     @Override
     protected BeanManagerImpl getManager(ELContext context) {
         return beanManager;
+    }
+
+    @Override
+    protected Namespace getRootNamespace() {
+        return rootNamespace.get();
     }
 
 }

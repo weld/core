@@ -20,11 +20,10 @@ import java.io.Serializable;
 
 import javax.enterprise.context.Destroyed;
 import javax.enterprise.context.Initialized;
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * General event payload for {@link Initialized} / {@link Destroyed} events. A more specific payload is necessary
- * for certain contexts (e.g. {@link HttpServletRequest})
+ * for certain contexts (e.g. {@link javax.servlet.http.HttpServletRequest})
  *
  * @author Jozef Hartinger
  *

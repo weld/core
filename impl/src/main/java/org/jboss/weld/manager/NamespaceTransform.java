@@ -16,7 +16,13 @@
  */
 package org.jboss.weld.manager;
 
+
 class NamespaceTransform implements Transform<String> {
+
+    static final NamespaceTransform INSTANCE = new NamespaceTransform();
+
+    private NamespaceTransform() {
+    }
 
     public Iterable<String> transform(BeanManagerImpl beanManager) {
         return beanManager.getNamespaces();

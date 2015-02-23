@@ -59,6 +59,11 @@
             <version>${weld.update.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.jboss.weld.module</groupId>
+            <artifactId>weld-web</artifactId>
+            <version>${weld.update.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.jboss.cdi.tck</groupId>
             <artifactId>cdi-tck-ext-lib</artifactId>
         </dependency>
@@ -109,6 +114,7 @@ JBOSS_HOME: ${jboss.home}
                                         <property name="weld.probe.file" value="weld-probe-core.jar"/>
                                         <property name="weld.jsf.file" value="weld-jsf.jar"/>
                                         <property name="weld.jta.file" value="weld-jta.jar"/>
+                                        <property name="weld.web.file" value="weld-web.jar"/>
 
                                         <delete>
                                             <fileset dir="${module.dir}/core/main" includes="*.jar" />
@@ -126,6 +132,7 @@ JBOSS_HOME: ${jboss.home}
                                                 <include name="${weld.core.file}" />
                                                 <include name="${weld.jta.file}" />
                                                 <include name="${weld.probe.file}" />
+                                                <include name="${weld.web.file}" />
                                             </fileset>
                                         </copy>
 
@@ -133,8 +140,8 @@ JBOSS_HOME: ${jboss.home}
                                         <replaceregexp file="${module.dir}/core/main/module.xml" match="path=&quot;weld-probe-core.*?&quot;" replace="path=&quot;${weld.probe.file}&quot;" byline="true" />
                                         <replaceregexp 
                                             file="${module.dir}/core/main/module.xml" 
-                                            match="^(.*)(&lt;resource-root path=&quot;weld-core-impl.jar&quot;/&gt;).*$"
-                                            replace="\1\2\&lt;resource-root path=&quot;weld-jta.jar&quot;/&gt;"
+                                            match="^(.*)(&lt;resource-root path=&quot;)weld-core-impl.jar(&quot;/&gt;).*$"
+                                            replace="\1\2weld-core-impl.jar\3\2weld-jta.jar\3\2weld-web.jar\3"
                                             byline="true" />
 
                                         <copy todir="${module.dir}/spi/main" overwrite="true">
@@ -235,7 +242,7 @@ JBOSS_HOME: ${jboss.home}
                             <outputDirectory>${project.build.directory}/dependency/lib</outputDirectory>
                             <overWriteSnapshots>true</overWriteSnapshots>
                             <stripVersion>true</stripVersion>
-                            <includeArtifactIds>cdi-api,weld-api,weld-core,weld-core-impl,weld-jsf,weld-jta,weld-spi,cdi-tck-ext-lib,weld-probe-core</includeArtifactIds>
+                            <includeArtifactIds>cdi-api,weld-api,weld-core,weld-core-impl,weld-jsf,weld-jta,weld-web,weld-spi,cdi-tck-ext-lib,weld-probe-core</includeArtifactIds>
                         </configuration>
                     </execution>
                 </executions>
