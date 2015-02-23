@@ -40,7 +40,9 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import org.jboss.classfilewriter.util.DescriptorUtils;
 import org.jboss.weld.ejb.spi.BusinessInterfaceDescriptor;
 import org.jboss.weld.resources.ClassLoaderResourceLoader;
+import org.jboss.weld.resources.DefaultResourceLoader;
 import org.jboss.weld.resources.WeldClassLoaderResourceLoader;
+import org.jboss.weld.resources.spi.ResourceLoader;
 
 /**
  * Utility class to produce friendly names e.g. for debugging
@@ -121,9 +123,15 @@ public class Formats {
             return 0;
         }
 
-        if (!Reflections.isClassLoadable(BCEL_JAVA_CLASS_FQCN, WeldClassLoaderResourceLoader.INSTANCE)) {
-            // Apache BCEL classes not on the classpath
-            return 0;
+        ResourceLoader bcelResourceLoader = WeldClassLoaderResourceLoader.INSTANCE;
+
+        if (!Reflections.isClassLoadable(BCEL_JAVA_CLASS_FQCN, bcelResourceLoader)) {
+            // Try TCCL as a fallback
+            bcelResourceLoader = DefaultResourceLoader.INSTANCE;
+            if (!Reflections.isClassLoadable(BCEL_JAVA_CLASS_FQCN, bcelResourceLoader)) {
+                // Apache BCEL classes not found on the classpath
+                return 0;
+            }
         }
 
         String classFile = member.getDeclaringClass().getName().replace('.', '/');
@@ -139,10 +147,10 @@ public class Formats {
             }
             in = classFileUrl.openStream();
 
-            Class<?> classParserClass = Reflections.loadClass(BCEL_CLASS_PARSER_FQCN, WeldClassLoaderResourceLoader.INSTANCE);
-            Class<?> javaClassClass = Reflections.loadClass(BCEL_JAVA_CLASS_FQCN, WeldClassLoaderResourceLoader.INSTANCE);
-            Class<?> methodClass = Reflections.loadClass(BCEL_METHOD_FQCN, WeldClassLoaderResourceLoader.INSTANCE);
-            Class<?> lntClass = Reflections.loadClass(BCEL_LINE_NUMBER_TABLE_FQCN, WeldClassLoaderResourceLoader.INSTANCE);
+            Class<?> classParserClass = Reflections.loadClass(BCEL_CLASS_PARSER_FQCN, bcelResourceLoader);
+            Class<?> javaClassClass = Reflections.loadClass(BCEL_JAVA_CLASS_FQCN, bcelResourceLoader);
+            Class<?> methodClass = Reflections.loadClass(BCEL_METHOD_FQCN, bcelResourceLoader);
+            Class<?> lntClass = Reflections.loadClass(BCEL_LINE_NUMBER_TABLE_FQCN, bcelResourceLoader);
 
             Object parser = classParserClass.getConstructor(InputStream.class, String.class).newInstance(in, classFile);
             Object javaClass = classParserClass.getMethod(BCEL_M_PARSE).invoke(parser);
