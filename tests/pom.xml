@@ -66,6 +66,11 @@
         </dependency>
 
         <dependency>
+            <groupId>org.jboss.weld.module</groupId>
+            <artifactId>weld-web</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.jboss.weld</groupId>
             <artifactId>weld-spi</artifactId>
         </dependency>

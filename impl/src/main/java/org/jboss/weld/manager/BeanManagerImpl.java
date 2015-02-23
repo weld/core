@@ -101,9 +101,6 @@ import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
-import org.jboss.weld.el.Namespace;
-import org.jboss.weld.el.WeldELResolver;
-import org.jboss.weld.el.WeldExpressionFactory;
 import org.jboss.weld.event.EventMetadataImpl;
 import org.jboss.weld.event.GlobalObserverNotifierService;
 import org.jboss.weld.event.ObserverNotifier;
@@ -131,6 +128,7 @@ import org.jboss.weld.metadata.cache.InterceptorBindingModel;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.metadata.cache.ScopeModel;
 import org.jboss.weld.metadata.cache.StereotypeModel;
+import org.jboss.weld.module.ExpressionLanguageService;
 import org.jboss.weld.module.ObserverNotifierFactory;
 import org.jboss.weld.resolution.BeanTypeAssignabilityRules;
 import org.jboss.weld.resolution.DecoratorResolvableBuilder;
@@ -225,7 +223,6 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     private final transient TypeSafeInterceptorResolver interceptorResolver;
     private final transient NameBasedResolver nameBasedResolver;
     private final transient ELResolver weldELResolver;
-    private transient Namespace rootNamespace;
 
     /*
      * Lenient instances do not perform event type checking - this is required for firing container lifecycle events.
@@ -377,7 +374,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         this.decoratorResolver = new TypeSafeDecoratorResolver(this, createDynamicGlobalIterable(DecoratorTransform.INSTANCE));
         this.interceptorResolver = new TypeSafeInterceptorResolver(this, createDynamicGlobalIterable(InterceptorTransform.INSTANCE));
         this.nameBasedResolver = new NameBasedResolver(this, createDynamicAccessibleIterable(beanTransform));
-        this.weldELResolver = new WeldELResolver(this);
+        this.weldELResolver = services.getOptional(ExpressionLanguageService.class).map(el -> el.createElResolver(this)).orElse(null);
 
         TypeSafeObserverResolver accessibleObserverResolver = new TypeSafeObserverResolver(getServices().get(MetaAnnotationStore.class),
                 createDynamicAccessibleIterable(ObserverMethodTransform.INSTANCE), getServices().get(WeldConfiguration.class));
@@ -1031,7 +1028,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     public Iterable<String> getAccessibleNamespaces() {
         // TODO Cache this
-        return createDynamicAccessibleIterable(new NamespaceTransform());
+        return createDynamicAccessibleIterable(NamespaceTransform.INSTANCE);
     }
 
     @Override
@@ -1045,14 +1042,6 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     public List<ObserverMethod<?>> getObservers() {
         return observers;
-    }
-
-    public Namespace getRootNamespace() {
-        // TODO I don't like this lazy init
-        if (rootNamespace == null) {
-            rootNamespace = new Namespace(createDynamicAccessibleIterable(new NamespaceTransform()));
-        }
-        return rootNamespace;
     }
 
     @Override
@@ -1145,12 +1134,16 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     @Override
     public ELResolver getELResolver() {
+        if (weldELResolver == null) {
+            throw BootstrapLogger.LOG.unspecifiedRequiredService(ExpressionLanguageService.class);
+        }
         return weldELResolver;
     }
 
     @Override
     public ExpressionFactory wrapExpressionFactory(ExpressionFactory expressionFactory) {
-        return new WeldExpressionFactory(expressionFactory);
+        return services.getOptional(ExpressionLanguageService.class)
+                .orElseThrow(() -> BootstrapLogger.LOG.unspecifiedRequiredService(ExpressionLanguageService.class)).wrapExpressionFactory(expressionFactory);
     }
 
     @Override

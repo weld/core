@@ -77,6 +77,7 @@
         <module>impl</module>
         <module>modules/jsf</module>
         <module>modules/jta</module>
+        <module>modules/web</module>
         <module>bundles/impl</module>
         <module>probe</module>
     </modules>
@@ -353,6 +354,12 @@
             <dependency>
                 <groupId>org.jboss.weld.module</groupId>
                 <artifactId>weld-jta</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.weld.module</groupId>
+                <artifactId>weld-web</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

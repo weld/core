@@ -43,6 +43,11 @@
             </exclusions>
         </dependency>
         <dependency>
+            <groupId>org.jboss.weld.module</groupId>
+            <artifactId>weld-web</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>provided</scope>

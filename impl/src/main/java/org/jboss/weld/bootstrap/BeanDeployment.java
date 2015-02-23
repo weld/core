@@ -40,10 +40,7 @@ import org.jboss.weld.bean.builtin.InjectionPointBean;
 import org.jboss.weld.bean.builtin.InstanceBean;
 import org.jboss.weld.bean.builtin.InterceptedBeanMetadataBean;
 import org.jboss.weld.bean.builtin.InterceptorMetadataBean;
-import org.jboss.weld.bean.builtin.ee.HttpServletRequestBean;
-import org.jboss.weld.bean.builtin.ee.HttpSessionBean;
 import org.jboss.weld.bean.builtin.ee.PrincipalBean;
-import org.jboss.weld.bean.builtin.ee.ServletContextBean;
 import org.jboss.weld.bootstrap.api.Environment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
@@ -67,14 +64,11 @@ import org.jboss.weld.metadata.ScanningPredicate;
 import org.jboss.weld.module.WeldModules;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
 import org.jboss.weld.resources.DefaultResourceLoader;
-import org.jboss.weld.resources.WeldClassLoaderResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.security.spi.SecurityServices;
-import org.jboss.weld.servlet.ServletApiAbstraction;
 import org.jboss.weld.util.AnnotationApiAbstraction;
 import org.jboss.weld.util.JtaApiAbstraction;
 import org.jboss.weld.util.collections.WeldCollections;
-import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.ws.WSApiAbstraction;
 
 /**
@@ -116,7 +110,6 @@ public class BeanDeployment {
         services.add(JtaApiAbstraction.class, new JtaApiAbstraction(resourceLoader));
         services.add(InterceptorsApiAbstraction.class, new InterceptorsApiAbstraction(resourceLoader));
         services.add(AnnotationApiAbstraction.class, new AnnotationApiAbstraction(resourceLoader));
-        services.add(ServletApiAbstraction.class, new ServletApiAbstraction(resourceLoader));
         this.beanManager = BeanManagerImpl.newManager(deploymentManager, beanDeploymentArchive.getId(), services);
         services.add(InjectionTargetService.class, new InjectionTargetService(beanManager));
         if (beanManager.getServices().contains(EjbServices.class)) {
@@ -234,11 +227,6 @@ public class BeanDeployment {
         beanDeployer.addBuiltInBean(new DecoratedBeanMetadataBean(beanManager));
         beanDeployer.addBuiltInBean(new InterceptorMetadataBean(beanManager));
         beanDeployer.addBuiltInBean(new DecoratorMetadataBean(beanManager));
-        if (Reflections.isClassLoadable(ServletApiAbstraction.SERVLET_CONTEXT_CLASS_NAME, WeldClassLoaderResourceLoader.INSTANCE)) {
-            beanDeployer.addBuiltInBean(new HttpServletRequestBean(beanManager));
-            beanDeployer.addBuiltInBean(new HttpSessionBean(beanManager));
-            beanDeployer.addBuiltInBean(new ServletContextBean(beanManager));
-        }
         if (beanManager.getServices().contains(SecurityServices.class)) {
             beanDeployer.addBuiltInBean(new PrincipalBean(beanManager));
         }
