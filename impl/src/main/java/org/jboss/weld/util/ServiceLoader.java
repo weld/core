@@ -31,6 +31,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.metadata.FileMetadata;
@@ -307,5 +309,9 @@ public class ServiceLoader<S> implements Iterable<Metadata<S>> {
     @Override
     public String toString() {
         return "Services for " + serviceFile;
+    }
+
+    public Stream<Metadata<S>> stream() {
+        return StreamSupport.stream(spliterator(), false);
     }
 }
