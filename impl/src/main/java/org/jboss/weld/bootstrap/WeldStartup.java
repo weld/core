@@ -113,6 +113,7 @@ import org.jboss.weld.manager.BeanManagerLookupService;
 import org.jboss.weld.manager.api.ExecutorServices;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
+import org.jboss.weld.module.WeldModules;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.DefaultResourceLoader;
 import org.jboss.weld.resources.MemberTransformer;
@@ -262,6 +263,9 @@ public class WeldStartup {
     }
 
     private void addImplementationServices(ServiceRegistry services) {
+        final WeldModules modules = new WeldModules();
+        services.add(WeldModules.class, modules);
+
         final WeldConfiguration configuration = services.get(WeldConfiguration.class);
         services.add(SlimAnnotatedTypeStore.class, new SlimAnnotatedTypeStoreImpl());
         if (services.get(ClassTransformer.class) == null) {
@@ -322,6 +326,7 @@ public class WeldStartup {
         services.add(ProtectionDomainCache.class, new ProtectionDomainCache());
 
         services.add(ProxyInstantiator.class, ProxyInstantiator.Factory.create(configuration));
+        modules.postServiceRegistration(contextId, services);
     }
 
     // needs to be resolved once extension beans are deployed
@@ -543,6 +548,8 @@ public class WeldStartup {
             // Register the EJB Request context if EjbServices are available
             contexts.add(new ContextHolder<EjbRequestContext>(new EjbRequestContextImpl(contextId), EjbRequestContext.class, EjbLiteral.INSTANCE));
         }
+
+        services.get(WeldModules.class).postContextRegistration(contextId, services, contexts);
 
         /*
         * Register the contexts with the bean manager and add the beans to the

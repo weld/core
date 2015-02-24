@@ -65,6 +65,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.api.ExecutorServices;
 import org.jboss.weld.metadata.FilterPredicate;
 import org.jboss.weld.metadata.ScanningPredicate;
+import org.jboss.weld.module.WeldModules;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
 import org.jboss.weld.resources.DefaultResourceLoader;
 import org.jboss.weld.resources.WeldClassLoaderResourceLoader;
@@ -223,6 +224,8 @@ public class BeanDeployment {
     }
 
     public void createBeans(Environment environment) {
+        getBeanManager().getServices().get(WeldModules.class).preBeanRegistration(this, environment);
+
         beanDeployer.addBuiltInBean(new InjectionPointBean(beanManager));
         beanDeployer.addBuiltInBean(new EventMetadataBean(beanManager));
         beanDeployer.addBuiltInBean(new EventBean(beanManager));
