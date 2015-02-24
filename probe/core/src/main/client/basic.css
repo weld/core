@@ -109,7 +109,8 @@ div.form-group {
   background-color: LightGray;
 }
 
-.MANAGED, .SESSION, .PRODUCER_METHOD, .PRODUCER_FIELD, .RESOURCE, .APPLICATION {
+.MANAGED, .SESSION, .PRODUCER_METHOD, .PRODUCER_FIELD, .RESOURCE,
+  .APPLICATION {
   background-color: LightGreen;
 }
 
@@ -215,4 +216,17 @@ div.content {
 
 .important {
   font-weight: bold;
+}
+
+.quick-links a.dropdown-toggle {
+  background-color: Salmon;
+  border-radius: 5px;
+}
+
+#navigation-menu .quick-links a.dropdown-toggle {
+  color: white;
+}
+
+#navigation-menu .quick-links a.dropdown-toggle:HOVER {
+  color: black;
 }
