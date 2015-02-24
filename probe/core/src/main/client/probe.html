@@ -27,7 +27,13 @@ ${head}
                         <li>{{#link-to 'beanArchives'}}Bean Archives{{/link-to}}</li>
                         <li>{{#link-to 'configuration'}}Configuration{{/link-to}}</li>
                         <li>{{#link-to 'beanList'}}Beans{{/link-to}}</li>
-                        <li>{{#link-to 'observerList'}}Observer Methods{{/link-to}}</li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Events <span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li>{{#link-to 'observerList'}}Observer Methods{{/link-to}}</li>
+                                <li>{{#link-to 'events'}}Fired Events{{/link-to}}</li>
+                            </ul>
+                        </li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Contexts <span class="caret"></span></a>
                             <ul class="dropdown-menu" role="menu">
@@ -37,7 +43,19 @@ ${head}
                             </ul>
                         </li>
                         <li>{{#link-to 'invocationList'}}Invocation Trees{{/link-to}}</li>
-                        <li>{{#link-to 'events'}}Events{{/link-to}}</li>
+
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right quick-links">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-external-link "></i> Quick Links <span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="https://developer.jboss.org/en/weld?view=discussions" target="_blank">User Forum</a></i></li>
+                                <li><a href="http://weld.cdi-spec.org/documentation/" target="_blank">Documentation &amp; FAQ</a></li>
+                                <li><a href="https://issues.jboss.org/browse/WELD" target="_blank">Issue Tracker</a></li>
+                                <li><a href="http://github.com/weld" target="_blank">Source Code</a></li>
+                                <li><a href="http://www.cdi-spec.org/download/" target="_blank">CDI Specification Resources</a></li>
+                            </ul>
+                        </li>
                     </ul>
                 </div>
             </div>
