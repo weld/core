@@ -49,8 +49,8 @@
             <version>${weld.update.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.jboss.weld</groupId>
-            <artifactId>weld-core-jsf</artifactId>
+            <groupId>org.jboss.weld.module</groupId>
+            <artifactId>weld-jsf</artifactId>
             <version>${weld.update.version}</version>
         </dependency>
         <dependency>
@@ -79,9 +79,9 @@
                                         <property file="${basedir}/local.build.properties" />
                                         <property file="${basedir}/build.properties" />
                                         <property name="jboss.home" value="${env.JBOSS_HOME}" />
-                                        
+
                                         <echo>
-                                        
+
 =========================================================================
 
 Updating Weld modules
@@ -100,39 +100,19 @@ JBOSS_HOME: ${jboss.home}
                                         <property name="module.dir" value="${jboss.home}/modules/org/jboss/weld" />
                                         <property name="jsf.injection.dir" value="${module.dir}/../as/jsf-injection/main" />
 
-                                        <!-- Check to see if this version of
-                                            AS / WildFly uses a separate weld-core-jsf artifact or not -->
-                                        <pathconvert property="weld.jsf.path" pathsep=" " setonempty="false">
-                                            <path>
-                                                <fileset dir="${jsf.injection.dir}" includes="weld-core-jsf*.jar" />
-                                            </path>
-                                        </pathconvert>
-                                        <!-- weld-core-impl is the right core
-                                            artifact if weld-core-jsf is used by the application server -->
-                                        <condition property="weld.core.file" value="weld-core-impl.jar">
-                                            <and>
-                                                <isset property="weld.jsf.path" />
-                                            </and>
-                                        </condition>
-                                        <condition property="weld.jsf.file" value="weld-core-jsf.jar">
-                                            <and>
-                                                <isset property="weld.jsf.path" />
-                                            </and>
-                                        </condition>
-                                        <!-- otherwise, use the old artifact
-                                            (weld-core) -->
-                                        <property name="weld.core.file" value="weld-core.jar" />
+                                        <property name="weld.core.file" value="weld-core-impl.jar" />
                                         <property name="weld.probe.file" value="weld-probe-core.jar" />
+                                        <property name="weld.jsf.file" value="weld-jsf.jar" />
 
                                         <delete>
                                             <fileset dir="${module.dir}/core/main" includes="*.jar" />
                                             <fileset dir="${module.dir}/spi/main" includes="*.jar" />
                                             <fileset dir="${module.dir}/api/main" includes="*.jar" />
-                                            <fileset dir="${jsf.injection.dir}" includes="weld-core-jsf*.jar" />
+                                            <fileset dir="${jsf.injection.dir}" includes="weld-*jsf*.jar" />
                                             <fileset dir="${module.dir}/core/main" includes="*.index" />
                                             <fileset dir="${module.dir}/spi/main" includes="*.index" />
                                             <fileset dir="${module.dir}/api/main" includes="*.index" />
-                                            <fileset dir="${jsf.injection.dir}" includes="weld-core-jsf*.index" />
+                                            <fileset dir="${jsf.injection.dir}" includes="weld-*jsf*.index" />
                                         </delete>
 
                                         <copy todir="${module.dir}/core/main" overwrite="true">
@@ -161,15 +141,13 @@ JBOSS_HOME: ${jboss.home}
 
                                         <replaceregexp file="${module.dir}/api/main/module.xml" match="path=&quot;.*?&quot;" replace="path=&quot;weld-api.jar&quot;" byline="true" />
 
-                                        <!-- Update the weld-core-jsf artifact
-                                            (this one is only used post WF 8.0.0.Alpha1) -->
                                         <copy todir="${jsf.injection.dir}" overwrite="true">
                                             <fileset dir="target/dependency/lib">
                                                 <include name="${weld.jsf.file}" />
                                             </fileset>
                                         </copy>
 
-                                        <replaceregexp file="${jsf.injection.dir}/module.xml" match="path=&quot;weld-core-jsf.*?&quot;" replace="path=&quot;weld-core-jsf.jar&quot;" byline="true" />
+                                        <replaceregexp file="${jsf.injection.dir}/module.xml" match="path=&quot;weld-core-jsf.*?&quot;" replace="path=&quot;weld-jsf.jar&quot;" byline="true" />
                                     </tasks>
                                 </configuration>
                             </execution>
@@ -244,7 +222,7 @@ JBOSS_HOME: ${jboss.home}
                             <outputDirectory>${project.build.directory}/dependency/lib</outputDirectory>
                             <overWriteSnapshots>true</overWriteSnapshots>
                             <stripVersion>true</stripVersion>
-                            <includeArtifactIds>cdi-api,weld-api,weld-core,weld-core-impl,weld-core-jsf,weld-spi,cdi-tck-ext-lib,weld-probe-core</includeArtifactIds>
+                            <includeArtifactIds>cdi-api,weld-api,weld-core,weld-core-impl,weld-jsf,weld-spi,cdi-tck-ext-lib,weld-probe-core</includeArtifactIds>
                         </configuration>
                     </execution>
                 </executions>

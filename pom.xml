@@ -75,7 +75,7 @@
 
     <modules>
         <module>impl</module>
-        <module>jsf</module>
+        <module>modules/jsf</module>
         <module>bundles/impl</module>
         <module>probe</module>
     </modules>
@@ -344,8 +344,8 @@
             </dependency>
 
             <dependency>
-                <groupId>org.jboss.weld</groupId>
-                <artifactId>weld-core-jsf</artifactId>
+                <groupId>org.jboss.weld.module</groupId>
+                <artifactId>weld-jsf</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
