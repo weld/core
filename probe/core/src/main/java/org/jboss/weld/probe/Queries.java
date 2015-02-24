@@ -22,6 +22,7 @@ import static org.jboss.weld.probe.Strings.BDA;
 import static org.jboss.weld.probe.Strings.BEAN_CLASS;
 import static org.jboss.weld.probe.Strings.BEAN_TYPE;
 import static org.jboss.weld.probe.Strings.CONTAINER;
+import static org.jboss.weld.probe.Strings.IS_ALTERNATIVE;
 import static org.jboss.weld.probe.Strings.KIND;
 import static org.jboss.weld.probe.Strings.METHOD_NAME;
 import static org.jboss.weld.probe.Strings.OBSERVED_TYPE;
@@ -29,6 +30,7 @@ import static org.jboss.weld.probe.Strings.QUALIFIER;
 import static org.jboss.weld.probe.Strings.RECEPTION;
 import static org.jboss.weld.probe.Strings.SCOPE;
 import static org.jboss.weld.probe.Strings.SEARCH;
+import static org.jboss.weld.probe.Strings.STEREOTYPES;
 import static org.jboss.weld.probe.Strings.TX_PHASE;
 
 import java.util.Collection;
@@ -66,10 +68,9 @@ final class Queries {
      * @return the page of data
      */
     static <T, F extends Filters<T>> Page<T> find(List<T> data, int page, int pageSize, F filters) {
-
         if (filters != null) {
             ProbeLogger.LOG.filtersApplied(filters);
-            for (Iterator<T> iterator = data.iterator(); iterator.hasNext(); ) {
+            for (Iterator<T> iterator = data.iterator(); iterator.hasNext();) {
                 T element = iterator.next();
                 if (!filters.test(element)) {
                     iterator.remove();
@@ -82,7 +83,7 @@ final class Queries {
             if (data.isEmpty()) {
                 return new Page<T>(0, 0, 0, Collections.emptyList());
             }
-            if (page > 1 && (((page - 1) * pageSize) >= data.size())) {
+            if ((page <= 0) || (page > 1 && (((page - 1) * pageSize) >= data.size()))) {
                 page = 1;
             }
             int lastIdx = data.size() / pageSize;
@@ -158,6 +159,12 @@ final class Queries {
             this.probe = probe;
         }
 
+        /**
+         * Input is a blank-separated list of key-value pairs. Keys and values are separated by {@value #SEPARATOR}. E.g.
+         * <code>beanClass:name scope:myScope</code>.
+         *
+         * @param filters
+         */
         void processFilters(String filters) {
             String[] tokens = filters.trim().split(" ");
             for (String token : tokens) {
@@ -201,7 +208,7 @@ final class Queries {
          * @return true if the filter is null or any of the value's {@link Object#toString()} contains the filter
          */
         boolean testAnyContains(String filter, Collection<?> values) {
-            if (filter == null || values.isEmpty()) {
+            if (filter == null) {
                 return true;
             }
             for (Object value : values) {
@@ -266,6 +273,10 @@ final class Queries {
 
         private String bda;
 
+        private Boolean isAlternative;
+
+        private String stereotypes;
+
         BeanFilters(Probe probe) {
             super(probe);
         }
@@ -274,7 +285,8 @@ final class Queries {
         public boolean test(Bean<?> bean) {
             return testBda(bda, bean) && testEquals(kind, BeanKind.from(bean)) && testContainsIgnoreCase(beanClass, bean.getBeanClass())
                     && testContainsIgnoreCase(scope, bean.getScope()) && testAnyContains(beanType, bean.getTypes())
-                    && testAnyContains(qualifier, bean.getQualifiers());
+                    && testAnyContains(qualifier, bean.getQualifiers()) && testEquals(isAlternative, bean.isAlternative())
+                    && testAnyContains(stereotypes, bean.getStereotypes());
         }
 
         @Override
@@ -291,13 +303,17 @@ final class Queries {
                 scope = value;
             } else if (BDA.equals(name)) {
                 bda = value;
+            } else if (IS_ALTERNATIVE.equals(name)) {
+                isAlternative = Boolean.valueOf(value);
+            } else if (STEREOTYPES.equals(name)) {
+                stereotypes = value;
             }
         }
 
         @Override
         public String toString() {
-            return String.format("BeanFilters [kind=%s, beanClass=%s, beanType=%s, qualifier=%s, scope=%s, bda=%s]", kind, beanClass, beanType, qualifier,
-                    scope, bda);
+            return String.format("BeanFilters [kind=%s, beanClass=%s, beanType=%s, qualifier=%s, scope=%s, bda=%s, isAlternative=%s, stereotypes=%s]", kind,
+                    beanClass, beanType, qualifier, scope, bda, isAlternative, stereotypes);
         }
 
     }

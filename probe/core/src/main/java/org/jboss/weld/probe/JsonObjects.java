@@ -301,6 +301,10 @@ final class JsonObjects {
         if (beanManager != null) {
             beanBuilder.add(BDA_ID, Components.getId(beanManager.getId()));
         }
+        // ALTERNATIVE
+        if (bean.isAlternative()) {
+            beanBuilder.add(IS_ALTERNATIVE, true);
+        }
         return beanBuilder;
     }
 
@@ -325,10 +329,6 @@ final class JsonObjects {
                 stereotypesBuilder.add(stereotype.getName());
             }
             beanBuilder.add(STEREOTYPES, stereotypesBuilder);
-        }
-        // ALTERNATIVE
-        if (bean.isAlternative()) {
-            beanBuilder.add(IS_ALTERNATIVE, true);
         }
         if (bean instanceof SessionBean) {
             // SESSION BEAN
