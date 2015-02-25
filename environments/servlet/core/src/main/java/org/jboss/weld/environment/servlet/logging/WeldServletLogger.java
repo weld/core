@@ -53,7 +53,7 @@ public interface WeldServletLogger extends WeldEnvironmentLogger {
     void unableToInstantiateCustomContainerClass(Object param1);
 
     @LogMessage(level = Level.WARN)
-    @Message(id = 1004, value = "Found both WEB-INF/beans.xml and WEB-INF/classes/META-INF/beans.xml. It''s not portable to use both locations at the same time. Weld is going to use {0}.", format = Format.MESSAGE_FORMAT)
+    @Message(id = 1004, value = "Found both WEB-INF/beans.xml and WEB-INF/classes/META-INF/beans.xml. It is not portable to use both locations at the same time. Weld is going to use: {0}", format = Format.MESSAGE_FORMAT)
     void foundBothConfiguration(Object param1);
 
     @LogMessage(level = Level.TRACE)

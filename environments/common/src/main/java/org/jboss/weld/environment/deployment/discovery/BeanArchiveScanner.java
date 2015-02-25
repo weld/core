@@ -49,9 +49,9 @@ public interface BeanArchiveScanner {
     }
 
     /**
-     * Scans for bean archives identified by beans.xml files.
+     * Scans for bean archives identified by beans.xml files. The map must not contain multiple results with the same {@link ScanResult#beanArchiveRef}.
      *
-     * @return the map of {@link ScanResult} representations mapped by url of the beans xml.
+     * @return the map of {@link ScanResult} representations mapped by url of the descriptor
      */
     Map<URL, ScanResult> scan();
 }
