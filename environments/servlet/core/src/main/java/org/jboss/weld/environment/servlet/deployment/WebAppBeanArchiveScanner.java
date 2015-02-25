@@ -19,7 +19,9 @@ package org.jboss.weld.environment.servlet.deployment;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.ServletContext;
 
@@ -45,6 +47,8 @@ public class WebAppBeanArchiveScanner extends DefaultBeanArchiveScanner {
 
     static final String WEB_INF_CLASSES = "/WEB-INF/classes";
 
+    static final String WEB_INF_CLASSES_FILE_PATH = File.separatorChar + "WEB-INF" + File.separatorChar + "classes";
+
     private final ServletContext servletContext;
 
     /**
@@ -60,7 +64,17 @@ public class WebAppBeanArchiveScanner extends DefaultBeanArchiveScanner {
 
     @Override
     public Map<URL, ScanResult> scan() {
+
         Map<URL, ScanResult> beansXmlMap = super.scan();
+
+        // All previous results for WEB-INF/classes must be ignored
+        for (Iterator<Entry<URL, ScanResult>> iterator = beansXmlMap.entrySet().iterator(); iterator.hasNext();) {
+            String path = iterator.next().getKey().toString();
+            if (path.contains(WEB_INF_CLASSES_FILE_PATH) || path.contains(WEB_INF_CLASSES)) {
+                iterator.remove();
+            }
+        }
+
         try {
             // WEB-INF/classes
             URL beansXmlUrl = null;

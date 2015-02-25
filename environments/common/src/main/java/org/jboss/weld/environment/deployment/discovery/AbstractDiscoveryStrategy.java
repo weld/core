@@ -24,7 +24,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import org.jboss.logging.Logger;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.environment.deployment.WeldBeanDeploymentArchive;
@@ -41,8 +40,6 @@ import org.jboss.weld.resources.spi.ResourceLoader;
  * @author Jozef Hartinger
  */
 public abstract class AbstractDiscoveryStrategy implements DiscoveryStrategy {
-
-    private static final Logger log = Logger.getLogger(AbstractDiscoveryStrategy.class);
 
     protected final ResourceLoader resourceLoader;
 
@@ -80,8 +77,15 @@ public abstract class AbstractDiscoveryStrategy implements DiscoveryStrategy {
         }
 
         final Collection<BeanArchiveBuilder> beanArchiveBuilders = new ArrayList<BeanArchiveBuilder>();
+        final Set<String> processedRefs = new HashSet<String>();
+
         for (ScanResult scanResult : scanner.scan().values()) {
             final String ref = scanResult.getBeanArchiveRef();
+            if(processedRefs.contains(ref)) {
+                throw CommonLogger.LOG.invalidScanningResult(ref);
+            }
+            CommonLogger.LOG.processingBeanArchiveReference(ref);
+            processedRefs.add(ref);
             BeanArchiveBuilder builder = null;
             for (BeanArchiveHandler handler : handlers) {
                 builder = handler.handle(ref);
@@ -93,7 +97,7 @@ public abstract class AbstractDiscoveryStrategy implements DiscoveryStrategy {
                 }
             }
             if (builder == null) {
-                log.warnv("The bean archive reference {0} cannot be handled by any BeanArchiveHandler: {1}", ref, handlers);
+                CommonLogger.LOG.beanArchiveReferenceCannotBeHandled(ref, handlers);
             }
         }
 
