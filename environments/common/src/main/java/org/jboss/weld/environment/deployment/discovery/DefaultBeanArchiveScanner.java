@@ -39,7 +39,6 @@ import org.jboss.weld.bootstrap.spi.BeanDiscoveryMode;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.environment.deployment.AbstractWeldDeployment;
 import org.jboss.weld.environment.deployment.WeldResourceLoader;
-import org.jboss.weld.environment.deployment.discovery.BeanArchiveScanner.ScanResult;
 import org.jboss.weld.environment.logging.CommonLogger;
 import org.jboss.weld.resources.spi.ResourceLoader;
 
@@ -68,7 +67,7 @@ public class DefaultBeanArchiveScanner implements BeanArchiveScanner {
 
     @Override
     public Map<URL, ScanResult> scan() {
-        final Map<URL, ScanResult>  beansXmlMap = new HashMap<URL, ScanResult> ();
+        final Map<URL, ScanResult> beansXmlMap = new HashMap<URL, ScanResult>();
         // META-INF/beans.xml
         final String[] resources = AbstractWeldDeployment.RESOURCES;
 

@@ -116,4 +116,16 @@ public interface CommonLogger extends WeldEnvironmentLogger {
     @LogMessage(level = Level.DEBUG)
     @Message(id = 30, value = "Cannot load class using the ResourceLoader: {0}", format = Format.MESSAGE_FORMAT)
     void cannotLoadClassUsingResourceLoader(String className);
+
+    @LogMessage(level = Level.WARN)
+    @Message(id = 31, value = "The bean archive reference {0} cannot be handled by any BeanArchiveHandler: {1}", format = Format.MESSAGE_FORMAT)
+    void beanArchiveReferenceCannotBeHandled(Object beanArchiveRef, Object handlers);
+
+    @LogMessage(level = Level.DEBUG)
+    @Message(id = 32, value = "Processing bean archive reference: {0}", format = Format.MESSAGE_FORMAT)
+    void processingBeanArchiveReference(Object beanArchiveRef);
+
+    @Message(id = 33, value = "Invalid bean archive scanning result - found multiple results with the same reference: {0}", format = Format.MESSAGE_FORMAT)
+    IllegalStateException invalidScanningResult(Object beanArchiveRef);
+
 }
