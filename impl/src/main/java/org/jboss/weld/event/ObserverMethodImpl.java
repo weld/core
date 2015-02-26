@@ -50,7 +50,7 @@ import org.jboss.weld.experimental.ExperimentalObserverMethod;
 import org.jboss.weld.experimental.Priority;
 import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.MethodInjectionPoint;
-import org.jboss.weld.injection.ObserverMethodInvocationStrategy;
+import org.jboss.weld.injection.MethodInvocationStrategy;
 import org.jboss.weld.injection.ParameterInjectionPoint;
 import org.jboss.weld.injection.attributes.SpecialParameterInjectionPoint;
 import org.jboss.weld.injection.attributes.WeldInjectionPointAttributes;
@@ -97,7 +97,7 @@ public class ObserverMethodImpl<T, X> implements ExperimentalObserverMethod<T> {
     private final boolean isStatic;
     private final boolean eventMetadataRequired;
 
-    private final ObserverMethodInvocationStrategy notificationStrategy;
+    private final MethodInvocationStrategy notificationStrategy;
 
     /**
      * Creates an Observer which describes and encapsulates an observer method (8.5).
@@ -140,7 +140,7 @@ public class ObserverMethodImpl<T, X> implements ExperimentalObserverMethod<T> {
         }
         this.isStatic = observer.isStatic();
         this.eventMetadataRequired = initMetadataRequired(this.injectionPoints);
-        this.notificationStrategy = ObserverMethodInvocationStrategy.of(observerMethod, beanManager);
+        this.notificationStrategy = MethodInvocationStrategy.forObserver(observerMethod, beanManager);
     }
 
     private static boolean initMetadataRequired(Set<WeldInjectionPointAttributes<?, ?>> injectionPoints) {
@@ -303,7 +303,7 @@ public class ObserverMethodImpl<T, X> implements ExperimentalObserverMethod<T> {
             preNotify(event, receiver);
             // As we are working with the contextual instance, we may not have the
             // actual object, but a container proxy (e.g. EJB)
-            notificationStrategy.notify(receiver, observerMethod, event, beanManager, creationalContext);
+            notificationStrategy.invoke(receiver, observerMethod, event, beanManager, creationalContext);
         } finally {
             postNotify(event, receiver);
             if (creationalContext != null) {
