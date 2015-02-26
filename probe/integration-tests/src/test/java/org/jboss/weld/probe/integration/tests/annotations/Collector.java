@@ -43,6 +43,8 @@ public @interface Collector {
 
         private final String value;
 
+        public static final Collector INSTANCE = new CollectorLiteral("");
+
         public CollectorLiteral(String value){
             this.value = value;
         }

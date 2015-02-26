@@ -76,7 +76,7 @@ public class JSONTestUtil {
         return result;
     }
 
-    public static JsonObject getBeanDetail(String path, Class clazz, URL url) throws IOException {
+    private static String getBeanDetailUrl(String path, Class clazz, URL url) throws IOException {
         JsonObject beans = getPageAsJSONObject(path, url);
         JsonArray beansArray = beans.getJsonArray(DATA);
         String id = null;
@@ -89,10 +89,24 @@ public class JSONTestUtil {
 
         if (id != null) {
             String beanDetailURL = BEANS_PATH.concat("/".concat(id));
-            return getPageAsJSONObject(beanDetailURL, url);
+            return beanDetailURL;
         } else {
             return null;
         }
+
+    }
+
+    public static JsonObject getBeanDetail(String path, Class clazz, URL url) throws IOException {
+        String beanDetailUrl = getBeanDetailUrl(path, clazz, url);
+        return getPageAsJSONObject(beanDetailUrl, url);
+    }
+
+    public static JsonObject getBeanInstanceDetail(String path, Class clazz, URL url, WebClient webClient, String... param) throws IOException {
+        String beanDetailUrl = getBeanDetailUrl(path, clazz, url);
+        for(int i = 0; i< param.length;i++) {
+            beanDetailUrl = beanDetailUrl + "/instance/" + param[i];
+        }
+        return getPageAsJSONObject(beanDetailUrl, url, webClient);
     }
 
     public static List<JsonObject> getAllJsonObjectsByClass(Class clazz, JsonArray array) {
@@ -100,7 +114,7 @@ public class JSONTestUtil {
 
         for (JsonValue jsonElement : array) {
             if (((JsonObject) jsonElement).getString(BEAN_CLASS).equals(clazz.getName())) {
-                result.add(((JsonObject)jsonElement));
+                result.add(((JsonObject) jsonElement));
             }
         }
         return result;
@@ -112,6 +126,7 @@ public class JSONTestUtil {
         DECORATOR,
         PRODUCER_FIELD,
         PRODUCER_METHOD,
+        EXTENSION,
         SESSION;
     }
 
@@ -119,6 +134,5 @@ public class JSONTestUtil {
         STATEFUL,
         STATELESS;
     }
-
 
 }
