@@ -1264,6 +1264,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         private transient Type type;
 
         @Override
+        @SuppressWarnings(value = "SE_INNER_CLASS")
         public Type getType() {
             if (type == null) {
                 this.type = new TypeLiteral<Instance<Object>>() {
