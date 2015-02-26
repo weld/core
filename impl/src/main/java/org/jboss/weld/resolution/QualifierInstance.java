@@ -38,6 +38,8 @@ import org.jboss.weld.security.SetAccessibleAction;
 import org.jboss.weld.util.collections.ImmutableMap;
 import org.jboss.weld.util.collections.ImmutableSet;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 /**
  * Optimized representation of a qualifier. JDK annotation proxies are slooow, this class provides significantly
  * faster equals/hashCode methods, that also correctly handle non binding attributes.
@@ -77,6 +79,7 @@ public class QualifierInstance {
      * @param store
      * @return a new qualifier instance for the given annotation
      */
+    @SuppressWarnings(value = "BC_UNCONFIRMED_CAST", justification = "False positive. Type check before cast.")
     public static QualifierInstance of(Annotation annotation, MetaAnnotationStore store) {
         Class<? extends Annotation> annotationType = annotation.annotationType();
         if (Any.class == annotationType) {
