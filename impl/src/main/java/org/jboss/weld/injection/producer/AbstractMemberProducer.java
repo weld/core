@@ -31,6 +31,7 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Producer;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMember;
+import org.jboss.weld.bean.ContextualInstance;
 import org.jboss.weld.bean.DisposalMethod;
 import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.exceptions.DefinitionException;
@@ -131,12 +132,27 @@ public abstract class AbstractMemberProducer<X, T> extends AbstractProducer<T> {
 
     public void dispose(T instance) {
         if (disposalMethod != null) {
-            CreationalContext<T> ctx = getBeanManager().createCreationalContext(null);
-            try {
-                Object receiver = getReceiver(ctx, ctx);
-                disposalMethod.invokeDisposeMethod(receiver, instance, ctx);
-            } finally {
-                ctx.release();
+            // CreationalContext is only created if we need it to obtain the receiver
+            // MethodInvocationStrategy takes care of creating CC for parameters, if needed
+            if (getAnnotated().isStatic()) {
+                disposalMethod.invokeDisposeMethod(null, instance, null);
+            } else {
+                WeldCreationalContext<X> ctx = null;
+                try {
+                    Object receiver = ContextualInstance.getIfExists(getDeclaringBean(), getBeanManager());
+                    if (receiver == null) {
+                        ctx = getBeanManager().createCreationalContext(null);
+                        // Create child CC so that a dependent reciever may be destroyed after the disposer method completes
+                        receiver = ContextualInstance.get(getDeclaringBean(), getBeanManager(), ctx.getCreationalContext(getDeclaringBean()));
+                    }
+                    if (receiver != null) {
+                        disposalMethod.invokeDisposeMethod(receiver, instance, ctx);
+                    }
+                } finally {
+                    if (ctx != null) {
+                        ctx.release();
+                    }
+                }
             }
         }
     }

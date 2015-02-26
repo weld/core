@@ -39,8 +39,9 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.annotated.enhanced.MethodSignature;
 import org.jboss.weld.bootstrap.Validator;
-import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.InjectionPointFactory;
+import org.jboss.weld.injection.MethodInjectionPoint;
+import org.jboss.weld.injection.MethodInvocationStrategy;
 import org.jboss.weld.injection.ParameterInjectionPoint;
 import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.logging.BeanLogger;
@@ -60,6 +61,8 @@ public class DisposalMethod<X, T> {
 
     private final Set<QualifierInstance> requiredQualifiers;
 
+    private final MethodInvocationStrategy invocationStrategy;
+
     public static <X, T> DisposalMethod<X, T> of(BeanManagerImpl manager, EnhancedAnnotatedMethod<T, ? super X> method, AbstractClassBean<X> declaringBean) {
         return new DisposalMethod<X, T>(manager, method, declaringBean);
     }
@@ -72,6 +75,7 @@ public class DisposalMethod<X, T> {
         this.disposesParameter = enhancedDisposesParameter.slim();
         this.requiredQualifiers = getRequiredQualifiers(enhancedDisposesParameter);
         checkDisposalMethod(enhancedAnnotatedMethod, declaringBean);
+        this.invocationStrategy = MethodInvocationStrategy.forDisposer(disposalMethodInjectionPoint, beanManager);
     }
 
     private EnhancedAnnotatedParameter<?, ? super X> getEnhancedDisposesParameter(EnhancedAnnotatedMethod<T, ? super X> enhancedAnnotatedMethod) {
@@ -88,7 +92,7 @@ public class DisposalMethod<X, T> {
     }
 
     public void invokeDisposeMethod(Object receiver, Object instance, CreationalContext<?> creationalContext) {
-        disposalMethodInjectionPoint.invoke(receiver, instance, beanManager, creationalContext, IllegalArgumentException.class);
+        invocationStrategy.invoke(receiver, disposalMethodInjectionPoint, instance, beanManager, creationalContext);
     }
 
     private void checkDisposalMethod(EnhancedAnnotatedMethod<T, ? super X> enhancedAnnotatedMethod, AbstractClassBean<X> declaringBean) {
