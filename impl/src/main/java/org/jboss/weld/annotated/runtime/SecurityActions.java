@@ -26,6 +26,7 @@ import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.security.MethodLookupAction;
 import org.jboss.weld.security.SetAccessibleAction;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 /**
  *
  * @author Martin Kouba
@@ -62,6 +63,8 @@ final class SecurityActions {
      * @return returns a method from the class or any class/interface in the inheritance hierarchy
      * @throws NoSuchMethodException
      */
+
+    @SuppressWarnings(value = "BC_UNCONFIRMED_CAST_OF_RETURN_VALUE", justification = "False positive")
     static Method lookupMethod(Class<?> javaClass, String methodName, Class<?>[] parameterTypes) throws NoSuchMethodException {
         if (System.getSecurityManager() != null) {
             try {

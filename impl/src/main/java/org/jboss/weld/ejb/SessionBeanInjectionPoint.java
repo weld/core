@@ -29,6 +29,8 @@ import org.jboss.weld.bean.builtin.InjectionPointBean;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.injection.ForwardingInjectionPoint;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 /**
  * <p>
  * The spec requires that an {@link InjectionPoint} of a session bean returns:
@@ -105,10 +107,15 @@ public class SessionBeanInjectionPoint {
         return ip;
     }
 
+    /**
+     * NonContextualSessionBeanInjectionPoint is Serializable if and only if realization of
+     * {@link NonContextualSessionBeanInjectionPoint#delegate} is Serializable.
+     */
     private static class NonContextualSessionBeanInjectionPoint extends ForwardingInjectionPoint implements Serializable {
 
         private static final long serialVersionUID = 6338875301221129389L;
 
+        @SuppressWarnings(value = "SE_BAD_FIELD", justification = "It depends on realization of InjectionPoint is it serializable or not.")
         private final InjectionPoint delegate;
 
         public NonContextualSessionBeanInjectionPoint(InjectionPoint delegate) {

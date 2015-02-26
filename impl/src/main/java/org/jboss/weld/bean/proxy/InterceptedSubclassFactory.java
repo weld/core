@@ -119,98 +119,92 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
 
     @Override
     protected void addMethodsFromClass(ClassFile proxyClassType, ClassMethod staticConstructor) {
-        try {
+        final Set<MethodSignature> finalMethods = new HashSet<MethodSignature>();
+        final Set<MethodSignature> processedBridgeMethods = new HashSet<MethodSignature>();
 
-            final Set<MethodSignature> finalMethods = new HashSet<MethodSignature>();
-            final Set<MethodSignature> processedBridgeMethods = new HashSet<MethodSignature>();
+        // Add all methods from the class hierarchy
+        Class<?> cls = getBeanType();
+        while (cls != null) {
+            Set<MethodSignature> declaredBridgeMethods = new HashSet<MethodSignature>();
+            for (Method method : AccessController.doPrivileged(new GetDeclaredMethodsAction(cls))) {
 
-            // Add all methods from the class hierarchy
-            Class<?> cls = getBeanType();
-            while (cls != null) {
-                Set<MethodSignature> declaredBridgeMethods = new HashSet<MethodSignature>();
-                for (Method method : AccessController.doPrivileged(new GetDeclaredMethodsAction(cls))) {
+                final MethodSignatureImpl methodSignature = new MethodSignatureImpl(method);
 
-                    final MethodSignatureImpl methodSignature = new MethodSignatureImpl(method);
+                if (!Modifier.isFinal(method.getModifiers()) && !method.isBridge() && enhancedMethodSignatures.contains(methodSignature)
+                        && !finalMethods.contains(methodSignature) && !processedBridgeMethods.contains(methodSignature)) {
+                    try {
+                        final MethodInformation methodInfo = new RuntimeMethodInformation(method);
 
-                    if (!Modifier.isFinal(method.getModifiers()) && !method.isBridge() && enhancedMethodSignatures.contains(methodSignature)
-                            && !finalMethods.contains(methodSignature) && !processedBridgeMethods.contains(methodSignature)) {
-                        try {
-                            final MethodInformation methodInfo = new RuntimeMethodInformation(method);
+                        if (interceptedMethodSignatures.contains(methodSignature)) {
+                            // create delegate-to-super method
+                            int modifiers = (method.getModifiers() | AccessFlag.SYNTHETIC | AccessFlag.PRIVATE) & ~AccessFlag.PUBLIC & ~AccessFlag.PROTECTED;
+                            ClassMethod delegatingMethod = proxyClassType.addMethod(modifiers, method.getName() + SUPER_DELEGATE_SUFFIX,
+                                    DescriptorUtils.makeDescriptor(method.getReturnType()), DescriptorUtils.parameterDescriptors(method.getParameterTypes()));
+                            delegatingMethod.addCheckedExceptions((Class<? extends Exception>[]) method.getExceptionTypes());
+                            createDelegateToSuper(delegatingMethod, methodInfo);
 
-                            if (interceptedMethodSignatures.contains(methodSignature)) {
-                                // create delegate-to-super method
-                                int modifiers = (method.getModifiers() | AccessFlag.SYNTHETIC | AccessFlag.PRIVATE) & ~AccessFlag.PUBLIC & ~AccessFlag.PROTECTED;
-                                ClassMethod delegatingMethod = proxyClassType.addMethod(modifiers, method.getName() + SUPER_DELEGATE_SUFFIX, DescriptorUtils.makeDescriptor(method.getReturnType()),
-                                        DescriptorUtils.parameterDescriptors(method.getParameterTypes()));
-                                delegatingMethod.addCheckedExceptions((Class<? extends Exception>[]) method.getExceptionTypes());
-                                createDelegateToSuper(delegatingMethod, methodInfo);
-
-                                // this method is intercepted
-                                // override a subclass method to delegate to method handler
-                                ClassMethod classMethod = proxyClassType.addMethod(method);
-                                addConstructedGuardToMethodBody(classMethod);
-                                createForwardingMethodBody(classMethod, methodInfo, staticConstructor);
-                                BeanLogger.LOG.addingMethodToProxy(method);
-                            } else {
-                                // this method is not intercepted
-                                // we still need to override and push InterceptionDecorationContext stack to prevent full interception
-                                ClassMethod classMethod = proxyClassType.addMethod(method);
-                                new RunWithinInterceptionDecorationContextGenerator(classMethod, this) {
-
-                                    @Override
-                                    void doWork(CodeAttribute b, ClassMethod method) {
-                                        // build the bytecode that invokes the super class method directly
-                                        b.aload(0);
-                                        // create the method invocation
-                                        b.loadMethodParameters();
-                                        b.invokespecial(methodInfo.getDeclaringClass(), methodInfo.getName(), methodInfo.getDescriptor());
-                                        // leave the result on top of the stack
-                                    }
-
-                                    @Override
-                                    void doReturn(CodeAttribute b, ClassMethod method) {
-                                        // assumes doWork() result is on top of the stack
-                                        b.returnInstruction();
-                                    }
-                                }.runStartIfNotOnTop();
-                            }
-
-
-                        } catch (DuplicateMemberException e) {
-                            // do nothing. This will happen if superclass methods have
-                            // been overridden
-                        }
-                    } else {
-                        if (Modifier.isFinal(method.getModifiers())) {
-                            finalMethods.add(methodSignature);
-                        }
-                        if (method.isBridge()) {
-                            declaredBridgeMethods.add(methodSignature);
-                        }
-                    }
-                }
-                processedBridgeMethods.addAll(declaredBridgeMethods);
-                cls = cls.getSuperclass();
-            }
-            for (Class<?> c : getAdditionalInterfaces()) {
-                for (Method method : c.getMethods()) {
-                    MethodSignature signature = new MethodSignatureImpl(method);
-                    if (enhancedMethodSignatures.contains(signature) && !processedBridgeMethods.contains(signature)) {
-                        try {
-                            MethodInformation methodInformation = new RuntimeMethodInformation(method);
-                            final ClassMethod classMethod = proxyClassType.addMethod(method);
-                            createSpecialMethodBody(classMethod, methodInformation, staticConstructor);
+                            // this method is intercepted
+                            // override a subclass method to delegate to method handler
+                            ClassMethod classMethod = proxyClassType.addMethod(method);
+                            addConstructedGuardToMethodBody(classMethod);
+                            createForwardingMethodBody(classMethod, methodInfo, staticConstructor);
                             BeanLogger.LOG.addingMethodToProxy(method);
-                        } catch (DuplicateMemberException e) {
+                        } else {
+                            // this method is not intercepted
+                            // we still need to override and push InterceptionDecorationContext stack to prevent full interception
+                            ClassMethod classMethod = proxyClassType.addMethod(method);
+                            new RunWithinInterceptionDecorationContextGenerator(classMethod, this) {
+
+                                @Override
+                                void doWork(CodeAttribute b, ClassMethod method) {
+                                    // build the bytecode that invokes the super class method directly
+                                    b.aload(0);
+                                    // create the method invocation
+                                    b.loadMethodParameters();
+                                    b.invokespecial(methodInfo.getDeclaringClass(), methodInfo.getName(), methodInfo.getDescriptor());
+                                    // leave the result on top of the stack
+                                }
+
+                                @Override
+                                void doReturn(CodeAttribute b, ClassMethod method) {
+                                    // assumes doWork() result is on top of the stack
+                                    b.returnInstruction();
+                                }
+                            }.runStartIfNotOnTop();
                         }
+
+                    } catch (DuplicateMemberException e) {
+                        // do nothing. This will happen if superclass methods have
+                        // been overridden
+                    }
+                } else {
+                    if (Modifier.isFinal(method.getModifiers())) {
+                        finalMethods.add(methodSignature);
                     }
                     if (method.isBridge()) {
-                        processedBridgeMethods.add(signature);
+                        declaredBridgeMethods.add(methodSignature);
                     }
                 }
             }
-        } catch (Exception e) {
-            throw new WeldException(e);
+            processedBridgeMethods.addAll(declaredBridgeMethods);
+            cls = cls.getSuperclass();
+        }
+        for (Class<?> c : getAdditionalInterfaces()) {
+            for (Method method : c.getMethods()) {
+                MethodSignature signature = new MethodSignatureImpl(method);
+                if (enhancedMethodSignatures.contains(signature) && !processedBridgeMethods.contains(signature)) {
+                    try {
+                        MethodInformation methodInformation = new RuntimeMethodInformation(method);
+                        final ClassMethod classMethod = proxyClassType.addMethod(method);
+                        createSpecialMethodBody(classMethod, methodInformation, staticConstructor);
+                        BeanLogger.LOG.addingMethodToProxy(method);
+                    } catch (DuplicateMemberException e) {
+                    }
+                }
+                if (method.isBridge()) {
+                    processedBridgeMethods.add(signature);
+                }
+            }
         }
     }
 
@@ -375,7 +369,7 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
 
             Method getMethodHandlerMethod = ProxyObject.class.getMethod("getHandler");
             generateGetMethodHandlerBody(proxyClassType.addMethod(getMethodHandlerMethod));
-       } catch (Exception e) {
+       } catch (SecurityException | NoSuchMethodException e) {
             throw new WeldException(e);
         }
     }

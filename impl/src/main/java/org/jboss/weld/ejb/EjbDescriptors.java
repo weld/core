@@ -28,6 +28,8 @@ import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.util.collections.SetMultimap;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 /**
  * EJB descriptors by EJB implementation class or name
  *
@@ -92,6 +94,7 @@ public class EjbDescriptors implements Service, Iterable<InternalEjbDescriptor<?
         return ejbByClass.containsKey(beanClass);
     }
 
+    @SuppressWarnings(value = "BC_UNCONFIRMED_CAST_OF_RETURN_VALUE", justification = "False positive")
     public <T> InternalEjbDescriptor<T> getUnique(Class<T> beanClass) {
         Set<String> ejbs = ejbByClass.get(beanClass);
         if (ejbs.size() > 1) {

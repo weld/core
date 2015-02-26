@@ -15,7 +15,12 @@ import org.jboss.weld.util.reflection.Reflections;
  */
 public class CombinedInterceptorAndDecoratorStackMethodHandler implements StackAwareMethodHandler, Serializable {
 
+    private static final long serialVersionUID = -7058180748541189063L;
+
     public static final CombinedInterceptorAndDecoratorStackMethodHandler NULL_INSTANCE = new CombinedInterceptorAndDecoratorStackMethodHandler() {
+
+        private static final long serialVersionUID = -7058180748541189063L;
+
         @Override
         public void setInterceptorMethodHandler(InterceptorMethodHandler interceptorMethodHandler) {
             throw new UnsupportedOperationException();

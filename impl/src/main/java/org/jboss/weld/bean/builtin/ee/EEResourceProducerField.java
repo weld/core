@@ -42,6 +42,8 @@ import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.ws.WSApiAbstraction;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 /**
  * @author pmuir
  */
@@ -93,6 +95,7 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T> {
         return new EEResourceProducerField<X, T>(attributes, field, declaringBean, disposalMethod, manager, services);
     }
 
+    @SuppressWarnings(value = "UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR", justification = "Use EEResourceProducerField.internalInitialize for initialization of this field")
     private ProxyFactory<T> proxyFactory;
 
     private final Class<T> rawType;
