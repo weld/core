@@ -25,6 +25,7 @@ import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.logging.UtilLogger;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.util.ApiAbstraction;
+import org.jboss.weld.util.collections.Arrays2;
 
 public class InterceptorsApiAbstraction extends ApiAbstraction implements Service {
 
@@ -65,7 +66,7 @@ public class InterceptorsApiAbstraction extends ApiAbstraction implements Servic
                 throw UtilLogger.LOG.annotationValuesInaccessible(e);
             }
         }
-        return null;
+        return Arrays2.EMPTY_CLASS_ARRAY;
     }
 
     @Override

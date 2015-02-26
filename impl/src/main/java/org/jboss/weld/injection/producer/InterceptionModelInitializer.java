@@ -236,19 +236,17 @@ public class InterceptionModelInitializer<T> {
         Class<?>[] classDeclaredInterceptors = interceptorsApi.extractInterceptorClasses(annotatedType);
         boolean excludeClassLevelAroundConstructInterceptors = constructor.isAnnotationPresent(ExcludeClassInterceptors.class);
 
-        if (classDeclaredInterceptors != null) {
-            for (Class<?> clazz : classDeclaredInterceptors) {
-                InterceptorClassMetadata<?> interceptor = reader.getPlainInterceptorMetadata(clazz);
-                for (InterceptionType interceptionType : InterceptionType.values()) {
-                    if (excludeClassLevelAroundConstructInterceptors && interceptionType.equals(InterceptionType.AROUND_CONSTRUCT)) {
-                        /*
-                         * @ExcludeClassInterceptors suppresses @AroundConstruct interceptors defined on class level
-                         */
-                        continue;
-                    }
-                    if (interceptor.isEligible(org.jboss.weld.interceptor.spi.model.InterceptionType.valueOf(interceptionType))) {
-                        builder.interceptGlobal(interceptionType, null, Collections.<InterceptorClassMetadata<?>>singleton(interceptor), null);
-                    }
+        for (Class<?> clazz : classDeclaredInterceptors) {
+            InterceptorClassMetadata<?> interceptor = reader.getPlainInterceptorMetadata(clazz);
+            for (InterceptionType interceptionType : InterceptionType.values()) {
+                if (excludeClassLevelAroundConstructInterceptors && interceptionType.equals(InterceptionType.AROUND_CONSTRUCT)) {
+                    /*
+                     * @ExcludeClassInterceptors suppresses @AroundConstruct interceptors defined on class level
+                     */
+                    continue;
+                }
+                if (interceptor.isEligible(org.jboss.weld.interceptor.spi.model.InterceptionType.valueOf(interceptionType))) {
+                    builder.interceptGlobal(interceptionType, null, Collections.<InterceptorClassMetadata<?>>singleton(interceptor), null);
                 }
             }
         }
@@ -259,10 +257,8 @@ public class InterceptionModelInitializer<T> {
      */
     public void initConstructorDeclaredEjbInterceptors() {
         Class<?>[] constructorDeclaredInterceptors = interceptorsApi.extractInterceptorClasses(constructor);
-        if (constructorDeclaredInterceptors != null) {
-            for (Class<?> clazz : constructorDeclaredInterceptors) {
-                builder.interceptGlobal(InterceptionType.AROUND_CONSTRUCT, null, Collections.<InterceptorClassMetadata<?>>singleton(reader.getPlainInterceptorMetadata(clazz)), null);
-            }
+        for (Class<?> clazz : constructorDeclaredInterceptors) {
+            builder.interceptGlobal(InterceptionType.AROUND_CONSTRUCT, null, Collections.<InterceptorClassMetadata<?>>singleton(reader.getPlainInterceptorMetadata(clazz)), null);
         }
     }
 
@@ -275,7 +271,7 @@ public class InterceptionModelInitializer<T> {
         }
 
         Class<?>[] methodDeclaredInterceptors = interceptorsApi.extractInterceptorClasses(method);
-        if (methodDeclaredInterceptors != null && methodDeclaredInterceptors.length > 0) {
+        if (methodDeclaredInterceptors.length > 0) {
             if (Reflections.isFinal(method.getJavaMember())) {
                 throw new DeploymentException(BeanLogger.LOG.finalInterceptedBeanMethodNotAllowed(method, methodDeclaredInterceptors[0].getName()));
             }
