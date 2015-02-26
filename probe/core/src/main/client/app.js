@@ -676,47 +676,47 @@ Ember.Handlebars.registerBoundHelper('substr', function(text, limit) {
     }
 });
 
-Ember.Handlebars.registerBoundHelper('eachLiAbbr',
-    function(types, limit, options) {
-        var ret = '<ul class="plain-list no-margin">';
-        if (types) {
-            for (var i = 0; i < types.length; i++) {
-                var text = Handlebars.Utils.escapeExpression(types[i]);
-                if (text.length > limit) {
-                    ret += '<li title="';
-                    ret += text;
-                    ret += '">';
-                    ret += text.charAt(0) === '@' ? abbreviateAnnotation(text,
-                        true, false) : abbreviateType(text, true, false);
-                    ret += '</li>';
-                } else {
-                    ret += "<li>";
-                    ret += text;
-                    ret += "</li>";
-                }
+Ember.Handlebars.registerBoundHelper('eachLiAbbr', function(types, limit,
+    options) {
+    var ret = '<ul class="plain-list no-margin">';
+    if (types) {
+        for (var i = 0; i < types.length; i++) {
+            var text = Handlebars.Utils.escapeExpression(types[i]);
+            if (text.length > limit) {
+                ret += '<li title="';
+                ret += text;
+                ret += '">';
+                ret += text.charAt(0) === '@' ? abbreviateAnnotation(text,
+                    true, false) : abbreviateType(text, true, false);
+                ret += '</li>';
+            } else {
+                ret += "<li>";
+                ret += text;
+                ret += "</li>";
             }
         }
-        ret += '</ul>';
-        return new Handlebars.SafeString(ret);
-    });
+    }
+    ret += '</ul>';
+    return new Handlebars.SafeString(ret);
+});
 
 /*
- * This helper takes two params: text and limit. Furthermore it's possible to specify optional hash arguments: title and suppressHtml.
+ * This helper takes two params: text and limit. Furthermore it's possible to
+ * specify optional hash arguments: title and suppressHtml.
  */
-Ember.Handlebars.registerBoundHelper('abbr',
-    function(text, limit, options) {
-        var addTitle = options.hash.title || true;
-        var suppresshtmlOutput = options.hash.suppressHtml || false;
-        var escaped = Handlebars.Utils.escapeExpression(text);
-        if (escaped.length > limit) {
-            var ret = '';
-            ret += escaped.charAt(0) === '@' ? abbreviateAnnotation(escaped,
-                !suppresshtmlOutput, addTitle) : abbreviateType(escaped,
-                !suppresshtmlOutput, addTitle);
-            escaped = ret;
-        }
-        return new Handlebars.SafeString(escaped);
-    });
+Ember.Handlebars.registerBoundHelper('abbr', function(text, limit, options) {
+    var addTitle = options.hash.title || true;
+    var suppresshtmlOutput = options.hash.suppressHtml || false;
+    var escaped = Handlebars.Utils.escapeExpression(text);
+    if (escaped.length > limit) {
+        var ret = '';
+        ret += escaped.charAt(0) === '@' ? abbreviateAnnotation(escaped,
+            !suppresshtmlOutput, addTitle) : abbreviateType(escaped,
+            !suppresshtmlOutput, addTitle);
+        escaped = ret;
+    }
+    return new Handlebars.SafeString(escaped);
+});
 
 // VIEWS
 
@@ -822,7 +822,8 @@ Probe.DependencyGraph = Ember.View
                             var desc;
                             if (d.dependencies.length == 1) {
                                 desc = abbreviateType(
-                                    d.dependencies[0].requiredType, false, false);
+                                    d.dependencies[0].requiredType, false,
+                                    false);
                             } else {
                                 desc = '(' + d.dependencies.length + ')';
                             }
@@ -1064,10 +1065,9 @@ Probe.InvocationTree = Ember.View.extend({
 
         nodeEnter.filter(function(d) {
             return d.declaringClass;
-        }).append("text").attr("dy", -14).text(
-            function(d) {
-                return d.declaringClass;
-            });
+        }).append("text").attr("dy", -14).text(function(d) {
+            return d.declaringClass;
+        });
 
         // Declare the links
         var link = svg.selectAll("path.link").data(links, function(d) {
@@ -1489,29 +1489,31 @@ function findLinksBdas(bdas, links, nodes, hideAddBda) {
     if (bdas) {
         bdas
             .forEach(function(bda) {
-                bda.accessibleBdas
-                    .forEach(function(accessible) {
-                        if (bda.id == accessible
-                            || (hideAddBda && isAdditionalBda(findBeanDeploymentArchiveId(
-                                cache.bdas, accessible)))) {
-                            return;
-                        }
-                        // First check identical links
-                        var found;
-                        for (var i = 0; i < links.length; i++) {
-                            if ((links[i].source == nodes[bda.id])
-                                && (links[i].target == nodes[accessible])) {
-                                found = links[i];
-                                break;
+                if (bda.accessibleBdas) {
+                    bda.accessibleBdas
+                        .forEach(function(accessible) {
+                            if (bda.id == accessible
+                                || (hideAddBda && isAdditionalBda(findBeanDeploymentArchiveId(
+                                    cache.bdas, accessible)))) {
+                                return;
                             }
-                        }
-                        if (!found) {
-                            links.push({
-                                source : nodes[bda.id],
-                                target : nodes[accessible],
-                            });
-                        }
-                    });
+                            // First check identical links
+                            var found;
+                            for (var i = 0; i < links.length; i++) {
+                                if ((links[i].source == nodes[bda.id])
+                                    && (links[i].target == nodes[accessible])) {
+                                    found = links[i];
+                                    break;
+                                }
+                            }
+                            if (!found) {
+                                links.push({
+                                    source : nodes[bda.id],
+                                    target : nodes[accessible],
+                                });
+                            }
+                        });
+                }
             });
     }
 }
@@ -1584,7 +1586,7 @@ function abbreviateType(type, htmlOutput, title) {
     var ret = '';
     var lastIdx = parts.length - 1;
     if (htmlOutput && title) {
-        ret += ' <span title="'+type+'">';
+        ret += ' <span title="' + type + '">';
     }
     for (var i = 0; i < parts.length; i++) {
         if (i === lastIdx) {
@@ -1601,7 +1603,7 @@ function abbreviateType(type, htmlOutput, title) {
         }
     }
     if (htmlOutput) {
-        if(title) {
+        if (title) {
             ret += '</span>';
         }
         ret += ' <i class="fa fa-compress abbreviated"></i>';
@@ -1618,7 +1620,8 @@ function abbreviateType(type, htmlOutput, title) {
  * @returns {String}
  */
 function abbreviateAnnotation(annotation, htmlOutput, title) {
-    var ret = (htmlOutput && title) ? ' <span title="'+annotation+'">@' : '@';
+    var ret = (htmlOutput && title) ? ' <span title="' + annotation + '">@'
+        : '@';
     if (annotation.indexOf('(') !== -1) {
         annotation = annotation.substring(1, annotation.indexOf('('));
     } else {
@@ -1641,7 +1644,7 @@ function abbreviateAnnotation(annotation, htmlOutput, title) {
         }
     }
     if (htmlOutput) {
-        if(title) {
+        if (title) {
             ret += '</span>';
         }
         ret += ' <i class="fa fa-compress abbreviated"></i>';
