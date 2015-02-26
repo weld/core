@@ -25,6 +25,8 @@ import java.util.Set;
 import org.jboss.weld.exceptions.UnsupportedOperationException;
 import org.jboss.weld.util.Preconditions;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 /**
  * Immutable map entry implementation. At the same time this implementation serves as a singleton Map implementation.
  *
@@ -40,8 +42,11 @@ class ImmutableMapEntry<K, V> extends ImmutableMap<K, V> implements Entry<K, V>,
     private final K key;
     private final V value;
 
+    @SuppressWarnings(value = "SE_TRANSIENT_FIELD_NOT_RESTORED", justification = "Lazy initialization")
     private transient volatile Set<Entry<K, V>> entrySet;
+    @SuppressWarnings(value = "SE_TRANSIENT_FIELD_NOT_RESTORED", justification = "Lazy initialization")
     private transient volatile Set<K> keySet;
+    @SuppressWarnings(value = "SE_TRANSIENT_FIELD_NOT_RESTORED", justification = "Lazy initialization")
     private transient volatile Collection<V> values;
 
     ImmutableMapEntry(Entry<K, V> entry) {
