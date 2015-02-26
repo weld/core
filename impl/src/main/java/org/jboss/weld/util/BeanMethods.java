@@ -51,6 +51,8 @@ import org.jboss.weld.security.SetAccessibleAction;
 import org.jboss.weld.util.collections.ImmutableList;
 import org.jboss.weld.util.collections.ImmutableSet;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 public class BeanMethods {
 
     private BeanMethods() {
@@ -322,6 +324,7 @@ public class BeanMethods {
             }
 
             @Override
+            @SuppressWarnings(value = "DP_DO_INSIDE_DO_PRIVILEGED", justification = "Boost performance of setAccessible if and only if it is possible")
             public void processMethod(EnhancedAnnotatedMethod<?, ? super T> method) {
                 final Method javaMethod = method.getJavaMember();
                 if (InterceptorMetadataUtils.isInterceptorMethod(interceptionType, javaMethod, targetClass)) {
