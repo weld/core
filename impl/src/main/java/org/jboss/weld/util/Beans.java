@@ -46,6 +46,7 @@ import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
+import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Alternative;
@@ -72,6 +73,7 @@ import org.jboss.weld.bean.InterceptorImpl;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bootstrap.SpecializationAndEnablementRegistry;
+import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.enablement.ModuleEnablement;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.ejb.spi.BusinessInterfaceDescriptor;
@@ -91,6 +93,8 @@ import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.resolution.QualifierInstance;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.spi.ClassFileInfo;
+import org.jboss.weld.serialization.spi.BeanIdentifier;
+import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.bytecode.BytecodeUtils;
 import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
@@ -698,6 +702,45 @@ public class Beans {
             }
         }
         return builder;
+    }
+
+    /**
+     * @param contextual
+     * @param contextualStore
+     * @return the identifier for the given contextual
+     * @see #getIdentifier(Contextual, ContextualStore, ServiceRegistry)
+     */
+    public static BeanIdentifier getIdentifier(Contextual<?> contextual, ContextualStore contextualStore) {
+        return getIdentifier(contextual, contextualStore, null);
+    }
+
+    /**
+     * @param contextual
+     * @param serviceRegistry
+     * @return the identifier for the given contextual
+     * @see #getIdentifier(Contextual, ContextualStore, ServiceRegistry)
+     */
+    public static BeanIdentifier getIdentifier(Contextual<?> contextual, ServiceRegistry serviceRegistry) {
+        return getIdentifier(contextual, null, serviceRegistry);
+    }
+
+    /**
+     * A slightly optimized way to get the bean identifier - there is not need to call ContextualStore.putIfAbsent() for passivation capable beans because it's
+     * already called during bootstrap. See also {@link BeanManagerImpl#addBean(Bean)}.
+     *
+     * @param contextual
+     * @param contextualStore
+     * @param serviceRegistry
+     * @return the identifier for the given contextual
+     */
+    private static BeanIdentifier getIdentifier(Contextual<?> contextual, ContextualStore contextualStore, ServiceRegistry serviceRegistry) {
+        if (contextual instanceof RIBean<?>) {
+            return ((RIBean<?>) contextual).getIdentifier();
+        }
+        if (contextualStore == null) {
+            contextualStore = serviceRegistry.get(ContextualStore.class);
+        }
+        return contextualStore.putIfAbsent(contextual);
     }
 
 }

@@ -29,6 +29,7 @@ import org.jboss.weld.serialization.BeanIdentifierIndex;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.serialization.spi.helpers.SerializableContextual;
+import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.reflection.Reflections;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
@@ -107,7 +108,7 @@ public class SerializableContextualFactory {
         }
 
         protected BeanIdentifier getId(C contextual, ContextualStore contextualStore) {
-            return contextualStore.putIfAbsent(contextual);
+            return Beans.getIdentifier(contextual, contextualStore);
         }
 
         protected ContextualStore getContextualStore() {
