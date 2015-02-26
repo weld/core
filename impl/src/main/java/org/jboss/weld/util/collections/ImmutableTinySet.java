@@ -23,6 +23,8 @@ import java.util.Set;
 
 import org.jboss.weld.util.Preconditions;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 /**
  * Contains {@link Set} implementations optimized for tiny number of elements. These implementations do not use hashing. {@link Set#contains(Object)} is o(n)
  * which is fine as the sets are tiny.
@@ -41,6 +43,7 @@ abstract class ImmutableTinySet<T> extends ImmutableSet<T> {
      *
      * @param <T> the element type
      */
+    @SuppressWarnings(value = "HE_HASHCODE_NO_EQUALS", justification = "Defined buy parent")
     static class Singleton<T> extends ImmutableTinySet<T> implements Serializable {
 
         private static final long serialVersionUID = 1L;
@@ -93,6 +96,7 @@ abstract class ImmutableTinySet<T> extends ImmutableSet<T> {
      *
      * @param <T> the element type
      */
+    @SuppressWarnings(value = "HE_HASHCODE_NO_EQUALS", justification = "Defined buy parent")
     static class Doubleton<T> extends ImmutableTinySet<T> implements Serializable {
 
         private static final long serialVersionUID = 1L;
@@ -150,6 +154,7 @@ abstract class ImmutableTinySet<T> extends ImmutableSet<T> {
      *
      * @param <T> the element type
      */
+    @SuppressWarnings(value = "HE_HASHCODE_NO_EQUALS", justification = "Defined buy parent")
     static class Tripleton<T> extends ImmutableTinySet<T> implements Serializable {
 
         private static final long serialVersionUID = 1L;

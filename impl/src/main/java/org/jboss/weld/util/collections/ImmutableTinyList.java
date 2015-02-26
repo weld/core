@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.RandomAccess;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 /**
  * {@link List} implementations optimized for tiny number of elements
  *
@@ -31,6 +33,7 @@ import java.util.RandomAccess;
  */
 abstract class ImmutableTinyList<E> extends ImmutableList<E> implements RandomAccess {
 
+    @SuppressWarnings(value = "HE_HASHCODE_NO_EQUALS", justification = "Defined buy parent")
     static class Singleton<E> extends ImmutableTinyList<E> implements Serializable {
 
         private static final long serialVersionUID = 1L;

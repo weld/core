@@ -28,6 +28,8 @@ import java.util.function.Consumer;
 
 import org.jboss.weld.util.Preconditions;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 /**
  * Immutable {@link List} implementation. This implementation uses an array as its backing storage.
  *
@@ -36,6 +38,7 @@ import org.jboss.weld.util.Preconditions;
  *
  * @param <E> the element type
  */
+@SuppressWarnings(value = "HE_HASHCODE_NO_EQUALS", justification = "Defined buy parent")
 class ImmutableArrayList<E> extends ImmutableList<E> implements RandomAccess, Serializable {
 
     private static final long serialVersionUID = 1L;
