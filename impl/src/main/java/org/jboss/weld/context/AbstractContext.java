@@ -22,7 +22,6 @@ import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 
 import org.jboss.weld.Container;
-import org.jboss.weld.bean.CommonBean;
 import org.jboss.weld.bean.WrappedContextual;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.context.api.ContextualInstance;
@@ -32,6 +31,7 @@ import org.jboss.weld.context.cache.RequestScopedCache;
 import org.jboss.weld.logging.ContextLogger;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.serialization.spi.ContextualStore;
+import org.jboss.weld.util.Beans;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
@@ -190,11 +190,7 @@ public abstract class AbstractContext implements AlterableContext {
         if (contextual instanceof WrappedContextual<?>) {
             contextual = ((WrappedContextual<?>) contextual).delegate();
         }
-        if (contextual instanceof CommonBean<?>) {
-            // There is not need to call ContextualStore.putIfAbsent() because it's called for all PassivationCapable beans during deployment
-            return ((CommonBean<?>) contextual).getIdentifier();
-        }
-        return serviceRegistry.get(ContextualStore.class).putIfAbsent(contextual);
+        return Beans.getIdentifier(contextual, serviceRegistry);
     }
 
     protected ServiceRegistry getServiceRegistry() {
