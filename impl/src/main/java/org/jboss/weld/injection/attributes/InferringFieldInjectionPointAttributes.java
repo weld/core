@@ -27,6 +27,8 @@ import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.reflection.Reflections;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 /**
  * An implementation of {@link WeldInjectionPointAttributes} that infers the attributes by reading {@link EnhancedAnnotatedField}.
  *
@@ -41,6 +43,7 @@ public class InferringFieldInjectionPointAttributes<T, X> extends AbstractInferr
         return new InferringFieldInjectionPointAttributes<T, X>(field, bean, declaringComponentClass, manager);
     }
 
+    @SuppressWarnings(value = "SE_BAD_FIELD", justification = "Depends on realization")
     private final AnnotatedField<X> field;
 
     protected InferringFieldInjectionPointAttributes(EnhancedAnnotatedField<T, X> field, Bean<?> bean, Class<?> declaringComponentClass, BeanManagerImpl manager) {

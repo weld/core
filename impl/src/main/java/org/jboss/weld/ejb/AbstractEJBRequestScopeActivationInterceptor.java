@@ -29,6 +29,8 @@ import org.jboss.weld.literal.InitializedLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.LazyValueHolder;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 /**
  * Interceptor for ensuring the request context is active during requests to EJBs.
  * <p/>
@@ -40,6 +42,8 @@ import org.jboss.weld.util.LazyValueHolder;
  * @author Pete Muir
  * @author Jozef Hartinger
  */
+
+@SuppressWarnings(value = "SE_INNER_CLASS", justification = "Store all information is needed")
 public abstract class AbstractEJBRequestScopeActivationInterceptor implements Serializable {
     private static final long serialVersionUID = 7327757031821596782L;
 

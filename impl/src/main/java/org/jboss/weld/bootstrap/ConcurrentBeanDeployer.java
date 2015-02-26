@@ -36,6 +36,8 @@ import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.collections.SetMultimap;
 import org.jboss.weld.util.reflection.Reflections;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 /**
  * BeanDeployer that processes some of the deployment tasks in parallel. A threadsafe instance of
  * {@link BeanDeployerEnvironment} is used.
@@ -77,6 +79,7 @@ public class ConcurrentBeanDeployer extends BeanDeployer {
 
         executor.invokeAllAndCheckForExceptions(new IterativeWorkerTaskFactory<InternalEjbDescriptor<?>>(getEnvironment().getEjbDescriptors()) {
             @Override
+            @SuppressWarnings(value = "BC_UNCONFIRMED_CAST_OF_RETURN_VALUE", justification = "False positive")
             protected void doWork(InternalEjbDescriptor<?> descriptor) {
                 if (!getEnvironment().isVetoed(descriptor.getBeanClass()) && !Beans.isVetoed(descriptor.getBeanClass())) {
                     if (descriptor.isSingleton() || descriptor.isStateful() || descriptor.isStateless()) {

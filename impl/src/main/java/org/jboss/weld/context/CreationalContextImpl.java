@@ -59,10 +59,12 @@ public class CreationalContextImpl<T> implements CreationalContext<T>, WeldCreat
 
     private final CreationalContextImpl<?> parentCreationalContext;
 
+    @SuppressWarnings(value = "SE_TRANSIENT_FIELD_NOT_RESTORED", justification = "Lazy initialization")
     private transient List<ResourceReference<?>> resourceReferences;
 
     private transient boolean constructorInterceptionSuppressed;
 
+    @SuppressWarnings(value = "SE_TRANSIENT_FIELD_NOT_RESTORED", justification = "Lazy initialization")
     private transient List<AroundConstructCallback<T>> aroundConstructCallbacks;
 
     public CreationalContextImpl(Contextual<T> contextual) {

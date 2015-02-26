@@ -29,6 +29,8 @@ import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 /**
  * Common implementation for binding-type-based helpers
  *
@@ -46,8 +48,8 @@ public abstract class AbstractFacade<T, X> {
         }
     }
 
-    private final BeanManagerImpl beanManager;
     private final InjectionPoint injectionPoint;
+    private final BeanManagerImpl beanManager;
     // The CreationalContext used to create the facade which was injected.
     // This allows us to propagate the CreationalContext when get() is called
     private final CreationalContext<? super T> creationalContext;
@@ -102,6 +104,7 @@ public abstract class AbstractFacade<T, X> {
 
         private static final long serialVersionUID = -9118965837530101152L;
 
+        @SuppressWarnings(value = "SE_BAD_FIELD", justification = "Depends on realization of injectionPoint")
         private final InjectionPoint injectionPoint;
         private final CreationalContext<? super T> creationalContext;
         private final BeanManagerImpl beanManager;

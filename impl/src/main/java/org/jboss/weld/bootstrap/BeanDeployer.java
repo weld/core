@@ -59,6 +59,8 @@ import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.collections.SetMultimap;
 import org.jboss.weld.util.reflection.Reflections;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 /**
  * @author Pete Muir
  * @author Jozef Hartinger
@@ -180,6 +182,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
         }
     }
 
+    @SuppressWarnings(value = "BC_UNCONFIRMED_CAST_OF_RETURN_VALUE", justification = "False positive")
     public void createClassBeans() {
         SetMultimap<Class<?>, SlimAnnotatedType<?>> otherWeldClasses = SetMultimap.newSetMultimap();
 

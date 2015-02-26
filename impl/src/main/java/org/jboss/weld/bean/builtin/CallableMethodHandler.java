@@ -24,10 +24,13 @@ import org.jboss.weld.bean.proxy.MethodHandler;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.util.reflection.Reflections;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 public class CallableMethodHandler implements MethodHandler, Serializable {
 
     private static final long serialVersionUID = -1348302663981663427L;
 
+    @SuppressWarnings(value = "SE_BAD_FIELD", justification = "Serialization depends on realization of callable")
     private final Callable<?> callable;
 
     public CallableMethodHandler(Callable<?> callable) {

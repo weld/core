@@ -1260,12 +1260,14 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
         private static final InjectionPoint INSTANCE = new InstanceInjectionPoint();
 
+        @SuppressWarnings(value = "SE_TRANSIENT_FIELD_NOT_RESTORED", justification = "Lazy inicialization")
         private transient Type type;
 
         @Override
         public Type getType() {
             if (type == null) {
                 this.type = new TypeLiteral<Instance<Object>>() {
+                    private static final long serialVersionUID = -3883247984265346991L;
                 }.getType();
             }
             return type;

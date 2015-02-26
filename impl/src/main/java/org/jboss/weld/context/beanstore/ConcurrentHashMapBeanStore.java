@@ -23,6 +23,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 /**
  * A BeanStore that uses a HashMap as backing storage
  *
@@ -34,6 +36,8 @@ public class ConcurrentHashMapBeanStore extends AbstractMapBackedBeanStore imple
 
     // The backing map
     protected Map<BeanIdentifier, Object> delegate;
+
+    @SuppressWarnings(value = "SE_TRANSIENT_FIELD_NOT_RESTORED", justification = "Lazy evaluation")
     private transient volatile LockStore lockStore;
 
     /**

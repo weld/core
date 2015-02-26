@@ -42,6 +42,8 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.security.GetAccessibleCopyOfMember;
 import org.jboss.weld.util.Decorators;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 /**
  * {@link InjectionTarget} implementation used for decorators.
  *
@@ -91,6 +93,7 @@ public class DecoratorInjectionTarget<T> extends BeanInjectionTarget<T> {
     }
 
     @Override
+    @SuppressWarnings(value = "BC_UNCONFIRMED_CAST", justification = "False positive")
     public void inject(T instance, CreationalContext<T> ctx) {
         super.inject(instance, ctx);
 

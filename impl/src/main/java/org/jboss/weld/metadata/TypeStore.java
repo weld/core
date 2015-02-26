@@ -26,6 +26,8 @@ import javax.inject.Scope;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.util.collections.SetMultimap;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 /**
  * This class is thread-safe.
  *
@@ -42,6 +44,7 @@ public class TypeStore implements Service {
         this.extraScopes = new CopyOnWriteArraySet<>();
     }
 
+    @SuppressWarnings(value = "BC_UNCONFIRMED_CAST_OF_RETURN_VALUE", justification = "False positive")
     public Set<Annotation> get(Class<? extends Annotation> annotationType) {
         return extraAnnotations.get(annotationType);
     }

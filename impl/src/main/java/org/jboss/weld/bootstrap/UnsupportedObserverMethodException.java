@@ -18,6 +18,8 @@ package org.jboss.weld.bootstrap;
 
 import org.jboss.weld.event.ExtensionObserverMethodImpl;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 /**
  * Thrown when {@link FastProcessAnnotatedTypeResolver} cannot be created due to unsupported observed type.
  *
@@ -27,6 +29,8 @@ import org.jboss.weld.event.ExtensionObserverMethodImpl;
 class UnsupportedObserverMethodException extends Exception {
 
     private static final long serialVersionUID = -2164722035016351775L;
+
+    @SuppressWarnings(value = "SE_BAD_FIELD", justification = "Depends on realization of observer")
     private final ExtensionObserverMethodImpl<?, ?> observer;
 
     public UnsupportedObserverMethodException(ExtensionObserverMethodImpl<?, ?> observer) {

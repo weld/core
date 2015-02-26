@@ -547,49 +547,43 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
     }
 
     protected void addMethodsFromClass(ClassFile proxyClassType, ClassMethod staticConstructor) {
-        try {
-            // Add all methods from the class hierarchy
-            Class<?> cls = getBeanType();
-            // first add equals/hashCode methods if required
-            generateEqualsMethod(proxyClassType);
+        // Add all methods from the class hierarchy
+        Class<?> cls = getBeanType();
+        // first add equals/hashCode methods if required
+        generateEqualsMethod(proxyClassType);
 
-            generateHashCodeMethod(proxyClassType);
+        generateHashCodeMethod(proxyClassType);
 
-            while (cls != null) {
-                for (Method method : AccessController.doPrivileged(new GetDeclaredMethodsAction(cls))) {
-                    if (!Modifier.isStatic(method.getModifiers()) &&
-                            !Modifier.isFinal(method.getModifiers()) &&
-                            (method.getDeclaringClass() != Object.class || method.getName().equals("toString")) &&
-                            isMethodAccepted(method)) {
-                        try {
-                            MethodInformation methodInfo = new RuntimeMethodInformation(method);
-                            ClassMethod classMethod = proxyClassType.addMethod(method);
-                            addConstructedGuardToMethodBody(classMethod);
-                            createForwardingMethodBody(classMethod, methodInfo, staticConstructor);
-                            BeanLogger.LOG.addingMethodToProxy(method);
-                        } catch (DuplicateMemberException e) {
-                            // do nothing. This will happen if superclass methods
-                            // have been overridden
-                        }
-                    }
-                }
-                cls = cls.getSuperclass();
-            }
-            for (Class<?> c : additionalInterfaces) {
-                for (Method method : c.getMethods()) {
-                    if (!Modifier.isStatic(method.getModifiers()) && isMethodAccepted(method)) {
-                        try {
-                            MethodInformation methodInfo = new RuntimeMethodInformation(method);
-                            ClassMethod classMethod = proxyClassType.addMethod(method);
-                            createSpecialMethodBody(classMethod, methodInfo, staticConstructor);
-                            BeanLogger.LOG.addingMethodToProxy(method);
-                        } catch (DuplicateMemberException e) {
-                        }
+        while (cls != null) {
+            for (Method method : AccessController.doPrivileged(new GetDeclaredMethodsAction(cls))) {
+                if (!Modifier.isStatic(method.getModifiers()) && !Modifier.isFinal(method.getModifiers())
+                        && (method.getDeclaringClass() != Object.class || method.getName().equals("toString")) && isMethodAccepted(method)) {
+                    try {
+                        MethodInformation methodInfo = new RuntimeMethodInformation(method);
+                        ClassMethod classMethod = proxyClassType.addMethod(method);
+                        addConstructedGuardToMethodBody(classMethod);
+                        createForwardingMethodBody(classMethod, methodInfo, staticConstructor);
+                        BeanLogger.LOG.addingMethodToProxy(method);
+                    } catch (DuplicateMemberException e) {
+                        // do nothing. This will happen if superclass methods
+                        // have been overridden
                     }
                 }
             }
-        } catch (Exception e) {
-            throw new WeldException(e);
+            cls = cls.getSuperclass();
+        }
+        for (Class<?> c : additionalInterfaces) {
+            for (Method method : c.getMethods()) {
+                if (!Modifier.isStatic(method.getModifiers()) && isMethodAccepted(method)) {
+                    try {
+                        MethodInformation methodInfo = new RuntimeMethodInformation(method);
+                        ClassMethod classMethod = proxyClassType.addMethod(method);
+                        createSpecialMethodBody(classMethod, methodInfo, staticConstructor);
+                        BeanLogger.LOG.addingMethodToProxy(method);
+                    } catch (DuplicateMemberException e) {
+                    }
+                }
+            }
         }
     }
 
@@ -780,7 +774,7 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
 
             Method getMethodHandlerMethod = ProxyObject.class.getMethod("getHandler");
             generateGetMethodHandlerBody(proxyClassType.addMethod(getMethodHandlerMethod));
-        } catch (Exception e) {
+        } catch (NoSuchMethodException e) {
             throw new WeldException(e);
         }
     }
