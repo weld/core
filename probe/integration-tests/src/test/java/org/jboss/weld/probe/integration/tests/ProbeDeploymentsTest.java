@@ -18,6 +18,7 @@ package org.jboss.weld.probe.integration.tests;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertNull;
 import static org.jboss.weld.probe.Strings.BEAN_DISCOVERY_MODE;
 import static org.jboss.weld.probe.integration.tests.JSONTestUtil.DEPLOYMENT_PATH;
 import static org.jboss.weld.probe.integration.tests.JSONTestUtil.getDeploymentByName;
@@ -28,10 +29,14 @@ import java.net.URL;
 import javax.json.JsonObject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.OperateOnDeployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.weld.bootstrap.spi.BeanDiscoveryMode;
+import org.jboss.weld.probe.integration.tests.beans.ModelBean;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -44,21 +49,60 @@ public class ProbeDeploymentsTest extends ProbeIntegrationTest {
     @ArquillianResource
     private URL url;
 
-    private static final String TEST_ARCHIVE_NAME = "probe-deployments-test";
+    private static final String TEST_ARCHIVE_NAME = "probe-deployments-test-explicit";
+    private static final String TEST_IMPLICIT_ARCHIVE_NAME = "probe-deployments-test-implicit";
+    private static final String NOT_BEAN_ARCHIVE_NAME = "probe-deployments-test-none";
+    private static final String EXPLICIT_ARCHIVE = "explicit-archive";
+    private static final String IMPLICIT_ARCHIVE = "implicit-archive";
+    private static final String NON_BEAN_ARCHIVE = "not-bean-archive";
 
-    @Deployment(testable = false)
-    public static WebArchive deploy() {
+    @Deployment(testable = false, name = EXPLICIT_ARCHIVE)
+    public static WebArchive deployExplicitArchive() {
         return ShrinkWrap.create(WebArchive.class, TEST_ARCHIVE_NAME + ".war")
                 .addAsWebInfResource(ProbeDeploymentsTest.class.getPackage(), "web.xml", "web.xml")
                 .addAsWebInfResource(ProbeDeploymentsTest.class.getPackage(), "beans.xml", "beans.xml")
                 .addClass(ProbeDeploymentsTest.class);
     }
 
+    @Deployment(testable = false, name = NON_BEAN_ARCHIVE)
+    public static WebArchive deployNotBeanArchive() {
+        return ShrinkWrap.create(WebArchive.class, NOT_BEAN_ARCHIVE_NAME + ".war")
+                .addAsWebInfResource(ProbeDeploymentsTest.class.getPackage(), "web.xml", "web.xml")
+                .addAsWebInfResource(ProbeDeploymentsTest.class.getPackage(), "beans-bdm-none.xml", "beans.xml")
+                .addClass(ProbeDeploymentsTest.class);
+    }
+
+    @Deployment(testable = false, name = IMPLICIT_ARCHIVE)
+    public static WebArchive deployImplicitArchive() {
+        return ShrinkWrap.create(WebArchive.class, TEST_IMPLICIT_ARCHIVE_NAME + ".war")
+                .addAsWebInfResource(ProbeDeploymentsTest.class.getPackage(), "web.xml", "web.xml")
+                .addPackage(ModelBean.class.getPackage())
+                .addClass(ProbeDeploymentsTest.class);
+    }
+
     @Test
-    public void testDeploymentEndpoint() throws IOException {
+    @OperateOnDeployment(EXPLICIT_ARCHIVE)
+    public void testDeploymentEndpointWithExplicitBeanArchive() throws IOException {
         JsonObject testArchive = getDeploymentByName(DEPLOYMENT_PATH, TEST_ARCHIVE_NAME, url);
         assertNotNull("Cannot find test archive in Probe deployments!", testArchive);
-        assertEquals("ALL", testArchive.getString(BEAN_DISCOVERY_MODE));
+        assertEquals("Another bean discovery mode expected!", BeanDiscoveryMode.ALL.name(), testArchive.getString(BEAN_DISCOVERY_MODE));
+    }
+
+    @Test
+    @OperateOnDeployment(IMPLICIT_ARCHIVE)
+    public void testDeploymentEndpointWithImplicitBeanArchive() throws IOException {
+        JsonObject testArchive = getDeploymentByName(DEPLOYMENT_PATH, TEST_IMPLICIT_ARCHIVE_NAME, url);
+        assertNotNull("Cannot find test archive in Probe deployments!", testArchive);
+        assertNotNull("Cannot find any value for bean discovery mode!", testArchive.get(BEAN_DISCOVERY_MODE));
+        assertEquals("Another bean discovery mode expected!", BeanDiscoveryMode.ANNOTATED.name(), testArchive.getString(BEAN_DISCOVERY_MODE));
+    }
+
+    @Test
+    @Ignore("WFLY-4388")
+    @OperateOnDeployment(NON_BEAN_ARCHIVE)
+    public void testDeploymentEndpointWithNonBeanArchive() throws IOException {
+        JsonObject testArchive = getDeploymentByName(DEPLOYMENT_PATH, NOT_BEAN_ARCHIVE_NAME, url);
+        assertNull("Archive should not be found!", testArchive);
     }
 
 }

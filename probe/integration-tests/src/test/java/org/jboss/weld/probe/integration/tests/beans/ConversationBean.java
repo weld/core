@@ -16,21 +16,20 @@
  */
 package org.jboss.weld.probe.integration.tests.beans;
 
-import javax.enterprise.inject.Model;
+import java.io.Serializable;
+
+import javax.enterprise.context.Conversation;
+import javax.enterprise.context.ConversationScoped;
 import javax.inject.Inject;
 
-@Model
-public class ModelBean {
-
-    @Inject
-    SessionScopedBean session;
+@ConversationScoped
+public class ConversationBean implements Serializable{
     
     @Inject
-    ConversationBean conversationBean;
+    private Conversation conversation;
 
-    public void simpleCall() {
-        session.doSomething();
-        conversationBean.start();
+    public void start(){
+        conversation.begin();
     }
-
+    
 }

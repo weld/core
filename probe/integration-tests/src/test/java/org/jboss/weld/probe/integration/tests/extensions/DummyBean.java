@@ -14,23 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.probe.integration.tests.beans;
+package org.jboss.weld.probe.integration.tests.extensions;
 
-import javax.enterprise.inject.Model;
-import javax.inject.Inject;
-
-@Model
-public class ModelBean {
-
-    @Inject
-    SessionScopedBean session;
-    
-    @Inject
-    ConversationBean conversationBean;
-
-    public void simpleCall() {
-        session.doSomething();
-        conversationBean.start();
-    }
-
+public class DummyBean {
 }

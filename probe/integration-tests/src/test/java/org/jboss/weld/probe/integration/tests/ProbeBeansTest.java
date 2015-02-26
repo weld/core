@@ -31,6 +31,7 @@ import static org.jboss.weld.probe.integration.tests.JSONTestUtil.BEANS_PATH_ALL
 import static org.jboss.weld.probe.integration.tests.JSONTestUtil.BeanType;
 import static org.jboss.weld.probe.integration.tests.JSONTestUtil.getAllJsonObjectsByClass;
 import static org.jboss.weld.probe.integration.tests.JSONTestUtil.getBeanDetail;
+import static org.jboss.weld.probe.integration.tests.JSONTestUtil.getBeanInstanceDetail;
 import static org.jboss.weld.probe.integration.tests.JSONTestUtil.getPageAsJSONObject;
 
 import java.io.IOException;
@@ -39,6 +40,8 @@ import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
@@ -46,12 +49,15 @@ import javax.enterprise.inject.Default;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 
+import com.gargoylesoftware.htmlunit.WebClient;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.probe.integration.tests.annotations.Collector;
+import org.jboss.weld.probe.integration.tests.beans.ApplicationScopedObserver;
+import org.jboss.weld.probe.integration.tests.beans.ConversationBean;
 import org.jboss.weld.probe.integration.tests.beans.ModelBean;
 import org.jboss.weld.probe.integration.tests.beans.SessionScopedBean;
 import org.jboss.weld.probe.integration.tests.beans.TestProducer;
@@ -145,6 +151,29 @@ public class ProbeBeansTest extends ProbeIntegrationTest {
         assertTrue("Cannot find producer method from " + TestProducer.class.getName(), methodProducer.isPresent());
         assertEquals("@" + Dependent.class.getSimpleName(), fieldProducer.get().getString(SCOPE));
         assertTrue(checkStringInArrayRecursively(ModelBean.class.getName(), null, methodProducer.get().getJsonArray(TYPES), false));
+    }
+    
+    @Test
+    public void testBeanInstanceDetail() throws IOException {
+        WebClient webClient = invokeSimpleAction(url);
+        
+        // sessionscoped bean instance 
+        JsonObject sessionBeanInstance = getBeanInstanceDetail(BEANS_PATH_ALL, SessionScopedBean.class, url, webClient);
+        assertEquals(BeanType.MANAGED.name(), sessionBeanInstance.getString(KIND));
+        assertEquals(SessionScopedBean.class.getName(), sessionBeanInstance.getString(BEAN_CLASS));
+        assertEquals("@"+SessionScoped.class.getSimpleName(), sessionBeanInstance.getString(SCOPE));
+
+        // applicationscoped bean instance 
+        JsonObject applicationScopedBeanInstance = getBeanInstanceDetail(BEANS_PATH_ALL, ApplicationScopedObserver.class, url, webClient);
+        assertEquals(BeanType.MANAGED.name(), applicationScopedBeanInstance.getString(KIND));
+        assertEquals(ApplicationScopedObserver.class.getName(), applicationScopedBeanInstance.getString(BEAN_CLASS));
+        assertEquals("@"+ApplicationScoped.class.getSimpleName(), applicationScopedBeanInstance.getString(SCOPE));
+
+        // conversationscoped bean instance
+        JsonObject conversationScopedBeanInstance = getBeanInstanceDetail(BEANS_PATH_ALL, ConversationBean.class, url, webClient, "?cid=1");
+        assertEquals(BeanType.MANAGED.name(), conversationScopedBeanInstance.getString(KIND));
+        assertEquals(ConversationBean.class.getName(), conversationScopedBeanInstance.getString(BEAN_CLASS));
+        assertEquals("@"+ConversationScoped.class.getSimpleName(), conversationScopedBeanInstance.getString(SCOPE));
     }
 
 }

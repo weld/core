@@ -14,23 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.probe.integration.tests.beans;
 
-import javax.enterprise.inject.Model;
-import javax.inject.Inject;
+package org.jboss.weld.probe.integration.tests.extensions;
 
-@Model
-public class ModelBean {
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.spi.Extension;
+import javax.enterprise.inject.spi.ProcessAnnotatedType;
 
-    @Inject
-    SessionScopedBean session;
-    
-    @Inject
-    ConversationBean conversationBean;
+import org.jboss.weld.probe.integration.tests.annotations.Collector;
+import org.jboss.weld.util.annotated.AnnotatedTypeWrapper;
 
-    public void simpleCall() {
-        session.doSomething();
-        conversationBean.start();
+public class TestExtension implements Extension {
+
+    void processAnnotatedType(@Observes ProcessAnnotatedType<DummyBean> event) {
+        event.setAnnotatedType(new AnnotatedTypeWrapper<DummyBean>(event.getAnnotatedType(), Collector.CollectorLiteral.INSTANCE));
     }
-
 }
