@@ -1,4 +1,4 @@
-package org.jboss.weld.probe.integration.tests.beans;
+package org.jboss.weld.probe.integration.tests.sessions;
 
 public interface DecoratedInterface {
 

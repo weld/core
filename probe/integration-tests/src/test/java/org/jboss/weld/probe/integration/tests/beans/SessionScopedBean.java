@@ -35,9 +35,6 @@ public class SessionScopedBean implements Serializable {
     @Inject
     Event<String> event;
 
-    @Inject
-    DecoratedInterface decoratedInterface;
-
     @TestInterceptorBinding
     public void doSomething() {
 
