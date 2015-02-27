@@ -37,26 +37,20 @@ public class EJBApiAbstraction extends ApiAbstraction implements Service {
     public EJBApiAbstraction(ResourceLoader resourceLoader) {
         super(resourceLoader);
         EJB_ANNOTATION_CLASS = annotationTypeForName("javax.ejb.EJB");
-        RESOURCE_ANNOTATION_CLASS = annotationTypeForName("javax.annotation.Resource");
         TIMEOUT_ANNOTATION_CLASS = annotationTypeForName("javax.ejb.Timeout");
         TRANSACTION_MANAGEMENT = annotationTypeForName("javax.ejb.TransactionManagement");
-        TRANSACTION_MANAGEMENT_TYPE = classForName("javax.ejb.TransactionManagementType");
+        final Class<?> TRANSACTION_MANAGEMENT_TYPE = classForName("javax.ejb.TransactionManagementType");
         if (TRANSACTION_MANAGEMENT_TYPE.equals(Dummy.class)) {
-            BEAN_MANAGED_TRANSACTION_MANAGEMENT_ENUM_VALUE = DummyEnum.DUMMY_VALUE;
             CONTAINER_MANAGED_TRANSACTION_MANAGEMENT_ENUM_VALUE = DummyEnum.DUMMY_VALUE;
         } else {
-            BEAN_MANAGED_TRANSACTION_MANAGEMENT_ENUM_VALUE = enumValue(TRANSACTION_MANAGEMENT_TYPE, "BEAN");
             CONTAINER_MANAGED_TRANSACTION_MANAGEMENT_ENUM_VALUE = enumValue(TRANSACTION_MANAGEMENT_TYPE, "CONTAINER");
         }
     }
 
     public final Class<? extends Annotation> EJB_ANNOTATION_CLASS;
-    public final Class<? extends Annotation> RESOURCE_ANNOTATION_CLASS;
     public final Class<? extends Annotation> TIMEOUT_ANNOTATION_CLASS;
-    public final Class<? extends Annotation> TRANSACTION_MANAGEMENT;
-    public final Class<?> TRANSACTION_MANAGEMENT_TYPE;
-    public final Object BEAN_MANAGED_TRANSACTION_MANAGEMENT_ENUM_VALUE;
-    public final Object CONTAINER_MANAGED_TRANSACTION_MANAGEMENT_ENUM_VALUE;
+    private final Class<? extends Annotation> TRANSACTION_MANAGEMENT;
+    private final Object CONTAINER_MANAGED_TRANSACTION_MANAGEMENT_ENUM_VALUE;
 
     public void cleanup() {
     }

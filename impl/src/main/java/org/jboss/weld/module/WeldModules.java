@@ -19,7 +19,7 @@ package org.jboss.weld.module;
 import static org.jboss.weld.util.ServiceLoader.load;
 
 import java.util.List;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.spi.Context;
 
@@ -31,12 +31,13 @@ import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.api.helpers.ServiceRegistries;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
+import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.module.WeldModule.PostContextRegistrationContext;
 import org.jboss.weld.module.WeldModule.PostServiceRegistrationContext;
 import org.jboss.weld.module.WeldModule.PreBeanRegistrationContext;
 import org.jboss.weld.resources.WeldClassLoaderResourceLoader;
-import org.jboss.weld.util.collections.ImmutableSet;
+import org.jboss.weld.util.collections.ImmutableList;
 
 /**
  * This service takes core of {@link WeldModule}s registered with Weld.
@@ -46,11 +47,13 @@ import org.jboss.weld.util.collections.ImmutableSet;
  */
 public class WeldModules implements Service {
 
-    private final Set<WeldModule> modules;
+    private final List<WeldModule> modules;
 
     public WeldModules() {
         modules = load(WeldModule.class, WeldClassLoaderResourceLoader.INSTANCE).stream().map(metadata -> metadata.getValue())
-                .collect(ImmutableSet.collector());
+                .sorted((m1, m2) -> m1.getName().compareTo(m2.getName()))
+                .collect(ImmutableList.collector());
+        BootstrapLogger.LOG.debugv("Using Weld modules: {0}", modules.stream().map(m -> m.getName()).collect(Collectors.toList()));
     }
 
     public void postServiceRegistration(final String contextId, final ServiceRegistry services) {
