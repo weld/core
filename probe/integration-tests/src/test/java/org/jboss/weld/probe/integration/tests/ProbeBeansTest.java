@@ -23,22 +23,12 @@ import static org.jboss.weld.probe.Strings.BEAN_CLASS;
 import static org.jboss.weld.probe.Strings.DATA;
 import static org.jboss.weld.probe.Strings.DEPENDENCIES;
 import static org.jboss.weld.probe.Strings.DEPENDENTS;
-import static org.jboss.weld.probe.Strings.EJB_NAME;
-import static org.jboss.weld.probe.Strings.ENABLEMENT;
-import static org.jboss.weld.probe.Strings.ID;
-import static org.jboss.weld.probe.Strings.IS_ALTERNATIVE;
 import static org.jboss.weld.probe.Strings.KIND;
-import static org.jboss.weld.probe.Strings.PRIORITY;
-import static org.jboss.weld.probe.Strings.PRIORITY_RANGE;
 import static org.jboss.weld.probe.Strings.QUALIFIERS;
 import static org.jboss.weld.probe.Strings.SCOPE;
-import static org.jboss.weld.probe.Strings.SESSION_BEAN_TYPE;
-import static org.jboss.weld.probe.Strings.STEREOTYPES;
 import static org.jboss.weld.probe.Strings.TYPES;
-import static org.jboss.weld.probe.integration.tests.JSONTestUtil.BEANS_PATH;
 import static org.jboss.weld.probe.integration.tests.JSONTestUtil.BEANS_PATH_ALL;
 import static org.jboss.weld.probe.integration.tests.JSONTestUtil.BeanType;
-import static org.jboss.weld.probe.integration.tests.JSONTestUtil.SessionBeanType;
 import static org.jboss.weld.probe.integration.tests.JSONTestUtil.getAllJsonObjectsByClass;
 import static org.jboss.weld.probe.integration.tests.JSONTestUtil.getBeanDetail;
 import static org.jboss.weld.probe.integration.tests.JSONTestUtil.getPageAsJSONObject;
@@ -49,7 +39,6 @@ import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 
-import javax.decorator.Decorator;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
@@ -63,11 +52,8 @@ import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.probe.integration.tests.annotations.Collector;
-import org.jboss.weld.probe.integration.tests.beans.DecoratedInterface;
 import org.jboss.weld.probe.integration.tests.beans.ModelBean;
 import org.jboss.weld.probe.integration.tests.beans.SessionScopedBean;
-import org.jboss.weld.probe.integration.tests.beans.StatefulEjbSession;
-import org.jboss.weld.probe.integration.tests.beans.TestDecorator;
 import org.jboss.weld.probe.integration.tests.beans.TestProducer;
 import org.jboss.weld.probe.integration.tests.interceptors.TestInterceptor;
 import org.junit.Test;
@@ -104,8 +90,6 @@ public class ProbeBeansTest extends ProbeIntegrationTest {
         assertBeanClassVisibleInProbe(ModelBean.class, beansArray);
         assertBeanClassVisibleInProbe(SessionScopedBean.class, beansArray);
         assertBeanClassVisibleInProbe(TestInterceptor.class, beansArray);
-        assertBeanClassVisibleInProbe(StatefulEjbSession.class, beansArray);
-        assertBeanClassVisibleInProbe(TestDecorator.class, beansArray);
     }
 
     @Test
@@ -161,48 +145,6 @@ public class ProbeBeansTest extends ProbeIntegrationTest {
         assertTrue("Cannot find producer method from " + TestProducer.class.getName(), methodProducer.isPresent());
         assertEquals("@" + Dependent.class.getSimpleName(), fieldProducer.get().getString(SCOPE));
         assertTrue(checkStringInArrayRecursively(ModelBean.class.getName(), null, methodProducer.get().getJsonArray(TYPES), false));
-    }
-
-    @Test
-    public void testEjbSessionBeans() throws IOException {
-        JsonObject allBeans = getPageAsJSONObject(BEANS_PATH_ALL, url);
-        JsonArray beansData = allBeans.getJsonArray(DATA);
-
-        List<JsonObject> statefulEjbSessionList = getAllJsonObjectsByClass(StatefulEjbSession.class, beansData);
-        assertEquals(statefulEjbSessionList.size(), 1);
-        JsonObject statefulEjbJson = statefulEjbSessionList.get(0);
-        String statefulEjbSessionId = statefulEjbJson.getString(ID);
-        JsonObject sessionBeansDetail = getPageAsJSONObject(BEANS_PATH + "/" + statefulEjbSessionId, url);
-
-        assertEquals(BeanType.SESSION.name(), sessionBeansDetail.getString(KIND));
-        assertTrue(checkStringInArrayRecursively(DecoratedInterface.class.getName(), TYPES, sessionBeansDetail.getJsonArray(TYPES), false));
-        assertEquals(Boolean.TRUE.booleanValue(), sessionBeansDetail.getBoolean(IS_ALTERNATIVE));
-        assertEquals(Boolean.TRUE.booleanValue(), sessionBeansDetail.getBoolean(EJB_NAME));
-        assertEquals(SessionBeanType.STATEFUL.name(), sessionBeansDetail.getString(SESSION_BEAN_TYPE));
-
-        JsonObject sessionBeanEnablement = sessionBeansDetail.getJsonObject(ENABLEMENT);
-        // TODO introduce enum with priority ranges
-        assertEquals("APPLICATION", sessionBeanEnablement.getString(PRIORITY_RANGE));
-        assertEquals(2500, sessionBeanEnablement.getInt(PRIORITY));
-    }
-
-    @Test
-    public void testDecorator() throws IOException {
-        JsonObject allBeans = getPageAsJSONObject(BEANS_PATH_ALL, url);
-        JsonArray beansData = allBeans.getJsonArray(DATA);
-
-        List<JsonObject> testDecorators = getAllJsonObjectsByClass(TestDecorator.class, beansData);
-        JsonObject testDecoratorJson = testDecorators.get(0);
-        assertNotNull("Cannot find any " + TestDecorator.class.getName(), testDecoratorJson);
-
-        String decoratorId = testDecoratorJson.getString(ID);
-        JsonObject decoratorDetail = getPageAsJSONObject(BEANS_PATH + "/" + decoratorId, url);
-
-        assertEquals(BeanType.DECORATOR.name(), decoratorDetail.getString(KIND));
-        assertTrue(checkStringInArrayRecursively(DecoratedInterface.class.getName(), TYPES, decoratorDetail.getJsonArray(TYPES), false));
-        assertTrue(checkStringInArrayRecursively(Serializable.class.getName(), TYPES, decoratorDetail.getJsonArray(TYPES), false));
-        assertTrue(checkStringInArrayRecursively(Decorator.class.getName(), STEREOTYPES, decoratorDetail.getJsonArray(STEREOTYPES), false));
-
     }
 
 }

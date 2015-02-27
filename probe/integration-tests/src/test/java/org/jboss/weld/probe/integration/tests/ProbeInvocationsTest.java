@@ -48,7 +48,7 @@ public class ProbeInvocationsTest extends ProbeIntegrationTest {
     @ArquillianResource
     private URL url;
 
-    private static final String TEST_ARCHIVE_NAME = "probe-events-test";
+    private static final String TEST_ARCHIVE_NAME = "probe-invocations-test";
 
     @Deployment(testable = false)
     public static WebArchive deploy() {
@@ -57,7 +57,9 @@ public class ProbeInvocationsTest extends ProbeIntegrationTest {
                 .addAsWebInfResource(ProbeInvocationsTest.class.getPackage(), "beans.xml", "beans.xml")
                 .addPackage(ProbeInvocationsTest.class.getPackage())
                 .addPackage(ModelBean.class.getPackage())
-                .addPackage(Collector.class.getPackage());
+                .addPackage(Collector.class.getPackage())
+                // exclude InvokingServlet from monitoring
+                .addAsResource("weld.properties", "weld.properties");
     }
 
     @Test
@@ -66,8 +68,7 @@ public class ProbeInvocationsTest extends ProbeIntegrationTest {
         JsonObject invocations = getPageAsJSONObject(INVOCATIONS_PATH, url, client);
         JsonArray invocationData = invocations.getJsonArray(DATA);
         assertTrue("No invocations in invocation tree!", invocationData.size() > 0);
-        assertTrue(checkStringInArrayRecursively("service", METHOD_NAME, invocationData, false));
+        assertTrue(checkStringInArrayRecursively("simpleCall", METHOD_NAME, invocationData, false));
     }
-
 
 }
