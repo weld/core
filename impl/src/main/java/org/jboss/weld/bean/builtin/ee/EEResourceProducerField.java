@@ -18,6 +18,7 @@ package org.jboss.weld.bean.builtin.ee;
 
 import java.io.Serializable;
 
+import javax.annotation.Resource;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
@@ -104,7 +105,7 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T> {
         EJBApiAbstraction ejbApiAbstraction = beanManager.getServices().get(EJBApiAbstraction.class);
         PersistenceApiAbstraction persistenceApiAbstraction = beanManager.getServices().get(PersistenceApiAbstraction.class);
         WSApiAbstraction wsApiAbstraction = beanManager.getServices().get(WSApiAbstraction.class);
-        return field.isAnnotationPresent(ejbApiAbstraction.EJB_ANNOTATION_CLASS) || field.isAnnotationPresent(ejbApiAbstraction.RESOURCE_ANNOTATION_CLASS)
+        return field.isAnnotationPresent(ejbApiAbstraction.EJB_ANNOTATION_CLASS) || field.isAnnotationPresent(Resource.class)
                 || field.isAnnotationPresent(persistenceApiAbstraction.PERSISTENCE_UNIT_ANNOTATION_CLASS)
                 || field.isAnnotationPresent(persistenceApiAbstraction.PERSISTENCE_CONTEXT_ANNOTATION_CLASS)
                 || field.isAnnotationPresent(wsApiAbstraction.WEB_SERVICE_REF_ANNOTATION_CLASS);

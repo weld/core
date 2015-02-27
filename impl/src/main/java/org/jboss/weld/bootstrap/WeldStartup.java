@@ -83,15 +83,11 @@ import org.jboss.weld.context.bound.BoundRequestContext;
 import org.jboss.weld.context.bound.BoundRequestContextImpl;
 import org.jboss.weld.context.bound.BoundSessionContext;
 import org.jboss.weld.context.bound.BoundSessionContextImpl;
-import org.jboss.weld.context.ejb.EjbLiteral;
-import org.jboss.weld.context.ejb.EjbRequestContext;
-import org.jboss.weld.context.ejb.EjbRequestContextImpl;
 import org.jboss.weld.context.unbound.ApplicationContextImpl;
 import org.jboss.weld.context.unbound.DependentContextImpl;
 import org.jboss.weld.context.unbound.RequestContextImpl;
 import org.jboss.weld.context.unbound.SingletonContextImpl;
 import org.jboss.weld.context.unbound.UnboundLiteral;
-import org.jboss.weld.ejb.spi.EjbServices;
 import org.jboss.weld.event.CurrentEventMetadata;
 import org.jboss.weld.event.DefaultObserverNotifierFactory;
 import org.jboss.weld.event.GlobalObserverNotifierService;
@@ -528,11 +524,6 @@ public class WeldStartup {
         contexts.add(new ContextHolder<RequestContext>(new RequestContextImpl(contextId), RequestContext.class, UnboundLiteral.INSTANCE));
         contexts.add(new ContextHolder<DependentContext>(new DependentContextImpl(services.get(ContextualStore.class)), DependentContext.class, UnboundLiteral.INSTANCE));
 
-        if (isEjbServicesRegistered()) {
-            // Register the EJB Request context if EjbServices are available
-            contexts.add(new ContextHolder<EjbRequestContext>(new EjbRequestContextImpl(contextId), EjbRequestContext.class, EjbLiteral.INSTANCE));
-        }
-
         services.get(WeldModules.class).postContextRegistration(contextId, services, contexts);
 
         /*
@@ -590,20 +581,5 @@ public class WeldStartup {
             }
         }
         return beans;
-    }
-
-    private boolean isEjbServicesRegistered() {
-        if(deployment.getServices().contains(EjbServices.class)) {
-            // For backwards compatibility with older integrators that register EjbServices
-            // as a deployment service
-            return true;
-        }
-        // EjbServices is a bean deployment archive service
-        for (BeanDeploymentArchive beanDeploymentArchive : deployment.getBeanDeploymentArchives()) {
-            if (beanDeploymentArchive.getServices().contains(EjbServices.class)) {
-                return true;
-            }
-        }
-        return false;
     }
 }

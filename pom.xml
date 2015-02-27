@@ -75,6 +75,7 @@
 
     <modules>
         <module>impl</module>
+        <module>modules/ejb</module>
         <module>modules/jsf</module>
         <module>modules/jta</module>
         <module>modules/web</module>
@@ -360,6 +361,12 @@
             <dependency>
                 <groupId>org.jboss.weld.module</groupId>
                 <artifactId>weld-web</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.weld.module</groupId>
+                <artifactId>weld-ejb</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

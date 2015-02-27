@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Resource;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 
@@ -343,7 +344,7 @@ public final class ResourceInjectionFactory {
 
         @Override
         protected Class<? extends Annotation> getMarkerAnnotation(EJBApiAbstraction apiAbstraction) {
-            return apiAbstraction.RESOURCE_ANNOTATION_CLASS;
+            return Resource.class;
         }
 
         @Override

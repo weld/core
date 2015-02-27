@@ -72,8 +72,6 @@ import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.bean.DisposalMethod;
 import org.jboss.weld.bean.InterceptorImpl;
 import org.jboss.weld.bean.NewBean;
-import org.jboss.weld.bean.NewManagedBean;
-import org.jboss.weld.bean.NewSessionBean;
 import org.jboss.weld.bean.ProducerMethod;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bean.WeldDecorator;
@@ -308,7 +306,7 @@ public class Validator implements Service {
                 throw BeanLogger.LOG.injectedFieldCannotBeProducer(ij.getAnnotated(), Reflections.<AnnotatedField<?>>cast(ij.getAnnotated()).getDeclaringType());
             }
         }
-        boolean newBean = (bean instanceof NewManagedBean<?>) || (bean instanceof NewSessionBean<?>);
+        boolean newBean = (bean instanceof NewBean);
         if (!newBean) {
             checkScopeAnnotations(ij, beanManager.getServices().get(MetaAnnotationStore.class));
         }
