@@ -64,6 +64,8 @@ import org.jboss.weld.util.InjectionPoints;
 import org.jboss.weld.util.collections.SetMultimap;
 import org.jboss.weld.util.reflection.Reflections;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 public class BeanDeployerEnvironment {
 
     private final Set<SlimAnnotatedTypeContext<?>> annotatedTypes;
@@ -178,6 +180,7 @@ public class BeanDeployerEnvironment {
         return newSessionBeanDescriptorsFromInjectionPoint;
     }
 
+    @SuppressWarnings(value = "BC_UNCONFIRMED_CAST_OF_RETURN_VALUE", justification = "False positive")
     public Set<ProducerMethod<?, ?>> getProducerMethod(Class<?> declaringClass, MethodSignature signature) {
         WeldMethodKey key = new WeldMethodKey(declaringClass, signature);
         Set<ProducerMethod<?, ?>> beans = producerMethodBeanMap.get(key);
@@ -187,6 +190,7 @@ public class BeanDeployerEnvironment {
         return beans;
     }
 
+    @SuppressWarnings(value = "BC_UNCONFIRMED_CAST_OF_RETURN_VALUE", justification = "False positive")
     public Set<AbstractClassBean<?>> getClassBeans(Class<?> clazz) {
         Set<AbstractClassBean<?>> beans = classBeanMap.get(clazz);
         for (AbstractClassBean<?> bean : beans) {
@@ -195,6 +199,7 @@ public class BeanDeployerEnvironment {
         return beans;
     }
 
+    @SuppressWarnings(value = "BC_UNCONFIRMED_CAST_OF_RETURN_VALUE", justification = "False positive")
     public void addProducerMethod(ProducerMethod<?, ?> bean) {
         producerMethodBeanMap.get(WeldMethodKey.of(bean)).add(bean);
         addAbstractBean(bean);
@@ -213,6 +218,7 @@ public class BeanDeployerEnvironment {
         beans.add(bean);
     }
 
+    @SuppressWarnings(value = "BC_UNCONFIRMED_CAST_OF_RETURN_VALUE", justification = "False positive")
     protected void addAbstractClassBean(AbstractClassBean<?> bean) {
         if (!(bean instanceof NewBean)) {
             classBeanMap.get(bean.getBeanClass()).add(bean);
@@ -393,6 +399,7 @@ public class BeanDeployerEnvironment {
         }
     }
 
+    @SuppressWarnings(value = "BC_UNCONFIRMED_CAST_OF_RETURN_VALUE", justification = "False positive")
     public void vetoBean(AbstractBean<?, ?> bean) {
         beans.remove(bean);
         if (bean instanceof AbstractClassBean<?>) {

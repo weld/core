@@ -19,6 +19,8 @@ package org.jboss.weld.util.reflection;
 import java.lang.reflect.Type;
 import java.lang.reflect.WildcardType;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 /**
  * Implementation of {@link WildcardType}.
  *
@@ -53,11 +55,13 @@ public class WildcardTypeImpl implements WildcardType {
         this.lowerBound = lowerBound;
     }
 
+    @SuppressWarnings(value = "EI_EXPOSE_REP", justification = "False positive")
     @Override
     public Type[] getUpperBounds() {
         return upperBound;
     }
 
+    @SuppressWarnings(value = "EI_EXPOSE_REP", justification = "False positive")
     @Override
     public Type[] getLowerBounds() {
         return lowerBound;

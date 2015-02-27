@@ -29,8 +29,11 @@ public class ParameterizedTypeImpl implements ParameterizedType, Serializable {
 
     private static final long serialVersionUID = -3005183010706452884L;
 
+    @SuppressWarnings(value = "SE_BAD_FIELD", justification = "Depends on realization of actualTypeArguments")
     private final Type[] actualTypeArguments;
+    @SuppressWarnings(value = "SE_BAD_FIELD", justification = "Depends on realization of rawType")
     private final Type rawType;
+    @SuppressWarnings(value = "SE_BAD_FIELD", justification = "Depends on realization of ownerType")
     private final Type ownerType;
 
     @SuppressWarnings("EI_EXPOSE_REP")

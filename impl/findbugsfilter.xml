@@ -1,10 +1,12 @@
 <FindBugsFilter>
-  <Match>
-    <Class name="~.*_\$logger$" />
-    <Bug pattern="NM_CLASS_NAMING_CONVENTION" />
-  </Match>
-  <Match>
-    <Class name="org.jboss.weld.util.reflection.WildcardTypeImpl" />
-    <Bug pattern="EI_EXPOSE_REP" />
-  </Match>
+    <Match>
+        <Class name="~.*_\$logger$" />
+        <Bug pattern="NM_CLASS_NAMING_CONVENTION" />
+    </Match>
+    <Match>
+        <Or>
+            <Bug pattern="SIC_INNER_SHOULD_BE_STATIC_ANON" />
+            <Bug pattern="RI_REDUNDANT_INTERFACES" />
+        </Or>
+    </Match>
 </FindBugsFilter>

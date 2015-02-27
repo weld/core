@@ -204,7 +204,7 @@ public enum ConfigurationKey {
         } else if (defaultValue instanceof Integer) {
             return Integer.valueOf(value);
         } else {
-            return value.toString();
+            return value;
         }
     }
 

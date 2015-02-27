@@ -18,12 +18,15 @@ package org.jboss.weld.bean.proxy;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.exceptions.UnproxyableResolutionException;
 
 import sun.misc.Unsafe;
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
 /**
  * {@link ProxyInstantiator} implementation that  {@link Unsafe#allocateInstance(Class)} to instantiate proxy class instance. When this
@@ -36,13 +39,39 @@ class UnsafeProxyInstantiator implements ProxyInstantiator {
 
     private final Unsafe unsafe;
 
-    UnsafeProxyInstantiator() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-        Field field = Unsafe.class.getDeclaredField("theUnsafe");
-        field.setAccessible(true);
-        this.unsafe = (Unsafe) field.get(null);
+    @SuppressWarnings(value = "BC_UNCONFIRMED_CAST_OF_RETURN_VALUE", justification = "False positive")
+    UnsafeProxyInstantiator() throws NoSuchFieldException, SecurityException, IllegalAccessException {
+        try {
+            this.unsafe = AccessController.doPrivileged(new StaticPrivilegedAction());
+        } catch (RuntimeException e) {
+            if (e.getCause() instanceof NoSuchFieldException) {
+                throw (NoSuchFieldException) e.getCause();
+            } else if (e.getCause() instanceof SecurityException) {
+                throw (SecurityException) e.getCause();
+            } else {
+                //always have to be an IllegalAccessException
+                throw (IllegalAccessException) e.getCause();
+            }
+        }
     }
 
-    @SuppressWarnings("unchecked")
+    private static class StaticPrivilegedAction implements PrivilegedAction<Unsafe> {
+
+        @Override
+        public Unsafe run() {
+            try {
+                Field field = Unsafe.class.getDeclaredField("theUnsafe");
+                field.setAccessible(true);
+                return (Unsafe) field.get(null);
+
+            } catch (NoSuchFieldException | SecurityException | IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+    }
+
+    @java.lang.SuppressWarnings("unchecked")
     @Override
     public <T> T newInstance(Class<T> clazz) throws InstantiationException{
         return (T) unsafe.allocateInstance(clazz);

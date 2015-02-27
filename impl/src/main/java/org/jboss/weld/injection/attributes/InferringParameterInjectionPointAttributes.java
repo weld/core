@@ -27,6 +27,8 @@ import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.reflection.Reflections;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 /**
  * An implementation of {@link WeldInjectionPointAttributes} that infers the attributes by reading {@link EnhancedAnnotatedParameter}.
  *
@@ -41,6 +43,7 @@ public class InferringParameterInjectionPointAttributes<T, X> extends AbstractIn
         return new InferringParameterInjectionPointAttributes<T, X>(parameter, bean, declaringComponentClass, manager);
     }
 
+    @SuppressWarnings(value = "SE_BAD_FIELD", justification = "Depends on realization")
     private final AnnotatedParameter<X> parameter;
 
     protected InferringParameterInjectionPointAttributes(EnhancedAnnotatedParameter<T, X> parameter, Bean<?> bean, Class<?> declaringComponentClass, BeanManagerImpl manager) {

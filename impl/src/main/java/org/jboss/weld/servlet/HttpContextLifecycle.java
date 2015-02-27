@@ -38,6 +38,8 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.servlet.spi.HttpContextActivationFilter;
 import org.jboss.weld.util.reflection.Reflections;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 /**
  * Takes care of setting up and tearing down CDI contexts around an HTTP request and dispatching context lifecycle events.
  *
@@ -176,6 +178,7 @@ public class HttpContextLifecycle implements Service {
         }
     }
 
+    @SuppressWarnings(value = "DE_MIGHT_IGNORE", justification = "Ignored in order to let the original exception be thrown")
     public void requestInitialized(HttpServletRequest request, ServletContext ctx) {
         if (nestedInvocationGuardEnabled) {
             Counter counter = nestedInvocationGuard.get();

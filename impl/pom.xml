@@ -187,12 +187,14 @@
                         <configuration>
                             <effort>Max</effort>
                             <xmlOutput>true</xmlOutput>
+                            <xmlOutputDirectory>${project.basedir}/target</xmlOutputDirectory>
                             <threshold>${findbugs.threshold}</threshold>
                             <failOnError>${findbugs.failOnError}</failOnError>
                             <excludeFilterFile>${project.basedir}/findbugsfilter.xml</excludeFilterFile>
                         </configuration>
                         <executions>
                             <execution>
+                                <phase>test</phase>
                                 <goals>
                                     <goal>check</goal>
                                 </goals>
@@ -232,5 +234,4 @@
             </build>
         </profile>
     </profiles>
-
 </project>

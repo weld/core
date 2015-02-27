@@ -40,6 +40,8 @@ import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.collections.SetMultimap;
 import org.jboss.weld.util.collections.WeldCollections;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 /**
  * Processes validation of beans, decorators and interceptors in parallel.
  *
@@ -124,6 +126,8 @@ public class ConcurrentValidator extends Validator {
 
         final SpecializationAndEnablementRegistry registry = beanManager.getServices().get(SpecializationAndEnablementRegistry.class);
         executor.invokeAllAndCheckForExceptions(new IterativeWorkerTaskFactory<String>(namedAccessibleBeans.keySet()) {
+
+            @SuppressWarnings(value = "BC_UNCONFIRMED_CAST_OF_RETURN_VALUE", justification = "False positive")
             protected void doWork(String name) {
                 Set<Bean<?>> resolvedBeans = beanManager.getBeanResolver().<Object>resolve(Beans.removeDisabledBeans(namedAccessibleBeans.get(name), beanManager, registry));
                 if (resolvedBeans.size() > 1) {

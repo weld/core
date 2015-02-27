@@ -23,9 +23,12 @@ import java.util.Set;
 
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.spi.CDI;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.injection.ForwardingInjectionPoint;
+
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
 /**
  * {@link InjectionPoint} that represents an injected {@link Event} or {@link Instance} object.
@@ -39,8 +42,11 @@ public class DynamicLookupInjectionPoint extends ForwardingInjectionPoint implem
 
     private static final long serialVersionUID = -4102173765226078459L;
 
-    private final InjectionPoint injectionPoint;
+    @SuppressWarnings(value = "SE_BAD_FIELD", justification = "Depends on realization of injectionPoint")
     private final Type type;
+
+    @SuppressWarnings(value = "SE_BAD_FIELD", justification = "Depends on realization of injectionPoint")
+    private final InjectionPoint injectionPoint;
     private final Set<Annotation> qualifiers;
 
     public DynamicLookupInjectionPoint(InjectionPoint injectionPoint, Type type, Set<Annotation> qualifiers) {

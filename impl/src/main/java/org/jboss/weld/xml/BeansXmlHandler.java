@@ -6,6 +6,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import org.jboss.weld.bootstrap.spi.BeanDiscoveryMode;
@@ -309,7 +310,7 @@ public class BeansXmlHandler extends DefaultHandler {
     private void processRootElement(Attributes attributes) {
         String discoveryMode = attributes.getValue(BEAN_DISCOVERY_MODE_ATTRIBUTE_NAME);
         if (discoveryMode != null) {
-            this.discoveryMode = BeanDiscoveryMode.valueOf(discoveryMode.toUpperCase());
+            this.discoveryMode = BeanDiscoveryMode.valueOf(discoveryMode.toUpperCase(Locale.getDefault()));
         }
         String version = attributes.getValue(VERSION_ATTRIBUTE_NAME);
         if (version != null) {

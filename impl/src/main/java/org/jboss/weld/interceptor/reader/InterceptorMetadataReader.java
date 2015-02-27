@@ -14,6 +14,8 @@ import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.cache.ComputingCache;
 import org.jboss.weld.util.cache.ComputingCacheBuilder;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 /**
  * InterceptorMetadata reader. The reader produces InterceptorMetadata instances for plain interceptors, CDI interceptors and components' target classes.
  * <p>
@@ -22,6 +24,7 @@ import org.jboss.weld.util.cache.ComputingCacheBuilder;
  * @author Jozef Hartinger
  *
  */
+@SuppressWarnings(value = {"NP_UNWRITTEN_FIELD", "UWF_UNWRITTEN_FIELD"}, justification = "False positive")
 public class InterceptorMetadataReader {
 
     private final BeanManagerImpl manager;

@@ -32,6 +32,8 @@ import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.collections.SetMultimap;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 /**
  * Represents an annotated annotation
  * <p/>
@@ -109,6 +111,7 @@ public class EnhancedAnnotationImpl<T extends Annotation> extends EnhancedAnnota
      *         present. An empty set is returned if no matches are found
      * @see org.jboss.weld.annotated.enhanced.EnhancedAnnotation#getMembers(Class)
      */
+    @SuppressWarnings(value = "BC_UNCONFIRMED_CAST_OF_RETURN_VALUE", justification = "False positive")
     public Set<EnhancedAnnotatedMethod<?, ?>> getMembers(Class<? extends Annotation> annotationType) {
         return Collections.unmodifiableSet(annotatedMembers.get(annotationType));
     }

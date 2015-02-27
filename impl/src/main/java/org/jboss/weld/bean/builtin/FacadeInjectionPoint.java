@@ -14,10 +14,13 @@ import org.jboss.weld.injection.ForwardingInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.reflection.ParameterizedTypeImpl;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 public class FacadeInjectionPoint extends ForwardingInjectionPoint implements Serializable {
 
     private static final long serialVersionUID = -4102173765226078459L;
 
+    @SuppressWarnings(value = "SE_BAD_FIELD", justification = "Depends on realization of injectionPoint")
     private final InjectionPoint injectionPoint;
     private final Type type;
     private final Set<Annotation> qualifiers;

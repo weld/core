@@ -36,6 +36,8 @@ import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.util.Preconditions;
 import org.jboss.weld.util.collections.ImmutableMap;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 /**
  * The index holds identifiers for the specified set of beans (note that only instances of {@link CommonBean} and implementations of {@link PassivationCapable}
  * are included). Identifiers are sorted into ascending order, according to the {@link BeanIdentifier#asString()} natural ordering.
@@ -44,6 +46,7 @@ import org.jboss.weld.util.collections.ImmutableMap;
  */
 public class BeanIdentifierIndex implements Service {
 
+    @SuppressWarnings(value = "VO_VOLATILE_REFERENCE_TO_ARRAY")
     private volatile BeanIdentifier[] index;
 
     private volatile Map<BeanIdentifier, Integer> reverseIndex;

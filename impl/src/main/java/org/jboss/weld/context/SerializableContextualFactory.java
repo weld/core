@@ -77,6 +77,7 @@ public class SerializableContextualFactory {
 
         private final String contextId;
 
+        @SuppressWarnings(value = "SE_TRANSIENT_FIELD_NOT_RESTORED", justification = "Lazy initialization if null in getter")
         private transient ContextualStore cachedContextualStore;
 
         private transient BeanIdentifierIndex beanIdentifierIndex;

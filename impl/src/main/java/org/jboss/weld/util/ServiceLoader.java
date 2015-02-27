@@ -137,6 +137,7 @@ public class ServiceLoader<S> implements Iterable<Metadata<S>> {
     private Class<S> expectedType;
     private final ResourceLoader loader;
 
+    @SuppressWarnings(value = "UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR", justification = "Lazy initialization")
     private Set<Metadata<S>> providers;
 
     private ServiceLoader(Class<S> service, ResourceLoader loader) {
