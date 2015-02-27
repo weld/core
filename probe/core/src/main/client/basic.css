@@ -102,35 +102,37 @@ div.form-group {
 }
 
 .SYNTHETIC {
-  background-color: LightBlue;
+  background-color: LightSlateGray;
 }
 
 .BUILT_IN, .CONTAINER {
-  background-color: LightGray;
+  background-color: DarkGray;
 }
 
 .MANAGED, .SESSION, .PRODUCER_METHOD, .PRODUCER_FIELD, .RESOURCE,
   .APPLICATION {
-  background-color: LightGreen;
+  background-color: LimeGreen;
 }
 
 .ALWAYS, .IF.EXISTS {
-  background-color: #ddc;
+  background-color: SandyBrown;
 }
 
 .IN_PROGRESS, .BEFORE_COMPLETION, .AFTER_COMPLETION, .AFTER_SUCCESS,
   .AFTER_FAILURE {
-  background-color: #ddd;
+  background-color: DarkGray;
 }
 
 .priority {
-  background-color: #dda;
+  background-color: DarkKhaki;
 }
 
 .boxed {
   font-weight: bold;
-  padding: 7px;
+  font-size: 12px;
+  padding: 5px;
   border-radius: 4px 4px 4px 4px;
+  color: white;
 }
 
 div.form-control-like {
