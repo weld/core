@@ -101,6 +101,7 @@ public class BeanIdentifierIndex implements Service {
         if (beans.isEmpty()) {
             index = new BeanIdentifier[0];
             reverseIndex = Collections.emptyMap();
+            indexHash = 0;
             return;
         }
 
