@@ -37,6 +37,7 @@ import static org.jboss.weld.probe.Strings.DECLARED_PRODUCERS;
 import static org.jboss.weld.probe.Strings.DECLARING_BEAN;
 import static org.jboss.weld.probe.Strings.DECLARING_CLASS;
 import static org.jboss.weld.probe.Strings.DECORATORS;
+import static org.jboss.weld.probe.Strings.DEFAULT_VALUE;
 import static org.jboss.weld.probe.Strings.DEPENDENCIES;
 import static org.jboss.weld.probe.Strings.DEPENDENTS;
 import static org.jboss.weld.probe.Strings.DISPOSAL_METHOD;
@@ -220,7 +221,7 @@ final class JsonObjects {
                 // Unsupported property type
                 continue;
             }
-            configBuilder.add(Json.objectBuilder().add(NAME, key.get()).add(VALUE, value.toString()));
+            configBuilder.add(Json.objectBuilder().add(NAME, key.get()).add(DEFAULT_VALUE, defaultValue.toString()).add(VALUE, value.toString()));
         }
         deploymentBuilder.add(CONFIGURATION, configBuilder);
 
@@ -672,8 +673,8 @@ final class JsonObjects {
                 } catch (InvocationTargetException e) {
                     value = toString(e);
                 }
-                propertiesBuilder.add(Json.objectBuilder().add(NAME, propertyDescriptor.getDisplayName())
-                        .add(VALUE, value != null ? value.toString() : "null"));
+                propertiesBuilder
+                        .add(Json.objectBuilder().add(NAME, propertyDescriptor.getDisplayName()).add(VALUE, value != null ? value.toString() : "null"));
             }
             builder.add(PROPERTIES, propertiesBuilder);
             return builder.build();

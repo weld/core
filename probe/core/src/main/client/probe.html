@@ -193,16 +193,19 @@ ${head}
         <table class="table table-bordered table-striped">
             <col width="6%">
             <col width="47%">
-            <col width="47%">
+            <col width="23%">
+            <col width="24%">
             <tr>
                 <th></th>
                 <th>Key</th>
+                <th>Default Value</th>
                 <th>Value</th>
             </tr>
             {{#each configuration}}
             <tr>
                 <td>{{increment _view.contentIndex}}</td>
                 <td>{{name}}</td>
+                <td>{{defaultValue}}</td>
                 <td>{{value}}</td>
             </tr>
             {{/each}}

@@ -56,6 +56,7 @@ public final class Strings {
     public static final String PRIORITY_RANGE = "priorityRange";
     public static final String ANNOTATED_METHOD = "annotatedMethod";
     public static final String VALUE = "value";
+    public static final String DEFAULT_VALUE = "defaultValue";
     public static final String PROPERTIES = "properties";
     public static final String INSTANCES = "instances";
     public static final String AS_STRING = "asString";
