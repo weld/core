@@ -61,9 +61,9 @@ public class InvocationMonitor implements Serializable {
     @Inject
     private BeanManagerImpl beanManager;
 
-    private volatile Probe probe = null;
+    private transient volatile Probe probe = null;
 
-    private volatile Boolean skipJavaBeanProperties;
+    private transient volatile Boolean skipJavaBeanProperties;
 
     @AroundInvoke
     public Object monitor(InvocationContext ctx) throws Exception {
