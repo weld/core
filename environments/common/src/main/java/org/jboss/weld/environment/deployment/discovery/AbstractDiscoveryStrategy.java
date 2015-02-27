@@ -90,7 +90,7 @@ public abstract class AbstractDiscoveryStrategy implements DiscoveryStrategy {
             for (BeanArchiveHandler handler : handlers) {
                 builder = handler.handle(ref);
                 if (builder != null) {
-                    builder.setId(ref);
+                    builder.setId(scanResult.getBeanArchiveId());
                     builder.setBeansXml(scanResult.getBeansXml());
                     beanArchiveBuilders.add(builder);
                     break;

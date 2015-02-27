@@ -19,7 +19,9 @@ package org.jboss.weld.environment.deployment.discovery;
 import java.net.URL;
 import java.util.Map;
 
+import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.BeansXml;
+import org.jboss.weld.util.Preconditions;
 
 /**
  * Scans the application for bean archives.
@@ -30,13 +32,26 @@ import org.jboss.weld.bootstrap.spi.BeansXml;
  * @author Martin Kouba
  */
 public interface BeanArchiveScanner {
+
     public static class ScanResult {
+
+        /**
+         * @see BeanArchiveHandler#handle(String)
+         */
         private final String beanArchiveRef;
+
         private final BeansXml beansXml;
 
-        public ScanResult(final BeansXml beansXml, final String beanArchiveRef) {
+        private String beanArchiveId;
+
+        public ScanResult(BeansXml beansXml, String beanArchiveRef, String beanArchiveId) {
             this.beansXml = beansXml;
             this.beanArchiveRef = beanArchiveRef;
+            this.beanArchiveId = beanArchiveId;
+        }
+
+        public ScanResult(BeansXml beansXml, String beanArchiveRef) {
+            this(beansXml, beanArchiveRef, null);
         }
 
         public String getBeanArchiveRef() {
@@ -46,6 +61,31 @@ public interface BeanArchiveScanner {
         public BeansXml getBeansXml() {
             return beansXml;
         }
+
+        /**
+         * If {@link #beanArchiveRef} is not set, use {@link #beanArchiveRef}.
+         *
+         * @return the bean archive id to be used as {@link BeanDeploymentArchive#getId()}
+         */
+        public String getBeanArchiveId() {
+            return beanArchiveId != null ? beanArchiveId : beanArchiveRef;
+        }
+
+        /**
+         * The id should be consistent between multiple occurrences of the deployment. It's no-op if
+         * the reference does not contain the specified separator.
+         *
+         * @param separator
+         * @return self
+         */
+        public ScanResult extractBeanArchiveId(String separator) {
+            Preconditions.checkArgumentNotNull(separator, "separator");
+            if (beanArchiveRef.contains(separator)) {
+                this.beanArchiveId = beanArchiveRef.substring(beanArchiveRef.indexOf(separator), beanArchiveRef.length());
+            }
+            return this;
+        }
+
     }
 
     /**
