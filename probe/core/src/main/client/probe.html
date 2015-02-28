@@ -82,12 +82,26 @@ ${head}
 
         <table class="table table-bordered table-striped">
             <col width="3%">
-            <col width="12%">
-            <col width="57%">
-            <col width="14%">
-            <col width="14%">
+            <col width="7%">
+            <col width="13%">
+            <col width="51%">
+            <col width="13%">
+            <col width="13%">
             <tr>
                 <th>Index</th>
+                <th>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                            Graph <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="#" {{action 'settingHasChanged'}}>Rebuild</a></li>
+                            <li><a href="#" {{action 'selectAll'}}>Select All</a></li>
+                            <li><a href="#" {{action 'selectNone'}}>Select None</a></li>
+                            <li><a href="#" {{action 'invertSelection'}}>Invert Selection</a></li>
+                        </ul>
+                    </div>
+                     <i class="fa fa-lg fa-info-circle" title="Selected bean archives are visible in the Accessibility Graph"></i></th>
                 <th>Actions</th>
                 <th>Identifier</th>
                 <th>Bean Discovery Mode</th>
@@ -96,6 +110,7 @@ ${head}
             {{#each filteredBdas}}
             <tr>
                 <td>{{increment _view.contentIndex}}</td>
+                <td class="centered">{{input type="checkbox" name="selected" checked=selected}}</td>
                 <td><i class="fa fa-search"></i> {{#link-to 'beanArchive' id class='nav-link'}}Detail{{/link-to}} <i class="fa fa-filter"></i>{{#link-to 'beanList' (query-params bda=id) class='nav-link'}}Filter beans{{/link-to}}</td>
                 <td>
                     {{bdaId}}
