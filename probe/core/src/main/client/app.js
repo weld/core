@@ -101,6 +101,9 @@ Probe.ApplicationRoute = Ember.Route
                 .done(
                     function(data) {
                         cache.bdas = data.bdas;
+                        cache.bdas.forEach(function(bda, index, array) {
+                            bda.selected = true;
+                        });
                         // Copy bdas for filtering purpose
                         cache.filterBdas = cache.bdas.slice(0);
                         // Add marker to filter additional archives
@@ -124,16 +127,12 @@ Probe.BeanArchivesRoute = Ember.Route.extend({
         if (hideAddBda == null) {
             hideAddBda = true;
         }
-        if (hideAddBda) {
-            data.filteredBdas = new Array();
-            cache.bdas.forEach(function(bda, index, array) {
-                if (!isAdditionalBda(bda.bdaId)) {
-                    data.filteredBdas.push(bda);
-                }
-            });
-        } else {
-            data.filteredBdas = cache.bdas;
-        }
+        data.filteredBdas = new Array();
+        cache.bdas.forEach(function(bda, index, array) {
+            if (!hideAddBda || !isAdditionalBda(bda.bdaId)) {
+                data.filteredBdas.push(bda);
+            }
+        });
         buildBdaGraphData(data, hideAddBda);
         return data;
     },
@@ -142,6 +141,24 @@ Probe.BeanArchivesRoute = Ember.Route.extend({
             this.set("hideAddBda", this.controller.get('hideAddBda'));
             this.refresh();
             this.controller.set('routeRefresh', new Date());
+        },
+        selectAll : function() {
+            cache.bdas.forEach(function(bda, index, array) {
+                bda.selected = true;
+            });
+            this.send('settingHasChanged');
+        },
+        selectNone : function() {
+            cache.bdas.forEach(function(bda, index, array) {
+                bda.selected = false;
+            });
+            this.send('settingHasChanged');
+        },
+        invertSelection : function() {
+            cache.bdas.forEach(function(bda, index, array) {
+                bda.selected = !bda.selected;
+            });
+            this.send('settingHasChanged');
         }
     }
 });
@@ -1474,7 +1491,7 @@ function buildBdaGraphData(data, hideAddBda) {
 function findNodesBdas(bdas, nodes) {
     if (bdas) {
         bdas.forEach(function(bda, index, array) {
-            if (!nodes[bda.id]) {
+            if (bda.selected && !nodes[bda.id]) {
                 nodes[bda.id] = {
                     id : bda.id,
                     bdaId : bda.bdaId,
@@ -1489,10 +1506,12 @@ function findLinksBdas(bdas, links, nodes, hideAddBda) {
     if (bdas) {
         bdas
             .forEach(function(bda) {
-                if (bda.accessibleBdas) {
+                if (bda.selected && bda.accessibleBdas) {
                     bda.accessibleBdas
                         .forEach(function(accessible) {
-                            if (bda.id == accessible
+                            if (!findBeanDeploymentArchive(cache.bdas,
+                                accessible).selected
+                                || bda.id == accessible
                                 || (hideAddBda && isAdditionalBda(findBeanDeploymentArchiveId(
                                     cache.bdas, accessible)))) {
                                 return;

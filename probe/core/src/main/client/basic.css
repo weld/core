@@ -232,3 +232,7 @@ div.content {
 #navigation-menu .quick-links a.dropdown-toggle:HOVER {
   color: black;
 }
+
+.centered {
+  text-align: center;
+}
