@@ -77,7 +77,7 @@ public class Reflections {
     public static boolean isCacheable(Collection<Annotation> annotations) {
         for (Annotation qualifier : annotations) {
             Class<?> clazz = qualifier.getClass();
-            if (isNonStaticInnerClass(clazz)) {
+            if (!isTopLevelOrStaticNestedClass(clazz)) {
                 return false;
             }
         }
@@ -87,7 +87,7 @@ public class Reflections {
     public static boolean isCacheable(Annotation[] annotations) {
         for (Annotation qualifier : annotations) {
             Class<?> clazz = qualifier.getClass();
-            if (isNonStaticInnerClass(clazz)) {
+            if (!isTopLevelOrStaticNestedClass(clazz)) {
                 return false;
             }
         }
@@ -395,12 +395,32 @@ public class Reflections {
     }
 
     /**
-     * @see https://issues.jboss.org/browse/WELD-1081
+     *
+     * @param javaClass
+     * @return <code>true</code> if the given class is a static nested class, <code>false</code> otherwise
      */
-    public static boolean isNonStaticInnerClass(Class<?> javaClass) {
-        return javaClass.getEnclosingConstructor() != null
-                || javaClass.getEnclosingMethod() != null
-                || (javaClass.getEnclosingClass() != null && !Reflections.isStatic(javaClass));
+    public static boolean isStaticNestedClass(Class<?> javaClass) {
+        if(javaClass.getEnclosingConstructor() != null || javaClass.getEnclosingMethod() != null) {
+            // Local or anonymous class
+            return false;
+        }
+        if(javaClass.getEnclosingClass() != null) {
+            // Extra check for anonymous class - http://bugs.java.com/bugdatabase/view_bug.do?bug_id=8034044
+            if(javaClass.isAnonymousClass()) {
+                return false;
+            }
+            return Reflections.isStatic(javaClass);
+        }
+        return false;
+    }
+
+    /**
+     *
+     * @param javaClass
+     * @return <code>true</code> if the given class is a top-level or static nested class, <code>false</code> otherwise
+     */
+    public static boolean isTopLevelOrStaticNestedClass(Class<?> javaClass) {
+        return javaClass.getEnclosingClass() == null || isStaticNestedClass(javaClass);
     }
 
     /**

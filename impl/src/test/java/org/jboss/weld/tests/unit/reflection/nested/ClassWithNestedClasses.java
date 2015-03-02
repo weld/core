@@ -14,9 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.unit.reflection.inner;
+package org.jboss.weld.tests.unit.reflection.nested;
 
 public class ClassWithNestedClasses {
+
+    static ThreadLocal<String> anonymous = new ThreadLocal<String>(){
+
+        @Override
+        protected String initialValue(){
+            return "foo";
+        }
+    };
 
     private final Class<?> constructorLocalClass;
 
