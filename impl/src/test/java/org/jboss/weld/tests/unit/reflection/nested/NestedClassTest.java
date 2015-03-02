@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.unit.reflection.inner;
+package org.jboss.weld.tests.unit.reflection.nested;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -27,41 +27,45 @@ import org.junit.Test;
 /**
  *
  * @see https://issues.jboss.org/browse/WELD-1081
+ * @see https://issues.jboss.org/browse/WELD-1884
  *
  * @author Jozef Hartinger
- *
+ * @author Martin Kouba
  */
-public class NonStaticInnerClassTest {
+public class NestedClassTest {
 
     @Test
     public void testInnerMemberClass() {
-        assertTrue(Reflections.isNonStaticInnerClass(ClassWithNestedClasses.InnerClass.class));
+        assertFalse(Reflections.isStaticNestedClass(ClassWithNestedClasses.InnerClass.class));
     }
 
     @Test
     public void testMethodLocalInnerClass() {
-        assertTrue(Reflections.isNonStaticInnerClass(ClassWithNestedClasses.getMethodLocalClass()));
+        assertFalse(Reflections.isStaticNestedClass(ClassWithNestedClasses.getMethodLocalClass()));
     }
 
     @Test
     public void testConstructorLocalInnerClass() {
-        assertTrue(Reflections.isNonStaticInnerClass(new ClassWithNestedClasses().getConstructorLocalClass()));
+        assertFalse(Reflections.isStaticNestedClass(new ClassWithNestedClasses().getConstructorLocalClass()));
     }
 
     @Test
     @SuppressWarnings("serial")
     public void testAnnonymousClass() {
-        assertTrue(Reflections.isNonStaticInnerClass(new Serializable() {
+        assertFalse(Reflections.isStaticNestedClass(new Serializable() {
         }.getClass()));
+        assertFalse(Reflections.isStaticNestedClass(ClassWithNestedClasses.anonymous.getClass()));
     }
 
     @Test
     public void testStaticNestedClass() {
-        assertFalse(Reflections.isNonStaticInnerClass(ClassWithNestedClasses.StaticNestedClass.class));
+        assertTrue(Reflections.isStaticNestedClass(ClassWithNestedClasses.StaticNestedClass.class));
     }
 
     @Test
     public void testNonNestedClass() {
-        assertFalse(Reflections.isNonStaticInnerClass(ClassWithNestedClasses.class));
+        assertFalse(Reflections.isStaticNestedClass(ClassWithNestedClasses.class));
+        assertTrue(Reflections.isTopLevelOrStaticNestedClass(ClassWithNestedClasses.class));
     }
+
 }
