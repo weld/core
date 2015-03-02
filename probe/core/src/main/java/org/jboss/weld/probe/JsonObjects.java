@@ -114,6 +114,7 @@ import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
 import org.jboss.weld.bean.proxy.ProxyObject;
 import org.jboss.weld.bootstrap.enablement.ModuleEnablement;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
+import org.jboss.weld.bootstrap.spi.BeanDiscoveryMode;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.config.ConfigurationKey;
 import org.jboss.weld.config.WeldConfiguration;
@@ -160,10 +161,9 @@ final class JsonObjects {
         Collections.sort(bdas, probe.getBdaComparator());
         for (BeanDeploymentArchive bda : bdas) {
             JsonObjectBuilder bdaBuilder = createSimpleBdaJson(bda.getId());
+            // If beans.xml is not found it's likely an implicit bean archive
             BeansXml beansXml = bda.getBeansXml();
-            if (beansXml != null) {
-                bdaBuilder.add(BEAN_DISCOVERY_MODE, beansXml.getBeanDiscoveryMode().toString());
-            }
+            bdaBuilder.add(BEAN_DISCOVERY_MODE, beansXml != null ? beansXml.getBeanDiscoveryMode().toString() : BeanDiscoveryMode.ANNOTATED.toString());
             // Enablement - interceptors, decorators, alternatives
             JsonObjectBuilder enablementBuilder = Json.objectBuilder(true);
             ModuleEnablement enablement = beanDeploymentArchivesMap.get(bda).getEnabled();
