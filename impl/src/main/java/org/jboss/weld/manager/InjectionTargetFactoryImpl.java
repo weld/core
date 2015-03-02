@@ -105,7 +105,7 @@ public class InjectionTargetFactoryImpl<T> implements WeldInjectionTargetFactory
             BeanLogger.LOG.injectionTargetCreatedForAbstractClass(type.getJavaClass());
             return new NonProducibleInjectionTarget<T>(type, bean, manager);
         }
-        if (Reflections.isNonStaticInnerClass(type.getJavaClass())) {
+        if (!Reflections.isTopLevelOrStaticNestedClass(type.getJavaClass())) {
             BeanLogger.LOG.injectionTargetCreatedForNonStaticInnerClass(type.getJavaClass());
             return new NonProducibleInjectionTarget<T>(type, bean, manager);
         }

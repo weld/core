@@ -106,7 +106,7 @@ public class BasicInjectionTarget<T> extends AbstractProducer<T> implements Weld
     }
 
     protected void checkType(EnhancedAnnotatedType<T> type) {
-        if (Reflections.isNonStaticInnerClass(type.getJavaClass())) {
+        if (!Reflections.isTopLevelOrStaticNestedClass(type.getJavaClass())) {
             throw BeanLogger.LOG.simpleBeanAsNonStaticInnerClassNotAllowed(type);
         }
     }
