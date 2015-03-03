@@ -1,5 +1,7 @@
 package org.jboss.weld.tests.ejb.singleton;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
@@ -10,19 +12,37 @@ import javax.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class Foo {
 
-    private static boolean postConstructCalled;
+    private static AtomicInteger countOfPostConstructCalled = new AtomicInteger();
+    private static AtomicInteger countOfConstructCalled = new AtomicInteger();
 
     public static boolean isPostConstructCalled() {
-        return postConstructCalled;
+        return countOfPostConstructCalled.get() > 0;
+    }
+
+    public Foo() {
+        Foo.countOfConstructCalled.incrementAndGet();
     }
 
     public static void reset() {
-        postConstructCalled = false;
+        countOfPostConstructCalled.set(0);
+        countOfConstructCalled.set(0);
     }
 
     @PostConstruct
     public void postConstruct() {
-        postConstructCalled = true;
+        countOfPostConstructCalled.incrementAndGet();
+    }
+
+    public static int getCountOfPostConstructCalled() {
+        return countOfPostConstructCalled.get();
+    }
+
+    public static int getCountOfConstructCalled() {
+        return countOfConstructCalled.get();
+    }
+
+    public boolean getSomeValue() {
+        return true;
     }
 
 }
