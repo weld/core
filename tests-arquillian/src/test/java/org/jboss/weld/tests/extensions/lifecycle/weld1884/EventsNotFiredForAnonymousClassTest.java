@@ -18,8 +18,6 @@ package org.jboss.weld.tests.extensions.lifecycle.weld1884;
 
 import static org.junit.Assert.assertFalse;
 
-import java.util.Optional;
-
 import javax.enterprise.inject.spi.Extension;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -42,14 +40,16 @@ public class EventsNotFiredForAnonymousClassTest {
 
     @Test
     public void processBeanAttributesEventNotFiredForAnonymousClass() {
-        Optional<Class<?>> optionalValue = TestExtension.pbaFiredvalues.stream().filter(c -> c.isAnonymousClass()).findFirst();
-        assertFalse("ProcessBeanAtttributes event fired for " + optionalValue.orElse(null), optionalValue.isPresent());
+        for (Class<?> clazz : TestExtension.pbaFiredvalues) {
+            assertFalse("ProcessBeanAtttributes event fired for " + clazz, clazz.isAnonymousClass());
+        }
     }
 
     @Test
     public void processBeanEventNotFiredForAnonymousClass() {
-        Optional<Class<?>> optionalValue = TestExtension.pbFiredValues.stream().filter(c -> c.isAnonymousClass()).findFirst();
-        assertFalse("ProcessBean event fired for "+ optionalValue.orElse(null), optionalValue.isPresent());
+        for (Class<?> clazz : TestExtension.pbFiredValues) {
+            assertFalse("ProcessBean event fired for "+ clazz, clazz.isAnonymousClass());
+        }
     }
 
 }

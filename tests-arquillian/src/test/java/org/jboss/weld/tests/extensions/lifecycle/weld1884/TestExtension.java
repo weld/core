@@ -26,8 +26,8 @@ import javax.enterprise.inject.spi.ProcessBeanAttributes;
 
 public class TestExtension implements Extension {
 
-    public static final List<Class<?>> pbaFiredvalues = new ArrayList<>();
-    public static final List<Class<?>> pbFiredValues = new ArrayList<>();
+    public static final List<Class<?>> pbaFiredvalues = new ArrayList<Class<?>>();
+    public static final List<Class<?>> pbFiredValues = new ArrayList<Class<?>>();
 
     public void processBeanAttributes(@Observes ProcessBeanAttributes<?> event) {
         if (event.getAnnotated().getBaseType() instanceof Class) {
