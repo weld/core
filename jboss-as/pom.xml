@@ -35,11 +35,6 @@
     <dependencies>
         <dependency>
             <groupId>org.jboss.weld</groupId>
-            <artifactId>weld-core</artifactId>
-            <version>${weld.update.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.weld</groupId>
             <artifactId>weld-core-impl</artifactId>
             <version>${weld.update.version}</version>
         </dependency>
@@ -247,7 +242,7 @@ JBOSS_HOME: ${jboss.home}
                             <outputDirectory>${project.build.directory}/dependency/lib</outputDirectory>
                             <overWriteSnapshots>true</overWriteSnapshots>
                             <stripVersion>true</stripVersion>
-                            <includeArtifactIds>cdi-api,weld-api,weld-core,weld-core-impl,weld-jsf,weld-ejb,weld-jta,weld-web,weld-spi,cdi-tck-ext-lib,weld-probe-core</includeArtifactIds>
+                            <includeArtifactIds>cdi-api,weld-api,weld-core-impl,weld-jsf,weld-ejb,weld-jta,weld-web,weld-spi,cdi-tck-ext-lib,weld-probe-core</includeArtifactIds>
                         </configuration>
                     </execution>
                 </executions>
