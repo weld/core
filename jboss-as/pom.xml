@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.jboss.weld</groupId>
         <artifactId>weld-core-parent</artifactId>
-        <version>3.0.0-SNAPSHOT</version>
+        <version>3.0.0.Alpha6</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -29,7 +29,7 @@
     <properties>
         <!-- We have to explicitly state the project version. We cannot use ${project.version}
             as the release plugin won't deal with double evaluation -->
-        <weld.update.version>3.0.0-SNAPSHOT</weld.update.version>
+        <weld.update.version>3.0.0.Alpha6</weld.update.version>
     </properties>
 
     <dependencies>
@@ -115,13 +115,13 @@ JBOSS_HOME: ${jboss.home}
                                         <property name="module.dir" value="${jboss.home}/modules/org/jboss/weld" />
                                         <property name="jsf.injection.dir" value="${module.dir}/../as/jsf-injection/main" />
 
-                                        <property name="weld.core.file" value="weld-core-impl.jar"/>
-                                        <property name="weld.probe.file" value="weld-probe-core.jar"/>
-                                        <property name="weld.ejb.file" value="weld-ejb.jar"/>
-                                        <property name="weld.jsf.file" value="weld-jsf.jar"/>
-                                        <property name="weld.jta.file" value="weld-jta.jar"/>
-                                        <property name="weld.web.file" value="weld-web.jar"/>
-                                        <property name="weld.ejb.file" value="weld-ejb.jar"/>
+                                        <property name="weld.core.file" value="weld-core-impl.jar" />
+                                        <property name="weld.probe.file" value="weld-probe-core.jar" />
+                                        <property name="weld.ejb.file" value="weld-ejb.jar" />
+                                        <property name="weld.jsf.file" value="weld-jsf.jar" />
+                                        <property name="weld.jta.file" value="weld-jta.jar" />
+                                        <property name="weld.web.file" value="weld-web.jar" />
+                                        <property name="weld.ejb.file" value="weld-ejb.jar" />
 
                                         <delete>
                                             <fileset dir="${module.dir}/core/main" includes="*.jar" />
@@ -147,11 +147,7 @@ JBOSS_HOME: ${jboss.home}
 
                                         <replaceregexp file="${module.dir}/core/main/module.xml" match="path=&quot;weld-core-impl.*?&quot;" replace="path=&quot;${weld.core.file}&quot;" byline="true" />
                                         <replaceregexp file="${module.dir}/core/main/module.xml" match="path=&quot;weld-probe-core.*?&quot;" replace="path=&quot;${weld.probe.file}&quot;" byline="true" />
-                                        <replaceregexp 
-                                            file="${module.dir}/core/main/module.xml" 
-                                            match="^(.*)(&lt;resource-root path=&quot;)weld-core-impl.jar(&quot;/&gt;).*$"
-                                            replace="\1\2${weld.core.file}\3\2${weld.jta.file}\3\2${weld.web.file}\3\2${weld.ejb.file}\3"
-                                            byline="true" />
+                                        <replaceregexp file="${module.dir}/core/main/module.xml" match="^(.*)(&lt;resource-root path=&quot;)weld-core-impl.jar(&quot;/&gt;).*$" replace="\1\2${weld.core.file}\3\2${weld.jta.file}\3\2${weld.web.file}\3\2${weld.ejb.file}\3" byline="true" />
 
                                         <copy todir="${module.dir}/spi/main" overwrite="true">
                                             <fileset dir="target/dependency/lib">

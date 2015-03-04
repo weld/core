@@ -1,9 +1,8 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
         <artifactId>weld-probe-parent</artifactId>
         <groupId>org.jboss.weld.probe</groupId>
-        <version>3.0.0-SNAPSHOT</version>
+        <version>3.0.0.Alpha6</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -201,7 +200,7 @@
                     src="moment.min-2.8.4.js"&gt;&lt;/script&gt;
                     &lt;script type="text/javascript"
                     src="app.js"&gt;&lt;/script&gt; </scripts>
-                <client.resource.path/>
+                <client.resource.path />
             </properties>
         </profile>
 
