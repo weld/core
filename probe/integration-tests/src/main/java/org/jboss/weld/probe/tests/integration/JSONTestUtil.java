@@ -103,7 +103,7 @@ public class JSONTestUtil {
 
     public static JsonObject getBeanInstanceDetail(String path, Class clazz, URL url, WebClient webClient, String... param) throws IOException {
         String beanDetailUrl = getBeanDetailUrl(path, clazz, url);
-        for(int i = 0; i< param.length;i++) {
+        for (int i = 0; i < param.length; i++) {
             beanDetailUrl = beanDetailUrl + "/instance/" + param[i];
         }
         return getPageAsJSONObject(beanDetailUrl, url, webClient);
