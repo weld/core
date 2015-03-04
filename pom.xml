@@ -79,7 +79,6 @@
         <module>modules/jsf</module>
         <module>modules/jta</module>
         <module>modules/web</module>
-        <module>bundles/impl</module>
         <module>probe</module>
     </modules>
 

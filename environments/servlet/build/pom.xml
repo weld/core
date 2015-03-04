@@ -102,6 +102,7 @@
                             <includeDependencySources>true</includeDependencySources>
                             <dependencySourceIncludes>
                                 <dependency-source>org.jboss.weld:*</dependency-source>
+                                <dependency-source>org.jboss.weld.module:*</dependency-source>
                                 <dependency-source>org.jboss.weld.servlet:*</dependency-source>
                                 <dependency-source>javax.enterprise:*</dependency-source>
                                 <dependency-source>javax.inject:*</dependency-source>
