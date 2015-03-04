@@ -21,9 +21,12 @@ import static org.jboss.weld.probe.Strings.BEAN_CLASS;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Map;
+import java.util.Set;
 
 import javax.json.JsonArray;
 import javax.json.JsonObject;
+import javax.json.JsonValue;
 
 import com.gargoylesoftware.htmlunit.WebClient;
 
@@ -50,15 +53,20 @@ public class ProbeIntegrationTest {
                 // we have an JSONObject
             } else if (arrayItem.startsWith("{")) {
                 JsonObject jsonObject = jsonArray.getJsonObject(i);
-                if (jsonObject.entrySet().toString().contains(key)) {
+                if (jsonObject.containsKey(key)) {
                     found = jsonObject.get(key).toString().contains(expectedValue);
                     if (found) {
                         return found;
                     }
                 } else {
-                    JsonArray array = jsonArray.getJsonObject(i).getJsonArray(key);
-                    if (array != null) {
-                        found = checkStringInArrayRecursively(expectedValue, key, array, found);
+                    Set<Map.Entry<String, JsonValue>> entries = jsonArray.getJsonObject(i).entrySet();
+                    for (Map.Entry<String, JsonValue> entry : entries) {
+                        if(entry.getValue().getValueType().equals(JsonValue.ValueType.OBJECT)){
+                            JsonObject nested = ((JsonObject) entry.getValue());
+                            if(nested.containsKey(key)){
+                                found = nested.get(key).toString().contains(expectedValue);
+                            }
+                        }
                     }
                 }
                 // we have some simple object

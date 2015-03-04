@@ -16,9 +16,15 @@
  */
 package org.jboss.weld.probe.tests.integration;
 
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
+import static org.jboss.weld.probe.Strings.BEAN_CLASS;
+import static org.jboss.weld.probe.Strings.CHILDREN;
 import static org.jboss.weld.probe.Strings.DATA;
+import static org.jboss.weld.probe.Strings.ID;
+import static org.jboss.weld.probe.Strings.INTERCEPTED_BEAN;
 import static org.jboss.weld.probe.Strings.METHOD_NAME;
+import static org.jboss.weld.probe.Strings.TYPE;
 import static org.jboss.weld.probe.tests.integration.JSONTestUtil.INVOCATIONS_PATH;
 import static org.jboss.weld.probe.tests.integration.JSONTestUtil.getPageAsJSONObject;
 
@@ -36,7 +42,10 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.probe.tests.integration.deployment.InvokingServlet;
 import org.jboss.weld.probe.tests.integration.deployment.annotations.Collector;
+import org.jboss.weld.probe.tests.integration.deployment.beans.ApplicationScopedObserver;
+import org.jboss.weld.probe.tests.integration.deployment.beans.ConversationBean;
 import org.jboss.weld.probe.tests.integration.deployment.beans.ModelBean;
+import org.jboss.weld.probe.tests.integration.deployment.beans.SessionScopedBean;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -70,6 +79,38 @@ public class ProbeInvocationsTest extends ProbeIntegrationTest {
         JsonArray invocationData = invocations.getJsonArray(DATA);
         assertTrue("No invocations in invocation tree!", invocationData.size() > 0);
         assertTrue(checkStringInArrayRecursively("simpleCall", METHOD_NAME, invocationData, false));
+    }
+    
+    @Test
+    public void testInvocationTreeDetail() throws IOException {
+        WebClient webClient = invokeSimpleAction(url);
+        JsonObject invocations = getPageAsJSONObject(INVOCATIONS_PATH, url, webClient);
+        JsonArray invocationData = invocations.getJsonArray(DATA);
+
+        //there is at least one invocation tree
+        int id = invocationData.getJsonObject(0).getInt(ID);
+        JsonObject invocationTree = getPageAsJSONObject(INVOCATIONS_PATH+"/"+id, url, webClient);
+        assertEquals(ModelBean.class.getName(), invocationTree.getJsonObject(INTERCEPTED_BEAN).getString(BEAN_CLASS));
+        JsonArray childsOfInvocation = invocationTree.getJsonArray(CHILDREN);
+        assertTrue("Cannot find any child invocations!", childsOfInvocation.size() > 0);
+        
+        //test sessionScopedBean child invocation
+        JsonObject sessionScopedInvocation = childsOfInvocation.getJsonObject(0);
+        assertEquals(SessionScopedBean.class.getName(), sessionScopedInvocation.getJsonObject(INTERCEPTED_BEAN).getString(BEAN_CLASS));
+        assertEquals("doSomething", sessionScopedInvocation.getString(METHOD_NAME));
+
+        JsonArray observerInvocation =  sessionScopedInvocation.getJsonArray(CHILDREN);
+        assertTrue(checkStringInArrayRecursively(ApplicationScopedObserver.class.getName(), BEAN_CLASS, observerInvocation, false));
+        assertTrue(checkStringInArrayRecursively("listen", METHOD_NAME, observerInvocation, false));
+        assertTrue(checkStringInArrayRecursively("listen1", METHOD_NAME, observerInvocation, false));
+        assertTrue(checkStringInArrayRecursively("listen2", METHOD_NAME, observerInvocation, false));
+
+        //test conversationScopedBean child invocation
+        JsonObject conversationScopedInvocation = childsOfInvocation.getJsonObject(1);
+        assertEquals(ConversationBean.class.getName(), conversationScopedInvocation.getJsonObject(INTERCEPTED_BEAN).getString(BEAN_CLASS));
+        assertEquals("start", conversationScopedInvocation.getString(METHOD_NAME));
+        assertEquals("BUSINESS", conversationScopedInvocation.getString(TYPE));
+        
     }
 
 }
