@@ -19,7 +19,6 @@ package org.jboss.weld.environment.deployment.discovery;
 import java.net.URL;
 import java.util.Map;
 
-import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.util.Preconditions;
 
@@ -65,7 +64,7 @@ public interface BeanArchiveScanner {
         /**
          * If {@link #beanArchiveRef} is not set, use {@link #beanArchiveRef}.
          *
-         * @return the bean archive id to be used as {@link BeanDeploymentArchive#getId()}
+         * @return the bean archive id to be used as {@link org.jboss.weld.bootstrap.spi.BeanDeploymentArchive#getId()}
          */
         public String getBeanArchiveId() {
             return beanArchiveId != null ? beanArchiveId : beanArchiveRef;
