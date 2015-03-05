@@ -21,6 +21,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -47,6 +48,8 @@ import org.junit.runner.RunWith;
 public class FireAsyncWithExecutorTest {
 
     private static final SynchronousQueue<Response> SYNCHRONIZER = new SynchronousQueue<>();
+    private static final AtomicBoolean REQUEST_RECEIVED = new AtomicBoolean();
+    private static final AtomicBoolean RESPONSE_RECEIVED = new AtomicBoolean();
 
     @Inject
     private ExperimentalEvent<Request> request;
@@ -67,15 +70,19 @@ public class FireAsyncWithExecutorTest {
         });
         request.fireAsync(new Request(), executor);
         final Response response = SYNCHRONIZER.poll(30, TimeUnit.SECONDS);
+        Assert.assertTrue(REQUEST_RECEIVED.get());
+        Assert.assertTrue(RESPONSE_RECEIVED.get());
         Assert.assertNotNull(response);
         Assert.assertEquals(FireAsyncWithExecutorTest.class.getName(), response.getThread().getName());
     }
 
     public static void receiveRequest(@Observes Request request, Event<Response> event) {
+        REQUEST_RECEIVED.set(true);
         event.fire(new Response(Thread.currentThread()));
     }
 
     public static void receive(@Observes Response response) {
+        RESPONSE_RECEIVED.set(true);
         SYNCHRONIZER.add(response);
     }
 }
