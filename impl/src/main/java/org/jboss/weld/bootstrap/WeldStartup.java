@@ -64,13 +64,11 @@ import org.jboss.weld.bootstrap.events.ContainerLifecycleEventPreloader;
 import org.jboss.weld.bootstrap.events.ContainerLifecycleEvents;
 import org.jboss.weld.bootstrap.events.RequiredAnnotationDiscovery;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
-import org.jboss.weld.bootstrap.spi.BootstrapConfiguration;
 import org.jboss.weld.bootstrap.spi.CDI11Deployment;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.config.ConfigurationKey;
 import org.jboss.weld.config.WeldConfiguration;
-import org.jboss.weld.configuration.spi.ExternalConfiguration;
 import org.jboss.weld.context.ApplicationContext;
 import org.jboss.weld.context.DependentContext;
 import org.jboss.weld.context.RequestContext;
@@ -195,7 +193,7 @@ public class WeldStartup {
         }
 
         // Weld configuration - must be set after the ResourceLoader fallback
-        WeldConfiguration configuration = new WeldConfiguration(registry.get(BootstrapConfiguration.class), registry.get(ExternalConfiguration.class), deployment);
+        WeldConfiguration configuration = new WeldConfiguration(registry, deployment);
         registry.add(WeldConfiguration.class, configuration);
 
         if (!registry.contains(InstantiatorFactory.class)) {
