@@ -29,6 +29,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.jboss.weld.bootstrap.api.Service;
+import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.BootstrapConfiguration;
 import org.jboss.weld.bootstrap.spi.Deployment;
@@ -36,11 +37,13 @@ import org.jboss.weld.configuration.spi.ExternalConfiguration;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.logging.ConfigurationLogger;
+import org.jboss.weld.resources.WeldClassLoaderResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
 import org.jboss.weld.security.GetSystemPropertyAction;
 import org.jboss.weld.util.Preconditions;
 import org.jboss.weld.util.collections.ImmutableMap;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * Represents an immutable per-deployment Weld configuration.
@@ -97,6 +100,8 @@ public class WeldConfiguration implements Service {
 
     private static final String OBSOLETE_SYSTEM_PROPETIES = "obsolete system properties";
 
+    private static final String EXTERNAL_CONFIGURATION_CLASS_NAME = "org.jboss.weld.configuration.spi.ExternalConfiguration";
+
     private final Map<ConfigurationKey, Object> properties;
 
     private final File proxyDumpFilePath;
@@ -106,9 +111,9 @@ public class WeldConfiguration implements Service {
      * @param bootstrapConfiguration
      * @param deployment
      */
-    public WeldConfiguration(BootstrapConfiguration bootstrapConfiguration, ExternalConfiguration externalConfiguration, Deployment deployment) {
+    public WeldConfiguration(ServiceRegistry services, Deployment deployment) {
         Preconditions.checkArgumentNotNull(deployment, "deployment");
-        this.properties = init(bootstrapConfiguration, externalConfiguration, deployment);
+        this.properties = init(services, deployment);
         this.proxyDumpFilePath = initProxyDumpFilePath();
         ConfigurationLogger.LOG.configurationInitialized(properties);
     }
@@ -211,7 +216,7 @@ public class WeldConfiguration implements Service {
         }
     }
 
-    private Map<ConfigurationKey, Object> init(BootstrapConfiguration bootstrapConfiguration, ExternalConfiguration externalConfiguration, Deployment deployment) {
+    private Map<ConfigurationKey, Object> init(ServiceRegistry services, Deployment deployment) {
 
         // 1. Properties files
         // weld.properties
@@ -242,8 +247,8 @@ public class WeldConfiguration implements Service {
 
         // 3. Integrator SPI
         // ExternalConfiguration.getConfigurationProperties() map has precedence
-        merge(properties, processExternalConfiguration(externalConfiguration), ExternalConfiguration.class.getSimpleName());
-        merge(properties, processBootstrapConfiguration(bootstrapConfiguration), BootstrapConfiguration.class.getSimpleName());
+        merge(properties, processExternalConfiguration(getExternalConfigurationOptions(services)), "ExternalConfiguration");
+        merge(properties, processBootstrapConfiguration(services.get(BootstrapConfiguration.class)), BootstrapConfiguration.class.getSimpleName());
 
         return properties;
     }
@@ -377,15 +382,23 @@ public class WeldConfiguration implements Service {
         return Collections.emptyMap();
     }
 
-    private Map<ConfigurationKey, Object> processExternalConfiguration(ExternalConfiguration externalConfiguration) {
-        if (externalConfiguration == null) {
-            return Collections.emptyMap();
-        }
-        Map<ConfigurationKey, Object> found = new EnumMap<ConfigurationKey, Object>(ConfigurationKey.class);
-        for (Entry<String, Object> entry : externalConfiguration.getConfigurationProperties().entrySet()) {
+    private Map<ConfigurationKey, Object> processExternalConfiguration(Map<String, Object> externalConfiguration) {
+        Map<ConfigurationKey, Object> found =  new EnumMap<ConfigurationKey, Object>(ConfigurationKey.class);
+        for (Entry<String, Object> entry : externalConfiguration.entrySet()) {
             processKeyValue(found, entry.getKey(), entry.getValue());
         }
         return found;
+    }
+
+    private Map<String, Object> getExternalConfigurationOptions(ServiceRegistry services) {
+        // to stay compatible with older SPI versions we first check if ExternalConfiguration is available before using the class
+        if (Reflections.isClassLoadable(EXTERNAL_CONFIGURATION_CLASS_NAME, WeldClassLoaderResourceLoader.INSTANCE)) {
+            final ExternalConfiguration externalConfiguration = services.get(ExternalConfiguration.class);
+            if (externalConfiguration != null) {
+                return externalConfiguration.getConfigurationProperties();
+            }
+        }
+        return Collections.emptyMap();
     }
 
     /**
