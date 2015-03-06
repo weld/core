@@ -138,6 +138,11 @@ public enum ConfigurationKey {
      * A regular expression. If a non-empty string  and the runtime class of the event object matches this pattern the event is excluded from monitoring.
      */
     PROBE_EVENT_MONITOR_EXCLUDE_TYPE("org.jboss.weld.probe.eventMonitor.excludeType", ""),
+    /**
+     * This optimization is used to reduce HTTP session replication overhead. However, the inconsistency detection mechanism may cause problems in some
+     * development environments.
+     */
+    BEAN_IDENTIFIER_INDEX_OPTIMIZATION("org.jboss.weld.serialization.beanIdentifierIndexOptimization", true),
 
     ;
 
