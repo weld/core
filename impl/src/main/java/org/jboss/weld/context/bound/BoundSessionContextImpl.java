@@ -46,7 +46,7 @@ public class BoundSessionContextImpl extends AbstractBoundContext<Map<String, Ob
             Object hash = storage.get(KEY_BEAN_ID_INDEX_HASH);
             if (hash != null) {
                 if (!index.getIndexHash().equals(hash)) {
-                    throw ContextLogger.LOG.beanIdentifierIndexInconsistencyDetected();
+                    throw ContextLogger.LOG.beanIdentifierIndexInconsistencyDetected(hash.toString(), index.getDebugInfo());
                 }
             } else {
                 storage.put(KEY_BEAN_ID_INDEX_HASH, index.getIndexHash());

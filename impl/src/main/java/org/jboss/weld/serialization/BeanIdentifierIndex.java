@@ -31,6 +31,7 @@ import org.jboss.weld.bean.CommonBean;
 import org.jboss.weld.bean.StringBeanIdentifier;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.exceptions.IllegalStateException;
+import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.logging.SerializationLogger;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.util.Preconditions;
@@ -130,6 +131,8 @@ public class BeanIdentifierIndex implements Service {
         reverseIndex = builder.build();
 
         indexHash = Arrays.hashCode(index);
+
+        BootstrapLogger.LOG.beanIdentifierIndexBuilt(getDebugInfo());
     }
 
     /**
@@ -138,6 +141,13 @@ public class BeanIdentifierIndex implements Service {
      */
     public boolean isBuilt() {
         return index != null;
+    }
+
+    /**
+     * @return <code>true</code> if the index is empty, <code>false</code> otherwise
+     */
+    public boolean isEmpty() {
+        return index.length == 0;
     }
 
     @Override
@@ -153,7 +163,20 @@ public class BeanIdentifierIndex implements Service {
 
     @Override
     public String toString() {
-        return String.format("BeanIdentifierIndex [index=%s]", Arrays.toString(index));
+        return String.format("BeanIdentifierIndex [hash=%s, indexed=%s]", indexHash, index.length);
+    }
+
+    public String getDebugInfo() {
+        StringBuilder builder = new StringBuilder();
+        builder.append(toString());
+        builder.append(":\n");
+        for (int i = 0; i < index.length; i++) {
+            builder.append(String.format("%4d", i));
+            builder.append(": ");
+            builder.append(index[i]);
+            builder.append("\n");
+        }
+        return builder.toString();
     }
 
 }
