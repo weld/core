@@ -156,6 +156,17 @@ For certain combinations of scopes, the container is permitted to optimize an in
 |`org.jboss.weld.injection.injectableReferenceOptimization` |false |If set to `true`, the optimization is enabled.
 |=======================================================================
 
+==== Bean identifier index optimization
+
+This optimization is used to reduce the HTTP session replication overhead. However, the inconsistency detection mechanism may cause problems in some development environments. It's recommended to disable this optimization during the development phase. 
+
+.Supported configuration properties
+[cols=",,",options="header",]
+|=======================================================================
+|Configuration key |Default value |Description
+|`org.jboss.weld.serialization.beanIdentifierIndexOptimization` |true |If set to `true`, the optimization is enabled.
+|=======================================================================
+
 [[config-dev-mode]]
 ==== Development Mode
 
