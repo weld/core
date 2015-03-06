@@ -41,6 +41,9 @@ public abstract class BeanIdentifierIndexNamingScheme extends AbstractNamingSche
     @Override
     public BeanIdentifier deprefix(String id) {
         String deprefixed = id.substring(getPrefix().length() + getDelimiter().length());
+        if (index == null) {
+            return new StringBeanIdentifier(deprefixed);
+        }
         if (deprefixed.startsWith(FALLBACK_FLAG)) {
             return new StringBeanIdentifier(deprefixed.substring(FALLBACK_FLAG.length()));
         }
@@ -53,6 +56,9 @@ public abstract class BeanIdentifierIndexNamingScheme extends AbstractNamingSche
 
     @Override
     public String prefix(BeanIdentifier id) {
+        if (index == null) {
+            return getPrefix() + getDelimiter() + id.asString();
+        }
         Integer idx = index.getIndex(id);
         if (idx == null) {
             return getPrefix() + getDelimiter() + FALLBACK_FLAG + id.asString();

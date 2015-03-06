@@ -23,7 +23,6 @@ import org.jboss.logging.annotations.Message;
 import org.jboss.logging.annotations.Message.Format;
 import org.jboss.logging.annotations.MessageLogger;
 import org.jboss.weld.exceptions.IllegalStateException;
-import org.jboss.weld.serialization.BeanIdentifierIndex;
 
 /**
  * Log messages for serialization.
@@ -36,6 +35,6 @@ public interface SerializationLogger extends WeldLogger {
     SerializationLogger LOG = Logger.getMessageLogger(SerializationLogger.class, Category.SERIALIZATION.getName());
 
     @Message(id = 1800, value = "Unable to get bean identifier at position {0} from {1}", format = Format.MESSAGE_FORMAT)
-    IllegalStateException unableToGetBeanIdentifier(int index, BeanIdentifierIndex beanIdentifierIndex);
+    IllegalStateException unableToGetBeanIdentifier(int index, Object info);
 
 }

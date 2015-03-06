@@ -122,6 +122,11 @@ public enum ConfigurationKey {
      * does not match the {@link javax.enterprise.context.spi.AlterableContext} contract.
      */
     INJECTABLE_REFERENCE_OPTIMIZATION("org.jboss.weld.injection.injectableReferenceOptimization", false),
+    /**
+     * This optimization is used to reduce HTTP session replication overhead. However, the inconsistency detection mechanism may cause problems in some
+     * development environments.
+     */
+    BEAN_IDENTIFIER_INDEX_OPTIMIZATION("org.jboss.weld.serialization.beanIdentifierIndexOptimization", true),
 
     ;
 
