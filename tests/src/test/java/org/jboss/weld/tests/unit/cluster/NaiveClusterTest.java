@@ -24,14 +24,22 @@ import javax.enterprise.context.Conversation;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.TestContainer;
+import org.jboss.weld.config.ConfigurationKey;
 import org.jboss.weld.context.bound.BoundConversationContext;
 import org.jboss.weld.context.bound.BoundRequest;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.mock.cluster.AbstractClusterTest;
 import org.jboss.weld.test.util.Utils;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 public class NaiveClusterTest extends AbstractClusterTest {
+
+    @BeforeTest
+    public void reset() {
+        System.setProperty(ConfigurationKey.BEAN_IDENTIFIER_INDEX_OPTIMIZATION.get(), ConfigurationKey.BEAN_IDENTIFIER_INDEX_OPTIMIZATION.getDefaultValue()
+                .toString());
+    }
 
     @Test(description = "A simple test to check session replication, doesn't carefully check if a bean ids are correct")
     public void testSimpleSessionReplication() throws Exception {
@@ -165,7 +173,7 @@ public class NaiveClusterTest extends AbstractClusterTest {
 
         use(1);
 
-        int i = stable1.getFodder().getAmount();
+        stable1.getFodder().getAmount();
 
         assert stable1.getFodder().getAmount() == 11;
         use(1);
@@ -203,6 +211,64 @@ public class NaiveClusterTest extends AbstractClusterTest {
     public void testSessionReplication() throws Exception {
         Collection<Class<?>> classes1 = Arrays.<Class<?>>asList(Stable.class, Horse.class, Fodder.class);
         Collection<Class<?>> classes2 = Arrays.<Class<?>>asList(Stable.class, Horse.class, Fodder.class);
+        TestContainer container1 = bootstrapContainer(1, classes1);
+        BeanManagerImpl beanManager1 = getBeanManager(container1);
+        Bean<?> stableBean1 = beanManager1.resolve(beanManager1.getBeans(Stable.class));
+
+        TestContainer container2 = bootstrapContainer(2, classes2);
+        BeanManagerImpl beanManager2 = getBeanManager(container2);
+        Bean<?> stableBean2 = beanManager2.resolve(beanManager2.getBeans(Stable.class));
+
+        use(1);
+        // Set a value into Foo1
+        Stable stable1 = (Stable) beanManager1.getReference(stableBean1, Stable.class, beanManager1.createCreationalContext(stableBean1));
+        stable1.getFodder().setAmount(10);
+        stable1.getHorse().setName("George");
+
+        replicateSession(1, container1, 2, container2);
+
+        use(2);
+
+        Stable stable2 = (Stable) beanManager2.getReference(stableBean2, Stable.class, beanManager2.createCreationalContext(stableBean2));
+        assert stable2.getFodder().getAmount() == stable1.getFodder().getAmount();
+        assert stable2.getHorse().getName() == null;
+        use(1);
+        container1.stopContainer();
+        use(2);
+        container2.stopContainer();
+    }
+
+    @Test
+    public void testVariableBeanDeploymentStructureNotVerified() throws Exception {
+        Collection<Class<?>> classes1 = Arrays.<Class<?>>asList(Stable.class, Horse.class, Fodder.class);
+        Collection<Class<?>> classes2 = Arrays.<Class<?>>asList(Stable.class, Horse.class, Fodder.class, Foo.class);
+        System.setProperty(ConfigurationKey.BEAN_IDENTIFIER_INDEX_OPTIMIZATION.get(), "false");
+        TestContainer container1 = bootstrapContainer(1, classes1);
+        BeanManagerImpl beanManager1 = getBeanManager(container1);
+        Bean<?> stableBean1 = beanManager1.resolve(beanManager1.getBeans(Stable.class));
+        TestContainer container2 = bootstrapContainer(2, classes2);
+
+        use(1);
+        // Set a value into Foo1
+        Stable stable1 = (Stable) beanManager1.getReference(stableBean1, Stable.class, beanManager1.createCreationalContext(stableBean1));
+        stable1.getFodder().setAmount(10);
+        stable1.getHorse().setName("George");
+
+        try {
+            replicateSession(1, container1, 2, container2);
+        } finally {
+            use(1);
+            container1.stopContainer();
+            use(2);
+            container2.stopContainer();
+        }
+    }
+
+    @Test
+    public void testSessionReplicationWorksIfBeanIdIndexDisabled() throws Exception {
+        Collection<Class<?>> classes1 = Arrays.<Class<?>>asList(Stable.class, Horse.class, Fodder.class);
+        Collection<Class<?>> classes2 = Arrays.<Class<?>>asList(Stable.class, Horse.class, Fodder.class);
+        System.setProperty(ConfigurationKey.BEAN_IDENTIFIER_INDEX_OPTIMIZATION.get(), "false");
         TestContainer container1 = bootstrapContainer(1, classes1);
         BeanManagerImpl beanManager1 = getBeanManager(container1);
         Bean<?> stableBean1 = beanManager1.resolve(beanManager1.getBeans(Stable.class));

@@ -269,8 +269,13 @@ public class WeldStartup {
         }
         services.add(MemberTransformer.class, new MemberTransformer(services.get(ClassTransformer.class)));
         services.add(MetaAnnotationStore.class, new MetaAnnotationStore(services.get(ClassTransformer.class)));
-        BeanIdentifierIndex beanIdentifierIndex = new BeanIdentifierIndex();
-        services.add(BeanIdentifierIndex.class, beanIdentifierIndex);
+
+        BeanIdentifierIndex beanIdentifierIndex = null;
+        if (configuration.getBooleanProperty(ConfigurationKey.BEAN_IDENTIFIER_INDEX_OPTIMIZATION)) {
+            beanIdentifierIndex = new BeanIdentifierIndex();
+            services.add(BeanIdentifierIndex.class, beanIdentifierIndex);
+        }
+
         services.add(ContextualStore.class, new ContextualStoreImpl(contextId, beanIdentifierIndex));
         services.add(CurrentInjectionPoint.class, new CurrentInjectionPoint());
         services.add(SLSBInvocationInjectionPoint.class, new SLSBInvocationInjectionPoint());
@@ -445,8 +450,11 @@ public class WeldStartup {
 
     public void endInitialization() {
 
-        // Build a special index of bean identifiers
-        deploymentManager.getServices().get(BeanIdentifierIndex.class).build(getBeansForBeanIdentifierIndex());
+        final BeanIdentifierIndex index = deploymentManager.getServices().get(BeanIdentifierIndex.class);
+        if (index != null) {
+            // Build a special index of bean identifiers
+            index.build(getBeansForBeanIdentifierIndex());
+        }
 
         // TODO rebuild the manager accessibility graph if the bdas have changed
         // Register the managers so external requests can handle them
