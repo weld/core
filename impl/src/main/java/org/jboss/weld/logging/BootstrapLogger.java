@@ -225,4 +225,8 @@ public interface BootstrapLogger extends WeldLogger {
 
     @Message(id = 144, value = "CDI API version mismatch. CDI 1.0 API detected on classpath. Weld requires version 1.1 or better.")
     IllegalStateException cdiApiVersionMismatch();
+
+    @LogMessage(level = Logger.Level.DEBUG)
+    @Message(id = 145, value = "Bean identifier index built:\n{0}", format = Format.MESSAGE_FORMAT)
+    void beanIdentifierIndexBuilt(Object info);
 }

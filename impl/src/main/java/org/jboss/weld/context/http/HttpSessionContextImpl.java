@@ -85,7 +85,7 @@ public class HttpSessionContextImpl extends AbstractBoundContext<HttpServletRequ
                 Object hash = session.getAttribute(KEY_BEAN_ID_INDEX_HASH);
                 if (hash != null) {
                     if (!index.getIndexHash().equals(hash)) {
-                        throw ContextLogger.LOG.beanIdentifierIndexInconsistencyDetected();
+                        throw ContextLogger.LOG.beanIdentifierIndexInconsistencyDetected(hash.toString(), index.getDebugInfo());
                     }
                 } else {
                     session.setAttribute(KEY_BEAN_ID_INDEX_HASH, index.getIndexHash());

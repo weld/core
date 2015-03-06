@@ -175,7 +175,7 @@ public interface ContextLogger extends WeldLogger {
     @Message(id = 226, value = "Cannot register additional context for scope: {0}, {1}", format = Format.MESSAGE_FORMAT)
     DeploymentException cannotRegisterContext(Class<? extends Annotation> scope, Context context);
 
-    @Message(id = 227, value = "Bean identifier index inconsistency detected - the distributed container probably doesn't work with identical applications", format = Format.MESSAGE_FORMAT)
-    IllegalStateException beanIdentifierIndexInconsistencyDetected();
+    @Message(id = 227, value = "Bean identifier index inconsistency detected - the distributed container probably does not work with identical applications\nExpected hash: {0}\nCurrent index: {1}", format = Format.MESSAGE_FORMAT)
+    IllegalStateException beanIdentifierIndexInconsistencyDetected(Object hash, Object index);
 
 }
