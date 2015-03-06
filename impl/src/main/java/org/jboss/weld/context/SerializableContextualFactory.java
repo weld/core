@@ -93,8 +93,11 @@ public class SerializableContextualFactory {
             } else {
                 this.serializable = null;
                 BeanIdentifier beanIdentifier = getId(contextual, contextualStore);
-                // The index may not be built yet
-                Integer idx = beanIdentifierIndex.isBuilt() ? beanIdentifierIndex.getIndex(beanIdentifier) : null;
+                // The index may be null or not built yet
+                Integer idx = null;
+                if (beanIdentifierIndex != null && beanIdentifierIndex.isBuilt()) {
+                    idx = beanIdentifierIndex.getIndex(beanIdentifier);
+                }
                 if (idx != null) {
                     this.identifierIndex = idx;
                     this.identifier = null;

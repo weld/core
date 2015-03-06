@@ -39,6 +39,8 @@ import org.jboss.weld.util.Preconditions;
 import com.google.common.collect.ImmutableMap;
 
 /**
+ * An optional per deployment service.
+ *
  * The index holds identifiers for the specified set of beans (note that only instances of {@link CommonBean} and implementations of {@link PassivationCapable}
  * are included). Identifiers are sorted into ascending order, according to the {@link BeanIdentifier#asString()} natural ordering.
  *
@@ -71,7 +73,7 @@ public class BeanIdentifierIndex implements Service {
     public BeanIdentifier getIdentifier(int idx) {
         checkIsBuilt();
         if (idx < 0 || idx >= index.length) {
-            throw SerializationLogger.LOG.unableToGetBeanIdentifier(idx, this);
+            throw SerializationLogger.LOG.unableToGetBeanIdentifier(idx, getDebugInfo());
         }
         return index[idx];
     }
