@@ -30,12 +30,12 @@ import org.jboss.weld.context.bound.BoundRequest;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.mock.cluster.AbstractClusterTest;
 import org.jboss.weld.test.util.Utils;
-import org.testng.annotations.BeforeTest;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 public class NaiveClusterTest extends AbstractClusterTest {
 
-    @BeforeTest
+    @BeforeMethod
     public void reset() {
         System.setProperty(ConfigurationKey.BEAN_IDENTIFIER_INDEX_OPTIMIZATION.get(), ConfigurationKey.BEAN_IDENTIFIER_INDEX_OPTIMIZATION.getDefaultValue()
                 .toString());
