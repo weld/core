@@ -119,7 +119,7 @@ public class BeanIdentifierIndexTest {
     private static class DummyBean<T> extends CommonBean<T> {
 
         static <T> DummyBean<T> of(String id) {
-            return new DummyBean<>(null, new StringBeanIdentifier(id));
+            return new DummyBean<T>(null, new StringBeanIdentifier(id));
         }
 
         protected DummyBean(BeanAttributes<T> attributes, BeanIdentifier identifier) {
