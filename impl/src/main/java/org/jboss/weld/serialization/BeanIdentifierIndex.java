@@ -135,7 +135,9 @@ public class BeanIdentifierIndex implements Service {
 
         indexHash = Arrays.hashCode(index);
 
-        BootstrapLogger.LOG.beanIdentifierIndexBuilt(getDebugInfo());
+        if(BootstrapLogger.LOG.isDebugEnabled()) {
+            BootstrapLogger.LOG.beanIdentifierIndexBuilt(getDebugInfo());
+        }
     }
 
     /**
