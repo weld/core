@@ -18,9 +18,9 @@ package org.jboss.weld.ejb;
 
 import java.io.Serializable;
 
+import javax.enterprise.context.RequestScoped;
 import javax.interceptor.InvocationContext;
 
-import org.jboss.weld.context.RequestContext;
 import org.jboss.weld.context.ejb.EjbRequestContext;
 import org.jboss.weld.event.ContextEvent;
 import org.jboss.weld.event.FastEvent;
@@ -87,12 +87,7 @@ public abstract class AbstractEJBRequestScopeActivationInterceptor implements Se
     }
 
     protected boolean isRequestContextActive() {
-        for (RequestContext requestContext : getBeanManager().instance().select(RequestContext.class)) {
-            if (requestContext.isActive()) {
-                return true;
-            }
-        }
-        return false;
+        return getBeanManager().isContextActive(RequestScoped.class);
     }
 
     protected EjbRequestContext getEjbRequestContext() {
