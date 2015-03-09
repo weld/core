@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.event;
 
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.spi.EventMetadata;
 import javax.enterprise.inject.spi.ObserverMethod;
 
@@ -111,12 +112,7 @@ public class DeferredEventNotification<T> implements Runnable {
         }
 
         private boolean isRequestContextActive() {
-            for (RequestContext requestContext : Container.instance(contextId).deploymentManager().instance().select(RequestContext.class)) {
-                if (requestContext.isActive()) {
-                    return true;
-                }
-            }
-            return false;
+            return Container.instance(contextId).deploymentManager().isContextActive(RequestScoped.class);
         }
 
     }
