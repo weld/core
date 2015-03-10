@@ -237,10 +237,39 @@
                     </plugin>
                 </plugins>
             </build>
-
         </profile>
-
-
+	 
+        <profile>
+            <id>jacoco</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <property>
+                    <name>jacoco</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <configuration>
+                            <excludes>
+                                <exclude>org.jboss.weld.tests.*</exclude>
+                                <exclude>org.jboss.weld.probe.tests.*</exclude>	
+                            </excludes>
+                            <propertyName>jacoco.agent</propertyName>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>prepare-agent</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 
 </project>
