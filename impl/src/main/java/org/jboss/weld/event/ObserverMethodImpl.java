@@ -291,6 +291,13 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
         }
     }
 
+    /**
+     * Note that {@link CreationalContext#release()} is not invoked within this method.
+     *
+     * @param event
+     * @param receiver
+     * @param creationalContext
+     */
     protected void sendEvent(T event, Object receiver, CreationalContext<?> creationalContext) {
         try {
             preNotify(event, receiver);
@@ -299,9 +306,6 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
             notificationStrategy.invoke(receiver, observerMethod, event, beanManager, creationalContext);
         } finally {
             postNotify(event, receiver);
-            if (creationalContext != null) {
-                creationalContext.release();
-            }
         }
     }
 
