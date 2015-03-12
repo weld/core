@@ -447,20 +447,24 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
     private Map<String, ManagedConversation> getConversationMap() {
         checkIsAssociated();
         checkContextInitialized();
-        if (!(getRequestAttribute(getRequest(), CONVERSATIONS_ATTRIBUTE_NAME) instanceof Map<?, ?>)) {
-            throw ConversationLogger.LOG.unableToLoadCurrentConversations();
+        R request = getRequest();
+        Object attribute = getRequestAttribute(getRequest(), CONVERSATIONS_ATTRIBUTE_NAME);
+        if (attribute == null || !(attribute instanceof Map)) {
+            throw ConversationLogger.LOG.unableToLoadConversations(CONVERSATIONS_ATTRIBUTE_NAME, attribute, request);
         }
-        return cast(getRequestAttribute(getRequest(), CONVERSATIONS_ATTRIBUTE_NAME));
+        return cast(attribute);
     }
 
     @Override
     public ManagedConversation getCurrentConversation() {
         checkIsAssociated();
         checkContextInitialized();
-        if (!(getRequestAttribute(getRequest(), CURRENT_CONVERSATION_ATTRIBUTE_NAME) instanceof ManagedConversation)) {
-            throw ConversationLogger.LOG.unableToLoadCurrentConversations();
+        R request = getRequest();
+        Object attribute = getRequestAttribute(request, CURRENT_CONVERSATION_ATTRIBUTE_NAME);
+        if (attribute == null || !(attribute instanceof ManagedConversation)) {
+            throw ConversationLogger.LOG.unableToLoadCurrentConversation(CURRENT_CONVERSATION_ATTRIBUTE_NAME, attribute, request);
         }
-        return (ManagedConversation) getRequestAttribute(getRequest(), CURRENT_CONVERSATION_ATTRIBUTE_NAME);
+        return (ManagedConversation) attribute;
     }
 
     @Override

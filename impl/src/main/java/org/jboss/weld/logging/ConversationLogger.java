@@ -253,10 +253,14 @@ public interface ConversationLogger extends WeldLogger {
     @Message(id = 340, value = "A request must be associated with the context in order to load the known conversations", format = Format.MESSAGE_FORMAT)
     IllegalStateException mustCallAssociateBeforeLoadingKnownConversations();
 
-    @Message(id = 341, value = "Unable to load current conversations from the associated request, something went badly wrong when associate() was called", format = Format.MESSAGE_FORMAT)
-    IllegalStateException unableToLoadCurrentConversations();
+    @Message(id = 341, value = "Unable to load the conversations from the associated request - {0}: {1}, request: {2}", format = Format.MESSAGE_FORMAT)
+    IllegalStateException unableToLoadConversations(String attributeName, Object attributeValue, Object request);
 
     @LogMessage(level = Level.WARN)
     @Message(id = 342, value = "Going to end a locked conversation with id {0}", format = Format.MESSAGE_FORMAT)
     void endLockedConversation(String cid);
+
+    @Message(id = 343, value = "Unable to load the current conversation from the associated request - {0}: {1}, request: {2}", format = Format.MESSAGE_FORMAT)
+    IllegalStateException unableToLoadCurrentConversation(String attributeName, Object attributeValue, Object request);
+
 }
