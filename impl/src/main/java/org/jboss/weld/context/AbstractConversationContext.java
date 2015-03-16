@@ -448,7 +448,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
         checkIsAssociated();
         checkContextInitialized();
         R request = getRequest();
-        Object attribute = getRequestAttribute(getRequest(), CONVERSATIONS_ATTRIBUTE_NAME);
+        Object attribute = getRequestAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME);
         if (attribute == null || !(attribute instanceof Map)) {
             throw ConversationLogger.LOG.unableToLoadConversations(CONVERSATIONS_ATTRIBUTE_NAME, attribute, request);
         }
