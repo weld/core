@@ -87,6 +87,7 @@ public final class Strings {
     public static final String METHOD = "method";
     public static final String CLASS = "class";
     public static final String APPLICATION = "application";
+    public static final String CONTEXT_ID = "contextId";
 
     public static final String PAGE = "page";
     public static final String PAGE_SIZE = "pageSize";

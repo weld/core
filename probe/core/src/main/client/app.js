@@ -113,6 +113,12 @@ Probe.ApplicationRoute = Ember.Route
                                 "bdaId" : "Only application bean archives - filter out beans from additional bean archives"
                             });
                         cache.configuration = data.configuration;
+                        cache.configuration
+                            .forEach(function(item, index, array) {
+                                if (item.value != item.defaultValue) {
+                                    item.changed = true;
+                                }
+                            });
                         return data;
                     }).fail(function(jqXHR, textStatus, errorThrown) {
                     alert('Unable to get JSON data: ' + textStatus);
@@ -763,7 +769,7 @@ Probe.DependencyGraph = Ember.View
             }
             // TODO responsive design
             var width = 1280;
-            var height = 600 - margin.top - margin.bottom;
+            var height = 800 - margin.top - margin.bottom;
 
             var nodes = d3.values(data.nodes);
             var links = data.links;
@@ -1008,16 +1014,19 @@ Probe.InvocationTree = Ember.View.extend({
             right : 120,
             bottom : 20,
             left : 120
-        }, width = 1280 - margin.right - margin.left, height = 1600
-            - margin.top - margin.bottom;
+        }
+        var width = 1280 - margin.right - margin.left;
+        var height = (getChildrenCount(data) * 80) + 100;
 
         var i = 0;
         var tree = d3.layout.tree().size([ height, width ]);
 
         var elementId = this.get('elementId');
         var element = d3.select('#' + elementId);
-        var svg = element.append("svg").attr("height",
-            height + margin.top + margin.bottom);
+        var svg = element.append("svg")
+
+        svg.attr("viewBox", "0 0 1280 " + height).attr("preserveAspectRatio",
+            "xMinYMin meet").attr("width", width).attr("height", height);
 
         // Type markers
         svg.append("defs").selectAll("marker").data([ "invocation" ]).enter()
@@ -1039,11 +1048,11 @@ Probe.InvocationTree = Ember.View.extend({
         nodes.forEach(function(d) {
             idx--;
             if (d.depth == 0) {
-                d.y = 40;
-                d.x = 40;
+                d.y = 20;
+                d.x = 20;
             } else {
-                d.y = (d.depth * 250) + 20;
-                d.x = (idx * 80) + 60;
+                d.y = (d.depth * 220);
+                d.x = (idx * 80);
             }
         });
 
@@ -1075,15 +1084,20 @@ Probe.InvocationTree = Ember.View.extend({
             return d.interceptedBean;
         }).append("a").attr("xlink:href", function(d) {
             return '#/bean/' + d.interceptedBean.id;
-        }).append("text").attr("dy", -14).style("fill", "#428bca").text(
-            function(d) {
-                return d.interceptedBean.beanClass;
-            });
+        }).append("text").attr("dx", 12).attr("dy", -5).style("fill",
+            "#428bca").text(function(d) {
+            return d.interceptedBeanClass;
+        });
 
         nodeEnter.filter(function(d) {
             return d.declaringClass;
-        }).append("text").attr("dy", -14).text(function(d) {
+        }).append("text").attr("dx", 12).attr("dy", -5).text(function(d) {
             return d.declaringClass;
+        });
+
+        nodeEnter.append("text").attr("dx", 12).attr("dy", 12).style("fill",
+            "black").style("font-size", "90%").text(function(d) {
+            return d.methodName ? '#' + d.methodName : '';
         });
 
         // Declare the links
@@ -1095,17 +1109,12 @@ Probe.InvocationTree = Ember.View.extend({
             .append("svg:g").attr("class", "labelText");
         linkLabel.append("circle").attr("r", 5).style("fill", "silver");
         linkLabel.append("svg:text").attr("class", "nodetext").style("fill",
-            "black").attr("x", "0.6em").attr("dy", "1.3em").style("font-size",
+            "black").attr("x", "0.6em").attr("dy", "-5").style("font-size",
             "90%").style("font-weight", "normal").each(
             function(d) {
                 var text = d3.select(this).text(
                     d.target.start + " (" + d.target.duration + ' ms)');
             });
-        linkLabel.append("svg:text").attr("class", "nodetext").style("fill",
-            "black").attr("x", "0.6em").attr("dy", "-0.6em").style("font-size",
-            "90%").style("font-weight", "bold").each(function(d) {
-            var text = d3.select(this).text(d.target.methodName + '()');
-        });
 
         linkLabel.attr("transform", function(d) {
             return "translate(" + d.source.y + "," + d.target.x + ")";
@@ -1546,7 +1555,14 @@ function findLinksBdas(bdas, links, nodes, hideAddBda) {
 function transformInvocation(invocation, parent) {
     var node = new Object();
     node.interceptedBean = invocation.interceptedBean;
-    node.declaringClass = invocation.declaringClass;
+    if (invocation.interceptedBean) {
+        node.interceptedBeanClass = abbreviateType(
+            invocation.interceptedBean.beanClass, false, false);
+    }
+    if (invocation.declaringClass) {
+        node.declaringClass = abbreviateType(invocation.declaringClass, false,
+            false);
+    }
     node.methodName = invocation.methodName;
     node.type = invocation.type;
     if (parent == null) {
@@ -1669,4 +1685,15 @@ function abbreviateAnnotation(annotation, htmlOutput, title) {
         ret += ' <i class="fa fa-compress abbreviated"></i>';
     }
     return ret;
+}
+
+function getChildrenCount(node) {
+    var count = 0;
+    if (node.children) {
+        for (var i = 0; i < node.children.length; i++) {
+            count += 1;
+            count += getChildrenCount(node.children[i]);
+        }
+    }
+    return count;
 }
