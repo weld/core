@@ -38,7 +38,7 @@ ${head}
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Contexts <span class="caret"></span></a>
                             <ul class="dropdown-menu" role="menu">
                                 {{#each contexts}}
-                                <li>{{#link-to 'context' id}}{{scope}}{{/link-to}}</li>
+                                <li>{{#link-to 'context' id}}{{abbr scope 0 title=false suppressHtml=true}}{{/link-to}}</li>
                                 {{/each}}
                             </ul>
                         </li>
@@ -72,6 +72,10 @@ ${head}
         type="text/x-handlebars"
         data-template-name="beanArchives">
 
+        <div class="breadcrumbs">
+            <i class="fa fa-lg fa-home"></i> / {{#link-to 'beanArchives'}}Bean Archives{{/link-to}}
+        </div>
+
         <h1>Bean Archives</h1>
 
          <div class="btn-line">
@@ -82,8 +86,8 @@ ${head}
 
         <table class="table table-bordered table-striped">
             <col width="3%">
-            <col width="7%">
-            <col width="13%">
+            <col width="5%">
+            <col width="15%">
             <col width="51%">
             <col width="13%">
             <col width="13%">
@@ -92,10 +96,10 @@ ${head}
                 <th>
                     <div class="btn-group">
                         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                            Graph <span class="caret"></span>
+                            <i class="fa fa-check-square" title="Graph operations"></i> <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu" role="menu">
-                            <li><a href="#" {{action 'settingHasChanged'}}>Rebuild</a></li>
+                            <li><a href="#" {{action 'settingHasChanged'}}>Rebuild Graph</a></li>
                             <li><a href="#" {{action 'selectAll'}}>Select All</a></li>
                             <li><a href="#" {{action 'selectNone'}}>Select None</a></li>
                             <li><a href="#" {{action 'invertSelection'}}>Invert Selection</a></li>
@@ -135,6 +139,10 @@ ${head}
     <script
         type="text/x-handlebars"
         data-template-name="beanArchive">
+
+        <div class="breadcrumbs">
+            <i class="fa fa-lg fa-home"></i> / {{#link-to 'beanArchives'}}Bean Archives{{/link-to}} / {{#link-to 'beanArchive' id class='nav-link'}}Bean Archive{{/link-to}}
+        </div>
 
         <h1>Bean Archive</h1>
 
@@ -203,25 +211,26 @@ ${head}
         type="text/x-handlebars"
         data-template-name="configuration">
 
+        <div class="breadcrumbs">
+            <i class="fa fa-lg fa-home"></i> / {{#link-to 'configuration'}}Weld Configuration{{/link-to}}
+        </div>
+
         <h1>Weld Configuration</h1>
 
         <table class="table table-bordered table-striped">
             <col width="6%">
             <col width="47%">
-            <col width="23%">
-            <col width="24%">
+            <col width="47%">
             <tr>
                 <th></th>
                 <th>Key</th>
-                <th>Default Value</th>
-                <th>Value</th>
+                <th>Value <i class="fa fa-lg fa-info-circle" title="Modified values are highlighted with an exclamation mark"></i></th>
             </tr>
             {{#each configuration}}
             <tr>
                 <td>{{increment _view.contentIndex}}</td>
                 <td>{{name}}</td>
-                <td>{{defaultValue}}</td>
-                <td>{{value}}</td>
+                <td>{{#if changed}}<i class="fa fa-lg fa-exclamation-circle" title="DEFAULT VALUE: {{unbound defaultValue}}"></i>{{/if}} &nbsp;<span class="changed-{{unbound changed}}">{{value}}</span></td>
             </tr>
             {{/each}}
         </table>
@@ -231,6 +240,10 @@ ${head}
    <script
         type="text/x-handlebars"
         data-template-name="beanList">
+
+        <div class="breadcrumbs">
+            <i class="fa fa-lg fa-home"></i> / {{#link-to 'beanList'}}Beans{{/link-to}}
+        </div>
 
         <h1>Beans</h1>
 
@@ -320,6 +333,10 @@ ${head}
     <script
         type="text/x-handlebars"
         data-template-name="beanDetail">
+
+        <div class="breadcrumbs">
+            <i class="fa fa-lg fa-home"></i> / {{#link-to 'beanList'}}Beans{{/link-to}} / {{#link-to 'beanDetail' id}}Bean Detail{{/link-to}}
+        </div>
 
         <h1>Bean Detail</h1>
 
@@ -538,6 +555,10 @@ ${head}
         type="text/x-handlebars"
         data-template-name="observerList">
 
+        <div class="breadcrumbs">
+            <i class="fa fa-lg fa-home"></i> / Events / {{#link-to 'observerList'}}Observer Methods{{/link-to}}
+        </div>
+
         <h1>Observer Methods</h1>
 
         <div class="btn-line form-control-like">
@@ -634,6 +655,10 @@ ${head}
         type="text/x-handlebars"
         data-template-name="observerDetail">
 
+        <div class="breadcrumbs">
+            <i class="fa fa-lg fa-home"></i> / Events / {{#link-to 'observerList'}}Observer Methods{{/link-to}} / {{#link-to 'observerDetail' id}}Observer Method Detail{{/link-to}}
+        </div>
+
         <h1>Observer Method Detail</h1>
 
         <div class="panel panel-default">
@@ -708,6 +733,10 @@ ${head}
         type="text/x-handlebars"
         data-template-name="context">
 
+        <div class="breadcrumbs">
+            <i class="fa fa-lg fa-home"></i> / Contexts / {{#link-to 'context' id}}{{abbr scope 0 title=false suppressHtml=true}}{{/link-to}}
+        </div>
+
         <h1>Context - {{scope}}</h1>
 
         {{#if cids}}
@@ -754,6 +783,10 @@ ${head}
     <script
       type="text/x-handlebars"
       data-template-name="contextInstance">
+
+      <div class="breadcrumbs">
+            <i class="fa fa-lg fa-home"></i> / Contexts / {{#link-to 'context' contextId}}{{abbr scope 0 title=false suppressHtml=true}}{{/link-to}} / {{#link-to 'contextInstance' id}}Context Instance{{/link-to}}
+      </div>
 
       <h1>Context Instance</h1>
 
@@ -808,6 +841,11 @@ ${head}
     <script
       type="text/x-handlebars"
       data-template-name="invocationList">
+
+      <div class="breadcrumbs">
+            <i class="fa fa-lg fa-home"></i> / {{#link-to 'invocationList'}}Invocation Trees{{/link-to}}
+      </div>
+
       <h1>Invocation Trees</h1>
 
       <div class="btn-line form-control-like">
@@ -882,6 +920,11 @@ ${head}
    <script
       type="text/x-handlebars"
       data-template-name="invocationDetail">
+
+      <div class="breadcrumbs">
+            <i class="fa fa-lg fa-home"></i> / {{#link-to 'invocationList'}}Invocation Trees{{/link-to}} / {{#link-to 'invocationDetail' id}}Invocation Tree{{/link-to}}
+      </div>
+
       <h1>Invocation Tree</h1>
 
       <div class="btn-line">
@@ -895,6 +938,11 @@ ${head}
     <script
       type="text/x-handlebars"
       data-template-name="events">
+
+         <div class="breadcrumbs">
+            <i class="fa fa-lg fa-home"></i> / Events / {{#link-to 'events'}}Fired Events{{/link-to}}
+        </div>
+
         <h1>Fired events</h1>
 
         <div class="btn-line">
@@ -965,6 +1013,7 @@ ${head}
         </div>
 
    </script>
+
    ${scripts}
 
 </body>

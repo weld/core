@@ -21,6 +21,7 @@ import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 
@@ -188,6 +189,15 @@ final class Components {
 
     static boolean isInspectableScope(Class<? extends Annotation> scope) {
         return INSPECTABLE_SCOPES.containsValue(scope);
+    }
+
+    static String getInspectableScopeId(Class<? extends Annotation> scope) {
+        for (Entry<String, Class<? extends Annotation>> inspectable : INSPECTABLE_SCOPES.entrySet()) {
+            if (inspectable.getValue().equals(scope)) {
+                return inspectable.getKey();
+            }
+        }
+        return null;
     }
 
     static SessionBeanType getSessionBeanType(EjbDescriptor<?> ejbDescriptor) {

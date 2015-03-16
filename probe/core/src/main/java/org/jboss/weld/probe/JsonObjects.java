@@ -31,6 +31,7 @@ import static org.jboss.weld.probe.Strings.CIDS;
 import static org.jboss.weld.probe.Strings.CONFIGURATION;
 import static org.jboss.weld.probe.Strings.CONTAINER;
 import static org.jboss.weld.probe.Strings.CONTEXTS;
+import static org.jboss.weld.probe.Strings.CONTEXT_ID;
 import static org.jboss.weld.probe.Strings.DATA;
 import static org.jboss.weld.probe.Strings.DECLARED_OBSERVERS;
 import static org.jboss.weld.probe.Strings.DECLARED_PRODUCERS;
@@ -282,7 +283,7 @@ final class JsonObjects {
     static JsonObjectBuilder createBasicBeanJson(Bean<?> bean, Probe probe) {
         JsonObjectBuilder beanBuilder = createSimpleBeanJson(bean, probe);
         // SCOPE
-        beanBuilder.add(SCOPE, "@" + (Components.isBuiltinScope(bean.getScope()) ? bean.getScope().getSimpleName() : bean.getScope().getName()));
+        beanBuilder.add(SCOPE, simplifiedScope(bean.getScope()));
         // BEAN TYPES
         JsonArrayBuilder typesBuilder = Json.arrayBuilder();
         for (Type type : sortTypes(bean.getTypes())) {
@@ -648,7 +649,8 @@ final class JsonObjects {
     static String createContextualInstanceJson(Bean<?> bean, Object contextualInstance, Probe probe) {
         try {
             JsonObjectBuilder builder = createSimpleBeanJson(bean, probe);
-            builder.add(SCOPE, "@" + (Components.isBuiltinScope(bean.getScope()) ? bean.getScope().getSimpleName() : bean.getScope().getName()));
+            builder.add(SCOPE, simplifiedScope(bean.getScope()));
+            builder.add(CONTEXT_ID, Components.getInspectableScopeId(bean.getScope()));
 
             JsonArrayBuilder propertiesBuilder = Json.arrayBuilder();
             Class<?> definingClass = contextualInstance.getClass();
@@ -862,6 +864,10 @@ final class JsonObjects {
         bdaBuilder.add(BDA_ID, bdaId);
         bdaBuilder.add(ID, Components.getId(bdaId));
         return bdaBuilder;
+    }
+
+    private static String simplifiedScope(Class<? extends Annotation> scope) {
+        return "@" + (Components.isBuiltinScope(scope) ? scope.getSimpleName() : scope.getName());
     }
 
 }
