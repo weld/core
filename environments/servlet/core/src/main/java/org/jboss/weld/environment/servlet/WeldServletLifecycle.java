@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.environment.servlet;
 
+import static org.jboss.weld.config.ConfigurationKey.BEAN_IDENTIFIER_INDEX_OPTIMIZATION;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
@@ -33,6 +35,8 @@ import org.jboss.weld.bootstrap.api.TypeDiscoveryConfiguration;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.CDI11Deployment;
 import org.jboss.weld.bootstrap.spi.Metadata;
+import org.jboss.weld.configuration.spi.ExternalConfiguration;
+import org.jboss.weld.configuration.spi.helpers.ExternalConfigurationBuilder;
 import org.jboss.weld.el.WeldELContextListener;
 import org.jboss.weld.environment.Container;
 import org.jboss.weld.environment.ContainerContext;
@@ -107,6 +111,9 @@ public class WeldServletLifecycle {
         if (isBootstrapNeeded) {
 
             final CDI11Deployment deployment = createDeployment(context, bootstrap);
+
+            deployment.getServices().add(ExternalConfiguration.class,
+                    new ExternalConfigurationBuilder().add(BEAN_IDENTIFIER_INDEX_OPTIMIZATION.get(), Boolean.FALSE.toString()).build());
 
             if (deployment.getBeanDeploymentArchives().isEmpty()) {
                 // Skip initialization - there is no bean archive in the deployment
