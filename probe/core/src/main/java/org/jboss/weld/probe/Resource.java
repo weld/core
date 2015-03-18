@@ -32,6 +32,7 @@ import static org.jboss.weld.probe.Strings.PARAM_TRANSIENT_DEPENDENCIES;
 import static org.jboss.weld.probe.Strings.PARAM_TRANSIENT_DEPENDENTS;
 import static org.jboss.weld.probe.Strings.PATH_META_INF_CLIENT;
 import static org.jboss.weld.probe.Strings.REMOVED_INVOCATIONS;
+import static org.jboss.weld.probe.Strings.REPRESENATION;
 import static org.jboss.weld.probe.Strings.RESOURCE_PARAM_END;
 import static org.jboss.weld.probe.Strings.RESOURCE_PARAM_START;
 import static org.jboss.weld.probe.Strings.SLASH;
@@ -91,8 +92,13 @@ enum Resource {
         @Override
         protected void handleGet(BeanManagerImpl beanManager, Probe probe, String[] pathInfoParts, HttpServletRequest req, HttpServletResponse resp)
                 throws IOException {
-            resp.getWriter().append(JsonObjects
-                    .createBeansJson(Queries.find(probe.getBeans(), getPage(req), getPageSize(req), initFilters(req, new BeanFilters(probe))), probe));
+            Representation representation = Representation.from(req.getParameter(REPRESENATION));
+            if (representation == null) {
+                representation = Representation.BASIC;
+            }
+            resp.getWriter().append(
+                    JsonObjects.createBeansJson(Queries.find(probe.getBeans(), getPage(req), getPageSize(req), initFilters(req, new BeanFilters(probe))),
+                            probe, beanManager, representation));
         }
     }),
     /**
@@ -195,8 +201,7 @@ enum Resource {
                 throws IOException {
             resp.getWriter().append(
                     JsonObjects.createInvocationsJson(
-                            Queries.find(probe.getInvocations(), getPage(req), getPageSize(req), initFilters(req, new InvocationsFilters(probe))),
-                            probe));
+                            Queries.find(probe.getInvocations(), getPage(req), getPageSize(req), initFilters(req, new InvocationsFilters(probe))), probe));
         }
 
         @Override
@@ -228,8 +233,9 @@ enum Resource {
         protected void handleGet(BeanManagerImpl beanManager, Probe probe, String[] pathInfoParts, HttpServletRequest req, HttpServletResponse resp)
                 throws IOException {
             ProbeObserver observer = beanManager.getExtension(ProbeExtension.class).getProbeObserver();
-            resp.getWriter().append(JsonObjects
-                    .createEventsJson(Queries.find(observer.getEvents(), getPage(req), getPageSize(req), initFilters(req, new EventsFilters(probe))), probe));
+            resp.getWriter().append(
+                    JsonObjects.createEventsJson(
+                            Queries.find(observer.getEvents(), getPage(req), getPageSize(req), initFilters(req, new EventsFilters(probe))), probe));
         }
 
         @Override
@@ -256,7 +262,7 @@ enum Resource {
             String contentType = detectContentType(resourceName);
             setHeaders(resp, contentType);
 
-            if(isCachableContentType(contentType)) {
+            if (isCachableContentType(contentType)) {
                 // Set Cache-Control header - 24 hours
                 resp.setHeader(HTTP_HEADER_CACHE_CONTROL, "max-age=86400");
             }
@@ -274,7 +280,7 @@ enum Resource {
                 }
             }
         }
-    }),;
+    }), ;
 
     // --- Instance variables
 
@@ -371,13 +377,13 @@ enum Resource {
     }
 
     static boolean isCachableContentType(String contentType) {
-        return TEXT_CSS.equals(contentType) || TEXT_JAVASCRIPT.equals(contentType) || IMG_ICO.equals(contentType) || IMG_PNG.equals(contentType) || IMG_SVG.equals(contentType);
+        return TEXT_CSS.equals(contentType) || TEXT_JAVASCRIPT.equals(contentType) || IMG_ICO.equals(contentType) || IMG_PNG.equals(contentType)
+                || IMG_SVG.equals(contentType);
     }
 
     static boolean isTextBasedContenType(String contentType) {
-        return !(IMG_PNG.equals(contentType) || IMG_ICO.equals(contentType) || APPLICATION_FONT_SFNT.equals(contentType) || APPLICATION_FONT_WOFF
-                .equals(contentType) || APPLICATION_FONT_MS
-                .equals(contentType));
+        return !(IMG_PNG.equals(contentType) || IMG_ICO.equals(contentType) || APPLICATION_FONT_SFNT.equals(contentType)
+                || APPLICATION_FONT_WOFF.equals(contentType) || APPLICATION_FONT_MS.equals(contentType));
     }
 
     abstract static class Handler {
@@ -434,7 +440,7 @@ enum Resource {
             } else {
                 try {
                     int result = Integer.valueOf(pageSizeParam);
-                    return result > 0 ? result : 0 ;
+                    return result > 0 ? result : 0;
                 } catch (NumberFormatException e) {
                     return 0;
                 }
@@ -472,6 +478,23 @@ enum Resource {
     static enum HttpMethod {
 
         GET, POST, DELETE, OPTIONS;
+
+    }
+
+    static enum Representation {
+
+        SIMPLE, BASIC, FULL,
+
+        ;
+
+        static Representation from(String value) {
+            for (Representation representation : values()) {
+                if (representation.toString().equalsIgnoreCase(value)) {
+                    return representation;
+                }
+            }
+            return null;
+        }
 
     }
 

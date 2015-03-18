@@ -95,6 +95,7 @@ public final class Strings {
     public static final String LAST_PAGE = "lastPage";
     public static final String DATA = "data";
     public static final String FILTERS = "filters";
+    public static final String REPRESENATION = "representation";
 
     public static final String PARAM_TRANSIENT_DEPENDENCIES = "transientDependencies";
     public static final String PARAM_TRANSIENT_DEPENDENTS = "transientDependents";

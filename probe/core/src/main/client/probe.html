@@ -78,7 +78,7 @@ ${head}
 
         <h1>Bean Archives</h1>
 
-         <div class="btn-line">
+        <div class="btn-line">
             <label>
                 {{input type="checkbox" name="hideAddBda" checked=hideAddBda}} Hide Additional Bean Archives <i class="fa fa-lg fa-info-circle" title="These synthetic bean archives are created for beans and extensions which do not belong to any regular bean archive"></i>
             </label>
@@ -87,10 +87,9 @@ ${head}
         <table class="table table-bordered table-striped">
             <col width="3%">
             <col width="5%">
-            <col width="15%">
-            <col width="51%">
             <col width="13%">
-            <col width="13%">
+            <col width="57%">
+            <col width="18%">
             <tr>
                 <th>Index</th>
                 <th>
@@ -99,42 +98,69 @@ ${head}
                             <i class="fa fa-check-square" title="Graph operations"></i> <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu" role="menu">
-                            <li><a href="#" {{action 'settingHasChanged'}}>Rebuild Graph</a></li>
+                            <li><a href="#" {{action 'settingHasChanged'}}>Rebuild Accessibility Graph</a></li>
                             <li><a href="#" {{action 'selectAll'}}>Select All</a></li>
                             <li><a href="#" {{action 'selectNone'}}>Select None</a></li>
                             <li><a href="#" {{action 'invertSelection'}}>Invert Selection</a></li>
+                            <li role="presentation" class="divider"></li>
+                            <li><a href="#" {{action 'overview'}}>Generate Overview Graph</a></li>
                         </ul>
                     </div>
-                     <i class="fa fa-lg fa-info-circle" title="Selected bean archives are visible in the Accessibility Graph"></i></th>
-                <th>Actions</th>
+                     <i class="fa fa-lg fa-exclamation-circle" title="Only selected bean archives are visible in the Accessibility Graph"></i>
+                </th>
+                <th>Beans <i class="fa fa-lg fa-info-circle" title="The number does not include inteceptors, decorators and built-in beans"></i></th>
                 <th>Identifier</th>
                 <th>Bean Discovery Mode</th>
-                <th>Number of Beans <i class="fa fa-lg fa-info-circle" title="Without built-in, inteceptors and decorators"></i></th>
             </tr>
             {{#each filteredBdas}}
             <tr>
-                <td>{{increment _view.contentIndex}}</td>
+                <td><div class="boxed boxed-lg centered let-width-3" style="background-color: {{unbound color}};">{{idx}}</div></td>
                 <td class="centered">{{input type="checkbox" name="selected" checked=selected}}</td>
-                <td><i class="fa fa-search"></i> {{#link-to 'beanArchive' id class='nav-link'}}Detail{{/link-to}} <i class="fa fa-filter"></i>{{#link-to 'beanList' (query-params bda=id) class='nav-link'}}Filter beans{{/link-to}}</td>
+                <td><div class="boxed boxed-lg bda-beans let-width-3">{{beans}}</div> &nbsp;<i class="fa fa-share-alt"></i>{{#link-to 'overview' (query-params bda=id) class='nav-link'}}Overview{{/link-to}}<i class="fa fa-filter"></i>{{#link-to 'beanList' (query-params bda=id) class='nav-link'}}Filter{{/link-to}}</td>
                 <td>
-                    {{bdaId}}
+                    {{detail-icon}} {{#link-to 'beanArchive' id}}{{bdaId}}{{/link-to}}
                 </td>
                 <td>{{beanDiscoveryMode}}</td>
-                <td>{{beans}}</td>
             </tr>
             {{/each}}
         </table>
 
         <h2>Accessibility Graph</h2>
 
-        <ul class="plain-list leg-list">
-            <li><div class="leg-circle leg-circle-bda">1</div> Application Bean Archive</li>
-            <li><div class="leg-circle leg-circle-bda leg-circle-bda-add">2</div> Additional Bean Archive</li>
-        </ul>
+        {{#if tooMuchData}}
+        <div class="alert alert-warning alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <strong>WARNING:</strong> The accessibility graph was not rendered - the amount of data might cause performance problems (nodes: {{filteredBdas.length}}, links: {{links.length}}). Try to restrict the set of selected bean archives or <a href="#" {{action 'settingHasChanged'}}>build the graph</a> anyway.
+        </div>
+        {{/if}}
 
         {{view Probe.BdaGraph contentBinding="model" routeRefresh=routeRefresh}}
 
     </script>
+
+    <script
+        type="text/x-handlebars"
+        data-template-name="overview">
+
+        <div class="breadcrumbs">
+            <i class="fa fa-lg fa-home"></i> / {{#link-to 'beanArchives'}}Bean Archives{{/link-to}} / {{#link-to 'overview'}}Overview Graph{{/link-to}}
+        </div>
+
+        <h1>Overview Graph</h1>
+
+        <ul class="plain-list leg-list">
+            <li><div class="leg-circle leg-circle-builtin">&nbsp;</div> Built-in bean</li>
+            {{#each filteredBdas}}
+            <li><div class="leg-circle" style="background: none repeat scroll 0 0 {{unbound color}}">&nbsp;</div> {{#link-to 'beanArchive' id}}{{bdaId}}{{/link-to}}</li>
+            {{/each}}
+            <li><div class="leg-circle leg-circle-nonselected">&nbsp;</div> Beans from non-selected archives</li>
+            <li>{{bean-kind-short-help}}</li>
+        </ul>
+
+        {{view Probe.OverviewGraph contentBinding="model"}}
+
+    </script>
+
 
     <script
         type="text/x-handlebars"
@@ -146,11 +172,17 @@ ${head}
 
         <h1>Bean Archive</h1>
 
-        <div class="btn-line"><i class="fa fa-filter"></i>{{#link-to 'beanList' (query-params bda=id) class='nav-link'}}Filter beans{{/link-to}}</div>
+        <div class="btn-line"><i class="fa fa-share-alt"></i>{{#link-to 'overview' (query-params bda=id) class='nav-link'}}Overview{{/link-to}} <i class="fa fa-filter"></i>{{#link-to 'beanList' (query-params bda=id) class='nav-link'}}Filter{{/link-to}}</div>
 
         <div class="panel panel-default">
             <div class="panel-body">
                 <form class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Index:</label>
+                         <div class="col-sm-10">
+                            <div class="form-control-static"><div class="boxed boxed-lg centered let-width-3" style="background-color: {{unbound color}};">{{idx}}</div></div>
+                        </div>
+                    </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Identifier:</label>
                          <div class="col-sm-10">
@@ -163,13 +195,19 @@ ${head}
                             <p class="form-control-static">{{beanDiscoveryMode}}</p>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Beans: </label>
+                         <div class="col-sm-10">
+                            <div class="form-control-static"><div class="boxed boxed-lg bda-beans let-width-3">{{beans}}</div> <i class="fa fa-lg fa-info-circle" title="The number does not include inteceptors, decorators and built-in beans"></i></div>
+                        </div>
+                    </div>
                     {{#if enablement.interceptors}}
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Enabled Interceptors:</label>
                         <div class="col-sm-10">
                             {{#each enablement.interceptors}}
                             <p class="form-control-static">{{increment _view.contentIndex}}.
-                            <i class="fa fa-search"></i>{{#link-to 'beanDetail' id class='nav-link'}}{{beanClass}}{{/link-to}}
+                            {{detail-icon}} {{#link-to 'beanDetail' id class='nav-link'}}{{beanClass}}{{/link-to}}
                             </p>
                             {{/each}}
                             <hr/>
@@ -182,7 +220,7 @@ ${head}
                         <div class="col-sm-10">
                             {{#each enablement.decorators}}
                             <p class="form-control-static">{{increment _view.contentIndex}}.
-                            <i class="fa fa-search"></i>{{#link-to 'beanDetail' id class='nav-link'}}{{beanClass}}{{/link-to}}
+                            {{detail-icon}} {{#link-to 'beanDetail' id class='nav-link'}}{{beanClass}}{{/link-to}}
                             </p>
                             {{/each}}
                             <hr/>
@@ -195,7 +233,7 @@ ${head}
                         <div class="col-sm-10">
                             {{#each enablement.alternatives}}
                             <p class="form-control-static">{{increment _view.contentIndex}}.
-                            <i class="fa fa-search"></i>{{#link-to 'beanDetail' id class='nav-link'}}{{beanClass}}{{/link-to}}
+                            {{detail-icon}} {{#link-to 'beanDetail' id class='nav-link'}}{{beanClass}}{{/link-to}}
                             </p>
                             {{/each}}
                         </div>
@@ -274,6 +312,7 @@ ${head}
         <table class="table table-bordered table-striped">
             <tr>
                 <th></th>
+                <th>Bean Archive</th>
                 <th>Kind {{view 'select' content=beanKinds value=kind prompt="-- ANY --" class="form-control"}}</th>
                 <th>
                     Scope
@@ -303,6 +342,7 @@ ${head}
             {{#each data}}
             <tr>
                 <td>{{increment _view.contentIndex}}</td>
+                <td>{{#if bda}}<div class="boxed boxed-lg centered let-width-3" title="{{unbound bda.bdaId}}" style="background-color: {{unbound bda.color}};">{{bda.idx}}</div> {{#link-to 'beanArchive' bda.id}}&nbsp;{{detail-icon}}&nbsp;{{/link-to}}{{/if}}</td>
                 <td><span class="{{unbound kind}} boxed">{{unbound kind}}</span></td>
                 <td>{{abbr scope 30}}</td>
                 <td>
@@ -343,15 +383,16 @@ ${head}
         <div class="panel panel-default">
             <div class="panel-body">
                 <form class="form-horizontal">
-                    {{#if bdaIdName}}
+                    {{#if bda}}
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Bean Archive:</label>
                          <div class="col-sm-10">
-                            <p class="form-control-static">
-                                <i class="fa fa-search"></i>{{#link-to 'beanArchive' bdaId class='nav-link'}}Detail{{/link-to}}
+                            <div class="form-control-static">
+                                <div class="boxed boxed-lg centered let-width-3" style="background-color: {{unbound bda.color}};">{{bda.idx}}</div>
+                                <i class="fa fa-share-alt"></i>{{#link-to 'overview' (query-params bda=bdaId) class='nav-link'}}Overview{{/link-to}}
                                 <i class="fa fa-filter"></i>{{#link-to 'beanList' (query-params bda=bdaId) class='nav-link'}}Filter beans{{/link-to}}
-                                {{bdaIdName}}
-                            </p>
+                                {{detail-icon}} {{#link-to 'beanArchive' bda.bdaId class='nav-link'}} {{bda.bdaId}}{{/link-to}}
+                            </div>
                         </div>
                     </div>
                     {{/if}}
@@ -435,7 +476,7 @@ ${head}
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Declaring Bean:</label>
                         <div class="col-sm-10">
-                            <p class="form-control-static"><span class="{{unbound declaringBean.kind}} boxed">{{declaringBean.kind}}</span> <i class="fa fa-search"></i> {{#link-to 'beanDetail' declaringBean.id}}{{declaringBean.beanClass}}{{/link-to}}</p>
+                            <p class="form-control-static"><span class="{{unbound declaringBean.kind}} boxed">{{declaringBean.kind}}</span> {{detail-icon}} {{#link-to 'beanDetail' declaringBean.id}}{{declaringBean.beanClass}}{{/link-to}}</p>
                         </div>
                     </div>
                     {{/if}}
@@ -471,7 +512,7 @@ ${head}
                             <p class="form-control-static">
                                 <span class="{{unbound reception}} boxed">{{unbound reception}}</span>
                                 <span class="{{unbound txPhase}} boxed">{{unbound txPhase}}</span>
-                                <i class="fa fa-search"></i> {{#link-to 'observerDetail' id}}{{observedType}}{{/link-to}}
+                                {{detail-icon}} {{#link-to 'observerDetail' id}}{{observedType}}{{/link-to}}
                             </p>
                             {{/each}}
                         </div>
@@ -484,7 +525,7 @@ ${head}
                             {{#each declaredProducers}}
                             <p class="form-control-static">
                                 <span class="{{unbound kind}} boxed">{{unbound kind}}</span>
-                                <i class="fa fa-search"></i> {{#link-to 'beanDetail' id}}
+                                {{detail-icon}} {{#link-to 'beanDetail' id}}
                                     {{#if producerInfo}}{{unbound producerInfo}}{{else}}Unknown{{/if}}
                                 {{/link-to}}
                             </p>
@@ -507,7 +548,7 @@ ${head}
                         <div class="col-sm-10">
                             {{#each enablement.bdas}}
                             <p class="form-control-static">
-                                <i class="fa fa-search"></i>{{#link-to 'beanArchive' id class='nav-link'}}{{unbound bdaId}}{{/link-to}}
+                                {{detail-icon}} {{#link-to 'beanArchive' id class='nav-link'}}{{unbound bdaId}}{{/link-to}}
                             </p>
                             {{/each}}
                         </div>
@@ -533,6 +574,10 @@ ${head}
                 {{input type="checkbox" name="injectionPointInfo" checked=injectionPointInfo}} Injection Points Info
             </label>
         </div>
+
+        <ul class="plain-list leg-list">
+            <li>{{bean-kind-short-help}}</li>
+        </ul>
 
         {{view Probe.DependencyGraph contentBinding="model" beanId=id routeRefresh=routeRefresh}}
 

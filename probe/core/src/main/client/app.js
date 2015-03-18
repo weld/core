@@ -9,6 +9,9 @@ var beanKinds = [ 'MANAGED', 'SESSION', 'PRODUCER_METHOD', 'PRODUCER_FIELD',
         'RESOURCE', 'SYNTHETIC', 'INTERCEPTOR', 'DECORATOR', 'EXTENSION',
         'BUILT_IN' ];
 
+var beanKindsShort = [ 'MB', 'SB', 'PM', 'PF', 'RE', 'SY', 'IN', 'DE', 'EX',
+        'BI' ];
+
 var observerDeclaringBeanKinds = [ 'MANAGED', 'SESSION', 'EXTENSION',
         'BUILT_IN' ];
 
@@ -74,6 +77,9 @@ Probe.Router.map(function() {
     this.route('events', {
         path : '/events'
     });
+    this.route('overview', {
+        path : '/overview'
+    });
 });
 
 // VIEWS
@@ -101,8 +107,11 @@ Probe.ApplicationRoute = Ember.Route
                 .done(
                     function(data) {
                         cache.bdas = data.bdas;
+                        colors = generateColors(data.bdas.length);
                         cache.bdas.forEach(function(bda, index, array) {
                             bda.selected = true;
+                            bda.idx = index + 1;
+                            bda.color = colors[index];
                         });
                         // Copy bdas for filtering purpose
                         cache.filterBdas = cache.bdas.slice(0);
@@ -140,13 +149,20 @@ Probe.BeanArchivesRoute = Ember.Route.extend({
             }
         });
         buildBdaGraphData(data, hideAddBda);
+        // Don't render the graph if too much data
+        if (!this.get('routeRefresh')
+            && (data.filteredBdas.length > 100 || data.links.length > 60)) {
+            data.tooMuchData = true;
+        }
         return data;
     },
     actions : {
         settingHasChanged : function() {
             this.set("hideAddBda", this.controller.get('hideAddBda'));
+            var routeRefresh = new Date();
+            this.set('routeRefresh', routeRefresh);
+            this.controller.set('routeRefresh', routeRefresh);
             this.refresh();
-            this.controller.set('routeRefresh', new Date());
         },
         selectAll : function() {
             cache.bdas.forEach(function(bda, index, array) {
@@ -165,6 +181,13 @@ Probe.BeanArchivesRoute = Ember.Route.extend({
                 bda.selected = !bda.selected;
             });
             this.send('settingHasChanged');
+        },
+        overview : function() {
+            this.transitionTo('overview', {
+                queryParams : {
+                    bda : null
+                }
+            });
         }
     }
 });
@@ -199,7 +222,7 @@ Probe.BeanListRoute = Ember.Route.extend(Probe.ResetScroll, {
         controller.set("cache", cache);
     },
     model : function(params) {
-        var query = '', filters = '', page = '';
+        var query = '', filters = '';
         filters = appendToFilters(filters, 'scope', params.scope);
         filters = appendToFilters(filters, 'beanClass', params.beanClass);
         filters = appendToFilters(filters, 'beanType', params.beanType);
@@ -223,6 +246,9 @@ Probe.BeanListRoute = Ember.Route.extend(Probe.ResetScroll, {
             query = appendToQuery(query, 'page', params.page);
         }
         return $.getJSON(restUrlBase + 'beans' + query).done(function(data) {
+            data.data.forEach(function(bean) {
+                bean.bda = findBeanDeploymentArchive(cache.bdas, bean.bdaId);
+            });
             return data;
         }).fail(function(jqXHR, textStatus, errorThrown) {
             alert('Unable to get JSON data: ' + textStatus);
@@ -252,17 +278,18 @@ Probe.BeanDetailRoute = Ember.Route.extend(Probe.ResetScroll, {
         var route = this;
         return $.getJSON(
             restUrlBase + 'beans/' + params.id
-                + '?transientDependencies=true&transientDependents=true').done(
-            function(data) {
-                data.bdaIdName = findBeanDeploymentArchiveId(cache.bdas,
-                    data['bdaId']);
-                buildDependencyGraphData(data, params.id, route
-                    .get("transientDependencies"), route
-                    .get("transientDependents"))
-                return data;
-            }).fail(function(jqXHR, textStatus, errorThrown) {
-            alert('Unable to get JSON data: ' + textStatus);
-        });
+                + '?transientDependencies=true&transientDependents=true')
+            .done(
+                function(data) {
+                    data.bda = findBeanDeploymentArchive(cache.bdas,
+                        data['bdaId']);
+                    buildDependencyGraphData(data, params.id, route
+                        .get("transientDependencies"), route
+                        .get("transientDependents"))
+                    return data;
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                alert('Unable to get JSON data: ' + textStatus);
+            });
     },
     actions : {
         settingHasChanged : function() {
@@ -305,7 +332,7 @@ Probe.ObserverListRoute = Ember.Route.extend(Probe.ResetScroll,
             controller.set("cache", cache);
         },
         model : function(params) {
-            var query = '', filters = '', page = '';
+            var query = '', filters = '';
             filters = appendToFilters(filters, 'beanClass', params.beanClass);
             filters = appendToFilters(filters, 'observedType',
                 params.observedType);
@@ -425,7 +452,7 @@ Probe.InvocationListRoute = Ember.Route.extend(Probe.ResetScroll, {
         controller.set("pages", buildPages(model.page, model.lastPage));
     },
     model : function(params) {
-        var query = '', filters = '', page = '';
+        var query = '', filters = '';
         filters = appendToFilters(filters, 'beanClass', params.beanClass);
         filters = appendToFilters(filters, 'methodName', params.methodName);
         filters = appendToFilters(filters, 'search', params.search);
@@ -486,7 +513,7 @@ Probe.EventsRoute = Ember.Route.extend(Probe.ResetScroll, {
         controller.set("pages", buildPages(model.page, model.lastPage));
     },
     model : function(params) {
-        var query = '', filters = '', page = '';
+        var query = '', filters = '';
         filters = appendToFilters(filters, 'eventInfo', params.eventInfo);
         filters = appendToFilters(filters, 'type', params.type);
         filters = appendToFilters(filters, 'qualifiers', params.qualifiers);
@@ -524,6 +551,75 @@ Probe.EventsRoute = Ember.Route.extend(Probe.ResetScroll, {
         },
     }
 });
+
+Probe.OverviewRoute = Ember.Route
+    .extend({
+        needs : [ 'beanArchives' ],
+        queryParams : {
+            bda : {
+                refreshModel : true
+            },
+        },
+        model : function(params) {
+            var data = new Object();
+
+            // Determine the bdas to include
+            data.filteredBdas = new Array();
+            if (params.bda) {
+                console.log("Build overview graph for " + params.bda);
+                data.filteredBdas.push(findBeanDeploymentArchive(cache.bdas,
+                    params.bda));
+            } else {
+                var filteredBdas = this.controllerFor('beanArchives').get(
+                    'filteredBdas');
+                if (filteredBdas) {
+                    console
+                        .log("Build overview graph for the selected bean archives");
+                    filteredBdas.forEach(function(bda, index, array) {
+                        if (bda.selected) {
+                            data.filteredBdas.push(bda);
+                        }
+                    });
+                } else {
+                    console.log("Build overview graph for all bean archives");
+                    cache.bdas.forEach(function(bda, index, array) {
+                        data.filteredBdas.push(bda);
+                    });
+                }
+            }
+
+            // Prepare promises
+            var promises = new Array();
+            if (data.filteredBdas) {
+                data.filteredBdas.forEach(function(bda, index, array) {
+                    var query = '';
+                    query = appendToQuery(query, 'filters', appendToFilters('',
+                        'bda', bda.id));
+                    query = appendToQuery(query, 'pageSize', '0');
+                    query = appendToQuery(query, 'representation', 'simple');
+                    promises.push($.getJSON(restUrlBase + 'beans' + query)
+                        .done(function(data) {
+                            return data;
+                        }).fail(function(jqXHR, textStatus, errorThrown) {
+                            alert('Unable to get JSON data: ' + textStatus);
+                        }))
+                });
+            }
+
+            // Load data, build graph
+            return Ember.RSVP.all(promises).then(function(values) {
+                var beans = new Array();
+                values.forEach(function(bdaPage, index, array) {
+                    bdaPage.data.forEach(function(bean, index, array) {
+                        beans.push(bean);
+                    });
+                });
+                data.beans = beans;
+                buildOverviewGraphData(data);
+                return data;
+            });
+        }
+    });
 
 // CONTROLLERS
 
@@ -681,6 +777,11 @@ Probe.ContextInstanceController = Ember.ObjectController.extend({
     queryParams : [ 'cid' ],
 });
 
+Probe.OverviewController = Ember.ObjectController.extend({
+    bda : null,
+    queryParams : [ 'bda' ],
+});
+
 // HELPERS
 
 Ember.Handlebars.registerBoundHelper('increment', function(integer) {
@@ -740,6 +841,18 @@ Ember.Handlebars.registerBoundHelper('abbr', function(text, limit, options) {
     }
     return new Handlebars.SafeString(escaped);
 });
+
+Ember.Handlebars.registerBoundHelper('detail-icon', function() {
+    return new Handlebars.SafeString('<i class="fa fa-file-text-o"></i>');
+});
+
+Ember.Handlebars
+    .registerBoundHelper(
+        'bean-kind-short-help',
+        function() {
+            return new Handlebars.SafeString(
+                '<strong>MB</strong> - managed bean, <strong>SB</strong> - session bean, <strong>PM</strong> - producer method, <strong>PF</strong> - producer field, <strong>RE</strong> - resource, <strong>SY</strong> - synthetic bean, <strong>IN</strong> - interceptor, <strong>DE</strong> - decorator, <strong>EX</strong> - extension, <strong>BI</strong> - built-in bean');
+        });
 
 // VIEWS
 
@@ -898,22 +1011,40 @@ Probe.DependencyGraph = Ember.View
             node.append("title").text(function(d) {
                 return d.beanClass;
             });
-            node.append("circle").attr("r", 12).attr(
-                "class",
-                function(d) {
-                    if (d.isRoot) {
-                        return "circle-root";
-                    } else if (d.kind == 'PRODUCER_METHOD'
-                        || d.kind == 'PRODUCER_FIELD' || d.kind == 'RESOURCE') {
-                        return "circle-producer";
-                    }
-                    return "circle-regular";
+
+            node.append("circle").attr("r", 16).style("stroke", function(d) {
+                if (d.isRoot) {
+                    return "black";
+                }
+            }).style("stroke-width", function(d) {
+                if (d.isRoot) {
+                    return "3";
+                }
+            }).style("fill", function(d) {
+                if (d.kind == 'BUILT_IN') {
+                    return 'DarkGray';
+                }
+                // At this point bda should be always non-null
+                var bda = findBeanDeploymentArchive(cache.bdas, d.bda);
+                return bda != null ? bda.color : "black";
+            });
+
+            var text = node
+                .append("text")
+                .attr(
+                    "dx",
+                    function(d) {
+                        return (d.kind === beanKinds[6]
+                            || d.kind === beanKinds[9] || d.kind === beanKinds[3]) ? "-8"
+                            : "-12";
+                    }).attr("dy", "5").style("fill", "white").text(function(d) {
+                    return getBeanKindShort(d.kind);
                 });
 
             node.append("a").attr("xlink:href", function(d) {
                 return "#/bean/" + d.id;
-            }).append("svg:text").attr("dx", 15).attr("dy", "0.2em").style(
-                "fill", "#428bca").text(function(d) {
+            }).append("svg:text").attr("dx", 20).attr("dy", "5").style("fill",
+                "#428bca").text(function(d) {
                 return abbreviateType(d.beanClass, false, false);
             });
 
@@ -1084,10 +1215,10 @@ Probe.InvocationTree = Ember.View.extend({
             return d.interceptedBean;
         }).append("a").attr("xlink:href", function(d) {
             return '#/bean/' + d.interceptedBean.id;
-        }).append("text").attr("dx", 12).attr("dy", -5).style("fill",
-            "#428bca").text(function(d) {
-            return d.interceptedBeanClass;
-        });
+        }).append("text").attr("dx", 12).attr("dy", -5)
+            .style("fill", "#428bca").text(function(d) {
+                return d.interceptedBeanClass;
+            });
 
         nodeEnter.filter(function(d) {
             return d.declaringClass;
@@ -1161,6 +1292,9 @@ Probe.BdaGraph = Ember.View.extend({
             alert("No data to render!");
             return;
         }
+        if (data.tooMuchData) {
+            return;
+        }
 
         var margin = {
             top : 20,
@@ -1226,8 +1360,8 @@ Probe.BdaGraph = Ember.View.extend({
             return d.bdaId;
         });
 
-        node.append("circle").attr("r", 16).attr("class", function(d) {
-            return isAdditionalBda(d.bdaId) ? "circle-bda-add" : "circle-bda";
+        node.append("circle").attr("r", 16).style("fill", function(d) {
+            return d.fill;
         });
 
         var text = node.append("svg:text").attr("dx", function(d) {
@@ -1281,6 +1415,162 @@ Probe.BdaGraph = Ember.View.extend({
 
     }
 });
+
+Probe.OverviewGraph = Ember.View
+    .extend({
+
+        dataChanged : function() {
+            this.rerender();
+        }.observes('routeRefresh'),
+
+        didInsertElement : function() {
+
+            var data = this.get('content');
+            if (!data) {
+                alert("No data to render!");
+                return;
+            }
+
+            var margin = {
+                top : 20,
+                right : 120,
+                bottom : 20,
+                left : 120
+            }
+            // TODO responsive design
+            var width = 1280;
+            var height = 600 + ((data.beans.length / 10) * 150) - margin.top
+                - margin.bottom;
+
+            var nodes = d3.values(data.nodes);
+            var links = data.links;
+
+            // D3 force layout
+            var force = d3.layout.force().nodes(nodes).links(links).size(
+                [ width, height ]).gravity(.05).linkDistance(250).charge(-500)
+                .on("tick", tick).start();
+
+            var elementId = this.get('elementId');
+            var element = d3.select('#' + elementId);
+            var svg = element.append("svg").attr("height",
+                height + margin.top + margin.bottom).attr("width", width);
+
+            // Arrow marker
+            var marker = svg.append("svg:defs").selectAll("marker").data(
+                [ "end" ]).enter().append("svg:marker").attr("id", String)
+                .attr("viewBox", "0 -5 10 10").attr("refX", 22).attr("refY",
+                    -1.5).attr("markerWidth", 6).attr("markerHeight", 6).attr(
+                    "orient", "auto").append("svg:path").attr("d",
+                    "M0,-5L10,0L0,5");
+
+            // add the links and the arrows
+            var path = svg.append("svg:g").selectAll("path")
+                .data(force.links()).enter().append("svg:path").attr("class",
+                    "link").attr("marker-end", "url(#end)");
+
+            var node_drag = d3.behavior.drag().on("dragstart", dragstart).on(
+                "drag", dragmove).on("dragend", dragend);
+
+            function dragstart(d, i) {
+                force.stop()
+            }
+
+            function dragmove(d, i) {
+                d.px += d3.event.dx;
+                d.py += d3.event.dy;
+                d.x += d3.event.dx;
+                d.y += d3.event.dy;
+                tick();
+            }
+
+            function dragend(d, i) {
+                d.fixed = true;
+                tick();
+                force.resume();
+            }
+
+            var node = svg.selectAll("g.node").data(nodes).enter().append(
+                "svg:g").attr("class", "node").call(node_drag);
+
+            node.append("title").text(function(d) {
+                return d.kind + ": " + d.beanClass;
+            });
+
+            node.append("circle").attr("r", 16).style("fill", function(d) {
+                if (d.kind == 'BUILT_IN') {
+                    return 'DarkGray';
+                }
+                // At this point bda should be always non-null
+                var bda = findBeanDeploymentArchive(data.filteredBdas, d.bda);
+                return bda != null ? bda.color : "black";
+            });
+
+            var text = node
+                .append("text")
+                .attr(
+                    "dx",
+                    function(d) {
+                        return (d.kind === beanKinds[6]
+                            || d.kind === beanKinds[9] || d.kind === beanKinds[3]) ? "-8"
+                            : "-12";
+                    }).attr("dy", "5").style("fill", "white").text(function(d) {
+                    return getBeanKindShort(d.kind);
+                });
+
+            node.append("a").attr("xlink:href", function(d) {
+                return "#/bean/" + d.id;
+            }).append("svg:text").attr("dx", 20).attr("dy", "5").style("fill",
+                "#428bca").text(function(d) {
+                return abbreviateType(d.beanClass, false, false);
+            });
+
+            node.on(
+                'mouseover',
+                function(d) {
+                    path.style('stroke', function(l) {
+                        if (d === l.source) {
+                            return 'LightGreen';
+                        } else if (d === l.target) {
+                            return 'Tomato';
+                        } else {
+                            return '#fafafa';
+                        }
+                    });
+                    path.style('stroke-opacity', function(l) {
+                        return (d === l.source || d === l.target) ? 1 : 0;
+                    });
+                    path.attr("marker-end", function(l) {
+                        return (d === l.source || d === l.target) ? 'url(#end)'
+                            : '';
+                    });
+                }).on('mouseout', function() {
+                path.style('stroke', function(l) {
+                    return '#ccc';
+                });
+                path.attr('marker-end', function(l) {
+                    return 'url(#end)';
+                });
+                path.style('stroke-opacity', function(l) {
+                    return 1;
+                });
+            });
+
+            force.on("tick", tick);
+
+            function tick() {
+                path.attr("d", function(d) {
+                    var dx = d.target.x - d.source.x, dy = d.target.y
+                        - d.source.y, dr = Math.sqrt(dx * dx + dy * dy);
+                    return "M" + d.source.x + "," + d.source.y + "A" + dr + ","
+                        + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
+                });
+                node.attr("transform", function(d) {
+                    return "translate(" + d.x + "," + d.y + ")";
+                });
+            }
+
+        }
+    });
 
 // UTILS
 
@@ -1341,7 +1631,8 @@ function appendToQuery(query, key, value) {
     return query;
 }
 
-function findNodesDependencies(bean, nodes, rootId, transientDependencies) {
+function findNodesDependencies(bean, nodes, rootId, transientDependencies,
+    rootIsFixed) {
     if (!nodes[bean.id]) {
         nodes[bean.id] = {
             id : bean.id,
@@ -1349,7 +1640,8 @@ function findNodesDependencies(bean, nodes, rootId, transientDependencies) {
             kind : bean.kind,
             // Root is always found in dependencies
             isRoot : (bean.id == rootId),
-            fixed : (bean.id == rootId)
+            fixed : (rootIsFixed && bean.id == rootId),
+            bda : bean.bdaId,
         };
         if (nodes[bean.id].isRoot) {
             nodes[bean.id].x = 300;
@@ -1362,7 +1654,7 @@ function findNodesDependencies(bean, nodes, rootId, transientDependencies) {
     if (bean.dependencies) {
         bean.dependencies.forEach(function(dependency) {
             findNodesDependencies(dependency, nodes, null,
-                transientDependencies);
+                transientDependencies, rootIsFixed);
         });
     }
 }
@@ -1410,6 +1702,7 @@ function findNodesDependents(bean, nodes, rootId, transientDependents) {
             id : bean.id,
             beanClass : bean.beanClass,
             kind : bean.kind,
+            bda : bean.bdaId,
             isDependent : true
         };
     }
@@ -1468,7 +1761,7 @@ function buildDependencyGraphData(data, id, transientDependencies,
     transientDependents) {
     // Create nodes
     var nodes = new Object();
-    findNodesDependencies(data, nodes, id, transientDependencies);
+    findNodesDependencies(data, nodes, id, transientDependencies, true);
     findNodesDependents(data, nodes, id, transientDependents);
     // Create links
     var links = new Array();
@@ -1477,6 +1770,27 @@ function buildDependencyGraphData(data, id, transientDependencies,
     data.nodes = nodes;
     data.links = links;
     console.log('Build dependency graph data [links: ' + links.length + ']');
+}
+
+/**
+ *
+ * @param data
+ *            OverviewRoute data
+ */
+function buildOverviewGraphData(data) {
+    // Create nodes and links
+    var nodes = new Object();
+    var links = new Array();
+    data.beans.forEach(function(bean, index, array) {
+        findNodesDependencies(bean, nodes, bean.id, false, false);
+        findNodesDependents(bean, nodes, bean.id, false);
+        findLinksDependencies(bean, links, nodes, false);
+        findLinksDependents(bean, links, nodes, false);
+    });
+    data.nodes = nodes;
+    data.links = links;
+    console.log('Build overview dependency graph data [nodes: '
+        + data.beans.length + ', links: ' + links.length + ']');
 }
 
 /**
@@ -1505,6 +1819,7 @@ function findNodesBdas(bdas, nodes) {
                     id : bda.id,
                     bdaId : bda.bdaId,
                     idx : index,
+                    fill : bda.color,
                 }
             }
         });
@@ -1696,4 +2011,31 @@ function getChildrenCount(node) {
         }
     }
     return count;
+}
+
+function generateColors(total) {
+    var colors = new Array();
+    var x = 360 / (total);
+    if (total <= 10) {
+        color = d3.scale.category10()
+    } else if (total <= 20) {
+        color = d3.scale.category20();
+    } else {
+        color = function(t) {
+            return d3.hcl(t * x, 100, 55);
+        };
+    }
+    for (var i = 0; i < total; i++) {
+        colors.push(color(i));
+    }
+    return colors;
+}
+
+function getBeanKindShort(beanKind) {
+    for (var i = 0; i < beanKinds.length; i++) {
+        if (beanKinds[i] == beanKind) {
+            return beanKindsShort[i];
+        }
+    }
+    return null;
 }

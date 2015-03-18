@@ -132,6 +132,7 @@ import org.jboss.weld.probe.Json.JsonArrayBuilder;
 import org.jboss.weld.probe.Json.JsonObjectBuilder;
 import org.jboss.weld.probe.ProbeObserver.EventInfo;
 import org.jboss.weld.probe.Queries.Page;
+import org.jboss.weld.probe.Resource.Representation;
 import org.jboss.weld.util.AnnotationApiAbstraction;
 import org.jboss.weld.util.collections.Sets;
 import org.jboss.weld.util.reflection.Formats;
@@ -261,14 +262,31 @@ final class JsonObjects {
     }
 
     /**
+     * <ul>
+     * <li>{@value Representation#SIMPLE} - simple plus dependencies (non-transient)</li>
+     * <li>{@value Representation#BASIC} - basic</li>
+     * <li>{@value Representation#FULL} - full plus dependencies (non-transient)</li>
+     * </ul>
      *
+     * @param page
      * @param probe
-     * @return the collection of all beans, using basic representation
+     * @param representation
+     * @return the collection of all beans of the given page, using the given representation
      */
-    static String createBeansJson(Page<Bean<?>> page, Probe probe) {
+    static String createBeansJson(Page<Bean<?>> page, Probe probe, BeanManagerImpl beanManager, Representation representation) {
         JsonArrayBuilder beansBuilder = Json.arrayBuilder();
         for (Bean<?> bean : page.getData()) {
-            beansBuilder.add(createBasicBeanJson(bean, probe));
+            switch (representation) {
+                case SIMPLE:
+                    beansBuilder.add(createSimpleBeanJsonWithDependencies(bean, probe));
+                    break;
+                case FULL:
+                    beansBuilder.add(createFullBeanJson(bean, false, false, beanManager, probe));
+                    break;
+                default:
+                    beansBuilder.add(createBasicBeanJson(bean, probe));
+                    break;
+            }
         }
         return createPageJson(page, beansBuilder);
     }
@@ -297,11 +315,6 @@ final class JsonObjects {
         // QUALIFIERS
         if (bean.getQualifiers() != null && !bean.getQualifiers().isEmpty()) {
             beanBuilder.add(QUALIFIERS, createQualifiers(bean.getQualifiers(), true));
-        }
-        // BDA
-        BeanManagerImpl beanManager = probe.getBeanManager(bean);
-        if (beanManager != null) {
-            beanBuilder.add(BDA_ID, Components.getId(beanManager.getId()));
         }
         // ALTERNATIVE
         if (bean.isAlternative()) {
@@ -451,7 +464,8 @@ final class JsonObjects {
     }
 
     /**
-     * The simple representation consists of the generated id, {@link Components.BeanKind} and {@link Bean#getBeanClass()}.
+     * The simple representation consists of the generated id, {@link Components.BeanKind}, {@link Bean#getBeanClass()} and bean archive id (if not a built-in
+     * bean).
      *
      * @param bean
      * @param probe
@@ -462,6 +476,33 @@ final class JsonObjects {
         builder.add(ID, probe.getBeanId(bean));
         builder.add(KIND, BeanKind.from(bean).toString());
         builder.add(BEAN_CLASS, bean.getBeanClass().getName());
+        // BDA
+        BeanManagerImpl beanManager = probe.getBeanManager(bean);
+        if (beanManager != null) {
+            builder.add(BDA_ID, Components.getId(beanManager.getId()));
+        }
+        return builder;
+    }
+
+    /**
+     * The simple representation plus dependencies (non-transient).
+     *
+     * @param bean
+     * @param probe
+     * @return the simple representation plus dependencies/dependents (non-transient)
+     */
+    static JsonObjectBuilder createSimpleBeanJsonWithDependencies(Bean<?> bean, Probe probe) {
+        JsonObjectBuilder builder = createSimpleBeanJson(bean, probe);
+        // DEPENDENCIES
+        JsonArrayBuilder dependencies = createDependencies(null, bean, probe, false);
+        if (dependencies != null) {
+            builder.add(DEPENDENCIES, dependencies);
+        }
+        // DEPENDENTS
+        JsonArrayBuilder dependents = createDependents(null, bean, probe, false);
+        if (dependents != null) {
+            builder.add(DEPENDENTS, dependents);
+        }
         return builder;
     }
 
