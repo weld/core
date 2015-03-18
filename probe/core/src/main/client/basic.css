@@ -57,6 +57,14 @@ footer {
   fill: steelblue;
 }
 
+.circle-builtin {
+  fill: DarkGray;
+}
+
+.circle-nonselected {
+  fill: black;
+}
+
 .stroke-producer {
   stroke: lightsteelblue;
 }
@@ -131,8 +139,14 @@ div.form-group {
   font-weight: bold;
   font-size: 12px;
   padding: 5px;
-  border-radius: 4px 4px 4px 4px;
+  border-radius: 4px;
   color: white;
+  display: inline-block;
+}
+
+.boxed-lg {
+  font-size: 14px;
+  padding: 3px;
 }
 
 div.form-control-like {
@@ -194,18 +208,26 @@ div.content {
 .leg-circle {
   border-radius: 50%;
   display: inline-block;
-}
-
-.leg-circle-bda {
-  background: none repeat scroll 0 0 CornflowerBlue;
   width: 30px;
   height: 30px;
   padding: 5px 5px 5px 10px;
   font-weight: bold;
 }
 
+.leg-circle-bda {
+  background: none repeat scroll 0 0 CornflowerBlue;
+}
+
 .leg-circle-bda-add {
   background: none repeat scroll 0 0 LightBlue;
+}
+
+.leg-circle-builtin {
+  background: none repeat scroll 0 0 DarkGray;
+}
+
+.leg-circle-nonselected {
+  background: none repeat scroll 0 0 black;
 }
 
 .leg-list li {
@@ -250,4 +272,14 @@ div.breadcrumbs {
 
 div.breadcrumbs>a {
   color: #333;
+}
+
+div.bda-beans {
+  background-color: black;
+  text-align: center;
+  display: inline-block;
+}
+
+div.let-width-3 {
+  width: 3em;
 }
