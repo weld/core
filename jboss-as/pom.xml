@@ -142,7 +142,9 @@ JBOSS_HOME: ${jboss.home}
 
                                         <replaceregexp file="${module.dir}/core/main/module.xml" match="path=&quot;weld-core-impl.*?&quot;" replace="path=&quot;${weld.core.file}&quot;" byline="true" />
                                         <replaceregexp file="${module.dir}/core/main/module.xml" match="path=&quot;weld-probe-core.*?&quot;" replace="path=&quot;${weld.probe.file}&quot;" byline="true" />
-                                        <replaceregexp file="${module.dir}/core/main/module.xml" match="^(.*)(&lt;resource-root path=&quot;)weld-core-impl.jar(&quot;/&gt;).*$" replace="\1\2${weld.core.file}\3\2${weld.jta.file}\3\2${weld.web.file}\3\2${weld.ejb.file}\3" byline="true" />
+                                        <replaceregexp file="${module.dir}/core/main/module.xml" match="path=&quot;weld-ejb.*?&quot;" replace="path=&quot;${weld.ejb.file}&quot;" byline="true" />
+                                        <replaceregexp file="${module.dir}/core/main/module.xml" match="path=&quot;weld-jta.*?&quot;" replace="path=&quot;${weld.jta.file}&quot;" byline="true" />
+                                        <replaceregexp file="${module.dir}/core/main/module.xml" match="path=&quot;weld-web.*?&quot;" replace="path=&quot;${weld.web.file}&quot;" byline="true" />
 
                                         <copy todir="${module.dir}/spi/main" overwrite="true">
                                             <fileset dir="target/dependency/lib">
