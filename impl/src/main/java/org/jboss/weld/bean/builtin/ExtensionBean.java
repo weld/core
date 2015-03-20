@@ -39,14 +39,14 @@ import org.jboss.weld.util.Proxies;
 /**
  * @author pmuir
  */
-public class ExtensionBean extends AbstractBuiltInBean<Extension> {
+public class ExtensionBean<E extends Extension> extends AbstractBuiltInBean<E> {
 
-    private final AnnotatedType<Extension> annotatedType;
-    private final Metadata<Extension> instance;
+    private final AnnotatedType<E> annotatedType;
+    private final Metadata<E> instance;
     private final boolean passivationCapable;
     private final boolean proxiable;
 
-    public ExtensionBean(BeanManagerImpl manager, EnhancedAnnotatedType<Extension> clazz, Metadata<Extension> instance) {
+    public ExtensionBean(BeanManagerImpl manager, EnhancedAnnotatedType<E> clazz, Metadata<E> instance) {
         super(new StringBeanIdentifier(BeanIdentifiers.forExtension(clazz)), manager, clazz.getJavaClass());
         this.annotatedType = clazz.slim();
         this.instance = instance;
@@ -55,7 +55,7 @@ public class ExtensionBean extends AbstractBuiltInBean<Extension> {
         checkPublicFields(clazz);
     }
 
-    private void checkPublicFields(EnhancedAnnotatedType<Extension> clazz) {
+    private void checkPublicFields(EnhancedAnnotatedType<E> clazz) {
         for (AnnotatedField<?> field : clazz.getFields()) {
             Member member = field.getJavaMember();
             if (Modifier.isPublic(member.getModifiers()) && !Modifier.isStatic(member.getModifiers())) {
@@ -81,7 +81,7 @@ public class ExtensionBean extends AbstractBuiltInBean<Extension> {
     }
 
     @Override
-    public Extension create(CreationalContext<Extension> creationalContext) {
+    public E create(CreationalContext<E> creationalContext) {
         return instance.getValue();
     }
 
