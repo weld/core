@@ -48,6 +48,13 @@ public class WeldTerminalListener implements HttpSessionListener {
     @Inject
     private BeanManagerImpl beanManager;
 
+    public WeldTerminalListener() {
+    }
+
+    public WeldTerminalListener(BeanManagerImpl beanManager) {
+        this.beanManager = beanManager;
+    }
+
     @Override
     public void sessionCreated(HttpSessionEvent httpSessionEvent) {
     }
