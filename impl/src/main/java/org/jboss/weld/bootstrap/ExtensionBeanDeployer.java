@@ -48,7 +48,7 @@ import org.jboss.weld.util.reflection.Formats;
 public class ExtensionBeanDeployer {
 
     private final BeanManagerImpl beanManager;
-    private final Set<Metadata<Extension>> extensions;
+    private final Set<Metadata<? extends Extension>> extensions;
     private final Deployment deployment;
     private final BeanDeploymentArchiveMapping bdaMapping;
     private final Collection<ContextHolder<? extends Context>> contexts;
@@ -58,7 +58,7 @@ public class ExtensionBeanDeployer {
     public ExtensionBeanDeployer(BeanManagerImpl manager, Deployment deployment, BeanDeploymentArchiveMapping bdaMapping,
             Collection<ContextHolder<? extends Context>> contexts) {
         this.beanManager = manager;
-        this.extensions = new HashSet<Metadata<Extension>>();
+        this.extensions = new HashSet<Metadata<? extends Extension>>();
         this.deployment = deployment;
         this.bdaMapping = bdaMapping;
         this.contexts = contexts;
@@ -67,31 +67,35 @@ public class ExtensionBeanDeployer {
     }
 
     public ExtensionBeanDeployer deployBeans() {
-        ClassTransformer classTransformer = beanManager.getServices().get(ClassTransformer.class);
-        for (Metadata<Extension> extension : extensions) {
-            // Locate the BeanDeployment for this extension
-            BeanDeployment beanDeployment = DeploymentStructures.getOrCreateBeanDeployment(deployment, beanManager, bdaMapping, contexts, extension.getValue()
-                    .getClass());
-
-            EnhancedAnnotatedType<Extension> enchancedAnnotatedType = getEnhancedAnnotatedType(classTransformer, extension, beanDeployment);
-
-            if (enchancedAnnotatedType != null) {
-                ExtensionBean bean = new ExtensionBean(beanDeployment.getBeanManager(), enchancedAnnotatedType, extension);
-                Set<ObserverInitializationContext<?, ?>> observerMethodInitializers = new HashSet<ObserverInitializationContext<?, ?>>();
-                createObserverMethods(bean, beanDeployment.getBeanManager(), enchancedAnnotatedType, observerMethodInitializers);
-                beanDeployment.getBeanManager().addBean(bean);
-                beanDeployment.getBeanDeployer().addExtension(bean);
-                for (ObserverInitializationContext<?, ?> observerMethodInitializer : observerMethodInitializers) {
-                    observerMethodInitializer.initialize();
-                    beanDeployment.getBeanManager().addObserver(observerMethodInitializer.getObserver());
-                    containerLifecycleEventObservers.processObserverMethod(observerMethodInitializer.getObserver());
-                }
-            }
+        final ClassTransformer classTransformer = beanManager.getServices().get(ClassTransformer.class);
+        for (Metadata<? extends Extension> extension : extensions) {
+            deployBean(extension, classTransformer);
         }
         return this;
     }
 
-    private EnhancedAnnotatedType<Extension> getEnhancedAnnotatedType(ClassTransformer classTransformer, Metadata<Extension> extension,
+    private <E extends Extension> void deployBean(Metadata<E> extension, ClassTransformer classTransformer) {
+     // Locate the BeanDeployment for this extension
+        BeanDeployment beanDeployment = DeploymentStructures.getOrCreateBeanDeployment(deployment, beanManager, bdaMapping, contexts, extension.getValue()
+                .getClass());
+
+        EnhancedAnnotatedType<E> enchancedAnnotatedType = getEnhancedAnnotatedType(classTransformer, extension, beanDeployment);
+
+        if (enchancedAnnotatedType != null) {
+            ExtensionBean<E> bean = new ExtensionBean<E>(beanDeployment.getBeanManager(), enchancedAnnotatedType, extension);
+            Set<ObserverInitializationContext<?, ?>> observerMethodInitializers = new HashSet<ObserverInitializationContext<?, ?>>();
+            createObserverMethods(bean, beanDeployment.getBeanManager(), enchancedAnnotatedType, observerMethodInitializers);
+            beanDeployment.getBeanManager().addBean(bean);
+            beanDeployment.getBeanDeployer().addExtension(bean);
+            for (ObserverInitializationContext<?, ?> observerMethodInitializer : observerMethodInitializers) {
+                observerMethodInitializer.initialize();
+                beanDeployment.getBeanManager().addObserver(observerMethodInitializer.getObserver());
+                containerLifecycleEventObservers.processObserverMethod(observerMethodInitializer.getObserver());
+            }
+        }
+    }
+
+    private <E extends Extension> EnhancedAnnotatedType<E> getEnhancedAnnotatedType(ClassTransformer classTransformer, Metadata<E> extension,
             BeanDeployment beanDeployment) {
         Class<? extends Extension> clazz = extension.getValue().getClass();
         try {
@@ -105,13 +109,13 @@ public class ExtensionBeanDeployer {
         }
     }
 
-    public void addExtensions(Iterable<Metadata<Extension>> extensions) {
-        for (Metadata<Extension> extension : extensions) {
+    public void addExtensions(Iterable<Metadata<? extends Extension>> extensions) {
+        for (Metadata<? extends Extension> extension : extensions) {
             addExtension(extension);
         }
     }
 
-    public void addExtension(Metadata<Extension> extension) {
+    public void addExtension(Metadata<? extends Extension> extension) {
         this.extensions.add(extension);
     }
 

@@ -121,6 +121,7 @@ import org.jboss.weld.servlet.spi.helpers.AcceptingHttpContextActivationFilter;
 import org.jboss.weld.transaction.spi.TransactionServices;
 import org.jboss.weld.util.Permissions;
 import org.jboss.weld.util.collections.ImmutableSet;
+import org.jboss.weld.util.collections.Iterables;
 import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -132,7 +133,6 @@ import org.jboss.weld.util.reflection.Reflections;
  * @author Ales Justin
  * @author Marko Luksa
  */
-@SuppressWarnings("deprecation")
 public class WeldStartup {
 
     static {
@@ -142,7 +142,7 @@ public class WeldStartup {
     private BeanManagerImpl deploymentManager;
     private BeanDeploymentArchiveMapping bdaMapping;
     private Collection<ContextHolder<? extends Context>> contexts;
-    private Iterable<Metadata<Extension>> extensions;
+    private List<Metadata<? extends Extension>> extensions;
     private Environment environment;
     private Deployment deployment;
     private DeploymentVisitor deploymentVisitor;
@@ -164,7 +164,7 @@ public class WeldStartup {
         this.contextId = contextId;
 
         if (this.extensions == null) {
-            this.extensions = deployment.getExtensions();
+            setExtensions(deployment.getExtensions());
         }
 
         final ServiceRegistry registry = deployment.getServices();
@@ -546,7 +546,7 @@ public class WeldStartup {
     }
 
     public TypeDiscoveryConfiguration startExtensions(Iterable<Metadata<Extension>> extensions) {
-        this.extensions = extensions;
+        setExtensions(extensions);
         // TODO: we should fire BeforeBeanDiscovery to allow extensions to register additional scopes
         final Set<Class<? extends Annotation>> beanDefiningAnnotations = ImmutableSet.of(
                 // built-in scopes
@@ -579,5 +579,10 @@ public class WeldStartup {
             }
         }
         return beans;
+    }
+
+    private void setExtensions(Iterable<Metadata<Extension>> extensions) {
+        this.extensions = new ArrayList<Metadata<? extends Extension>>();
+        Iterables.addAll(this.extensions, extensions);
     }
 }
