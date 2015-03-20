@@ -73,6 +73,13 @@ public class WeldInitialListener extends AbstractServletListener {
     private BeanManagerImpl beanManager;
     private HttpContextLifecycle lifecycle;
 
+    public WeldInitialListener() {
+    }
+
+    public WeldInitialListener(BeanManagerImpl beanManager) {
+        this.beanManager = beanManager;
+    }
+
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         final ServletContext ctx = sce.getServletContext();
