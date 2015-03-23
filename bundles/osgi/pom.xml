@@ -51,23 +51,10 @@
     </licenses>
     <url>http://weld.cdi-spec.org</url>
 
-
     <properties>
         <osgi.version>${project.version}</osgi.version>
         <parsedVersion.osgiVersion>${project.version}</parsedVersion.osgiVersion>
-    </properties>
-
-    <build>
-        <plugins>
-
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <configuration>
-                    <instructions>
-                        <Embed-Dependency>*; scope=compile; inline=true</Embed-Dependency>
-
-                        <_exportcontents>
+        <export.contents>
                             <!-- Weld API and SPI -->
                             org.jboss.weld.*.api.*;
                             org.jboss.weld.*.spi.*;
@@ -87,10 +74,9 @@
                             org.jboss.weld.servlet;
                             org.jboss.weld.util;
                             org.jboss.weld.security;
-                            version=${osgi.version}
-                        </_exportcontents>
-
-                        <Import-Package>
+                            version=
+          </export.contents>
+          <import.package>
                             javax.annotation; version="1.1",
                             javax.el; version=1.0; resolution:=optional,
                             javax.faces.*; resolution:=optional,
@@ -100,6 +86,22 @@
                             javax.transaction; version="1.1"; resolution:=optional,
                             javax.validation.*; resolution:=optional,
                             org.jboss.logging.annotations; resolution:=optional,
+          </import.package>
+    </properties>
+
+    <build>
+        <plugins>
+
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <configuration>
+                    <instructions>
+                        <Embed-Dependency>*; scope=compile; inline=true</Embed-Dependency>
+
+                        <_exportcontents>${export.contents}${osgi.version}</_exportcontents>
+
+                        <Import-Package>${import.package}
                             *;,
                         </Import-Package>
 
@@ -122,6 +124,24 @@
                 <executions>
                     <execution>
                         <id>osgi-bundle</id>
+                        <goals>
+                            <goal>bundle</goal>
+                        </goals>
+                        <phase>package</phase>
+                    </execution>
+                    <!-- This is a modified bundle to ensure compatibility with GlassFish 4, see also WELD-1712 -->
+                    <execution>
+                        <id>osgi-bundle-glassfish4</id>
+                        <configuration>
+                        <classifier>glassfish4</classifier>
+                            <instructions>
+                                <_exportcontents>${export.contents}1.0</_exportcontents>
+                                <Import-Package>${import.package}
+                                    org.jboss.weld.*; version=1.0,
+                                    *;,
+                                </Import-Package>
+                            </instructions>
+                        </configuration>
                         <goals>
                             <goal>bundle</goal>
                         </goals>
@@ -182,7 +202,7 @@
             <groupId>org.jboss.weld</groupId>
             <artifactId>weld-core-impl</artifactId>
         </dependency>
-    
+
         <dependency>
             <groupId>org.jboss.weld</groupId>
             <artifactId>weld-core-jsf</artifactId>
