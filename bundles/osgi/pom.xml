@@ -202,7 +202,7 @@
             <groupId>org.jboss.weld</groupId>
             <artifactId>weld-core-impl</artifactId>
         </dependency>
-    
+
         <dependency>
             <groupId>org.jboss.weld</groupId>
             <artifactId>weld-core-jsf</artifactId>
