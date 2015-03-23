@@ -149,8 +149,10 @@ This optimization is used to reduce the HTTP session replication overhead. Howev
 [cols=",,",options="header",]
 |=======================================================================
 |Configuration key |Default value |Description
-|`org.jboss.weld.serialization.beanIdentifierIndexOptimization` |true |If set to `true`, the optimization is enabled.
+|`org.jboss.weld.serialization.beanIdentifierIndexOptimization` |true (false in weld-servlet)|If set to `true`, the optimization is enabled.
 |=======================================================================
+
+NOTE: This optimization is disabled by default in <<weld-servlet,Servlet containers>>.
 
 === Excluding classes from scanning and deployment
 
