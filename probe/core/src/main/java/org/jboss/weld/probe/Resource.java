@@ -32,7 +32,7 @@ import static org.jboss.weld.probe.Strings.PARAM_TRANSIENT_DEPENDENCIES;
 import static org.jboss.weld.probe.Strings.PARAM_TRANSIENT_DEPENDENTS;
 import static org.jboss.weld.probe.Strings.PATH_META_INF_CLIENT;
 import static org.jboss.weld.probe.Strings.REMOVED_INVOCATIONS;
-import static org.jboss.weld.probe.Strings.REPRESENATION;
+import static org.jboss.weld.probe.Strings.REPRESENTATION;
 import static org.jboss.weld.probe.Strings.RESOURCE_PARAM_END;
 import static org.jboss.weld.probe.Strings.RESOURCE_PARAM_START;
 import static org.jboss.weld.probe.Strings.SLASH;
@@ -92,7 +92,7 @@ enum Resource {
         @Override
         protected void handleGet(BeanManagerImpl beanManager, Probe probe, String[] pathInfoParts, HttpServletRequest req, HttpServletResponse resp)
                 throws IOException {
-            Representation representation = Representation.from(req.getParameter(REPRESENATION));
+            Representation representation = Representation.from(req.getParameter(REPRESENTATION));
             if (representation == null) {
                 representation = Representation.BASIC;
             }
