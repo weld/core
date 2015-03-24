@@ -69,15 +69,15 @@ public class EnterpriseBeanInterceptionTest {
         Assert.assertTrue(expectedInterceptors.contains(interceptors.get(2).getBeanClass()));
 
 
-        Assert.assertEquals(0, interceptorBindings.getMethodInterceptors(InterceptionType.AROUND_TIMEOUT, ballSessionBean.getType().getMethod("shoot")).size());
-        Assert.assertEquals(1, interceptorBindings.getMethodInterceptors(InterceptionType.AROUND_INVOKE, ballSessionBean.getType().getMethod("shoot")).size());
-        Assert.assertEquals(Goalkeeper.class, interceptorBindings.getMethodInterceptors(InterceptionType.AROUND_INVOKE, ballSessionBean.getType().getMethod("shoot")).get(0).getBeanClass());
+        Assert.assertEquals(0, interceptorBindings.getMethodInterceptors(InterceptionType.AROUND_TIMEOUT, ballSessionBean.getBeanClass().getMethod("shoot")).size());
+        Assert.assertEquals(1, interceptorBindings.getMethodInterceptors(InterceptionType.AROUND_INVOKE, ballSessionBean.getBeanClass().getMethod("shoot")).size());
+        Assert.assertEquals(Goalkeeper.class, interceptorBindings.getMethodInterceptors(InterceptionType.AROUND_INVOKE, ballSessionBean.getBeanClass().getMethod("shoot")).get(0).getBeanClass());
 
-        Assert.assertEquals(0, interceptorBindings.getMethodInterceptors(InterceptionType.AROUND_TIMEOUT, ballSessionBean.getType().getMethod("pass")).size());
-        Assert.assertEquals(1, interceptorBindings.getMethodInterceptors(InterceptionType.AROUND_INVOKE, ballSessionBean.getType().getMethod("pass")).size());
-        Assert.assertEquals(Defender.class, interceptorBindings.getMethodInterceptors(InterceptionType.AROUND_INVOKE, ballSessionBean.getType().getMethod("pass")).get(0).getBeanClass());
+        Assert.assertEquals(0, interceptorBindings.getMethodInterceptors(InterceptionType.AROUND_TIMEOUT, ballSessionBean.getBeanClass().getMethod("pass")).size());
+        Assert.assertEquals(1, interceptorBindings.getMethodInterceptors(InterceptionType.AROUND_INVOKE, ballSessionBean.getBeanClass().getMethod("pass")).size());
+        Assert.assertEquals(Defender.class, interceptorBindings.getMethodInterceptors(InterceptionType.AROUND_INVOKE, ballSessionBean.getBeanClass().getMethod("pass")).get(0).getBeanClass());
 
-        Method finishGameMethod = ballSessionBean.getType().getMethod("finishGame", Timer.class);
+        Method finishGameMethod = ballSessionBean.getBeanClass().getMethod("finishGame", Timer.class);
         Assert.assertEquals(0, interceptorBindings.getMethodInterceptors(InterceptionType.AROUND_INVOKE, finishGameMethod).size());
         Assert.assertEquals(1, interceptorBindings.getMethodInterceptors(InterceptionType.AROUND_TIMEOUT, finishGameMethod).size());
         Assert.assertEquals(Referee.class, interceptorBindings.getMethodInterceptors(InterceptionType.AROUND_TIMEOUT, finishGameMethod).get(0).getBeanClass());

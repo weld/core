@@ -30,7 +30,7 @@ import org.jboss.weld.util.reflection.Reflections;
  * @author Pete Muir
  *
  */
-public abstract class CommonBean<T> extends ForwardingBeanAttributes<T> implements Bean<T> {
+public abstract class CommonBean<T> extends ForwardingBeanAttributes<T> implements Bean<T>, WeldBean<T> {
 
     private volatile BeanAttributes<T> attributes;
 

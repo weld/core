@@ -44,6 +44,7 @@ import org.jboss.weld.bean.ProducerField;
 import org.jboss.weld.bean.ProducerMethod;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.SessionBean;
+import org.jboss.weld.bean.SessionBeanImpl;
 import org.jboss.weld.bean.attributes.BeanAttributesFactory;
 import org.jboss.weld.bean.attributes.ExternalBeanAttributesFactory;
 import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
@@ -291,7 +292,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
     protected <T> SessionBean<T> createSessionBean(InternalEjbDescriptor<T> descriptor, EnhancedAnnotatedType<T> weldClass) {
         // TODO Don't create enterprise bean if it has no local interfaces!
         BeanAttributes<T> attributes = BeanAttributesFactory.forSessionBean(weldClass, descriptor, getManager());
-        SessionBean<T> bean = SessionBean.of(attributes, descriptor, manager, weldClass);
+        SessionBean<T> bean = SessionBeanImpl.of(attributes, descriptor, manager, weldClass);
         getEnvironment().addSessionBean(bean);
         return bean;
     }
