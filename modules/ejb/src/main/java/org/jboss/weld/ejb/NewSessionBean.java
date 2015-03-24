@@ -14,12 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.bean;
+package org.jboss.weld.ejb;
 
 import javax.enterprise.inject.spi.BeanAttributes;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
-import org.jboss.weld.ejb.InternalEjbDescriptor;
+import org.jboss.weld.bean.NewBean;
+import org.jboss.weld.bean.StringBeanIdentifier;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
@@ -29,7 +30,7 @@ import org.jboss.weld.serialization.spi.BeanIdentifier;
  *
  * @author Nicklas Karlsson
  */
-public class NewSessionBean<T> extends SessionBeanImpl<T> implements NewBean {
+class NewSessionBean<T> extends SessionBeanImpl<T> implements NewBean {
 
     /**
      * Creates an instance of a NewEnterpriseBean from an annotated class
@@ -40,7 +41,7 @@ public class NewSessionBean<T> extends SessionBeanImpl<T> implements NewBean {
      */
     public static <T> NewSessionBean<T> of(BeanAttributes<T> attributes, InternalEjbDescriptor<T> ejbDescriptor, BeanManagerImpl beanManager) {
         EnhancedAnnotatedType<T> type = beanManager.getServices().get(ClassTransformer.class).getEnhancedAnnotatedType(ejbDescriptor.getBeanClass(), beanManager.getId());
-        return new NewSessionBean<T>(attributes, type, ejbDescriptor, new StringBeanIdentifier(BeanIdentifiers.forNewSessionBean(ejbDescriptor)), beanManager);
+        return new NewSessionBean<T>(attributes, type, ejbDescriptor, new StringBeanIdentifier(SessionBeans.createIdentifierForNew(ejbDescriptor)), beanManager);
     }
 
     /**
@@ -49,7 +50,7 @@ public class NewSessionBean<T> extends SessionBeanImpl<T> implements NewBean {
      * @param type        An annotated class
      * @param beanManager The Bean manager
      */
-    protected NewSessionBean(BeanAttributes<T> attributes, final EnhancedAnnotatedType<T> type, InternalEjbDescriptor<T> ejbDescriptor, BeanIdentifier identifier, BeanManagerImpl beanManager) {
+    NewSessionBean(BeanAttributes<T> attributes, final EnhancedAnnotatedType<T> type, InternalEjbDescriptor<T> ejbDescriptor, BeanIdentifier identifier, BeanManagerImpl beanManager) {
         super(attributes, type, ejbDescriptor, identifier, beanManager);
     }
 

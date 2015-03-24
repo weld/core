@@ -35,7 +35,6 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMember;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
-import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.literal.NamedLiteral;
@@ -47,7 +46,6 @@ import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.reflection.Formats;
-import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * Creates {@link BeanAttributes} based on a given annotated.
@@ -65,14 +63,7 @@ public class BeanAttributesFactory {
      * Creates new {@link BeanAttributes} to represent a managed bean.
      */
     public static <T> BeanAttributes<T> forBean(EnhancedAnnotated<T, ?> annotated, BeanManagerImpl manager) {
-        return new BeanAttributesBuilder<T>(annotated, null, manager).build();
-    }
-
-    /**
-     * Creates new {@link BeanAttributes} to represent a session bean.
-     */
-    public static <T> BeanAttributes<T> forSessionBean(EnhancedAnnotatedType<T> annotated, InternalEjbDescriptor<?> descriptor, BeanManagerImpl manager) {
-        return new BeanAttributesBuilder<T>(annotated, Reflections.<InternalEjbDescriptor<T>> cast(descriptor), manager).build();
+        return new BeanAttributesBuilder<T>(annotated, manager).build();
     }
 
     public static <T> BeanAttributes<T> forNewBean(Set<Type> types, final Class<?> javaClass) {
@@ -84,11 +75,7 @@ public class BeanAttributesFactory {
         return forNewBean(SharedObjectCache.instance(manager).getSharedSet(Beans.getTypes(weldClass)), weldClass.getJavaClass());
     }
 
-    public static <T> BeanAttributes<T> forNewSessionBean(BeanAttributes<T> originalAttributes, Class<?> javaClass) {
-        return forNewBean(originalAttributes.getTypes(), javaClass);
-    }
-
-    private static class BeanAttributesBuilder<T> {
+    public static class BeanAttributesBuilder<T> {
 
         private MergedStereotypes<T, ?> mergedStereotypes;
         private boolean alternative;
@@ -99,7 +86,7 @@ public class BeanAttributesFactory {
         private BeanManagerImpl manager;
         protected final EnhancedAnnotated<T, ?> annotated;
 
-        private BeanAttributesBuilder(EnhancedAnnotated<T, ?> annotated, InternalEjbDescriptor<T> descriptor, BeanManagerImpl manager) {
+        public BeanAttributesBuilder(EnhancedAnnotated<T, ?> annotated, Set<Type> types, BeanManagerImpl manager) {
             this.manager = manager;
             this.annotated = annotated;
             initStereotypes(annotated, manager);
@@ -107,11 +94,11 @@ public class BeanAttributesFactory {
             initName(annotated);
             initQualifiers(annotated);
             initScope(annotated);
-            if (descriptor == null) {
-                types = SharedObjectCache.instance(manager).getSharedSet(Beans.getTypes(annotated));
-            } else {
-                types = SharedObjectCache.instance(manager).getSharedSet(Beans.getTypes(annotated, descriptor));
-            }
+            this.types = types;
+        }
+
+        public BeanAttributesBuilder(EnhancedAnnotated<T, ?> annotated, BeanManagerImpl manager) {
+            this(annotated, SharedObjectCache.instance(manager).getSharedSet(Beans.getTypes(annotated)), manager);
         }
 
         protected <S> void initStereotypes(EnhancedAnnotated<T, S> annotated, BeanManagerImpl manager) {

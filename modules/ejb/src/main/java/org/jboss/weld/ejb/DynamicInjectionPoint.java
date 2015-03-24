@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.injection;
+package org.jboss.weld.ejb;
 
 import java.io.ObjectStreamException;
 import java.io.Serializable;
@@ -22,6 +22,7 @@ import java.io.Serializable;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.Container;
+import org.jboss.weld.injection.ForwardingInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
@@ -30,14 +31,14 @@ import org.jboss.weld.manager.BeanManagerImpl;
  * @author Marko Luksa
  *
  */
-public class DynamicInjectionPoint extends ForwardingInjectionPoint implements Serializable {
+class DynamicInjectionPoint extends ForwardingInjectionPoint implements Serializable {
 
     private static final long serialVersionUID = 0L;
 
     private final transient SLSBInvocationInjectionPoint invocationInjectionPoint;
     private final String contextId;
 
-    public DynamicInjectionPoint(BeanManagerImpl manager) {
+    DynamicInjectionPoint(BeanManagerImpl manager) {
         this.contextId = manager.getContextId();
         this.invocationInjectionPoint = manager.getServices().get(SLSBInvocationInjectionPoint.class);
     }

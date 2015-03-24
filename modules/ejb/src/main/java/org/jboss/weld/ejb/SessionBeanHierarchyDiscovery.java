@@ -1,12 +1,13 @@
-package org.jboss.weld.util.reflection;
+package org.jboss.weld.ejb;
 
 import java.lang.reflect.Type;
 
 import org.jboss.weld.util.Types;
+import org.jboss.weld.util.reflection.HierarchyDiscovery;
 
-public class SessionBeanHierarchyDiscovery extends HierarchyDiscovery {
+class SessionBeanHierarchyDiscovery extends HierarchyDiscovery {
 
-    public SessionBeanHierarchyDiscovery(Type type) {
+    SessionBeanHierarchyDiscovery(Type type) {
         super(Types.getCanonicalType(type));
     }
 

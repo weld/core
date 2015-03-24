@@ -25,7 +25,6 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.slim.AnnotatedTypeIdentifier;
-import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.Beans;
@@ -40,7 +39,7 @@ public class BeanIdentifiers {
 
     public static final String PREFIX_BUILDER = "BUILDER" + BEAN_ID_SEPARATOR;
 
-    private static StringBuilder getPrefix(Class<?> beanType) {
+    public static StringBuilder getPrefix(Class<?> beanType) {
         return new StringBuilder(PREFIX).append(beanType.getSimpleName()).append(BEAN_ID_SEPARATOR);
     }
 
@@ -62,24 +61,6 @@ public class BeanIdentifiers {
 
     public static String forNewManagedBean(EnhancedAnnotatedType<?> type) {
         return getPrefix(NewManagedBean.class).append(type.slim().getIdentifier().asString()).toString();
-    }
-
-    public static String forSessionBean(EnhancedAnnotatedType<?> type, EjbDescriptor<?> descriptor) {
-        StringBuilder builder = getPrefix(SessionBean.class);
-        appendEjbNameAndClass(builder, descriptor);
-        if (!type.isDiscovered()) {
-            builder.append(BEAN_ID_SEPARATOR).append(type.slim().getIdentifier().asString());
-        }
-        return builder.toString();
-    }
-
-    public static String forNewSessionBean(EjbDescriptor<?> descriptor) {
-        StringBuilder builder = getPrefix(NewSessionBean.class);
-        return appendEjbNameAndClass(builder, descriptor).toString();
-    }
-
-    private static StringBuilder appendEjbNameAndClass(StringBuilder builder, EjbDescriptor<?> descriptor) {
-        return builder.append(descriptor.getEjbName()).append(BEAN_ID_SEPARATOR).append(descriptor.getBeanClass().getName());
     }
 
     public static String forProducerField(EnhancedAnnotatedField<?, ?> field, AbstractClassBean<?> declaringBean) {

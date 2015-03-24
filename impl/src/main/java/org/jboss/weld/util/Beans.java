@@ -30,10 +30,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.decorator.Decorator;
@@ -70,8 +68,6 @@ import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bootstrap.SpecializationAndEnablementRegistry;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.enablement.ModuleEnablement;
-import org.jboss.weld.ejb.spi.BusinessInterfaceDescriptor;
-import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.injection.FieldInjectionPoint;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.ResourceInjection;
@@ -90,9 +86,7 @@ import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.bytecode.BytecodeUtils;
 import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.reflection.Formats;
-import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.Reflections;
-import org.jboss.weld.util.reflection.SessionBeanHierarchyDiscovery;
 
 /**
  * Helper class for bean inspection
@@ -425,39 +419,6 @@ public class Beans {
                 return getLegalBeanTypes(annotated.getTypeClosure(), annotated);
             }
         }
-    }
-
-    /**
-     * Bean types of a session bean.
-     */
-    public static <T> Set<Type> getTypes(EnhancedAnnotated<T, ?> annotated, EjbDescriptor<T> ejbDescriptor) {
-        ImmutableSet.Builder<Type> types = ImmutableSet.builder();
-        // session beans
-        Map<Class<?>, Type> typeMap = new LinkedHashMap<Class<?>, Type>();
-        HierarchyDiscovery beanClassDiscovery = HierarchyDiscovery.forNormalizedType(ejbDescriptor.getBeanClass());
-        for (BusinessInterfaceDescriptor<?> businessInterfaceDescriptor : ejbDescriptor.getLocalBusinessInterfaces()) {
-            // first we need to resolve the local interface
-            Type resolvedLocalInterface = beanClassDiscovery.resolveType(Types.getCanonicalType(businessInterfaceDescriptor.getInterface()));
-            SessionBeanHierarchyDiscovery interfaceDiscovery = new SessionBeanHierarchyDiscovery(resolvedLocalInterface);
-            if (beanClassDiscovery.getTypeMap().containsKey(businessInterfaceDescriptor.getInterface())) {
-                // WELD-1675 Only add types also included in Annotated.getTypeClosure()
-                for (Entry<Class<?>, Type> entry : interfaceDiscovery.getTypeMap().entrySet()) {
-                    if (annotated.getTypeClosure().contains(entry.getValue())) {
-                        typeMap.put(entry.getKey(), entry.getValue());
-                    }
-                }
-            } else {
-                // Session bean class does not implement the business interface and @javax.ejb.Local applied to the session bean class
-                typeMap.putAll(interfaceDiscovery.getTypeMap());
-            }
-        }
-        if (annotated.isAnnotationPresent(Typed.class)) {
-            types.addAll(getTypedTypes(typeMap, annotated.getJavaClass(), annotated.getAnnotation(Typed.class)));
-        } else {
-            typeMap.put(Object.class, Object.class);
-            types.addAll(typeMap.values());
-        }
-        return types.build();
     }
 
     /**

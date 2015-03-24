@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.bean.proxy;
+package org.jboss.weld.ejb;
 
 import java.io.ObjectStreamException;
 import java.lang.reflect.Method;
@@ -22,9 +22,10 @@ import java.lang.reflect.Method;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.Container;
+import org.jboss.weld.bean.proxy.EnterpriseTargetBeanInstance;
+import org.jboss.weld.bean.proxy.MethodHandler;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.injection.EmptyInjectionPoint;
-import org.jboss.weld.injection.SLSBInvocationInjectionPoint;
 import org.jboss.weld.injection.ThreadLocalStack.ThreadLocalStackReference;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.serialization.InjectionPointHolder;
@@ -34,7 +35,7 @@ import org.jboss.weld.serialization.InjectionPointHolder;
  * @author Jozef Hartinger
  *
  */
-public class InjectionPointPropagatingEnterpriseTargetBeanInstance extends EnterpriseTargetBeanInstance {
+class InjectionPointPropagatingEnterpriseTargetBeanInstance extends EnterpriseTargetBeanInstance {
 
     private static final long serialVersionUID = 166825647603520280L;
 
@@ -42,7 +43,7 @@ public class InjectionPointPropagatingEnterpriseTargetBeanInstance extends Enter
     private final String contextId;
     private transient SLSBInvocationInjectionPoint slsbInvocationInjectionPoint;
 
-    public InjectionPointPropagatingEnterpriseTargetBeanInstance(Class<?> baseType, MethodHandler methodHandler, BeanManagerImpl manager) {
+    InjectionPointPropagatingEnterpriseTargetBeanInstance(Class<?> baseType, MethodHandler methodHandler, BeanManagerImpl manager) {
         super(baseType, methodHandler);
         this.contextId = manager.getContextId();
         this.slsbInvocationInjectionPoint = manager.getServices().get(SLSBInvocationInjectionPoint.class);

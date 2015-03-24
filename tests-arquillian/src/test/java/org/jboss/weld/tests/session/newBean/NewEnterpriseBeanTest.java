@@ -33,7 +33,7 @@ import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.weld.bean.AbstractClassBean;
-import org.jboss.weld.bean.NewSessionBean;
+import org.jboss.weld.bean.NewBean;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.producer.BasicInjectionTarget;
@@ -61,7 +61,7 @@ public class NewEnterpriseBeanTest {
     private BeanManager beanManager;
 
     private SessionBean<WrappedEnterpriseBeanLocal> wrappedEnterpriseBean;
-    private NewSessionBean<WrappedEnterpriseBeanLocal> newEnterpriseBean;
+    private SessionBean<WrappedEnterpriseBeanLocal> newEnterpriseBean;
 
     public void initNewBean() {
         Set<Bean<?>> beans = beanManager.getBeans(WrappedEnterpriseBeanLocal.class);
@@ -70,14 +70,14 @@ public class NewEnterpriseBeanTest {
         wrappedEnterpriseBean = (SessionBean<WrappedEnterpriseBeanLocal>) beanManager.getBeans(WrappedEnterpriseBeanLocal.class).iterator().next();
 
         Assert.assertEquals(1, beanManager.getBeans(WrappedEnterpriseBeanLocal.class, NEW_LITERAL).size());
-        Assert.assertTrue(beanManager.getBeans(WrappedEnterpriseBeanLocal.class, NEW_LITERAL).iterator().next() instanceof NewSessionBean<?>);
-        newEnterpriseBean = (NewSessionBean<WrappedEnterpriseBeanLocal>) beanManager.getBeans(WrappedEnterpriseBeanLocal.class, NEW_LITERAL).iterator().next();
+        Assert.assertTrue(beanManager.getBeans(WrappedEnterpriseBeanLocal.class, NEW_LITERAL).iterator().next() instanceof NewBean);
+        newEnterpriseBean = (SessionBean<WrappedEnterpriseBeanLocal>) beanManager.getBeans(WrappedEnterpriseBeanLocal.class, NEW_LITERAL).iterator().next();
     }
 
     @Test
     public void testNewBeanHasImplementationClassOfInjectionPointType() {
         initNewBean();
-        Assert.assertEquals(WrappedEnterpriseBean.class, newEnterpriseBean.getType());
+        Assert.assertEquals(WrappedEnterpriseBean.class, newEnterpriseBean.getBeanClass());
     }
 
     @Test

@@ -14,15 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.injection;
+package org.jboss.weld.ejb;
 
-import javax.enterprise.inject.spi.InjectionPoint;
+import org.jboss.weld.bean.SessionBean;
+import org.jboss.weld.bean.proxy.Marker;
 
-import org.jboss.weld.bootstrap.api.Service;
+import javax.enterprise.context.spi.CreationalContext;
 
-public class SLSBInvocationInjectionPoint extends ThreadLocalStack<InjectionPoint> implements Service {
+/**
+ * Interface implemented by all enterprise bean proxies to query/control the proxy
+ *
+ * @author Pete Muir
+ */
+public interface EnterpriseBeanInstance {
 
-    @Override
-    public void cleanup() {
-    }
+    void destroy(Marker marker, SessionBean<?> enterpriseBean, CreationalContext<?> creationalContext);
+
 }

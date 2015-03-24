@@ -26,22 +26,18 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.exceptions.IllegalArgumentException;
-import org.jboss.weld.injection.producer.AbstractInstantiator;
 import org.jboss.weld.injection.producer.BasicInjectionTarget;
 import org.jboss.weld.injection.producer.BeanInjectionTarget;
 import org.jboss.weld.injection.producer.DecoratorInjectionTarget;
-import org.jboss.weld.injection.producer.DefaultInstantiator;
 import org.jboss.weld.injection.producer.InjectionTargetService;
 import org.jboss.weld.injection.producer.NonProducibleInjectionTarget;
-import org.jboss.weld.injection.producer.SubclassedComponentInstantiator;
-import org.jboss.weld.injection.producer.ejb.SessionBeanInjectionTarget;
 import org.jboss.weld.injection.spi.InjectionServices;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.api.WeldInjectionTarget;
 import org.jboss.weld.manager.api.WeldInjectionTargetFactory;
+import org.jboss.weld.module.EjbSupport;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.Beans;
-import org.jboss.weld.util.SessionBeans;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
@@ -118,7 +114,7 @@ public class InjectionTargetFactoryImpl<T> implements WeldInjectionTargetFactory
             return new NonProducibleInjectionTarget<T>(type, null, manager);
         }
         if (bean instanceof SessionBean<?>) {
-            return SessionBeanInjectionTarget.of(type, (SessionBean<T>) bean, manager);
+            return manager.getServices().get(EjbSupport.class).createSessionBeanInjectionTarget(type, (SessionBean<T>) bean, manager);
         }
         if (bean instanceof Interceptor<?> || type.isAnnotationPresent(javax.interceptor.Interceptor.class)) {
             return BeanInjectionTarget.forCdiInterceptor(type, bean, manager);
@@ -130,16 +126,7 @@ public class InjectionTargetFactoryImpl<T> implements WeldInjectionTargetFactory
     }
 
     protected InjectionTarget<T> createMessageDrivenInjectionTarget(InternalEjbDescriptor<T> descriptor) {
-        EnhancedAnnotatedType<T> implementationClass = SessionBeans.getEjbImplementationClass(descriptor, manager, type);
-
-        AbstractInstantiator<T> instantiator = null;
-        if (type.equals(implementationClass)) {
-            instantiator = new DefaultInstantiator<T>(type, null, manager);
-        } else {
-            // Session bean subclassed by the EJB container
-            instantiator = SubclassedComponentInstantiator.forSubclassedEjb(type, implementationClass, null, manager);
-        }
-        return prepareInjectionTarget(BasicInjectionTarget.createDefault(type, null, manager, instantiator));
+        return prepareInjectionTarget(manager.getServices().get(EjbSupport.class).createMessageDrivenInjectionTarget(type, descriptor, manager));
     }
 
     private BasicInjectionTarget<T> initialize(BasicInjectionTarget<T> injectionTarget) {

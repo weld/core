@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.bean.proxy;
+package org.jboss.weld.ejb;
 
 import java.io.ObjectStreamException;
 import java.io.Serializable;
@@ -26,6 +26,8 @@ import java.util.Set;
 import org.jboss.weld.annotated.enhanced.MethodSignature;
 import org.jboss.weld.annotated.enhanced.jlr.MethodSignatureImpl;
 import org.jboss.weld.bean.SessionBean;
+import org.jboss.weld.bean.proxy.Marker;
+import org.jboss.weld.bean.proxy.MethodHandler;
 import org.jboss.weld.ejb.api.SessionObjectReference;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -41,7 +43,7 @@ import org.jboss.weld.util.reflection.Reflections;
  * @author Pete Muir
  * @author Marko Luksa
  */
-public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Serializable {
+class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Serializable {
 
     private static final long serialVersionUID = 2107723373882153667L;
 
@@ -58,7 +60,7 @@ public class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Seria
      *
      * @param bean the session bean
      */
-    public EnterpriseBeanProxyMethodHandler(SessionBean<T> bean) {
+    EnterpriseBeanProxyMethodHandler(SessionBean<T> bean) {
         this(bean, null);
     }
 

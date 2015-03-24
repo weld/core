@@ -128,6 +128,7 @@ import org.jboss.weld.metadata.cache.InterceptorBindingModel;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.metadata.cache.ScopeModel;
 import org.jboss.weld.metadata.cache.StereotypeModel;
+import org.jboss.weld.module.EjbSupport;
 import org.jboss.weld.module.ExpressionLanguageService;
 import org.jboss.weld.module.ObserverNotifierFactory;
 import org.jboss.weld.resolution.BeanTypeAssignabilityRules;
@@ -1312,7 +1313,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     public <T> BeanAttributes<T> createBeanAttributes(AnnotatedType<T> type) {
         EnhancedAnnotatedType<T> clazz = services.get(ClassTransformer.class).getEnhancedAnnotatedType(type, getId());
         if (services.get(EjbDescriptors.class).contains(type.getJavaClass())) {
-            return BeanAttributesFactory.forSessionBean(clazz, services.get(EjbDescriptors.class).getUnique(clazz.getJavaClass()), this);
+            final InternalEjbDescriptor<T> descriptor = services.get(EjbDescriptors.class).getUnique(clazz.getJavaClass());
+            return services.get(EjbSupport.class).createSessionBeanAttributes(clazz, descriptor, this);
         }
         return BeanAttributesFactory.forBean(clazz, this);
     }

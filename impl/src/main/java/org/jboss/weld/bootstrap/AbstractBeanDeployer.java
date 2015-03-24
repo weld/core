@@ -39,12 +39,10 @@ import org.jboss.weld.bean.InterceptorImpl;
 import org.jboss.weld.bean.ManagedBean;
 import org.jboss.weld.bean.NewBean;
 import org.jboss.weld.bean.NewManagedBean;
-import org.jboss.weld.bean.NewSessionBean;
 import org.jboss.weld.bean.ProducerField;
 import org.jboss.weld.bean.ProducerMethod;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bean.SessionBean;
-import org.jboss.weld.bean.SessionBeanImpl;
 import org.jboss.weld.bean.attributes.BeanAttributesFactory;
 import org.jboss.weld.bean.attributes.ExternalBeanAttributesFactory;
 import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
@@ -54,12 +52,12 @@ import org.jboss.weld.bean.builtin.ee.StaticEEResourceProducerField;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.events.ContainerLifecycleEvents;
 import org.jboss.weld.bootstrap.events.ProcessBeanAttributesImpl;
-import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.event.ObserverFactory;
 import org.jboss.weld.event.ObserverMethodImpl;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.module.EjbSupport;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.BeanMethods;
 import org.jboss.weld.util.Observers;
@@ -80,6 +78,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
     protected final ClassTransformer classTransformer;
     protected final SlimAnnotatedTypeStore slimAnnotatedTypeStore;
     protected final SpecializationAndEnablementRegistry specializationAndEnablementRegistry;
+    protected final EjbSupport ejbSupport;
 
     public AbstractBeanDeployer(BeanManagerImpl manager, ServiceRegistry services, E environment) {
         this.manager = manager;
@@ -89,6 +88,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
         this.classTransformer = services.get(ClassTransformer.class);
         this.slimAnnotatedTypeStore = services.get(SlimAnnotatedTypeStore.class);
         this.specializationAndEnablementRegistry = services.get(SpecializationAndEnablementRegistry.class);
+        this.ejbSupport = services.get(EjbSupport.class);
     }
 
     protected BeanManagerImpl getManager() {
@@ -282,25 +282,6 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
         BeanAttributes<T> attributes = BeanAttributesFactory.forBean(weldClass, getManager());
         InterceptorImpl<T> bean = InterceptorImpl.of(attributes, weldClass, manager);
         getEnvironment().addInterceptor(bean);
-    }
-
-    protected <T> SessionBean<T> createSessionBean(InternalEjbDescriptor<T> descriptor) {
-        EnhancedAnnotatedType<T> type = classTransformer.getEnhancedAnnotatedType(descriptor.getBeanClass(), getManager().getId());
-        slimAnnotatedTypeStore.put(type.slim());
-        return createSessionBean(descriptor, type);
-    }
-    protected <T> SessionBean<T> createSessionBean(InternalEjbDescriptor<T> descriptor, EnhancedAnnotatedType<T> weldClass) {
-        // TODO Don't create enterprise bean if it has no local interfaces!
-        BeanAttributes<T> attributes = BeanAttributesFactory.forSessionBean(weldClass, descriptor, getManager());
-        SessionBean<T> bean = SessionBeanImpl.of(attributes, descriptor, manager, weldClass);
-        getEnvironment().addSessionBean(bean);
-        return bean;
-    }
-
-    protected <T> void createNewSessionBean(InternalEjbDescriptor<T> ejbDescriptor, BeanAttributes<?> originalAttributes, EnhancedAnnotatedType<?> type) {
-        slimAnnotatedTypeStore.put(type.slim());
-        BeanAttributes<T> attributes = Reflections.cast(BeanAttributesFactory.forNewSessionBean(originalAttributes, type.getJavaClass()));
-        getEnvironment().addSessionBean(NewSessionBean.of(attributes, ejbDescriptor, manager));
     }
 
     public E getEnvironment() {

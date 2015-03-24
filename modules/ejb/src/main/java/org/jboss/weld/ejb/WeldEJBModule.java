@@ -20,6 +20,7 @@ import org.jboss.weld.bootstrap.ContextHolder;
 import org.jboss.weld.context.ejb.EjbLiteral;
 import org.jboss.weld.context.ejb.EjbRequestContext;
 import org.jboss.weld.context.ejb.EjbRequestContextImpl;
+import org.jboss.weld.module.EjbSupport;
 import org.jboss.weld.module.WeldModule;
 
 /**
@@ -30,9 +31,17 @@ import org.jboss.weld.module.WeldModule;
  */
 public class WeldEJBModule implements WeldModule {
 
+    private final EjbSupport ejbSupport = new EjbSupportImpl();
+
     @Override
     public String getName() {
         return "weld-ejb";
+    }
+
+    @Override
+    public void postServiceRegistration(PostServiceRegistrationContext ctx) {
+        ctx.getServices().add(EjbSupport.class, ejbSupport);
+        ctx.getServices().add(SLSBInvocationInjectionPoint.class, new SLSBInvocationInjectionPoint());
     }
 
     @Override
