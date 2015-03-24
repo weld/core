@@ -34,7 +34,7 @@ import org.jboss.weld.ejb.spi.BusinessInterfaceDescriptor;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.ejb.spi.EjbServices;
 import org.jboss.weld.ejb.spi.SubclassedComponentDescriptor;
-import org.jboss.weld.injection.producer.ejb.SessionBeanInjectionTarget;
+import org.jboss.weld.injection.producer.BasicInjectionTarget;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.mock.AbstractDeployment;
@@ -123,7 +123,7 @@ public class SubclassedComponentDescriptorTest {
 
     @Test
     public void testInterceptionModelForConstructor() {
-        SessionBeanInjectionTarget<?> it = (SessionBeanInjectionTarget<?>) manager.createInjectionTarget(manager.getEjbDescriptor(Foo.class.getSimpleName()));
+        BasicInjectionTarget<?> it = (BasicInjectionTarget<?>) manager.createInjectionTarget(manager.getEjbDescriptor(Foo.class.getSimpleName()));
         InterceptionModel model = manager.getInterceptorModelRegistry().get(it.getAnnotated());
         assertNotNull(model);
         assertTrue(model.hasExternalConstructorInterceptors());

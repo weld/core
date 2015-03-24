@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.injection.producer.ejb;
+package org.jboss.weld.ejb;
 
 import java.lang.reflect.Constructor;
 import java.security.AccessController;
@@ -25,10 +25,7 @@ import javax.enterprise.context.spi.CreationalContext;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bean.SessionBean;
-import org.jboss.weld.bean.proxy.EnterpriseBeanProxyMethodHandler;
-import org.jboss.weld.bean.proxy.EnterpriseProxyFactory;
 import org.jboss.weld.bean.proxy.EnterpriseTargetBeanInstance;
-import org.jboss.weld.bean.proxy.InjectionPointPropagatingEnterpriseTargetBeanInstance;
 import org.jboss.weld.bean.proxy.ProxyFactory;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.injection.producer.Instantiator;
@@ -41,12 +38,12 @@ import org.jboss.weld.security.NewInstanceAction;
  *
  * @author Jozef Hartinger
  */
-public class SessionBeanProxyInstantiator<T> implements Instantiator<T> {
+class SessionBeanProxyInstantiator<T> implements Instantiator<T> {
 
     private final Class<T> proxyClass;
     private final SessionBean<T> bean;
 
-    public SessionBeanProxyInstantiator(EnhancedAnnotatedType<T> type, SessionBean<T> bean) {
+    SessionBeanProxyInstantiator(EnhancedAnnotatedType<T> type, SessionBean<T> bean) {
         this.bean = bean;
         this.proxyClass = new EnterpriseProxyFactory<T>(type.getJavaClass(), bean).getProxyClass();
     }

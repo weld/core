@@ -19,7 +19,6 @@ package org.jboss.weld.bootstrap;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.decorator.Decorator;
@@ -39,7 +38,6 @@ import org.jboss.weld.annotated.slim.SlimAnnotatedTypeStore;
 import org.jboss.weld.bean.AbstractBean;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.RIBean;
-import org.jboss.weld.bean.attributes.BeanAttributesFactory;
 import org.jboss.weld.bean.interceptor.InterceptorBindingsAdapter;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.enablement.GlobalEnablementBuilder;
@@ -57,7 +55,6 @@ import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.AnnotationApiAbstraction;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.collections.SetMultimap;
-import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * @author Pete Muir
@@ -187,22 +184,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
             createClassBean(ctx.getAnnotatedType(), otherWeldClasses);
         }
         // create session beans
-        for (InternalEjbDescriptor<?> ejbDescriptor : getEnvironment().getEjbDescriptors()) {
-            if (getEnvironment().isVetoed(ejbDescriptor.getBeanClass()) || Beans.isVetoed(ejbDescriptor.getBeanClass())) {
-                continue;
-            }
-            if (ejbDescriptor.isSingleton() || ejbDescriptor.isStateful() || ejbDescriptor.isStateless()) {
-                Set<SlimAnnotatedType<?>> classes = otherWeldClasses.get(ejbDescriptor.getBeanClass());
-                if (!classes.isEmpty()) {
-                    for (SlimAnnotatedType<?> annotatedType : classes) {
-                        EnhancedAnnotatedType<?> weldClass = classTransformer.getEnhancedAnnotatedType(annotatedType);
-                        createSessionBean(ejbDescriptor, Reflections.<EnhancedAnnotatedType> cast(weldClass));
-                    }
-                } else {
-                    createSessionBean(ejbDescriptor);
-                }
-            }
-        }
+        ejbSupport.createSessionBeans(getEnvironment(), otherWeldClasses, getManager());
     }
 
     protected void createClassBean(SlimAnnotatedType<?> annotatedType, SetMultimap<Class<?>, SlimAnnotatedType<?>> otherWeldClasses) {
@@ -307,10 +289,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
         for (EnhancedAnnotatedType<?> clazz : getEnvironment().getNewManagedBeanClasses()) {
             createNewManagedBean(clazz);
         }
-        for (Entry<InternalEjbDescriptor<?>, EnhancedAnnotatedType<?>> entry : getEnvironment().getNewSessionBeanDescriptorsFromInjectionPoint().entrySet()) {
-            InternalEjbDescriptor<?> descriptor = entry.getKey();
-            createNewSessionBean(descriptor, BeanAttributesFactory.forSessionBean(entry.getValue(), descriptor, getManager()), entry.getValue());
-        }
+        ejbSupport.createNewSessionBeans(getEnvironment(), getManager());
     }
 
     public void deploy() {

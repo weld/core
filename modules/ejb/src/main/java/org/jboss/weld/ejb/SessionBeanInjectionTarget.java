@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.injection.producer.ejb;
+package org.jboss.weld.ejb;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -41,14 +41,12 @@ import org.jboss.weld.injection.producer.Injector;
 import org.jboss.weld.injection.producer.Instantiator;
 import org.jboss.weld.injection.producer.InterceptionModelInitializer;
 import org.jboss.weld.injection.producer.LifecycleCallbackInvoker;
-import org.jboss.weld.injection.producer.StatelessSessionBeanInjector;
 import org.jboss.weld.injection.producer.SubclassDecoratorApplyingInstantiator;
 import org.jboss.weld.injection.producer.SubclassedComponentInstantiator;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.util.SessionBeans;
 import org.jboss.weld.util.Types;
 
-public class SessionBeanInjectionTarget<T> extends BeanInjectionTarget<T> {
+class SessionBeanInjectionTarget<T> extends BeanInjectionTarget<T> {
 
     public static <T> SessionBeanInjectionTarget<T> of(EnhancedAnnotatedType<T> type, SessionBean<T> bean, BeanManagerImpl beanManager) {
         LifecycleCallbackInvoker<T> invoker = DefaultLifecycleCallbackInvoker.of(type);

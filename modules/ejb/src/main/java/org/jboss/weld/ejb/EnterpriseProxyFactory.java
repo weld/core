@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.jboss.weld.bean.proxy;
+package org.jboss.weld.ejb;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -23,6 +23,7 @@ import java.lang.reflect.Type;
 import org.jboss.classfilewriter.ClassFile;
 import org.jboss.classfilewriter.ClassMethod;
 import org.jboss.weld.bean.SessionBean;
+import org.jboss.weld.bean.proxy.ProxyFactory;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.util.bytecode.MethodInformation;
@@ -36,7 +37,7 @@ import org.jboss.weld.util.collections.ImmutableSet;
  *
  * @author David Allen
  */
-public class EnterpriseProxyFactory<T> extends ProxyFactory<T> {
+class EnterpriseProxyFactory<T> extends ProxyFactory<T> {
 
     private static final String SUFFIX = "$EnterpriseProxy$";
 
@@ -45,7 +46,7 @@ public class EnterpriseProxyFactory<T> extends ProxyFactory<T> {
      *
      * @param proxiedBeanType the actual enterprise bean
      */
-    public EnterpriseProxyFactory(Class<T> proxiedBeanType, SessionBean<T> bean) {
+    EnterpriseProxyFactory(Class<T> proxiedBeanType, SessionBean<T> bean) {
         super(bean.getBeanManager().getContextId(), proxiedBeanType, ImmutableSet.<Type> builder().addAll(bean.getTypes())
                 .addAll(bean.getEjbDescriptor().getRemoteBusinessInterfacesAsClasses()).build(), bean);
     }

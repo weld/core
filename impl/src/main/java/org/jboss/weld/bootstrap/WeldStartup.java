@@ -91,7 +91,6 @@ import org.jboss.weld.event.DefaultObserverNotifierFactory;
 import org.jboss.weld.event.GlobalObserverNotifierService;
 import org.jboss.weld.executor.ExecutorServicesFactory;
 import org.jboss.weld.injection.CurrentInjectionPoint;
-import org.jboss.weld.injection.SLSBInvocationInjectionPoint;
 import org.jboss.weld.injection.producer.InjectionTargetService;
 import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.logging.VersionLogger;
@@ -100,6 +99,7 @@ import org.jboss.weld.manager.BeanManagerLookupService;
 import org.jboss.weld.manager.api.ExecutorServices;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
+import org.jboss.weld.module.EjbSupport;
 import org.jboss.weld.module.ObserverNotifierFactory;
 import org.jboss.weld.module.WeldModules;
 import org.jboss.weld.resources.ClassTransformer;
@@ -267,7 +267,6 @@ public class WeldStartup {
 
         services.add(ContextualStore.class, new ContextualStoreImpl(contextId, beanIdentifierIndex));
         services.add(CurrentInjectionPoint.class, new CurrentInjectionPoint());
-        services.add(SLSBInvocationInjectionPoint.class, new SLSBInvocationInjectionPoint());
         services.add(CurrentEventMetadata.class, new CurrentEventMetadata());
         services.add(SpecializationAndEnablementRegistry.class, new SpecializationAndEnablementRegistry());
         services.add(MissingDependenciesRegistry.class, new MissingDependenciesRegistry());
@@ -305,6 +304,10 @@ public class WeldStartup {
         services.add(ObserverNotifierFactory.class, DefaultObserverNotifierFactory.INSTANCE);
 
         modules.postServiceRegistration(contextId, services);
+
+        if (!services.contains(EjbSupport.class)) {
+            services.add(EjbSupport.class, EjbSupport.NOOP_IMPLEMENTATION);
+        }
 
         GlobalObserverNotifierService observerNotificationService = new GlobalObserverNotifierService(services, contextId);
         services.add(GlobalObserverNotifierService.class, observerNotificationService);

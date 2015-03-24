@@ -1,8 +1,8 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2015, Red Hat, Inc. and/or its affiliates, and individual
- * contributors by the @authors tag. See the copyright.txt in the
- * distribution for a full listing of individual contributors.
+ * Copyright 2008, Red Hat, Inc., and individual contributors
+ * by the @authors tag. See the copyright.txt in the distribution for a
+ * full listing of individual contributors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@Vetoed
-package org.jboss.weld.injection.producer.ejb;
-import javax.enterprise.inject.Vetoed;
+package org.jboss.weld.ejb;
 
+import javax.enterprise.inject.spi.InjectionPoint;
+
+import org.jboss.weld.bootstrap.api.Service;
+import org.jboss.weld.injection.ThreadLocalStack;
+
+class SLSBInvocationInjectionPoint extends ThreadLocalStack<InjectionPoint> implements Service {
+
+    @Override
+    public void cleanup() {
+    }
+}

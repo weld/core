@@ -45,7 +45,6 @@ import org.jboss.weld.bean.InterceptorImpl;
 import org.jboss.weld.bean.ManagedBean;
 import org.jboss.weld.bean.NewBean;
 import org.jboss.weld.bean.NewManagedBean;
-import org.jboss.weld.bean.NewSessionBean;
 import org.jboss.weld.bean.ProducerField;
 import org.jboss.weld.bean.ProducerMethod;
 import org.jboss.weld.bean.RIBean;
@@ -61,6 +60,7 @@ import org.jboss.weld.resolution.ResolvableBuilder;
 import org.jboss.weld.resolution.TypeSafeDisposerResolver;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.InjectionPoints;
+import org.jboss.weld.util.Preconditions;
 import org.jboss.weld.util.collections.SetMultimap;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -225,18 +225,11 @@ public class BeanDeployerEnvironment {
     }
 
     public void addSessionBean(SessionBean<?> bean) {
-        if (bean instanceof AbstractClassBean<?>) {
-            addAbstractClassBean((AbstractClassBean<?>) bean);
-        }
-        // FIXME
-        throw new IllegalArgumentException(bean.toString());
+        Preconditions.checkArgument(bean instanceof AbstractClassBean<?>, bean);
+        addAbstractClassBean((AbstractClassBean<?>) bean);
     }
 
     public void addNewManagedBean(NewManagedBean<?> bean) {
-        beans.add(bean);
-    }
-
-    public void addNewSessionBean(NewSessionBean<?> bean) {
         beans.add(bean);
     }
 

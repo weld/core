@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.injection.producer;
+package org.jboss.weld.ejb;
 
 import java.util.Set;
 
@@ -26,8 +26,9 @@ import javax.enterprise.inject.spi.InjectionTarget;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.injection.CurrentInjectionPoint;
-import org.jboss.weld.injection.DynamicInjectionPoint;
 import org.jboss.weld.injection.ThreadLocalStack.ThreadLocalStackReference;
+import org.jboss.weld.injection.producer.DefaultInjector;
+import org.jboss.weld.injection.producer.Injector;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
@@ -40,12 +41,12 @@ import org.jboss.weld.manager.BeanManagerImpl;
  *
  * @param <T>
  */
-public class StatelessSessionBeanInjector<T> extends DefaultInjector<T> {
+class StatelessSessionBeanInjector<T> extends DefaultInjector<T> {
 
     private final CurrentInjectionPoint currentInjectionPoint;
     private boolean pushDynamicInjectionPoints;
 
-    public StatelessSessionBeanInjector(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager) {
+    StatelessSessionBeanInjector(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager) {
         super(type, bean, beanManager);
         this.currentInjectionPoint = beanManager.getServices().get(CurrentInjectionPoint.class);
     }

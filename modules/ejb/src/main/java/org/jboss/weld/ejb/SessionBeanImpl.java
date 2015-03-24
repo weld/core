@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.bean;
+package org.jboss.weld.ejb;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
@@ -32,17 +32,17 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.enhanced.MethodSignature;
 import org.jboss.weld.annotated.enhanced.jlr.MethodSignatureImpl;
+import org.jboss.weld.bean.AbstractBean;
+import org.jboss.weld.bean.AbstractClassBean;
+import org.jboss.weld.bean.SessionBean;
+import org.jboss.weld.bean.StringBeanIdentifier;
 import org.jboss.weld.bean.interceptor.InterceptorBindingsAdapter;
-import org.jboss.weld.bean.proxy.EnterpriseBeanInstance;
 import org.jboss.weld.bean.proxy.Marker;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
-import org.jboss.weld.ejb.InternalEjbDescriptor;
-import org.jboss.weld.ejb.SessionBeanInjectionPoint;
 import org.jboss.weld.ejb.api.SessionObjectReference;
 import org.jboss.weld.ejb.spi.BusinessInterfaceDescriptor;
 import org.jboss.weld.ejb.spi.EjbServices;
 import org.jboss.weld.injection.producer.Instantiator;
-import org.jboss.weld.injection.producer.ejb.SessionBeanProxyInstantiator;
 import org.jboss.weld.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -59,7 +59,7 @@ import org.jboss.weld.util.reflection.Formats;
  * @author Ales Justin
  */
 
-public class SessionBeanImpl<T> extends AbstractClassBean<T> implements SessionBean<T> {
+class SessionBeanImpl<T> extends AbstractClassBean<T> implements SessionBean<T> {
     // The EJB descriptor
     private final InternalEjbDescriptor<T> ejbDescriptor;
 
@@ -74,7 +74,7 @@ public class SessionBeanImpl<T> extends AbstractClassBean<T> implements SessionB
      * @return An Enterprise Web Bean
      */
     public static <T> SessionBean<T> of(BeanAttributes<T> attributes, InternalEjbDescriptor<T> ejbDescriptor, BeanManagerImpl beanManager, EnhancedAnnotatedType<T> type) {
-        return new SessionBeanImpl<T>(attributes, type, ejbDescriptor, new StringBeanIdentifier(BeanIdentifiers.forSessionBean(type, ejbDescriptor)), beanManager);
+        return new SessionBeanImpl<T>(attributes, type, ejbDescriptor, new StringBeanIdentifier(SessionBeans.createIdentifier(type, ejbDescriptor)), beanManager);
     }
 
     /**
@@ -83,7 +83,7 @@ public class SessionBeanImpl<T> extends AbstractClassBean<T> implements SessionB
      * @param type    The type of the bean
      * @param manager The Bean manager
      */
-    protected SessionBeanImpl(BeanAttributes<T> attributes, EnhancedAnnotatedType<T> type, InternalEjbDescriptor<T> ejbDescriptor, BeanIdentifier identifier, BeanManagerImpl manager) {
+    SessionBeanImpl(BeanAttributes<T> attributes, EnhancedAnnotatedType<T> type, InternalEjbDescriptor<T> ejbDescriptor, BeanIdentifier identifier, BeanManagerImpl manager) {
         super(attributes, type, identifier, manager);
         this.ejbDescriptor = ejbDescriptor;
         setProducer(beanManager.getLocalInjectionTargetFactory(type).createInjectionTarget(type, this, false));

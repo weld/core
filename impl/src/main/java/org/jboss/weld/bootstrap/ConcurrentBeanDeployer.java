@@ -17,24 +17,19 @@
 package org.jboss.weld.bootstrap;
 
 import java.util.List;
-import java.util.Set;
 
 import javax.enterprise.inject.spi.Bean;
 
-import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.annotated.slim.SlimAnnotatedTypeContext;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.ejb.EjbDescriptors;
-import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.executor.IterativeWorkerTaskFactory;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.api.ExecutorServices;
-import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.collections.SetMultimap;
-import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * BeanDeployer that processes some of the deployment tasks in parallel. A threadsafe instance of
@@ -75,24 +70,8 @@ public class ConcurrentBeanDeployer extends BeanDeployer {
             }
         });
 
-        executor.invokeAllAndCheckForExceptions(new IterativeWorkerTaskFactory<InternalEjbDescriptor<?>>(getEnvironment().getEjbDescriptors()) {
-            @Override
-            protected void doWork(InternalEjbDescriptor<?> descriptor) {
-                if (!getEnvironment().isVetoed(descriptor.getBeanClass()) && !Beans.isVetoed(descriptor.getBeanClass())) {
-                    if (descriptor.isSingleton() || descriptor.isStateful() || descriptor.isStateless()) {
-                        Set<SlimAnnotatedType<?>> classes = otherWeldClasses.get(descriptor.getBeanClass());
-                        if (!classes.isEmpty()) {
-                            for (SlimAnnotatedType<?> annotatedType : classes) {
-                                EnhancedAnnotatedType<?> weldClass = classTransformer.getEnhancedAnnotatedType(annotatedType);
-                                createSessionBean(descriptor, Reflections.<EnhancedAnnotatedType> cast(weldClass));
-                            }
-                        } else {
-                            createSessionBean(descriptor);
-                        }
-                    }
-                }
-            }
-        });
+        // create session beans
+        ejbSupport.createSessionBeans(getEnvironment(), otherWeldClasses, getManager());
     }
 
     @Override
