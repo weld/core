@@ -16,8 +16,6 @@
  */
 package org.jboss.weld.util;
 
-import static org.jboss.weld.util.reflection.Reflections.cast;
-
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.GenericArrayType;
@@ -65,16 +63,13 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotated;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedConstructor;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
-import org.jboss.weld.annotated.slim.SlimAnnotatedTypeStore;
 import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.bean.DecoratorImpl;
 import org.jboss.weld.bean.InterceptorImpl;
 import org.jboss.weld.bean.RIBean;
-import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bootstrap.SpecializationAndEnablementRegistry;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.enablement.ModuleEnablement;
-import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.ejb.spi.BusinessInterfaceDescriptor;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.injection.FieldInjectionPoint;
@@ -89,7 +84,6 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MergedStereotypes;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.resolution.QualifierInstance;
-import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.spi.ClassFileInfo;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.serialization.spi.ContextualStore;
@@ -626,27 +620,6 @@ public class Beans {
     public static boolean hasBuiltinScope(Bean<?> bean) {
         return RequestScoped.class.equals(bean.getScope()) || SessionScoped.class.equals(bean.getScope()) || ApplicationScoped.class.equals(bean.getScope())
                 || ConversationScoped.class.equals(bean.getScope()) || Dependent.class.equals(bean.getScope());
-    }
-
-    /**
-     * Returns {@link EnhancedAnnotatedType} for the EJB implementation class. Throws {@link IllegalStateException} if called after bootstrap.
-     * @param bean
-     * @throws IllegalStateException if called after bootstrap
-     * @return {@link EnhancedAnnotatedType} representation of this EJB's implementation class
-     */
-    public static <T> EnhancedAnnotatedType<T> getEjbImplementationClass(SessionBean<T> bean) {
-        return getEjbImplementationClass(bean.getEjbDescriptor(), bean.getBeanManager(), bean.getEnhancedAnnotated());
-    }
-
-    public static <T> EnhancedAnnotatedType<T> getEjbImplementationClass(InternalEjbDescriptor<T> ejbDescriptor, BeanManagerImpl manager, EnhancedAnnotatedType<T> componentType) {
-        if (ejbDescriptor.getBeanClass().equals(ejbDescriptor.getImplementationClass())) {
-            // no special implementation class is used
-            return componentType;
-        }
-        ClassTransformer transformer = manager.getServices().get(ClassTransformer.class);
-        EnhancedAnnotatedType<T> implementationClass = cast(transformer.getEnhancedAnnotatedType(ejbDescriptor.getImplementationClass(), manager.getId()));
-        manager.getServices().get(SlimAnnotatedTypeStore.class).put(implementationClass.slim());
-        return implementationClass;
     }
 
     /**

@@ -16,14 +16,15 @@
  */
 package org.jboss.weld.bootstrap.events;
 
-import org.jboss.weld.bean.AbstractClassBean;
-import org.jboss.weld.manager.BeanManagerImpl;
+import java.lang.reflect.Type;
 
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.ProcessBean;
-import java.lang.reflect.Type;
 
-public abstract class AbstractProcessClassBean<X, B extends AbstractClassBean<X>> extends AbstractDefinitionContainerEvent implements ProcessBean<X> {
+import org.jboss.weld.bean.ClassBean;
+import org.jboss.weld.manager.BeanManagerImpl;
+
+public abstract class AbstractProcessClassBean<X, B extends ClassBean<X>> extends AbstractDefinitionContainerEvent implements ProcessBean<X> {
 
     private final B bean;
 

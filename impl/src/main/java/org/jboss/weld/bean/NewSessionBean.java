@@ -29,7 +29,7 @@ import org.jboss.weld.serialization.spi.BeanIdentifier;
  *
  * @author Nicklas Karlsson
  */
-public class NewSessionBean<T> extends SessionBean<T> implements NewBean {
+public class NewSessionBean<T> extends SessionBeanImpl<T> implements NewBean {
 
     /**
      * Creates an instance of a NewEnterpriseBean from an annotated class

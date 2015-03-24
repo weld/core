@@ -43,7 +43,7 @@ import org.jboss.weld.util.Beans;
  * @author David Allen
  * @author Jozef Hartinger
  */
-public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> implements DecorableBean<T> {
+public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> implements DecorableBean<T>, ClassBean<T> {
 
     // The item representation
     protected final SlimAnnotatedType<T> annotatedType;

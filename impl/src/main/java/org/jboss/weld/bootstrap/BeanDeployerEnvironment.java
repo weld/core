@@ -225,7 +225,11 @@ public class BeanDeployerEnvironment {
     }
 
     public void addSessionBean(SessionBean<?> bean) {
-        addAbstractClassBean(bean);
+        if (bean instanceof AbstractClassBean<?>) {
+            addAbstractClassBean((AbstractClassBean<?>) bean);
+        }
+        // FIXME
+        throw new IllegalArgumentException(bean.toString());
     }
 
     public void addNewManagedBean(NewManagedBean<?> bean) {

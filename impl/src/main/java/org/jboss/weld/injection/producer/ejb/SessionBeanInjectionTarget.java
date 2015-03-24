@@ -45,7 +45,7 @@ import org.jboss.weld.injection.producer.StatelessSessionBeanInjector;
 import org.jboss.weld.injection.producer.SubclassDecoratorApplyingInstantiator;
 import org.jboss.weld.injection.producer.SubclassedComponentInstantiator;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.SessionBeans;
 import org.jboss.weld.util.Types;
 
 public class SessionBeanInjectionTarget<T> extends BeanInjectionTarget<T> {
@@ -76,7 +76,7 @@ public class SessionBeanInjectionTarget<T> extends BeanInjectionTarget<T> {
     @Override
     protected Instantiator<T> initInstantiator(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager, Set<InjectionPoint> injectionPoints) {
         if (bean instanceof SessionBean<?>) {
-            EnhancedAnnotatedType<T> implementationClass = Beans.getEjbImplementationClass((SessionBean<T>) bean);
+            EnhancedAnnotatedType<T> implementationClass = SessionBeans.getEjbImplementationClass((SessionBean<T>) bean);
 
             AbstractInstantiator<T> instantiator = null;
             if (type.equals(implementationClass)) {
@@ -99,7 +99,7 @@ public class SessionBeanInjectionTarget<T> extends BeanInjectionTarget<T> {
         List<Decorator<?>> decorators = beanManager.resolveDecorators(getBean().getTypes(), getBean().getQualifiers());
         if (!decorators.isEmpty()) {
             Instantiator<T> instantiator = getInstantiator();
-            EnhancedAnnotatedType<T> implementationClass = Beans.getEjbImplementationClass(getBean());
+            EnhancedAnnotatedType<T> implementationClass = SessionBeans.getEjbImplementationClass(getBean());
             instantiator = SubclassedComponentInstantiator.forInterceptedDecoratedBean(implementationClass, getBean(), (AbstractInstantiator<T>) instantiator, beanManager);
             instantiator = new SubclassDecoratorApplyingInstantiator<T>(getBeanManager().getContextId(), instantiator, getBean(), decorators, implementationClass.getJavaClass());
             setInstantiator(instantiator);

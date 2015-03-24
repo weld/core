@@ -41,6 +41,7 @@ import org.jboss.weld.manager.api.WeldInjectionTarget;
 import org.jboss.weld.manager.api.WeldInjectionTargetFactory;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.SessionBeans;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
@@ -129,7 +130,7 @@ public class InjectionTargetFactoryImpl<T> implements WeldInjectionTargetFactory
     }
 
     protected InjectionTarget<T> createMessageDrivenInjectionTarget(InternalEjbDescriptor<T> descriptor) {
-        EnhancedAnnotatedType<T> implementationClass = Beans.getEjbImplementationClass(descriptor, manager, type);
+        EnhancedAnnotatedType<T> implementationClass = SessionBeans.getEjbImplementationClass(descriptor, manager, type);
 
         AbstractInstantiator<T> instantiator = null;
         if (type.equals(implementationClass)) {
