@@ -19,6 +19,7 @@ package org.jboss.weld.probe.tests.integration;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
+import static org.jboss.weld.probe.Strings.CLASS;
 import static org.jboss.weld.probe.Strings.DATA;
 import static org.jboss.weld.probe.Strings.EJB_NAME;
 import static org.jboss.weld.probe.Strings.ENABLEMENT;
@@ -32,8 +33,6 @@ import static org.jboss.weld.probe.Strings.STEREOTYPES;
 import static org.jboss.weld.probe.Strings.TYPES;
 import static org.jboss.weld.probe.tests.integration.JSONTestUtil.BEANS_PATH;
 import static org.jboss.weld.probe.tests.integration.JSONTestUtil.BEANS_PATH_ALL;
-import static org.jboss.weld.probe.tests.integration.JSONTestUtil.BeanType;
-import static org.jboss.weld.probe.tests.integration.JSONTestUtil.SessionBeanType;
 import static org.jboss.weld.probe.tests.integration.JSONTestUtil.getAllJsonObjectsByClass;
 import static org.jboss.weld.probe.tests.integration.JSONTestUtil.getPageAsJSONObject;
 
@@ -51,6 +50,8 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.weld.probe.tests.integration.JSONTestUtil.BeanType;
+import org.jboss.weld.probe.tests.integration.JSONTestUtil.SessionBeanType;
 import org.jboss.weld.probe.tests.integration.deployment.InvokingServlet;
 import org.jboss.weld.probe.tests.integration.deployment.annotations.Collector;
 import org.jboss.weld.probe.tests.integration.deployment.beans.ModelBean;
@@ -122,7 +123,7 @@ public class ProbeSessionBeansTest extends ProbeIntegrationTest {
         assertEquals(BeanType.DECORATOR.name(), decoratorDetail.getString(KIND));
         assertTrue(checkStringInArrayRecursively(DecoratedInterface.class.getName(), TYPES, decoratorDetail.getJsonArray(TYPES), false));
         assertTrue(checkStringInArrayRecursively(Serializable.class.getName(), TYPES, decoratorDetail.getJsonArray(TYPES), false));
-        assertTrue(checkStringInArrayRecursively(Decorator.class.getName(), STEREOTYPES, decoratorDetail.getJsonArray(STEREOTYPES), false));
+        assertTrue(checkStringInArrayRecursively(Decorator.class.getName(), CLASS, decoratorDetail.getJsonArray(STEREOTYPES), false));
 
     }
 
