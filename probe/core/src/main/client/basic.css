@@ -19,12 +19,6 @@ h3 {
   font-size: 18px;
 }
 
-footer {
-  margin-top: 2em;
-  border-top: 1px solid silver;
-  color: silver;
-}
-
 .node text {
   font-weight: bold;
 }
@@ -142,11 +136,6 @@ div.form-group {
   border-radius: 4px;
   color: white;
   display: inline-block;
-}
-
-.boxed-lg {
-  font-size: 14px;
-  padding: 3px;
 }
 
 div.form-control-like {
@@ -282,4 +271,12 @@ div.bda-beans {
 
 div.let-width-3 {
   width: 3em;
+}
+
+a.probe-comp, i.probe-comp, span.probe-comp {
+  color: silver;
+}
+
+p.version {
+  padding-right: 10px;
 }

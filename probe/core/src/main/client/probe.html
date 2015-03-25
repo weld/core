@@ -19,6 +19,9 @@ ${head}
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
                     </button>
                     <a class="navbar-brand" href="#" title="Weld Probe"><img src="${client.resource.path}weld_icon_48x.png" alt="Weld logo" /></a>
                 </div>
@@ -49,7 +52,7 @@ ${head}
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-external-link "></i> Quick Links <span class="caret"></span></a>
                             <ul class="dropdown-menu" role="menu">
-                                <li><a href="https://developer.jboss.org/en/weld?view=discussions" target="_blank">User Forum</a></i></li>
+                                <li><a href="https://developer.jboss.org/en/weld?view=discussions" target="_blank">User Forum</a></li>
                                 <li><a href="http://weld.cdi-spec.org/documentation/" target="_blank">Documentation &amp; FAQ</a></li>
                                 <li><a href="https://issues.jboss.org/browse/WELD" target="_blank">Issue Tracker</a></li>
                                 <li><a href="http://github.com/weld" target="_blank">Source Code</a></li>
@@ -57,14 +60,12 @@ ${head}
                             </ul>
                         </li>
                     </ul>
+                    <p class="navbar-text navbar-right version">Weld {{version}}</p>
                 </div>
             </div>
         </div>
         <div class="container-fluid content">
         {{outlet}}
-        <footer>
-            Build ${project.version}
-        </footer>
         </div>
     </script>
 
@@ -80,7 +81,7 @@ ${head}
 
         <div class="btn-line">
             <label>
-                {{input type="checkbox" name="hideAddBda" checked=hideAddBda}} Hide Additional Bean Archives <i class="fa fa-lg fa-info-circle" title="These synthetic bean archives are created for beans and extensions which do not belong to any regular bean archive"></i>
+                {{input type="checkbox" name="hideAddBda" checked=hideAddBda}} Hide Additional Bean Archives {{tip "These synthetic bean archives are created for beans and extensions which do not belong to any regular bean archive"}}
             </label>
         </div>
 
@@ -98,25 +99,25 @@ ${head}
                             <i class="fa fa-check-square" title="Graph operations"></i> <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu" role="menu">
-                            <li><a href="#" {{action 'settingHasChanged'}}>Rebuild Accessibility Graph</a></li>
                             <li><a href="#" {{action 'selectAll'}}>Select All</a></li>
                             <li><a href="#" {{action 'selectNone'}}>Select None</a></li>
                             <li><a href="#" {{action 'invertSelection'}}>Invert Selection</a></li>
                             <li role="presentation" class="divider"></li>
+                            <li><a href="#" {{action 'rebuildGraph'}}>Rebuild Accessibility Graph</a></li>
                             <li><a href="#" {{action 'overview'}}>Generate Overview Graph</a></li>
                         </ul>
                     </div>
                      <i class="fa fa-lg fa-exclamation-circle" title="Only selected bean archives are visible in the Accessibility Graph"></i>
                 </th>
-                <th>Beans <i class="fa fa-lg fa-info-circle" title="The number does not include inteceptors, decorators and built-in beans"></i></th>
+                <th>Beans {{tip "The number does not include inteceptors, decorators and built-in beans"}}</th>
                 <th>Identifier</th>
                 <th>Bean Discovery Mode</th>
             </tr>
-            {{#each filteredBdas}}
+            {{#each visibleBdas}}
             <tr>
-                <td><div class="boxed boxed-lg centered let-width-3" style="background-color: {{unbound color}};">{{idx}}</div></td>
+                <td><div class="boxed centered let-width-3" style="background-color: {{unbound color}};">{{idx}}</div></td>
                 <td class="centered">{{input type="checkbox" name="selected" checked=selected}}</td>
-                <td><div class="boxed boxed-lg bda-beans let-width-3">{{beans}}</div> &nbsp;<i class="fa fa-share-alt"></i>{{#link-to 'overview' (query-params bda=id) class='nav-link'}}Overview{{/link-to}}<i class="fa fa-filter"></i>{{#link-to 'beanList' (query-params bda=id) class='nav-link'}}Filter{{/link-to}}</td>
+                <td><div class="boxed bda-beans let-width-3">{{beans}}</div> &nbsp;<i class="fa fa-share-alt"></i>{{#link-to 'overview' (query-params bda=id) class='nav-link'}}Overview{{/link-to}}<i class="fa fa-filter"></i>{{#link-to 'beanList' (query-params bda=id) class='nav-link'}}Filter{{/link-to}}</td>
                 <td>
                     {{detail-icon}} {{#link-to 'beanArchive' id}}{{bdaId}}{{/link-to}}
                 </td>
@@ -127,14 +128,14 @@ ${head}
 
         <h2>Accessibility Graph</h2>
 
-        {{#if tooMuchData}}
+        {{#if graphData.tooMuchData}}
         <div class="alert alert-warning alert-dismissible" role="alert">
             <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <strong>WARNING:</strong> The accessibility graph was not rendered - the amount of data might cause performance problems (nodes: {{filteredBdas.length}}, links: {{links.length}}). Try to restrict the set of selected bean archives or <a href="#" {{action 'settingHasChanged'}}>build the graph</a> anyway.
+            <strong>WARNING:</strong> The accessibility graph was not rendered - the amount of data might cause performance problems (nodes: {{selectedBdas.length}}, links: {{graphData.links.length}}). Try to restrict the set of selected bean archives or <a href="#" {{action 'rebuildGraph'}}>build the graph</a> anyway.
         </div>
         {{/if}}
 
-        {{view Probe.BdaGraph contentBinding="model" routeRefresh=routeRefresh}}
+        {{view Probe.BdaGraph contentBinding=graphData}}
 
     </script>
 
@@ -180,7 +181,7 @@ ${head}
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Index:</label>
                          <div class="col-sm-10">
-                            <div class="form-control-static"><div class="boxed boxed-lg centered let-width-3" style="background-color: {{unbound color}};">{{idx}}</div></div>
+                            <div class="form-control-static"><div class="boxed centered let-width-3" style="background-color: {{unbound color}};">{{idx}}</div></div>
                         </div>
                     </div>
                     <div class="form-group">
@@ -198,7 +199,7 @@ ${head}
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Beans: </label>
                          <div class="col-sm-10">
-                            <div class="form-control-static"><div class="boxed boxed-lg bda-beans let-width-3">{{beans}}</div> <i class="fa fa-lg fa-info-circle" title="The number does not include inteceptors, decorators and built-in beans"></i></div>
+                            <div class="form-control-static"><div class="boxed bda-beans let-width-3">{{beans}}</div> {{tip "The number does not include inteceptors, decorators and built-in beans"}}</div>
                         </div>
                     </div>
                     {{#if enablement.interceptors}}
@@ -207,7 +208,11 @@ ${head}
                         <div class="col-sm-10">
                             {{#each enablement.interceptors}}
                             <p class="form-control-static">{{increment _view.contentIndex}}.
-                            {{detail-icon}} {{#link-to 'beanDetail' id class='nav-link'}}{{beanClass}}{{/link-to}}
+                            {{#if probeComponent}}
+                                {{detail-icon}} {{#link-to 'beanDetail' id class='probe-comp'}}{{beanClass}}{{/link-to}} {{probe-comp}}
+                            {{else}}
+                                {{detail-icon}} {{#link-to 'beanDetail' id}}{{beanClass}}{{/link-to}}
+                            {{/if}}
                             </p>
                             {{/each}}
                             <hr/>
@@ -220,7 +225,7 @@ ${head}
                         <div class="col-sm-10">
                             {{#each enablement.decorators}}
                             <p class="form-control-static">{{increment _view.contentIndex}}.
-                            {{detail-icon}} {{#link-to 'beanDetail' id class='nav-link'}}{{beanClass}}{{/link-to}}
+                            {{detail-icon}} {{#link-to 'beanDetail' id}}{{beanClass}}{{/link-to}}
                             </p>
                             {{/each}}
                             <hr/>
@@ -233,7 +238,7 @@ ${head}
                         <div class="col-sm-10">
                             {{#each enablement.alternatives}}
                             <p class="form-control-static">{{increment _view.contentIndex}}.
-                            {{detail-icon}} {{#link-to 'beanDetail' id class='nav-link'}}{{beanClass}}{{/link-to}}
+                            {{detail-icon}} {{#link-to 'beanDetail' id}}{{beanClass}}{{/link-to}}
                             </p>
                             {{/each}}
                         </div>
@@ -262,9 +267,9 @@ ${head}
             <tr>
                 <th></th>
                 <th>Key</th>
-                <th>Value <i class="fa fa-lg fa-info-circle" title="Modified values are highlighted with an exclamation mark"></i></th>
+                <th>Value {{tip "Modified values are highlighted with an exclamation mark"}}</th>
             </tr>
-            {{#each configuration}}
+            {{#each}}
             <tr>
                 <td>{{increment _view.contentIndex}}</td>
                 <td>{{name}}</td>
@@ -290,7 +295,7 @@ ${head}
                 <label class="control-label">Bean Archive:</label>
                 {{view "select"
                     value=bda
-                    content=cache.filterBdas
+                    content=filterBdas
                     optionValuePath="content.id"
                     optionLabelPath="content.bdaId"
                     prompt="-- ANY --"
@@ -321,19 +326,19 @@ ${head}
                     </form>
                 </th>
                 <th>
-                    Bean class <i class="fa fa-lg fa-info-circle" title="Click to show the bean detail"></i>
+                    Bean class {{tip "Click to show the bean detail"}}
                     <form {{action "filter" on="submit"}}>
                         {{input value=beanClass class="form-control" placeholder="FQN Contains"}}
                     </form>
                 </th>
                 <th>
-                    Bean types <i class="fa fa-lg fa-info-circle" title="The set does not contain java.lang.Object"></i>
+                    Bean types {{tip "The set does not contain java.lang.Object"}}
                     <form {{action "filter" on="submit"}}>
                         {{input value=beanType class="form-control" placeholder="Any FQN contains"}}
                     </form>
                 </th>
                 <th>
-                    Qualifiers <i class="fa fa-lg fa-info-circle" title="The set does not contain javax.enterprise.inject.Any"></i>
+                    Qualifiers {{tip "The set does not contain javax.enterprise.inject.Any"}}
                     <form {{action "filter" on="submit"}}>
                         {{input value=qualifier class="form-control" placeholder="Any contains"}}
                     </form>
@@ -342,7 +347,7 @@ ${head}
             {{#each data}}
             <tr>
                 <td>{{increment _view.contentIndex}}</td>
-                <td>{{#if bda}}<div class="boxed boxed-lg centered let-width-3" title="{{unbound bda.bdaId}}" style="background-color: {{unbound bda.color}};">{{bda.idx}}</div> {{#link-to 'beanArchive' bda.id}}&nbsp;{{detail-icon}}&nbsp;{{/link-to}}{{/if}}</td>
+                <td>{{#if bda}}<div class="boxed centered let-width-3" title="{{unbound bda.bdaId}}" style="background-color: {{unbound bda.color}};">{{bda.idx}}</div> {{#link-to 'beanArchive' bda.id}}&nbsp;{{detail-icon}}&nbsp;{{/link-to}}{{/if}}</td>
                 <td><span class="{{unbound kind}} boxed">{{unbound kind}}</span></td>
                 <td>{{abbr scope 30}}</td>
                 <td>
@@ -388,7 +393,7 @@ ${head}
                         <label class="col-sm-2 control-label">Bean Archive:</label>
                          <div class="col-sm-10">
                             <div class="form-control-static">
-                                <div class="boxed boxed-lg centered let-width-3" style="background-color: {{unbound bda.color}};">{{bda.idx}}</div>
+                                <div class="boxed centered let-width-3" style="background-color: {{unbound bda.color}};">{{bda.idx}}</div>
                                 <i class="fa fa-share-alt"></i>{{#link-to 'overview' (query-params bda=bdaId) class='nav-link'}}Overview{{/link-to}}
                                 <i class="fa fa-filter"></i>{{#link-to 'beanList' (query-params bda=bdaId) class='nav-link'}}Filter beans{{/link-to}}
                                 {{detail-icon}} {{#link-to 'beanArchive' bdaId class='nav-link'}} {{bda.bdaId}}{{/link-to}}
@@ -451,7 +456,9 @@ ${head}
                         <label class="col-sm-2 control-label">Stereotypes:</label>
                         <div class="col-sm-10">
                             {{#each stereotypes}}
-                            <p class="form-control-static">{{this}}</p>
+                            <p class="form-control-static">
+                            {{#if probeComponent}}<span class='probe-comp'>{{class}}</span> {{probe-comp}}{{else}}{{class}}{{/if}}
+                            </p>
                             {{/each}}
                         </div>
                     </div>
@@ -579,7 +586,7 @@ ${head}
             <li>{{bean-kind-short-help}}</li>
         </ul>
 
-        {{view Probe.DependencyGraph contentBinding="model" beanId=id routeRefresh=routeRefresh}}
+        {{view Probe.DependencyGraph contentBinding="graphData"}}
 
         <div class="modal" id="ipInfoModal" tabindex="-1" role="dialog" aria-labelledby="ipInfoModalTitle" aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-center">
@@ -611,7 +618,7 @@ ${head}
                 <label class="control-label">Bean Archive:</label>
                 {{view "select"
                     value=bda
-                    content=cache.filterBdas
+                    content=filterBdas
                     optionValuePath="content.id"
                     optionLabelPath="content.bdaId"
                     prompt="-- ANY --"
@@ -635,7 +642,7 @@ ${head}
                 <th rowspan="2"></th>
                 <th colspan="2">Declaring Bean</th>
                 <th rowspan="2" class="with-rowspan">
-                    Observed Type <i class="fa fa-lg fa-info-circle" title="Click to show the observer method detail"></i>
+                    Observed Type {{tip "Click to show the observer method detail"}}
                     <form {{action "filter" on="submit"}}>
                         {{input value=observedType class="form-control" placeholder="Contains"}}
                     </form>
@@ -652,7 +659,7 @@ ${head}
             <tr>
                 <th>Kind {{view 'select' content=beanKinds value=kind prompt="-- ANY --" class="form-control"}}</th>
                 <th>
-                    Bean Class <i class="fa fa-lg fa-info-circle" title="Or ObserverMethod.getBeanClass() if declaring bean not available"></i>
+                    Bean Class {{tip "Or ObserverMethod.getBeanClass() if declaring bean not available"}}
                     <form {{action "filter" on="submit"}}>
                         {{input value=beanClass class="form-control" placeholder="Contains"}}
                     </form>
@@ -737,7 +744,7 @@ ${head}
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Declaring Bean:</label>
                          <div class="col-sm-10">
-                            <p class="form-control-static"><span class="{{unbound declaringBean.kind}} boxed">{{unbound declaringBean.kind}}</span> <i class="fa fa-search"></i> {{#link-to 'beanDetail' declaringBean.id}}{{declaringBean.beanClass}}{{/link-to}}</p>
+                            <p class="form-control-static"><span class="{{unbound declaringBean.kind}} boxed">{{unbound declaringBean.kind}}</span> {{detail-icon}} {{#link-to 'beanDetail' declaringBean.id}}{{declaringBean.beanClass}}{{/link-to}}</p>
                         </div>
                     </div>
                     {{else}}
@@ -804,13 +811,17 @@ ${head}
 
         <table class="table table-bordered table-striped">
             <tr>
-                <th>Bean <i class="fa fa-lg fa-info-circle" title="Link to bean detail"></i></th>
-                <th>Instance <i class="fa fa-lg fa-info-circle" title="Link to contextual instance detail"></i></th>
+                <th></th>
+                <th>Bean Archive</th>
+                <th>Bean {{tip "Link to bean detail"}}</th>
+                <th>Instance {{tip "Link to contextual instance detail"}}</th>
             </tr>
             {{#with this as parentThis}}
             {{#each instances}}
             <tr>
-                <td>{{#link-to 'beanDetail' id}}{{beanClass}}{{/link-to}}</td>
+                <td>{{increment _view.contentIndex}}</td>
+                <td>{{#if bda}}<div class="boxed centered let-width-3" title="{{unbound bda.bdaId}}" style="background-color: {{unbound bda.color}};">{{bda.idx}}</div> {{#link-to 'beanArchive' bda.id}}&nbsp;{{detail-icon}}&nbsp;{{/link-to}}{{/if}}</td>
+                <td>{{#link-to 'beanDetail' id}}{{abbr beanClass 50}}{{/link-to}}</td>
                 <td>
                 {{#if parentThis.cid}}
                 {{#link-to 'contextInstance' id (query-params cid=parentThis.cid)}}{{asString}}{{/link-to}}
@@ -857,7 +868,7 @@ ${head}
                 <div class="form-group">
                     <label class="col-sm-2 control-label">Bean Class:</label>
                     <div class="col-sm-10">
-                        <p class="form-control-static"><i class="fa fa-search"></i> {{#link-to 'beanDetail' id}}{{beanClass}}{{/link-to}}</p>
+                        <p class="form-control-static">{{detail-icon}} {{#link-to 'beanDetail' id}}{{beanClass}}{{/link-to}}</p>
                     </div>
                 </div>
             </form>
@@ -897,7 +908,7 @@ ${head}
         <form {{action "filter" on="submit"}} class="form-inline">
             <label class="control-label">Search:</label>
             {{input value=search class="form-control form-control-auto-width" placeholder="Class or method contains"}}
-            <i class="fa fa-lg fa-info-circle" title="Search the whole invocation trees"></i>
+            {{tip "Search the whole invocation trees"}}
         </form>
       </div>
 
@@ -921,12 +932,12 @@ ${head}
                 <th rowspan="2" class="with-rowspan">Time</th>
             </tr>
             <tr>
-                <th>Intercepted Bean <i class="fa fa-lg fa-info-circle" title="Or the declaring class if the bean is not available. Click to show the intercepted bean detail"></i>
+                <th>Intercepted Bean {{tip "Or the declaring class if the bean is not available. Click to show the intercepted bean detail"}}
                     <form {{action "filter" on="submit"}}>
                         {{input value=beanClass class="form-control" placeholder="Contains"}}
                     </form>
                 </th>
-                <th>Method Name <i class="fa fa-lg fa-info-circle" title="Click to show the invocation tree detail"></i>
+                <th>Method Name {{tip "Click to show the invocation tree detail"}}
                     <form {{action "filter" on="submit"}}>
                         {{input value=methodName class="form-control" placeholder="Contains"}}
                     </form>
@@ -1007,7 +1018,7 @@ ${head}
                 <th/>
                 <th>Kind {{view 'select' content=eventKinds value=kind prompt="-- ANY --" class="form-control"}}</th>
                 <th>
-                    Event <i class="fa fa-lg fa-info-circle" title="eventPayload.toString()"></i>
+                    Event {{tip "eventPayload.toString()"}}
                     <form {{action "filter" on="submit"}}>
                         {{input value=eventInfo class="form-control" placeholder="Contains"}}
                     </form>

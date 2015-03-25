@@ -18,6 +18,10 @@ package org.jboss.weld.probe;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -60,8 +64,19 @@ import org.jboss.weld.util.collections.ImmutableMap;
  */
 final class Components {
 
-    static final Map<String, Class<? extends Annotation>> INSPECTABLE_SCOPES = ImmutableMap.<String, Class<? extends Annotation>> builder().put("application", ApplicationScoped.class)
-            .put("session", SessionScoped.class).put("conversation", ConversationScoped.class).build();
+    static final Map<String, Class<? extends Annotation>> INSPECTABLE_SCOPES = ImmutableMap.<String, Class<? extends Annotation>> builder()
+            .put("application", ApplicationScoped.class).put("session", SessionScoped.class).put("conversation", ConversationScoped.class).build();
+
+    static final Comparator<Class<?>> PROBE_COMPONENT_CLASS_COMPARATOR = new Comparator<Class<?>>() {
+
+        @Override
+        public int compare(Class<?> o1, Class<?> o2) {
+            // Probe components should have the lowest priority when sorting
+            int result = Boolean.compare(isProbeComponent(o1), isProbeComponent(o2));
+            // Unless decided compare the class names lexicographically
+            return result == 0 ? o1.getName().compareTo(o2.getName()) : result;
+        }
+    };
 
     private Components() {
     }
@@ -235,6 +250,26 @@ final class Components {
             }
         }
         return count;
+    }
+
+    /**
+     *
+     * @param clazz
+     * @return <code>true</code> if the given class is a probe component class, <code>false</code> otherwise
+     */
+    static boolean isProbeComponent(Class<?> clazz) {
+        return clazz.getName().startsWith(Probe.class.getPackage().getName());
+    }
+
+    /**
+     *
+     * @param candidates
+     * @return the sorted list of classes, where the probe component class have the lowest priority
+     */
+    static <T> List<Class<? extends T>> getSortedProbeComponetCandidates(Collection<Class<? extends T>> candidates) {
+        List<Class<? extends T>> result = new ArrayList<Class<? extends T>>(candidates);
+        Collections.sort(result, Components.PROBE_COMPONENT_CLASS_COMPARATOR);
+        return result;
     }
 
     /**
