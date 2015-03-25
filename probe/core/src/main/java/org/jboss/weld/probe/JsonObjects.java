@@ -28,6 +28,7 @@ import static org.jboss.weld.probe.Strings.BEAN_CLASS;
 import static org.jboss.weld.probe.Strings.BEAN_DISCOVERY_MODE;
 import static org.jboss.weld.probe.Strings.CHILDREN;
 import static org.jboss.weld.probe.Strings.CIDS;
+import static org.jboss.weld.probe.Strings.CLASS;
 import static org.jboss.weld.probe.Strings.CONFIGURATION;
 import static org.jboss.weld.probe.Strings.CONTAINER;
 import static org.jboss.weld.probe.Strings.CONTEXTS;
@@ -60,6 +61,7 @@ import static org.jboss.weld.probe.Strings.OBSERVERS;
 import static org.jboss.weld.probe.Strings.PAGE;
 import static org.jboss.weld.probe.Strings.PRIORITY;
 import static org.jboss.weld.probe.Strings.PRIORITY_RANGE;
+import static org.jboss.weld.probe.Strings.PROBE_COMPONENT;
 import static org.jboss.weld.probe.Strings.PRODUCER_FIELD;
 import static org.jboss.weld.probe.Strings.PRODUCER_INFO;
 import static org.jboss.weld.probe.Strings.PRODUCER_METHOD;
@@ -78,6 +80,7 @@ import static org.jboss.weld.probe.Strings.TX_PHASE;
 import static org.jboss.weld.probe.Strings.TYPE;
 import static org.jboss.weld.probe.Strings.TYPES;
 import static org.jboss.weld.probe.Strings.VALUE;
+import static org.jboss.weld.probe.Strings.VERSION;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -113,6 +116,7 @@ import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
 import org.jboss.weld.bean.proxy.ProxyObject;
+import org.jboss.weld.bootstrap.WeldBootstrap;
 import org.jboss.weld.bootstrap.enablement.ModuleEnablement;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.BeanDiscoveryMode;
@@ -157,6 +161,9 @@ final class JsonObjects {
         Map<BeanDeploymentArchive, BeanManagerImpl> beanDeploymentArchivesMap = Container.instance(beanManager).beanDeploymentArchives();
         JsonObjectBuilder deploymentBuilder = Json.objectBuilder();
 
+        // WELD VERSION
+        deploymentBuilder.add(VERSION, Formats.version(WeldBootstrap.class.getPackage()));
+
         // BEAN DEPLOYMENT ARCHIVES
         JsonArrayBuilder bdasBuilder = Json.arrayBuilder();
         List<BeanDeploymentArchive> bdas = new ArrayList<BeanDeploymentArchive>(beanDeploymentArchivesMap.keySet());
@@ -170,8 +177,8 @@ final class JsonObjects {
             JsonObjectBuilder enablementBuilder = Json.objectBuilder(true);
             ModuleEnablement enablement = beanDeploymentArchivesMap.get(bda).getEnabled();
             JsonArrayBuilder interceptors = Json.arrayBuilder();
-            for (Class<?> interceptor : enablement.getInterceptors()) {
-                interceptors.add(createSimpleBeanJson(findEnabledBean(interceptor, BeanKind.INTERCEPTOR, probe), probe));
+            for (Class<?> interceptor : Components.getSortedProbeComponetCandidates(enablement.getInterceptors())) {
+                interceptors.add(decorateProbeComponent(interceptor, createSimpleBeanJson(findEnabledBean(interceptor, BeanKind.INTERCEPTOR, probe), probe)));
             }
             enablementBuilder.add(INTERCEPTORS, interceptors);
             JsonArrayBuilder decorators = Json.arrayBuilder();
@@ -340,8 +347,8 @@ final class JsonObjects {
         // STEREOTYPES
         if (bean.getStereotypes() != null && !bean.getStereotypes().isEmpty()) {
             JsonArrayBuilder stereotypesBuilder = Json.arrayBuilder();
-            for (Class<?> stereotype : bean.getStereotypes()) {
-                stereotypesBuilder.add(stereotype.getName());
+            for (Class<?> stereotype : Components.getSortedProbeComponetCandidates(bean.getStereotypes())) {
+                stereotypesBuilder.add(Json.objectBuilder().add(CLASS, stereotype.getName()).add(PROBE_COMPONENT, Components.isProbeComponent(stereotype)));
             }
             beanBuilder.add(STEREOTYPES, stereotypesBuilder);
         }
@@ -781,9 +788,7 @@ final class JsonObjects {
             if (bean.getScope().equals(scope)) {
                 Object contextualInstance = context.get(bean);
                 if (contextualInstance != null) {
-                    JsonObjectBuilder instanceBuilder = Json.objectBuilder();
-                    instanceBuilder.add(ID, probe.getBeanId(bean));
-                    instanceBuilder.add(BEAN_CLASS, bean.getBeanClass().getName());
+                    JsonObjectBuilder instanceBuilder = createSimpleBeanJson(bean, probe);
                     instanceBuilder.add(AS_STRING, contextualInstance.toString());
                     builder.add(instanceBuilder);
                 }
@@ -909,6 +914,10 @@ final class JsonObjects {
 
     private static String simplifiedScope(Class<? extends Annotation> scope) {
         return "@" + (Components.isBuiltinScope(scope) ? scope.getSimpleName() : scope.getName());
+    }
+
+    private static JsonObjectBuilder decorateProbeComponent(Class<?> clazz, JsonObjectBuilder builder) {
+        return Components.isProbeComponent(clazz) ? builder.add(PROBE_COMPONENT, true) : builder;
     }
 
 }

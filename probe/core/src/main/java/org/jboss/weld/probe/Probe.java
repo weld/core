@@ -107,7 +107,7 @@ public class Probe implements Service {
                                 Components.getNumberOfEnabledBeans(mappings.getBdaToManager().get(bda1)));
                     }
                 }
-                // Unles decided compare the ids lexicographically
+                // Unless decided compare the ids lexicographically
                 return result == 0 ? bda1.getId().compareTo(bda2.getId()) : result;
             }
         };
@@ -329,7 +329,7 @@ public class Probe implements Service {
                     // there's only one Instance bean though
                     if (bean instanceof ExtensionBean) {
                         // ExtensionBean does not include BeanManager in its BeanIdentifier
-                        ExtensionBean extensionBean = (ExtensionBean) bean;
+                        ExtensionBean<?> extensionBean = (ExtensionBean<?>) bean;
                         if (!idToBean.containsValue(extensionBean)) {
                             putBean(Components.getId(extensionBean.getIdentifier()), manager, extensionBean);
                         }

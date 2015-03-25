@@ -3,30 +3,6 @@
  * Copyright 2015, Red Hat, Inc.
  * Licensed the Apache License, Version 2.0 (http://www.apache.org/licenses/LICENSE-2.0)
  */
-var restUrlBase = '${rest.url.base}';
-
-var beanKinds = [ 'MANAGED', 'SESSION', 'PRODUCER_METHOD', 'PRODUCER_FIELD',
-        'RESOURCE', 'SYNTHETIC', 'INTERCEPTOR', 'DECORATOR', 'EXTENSION',
-        'BUILT_IN' ];
-
-var beanKindsShort = [ 'MB', 'SB', 'PM', 'PF', 'RE', 'SY', 'IN', 'DE', 'EX',
-        'BI' ];
-
-var observerDeclaringBeanKinds = [ 'MANAGED', 'SESSION', 'EXTENSION',
-        'BUILT_IN' ];
-
-var eventKinds = [ 'APPLICATION', 'CONTAINER' ];
-
-var receptions = [ 'ALWAYS', 'IF_EXISTS' ];
-
-var txPhases = [ 'IN_PROGRESS', 'BEFORE_COMPLETION', 'AFTER_COMPLETION',
-        'AFTER_FAILURE', 'AFTER_SUCCESS' ];
-
-var additionalBdaSuffix = '.additionalClasses';
-
-var markerFilterAddBdas = "probe-filterAdditionalBdas";
-
-var cache = new Object();
 
 var Probe = Ember.Application.create({});
 
@@ -102,32 +78,36 @@ Probe.ApplicationView = Ember.View.extend({
 Probe.ApplicationRoute = Ember.Route
     .extend({
         model : function() {
+            var controller = this.controllerFor('application');
             return $
-                .getJSON(restUrlBase + 'deployment')
+                .getJSON(controller.get('restUrlBase') + 'deployment')
                 .done(
                     function(data) {
-                        cache.bdas = data.bdas;
-                        colors = generateColors(data.bdas.length);
-                        cache.bdas.forEach(function(bda, index, array) {
-                            bda.selected = true;
+                        // All bean archives - add index and color
+                        var colors = generateColors(data.bdas.length);
+                        data.bdas.forEach(function(bda, index, array) {
                             bda.idx = index + 1;
                             bda.color = colors[index];
                         });
+                        controller.set('bdas', data.bdas);
                         // Copy bdas for filtering purpose
-                        cache.filterBdas = cache.bdas.slice(0);
+                        var filterBdas = data.bdas.slice(0);
                         // Add marker to filter additional archives
-                        cache.filterBdas
+                        filterBdas
                             .unshift({
-                                "id" : markerFilterAddBdas,
+                                "id" : controller.get('markerFilterAddBdas'),
                                 "bdaId" : "Only application bean archives - filter out beans from additional bean archives"
                             });
-                        cache.configuration = data.configuration;
-                        cache.configuration
-                            .forEach(function(item, index, array) {
-                                if (item.value != item.defaultValue) {
-                                    item.changed = true;
-                                }
-                            });
+                        controller.set('filterBdas', filterBdas);
+                        // Weld configuration - changed flag indicates a
+                        // modified value
+                        var configuration = data.configuration;
+                        configuration.forEach(function(item, index, array) {
+                            if (item.value != item.defaultValue) {
+                                item.changed = true;
+                            }
+                        });
+                        controller.set('configuration', configuration);
                         return data;
                     }).fail(function(jqXHR, textStatus, errorThrown) {
                     alert('Unable to get JSON data: ' + textStatus);
@@ -137,51 +117,9 @@ Probe.ApplicationRoute = Ember.Route
 
 Probe.BeanArchivesRoute = Ember.Route.extend({
     model : function() {
-        var data = new Object();
-        var hideAddBda = this.get('hideAddBda');
-        if (hideAddBda == null) {
-            hideAddBda = true;
-        }
-        data.filteredBdas = new Array();
-        cache.bdas.forEach(function(bda, index, array) {
-            if (!hideAddBda || !isAdditionalBda(bda.bdaId)) {
-                data.filteredBdas.push(bda);
-            }
-        });
-        buildBdaGraphData(data, hideAddBda);
-        // Don't render the graph if too much data
-        if (!this.get('routeRefresh')
-            && (data.filteredBdas.length > 100 || data.links.length > 60)) {
-            data.tooMuchData = true;
-        }
-        return data;
+        return this.controllerFor('application').get('bdas');
     },
     actions : {
-        settingHasChanged : function() {
-            this.set("hideAddBda", this.controller.get('hideAddBda'));
-            var routeRefresh = new Date();
-            this.set('routeRefresh', routeRefresh);
-            this.controller.set('routeRefresh', routeRefresh);
-            this.refresh();
-        },
-        selectAll : function() {
-            cache.bdas.forEach(function(bda, index, array) {
-                bda.selected = true;
-            });
-            this.send('settingHasChanged');
-        },
-        selectNone : function() {
-            cache.bdas.forEach(function(bda, index, array) {
-                bda.selected = false;
-            });
-            this.send('settingHasChanged');
-        },
-        invertSelection : function() {
-            cache.bdas.forEach(function(bda, index, array) {
-                bda.selected = !bda.selected;
-            });
-            this.send('settingHasChanged');
-        },
         overview : function() {
             this.transitionTo('overview', {
                 queryParams : {
@@ -194,13 +132,16 @@ Probe.BeanArchivesRoute = Ember.Route.extend({
 
 Probe.BeanArchiveRoute = Ember.Route.extend({
     model : function(params) {
-        return findBeanDeploymentArchive(cache.bdas, params.id);
+        // Use cached data
+        return findBeanDeploymentArchive(this.controllerFor('application').get(
+            'bdas'), params.id);
     }
 });
 
 Probe.ConfigurationRoute = Ember.Route.extend({
     model : function() {
-        return cache;
+        // Use cached data
+        return this.controllerFor('application').get('configuration');
     }
 });
 
@@ -219,23 +160,23 @@ Probe.BeanListRoute = Ember.Route.extend(Probe.ResetScroll, {
     setupController : function(controller, model) {
         this._super(controller, model);
         controller.set("pages", buildPages(model.page, model.lastPage));
-        controller.set("cache", cache);
     },
     model : function(params) {
+        var appController = this.controllerFor('application');
         var query = '', filters = '';
         filters = appendToFilters(filters, 'scope', params.scope);
         filters = appendToFilters(filters, 'beanClass', params.beanClass);
         filters = appendToFilters(filters, 'beanType', params.beanType);
         filters = appendToFilters(filters, 'qualifier', params.qualifier);
         if (params.bda) {
-            cache.filterBdas.forEach(function(bda) {
+            appController.get('filterBdas').forEach(function(bda) {
                 if (bda.id == params.bda) {
                     filters = appendToFilters(filters, 'bda', bda.id);
                 }
             });
         }
         if (params.kind) {
-            beanKinds.forEach(function(kind) {
+            appController.get('beanKinds').forEach(function(kind) {
                 if (kind == params.kind) {
                     filters = appendToFilters(filters, 'kind', kind);
                 }
@@ -245,14 +186,18 @@ Probe.BeanListRoute = Ember.Route.extend(Probe.ResetScroll, {
         if (params.page) {
             query = appendToQuery(query, 'page', params.page);
         }
-        return $.getJSON(restUrlBase + 'beans' + query).done(function(data) {
-            data.data.forEach(function(bean) {
-                bean.bda = findBeanDeploymentArchive(cache.bdas, bean.bdaId);
+        return $.getJSON(appController.get('restUrlBase') + 'beans' + query)
+            .done(
+                function(data) {
+                    data.data.forEach(function(bean) {
+                        // We want to render the bda index
+                        bean.bda = findBeanDeploymentArchive(appController
+                            .get('bdas'), bean.bdaId);
+                    });
+                    return data;
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                alert('Unable to get JSON data: ' + textStatus);
             });
-            return data;
-        }).fail(function(jqXHR, textStatus, errorThrown) {
-            alert('Unable to get JSON data: ' + textStatus);
-        });
     },
     actions : {
         refreshData : function() {
@@ -262,49 +207,19 @@ Probe.BeanListRoute = Ember.Route.extend(Probe.ResetScroll, {
 });
 
 Probe.BeanDetailRoute = Ember.Route.extend(Probe.ResetScroll, {
-    setupController : function(controller, model) {
-        this._super(controller, model);
-        // A bean kind css class binding
-        controller.set("kindClass", model.kind + ' boxed');
-    },
     model : function(params) {
-        this.set("beanId", params.id);
-        if (this.get("transientDependencies")) {
-            this.set("transientDependencies", true);
-        }
-        if (this.get("transientDependents")) {
-            this.set("transientDependents", true);
-        }
-        var route = this;
+        var appController = this.controllerFor('application');
         return $.getJSON(
-            restUrlBase + 'beans/' + params.id
-                + '?transientDependencies=true&transientDependents=true')
-            .done(
-                function(data) {
-                    data.bda = findBeanDeploymentArchive(cache.bdas,
-                        data['bdaId']);
-                    buildDependencyGraphData(data, params.id, route
-                        .get("transientDependencies"), route
-                        .get("transientDependents"))
-                    return data;
-                }).fail(function(jqXHR, textStatus, errorThrown) {
-                alert('Unable to get JSON data: ' + textStatus);
-            });
+            appController.get('restUrlBase') + 'beans/' + params.id
+                + '?transientDependencies=true&transientDependents=true').done(
+            function(data) {
+                data.bda = findBeanDeploymentArchive(appController.get('bdas'),
+                    data['bdaId']);
+                return data;
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+            alert('Unable to get JSON data: ' + textStatus);
+        });
     },
-    actions : {
-        settingHasChanged : function() {
-            this.set("transientDependencies", this.controller
-                .get('transientDependencies'));
-            this.set("transientDependents", this.controller
-                .get('transientDependents'));
-            // Rebuild dependency graph data
-            var data = this.get('controller.model');
-            buildDependencyGraphData(data, data.id, this.controller
-                .get('transientDependencies'), this.controller
-                .get('transientDependents'));
-            this.controller.set('routeRefresh', new Date());
-        }
-    }
 });
 
 Probe.ObserverListRoute = Ember.Route.extend(Probe.ResetScroll,
@@ -329,9 +244,9 @@ Probe.ObserverListRoute = Ember.Route.extend(Probe.ResetScroll,
         setupController : function(controller, model) {
             this._super(controller, model);
             controller.set("pages", buildPages(model.page, model.lastPage));
-            controller.set("cache", cache);
         },
         model : function(params) {
+            var appController = this.controllerFor('application');
             var query = '', filters = '';
             filters = appendToFilters(filters, 'beanClass', params.beanClass);
             filters = appendToFilters(filters, 'observedType',
@@ -348,7 +263,7 @@ Probe.ObserverListRoute = Ember.Route.extend(Probe.ResetScroll,
                 });
             }
             if (params.kind) {
-                beanKinds.forEach(function(kind) {
+                appController.get('beanKinds').forEach(function(kind) {
                     if (kind == params.kind) {
                         filters = appendToFilters(filters, 'kind', kind);
                     }
@@ -362,7 +277,7 @@ Probe.ObserverListRoute = Ember.Route.extend(Probe.ResetScroll,
                 });
             }
             if (params.bda) {
-                cache.filterBdas.forEach(function(bda) {
+                appController.get('filterBdas').forEach(function(bda) {
                     if (bda.id == params.bda) {
                         filters = appendToFilters(filters, 'bda', bda.id);
                     }
@@ -372,7 +287,8 @@ Probe.ObserverListRoute = Ember.Route.extend(Probe.ResetScroll,
             if (params.page) {
                 query = appendToQuery(query, 'page', params.page);
             }
-            return $.getJSON(restUrlBase + 'observers' + query).done(
+            return $.getJSON(
+                appController.get('restUrlBase') + 'observers' + query).done(
                 function(data) {
                     return data;
                 }).fail(function(jqXHR, textStatus, errorThrown) {
@@ -388,10 +304,11 @@ Probe.ObserverListRoute = Ember.Route.extend(Probe.ResetScroll,
 
 Probe.ObserverDetailRoute = Ember.Route.extend(Probe.ResetScroll, {
     model : function(params) {
-        return $.getJSON(restUrlBase + 'observers/' + params.id).done(
-            function(data) {
-                return data;
-            }).fail(function(jqXHR, textStatus, errorThrown) {
+        return $.getJSON(
+            this.controllerFor('application').get('restUrlBase') + 'observers/'
+                + params.id).done(function(data) {
+            return data;
+        }).fail(function(jqXHR, textStatus, errorThrown) {
             alert('Unable to get JSON data: ' + textStatus);
         });
     }
@@ -399,13 +316,22 @@ Probe.ObserverDetailRoute = Ember.Route.extend(Probe.ResetScroll, {
 
 Probe.ContextRoute = Ember.Route.extend(Probe.ResetScroll, {
     model : function(params) {
-        var url = restUrlBase + 'contexts/' + params.id;
+        var appController = this.controllerFor('application');
+        var url = appController.get('restUrlBase') + 'contexts/' + params.id;
         if (this.get('cid')) {
             url += '?cid=' + this.get('cid');
         }
-        return $.getJSON(url).done(function(data) {
-            return data;
-        }).fail(function(jqXHR, textStatus, errorThrown) {
+        return $.getJSON(url).done(
+            function(data) {
+                if (data.instances) {
+                    data.instances.forEach(function(bean) {
+                        // We want to render the bda index
+                        bean.bda = findBeanDeploymentArchive(appController
+                            .get('bdas'), bean.bdaId);
+                    });
+                }
+                return data;
+            }).fail(function(jqXHR, textStatus, errorThrown) {
             alert('Unable to get JSON data: ' + textStatus);
         });
     },
@@ -424,7 +350,8 @@ Probe.ContextInstanceRoute = Ember.Route.extend(Probe.ResetScroll, {
         controller.set("kindClass", model.kind + ' boxed');
     },
     model : function(params) {
-        var url = restUrlBase + 'beans/' + params.id + '/instance';
+        var url = this.controllerFor('application').get('restUrlBase')
+            + 'beans/' + params.id + '/instance';
         if (params.cid) {
             url = url + '?cid=' + params.cid;
         }
@@ -453,6 +380,7 @@ Probe.InvocationListRoute = Ember.Route.extend(Probe.ResetScroll, {
     },
     model : function(params) {
         var query = '', filters = '';
+        var appController = this.controllerFor('application');
         filters = appendToFilters(filters, 'beanClass', params.beanClass);
         filters = appendToFilters(filters, 'methodName', params.methodName);
         filters = appendToFilters(filters, 'search', params.search);
@@ -460,7 +388,8 @@ Probe.InvocationListRoute = Ember.Route.extend(Probe.ResetScroll, {
         if (params.page) {
             query = appendToQuery(query, 'page', params.page);
         }
-        return $.getJSON(restUrlBase + 'invocations' + query).done(
+        return $.getJSON(
+            appController.get('restUrlBase') + 'invocations' + query).done(
             function(data) {
                 data.data.forEach(function(invocation) {
                     invocation['time'] = (invocation['time'] / 1000000)
@@ -479,9 +408,11 @@ Probe.InvocationListRoute = Ember.Route.extend(Probe.ResetScroll, {
         },
         clearInvocations : function() {
             var route = this;
-            $.ajax(restUrlBase + 'invocations', {
-                'type' : 'DELETE'
-            }).then(function(data) {
+            $.ajax(
+                route.controllerFor('application').get('restUrlBase')
+                    + 'invocations', {
+                    'type' : 'DELETE'
+                }).then(function(data) {
                 route.refresh();
             });
         },
@@ -490,10 +421,11 @@ Probe.InvocationListRoute = Ember.Route.extend(Probe.ResetScroll, {
 
 Probe.InvocationDetailRoute = Ember.Route.extend(Probe.ResetScroll, {
     model : function(params) {
-        return $.getJSON(restUrlBase + 'invocations/' + params.id).done(
-            function(data) {
-                data.transformed = getRootNode(data, null);
-            }).fail(function(jqXHR, textStatus, errorThrown) {
+        return $.getJSON(
+            this.controllerFor('application').get('restUrlBase')
+                + 'invocations/' + params.id).done(function(data) {
+            data.transformed = getRootNode(data, null);
+        }).fail(function(jqXHR, textStatus, errorThrown) {
             alert('Unable to get JSON data: ' + textStatus);
         });
     }
@@ -524,7 +456,9 @@ Probe.EventsRoute = Ember.Route.extend(Probe.ResetScroll, {
         if (params.page) {
             query = appendToQuery(query, 'page', params.page);
         }
-        return $.getJSON(restUrlBase + 'events' + query).done(
+        return $.getJSON(
+            this.controllerFor('application').get('restUrlBase') + 'events'
+                + query).done(
             function(data) {
                 data.data.forEach(function(event) {
                     event['tsShort'] = moment(event['ts']).format(
@@ -543,104 +477,176 @@ Probe.EventsRoute = Ember.Route.extend(Probe.ResetScroll, {
         },
         clearEvents : function() {
             var route = this;
-            $.ajax(restUrlBase + 'events', {
-                'type' : 'DELETE'
-            }).then(function(data) {
+            $.ajax(
+                route.controllerFor('application').get('restUrlBase')
+                    + 'events', {
+                    'type' : 'DELETE'
+                }).then(function(data) {
                 route.refresh();
             });
         },
     }
 });
 
-Probe.OverviewRoute = Ember.Route
-    .extend({
-        needs : [ 'beanArchives' ],
-        queryParams : {
-            bda : {
-                refreshModel : true
-            },
+Probe.OverviewRoute = Ember.Route.extend({
+    queryParams : {
+        bda : {
+            refreshModel : true
         },
-        model : function(params) {
-            var data = new Object();
+    },
+    model : function(params) {
+        var data = new Object();
+        var appController = this.controllerFor('application');
 
-            // Determine the bdas to include
-            data.filteredBdas = new Array();
-            if (params.bda) {
-                console.log("Build overview graph for " + params.bda);
-                data.filteredBdas.push(findBeanDeploymentArchive(cache.bdas,
-                    params.bda));
+        // Determine the bdas to include
+        data.filteredBdas = new Array();
+        if (params.bda) {
+            console.log("Build overview graph for " + params.bda);
+            data.filteredBdas.push(findBeanDeploymentArchive(appController
+                .get('bdas'), params.bda));
+        } else {
+            var beanArchivesController = this.controllerFor('beanArchives');
+            if (beanArchivesController.get('lastModelUpdateTs')) {
+                var selectedBdas = beanArchivesController
+                    .get('selectedBdasUnwrapped');
+                console.log("Build overview graph for " + selectedBdas.length
+                    + " selected bean archives");
+                data.filteredBdas = selectedBdas.slice(0);
             } else {
-                var filteredBdas = this.controllerFor('beanArchives').get(
-                    'filteredBdas');
-                if (filteredBdas) {
-                    console
-                        .log("Build overview graph for the selected bean archives");
-                    filteredBdas.forEach(function(bda, index, array) {
-                        if (bda.selected) {
-                            data.filteredBdas.push(bda);
-                        }
-                    });
-                } else {
-                    console.log("Build overview graph for all bean archives");
-                    cache.bdas.forEach(function(bda, index, array) {
-                        data.filteredBdas.push(bda);
-                    });
-                }
-            }
-
-            // Prepare promises
-            var promises = new Array();
-            if (data.filteredBdas) {
-                data.filteredBdas.forEach(function(bda, index, array) {
-                    var query = '';
-                    query = appendToQuery(query, 'filters', appendToFilters('',
-                        'bda', bda.id));
-                    query = appendToQuery(query, 'pageSize', '0');
-                    query = appendToQuery(query, 'representation', 'simple');
-                    promises.push($.getJSON(restUrlBase + 'beans' + query)
-                        .done(function(data) {
-                            return data;
-                        }).fail(function(jqXHR, textStatus, errorThrown) {
-                            alert('Unable to get JSON data: ' + textStatus);
-                        }))
+                console.log("Build overview graph for all bean archives");
+                appController.get('bdas').forEach(function(bda, index, array) {
+                    data.filteredBdas.push(bda);
                 });
             }
+        }
 
-            // Load data, build graph
-            return Ember.RSVP.all(promises).then(function(values) {
-                var beans = new Array();
-                values.forEach(function(bdaPage, index, array) {
-                    bdaPage.data.forEach(function(bean, index, array) {
-                        beans.push(bean);
-                    });
-                });
-                data.beans = beans;
-                buildOverviewGraphData(data);
-                return data;
+        // Prepare promises
+        var promises = new Array();
+        if (data.filteredBdas && data.filteredBdas.length > 0) {
+            data.filteredBdas.forEach(function(bda, index, array) {
+                var query = '';
+                query = appendToQuery(query, 'filters', appendToFilters('',
+                    'bda', bda.id));
+                query = appendToQuery(query, 'pageSize', '0');
+                query = appendToQuery(query, 'representation', 'simple');
+                promises.push($.getJSON(
+                    appController.get('restUrlBase') + 'beans' + query).done(
+                    function(data) {
+                        return data;
+                    }).fail(function(jqXHR, textStatus, errorThrown) {
+                    alert('Unable to get JSON data: ' + textStatus);
+                }))
             });
         }
-    });
+
+        // Load data, build graph
+        return Ember.RSVP.all(promises).then(function(values) {
+            var beans = new Array();
+            values.forEach(function(bdaPage, index, array) {
+                bdaPage.data.forEach(function(bean, index, array) {
+                    beans.push(bean);
+                });
+            });
+            data.beans = beans;
+            buildOverviewGraphData(data);
+            return data;
+        });
+    }
+});
 
 // CONTROLLERS
 
-Probe.BeanArchivesController = Ember.ObjectController.extend({
+Probe.ApplicationController = Ember.ObjectController.extend({
+    restUrlBase : '${rest.url.base}',
+    beanKinds : [ 'MANAGED', 'SESSION', 'PRODUCER_METHOD', 'PRODUCER_FIELD',
+            'RESOURCE', 'SYNTHETIC', 'INTERCEPTOR', 'DECORATOR', 'EXTENSION',
+            'BUILT_IN' ],
+    beanKindsShort : [ 'MB', 'SB', 'PM', 'PF', 'RE', 'SY', 'IN', 'DE', 'EX',
+            'BI' ],
+    observerDeclaringBeanKinds : [ 'MANAGED', 'SESSION', 'EXTENSION',
+            'BUILT_IN' ],
+    eventKinds : [ 'APPLICATION', 'CONTAINER' ],
+    receptions : [ 'ALWAYS', 'IF_EXISTS' ],
+    txPhases : [ 'IN_PROGRESS', 'BEFORE_COMPLETION', 'AFTER_COMPLETION',
+            'AFTER_FAILURE', 'AFTER_SUCCESS' ],
+    additionalBdaSuffix : '.additionalClasses',
+    markerFilterAddBdas : "probe-filterAdditionalBdas",
+    bdas : null,
+    filterBdas : null,
+    configuration : null,
+});
+
+Probe.BeanArchivesController = Ember.ArrayController.extend({
+    needs : [ 'application' ],
+    lastModelUpdateTs : null,
     hideAddBda : true,
     onSettingsChanged : function() {
-        this.send("settingHasChanged");
-    }.observes('hideAddBda')
+        this.send("settingHasChanged", false);
+    }.observes('hideAddBda'),
+    onModelChanged : function() {
+        this.set('lastModelUpdateTs', new Date());
+        this.send("settingHasChanged", true);
+    }.observes('model'),
+    bdas : Ember.computed.map('model', function(bda) {
+        return Ember.ObjectProxy.create({
+            content : bda,
+            selected : true,
+            visible : true,
+        });
+    }),
+    visibleBdas : Ember.computed.filterBy('bdas', 'visible', true),
+    selectedBdas : Ember.computed.filterBy('visibleBdas', 'selected', true),
+    selectedBdasUnwrapped : Ember.computed.mapBy('selectedBdas', 'content'),
+    actions : {
+        settingHasChanged : function(checkTooMuchData) {
+            var controller = this;
+            var appController = this.get('controllers.application');
+            this.get('bdas').forEach(
+                function(proxy) {
+                    if (controller.get('hideAddBda')
+                        && isAdditionalBda(appController
+                            .get('additionalBdaSuffix'), proxy.get('bdaId'))) {
+                        proxy.set('visible', false);
+                    } else {
+                        proxy.set('visible', true);
+                    }
+                });
+            this.send('rebuildGraph', checkTooMuchData);
+        },
+        rebuildGraph : function(checkTooMuchData) {
+            this.set('graphData', buildBdaGraphData(this
+                .get('selectedBdasUnwrapped'), checkTooMuchData));
+        },
+        selectAll : function() {
+            this.get('bdas').forEach(function(proxy) {
+                proxy.set('selected', true);
+            });
+            this.send('rebuildGraph');
+        },
+        selectNone : function() {
+            this.get('bdas').forEach(function(proxy) {
+                proxy.set('selected', false);
+            });
+            this.send('rebuildGraph');
+        },
+        invertSelection : function() {
+            this.get('bdas').forEach(function(proxy) {
+                proxy.set('selected', !proxy.get('selected'));
+            });
+            this.send('rebuildGraph');
+        }
+    }
 });
 
 Probe.BeanArchiveController = Ember.ObjectController.extend({});
 
-Probe.ConfigurationController = Ember.ObjectController.extend({});
+Probe.ConfigurationController = Ember.ArrayController.extend({});
 
 Probe.BeanListController = Ember.ObjectController.extend({
-    init : function() {
-        this._super();
-        this.set('initialized', true);
-        this.set('beanKinds', beanKinds);
-    },
-    bda : markerFilterAddBdas,
+    needs : [ 'application' ],
+    beanKinds : Ember.computed.alias('controllers.application.beanKinds'),
+    filterBdas : Ember.computed.alias('controllers.application.filterBdas'),
+    bda : Ember.computed.alias('controllers.application.markerFilterAddBdas'),
     kind : null,
     scope : '',
     beanClass : '',
@@ -667,24 +673,39 @@ Probe.BeanListController = Ember.ObjectController.extend({
 });
 
 Probe.BeanDetailController = Ember.ObjectController.extend({
+    needs : [ 'application' ],
     transientDependencies : true,
     transientDependents : false,
     injectionPointInfo : true,
+    bdas : Ember.computed.alias('controllers.application.bdas'),
+    beanKinds : Ember.computed.alias('controllers.application.beanKinds'),
+    beanKindsShort : Ember.computed
+        .alias('controllers.application.beanKindsShort'),
+    onModelChanged : function() {
+        // A bean kind css class binding
+        this.set("kindClass", this.get('model.kind') + ' boxed');
+        this.send("rebuildGraph");
+    }.observes('model'),
     onSettingsChanged : function() {
-        this.send("settingHasChanged");
+        this.send("rebuildGraph");
     }.observes('transientDependencies', 'transientDependents',
-        'injectionPointInfo')
+        'injectionPointInfo'),
+    actions : {
+        rebuildGraph : function() {
+            this.set('graphData', buildDependencyGraphData(this.get('model'),
+                this.get('model').id, this.get("transientDependencies"), this
+                    .get("transientDependents")));
+        }
+    }
 });
 
 Probe.ObserverListController = Ember.ObjectController.extend({
-    init : function() {
-        this._super();
-        this.set('initialized', true);
-        this.set('receptions', receptions);
-        this.set('txPhases', txPhases);
-        this.set('beanKinds', observerDeclaringBeanKinds);
-    },
-    bda : markerFilterAddBdas,
+    needs : [ 'application' ],
+    beanKinds : Ember.computed.alias('controllers.application.beanKinds'),
+    filterBdas : Ember.computed.alias('controllers.application.filterBdas'),
+    bda : Ember.computed.alias('controllers.application.markerFilterAddBdas'),
+    receptions : Ember.computed.alias('controllers.application.receptions'),
+    txPhases : Ember.computed.alias('controllers.application.txPhases'),
     observedType : '',
     beanClass : '',
     reception : null,
@@ -713,10 +734,6 @@ Probe.ObserverListController = Ember.ObjectController.extend({
 });
 
 Probe.InvocationListController = Ember.ObjectController.extend({
-    init : function() {
-        this._super();
-        this.set('initialized', true);
-    },
     beanClass : '',
     methodName : '',
     search : '',
@@ -739,11 +756,8 @@ Probe.InvocationListController = Ember.ObjectController.extend({
 Probe.InvocationDetailController = Ember.ObjectController.extend({});
 
 Probe.EventsController = Ember.ObjectController.extend({
-    init : function() {
-        this._super();
-        this.set('initialized', true);
-        this.set('eventKinds', eventKinds);
-    },
+    needs : [ 'application' ],
+    eventKinds : Ember.computed.alias('controllers.application.eventKinds'),
     eventInfo : '',
     type : '',
     qualifiers : '',
@@ -778,8 +792,12 @@ Probe.ContextInstanceController = Ember.ObjectController.extend({
 });
 
 Probe.OverviewController = Ember.ObjectController.extend({
+    needs : [ 'application' ],
     bda : null,
     queryParams : [ 'bda' ],
+    beanKinds : Ember.computed.alias('controllers.application.beanKinds'),
+    beanKindsShort : Ember.computed
+        .alias('controllers.application.beanKindsShort'),
 });
 
 // HELPERS
@@ -854,19 +872,36 @@ Ember.Handlebars
                 '<strong>MB</strong> - managed bean, <strong>SB</strong> - session bean, <strong>PM</strong> - producer method, <strong>PF</strong> - producer field, <strong>RE</strong> - resource, <strong>SY</strong> - synthetic bean, <strong>IN</strong> - interceptor, <strong>DE</strong> - decorator, <strong>EX</strong> - extension, <strong>BI</strong> - built-in bean');
         });
 
+/**
+ * This helper is used to render a tooltip-like icon.
+ */
+Ember.Handlebars.registerBoundHelper('tip', function(text, options) {
+    return new Handlebars.SafeString(
+        '<i class="fa fa-lg fa-info-circle" title="' + text + '"></i>');
+});
+
+Ember.Handlebars
+    .registerBoundHelper(
+        'probe-comp',
+        function() {
+            return new Handlebars.SafeString(
+                '<i class="fa fa-lg fa-info-circle probe-comp" title="Probe internal component"></i>');
+        });
+
 // VIEWS
 
 Probe.DependencyGraph = Ember.View
     .extend({
 
-        dataChanged : function() {
+        contentChanged : function() {
             this.rerender();
-        }.observes('beanId', 'routeRefresh'),
+        }.observes('content'),
 
         didInsertElement : function() {
 
             var injectionPointInfo = this.get('controller').get(
                 "injectionPointInfo");
+            var controller = this.get('controller');
 
             var data = this.get('content');
             if (!data) {
@@ -882,7 +917,7 @@ Probe.DependencyGraph = Ember.View
             }
             // TODO responsive design
             var width = 1280;
-            var height = 800 - margin.top - margin.bottom;
+            var height = 900 - margin.top - margin.bottom;
 
             var nodes = d3.values(data.nodes);
             var links = data.links;
@@ -1020,26 +1055,31 @@ Probe.DependencyGraph = Ember.View
                 if (d.isRoot) {
                     return "3";
                 }
-            }).style("fill", function(d) {
-                if (d.kind == 'BUILT_IN') {
-                    return 'DarkGray';
-                }
-                // At this point bda should be always non-null
-                var bda = findBeanDeploymentArchive(cache.bdas, d.bda);
-                return bda != null ? bda.color : "black";
-            });
+            }).style(
+                "fill",
+                function(d) {
+                    if (d.kind == 'BUILT_IN') {
+                        return 'DarkGray';
+                    }
+                    // At this point bda should be always non-null
+                    var bda = findBeanDeploymentArchive(controller.get('bdas'),
+                        d.bda);
+                    return bda != null ? bda.color : "black";
+                });
 
             var text = node
                 .append("text")
                 .attr(
                     "dx",
                     function(d) {
-                        return (d.kind === beanKinds[6]
-                            || d.kind === beanKinds[9] || d.kind === beanKinds[3]) ? "-8"
-                            : "-12";
-                    }).attr("dy", "5").style("fill", "white").text(function(d) {
-                    return getBeanKindShort(d.kind);
-                });
+                        return (d.kind === controller.get('beanKinds')[6]
+                            || d.kind === controller.get('beanKinds')[9] || d.kind === controller
+                            .get('beanKinds')[3]) ? "-8" : "-12";
+                    }).attr("dy", "5").style("fill", "white").text(
+                    function(d) {
+                        return getBeanKindShort(controller.get('beanKinds'),
+                            controller.get('beanKindsShort'), d.kind);
+                    });
 
             node.append("a").attr("xlink:href", function(d) {
                 return "#/bean/" + d.id;
@@ -1281,9 +1321,9 @@ Probe.InvocationTree = Ember.View.extend({
 
 Probe.BdaGraph = Ember.View.extend({
 
-    dataChanged : function() {
+    contentChanged : function() {
         this.rerender();
-    }.observes('routeRefresh'),
+    }.observes("content"),
 
     didInsertElement : function() {
 
@@ -1365,9 +1405,9 @@ Probe.BdaGraph = Ember.View.extend({
         });
 
         var text = node.append("svg:text").attr("dx", function(d) {
-            return d.idx > 8 ? "-10" : "-5";
-        }).attr("dy", "5").style("fill", "black").text(function(d) {
-            return d.idx + 1;
+            return d.idx > 9 ? "-10" : "-5";
+        }).attr("dy", "5").style("fill", "white").text(function(d) {
+            return d.idx;
         });
 
         node.on('mouseover', function(d) {
@@ -1419,9 +1459,9 @@ Probe.BdaGraph = Ember.View.extend({
 Probe.OverviewGraph = Ember.View
     .extend({
 
-        dataChanged : function() {
+        contentChanged : function() {
             this.rerender();
-        }.observes('routeRefresh'),
+        }.observes('content'),
 
         didInsertElement : function() {
 
@@ -1430,6 +1470,8 @@ Probe.OverviewGraph = Ember.View
                 alert("No data to render!");
                 return;
             }
+
+            var controller = this.get('controller');
 
             var margin = {
                 top : 20,
@@ -1496,26 +1538,31 @@ Probe.OverviewGraph = Ember.View
                 return d.kind + ": " + d.beanClass;
             });
 
-            node.append("circle").attr("r", 16).style("fill", function(d) {
-                if (d.kind == 'BUILT_IN') {
-                    return 'DarkGray';
-                }
-                // At this point bda should be always non-null
-                var bda = findBeanDeploymentArchive(data.filteredBdas, d.bda);
-                return bda != null ? bda.color : "black";
-            });
+            node.append("circle").attr("r", 16).style(
+                "fill",
+                function(d) {
+                    if (d.kind == 'BUILT_IN') {
+                        return 'DarkGray';
+                    }
+                    // At this point bda should be always non-null
+                    var bda = findBeanDeploymentArchive(controller
+                        .get('filteredBdas'), d.bda);
+                    return bda != null ? bda.color : "black";
+                });
 
             var text = node
                 .append("text")
                 .attr(
                     "dx",
                     function(d) {
-                        return (d.kind === beanKinds[6]
-                            || d.kind === beanKinds[9] || d.kind === beanKinds[3]) ? "-8"
-                            : "-12";
-                    }).attr("dy", "5").style("fill", "white").text(function(d) {
-                    return getBeanKindShort(d.kind);
-                });
+                        return (d.kind === controller.get('beanKinds')[6]
+                            || d.kind === controller.get('beanKinds')[9] || d.kind === controller
+                            .get('beanKinds')[3]) ? "-8" : "-12";
+                    }).attr("dy", "5").style("fill", "white").text(
+                    function(d) {
+                        return getBeanKindShort(controller.get('beanKinds'),
+                            controller.get('beanKindsShort'), d.kind);
+                    });
 
             node.append("a").attr("xlink:href", function(d) {
                 return "#/bean/" + d.id;
@@ -1644,8 +1691,8 @@ function findNodesDependencies(bean, nodes, rootId, transientDependencies,
             bda : bean.bdaId,
         };
         if (nodes[bean.id].isRoot) {
-            nodes[bean.id].x = 300;
-            nodes[bean.id].y = 100;
+            nodes[bean.id].x = 150;
+            nodes[bean.id].y = 150;
         }
     }
     if (rootId == null && !transientDependencies) {
@@ -1756,9 +1803,12 @@ function findLinksDependents(bean, links, nodes, transientDependents) {
  *
  * @param data
  *            BeanDetailRoute data
+ * @param transientDependencies
+ * @param transientDependents
  */
 function buildDependencyGraphData(data, id, transientDependencies,
     transientDependents) {
+    var result = new Object();
     // Create nodes
     var nodes = new Object();
     findNodesDependencies(data, nodes, id, transientDependencies, true);
@@ -1767,9 +1817,10 @@ function buildDependencyGraphData(data, id, transientDependencies,
     var links = new Array();
     findLinksDependencies(data, links, nodes, transientDependencies);
     findLinksDependents(data, links, nodes, transientDependents);
-    data.nodes = nodes;
-    data.links = links;
+    result.nodes = nodes;
+    result.links = links;
     console.log('Build dependency graph data [links: ' + links.length + ']');
+    return result;
 }
 
 /**
@@ -1795,30 +1846,35 @@ function buildOverviewGraphData(data) {
 
 /**
  *
- * @param data
- *            BeanArchivesRoute data
- * @param hideAddBda
+ * @param selectedBdas
  */
-function buildBdaGraphData(data, hideAddBda) {
+function buildBdaGraphData(selectedBdas, checkTooMuchData) {
+    var data = new Object();
     // Create nodes
     var nodes = new Object();
-    findNodesBdas(data.filteredBdas, nodes);
+    findNodesBdas(selectedBdas, nodes);
     // Create links
     var links = new Array();
-    findLinksBdas(data.filteredBdas, links, nodes, hideAddBda);
+    findLinksBdas(selectedBdas, links, nodes);
     data.nodes = nodes;
     data.links = links;
-    console.log('Build BDA graph data [links: ' + links.length + ']');
+    // Don't render the graph if too much data
+    if (checkTooMuchData && (selectedBdas.length > 100 || links.length > 60)) {
+        data.tooMuchData = true;
+    }
+    console.log('Build bean archives accessible graph data [nodes: '
+        + selectedBdas.length + ', links: ' + links.length + ']');
+    return data;
 }
 
-function findNodesBdas(bdas, nodes) {
-    if (bdas) {
-        bdas.forEach(function(bda, index, array) {
-            if (bda.selected && !nodes[bda.id]) {
+function findNodesBdas(selectedBdas, nodes) {
+    if (selectedBdas) {
+        selectedBdas.forEach(function(bda, index, array) {
+            if (!nodes[bda.id]) {
                 nodes[bda.id] = {
                     id : bda.id,
                     bdaId : bda.bdaId,
-                    idx : index,
+                    idx : bda.idx,
                     fill : bda.color,
                 }
             }
@@ -1826,38 +1882,34 @@ function findNodesBdas(bdas, nodes) {
     }
 }
 
-function findLinksBdas(bdas, links, nodes, hideAddBda) {
-    if (bdas) {
-        bdas
-            .forEach(function(bda) {
-                if (bda.selected && bda.accessibleBdas) {
-                    bda.accessibleBdas
-                        .forEach(function(accessible) {
-                            if (!findBeanDeploymentArchive(cache.bdas,
-                                accessible).selected
-                                || bda.id == accessible
-                                || (hideAddBda && isAdditionalBda(findBeanDeploymentArchiveId(
-                                    cache.bdas, accessible)))) {
-                                return;
-                            }
-                            // First check identical links
-                            var found;
-                            for (var i = 0; i < links.length; i++) {
-                                if ((links[i].source == nodes[bda.id])
-                                    && (links[i].target == nodes[accessible])) {
-                                    found = links[i];
-                                    break;
-                                }
-                            }
-                            if (!found) {
-                                links.push({
-                                    source : nodes[bda.id],
-                                    target : nodes[accessible],
-                                });
-                            }
+function findLinksBdas(selectedBdas, links, nodes) {
+    if (selectedBdas) {
+        selectedBdas.forEach(function(bda) {
+            if (bda.accessibleBdas) {
+                bda.accessibleBdas.forEach(function(accessible) {
+                    var accessibleBda = findBeanDeploymentArchive(selectedBdas,
+                        accessible);
+                    if (accessibleBda == null || bda.id == accessible) {
+                        return;
+                    }
+                    // First check identical links
+                    var found;
+                    for (var i = 0; i < links.length; i++) {
+                        if ((links[i].source == nodes[bda.id])
+                            && (links[i].target == nodes[accessible])) {
+                            found = links[i];
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        links.push({
+                            source : nodes[bda.id],
+                            target : nodes[accessible],
                         });
-                }
-            });
+                    }
+                });
+            }
+        });
     }
 }
 
@@ -1917,7 +1969,7 @@ function abbreviate(text, limit) {
     return '...' + text.substring(start, end);
 }
 
-function isAdditionalBda(bdaId) {
+function isAdditionalBda(additionalBdaSuffix, bdaId) {
     return bdaId.indexOf(additionalBdaSuffix, bdaId.length
         - additionalBdaSuffix.length) !== -1;
 }
@@ -2031,7 +2083,7 @@ function generateColors(total) {
     return colors;
 }
 
-function getBeanKindShort(beanKind) {
+function getBeanKindShort(beanKinds, beanKindsShort, beanKind) {
     for (var i = 0; i < beanKinds.length; i++) {
         if (beanKinds[i] == beanKind) {
             return beanKindsShort[i];
