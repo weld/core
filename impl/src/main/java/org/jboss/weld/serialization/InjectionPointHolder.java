@@ -26,7 +26,10 @@ import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 
+import org.jboss.weld.injection.EmptyInjectionPoint;
 import org.jboss.weld.logging.BeanLogger;
+import org.jboss.weld.logging.SerializationLogger;
+import org.jboss.weld.util.Preconditions;
 import org.jboss.weld.util.reflection.Reflections;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
@@ -45,8 +48,13 @@ public class InjectionPointHolder extends AbstractSerializableHolder<InjectionPo
 
     public InjectionPointHolder(String contextId, InjectionPoint ip) {
         super(ip);
+        Preconditions.checkArgumentNotNull(ip, "injectionPoint");
         if (ip.getBean() == null) {
-            this.identifier = new NoopInjectionPointIdentifier(ip);
+            if (ip instanceof Serializable) {
+                this.identifier = new SerializableInjectionPointIdentifier(ip);
+            } else {
+                this.identifier = new TransientInjectionPointIdentifier(ip);
+            }
         } else if (ip.getAnnotated() instanceof AnnotatedField<?>) {
             AnnotatedField<?> field = Reflections.cast(ip.getAnnotated());
             this.identifier = new FieldInjectionPointIdentifier(contextId, ip.getBean(), field);
@@ -68,7 +76,12 @@ public class InjectionPointHolder extends AbstractSerializableHolder<InjectionPo
 
     @Override
     protected InjectionPoint initialize() {
-        return identifier.restoreInjectionPoint();
+        final InjectionPoint ip = identifier.restoreInjectionPoint();
+        if (ip == null) {
+            SerializationLogger.LOG.debug("Unable to deserialize InjectionPoint metadata. Falling back to EmptyInjectionPoint");
+            return EmptyInjectionPoint.INSTANCE;
+        }
+        return ip;
     }
 
     private interface InjectionPointIdentifier extends Serializable {
@@ -76,21 +89,42 @@ public class InjectionPointHolder extends AbstractSerializableHolder<InjectionPo
     }
 
     /**
-     * Noop implementation of {@link InjectionPointIdentifier}. An instance is serializable as long as the underlying
-     * {@link InjectionPoint} is serializable. This identifier should only be used to wrap {@link InjectionPoint}s that do not
-     * belong to a bean.
+     * Transient implementation of {@link InjectionPointIdentifier}. Holds an InjectionPint reference until serialized. After deserialization the reference is lost.
      *
      * @author Jozef Hartinger
      *
      */
-    private static class NoopInjectionPointIdentifier implements InjectionPointIdentifier {
+    private static class TransientInjectionPointIdentifier implements InjectionPointIdentifier {
 
         private static final long serialVersionUID = 6952579330771485841L;
 
         @SuppressWarnings("SE_TRANSIENT_FIELD_NOT_RESTORED")
         private final transient InjectionPoint ip;
 
-        public NoopInjectionPointIdentifier(InjectionPoint ip) {
+        public TransientInjectionPointIdentifier(InjectionPoint ip) {
+            this.ip = ip;
+        }
+
+        @Override
+        public InjectionPoint restoreInjectionPoint() {
+            return ip;
+        }
+
+    }
+
+    /**
+     * Holds a direct reference to an InjectionPoint provided it is {@link Serializable}
+     *
+     * @author Jozef Hartinger
+     *
+     */
+    private static class SerializableInjectionPointIdentifier implements InjectionPointIdentifier {
+
+        private static final long serialVersionUID = 6952579330771485841L;
+
+        private final InjectionPoint ip;
+
+        public SerializableInjectionPointIdentifier(InjectionPoint ip) {
             this.ip = ip;
         }
 
