@@ -36,6 +36,7 @@ import org.jboss.weld.executor.IterativeWorkerTaskFactory;
 import org.jboss.weld.logging.ValidatorLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.api.ExecutorServices;
+import org.jboss.weld.module.PlugableValidator;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.collections.SetMultimap;
 import org.jboss.weld.util.collections.WeldCollections;
@@ -50,7 +51,8 @@ public class ConcurrentValidator extends Validator {
 
     private final ExecutorServices executor;
 
-    public ConcurrentValidator(ExecutorServices executor) {
+    public ConcurrentValidator(Set<PlugableValidator> plugableValidators, ExecutorServices executor) {
+        super(plugableValidators);
         this.executor = executor;
     }
 

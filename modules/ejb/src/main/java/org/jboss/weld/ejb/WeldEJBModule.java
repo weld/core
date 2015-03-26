@@ -42,6 +42,7 @@ public class WeldEJBModule implements WeldModule {
     public void postServiceRegistration(PostServiceRegistrationContext ctx) {
         ctx.getServices().add(EjbSupport.class, ejbSupport);
         ctx.getServices().add(SLSBInvocationInjectionPoint.class, new SLSBInvocationInjectionPoint());
+        ctx.registerPlugableValidator(new WeldEJBValidator());
     }
 
     @Override

@@ -82,7 +82,6 @@ import org.jboss.weld.bean.interceptor.CdiInterceptorFactory;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.Metadata;
-import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.UnproxyableResolutionException;
@@ -100,11 +99,11 @@ import org.jboss.weld.logging.MessageCallback;
 import org.jboss.weld.logging.ValidatorLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
+import org.jboss.weld.module.PlugableValidator;
 import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.BeanMethods;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Decorators;
-import org.jboss.weld.util.JtaApiAbstraction;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.collections.Multimap;
 import org.jboss.weld.util.collections.SetMultimap;
@@ -122,6 +121,12 @@ import org.jboss.weld.util.reflection.Reflections;
  * @author Ales Justin
  */
 public class Validator implements Service {
+
+    private final Set<PlugableValidator> plugableValidators;
+
+    public Validator(Set<PlugableValidator> plugableValidators) {
+        this.plugableValidators = plugableValidators;
+    }
 
     protected void validateGeneralBean(Bean<?> bean, BeanManagerImpl beanManager) {
         for (InjectionPoint ij : bean.getInjectionPoints()) {
@@ -312,14 +317,9 @@ public class Validator implements Service {
         }
         checkFacadeInjectionPoint(ij, Instance.class);
         checkFacadeInjectionPoint(ij, Event.class);
-        // check that UserTransaction is not injected into a SessionBean with container-managed transactions
-        if (bean instanceof SessionBean<?>) {
-            JtaApiAbstraction jtaApi = beanManager.getServices().get(JtaApiAbstraction.class);
-            if (jtaApi.USER_TRANSACTION_CLASS.equals(ij.getType()) &&
-                    (ij.getQualifiers().isEmpty() || ij.getQualifiers().contains(DefaultLiteral.INSTANCE)) &&
-                    beanManager.getServices().get(EJBApiAbstraction.class).isSessionBeanWithContainerManagedTransactions(bean)) {
-                throw ValidatorLogger.LOG.userTransactionInjectionIntoBeanWithContainerManagedTransactions(ij);
-            }
+
+        for (PlugableValidator validator : plugableValidators) {
+            validator.validateInjectionPointForDefinitionErrors(ij, bean, beanManager);
         }
     }
 
@@ -388,6 +388,10 @@ public class Validator implements Service {
             if (bean != null && Beans.isPassivatingScope(bean, beanManager)) {
                 validateInjectionPointPassivationCapable(ij, resolvedBean, beanManager);
             }
+        }
+
+        for (PlugableValidator validator : plugableValidators) {
+            validator.validateInjectionPointForDeploymentProblems(ij, bean, beanManager);
         }
     }
 

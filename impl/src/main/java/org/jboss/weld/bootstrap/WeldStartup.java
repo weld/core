@@ -284,15 +284,6 @@ public class WeldStartup {
 
         services.add(RequiredAnnotationDiscovery.class, new RequiredAnnotationDiscovery(services.get(ReflectionCache.class)));
 
-        /*
-         * Setup Validator
-         */
-        if (configuration.getBooleanProperty(ConfigurationKey.CONCURRENT_DEPLOYMENT) && services.contains(ExecutorServices.class)) {
-            services.add(Validator.class, new ConcurrentValidator(executor));
-        } else {
-            services.add(Validator.class, new Validator());
-        }
-
         services.add(GlobalEnablementBuilder.class, new GlobalEnablementBuilder());
         if (!services.contains(HttpContextActivationFilter.class)) {
             services.add(HttpContextActivationFilter.class, AcceptingHttpContextActivationFilter.INSTANCE);
@@ -304,6 +295,15 @@ public class WeldStartup {
         services.add(ObserverNotifierFactory.class, DefaultObserverNotifierFactory.INSTANCE);
 
         modules.postServiceRegistration(contextId, services);
+
+        /*
+         * Setup Validator
+         */
+        if (configuration.getBooleanProperty(ConfigurationKey.CONCURRENT_DEPLOYMENT) && services.contains(ExecutorServices.class)) {
+            services.add(Validator.class, new ConcurrentValidator(modules.getPluggableValidators(), executor));
+        } else {
+            services.add(Validator.class, new Validator(modules.getPluggableValidators()));
+        }
 
         if (!services.contains(EjbSupport.class)) {
             services.add(EjbSupport.class, EjbSupport.NOOP_IMPLEMENTATION);

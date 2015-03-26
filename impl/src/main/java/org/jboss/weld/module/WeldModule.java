@@ -69,6 +69,11 @@ public interface WeldModule {
          * @return services
          */
         ServiceRegistry getServices();
+        /**
+         * Registers an additional validator to be used for bean validation
+         * @param validator
+         */
+        void registerPlugableValidator(PlugableValidator validator);
     }
 
     /**
@@ -81,8 +86,13 @@ public interface WeldModule {
     /**
      * Context object for the <code>postContextRegistration</code> phase
      */
-    interface PostContextRegistrationContext extends PostServiceRegistrationContext {
+    interface PostContextRegistrationContext {
 
+        /**
+         * Returns the container id of the running container
+         * @return the container id
+         */
+        String getContextId();
         /**
          * An immutable view on per-deployment services
          * @return services

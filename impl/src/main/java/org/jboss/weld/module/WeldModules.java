@@ -18,7 +18,10 @@ package org.jboss.weld.module;
 
 import static org.jboss.weld.util.ServiceLoader.load;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.spi.Context;
@@ -38,6 +41,7 @@ import org.jboss.weld.module.WeldModule.PostServiceRegistrationContext;
 import org.jboss.weld.module.WeldModule.PreBeanRegistrationContext;
 import org.jboss.weld.resources.WeldClassLoaderResourceLoader;
 import org.jboss.weld.util.collections.ImmutableList;
+import org.jboss.weld.util.collections.ImmutableSet;
 
 /**
  * This service takes core of {@link WeldModule}s registered with Weld.
@@ -48,15 +52,18 @@ import org.jboss.weld.util.collections.ImmutableList;
 public class WeldModules implements Service {
 
     private final List<WeldModule> modules;
+    private Set<PlugableValidator> validators;
 
     public WeldModules() {
         modules = load(WeldModule.class, WeldClassLoaderResourceLoader.INSTANCE).stream().map(metadata -> metadata.getValue())
                 .sorted((m1, m2) -> m1.getName().compareTo(m2.getName()))
                 .collect(ImmutableList.collector());
+        this.validators = Collections.emptySet();
         BootstrapLogger.LOG.debugv("Using Weld modules: {0}", modules.stream().map(m -> m.getName()).collect(Collectors.toList()));
     }
 
     public void postServiceRegistration(final String contextId, final ServiceRegistry services) {
+        final Set<PlugableValidator> validators = new HashSet<>();
         final PostServiceRegistrationContext ctx = new PostServiceRegistrationContext() {
             @Override
             public ServiceRegistry getServices() {
@@ -67,10 +74,16 @@ public class WeldModules implements Service {
             public String getContextId() {
                 return contextId;
             }
+
+            @Override
+            public void registerPlugableValidator(PlugableValidator validator) {
+                validators.add(validator);
+            }
         };
         for (WeldModule module : modules) {
             module.postServiceRegistration(ctx);
         }
+        this.validators = ImmutableSet.copyOf(validators);
     }
 
     public void postContextRegistration(final String contextId, final ServiceRegistry services, final List<ContextHolder<? extends Context>> contexts) {
@@ -126,4 +139,7 @@ public class WeldModules implements Service {
     public void cleanup() {
     }
 
+    public Set<PlugableValidator> getPluggableValidators() {
+        return validators;
+    }
 }
