@@ -74,7 +74,11 @@ public class SessionBeanProxyInstantiator<T> implements Instantiator<T> {
     }
 
     protected EnterpriseTargetBeanInstance createEnterpriseTargetBeanInstance() {
-        return new InjectionPointPropagatingEnterpriseTargetBeanInstance(bean.getBeanClass(), new EnterpriseBeanProxyMethodHandler<T>(bean), bean.getBeanManager());
+        if (bean.getEjbDescriptor().isStateless()) {
+            return new InjectionPointPropagatingEnterpriseTargetBeanInstance(bean.getBeanClass(), new EnterpriseBeanProxyMethodHandler<T>(bean), bean.getBeanManager());
+        } else {
+            return new EnterpriseTargetBeanInstance(bean.getBeanClass(), new EnterpriseBeanProxyMethodHandler<T>(bean));
+        }
     }
 
     @Override
