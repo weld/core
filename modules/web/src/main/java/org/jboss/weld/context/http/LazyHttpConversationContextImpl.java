@@ -29,10 +29,10 @@ import org.jboss.weld.serialization.BeanIdentifierIndex;
 import org.jboss.weld.servlet.ConversationContextActivator;
 
 /**
- * An implementation of {@link HttpConversationContext} that is capable of lazy initialization. By default, the context is associated with a request and the active flag
- * is set to true in the beginning of the request processing but the context is not initialized (cid not read and the state not restored) until the conversation context is first
- * accessed. As a result, {@link BusyConversationException} or {@link NonexistentConversationException} may be thrown late in the request processing and any component invoking
- * methods on {@link ConversationScoped} beans should be ready to catch these exceptions.
+ * An implementation of {@link HttpConversationContext} that is capable of lazy initialization. By default, the context is associated with a request and the
+ * active flag is set to true in the beginning of the request processing but the context is not initialized (cid not read and the state not restored) until the
+ * conversation context is first accessed. As a result, {@link BusyConversationException} or {@link NonexistentConversationException} may be thrown late in the
+ * request processing and any component invoking methods on {@link ConversationScoped} beans should be ready to catch these exceptions.
  *
  * Lazy initialization is mostly a workaround for https://issues.jboss.org/browse/CDI-411.
  *
@@ -75,6 +75,9 @@ public class LazyHttpConversationContextImpl extends HttpConversationContextImpl
         } else {
             ConversationLogger.LOG.contextAlreadyActive(getRequest());
         }
+        // Reset the initialized flag - a thread which is not cleaned up properly (e.g. async processing on
+        // Tomcat) may break the lazy initialization otherwise
+        this.initialized.set(null);
     }
 
     public boolean isInitialized() {
@@ -121,7 +124,7 @@ public class LazyHttpConversationContextImpl extends HttpConversationContextImpl
             initialize(cid);
             if (cid == null) { // transient conversation
                 Consumer<HttpServletRequest> callback = initializationCallback.get();
-                if(callback != null) {
+                if (callback != null) {
                     callback.accept(request);
                 }
             }
