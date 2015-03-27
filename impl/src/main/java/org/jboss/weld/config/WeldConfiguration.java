@@ -372,12 +372,11 @@ public class WeldConfiguration implements Service {
 
     private Map<ConfigurationKey, Object> processBootstrapConfiguration(BootstrapConfiguration bootstrapConfiguration) {
         if (bootstrapConfiguration != null) {
-
             Map<ConfigurationKey, Object> found = new EnumMap<ConfigurationKey, Object>(ConfigurationKey.class);
-
             processKeyValue(found, ConfigurationKey.CONCURRENT_DEPLOYMENT, bootstrapConfiguration.isConcurrentDeploymentEnabled());
             processKeyValue(found, ConfigurationKey.PRELOADER_THREAD_POOL_SIZE, bootstrapConfiguration.getPreloaderThreadPoolSize());
             processKeyValue(found, ConfigurationKey.NON_PORTABLE_MODE, bootstrapConfiguration.isNonPortableModeEnabled());
+            return found;
         }
         return Collections.emptyMap();
     }
