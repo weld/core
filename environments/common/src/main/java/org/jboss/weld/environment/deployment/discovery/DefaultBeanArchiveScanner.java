@@ -24,6 +24,7 @@ import static org.jboss.weld.environment.util.URLUtils.PROCOTOL_JAR;
 import static org.jboss.weld.environment.util.URLUtils.PROTOCOL_FILE_PART;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URI;
@@ -134,12 +135,28 @@ public class DefaultBeanArchiveScanner implements BeanArchiveScanner {
             // WebStart support: get path to local cached copy of remote JAR file
             // Class loader should be an instance of com.sun.jnlp.JNLPClassLoader
             ClassLoader jnlpClassLoader = WeldResourceLoader.getClassLoader();
-            try {
-                // Try to call com.sun.jnlp.JNLPClassLoader#getJarFile(URL) from JDK 6
-                Method m = jnlpClassLoader.getClass().getMethod("getJarFile", URL.class);
-                // returns a reference to the local cached copy of the JAR
-                ZipFile jarFile = (ZipFile) m.invoke(jnlpClassLoader, new URL(path));
-                return jarFile.getName();
+            Class<?> jnlpClClass = jnlpClassLoader.getClass();
+
+            try{
+                // Detecting if running inside icedtea-web JNLP runtime
+                if (jnlpClClass.getName().equals("net.sourceforge.jnlp.runtime.JNLPClassLoader")) {
+                    // Try to get field net.sourceforge.jnlp.runtime.JNLPClassLoader#tracker from icedtea-web 1.5
+                    Field f = jnlpClassLoader.getClass().getDeclaredField("tracker");
+                    f.setAccessible(true);
+                    Object tracker = f.get(jnlpClassLoader);
+                    // Try to call net.sourceforge.jnlp.cache.ResourceTracker#getCacheFile(URL)
+                    Method m = tracker.getClass().getMethod("getCacheFile", URL.class);
+                    File jarFile = (File) m.invoke(tracker, new URL(path));
+                    return jarFile.getPath();
+                } else {
+                    // Try to call com.sun.jnlp.JNLPClassLoader#getJarFile(URL) from JDK 6
+                    Method m = jnlpClClass.getMethod("getJarFile", URL.class);
+                    // returns a reference to the local cached copy of the JAR
+                    ZipFile jarFile = (ZipFile) m.invoke(jnlpClassLoader, new URL(path));
+                    return jarFile.getName();
+                }
+            } catch (NoSuchFieldException nsfe) {
+                CommonLogger.LOG.unexpectedClassLoader(nsfe);
             } catch (NoSuchMethodException nsme) {
                 CommonLogger.LOG.unexpectedClassLoader(nsme);
             } catch (IllegalArgumentException iarge) {
