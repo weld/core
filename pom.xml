@@ -68,7 +68,7 @@
         <testng.version>5.10</testng.version>
         <weld.api.version>2.2.SP4</weld.api.version>
         <wildfly.version>8.2.0.Final</wildfly.version>
-        <wildfly.arquillian.version>1.0.0.Alpha1</wildfly.arquillian.version>
+        <wildfly.arquillian.version>1.0.0.Alpha2</wildfly.arquillian.version>
     </properties>
 
     <modules>
