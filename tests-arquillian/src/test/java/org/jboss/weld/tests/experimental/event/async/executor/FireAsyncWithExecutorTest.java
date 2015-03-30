@@ -22,6 +22,7 @@ import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -49,7 +50,7 @@ public class FireAsyncWithExecutorTest {
 
     private static final SynchronousQueue<Response> SYNCHRONIZER = new SynchronousQueue<>();
     private static final AtomicBoolean REQUEST_RECEIVED = new AtomicBoolean();
-    private static final AtomicBoolean RESPONSE_RECEIVED = new AtomicBoolean();
+    private static final AtomicReference<Response> RESPONSE_RECEIVED = new AtomicReference<>();
 
     @Inject
     private ExperimentalEvent<Request> request;
@@ -71,7 +72,8 @@ public class FireAsyncWithExecutorTest {
         request.fireAsync(new Request(), executor);
         final Response response = SYNCHRONIZER.poll(30, TimeUnit.SECONDS);
         Assert.assertTrue(REQUEST_RECEIVED.get());
-        Assert.assertTrue(RESPONSE_RECEIVED.get());
+        Assert.assertNotNull(RESPONSE_RECEIVED.get());
+        Assert.assertEquals(FireAsyncWithExecutorTest.class.getName(), RESPONSE_RECEIVED.get().getThread().getName());
         Assert.assertNotNull(response);
         Assert.assertEquals(FireAsyncWithExecutorTest.class.getName(), response.getThread().getName());
     }
@@ -82,7 +84,7 @@ public class FireAsyncWithExecutorTest {
     }
 
     public static void receive(@Observes Response response) {
-        RESPONSE_RECEIVED.set(true);
+        RESPONSE_RECEIVED.set(response);
         SYNCHRONIZER.add(response);
     }
 }
