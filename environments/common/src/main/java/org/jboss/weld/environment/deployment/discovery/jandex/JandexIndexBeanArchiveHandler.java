@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.environment.deployment.discovery.jandex;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -119,7 +120,7 @@ public class JandexIndexBeanArchiveHandler implements BeanArchiveHandler {
 
     private String getJandexIndexURLString(final String urlPath) {
         String indexUrlString = FILE_URL_PREFIX + urlPath + SEPARATOR + JANDEX_INDEX_NAME;
-        if (urlPath.toLowerCase().endsWith(".jar")) {
+        if (new File(urlPath).isFile()) {
             indexUrlString = JAR_URL_PREFIX + indexUrlString;
         }
 
