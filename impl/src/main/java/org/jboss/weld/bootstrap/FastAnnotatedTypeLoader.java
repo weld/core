@@ -43,12 +43,12 @@ import org.jboss.weld.util.bytecode.BytecodeUtils;
  * @author Jozef Hartinger
  *
  */
-public class FastAnnotatedTypeLoader extends AnnotatedTypeLoader {
+class FastAnnotatedTypeLoader extends AnnotatedTypeLoader {
 
     private final ClassFileServices classFileServices;
     private final FastProcessAnnotatedTypeResolver resolver;
 
-    public FastAnnotatedTypeLoader(BeanManagerImpl manager, ClassTransformer transformer, ClassFileServices classFileServices,
+    FastAnnotatedTypeLoader(BeanManagerImpl manager, ClassTransformer transformer, ClassFileServices classFileServices,
             ContainerLifecycleEvents events, FastProcessAnnotatedTypeResolver resolver) {
         super(manager, transformer, events);
         this.classFileServices = classFileServices;
