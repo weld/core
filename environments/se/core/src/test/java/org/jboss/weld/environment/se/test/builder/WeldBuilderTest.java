@@ -1,0 +1,166 @@
+/*
+ * JBoss, Home of Professional Open Source
+ * Copyright 2015, Red Hat, Inc., and individual contributors
+ * by the @authors tag. See the copyright.txt in the distribution for a
+ * full listing of individual contributors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.jboss.weld.environment.se.test.builder;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.enterprise.event.ObserverException;
+
+import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
+import org.jboss.weld.config.ConfigurationKey;
+import org.jboss.weld.config.WeldConfiguration;
+import org.jboss.weld.environment.se.Weld;
+import org.jboss.weld.environment.se.WeldContainer;
+import org.jboss.weld.environment.se.test.builder.alphas.Alpha1;
+import org.jboss.weld.environment.se.test.builder.alphas.Alpha2;
+import org.jboss.weld.manager.BeanManagerImpl;
+import org.junit.Test;
+
+/**
+ *
+ * @author Martin Kouba
+ */
+public class WeldBuilderTest {
+
+    @Test
+    public void testSyntheticBeanArchive() throws Exception {
+        Weld weld = new Weld().disableDiscovery();
+        try (WeldContainer container = weld.containerId("FOO").beanClasses(Foo.class, Bar.class, Cat.class).initialize()) {
+            assertEquals(10, container.select(Foo.class).get().getVal());
+            assertTrue(container.select(Bar.class).isUnsatisfied());
+            assertTrue(container.select(Cat.class).isUnsatisfied());
+            assertTrue(container.select(Qux.class).isUnsatisfied());
+        }
+        // Test AutoCloseable
+        assertNull(WeldContainer.instance("FOO"));
+        // Test alternatives selected for the synthetic BDA
+        try (WeldContainer container = weld.beanClasses(Foo.class, Bar.class, Cat.class).alternatives(Bar.class)
+                .alternativeStereotypes(AlternativeStereotype.class).initialize()) {
+            assertEquals(10, container.select(Foo.class).get().getVal());
+            assertEquals(1, container.select(Bar.class).get().getVal());
+            assertEquals(5, container.select(Cat.class).get().getVal());
+        }
+        // Test interceptor enabled for the synthetic BDA
+        try (WeldContainer container = weld.reset().beanClasses(Qux.class).interceptors(MonitoringInterceptor.class).initialize()) {
+            assertEquals(Integer.valueOf(11), container.select(Qux.class).get().ping());
+        }
+        // Test decorator enabled for the synthetic BDA
+        try (WeldContainer container = weld.reset().beanClasses(Foo.class).decorators(CoolDecorator.class).initialize()) {
+            assertEquals("NOK", container.select(Foo.class).get().methodToBeDecorated());
+        }
+        // Test addBeanClass()
+        try (WeldContainer container = weld.reset().beanClasses(Bar.class).addBeanClass(Foo.class).alternatives(Bar.class).initialize()) {
+            assertEquals(10, container.select(Foo.class).get().getVal());
+            assertEquals(1, container.select(Bar.class).get().getVal());
+            assertTrue(container.select(Baz.class).isUnsatisfied());
+        }
+    }
+
+    @Test
+    public void testInitializedContainers() {
+        Baz.DESTROYED.clear();
+        Weld weld = new Weld().disableDiscovery();
+        int loop = 5;
+        List<WeldContainer> containers = new ArrayList<WeldContainer>();
+        for (int i = 0; i < loop; i++) {
+            containers.add(weld.containerId("" + i).beanClasses(Baz.class).initialize());
+        }
+        for (WeldContainer container : containers) {
+            assertTrue(container.isRunning());
+            assertEquals(container.getId(), container.select(Baz.class).get().getVal());
+        }
+        weld.shutdown();
+        assertEquals(loop, Baz.DESTROYED.size());
+        for (int i = 0; i < loop; i++) {
+            assertTrue(Baz.DESTROYED.contains("" + i));
+        }
+        for (WeldContainer container : containers) {
+            assertFalse(container.isRunning());
+        }
+    }
+
+    @Test
+    public void testConfigurationProperties() {
+        try (WeldContainer container = new Weld().disableDiscovery().property(ConfigurationKey.CONCURRENT_DEPLOYMENT, false).initialize()) {
+            assertFalse(container.select(BeanManagerImpl.class).get().getServices().get(WeldConfiguration.class)
+                    .getBooleanProperty(ConfigurationKey.CONCURRENT_DEPLOYMENT));
+        }
+    }
+
+    @Test
+    public void testReset() {
+        Weld weld = new Weld().containerId("FOO").disableDiscovery().property(ConfigurationKey.BEAN_IDENTIFIER_INDEX_OPTIMIZATION, true).beanClasses(Foo.class);
+        weld.reset();
+        assertFalse(weld.isDiscoveryEnabled());
+        assertEquals("FOO", weld.getContainerId());
+        try (WeldContainer container = weld.initialize()) {
+            assertTrue(container.select(Foo.class).isUnsatisfied());
+            assertTrue(container.select(BeanManagerImpl.class).get().getServices().get(WeldConfiguration.class)
+                    .getBooleanProperty(ConfigurationKey.BEAN_IDENTIFIER_INDEX_OPTIMIZATION));
+        }
+    }
+
+    @Test
+    public void testResetAll() {
+        Weld weld = new Weld().containerId("FOO").disableDiscovery().property(ConfigurationKey.RELAXED_CONSTRUCTION, false).beanClasses(Foo.class);
+        weld.resetAll();
+        assertTrue(weld.isDiscoveryEnabled());
+        assertEquals(RegistrySingletonProvider.STATIC_INSTANCE, weld.getContainerId());
+        weld.disableDiscovery();
+        try (WeldContainer container = weld.initialize()) {
+            assertTrue(container.select(Foo.class).isUnsatisfied());
+            assertTrue(container.select(BeanManagerImpl.class).get().getServices().get(WeldConfiguration.class)
+                    .getBooleanProperty(ConfigurationKey.BEAN_IDENTIFIER_INDEX_OPTIMIZATION));
+        }
+    }
+
+    @Test
+    public void testLifecycle() {
+        Weld weld = new Weld().disableDiscovery().beanClasses(Foo.class, DependentFoo.class);
+        try (WeldContainer container = weld.initialize()) {
+            container.select(DependentFoo.class).get().getVal();
+        }
+        assertTrue(DependentFoo.destroyCallbackCalled.get());
+        DependentFoo.reset();
+        try (WeldContainer container = weld.initialize()) {
+            DependentFoo dependentFoo = container.select(DependentFoo.class).get();
+            dependentFoo.getVal();
+            container.destroy(dependentFoo);
+            assertTrue(DependentFoo.destroyCallbackCalled.get());
+        }
+    }
+
+    @Test
+    public void testSyntheticBeanArchivePackages() throws Exception {
+        Weld weld = new Weld().disableDiscovery();
+        try (WeldContainer container = weld.packages(Alpha1.class).initialize()) {
+            assertEquals(1, container.select(Alpha1.class).get().getVal());
+            assertEquals(2, container.select(Alpha2.class).get().getVal());
+        }
+        // Scan the package from cdi-api.jar
+        try (WeldContainer container = weld.packages(ObserverException.class).initialize()) {
+            assertFalse(container.select(ObserverException.class).isUnsatisfied());
+        }
+    }
+
+}

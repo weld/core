@@ -22,11 +22,11 @@ import java.util.Set;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Vetoed;
-import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
+import javax.inject.Singleton;
 
 import org.jboss.weld.bean.builtin.BeanManagerProxy;
 import org.jboss.weld.bootstrap.events.AbstractContainerEvent;
@@ -34,6 +34,8 @@ import org.jboss.weld.environment.se.beans.InstanceManager;
 import org.jboss.weld.environment.se.beans.ParametersFactory;
 import org.jboss.weld.environment.se.contexts.ThreadContext;
 import org.jboss.weld.environment.se.threading.RunnableDecorator;
+import org.jboss.weld.experimental.ExperimentalAfterBeanDiscovery;
+import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.util.annotated.ForwardingAnnotatedType;
 
 /**
@@ -51,32 +53,38 @@ public class WeldSEBeanRegistrant implements Extension {
             return;
         }
 
-        VetoedSuppressedAnnotatedType<ParametersFactory> parametersFactory = new VetoedSuppressedAnnotatedType<ParametersFactory>(manager.createAnnotatedType(ParametersFactory.class));
-        VetoedSuppressedAnnotatedType<InstanceManager> instanceManager = new VetoedSuppressedAnnotatedType<InstanceManager>(manager.createAnnotatedType(InstanceManager.class));
-        VetoedSuppressedAnnotatedType<RunnableDecorator> runnableDecorator = new VetoedSuppressedAnnotatedType<RunnableDecorator>(manager.createAnnotatedType(RunnableDecorator.class));
-        VetoedSuppressedAnnotatedType<WeldContainer> weldContainer = new VetoedSuppressedAnnotatedType<WeldContainer>(manager.createAnnotatedType(WeldContainer.class));
+        VetoedSuppressedAnnotatedType<ParametersFactory> parametersFactory = new VetoedSuppressedAnnotatedType<ParametersFactory>(
+                manager.createAnnotatedType(ParametersFactory.class));
+        VetoedSuppressedAnnotatedType<InstanceManager> instanceManager = new VetoedSuppressedAnnotatedType<InstanceManager>(
+                manager.createAnnotatedType(InstanceManager.class));
+        VetoedSuppressedAnnotatedType<RunnableDecorator> runnableDecorator = new VetoedSuppressedAnnotatedType<RunnableDecorator>(
+                manager.createAnnotatedType(RunnableDecorator.class));
 
         event.addAnnotatedType(parametersFactory);
         event.addAnnotatedType(instanceManager);
         event.addAnnotatedType(runnableDecorator);
-        event.addAnnotatedType(weldContainer);
     }
 
-    public void registerWeldSEContexts(@Observes AfterBeanDiscovery event, BeanManager manager) {
+    public void registerWeldSEContexts(@Observes ExperimentalAfterBeanDiscovery event, BeanManager manager) {
         if (ignoreEvent(event)) {
             return;
         }
 
+        final String contextId = BeanManagerProxy.unwrap(manager).getContextId();
+
         // set up this thread's bean store
-        this.threadContext = new ThreadContext(BeanManagerProxy.unwrap(manager).getContextId());
+        this.threadContext = new ThreadContext(contextId);
 
         // activate and add context
         event.addContext(threadContext);
+
+        // Register WeldContainer as a singleton
+        event.addBean().addType(WeldContainer.class).addQualifier(DefaultLiteral.INSTANCE).scope(Singleton.class)
+                .produceWith(() -> WeldContainer.instance(contextId));
     }
 
     /**
-     * Returns <tt>true</tt> if the specified event is not an instance of {@link AbstractContainerEvent}, i.e. was thrown by
-     * other CDI implementation than Weld.
+     * Returns <tt>true</tt> if the specified event is not an instance of {@link AbstractContainerEvent}, i.e. was thrown by other CDI implementation than Weld.
      */
     private static boolean ignoreEvent(Object event) {
         return !(event instanceof AbstractContainerEvent);

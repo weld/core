@@ -24,6 +24,7 @@ import org.jboss.weld.environment.se.logging.WeldSELogger;
 import org.jboss.weld.literal.DestroyedLiteral;
 
 @Vetoed
+@Deprecated
 public class ShutdownManager {
 
     private boolean hasShutdownBeenCalled = false;

@@ -34,6 +34,7 @@ import org.jboss.weld.experimental.ExperimentalEvent;
  * @see WeldContainer
  */
 @Vetoed
+@Deprecated
 public class InstanceManager {
 
     @Inject @Any
