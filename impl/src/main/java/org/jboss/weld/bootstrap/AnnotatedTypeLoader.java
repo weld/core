@@ -34,14 +34,14 @@ import org.jboss.weld.util.Beans;
  * @author Jozef Hartinger
  *
  */
-public class AnnotatedTypeLoader {
+class AnnotatedTypeLoader {
 
     final ResourceLoader resourceLoader;
     final ClassTransformer classTransformer;
     final MissingDependenciesRegistry missingDependenciesRegistry;
     final ContainerLifecycleEvents containerLifecycleEvents;
 
-    public AnnotatedTypeLoader(BeanManagerImpl manager, ClassTransformer transformer, ContainerLifecycleEvents containerLifecycleEvents) {
+    AnnotatedTypeLoader(BeanManagerImpl manager, ClassTransformer transformer, ContainerLifecycleEvents containerLifecycleEvents) {
         this.resourceLoader = manager.getServices().get(ResourceLoader.class);
         this.classTransformer = transformer;
         this.missingDependenciesRegistry = manager.getServices().get(MissingDependenciesRegistry.class);
