@@ -38,7 +38,8 @@ import org.jboss.weld.util.bytecode.BytecodeUtils;
 /**
  * Specialized version of {@link AnnotatedTypeLoader}. This implementation uses {@link ClassFileServices} to avoid loading application classes that are not
  * needed for Weld. In addition, this implementation feeds {@link SlimAnnotatedTypeContext} with {@link ClassFileInfo} and resolved {@link ProcessAnnotatedType}
- * observer methods.
+ * observer methods. If {@link ClassFileServices} is not sufficient to load an annotated type (e.g. superclass information missing from the index) then a fall back
+ * to {@link AnnotatedTypeLoader} is performed.
  *
  * @author Jozef Hartinger
  *
@@ -47,10 +48,12 @@ class FastAnnotatedTypeLoader extends AnnotatedTypeLoader {
 
     private final ClassFileServices classFileServices;
     private final FastProcessAnnotatedTypeResolver resolver;
+    private final AnnotatedTypeLoader fallback;
 
     FastAnnotatedTypeLoader(BeanManagerImpl manager, ClassTransformer transformer, ClassFileServices classFileServices,
             ContainerLifecycleEvents events, FastProcessAnnotatedTypeResolver resolver) {
         super(manager, transformer, events);
+        this.fallback = new AnnotatedTypeLoader(manager, transformer, events);
         this.classFileServices = classFileServices;
         this.resolver = resolver;
     }
@@ -86,7 +89,7 @@ class FastAnnotatedTypeLoader extends AnnotatedTypeLoader {
             return null;
         } catch (ClassFileInfoException e) {
             BootstrapLogger.LOG.exceptionLoadingAnnotatedType(e.getMessage());
-            return super.loadAnnotatedType(className, bdaId);
+            return fallback.loadAnnotatedType(className, bdaId);
         }
     }
 
