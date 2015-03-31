@@ -47,6 +47,7 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.AnnotatedField;
@@ -106,6 +107,7 @@ import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.el.Namespace;
 import org.jboss.weld.el.WeldELResolver;
 import org.jboss.weld.el.WeldExpressionFactory;
+import org.jboss.weld.event.EventImpl;
 import org.jboss.weld.event.EventMetadataImpl;
 import org.jboss.weld.event.GlobalObserverNotifierService;
 import org.jboss.weld.event.ObserverNotifier;
@@ -1369,6 +1371,62 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     @Override
     public Instance<Object> instance() {
         return InstanceImpl.of(InstanceInjectionPoint.INSTANCE, createCreationalContext(null), this);
+    }
+
+    private static class EventInjectionPoint implements InjectionPoint, Serializable {
+
+        private static final long serialVersionUID = 8947703643709929295L;
+
+        private static final InjectionPoint INSTANCE = new EventInjectionPoint();
+
+        private transient Type type;
+
+        @java.lang.SuppressWarnings("serial")
+        @Override
+        public Type getType() {
+            if (type == null) {
+                this.type = new TypeLiteral<Event<Object>>() {
+                }.getType();
+            }
+            return type;
+        }
+
+        // there are no qualifiers by default
+        // ResolvableBuilder.create() takes care of adding @Default if there is no qualifier selected
+        @Override
+        public Set<Annotation> getQualifiers() {
+            return Collections.emptySet();
+        }
+
+        @Override
+        public Bean<?> getBean() {
+            return null;
+        }
+
+        @Override
+        public Member getMember() {
+            return null;
+        }
+
+        @Override
+        public Annotated getAnnotated() {
+            return null;
+        }
+
+        @Override
+        public boolean isDelegate() {
+            return false;
+        }
+
+        @Override
+        public boolean isTransient() {
+            return false;
+        }
+
+    }
+
+    public Event<Object> event() {
+        return EventImpl.of(EventInjectionPoint.INSTANCE, this);
     }
 
     public <T> Instance<Object> getInstance(CreationalContext<?> ctx) {
