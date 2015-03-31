@@ -29,6 +29,7 @@ import java.util.zip.ZipFile;
 
 import org.jboss.logging.Logger;
 import org.jboss.weld.environment.logging.CommonLogger;
+import org.jboss.weld.environment.util.Files;
 
 /**
  * Handles JAR files and directories.
@@ -41,7 +42,7 @@ public class FileSystemBeanArchiveHandler implements BeanArchiveHandler {
 
     private static final Logger log = Logger.getLogger(FileSystemBeanArchiveHandler.class);
 
-    public static final String CLASS_FILE_EXTENSION = ".class";
+    public static final String CLASS_FILE_EXTENSION = Files.CLASS_FILE_EXTENSION;
 
     @Override
     public BeanArchiveBuilder handle(String path) {
@@ -115,17 +116,9 @@ public class FileSystemBeanArchiveHandler implements BeanArchiveHandler {
     }
 
     protected void add(Entry entry, BeanArchiveBuilder builder) throws MalformedURLException {
-        if (isClass(entry.getName())) {
-            builder.addClass(filenameToClassname(entry.getName()));
+        if (Files.isClass(entry.getName())) {
+            builder.addClass(Files.filenameToClassname(entry.getName()));
         }
-    }
-
-    protected boolean isClass(String name) {
-        return name.endsWith(CLASS_FILE_EXTENSION);
-    }
-
-    private String filenameToClassname(String filename) {
-        return filename.substring(0, filename.lastIndexOf(CLASS_FILE_EXTENSION)).replace('/', '.').replace('\\', '.');
     }
 
     /**
