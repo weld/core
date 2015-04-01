@@ -86,7 +86,7 @@ public class ProbeFilter implements Filter {
         if (configuration.getBooleanProperty(ConfigurationKey.PROBE_CLIPPY_SUPPORT)) {
             StringBuilder builder = new StringBuilder();
             builder.append("<!-- The following snippet was automatically added by Weld, see the documentation to disable this functionality -->");
-            builder.append("<div id=\"weld-dev-mode-info\" style=\"width:auto;background-color:#f8f8f8;border:2px solid silver;padding:10px;border-radius:5px;margin:50px 5px 5px 5px;font-size:16px;font-family:sans-serif;color:black;\">");
+            builder.append("<div id=\"weld-dev-mode-info\" style=\"position: fixed !important;bottom:0;left:0;width:100%;background-color:#f8f8f8;border:2px solid silver;padding:10px;border-radius:2px;margin:0px;font-size:16px;font-family:sans-serif;color:black;\">");
             builder.append("<img alt=\"Weld logo\" src=\"");
             builder.append(filterConfig.getServletContext().getContextPath());
             builder.append("/weld-probe/client/weld_icon_48x.png\">");
