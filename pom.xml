@@ -69,7 +69,6 @@
         <shrinkwrap.descriptors.version>1.1.0-beta-1</shrinkwrap.descriptors.version>
         <testng.version>5.10</testng.version>
         <weld.api.version>3.0.Alpha5</weld.api.version>
-        <wildfly.version>8.0.0.Final</wildfly.version>
         <wildfly.arquillian.version>1.0.0.Alpha2</wildfly.arquillian.version>
     </properties>
 
@@ -276,26 +275,7 @@
                 <version>${arquillian.glassfish.version}</version>
             </dependency>
 
-            <!-- WildFly Arquillian container -->
-            <dependency>
-                <groupId>org.wildfly</groupId>
-                <artifactId>wildfly-arquillian-common</artifactId>
-                <version>${wildfly.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.wildfly</groupId>
-                <artifactId>wildfly-arquillian-container-managed</artifactId>
-                <version>${wildfly.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.wildfly</groupId>
-                <artifactId>wildfly-arquillian-container-remote</artifactId>
-                <version>${wildfly.version}</version>
-            </dependency>
-
-            <!-- WildFly 9.x -->
+            <!-- WildFly -->
             <dependency>
                 <groupId>org.wildfly.arquillian</groupId>
                 <artifactId>wildfly-arquillian-container-managed</artifactId>
@@ -304,6 +284,11 @@
             <dependency>
                 <groupId>org.wildfly.arquillian</groupId>
                 <artifactId>wildfly-arquillian-protocol-jmx</artifactId>
+                <version>${wildfly.arquillian.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wildfly.arquillian</groupId>
+                <artifactId>wildfly-arquillian-common</artifactId>
                 <version>${wildfly.arquillian.version}</version>
             </dependency>
 

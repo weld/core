@@ -292,9 +292,15 @@
                 </dependency>
                 <!-- Because we need this to compile the exception transformer and resource manager -->
                 <dependency>
-                    <groupId>org.wildfly</groupId>
+                    <groupId>org.wildfly.arquillian</groupId>
                     <artifactId>wildfly-arquillian-common</artifactId>
                     <scope>test</scope>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>org.jboss.logmanager</groupId>
+                            <artifactId>log4j-jboss-logmanager</artifactId>
+                        </exclusion>
+                    </exclusions>
                 </dependency>
             </dependencies>
             <build>
@@ -333,216 +339,6 @@
                 <property>
                     <name>incontainer</name>
                     <value>true</value>
-                </property>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>org.wildfly</groupId>
-                    <artifactId>wildfly-arquillian-container-managed</artifactId>
-                    <scope>test</scope>
-                    <exclusions>
-                        <exclusion>
-                            <groupId>org.jboss.arquillian.core</groupId>
-                            <artifactId>arquillian-core-spi</artifactId>
-                        </exclusion>
-                        <exclusion>
-                            <groupId>org.jboss.arquillian.core</groupId>
-                            <artifactId>arquillian-core-api</artifactId>
-                        </exclusion>
-	                    <exclusion>
-	                        <groupId>org.jboss.logmanager</groupId>
-	                        <artifactId>log4j-jboss-logmanager</artifactId>
-	                    </exclusion>
-                    </exclusions>
-                </dependency>
-                <dependency>
-                    <groupId>org.jboss.arquillian.protocol</groupId>
-                    <artifactId>arquillian-protocol-servlet</artifactId>
-                    <version>${arquillian.version}</version>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>log4j</groupId>
-                    <artifactId>log4j</artifactId>
-                </dependency>
-            </dependencies>
-            <build>
-                <resources>
-                    <resource>
-                        <directory>src/test/resources</directory>
-                    </resource>
-                    <resource>
-                        <directory>src/test/wildfly8</directory>
-                    </resource>
-                </resources>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <systemPropertyVariables>
-                                <!-- Silencing the broken code in getActiveConfiguration(),
-                                    see https://github.com/arquillian/arquillian/blob/master/impl-base/src/main/java/org/jboss/arquillian/impl/client/container/ContainerRegistryCreator.java -->
-                                <arquillian.launch>wildfly-8</arquillian.launch>
-                                <!-- Specified system properties are not
-                                    available during in-container test execution -->
-                                <org.jboss.cdi.tck.libraryDirectory>target/dependency/lib</org.jboss.cdi.tck.libraryDirectory>
-                                <org.jboss.cdi.tck.testDataSource>java:jboss/datasources/ExampleDS</org.jboss.cdi.tck.testDataSource>
-                            </systemPropertyVariables>
-                            <systemProperties>
-                                <jacoco.agent>${jacoco.agent}</jacoco.agent>
-                                <additional.vm.args>${additional.vm.args}</additional.vm.args>
-                            </systemProperties>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <!-- Run the TCK in the managed container (Web Profile) -->
-        <profile>
-            <id>incontainer-webprofile</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-                <property>
-                    <name>incontainer</name>
-                    <value>webprofile</value>
-                </property>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>org.wildfly</groupId>
-                    <artifactId>wildfly-arquillian-container-managed</artifactId>
-                    <scope>test</scope>
-                    <exclusions>
-                        <exclusion>
-                            <groupId>org.jboss.arquillian.core</groupId>
-                            <artifactId>arquillian-core-spi</artifactId>
-                        </exclusion>
-                        <exclusion>
-                            <groupId>org.jboss.arquillian.core</groupId>
-                            <artifactId>arquillian-core-api</artifactId>
-                        </exclusion>
-                    </exclusions>
-                </dependency>
-                <dependency>
-                    <groupId>org.jboss.arquillian.protocol</groupId>
-                    <artifactId>arquillian-protocol-servlet</artifactId>
-                    <version>${arquillian.version}</version>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
-            <build>
-                <resources>
-                    <resource>
-                        <directory>src/test/resources</directory>
-                    </resource>
-                    <resource>
-                        <directory>src/test/wildfly8</directory>
-                    </resource>
-                </resources>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <excludedGroups>javaee-full</excludedGroups>
-                            <systemPropertyVariables>
-                                <!-- Silencing the broken code in getActiveConfiguration(),
-                                    see https://github.com/arquillian/arquillian/blob/master/impl-base/src/main/java/org/jboss/arquillian/impl/client/container/ContainerRegistryCreator.java -->
-                                <arquillian.launch>wildfly-8</arquillian.launch>
-                                <!-- Specified system properties are not
-                                    available during in-container test execution -->
-                                <org.jboss.cdi.tck.libraryDirectory>target/dependency/lib</org.jboss.cdi.tck.libraryDirectory>
-                                <org.jboss.cdi.tck.testDataSource>java:jboss/datasources/ExampleDS</org.jboss.cdi.tck.testDataSource>
-                            </systemPropertyVariables>
-                            <systemProperties>
-                                <jacoco.agent>${jacoco.agent}</jacoco.agent>
-                            </systemProperties>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <!-- Run the TCK in the remote container (full Java EE platform) -->
-        <profile>
-            <id>incontainer-remote</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-                <property>
-                    <name>incontainer</name>
-                    <value>remote</value>
-                </property>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>org.wildfly</groupId>
-                    <artifactId>wildfly-arquillian-container-remote</artifactId>
-                    <scope>test</scope>
-                    <exclusions>
-                        <exclusion>
-                            <groupId>org.jboss.arquillian.core</groupId>
-                            <artifactId>arquillian-core-spi</artifactId>
-                        </exclusion>
-                        <exclusion>
-                            <groupId>org.jboss.arquillian.core</groupId>
-                            <artifactId>arquillian-core-api</artifactId>
-                        </exclusion>
-	                    <exclusion>
-	                        <groupId>org.jboss.logmanager</groupId>
-	                        <artifactId>log4j-jboss-logmanager</artifactId>
-	                    </exclusion>
-                    </exclusions>
-                </dependency>
-                <dependency>
-                    <groupId>org.jboss.arquillian.protocol</groupId>
-                    <artifactId>arquillian-protocol-servlet</artifactId>
-                    <version>${arquillian.version}</version>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>log4j</groupId>
-                    <artifactId>log4j</artifactId>
-                </dependency>
-            </dependencies>
-            <build>
-                <resources>
-                    <resource>
-                        <directory>src/test/resources</directory>
-                    </resource>
-                    <resource>
-                        <directory>src/test/wildfly8</directory>
-                    </resource>
-                </resources>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <systemPropertyVariables>
-                                <!-- Silencing the broken code in getActiveConfiguration(),
-                                    see https://github.com/arquillian/arquillian/blob/master/impl-base/src/main/java/org/jboss/arquillian/impl/client/container/ContainerRegistryCreator.java -->
-                                <arquillian.launch>wildfly-8</arquillian.launch>
-                                <!-- Specified system properties are not
-                                    available during in-container test execution -->
-                                <org.jboss.cdi.tck.libraryDirectory>target/dependency/lib</org.jboss.cdi.tck.libraryDirectory>
-                                <org.jboss.cdi.tck.testDataSource>java:jboss/datasources/ExampleDS</org.jboss.cdi.tck.testDataSource>
-                            </systemPropertyVariables>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <!-- WildFly 9.x -->
-        <profile>
-            <id>wildfly9</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-                <property>
-                    <name>incontainer</name>
-                    <value>wildfly9</value>
                 </property>
             </activation>
             <dependencies>
@@ -590,6 +386,7 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
+                            <excludedGroups>${excluded.groups}</excludedGroups>
                             <systemPropertyVariables>
                                 <!-- Silencing the broken code in getActiveConfiguration(),
                                     see https://github.com/arquillian/arquillian/blob/master/impl-base/src/main/java/org/jboss/arquillian/impl/client/container/ContainerRegistryCreator.java -->
@@ -607,6 +404,21 @@
                     </plugin>
                 </plugins>
             </build>
+        </profile>
+
+        <!-- Run only web profile tests -->
+        <profile>
+            <id>webprofile</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <property>
+                    <name>webprofile</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <properties>
+                <excluded.groups>javaee-full</excluded.groups>
+            </properties>
         </profile>
 
         <profile>

@@ -93,97 +93,6 @@
             </activation>
             <dependencies>
                 <dependency>
-                    <groupId>org.wildfly</groupId>
-                    <artifactId>wildfly-arquillian-container-managed</artifactId>
-                    <scope>test</scope>
-                    <exclusions>
-                        <exclusion>
-                            <groupId>org.jboss.logmanager</groupId>
-                            <artifactId>log4j-jboss-logmanager</artifactId>
-                        </exclusion>
-                    </exclusions>
-                </dependency>
-                <dependency>
-                    <groupId>log4j</groupId>
-                    <artifactId>log4j</artifactId>
-                </dependency>
-            </dependencies>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <systemProperties>
-                                <arquillian.xml>arquillian.xml</arquillian.xml>
-                                <jacoco.agent>${jacoco.agent}</jacoco.agent>
-                                <additional.vm.args>${additional.vm.args}</additional.vm.args>
-                                <org.jboss.remoting-jmx.timeout>360</org.jboss.remoting-jmx.timeout>
-                            </systemProperties>
-                            <test>${test}</test>
-                            <parallel>none</parallel>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <!-- WildFly 8.x - Remote -->
-        <profile>
-            <id>incontainer-remote</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-                <property>
-                    <name>incontainer</name>
-                    <value>remote</value>
-                </property>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>org.wildfly</groupId>
-                    <artifactId>wildfly-arquillian-container-remote</artifactId>
-                    <scope>test</scope>
-                    <exclusions>
-                        <exclusion>
-                            <groupId>org.jboss.logmanager</groupId>
-                            <artifactId>log4j-jboss-logmanager</artifactId>
-                        </exclusion>
-                    </exclusions>
-                </dependency>
-                <dependency>
-                    <groupId>log4j</groupId>
-                    <artifactId>log4j</artifactId>
-                </dependency>
-            </dependencies>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <systemProperties>
-                                <arquillian.xml>arquillian.xml</arquillian.xml>
-                            </systemProperties>
-                            <test>${test}</test>
-                            <parallel>none</parallel>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <!-- WildFly 9.x - Managed -->
-        <profile>
-            <id>wildfly9</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-                <property>
-                    <name>incontainer</name>
-                    <value>wildfly9</value>
-                </property>
-            </activation>
-
-            <dependencies>
-                <dependency>
                     <groupId>org.wildfly.arquillian</groupId>
                     <artifactId>wildfly-arquillian-container-managed</artifactId>
                     <scope>test</scope>
@@ -194,10 +103,6 @@
                       </exclusion>
                     </exclusions>
                 </dependency>
-                <dependency>
-                    <groupId>log4j</groupId>
-                    <artifactId>log4j</artifactId>
-                </dependency>
             </dependencies>
             <build>
                 <plugins>
@@ -218,6 +123,7 @@
                 </plugins>
             </build>
         </profile>
+
         <profile>
             <id>tomcat</id>
             <activation>
