@@ -50,9 +50,27 @@ public class InvocationMonitor implements Serializable {
 
     private static final long serialVersionUID = -5245789370968148511L;
 
-    private static final ThreadLocal<Invocation.Builder> invocations = new ThreadLocal<Invocation.Builder>();
+    private static final ThreadLocal<Invocation.Builder> INVOCATIONS = new ThreadLocal<Invocation.Builder>();
 
-    private static final AtomicInteger invocationIdGenerator = new AtomicInteger(0);
+    private static final AtomicInteger INVOCATION_ID_GENERATOR = new AtomicInteger(0);
+
+    private static final InterceptorAction INTERCEPTOR_ACTION = new InterceptorAction();
+
+    /**
+     *
+     * @return a new entry point or a child
+     */
+    static Invocation.Builder initBuilder() {
+        Invocation.Builder builder = INVOCATIONS.get();
+        if (builder == null) {
+            builder = Invocation.Builder.newBuilder(INVOCATION_ID_GENERATOR.incrementAndGet());
+            INVOCATIONS.set(builder);
+        } else {
+            builder = builder.newChild();
+            INVOCATIONS.set(builder);
+        }
+        return builder;
+    }
 
     @Intercepted
     @Inject
@@ -80,43 +98,18 @@ public class InvocationMonitor implements Serializable {
             return ctx.proceed();
         }
 
-        Invocation.Builder builder = invocations.get();
-        boolean entryPoint = false;
+        final Invocation.Builder builder = initBuilder();
 
-        try {
-            if (builder == null) {
-                entryPoint = true;
-                builder = Invocation.Builder.newBuilder(invocationIdGenerator.incrementAndGet());
-                invocations.set(builder);
-            } else {
-                builder = builder.newChild();
-                invocations.set(builder);
-            }
-            if (interceptedBean != null) {
-                builder.setInterceptedBean(interceptedBean);
-            } else {
-                builder.setDeclaringClassName(ctx.getMethod().getDeclaringClass().getName());
-            }
-            builder.guessType(ctx);
-            builder.setStart(System.currentTimeMillis());
-            builder.setMethodName(ctx.getMethod().getName());
-            long start = System.nanoTime();
-
-            Object result = ctx.proceed();
-
-            builder.setDuration(System.nanoTime() - start);
-            if (entryPoint) {
-                probe.addInvocation(builder.build());
-            } else {
-                invocations.set(builder.getParent());
-            }
-            return result;
-
-        } finally {
-            if (entryPoint) {
-                invocations.remove();
-            }
+        if (interceptedBean != null) {
+            builder.setInterceptedBean(interceptedBean);
+        } else {
+            builder.setDeclaringClassName(ctx.getMethod().getDeclaringClass().getName());
         }
+        builder.guessType(ctx);
+        builder.setStart(System.currentTimeMillis());
+        builder.setMethodName(ctx.getMethod().getName());
+
+        return INTERCEPTOR_ACTION.perform(builder, probe, ctx);
     }
 
     private synchronized void initProbe() {
@@ -141,6 +134,41 @@ public class InvocationMonitor implements Serializable {
             return method.getName().startsWith(SET_PREFIX);
         }
         return false;
+    }
+
+    abstract static class Action<T> {
+
+        Object perform(Invocation.Builder builder, Probe probe, T context) throws Exception {
+            try {
+                long start = System.nanoTime();
+                Object result = proceed(context);
+                builder.setDuration(System.nanoTime() - start);
+                if (builder.isEntryPoint()) {
+                    if (!builder.isIgnored()) {
+                        probe.addInvocation(builder.build());
+                    }
+                } else {
+                    INVOCATIONS.set(builder.getParent());
+                }
+                return result;
+            } finally {
+                if (builder.isEntryPoint()) {
+                    INVOCATIONS.remove();
+                }
+            }
+        }
+
+        protected abstract Object proceed(T context) throws Exception;
+
+    }
+
+    private static class InterceptorAction extends Action<InvocationContext> {
+
+        @Override
+        protected Object proceed(InvocationContext ctx) throws Exception {
+            return ctx.proceed();
+        }
+
     }
 
 }

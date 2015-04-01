@@ -88,4 +88,7 @@ public interface ProbeLogger extends BasicLogger {
     @Message(id = 12, value = "{0} monitoring limit {1} exceed - some old data were removed", format = Format.MESSAGE_FORMAT)
     void monitoringLimitExceeded(Object monitor, Object limit);
 
+    @Message(id = 13, value = "Probe filter is not able to operate - missing {0}", format = Format.MESSAGE_FORMAT)
+    IllegalStateException probeFilterUnableToOperate(Class<?> component);
+
 }

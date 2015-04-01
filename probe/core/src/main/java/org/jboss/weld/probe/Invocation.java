@@ -64,6 +64,8 @@ public final class Invocation {
 
     private final Type type;
 
+    private final String description;
+
     /**
      *
      * @param entryPointIdx
@@ -75,8 +77,10 @@ public final class Invocation {
      * @param methodName
      * @param children
      * @param type
+     * @param description
      */
-    public Invocation(Integer entryPointIdx, Bean<?> interceptedBean, String declaringClassName,  long start, long duration, String methodName, List<Invocation> children, Type type) {
+    public Invocation(Integer entryPointIdx, Bean<?> interceptedBean, String declaringClassName, long start, long duration, String methodName,
+            List<Invocation> children, Type type, String description) {
         this.entryPointIdx = entryPointIdx;
         this.interceptedBean = interceptedBean;
         this.declaringClassName = declaringClassName;
@@ -85,6 +89,7 @@ public final class Invocation {
         this.methodName = methodName;
         this.children = children;
         this.type = type;
+        this.description = description;
     }
 
     public Integer getEntryPointIdx() {
@@ -129,6 +134,10 @@ public final class Invocation {
 
     public Type getType() {
         return type;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public enum Type {
@@ -191,7 +200,11 @@ public final class Invocation {
 
         private Type type;
 
+        private String description;
+
         private Builder parent;
+
+        private boolean ignoreIfNoChildren;
 
         static Builder newBuilder(Integer idx) {
             return new Builder(idx);
@@ -205,6 +218,10 @@ public final class Invocation {
 
         private Builder(Integer idx) {
             this.entryPointIdx = idx;
+        }
+
+        boolean isEntryPoint() {
+            return this.entryPointIdx != null;
         }
 
         Builder setInterceptedBean(Bean<?> bean) {
@@ -234,6 +251,20 @@ public final class Invocation {
 
         Builder setType(Type type) {
             this.type = type;
+            return this;
+        }
+
+        Builder setDescription(String description) {
+            this.description = description;
+            return this;
+        }
+
+        public boolean isIgnored() {
+            return ignoreIfNoChildren && !hasChildren();
+        }
+
+        Builder ignoreIfNoChildren() {
+            this.ignoreIfNoChildren = true;
             return this;
         }
 
@@ -275,6 +306,10 @@ public final class Invocation {
             return children.add(child);
         }
 
+        public boolean hasChildren() {
+            return children != null && !children.isEmpty();
+        }
+
         Invocation build() {
             List<Invocation> invocations = null;
             if (children != null) {
@@ -283,7 +318,7 @@ public final class Invocation {
                     invocations.add(builder.build());
                 }
             }
-            return new Invocation(entryPointIdx, interceptedBean, declaringClassName, start, duration, methodName, invocations, type);
+            return new Invocation(entryPointIdx, interceptedBean, declaringClassName, start, duration, methodName, invocations, type, description);
         }
 
     }
