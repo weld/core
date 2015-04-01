@@ -31,14 +31,17 @@ import org.jboss.weld.probe.Resource.HttpMethod;
  * A simple Probe REST API implementation.
  *
  * <p>
- * An integrator is required to register this servlet if appropriate.
+ * An integrator is required to register this servlet if appropriate. This servlet should only be mapped to a single URL pattern of value
+ * {@value #DEFAULT_URL_PATTERN}.
  * </p>
  *
  * @author Martin Kouba
  */
 public class ProbeServlet extends HttpServlet {
 
-    public static final String DEFAULT_URL_PATTERN = "/weld-probe/*";
+    static final String URL_PATTERN_BASE = "/weld-probe";
+
+    public static final String DEFAULT_URL_PATTERN = URL_PATTERN_BASE + "/*";
 
     private static final long serialVersionUID = -881168492978480911L;
 
