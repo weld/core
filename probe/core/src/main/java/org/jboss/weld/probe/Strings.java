@@ -90,6 +90,7 @@ public final class Strings {
     public static final String CONTEXT_ID = "contextId";
     public static final String VERSION = "version";
     public static final String PROBE_COMPONENT = "probeComponent";
+    public static final String DESCRIPTION = "description";
 
     public static final String PAGE = "page";
     public static final String PAGE_SIZE = "pageSize";

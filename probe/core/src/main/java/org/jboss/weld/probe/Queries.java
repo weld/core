@@ -22,6 +22,7 @@ import static org.jboss.weld.probe.Strings.BDA;
 import static org.jboss.weld.probe.Strings.BEAN_CLASS;
 import static org.jboss.weld.probe.Strings.BEAN_TYPE;
 import static org.jboss.weld.probe.Strings.CONTAINER;
+import static org.jboss.weld.probe.Strings.DESCRIPTION;
 import static org.jboss.weld.probe.Strings.IS_ALTERNATIVE;
 import static org.jboss.weld.probe.Strings.KIND;
 import static org.jboss.weld.probe.Strings.METHOD_NAME;
@@ -394,6 +395,8 @@ final class Queries {
 
         private String search;
 
+        private String description;
+
         InvocationsFilters(Probe probe) {
             super(probe);
         }
@@ -401,7 +404,7 @@ final class Queries {
         @Override
         boolean test(Invocation invocation) {
             return testSearch(search, invocation) && testContainsIgnoreCase(beanClass, invocation.getBeanClass())
-                    && testContainsIgnoreCase(methodName, invocation.getMethodName());
+                    && testContainsIgnoreCase(methodName, invocation.getMethodName()) && testContainsIgnoreCase(description, invocation.getDescription());
         }
 
         @Override
@@ -412,6 +415,8 @@ final class Queries {
                 methodName = value;
             } else if (SEARCH.equals(name)) {
                 search = value;
+            } else if (DESCRIPTION.equals(name)) {
+                description = value;
             }
         }
 

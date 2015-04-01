@@ -927,7 +927,7 @@ ${head}
        <table class="table table-bordered table-striped">
             <tr>
                 <th rowspan="2"></th>
-                <th colspan="2">Entry Point</th>
+                <th colspan="3">Entry Point</th>
                 <th rowspan="2" class="with-rowspan">Start</th>
                 <th rowspan="2" class="with-rowspan">Time</th>
             </tr>
@@ -942,6 +942,11 @@ ${head}
                         {{input value=methodName class="form-control" placeholder="Contains"}}
                     </form>
                 </th>
+                <th>Description {{tip "An optional description, e.g. a HTTP request info"}}
+                    <form {{action "filter" on="submit"}}>
+                        {{input value=description class="form-control" placeholder="Contains"}}
+                    </form>
+                </th>
             </tr>
             {{#each data}}
             <tr>
@@ -951,6 +956,9 @@ ${head}
                 </td>
                 <td>
                     {{#link-to 'invocationDetail' id}}{{unbound methodName}}{{/link-to}}
+                </td>
+                <td>
+                    {{unbound description}}
                 </td>
                 <td>
                     {{unbound start}}
@@ -983,8 +991,49 @@ ${head}
 
       <h1>Invocation Tree</h1>
 
-      <div class="btn-line">
-        Start: <strong>{{transformed.children.0.startFull}}</strong>
+      <div class="panel panel-default">
+        <div class="panel-body">
+            <form class="form-horizontal">
+                <fieldset>
+                    <legend>Entry Point</legend>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Intercepted Bean {{tip "Or the declaring class if the bean is not available"}}:</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static">{{#if interceptedBean}}{{detail-icon}} {{#link-to 'beanDetail' interceptedBean.id}}{{interceptedBean.beanClass}}{{/link-to}}{{else}}{{declaringClass}}{{/if}}</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Method Name:</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static">{{methodName}}</span></p>
+                        </div>
+                    </div>
+                    {{#if description}}
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Description:</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static">{{description}}</span></p>
+                        </div>
+                    </div>
+                    {{/if}}
+                </fieldset>
+                    <fieldset>
+                    <legend>Details</legend>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Start:</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static">{{transformed.children.0.startFull}}</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Duration:</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static">{{transformed.children.0.duration}} ms</p>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
       </div>
 
       {{view Probe.InvocationTree contentBinding="model"}}

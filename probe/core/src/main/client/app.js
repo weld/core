@@ -384,6 +384,7 @@ Probe.InvocationListRoute = Ember.Route.extend(Probe.ResetScroll, {
         filters = appendToFilters(filters, 'beanClass', params.beanClass);
         filters = appendToFilters(filters, 'methodName', params.methodName);
         filters = appendToFilters(filters, 'search', params.search);
+        filters = appendToFilters(filters, 'description', params.description);
         query = appendToQuery(query, 'filters', filters);
         if (params.page) {
             query = appendToQuery(query, 'page', params.page);
@@ -737,14 +738,16 @@ Probe.InvocationListController = Ember.ObjectController.extend({
     beanClass : '',
     methodName : '',
     search : '',
+    description : '',
     page : 1,
-    queryParams : [ 'beanClass', 'methodName', 'search', 'page' ],
+    queryParams : [ 'beanClass', 'methodName', 'search', 'description', 'page' ],
     actions : {
         clearFilters : function() {
             this.set('page', 1);
             this.set('beanClass', '');
             this.set('methodName', '');
             this.set('search', '');
+            this.set('description', '');
             this.send('refreshData');
         },
         filter : function() {
@@ -1267,8 +1270,8 @@ Probe.InvocationTree = Ember.View.extend({
         });
 
         nodeEnter.append("text").attr("dx", 12).attr("dy", 12).style("fill",
-            "black").style("font-size", "90%").text(function(d) {
-            return d.methodName ? '#' + d.methodName : '';
+            "#333").style("font-size", "90%").text(function(d) {
+            return d.methodName ? d.methodName : '';
         });
 
         // Declare the links

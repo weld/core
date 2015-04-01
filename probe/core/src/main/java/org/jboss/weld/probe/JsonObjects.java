@@ -42,6 +42,7 @@ import static org.jboss.weld.probe.Strings.DECORATORS;
 import static org.jboss.weld.probe.Strings.DEFAULT_VALUE;
 import static org.jboss.weld.probe.Strings.DEPENDENCIES;
 import static org.jboss.weld.probe.Strings.DEPENDENTS;
+import static org.jboss.weld.probe.Strings.DESCRIPTION;
 import static org.jboss.weld.probe.Strings.DISPOSAL_METHOD;
 import static org.jboss.weld.probe.Strings.EJB_NAME;
 import static org.jboss.weld.probe.Strings.ENABLEMENT;
@@ -609,6 +610,9 @@ final class JsonObjects {
             invocationBuilder.add(INTERCEPTED_BEAN, createSimpleBeanJson(invocation.getInterceptedBean(), probe));
         } else {
             invocationBuilder.add(DECLARING_CLASS, invocation.getDeclaringClassName());
+        }
+        if (invocation.getDescription() != null) {
+            invocationBuilder.add(DESCRIPTION, invocation.getDescription());
         }
         invocationBuilder.add(METHOD_NAME, invocation.getMethodName());
         invocationBuilder.add(START, invocation.getStart());

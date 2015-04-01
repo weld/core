@@ -21,6 +21,7 @@ import static org.jboss.weld.probe.Strings.TEXT_HTML;
 import java.io.CharArrayWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 import javax.servlet.Filter;
@@ -37,16 +38,24 @@ import org.jboss.weld.bootstrap.WeldBootstrap;
 import org.jboss.weld.config.ConfigurationKey;
 import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.probe.Invocation.Type;
+import org.jboss.weld.probe.InvocationMonitor.Action;
 import org.jboss.weld.util.reflection.Formats;
 
 /**
- * This servlet filter enables clippy-like support.
+ * This servlet filter enables clippy-like support and allows to group together monitored invocations within the same request.
  *
  * <p>
  * An integrator is required to register this extension if appropriate.
  * </p>
  *
+ * <p>
+ * To disable the clippy support, set {@link ConfigurationKey#PROBE_CLIPPY_SUPPORT} to <code>false</code>. It's also possible to use the
+ * {@link ConfigurationKey#PROBE_INVOCATION_MONITOR_EXCLUDE_TYPE} to skip the monitoring.
+ * </p>
+ *
  * @see ConfigurationKey#PROBE_CLIPPY_SUPPORT
+ * @see ConfigurationKey#PROBE_INVOCATION_MONITOR_EXCLUDE_TYPE
  * @author Martin Kouba
  */
 public class ProbeFilter implements Filter {
@@ -54,12 +63,27 @@ public class ProbeFilter implements Filter {
     @Inject
     private BeanManagerImpl beanManager;
 
-    // It shouldn't be necessary to make this field volatile - see also javax.servlet.GenericServlet.config
+    // It shouldn't be necessary to make these fields volatile - see also javax.servlet.GenericServlet.config
     private String clippy;
+
+    private Probe probe;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        if (beanManager.getServices().get(WeldConfiguration.class).getBooleanProperty(ConfigurationKey.PROBE_CLIPPY_SUPPORT)) {
+
+        if (beanManager == null) {
+            throw ProbeLogger.LOG.probeFilterUnableToOperate(BeanManagerImpl.class);
+        }
+
+        Probe probe = beanManager.getServices().get(Probe.class);
+        if (probe == null) {
+            throw ProbeLogger.LOG.probeFilterUnableToOperate(Probe.class);
+        }
+
+        WeldConfiguration configuration = beanManager.getServices().get(WeldConfiguration.class);
+
+        // Note that we have to use in-line CSS
+        if (configuration.getBooleanProperty(ConfigurationKey.PROBE_CLIPPY_SUPPORT)) {
             StringBuilder builder = new StringBuilder();
             builder.append("<!-- The following snippet was automatically added by Weld, see the documentation to disable this functionality -->");
             builder.append("<div id=\"weld-dev-mode-info\" style=\"width:auto;background-color:#f8f8f8;border:2px solid silver;padding:10px;border-radius:5px;margin:50px 5px 5px 5px;font-size:16px;font-family:sans-serif;color:black;\">");
@@ -75,19 +99,47 @@ public class ProbeFilter implements Filter {
             builder.append(" <button style=\"background-color:#f8f8f8;border:1px solid silver; color:gray;border-radius:4px;padding:4px 10px 4px 10px;margin-left:2em;font-weight: bold;\" onclick=\"document.getElementById('weld-dev-mode-info').style.display='none';\">x</button></div>");
             clippy = builder.toString();
         }
+
+        String exclude = configuration.getStringProperty(ConfigurationKey.PROBE_INVOCATION_MONITOR_EXCLUDE_TYPE);
+        if (exclude.isEmpty() || !Pattern.compile(exclude).matcher(ProbeFilter.class.getName()).matches()) {
+            this.probe = probe;
+        }
     }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        HttpServletRequest httpServletRequest = (HttpServletRequest) request;
 
-        if (clippy == null || httpServletRequest.getServletPath().startsWith(ProbeServlet.URL_PATTERN_BASE)) {
+        if (!(request instanceof HttpServletRequest)) {
             chain.doFilter(request, response);
+            return;
+        }
+
+        final HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+
+        if (httpServletRequest.getServletPath().startsWith(ProbeServlet.URL_PATTERN_BASE)) {
+            // Don't apply the filter to the probe servlet
+            chain.doFilter(request, response);
+            return;
+        }
+
+        final Invocation.Builder builder;
+        if (probe != null) {
+            builder = InvocationMonitor.initBuilder();
+            builder.setDeclaringClassName(ProbeFilter.class.getName());
+            builder.setStart(System.currentTimeMillis());
+            builder.setMethodName("doFilter");
+            builder.setType(Type.BUSINESS);
+            builder.setDescription(getDescription(httpServletRequest));
+            builder.ignoreIfNoChildren();
         } else {
+            builder = null;
+        }
 
+        if (clippy == null) {
+            FilterAction.of(request, response).doFilter(builder, probe, chain);
+        } else {
             ResponseWrapper responseWrapper = new ResponseWrapper((HttpServletResponse) response);
-            chain.doFilter(request, responseWrapper);
-
+            FilterAction.of(request, responseWrapper).doFilter(builder, probe, chain);
             String captured = responseWrapper.getOutput();
 
             if (captured != null && !captured.isEmpty()) {
@@ -116,6 +168,19 @@ public class ProbeFilter implements Filter {
     public void destroy() {
     }
 
+    private String getDescription(HttpServletRequest req) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(req.getMethod());
+        builder.append(' ');
+        builder.append(req.getRequestURI());
+        String queryString = req.getQueryString();
+        if (queryString != null) {
+            builder.append('?');
+            builder.append(queryString);
+        }
+        return builder.toString();
+    }
+
     private static class ResponseWrapper extends HttpServletResponseWrapper {
 
         private final CharArrayWriter output;
@@ -135,6 +200,41 @@ public class ProbeFilter implements Filter {
         String getOutput() {
             return output.toString();
         }
+    }
+
+    private static class FilterAction extends Action<FilterChain> {
+
+        private static FilterAction of(ServletRequest request, ServletResponse response) {
+            return new FilterAction(request, response);
+        }
+
+        private final ServletRequest request;
+
+        private final ServletResponse response;
+
+        private FilterAction(ServletRequest request, ServletResponse response) {
+            this.request = request;
+            this.response = response;
+        }
+
+        @Override
+        protected Object proceed(FilterChain chain) throws Exception {
+            chain.doFilter(request, response);
+            return null;
+        }
+
+        void doFilter(Invocation.Builder builder, Probe probe, FilterChain chain) throws ServletException, IOException {
+            if (builder == null) {
+                chain.doFilter(request, response);
+            } else {
+                try {
+                    perform(builder, probe, chain);
+                } catch (Exception e) {
+                    throw new ServletException(e);
+                }
+            }
+        }
+
     }
 
 }
