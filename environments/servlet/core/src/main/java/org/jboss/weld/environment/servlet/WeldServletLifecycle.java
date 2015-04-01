@@ -25,8 +25,9 @@ import java.util.Set;
 
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
+import javax.servlet.FilterRegistration;
 import javax.servlet.ServletContext;
-import javax.servlet.ServletRegistration.Dynamic;
+import javax.servlet.ServletRegistration;
 import javax.servlet.jsp.JspApplicationContext;
 import javax.servlet.jsp.JspFactory;
 
@@ -88,6 +89,8 @@ public class WeldServletLifecycle {
     private static final String PROBE_EXTENSION_CLASS_NAME = "org.jboss.weld.probe.ProbeExtension";
 
     private static final String PROBE_SERVLET_CLASS_NAME = "org.jboss.weld.probe.ProbeServlet";
+
+    private static final String PROBE_FILTER_CLASS_NAME = "org.jboss.weld.probe.ProbeFilter";
 
     private static final String CONTEXT_PARAM_ARCHIVE_ISOLATION = WeldServletLifecycle.class.getPackage().getName() + ".archive.isolation";
 
@@ -226,11 +229,14 @@ public class WeldServletLifecycle {
             bootstrap.deployBeans().validateBeans().endInitialization();
 
             if (isDevModeEnabled) {
-
                 // Register the probe servlet
-                Dynamic registration = context.addServlet("Weld Probe Servlet", PROBE_SERVLET_CLASS_NAME);
-                registration.setLoadOnStartup(1);
-                registration.addMapping("/weld-probe/*");
+                ServletRegistration.Dynamic servletDynamic = context.addServlet("Weld Probe Servlet", PROBE_SERVLET_CLASS_NAME);
+                servletDynamic.setLoadOnStartup(1);
+                servletDynamic.addMapping("/weld-probe/*");
+
+                // Register the probe filter
+                FilterRegistration.Dynamic filterDynamic = context.addFilter("Probe Filter", PROBE_FILTER_CLASS_NAME);
+                filterDynamic.addMappingForUrlPatterns(null, true, "/*");
 
                 // Initialize the probe service
                 WeldManager unwrapped = manager.unwrap();
