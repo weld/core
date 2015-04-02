@@ -135,7 +135,7 @@ public enum ConfigurationKey {
     PROBE_INVOCATION_MONITOR_SKIP_JAVABEAN_PROPERTIES("org.jboss.weld.probe.invocationMonitor.skipJavaBeanProperties", true),
 
     /**
-     * A regular expression. If a non-empty string  and the runtime class of the event object matches this pattern the event is excluded from monitoring.
+     * A regular expression. If a non-empty string and the runtime class of the event object matches this pattern the event is excluded from monitoring.
      */
     PROBE_EVENT_MONITOR_EXCLUDE_TYPE("org.jboss.weld.probe.eventMonitor.excludeType", ""),
 
@@ -148,7 +148,7 @@ public enum ConfigurationKey {
     /**
      * If set to <code>true</code> an informative HTML snippet will be added to every response with Content-Type of value <code>text/html</code>.
      */
-    PROBE_CLIPPY_SUPPORT("org.jboss.weld.probe.clippySupport", true),
+    PROBE_EMBED_INFO_SNIPPET("org.jboss.weld.probe.embedInfoSnippet", true),
 
     ;
 
