@@ -21,10 +21,12 @@ import static org.jboss.weld.config.ConfigurationKey.BEAN_IDENTIFIER_INDEX_OPTIM
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
+import javax.servlet.DispatcherType;
 import javax.servlet.FilterRegistration;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRegistration;
@@ -236,7 +238,7 @@ public class WeldServletLifecycle {
 
                 // Register the probe filter
                 FilterRegistration.Dynamic filterDynamic = context.addFilter("Probe Filter", PROBE_FILTER_CLASS_NAME);
-                filterDynamic.addMappingForUrlPatterns(null, true, "/*");
+                filterDynamic.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST, DispatcherType.FORWARD, DispatcherType.INCLUDE), true, "/*");
 
                 // Initialize the probe service
                 WeldManager unwrapped = manager.unwrap();
