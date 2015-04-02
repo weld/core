@@ -310,6 +310,10 @@ public final class Invocation {
             return children != null && !children.isEmpty();
         }
 
+        public Integer getEntryPointIdx() {
+            return entryPointIdx;
+        }
+
         Invocation build() {
             List<Invocation> invocations = null;
             if (children != null) {

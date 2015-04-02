@@ -64,7 +64,7 @@ public class ProbeFilter implements Filter {
     private BeanManagerImpl beanManager;
 
     // It shouldn't be necessary to make these fields volatile - see also javax.servlet.GenericServlet.config
-    private String clippy;
+    private String snippetBase;
 
     private Probe probe;
 
@@ -86,18 +86,18 @@ public class ProbeFilter implements Filter {
         if (configuration.getBooleanProperty(ConfigurationKey.PROBE_CLIPPY_SUPPORT)) {
             StringBuilder builder = new StringBuilder();
             builder.append("<!-- The following snippet was automatically added by Weld, see the documentation to disable this functionality -->");
-            builder.append("<div id=\"weld-dev-mode-info\" style=\"position: fixed !important;bottom:0;left:0;width:100%;background-color:#f8f8f8;border:2px solid silver;padding:10px;border-radius:2px;margin:0px;font-size:16px;font-family:sans-serif;color:black;\">");
+            builder.append("<div id=\"weld-dev-mode-info\" style=\"position: fixed !important;bottom:0;left:0;width:100%;background-color:#f8f8f8;border:2px solid silver;padding:10px;border-radius:2px;margin:0px;font-size:14px;font-family:sans-serif;color:black;\">");
             builder.append("<img alt=\"Weld logo\" src=\"");
             builder.append(filterConfig.getServletContext().getContextPath());
-            builder.append("/weld-probe/client/weld_icon_48x.png\">");
+            builder.append("/weld-probe/client/weld_icon_32x.png\">");
             builder.append("&nbsp; Running on Weld <span style=\"color:gray\">");
             builder.append(Formats.version(WeldBootstrap.class.getPackage().getSpecificationVersion(), null));
-            builder.append("</span>. The development mode is <span style=\"color:white;background-color:#d62728;padding:6px;border-radius:4px;font-size:14px;\">ENABLED</span>. Inspect your application with <a style=\"color:#337ab7;font-weight:bold;\" href=\"");
+            builder.append("</span>. The development mode is <span style=\"color:white;background-color:#d62728;padding:6px;border-radius:4px;font-size:12px;\">ENABLED</span>. Inspect your application with <a style=\"color:#337ab7;\" href=\"");
             builder.append(filterConfig.getServletContext().getContextPath());
             builder.append("/weld-probe");
             builder.append("\" target=\"_blank\">Probe Development Tool</a>.");
-            builder.append(" <button style=\"background-color:#f8f8f8;border:1px solid silver; color:gray;border-radius:4px;padding:4px 10px 4px 10px;margin-left:2em;font-weight: bold;\" onclick=\"document.getElementById('weld-dev-mode-info').style.display='none';\">x</button></div>");
-            clippy = builder.toString();
+            builder.append(" <button style=\"float:right;background-color:#f8f8f8;border:1px solid silver; color:gray;border-radius:4px;padding:4px 10px 4px 10px;margin-left:2em;font-weight: bold;\" onclick=\"document.getElementById('weld-dev-mode-info').style.display='none';\">x</button>");
+            snippetBase = builder.toString();
         }
 
         String exclude = configuration.getStringProperty(ConfigurationKey.PROBE_INVOCATION_MONITOR_EXCLUDE_TYPE);
@@ -124,18 +124,21 @@ public class ProbeFilter implements Filter {
 
         final Invocation.Builder builder;
         if (probe != null) {
-            builder = InvocationMonitor.initBuilder();
-            builder.setDeclaringClassName(ProbeFilter.class.getName());
-            builder.setStart(System.currentTimeMillis());
-            builder.setMethodName("doFilter");
-            builder.setType(Type.BUSINESS);
-            builder.setDescription(getDescription(httpServletRequest));
-            builder.ignoreIfNoChildren();
+            // Don't initialize a new builder if an entry point already exists
+            builder = InvocationMonitor.initBuilder(false);
+            if (builder != null) {
+                builder.setDeclaringClassName(ProbeFilter.class.getName());
+                builder.setStart(System.currentTimeMillis());
+                builder.setMethodName("doFilter");
+                builder.setType(Type.BUSINESS);
+                builder.setDescription(getDescription(httpServletRequest));
+                builder.ignoreIfNoChildren();
+            }
         } else {
             builder = null;
         }
 
-        if (clippy == null) {
+        if (snippetBase == null) {
             FilterAction.of(request, response).doFilter(builder, probe, chain);
         } else {
             ResponseWrapper responseWrapper = new ResponseWrapper((HttpServletResponse) response);
@@ -153,7 +156,16 @@ public class ProbeFilter implements Filter {
                     } else {
                         CharArrayWriter writer = new CharArrayWriter();
                         writer.write(captured.substring(0, idx));
-                        writer.write(clippy);
+                        writer.write(snippetBase);
+                        if (builder != null && !builder.isIgnored()) {
+                            writer.write("See <a style=\"color:#337ab7;\" href=\"");
+                            writer.write(request.getServletContext().getContextPath());
+                            // This path must be hardcoded unless we find an easy way to reference the client-specific configuration
+                            writer.write("/weld-probe/#/invocation/");
+                            writer.write("" + builder.getEntryPointIdx());
+                            writer.write("\" target=\"_blank\">all bean invocations</a> within the HTTP request which rendered this page.");
+                        }
+                        writer.write("</div>");
                         writer.write(captured.substring(idx, captured.length()));
                         out.write(writer.toString());
                     }

@@ -61,11 +61,19 @@ public class InvocationMonitor implements Serializable {
      * @return a new entry point or a child
      */
     static Invocation.Builder initBuilder() {
+        return initBuilder(true);
+    }
+
+    /**
+     *
+     * @return a new entry point or a child or <code>null</code>
+     */
+    static Invocation.Builder initBuilder(boolean initChild) {
         Invocation.Builder builder = INVOCATIONS.get();
         if (builder == null) {
             builder = Invocation.Builder.newBuilder(INVOCATION_ID_GENERATOR.incrementAndGet());
             INVOCATIONS.set(builder);
-        } else {
+        } else if (initChild) {
             builder = builder.newChild();
             INVOCATIONS.set(builder);
         }
