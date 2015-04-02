@@ -87,12 +87,12 @@ public class ProbeFilter implements Filter {
             StringBuilder builder = new StringBuilder();
             builder.append("<!-- The following snippet was automatically added by Weld, see the documentation to disable this functionality -->");
             builder.append("<div id=\"weld-dev-mode-info\" style=\"position: fixed !important;bottom:0;left:0;width:100%;background-color:#f8f8f8;border:2px solid silver;padding:10px;border-radius:2px;margin:0px;font-size:14px;font-family:sans-serif;color:black;\">");
-            builder.append("<img alt=\"Weld logo\" src=\"");
+            builder.append("<img alt=\"Weld logo\" style=\"vertical-align: middle;border-width:0px;\" src=\"");
             builder.append(filterConfig.getServletContext().getContextPath());
             builder.append("/weld-probe/client/weld_icon_32x.png\">");
             builder.append("&nbsp; Running on Weld <span style=\"color:gray\">");
             builder.append(Formats.version(WeldBootstrap.class.getPackage().getSpecificationVersion(), null));
-            builder.append("</span>. The development mode is <span style=\"color:white;background-color:#d62728;padding:6px;border-radius:4px;font-size:12px;\">ENABLED</span>. Inspect your application with <a style=\"color:#337ab7;\" href=\"");
+            builder.append("</span>. The development mode is <span style=\"color:white;background-color:#d62728;padding:6px;border-radius:4px;font-size:12px;\">ENABLED</span>. Inspect your application with <a style=\"color:#337ab7;text-decoration:underline;\" href=\"");
             builder.append(filterConfig.getServletContext().getContextPath());
             builder.append("/weld-probe");
             builder.append("\" target=\"_blank\">Probe Development Tool</a>.");
@@ -158,7 +158,7 @@ public class ProbeFilter implements Filter {
                         writer.write(captured.substring(0, idx));
                         writer.write(snippetBase);
                         if (builder != null && !builder.isIgnored()) {
-                            writer.write("See <a style=\"color:#337ab7;\" href=\"");
+                            writer.write("See <a style=\"color:#337ab7;text-decoration:underline;\" href=\"");
                             writer.write(request.getServletContext().getContextPath());
                             // This path must be hardcoded unless we find an easy way to reference the client-specific configuration
                             writer.write("/weld-probe/#/invocation/");
