@@ -50,11 +50,11 @@ import org.jboss.weld.util.reflection.Formats;
  * </p>
  *
  * <p>
- * To disable the clippy support, set {@link ConfigurationKey#PROBE_CLIPPY_SUPPORT} to <code>false</code>. It's also possible to use the
+ * To disable the clippy support, set {@link ConfigurationKey#PROBE_EMBED_INFO_SNIPPET} to <code>false</code>. It's also possible to use the
  * {@link ConfigurationKey#PROBE_INVOCATION_MONITOR_EXCLUDE_TYPE} to skip the monitoring.
  * </p>
  *
- * @see ConfigurationKey#PROBE_CLIPPY_SUPPORT
+ * @see ConfigurationKey#PROBE_EMBED_INFO_SNIPPET
  * @see ConfigurationKey#PROBE_INVOCATION_MONITOR_EXCLUDE_TYPE
  * @author Martin Kouba
  */
@@ -83,7 +83,7 @@ public class ProbeFilter implements Filter {
         WeldConfiguration configuration = beanManager.getServices().get(WeldConfiguration.class);
 
         // Note that we have to use in-line CSS
-        if (configuration.getBooleanProperty(ConfigurationKey.PROBE_CLIPPY_SUPPORT)) {
+        if (configuration.getBooleanProperty(ConfigurationKey.PROBE_EMBED_INFO_SNIPPET)) {
             StringBuilder builder = new StringBuilder();
             builder.append("<!-- The following snippet was automatically added by Weld, see the documentation to disable this functionality -->");
             builder.append("<div id=\"weld-dev-mode-info\" style=\"position: fixed !important;bottom:0;left:0;width:100%;background-color:#f8f8f8;border:2px solid silver;padding:10px;border-radius:2px;margin:0px;font-size:14px;font-family:sans-serif;color:black;\">");
