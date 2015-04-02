@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
@@ -28,6 +29,7 @@ import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bean.builtin.InjectionPointBean;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.injection.ForwardingInjectionPoint;
+import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
  * <p>
@@ -61,7 +63,20 @@ import org.jboss.weld.injection.ForwardingInjectionPoint;
  * @author Jozef Hartinger
  *
  */
-public class SessionBeanInjectionPoint {
+class SessionBeanAwareInjectionPointBean extends InjectionPointBean {
+
+    SessionBeanAwareInjectionPointBean(BeanManagerImpl manager) {
+        super(manager);
+    }
+
+    @Override
+    protected InjectionPoint newInstance(InjectionPoint ip, CreationalContext<InjectionPoint> creationalContext) {
+        ip = super.newInstance(ip, creationalContext);
+        if (ip != null) {
+            ip = SessionBeanAwareInjectionPointBean.wrapIfNecessary(ip);
+        }
+        return ip;
+    }
 
     private static final ThreadLocal<Set<Class<?>>> CONTEXTUAL_SESSION_BEANS = new ThreadLocal<Set<Class<?>>>() {
         @Override
@@ -70,8 +85,6 @@ public class SessionBeanInjectionPoint {
         }
     };
 
-    private SessionBeanInjectionPoint() {
-    }
 
     /**
      * Indicates that a contextual instance of a session bean is about to be constructed.

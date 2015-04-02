@@ -50,4 +50,9 @@ public class WeldEJBModule implements WeldModule {
         // Register the EJB Request context
         ctx.addContext(new ContextHolder<EjbRequestContext>(new EjbRequestContextImpl(ctx.getContextId()), EjbRequestContext.class, EjbLiteral.INSTANCE));
     }
+
+    @Override
+    public void preBeanRegistration(PreBeanRegistrationContext ctx) {
+        ctx.registerBean(new SessionBeanAwareInjectionPointBean(ctx.getBeanManager()));
+    }
 }

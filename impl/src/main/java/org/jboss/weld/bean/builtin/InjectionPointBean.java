@@ -19,7 +19,6 @@ package org.jboss.weld.bean.builtin;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.InjectionPoint;
 
-import org.jboss.weld.ejb.SessionBeanInjectionPoint;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.bean.SerializableForwardingInjectionPoint;
 
@@ -46,7 +45,6 @@ public class InjectionPointBean extends AbstractStaticallyDecorableBuiltInBean<I
             return ip;
         }
         ip = new SerializableForwardingInjectionPoint(getBeanManager().getContextId(), ip);
-        ip = SessionBeanInjectionPoint.wrapIfNecessary(ip);
         return ip;
     }
 
