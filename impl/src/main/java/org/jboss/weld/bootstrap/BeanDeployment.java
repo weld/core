@@ -61,6 +61,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.api.ExecutorServices;
 import org.jboss.weld.metadata.FilterPredicate;
 import org.jboss.weld.metadata.ScanningPredicate;
+import org.jboss.weld.module.EjbSupport;
 import org.jboss.weld.module.WeldModules;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
 import org.jboss.weld.resources.DefaultResourceLoader;
@@ -217,7 +218,14 @@ public class BeanDeployment {
     public void createBeans(Environment environment) {
         getBeanManager().getServices().get(WeldModules.class).preBeanRegistration(this, environment);
 
-        beanDeployer.addBuiltInBean(new InjectionPointBean(beanManager));
+        /*
+         * If EjbSupport is installed then SessionBeanAwareInjectionPointBean is used instead
+         * TODO: remove this tight coupling
+         */
+        if (!getBeanManager().getServices().contains(EjbSupport.class)) {
+            beanDeployer.addBuiltInBean(new InjectionPointBean(beanManager));
+        }
+
         beanDeployer.addBuiltInBean(new EventMetadataBean(beanManager));
         beanDeployer.addBuiltInBean(new EventBean(beanManager));
         beanDeployer.addBuiltInBean(new InstanceBean(beanManager));

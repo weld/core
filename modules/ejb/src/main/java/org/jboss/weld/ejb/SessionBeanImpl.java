@@ -225,10 +225,10 @@ class SessionBeanImpl<T> extends AbstractClassBean<T> implements SessionBean<T> 
 
     public SessionObjectReference createReference() {
         try {
-            SessionBeanInjectionPoint.registerContextualInstance(getEjbDescriptor());
+            SessionBeanAwareInjectionPointBean.registerContextualInstance(getEjbDescriptor());
             return beanManager.getServices().get(EjbServices.class).resolveEjb(getEjbDescriptor().delegate());
         } finally {
-            SessionBeanInjectionPoint.unregisterContextualInstance(getEjbDescriptor());
+            SessionBeanAwareInjectionPointBean.unregisterContextualInstance(getEjbDescriptor());
         }
     }
 
