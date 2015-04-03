@@ -144,6 +144,11 @@ public enum ConfigurationKey {
      */
     BEAN_IDENTIFIER_INDEX_OPTIMIZATION("org.jboss.weld.serialization.beanIdentifierIndexOptimization", true),
 
+    /**
+     * If set to <code>true</code> Weld will try to set the method signature so that methods declared on proxies may retain the generic info.
+     */
+    PROXY_METHOD_SIGNATURES("org.jboss.weld.proxy.methodSignatures", true),
+
     ;
 
     /**

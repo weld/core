@@ -51,14 +51,18 @@ import org.jboss.classfilewriter.code.CodeAttribute;
 import org.jboss.classfilewriter.util.Boxing;
 import org.jboss.classfilewriter.util.DescriptorUtils;
 import org.jboss.weld.Container;
+import org.jboss.weld.config.ConfigurationKey;
 import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.interceptor.proxy.LifecycleMixin;
 import org.jboss.weld.interceptor.util.proxy.TargetInstanceProxy;
 import org.jboss.weld.logging.BeanLogger;
+import org.jboss.weld.resources.DefaultResourceLoader;
+import org.jboss.weld.resources.WeldClassLoaderResourceLoader;
 import org.jboss.weld.security.GetDeclaredConstructorsAction;
 import org.jboss.weld.security.GetDeclaredMethodsAction;
+import org.jboss.weld.security.GetMethodAction;
 import org.jboss.weld.security.GetProtectionDomainAction;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.serialization.spi.ContextualStore;
@@ -119,13 +123,34 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
 
     private static final Set<ProxiedMethodFilter> METHOD_FILTERS;
 
+    /**
+     * Signatures#methodSignature() if available
+     */
+    protected static final Method SIGNATURES_METHOD;
+    private static final String SIGNATURES_FQCN = "org.jboss.classfilewriter.util.Signatures";
+    private static final String SIGNATURES_METHOD_SIGNATURE = "methodSignature";
+
     static {
         GroovyMethodFilter groovy = new GroovyMethodFilter();
         if (groovy.isEnabled()) {
-            METHOD_FILTERS = Collections.<ProxiedMethodFilter>singleton(groovy);
+            METHOD_FILTERS = Collections.<ProxiedMethodFilter> singleton(groovy);
         } else {
             METHOD_FILTERS = Collections.emptySet();
         }
+
+        Class<?> signaturesClass = Reflections.loadClass(SIGNATURES_FQCN, WeldClassLoaderResourceLoader.INSTANCE);
+        if (signaturesClass == null) {
+            // Try TCCL as a fallback
+            signaturesClass = Reflections.loadClass(SIGNATURES_FQCN, DefaultResourceLoader.INSTANCE);
+        }
+        Method methodSignature = null;
+        if (signaturesClass != null) {
+            try {
+                methodSignature = AccessController.doPrivileged(new GetMethodAction(signaturesClass, SIGNATURES_METHOD_SIGNATURE, Method.class));
+            } catch (Exception ignored) {
+            }
+        }
+        SIGNATURES_METHOD = methodSignature;
     }
 
     /**
@@ -186,6 +211,10 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
         additionalInterfaces.addAll(list);
 
         this.proxyInstantiator = Container.instance(contextId).services().get(ProxyInstantiator.class);
+
+        if (configuration.getBooleanProperty(ConfigurationKey.PROXY_METHOD_SIGNATURES) && SIGNATURES_METHOD == null) {
+            BeanLogger.LOG.unableToSetMethodSignatures();
+        }
     }
 
     static String getProxyName(String contextId, Class<?> proxiedBeanType, Set<? extends Type> typeClosure, Bean<?> bean) {
@@ -564,6 +593,7 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
                         try {
                             MethodInformation methodInfo = new RuntimeMethodInformation(method);
                             ClassMethod classMethod = proxyClassType.addMethod(method);
+                            setSignature(classMethod, method);
                             addConstructedGuardToMethodBody(classMethod);
                             createForwardingMethodBody(classMethod, methodInfo, staticConstructor);
                             BeanLogger.LOG.addingMethodToProxy(method);
@@ -859,5 +889,22 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
 
     protected void getMethodHandlerField(ClassFile file, CodeAttribute b) {
         b.getfield(file.getName(), METHOD_HANDLER_FIELD_NAME, DescriptorUtils.makeDescriptor(getMethodHandlerType()));
+    }
+
+    /**
+     * If possible and desired, set the signature so that methods declared on proxies retain the generic info.
+     *
+     * @param classMethod
+     * @param method
+     */
+    protected void setSignature(ClassMethod classMethod, Method method) {
+        if (configuration.getBooleanProperty(ConfigurationKey.PROXY_METHOD_SIGNATURES) && SIGNATURES_METHOD != null) {
+            try {
+                classMethod.setSignature((String) SIGNATURES_METHOD.invoke(null, method));
+            } catch (Throwable t) {
+                BeanLogger.LOG.unableToEncodeMethodSignature(method, t);
+                BeanLogger.LOG.catchingDebug(t);
+            }
+        }
     }
 }
