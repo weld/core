@@ -74,7 +74,7 @@ public class StaticEEResourceProducerField<X, T> extends EEResourceProducerField
     protected ResourceInjection<T> getResourceInjection(EnhancedAnnotatedField<T, ? super X> field,
             AbstractClassBean<X> declaringBean, BeanManagerImpl manager) {
         FieldInjectionPoint<T, X> injectionPoint = cast(InjectionPointFactory.silentInstance().createFieldInjectionPoint(field, declaringBean, declaringBean.getBeanClass(), manager));
-        return ResourceInjectionFactory.instance().getStaticProducerFieldResourceInjection(injectionPoint, beanManager);
+        return manager.getServices().get(ResourceInjectionFactory.class).getStaticProducerFieldResourceInjection(injectionPoint, beanManager);
     }
 
     @Override
