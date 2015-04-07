@@ -24,7 +24,6 @@ import org.jboss.shrinkwrap.api.container.ResourceContainer;
  *
  * @author Tomas Remes
  */
-
 public class PropertiesBuilder {
 
     private StringBuilder stringBuilder;
