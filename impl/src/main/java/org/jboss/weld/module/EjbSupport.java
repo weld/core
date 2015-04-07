@@ -16,6 +16,9 @@
  */
 package org.jboss.weld.module;
 
+import java.lang.annotation.Annotation;
+
+import javax.enterprise.inject.New;
 import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.InjectionTarget;
 
@@ -65,14 +68,26 @@ public interface EjbSupport extends Service {
     <T> BasicInjectionTarget<T> createMessageDrivenInjectionTarget(EnhancedAnnotatedType<T> type, InternalEjbDescriptor<T> descriptor, BeanManagerImpl manager);
 
     /**
-     * Creates Session
+     * Creates session beans and registers them within the given environment.
      * @param environment
      * @param classes
      * @param manager
      */
     void createSessionBeans(BeanDeployerEnvironment environment, SetMultimap<Class<?>, SlimAnnotatedType<?>> classes, BeanManagerImpl manager);
 
+    /**
+     * Creates {@link New} session beans and registers them within the given environment.
+     * @param environment
+     * @param classes
+     * @param manager
+     */
     void createNewSessionBeans(BeanDeployerEnvironment environment, BeanManagerImpl manager);
+
+    /**
+     * Returns the class object for the {@link javax.ejb.Timeout} annotation
+     * @return the class object for the Timeout annotation or null if the annotation is not present
+     */
+    Class<? extends Annotation> getTimeoutAnnotation();
 
     EjbSupport NOOP_IMPLEMENTATION = new EjbSupport() {
 
@@ -106,6 +121,11 @@ public interface EjbSupport extends Service {
 
         @Override
         public void createNewSessionBeans(BeanDeployerEnvironment environment, BeanManagerImpl manager) {
+        }
+
+        @Override
+        public Class<? extends Annotation> getTimeoutAnnotation() {
+            return null;
         }
     };
 }
