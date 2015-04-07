@@ -30,7 +30,7 @@ import org.jboss.weld.module.WeldModule;
  * @author Jozef Hartinger
  *
  */
-public class WeldEJBModule implements WeldModule {
+public class WeldEjbModule implements WeldModule {
 
     private final EjbSupport ejbSupport = new EjbSupportImpl();
 
@@ -43,7 +43,7 @@ public class WeldEJBModule implements WeldModule {
     public void postServiceRegistration(PostServiceRegistrationContext ctx) {
         ctx.getServices().add(EjbSupport.class, ejbSupport);
         ctx.getServices().add(SLSBInvocationInjectionPoint.class, new SLSBInvocationInjectionPoint());
-        ctx.registerPlugableValidator(new WeldEJBValidator());
+        ctx.registerPlugableValidator(new WeldEjbValidator());
         ctx.getServices().get(ResourceInjectionFactory.class).addResourceInjectionProcessor(new EjbResourceInjectionProcessor());
     }
 

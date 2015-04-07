@@ -28,7 +28,7 @@ import org.jboss.weld.logging.ValidatorLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.module.PlugableValidator;
 
-class WeldEJBValidator implements PlugableValidator {
+class WeldEjbValidator implements PlugableValidator {
 
     public void validateInjectionPointForDefinitionErrors(InjectionPoint ij, Bean<?> bean, BeanManagerImpl beanManager) {
         // check that UserTransaction is not injected into a SessionBean with container-managed transactions
