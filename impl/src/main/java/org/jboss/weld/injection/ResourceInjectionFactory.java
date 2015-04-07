@@ -115,7 +115,7 @@ public final class ResourceInjectionFactory implements Service, Iterable<Resourc
      * JPA persistence unit resource injection processor.
      *
      */
-    private class PersistenceUnitResourceInjectionProcessor extends
+    private static class PersistenceUnitResourceInjectionProcessor extends
             ResourceInjectionProcessor<JpaInjectionServices, PersistenceApiAbstraction> {
 
         @Override
@@ -149,7 +149,7 @@ public final class ResourceInjectionFactory implements Service, Iterable<Resourc
     /**
      * JPA persistence context resource injection processor.
      */
-    private class PersistenceContextResourceInjectionProcessor extends
+    private static class PersistenceContextResourceInjectionProcessor extends
             ResourceInjectionProcessor<JpaInjectionServices, PersistenceApiAbstraction> {
 
         @Override
@@ -184,7 +184,7 @@ public final class ResourceInjectionFactory implements Service, Iterable<Resourc
     /**
      * Resource injection processor.
      */
-    private class ResourceResourceInjectionProcessor extends
+    private static class ResourceResourceInjectionProcessor extends
             ResourceInjectionProcessor<ResourceInjectionServices, Object> {
 
         @Override
@@ -214,7 +214,7 @@ public final class ResourceInjectionFactory implements Service, Iterable<Resourc
     /**
      * JAX-WS resource injection processor.
      */
-    private class WebServiceResourceInjectionProcessor extends
+    private static class WebServiceResourceInjectionProcessor extends
             ResourceInjectionProcessor<JaxwsInjectionServices, WSApiAbstraction> {
 
         @Override
