@@ -67,7 +67,6 @@ import org.jboss.weld.resources.DefaultResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.security.spi.SecurityServices;
 import org.jboss.weld.util.AnnotationApiAbstraction;
-import org.jboss.weld.util.JtaApiAbstraction;
 import org.jboss.weld.util.collections.WeldCollections;
 import org.jboss.weld.ws.WSApiAbstraction;
 
@@ -106,7 +105,6 @@ public class BeanDeployment {
 
         services.add(PersistenceApiAbstraction.class, new PersistenceApiAbstraction(resourceLoader));
         services.add(WSApiAbstraction.class, new WSApiAbstraction(resourceLoader));
-        services.add(JtaApiAbstraction.class, new JtaApiAbstraction(resourceLoader));
         services.add(InterceptorsApiAbstraction.class, new InterceptorsApiAbstraction(resourceLoader));
         services.add(AnnotationApiAbstraction.class, new AnnotationApiAbstraction(resourceLoader));
         this.beanManager = BeanManagerImpl.newManager(deploymentManager, beanDeploymentArchive.getId(), services);
