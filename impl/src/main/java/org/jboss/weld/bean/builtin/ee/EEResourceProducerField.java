@@ -18,7 +18,6 @@ package org.jboss.weld.bean.builtin.ee;
 
 import java.io.Serializable;
 
-import javax.annotation.Resource;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
@@ -35,14 +34,13 @@ import org.jboss.weld.bean.proxy.EnterpriseTargetBeanInstance;
 import org.jboss.weld.bean.proxy.ProxyFactory;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
-import org.jboss.weld.ejb.EJBApiAbstraction;
+import org.jboss.weld.injection.ResourceInjectionFactory;
+import org.jboss.weld.injection.ResourceInjectionProcessor;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.persistence.PersistenceApiAbstraction;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.serialization.spi.ContextualStore;
 import org.jboss.weld.util.reflection.Reflections;
-import org.jboss.weld.ws.WSApiAbstraction;
 
 /**
  * @author pmuir
@@ -102,13 +100,13 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T> {
      * @return <code>true</code> if the given field is annotated with an EE resource annotation, <code>false</code> otherwise
      */
     public static boolean isEEResourceProducerField(BeanManagerImpl beanManager, AnnotatedField<?> field) {
-        EJBApiAbstraction ejbApiAbstraction = beanManager.getServices().get(EJBApiAbstraction.class);
-        PersistenceApiAbstraction persistenceApiAbstraction = beanManager.getServices().get(PersistenceApiAbstraction.class);
-        WSApiAbstraction wsApiAbstraction = beanManager.getServices().get(WSApiAbstraction.class);
-        return field.isAnnotationPresent(ejbApiAbstraction.EJB_ANNOTATION_CLASS) || field.isAnnotationPresent(Resource.class)
-                || field.isAnnotationPresent(persistenceApiAbstraction.PERSISTENCE_UNIT_ANNOTATION_CLASS)
-                || field.isAnnotationPresent(persistenceApiAbstraction.PERSISTENCE_CONTEXT_ANNOTATION_CLASS)
-                || field.isAnnotationPresent(wsApiAbstraction.WEB_SERVICE_REF_ANNOTATION_CLASS);
+        final ResourceInjectionFactory factory = beanManager.getServices().get(ResourceInjectionFactory.class);
+        for (ResourceInjectionProcessor<?, ?> processor : factory) {
+            if (field.isAnnotationPresent(processor.getMarkerAnnotation(beanManager))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private ProxyFactory<T> proxyFactory;

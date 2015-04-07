@@ -39,6 +39,7 @@ import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.event.DefaultObserverNotifierFactory;
 import org.jboss.weld.event.GlobalObserverNotifierService;
+import org.jboss.weld.injection.ResourceInjectionFactory;
 import org.jboss.weld.injection.producer.InjectionTargetService;
 import org.jboss.weld.interceptor.builder.InterceptorsApiAbstraction;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -83,6 +84,7 @@ public class AccessibleManagerResolutionTest {
         this.services.add(SpecializationAndEnablementRegistry.class, new SpecializationAndEnablementRegistry());
         this.services.add(InterceptorsApiAbstraction.class, new InterceptorsApiAbstraction(DefaultResourceLoader.INSTANCE));
         this.services.add(ProxyInstantiator.class, DefaultProxyInstantiator.INSTANCE);
+        this.services.add(ResourceInjectionFactory.class, new ResourceInjectionFactory());
     }
 
     private <T> void addBean(BeanManagerImpl manager, Class<T> c) {

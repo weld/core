@@ -55,8 +55,8 @@ public class ResourceInjector<T> extends DefaultInjector<T> {
 
     protected ResourceInjector(EnhancedAnnotatedType<T> type, Bean<T> bean, BeanManagerImpl beanManager) {
         super(type, bean, beanManager);
-        this.resourceInjectionsHierarchy = ImmutableList.copyOf(ResourceInjectionFactory.instance().getResourceInjections(bean, type,
-                beanManager));
+        final ResourceInjectionFactory factory = beanManager.getServices().get(ResourceInjectionFactory.class);
+        this.resourceInjectionsHierarchy = ImmutableList.copyOf(factory.getResourceInjections(bean, type, beanManager));
     }
 
     @Override

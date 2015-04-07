@@ -20,6 +20,7 @@ import org.jboss.weld.bootstrap.ContextHolder;
 import org.jboss.weld.context.ejb.EjbLiteral;
 import org.jboss.weld.context.ejb.EjbRequestContext;
 import org.jboss.weld.context.ejb.EjbRequestContextImpl;
+import org.jboss.weld.injection.ResourceInjectionFactory;
 import org.jboss.weld.module.EjbSupport;
 import org.jboss.weld.module.WeldModule;
 
@@ -43,6 +44,7 @@ public class WeldEJBModule implements WeldModule {
         ctx.getServices().add(EjbSupport.class, ejbSupport);
         ctx.getServices().add(SLSBInvocationInjectionPoint.class, new SLSBInvocationInjectionPoint());
         ctx.registerPlugableValidator(new WeldEJBValidator());
+        ctx.getServices().get(ResourceInjectionFactory.class).addResourceInjectionProcessor(new EjbResourceInjectionProcessor());
     }
 
     @Override

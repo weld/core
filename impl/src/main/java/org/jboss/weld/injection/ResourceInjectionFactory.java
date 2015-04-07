@@ -20,30 +20,25 @@ import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.annotation.Resource;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 
-import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
-import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
-import org.jboss.weld.bean.builtin.ee.StaticEEResourceProducerField;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.ejb.EJBApiAbstraction;
-import org.jboss.weld.injection.spi.EjbInjectionServices;
 import org.jboss.weld.injection.spi.JaxwsInjectionServices;
 import org.jboss.weld.injection.spi.JpaInjectionServices;
 import org.jboss.weld.injection.spi.ResourceInjectionServices;
 import org.jboss.weld.injection.spi.ResourceReferenceFactory;
 import org.jboss.weld.logging.BeanLogger;
-import org.jboss.weld.logging.UtilLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
-import org.jboss.weld.util.ApiAbstraction;
-import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.reflection.Reflections;
 import org.jboss.weld.ws.WSApiAbstraction;
 
@@ -52,24 +47,17 @@ import org.jboss.weld.ws.WSApiAbstraction;
  *
  * @author Martin Kouba
  */
-public final class ResourceInjectionFactory {
-
-    private static final ResourceInjectionFactory INSTANCE = new ResourceInjectionFactory();
+public final class ResourceInjectionFactory implements Service, Iterable<ResourceInjectionProcessor<?, ?>> {
 
     private final List<ResourceInjectionProcessor<?, ?>> resourceInjectionProcessors;
 
-    private ResourceInjectionFactory() {
-        super();
-        this.resourceInjectionProcessors = initializeProcessors();
+    public ResourceInjectionFactory() {
+        this.resourceInjectionProcessors = new CopyOnWriteArrayList<>();
+        initializeProcessors();
     }
 
-    /**
-     * Returns the default {@link ResourceInjectionFactory} singleton.
-     *
-     * @return the default {@link ResourceInjectionFactory} singleton
-     */
-    public static ResourceInjectionFactory instance() {
-        return INSTANCE;
+    public void addResourceInjectionProcessor(ResourceInjectionProcessor<?, ?> processor) {
+        resourceInjectionProcessors.add(processor);
     }
 
     /**
@@ -117,146 +105,11 @@ public final class ResourceInjectionFactory {
         return resourceInjection;
     }
 
-    private List<ResourceInjectionProcessor<?, ?>> initializeProcessors() {
-        List<ResourceInjectionProcessor<?, ?>> processors = new ArrayList<ResourceInjectionFactory.ResourceInjectionProcessor<?, ?>>();
-        processors.add(new EjbResourceInjectionProcessor());
-        processors.add(new PersistenceUnitResourceInjectionProcessor());
-        processors.add(new PersistenceContextResourceInjectionProcessor());
-        processors.add(new ResourceResourceInjectionProcessor());
-        processors.add(new WebServiceResourceInjectionProcessor());
-        return processors;
-    }
-
-    /**
-     * Abstract stateless resource injection processor.
-     *
-     * @author Martin Kouba
-     *
-     * @param <S>
-     * @param <A>
-     */
-    private abstract class ResourceInjectionProcessor<S extends Service, A extends ApiAbstraction> {
-
-        /**
-         * @param fieldInjectionPoint
-         * @param beanManager
-         * @return {@link ResourceInjection} for static producer field or <code>null</code> if required services are not
-         *         supported or the field is not annotated with the specific marker annotation
-         * @see StaticEEResourceProducerField
-         */
-        protected <T, X> ResourceInjection<T> createStaticProducerFieldResourceInjection(
-                FieldInjectionPoint<T, X> fieldInjectionPoint, BeanManagerImpl beanManager) {
-
-            S injectionServices = getInjectionServices(beanManager);
-            A apiAbstraction = getApiAbstraction(beanManager);
-
-            if (injectionServices != null && apiAbstraction != null
-                    && fieldInjectionPoint.getAnnotated().isAnnotationPresent(getMarkerAnnotation(apiAbstraction))) {
-                return createFieldResourceInjection(fieldInjectionPoint, injectionServices, apiAbstraction);
-            }
-            return null;
-        }
-
-        /**
-         *
-         * @param declaringBean
-         * @param type
-         * @param manager
-         * @return the set of {@link ResourceInjection}s for the specified bean and type
-         */
-        protected Set<ResourceInjection<?>> createResourceInjections(Bean<?> declaringBean, EnhancedAnnotatedType<?> type,
-                BeanManagerImpl manager) {
-
-            S injectionServices = getInjectionServices(manager);
-            A apiAbstraction = getApiAbstraction(manager);
-
-            if (injectionServices == null || apiAbstraction == null) {
-                return Collections.emptySet();
-            }
-
-            Class<? extends Annotation> marker = getMarkerAnnotation(apiAbstraction);
-            ImmutableSet.Builder<ResourceInjection<?>> resourceInjections = ImmutableSet.builder();
-
-            for (EnhancedAnnotatedField<?, ?> field : type.getDeclaredEnhancedFields(marker)) {
-                resourceInjections.add(createFieldResourceInjection(InjectionPointFactory.silentInstance()
-                        .createFieldInjectionPoint(field, declaringBean, type.getJavaClass(), manager), injectionServices,
-                        apiAbstraction));
-            }
-            for (EnhancedAnnotatedMethod<?, ?> method : type.getDeclaredEnhancedMethods(marker)) {
-                if (method.getParameters().size() != 1) {
-                    throw UtilLogger.LOG.resourceSetterInjectionNotAJavabean(method);
-                }
-                resourceInjections.add(createSetterResourceInjection(
-                        InjectionPointFactory.silentInstance().createParameterInjectionPoint(
-                                method.getEnhancedParameters().get(0), declaringBean, type.getJavaClass(), manager),
-                        injectionServices, apiAbstraction));
-            }
-            return resourceInjections.build();
-        }
-
-        /**
-         *
-         * @param fieldInjectionPoint
-         * @param beanManager
-         * @return {@link ResourceInjection} for the given field
-         */
-        private <T, X> ResourceInjection<T> createFieldResourceInjection(FieldInjectionPoint<T, X> fieldInjectionPoint,
-                S injectionServices, A apiAbstraction) {
-            return new FieldResourceInjection<T, X>(fieldInjectionPoint,
-                    Reflections.<ResourceReferenceFactory<T>> cast(getResourceReferenceFactory(fieldInjectionPoint,
-                            injectionServices, apiAbstraction)));
-        }
-
-        /**
-         *
-         * @param methodInjectionPoint
-         * @param beanManager
-         * @return {@link ResourceInjection} for the given setter method
-         */
-        private <T, X> ResourceInjection<T> createSetterResourceInjection(
-                ParameterInjectionPoint<T, X> parameterInjectionPoint, S injectionServices, A apiAbstraction) {
-            return new SetterResourceInjection<T, X>(parameterInjectionPoint,
-                    Reflections.<ResourceReferenceFactory<T>> cast(getResourceReferenceFactory(parameterInjectionPoint,
-                            injectionServices, apiAbstraction)));
-        }
-
-        protected abstract <T> ResourceReferenceFactory<T> getResourceReferenceFactory(InjectionPoint injectionPoint,
-                S injectionServices, A apiAbstraction);
-
-        protected abstract Class<? extends Annotation> getMarkerAnnotation(A apiAbstraction);
-
-        protected abstract A getApiAbstraction(BeanManagerImpl manager);
-
-        protected abstract S getInjectionServices(BeanManagerImpl manager);
-
-    }
-
-    /**
-     * EJB resource injection processor.
-     */
-    private class EjbResourceInjectionProcessor extends ResourceInjectionProcessor<EjbInjectionServices, EJBApiAbstraction> {
-
-        @Override
-        protected <T> ResourceReferenceFactory<T> getResourceReferenceFactory(InjectionPoint injectionPoint,
-                EjbInjectionServices injectionServices, EJBApiAbstraction apiAbstraction) {
-            return Reflections.<ResourceReferenceFactory<T>> cast(injectionServices.registerEjbInjectionPoint(injectionPoint));
-        }
-
-        @Override
-        protected Class<? extends Annotation> getMarkerAnnotation(EJBApiAbstraction apiAbstraction) {
-            return apiAbstraction.EJB_ANNOTATION_CLASS;
-        }
-
-        @Override
-        protected EJBApiAbstraction getApiAbstraction(BeanManagerImpl manager) {
-            return manager.getServices().get(EJBApiAbstraction.class);
-        }
-
-        @Override
-        protected EjbInjectionServices getInjectionServices(BeanManagerImpl manager) {
-            return manager.getServices().get(EjbInjectionServices.class);
-        }
-
+    private void initializeProcessors() {
+        resourceInjectionProcessors.add(new PersistenceUnitResourceInjectionProcessor());
+        resourceInjectionProcessors.add(new PersistenceContextResourceInjectionProcessor());
+        resourceInjectionProcessors.add(new ResourceResourceInjectionProcessor());
+        resourceInjectionProcessors.add(new WebServiceResourceInjectionProcessor());
     }
 
     /**
@@ -284,7 +137,7 @@ public final class ResourceInjectionFactory {
         }
 
         @Override
-        protected PersistenceApiAbstraction getApiAbstraction(BeanManagerImpl manager) {
+        protected PersistenceApiAbstraction getProcessorContext(BeanManagerImpl manager) {
             return manager.getServices().get(PersistenceApiAbstraction.class);
         }
 
@@ -318,7 +171,7 @@ public final class ResourceInjectionFactory {
         }
 
         @Override
-        protected PersistenceApiAbstraction getApiAbstraction(BeanManagerImpl manager) {
+        protected PersistenceApiAbstraction getProcessorContext(BeanManagerImpl manager) {
             return manager.getServices().get(PersistenceApiAbstraction.class);
         }
 
@@ -348,7 +201,7 @@ public final class ResourceInjectionFactory {
         }
 
         @Override
-        protected EJBApiAbstraction getApiAbstraction(BeanManagerImpl manager) {
+        protected EJBApiAbstraction getProcessorContext(BeanManagerImpl manager) {
             return manager.getServices().get(EJBApiAbstraction.class);
         }
 
@@ -378,7 +231,7 @@ public final class ResourceInjectionFactory {
         }
 
         @Override
-        protected WSApiAbstraction getApiAbstraction(BeanManagerImpl manager) {
+        protected WSApiAbstraction getProcessorContext(BeanManagerImpl manager) {
             return manager.getServices().get(WSApiAbstraction.class);
         }
 
@@ -404,6 +257,15 @@ public final class ResourceInjectionFactory {
             resourceInjections.addAll(processor.createResourceInjections(bean, type, manager));
         }
         return resourceInjections;
+    }
+
+    @Override
+    public void cleanup() {
+    }
+
+    @Override
+    public Iterator<ResourceInjectionProcessor<?, ?>> iterator() {
+        return resourceInjectionProcessors.iterator();
     }
 
 }

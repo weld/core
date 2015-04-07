@@ -91,6 +91,7 @@ import org.jboss.weld.event.DefaultObserverNotifierFactory;
 import org.jboss.weld.event.GlobalObserverNotifierService;
 import org.jboss.weld.executor.ExecutorServicesFactory;
 import org.jboss.weld.injection.CurrentInjectionPoint;
+import org.jboss.weld.injection.ResourceInjectionFactory;
 import org.jboss.weld.injection.producer.InjectionTargetService;
 import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.logging.VersionLogger;
@@ -293,6 +294,8 @@ public class WeldStartup {
         services.add(ProxyInstantiator.class, ProxyInstantiator.Factory.create(configuration));
 
         services.add(ObserverNotifierFactory.class, DefaultObserverNotifierFactory.INSTANCE);
+
+        services.add(ResourceInjectionFactory.class, new ResourceInjectionFactory());
 
         modules.postServiceRegistration(contextId, services);
 
