@@ -51,7 +51,6 @@ import org.jboss.weld.bootstrap.spi.BeanDiscoveryMode;
 import org.jboss.weld.bootstrap.spi.Filter;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.config.WeldConfiguration;
-import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.ejb.spi.EjbServices;
 import org.jboss.weld.injection.producer.InjectionTargetService;
@@ -105,7 +104,6 @@ public class BeanDeployment {
         services.addAll(deploymentServices.entrySet());
         services.addAll(registry.entrySet());
 
-        services.add(EJBApiAbstraction.class, new EJBApiAbstraction(resourceLoader));
         services.add(PersistenceApiAbstraction.class, new PersistenceApiAbstraction(resourceLoader));
         services.add(WSApiAbstraction.class, new WSApiAbstraction(resourceLoader));
         services.add(JtaApiAbstraction.class, new JtaApiAbstraction(resourceLoader));

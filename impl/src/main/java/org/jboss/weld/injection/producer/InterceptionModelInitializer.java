@@ -39,7 +39,6 @@ import javax.interceptor.InterceptorBinding;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedConstructor;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
-import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.interceptor.builder.InterceptionModelBuilder;
 import org.jboss.weld.interceptor.builder.InterceptorsApiAbstraction;
@@ -50,6 +49,7 @@ import org.jboss.weld.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.logging.ValidatorLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.module.EjbSupport;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.collections.Multimap;
 import org.jboss.weld.util.collections.SetMultimap;
@@ -76,7 +76,7 @@ public class InterceptionModelInitializer<T> {
     private final EnhancedAnnotatedConstructor<T> constructor;
 
     private final InterceptorsApiAbstraction interceptorsApi;
-    private final EJBApiAbstraction ejbApi;
+    private final Class<? extends Annotation> timeoutAnnotation;
 
     private List<EnhancedAnnotatedMethod<?, ?>> businessMethods;
     private final InterceptionModelBuilder builder;
@@ -94,7 +94,7 @@ public class InterceptionModelInitializer<T> {
             stereotypes = bean.getStereotypes();
         }
         this.interceptorsApi = manager.getServices().get(InterceptorsApiAbstraction.class);
-        this.ejbApi = manager.getServices().get(EJBApiAbstraction.class);
+        this.timeoutAnnotation = manager.getServices().get(EjbSupport.class).getTimeoutAnnotation();
     }
 
     public void init() {
@@ -296,7 +296,7 @@ public class InterceptionModelInitializer<T> {
     }
 
     private boolean isTimeoutAnnotationPresentOn(AnnotatedMethod<?> method) {
-        return method.isAnnotationPresent(ejbApi.TIMEOUT_ANNOTATION_CLASS);
+        return timeoutAnnotation != null && method.isAnnotationPresent(timeoutAnnotation);
     }
 
     /**

@@ -31,7 +31,6 @@ import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bootstrap.api.Service;
-import org.jboss.weld.ejb.EJBApiAbstraction;
 import org.jboss.weld.injection.spi.JaxwsInjectionServices;
 import org.jboss.weld.injection.spi.JpaInjectionServices;
 import org.jboss.weld.injection.spi.ResourceInjectionServices;
@@ -186,23 +185,23 @@ public final class ResourceInjectionFactory implements Service, Iterable<Resourc
      * Resource injection processor.
      */
     private class ResourceResourceInjectionProcessor extends
-            ResourceInjectionProcessor<ResourceInjectionServices, EJBApiAbstraction> {
+            ResourceInjectionProcessor<ResourceInjectionServices, Object> {
 
         @Override
         protected <T> ResourceReferenceFactory<T> getResourceReferenceFactory(InjectionPoint injectionPoint,
-                ResourceInjectionServices injectionServices, EJBApiAbstraction apiAbstraction) {
+                ResourceInjectionServices injectionServices, Object processorContext) {
             return Reflections.<ResourceReferenceFactory<T>> cast(injectionServices
                     .registerResourceInjectionPoint(injectionPoint));
         }
 
         @Override
-        protected Class<? extends Annotation> getMarkerAnnotation(EJBApiAbstraction apiAbstraction) {
+        protected Class<? extends Annotation> getMarkerAnnotation(Object processorContext) {
             return Resource.class;
         }
 
         @Override
-        protected EJBApiAbstraction getProcessorContext(BeanManagerImpl manager) {
-            return manager.getServices().get(EJBApiAbstraction.class);
+        protected Object getProcessorContext(BeanManagerImpl manager) {
+            return null;
         }
 
         @Override

@@ -45,6 +45,7 @@ import org.jboss.weld.interceptor.builder.InterceptorsApiAbstraction;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
+import org.jboss.weld.module.EjbSupport;
 import org.jboss.weld.module.ExpressionLanguageService;
 import org.jboss.weld.module.ObserverNotifierFactory;
 import org.jboss.weld.resources.ClassTransformer;
@@ -85,6 +86,7 @@ public class AccessibleManagerResolutionTest {
         this.services.add(InterceptorsApiAbstraction.class, new InterceptorsApiAbstraction(DefaultResourceLoader.INSTANCE));
         this.services.add(ProxyInstantiator.class, DefaultProxyInstantiator.INSTANCE);
         this.services.add(ResourceInjectionFactory.class, new ResourceInjectionFactory());
+        this.services.add(EjbSupport.class, EjbSupport.NOOP_IMPLEMENTATION);
     }
 
     private <T> void addBean(BeanManagerImpl manager, Class<T> c) {

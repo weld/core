@@ -16,9 +16,11 @@
  */
 package org.jboss.weld.ejb;
 
+import java.lang.annotation.Annotation;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.ejb.Timeout;
 import javax.enterprise.inject.spi.BeanAttributes;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
@@ -116,5 +118,10 @@ class EjbSupportImpl implements EjbSupport {
         store.put(type.slim());
         final BeanAttributes<T> attributes = Reflections.cast(SessionBeans.createBeanAttributesForNew(type, ejbDescriptor, beanManager, type.getJavaClass()));
         return NewSessionBean.of(attributes, ejbDescriptor, beanManager);
+    }
+
+    @Override
+    public Class<? extends Annotation> getTimeoutAnnotation() {
+        return Timeout.class;
     }
 }
