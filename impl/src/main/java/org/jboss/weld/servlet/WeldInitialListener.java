@@ -124,8 +124,8 @@ public class WeldInitialListener extends AbstractServletListener {
      */
     private boolean initLazyConversationContext(BeanManagerImpl manager, ServletContext ctx) {
         ObserverNotifier notifier = manager.getAccessibleLenientObserverNotifier();
-        boolean noObservers = notifier.resolveObserverMethods(notifier.buildEventResolvable(HttpServletRequest.class, InitializedLiteral.CONVERSATION)).isEmpty()
-                && notifier.resolveObserverMethods(notifier.buildEventResolvable(HttpServletRequest.class, DestroyedLiteral.CONVERSATION)).isEmpty();
+        boolean noObservers = notifier.resolveObserverMethods(HttpServletRequest.class, InitializedLiteral.CONVERSATION).isEmpty()
+                && notifier.resolveObserverMethods(HttpServletRequest.class, DestroyedLiteral.CONVERSATION).isEmpty();
         return getBooleanInitParameter(ctx, CONVERSATION_CONTEXT_LAZY_PARAM, noObservers);
     }
 
