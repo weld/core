@@ -50,12 +50,12 @@ public class SessionAvailabilityTest {
     }
 
     @Test
-    public void test() throws IOException {
+    public void testPrecedingSessionAvailable() throws IOException {
         // set data to session - increment int
         String id1 = pageAsString("set=true");
         //change session id 
         String id2 = pageAsString("change=true");
-        Assert.assertNotSame(id1, id2);
+        Assert.assertTrue(!id1.equals(id2));
         String p = pageAsString("print=true");
         Assert.assertEquals(p, "1");
     }
