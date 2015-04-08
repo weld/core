@@ -44,9 +44,10 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
 /**
- * Provides event-related operations such sa observer method resolution and event delivery.
+ * Provides event-related operations such as observer method resolution and event delivery.
  *
- *
+ * An ObserverNotifier may be created with strict checks enabled. In such case event type checks are performed. Otherwise, the ObserverNotifier is called
+ * lenient. The lenient version should be used for internal dispatching of events only.
  *
  * @author Jozef Hartinger
  * @author David Allen
@@ -89,24 +90,60 @@ public class ObserverNotifier {
         }
     }
 
+    /**
+     * Resolves observer methods based on the given event type and qualifiers. If strict checks are enabled the given type is verified.
+     *
+     * @param event the event object
+     * @param qualifiers given event qualifiers
+     * @return resolved observer methods
+     */
     public <T> ResolvedObservers<T> resolveObserverMethods(Type eventType, Annotation... qualifiers) {
         checkEventObjectType(eventType);
         return this.<T>resolveObserverMethods(buildEventResolvable(eventType, qualifiers));
     }
 
+    /**
+     * Resolves observer methods based on the given event type and qualifiers. If strict checks are enabled the given type is verified.
+     *
+     * @param event the event object
+     * @param qualifiers given event qualifiers
+     * @return resolved observer methods
+     */
     public <T> ResolvedObservers<T> resolveObserverMethods(Type eventType, Set<Annotation> qualifiers) {
         checkEventObjectType(eventType);
         return this.<T>resolveObserverMethods(buildEventResolvable(eventType, qualifiers));
     }
 
+    /**
+     * Resolves observer methods using the given resolvable.
+     *
+     * @param resolvable the given resolvable
+     * @return resolved observer methods
+     */
     public <T> ResolvedObservers<T> resolveObserverMethods(Resolvable resolvable) {
         return cast(resolver.resolve(resolvable, true));
     }
 
+    /**
+     * Delivers the given event object to observer methods resolved based on the runtime type of the event object and given event qualifiers. If strict checks
+     * are enabled the event object type is verified.
+     *
+     * @param event the event object
+     * @param metadata event metadata
+     * @param qualifiers event qualifiers
+     */
     public void fireEvent(Object event, EventMetadata metadata, Annotation... qualifiers) {
         fireEvent(event.getClass(), event, metadata, qualifiers);
     }
 
+    /**
+     * Delivers the given event object to observer methods resolved based on the given event type and qualifiers. If strict checks are enabled the given type is
+     * verified.
+     *
+     * @param eventType the given event type
+     * @param event the given event object
+     * @param qualifiers event qualifiers
+     */
     public void fireEvent(Type eventType, Object event, Annotation... qualifiers) {
         fireEvent(eventType, event, null, qualifiers);
     }
@@ -117,6 +154,13 @@ public class ObserverNotifier {
         notify(resolveObserverMethods(buildEventResolvable(eventType, qualifiers)), event, metadata);
     }
 
+    /**
+     * Delivers the given event object to observer methods resolved based on the given resolvable. If strict checks are enabled the event object type is
+     * verified.
+     *
+     * @param event the given event object
+     * @param resolvable
+     */
     public void fireEvent(Object event, Resolvable resolvable) {
         checkEventObjectType(event);
         notify(resolveObserverMethods(resolvable), event, null);
@@ -143,6 +187,9 @@ public class ObserverNotifier {
             .create();
     }
 
+    /**
+     * Clears cached observer method resolutions and event type checks.
+     */
     public void clear() {
         resolver.clear();
         if (eventTypeCheckCache != null) {
@@ -154,6 +201,15 @@ public class ObserverNotifier {
         checkEventObjectType(event.getClass());
     }
 
+    /**
+     * If strict checks are enabled this method performs event type checks on the given type. More specifically it verifies that no type variables nor wildcards
+     * are present within the event type. In addition, this method verifies, that the event type is not assignable to a container lifecycle event type. If
+     * strict checks are not enabled then this method does not perform any action.
+     *
+     * @param eventType the given event type
+     * @throws org.jboss.weld.exceptions.IllegalArgumentException if the strict mode is enabled and the event type contains a type variable, wildcard or is
+     *         assignable to a container lifecycle event type
+     */
     public void checkEventObjectType(Type eventType) {
         if (strict) {
             RuntimeException exception = getCacheValue(eventTypeCheckCache, eventType);
@@ -190,6 +246,13 @@ public class ObserverNotifier {
         }
     }
 
+    /**
+     * Delivers the given event object to given observer methods. Event metadata is made available for injection into observer methods, if needed.
+     *
+     * @param observers the given observer methods
+     * @param event the given event object
+     * @param metadata event metadata
+     */
     public <T> void notify(ResolvedObservers<T> observers, T event, EventMetadata metadata) {
         if (!observers.isMetadataRequired()) {
             metadata = null;
