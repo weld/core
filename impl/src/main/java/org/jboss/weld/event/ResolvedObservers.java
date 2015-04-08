@@ -24,12 +24,20 @@ import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.event.TransactionPhase;
+import javax.enterprise.inject.spi.EventMetadata;
 import javax.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.weld.util.Observers;
 
 import com.google.common.collect.ImmutableSet;
 
+/**
+ * Immutable information about observer methods resolved for a type/qualifiers combination.
+ *
+ * @author Jozef Hartinger
+ *
+ * @param <T> the event type
+ */
 public class ResolvedObservers<T> {
 
     private static final ResolvedObservers<Object> EMPTY = new ResolvedObservers<Object>(Collections.<ObserverMethod<? super Object>>emptySet(), Collections.<ObserverMethod<? super Object>>emptySet(), false) {
@@ -77,10 +85,18 @@ public class ResolvedObservers<T> {
         return transactionObservers;
     }
 
+    /**
+     * Indicates whether any of the resolved observer methods is either an extension-provided one or declares an explicit {@link EventMetadata} injection point.
+     * @return true iff any of the resolved observer methods requires event metadata
+     */
     boolean isMetadataRequired() {
         return metadataRequired;
     }
 
+    /**
+     * Indicates whether this object represents an empty set of observer methods.
+     * @return true iff this object represents an empty set of observer methods
+     */
     public boolean isEmpty() {
         return false;
     }
