@@ -89,9 +89,9 @@ public class ObserverNotifier {
         }
     }
 
-    public <T> ResolvedObservers<T> resolveObserverMethods(T event, Annotation... bindings) {
-        checkEventObjectType(event);
-        return this.<T>resolveObserverMethods(buildEventResolvable(event.getClass(), bindings));
+    public <T> ResolvedObservers<T> resolveObserverMethods(Type eventType, Annotation... qualifiers) {
+        checkEventObjectType(eventType);
+        return this.<T>resolveObserverMethods(buildEventResolvable(eventType, qualifiers));
     }
 
     public <T> ResolvedObservers<T> resolveObserverMethods(Type eventType, Set<Annotation> qualifiers) {
@@ -111,7 +111,7 @@ public class ObserverNotifier {
         fireEvent(eventType, event, null, qualifiers);
     }
 
-    public void fireEvent(Type eventType, Object event, EventMetadata metadata, Annotation... qualifiers) {
+    protected void fireEvent(Type eventType, Object event, EventMetadata metadata, Annotation... qualifiers) {
         checkEventObjectType(eventType);
         // we use the array of qualifiers for resolution so that we can catch duplicate qualifiers
         notify(resolveObserverMethods(buildEventResolvable(eventType, qualifiers)), event, metadata);
@@ -122,7 +122,7 @@ public class ObserverNotifier {
         notify(resolveObserverMethods(resolvable), event, null);
     }
 
-    public Resolvable buildEventResolvable(Type eventType, Set<Annotation> qualifiers) {
+    protected Resolvable buildEventResolvable(Type eventType, Set<Annotation> qualifiers) {
         // We can always cache as this is only ever called by Weld where we avoid non-static inner classes for annotation literals
         Set<Type> typeClosure = sharedObjectCache.getTypeClosureHolder(eventType).get();
         return new ResolvableBuilder(resolver.getMetaAnnotationStore())
@@ -133,7 +133,7 @@ public class ObserverNotifier {
             .create();
     }
 
-    public Resolvable buildEventResolvable(Type eventType, Annotation... qualifiers) {
+    protected Resolvable buildEventResolvable(Type eventType, Annotation... qualifiers) {
         // We can always cache as this is only ever called by Weld where we avoid non-static inner classes for annotation literals
         return new ResolvableBuilder(resolver.getMetaAnnotationStore())
             .addTypes(sharedObjectCache.getTypeClosureHolder(eventType).get())
@@ -150,7 +150,7 @@ public class ObserverNotifier {
         }
     }
 
-    public void checkEventObjectType(Object event) {
+    protected void checkEventObjectType(Object event) {
         checkEventObjectType(event.getClass());
     }
 
@@ -188,10 +188,6 @@ public class ObserverNotifier {
             }
             return NO_EXCEPTION_MARKER;
         }
-    }
-
-    public <T> void notify(Set<ObserverMethod<? super T>> observers, T event, EventMetadata metadata) {
-        notify(ResolvedObservers.of(observers), event, metadata);
     }
 
     public <T> void notify(ResolvedObservers<T> observers, T event, EventMetadata metadata) {
