@@ -59,9 +59,11 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- TODO: use bom version once WELD-1913 is fixed -->
         <dependency>
             <groupId>org.jboss.spec.javax.servlet</groupId>
-            <artifactId>jboss-servlet-api_3.0_spec</artifactId>
+            <artifactId>jboss-servlet-api_3.1_spec</artifactId>
+            <version>1.0.0.Final</version>
         </dependency>
 
         <dependency>
