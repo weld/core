@@ -72,7 +72,7 @@ public class FastEvent<T> {
      * @return
      */
     public static <T> FastEvent<T> of(Class<T> type, BeanManagerImpl manager, ObserverNotifier notifier, Annotation... qualifiers) {
-        ResolvedObservers<T> resolvedObserverMethods = notifier.<T> resolveObserverMethods(notifier.buildEventResolvable(type, qualifiers));
+        ResolvedObservers<T> resolvedObserverMethods = notifier.<T> resolveObserverMethods(type, qualifiers);
         if (resolvedObserverMethods.isMetadataRequired()) {
             EventMetadata metadata = new EventMetadataImpl(type, null, qualifiers);
             CurrentEventMetadata metadataService = manager.getServices().get(CurrentEventMetadata.class);
