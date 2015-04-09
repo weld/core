@@ -1390,6 +1390,10 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         return InstanceImpl.of(InstanceInjectionPoint.INSTANCE, createCreationalContext(null), this);
     }
 
+    public <T> Instance<Object> getInstance(CreationalContext<?> ctx) {
+        return cast(InstanceImpl.of(InstanceInjectionPoint.INSTANCE, ctx, this));
+    }
+
     @Override
     public <T> BeanAttributes<T> createBeanAttributes(AnnotatedType<T> type) {
         EnhancedAnnotatedType<T> clazz = services.get(ClassTransformer.class).getEnhancedAnnotatedType(type, getId());

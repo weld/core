@@ -16,6 +16,7 @@
  */
 package org.jboss.weld;
 
+import static org.jboss.weld.util.cache.LoadingCacheUtils.getCastCacheValue;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.annotation.Annotation;
@@ -29,12 +30,16 @@ import javax.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.bean.builtin.BeanManagerProxy;
 import org.jboss.weld.logging.BeanManagerLogger;
+import org.jboss.weld.manager.BeanManagerImpl;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableSet;
 
 /**
- * Abstract implementation of CDI which forwards all Instance methods to a delegate. Furthermore, it allows the calling class to be identified
- * using the {@link #getCallingClassName()} method.
+ * Abstract implementation of CDI which forwards all Instance methods to a delegate. Furthermore, it allows the calling class to be identified using the
+ * {@link #getCallingClassName()} method.
  *
  * @author Jozef Hartinger
  *
@@ -46,6 +51,8 @@ public abstract class AbstractCDI<T> extends CDI<T> {
     // used for caller detection
     protected final Set<String> knownClassNames;
 
+    private final LoadingCache<BeanManagerImpl, Instance<T>> instanceCache;
+
     public AbstractCDI() {
         ImmutableSet.Builder<String> names = ImmutableSet.builder();
         for (Class<?> clazz = getClass(); clazz != CDI.class; clazz = clazz.getSuperclass()) {
@@ -53,6 +60,13 @@ public abstract class AbstractCDI<T> extends CDI<T> {
         }
         names.add(Unmanaged.class.getName());
         this.knownClassNames = names.build();
+        this.instanceCache = CacheBuilder.newBuilder().build(new CacheLoader<BeanManagerImpl, Instance<T>>() {
+
+            @Override
+            public Instance<T> load(BeanManagerImpl beanManager) throws Exception {
+                return cast(beanManager.getInstance(beanManager.createCreationalContext(null)));
+            }
+        });
     }
 
     @Override
@@ -113,7 +127,13 @@ public abstract class AbstractCDI<T> extends CDI<T> {
         throw BeanManagerLogger.LOG.unableToIdentifyBeanManager();
     }
 
-    private Instance<T> getInstance() {
-        return cast(BeanManagerProxy.unwrap(getBeanManager()).instance());
+    /**
+     * Subclasses are allowed to override the default behavior, i.e. to cache instance per BeanManager.
+     *
+     * @return the {@link Instance} the relevant calls are delegated to
+     */
+    protected Instance<T> getInstance() {
+        return getCastCacheValue(instanceCache, BeanManagerProxy.unwrap(getBeanManager()));
     }
+
 }
