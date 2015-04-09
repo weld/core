@@ -101,7 +101,7 @@ public class WeldBuilderTest {
 
     @Test
     public void testConfigurationProperties() {
-        try (WeldContainer container = new Weld().disableDiscovery().property(ConfigurationKey.CONCURRENT_DEPLOYMENT, false).initialize()) {
+        try (WeldContainer container = new Weld().disableDiscovery().property(ConfigurationKey.CONCURRENT_DEPLOYMENT.get(), false).initialize()) {
             assertFalse(container.select(BeanManagerImpl.class).get().getServices().get(WeldConfiguration.class)
                     .getBooleanProperty(ConfigurationKey.CONCURRENT_DEPLOYMENT));
         }
@@ -109,7 +109,8 @@ public class WeldBuilderTest {
 
     @Test
     public void testReset() {
-        Weld weld = new Weld().containerId("FOO").disableDiscovery().property(ConfigurationKey.BEAN_IDENTIFIER_INDEX_OPTIMIZATION, true).beanClasses(Foo.class);
+        Weld weld = new Weld().containerId("FOO").disableDiscovery().property(ConfigurationKey.BEAN_IDENTIFIER_INDEX_OPTIMIZATION.get(), true)
+                .beanClasses(Foo.class);
         weld.reset();
         assertFalse(weld.isDiscoveryEnabled());
         assertEquals("FOO", weld.getContainerId());
@@ -122,7 +123,7 @@ public class WeldBuilderTest {
 
     @Test
     public void testResetAll() {
-        Weld weld = new Weld().containerId("FOO").disableDiscovery().property(ConfigurationKey.RELAXED_CONSTRUCTION, false).beanClasses(Foo.class);
+        Weld weld = new Weld().containerId("FOO").disableDiscovery().property(ConfigurationKey.RELAXED_CONSTRUCTION.get(), false).beanClasses(Foo.class);
         weld.resetAll();
         assertTrue(weld.isDiscoveryEnabled());
         assertEquals(RegistrySingletonProvider.STATIC_INSTANCE, weld.getContainerId());
