@@ -101,7 +101,7 @@ public interface CommonLogger extends WeldEnvironmentLogger {
     void archiveIsolationEnabled();
 
     @Message(id = 25, value = "Index for name: {0} not found.", format = Format.MESSAGE_FORMAT)
-    IllegalStateException indexForNameNotFound(Object param1);
+    ClassFileInfoException indexForNameNotFound(Object param1);
 
     @Message(id = 26, value = "Unable to instantiate {0} using parameters: {1}.", format = Format.MESSAGE_FORMAT)
     IllegalStateException unableToInstantiate(Object param1, Object param2, @Cause Throwable cause);
