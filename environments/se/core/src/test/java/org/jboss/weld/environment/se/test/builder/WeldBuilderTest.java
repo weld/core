@@ -164,4 +164,12 @@ public class WeldBuilderTest {
         }
     }
 
+    @Test
+    public void testExtensions() {
+        Weld weld = new Weld().disableDiscovery();
+        try (WeldContainer container = weld.extensions(new TestExtension()).initialize()) {
+            assertEquals(10, container.select(Foo.class).get().getVal());
+        }
+    }
+
 }
