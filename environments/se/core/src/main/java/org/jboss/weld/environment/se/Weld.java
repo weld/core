@@ -173,7 +173,7 @@ public class Weld {
 
     private final Set<Metadata<Extension>> extensions;
 
-    private final Map<ConfigurationKey, Object> properties;
+    private final Map<String, Object> properties;
 
     private final Set<Class<?>> packageClasses;
 
@@ -195,7 +195,7 @@ public class Weld {
         this.enabledInterceptors = new ArrayList<Metadata<String>>();
         this.enabledDecorators = new ArrayList<Metadata<String>>();
         this.extensions = new HashSet<Metadata<Extension>>();
-        this.properties = new HashMap<ConfigurationKey, Object>();
+        this.properties = new HashMap<String, Object>();
         this.packageClasses = new HashSet<Class<?>>();
     }
 
@@ -339,7 +339,7 @@ public class Weld {
      * @param value
      * @return self
      */
-    public Weld property(ConfigurationKey key, Object value) {
+    public Weld property(String key, Object value) {
         properties.put(key, value);
         return this;
     }
@@ -423,8 +423,8 @@ public class Weld {
         final ExternalConfigurationBuilder configurationBuilder = new ExternalConfigurationBuilder()
                 // weld-se uses relaxed construction by default
                 .add(ConfigurationKey.RELAXED_CONSTRUCTION.get(), true);
-        for (Entry<ConfigurationKey, Object> property : properties.entrySet()) {
-            configurationBuilder.add(property.getKey().get(), property.getValue());
+        for (Entry<String, Object> property : properties.entrySet()) {
+            configurationBuilder.add(property.getKey(), property.getValue());
         }
         deployment.getServices().add(ExternalConfiguration.class, configurationBuilder.build());
 
