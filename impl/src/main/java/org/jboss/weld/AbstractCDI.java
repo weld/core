@@ -29,11 +29,14 @@ import javax.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.bean.builtin.BeanManagerProxy;
 import org.jboss.weld.logging.BeanManagerLogger;
+import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.cache.ComputingCache;
+import org.jboss.weld.util.cache.ComputingCacheBuilder;
 import org.jboss.weld.util.collections.ImmutableSet;
 
 /**
- * Abstract implementation of CDI which forwards all Instance methods to a delegate. Furthermore, it allows the calling class to be identified
- * using the {@link #getCallingClassName()} method.
+ * Abstract implementation of CDI which forwards all Instance methods to a delegate. Furthermore, it allows the calling class to be identified using the
+ * {@link #getCallingClassName()} method.
  *
  * @author Jozef Hartinger
  *
@@ -45,6 +48,8 @@ public abstract class AbstractCDI<T> extends CDI<T> {
     // used for caller detection
     protected final Set<String> knownClassNames;
 
+    private final ComputingCache<BeanManagerImpl, Instance<T>> instanceCache;
+
     public AbstractCDI() {
         ImmutableSet.Builder<String> names = ImmutableSet.builder();
         for (Class<?> clazz = getClass(); clazz != CDI.class; clazz = clazz.getSuperclass()) {
@@ -52,6 +57,8 @@ public abstract class AbstractCDI<T> extends CDI<T> {
         }
         names.add(Unmanaged.class.getName());
         this.knownClassNames = names.build();
+        this.instanceCache = ComputingCacheBuilder.newBuilder().<BeanManagerImpl, Instance<T>> build(
+                (b) -> cast(b.getInstance(b.createCreationalContext(null))));
     }
 
     @Override
@@ -112,7 +119,13 @@ public abstract class AbstractCDI<T> extends CDI<T> {
         throw BeanManagerLogger.LOG.unableToIdentifyBeanManager();
     }
 
+    /**
+     * Subclasses are allowed to override the default behavior, i.e. to cache an instance per BeanManager.
+     *
+     * @return the {@link Instance} the relevant calls are delegated to
+     */
     protected Instance<T> getInstance() {
-        return cast(BeanManagerProxy.unwrap(getBeanManager()).instance());
+        return instanceCache.getValue(BeanManagerProxy.unwrap(getBeanManager()));
     }
+
 }
