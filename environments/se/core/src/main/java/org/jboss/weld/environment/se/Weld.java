@@ -264,7 +264,21 @@ public class Weld {
     }
 
     /**
-     * Add extension explicitly.
+     * Define the set of extensions.
+     *
+     * @param extensions
+     * @return self
+     */
+    public Weld extensions(Extension... extensions) {
+        this.extensions.clear();
+        for (Extension extension : extensions) {
+            addExtension(extension);
+        }
+        return this;
+    }
+
+    /**
+     * Add an extension to the set of extensions.
      *
      * @param extension an extension
      */
