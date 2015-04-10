@@ -23,7 +23,7 @@ public class ResourceProducer {
 	
     @True
 	@Produces
-	@WebServiceRef(value=TranslatorEndpointService.class)
+	@WebServiceRef(value=TranslatorService.class)
 	Translator translator;
 
 }

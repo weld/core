@@ -26,8 +26,8 @@ import javax.jws.WebService;
 /**
  * @author <a href="mailto:ropalka@redhat.com">Richard Opalka</a>
  */
-@WebService(name = "EndpointIface", targetNamespace = "http://org.jboss.test.ws/jbws3441")
+@WebService(name = "EndpointIface", targetNamespace = WebServiceInterceptorTest.TARGET_NAMESPACE)
 public interface EndpointIface
 {
-   public String echo(final String message);
+   String echo(final String message);
 }
