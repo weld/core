@@ -88,7 +88,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
         this.classTransformer = services.get(ClassTransformer.class);
         this.slimAnnotatedTypeStore = services.get(SlimAnnotatedTypeStore.class);
         this.specializationAndEnablementRegistry = services.get(SpecializationAndEnablementRegistry.class);
-        this.ejbSupport = services.get(EjbSupport.class);
+        this.ejbSupport = manager.getServices().getRequired(EjbSupport.class);
     }
 
     protected BeanManagerImpl getManager() {

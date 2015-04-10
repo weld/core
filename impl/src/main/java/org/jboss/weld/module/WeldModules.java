@@ -36,6 +36,7 @@ import org.jboss.weld.bootstrap.api.helpers.ServiceRegistries;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.module.WeldModule.PostBeanArchiveServiceRegistrationContext;
 import org.jboss.weld.module.WeldModule.PostContextRegistrationContext;
 import org.jboss.weld.module.WeldModule.PostServiceRegistrationContext;
 import org.jboss.weld.module.WeldModule.PreBeanRegistrationContext;
@@ -105,6 +106,24 @@ public class WeldModules implements Service {
         };
         for (WeldModule module : modules) {
             module.postContextRegistration(ctx);
+        }
+    }
+
+    public void postBeanArchiveServiceRegistration(final ServiceRegistry services, final BeanManagerImpl manager) {
+        final PostBeanArchiveServiceRegistrationContext ctx = new PostBeanArchiveServiceRegistrationContext() {
+
+            @Override
+            public ServiceRegistry getServices() {
+                return services;
+            }
+
+            @Override
+            public BeanManagerImpl getBeanManager() {
+                return manager;
+            }
+        };
+        for (WeldModule module : modules) {
+            module.postBeanArchiveServiceRegistration(ctx);
         }
     }
 

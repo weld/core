@@ -32,8 +32,6 @@ import org.jboss.weld.module.WeldModule;
  */
 public class WeldEjbModule implements WeldModule {
 
-    private final EjbSupport ejbSupport = new EjbSupportImpl();
-
     @Override
     public String getName() {
         return "weld-ejb";
@@ -41,7 +39,6 @@ public class WeldEjbModule implements WeldModule {
 
     @Override
     public void postServiceRegistration(PostServiceRegistrationContext ctx) {
-        ctx.getServices().add(EjbSupport.class, ejbSupport);
         ctx.getServices().add(SLSBInvocationInjectionPoint.class, new SLSBInvocationInjectionPoint());
         ctx.registerPlugableValidator(new WeldEjbValidator());
         ctx.getServices().get(ResourceInjectionFactory.class).addResourceInjectionProcessor(new EjbResourceInjectionProcessor());
@@ -51,6 +48,11 @@ public class WeldEjbModule implements WeldModule {
     public void postContextRegistration(PostContextRegistrationContext ctx) {
         // Register the EJB Request context
         ctx.addContext(new ContextHolder<EjbRequestContext>(new EjbRequestContextImpl(ctx.getContextId()), EjbRequestContext.class, EjbLiteral.INSTANCE));
+    }
+
+    @Override
+    public void postBeanArchiveServiceRegistration(PostBeanArchiveServiceRegistrationContext ctx) {
+        ctx.getServices().add(EjbSupport.class, new EjbSupportImpl());
     }
 
     @Override

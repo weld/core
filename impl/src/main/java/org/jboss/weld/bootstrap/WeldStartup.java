@@ -100,7 +100,6 @@ import org.jboss.weld.manager.BeanManagerLookupService;
 import org.jboss.weld.manager.api.ExecutorServices;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
-import org.jboss.weld.module.EjbSupport;
 import org.jboss.weld.module.ObserverNotifierFactory;
 import org.jboss.weld.module.WeldModules;
 import org.jboss.weld.resources.ClassTransformer;
@@ -306,10 +305,6 @@ public class WeldStartup {
             services.add(Validator.class, new ConcurrentValidator(modules.getPluggableValidators(), executor));
         } else {
             services.add(Validator.class, new Validator(modules.getPluggableValidators()));
-        }
-
-        if (!services.contains(EjbSupport.class)) {
-            services.add(EjbSupport.class, EjbSupport.NOOP_IMPLEMENTATION);
         }
 
         GlobalObserverNotifierService observerNotificationService = new GlobalObserverNotifierService(services, contextId);

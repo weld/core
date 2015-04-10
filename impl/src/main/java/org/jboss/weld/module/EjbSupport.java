@@ -33,7 +33,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.collections.SetMultimap;
 
 /**
- * This service provides EJB support. It is implemented by the weld-ejb module.
+ * This service provides EJB support. It is implemented by the weld-ejb module. This is a per-archive service.
  *
  * @author Jozef Hartinger
  *

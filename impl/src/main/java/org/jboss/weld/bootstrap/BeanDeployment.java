@@ -115,6 +115,9 @@ public class BeanDeployment {
             ejbDescriptors.addAll(beanDeploymentArchive.getEjbs());
         }
 
+        services.get(WeldModules.class).postBeanArchiveServiceRegistration(services, beanManager);
+        services.addIfAbsent(EjbSupport.class, EjbSupport.NOOP_IMPLEMENTATION);
+
         if (services.get(WeldConfiguration.class).getBooleanProperty(CONCURRENT_DEPLOYMENT) && services.contains(ExecutorServices.class)) {
             beanDeployer = new ConcurrentBeanDeployer(beanManager, ejbDescriptors, deploymentServices);
         } else {

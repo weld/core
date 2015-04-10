@@ -106,6 +106,29 @@ public interface WeldModule {
     }
 
     /**
+     * This hook is called once Weld registered {@link Service}s for deployment of a particular bean archive.
+     * A module may use this hook to discover services for a particular archive and to register additional services.
+     * This method is called for each bean archive that is processed.
+     * @param ctx context
+     */
+    default void postBeanArchiveServiceRegistration(PostBeanArchiveServiceRegistrationContext ctx) {
+    }
+
+    interface PostBeanArchiveServiceRegistrationContext {
+        /**
+         * A mutable service registry for a given bean archive. Existing services may be replaced and additional services may be registered by a module.
+         * @return services
+         */
+        ServiceRegistry getServices();
+
+        /**
+         * Returns the {@link BeanManagerImpl} for the given bean archive deployment.
+         * @return bean manager
+         */
+        BeanManagerImpl getBeanManager();
+    }
+
+    /**
      * This hook is called by Weld before it starts deploying beans. A module may register additional built-in beans.
      * This callback is called for each {@link BeanDeployment} separately.
      * @param ctx context
@@ -123,17 +146,17 @@ public interface WeldModule {
          */
         Environment getEnvironment();
         /**
-         * Returns {@link BeanDeploymentArchive} represented by this bean deployment.
+         * Returns {@link BeanDeploymentArchive} represented by this bean archive deployment.
          * @return bda
          */
         BeanDeploymentArchive getBeanDeploymentArchive();
         /**
-         * Returns the {@link BeanManagerImpl} for the given bean deployment.
+         * Returns the {@link BeanManagerImpl} for the given bean archive deployment.
          * @return bean manager
          */
         BeanManagerImpl getBeanManager();
         /**
-         * Register an additional built-in bean with the given bean deployment.
+         * Register an additional built-in bean with the given bean archive deployment.
          * @param additional built-in bean
          */
         void registerBean(AbstractBuiltInBean<?> bean);
