@@ -108,7 +108,8 @@ public class WeldBuilderTest {
 
     @Test
     public void testConfigurationProperties() {
-        try (WeldContainer container = new Weld().disableDiscovery().property(ConfigurationKey.CONCURRENT_DEPLOYMENT.get(), false).initialize()) {
+        try (WeldContainer container = new Weld().disableDiscovery().beanClasses(Foo.class).property(ConfigurationKey.CONCURRENT_DEPLOYMENT.get(), false)
+                .initialize()) {
             assertFalse(container.select(BeanManagerImpl.class).get().getServices().get(WeldConfiguration.class)
                     .getBooleanProperty(ConfigurationKey.CONCURRENT_DEPLOYMENT));
         }
@@ -121,7 +122,7 @@ public class WeldBuilderTest {
         weld.reset();
         assertFalse(weld.isDiscoveryEnabled());
         assertEquals("FOO", weld.getContainerId());
-        try (WeldContainer container = weld.initialize()) {
+        try (WeldContainer container = weld.beanClasses(Bar.class).initialize()) {
             assertTrue(container.select(Foo.class).isUnsatisfied());
             assertTrue(container.select(BeanManagerImpl.class).get().getServices().get(WeldConfiguration.class)
                     .getBooleanProperty(ConfigurationKey.BEAN_IDENTIFIER_INDEX_OPTIMIZATION));
@@ -135,7 +136,7 @@ public class WeldBuilderTest {
         assertTrue(weld.isDiscoveryEnabled());
         assertEquals(RegistrySingletonProvider.STATIC_INSTANCE, weld.getContainerId());
         weld.disableDiscovery();
-        try (WeldContainer container = weld.initialize()) {
+        try (WeldContainer container = weld.beanClasses(Bar.class).initialize()) {
             assertTrue(container.select(Foo.class).isUnsatisfied());
             assertTrue(container.select(BeanManagerImpl.class).get().getServices().get(WeldConfiguration.class)
                     .getBooleanProperty(ConfigurationKey.BEAN_IDENTIFIER_INDEX_OPTIMIZATION));
@@ -200,10 +201,14 @@ public class WeldBuilderTest {
 
     @Test
     public void testExtensions() {
-        Weld weld = new Weld().disableDiscovery();
-        try (WeldContainer container = weld.extensions(new TestExtension()).initialize()) {
+        try (WeldContainer container = new Weld().disableDiscovery().beanClasses(Bar.class).extensions(new TestExtension()).initialize()) {
             assertEquals(10, container.select(Foo.class).get().getVal());
         }
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testNoBeanArchivesFound() {
+        new Weld().disableDiscovery().initialize();
     }
 
 }

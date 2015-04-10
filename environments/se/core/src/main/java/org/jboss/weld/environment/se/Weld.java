@@ -33,6 +33,7 @@ import java.net.URL;
 import java.security.AccessController;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -58,6 +59,7 @@ import org.jboss.weld.bootstrap.api.Environments;
 import org.jboss.weld.bootstrap.api.SingletonProvider;
 import org.jboss.weld.bootstrap.api.TypeDiscoveryConfiguration;
 import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
+import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.BeanDiscoveryMode;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.Deployment;
@@ -74,6 +76,7 @@ import org.jboss.weld.environment.logging.CommonLogger;
 import org.jboss.weld.environment.se.contexts.ThreadScoped;
 import org.jboss.weld.environment.se.events.ContainerInitialized;
 import org.jboss.weld.environment.se.logging.WeldSELogger;
+import org.jboss.weld.environment.util.BeanArchives;
 import org.jboss.weld.environment.util.Files;
 import org.jboss.weld.literal.InitializedLiteral;
 import org.jboss.weld.manager.api.WeldManager;
@@ -86,6 +89,8 @@ import org.jboss.weld.security.GetSystemPropertyAction;
 import org.jboss.weld.util.collections.ImmutableList;
 import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.collections.Iterables;
+import org.jboss.weld.util.collections.Multimap;
+import org.jboss.weld.util.collections.WeldCollections;
 
 /**
  * <p>
@@ -550,6 +555,18 @@ public class Weld {
             WeldBeanDeploymentArchive syntheticBeanArchive = new WeldBeanDeploymentArchive(WeldDeployment.SYNTHETIC_BDA_ID, beanClassesBuilder.build(),
                     buildSyntheticBeansXml());
             beanArchives.add(syntheticBeanArchive);
+        }
+
+        if (beanArchives.isEmpty()) {
+            throw WeldSELogger.LOG.weldContainerCannotBeInitializedNoBeanArchivesFound();
+        }
+
+        Multimap<String, BeanDeploymentArchive> problems = BeanArchives.findBeanClassesDeployedInMultipleBeanArchives(beanArchives);
+        if (!problems.isEmpty()) {
+            // Right now, we only log a warning for each bean class deployed in multiple bean archives
+            for (Entry<String, Collection<BeanDeploymentArchive>> entry : problems.entrySet()) {
+                WeldSELogger.LOG.beanClassDeployedInMultipleBeanArchives(entry.getKey(), WeldCollections.toMultiRowString(entry.getValue()));
+            }
         }
 
         String isolation = AccessController.doPrivileged(new GetSystemPropertyAction(ARCHIVE_ISOLATION_SYSTEM_PROPERTY));
