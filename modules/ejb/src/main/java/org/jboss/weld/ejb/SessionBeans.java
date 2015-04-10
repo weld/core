@@ -68,8 +68,9 @@ class SessionBeans {
         return getEjbImplementationClass(bean.getEjbDescriptor(), bean.getBeanManager(), bean.getEnhancedAnnotated());
     }
 
-    public static <T> EnhancedAnnotatedType<T> getEjbImplementationClass(InternalEjbDescriptor<T> ejbDescriptor, BeanManagerImpl manager,
+    public static <T> EnhancedAnnotatedType<T> getEjbImplementationClass(EjbDescriptor<T> descriptor, BeanManagerImpl manager,
             EnhancedAnnotatedType<T> componentType) {
+        InternalEjbDescriptor<T> ejbDescriptor = InternalEjbDescriptor.of(descriptor);
         if (ejbDescriptor.getBeanClass().equals(ejbDescriptor.getImplementationClass())) {
             // no special implementation class is used
             return componentType;

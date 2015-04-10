@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.bootstrap;
 
+import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -49,6 +50,7 @@ import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.AnnotationApiAbstraction;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.collections.SetMultimap;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * @author Pete Muir
@@ -280,8 +282,11 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
     }
 
     public void createNewBeans() {
-        for (EnhancedAnnotatedType<?> clazz : getEnvironment().getNewManagedBeanClasses()) {
-            createNewManagedBean(clazz);
+        for (Type type : getEnvironment().getNewBeanTypes()) {
+            Class<?> clazz = Reflections.getRawType(type);
+            if (!ejbSupport.isEjb(clazz)) {
+                createNewManagedBean(clazz, type);
+            }
         }
         ejbSupport.createNewSessionBeans(getEnvironment(), getManager());
     }

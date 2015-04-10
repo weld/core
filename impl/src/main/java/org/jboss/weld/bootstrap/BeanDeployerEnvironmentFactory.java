@@ -16,10 +16,10 @@
  */
 package org.jboss.weld.bootstrap;
 
+import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.slim.SlimAnnotatedTypeContext;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.DecoratorImpl;
@@ -29,7 +29,6 @@ import org.jboss.weld.bean.ProducerField;
 import org.jboss.weld.bean.ProducerMethod;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment.WeldMethodKey;
-import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.collections.SetMultimap;
 
@@ -56,8 +55,7 @@ public class BeanDeployerEnvironmentFactory {
                 Collections.newSetFromMap(new ConcurrentHashMap<DisposalMethod<?, ?>, Boolean>()),
                 Collections.newSetFromMap(new ConcurrentHashMap<DecoratorImpl<?>, Boolean>()),
                 Collections.newSetFromMap(new ConcurrentHashMap<InterceptorImpl<?>, Boolean>()),
-                Collections.newSetFromMap(new ConcurrentHashMap<EnhancedAnnotatedType<?>, Boolean>()),
-                new ConcurrentHashMap<InternalEjbDescriptor<?>, EnhancedAnnotatedType<?>>(), manager);
+                Collections.newSetFromMap(new ConcurrentHashMap<Type, Boolean>()), manager);
     }
 
 }

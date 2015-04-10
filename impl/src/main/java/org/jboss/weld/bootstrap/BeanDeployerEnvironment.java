@@ -22,9 +22,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import javax.enterprise.event.Event;
@@ -33,7 +31,6 @@ import javax.enterprise.inject.New;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.InjectionPoint;
 
-import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.enhanced.MethodSignature;
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.annotated.slim.SlimAnnotatedTypeContext;
@@ -52,7 +49,6 @@ import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
 import org.jboss.weld.bean.builtin.ExtensionBean;
 import org.jboss.weld.config.WeldConfiguration;
-import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.injection.attributes.WeldInjectionPointAttributes;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resolution.ResolvableBuilder;
@@ -78,8 +74,7 @@ public class BeanDeployerEnvironment {
     private final Set<InterceptorImpl<?>> interceptors;
     private final TypeSafeDisposerResolver disposalMethodResolver;
     private final ClassTransformer classTransformer;
-    private final Set<EnhancedAnnotatedType<?>> newManagedBeanClasses;
-    private final Map<InternalEjbDescriptor<?>, EnhancedAnnotatedType<?>> newSessionBeanDescriptorsFromInjectionPoint;
+    private final Set<Type> newBeanTypes;
     private final BeanManagerImpl manager;
 
     protected BeanDeployerEnvironment(BeanManagerImpl manager) {
@@ -95,8 +90,7 @@ public class BeanDeployerEnvironment {
                 new HashSet<DisposalMethod<?, ?>>(),
                 new HashSet<DecoratorImpl<?>>(),
                 new HashSet<InterceptorImpl<?>>(),
-                new HashSet<EnhancedAnnotatedType<?>>(),
-                new HashMap<InternalEjbDescriptor<?>, EnhancedAnnotatedType<?>>(),
+                new HashSet<Type>(),
                 manager);
     }
 
@@ -112,8 +106,7 @@ public class BeanDeployerEnvironment {
             Set<DisposalMethod<?, ?>> resolvedDisposalBeans,
             Set<DecoratorImpl<?>> decorators,
             Set<InterceptorImpl<?>> interceptors,
-            Set<EnhancedAnnotatedType<?>> newManagedBeanClasses,
-            Map<InternalEjbDescriptor<?>, EnhancedAnnotatedType<?>> newSessionBeanDescriptorsFromInjectionPoint,
+            Set<Type> newBeanTypes,
             BeanManagerImpl manager) {
         this.annotatedTypes = annotatedTypes;
         this.vetoedClasses = vetoedClasses;
@@ -128,8 +121,7 @@ public class BeanDeployerEnvironment {
         this.interceptors = interceptors;
         this.disposalMethodResolver = new TypeSafeDisposerResolver(allDisposalBeans, manager.getServices().get(WeldConfiguration.class));
         this.classTransformer = manager.getServices().get(ClassTransformer.class);
-        this.newManagedBeanClasses = newManagedBeanClasses;
-        this.newSessionBeanDescriptorsFromInjectionPoint = newSessionBeanDescriptorsFromInjectionPoint;
+        this.newBeanTypes = newBeanTypes;
         this.manager = manager;
     }
 
@@ -163,14 +155,6 @@ public class BeanDeployerEnvironment {
 
     public boolean isVetoed(Class<?> clazz) {
         return vetoedClasses.contains(clazz);
-    }
-
-    public Set<EnhancedAnnotatedType<?>> getNewManagedBeanClasses() {
-        return newManagedBeanClasses;
-    }
-
-    public Map<InternalEjbDescriptor<?>, EnhancedAnnotatedType<?>> getNewSessionBeanDescriptorsFromInjectionPoint() {
-        return newSessionBeanDescriptorsFromInjectionPoint;
     }
 
     public Set<ProducerMethod<?, ?>> getProducerMethod(Class<?> declaringClass, MethodSignature signature) {
@@ -269,25 +253,19 @@ public class BeanDeployerEnvironment {
                         // e.g. @Inject @New(ChequePaymentProcessor.class) Instance<PaymentProcessor> chequePaymentProcessor;
                         // see WELD-975
                         Type typeParameter = Reflections.getActualTypeArguments(weldInjectionPoint.getType())[0];
-                        addNewBeanFromInjectionPoint(Reflections.getRawType(typeParameter), typeParameter);
+                        addNewBeanFromInjectionPoint(typeParameter);
                     } else {
-                        addNewBeanFromInjectionPoint(rawType, weldInjectionPoint.getType());
+                        addNewBeanFromInjectionPoint(weldInjectionPoint.getType());
                     }
                 } else {
-                    addNewBeanFromInjectionPoint(_new.value(), _new.value());
+                    addNewBeanFromInjectionPoint(_new.value());
                 }
             }
         }
     }
 
-    private void addNewBeanFromInjectionPoint(Class<?> rawType, Type baseType) {
-        // FIXME
-//        if (getEjbDescriptors().contains(rawType)) {
-//            InternalEjbDescriptor<?> descriptor = getEjbDescriptors().getUnique(rawType);
-//            newSessionBeanDescriptorsFromInjectionPoint.put(descriptor, classTransformer.getEnhancedAnnotatedType(rawType, baseType, manager.getId()));
-//        } else {
-            newManagedBeanClasses.add(classTransformer.getEnhancedAnnotatedType(rawType, baseType, manager.getId()));
-//        }
+    private void addNewBeanFromInjectionPoint(Type baseType) {
+        newBeanTypes.add(baseType);
     }
 
     public Set<? extends RIBean<?>> getBeans() {
@@ -427,7 +405,10 @@ public class BeanDeployerEnvironment {
         this.interceptors.clear();
         this.observers.clear();
         this.disposalMethodResolver.clear();
-        this.newManagedBeanClasses.clear();
-        this.newSessionBeanDescriptorsFromInjectionPoint.clear();
+        this.newBeanTypes.clear();
+    }
+
+    public Set<Type> getNewBeanTypes() {
+        return Collections.unmodifiableSet(newBeanTypes);
     }
 }

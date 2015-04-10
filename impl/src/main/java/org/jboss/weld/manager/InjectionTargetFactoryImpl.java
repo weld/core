@@ -24,7 +24,7 @@ import javax.enterprise.inject.spi.Interceptor;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.bean.SessionBean;
-import org.jboss.weld.ejb.InternalEjbDescriptor;
+import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.injection.producer.BasicInjectionTarget;
 import org.jboss.weld.injection.producer.BeanInjectionTarget;
@@ -125,7 +125,7 @@ public class InjectionTargetFactoryImpl<T> implements WeldInjectionTargetFactory
         return BeanInjectionTarget.createDefault(type, bean, manager);
     }
 
-    protected InjectionTarget<T> createMessageDrivenInjectionTarget(InternalEjbDescriptor<T> descriptor) {
+    protected InjectionTarget<T> createMessageDrivenInjectionTarget(EjbDescriptor<T> descriptor) {
         return prepareInjectionTarget(manager.getServices().get(EjbSupport.class).createMessageDrivenInjectionTarget(type, descriptor, manager));
     }
 

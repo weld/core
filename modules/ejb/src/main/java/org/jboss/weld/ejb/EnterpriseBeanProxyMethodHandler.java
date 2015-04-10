@@ -25,7 +25,6 @@ import java.util.Set;
 
 import org.jboss.weld.annotated.enhanced.MethodSignature;
 import org.jboss.weld.annotated.enhanced.jlr.MethodSignatureImpl;
-import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bean.proxy.Marker;
 import org.jboss.weld.bean.proxy.MethodHandler;
 import org.jboss.weld.ejb.api.SessionObjectReference;
@@ -51,7 +50,7 @@ class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Serializable
     private final BeanIdentifier beanId;
     private final SessionObjectReference reference;
 
-    private final transient SessionBean<T> bean;
+    private final transient SessionBeanImpl<T> bean;
 
     private final transient Map<Class<?>, Class<?>> typeToBusinessInterfaceMap;
 
@@ -60,7 +59,7 @@ class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Serializable
      *
      * @param bean the session bean
      */
-    EnterpriseBeanProxyMethodHandler(SessionBean<T> bean) {
+    EnterpriseBeanProxyMethodHandler(SessionBeanImpl<T> bean) {
         this(bean, null);
     }
 
@@ -70,7 +69,7 @@ class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Serializable
      * @param bean      the session bean
      * @param reference session object reference or {@code null} to create a new reference
      */
-    private EnterpriseBeanProxyMethodHandler(SessionBean<T> bean, SessionObjectReference reference) {
+    private EnterpriseBeanProxyMethodHandler(SessionBeanImpl<T> bean, SessionObjectReference reference) {
         this.bean = bean;
         this.manager = bean.getBeanManager();
         this.beanId = bean.getIdentifier();
@@ -159,7 +158,7 @@ class EnterpriseBeanProxyMethodHandler<T> implements MethodHandler, Serializable
 
     @SuppressWarnings("unchecked")
     private Object readResolve() throws ObjectStreamException {
-        return new EnterpriseBeanProxyMethodHandler<T>((SessionBean<T>) manager.getPassivationCapableBean(beanId), reference);
+        return new EnterpriseBeanProxyMethodHandler<T>((SessionBeanImpl<T>) manager.getPassivationCapableBean(beanId), reference);
     }
 
     private void discoverBusinessInterfaces(Map<Class<?>, Class<?>> typeToBusinessInterfaceMap, Set<Class<?>> businessInterfaces) {

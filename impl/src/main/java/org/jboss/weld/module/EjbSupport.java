@@ -29,7 +29,6 @@ import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.api.Service;
-import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.ejb.spi.EjbServices;
 import org.jboss.weld.injection.producer.BasicInjectionTarget;
@@ -69,7 +68,7 @@ public interface EjbSupport extends Service {
      * @param manager the bean manager
      * @return InjectionTarget implementation for a given message-driven bean
      */
-    <T> BasicInjectionTarget<T> createMessageDrivenInjectionTarget(EnhancedAnnotatedType<T> type, InternalEjbDescriptor<T> descriptor, BeanManagerImpl manager);
+    <T> BasicInjectionTarget<T> createMessageDrivenInjectionTarget(EnhancedAnnotatedType<T> type, EjbDescriptor<T> descriptor, BeanManagerImpl manager);
 
     /**
      * Creates session beans and registers them within the given environment.
@@ -112,13 +111,13 @@ public interface EjbSupport extends Service {
      * @param beanName
      * @return descriptor identified by the given name or null if no such descriptor exists
      */
-    <T> InternalEjbDescriptor<T> getEjbDescriptor(String beanName);
+    <T> EjbDescriptor<T> getEjbDescriptor(String beanName);
 
     /**
      * Returns a collection of all known EJB descriptors
      * @return a collection of all known EJB descriptors
      */
-    Collection<InternalEjbDescriptor<?>> getEjbDescriptors();
+    Collection<? extends EjbDescriptor<?>> getEjbDescriptors();
 
     EjbSupport NOOP_IMPLEMENTATION = new EjbSupport() {
 
@@ -141,7 +140,7 @@ public interface EjbSupport extends Service {
         }
 
         @Override
-        public <T> BasicInjectionTarget<T> createMessageDrivenInjectionTarget(EnhancedAnnotatedType<T> type, InternalEjbDescriptor<T> descriptor,
+        public <T> BasicInjectionTarget<T> createMessageDrivenInjectionTarget(EnhancedAnnotatedType<T> type, EjbDescriptor<T> descriptor,
                 BeanManagerImpl manager) {
             return fail();
         }
@@ -164,7 +163,7 @@ public interface EjbSupport extends Service {
         }
 
         @Override
-        public Collection<InternalEjbDescriptor<?>> getEjbDescriptors() {
+        public Collection<EjbDescriptor<?>> getEjbDescriptors() {
             return Collections.emptyList();
         }
 
@@ -174,7 +173,7 @@ public interface EjbSupport extends Service {
         }
 
         @Override
-        public <T> InternalEjbDescriptor<T> getEjbDescriptor(String beanName) {
+        public <T> EjbDescriptor<T> getEjbDescriptor(String beanName) {
             return null;
         }
     };

@@ -21,8 +21,8 @@ import java.util.Set;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.annotated.enhanced.MethodSignature;
-import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.ejb.api.SessionObjectReference;
+import org.jboss.weld.ejb.spi.EjbDescriptor;
 
 /**
  * {@link Bean} implementation representing an enterprise session bean.
@@ -37,7 +37,7 @@ public interface SessionBean<T> extends ClassBean<T> {
      * Returns an EJB descriptor for this bean
      * @return EJB descriptor
      */
-    InternalEjbDescriptor<T> getEjbDescriptor();
+    EjbDescriptor<T> getEjbDescriptor();
 
     /**
      * Returns an unmodifiable set of business method signatures.

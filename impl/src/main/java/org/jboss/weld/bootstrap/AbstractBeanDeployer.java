@@ -17,6 +17,7 @@
 package org.jboss.weld.bootstrap;
 
 import java.lang.reflect.Member;
+import java.lang.reflect.Type;
 import java.util.Set;
 
 import javax.enterprise.inject.Disposes;
@@ -266,10 +267,10 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
         return bean;
     }
 
-    protected <T> void createNewManagedBean(EnhancedAnnotatedType<T> annotatedClass) {
-        // TODO resolve existing beans first
-        slimAnnotatedTypeStore.put(annotatedClass.slim());
-        getEnvironment().addManagedBean(NewManagedBean.of(BeanAttributesFactory.forNewManagedBean(annotatedClass, manager), annotatedClass, manager));
+    protected <T> void createNewManagedBean(Class<T> clazz, Type type) {
+        EnhancedAnnotatedType<T> enhancedType = classTransformer.getEnhancedAnnotatedType(clazz, type, manager.getId());
+        slimAnnotatedTypeStore.put(enhancedType.slim());
+        getEnvironment().addManagedBean(NewManagedBean.of(BeanAttributesFactory.forNewManagedBean(enhancedType, manager), enhancedType, manager));
     }
 
     protected <T> void createDecorator(EnhancedAnnotatedType<T> weldClass) {

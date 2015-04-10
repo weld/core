@@ -16,13 +16,16 @@
  */
 package org.jboss.weld.tests.enterprise;
 
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.InjectionTarget;
+import javax.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.bean.SessionBean;
-import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.tests.category.Integration;
@@ -30,10 +33,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
-
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.InjectionTarget;
-import javax.inject.Inject;
 
 /**
  * @author pmuir
@@ -53,7 +52,7 @@ public class EjbDescriptorLookupTest {
     @Test
     public void testCorrectSubType() {
         EjbDescriptor<CatLocal> descriptor = beanManager.getEjbDescriptor("Cat");
-        assert descriptor.getClass().equals(InternalEjbDescriptor.class);
+        assert descriptor.getClass().getSimpleName().equals("InternalEjbDescriptor");
         Bean<CatLocal> bean = beanManager.getBean(descriptor);
         Assert.assertNotNull(bean);
         Assert.assertTrue(bean instanceof SessionBean<?>);

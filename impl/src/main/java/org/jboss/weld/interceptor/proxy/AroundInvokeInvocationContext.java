@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.ejb.Asynchronous;
 import javax.interceptor.InvocationContext;
 
 import org.jboss.weld.bean.proxy.CombinedInterceptorAndDecoratorStackMethodHandler;
@@ -39,7 +38,7 @@ import org.jboss.weld.bean.proxy.InterceptionDecorationContext.Stack;
  * This allows:
  * <ul>
  * <li>interception to be repeatable - e.g. an interceptor may call InvocationContext.proceed() multiple times</li>
- * <li>interception to continue in a different thread - implementing {@link Asynchronous} with interceptors</li>
+ * <li>interception to continue in a different thread - implementing {@link javax.ejb.Asynchronous} with interceptors</li>
  * </ul>
  *
  * This however also requires that for each interceptor in the chain we create a new instance of {@link AroundInvokeInvocationContext}.

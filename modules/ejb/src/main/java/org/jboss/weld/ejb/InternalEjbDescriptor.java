@@ -40,9 +40,9 @@ import org.jboss.weld.util.reflection.Reflections;
  *
  * @author Pete Muir
  */
-public class InternalEjbDescriptor<T> extends ForwardingEjbDescriptor<T> {
+class InternalEjbDescriptor<T> extends ForwardingEjbDescriptor<T> {
 
-    public static <T> InternalEjbDescriptor<T> of(EjbDescriptor<T> ejbDescriptor) {
+    static <T> InternalEjbDescriptor<T> of(EjbDescriptor<T> ejbDescriptor) {
         if (ejbDescriptor instanceof InternalEjbDescriptor<?>) {
             return cast(ejbDescriptor);
         }

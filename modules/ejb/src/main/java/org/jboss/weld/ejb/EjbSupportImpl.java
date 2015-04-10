@@ -17,8 +17,8 @@
 package org.jboss.weld.ejb;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 import java.util.Collection;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.ejb.Timeout;
@@ -66,7 +66,8 @@ class EjbSupportImpl implements EjbSupport {
     }
 
     @Override
-    public <T> BasicInjectionTarget<T> createMessageDrivenInjectionTarget(EnhancedAnnotatedType<T> type, InternalEjbDescriptor<T> descriptor, BeanManagerImpl manager) {
+    public <T> BasicInjectionTarget<T> createMessageDrivenInjectionTarget(EnhancedAnnotatedType<T> type, EjbDescriptor<T> d, BeanManagerImpl manager) {
+        InternalEjbDescriptor<T> descriptor = InternalEjbDescriptor.of(d);
         EnhancedAnnotatedType<T> implementationClass = SessionBeans.getEjbImplementationClass(descriptor, manager, type);
 
         AbstractInstantiator<T> instantiator = null;
@@ -129,9 +130,14 @@ class EjbSupportImpl implements EjbSupport {
     @Override
     public void createNewSessionBeans(BeanDeployerEnvironment environment, BeanManagerImpl manager) {
         final SlimAnnotatedTypeStore store = manager.getServices().get(SlimAnnotatedTypeStore.class);
-        for (Entry<InternalEjbDescriptor<?>, EnhancedAnnotatedType<?>> entry : environment.getNewSessionBeanDescriptorsFromInjectionPoint().entrySet()) {
-            InternalEjbDescriptor<?> descriptor = entry.getKey();
-            environment.addSessionBean(createNewSessionBean(entry.getValue(), descriptor, manager, store));
+        final ClassTransformer classTransformer = manager.getServices().get(ClassTransformer.class);
+        for (Type type : environment.getNewBeanTypes()) {
+            Class<?> clazz = Reflections.getRawType(type);
+            if (isEjb(clazz)) {
+                EnhancedAnnotatedType<?> enhancedType = classTransformer.getEnhancedAnnotatedType(clazz, type, manager.getId());
+                InternalEjbDescriptor<?> descriptor = ejbDescriptors.getUnique(clazz);
+                environment.addSessionBean(createNewSessionBean(enhancedType, descriptor, manager, store));
+            }
         }
     }
 

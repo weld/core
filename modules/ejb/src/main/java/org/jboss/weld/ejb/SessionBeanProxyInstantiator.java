@@ -41,9 +41,9 @@ import org.jboss.weld.security.NewInstanceAction;
 class SessionBeanProxyInstantiator<T> implements Instantiator<T> {
 
     private final Class<T> proxyClass;
-    private final SessionBean<T> bean;
+    private final SessionBeanImpl<T> bean;
 
-    SessionBeanProxyInstantiator(EnhancedAnnotatedType<T> type, SessionBean<T> bean) {
+    SessionBeanProxyInstantiator(EnhancedAnnotatedType<T> type, SessionBeanImpl<T> bean) {
         this.bean = bean;
         this.proxyClass = new EnterpriseProxyFactory<T>(type.getJavaClass(), bean).getProxyClass();
     }
