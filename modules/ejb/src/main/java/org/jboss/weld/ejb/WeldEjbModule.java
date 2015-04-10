@@ -20,6 +20,7 @@ import org.jboss.weld.bootstrap.ContextHolder;
 import org.jboss.weld.context.ejb.EjbLiteral;
 import org.jboss.weld.context.ejb.EjbRequestContext;
 import org.jboss.weld.context.ejb.EjbRequestContextImpl;
+import org.jboss.weld.ejb.spi.EjbServices;
 import org.jboss.weld.injection.ResourceInjectionFactory;
 import org.jboss.weld.module.EjbSupport;
 import org.jboss.weld.module.WeldModule;
@@ -52,7 +53,13 @@ public class WeldEjbModule implements WeldModule {
 
     @Override
     public void postBeanArchiveServiceRegistration(PostBeanArchiveServiceRegistrationContext ctx) {
-        ctx.getServices().add(EjbSupport.class, new EjbSupportImpl());
+        final EjbServices ejbServices = ctx.getServices().get(EjbServices.class);
+        if (ejbServices != null) {
+            // Must populate EJB cache first, as we need it to detect whether a
+            // bean is an EJB!
+            ctx.getServices().getRequired(EjbDescriptors.class).addAll(ctx.getBeanDeploymentArchive().getEjbs());
+            ctx.getServices().add(EjbSupport.class, new EjbSupportImpl(ejbServices));
+        }
     }
 
     @Override

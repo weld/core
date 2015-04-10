@@ -38,15 +38,10 @@ import org.jboss.weld.annotated.slim.SlimAnnotatedTypeStore;
 import org.jboss.weld.bean.AbstractBean;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.RIBean;
-import org.jboss.weld.bean.interceptor.InterceptorBindingsAdapter;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.enablement.GlobalEnablementBuilder;
 import org.jboss.weld.bootstrap.events.ProcessAnnotatedTypeImpl;
 import org.jboss.weld.ejb.EjbDescriptors;
-import org.jboss.weld.ejb.InternalEjbDescriptor;
-import org.jboss.weld.ejb.spi.EjbServices;
-import org.jboss.weld.injection.producer.InterceptionModelInitializer;
-import org.jboss.weld.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.spi.ClassFileServices;
@@ -321,19 +316,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
     }
 
     public void registerCdiInterceptorsForMessageDrivenBeans() {
-        EjbServices ejbServices = getManager().getServices().get(EjbServices.class);
-        for (InternalEjbDescriptor<?> descriptor : getEnvironment().getEjbDescriptors()) {
-            if (descriptor.isMessageDriven()) {
-                EnhancedAnnotatedType<?> type =  classTransformer.getEnhancedAnnotatedType(descriptor.getBeanClass(), getManager().getId());
-                if (!getManager().getInterceptorModelRegistry().containsKey(type.slim())) {
-                    InterceptionModelInitializer.of(getManager(), type, null).init();
-                }
-                InterceptionModel model = getManager().getInterceptorModelRegistry().get(type.slim());
-                if (model != null) {
-                    ejbServices.registerInterceptors(descriptor, new InterceptorBindingsAdapter(model));
-                }
-            }
-        }
+        ejbSupport.registerCdiInterceptorsForMessageDrivenBeans(getEnvironment(), getManager());
     }
 
     public ResourceLoader getResourceLoader() {

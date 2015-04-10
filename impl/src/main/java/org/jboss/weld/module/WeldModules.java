@@ -109,7 +109,7 @@ public class WeldModules implements Service {
         }
     }
 
-    public void postBeanArchiveServiceRegistration(final ServiceRegistry services, final BeanManagerImpl manager) {
+    public void postBeanArchiveServiceRegistration(final ServiceRegistry services, final BeanManagerImpl manager, final BeanDeploymentArchive archive) {
         final PostBeanArchiveServiceRegistrationContext ctx = new PostBeanArchiveServiceRegistrationContext() {
 
             @Override
@@ -120,6 +120,11 @@ public class WeldModules implements Service {
             @Override
             public BeanManagerImpl getBeanManager() {
                 return manager;
+            }
+
+            @Override
+            public BeanDeploymentArchive getBeanDeploymentArchive() {
+                return archive;
             }
         };
         for (WeldModule module : modules) {

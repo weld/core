@@ -126,6 +126,12 @@ public interface WeldModule {
          * @return bean manager
          */
         BeanManagerImpl getBeanManager();
+
+        /**
+         * Returns the {@link BeanDeploymentArchive} the services are associated with
+         * @return the bean deployment archive
+         */
+        BeanDeploymentArchive getBeanDeploymentArchive();
     }
 
     /**

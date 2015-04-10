@@ -52,7 +52,6 @@ import org.jboss.weld.bootstrap.spi.Filter;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.ejb.EjbDescriptors;
-import org.jboss.weld.ejb.spi.EjbServices;
 import org.jboss.weld.injection.producer.InjectionTargetService;
 import org.jboss.weld.interceptor.builder.InterceptorsApiAbstraction;
 import org.jboss.weld.logging.BootstrapLogger;
@@ -109,13 +108,8 @@ public class BeanDeployment {
         services.add(AnnotationApiAbstraction.class, new AnnotationApiAbstraction(resourceLoader));
         this.beanManager = BeanManagerImpl.newManager(deploymentManager, beanDeploymentArchive.getId(), services);
         services.add(InjectionTargetService.class, new InjectionTargetService(beanManager));
-        if (beanManager.getServices().contains(EjbServices.class)) {
-            // Must populate EJB cache first, as we need it to detect whether a
-            // bean is an EJB!
-            ejbDescriptors.addAll(beanDeploymentArchive.getEjbs());
-        }
 
-        services.get(WeldModules.class).postBeanArchiveServiceRegistration(services, beanManager);
+        services.get(WeldModules.class).postBeanArchiveServiceRegistration(services, beanManager, beanDeploymentArchive);
         services.addIfAbsent(EjbSupport.class, EjbSupport.NOOP_IMPLEMENTATION);
 
         if (services.get(WeldConfiguration.class).getBooleanProperty(CONCURRENT_DEPLOYMENT) && services.contains(ExecutorServices.class)) {

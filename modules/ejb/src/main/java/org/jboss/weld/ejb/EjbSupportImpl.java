@@ -27,11 +27,15 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.slim.SlimAnnotatedType;
 import org.jboss.weld.annotated.slim.SlimAnnotatedTypeStore;
 import org.jboss.weld.bean.SessionBean;
+import org.jboss.weld.bean.interceptor.InterceptorBindingsAdapter;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
+import org.jboss.weld.ejb.spi.EjbServices;
 import org.jboss.weld.injection.producer.AbstractInstantiator;
 import org.jboss.weld.injection.producer.BasicInjectionTarget;
 import org.jboss.weld.injection.producer.DefaultInstantiator;
+import org.jboss.weld.injection.producer.InterceptionModelInitializer;
 import org.jboss.weld.injection.producer.SubclassedComponentInstantiator;
+import org.jboss.weld.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.module.EjbSupport;
 import org.jboss.weld.resources.ClassTransformer;
@@ -40,6 +44,12 @@ import org.jboss.weld.util.collections.SetMultimap;
 import org.jboss.weld.util.reflection.Reflections;
 
 class EjbSupportImpl implements EjbSupport {
+
+    private final EjbServices ejbServices;
+
+    EjbSupportImpl(EjbServices ejbServices) {
+        this.ejbServices = ejbServices;
+    }
 
     @Override
     public void cleanup() {
@@ -123,5 +133,20 @@ class EjbSupportImpl implements EjbSupport {
     @Override
     public Class<? extends Annotation> getTimeoutAnnotation() {
         return Timeout.class;
+    }
+
+    public void registerCdiInterceptorsForMessageDrivenBeans(BeanDeployerEnvironment environment, BeanManagerImpl manager) {
+        for (InternalEjbDescriptor<?> descriptor : environment.getEjbDescriptors()) {
+            if (descriptor.isMessageDriven()) {
+                EnhancedAnnotatedType<?> type =  manager.getServices().getRequired(ClassTransformer.class).getEnhancedAnnotatedType(descriptor.getBeanClass(), manager.getId());
+                if (!manager.getInterceptorModelRegistry().containsKey(type.slim())) {
+                    InterceptionModelInitializer.of(manager, type, null).init();
+                }
+                InterceptionModel model = manager.getInterceptorModelRegistry().get(type.slim());
+                if (model != null) {
+                    ejbServices.registerInterceptors(descriptor, new InterceptorBindingsAdapter(model));
+                }
+            }
+        }
     }
 }

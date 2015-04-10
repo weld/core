@@ -28,6 +28,7 @@ import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
+import org.jboss.weld.ejb.spi.EjbServices;
 import org.jboss.weld.injection.producer.BasicInjectionTarget;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.collections.SetMultimap;
@@ -89,6 +90,13 @@ public interface EjbSupport extends Service {
      */
     Class<? extends Annotation> getTimeoutAnnotation();
 
+    /**
+     * Initializes interception model for MDBs and propagates them to {@link EjbServices#registerInterceptors(org.jboss.weld.ejb.spi.EjbDescriptor, org.jboss.weld.ejb.spi.InterceptorBindings)}
+     * @param environment
+     * @param manager
+     */
+    void registerCdiInterceptorsForMessageDrivenBeans(BeanDeployerEnvironment environment, BeanManagerImpl manager);
+
     EjbSupport NOOP_IMPLEMENTATION = new EjbSupport() {
 
         @Override
@@ -126,6 +134,10 @@ public interface EjbSupport extends Service {
         @Override
         public Class<? extends Annotation> getTimeoutAnnotation() {
             return null;
+        }
+
+        @Override
+        public void registerCdiInterceptorsForMessageDrivenBeans(BeanDeployerEnvironment environment, BeanManagerImpl manager) {
         }
     };
 }
