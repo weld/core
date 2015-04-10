@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.util.collections;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -29,6 +30,8 @@ import java.util.Set;
  *
  */
 public class Multimaps {
+
+    public static final Multimap<Object, Object> EMPTY_MULTIMAP = new EmptyMultimap<Object, Object>();
 
     private Multimaps() {
     }
@@ -44,6 +47,15 @@ public class Multimaps {
             return multimap;
         }
         return new UnmodifiableMultimap<K, V>(multimap);
+    }
+
+    /**
+     *
+     * @return an immutable empty multimap
+     */
+    @SuppressWarnings("unchecked")
+    public static <K, V> Multimap<K, V> emptyMultimap() {
+        return (Multimap<K, V>) EMPTY_MULTIMAP;
     }
 
     /**
@@ -123,6 +135,83 @@ public class Multimaps {
         @Override
         public Set<Entry<K, Collection<V>>> entrySet() {
             return delegate.entrySet();
+        }
+
+    }
+
+    static class EmptyMultimap<K, V> implements Multimap<K, V>, Serializable {
+
+        private static final long serialVersionUID = -7386055586552408792L;
+
+        @Override
+        public int size() {
+            return 0;
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return true;
+        }
+
+        @Override
+        public Collection<V> get(K key) {
+            return Collections.emptyList();
+        }
+
+        @Override
+        public boolean put(K key, V value) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean putAll(K key, Collection<? extends V> values) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Collection<V> replaceValues(K key, Iterable<? extends V> values) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean containsKey(Object key) {
+            return false;
+        }
+
+        @Override
+        public Set<K> keySet() {
+            return Collections.emptySet();
+        }
+
+        @Override
+        public List<V> values() {
+            return Collections.emptyList();
+        }
+
+        @Override
+        public Set<V> uniqueValues() {
+            return Collections.emptySet();
+        }
+
+        @Override
+        public Set<Entry<K, Collection<V>>> entrySet() {
+            return Collections.emptySet();
+        }
+
+        @Override
+        public void clear() {
+        }
+
+        public boolean equals(Object o) {
+            return (o instanceof Multimap) && ((Multimap<?, ?>) o).isEmpty();
+        }
+
+        public int hashCode() {
+            return 1;
+        }
+
+        private Object readResolve() {
+            return EMPTY_MULTIMAP;
         }
 
     }
