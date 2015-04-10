@@ -47,4 +47,8 @@ public interface WeldSELogger extends WeldEnvironmentLogger {
     @Message(id = 2005, value = "Package not found {0}", format = Format.MESSAGE_FORMAT)
     void packageNotFound(Object packageName);
 
+    @LogMessage(level = Level.INFO)
+    @Message(id = 2006, value = "Multiple containers running - CDI.current() may not work properly: {0}", format = Format.MESSAGE_FORMAT)
+    void multipleContainersRunning(Object ids);
+
 }
