@@ -48,11 +48,12 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 @RunAsClient
 @Category(Integration.class)
-public class WebServiceInterceptorTest
-{
+public class WebServiceInterceptorTest {
+    
     @ArquillianResource
     URL baseUrl;
 
+    public final static String TARGET_NAMESPACE = "http://interceptors.ws.tests.weld.jboss.org/";
     public static final String ARCHIVE_NAME = "jaxws-cdi-interceptors";
 
     @Deployment
@@ -66,14 +67,14 @@ public class WebServiceInterceptorTest
 
     private EndpointIface getPojo() throws Exception {
         final URL wsdlURL = new URL(baseUrl + "POJOEndpointService?wsdl");
-        final QName serviceName = new QName("http://org.jboss.test.ws/jbws3441", "POJOEndpointService");
+        final QName serviceName = new QName(TARGET_NAMESPACE, "POJOEndpointService");
         final Service service = Service.create(wsdlURL, serviceName);
         return service.getPort(EndpointIface.class);
     }
 
     private EndpointIface getEjb3() throws Exception {
         final URL wsdlURL = new URL(baseUrl + "EJB3EndpointService/EJB3Endpoint?wsdl");
-        final QName serviceName = new QName("http://org.jboss.test.ws/jbws3441", "EJB3EndpointService");
+        final QName serviceName = new QName(TARGET_NAMESPACE, "EJB3EndpointService");
         final Service service = Service.create(wsdlURL, serviceName);
         return service.getPort(EndpointIface.class);
     }

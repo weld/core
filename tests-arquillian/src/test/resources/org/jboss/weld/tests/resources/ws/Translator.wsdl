@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="Translator" targetNamespace="http://ws.resources.tests.weld.jboss.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://ws.resources.tests.weld.jboss.org/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <wsdl:types>
+<schema xmlns="http://www.w3.org/2001/XMLSchema">
+  <import namespace="http://ws.resources.tests.weld.jboss.org/" schemaLocation="Translator_schema1.xsd"></import>
+</schema>
+  </wsdl:types>
+  <wsdl:message name="translateResponse">
+    <wsdl:part name="parameters" element="tns:translateResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="translate">
+    <wsdl:part name="parameters" element="tns:translate">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="Translator">
+    <wsdl:operation name="translate">
+      <wsdl:input name="translate" message="tns:translate">
+    </wsdl:input>
+      <wsdl:output name="translateResponse" message="tns:translateResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="TranslatorSoapBinding" type="tns:Translator">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="translate">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="translate">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="translateResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="Translator">
+    <wsdl:port name="TranslatorEndpointPort" binding="tns:TranslatorSoapBinding">
+      <soap:address location="http://localhost:9090/TranslatorEndpointPort"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

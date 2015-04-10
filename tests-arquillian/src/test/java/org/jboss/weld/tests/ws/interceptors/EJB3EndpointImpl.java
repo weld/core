@@ -27,7 +27,7 @@ import javax.jws.WebService;
 /**
  * @author <a href="mailto:ropalka@redhat.com">Richard Opalka</a>
  */
-@WebService(name = "EJB3Endpoint", serviceName="EJB3EndpointService", targetNamespace = "http://org.jboss.test.ws/jbws3441")
+@WebService(name = "EJB3Endpoint", serviceName="EJB3EndpointService", targetNamespace = WebServiceInterceptorTest.TARGET_NAMESPACE)
 @Stateless
 public class EJB3EndpointImpl implements EndpointIface
 {

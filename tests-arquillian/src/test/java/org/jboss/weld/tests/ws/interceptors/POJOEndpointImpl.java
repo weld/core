@@ -26,7 +26,7 @@ import javax.jws.WebService;
 /**
  * @author <a href="mailto:ropalka@redhat.com">Richard Opalka</a>
  */
-@WebService(name = "POJOEndpoint", serviceName="POJOEndpointService", targetNamespace = "http://org.jboss.test.ws/jbws3441")
+@WebService(name = "POJOEndpoint", serviceName="POJOEndpointService", targetNamespace = WebServiceInterceptorTest.TARGET_NAMESPACE)
 public class POJOEndpointImpl implements EndpointIface
 {
     static boolean interceptorCalled;
