@@ -24,6 +24,7 @@ import static org.jboss.weld.environment.util.URLUtils.PROTOCOL_FILE_PART;
 import java.io.File;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.lang.ref.WeakReference;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -175,7 +176,7 @@ public class Weld {
 
     private final Map<String, Object> properties;
 
-    private final Set<Class<?>> packageClasses;
+    private final Set<PackInfo> packages;
 
     public Weld() {
         this(RegistrySingletonProvider.STATIC_INSTANCE);
@@ -196,7 +197,7 @@ public class Weld {
         this.enabledDecorators = new ArrayList<Metadata<String>>();
         this.extensions = new HashSet<Metadata<Extension>>();
         this.properties = new HashMap<String, Object>();
-        this.packageClasses = new HashSet<Class<?>>();
+        this.packages = new HashSet<PackInfo>();
     }
 
     /**
@@ -248,18 +249,45 @@ public class Weld {
      * All classes from the packages of the specified classes will be added to the set of bean classes for the synthetic bean archive.
      *
      * <p>
-     * Note that the scanning possibilities are limited. Therefore, only directories and jar files from the filesystem are supported. Scanning may also have
-     * negative impact on bootstrap performance.
+     * Note that the scanning possibilities are limited. Therefore, only directories and jar files from the filesystem are supported.
+     * </p>
+     *
+     * <p>
+     * Scanning may also have negative impact on bootstrap performance.
      * </p>
      *
      * @param classes
      * @return self
      */
-    public Weld packages(Class<?>... classes) {
-        this.packageClasses.clear();
-        for (Class<?> packageClass : classes) {
-            this.packageClasses.add(packageClass);
+    public Weld packages(Class<?>... packageClasses) {
+        this.packages.clear();
+        addPackages(false, packageClasses);
+        return this;
+    }
+
+    /**
+     * Packages of the specified classes will be scanned and found classes will be added to the set of bean classes for the synthetic bean archive.
+     *
+     * @param scanRecursively
+     * @param packageClasses
+     * @return self
+     */
+    public Weld addPackages(boolean scanRecursively, Class<?>... packageClasses) {
+        for (Class<?> packageClass : packageClasses) {
+            addPackage(scanRecursively, packageClass);
         }
+        return this;
+    }
+
+    /**
+     * A package of the specified class will be scanned and found classes will be added to the set of bean classes for the synthetic bean archive.
+     *
+     * @param scanRecursively
+     * @param packageClass
+     * @return self
+     */
+    public Weld addPackage(boolean scanRecursively, Class<?> packageClass) {
+        this.packages.add(new PackInfo(packageClass, scanRecursively));
         return this;
     }
 
@@ -365,7 +393,7 @@ public class Weld {
      */
     public Weld reset() {
         beanClasses.clear();
-        packageClasses.clear();
+        packages.clear();
         selectedAlternatives.clear();
         selectedAlternativeStereotypes.clear();
         enabledInterceptors.clear();
@@ -565,7 +593,7 @@ public class Weld {
     }
 
     private boolean isSyntheticBeanArchiveRequired() {
-        return !beanClasses.isEmpty() || !packageClasses.isEmpty();
+        return !beanClasses.isEmpty() || !packages.isEmpty();
     }
 
     private Iterable<Metadata<Extension>> getExtensions(ClassLoader classLoader, Bootstrap bootstrap) {
@@ -602,79 +630,176 @@ public class Weld {
 
     private Set<String> scanPackages() {
 
-        if (packageClasses.isEmpty()) {
+        if (packages.isEmpty()) {
             return Collections.emptySet();
         }
 
         Set<String> foundClasses = new HashSet<String>();
 
-        for (Class<?> packClass : packageClasses) {
+        for (PackInfo packInfo : packages) {
 
-            ClassLoader cl = AccessController.doPrivileged(new GetClassLoaderAction(packClass));
-            String packName = packClass.getPackage().getName();
-            URL resource = cl.getResource(packClass.getName().replace('.', '/') + Files.CLASS_FILE_EXTENSION);
+            ClassLoader cl = packInfo.getClassLoaderRef().get();
+            if (cl == null) {
+                continue;
+            }
+            String packName = packInfo.getPackName();
+            URL resourceUrl = cl.getResource(packInfo.getPackClassName().replace('.', '/') + Files.CLASS_FILE_EXTENSION);
 
-            if (resource != null) {
+            if (resourceUrl != null) {
 
-                WeldSELogger.LOG.scanningPackage(packName, resource);
+                WeldSELogger.LOG.scanningPackage(packName, resourceUrl);
 
-                URI uri = null;
                 try {
-                    uri = resource.toURI();
+                    URI resourceUri = resourceUrl.toURI();
+
+                    if (PROCOTOL_FILE.equals(resourceUrl.getProtocol())) {
+                        // Get the package directory, e.g. "file:///home/weld/org/jboss
+                        handleDir(new File(resourceUri).getParentFile(), packInfo.isScanRecursively(), packName, foundClasses);
+                    } else if (PROCOTOL_JAR.equals(resourceUrl.getProtocol())) {
+                        handleJar(resourceUri, packInfo.isScanRecursively(), packName, foundClasses);
+                    } else {
+                        WeldSELogger.LOG.resourceUrlProtocolNotSupported(resourceUrl);
+                    }
+
                 } catch (URISyntaxException e) {
-                    CommonLogger.LOG.couldNotReadResource(resource, e);
-                }
-
-                if (PROCOTOL_FILE.equals(resource.getProtocol())) {
-                    // Get the package directory, e.g. "file:///home/weld/org/jboss
-                    File packDir = new File(uri).getParentFile();
-                    if (packDir != null && packDir.exists() && packDir.canRead()) {
-                        for (File file : packDir.listFiles()) {
-                            if (file.isFile() && file.exists() && Files.isClass(file.getName())) {
-                                foundClasses.add(Files.filenameToClassname(packName + "." + file.getName()));
-                            }
-                        }
-                    }
-                } else if (PROCOTOL_JAR.equals(resource.getProtocol())) {
-
-                    // Currently we only support jar:file
-                    if (uri.getSchemeSpecificPart().startsWith(PROCOTOL_FILE)) {
-
-                        // Get the JAR file path, e.g. "jar:file:/home/duke/duke.jar!/com/foo/Bar" becomes "/home/duke/duke.jar"
-                        String path = uri.getSchemeSpecificPart().substring(PROTOCOL_FILE_PART.length());
-                        if (path.lastIndexOf(JAR_URL_SEPARATOR) > 0) {
-                            path = path.substring(0, path.lastIndexOf(JAR_URL_SEPARATOR));
-                        }
-
-                        JarFile jar = null;
-                        String packNamePath = packName.replace('.', '/');
-
-                        try {
-                            jar = new JarFile(new File(path));
-                            Enumeration<JarEntry> entries = jar.entries();
-                            while (entries.hasMoreElements()) {
-                                JarEntry entry = entries.nextElement();
-                                if (entry.getName().endsWith(Files.CLASS_FILE_EXTENSION) && entry.getName().startsWith(packNamePath)) {
-                                    foundClasses.add(Files.filenameToClassname(entry.getName()));
-                                }
-                            }
-                        } catch (IOException e) {
-                            CommonLogger.LOG.couldNotReadResource(resource, e);
-                        } finally {
-                            if (jar != null) {
-                                try {
-                                    jar.close();
-                                } catch (IOException ignored) {
-                                }
-                            }
-                        }
-                    }
+                    CommonLogger.LOG.couldNotReadResource(resourceUrl, e);
                 }
             } else {
                 WeldSELogger.LOG.packageNotFound(packName);
             }
         }
         return foundClasses;
+    }
+
+    private void handleDir(File packDir, boolean scanRecursively, String packName, Set<String> foundClasses) {
+        if (packDir != null && packDir.exists() && packDir.canRead()) {
+            for (File file : packDir.listFiles()) {
+                if (file.isFile()) {
+                    if (Files.isUsable(file) && Files.isClass(file.getName())) {
+                        foundClasses.add(Files.filenameToClassname(packName + "." + file.getName()));
+                    }
+                }
+                if (file.isDirectory() && scanRecursively) {
+                    handleDir(file, scanRecursively, packName + "." + file.getName(), foundClasses);
+                }
+            }
+        }
+    }
+
+    private void handleJar(URI resourceUri, boolean scanRecursively, String packName, Set<String> foundClasses) {
+
+        // Currently we only support jar:file
+        if (resourceUri.getSchemeSpecificPart().startsWith(PROCOTOL_FILE)) {
+
+            // Get the JAR file path, e.g. "jar:file:/home/duke/duke.jar!/com/foo/Bar" becomes "/home/duke/duke.jar"
+            String path = resourceUri.getSchemeSpecificPart().substring(PROTOCOL_FILE_PART.length());
+            if (path.lastIndexOf(JAR_URL_SEPARATOR) > 0) {
+                path = path.substring(0, path.lastIndexOf(JAR_URL_SEPARATOR));
+            }
+
+            JarFile jar = null;
+            String packNamePath = packName.replace('.', '/');
+            int expectedPartsLength = splitBySlash(packNamePath).length + 1;
+
+            try {
+                jar = new JarFile(new File(path));
+                Enumeration<JarEntry> entries = jar.entries();
+                while (entries.hasMoreElements()) {
+                    JarEntry entry = entries.nextElement();
+                    if (!entry.getName().endsWith(Files.CLASS_FILE_EXTENSION)) {
+                        continue;
+                    }
+                    if (entry.getName().startsWith(packNamePath)) {
+                        if (scanRecursively) {
+                            foundClasses.add(Files.filenameToClassname(entry.getName()));
+                        } else {
+                            String[] parts = splitBySlash(entry.getName());
+                            if (parts.length == expectedPartsLength) {
+                                foundClasses.add(Files.filenameToClassname(entry.getName()));
+                            }
+                        }
+                    }
+                }
+            } catch (IOException e) {
+                CommonLogger.LOG.couldNotReadResource(resourceUri, e);
+            } finally {
+                if (jar != null) {
+                    try {
+                        jar.close();
+                    } catch (IOException ignored) {
+                    }
+                }
+            }
+        }
+    }
+
+    private String[] splitBySlash(String value) {
+        return value.split("/");
+    }
+
+    private static class PackInfo {
+
+        private final String packName;
+
+        private final String packClassName;
+
+        private final boolean scanRecursively;
+
+        private final WeakReference<ClassLoader> classLoaderRef;
+
+        PackInfo(Class<?> packClass, boolean recursiveScan) {
+            this.packName = packClass.getPackage().getName();
+            this.packClassName = packClass.getName();
+            this.scanRecursively = recursiveScan;
+            this.classLoaderRef = new WeakReference<ClassLoader>(AccessController.doPrivileged(new GetClassLoaderAction(packClass)));
+        }
+
+        public String getPackName() {
+            return packName;
+        }
+
+        public String getPackClassName() {
+            return packClassName;
+        }
+
+        public boolean isScanRecursively() {
+            return scanRecursively;
+        }
+
+        public WeakReference<ClassLoader> getClassLoaderRef() {
+            return classLoaderRef;
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((packClassName == null) ? 0 : packClassName.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            PackInfo other = (PackInfo) obj;
+            if (packClassName == null) {
+                if (other.packClassName != null) {
+                    return false;
+                }
+            } else if (!packClassName.equals(other.packClassName)) {
+                return false;
+            }
+            return true;
+        }
+
     }
 
 }
