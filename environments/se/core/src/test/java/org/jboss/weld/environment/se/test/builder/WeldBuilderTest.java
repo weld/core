@@ -23,16 +23,23 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 
 import javax.enterprise.event.ObserverException;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.spi.DefinitionException;
 
+import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
+import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.config.ConfigurationKey;
 import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
 import org.jboss.weld.environment.se.test.builder.alphas.Alpha1;
 import org.jboss.weld.environment.se.test.builder.alphas.Alpha2;
+import org.jboss.weld.environment.se.test.builder.alphas.betas.Beta1;
+import org.jboss.weld.environment.se.test.builder.alphas.betas.Beta2;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.junit.Test;
 
@@ -157,10 +164,37 @@ public class WeldBuilderTest {
         try (WeldContainer container = weld.packages(Alpha1.class).initialize()) {
             assertEquals(1, container.select(Alpha1.class).get().getVal());
             assertEquals(2, container.select(Alpha2.class).get().getVal());
+            assertTrue(container.select(Beta1.class).isUnsatisfied());
+            assertTrue(container.select(Beta2.class).isUnsatisfied());
+        }
+        try (WeldContainer container = weld.reset().addPackage(true, Alpha2.class).initialize()) {
+            assertEquals(1, container.select(Alpha1.class).get().getVal());
+            assertEquals(2, container.select(Alpha2.class).get().getVal());
+            assertEquals(11, container.select(Beta1.class).get().getVal());
+            assertEquals(22, container.select(Beta2.class).get().getVal());
+        }
+        try (WeldContainer container = weld.reset().addPackages(true, Beta1.class).initialize()) {
+            assertTrue(container.select(Alpha1.class).isUnsatisfied());
+            assertTrue(container.select(Alpha2.class).isUnsatisfied());
+            assertEquals(11, container.select(Beta1.class).get().getVal());
+            assertEquals(22, container.select(Beta2.class).get().getVal());
         }
         // Scan the package from cdi-api.jar
-        try (WeldContainer container = weld.packages(ObserverException.class).initialize()) {
+        try (WeldContainer container = weld.reset().packages(ObserverException.class).initialize()) {
             assertFalse(container.select(ObserverException.class).isUnsatisfied());
+        }
+        // Scan the package recursively from cdi-api.jar
+        try (WeldContainer container = weld.reset().addPackage(true, Any.class).initialize()) {
+            // There is no managed bean discovered, therefore we only check the the bean class was found
+            boolean found = false;
+            for (Entry<BeanDeploymentArchive, BeanManagerImpl> entry : Container.instance().beanDeploymentArchives().entrySet()) {
+                for (String className : entry.getKey().getBeanClasses()) {
+                    if (className.equals(DefinitionException.class.getName())) {
+                        found = true;
+                    }
+                }
+            }
+            assertTrue(found);
         }
     }
 

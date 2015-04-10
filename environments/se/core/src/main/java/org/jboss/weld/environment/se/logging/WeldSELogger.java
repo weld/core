@@ -44,11 +44,15 @@ public interface WeldSELogger extends WeldEnvironmentLogger {
     void scanningPackage(Object packageName, Object resource);
 
     @LogMessage(level = Level.WARN)
-    @Message(id = 2005, value = "Package not found {0}", format = Format.MESSAGE_FORMAT)
+    @Message(id = 2005, value = "Package intended for scanning was not found: {0}", format = Format.MESSAGE_FORMAT)
     void packageNotFound(Object packageName);
 
     @LogMessage(level = Level.INFO)
     @Message(id = 2006, value = "Multiple containers running - CDI.current() may not work properly: {0}", format = Format.MESSAGE_FORMAT)
     void multipleContainersRunning(Object ids);
+
+    @LogMessage(level = Level.DEBUG)
+    @Message(id = 2007, value = "Resource URL procotol not supported: {0}", format = Format.MESSAGE_FORMAT)
+    void resourceUrlProtocolNotSupported(Object resource);
 
 }
