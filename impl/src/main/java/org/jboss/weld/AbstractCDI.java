@@ -112,7 +112,7 @@ public abstract class AbstractCDI<T> extends CDI<T> {
         throw BeanManagerLogger.LOG.unableToIdentifyBeanManager();
     }
 
-    private Instance<T> getInstance() {
+    protected Instance<T> getInstance() {
         return cast(BeanManagerProxy.unwrap(getBeanManager()).instance());
     }
 }

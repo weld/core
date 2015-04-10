@@ -16,11 +16,15 @@
  */
 package org.jboss.weld.environment.se;
 
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Vetoed;
 import javax.enterprise.inject.spi.BeanManager;
 
+import org.jboss.weld.AbstractCDI;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.Singleton;
 import org.jboss.weld.bootstrap.api.SingletonProvider;
@@ -29,7 +33,7 @@ import org.jboss.weld.experimental.ExperimentalEvent;
 import org.jboss.weld.literal.DestroyedLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.api.WeldManager;
-import org.jboss.weld.util.bean.ForwardingInstance;
+import org.jboss.weld.util.collections.ImmutableList;
 
 /**
  * Represents a Weld SE container.
@@ -80,12 +84,15 @@ import org.jboss.weld.util.bean.ForwardingInstance;
  * @see Weld
  */
 @Vetoed
-public class WeldContainer extends ForwardingInstance<Object> implements AutoCloseable {
+public class WeldContainer extends AbstractCDI<Object> implements AutoCloseable {
 
-    private static Singleton<WeldContainer> singleton;
+    private static final Singleton<WeldContainer> SINGLETON;
+
+    private static final List<String> RUNNING_CONTAINER_IDS;
 
     static {
-        singleton = SingletonProvider.instance().create(WeldContainer.class);
+        SINGLETON = SingletonProvider.instance().create(WeldContainer.class);
+        RUNNING_CONTAINER_IDS = new CopyOnWriteArrayList<String>();
     }
 
     /**
@@ -94,10 +101,18 @@ public class WeldContainer extends ForwardingInstance<Object> implements AutoClo
      */
     public static WeldContainer instance(String id) {
         try {
-            return singleton.get(id);
+            return SINGLETON.get(id);
         } catch (IllegalStateException e) {
             return null;
         }
+    }
+
+    /**
+     *
+     * @return an immutable list of ids of running containers
+     */
+    public static List<String> getRunningContainerIds() {
+        return ImmutableList.copyOf(RUNNING_CONTAINER_IDS);
     }
 
     /**
@@ -108,11 +123,12 @@ public class WeldContainer extends ForwardingInstance<Object> implements AutoClo
      * @return the initialized Weld container
      */
     static WeldContainer initialize(String id, WeldManager manager, Bootstrap bootstrap) {
-        if (singleton.isSet(id)) {
+        if (SINGLETON.isSet(id)) {
             throw WeldSELogger.LOG.weldContainerAlreadyRunning(id);
         }
         WeldContainer weldContainer = new WeldContainer(id, manager, bootstrap);
-        singleton.set(id, weldContainer);
+        SINGLETON.set(id, weldContainer);
+        RUNNING_CONTAINER_IDS.add(id);
         WeldSELogger.LOG.weldContainerInitialized(id);
         return weldContainer;
     }
@@ -137,6 +153,7 @@ public class WeldContainer extends ForwardingInstance<Object> implements AutoClo
      * @param bootstrap
      */
     private WeldContainer(String id, WeldManager manager, Bootstrap bootstrap) {
+        super();
         this.id = id;
         this.manager = manager;
         this.bootstrap = bootstrap;
@@ -192,7 +209,8 @@ public class WeldContainer extends ForwardingInstance<Object> implements AutoClo
             try {
                 manager.fireEvent(new Object(), DestroyedLiteral.APPLICATION);
             } finally {
-                singleton.clear(id);
+                SINGLETON.clear(id);
+                RUNNING_CONTAINER_IDS.remove(id);
                 // Destroy all the dependent beans correctly
                 creationalContext.release();
                 bootstrap.shutdown();
@@ -211,7 +229,7 @@ public class WeldContainer extends ForwardingInstance<Object> implements AutoClo
      * @return <code>true</code> if the container was not shut down yet, <code>false</code> otherwise
      */
     public boolean isRunning() {
-        return singleton.isSet(id);
+        return SINGLETON.isSet(id);
     }
 
     @Override
@@ -220,7 +238,7 @@ public class WeldContainer extends ForwardingInstance<Object> implements AutoClo
     }
 
     @Override
-    protected Instance<Object> delegate() {
+    protected Instance<Object> getInstance() {
         return instance;
     }
 
