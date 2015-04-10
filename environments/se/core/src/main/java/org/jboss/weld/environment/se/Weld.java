@@ -231,7 +231,7 @@ public class Weld {
      * @return self
      */
     public Weld beanClasses(Class<?>... classes) {
-        this.beanClasses.clear();
+        beanClasses.clear();
         for (Class<?> beanClass : classes) {
             addBeanClass(beanClass);
         }
@@ -245,7 +245,7 @@ public class Weld {
      * @return self
      */
     public Weld addBeanClass(Class<?> beanClass) {
-        this.beanClasses.add(beanClass.getName());
+        beanClasses.add(beanClass.getName());
         return this;
     }
 
@@ -264,7 +264,7 @@ public class Weld {
      * @return self
      */
     public Weld packages(Class<?>... packageClasses) {
-        this.packages.clear();
+        packages.clear();
         addPackages(false, packageClasses);
         return this;
     }
@@ -291,7 +291,7 @@ public class Weld {
      * @return self
      */
     public Weld addPackage(boolean scanRecursively, Class<?> packageClass) {
-        this.packages.add(new PackInfo(packageClass, scanRecursively));
+        packages.add(new PackInfo(packageClass, scanRecursively));
         return this;
     }
 
@@ -328,9 +328,20 @@ public class Weld {
     public Weld interceptors(Class<?>... interceptorClasses) {
         enabledInterceptors.clear();
         for (Class<?> interceptorClass : interceptorClasses) {
-            beanClasses.add(interceptorClass.getName());
-            enabledInterceptors.add(syntheticMetadata(interceptorClass));
+            addInterceptor(interceptorClass);
         }
+        return this;
+    }
+
+    /**
+     * Add an interceptor class to the list of enabled interceptors for a synthetic bean archive.
+     *
+     * @param interceptorClass
+     * @return self
+     */
+    public Weld addInterceptor(Class<?> interceptorClass) {
+        beanClasses.add(interceptorClass.getName());
+        enabledInterceptors.add(syntheticMetadata(interceptorClass));
         return this;
     }
 
@@ -343,9 +354,20 @@ public class Weld {
     public Weld decorators(Class<?>... decoratorClasses) {
         enabledDecorators.clear();
         for (Class<?> decoratorClass : decoratorClasses) {
-            beanClasses.add(decoratorClass.getName());
-            enabledDecorators.add(syntheticMetadata(decoratorClass));
+            addDecorator(decoratorClass);
         }
+        return this;
+    }
+
+    /**
+     * Add a decorator class to the list of enabled decorators for a synthetic bean archive.
+     *
+     * @param decoratorClass
+     * @return self
+     */
+    public Weld addDecorator(Class<?> decoratorClass) {
+        beanClasses.add(decoratorClass.getName());
+        enabledDecorators.add(syntheticMetadata(decoratorClass));
         return this;
     }
 
@@ -358,8 +380,19 @@ public class Weld {
     public Weld alternatives(Class<?>... alternativeClasses) {
         selectedAlternatives.clear();
         for (Class<?> alternativeClass : alternativeClasses) {
-            selectedAlternatives.add(syntheticMetadata(alternativeClass));
+            addAlternative(alternativeClass);
         }
+        return this;
+    }
+
+    /**
+     * Add an alternative class to the list of selected alternatives for a synthetic bean archive.
+     *
+     * @param alternativeClass
+     * @return self
+     */
+    public Weld addAlternative(Class<?> alternativeClass) {
+        selectedAlternatives.add(syntheticMetadata(alternativeClass));
         return this;
     }
 
@@ -372,9 +405,20 @@ public class Weld {
     @SafeVarargs
     public final Weld alternativeStereotypes(Class<? extends Annotation>... alternativeStereotypeClasses) {
         selectedAlternativeStereotypes.clear();
-        for (Class<?> alternativeStereotypClass : alternativeStereotypeClasses) {
-            selectedAlternativeStereotypes.add(syntheticMetadata(alternativeStereotypClass));
+        for (Class<? extends Annotation> alternativeStereotypeClass : alternativeStereotypeClasses) {
+            addAlternativeStereotype(alternativeStereotypeClass);
         }
+        return this;
+    }
+
+    /**
+     * Add an alternative stereotype class to the list of selected alternative stereotypes for a synthetic bean archive.
+     *
+     * @param alternativeStereotypeClass
+     * @return self
+     */
+    public Weld addAlternativeStereotype(Class<? extends Annotation> alternativeStereotypeClass) {
+        selectedAlternativeStereotypes.add(syntheticMetadata(alternativeStereotypeClass));
         return this;
     }
 
