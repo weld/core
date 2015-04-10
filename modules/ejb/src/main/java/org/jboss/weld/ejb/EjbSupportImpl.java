@@ -17,6 +17,7 @@
 package org.jboss.weld.ejb;
 
 import java.lang.annotation.Annotation;
+import java.util.Collection;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -29,6 +30,7 @@ import org.jboss.weld.annotated.slim.SlimAnnotatedTypeStore;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bean.interceptor.InterceptorBindingsAdapter;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
+import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.ejb.spi.EjbServices;
 import org.jboss.weld.injection.producer.AbstractInstantiator;
 import org.jboss.weld.injection.producer.BasicInjectionTarget;
@@ -40,15 +42,18 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.module.EjbSupport;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.util.Beans;
+import org.jboss.weld.util.Preconditions;
 import org.jboss.weld.util.collections.SetMultimap;
 import org.jboss.weld.util.reflection.Reflections;
 
 class EjbSupportImpl implements EjbSupport {
 
     private final EjbServices ejbServices;
+    private final EjbDescriptors ejbDescriptors;
 
-    EjbSupportImpl(EjbServices ejbServices) {
+    EjbSupportImpl(EjbServices ejbServices, Collection<EjbDescriptor<?>> descriptors) {
         this.ejbServices = ejbServices;
+        this.ejbDescriptors = new EjbDescriptors(descriptors);
     }
 
     @Override
@@ -75,7 +80,13 @@ class EjbSupportImpl implements EjbSupport {
     }
 
     @Override
-    public <T> BeanAttributes<T> createSessionBeanAttributes(EnhancedAnnotatedType<T> annotated, InternalEjbDescriptor<?> descriptor, BeanManagerImpl manager) {
+    public <T> BeanAttributes<T> createSessionBeanAttributes(EnhancedAnnotatedType<T> annotated, BeanManagerImpl manager) {
+        final InternalEjbDescriptor<?> descriptor = ejbDescriptors.getUnique(annotated.getJavaClass());
+        Preconditions.checkArgument(descriptor != null, annotated.getJavaClass() + " is not an EJB.");
+        return createSessionBeanAttributes(annotated, descriptor, manager);
+    }
+
+    private <T> BeanAttributes<T> createSessionBeanAttributes(EnhancedAnnotatedType<T> annotated, InternalEjbDescriptor<?> descriptor, BeanManagerImpl manager) {
         return SessionBeans.createBeanAttributes(annotated, descriptor, manager);
     }
 
@@ -83,7 +94,7 @@ class EjbSupportImpl implements EjbSupport {
     public void createSessionBeans(BeanDeployerEnvironment environment, SetMultimap<Class<?>, SlimAnnotatedType<?>> types, BeanManagerImpl manager) {
         final ClassTransformer transformer = manager.getServices().get(ClassTransformer.class);
 
-        for (InternalEjbDescriptor<?> ejbDescriptor : environment.getEjbDescriptors()) {
+        for (InternalEjbDescriptor<?> ejbDescriptor : getEjbDescriptors()) {
             if (environment.isVetoed(ejbDescriptor.getBeanClass()) || Beans.isVetoed(ejbDescriptor.getBeanClass())) {
                 continue;
             }
@@ -136,7 +147,7 @@ class EjbSupportImpl implements EjbSupport {
     }
 
     public void registerCdiInterceptorsForMessageDrivenBeans(BeanDeployerEnvironment environment, BeanManagerImpl manager) {
-        for (InternalEjbDescriptor<?> descriptor : environment.getEjbDescriptors()) {
+        for (InternalEjbDescriptor<?> descriptor : getEjbDescriptors()) {
             if (descriptor.isMessageDriven()) {
                 EnhancedAnnotatedType<?> type =  manager.getServices().getRequired(ClassTransformer.class).getEnhancedAnnotatedType(descriptor.getBeanClass(), manager.getId());
                 if (!manager.getInterceptorModelRegistry().containsKey(type.slim())) {
@@ -148,5 +159,20 @@ class EjbSupportImpl implements EjbSupport {
                 }
             }
         }
+    }
+
+    @Override
+    public Collection<InternalEjbDescriptor<?>> getEjbDescriptors() {
+        return ejbDescriptors.getAll();
+    }
+
+    @Override
+    public boolean isEjb(Class<?> beanClass) {
+        return ejbDescriptors.contains(beanClass);
+    }
+
+    @Override
+    public <T> InternalEjbDescriptor<T> getEjbDescriptor(String beanName) {
+        return ejbDescriptors.get(beanName);
     }
 }

@@ -17,6 +17,7 @@
 package org.jboss.weld.ejb;
 
 import org.jboss.weld.bootstrap.ContextHolder;
+import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.context.ejb.EjbLiteral;
 import org.jboss.weld.context.ejb.EjbRequestContext;
 import org.jboss.weld.context.ejb.EjbRequestContextImpl;
@@ -31,8 +32,8 @@ import org.jboss.weld.module.WeldModule;
  * @author Jozef Hartinger
  *
  */
-public class WeldEjbModule implements WeldModule {
 
+public class WeldEjbModule implements WeldModule {
     @Override
     public String getName() {
         return "weld-ejb";
@@ -53,12 +54,12 @@ public class WeldEjbModule implements WeldModule {
 
     @Override
     public void postBeanArchiveServiceRegistration(PostBeanArchiveServiceRegistrationContext ctx) {
-        final EjbServices ejbServices = ctx.getServices().get(EjbServices.class);
+        final ServiceRegistry services = ctx.getServices();
+        final EjbServices ejbServices = services.get(EjbServices.class);
         if (ejbServices != null) {
             // Must populate EJB cache first, as we need it to detect whether a
             // bean is an EJB!
-            ctx.getServices().getRequired(EjbDescriptors.class).addAll(ctx.getBeanDeploymentArchive().getEjbs());
-            ctx.getServices().add(EjbSupport.class, new EjbSupportImpl(ejbServices));
+            services.add(EjbSupport.class, new EjbSupportImpl(ejbServices, ctx.getBeanDeploymentArchive().getEjbs()));
         }
     }
 

@@ -18,12 +18,12 @@ package org.jboss.weld.ejb;
 
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.util.collections.SetMultimap;
@@ -33,20 +33,19 @@ import org.jboss.weld.util.collections.SetMultimap;
  *
  * @author Pete Muir
  */
-public class EjbDescriptors implements Service, Iterable<InternalEjbDescriptor<?>> {
+class EjbDescriptors {
     // EJB name -> EJB descriptors map
     private final Map<String, InternalEjbDescriptor<?>> ejbByName;
 
     private final SetMultimap<Class<?>, String> ejbByClass;
 
-    public static final EjbDescriptors EMPTY = new EjbDescriptors();
-
     /**
      * Constructor
      */
-    public EjbDescriptors() {
+    EjbDescriptors(Collection<EjbDescriptor<?>> descriptors) {
         this.ejbByName = new HashMap<String, InternalEjbDescriptor<?>>();
         this.ejbByClass = SetMultimap.newSetMultimap();
+        addAll(descriptors);
     }
 
     /**
@@ -64,7 +63,7 @@ public class EjbDescriptors implements Service, Iterable<InternalEjbDescriptor<?
      *
      * @param ejbDescriptor The EJB descriptor to add
      */
-    public <T> void add(EjbDescriptor<T> ejbDescriptor) {
+    private <T> void add(EjbDescriptor<T> ejbDescriptor) {
         InternalEjbDescriptor<T> internalEjbDescriptor = InternalEjbDescriptor.of(ejbDescriptor);
         ejbByName.put(ejbDescriptor.getEjbName(), internalEjbDescriptor);
         ejbByClass.put(ejbDescriptor.getBeanClass(), internalEjbDescriptor.getEjbName());
@@ -108,21 +107,18 @@ public class EjbDescriptors implements Service, Iterable<InternalEjbDescriptor<?
      *
      * @param ejbDescriptors The descriptors to add
      */
-    public void addAll(Iterable<EjbDescriptor<?>> ejbDescriptors) {
+    private void addAll(Iterable<EjbDescriptor<?>> ejbDescriptors) {
         for (EjbDescriptor<?> ejbDescriptor : ejbDescriptors) {
             add(ejbDescriptor);
         }
     }
 
-    /**
-     * Clears both maps
-     */
-    public void clear() {
-        ejbByName.clear();
-    }
-
     public Iterator<InternalEjbDescriptor<?>> iterator() {
         return ejbByName.values().iterator();
+    }
+
+    public Collection<InternalEjbDescriptor<?>> getAll() {
+        return ejbByName.values();
     }
 
     public void cleanup() {

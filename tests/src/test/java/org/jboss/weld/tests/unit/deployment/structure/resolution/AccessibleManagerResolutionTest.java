@@ -36,7 +36,6 @@ import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
 import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
 import org.jboss.weld.config.WeldConfiguration;
-import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.event.DefaultObserverNotifierFactory;
 import org.jboss.weld.event.GlobalObserverNotifierService;
 import org.jboss.weld.injection.ResourceInjectionFactory;
@@ -94,7 +93,7 @@ public class AccessibleManagerResolutionTest {
         RIBean<?> bean = ManagedBean.of(BeanAttributesFactory.forBean(clazz, manager), clazz, manager);
         manager.addBean(bean);
         manager.getBeanResolver().clear();
-        BeanDeployerEnvironment environment = BeanDeployerEnvironmentFactory.newEnvironment(new EjbDescriptors(), manager);
+        BeanDeployerEnvironment environment = BeanDeployerEnvironmentFactory.newEnvironment(manager);
         bean.initialize(environment);
     }
 

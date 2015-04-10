@@ -52,7 +52,6 @@ import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
 import org.jboss.weld.bean.builtin.ExtensionBean;
 import org.jboss.weld.config.WeldConfiguration;
-import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.injection.attributes.WeldInjectionPointAttributes;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -77,14 +76,13 @@ public class BeanDeployerEnvironment {
     private final Set<DisposalMethod<?, ?>> resolvedDisposalBeans;
     private final Set<DecoratorImpl<?>> decorators;
     private final Set<InterceptorImpl<?>> interceptors;
-    private final EjbDescriptors ejbDescriptors;
     private final TypeSafeDisposerResolver disposalMethodResolver;
     private final ClassTransformer classTransformer;
     private final Set<EnhancedAnnotatedType<?>> newManagedBeanClasses;
     private final Map<InternalEjbDescriptor<?>, EnhancedAnnotatedType<?>> newSessionBeanDescriptorsFromInjectionPoint;
     private final BeanManagerImpl manager;
 
-    protected BeanDeployerEnvironment(EjbDescriptors ejbDescriptors, BeanManagerImpl manager) {
+    protected BeanDeployerEnvironment(BeanManagerImpl manager) {
         this(
                 new HashSet<SlimAnnotatedTypeContext<?>>(),
                 new HashSet<Class<?>>(),
@@ -97,7 +95,6 @@ public class BeanDeployerEnvironment {
                 new HashSet<DisposalMethod<?, ?>>(),
                 new HashSet<DecoratorImpl<?>>(),
                 new HashSet<InterceptorImpl<?>>(),
-                ejbDescriptors,
                 new HashSet<EnhancedAnnotatedType<?>>(),
                 new HashMap<InternalEjbDescriptor<?>, EnhancedAnnotatedType<?>>(),
                 manager);
@@ -115,7 +112,6 @@ public class BeanDeployerEnvironment {
             Set<DisposalMethod<?, ?>> resolvedDisposalBeans,
             Set<DecoratorImpl<?>> decorators,
             Set<InterceptorImpl<?>> interceptors,
-            EjbDescriptors ejbDescriptors,
             Set<EnhancedAnnotatedType<?>> newManagedBeanClasses,
             Map<InternalEjbDescriptor<?>, EnhancedAnnotatedType<?>> newSessionBeanDescriptorsFromInjectionPoint,
             BeanManagerImpl manager) {
@@ -130,7 +126,6 @@ public class BeanDeployerEnvironment {
         this.resolvedDisposalBeans = resolvedDisposalBeans;
         this.decorators = decorators;
         this.interceptors = interceptors;
-        this.ejbDescriptors = ejbDescriptors;
         this.disposalMethodResolver = new TypeSafeDisposerResolver(allDisposalBeans, manager.getServices().get(WeldConfiguration.class));
         this.classTransformer = manager.getServices().get(ClassTransformer.class);
         this.newManagedBeanClasses = newManagedBeanClasses;
@@ -286,12 +281,13 @@ public class BeanDeployerEnvironment {
     }
 
     private void addNewBeanFromInjectionPoint(Class<?> rawType, Type baseType) {
-        if (getEjbDescriptors().contains(rawType)) {
-            InternalEjbDescriptor<?> descriptor = getEjbDescriptors().getUnique(rawType);
-            newSessionBeanDescriptorsFromInjectionPoint.put(descriptor, classTransformer.getEnhancedAnnotatedType(rawType, baseType, manager.getId()));
-        } else {
+        // FIXME
+//        if (getEjbDescriptors().contains(rawType)) {
+//            InternalEjbDescriptor<?> descriptor = getEjbDescriptors().getUnique(rawType);
+//            newSessionBeanDescriptorsFromInjectionPoint.put(descriptor, classTransformer.getEnhancedAnnotatedType(rawType, baseType, manager.getId()));
+//        } else {
             newManagedBeanClasses.add(classTransformer.getEnhancedAnnotatedType(rawType, baseType, manager.getId()));
-        }
+//        }
     }
 
     public Set<? extends RIBean<?>> getBeans() {
@@ -314,10 +310,6 @@ public class BeanDeployerEnvironment {
         Set<DisposalMethod<?, ?>> beans = new HashSet<DisposalMethod<?, ?>>(allDisposalBeans);
         beans.removeAll(resolvedDisposalBeans);
         return Collections.unmodifiableSet(beans);
-    }
-
-    public EjbDescriptors getEjbDescriptors() {
-        return ejbDescriptors;
     }
 
     /**

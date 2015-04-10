@@ -29,7 +29,6 @@ import org.jboss.weld.bean.ProducerField;
 import org.jboss.weld.bean.ProducerMethod;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment.WeldMethodKey;
-import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.collections.SetMultimap;
@@ -39,14 +38,14 @@ public class BeanDeployerEnvironmentFactory {
     private BeanDeployerEnvironmentFactory() {
     }
 
-    public static BeanDeployerEnvironment newEnvironment(EjbDescriptors ejbDescriptors, BeanManagerImpl manager) {
-        return new BeanDeployerEnvironment(ejbDescriptors, manager);
+    public static BeanDeployerEnvironment newEnvironment(BeanManagerImpl manager) {
+        return new BeanDeployerEnvironment(manager);
     }
 
     /**
      * Creates a new threadsafe BeanDeployerEnvironment instance. These instances are used by {@link ConcurrentBeanDeployer} during bootstrap.
      */
-    public static BeanDeployerEnvironment newConcurrentEnvironment(EjbDescriptors ejbDescriptors, BeanManagerImpl manager) {
+    public static BeanDeployerEnvironment newConcurrentEnvironment(BeanManagerImpl manager) {
         return new BeanDeployerEnvironment(Collections.newSetFromMap(new ConcurrentHashMap<SlimAnnotatedTypeContext<?>, Boolean>()),
                 Collections.newSetFromMap(new ConcurrentHashMap<Class<?>, Boolean>()), SetMultimap.<Class<?>, AbstractClassBean<?>> newConcurrentSetMultimap(),
                 Collections.newSetFromMap(new ConcurrentHashMap<ProducerField<?, ?>, Boolean>()),
@@ -56,7 +55,7 @@ public class BeanDeployerEnvironmentFactory {
                 Collections.newSetFromMap(new ConcurrentHashMap<DisposalMethod<?, ?>, Boolean>()),
                 Collections.newSetFromMap(new ConcurrentHashMap<DisposalMethod<?, ?>, Boolean>()),
                 Collections.newSetFromMap(new ConcurrentHashMap<DecoratorImpl<?>, Boolean>()),
-                Collections.newSetFromMap(new ConcurrentHashMap<InterceptorImpl<?>, Boolean>()), ejbDescriptors,
+                Collections.newSetFromMap(new ConcurrentHashMap<InterceptorImpl<?>, Boolean>()),
                 Collections.newSetFromMap(new ConcurrentHashMap<EnhancedAnnotatedType<?>, Boolean>()),
                 new ConcurrentHashMap<InternalEjbDescriptor<?>, EnhancedAnnotatedType<?>>(), manager);
     }

@@ -99,7 +99,6 @@ import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.context.CreationalContextImpl;
 import org.jboss.weld.context.PassivatingContextWrapper;
 import org.jboss.weld.context.WeldCreationalContext;
-import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.event.EventImpl;
@@ -1185,7 +1184,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     @Override
     public <T> EjbDescriptor<T> getEjbDescriptor(String beanName) {
-        return getServices().get(EjbDescriptors.class).get(beanName);
+        return getServices().get(EjbSupport.class).getEjbDescriptor(beanName);
     }
 
     @Override
@@ -1370,9 +1369,8 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     @Override
     public <T> BeanAttributes<T> createBeanAttributes(AnnotatedType<T> type) {
         EnhancedAnnotatedType<T> clazz = services.get(ClassTransformer.class).getEnhancedAnnotatedType(type, getId());
-        if (services.get(EjbDescriptors.class).contains(type.getJavaClass())) {
-            final InternalEjbDescriptor<T> descriptor = services.get(EjbDescriptors.class).getUnique(clazz.getJavaClass());
-            return services.get(EjbSupport.class).createSessionBeanAttributes(clazz, descriptor, this);
+        if (services.get(EjbSupport.class).isEjb(type.getJavaClass())) {
+            return services.get(EjbSupport.class).createSessionBeanAttributes(clazz, this);
         }
         return BeanAttributesFactory.forBean(clazz, this);
     }

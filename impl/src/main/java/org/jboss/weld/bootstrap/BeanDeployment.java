@@ -51,7 +51,6 @@ import org.jboss.weld.bootstrap.spi.BeanDiscoveryMode;
 import org.jboss.weld.bootstrap.spi.Filter;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.config.WeldConfiguration;
-import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.injection.producer.InjectionTargetService;
 import org.jboss.weld.interceptor.builder.InterceptorsApiAbstraction;
 import org.jboss.weld.logging.BootstrapLogger;
@@ -87,10 +86,8 @@ public class BeanDeployment {
 
     public BeanDeployment(BeanDeploymentArchive beanDeploymentArchive, BeanManagerImpl deploymentManager, ServiceRegistry deploymentServices, Collection<ContextHolder<? extends Context>> contexts, boolean additionalBeanArchive) {
         this.beanDeploymentArchive = beanDeploymentArchive;
-        EjbDescriptors ejbDescriptors = new EjbDescriptors();
 
         ServiceRegistry registry = beanDeploymentArchive.getServices();
-        registry.add(EjbDescriptors.class, ejbDescriptors);
 
         ResourceLoader resourceLoader = registry.get(ResourceLoader.class);
         if (resourceLoader == null) {
@@ -113,9 +110,9 @@ public class BeanDeployment {
         services.addIfAbsent(EjbSupport.class, EjbSupport.NOOP_IMPLEMENTATION);
 
         if (services.get(WeldConfiguration.class).getBooleanProperty(CONCURRENT_DEPLOYMENT) && services.contains(ExecutorServices.class)) {
-            beanDeployer = new ConcurrentBeanDeployer(beanManager, ejbDescriptors, deploymentServices);
+            beanDeployer = new ConcurrentBeanDeployer(beanManager, deploymentServices);
         } else {
-            beanDeployer = new BeanDeployer(beanManager, ejbDescriptors, deploymentServices);
+            beanDeployer = new BeanDeployer(beanManager, deploymentServices);
         }
         beanManager.getServices().get(SpecializationAndEnablementRegistry.class).registerEnvironment(beanManager, beanDeployer.getEnvironment(), additionalBeanArchive);
 

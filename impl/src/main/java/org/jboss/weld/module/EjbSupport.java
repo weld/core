@@ -17,6 +17,8 @@
 package org.jboss.weld.module;
 
 import java.lang.annotation.Annotation;
+import java.util.Collection;
+import java.util.Collections;
 
 import javax.enterprise.inject.New;
 import javax.enterprise.inject.spi.BeanAttributes;
@@ -28,6 +30,7 @@ import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bootstrap.BeanDeployerEnvironment;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
+import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.ejb.spi.EjbServices;
 import org.jboss.weld.injection.producer.BasicInjectionTarget;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -48,7 +51,7 @@ public interface EjbSupport extends Service {
      * @param manager the bean manager
      * @return BeanAttributes representation of a given session bean
      */
-    <T> BeanAttributes<T> createSessionBeanAttributes(EnhancedAnnotatedType<T> type, InternalEjbDescriptor<?> descriptor, BeanManagerImpl manager);
+    <T> BeanAttributes<T> createSessionBeanAttributes(EnhancedAnnotatedType<T> type, BeanManagerImpl manager);
 
     /**
      * Creates an {@link InjectionTarget} implementation for a given session bean.
@@ -97,6 +100,26 @@ public interface EjbSupport extends Service {
      */
     void registerCdiInterceptorsForMessageDrivenBeans(BeanDeployerEnvironment environment, BeanManagerImpl manager);
 
+    /**
+     * Indicates whether an {@link EjbDescriptor} is known for a given class
+     * @param beanClass
+     * @return true iff an EjbDescriptor for the given class exists
+     */
+    boolean isEjb(Class<?> beanClass);
+
+    /**
+     * Returns an {@link EjbDescriptor} identified by the given name or null if no such descriptor exists
+     * @param beanName
+     * @return descriptor identified by the given name or null if no such descriptor exists
+     */
+    <T> InternalEjbDescriptor<T> getEjbDescriptor(String beanName);
+
+    /**
+     * Returns a collection of all known EJB descriptors
+     * @return a collection of all known EJB descriptors
+     */
+    Collection<InternalEjbDescriptor<?>> getEjbDescriptors();
+
     EjbSupport NOOP_IMPLEMENTATION = new EjbSupport() {
 
         @Override
@@ -113,7 +136,7 @@ public interface EjbSupport extends Service {
         }
 
         @Override
-        public <T> BeanAttributes<T> createSessionBeanAttributes(EnhancedAnnotatedType<T> type, InternalEjbDescriptor<?> descriptor, BeanManagerImpl manager) {
+        public <T> BeanAttributes<T> createSessionBeanAttributes(EnhancedAnnotatedType<T> type, BeanManagerImpl manager) {
             return fail();
         }
 
@@ -138,6 +161,21 @@ public interface EjbSupport extends Service {
 
         @Override
         public void registerCdiInterceptorsForMessageDrivenBeans(BeanDeployerEnvironment environment, BeanManagerImpl manager) {
+        }
+
+        @Override
+        public Collection<InternalEjbDescriptor<?>> getEjbDescriptors() {
+            return Collections.emptyList();
+        }
+
+        @Override
+        public boolean isEjb(Class<?> beanClass) {
+            return false;
+        }
+
+        @Override
+        public <T> InternalEjbDescriptor<T> getEjbDescriptor(String beanName) {
+            return null;
         }
     };
 }

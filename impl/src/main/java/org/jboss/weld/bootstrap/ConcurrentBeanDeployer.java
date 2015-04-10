@@ -25,7 +25,6 @@ import org.jboss.weld.annotated.slim.SlimAnnotatedTypeContext;
 import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
-import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.executor.IterativeWorkerTaskFactory;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.api.ExecutorServices;
@@ -42,8 +41,8 @@ public class ConcurrentBeanDeployer extends BeanDeployer {
 
     private final ExecutorServices executor;
 
-    public ConcurrentBeanDeployer(BeanManagerImpl manager, EjbDescriptors ejbDescriptors, ServiceRegistry services) {
-        super(manager, ejbDescriptors, services, BeanDeployerEnvironmentFactory.newConcurrentEnvironment(ejbDescriptors, manager));
+    public ConcurrentBeanDeployer(BeanManagerImpl manager, ServiceRegistry services) {
+        super(manager, services, BeanDeployerEnvironmentFactory.newConcurrentEnvironment(manager));
         this.executor = services.get(ExecutorServices.class);
     }
 

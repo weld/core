@@ -41,7 +41,6 @@ import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.enablement.GlobalEnablementBuilder;
 import org.jboss.weld.bootstrap.events.ProcessAnnotatedTypeImpl;
-import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.spi.ClassFileServices;
@@ -65,11 +64,11 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
     private final AnnotationApiAbstraction annotationApi;
     private final ClassFileServices classFileServices;
 
-    public BeanDeployer(BeanManagerImpl manager, EjbDescriptors ejbDescriptors, ServiceRegistry services) {
-        this(manager, ejbDescriptors, services, BeanDeployerEnvironmentFactory.newEnvironment(ejbDescriptors, manager));
+    public BeanDeployer(BeanManagerImpl manager, ServiceRegistry services) {
+        this(manager, services, BeanDeployerEnvironmentFactory.newEnvironment(manager));
     }
 
-    public BeanDeployer(BeanManagerImpl manager, EjbDescriptors ejbDescriptors, ServiceRegistry services, BeanDeployerEnvironment environment) {
+    public BeanDeployer(BeanManagerImpl manager, ServiceRegistry services, BeanDeployerEnvironment environment) {
         super(manager, services, environment);
         this.resourceLoader = manager.getServices().get(ResourceLoader.class);
         this.annotatedTypeStore = manager.getServices().get(SlimAnnotatedTypeStore.class);
@@ -183,7 +182,7 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
     }
 
     protected void createClassBean(SlimAnnotatedType<?> annotatedType, SetMultimap<Class<?>, SlimAnnotatedType<?>> otherWeldClasses) {
-        boolean managedBeanOrDecorator = !getEnvironment().getEjbDescriptors().contains(annotatedType.getJavaClass()) && Beans.isTypeManagedBeanOrDecoratorOrInterceptor(annotatedType);
+        boolean managedBeanOrDecorator = !ejbSupport.isEjb(annotatedType.getJavaClass()) && Beans.isTypeManagedBeanOrDecoratorOrInterceptor(annotatedType);
         if (managedBeanOrDecorator) {
             containerLifecycleEvents.preloadProcessInjectionTarget(annotatedType.getJavaClass());
             containerLifecycleEvents.preloadProcessBeanAttributes(annotatedType.getJavaClass());
