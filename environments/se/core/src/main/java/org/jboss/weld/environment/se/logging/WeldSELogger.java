@@ -55,4 +55,11 @@ public interface WeldSELogger extends WeldEnvironmentLogger {
     @Message(id = 2007, value = "Resource URL procotol not supported: {0}", format = Format.MESSAGE_FORMAT)
     void resourceUrlProtocolNotSupported(Object resource);
 
+    @LogMessage(level = Level.WARN)
+    @Message(id = 2008, value = "Bean class {0} found in multiple bean archives - this may result in incorrect behavior: {1}", format = Format.MESSAGE_FORMAT)
+    void beanClassDeployedInMultipleBeanArchives(Object beanClass, Object bdas);
+
+    @Message(id = 2009, value = "Weld SE container cannot be initialized - no bean archives found")
+    IllegalStateException weldContainerCannotBeInitializedNoBeanArchivesFound();
+
 }
