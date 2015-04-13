@@ -17,15 +17,17 @@
 
 package org.jboss.weld.environment.servlet.inject;
 
-import java.util.Map;
-import java.util.WeakHashMap;
+import static org.jboss.weld.util.cache.LoadingCacheUtils.getCastCacheValue;
 
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.InjectionTarget;
 
 import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.util.Preconditions;
+
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 
 /**
  * Provides support for Weld injection into servlets, servlet filters etc.
@@ -36,29 +38,28 @@ import org.jboss.weld.util.Preconditions;
  */
 public abstract class AbstractInjector {
     private final WeldManager manager;
-    private final Map<Class<?>, InjectionTarget<?>> cache = new WeakHashMap<Class<?>, InjectionTarget<?>>();
+    private final LoadingCache<Class<?>, InjectionTarget<?>> cache;
 
-    protected AbstractInjector(WeldManager manager) {
+    protected AbstractInjector(final WeldManager manager) {
         Preconditions.checkArgumentNotNull(manager, "manager");
         this.manager = manager;
+        this.cache = CacheBuilder.newBuilder().weakValues().build(new CacheLoader<Class<?>, InjectionTarget<?>>() {
+            @Override
+            public InjectionTarget<?> load(Class<?> key) throws Exception {
+                return manager.createInjectionTarget(manager.createAnnotatedType(key));
+            }
+        });
     }
 
     protected void inject(Object instance) {
-        // not data-race safe, however doesn't matter, as the injection target created for class A is interchangeable for another injection target created for class A
-        // TODO Make this a concurrent cache when we switch to google collections
-        Class<?> clazz = instance.getClass();
-        if (!cache.containsKey(clazz)) {
-            cache.put(clazz, manager.createInjectionTarget(manager.createAnnotatedType(clazz)));
-        }
+        final InjectionTarget<Object> it = getCastCacheValue(cache, instance.getClass());
         CreationalContext<Object> cc = manager.createCreationalContext(null);
-        InjectionTarget<Object> it = (InjectionTarget<Object>) cache.get(clazz);
         it.inject(instance, cc);
     }
 
     public void destroy(Object instance) {
         if (instance != null) {
-            AnnotatedType type = manager.createAnnotatedType(instance.getClass());
-            InjectionTarget it = manager.createInjectionTarget(type);
+            final InjectionTarget<Object> it = getCastCacheValue(cache, instance.getClass());
             it.dispose(instance);
         }
     }
