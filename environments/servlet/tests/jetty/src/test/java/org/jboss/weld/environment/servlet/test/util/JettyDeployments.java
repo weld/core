@@ -39,5 +39,11 @@ public class JettyDeployments {
                 "</Arg>" +
                 "<Arg type=\"boolean\">true</Arg>" +
             "</New>" +
+            "<New class=\"org.eclipse.jetty.plus.jndi.EnvEntry\">" +
+                "<Arg></Arg>" +
+                "<Arg>foo</Arg>" +
+                "<Arg type=\"java.lang.String\">bar</Arg>" +
+                "<Arg type=\"boolean\">true</Arg>" +
+            "</New>" +
         "</Configure>");
 }

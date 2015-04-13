@@ -9,6 +9,7 @@ public class TomcatDeployments {
         "<Context crossContext=\"true\">" +
             "<Manager pathname=\"\" />" +
             "<Resource name=\"BeanManager\" auth=\"Container\" type=\"javax.inject.manager.BeanManager\" factory=\"org.jboss.weld.resources.ManagerObjectFactory\"/>" +
+            "<Environment name=\"foo\" value=\"bar\" type=\"java.lang.String\"/>" +
         "</Context>");
 
 }
