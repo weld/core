@@ -228,6 +228,7 @@ public class ResolvableBuilder {
         private final Class<?> rawType;
         private final Bean<?> declaringBean;
         private final boolean delegate;
+        private int hashCode;
 
         protected ResolvableImpl(Class<?> rawType, Set<Type> typeClosure, Bean<?> declaringBean, final Set<QualifierInstance> qualifierInstances, boolean delegate) {
             this.typeClosure = typeClosure;
@@ -264,10 +265,13 @@ public class ResolvableBuilder {
 
         @Override
         public int hashCode() {
-            int result = 17;
-            result = 31 * result + this.getTypes().hashCode();
-            result = 31 * result + this.qualifierInstances.hashCode();
-            return result;
+            if(hashCode == 0) {
+                int result = 17;
+                result = 31 * result + this.getTypes().hashCode();
+                result = 31 * result + this.qualifierInstances.hashCode();
+                hashCode = result;
+            }
+            return hashCode;
         }
 
         @Override
