@@ -58,7 +58,8 @@ public abstract class AbstractNamingScheme implements NamingScheme {
     }
 
     public boolean accept(String id) {
-        return id.startsWith(getPrefix() + delimiter);
+        String prefix = getPrefix();
+        return id.startsWith(prefix) && id.startsWith(delimiter, prefix.length());
     }
 
     public BeanIdentifier deprefix(String id) {
