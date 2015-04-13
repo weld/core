@@ -20,6 +20,7 @@ package org.jboss.weld.environment.servlet.inject;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.InjectionTarget;
 
 import org.jboss.weld.manager.api.WeldManager;
@@ -41,7 +42,13 @@ public abstract class AbstractInjector {
     protected AbstractInjector(WeldManager manager) {
         Preconditions.checkArgumentNotNull(manager, "manager");
         this.manager = manager;
-        this.cache = ComputingCacheBuilder.newBuilder().setWeakValues().build(clazz -> manager.createInjectionTarget(manager.createAnnotatedType(clazz)));
+        this.cache = ComputingCacheBuilder.newBuilder().setWeakValues().build(clazz -> {
+            AnnotatedType<?> type = manager.createAnnotatedType(clazz);
+            return manager.createInjectionTargetBuilder(type)
+                .setResourceInjectionEnabled(false)
+                .setTargetClassLifecycleCallbacksEnabled(false)
+                .build();
+        });
     }
 
     protected void inject(Object instance) {
