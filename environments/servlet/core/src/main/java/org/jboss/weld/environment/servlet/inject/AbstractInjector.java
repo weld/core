@@ -20,6 +20,7 @@ package org.jboss.weld.environment.servlet.inject;
 import static org.jboss.weld.util.cache.LoadingCacheUtils.getCastCacheValue;
 
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.InjectionTarget;
 
 import org.jboss.weld.manager.api.WeldManager;
@@ -46,7 +47,11 @@ public abstract class AbstractInjector {
         this.cache = CacheBuilder.newBuilder().weakValues().build(new CacheLoader<Class<?>, InjectionTarget<?>>() {
             @Override
             public InjectionTarget<?> load(Class<?> key) throws Exception {
-                return manager.createInjectionTarget(manager.createAnnotatedType(key));
+                AnnotatedType<?> type = manager.createAnnotatedType(key);
+                return manager.createInjectionTargetBuilder(type)
+                    .setResourceInjectionEnabled(false)
+                    .setTargetClassLifecycleCallbacksEnabled(false)
+                    .build();
             }
         });
     }
