@@ -16,6 +16,10 @@
  */
 package org.jboss.weld.tests.experimental.event.async.executor;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.SynchronousQueue;
@@ -27,8 +31,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
-
-import junit.framework.Assert;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -71,11 +73,11 @@ public class FireAsyncWithExecutorTest {
         });
         request.fireAsync(new Request(), executor);
         final Response response = SYNCHRONIZER.poll(30, TimeUnit.SECONDS);
-        Assert.assertTrue(REQUEST_RECEIVED.get());
-        Assert.assertNotNull(RESPONSE_RECEIVED.get());
-        Assert.assertEquals(FireAsyncWithExecutorTest.class.getName(), RESPONSE_RECEIVED.get().getThread().getName());
-        Assert.assertNotNull(response);
-        Assert.assertEquals(FireAsyncWithExecutorTest.class.getName(), response.getThread().getName());
+        assertTrue(REQUEST_RECEIVED.get());
+        assertNotNull("Response not recieved or unable to synchronize the queue", RESPONSE_RECEIVED.get());
+        assertEquals(FireAsyncWithExecutorTest.class.getName(), RESPONSE_RECEIVED.get().getThread().getName());
+        assertNotNull(response);
+        assertEquals(FireAsyncWithExecutorTest.class.getName(), response.getThread().getName());
     }
 
     public static void receiveRequest(@Observes Request request, Event<Response> event) {
@@ -83,8 +85,9 @@ public class FireAsyncWithExecutorTest {
         event.fire(new Response(Thread.currentThread()));
     }
 
-    public static void receive(@Observes Response response) {
-        RESPONSE_RECEIVED.set(response);
-        SYNCHRONIZER.add(response);
+    public static void receive(@Observes Response response) throws InterruptedException {
+        if (SYNCHRONIZER.offer(response, 10, TimeUnit.SECONDS)) {
+            RESPONSE_RECEIVED.set(response);
+        }
     }
 }
