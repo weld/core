@@ -17,7 +17,7 @@
     <url>http://weld.cdi-spec.org</url>
 
     <properties>
-        <pax.cdi.version>0.8.0</pax.cdi.version>
+        <pax.cdi.version>0.11.0</pax.cdi.version>
     </properties>
 
     <developers>
