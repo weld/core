@@ -28,9 +28,12 @@ import org.jboss.weld.AbstractCDI;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.Singleton;
 import org.jboss.weld.bootstrap.api.SingletonProvider;
+import org.jboss.weld.environment.se.events.ContainerInitialized;
+import org.jboss.weld.environment.se.events.ContainerShutdown;
 import org.jboss.weld.environment.se.logging.WeldSELogger;
 import org.jboss.weld.experimental.ExperimentalEvent;
 import org.jboss.weld.literal.DestroyedLiteral;
+import org.jboss.weld.literal.InitializedLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.util.collections.ImmutableList;
@@ -130,6 +133,7 @@ public class WeldContainer extends AbstractCDI<Object> implements AutoCloseable 
         SINGLETON.set(id, weldContainer);
         RUNNING_CONTAINER_IDS.add(id);
         WeldSELogger.LOG.weldContainerInitialized(id);
+        manager.fireEvent(new ContainerInitialized(id), InitializedLiteral.APPLICATION);
         return weldContainer;
     }
 
@@ -207,7 +211,7 @@ public class WeldContainer extends AbstractCDI<Object> implements AutoCloseable 
     public synchronized void shutdown() {
         if (isRunning()) {
             try {
-                manager.fireEvent(new Object(), DestroyedLiteral.APPLICATION);
+                manager.fireEvent(new ContainerShutdown(id), DestroyedLiteral.APPLICATION);
             } finally {
                 SINGLETON.clear(id);
                 RUNNING_CONTAINER_IDS.remove(id);

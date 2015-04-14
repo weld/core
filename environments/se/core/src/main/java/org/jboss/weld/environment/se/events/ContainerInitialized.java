@@ -23,12 +23,10 @@ import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
  *
  * @author Peter Royle
  */
-public class ContainerInitialized {
-
-    private final String containerId;
+public class ContainerInitialized extends WeldContainerEvent {
 
     public ContainerInitialized() {
-        this.containerId = RegistrySingletonProvider.STATIC_INSTANCE;
+        super(RegistrySingletonProvider.STATIC_INSTANCE);
     }
 
     /**
@@ -36,11 +34,7 @@ public class ContainerInitialized {
      * @param containerId
      */
     public ContainerInitialized(String containerId) {
-        this.containerId = containerId;
-    }
-
-    public String getContainerId() {
-        return containerId;
+        super(containerId);
     }
 
 }
