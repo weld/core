@@ -72,11 +72,9 @@ import org.jboss.weld.environment.deployment.discovery.DiscoveryStrategy;
 import org.jboss.weld.environment.deployment.discovery.DiscoveryStrategyFactory;
 import org.jboss.weld.environment.logging.CommonLogger;
 import org.jboss.weld.environment.se.contexts.ThreadScoped;
-import org.jboss.weld.environment.se.events.ContainerInitialized;
 import org.jboss.weld.environment.se.logging.WeldSELogger;
 import org.jboss.weld.environment.util.BeanArchives;
 import org.jboss.weld.environment.util.Files;
-import org.jboss.weld.literal.InitializedLiteral;
 import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.metadata.BeansXmlImpl;
 import org.jboss.weld.metadata.MetadataImpl;
@@ -528,8 +526,6 @@ public class Weld {
 
         final WeldManager manager = bootstrap.getManager(deployment.loadBeanDeploymentArchive(WeldContainer.class));
         final WeldContainer weldContainer = WeldContainer.initialize(containerId, manager, bootstrap);
-
-        weldContainer.event().select(ContainerInitialized.class, InitializedLiteral.APPLICATION).fire(new ContainerInitialized(containerId));
 
         initializedContainers.put(containerId, weldContainer);
         return weldContainer;
