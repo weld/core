@@ -18,7 +18,7 @@ Make sure you have Apache Karaf installed.
 
 3. Install Pax CDI and Weld by running the following command in the Karaf console:
 
-        feature:install pax-cdi weld
+        feature:install pax-cdi-1.2-weld
 
 4. Deploy the Paint API artifact 
 

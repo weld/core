@@ -18,14 +18,11 @@
 package org.jboss.weld.examples.osgi.paint.triangle;
 
 
-import javax.enterprise.context.ApplicationScoped;
-
 import org.jboss.weld.examples.osgi.paint.api.Shape;
 import org.jboss.weld.examples.osgi.paint.api.ShapeProvider;
 import org.ops4j.pax.cdi.api.OsgiServiceProvider;
 
 @OsgiServiceProvider
-@ApplicationScoped
 public class TriangleShapeProvider implements ShapeProvider {
 
     @Override
