@@ -212,7 +212,7 @@ public class BeanDeployment {
          * If EjbSupport is installed then SessionBeanAwareInjectionPointBean is used instead
          * TODO: remove this tight coupling
          */
-        if (!getBeanManager().getServices().contains(EjbSupport.class)) {
+        if (getBeanManager().getServices().get(EjbSupport.class) == EjbSupport.NOOP_IMPLEMENTATION) {
             beanDeployer.addBuiltInBean(new InjectionPointBean(beanManager));
         }
 
