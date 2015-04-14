@@ -17,14 +17,10 @@
 
 package org.jboss.weld.examples.osgi.paint.square;
 
-
-import javax.enterprise.context.ApplicationScoped;
-
 import org.jboss.weld.examples.osgi.paint.api.Shape;
 import org.jboss.weld.examples.osgi.paint.api.ShapeProvider;
 import org.ops4j.pax.cdi.api.OsgiServiceProvider;
 
-@ApplicationScoped
 @OsgiServiceProvider
 public class SquareShapeProvider implements ShapeProvider {
 
