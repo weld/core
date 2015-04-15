@@ -203,12 +203,20 @@ public class WeldBuilderTest {
     public void testExtensions() {
         try (WeldContainer container = new Weld().disableDiscovery().beanClasses(Bar.class).extensions(new TestExtension()).initialize()) {
             assertEquals(10, container.select(Foo.class).get().getVal());
+            assertFalse(container.select(TestExtension.class).isUnsatisfied());
         }
     }
 
     @Test(expected = IllegalStateException.class)
     public void testNoBeanArchivesFound() {
         new Weld().disableDiscovery().initialize();
+    }
+
+    @Test
+    public void testAccessibility() {
+        try (WeldContainer container = new Weld().beanClasses(Oof.class).extensions(new OofExtension()).initialize()) {
+            assertEquals(10, container.select(Oof.class).get().getVal());
+        }
     }
 
 }

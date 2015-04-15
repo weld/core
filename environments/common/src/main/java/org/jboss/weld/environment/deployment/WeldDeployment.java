@@ -60,6 +60,7 @@ public class WeldDeployment extends AbstractWeldDeployment {
         for (BeanDeploymentArchive archive : beanDeploymentArchives) {
             archive.getServices().add(ResourceLoader.class, resourceLoader);
         }
+        setBeanDeploymentArchivesAccessibility();
     }
 
     @Override
@@ -106,17 +107,21 @@ public class WeldDeployment extends AbstractWeldDeployment {
         // At this time only the initial bean class is known
         Set<String> beanClasses = new HashSet<String>();
         beanClasses.add(beanClass.getName());
-
         WeldBeanDeploymentArchive additionalBda = new WeldBeanDeploymentArchive(ADDITIONAL_BDA_ID, beanClasses, null);
         additionalBda.getServices().add(ResourceLoader.class, resourceLoader);
         additionalBda.getServices().addAll(getServices().entrySet());
         beanDeploymentArchives.add(additionalBda);
+        setBeanDeploymentArchivesAccessibility();
+        return additionalBda;
+    }
 
-        // Set visibility - by default all bean archives see each other
+    /**
+     * By default all bean archives see each other.
+     */
+    protected void setBeanDeploymentArchivesAccessibility() {
         for (WeldBeanDeploymentArchive archive : beanDeploymentArchives) {
             archive.setAccessibleBeanDeploymentArchives(beanDeploymentArchives);
         }
-        return additionalBda;
     }
 
 }
