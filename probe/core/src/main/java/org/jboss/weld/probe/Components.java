@@ -16,8 +16,12 @@
  */
 package org.jboss.weld.probe;
 
+import static org.jboss.weld.probe.Strings.INFO_FETCHING_LAZILY;
+
 import java.io.UnsupportedEncodingException;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -50,9 +54,11 @@ import org.jboss.weld.bean.ProducerMethod;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
 import org.jboss.weld.bean.builtin.ExtensionBean;
+import org.jboss.weld.bean.builtin.InstanceImpl;
 import org.jboss.weld.bean.builtin.ee.EEResourceProducerField;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.exceptions.IllegalStateException;
+import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.util.collections.ImmutableMap;
@@ -153,8 +159,16 @@ final class Components {
                     // At this point unsatisfied or ambiguous dependency should not exits
                     Bean<?> candidateDependency = beanManager.resolve(beanManager.getBeans(injectionPoint.getType(),
                             injectionPoint.getQualifiers().toArray(new Annotation[injectionPoint.getQualifiers().size()])));
-                    boolean satisfies = false;
 
+                    if (candidateDependency.getBeanClass().equals(InstanceImpl.class)) {
+                        Bean<?> lazilyFetched = getInstanceResolvedBean(beanManager, injectionPoint);
+                        if (lazilyFetched != null && lazilyFetched.equals(bean)) {
+                            dependents.add(new Dependency(candidate, injectionPoint, INFO_FETCHING_LAZILY));
+                            continue;
+                        }
+                    }
+
+                    boolean satisfies = false;
                     if (isBuiltinBeanButNotExtension(candidateDependency)) {
                         satisfies = bean.equals(probe.getBean(Components.getBuiltinBeanId((AbstractBuiltInBean<?>) candidateDependency)));
                     } else {
@@ -191,6 +205,31 @@ final class Components {
             }
         }
         return dependencies;
+    }
+
+    /**
+     *
+     * @return the bean if a satisfied and unambiguous dependency is found for the Instance required type and quialifiers
+     */
+    static Bean<?> getInstanceResolvedBean(BeanManager beanManager, InjectionPoint injectionPoint) {
+        try {
+            Set<Bean<?>> beans = beanManager.getBeans(getFacadeType(injectionPoint),
+                    injectionPoint.getQualifiers().toArray(new Annotation[injectionPoint.getQualifiers().size()]));
+            if (!beans.isEmpty()) {
+                return beanManager.resolve(beans);
+            }
+        } catch (Exception ignored) {
+        }
+        return null;
+    }
+
+    static Type getFacadeType(InjectionPoint injectionPoint) {
+        Type genericType = injectionPoint.getType();
+        if (genericType instanceof ParameterizedType) {
+            return ((ParameterizedType) genericType).getActualTypeArguments()[0];
+        } else {
+            throw new IllegalStateException(BeanLogger.LOG.typeParameterMustBeConcrete(injectionPoint));
+        }
     }
 
     static boolean isBuiltinScope(Class<? extends Annotation> scope) {
@@ -282,17 +321,28 @@ final class Components {
 
         private final InjectionPoint injectionPoint;
 
-        public Dependency(Bean<?> resolvedBean, InjectionPoint injectionPoint) {
-            this.bean = resolvedBean;
-            this.injectionPoint = injectionPoint;
+        private final String info;
+
+        Dependency(Bean<?> bean, InjectionPoint injectionPoint) {
+            this(bean, injectionPoint, null);
         }
 
-        public Bean<?> getBean() {
+        Dependency(Bean<?> bean, InjectionPoint injectionPoint, String info) {
+            this.bean = bean;
+            this.injectionPoint = injectionPoint;
+            this.info = info;
+        }
+
+        Bean<?> getBean() {
             return bean;
         }
 
-        public InjectionPoint getInjectionPoint() {
+        InjectionPoint getInjectionPoint() {
             return injectionPoint;
+        }
+
+        String getInfo() {
+            return info;
         }
 
     }

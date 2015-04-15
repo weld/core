@@ -91,6 +91,7 @@ public final class Strings {
     public static final String VERSION = "version";
     public static final String PROBE_COMPONENT = "probeComponent";
     public static final String DESCRIPTION = "description";
+    public static final String INFO = "info";
 
     public static final String PAGE = "page";
     public static final String PAGE_SIZE = "pageSize";
@@ -148,6 +149,8 @@ public final class Strings {
     static final String SET_PREFIX = "set";
 
     static final String HTTP_HEADER_CACHE_CONTROL = "Cache-Control";
+
+    static final String INFO_FETCHING_LAZILY = "Most likely lazy fetching - Instance.get()";
 
     private Strings() {
     }

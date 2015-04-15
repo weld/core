@@ -48,6 +48,8 @@ import static org.jboss.weld.probe.Strings.EJB_NAME;
 import static org.jboss.weld.probe.Strings.ENABLEMENT;
 import static org.jboss.weld.probe.Strings.EVENT_INFO;
 import static org.jboss.weld.probe.Strings.ID;
+import static org.jboss.weld.probe.Strings.INFO;
+import static org.jboss.weld.probe.Strings.INFO_FETCHING_LAZILY;
 import static org.jboss.weld.probe.Strings.INSTANCES;
 import static org.jboss.weld.probe.Strings.INTERCEPTED_BEAN;
 import static org.jboss.weld.probe.Strings.INTERCEPTORS;
@@ -116,6 +118,7 @@ import org.jboss.weld.Container;
 import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
+import org.jboss.weld.bean.builtin.InstanceImpl;
 import org.jboss.weld.bean.proxy.ProxyObject;
 import org.jboss.weld.bootstrap.WeldBootstrap;
 import org.jboss.weld.bootstrap.enablement.ModuleEnablement;
@@ -532,9 +535,8 @@ final class JsonObjects {
         JsonArrayBuilder dependenciesBuilder = Json.arrayBuilder(true);
 
         for (Dependency dep : Components.getDependencies(bean, beanManager, probe)) {
-            // Workaround for built-in beans - these are identified by the set of types
             if (Components.isBuiltinBeanButNotExtension(dep.getBean())) {
-                dependenciesBuilder.add(createDependency(probe.getBean(Components.getBuiltinBeanId((AbstractBuiltInBean<?>) dep.getBean())), dep, probe));
+                dependenciesBuilder.add(createBuiltInDependency(dep, probe, beanManager, DEPENDENCIES));
                 continue;
             }
             // Handle circular dependencies
@@ -551,6 +553,32 @@ final class JsonObjects {
             }
         }
         return dependenciesBuilder.isEmpty() ? null : dependenciesBuilder;
+    }
+
+    /**
+     * Built-in beans are identified by the set of types. Moreover, each bean deployment archive has its own instance.
+     *
+     * @param dependency
+     * @param probe
+     * @param beanManager
+     * @param type
+     * @return
+     */
+    private static JsonObjectBuilder createBuiltInDependency(Dependency dependency, Probe probe, BeanManagerImpl beanManager, String type) {
+        AbstractBuiltInBean<?> builtInBean = (AbstractBuiltInBean<?>) dependency.getBean();
+        JsonObjectBuilder builtInDependency = createDependency(probe.getBean(Components.getBuiltinBeanId(builtInBean)), dependency, probe);
+        if (builtInBean.getBeanClass().equals(InstanceImpl.class)) {
+            // Special treatment of Instance<?>
+            Bean<?> lazilyFetched = Components.getInstanceResolvedBean(beanManager, dependency.getInjectionPoint());
+            if (lazilyFetched != null && !Components.isBuiltinBeanButNotExtension(lazilyFetched)) {
+                JsonObjectBuilder lazilyFetchedDependency = createDependency(lazilyFetched, null, probe);
+                lazilyFetchedDependency.add(REQUIRED_TYPE, Formats.formatType(Components.getFacadeType(dependency.getInjectionPoint()), false)).add(QUALIFIERS,
+                        createQualifiers(dependency.getInjectionPoint().getQualifiers(), false));
+                lazilyFetchedDependency.add(INFO, INFO_FETCHING_LAZILY);
+                builtInDependency.add(type, Json.arrayBuilder().add(lazilyFetchedDependency));
+            }
+        }
+        return builtInDependency;
     }
 
     /**
@@ -579,6 +607,9 @@ final class JsonObjects {
             }
 
             JsonObjectBuilder dependency = createDependency(dependent.getBean(), dependent, probe);
+            if (dependent.getInfo() != null) {
+                dependency.add(INFO, dependent.getInfo());
+            }
             dependentsBuilder.add(dependency);
 
             if (isTransient) {
