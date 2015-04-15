@@ -1,4 +1,4 @@
-/**
+/*
  * JBoss, Home of Professional Open Source
  * Copyright 2009, Red Hat, Inc. and/or its affiliates, and individual
  * contributors by the @authors tag. See the copyright.txt in the
@@ -18,11 +18,8 @@ package org.jboss.weld.environment.se;
 
 import javax.enterprise.inject.Vetoed;
 
-
 /**
- * This is the main class that can be called from the command line for
- * a WeldContainer SE app which makes use of the ContainerInitialized event.
- * Something like:
+ * This is the main class that can be called from the command line for a WeldContainer SE app which makes use of the ContainerInitialized event. Something like:
  * <code>
  * java -cp weld-se.jar:my-app.jar org.jboss.weld.environment.se.StartMain arg1 arg2
  * </code>
@@ -33,20 +30,18 @@ import javax.enterprise.inject.Vetoed;
  */
 @Vetoed
 public class StartMain {
+
     public static String[] PARAMETERS;
+
+    private final Weld weld;
 
     public StartMain(String[] commandLineArgs) {
         PARAMETERS = commandLineArgs;
+        weld = new Weld();
     }
 
-    private ShutdownHook shutdownHook;
-
     public WeldContainer go() {
-        Weld weld = new Weld();
-        shutdownHook = new ShutdownHook(weld);
-        Runtime.getRuntime().addShutdownHook(shutdownHook);
-        WeldContainer container = weld.initialize();
-        return container;
+        return weld.initialize();
     }
 
     /**
@@ -65,23 +60,10 @@ public class StartMain {
     }
 
     /**
-     * Shut down Weld immediately. Removes shutdown hook. Blocks until Weld is completely shut down.
+     * Shut down Weld immediately. Blocks until Weld is completely shut down.
      */
     public void shutdownNow() {
-        Runtime.getRuntime().removeShutdownHook(shutdownHook);
-        shutdownHook.run();
+        weld.shutdown();
     }
 
-    static class ShutdownHook extends Thread {
-        private final Weld weld;
-
-        ShutdownHook(Weld weld) {
-            this.weld = weld;
-        }
-
-        @Override
-        public void run() {
-            weld.shutdown();
-        }
-    }
 }
