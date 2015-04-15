@@ -74,9 +74,9 @@ public class FireAsyncWithExecutorTest {
         request.fireAsync(new Request(), executor);
         final Response response = SYNCHRONIZER.poll(30, TimeUnit.SECONDS);
         assertTrue(REQUEST_RECEIVED.get());
-        assertNotNull("Response not recieved or unable to synchronize the queue", RESPONSE_RECEIVED.get());
+        assertNotNull(RESPONSE_RECEIVED.get());
         assertEquals(FireAsyncWithExecutorTest.class.getName(), RESPONSE_RECEIVED.get().getThread().getName());
-        assertNotNull(response);
+        assertNotNull("Synchronization failed", response);
         assertEquals(FireAsyncWithExecutorTest.class.getName(), response.getThread().getName());
     }
 
@@ -86,8 +86,7 @@ public class FireAsyncWithExecutorTest {
     }
 
     public static void receive(@Observes Response response) throws InterruptedException {
-        if (SYNCHRONIZER.offer(response, 10, TimeUnit.SECONDS)) {
-            RESPONSE_RECEIVED.set(response);
-        }
+        RESPONSE_RECEIVED.set(response);
+        SYNCHRONIZER.offer(response, 10, TimeUnit.SECONDS);
     }
 }
