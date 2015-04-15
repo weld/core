@@ -24,5 +24,26 @@ import org.jboss.shrinkwrap.api.asset.StringAsset;
  * @author Ales Justin
  */
 public class JettyDeployments {
-    public static final Asset JETTY_ENV = new StringAsset("<Configure id=\"webAppCtx\" class=\"org.eclipse.jetty.webapp.WebAppContext\"><Set class=\"org.eclipse.jetty.util.resource.Resource\" name=\"defaultUseCaches\">false</Set><New class=\"org.eclipse.jetty.plus.jndi.EnvEntry\"><Arg><Ref id=\"webAppCtx\"/></Arg><Arg>BeanManager</Arg><Arg><New class=\"javax.naming.Reference\"><Arg>javax.enterprise.inject.spi.BeanManager</Arg><Arg>org.jboss.weld.resources.ManagerObjectFactory</Arg><Arg/></New></Arg><Arg type=\"boolean\">true</Arg></New></Configure>");
+    public static final Asset JETTY_ENV = new StringAsset(
+        "<Configure id=\"webAppCtx\" class=\"org.eclipse.jetty.webapp.WebAppContext\">" +
+            "<Set class=\"org.eclipse.jetty.util.resource.Resource\" name=\"defaultUseCaches\">false</Set>" +
+            "<New class=\"org.eclipse.jetty.plus.jndi.EnvEntry\">" +
+                "<Arg><Ref id=\"webAppCtx\"/></Arg>" +
+                "<Arg>BeanManager</Arg>" +
+                "<Arg>" +
+                    "<New class=\"javax.naming.Reference\">" +
+                        "<Arg>javax.enterprise.inject.spi.BeanManager</Arg>" +
+                        "<Arg>org.jboss.weld.resources.ManagerObjectFactory</Arg>" +
+                        "<Arg/>" +
+                    "</New>" +
+                "</Arg>" +
+                "<Arg type=\"boolean\">true</Arg>" +
+            "</New>" +
+            "<New class=\"org.eclipse.jetty.plus.jndi.EnvEntry\">" +
+                "<Arg></Arg>" +
+                "<Arg>foo</Arg>" +
+                "<Arg type=\"java.lang.String\">bar</Arg>" +
+                "<Arg type=\"boolean\">true</Arg>" +
+            "</New>" +
+        "</Configure>");
 }
