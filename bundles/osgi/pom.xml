@@ -86,6 +86,7 @@
                             javax.transaction; version="1.1"; resolution:=optional,
                             javax.validation.*; resolution:=optional,
                             org.jboss.logging.annotations; resolution:=optional,
+                            sun.*; resolution:=optional,
           </import.package>
     </properties>
 
