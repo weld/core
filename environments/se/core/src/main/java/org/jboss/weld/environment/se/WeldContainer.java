@@ -1,4 +1,4 @@
-/**
+/*
  * JBoss, Home of Professional Open Source
  * Copyright 2009, Red Hat, Inc. and/or its affiliates, and individual
  * contributors by the @authors tag. See the copyright.txt in the
@@ -95,6 +95,10 @@ public class WeldContainer extends AbstractCDI<Object> implements AutoCloseable,
 
     private static final List<String> RUNNING_CONTAINER_IDS;
 
+    private static final Object LOCK = new Object();
+
+    private static volatile ShutdownHook shutdownHook;
+
     static {
         SINGLETON = SingletonProvider.instance().create(WeldContainer.class);
         RUNNING_CONTAINER_IDS = new CopyOnWriteArrayList<String>();
@@ -136,6 +140,15 @@ public class WeldContainer extends AbstractCDI<Object> implements AutoCloseable,
         RUNNING_CONTAINER_IDS.add(id);
         WeldSELogger.LOG.weldContainerInitialized(id);
         manager.fireEvent(new ContainerInitialized(id), InitializedLiteral.APPLICATION);
+        // We register only one shutdown hook for all containers
+        if (shutdownHook == null) {
+            synchronized (LOCK) {
+                if (shutdownHook == null) {
+                    shutdownHook = new ShutdownHook();
+                    Runtime.getRuntime().addShutdownHook(shutdownHook);
+                }
+            }
+        }
         return weldContainer;
     }
 
@@ -248,6 +261,24 @@ public class WeldContainer extends AbstractCDI<Object> implements AutoCloseable,
     @Override
     protected Instance<Object> getInstance() {
         return instance;
+    }
+
+    /**
+     * Shuts down all running containers.
+     */
+    static class ShutdownHook extends Thread {
+
+        @Override
+        public void run() {
+            for (String id : getRunningContainerIds()) {
+                WeldContainer container = instance(id);
+                if (container != null) {
+                    container.shutdown();
+                    // At this time the logger service may not be available - print some basic info to the standard output
+                    System.out.println(String.format("Weld SE container %s shut down by shutdown hook", id));
+                }
+            }
+        }
     }
 
 }
