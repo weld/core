@@ -920,7 +920,9 @@ Probe.DependencyGraph = Ember.View
             }
             // TODO responsive design
             var width = 1280;
-            var height = 900 - margin.top - margin.bottom;
+            //var height = 900 - margin.top - margin.bottom;
+            var height = 700 + ((data.links.length / 20) * 200) - margin.top
+            - margin.bottom;
 
             var nodes = d3.values(data.nodes);
             var links = data.links;
@@ -967,6 +969,8 @@ Probe.DependencyGraph = Ember.View
                 if (!d.source.isDependent && d.target.isRoot) {
                     // Circular dependency
                     return "red";
+                } else if(d.info) {
+                    return "LightBlue";
                 }
             });
 
@@ -980,7 +984,7 @@ Probe.DependencyGraph = Ember.View
                     .text(
                         function(d) {
                             if (d.dependencies.length == 1) {
-                                return getInjectionPointInfo(d, false);
+                                return getInjectionPointInfo(d);
                             } else {
                                 return 'Multiple injection points found, click to show details.';
                             }
@@ -994,7 +998,9 @@ Probe.DependencyGraph = Ember.View
                                 return;
                             }
                             var desc;
-                            if (d.dependencies.length == 1) {
+                            if(d.info) {
+                                desc = d.info;
+                            } else if (d.dependencies.length == 1) {
                                 desc = abbreviateType(
                                     d.dependencies[0].requiredType, false,
                                     false);
@@ -1039,7 +1045,7 @@ Probe.DependencyGraph = Ember.View
                 "click",
                 function(d, i) {
                     $('div#ipInfoModal div.modal-body').html(
-                        getInjectionPointInfoHtml(d, true));
+                        getInjectionPointInfoHtml(d));
                     $('div#ipInfoModal').modal('show');
                 });
 
@@ -1126,7 +1132,7 @@ function getInjectionPointInfo(d) {
     if (!d.dependencies) {
         return '';
     }
-    var description = '';
+    var desc = '';
     for (var j = 0; j < d.dependencies.length; j++) {
         // Injection point info
         var qualifiers = "";
@@ -1139,9 +1145,9 @@ function getInjectionPointInfo(d) {
         if (d.dependencies[j].requiredType) {
             requiredType += d.dependencies[j].requiredType;
         }
-        description += qualifiers;
-        description += ' ' + requiredType;
-        return description;
+        desc += qualifiers;
+        desc += ' ' + requiredType;
+        return desc;
     }
 }
 
@@ -1736,6 +1742,7 @@ function findLinksDependencies(bean, links, nodes, transientDependencies) {
                     target : nodes[dependency.id],
                     type : 'dependency',
                     dependencies : [ info ],
+                    info : dependency.info,
                 });
             }
             if (transientDependencies) {
@@ -1792,6 +1799,7 @@ function findLinksDependents(bean, links, nodes, transientDependents) {
                     source : nodes[dependent.id],
                     type : 'dependent',
                     dependencies : [ info ],
+                    info : dependent.info,
                 });
             }
             if (transientDependents) {
@@ -2070,12 +2078,12 @@ function getChildrenCount(node) {
 
 function generateColors(total) {
     var colors = new Array();
-    var x = 360 / (total);
     if (total <= 10) {
         color = d3.scale.category10()
     } else if (total <= 20) {
         color = d3.scale.category20();
     } else {
+        var x = 360 / (total);
         color = function(t) {
             return d3.hcl(t * x, 100, 55);
         };
