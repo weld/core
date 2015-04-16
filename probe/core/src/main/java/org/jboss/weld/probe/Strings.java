@@ -92,6 +92,7 @@ public final class Strings {
     public static final String PROBE_COMPONENT = "probeComponent";
     public static final String DESCRIPTION = "description";
     public static final String INFO = "info";
+    public static final String IS_POTENTIAL = "isPotential";
 
     public static final String PAGE = "page";
     public static final String PAGE_SIZE = "pageSize";

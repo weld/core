@@ -54,6 +54,7 @@ import static org.jboss.weld.probe.Strings.INSTANCES;
 import static org.jboss.weld.probe.Strings.INTERCEPTED_BEAN;
 import static org.jboss.weld.probe.Strings.INTERCEPTORS;
 import static org.jboss.weld.probe.Strings.IS_ALTERNATIVE;
+import static org.jboss.weld.probe.Strings.IS_POTENTIAL;
 import static org.jboss.weld.probe.Strings.KIND;
 import static org.jboss.weld.probe.Strings.LAST_PAGE;
 import static org.jboss.weld.probe.Strings.METHOD;
@@ -484,6 +485,7 @@ final class JsonObjects {
      */
     static JsonObjectBuilder createSimpleBeanJsonWithDependencies(Bean<?> bean, Probe probe) {
         JsonObjectBuilder builder = createSimpleBeanJson(bean, probe);
+        builder.add(DECLARING_BEAN, createDeclaringBean(bean, probe));
         // DEPENDENCIES
         JsonArrayBuilder dependencies = createDependencies(null, bean, probe, false);
         if (dependencies != null) {
@@ -494,9 +496,23 @@ final class JsonObjects {
         if (dependents != null) {
             builder.add(DEPENDENTS, dependents);
         }
-        // DECLARED PRODUCERS
-        builder.add(DECLARED_PRODUCERS, createDeclaredProducers(bean, probe));
         return builder;
+    }
+
+    /**
+     *
+     * @param bean
+     * @param probe
+     * @return the declaring bean if the specified bean is an implicit producer
+     */
+    static JsonObjectBuilder createDeclaringBean(Bean<?> bean, Probe probe) {
+        if(bean instanceof AbstractProducerBean) {
+            AbstractProducerBean<?, ?, ?> producerBean = (AbstractProducerBean<?, ?, ?>) bean;
+            if (producerBean.getDeclaringBean() != null) {
+                return createSimpleBeanJson(producerBean.getDeclaringBean(), probe);
+            }
+        }
+        return null;
     }
 
     /**
@@ -528,6 +544,7 @@ final class JsonObjects {
             }
 
             JsonObjectBuilder dependency = createDependency(dep.getBean(), dep, probe);
+            dependency.add(DECLARING_BEAN, createDeclaringBean(dep.getBean(), probe));
             dependenciesBuilder.add(dependency);
 
             if (isTransient) {
@@ -557,6 +574,7 @@ final class JsonObjects {
                 lazilyFetchedDependency.add(REQUIRED_TYPE, Formats.formatType(Components.getFacadeType(dependency.getInjectionPoint()), false)).add(QUALIFIERS,
                         createQualifiers(dependency.getInjectionPoint().getQualifiers(), false));
                 lazilyFetchedDependency.add(INFO, INFO_FETCHING_LAZILY);
+                lazilyFetchedDependency.add(IS_POTENTIAL, true);
                 builtInDependency.add(type, Json.arrayBuilder().add(lazilyFetchedDependency));
             }
         }
@@ -591,7 +609,11 @@ final class JsonObjects {
             JsonObjectBuilder dependency = createDependency(dependent.getBean(), dependent, probe);
             if (dependent.getInfo() != null) {
                 dependency.add(INFO, dependent.getInfo());
+                if(dependent.isPotential()) {
+                    dependency.add(IS_POTENTIAL, true);
+                }
             }
+            dependency.add(DECLARING_BEAN, createDeclaringBean(dependent.getBean(), probe));
             dependentsBuilder.add(dependency);
 
             if (isTransient) {

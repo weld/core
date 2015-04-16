@@ -163,7 +163,7 @@ final class Components {
                     if (candidateDependency.getBeanClass().equals(InstanceImpl.class)) {
                         Bean<?> lazilyFetched = getInstanceResolvedBean(beanManager, injectionPoint);
                         if (lazilyFetched != null && lazilyFetched.equals(bean)) {
-                            dependents.add(new Dependency(candidate, injectionPoint, INFO_FETCHING_LAZILY));
+                            dependents.add(new Dependency(candidate, injectionPoint, INFO_FETCHING_LAZILY, true));
                             continue;
                         }
                     }
@@ -323,14 +323,17 @@ final class Components {
 
         private final String info;
 
+        private final boolean isPotential;
+
         Dependency(Bean<?> bean, InjectionPoint injectionPoint) {
-            this(bean, injectionPoint, null);
+            this(bean, injectionPoint, null, false);
         }
 
-        Dependency(Bean<?> bean, InjectionPoint injectionPoint, String info) {
+        Dependency(Bean<?> bean, InjectionPoint injectionPoint, String info, boolean isPotential) {
             this.bean = bean;
             this.injectionPoint = injectionPoint;
             this.info = info;
+            this.isPotential = isPotential;
         }
 
         Bean<?> getBean() {
@@ -343,6 +346,10 @@ final class Components {
 
         String getInfo() {
             return info;
+        }
+
+        public boolean isPotential() {
+            return isPotential;
         }
 
     }
