@@ -172,7 +172,7 @@ NOTE: This optimization is disabled by default in <<weld-servlet,Servlet contain
 [[config-dev-mode]]
 ==== Development Mode
 
-The monitoring features of the development mode may have negative impact on the performance of the application. The following configuration properties allow to specify the set of components which will be monitored.
+Some features of the development mode may have negative impact on the performance/functionality of the application. The following configuration properties allow to tune/disable these features, e.g. to specify the set of components which will be monitored.
 
 .Supported configuration properties
 [cols=",,",options="header",]
@@ -181,6 +181,7 @@ The monitoring features of the development mode may have negative impact on the 
 |`org.jboss.weld.probe.invocationMonitor.excludeType` |'' |A regular expression. If a non-empty string and the base type for an AnnotatedType or a declaring type for an AnnotatedMember matches this pattern the type is excluded from monitoring.
 |`org.jboss.weld.probe.invocationMonitor.skipJavaBeanProperties` |'true' |If set to `true`, the JavaBean accessor methods are not monitored.
 |`org.jboss.weld.probe.eventMonitor.excludeType` |'' |A regular expression. If a non-empty string  and the runtime class of the event object matches this pattern the event is excluded from monitoring.
+|`org.jboss.weld.probe.embedInfoSnippet` |'true' | If set to `true` an informative HTML snippet will be added to every HTTP response with Content-Type of value `text/html`.
 |=======================================================================
 
 TIP: To disable the monitoring entirely set `org.jboss.weld.probe.invocationMonitor.excludeType` and `org.jboss.weld.probe.eventMonitor.excludeType` properties to `.*`.
