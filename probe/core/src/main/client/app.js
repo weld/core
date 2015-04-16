@@ -940,12 +940,12 @@ Probe.DependencyGraph = Ember.View
 
             // Type markers
             svg.append("defs").selectAll("marker").data(
-                [ "inject", "injectedBy" , "declaredBy" ]).enter().append("marker").attr("id",
-                function(d) {
-                    return d;
-                }).attr("viewBox", "0 -5 10 10").attr("refX", 20).attr("refY",
-                0).attr("markerWidth", 6).attr("markerHeight", 6).attr(
-                "orient", "auto").append("path").attr("d", "M0,-5L10,0L0,5");
+                [ "inject", "injectedBy", "declaredBy" ]).enter().append(
+                "marker").attr("id", function(d) {
+                return d;
+            }).attr("viewBox", "0 -5 10 10").attr("refX", 20).attr("refY", 0)
+                .attr("markerWidth", 6).attr("markerHeight", 6).attr("orient",
+                    "auto").append("path").attr("d", "M0,-5L10,0L0,5");
 
             // Links - lines
             var link = svg.selectAll("line.link").data(links).enter().append(
@@ -959,15 +959,17 @@ Probe.DependencyGraph = Ember.View
                 return d.target.y;
             }).attr("marker-end", function(d) {
                 return "url(#" + d.type + ")";
-            }).style("stroke-dasharray", function(d) {
-                if (d.source.isDependent || d.isPotential || d.type == 'declaredBy') {
-                    return "5,5";
-                }
-                if (d.target.isRoot) {
-                    // Circular dependency
-                    return "10,15";
-                }
-            }).style("stroke", function(d) {
+            }).style(
+                "stroke-dasharray",
+                function(d) {
+                    if (d.source.isDependent) {
+                        return "5,5";
+                    }
+                    if (d.target.isRoot) {
+                        // Circular dependency
+                        return "10,15";
+                    }
+                }).style("stroke", function(d) {
                 if (!d.source.isDependent && d.target.isRoot) {
                     // Circular dependency
                     return "red";
@@ -1001,18 +1003,17 @@ Probe.DependencyGraph = Ember.View
                     .style("font-size", "90%").each(
                         function(d) {
                             var text = d3.select(this);
-                            if (!d.dependencies) {
-                                return;
-                            }
                             var desc;
                             if (d.info) {
                                 desc = d.info;
-                            } else if (d.dependencies.length == 1) {
-                                desc = abbreviateType(
-                                    d.dependencies[0].requiredType, false,
-                                    false);
-                            } else {
-                                desc = '(' + d.dependencies.length + ')';
+                            } else if (d.dependencies) {
+                                if (d.dependencies.length == 1) {
+                                    desc = abbreviateType(
+                                        d.dependencies[0].requiredType, false,
+                                        false);
+                                } else {
+                                    desc = '(' + d.dependencies.length + ')';
+                                }
                             }
                             text.append("tspan").attr("x", 10).attr("dy", 15)
                                 .attr(
@@ -1534,7 +1535,7 @@ Probe.OverviewGraph = Ember.View
             });
             path.style("stroke-dasharray", function(l) {
                 if (l.type == 'declaredBy' || l.isPotential) {
-                    return "5,5";
+                    return "5,1";
                 }
             })
 
@@ -1831,7 +1832,7 @@ function findLinksDependents(bean, links, nodes, transientDependents) {
                     info : dependent.info,
                     isPotential : dependent.isPotential,
                 });
-                findLinksDeclaredBean(bean, links, nodes);
+                findLinksDeclaredBean(dependent, links, nodes);
             }
             if (transientDependents) {
                 findLinksDependents(dependent, links, nodes,
@@ -1860,7 +1861,9 @@ function findLinksDeclaredBean(bean, links, nodes) {
             source : nodes[bean.id],
             target : nodes[bean.declaringBean.id],
             type : 'declaredBy',
+            info : 'Declared by'
         });
+        console.log(bean);
     }
 }
 
