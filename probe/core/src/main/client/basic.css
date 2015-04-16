@@ -75,8 +75,7 @@ h3 {
 }
 
 i.dep-legend {
-  padding-right: 5px;
-  padding-left: 5px;
+  padding: 5px;
 }
 
 i.injects {
@@ -86,6 +85,10 @@ i.injects {
 
 i.declared-by {
   color: LightBlue;
+}
+
+i.potential {
+  color: Aquamarine;
 }
 
 svg {

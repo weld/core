@@ -922,9 +922,9 @@ Probe.DependencyGraph = Ember.View
             }
             // TODO responsive design
             var width = 1280;
-            //var height = 900 - margin.top - margin.bottom;
+            // var height = 900 - margin.top - margin.bottom;
             var height = 700 + ((data.links.length / 20) * 200) - margin.top
-            - margin.bottom;
+                - margin.bottom;
 
             var nodes = d3.values(data.nodes);
             var links = data.links;
@@ -940,8 +940,8 @@ Probe.DependencyGraph = Ember.View
 
             // Type markers
             svg.append("defs").selectAll("marker").data(
-                [ "inject", "injectedBy" ]).enter().append("marker").attr(
-                "id", function(d) {
+                [ "inject", "injectedBy" , "declaredBy" ]).enter().append("marker").attr("id",
+                function(d) {
                     return d;
                 }).attr("viewBox", "0 -5 10 10").attr("refX", 20).attr("refY",
                 0).attr("markerWidth", 6).attr("markerHeight", 6).attr(
@@ -960,7 +960,7 @@ Probe.DependencyGraph = Ember.View
             }).attr("marker-end", function(d) {
                 return "url(#" + d.type + ")";
             }).style("stroke-dasharray", function(d) {
-                if (d.source.isDependent) {
+                if (d.source.isDependent || d.isPotential || d.type == 'declaredBy') {
                     return "5,5";
                 }
                 if (d.target.isRoot) {
@@ -971,8 +971,10 @@ Probe.DependencyGraph = Ember.View
                 if (!d.source.isDependent && d.target.isRoot) {
                     // Circular dependency
                     return "red";
-                } else if(d.info) {
-                    return "LightBlue";
+                } else if (d.isPotential) {
+                    return 'Aquamarine';
+                } else if (d.type == 'declaredBy') {
+                    return 'LightBlue';
                 }
             });
 
@@ -985,6 +987,9 @@ Probe.DependencyGraph = Ember.View
                     .append("title")
                     .text(
                         function(d) {
+                            if (!d.dependencies) {
+                                return;
+                            }
                             if (d.dependencies.length == 1) {
                                 return getInjectionPointInfo(d);
                             } else {
@@ -1000,7 +1005,7 @@ Probe.DependencyGraph = Ember.View
                                 return;
                             }
                             var desc;
-                            if(d.info) {
+                            if (d.info) {
                                 desc = d.info;
                             } else if (d.dependencies.length == 1) {
                                 desc = abbreviateType(
@@ -1521,12 +1526,14 @@ Probe.OverviewGraph = Ember.View
                 .data(force.links()).enter().append("svg:path").attr("class",
                     "link").attr("marker-end", "url(#end)");
             path.style('stroke', function(l) {
-                if(l.type == 'declaredBy') {
+                if (l.type == 'declaredBy') {
                     return 'LightBlue';
+                } else if (l.isPotential) {
+                    return 'Aquamarine';
                 }
             });
             path.style("stroke-dasharray", function(l) {
-                if(l.type == 'declaredBy') {
+                if (l.type == 'declaredBy' || l.isPotential) {
                     return "5,5";
                 }
             })
@@ -1613,10 +1620,13 @@ Probe.OverviewGraph = Ember.View
                     });
                 }).on('mouseout', function() {
                 path.style('stroke', function(l) {
-                    if(l.type == 'declaredBy') {
+                    if (l.type == 'declaredBy') {
                         return 'LightBlue';
+                    } else if (l.info) {
+                        return 'Aquamarine';
+                    } else {
+                        return '#ccc';
                     }
-                    return '#ccc';
                 });
                 path.attr('marker-end', function(l) {
                     return 'url(#end)';
@@ -1718,6 +1728,7 @@ function findNodesDependencies(bean, nodes, rootId, transientDependencies,
             nodes[bean.id].x = 150;
             nodes[bean.id].y = 150;
         }
+        findNodesDeclaredBean(bean, nodes);
     }
     if (rootId == null && !transientDependencies) {
         return;
@@ -1758,7 +1769,9 @@ function findLinksDependencies(bean, links, nodes, transientDependencies) {
                     type : 'inject',
                     dependencies : [ info ],
                     info : dependency.info,
+                    isPotential : dependency.isPotential,
                 });
+                findLinksDeclaredBean(dependency, links, nodes);
             }
             if (transientDependencies) {
                 findLinksDependencies(dependency, links, nodes,
@@ -1777,6 +1790,7 @@ function findNodesDependents(bean, nodes, rootId, transientDependents) {
             bda : bean.bdaId,
             isDependent : true
         };
+        findNodesDeclaredBean(bean, nodes);
     }
     if (rootId == null && !transientDependents) {
         return;
@@ -1815,7 +1829,9 @@ function findLinksDependents(bean, links, nodes, transientDependents) {
                     type : 'injectedBy',
                     dependencies : [ info ],
                     info : dependent.info,
+                    isPotential : dependent.isPotential,
                 });
+                findLinksDeclaredBean(bean, links, nodes);
             }
             if (transientDependents) {
                 findLinksDependents(dependent, links, nodes,
@@ -1825,29 +1841,25 @@ function findLinksDependents(bean, links, nodes, transientDependents) {
     }
 }
 
-function findNodesDeclaredProducers(bean, nodes) {
-    if (bean.declaredProducers) {
-        bean.declaredProducers.forEach(function(producer) {
-            if (!nodes[producer.id]) {
-                nodes[producer.id] = {
-                    id : producer.id,
-                    beanClass : producer.beanClass,
-                    kind : producer.kind,
-                    bda : producer.bdaId,
-                };
-            }
-        });
+function findNodesDeclaredBean(bean, nodes) {
+    if (bean.declaringBean) {
+        if (!nodes[bean.declaringBean.id]) {
+            nodes[bean.declaringBean.id] = {
+                id : bean.declaringBean.id,
+                beanClass : bean.declaringBean.beanClass,
+                kind : bean.declaringBean.kind,
+                bda : bean.declaringBean.bdaId,
+            };
+        }
     }
 }
 
-function findLinksDeclaredProducers(bean, links, nodes) {
-    if (bean.declaredProducers) {
-        bean.declaredProducers.forEach(function(producer) {
-            links.push({
-                source : nodes[producer.id],
-                target : nodes[bean.id],
-                type : 'declaredBy',
-            });
+function findLinksDeclaredBean(bean, links, nodes) {
+    if (bean.declaringBean) {
+        links.push({
+            source : nodes[bean.id],
+            target : nodes[bean.declaringBean.id],
+            type : 'declaredBy',
         });
     }
 }
@@ -1870,6 +1882,8 @@ function buildDependencyGraphData(data, id, transientDependencies,
     var links = new Array();
     findLinksDependencies(data, links, nodes, transientDependencies);
     findLinksDependents(data, links, nodes, transientDependents);
+    findNodesDeclaredBean(data, nodes);
+    findLinksDeclaredBean(data, links, nodes);
     result.nodes = nodes;
     result.links = links;
     console.log('Build dependency graph data [links: ' + links.length + ']');
@@ -1890,8 +1904,8 @@ function buildOverviewGraphData(data) {
         findNodesDependents(bean, nodes, bean.id, false);
         findLinksDependencies(bean, links, nodes, false);
         findLinksDependents(bean, links, nodes, false);
-        findNodesDeclaredProducers(bean, nodes);
-        findLinksDeclaredProducers(bean, links, nodes);
+        findNodesDeclaredBean(bean, nodes);
+        findLinksDeclaredBean(bean, links, nodes);
     });
     data.nodes = nodes;
     data.links = links;
