@@ -36,6 +36,7 @@ import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.weld.Container;
+import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
 import org.jboss.weld.bean.builtin.ExtensionBean;
 import org.jboss.weld.bootstrap.api.Service;
@@ -43,7 +44,9 @@ import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.event.ObserverMethodImpl;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.probe.Components.BeanKind;
 import org.jboss.weld.serialization.spi.ContextualStore;
+import org.jboss.weld.util.collections.SetMultimap;
 
 /**
  * Probe is a per deployment service.
@@ -234,7 +237,7 @@ public class Probe implements Service {
      *
      * @return the sorted entry points (invocation trees)
      */
-    public List<Invocation> getInvocations() {
+    List<Invocation> getInvocations() {
         checkInitialized();
         List<Invocation> sorted = new ArrayList<Invocation>(invocations.values());
         Collections.sort(sorted, Invocation.Comparators.ENTRY_POINT_IDX);
@@ -273,6 +276,15 @@ public class Probe implements Service {
         return bdaComparator;
     }
 
+    /**
+     *
+     * @param bean
+     * @return the set of declared producers
+     */
+    Set<AbstractProducerBean<?, ?, ?>> getDeclaredProducers(Bean<?> bean) {
+        return mappings.getBeanToDeclaredProducers().containsKey(bean) ? mappings.getBeanToDeclaredProducers().get(bean) : Collections.emptySet();
+    }
+
     @Override
     public void cleanup() {
         if (mappings != null) {
@@ -306,6 +318,8 @@ public class Probe implements Service {
 
         private final Map<BeanDeploymentArchive, BeanManagerImpl> bdaToManager;
 
+        private final SetMultimap<Bean<?>, AbstractProducerBean<?, ?, ?>> beanToDeclaredProducers;
+
         Mappings(BeanManagerImpl beanManager) {
 
             beanToId = new HashMap<Bean<?>, String>();
@@ -313,6 +327,7 @@ public class Probe implements Service {
             beanToManager = new HashMap<Bean<?>, BeanManagerImpl>();
             idToObserver = new HashMap<String, ObserverMethod<?>>();
             observerToId = new HashMap<ObserverMethod<?>, String>();
+            beanToDeclaredProducers = SetMultimap.newSetMultimap();
 
             ContextualStore contextualStore = beanManager.getServices().get(ContextualStore.class);
             bdaToManager = Container.instance(beanManager).beanDeploymentArchives();
@@ -367,6 +382,15 @@ public class Probe implements Service {
                 }
             }
 
+            // Find declared producers
+            for (Bean<?> candidate : idToBean.values()) {
+                BeanKind kind = BeanKind.from(candidate);
+                if ((BeanKind.PRODUCER_FIELD.equals(kind) || BeanKind.PRODUCER_METHOD.equals(kind) || BeanKind.RESOURCE.equals(kind))
+                        && candidate instanceof AbstractProducerBean) {
+                    AbstractProducerBean<?, ?, ?> producerBean = (AbstractProducerBean<?, ?, ?>) candidate;
+                    beanToDeclaredProducers.put(producerBean.getDeclaringBean(), producerBean);
+                }
+            }
         }
 
         Map<Bean<?>, String> getBeanToId() {
@@ -391,6 +415,10 @@ public class Probe implements Service {
 
         Map<BeanDeploymentArchive, BeanManagerImpl> getBdaToManager() {
             return bdaToManager;
+        }
+
+        SetMultimap<Bean<?>, AbstractProducerBean<?, ?, ?>> getBeanToDeclaredProducers() {
+            return beanToDeclaredProducers;
         }
 
         private void putBean(ContextualStore contextualStore, Bean<?> bean) {

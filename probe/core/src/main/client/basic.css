@@ -74,6 +74,20 @@ h3 {
   stroke-width: 2px;
 }
 
+i.dep-legend {
+  padding-right: 5px;
+  padding-left: 5px;
+}
+
+i.injects {
+  padding-ritgh: 5px;
+  color: #ccc;
+}
+
+i.declared-by {
+  color: LightBlue;
+}
+
 svg {
   width: 100%;
   padding: 0px;
