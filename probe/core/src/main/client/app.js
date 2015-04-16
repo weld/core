@@ -734,27 +734,29 @@ Probe.ObserverListController = Ember.ObjectController.extend({
     },
 });
 
-Probe.InvocationListController = Ember.ObjectController.extend({
-    beanClass : '',
-    methodName : '',
-    search : '',
-    description : '',
-    page : 1,
-    queryParams : [ 'beanClass', 'methodName', 'search', 'description', 'page' ],
-    actions : {
-        clearFilters : function() {
-            this.set('page', 1);
-            this.set('beanClass', '');
-            this.set('methodName', '');
-            this.set('search', '');
-            this.set('description', '');
-            this.send('refreshData');
+Probe.InvocationListController = Ember.ObjectController
+    .extend({
+        beanClass : '',
+        methodName : '',
+        search : '',
+        description : '',
+        page : 1,
+        queryParams : [ 'beanClass', 'methodName', 'search', 'description',
+                'page' ],
+        actions : {
+            clearFilters : function() {
+                this.set('page', 1);
+                this.set('beanClass', '');
+                this.set('methodName', '');
+                this.set('search', '');
+                this.set('description', '');
+                this.send('refreshData');
+            },
+            filter : function() {
+                this.send('refreshData');
+            }
         },
-        filter : function() {
-            this.send('refreshData');
-        }
-    },
-});
+    });
 
 Probe.InvocationDetailController = Ember.ObjectController.extend({});
 
@@ -938,7 +940,7 @@ Probe.DependencyGraph = Ember.View
 
             // Type markers
             svg.append("defs").selectAll("marker").data(
-                [ "dependency", "dependent" ]).enter().append("marker").attr(
+                [ "inject", "injectedBy" ]).enter().append("marker").attr(
                 "id", function(d) {
                     return d;
                 }).attr("viewBox", "0 -5 10 10").attr("refX", 20).attr("refY",
@@ -1518,6 +1520,16 @@ Probe.OverviewGraph = Ember.View
             var path = svg.append("svg:g").selectAll("path")
                 .data(force.links()).enter().append("svg:path").attr("class",
                     "link").attr("marker-end", "url(#end)");
+            path.style('stroke', function(l) {
+                if(l.type == 'declaredBy') {
+                    return 'LightBlue';
+                }
+            });
+            path.style("stroke-dasharray", function(l) {
+                if(l.type == 'declaredBy') {
+                    return "5,5";
+                }
+            })
 
             var node_drag = d3.behavior.drag().on("dragstart", dragstart).on(
                 "drag", dragmove).on("dragend", dragend);
@@ -1601,6 +1613,9 @@ Probe.OverviewGraph = Ember.View
                     });
                 }).on('mouseout', function() {
                 path.style('stroke', function(l) {
+                    if(l.type == 'declaredBy') {
+                        return 'LightBlue';
+                    }
                     return '#ccc';
                 });
                 path.attr('marker-end', function(l) {
@@ -1740,7 +1755,7 @@ function findLinksDependencies(bean, links, nodes, transientDependencies) {
                 links.push({
                     source : nodes[bean.id],
                     target : nodes[dependency.id],
-                    type : 'dependency',
+                    type : 'inject',
                     dependencies : [ info ],
                     info : dependency.info,
                 });
@@ -1797,7 +1812,7 @@ function findLinksDependents(bean, links, nodes, transientDependents) {
                 links.push({
                     target : nodes[bean.id],
                     source : nodes[dependent.id],
-                    type : 'dependent',
+                    type : 'injectedBy',
                     dependencies : [ info ],
                     info : dependent.info,
                 });
@@ -1806,6 +1821,33 @@ function findLinksDependents(bean, links, nodes, transientDependents) {
                 findLinksDependents(dependent, links, nodes,
                     transientDependents);
             }
+        });
+    }
+}
+
+function findNodesDeclaredProducers(bean, nodes) {
+    if (bean.declaredProducers) {
+        bean.declaredProducers.forEach(function(producer) {
+            if (!nodes[producer.id]) {
+                nodes[producer.id] = {
+                    id : producer.id,
+                    beanClass : producer.beanClass,
+                    kind : producer.kind,
+                    bda : producer.bdaId,
+                };
+            }
+        });
+    }
+}
+
+function findLinksDeclaredProducers(bean, links, nodes) {
+    if (bean.declaredProducers) {
+        bean.declaredProducers.forEach(function(producer) {
+            links.push({
+                source : nodes[producer.id],
+                target : nodes[bean.id],
+                type : 'declaredBy',
+            });
         });
     }
 }
@@ -1848,6 +1890,8 @@ function buildOverviewGraphData(data) {
         findNodesDependents(bean, nodes, bean.id, false);
         findLinksDependencies(bean, links, nodes, false);
         findLinksDependents(bean, links, nodes, false);
+        findNodesDeclaredProducers(bean, nodes);
+        findLinksDeclaredProducers(bean, links, nodes);
     });
     data.nodes = nodes;
     data.links = links;

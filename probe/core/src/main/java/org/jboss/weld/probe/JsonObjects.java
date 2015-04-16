@@ -410,27 +410,7 @@ final class JsonObjects {
         beanBuilder.add(DECLARED_OBSERVERS, declaredObservers);
 
         // DECLARED PRODUCERS
-        JsonArrayBuilder declaredProducers = Json.arrayBuilder();
-        for (Bean<?> candidate : probe.getBeans()) {
-            BeanKind kind = BeanKind.from(candidate);
-            if ((BeanKind.PRODUCER_FIELD.equals(kind) || BeanKind.PRODUCER_METHOD.equals(kind) || BeanKind.RESOURCE.equals(kind))
-                    && candidate instanceof AbstractProducerBean) {
-                AbstractProducerBean<?, ?, ?> producerBean = (AbstractProducerBean<?, ?, ?>) candidate;
-                // The declaring bean of a candidate must equal to the current bean
-                if (bean.equals(producerBean.getDeclaringBean())) {
-                    JsonObjectBuilder producerBuilder = createSimpleBeanJson(candidate, probe);
-                    if (producerBean.getProducer() instanceof ProducerMethodProducer) {
-                        ProducerMethodProducer<?, ?> producer = (ProducerMethodProducer<?, ?>) producerBean.getProducer();
-                        producerBuilder.add(PRODUCER_INFO, annotatedMethodToString((AnnotatedMethod<?>) producer.getAnnotated(), bean.getBeanClass()));
-                    } else if (producerBean.getProducer() instanceof ProducerFieldProducer) {
-                        ProducerFieldProducer<?, ?> producer = (ProducerFieldProducer<?, ?>) producerBean.getProducer();
-                        producerBuilder.add(PRODUCER_INFO, annotatedFieldToString(producer.getAnnotated(), bean.getBeanClass()));
-                    }
-                    declaredProducers.add(producerBuilder);
-                }
-            }
-        }
-        beanBuilder.add(DECLARED_PRODUCERS, declaredProducers);
+        beanBuilder.add(DECLARED_PRODUCERS, createDeclaredProducers(bean, probe));
 
         // ENABLEMENT
         BeanKind kind = BeanKind.from(bean);
@@ -514,6 +494,8 @@ final class JsonObjects {
         if (dependents != null) {
             builder.add(DEPENDENTS, dependents);
         }
+        // DECLARED PRODUCERS
+        builder.add(DECLARED_PRODUCERS, createDeclaredProducers(bean, probe));
         return builder;
     }
 
@@ -617,6 +599,28 @@ final class JsonObjects {
             }
         }
         return dependentsBuilder.isEmpty() ? null : dependentsBuilder;
+    }
+
+    /**
+     *
+     * @param bean
+     * @param probe
+     * @return
+     */
+    static JsonArrayBuilder createDeclaredProducers(Bean<?> bean, Probe probe) {
+        JsonArrayBuilder declaredProducers = Json.arrayBuilder();
+        for (AbstractProducerBean<?, ?, ?> producerBean : probe.getDeclaredProducers(bean)) {
+            JsonObjectBuilder producerBuilder = createSimpleBeanJson(producerBean, probe);
+            if (producerBean.getProducer() instanceof ProducerMethodProducer) {
+                ProducerMethodProducer<?, ?> producer = (ProducerMethodProducer<?, ?>) producerBean.getProducer();
+                producerBuilder.add(PRODUCER_INFO, annotatedMethodToString((AnnotatedMethod<?>) producer.getAnnotated(), bean.getBeanClass()));
+            } else if (producerBean.getProducer() instanceof ProducerFieldProducer) {
+                ProducerFieldProducer<?, ?> producer = (ProducerFieldProducer<?, ?>) producerBean.getProducer();
+                producerBuilder.add(PRODUCER_INFO, annotatedFieldToString(producer.getAnnotated(), bean.getBeanClass()));
+            }
+            declaredProducers.add(producerBuilder);
+        }
+        return declaredProducers;
     }
 
     /**
