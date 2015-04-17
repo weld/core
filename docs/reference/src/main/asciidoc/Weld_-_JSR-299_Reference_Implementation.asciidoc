@@ -1,6 +1,6 @@
 :numbered!:
 :icons: font
-= Weld - CDI Reference Implementation
+= Weld {weldVersion} - CDI Reference Implementation
 
 [preface]
 = A note about naming and nomenclature
