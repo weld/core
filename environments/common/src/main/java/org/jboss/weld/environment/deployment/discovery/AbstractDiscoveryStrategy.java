@@ -81,7 +81,7 @@ public abstract class AbstractDiscoveryStrategy implements DiscoveryStrategy {
 
         for (ScanResult scanResult : scanner.scan().values()) {
             final String ref = scanResult.getBeanArchiveRef();
-            if(processedRefs.contains(ref)) {
+            if (processedRefs.contains(ref)) {
                 throw CommonLogger.LOG.invalidScanningResult(ref);
             }
             CommonLogger.LOG.processingBeanArchiveReference(ref);
@@ -130,13 +130,6 @@ public abstract class AbstractDiscoveryStrategy implements DiscoveryStrategy {
         return null;
     }
 
-    protected void assignVisibility(Set<WeldBeanDeploymentArchive> deploymentArchives) {
-        // By default bean archives see each other
-        for (WeldBeanDeploymentArchive archive : deploymentArchives) {
-            archive.setAccessibleBeanDeploymentArchives(deploymentArchives);
-        }
-    }
-
     protected void addToArchives(Set<WeldBeanDeploymentArchive> deploymentArchives, WeldBeanDeploymentArchive bda) {
         if (bda != null) {
             deploymentArchives.add(bda);
@@ -152,7 +145,7 @@ public abstract class AbstractDiscoveryStrategy implements DiscoveryStrategy {
     }
 
     protected void afterDiscovery(Set<WeldBeanDeploymentArchive> archives) {
-        assignVisibility(archives);
+        // No-op
     }
 
     /**
