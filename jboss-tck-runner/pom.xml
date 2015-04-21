@@ -82,29 +82,6 @@
             <groupId>org.jboss.cdi.tck</groupId>
             <artifactId>cdi-tck-impl</artifactId>
             <version>${cdi.tck.version}</version>
-            <type>xml</type>
-            <classifier>suite</classifier>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <artifactId>el-api</artifactId>
-                    <groupId>javax.el</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>jsf-api</artifactId>
-                    <groupId>javax.faces</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>container-se-api</artifactId>
-                    <groupId>org.jboss.arquillian.container</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jboss.cdi.tck</groupId>
-            <artifactId>cdi-tck-impl</artifactId>
-            <version>${cdi.tck.version}</version>
             <scope>test</scope>
             <exclusions>
                 <exclusion>
