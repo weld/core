@@ -21,7 +21,6 @@ import java.util.Set;
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.annotated.enhanced.MethodSignature;
-import org.jboss.weld.ejb.api.SessionObjectReference;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 
 /**
@@ -44,17 +43,5 @@ public interface SessionBean<T> extends ClassBean<T> {
      * @return business method signatures
      */
     Set<MethodSignature> getBusinessMethodSignatures();
-
-    /**
-     * Indicates whether a client is allowed to call {@link javax.ejb.Remove} methods on instances of this bean.
-     * @return true iff a client is allowed to call {@link javax.ejb.Remove} methods, false otherwise
-     */
-    boolean isClientCanCallRemoveMethods();
-
-    /**
-     * Retrieves an internal container reference for this EJB.
-     * @return EJB reference
-     */
-    SessionObjectReference createReference();
 
 }
