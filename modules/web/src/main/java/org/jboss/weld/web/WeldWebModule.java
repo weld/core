@@ -31,7 +31,7 @@ import org.jboss.weld.context.http.LazyHttpConversationContextImpl;
 import org.jboss.weld.el.WeldELResolver;
 import org.jboss.weld.el.WeldExpressionFactory;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.module.ExpressionLanguageService;
+import org.jboss.weld.module.ExpressionLanguageSupport;
 import org.jboss.weld.module.WeldModule;
 import org.jboss.weld.resources.WeldClassLoaderResourceLoader;
 import org.jboss.weld.serialization.BeanIdentifierIndex;
@@ -47,7 +47,7 @@ import org.jboss.weld.util.reflection.Reflections;
  */
 public class WeldWebModule implements WeldModule {
 
-    public static final ExpressionLanguageService EL_SERVICE = new ExpressionLanguageService() {
+    public static final ExpressionLanguageSupport EL_SUPPORT = new ExpressionLanguageSupport() {
         @Override
         public void cleanup() {
         }
@@ -70,7 +70,7 @@ public class WeldWebModule implements WeldModule {
 
     @Override
     public void postServiceRegistration(PostServiceRegistrationContext ctx) {
-        ctx.getServices().add(ExpressionLanguageService.class, EL_SERVICE);
+        ctx.getServices().add(ExpressionLanguageSupport.class, EL_SUPPORT);
         ctx.getServices().add(ServletContextService.class, new ServletContextService());
         ctx.getServices().add(ServletApiAbstraction.class, new ServletApiAbstraction(WeldClassLoaderResourceLoader.INSTANCE));
     }

@@ -130,7 +130,7 @@ import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.metadata.cache.ScopeModel;
 import org.jboss.weld.metadata.cache.StereotypeModel;
 import org.jboss.weld.module.EjbSupport;
-import org.jboss.weld.module.ExpressionLanguageService;
+import org.jboss.weld.module.ExpressionLanguageSupport;
 import org.jboss.weld.module.ObserverNotifierFactory;
 import org.jboss.weld.resolution.BeanTypeAssignabilityRules;
 import org.jboss.weld.resolution.DecoratorResolvableBuilder;
@@ -376,7 +376,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         this.decoratorResolver = new TypeSafeDecoratorResolver(this, createDynamicGlobalIterable(DecoratorTransform.INSTANCE));
         this.interceptorResolver = new TypeSafeInterceptorResolver(this, createDynamicGlobalIterable(InterceptorTransform.INSTANCE));
         this.nameBasedResolver = new NameBasedResolver(this, createDynamicAccessibleIterable(beanTransform));
-        this.weldELResolver = services.getOptional(ExpressionLanguageService.class).map(el -> el.createElResolver(this)).orElse(null);
+        this.weldELResolver = services.getOptional(ExpressionLanguageSupport.class).map(el -> el.createElResolver(this)).orElse(null);
 
         TypeSafeObserverResolver accessibleObserverResolver = new TypeSafeObserverResolver(getServices().get(MetaAnnotationStore.class),
                 createDynamicAccessibleIterable(ObserverMethodTransform.INSTANCE), getServices().get(WeldConfiguration.class));
@@ -1136,15 +1136,15 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     @Override
     public ELResolver getELResolver() {
         if (weldELResolver == null) {
-            throw BootstrapLogger.LOG.unspecifiedRequiredService(ExpressionLanguageService.class);
+            throw BootstrapLogger.LOG.unspecifiedRequiredService(ExpressionLanguageSupport.class);
         }
         return weldELResolver;
     }
 
     @Override
     public ExpressionFactory wrapExpressionFactory(ExpressionFactory expressionFactory) {
-        return services.getOptional(ExpressionLanguageService.class)
-                .orElseThrow(() -> BootstrapLogger.LOG.unspecifiedRequiredService(ExpressionLanguageService.class)).wrapExpressionFactory(expressionFactory);
+        return services.getOptional(ExpressionLanguageSupport.class)
+                .orElseThrow(() -> BootstrapLogger.LOG.unspecifiedRequiredService(ExpressionLanguageSupport.class)).wrapExpressionFactory(expressionFactory);
     }
 
     @Override

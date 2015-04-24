@@ -28,7 +28,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
  * @author Jozef Hartinger
  *
  */
-public interface ExpressionLanguageService extends Service {
+public interface ExpressionLanguageSupport extends Service {
 
     /**
      * Returns a wrapper {@link javax.el.ExpressionFactory} that delegates

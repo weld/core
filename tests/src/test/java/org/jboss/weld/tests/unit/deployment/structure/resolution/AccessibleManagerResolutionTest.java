@@ -45,7 +45,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.module.EjbSupport;
-import org.jboss.weld.module.ExpressionLanguageService;
+import org.jboss.weld.module.ExpressionLanguageSupport;
 import org.jboss.weld.module.ObserverNotifierFactory;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.DefaultResourceLoader;
@@ -79,7 +79,7 @@ public class AccessibleManagerResolutionTest {
         this.services.add(WeldConfiguration.class, new WeldConfiguration(this.services, new MockDeployment(services)));
         this.services.add(ObserverNotifierFactory.class, DefaultObserverNotifierFactory.INSTANCE);
         this.services.add(GlobalObserverNotifierService.class, new GlobalObserverNotifierService(services, RegistrySingletonProvider.STATIC_INSTANCE));
-        this.services.add(ExpressionLanguageService.class, WeldWebModule.EL_SERVICE);
+        this.services.add(ExpressionLanguageSupport.class, WeldWebModule.EL_SUPPORT);
         this.services.add(InjectionTargetService.class, new InjectionTargetService(BeanManagerImpl.newRootManager(STATIC_INSTANCE, "foo", services)));
         this.services.add(SpecializationAndEnablementRegistry.class, new SpecializationAndEnablementRegistry());
         this.services.add(InterceptorsApiAbstraction.class, new InterceptorsApiAbstraction(DefaultResourceLoader.INSTANCE));
