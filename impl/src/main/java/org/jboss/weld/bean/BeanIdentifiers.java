@@ -25,6 +25,7 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.slim.AnnotatedTypeIdentifier;
+import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.AnnotatedTypes;
 import org.jboss.weld.util.Beans;
@@ -91,7 +92,7 @@ public class BeanIdentifiers {
     }
 
     public static String forBuiltInBean(BeanManagerImpl manager, Class<?> type, String suffix) {
-        StringBuilder builder = getPrefix(AbstractSyntheticBean.class).append(manager.getId()).append(BEAN_ID_SEPARATOR).append(type.getSimpleName());
+        StringBuilder builder = getPrefix(AbstractBuiltInBean.class).append(manager.getId()).append(BEAN_ID_SEPARATOR).append(type.getSimpleName());
         if (suffix != null) {
             builder.append(BEAN_ID_SEPARATOR).append(suffix);
         }
