@@ -66,6 +66,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.metadata.MetadataImpl;
 import org.jboss.weld.resources.ManagerObjectFactory;
+import org.jboss.weld.resources.WeldClassLoaderResourceLoader;
 import org.jboss.weld.resources.spi.ClassFileServices;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.servlet.WeldInitialListener;
@@ -98,6 +99,8 @@ public class WeldServletLifecycle {
 
     // This context param is used to activate the development mode
     private static final String CONTEXT_PARAM_DEV_MODE = "org.jboss.weld.development";
+
+    private static final String JSP_FACTORY_CLASS_NAME = "javax.servlet.jsp.JspFactory";
 
     private final transient CDI11Bootstrap bootstrap;
 
@@ -209,7 +212,7 @@ public class WeldServletLifecycle {
             this.container = container;
         }
 
-        if (JspFactory.getDefaultFactory() != null) {
+        if (Reflections.isClassLoadable(WeldClassLoaderResourceLoader.INSTANCE, JSP_FACTORY_CLASS_NAME) && JspFactory.getDefaultFactory() != null) {
             JspApplicationContext jspApplicationContext = JspFactory.getDefaultFactory().getJspApplicationContext(context);
 
             // Register the ELResolver with JSP
