@@ -58,6 +58,7 @@ import org.jboss.weld.environment.util.Reflections;
 import org.jboss.weld.injection.spi.ResourceInjectionServices;
 import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.resources.ManagerObjectFactory;
+import org.jboss.weld.resources.WeldClassLoaderResourceLoader;
 import org.jboss.weld.resources.spi.ClassFileServices;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.servlet.WeldInitialListener;
@@ -78,6 +79,8 @@ public class WeldServletLifecycle {
     private static final String EXPRESSION_FACTORY_NAME = "org.jboss.weld.el.ExpressionFactory";
 
     private static final String CONTEXT_PARAM_ARCHIVE_ISOLATION = WeldServletLifecycle.class.getPackage().getName() + ".archive.isolation";
+
+    private static final String JSP_FACTORY_CLASS_NAME = "javax.servlet.jsp.JspFactory";
 
     private final transient CDI11Bootstrap bootstrap;
 
@@ -171,7 +174,7 @@ public class WeldServletLifecycle {
             this.container = container;
         }
 
-        if (JspFactory.getDefaultFactory() != null) {
+        if (Reflections.isClassLoadable(WeldClassLoaderResourceLoader.INSTANCE, JSP_FACTORY_CLASS_NAME) && JspFactory.getDefaultFactory() != null) {
             JspApplicationContext jspApplicationContext = JspFactory.getDefaultFactory().getJspApplicationContext(context);
 
             // Register the ELResolver with JSP
