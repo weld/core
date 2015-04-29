@@ -37,7 +37,7 @@ import org.junit.Test;
  *
  * @author Martin Kouba
  */
-public class ConflictingBeansXmlTestBase {
+public class ConflictingBeansXmlTestBase implements Marker {
 
     public static WebArchive baseTestArchive() {
         return ShrinkWrap.create(WebArchive.class).addClasses(ConflictingBeansXmlTestBase.class, Foo.class, VerifyExtension.class)
@@ -55,7 +55,7 @@ public class ConflictingBeansXmlTestBase {
     public void testConflictingDescriptors() {
         List<Object> events = extension.getEvents();
         // ConflictingBeansXmlTestBase, ConflictingBeansXmlTest, VerifyExtension, Foo, AfterBeanDiscovery
-        assertEquals(5, events.size());
+        assertEquals(events.toString(), 5, events.size());
         assertFalse(fooInstance.isUnsatisfied());
         assertFalse(fooInstance.isAmbiguous());
         fooInstance.get().ping();
