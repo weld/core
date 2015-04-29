@@ -132,9 +132,9 @@
                <configuration>
                     <!-- This path is not used for default properties files yet -->
                     <!-- https://issues.jboss.org/browse/LOGTOOL-65 -->
-                    <compilerArgument>
-                        -AgeneratedTranslationFilesPath=${project.build.directory}/generated-translation-files
-                    </compilerArgument>
+                    <compilerArguments>
+                        <AgeneratedTranslationFilesPath>${project.build.directory}/generated-translation-files</AgeneratedTranslationFilesPath>
+                    </compilerArguments>
                </configuration>
             </plugin>
             <plugin>
