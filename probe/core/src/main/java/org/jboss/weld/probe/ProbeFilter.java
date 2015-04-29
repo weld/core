@@ -34,6 +34,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
+import org.jboss.weld.bean.builtin.BeanManagerProxy;
 import org.jboss.weld.bootstrap.WeldBootstrap;
 import org.jboss.weld.config.ConfigurationKey;
 import org.jboss.weld.config.WeldConfiguration;
@@ -60,6 +61,8 @@ import org.jboss.weld.util.reflection.Formats;
  */
 public class ProbeFilter implements Filter {
 
+    static final String WELD_SERVLET_BEAN_MANAGER_KEY = "org.jboss.weld.environment.servlet.javax.enterprise.inject.spi.BeanManager";
+
     @Inject
     private BeanManagerImpl beanManager;
 
@@ -72,7 +75,10 @@ public class ProbeFilter implements Filter {
     public void init(FilterConfig filterConfig) throws ServletException {
 
         if (beanManager == null) {
-            throw ProbeLogger.LOG.probeFilterUnableToOperate(BeanManagerImpl.class);
+            beanManager = BeanManagerProxy.tryUnwrap(filterConfig.getServletContext().getAttribute(WELD_SERVLET_BEAN_MANAGER_KEY));
+            if (beanManager == null) {
+                throw ProbeLogger.LOG.probeFilterUnableToOperate(BeanManagerImpl.class);
+            }
         }
 
         Probe probe = beanManager.getServices().get(Probe.class);
