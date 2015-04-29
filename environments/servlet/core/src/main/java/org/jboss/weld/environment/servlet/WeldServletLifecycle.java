@@ -60,6 +60,7 @@ import org.jboss.weld.environment.servlet.logging.WeldServletLogger;
 import org.jboss.weld.environment.servlet.services.ServletResourceInjectionServices;
 import org.jboss.weld.environment.servlet.util.ServiceLoader;
 import org.jboss.weld.environment.tomcat.TomcatContainer;
+import org.jboss.weld.environment.undertow.UndertowContainer;
 import org.jboss.weld.environment.util.Reflections;
 import org.jboss.weld.injection.spi.ResourceInjectionServices;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -359,7 +360,7 @@ public class WeldServletLifecycle {
             container = checkContainers(ctx, dump, extContainers);
             if (container == null) {
                 // 3. Built-in containers in predefined order
-                container = checkContainers(ctx, dump, Arrays.asList(TomcatContainer.INSTANCE, JettyContainer.INSTANCE, GwtDevHostedModeContainer.INSTANCE));
+                container = checkContainers(ctx, dump, Arrays.asList(TomcatContainer.INSTANCE, JettyContainer.INSTANCE, UndertowContainer.INSTANCE, GwtDevHostedModeContainer.INSTANCE));
             }
         }
         return container;
