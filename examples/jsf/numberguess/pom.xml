@@ -94,8 +94,13 @@
                 </dependency>
 
                 <dependency>
-                    <groupId>org.glassfish</groupId>
-                    <artifactId>javax.faces</artifactId>
+                    <groupId>org.jboss.spec.javax.faces</groupId>
+                    <artifactId>jboss-jsf-api_2.2_spec</artifactId>
+                </dependency>
+
+                <dependency>
+                    <groupId>com.sun.faces</groupId>
+                    <artifactId>jsf-impl</artifactId>
                     <scope>runtime</scope>
                 </dependency>
 
@@ -158,8 +163,13 @@
                 </dependency>
 
                 <dependency>
-                    <groupId>org.glassfish</groupId>
-                    <artifactId>javax.faces</artifactId>
+                    <groupId>org.jboss.spec.javax.faces</groupId>
+                    <artifactId>jboss-jsf-api_2.2_spec</artifactId>
+                </dependency>
+
+                <dependency>
+                    <groupId>com.sun.faces</groupId>
+                    <artifactId>jsf-impl</artifactId>
                     <scope>runtime</scope>
                 </dependency>
 

@@ -16,12 +16,6 @@
  */
 package org.jboss.weld.environment.servlet.test.bootstrap.beansxml;
 
-import javax.enterprise.inject.Alternative;
-
-@Alternative
-public class Foo implements Marker {
-
-    public void ping() {
-    }
+public interface Marker {
 
 }

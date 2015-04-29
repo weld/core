@@ -26,7 +26,6 @@
 
     <properties>
         <jsf.version>2.1</jsf.version>
-        <jsf-impl.version>2.1.22</jsf-impl.version>
         <tomcat.version>7.0.55</tomcat.version>
         <tomcat8.version>8.0.9</tomcat8.version>
         <jetty.version>8.1.14.v20131031</jetty.version>
@@ -49,12 +48,6 @@
                 <groupId>javax.faces</groupId>
                 <artifactId>jsf-api</artifactId>
                 <version>${jsf.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.glassfish</groupId>
-                <artifactId>javax.faces</artifactId>
-                <version>${jsf-impl.version}</version>
             </dependency>
 
             <dependency>
