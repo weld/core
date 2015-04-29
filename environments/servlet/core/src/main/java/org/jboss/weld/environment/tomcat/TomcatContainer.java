@@ -30,7 +30,7 @@ import org.jboss.weld.environment.servlet.logging.TomcatLogger;
  */
 public class TomcatContainer extends AbstractContainer {
 
-    public static Container INSTANCE = new TomcatContainer();
+    public static final Container INSTANCE = new TomcatContainer();
 
     private static final String TOMCAT_REQUIRED_CLASS_NAME = "org.apache.catalina.connector.Request";
 

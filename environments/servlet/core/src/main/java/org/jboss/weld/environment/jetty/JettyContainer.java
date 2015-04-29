@@ -31,7 +31,7 @@ import org.jboss.weld.environment.servlet.logging.JettyLogger;
  */
 public class JettyContainer extends AbstractJettyContainer {
 
-    public static Container INSTANCE = new JettyContainer();
+    public static final Container INSTANCE = new JettyContainer();
 
     private static final String JETTY_SERVERNAME = "jetty";
 

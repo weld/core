@@ -32,7 +32,7 @@ import org.jboss.weld.environment.servlet.logging.JettyLogger;
  *
  */
 public class GwtDevHostedModeContainer extends AbstractJettyContainer {
-    public static Container INSTANCE = new GwtDevHostedModeContainer();
+    public static final Container INSTANCE = new GwtDevHostedModeContainer();
 
     // The gwt-dev jar is never in the project classpath (only in the maven/eclipse/intellij plugin classpath)
     // except when GWT is being run in hosted mode.
