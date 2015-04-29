@@ -24,7 +24,8 @@ public enum Category {
 
     WELDSERVLET("WeldServlet"),
     JETTY("Jetty"),
-    TOMCAT("Tomcat");
+    TOMCAT("Tomcat"),
+    UNDERTOW("Undertow");
 
     private static final String LOG_PREFIX = "org.jboss.weld.environment.servlet";
 
