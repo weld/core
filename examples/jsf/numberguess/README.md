@@ -16,9 +16,9 @@ Make sure you have assigned the absolute path of your installation to the
 
         $JBOSS_HOME/bin/standalone.sh
 
-2. Deploy example to the server you have started in step 1 using command
+2. Build and deploy the example to the server you have started in step 1 using command
 
-        mvn wildfly:deploy
+        mvn clean package wildfly:deploy
 
 3. Now you can view the application at <http://localhost:8080/weld-numberguess>.
 
@@ -26,6 +26,24 @@ Make sure you have assigned the absolute path of your installation to the
 To run the functional tests, execute:
 
     mvn verify -Darquillian=wildfly-managed-8
+
+Deploying to WildFly Web
+------------------------
+
+WildFly Web is a lightweigh Servlet-only version of WildFly.
+
+Make sure you have assigned the absolute path of your installation to the
+`JBOSS_HOME` environment variable.
+
+1. Open terminal and start the server by running
+
+        $JBOSS_HOME/bin/standalone.sh
+
+2. Build and deploy the example to the server you have started in step 1 using command
+
+        mvn clean package -Pwildfly-web wildfly:deploy
+
+3. Now you can view the application at <http://localhost:8080/weld-numberguess>.
 
 Deploying to GlassFish
 ----------------------
