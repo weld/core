@@ -25,7 +25,7 @@ import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 
-public class VerifyExtension implements Extension {
+public class VerifyExtension implements Extension, Marker {
 
     private List<Object> events = new ArrayList<Object>();
 
@@ -33,7 +33,7 @@ public class VerifyExtension implements Extension {
         events.add(event);
     }
 
-    public void observeProcessAnnotatedType(@Observes ProcessAnnotatedType<?> event) {
+    public void observeProcessAnnotatedType(@Observes ProcessAnnotatedType<? extends Marker> event) {
         events.add(event);
     }
 
