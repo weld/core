@@ -265,6 +265,55 @@ public class Main {
 -------------------------------------------------------------
 <1> Weld's `org.jboss.weld.environment.servlet.Listener` registered programmatically:
 
+==== Undertow
+
+Weld supports context activation/deactivation and dependency injection into Servlets when running on Undertow.
+Injection into Filters and Servlet listeners is not currently supported.
+Weld's listener needs to be registered programmatically:
+
+[source.JAVA, java]
+-------------------------------------------------------------
+public class Main {
+
+    public static void main(String[] args) throws ServletException {
+        DeploymentInfo servletBuilder = Servlets.deployment()
+                .setClassLoader(Main.class.getClassLoader())
+                .setResourceManager(new ClassPathResourceManager(Main.class.getClassLoader()))
+                .setContextPath("/")
+                .setDeploymentName("test.war")
+                .addServlet(Servlets.servlet("hello", HelloWorldServlet.class).addMapping("/*"))
+
+                .addListener(Servlets.listener(Listener.class)); # <1>
+
+        DeploymentManager manager = Servlets.defaultContainer().addDeployment(servletBuilder);
+        manager.deploy();
+
+        HttpHandler servletHandler = manager.start();
+        PathHandler path = Handlers.path(Handlers.redirect("/")).addPrefixPath("/", servletHandler);
+        Undertow server = Undertow.builder().addHttpListener(8080, "localhost").setHandler(path).build();
+        server.start();
+    }
+
+    public static class HelloWorldServlet extends HttpServlet {
+
+        @Inject BeanManager manager;
+
+        protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+            resp.setContentType("text/plain");
+            resp.getWriter().append("Hello from " + manager);
+        }
+    }
+}
+-------------------------------------------------------------
+<1> Weld's `org.jboss.weld.environment.servlet.Listener` registered programmatically:
+
+==== WildFly Web
+
+WildFly Web is a lightweight Servlet container that uses Undertow.
+Weld supports context activation/deactivation and dependency injection into Servlets.
+Injection into Filters and Servlet listeners is not currently supported.
+Weld integration is started automatically when weld-servlet is part of your application.
+
 ==== Bean Archive Isolation
 
 By default, bean archive isolation is enabled. It means that alternatives, interceptors and decorators can be selected/enabled for a bean archive by using a beans.xml descriptor.
