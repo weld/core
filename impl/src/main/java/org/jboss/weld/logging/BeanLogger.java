@@ -492,4 +492,7 @@ public interface BeanLogger extends WeldLogger {
 
     @Message(id = 1560, value = "Bean builder {0} does not define a destroy lifecycle callback.", format = Format.MESSAGE_FORMAT)
     DefinitionException beanBuilderInvalidDestroyCallback(Object param1);
+
+    @Message(id = 1561, value = "Bean builder {0} does not define a BeanManager.", format = Format.MESSAGE_FORMAT)
+    DefinitionException beanBuilderInvalidBeanManager(Object param1);
 }

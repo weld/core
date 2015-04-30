@@ -23,7 +23,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Default;
 import javax.enterprise.inject.spi.BeanAttributes;
 
 import org.jboss.weld.bean.attributes.ImmutableBeanAttributes;
@@ -41,6 +40,15 @@ import org.jboss.weld.util.collections.ImmutableSet;
  */
 public abstract class BeanAttributesBuilder<T, B> {
 
+    private static final String ARG_SCOPE = "scope";
+    private static final String ARG_NAME = "name";
+    private static final String ARG_TYPES = "types";
+    private static final String ARG_TYPE = "type";
+    private static final String ARG_QUALIFIERS = "qualifiers";
+    private static final String ARG_QUALIFIER = "qualifier";
+    private static final String ARG_STEREOTYPES = "stereotypes";
+    private static final String ARG_STEREOTYPE = "stereotype";
+
     protected String name;
 
     protected Set<Annotation> qualifiers;
@@ -51,16 +59,14 @@ public abstract class BeanAttributesBuilder<T, B> {
 
     protected Set<Type> types;
 
-    protected boolean alternative;
+    protected Boolean alternative;
 
     BeanAttributesBuilder() {
         qualifiers = new HashSet<Annotation>();
         qualifiers.add(AnyLiteral.INSTANCE);
         types = new HashSet<Type>();
         types.add(Object.class);
-        scope = Dependent.class;
         stereotypes = new HashSet<Class<? extends Annotation>>();
-        alternative = false;
     }
 
     /**
@@ -68,27 +74,44 @@ public abstract class BeanAttributesBuilder<T, B> {
      * @return the bean attributes
      */
     public BeanAttributes<T> build() {
-        return new ImmutableBeanAttributes<T>(ImmutableSet.copyOf(stereotypes), alternative, name, ImmutableSet.copyOf(qualifiers), ImmutableSet.copyOf(types), scope);
+        return new ImmutableBeanAttributes<T>(ImmutableSet.copyOf(stereotypes), alternative != null ? alternative : false, name,
+                ImmutableSet.copyOf(qualifiers), ImmutableSet.copyOf(types), scope != null ? scope : Dependent.class);
     }
 
     public B addType(Type type) {
+        Preconditions.checkArgumentNotNull(type, ARG_TYPE);
         this.types.add(type);
         return self();
     }
 
+    public B addTypes(Type... types) {
+        Preconditions.checkArgumentNotNull(types, ARG_TYPES);
+        Collections.addAll(this.types, types);
+        return self();
+    }
+
+    public B addTypes(Set<Type> types) {
+        Preconditions.checkArgumentNotNull(types, ARG_TYPES);
+        this.types.addAll(types);
+        return self();
+    }
+
     public B types(Type... types) {
-        this.types = new HashSet<Type>();
+        Preconditions.checkArgumentNotNull(types, ARG_TYPES);
+        this.types.clear();
         Collections.addAll(this.types, types);
         return self();
     }
 
     public B types(Set<Type> types) {
-        this.types = new HashSet<Type>(types);
+        Preconditions.checkArgumentNotNull(types, ARG_TYPES);
+        this.types.clear();
+        this.types.addAll(types);
         return self();
     }
 
     public B scope(Class<? extends Annotation> scope) {
-        Preconditions.checkArgumentNotNull(scope, "scope");
+        Preconditions.checkArgumentNotNull(scope, ARG_SCOPE);
         this.scope = scope;
         return self();
     }
@@ -98,21 +121,37 @@ public abstract class BeanAttributesBuilder<T, B> {
     }
 
     public B addQualifier(Annotation qualifier) {
-        if (!qualifier.annotationType().equals(Default.class)) {
-            this.qualifiers.remove(DefaultLiteral.INSTANCE);
-        }
+        Preconditions.checkArgumentNotNull(qualifier, ARG_QUALIFIER);
+        this.qualifiers.remove(DefaultLiteral.INSTANCE);
         this.qualifiers.add(qualifier);
         return self();
     }
 
+    public B addQualifiers(Annotation... qualifiers) {
+        Preconditions.checkArgumentNotNull(qualifiers, ARG_QUALIFIERS);
+        this.qualifiers.remove(DefaultLiteral.INSTANCE);
+        Collections.addAll(this.qualifiers, qualifiers);
+        return self();
+    }
+
+    public B addQualifiers(Set<Annotation> qualifiers) {
+        Preconditions.checkArgumentNotNull(qualifiers, ARG_QUALIFIERS);
+        this.qualifiers.remove(DefaultLiteral.INSTANCE);
+        this.qualifiers.addAll(qualifiers);
+        return self();
+    }
+
     public B qualifiers(Annotation... qualifiers) {
-        this.qualifiers = new HashSet<Annotation>();
+        Preconditions.checkArgumentNotNull(qualifiers, ARG_QUALIFIERS);
+        this.qualifiers.clear();
         Collections.addAll(this.qualifiers, qualifiers);
         return self();
     }
 
     public B qualifiers(Set<Annotation> qualifiers) {
-        this.qualifiers = new HashSet<Annotation>(qualifiers);
+        Preconditions.checkArgumentNotNull(qualifiers, ARG_QUALIFIERS);
+        this.qualifiers.clear();
+        this.qualifiers.addAll(qualifiers);
         return self();
     }
 
@@ -121,23 +160,26 @@ public abstract class BeanAttributesBuilder<T, B> {
     }
 
     public B addStereotype(Class<? extends Annotation> stereotype) {
+        Preconditions.checkArgumentNotNull(stereotype, ARG_STEREOTYPE);
         this.stereotypes.add(stereotype);
         return self();
     }
 
-    public B stereotypes(@SuppressWarnings("unchecked") Class<? extends Annotation>... stereotypes) {
-        this.stereotypes = new HashSet<Class<? extends Annotation>>();
-        Collections.addAll(this.stereotypes, stereotypes);
+    public B addStereotypes(Set<Class<? extends Annotation>> stereotypes) {
+        Preconditions.checkArgumentNotNull(stereotypes, ARG_STEREOTYPES);
+        this.stereotypes.addAll(stereotypes);
         return self();
     }
 
     public B stereotypes(Set<Class<? extends Annotation>> stereotypes) {
-        this.stereotypes = new HashSet<Class<? extends Annotation>>(stereotypes);
+        Preconditions.checkArgumentNotNull(stereotypes, ARG_STEREOTYPES);
+        this.stereotypes.clear();
+        this.stereotypes.addAll(stereotypes);
         return self();
     }
 
     public B name(String name) {
-        Preconditions.checkArgumentNotNull(name, "name");
+        Preconditions.checkArgumentNotNull(name, ARG_NAME);
         this.name = name;
         return self();
     }

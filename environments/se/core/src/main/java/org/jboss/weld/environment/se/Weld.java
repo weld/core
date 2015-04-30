@@ -52,6 +52,7 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 
+import org.jboss.weld.bootstrap.BeanDeploymentFinder;
 import org.jboss.weld.bootstrap.WeldBootstrap;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.CDI11Bootstrap;
@@ -59,6 +60,7 @@ import org.jboss.weld.bootstrap.api.Environments;
 import org.jboss.weld.bootstrap.api.SingletonProvider;
 import org.jboss.weld.bootstrap.api.TypeDiscoveryConfiguration;
 import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
+import org.jboss.weld.bootstrap.events.BeanBuilderImpl;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.BeanDiscoveryMode;
 import org.jboss.weld.bootstrap.spi.BeansXml;
@@ -78,6 +80,7 @@ import org.jboss.weld.environment.se.contexts.ThreadScoped;
 import org.jboss.weld.environment.se.logging.WeldSELogger;
 import org.jboss.weld.environment.util.BeanArchives;
 import org.jboss.weld.environment.util.Files;
+import org.jboss.weld.experimental.BeanBuilder;
 import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.metadata.BeansXmlImpl;
 import org.jboss.weld.metadata.MetadataImpl;
@@ -182,6 +185,8 @@ public class Weld implements ContainerInstanceFactory {
 
     private final Set<PackInfo> packages;
 
+    private final List<BeanBuilderImpl<?>> beanBuilders;
+
     public Weld() {
         this(RegistrySingletonProvider.STATIC_INSTANCE);
     }
@@ -202,6 +207,7 @@ public class Weld implements ContainerInstanceFactory {
         this.extensions = new HashSet<Metadata<Extension>>();
         this.properties = new HashMap<String, Object>();
         this.packages = new HashSet<PackInfo>();
+        this.beanBuilders = new ArrayList<BeanBuilderImpl<?>>();
     }
 
     /**
@@ -435,7 +441,18 @@ public class Weld implements ContainerInstanceFactory {
     }
 
     /**
-     * Reset the synthetic bean archive (bean classes and enablement) and explicitly added extensions.
+     * The {@link BeanBuilder#build()} is invoked automatically and the resulting bean is registered after all observers are notified.
+     *
+     * @return a builder for a custom bean
+     */
+    public <T> BeanBuilder<T> addBean() {
+        BeanBuilderImpl<T> beanBuilder = new BeanBuilderImpl<T>(WeldSEBeanRegistrant.class);
+        beanBuilders.add(beanBuilder);
+        return beanBuilder;
+    }
+
+    /**
+     * Reset the synthetic bean archive (bean classes and enablement), explicitly added extensions and custom beans added via {@link #addBean()}.
      *
      * @return self
      */
@@ -447,6 +464,7 @@ public class Weld implements ContainerInstanceFactory {
         enabledInterceptors.clear();
         enabledDecorators.clear();
         extensions.clear();
+        beanBuilders.clear();
         return this;
     }
 
@@ -507,7 +525,7 @@ public class Weld implements ContainerInstanceFactory {
             throw CommonLogger.LOG.missingBeansXml();
         }
 
-        final CDI11Bootstrap bootstrap = new WeldBootstrap();
+        final WeldBootstrap bootstrap = new WeldBootstrap();
         final Deployment deployment = createDeployment(resourceLoader, bootstrap);
 
         final ExternalConfigurationBuilder configurationBuilder = new ExternalConfigurationBuilder()
@@ -524,6 +542,13 @@ public class Weld implements ContainerInstanceFactory {
         bootstrap.startContainer(containerId, Environments.SE, deployment);
         // Start the container
         bootstrap.startInitialization();
+        // Bean builders - set bean deployment finder
+        if (!beanBuilders.isEmpty()) {
+            BeanDeploymentFinder beanDeploymentFinder = bootstrap.getBeanDeploymentFinder();
+            for (BeanBuilderImpl<?> beanBuilder : beanBuilders) {
+                beanBuilder.setBeanDeploymentFinder(beanDeploymentFinder);
+            }
+        }
         bootstrap.deployBeans();
         bootstrap.validateBeans();
         bootstrap.endInitialization();
@@ -598,7 +623,7 @@ public class Weld implements ContainerInstanceFactory {
             beanArchives.add(syntheticBeanArchive);
         }
 
-        if (beanArchives.isEmpty()) {
+        if (beanArchives.isEmpty() && beanBuilders.isEmpty()) {
             throw WeldSELogger.LOG.weldContainerCannotBeInitializedNoBeanArchivesFound();
         }
 
@@ -665,16 +690,23 @@ public class Weld implements ContainerInstanceFactory {
             result.addAll(extensions);
         }
         // Ensure that WeldSEBeanRegistrant is present
+        WeldSEBeanRegistrant weldSEBeanRegistrant = null;
         for (Metadata<Extension> metadata : result) {
             if (metadata.getValue().getClass().getName().equals(WeldSEBeanRegistrant.class.getName())) {
-                return result;
+                weldSEBeanRegistrant = (WeldSEBeanRegistrant) metadata.getValue();
+                break;
             }
         }
-        try {
-            result.add(new MetadataImpl<Extension>(SecurityActions.newInstance(WeldSEBeanRegistrant.class), SYNTHETIC_LOCATION_PREFIX
-                    + WeldSEBeanRegistrant.class.getName()));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        if (weldSEBeanRegistrant == null) {
+            try {
+                weldSEBeanRegistrant = SecurityActions.newInstance(WeldSEBeanRegistrant.class);
+                result.add(new MetadataImpl<Extension>(weldSEBeanRegistrant, SYNTHETIC_LOCATION_PREFIX + WeldSEBeanRegistrant.class.getName()));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        if (!beanBuilders.isEmpty()) {
+            weldSEBeanRegistrant.setBeanBuilders(beanBuilders);
         }
         return result;
     }

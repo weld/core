@@ -18,6 +18,7 @@ package org.jboss.weld.environment.se;
 
 import java.lang.annotation.Annotation;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.event.Observes;
@@ -30,10 +31,12 @@ import javax.inject.Singleton;
 
 import org.jboss.weld.bean.builtin.BeanManagerProxy;
 import org.jboss.weld.bootstrap.events.AbstractContainerEvent;
+import org.jboss.weld.bootstrap.events.BeanBuilderImpl;
 import org.jboss.weld.environment.se.beans.InstanceManager;
 import org.jboss.weld.environment.se.beans.ParametersFactory;
 import org.jboss.weld.environment.se.contexts.ThreadContext;
 import org.jboss.weld.environment.se.threading.RunnableDecorator;
+import org.jboss.weld.experimental.BeanBuilder;
 import org.jboss.weld.experimental.ExperimentalAfterBeanDiscovery;
 import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.util.annotated.ForwardingAnnotatedType;
@@ -47,6 +50,8 @@ import org.jboss.weld.util.annotated.ForwardingAnnotatedType;
 public class WeldSEBeanRegistrant implements Extension {
 
     private ThreadContext threadContext;
+
+    private List<BeanBuilderImpl<?>> beanBuilders;
 
     public void registerWeldSEBeans(@Observes BeforeBeanDiscovery event, BeanManager manager) {
         if (ignoreEvent(event)) {
@@ -81,6 +86,13 @@ public class WeldSEBeanRegistrant implements Extension {
         // Register WeldContainer as a singleton
         event.addBean().addType(WeldContainer.class).addQualifier(DefaultLiteral.INSTANCE).scope(Singleton.class)
                 .produceWith(() -> WeldContainer.instance(contextId));
+
+        // Process queued bean builders
+        if(beanBuilders != null) {
+            for (BeanBuilder<?> beanBuilder : beanBuilders) {
+                event.addBean(beanBuilder.build());
+            }
+        }
     }
 
     /**
@@ -92,6 +104,10 @@ public class WeldSEBeanRegistrant implements Extension {
 
     public ThreadContext getThreadContext() {
         return threadContext;
+    }
+
+    void setBeanBuilders(List<BeanBuilderImpl<?>> beanBuilders) {
+        this.beanBuilders = beanBuilders;
     }
 
     private class VetoedSuppressedAnnotatedType<T> extends ForwardingAnnotatedType<T> {

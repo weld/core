@@ -41,6 +41,7 @@ import org.jboss.weld.annotated.slim.SlimAnnotatedTypeStore;
 import org.jboss.weld.bean.CustomDecoratorWrapper;
 import org.jboss.weld.bean.attributes.ExternalBeanAttributesFactory;
 import org.jboss.weld.bootstrap.BeanDeploymentArchiveMapping;
+import org.jboss.weld.bootstrap.BeanDeploymentFinder;
 import org.jboss.weld.bootstrap.ContextHolder;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.experimental.BeanBuilder;
@@ -128,14 +129,14 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
 
     @Override
     public <T> BeanBuilder<T> addBean() {
-        BeanBuilderImpl<T> builder = new BeanBuilderImpl<T>(getReceiver().getClass(), getBeanDeployments(), getDeployment(), getContexts(), getBeanManager());
+        BeanBuilderImpl<T> builder = new BeanBuilderImpl<T>(getReceiver().getClass(), getBeanDeploymentFinder());
         additionalBeans.add(new BeanRegistration(builder));
         return builder;
     }
 
     @Override
     public <T> BeanBuilder<T> beanBuilder() {
-        return new BeanBuilderImpl<T>(getReceiver().getClass(), getBeanDeployments(), getDeployment(), getContexts(), getBeanManager());
+        return new BeanBuilderImpl<T>(getReceiver().getClass(), getBeanDeploymentFinder());
     }
 
     protected <T> void processBeanRegistration(BeanRegistration registration) {
@@ -222,6 +223,10 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
         } catch (Exception e) {
             throw new DefinitionException(e);
         }
+    }
+
+    private BeanDeploymentFinder getBeanDeploymentFinder() {
+        return new BeanDeploymentFinder(getBeanDeployments(), getDeployment(), getContexts(), getBeanManager());
     }
 
     private static class BeanRegistration {

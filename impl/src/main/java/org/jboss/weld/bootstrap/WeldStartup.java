@@ -594,4 +594,21 @@ public class WeldStartup {
         this.extensions = new ArrayList<Metadata<? extends Extension>>();
         Iterables.addAll(this.extensions, extensions);
     }
+
+    BeanManagerImpl getDeploymentManager() {
+        return deploymentManager;
+    }
+
+    BeanDeploymentArchiveMapping getBdaMapping() {
+        return bdaMapping;
+    }
+
+    Collection<ContextHolder<? extends Context>> getContexts() {
+        return contexts;
+    }
+
+    Deployment getDeployment() {
+        return deployment;
+    }
+
 }
