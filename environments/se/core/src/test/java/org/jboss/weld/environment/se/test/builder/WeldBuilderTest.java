@@ -219,4 +219,14 @@ public class WeldBuilderTest {
         }
     }
 
+    @Test
+    public void testBeanBuilder() {
+        Weld builder = new Weld().disableDiscovery();
+        Integer val = 42;
+        builder.addBean().addType(Integer.class).produceWith(() -> val).addQualifier(Juicy.Literal.INSTANCE);
+        try (WeldContainer container = builder.initialize()) {
+            assertEquals(Integer.valueOf(42), container.select(Integer.class, Juicy.Literal.INSTANCE).get());
+        }
+    }
+
 }

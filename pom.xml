@@ -65,7 +65,7 @@
         <shrinkwrap.version>1.1.3</shrinkwrap.version>
         <shrinkwrap.descriptors.version>1.1.0-beta-1</shrinkwrap.descriptors.version>
         <testng.version>5.10</testng.version>
-        <weld.api.version>3.0.Alpha7</weld.api.version>
+        <weld.api.version>3.0-SNAPSHOT</weld.api.version>
         <wildfly.arquillian.version>1.0.0.Alpha2</wildfly.arquillian.version>
     </properties>
 
@@ -338,7 +338,7 @@
                 <artifactId>weld-porting-package-tck</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            
+
             <dependency>
                 <groupId>org.jboss.weld.environment</groupId>
                 <artifactId>weld-environment-common</artifactId>
@@ -368,7 +368,7 @@
                 <artifactId>weld-se-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            
+
             <dependency>
                 <groupId>org.jboss.weld.probe</groupId>
                 <artifactId>weld-probe-core</artifactId>

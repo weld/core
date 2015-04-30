@@ -16,34 +16,12 @@
  */
 package org.jboss.weld.tests.extensions.custombeans;
 
-import java.util.concurrent.atomic.AtomicLong;
+import javax.enterprise.context.RequestScoped;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.inject.Model;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
-
-@Model
-public class Foo implements VetoedBean {
-
-    private static AtomicLong idGenerator = new AtomicLong(0);
-
-    private Long id;
-
-    @Inject
-    BeanManager beanManager;
-
-    @PostConstruct
-    public void postConstruct() {
-        id = idGenerator.incrementAndGet();
-    }
+@RequestScoped
+public class Bar implements VetoedBean {
 
     public void ping() {
-        beanManager.fireEvent(new Foo());
-    }
-
-    public Long getId() {
-        return id;
     }
 
 }

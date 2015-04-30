@@ -115,7 +115,6 @@ public class WeldBootstrap implements CDI11Bootstrap {
         }
     }
 
-
     @Override
     public BeansXml parse(Iterable<URL> urls) {
         return parse(urls, false);
@@ -131,10 +130,19 @@ public class WeldBootstrap implements CDI11Bootstrap {
         return beansXmlParser.parse(url);
     }
 
-
     @Override
     public Iterable<Metadata<Extension>> loadExtensions(ClassLoader classLoader) {
         return ServiceLoader.load(Extension.class, classLoader);
+    }
+
+    /**
+     * This method can only be invoked during initialization.
+     *
+     * @return the bean deployment finder
+     */
+    public synchronized BeanDeploymentFinder getBeanDeploymentFinder() {
+        checkInitializationNotAlreadyEnded();
+        return new BeanDeploymentFinder(weldStartup.getBdaMapping(), weldStartup.getDeployment(), weldStartup.getContexts(), weldStartup.getDeploymentManager());
     }
 
     private void checkInitializationNotAlreadyEnded() {

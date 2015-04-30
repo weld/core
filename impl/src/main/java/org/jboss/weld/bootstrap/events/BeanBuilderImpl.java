@@ -16,9 +16,9 @@
  */
 package org.jboss.weld.bootstrap.events;
 
+import static org.jboss.weld.util.Preconditions.checkArgumentNotNull;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -27,74 +27,77 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanAttributes;
-import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
 import javax.enterprise.inject.spi.PassivationCapable;
 
 import org.jboss.weld.bean.BeanIdentifiers;
-import org.jboss.weld.bootstrap.BeanDeployment;
-import org.jboss.weld.bootstrap.BeanDeploymentArchiveMapping;
-import org.jboss.weld.bootstrap.ContextHolder;
-import org.jboss.weld.bootstrap.spi.Deployment;
+import org.jboss.weld.bootstrap.BeanDeploymentFinder;
 import org.jboss.weld.experimental.BeanBuilder;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.util.DeploymentStructures;
-import org.jboss.weld.util.Preconditions;
 import org.jboss.weld.util.bean.ForwardingBeanAttributes;
 import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.reflection.Formats;
 
 /**
- *
+ * Bean builder is not thread-safe.
  *
  * @author Martin Kouba
  * @param <T> the class of the bean instance
  */
 public final class BeanBuilderImpl<T> extends BeanAttributesBuilder<T, BeanBuilder<T>> implements BeanBuilder<T> {
 
-    private static final String CALLBACK_PARAM = "callback";
+    private static final String ARG_CALLBACK = "callback";
+    private static final String ARG_ID = "id";
+    private static final String ARG_INJECTION_POINTS = "injectionPoints";
+    private static final String ARG_INJECTION_POINT = "injectionPoint";
+    private static final String ARG_BEAN_CLASS = "beanClass";
+    private static final String ARG_BEAN_ATTRS = "beanAttributes";
+    private static final String ARG_ANN_TYPE = "annotatedType";
 
-    private final DeploymentFinder deploymentFinder;
+    private final Class<?> defaultBeanClass;
+
+    private final Set<InjectionPoint> injectionPoints;
+
+    private BeanDeploymentFinder beanDeploymentFinder;
 
     private BeanManagerImpl beanManager;
 
-    private String id;
-
     private Class<?> beanClass;
 
-    private Set<InjectionPoint> injectionPoints;
+    private String id;
 
     private CreateCallback<T> createCallback;
 
     private DestroyCallback<T> destroyCallback;
 
+    private AnnotatedType<? extends T> annotatedType;
+
     /**
      *
-     * @param extensionClass
-     * @param bdaMapping
-     * @param deployment
-     * @param contexts
-     * @param deploymentManager
+     * @param defaultBeanClass
+     * @param beanDeploymentFinder
      */
-    public BeanBuilderImpl(Class<? extends Extension> extensionClass, BeanDeploymentArchiveMapping bdaMapping, Deployment deployment,
-            Collection<ContextHolder<? extends Context>> contexts, BeanManagerImpl deploymentManager) {
+    public BeanBuilderImpl(Class<?> defaultBeanClass, BeanDeploymentFinder beanDeploymentFinder) {
         super();
-        Preconditions.checkArgumentNotNull(extensionClass, "extensionClass");
-        Preconditions.checkArgumentNotNull(bdaMapping, "bdaMapping");
-        Preconditions.checkArgumentNotNull(deployment, "deployment");
-        Preconditions.checkArgumentNotNull(contexts, "contexts");
-        Preconditions.checkArgumentNotNull(deploymentManager, "deploymentManager");
-        this.deploymentFinder = new DeploymentFinder(bdaMapping, deployment, contexts, deploymentManager);
-        beanClass(extensionClass);
+        this.defaultBeanClass = defaultBeanClass;
+        this.beanDeploymentFinder = beanDeploymentFinder;
         this.injectionPoints = new HashSet<InjectionPoint>();
+    }
+
+    /**
+     * Constructs a builder which is not usable until the {@link #beanDeploymentFinder} is set.
+     *
+     * @param defaultBeanClass
+     */
+    public BeanBuilderImpl(Class<?> defaultBeanClass) {
+        this(defaultBeanClass, null);
     }
 
     /**
@@ -102,85 +105,92 @@ public final class BeanBuilderImpl<T> extends BeanAttributesBuilder<T, BeanBuild
      * @return
      */
     public Bean<T> build() {
+        if (annotatedType != null) {
+            readAnnotatedTypeBeanClass(annotatedType);
+        }
+        Class<?> finalBeanClass = beanClass != null ? beanClass : defaultBeanClass;
+        if (beanDeploymentFinder != null) {
+            this.beanManager = beanDeploymentFinder.getOrCreateBeanDeployment(finalBeanClass).getBeanManager();
+            if (annotatedType != null) {
+                readAnnotatedType(annotatedType);
+            }
+        }
         validate();
-        return new ImmutableBean<T>(beanManager, id, beanClass, super.build(), injectionPoints, createCallback, destroyCallback);
+        return new ImmutableBean<T>(beanManager, id, beanClass == null ? defaultBeanClass : beanClass, super.build(), injectionPoints, createCallback,
+                destroyCallback);
     }
 
     @Override
-    public <U extends T> BeanBuilder<U> read(AnnotatedType<U> type) {
-        Preconditions.checkArgumentNotNull(type, "type");
-
-        beanClass(type.getJavaClass());
-
-        final InjectionTarget<T> injectionTarget = cast(beanManager.getInjectionTargetFactory(type).createInjectionTarget(null));
-        injectionPoints(injectionTarget.getInjectionPoints());
-        createWith(c -> {
-            T instance = injectionTarget.produce(c);
-            injectionTarget.inject(instance, c);
-            injectionTarget.postConstruct(instance);
-            return instance;
-        });
-        destroyWith((i, c) -> {
-            injectionTarget.preDestroy(i);
-            c.release();
-        });
-        return cast(read(beanManager.createBeanAttributes(type)));
+    public <U extends T> BeanBuilder<U> read(AnnotatedType<U> annotatedType) {
+        checkArgumentNotNull(annotatedType, ARG_ANN_TYPE);
+        this.annotatedType = annotatedType;
+        return cast(this);
     }
 
     @Override
     public BeanBuilder<T> read(BeanAttributes<?> beanAttributes) {
-        Preconditions.checkArgumentNotNull(beanAttributes, "beanAttributes");
-
+        checkArgumentNotNull(beanAttributes, ARG_BEAN_ATTRS);
         scope(beanAttributes.getScope());
         name(beanAttributes.getName());
         alternative(beanAttributes.isAlternative());
         qualifiers(beanAttributes.getQualifiers());
         stereotypes(beanAttributes.getStereotypes());
         types(beanAttributes.getTypes());
-
         return this;
     }
 
     public BeanBuilder<T> beanClass(Class<?> beanClass) {
-        Preconditions.checkArgumentNotNull(beanClass, "beanClass");
+        checkArgumentNotNull(beanClass, ARG_BEAN_CLASS);
         this.beanClass = beanClass;
-        this.beanManager = deploymentFinder.getOrCreateBeanDeployment(beanClass).getBeanManager();
         return this;
     }
 
     public BeanBuilder<T> addInjectionPoint(InjectionPoint injectionPoint) {
+        checkArgumentNotNull(injectionPoint, ARG_INJECTION_POINT);
         injectionPoints.add(injectionPoint);
         return this;
     }
 
+    public BeanBuilder<T> addInjectionPoints(InjectionPoint... injectionPoints) {
+        checkArgumentNotNull(injectionPoints, ARG_INJECTION_POINTS);
+        return this;
+    }
+
+    public BeanBuilder<T> addInjectionPoints(Set<InjectionPoint> injectionPoints) {
+        checkArgumentNotNull(injectionPoints, ARG_INJECTION_POINTS);
+        return this;
+    }
+
     public BeanBuilder<T> injectionPoints(InjectionPoint... injectionPoints) {
-        this.injectionPoints = new HashSet<InjectionPoint>();
+        checkArgumentNotNull(injectionPoints, ARG_INJECTION_POINTS);
+        this.injectionPoints.clear();
         Collections.addAll(this.injectionPoints, injectionPoints);
         return this;
     }
 
     @Override
     public BeanBuilder<T> injectionPoints(Set<InjectionPoint> injectionPoints) {
-        Preconditions.checkArgumentNotNull(injectionPoints, "injectionPoints");
-        this.injectionPoints = new HashSet<InjectionPoint>(injectionPoints);
+        checkArgumentNotNull(injectionPoints, ARG_INJECTION_POINTS);
+        this.injectionPoints.clear();
+        this.injectionPoints.addAll(injectionPoints);
         return this;
     }
 
     public BeanBuilder<T> id(String id) {
-        Preconditions.checkArgumentNotNull(id, "id");
+        checkArgumentNotNull(id, ARG_ID);
         this.id = id;
         return this;
     }
 
     public <U extends T> BeanBuilder<U> createWith(Function<CreationalContext<U>, U> callback) {
-        Preconditions.checkArgumentNotNull(callback, CALLBACK_PARAM);
+        checkArgumentNotNull(callback, ARG_CALLBACK);
         this.createCallback = cast(CreateCallback.fromCreateWith(callback));
         return cast(this);
     }
 
     @Override
     public <U extends T> BeanBuilder<U> produceWith(Function<Instance<Object>, U> callback) {
-        Preconditions.checkArgumentNotNull(callback, CALLBACK_PARAM);
+        checkArgumentNotNull(callback, ARG_CALLBACK);
         this.createCallback = cast(CreateCallback.fromProduceWith(callback));
         if (this.destroyCallback == null) {
             this.destroyCallback = new DestroyCallback<T>((i) -> {
@@ -191,7 +201,7 @@ public final class BeanBuilderImpl<T> extends BeanAttributesBuilder<T, BeanBuild
 
     @Override
     public <U extends T> BeanBuilder<U> produceWith(Supplier<U> callback) {
-        Preconditions.checkArgumentNotNull(callback, CALLBACK_PARAM);
+        checkArgumentNotNull(callback, ARG_CALLBACK);
         this.createCallback = cast(CreateCallback.fromProduceWith(callback));
         if (this.destroyCallback == null) {
             this.destroyCallback = new DestroyCallback<T>((i) -> {
@@ -201,16 +211,20 @@ public final class BeanBuilderImpl<T> extends BeanAttributesBuilder<T, BeanBuild
     }
 
     public BeanBuilder<T> destroyWith(BiConsumer<T, CreationalContext<T>> callback) {
-        Preconditions.checkArgumentNotNull(callback, CALLBACK_PARAM);
+        checkArgumentNotNull(callback, ARG_CALLBACK);
         this.destroyCallback = new DestroyCallback<>(callback);
         return this;
     }
 
     @Override
     public BeanBuilder<T> disposeWith(Consumer<T> callback) {
-        Preconditions.checkArgumentNotNull(callback, CALLBACK_PARAM);
+        checkArgumentNotNull(callback, ARG_CALLBACK);
         this.destroyCallback = new DestroyCallback<>(callback);
         return this;
+    }
+
+    public void setBeanDeploymentFinder(BeanDeploymentFinder beanDeploymentFinder) {
+        this.beanDeploymentFinder = beanDeploymentFinder;
     }
 
     @Override
@@ -223,6 +237,9 @@ public final class BeanBuilderImpl<T> extends BeanAttributesBuilder<T, BeanBuild
     }
 
     void validate() {
+        if (beanManager == null) {
+            throw BeanLogger.LOG.beanBuilderInvalidBeanManager(this);
+        }
         if (createCallback == null) {
             throw BeanLogger.LOG.beanBuilderInvalidCreateCallback(this);
         }
@@ -234,6 +251,44 @@ public final class BeanBuilderImpl<T> extends BeanAttributesBuilder<T, BeanBuild
     @Override
     public String toString() {
         return String.format("BeanBuilderImpl [id=%s, beanClass=%s, qualifiers=%s, types=%s]", id, beanClass, qualifiers, types);
+    }
+
+    private <U extends T> void readAnnotatedTypeBeanClass(AnnotatedType<U> type) {
+        if (beanClass == null) {
+            beanClass(type.getJavaClass());
+        }
+    }
+
+    private <U extends T> void readAnnotatedType(AnnotatedType<U> type) {
+        final InjectionTarget<T> injectionTarget = cast(beanManager.getInjectionTargetFactory(type).createInjectionTarget(null));
+        addInjectionPoints(injectionTarget.getInjectionPoints());
+        if (createCallback == null) {
+            createWith(c -> {
+                T instance = injectionTarget.produce(c);
+                injectionTarget.inject(instance, c);
+                injectionTarget.postConstruct(instance);
+                return instance;
+            });
+        }
+        if (destroyCallback == null) {
+            destroyWith((i, c) -> {
+                injectionTarget.preDestroy(i);
+                c.release();
+            });
+        }
+        BeanAttributes<U> beanAttributes = beanManager.createBeanAttributes(type);
+        if (scope == null && beanAttributes.getScope() != null) {
+            scope(beanAttributes.getScope());
+        }
+        if (name == null && beanAttributes.getName() != null) {
+            name(beanAttributes.getName());
+        }
+        if (alternative == null) {
+            alternative(beanAttributes.isAlternative());
+        }
+        addQualifiers(beanAttributes.getQualifiers());
+        addStereotypes(beanAttributes.getStereotypes());
+        addTypes(beanAttributes.getTypes());
     }
 
     /**
@@ -385,30 +440,6 @@ public final class BeanBuilderImpl<T> extends BeanAttributesBuilder<T, BeanBuild
             } else {
                 destroy.accept(instance, ctx);
             }
-        }
-
-    }
-
-    static class DeploymentFinder {
-
-        private final BeanDeploymentArchiveMapping bdaMapping;
-
-        private final Deployment deployment;
-
-        private final Collection<ContextHolder<? extends Context>> contexts;
-
-        private final BeanManagerImpl deploymentManager;
-
-        DeploymentFinder(BeanDeploymentArchiveMapping bdaMapping, Deployment deployment, Collection<ContextHolder<? extends Context>> contexts,
-                BeanManagerImpl deploymentManager) {
-            this.bdaMapping = bdaMapping;
-            this.deployment = deployment;
-            this.contexts = contexts;
-            this.deploymentManager = deploymentManager;
-        }
-
-        BeanDeployment getOrCreateBeanDeployment(Class<?> clazz) {
-            return DeploymentStructures.getOrCreateBeanDeployment(deployment, deploymentManager, bdaMapping, contexts, clazz);
         }
 
     }

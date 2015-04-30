@@ -88,6 +88,11 @@ public class BeanBuilderTest {
                 beanManager.createCreationalContext(anotherRandomBean));
         assertNotNull(anotherRandom);
         assertEquals(Long.valueOf(foo.getId() * 2), anotherRandom);
+
+        beans = beanManager.getBeans(Bar.class);
+        assertEquals(1, beans.size());
+        Bean<Bar> barBean = (Bean<Bar>) beans.iterator().next();
+        assertEquals(Dependent.class, barBean.getScope());
     }
 
 }

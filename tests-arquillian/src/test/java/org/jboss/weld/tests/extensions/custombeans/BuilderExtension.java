@@ -37,7 +37,7 @@ public class BuilderExtension implements Extension {
 
     static final AtomicBoolean DISPOSED = new AtomicBoolean(false);
 
-    public void processAnnotatedType(@Observes ProcessAnnotatedType<Foo> event) {
+    public void processAnnotatedType(@Observes ProcessAnnotatedType<? extends VetoedBean> event) {
         event.veto();
     }
 
@@ -58,6 +58,9 @@ public class BuilderExtension implements Extension {
         BeanBuilder<Foo> builder = event.beanBuilder().read(annotatedType);
         builder.id("BAZinga").addQualifier(Juicy.Literal.INSTANCE);
         event.addBean(builder.build());
+
+        // Read from AT, set the scope
+        event.addBean().read(beanManager.createAnnotatedType(Bar.class)).scope(Dependent.class);
 
         // Test simple produceWith callback
         event.addBean().addType(Integer.class).addQualifier(Random.Literal.INSTANCE)
