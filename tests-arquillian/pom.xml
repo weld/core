@@ -140,16 +140,10 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- Because we need this to compile the exception transformer and resource manager -->
         <dependency>
             <groupId>org.wildfly.arquillian</groupId>
             <artifactId>wildfly-arquillian-common</artifactId>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.jboss.logmanager</groupId>
-                        <artifactId>log4j-jboss-logmanager</artifactId>
-                    </exclusion>
-                </exclusions>
-            <scope>test</scope>
         </dependency>
 
     </dependencies>

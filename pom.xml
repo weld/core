@@ -275,6 +275,17 @@
                 <groupId>org.wildfly.arquillian</groupId>
                 <artifactId>wildfly-arquillian-common</artifactId>
                 <version>${wildfly.arquillian.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.jboss.logmanager</groupId>
+                        <artifactId>log4j-jboss-logmanager</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-api</artifactId>
+                    </exclusion>
+                </exclusions>
+                <scope>test</scope>
             </dependency>
 
             <dependency>
@@ -338,7 +349,7 @@
                 <artifactId>weld-porting-package-tck</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            
+
             <dependency>
                 <groupId>org.jboss.weld.environment</groupId>
                 <artifactId>weld-environment-common</artifactId>
@@ -368,7 +379,7 @@
                 <artifactId>weld-se-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            
+
             <dependency>
                 <groupId>org.jboss.weld.probe</groupId>
                 <artifactId>weld-probe-core</artifactId>
