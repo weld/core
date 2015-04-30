@@ -20,24 +20,42 @@ application and deploy.
 While CDI does not require support for servlet environments, Weld can be
 used in a servlet container, such as Tomcat or Jetty.
 
-NOTE: There is a major limitation to using a servlet container. Weld doesn't
+NOTE: There is a major limitation to using a servlet container; Weld doesn't
 support deploying session beans, injection using `@EJB`
 or`@PersistenceContext`, or using transactional events in servlet
 containers. For enterprise features such as these, you should really be
 looking at a Java EE application server.
 
 Weld can be used as a library in an web application that is deployed to
-a Servlet container. You should place `weld-servlet-shaded.jar` within the
-`WEB-INF/lib` directory relative to the web root. `weld-servlet-shaded.jar` is
-an "uber-jar", meaning it bundles all the bits of Weld and CDI required
-for running in a Servlet container, for your convenience. Alternatively,
-you can use its component jars. A list of transitive dependencies can be
-found in the `META-INF/DEPENDENCIES.txt` file inside the
-`weld-servlet-shaded.jar` artifact.
+a Servlet container. You should add the `weld-servlet-core` as a dependency
+to your project:
 
-You also need to explicitly specify the servlet listener (used to boot
-Weld, and control its interaction with requests) in WEB-INF/web.xml in
-the web root:
+[source.XML, xml, subs="normal"]
+<dependency>
+    <groupId>org.jboss.weld.servlet</groupId>
+    <artifactId>weld-servlet-core</artifactId>
+    <version>{weldVersion}</version>
+</dependency>
+
+All the necessary dependencies (CDI API, Weld core) will be fetched transitively.
+
+Alternatively, there is a shaded version with all the dependencies in a single
+jar file which is available as:
+
+[source.XML, xml, subs="normal"]
+<dependency>
+    <groupId>org.jboss.weld.servlet</groupId>
+    <artifactId>weld-servlet-shaded</artifactId>
+    <version>{weldVersion}</version>
+</dependency>
+
+In general, weld-servlet uses link:http://docs.oracle.com/javaee/7/api/javax/servlet/ServletContainerInitializer.html[ServletContainerInitializer]
+mechanism to hook into the life cycle of Servlet 3.x compatible containers.
+
+In special cases when your Servlet container does not support `ServletContainerInitializer`
+or you need more control over the ordering of listeners (e.g. move Weld's listener)
+to the beginning of the list so that CDI context are active during invocation of other listeners)
+you can register Weld's listener manually in the `WEB-INF/web.xml` file of the application:
 
 [source.XML, xml]
 -------------------------------------------------------------------------------
@@ -45,24 +63,6 @@ the web root:
    <listener-class>org.jboss.weld.environment.servlet.Listener</listener-class>
 </listener>
 -------------------------------------------------------------------------------
-
-Actually, you don't have to register this listener in Servlet 3.x
-compliant containers which support
-`javax.servlet.ServletContainerInitializer` service properly (e.g.
-Tomcat 7.0.50). In this case
-`org.jboss.weld.environment.servlet.EnhancedListener` will do all the
-necessary work automatically, and what is more important - injection
-into Listeners will work on some containers as well (see <<_tomcat>> and <<_jetty>> for
-more info).
-
-The downside of `javax.servlet.ServletContainerInitializer` approach is
-that the Weld listener will be added to the end of the ordered list of
-discovered listeners. In practice the request and session context will
-not be active during `ServletRequestListener` and `HttpSessionListener`
-notifications. Fortunately, it's possible to combine the
-`EnhancedListener` and the old `Listener` to fix this problem - simply
-add the old `Listener` to the `web.xml` as mentioned above. Note that it
-must be defined before the listeners using request and session context.
 
 NOTE: There is quite a special use-case where one more special component must
 be involved. If you want the session context to be active during
@@ -76,8 +76,16 @@ destroyed).
 
 ==== Tomcat
 
-Since version 2.2.0.Final only Tomcat 7 and 8 are supported.
+Since version 2.2.0.Final only Tomcat 7 and 8 are supported by Weld.
+By simply adding `weld-servlet` you get Tomcat integration automatically.
 
+Weld automatically supports context activation/deactivation and dependency
+injection into Servlets and Filters. Injection into Servlet listeners works on
+Tomcat 7.0.50 and newer.
+
+===== Binding BeanManager to JNDI
+
+What does not work out of the box is binding BeanManager to JNDI.
 Tomcat has a read-only JNDI, so Weld can't automatically bind the
 BeanManager extension SPI. To bind the BeanManager into JNDI, you should
 populate `META-INF/context.xml` in the web root with the following
@@ -109,12 +117,71 @@ of `web.xml`:
 Tomcat only allows you to bind entries to `java:comp/env`, so the
 BeanManager will be available at `java:comp/env/BeanManager`
 
-Weld also supports Servlet and Filter injection in Tomcat containers.
-Listener injection should also work on Tomcat 7.0.50 and newer versions.
+===== Embedded Tomcat
+
+With embedded Tomcat it is necessary to register Weld's listener programmatically:
+
+[source.JAVA, java]
+-------------------------------------------------------------
+public class Main {
+
+    public static void main(String[] args) throws ServletException, LifecycleException {
+        Tomcat tomcat = new Tomcat();
+        Context ctx = tomcat.addContext("/", new File("src/main/resources").getAbsolutePath());
+
+        Tomcat.addServlet(ctx, "hello", HelloWorldServlet.class.getName());
+        ctx.addServletMapping("/*", "hello");
+
+        // ctx.addApplicationListener(Listener.class.getName()); # <1>
+
+        tomcat.start();
+        tomcat.getServer().await();
+    }
+
+    public static class HelloWorldServlet extends HttpServlet {
+
+        @Inject
+        private BeanManager manager;
+
+        @Override
+        protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+            resp.setContentType("text/plain");
+            resp.getWriter().append("Hello from " + manager);
+        }
+    }
+}
+-------------------------------------------------------------
+<1> Weld's `org.jboss.weld.environment.servlet.Listener` registered programmatically
 
 ==== Jetty
 
 Since version 2.0.2.Final only Jetty 7, 8 and 9 are supported.
+
+Weld supports context activation/deactivation and dependency
+injection into Servlets and Filters. Injection into Servlet listeners works on
+Jetty 9.1.1 and newer. This is done automatically for the most part.
+
+Since Jetty 8 the class `org.eclipse.jetty.servlet.ServletContextHandler.Decorator`
+is not visible from the web application. Therefore, one more step is required -
+we have to tell Jetty not to hide this system class.
+
+Simply place the following `jetty-context.xml` file in the WEB-INF dir:
+
+[source.XML, xml]
+-------------------------------------------------------------
+<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure.dtd">
+<Configure class="org.eclipse.jetty.webapp.WebAppContext">
+    <Set name="serverClasses">
+        <Array type="java.lang.String">
+            <Item>-org.eclipse.jetty.servlet.ServletContextHandler.Decorator</Item>
+        </Array>
+    </Set>
+</Configure>
+-------------------------------------------------------------
+
+See also http://www.eclipse.org/jetty/documentation/current/jetty-classloading.html#setting-server-classes[Jetty Classloading documentation].
+
+===== Binding BeanManager to JNDI
 
 To bind the BeanManager into JNDI, you should either populate
 `WEB-INF/jetty-env.xml` with the following contents:
@@ -166,27 +233,41 @@ deployment by adding this to the bottom of `web.xml`:
 Jetty only allows you to bind entries to `java:comp/env`, so the
 BeanManager will be available at `java:comp/env/BeanManager`.
 
-Since Jetty 8 the class `org.eclipse.jetty.servlet.ServletContextHandler.Decorator` is not visible from the web application.
-Therefore, one more step is required - we have to tell Jetty not to hide this system class.  
+===== Embedded Jetty
 
-Simply place the following `jetty-context.xml` file in the WEB-INF dir:
+When starting embedded Jetty programmatically from the main method it is necessary
+to register Weld's listener:
 
-[source.XML, xml]
+[source.JAVA, java]
 -------------------------------------------------------------
-<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure.dtd">
-<Configure class="org.eclipse.jetty.webapp.WebAppContext">
-    <Set name="serverClasses">
-        <Array type="java.lang.String">
-            <Item>-org.eclipse.jetty.servlet.ServletContextHandler.Decorator</Item>
-        </Array>
-    </Set>
-</Configure>
+public class Main {
+
+    public static void main(String[] args) throws Exception {
+        Server jetty = new Server(8080);
+        WebAppContext context = new WebAppContext();
+        context.setContextPath("/");
+        context.setResourceBase("src/main/resources");
+        jetty.setHandler(context);
+        context.addServlet(HelloWorldServlet.class, "/*");
+
+        context.addEventListener(new Listener()); # <1>
+
+        jetty.start();
+        jetty.join();
+    }
+
+    public static class HelloWorldServlet extends HttpServlet {
+
+        @Inject BeanManager manager;
+
+        protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+            resp.setContentType("text/plain");
+            resp.getWriter().append("Hello from " + manager);
+        }
+    }
+}
 -------------------------------------------------------------
-
-See also http://www.eclipse.org/jetty/documentation/current/jetty-classloading.html#setting-server-classes[Jetty Classloading documentation].
-
-Weld also supports Servlet and Filter injection in Jetty containers.
-Listener injection should also work on Jetty 9.1.1 and newer versions.
+<1> Weld's `org.jboss.weld.environment.servlet.Listener` registered programmatically:
 
 ==== Bean Archive Isolation
 
@@ -195,15 +276,15 @@ By default, bean archive isolation is enabled. It means that alternatives, inter
 This behaviour can be changed by setting the servlet initialization parameter `org.jboss.weld.environment.servlet.archive.isolation` to false.
 In this case, Weld will use a "flat" deployment structure - all bean classes share the same bean archive and all beans.xml descriptors are automatically merged into one. Thus alternatives, interceptors and decorators selected/enabled for a bean archive will be enabled for the whole application.
 
-NOTE: Bean archive isolation is supported (and enabled by default) from version 2.2.5.Final. Previous versions only operated with the "flat" deployment structure.   
+NOTE: Bean archive isolation is supported (and enabled by default) from version 2.2.5.Final. Previous versions only operated with the "flat" deployment structure.
 
 ==== Implicit Bean Archive Support
 
-CDI 1.1 introduced the bean discovery mode of `annotated` used for implicit bean archives (see also <<packaging-and-deployment>>). 
-This mode may bring additional overhead during container bootstrap. Therefore, Weld Servlet supports the use of https://github.com/wildfly/jandex[Jandex] bytecode scanning library to speed up the scanning process. Simply put the http://search.maven.org/#search|gav|1|g%3A%22org.jboss%22%20AND%20a%3A%22jandex%22[jandex.jar] on the classpath. 
+CDI 1.1 introduced the bean discovery mode of `annotated` used for implicit bean archives (see also <<packaging-and-deployment>>).
+This mode may bring additional overhead during container bootstrap. Therefore, Weld Servlet supports the use of https://github.com/wildfly/jandex[Jandex] bytecode scanning library to speed up the scanning process. Simply put the http://search.maven.org/#search|gav|1|g%3A%22org.jboss%22%20AND%20a%3A%22jandex%22[jandex.jar] on the classpath.
 If Jandex is not found on the classpath Weld will use the Java Reflection as a fallback.
 
-In general, an implicit bean archive does not have to contain a beans.xml descriptor. However, such a bean archive is not supported by Weld Servlet, i.e. it's excluded from discovery.  
+In general, an implicit bean archive does not have to contain a beans.xml descriptor. However, such a bean archive is not supported by Weld Servlet, i.e. it's excluded from discovery.
 
 NOTE: The bean discovery mode of `annotated` is supported from version 2.2.5.Final. Previous versions processed implicit bean archives in the same way as explicit bean archives.
 
@@ -421,17 +502,17 @@ declare a dependency such as:
 
 By default, bean archive isolation is enabled. It means that alternatives, interceptors and decorators can be selected/enabled for a bean archive by using a beans.xml descriptor.
 
-This behaviour can be changed by providing a system property `org.jboss.weld.se.archive.isolation` with value of `false`. In this case, Weld will use a "flat" deployment structure - all bean classes share the same bean archive and all beans.xml descriptors are automatically merged into one. Thus alternatives, interceptors and decorators selected/enabled for a bean archive will be enabled for the whole application. 
+This behaviour can be changed by providing a system property `org.jboss.weld.se.archive.isolation` with value of `false`. In this case, Weld will use a "flat" deployment structure - all bean classes share the same bean archive and all beans.xml descriptors are automatically merged into one. Thus alternatives, interceptors and decorators selected/enabled for a bean archive will be enabled for the whole application.
 
-NOTE: Bean archive isolation is supported (and enabled by default) from version 2.2.0.Final. Previous versions only operated with the "flat" deployment structure.   
+NOTE: Bean archive isolation is supported (and enabled by default) from version 2.2.0.Final. Previous versions only operated with the "flat" deployment structure.
 
 ==== Implicit Bean Archive Support
 
-CDI 1.1 introduced the bean discovery mode of `annotated` used for implicit bean archives (see also <<packaging-and-deployment>>). This mode may bring additional overhead during container bootstrap. 
+CDI 1.1 introduced the bean discovery mode of `annotated` used for implicit bean archives (see also <<packaging-and-deployment>>). This mode may bring additional overhead during container bootstrap.
 Therefore, Weld Servlet supports the use of https://github.com/wildfly/jandex[Jandex] bytecode scanning library to speed up the scanning process. Simply put the http://search.maven.org/#search|gav|1|g%3A%22org.jboss%22%20AND%20a%3A%22jandex%22[jandex.jar] on the classpath.
-If Jandex is not found on the classpath Weld will use the Java Reflection as a fallback.  
+If Jandex is not found on the classpath Weld will use the Java Reflection as a fallback.
 
-In general, an implicit bean archive does not have to contain a beans.xml descriptor. However, such a bean archive is not supported by Weld SE, i.e. it's excluded from discovery.  
+In general, an implicit bean archive does not have to contain a beans.xml descriptor. However, such a bean archive is not supported by Weld SE, i.e. it's excluded from discovery.
 
 NOTE: The bean discovery mode of `annotated` is supported from version 2.2.0.Final. Previous versions processed implicit bean archives in the same way as explicit bean archives.
 
