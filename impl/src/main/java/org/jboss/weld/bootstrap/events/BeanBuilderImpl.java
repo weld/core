@@ -163,7 +163,7 @@ public final class BeanBuilderImpl<T> extends BeanAttributesBuilder<T, BeanBuild
     public BeanBuilder<T> injectionPoints(Set<InjectionPoint> injectionPoints) {
         Preconditions.checkArgumentNotNull(injectionPoints, "injectionPoints");
         this.injectionPoints = new HashSet<InjectionPoint>(injectionPoints);
-        return null;
+        return this;
     }
 
     public BeanBuilder<T> id(String id) {
@@ -210,7 +210,7 @@ public final class BeanBuilderImpl<T> extends BeanAttributesBuilder<T, BeanBuild
     public BeanBuilder<T> disposeWith(Consumer<T> callback) {
         Preconditions.checkArgumentNotNull(callback, CALLBACK_PARAM);
         this.destroyCallback = new DestroyCallback<>(callback);
-        return null;
+        return this;
     }
 
     @Override
