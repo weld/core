@@ -65,6 +65,7 @@ import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.config.ConfigurationKey;
 import org.jboss.weld.configuration.spi.ExternalConfiguration;
 import org.jboss.weld.configuration.spi.helpers.ExternalConfigurationBuilder;
+import org.jboss.weld.environment.ContainerInstanceFactory;
 import org.jboss.weld.environment.deployment.WeldBeanDeploymentArchive;
 import org.jboss.weld.environment.deployment.WeldDeployment;
 import org.jboss.weld.environment.deployment.WeldResourceLoader;
@@ -144,7 +145,7 @@ import com.google.common.collect.Multimap;
  * @see WeldContainer
  */
 @Vetoed
-public class Weld {
+public class Weld implements ContainerInstanceFactory {
 
     public static final String ARCHIVE_ISOLATION_SYSTEM_PROPERTY = "org.jboss.weld.se.archive.isolation";
 

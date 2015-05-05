@@ -29,6 +29,7 @@ import org.jboss.weld.AbstractCDI;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.Singleton;
 import org.jboss.weld.bootstrap.api.SingletonProvider;
+import org.jboss.weld.environment.ContainerInstance;
 import org.jboss.weld.environment.se.events.ContainerInitialized;
 import org.jboss.weld.environment.se.events.ContainerShutdown;
 import org.jboss.weld.environment.se.logging.WeldSELogger;
@@ -88,7 +89,7 @@ import com.google.common.collect.ImmutableList;
  * @see Weld
  */
 @Vetoed
-public class WeldContainer extends AbstractCDI<Object> implements AutoCloseable {
+public class WeldContainer extends AbstractCDI<Object> implements AutoCloseable, ContainerInstance {
 
     private static final Singleton<WeldContainer> SINGLETON;
 

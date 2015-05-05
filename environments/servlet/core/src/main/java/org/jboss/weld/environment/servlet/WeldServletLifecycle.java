@@ -31,6 +31,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.jsp.JspApplicationContext;
 import javax.servlet.jsp.JspFactory;
 
+import org.jboss.weld.bean.builtin.BeanManagerProxy;
 import org.jboss.weld.bootstrap.WeldBootstrap;
 import org.jboss.weld.bootstrap.api.CDI11Bootstrap;
 import org.jboss.weld.bootstrap.api.Environments;
@@ -46,6 +47,8 @@ import org.jboss.weld.configuration.spi.helpers.ExternalConfigurationBuilder;
 import org.jboss.weld.el.WeldELContextListener;
 import org.jboss.weld.environment.Container;
 import org.jboss.weld.environment.ContainerContext;
+import org.jboss.weld.environment.ContainerInstance;
+import org.jboss.weld.environment.ContainerInstanceFactory;
 import org.jboss.weld.environment.deployment.WeldBeanDeploymentArchive;
 import org.jboss.weld.environment.deployment.WeldDeployment;
 import org.jboss.weld.environment.deployment.WeldResourceLoader;
@@ -83,7 +86,7 @@ import com.google.common.collect.ImmutableSet;
 public class WeldServletLifecycle {
 
     public static final String BEAN_MANAGER_ATTRIBUTE_NAME = WeldServletLifecycle.class.getPackage().getName() + "." + BeanManager.class.getName();
-
+    public static final String CONTAINER_ATTRIBUTE_NAME = WeldServletLifecycle.class.getPackage().getName() + ".container";
     static final String INSTANCE_ATTRIBUTE_NAME = WeldServletLifecycle.class.getPackage().getName() + ".lifecycleInstance";
 
     private static final String EXPRESSION_FACTORY_NAME = "org.jboss.weld.el.ExpressionFactory";
@@ -99,7 +102,7 @@ public class WeldServletLifecycle {
 
     private static final String JSP_FACTORY_CLASS_NAME = "javax.servlet.jsp.JspFactory";
 
-    private final transient CDI11Bootstrap bootstrap;
+    private Runnable shutdownAction;
 
     private final transient ServletListener weldListener;
 
@@ -114,7 +117,6 @@ public class WeldServletLifecycle {
 
     WeldServletLifecycle() {
         resourceLoader = new WeldResourceLoader();
-        bootstrap = new WeldBootstrap();
         weldListener = new WeldInitialListener();
     }
 
@@ -130,8 +132,24 @@ public class WeldServletLifecycle {
         WeldManager manager = (WeldManager) context.getAttribute(BEAN_MANAGER_ATTRIBUTE_NAME);
         if (manager != null) {
             isBootstrapNeeded = false;
+        } else {
+            Object container = context.getAttribute(CONTAINER_ATTRIBUTE_NAME);
+            if (container instanceof ContainerInstanceFactory) {
+                ContainerInstanceFactory factory = (ContainerInstanceFactory) container;
+                // start the container
+                ContainerInstance containerInstance = factory.initialize();
+                container = containerInstance;
+                // we are in charge of shutdown also
+                this.shutdownAction = () -> containerInstance.shutdown();
+            }
+            if (container instanceof ContainerInstance) {
+                // the container instance was either passed to us directly or was created in the block above
+                manager = BeanManagerProxy.unwrap(ContainerInstance.class.cast(container).getBeanManager());
+                isBootstrapNeeded = false;
+            }
         }
 
+        final CDI11Bootstrap bootstrap = new WeldBootstrap();
         if (isBootstrapNeeded) {
             final CDI11Deployment deployment = createDeployment(context, bootstrap);
 
@@ -218,15 +236,16 @@ public class WeldServletLifecycle {
                 FilterRegistration.Dynamic filterDynamic = context.addFilter("Weld Probe Filter", PROBE_FILTER_CLASS_NAME);
                 filterDynamic.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST, DispatcherType.FORWARD, DispatcherType.INCLUDE), true, "/*");
             }
+            this.shutdownAction = () -> bootstrap.shutdown();
         }
         return true;
     }
 
     void destroy(ServletContext context) {
 
-        if (isBootstrapNeeded) {
+        if (shutdownAction != null) {
             // Shutdown only if bootstrap not skipped
-            bootstrap.shutdown();
+            shutdownAction.run();
         }
 
         if (container != null) {
