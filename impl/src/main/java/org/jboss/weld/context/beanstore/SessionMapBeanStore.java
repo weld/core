@@ -19,6 +19,7 @@ package org.jboss.weld.context.beanstore;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.jboss.weld.context.api.ContextualInstance;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
@@ -36,7 +37,7 @@ public class SessionMapBeanStore extends MapBeanStore {
     private static final String LOCK_STORE_KEY = "org.jboss.weld.context.beanstore.LockStore";
 
     public SessionMapBeanStore(NamingScheme namingScheme, Map<String, Object> delegate) {
-        super(namingScheme, delegate);
+        super(namingScheme, delegate, delegate instanceof ConcurrentHashMap);
     }
 
     @Override
