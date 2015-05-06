@@ -1,14 +1,15 @@
 package org.jboss.weld.context.bound;
 
+import java.lang.annotation.Annotation;
+import java.util.Map;
+
+import javax.enterprise.context.RequestScoped;
+
 import org.jboss.weld.context.AbstractBoundContext;
 import org.jboss.weld.context.beanstore.MapBeanStore;
 import org.jboss.weld.context.beanstore.NamingScheme;
 import org.jboss.weld.context.beanstore.SimpleNamingScheme;
 import org.jboss.weld.context.cache.RequestScopedCache;
-
-import javax.enterprise.context.RequestScoped;
-import java.lang.annotation.Annotation;
-import java.util.Map;
 
 public class BoundRequestContextImpl extends AbstractBoundContext<Map<String, Object>> implements BoundRequestContext {
 
@@ -25,7 +26,7 @@ public class BoundRequestContextImpl extends AbstractBoundContext<Map<String, Ob
 
     public boolean associate(Map<String, Object> storage) {
         if (getBeanStore() == null) {
-            setBeanStore(new MapBeanStore(namingScheme, storage));
+            setBeanStore(new MapBeanStore(namingScheme, storage, true));
             getBeanStore().attach();
             return true;
         } else {
