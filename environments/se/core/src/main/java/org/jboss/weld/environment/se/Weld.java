@@ -169,7 +169,7 @@ public class Weld implements ContainerInstanceFactory {
 
     private boolean discoveryEnabled = true;
 
-    private final Set<String> beanClasses;
+    private final Set<Class<?>> beanClasses;
 
     private final List<Metadata<String>> selectedAlternatives;
 
@@ -199,7 +199,7 @@ public class Weld implements ContainerInstanceFactory {
     public Weld(String containerId) {
         this.containerId = containerId;
         this.initializedContainers = new HashMap<String, WeldContainer>();
-        this.beanClasses = new HashSet<String>();
+        this.beanClasses = new HashSet<Class<?>>();
         this.selectedAlternatives = new ArrayList<Metadata<String>>();
         this.selectedAlternativeStereotypes = new ArrayList<Metadata<String>>();
         this.enabledInterceptors = new ArrayList<Metadata<String>>();
@@ -251,7 +251,7 @@ public class Weld implements ContainerInstanceFactory {
      * @return self
      */
     public Weld addBeanClass(Class<?> beanClass) {
-        beanClasses.add(beanClass.getName());
+        beanClasses.add(beanClass);
         return this;
     }
 
@@ -346,7 +346,7 @@ public class Weld implements ContainerInstanceFactory {
      * @return self
      */
     public Weld addInterceptor(Class<?> interceptorClass) {
-        beanClasses.add(interceptorClass.getName());
+        beanClasses.add(interceptorClass);
         enabledInterceptors.add(syntheticMetadata(interceptorClass));
         return this;
     }
@@ -372,7 +372,7 @@ public class Weld implements ContainerInstanceFactory {
      * @return self
      */
     public Weld addDecorator(Class<?> decoratorClass) {
-        beanClasses.add(decoratorClass.getName());
+        beanClasses.add(decoratorClass);
         enabledDecorators.add(syntheticMetadata(decoratorClass));
         return this;
     }
@@ -616,10 +616,9 @@ public class Weld implements ContainerInstanceFactory {
 
         if (isSyntheticBeanArchiveRequired()) {
             ImmutableSet.Builder<String> beanClassesBuilder = ImmutableSet.builder();
-            beanClassesBuilder.addAll(beanClasses);
             beanClassesBuilder.addAll(scanPackages());
             WeldBeanDeploymentArchive syntheticBeanArchive = new WeldBeanDeploymentArchive(WeldDeployment.SYNTHETIC_BDA_ID, beanClassesBuilder.build(),
-                    buildSyntheticBeansXml());
+                    buildSyntheticBeansXml(), Collections.emptySet(), ImmutableSet.copyOf(beanClasses));
             beanArchives.add(syntheticBeanArchive);
         }
 

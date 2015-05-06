@@ -37,6 +37,7 @@ import org.jboss.weld.xml.BeansXmlParser;
 public class WeldBeanDeploymentArchive extends AbstractWeldBeanDeploymentArchive {
 
     private final Collection<String> beanClasses;
+    private final Collection<Class<?>> loadedBeanClasses;
 
     private final BeansXml beansXml;
 
@@ -50,10 +51,15 @@ public class WeldBeanDeploymentArchive extends AbstractWeldBeanDeploymentArchive
      * @param beanDeploymentArchives
      */
     public WeldBeanDeploymentArchive(String id, Collection<String> beanClasses, BeansXml beansXml, Set<WeldBeanDeploymentArchive> beanDeploymentArchives) {
+        this(id, beanClasses, beansXml, beanDeploymentArchives, Collections.emptySet());
+    }
+
+    public WeldBeanDeploymentArchive(String id, Collection<String> beanClasses, BeansXml beansXml, Set<WeldBeanDeploymentArchive> beanDeploymentArchives, Collection<Class<?>> loadedBeanClasses) {
         super(id);
         this.beanClasses = beanClasses;
         this.beansXml = beansXml;
         this.accessibleBeanDeploymentArchives = beanDeploymentArchives;
+        this.loadedBeanClasses = loadedBeanClasses;
     }
 
     public WeldBeanDeploymentArchive(String id, Collection<String> beanClasses, BeansXml beansXml) {
@@ -63,6 +69,11 @@ public class WeldBeanDeploymentArchive extends AbstractWeldBeanDeploymentArchive
     @Override
     public Collection<String> getBeanClasses() {
         return Collections.unmodifiableCollection(beanClasses);
+    }
+
+    @Override
+    public Collection<Class<?>> getLoadedBeanClasses() {
+        return Collections.unmodifiableCollection(loadedBeanClasses);
     }
 
     @Override

@@ -103,6 +103,11 @@ public class WeldSEProvider implements CDIProvider {
                             return WeldContainer.instance(containerId);
                         }
                     }
+                    for (Class<?> clazz : entry.getKey().getLoadedBeanClasses()) {
+                        if (clazz.getName().equals(callerClassName)) {
+                            return WeldContainer.instance(containerId);
+                        }
+                    }
                 }
             }
             return WeldContainer.instance(ids.get(0));
