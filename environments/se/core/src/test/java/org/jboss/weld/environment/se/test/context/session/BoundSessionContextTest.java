@@ -59,8 +59,9 @@ public class BoundSessionContextTest {
         Map<String, Object> storage = Collections.synchronizedMap(new HashMap<String, Object>());
 
         List<Callable<Void>> calls = new ArrayList<Callable<Void>>();
-        calls.add(new ConcurrentCall(storage, boundSessionContext, product));
-        calls.add(new ConcurrentCall(storage, boundSessionContext, product));
+        for (int i = 0; i < Runtime.getRuntime().availableProcessors(); i++) {
+            calls.add(new ConcurrentCall(storage, boundSessionContext, product));
+        }
 
         for (Future<Void> result : executor.invokeAll(calls)) {
             result.get();
@@ -87,9 +88,17 @@ public class BoundSessionContextTest {
         }
 
         public Void call() throws Exception {
+            for (int i = 0; i < 1000; i++) {
+                doWork();
+            }
+            return null;
+        }
 
+        private void doWork() {
             sessionContext.associate(storage);
             sessionContext.activate();
+            // store some additional key-value pairs in the storage map to make it more likely to reproduce WELD-1932
+            storage.put(ConcurrentCall.class.getName(), this);
 
             try {
                 // Invoke the proxy - force bean instance creation
@@ -99,8 +108,8 @@ public class BoundSessionContextTest {
                 sessionContext.deactivate();
             } finally {
                 sessionContext.dissociate(storage);
+                storage.remove(ConcurrentCall.class.getName());
             }
-            return null;
         }
     }
 
