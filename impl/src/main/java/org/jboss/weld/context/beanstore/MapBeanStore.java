@@ -1,6 +1,7 @@
 package org.jboss.weld.context.beanstore;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
 
 public class MapBeanStore extends AttributeBeanStore {
@@ -8,10 +9,20 @@ public class MapBeanStore extends AttributeBeanStore {
     protected transient volatile LockStore lockStore;
 
     private final Map<String, Object> delegate;
+    /*
+     * Indicates whether it is safe to iterate over the keys if the delegate without synchronizing on it.
+     * For example, it is safe for ConcurrentHashMap but is not for Collections.synchronizedMap()
+     */
+    private final boolean safeIteration;
 
     public MapBeanStore(NamingScheme namingScheme, Map<String, Object> delegate) {
+        this(namingScheme, delegate, false);
+    }
+
+    public MapBeanStore(NamingScheme namingScheme, Map<String, Object> delegate, boolean safeIteration) {
         super(namingScheme);
         this.delegate = delegate;
+        this.safeIteration = safeIteration;
     }
 
     @Override
@@ -26,7 +37,12 @@ public class MapBeanStore extends AttributeBeanStore {
 
     @Override
     protected Collection<String> getAttributeNames() {
-        return delegate.keySet();
+        if (safeIteration) {
+            return new HashSet<String>(delegate.keySet());
+        }
+        synchronized (delegate) {
+            return new HashSet<String>(delegate.keySet());
+        }
     }
 
     @Override

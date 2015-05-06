@@ -182,7 +182,8 @@ public abstract class AttributeBeanStore implements BoundBeanStore {
 
     /**
      * Gets an enumeration of the attribute names present in the underlying
-     * storage
+     * storage. The collection must guarantee non-interference with other threads
+     * when iterating over it using iterator.
      *
      * @return The attribute names
      */
