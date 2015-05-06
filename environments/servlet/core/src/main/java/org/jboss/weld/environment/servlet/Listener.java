@@ -16,12 +16,20 @@
  */
 package org.jboss.weld.environment.servlet;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Consumer;
+
+import javax.enterprise.inject.spi.BeanManager;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 
+import org.jboss.weld.environment.ContainerInstance;
+import org.jboss.weld.environment.ContainerInstanceFactory;
 import org.jboss.weld.environment.servlet.logging.WeldServletLogger;
 import org.jboss.weld.servlet.api.ServletListener;
 import org.jboss.weld.servlet.api.helpers.ForwardingServletListener;
+import org.jboss.weld.util.Preconditions;
 
 /**
  * This is the original listener which had to be defined in web.xml.
@@ -38,9 +46,58 @@ import org.jboss.weld.servlet.api.helpers.ForwardingServletListener;
  */
 public class Listener extends ForwardingServletListener {
 
-    public static final String LISTENER_USED_ATTRIBUTE_NAME = EnhancedListener.class.getPackage().getName() + ".listenerUsed";
+    public static final String CONTAINER_ATTRIBUTE_NAME = WeldServletLifecycle.class.getPackage().getName() + ".container";
+    static final String LISTENER_USED_ATTRIBUTE_NAME = EnhancedListener.class.getPackage().getName() + ".listenerUsed";
+
+    /**
+     * Creates a new Listener that uses the given {@link BeanManager} instead of initializing a new Weld container instance.
+     * @param manager the bean manager to be used
+     * @return a new Listener instance
+     */
+    public static Listener using(BeanManager manager) {
+        return new Listener(Collections.singletonList(initAction(WeldServletLifecycle.BEAN_MANAGER_ATTRIBUTE_NAME, manager)));
+    }
+
+    /**
+     * Creates a new Listener that uses the given {@link ContainerInstance} (e.g. {@link org.jboss.weld.environment.se.WeldContainer}) instead of initializing a
+     * new Weld container instance. The listener does not take over the responsibility for container instance lifecycle management. It is the caller's
+     * responsibility to shut down the container instance properly. The listener will not shut down the container instance when the Servlet context is
+     * destroyed.
+     *
+     * @param container the container instance to be used
+     * @return a new Listener instance
+     */
+    public static Listener using(ContainerInstance container) {
+        return new Listener(Collections.singletonList(initAction(CONTAINER_ATTRIBUTE_NAME, container)));
+    }
+
+    /**
+     * Creates a new Listener that uses the given {@link ContainerInstanceFactory} for initializing Weld instance. A new Weld instance will be initialized using
+     * {@link ContainerInstanceFactory#initialize()} when the Servlet context is initialized. The Weld instance will be shut down when Servlet context is
+     * destroyed.
+     *
+     * @param container the container factory to be used
+     * @return a new Listener instance
+     */
+    public static Listener using(ContainerInstanceFactory container) {
+        return new Listener(Collections.singletonList(initAction(CONTAINER_ATTRIBUTE_NAME, container)));
+    }
+
+    private static Consumer<ServletContext> initAction(String key, Object value) {
+        Preconditions.checkNotNull(value);
+        return (context -> context.setAttribute(key, value));
+    }
 
     private volatile WeldServletLifecycle lifecycle;
+    private final List<Consumer<ServletContext>> initActions;
+
+    public Listener() {
+        this.initActions = Collections.emptyList();
+    }
+
+    private Listener(List<Consumer<ServletContext>> initActions) {
+        this.initActions = initActions;
+    }
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
@@ -52,6 +109,9 @@ public class Listener extends ForwardingServletListener {
             return;
         }
         WeldServletLogger.LOG.initializeWeldUsingServletContextListener();
+        for (Consumer<ServletContext> initAction : initActions) {
+            initAction.accept(context);
+        }
         lifecycle = new WeldServletLifecycle();
         lifecycle.initialize(context);
         super.contextInitialized(sce);

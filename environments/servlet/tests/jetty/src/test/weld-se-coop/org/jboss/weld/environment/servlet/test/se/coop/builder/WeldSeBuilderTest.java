@@ -23,7 +23,6 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
 import org.jboss.weld.environment.servlet.Listener;
-import org.jboss.weld.environment.servlet.WeldServletLifecycle;
 import org.junit.Test;
 
 import com.gargoylesoftware.htmlunit.Page;
@@ -39,25 +38,45 @@ public class WeldSeBuilderTest {
 
     @Test
     public void testPassingWeldSeBuilderToWeldServlet() throws Exception {
-        Weld builder = new Weld().disableDiscovery().beanClasses(Cat.class); // only take cat
-        test(builder);
+        Weld builder = new Weld().disableDiscovery().beanClasses(Cat.class);
+        ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+        context.addEventListener(Listener.using(builder));
+        test(context);
+    }
+
+    @Test
+    public void testPassingWeldSeBuilderToWeldServletViaParam() throws Exception {
+        Weld builder = new Weld().disableDiscovery().beanClasses(Cat.class);
+        ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+        context.addEventListener(new Listener());
+        context.setAttribute(Listener.CONTAINER_ATTRIBUTE_NAME, builder);
+        test(context);
     }
 
     @Test
     public void testPassingWeldSeContainerToWeldServlet() throws Exception {
         try (WeldContainer weld = new Weld().disableDiscovery().beanClasses(Cat.class).initialize()) {
-            test(weld);
+            ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+            context.addEventListener(Listener.using(weld));
+            test(context);
         }
     }
 
-    private void test(Object attribute) throws Exception {
+    @Test
+    public void testPassingWeldSeContainerToWeldServletViaParam() throws Exception {
+        try (WeldContainer weld = new Weld().disableDiscovery().beanClasses(Cat.class).initialize()) {
+            ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+            context.addEventListener(new Listener());
+            context.setAttribute(Listener.CONTAINER_ATTRIBUTE_NAME, weld);
+            test(context);
+        }
+    }
+
+    private void test(ServletContextHandler context) throws Exception {
         Server server = new Server(8080);
-        ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setContextPath("/");
         server.setHandler(context);
         context.addServlet(TestServlet.class, "/test");
-        context.setAttribute(WeldServletLifecycle.CONTAINER_ATTRIBUTE_NAME, attribute);
-        context.addEventListener(new Listener());
         server.start();
 
         try {
