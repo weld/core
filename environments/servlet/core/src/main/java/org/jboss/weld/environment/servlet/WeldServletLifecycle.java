@@ -86,7 +86,6 @@ import org.jboss.weld.util.collections.ImmutableSet;
 public class WeldServletLifecycle {
 
     public static final String BEAN_MANAGER_ATTRIBUTE_NAME = WeldServletLifecycle.class.getPackage().getName() + "." + BeanManager.class.getName();
-    public static final String CONTAINER_ATTRIBUTE_NAME = WeldServletLifecycle.class.getPackage().getName() + ".container";
     static final String INSTANCE_ATTRIBUTE_NAME = WeldServletLifecycle.class.getPackage().getName() + ".lifecycleInstance";
 
     private static final String EXPRESSION_FACTORY_NAME = "org.jboss.weld.el.ExpressionFactory";
@@ -139,7 +138,7 @@ public class WeldServletLifecycle {
         if (manager != null) {
             isBootstrapNeeded = false;
         } else {
-            Object container = context.getAttribute(CONTAINER_ATTRIBUTE_NAME);
+            Object container = context.getAttribute(Listener.CONTAINER_ATTRIBUTE_NAME);
             if (container instanceof ContainerInstanceFactory) {
                 ContainerInstanceFactory factory = (ContainerInstanceFactory) container;
                 // start the container
