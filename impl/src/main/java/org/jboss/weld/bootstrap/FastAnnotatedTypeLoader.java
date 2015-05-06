@@ -95,15 +95,14 @@ class FastAnnotatedTypeLoader extends AnnotatedTypeLoader {
 
     private <T> SlimAnnotatedTypeContext<T> createContext(String className, ClassFileInfo classFileInfo,
             Set<ExtensionObserverMethodImpl<?, ?>> observerMethods, String bdaId) {
-        final SlimAnnotatedType<T> type = loadAnnotatedType(this.<T> loadClass(className), bdaId);
+        final SlimAnnotatedType<T> type = loadSlimAnnotatedType(this.<T> loadClass(className), bdaId);
         if (type != null) {
             return SlimAnnotatedTypeContext.of(type, classFileInfo, observerMethods, classTransformer);
         }
         return null;
     }
 
-    @Override
-    protected <T> SlimAnnotatedType<T> loadAnnotatedType(Class<T> clazz, String bdaId) {
+    private <T> SlimAnnotatedType<T> loadSlimAnnotatedType(Class<T> clazz, String bdaId) {
         if (clazz != null) {
             try {
                 return classTransformer.getBackedAnnotatedType(clazz, bdaId);

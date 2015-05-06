@@ -83,11 +83,20 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
      * Loads a given class, creates a {@link SlimAnnotatedTypeContext} for it and stores it in {@link BeanDeployerEnvironment}.
      */
     public BeanDeployer addClass(String className, AnnotatedTypeLoader loader) {
-        SlimAnnotatedTypeContext<?> ctx = loader.loadAnnotatedType(className, getManager().getId());
+        addIfNotNull(loader.loadAnnotatedType(className, getManager().getId()));
+        return this;
+    }
+
+    public BeanDeployer addClass(Class<?> clazz, AnnotatedTypeLoader loader) {
+        addIfNotNull(loader.loadAnnotatedType(clazz, getManager().getId()));
+        return this;
+    }
+
+    private <T> SlimAnnotatedTypeContext<T> addIfNotNull(SlimAnnotatedTypeContext<T> ctx) {
         if (ctx != null) {
             getEnvironment().addAnnotatedType(ctx);
         }
-        return this;
+        return ctx;
     }
 
     private void processPriority(AnnotatedType<?> type) {
@@ -122,6 +131,14 @@ public class BeanDeployer extends AbstractBeanDeployer<BeanDeployerEnvironment> 
         AnnotatedTypeLoader loader = createAnnotatedTypeLoader();
         for (String className : classes) {
             addClass(className, loader);
+        }
+        return this;
+    }
+
+    public BeanDeployer addLoadedClasses(Iterable<Class<?>> classes) {
+        AnnotatedTypeLoader loader = createAnnotatedTypeLoader();
+        for (Class<?> clazz : classes) {
+            addClass(clazz, loader);
         }
         return this;
     }

@@ -57,7 +57,19 @@ class AnnotatedTypeLoader {
      * @return a new {@code SlimAnnotatedTypeContext} for a specified class or null
      */
     public <T> SlimAnnotatedTypeContext<T> loadAnnotatedType(String className, String bdaId) {
-        return createContext(loadAnnotatedType(this.<T> loadClass(className), bdaId));
+        return loadAnnotatedType(this.<T> loadClass(className), bdaId);
+    }
+
+    /**
+     * Creates a new {@link SlimAnnotatedTypeContext} instance for the given class. This method may return null if there is a problem
+     * loading the class or this class is not needed for further processing (e.g. an annotation or a vetoed class).
+     *
+     * @param clazz the given class
+     * @param bdaId the identifier of the bean archive this class resides in
+     * @return a new {@code SlimAnnotatedTypeContext} for a specified class or null
+     */
+    public <T> SlimAnnotatedTypeContext<T> loadAnnotatedType(Class<T> clazz, String bdaId) {
+        return createContext(internalLoadAnnotatedType(clazz, bdaId));
     }
 
     protected <T> Class<T> loadClass(String className) {
@@ -69,7 +81,7 @@ class AnnotatedTypeLoader {
         }
     }
 
-    protected <T> SlimAnnotatedType<T> loadAnnotatedType(Class<T> clazz, String bdaId) {
+    protected <T> SlimAnnotatedType<T> internalLoadAnnotatedType(Class<T> clazz, String bdaId) {
         if (clazz != null && !clazz.isAnnotation()) {
             try {
                 if (!Beans.isVetoed(clazz)) { // may throw ArrayStoreException - see bug http://bugs.sun.com/view_bug.do?bug_id=7183985
