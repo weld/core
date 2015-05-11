@@ -184,6 +184,16 @@ The `EjbDescriptor` should return the relevant metadata as defined in
 the EJB specification. Each business interface of a session bean should
 be described using a `BusinessInterfaceDescriptor`.
 
+By default, Weld uses the EJB component class when creating new EJB instances.
+This may not always be desired especially if the EJB container uses subclassing
+internally. In such scenario, the EJB container requires that the subclass
+it generated is used for creating instances instead of the component class.
+An integrator can communicate such layout to Weld by additionally implementing the optional
+`SubclassedComponentDescriptor` interface in the `EjbDescriptor` implementation.
+The return value of the
+link:http://docs.jboss.org/weld/javadoc/2.2/weld-spi/org/jboss/weld/ejb/spi/SubclassedComponentDescriptor.html#getComponentSubclass--[SubclassedComponentDescriptor.getComponentSubclass()]
+method determines which class will be used by Weld when creating new EJB instances.
+
 ==== EE resource injection and resolution services
 
 All the EE resource services are per-BDA services, and may be provided
