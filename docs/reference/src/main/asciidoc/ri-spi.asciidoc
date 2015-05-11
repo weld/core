@@ -777,6 +777,22 @@ it.dispose();
 cc.release();
 --------------------------------------------------------------------------------
 
+==== Around-construct interception
+
+Weld implements support for constructor call interception and invokes interceptors that are
+associated with the particular component either using an interceptor binding
+or the `@Interceptors` annotation.
+
+This can be suppressed by calling `WeldCreationalContext.setConstructorInterceptionSuppressed(true)`
+
+In addition, an integrator may register a callback in which it performs additional
+operations around the constructor call. This way an integrator may for example
+implement support for additional interceptors (e.g. those bound using the deployment descriptor).
+
+See link:http://docs.jboss.org/weld/javadoc/2.2/weld-spi/org/jboss/weld/construction/api/AroundConstructCallback.html[AroundConstructCallback]
+and link:http://docs.jboss.org/weld/javadoc/2.2/weld-spi/org/jboss/weld/construction/api/WeldCreationalContext.html#registerAroundConstructCallback-org.jboss.weld.construction.api.AroundConstructCallback-[WeldCreationalContext.registerAroundConstructCallback()]
+for more details.
+
 === Migration notes
 
 This part of the appendix documents the changes in Weld across major and
