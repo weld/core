@@ -650,7 +650,7 @@ In addition, since CDI 1.1 the `aroundInvoke` method of
 `SessionBeanInterceptor` should be invoked around `@PostConstruct`
 callbacks of EJBs.
 
-IMPORTANT: You must register the `SessionBeanInterceptor` as the inner most
+IMPORTANT: You must register the `SessionBeanInterceptor` as the outer most
 interceptor in the stack for all EJBs.
 
 ==== The `weld-core.jar`
