@@ -210,6 +210,11 @@ public final class BeanBuilderImpl<T> extends BeanAttributesBuilder<T, BeanBuild
         return cast(this);
     }
 
+    @Override
+    public <U extends T> BeanBuilder<U> producing(U instance) {
+        return produceWith(() -> instance);
+    }
+
     public BeanBuilder<T> destroyWith(BiConsumer<T, CreationalContext<T>> callback) {
         checkArgumentNotNull(callback, ARG_CALLBACK);
         this.destroyCallback = new DestroyCallback<>(callback);

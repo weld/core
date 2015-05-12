@@ -104,7 +104,8 @@ public class BeanBuilderTest {
         List<String> list = (List<String>) beanManager.getReference(listBean, new TypeLiteral<List<String>>() {
         }.getType(), beanManager.createCreationalContext(listBean));
         assertNotNull(list);
-        assertTrue(list.isEmpty());
+        assertEquals(1, list.size());
+        assertEquals("FOO", list.get(0));
 
         beans = beanManager.getBeans(VetoedBean.class, Random.Literal.INSTANCE);
         assertEquals(1, beans.size());
