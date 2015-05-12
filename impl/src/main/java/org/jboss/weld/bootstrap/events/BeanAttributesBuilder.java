@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.bootstrap.events;
 
+import static org.jboss.weld.util.Preconditions.checkArgumentNotNull;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collections;
@@ -24,12 +26,14 @@ import java.util.Set;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.spi.BeanAttributes;
+import javax.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.bean.attributes.ImmutableBeanAttributes;
 import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.literal.DefaultLiteral;
-import org.jboss.weld.util.Preconditions;
+import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.collections.ImmutableSet;
+import org.jboss.weld.util.reflection.HierarchyDiscovery;
 
 /**
  *
@@ -38,16 +42,17 @@ import org.jboss.weld.util.collections.ImmutableSet;
  * @param <T> the class of the bean instance
  * @param <B> the current builder class
  */
-public abstract class BeanAttributesBuilder<T, B> {
+abstract class BeanAttributesBuilder<T, B> {
 
-    private static final String ARG_SCOPE = "scope";
-    private static final String ARG_NAME = "name";
-    private static final String ARG_TYPES = "types";
-    private static final String ARG_TYPE = "type";
-    private static final String ARG_QUALIFIERS = "qualifiers";
-    private static final String ARG_QUALIFIER = "qualifier";
-    private static final String ARG_STEREOTYPES = "stereotypes";
-    private static final String ARG_STEREOTYPE = "stereotype";
+    protected static final String ARG_SCOPE = "scope";
+    protected static final String ARG_NAME = "name";
+    protected static final String ARG_TYPES = "types";
+    protected static final String ARG_TYPE = "type";
+    protected static final String ARG_TYPE_LITERAL = "typeLiteral";
+    protected static final String ARG_QUALIFIERS = "qualifiers";
+    protected static final String ARG_QUALIFIER = "qualifier";
+    protected static final String ARG_STEREOTYPES = "stereotypes";
+    protected static final String ARG_STEREOTYPE = "stereotype";
 
     protected String name;
 
@@ -73,45 +78,57 @@ public abstract class BeanAttributesBuilder<T, B> {
      *
      * @return the bean attributes
      */
-    public BeanAttributes<T> build() {
+    BeanAttributes<T> build() {
         return new ImmutableBeanAttributes<T>(ImmutableSet.copyOf(stereotypes), alternative != null ? alternative : false, name,
                 ImmutableSet.copyOf(qualifiers), ImmutableSet.copyOf(types), scope != null ? scope : Dependent.class);
     }
 
     public B addType(Type type) {
-        Preconditions.checkArgumentNotNull(type, ARG_TYPE);
+        checkArgumentNotNull(type, ARG_TYPE);
         this.types.add(type);
         return self();
     }
 
+    public B addType(TypeLiteral<?> typeLiteral) {
+        checkArgumentNotNull(typeLiteral, ARG_TYPE_LITERAL);
+        this.types.add(typeLiteral.getType());
+        return self();
+    }
+
     public B addTypes(Type... types) {
-        Preconditions.checkArgumentNotNull(types, ARG_TYPES);
+        checkArgumentNotNull(types, ARG_TYPES);
         Collections.addAll(this.types, types);
         return self();
     }
 
     public B addTypes(Set<Type> types) {
-        Preconditions.checkArgumentNotNull(types, ARG_TYPES);
+        checkArgumentNotNull(types, ARG_TYPES);
         this.types.addAll(types);
         return self();
     }
 
+    public B addTransitiveTypeClosure(Type type) {
+        checkArgumentNotNull(type, ARG_TYPE);
+        this.types.addAll(Beans.getLegalBeanTypes(new HierarchyDiscovery(type).getTypeClosure(), type));
+        return self();
+    }
+
     public B types(Type... types) {
-        Preconditions.checkArgumentNotNull(types, ARG_TYPES);
+        checkArgumentNotNull(types, ARG_TYPES);
         this.types.clear();
         Collections.addAll(this.types, types);
         return self();
     }
 
     public B types(Set<Type> types) {
-        Preconditions.checkArgumentNotNull(types, ARG_TYPES);
+        checkArgumentNotNull(types, ARG_TYPES);
         this.types.clear();
         this.types.addAll(types);
         return self();
     }
 
     public B scope(Class<? extends Annotation> scope) {
-        Preconditions.checkArgumentNotNull(scope, ARG_SCOPE);
+        checkArgumentNotNull(scope, ARG_SCOPE);
         this.scope = scope;
         return self();
     }
@@ -121,35 +138,35 @@ public abstract class BeanAttributesBuilder<T, B> {
     }
 
     public B addQualifier(Annotation qualifier) {
-        Preconditions.checkArgumentNotNull(qualifier, ARG_QUALIFIER);
+        checkArgumentNotNull(qualifier, ARG_QUALIFIER);
         this.qualifiers.remove(DefaultLiteral.INSTANCE);
         this.qualifiers.add(qualifier);
         return self();
     }
 
     public B addQualifiers(Annotation... qualifiers) {
-        Preconditions.checkArgumentNotNull(qualifiers, ARG_QUALIFIERS);
+        checkArgumentNotNull(qualifiers, ARG_QUALIFIERS);
         this.qualifiers.remove(DefaultLiteral.INSTANCE);
         Collections.addAll(this.qualifiers, qualifiers);
         return self();
     }
 
     public B addQualifiers(Set<Annotation> qualifiers) {
-        Preconditions.checkArgumentNotNull(qualifiers, ARG_QUALIFIERS);
+        checkArgumentNotNull(qualifiers, ARG_QUALIFIERS);
         this.qualifiers.remove(DefaultLiteral.INSTANCE);
         this.qualifiers.addAll(qualifiers);
         return self();
     }
 
     public B qualifiers(Annotation... qualifiers) {
-        Preconditions.checkArgumentNotNull(qualifiers, ARG_QUALIFIERS);
+        checkArgumentNotNull(qualifiers, ARG_QUALIFIERS);
         this.qualifiers.clear();
         Collections.addAll(this.qualifiers, qualifiers);
         return self();
     }
 
     public B qualifiers(Set<Annotation> qualifiers) {
-        Preconditions.checkArgumentNotNull(qualifiers, ARG_QUALIFIERS);
+        checkArgumentNotNull(qualifiers, ARG_QUALIFIERS);
         this.qualifiers.clear();
         this.qualifiers.addAll(qualifiers);
         return self();
@@ -160,26 +177,26 @@ public abstract class BeanAttributesBuilder<T, B> {
     }
 
     public B addStereotype(Class<? extends Annotation> stereotype) {
-        Preconditions.checkArgumentNotNull(stereotype, ARG_STEREOTYPE);
+        checkArgumentNotNull(stereotype, ARG_STEREOTYPE);
         this.stereotypes.add(stereotype);
         return self();
     }
 
     public B addStereotypes(Set<Class<? extends Annotation>> stereotypes) {
-        Preconditions.checkArgumentNotNull(stereotypes, ARG_STEREOTYPES);
+        checkArgumentNotNull(stereotypes, ARG_STEREOTYPES);
         this.stereotypes.addAll(stereotypes);
         return self();
     }
 
     public B stereotypes(Set<Class<? extends Annotation>> stereotypes) {
-        Preconditions.checkArgumentNotNull(stereotypes, ARG_STEREOTYPES);
+        checkArgumentNotNull(stereotypes, ARG_STEREOTYPES);
         this.stereotypes.clear();
         this.stereotypes.addAll(stereotypes);
         return self();
     }
 
     public B name(String name) {
-        Preconditions.checkArgumentNotNull(name, ARG_NAME);
+        checkArgumentNotNull(name, ARG_NAME);
         this.name = name;
         return self();
     }

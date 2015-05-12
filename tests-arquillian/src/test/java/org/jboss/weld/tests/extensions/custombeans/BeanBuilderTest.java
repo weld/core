@@ -21,6 +21,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.context.Dependent;
@@ -28,6 +29,7 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
+import javax.enterprise.util.TypeLiteral;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -54,7 +56,7 @@ public class BeanBuilderTest {
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "serial" })
     @Test
     public void testCustomBean(BeanManager beanManager) throws Exception {
         Set<Bean<?>> beans = beanManager.getBeans("bar");
@@ -93,6 +95,23 @@ public class BeanBuilderTest {
         assertEquals(1, beans.size());
         Bean<Bar> barBean = (Bean<Bar>) beans.iterator().next();
         assertEquals(Dependent.class, barBean.getScope());
+
+        beans = beanManager.getBeans(new TypeLiteral<List<String>>() {
+        }.getType(), Juicy.Literal.INSTANCE);
+        assertEquals(1, beans.size());
+        Bean<List<String>> listBean = (Bean<List<String>>) beans.iterator().next();
+        assertEquals(Dependent.class, listBean.getScope());
+        List<String> list = (List<String>) beanManager.getReference(listBean, new TypeLiteral<List<String>>() {
+        }.getType(), beanManager.createCreationalContext(listBean));
+        assertNotNull(list);
+        assertTrue(list.isEmpty());
+
+        beans = beanManager.getBeans(VetoedBean.class, Random.Literal.INSTANCE);
+        assertEquals(1, beans.size());
+        fooBean = (Bean<Foo>) beans.iterator().next();
+        assertEquals(Dependent.class, fooBean.getScope());
+        Foo randomFoo = (Foo) beanManager.getReference(fooBean, Foo.class, beanManager.createCreationalContext(listBean));
+        assertEquals(Long.valueOf(-1), randomFoo.getId());
     }
 
 }
