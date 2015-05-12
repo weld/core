@@ -170,13 +170,13 @@ public interface BeanLogger extends WeldLogger {
     @Message(id = 24, value = "ValidationServices are not available")
     String validationServiceNotAvailable();
 
-    @Message(id = 25, value = "Tried to create an EEResourceProducerField, but no @Resource, @PersistenceContext, @PersistenceUnit, @WebServiceRef or @EJB is present {0}", format = Format.MESSAGE_FORMAT)
+    @Message(id = 25, value = "Tried to create an EEResourceProducerField, but no @Resource, @PersistenceContext, @PersistenceUnit, @WebServiceRef or @EJB is present: {0}", format = Format.MESSAGE_FORMAT)
     IllegalStateException invalidResourceProducerField(Object param1);
 
-    @Message(id = 26, value = "SecurityServices not available")
+    @Message(id = 26, value = "Security Services not available - unable to obtain the Principal")
     IllegalStateException securityServicesNotAvailable();
 
-    @Message(id = 27, value = "TransactionServices not available")
+    @Message(id = 27, value = "Transaction Services not available - unable to obtain the UserTransaction")
     IllegalStateException transactionServicesNotAvailable();
 
     @Message(id = 28, value = "Interception model must not be null")
@@ -209,8 +209,8 @@ public interface BeanLogger extends WeldLogger {
     @Message(id = 37, value = "Cannot call EJB remove method directly on non-dependent scoped bean {0}", format = Format.MESSAGE_FORMAT)
     UnsupportedOperationException invalidRemoveMethodInvocation(Object param1);
 
-    @Message(id = 38, value = "Cannot place @Delegate at an injection point which is not on a Decorator: {0}", format = Format.MESSAGE_FORMAT)
-    DefinitionException delegateNotOnDecorator(Object param1);
+    @Message(id = 38, value = "A bean class that is not a decorator has an injection point annotated @Delegate\n  at injection point {0}\n  at {1}", format = Format.MESSAGE_FORMAT)
+    DefinitionException delegateNotOnDecorator(Object ip, Object stackElement);
 
     @Message(id = 39, value = "@Typed class {0} is not present in the type hierarchy {1}", format = Format.MESSAGE_FORMAT)
     DefinitionException typedClassNotInHierarchy(Object param1, Object param2);

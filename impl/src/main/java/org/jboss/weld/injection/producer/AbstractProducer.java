@@ -22,13 +22,14 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.Producer;
 
 import org.jboss.weld.logging.BeanLogger;
+import org.jboss.weld.util.reflection.Formats;
 
 public abstract class AbstractProducer<T> implements Producer<T> {
 
     protected void checkDelegateInjectionPoints() {
         for (InjectionPoint injectionPoint : getInjectionPoints()) {
             if (injectionPoint.isDelegate()) {
-                throw BeanLogger.LOG.delegateNotOnDecorator(this);
+            	throw BeanLogger.LOG.delegateNotOnDecorator(injectionPoint, Formats.formatAsStackTraceElement(injectionPoint));
             }
         }
     }
