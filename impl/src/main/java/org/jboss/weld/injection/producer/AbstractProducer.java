@@ -29,7 +29,7 @@ public abstract class AbstractProducer<T> implements Producer<T> {
     protected void checkDelegateInjectionPoints() {
         for (InjectionPoint injectionPoint : getInjectionPoints()) {
             if (injectionPoint.isDelegate()) {
-            	throw BeanLogger.LOG.delegateNotOnDecorator(injectionPoint, Formats.formatAsStackTraceElement(injectionPoint));
+                throw BeanLogger.LOG.delegateNotOnDecorator(injectionPoint, Formats.formatAsStackTraceElement(injectionPoint));
             }
         }
     }
