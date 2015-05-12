@@ -16,7 +16,9 @@
  */
 package org.jboss.weld.tests.extensions.custombeans;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.enterprise.context.Dependent;
@@ -25,6 +27,7 @@ import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
+import javax.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.experimental.BeanBuilder;
 import org.jboss.weld.experimental.ExperimentalAfterBeanDiscovery;
@@ -41,6 +44,7 @@ public class BuilderExtension implements Extension {
         event.veto();
     }
 
+    @SuppressWarnings("serial")
     public void afterBeanDiscovery(@Observes ExperimentalAfterBeanDiscovery event, BeanManager beanManager) {
 
         AnnotatedType<Foo> annotatedType = beanManager.createAnnotatedType(Foo.class);
@@ -69,5 +73,13 @@ public class BuilderExtension implements Extension {
         // Test produceWith callback with Instance<Object> param
         event.addBean().addType(Long.class).addQualifier(AnotherRandom.Literal.INSTANCE)
                 .produceWith((i) -> i.select(Foo.class, Juicy.Literal.INSTANCE).get().getId() * 2);
+
+        // Test TypeLiteral
+        event.addBean().addType(new TypeLiteral<List<String>>() {
+        }).addQualifier(Juicy.Literal.INSTANCE).produceWith(() -> new ArrayList<String>());
+
+        // Test transitive type closure
+        event.addBean().addTransitiveTypeClosure(Foo.class).addQualifier(Random.Literal.INSTANCE)
+                .produceWith(() -> new Foo(-1l));
     }
 }

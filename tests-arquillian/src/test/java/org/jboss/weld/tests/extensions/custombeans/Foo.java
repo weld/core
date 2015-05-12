@@ -30,6 +30,13 @@ public class Foo implements VetoedBean {
 
     private Long id;
 
+    public Foo() {
+    }
+
+    public Foo(Long id) {
+        this.id = id;
+    }
+
     @Inject
     BeanManager beanManager;
 

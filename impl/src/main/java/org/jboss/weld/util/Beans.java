@@ -400,7 +400,7 @@ public class Beans {
     }
 
     /**
-     * Illegal bean types are ignored except fo array and primitive types and unless {@link Typed} is used.
+     * Illegal bean types are ignored except for array and primitive types and unless {@link Typed} is used.
      *
      * @return the set of bean types from an annotated element
      */
@@ -590,24 +590,24 @@ public class Beans {
      * @param additionalTypes Types to add to the initial set
      * @return the set of legal bean types
      */
-    static Set<Type> getLegalBeanTypes(Set<Type> types, EnhancedAnnotated<?, ?> annotated, Type... additionalTypes) {
+    public static Set<Type> getLegalBeanTypes(Set<Type> types, Object baseType, Type... additionalTypes) {
         if (additionalTypes != null && additionalTypes.length > 0) {
             // Micro-optimization is not possible
-            return omitIllegalBeanTypes(types, annotated).addAll(additionalTypes).build();
+            return omitIllegalBeanTypes(types, baseType).addAll(additionalTypes).build();
         }
         for (Type type : types) {
             if (Types.isIllegalBeanType(type)) {
-                return omitIllegalBeanTypes(types, annotated).build();
+                return omitIllegalBeanTypes(types, baseType).build();
             }
         }
         return types;
     }
 
-    static ImmutableSet.Builder<Type> omitIllegalBeanTypes(Set<Type> types, EnhancedAnnotated<?, ?> annotated) {
+    static ImmutableSet.Builder<Type> omitIllegalBeanTypes(Set<Type> types, Object baseType) {
         ImmutableSet.Builder<Type> builder = ImmutableSet.builder();
         for (Type type : types) {
             if (Types.isIllegalBeanType(type)) {
-                MetadataLogger.LOG.illegalBeanTypeIgnored(type, annotated);
+                MetadataLogger.LOG.illegalBeanTypeIgnored(type, baseType);
             } else {
                 builder.add(type);
             }
