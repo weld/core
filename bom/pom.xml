@@ -3,12 +3,12 @@
     <groupId>org.jboss.weld</groupId>
     <artifactId>weld-core-bom</artifactId>
     <packaging>pom</packaging>
-    <version>2.2.12.Final</version>
+    <version>2.2.13-SNAPSHOT</version>
 
     <parent>
         <groupId>org.jboss.weld</groupId>
         <artifactId>weld-core-parent</artifactId>
-        <version>2.2.12.Final</version>
+        <version>2.2.13-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -108,7 +108,7 @@
         <connection>scm:git:git@github.com:weld/core.git</connection>
         <developerConnection>scm:git:git@github.com:weld/core.git</developerConnection>
         <url>scm:git:git@github.com:weld/core.git</url>
-      <tag>2.2.12.Final</tag>
+      <tag>HEAD</tag>
   </scm>
 
 </project>
