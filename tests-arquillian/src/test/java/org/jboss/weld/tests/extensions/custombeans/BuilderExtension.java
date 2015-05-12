@@ -75,8 +75,10 @@ public class BuilderExtension implements Extension {
                 .produceWith((i) -> i.select(Foo.class, Juicy.Literal.INSTANCE).get().getId() * 2);
 
         // Test TypeLiteral
+        List<String> list = new ArrayList<String>();
+        list.add("FOO");
         event.addBean().addType(new TypeLiteral<List<String>>() {
-        }).addQualifier(Juicy.Literal.INSTANCE).produceWith(() -> new ArrayList<String>());
+        }).addQualifier(Juicy.Literal.INSTANCE).producing(list);
 
         // Test transitive type closure
         event.addBean().addTransitiveTypeClosure(Foo.class).addQualifier(Random.Literal.INSTANCE)
