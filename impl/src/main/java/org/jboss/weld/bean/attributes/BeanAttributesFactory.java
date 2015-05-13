@@ -16,7 +16,6 @@
  */
 package org.jboss.weld.bean.attributes;
 
-import java.beans.Introspector;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collections;
@@ -144,7 +143,9 @@ public class BeanAttributesFactory {
          */
         protected String getDefaultName(EnhancedAnnotated<?, ?> annotated) {
             if (annotated instanceof EnhancedAnnotatedType<?>) {
-                return Introspector.decapitalize(((EnhancedAnnotatedType<?>) annotated).getSimpleName());
+                StringBuilder defaultName = new StringBuilder(((EnhancedAnnotatedType<?>) annotated).getSimpleName());
+                defaultName.setCharAt(0, Character.toLowerCase(defaultName.charAt(0)));
+                return defaultName.toString();
             } else if (annotated instanceof EnhancedAnnotatedField<?, ?>) {
                 return ((EnhancedAnnotatedField<?, ?>) annotated).getPropertyName();
             } else if (annotated instanceof EnhancedAnnotatedMethod<?, ?>) {
