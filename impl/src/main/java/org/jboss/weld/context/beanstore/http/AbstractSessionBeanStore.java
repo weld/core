@@ -1,10 +1,9 @@
 package org.jboss.weld.context.beanstore.http;
 
-import static java.util.Collections.emptyList;
+import static java.util.Collections.emptyIterator;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
-import java.util.Collection;
-import java.util.Enumeration;
+import java.util.Iterator;
 
 import javax.servlet.http.HttpSession;
 
@@ -14,8 +13,7 @@ import org.jboss.weld.context.beanstore.LockStore;
 import org.jboss.weld.context.beanstore.NamingScheme;
 import org.jboss.weld.logging.ContextLogger;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
-import org.jboss.weld.util.collections.EnumerationList;
-import org.jboss.weld.util.reflection.Reflections;
+import org.jboss.weld.util.collections.EnumerationIterator;
 
 /**
  * Base class providing an HttpSession backed, bound bean store.
@@ -40,12 +38,12 @@ public abstract class AbstractSessionBeanStore extends AttributeBeanStore {
         super(namingScheme);
     }
 
-    protected Collection<String> getAttributeNames() {
+    protected Iterator<String> getAttributeNames() {
         HttpSession session = getSession(false);
         if (session == null) {
-            return emptyList();
+            return emptyIterator();
         } else {
-            return new EnumerationList<String>(Reflections.<Enumeration<String>>cast(session.getAttributeNames()));
+            return new EnumerationIterator<String>(session.getAttributeNames());
         }
     }
 

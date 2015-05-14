@@ -187,7 +187,7 @@ public abstract class AttributeBeanStore implements BoundBeanStore {
      *
      * @return The attribute names
      */
-    protected abstract Collection<String> getAttributeNames();
+    protected abstract Iterator<String> getAttributeNames();
 
     /**
      * Gets an enumeration of the attribute names present in the underlying
