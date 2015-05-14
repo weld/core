@@ -1,26 +1,18 @@
 package org.jboss.weld.context.beanstore;
 
-import static com.google.common.collect.Collections2.filter;
-
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 import org.jboss.weld.bean.StringBeanIdentifier;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 
 import com.google.common.base.Function;
-import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 
 public abstract class AbstractNamingScheme implements NamingScheme {
-
-    class PrefixPredicate implements Predicate<String> {
-
-        public boolean apply(String input) {
-            return AbstractNamingScheme.this.accept(input);
-        }
-
-    }
 
     class DeprefixerFunction implements Function<String, BeanIdentifier> {
 
@@ -39,7 +31,6 @@ public abstract class AbstractNamingScheme implements NamingScheme {
     }
 
     private final String delimiter;
-    private final PrefixPredicate predicate;
     private final DeprefixerFunction deprefixerFunction;
     private final PrefixerFunction prefixerFunction;
 
@@ -52,7 +43,6 @@ public abstract class AbstractNamingScheme implements NamingScheme {
      */
     public AbstractNamingScheme(String delimiter) {
         this.delimiter = delimiter;
-        this.predicate = new PrefixPredicate();
         this.deprefixerFunction = new DeprefixerFunction();
         this.prefixerFunction = new PrefixerFunction();
     }
@@ -70,8 +60,18 @@ public abstract class AbstractNamingScheme implements NamingScheme {
         return getPrefix() + delimiter + id.asString();
     }
 
-    public Collection<String> filterIds(Collection<String> ids) {
-        return new ArrayList<String>(filter(ids, predicate));
+    public Collection<String> filterIds(Iterator<String> iterator) {
+        if (!iterator.hasNext()) {
+            return Collections.emptyList();
+        }
+        List<String> filtered = new ArrayList<String>();
+        while (iterator.hasNext()) {
+            String id = iterator.next();
+            if (accept(id)) {
+                filtered.add(id);
+            }
+        }
+        return filtered;
     }
 
     public Collection<BeanIdentifier> deprefix(Collection<String> ids) {
