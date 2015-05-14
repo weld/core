@@ -1,6 +1,6 @@
 package org.jboss.weld.context.beanstore.ejb;
 
-import java.util.Collection;
+import java.util.Iterator;
 
 import javax.interceptor.InvocationContext;
 
@@ -28,8 +28,8 @@ public class InvocationContextBeanStore extends AttributeBeanStore {
     }
 
     @Override
-    protected Collection<String> getAttributeNames() {
-        return ctx.getContextData().keySet();
+    protected Iterator<String> getAttributeNames() {
+        return ctx.getContextData().keySet().iterator();
     }
 
     @Override
