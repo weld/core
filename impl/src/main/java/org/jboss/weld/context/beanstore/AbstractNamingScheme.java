@@ -1,6 +1,10 @@
 package org.jboss.weld.context.beanstore;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.jboss.weld.bean.StringBeanIdentifier;
@@ -31,8 +35,18 @@ public abstract class AbstractNamingScheme implements NamingScheme {
         return getPrefix() + delimiter + id.asString();
     }
 
-    public Collection<String> filterIds(Collection<String> ids) {
-        return ids.stream().filter(this::accept).collect(Collectors.toList());
+    public Collection<String> filterIds(Iterator<String> iterator) {
+        if (!iterator.hasNext()) {
+            return Collections.emptyList();
+        }
+        List<String> filtered = new ArrayList<String>();
+        while (iterator.hasNext()) {
+            String id = iterator.next();
+            if (accept(id)) {
+                filtered.add(id);
+            }
+        }
+        return filtered;
     }
 
     public Collection<BeanIdentifier> deprefix(Collection<String> ids) {
