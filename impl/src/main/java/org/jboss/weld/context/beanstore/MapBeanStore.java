@@ -1,7 +1,7 @@
 package org.jboss.weld.context.beanstore;
 
-import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 
 public class MapBeanStore extends AttributeBeanStore {
@@ -36,12 +36,12 @@ public class MapBeanStore extends AttributeBeanStore {
     }
 
     @Override
-    protected Collection<String> getAttributeNames() {
+    protected Iterator<String> getAttributeNames() {
         if (safeIteration) {
-            return new HashSet<String>(delegate.keySet());
+            return new HashSet<String>(delegate.keySet()).iterator();
         }
         synchronized (delegate) {
-            return new HashSet<String>(delegate.keySet());
+            return new HashSet<String>(delegate.keySet()).iterator();
         }
     }
 

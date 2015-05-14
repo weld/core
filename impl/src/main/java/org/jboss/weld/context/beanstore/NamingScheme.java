@@ -1,6 +1,7 @@
 package org.jboss.weld.context.beanstore;
 
 import java.util.Collection;
+import java.util.Iterator;
 
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 
@@ -31,11 +32,11 @@ public interface NamingScheme {
     String prefix(BeanIdentifier id);
 
     /**
-     * Filter a collection of ids, retaining only those correctly prefixed.
+     * Filter ids and retain only those correctly prefixed.
      *
-     * @param ids the collection of ides to filter
+     * @param ids the identifiers to filter
      */
-    Collection<String> filterIds(Collection<String> ids);
+    Collection<String> filterIds(Iterator<String> ids);
 
     Collection<BeanIdentifier> deprefix(Collection<String> ids);
 
