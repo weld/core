@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.jboss.weld.context.beanstore.AttributeBeanStore;
 import org.jboss.weld.context.beanstore.LockStore;
 import org.jboss.weld.context.beanstore.NamingScheme;
+import org.jboss.weld.servlet.HttpContextLifecycle;
 import org.jboss.weld.util.collections.EnumerationIterator;
 
 /**
@@ -58,4 +59,10 @@ public class RequestBeanStore extends AttributeBeanStore {
     public LockStore getLockStore() {
         return null;
     }
+
+    @Override
+    protected boolean isStoreSyncDuringAttachRequired() {
+        return Boolean.TRUE.equals(request.getAttribute(HttpContextLifecycle.ASYNC_STARTED_ATTR_NAME));
+    }
+
 }
