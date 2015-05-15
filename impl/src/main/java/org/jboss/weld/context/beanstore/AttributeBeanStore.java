@@ -80,24 +80,22 @@ public abstract class AttributeBeanStore implements BoundBeanStore {
     public boolean attach() {
         if (!attached) {
             attached = true;
-            // beanStore is authoritative, so copy everything to the backing store
-            for (BeanIdentifier id : beanStore) {
-                ContextualInstance<?> instance = beanStore.get(id);
-                String prefixedId = getNamingScheme().prefix(id);
-                ContextLogger.LOG.updatingStoreWithContextualUnderId(instance, id);
-                setAttribute(prefixedId, instance);
-            }
-
-            /*
-            * Additionally copy anything not in the bean store but in the session
-            * into the bean store
-            */
-            for (String prefixedId : getPrefixedAttributeNames()) {
-                BeanIdentifier id = getNamingScheme().deprefix(prefixedId);
-                if (!beanStore.contains(id)) {
-                    ContextualInstance<?> instance = (ContextualInstance<?>) getAttribute(prefixedId);
-                    beanStore.put(id, instance);
-                    ContextLogger.LOG.addingDetachedContextualUnderId(instance, id);
+            if (isStoreSyncDuringAttachRequired()) {
+                // The local bean store is authoritative, so copy everything to the backing store
+                for (BeanIdentifier id : beanStore) {
+                    ContextualInstance<?> instance = beanStore.get(id);
+                    String prefixedId = getNamingScheme().prefix(id);
+                    ContextLogger.LOG.updatingStoreWithContextualUnderId(instance, id);
+                    setAttribute(prefixedId, instance);
+                }
+                // Additionally copy anything not in the local bean store but in the backing store
+                for (String prefixedId : getPrefixedAttributeNames()) {
+                    BeanIdentifier id = getNamingScheme().deprefix(prefixedId);
+                    if (!beanStore.contains(id)) {
+                        ContextualInstance<?> instance = (ContextualInstance<?>) getAttribute(prefixedId);
+                        beanStore.put(id, instance);
+                        ContextLogger.LOG.addingDetachedContextualUnderId(instance, id);
+                    }
                 }
             }
             return true;
@@ -218,4 +216,13 @@ public abstract class AttributeBeanStore implements BoundBeanStore {
     }
 
     protected abstract LockStore getLockStore();
+
+    /**
+     * TODO
+     *
+     * @return
+     */
+    protected boolean isStoreSyncDuringAttachRequired() {
+        return true;
+    }
 }
