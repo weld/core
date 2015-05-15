@@ -47,6 +47,8 @@ import org.jboss.weld.util.reflection.Reflections;
  */
 public class HttpContextLifecycle implements Service {
 
+    public static final String ASYNC_STARTED_ATTR_NAME = "org.jboss.weld.context.asyncStarted";
+
     private static final String HTTP_SESSION = "org.jboss.weld." + HttpSession.class.getName();
 
     private static final String INCLUDE_HEADER = "javax.servlet.include.request_uri";
@@ -278,7 +280,14 @@ public class HttpContextLifecycle implements Service {
              * if this request has been switched to async then do not invalidate the context now
              * as it will be invalidated at the end of the async operation.
              */
-            if (!servletApi.isAsyncSupported() || !servletApi.isAsyncStarted(request)) {
+            // if (!servletApi.isAsyncSupported() || !servletApi.isAsyncStarted(request)) {
+            //    getRequestContext().invalidate();
+            //}
+
+            // TODO isAsyncStarted() is not working after dispatch
+            if(servletApi.isAsyncSupported() && servletApi.isAsyncStarted(request)) {
+                request.setAttribute(ASYNC_STARTED_ATTR_NAME, true);
+            } else {
                 getRequestContext().invalidate();
             }
 
