@@ -25,13 +25,6 @@
 
             <!-- Issues in the TCK -->
 
-            <!-- CDITCK-217 -->
-            <class
-              name="org.jboss.jsr299.tck.tests.lookup.injection.non.contextual.ws.InjectionIntoWebServiceEndPointTest">
-              <methods>
-                <exclude name="testInjectionIntoWebServiceEndpoint" />
-              </methods>
-            </class>
 
             <!-- CDITCK-265 -->
             <class
@@ -41,13 +34,6 @@
               </methods>
             </class>
 
-            <!-- CDITCK-263 -->
-            <class
-              name="org.jboss.jsr299.tck.tests.implementation.simple.lifecycle.unproxyable.UnproxyableManagedBeanTest">
-              <methods>
-                <exclude name=".*" />
-              </methods>
-            </class>
 
             <!-- Issues in Weld (the RI) -->
 
