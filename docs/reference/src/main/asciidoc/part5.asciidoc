@@ -25,6 +25,8 @@ include::environments.asciidoc[]
 
 include::configure.asciidoc[]
 
+include::logging.asciidoc[]
+
 include::developmentmode.asciidoc[]
 
 include::contexts.asciidoc[]
