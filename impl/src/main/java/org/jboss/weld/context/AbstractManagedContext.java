@@ -1,30 +1,45 @@
+/*
+ * JBoss, Home of Professional Open Source
+ * Copyright 2008, Red Hat, Inc., and individual contributors
+ * by the @authors tag. See the copyright.txt in the distribution for a
+ * full listing of individual contributors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.jboss.weld.context;
 
-import static java.lang.Boolean.FALSE;
-
+/**
+ *
+ * @author Pete Muir
+ */
 public abstract class AbstractManagedContext extends AbstractContext implements ManagedContext {
 
-    private final ThreadLocal<Boolean> active;
-    private final ThreadLocal<Boolean> valid;
+    private final ThreadLocal<ManagedState> state;
 
     public AbstractManagedContext(String contextId, boolean multithreaded) {
         super(contextId, multithreaded);
-        this.active = new ThreadLocal<Boolean>();
-        this.valid = new ThreadLocal<Boolean>();
-
+        this.state = new ThreadLocal<ManagedState>();
     }
 
     public boolean isActive() {
-        Boolean active = this.active.get();
-        return active == null ? false : active;
+        ManagedState managedState = state.get();
+        return managedState != null ? managedState.isActive() : false;
     }
 
     protected void setActive(boolean active) {
-        this.active.set(active);
+        getManagedState().setActive(active);
     }
 
     public void invalidate() {
-        this.valid.set(FALSE);
+        getManagedState().setValid(false);
     }
 
     public void activate() {
@@ -32,22 +47,53 @@ public abstract class AbstractManagedContext extends AbstractContext implements 
     }
 
     public boolean isValid() {
-        Boolean valid = this.valid.get();
-        return valid == null ? true : valid;
+        ManagedState managedState = state.get();
+        return managedState != null ? managedState.isValid() : false;
     }
 
     public void deactivate() {
         if (!isValid()) {
             destroy();
         }
-        active.remove();
+        state.remove();
     }
 
-    @Override
-    public void cleanup() {
-        super.cleanup();
-        active.remove();
-        valid.remove();
+    private ManagedState getManagedState() {
+        ManagedState managedState = state.get();
+        if (managedState == null) {
+            managedState = new ManagedState();
+            state.set(managedState);
+        }
+        return managedState;
+    }
+
+    private static class ManagedState {
+
+        private boolean isActive;
+
+        private boolean isValid;
+
+        private ManagedState() {
+            isActive = false;
+            isValid = true;
+        }
+
+        boolean isActive() {
+            return isActive;
+        }
+
+        void setActive(boolean isActive) {
+            this.isActive = isActive;
+        }
+
+        boolean isValid() {
+            return isValid;
+        }
+
+        void setValid(boolean isValid) {
+            this.isValid = isValid;
+        }
+
     }
 
 }
