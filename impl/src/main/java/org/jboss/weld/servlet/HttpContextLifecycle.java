@@ -297,8 +297,9 @@ public class HttpContextLifecycle implements Service {
 
             safelyDeactivate(getSessionContext(), request);
             // fire @Destroyed(SessionScoped.class)
-            if (!getSessionContext().isValid()) {
-                sessionDestroyedEvent.fire((HttpSession) request.getAttribute(HTTP_SESSION));
+            Object destroyedHttpSession = request.getAttribute(HTTP_SESSION);
+            if (destroyedHttpSession != null) {
+                sessionDestroyedEvent.fire((HttpSession) destroyedHttpSession);
             }
         } finally {
             safelyDissociate(getRequestContext(), request);
