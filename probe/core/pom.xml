@@ -120,6 +120,8 @@
                             <destinationFolder>${project.basedir}/target/classes/META-INF/client</destinationFolder>
                             <contextFolder>${project.basedir}/target/client</contextFolder>
                             <wroFile>src/main/client/wro.xml</wroFile>
+                            <wroManagerFactory>ro.isdc.wro.maven.plugin.manager.factory.ConfigurableWroManagerFactory</wroManagerFactory>
+                            <extraConfigFile>src/main/client/wro.properties</extraConfigFile>
                         </configuration>
                     </plugin>
                     <plugin>
