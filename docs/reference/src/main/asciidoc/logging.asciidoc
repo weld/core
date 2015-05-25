@@ -1,0 +1,34 @@
+[[logging]]
+== Logging
+Weld is using link:https://developer.jboss.org/wiki/JBossLoggingTooling[JBoss Logging], an abstraction layer which provides support for the internationalization and localization of log messages and exception messages. However, JBoss Logging itself does not write any log messages. Instead, it only constructs a log message and delegates to one of the supported logging frameworks.
+
+The supported "back-end" frameworks include:
+
+. link:https://developer.jboss.org/wiki/StandaloneJBossLogManager[jboss-logmanager]
+. link:http://logging.apache.org/log4j/2.x/[Log4j]
+. link:http://www.slf4j.org/[SLF4J]
+. JDK logging
+
+A system property `org.jboss.logging.provider` may be used to specify the logging framework directly. Supported values are `jboss`, `jdk`, `log4j` and `slf4j`. If this system property is not set, JBoss Logging will attempt to find the logging frameworks from the above-mentioned list on the classpath - the first one found is taken.
+
+=== Java EE containers
+If using Weld with a Java EE container (e.g. WildFly) the logging configuration is under the direction of the container. You should follow the container-specific guides to change the configuration (e.g. link:https://docs.jboss.org/author/display/WFLY8/Logging+Configuration[WildFly - Logging Configuration]).
+
+=== Servlet containers
+Unlike the case of Java EE containers a web application deployed to a servlet container usually bundles a logging framework and possibly some configuration file. In this case, the configuration is in hands of the application developer (provided the bundled framework is supported by JBoss Logging).
+
+If no logging framework is bundled follow the container-specific guides to change the configuration (e.g. link:http://tomcat.apache.org/tomcat-8.0-doc/logging.html[Logging in Tomcat]).
+
+=== Weld SE
+This is very similar to servlet containers except the class loading is usually even less complicated.
+
+[TIP]
+====
+If you just want to see the debug log messages as quickly as possible in Weld SE try this:
+
+. add org.slf4j:slf4j-simple on the classpath and remove other SLF4J bindings,
+. set the "back-end" framework to `slf4j`,
+. and change the level for `org.jboss.weld`, e.g.:
+
+ mvn clean test -Dtest=MyWeldSETest -Dorg.jboss.logging.provider=slf4j -Dorg.slf4j.simpleLogger.log.org.jboss.weld=debug
+====
