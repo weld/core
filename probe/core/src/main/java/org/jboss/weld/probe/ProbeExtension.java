@@ -25,6 +25,7 @@ import javax.decorator.Decorator;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.UnproxyableResolutionException;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
+import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.AnnotatedMember;
 import javax.enterprise.inject.spi.AnnotatedType;
@@ -45,19 +46,24 @@ import org.jboss.weld.util.bean.ForwardingBeanAttributes;
 import org.jboss.weld.util.collections.ImmutableSet;
 
 /**
- * This extension is needed for monitoring. In particular, it adds {@link AnnotatedType}s for interceptor, interceptor binding and stereotype. Furthermore,
- * {@link BeanAttributes} of all suitable beans are modified so that a stereotype with applied interceptor binding is declared.
+ * This extension adds {@link AnnotatedType}s needed for monitoring. Furthermore, {@link BeanAttributes} of all suitable beans are modified so that a stereotype
+ * with applied interceptor binding is declared. Finally, an initialization of the {@link Probe} component (mapping data) is triggered.
  *
  * <p>
- * An integrator is required to register this extension if appropriate.
+ * An integrator is required to register this extension for every application which should be a subject of inspection.
  * </p>
  *
  * @author Martin Kouba
  */
 public class ProbeExtension implements Extension {
 
+    private final Probe probe;
+
     private volatile Pattern invocationMonitorExcludePattern;
-    private volatile ProbeObserver probeObserver;
+
+    public ProbeExtension() {
+        this.probe = new Probe();
+    }
 
     public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery event, BeanManager beanManager) {
         ProbeLogger.LOG.developmentModeEnabled();
@@ -88,6 +94,20 @@ public class ProbeExtension implements Extension {
         }
     }
 
+    public void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager beanManager) {
+        BeanManagerImpl weldManager = BeanManagerProxy.unwrap(beanManager);
+        String exclude = weldManager.getServices().get(WeldConfiguration.class).getStringProperty(ConfigurationKey.PROBE_EVENT_MONITOR_EXCLUDE_TYPE);
+        event.addObserverMethod(new ProbeObserver(weldManager, exclude.isEmpty() ? null : Pattern.compile(exclude), probe));
+    }
+
+    public void afterDeploymentValidation(@Observes AfterDeploymentValidation event, BeanManager beanManager) {
+        probe.init(BeanManagerProxy.unwrap(beanManager));
+    }
+
+    Probe getProbe() {
+        return probe;
+    }
+
     private <T> boolean isMonitored(Annotated annotated, BeanAttributes<T> beanAttributes, WeldManager weldManager) {
         if (annotated.isAnnotationPresent(Interceptor.class) || annotated.isAnnotationPresent(Decorator.class)) {
             // Omit interceptors and decorators
@@ -115,16 +135,5 @@ public class ProbeExtension implements Extension {
             }
         }
         return true;
-    }
-
-    public void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager manager) {
-        WeldManager weldManager = (WeldManager) manager;
-        String exclude = weldManager.getServices().get(WeldConfiguration.class).getStringProperty(ConfigurationKey.PROBE_EVENT_MONITOR_EXCLUDE_TYPE);
-        probeObserver = new ProbeObserver(BeanManagerProxy.unwrap(manager), exclude.isEmpty() ? null : Pattern.compile(exclude));
-        event.addObserverMethod(probeObserver);
-    }
-
-    public ProbeObserver getProbeObserver() {
-        return probeObserver;
     }
 }

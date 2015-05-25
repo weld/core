@@ -122,7 +122,10 @@ public class InvocationMonitor implements Serializable {
 
     private synchronized void initProbe() {
         if (probe == null) {
-            probe = beanManager.getServices().get(Probe.class);
+            probe = beanManager.getExtension(ProbeExtension.class).getProbe();
+            if (!probe.isInitialized()) {
+                throw ProbeLogger.LOG.probeNotInitialized();
+            }
         }
     }
 

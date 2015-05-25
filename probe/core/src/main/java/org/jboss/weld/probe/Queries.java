@@ -47,7 +47,6 @@ import javax.enterprise.inject.spi.ObserverMethod;
 import org.jboss.weld.event.ObserverMethodImpl;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.probe.Components.BeanKind;
-import org.jboss.weld.probe.ProbeObserver.EventInfo;
 
 /**
  * A few utility methods and classes to support simple querying (filtering and pagination).
@@ -457,8 +456,8 @@ final class Queries {
 
         @Override
         boolean test(EventInfo event) {
-            return testContainsIgnoreCase(eventInfo, event.eventString) && testContainsIgnoreCase(type, event.type)
-                    && testContainsIgnoreCase(qualifiers, event.qualifiers) && (container == null || container == event.containerEvent);
+            return testContainsIgnoreCase(eventInfo, event.getEventString()) && testContainsIgnoreCase(type, event.getType())
+                    && testContainsIgnoreCase(qualifiers, event.getQualifiers()) && (container == null || container == event.isContainerEvent());
         }
 
         @Override

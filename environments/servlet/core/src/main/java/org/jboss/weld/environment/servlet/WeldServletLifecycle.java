@@ -18,7 +18,6 @@ package org.jboss.weld.environment.servlet;
 
 import static org.jboss.weld.config.ConfigurationKey.BEAN_IDENTIFIER_INDEX_OPTIMIZATION;
 
-import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -29,7 +28,6 @@ import javax.enterprise.inject.spi.Extension;
 import javax.servlet.DispatcherType;
 import javax.servlet.FilterRegistration;
 import javax.servlet.ServletContext;
-import javax.servlet.ServletRegistration;
 import javax.servlet.jsp.JspApplicationContext;
 import javax.servlet.jsp.JspFactory;
 
@@ -37,7 +35,6 @@ import org.jboss.weld.bean.builtin.BeanManagerProxy;
 import org.jboss.weld.bootstrap.WeldBootstrap;
 import org.jboss.weld.bootstrap.api.CDI11Bootstrap;
 import org.jboss.weld.bootstrap.api.Environments;
-import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.bootstrap.api.TypeDiscoveryConfiguration;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.CDI11Deployment;
@@ -66,7 +63,6 @@ import org.jboss.weld.environment.tomcat.TomcatContainer;
 import org.jboss.weld.environment.undertow.UndertowContainer;
 import org.jboss.weld.environment.util.Reflections;
 import org.jboss.weld.injection.spi.ResourceInjectionServices;
-import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.metadata.MetadataImpl;
 import org.jboss.weld.resources.ManagerObjectFactory;
@@ -90,11 +86,7 @@ public class WeldServletLifecycle {
 
     private static final String EXPRESSION_FACTORY_NAME = "org.jboss.weld.el.ExpressionFactory";
 
-    private static final String PROBE_SERVICE_CLASS_NAME = "org.jboss.weld.probe.Probe";
-
     private static final String PROBE_EXTENSION_CLASS_NAME = "org.jboss.weld.probe.ProbeExtension";
-
-    private static final String PROBE_SERVLET_CLASS_NAME = "org.jboss.weld.probe.ProbeServlet";
 
     private static final String PROBE_FILTER_CLASS_NAME = "org.jboss.weld.probe.ProbeFilter";
 
@@ -131,8 +123,6 @@ public class WeldServletLifecycle {
     boolean initialize(ServletContext context) {
 
         isDevModeEnabled = Boolean.valueOf(context.getInitParameter(CONTEXT_PARAM_DEV_MODE));
-        Class<? extends Service> probeServiceClass = null;
-        Service probeService = null;
 
         WeldManager manager = (WeldManager) context.getAttribute(BEAN_MANAGER_ATTRIBUTE_NAME);
         if (manager != null) {
@@ -177,18 +167,6 @@ public class WeldServletLifecycle {
             } catch (NoClassDefFoundError e) {
                 // Support GAE
                 WeldServletLogger.LOG.resourceInjectionNotAvailable();
-            }
-
-            // Register the Probe service
-            probeServiceClass = Reflections.loadClass(resourceLoader, PROBE_SERVICE_CLASS_NAME);
-            if (probeServiceClass == null) {
-                throw WeldServletLogger.LOG.probeComponentNotFoundOnClasspath(PROBE_SERVICE_CLASS_NAME);
-            }
-            try {
-                probeService = SecurityActions.newInstance(probeServiceClass);
-                deployment.getServices().add(probeServiceClass, org.jboss.weld.environment.util.Reflections.cast(probeService));
-            } catch (Exception e) {
-                throw WeldServletLogger.LOG.unableToInitializeProbeComponent(probeServiceClass, e);
             }
 
             String id = context.getInitParameter(org.jboss.weld.Container.CONTEXT_ID_KEY);
@@ -252,27 +230,8 @@ public class WeldServletLifecycle {
             bootstrap.deployBeans().validateBeans().endInitialization();
 
             if (isDevModeEnabled) {
-                // Register the probe servlet
-                ServletRegistration.Dynamic servletDynamic = context.addServlet("Weld Probe Servlet", PROBE_SERVLET_CLASS_NAME);
-                servletDynamic.setLoadOnStartup(1);
-                servletDynamic.addMapping("/weld-probe/*");
-
-                // Register the probe filter
-                FilterRegistration.Dynamic filterDynamic = context.addFilter("Probe Filter", PROBE_FILTER_CLASS_NAME);
+                FilterRegistration.Dynamic filterDynamic = context.addFilter("Weld Probe Filter", PROBE_FILTER_CLASS_NAME);
                 filterDynamic.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST, DispatcherType.FORWARD, DispatcherType.INCLUDE), true, "/*");
-
-                // Initialize the probe service
-                WeldManager unwrapped = manager.unwrap();
-                if (unwrapped instanceof BeanManagerImpl) {
-                    try {
-                        Method initMethod = SecurityActions.lookupMethod(probeServiceClass, "initialize", new Class<?>[] { BeanManagerImpl.class });
-                        initMethod.invoke(probeService, (BeanManagerImpl) unwrapped);
-                    } catch (Exception e) {
-                        throw WeldServletLogger.LOG.unableToInitializeProbeComponent(e.getMessage(), e);
-                    }
-                } else {
-                    throw WeldServletLogger.LOG.unableToInitializeProbeComponent("Unsupported BeanManager implementation found", null);
-                }
             }
             this.shutdownAction = () -> bootstrap.shutdown();
         }
@@ -316,7 +275,7 @@ public class WeldServletLifecycle {
             try {
                 Class<? extends Extension> probeExtensionClass = Reflections.loadClass(resourceLoader, PROBE_EXTENSION_CLASS_NAME);
                 if (probeExtensionClass == null) {
-                    throw WeldServletLogger.LOG.probeComponentNotFoundOnClasspath(PROBE_SERVICE_CLASS_NAME);
+                    throw WeldServletLogger.LOG.probeComponentNotFoundOnClasspath(PROBE_EXTENSION_CLASS_NAME);
                 }
                 extensionsBuilder.add(new MetadataImpl<Extension>(SecurityActions.newInstance(probeExtensionClass), "N/A"));
             } catch (Exception e) {

@@ -65,9 +65,6 @@ public interface ProbeLogger extends BasicLogger {
     @Message(id = 6, value = "{0} not monitored - excluded", format = Format.MESSAGE_FORMAT)
     void invocationMonitorNotAssociatedExcluded(Object beanClass);
 
-    @Message(id = 7, value = "Probe Servlet is not able to operate - missing {0}", format = Format.MESSAGE_FORMAT)
-    IllegalStateException probeServletUnableToOperate(Class<?> component);
-
     @LogMessage(level = Level.INFO)
     @Message(id = 8, value = "\n=====================================\n\n Weld Development Mode: ENABLED \n\n=====================================")
     void developmentModeEnabled();

@@ -41,7 +41,7 @@ final class IOUtils {
         StringWriter writer = new StringWriter();
         BufferedReader reader = null;
         try {
-            InputStream in = ProbeServlet.class.getResourceAsStream(resourceName);
+            InputStream in = Resource.class.getResourceAsStream(resourceName);
             if (in == null) {
                 return null;
             }
@@ -69,7 +69,7 @@ final class IOUtils {
     }
 
     static boolean writeResource(String resourceName, OutputStream out) {
-        InputStream in = ProbeServlet.class.getResourceAsStream(resourceName);
+        InputStream in = Resource.class.getResourceAsStream(resourceName);
         if (in == null) {
             return false;
         }

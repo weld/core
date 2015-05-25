@@ -80,7 +80,7 @@ enum Resource {
      */
     DEPLOYMENT("/deployment", new Handler() {
         @Override
-        protected void handleGet(BeanManagerImpl beanManager, Probe probe, String[] pathInfoParts, HttpServletRequest req, HttpServletResponse resp)
+        protected void handleGet(BeanManagerImpl beanManager, Probe probe, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp)
                 throws IOException {
             resp.getWriter().append(JsonObjects.createDeploymentJson(beanManager, probe));
         }
@@ -90,7 +90,7 @@ enum Resource {
      */
     BEANS("/beans", new Handler() {
         @Override
-        protected void handleGet(BeanManagerImpl beanManager, Probe probe, String[] pathInfoParts, HttpServletRequest req, HttpServletResponse resp)
+        protected void handleGet(BeanManagerImpl beanManager, Probe probe, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp)
                 throws IOException {
             Representation representation = Representation.from(req.getParameter(REPRESENTATION));
             if (representation == null) {
@@ -106,9 +106,9 @@ enum Resource {
      */
     BEAN("/beans/{.+}", new Handler() {
         @Override
-        protected void handleGet(BeanManagerImpl beanManager, Probe probe, String[] pathInfoParts, HttpServletRequest req, HttpServletResponse resp)
+        protected void handleGet(BeanManagerImpl beanManager, Probe probe, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp)
                 throws IOException {
-            Bean<?> bean = probe.getBean(pathInfoParts[1]);
+            Bean<?> bean = probe.getBean(resourcePathParts[1]);
             if (bean != null) {
                 resp.getWriter().append(
                         JsonObjects.createFullBeanJson(bean, Boolean.valueOf(req.getParameter(PARAM_TRANSIENT_DEPENDENCIES)),
@@ -123,9 +123,9 @@ enum Resource {
      */
     BEAN_INSTANCE("/beans/{.+}/instance", new Handler() {
         @Override
-        protected void handleGet(BeanManagerImpl beanManager, Probe probe, String[] pathInfoParts, HttpServletRequest req, HttpServletResponse resp)
+        protected void handleGet(BeanManagerImpl beanManager, Probe probe, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp)
                 throws IOException {
-            Bean<?> bean = probe.getBean(pathInfoParts[1]);
+            Bean<?> bean = probe.getBean(resourcePathParts[1]);
             if (bean != null && Components.isInspectableScope(bean.getScope())) {
                 Object instance = Components.findContextualInstance(bean, beanManager);
                 if (instance != null) {
@@ -143,7 +143,7 @@ enum Resource {
      */
     OBSERVERS("/observers", new Handler() {
         @Override
-        protected void handleGet(BeanManagerImpl beanManager, Probe probe, String[] pathInfoParts, HttpServletRequest req, HttpServletResponse resp)
+        protected void handleGet(BeanManagerImpl beanManager, Probe probe, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp)
                 throws IOException {
             resp.getWriter().append(
                     JsonObjects.createObserversJson(
@@ -155,9 +155,9 @@ enum Resource {
      */
     OBSERVER("/observers/{.+}", new Handler() {
         @Override
-        protected void handleGet(BeanManagerImpl beanManager, Probe probe, String[] pathInfoParts, HttpServletRequest req, HttpServletResponse resp)
+        protected void handleGet(BeanManagerImpl beanManager, Probe probe, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp)
                 throws IOException {
-            ObserverMethod<?> observer = probe.getObserver(pathInfoParts[1]);
+            ObserverMethod<?> observer = probe.getObserver(resourcePathParts[1]);
             if (observer != null) {
                 resp.getWriter().append(JsonObjects.createFullObserverJson(observer, probe));
             } else {
@@ -170,7 +170,7 @@ enum Resource {
      */
     CONTEXTS("/contexts", new Handler() {
         @Override
-        protected void handleGet(BeanManagerImpl beanManager, Probe probe, String[] pathInfoParts, HttpServletRequest req, HttpServletResponse resp)
+        protected void handleGet(BeanManagerImpl beanManager, Probe probe, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp)
                 throws IOException {
             resp.getWriter().append(JsonObjects.createContextsJson(beanManager, probe).build());
         }
@@ -180,9 +180,9 @@ enum Resource {
      */
     CONTEXT("/contexts/{[a-zA-Z_0]+}", new Handler() {
         @Override
-        protected void handleGet(BeanManagerImpl beanManager, Probe probe, String[] pathInfoParts, HttpServletRequest req, HttpServletResponse resp)
+        protected void handleGet(BeanManagerImpl beanManager, Probe probe, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp)
                 throws IOException {
-            final String id = pathInfoParts[1];
+            final String id = resourcePathParts[1];
             final Class<? extends Annotation> scope = Components.INSPECTABLE_SCOPES.get(id);
             if (scope != null) {
                 resp.getWriter().append(JsonObjects.createContextJson(id, scope, beanManager, probe, req).build());
@@ -197,7 +197,7 @@ enum Resource {
      */
     INVOCATIONS("/invocations", new Handler() {
         @Override
-        protected void handleGet(BeanManagerImpl beanManager, Probe probe, String[] pathInfoParts, HttpServletRequest req, HttpServletResponse resp)
+        protected void handleGet(BeanManagerImpl beanManager, Probe probe, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp)
                 throws IOException {
             resp.getWriter().append(
                     JsonObjects.createInvocationsJson(
@@ -205,7 +205,7 @@ enum Resource {
         }
 
         @Override
-        protected void handleDelete(BeanManagerImpl beanManager, Probe probe, String[] pathInfoParts, HttpServletRequest req, HttpServletResponse resp)
+        protected void handleDelete(BeanManagerImpl beanManager, Probe probe, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp)
                 throws IOException {
             resp.getWriter().append(Json.objectBuilder().add(REMOVED_INVOCATIONS, probe.clearInvocations()).build());
         }
@@ -215,9 +215,9 @@ enum Resource {
      */
     INVOCATION("/invocations/{.+}", new Handler() {
         @Override
-        protected void handleGet(BeanManagerImpl beanManager, Probe probe, String[] pathInfoParts, HttpServletRequest req, HttpServletResponse resp)
+        protected void handleGet(BeanManagerImpl beanManager, Probe probe, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp)
                 throws IOException {
-            Invocation entryPoint = probe.getInvocation(pathInfoParts[1]);
+            Invocation entryPoint = probe.getInvocation(resourcePathParts[1]);
             if (entryPoint != null) {
                 resp.getWriter().append(JsonObjects.createFullInvocationJson(entryPoint, probe).build());
             } else {
@@ -230,19 +230,17 @@ enum Resource {
      */
     EVENTS("/events", new Handler() {
         @Override
-        protected void handleGet(BeanManagerImpl beanManager, Probe probe, String[] pathInfoParts, HttpServletRequest req, HttpServletResponse resp)
+        protected void handleGet(BeanManagerImpl beanManager, Probe probe, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp)
                 throws IOException {
-            ProbeObserver observer = beanManager.getExtension(ProbeExtension.class).getProbeObserver();
             resp.getWriter().append(
-                    JsonObjects.createEventsJson(
-                            Queries.find(observer.getEvents(), getPage(req), getPageSize(req), initFilters(req, new EventsFilters(probe))), probe));
+                    JsonObjects.createEventsJson(Queries.find(probe.getEvents(), getPage(req), getPageSize(req), initFilters(req, new EventsFilters(probe))),
+                            probe));
         }
 
         @Override
-        protected void handleDelete(BeanManagerImpl beanManager, Probe probe, String[] pathInfoParts, HttpServletRequest req, HttpServletResponse resp)
+        protected void handleDelete(BeanManagerImpl beanManager, Probe probe, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp)
                 throws IOException {
-            ProbeObserver observer = beanManager.getExtension(ProbeExtension.class).getProbeObserver();
-            resp.getWriter().append(Json.objectBuilder().add("removedEvents", observer.clear()).build());
+            resp.getWriter().append(Json.objectBuilder().add("removedEvents", probe.clearEvents()).build());
         }
     }),
     /**
@@ -250,7 +248,7 @@ enum Resource {
      */
     CLIENT_RESOURCE("/client/{[a-zA-Z_0-9-]+\\.\\w+}", new Handler() {
         @Override
-        protected void handle(BeanManagerImpl beanManager, Probe probe, HttpMethod method, String[] pathInfoParts, HttpServletRequest req,
+        protected void handle(BeanManagerImpl beanManager, Probe probe, HttpMethod method, String[] resourcePathParts, HttpServletRequest req,
                 HttpServletResponse resp) throws IOException {
 
             if (!HttpMethod.GET.equals(method)) {
@@ -258,7 +256,7 @@ enum Resource {
                 return;
             }
 
-            String resourceName = PATH_META_INF_CLIENT + (pathInfoParts == null ? FILE_CLIENT_HTML : pathInfoParts[pathInfoParts.length - 1]);
+            String resourceName = PATH_META_INF_CLIENT + (resourcePathParts.length == 0 ? FILE_CLIENT_HTML : resourcePathParts[resourcePathParts.length - 1]);
             String contentType = detectContentType(resourceName);
             setHeaders(resp, contentType);
 
@@ -272,7 +270,7 @@ enum Resource {
                 if (content == null) {
                     resp.sendError(HttpServletResponse.SC_NOT_FOUND);
                 }
-                content = content.replace("${contextPath}", req.getContextPath() + req.getServletPath() + SLASH);
+                content = content.replace("${contextPath}", req.getServletContext().getContextPath() + ProbeFilter.REST_URL_PATTERN_BASE + SLASH);
                 resp.getWriter().append(content);
             } else {
                 if (!IOUtils.writeResource(resourceName, resp.getOutputStream())) {
@@ -293,25 +291,25 @@ enum Resource {
         this.handler = handler;
     }
 
-    protected void handle(BeanManagerImpl beanManager, Probe probe, HttpMethod method, String[] pathInfoParts, HttpServletRequest req, HttpServletResponse resp)
-            throws IOException {
-        handler.handle(beanManager, probe, method, pathInfoParts, req, resp);
+    protected void handle(BeanManagerImpl beanManager, Probe probe, HttpMethod method, String[] resourcePathParts, HttpServletRequest req,
+            HttpServletResponse resp) throws IOException {
+        handler.handle(beanManager, probe, method, resourcePathParts, req, resp);
     }
 
     /**
-     * @param pathInfo
+     * @param resourcePathParts
      * @return <code>true</code> if the resource matches the given path, <code>false</code> otherwise
      */
-    boolean matches(String[] pathInfo) {
-        if (pathInfo.length != parts.length) {
+    boolean matches(String[] resourcePathParts) {
+        if (resourcePathParts.length != parts.length) {
             return false;
         }
         for (int i = 0; i < parts.length; i++) {
             if (isParam(parts[i])) {
-                if (!pathInfo[i].matches(parts[i].substring(1, parts[i].length() - 1))) {
+                if (!resourcePathParts[i].matches(parts[i].substring(1, parts[i].length() - 1))) {
                     return false;
                 }
-            } else if (!parts[i].equals(pathInfo[i])) {
+            } else if (!parts[i].equals(resourcePathParts[i])) {
                 return false;
             }
         }
@@ -349,7 +347,7 @@ enum Resource {
         if (builder != null) {
             parts.add(builder.toString());
         }
-        return parts.isEmpty() ? null : parts.toArray(new String[parts.size()]);
+        return parts.toArray(new String[parts.size()]);
     }
 
     static String detectContentType(String resourceName) {
@@ -388,37 +386,45 @@ enum Resource {
 
     abstract static class Handler {
 
-        protected void handle(BeanManagerImpl beanManager, Probe probe, HttpMethod method, String[] pathInfoParts, HttpServletRequest req,
+        protected void handle(BeanManagerImpl beanManager, Probe probe, HttpMethod method, String[] resourcePathParts, HttpServletRequest req,
                 HttpServletResponse resp) throws IOException {
             setHeaders(resp, getContentType());
             switch (method) {
                 case GET:
-                    handleGet(beanManager, probe, pathInfoParts, req, resp);
+                    handleGet(beanManager, probe, resourcePathParts, req, resp);
                     break;
                 case POST:
-                    handlePost(beanManager, probe, pathInfoParts, req, resp);
+                    handlePost(beanManager, probe, resourcePathParts, req, resp);
                     break;
                 case DELETE:
-                    handleDelete(beanManager, probe, pathInfoParts, req, resp);
+                    handleDelete(beanManager, probe, resourcePathParts, req, resp);
+                    break;
+                case OPTIONS:
+                    handleOptions(beanManager, probe, resourcePathParts, req, resp);
                     break;
                 default:
                     resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
             }
         }
 
-        protected void handleGet(BeanManagerImpl beanManager, Probe probe, String[] pathInfoParts, HttpServletRequest req, HttpServletResponse resp)
+        protected void handleGet(BeanManagerImpl beanManager, Probe probe, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp)
                 throws IOException {
             resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
         }
 
-        protected void handlePost(BeanManagerImpl beanManager, Probe probe, String[] pathInfoParts, HttpServletRequest req, HttpServletResponse resp)
+        protected void handlePost(BeanManagerImpl beanManager, Probe probe, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp)
                 throws IOException {
             resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
         }
 
-        protected void handleDelete(BeanManagerImpl beanManager, Probe probe, String[] pathInfoParts, HttpServletRequest req, HttpServletResponse resp)
+        protected void handleDelete(BeanManagerImpl beanManager, Probe probe, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp)
                 throws IOException {
             resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+        }
+
+        protected void handleOptions(BeanManagerImpl beanManager, Probe probe, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp)
+                throws IOException {
+            setCorsHeaders(resp);
         }
 
         protected int getPage(HttpServletRequest req) {
@@ -478,6 +484,15 @@ enum Resource {
     static enum HttpMethod {
 
         GET, POST, DELETE, OPTIONS;
+
+        static HttpMethod from(String method) {
+            for (HttpMethod httpMethod : values()) {
+                if (httpMethod.toString().equalsIgnoreCase(method)) {
+                    return httpMethod;
+                }
+            }
+            return null;
+        }
 
     }
 

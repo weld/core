@@ -203,6 +203,10 @@ a.nav-link {
   text-decoration: underline;
 }
 
+#navigation-menu .navbar-nav>li {
+  border-right: 2px solid #f6f4f4;
+}
+
 div.content {
   padding: 30px 10px 10px 10px;
 }
