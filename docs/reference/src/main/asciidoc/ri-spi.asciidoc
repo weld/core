@@ -743,7 +743,7 @@ it.postConstruct(instance);
 it.preDestroy(instance);
 
 // Clean up the instance
-it.dispose();
+it.dispose(instance);
 cc.release();
 -----------------------------------------------------------------------
 
@@ -759,23 +759,35 @@ correct bean manager for the bean deployment archive containing the EJB.
 --------------------------------------------------------------------------------
 // Obtain the EjbDescriptor for the EJB
 // You may choose to use this utility method to get the descriptor
-EjbDescriptor<?> ejbDescriptor = beanManager.getEjbDescriptor(ejbName);
+EjbDescriptor<T> ejbDescriptor = beanManager.<T>getEjbDescriptor(ejbName);
 
 // Get an the Bean object
-Bean<?> bean = beanManager.getBean(ejbDescriptor);
+Bean<T> bean = beanManager.getBean(ejbDescriptor);
 
 // Create the injection target
-InjectionTarget it = deploymentBeanManager.createInjectionTarget(ejbDescriptor);
+InjectionTarget<T> it = beanManager.createInjectionTarget(ejbDescriptor);
 
 // Per instance required, create the creational context
-CreationalContext<?> cc = deploymentBeanManager.createCreationalContext(bean);
+WeldCreationalContext<T> cc = beanManager.createCreationalContext(bean);
+
+// register an AroundConstructCallback if needed
+cc.setConstructorInterceptionSuppressed(true);
+cc.registerAroundConstructCallback(new AroundConstructCallback<T>() {
+    public T aroundConstruct(ConstructionHandle<T> handle, AnnotatedConstructor<T> constructor, Object[] parameters,
+            Map<String, Object> data) throws Exception {
+        // TODO: invoke @AroundConstruct interceptors
+        return handle.proceed(parameters, data);
+    }
+});
+
+// Produce the instance, performing any constructor injection required
+T instance = it.produce(cc);
 
 // Perform injection and call initializers
 it.inject(instance, cc);
 
 // You may choose to have CDI call the post construct and pre destroy
 // lifecycle callbacks
-
 // Call the post-construct callback
 it.postConstruct(instance);
 
@@ -783,7 +795,7 @@ it.postConstruct(instance);
 it.preDestroy(instance);
 
 // Clean up the instance
-it.dispose();
+it.dispose(instance);
 cc.release();
 --------------------------------------------------------------------------------
 
