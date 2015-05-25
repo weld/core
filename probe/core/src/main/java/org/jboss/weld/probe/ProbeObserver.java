@@ -29,10 +29,8 @@ import javax.enterprise.context.Initialized;
 import javax.enterprise.event.Reception;
 import javax.enterprise.event.TransactionPhase;
 import javax.enterprise.inject.spi.EventMetadata;
-import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.ObserverMethod;
 import javax.interceptor.Interceptor;
-import javax.servlet.http.HttpServletRequest;
 
 import org.jboss.weld.event.CurrentEventMetadata;
 import org.jboss.weld.event.ObserverNotifier;
@@ -43,67 +41,34 @@ import org.jboss.weld.util.collections.ImmutableList;
 import org.jboss.weld.util.reflection.Formats;
 
 /**
- * Catch-all observer with low priority (called first) that captures all events within the application and keeps information about them.
+ * Catch-all observer with low priority (called first) that captures all events within the application.
  *
  * @author Jozef Hartinger
  *
  */
 class ProbeObserver implements ObserverMethod<Object>, Prioritized {
 
-    // If needed make this configurable
-    private static final int DEFAULT_EVENTS_LIMIT = 5000;
-
     private static final int PRIORITY_OFFSET = 100;
 
     private final Pattern excludePattern;
 
-    static class EventInfo {
+    private final Probe probe;
 
-        final boolean containerEvent;
-        final Type type;
-        final Set<Annotation> qualifiers;
-        final String eventString;
-        final InjectionPoint injectionPoint;
-        final List<ObserverMethod<?>> observers;
-        final long timestamp;
-
-        private EventInfo(Type type, Set<Annotation> qualifiers, Object event, InjectionPoint injectionPoint, List<ObserverMethod<?>> observers,
-                boolean containerEvent, long timestamp) {
-            this.type = type;
-            this.qualifiers = qualifiers;
-            this.injectionPoint = injectionPoint;
-            this.containerEvent = containerEvent;
-            this.eventString = initEventString(event, containerEvent);
-            this.observers = observers;
-            this.timestamp = timestamp;
-        }
-
-        /*
-         * Workaround for Undertow's ugly toString(). TODO: also check Tomcat/Jetty and consider removing this if appropriate
-         */
-        private String initEventString(Object event, boolean containerEvent) {
-            if (containerEvent && event instanceof HttpServletRequest) {
-                HttpServletRequest request = (HttpServletRequest) event;
-                StringBuilder builder = new StringBuilder();
-                builder.append(HttpServletRequest.class.getSimpleName());
-                builder.append(' ');
-                builder.append(request.getMethod());
-                builder.append(' ');
-                builder.append(request.getRequestURI());
-                return builder.toString();
-            }
-            return event.toString();
-        }
-    }
-
-    private final List<EventInfo> events = Collections.synchronizedList(new ArrayList<EventInfo>());
     private final CurrentEventMetadata currentEventMetadata;
+
     private final BeanManagerImpl manager;
 
-    ProbeObserver(BeanManagerImpl manager, Pattern excludePattern) {
+    /**
+     *
+     * @param manager
+     * @param excludePattern
+     * @param probe
+     */
+    ProbeObserver(BeanManagerImpl manager, Pattern excludePattern, Probe probe) {
         this.currentEventMetadata = manager.getServices().get(CurrentEventMetadata.class);
         this.manager = manager;
         this.excludePattern = excludePattern;
+        this.probe = probe;
     }
 
     @Override
@@ -142,17 +107,7 @@ class ProbeObserver implements ObserverMethod<Object>, Prioritized {
         List<ObserverMethod<?>> observers = resolveObservers(metadata, containerEvent);
         EventInfo info = new EventInfo(metadata.getType(), metadata.getQualifiers(), event, metadata.getInjectionPoint(), observers, containerEvent,
                 System.currentTimeMillis());
-
-        // Remove some old data if the limit is exceeded
-        if (events.size() > DEFAULT_EVENTS_LIMIT) {
-            synchronized (this) {
-                if (events.size() > DEFAULT_EVENTS_LIMIT) {
-                    events.subList(DEFAULT_EVENTS_LIMIT / 2, events.size()).clear();
-                    ProbeLogger.LOG.monitoringLimitExceeded(EventInfo.class.getSimpleName(), DEFAULT_EVENTS_LIMIT);
-                }
-            }
-        }
-        events.add(0, info);
+        probe.addEvent(info);
     }
 
     private List<ObserverMethod<?>> resolveObservers(EventMetadata metadata, boolean containerEvent) {
@@ -171,30 +126,6 @@ class ProbeObserver implements ObserverMethod<Object>, Prioritized {
     @Override
     public int getPriority() {
         return Interceptor.Priority.PLATFORM_BEFORE + PRIORITY_OFFSET;
-    }
-
-    /**
-     * Returns a mutable copy of the captured event information.
-     *
-     * @return mutable copy of the captured event information
-     */
-    public List<EventInfo> getEvents() {
-        synchronized (events) {
-            return new ArrayList<EventInfo>(events);
-        }
-    }
-
-    /**
-     * Clear the state
-     *
-     * @return the number of captured events before the state is cleared.
-     */
-    public int clear() {
-        synchronized (events) {
-            int count = events.size();
-            events.clear();
-            return count;
-        }
     }
 
     private boolean isContainerEvent(Set<Annotation> qualifiers) {

@@ -42,7 +42,7 @@ public class ResourceTest {
 
     @Test
     public void testSplitPath() {
-        assertTrue(Arrays.equals(null, Resource.splitPath("/")));
+        assertTrue(Arrays.equals(new String[] {}, Resource.splitPath("/")));
         assertTrue(Arrays.equals(new String[] { "client", "probe.css" }, Resource.splitPath("/client/probe.css")));
         assertTrue(Arrays.equals(new String[] { "bean", "12", "instance" }, Resource.splitPath("/bean/12/instance")));
     }

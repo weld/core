@@ -139,7 +139,6 @@ import org.jboss.weld.probe.Components.BeanKind;
 import org.jboss.weld.probe.Components.Dependency;
 import org.jboss.weld.probe.Json.JsonArrayBuilder;
 import org.jboss.weld.probe.Json.JsonObjectBuilder;
-import org.jboss.weld.probe.ProbeObserver.EventInfo;
 import org.jboss.weld.probe.Queries.Page;
 import org.jboss.weld.probe.Resource.Representation;
 import org.jboss.weld.util.AnnotationApiAbstraction;
@@ -939,13 +938,13 @@ final class JsonObjects {
 
     static JsonObjectBuilder createEventJson(EventInfo event, Probe probe) {
         JsonObjectBuilder builder = Json.objectBuilder();
-        builder.add(TYPE, Formats.formatType(event.type, false));
-        builder.add(QUALIFIERS, createQualifiers(event.qualifiers, true));
-        builder.add(EVENT_INFO, event.eventString);
-        builder.add(KIND, (event.containerEvent ? CONTAINER : APPLICATION).toUpperCase());
-        builder.add(TIMESTAMP, event.timestamp);
+        builder.add(TYPE, Formats.formatType(event.getType(), false));
+        builder.add(QUALIFIERS, createQualifiers(event.getQualifiers(), true));
+        builder.add(EVENT_INFO, event.getEventString());
+        builder.add(KIND, (event.isContainerEvent() ? CONTAINER : APPLICATION).toUpperCase());
+        builder.add(TIMESTAMP, event.getTimestamp());
         JsonArrayBuilder observersBuilder = Json.arrayBuilder();
-        for (ObserverMethod<?> observer : event.observers) {
+        for (ObserverMethod<?> observer : event.getObservers()) {
             JsonObjectBuilder b = createSimpleObserverJson(observer, probe);
             if (observer instanceof ObserverMethodImpl<?, ?>) {
                 ObserverMethodImpl<?, ?> weldObserver = (ObserverMethodImpl<?, ?>) observer;
