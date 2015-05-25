@@ -98,7 +98,7 @@
                 <artifactId>maven-bundle-plugin</artifactId>
                 <configuration>
                     <instructions>
-                        <Embed-Dependency>*; scope=compile; inline=true</Embed-Dependency>
+                        <Embed-Dependency>*; scope=compile; inline=true; groupId=org.jboss.weld</Embed-Dependency>
 
                         <_exportcontents>${export.contents}${osgi.version}</_exportcontents>
 
@@ -136,6 +136,7 @@
                         <configuration>
                         <classifier>glassfish4</classifier>
                             <instructions>
+                                <Embed-Dependency>*; scope=compile; inline=true</Embed-Dependency>
                                 <_exportcontents>${export.contents}1.0</_exportcontents>
                                 <Import-Package>${import.package}
                                     org.jboss.weld.*; version=1.0,
@@ -167,7 +168,7 @@
                             <failOnMissingClassifierArtifact>false</failOnMissingClassifierArtifact>
                             <outputDirectory>${project.build.directory}/sources</outputDirectory>
                             <excludeGroupIds>*</excludeGroupIds>
-                            <includeGroupIds>org.jboss.weld,org.jboss.classfilewriter</includeGroupIds>
+                            <includeGroupIds>org.jboss.weld</includeGroupIds>
                         </configuration>
                     </execution>
                 </executions>
