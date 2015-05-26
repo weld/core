@@ -147,7 +147,7 @@
                             <failOnMissingClassifierArtifact>false</failOnMissingClassifierArtifact>
                             <outputDirectory>${project.build.directory}/sources</outputDirectory>
                             <excludeGroupIds>*</excludeGroupIds>
-                            <includeGroupIds>org.jboss.weld,org.jboss.classfilewriter</includeGroupIds>
+                            <includeGroupIds>org.jboss.weld</includeGroupIds>
                         </configuration>
                     </execution>
                 </executions>
@@ -207,11 +207,6 @@
         <dependency>
             <groupId>org.jboss.weld</groupId>
             <artifactId>weld-spi</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jboss.classfilewriter</groupId>
-            <artifactId>jboss-classfilewriter</artifactId>
         </dependency>
     </dependencies>
 
