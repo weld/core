@@ -113,6 +113,13 @@ public class BeanBuilderTest {
         assertEquals(Dependent.class, fooBean.getScope());
         Foo randomFoo = (Foo) beanManager.getReference(fooBean, Foo.class, beanManager.createCreationalContext(listBean));
         assertEquals(Long.valueOf(-1), randomFoo.getId());
+
+        beans = beanManager.getBeans(Configuration.class);
+        assertEquals(1, beans.size());
+        Bean<Configuration> configBean = (Bean<Configuration>) beans.iterator().next();
+        assertEquals(Dependent.class, configBean.getScope());
+        Configuration configuration = (Configuration) beanManager.getReference(configBean, Configuration.class, beanManager.createCreationalContext(configBean));
+        assertEquals(1, configuration.getId());
     }
 
 }
