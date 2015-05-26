@@ -27,6 +27,7 @@ import java.util.Set;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.util.TypeLiteral;
+import javax.inject.Named;
 
 import org.jboss.weld.bean.attributes.ImmutableBeanAttributes;
 import org.jboss.weld.literal.AnyLiteral;
@@ -43,6 +44,8 @@ import org.jboss.weld.util.reflection.HierarchyDiscovery;
  * @param <B> the current builder class
  */
 abstract class BeanAttributesBuilder<T, B> {
+
+    static final Set<Annotation> DEFAULT_QUALIFIERS = ImmutableSet.of(AnyLiteral.INSTANCE, DefaultLiteral.INSTANCE);
 
     protected static final String ARG_SCOPE = "scope";
     protected static final String ARG_NAME = "name";
@@ -68,7 +71,6 @@ abstract class BeanAttributesBuilder<T, B> {
 
     BeanAttributesBuilder() {
         qualifiers = new HashSet<Annotation>();
-        qualifiers.add(AnyLiteral.INSTANCE);
         types = new HashSet<Type>();
         types.add(Object.class);
         stereotypes = new HashSet<Class<? extends Annotation>>();
@@ -80,7 +82,7 @@ abstract class BeanAttributesBuilder<T, B> {
      */
     BeanAttributes<T> build() {
         return new ImmutableBeanAttributes<T>(ImmutableSet.copyOf(stereotypes), alternative != null ? alternative : false, name,
-                ImmutableSet.copyOf(qualifiers), ImmutableSet.copyOf(types), scope != null ? scope : Dependent.class);
+                initQualifiers(), ImmutableSet.copyOf(types), scope != null ? scope : Dependent.class);
     }
 
     public B addType(Type type) {
@@ -139,21 +141,18 @@ abstract class BeanAttributesBuilder<T, B> {
 
     public B addQualifier(Annotation qualifier) {
         checkArgumentNotNull(qualifier, ARG_QUALIFIER);
-        this.qualifiers.remove(DefaultLiteral.INSTANCE);
         this.qualifiers.add(qualifier);
         return self();
     }
 
     public B addQualifiers(Annotation... qualifiers) {
         checkArgumentNotNull(qualifiers, ARG_QUALIFIERS);
-        this.qualifiers.remove(DefaultLiteral.INSTANCE);
         Collections.addAll(this.qualifiers, qualifiers);
         return self();
     }
 
     public B addQualifiers(Set<Annotation> qualifiers) {
         checkArgumentNotNull(qualifiers, ARG_QUALIFIERS);
-        this.qualifiers.remove(DefaultLiteral.INSTANCE);
         this.qualifiers.addAll(qualifiers);
         return self();
     }
@@ -211,5 +210,28 @@ abstract class BeanAttributesBuilder<T, B> {
     }
 
     protected abstract B self();
+
+    protected Set<Annotation> initQualifiers() {
+        if(qualifiers.isEmpty()) {
+            return DEFAULT_QUALIFIERS;
+        }
+        Set<Annotation> normalized = new HashSet<Annotation>(qualifiers);
+        normalized.remove(AnyLiteral.INSTANCE);
+        normalized.remove(DefaultLiteral.INSTANCE);
+        if(normalized.isEmpty()) {
+            normalized = DEFAULT_QUALIFIERS;
+        } else {
+            ImmutableSet.Builder<Annotation> builder = ImmutableSet.builder();
+            if (normalized.size() == 1) {
+                if (qualifiers.iterator().next().annotationType().equals(Named.class)) {
+                    builder.add(DefaultLiteral.INSTANCE);
+                }
+            }
+            builder.add(AnyLiteral.INSTANCE);
+            builder.addAll(qualifiers);
+            normalized = builder.build();
+        }
+        return normalized;
+    }
 
 }

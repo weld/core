@@ -83,5 +83,8 @@ public class BuilderExtension implements Extension {
         // Test transitive type closure
         event.addBean().addTransitiveTypeClosure(Foo.class).addQualifier(Random.Literal.INSTANCE)
                 .produceWith(() -> new Foo(-1l));
+
+        // Test default qualifiers
+        event.addBean().addType(Configuration.class).producing(new Configuration(1));
     }
 }
