@@ -27,10 +27,10 @@
     <properties>
         <jsf.version>2.1</jsf.version>
         <jsf-impl.version>2.1.22</jsf-impl.version>
-        <tomcat.version>7.0.55</tomcat.version>
-        <tomcat8.version>8.0.9</tomcat8.version>
-        <jetty.version>8.1.14.v20131031</jetty.version>
-        <jetty9.version>9.1.4.v20140401</jetty9.version>
+        <tomcat.version>7.0.62</tomcat.version>
+        <tomcat8.version>8.0.22</tomcat8.version>
+        <jetty.version>8.1.17.v20150415</jetty.version>
+        <jetty9.version>9.1.5.v20140505</jetty9.version>
         <!-- Jetty 6 API is used for GWT support only -->
         <jetty6.version>6.1.26</jetty6.version>
         <uel.glassfish.version>2.2</uel.glassfish.version>
