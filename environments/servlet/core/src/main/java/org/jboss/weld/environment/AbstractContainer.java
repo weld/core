@@ -34,6 +34,7 @@ public abstract class AbstractContainer implements Container {
      */
     protected abstract String classToCheck();
 
+    @Override
     public boolean touch(ResourceLoader resourceLoader, ContainerContext context) throws Exception {
         Reflections.classForName(resourceLoader, classToCheck());
         return true;

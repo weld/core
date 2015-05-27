@@ -23,6 +23,7 @@ import org.jboss.weld.environment.Container;
 import org.jboss.weld.environment.ContainerContext;
 import org.jboss.weld.environment.servlet.EnhancedListener;
 import org.jboss.weld.environment.servlet.logging.JettyLogger;
+import org.jboss.weld.resources.spi.ResourceLoader;
 
 /**
  * Jetty 7.2+, 8.x and 9.x container.
@@ -46,7 +47,8 @@ public class JettyContainer extends AbstractJettyContainer {
         return JETTY_REQUIRED_CLASS_NAME;
     }
 
-    public boolean touch(ContainerContext context) throws Exception {
+    @Override
+    public boolean touch(ResourceLoader resourceLoader, ContainerContext context) throws Exception {
         ServletContext sc = context.getServletContext();
         String si = sc.getServerInfo();
         JettyLogger.LOG.debugv("Parsing server info: {0}", si);
@@ -64,6 +66,7 @@ public class JettyContainer extends AbstractJettyContainer {
         return (major > MAJOR_VERSION || (major == MAJOR_VERSION & minor >= MINOR_VERSION));
     }
 
+    @Override
     public void initialize(ContainerContext context) {
         // Try pushing a Jetty Injector into the servlet context
         try {
