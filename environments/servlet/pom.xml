@@ -30,6 +30,7 @@
         <tomcat8.version>8.0.22</tomcat8.version>
         <jetty.version>8.1.17.v20150415</jetty.version>
         <jetty9.version>9.1.5.v20140505</jetty9.version>
+        <jetty9.asm.version>5.0.3</jetty9.asm.version>
         <!-- Jetty 6 API is used for GWT support only -->
         <jetty6.version>6.1.26</jetty6.version>
         <uel.glassfish.version>2.2</uel.glassfish.version>
