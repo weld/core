@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
         <artifactId>weld-servlet-parent</artifactId>
         <groupId>org.jboss.weld.servlet</groupId>
@@ -207,7 +208,7 @@
         </profile>
         <profile>
 
-             <id>jetty-embedded-9</id>
+            <id>jetty-embedded-9</id>
 
             <activation>
                 <activeByDefault>false</activeByDefault>
@@ -225,6 +226,28 @@
                     <groupId>org.jboss.arquillian.container</groupId>
                     <artifactId>arquillian-jetty-embedded-9</artifactId>
                     <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.eclipse.jetty</groupId>
+                    <artifactId>jetty-annotations</artifactId>
+                    <scope>test</scope>
+                    <!-- excluding asm version 4.x and adding asm 5 version below because of problems on JDK 8 -->
+                    <exclusions>
+                        <exclusion>
+                            <groupId>org.ow2.asm</groupId>
+                            <artifactId>asm-commons</artifactId>
+                        </exclusion>
+                        <exclusion>
+                            <groupId>org.ow2.asm</groupId>
+                            <artifactId>asm</artifactId>
+                        </exclusion>
+                    </exclusions>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.ow2.asm</groupId>
+                    <artifactId>asm</artifactId>
+                    <version>${jetty9.asm.version}</version>
                 </dependency>
             </dependencies>
 
@@ -283,11 +306,11 @@
                                     <goal>add-test-resource</goal>
                                 </goals>
                                 <configuration>
-                                   <resources>
+                                    <resources>
                                         <resource>
                                             <directory>src/test/weld-se-coop-resources</directory>
                                         </resource>
-                                   </resources>
+                                    </resources>
                                 </configuration>
                             </execution>
                         </executions>
