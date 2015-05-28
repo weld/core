@@ -39,9 +39,6 @@ import javax.servlet.http.HttpSessionEvent;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.bean.builtin.BeanManagerProxy;
-import org.jboss.weld.event.ObserverNotifier;
-import org.jboss.weld.literal.DestroyedLiteral;
-import org.jboss.weld.literal.InitializedLiteral;
 import org.jboss.weld.logging.ServletLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.BeanManagers;
@@ -100,7 +97,7 @@ public class WeldInitialListener extends AbstractServletListener {
         final boolean ignoreForwards = getBooleanInitParameter(ctx, InitParameters.CONTEXT_IGNORE_FORWARD, false);
         final boolean ignoreIncludes = getBooleanInitParameter(ctx, InitParameters.CONTEXT_IGNORE_INCLUDE, false);
         final boolean nestedInvocationGuard = getBooleanInitParameter(ctx, CONTEXT_IGNORE_GUARD_PARAMETER, true);
-        final boolean lazyConversationContext = initLazyConversationContext(beanManager, ctx);
+        final boolean lazyConversationContext = getBooleanInitParameter(ctx, CONVERSATION_CONTEXT_LAZY_PARAM, true);
         this.lifecycle = new HttpContextLifecycle(beanManager, filter, ignoreForwards, ignoreIncludes, lazyConversationContext, nestedInvocationGuard);
         if (Boolean.valueOf(ctx.getInitParameter(CONVERSATION_FILTER_REGISTERED))) {
             this.lifecycle.setConversationActivationEnabled(false);
@@ -115,18 +112,6 @@ public class WeldInitialListener extends AbstractServletListener {
             return defaultValue;
         }
         return Boolean.valueOf(value);
-    }
-
-    /**
-     * The lazy conversation context can be configured to be enabled or disabled in web.xml. If not configured, the default behavior depends on whether an
-     * observer for the Initialized(ConversationScoped.class) event is present or not. If an observer is present, the lazy conversation context is disabled by
-     * default. Otherwise, it is enabled.
-     */
-    private boolean initLazyConversationContext(BeanManagerImpl manager, ServletContext ctx) {
-        ObserverNotifier notifier = manager.getAccessibleLenientObserverNotifier();
-        boolean noObservers = notifier.resolveObserverMethods(HttpServletRequest.class, InitializedLiteral.CONVERSATION).isEmpty()
-                && notifier.resolveObserverMethods(HttpServletRequest.class, DestroyedLiteral.CONVERSATION).isEmpty();
-        return getBooleanInitParameter(ctx, CONVERSATION_CONTEXT_LAZY_PARAM, noObservers);
     }
 
     @Override

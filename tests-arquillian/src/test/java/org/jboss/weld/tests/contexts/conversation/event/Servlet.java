@@ -44,10 +44,10 @@ public class Servlet extends HttpServlet {
         String uri = req.getRequestURI();
         if (uri.endsWith("/begin")) {
             conversation.begin("org.jboss.weld");
-            bean.setFoo("baz");
         } else if (uri.contains("/end")) {
             conversation.end();
         }
+        bean.setFoo("baz");
         resp.getWriter().append("Initialized conversations:").append(Integer.toString(observer.getInitializedConversationCount().get()));
         resp.getWriter().append('\n');
         resp.getWriter().append("Destroyed conversations:").append(Integer.toString(observer.getDestroyedConversationCount().get()));

@@ -340,9 +340,6 @@ applies:
 
 * If the `CDI Conversation Filter` is mapped, the conversation context is
 initialized eagerly within this filter
-* If an observer for `@Initialized(ConversationScoped.class)` or
-`@Destroyed(ConversationScoped.class)` event exists in the application,
-the conversation context is initialized eagerly
 * Otherwise, the conversation context is initialized lazily
 
 === The singleton pseudo-scope
