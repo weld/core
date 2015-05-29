@@ -20,10 +20,13 @@ import static org.jboss.weld.config.ConfigurationKey.BEAN_IDENTIFIER_INDEX_OPTIM
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
+import javax.servlet.DispatcherType;
+import javax.servlet.FilterRegistration;
 import javax.servlet.ServletContext;
 import javax.servlet.jsp.JspApplicationContext;
 import javax.servlet.jsp.JspFactory;
@@ -57,12 +60,15 @@ import org.jboss.weld.environment.tomcat.TomcatContainer;
 import org.jboss.weld.environment.util.Reflections;
 import org.jboss.weld.injection.spi.ResourceInjectionServices;
 import org.jboss.weld.manager.api.WeldManager;
+import org.jboss.weld.metadata.MetadataImpl;
 import org.jboss.weld.resources.ManagerObjectFactory;
 import org.jboss.weld.resources.WeldClassLoaderResourceLoader;
 import org.jboss.weld.resources.spi.ClassFileServices;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.servlet.WeldInitialListener;
 import org.jboss.weld.servlet.api.ServletListener;
+
+import com.google.common.collect.ImmutableSet;
 
 /**
  *
@@ -78,7 +84,14 @@ public class WeldServletLifecycle {
 
     private static final String EXPRESSION_FACTORY_NAME = "org.jboss.weld.el.ExpressionFactory";
 
+    private static final String PROBE_EXTENSION_CLASS_NAME = "org.jboss.weld.probe.ProbeExtension";
+
+    private static final String PROBE_FILTER_CLASS_NAME = "org.jboss.weld.probe.ProbeFilter";
+
     private static final String CONTEXT_PARAM_ARCHIVE_ISOLATION = WeldServletLifecycle.class.getPackage().getName() + ".archive.isolation";
+
+    // This context param is used to activate the development mode
+    private static final String CONTEXT_PARAM_DEV_MODE = "org.jboss.weld.development";
 
     private static final String JSP_FACTORY_CLASS_NAME = "javax.servlet.jsp.JspFactory";
 
@@ -93,6 +106,8 @@ public class WeldServletLifecycle {
     // WELD-1665 Bootstrap might be already performed
     private boolean isBootstrapNeeded = true;
 
+    private boolean isDevModeEnabled;
+
     WeldServletLifecycle() {
         resourceLoader = new WeldResourceLoader();
         bootstrap = new WeldBootstrap();
@@ -105,6 +120,8 @@ public class WeldServletLifecycle {
      * @return <code>true</code> if initialized properly, <code>false</code> otherwise
      */
     boolean initialize(ServletContext context) {
+
+        isDevModeEnabled = Boolean.valueOf(context.getInitParameter(CONTEXT_PARAM_DEV_MODE));
 
         WeldManager manager = (WeldManager) context.getAttribute(BEAN_MANAGER_ATTRIBUTE_NAME);
         if (manager != null) {
@@ -193,6 +210,11 @@ public class WeldServletLifecycle {
 
         if (isBootstrapNeeded) {
             bootstrap.deployBeans().validateBeans().endInitialization();
+
+            if (isDevModeEnabled) {
+                FilterRegistration.Dynamic filterDynamic = context.addFilter("Weld Probe Filter", PROBE_FILTER_CLASS_NAME);
+                filterDynamic.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST, DispatcherType.FORWARD, DispatcherType.INCLUDE), true, "/*");
+            }
         }
         return true;
     }
@@ -228,7 +250,21 @@ public class WeldServletLifecycle {
      */
     protected CDI11Deployment createDeployment(ServletContext context, CDI11Bootstrap bootstrap) {
 
-        final Iterable<Metadata<Extension>> extensions = bootstrap.loadExtensions(WeldResourceLoader.getClassLoader());
+        ImmutableSet.Builder<Metadata<Extension>> extensionsBuilder = ImmutableSet.builder();
+        extensionsBuilder.addAll(bootstrap.loadExtensions(WeldResourceLoader.getClassLoader()));
+        if (isDevModeEnabled) {
+            try {
+                Class<? extends Extension> probeExtensionClass = Reflections.loadClass(resourceLoader, PROBE_EXTENSION_CLASS_NAME);
+                if (probeExtensionClass == null) {
+                    throw WeldServletLogger.LOG.probeComponentNotFoundOnClasspath(PROBE_EXTENSION_CLASS_NAME);
+                }
+                extensionsBuilder.add(new MetadataImpl<Extension>(SecurityActions.newInstance(probeExtensionClass), "N/A"));
+            } catch (Exception e) {
+                throw WeldServletLogger.LOG.unableToInitializeProbeComponent(e.getMessage(), e);
+            }
+        }
+
+        final Iterable<Metadata<Extension>> extensions = extensionsBuilder.build();
         final TypeDiscoveryConfiguration typeDiscoveryConfiguration = bootstrap.startExtensions(extensions);
 
         DiscoveryStrategy strategy = DiscoveryStrategyFactory.create(resourceLoader, bootstrap, typeDiscoveryConfiguration.getKnownBeanDefiningAnnotations());

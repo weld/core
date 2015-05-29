@@ -248,13 +248,21 @@ public class BeanManagerProxy extends ForwardingBeanManager implements WeldManag
     }
 
     public static BeanManagerImpl unwrap(BeanManager manager) {
-        if (manager instanceof ForwardingBeanManager) {
-            manager = Reflections.<ForwardingBeanManager> cast(manager).delegate();
+        BeanManagerImpl instance = tryUnwrap(manager);
+        if (instance == null) {
+            throw new IllegalArgumentException("Unknown BeanManager " + manager);
         }
-        if (manager instanceof BeanManagerImpl) {
-            return (BeanManagerImpl) manager;
+        return instance;
+    }
+
+    public static BeanManagerImpl tryUnwrap(Object instance) {
+        if (instance instanceof ForwardingBeanManager) {
+            instance = Reflections.<ForwardingBeanManager> cast(instance).delegate();
         }
-        throw new IllegalArgumentException("Unknown BeanManager " + manager);
+        if (instance instanceof BeanManagerImpl) {
+            return (BeanManagerImpl) instance;
+        }
+        return null;
     }
 
     @Override

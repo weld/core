@@ -122,11 +122,33 @@ public enum ConfigurationKey {
      * does not match the {@link javax.enterprise.context.spi.AlterableContext} contract.
      */
     INJECTABLE_REFERENCE_OPTIMIZATION("org.jboss.weld.injection.injectableReferenceOptimization", false),
+
+    /**
+     * A regular expression. If a non-empty string and the base type for an AnnotatedType or a declaring type for an AnnotatedMember matches this pattern the
+     * type is excluded from monitoring, i.e. the invocation monitor interceptor is not associated.
+     */
+    PROBE_INVOCATION_MONITOR_EXCLUDE_TYPE("org.jboss.weld.probe.invocationMonitor.excludeType", ""),
+
+    /**
+     * If set to <code>true</code> the JavaBean accessor methods are not monitored.
+     */
+    PROBE_INVOCATION_MONITOR_SKIP_JAVABEAN_PROPERTIES("org.jboss.weld.probe.invocationMonitor.skipJavaBeanProperties", true),
+
+    /**
+     * A regular expression. If a non-empty string and the runtime class of the event object matches this pattern the event is excluded from monitoring.
+     */
+    PROBE_EVENT_MONITOR_EXCLUDE_TYPE("org.jboss.weld.probe.eventMonitor.excludeType", ""),
+
     /**
      * This optimization is used to reduce the HTTP session replication overhead. However, the inconsistency detection mechanism may cause problems in some
      * development environments.
      */
     BEAN_IDENTIFIER_INDEX_OPTIMIZATION("org.jboss.weld.serialization.beanIdentifierIndexOptimization", true),
+
+    /**
+     * If set to <code>true</code> an informative HTML snippet will be added to every response with Content-Type of value <code>text/html</code>.
+     */
+    PROBE_EMBED_INFO_SNIPPET("org.jboss.weld.probe.embedInfoSnippet", true),
 
     ;
 
