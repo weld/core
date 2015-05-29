@@ -92,7 +92,7 @@
                 <activeByDefault>false</activeByDefault>
                 <property>
                     <name>incontainer</name>
-                    <value>true</value>
+                    <value>wildfly</value>
                 </property>
             </activation>
             <dependencies>
@@ -133,7 +133,7 @@
             <activation>
                 <property>
                     <name>incontainer</name>
-                    <value>tomcat</value>
+                    <value>true</value>
                 </property>
             </activation>
 
