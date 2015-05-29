@@ -54,7 +54,6 @@
         <jboss.logging.version>3.1.3.GA</jboss.logging.version>
         <jboss.logging.processor.version>1.1.0.Final</jboss.logging.processor.version>
         <jboss.logmanager.version>1.2.2.GA</jboss.logmanager.version>
-        <jboss.spec.ejb.version>1.0.2.Final</jboss.spec.ejb.version>
         <jboss.spec.el-api.version>1.0.0.Alpha1</jboss.spec.el-api.version>
         <jsf.impl.version>2.2.10</jsf.impl.version>
         <jsp.api.version>2.2</jsp.api.version>
@@ -66,7 +65,7 @@
         <shrinkwrap.version>1.1.3</shrinkwrap.version>
         <shrinkwrap.descriptors.version>1.1.0-beta-1</shrinkwrap.descriptors.version>
         <testng.version>5.10</testng.version>
-        <weld.api.version>3.0.Alpha9</weld.api.version>
+        <weld.api.version>3.0.Alpha10</weld.api.version>
         <weld.logging.tools.version>1.0.0.CR1</weld.logging.tools.version>
         <wildfly.arquillian.version>1.0.0.Alpha5</wildfly.arquillian.version>
     </properties>
@@ -288,12 +287,6 @@
                     </exclusion>
                 </exclusions>
                 <scope>test</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.spec.javax.ejb</groupId>
-                <artifactId>jboss-ejb-api_3.1_spec</artifactId>
-                <version>${jboss.spec.ejb.version}</version>
             </dependency>
 
             <dependency>
