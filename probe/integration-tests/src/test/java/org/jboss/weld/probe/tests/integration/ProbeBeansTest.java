@@ -150,7 +150,7 @@ public class ProbeBeansTest extends ProbeIntegrationTest {
         Optional<JsonObject> methodProducer = producers.stream().filter((JsonObject o) -> o.getString(KIND).equals(BeanType.PRODUCER_METHOD.name()))
                 .findAny();
         assertTrue("Cannot find producer method from " + TestProducer.class.getName(), methodProducer.isPresent());
-        assertEquals("@" + Dependent.class.getSimpleName(), fieldProducer.get().getString(SCOPE));
+        assertEquals("@" + Dependent.class.getSimpleName(), methodProducer.get().getString(SCOPE));
         assertTrue(checkStringInArrayRecursively(ModelBean.class.getName(), null, methodProducer.get().getJsonArray(TYPES), false));
     }
     
