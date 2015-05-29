@@ -368,6 +368,11 @@ public class ServletContextBeanArchiveHandlerTest {
 
         }
 
+        @Override
+        public String getVirtualServerName() {
+            return null;
+        }
+
     }
 
     private static Set<String> toWebInfSet(String... paths) {

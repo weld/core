@@ -15,8 +15,6 @@
     <name>Weld Examples: PasteCode</name>
 
     <properties>
-        <javax.persistence.api.version>1.0.0.Final</javax.persistence.api.version>
-        <javax.transaction.version>1.1</javax.transaction.version>
         <urlrewritefilter.version>3.1.0</urlrewritefilter.version>
     </properties>
 
@@ -37,7 +35,7 @@
 
         <dependency>
             <groupId>org.jboss.spec.javax.servlet</groupId>
-            <artifactId>jboss-servlet-api_3.0_spec</artifactId>
+            <artifactId>jboss-servlet-api_3.1_spec</artifactId>
             <scope>provided</scope>
         </dependency>
 
@@ -81,9 +79,8 @@
         </dependency>
 
         <dependency>
-            <groupId>javax.transaction</groupId>
-            <artifactId>jta</artifactId>
-            <version>${javax.transaction.version}</version>
+            <groupId>org.jboss.spec.javax.transaction</groupId>
+            <artifactId>jboss-transaction-api_1.2_spec</artifactId>
             <scope>provided</scope>
         </dependency>
 
