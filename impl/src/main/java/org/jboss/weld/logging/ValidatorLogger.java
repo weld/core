@@ -215,7 +215,7 @@ public interface ValidatorLogger extends WeldLogger {
     @Message(id = 1435, value = "Normal scoped bean {0} is not proxyable because it has no no-args constructor - {1}.", format = Format.MESSAGE_FORMAT)
     UnproxyableResolutionException notProxyableNoConstructor(Object param1, Object param2);
 
-    @Message(id = 1436, value = "Normal scoped bean {0} is not proxyable because it has a private constructor {1} - {2}.", format = Format.MESSAGE_FORMAT)
+    @Message(id = 1436, value = "Type {0} is not proxyable because it has a private constructor {1} - {2}.", format = Format.MESSAGE_FORMAT)
     String notProxyablePrivateConstructor(Object param1, Object param2, Object param3);
 
     @Message(id = 1437, value = "Normal scoped bean {0} is not proxyable because the type is final or it contains a final method {1} - {2}.", format = Format.MESSAGE_FORMAT)
