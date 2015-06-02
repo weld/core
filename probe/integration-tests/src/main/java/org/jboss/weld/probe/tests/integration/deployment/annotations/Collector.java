@@ -22,7 +22,6 @@ import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
@@ -32,11 +31,11 @@ import javax.inject.Qualifier;
 @Qualifier
 @Target({ TYPE, METHOD, PARAMETER, FIELD })
 @Retention(RUNTIME)
-@Repeatable(Collectors.class)
 public @interface Collector {
 
     String value() default "";
 
+    @SuppressWarnings("all")
     public static class CollectorLiteral extends AnnotationLiteral<Collector> implements Collector {
 
         private static final long serialVersionUID = 1L;
