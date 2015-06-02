@@ -61,7 +61,8 @@ public class RequestBeanStore extends AttributeBeanStore {
     }
 
     @Override
-    protected boolean isStoreSyncDuringAttachRequired() {
+    protected boolean isLocalBeanStoreSyncNeeded() {
+        // The synchronization is not needed unless the request has been switched to async mode
         return Boolean.TRUE.equals(request.getAttribute(HttpContextLifecycle.ASYNC_STARTED_ATTR_NAME));
     }
 
