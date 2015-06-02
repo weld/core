@@ -80,7 +80,7 @@ public abstract class AttributeBeanStore implements BoundBeanStore {
     public boolean attach() {
         if (!attached) {
             attached = true;
-            if (isStoreSyncDuringAttachRequired()) {
+            if (isLocalBeanStoreSyncNeeded()) {
                 // The local bean store is authoritative, so copy everything to the backing store
                 for (BeanIdentifier id : beanStore) {
                     ContextualInstance<?> instance = beanStore.get(id);
@@ -218,11 +218,10 @@ public abstract class AttributeBeanStore implements BoundBeanStore {
     protected abstract LockStore getLockStore();
 
     /**
-     * TODO
      *
-     * @return
+     * @return <code>true</code> if a bean store synchronization is required during {@link #attach()} invocation, <code>false</code> otherwise
      */
-    protected boolean isStoreSyncDuringAttachRequired() {
+    protected boolean isLocalBeanStoreSyncNeeded() {
         return true;
     }
 }
