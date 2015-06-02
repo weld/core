@@ -90,7 +90,8 @@ public class HttpContextLifecycle implements Service {
         private int value = 1;
     }
 
-    public HttpContextLifecycle(BeanManagerImpl beanManager, HttpContextActivationFilter contextActivationFilter, boolean ignoreForwards, boolean ignoreIncludes, boolean lazyConversationContext, boolean nestedInvocationGuardEnabled) {
+    public HttpContextLifecycle(BeanManagerImpl beanManager, HttpContextActivationFilter contextActivationFilter, boolean ignoreForwards,
+            boolean ignoreIncludes, boolean lazyConversationContext, boolean nestedInvocationGuardEnabled) {
         this.beanManager = beanManager;
         this.conversationContextActivator = new ConversationContextActivator(beanManager, lazyConversationContext);
         this.conversationActivationEnabled = null;
@@ -189,10 +190,9 @@ public class HttpContextLifecycle implements Service {
             } else {
                 if (counter != null && marker == null) {
                     /*
-                     * This request has not been processed yet but the guard is set already.
-                     * That indicates, that the guard leaked from a previous request processing - most likely
-                     * the Servlet container did not invoke listener methods symmetrically.
-                     * Log a warning and recover by re-initializing the guard
+                     * This request has not been processed yet but the guard is set already. That indicates, that the guard leaked from a previous request
+                     * processing - most likely the Servlet container did not invoke listener methods symmetrically. Log a warning and recover by
+                     * re-initializing the guard
                      */
                     ServletLogger.LOG.guardLeak(counter.value);
                 }
@@ -277,21 +277,16 @@ public class HttpContextLifecycle implements Service {
         try {
             conversationContextActivator.deactivateConversationContext(request);
             /*
-             * if this request has been switched to async then do not invalidate the context now
-             * as it will be invalidated at the end of the async operation.
+             * If this request has been switched to async then do not invalidate the context now as it will be invalidated at the end of the async operation.
              */
-            // if (!servletApi.isAsyncSupported() || !servletApi.isAsyncStarted(request)) {
-            //    getRequestContext().invalidate();
-            //}
-
-            // TODO isAsyncStarted() is not working after dispatch
-            if(servletApi.isAsyncSupported() && servletApi.isAsyncStarted(request)) {
+            if (servletApi.isAsyncSupported() && servletApi.isAsyncStarted(request)) {
+                // Note that we can't use isAsyncStarted() because it may return false after dispatch
                 request.setAttribute(ASYNC_STARTED_ATTR_NAME, true);
             } else {
                 getRequestContext().invalidate();
             }
 
-            safelyDeactivate(getRequestContext(),  request);
+            safelyDeactivate(getRequestContext(), request);
             // fire @Destroyed(RequestScoped.class)
             requestDestroyedEvent.fire(request);
 
@@ -354,7 +349,7 @@ public class HttpContextLifecycle implements Service {
     private <T> void safelyDissociate(BoundContext<T> context, T storage) {
         try {
             context.dissociate(storage);
-        } catch(Exception e) {
+        } catch (Exception e) {
             ServletLogger.LOG.unableToDissociateContext(context, storage);
             ServletLogger.LOG.catchingDebug(e);
         }
@@ -363,7 +358,7 @@ public class HttpContextLifecycle implements Service {
     private void safelyDeactivate(ManagedContext context, HttpServletRequest request) {
         try {
             context.deactivate();
-        } catch(Exception e) {
+        } catch (Exception e) {
             ServletLogger.LOG.unableToDeactivateContext(context, request);
             ServletLogger.LOG.catchingDebug(e);
         }
