@@ -40,6 +40,7 @@ import static org.jboss.weld.logging.messages.ContextMessage.CONTEXTUAL_INSTANCE
 import static org.jboss.weld.logging.messages.ContextMessage.CONTEXTUAL_IS_NULL;
 import static org.jboss.weld.logging.messages.ContextMessage.CONTEXT_CLEARED;
 import static org.jboss.weld.logging.messages.ContextMessage.NO_BEAN_STORE_AVAILABLE;
+import static org.jboss.weld.logging.messages.ContextMessage.BEAN_STORE_CLEAR_FAILURE;
 
 /**
  * Base for the Context implementations. Delegates calls to the abstract
@@ -153,7 +154,11 @@ public abstract class AbstractContext implements Context {
 
     public void cleanup() {
         if (getBeanStore() != null) {
-            getBeanStore().clear();
+            try {
+                getBeanStore().clear();
+            } catch (Exception e) {
+                log.trace(BEAN_STORE_CLEAR_FAILURE,getBeanStore(),e);
+            }
         }
     }
 
