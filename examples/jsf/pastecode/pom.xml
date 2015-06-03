@@ -16,6 +16,7 @@
 
     <properties>
         <urlrewritefilter.version>3.1.0</urlrewritefilter.version>
+        <jpamodelgen.version>4.3.7.Final</jpamodelgen.version>
     </properties>
 
     <dependencies>
@@ -47,8 +48,7 @@
 
         <dependency>
             <groupId>org.hibernate.javax.persistence</groupId>
-            <artifactId>hibernate-jpa-2.0-api</artifactId>
-            <version>${javax.persistence.api.version}</version>
+            <artifactId>hibernate-jpa-2.1-api</artifactId>
             <scope>provided</scope>
         </dependency>
 
@@ -56,7 +56,7 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-jpamodelgen</artifactId>
             <!-- TODO Get this into Weld Parent! -->
-            <version>${javax.persistence.api.version}</version>
+            <version>${jpamodelgen.version}</version>
             <scope>provided</scope>
         </dependency>
 
