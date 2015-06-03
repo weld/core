@@ -159,9 +159,9 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
                 if (getSessionAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME, false) == null) {
                     setSessionAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME, getRequestAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME), false);
                 }
-                this.associated.set(null);
                 return true;
             } finally {
+                this.associated.set(null);
                 cleanup();
             }
         } else {
