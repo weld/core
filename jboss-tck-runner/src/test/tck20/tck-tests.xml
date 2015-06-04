@@ -41,6 +41,12 @@
             </class>
 
             <!-- Issues in Weld (the RI) -->
+            <!-- WELD-1941 -->
+            <class name="org.jboss.cdi.tck.tests.definition.name.NameDefinitionTest">
+                <methods>
+                    <exclude name="testNameStartingWithMultipleUpperCaseCharacters"/>
+                </methods>
+            </class>
 
             <!-- Issues in WildFly -->
         </classes>
