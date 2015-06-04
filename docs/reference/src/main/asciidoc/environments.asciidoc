@@ -76,11 +76,8 @@ destroyed).
 
 ==== Tomcat
 
-Since version 2.2.0.Final only Tomcat 7 and 8 are supported by Weld.
-By simply adding `weld-servlet` you get Tomcat integration automatically.
-
-Weld automatically supports context activation/deactivation and dependency
-injection into Servlets and Filters. Injection into Servlet listeners works on
+Tomcat 7 and 8 are supported. Context activation/deactivation and dependency
+injection into Servlets and Filters works out of the box. Injection into Servlet listeners works on
 Tomcat 7.0.50 and newer.
 
 ===== Binding BeanManager to JNDI
@@ -155,31 +152,28 @@ public class Main {
 
 ==== Jetty
 
-Since version 2.0.2.Final only Jetty 7, 8 and 9 are supported.
+Jetty 7, 8 and 9 are supported. Context activation/deactivation and dependency
+injection into Servlets and Filters works out of the box. Injection into Servlet listeners works on
+Jetty 9.1.1 and newer.
 
-Weld supports context activation/deactivation and dependency
-injection into Servlets and Filters. Injection into Servlet listeners works on
-Jetty 9.1.1 and newer. This is done automatically for the most part.
+===== Class Loading
 
-Since Jetty 8 the class `org.eclipse.jetty.servlet.ServletContextHandler.Decorator`
-is not visible from the web application. Therefore, one more step is required -
-we have to tell Jetty not to hide this system class.
+No further configuration is needed when starting Jetty as an embedded webapp server from within another Java program. However, if you’re using a Jetty standalone instance one more configuration step is required.
 
-Simply place the following `jetty-context.xml` file in the WEB-INF dir:
+The reason is that since Jetty 8 some internal classes are not visible from the web application. See also http://www.eclipse.org/jetty/documentation/current/jetty-classloading.html#setting-server-classes[Setting Server Classes]. Therefore, we have to tell Jetty not to hide the system classes which Weld integration code is using. Unfortunately, it’s not so simple. The only workaround is to use a http://www.eclipse.org/jetty/documentation/current/configuring-specific-webapp-deployment.html[Jetty Deployable Descriptor XML File] (this is a Jetty 9 feature, in Jetty 8 a similar feature is incorporated - http://wiki.eclipse.org/Jetty/Feature/ContextDeployer[ContextProvider]). For instance, if there is an application archive named `weld-numberguess.war` deployed in the `webapps` directory, an XML descriptor named `weld-numberguess.xml` should be created in the same directory (the file should have the same base name as the war - see alse the scanning rules described in http://www.eclipse.org/jetty/documentation/current/deployment-architecture.html#default-web-app-provider[Jetty docs]):
 
 [source.XML, xml]
 -------------------------------------------------------------
-<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure.dtd">
+<?xml version="1.0"?>
+<!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN" "http://www.eclipse.org/jetty/configure_9_0.dtd">
 <Configure class="org.eclipse.jetty.webapp.WebAppContext">
-    <Set name="serverClasses">
-        <Array type="java.lang.String">
-            <Item>-org.eclipse.jetty.servlet.ServletContextHandler.Decorator</Item>
-        </Array>
-    </Set>
+  <Set name="contextPath">/weld-numberguess</Set>
+  <Set name="war"><Property name="jetty.webapps" default="."/>/weld-numberguess.war</Set>
+  <Call name="prependServerClass">
+    <Arg>-org.eclipse.jetty.server.handler.ContextHandler,-org.eclipse.jetty.servlet.FilterHolder,-org.eclipse.jetty.servlet.ServletContextHandler,-org.eclipse.jetty.servlet.ServletHolder</Arg>
+  </Call>
 </Configure>
 -------------------------------------------------------------
-
-See also http://www.eclipse.org/jetty/documentation/current/jetty-classloading.html#setting-server-classes[Jetty Classloading documentation].
 
 ===== Binding BeanManager to JNDI
 
