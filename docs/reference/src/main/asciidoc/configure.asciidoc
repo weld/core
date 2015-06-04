@@ -11,7 +11,7 @@ Each configuration property can be specified (by priority in descending order):
 . As a system property
 . By a bootstrap configuration provided by an integrator
 
-If a configuration key is set in multiple sources (e.g. as a system property and in a properties file), the value from the source with higher priority is taken, other values are ignored. Unsupported configuration keys are ignored. If an invalid configuration property value is set, the container automatically detects the problem and treats it as a deployment problem. 
+If a configuration key is set in multiple sources (e.g. as a system property and in a properties file), the value from the source with higher priority is taken, other values are ignored. Unsupported configuration keys are ignored. If an invalid configuration property value is set, the container automatically detects the problem and treats it as a deployment problem.
 
 [[relaxedConstruction]]
 ==== Relaxed construction
@@ -60,7 +60,7 @@ NOTE: The bootstrap configuration may be altered using the deprecated `org.jboss
 ==== Thread pool configuration
 
 For certain types of tasks Weld uses its own thread pool. The thread
-pool is represented by the `ExecutorServices` service. 
+pool is represented by the `ExecutorServices` service.
 
 .Supported configuration properties
 [cols=",,",options="header",]
@@ -153,6 +153,23 @@ This optimization is used to reduce the HTTP session replication overhead. Howev
 |=======================================================================
 
 NOTE: This optimization is disabled by default in <<weld-servlet,Servlet containers>>.
+
+[[config-dev-mode]]
+==== Development Mode
+
+Some features of the development mode may have negative impact on the performance/functionality of the application. The following configuration properties allow to tune/disable these features, e.g. to specify the set of components which will be monitored.
+
+.Supported configuration properties
+[cols=",,",options="header",]
+|=======================================================================
+|Configuration key |Default value |Description
+|`org.jboss.weld.probe.invocationMonitor.excludeType` |'' |A regular expression. If a non-empty string and the base type for an AnnotatedType or a declaring type for an AnnotatedMember matches this pattern the type is excluded from monitoring.
+|`org.jboss.weld.probe.invocationMonitor.skipJavaBeanProperties` |'true' |If set to `true`, the JavaBean accessor methods are not monitored.
+|`org.jboss.weld.probe.eventMonitor.excludeType` |'' |A regular expression. If a non-empty string  and the runtime class of the event object matches this pattern the event is excluded from monitoring.
+|`org.jboss.weld.probe.embedInfoSnippet` |'true' | If set to `true` an informative HTML snippet will be added to every HTTP response with Content-Type of value `text/html`.
+|=======================================================================
+
+TIP: To disable the monitoring entirely set `org.jboss.weld.probe.invocationMonitor.excludeType` and `org.jboss.weld.probe.eventMonitor.excludeType` properties to `.*`.
 
 === Excluding classes from scanning and deployment
 

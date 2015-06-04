@@ -1,0 +1,42 @@
+[[devmode]]
+== Development Mode
+
+Weld comes with a special mode for application development. When the Development mode is enabled, certain built-in tools, which facilitate the development of CDI applications, are available.
+
+=== Enablement
+
+To enable the Development Mode set the Servlet initialization parameter `org.jboss.weld.development` to `true`.
+
+[source.XML, xml]
+-----------------------------------------------------------------------------------------------------------
+<web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee/"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+
+    <context-param>
+        <param-name>org.jboss.weld.development</param-name>
+        <param-value>true</param-value>
+    </context-param>
+
+</web-app>
+-----------------------------------------------------------------------------------------------------------
+
+You will see the following log message when deploying your application.
+
+-----------------------------------------------------------------------------------------------------------
+=====================================
+
+ Weld Development Mode: ENABLED
+
+=====================================
+-----------------------------------------------------------------------------------------------------------
+
+=== Tools
+
+==== Probe
+
+This tool allows to inspect the application components in the runtime. The Probe consists of the REST API and the default (single-page application) client. Therefore it's only available in a web application. Right now, the integration is provided for WildFly (unofficial patch), Tomcat and Jetty (Weld Servlet). The default client is available at path `/weld-probe` inside your web application, e.g. `http://localhost:8080/weld-numberguess/weld-probe`.
+
+NOTE: The development mode should not be used in production as it may have negative impact on the performance of the application. Make sure to disable the development mode before deploying to production.
+
+TIP: There are some configuration properties which allow to specify the set of components which will be monitored. See also <<config-dev-mode>>.
