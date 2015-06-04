@@ -38,7 +38,16 @@ public class PlainInterceptorFactory<T> implements InterceptorFactory<T> {
 
     public static <T> PlainInterceptorFactory<T> of(Class<T> javaClass, BeanManagerImpl manager) {
         AnnotatedType<T> type = manager.createAnnotatedType(javaClass);
-        InjectionTarget<T> it = manager.getInjectionTargetFactory(type).createInterceptorInjectionTarget();
+        /*
+         * For historical reasons WeldInjectionTargetFactory.createInterceptorInjectionTarget() does not add
+         * resource injection support. Therefore, we intentionally use builder instead.
+         */
+        InjectionTarget<T> it = manager.createInjectionTargetBuilder(type)
+                .setDecorationEnabled(false)
+                .setInterceptionEnabled(false)
+                .setResourceInjectionEnabled(true)
+                .setTargetClassLifecycleCallbacksEnabled(false)
+                .build();
         return new PlainInterceptorFactory<T>(it);
     }
 
