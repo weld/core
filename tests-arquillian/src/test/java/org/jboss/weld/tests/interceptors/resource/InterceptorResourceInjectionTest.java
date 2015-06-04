@@ -54,7 +54,7 @@ public class InterceptorResourceInjectionTest {
 
     @Test
     public void testWithUnmanagedComponent(BeanManager manager) {
-        Unmanaged<InterceptedBean> unmanaged = new Unmanaged<>(manager, InterceptedBean.class);
+        Unmanaged<InterceptedBean> unmanaged = new Unmanaged<InterceptedBean>(manager, InterceptedBean.class);
         UnmanagedInstance<InterceptedBean> instance = unmanaged.newInstance();
         InterceptedBean reference = instance.produce().inject().postConstruct().get();
         Assert.assertNotNull(reference.ping(null));
