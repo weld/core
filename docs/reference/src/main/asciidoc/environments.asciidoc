@@ -175,6 +175,8 @@ The reason is that since Jetty 8 some internal classes are not visible from the 
 </Configure>
 -------------------------------------------------------------
 
+TIP: Jetty distributions (from version *9.2.4*) contain a *dedicated http://www.eclipse.org/jetty/documentation/current/framework-weld.html[CDI/Weld module]* which allows to deploy a CDI application without bundling the Weld Servlet integration code.
+
 ===== Binding BeanManager to JNDI
 
 To bind the BeanManager into JNDI, you should either populate
