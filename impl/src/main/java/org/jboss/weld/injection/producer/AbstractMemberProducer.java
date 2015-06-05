@@ -60,44 +60,38 @@ public abstract class AbstractMemberProducer<X, T> extends AbstractProducer<T> {
         }
     }
 
-    /**
-     * Validates the producer method
-     */
     protected void checkProducerReturnType(EnhancedAnnotatedMember<T, ? super X, ? extends Member> enhancedMember) {
-        checkReturnTypeIsConcrete(enhancedMember, enhancedMember.getBaseType());
-        checkReturnTypeForWildcardsAndTypeVariables(enhancedMember, enhancedMember.getBaseType());
+        checkReturnTypeForWildcardsAndTypeVariables(enhancedMember, enhancedMember.getBaseType(), false);
     }
 
-    private void checkReturnTypeIsConcrete(EnhancedAnnotatedMember<T, ? super X, ? extends Member> enhancedMember, Type type) {
-        if (type instanceof TypeVariable<?> || type instanceof WildcardType) {
-            throw BeanLogger.LOG.returnTypeMustBeConcrete(enhancedMember);
-        } else if (type instanceof GenericArrayType) {
-            GenericArrayType arrayType = (GenericArrayType) type;
-            checkReturnTypeIsConcrete(enhancedMember, arrayType.getGenericComponentType());
-        }
-    }
-
-    private void checkReturnTypeForWildcardsAndTypeVariables(EnhancedAnnotatedMember<T, ? super X, ? extends Member> enhancedMember, Type type) {
+    private void checkReturnTypeForWildcardsAndTypeVariables(EnhancedAnnotatedMember<T, ? super X, ? extends Member> enhancedMember, Type type,
+            boolean isParameterizedType) {
         if (type instanceof TypeVariable<?>) {
-            if (!isDependent()) {
-                throw producerWithTypeVariableBeanTypeMustBeDependent(enhancedMember);
+            if (isParameterizedType) {
+                if (!isDependent()) {
+                    throw producerWithParameterizedTypeWithTypeVariableBeanTypeMustBeDependent(enhancedMember);
+                }
+            } else {
+                throw producerWithInvalidTypeVariable(enhancedMember);
             }
         } else if (type instanceof WildcardType) {
-            throw producerCannotHaveWildcardBeanType(enhancedMember);
+            throw producerWithInvalidWildcard(enhancedMember);
         } else if (type instanceof ParameterizedType) {
             ParameterizedType parameterizedType = (ParameterizedType) type;
             for (Type parameterType : parameterizedType.getActualTypeArguments()) {
-                checkReturnTypeForWildcardsAndTypeVariables(enhancedMember, parameterType);
+                checkReturnTypeForWildcardsAndTypeVariables(enhancedMember, parameterType, true);
             }
         } else if (type instanceof GenericArrayType) {
             GenericArrayType arrayType = (GenericArrayType) type;
-            checkReturnTypeForWildcardsAndTypeVariables(enhancedMember, arrayType.getGenericComponentType());
+            checkReturnTypeForWildcardsAndTypeVariables(enhancedMember, arrayType.getGenericComponentType(), false);
         }
     }
 
-    protected abstract DefinitionException producerCannotHaveWildcardBeanType(Object member);
+    protected abstract DefinitionException producerWithInvalidTypeVariable(AnnotatedMember<?> member);
 
-    protected abstract DefinitionException producerWithTypeVariableBeanTypeMustBeDependent(Object member);
+    protected abstract DefinitionException producerWithInvalidWildcard(AnnotatedMember<?> member);
+
+    protected abstract DefinitionException producerWithParameterizedTypeWithTypeVariableBeanTypeMustBeDependent(AnnotatedMember<?> member);
 
     private boolean isDependent() {
         return getBean() != null && Dependent.class.equals(getBean().getScope());

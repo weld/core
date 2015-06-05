@@ -25,6 +25,7 @@ import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.AnnotatedField;
+import javax.enterprise.inject.spi.AnnotatedMember;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.Producer;
 import javax.inject.Inject;
@@ -37,6 +38,7 @@ import org.jboss.weld.interceptor.util.proxy.TargetInstanceProxy;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.logging.UtilLogger;
 import org.jboss.weld.security.GetAccessibleCopyOfMember;
+import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
@@ -94,11 +96,18 @@ public abstract class ProducerFieldProducer<X, T> extends AbstractMemberProducer
         return getAnnotated().toString();
     }
 
-    protected DefinitionException producerCannotHaveWildcardBeanType(Object member) {
-        return BeanLogger.LOG.producerFieldCannotHaveAWildcardBeanType(member);
+    @Override
+    protected DefinitionException producerWithInvalidTypeVariable(AnnotatedMember<?> member) {
+        return BeanLogger.LOG.producerFieldTypeInvalidTypeVariable(member, Formats.formatAsStackTraceElement(member.getJavaMember()));
     }
 
-    protected DefinitionException producerWithTypeVariableBeanTypeMustBeDependent(Object member) {
-        return BeanLogger.LOG.producerFieldWithTypeVariableBeanTypeMustBeDependent(member);
+    @Override
+    protected DefinitionException producerWithInvalidWildcard(AnnotatedMember<?> member) {
+        return BeanLogger.LOG.producerFieldCannotHaveAWildcardBeanType(member, Formats.formatAsStackTraceElement(member.getJavaMember()));
+    }
+
+    @Override
+    protected DefinitionException producerWithParameterizedTypeWithTypeVariableBeanTypeMustBeDependent(AnnotatedMember<?> member) {
+        return BeanLogger.LOG.producerFieldWithTypeVariableBeanTypeMustBeDependent(member, Formats.formatAsStackTraceElement(member.getJavaMember()));
     }
 }
