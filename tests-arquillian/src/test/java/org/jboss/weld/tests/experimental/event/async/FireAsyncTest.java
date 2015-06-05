@@ -61,18 +61,15 @@ public class FireAsyncTest {
     @Test
     public void testAsyncEventExecutedInDifferentThread() throws InterruptedException {
         BlockingQueue<ThreadCapturingMessage> synchronizer = new LinkedBlockingQueue<>();
-        event.fireAsync(new ThreadCapturingMessage()).thenAccept(message -> synchronizer.add(message));
+        event.fireAsync(new ThreadCapturingMessage()).thenAccept(synchronizer::add);
         Assert.assertFalse(synchronizer.poll(2, TimeUnit.SECONDS).receivingThread.equals(Thread.currentThread()));
     }
 
     @Test
     public void testExceptionPropagated() throws InterruptedException {
         BlockingQueue<Throwable> synchronizer = new LinkedBlockingQueue<>();
-        event.fireAsync(new Message() {
-            @Override
-            public void receive() {
-                throw new IllegalStateException(FireAsyncTest.class.getName());
-            }
+        event.fireAsync(() -> {
+            throw new IllegalStateException(FireAsyncTest.class.getName());
         }).whenComplete((event, throwable) -> synchronizer.add(throwable));
 
         Throwable materializedThrowable = synchronizer.poll(2, TimeUnit.SECONDS);

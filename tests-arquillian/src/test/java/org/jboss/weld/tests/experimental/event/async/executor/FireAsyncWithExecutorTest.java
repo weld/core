@@ -23,7 +23,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -65,11 +64,8 @@ public class FireAsyncWithExecutorTest {
     @Test
     public void testGivenExecutorUsed() throws InterruptedException {
         // easily identifiable thread pool
-        Executor executor = Executors.newSingleThreadExecutor(new ThreadFactory() {
-            @Override
-            public Thread newThread(Runnable r) {
-                return new Thread(r, FireAsyncWithExecutorTest.class.getName());
-            }
+        Executor executor = Executors.newSingleThreadExecutor(runnable -> {
+            return new Thread(runnable, FireAsyncWithExecutorTest.class.getName());
         });
         request.fireAsync(new Request(), executor);
         final Response response = SYNCHRONIZER.poll(30, TimeUnit.SECONDS);
