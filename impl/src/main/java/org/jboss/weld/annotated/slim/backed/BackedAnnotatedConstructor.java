@@ -59,7 +59,7 @@ public class BackedAnnotatedConstructor<X> extends BackedAnnotatedCallable<X, Co
     }
 
     private void readObject(ObjectInputStream stream) throws InvalidObjectException {
-        throw BeanLogger.LOG.proxyRequired();
+        throw BeanLogger.LOG.serializationProxyRequired();
     }
 
     private static class SerializationProxy<X> extends BackedAnnotatedMemberSerializationProxy<X, AnnotatedConstructor<X>> {
