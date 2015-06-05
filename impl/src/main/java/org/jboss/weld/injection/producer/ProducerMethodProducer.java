@@ -38,6 +38,7 @@ import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.security.GetMethodAction;
+import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
@@ -100,11 +101,18 @@ public abstract class ProducerMethodProducer<X, T> extends AbstractMemberProduce
         return method.getAnnotated();
     }
 
-    protected DefinitionException producerCannotHaveWildcardBeanType(Object member) {
-        return BeanLogger.LOG.producerMethodCannotHaveAWildcardReturnType(member);
+    @Override
+    protected DefinitionException producerWithInvalidTypeVariable(AnnotatedMember<?> member) {
+        return BeanLogger.LOG.producerMethodReturnTypeInvalidTypeVariable(member, Formats.formatAsStackTraceElement(member.getJavaMember()));
     }
 
-    protected DefinitionException producerWithTypeVariableBeanTypeMustBeDependent(Object member) {
-        return BeanLogger.LOG.producerMethodWithTypeVariableReturnTypeMustBeDependent(member);
+    @Override
+    protected DefinitionException producerWithInvalidWildcard(AnnotatedMember<?> member) {
+        return BeanLogger.LOG.producerMethodCannotHaveAWildcardReturnType(member, Formats.formatAsStackTraceElement(member.getJavaMember()));
+    }
+
+    @Override
+    protected DefinitionException producerWithParameterizedTypeWithTypeVariableBeanTypeMustBeDependent(AnnotatedMember<?> member) {
+        return BeanLogger.LOG.producerMethodWithTypeVariableReturnTypeMustBeDependent(member, Formats.formatAsStackTraceElement(member.getJavaMember()));
     }
 }
