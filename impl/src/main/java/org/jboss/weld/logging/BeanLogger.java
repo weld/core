@@ -178,9 +178,6 @@ public interface BeanLogger extends WeldLogger {
     @Message(id = 50, value = "Cannot cast producer type {0} to bean type {1}", format = Format.MESSAGE_FORMAT)
     WeldException producerCastError(Object param1, Object param2, @Cause Throwable cause);
 
-    @Message(id = 51, value = "Return type must be concrete:  {0}", format = Format.MESSAGE_FORMAT)
-    DefinitionException returnTypeMustBeConcrete(Object param1);
-
     @Message(id = 52, value = "Cannot return null from a non-dependent producer method:  {0}", format = Format.MESSAGE_FORMAT)
     IllegalProductException nullNotAllowedFromProducer(Object param1);
 
@@ -283,11 +280,11 @@ public interface BeanLogger extends WeldLogger {
     @Message(id = 96, value = "Producer fields on session beans must be static. Field {0} declared on {1}", format = Format.MESSAGE_FORMAT)
     DefinitionException producerFieldOnSessionBeanMustBeStatic(Object param1, Object param2);
 
-    @Message(id = 97, value = "A producer method with a parameterized return type with a type variable must be declared @Dependent scoped. Method {0}", format = Format.MESSAGE_FORMAT)
-    DefinitionException producerMethodWithTypeVariableReturnTypeMustBeDependent(Object param1);
+    @Message(id = 97, value = "A producer method with a parameterized return type with a type variable must be declared @Dependent scoped: \n  {0}\n\tat {1}\n  StackTrace:", format = Format.MESSAGE_FORMAT)
+    DefinitionException producerMethodWithTypeVariableReturnTypeMustBeDependent(Object param1, String stackElement);
 
-    @Message(id = 98, value = "A producer method cannot have a return type parameterized with wildcards. Method {0}", format = Format.MESSAGE_FORMAT)
-    DefinitionException producerMethodCannotHaveAWildcardReturnType(Object param1);
+    @Message(id = 98, value = "A producer method return type may not contain a wildcard: \n  {0}\n\tat {1}\n  StackTrace:", format = Format.MESSAGE_FORMAT)
+    DefinitionException producerMethodCannotHaveAWildcardReturnType(Object param1, String stackElement);
 
     @Message(id = 99, value = "Cannot load class {0} during deserialization of proxy", format = Format.MESSAGE_FORMAT)
     WeldException cannotLoadClass(Object param1, @Cause Throwable cause);
@@ -456,11 +453,11 @@ public interface BeanLogger extends WeldLogger {
     @Message(id = 1549, value = "Unable to determine parent creational context of {0}", format = Format.MESSAGE_FORMAT)
     IllegalArgumentException unableToDetermineParentCreationalContext(Object param1);
 
-    @Message(id = 1550, value = "A producer field with a parameterized type with a type variable must be declared @Dependent scoped. Field {0}", format = Format.MESSAGE_FORMAT)
-    DefinitionException producerFieldWithTypeVariableBeanTypeMustBeDependent(Object param1);
+    @Message(id = 1550, value = "A producer field with a parameterized type with a type variable must be declared @Dependent scoped: \n  {0}\n\tat {1}\n  StackTrace:", format = Format.MESSAGE_FORMAT)
+    DefinitionException producerFieldWithTypeVariableBeanTypeMustBeDependent(Object param1, String stackElement);
 
-    @Message(id = 1551, value = "A producer field's type cannot be a parameterized type with wildcards. Field {0}", format = Format.MESSAGE_FORMAT)
-    DefinitionException producerFieldCannotHaveAWildcardBeanType(Object param1);
+    @Message(id = 1551, value = "A producer field type may not contain a wildcard: \n  {0}\n\tat {1}\n  StackTrace:", format = Format.MESSAGE_FORMAT)
+    DefinitionException producerFieldCannotHaveAWildcardBeanType(Object param1, String stackElement);
 
     @LogMessage(level = Level.WARN)
     @Message(id = 1552, value = "An extension ({0}) has a non-static public field ({1}).", format = Format.MESSAGE_FORMAT)
@@ -495,4 +492,11 @@ public interface BeanLogger extends WeldLogger {
 
     @Message(id = 1561, value = "Bean builder {0} does not define a BeanManager.", format = Format.MESSAGE_FORMAT)
     DefinitionException beanBuilderInvalidBeanManager(Object param1);
+
+    @Message(id = 1562, value = "A producer method return type may not be a type variable or an array type whose component type is a type variable: \n  {0}\n\tat {1}\n  StackTrace:", format = Format.MESSAGE_FORMAT)
+    DefinitionException producerMethodReturnTypeInvalidTypeVariable(Object param1, String stackElement);
+
+    @Message(id = 1563, value = "A producer field type may not be a type variable or an array type whose component type is a type variable: \n  {0}\n\tat {1}\n  StackTrace:", format = Format.MESSAGE_FORMAT)
+    DefinitionException producerFieldTypeInvalidTypeVariable(Object param1, String stackElement);
+
 }
