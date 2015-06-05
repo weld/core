@@ -68,6 +68,6 @@ public class UnbackedAnnotatedMethod<X> extends UnbackedAnnotatedMember<X> imple
     }
 
     private void readObject(ObjectInputStream stream) throws InvalidObjectException {
-        throw BeanLogger.LOG.proxyRequired();
+        throw BeanLogger.LOG.serializationProxyRequired();
     }
 }

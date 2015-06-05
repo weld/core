@@ -189,7 +189,7 @@ public class InstanceImpl<T> extends AbstractFacade<T, Instance<T>> implements I
     }
 
     private void readObject(ObjectInputStream stream) throws InvalidObjectException {
-        throw BeanLogger.LOG.proxyRequired();
+        throw BeanLogger.LOG.serializationProxyRequired();
     }
 
     private static class SerializationProxy<T> extends AbstractFacadeSerializationProxy<T, Instance<T>> {

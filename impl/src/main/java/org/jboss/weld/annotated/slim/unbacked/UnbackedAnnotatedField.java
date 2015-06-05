@@ -52,6 +52,6 @@ public class UnbackedAnnotatedField<X> extends UnbackedAnnotatedMember<X> implem
     }
 
     private void readObject(ObjectInputStream stream) throws InvalidObjectException {
-        throw BeanLogger.LOG.proxyRequired();
+        throw BeanLogger.LOG.serializationProxyRequired();
     }
 }
