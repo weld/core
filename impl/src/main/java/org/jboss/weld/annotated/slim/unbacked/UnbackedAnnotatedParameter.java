@@ -48,7 +48,7 @@ public class UnbackedAnnotatedParameter<X> extends UnbackedAnnotated implements 
     }
 
     private void readObject(ObjectInputStream stream) throws InvalidObjectException {
-        throw BeanLogger.LOG.proxyRequired();
+        throw BeanLogger.LOG.serializationProxyRequired();
     }
 
     private static class SerializationProxy<X> implements Serializable {
