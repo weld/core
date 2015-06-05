@@ -122,7 +122,7 @@ public abstract class AbstractBean<T, S> extends RIBean<T> {
                 }
                 previousSpecializedBeanName = name;
                 if (isNameDefined && name != null) {
-                    throw BeanLogger.LOG.nameNotAllowedOnSpecialization(getAnnotated());
+                    throw BeanLogger.LOG.nameNotAllowedOnSpecialization(getAnnotated(), specializedBean.getAnnotated());
                 }
 
                 // When a specializing bean extends the raw type of a generic superclass, types of the generic superclass are
