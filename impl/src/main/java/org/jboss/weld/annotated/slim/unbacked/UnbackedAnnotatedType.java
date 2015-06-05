@@ -104,7 +104,7 @@ public class UnbackedAnnotatedType<X> extends UnbackedAnnotated implements SlimA
     }
 
     private void readObject(ObjectInputStream stream) throws InvalidObjectException {
-        throw BeanLogger.LOG.proxyRequired();
+        throw BeanLogger.LOG.serializationProxyRequired();
     }
 
     @Override

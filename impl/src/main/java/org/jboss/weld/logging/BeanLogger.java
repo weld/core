@@ -160,8 +160,8 @@ public interface BeanLogger extends WeldLogger {
     @Message(id = 44, value = "Unable to obtain instance from {0}", format = Format.MESSAGE_FORMAT)
     NullInstanceException nullInstance(Object param1);
 
-    @Message(id = 45, value = "Proxy required")
-    InvalidObjectException proxyRequired();
+    @Message(id = 45, value = "Unable to deserialize object - serialization proxy is required")
+    InvalidObjectException serializationProxyRequired();
 
     @Message(id = 46, value = "At most one scope may be specified on {0}", format = Format.MESSAGE_FORMAT)
     DefinitionException onlyOneScopeAllowed(Object param1);

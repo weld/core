@@ -65,6 +65,6 @@ public class UnbackedAnnotatedConstructor<X> extends UnbackedAnnotatedMember<X> 
     }
 
     private void readObject(ObjectInputStream stream) throws InvalidObjectException {
-        throw BeanLogger.LOG.proxyRequired();
+        throw BeanLogger.LOG.serializationProxyRequired();
     }
 }

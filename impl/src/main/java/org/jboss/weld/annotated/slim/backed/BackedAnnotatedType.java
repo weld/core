@@ -146,7 +146,7 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
     }
 
     private void readObject(ObjectInputStream stream) throws InvalidObjectException {
-        throw BeanLogger.LOG.proxyRequired();
+        throw BeanLogger.LOG.serializationProxyRequired();
     }
 
     // Lazy initialization
