@@ -148,8 +148,8 @@ public interface BeanLogger extends WeldLogger {
     @Message(id = 40, value = "All stereotypes must specify the same scope or the bean must declare a scope - declaring class: {0}, declared stereotypes [{1}], possible scopes {2}{3}", format = Format.MESSAGE_FORMAT)
     DefinitionException multipleScopesFoundFromStereotypes(Object param1, Object stereotypes, Object possibleScopes, String stack);
 
-    @Message(id = 41, value = "Cannot put name on specializing and specialized class {0}", format = Format.MESSAGE_FORMAT)
-    DefinitionException nameNotAllowedOnSpecialization(Object param1);
+    @Message(id = 41, value = "Specializing bean may not declare a bean name if it is declared by specialized bean\n  specializing: {0}\n  specialized: {1}", format = Format.MESSAGE_FORMAT)
+    DefinitionException nameNotAllowedOnSpecialization(Object specializing, Object specialized);
 
     @Message(id = 42, value = "Cannot operate on non container provided decorator {0}", format = Format.MESSAGE_FORMAT)
     IllegalStateException nonContainerDecorator(Object param1);
