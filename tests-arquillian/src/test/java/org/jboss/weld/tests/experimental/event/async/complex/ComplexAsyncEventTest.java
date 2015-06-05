@@ -71,7 +71,7 @@ public class ComplexAsyncEventTest {
     @Test
     public void test() throws InterruptedException {
         // make it possible for configuration to be altered by observers
-        event.fireAsync(new CalculationConfiguration()).thenAccept(conf -> master.compute(conf));
+        event.fireAsync(new CalculationConfiguration()).thenAccept(master::compute);
 
         PiApproximation result = RESULT.poll(15, TimeUnit.SECONDS);
         Assert.assertTrue(3.140D < result.getPi() && result.getPi() < 3.145D);

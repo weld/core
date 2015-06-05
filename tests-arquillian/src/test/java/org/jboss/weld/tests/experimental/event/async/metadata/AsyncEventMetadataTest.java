@@ -61,7 +61,7 @@ public class AsyncEventMetadataTest {
     @Test
     public void testAsync() throws InterruptedException {
         BlockingQueue<Message> synchronizer = new LinkedBlockingQueue<>();
-        event.fireAsync(new Message()).thenAccept(message -> synchronizer.add(message));
+        event.fireAsync(new Message()).thenAccept(synchronizer::add);
         Assert.assertTrue(synchronizer.poll(2, TimeUnit.SECONDS).isAsync());
     }
 }
