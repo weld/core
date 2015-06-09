@@ -14,19 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.bootstrap.configuration;
+package org.jboss.weld.environment.servlet.test.bootstrap.configuration;
 
+import static org.jboss.weld.environment.servlet.test.util.Deployments.baseDeployment;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import javax.inject.Inject;
 
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.BeanArchive;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.bootstrap.ConcurrentValidator;
 import org.jboss.weld.bootstrap.Validator;
 import org.jboss.weld.bootstrap.events.ContainerLifecycleEvents;
@@ -34,18 +31,16 @@ import org.jboss.weld.executor.FixedThreadPoolExecutorServices;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.api.ExecutorServices;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
-@RunWith(Arquillian.class)
-public class DisabledPreloaderTest {
+public class DisabledPreloaderTestBase {
 
     @Inject
     private BeanManagerImpl manager;
 
-    @Deployment
-    public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).addAsResource(new StringAsset("preloaderThreadPoolSize=0"),
-                "org.jboss.weld.bootstrap.properties");
+    public static WebArchive getDeployment() {
+        return baseDeployment()
+                .addAsResource(new StringAsset("preloaderThreadPoolSize=0"), "org.jboss.weld.bootstrap.properties")
+                .addClass(DisabledPreloaderTestBase.class);
     }
 
     @Test
