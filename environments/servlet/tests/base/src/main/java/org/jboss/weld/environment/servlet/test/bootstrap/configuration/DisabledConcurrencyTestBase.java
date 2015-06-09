@@ -14,40 +14,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.bootstrap.configuration;
+package org.jboss.weld.environment.servlet.test.bootstrap.configuration;
 
+import static org.jboss.weld.environment.servlet.test.util.Deployments.baseDeployment;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import javax.inject.Inject;
 
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.BeanArchive;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.bootstrap.ConcurrentValidator;
 import org.jboss.weld.bootstrap.Validator;
 import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.manager.api.ExecutorServices;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
-@RunWith(Arquillian.class)
-public class DisabledExecutorTest {
+public class DisabledConcurrencyTestBase {
 
     @Inject
     private BeanManagerImpl manager;
 
-    @Deployment
-    public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).addAsResource(new StringAsset("threadPoolType=NONE"), "org.jboss.weld.executor.properties");
+    public static WebArchive getDeployment() {
+        return baseDeployment()
+                .addAsResource(new StringAsset("concurrentDeployment=false"), "org.jboss.weld.bootstrap.properties")
+                .addClass(DisabledConcurrencyTestBase.class);
     }
 
     @Test
     public void testServices() {
+        assertTrue(manager.getServices().get(Validator.class) instanceof Validator);
         assertFalse(manager.getServices().get(Validator.class) instanceof ConcurrentValidator);
-        assertNull(manager.getServices().get(ExecutorServices.class));
     }
 }
