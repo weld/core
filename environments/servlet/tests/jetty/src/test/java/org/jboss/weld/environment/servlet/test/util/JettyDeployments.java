@@ -19,11 +19,16 @@ package org.jboss.weld.environment.servlet.test.util;
 
 import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 
 /**
  * @author Ales Justin
  */
-public class JettyDeployments {
+public final class JettyDeployments {
+
+    private JettyDeployments() {
+    }
+
     public static final Asset JETTY_ENV = new StringAsset(
         "<Configure id=\"webAppCtx\" class=\"org.eclipse.jetty.webapp.WebAppContext\">" +
             "<Set class=\"org.eclipse.jetty.util.resource.Resource\" name=\"defaultUseCaches\">false</Set>" +
@@ -46,4 +51,9 @@ public class JettyDeployments {
                 "<Arg type=\"boolean\">true</Arg>" +
             "</New>" +
         "</Configure>");
+
+    public static <W extends WebArchive> W apply(W archive) {
+        archive.addAsWebInfResource(JETTY_ENV, "jetty-env.xml");
+        return archive;
+    }
 }
