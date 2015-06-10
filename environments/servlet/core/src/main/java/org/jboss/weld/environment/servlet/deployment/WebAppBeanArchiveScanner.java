@@ -52,6 +52,7 @@ public class WebAppBeanArchiveScanner extends DefaultBeanArchiveScanner {
     static final String[] RESOURCES = { WEB_INF_BEANS_XML, WEB_INF_CLASSES_BEANS_XML };
 
     private final ServletContext servletContext;
+    private final ResourceLoader resourceLoader;
 
     /**
      *
@@ -61,6 +62,7 @@ public class WebAppBeanArchiveScanner extends DefaultBeanArchiveScanner {
      */
     public WebAppBeanArchiveScanner(ResourceLoader resourceLoader, Bootstrap bootstrap, ServletContext servletContext) {
         super(resourceLoader, bootstrap);
+        this.resourceLoader = resourceLoader;
         this.servletContext = servletContext;
     }
 

@@ -120,6 +120,9 @@ public abstract class AbstractDiscoveryStrategy implements DiscoveryStrategy {
                     CommonLogger.LOG.undefinedBeanDiscoveryValue(beansXml.getBeanDiscoveryMode());
             }
         }
+        for (WeldBeanDeploymentArchive archive : archives) {
+            archive.getServices().add(ResourceLoader.class, resourceLoader);
+        }
         afterDiscovery(archives);
         return archives;
     }
@@ -167,10 +170,6 @@ public abstract class AbstractDiscoveryStrategy implements DiscoveryStrategy {
      */
     protected WeldBeanDeploymentArchive processAllDiscovery(BeanArchiveBuilder builder) {
         return builder.build();
-    }
-
-    public ResourceLoader getResourceLoader() {
-        return resourceLoader;
     }
 
     @Override

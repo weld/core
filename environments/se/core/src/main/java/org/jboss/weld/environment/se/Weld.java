@@ -54,6 +54,7 @@ import org.jboss.weld.bootstrap.WeldBootstrap;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.CDI11Bootstrap;
 import org.jboss.weld.bootstrap.api.Environments;
+import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.bootstrap.api.SingletonProvider;
 import org.jboss.weld.bootstrap.api.TypeDiscoveryConfiguration;
 import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
@@ -79,10 +80,12 @@ import org.jboss.weld.environment.util.Files;
 import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.metadata.BeansXmlImpl;
 import org.jboss.weld.metadata.MetadataImpl;
+import org.jboss.weld.resources.ClassLoaderResourceLoader;
 import org.jboss.weld.resources.spi.ClassFileServices;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.security.GetClassLoaderAction;
 import org.jboss.weld.security.GetSystemPropertyAction;
+import org.jboss.weld.util.Preconditions;
 import org.jboss.weld.util.collections.WeldCollections;
 
 import com.google.common.collect.ImmutableList;
@@ -181,6 +184,8 @@ public class Weld implements ContainerInstanceFactory {
 
     private final Set<PackInfo> packages;
 
+    private ResourceLoader resourceLoader;
+
     public Weld() {
         this(RegistrySingletonProvider.STATIC_INSTANCE);
     }
@@ -201,6 +206,7 @@ public class Weld implements ContainerInstanceFactory {
         this.extensions = new HashSet<Metadata<Extension>>();
         this.properties = new HashMap<String, Object>();
         this.packages = new HashSet<PackInfo>();
+        this.resourceLoader = new WeldResourceLoader();
     }
 
     /**
@@ -499,8 +505,6 @@ public class Weld implements ContainerInstanceFactory {
      * @see #setDiscoveryEnabled(boolean)
      */
     public WeldContainer initialize() {
-        final ResourceLoader resourceLoader = new WeldResourceLoader();
-
         // If also building a synthetic bean archive the check for beans.xml is not necessary
         if (!isSyntheticBeanArchiveRequired() && resourceLoader.getResource(WeldDeployment.BEANS_XML) == null) {
             throw CommonLogger.LOG.missingBeansXml();
@@ -544,6 +548,15 @@ public class Weld implements ContainerInstanceFactory {
     }
 
     /**
+     * Set a {@link ClassLoader}. The given {@link ClassLoader} will be scanned automatically for bean archives if scanning is enabled.
+     */
+    public Weld setClassLoader(ClassLoader classLoader) {
+       Preconditions.checkNotNull(classLoader);
+       resourceLoader = new ClassLoaderResourceLoader(classLoader);
+       return this;
+    }
+
+    /**
      * <p>
      * Extensions to Weld SE can subclass and override this method to customize the deployment before weld boots up. For example, to add a custom
      * ResourceLoader, you would subclass Weld like so:
@@ -574,16 +587,15 @@ public class Weld implements ContainerInstanceFactory {
         final TypeDiscoveryConfiguration typeDiscoveryConfiguration = bootstrap.startExtensions(extensions);
         final Deployment deployment;
         final Set<WeldBeanDeploymentArchive> beanArchives = new HashSet<WeldBeanDeploymentArchive>();
-        final DiscoveryStrategy strategy;
+        final Map<Class<? extends Service>, Service> additionalServices = new HashMap<>();
 
         if (discoveryEnabled) {
-            strategy = DiscoveryStrategyFactory.create(resourceLoader, bootstrap,
+            DiscoveryStrategy strategy = DiscoveryStrategyFactory.create(resourceLoader, bootstrap,
                     ImmutableSet.<Class<? extends Annotation>> builder().addAll(typeDiscoveryConfiguration.getKnownBeanDefiningAnnotations())
                     // Add ThreadScoped manually as Weld SE doesn't support implicit bean archives without beans.xml
                             .add(ThreadScoped.class).build());
             beanArchives.addAll(strategy.performDiscovery());
-        } else {
-            strategy = null;
+            additionalServices.put(ClassFileServices.class, strategy.getClassFileServices());
         }
 
         if (isSyntheticBeanArchiveRequired()) {
@@ -619,9 +631,7 @@ public class Weld implements ContainerInstanceFactory {
             CommonLogger.LOG.archiveIsolationEnabled();
         }
 
-        if (strategy != null && strategy.getClassFileServices() != null) {
-            deployment.getServices().add(ClassFileServices.class, strategy.getClassFileServices());
-        }
+        deployment.getServices().addAll(additionalServices.entrySet());
         return deployment;
     }
 
