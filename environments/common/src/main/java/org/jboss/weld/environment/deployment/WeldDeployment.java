@@ -57,9 +57,6 @@ public class WeldDeployment extends AbstractWeldDeployment {
         super(bootstrap, extensions);
         this.resourceLoader = resourceLoader;
         this.beanDeploymentArchives = beanDeploymentArchives;
-        for (BeanDeploymentArchive archive : beanDeploymentArchives) {
-            archive.getServices().add(ResourceLoader.class, resourceLoader);
-        }
         setBeanDeploymentArchivesAccessibility();
     }
 
