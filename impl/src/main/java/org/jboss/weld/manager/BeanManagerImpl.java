@@ -85,6 +85,7 @@ import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.events.AbstractProcessInjectionTarget;
 import org.jboss.weld.context.ContextNotActiveException;
 import org.jboss.weld.context.CreationalContextImpl;
+import org.jboss.weld.context.PassivatingContextWrapper;
 import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
@@ -588,7 +589,31 @@ public class BeanManagerImpl implements WeldManager, Serializable {
      * @return A single active context of the given scope
      * @see javax.enterprise.inject.spi.BeanManager#getContext(java.lang.Class)
      */
+    @Override
     public Context getContext(Class<? extends Annotation> scopeType) {
+        Context activeContext = internalGetContext(scopeType);
+        if (activeContext == null) {
+            throw new ContextNotActiveException(CONTEXT_NOT_ACTIVE, scopeType.getName());
+        }
+        return activeContext;
+    }
+
+    public Context getUnwrappedContext(Class<? extends Annotation> scopeType) {
+        return PassivatingContextWrapper.unwrap(getContext(scopeType));
+    }
+
+    /**
+     * Indicates whether there is an active context for a given scope.
+     *
+     * @throws IllegalStateException if there are multiple active scopes for a given context
+     * @param scopeType
+     * @return true if there is an active context for a given scope, false otherwise
+     */
+    public boolean isContextActive(Class<? extends Annotation> scopeType) {
+        return internalGetContext(scopeType) != null;
+    }
+
+    private Context internalGetContext(Class<? extends Annotation> scopeType) {
         Context activeContext = null;
         final List<Context> ctx = contexts.get(scopeType);
         if (ctx == null) {
