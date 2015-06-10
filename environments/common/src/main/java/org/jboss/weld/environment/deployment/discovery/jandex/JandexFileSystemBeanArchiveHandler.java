@@ -41,6 +41,9 @@ public class JandexFileSystemBeanArchiveHandler extends FileSystemBeanArchiveHan
     @Override
     public BeanArchiveBuilder handle(String path) {
         BeanArchiveBuilder builder = super.handle(path);
+        if (builder == null) {
+            return null;
+        }
         builder.setAttribute(JandexDiscoveryStrategy.INDEX_ATTRIBUTE_NAME, buildIndex());
         return builder;
     }
