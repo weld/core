@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.enterprise.inject.spi.AnnotatedMember;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 
@@ -152,7 +153,8 @@ public final class ResourceInjectionFactory {
             A apiAbstraction = getApiAbstraction(beanManager);
 
             if (injectionServices != null && apiAbstraction != null
-                    && fieldInjectionPoint.getAnnotated().isAnnotationPresent(getMarkerAnnotation(apiAbstraction))) {
+                    && fieldInjectionPoint.getAnnotated().isAnnotationPresent(getMarkerAnnotation(apiAbstraction))
+                    && accept(fieldInjectionPoint.getAnnotated(), apiAbstraction)) {
                 return createFieldResourceInjection(fieldInjectionPoint, injectionServices, apiAbstraction);
             }
             return null;
@@ -179,18 +181,22 @@ public final class ResourceInjectionFactory {
             Set<ResourceInjection<?>> resourceInjections = new ArraySet<ResourceInjection<?>>();
 
             for (EnhancedAnnotatedField<?, ?> field : type.getDeclaredEnhancedFields(marker)) {
-                resourceInjections.add(createFieldResourceInjection(InjectionPointFactory.silentInstance()
-                        .createFieldInjectionPoint(field, declaringBean, type.getJavaClass(), manager), injectionServices,
-                        apiAbstraction));
+                if (accept(field, apiAbstraction)) {
+                    resourceInjections.add(createFieldResourceInjection(InjectionPointFactory.silentInstance()
+                            .createFieldInjectionPoint(field, declaringBean, type.getJavaClass(), manager), injectionServices,
+                            apiAbstraction));
+                }
             }
             for (EnhancedAnnotatedMethod<?, ?> method : type.getDeclaredEnhancedMethods(marker)) {
                 if (method.getParameters().size() != 1) {
                     throw UtilLogger.LOG.resourceSetterInjectionNotAJavabean(method);
                 }
-                resourceInjections.add(createSetterResourceInjection(
-                        InjectionPointFactory.silentInstance().createParameterInjectionPoint(
-                                method.getEnhancedParameters().get(0), declaringBean, type.getJavaClass(), manager),
-                        injectionServices, apiAbstraction));
+                if (accept(method, apiAbstraction)) {
+                    resourceInjections.add(createSetterResourceInjection(
+                            InjectionPointFactory.silentInstance().createParameterInjectionPoint(
+                                    method.getEnhancedParameters().get(0), declaringBean, type.getJavaClass(), manager),
+                            injectionServices, apiAbstraction));
+                }
             }
             return immutableSet(resourceInjections);
         }
@@ -229,6 +235,13 @@ public final class ResourceInjectionFactory {
         protected abstract A getApiAbstraction(BeanManagerImpl manager);
 
         protected abstract S getInjectionServices(BeanManagerImpl manager);
+
+        /**
+         * Allows an implementation to indicate whether it accepts a given injection point annotated with the marker annotation.
+         */
+        protected boolean accept(AnnotatedMember<?> member, A apiAbstraction) {
+            return true;
+        }
 
     }
 
