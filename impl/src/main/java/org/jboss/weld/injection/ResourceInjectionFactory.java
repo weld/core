@@ -17,15 +17,19 @@
 package org.jboss.weld.injection;
 
 import static org.jboss.weld.util.collections.WeldCollections.immutableSet;
+import static org.jboss.weld.util.reflection.Reflections.getRawType;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.AnnotatedMember;
+import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 
@@ -243,6 +247,20 @@ public final class ResourceInjectionFactory {
             return true;
         }
 
+        protected Type getResourceInjectionPointType(AnnotatedMember<?> member) {
+            if (member instanceof AnnotatedField<?>) {
+                return member.getBaseType();
+            }
+            if (member instanceof AnnotatedMethod<?>) {
+                AnnotatedMethod<?> method = (AnnotatedMethod<?>) member;
+                if (method.getParameters().size() != 1) {
+                    throw UtilLogger.LOG.resourceSetterInjectionNotAJavabean(method);
+                }
+                return method.getParameters().get(0).getBaseType();
+            }
+            throw new IllegalArgumentException("Unknown member " + member);
+        }
+
     }
 
     /**
@@ -306,6 +324,13 @@ public final class ResourceInjectionFactory {
         protected JpaInjectionServices getInjectionServices(BeanManagerImpl manager) {
             return manager.getServices().get(JpaInjectionServices.class);
         }
+
+        @Override
+        protected boolean accept(AnnotatedMember<?> member, PersistenceApiAbstraction apiAbstraction) {
+            // ugly hack that allows application servers to support hibernate session injection while at the same time
+            // the injection points are validated by Weld for invalid types (required by the TCK)
+            return !apiAbstraction.SESSION_FACTORY_NAME.equals(getRawType(getResourceInjectionPointType(member)).getName());
+        }
     }
 
     /**
@@ -341,6 +366,12 @@ public final class ResourceInjectionFactory {
             return manager.getServices().get(JpaInjectionServices.class);
         }
 
+        @Override
+        protected boolean accept(AnnotatedMember<?> member, PersistenceApiAbstraction apiAbstraction) {
+            // ugly hack that allows application servers to support hibernate session injection while at the same time
+            // the injection points are validated by Weld for invalid types (required by the TCK)
+            return !apiAbstraction.SESSION_NAME.equals(getRawType(getResourceInjectionPointType(member)).getName());
+        }
     }
 
     /**
