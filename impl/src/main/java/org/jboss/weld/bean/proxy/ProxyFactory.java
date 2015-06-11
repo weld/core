@@ -421,11 +421,12 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
         additionalInterfaces.removeAll(specialInterfaces);
 
         ClassFile proxyClassType = null;
+        final int accessFlags = AccessFlag.of(AccessFlag.PUBLIC, AccessFlag.SUPER, AccessFlag.SYNTHETIC);
         if (getBeanType().isInterface()) {
-            proxyClassType = new ClassFile(proxyClassName, Object.class.getName());
+            proxyClassType = new ClassFile(proxyClassName, accessFlags, Object.class.getName());
             proxyClassType.addInterface(getBeanType().getName());
         } else {
-            proxyClassType = new ClassFile(proxyClassName, getBeanType().getName());
+            proxyClassType = new ClassFile(proxyClassName, accessFlags, getBeanType().getName());
         }
         // Add interfaces which require method generation
         for (Class<?> clazz : additionalInterfaces) {
