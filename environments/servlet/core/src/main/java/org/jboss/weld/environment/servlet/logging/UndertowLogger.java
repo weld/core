@@ -20,6 +20,7 @@ import org.jboss.logging.Logger;
 import org.jboss.logging.Logger.Level;
 import org.jboss.logging.annotations.LogMessage;
 import org.jboss.logging.annotations.Message;
+import org.jboss.logging.annotations.Message.Format;
 import org.jboss.logging.annotations.MessageLogger;
 import org.jboss.weld.environment.logging.WeldEnvironmentLogger;
 
@@ -36,5 +37,13 @@ public interface UndertowLogger extends WeldEnvironmentLogger {
 
     @LogMessage(level = Level.INFO)
     @Message(id = 1300, value = "Undertow detected, CDI injection will be available in Servlets.")
+    void undertowDetectedServletOnly();
+
+    @LogMessage(level = Level.DEBUG)
+    @Message(id = 1301, value = "Installing CDI support for {0}", format = Format.MESSAGE_FORMAT)
+    void installingCdiSupport(Class<?> clazz);
+
+    @LogMessage(level = Level.INFO)
+    @Message(id = 1302, value = "Undertow detected, CDI injection will be available in Servlets, Filters and Listeners.")
     void undertowDetected();
 }

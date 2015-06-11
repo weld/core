@@ -144,7 +144,6 @@
                     <artifactId>weld-servlet</artifactId>
                     <scope>runtime</scope>
                 </dependency>
-
             </dependencies>
             <build>
                 <plugins>

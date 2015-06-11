@@ -21,25 +21,25 @@ import java.io.IOException;
 import javax.enterprise.context.Conversation;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 
-public class InjectedServlet extends HttpServlet {
-
-    private static final long serialVersionUID = -1627577238935505724L;
+public class InjectedFilter implements Filter {
 
     @Inject
     private Foo field;
     private final Conversation constructor;
 
     @Inject
-    public InjectedServlet(Conversation constructor) {
+    public InjectedFilter(Conversation constructor) {
         this.constructor = constructor;
     }
 
-    public InjectedServlet() {
+    public InjectedFilter() {
         this(null);
     }
 
@@ -51,8 +51,15 @@ public class InjectedServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setContentType("text/plain");
-        resp.getWriter().println("Hello!");
+    public void init(FilterConfig filterConfig) throws ServletException {
     }
+
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    }
+
+    @Override
+    public void destroy() {
+    }
+
 }
