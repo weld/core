@@ -37,8 +37,11 @@ public class UndertowContainer implements Container {
 
     @Override
     public void initialize(ContainerContext context) {
-        if (Boolean.TRUE.equals(context.getServletContext().getAttribute(WeldServletExtension.INSTALLED))) {
+        Object value = context.getServletContext().getAttribute(WeldServletExtension.INSTALLED);
+        if (WeldServletExtension.INSTALLED_FULL.equals(value)) {
             UndertowLogger.LOG.undertowDetected();
+        } else if (WeldServletExtension.INSTALLED_SERVLET.equals(value)) {
+            UndertowLogger.LOG.undertowDetectedServletOnly();
         }
     }
 

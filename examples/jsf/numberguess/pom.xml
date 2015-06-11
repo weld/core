@@ -84,6 +84,11 @@
                     <scope>runtime</scope>
                 </dependency>
                 <dependency>
+                    <groupId>org.jboss.weld.module</groupId>
+                    <artifactId>weld-jsf</artifactId>
+                    <scope>runtime</scope>
+                </dependency>
+                <dependency>
                     <groupId>com.sun.faces</groupId>
                     <artifactId>jsf-impl</artifactId>
                 </dependency>
@@ -139,7 +144,6 @@
                     <artifactId>weld-servlet-shaded</artifactId>
                     <scope>runtime</scope>
                 </dependency>
-
             </dependencies>
             <build>
                 <plugins>
