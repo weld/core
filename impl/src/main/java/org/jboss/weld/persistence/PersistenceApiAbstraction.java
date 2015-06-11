@@ -16,11 +16,11 @@
  */
 package org.jboss.weld.persistence;
 
+import java.lang.annotation.Annotation;
+
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.util.ApiAbstraction;
-
-import java.lang.annotation.Annotation;
 
 public class PersistenceApiAbstraction extends ApiAbstraction implements Service {
 
@@ -33,6 +33,8 @@ public class PersistenceApiAbstraction extends ApiAbstraction implements Service
     public final Class<? extends Annotation> EMBEDDABLE_CLASS;
     public final Class<?> ENTITY_MANAGER_CLASS;
     public final Class<?> ENTITY_MANAGER_FACTORY_CLASS;
+    public final String SESSION_NAME = "org.hibernate.Session";
+    public final String SESSION_FACTORY_NAME = "org.hibernate.SessionFactory";
 
     /**
      * @param resourceLoader

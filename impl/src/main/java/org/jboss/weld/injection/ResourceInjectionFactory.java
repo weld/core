@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.injection;
 
+import static org.jboss.weld.util.reflection.Reflections.getRawType;
+
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,6 +28,7 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.annotation.Resource;
+import javax.enterprise.inject.spi.AnnotatedMember;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 
@@ -144,6 +147,13 @@ public final class ResourceInjectionFactory implements Service, Iterable<Resourc
         protected JpaInjectionServices getInjectionServices(BeanManagerImpl manager) {
             return manager.getServices().get(JpaInjectionServices.class);
         }
+
+        @Override
+        protected boolean accept(AnnotatedMember<?> member, PersistenceApiAbstraction apiAbstraction) {
+            // ugly hack that allows application servers to support hibernate session injection while at the same time
+            // the injection points are validated by Weld for invalid types (required by the TCK)
+            return !apiAbstraction.SESSION_FACTORY_NAME.equals(getRawType(getResourceInjectionPointType(member)).getName());
+        }
     }
 
     /**
@@ -179,6 +189,12 @@ public final class ResourceInjectionFactory implements Service, Iterable<Resourc
             return manager.getServices().get(JpaInjectionServices.class);
         }
 
+        @Override
+        protected boolean accept(AnnotatedMember<?> member, PersistenceApiAbstraction apiAbstraction) {
+            // ugly hack that allows application servers to support hibernate session injection while at the same time
+            // the injection points are validated by Weld for invalid types (required by the TCK)
+            return !apiAbstraction.SESSION_NAME.equals(getRawType(getResourceInjectionPointType(member)).getName());
+        }
     }
 
     /**
