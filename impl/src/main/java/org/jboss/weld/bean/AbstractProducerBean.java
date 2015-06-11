@@ -148,7 +148,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
             if (!(instance instanceof Serializable)) {
                 boolean passivating = beanManager.isPassivatingScope(getScope());
                 if (passivating) {
-                    throw BeanLogger.LOG.nonSerializableProductError(getProducer());
+                    throw BeanLogger.LOG.nonSerializableProductError(getProducer(), Formats.formatAsStackTraceElement(getAnnotated().getJavaMember()));
                 }
                 InjectionPoint injectionPoint = beanManager.getServices().get(CurrentInjectionPoint.class).peek();
                 if (injectionPoint != null && injectionPoint.getBean() != null) {
