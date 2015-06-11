@@ -17,11 +17,14 @@
 package org.jboss.weld.injection;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 
+import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.AnnotatedMember;
+import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 
@@ -157,6 +160,20 @@ public abstract class ResourceInjectionProcessor<S extends Service, C> {
      */
     protected boolean accept(AnnotatedMember<?> member, C processorContext) {
         return true;
+    }
+
+    protected Type getResourceInjectionPointType(AnnotatedMember<?> member) {
+        if (member instanceof AnnotatedField<?>) {
+            return member.getBaseType();
+        }
+        if (member instanceof AnnotatedMethod<?>) {
+            AnnotatedMethod<?> method = (AnnotatedMethod<?>) member;
+            if (method.getParameters().size() != 1) {
+                throw UtilLogger.LOG.resourceSetterInjectionNotAJavabean(method);
+            }
+            return method.getParameters().get(0).getBaseType();
+        }
+        throw new IllegalArgumentException("Unknown member " + member);
     }
 
 }
