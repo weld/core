@@ -16,30 +16,24 @@
  */
 package org.jboss.weld.environment.servlet.undertow;
 
-import java.io.IOException;
-
 import javax.enterprise.context.Conversation;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
 
-public class InjectedServlet extends HttpServlet {
-
-    private static final long serialVersionUID = -1627577238935505724L;
+public class InjectedListener implements ServletContextListener {
 
     @Inject
     private Foo field;
     private final Conversation constructor;
 
     @Inject
-    public InjectedServlet(Conversation constructor) {
+    public InjectedListener(Conversation constructor) {
         this.constructor = constructor;
     }
 
-    public InjectedServlet() {
+    public InjectedListener() {
         this(null);
     }
 
@@ -51,8 +45,11 @@ public class InjectedServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setContentType("text/plain");
-        resp.getWriter().println("Hello!");
+    public void contextInitialized(ServletContextEvent sce) {
     }
+
+    @Override
+    public void contextDestroyed(ServletContextEvent sce) {
+    }
+
 }
