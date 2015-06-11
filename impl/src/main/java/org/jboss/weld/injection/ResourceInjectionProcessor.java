@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 
+import javax.enterprise.inject.spi.AnnotatedMember;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 
@@ -57,7 +58,8 @@ public abstract class ResourceInjectionProcessor<S extends Service, C> {
         S injectionServices = getInjectionServices(beanManager);
         C processorContext = getProcessorContext(beanManager);
 
-        if (injectionServices != null && fieldInjectionPoint.getAnnotated().isAnnotationPresent(getMarkerAnnotation(processorContext))) {
+        if (injectionServices != null && fieldInjectionPoint.getAnnotated().isAnnotationPresent(getMarkerAnnotation(processorContext))
+                && accept(fieldInjectionPoint.getAnnotated(), processorContext)) {
             return createFieldResourceInjection(fieldInjectionPoint, injectionServices, processorContext);
         }
         return null;
@@ -131,19 +133,30 @@ public abstract class ResourceInjectionProcessor<S extends Service, C> {
         C processorContext = getProcessorContext(manager);
 
         for (EnhancedAnnotatedField<?, ? super T> field : fields) {
-            resourceInjections.add(createFieldResourceInjection(
-                    InjectionPointFactory.silentInstance().createFieldInjectionPoint(field, declaringBean, declaringClass, manager), injectionServices,
-                    processorContext));
+            if (accept(field, processorContext)) {
+                resourceInjections.add(createFieldResourceInjection(
+                        InjectionPointFactory.silentInstance().createFieldInjectionPoint(field, declaringBean, declaringClass, manager), injectionServices,
+                        processorContext));
+            }
         }
         for (EnhancedAnnotatedMethod<?, ?> method : methods) {
             if (method.getParameters().size() != 1) {
                 throw UtilLogger.LOG.resourceSetterInjectionNotAJavabean(method);
             }
-            resourceInjections.add(createSetterResourceInjection(
-                    InjectionPointFactory.silentInstance().createParameterInjectionPoint(method.getEnhancedParameters().get(0), declaringBean,
-                            declaringClass, manager), injectionServices, processorContext));
+            if (accept(method, processorContext)) {
+                resourceInjections.add(createSetterResourceInjection(
+                        InjectionPointFactory.silentInstance().createParameterInjectionPoint(method.getEnhancedParameters().get(0), declaringBean,
+                                declaringClass, manager), injectionServices, processorContext));
+            }
         }
         return resourceInjections.build();
+    }
+
+    /**
+     * Allows an implementation to indicate whether it accepts a given injection point annotated with the marker annotation.
+     */
+    protected boolean accept(AnnotatedMember<?> member, C processorContext) {
+        return true;
     }
 
 }
