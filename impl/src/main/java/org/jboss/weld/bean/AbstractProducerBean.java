@@ -39,6 +39,7 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.serialization.spi.BeanIdentifier;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Defaults;
+import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
@@ -132,7 +133,7 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
      */
     protected T checkReturnValue(T instance) {
         if (instance == null && !isDependent()) {
-            throw BeanLogger.LOG.nullNotAllowedFromProducer(getProducer());
+            throw BeanLogger.LOG.nullNotAllowedFromProducer(getProducer(), Formats.formatAsStackTraceElement(getAnnotated().getJavaMember()));
         }
         if (instance == null) {
             InjectionPoint injectionPoint = beanManager.getServices().get(CurrentInjectionPoint.class).peek();

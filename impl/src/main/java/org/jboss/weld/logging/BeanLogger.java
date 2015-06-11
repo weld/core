@@ -139,7 +139,7 @@ public interface BeanLogger extends WeldLogger {
     @Message(id = 37, value = "Cannot call EJB remove method directly on non-dependent scoped bean {0}", format = Format.MESSAGE_FORMAT)
     UnsupportedOperationException invalidRemoveMethodInvocation(Object param1);
 
-    @Message(id = 38, value = "A bean class that is not a decorator has an injection point annotated @Delegate\n  at injection point {0}\n  at {1}", format = Format.MESSAGE_FORMAT)
+    @Message(id = 38, value = "A bean class that is not a decorator has an injection point annotated @Delegate\n  at injection point {0}\n\tat {1}\n  StackTrace:", format = Format.MESSAGE_FORMAT)
     DefinitionException delegateNotOnDecorator(Object ip, Object stackElement);
 
     @Message(id = 39, value = "@Typed class {0} not present in the set of bean types of {1} [{2}]", format = Format.MESSAGE_FORMAT)
@@ -178,8 +178,8 @@ public interface BeanLogger extends WeldLogger {
     @Message(id = 50, value = "Cannot cast producer type {0} to bean type {1}", format = Format.MESSAGE_FORMAT)
     WeldException producerCastError(Object param1, Object param2, @Cause Throwable cause);
 
-    @Message(id = 52, value = "Cannot return null from a non-dependent producer method:  {0}", format = Format.MESSAGE_FORMAT)
-    IllegalProductException nullNotAllowedFromProducer(Object param1);
+    @Message(id = 52, value = "Cannot return null from a non-dependent producer method: {0}\n\tat {1}\n  StackTrace:", format = Format.MESSAGE_FORMAT)
+    IllegalProductException nullNotAllowedFromProducer(Object param1, Object stackElement);
 
     @Message(id = 53, value = "Producers cannot declare passivating scope and return a non-serializable class:  {0}", format = Format.MESSAGE_FORMAT)
     IllegalProductException nonSerializableProductError(Object param1);
