@@ -56,13 +56,13 @@ public class SyntheticDecorator<T> extends SyntheticClassBean<T> implements Deco
         for (InjectionPoint injectionPoint : injectionPoints) {
             if (injectionPoint.isDelegate()) {
                 if (delegate != null) {
-                    throw BeanLogger.LOG.tooManyDelegatesForDecorator(getBeanClass());
+                    throw BeanLogger.LOG.tooManyDelegateInjectionPoints(getBeanClass());
                 }
                 delegate = injectionPoint;
             }
         }
         if (delegate == null) {
-            throw BeanLogger.LOG.noDelegateForDecorator(getBeanClass());
+            throw BeanLogger.LOG.noDelegateInjectionPoint(getBeanClass());
         }
         return delegate;
     }

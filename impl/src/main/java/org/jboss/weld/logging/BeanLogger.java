@@ -190,14 +190,14 @@ public interface BeanLogger extends WeldLogger {
     @Message(id = 58, value = "Method with @Delegate parameter must be an initializer method:  {0}", format = Format.MESSAGE_FORMAT)
     DefinitionException delegateOnNonInitializerMethod(Object param1);
 
-    @Message(id = 59, value = "No delegate injection points defined for {0}", format = Format.MESSAGE_FORMAT)
-    DefinitionException noDelegateForDecorator(Object param1);
+    @Message(id = 59, value = "No delegate injection point defined for {0}", format = Format.MESSAGE_FORMAT)
+    DefinitionException noDelegateInjectionPoint(Object param1);
 
     @Message(id = 60, value = "Too many delegate injection points defined for {0}", format = Format.MESSAGE_FORMAT)
-    DefinitionException tooManyDelegatesForDecorator(Object param1);
+    DefinitionException tooManyDelegateInjectionPoints(Object param1);
 
-    @Message(id = 61, value = "The delegate type must extend or implement every decorated type.  Decorated type {0} on {1}", format = Format.MESSAGE_FORMAT)
-    DefinitionException delegateMustSupportEveryDecoratedType(Object param1, Object param2);
+    @Message(id = 61, value = "The delegate type does not extend or implement every decorated type. \n  Decorated type: {0}\n  Decorator: {1}", format = Format.MESSAGE_FORMAT)
+    DefinitionException delegateMustSupportEveryDecoratedType(Object decoratedType, Object decorator);
 
     @Message(id = 64, value = "Unable to process {0}", format = Format.MESSAGE_FORMAT)
     String unableToProcess(Object param1);
