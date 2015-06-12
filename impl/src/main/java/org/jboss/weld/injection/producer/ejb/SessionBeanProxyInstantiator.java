@@ -55,7 +55,7 @@ public class SessionBeanProxyInstantiator<T> implements Instantiator<T> {
     public T newInstance(CreationalContext<T> ctx, BeanManagerImpl manager) {
         try {
             T instance = AccessController.doPrivileged(NewInstanceAction.of(proxyClass));
-            if(!bean.getScope().equals(Dependent.class)) {
+            if (!bean.getScope().equals(Dependent.class)) {
                 ctx.push(instance);
             }
             ProxyFactory.setBeanInstance(bean.getBeanManager().getContextId(), instance, createEnterpriseTargetBeanInstance(), bean);
@@ -69,7 +69,7 @@ public class SessionBeanProxyInstantiator<T> implements Instantiator<T> {
                 throw new WeldException(e.getCause());
             }
         } catch (Exception e) {
-            throw BeanLogger.LOG.ejbNotFound(proxyClass, e);
+            throw BeanLogger.LOG.sessionBeanProxyInstantiationFailed(bean, proxyClass, e);
         }
     }
 
