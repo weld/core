@@ -11,7 +11,7 @@
     <container qualifier="wildfly-8" default="true">
         <configuration>
             <property name="serverConfig">standalone-full.xml</property>
-            <property name="javaVmArguments">-Xms128m -Xmx1g -XX:MaxPermSize=512m -ea -DcdiTckExcludeDummy=true ${additional.vm.args}</property>
+            <property name="javaVmArguments">-Xms128m -Xmx1g -XX:MaxPermSize=512m -ea -DcdiTckExcludeDummy=true ${additional.vm.args} ${jacoco.agent}</property>
             <property name="outputToConsole">false</property>
         </configuration>
         <protocol type="Servlet 3.0">
