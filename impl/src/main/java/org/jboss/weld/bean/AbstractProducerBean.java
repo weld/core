@@ -145,19 +145,16 @@ public abstract class AbstractProducerBean<X, T, S extends Member> extends Abstr
                 }
             }
         }
-        if (instance != null) {
-            if (!(instance instanceof Serializable)) {
-                boolean passivating = beanManager.isPassivatingScope(getScope());
-                if (passivating) {
-                    throw BeanLogger.LOG.nonSerializableProductError(getProducer(), Formats.formatAsStackTraceElement(getAnnotated().getJavaMember()));
-                }
-                InjectionPoint injectionPoint = beanManager.getServices().get(CurrentInjectionPoint.class).peek();
-                if (injectionPoint != null && injectionPoint.getBean() != null) {
-                    if (Beans.isPassivatingScope(injectionPoint.getBean(), beanManager)) {
-                        if (injectionPoint.getMember() instanceof Field && !injectionPoint.isTransient()) {
-                            throw BeanLogger.LOG.nonSerializableFieldInjectionError(this, injectionPoint);
-                        }
-                    }
+        if (instance != null && !(instance instanceof Serializable)) {
+            if (beanManager.isPassivatingScope(getScope())) {
+                throw BeanLogger.LOG.nonSerializableProductError(getProducer(), Formats.formatAsStackTraceElement(getAnnotated().getJavaMember()));
+            }
+            InjectionPoint injectionPoint = beanManager.getServices().get(CurrentInjectionPoint.class).peek();
+            if (injectionPoint != null && injectionPoint.getBean() != null && Beans.isPassivatingScope(injectionPoint.getBean(), beanManager)) {
+                // Transient field is passivation capable injection point
+                if (!(injectionPoint.getMember() instanceof Field) || !injectionPoint.isTransient()) {
+                    throw BeanLogger.LOG.unserializableProductInjectionError(this, Formats.formatAsStackTraceElement(getAnnotated().getJavaMember()),
+                            injectionPoint, Formats.formatAsStackTraceElement(injectionPoint.getMember()));
                 }
             }
         }
