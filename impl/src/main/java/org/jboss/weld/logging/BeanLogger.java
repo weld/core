@@ -184,8 +184,8 @@ public interface BeanLogger extends WeldLogger {
     @Message(id = 53, value = "Producers cannot declare passivating scope and return a non-serializable class: {0}\n\tat {1}\n  StackTrace:", format = Format.MESSAGE_FORMAT)
     IllegalProductException nonSerializableProductError(Object param1, Object stackElement);
 
-    @Message(id = 54, value = "Producers cannot produce non-serializable instances for injection into non-transient fields of passivating beans\n\nProducer:  {0}\nInjection Point:  {1}", format = Format.MESSAGE_FORMAT)
-    IllegalProductException nonSerializableFieldInjectionError(Object param1, Object param2);
+    @Message(id = 54, value = "Producers cannot produce unserializable instances for injection into an injection point that requires a passivation capable dependency\n  Producer:  {0}\n\tat {1}\n  Injection Point:  {2}\n\tat {3}\n  StackTrace:", format = Format.MESSAGE_FORMAT)
+    IllegalProductException unserializableProductInjectionError(Object producer, Object producerStackElement, Object ip, Object ipStackElement);
 
     @Message(id = 58, value = "Method with @Delegate parameter must be an initializer method:  {0}", format = Format.MESSAGE_FORMAT)
     DefinitionException delegateOnNonInitializerMethod(Object param1);
