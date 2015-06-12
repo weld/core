@@ -46,9 +46,12 @@ public abstract class IterativeWorkerTaskFactory<T> implements ExecutorServices.
 
     @Override
     public List<Callable<Void>> createTasks(int threadPoolSize) {
-        final int availableProcessors = Math.min(Runtime.getRuntime().availableProcessors(), threadPoolSize);
+        int taskCount = Runtime.getRuntime().availableProcessors();
+        if (threadPoolSize > 0) {
+            taskCount = Math.min(Runtime.getRuntime().availableProcessors(), threadPoolSize);
+        }
         List<Callable<Void>> tasks = new LinkedList<Callable<Void>>();
-        for (int i = 0; i < availableProcessors; i++) {
+        for (int i = 0; i < taskCount; i++) {
             tasks.add(new Callable<Void>() {
 
                 @Override
