@@ -91,5 +91,9 @@ public abstract class AbstractExecutorServices implements ExecutorServices {
         }
     }
 
+    /**
+     * Indicates the maximum number of threads in this thread pool. If the value is unknown or if the max number of threads is not bounded this method should
+     * return -1
+     */
     protected abstract int getThreadPoolSize();
 }
