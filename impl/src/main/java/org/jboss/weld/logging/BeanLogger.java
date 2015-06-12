@@ -235,8 +235,8 @@ public interface BeanLogger extends WeldLogger {
     @Message(id = 78, value = "Specialized producer method does not override a method on the direct superclass:  {0}", format = Format.MESSAGE_FORMAT)
     DefinitionException producerMethodNotSpecializing(Object param1);
 
-    @Message(id = 79, value = "Could not find the EJB in JNDI:  {0}", format = Format.MESSAGE_FORMAT)
-    CreationException ejbNotFound(Object param1, @Cause Throwable cause);
+    @Message(id = 79, value = "Could not instantiate a proxy for a session bean:  {0}\n  Proxy: {1}", format = Format.MESSAGE_FORMAT)
+    CreationException sessionBeanProxyInstantiationFailed(Object sessionBean, Object proxyClass, @Cause Throwable cause);
 
     @Message(id = 80, value = "Enterprise beans cannot be interceptors:  {0}", format = Format.MESSAGE_FORMAT)
     DefinitionException ejbCannotBeInterceptor(Object param1);
