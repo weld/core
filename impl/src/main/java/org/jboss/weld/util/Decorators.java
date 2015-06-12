@@ -101,7 +101,7 @@ public class Decorators {
         for (InjectionPoint injectionPoint : injectionPoints) {
             if (injectionPoint.isDelegate()) {
                 if (result != null) {
-                    throw BeanLogger.LOG.tooManyDelegatesForDecorator(type);
+                    throw BeanLogger.LOG.tooManyDelegateInjectionPoints(type);
                 }
                 if (injectionPoint instanceof MethodInjectionPoint<?, ?> && !injectionPoint.getAnnotated().isAnnotationPresent(Inject.class)) {
                     throw BeanLogger.LOG.delegateOnNonInitializerMethod(injectionPoint);
@@ -110,7 +110,7 @@ public class Decorators {
             }
         }
         if (result == null) {
-            throw BeanLogger.LOG.noDelegateForDecorator(type);
+            throw BeanLogger.LOG.noDelegateInjectionPoint(type);
         }
         return result;
     }
