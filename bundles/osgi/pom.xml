@@ -82,6 +82,8 @@
                             org.jboss.weld.el;
                             org.jboss.weld.event;
                             org.jboss.weld.injection;
+                            org.jboss.weld.interceptor.proxy;
+                            org.jboss.weld.interceptor.util.proxy;
                             org.jboss.weld.jsf;
                             org.jboss.weld.manager;
                             org.jboss.weld.servlet;
