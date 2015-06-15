@@ -38,55 +38,6 @@ public interface ServletLogger extends WeldLogger {
 
     ServletLogger LOG = Logger.getMessageLogger(ServletLogger.class, Category.SERVLET.getName());
 
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 700, value = "Not starting Weld/Servlet integration as Weld failed to initialize")
-    String notStarting();
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 701, value = "ServletContext is null")
-    String contextNull();
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 702, value = "Unable to find BeanManager for {0}", format = Format.MESSAGE_FORMAT)
-    String beanManagerNotFound(Object param1);
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 703, value = "Cannot obtain request scoped beans from the request")
-    String requestScopeBeanStoreMissing();
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 704, value = "Unable to locate bean deployment archive for {0}", format = Format.MESSAGE_FORMAT)
-    String beanDeploymentArchiveMissing(Object param1);
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 705, value = "Unable to locate bean manager for {0} in {1}", format = Format.MESSAGE_FORMAT)
-    String beanManagerForArchiveNotFound(Object param1, Object param2);
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 706, value = "Cannot use WeldListener without ServletServices")
-    String illegalUseOfWeldListener();
-
     @Message(id = 707, value = "Non Http-Servlet lifecycle not defined")
     IllegalStateException onlyHttpServletLifecycleDefined();
 

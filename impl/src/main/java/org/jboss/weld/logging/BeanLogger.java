@@ -54,23 +54,9 @@ public interface BeanLogger extends WeldLogger {
     @Message(id = 2, value = "Exactly one constructor ({0}) defined, using it as the bean constructor for {1}", format = Format.MESSAGE_FORMAT)
     void foundDefaultConstructor(Object param1, Object param2);
 
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 3, value = "Found {0} methods annotated with @PostConstruct for {1}", format = Format.MESSAGE_FORMAT)
-    String foundPostConstructMethods(Object param1, Object param2);
-
     @LogMessage(level = Level.TRACE)
     @Message(id = 4, value = "Exactly one post construct method ({0}) for {1}", format = Format.MESSAGE_FORMAT)
     void foundOnePostConstructMethod(Object param1, Object param2);
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 5, value = "Found {0} methods annotated with @PreDestroy for {1}", format = Format.MESSAGE_FORMAT)
-    String foundPreDestroyMethods(Object param1, Object param2);
 
     @LogMessage(level = Level.TRACE)
     @Message(id = 6, value = "Exactly one pre destroy method ({0}) for {1}", format = Format.MESSAGE_FORMAT)
@@ -91,45 +77,17 @@ public interface BeanLogger extends WeldLogger {
     @Message(id = 10, value = "Using qualifiers {0} for {1}", format = Format.MESSAGE_FORMAT)
     void qualifiersUsed(Object param1, Object param2);
 
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 11, value = "Adding @Default qualifier for {0}", format = Format.MESSAGE_FORMAT)
-    String usingDefaultQualifier(Object param1);
-
     @LogMessage(level = Level.TRACE)
     @Message(id = 12, value = "Building bean metadata for {0}", format = Format.MESSAGE_FORMAT)
     void creatingBean(Object param1);
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 13, value = "Using default name {0} for {1}", format = Format.MESSAGE_FORMAT)
-    String usingDefaultName(Object param1, Object param2);
 
     @LogMessage(level = Level.TRACE)
     @Message(id = 14, value = "Using name {0} for {1}", format = Format.MESSAGE_FORMAT)
     void usingName(Object param1, Object param2);
 
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 15, value = "Using scope {0} for {1} from merged stereotypes {2}", format = Format.MESSAGE_FORMAT)
-    String usingScopeFromStereotype(Object param1, Object param2, Object param3);
-
     @LogMessage(level = Level.TRACE)
     @Message(id = 16, value = "Using scope {0} for {1}", format = Format.MESSAGE_FORMAT)
     void usingScope(Object param1, Object param2);
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 17, value = "Using default @Dependent scope for {0}", format = Format.MESSAGE_FORMAT)
-    String usingDefaultScope(Object param1);
 
     @LogMessage(level = Level.WARN)
     @Message(id = 18, value = "Executing producer field or method {0} on incomplete declaring bean {1} due to circular injection", format = Format.MESSAGE_FORMAT)
@@ -139,36 +97,8 @@ public interface BeanLogger extends WeldLogger {
     @Message(id = 19, value = "Error destroying an instance {0} of {1}", format = Format.MESSAGE_FORMAT)
     void errorDestroying(Object param1, Object param2);
 
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 20, value = "Delegate injection point not found on decorator {0}", format = Format.MESSAGE_FORMAT)
-    String delegateInjectionPointNotFound(Object param1);
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 21, value = "The annotation {0} is not a binding for {1}", format = Format.MESSAGE_FORMAT)
-    String annotationNotBinding(Object param1, Object param2);
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 22, value = "The annotation {0} is already present in the bindings list for {1}", format = Format.MESSAGE_FORMAT)
-    String duplicateBinding(Object param1, Object param2);
-
     @Message(id = 23, value = "Type parameter must be a concrete type:  {0}", format = Format.MESSAGE_FORMAT)
     String typeParameterMustBeConcrete(Object param1);
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 24, value = "ValidationServices are not available")
-    String validationServiceNotAvailable();
 
     @Message(id = 25, value = "Tried to create an EEResourceProducerField, but no @Resource, @PersistenceContext, @PersistenceUnit, @WebServiceRef or @EJB is present: {0}", format = Format.MESSAGE_FORMAT)
     IllegalStateException invalidResourceProducerField(Object param1);
@@ -260,27 +190,6 @@ public interface BeanLogger extends WeldLogger {
     @Message(id = 54, value = "Producers cannot produce non-serializable instances for injection into non-transient fields of passivating beans\n\nProducer:  {0}\nInjection Point:  {1}", format = Format.MESSAGE_FORMAT)
     IllegalProductException nonSerializableFieldInjectionError(Object param1, Object param2);
 
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 55, value = "Producers cannot produce non-serializable instances for injection into parameters of initializers of beans declaring passivating scope.\n\nBean:  {0}\nInjection Point:  {1}", format = Format.MESSAGE_FORMAT)
-    String nonSerializableInitializerParamInjectionError(Object param1, Object param2);
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 56, value = "Producers cannot produce non-serializable instances for injection into parameters of producer methods declaring passivating scope.\n\nBean:  {0}\nInjection Point:  {1}", format = Format.MESSAGE_FORMAT)
-    String nonSerializableProducerParamInjectionError(Object param1, Object param2);
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 57, value = "Producers cannot produce non-serializable instances for injection into parameters of constructors of beans declaring passivating scope.\n\nBean:  {0}\nInjection Point:  {1}", format = Format.MESSAGE_FORMAT)
-    String nonSerializableConstructorParamInjectionError(Object param1, Object param2);
-
     @Message(id = 58, value = "Method with @Delegate parameter must be an initializer method:  {0}", format = Format.MESSAGE_FORMAT)
     DefinitionException delegateOnNonInitializerMethod(Object param1);
 
@@ -293,29 +202,8 @@ public interface BeanLogger extends WeldLogger {
     @Message(id = 61, value = "The delegate type must extend or implement every decorated type.  Decorated type {0} on {1}", format = Format.MESSAGE_FORMAT)
     DefinitionException delegateMustSupportEveryDecoratedType(Object param1, Object param2);
 
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 62, value = "The decorated type is parameterized, but the delegate type isn't.  Delegate type {0} on {1}", format = Format.MESSAGE_FORMAT)
-    String decoratedTypeParameterizedDelegateNot(Object param1, Object param2);
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 63, value = "The delegate type must have exactly the same type parameters as the decorated type.  Decorated type {0} on decorator {1}", format = Format.MESSAGE_FORMAT)
-    String delegateTypeParameterMismatch(Object param1, Object param2);
-
     @Message(id = 64, value = "Unable to process {0}", format = Format.MESSAGE_FORMAT)
     String unableToProcess(Object param1);
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 65, value = "{0} does not have @Dispose as first parameter", format = Format.MESSAGE_FORMAT)
-    String disposeNotFirstParam(Object param1);
 
     @Message(id = 66, value = "{0} has more than one @Dispose parameter", format = Format.MESSAGE_FORMAT)
     DefinitionException multipleDisposeParams(Object param1);
@@ -325,14 +213,6 @@ public interface BeanLogger extends WeldLogger {
 
     @Message(id = 68, value = "Method {0} must be declared on a business interface of {1}", format = Format.MESSAGE_FORMAT)
     DefinitionException methodNotBusinessMethod(Object param1, Object param2);
-
-    /**
-     * @deprecated Not in use
-     * @see WELD-1668
-     */
-    @Deprecated
-    @Message(id = 69, value = "An interceptor must have at least one binding, but {0} has none", format = Format.MESSAGE_FORMAT)
-    DeploymentException missingBindingOnInterceptor(Object param1);
 
     @Message(id = 70, value = "Simple bean {0} cannot be a non-static inner class", format = Format.MESSAGE_FORMAT)
     DefinitionException simpleBeanAsNonStaticInnerClassNotAllowed(Object param1);
@@ -345,13 +225,6 @@ public interface BeanLogger extends WeldLogger {
 
     @Message(id = 73, value = "Bean class which has decorators cannot be declared final:  {0}", format = Format.MESSAGE_FORMAT)
     DeploymentException finalBeanClassWithDecoratorsNotAllowed(Object param1);
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 74, value = "Decorated bean method {0} (decorated by {1}) cannot be declared final", format = Format.MESSAGE_FORMAT)
-    String finalDecoratedBeanMethodNotAllowed(Object param1, Object param2);
 
     @Message(id = 75, value = "Normal scoped managed bean implementation class has a public field:  {0}", format = Format.MESSAGE_FORMAT)
     DefinitionException publicFieldOnNormalScopedBeanNotAllowed(Object param1);
@@ -401,27 +274,6 @@ public interface BeanLogger extends WeldLogger {
     @Message(id = 90, value = "Method {0} defined on {1} does not match any method on decorated types", format = Format.MESSAGE_FORMAT)
     DefinitionException abstractMethodMustMatchDecoratedType(Object param1, Object param2);
 
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 91, value = "Cannot handle injection point as a constructor or method:  {0}", format = Format.MESSAGE_FORMAT)
-    String ipNotConstructorOrMethod(Object param1);
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 92, value = "Parameter position {0} is not in the parameter list:  {1}", format = Format.MESSAGE_FORMAT)
-    String paramNotInParamList(Object param1, Object param2);
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 93, value = "Cannot read object")
-    String cannotReadObject();
-
     @Message(id = 94, value = "Injected field {0} cannot be annotated @Produces on {1}", format = Format.MESSAGE_FORMAT)
     DefinitionException injectedFieldCannotBeProducer(Object param1, Object param2);
 
@@ -454,13 +306,6 @@ public interface BeanLogger extends WeldLogger {
 
     @Message(id = 1504, value = "Intercepted bean method {0} (intercepted by {1}) cannot be declared final", format = Format.MESSAGE_FORMAT)
     DeploymentException finalInterceptedBeanMethodNotAllowed(Object param1, Object param2);
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 1505, value = "Failed to set ThreadLocal for serialization on proxy using reflection {0}", format = Format.MESSAGE_FORMAT)
-    String failedToSetThreadLocalOnProxy(Object param1);
 
     @LogMessage(level = Level.TRACE)
     @Message(id = 1506, value = "Created new client proxy of type {0} for bean {1} with ID {2}", format = Format.MESSAGE_FORMAT)
@@ -527,13 +372,6 @@ public interface BeanLogger extends WeldLogger {
 
     @Message(id = 1527, value = "Managed bean declaring a passivating scope has a non-serializable interceptor.  Bean:  {0}  Interceptor: {1}", format = Format.MESSAGE_FORMAT)
     DeploymentException passivatingBeanHasNonPassivationCapableInterceptor(Object param1, Object param2);
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 1528, value = "Unable to create a new instance of {0}", format = Format.MESSAGE_FORMAT)
-    String cannotInstantiateAbstractClass(Object param1);
 
     @LogMessage(level = Level.DEBUG)
     @Message(id = 1529, value = "An InjectionTarget is created for a {0} which does not have any appropriate constructor. It will not be possible to produce instances of this type!", format = Format.MESSAGE_FORMAT)
