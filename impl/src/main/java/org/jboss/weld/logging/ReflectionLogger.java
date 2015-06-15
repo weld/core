@@ -54,13 +54,6 @@ public interface ReflectionLogger extends WeldLogger {
     @Message(id = 602, value = "{0} is not declared @Target(TYPE, METHOD) or @Target(TYPE). Weld will use this annotation, however this may make the application unportable.", format = Format.MESSAGE_FORMAT)
     void missingTargetTypeMethodOrTargetType(Object param1);
 
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 603, value = "{0} is declared @Target(TYPE, METHOD), but inherits {1}, which is declared @Target(TYPE). Weld will use this annotation, however this may make the application unportable.", format = Format.MESSAGE_FORMAT)
-    String targetTypeMethodInheritsFromTargetType(Object param1, Object param2);
-
     @LogMessage(level = Level.DEBUG)
     @Message(id = 604, value = "{0} is not declared @Target(METHOD, FIELD, TYPE). Weld will use this annotation, however this may make the application unportable.", format = Format.MESSAGE_FORMAT)
     void missingTargetMethodFieldType(Object param1);
@@ -78,13 +71,6 @@ public interface ReflectionLogger extends WeldLogger {
     @Message(id = 608, value = "declaredAnnotationMap cannot be null")
     WeldException declaredAnnotationMapNull();
 
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 609, value = "Cleaning Javassist proxy. Class {0}", format = Format.MESSAGE_FORMAT)
-    String cleaningJavassistProxyClass(Object param1);
-
     @Message(id = 610, value = "Unable to deserialize constructor. Declaring class {0}, index {1}", format = Format.MESSAGE_FORMAT)
     WeldException unableToGetConstructorOnDeserialization(Object param1, Object param2, @Cause Throwable cause);
 
@@ -94,35 +80,14 @@ public interface ReflectionLogger extends WeldLogger {
     @Message(id = 612, value = "Unable to deserialize field. Declaring class {0}, field name {1}", format = Format.MESSAGE_FORMAT)
     WeldException unableToGetFieldOnDeserialization(Object param1, Object param2, @Cause Throwable cause);
 
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 613, value = "Unable to deserialize parameter. Declaring class {0}, parameter {2} of method with signature {1}", format = Format.MESSAGE_FORMAT)
-    String unableToGetParameterOnDeserialization(Object param1, Object param2, Object param3);
-
     @Message(id = 614, value = "Incorrect number of AnnotatedParameters {0} on AnnotatedMethod {1}. AnnotatedMethod has {2} as parameters but should have {3} as parameters", format = Format.MESSAGE_FORMAT)
     DefinitionException incorrectNumberOfAnnotatedParametersMethod(Object param1, Object param2, Object param3, Object param4);
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 615, value = "Incorrect number of AnnotatedParameters {0} on AnnotatedConstructor {1}. AnnotatedConstructor has {2} as parameters but should have {3} as parameters", format = Format.MESSAGE_FORMAT)
-    String incorrectNumberOfAnnotatedParametersConstructor(Object param1, Object param2, Object param3, Object param4);
 
     @Message(id = 616, value = "Instantiation through ReflectionFactory of {0} failed", format = Format.MESSAGE_FORMAT)
     WeldException reflectionfactoryInstantiationFailed(Object param1, @Cause Throwable cause);
 
     @Message(id = 617, value = "Instantiation through Unsafe of {0} failed", format = Format.MESSAGE_FORMAT)
     WeldException unsafeInstantiationFailed(Object param1, @Cause Throwable cause);
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 618, value = "Could not set MethodHandler on {0}", format = Format.MESSAGE_FORMAT)
-    String methodhandlerSetFailed(Object param1);
 
     @Message(id = 619, value = "An interceptor for lifecycle callbacks {0} declares and interceptor binding {1} with METHOD as its @Target.", format = Format.MESSAGE_FORMAT)
     DefinitionException methodElementTypeNotAllowed(Object param1, Object param2);

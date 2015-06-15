@@ -128,20 +128,6 @@ public interface ValidatorLogger extends WeldLogger {
     @Message(id = 1410, value = "The injection point {0} has non-proxyable dependencies", format = Format.MESSAGE_FORMAT)
     DeploymentException injectionPointHasNonProxyableDependencies(Object param1, @Cause Throwable cause);
 
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 1411, value = "Injection point {0} has nullable dependencies", format = Format.MESSAGE_FORMAT)
-    String injectionPointHasNullableDependencies(Object param1);
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 1412, value = "The bean {0} declares a passivating scope but the producer returned a non-serializable bean for injection:  {1}", format = Format.MESSAGE_FORMAT)
-    String nonSerializableBeanInjectedIntoPassivatingBean(Object param1, Object param2);
-
     @Message(id = 1413, value = "The bean {0} declares a passivating scope but has a non-passivation-capable dependency {1}", format = Format.MESSAGE_FORMAT)
     UnserializableDependencyException injectionPointHasNonSerializableDependency(Object param1, Object param2);
 
@@ -171,13 +157,6 @@ public interface ValidatorLogger extends WeldLogger {
 
     @Message(id = 1422, value = "Enabled alternative {0} is not an alternative", format = Format.MESSAGE_FORMAT)
     DeploymentException alternativeBeanClassNotAnnotated(Object param1);
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 1423, value = "Cannot enable the same alternative bean class {0} in beans.xml:\n  - {1},\n  - {2}", format = Format.MESSAGE_FORMAT)
-    String alternativeBeanClassSpecifiedMultipleTimes(Object param1, Object param2, Object param3);
 
     @Message(id = 1424, value = "The following disposal methods were declared but did not resolve to a producer method: {0}", format = Format.MESSAGE_FORMAT)
     DefinitionException disposalMethodsWithoutProducer(Object param1);
@@ -240,13 +219,6 @@ public interface ValidatorLogger extends WeldLogger {
     @Message(id = 1443, value = "Pseudo scoped bean has circular dependencies. Dependency path: {0}", format = Format.MESSAGE_FORMAT)
     DeploymentException pseudoScopedBeanHasCircularReferences(Object param1);
 
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 1444, value = "Cannot inject {0} {1} into {2}", format = Format.MESSAGE_FORMAT)
-    String cannotInjectBeanMetadata(Object param1, Object param2, Object param3);
-
     @Message(id = 1445, value = "An interceptor cannot have observer methods, but at least one was found on {0}.", format = Format.MESSAGE_FORMAT)
     DefinitionException interceptorsCannotHaveObserverMethods(Object param1);
 
@@ -261,13 +233,6 @@ public interface ValidatorLogger extends WeldLogger {
 
     @Message(id = 1449, value = "Method {0} defined on class {1} is not defined according to the specification. It is annotated with @{2} but its single parameter is not a {3}.", format = Format.MESSAGE_FORMAT)
     DefinitionException interceptorMethodDoesNotHaveCorrectTypeOfParameter(Object param1, Object param2, Object param3, Object param4);
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 1450, value = "Interceptor method {0} does not declare that it throws Exception.", format = Format.MESSAGE_FORMAT)
-    String interceptorMethodDoesNotThrowException(Object param1);
 
     @Message(id = 1451, value = "javax.transaction.UserTransaction cannot be injected into an enterprise bean with container-managed transactions {0}", format = Format.MESSAGE_FORMAT)
     DefinitionException userTransactionInjectionIntoBeanWithContainerManagedTransactions(Object param1);
@@ -290,41 +255,6 @@ public interface ValidatorLogger extends WeldLogger {
     @Message(id = 1457, value = "Cannot enable the same alternative class {0} in beans.xml:\n  - {1},\n  - {2}", format = Format.MESSAGE_FORMAT)
     DeploymentException alternativeClassSpecifiedMultipleTimes(Object param1, Object param2, Object param3);
 
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 1458, value = "Locally disabled {0} does not match any global enablement. {1}", format = Format.MESSAGE_FORMAT)
-    String noGloballyEnabledClassMatchingLocalDisable(Object param1, Object param2);
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 1459, value = "Class {0} is enabled but no priority is set for it. Either enable the class globally by providing the priority attribute or do not use the enabled flag explicitly. {1}", format = Format.MESSAGE_FORMAT)
-    String enabledFlagUsedWithoutPrioritySet(Object param1, Object param2);
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 1460, value = "Globally enabled alternative {0} is not present in the bean archive that enables it globally {1}", format = Format.MESSAGE_FORMAT)
-    String globallyEnabledAlternativeNotInArchive(Object param1, Object param2);
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 1461, value = "Globally enabled interceptor {0} is not present in the bean archive that enables it globally {1}", format = Format.MESSAGE_FORMAT)
-    String globallyEnabledInterceptorNotInArchive(Object param1, Object param2);
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 1462, value = "Globally enabled decorator {0} is not present in the bean archive that enables it globally {1}", format = Format.MESSAGE_FORMAT)
-    String globallyEnabledDecoratorNotInArchive(Object param1, Object param2);
-
     @Message(id = 1463, value = "Bean declaring a passivating scope must be passivation capable.  Bean:  {0}", format = Format.MESSAGE_FORMAT)
     DeploymentException beanWithPassivatingScopeNotPassivationCapable(Object param1);
 
@@ -342,13 +272,6 @@ public interface ValidatorLogger extends WeldLogger {
 
     @Message(id = 1469, value = "Method {0} defined on class {1} is not defined according to the specification. It is annotated with @{2} but it does not have zero parameters.", format = Format.MESSAGE_FORMAT)
     DefinitionException interceptorMethodDoesNotHaveZeroParameters(Object param1, Object param2, Object param3);
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 1470, value = "Method {0} defined on target class {1} is a @{2} callback method and should not be defined on the target class.", format = Format.MESSAGE_FORMAT)
-    String aroundConstructInterceptorMethodNotAllowedOnTargetClass(Object param1, Object param2, Object param3);
 
     @LogMessage(level = Level.WARN)
     @Message(id = 1471, value = "Interceptor method {0} defined on class {1} is not defined according to the specification. It should not throw {2}, which is a checked exception.", format = Format.MESSAGE_FORMAT)
