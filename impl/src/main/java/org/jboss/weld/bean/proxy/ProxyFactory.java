@@ -70,6 +70,7 @@ import org.jboss.weld.util.bytecode.ConstructorUtils;
 import org.jboss.weld.util.bytecode.DeferredBytecode;
 import org.jboss.weld.util.bytecode.MethodInformation;
 import org.jboss.weld.util.bytecode.RuntimeMethodInformation;
+import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.collections.Sets;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -118,6 +119,19 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
     private static final String JAVA = "java";
 
     private static final Set<ProxiedMethodFilter> METHOD_FILTERS;
+
+    // class access flags are configurable since classfilewriter 1.1.2.Final
+    // with older versions we silently fall back to default access flags (no SYNTHETIC support)
+    private static final boolean CONFIGURABLE_ACCESS_FLAGS;
+
+    static {
+        Constructor<?> temp = null;
+        try {
+            temp = ClassFile.class.getConstructor(String.class, int.class, String.class, Arrays2.EMPTY_STRING_ARRAY.getClass());
+        } catch (NoSuchMethodException ignored) {
+        }
+        CONFIGURABLE_ACCESS_FLAGS = temp != null;
+    }
 
     static {
         GroovyMethodFilter groovy = new GroovyMethodFilter();
@@ -423,10 +437,10 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
         ClassFile proxyClassType = null;
         final int accessFlags = AccessFlag.of(AccessFlag.PUBLIC, AccessFlag.SUPER, AccessFlag.SYNTHETIC);
         if (getBeanType().isInterface()) {
-            proxyClassType = new ClassFile(proxyClassName, accessFlags, Object.class.getName());
+            proxyClassType = newClassFile(proxyClassName, accessFlags, Object.class.getName());
             proxyClassType.addInterface(getBeanType().getName());
         } else {
-            proxyClassType = new ClassFile(proxyClassName, accessFlags, getBeanType().getName());
+            proxyClassType = newClassFile(proxyClassName, accessFlags, getBeanType().getName());
         }
         // Add interfaces which require method generation
         for (Class<?> clazz : additionalInterfaces) {
@@ -464,6 +478,14 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
         Class<T> proxyClass = cast(ClassFileUtils.toClass(proxyClassType, classLoader, domain));
         BeanLogger.LOG.createdProxyClass(proxyClass, Arrays.toString(proxyClass.getInterfaces()));
         return proxyClass;
+    }
+
+    private static ClassFile newClassFile(String name, int accessFlags, String superclass, String... interfaces) {
+        if (CONFIGURABLE_ACCESS_FLAGS) {
+            return new ClassFile(name, accessFlags, superclass, interfaces);
+        } else {
+            return new ClassFile(name, superclass, interfaces);
+        }
     }
 
     private void dumpToFile(String fileName, byte[] data) {
