@@ -35,21 +35,9 @@ public interface ResolutionLogger extends WeldLogger {
 
     ResolutionLogger LOG = Logger.getMessageLogger(ResolutionLogger.class, Category.RESOLUTION.getName());
 
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 1600, value = "Invalid member type {0}", format = Format.MESSAGE_FORMAT)
-    String invalidMemberType(Object param1);
-
     @Message(id = 1601, value = "Cannot extract rawType from {0}", format = Format.MESSAGE_FORMAT)
     IllegalArgumentException cannotExtractRawType(Object param1);
 
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 1602, value = "Unable to extract type information from {0}", format = Format.MESSAGE_FORMAT)
-    String cannotExtractTypeInformation(Object param1);
+    // Last message id used was 1602
 
 }

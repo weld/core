@@ -37,93 +37,9 @@ public interface ConversationLogger extends WeldLogger {
 
     ConversationLogger LOG = Logger.getMessageLogger(ConversationLogger.class, Category.CONVERSATION.getName());
 
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 300, value = "No conversation id to restore")
-    String noConversationToRestore();
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 301, value = "Could not restore long-running conversation {0} because {1}", format = Format.MESSAGE_FORMAT)
-    String unableToRestoreConversation(Object param1, Object param2);
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 302, value = "Interrupted while trying to acquire lock")
-    String conversationLockUnavailable();
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 303, value = "Conversation switched from {0} to {1}", format = Format.MESSAGE_FORMAT)
-    String conversationSwitched(Object param1, Object param2);
-
     @LogMessage(level = Level.TRACE)
     @Message(id = 304, value = "Cleaning up conversation {0}", format = Format.MESSAGE_FORMAT)
     void cleaningUpConversation(Object param1);
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 305, value = "Scheduled {0} for termination", format = Format.MESSAGE_FORMAT)
-    String conversationTerminationScheduled(Object param1);
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 306, value = "Termination of conversation {0} cancelled", format = Format.MESSAGE_FORMAT)
-    String conversationTerminationCancelled(Object param1);
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 307, value = "Failed to cancel termination of conversation {0}", format = Format.MESSAGE_FORMAT)
-    String conversationTerminationCancellationFailed(Object param1);
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 308, value = "Destroyed long-running conversation {0} because {1}", format = Format.MESSAGE_FORMAT)
-    String destroyLrcComplete(Object param1, Object param2);
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 309, value = "{0} long-running conversations", format = Format.MESSAGE_FORMAT)
-    String lrcCount(Object param1);
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 310, value = "Destroying transient conversation {0}", format = Format.MESSAGE_FORMAT)
-    String destroyTransientConversation(Object param1);
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 311, value = "Destroying long-running conversation {0} because {1}", format = Format.MESSAGE_FORMAT)
-    String destroyLrc(Object param1, Object param2);
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 312, value = "Destroying all long-running conversations because {0}", format = Format.MESSAGE_FORMAT)
-    String destroyAllLrc(Object param1);
 
     @LogMessage(level = Level.TRACE)
     @Message(id = 313, value = "Lock acquired on conversation {0}", format = Format.MESSAGE_FORMAT)
@@ -149,13 +65,6 @@ public interface ConversationLogger extends WeldLogger {
     @Message(id = 318, value = "Returned long-running conversation {0} to transient", format = Format.MESSAGE_FORMAT)
     void demotedLrc(Object param1);
 
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 319, value = "Switched conversation from {0} to {1}", format = Format.MESSAGE_FORMAT)
-    String switchedConversation(Object param1, Object param2);
-
     @LogMessage(level = Level.TRACE)
     @Message(id = 320, value = "Cleaning up transient conversation")
     void cleaningUpTransientConversation();
@@ -165,30 +74,6 @@ public interface ConversationLogger extends WeldLogger {
 
     @Message(id = 322, value = "Conversation lock timed out: {0}", format = Format.MESSAGE_FORMAT)
     BusyConversationException conversationLockTimedout(Object param1);
-
-    // Moved from JsfLogger, id 500
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 323, value = "Cleaning up the conversation after the {0} phase because {1}", format = Format.MESSAGE_FORMAT)
-    String cleaningUpConversation(Object param1, Object param2);
-
-    // Moved from JsfLogger, id 501
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 324, value = "Skipping conversation cleanup after the {0} phase because {1}", format = Format.MESSAGE_FORMAT)
-    String skippingCleaningUpConversation(Object param1, Object param2);
-
-    // Moved from JsfLogger, id 502
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 325, value = "Initiating conversation before the {0} phase", format = Format.MESSAGE_FORMAT)
-    String initiatingConversation(Object param1);
 
     // Moved from JsfLogger, id 503
     @LogMessage(level = Level.TRACE)
@@ -207,22 +92,6 @@ public interface ConversationLogger extends WeldLogger {
     // Previously 215
     @Message(id = 329, value = "Attempt to call end() on a transient conversation")
     IllegalStateException endCalledOnTransientConversation();
-
-    /**
-     * @deprecated Not in use
-     */
-    // Previously 216
-    @Deprecated
-    @Message(id = 330, value = "Cannot create ConversationBeanStore with a null HTTP session")
-    String nullHttpSession();
-
-    /**
-     * @deprecated Not in use
-     */
-    // Previously 217
-    @Deprecated
-    @Message(id = 331, value = "Switching modes with non-transient conversations present resets the timeouts")
-    String switchingModeResetsTimeouts();
 
     // Previously 218
     @Message(id = 332, value = "Conversation ID {0} is already in use", format = Format.MESSAGE_FORMAT)

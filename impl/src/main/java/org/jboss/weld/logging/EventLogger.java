@@ -45,13 +45,6 @@ public interface EventLogger extends WeldLogger {
     @Message(id = 401, value = "Failure while notifying an observer of event {0}", format = Format.MESSAGE_FORMAT)
     void asyncObserverFailure(Object param1);
 
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 402, value = "Sending event {0} asynchronously to transactional observer {1}", format = Format.MESSAGE_FORMAT)
-    String asyncTxFire(Object param1, Object param2);
-
     @Message(id = 403, value = "Proxy required")
     InvalidObjectException proxyRequired();
 

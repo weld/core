@@ -59,55 +59,6 @@ public interface ContextLogger extends WeldLogger {
     @Message(id = 203, value = "Removed {0} from {1}", format = Format.MESSAGE_FORMAT)
     void contextualInstanceRemoved(Object param1, Object param2);
 
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 204, value = "Restoring session {0}", format = Format.MESSAGE_FORMAT)
-    String sessionRestored(Object param1);
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 205, value = "Ending session {0}", format = Format.MESSAGE_FORMAT)
-    String sessionEnded(Object param1);
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 206, value = "Starting request {0}", format = Format.MESSAGE_FORMAT)
-    String requestStarted(Object param1);
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 207, value = "Ending request {0}", format = Format.MESSAGE_FORMAT)
-    String requestEnded(Object param1);
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 208, value = "Starting application {0}", format = Format.MESSAGE_FORMAT)
-    String applicationStarted(Object param1);
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 209, value = "Ending application {0}", format = Format.MESSAGE_FORMAT)
-    String applicationEnded(Object param1);
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 210, value = "Attached dependent instance {0} to {1}", format = Format.MESSAGE_FORMAT)
-    String dependentInstanceAttached(Object param1, Object param2);
-
     @Message(id = 211, value = "The delimiter \"{0}\" should not be in the prefix \"{1}\"", format = Format.MESSAGE_FORMAT)
     IllegalArgumentException delimiterInPrefix(Object param1, Object param2);
 
@@ -116,13 +67,6 @@ public interface ContextLogger extends WeldLogger {
 
     @Message(id = 213, value = "No bean store available for {0}", format = Format.MESSAGE_FORMAT)
     IllegalStateException noBeanStoreAvailable(Object param1);
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 214, value = "Restoring conversation {0}", format = Format.MESSAGE_FORMAT)
-    String conversationRestored(Object param1);
 
     @LogMessage(level = Level.TRACE)
     @Message(id = 215, value = "Bean store {0} is detached", format = Format.MESSAGE_FORMAT)

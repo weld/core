@@ -56,26 +56,12 @@ public interface XmlLogger extends WeldLogger {
     @Message(id = 1205, value = "<interceptors> can only be specified once, but it is specified multiple times:  {0}", format = Format.MESSAGE_FORMAT)
     DefinitionException multipleInterceptors(Object param1);
 
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 1206, value = "Could not load class {0}", format = Format.MESSAGE_FORMAT)
-    String cannotLoadClass(Object param1);
-
     @Message(id = 1207, value = "<scan> can only be specified once, but it is specified multiple times:  {0}", format = Format.MESSAGE_FORMAT)
     DefinitionException multipleScanning(Object param1);
 
     @LogMessage(level = Level.WARN)
     @Message(id = 1208, value = "Error when validating {0}@{1} against xsd. {2}", format = Format.MESSAGE_FORMAT)
     void xsdValidationError(Object param1, Object param2, Object param3);
-
-    /**
-     * @deprecated Not in use
-     */
-    @Deprecated
-    @Message(id = 1209, value = "Exception opening InputStream for {0}", format = Format.MESSAGE_FORMAT)
-    String exceptionOpeningInputStream(Object param1);
 
     @LogMessage(level = Level.WARN)
     @Message(id = 1210, value = "Warning when validating {0}@{1} against xsd. {2}", format = Format.MESSAGE_FORMAT)
