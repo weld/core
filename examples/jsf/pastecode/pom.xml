@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.jboss.weld.examples</groupId>
         <artifactId>weld-examples-parent</artifactId>
-        <version>2.3.0.Beta1-SNAPSHOT</version>
+        <version>2.3.0.Beta1</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
@@ -216,7 +216,7 @@
         <connection>scm:svn:http://anonsvn.jboss.org/repos/weld/examples/trunk/jsf/pastecode</connection>
         <developerConnection>scm:svn:https://svn.jboss.org/repos/weld/examples/trunk/jsf/pastecode</developerConnection>
         <url>http://fisheye.jboss.org/browse/weld/examples/trunk/jsf/pastecode</url>
-      <tag>HEAD</tag>
+      <tag>2.3.0.Beta1</tag>
   </scm>
 
 </project>
