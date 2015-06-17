@@ -36,6 +36,6 @@ public interface VersionLogger extends WeldLogger {
 
     @LogMessage(level = Level.INFO)
     @Message(id = 900, value = "{0}", format = Format.MESSAGE_FORMAT)
-    void version(Object param1);
+    void version(Object info);
 
 }

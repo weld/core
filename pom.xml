@@ -25,6 +25,7 @@
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <build.timestamp>${maven.build.timestamp}</build.timestamp>
 
         <!-- Dependency versions. KEEP IN ALPHABETICAL ORDER -->
         <apache.httpclient.version>3.1</apache.httpclient.version>
