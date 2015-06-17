@@ -23,6 +23,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -33,6 +34,7 @@ import org.junit.runner.RunWith;
  *
  */
 @RunWith(Arquillian.class)
+@Ignore("Ignore these tests for now until jboss-classfilewriter is available (WildFly 9.0.0.Final, 10.0.0.Alpha4)")
 public class SyntheticProxyTest {
 
     @Deployment
