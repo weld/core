@@ -89,8 +89,8 @@ public interface ReflectionLogger extends WeldLogger {
     @Message(id = 617, value = "Instantiation through Unsafe of {0} failed", format = Format.MESSAGE_FORMAT)
     WeldException unsafeInstantiationFailed(Object param1, @Cause Throwable cause);
 
-    @Message(id = 619, value = "An interceptor for lifecycle callbacks {0} declares and interceptor binding {1} with METHOD as its @Target.", format = Format.MESSAGE_FORMAT)
-    DefinitionException methodElementTypeNotAllowed(Object param1, Object param2);
+    @Message(id = 619, value = "A lifecycle callback interceptor declares an interceptor binding with target other than ElementType.TYPE\n  {0}\n  Binding: {1}\n  Target: {2}", format = Format.MESSAGE_FORMAT)
+    DefinitionException lifecycleCallbackInterceptorWithInvalidBindingTarget(Object interceptor, Object binding, Object elementTypes);
 
     @LogMessage(level = Level.DEBUG)
     @Message(id = 620, value = "{0} is not declared @Target(METHOD, FIELD, PARAMETER, TYPE). Weld will use this annotation, however this may make the application unportable.", format = Format.MESSAGE_FORMAT)

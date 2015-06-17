@@ -22,6 +22,7 @@ import static org.jboss.weld.bean.BeanIdentifiers.forInterceptor;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -46,7 +47,6 @@ import org.jboss.weld.logging.ReflectionLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Interceptors;
-import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.reflection.Formats;
 
 /**
@@ -127,17 +127,27 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
     }
 
     private void checkInterceptorBindings() {
-        if (interceptorMetadata.isEligible(org.jboss.weld.interceptor.spi.model.InterceptionType.POST_CONSTRUCT) ||
-                interceptorMetadata.isEligible(org.jboss.weld.interceptor.spi.model.InterceptionType.PRE_DESTROY) ||
-                interceptorMetadata.isEligible(org.jboss.weld.interceptor.spi.model.InterceptionType.POST_ACTIVATE) ||
-                interceptorMetadata.isEligible(org.jboss.weld.interceptor.spi.model.InterceptionType.PRE_PASSIVATE)) {
+        if (interceptorMetadata.isEligible(org.jboss.weld.interceptor.spi.model.InterceptionType.POST_CONSTRUCT)
+                || interceptorMetadata.isEligible(org.jboss.weld.interceptor.spi.model.InterceptionType.PRE_DESTROY)
+                || interceptorMetadata.isEligible(org.jboss.weld.interceptor.spi.model.InterceptionType.POST_ACTIVATE)
+                || interceptorMetadata.isEligible(org.jboss.weld.interceptor.spi.model.InterceptionType.PRE_PASSIVATE)) {
             for (Annotation interceptorBindingType : interceptorBindingTypes) {
                 Target target = interceptorBindingType.annotationType().getAnnotation(Target.class);
-                if (target != null && Arrays2.unorderedEquals(target.value(), ElementType.TYPE, ElementType.METHOD)) {
-                    throw ReflectionLogger.LOG.methodElementTypeNotAllowed(this, interceptorBindingType.annotationType());
+                if (target == null || hasInvalidTargetType(target.value())) {
+                    throw ReflectionLogger.LOG.lifecycleCallbackInterceptorWithInvalidBindingTarget(this, interceptorBindingType.annotationType().getName(),
+                            target != null ? Arrays.toString(target.value()) : "Target meta-annotation is not present");
                 }
             }
         }
+    }
+
+    private boolean hasInvalidTargetType(ElementType[] elementTypes) {
+        for (ElementType elementType : elementTypes) {
+            if (!ElementType.TYPE.equals(elementType)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
