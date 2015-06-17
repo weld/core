@@ -33,6 +33,7 @@ public class Arrays2 {
     public static final Annotation[] EMPTY_ANNOTATION_ARRAY = new Annotation[0];
     public static final Type[] EMPTY_TYPE_ARRAY = new Type[0];
     public static final Class<?>[] EMPTY_CLASS_ARRAY = new Class<?>[0];
+    public static final String[] EMPTY_STRING_ARRAY = new String[0];
 
     private Arrays2() {
     }
