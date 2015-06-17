@@ -595,7 +595,10 @@ public class Weld implements ContainerInstanceFactory {
                     // Add ThreadScoped manually as Weld SE doesn't support implicit bean archives without beans.xml
                             .add(ThreadScoped.class).build());
             beanArchives.addAll(strategy.performDiscovery());
-            additionalServices.put(ClassFileServices.class, strategy.getClassFileServices());
+            ClassFileServices classFileServices = strategy.getClassFileServices();
+            if(classFileServices != null) {
+                additionalServices.put(ClassFileServices.class, classFileServices);
+            }
         }
 
         if (isSyntheticBeanArchiveRequired()) {
