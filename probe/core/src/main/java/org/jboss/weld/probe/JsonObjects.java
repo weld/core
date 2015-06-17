@@ -166,7 +166,7 @@ final class JsonObjects {
         JsonObjectBuilder deploymentBuilder = Json.objectBuilder();
 
         // WELD VERSION
-        deploymentBuilder.add(VERSION, Formats.version(WeldBootstrap.class.getPackage()));
+        deploymentBuilder.add(VERSION, Formats.version(WeldBootstrap.class));
 
         // BEAN DEPLOYMENT ARCHIVES
         JsonArrayBuilder bdasBuilder = Json.arrayBuilder();

@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.util.reflection;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -29,6 +30,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
 
 import javax.enterprise.inject.spi.AnnotatedConstructor;
 import javax.enterprise.inject.spi.AnnotatedField;
@@ -70,6 +72,8 @@ public class Formats {
     private static final String BCEL_M_GET_SIGNATURE = "getSignature";
 
     private static final String INIT_METHOD_NAME = "<init>";
+
+    private static final String BUILD_PROPERTIES_FILE = "/weld-build.properties";
 
     private Formats() {
     }
@@ -475,12 +479,38 @@ public class Formats {
         return formatIterable(annotations, ANNOTATION_LIST_FUNCTION);
     }
 
-    public static String version(Package pkg) {
-        if (pkg == null) {
-            throw new IllegalArgumentException("Package can not be null");
-        } else {
-            return version(pkg.getSpecificationVersion(), pkg.getImplementationVersion());
+    public static String version(Class<?> weldClass) {
+
+        String version = null;
+        String timestamp = null;
+
+        // First try to get weld-build.properties file
+        InputStream in = weldClass.getResourceAsStream(BUILD_PROPERTIES_FILE);
+        try {
+            if (in != null) {
+                try {
+                    Properties buildProperties = new Properties();
+                    buildProperties.load(in);
+                    version = buildProperties.getProperty("version");
+                    timestamp = buildProperties.getProperty("timestamp");
+                } finally {
+                    in.close();
+                }
+            }
+        } catch (IOException e) {
+            // No-op
         }
+
+        if (version == null) {
+            // If needed use the manifest info
+            Package pkg = weldClass.getPackage();
+            if (pkg == null) {
+                throw new IllegalArgumentException("Package can not be null");
+            }
+            version = pkg.getSpecificationVersion();
+            timestamp = pkg.getImplementationVersion();
+        }
+        return version(version, timestamp);
     }
 
     @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "NP_NULL_ON_SOME_PATH_MIGHT_BE_INFEASIBLE", justification = "False positive.")

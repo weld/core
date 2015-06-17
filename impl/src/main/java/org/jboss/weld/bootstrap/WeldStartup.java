@@ -149,7 +149,7 @@ import com.google.common.collect.Iterables;
 public class WeldStartup {
 
     static {
-        VersionLogger.LOG.version(Formats.version(WeldBootstrap.class.getPackage()));
+        VersionLogger.LOG.version(Formats.version(WeldBootstrap.class));
     }
 
     private BeanManagerImpl deploymentManager;
