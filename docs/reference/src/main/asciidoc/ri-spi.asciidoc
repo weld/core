@@ -907,3 +907,14 @@ http://docs.jboss.org/weld/javadoc/2.2/weld-spi/org/jboss/weld/ejb/api/SessionOb
 this method passing in a remote view of a session bean.
 * The link:#cdiProvider[CDI provider implementation] was reimplemented
 and is no longer compatible with the previous version.
+
+==== Migration from Weld 2.2 to 2.3
+
+* The `jboss-classfilewriter` dependency, which is used by Weld for runtime bytecode generation, is no longer bundled within the Weld OSGi bundle.
+Instead, this dependency needs to be deployed separately to the OSGi container.
+
+[cols=",,",options="header",]
+|======================================================
+|group id |artifact id |version
+|org.jboss.classfilewriter |jboss-classfilewriter |1.1.2.Final
+|======================================================
