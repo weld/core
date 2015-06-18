@@ -29,7 +29,7 @@ public class Observer1 {
 
     void observe(@Observes @Initialized(ApplicationScoped.class) ServletContext servletContext) {
         if (observed) {
-            throw new IllegalStateException("ServletContextEvent invoked multiple times.");
+            throw new IllegalStateException("ServletContext invoked multiple times.");
         }
         observed = true;
     }
