@@ -19,18 +19,18 @@ package org.jboss.weld.tests.contexts.application.event;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Initialized;
 import javax.enterprise.event.Observes;
-import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContext;
 
 public class Observer3 {
 
     private static boolean observed;
 
-    void observe(@Observes @Initialized(ApplicationScoped.class) ServletContextEvent event) {
-        if (!event.getServletContext().getContextPath().equals("/test2")) {
-            throw new IllegalArgumentException("Excepted /test2 but received " + event.getServletContext().getContextPath());
+    void observe(@Observes @Initialized(ApplicationScoped.class) ServletContext event) {
+        if (!event.getContextPath().equals("/test2")) {
+            throw new IllegalArgumentException("Excepted /test2 but received " + event.getContextPath());
         }
         if (observed) {
-            throw new IllegalStateException("ServletContextEvent invoked multiple times.");
+            throw new IllegalStateException("ServletContext invoked multiple times.");
         }
         observed = true;
     }
