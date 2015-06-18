@@ -16,22 +16,11 @@
  */
 package org.jboss.weld.tests.contexts.application.event;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Initialized;
-import javax.enterprise.event.Observes;
-import javax.servlet.ServletContext;
 
-public class Observer3 {
+public class MultiObserver5 extends AbstractObserver {
 
-    private static boolean observed;
-
-    void observe(@Observes @Initialized(ApplicationScoped.class) ServletContext event) {
-        if (!event.getContextPath().equals("/test2")) {
-            throw new IllegalArgumentException("Excepted /test2 but received " + event.getContextPath());
-        }
-        if (observed) {
-            throw new IllegalStateException("ServletContext invoked multiple times.");
-        }
-        observed = true;
+    @Override
+    public String getName() {
+        return "ejb2";
     }
 }
