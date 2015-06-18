@@ -18,33 +18,58 @@ package org.jboss.weld.tests.contexts.application.event;
 
 import javax.servlet.ServletContext;
 
+import junit.framework.Assert;
+
 import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.Testable;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 /**
  * Verifies that an observer is not notified of a non-visible {@link ServletContext}.
- * 
+ *
  * @author Jozef Hartinger
- * 
+ *
  */
 @RunWith(Arquillian.class)
+@Category(Integration.class)
 public class MultiWarTest {
 
-    @Deployment(testable = false)
+    @Deployment
     public static EnterpriseArchive getDeployment() {
-        WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war").addClasses(Observer2.class).addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
-        WebArchive war2 = ShrinkWrap.create(WebArchive.class, "test2.war").addClasses(Observer3.class).addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
-        return ShrinkWrap.create(EnterpriseArchive.class).addAsModules(war1, war2).addAsManifestResource(MultiWarTest.class.getPackage(), "application.xml", "application.xml");
+        JavaArchive lib = ShrinkWrap.create(BeanArchive.class).addClasses(AbstractObserver.class, EventRepository.class, MultiObserver4.class);
+        WebArchive war1 = Testable.archiveToTest(ShrinkWrap.create(WebArchive.class, "test1.war").addClasses(MultiObserver1.class, MultiWarTest.class).addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml"));
+        WebArchive war2 = ShrinkWrap.create(WebArchive.class, "test2.war").addClasses(MultiObserver2.class).addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+        JavaArchive ejb1 = ShrinkWrap.create(BeanArchive.class, "ejb1.jar").addClasses(MultiObserver3.class, TestEjb1.class);
+        JavaArchive ejb2 = ShrinkWrap.create(BeanArchive.class, "ejb2.jar").addClasses(MultiObserver5.class, TestEjb2.class);
+        return ShrinkWrap.create(EnterpriseArchive.class)
+                .addAsModules(war1, war2, ejb1, ejb2)
+                .addAsLibrary(lib);
     }
 
     @Test
-    public void test() {
-        // noop - the deployment either fails or not
+    public void testServletContextObservers() {
+        Assert.assertEquals(2, EventRepository.SERVLET_CONTEXTS.size());
+        Assert.assertTrue(EventRepository.SERVLET_CONTEXTS.contains("test1"));
+        Assert.assertTrue(EventRepository.SERVLET_CONTEXTS.contains("test2"));
+    }
+
+    @Test
+    public void testObject() {
+        Assert.assertEquals(EventRepository.OBJECTS.toString(), 5, EventRepository.OBJECTS.size());
+        Assert.assertTrue(EventRepository.OBJECTS.contains("test1"));
+        Assert.assertTrue(EventRepository.OBJECTS.contains("test2"));
+        Assert.assertTrue(EventRepository.OBJECTS.contains("lib"));
+        Assert.assertTrue(EventRepository.OBJECTS.contains("ejb1"));
+        Assert.assertTrue(EventRepository.OBJECTS.contains("ejb2"));
     }
 }
