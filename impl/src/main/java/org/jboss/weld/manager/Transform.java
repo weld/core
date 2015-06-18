@@ -16,8 +16,52 @@
  */
 package org.jboss.weld.manager;
 
-public interface Transform<T> {
+import java.util.Collections;
 
-    Iterable<T> transform(BeanManagerImpl beanManager);
+import javax.enterprise.inject.spi.Decorator;
+import javax.enterprise.inject.spi.Interceptor;
+import javax.enterprise.inject.spi.ObserverMethod;
 
+import com.google.common.base.Function;
+
+abstract class Transform<T> implements Function<BeanManagerImpl, Iterable<T>> {
+
+    public abstract Iterable<T> transform(BeanManagerImpl input);
+
+    @Override
+    public Iterable<T> apply(BeanManagerImpl input) {
+        if (input == null) {
+            // should never be null but makes findbugs happy
+            return Collections.emptySet();
+        }
+        return transform(input);
+    }
+
+    static final Transform<Decorator<?>> DECORATOR = new Transform<Decorator<?>>() {
+        @Override
+        public Iterable<Decorator<?>> transform(BeanManagerImpl beanManager) {
+            return beanManager.getDecorators();
+        }
+    };
+
+    static final Transform<Interceptor<?>> INTERCEPTOR = new Transform<Interceptor<?>>() {
+        @Override
+        public Iterable<Interceptor<?>> transform(BeanManagerImpl beanManager) {
+            return beanManager.getInterceptors();
+        }
+    };
+
+    static final Transform<String> NAMESPACE = new Transform<String>() {
+        @Override
+        public Iterable<String> transform(BeanManagerImpl beanManager) {
+            return beanManager.getNamespaces();
+        }
+    };
+
+    static final Transform<ObserverMethod<?>> OBSERVER = new Transform<ObserverMethod<?>>() {
+        @Override
+        public Iterable<ObserverMethod<?>> transform(BeanManagerImpl beanManager) {
+            return beanManager.getObservers();
+        }
+    };
 }

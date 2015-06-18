@@ -16,7 +16,9 @@
  */
 package org.jboss.weld.manager;
 
+import static com.google.common.collect.Iterables.concat;
 import static org.jboss.weld.annotated.AnnotatedTypeValidator.validateAnnotatedType;
+import static org.jboss.weld.util.collections.WeldCollections.flatMap;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 import static org.jboss.weld.util.reflection.Reflections.isCacheable;
 
@@ -30,7 +32,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -156,11 +157,8 @@ import org.jboss.weld.util.Interceptors;
 import org.jboss.weld.util.Preconditions;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.Types;
-import org.jboss.weld.util.collections.IterableToIteratorFunction;
 import org.jboss.weld.util.collections.WeldCollections;
 import org.jboss.weld.util.reflection.Reflections;
-
-import com.google.common.collect.Iterators;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
@@ -423,14 +421,14 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         // TODO Currently we build the accessible bean list on the fly, we need to set it in stone once bootstrap is finished...
         Transform<Bean<?>> beanTransform = new BeanTransform(this);
         this.beanResolver = new TypeSafeBeanResolver(this, createDynamicAccessibleIterable(beanTransform));
-        this.decoratorResolver = new TypeSafeDecoratorResolver(this, createDynamicGlobalIterable(DecoratorTransform.INSTANCE));
-        this.interceptorResolver = new TypeSafeInterceptorResolver(this, createDynamicGlobalIterable(InterceptorTransform.INSTANCE));
+        this.decoratorResolver = new TypeSafeDecoratorResolver(this, createDynamicGlobalIterable(Transform.DECORATOR));
+        this.interceptorResolver = new TypeSafeInterceptorResolver(this, createDynamicGlobalIterable(Transform.INTERCEPTOR));
         this.nameBasedResolver = new NameBasedResolver(this, createDynamicAccessibleIterable(beanTransform));
         this.weldELResolver = new WeldELResolver(this);
         this.childActivities = new CopyOnWriteArraySet<BeanManagerImpl>();
 
         TypeSafeObserverResolver accessibleObserverResolver = new TypeSafeObserverResolver(getServices().get(MetaAnnotationStore.class),
-                createDynamicAccessibleIterable(ObserverMethodTransform.INSTANCE), getServices().get(WeldConfiguration.class));
+                createDynamicAccessibleIterable(Transform.OBSERVER), getServices().get(WeldConfiguration.class));
         this.accessibleLenientObserverNotifier = ObserverNotifier.of(contextId, accessibleObserverResolver, getServices(), false);
         GlobalObserverNotifierService globalObserverNotifierService = services.get(GlobalObserverNotifierService.class);
         this.globalLenientObserverNotifier = globalObserverNotifierService.getGlobalLenientObserverNotifier();
@@ -443,16 +441,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     private <T> Iterable<T> createDynamicGlobalIterable(final Transform<T> transform) {
-        return new Iterable<T>() {
-            @Override
-            public Iterator<T> iterator() {
-                Set<Iterable<T>> result = new HashSet<Iterable<T>>();
-                for (BeanManagerImpl manager : managers) {
-                    result.add(transform.transform(manager));
-                }
-                return Iterators.concat(Iterators.transform(result.iterator(), IterableToIteratorFunction.<T>instance()));
-            }
-        };
+        return flatMap(managers, transform);
     }
 
     public String getContextId() {
@@ -460,15 +449,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     private <T> Iterable<T> createDynamicAccessibleIterable(final Transform<T> transform) {
-        return new Iterable<T>() {
-
-            @Override
-            public Iterator<T> iterator() {
-                Set<Iterable<T>> iterable = BeanManagers.getDirectlyAccessibleComponents(BeanManagerImpl.this, transform);
-                return Iterators.concat(Iterators.transform(iterable.iterator(), IterableToIteratorFunction.<T>instance()));
-            }
-
-        };
+        return concat(flatMap(getAccessibleManagers(), transform), transform.transform(this));
     }
 
     public void addAccessibleBeanManager(BeanManagerImpl accessibleBeanManager) {
@@ -643,11 +624,11 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     public Iterable<Interceptor<?>> getAccessibleInterceptors() {
-        return createDynamicAccessibleIterable(new InterceptorTransform());
+        return createDynamicAccessibleIterable(Transform.INTERCEPTOR);
     }
 
     public Iterable<Decorator<?>> getAccessibleDecorators() {
-        return createDynamicAccessibleIterable(new DecoratorTransform());
+        return createDynamicAccessibleIterable(Transform.DECORATOR);
     }
 
     public void addContext(Context context) {
@@ -1104,7 +1085,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     public Iterable<String> getAccessibleNamespaces() {
         // TODO Cache this
-        return createDynamicAccessibleIterable(new NamespaceTransform());
+        return createDynamicAccessibleIterable(Transform.NAMESPACE);
     }
 
     private Set<CurrentActivity> getCurrentActivities() {
@@ -1127,7 +1108,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     public Namespace getRootNamespace() {
         // TODO I don't like this lazy init
         if (rootNamespace == null) {
-            rootNamespace = new Namespace(createDynamicAccessibleIterable(new NamespaceTransform()));
+            rootNamespace = new Namespace(createDynamicAccessibleIterable(Transform.NAMESPACE));
         }
         return rootNamespace;
     }
