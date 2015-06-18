@@ -44,9 +44,6 @@ public class WeldCollections {
         if (set instanceof ImmutableSet<?>) {
             return set;
         }
-        if (set.isEmpty()) {
-            return Collections.emptySet();
-        }
         return Collections.unmodifiableSet(set);
     }
 
@@ -57,9 +54,6 @@ public class WeldCollections {
     public static <T> List<T> immutableListView(List<T> list) {
         if (list instanceof ImmutableList<?>) {
             return list;
-        }
-        if (list.isEmpty()) {
-            return Collections.emptyList();
         }
         if (list instanceof ArrayList<?>) {
             ArrayList.class.cast(list).trimToSize();

@@ -72,15 +72,10 @@ public final class Iterators {
     public static <T, R> Iterator<R> transform(final Iterator<T> iterator, final Function<? super T, ? extends R> function) {
         Preconditions.checkArgumentNotNull(iterator, "iterator");
         Preconditions.checkArgumentNotNull(function, "function");
-        return new TransformingIterator<T, R>(iterator) {
-            @Override
-            R transform(T from) {
-                return function.apply(from);
-            }
-        };
+        return new TransformingIterator<T, R>(iterator, function);
     }
 
-    private static class CombinedIterator<E> implements Iterator<E> {
+    static class CombinedIterator<E> implements Iterator<E> {
 
         private final Iterator<? extends Iterator<? extends E>> iterators;
 
@@ -127,15 +122,15 @@ public final class Iterators {
      * @param <T> The original type
      * @param <R> The result type
      */
-    private abstract static class TransformingIterator<T, R> implements Iterator<R> {
+    static class TransformingIterator<T, R> implements Iterator<R> {
 
         final Iterator<? extends T> iterator;
+        final Function<? super T, ? extends R> function;
 
-        TransformingIterator(Iterator<? extends T> iterator) {
+        TransformingIterator(Iterator<? extends T> iterator, Function<? super T, ? extends R> function) {
             this.iterator = iterator;
+            this.function = function;
         }
-
-        abstract R transform(T from);
 
         @Override
         public final boolean hasNext() {
@@ -144,7 +139,7 @@ public final class Iterators {
 
         @Override
         public final R next() {
-            return transform(iterator.next());
+            return function.apply(iterator.next());
         }
 
         @Override

@@ -16,8 +16,10 @@
  */
 package org.jboss.weld.util.collections;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.function.Function;
 
 /**
  * Static utility methods for {@link Iterable}.
@@ -54,22 +56,27 @@ public final class Iterables {
     }
 
     /**
+     * Combine the iterables into a single one.
+     */
+    public static <T> Iterable<T> concat(Iterable<? extends T> a, Iterable<? extends T> b) {
+      return concat(Arrays.asList(a, b));
+    }
+
+    /**
      *
      * @param iterables
      * @return an iterator over iterators from the given iterable of iterables
      */
     public static <T> Iterator<Iterator<? extends T>> iterators(Iterable<? extends Iterable<? extends T>> iterables) {
-        final Iterator<? extends Iterable<? extends T>> iterator = iterables.iterator();
-        return new Iterator<Iterator<? extends T>>() {
-            @Override
-            public boolean hasNext() {
-                return iterator.hasNext();
-            }
-            @Override
-            public Iterator<? extends T> next() {
-                return iterator.next().iterator();
-            }
-        };
+        return Iterators.transform(iterables.iterator(), Iterable::iterator);
+    }
+
+    public static <T, R> Iterable<R> transform(Iterable<T> iterable, final Function<? super T, ? extends R> function) {
+        return () -> new Iterators.TransformingIterator<>(iterable.iterator(), function);
+    }
+
+    public static <T, R> Iterable<R> flatMap(Iterable<T> iterable, Function<? super T, ? extends Iterable<? extends R>> function) {
+        return concat(transform(iterable, function));
     }
 
 }
