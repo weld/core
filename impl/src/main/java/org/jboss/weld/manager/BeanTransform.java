@@ -18,7 +18,7 @@ package org.jboss.weld.manager;
 
 import javax.enterprise.inject.spi.Bean;
 
-public class BeanTransform implements Transform<Bean<?>> {
+final class BeanTransform extends Transform<Bean<?>> {
 
     private final BeanManagerImpl declaringBeanManager;
 
@@ -26,6 +26,7 @@ public class BeanTransform implements Transform<Bean<?>> {
         this.declaringBeanManager = declaringBeanManager;
     }
 
+    @Override
     public Iterable<Bean<?>> transform(BeanManagerImpl beanManager) {
         // New beans and built in beans aren't resolvable transitively
         if (beanManager.equals(declaringBeanManager)) {
