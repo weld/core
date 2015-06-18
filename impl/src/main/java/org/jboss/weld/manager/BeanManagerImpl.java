@@ -17,6 +17,8 @@
 package org.jboss.weld.manager;
 
 import static org.jboss.weld.annotated.AnnotatedTypeValidator.validateAnnotatedType;
+import static org.jboss.weld.util.collections.Iterables.concat;
+import static org.jboss.weld.util.collections.Iterables.flatMap;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 import static org.jboss.weld.util.reflection.Reflections.isCacheable;
 
@@ -30,7 +32,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -38,6 +39,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 
 import javax.el.ELResolver;
 import javax.el.ExpressionFactory;
@@ -157,7 +159,6 @@ import org.jboss.weld.util.Preconditions;
 import org.jboss.weld.util.Proxies;
 import org.jboss.weld.util.Types;
 import org.jboss.weld.util.collections.ImmutableSet;
-import org.jboss.weld.util.collections.Iterators;
 import org.jboss.weld.util.collections.WeldCollections;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -371,15 +372,15 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         this.accessibleManagers = new HashSet<BeanManagerImpl>();
 
         // TODO Currently we build the accessible bean list on the fly, we need to set it in stone once bootstrap is finished...
-        Transform<Bean<?>> beanTransform = new BeanTransform(this);
+        BeanTransform beanTransform = new BeanTransform(this);
         this.beanResolver = new TypeSafeBeanResolver(this, createDynamicAccessibleIterable(beanTransform));
-        this.decoratorResolver = new TypeSafeDecoratorResolver(this, createDynamicGlobalIterable(DecoratorTransform.INSTANCE));
-        this.interceptorResolver = new TypeSafeInterceptorResolver(this, createDynamicGlobalIterable(InterceptorTransform.INSTANCE));
+        this.decoratorResolver = new TypeSafeDecoratorResolver(this, createDynamicGlobalIterable(BeanManagerImpl::getDecorators));
+        this.interceptorResolver = new TypeSafeInterceptorResolver(this, createDynamicGlobalIterable(BeanManagerImpl::getInterceptors));
         this.nameBasedResolver = new NameBasedResolver(this, createDynamicAccessibleIterable(beanTransform));
         this.weldELResolver = services.getOptional(ExpressionLanguageSupport.class).map(el -> el.createElResolver(this)).orElse(null);
 
         TypeSafeObserverResolver accessibleObserverResolver = new TypeSafeObserverResolver(getServices().get(MetaAnnotationStore.class),
-                createDynamicAccessibleIterable(ObserverMethodTransform.INSTANCE), getServices().get(WeldConfiguration.class));
+                createDynamicAccessibleIterable(BeanManagerImpl::getObservers), getServices().get(WeldConfiguration.class));
         this.accessibleLenientObserverNotifier = getServices().get(ObserverNotifierFactory.class).create(contextId, accessibleObserverResolver, getServices(), false);
         GlobalObserverNotifierService globalObserverNotifierService = services.get(GlobalObserverNotifierService.class);
         this.globalLenientObserverNotifier = globalObserverNotifierService.getGlobalLenientObserverNotifier();
@@ -391,33 +392,16 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         this.clientProxyOptimization = getServices().get(WeldConfiguration.class).getBooleanProperty(ConfigurationKey.INJECTABLE_REFERENCE_OPTIMIZATION);
     }
 
-    private <T> Iterable<T> createDynamicGlobalIterable(final Transform<T> transform) {
-        return new Iterable<T>() {
-            @Override
-            public Iterator<T> iterator() {
-                Set<Iterable<T>> result = new HashSet<Iterable<T>>();
-                for (BeanManagerImpl manager : managers) {
-                    result.add(transform.transform(manager));
-                }
-                return Iterators.concat(Iterators.transform(result.iterator(), Iterable::iterator));
-            }
-        };
+    private <T> Iterable<T> createDynamicGlobalIterable(final Function<BeanManagerImpl, Iterable<T>> transform) {
+        return flatMap(managers, transform);
     }
 
     public String getContextId() {
         return contextId;
     }
 
-    private <T> Iterable<T> createDynamicAccessibleIterable(final Transform<T> transform) {
-        return new Iterable<T>() {
-
-            @Override
-            public Iterator<T> iterator() {
-                Set<Iterable<T>> iterables = BeanManagers.getDirectlyAccessibleComponents(BeanManagerImpl.this, transform);
-                return Iterators.concat(Iterators.transform(iterables.iterator(), Iterable::iterator));
-            }
-
-        };
+    private <T> Iterable<T> createDynamicAccessibleIterable(final Function<BeanManagerImpl, Iterable<T>> transform) {
+        return concat(flatMap(getAccessibleManagers(), transform), transform.apply(this));
     }
 
     public void addAccessibleBeanManager(BeanManagerImpl accessibleBeanManager) {
@@ -594,11 +578,11 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     }
 
     public Iterable<Interceptor<?>> getAccessibleInterceptors() {
-        return createDynamicAccessibleIterable(new InterceptorTransform());
+        return createDynamicAccessibleIterable(BeanManagerImpl::getInterceptors);
     }
 
     public Iterable<Decorator<?>> getAccessibleDecorators() {
-        return createDynamicAccessibleIterable(new DecoratorTransform());
+        return createDynamicAccessibleIterable(BeanManagerImpl::getDecorators);
     }
 
     public void addContext(Context context) {
@@ -1030,7 +1014,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     public Iterable<String> getAccessibleNamespaces() {
         // TODO Cache this
-        return createDynamicAccessibleIterable(NamespaceTransform.INSTANCE);
+        return createDynamicAccessibleIterable(BeanManagerImpl::getNamespaces);
     }
 
     @Override
