@@ -32,6 +32,12 @@
             </class>
 
             <!-- Issues in the TCK -->
+            <!-- CDITCK-493 -->
+            <class name="org.jboss.cdi.tck.tests.interceptors.definition.broken.interceptorForLifecycleTargetMethod.InterceptorForLifecycleTargetMethodTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
 
             <!-- Issues in Weld (the RI) -->
 
