@@ -1,11 +1,16 @@
 [[devmode]]
 == Development Mode
 
-Weld comes with a special mode for application development. When the Development mode is enabled, certain built-in tools, which facilitate the development of CDI applications, are available.
+Weld comes with a special mode for application development. When enabled, certain built-in tools which facilitate the development of CDI applications, are available.
 
-=== Enablement
+NOTE: The development mode should not be used in production as it may have negative impact on the performance of the application. Make sure to disable the development mode before deploying to production.
 
-To enable the Development Mode set the Servlet initialization parameter `org.jboss.weld.development` to `true`.
+WARNING: Not all environments and containers may support the development mode and all tools. Check the <<devtools,tools>> details and the container documentation.
+
+[[devmode-enable]]
+=== How to enable the development mode
+
+Set the Servlet initialization parameter `org.jboss.weld.development` to `true`:
 
 [source.XML, xml]
 -----------------------------------------------------------------------------------------------------------
@@ -21,7 +26,7 @@ xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/
 </web-app>
 -----------------------------------------------------------------------------------------------------------
 
-You will see the following log message when deploying your application.
+You should see the following log message when deploying your application:
 
 -----------------------------------------------------------------------------------------------------------
 =====================================
@@ -31,12 +36,16 @@ You will see the following log message when deploying your application.
 =====================================
 -----------------------------------------------------------------------------------------------------------
 
-=== Tools
+NOTE: An integrator is allowed to specify an alternative way of enabling the development mode.
 
+[[devtools]]
+=== Development Tools
+
+[[probe]]
 ==== Probe
 
-This tool allows to inspect the application components in the runtime. The Probe consists of the REST API and the default (single-page application) client. Therefore it's only available in a web application. Right now, the integration is provided for WildFly (unofficial patch), Tomcat and Jetty (Weld Servlet). The default client is available at path `/weld-probe` inside your web application, e.g. `http://localhost:8080/weld-numberguess/weld-probe`.
+This tool allows to inspect the application CDI components at runtime. See also the http://probe-weld.itos.redhat.com/weld-numberguess/weld-probe[demo application hosted on OpenShift]. Currently, this tool is only available in a web application. JSON data are available through the REST API. However, a default HTML client (single-page application) is also available at `{webappContextPath}/weld-probe`, e.g. `http://localhost:8080/weld-numberguess/weld-probe`.
 
-NOTE: The development mode should not be used in production as it may have negative impact on the performance of the application. Make sure to disable the development mode before deploying to production.
+Right now, the integration is provided for WildFly (unofficial patch), Tomcat and Jetty (Weld Servlet).
 
-TIP: There are some configuration properties which allow to specify the set of components which will be monitored. See also <<config-dev-mode>>.
+TIP: There are some configuration properties which allow to tune or disable Probe features, e.g. to limit the set of components which will be monitored. See also <<config-dev-mode>>.
