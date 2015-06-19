@@ -20,6 +20,8 @@ import java.util.Comparator;
 
 import org.jboss.weld.manager.api.WeldManager;
 
+import com.google.common.base.Function;
+
 
 public final class BeanManagers {
 
@@ -27,6 +29,16 @@ public final class BeanManagers {
         @Override
         public int compare(WeldManager m1, WeldManager m2) {
             return m1.getId().compareTo(m2.getId());
+        }
+    };
+
+    public static final Function<BeanManagerImpl, String> BEAN_MANAGER_TO_ID = new Function<BeanManagerImpl, String>() {
+        @Override
+        public String apply(BeanManagerImpl manager) {
+            if (manager == null) {
+                throw new IllegalArgumentException("manager"); // findbugs
+            }
+            return manager.getId();
         }
     };
 

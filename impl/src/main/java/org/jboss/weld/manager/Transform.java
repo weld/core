@@ -24,7 +24,10 @@ import javax.enterprise.inject.spi.ObserverMethod;
 
 import com.google.common.base.Function;
 
-abstract class Transform<T> implements Function<BeanManagerImpl, Iterable<T>> {
+public abstract class Transform<T> implements Function<BeanManagerImpl, Iterable<T>> {
+
+    Transform() {
+    }
 
     public abstract Iterable<T> transform(BeanManagerImpl input);
 
@@ -58,7 +61,7 @@ abstract class Transform<T> implements Function<BeanManagerImpl, Iterable<T>> {
         }
     };
 
-    static final Transform<ObserverMethod<?>> OBSERVER = new Transform<ObserverMethod<?>>() {
+    public static final Transform<ObserverMethod<?>> OBSERVER = new Transform<ObserverMethod<?>>() {
         @Override
         public Iterable<ObserverMethod<?>> transform(BeanManagerImpl beanManager) {
             return beanManager.getObservers();
