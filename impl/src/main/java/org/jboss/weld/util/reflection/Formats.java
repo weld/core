@@ -489,17 +489,12 @@ public class Formats {
         String timestamp = null;
 
         // First try to get weld-build.properties file
-        InputStream in = weldClass.getResourceAsStream(BUILD_PROPERTIES_FILE);
-        try {
+        try (InputStream in = weldClass.getResourceAsStream(BUILD_PROPERTIES_FILE)) {
             if (in != null) {
-                try {
-                    Properties buildProperties = new Properties();
-                    buildProperties.load(in);
-                    version = buildProperties.getProperty("version");
-                    timestamp = buildProperties.getProperty("timestamp");
-                } finally {
-                    in.close();
-                }
+                Properties buildProperties = new Properties();
+                buildProperties.load(in);
+                version = buildProperties.getProperty("version");
+                timestamp = buildProperties.getProperty("timestamp");
             }
         } catch (IOException e) {
             // No-op
