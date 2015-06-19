@@ -76,6 +76,7 @@
                             org.jboss.weld.servlet;
                             org.jboss.weld.util;
                             org.jboss.weld.security;
+                            org.jboss.weld.probe;
                             version=
           </export.contents>
           <import.package>
@@ -207,7 +208,7 @@
             <groupId>org.jboss.weld</groupId>
             <artifactId>weld-core-impl</artifactId>
         </dependency>
-    
+
         <dependency>
             <groupId>org.jboss.weld</groupId>
             <artifactId>weld-core-jsf</artifactId>
@@ -222,6 +223,12 @@
             <groupId>org.jboss.classfilewriter</groupId>
             <artifactId>jboss-classfilewriter</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>org.jboss.weld.probe</groupId>
+            <artifactId>weld-probe-core</artifactId>
+        </dependency>
+
     </dependencies>
 
     <!-- SCM and distribution management -->
