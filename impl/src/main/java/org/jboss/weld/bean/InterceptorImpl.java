@@ -78,7 +78,8 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
     @SuppressWarnings("unchecked")
     private InterceptorClassMetadata<T> initInterceptorMetadata() {
         CdiInterceptorFactory<T> reference = new CdiInterceptorFactory<T>(this);
-        return new InterceptorMetadataImpl<T>((Class<T>) getBeanClass(), reference, InterceptorMetadataUtils.buildMethodMap(getEnhancedAnnotated(), false, getBeanManager()));
+        return new InterceptorMetadataImpl<T>((Class<T>) getBeanClass(), reference, InterceptorMetadataUtils.buildMethodMap(getEnhancedAnnotated(), false,
+                getBeanManager()));
     }
 
     @Override
@@ -92,16 +93,17 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
 
     @Override
     public Object intercept(InterceptionType type, T instance, final InvocationContext ctx) {
-        final org.jboss.weld.interceptor.spi.model.InterceptionType interceptionType = org.jboss.weld.interceptor.spi.model.InterceptionType.valueOf(type.name());
-        final List<InterceptorMethodInvocation> methodInvocations = interceptorMetadata.getInterceptorInvocation(instance, interceptionType).getInterceptorMethodInvocations();
+        final org.jboss.weld.interceptor.spi.model.InterceptionType interceptionType = org.jboss.weld.interceptor.spi.model.InterceptionType.valueOf(type
+                .name());
+        final List<InterceptorMethodInvocation> methodInvocations = interceptorMetadata.getInterceptorInvocation(instance, interceptionType)
+                .getInterceptorMethodInvocations();
 
         try {
             /*
-             * Calling Interceptor.intercept() may result in multiple interceptor method invocations (provided the interceptor class
-             * interceptor methods on superclasses). This requires cooperation with InvocationContext.
+             * Calling Interceptor.intercept() may result in multiple interceptor method invocations (provided the interceptor class interceptor methods on
+             * superclasses). This requires cooperation with InvocationContext.
              *
-             * We use a wrapper InvocationContext for the purpose of executing the chain of
-             * interceptor methods of this interceptor.
+             * We use a wrapper InvocationContext for the purpose of executing the chain of interceptor methods of this interceptor.
              */
             return new WeldInvocationContext(ctx, methodInvocations).proceed();
         } catch (RuntimeException e) {
@@ -134,7 +136,7 @@ public class InterceptorImpl<T> extends ManagedBean<T> implements Interceptor<T>
             for (Annotation interceptorBindingType : interceptorBindingTypes) {
                 Target target = interceptorBindingType.annotationType().getAnnotation(Target.class);
                 if (target == null || hasInvalidTargetType(target.value())) {
-                    throw ReflectionLogger.LOG.lifecycleCallbackInterceptorWithInvalidBindingTarget(this, interceptorBindingType.annotationType().getName(),
+                    ReflectionLogger.LOG.lifecycleCallbackInterceptorWithInvalidBindingTarget(this, interceptorBindingType.annotationType().getName(),
                             target != null ? Arrays.toString(target.value()) : "Target meta-annotation is not present");
                 }
             }
