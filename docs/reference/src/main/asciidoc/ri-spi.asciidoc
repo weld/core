@@ -815,6 +815,20 @@ See link:http://docs.jboss.org/weld/javadoc/2.2/weld-spi/org/jboss/weld/construc
 and link:http://docs.jboss.org/weld/javadoc/2.2/weld-spi/org/jboss/weld/construction/api/WeldCreationalContext.html#registerAroundConstructCallback-org.jboss.weld.construction.api.AroundConstructCallback-[WeldCreationalContext.registerAroundConstructCallback()]
 for more details.
 
+==== Probe Development Tool (Optional)
+
+Optionally, an integrator may register the following <<probe,Probe Development Tool>> components in order to enable its functionality. Note that these components should only be registered if the development mode is enabled - see also <<devmode-enable>>.
+
+.Probe components
+[cols="1,1,2",options="header"]
+|=======================================================================
+|Class|Type|Description
+|`org.jboss.weld.probe.ProbeFilter`|Servlet filter|An integrator is required to register this filter for every web application which should be a subject of inspection. The filter should only be mapped to a single URL pattern of value `/*`.
+|`org.jboss.weld.probe.ProbeExtension`|CDI extension|An integrator is required to register this extension for every application which should be a subject of inspection.
+|=======================================================================
+
+NOTE: Probe classes reside in a separate module with the following coordinates: `org.jboss.weld.probe:weld-probe-core`. This module is a dependency of a Weld Servlet integration module and it's also a part of the `weld-servlet-shaded` artifact and Weld OSGi bundle.
+
 === Migration notes
 
 This part of the appendix documents the changes in Weld across major and
