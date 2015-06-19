@@ -16,12 +16,18 @@
  */
 package org.jboss.weld.servlet;
 
+import java.lang.annotation.Annotation;
+import java.util.Collections;
+
+import javax.enterprise.inject.spi.EventMetadata;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRequestListener;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.jboss.weld.Container;
+import org.jboss.weld.bootstrap.BeanDeploymentModule;
+import org.jboss.weld.bootstrap.BeanDeploymentModules;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.context.BoundContext;
 import org.jboss.weld.context.ManagedContext;
@@ -30,6 +36,7 @@ import org.jboss.weld.context.http.HttpRequestContext;
 import org.jboss.weld.context.http.HttpRequestContextImpl;
 import org.jboss.weld.context.http.HttpSessionContext;
 import org.jboss.weld.context.http.HttpSessionDestructionContext;
+import org.jboss.weld.event.EventMetadataImpl;
 import org.jboss.weld.event.FastEvent;
 import org.jboss.weld.literal.DestroyedLiteral;
 import org.jboss.weld.literal.InitializedLiteral;
@@ -70,8 +77,6 @@ public class HttpContextLifecycle implements Service {
     private final ConversationContextActivator conversationContextActivator;
     private final HttpContextActivationFilter contextActivationFilter;
 
-    private final FastEvent<ServletContext> applicationInitializedEvent;
-    private final FastEvent<ServletContext> applicationDestroyedEvent;
     private final FastEvent<HttpServletRequest> requestInitializedEvent;
     private final FastEvent<HttpServletRequest> requestDestroyedEvent;
     private final FastEvent<HttpSession> sessionInitializedEvent;
@@ -82,6 +87,7 @@ public class HttpContextLifecycle implements Service {
     private final ServletContextService servletContextService;
 
     private final Container container;
+    private final BeanDeploymentModule module;
 
     private static final ThreadLocal<Counter> nestedInvocationGuard = new ThreadLocal<HttpContextLifecycle.Counter>();
     private final boolean nestedInvocationGuardEnabled;
@@ -98,8 +104,6 @@ public class HttpContextLifecycle implements Service {
         this.ignoreForwards = ignoreForwards;
         this.ignoreIncludes = ignoreIncludes;
         this.contextActivationFilter = contextActivationFilter;
-        this.applicationInitializedEvent = FastEvent.of(ServletContext.class, beanManager, InitializedLiteral.APPLICATION);
-        this.applicationDestroyedEvent = FastEvent.of(ServletContext.class, beanManager, DestroyedLiteral.APPLICATION);
         this.requestInitializedEvent = FastEvent.of(HttpServletRequest.class, beanManager, InitializedLiteral.REQUEST);
         this.requestDestroyedEvent = FastEvent.of(HttpServletRequest.class, beanManager, DestroyedLiteral.REQUEST);
         this.sessionInitializedEvent = FastEvent.of(HttpSession.class, beanManager, InitializedLiteral.SESSION);
@@ -108,6 +112,7 @@ public class HttpContextLifecycle implements Service {
         this.servletContextService = beanManager.getServices().get(ServletContextService.class);
         this.nestedInvocationGuardEnabled = nestedInvocationGuardEnabled;
         this.container = Container.instance(beanManager);
+        this.module = beanManager.getServices().get(BeanDeploymentModules.class).getModule(beanManager);
     }
 
     private HttpSessionDestructionContext getSessionDestructionContext() {
@@ -134,13 +139,23 @@ public class HttpContextLifecycle implements Service {
     public void contextInitialized(ServletContext ctx) {
         servletContextService.contextInitialized(ctx);
         synchronized (container) {
-            applicationInitializedEvent.fire(ctx);
+            fireEventForApplicationScope(ctx, InitializedLiteral.APPLICATION);
         }
     }
 
     public void contextDestroyed(ServletContext ctx) {
         synchronized (container) {
-            applicationDestroyedEvent.fire(ctx);
+            fireEventForApplicationScope(ctx, DestroyedLiteral.APPLICATION);
+        }
+    }
+
+    private void fireEventForApplicationScope(ServletContext ctx, Annotation qualifier) {
+        if (module.isWebModule()) {
+            module.fireEvent(ServletContext.class, ctx, qualifier);
+        } else {
+            // fallback for backward compatibility
+            final EventMetadata metadata = new EventMetadataImpl(ServletContext.class, null, Collections.singleton(qualifier));
+            beanManager.getAccessibleLenientObserverNotifier().fireEvent(ServletContext.class, ctx, metadata, qualifier);
         }
     }
 
