@@ -86,6 +86,7 @@ import org.jboss.weld.context.unbound.DependentContextImpl;
 import org.jboss.weld.context.unbound.RequestContextImpl;
 import org.jboss.weld.context.unbound.SingletonContextImpl;
 import org.jboss.weld.context.unbound.UnboundLiteral;
+import org.jboss.weld.event.ContextEvent;
 import org.jboss.weld.event.CurrentEventMetadata;
 import org.jboss.weld.event.DefaultObserverNotifierFactory;
 import org.jboss.weld.event.GlobalObserverNotifierService;
@@ -93,6 +94,7 @@ import org.jboss.weld.executor.ExecutorServicesFactory;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.injection.ResourceInjectionFactory;
 import org.jboss.weld.injection.producer.InjectionTargetService;
+import org.jboss.weld.literal.InitializedLiteral;
 import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.logging.VersionLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -319,6 +321,7 @@ public class WeldStartup {
             preloader = new ContainerLifecycleEventPreloader(preloaderThreadPoolSize, observerNotificationService.getGlobalLenientObserverNotifier());
         }
         services.add(ContainerLifecycleEvents.class, new ContainerLifecycleEvents(preloader, services.get(RequiredAnnotationDiscovery.class)));
+        services.add(BeanDeploymentModules.class, new BeanDeploymentModules(contextId, services));
     }
 
     // needs to be resolved once extension beans are deployed
@@ -483,8 +486,20 @@ public class WeldStartup {
         for (BeanDeployment beanDeployment : getBeanDeployments()) {
             beanDeployment.getBeanDeployer().cleanup();
         }
+        // feed BeanDeploymentModule registry
+        final BeanDeploymentModules modules = deploymentManager.getServices().get(BeanDeploymentModules.class);
+        modules.processBeanDeployments(getBeanDeployments());
+        BootstrapLogger.LOG.debugv("EE modules: {0}", modules);
 
         getContainer().setState(ContainerState.INITIALIZED);
+
+        // fire @Initialized(ApplicationScoped.class) for non-web modules
+        // web modules are handled by HttpContextLifecycle
+        for (BeanDeploymentModule module : modules) {
+            if (!module.isWebModule()) {
+                module.fireEvent(Object.class, ContextEvent.APPLICATION_INITIALIZED, InitializedLiteral.APPLICATION);
+            }
+        }
     }
 
     private void flushCaches() {

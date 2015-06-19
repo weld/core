@@ -140,7 +140,7 @@ public class ObserverNotifier {
         fireEvent(eventType, event, null, qualifiers);
     }
 
-    protected void fireEvent(Type eventType, Object event, EventMetadata metadata, Annotation... qualifiers) {
+    public void fireEvent(Type eventType, Object event, EventMetadata metadata, Annotation... qualifiers) {
         checkEventObjectType(eventType);
         // we use the array of qualifiers for resolution so that we can catch duplicate qualifiers
         notify(resolveObserverMethods(buildEventResolvable(eventType, qualifiers)), event, metadata);

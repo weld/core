@@ -24,6 +24,8 @@ import org.jboss.weld.bootstrap.events.BeforeShutdownImpl;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.context.ApplicationContext;
 import org.jboss.weld.context.SingletonContext;
+import org.jboss.weld.event.ContextEvent;
+import org.jboss.weld.literal.DestroyedLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
@@ -52,7 +54,18 @@ public class WeldRuntime {
             // First, the container must destroy all contexts.
             deploymentManager.instance().select(ApplicationContext.class).get().invalidate();
             deploymentManager.instance().select(SingletonContext.class).get().invalidate();
+
         } finally {
+            try {
+                // fire @Destroyed(ApplicationScoped.class) for non-web modules
+                // web modules are handled by HttpContextLifecycle
+                for (BeanDeploymentModule module : deploymentManager.getServices().get(BeanDeploymentModules.class)) {
+                    if (!module.isWebModule()) {
+                        module.fireEvent(Object.class, ContextEvent.APPLICATION_DESTROYED, DestroyedLiteral.APPLICATION);
+                    }
+                }
+            } catch (Exception ignored) {
+            }
             try {
                 // Finally, the container must fire an event of type BeforeShutdown.
                 BeforeShutdownImpl.fire(deploymentManager);
