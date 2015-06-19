@@ -44,8 +44,9 @@
             </class>
 
             <!-- Issues in the TCK -->
-            <!-- CDI-437 -->
-            <class name="org.jboss.cdi.tck.tests.lookup.byname.ambiguous.broken.AmbiguousELNamesTest">
+
+            <!-- CDITCK-493 -->
+            <class name="org.jboss.cdi.tck.tests.interceptors.definition.broken.interceptorForLifecycleTargetMethod.InterceptorForLifecycleTargetMethodTest">
                 <methods>
                     <exclude name=".*"/>
                 </methods>
