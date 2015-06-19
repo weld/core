@@ -75,6 +75,7 @@
                             org.jboss.weld.manager;
                             org.jboss.weld.servlet;
                             org.jboss.weld.util;
+                            org.jboss.weld.xml;
                             org.jboss.weld.security;
                             version=
           </export.contents>
