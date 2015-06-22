@@ -90,6 +90,7 @@ import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -127,6 +128,7 @@ import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.BeanDiscoveryMode;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.config.ConfigurationKey;
+import org.jboss.weld.config.Description;
 import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.context.AbstractConversationContext;
 import org.jboss.weld.context.ManagedConversation;
@@ -217,10 +219,32 @@ final class JsonObjects {
         deploymentBuilder.add(BDAS, bdasBuilder);
 
         // CONFIGURATION
+        List<ConfigurationKey> configurationKeys = new ArrayList<>();
+        Collections.addAll(configurationKeys, ConfigurationKey.values());
+        Collections.sort(configurationKeys, new Comparator<ConfigurationKey>() {
+            @Override
+            public int compare(ConfigurationKey o1, ConfigurationKey o2) {
+                return o1.get().compareTo(o2.get());
+            }
+        });
         JsonArrayBuilder configBuilder = Json.arrayBuilder();
         WeldConfiguration configuration = beanManager.getServices().get(WeldConfiguration.class);
-        for (ConfigurationKey key : ConfigurationKey.values()) {
+        for (ConfigurationKey key : configurationKeys) {
             Object defaultValue = key.getDefaultValue();
+            String desc = "";
+            try {
+                Field field = ConfigurationKey.class.getDeclaredField(key.toString());
+                if (field != null && field.isEnumConstant()) {
+                    Description description = field.getAnnotation(Description.class);
+                    if (description == null) {
+                        // Don't show config options without description
+                        continue;
+                    }
+                    desc = description.value();
+                }
+            } catch (Exception e) {
+                // Ignored
+            }
             Object value;
             if (defaultValue instanceof Boolean) {
                 value = configuration.getBooleanProperty(key);
@@ -234,7 +258,8 @@ final class JsonObjects {
                 // Unsupported property type
                 continue;
             }
-            configBuilder.add(Json.objectBuilder().add(NAME, key.get()).add(DEFAULT_VALUE, defaultValue.toString()).add(VALUE, value.toString()));
+            configBuilder.add(Json.objectBuilder().add(NAME, key.get()).add(DEFAULT_VALUE, defaultValue.toString()).add(VALUE, value.toString())
+                    .add(DESCRIPTION, desc));
         }
         deploymentBuilder.add(CONFIGURATION, configBuilder);
 
