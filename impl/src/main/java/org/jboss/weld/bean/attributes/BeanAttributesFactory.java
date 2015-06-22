@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.bean.attributes;
 
+import java.beans.Introspector;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collections;
@@ -33,6 +34,8 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotated;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
+import org.jboss.weld.config.ConfigurationKey;
+import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.literal.DefaultLiteral;
@@ -143,9 +146,14 @@ public class BeanAttributesFactory {
          */
         protected String getDefaultName(EnhancedAnnotated<?, ?> annotated) {
             if (annotated instanceof EnhancedAnnotatedType<?>) {
-                StringBuilder defaultName = new StringBuilder(((EnhancedAnnotatedType<?>) annotated).getSimpleName());
-                defaultName.setCharAt(0, Character.toLowerCase(defaultName.charAt(0)));
-                return defaultName.toString();
+                if (manager.getServices().get(WeldConfiguration.class).getBooleanProperty(ConfigurationKey.DEFAULT_BEAN_NAMES_FOLLOW_JAVABEAN_RULES)) {
+                    // We need to fix WELD-1941 but still don't break existing applications
+                    return Introspector.decapitalize(((EnhancedAnnotatedType<?>) annotated).getSimpleName());
+                } else {
+                    StringBuilder defaultNameBuilder = new StringBuilder(((EnhancedAnnotatedType<?>) annotated).getSimpleName());
+                    defaultNameBuilder.setCharAt(0, Character.toLowerCase(defaultNameBuilder.charAt(0)));
+                    return defaultNameBuilder.toString();
+                }
             } else if (annotated instanceof EnhancedAnnotatedField<?, ?>) {
                 return ((EnhancedAnnotatedField<?, ?>) annotated).getPropertyName();
             } else if (annotated instanceof EnhancedAnnotatedMethod<?, ?>) {

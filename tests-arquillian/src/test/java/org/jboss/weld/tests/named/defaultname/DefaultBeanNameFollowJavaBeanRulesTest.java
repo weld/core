@@ -25,6 +25,8 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.weld.config.ConfigurationKey;
+import org.jboss.weld.tests.util.PropertiesBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -33,16 +35,20 @@ import org.junit.runner.RunWith;
  * @author Martin Kouba
  */
 @RunWith(Arquillian.class)
-public class DefaultBeanNameTest {
+public class DefaultBeanNameFollowJavaBeanRulesTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        return ShrinkWrap.create(BeanArchive.class).addPackage(DefaultBeanNameTest.class.getPackage());
+        return ShrinkWrap
+                .create(BeanArchive.class)
+                .addPackage(DefaultBeanNameFollowJavaBeanRulesTest.class.getPackage())
+                .addAsResource(PropertiesBuilder.newBuilder().set(ConfigurationKey.DEFAULT_BEAN_NAMES_FOLLOW_JAVABEAN_RULES.get(), "true").build(),
+                        "weld.properties");
     }
 
     @Test
     public void testDefaultNames(BeanManager beanManager) {
-        assertEquals(1, beanManager.getBeans("uRLAlpha").size());
+        assertEquals(1, beanManager.getBeans("URLAlpha").size());
         assertEquals(1, beanManager.getBeans("bravo").size());
         assertEquals(1, beanManager.getBeans("alpha").size());
     }
