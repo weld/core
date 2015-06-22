@@ -121,7 +121,6 @@ import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
 import org.jboss.weld.bean.builtin.InstanceImpl;
 import org.jboss.weld.bean.proxy.ProxyObject;
-import org.jboss.weld.bootstrap.WeldBootstrap;
 import org.jboss.weld.bootstrap.enablement.ModuleEnablement;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.BeanDiscoveryMode;
@@ -166,7 +165,7 @@ final class JsonObjects {
         JsonObjectBuilder deploymentBuilder = Json.objectBuilder();
 
         // WELD VERSION
-        deploymentBuilder.add(VERSION, Formats.version(WeldBootstrap.class));
+        deploymentBuilder.add(VERSION, Formats.version(null));
 
         // BEAN DEPLOYMENT ARCHIVES
         JsonArrayBuilder bdasBuilder = Json.arrayBuilder();
