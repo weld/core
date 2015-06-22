@@ -263,19 +263,22 @@ ${head}
         <h1>Weld Configuration</h1>
 
         <table class="table table-bordered table-striped">
-            <col width="6%">
-            <col width="47%">
-            <col width="47%">
+            <col width="5%">
+            <col width="35%">
+            <col width="25%">
+            <col width="35%">
             <tr>
                 <th></th>
                 <th>Key</th>
                 <th>Value {{tip "Modified values are highlighted with an exclamation mark"}}</th>
+                <th>Brief Description {{tip "See also the documentation for more information"}}</th>
             </tr>
             {{#each}}
             <tr>
                 <td>{{increment _view.contentIndex}}</td>
                 <td>{{name}}</td>
                 <td>{{#if changed}}<i class="fa fa-lg fa-exclamation-circle" title="DEFAULT VALUE: {{unbound defaultValue}}"></i>{{/if}} &nbsp;<span class="changed-{{unbound changed}}">{{value}}</span></td>
+                <td>{{{description}}}</td>
             </tr>
             {{/each}}
         </table>
