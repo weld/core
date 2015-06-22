@@ -73,7 +73,7 @@ public class Formats {
 
     private static final String INIT_METHOD_NAME = "<init>";
 
-    private static final String BUILD_PROPERTIES_FILE = "/weld-build.properties";
+    private static final String BUILD_PROPERTIES_FILE = "weld-build.properties";
 
     private Formats() {
     }
@@ -483,13 +483,18 @@ public class Formats {
         return formatIterable(annotations, ANNOTATION_LIST_FUNCTION);
     }
 
-    public static String version(Class<?> weldClass) {
+    /**
+     *
+     * @param pkg This param is completely ignored
+     * @return the formatted version
+     */
+    public static String version(@Deprecated Package pkg) {
 
         String version = null;
         String timestamp = null;
 
-        // First try to get weld-build.properties file
-        try (InputStream in = weldClass.getResourceAsStream(BUILD_PROPERTIES_FILE)) {
+        // First try the weld-build.properties file
+        try (InputStream in = getBuildPropertiesResource()) {
             if (in != null) {
                 Properties buildProperties = new Properties();
                 buildProperties.load(in);
@@ -502,12 +507,12 @@ public class Formats {
 
         if (version == null) {
             // If needed use the manifest info
-            Package pkg = weldClass.getPackage();
-            if (pkg == null) {
+            Package pack = WeldClassLoaderResourceLoader.class.getPackage();
+            if (pack == null) {
                 throw new IllegalArgumentException("Package can not be null");
             }
-            version = pkg.getSpecificationVersion();
-            timestamp = pkg.getImplementationVersion();
+            version = pack.getSpecificationVersion();
+            timestamp = pack.getImplementationVersion();
         }
         return version(version, timestamp);
     }
@@ -640,4 +645,15 @@ public class Formats {
             return "[unknown]";
         }
     }
+
+    private static InputStream getBuildPropertiesResource() {
+        URL url = WeldClassLoaderResourceLoader.INSTANCE.getResource(BUILD_PROPERTIES_FILE);
+        try {
+            return url != null ? url.openStream() : null;
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
+
 }
