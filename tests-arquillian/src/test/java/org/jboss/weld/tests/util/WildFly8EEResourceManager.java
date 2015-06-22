@@ -1,6 +1,5 @@
 package org.jboss.weld.tests.util;
 
-import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -8,9 +7,6 @@ import org.jboss.arquillian.container.spi.event.StartContainer;
 import org.jboss.arquillian.core.api.annotation.Observes;
 import org.jboss.arquillian.core.spi.EventContext;
 import org.jboss.as.controller.client.ModelControllerClient;
-import org.jboss.as.controller.client.OperationBuilder;
-import org.jboss.as.controller.client.helpers.ClientConstants;
-import org.jboss.dmr.ModelNode;
 
 /**
  * Assumptions:
@@ -39,114 +35,19 @@ public class WildFly8EEResourceManager {
 
             // Then check resources
             ModelControllerClient client = ModelControllerClient.Factory.create("localhost", 9990);
-            if (isJmsSubsystemActive(client)) {
-                checkJmsQueue(client);
-                checkJmsTopic(client);
+            WildFlyMessaging messaging = WildFlyMessaging.get(client);
+            if (messaging != null) {
+                messaging.checkJmsQueue(client);
+                messaging.checkJmsTopic(client);
             } else {
                 /*
-                 * JMS subsystem may not be installed (e.g. when debugging against standalone.xml)
-                 * If this happens, do not attempt to install Queue/Topic as that always fails
+                 * JMS subsystem may not be installed (e.g. when debugging against standalone.xml) If this happens, do not attempt to install Queue/Topic as
+                 * that always fails
                  */
                 logger.log(Level.WARNING, "JMS subsystem not installed. Skipping test Queue/Topic installation.");
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private boolean isJmsSubsystemActive(ModelControllerClient client) throws IOException {
-        ModelNode request = new ModelNode();
-        request.get(ClientConstants.OP).set("read-resource");
-        request.get("recursive").set(true);
-        ModelNode address = request.get(ClientConstants.OP_ADDR);
-        address.add("subsystem", "messaging");
-
-        ModelNode response = client.execute(new OperationBuilder(request).build());
-        return response.get(ClientConstants.OUTCOME).asString().equals(ClientConstants.SUCCESS);
-    }
-
-    /**
-     * Check JMS topic and try to create one if it does not exist.
-     *
-     * @param client
-     * @throws java.io.IOException
-     */
-    private void checkJmsTopic(ModelControllerClient client) throws IOException {
-        ModelNode request = new ModelNode();
-        request.get(ClientConstants.OP).set("read-resource");
-        request.get("recursive").set(true);
-
-        ModelNode address = request.get(ClientConstants.OP_ADDR);
-        address.add("subsystem", "messaging");
-        address.add("hornetq-server", "default");
-        address.add("jms-topic", "testTopic");
-
-        ModelNode response = client.execute(new OperationBuilder(request).build());
-
-        if (!response.get(ClientConstants.OUTCOME).asString().equals(ClientConstants.SUCCESS)) {
-
-            request = new ModelNode();
-            request.get(ClientConstants.OP).set("add");
-
-            address = request.get(ClientConstants.OP_ADDR);
-            address.add("subsystem", "messaging");
-            address.add("hornetq-server", "default");
-            address.add("jms-topic", "testTopic");
-
-            ModelNode entries = request.get("entries");
-
-            entries.add("topic/test");
-            entries.add("java:jboss/exported/jms/topic/test");
-
-            response = client.execute(new OperationBuilder(request).build());
-
-            if (!response.get(ClientConstants.OUTCOME).asString().equals(ClientConstants.SUCCESS)) {
-                throw new RuntimeException("Test JMS topic was not found and could not be created automatically: " + response);
-            }
-            logger.log(Level.INFO, "Test JMS topic added");
-        }
-    }
-
-    /**
-     * Check JMS queue and try to create one if it does not exist.
-     *
-     * @param client
-     * @throws java.io.IOException
-     */
-    private void checkJmsQueue(ModelControllerClient client) throws IOException {
-
-        ModelNode request = new ModelNode();
-        request.get(ClientConstants.OP).set("read-resource");
-        request.get("recursive").set(true);
-
-        ModelNode address = request.get(ClientConstants.OP_ADDR);
-        address.add("subsystem", "messaging");
-        address.add("hornetq-server", "default");
-        address.add("jms-queue", "testQueue");
-
-        ModelNode response = client.execute(new OperationBuilder(request).build());
-
-        if (!response.get(ClientConstants.OUTCOME).asString().equals(ClientConstants.SUCCESS)) {
-
-            request = new ModelNode();
-            request.get(ClientConstants.OP).set("add");
-
-            address = request.get(ClientConstants.OP_ADDR);
-            address.add("subsystem", "messaging");
-            address.add("hornetq-server", "default");
-            address.add("jms-queue", "testQueue");
-
-            ModelNode entries = request.get("entries");
-            entries.add("queue/test");
-            entries.add("java:jboss/exported/jms/queue/test");
-
-            response = client.execute(new OperationBuilder(request).build());
-
-            if (!response.get(ClientConstants.OUTCOME).asString().equals(ClientConstants.SUCCESS)) {
-                throw new RuntimeException("Test JMS queue was not found and could not be created automatically: " + response);
-            }
-            logger.log(Level.INFO, "Test JMS queue added");
-        }
-
     }
 }
