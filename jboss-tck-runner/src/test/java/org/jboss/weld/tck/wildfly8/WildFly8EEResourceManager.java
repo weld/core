@@ -1,5 +1,9 @@
 package org.jboss.weld.tck.wildfly8;
 
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.jboss.arquillian.container.spi.event.StartContainer;
 import org.jboss.arquillian.core.api.annotation.Observes;
 import org.jboss.arquillian.core.spi.EventContext;
@@ -9,10 +13,6 @@ import org.jboss.as.controller.client.helpers.ClientConstants;
 import org.jboss.cdi.tck.impl.ConfigurationFactory;
 import org.jboss.dmr.ModelNode;
 import org.jboss.dmr.Property;
-
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Assumptions:
@@ -41,8 +41,17 @@ public class WildFly8EEResourceManager {
 
             // Then check resources
             ModelControllerClient client = ModelControllerClient.Factory.create("localhost", 9990);
-            checkJmsQueue(client);
-            checkJmsTopic(client);
+            WildFlyMessaging messaging = WildFlyMessaging.get(client);
+            if (messaging != null) {
+                messaging.checkJmsQueue(client);
+                messaging.checkJmsTopic(client);
+            } else {
+                /*
+                 * JMS subsystem may not be installed (e.g. when debugging against standalone.xml) If this happens, do not attempt to install Queue/Topic as
+                 * that always fails
+                 */
+                logger.log(Level.WARNING, "JMS subsystem not installed. Skipping test Queue/Topic installation.");
+            }
             checkTestDataSource(client);
             checkEarSubdeploymentsIsolation(client);
 
