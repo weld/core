@@ -26,14 +26,22 @@ import javax.servlet.ServletContext;
 @ApplicationScoped
 public class Ping {
 
-    private AtomicInteger observations = new AtomicInteger(0);
+    private final AtomicInteger observations = new AtomicInteger(0);
+    private final AtomicInteger objectObservations = new AtomicInteger(0);
 
     public void observesApplicationContext(@Observes @Initialized(ApplicationScoped.class) ServletContext servletContext) {
         observations.incrementAndGet();
+    }
+
+    public void observesApplicationContextObject(@Observes @Initialized(ApplicationScoped.class) Object object) {
+        objectObservations.incrementAndGet();
     }
 
     public Integer getObservations() {
         return observations.get();
     }
 
+    public Integer getObjectObservations() {
+        return objectObservations.get();
+    }
 }

@@ -37,7 +37,10 @@ import org.jboss.weld.bootstrap.api.Environments;
 import org.jboss.weld.bootstrap.api.TypeDiscoveryConfiguration;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.CDI11Deployment;
+import org.jboss.weld.bootstrap.spi.EEModuleDescriptor;
+import org.jboss.weld.bootstrap.spi.EEModuleDescriptor.ModuleType;
 import org.jboss.weld.bootstrap.spi.Metadata;
+import org.jboss.weld.bootstrap.spi.helpers.EEModuleDescriptorImpl;
 import org.jboss.weld.configuration.spi.ExternalConfiguration;
 import org.jboss.weld.configuration.spi.helpers.ExternalConfigurationBuilder;
 import org.jboss.weld.el.WeldELContextListener;
@@ -130,7 +133,6 @@ public class WeldServletLifecycle {
         }
 
         if (isBootstrapNeeded) {
-
             final CDI11Deployment deployment = createDeployment(context, bootstrap);
 
             deployment.getServices().add(ExternalConfiguration.class,
@@ -267,6 +269,7 @@ public class WeldServletLifecycle {
 
         final Iterable<Metadata<Extension>> extensions = extensionsBuilder.build();
         final TypeDiscoveryConfiguration typeDiscoveryConfiguration = bootstrap.startExtensions(extensions);
+        final EEModuleDescriptor eeModule = new EEModuleDescriptorImpl(context.getContextPath(), ModuleType.WEB);
 
         DiscoveryStrategy strategy = DiscoveryStrategyFactory.create(resourceLoader, bootstrap, typeDiscoveryConfiguration.getKnownBeanDefiningAnnotations());
         strategy.registerHandler(new ServletContextBeanArchiveHandler(context));
@@ -283,7 +286,18 @@ public class WeldServletLifecycle {
             CommonLogger.LOG.archiveIsolationEnabled();
         }
 
-        CDI11Deployment deployment = new WeldDeployment(resourceLoader, bootstrap, beanDeploymentArchives, extensions);
+        for (BeanDeploymentArchive archive : beanDeploymentArchives) {
+            archive.getServices().add(EEModuleDescriptor.class, eeModule);
+        }
+
+        CDI11Deployment deployment = new WeldDeployment(resourceLoader, bootstrap, beanDeploymentArchives, extensions) {
+            @Override
+            protected WeldBeanDeploymentArchive createAdditionalBeanDeploymentArchive(Class<?> beanClass) {
+                WeldBeanDeploymentArchive archive = super.createAdditionalBeanDeploymentArchive(beanClass);
+                archive.getServices().add(EEModuleDescriptor.class, eeModule);
+                return archive;
+            }
+        };
 
         if (strategy.getClassFileServices() != null) {
             deployment.getServices().add(ClassFileServices.class, strategy.getClassFileServices());
