@@ -54,6 +54,7 @@ public class EnhancedListenerTest {
         // Test whether bootstrap finished successfully
         assertNotNull(ping);
         assertEquals(Integer.valueOf(1), ping.getObservations());
+        assertEquals(Integer.valueOf(1), ping.getObjectObservations());
     }
 
 }
