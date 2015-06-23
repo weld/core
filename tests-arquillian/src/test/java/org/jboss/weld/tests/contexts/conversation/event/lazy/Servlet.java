@@ -48,11 +48,11 @@ public class Servlet extends HttpServlet {
         } else if (uri.contains("/end")) {
             conversation.end();
         }
-        resp.getWriter().append("Initialized conversations:" + observer.getInitializedConversationCount().get());
-        resp.getWriter().append("\n");
-        resp.getWriter().append("Destroyed conversations:" + observer.getDestroyedConversationCount().get());
-        resp.getWriter().append("\n");
-        resp.getWriter().append("cid:" + conversation.getId());
+        resp.getWriter().append("Initialized conversations:").append(Integer.toString(observer.getInitializedConversationCount().get()));
+        resp.getWriter().append('\n');
+        resp.getWriter().append("Destroyed conversations:").append(Integer.toString(observer.getDestroyedConversationCount().get()));
+        resp.getWriter().append('\n');
+        resp.getWriter().append("cid:").append(conversation.getId());
         resp.setContentType("text/plain");
     }
 }

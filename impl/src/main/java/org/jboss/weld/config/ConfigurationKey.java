@@ -215,7 +215,7 @@ public enum ConfigurationKey {
         } else if (defaultValue instanceof Integer) {
             return Integer.valueOf(value);
         } else {
-            return value.toString();
+            return value;
         }
     }
 
@@ -225,7 +225,7 @@ public enum ConfigurationKey {
      * @return <code>true</code> if the given value type is supported, <code>false</code> otherwise
      */
     public static boolean isValueTypeSupported(Class<?> valueType) {
-        return valueType.equals(String.class) || valueType.equals(Boolean.class) || valueType.equals(Integer.class) || valueType.equals(Long.class);
+        return String.class.equals(valueType) || Boolean.class.equals(valueType) || Integer.class.equals(valueType) || Long.class.equals(valueType);
     }
 
     /**

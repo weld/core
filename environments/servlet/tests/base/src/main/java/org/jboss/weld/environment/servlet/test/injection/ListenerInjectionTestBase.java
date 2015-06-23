@@ -27,7 +27,7 @@ public class ListenerInjectionTestBase {
         listeners.append(toListener(BatServletContextListener.class.getName()));
         Asset webXml = new ByteArrayAsset(
                 extendDefaultWebXml(
-                        listeners.toString()
+                        listeners
                                 + "<servlet><servlet-name>Bat Servlet</servlet-name><servlet-class>"
                                 + BatServlet.class.getName()
                                 + "</servlet-class></servlet> <servlet-mapping><servlet-name>Bat Servlet</servlet-name><url-pattern>/bat</url-pattern></servlet-mapping>")

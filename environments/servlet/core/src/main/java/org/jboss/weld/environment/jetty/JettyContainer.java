@@ -55,7 +55,7 @@ public class JettyContainer extends AbstractJettyContainer {
         if(!si.contains(JETTY_SERVERNAME)) {
             return false;
         }
-        int p = si.indexOf("/");
+        int p = si.indexOf('/');
         if (p < 0) {
             return false;
         }

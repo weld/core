@@ -30,7 +30,7 @@ public class LoggingInterceptor {
 
     @AroundInvoke
     public Object intercept(InvocationContext ctx) throws Exception {
-        ActionSequence.addAction(LoggingInterceptor.class.getName().toString());
+        ActionSequence.addAction(LoggingInterceptor.class.getName());
         return ctx.proceed();
     }
 

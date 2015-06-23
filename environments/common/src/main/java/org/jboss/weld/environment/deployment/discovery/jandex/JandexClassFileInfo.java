@@ -168,7 +168,7 @@ public class JandexClassFileInfo implements ClassFileInfo {
         if (name.isComponentized()) {
             return name.prefix();
         } else {
-            final int lastIndex = name.local().lastIndexOf(".");
+            final int lastIndex = name.local().lastIndexOf('.');
             if (lastIndex == -1) {
                 return name;
             }
