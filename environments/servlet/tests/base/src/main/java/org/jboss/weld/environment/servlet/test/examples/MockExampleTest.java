@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2011, Red Hat, Inc., and individual contributors
+ * Copyright 2010, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,31 +14,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.jboss.weld.environment.servlet.test.examples;
 
-package org.jboss.weld.environment.servlet.test.config;
+import static org.jboss.weld.environment.servlet.test.util.Deployments.baseDeployment;
+import static org.junit.Assert.assertEquals;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.Asset;
-import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.impl.BeansXml;
-import org.jboss.weld.environment.servlet.test.util.Deployments;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
-/**
- * @author <a href="mailto:csadilek@redhat.com">Christian Sadilek</a>
- */
 @RunWith(Arquillian.class)
-public class ConfigWithoutJettyEnvTest extends ConfigTestBase {
-
-    public static final Asset WEB_XML = new ByteArrayAsset((Deployments.DEFAULT_WEB_XML_START
-            + Deployments.toListener("org.jboss.weld.environment.servlet.Listener")
-            + Deployments.toListener("org.jboss.weld.environment.servlet.BeanManagerResourceBindingListener") + Deployments.DEFAULT_WEB_XML_SUFFIX).getBytes());
+public class MockExampleTest {
 
     @Deployment
     public static WebArchive createTestArchive() {
-        return ShrinkWrap.create(WebArchive.class).addAsWebInfResource(new BeansXml(), "beans.xml").setWebXML(WEB_XML).addClass(GoodBean.class);
+        return baseDeployment(new BeansXml().alternatives(MockSentenceTranslator.class)).addPackage(MockExampleTest.class.getPackage());
     }
+
+    @Test
+    public void testMockSentenceTranslator(TextTranslator textTranslator) throws Exception {
+        assertEquals("Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.", textTranslator.translate("Hello world. How's tricks?"));
+    }
+
 }

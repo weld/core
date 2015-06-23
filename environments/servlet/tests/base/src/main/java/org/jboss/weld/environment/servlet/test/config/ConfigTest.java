@@ -19,26 +19,18 @@ package org.jboss.weld.environment.servlet.test.config;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.Asset;
-import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.shrinkwrap.impl.BeansXml;
-import org.jboss.weld.environment.servlet.test.util.Deployments;
+import org.jboss.weld.environment.servlet.test.config.dos.DOSBean;
 import org.junit.runner.RunWith;
 
 /**
- * @author <a href="mailto:csadilek@redhat.com">Christian Sadilek</a>
+ * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
 @RunWith(Arquillian.class)
-public class ConfigWithoutJettyEnvTest extends ConfigTestBase {
-
-    public static final Asset WEB_XML = new ByteArrayAsset((Deployments.DEFAULT_WEB_XML_START
-            + Deployments.toListener("org.jboss.weld.environment.servlet.Listener")
-            + Deployments.toListener("org.jboss.weld.environment.servlet.BeanManagerResourceBindingListener") + Deployments.DEFAULT_WEB_XML_SUFFIX).getBytes());
+public class ConfigTest extends ConfigTestBase {
 
     @Deployment
     public static WebArchive createTestArchive() {
-        return ShrinkWrap.create(WebArchive.class).addAsWebInfResource(new BeansXml(), "beans.xml").setWebXML(WEB_XML).addClass(GoodBean.class);
+        return baseDeployment(DOSBean.class.getPackage()).addClasses(ConfigTest.class, ConfigTestBase.class, GoodBean.class, DOSBean.class);
     }
 }

@@ -1,12 +1,19 @@
 package org.jboss.weld.environment.servlet.test.util;
 
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.ArchivePath;
+import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
+import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.impl.BeansXml;
 
 public class Deployments {
+
+    public static final ArchivePath MARKER_SKIP_PROCESSOR = ArchivePaths.create("META-INF/weld.servlet.skipProcessor");
+
     public static final String DEFAULT_WEB_XML_START = "<web-app>";
     public static final String DEFAULT_WEB_XML_BODY = toListener("org.jboss.weld.environment.servlet.Listener") + "<resource-env-ref><resource-env-ref-name>BeanManager</resource-env-ref-name><resource-env-ref-type>javax.enterprise.inject.spi.BeanManager</resource-env-ref-type></resource-env-ref> ";
     public static final String DEFAULT_WEB_XML_PREFIX = DEFAULT_WEB_XML_START + DEFAULT_WEB_XML_BODY;
@@ -65,6 +72,14 @@ public class Deployments {
      */
     public static String extendDefaultWebXml(String extension) {
         return DEFAULT_WEB_XML_PREFIX + extension + DEFAULT_WEB_XML_SUFFIX;
+    }
+
+    public static <T extends Archive<T>> T skipProcessor(T archive) {
+        return archive.add(EmptyAsset.INSTANCE, MARKER_SKIP_PROCESSOR);
+    }
+
+    public static <T extends Archive<?>> boolean isProcessorSkipped(T archive) {
+        return archive.contains(Deployments.MARKER_SKIP_PROCESSOR);
     }
 
 }
