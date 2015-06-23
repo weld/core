@@ -35,7 +35,7 @@ import org.junit.Test;
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
-public class ConfigTestBase {
+public abstract class ConfigTestBase {
 
     public static WebArchive baseDeployment(final Package... excludedPackages) {
         BeansXml beansXml = new BeansXml();
@@ -45,10 +45,6 @@ public class ConfigTestBase {
         }
         beansXml.excludeFilters(filters.toArray(new Exclude[filters.size()]));
         return Deployments.baseDeployment(beansXml);
-    }
-
-    public static WebArchive baseDOSDeployment() {
-        return baseDeployment(DOSBean.class.getPackage()).addClasses(ConfigTestBase.class, GoodBean.class, DOSBean.class);
     }
 
     @Inject

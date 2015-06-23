@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2011, Red Hat, Inc., and individual contributors
+ * Copyright 2014, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,8 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.jboss.weld.environment.servlet.test.config;
+package org.jboss.weld.environment.servlet.test.bootstrap.nobeanarchive;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -23,22 +22,27 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.shrinkwrap.impl.BeansXml;
 import org.jboss.weld.environment.servlet.test.util.Deployments;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
- * @author <a href="mailto:csadilek@redhat.com">Christian Sadilek</a>
+ * Verify the <code>org.jboss.weld.environment.servlet.EnhancedListener</code> does not fail if the deployment does not contain any bean archive.
+ *
+ * @author Martin Kouba
  */
 @RunWith(Arquillian.class)
-public class ConfigWithoutJettyEnvTest extends ConfigTestBase {
+public class NoBeanArchiveTest {
 
-    public static final Asset WEB_XML = new ByteArrayAsset((Deployments.DEFAULT_WEB_XML_START
-            + Deployments.toListener("org.jboss.weld.environment.servlet.Listener")
-            + Deployments.toListener("org.jboss.weld.environment.servlet.BeanManagerResourceBindingListener") + Deployments.DEFAULT_WEB_XML_SUFFIX).getBytes());
+    public static final Asset WEB_XML = new ByteArrayAsset((Deployments.DEFAULT_WEB_XML_START + Deployments.DEFAULT_WEB_XML_SUFFIX).getBytes());
 
     @Deployment
     public static WebArchive createTestArchive() {
-        return ShrinkWrap.create(WebArchive.class).addAsWebInfResource(new BeansXml(), "beans.xml").setWebXML(WEB_XML).addClass(GoodBean.class);
+        return ShrinkWrap.create(WebArchive.class).setWebXML(WEB_XML);
     }
+
+    @Test
+    public void testDeploymentDoesNotFail() {
+    }
+
 }

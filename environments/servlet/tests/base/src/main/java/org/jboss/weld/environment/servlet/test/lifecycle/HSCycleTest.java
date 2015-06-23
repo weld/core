@@ -15,30 +15,40 @@
  * limitations under the License.
  */
 
-package org.jboss.weld.environment.servlet.test.config;
+package org.jboss.weld.environment.servlet.test.lifecycle;
+
+import static org.junit.Assert.assertEquals;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.Asset;
-import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
+import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.shrinkwrap.impl.BeansXml;
 import org.jboss.weld.environment.servlet.test.util.Deployments;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
- * @author <a href="mailto:csadilek@redhat.com">Christian Sadilek</a>
+ * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
+ * @author Matus Abaffy
  */
 @RunWith(Arquillian.class)
-public class ConfigWithoutJettyEnvTest extends ConfigTestBase {
-
-    public static final Asset WEB_XML = new ByteArrayAsset((Deployments.DEFAULT_WEB_XML_START
-            + Deployments.toListener("org.jboss.weld.environment.servlet.Listener")
-            + Deployments.toListener("org.jboss.weld.environment.servlet.BeanManagerResourceBindingListener") + Deployments.DEFAULT_WEB_XML_SUFFIX).getBytes());
+public class HSCycleTest {
 
     @Deployment
     public static WebArchive createTestArchive() {
-        return ShrinkWrap.create(WebArchive.class).addAsWebInfResource(new BeansXml(), "beans.xml").setWebXML(WEB_XML).addClass(GoodBean.class);
+        WebArchive war = ShrinkWrap.create(WebArchive.class);
+        war.addPackage(HSCycleTest.class.getPackage());
+        String webXml = Deployments.extendDefaultWebXml(Deployments.toListener(HSListener.class.getName()));
+        war.setWebXML(new StringAsset(webXml));
+        war.addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+        return war;
+    }
+
+    @Test
+    public void testCycle(Pinger pinger) throws Exception {
+        pinger.ping();
+        assertEquals(2, Pinger.getCalled());
     }
 }

@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2011, Red Hat, Inc., and individual contributors
+ * Copyright 2013, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -15,30 +15,40 @@
  * limitations under the License.
  */
 
-package org.jboss.weld.environment.servlet.test.config;
+package org.jboss.weld.environment.servlet.test.bootstrap.duplicates;
+
+import static org.jboss.weld.environment.servlet.test.util.Deployments.baseDeployment;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.Asset;
-import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.impl.BeansXml;
-import org.jboss.weld.environment.servlet.test.util.Deployments;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
- * @author <a href="mailto:csadilek@redhat.com">Christian Sadilek</a>
+ * Testing that there are no duplicate interceptors added by Weld.
+ *
+ * @author Matej Briskar
  */
 @RunWith(Arquillian.class)
-public class ConfigWithoutJettyEnvTest extends ConfigTestBase {
-
-    public static final Asset WEB_XML = new ByteArrayAsset((Deployments.DEFAULT_WEB_XML_START
-            + Deployments.toListener("org.jboss.weld.environment.servlet.Listener")
-            + Deployments.toListener("org.jboss.weld.environment.servlet.BeanManagerResourceBindingListener") + Deployments.DEFAULT_WEB_XML_SUFFIX).getBytes());
+public class DuplicateBeansXmlMergingTest {
 
     @Deployment
     public static WebArchive createTestArchive() {
-        return ShrinkWrap.create(WebArchive.class).addAsWebInfResource(new BeansXml(), "beans.xml").setWebXML(WEB_XML).addClass(GoodBean.class);
+        BeansXml beansXml = new BeansXml();
+        beansXml.interceptors(SimpleInterceptor.class);
+        WebArchive war = baseDeployment(beansXml).addClasses(DuplicateBeansXmlMergingTest.class, SimpleBinding.class, SimpleInterceptor.class);
+        JavaArchive library = ShrinkWrap.create(JavaArchive.class, "library.jar").addAsManifestResource(beansXml, "beans.xml");
+        war.addAsLibrary(library);
+        return war;
+    }
+
+    @Test
+    public void testDuplicatesInSingleFileAreNotRemoved() {
+        // tests should not throw deployment error because of 2 definitions of the same interceptor
     }
 }
+
