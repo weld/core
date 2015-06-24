@@ -76,7 +76,7 @@ public interface EventLogger extends WeldLogger {
     @Message(id = 410, value = "Observer method {0} cannot define @WithAnnotations", format = Format.MESSAGE_FORMAT)
     DefinitionException invalidWithAnnotations(Object param1);
 
-    @LogMessage(level=Level.WARN)
+    @LogMessage(level=Level.INFO)
     @Message(id = 411, value = "Observer method {0} receives events for all annotated types. Consider restricting events using @WithAnnotations or a generic type with bounds.", format = Format.MESSAGE_FORMAT)
     void unrestrictedProcessAnnotatedTypes(Object param1);
 
