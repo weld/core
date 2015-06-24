@@ -43,8 +43,9 @@ public interface CommonLogger extends WeldEnvironmentLogger {
     @Message(id = 6, value = "Could not invoke JNLPClassLoader#getJarFile(URL) on context class loader", format = Format.MESSAGE_FORMAT)
     void jnlpClassLoaderInvocationException(@Cause Throwable cause);
 
-    @Message(id = 7, value = "Error handling file {0}", format = Format.MESSAGE_FORMAT)
-    RuntimeException cannotHandleFile(Object param1, @Cause Throwable cause);
+    @LogMessage(level = Level.WARN)
+    @Message(id = 7, value = "Error handling file path\n  File: {0}\n  Path: {1}", format = Format.MESSAGE_FORMAT)
+    void cannotHandleFilePath(Object file, Object path, @Cause Throwable cause);
 
     @LogMessage(level = Level.ERROR)
     @Message(id = 8, value = "Error loading file {0}", format = Format.MESSAGE_FORMAT)
