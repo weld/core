@@ -109,6 +109,8 @@ public class DefaultBeanArchiveScanner implements BeanArchiveScanner {
 
         } else if(PROCOTOL_JAR.equals(url.getProtocol())) {
             // Adapt JAR file URL, e.g. "jar:file:/home/duke/duke.jar!/META-INF/beans.xml" becomes "/home/duke/duke.jar"
+            // NOTE: Some class loaders may support nested jars, e.g. "jar:file:/home/duke/duke.jar!/lib/foo.jar!/META-INF/beans.xml" becomes
+            // "/home/duke/duke.jar!/lib/foo.jar"
 
             // The decoded part without protocol part, i.e. without "jar:"
             ref = uri.getSchemeSpecificPart();
@@ -116,7 +118,7 @@ public class DefaultBeanArchiveScanner implements BeanArchiveScanner {
             if(ref.lastIndexOf(JAR_URL_SEPARATOR) > 0) {
                 ref = ref.substring(0, ref.lastIndexOf(JAR_URL_SEPARATOR));
             }
-            return getBeanArchiveReferenceForJar(ref, url);
+            ref = getBeanArchiveReferenceForJar(ref, url);
         } else {
             log.warnv("Unable to adapt URL: {0}, using its external form instead", url);
             ref = url.toExternalForm();

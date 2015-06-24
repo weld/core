@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.environment.deployment.discovery;
 
+import static org.jboss.weld.environment.util.URLUtils.JAR_URL_SEPARATOR;
 import static org.jboss.weld.environment.util.URLUtils.PROCOTOL_JAR;
 
 import java.io.File;
@@ -24,8 +25,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
 
 import org.jboss.logging.Logger;
 import org.jboss.weld.environment.logging.CommonLogger;
@@ -47,9 +48,18 @@ public class FileSystemBeanArchiveHandler implements BeanArchiveHandler {
     @Override
     public BeanArchiveBuilder handle(String path) {
 
-        File file = new File(path);
+        boolean nested = false;
+        File file;
 
-        if(!file.exists()) {
+        if (path.contains(JAR_URL_SEPARATOR)) {
+            // Most probably a nested archive, e.g. "/home/duke/duke.jar!/lib/foo.jar"
+            file = new File(path.substring(0, path.indexOf(JAR_URL_SEPARATOR)));
+            nested = true;
+        } else {
+            file = new File(path);
+        }
+
+        if (!file.exists()) {
             return null;
         }
 
@@ -57,61 +67,83 @@ public class FileSystemBeanArchiveHandler implements BeanArchiveHandler {
 
         try {
             log.debugv("Handle path: {0}", path);
-
             if (file.isDirectory()) {
                 handleDirectory(new DirectoryEntry().setFile(file), builder);
             } else {
-                handleFile(file, builder);
+                if(nested) {
+                    handleNestedFile(path, file, builder);
+                } else {
+                    handleFile(file, builder);
+                }
             }
-        } catch (IOException e) {
-            log.warn("Could not handle path: "+path , e);
+        } catch (Exception e) {
+            CommonLogger.LOG.cannotHandleFilePath(file, path, e);
+            return null;
         }
         return builder;
     }
 
     protected void handleFile(File file, BeanArchiveBuilder builder) throws IOException {
-
         log.debugv("Handle archive file: {0}", file);
-
-        try {
-            ZipFile zip = new ZipFile(file);
+        try (ZipFile zip = new ZipFile(file)) {
             Enumeration<? extends ZipEntry> entries = zip.entries();
-            ZipFileEntry entry = new ZipFileEntry(PROCOTOL_JAR + ":" + file.toURI().toURL().toExternalForm() + "!/");
+            ZipFileEntry entry = new ZipFileEntry(PROCOTOL_JAR + ":" + file.toURI().toURL().toExternalForm() + JAR_URL_SEPARATOR);
             while (entries.hasMoreElements()) {
                 add(entry.setName(entries.nextElement().getName()), builder);
             }
-            zip.close();
-        } catch (ZipException e) {
-            throw CommonLogger.LOG.cannotHandleFile(file, e);
         }
     }
 
     protected void handleDirectory(DirectoryEntry entry, BeanArchiveBuilder builder) throws IOException {
-
         log.debugv("Handle directory: {0}", entry.getFile());
-
         File[] files = entry.getFile().listFiles();
-
-        if(files == null) {
-            log.warnv("Unable to list directory files: {0}", entry.getFile());
-        }
         String parentPath = entry.getName();
-
         for (File child : files) {
-
             if(entry.getName() != null ) {
                 entry.setPath(entry.getName() + "/" + child.getName());
             } else {
                 entry.setPath(child.getName());
             }
             entry.setFile(child);
-
             if (child.isDirectory()) {
                 handleDirectory(entry, builder);
             } else {
                 add(entry, builder);
             }
             entry.setPath(parentPath);
+        }
+    }
+
+    protected void handleNestedFile(String path, File file, BeanArchiveBuilder builder) throws IOException {
+        log.debugv("Handle nested archive\n  File: {0}\n  Path: {1}", file, path);
+
+        String nestedEntryName = path.substring(path.indexOf(JAR_URL_SEPARATOR) + JAR_URL_SEPARATOR.length(), path.length());
+        if (nestedEntryName.contains(JAR_URL_SEPARATOR)) {
+            throw new IllegalArgumentException("Recursive nested archives are not supported");
+        }
+
+        try (ZipFile zip = new ZipFile(file)) {
+
+            Enumeration<? extends ZipEntry> entries = zip.entries();
+
+            while (entries.hasMoreElements()) {
+
+                ZipEntry zipEntry = entries.nextElement();
+
+                if (zipEntry.getName().equals(nestedEntryName)) {
+
+                    // Reconstruct the archive URL, e.g. "jar:file:/home/duke/duke.jar!/lib/foo.jar"
+                    ZipFileEntry entry = new ZipFileEntry(PROCOTOL_JAR + ":" + file.toURI().toURL().toExternalForm() + JAR_URL_SEPARATOR + zipEntry.getName());
+
+                    // Add entries from the nested archive
+                    try (ZipInputStream nestedZip = new ZipInputStream(zip.getInputStream(zipEntry))) {
+                        ZipEntry nestedEntry;
+                        while ((nestedEntry = nestedZip.getNextEntry()) != null) {
+                            add(entry.setName(nestedEntry.getName()), builder);
+                        }
+                    }
+                }
+            }
         }
     }
 
