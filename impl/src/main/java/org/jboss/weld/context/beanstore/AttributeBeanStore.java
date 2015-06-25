@@ -16,8 +16,12 @@
  */
 package org.jboss.weld.context.beanstore;
 
+import static org.jboss.weld.util.reflection.Reflections.cast;
+
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import org.jboss.weld.context.api.ContextualInstance;
 import org.jboss.weld.logging.ContextLogger;
@@ -80,7 +84,7 @@ public abstract class AttributeBeanStore implements BoundBeanStore {
     public boolean attach() {
         if (!attached) {
             attached = true;
-            if (isLocalBeanStoreSyncNeeded()) {
+            if (isLocalBeanStoreSyncNeeded() && !isAttributeLazyLoadingAllowed()) {
                 // The local bean store is authoritative, so copy everything to the backing store
                 for (BeanIdentifier id : beanStore) {
                     ContextualInstance<?> instance = beanStore.get(id);
@@ -89,18 +93,25 @@ public abstract class AttributeBeanStore implements BoundBeanStore {
                     setAttribute(prefixedId, instance);
                 }
                 // Additionally copy anything not in the local bean store but in the backing store
-                for (String prefixedId : getPrefixedAttributeNames()) {
-                    BeanIdentifier id = getNamingScheme().deprefix(prefixedId);
-                    if (!beanStore.contains(id)) {
-                        ContextualInstance<?> instance = (ContextualInstance<?>) getAttribute(prefixedId);
-                        beanStore.put(id, instance);
-                        ContextLogger.LOG.addingDetachedContextualUnderId(instance, id);
-                    }
-                }
+                readAttributes();
             }
             return true;
         } else {
             return false;
+        }
+    }
+
+    /**
+     * Read all relevant attributes from the backing store and copy instances which are not present in the local bean store.
+     */
+    public void readAttributes() {
+        for (String prefixedId : getPrefixedAttributeNames()) {
+            BeanIdentifier id = getNamingScheme().deprefix(prefixedId);
+            if (!beanStore.contains(id)) {
+                ContextualInstance<?> instance = (ContextualInstance<?>) getAttribute(prefixedId);
+                beanStore.put(id, instance);
+                ContextLogger.LOG.addingDetachedContextualUnderId(instance, id);
+            }
         }
     }
 
@@ -111,6 +122,12 @@ public abstract class AttributeBeanStore implements BoundBeanStore {
     @Override
     public <T> ContextualInstance<T> get(BeanIdentifier id) {
         ContextualInstance<T> instance = beanStore.get(id);
+        if(instance == null && isAttached() && isAttributeLazyLoadingAllowed()) {
+            instance = cast(getAttribute(namingScheme.prefix(id)));
+            if(instance != null) {
+                beanStore.put(id, instance);
+            }
+        }
         ContextLogger.LOG.contextualInstanceFound(id, instance, this);
         return instance;
     }
@@ -119,8 +136,7 @@ public abstract class AttributeBeanStore implements BoundBeanStore {
     public <T> void put(BeanIdentifier id, ContextualInstance<T> instance) {
         beanStore.put(id, instance); // moved due to WELD-892
         if (isAttached()) {
-            String prefixedId = namingScheme.prefix(id);
-            setAttribute(prefixedId, instance);
+            setAttribute(namingScheme.prefix(id), instance);
         }
         ContextLogger.LOG.contextualInstanceAdded(instance.getContextual(), id, this);
     }
@@ -160,7 +176,21 @@ public abstract class AttributeBeanStore implements BoundBeanStore {
     }
 
     public Iterator<BeanIdentifier> iterator() {
-        return beanStore.iterator();
+        Iterator<BeanIdentifier> iterator;
+        if (isAttributeLazyLoadingAllowed()) {
+            // Merge the bean identifiers from the local bean store and the backing store
+            Set<BeanIdentifier> identifiers = new HashSet<>();
+            for (BeanIdentifier id : beanStore) {
+                identifiers.add(id);
+            }
+            for (String prefixedId : getPrefixedAttributeNames()) {
+                identifiers.add(getNamingScheme().deprefix(prefixedId));
+            }
+            iterator = identifiers.iterator();
+        } else {
+            iterator = beanStore.iterator();
+        }
+        return iterator;
     }
 
     /**
@@ -223,5 +253,13 @@ public abstract class AttributeBeanStore implements BoundBeanStore {
      */
     protected boolean isLocalBeanStoreSyncNeeded() {
         return true;
+    }
+
+    /**
+     *
+     * @return <code>true</code> if attributes can be loaded lazily, <code>false</code> otherwise
+     */
+    protected boolean isAttributeLazyLoadingAllowed() {
+        return false;
     }
 }

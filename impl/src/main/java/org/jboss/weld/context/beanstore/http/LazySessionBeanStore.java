@@ -48,8 +48,23 @@ public class LazySessionBeanStore extends AbstractSessionBeanStore {
 
     private final HttpServletRequest request;
 
+    /**
+     *
+     * @param request
+     * @param namingScheme
+     */
     public LazySessionBeanStore(HttpServletRequest request, NamingScheme namingScheme) {
-        super(namingScheme);
+        this(request, namingScheme, true);
+    }
+
+    /**
+     *
+     * @param request
+     * @param namingScheme
+     * @param isAttributeLazyLoadingAllowed
+     */
+    public LazySessionBeanStore(HttpServletRequest request, NamingScheme namingScheme,  boolean isAttributeLazyLoadingAllowed) {
+        super(namingScheme, isAttributeLazyLoadingAllowed);
         this.request = request;
         ContextLogger.LOG.loadingBeanStoreMapFromSession(this, getSession(false));
     }
