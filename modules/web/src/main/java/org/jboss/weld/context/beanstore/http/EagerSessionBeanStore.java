@@ -31,7 +31,11 @@ public class EagerSessionBeanStore extends AbstractSessionBeanStore {
     private final HttpSession session;
 
     public EagerSessionBeanStore(NamingScheme namingScheme, HttpSession session) {
-        super(namingScheme);
+        this(namingScheme, session, true);
+    }
+
+    public EagerSessionBeanStore(NamingScheme namingScheme, HttpSession session, boolean isAttributeLazyLoadingAllowed) {
+        super(namingScheme, isAttributeLazyLoadingAllowed);
         this.session = session;
         ContextLogger.LOG.loadingBeanStoreMapFromSession(this, getSession(false));
     }
