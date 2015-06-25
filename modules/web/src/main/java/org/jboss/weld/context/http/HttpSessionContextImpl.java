@@ -9,6 +9,8 @@ import javax.servlet.http.HttpSession;
 
 import org.jboss.weld.Container;
 import org.jboss.weld.context.AbstractBoundContext;
+import org.jboss.weld.context.beanstore.AttributeBeanStore;
+import org.jboss.weld.context.beanstore.BoundBeanStore;
 import org.jboss.weld.context.beanstore.NamingScheme;
 import org.jboss.weld.context.beanstore.SimpleBeanIdentifierIndexNamingScheme;
 import org.jboss.weld.context.beanstore.http.EagerSessionBeanStore;
@@ -44,10 +46,11 @@ public class HttpSessionContextImpl extends AbstractBoundContext<HttpServletRequ
     }
 
     public boolean destroy(HttpSession session) {
-        if (getBeanStore() == null) {
+        final BoundBeanStore beanStore = getBeanStore();
+        if (beanStore == null) {
             try {
                 HttpConversationContext conversationContext = getConversationContext();
-                setBeanStore(new EagerSessionBeanStore(namingScheme, session));
+                setBeanStore(new EagerSessionBeanStore(namingScheme, session, false));
                 activate();
                 invalidate();
                 conversationContext.destroy(session);
@@ -60,6 +63,10 @@ public class HttpSessionContextImpl extends AbstractBoundContext<HttpServletRequ
         } else {
             // We are in a request, invalidate it
             invalidate();
+            // At this moment we have to sync the local bean store and the backing store
+            if (beanStore instanceof AttributeBeanStore) {
+                ((AttributeBeanStore) beanStore).readAttributes();
+            }
             getConversationContext().destroy(session);
             return false;
         }
