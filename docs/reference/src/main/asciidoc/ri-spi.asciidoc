@@ -174,6 +174,28 @@ should be loaded by the application. To aid the container integrator,
 Weld provides the method `Bootstrap.loadExtensions(ClassLoader)` which
 will load the extensions for the specified classloader.
 
+===== EE Modules
+
+In Java EE environment, description of each Java EE module that contains bean archives
+deployment should be provided. This applies to:
+
+* web modules (wars)
+* EJB modules
+* connector modules (rar)
+* application client modules
+* enterprise archive libraries (ear/lib)
+
+For each such module the integrator should create an instance of the `EEModuleDescriptor`
+which describes the module. `EEModuleDescriptorImpl` is provided for convenience.
+
+An `EEModuleDescriptor` instance that represents a given module should be registered
+as a per bean archive service in each `BeanDeploymentArchive` that belongs to the given
+module. This applies both to physical bean archives deployed within the given module
+and also to logical bean archives that belong to the module. Bean archives that are not
+part of a Java EE module (e.g. built-in server libraries) are not required to have a
+`EEModuleDescriptor` service registered.
+
+
 ==== EJB descriptors
 
 Weld delegates EJB 3 bean discovery to the container so that it doesn't
@@ -932,3 +954,6 @@ Instead, this dependency needs to be deployed separately to the OSGi container.
 |group id |artifact id |version
 |org.jboss.classfilewriter |jboss-classfilewriter |1.1.2.Final
 |======================================================
+
+* `EEModuleDescriptor` which describes Java EE modules has been introduced and is now required as part of deployment structure metadata.
+  See <<_ee_modules>> for details.
