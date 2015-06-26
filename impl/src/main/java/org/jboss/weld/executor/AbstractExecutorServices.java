@@ -21,9 +21,11 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.WeldException;
+import org.jboss.weld.logging.BootstrapLogger;
 import org.jboss.weld.manager.api.ExecutorServices;
 
 /**
@@ -33,6 +35,8 @@ import org.jboss.weld.manager.api.ExecutorServices;
  *
  */
 public abstract class AbstractExecutorServices implements ExecutorServices {
+
+    private static final long SHUTDOWN_TIMEOUT = 60L;
 
     @Override
     public <T> List<Future<T>> invokeAllAndCheckForExceptions(Collection<? extends Callable<T>> tasks) {
@@ -72,4 +76,30 @@ public abstract class AbstractExecutorServices implements ExecutorServices {
      * return -1
      */
     protected abstract int getThreadPoolSize();
+
+    @Override
+    public void cleanup() {
+        shutdown();
+    }
+
+    protected void shutdown() {
+        getTaskExecutor().shutdown();
+        try {
+            // Wait a while for existing tasks to terminate
+            if (!getTaskExecutor().awaitTermination(SHUTDOWN_TIMEOUT, TimeUnit.SECONDS)) {
+                getTaskExecutor().shutdownNow(); // Cancel currently executing tasks
+                // Wait a while for tasks to respond to being cancelled
+                if (!getTaskExecutor().awaitTermination(SHUTDOWN_TIMEOUT, TimeUnit.SECONDS)) {
+                    // Log the error here
+                    BootstrapLogger.LOG.timeoutShuttingDownThreadPool(getTaskExecutor(), this);
+                    // log.warn(BootstrapMessage.TIMEOUT_SHUTTING_DOWN_THREAD_POOL, getTaskExecutor(), this);
+                }
+            }
+        } catch (InterruptedException ie) {
+            // (Re-)Cancel if current thread also interrupted
+            getTaskExecutor().shutdownNow();
+            // Preserve interrupt status
+            Thread.currentThread().interrupt();
+        }
+    }
 }

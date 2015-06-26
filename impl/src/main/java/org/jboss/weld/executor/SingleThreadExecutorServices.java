@@ -23,7 +23,7 @@ import java.util.concurrent.Executors;
 /**
  * @author pmuir
  */
-public class SingleThreadExecutorServices extends AbstractManagedExecutorServices {
+public class SingleThreadExecutorServices extends AbstractExecutorServices {
 
     private final transient ExecutorService taskExecutor = Executors.newSingleThreadExecutor();
 
