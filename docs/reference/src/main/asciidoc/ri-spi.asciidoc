@@ -958,3 +958,5 @@ Instead, this dependency needs to be deployed separately to the OSGi container.
 
 * `EEModuleDescriptor` which describes Java EE modules has been introduced and is now required as part of deployment structure metadata.
   See <<_ee_modules>> for details.
+
+* Java 6 support was dropped. Java 7 or newer is now required for both compile time and runtime.
