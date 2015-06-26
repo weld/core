@@ -71,6 +71,10 @@ public abstract class AbstractExecutorServices implements ExecutorServices {
     }
 
     public void cleanup() {
+        shutdown();
+    }
+
+    protected void shutdown() {
         getTaskExecutor().shutdown();
         try {
             // Wait a while for existing tasks to terminate
