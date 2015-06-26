@@ -28,7 +28,7 @@ import org.jboss.weld.logging.BootstrapLogger;
  *
  * @author Martin Kouba
  */
-public class TimingOutFixedThreadPoolExecutorServices extends AbstractManagedExecutorServices {
+public class TimingOutFixedThreadPoolExecutorServices extends AbstractExecutorServices {
 
     private final int threadPoolSize;
     /**
