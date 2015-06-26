@@ -14,8 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.bootstrap.configuration;
+package org.jboss.weld.environment.servlet.test.bootstrap.configuration;
 
+import static org.jboss.weld.environment.servlet.test.util.Deployments.baseDeployment;
 import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.ForkJoinPool;
@@ -27,8 +28,6 @@ import junit.framework.Assert;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.BeanArchive;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.bootstrap.ConcurrentValidator;
 import org.jboss.weld.bootstrap.Validator;
 import org.jboss.weld.bootstrap.events.ContainerLifecycleEvents;
@@ -47,7 +46,13 @@ public class CommonExecutorServicesConfigurationTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).addAsResource(PropertiesBuilder.newBuilder().set("org.jboss.weld.executor.threadPoolType", "COMMON").build(), "weld.properties");
+        return baseDeployment()
+                .addClass(CommonExecutorServicesConfigurationTest.class)
+                .addAsResource(
+                        PropertiesBuilder
+                        .newBuilder()
+                        .set("org.jboss.weld.executor.threadPoolType", "COMMON")
+                        .build(), "weld.properties");
     }
 
     @Test
