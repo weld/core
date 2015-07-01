@@ -63,6 +63,7 @@ import org.jboss.weld.module.WeldModules;
 import org.jboss.weld.persistence.PersistenceApiAbstraction;
 import org.jboss.weld.resources.DefaultResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoader;
+import org.jboss.weld.security.NoopSecurityServices;
 import org.jboss.weld.security.spi.SecurityServices;
 import org.jboss.weld.util.AnnotationApiAbstraction;
 import org.jboss.weld.util.collections.WeldCollections;
@@ -230,7 +231,7 @@ public class BeanDeployment {
         beanDeployer.addBuiltInBean(new DecoratedBeanMetadataBean(beanManager));
         beanDeployer.addBuiltInBean(new InterceptorMetadataBean(beanManager));
         beanDeployer.addBuiltInBean(new DecoratorMetadataBean(beanManager));
-        if (beanManager.getServices().contains(SecurityServices.class)) {
+        if (beanManager.getServices().getRequired(SecurityServices.class) != NoopSecurityServices.INSTANCE) {
             beanDeployer.addBuiltInBean(new PrincipalBean(beanManager));
         }
         // Register the context beans

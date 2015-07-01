@@ -41,6 +41,8 @@ import org.jboss.weld.resolution.Resolvable;
 import org.jboss.weld.resolution.ResolvableBuilder;
 import org.jboss.weld.resolution.TypeSafeObserverResolver;
 import org.jboss.weld.resources.SharedObjectCache;
+import org.jboss.weld.security.spi.SecurityContext;
+import org.jboss.weld.security.spi.SecurityServices;
 import org.jboss.weld.util.Observers;
 import org.jboss.weld.util.Types;
 import org.jboss.weld.util.cache.ComputingCache;
@@ -67,6 +69,7 @@ public class ObserverNotifier {
     protected final CurrentEventMetadata currentEventMetadata;
     private final ComputingCache<Type, RuntimeException> eventTypeCheckCache;
     private final Executor asyncEventExecutor;
+    private final SecurityServices securityServices;
 
     protected ObserverNotifier(TypeSafeObserverResolver resolver, ServiceRegistry services, boolean strict) {
         this.resolver = resolver;
@@ -80,6 +83,7 @@ public class ObserverNotifier {
         }
         // fall back to FJP.commonPool() if ExecutorServices are not installed
         this.asyncEventExecutor = services.getOptional(ExecutorServices.class).map((e) -> e.getTaskExecutor()).orElse(ForkJoinPool.commonPool());
+        this.securityServices = services.getRequired(SecurityServices.class);
     }
 
     /**
@@ -295,12 +299,22 @@ public class ObserverNotifier {
     }
 
     protected <T, U extends T> CompletionStage<U> notifyAsyncObservers(List<ObserverMethod<? super T>> observers, U event, EventMetadata metadata, Executor executor) {
+        if (observers.isEmpty()) {
+            return AsyncEventDeliveryStage.completed(event);
+        }
         if (executor == null) {
             executor = asyncEventExecutor;
         }
+        final SecurityContext securityContext = securityServices.getSecurityContext();
         return new AsyncEventDeliveryStage<>(() -> {
-            notifySyncObservers(observers, event, metadata);
-            return event;
+            try {
+                securityContext.associate();
+                notifySyncObservers(observers, event, metadata);
+                return event;
+            } finally {
+                securityContext.dissociate();
+                securityContext.close();
+            }
         }, executor);
     }
 }

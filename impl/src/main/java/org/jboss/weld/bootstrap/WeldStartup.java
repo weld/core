@@ -114,6 +114,8 @@ import org.jboss.weld.resources.SingleThreadScheduledExecutorServiceFactory;
 import org.jboss.weld.resources.spi.ClassFileServices;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ScheduledExecutorServiceFactory;
+import org.jboss.weld.security.NoopSecurityServices;
+import org.jboss.weld.security.spi.SecurityServices;
 import org.jboss.weld.serialization.BeanIdentifierIndex;
 import org.jboss.weld.serialization.ContextualStoreImpl;
 import org.jboss.weld.serialization.spi.ContextualStore;
@@ -189,6 +191,9 @@ public class WeldStartup {
         }
         if (!registry.contains(ProxyServices.class)) {
             registry.add(ProxyServices.class, new SimpleProxyServices());
+        }
+        if (!registry.contains(SecurityServices.class)) {
+            registry.add(SecurityServices.class, NoopSecurityServices.INSTANCE);
         }
 
         addImplementationServices(registry);
