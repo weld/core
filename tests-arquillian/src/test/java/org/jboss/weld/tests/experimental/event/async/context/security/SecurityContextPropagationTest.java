@@ -19,6 +19,7 @@ package org.jboss.weld.tests.experimental.event.async.context.security;
 import java.util.concurrent.ExecutionException;
 
 import javax.ejb.EJBAccessException;
+import javax.enterprise.event.FireAsyncException;
 
 import junit.framework.Assert;
 
@@ -59,7 +60,10 @@ public class SecurityContextPropagationTest {
             stranger.print(new Spreadsheet());
             Assert.fail();
         } catch (ExecutionException expected) {
-            Assert.assertTrue(expected.getCause() instanceof EJBAccessException);
+            Assert.assertTrue(expected.getCause() instanceof FireAsyncException);
+            FireAsyncException cause = (FireAsyncException) expected.getCause();
+            Assert.assertEquals(1, cause.getSuppressed().length);
+            Assert.assertTrue(cause.getSuppressed()[0] instanceof EJBAccessException);
         }
     }
 }

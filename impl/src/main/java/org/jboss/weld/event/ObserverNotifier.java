@@ -41,6 +41,8 @@ import org.jboss.weld.resolution.Resolvable;
 import org.jboss.weld.resolution.ResolvableBuilder;
 import org.jboss.weld.resolution.TypeSafeObserverResolver;
 import org.jboss.weld.resources.SharedObjectCache;
+import org.jboss.weld.security.spi.SecurityContext;
+import org.jboss.weld.security.spi.SecurityServices;
 import org.jboss.weld.util.Observers;
 import org.jboss.weld.util.Types;
 import org.jboss.weld.util.cache.ComputingCache;
@@ -67,6 +69,7 @@ public class ObserverNotifier {
     protected final CurrentEventMetadata currentEventMetadata;
     private final ComputingCache<Type, RuntimeException> eventTypeCheckCache;
     private final Executor asyncEventExecutor;
+    private final SecurityServices securityServices;
 
     protected ObserverNotifier(TypeSafeObserverResolver resolver, ServiceRegistry services, boolean strict) {
         this.resolver = resolver;
@@ -80,6 +83,7 @@ public class ObserverNotifier {
         }
         // fall back to FJP.commonPool() if ExecutorServices are not installed
         this.asyncEventExecutor = services.getOptional(ExecutorServices.class).map((e) -> e.getTaskExecutor()).orElse(ForkJoinPool.commonPool());
+        this.securityServices = services.getRequired(SecurityServices.class);
     }
 
     /**
@@ -308,10 +312,12 @@ public class ObserverNotifier {
         if (executor == null) {
             executor = asyncEventExecutor;
         }
+        final SecurityContext securityContext = securityServices.getSecurityContext();
         return new AsyncEventDeliveryStage<>(() -> {
             final ThreadLocalStackReference<EventMetadata> stack = currentEventMetadata.pushIfNotNull(metadata);
             FireAsyncException fireAsyncException = null;
             try {
+                securityContext.associate();
                 // Note that all async observers are notified serially in a single worker thread
                 for (ObserverMethod<? super T> observer : observers) {
                     try {
@@ -326,6 +332,8 @@ public class ObserverNotifier {
                 }
             } finally {
                 stack.pop();
+                securityContext.dissociate();
+                securityContext.close();
             }
             if (fireAsyncException != null) {
                 // This is always wrapped with CompletionException
