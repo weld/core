@@ -17,9 +17,13 @@
 
 package org.jboss.weld.environment.servlet.test.provider;
 
+import java.util.Map;
+
 import javax.enterprise.inject.Vetoed;
 import javax.enterprise.inject.spi.CDI;
 import javax.enterprise.inject.spi.CDIProvider;
+
+import org.jboss.weld.exceptions.UnsupportedOperationException;
 
 /**
  * @author Martin Kouba
@@ -38,6 +42,16 @@ public class CustomCDIProvider implements CDIProvider {
 
     public static void reset() {
         isCalled = false;
+    }
+
+    @Override
+    public CDI<Object> initialize(Map<String, Object> arg0) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean isInitialized() {
+        throw new UnsupportedOperationException();
     }
 
 }

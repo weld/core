@@ -17,6 +17,7 @@
 package org.jboss.weld.environment.se;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Function;
@@ -28,6 +29,7 @@ import javax.enterprise.inject.spi.Unmanaged;
 import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.environment.se.logging.WeldSELogger;
+import org.jboss.weld.exceptions.UnsupportedOperationException;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.cache.ComputingCache;
 import org.jboss.weld.util.cache.ComputingCacheBuilder;
@@ -112,6 +114,18 @@ public class WeldSEProvider implements CDIProvider {
             }
             return WeldContainer.instance(ids.get(0));
         }
+    }
+
+    @Override
+    public CDI<Object> initialize(Map<String, Object> arg0) {
+        // TODO
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean isInitialized() {
+        // TODO
+        throw new UnsupportedOperationException();
     }
 
 }
