@@ -1,15 +1,14 @@
 package org.jboss.weld.context.beanstore.http;
 
-import java.util.Collection;
-import java.util.Enumeration;
+import java.util.Iterator;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.jboss.weld.context.beanstore.AttributeBeanStore;
 import org.jboss.weld.context.beanstore.LockStore;
 import org.jboss.weld.context.beanstore.NamingScheme;
-import org.jboss.weld.util.collections.EnumerationList;
-import org.jboss.weld.util.reflection.Reflections;
+import org.jboss.weld.servlet.HttpContextLifecycle;
+import org.jboss.weld.util.collections.EnumerationIterator;
 
 /**
  * <p>
@@ -44,8 +43,8 @@ public class RequestBeanStore extends AttributeBeanStore {
     }
 
     @Override
-    protected Collection<String> getAttributeNames() {
-        return new EnumerationList<String>(Reflections.<Enumeration<String>>cast(request.getAttributeNames()));
+    protected Iterator<String> getAttributeNames() {
+        return new EnumerationIterator<String>(request.getAttributeNames());
     }
 
     @Override
@@ -60,4 +59,11 @@ public class RequestBeanStore extends AttributeBeanStore {
     public LockStore getLockStore() {
         return null;
     }
+
+    @Override
+    protected boolean isLocalBeanStoreSyncNeeded() {
+        // The synchronization is not needed unless the request has been switched to async mode
+        return Boolean.TRUE.equals(request.getAttribute(HttpContextLifecycle.ASYNC_STARTED_ATTR_NAME));
+    }
+
 }
