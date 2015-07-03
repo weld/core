@@ -128,4 +128,9 @@ public abstract class AbstractCDI<T> extends CDI<T> {
         return instanceCache.getValue(BeanManagerProxy.unwrap(getBeanManager()));
     }
 
+    @Override
+    public void shutdown() {
+        // TODO
+        throw new UnsupportedOperationException();
+    }
 }

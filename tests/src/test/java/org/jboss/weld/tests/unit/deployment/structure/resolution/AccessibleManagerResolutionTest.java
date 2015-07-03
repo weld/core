@@ -51,6 +51,8 @@ import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.DefaultResourceLoader;
 import org.jboss.weld.resources.ReflectionCacheFactory;
 import org.jboss.weld.resources.SharedObjectCache;
+import org.jboss.weld.security.NoopSecurityServices;
+import org.jboss.weld.security.spi.SecurityServices;
 import org.jboss.weld.serialization.BeanIdentifierIndex;
 import org.jboss.weld.serialization.ContextualStoreImpl;
 import org.jboss.weld.serialization.spi.ContextualStore;
@@ -77,6 +79,7 @@ public class AccessibleManagerResolutionTest {
         this.services.add(ClassTransformer.class, classTransformer);
         this.services.add(SharedObjectCache.class, new SharedObjectCache());
         this.services.add(WeldConfiguration.class, new WeldConfiguration(this.services, new MockDeployment(services)));
+        this.services.add(SecurityServices.class, NoopSecurityServices.INSTANCE);
         this.services.add(ObserverNotifierFactory.class, DefaultObserverNotifierFactory.INSTANCE);
         this.services.add(GlobalObserverNotifierService.class, new GlobalObserverNotifierService(services, RegistrySingletonProvider.STATIC_INSTANCE));
         this.services.add(ExpressionLanguageSupport.class, WeldWebModule.EL_SUPPORT);

@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2014, Red Hat, Inc., and individual contributors
+ * Copyright 2015, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,13 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.experimental.event.async.metadata;
+package org.jboss.weld.tests.experimental.event.async.context.security;
 
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ExecutionException;
 
-import javax.inject.Inject;
+import javax.ejb.EJBAccessException;
 
 import junit.framework.Assert;
 
@@ -29,42 +27,39 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.weld.experimental.ExperimentalEvent;
-import org.jboss.weld.experimental.ExperimentalEventMetadata;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 /**
- * Tests for {@link ExperimentalEventMetadata#isAsync()}.
+ * Testcase for WELD-1977
  *
  * @author Jozef Hartinger
  *
  */
 @RunWith(Arquillian.class)
-@Category(Integration.class) // fireAsync() tests are run incontainer because the embedded container does not implement the new SecurityServices
-public class AsyncEventMetadataTest {
+@Category(Integration.class)
+public class SecurityContextPropagationTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).addPackage(AsyncEventMetadataTest.class.getPackage());
-    }
-
-    @Inject
-    private ExperimentalEvent<Message> event;
-
-    @Test
-    public void testSync() {
-        Message message = new Message();
-        event.fire(message);
-        Assert.assertFalse(message.isAsync());
+        return ShrinkWrap.create(BeanArchive.class).addPackage(SecurityContextPropagationTest.class.getPackage());
     }
 
     @Test
-    public void testAsync() throws InterruptedException {
-        BlockingQueue<Message> synchronizer = new LinkedBlockingQueue<>();
-        event.fireAsync(new Message()).thenAccept(synchronizer::add);
-        Assert.assertTrue(synchronizer.poll(2, TimeUnit.SECONDS).isAsync());
+    public void testPositive(Student student) throws InterruptedException, ExecutionException {
+        Spreadsheet spreadsheet = new Spreadsheet();
+        Assert.assertEquals(spreadsheet, student.print(spreadsheet));
+    }
+
+    @Test
+    public void testNegative(Stranger stranger) throws InterruptedException, ExecutionException {
+        try {
+            stranger.print(new Spreadsheet());
+            Assert.fail();
+        } catch (ExecutionException expected) {
+            Assert.assertTrue(expected.getCause() instanceof EJBAccessException);
+        }
     }
 }

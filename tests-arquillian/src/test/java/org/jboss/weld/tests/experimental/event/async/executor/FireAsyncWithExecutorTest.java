@@ -37,7 +37,9 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.experimental.ExperimentalEvent;
+import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 /**
@@ -47,6 +49,7 @@ import org.junit.runner.RunWith;
  *
  */
 @RunWith(Arquillian.class)
+@Category(Integration.class) // fireAsync() tests are run incontainer because the embedded container does not implement the new SecurityServices
 public class FireAsyncWithExecutorTest {
 
     private static final SynchronousQueue<Response> SYNCHRONIZER = new SynchronousQueue<>();

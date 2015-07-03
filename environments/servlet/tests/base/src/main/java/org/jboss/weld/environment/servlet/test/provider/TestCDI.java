@@ -25,6 +25,8 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.CDI;
 import javax.enterprise.util.TypeLiteral;
 
+import org.jboss.weld.exceptions.UnsupportedOperationException;
+
 /**
  *
  * @author Martin Kouba
@@ -84,5 +86,11 @@ public class TestCDI extends CDI<Object> {
     public BeanManager getBeanManager() {
         throw new UnsupportedOperationException();
     }
+
+    @Override
+    public void shutdown() {
+        throw new UnsupportedOperationException();
+    }
+
 
 }
