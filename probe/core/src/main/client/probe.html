@@ -566,6 +566,18 @@ ${head}
                         </div>
                     </div>
                     {{/if}}
+                    {{#if bindings}}
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Interceptor Bindings:</label>
+                        <div class="col-sm-10">
+                            {{#each bindings}}
+                            <p class="form-control-static">
+                                {{this}}
+                            </p>
+                            {{/each}}
+                        </div>
+                    </div>
+                    {{/if}}
                 </form>
             </div>
         </div>
