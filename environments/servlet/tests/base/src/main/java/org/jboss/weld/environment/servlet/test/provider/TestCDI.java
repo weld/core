@@ -85,4 +85,9 @@ public class TestCDI extends CDI<Object> {
         throw new UnsupportedOperationException();
     }
 
+    @Override
+    public void shutdown() {
+        throw new UnsupportedOperationException();
+    }
+
 }
