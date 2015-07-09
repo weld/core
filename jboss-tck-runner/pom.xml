@@ -161,6 +161,10 @@
                             <value>false</value>
                         </property>
                     </properties>
+                    <!-- https://issues.apache.org/jira/browse/SUREFIRE-569 -->
+                    <dependenciesToScan>
+                        <dependency>org.jboss.cdi.tck:cdi-tck-impl</dependency>
+                    </dependenciesToScan>
                 </configuration>
             </plugin>
             <plugin>
