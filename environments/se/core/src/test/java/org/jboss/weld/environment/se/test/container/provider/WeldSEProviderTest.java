@@ -17,6 +17,7 @@
 package org.jboss.weld.environment.se.test.container.provider;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import javax.enterprise.inject.spi.CDI;
@@ -31,9 +32,9 @@ import org.junit.Test;
  */
 public class WeldSEProviderTest {
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testNoContainer() {
-        CDI.current();
+        assertNull(CDI.current());
     }
 
     @Test

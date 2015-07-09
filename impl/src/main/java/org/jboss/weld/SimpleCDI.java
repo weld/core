@@ -117,4 +117,9 @@ public class SimpleCDI extends AbstractCDI<Object> {
     public void cleanup() {
         beanManagers.clear();
     }
+
+    @Override
+    public void shutdown() {
+       throw new IllegalStateException();
+    }
 }
