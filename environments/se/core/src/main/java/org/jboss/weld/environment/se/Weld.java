@@ -447,6 +447,17 @@ public class Weld implements ContainerInstanceFactory {
     }
 
     /**
+     * Set all the configuration properties.
+     *
+     * @param properties
+     * @return self
+     */
+    public Weld properties(Map<String, Object> properties) {
+        this.properties.putAll(properties);
+        return this;
+    }
+
+    /**
      * The {@link BeanBuilder#build()} is invoked automatically and the resulting bean is registered after all observers are notified.
      *
      * @return a builder for a custom bean
