@@ -17,6 +17,7 @@
 package org.jboss.weld.environment.se.test.beandiscovery;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -61,6 +62,12 @@ public class BeanDiscoveryWithJandexIndexTest {
                 .addClasses(Flat.class, House.class, Apartment.class);
         archive03.addAsManifestResource(createJandexIndexAsset(archive03), "jandex.idx");
         archives.add(archive03);
+
+        // Archive without index
+        JavaArchive archive04 = ShrinkWrap.create(BeanArchive.class).addAsManifestResource(new BeansXml(BeanDiscoveryMode.ALL), "beans.xml")
+                .addClasses(Hat.class);
+        archives.add(archive04);
+
         return archives;
     }
 
@@ -109,4 +116,11 @@ public class BeanDiscoveryWithJandexIndexTest {
         assertEquals(1, manager.getBeans(House.class).size());
         assertEquals(1, manager.getBeans(Apartment.class).size());
     }
+
+    @Test
+    public void testArchiveWithoutIndex(Hat hat) {
+        assertNotNull(hat);
+        assertNotNull(hat.getBeanManager());
+    }
+
 }
