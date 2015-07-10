@@ -171,6 +171,17 @@ Some features of the <<devmode,development mode>> may have negative impact on th
 
 TIP: To disable the monitoring entirely set `org.jboss.weld.probe.invocationMonitor.excludeType` and `org.jboss.weld.probe.eventMonitor.excludeType` properties to `.*`.
 
+==== Default bean names
+
+There was https://issues.jboss.org/browse/WELD-1941[a bug] in Weld where the default name of a bean did not met the CDI specification requirements. This bug is fixed in Weld 2.2.14.Final and later versions. However, this fix is not backward compatible. Therefore, a special cofiguration option may be used to switch to the legacy strategy to infer the default bean names.
+
+.Supported configuration properties
+[cols=",,",options="header",]
+|=======================================================================
+|Configuration key |Default value |Description
+|`org.jboss.weld.bean.defaultNamesFollowJavaBeanRules` |false|If set to `true`, the default names follow the rules from the original JavaBean specification. Otherwise (default, portable solution), the CDI specification requirements are met.
+|=======================================================================
+
 === Excluding classes from scanning and deployment
 
 CDI 1.1 allows you to exclude classes in your archive from being
