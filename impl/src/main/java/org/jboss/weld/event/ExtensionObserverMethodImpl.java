@@ -89,7 +89,7 @@ public class ExtensionObserverMethodImpl<T, X> extends ObserverMethodImpl<T, X> 
     @Override
     protected MethodInjectionPoint<T, ? super X> initMethodInjectionPoint(EnhancedAnnotatedMethod<T, ? super X> observer, RIBean<X> declaringBean, BeanManagerImpl manager) {
         // use silent creation of injection points for ProcessInjectionPoint events not to be fired for extension observer methods
-        return InjectionPointFactory.silentInstance().createMethodInjectionPoint(observer, declaringBean, declaringBean.getBeanClass(), Observes.class, manager);
+        return InjectionPointFactory.silentInstance().createMethodInjectionPoint(observer, declaringBean, declaringBean.getBeanClass(), SPECIAL_PARAM_MARKERS, manager);
     }
 
     @Override

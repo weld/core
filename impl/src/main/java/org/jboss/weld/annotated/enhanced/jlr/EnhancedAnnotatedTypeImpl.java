@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.enterprise.event.Observes;
+import javax.enterprise.event.ObservesAsync;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.spi.AnnotatedConstructor;
 import javax.enterprise.inject.spi.AnnotatedField;
@@ -84,7 +85,7 @@ public class EnhancedAnnotatedTypeImpl<T> extends AbstractEnhancedAnnotated<T, C
     }
 
     @SuppressWarnings("unchecked")
-    private static final Set<Class<? extends Annotation>> MAPPED_METHOD_PARAMETER_ANNOTATIONS = ImmutableSet.of(Observes.class);
+    private static final Set<Class<? extends Annotation>> MAPPED_METHOD_PARAMETER_ANNOTATIONS = ImmutableSet.of(Observes.class, ObservesAsync.class);
     @SuppressWarnings("unchecked")
     private static final Set<Class<? extends Annotation>> MAPPED_DECLARED_METHOD_PARAMETER_ANNOTATIONS = ImmutableSet.of(Disposes.class);
 

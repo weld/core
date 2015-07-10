@@ -29,6 +29,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
+import javax.enterprise.event.ObservesAsync;
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -36,12 +37,11 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.weld.experimental.ExperimentalEvent;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
- * Simple testcase for {@link ExperimentalEvent#fireAsync(Object, Executor)}. See WELD-1793 for details.
+ * Simple testcase for {@link Event#fireAsync(Object, Executor)}. See WELD-1793 for details.
  *
  * @author Jozef Hartinger
  *
@@ -54,7 +54,7 @@ public class FireAsyncWithExecutorTest {
     private static final AtomicReference<Response> RESPONSE_RECEIVED = new AtomicReference<>();
 
     @Inject
-    private ExperimentalEvent<Request> request;
+    private Event<Request> request;
 
     @Deployment
     public static Archive<?> getDeployment() {
@@ -76,7 +76,7 @@ public class FireAsyncWithExecutorTest {
         assertEquals(FireAsyncWithExecutorTest.class.getName(), response.getThread().getName());
     }
 
-    public static void receiveRequest(@Observes Request request, Event<Response> event) {
+    public static void receiveRequest(@ObservesAsync Request request, Event<Response> event) {
         REQUEST_RECEIVED.set(true);
         event.fire(new Response(Thread.currentThread()));
     }

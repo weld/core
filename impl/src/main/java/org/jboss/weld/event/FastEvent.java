@@ -89,7 +89,7 @@ public class FastEvent<T> {
     }
 
     public void fire(T event) {
-        for (ObserverMethod<? super T> observer : resolvedObserverMethods.getImmediateObservers()) {
+        for (ObserverMethod<? super T> observer : resolvedObserverMethods.getImmediateSyncObservers()) {
             observer.notify(event);
         }
     }

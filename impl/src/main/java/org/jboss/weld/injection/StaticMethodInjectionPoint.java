@@ -22,7 +22,9 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.TransientReference;
@@ -50,18 +52,24 @@ class StaticMethodInjectionPoint<T, X> extends MethodInjectionPoint<T, X> {
     final Method accessibleMethod;
 
     StaticMethodInjectionPoint(EnhancedAnnotatedMethod<T, X> enhancedMethod, Bean<?> declaringBean, Class<?> declaringComponentClass,
-            Class<? extends Annotation> specialParameterMarker, InjectionPointFactory factory, BeanManagerImpl manager) {
-        super(enhancedMethod, declaringBean, declaringComponentClass, specialParameterMarker != null, factory, manager);
+            Set<Class<? extends Annotation>> specialParameterMarkers, InjectionPointFactory factory, BeanManagerImpl manager) {
+        super(enhancedMethod, declaringBean, declaringComponentClass, specialParameterMarkers != null, factory, manager);
         this.accessibleMethod = SecurityActions.getAccessibleCopyOfMethod(enhancedMethod.getJavaMember());
         this.annotatedMethod = enhancedMethod.slim();
-        this.specialInjectionPointIndex = initSpecialInjectionPointIndex(enhancedMethod, specialParameterMarker);
+        this.specialInjectionPointIndex = initSpecialInjectionPointIndex(enhancedMethod, specialParameterMarkers);
     }
 
-    private static <X> int initSpecialInjectionPointIndex(EnhancedAnnotatedMethod<?, X> enhancedMethod, Class<? extends Annotation> specialParameterMarker) {
-        if (specialParameterMarker == null) {
+    private static <X> int initSpecialInjectionPointIndex(EnhancedAnnotatedMethod<?, X> enhancedMethod, Set<Class<? extends Annotation>> specialParameterMarkers) {
+        if (specialParameterMarkers == null || specialParameterMarkers.isEmpty()) {
             return -1;
         }
-        List<EnhancedAnnotatedParameter<?, X>> parameters = enhancedMethod.getEnhancedParameters(specialParameterMarker);
+        List<EnhancedAnnotatedParameter<?, X>> parameters = Collections.emptyList();
+        for (Class<? extends Annotation> marker : specialParameterMarkers) {
+            parameters = enhancedMethod.getEnhancedParameters(marker);
+            if (!parameters.isEmpty()) {
+                break;
+            }
+        }
         if (parameters.isEmpty()) {
             throw new org.jboss.weld.exceptions.IllegalArgumentException("Not a disposer nor observer method: " + enhancedMethod);
         }

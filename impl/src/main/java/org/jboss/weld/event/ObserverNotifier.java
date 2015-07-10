@@ -249,7 +249,7 @@ public class ObserverNotifier {
         if (!observers.isMetadataRequired()) {
             metadata = null;
         }
-        notifySyncObservers(observers.getImmediateObservers(), event, metadata);
+        notifySyncObservers(observers.getImmediateSyncObservers(), event, metadata);
         notifyTransactionObservers(observers.getTransactionObservers(), event, metadata);
     }
 
@@ -275,7 +275,10 @@ public class ObserverNotifier {
     /**
      * Delivers the given event object to given observer methods asynchronously.
      *
-     * Observer methods with {@link TransactionPhase#IN_PROGRESS} are called asynchronously in a separate thread. Observer methods with other transaction phase
+     *
+     * TODO rewrite the following paragraph
+     *
+     * Observer methods with {@link TransactionPhase#IN_PROGRESS} are called asnchronously in a separate thread. Observer methods with other transaction phase
      * are scheduled for the corresponding transaction phase. This behavior is the same as for {@link #notify(ResolvedObservers, Object, EventMetadata)}. See
      * {@link ExperimentalEvent#fireAsync(Object)} for more information. {@link EventMetadata} is made available for injection into observer methods, if needed.
      *
@@ -290,8 +293,11 @@ public class ObserverNotifier {
         if (!observers.isMetadataRequired()) {
             metadata = null;
         }
+        // Notify sync observers first
+        notifySyncObservers(observers.getImmediateSyncObservers(), event, metadata);
         notifyTransactionObservers(observers.getTransactionObservers(), event, metadata);
-        return notifyAsyncObservers(observers.getImmediateObservers(), event, metadata, executor);
+
+        return notifyAsyncObservers(observers.getAsyncObservers(), event, metadata, executor);
     }
 
     protected <T, U extends T> CompletionStage<U> notifyAsyncObservers(List<ObserverMethod<? super T>> observers, U event, EventMetadata metadata, Executor executor) {

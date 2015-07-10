@@ -17,10 +17,9 @@
 package org.jboss.weld.tests.experimental.event.async.complex;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
-
-import org.jboss.weld.experimental.ExperimentalEvent;
 
 /**
  * Splits the work and delegates it to workers. In addition, it aggregates the result.
@@ -32,9 +31,9 @@ import org.jboss.weld.experimental.ExperimentalEvent;
 public class Master {
 
     @Inject
-    private ExperimentalEvent<Work> event;
+    private Event<Work> event;
     @Inject
-    private ExperimentalEvent<PiApproximation> resultEvent;
+    private Event<PiApproximation> resultEvent;
 
     private long start;
 

@@ -53,6 +53,8 @@ import org.jboss.weld.util.reflection.Reflections;
 
 public class DisposalMethod<X, T> {
 
+    private static final Set<Class<? extends Annotation>> SPECIAL_PARAM_MARKERS = Collections.singleton(Disposes.class);
+
     private static final String DISPOSER_ANNOTATION = "@Disposes";
     private final BeanManagerImpl beanManager;
     private final AbstractClassBean<X> declaringBean;
@@ -69,7 +71,7 @@ public class DisposalMethod<X, T> {
     }
 
     protected DisposalMethod(BeanManagerImpl beanManager, EnhancedAnnotatedMethod<T, ? super X> enhancedAnnotatedMethod, AbstractClassBean<X> declaringBean) {
-        this.disposalMethodInjectionPoint = InjectionPointFactory.instance().createMethodInjectionPoint(enhancedAnnotatedMethod, declaringBean, declaringBean.getBeanClass(), Disposes.class, beanManager);
+        this.disposalMethodInjectionPoint = InjectionPointFactory.instance().createMethodInjectionPoint(enhancedAnnotatedMethod, declaringBean, declaringBean.getBeanClass(), SPECIAL_PARAM_MARKERS, beanManager);
         this.beanManager = beanManager;
         this.declaringBean = declaringBean;
         EnhancedAnnotatedParameter<?, ? super X> enhancedDisposesParameter = getEnhancedDisposesParameter(enhancedAnnotatedMethod);

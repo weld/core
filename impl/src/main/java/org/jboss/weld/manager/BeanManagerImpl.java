@@ -111,7 +111,6 @@ import org.jboss.weld.exceptions.DeploymentException;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.exceptions.InjectionException;
-import org.jboss.weld.experimental.ExperimentalEvent;
 import org.jboss.weld.injection.CurrentInjectionPoint;
 import org.jboss.weld.injection.EmptyInjectionPoint;
 import org.jboss.weld.injection.ThreadLocalStack.ThreadLocalStackReference;
@@ -1340,7 +1339,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     }
 
-    public ExperimentalEvent<Object> event() {
+    public Event<Object> event() {
         return EventImpl.of(EventInjectionPoint.INSTANCE, this);
     }
 

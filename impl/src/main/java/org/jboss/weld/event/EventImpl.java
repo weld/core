@@ -36,7 +36,6 @@ import javax.enterprise.util.TypeLiteral;
 import org.jboss.weld.bean.builtin.AbstractFacade;
 import org.jboss.weld.bean.builtin.FacadeInjectionPoint;
 import org.jboss.weld.exceptions.InvalidObjectException;
-import org.jboss.weld.experimental.ExperimentalEvent;
 import org.jboss.weld.logging.EventLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Preconditions;
@@ -54,7 +53,7 @@ import org.jboss.weld.util.reflection.TypeResolver;
  * @see javax.enterprise.event.Event
  */
 @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "SE_NO_SUITABLE_CONSTRUCTOR", justification = "Uses SerializationProxy")
-public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements ExperimentalEvent<T>, Serializable {
+public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T>, Serializable {
 
     private static final String EVENT_ARGUMENT_NAME = "event";
     private static final String SUBTYPE_ARGUMENT_NAME = "subtype";
@@ -138,23 +137,23 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Experim
     }
 
     @Override
-    public ExperimentalEvent<T> select(Annotation... qualifiers) {
+    public Event<T> select(Annotation... qualifiers) {
         return selectEvent(this.getType(), qualifiers);
     }
 
     @Override
-    public <U extends T> ExperimentalEvent<U> select(Class<U> subtype, Annotation... qualifiers) {
+    public <U extends T> Event<U> select(Class<U> subtype, Annotation... qualifiers) {
         Preconditions.checkArgumentNotNull(subtype, SUBTYPE_ARGUMENT_NAME);
         return selectEvent(subtype, qualifiers);
     }
 
     @Override
-    public <U extends T> ExperimentalEvent<U> select(TypeLiteral<U> subtype, Annotation... qualifiers) {
+    public <U extends T> Event<U> select(TypeLiteral<U> subtype, Annotation... qualifiers) {
         Preconditions.checkArgumentNotNull(subtype, SUBTYPE_ARGUMENT_NAME);
         return selectEvent(subtype.getType(), qualifiers);
     }
 
-    private <U extends T> ExperimentalEvent<U> selectEvent(Type subtype, Annotation[] newQualifiers) {
+    private <U extends T> Event<U> selectEvent(Type subtype, Annotation[] newQualifiers) {
         getBeanManager().getGlobalStrictObserverNotifier().checkEventObjectType(subtype);
         return new EventImpl<U>(new FacadeInjectionPoint(getBeanManager(), getInjectionPoint(), subtype, getQualifiers(), newQualifiers),
                 getBeanManager());

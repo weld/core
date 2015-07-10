@@ -16,13 +16,13 @@
  */
 package org.jboss.weld.environment.se.beans;
 
+import javax.enterprise.event.Event;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Vetoed;
 import javax.inject.Inject;
 
 import org.jboss.weld.environment.se.WeldContainer;
-import org.jboss.weld.experimental.ExperimentalEvent;
 
 /**
  * A managed bean which holds all of the injected instances of managed beans and
@@ -40,7 +40,7 @@ public class InstanceManager {
     @Inject @Any
     Instance<Object> instances;
     @Inject @Any
-    ExperimentalEvent<Object> events;
+    Event<Object> events;
 
     public InstanceManager() {
     }
@@ -49,7 +49,7 @@ public class InstanceManager {
         return instances;
     }
 
-    public ExperimentalEvent<Object> getEvents() {
+    public Event<Object> getEvents() {
         return events;
     }
 }

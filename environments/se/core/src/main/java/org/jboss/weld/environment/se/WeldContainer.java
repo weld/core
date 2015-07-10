@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Vetoed;
 import javax.enterprise.inject.spi.BeanManager;
@@ -32,7 +33,6 @@ import org.jboss.weld.environment.ContainerInstance;
 import org.jboss.weld.environment.se.events.ContainerInitialized;
 import org.jboss.weld.environment.se.events.ContainerShutdown;
 import org.jboss.weld.environment.se.logging.WeldSELogger;
-import org.jboss.weld.experimental.ExperimentalEvent;
 import org.jboss.weld.literal.DestroyedLiteral;
 import org.jboss.weld.literal.InitializedLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -160,7 +160,7 @@ public class WeldContainer extends AbstractCDI<Object> implements AutoCloseable,
 
     private final Instance<Object> instance;
 
-    private final ExperimentalEvent<Object> event;
+    private final Event<Object> event;
 
     private final CreationalContext<?> creationalContext;
 
@@ -199,7 +199,7 @@ public class WeldContainer extends AbstractCDI<Object> implements AutoCloseable,
      *
      * @return the event
      */
-    public ExperimentalEvent<Object> event() {
+    public Event<Object> event() {
         return event;
     }
 
