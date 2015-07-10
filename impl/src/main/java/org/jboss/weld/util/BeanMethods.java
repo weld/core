@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.event.Observes;
+import javax.enterprise.event.ObservesAsync;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.AnnotatedMethod;
@@ -293,6 +294,10 @@ public class BeanMethods {
 
     public static <T> Collection<EnhancedAnnotatedMethod<?, ? super T>> getObserverMethods(final EnhancedAnnotatedType<T> type) {
         return filterOutBridgeMethods(type.getEnhancedMethodsWithAnnotatedParameters(Observes.class));
+    }
+
+    public static <T> Collection<EnhancedAnnotatedMethod<?, ? super T>> getAsyncObserverMethods(final EnhancedAnnotatedType<T> type) {
+        return filterOutBridgeMethods(type.getEnhancedMethodsWithAnnotatedParameters(ObservesAsync.class));
     }
 
     /**
