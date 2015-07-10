@@ -32,7 +32,6 @@ import org.jboss.weld.bootstrap.events.ProcessAnnotatedTypeEventResolvable;
 import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.event.ExtensionObserverMethodImpl;
 import org.jboss.weld.event.ResolvedObservers;
-import org.jboss.weld.experimental.ExperimentalObserverMethod;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.util.Beans;
 import org.jboss.weld.util.Observers;
@@ -51,8 +50,8 @@ public class TypeSafeObserverResolver extends TypeSafeResolver<Resolvable, Obser
 
         @Override
         public int compare(ObserverMethod<?> o1, ObserverMethod<?> o2) {
-            ExperimentalObserverMethod<?> eom1 = (ExperimentalObserverMethod<?>) o1;
-            ExperimentalObserverMethod<?> eom2 = (ExperimentalObserverMethod<?>) o2;
+            ObserverMethod<?> eom1 = (ObserverMethod<?>) o1;
+            ObserverMethod<?> eom2 = (ObserverMethod<?>) o2;
             return eom1.getPriority() - eom2.getPriority();
         }
     }

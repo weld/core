@@ -124,11 +124,13 @@ public class ExtensionBeanDeployer {
         for (EnhancedAnnotatedMethod<?, ? super X> method : BeanMethods.getObserverMethods(annotatedClass)) {
             createObserverMethod(declaringBean, beanManager, method, observerMethodInitializers);
         }
+        // Extension observer methods must be always sync
+        // TODO log a warning if there an async extension observer method exists
     }
 
     protected <T, X> void createObserverMethod(RIBean<X> declaringBean, BeanManagerImpl beanManager, EnhancedAnnotatedMethod<T, ? super X> method,
             Set<ObserverInitializationContext<?, ?>> observerMethodInitializers) {
-        ObserverMethodImpl<T, X> observer = ObserverFactory.create(method, declaringBean, beanManager);
+        ObserverMethodImpl<T, X> observer = ObserverFactory.create(method, declaringBean, beanManager, false);
         ObserverInitializationContext<T, X> observerMethodInitializer = ObserverInitializationContext.of(observer, method);
         observerMethodInitializers.add(observerMethodInitializer);
     }

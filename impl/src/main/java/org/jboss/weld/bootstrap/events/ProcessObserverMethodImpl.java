@@ -26,7 +26,6 @@ import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.ObserverMethod;
 import javax.enterprise.inject.spi.ProcessObserverMethod;
 
-import org.jboss.weld.experimental.ExperimentalObserverMethod;
 import org.jboss.weld.experimental.ExperimentalProcessObserverMethod;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.Preconditions;
@@ -69,9 +68,9 @@ public class ProcessObserverMethodImpl<T, X> extends AbstractDefinitionContainer
         return beanMethod;
     }
 
-    public ExperimentalObserverMethod<T> getObserverMethod() {
+    public ObserverMethod<T> getObserverMethod() {
         checkWithinObserverNotification();
-        return (ExperimentalObserverMethod<T>) observerMethod; // TODO remove this cast
+        return observerMethod;
     }
 
     public List<Throwable> getDefinitionErrors() {

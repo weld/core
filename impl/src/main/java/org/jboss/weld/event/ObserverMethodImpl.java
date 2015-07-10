@@ -25,6 +25,7 @@ import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
+import javax.enterprise.event.ObservesAsync;
 import javax.enterprise.event.Reception;
 import javax.enterprise.event.TransactionPhase;
 import javax.enterprise.inject.Disposes;
@@ -46,7 +47,6 @@ import org.jboss.weld.bean.ContextualInstance;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.context.CreationalContextImpl;
 import org.jboss.weld.experimental.ExperimentalEventMetadata;
-import org.jboss.weld.experimental.ExperimentalObserverMethod;
 import org.jboss.weld.experimental.Priority;
 import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.MethodInjectionPoint;
@@ -71,14 +71,18 @@ import org.jboss.weld.util.reflection.HierarchyDiscovery;
  * @author Jozef Hartinger
  * @author Marko Luksa
  */
-public class ObserverMethodImpl<T, X> implements ExperimentalObserverMethod<T> {
+public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
+
+    public static final String ID_PREFIX = ObserverMethodImpl.class.getPackage().getName();
+
+    public static final String ID_SEPARATOR = "-";
 
     @SuppressWarnings("serial")
     private static final Type EVENT_METADATA_INSTANCE_TYPE = new TypeLiteral<Instance<EventMetadata>>() {
     }.getType();
-    public static final String ID_PREFIX = ObserverMethodImpl.class.getPackage().getName();
 
-    public static final String ID_SEPARATOR = "-";
+    @SuppressWarnings("checkstyle:magicnumber")
+    private static final int DEFAULT_PRIORITY = javax.interceptor.Interceptor.Priority.APPLICATION + 500;
 
     private final Set<Annotation> bindings;
     private final Type eventType;
@@ -99,6 +103,8 @@ public class ObserverMethodImpl<T, X> implements ExperimentalObserverMethod<T> {
 
     private final MethodInvocationStrategy notificationStrategy;
 
+    private final boolean isAsync;
+
     /**
      * Creates an Observer which describes and encapsulates an observer method (8.5).
      *
@@ -106,18 +112,28 @@ public class ObserverMethodImpl<T, X> implements ExperimentalObserverMethod<T> {
      * @param declaringBean The observer bean
      * @param manager The Bean manager
      */
-    protected ObserverMethodImpl(final EnhancedAnnotatedMethod<T, ? super X> observer, final RIBean<X> declaringBean, final BeanManagerImpl manager) {
+    protected ObserverMethodImpl(final EnhancedAnnotatedMethod<T, ? super X> observer, final RIBean<X> declaringBean, final BeanManagerImpl manager,
+            final boolean isAsync) {
         this.beanManager = manager;
         this.declaringBean = declaringBean;
         this.observerMethod = initMethodInjectionPoint(observer, declaringBean, manager);
         EnhancedAnnotatedParameter<?, ? super X> eventParameter = observer.getEnhancedParameters(Observes.class).get(0);
         this.eventType = new HierarchyDiscovery(declaringBean.getBeanClass()).resolveType(eventParameter.getBaseType());
         this.id = createId(observer, declaringBean);
+
+        final Class<? extends Annotation> annotationClass;
+        if (isAsync) {
+            annotationClass = ObservesAsync.class;
+            this.reception = observer.getEnhancedParameters(ObservesAsync.class).get(0).getAnnotation(ObservesAsync.class).notifyObserver();
+            // Asynchronous observers may not be transactional
+            this.transactionPhase = TransactionPhase.IN_PROGRESS;
+        } else {
+            annotationClass = Observes.class;
+            this.reception = observer.getEnhancedParameters(Observes.class).get(0).getAnnotation(Observes.class).notifyObserver();
+            this.transactionPhase = ObserverFactory.getTransactionalPhase(observer);
+        }
         this.bindings = manager.getServices().get(SharedObjectCache.class)
-                .getSharedSet(observer.getEnhancedParameters(Observes.class).get(0).getMetaAnnotations(Qualifier.class));
-        Observes observesAnnotation = observer.getEnhancedParameters(Observes.class).get(0).getAnnotation(Observes.class);
-        this.reception = observesAnnotation.notifyObserver();
-        transactionPhase = ObserverFactory.getTransactionalPhase(observer);
+                .getSharedSet(observer.getEnhancedParameters(annotationClass).get(0).getMetaAnnotations(Qualifier.class));
 
         ImmutableSet.Builder<WeldInjectionPointAttributes<?, ?>> injectionPoints = ImmutableSet.builder();
         ImmutableSet.Builder<WeldInjectionPointAttributes<?, ?>> newInjectionPoints = ImmutableSet.builder();
@@ -134,13 +150,14 @@ public class ObserverMethodImpl<T, X> implements ExperimentalObserverMethod<T> {
         this.newInjectionPoints = newInjectionPoints.build();
         Priority priority = eventParameter.getAnnotation(Priority.class);
         if (priority == null) {
-            this.priority = ExperimentalObserverMethod.DEFAULT_PRIORITY;
+            this.priority = DEFAULT_PRIORITY;
         } else {
             this.priority = priority.value();
         }
         this.isStatic = observer.isStatic();
         this.eventMetadataRequired = initMetadataRequired(this.injectionPoints);
         this.notificationStrategy = MethodInvocationStrategy.forObserver(observerMethod, beanManager);
+        this.isAsync = isAsync;
     }
 
     private static boolean initMetadataRequired(Set<WeldInjectionPointAttributes<?, ?>> injectionPoints) {
@@ -375,6 +392,11 @@ public class ObserverMethodImpl<T, X> implements ExperimentalObserverMethod<T> {
     @Override
     public int getPriority() {
         return priority;
+    }
+
+    @Override
+    public boolean isAsync() {
+        return isAsync;
     }
 
     public boolean isEventMetadataRequired() {

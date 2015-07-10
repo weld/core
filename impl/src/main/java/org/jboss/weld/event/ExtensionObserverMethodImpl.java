@@ -35,8 +35,8 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bootstrap.events.NotificationListener;
-import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.InjectionPointFactory;
+import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.logging.EventLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.collections.ImmutableSet;
@@ -56,7 +56,8 @@ public class ExtensionObserverMethodImpl<T, X> extends ObserverMethodImpl<T, X> 
     private volatile Set<Class<? extends Annotation>> requiredScopeTypeAnnotations;
 
     protected ExtensionObserverMethodImpl(EnhancedAnnotatedMethod<T, ? super X> observer, RIBean<X> declaringBean, BeanManagerImpl manager) {
-        super(observer, declaringBean, manager);
+        // Extension observer method are always sync
+        super(observer, declaringBean, manager, false);
         this.containerLifecycleEventDeliveryLock = Container.instance(manager);
         this.requiredTypeAnnotations = initRequiredTypeAnnotations(observer);
     }
