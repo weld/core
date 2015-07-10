@@ -20,6 +20,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import junit.framework.Assert;
@@ -29,7 +30,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.weld.experimental.ExperimentalEvent;
 import org.jboss.weld.experimental.ExperimentalEventMetadata;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,7 +49,7 @@ public class AsyncEventMetadataTest {
     }
 
     @Inject
-    private ExperimentalEvent<Message> event;
+    private Event<Message> event;
 
     @Test
     public void testSync() {

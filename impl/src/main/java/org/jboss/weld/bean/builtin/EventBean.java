@@ -27,7 +27,6 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.event.EventImpl;
-import org.jboss.weld.experimental.ExperimentalEvent;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.collections.ImmutableSet;
 
@@ -36,7 +35,7 @@ public class EventBean extends AbstractFacadeBean<Event<?>> {
     private static final Class<Event<?>> TYPE = cast(Event.class);
     @SuppressWarnings("serial")
     private static final Type DEFAULT_TYPE = new TypeLiteral<Event<Object>>(){}.getType();
-    private static final Set<Type> TYPES = ImmutableSet.<Type>of(ExperimentalEvent.class, Event.class, Object.class);
+    private static final Set<Type> TYPES = ImmutableSet.<Type>of(Event.class, Object.class);
 
     public EventBean(BeanManagerImpl manager) {
         super(manager, TYPE);

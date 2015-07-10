@@ -38,7 +38,7 @@ import org.jboss.weld.util.collections.ImmutableList;
  */
 public class ResolvedObservers<T> {
 
-    private static final ResolvedObservers<Object> EMPTY = new ResolvedObservers<Object>(Collections.emptyList(), Collections.emptyList(), false) {
+    private static final ResolvedObservers<Object> EMPTY = new ResolvedObservers<Object>(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), false) {
         public boolean isEmpty() {
             return true;
         }
@@ -50,11 +50,14 @@ public class ResolvedObservers<T> {
             return (ResolvedObservers<T>) EMPTY;
         }
         boolean metadataRequired = false;
-        List<ObserverMethod<? super T>> immediateObservers = new ArrayList<ObserverMethod<? super T>>();
+        List<ObserverMethod<? super T>> immediateSyncObservers = new ArrayList<ObserverMethod<? super T>>();
         List<ObserverMethod<? super T>> transactionObservers = new ArrayList<ObserverMethod<? super T>>();
+        List<ObserverMethod<? super T>> asyncObservers = new ArrayList<ObserverMethod<? super T>>();
         for (ObserverMethod<? super T> observer : observers) {
-            if (TransactionPhase.IN_PROGRESS == observer.getTransactionPhase()) {
-                immediateObservers.add(observer);
+            if(observer.isAsync()) {
+                asyncObservers.add(observer);
+            } else if (TransactionPhase.IN_PROGRESS == observer.getTransactionPhase()) {
+                immediateSyncObservers.add(observer);
             } else {
                 transactionObservers.add(observer);
             }
@@ -62,25 +65,43 @@ public class ResolvedObservers<T> {
                 metadataRequired = true;
             }
         }
-        return new ResolvedObservers<>(copyOf(immediateObservers), copyOf(transactionObservers), metadataRequired);
+        return new ResolvedObservers<>(copyOf(immediateSyncObservers), copyOf(asyncObservers), copyOf(transactionObservers), metadataRequired);
     }
 
-    private final List<ObserverMethod<? super T>> immediateObservers;
+    private final List<ObserverMethod<? super T>> immediateSyncObservers;
+    private final List<ObserverMethod<? super T>> asyncObservers;
     private final List<ObserverMethod<? super T>> transactionObservers;
     private final boolean metadataRequired;
 
-    private ResolvedObservers(List<ObserverMethod<? super T>> immediateObservers, List<ObserverMethod<? super T>> transactionObservers, boolean metadataRequired) {
-        this.immediateObservers = immediateObservers;
+    private ResolvedObservers(List<ObserverMethod<? super T>> immediateSyncObservers, List<ObserverMethod<? super T>> asyncObservers, List<ObserverMethod<? super T>> transactionObservers, boolean metadataRequired) {
+        this.immediateSyncObservers = immediateSyncObservers;
+        this.asyncObservers = asyncObservers;
         this.transactionObservers = transactionObservers;
         this.metadataRequired = metadataRequired;
     }
 
-    List<ObserverMethod<? super T>> getImmediateObservers() {
-        return immediateObservers;
+    /**
+     *
+     * @return the list of sync immediate observers
+     */
+    List<ObserverMethod<? super T>> getImmediateSyncObservers() {
+        return immediateSyncObservers;
     }
 
+    /**
+     *
+     * @return the list of sync transactional observers
+     */
     List<ObserverMethod<? super T>> getTransactionObservers() {
         return transactionObservers;
+    }
+
+    /**
+     *
+     * @return the list of async observers
+     */
+    List<ObserverMethod<? super T>> getAsyncObservers() {
+        return asyncObservers;
     }
 
     /**
@@ -100,11 +121,10 @@ public class ResolvedObservers<T> {
     }
 
     /**
-     * Returns all observer methods. First part of the list consists of the ordered sequence of {@link TransactionPhase#IN_PROGRESS} observers followed by
-     * an ordered sequence of transactional observers.
-     * TODO: we may need to preserve ordering of the entire list
+     * Returns all observer methods. First part of the list consists of the ordered sequence of {@link TransactionPhase#IN_PROGRESS} observers followed by the
+     * ordered sequence of async obervers followed by an ordered sequence of transactional observers. TODO: we may need to preserve ordering of the entire list
      */
     public List<ObserverMethod<? super T>> getAllObservers() {
-        return ImmutableList.<ObserverMethod<? super T>>builder().addAll(immediateObservers).addAll(transactionObservers).build();
+        return ImmutableList.<ObserverMethod<? super T>> builder().addAll(immediateSyncObservers).addAll(asyncObservers).addAll(transactionObservers).build();
     }
 }

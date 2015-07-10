@@ -24,6 +24,7 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import javax.enterprise.inject.spi.Bean;
 
@@ -44,9 +45,9 @@ class VirtualMethodInjectionPoint<T, X> extends StaticMethodInjectionPoint<T, X>
     private volatile Map<Class<?>, Method> methods;
 
     VirtualMethodInjectionPoint(EnhancedAnnotatedMethod<T, X> enhancedMethod, Bean<?> declaringBean, Class<?> declaringComponentClass,
-            Class<? extends Annotation> specialParameterMarker, InjectionPointFactory factory, BeanManagerImpl manager) {
-        super(enhancedMethod, declaringBean, declaringComponentClass, specialParameterMarker, factory, manager);
-        this.methods = Collections.<Class<?>, Method>singletonMap(getAnnotated().getJavaMember().getDeclaringClass(), accessibleMethod);
+            Set<Class<? extends Annotation>> specialParameterMarkers, InjectionPointFactory factory, BeanManagerImpl manager) {
+        super(enhancedMethod, declaringBean, declaringComponentClass, specialParameterMarkers, factory, manager);
+        this.methods = Collections.<Class<?>, Method> singletonMap(getAnnotated().getJavaMember().getDeclaringClass(), accessibleMethod);
     }
 
     @Override

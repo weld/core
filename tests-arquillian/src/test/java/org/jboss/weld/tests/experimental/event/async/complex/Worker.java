@@ -17,16 +17,15 @@
 package org.jboss.weld.tests.experimental.event.async.complex;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
-
-import org.jboss.weld.experimental.ExperimentalEvent;
 
 @ApplicationScoped
 public class Worker {
 
     @Inject
-    private ExperimentalEvent<Result> event;
+    private Event<Result> event;
 
     public void doWork(@Observes Work work) {
         double result = calculatePiFor(work.getStart(), work.getNrOfElements());

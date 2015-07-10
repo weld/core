@@ -77,6 +77,8 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
 
     public static final String ID_SEPARATOR = "-";
 
+    protected static final Set<Class<? extends Annotation>> SPECIAL_PARAM_MARKERS = ImmutableSet.of(Observes.class, ObservesAsync.class);
+
     @SuppressWarnings("serial")
     private static final Type EVENT_METADATA_INSTANCE_TYPE = new TypeLiteral<Instance<EventMetadata>>() {
     }.getType();
@@ -117,8 +119,6 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
         this.beanManager = manager;
         this.declaringBean = declaringBean;
         this.observerMethod = initMethodInjectionPoint(observer, declaringBean, manager);
-        EnhancedAnnotatedParameter<?, ? super X> eventParameter = observer.getEnhancedParameters(Observes.class).get(0);
-        this.eventType = new HierarchyDiscovery(declaringBean.getBeanClass()).resolveType(eventParameter.getBaseType());
         this.id = createId(observer, declaringBean);
 
         final Class<? extends Annotation> annotationClass;
@@ -134,6 +134,8 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
         }
         this.bindings = manager.getServices().get(SharedObjectCache.class)
                 .getSharedSet(observer.getEnhancedParameters(annotationClass).get(0).getMetaAnnotations(Qualifier.class));
+        EnhancedAnnotatedParameter<?, ? super X> eventParameter = observer.getEnhancedParameters(annotationClass).get(0);
+        this.eventType = new HierarchyDiscovery(declaringBean.getBeanClass()).resolveType(eventParameter.getBaseType());
 
         ImmutableSet.Builder<WeldInjectionPointAttributes<?, ?>> injectionPoints = ImmutableSet.builder();
         ImmutableSet.Builder<WeldInjectionPointAttributes<?, ?>> newInjectionPoints = ImmutableSet.builder();
@@ -184,7 +186,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
 
     protected MethodInjectionPoint<T, ? super X> initMethodInjectionPoint(EnhancedAnnotatedMethod<T, ? super X> observer, RIBean<X> declaringBean,
             BeanManagerImpl manager) {
-        return InjectionPointFactory.instance().createMethodInjectionPoint(observer, declaringBean, declaringBean.getBeanClass(), Observes.class, manager);
+        return InjectionPointFactory.instance().createMethodInjectionPoint(observer, declaringBean, declaringBean.getBeanClass(), SPECIAL_PARAM_MARKERS, manager);
     }
 
     public Set<WeldInjectionPointAttributes<?, ?>> getInjectionPoints() {
@@ -199,8 +201,9 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
      * Performs validation of the observer method for compliance with the specifications.
      */
     private <Y> void checkObserverMethod(EnhancedAnnotatedMethod<T, Y> annotated) {
-        // Make sure exactly one and only one parameter is annotated with Observes
+        // Make sure exactly one and only one parameter is annotated with Observes or ObservesAsync
         List<EnhancedAnnotatedParameter<?, Y>> eventObjects = annotated.getEnhancedParameters(Observes.class);
+        eventObjects.addAll(annotated.getEnhancedParameters(ObservesAsync.class));
         if (this.reception.equals(Reception.IF_EXISTS) && declaringBean.getScope().equals(Dependent.class)) {
             throw EventLogger.LOG.invalidScopedConditionalObserver(this);
         }

@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.event.Observes;
+import javax.enterprise.event.ObservesAsync;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
@@ -171,12 +172,12 @@ public class InjectionPointFactory {
         return new ConstructorInjectionPoint<T>(constructor, declaringBean, declaringComponentClass, this, manager);
     }
 
-    public <T, X> MethodInjectionPoint<T, X> createMethodInjectionPoint(EnhancedAnnotatedMethod<T, X> enhancedMethod,
-            Bean<?> declaringBean, Class<?> declaringComponentClass, Class<? extends Annotation> specialParameterMarker, BeanManagerImpl manager) {
+    public <T, X> MethodInjectionPoint<T, X> createMethodInjectionPoint(EnhancedAnnotatedMethod<T, X> enhancedMethod, Bean<?> declaringBean,
+            Class<?> declaringComponentClass, Set<Class<? extends Annotation>> specialParameterMarkers, BeanManagerImpl manager) {
         if (enhancedMethod.isStatic()) {
-            return new StaticMethodInjectionPoint<T, X>(enhancedMethod, declaringBean, declaringComponentClass, specialParameterMarker, this, manager);
+            return new StaticMethodInjectionPoint<T, X>(enhancedMethod, declaringBean, declaringComponentClass, specialParameterMarkers, this, manager);
         } else {
-            return new VirtualMethodInjectionPoint<T, X>(enhancedMethod, declaringBean, declaringComponentClass, specialParameterMarker, this, manager);
+            return new VirtualMethodInjectionPoint<T, X>(enhancedMethod, declaringBean, declaringComponentClass, specialParameterMarkers, this, manager);
         }
     }
 
@@ -254,6 +255,7 @@ public class InjectionPointFactory {
     }
 
     private boolean isSpecialParameter(EnhancedAnnotatedParameter<?, ?> parameter) {
-        return parameter.isAnnotationPresent(Disposes.class) || parameter.isAnnotationPresent(Observes.class);
+        return parameter.isAnnotationPresent(Disposes.class) || parameter.isAnnotationPresent(Observes.class)
+                || parameter.isAnnotationPresent(ObservesAsync.class);
     }
 }

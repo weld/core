@@ -53,7 +53,7 @@ public interface EventLogger extends WeldLogger {
     @Message(id = 404, value = "Conditional observer method [{0}] cannot be declared by a @Dependent scoped bean", format = Format.MESSAGE_FORMAT)
     DefinitionException invalidScopedConditionalObserver(Object param1);
 
-    @Message(id = 405, value = "Observer method [{0}] cannot have more than one event parameter annotated @Observes", format = Format.MESSAGE_FORMAT)
+    @Message(id = 405, value = "Observer method [{0}] may only have one event parameter annotated with @Observes or @ObservesAsync", format = Format.MESSAGE_FORMAT)
     DefinitionException multipleEventParameters(Object param1);
 
     @Message(id = 406, value = "Observer method [{0}] cannot have a parameter annotated with @Disposes", format = Format.MESSAGE_FORMAT)

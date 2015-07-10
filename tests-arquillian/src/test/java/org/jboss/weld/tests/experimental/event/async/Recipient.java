@@ -16,11 +16,11 @@
  */
 package org.jboss.weld.tests.experimental.event.async;
 
-import javax.enterprise.event.Observes;
+import javax.enterprise.event.ObservesAsync;
 
 class Recipient {
 
-    public void observe(@Observes Message message) {
+    public void observe(@ObservesAsync Message message) {
         message.receive();
     }
 }
