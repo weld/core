@@ -269,6 +269,7 @@ enum Resource {
                 String content = IOUtils.getResourceAsString(resourceName);
                 if (content == null) {
                     resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+                    return;
                 }
                 content = content.replace("${contextPath}", req.getServletContext().getContextPath() + ProbeFilter.REST_URL_PATTERN_BASE + SLASH);
                 resp.getWriter().append(content);
