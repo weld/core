@@ -39,8 +39,11 @@ import static org.jboss.weld.probe.Strings.DECLARED_OBSERVERS;
 import static org.jboss.weld.probe.Strings.DECLARED_PRODUCERS;
 import static org.jboss.weld.probe.Strings.DECLARING_BEAN;
 import static org.jboss.weld.probe.Strings.DECLARING_CLASS;
+import static org.jboss.weld.probe.Strings.DECORATED_TYPES;
 import static org.jboss.weld.probe.Strings.DECORATORS;
 import static org.jboss.weld.probe.Strings.DEFAULT_VALUE;
+import static org.jboss.weld.probe.Strings.DELEGATE_QUALIFIERS;
+import static org.jboss.weld.probe.Strings.DELEGATE_TYPE;
 import static org.jboss.weld.probe.Strings.DEPENDENCIES;
 import static org.jboss.weld.probe.Strings.DEPENDENTS;
 import static org.jboss.weld.probe.Strings.DESCRIPTION;
@@ -113,6 +116,7 @@ import javax.enterprise.inject.Default;
 import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.ObserverMethod;
 import javax.servlet.http.HttpServletRequest;
@@ -472,6 +476,18 @@ final class JsonObjects {
                 bindings.add(binding.toString());
             }
             beanBuilder.add(BINDINGS, bindings);
+        }
+
+        // DECORATOR
+        if (BeanKind.DECORATOR.equals(kind)) {
+            Decorator<?> decorator = (Decorator<?>) bean;
+            beanBuilder.add(DELEGATE_TYPE, Formats.formatType(decorator.getDelegateType(), false));
+            beanBuilder.add(DELEGATE_QUALIFIERS, createQualifiers(decorator.getDelegateQualifiers(), false));
+            JsonArrayBuilder decoratedTypes = Json.arrayBuilder(true);
+            for (Type type : decorator.getDecoratedTypes()) {
+                decoratedTypes.add(Formats.formatType(type, false));
+            }
+            beanBuilder.add(DECORATED_TYPES, decoratedTypes);
         }
 
         return beanBuilder.build();
