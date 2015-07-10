@@ -94,6 +94,9 @@ public final class Strings {
     public static final String INFO = "info";
     public static final String IS_POTENTIAL = "isPotential";
     public static final String BINDINGS = "bindings";
+    public static final String DELEGATE_TYPE = "delegateType";
+    public static final String DELEGATE_QUALIFIERS = "delegateQualifiers";
+    public static final String DECORATED_TYPES = "decoratedTypes";
 
     public static final String PAGE = "page";
     public static final String PAGE_SIZE = "pageSize";
