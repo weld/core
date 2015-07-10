@@ -173,6 +173,7 @@ public enum ConfigurationKey {
      *
      * @see https://issues.jboss.org/browse/WELD-1941
      */
+    @Description("If set to <code>true</code> the default name follows the rules from the original JavaBean specification. Otherwise (default, portable solution), the CDI specification requirements are met.")
     DEFAULT_BEAN_NAMES_FOLLOW_JAVABEAN_RULES("org.jboss.weld.bean.defaultNamesFollowJavaBeanRules", false),
 
     ;
