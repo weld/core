@@ -27,6 +27,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ForkJoinPool;
 import java.util.function.Function;
 
+import javax.enterprise.event.FireAsyncException;
 import javax.enterprise.event.TransactionPhase;
 import javax.enterprise.inject.spi.EventMetadata;
 import javax.enterprise.inject.spi.ObserverMethod;
@@ -300,12 +301,37 @@ public class ObserverNotifier {
         return notifyAsyncObservers(observers.getAsyncObservers(), event, metadata, executor);
     }
 
-    protected <T, U extends T> CompletionStage<U> notifyAsyncObservers(List<ObserverMethod<? super T>> observers, U event, EventMetadata metadata, Executor executor) {
+    protected <T, U extends T> CompletionStage<U> notifyAsyncObservers(List<ObserverMethod<? super T>> observers, U event, EventMetadata metadata,
+            Executor executor) {
         if (executor == null) {
             executor = asyncEventExecutor;
         }
         return new AsyncEventDeliveryStage<>(() -> {
-            notifySyncObservers(observers, event, metadata);
+            if (observers.isEmpty()) {
+                return event;
+            }
+            final ThreadLocalStackReference<EventMetadata> stack = currentEventMetadata.pushIfNotNull(metadata);
+            FireAsyncException fireAsyncException = null;
+            try {
+                // Note that all async observers are notified serially in a single worker thread
+                for (ObserverMethod<? super T> observer : observers) {
+                    try {
+                        observer.notify(event);
+                    } catch (Throwable e) {
+                        // The exception aborts processing of the observer but not of the event
+                        if (fireAsyncException == null) {
+                            fireAsyncException = new FireAsyncException();
+                        }
+                        fireAsyncException.addSuppressed(e);
+                    }
+                }
+            } finally {
+                stack.pop();
+            }
+            if (fireAsyncException != null) {
+                // This is always wrapped with CompletionException
+                throw fireAsyncException;
+            }
             return event;
         }, executor);
     }

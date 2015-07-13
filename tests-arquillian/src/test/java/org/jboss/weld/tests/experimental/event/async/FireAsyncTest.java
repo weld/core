@@ -16,15 +16,18 @@
  */
 package org.jboss.weld.tests.experimental.event.async;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 import javax.enterprise.event.Event;
+import javax.enterprise.event.FireAsyncException;
 import javax.inject.Inject;
-
-import junit.framework.Assert;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -62,7 +65,7 @@ public class FireAsyncTest {
     public void testAsyncEventExecutedInDifferentThread() throws InterruptedException {
         BlockingQueue<ThreadCapturingMessage> synchronizer = new LinkedBlockingQueue<>();
         event.fireAsync(new ThreadCapturingMessage()).thenAccept(synchronizer::add);
-        Assert.assertFalse(synchronizer.poll(2, TimeUnit.SECONDS).receivingThread.equals(Thread.currentThread()));
+        assertFalse(synchronizer.poll(2, TimeUnit.SECONDS).receivingThread.equals(Thread.currentThread()));
     }
 
     @Test
@@ -73,9 +76,13 @@ public class FireAsyncTest {
         }).whenComplete((event, throwable) -> synchronizer.add(throwable));
 
         Throwable materializedThrowable = synchronizer.poll(2, TimeUnit.SECONDS);
-        Assert.assertTrue(materializedThrowable instanceof CompletionException);
+        assertTrue(materializedThrowable instanceof CompletionException);
         // TODO we should remove CompletionException wrapper
-        Assert.assertTrue(materializedThrowable.getCause() instanceof IllegalStateException);
-        Assert.assertEquals(FireAsyncTest.class.getName(), materializedThrowable.getCause().getMessage());
+        assertTrue(materializedThrowable.getCause() instanceof FireAsyncException);
+        FireAsyncException fireAsyncException = (FireAsyncException) materializedThrowable.getCause();
+        Throwable[] suppressed = fireAsyncException.getSuppressed();
+        assertEquals(1, suppressed.length);
+        assertTrue(suppressed[0] instanceof IllegalStateException);
+        assertEquals(FireAsyncTest.class.getName(), suppressed[0].getMessage());
     }
 }
