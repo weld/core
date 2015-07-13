@@ -566,6 +566,51 @@ ${head}
                         </div>
                     </div>
                     {{/if}}
+                    {{#if bindings}}
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Interceptor Bindings:</label>
+                        <div class="col-sm-10">
+                            {{#each bindings}}
+                            <p class="form-control-static">
+                                {{this}}
+                            </p>
+                            {{/each}}
+                        </div>
+                    </div>
+                    {{/if}}
+                    {{#if decoratedTypes}}
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Decorated Types:</label>
+                        <div class="col-sm-10">
+                            {{#each decoratedTypes}}
+                            <p class="form-control-static">
+                                {{this}}
+                            </p>
+                            {{/each}}
+                        </div>
+                    </div>
+                    {{/if}}
+                    {{#if delegateType}}
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Delegate Type:</label>
+                            <div class="col-sm-10">
+                                <p class="form-control-static">{{delegateType}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {{/if}}
+                    {{#if delegateQualifiers}}
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Delegate Qualifiers:</label>
+                        <div class="col-sm-10">
+                            {{#each delegateQualifiers}}
+                            <p class="form-control-static">
+                                {{this}}
+                            </p>
+                            {{/each}}
+                        </div>
+                    </div>
+                    {{/if}}
                 </form>
             </div>
         </div>

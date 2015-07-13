@@ -851,6 +851,8 @@ Optionally, an integrator may register the following <<probe,Probe Development T
 
 NOTE: Probe classes reside in a separate module with the following coordinates: `org.jboss.weld.probe:weld-probe-core`. This module is a dependency of a Weld Servlet integration module and it's also a part of the `weld-servlet-shaded` artifact and Weld OSGi bundle.
 
+NOTE: Probe REST API is implemented using a servlet filter. However, not all servlet containers trigger filters when recieving a request to a path which is not mapped to any servlet (although most of them define a "default" servlet for each application). In this case, an integrator should register a "dummy" servlet (its methods will never be invoked) mapped to the URL pattern `/weld-probe/*`.
+
 === Migration notes
 
 This part of the appendix documents the changes in Weld across major and

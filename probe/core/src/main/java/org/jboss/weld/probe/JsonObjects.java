@@ -26,6 +26,7 @@ import static org.jboss.weld.probe.Strings.BDA_ID;
 import static org.jboss.weld.probe.Strings.BEANS;
 import static org.jboss.weld.probe.Strings.BEAN_CLASS;
 import static org.jboss.weld.probe.Strings.BEAN_DISCOVERY_MODE;
+import static org.jboss.weld.probe.Strings.BINDINGS;
 import static org.jboss.weld.probe.Strings.CHILDREN;
 import static org.jboss.weld.probe.Strings.CIDS;
 import static org.jboss.weld.probe.Strings.CLASS;
@@ -38,8 +39,11 @@ import static org.jboss.weld.probe.Strings.DECLARED_OBSERVERS;
 import static org.jboss.weld.probe.Strings.DECLARED_PRODUCERS;
 import static org.jboss.weld.probe.Strings.DECLARING_BEAN;
 import static org.jboss.weld.probe.Strings.DECLARING_CLASS;
+import static org.jboss.weld.probe.Strings.DECORATED_TYPES;
 import static org.jboss.weld.probe.Strings.DECORATORS;
 import static org.jboss.weld.probe.Strings.DEFAULT_VALUE;
+import static org.jboss.weld.probe.Strings.DELEGATE_QUALIFIERS;
+import static org.jboss.weld.probe.Strings.DELEGATE_TYPE;
 import static org.jboss.weld.probe.Strings.DEPENDENCIES;
 import static org.jboss.weld.probe.Strings.DEPENDENTS;
 import static org.jboss.weld.probe.Strings.DESCRIPTION;
@@ -112,6 +116,8 @@ import javax.enterprise.inject.Default;
 import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.Decorator;
+import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.ObserverMethod;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -461,6 +467,29 @@ final class JsonObjects {
             }
             beanBuilder.add(ENABLEMENT, enablementBuilder);
         }
+
+        // INTERCEPTOR BINDINGS
+        if (BeanKind.INTERCEPTOR.equals(kind)) {
+            Interceptor<?> interceptor = (Interceptor<?>) bean;
+            JsonArrayBuilder bindings = Json.arrayBuilder(true);
+            for (Annotation binding : interceptor.getInterceptorBindings()) {
+                bindings.add(binding.toString());
+            }
+            beanBuilder.add(BINDINGS, bindings);
+        }
+
+        // DECORATOR
+        if (BeanKind.DECORATOR.equals(kind)) {
+            Decorator<?> decorator = (Decorator<?>) bean;
+            beanBuilder.add(DELEGATE_TYPE, Formats.formatType(decorator.getDelegateType(), false));
+            beanBuilder.add(DELEGATE_QUALIFIERS, createQualifiers(decorator.getDelegateQualifiers(), false));
+            JsonArrayBuilder decoratedTypes = Json.arrayBuilder(true);
+            for (Type type : decorator.getDecoratedTypes()) {
+                decoratedTypes.add(Formats.formatType(type, false));
+            }
+            beanBuilder.add(DECORATED_TYPES, decoratedTypes);
+        }
+
         return beanBuilder.build();
     }
 
@@ -529,7 +558,7 @@ final class JsonObjects {
      * @return the declaring bean if the specified bean is an implicit producer
      */
     static JsonObjectBuilder createDeclaringBean(Bean<?> bean, Probe probe) {
-        if(bean instanceof AbstractProducerBean) {
+        if (bean instanceof AbstractProducerBean) {
             AbstractProducerBean<?, ?, ?> producerBean = (AbstractProducerBean<?, ?, ?>) bean;
             if (producerBean.getDeclaringBean() != null) {
                 return createSimpleBeanJson(producerBean.getDeclaringBean(), probe);
@@ -632,7 +661,7 @@ final class JsonObjects {
             JsonObjectBuilder dependency = createDependency(dependent.getBean(), dependent, probe);
             if (dependent.getInfo() != null) {
                 dependency.add(INFO, dependent.getInfo());
-                if(dependent.isPotential()) {
+                if (dependent.isPotential()) {
                     dependency.add(IS_POTENTIAL, true);
                 }
             }
