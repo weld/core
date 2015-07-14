@@ -21,7 +21,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.CompletionException;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -76,11 +75,8 @@ public class FireAsyncTest {
         }).whenComplete((event, throwable) -> synchronizer.add(throwable));
 
         Throwable materializedThrowable = synchronizer.poll(2, TimeUnit.SECONDS);
-        assertTrue(materializedThrowable instanceof CompletionException);
-        // TODO we should remove CompletionException wrapper
-        assertTrue(materializedThrowable.getCause() instanceof FireAsyncException);
-        FireAsyncException fireAsyncException = (FireAsyncException) materializedThrowable.getCause();
-        Throwable[] suppressed = fireAsyncException.getSuppressed();
+        assertTrue(materializedThrowable instanceof FireAsyncException);
+        Throwable[] suppressed = ((FireAsyncException) materializedThrowable).getSuppressed();
         assertEquals(1, suppressed.length);
         assertTrue(suppressed[0] instanceof IllegalStateException);
         assertEquals(FireAsyncTest.class.getName(), suppressed[0].getMessage());
