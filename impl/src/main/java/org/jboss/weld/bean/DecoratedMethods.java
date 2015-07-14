@@ -17,13 +17,18 @@
 package org.jboss.weld.bean;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.jboss.weld.annotated.runtime.InvokableAnnotatedMethod;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.resolution.CovariantTypes;
 import org.jboss.weld.util.Decorators;
+import org.jboss.weld.util.Types;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
@@ -62,17 +67,37 @@ class DecoratedMethods {
     }
 
     private Object findMatchingDecoratedMethod(Method method) {
+        // First try to find the same method
         for (InvokableAnnotatedMethod<?> decoratedMethod : decoratedTypeMethods) {
             if (decoratedMethod.getJavaMember().equals(method)) {
                 return decoratedMethod;
             }
         }
+        // Then try to find all matching methods
+        List<InvokableAnnotatedMethod<?>> matching = new ArrayList<InvokableAnnotatedMethod<?>>();
         for (InvokableAnnotatedMethod<?> decoratedMethod : decoratedTypeMethods) {
             if (matches(decoratedMethod, method)) {
-                return decoratedMethod;
+                matching.add(decoratedMethod);
             }
         }
-        return NULL_MARKER;
+        if (matching.isEmpty()) {
+            // No match
+            return NULL_MARKER;
+        } else if (matching.size() == 1) {
+            // If there is only one matching method no further action is needed
+            return matching.get(0);
+        }
+        // Choose the most specific method
+        // This does meet all requirements of JLS but it should work in most cases
+        // See also JLS Java SE 8 Edition, 15.12.2.5 Choosing the Most Specific Method
+        InvokableAnnotatedMethod<?> mostSpecific = matching.get(0);
+        for (int i = 1; i < matching.size(); i++) {
+            InvokableAnnotatedMethod<?> candidate = matching.get(i);
+            if (isMoreSpecific(candidate, mostSpecific)) {
+                mostSpecific = candidate;
+            }
+        }
+        return mostSpecific;
     }
 
     private boolean matches(InvokableAnnotatedMethod<?> decoratedMethod, Method candidate) {
@@ -83,10 +108,28 @@ class DecoratedMethods {
             return false;
         }
         for (int i = 0; i < candidate.getParameterTypes().length; i++) {
-            if (!decoratedMethod.getJavaMember().getParameterTypes()[i].isAssignableFrom(candidate.getParameterTypes()[i])) {
-                return false;
+            Type decoratedMethodParamType = decoratedMethod.getJavaMember().getGenericParameterTypes()[i];
+            Type candidateParamType = candidate.getGenericParameterTypes()[i];
+            if (Types.containsUnresolvedTypeVariableOrWildcard(decoratedMethodParamType) || Types.containsUnresolvedTypeVariableOrWildcard(candidateParamType)) {
+                if (!decoratedMethod.getJavaMember().getParameterTypes()[i].isAssignableFrom(candidate.getParameterTypes()[i])) {
+                    return false;
+                }
+            } else {
+                if (!CovariantTypes.isAssignableFrom(decoratedMethodParamType, candidateParamType)) {
+                    return false;
+                }
             }
         }
         return true;
     }
+
+    private boolean isMoreSpecific(InvokableAnnotatedMethod<?> candidate, InvokableAnnotatedMethod<?> mostSpecific) {
+        for (int i = 0; i < candidate.getJavaMember().getGenericParameterTypes().length; i++) {
+            if (Types.isMoreSpecific(candidate.getJavaMember().getGenericParameterTypes()[i], mostSpecific.getJavaMember().getGenericParameterTypes()[i])) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

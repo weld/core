@@ -19,6 +19,8 @@ package org.jboss.weld.tests.unit.util;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -49,6 +51,19 @@ public class TypesTest {
         assertTrue(Types.isIllegalBeanType(new TypeLiteral<List<?>[]>() {
         }.getType()));
         assertFalse(Types.isIllegalBeanType(new TypeLiteral<Instance<Integer>[]>() {
+        }.getType()));
+    }
+
+    @SuppressWarnings("serial")
+    @Test
+    public void testIsMoreSpecific() {
+        assertTrue(Types.isMoreSpecific(ArrayList.class, List.class));
+        assertFalse(Types.isMoreSpecific(ArrayList.class, ArrayList.class));
+        assertTrue(Types.isMoreSpecific(ArrayList.class, Collection.class));
+        assertTrue(Types.isMoreSpecific(Integer.class, Number.class));
+        assertFalse(Types.isMoreSpecific(Number.class, Integer.class));
+        assertTrue(Types.isMoreSpecific(new TypeLiteral<List<Integer>>() {
+        }.getType(), new TypeLiteral<Collection<Integer>>() {
         }.getType()));
     }
 
