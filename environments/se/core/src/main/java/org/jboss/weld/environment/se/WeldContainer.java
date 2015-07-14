@@ -223,10 +223,10 @@ public class WeldContainer extends AbstractCDI<Object> implements AutoCloseable,
                 WeldSELogger.LOG.weldContainerShutdown(id);
             }
         } else {
-            WeldSELogger.LOG.weldContainerAlreadyShutDown(id);
             if (WeldSELogger.LOG.isTraceEnabled()) {
                 WeldSELogger.LOG.tracev("Spurious call to shutdown from: {0}", (Object[]) Thread.currentThread().getStackTrace());
             }
+            throw WeldSELogger.LOG.weldContainerAlreadyShutDown(id);
         }
     }
 
