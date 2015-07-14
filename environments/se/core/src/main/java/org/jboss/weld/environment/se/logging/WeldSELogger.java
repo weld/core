@@ -31,9 +31,8 @@ public interface WeldSELogger extends WeldEnvironmentLogger {
     @Message(id = 2001, value = "Weld SE container {0} shut down", format = Format.MESSAGE_FORMAT)
     void weldContainerShutdown(Object id);
 
-    @LogMessage(level = Level.WARN)
     @Message(id = 2002, value = "Weld SE container {0} was already shut down", format = Format.MESSAGE_FORMAT)
-    void weldContainerAlreadyShutDown(Object id);
+    IllegalStateException weldContainerAlreadyShutDown(Object id);
 
     @LogMessage(level = Level.INFO)
     @Message(id = 2003, value = "Weld SE container {0} initialized", format = Format.MESSAGE_FORMAT)
