@@ -79,4 +79,22 @@ public final class Iterables {
         return concat(transform(iterable, function));
     }
 
+    /**
+     *
+     * @param iterable
+     * @return
+     * @see WeldCollections#toMultiRowString(Collection)
+     */
+    public static <T> String toMultiRowString(Iterable<T> iterable) {
+        StringBuilder builder = new StringBuilder("\n  - ");
+        for (Iterator<T> iterator = iterable.iterator(); iterator.hasNext();) {
+            T element = iterator.next();
+            builder.append(element);
+            if (iterator.hasNext()) {
+                builder.append(",\n  - ");
+            }
+        }
+        return builder.toString();
+    }
+
 }

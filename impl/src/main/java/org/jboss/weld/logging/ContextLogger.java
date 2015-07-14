@@ -113,7 +113,7 @@ public interface ContextLogger extends WeldLogger {
      * @param info Some additional info, e.g. HTTP request for HttpSessionContext
      */
     @LogMessage(level = Level.WARN)
-    @Message(id = 225, value = "Bean store leak was detected during {0} association: {1}", format = Format.MESSAGE_FORMAT)
+    @Message(id = 225, value = "Bean store leak detected during {0} association: {1}", format = Format.MESSAGE_FORMAT)
     void beanStoreLeakDuringAssociation(Object context, Object info);
 
     @Message(id = 226, value = "Cannot register additional context for scope: {0}, {1}", format = Format.MESSAGE_FORMAT)
@@ -121,5 +121,9 @@ public interface ContextLogger extends WeldLogger {
 
     @Message(id = 227, value = "Bean identifier index inconsistency detected - the distributed container probably does not work with identical applications\nExpected hash: {0}\nCurrent index: {1}", format = Format.MESSAGE_FORMAT)
     IllegalStateException beanIdentifierIndexInconsistencyDetected(Object hash, Object index);
+
+    @LogMessage(level = Level.DEBUG)
+    @Message(id = 228, value = "Bean store leak detected during {0} association - instances of beans with the following identifiers might not be destroyed correctly: {1}", format = Format.MESSAGE_FORMAT)
+    void beanStoreLeakAffectedBeanIdentifiers(Object context, Object identifiers);
 
 }

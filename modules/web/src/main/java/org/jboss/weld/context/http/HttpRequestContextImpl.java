@@ -28,11 +28,13 @@ import javax.enterprise.context.RequestScoped;
 import javax.servlet.http.HttpServletRequest;
 
 import org.jboss.weld.context.AbstractBoundContext;
+import org.jboss.weld.context.beanstore.BoundBeanStore;
 import org.jboss.weld.context.beanstore.NamingScheme;
 import org.jboss.weld.context.beanstore.SimpleNamingScheme;
 import org.jboss.weld.context.beanstore.http.RequestBeanStore;
 import org.jboss.weld.context.cache.RequestScopedCache;
 import org.jboss.weld.logging.ContextLogger;
+import org.jboss.weld.util.collections.Iterables;
 import org.jboss.weld.util.reflection.Reflections;
 
 public class HttpRequestContextImpl extends AbstractBoundContext<HttpServletRequest> implements HttpRequestContext {
@@ -49,11 +51,13 @@ public class HttpRequestContextImpl extends AbstractBoundContext<HttpServletRequ
 
     public boolean associate(HttpServletRequest request) {
         // At this point the bean store should never be set - see also HttpContextLifecycle#nestedInvocationGuard
-        if (getBeanStore() != null) {
+        BoundBeanStore beanStore = getBeanStore();
+        if (beanStore != null) {
             ContextLogger.LOG.beanStoreLeakDuringAssociation(this.getClass().getName(), request);
+            ContextLogger.LOG.beanStoreLeakAffectedBeanIdentifiers(this.getClass().getName(), Iterables.toMultiRowString(beanStore));
         }
         // We always associate a new bean store to avoid possible leaks (security threats)
-        final RequestBeanStore beanStore = new RequestBeanStore(request, namingScheme);
+        beanStore = new RequestBeanStore(request, namingScheme);
         setBeanStore(beanStore);
         beanStore.attach();
         return true;

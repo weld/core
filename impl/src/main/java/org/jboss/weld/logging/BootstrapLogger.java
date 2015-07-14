@@ -192,6 +192,6 @@ public interface BootstrapLogger extends WeldLogger {
     IllegalStateException cdiApiVersionMismatch();
 
     @LogMessage(level = Logger.Level.DEBUG)
-    @Message(id = 145, value = "Bean identifier index built:\n{0}", format = Format.MESSAGE_FORMAT)
+    @Message(id = 145, value = "Bean identifier index built:\n  {0}", format = Format.MESSAGE_FORMAT)
     void beanIdentifierIndexBuilt(Object info);
 }

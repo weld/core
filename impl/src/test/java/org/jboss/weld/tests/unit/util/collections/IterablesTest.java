@@ -21,6 +21,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -87,6 +88,11 @@ public class IterablesTest {
         assertEquals(list1.get(0), iterator.next());
         assertFalse(iterator.hasNext());
         assertFalse(iterablesIterator.hasNext());
+    }
+
+    @Test
+    public void testToMultiRowString() {
+        assertEquals("\n  - Foo,\n  - Bar,\n  - Baz", Iterables.toMultiRowString(Arrays.asList("Foo", "Bar", "Baz")));
     }
 
 }
