@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
+import org.jboss.weld.resolution.CovariantTypes;
 import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.collections.ImmutableSet;
 import org.jboss.weld.util.reflection.GenericArrayTypeImpl;
@@ -299,5 +300,18 @@ public class Types {
             result = isIllegalBeanType(arrayType.getGenericComponentType());
         }
         return result;
+    }
+
+    /**
+     *
+     * @param type1
+     * @param type2
+     * @return <code>true</code> if the first type is more specific than the second type (is a subtype of), <code>false</code> otherwise
+     */
+    public static boolean isMoreSpecific(Type type1, Type type2) {
+        if(type1.equals(type2)) {
+            return false;
+        }
+        return CovariantTypes.isAssignableFrom(type2, type1);
     }
 }
