@@ -128,36 +128,12 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
 
     @Override
     public boolean associate(R request) {
-            this.associated.set(request);
-            /*
-            * We need to delay attaching the bean store until activate() is called
-            * so that we can attach the correct conversation id
-            *
-            * We may need access to the conversation id generator and
-            * conversations. If the session already exists, we can load it from
-            * there, otherwise we can create a new conversation id generator and
-            * conversations collection. If the the session exists when the request
-            * is dissociated, then we store them in the session then.
-            *
-            * We always store the generator and conversation map in the request
-            * for temporary usage.
-            */
-            if (getSessionAttribute(request, CONVERSATION_ID_GENERATOR_ATTRIBUTE_NAME, false) == null) {
-                ConversationIdGenerator generator = new ConversationIdGenerator();
-                setRequestAttribute(request, CONVERSATION_ID_GENERATOR_ATTRIBUTE_NAME, generator);
-                setSessionAttribute(request, CONVERSATION_ID_GENERATOR_ATTRIBUTE_NAME, generator, false);
-            } else {
-                setRequestAttribute(request, CONVERSATION_ID_GENERATOR_ATTRIBUTE_NAME, getSessionAttribute(request, CONVERSATION_ID_GENERATOR_ATTRIBUTE_NAME, true));
-            }
-
-            if (getSessionAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME, false) == null) {
-                Map<String, ManagedConversation> conversations = Collections.synchronizedMap(new HashMap<String, ManagedConversation>());
-                setRequestAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME, conversations);
-                setSessionAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME, conversations, false);
-            } else {
-                setRequestAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME, getSessionAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME, true));
-            }
-            return true;
+        this.associated.set(request);
+        /*
+         * We need to delay attaching the bean store until activate() is called so that we can attach the correct conversation id. We may need access to the
+         * conversation id generator and conversation map are initialized lazily.
+         */
+        return true;
     }
 
     @Override
@@ -175,20 +151,19 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
         }
     }
 
-    public void copyConversationIdGeneratorAndConversationsToSession() {
-        if (!isAssociated()) {
+    protected void copyConversationIdGeneratorAndConversationsToSession() {
+        final R request = getRequest();
+        if(request == null) {
             return;
         }
-        final R request = associated.get();
-        /*
-        * If the session is available, store the conversation id generator and
-        * conversations if necessary.
-        */
-        if (getSessionAttribute(request, CONVERSATION_ID_GENERATOR_ATTRIBUTE_NAME, false) == null) {
-            setSessionAttribute(request, CONVERSATION_ID_GENERATOR_ATTRIBUTE_NAME, getRequestAttribute(request, CONVERSATION_ID_GENERATOR_ATTRIBUTE_NAME), false);
+        // If necessary, store the conversation id generator and conversation map in the session
+        Object conversationIdGenerator = getRequestAttribute(request, CONVERSATION_ID_GENERATOR_ATTRIBUTE_NAME);
+        if(conversationIdGenerator != null && getSessionAttribute(request, CONVERSATION_ID_GENERATOR_ATTRIBUTE_NAME, false) == null) {
+            setSessionAttribute(request, CONVERSATION_ID_GENERATOR_ATTRIBUTE_NAME, conversationIdGenerator, false);
         }
-        if (getSessionAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME, false) == null) {
-            setSessionAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME, getRequestAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME), false);
+        Object conversationMap = getRequestAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME);
+        if(conversationMap != null && getSessionAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME, false) == null) {
+            setSessionAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME, conversationMap, false);
         }
     }
 
@@ -409,15 +384,31 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
 
     @Override
     public String generateConversationId() {
-        if (!isAssociated()) {
+        ConversationIdGenerator generator = getConversationIdGenerator();
+        checkContextInitialized();
+        return generator.call();
+    }
+
+    protected ConversationIdGenerator getConversationIdGenerator() {
+        final R request = associated.get();
+        if (request == null) {
             throw ConversationLogger.LOG.mustCallAssociateBeforeGeneratingId();
         }
-        if (!(getRequestAttribute(getRequest(), CONVERSATION_ID_GENERATOR_ATTRIBUTE_NAME) instanceof ConversationIdGenerator)) {
+        Object conversationIdGenerator = getRequestAttribute(request, CONVERSATION_ID_GENERATOR_ATTRIBUTE_NAME);
+        if (conversationIdGenerator == null) {
+            conversationIdGenerator = getSessionAttribute(request, CONVERSATION_ID_GENERATOR_ATTRIBUTE_NAME, false);
+            if(conversationIdGenerator == null) {
+                conversationIdGenerator = new ConversationIdGenerator();
+                setRequestAttribute(request, CONVERSATION_ID_GENERATOR_ATTRIBUTE_NAME, conversationIdGenerator);
+                setSessionAttribute(request, CONVERSATION_ID_GENERATOR_ATTRIBUTE_NAME, conversationIdGenerator, false);
+            } else {
+                setRequestAttribute(request, CONVERSATION_ID_GENERATOR_ATTRIBUTE_NAME, conversationIdGenerator);
+            }
+        }
+        if (!(conversationIdGenerator instanceof ConversationIdGenerator)) {
             throw ConversationLogger.LOG.conversationIdGeneratorNotFound();
         }
-        checkContextInitialized();
-        ConversationIdGenerator generator = (ConversationIdGenerator) getRequestAttribute(getRequest(), CONVERSATION_ID_GENERATOR_ATTRIBUTE_NAME);
-        return generator.call();
+        return (ConversationIdGenerator) conversationIdGenerator;
     }
 
     private static boolean isExpired(ManagedConversation conversation) {
@@ -447,12 +438,22 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
     private Map<String, ManagedConversation> getConversationMap() {
         checkIsAssociated();
         checkContextInitialized();
-        R request = getRequest();
-        Object attribute = getRequestAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME);
-        if (attribute == null || !(attribute instanceof Map)) {
-            throw ConversationLogger.LOG.unableToLoadConversations(CONVERSATIONS_ATTRIBUTE_NAME, attribute, request);
+        final R request = getRequest();
+        Object conversationMap = getRequestAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME);
+        if(conversationMap == null) {
+            conversationMap = getSessionAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME, false);
+            if (conversationMap == null) {
+                conversationMap = Collections.synchronizedMap(new HashMap<String, ManagedConversation>());
+                setRequestAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME, conversationMap);
+                setSessionAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME, conversationMap, false);
+            } else {
+                setRequestAttribute(request, CONVERSATIONS_ATTRIBUTE_NAME, conversationMap);
+            }
         }
-        return cast(attribute);
+        if (conversationMap == null || !(conversationMap instanceof Map)) {
+            throw ConversationLogger.LOG.unableToLoadConversations(CONVERSATIONS_ATTRIBUTE_NAME, conversationMap, request);
+        }
+        return cast(conversationMap);
     }
 
     @Override
