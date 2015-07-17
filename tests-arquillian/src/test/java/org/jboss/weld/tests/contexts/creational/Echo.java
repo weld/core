@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2012, Red Hat, Inc., and individual contributors
+ * Copyright 2015, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -16,30 +16,14 @@
  */
 package org.jboss.weld.tests.contexts.creational;
 
-import java.util.UUID;
+import javax.annotation.PreDestroy;
+import javax.enterprise.context.Dependent;
 
-import javax.enterprise.inject.Disposes;
-import javax.enterprise.inject.Produces;
+@Dependent
+public class Echo {
 
-public class Producer {
-
-    // Optimization is not allowed because there is a dependency with @PreDestroy callback
-    @Juicy
-    @Produces
-    public String generatedId(Echo echo) {
-        return "Juicy" + UUID.randomUUID().toString();
+    @PreDestroy
+    public void destroy() {
     }
 
-    @Produces
-    public ProductWithoutDisposer foo() {
-        return new ProductWithoutDisposer(true);
-    }
-
-    @Produces
-    public ProductWithDisposer bar() {
-        return new ProductWithDisposer(true);
-    }
-
-    public void disposeBar(@Disposes ProductWithDisposer product) {
-    }
 }

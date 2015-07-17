@@ -17,6 +17,7 @@
 package org.jboss.weld.tests.contexts.creational;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -48,11 +49,11 @@ public class CreationalContextTest {
     public void testOnlyDependenciesThatRequireCleanupAreStoredInCreationalContext(BeanManager manager) {
         Bean<InjectedBean> bean = Reflections.cast(manager.getBeans(InjectedBean.class).iterator().next());
         CreationalContext<InjectedBean> cc = manager.createCreationalContext(bean);
-        @SuppressWarnings("unused")
         InjectedBean instance = bean.create(cc);
+        assertNotNull(instance.id);
 
         WeldCreationalContext<InjectedBean> wcc = (WeldCreationalContext<InjectedBean>) cc;
-        assertEquals(4, wcc.getDependentInstances().size());
+        assertEquals(5, wcc.getDependentInstances().size());
 
         @SuppressWarnings("serial")
         Set<Class<?>> expectedDependentInstanceClasses = new HashSet<Class<?>>() {
@@ -61,6 +62,7 @@ public class CreationalContextTest {
                 add(ProductWithDisposer.class);
                 add(Bravo.class);
                 add(Delta.class);
+                add(String.class);
             }
         };
         Set<Class<?>> actualDependentInstanceClasses = new HashSet<Class<?>>();
