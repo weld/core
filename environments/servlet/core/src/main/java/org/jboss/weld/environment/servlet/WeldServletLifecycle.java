@@ -136,10 +136,15 @@ public class WeldServletLifecycle {
             if (container instanceof ContainerInstanceFactory) {
                 ContainerInstanceFactory factory = (ContainerInstanceFactory) container;
                 // start the container
-                ContainerInstance containerInstance = factory.initialize();
+                final ContainerInstance containerInstance = factory.initialize();
                 container = containerInstance;
                 // we are in charge of shutdown also
-                this.shutdownAction = () -> containerInstance.shutdown();
+                this.shutdownAction = new Runnable() {
+                    @Override
+                    public void run() {
+                        containerInstance.shutdown();
+                    }
+                };
             }
             if (container instanceof ContainerInstance) {
                 // the container instance was either passed to us directly or was created in the block above
@@ -235,7 +240,12 @@ public class WeldServletLifecycle {
                 FilterRegistration.Dynamic filterDynamic = context.addFilter("Weld Probe Filter", PROBE_FILTER_CLASS_NAME);
                 filterDynamic.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST, DispatcherType.FORWARD, DispatcherType.INCLUDE), true, "/*");
             }
-            this.shutdownAction = () -> bootstrap.shutdown();
+            this.shutdownAction = new Runnable() {
+                @Override
+                public void run() {
+                    bootstrap.shutdown();
+                }
+            };
         }
         return true;
     }

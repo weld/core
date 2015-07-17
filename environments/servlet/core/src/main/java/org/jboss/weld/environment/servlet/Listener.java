@@ -18,7 +18,6 @@ package org.jboss.weld.environment.servlet;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Consumer;
 
 import javax.enterprise.inject.spi.BeanManager;
 import javax.servlet.ServletContext;
@@ -29,6 +28,7 @@ import org.jboss.weld.environment.ContainerInstanceFactory;
 import org.jboss.weld.environment.servlet.logging.WeldServletLogger;
 import org.jboss.weld.servlet.api.ServletListener;
 import org.jboss.weld.servlet.api.helpers.ForwardingServletListener;
+import org.jboss.weld.util.Consumer;
 import org.jboss.weld.util.Preconditions;
 
 /**
@@ -83,9 +83,14 @@ public class Listener extends ForwardingServletListener {
         return new Listener(Collections.singletonList(initAction(CONTAINER_ATTRIBUTE_NAME, container)));
     }
 
-    private static Consumer<ServletContext> initAction(String key, Object value) {
+    private static Consumer<ServletContext> initAction(final String key, final Object value) {
         Preconditions.checkNotNull(value);
-        return (context -> context.setAttribute(key, value));
+        return new Consumer<ServletContext>() {
+            @Override
+            public void accept(ServletContext context) {
+                context.setAttribute(key, value);
+            }
+        };
     }
 
     private volatile WeldServletLifecycle lifecycle;
