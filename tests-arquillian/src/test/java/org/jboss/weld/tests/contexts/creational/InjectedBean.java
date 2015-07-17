@@ -52,4 +52,9 @@ public class InjectedBean {
     @Inject
     // retained within CreationalContext - because its dependency has disposer method
     private Delta dependency8;
+
+    @Inject
+    @Juicy
+    // retained within CreationalContext - because its dependency has @PreDestroy
+    String id;
 }
