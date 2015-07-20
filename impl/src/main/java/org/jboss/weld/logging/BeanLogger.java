@@ -241,10 +241,10 @@ public interface BeanLogger extends WeldLogger {
     @Message(id = 81, value = "Enterprise beans cannot be decorators:  {0}", format = Format.MESSAGE_FORMAT)
     DefinitionException ejbCannotBeDecorator(Object param1);
 
-    @Message(id = 82, value = "Scope {0} is not allowed on stateless enterprise beans for {1}.  Only @Dependent is allowed on stateless session beans.", format = Format.MESSAGE_FORMAT)
+    @Message(id = 82, value = "Scope {0} is not allowed on stateless session beans for {1}. Only @Dependent is allowed.", format = Format.MESSAGE_FORMAT)
     DefinitionException scopeNotAllowedOnStatelessSessionBean(Object param1, Object param2);
 
-    @Message(id = 83, value = "Scope {0} is not allowed on singleton enterprise beans for {1}.  Only @Dependent and @ApplicationScoped is allowed on singleton session beans.", format = Format.MESSAGE_FORMAT)
+    @Message(id = 83, value = "Scope {0} is not allowed on singleton session beans for {1}. Only @Dependent and @ApplicationScoped is allowed.", format = Format.MESSAGE_FORMAT)
     DefinitionException scopeNotAllowedOnSingletonBean(Object param1, Object param2);
 
     @Message(id = 84, value = "Specializing enterprise bean must extend another enterprise bean:  {0}", format = Format.MESSAGE_FORMAT)
@@ -259,8 +259,8 @@ public interface BeanLogger extends WeldLogger {
     @Message(id = 87, value = "Message driven beans cannot be Managed Beans:  {0}", format = Format.MESSAGE_FORMAT)
     DefinitionException messageDrivenBeansCannotBeManaged(Object param1);
 
-    @Message(id = 88, value = "Observer method must be static or local business method:  {0} on {1}", format = Format.MESSAGE_FORMAT)
-    DefinitionException observerMethodMustBeStaticOrBusiness(Object param1, Object param2);
+    @Message(id = 88, value = "Observer method must be static or local business method:  {0}\n\tat {1}\n  StackTrace:", format = Format.MESSAGE_FORMAT)
+    DefinitionException observerMethodMustBeStaticOrBusiness(Object param1, Object stackElement);
 
     @Message(id = 89, value = "Unable to determine EJB for {0}, multiple EJBs with that class:  {1}", format = Format.MESSAGE_FORMAT)
     IllegalStateException tooManyEjbsForClass(Object param1, Object param2);

@@ -197,12 +197,12 @@ class SessionBeanImpl<T> extends AbstractClassBean<T> implements SessionBean<T> 
      */
     protected void checkObserverMethods() {
         Collection<EnhancedAnnotatedMethod<?, ? super T>> observerMethods = BeanMethods.getObserverMethods(this.getEnhancedAnnotated());
-
         if (!observerMethods.isEmpty()) {
             Set<MethodSignature> businessMethodSignatures = getBusinessMethodSignatures();
             for (EnhancedAnnotatedMethod<?, ? super T> observerMethod : observerMethods) {
                 if (!observerMethod.isStatic() && !businessMethodSignatures.contains(observerMethod.getSignature())) {
-                    throw BeanLogger.LOG.observerMethodMustBeStaticOrBusiness(observerMethod, getEnhancedAnnotated());
+                    throw BeanLogger.LOG
+                            .observerMethodMustBeStaticOrBusiness(observerMethod, Formats.formatAsStackTraceElement(observerMethod.getJavaMember()));
                 }
             }
         }
