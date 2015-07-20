@@ -196,8 +196,8 @@ public interface BeanLogger extends WeldLogger {
     @Message(id = 61, value = "The delegate type does not extend or implement every decorated type. \n  Decorated type: {0}\n  Decorator: {1}", format = Format.MESSAGE_FORMAT)
     DefinitionException delegateMustSupportEveryDecoratedType(Object decoratedType, Object decorator);
 
-    @Message(id = 64, value = "Unable to process {0}", format = Format.MESSAGE_FORMAT)
-    String unableToProcess(Object param1);
+    @Message(id = 64, value = "Unable to process decorated type: {0}", format = Format.MESSAGE_FORMAT)
+    IllegalStateException unableToProcessDecoratedType(Object decoratedType);
 
     @Message(id = 66, value = "{0} has more than one @Dispose parameter", format = Format.MESSAGE_FORMAT)
     DefinitionException multipleDisposeParams(Object param1);
