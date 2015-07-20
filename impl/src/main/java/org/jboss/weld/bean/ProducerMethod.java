@@ -117,7 +117,7 @@ public class ProducerMethod<X, T> extends AbstractProducerBean<X, T, Method> {
     protected void specialize() {
         Set<? extends AbstractBean<?, ?>> specializedBeans = getSpecializedBeans();
         if (specializedBeans.isEmpty()) {
-            throw BeanLogger.LOG.producerMethodNotSpecializing(this);
+            throw BeanLogger.LOG.producerMethodNotSpecializing(this, Formats.formatAsStackTraceElement(annotatedMethod.getJavaMember()));
         }
     }
 
