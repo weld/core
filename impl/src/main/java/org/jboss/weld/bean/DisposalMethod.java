@@ -102,16 +102,20 @@ public class DisposalMethod<X, T> {
                     .multipleDisposeParams(disposalMethodInjectionPoint, Formats.formatAsStackTraceElement(enhancedAnnotatedMethod.getJavaMember()));
         }
         if (enhancedAnnotatedMethod.getEnhancedParameters(Observes.class).size() > 0) {
-            throw BeanLogger.LOG.inconsistentAnnotationsOnMethod("@Observes", DISPOSER_ANNOTATION, disposalMethodInjectionPoint);
+            throw BeanLogger.LOG.inconsistentAnnotationsOnMethod("@Observes", DISPOSER_ANNOTATION, disposalMethodInjectionPoint,
+                    Formats.formatAsStackTraceElement(enhancedAnnotatedMethod.getJavaMember()));
         }
         if (enhancedAnnotatedMethod.getAnnotation(Inject.class) != null) {
-            throw BeanLogger.LOG.inconsistentAnnotationsOnMethod("@Inject", DISPOSER_ANNOTATION, disposalMethodInjectionPoint);
+            throw BeanLogger.LOG.inconsistentAnnotationsOnMethod("@Inject", DISPOSER_ANNOTATION, disposalMethodInjectionPoint,
+                    Formats.formatAsStackTraceElement(enhancedAnnotatedMethod.getJavaMember()));
         }
         if (enhancedAnnotatedMethod.getAnnotation(Produces.class) != null) {
-            throw BeanLogger.LOG.inconsistentAnnotationsOnMethod("@Produces", DISPOSER_ANNOTATION, disposalMethodInjectionPoint);
+            throw BeanLogger.LOG.inconsistentAnnotationsOnMethod("@Produces", DISPOSER_ANNOTATION, disposalMethodInjectionPoint,
+                    Formats.formatAsStackTraceElement(enhancedAnnotatedMethod.getJavaMember()));
         }
         if (enhancedAnnotatedMethod.getAnnotation(Specializes.class) != null) {
-            throw BeanLogger.LOG.inconsistentAnnotationsOnMethod("@Specialized", DISPOSER_ANNOTATION, disposalMethodInjectionPoint);
+            throw BeanLogger.LOG.inconsistentAnnotationsOnMethod("@Specialized", DISPOSER_ANNOTATION, disposalMethodInjectionPoint,
+                    Formats.formatAsStackTraceElement(enhancedAnnotatedMethod.getJavaMember()));
         }
         if (declaringBean instanceof SessionBean<?>) {
             SessionBean<?> sessionBean = (SessionBean<?>) declaringBean;

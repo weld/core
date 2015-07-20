@@ -193,7 +193,7 @@ public interface BeanLogger extends WeldLogger {
     @Message(id = 60, value = "Too many delegate injection points defined for {0}", format = Format.MESSAGE_FORMAT)
     DefinitionException tooManyDelegateInjectionPoints(Object param1);
 
-    @Message(id = 61, value = "The delegate type does not extend or implement every decorated type. \n  Decorated type: {0}\n  Decorator: {1}", format = Format.MESSAGE_FORMAT)
+    @Message(id = 61, value = "The delegate type does not extend or implement the decorated type. \n  Decorated type: {0}\n  Decorator: {1}", format = Format.MESSAGE_FORMAT)
     DefinitionException delegateMustSupportEveryDecoratedType(Object decoratedType, Object decorator);
 
     @Message(id = 64, value = "Unable to process decorated type: {0}", format = Format.MESSAGE_FORMAT)
@@ -202,8 +202,8 @@ public interface BeanLogger extends WeldLogger {
     @Message(id = 66, value = "{0} has more than one @Dispose parameter \n\tat {1}\n  StackTrace:", format = Format.MESSAGE_FORMAT)
     DefinitionException multipleDisposeParams(Object param1, Object stackElement);
 
-    @Message(id = 67, value = "{0} is not allowed on same method as {1}, see {2}", format = Format.MESSAGE_FORMAT)
-    DefinitionException inconsistentAnnotationsOnMethod(Object param1, Object param2, Object param3);
+    @Message(id = 67, value = "{0} is not allowed on same method as {1}, see {2}\n\tat {3}\n  StackTrace:", format = Format.MESSAGE_FORMAT)
+    DefinitionException inconsistentAnnotationsOnMethod(Object param1, Object param2, Object param3, Object stackElement);
 
     @Message(id = 68, value = "Method {0} must be declared on a business interface of {1}", format = Format.MESSAGE_FORMAT)
     DefinitionException methodNotBusinessMethod(Object param1, Object param2);
