@@ -265,7 +265,7 @@ public interface BeanLogger extends WeldLogger {
     @Message(id = 89, value = "Unable to determine EJB for {0}, multiple EJBs with that class:  {1}", format = Format.MESSAGE_FORMAT)
     IllegalStateException tooManyEjbsForClass(Object param1, Object param2);
 
-    @Message(id = 90, value = "Method {0} defined on {1} does not match any method on decorated types", format = Format.MESSAGE_FORMAT)
+    @Message(id = 90, value = "A decorator has an abstract method that is not declared by any decorated type\n  Method: {0}\n\tat {1}\n  StackTrace:", format = Format.MESSAGE_FORMAT)
     DefinitionException abstractMethodMustMatchDecoratedType(Object param1, Object param2);
 
     @Message(id = 94, value = "Injected field {0} cannot be annotated @Produces on {1}", format = Format.MESSAGE_FORMAT)
