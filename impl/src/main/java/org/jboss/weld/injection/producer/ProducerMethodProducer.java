@@ -65,9 +65,11 @@ public abstract class ProducerMethodProducer<X, T> extends AbstractMemberProduce
      */
     protected void checkProducerMethod(EnhancedAnnotatedMethod<T, ? super X> method) {
         if (method.getEnhancedParameters(Observes.class).size() > 0) {
-            throw BeanLogger.LOG.inconsistentAnnotationsOnMethod(PRODUCER_ANNOTATION, "@Observes", this.method);
+            throw BeanLogger.LOG.inconsistentAnnotationsOnMethod(PRODUCER_ANNOTATION, "@Observes", this.method,
+                    Formats.formatAsStackTraceElement(method.getJavaMember()));
         } else if (method.getEnhancedParameters(Disposes.class).size() > 0) {
-            throw BeanLogger.LOG.inconsistentAnnotationsOnMethod(PRODUCER_ANNOTATION, "@Disposes", this.method);
+            throw BeanLogger.LOG.inconsistentAnnotationsOnMethod(PRODUCER_ANNOTATION, "@Disposes", this.method,
+                    Formats.formatAsStackTraceElement(method.getJavaMember()));
         } else if (getDeclaringBean() instanceof SessionBean<?> && !Modifier.isStatic(method.slim().getJavaMember().getModifiers())) {
             boolean methodDeclaredOnTypes = false;
             // TODO use annotated item?
