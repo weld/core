@@ -223,8 +223,8 @@ public interface BeanLogger extends WeldLogger {
     @Message(id = 75, value = "Normal scoped managed bean implementation class has a public field:  {0}", format = Format.MESSAGE_FORMAT)
     DefinitionException publicFieldOnNormalScopedBeanNotAllowed(Object param1);
 
-    @Message(id = 76, value = "Managed bean constructor must not have a parameter annotated {0}:  {1}", format = Format.MESSAGE_FORMAT)
-    DefinitionException parameterAnnotationNotAllowedOnConstructor(Object param1, Object param2);
+    @Message(id = 76, value = "Bean constructor must not have a parameter annotated with {0}: {1}\n\tat {2}\n  StackTrace:", format = Format.MESSAGE_FORMAT)
+    DefinitionException parameterAnnotationNotAllowedOnConstructor(Object param1, Object param2, Object stackElement);
 
     @Message(id = 77, value = "Cannot declare multiple disposal methods for this producer method.\n\nProducer method:  {0}\nDisposal methods:  {1}", format = Format.MESSAGE_FORMAT)
     DefinitionException multipleDisposalMethods(Object param1, Object param2);
