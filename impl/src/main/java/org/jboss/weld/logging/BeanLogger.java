@@ -211,8 +211,8 @@ public interface BeanLogger extends WeldLogger {
     @Message(id = 70, value = "Simple bean {0} cannot be a non-static inner class", format = Format.MESSAGE_FORMAT)
     DefinitionException simpleBeanAsNonStaticInnerClassNotAllowed(Object param1);
 
-    @Message(id = 71, value = "Managed bean {0} must be @Dependent", format = Format.MESSAGE_FORMAT)
-    DefinitionException beanMustBeDependent(Object param1);
+    @Message(id = 71, value = "Managed bean with a parameterized bean class must be @Dependent: {0}", format = Format.MESSAGE_FORMAT)
+    DefinitionException managedBeanWithParameterizedBeanClassMustBeDependent(Object param1);
 
     @Message(id = 72, value = "Bean declaring a passivating scope must be passivation capable.  Bean:  {0}", format = Format.MESSAGE_FORMAT)
     DeploymentException passivatingBeanNeedsSerializableImpl(Object param1);
