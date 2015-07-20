@@ -229,8 +229,8 @@ public interface BeanLogger extends WeldLogger {
     @Message(id = 77, value = "Cannot declare multiple disposal methods for this producer method.\n\nProducer method:  {0}\nDisposal methods:  {1}", format = Format.MESSAGE_FORMAT)
     DefinitionException multipleDisposalMethods(Object param1, Object param2);
 
-    @Message(id = 78, value = "Specialized producer method does not override a method on the direct superclass:  {0}", format = Format.MESSAGE_FORMAT)
-    DefinitionException producerMethodNotSpecializing(Object param1);
+    @Message(id = 78, value = "Specialized producer method does not override another producer method: {0}\n\tat {1}\n  StackTrace:", format = Format.MESSAGE_FORMAT)
+    DefinitionException producerMethodNotSpecializing(Object param1, Object stackElement);
 
     @Message(id = 79, value = "Could not instantiate a proxy for a session bean:  {0}\n  Proxy: {1}", format = Format.MESSAGE_FORMAT)
     CreationException sessionBeanProxyInstantiationFailed(Object sessionBean, Object proxyClass, @Cause Throwable cause);
