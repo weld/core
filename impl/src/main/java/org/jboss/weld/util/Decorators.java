@@ -31,7 +31,6 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.PassivationCapable;
-import javax.inject.Inject;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
@@ -45,7 +44,6 @@ import org.jboss.weld.bean.proxy.TargetBeanInstance;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.exceptions.WeldException;
-import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.attributes.WeldInjectionPointAttributes;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -102,9 +100,6 @@ public class Decorators {
             if (injectionPoint.isDelegate()) {
                 if (result != null) {
                     throw BeanLogger.LOG.tooManyDelegateInjectionPoints(type);
-                }
-                if (injectionPoint instanceof MethodInjectionPoint<?, ?> && !injectionPoint.getAnnotated().isAnnotationPresent(Inject.class)) {
-                    throw BeanLogger.LOG.delegateOnNonInitializerMethod(injectionPoint);
                 }
                 result = InjectionPoints.getWeldInjectionPoint(injectionPoint);
             }
