@@ -48,6 +48,7 @@ import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.metadata.cache.MetaAnnotationStore;
 import org.jboss.weld.resolution.QualifierInstance;
+import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
 
 public class DisposalMethod<X, T> {
@@ -97,7 +98,8 @@ public class DisposalMethod<X, T> {
 
     private void checkDisposalMethod(EnhancedAnnotatedMethod<T, ? super X> enhancedAnnotatedMethod, AbstractClassBean<X> declaringBean) {
         if (enhancedAnnotatedMethod.getEnhancedParameters(Disposes.class).size() > 1) {
-            throw BeanLogger.LOG.multipleDisposeParams(disposalMethodInjectionPoint);
+            throw BeanLogger.LOG
+                    .multipleDisposeParams(disposalMethodInjectionPoint, Formats.formatAsStackTraceElement(enhancedAnnotatedMethod.getJavaMember()));
         }
         if (enhancedAnnotatedMethod.getEnhancedParameters(Observes.class).size() > 0) {
             throw BeanLogger.LOG.inconsistentAnnotationsOnMethod("@Observes", DISPOSER_ANNOTATION, disposalMethodInjectionPoint);
