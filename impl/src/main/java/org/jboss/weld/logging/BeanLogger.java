@@ -205,8 +205,8 @@ public interface BeanLogger extends WeldLogger {
     @Message(id = 67, value = "{0} is not allowed on same method as {1}, see {2}\n\tat {3}\n  StackTrace:", format = Format.MESSAGE_FORMAT)
     DefinitionException inconsistentAnnotationsOnMethod(Object param1, Object param2, Object param3, Object stackElement);
 
-    @Message(id = 68, value = "Method {0} must be declared on a business interface of {1}", format = Format.MESSAGE_FORMAT)
-    DefinitionException methodNotBusinessMethod(Object param1, Object param2);
+    @Message(id = 68, value = "{0} method {1} is not a business method of {2}\n\tat {3}\n  StackTrace:", format = Format.MESSAGE_FORMAT)
+    DefinitionException methodNotBusinessMethod(Object methodType, Object param1, Object param2, Object stackElement);
 
     @Message(id = 70, value = "Simple bean {0} cannot be a non-static inner class", format = Format.MESSAGE_FORMAT)
     DefinitionException simpleBeanAsNonStaticInnerClassNotAllowed(Object param1);

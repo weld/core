@@ -121,7 +121,8 @@ public class DisposalMethod<X, T> {
             SessionBean<?> sessionBean = (SessionBean<?>) declaringBean;
             Set<MethodSignature> businessMethodSignatures = sessionBean.getBusinessMethodSignatures();
             if (!businessMethodSignatures.contains(enhancedAnnotatedMethod.getSignature())) {
-                throw BeanLogger.LOG.methodNotBusinessMethod(enhancedAnnotatedMethod, declaringBean);
+                throw BeanLogger.LOG.methodNotBusinessMethod("Disposer", enhancedAnnotatedMethod, declaringBean,
+                        Formats.formatAsStackTraceElement(enhancedAnnotatedMethod.getJavaMember()));
             }
         }
         for (ParameterInjectionPoint<?, ?> ip : disposalMethodInjectionPoint.getParameterInjectionPoints()) {
