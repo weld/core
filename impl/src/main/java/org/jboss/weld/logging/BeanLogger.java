@@ -187,9 +187,6 @@ public interface BeanLogger extends WeldLogger {
     @Message(id = 54, value = "Producers cannot produce unserializable instances for injection into an injection point that requires a passivation capable dependency\n  Producer:  {0}\n\tat {1}\n  Injection Point:  {2}\n\tat {3}\n  StackTrace:", format = Format.MESSAGE_FORMAT)
     IllegalProductException unserializableProductInjectionError(Object producer, Object producerStackElement, Object ip, Object ipStackElement);
 
-    @Message(id = 58, value = "Method with @Delegate parameter must be an initializer method:  {0}", format = Format.MESSAGE_FORMAT)
-    DefinitionException delegateOnNonInitializerMethod(Object param1);
-
     @Message(id = 59, value = "No delegate injection point defined for {0}", format = Format.MESSAGE_FORMAT)
     DefinitionException noDelegateInjectionPoint(Object param1);
 
