@@ -48,6 +48,7 @@ import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.serialization.spi.ContextualStore;
+import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 import org.jboss.weld.util.reflection.Reflections;
 
@@ -152,7 +153,7 @@ public class Decorators {
      */
     public static <T> void checkAbstractMethods(Set<Type> decoratedTypes, EnhancedAnnotatedType<T> type, BeanManagerImpl beanManager) {
 
-        if(decoratedTypes == null) {
+        if (decoratedTypes == null) {
             decoratedTypes = new HashSet<Type>(type.getInterfaceClosure());
             decoratedTypes.remove(Serializable.class);
         }
@@ -160,7 +161,8 @@ public class Decorators {
         Set<MethodSignature> signatures = new HashSet<MethodSignature>();
 
         for (Type decoratedType : decoratedTypes) {
-            for (EnhancedAnnotatedMethod<?, ?> method : ClassTransformer.instance(beanManager).getEnhancedAnnotatedType(Reflections.getRawType(decoratedType), beanManager.getId()).getEnhancedMethods()) {
+            for (EnhancedAnnotatedMethod<?, ?> method : ClassTransformer.instance(beanManager)
+                    .getEnhancedAnnotatedType(Reflections.getRawType(decoratedType), beanManager.getId()).getEnhancedMethods()) {
                 signatures.add(method.getSignature());
             }
         }
@@ -169,7 +171,7 @@ public class Decorators {
             if (Reflections.isAbstract(((AnnotatedMethod<?>) method).getJavaMember())) {
                 MethodSignature methodSignature = method.getSignature();
                 if (!signatures.contains(methodSignature)) {
-                    throw BeanLogger.LOG.abstractMethodMustMatchDecoratedType(method.getSignature(), type);
+                    throw BeanLogger.LOG.abstractMethodMustMatchDecoratedType(method, Formats.formatAsStackTraceElement(method.getJavaMember()));
                 }
             }
         }
