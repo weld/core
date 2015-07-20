@@ -83,7 +83,7 @@ public abstract class ProducerMethodProducer<X, T> extends AbstractMemberProduce
                 }
             }
             if (!methodDeclaredOnTypes) {
-                throw BeanLogger.LOG.methodNotBusinessMethod(this, getDeclaringBean());
+                throw BeanLogger.LOG.methodNotBusinessMethod("Producer", this, getDeclaringBean(), Formats.formatAsStackTraceElement(method.getJavaMember()));
             }
         }
     }
