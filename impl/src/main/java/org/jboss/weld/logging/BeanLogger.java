@@ -199,8 +199,8 @@ public interface BeanLogger extends WeldLogger {
     @Message(id = 64, value = "Unable to process decorated type: {0}", format = Format.MESSAGE_FORMAT)
     IllegalStateException unableToProcessDecoratedType(Object decoratedType);
 
-    @Message(id = 66, value = "{0} has more than one @Dispose parameter", format = Format.MESSAGE_FORMAT)
-    DefinitionException multipleDisposeParams(Object param1);
+    @Message(id = 66, value = "{0} has more than one @Dispose parameter \n\tat {1}\n  StackTrace:", format = Format.MESSAGE_FORMAT)
+    DefinitionException multipleDisposeParams(Object param1, Object stackElement);
 
     @Message(id = 67, value = "{0} is not allowed on same method as {1}, see {2}", format = Format.MESSAGE_FORMAT)
     DefinitionException inconsistentAnnotationsOnMethod(Object param1, Object param2, Object param3);
