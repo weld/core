@@ -42,7 +42,6 @@ import org.jboss.weld.bean.WeldDecorator;
 import org.jboss.weld.bean.proxy.DecorationHelper;
 import org.jboss.weld.bean.proxy.TargetBeanInstance;
 import org.jboss.weld.exceptions.DefinitionException;
-import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.exceptions.WeldException;
 import org.jboss.weld.injection.attributes.WeldInjectionPointAttributes;
 import org.jboss.weld.logging.BeanLogger;
@@ -75,7 +74,7 @@ public class Decorators {
     public static Set<InvokableAnnotatedMethod<?>> getDecoratorMethods(BeanManagerImpl beanManager, WeldDecorator<?> decorator) {
         ImmutableSet.Builder<InvokableAnnotatedMethod<?>> builder = ImmutableSet.builder();
         for (Type type : decorator.getDecoratedTypes()) {
-            EnhancedAnnotatedType<?> weldClass = getWeldClassOfDecoratedType(beanManager, type);
+            EnhancedAnnotatedType<?> weldClass = getEnhancedAnnotatedTypeOfDecoratedType(beanManager, type);
             for (EnhancedAnnotatedMethod<?, ?> method : weldClass.getDeclaredEnhancedMethods()) {
                 if (decorator.getEnhancedAnnotated().getEnhancedMethod(method.getSignature()) != null) {
                     builder.add(InvokableAnnotatedMethod.of(method.slim()));
@@ -85,14 +84,14 @@ public class Decorators {
         return builder.build();
     }
 
-    private static EnhancedAnnotatedType<?> getWeldClassOfDecoratedType(BeanManagerImpl beanManager, Type type) {
+    private static EnhancedAnnotatedType<?> getEnhancedAnnotatedTypeOfDecoratedType(BeanManagerImpl beanManager, Type type) {
         if (type instanceof Class<?>) {
             return beanManager.createEnhancedAnnotatedType((Class<?>) type);
         }
         if (type instanceof ParameterizedType && (((ParameterizedType) type).getRawType() instanceof Class)) {
             return beanManager.createEnhancedAnnotatedType((Class<?>) ((ParameterizedType) type).getRawType());
         }
-        throw new IllegalStateException(BeanLogger.LOG.unableToProcess(type));
+        throw BeanLogger.LOG.unableToProcessDecoratedType(type);
     }
 
     public static WeldInjectionPointAttributes<?, ?> findDelegateInjectionPoint(AnnotatedType<?> type, Iterable<InjectionPoint> injectionPoints) {
