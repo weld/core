@@ -205,7 +205,7 @@ public class ManagedBean<T> extends AbstractClassBean<T> {
     @Override
     protected void checkType() {
         if (!isDependent() && getEnhancedAnnotated().isParameterizedType()) {
-            throw BeanLogger.LOG.beanMustBeDependent(type);
+            throw BeanLogger.LOG.managedBeanWithParameterizedBeanClassMustBeDependent(type);
         }
         boolean passivating = beanManager.isPassivatingScope(getScope());
         if (passivating && !isPassivationCapableBean()) {
