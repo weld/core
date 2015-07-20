@@ -293,10 +293,12 @@ public class Beans {
         }
         if (constructor != null) {
             if (!constructor.getEnhancedParameters(Disposes.class).isEmpty()) {
-                throw BeanLogger.LOG.parameterAnnotationNotAllowedOnConstructor("@Disposes", constructor);
+                throw BeanLogger.LOG.parameterAnnotationNotAllowedOnConstructor("@Disposes", constructor,
+                        Formats.formatAsStackTraceElement(constructor.getJavaMember()));
             }
             if (!constructor.getEnhancedParameters(Observes.class).isEmpty()) {
-                throw BeanLogger.LOG.parameterAnnotationNotAllowedOnConstructor("@Observes", constructor);
+                throw BeanLogger.LOG.parameterAnnotationNotAllowedOnConstructor("@Observes", constructor,
+                        Formats.formatAsStackTraceElement(constructor.getJavaMember()));
             }
         }
         return constructor;
