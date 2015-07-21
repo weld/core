@@ -54,11 +54,11 @@ public interface UtilLogger extends WeldLogger {
     @Message(id = 806, value = "Cannot have more than one pre destroy method annotated @PreDestroy for {0}", format = Format.MESSAGE_FORMAT)
     DefinitionException tooManyPreDestroyMethods(Object param1);
 
-    @Message(id = 807, value = "Initializer method {0} cannot be annotated @Produces on {1}", format = Format.MESSAGE_FORMAT)
-    DefinitionException initializerCannotBeProducer(Object param1, Object param2);
+    @Message(id = 807, value = "Initializer method cannot be annotated @Produces {0}\n\tat {1}\n  StackTrace:", format = Format.MESSAGE_FORMAT)
+    DefinitionException initializerCannotBeProducer(Object param1, Object stackElement);
 
-    @Message(id = 808, value = "Initializer method {0} cannot have parameters annotated @Disposes on {1}", format = Format.MESSAGE_FORMAT)
-    DefinitionException initializerCannotBeDisposalMethod(Object param1, Object param2);
+    @Message(id = 808, value = "Initializer method cannot have parameters annotated @Disposes: {0}\n\tat {1}\n  StackTrace:", format = Format.MESSAGE_FORMAT)
+    DefinitionException initializerCannotBeDisposalMethod(Object param1, Object stackElement);
 
     @Message(id = 810, value = "Cannot place qualifiers on final fields:  {0}", format = Format.MESSAGE_FORMAT)
     DefinitionException qualifierOnFinalField(Object param1);
@@ -96,7 +96,7 @@ public interface UtilLogger extends WeldLogger {
     @Message(id = 826, value = "Cannot access values() on annotation")
     DeploymentException annotationValuesInaccessible(@Cause Throwable cause);
 
-    @Message(id = 827, value = "Initializer method {0} declared on {1} may not be a generic method", format = Format.MESSAGE_FORMAT)
+    @Message(id = 827, value = "Initializer method may not be a generic method: {0}\n\tat {1}\n  StackTrace:", format = Format.MESSAGE_FORMAT)
     DefinitionException initializerMethodIsGeneric(Object param1, Object param2);
 
     @Message(id = 832, value = "Unable to load the cache value for the key {0}", format = Format.MESSAGE_FORMAT)
