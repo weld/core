@@ -35,6 +35,7 @@ import org.jboss.weld.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
+import org.jboss.weld.util.reflection.Formats;
 
 /**
  * @author Pete Muir
@@ -145,7 +146,7 @@ public class BeanInjectionTarget<T> extends BasicInjectionTarget<T> {
         if (constructor == null) {
             throw BeanLogger.LOG.decoratedHasNoNoargsConstructor(this);
         } else if (constructor.isPrivate()) {
-            throw BeanLogger.LOG.decoratedNoargsConstructorIsPrivate(this);
+            throw BeanLogger.LOG.decoratedNoargsConstructorIsPrivate(this, Formats.formatAsStackTraceElement(constructor.getJavaMember()));
         }
     }
 
