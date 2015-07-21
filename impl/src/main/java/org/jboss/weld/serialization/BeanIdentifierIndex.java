@@ -174,8 +174,9 @@ public class BeanIdentifierIndex implements Service {
     public String getDebugInfo() {
         StringBuilder builder = new StringBuilder();
         builder.append(toString());
-        builder.append(":\n");
+        builder.append(" \n");
         for (int i = 0; i < index.length; i++) {
+            builder.append("  ");
             builder.append(String.format("%4d", i));
             builder.append(": ");
             builder.append(index[i]);
