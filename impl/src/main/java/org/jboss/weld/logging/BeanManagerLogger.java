@@ -79,6 +79,9 @@ public interface BeanManagerLogger extends WeldLogger {
     @Message(id = 1314, value = "{0} is expected to be a normal scope type", format = Format.MESSAGE_FORMAT)
     String nonNormalScope(Object param1);
 
+    @Message(id = 1315, value = "More than one current activity for an active context:  {0}", format = Format.MESSAGE_FORMAT)
+    IllegalStateException tooManyActivities(Object param1);
+
     @Message(id = 1316, value = "{0} is not an interceptor binding type", format = Format.MESSAGE_FORMAT)
     IllegalArgumentException notInterceptorBindingType(Object param1);
 

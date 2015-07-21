@@ -35,10 +35,11 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.bean.RIBean;
 import org.jboss.weld.bootstrap.events.NotificationListener;
-import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.InjectionPointFactory;
+import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.logging.EventLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.Reflections;
 
 import com.google.common.collect.ImmutableSet;
@@ -76,7 +77,8 @@ public class ExtensionObserverMethodImpl<T, X> extends ObserverMethodImpl<T, X> 
         Class<?> rawObserverType = Reflections.getRawType(getObservedType());
         boolean isProcessAnnotatedType = rawObserverType.equals(ProcessAnnotatedType.class) || rawObserverType.equals(ProcessSyntheticAnnotatedType.class);
         if (!isProcessAnnotatedType && !requiredTypeAnnotations.isEmpty()) {
-            throw EventLogger.LOG.invalidWithAnnotations(this);
+            throw EventLogger.LOG
+                    .invalidWithAnnotations(this, Formats.formatAsStackTraceElement(eventParameter.getDeclaringEnhancedCallable().getJavaMember()));
         }
         if (isProcessAnnotatedType && requiredTypeAnnotations.isEmpty()) {
             Type[] typeArguments = eventParameter.getActualTypeArguments();

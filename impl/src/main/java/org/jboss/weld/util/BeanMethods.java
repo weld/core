@@ -37,8 +37,8 @@ import javax.inject.Inject;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
-import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.InjectionPointFactory;
+import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.interceptor.reader.InterceptorMetadataUtils;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
 import org.jboss.weld.interceptor.util.InterceptionTypeRegistry;
@@ -48,6 +48,7 @@ import org.jboss.weld.logging.UtilLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.security.SetAccessibleAction;
 import org.jboss.weld.util.collections.WeldCollections;
+import org.jboss.weld.util.reflection.Formats;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
@@ -238,7 +239,7 @@ public class BeanMethods {
                 } else if (method.getEnhancedParameters(Disposes.class).size() > 0) {
                     throw UtilLogger.LOG.initializerCannotBeDisposalMethod(method, type);
                 } else if (method.getEnhancedParameters(Observes.class).size() > 0) {
-                    throw EventLogger.LOG.invalidInitializer(method);
+                    throw EventLogger.LOG.invalidInitializer(method, Formats.formatAsStackTraceElement(method.getJavaMember()));
                 } else if (method.isGeneric()) {
                     throw UtilLogger.LOG.initializerMethodIsGeneric(method, type);
                 }

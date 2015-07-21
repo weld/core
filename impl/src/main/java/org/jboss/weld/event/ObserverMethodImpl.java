@@ -59,6 +59,7 @@ import org.jboss.weld.logging.EventLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.util.Observers;
+import org.jboss.weld.util.reflection.Formats;
 import org.jboss.weld.util.reflection.HierarchyDiscovery;
 
 /**
@@ -178,31 +179,31 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
         // Make sure exactly one and only one parameter is annotated with Observes
         List<EnhancedAnnotatedParameter<?, Y>> eventObjects = annotated.getEnhancedParameters(Observes.class);
         if (this.reception.equals(Reception.IF_EXISTS) && declaringBean.getScope().equals(Dependent.class)) {
-            throw EventLogger.LOG.invalidScopedConditionalObserver(this);
+            throw EventLogger.LOG.invalidScopedConditionalObserver(this, Formats.formatAsStackTraceElement(annotated.getJavaMember()));
         }
         if (eventObjects.size() > 1) {
-            throw EventLogger.LOG.multipleEventParameters(this);
+            throw EventLogger.LOG.multipleEventParameters(this, Formats.formatAsStackTraceElement(annotated.getJavaMember()));
         }
         EnhancedAnnotatedParameter<?, Y> eventParameter = eventObjects.iterator().next();
         checkRequiredTypeAnnotations(eventParameter);
         // Check for parameters annotated with @Disposes
         List<?> disposeParams = annotated.getEnhancedParameters(Disposes.class);
         if (disposeParams.size() > 0) {
-            throw EventLogger.LOG.invalidDisposesParameter(this);
+            throw EventLogger.LOG.invalidDisposesParameter(this, Formats.formatAsStackTraceElement(annotated.getJavaMember()));
         }
         // Check annotations on the method to make sure this is not a producer
         // method, initializer method, or destructor method.
         if (this.observerMethod.getAnnotated().isAnnotationPresent(Produces.class)) {
-            throw EventLogger.LOG.invalidProducer(this);
+            throw EventLogger.LOG.invalidProducer(this, Formats.formatAsStackTraceElement(annotated.getJavaMember()));
         }
         if (this.observerMethod.getAnnotated().isAnnotationPresent(Inject.class)) {
-            throw EventLogger.LOG.invalidInitializer(this);
+            throw EventLogger.LOG.invalidInitializer(this, Formats.formatAsStackTraceElement(annotated.getJavaMember()));
         }
         boolean containerLifecycleObserverMethod = Observers.isContainerLifecycleObserverMethod(this);
         for (EnhancedAnnotatedParameter<?, ?> parameter : annotated.getEnhancedParameters()) {
             // if this is an observer method for container lifecycle event, it must not inject anything besides BeanManager
             if (containerLifecycleObserverMethod && !parameter.isAnnotationPresent(Observes.class) && !BeanManager.class.equals(parameter.getBaseType())) {
-                throw EventLogger.LOG.invalidInjectionPoint(this);
+                throw EventLogger.LOG.invalidInjectionPoint(this, Formats.formatAsStackTraceElement(annotated.getJavaMember()));
             }
         }
 
@@ -210,7 +211,8 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
 
     protected void checkRequiredTypeAnnotations(EnhancedAnnotatedParameter<?, ?> eventParameter) {
         if (eventParameter.isAnnotationPresent(WithAnnotations.class)) {
-            throw EventLogger.LOG.invalidWithAnnotations(this);
+            throw EventLogger.LOG
+                    .invalidWithAnnotations(this, Formats.formatAsStackTraceElement(eventParameter.getDeclaringEnhancedCallable().getJavaMember()));
         }
     }
 
