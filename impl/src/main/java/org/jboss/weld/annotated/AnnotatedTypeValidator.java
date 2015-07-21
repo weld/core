@@ -26,6 +26,7 @@ import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.AnnotatedType;
 
 import org.jboss.weld.logging.MetadataLogger;
+import org.jboss.weld.util.reflection.Formats;
 
 /**
  * Validates that methods of an {@link Annotated} implementation return sane values.
@@ -95,7 +96,8 @@ public class AnnotatedTypeValidator {
     private static void checkMembersBelongToHierarchy(Iterable<? extends AnnotatedMember<?>> members, Set<Class<?>> hierarchy, AnnotatedType<?> type) {
         for (AnnotatedMember<?> member : members) {
             if (!hierarchy.contains(member.getJavaMember().getDeclaringClass())) {
-                MetadataLogger.LOG.notInHierarchy(member.getJavaMember().getName(), member.toString(), type.getJavaClass().getName(), type.toString());
+                MetadataLogger.LOG.notInHierarchy(member.getJavaMember().getName(), member.toString(), type.getJavaClass().getName(), type.toString(),
+                        Formats.formatAsStackTraceElement(member.getJavaMember()));
             }
         }
     }

@@ -48,28 +48,28 @@ public interface EventLogger extends WeldLogger {
     void asyncObserverFailure(Object param1);
 
     @Message(id = 403, value = "Proxy required")
-    InvalidObjectException proxyRequired();
+    InvalidObjectException serializationProxyRequired();
 
-    @Message(id = 404, value = "Conditional observer method [{0}] cannot be declared by a @Dependent scoped bean", format = Format.MESSAGE_FORMAT)
-    DefinitionException invalidScopedConditionalObserver(Object param1);
+    @Message(id = 404, value = "Conditional observer method cannot be declared by a @Dependent scoped bean: {0}\n\tat {1}\n  StackTrace:", format = Format.MESSAGE_FORMAT)
+    DefinitionException invalidScopedConditionalObserver(Object param1, Object stackElement);
 
-    @Message(id = 405, value = "Observer method [{0}] cannot have more than one event parameter annotated @Observes", format = Format.MESSAGE_FORMAT)
-    DefinitionException multipleEventParameters(Object param1);
+    @Message(id = 405, value = "Observer method cannot have more than one event parameter annotated @Observes: {0}\n\tat {1}\n  StackTrace:", format = Format.MESSAGE_FORMAT)
+    DefinitionException multipleEventParameters(Object param1, Object stackElement);
 
-    @Message(id = 406, value = "Observer method [{0}] cannot have a parameter annotated with @Disposes", format = Format.MESSAGE_FORMAT)
-    DefinitionException invalidDisposesParameter(Object param1);
+    @Message(id = 406, value = "Observer method cannot have a parameter annotated with @Disposes: {0}\n\tat {1}\n  StackTrace:", format = Format.MESSAGE_FORMAT)
+    DefinitionException invalidDisposesParameter(Object param1, Object stackElement);
 
-    @Message(id = 407, value = "Observer method [{0}] cannot be annotated with @Produces", format = Format.MESSAGE_FORMAT)
-    DefinitionException invalidProducer(Object param1);
+    @Message(id = 407, value = "Observer method cannot be annotated with @Produces: {0}\n\tat {1}\n  StackTrace:", format = Format.MESSAGE_FORMAT)
+    DefinitionException invalidProducer(Object param1, Object stackElement);
 
-    @Message(id = 408, value = "Observer method [{0}] cannot be annotated with @Inject; observer methods are automatically injection points", format = Format.MESSAGE_FORMAT)
-    DefinitionException invalidInitializer(Object param1);
+    @Message(id = 408, value = "Observer method cannot be annotated with @Inject, observer methods are automatically injection points: {0}\n\tat {1}\n  StackTrace:", format = Format.MESSAGE_FORMAT)
+    DefinitionException invalidInitializer(Object param1, Object stackElement);
 
-    @Message(id = 409, value = "Observer method for container lifecycle event [{0}] can only inject BeanManager.", format = Format.MESSAGE_FORMAT)
-    DefinitionException invalidInjectionPoint(Object param1);
+    @Message(id = 409, value = "Observer method for container lifecycle event can only inject BeanManager: {0}\n\tat {1}\n  StackTrace:", format = Format.MESSAGE_FORMAT)
+    DefinitionException invalidInjectionPoint(Object param1, Object stackElement);
 
-    @Message(id = 410, value = "Observer method {0} cannot define @WithAnnotations", format = Format.MESSAGE_FORMAT)
-    DefinitionException invalidWithAnnotations(Object param1);
+    @Message(id = 410, value = "Observer method cannot define @WithAnnotations: {0}\n\tat {1}\n  StackTrace:", format = Format.MESSAGE_FORMAT)
+    DefinitionException invalidWithAnnotations(Object param1, Object stackElement);
 
     @LogMessage(level=Level.INFO)
     @Message(id = 411, value = "Observer method {0} receives events for all annotated types. Consider restricting events using @WithAnnotations or a generic type with bounds.", format = Format.MESSAGE_FORMAT)

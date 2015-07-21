@@ -14,6 +14,7 @@ import org.jboss.weld.logging.ValidatorLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.util.BeanMethods;
 import org.jboss.weld.util.collections.ImmutableMap;
+import org.jboss.weld.util.reflection.Formats;
 
 /**
  * @author Marius Bogoevici
@@ -57,13 +58,13 @@ public class InterceptorMetadataUtils {
         if (!Void.TYPE.equals(method.getReturnType()) && !Object.class.equals(method.getReturnType())) {
             throw ValidatorLogger.LOG.interceptorMethodDoesNotHaveVoidReturnType(
                     method.getName(), method.getDeclaringClass().getName(),
-                    interceptionType.annotationClassName(), Void.TYPE.getName());
+                    interceptionType.annotationClassName(), Void.TYPE.getName(), Formats.formatAsStackTraceElement(method));
         }
         Class<?>[] parameterTypes = method.getParameterTypes();
         if (parameterTypes.length > 1) {
             throw ValidatorLogger.LOG.interceptorMethodDoesNotHaveZeroParameters(
                     method.getName(), method.getDeclaringClass().getName(),
-                    interceptionType.annotationClassName());
+                    interceptionType.annotationClassName(), Formats.formatAsStackTraceElement(method));
         }
         Class<?>[] exceptionTypes = method.getExceptionTypes();
         if (exceptionTypes.length != 0) {
@@ -71,7 +72,7 @@ public class InterceptorMetadataUtils {
                 if (!RuntimeException.class.isAssignableFrom(exceptionType)) {
                     ValidatorLogger.LOG.interceptorMethodShouldNotThrowCheckedExceptions(
                             method.getName(), method.getDeclaringClass().getName(),
-                            exceptionType.getName());
+                            exceptionType.getName(), Formats.formatAsStackTraceElement(method));
                 }
             }
         }
@@ -81,9 +82,8 @@ public class InterceptorMetadataUtils {
 
     private static boolean isValidInterceptorClassLifecycleInterceptorMethod(InterceptionType interceptionType, Method method) {
         if (!Object.class.equals(method.getReturnType()) && !Void.TYPE.equals(method.getReturnType())) {
-            throw ValidatorLogger.LOG.interceptorMethodDoesNotReturnObjectOrVoid(
-                    method.getName(), method.getDeclaringClass().getName(),
-                    interceptionType.annotationClassName(), Void.TYPE.getName(), OBJECT_CLASS_NAME);
+            throw ValidatorLogger.LOG.interceptorMethodDoesNotReturnObjectOrVoid(method.getName(), method.getDeclaringClass().getName(),
+                    interceptionType.annotationClassName(), Void.TYPE.getName(), OBJECT_CLASS_NAME, Formats.formatAsStackTraceElement(method));
         }
 
         Class<?>[] parameterTypes = method.getParameterTypes();
@@ -93,33 +93,28 @@ public class InterceptorMetadataUtils {
             if (InvocationContext.class.isAssignableFrom(parameterTypes[0])) {
                 return true;
             }
-            throw ValidatorLogger.LOG.interceptorMethodDoesNotHaveCorrectTypeOfParameter(
-                    method.getName(), method.getDeclaringClass().getName(),
-                    interceptionType.annotationClassName(), InvocationContext.class.getName());
+            throw ValidatorLogger.LOG.interceptorMethodDoesNotHaveCorrectTypeOfParameter(method.getName(), method.getDeclaringClass().getName(),
+                    interceptionType.annotationClassName(), InvocationContext.class.getName(), Formats.formatAsStackTraceElement(method));
         } else {
-            throw ValidatorLogger.LOG.interceptorMethodDoesNotHaveExactlyOneParameter(
-                    method.getName(), method.getDeclaringClass().getName(),
-                    interceptionType.annotationClassName());
+            throw ValidatorLogger.LOG.interceptorMethodDoesNotHaveExactlyOneParameter(method.getName(), method.getDeclaringClass().getName(),
+                    interceptionType.annotationClassName(), Formats.formatAsStackTraceElement(method));
         }
     }
 
     private static boolean isValidBusinessMethodInterceptorMethod(InterceptionType interceptionType, Method method) {
         if (!Object.class.equals(method.getReturnType())) {
-            throw ValidatorLogger.LOG.interceptorMethodDoesNotReturnObject(
-                    method.getName(), method.getDeclaringClass().getName(),
-                    interceptionType.annotationClassName(), OBJECT_CLASS_NAME);
+            throw ValidatorLogger.LOG.interceptorMethodDoesNotReturnObject(method.getName(), method.getDeclaringClass().getName(),
+                    interceptionType.annotationClassName(), OBJECT_CLASS_NAME, Formats.formatAsStackTraceElement(method));
         }
 
         Class<?>[] parameterTypes = method.getParameterTypes();
         if (parameterTypes.length != 1) {
-            throw ValidatorLogger.LOG.interceptorMethodDoesNotHaveExactlyOneParameter(
-                    method.getName(), method.getDeclaringClass().getName(),
-                    interceptionType.annotationClassName());
+            throw ValidatorLogger.LOG.interceptorMethodDoesNotHaveExactlyOneParameter(method.getName(), method.getDeclaringClass().getName(),
+                    interceptionType.annotationClassName(), Formats.formatAsStackTraceElement(method));
         }
         if (!InvocationContext.class.isAssignableFrom(parameterTypes[0])) {
-            throw ValidatorLogger.LOG.interceptorMethodDoesNotHaveCorrectTypeOfParameter(
-                    method.getName(), method.getDeclaringClass().getName(),
-                    interceptionType.annotationClassName(), InvocationContext.class.getName());
+            throw ValidatorLogger.LOG.interceptorMethodDoesNotHaveCorrectTypeOfParameter(method.getName(), method.getDeclaringClass().getName(),
+                    interceptionType.annotationClassName(), InvocationContext.class.getName(), Formats.formatAsStackTraceElement(method));
         }
         return true;
     }

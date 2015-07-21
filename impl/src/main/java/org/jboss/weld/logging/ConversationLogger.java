@@ -59,11 +59,11 @@ public interface ConversationLogger extends WeldLogger {
 
     @LogMessage(level = Level.DEBUG)
     @Message(id = 317, value = "Promoted conversation {0} to long-running", format = Format.MESSAGE_FORMAT)
-    void promotedTransient(Object param1);
+    void promotedTransientConversation(Object param1);
 
     @LogMessage(level = Level.DEBUG)
     @Message(id = 318, value = "Returned long-running conversation {0} to transient", format = Format.MESSAGE_FORMAT)
-    void demotedLrc(Object param1);
+    void demotedLongRunningConversation(Object param1);
 
     @LogMessage(level = Level.TRACE)
     @Message(id = 320, value = "Cleaning up transient conversation")
@@ -107,7 +107,7 @@ public interface ConversationLogger extends WeldLogger {
     @Message(id = 335, value = "Conversation context is already active, most likely it was not cleaned up properly during previous request processing: {0}", format = Format.MESSAGE_FORMAT)
     void contextAlreadyActive(Object request);
 
-    @Message(id = 336, value = "Context is not active", format = Format.MESSAGE_FORMAT)
+    @Message(id = 336, value = "Conversation context is not active", format = Format.MESSAGE_FORMAT)
     IllegalStateException contextNotActive();
 
     @Message(id = 337, value = "Unable to find ConversationNamingScheme in the request, this conversation wasn't transient at the start of the request", format = Format.MESSAGE_FORMAT)
