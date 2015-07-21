@@ -27,6 +27,7 @@ import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.logging.ValidatorLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.module.PlugableValidator;
+import org.jboss.weld.util.reflection.Formats;
 
 class WeldEjbValidator implements PlugableValidator {
 
@@ -36,7 +37,7 @@ class WeldEjbValidator implements PlugableValidator {
             SessionBean<?> sessionBean = (SessionBean<?>) bean;
             if (UserTransaction.class.equals(ij.getType()) && (ij.getQualifiers().isEmpty() || ij.getQualifiers().contains(DefaultLiteral.INSTANCE))
                     && hasContainerManagedTransactions(sessionBean)) {
-                throw ValidatorLogger.LOG.userTransactionInjectionIntoBeanWithContainerManagedTransactions(ij);
+                throw ValidatorLogger.LOG.userTransactionInjectionIntoBeanWithContainerManagedTransactions(ij, Formats.formatAsStackTraceElement(ij));
             }
         }
     }
