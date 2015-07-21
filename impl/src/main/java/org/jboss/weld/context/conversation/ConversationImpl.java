@@ -72,7 +72,7 @@ public class ConversationImpl implements ManagedConversation, Serializable {
             this.id = getActiveConversationContext().generateConversationId();
         }
         notifyConversationContext();
-        ConversationLogger.LOG.promotedTransient(id);
+        ConversationLogger.LOG.promotedTransientConversation(id);
     }
 
     @Override
@@ -87,7 +87,7 @@ public class ConversationImpl implements ManagedConversation, Serializable {
         _transient = false;
         this.id = id;
         notifyConversationContext();
-        ConversationLogger.LOG.promotedTransient(id);
+        ConversationLogger.LOG.promotedTransientConversation(id);
     }
 
     private void notifyConversationContext() {
@@ -105,7 +105,7 @@ public class ConversationImpl implements ManagedConversation, Serializable {
         if (_transient) {
             throw ConversationLogger.LOG.endCalledOnTransientConversation();
         }
-        ConversationLogger.LOG.demotedLrc(id);
+        ConversationLogger.LOG.demotedLongRunningConversation(id);
         _transient = true;
     }
 
