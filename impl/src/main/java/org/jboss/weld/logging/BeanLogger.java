@@ -387,8 +387,8 @@ public interface BeanLogger extends WeldLogger {
     @Message(id = 1534, value = "Bean class which has decorators must have a public constructor without parameters: {0}", format = Format.MESSAGE_FORMAT)
     DeploymentException decoratedHasNoNoargsConstructor(Object param1);
 
-    @Message(id = 1535, value = "Constructor without parameters cannot be private in bean class which has decorators: {0}", format = Format.MESSAGE_FORMAT)
-    DeploymentException decoratedNoargsConstructorIsPrivate(Object param1);
+    @Message(id = 1535, value = "Constructor without parameters cannot be private in bean class which has decorators: {0}\n\tat {1}\n  StackTrace:", format = Format.MESSAGE_FORMAT)
+    DeploymentException decoratedNoargsConstructorIsPrivate(Object param1, Object stackElement);
 
     /**
      * ID of this message was originally 0 but in jboss-logging zero is a special value meaning no ID
