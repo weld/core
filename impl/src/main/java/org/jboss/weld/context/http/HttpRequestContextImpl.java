@@ -54,7 +54,9 @@ public class HttpRequestContextImpl extends AbstractBoundContext<HttpServletRequ
         BoundBeanStore beanStore = getBeanStore();
         if (beanStore != null) {
             ContextLogger.LOG.beanStoreLeakDuringAssociation(this.getClass().getName(), request);
-            ContextLogger.LOG.beanStoreLeakAffectedBeanIdentifiers(this.getClass().getName(), Iterables.toMultiRowString(beanStore));
+            if (ContextLogger.LOG.isDebugEnabled()) {
+                ContextLogger.LOG.beanStoreLeakAffectedBeanIdentifiers(this.getClass().getName(), Iterables.toMultiRowString(beanStore));
+            }
         }
         // We always associate a new bean store to avoid possible leaks (security threats)
         beanStore = new RequestBeanStore(request, namingScheme);
