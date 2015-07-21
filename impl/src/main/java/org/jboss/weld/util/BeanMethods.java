@@ -235,13 +235,13 @@ public class BeanMethods {
         public void processMethod(EnhancedAnnotatedMethod<?, ? super T> method) {
             if (method.isAnnotationPresent(Inject.class)) {
                 if (method.getAnnotation(Produces.class) != null) {
-                    throw UtilLogger.LOG.initializerCannotBeProducer(method, type);
+                    throw UtilLogger.LOG.initializerCannotBeProducer(method, Formats.formatAsStackTraceElement(method.getJavaMember()));
                 } else if (method.getEnhancedParameters(Disposes.class).size() > 0) {
-                    throw UtilLogger.LOG.initializerCannotBeDisposalMethod(method, type);
+                    throw UtilLogger.LOG.initializerCannotBeDisposalMethod(method, Formats.formatAsStackTraceElement(method.getJavaMember()));
                 } else if (method.getEnhancedParameters(Observes.class).size() > 0) {
                     throw EventLogger.LOG.invalidInitializer(method, Formats.formatAsStackTraceElement(method.getJavaMember()));
                 } else if (method.isGeneric()) {
-                    throw UtilLogger.LOG.initializerMethodIsGeneric(method, type);
+                    throw UtilLogger.LOG.initializerMethodIsGeneric(method, Formats.formatAsStackTraceElement(method.getJavaMember()));
                 }
                 if (!method.isStatic()) {
                     currentLevel.add(InjectionPointFactory.instance().createMethodInjectionPoint(method, declaringBean,
