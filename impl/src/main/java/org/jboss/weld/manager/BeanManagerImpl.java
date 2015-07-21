@@ -18,7 +18,7 @@ package org.jboss.weld.manager;
 
 import static com.google.common.collect.Iterables.concat;
 import static org.jboss.weld.annotated.AnnotatedTypeValidator.validateAnnotatedType;
-import static org.jboss.weld.util.collections.WeldCollections.flatMap;
+import static org.jboss.weld.util.collections.Iterables.flatMap;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 import static org.jboss.weld.util.reflection.Reflections.isCacheable;
 

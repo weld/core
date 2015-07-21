@@ -17,7 +17,7 @@
 package org.jboss.weld.bootstrap;
 
 import static org.jboss.weld.manager.BeanManagers.BEAN_MANAGER_TO_ID;
-import static org.jboss.weld.util.collections.WeldCollections.flatMap;
+import static org.jboss.weld.util.collections.Iterables.flatMap;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;

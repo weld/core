@@ -16,7 +16,12 @@
  */
 package org.jboss.weld.util.collections;
 
+import static com.google.common.collect.Iterables.concat;
+import static com.google.common.collect.Iterables.transform;
+
 import java.util.Iterator;
+
+import com.google.common.base.Function;
 
 /**
  * Static utility methods for {@link Iterable}.
@@ -46,4 +51,7 @@ public final class Iterables {
         return builder.toString();
     }
 
+    public static <F, T> Iterable<T> flatMap(Iterable<F> iterable, Function<F, Iterable<T>> function) {
+        return concat(transform(iterable, function));
+    }
 }

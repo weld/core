@@ -27,12 +27,10 @@ import java.util.concurrent.ConcurrentMap;
 
 import org.jboss.weld.util.reflection.Reflections;
 
-import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterables;
 
 /**
  * Collection utilities.
@@ -193,9 +191,5 @@ public class WeldCollections {
             return old;
         }
         return value;
-    }
-
-    public static <F, T> Iterable<T> flatMap(Iterable<F> iterable, Function<F, Iterable<T>> function) {
-        return Iterables.concat(Iterables.transform(iterable, function));
     }
 }
