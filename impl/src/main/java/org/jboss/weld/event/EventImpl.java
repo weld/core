@@ -188,7 +188,7 @@ public class EventImpl<T> extends AbstractFacade<T, Event<T>> implements Event<T
     }
 
     private void readObject(ObjectInputStream stream) throws InvalidObjectException {
-        throw EventLogger.LOG.proxyRequired();
+        throw EventLogger.LOG.serializationProxyRequired();
     }
 
     private static class SerializationProxy<T> extends AbstractFacadeSerializationProxy<T, Event<T>> {
