@@ -45,14 +45,14 @@ public interface ValidatorLogger extends WeldLogger {
     MessageCallback<DefinitionException> INJECTION_INTO_DISPOSER_METHOD = new MessageCallback<DefinitionException>() {
         @Override
         public DefinitionException construct(Object... params) {
-            return ValidatorLogger.LOG.injectionIntoDisposerMethod(params[0]);
+            return ValidatorLogger.LOG.injectionIntoDisposerMethod(params[0], params[1]);
         }
     };
 
     MessageCallback<DefinitionException> INJECTION_INTO_NON_BEAN = new MessageCallback<DefinitionException>() {
         @Override
         public DefinitionException construct(Object... params) {
-            return ValidatorLogger.LOG.injectionIntoNonBean(params[0]);
+            return ValidatorLogger.LOG.injectionIntoNonBean(params[0], params[1]);
         }
     };
 
@@ -107,17 +107,17 @@ public interface ValidatorLogger extends WeldLogger {
     @Message(id = 1403, value = "The bean {0} declares a passivating scope but has a non-serializable decorator {1}", format = Format.MESSAGE_FORMAT)
     UnserializableDependencyException passivatingBeanWithNonserializableDecorator(Object param1, Object param2);
 
-    @Message(id = 1404, value = "The injection point {0} is annotated with @New which cannot be combined with other qualifiers", format = Format.MESSAGE_FORMAT)
-    DefinitionException newWithQualifiers(Object param1);
+    @Message(id = 1404, value = "The injection point is annotated with @New which cannot be combined with other qualifiers: {0}\n\tat {1}\n  StackTrace", format = Format.MESSAGE_FORMAT)
+    DefinitionException newWithQualifiers(Object param1, Object stackElement);
 
-    @Message(id = 1405, value = "Cannot inject {0} in a class which isn't a bean", format = Format.MESSAGE_FORMAT)
-    DefinitionException injectionIntoNonBean(Object param1);
+    @Message(id = 1405, value = "Cannot inject {0} in a class which isn't a bean\n\tat {1}\n  StackTrace", format = Format.MESSAGE_FORMAT)
+    DefinitionException injectionIntoNonBean(Object param1, Object stackElement);
 
-    @Message(id = 1406, value = "Cannot inject {0} in a non @Dependent scoped bean", format = Format.MESSAGE_FORMAT)
-    DefinitionException injectionIntoNonDependentBean(Object param1);
+    @Message(id = 1406, value = "Cannot inject injection point metadata in a non @Dependent scoped bean: {0}\n\tat {1}\n  StackTrace", format = Format.MESSAGE_FORMAT)
+    DefinitionException injectionIntoNonDependentBean(Object param1, Object stackElement);
 
-    @Message(id = 1407, value = "Cannot declare an injection point with a type variable: {0}", format = Format.MESSAGE_FORMAT)
-    DefinitionException injectionPointWithTypeVariable(Object param1);
+    @Message(id = 1407, value = "Cannot declare an injection point with a type variable: {0}\n\tat {1}\n  StackTrace", format = Format.MESSAGE_FORMAT)
+    DefinitionException injectionPointWithTypeVariable(Object param1, Object stackElement);
 
     @Message(id = 1408, value = "Unsatisfied dependencies for type {2} with qualifiers {1}\n  at injection point {0}\n  at {3}\n{4}", format = Format.MESSAGE_FORMAT)
     DeploymentException injectionPointHasUnsatisfiedDependencies(Object param1, Object param2, Object param3, Object param4, Object param5);
@@ -125,8 +125,8 @@ public interface ValidatorLogger extends WeldLogger {
     @Message(id = 1409, value = "Ambiguous dependencies for type {2} with qualifiers {1}\n  at injection point {0}\n  at {3}\n  Possible dependencies: {4}\n", format = Format.MESSAGE_FORMAT)
     DeploymentException injectionPointHasAmbiguousDependencies(Object param1, Object param2, Object param3, Object param4, Object param5);
 
-    @Message(id = 1410, value = "The injection point {0} has non-proxyable dependencies", format = Format.MESSAGE_FORMAT)
-    DeploymentException injectionPointHasNonProxyableDependencies(Object param1, @Cause Throwable cause);
+    @Message(id = 1410, value = "The injection point has non-proxyable dependencies: {0}\n\tat {1}\n  StackTrace", format = Format.MESSAGE_FORMAT)
+    DeploymentException injectionPointHasNonProxyableDependencies(Object param1, Object stackElement, @Cause Throwable cause);
 
     @Message(id = 1413, value = "The bean {0} declares a passivating scope but has a non-passivation-capable dependency {1}", format = Format.MESSAGE_FORMAT)
     UnserializableDependencyException injectionPointHasNonSerializableDependency(Object param1, Object param2);
@@ -161,14 +161,14 @@ public interface ValidatorLogger extends WeldLogger {
     @Message(id = 1424, value = "The following disposal methods were declared but did not resolve to a producer method: {0}", format = Format.MESSAGE_FORMAT)
     DefinitionException disposalMethodsWithoutProducer(Object param1);
 
-    @Message(id = 1425, value = "An injection point of type {0} cannot have a wildcard type parameter:  {1}", format = Format.MESSAGE_FORMAT)
-    DefinitionException injectionPointHasWildcard(Object param1, Object param2);
+    @Message(id = 1425, value = "An injection point cannot have a wildcard type parameter: {0}\n\tat {1}\n  StackTrace", format = Format.MESSAGE_FORMAT)
+    DefinitionException injectionPointHasWildcard(Object param1,  Object stackElement);
 
-    @Message(id = 1426, value = "An injection point of type {0} must have a type parameter:  {1}", format = Format.MESSAGE_FORMAT)
-    DefinitionException injectionPointMustHaveTypeParameter(Object param1, Object param2);
+    @Message(id = 1426, value = "An injection point must have a type parameter: {0}\n\tat {1}\n  StackTrace", format = Format.MESSAGE_FORMAT)
+    DefinitionException injectionPointMustHaveTypeParameter(Object param1, Object stackElement);
 
-    @Message(id = 1427, value = "Only field injection points can use the @Named qualifier with no value. {0} is not a field injection point.", format = Format.MESSAGE_FORMAT)
-    DefinitionException nonFieldInjectionPointCannotUseNamed(Object param1);
+    @Message(id = 1427, value = "Only field injection points can use the @Named qualifier with no value: {0}\n\tat {1}\n  StackTrace", format = Format.MESSAGE_FORMAT)
+    DefinitionException nonFieldInjectionPointCannotUseNamed(Object param1, Object stackElement);
 
     @Message(id = 1428, value = "A decorator cannot have producer methods, but at least one was found on {0}.", format = Format.MESSAGE_FORMAT)
     DefinitionException decoratorsCannotHaveProducerMethods(Object param1);
@@ -207,8 +207,8 @@ public interface ValidatorLogger extends WeldLogger {
     UnproxyableResolutionException notProxyableArrayType(Object param1, Object param2);
 
     @LogMessage(level = Level.WARN)
-    @Message(id = 1440, value = "Scope type {0} used on injection point {1}", format = Format.MESSAGE_FORMAT)
-    void scopeAnnotationOnInjectionPoint(Object param1, Object param2);
+    @Message(id = 1440, value = "Scope type {0} used on injection point {1}\n\tat {2}\n  StackTrace", format = Format.MESSAGE_FORMAT)
+    void scopeAnnotationOnInjectionPoint(Object param1, Object param2, Object stackElement);
 
     @Message(id = 1441, value = "Enabled alternative {0} is not a class", format = Format.MESSAGE_FORMAT)
     DeploymentException alternativeBeanClassNotClass(Object param1);
@@ -225,26 +225,26 @@ public interface ValidatorLogger extends WeldLogger {
     @Message(id = 1446, value = "A decorator cannot have observer methods, but at least one was found on {0}.", format = Format.MESSAGE_FORMAT)
     DefinitionException decoratorsCannotHaveObserverMethods(Object param1);
 
-    @Message(id = 1447, value = "Method {0} defined on class {1} is not defined according to the specification. It is annotated with @{2} but it does not return {3}.", format = Format.MESSAGE_FORMAT)
-    DefinitionException interceptorMethodDoesNotReturnObject(Object param1, Object param2, Object param3, Object param4);
+    @Message(id = 1447, value = "Method {0} defined on class {1} is not defined according to the specification. It is annotated with @{2} but it does not return {3}\n\tat {4}\n  StackTrace", format = Format.MESSAGE_FORMAT)
+    DefinitionException interceptorMethodDoesNotReturnObject(Object param1, Object param2, Object param3, Object param4, Object stackElement);
 
-    @Message(id = 1448, value = "Method {0} defined on class {1} is not defined according to the specification. It is annotated with @{2} but it does not have exactly one parameter.", format = Format.MESSAGE_FORMAT)
-    DefinitionException interceptorMethodDoesNotHaveExactlyOneParameter(Object param1, Object param2, Object param3);
+    @Message(id = 1448, value = "Method {0} defined on class {1} is not defined according to the specification. It is annotated with @{2} but it does not have exactly one parameter\n\tat {3}\n  StackTrace", format = Format.MESSAGE_FORMAT)
+    DefinitionException interceptorMethodDoesNotHaveExactlyOneParameter(Object param1, Object param2, Object param3, Object stackElement);
 
-    @Message(id = 1449, value = "Method {0} defined on class {1} is not defined according to the specification. It is annotated with @{2} but its single parameter is not a {3}.", format = Format.MESSAGE_FORMAT)
-    DefinitionException interceptorMethodDoesNotHaveCorrectTypeOfParameter(Object param1, Object param2, Object param3, Object param4);
+    @Message(id = 1449, value = "Method {0} defined on class {1} is not defined according to the specification. It is annotated with @{2} but its single parameter is not a {3}\n\tat {4}\n  StackTrace", format = Format.MESSAGE_FORMAT)
+    DefinitionException interceptorMethodDoesNotHaveCorrectTypeOfParameter(Object param1, Object param2, Object param3, Object param4, Object stackElement);
 
-    @Message(id = 1451, value = "javax.transaction.UserTransaction cannot be injected into an enterprise bean with container-managed transactions {0}", format = Format.MESSAGE_FORMAT)
-    DefinitionException userTransactionInjectionIntoBeanWithContainerManagedTransactions(Object param1);
+    @Message(id = 1451, value = "javax.transaction.UserTransaction cannot be injected into an enterprise bean with container-managed transactions: {0}\n\tat {1}\n  StackTrace", format = Format.MESSAGE_FORMAT)
+    DefinitionException userTransactionInjectionIntoBeanWithContainerManagedTransactions(Object param1, Object stackElement);
 
-    @Message(id = 1452, value = "{0} is not a valid type for a Bean metadata injection point {1}", format = Format.MESSAGE_FORMAT)
-    DefinitionException invalidBeanMetadataInjectionPointType(Object param1, Object param2);
+    @Message(id = 1452, value = "{0} is not a valid type for a Bean metadata injection point {1}\n\tat {2}\n  StackTrace", format = Format.MESSAGE_FORMAT)
+    DefinitionException invalidBeanMetadataInjectionPointType(Object param1, Object param2, Object stackElement);
 
-    @Message(id = 1453, value = "{0} is not a valid type argument for a Bean metadata injection point {1}", format = Format.MESSAGE_FORMAT)
-    DefinitionException invalidBeanMetadataInjectionPointTypeArgument(Object param1, Object param2);
+    @Message(id = 1453, value = "{0} is not a valid type argument for a Bean metadata injection point {1}\n\tat {2}\n  StackTrace", format = Format.MESSAGE_FORMAT)
+    DefinitionException invalidBeanMetadataInjectionPointTypeArgument(Object param1, Object param2, Object stackElement);
 
-    @Message(id = 1454, value = "{0} cannot be used at a Bean metadata injection point of a bean which is not {1}, {2}", format = Format.MESSAGE_FORMAT)
-    DefinitionException invalidBeanMetadataInjectionPointQualifier(Object param1, Object param2, Object param3);
+    @Message(id = 1454, value = "{0} cannot be used at a Bean metadata injection point of a bean which is not {1}, {2}\n\tat {3}\n  StackTrace", format = Format.MESSAGE_FORMAT)
+    DefinitionException invalidBeanMetadataInjectionPointQualifier(Object param1, Object param2, Object param3, Object stackElement);
 
     @Message(id = 1455, value = "{0} does not declare any decorated types.", format = Format.MESSAGE_FORMAT)
     DefinitionException noDecoratedTypes(Object param1);
@@ -261,24 +261,24 @@ public interface ValidatorLogger extends WeldLogger {
     @Message(id = 1465, value = "{0} for a built-in bean {1} must be passivation capable.", format = Format.MESSAGE_FORMAT)
     UnserializableDependencyException builtinBeanWithNonserializableDecorator(Object param1, Object param2);
 
-    @Message(id = 1466, value = "Cannot inject {0} in a disposer method", format = Format.MESSAGE_FORMAT)
-    DefinitionException injectionIntoDisposerMethod(Object param1);
+    @Message(id = 1466, value = "Invalid injection point found in a disposer method: {0}\n\tat {1}\n  StackTrace", format = Format.MESSAGE_FORMAT)
+    DefinitionException injectionIntoDisposerMethod(Object param1, Object stackElement);
 
-    @Message(id = 1467, value = "Method {0} defined on class {1} is not defined according to the specification. It is annotated with @{2} but it does not return {3} or {4}.", format = Format.MESSAGE_FORMAT)
-    DefinitionException interceptorMethodDoesNotReturnObjectOrVoid(Object param1, Object param2, Object param3, Object param4, Object param5);
+    @Message(id = 1467, value = "Method {0} defined on class {1} is not defined according to the specification. It is annotated with @{2} but it does not return {3} or {4}.\n\tat {5}\n  StackTrace", format = Format.MESSAGE_FORMAT)
+    DefinitionException interceptorMethodDoesNotReturnObjectOrVoid(Object param1, Object param2, Object param3, Object param4, Object param5, Object stackElement);
 
-    @Message(id = 1468, value = "Method {0} defined on class {1} is not defined according to the specification. It is annotated with @{2} but it does not have a {3} return type.", format = Format.MESSAGE_FORMAT)
-    DefinitionException interceptorMethodDoesNotHaveVoidReturnType(Object param1, Object param2, Object param3, Object param4);
+    @Message(id = 1468, value = "Method {0} defined on class {1} is not defined according to the specification. It is annotated with @{2} but it does not have a {3} return type.\n\tat {4}\n  StackTrace", format = Format.MESSAGE_FORMAT)
+    DefinitionException interceptorMethodDoesNotHaveVoidReturnType(Object param1, Object param2, Object param3, Object param4, Object stackElement);
 
-    @Message(id = 1469, value = "Method {0} defined on class {1} is not defined according to the specification. It is annotated with @{2} but it does not have zero parameters.", format = Format.MESSAGE_FORMAT)
-    DefinitionException interceptorMethodDoesNotHaveZeroParameters(Object param1, Object param2, Object param3);
+    @Message(id = 1469, value = "Method {0} defined on class {1} is not defined according to the specification. It is annotated with @{2} but it does not have zero parameters.\n\tat {3}\n  StackTrace", format = Format.MESSAGE_FORMAT)
+    DefinitionException interceptorMethodDoesNotHaveZeroParameters(Object param1, Object param2, Object param3, Object stackElement);
 
     @LogMessage(level = Level.WARN)
-    @Message(id = 1471, value = "Interceptor method {0} defined on class {1} is not defined according to the specification. It should not throw {2}, which is a checked exception.", format = Format.MESSAGE_FORMAT)
-    void interceptorMethodShouldNotThrowCheckedExceptions(Object param1, Object param2, Object param3);
+    @Message(id = 1471, value = "Interceptor method {0} defined on class {1} is not defined according to the specification. It should not throw {2}, which is a checked exception.\n\tat {3}\n  StackTrace", format = Format.MESSAGE_FORMAT)
+    void interceptorMethodShouldNotThrowCheckedExceptions(Object param1, Object param2, Object param3, Object stackElement);
 
-    @Message(id = 1472, value = "EventMetadata can only be injected into an observer method. {0}", format = Format.MESSAGE_FORMAT)
-    DefinitionException eventMetadataInjectedOutsideOfObserver(Object param1);
+    @Message(id = 1472, value = "EventMetadata can only be injected into an observer method: {0}\n\tat {1}\n  StackTrace", format = Format.MESSAGE_FORMAT)
+    DefinitionException eventMetadataInjectedOutsideOfObserver(Object param1, Object stackElement);
 
     @LogMessage(level = Level.WARN)
     @Message(id = 1473, value = "javax.enterprise.inject.spi.Bean implementation {0} declared a normal scope but does not implement javax.enterprise.inject.spi.PassivationCapable. It won'''t be possible to inject this bean into a bean with a passivating scope (@SessionScoped, @ConversationScoped). This can be fixed by assigning the Bean implementation a unique id by implementing the PassivationCapable interface.", format = Format.MESSAGE_FORMAT)

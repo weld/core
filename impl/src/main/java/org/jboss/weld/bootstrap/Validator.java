@@ -286,13 +286,13 @@ public class Validator implements Service {
      */
     public void validateInjectionPointForDefinitionErrors(InjectionPoint ij, Bean<?> bean, BeanManagerImpl beanManager) {
         if (ij.getAnnotated().getAnnotation(New.class) != null && ij.getQualifiers().size() > 1) {
-            throw ValidatorLogger.LOG.newWithQualifiers(ij);
+            throw ValidatorLogger.LOG.newWithQualifiers(ij, Formats.formatAsStackTraceElement(ij));
         }
         if (ij.getType() instanceof TypeVariable<?>) {
-            throw ValidatorLogger.LOG.injectionPointWithTypeVariable(ij);
+            throw ValidatorLogger.LOG.injectionPointWithTypeVariable(ij, Formats.formatAsStackTraceElement(ij));
         }
         if (!(ij.getMember() instanceof Field) && ij.getAnnotated().isAnnotationPresent(Named.class) && ij.getAnnotated().getAnnotation(Named.class).value().equals("")) {
-            throw ValidatorLogger.LOG.nonFieldInjectionPointCannotUseNamed(ij);
+            throw ValidatorLogger.LOG.nonFieldInjectionPointCannotUseNamed(ij, Formats.formatAsStackTraceElement(ij));
         }
         if (ij.getAnnotated().isAnnotationPresent(Produces.class)) {
             if (bean != null) {
@@ -313,7 +313,7 @@ public class Validator implements Service {
             if (jtaApi.USER_TRANSACTION_CLASS.equals(ij.getType()) &&
                     (ij.getQualifiers().isEmpty() || ij.getQualifiers().contains(DefaultLiteral.INSTANCE)) &&
                     beanManager.getServices().get(EJBApiAbstraction.class).isSessionBeanWithContainerManagedTransactions(bean)) {
-                throw ValidatorLogger.LOG.userTransactionInjectionIntoBeanWithContainerManagedTransactions(ij);
+                throw ValidatorLogger.LOG.userTransactionInjectionIntoBeanWithContainerManagedTransactions(ij, Formats.formatAsStackTraceElement(ij));
             }
         }
     }
@@ -321,15 +321,15 @@ public class Validator implements Service {
     public void validateMetadataInjectionPoint(InjectionPoint ij, Bean<?> bean, MessageCallback<DefinitionException> messageCallback) {
         // metadata injection points
         if (ij.getType().equals(InjectionPoint.class) && bean == null) {
-            throw messageCallback.construct(ij);
+            throw messageCallback.construct(ij, Formats.formatAsStackTraceElement(ij));
         }
         if (ij.getType().equals(InjectionPoint.class) && !Dependent.class.equals(bean.getScope())) {
-            throw ValidatorLogger.LOG.injectionIntoNonDependentBean(ij);
+            throw ValidatorLogger.LOG.injectionIntoNonDependentBean(ij, Formats.formatAsStackTraceElement(ij));
         }
         Class<?> rawType = Reflections.getRawType(ij.getType());
         if (Bean.class.equals(rawType) || Interceptor.class.equals(rawType) || Decorator.class.equals(rawType)) {
             if (bean == null) {
-                throw messageCallback.construct(ij);
+                throw messageCallback.construct(ij, Formats.formatAsStackTraceElement(ij));
             }
             if (bean instanceof AbstractClassBean<?>) {
                 checkBeanMetadataInjectionPoint(bean, ij, AnnotatedTypes.getDeclaringAnnotatedType(ij.getAnnotated()).getBaseType());
@@ -343,7 +343,7 @@ public class Validator implements Service {
 
     public void validateEventMetadataInjectionPoint(InjectionPoint ip) {
         if (EventMetadata.class.equals(ip.getType()) && ip.getQualifiers().contains(DefaultLiteral.INSTANCE)) {
-            throw ValidatorLogger.LOG.eventMetadataInjectedOutsideOfObserver(ip);
+            throw ValidatorLogger.LOG.eventMetadataInjectedOutsideOfObserver(ip, Formats.formatAsStackTraceElement(ip));
         }
     }
 
@@ -377,7 +377,7 @@ public class Validator implements Service {
             if (beanManager.isNormalScope(resolvedBean.getScope())) {
                 UnproxyableResolutionException ue = Proxies.getUnproxyableTypeException(ij.getType(), resolvedBean, beanManager.getServices());
                 if (ue != null) {
-                    throw ValidatorLogger.LOG.injectionPointHasNonProxyableDependencies(ij, ue);
+                    throw ValidatorLogger.LOG.injectionPointHasNonProxyableDependencies(ij, Formats.formatAsStackTraceElement(ij), ue);
                 }
             }
             if (bean != null && Beans.isPassivatingScope(bean, beanManager)) {
@@ -440,7 +440,7 @@ public class Validator implements Service {
     }
 
     private void logScopeOnInjectionPointWarning(InjectionPoint ij, Annotation annotation) {
-        ValidatorLogger.LOG.scopeAnnotationOnInjectionPoint(annotation, ij);
+        ValidatorLogger.LOG.scopeAnnotationOnInjectionPoint(annotation, ij, Formats.formatAsStackTraceElement(ij));
     }
 
     private boolean hasScopeMetaAnnotation(Annotation annotation) {
@@ -758,16 +758,16 @@ public class Validator implements Service {
     private static void checkFacadeInjectionPoint(InjectionPoint injectionPoint, Class<?> type) {
         Type injectionPointType = injectionPoint.getType();
         if (injectionPointType instanceof Class<?> && type.equals(injectionPointType)) {
-            throw ValidatorLogger.LOG.injectionPointMustHaveTypeParameter(type, injectionPoint);
+            throw ValidatorLogger.LOG.injectionPointMustHaveTypeParameter(injectionPoint, Formats.formatAsStackTraceElement(injectionPoint));
         }
         if (injectionPointType instanceof ParameterizedType && !injectionPoint.isDelegate()) {
             ParameterizedType parameterizedType = (ParameterizedType) injectionPointType;
             if (type.equals(parameterizedType.getRawType())) {
                 if (parameterizedType.getActualTypeArguments()[0] instanceof TypeVariable<?>) {
-                    throw ValidatorLogger.LOG.injectionPointWithTypeVariable(injectionPoint);
+                    throw ValidatorLogger.LOG.injectionPointWithTypeVariable(injectionPoint, Formats.formatAsStackTraceElement(injectionPoint));
                 }
                 if (parameterizedType.getActualTypeArguments()[0] instanceof WildcardType) {
-                    throw ValidatorLogger.LOG.injectionPointHasWildcard(type, injectionPoint);
+                    throw ValidatorLogger.LOG.injectionPointHasWildcard(injectionPoint, Formats.formatAsStackTraceElement(injectionPoint));
                 }
             }
         }
@@ -775,31 +775,31 @@ public class Validator implements Service {
 
     public static void checkBeanMetadataInjectionPoint(Object bean, InjectionPoint ip, Type expectedTypeArgument) {
         if (!(ip.getType() instanceof ParameterizedType)) {
-            throw ValidatorLogger.LOG.invalidBeanMetadataInjectionPointType(ip.getType(), ip);
+            throw ValidatorLogger.LOG.invalidBeanMetadataInjectionPointType(ip.getType(), ip, Formats.formatAsStackTraceElement(ip));
         }
         ParameterizedType parameterizedType = (ParameterizedType) ip.getType();
         if (parameterizedType.getActualTypeArguments().length != 1) {
-            throw ValidatorLogger.LOG.invalidBeanMetadataInjectionPointType(ip.getType(), ip);
+            throw ValidatorLogger.LOG.invalidBeanMetadataInjectionPointType(ip.getType(), ip, Formats.formatAsStackTraceElement(ip));
         }
         Class<?> rawType = (Class<?>) parameterizedType.getRawType();
         Type typeArgument = parameterizedType.getActualTypeArguments()[0];
 
         if (bean == null) {
-            throw ValidatorLogger.LOG.injectionIntoNonBean(ip);
+            throw ValidatorLogger.LOG.injectionIntoNonBean(ip, Formats.formatAsStackTraceElement(ip));
         }
         /*
          * If an Interceptor instance is injected into a bean instance other than an interceptor instance, the container
          * automatically detects the problem and treats it as a definition error.
          */
         if (rawType.equals(Interceptor.class) && !(bean instanceof Interceptor<?>)) {
-            throw ValidatorLogger.LOG.invalidBeanMetadataInjectionPointType(ip.getType(), ip);
+            throw ValidatorLogger.LOG.invalidBeanMetadataInjectionPointType(ip.getType(), ip, Formats.formatAsStackTraceElement(ip));
         }
         /*
          * If a Decorator instance is injected into a bean instance other than a decorator instance, the container automatically
          * detects the problem and treats it as a definition error.
          */
         if (rawType.equals(Decorator.class) && !(bean instanceof Decorator<?>)) {
-            throw ValidatorLogger.LOG.invalidBeanMetadataInjectionPointType(ip.getType(), ip);
+            throw ValidatorLogger.LOG.invalidBeanMetadataInjectionPointType(ip.getType(), ip, Formats.formatAsStackTraceElement(ip));
         }
         Set<Annotation> qualifiers = ip.getQualifiers();
         if (qualifiers.contains(InterceptedLiteral.INSTANCE)) {
@@ -808,17 +808,17 @@ public class Validator implements Service {
              * instance, the container automatically detects the problem and treats it as a definition error.
              */
             if (!(bean instanceof Interceptor<?>)) {
-                throw ValidatorLogger.LOG.invalidBeanMetadataInjectionPointQualifier(Intercepted.class, Interceptor.class, ip);
+                throw ValidatorLogger.LOG.invalidBeanMetadataInjectionPointQualifier(Intercepted.class, Interceptor.class, ip, Formats.formatAsStackTraceElement(ip));
             }
             /*
              * If the injection point is a field, an initializer method parameter or a bean constructor of an interceptor, with
              * qualifier @Intercepted, then the type parameter of the injected Bean must be an unbounded wildcard.
              */
             if (!rawType.equals(Bean.class)) {
-                throw ValidatorLogger.LOG.invalidBeanMetadataInjectionPointType(ip.getType(), ip);
+                throw ValidatorLogger.LOG.invalidBeanMetadataInjectionPointType(ip.getType(), ip, Formats.formatAsStackTraceElement(ip));
             }
             if (!Reflections.isUnboundedWildcard(typeArgument)) {
-                throw ValidatorLogger.LOG.invalidBeanMetadataInjectionPointTypeArgument(typeArgument, ip);
+                throw ValidatorLogger.LOG.invalidBeanMetadataInjectionPointTypeArgument(typeArgument, ip, Formats.formatAsStackTraceElement(ip));
             }
         }
         if (qualifiers.contains(DecoratedLiteral.INSTANCE)) {
@@ -827,7 +827,7 @@ public class Validator implements Service {
              * the container automatically detects the problem and treats it as a definition error.
              */
             if (!(bean instanceof Decorator<?>)) {
-                throw ValidatorLogger.LOG.invalidBeanMetadataInjectionPointQualifier(Decorated.class, Decorator.class, ip);
+                throw ValidatorLogger.LOG.invalidBeanMetadataInjectionPointQualifier(Decorated.class, Decorator.class, ip, Formats.formatAsStackTraceElement(ip));
             }
             Decorator<?> decorator = Reflections.cast(bean);
             /*
@@ -835,10 +835,10 @@ public class Validator implements Service {
              * qualifier @Decorated, then the type parameter of the injected Bean must be the same as the delegate type.
              */
             if (!rawType.equals(Bean.class)) {
-                throw ValidatorLogger.LOG.invalidBeanMetadataInjectionPointType(ip.getType(), ip);
+                throw ValidatorLogger.LOG.invalidBeanMetadataInjectionPointType(ip.getType(), ip, Formats.formatAsStackTraceElement(ip));
             }
             if (!typeArgument.equals(decorator.getDelegateType())) {
-                throw ValidatorLogger.LOG.invalidBeanMetadataInjectionPointTypeArgument(typeArgument, ip);
+                throw ValidatorLogger.LOG.invalidBeanMetadataInjectionPointTypeArgument(typeArgument, ip, Formats.formatAsStackTraceElement(ip));
             }
         }
         if (qualifiers.contains(DefaultLiteral.INSTANCE)) {
@@ -854,7 +854,7 @@ public class Validator implements Service {
              * same as the disposed parameter.
              */
             if (!expectedTypeArgument.equals(typeArgument)) {
-                throw ValidatorLogger.LOG.invalidBeanMetadataInjectionPointTypeArgument(typeArgument, ip);
+                throw ValidatorLogger.LOG.invalidBeanMetadataInjectionPointTypeArgument(typeArgument, ip, Formats.formatAsStackTraceElement(ip));
             }
         }
     }
