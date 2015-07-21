@@ -1366,7 +1366,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
         if (member instanceof AnnotatedField<?> || member instanceof AnnotatedMethod<?>) {
             weldMember = services.get(MemberTransformer.class).loadEnhancedMember(member, getId());
         } else {
-            throw BeanManagerLogger.LOG.incorrectProducerMember(member);
+            throw BeanManagerLogger.LOG.cannotCreateBeanAttributesForIncorrectAnnotatedMember(member);
         }
         return BeanAttributesFactory.forBean(weldMember, this);
     }
