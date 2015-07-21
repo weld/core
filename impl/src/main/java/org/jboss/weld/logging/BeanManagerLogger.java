@@ -79,9 +79,6 @@ public interface BeanManagerLogger extends WeldLogger {
     @Message(id = 1314, value = "{0} is expected to be a normal scope type", format = Format.MESSAGE_FORMAT)
     String nonNormalScope(Object param1);
 
-    @Message(id = 1315, value = "More than one current activity for an active context:  {0}", format = Format.MESSAGE_FORMAT)
-    IllegalStateException tooManyActivities(Object param1);
-
     @Message(id = 1316, value = "{0} is not an interceptor binding type", format = Format.MESSAGE_FORMAT)
     IllegalArgumentException notInterceptorBindingType(Object param1);
 
@@ -97,8 +94,8 @@ public interface BeanManagerLogger extends WeldLogger {
     @Message(id = 1325, value = "No instance of an extension {0} registered with the deployment", format = Format.MESSAGE_FORMAT)
     IllegalArgumentException noInstanceOfExtension(Object param1);
 
-    @Message(id = 1326, value = "The argument must be either an AnnotatedField or AnnotatedMethod but {0} is not", format = Format.MESSAGE_FORMAT)
-    IllegalArgumentException incorrectProducerMember(Object param1);
+    @Message(id = 1326, value = "Cannot create bean attributes - the argument must be either an AnnotatedField or AnnotatedMethod but {0} is not", format = Format.MESSAGE_FORMAT)
+    IllegalArgumentException cannotCreateBeanAttributesForIncorrectAnnotatedMember(Object param1);
 
     @Message(id = 1327, value = "Unable to identify the correct BeanManager. The calling class {0} is placed in multiple bean archives", format = Format.MESSAGE_FORMAT)
     IllegalStateException ambiguousBeanManager(Object param1);
