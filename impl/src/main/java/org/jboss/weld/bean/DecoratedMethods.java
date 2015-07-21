@@ -88,7 +88,7 @@ class DecoratedMethods {
             return matching.get(0);
         }
         // Choose the most specific method
-        // This does meet all requirements of JLS but it should work in most cases
+        // This does not meet all requirements of JLS but it should work in most cases
         // See also JLS Java SE 8 Edition, 15.12.2.5 Choosing the Most Specific Method
         InvokableAnnotatedMethod<?> mostSpecific = matching.get(0);
         for (int i = 1; i < matching.size(); i++) {
