@@ -66,13 +66,13 @@ class TransactionalObserverNotifier extends ObserverNotifier {
     }
 
     @Override
-    protected <T> void notifyTransactionObservers(List<ObserverMethod<? super T>> observers, T event, EventMetadata metadata) {
+    protected <T> void notifyTransactionObservers(List<ObserverMethod<? super T>> observers, T event, EventMetadata metadata, final ObserverExceptionHandler handler) {
         if (observers.isEmpty()) {
             return;
         }
         if (transactionServices == null || !transactionServices.isTransactionActive()) {
             // Transaction is not active - no deferred notifications
-            notifySyncObservers(observers, event, metadata);
+            notifySyncObservers(observers, event, metadata, handler);
         } else {
             List<DeferredEventNotification<?>> notifications = new ArrayList<DeferredEventNotification<?>>();
             for (ObserverMethod<? super T> observer : observers) {
