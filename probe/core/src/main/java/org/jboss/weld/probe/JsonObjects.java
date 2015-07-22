@@ -119,6 +119,7 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.ObserverMethod;
+import javax.enterprise.inject.spi.Prioritized;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -138,7 +139,6 @@ import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.context.AbstractConversationContext;
 import org.jboss.weld.context.ManagedConversation;
 import org.jboss.weld.event.ObserverMethodImpl;
-import org.jboss.weld.experimental.Prioritized;
 import org.jboss.weld.injection.producer.ProducerFieldProducer;
 import org.jboss.weld.injection.producer.ProducerMethodProducer;
 import org.jboss.weld.manager.BeanManagerImpl;

@@ -33,7 +33,6 @@ import javax.enterprise.inject.spi.EventMetadata;
 import javax.enterprise.inject.spi.ObserverMethod;
 
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
-import org.jboss.weld.experimental.ExperimentalEvent;
 import org.jboss.weld.injection.ThreadLocalStack.ThreadLocalStackReference;
 import org.jboss.weld.logging.UtilLogger;
 import org.jboss.weld.manager.api.ExecutorServices;
@@ -281,7 +280,7 @@ public class ObserverNotifier {
      *
      * Observer methods with {@link TransactionPhase#IN_PROGRESS} are called asnchronously in a separate thread. Observer methods with other transaction phase
      * are scheduled for the corresponding transaction phase. This behavior is the same as for {@link #notify(ResolvedObservers, Object, EventMetadata)}. See
-     * {@link ExperimentalEvent#fireAsync(Object)} for more information. {@link EventMetadata} is made available for injection into observer methods, if needed.
+     * {@link Event#fireAsync(Object)} for more information. {@link EventMetadata} is made available for injection into observer methods, if needed.
      *
      * If an executor is provided then observer methods are notified using this executor. Otherwise, Weld's task executor is used.
      *

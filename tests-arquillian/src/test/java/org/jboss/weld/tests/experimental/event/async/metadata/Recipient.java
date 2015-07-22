@@ -17,12 +17,11 @@
 package org.jboss.weld.tests.experimental.event.async.metadata;
 
 import javax.enterprise.event.Observes;
-
-import org.jboss.weld.experimental.ExperimentalEventMetadata;
+import javax.enterprise.inject.spi.EventMetadata;
 
 public class Recipient {
 
-    public void receive(@Observes Message message, ExperimentalEventMetadata metadata) {
+    public void receive(@Observes Message message, EventMetadata metadata) {
         message.setAsync(metadata.isAsync());
     }
 }

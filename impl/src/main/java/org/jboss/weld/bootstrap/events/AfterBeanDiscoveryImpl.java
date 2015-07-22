@@ -46,7 +46,6 @@ import org.jboss.weld.bootstrap.ContextHolder;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.experimental.BeanBuilder;
 import org.jboss.weld.experimental.ExperimentalAfterBeanDiscovery;
-import org.jboss.weld.experimental.util.ForwardingExperimentalObserverMethod;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.logging.ContextLogger;
 import org.jboss.weld.logging.InterceptorLogger;
@@ -110,7 +109,7 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
         checkWithinObserverNotification();
         Preconditions.checkArgumentNotNull(observerMethod, "observerMethod");
         validateObserverMethod(observerMethod, getBeanManager(), null);
-        additionalObservers.add(new ForwardingExperimentalObserverMethod<>(observerMethod));
+        additionalObservers.add(observerMethod);
     }
 
     @Override

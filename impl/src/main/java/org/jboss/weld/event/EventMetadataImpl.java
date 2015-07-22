@@ -23,7 +23,6 @@ import java.util.Set;
 import javax.enterprise.inject.spi.EventMetadata;
 import javax.enterprise.inject.spi.InjectionPoint;
 
-import org.jboss.weld.experimental.ExperimentalEventMetadata;
 import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.util.collections.ImmutableSet;
 
@@ -33,7 +32,7 @@ import org.jboss.weld.util.collections.ImmutableSet;
  * @author Jozef Hartinger
  *
  */
-public final class EventMetadataImpl implements ExperimentalEventMetadata {
+public final class EventMetadataImpl implements EventMetadata {
 
     private final Type type;
     private final InjectionPoint injectionPoint;

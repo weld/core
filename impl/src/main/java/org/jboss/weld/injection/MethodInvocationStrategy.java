@@ -26,7 +26,6 @@ import javax.enterprise.inject.spi.EventMetadata;
 
 import org.jboss.weld.bean.builtin.BeanManagerProxy;
 import org.jboss.weld.event.CurrentEventMetadata;
-import org.jboss.weld.experimental.ExperimentalEventMetadata;
 import org.jboss.weld.manager.BeanManagerImpl;
 
 /**
@@ -80,7 +79,7 @@ public abstract class MethodInvocationStrategy {
             if (parameters.get(0).getAnnotated().isAnnotationPresent(Observes.class)) {
                 if (BeanManager.class.equals(parameters.get(1).getType())) {
                     return OBSERVER_EVENT_PLUS_BEAN_MANAGER_STRATEGY;
-                } else if (EventMetadata.class.equals(parameters.get(1).getType()) || ExperimentalEventMetadata.class.equals(parameters.get(1).getType())) {
+                } else if (EventMetadata.class.equals(parameters.get(1).getType())) {
                     return new EventPlusMetadataStrategy(manager);
                 }
             }
