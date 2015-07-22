@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ObserverMethod;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
@@ -56,15 +55,14 @@ public class ExtensionObserverMethodImpl<T, X> extends ObserverMethodImpl<T, X> 
     private final Set<Class<? extends Annotation>> requiredTypeAnnotations;
     private volatile Set<Class<? extends Annotation>> requiredScopeTypeAnnotations;
 
-    protected ExtensionObserverMethodImpl(EnhancedAnnotatedMethod<T, ? super X> observer, RIBean<X> declaringBean, BeanManagerImpl manager) {
-        // Extension observer method are always sync
-        super(observer, declaringBean, manager, false);
+    protected ExtensionObserverMethodImpl(EnhancedAnnotatedMethod<T, ? super X> observer, RIBean<X> declaringBean, BeanManagerImpl manager, boolean isAsync) {
+        super(observer, declaringBean, manager, isAsync);
         this.containerLifecycleEventDeliveryLock = Container.instance(manager);
         this.requiredTypeAnnotations = initRequiredTypeAnnotations(observer);
     }
 
     protected Set<Class<? extends Annotation>> initRequiredTypeAnnotations(EnhancedAnnotatedMethod<T, ? super X> observer) {
-        EnhancedAnnotatedParameter<?, ? super X> eventParameter = observer.getEnhancedParameters(Observes.class).get(0);
+        EnhancedAnnotatedParameter<?, ? super X> eventParameter = getEventParameter(observer);
         WithAnnotations annotation = eventParameter.getAnnotation(WithAnnotations.class);
         if (annotation != null) {
             return ImmutableSet.<Class<? extends Annotation>>of(annotation.value());

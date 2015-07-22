@@ -121,21 +121,19 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
         this.declaringBean = declaringBean;
         this.observerMethod = initMethodInjectionPoint(observer, declaringBean, manager);
         this.id = createId(observer, declaringBean);
+        this.isAsync = isAsync;
 
-        final Class<? extends Annotation> annotationClass;
+        final EnhancedAnnotatedParameter<?, ? super X> eventParameter = getEventParameter(observer);
         if (isAsync) {
-            annotationClass = ObservesAsync.class;
-            this.reception = observer.getEnhancedParameters(ObservesAsync.class).get(0).getAnnotation(ObservesAsync.class).notifyObserver();
+            this.reception = eventParameter.getAnnotation(ObservesAsync.class).notifyObserver();
             // Asynchronous observers may not be transactional
             this.transactionPhase = TransactionPhase.IN_PROGRESS;
         } else {
-            annotationClass = Observes.class;
-            this.reception = observer.getEnhancedParameters(Observes.class).get(0).getAnnotation(Observes.class).notifyObserver();
+            this.reception = eventParameter.getAnnotation(Observes.class).notifyObserver();
             this.transactionPhase = ObserverFactory.getTransactionalPhase(observer);
         }
         this.bindings = manager.getServices().get(SharedObjectCache.class)
-                .getSharedSet(observer.getEnhancedParameters(annotationClass).get(0).getMetaAnnotations(Qualifier.class));
-        EnhancedAnnotatedParameter<?, ? super X> eventParameter = observer.getEnhancedParameters(annotationClass).get(0);
+                .getSharedSet(eventParameter.getMetaAnnotations(Qualifier.class));
         this.eventType = new HierarchyDiscovery(declaringBean.getBeanClass()).resolveType(eventParameter.getBaseType());
 
         ImmutableSet.Builder<WeldInjectionPointAttributes<?, ?>> injectionPoints = ImmutableSet.builder();
@@ -160,7 +158,14 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
         this.isStatic = observer.isStatic();
         this.eventMetadataRequired = initMetadataRequired(this.injectionPoints);
         this.notificationStrategy = MethodInvocationStrategy.forObserver(observerMethod, beanManager);
-        this.isAsync = isAsync;
+    }
+
+    protected EnhancedAnnotatedParameter<?, ? super X> getEventParameter(EnhancedAnnotatedMethod<T, ? super X> observer) {
+        if (isAsync) {
+            return observer.getEnhancedParameters(ObservesAsync.class).get(0);
+        } else {
+            return observer.getEnhancedParameters(Observes.class).get(0);
+        }
     }
 
     private static boolean initMetadataRequired(Set<WeldInjectionPointAttributes<?, ?>> injectionPoints) {
@@ -229,7 +234,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
         boolean containerLifecycleObserverMethod = Observers.isContainerLifecycleObserverMethod(this);
         for (EnhancedAnnotatedParameter<?, ?> parameter : annotated.getEnhancedParameters()) {
             // if this is an observer method for container lifecycle event, it must not inject anything besides BeanManager
-            if (containerLifecycleObserverMethod && !parameter.isAnnotationPresent(Observes.class) && !BeanManager.class.equals(parameter.getBaseType())) {
+            if (containerLifecycleObserverMethod && !parameter.isAnnotationPresent(Observes.class) && !parameter.isAnnotationPresent(ObservesAsync.class) && !BeanManager.class.equals(parameter.getBaseType())) {
                 throw EventLogger.LOG.invalidInjectionPoint(this, Formats.formatAsStackTraceElement(annotated.getJavaMember()));
             }
         }

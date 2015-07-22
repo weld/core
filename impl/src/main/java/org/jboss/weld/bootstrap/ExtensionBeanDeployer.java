@@ -35,12 +35,15 @@ import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.event.ObserverFactory;
 import org.jboss.weld.event.ObserverMethodImpl;
 import org.jboss.weld.logging.BootstrapLogger;
+import org.jboss.weld.logging.EventLogger;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
 import org.jboss.weld.util.BeanMethods;
 import org.jboss.weld.util.DeploymentStructures;
+import org.jboss.weld.util.Observers;
 import org.jboss.weld.util.reflection.Formats;
+import org.jboss.weld.util.reflection.Reflections;
 
 /**
  * @author pmuir
@@ -75,7 +78,7 @@ public class ExtensionBeanDeployer {
     }
 
     private <E extends Extension> void deployBean(Metadata<E> extension, ClassTransformer classTransformer) {
-     // Locate the BeanDeployment for this extension
+        // Locate the BeanDeployment for this extension
         BeanDeployment beanDeployment = DeploymentStructures.getOrCreateBeanDeployment(deployment, beanManager, bdaMapping, contexts, extension.getValue()
                 .getClass());
 
@@ -122,16 +125,20 @@ public class ExtensionBeanDeployer {
     protected <X> void createObserverMethods(RIBean<X> declaringBean, BeanManagerImpl beanManager, EnhancedAnnotatedType<? super X> annotatedClass,
             Set<ObserverInitializationContext<?, ?>> observerMethodInitializers) {
         for (EnhancedAnnotatedMethod<?, ? super X> method : BeanMethods.getObserverMethods(annotatedClass)) {
-            createObserverMethod(declaringBean, beanManager, method, observerMethodInitializers);
+            createObserverMethod(declaringBean, beanManager, method, observerMethodInitializers, false);
         }
-        // Extension observer methods must be always sync
-        // TODO log a warning if there an async extension observer method exists
+        for (EnhancedAnnotatedMethod<?, ? super X> method : BeanMethods.getAsyncObserverMethods(annotatedClass)) {
+            createObserverMethod(declaringBean, beanManager, method, observerMethodInitializers, true);
+        }
     }
 
     protected <T, X> void createObserverMethod(RIBean<X> declaringBean, BeanManagerImpl beanManager, EnhancedAnnotatedMethod<T, ? super X> method,
-            Set<ObserverInitializationContext<?, ?>> observerMethodInitializers) {
-        ObserverMethodImpl<T, X> observer = ObserverFactory.create(method, declaringBean, beanManager, false);
+            Set<ObserverInitializationContext<?, ?>> observerMethodInitializers, boolean isAsync) {
+        ObserverMethodImpl<T, X> observer = ObserverFactory.create(method, declaringBean, beanManager, isAsync);
         ObserverInitializationContext<T, X> observerMethodInitializer = ObserverInitializationContext.of(observer, method);
+        if (isAsync && Observers.CONTAINER_LIFECYCLE_EVENT_TYPES.contains(Reflections.getRawType(observer.getObservedType()))) {
+            throw EventLogger.LOG.asyncContainerLifecycleEventObserver(observer, Formats.formatAsStackTraceElement(method.getJavaMember()));
+        }
         observerMethodInitializers.add(observerMethodInitializer);
     }
 

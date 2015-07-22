@@ -45,7 +45,7 @@ public class ObserverFactory {
      */
     public static <T, X> ObserverMethodImpl<T, X> create(EnhancedAnnotatedMethod<T, ? super X> method, RIBean<X> declaringBean, BeanManagerImpl manager, boolean isAsync) {
         if (declaringBean instanceof ExtensionBean) {
-                return new ExtensionObserverMethodImpl<T, X>(method, declaringBean, manager);
+                return new ExtensionObserverMethodImpl<T, X>(method, declaringBean, manager, isAsync);
         }
         return new ObserverMethodImpl<T, X>(method, declaringBean, manager, isAsync);
     }

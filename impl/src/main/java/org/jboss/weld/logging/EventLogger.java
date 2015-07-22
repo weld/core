@@ -81,4 +81,7 @@ public interface EventLogger extends WeldLogger {
     @Message(id = 413, value = "{0} cannot be replaced by an observer method with a different bean class {1}", format = Format.MESSAGE_FORMAT)
     DefinitionException beanClassMismatch(ObserverMethod<?> originalObserverMethod, ObserverMethod<?> observerMethod);
 
+    @Message(id = 414, value = "Observer method for container lifecycle events cannot be asynchronous. {0}\n\tat {1}\n  StackTrace:", format = Format.MESSAGE_FORMAT)
+    DefinitionException asyncContainerLifecycleEventObserver(ObserverMethod<?> observer, Object stackElement);
+
 }
