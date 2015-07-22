@@ -303,13 +303,13 @@ public class ObserverNotifier {
 
     protected <T, U extends T> CompletionStage<U> notifyAsyncObservers(List<ObserverMethod<? super T>> observers, U event, EventMetadata metadata,
             Executor executor) {
+        if (observers.isEmpty()) {
+            return AsyncEventDeliveryStage.completed(event);
+        }
         if (executor == null) {
             executor = asyncEventExecutor;
         }
         return new AsyncEventDeliveryStage<>(() -> {
-            if (observers.isEmpty()) {
-                return event;
-            }
             final ThreadLocalStackReference<EventMetadata> stack = currentEventMetadata.pushIfNotNull(metadata);
             FireAsyncException fireAsyncException = null;
             try {

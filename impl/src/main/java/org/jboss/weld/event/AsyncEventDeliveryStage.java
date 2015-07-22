@@ -36,10 +36,20 @@ import org.jboss.weld.util.ForwardingCompletionStage;
  */
 public class AsyncEventDeliveryStage<T> extends ForwardingCompletionStage<T> {
 
+    static <T> AsyncEventDeliveryStage<T> completed(T event) {
+        final CompletableFuture<T> delegate = new CompletableFuture<>();
+        delegate.complete(event);
+        return new AsyncEventDeliveryStage<>(delegate);
+    }
+
     private final CompletionStage<T> delegate;
 
     AsyncEventDeliveryStage(Supplier<T> supplier, Executor executor) {
-        this.delegate = CompletableFuture.supplyAsync(supplier, executor);
+        this(CompletableFuture.supplyAsync(supplier, executor));
+    }
+
+    private AsyncEventDeliveryStage(CompletionStage<T> delegate) {
+        this.delegate = delegate;
     }
 
     @Override
