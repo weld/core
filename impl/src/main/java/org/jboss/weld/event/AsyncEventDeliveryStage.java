@@ -57,6 +57,10 @@ public class AsyncEventDeliveryStage<T> extends ForwardingCompletionStage<T> {
         return delegate;
     }
 
+    /*
+     * All the following methods unwrap CompletionException in order for FireAsyncException to be propagate on the top level.
+     * This may not be needed in the future - depending on the resolution of https://issues.jboss.org/browse/CDI-548
+     */
     @Override
     public CompletionStage<T> whenComplete(BiConsumer<? super T, ? super Throwable> action) {
         return super.whenComplete((r,t) -> action.accept(r, unwrap(t)));
