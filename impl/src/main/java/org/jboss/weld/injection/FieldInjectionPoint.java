@@ -35,7 +35,6 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
-import org.jboss.weld.Container;
 import org.jboss.weld.bean.proxy.DecoratorProxy;
 import org.jboss.weld.exceptions.IllegalStateException;
 import org.jboss.weld.exceptions.InvalidObjectException;
@@ -45,6 +44,7 @@ import org.jboss.weld.introspector.WeldClass;
 import org.jboss.weld.introspector.WeldField;
 import org.jboss.weld.logging.messages.ReflectionMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.util.AnnotatedTypes;
@@ -62,21 +62,22 @@ public class FieldInjectionPoint<T, X> extends ForwardingWeldField<T, X> impleme
     private final WeldField<T, X> field;
     private final boolean delegate;
     private final boolean cacheable;
+    private final WeldManager beanManager;
     private Bean<?> cachedBean;
     private Type type;
 
-
-    public static <T, X> FieldInjectionPoint<T, X> of(Bean<?> declaringBean, WeldClass<?> injectionTargetClass, WeldField<T, X> field) {
-        return new FieldInjectionPoint<T, X>(declaringBean, injectionTargetClass, field);
+    public static <T, X> FieldInjectionPoint<T, X> of(Bean<?> declaringBean, WeldClass<?> injectionTargetClass, WeldField<T, X> field, WeldManager beanManager) {
+        return new FieldInjectionPoint<T, X>(declaringBean, injectionTargetClass, field, beanManager);
     }
 
-    protected FieldInjectionPoint(Bean<?> declaringBean, WeldClass<?> injectionTargetClass, WeldField<T, X> field) {
+    protected FieldInjectionPoint(Bean<?> declaringBean, WeldClass<?> injectionTargetClass, WeldField<T, X> field, WeldManager manager) {
         assert (declaringBean != null || injectionTargetClass != null) : "both declaringBean and injectionTargetClass are null";
         this.declaringBean = declaringBean;
         this.injectionTargetClass = injectionTargetClass;
         this.field = field;
         this.delegate = isAnnotationPresent(Inject.class) && isAnnotationPresent(Delegate.class) && declaringBean instanceof Decorator<?>;
         this.cacheable = !delegate && !InjectionPoint.class.isAssignableFrom(field.getJavaMember().getType()) && !Instance.class.isAssignableFrom(field.getJavaMember().getType());
+        this.beanManager = manager;
     }
 
     @Override
@@ -178,6 +179,10 @@ public class FieldInjectionPoint<T, X> extends ForwardingWeldField<T, X> impleme
         return getJavaMember();
     }
 
+    protected WeldManager getBeanManager() {
+        return beanManager;
+    }
+
     // Serialization
 
     private Object writeReplace() throws ObjectStreamException {
@@ -194,11 +199,13 @@ public class FieldInjectionPoint<T, X> extends ForwardingWeldField<T, X> impleme
 
         private final String fieldName;
         private final String injectionTargetClassName;
+        private final WeldManager beanManager;
 
         public SerializationProxy(FieldInjectionPoint<T, ?> injectionPoint) {
             super(injectionPoint);
             this.fieldName = injectionPoint.getName();
             this.injectionTargetClassName = injectionPoint.getInjectionTargetClass().getName();
+            this.beanManager = injectionPoint.getBeanManager();
         }
 
         private Object readResolve() {
@@ -207,11 +214,11 @@ public class FieldInjectionPoint<T, X> extends ForwardingWeldField<T, X> impleme
                 throw new IllegalStateException(ReflectionMessage.UNABLE_TO_GET_FIELD_ON_DESERIALIZATION, getDeclaringBeanId(), getDeclaringWeldClass(), fieldName);
             }
 
-            return FieldInjectionPoint.of(getDeclaringBean(), getInjectionTargetClass(), getWeldField());
+            return FieldInjectionPoint.of(getDeclaringBean(), getInjectionTargetClass(), getWeldField(), beanManager);
         }
 
         protected WeldClass<?> getInjectionTargetClass() {
-            Class<?> clazz = getService(ResourceLoader.class).classForName(injectionTargetClassName);
+            final Class<?> clazz = beanManager.getServices().get(ResourceLoader.class).classForName(injectionTargetClassName);
             return getService(ClassTransformer.class).loadClass(clazz);
         }
 

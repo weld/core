@@ -106,7 +106,7 @@ public class EEResourceProducerField<X, T> extends ProducerField<X, T> {
 
     protected EEResourceProducerField(WeldField<T, ? super X> field, AbstractClassBean<X> declaringBean, BeanManagerImpl manager, ServiceRegistry services) {
         super(field, declaringBean, manager, services);
-        this.injectionPoint = FieldInjectionPoint.of(declaringBean, null, field);
+        this.injectionPoint = FieldInjectionPoint.of(declaringBean, null, field, manager);
     }
 
     @Override
