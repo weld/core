@@ -74,7 +74,7 @@ public class SimpleInjectionTarget<T> implements InjectionTarget<T> {
             // unless someone calls produce()
         }
         this.constructor = constructor;
-        this.injectableFields = Beans.getFieldInjectionPoints(null, type);
+        this.injectableFields = Beans.getFieldInjectionPoints(null, type, beanManager);
         this.injectionPoints.addAll(Beans.mergeFieldInjectionPoints(this.injectableFields));
         this.initializerMethods = Beans.getInitializerMethods(null, type);
         this.injectionPoints.addAll(Beans.getParameterInjectionPoints(null, initializerMethods));
