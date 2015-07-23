@@ -1,159 +1,162 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-	<groupId>org.jboss.weld.reference-guide</groupId>
-	<artifactId>weld-reference-guide</artifactId>
-	<version>2.3.0-SNAPSHOT</version>
-	<packaging>jdocbook</packaging>
-	<name>Weld Reference Guide</name>
-			<url>http://weld.cdi-spec.org</url>
-			<licenses>
-					<license>
-							<name>Apache License, Version 2.0</name>
-							<distribution>repo</distribution>
-							<url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
-					</license>
-			</licenses>
-
-
-	<parent>
-		<groupId>org.jboss.weld</groupId>
-		<artifactId>weld-core-parent</artifactId>
-		<version>2.3.0-SNAPSHOT</version>
-		<relativePath>../../pom.xml</relativePath>
-	</parent>
+    <groupId>org.jboss.weld.reference-guide</groupId>
+    <artifactId>weld-reference-guide</artifactId>
+    <version>2.3.0-SNAPSHOT</version>
+    <packaging>jdocbook</packaging>
+    <name>Weld Reference Guide</name>
+    <url>http://weld.cdi-spec.org</url>
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <distribution>repo</distribution>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+        </license>
+    </licenses>
 
 
-	<description>The Weld reference guide</description>
+    <parent>
+        <groupId>org.jboss.weld</groupId>
+        <artifactId>weld-core-parent</artifactId>
+        <version>2.3.0-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+
+    <description>The Weld reference guide</description>
 
 
-	<properties>
-		<asciidoctor.version>0.1.4</asciidoctor.version>
-		<weld.docbook.version>1.1.1-Beta5</weld.docbook.version>
-		<pdf.name>weld-reference.pdf</pdf.name>
-		<weld.version>${project.version}</weld.version>
-		<jdocbook.source.directory>target/docbook</jdocbook.source.directory>
-	</properties>
+    <properties>
+        <asciidoctor.version>0.1.4</asciidoctor.version>
+        <weld.docbook.version>1.1.1-Beta5</weld.docbook.version>
+        <pdf.name>weld-reference.pdf</pdf.name>
+        <weld.version>${project.version}</weld.version>
+        <jdocbook.source.directory>target/docbook</jdocbook.source.directory>
+    </properties>
 
-	<dependencyManagement>
+    <dependencyManagement>
 
-		<dependencies>
-			<!-- wrong version defined transitively, so the correct is hardcoded here -->
-			<dependency>
-				<groupId>org.eclipse.equinox</groupId>
-				<artifactId>app</artifactId>
-				<version>1.3.100-v20130327-1442</version>
-				<optional>false</optional>
-			</dependency>
-		</dependencies>
+        <dependencies>
+            <!-- wrong version defined transitively, so the correct is hardcoded 
+                here -->
+            <dependency>
+                <groupId>org.eclipse.equinox</groupId>
+                <artifactId>app</artifactId>
+                <version>1.3.100-v20130327-1442</version>
+                <optional>false</optional>
+            </dependency>
+        </dependencies>
 
-	</dependencyManagement>
+    </dependencyManagement>
 
-	<build>
-		<defaultGoal>clean process-classes</defaultGoal>
-		<plugins>
-			<plugin>
-				<groupId>org.asciidoctor</groupId>
-				<artifactId>asciidoctor-maven-plugin</artifactId>
-				<version>${asciidoctor.version}</version>
-				<executions>
-					<execution>
-						<id>output-docbook</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>process-asciidoc</goal>
-						</goals>
-						<configuration>
-							<backend>docbook45</backend>
-							<doctype>book</doctype>
-							<toc>true</toc>
-							<sourceDocumentName>Weld_-_JSR-299_Reference_Implementation.asciidoc</sourceDocumentName>
-							<templateEngine>slim</templateEngine>
-							<headerFooter>true</headerFooter>
-							<compact>false</compact>
-							<outputDirectory>${jdocbook.source.directory}/en-US</outputDirectory>
-							<attributes>
-								<docinfo>true</docinfo>
-								<experimental>true</experimental>
-								<weldVersion>${weld.version}</weldVersion>
-							</attributes>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
+    <build>
+        <defaultGoal>clean process-classes</defaultGoal>
+        <plugins>
+            <plugin>
+                <groupId>org.asciidoctor</groupId>
+                <artifactId>asciidoctor-maven-plugin</artifactId>
+                <version>${asciidoctor.version}</version>
+                <executions>
+                    <execution>
+                        <id>output-docbook</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>process-asciidoc</goal>
+                        </goals>
+                        <configuration>
+                            <backend>docbook45</backend>
+                            <doctype>book</doctype>
+                            <toc>true</toc>
+                            <sourceDocumentName>Weld_-_JSR-299_Reference_Implementation.asciidoc</sourceDocumentName>
+                            <templateEngine>slim</templateEngine>
+                            <headerFooter>true</headerFooter>
+                            <compact>false</compact>
+                            <outputDirectory>${jdocbook.source.directory}/en-US</outputDirectory>
+                            <attributes>
+                                <docinfo>true</docinfo>
+                                <experimental>true</experimental>
+                                <weldVersion>${weld.version}</weldVersion>
+                            </attributes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 
-			<plugin>
-				<groupId>org.jboss.maven.plugins</groupId>
-				<artifactId>maven-jdocbook-plugin</artifactId>
-				<version>2.3.8</version>
-				<configuration>
-					<sourceDirectory>${basedir}/${jdocbook.source.directory}</sourceDirectory>
-					<sourceDocumentName>Weld_-_JSR-299_Reference_Implementation.xml</sourceDocumentName>
-					<masterTranslation>en-US</masterTranslation>
-					<imageResource>
-						<directory>${project.basedir}/src/main/asciidoc</directory>
-						<includes>
-							<include>images/*.png</include>
-						</includes>
-					</imageResource>
-					<options>
-						<injectionDateFormat>dd/MM/yyyy</injectionDateFormat>
-					</options>
-				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<executions>
-					<execution>
-						<phase>process-classes</phase>
-						<configuration>
-							<tasks>
-								<copy file="${basedir}/target/docbook/publish/en-US/pdf/${pdf.name}" todir="${basedir}" />
-							</tasks>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
+            <plugin>
+                <groupId>org.jboss.maven.plugins</groupId>
+                <artifactId>maven-jdocbook-plugin</artifactId>
+                <version>2.3.8</version>
+                <configuration>
+                    <sourceDirectory>${basedir}/${jdocbook.source.directory}</sourceDirectory>
+                    <sourceDocumentName>Weld_-_JSR-299_Reference_Implementation.xml</sourceDocumentName>
+                    <masterTranslation>en-US</masterTranslation>
+                    <imageResource>
+                        <directory>${project.basedir}/src/main/asciidoc</directory>
+                        <includes>
+                            <include>images/*.png</include>
+                        </includes>
+                    </imageResource>
+                    <options>
+                        <injectionDateFormat>dd/MM/yyyy</injectionDateFormat>
+                    </options>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>process-classes</phase>
+                        <configuration>
+                            <tasks>
+                                <copy
+                                    file="${basedir}/target/docbook/publish/en-US/pdf/${pdf.name}"
+                                    todir="${basedir}" />
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
-	<profiles>
-		<profile>
-			<id>jboss-plugin-public-repository</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<repositories>
-				<repository>
-					<id>jboss-repo</id>
-					<url>https://repository.jboss.org/nexus/content/groups/public</url>
-					<releases>
-						<enabled>true</enabled>
-					</releases>
-					<snapshots>
-						<enabled>false</enabled>
-					</snapshots>
-				</repository>
-			</repositories>
-			<pluginRepositories>
-				<pluginRepository>
-					<id>jboss-public-repository-group</id>
-					<name>JBoss Public Maven Repository Group</name>
-					<url>http://repository.jboss.org/nexus/content/groups/public</url>
-					<releases>
-						<enabled>true</enabled>
-						<updatePolicy>never</updatePolicy>
-					</releases>
-					<snapshots>
-						<enabled>false</enabled>
-						<updatePolicy>never</updatePolicy>
-					</snapshots>
-				</pluginRepository>
-			</pluginRepositories>
-		</profile>
-	</profiles>
+    <profiles>
+        <profile>
+            <id>jboss-plugin-public-repository</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <repositories>
+                <repository>
+                    <id>jboss-repo</id>
+                    <url>https://repository.jboss.org/nexus/content/groups/public</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                </repository>
+            </repositories>
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>jboss-public-repository-group</id>
+                    <name>JBoss Public Maven Repository Group</name>
+                    <url>http://repository.jboss.org/nexus/content/groups/public</url>
+                    <releases>
+                        <enabled>true</enabled>
+                        <updatePolicy>never</updatePolicy>
+                    </releases>
+                    <snapshots>
+                        <enabled>false</enabled>
+                        <updatePolicy>never</updatePolicy>
+                    </snapshots>
+                </pluginRepository>
+            </pluginRepositories>
+        </profile>
+    </profiles>
 
 </project>
