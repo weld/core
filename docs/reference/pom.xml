@@ -24,16 +24,15 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
-
     <description>The Weld reference guide</description>
-
 
     <properties>
         <asciidoctor.version>0.1.4</asciidoctor.version>
-        <weld.docbook.version>1.1.1-Beta5</weld.docbook.version>
         <pdf.name>weld-reference.pdf</pdf.name>
         <weld.version>${project.version}</weld.version>
         <jdocbook.source.directory>target/docbook</jdocbook.source.directory>
+        <jdocbook.plugin.version>2.3.8</jdocbook.plugin.version>
+        <pressgang.version>2.0.2</pressgang.version>
     </properties>
 
     <dependencyManagement>
@@ -87,7 +86,8 @@
             <plugin>
                 <groupId>org.jboss.maven.plugins</groupId>
                 <artifactId>maven-jdocbook-plugin</artifactId>
-                <version>2.3.8</version>
+                <version>${jdocbook.plugin.version}</version>
+                <extensions>true</extensions>
                 <configuration>
                     <sourceDirectory>${basedir}/${jdocbook.source.directory}</sourceDirectory>
                     <sourceDocumentName>Weld_-_JSR-299_Reference_Implementation.xml</sourceDocumentName>
@@ -98,10 +98,44 @@
                             <include>images/*.png</include>
                         </includes>
                     </imageResource>
+                    <formats>
+                        <format>
+                            <formatName>pdf</formatName>
+                            <stylesheetResource>classpath:/xslt/org/jboss/pdf.xsl</stylesheetResource>
+                            <finalName>${pdf.name}</finalName>
+                        </format>
+                        <format>
+                            <formatName>html</formatName>
+                            <stylesheetResource>classpath:/xslt/org/jboss/xhtml.xsl</stylesheetResource>
+                            <finalName>index.html</finalName>
+                        </format>
+                        <format>
+                            <formatName>html_single</formatName>
+                            <stylesheetResource>classpath:/xslt/org/jboss/xhtml-single.xsl</stylesheetResource>
+                            <finalName>index.html</finalName>
+                        </format>
+                    </formats>
                     <options>
+                        <xincludeSupported>true</xincludeSupported>
+                        <xmlTransformerType>saxon</xmlTransformerType>
+                        <docbookVersion>1.72.0</docbookVersion>
+                        <localeSeparator>-</localeSeparator>
                         <injectionDateFormat>dd/MM/yyyy</injectionDateFormat>
                     </options>
                 </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.jboss.pressgang</groupId>
+                        <artifactId>pressgang-xslt-ns</artifactId>
+                        <version>${pressgang.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.jboss.pressgang</groupId>
+                        <artifactId>pressgang-jdocbook-style</artifactId>
+                        <type>jdocbook-style</type>
+                        <version>${pressgang.version}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
