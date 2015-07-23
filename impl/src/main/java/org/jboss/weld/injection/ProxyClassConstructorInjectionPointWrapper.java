@@ -30,6 +30,7 @@ import org.jboss.weld.bean.proxy.ProxyFactory;
 import org.jboss.weld.bean.proxy.TargetBeanInstance;
 import org.jboss.weld.introspector.WeldConstructor;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.manager.api.WeldManager;
 
 /**
  * A wrapper on a {@link ConstructorInjectionPoint}, to be used if a proxy subclass is instantiated instead of the
@@ -50,8 +51,8 @@ public class ProxyClassConstructorInjectionPointWrapper<T> extends ConstructorIn
     private boolean decorator;
     private final Bean<?> bean;
 
-    public ProxyClassConstructorInjectionPointWrapper(Bean<T> declaringBean, WeldConstructor<T> weldConstructor, ConstructorInjectionPoint<T> originalConstructorInjectionPoint) {
-        super(declaringBean, weldConstructor);
+    public ProxyClassConstructorInjectionPointWrapper(Bean<T> declaringBean, WeldConstructor<T> weldConstructor, ConstructorInjectionPoint<T> originalConstructorInjectionPoint, WeldManager beanManager) {
+        super(declaringBean, weldConstructor, beanManager);
         this.decorator = (declaringBean instanceof javax.enterprise.inject.spi.Decorator);
         this.originalConstructorInjectionPoint = originalConstructorInjectionPoint;
         this.bean = declaringBean;

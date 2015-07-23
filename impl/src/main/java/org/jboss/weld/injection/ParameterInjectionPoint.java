@@ -28,6 +28,7 @@ import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.logging.messages.ReflectionMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.util.reflection.Reflections;
 
 import javax.decorator.Delegate;
@@ -53,8 +54,8 @@ import static org.jboss.weld.util.reflection.Reflections.cast;
 
 public class ParameterInjectionPoint<T, X> extends ForwardingWeldParameter<T, X> implements WeldInjectionPoint<T, Object>, Serializable {
 
-    public static <T, X> ParameterInjectionPoint<T, X> of(Bean<?> declaringBean, WeldParameter<T, X> parameter) {
-        return new ParameterInjectionPoint<T, X>(declaringBean, parameter);
+    public static <T, X> ParameterInjectionPoint<T, X> of(Bean<?> declaringBean, WeldParameter<T, X> parameter, WeldManager beanManager) {
+        return new ParameterInjectionPoint<T, X>(declaringBean, parameter, beanManager);
     }
 
     @SuppressWarnings(value = "SE_BAD_FIELD", justification = "If the bean is not serializable, we won't ever try to serialize the injection point")
@@ -62,13 +63,15 @@ public class ParameterInjectionPoint<T, X> extends ForwardingWeldParameter<T, X>
     private final WeldParameter<T, X> parameter;
     private final boolean delegate;
     private final boolean cacheable;
+    private final WeldManager beanManager;
     private Bean<?> cachedBean;
 
-    private ParameterInjectionPoint(Bean<?> declaringBean, WeldParameter<T, X> parameter) {
+    private ParameterInjectionPoint(Bean<?> declaringBean, WeldParameter<T, X> parameter, WeldManager beanManager) {
         this.declaringBean = declaringBean;
         this.parameter = parameter;
         this.delegate = isAnnotationPresent(Delegate.class) && declaringBean instanceof Decorator<?>;
         this.cacheable = !delegate && !InjectionPoint.class.isAssignableFrom(parameter.getJavaClass()) && !Instance.class.isAssignableFrom(parameter.getJavaClass());
+        this.beanManager = beanManager;
     }
 
     @Override
@@ -153,6 +156,10 @@ public class ParameterInjectionPoint<T, X> extends ForwardingWeldParameter<T, X>
         throw new InvalidObjectException(PROXY_REQUIRED);
     }
 
+    private WeldManager getBeanManager() {
+        return beanManager;
+    }
+
     private static class SerializationProxy<T> extends WeldInjectionPointSerializationProxy<T, Object> {
 
         private static final long serialVersionUID = -3491482804822264969L;
@@ -162,7 +169,7 @@ public class ParameterInjectionPoint<T, X> extends ForwardingWeldParameter<T, X>
         private final ConstructorSignature constructorSignature;
 
         public SerializationProxy(ParameterInjectionPoint<T, ?> injectionPoint) {
-            super(injectionPoint);
+            super(injectionPoint, injectionPoint.getBeanManager());
             this.parameterPosition = injectionPoint.getPosition();
             if (injectionPoint.delegate().getDeclaringWeldCallable() instanceof WeldMethod<?, ?>) {
                 this.methodSignature = ((WeldMethod<?, ?>) injectionPoint.delegate().getDeclaringWeldCallable()).getSignature();
@@ -181,7 +188,7 @@ public class ParameterInjectionPoint<T, X> extends ForwardingWeldParameter<T, X>
             if (parameter == null || (bean == null && getDeclaringBeanId() != null)) {
                 throw new IllegalStateException(ReflectionMessage.UNABLE_TO_GET_PARAMETER_ON_DESERIALIZATION, getDeclaringBeanId(), getDeclaringWeldClass(), methodSignature, parameterPosition);
             }
-            return ParameterInjectionPoint.of(getDeclaringBean(), getWeldParameter());
+            return ParameterInjectionPoint.of(getDeclaringBean(), getWeldParameter(), getBeanManager());
         }
 
         protected WeldParameter<T, ?> getWeldParameter() {

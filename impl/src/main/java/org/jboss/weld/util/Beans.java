@@ -415,15 +415,15 @@ public class Beans {
         return set.trimToSize();
     }
 
-    public static List<Set<MethodInjectionPoint<?, ?>>> getInitializerMethods(Bean<?> declaringBean, WeldClass<?> weldClass) {
+    public static List<Set<MethodInjectionPoint<?, ?>>> getInitializerMethods(Bean<?> declaringBean, WeldClass<?> weldClass, BeanManagerImpl beanManager) {
         if (weldClass.isModified()) {
-            return getInitializerMethodsFromWeldMethods(declaringBean, weldClass);
+            return getInitializerMethodsFromWeldMethods(declaringBean, weldClass, beanManager);
         } else {
-            return getInitializerMethodsFromDeclaredMethods(declaringBean, weldClass);
+            return getInitializerMethodsFromDeclaredMethods(declaringBean, weldClass, beanManager);
         }
     }
 
-    private static <T> List<Set<MethodInjectionPoint<?, ?>>> getInitializerMethodsFromWeldMethods(Bean<?> declaringBean, WeldClass<T> weldClass) {
+    private static <T> List<Set<MethodInjectionPoint<?, ?>>> getInitializerMethodsFromWeldMethods(Bean<?> declaringBean, WeldClass<T> weldClass, BeanManagerImpl beanManager) {
         List<Set<MethodInjectionPoint<?, ?>>> initializerMethods = new ArrayList<Set<MethodInjectionPoint<?, ?>>>();
 
         // Keep track of all seen methods so we can ignore overridden methods
@@ -434,7 +434,7 @@ public class Beans {
             ArraySet<MethodInjectionPoint<?, ?>> set = new ArraySet<MethodInjectionPoint<?, ?>>();
             for (WeldMethod<?, ?> weldMethod : Collections2.filter(weldClass.getWeldMethods(), BRIDGE_METHOD_FILTER_PREDICATE)) {
                 if (weldMethod.getJavaMember().getDeclaringClass().equals(clazz)) {
-                    processPossibleInitializerMethod(declaringBean, weldClass, weldMethod, seenMethods, set);
+                    processPossibleInitializerMethod(declaringBean, weldClass, weldMethod, seenMethods, set, beanManager);
                 }
             }
             set.trimToSize();
@@ -446,7 +446,7 @@ public class Beans {
         return initializerMethods;
     }
 
-    public static List<Set<MethodInjectionPoint<?, ?>>> getInitializerMethodsFromDeclaredMethods(Bean<?> declaringBean, WeldClass<?> weldClass) {
+    public static List<Set<MethodInjectionPoint<?, ?>>> getInitializerMethodsFromDeclaredMethods(Bean<?> declaringBean, WeldClass<?> weldClass, BeanManagerImpl beanManager) {
         List<Set<MethodInjectionPoint<?, ?>>> list = new ArrayList<Set<MethodInjectionPoint<?, ?>>>();
         // Keep track of all seen methods so we can ignore overridden methods
         Multimap<MethodSignature, Package> seenMethods = Multimaps.newSetMultimap(new HashMap<MethodSignature, Collection<Package>>(), HashSetSupplier.<Package>instance());
@@ -455,7 +455,7 @@ public class Beans {
             ArraySet<MethodInjectionPoint<?, ?>> set = new ArraySet<MethodInjectionPoint<?, ?>>();
             Collection declaredWeldMethods = Collections2.filter(clazz.getDeclaredWeldMethods(), BRIDGE_METHOD_FILTER_PREDICATE);
             for (WeldMethod<?, ?> method : (Collection<WeldMethod<?, ?>>) declaredWeldMethods) {
-                processPossibleInitializerMethod(declaringBean, weldClass, method, seenMethods, set);
+                processPossibleInitializerMethod(declaringBean, weldClass, method, seenMethods, set, beanManager);
             }
             set.trimToSize();
             list.add(0, set);
@@ -464,11 +464,11 @@ public class Beans {
         return list;
     }
 
-    private static void processPossibleInitializerMethod(Bean<?> declaringBean, WeldClass<?> injectionTargetClass, WeldMethod<?, ?> method, Multimap<MethodSignature, Package> seenMethods, ArraySet<MethodInjectionPoint<?, ?>> set) {
+    private static void processPossibleInitializerMethod(Bean<?> declaringBean, WeldClass<?> injectionTargetClass, WeldMethod<?, ?> method, Multimap<MethodSignature, Package> seenMethods, ArraySet<MethodInjectionPoint<?, ?>> set, BeanManagerImpl beanManager) {
         if (isInitializerMethod(method)) {
             validateInitializerMethod(method, injectionTargetClass);
             if (!isOverridden(method, seenMethods)) {
-                set.add(MethodInjectionPoint.of(declaringBean, method));
+                set.add(MethodInjectionPoint.of(declaringBean, method, beanManager));
             }
         }
         seenMethods.put(method.getSignature(), method.getPackage());
@@ -500,31 +500,31 @@ public class Beans {
         }
     }
 
-    public static Set<ParameterInjectionPoint<?, ?>> getParameterInjectionPoints(Bean<?> declaringBean, WeldConstructor<?> constructor) {
+    public static Set<ParameterInjectionPoint<?, ?>> getParameterInjectionPoints(Bean<?> declaringBean, WeldConstructor<?> constructor, BeanManagerImpl beanManager) {
         ArraySet<ParameterInjectionPoint<?, ?>> injectionPoints = new ArraySet<ParameterInjectionPoint<?, ?>>();
         for (WeldParameter<?, ?> parameter : constructor.getWeldParameters()) {
-            injectionPoints.add(ParameterInjectionPoint.of(declaringBean, parameter));
+            injectionPoints.add(ParameterInjectionPoint.of(declaringBean, parameter, beanManager));
         }
         return injectionPoints.trimToSize();
     }
 
-    public static Set<ParameterInjectionPoint<?, ?>> getParameterInjectionPoints(Bean<?> declaringBean, MethodInjectionPoint<?, ?> method) {
+    public static Set<ParameterInjectionPoint<?, ?>> getParameterInjectionPoints(Bean<?> declaringBean, MethodInjectionPoint<?, ?> method, BeanManagerImpl beanManager) {
         ArraySet<ParameterInjectionPoint<?, ?>> injectionPoints = new ArraySet<ParameterInjectionPoint<?, ?>>();
         for (WeldParameter<?, ?> parameter : method.getWeldParameters()) {
             if (parameter.isAnnotationPresent(Disposes.class)) {
                 continue; // disposes parameter is not an injection point
             }
-            injectionPoints.add(ParameterInjectionPoint.of(declaringBean, parameter));
+            injectionPoints.add(ParameterInjectionPoint.of(declaringBean, parameter, beanManager));
         }
         return injectionPoints.trimToSize();
     }
 
-    public static Set<ParameterInjectionPoint<?, ?>> getParameterInjectionPoints(Bean<?> declaringBean, List<Set<MethodInjectionPoint<?, ?>>> methodInjectionPoints) {
+    public static Set<ParameterInjectionPoint<?, ?>> getParameterInjectionPoints(Bean<?> declaringBean, List<Set<MethodInjectionPoint<?, ?>>> methodInjectionPoints, BeanManagerImpl beanManager) {
         ArraySet<ParameterInjectionPoint<?, ?>> injectionPoints = new ArraySet<ParameterInjectionPoint<?, ?>>();
         for (Set<MethodInjectionPoint<?, ?>> i : methodInjectionPoints) {
             for (MethodInjectionPoint<?, ?> method : i) {
                 for (WeldParameter<?, ?> parameter : method.getWeldParameters()) {
-                    injectionPoints.add(ParameterInjectionPoint.of(declaringBean, parameter));
+                    injectionPoints.add(ParameterInjectionPoint.of(declaringBean, parameter, beanManager));
                 }
             }
         }
@@ -676,7 +676,7 @@ public class Beans {
         return false;
     }
 
-    public static <T> ConstructorInjectionPoint<T> getBeanConstructor(Bean<T> declaringBean, WeldClass<T> type) {
+    public static <T> ConstructorInjectionPoint<T> getBeanConstructor(Bean<T> declaringBean, WeldClass<T> type, BeanManagerImpl beanManager) {
         ConstructorInjectionPoint<T> constructor = null;
         Collection<WeldConstructor<T>> initializerAnnotatedConstructors = type.getWeldConstructors(Inject.class);
         log.trace(FOUND_INJECTABLE_CONSTRUCTORS, initializerAnnotatedConstructors, type);
@@ -685,11 +685,11 @@ public class Beans {
                 throw new DefinitionException(AMBIGUOUS_CONSTRUCTOR, type, initializerAnnotatedConstructors);
             }
         } else if (initializerAnnotatedConstructors.size() == 1) {
-            constructor = ConstructorInjectionPoint.of(declaringBean, initializerAnnotatedConstructors.iterator().next());
+            constructor = ConstructorInjectionPoint.of(declaringBean, initializerAnnotatedConstructors.iterator().next(), beanManager);
             log.trace(FOUND_ONE_INJECTABLE_CONSTRUCTOR, constructor, type);
         } else if (type.getNoArgsWeldConstructor() != null) {
 
-            constructor = ConstructorInjectionPoint.of(declaringBean, type.getNoArgsWeldConstructor());
+            constructor = ConstructorInjectionPoint.of(declaringBean, type.getNoArgsWeldConstructor(), beanManager);
             log.trace(FOUND_DEFAULT_CONSTRUCTOR, constructor, type);
         }
 
