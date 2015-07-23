@@ -344,6 +344,9 @@
                     <value>true</value>
                 </property>
             </activation>
+            <properties>
+                <excluded.groups>se</excluded.groups>
+            </properties>
             <dependencies>
                 <dependency>
                     <groupId>org.wildfly.arquillian</groupId>
@@ -495,7 +498,7 @@
                 </property>
             </activation>
             <properties>
-                <excluded.groups>javaee-full</excluded.groups>
+                <excluded.groups>javaee-full,se</excluded.groups>
             </properties>
         </profile>
 
