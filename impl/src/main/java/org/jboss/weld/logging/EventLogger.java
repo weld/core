@@ -53,6 +53,7 @@ public interface EventLogger extends WeldLogger {
     @Message(id = 404, value = "Conditional observer method cannot be declared by a @Dependent scoped bean: {0}\n\tat {1}\n  StackTrace:", format = Format.MESSAGE_FORMAT)
     DefinitionException invalidScopedConditionalObserver(Object param1, Object stackElement);
 
+    @SuppressWarnings("weldlog:msg-value")
     @Message(id = 405, value = "Observer method cannot have more than one event parameter annotated with @Observes or @ObservesAsync: {0}\n\tat {1}\n  StackTrace:", format = Format.MESSAGE_FORMAT)
     DefinitionException multipleEventParameters(Object param1, Object stackElement);
 
