@@ -123,10 +123,12 @@ JBOSS_HOME: ${jboss.home}
                                             <fileset dir="${module.dir}/spi/main" includes="*.jar" />
                                             <fileset dir="${module.dir}/api/main" includes="*.jar" />
                                             <fileset dir="${jsf.injection.dir}" includes="weld-*jsf*.jar" />
+                                            <fileset dir="${module.dir}/probe/main" includes="*.jar" />
                                             <fileset dir="${module.dir}/core/main" includes="*.index" />
                                             <fileset dir="${module.dir}/spi/main" includes="*.index" />
                                             <fileset dir="${module.dir}/api/main" includes="*.index" />
                                             <fileset dir="${jsf.injection.dir}" includes="weld-*jsf*.index" />
+                                            <fileset dir="${module.dir}/probe/main" includes="*.index" />
                                         </delete>
 
                                         <copy todir="${module.dir}/core/main" overwrite="true">
@@ -134,17 +136,23 @@ JBOSS_HOME: ${jboss.home}
                                                 <include name="${weld.core.file}" />
                                                 <include name="${weld.ejb.file}" />
                                                 <include name="${weld.jta.file}" />
-                                                <include name="${weld.probe.file}" />
                                                 <include name="${weld.web.file}" />
                                                 <include name="${weld.ejb.file}" />
                                             </fileset>
                                         </copy>
 
+
                                         <replaceregexp file="${module.dir}/core/main/module.xml" match="path=&quot;weld-core-impl.*?&quot;" replace="path=&quot;${weld.core.file}&quot;" byline="true" />
-                                        <replaceregexp file="${module.dir}/core/main/module.xml" match="path=&quot;weld-probe-core.*?&quot;" replace="path=&quot;${weld.probe.file}&quot;" byline="true" />
                                         <replaceregexp file="${module.dir}/core/main/module.xml" match="path=&quot;weld-ejb.*?&quot;" replace="path=&quot;${weld.ejb.file}&quot;" byline="true" />
                                         <replaceregexp file="${module.dir}/core/main/module.xml" match="path=&quot;weld-jta.*?&quot;" replace="path=&quot;${weld.jta.file}&quot;" byline="true" />
                                         <replaceregexp file="${module.dir}/core/main/module.xml" match="path=&quot;weld-web.*?&quot;" replace="path=&quot;${weld.web.file}&quot;" byline="true" />
+
+                                        <copy todir="${module.dir}/probe/main" overwrite="true">
+                                            <fileset dir="target/dependency/lib">
+                                                <include name="${weld.probe.file}" />
+                                            </fileset>
+                                        </copy>
+                                        <replaceregexp file="${module.dir}/probe/main/module.xml" match="path=&quot;weld-probe-core.*?&quot;" replace="path=&quot;${weld.probe.file}&quot;" byline="true" />
 
                                         <copy todir="${module.dir}/spi/main" overwrite="true">
                                             <fileset dir="target/dependency/lib">
