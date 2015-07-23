@@ -47,7 +47,7 @@ class TransactionalObserverNotifier extends ObserverNotifier {
     private final String contextId;
 
     TransactionalObserverNotifier(String contextId, TypeSafeObserverResolver resolver, ServiceRegistry services, boolean strict) {
-        super(resolver, services, strict);
+        super(contextId, resolver, services, strict);
         this.contextId = contextId;
         this.transactionServices = services.get(TransactionServices.class);
     }

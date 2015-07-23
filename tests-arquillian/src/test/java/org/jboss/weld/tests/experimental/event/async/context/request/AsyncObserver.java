@@ -14,21 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.event;
+package org.jboss.weld.tests.experimental.event.async.context.request;
 
-import org.jboss.weld.bootstrap.api.ServiceRegistry;
-import org.jboss.weld.module.ObserverNotifierFactory;
-import org.jboss.weld.resolution.TypeSafeObserverResolver;
+import java.util.concurrent.atomic.AtomicInteger;
 
-public class DefaultObserverNotifierFactory implements ObserverNotifierFactory {
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.event.ObservesAsync;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.inject.Inject;
 
-    public static final ObserverNotifierFactory INSTANCE = new DefaultObserverNotifierFactory();
+import junit.framework.Assert;
 
-    private DefaultObserverNotifierFactory() {
-    }
+@RequestScoped
+public class AsyncObserver {
 
-    @Override
-    public ObserverNotifier create(String contextId, TypeSafeObserverResolver resolver, ServiceRegistry services, boolean strict) {
-        return new ObserverNotifier(contextId, resolver, services, strict);
+    @Inject
+    private Incrementor incrementor;
+
+    public void inc(@ObservesAsync AtomicInteger value, BeanManager manager) {
+        Assert.assertNotNull(manager.getContext(RequestScoped.class));
+        incrementor.inc(value);
     }
 }

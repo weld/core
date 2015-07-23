@@ -35,7 +35,10 @@ import javax.enterprise.event.TransactionPhase;
 import javax.enterprise.inject.spi.EventMetadata;
 import javax.enterprise.inject.spi.ObserverMethod;
 
+import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
+import org.jboss.weld.context.RequestContext;
+import org.jboss.weld.context.unbound.UnboundLiteral;
 import org.jboss.weld.injection.ThreadLocalStack.ThreadLocalStackReference;
 import org.jboss.weld.logging.UtilLogger;
 import org.jboss.weld.manager.api.ExecutorServices;
@@ -46,6 +49,7 @@ import org.jboss.weld.resolution.TypeSafeObserverResolver;
 import org.jboss.weld.resources.SharedObjectCache;
 import org.jboss.weld.security.spi.SecurityContext;
 import org.jboss.weld.security.spi.SecurityServices;
+import org.jboss.weld.util.LazyValueHolder;
 import org.jboss.weld.util.Observers;
 import org.jboss.weld.util.Types;
 import org.jboss.weld.util.cache.ComputingCache;
@@ -73,8 +77,9 @@ public class ObserverNotifier {
     private final ComputingCache<Type, RuntimeException> eventTypeCheckCache;
     private final Executor asyncEventExecutor;
     private final SecurityServices securityServices;
+    private final LazyValueHolder<RequestContext> requestContextHolder;
 
-    protected ObserverNotifier(TypeSafeObserverResolver resolver, ServiceRegistry services, boolean strict) {
+    protected ObserverNotifier(String contextId, TypeSafeObserverResolver resolver, ServiceRegistry services, boolean strict) {
         this.resolver = resolver;
         this.sharedObjectCache = services.get(SharedObjectCache.class);
         this.strict = strict;
@@ -87,6 +92,8 @@ public class ObserverNotifier {
         // fall back to FJP.commonPool() if ExecutorServices are not installed
         this.asyncEventExecutor = services.getOptional(ExecutorServices.class).map((e) -> e.getTaskExecutor()).orElse(ForkJoinPool.commonPool());
         this.securityServices = services.getRequired(SecurityServices.class);
+        // LazyValueHolder is used because contexts are not ready yet at the point when ObserverNotifier is first initialized
+        this.requestContextHolder = LazyValueHolder.forSupplier(() -> Container.instance(contextId).deploymentManager().instance().select(RequestContext.class, UnboundLiteral.INSTANCE).get());
     }
 
     /**
@@ -322,8 +329,10 @@ public class ObserverNotifier {
         final SecurityContext securityContext = securityServices.getSecurityContext();
         return new AsyncEventDeliveryStage<>(() -> {
             final ThreadLocalStackReference<EventMetadata> stack = currentEventMetadata.pushIfNotNull(metadata);
+            final RequestContext requestContext = requestContextHolder.get();
             try {
                 securityContext.associate();
+                requestContext.activate();
                 // Note that all async observers are notified serially in a single worker thread
                 for (ObserverMethod<? super T> observer : observers) {
                     try {
@@ -334,6 +343,8 @@ public class ObserverNotifier {
                 }
             } finally {
                 stack.pop();
+                requestContext.invalidate();
+                requestContext.deactivate();
                 securityContext.dissociate();
                 securityContext.close();
             }
