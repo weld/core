@@ -137,8 +137,11 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
 
     private volatile Map<Class<?>, Integer> cachedAlternativeMap;
     private volatile boolean sorted;
+    private volatile boolean dirty;
 
     private void addItem(List<Item> list, Class<?> javaClass, int priority) {
+        sorted = false;
+        dirty = true;
         list.add(new Item(javaClass, priority));
     }
 
@@ -184,12 +187,20 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
         };
     }
 
+    /**
+     *
+     * @return <code>true</code> if a new item was added and the up-to-date enablements were not built yet, <code>false</code> otherwise
+     */
+    public boolean isDirty() {
+        return dirty;
+    }
+
     /*
      * cachedAlternativeMap is accessed from a single thread only and the result is safely propagated. Therefore, there is no need to synchronize access to
      * cachedAlternativeMap.
      */
     private Map<Class<?>, Integer> getGlobalAlternativeMap() {
-        if (cachedAlternativeMap == null) {
+        if (cachedAlternativeMap == null || dirty) {
             Map<Class<?>, Integer> map = new HashMap<Class<?>, Integer>();
             for (ListIterator<Item> iterator = alternatives.listIterator(); iterator.hasNext();) {
                 Item item = iterator.next();
@@ -250,6 +261,9 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
         }
 
         Map<Class<?>, Integer> globalAlternatives = getGlobalAlternativeMap();
+
+        // We suppose that enablements are always created all at once
+        dirty = false;
 
         return new ModuleEnablement(moduleInterceptorsBuilder.build(), moduleDecoratorsBuilder.build(), globalAlternatives, alternativeClasses,
                 alternativeStereotypes);

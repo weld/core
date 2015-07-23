@@ -36,6 +36,7 @@ import javax.enterprise.inject.spi.DefinitionException;
 import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.ObserverMethod;
 import javax.enterprise.inject.spi.PassivationCapable;
+import javax.enterprise.inject.spi.Prioritized;
 
 import org.jboss.weld.annotated.slim.SlimAnnotatedTypeStore;
 import org.jboss.weld.bean.CustomDecoratorWrapper;
@@ -43,6 +44,7 @@ import org.jboss.weld.bean.attributes.ExternalBeanAttributesFactory;
 import org.jboss.weld.bootstrap.BeanDeploymentArchiveMapping;
 import org.jboss.weld.bootstrap.BeanDeploymentFinder;
 import org.jboss.weld.bootstrap.ContextHolder;
+import org.jboss.weld.bootstrap.enablement.GlobalEnablementBuilder;
 import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.experimental.BeanBuilder;
 import org.jboss.weld.experimental.ExperimentalAfterBeanDiscovery;
@@ -138,7 +140,7 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
         return new BeanBuilderImpl<T>(getReceiver().getClass(), getBeanDeploymentFinder());
     }
 
-    protected <T> void processBeanRegistration(BeanRegistration registration) {
+    protected <T> void processBeanRegistration(BeanRegistration registration, GlobalEnablementBuilder globalEnablementBuilder) {
         Bean<?> bean = registration.getBean();
         BeanManagerImpl beanManager = registration.getBeanManager();
         if (beanManager == null) {
@@ -148,12 +150,25 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
             // Also validate the bean produced by a builder
             validateBean(bean);
         }
+
+        // Custom beans (alternatives, interceptors, decorators) may also implement javax.enterprise.inject.spi.Prioritized
+        Integer priority = (bean instanceof Prioritized) ? ((Prioritized) bean).getPriority() : null;
+
         if (bean instanceof Interceptor<?>) {
             beanManager.addInterceptor((Interceptor<?>) bean);
+            if (priority != null) {
+                globalEnablementBuilder.addInterceptor(bean.getBeanClass(), priority);
+            }
         } else if (bean instanceof Decorator<?>) {
             beanManager.addDecorator(CustomDecoratorWrapper.of((Decorator<?>) bean, beanManager));
+            if (priority != null) {
+                globalEnablementBuilder.addDecorator(bean.getBeanClass(), priority);
+            }
         } else {
             beanManager.addBean(bean);
+            if (priority != null && bean.isAlternative()) {
+                globalEnablementBuilder.addAlternative(bean.getBeanClass(), priority);
+            }
         }
         containerLifecycleEvents.fireProcessBean(beanManager, bean);
     }
@@ -207,8 +222,9 @@ public class AfterBeanDiscoveryImpl extends AbstractBeanDiscoveryEvent implement
      */
     private void finish() {
         try {
+            GlobalEnablementBuilder globalEnablementBuilder = getBeanManager().getServices().get(GlobalEnablementBuilder.class);
             for (BeanRegistration registration : additionalBeans) {
-                processBeanRegistration(registration);
+                processBeanRegistration(registration, globalEnablementBuilder);
             }
             for (ObserverMethod<?> observer : additionalObservers) {
                 BeanManagerImpl manager = getOrCreateBeanDeployment(observer.getBeanClass()).getBeanManager();

@@ -423,6 +423,13 @@ public class WeldStartup {
         // Extensions may have registered beans / observers. We need to flush caches.
         flushCaches();
 
+        // If needed, recreate enablement once again - extensions may have registered interceptors, decorators and alternatives
+        if(deployment.getServices().getRequired(GlobalEnablementBuilder.class).isDirty()) {
+            for (BeanDeployment beanDeployment : getBeanDeployments()) {
+                beanDeployment.createEnablement();
+            }
+        }
+
         // Re-read the deployment structure, bdaMapping will be the physical
         // structure, extensions, classes, and any beans added using addBean
         // outside the physical structure
