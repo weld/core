@@ -68,6 +68,7 @@ import javax.enterprise.inject.spi.InterceptionType;
 import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.ObserverMethod;
 import javax.enterprise.inject.spi.PassivationCapable;
+import javax.enterprise.inject.spi.Prioritized;
 import javax.enterprise.inject.spi.ProducerFactory;
 import javax.enterprise.util.TypeLiteral;
 
@@ -436,7 +437,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     private void addBean(Bean<?> bean, List<Bean<?>> beanList, List<Bean<?>> transitiveBeans) {
         if (beanSet.add(bean)) {
-            if (bean.isAlternative() && !registry.isEnabledInAnyBeanDeployment(bean)) {
+            if (bean.isAlternative() && (!registry.isEnabledInAnyBeanDeployment(bean) && !(bean instanceof Prioritized))) {
                 BootstrapLogger.LOG.foundDisabledAlternative(bean);
             } else if (registry.isSpecializedInAnyBeanDeployment(bean)) {
                 BootstrapLogger.LOG.foundSpecializedBean(bean);
@@ -455,8 +456,7 @@ public class BeanManagerImpl implements WeldManager, Serializable {
                 }
                 registerBeanNamespace(bean);
                 // New beans (except for SessionBeans) and most built in beans aren't resolvable transitively
-                if (bean instanceof ExtensionBean || bean instanceof SessionBean
-                        || (!(bean instanceof NewBean) && !(bean instanceof AbstractBuiltInBean<?>))) {
+                if (bean instanceof ExtensionBean || bean instanceof SessionBean || (!(bean instanceof NewBean) && !(bean instanceof AbstractBuiltInBean<?>))) {
                     transitiveBeans.add(bean);
                 }
             }
