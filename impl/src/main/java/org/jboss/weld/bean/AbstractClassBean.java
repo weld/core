@@ -254,8 +254,8 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
      * Initializes the initializer methods
      */
     protected void initInitializerMethods() {
-        initializerMethods = Beans.getInitializerMethods(this, getWeldAnnotated());
-        addInjectionPoints(Beans.getParameterInjectionPoints(this, initializerMethods));
+        initializerMethods = Beans.getInitializerMethods(this, getWeldAnnotated(), beanManager);
+        addInjectionPoints(Beans.getParameterInjectionPoints(this, initializerMethods, beanManager));
     }
 
     @Override
@@ -439,8 +439,8 @@ public abstract class AbstractClassBean<T> extends AbstractBean<T, Class<T>> {
      * Initializes the constructor
      */
     protected void initConstructor() {
-        this.constructor = Beans.getBeanConstructor(this, getWeldAnnotated());
-        addInjectionPoints(Beans.getParameterInjectionPoints(this, constructor));
+        this.constructor = Beans.getBeanConstructor(this, getWeldAnnotated(), beanManager);
+        addInjectionPoints(Beans.getParameterInjectionPoints(this, constructor, beanManager));
     }
 
     /**

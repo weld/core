@@ -199,13 +199,11 @@ public class FieldInjectionPoint<T, X> extends ForwardingWeldField<T, X> impleme
 
         private final String fieldName;
         private final String injectionTargetClassName;
-        private final WeldManager beanManager;
 
         public SerializationProxy(FieldInjectionPoint<T, ?> injectionPoint) {
-            super(injectionPoint);
+            super(injectionPoint, injectionPoint.getBeanManager());
             this.fieldName = injectionPoint.getName();
             this.injectionTargetClassName = injectionPoint.getInjectionTargetClass().getName();
-            this.beanManager = injectionPoint.getBeanManager();
         }
 
         private Object readResolve() {
@@ -214,11 +212,11 @@ public class FieldInjectionPoint<T, X> extends ForwardingWeldField<T, X> impleme
                 throw new IllegalStateException(ReflectionMessage.UNABLE_TO_GET_FIELD_ON_DESERIALIZATION, getDeclaringBeanId(), getDeclaringWeldClass(), fieldName);
             }
 
-            return FieldInjectionPoint.of(getDeclaringBean(), getInjectionTargetClass(), getWeldField(), beanManager);
+            return FieldInjectionPoint.of(getDeclaringBean(), getInjectionTargetClass(), getWeldField(), getBeanManager());
         }
 
         protected WeldClass<?> getInjectionTargetClass() {
-            final Class<?> clazz = beanManager.getServices().get(ResourceLoader.class).classForName(injectionTargetClassName);
+            final Class<?> clazz = getService(ResourceLoader.class).classForName(injectionTargetClassName);
             return getService(ClassTransformer.class).loadClass(clazz);
         }
 

@@ -20,6 +20,7 @@ import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.introspector.WeldAnnotated;
 import org.jboss.weld.introspector.WeldClass;
+import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.serialization.spi.ContextualStore;
 
@@ -35,11 +36,13 @@ public interface WeldInjectionPoint<T, S> extends InjectionPoint, WeldAnnotated<
 
         private final String declaringBeanId;
         private final Class<?> declaringClass;
+        private final WeldManager beanManager;
 
-        public WeldInjectionPointSerializationProxy(WeldInjectionPoint<T, S> injectionPoint) {
+        public WeldInjectionPointSerializationProxy(WeldInjectionPoint<T, S> injectionPoint, WeldManager beanManager) {
             this.declaringBeanId =
                     injectionPoint.getBean() == null ? null : getService(ContextualStore.class).putIfAbsent(injectionPoint.getBean());
             this.declaringClass = injectionPoint.getDeclaringType().getJavaClass();
+            this.beanManager = beanManager;
         }
 
         protected Bean<T> getDeclaringBean() {
@@ -54,8 +57,12 @@ public interface WeldInjectionPoint<T, S> extends InjectionPoint, WeldAnnotated<
             return declaringBeanId;
         }
 
+        protected WeldManager getBeanManager() {
+            return beanManager;
+        }
+
         protected <E extends Service> E getService(Class<E> serviceClass) {
-            return Container.instance().services().get(serviceClass);
+            return beanManager.getServices().get(serviceClass);
         }
 
     }

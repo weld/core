@@ -27,6 +27,7 @@ import org.jboss.weld.introspector.WeldConstructor;
 import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.logging.messages.ReflectionMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.util.AnnotatedTypes;
 
 import javax.enterprise.context.spi.CreationalContext;
@@ -57,9 +58,11 @@ public class ConstructorInjectionPoint<T> extends ForwardingWeldConstructor<T> i
 
         protected abstract Bean<X> declaringBean();
 
+        protected abstract WeldManager beanManager();
+
         @Override
         public ParameterInjectionPoint<T, X> get(int index) {
-            return ParameterInjectionPoint.of(declaringBean(), delegate().get(index));
+            return ParameterInjectionPoint.of(declaringBean(), delegate().get(index), beanManager());
         }
 
         @Override
@@ -71,15 +74,19 @@ public class ConstructorInjectionPoint<T> extends ForwardingWeldConstructor<T> i
 
     @SuppressWarnings(value = "SE_BAD_FIELD", justification = "If the bean is not serializable, we won't ever try to serialize the injection point")
     private final Bean<T> declaringBean;
+
     private final WeldConstructor<T> constructor;
 
-    public static <T> ConstructorInjectionPoint<T> of(Bean<T> declaringBean, WeldConstructor<T> constructor) {
-        return new ConstructorInjectionPoint<T>(declaringBean, constructor);
+    private final WeldManager beanManager;
+
+    public static <T> ConstructorInjectionPoint<T> of(Bean<T> declaringBean, WeldConstructor<T> constructor, WeldManager beanManager) {
+        return new ConstructorInjectionPoint<T>(declaringBean, constructor, beanManager);
     }
 
-    protected ConstructorInjectionPoint(Bean<T> declaringBean, WeldConstructor<T> constructor) {
+    protected ConstructorInjectionPoint(Bean<T> declaringBean, WeldConstructor<T> constructor, WeldManager beanManager) {
         this.declaringBean = declaringBean;
         this.constructor = constructor;
+        this.beanManager = beanManager;
     }
 
     @Override
@@ -105,6 +112,10 @@ public class ConstructorInjectionPoint<T> extends ForwardingWeldConstructor<T> i
 
     public Bean<?> getBean() {
         return declaringBean;
+    }
+
+    protected WeldManager getBeanManager() {
+        return beanManager;
     }
 
     @Override
@@ -142,6 +153,10 @@ public class ConstructorInjectionPoint<T> extends ForwardingWeldConstructor<T> i
                 return delegate;
             }
 
+            @Override
+            protected WeldManager beanManager() {
+                return beanManager;
+            }
         };
     }
 
@@ -211,7 +226,7 @@ public class ConstructorInjectionPoint<T> extends ForwardingWeldConstructor<T> i
         private final ConstructorSignature signature;
 
         public SerializationProxy(ConstructorInjectionPoint<T> injectionPoint) {
-            super(injectionPoint);
+            super(injectionPoint, injectionPoint.getBeanManager());
             this.signature = injectionPoint.getSignature();
         }
 
@@ -221,7 +236,7 @@ public class ConstructorInjectionPoint<T> extends ForwardingWeldConstructor<T> i
             if (constructor == null || (bean == null && getDeclaringBeanId() != null)) {
                 throw new IllegalStateException(ReflectionMessage.UNABLE_TO_GET_CONSTRUCTOR_ON_DESERIALIZATION, getDeclaringBeanId(), getDeclaringWeldClass(), signature);
             }
-            return ConstructorInjectionPoint.of(getDeclaringBean(), getWeldConstructor());
+            return ConstructorInjectionPoint.of(getDeclaringBean(), getWeldConstructor(), getBeanManager());
         }
 
         protected WeldConstructor<T> getWeldConstructor() {

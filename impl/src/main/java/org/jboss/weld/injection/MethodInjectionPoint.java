@@ -24,6 +24,7 @@ import org.jboss.weld.introspector.WeldMethod;
 import org.jboss.weld.introspector.WeldParameter;
 import org.jboss.weld.logging.messages.ReflectionMessage;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.util.AnnotatedTypes;
 
 import javax.enterprise.context.spi.CreationalContext;
@@ -52,9 +53,11 @@ public class MethodInjectionPoint<T, X> extends ForwardingWeldMethod<T, X> imple
 
         protected abstract Bean<X> declaringBean();
 
+        protected abstract WeldManager beanManager();
+
         @Override
         public ParameterInjectionPoint<T, X> get(int index) {
-            return ParameterInjectionPoint.of(declaringBean(), delegate().get(index));
+            return ParameterInjectionPoint.of(declaringBean(), delegate().get(index), null);
         }
 
         @Override
@@ -66,14 +69,16 @@ public class MethodInjectionPoint<T, X> extends ForwardingWeldMethod<T, X> imple
 
     private final Bean<?> declaringBean;
     private final WeldMethod<T, X> method;
+    private final WeldManager beanManager;
 
-    public static <T, X> MethodInjectionPoint<T, X> of(Bean<?> declaringBean, WeldMethod<T, X> method) {
-        return new MethodInjectionPoint<T, X>(declaringBean, method);
+    public static <T, X> MethodInjectionPoint<T, X> of(Bean<?> declaringBean, WeldMethod<T, X> method, WeldManager beanManager) {
+        return new MethodInjectionPoint<T, X>(declaringBean, method, beanManager);
     }
 
-    protected MethodInjectionPoint(Bean<?> declaringBean, WeldMethod<T, X> method) {
+    protected MethodInjectionPoint(Bean<?> declaringBean, WeldMethod<T, X> method, WeldManager beanManager) {
         this.declaringBean = declaringBean;
         this.method = method;
+        this.beanManager = beanManager;
     }
 
     @Override
@@ -99,6 +104,10 @@ public class MethodInjectionPoint<T, X> extends ForwardingWeldMethod<T, X> imple
 
     public Bean<?> getBean() {
         return declaringBean;
+    }
+
+    protected WeldManager getBeanManager() {
+        return beanManager;
     }
 
     @Override
@@ -181,6 +190,10 @@ public class MethodInjectionPoint<T, X> extends ForwardingWeldMethod<T, X> imple
                 return delegate;
             }
 
+            @Override
+            protected WeldManager beanManager() {
+                return beanManager;
+            }
         };
     }
 
@@ -259,7 +272,7 @@ public class MethodInjectionPoint<T, X> extends ForwardingWeldMethod<T, X> imple
         private final MethodSignature signature;
 
         public SerializationProxy(MethodInjectionPoint<T, ?> injectionPoint) {
-            super(injectionPoint);
+            super(injectionPoint, injectionPoint.getBeanManager());
             this.signature = injectionPoint.getSignature();
         }
 
@@ -269,7 +282,7 @@ public class MethodInjectionPoint<T, X> extends ForwardingWeldMethod<T, X> imple
             if (method == null || (bean == null && getDeclaringBeanId() != null)) {
                 throw new IllegalStateException(ReflectionMessage.UNABLE_TO_GET_METHOD_ON_DESERIALIZATION, getDeclaringBeanId(), getDeclaringWeldClass(), signature);
             }
-            return MethodInjectionPoint.of(getDeclaringBean(), getWeldMethod());
+            return MethodInjectionPoint.of(getDeclaringBean(), getWeldMethod(), getBeanManager());
         }
 
         protected WeldMethod<T, ?> getWeldMethod() {
