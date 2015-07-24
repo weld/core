@@ -45,7 +45,7 @@
                                 <configuration>
                                     <transformers>
                                         <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                            <mainClass>org.jboss.weld.environment.se.StartMain</mainClass>
+                                            <mainClass>org.jboss.weld.environment.se.example.numberguess.Main</mainClass>
                                         </transformer>
                                     </transformers>
                                 </configuration>
@@ -77,7 +77,7 @@
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>exec-maven-plugin</artifactId>
                         <configuration>
-                            <mainClass>org.jboss.weld.environment.se.StartMain</mainClass>
+                            <mainClass>org.jboss.weld.environment.se.example.numberguess.Main</mainClass>
                         </configuration>
                     </plugin>
                 </plugins>
@@ -96,6 +96,7 @@
         <profile>
             <id>jandex-index</id>
             <build>
+                <finalName>${project.artifactId}</finalName>
                 <plugins>
                     <plugin>
                         <groupId>org.jboss.jandex</groupId>
