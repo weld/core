@@ -41,3 +41,4 @@ within WildFly. Then, run:
 
 
 
+foo
