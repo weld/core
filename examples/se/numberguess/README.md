@@ -39,7 +39,7 @@ ready-made index and uses it to discover classes even faster.
 To run the example in this configuration, run:
 
         mvn clean package -Pjandex,jandex-index dependency:copy-dependencies -Dmdep.stripVersion
-        java -cp target/weld-se-numberguess.jar:target/dependency/weld-se-shaded.jar:target/dependency/jandex.jar org.jboss.weld.environment.se.StartMain
+        java -cp target/weld-se-numberguess.jar:target/dependency/weld-se-shaded.jar:target/dependency/jandex.jar org.jboss.weld.environment.se.example.numberguess.Main
 
 In the log, you should see a confirmation that existing Jandex index was found and used.
 
@@ -50,7 +50,7 @@ There is a simple ready-made policy file named numberguess.policy
 To run the example with SecurityManager enabled, run:
 
         mvn clean package dependency:copy-dependencies -Dmdep.stripVersion
-        java -Djava.security.manager -Djava.security.policy=target/numberguess.policy -cp target/weld-se-numberguess.jar:target/dependency/weld-se-shaded.jar org.jboss.weld.environment.se.StartMain
+        java -Djava.security.manager -Djava.security.policy=target/numberguess.policy -cp target/weld-se-numberguess.jar:target/dependency/weld-se-shaded.jar org.jboss.weld.environment.se.example.numberguess.Main
 
 Runnig the Example with shaded maven plugin (fat-jar)
 -----------------------------------------------------
