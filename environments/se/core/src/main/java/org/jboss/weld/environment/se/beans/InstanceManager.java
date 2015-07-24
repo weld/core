@@ -34,6 +34,7 @@ import org.jboss.weld.environment.se.WeldContainer;
  * @see WeldContainer
  */
 @Vetoed
+@Deprecated
 public class InstanceManager {
 
     @Inject @Any

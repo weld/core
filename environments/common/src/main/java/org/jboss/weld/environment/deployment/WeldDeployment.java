@@ -37,6 +37,8 @@ public class WeldDeployment extends AbstractWeldDeployment {
 
     public static final String ADDITIONAL_BDA_ID = WeldDeployment.class.getName() + ".additionalClasses";
 
+    public static final String SYNTHETIC_BDA_ID = WeldDeployment.class.getName() + ".synthetic";
+
     private final Set<WeldBeanDeploymentArchive> beanDeploymentArchives;
 
     private final ResourceLoader resourceLoader;
@@ -55,9 +57,6 @@ public class WeldDeployment extends AbstractWeldDeployment {
         super(bootstrap, extensions);
         this.resourceLoader = resourceLoader;
         this.beanDeploymentArchives = beanDeploymentArchives;
-        for (BeanDeploymentArchive archive : beanDeploymentArchives) {
-            archive.getServices().add(ResourceLoader.class, resourceLoader);
-        }
         setBeanDeploymentArchivesAccessibility();
     }
 

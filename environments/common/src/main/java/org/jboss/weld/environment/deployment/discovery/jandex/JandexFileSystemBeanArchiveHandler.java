@@ -26,6 +26,7 @@ import org.jboss.jandex.Indexer;
 import org.jboss.weld.environment.deployment.discovery.BeanArchiveBuilder;
 import org.jboss.weld.environment.deployment.discovery.FileSystemBeanArchiveHandler;
 import org.jboss.weld.environment.logging.CommonLogger;
+import org.jboss.weld.environment.util.Files;
 
 /**
  * Builds and attaches a jandex index to each bean archive.
@@ -40,6 +41,9 @@ public class JandexFileSystemBeanArchiveHandler extends FileSystemBeanArchiveHan
     @Override
     public BeanArchiveBuilder handle(String path) {
         BeanArchiveBuilder builder = super.handle(path);
+        if (builder == null) {
+            return null;
+        }
         builder.setAttribute(JandexDiscoveryStrategy.INDEX_ATTRIBUTE_NAME, buildIndex());
         return builder;
     }
@@ -47,7 +51,7 @@ public class JandexFileSystemBeanArchiveHandler extends FileSystemBeanArchiveHan
     @Override
     protected void add(Entry entry, BeanArchiveBuilder builder) throws MalformedURLException {
         super.add(entry, builder);
-        if (isClass(entry.getName())) {
+        if (Files.isClass(entry.getName())) {
             addToIndex(entry.getUrl());
         }
     }

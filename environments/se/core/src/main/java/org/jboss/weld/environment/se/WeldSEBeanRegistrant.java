@@ -17,16 +17,22 @@
 package org.jboss.weld.environment.se;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Vetoed;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AnnotatedType;
+import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.inject.Singleton;
 
 import org.jboss.weld.bean.builtin.BeanManagerProxy;
 import org.jboss.weld.bootstrap.events.AbstractContainerEvent;
@@ -34,7 +40,11 @@ import org.jboss.weld.environment.se.beans.InstanceManager;
 import org.jboss.weld.environment.se.beans.ParametersFactory;
 import org.jboss.weld.environment.se.contexts.ThreadContext;
 import org.jboss.weld.environment.se.threading.RunnableDecorator;
+import org.jboss.weld.literal.AnyLiteral;
+import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.util.annotated.ForwardingAnnotatedType;
+
+import com.google.common.collect.ImmutableSet;
 
 /**
  * Explicitly registers all of the 'built-in' Java SE related beans and contexts.
@@ -51,15 +61,16 @@ public class WeldSEBeanRegistrant implements Extension {
             return;
         }
 
-        VetoedSuppressedAnnotatedType<ParametersFactory> parametersFactory = new VetoedSuppressedAnnotatedType<ParametersFactory>(manager.createAnnotatedType(ParametersFactory.class));
-        VetoedSuppressedAnnotatedType<InstanceManager> instanceManager = new VetoedSuppressedAnnotatedType<InstanceManager>(manager.createAnnotatedType(InstanceManager.class));
-        VetoedSuppressedAnnotatedType<RunnableDecorator> runnableDecorator = new VetoedSuppressedAnnotatedType<RunnableDecorator>(manager.createAnnotatedType(RunnableDecorator.class));
-        VetoedSuppressedAnnotatedType<WeldContainer> weldContainer = new VetoedSuppressedAnnotatedType<WeldContainer>(manager.createAnnotatedType(WeldContainer.class));
+        VetoedSuppressedAnnotatedType<ParametersFactory> parametersFactory = new VetoedSuppressedAnnotatedType<ParametersFactory>(
+                manager.createAnnotatedType(ParametersFactory.class));
+        VetoedSuppressedAnnotatedType<InstanceManager> instanceManager = new VetoedSuppressedAnnotatedType<InstanceManager>(
+                manager.createAnnotatedType(InstanceManager.class));
+        VetoedSuppressedAnnotatedType<RunnableDecorator> runnableDecorator = new VetoedSuppressedAnnotatedType<RunnableDecorator>(
+                manager.createAnnotatedType(RunnableDecorator.class));
 
         event.addAnnotatedType(parametersFactory);
         event.addAnnotatedType(instanceManager);
         event.addAnnotatedType(runnableDecorator);
-        event.addAnnotatedType(weldContainer);
     }
 
     public void registerWeldSEContexts(@Observes AfterBeanDiscovery event, BeanManager manager) {
@@ -67,16 +78,20 @@ public class WeldSEBeanRegistrant implements Extension {
             return;
         }
 
+        final String contextId = BeanManagerProxy.unwrap(manager).getContextId();
+
         // set up this thread's bean store
-        this.threadContext = new ThreadContext(BeanManagerProxy.unwrap(manager).getContextId());
+        this.threadContext = new ThreadContext(contextId);
 
         // activate and add context
         event.addContext(threadContext);
+
+        // Register WeldContainer as a singleton
+        event.addBean(new WeldContainerBean(contextId));
     }
 
     /**
-     * Returns <tt>true</tt> if the specified event is not an instance of {@link AbstractContainerEvent}, i.e. was thrown by
-     * other CDI implementation than Weld.
+     * Returns <tt>true</tt> if the specified event is not an instance of {@link AbstractContainerEvent}, i.e. was thrown by other CDI implementation than Weld.
      */
     private static boolean ignoreEvent(Object event) {
         return !(event instanceof AbstractContainerEvent);
@@ -86,7 +101,7 @@ public class WeldSEBeanRegistrant implements Extension {
         return threadContext;
     }
 
-    private class VetoedSuppressedAnnotatedType<T> extends ForwardingAnnotatedType<T> {
+    private static class VetoedSuppressedAnnotatedType<T> extends ForwardingAnnotatedType<T> {
 
         private final AnnotatedType<T> annotatedType;
 
@@ -124,6 +139,70 @@ public class WeldSEBeanRegistrant implements Extension {
         @Override
         public AnnotatedType<T> delegate() {
             return annotatedType;
+        }
+
+    }
+
+    private static class WeldContainerBean implements Bean<WeldContainer> {
+
+        private final String contextId;
+
+        private WeldContainerBean(String contextId) {
+            this.contextId = contextId;
+        }
+
+        @Override
+        public WeldContainer create(CreationalContext<WeldContainer> creationalContext) {
+            return WeldContainer.instance(contextId);
+        }
+
+        @Override
+        public void destroy(WeldContainer instance, CreationalContext<WeldContainer> creationalContext) {
+        }
+
+        @Override
+        public Set<Type> getTypes() {
+            return ImmutableSet.<Type>of(WeldContainer.class, Object.class);
+        }
+
+        @Override
+        public Set<Annotation> getQualifiers() {
+            return ImmutableSet.of(AnyLiteral.INSTANCE, DefaultLiteral.INSTANCE);
+        }
+
+        @Override
+        public Class<? extends Annotation> getScope() {
+            return Singleton.class;
+        }
+
+        @Override
+        public String getName() {
+            return null;
+        }
+
+        @Override
+        public Set<Class<? extends Annotation>> getStereotypes() {
+            return Collections.emptySet();
+        }
+
+        @Override
+        public boolean isAlternative() {
+            return false;
+        }
+
+        @Override
+        public Class<?> getBeanClass() {
+            return WeldSEBeanRegistrant.class;
+        }
+
+        @Override
+        public Set<InjectionPoint> getInjectionPoints() {
+            return Collections.emptySet();
+        }
+
+        @Override
+        public boolean isNullable() {
+            return false;
         }
 
     }

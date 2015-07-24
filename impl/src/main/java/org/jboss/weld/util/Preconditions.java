@@ -40,4 +40,28 @@ public class Preconditions {
             throw ValidatorLogger.LOG.argumentNull(argumentName);
         }
     }
+
+    /**
+    *
+    * @param reference The reference to be checked
+    * @throws NullPointerException if the reference is null
+    */
+   public static void checkNotNull(Object reference) {
+       if (reference == null) {
+           throw new NullPointerException();
+       }
+   }
+
+   public static void checkArgument(boolean condition, Object argument) {
+       if (!condition) {
+           throw new IllegalArgumentException("Illegal argument " + ((argument == null) ? "null" : argument.toString()));
+       }
+   }
+
+   public static void checkArgument(boolean condition, String message) {
+       if (!condition) {
+           throw new IllegalArgumentException(message);
+       }
+   }
+
 }

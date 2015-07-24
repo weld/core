@@ -59,4 +59,9 @@ public abstract class AbstractWeldBeanDeploymentArchive implements BeanDeploymen
         return serviceRegistry;
     }
 
+    @Override
+    public String toString() {
+        return String.format("%s [id=%s]", getClass().getSimpleName(), id);
+    }
+
 }

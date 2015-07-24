@@ -1,4 +1,4 @@
-/**
+/*
  * JBoss, Home of Professional Open Source
  * Copyright 2009, Red Hat, Inc. and/or its affiliates, and individual
  * contributors by the @authors tag. See the copyright.txt in the
@@ -16,13 +16,25 @@
  */
 package org.jboss.weld.environment.se.events;
 
+import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
+
 /**
- * The event that is fired when the Weld CDI container is initialized and
- * ready for applications to take control, which it may do by observing this
- * event.
+ * The event that is fired when the Weld CDI container is initialized and ready for applications to take control, which it may do by observing this event.
  *
  * @author Peter Royle
  */
-public class ContainerInitialized {
+public class ContainerInitialized extends WeldContainerEvent {
+
+    public ContainerInitialized() {
+        super(RegistrySingletonProvider.STATIC_INSTANCE);
+    }
+
+    /**
+     *
+     * @param containerId
+     */
+    public ContainerInitialized(String containerId) {
+        super(containerId);
+    }
 
 }
