@@ -58,7 +58,7 @@ public class HttpConversationContextImpl extends AbstractConversationContext<Htt
 
     @Override
     protected BoundBeanStore createSessionBeanStore(NamingScheme namingScheme, HttpSession session) {
-        return new EagerSessionBeanStore(namingScheme, session, false);
+        return new EagerSessionBeanStore(namingScheme, session);
     }
 
     @Override
