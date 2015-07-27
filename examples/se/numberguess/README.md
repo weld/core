@@ -50,7 +50,7 @@ There is a simple ready-made policy file named numberguess.policy
 To run the example with SecurityManager enabled, run:
 
         mvn clean package dependency:copy-dependencies -Dmdep.stripVersion
-        java -Djava.security.manager -Djava.security.policy=numberguess.policy -cp target/weld-se-numberguess.jar:target/dependency/weld-se-shaded.jar org.jboss.weld.environment.se.StartMain
+        java -Djava.security.manager -Djava.security.policy=target/numberguess.policy -cp target/weld-se-numberguess.jar:target/dependency/weld-se-shaded.jar org.jboss.weld.environment.se.StartMain
 
 Runnig the Example with shaded maven plugin (fat-jar)
 -----------------------------------------------------

@@ -27,11 +27,24 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <finalName>${project.artifactId}</finalName>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+            <resource>
+                <directory>src/main/policy</directory>
+                <filtering>true</filtering>
+                <targetPath>${basedir}/target</targetPath>
+            </resource>
+        </resources>
+    </build>
+
     <profiles>
         <profile>
             <id>shaded</id>
             <build>
-                <finalName>${project.artifactId}</finalName>
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
