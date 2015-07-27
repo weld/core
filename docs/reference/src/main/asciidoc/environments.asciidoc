@@ -22,7 +22,7 @@ used in a servlet container, such as Tomcat or Jetty.
 
 NOTE: There is a major limitation to using a servlet container; Weld doesn't
 support deploying session beans, injection using `@EJB`
-or`@PersistenceContext`, or using transactional events in servlet
+or `@PersistenceContext`, or using transactional events in servlet
 containers. For enterprise features such as these, you should really be
 looking at a Java EE application server.
 
