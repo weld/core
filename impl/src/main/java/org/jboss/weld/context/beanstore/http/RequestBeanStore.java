@@ -28,7 +28,7 @@ public class RequestBeanStore extends AttributeBeanStore {
     private final HttpServletRequest request;
 
     public RequestBeanStore(HttpServletRequest request, NamingScheme namingScheme) {
-        super(namingScheme);
+        super(namingScheme, false);
         this.request = request;
     }
 

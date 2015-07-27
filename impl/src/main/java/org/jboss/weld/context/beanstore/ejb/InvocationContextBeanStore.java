@@ -13,7 +13,7 @@ public class InvocationContextBeanStore extends AttributeBeanStore {
     private final InvocationContext ctx;
 
     public InvocationContextBeanStore(NamingScheme namingScheme, InvocationContext ctx) {
-        super(namingScheme);
+        super(namingScheme, false);
         this.ctx = ctx;
     }
 
