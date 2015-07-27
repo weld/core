@@ -168,6 +168,11 @@ public enum ConfigurationKey {
     @Description("<strong>DEVELOPMENT MODE</strong> - if set to <code>true</code> an informative HTML snippet will be added to every response with Content-Type of value <code>text/html</code>.")
     PROBE_EMBED_INFO_SNIPPET("org.jboss.weld.probe.embedInfoSnippet", true),
 
+    /**
+     * If set to <code>true</code>, the attributes should be fetched lazily from the backing store for some contexts (e.g. attributes of an HTTP session for a session context).
+     */
+    CONTEXT_ATTRIBUTE_LAZY_FETCH("org.jboss.weld.context.attributes.lazyFetch", true),
+
     ;
 
     /**

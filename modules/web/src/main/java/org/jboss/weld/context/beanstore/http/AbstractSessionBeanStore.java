@@ -32,17 +32,15 @@ public abstract class AbstractSessionBeanStore extends AttributeBeanStore {
 
     private static final ThreadLocal<LockStore> CURRENT_LOCK_STORE = new ThreadLocal<LockStore>();
 
-    private final boolean isAttributeLazyLoadingAllowed;
-
     protected abstract HttpSession getSession(boolean create);
 
-    public AbstractSessionBeanStore(NamingScheme namingScheme) {
-        this(namingScheme, true);
-    }
-
-    public AbstractSessionBeanStore(NamingScheme namingScheme, boolean isAttributeLazyLoadingAllowed) {
-        super(namingScheme);
-        this.isAttributeLazyLoadingAllowed = isAttributeLazyLoadingAllowed;
+    /**
+     *
+     * @param namingScheme
+     * @param attributeLazyFetchingEnabled
+     */
+    public AbstractSessionBeanStore(NamingScheme namingScheme, boolean attributeLazyFetchingEnabled) {
+        super(namingScheme, attributeLazyFetchingEnabled);
     }
 
     protected Iterator<String> getAttributeNames() {
@@ -132,11 +130,6 @@ public abstract class AbstractSessionBeanStore extends AttributeBeanStore {
             this.lockStore = lockStore;
         }
         return lockStore;
-    }
-
-    @Override
-    protected boolean isAttributeLazyLoadingAllowed() {
-        return isAttributeLazyLoadingAllowed;
     }
 
 }

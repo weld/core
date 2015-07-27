@@ -49,11 +49,19 @@ public abstract class AttributeBeanStore implements BoundBeanStore {
     private final HashMapBeanStore beanStore;
     private final NamingScheme namingScheme;
 
+    private final boolean attributeLazyFetchingEnabled;
+
     private boolean attached;
 
-    public AttributeBeanStore(NamingScheme namingScheme) {
+    /**
+     *
+     * @param namingScheme
+     * @param attributeLazyFetchingEnabled
+     */
+    public AttributeBeanStore(NamingScheme namingScheme, boolean attributeLazyFetchingEnabled) {
         this.namingScheme = namingScheme;
         this.beanStore = new HashMapBeanStore();
+        this.attributeLazyFetchingEnabled = attributeLazyFetchingEnabled;
     }
 
     /**
@@ -84,16 +92,20 @@ public abstract class AttributeBeanStore implements BoundBeanStore {
     public boolean attach() {
         if (!attached) {
             attached = true;
-            if (isLocalBeanStoreSyncNeeded() && !isAttributeLazyLoadingAllowed()) {
-                // The local bean store is authoritative, so copy everything to the backing store
-                for (BeanIdentifier id : beanStore) {
-                    ContextualInstance<?> instance = beanStore.get(id);
-                    String prefixedId = getNamingScheme().prefix(id);
-                    ContextLogger.LOG.updatingStoreWithContextualUnderId(instance, id);
-                    setAttribute(prefixedId, instance);
+            if (isLocalBeanStoreSyncNeeded()) {
+                if (!beanStore.delegate().isEmpty()) {
+                    // The local bean store is authoritative, so copy everything to the backing store
+                    for (BeanIdentifier id : beanStore) {
+                        ContextualInstance<?> instance = beanStore.get(id);
+                        String prefixedId = getNamingScheme().prefix(id);
+                        ContextLogger.LOG.updatingStoreWithContextualUnderId(instance, id);
+                        setAttribute(prefixedId, instance);
+                    }
                 }
-                // Additionally copy anything not in the local bean store but in the backing store
-                readAttributes();
+                if (!isAttributeLazyFetchingEnabled()) {
+                    // Additionally copy anything not in the local bean store but in the backing store
+                    fetchUninitializedAttributes();
+                }
             }
             return true;
         } else {
@@ -102,9 +114,9 @@ public abstract class AttributeBeanStore implements BoundBeanStore {
     }
 
     /**
-     * Read all relevant attributes from the backing store and copy instances which are not present in the local bean store.
+     * Fetch all relevant attributes from the backing store and copy instances which are not present in the local bean store.
      */
-    public void readAttributes() {
+    public void fetchUninitializedAttributes() {
         for (String prefixedId : getPrefixedAttributeNames()) {
             BeanIdentifier id = getNamingScheme().deprefix(prefixedId);
             if (!beanStore.contains(id)) {
@@ -122,7 +134,7 @@ public abstract class AttributeBeanStore implements BoundBeanStore {
     @Override
     public <T> ContextualInstance<T> get(BeanIdentifier id) {
         ContextualInstance<T> instance = beanStore.get(id);
-        if(instance == null && isAttached() && isAttributeLazyLoadingAllowed()) {
+        if(instance == null && isAttached() && isAttributeLazyFetchingEnabled()) {
             instance = cast(getAttribute(namingScheme.prefix(id)));
             if(instance != null) {
                 beanStore.put(id, instance);
@@ -177,7 +189,7 @@ public abstract class AttributeBeanStore implements BoundBeanStore {
 
     public Iterator<BeanIdentifier> iterator() {
         Iterator<BeanIdentifier> iterator;
-        if (isAttributeLazyLoadingAllowed()) {
+        if (isAttributeLazyFetchingEnabled()) {
             // Merge the bean identifiers from the local bean store and the backing store
             Set<BeanIdentifier> identifiers = new HashSet<>();
             for (BeanIdentifier id : beanStore) {
@@ -257,9 +269,9 @@ public abstract class AttributeBeanStore implements BoundBeanStore {
 
     /**
      *
-     * @return <code>true</code> if attributes can be loaded lazily, <code>false</code> otherwise
+     * @return <code>true</code> if attributes should be fetched lazily, <code>false</code> otherwise
      */
-    protected boolean isAttributeLazyLoadingAllowed() {
-        return false;
+    public boolean isAttributeLazyFetchingEnabled() {
+        return attributeLazyFetchingEnabled;
     }
 }
