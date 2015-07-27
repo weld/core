@@ -1,0 +1,38 @@
+@CHARSET "UTF-8";
+
+@import url("jbossorg.css");
+
+body {
+ font-size: 14px;
+ max-width: 60em;
+}
+
+div.note, div.tip, div.warning {
+ border-radius: 4px;
+}
+
+pre.JAVA, pre.XML {
+ border-radius: 4px;
+ padding: 10px 15px 10px 25px;
+}
+
+table td, table th {
+ border-collapse: collapse;
+ border-color: #e5e5e5;
+ border-style: solid;
+}
+
+code.literal {
+ background-color: #efefef;
+ padding: 2px 3px;
+ border: 1px solid #e2e2e2;
+ border-radius: 3px;
+ white-space: nowrap;
+ color: #333;
+}
+
+p#title a.site_href {
+ display: block;
+ float: left;
+ background: url(../images/weld_logo.png) top left no-repeat;
+}
