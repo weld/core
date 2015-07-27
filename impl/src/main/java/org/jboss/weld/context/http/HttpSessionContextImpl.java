@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.jboss.weld.Container;
+import org.jboss.weld.config.ConfigurationKey;
+import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.context.AbstractBoundContext;
 import org.jboss.weld.context.beanstore.AttributeBeanStore;
 import org.jboss.weld.context.beanstore.BoundBeanStore;
@@ -40,7 +42,8 @@ public class HttpSessionContextImpl extends AbstractBoundContext<HttpServletRequ
             ContextLogger.LOG.beanStoreLeakDuringAssociation(this.getClass().getName(), request);
         }
         // We always associate a new bean store to avoid possible leaks (security threats)
-        setBeanStore(new LazySessionBeanStore(request, namingScheme));
+        setBeanStore(new LazySessionBeanStore(request, namingScheme, getServiceRegistry().getRequired(WeldConfiguration.class).getBooleanProperty(
+                ConfigurationKey.CONTEXT_ATTRIBUTE_LAZY_FETCH)));
         checkBeanIdentifierIndexConsistency(request);
         return true;
     }
@@ -50,7 +53,7 @@ public class HttpSessionContextImpl extends AbstractBoundContext<HttpServletRequ
         if (beanStore == null) {
             try {
                 HttpConversationContext conversationContext = getConversationContext();
-                setBeanStore(new EagerSessionBeanStore(namingScheme, session, false));
+                setBeanStore(new EagerSessionBeanStore(namingScheme, session));
                 activate();
                 invalidate();
                 conversationContext.destroy(session);
@@ -63,9 +66,12 @@ public class HttpSessionContextImpl extends AbstractBoundContext<HttpServletRequ
         } else {
             // We are in a request, invalidate it
             invalidate();
-            // At this moment we have to sync the local bean store and the backing store
             if (beanStore instanceof AttributeBeanStore) {
-                ((AttributeBeanStore) beanStore).readAttributes();
+                AttributeBeanStore attributeBeanStore = ((AttributeBeanStore) beanStore);
+                if (attributeBeanStore.isAttributeLazyFetchingEnabled()) {
+                    // At this moment we have to sync the local bean store and the backing store
+                    attributeBeanStore.fetchUninitializedAttributes();
+                }
             }
             getConversationContext().destroy(session);
             return false;

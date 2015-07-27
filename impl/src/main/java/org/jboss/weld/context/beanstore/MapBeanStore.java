@@ -20,7 +20,7 @@ public class MapBeanStore extends AttributeBeanStore {
     }
 
     public MapBeanStore(NamingScheme namingScheme, Map<String, Object> delegate, boolean safeIteration) {
-        super(namingScheme);
+        super(namingScheme, false);
         this.delegate = delegate;
         this.safeIteration = safeIteration;
     }
