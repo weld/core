@@ -33,7 +33,7 @@ import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
 @Category(Integration.class)
-@Ignore("Ignored until WF9")
+@Ignore("WELD-2005")
 public class ProcessAnnotatedTypeResolutionTest {
 
     @Inject

@@ -29,7 +29,6 @@ import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.transaction.spi.TransactionServices;
 import org.jboss.weld.util.ServiceLoader;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -55,9 +54,8 @@ public class AdditionalServiceTest {
             Bravo1Service.class,
             Bravo2Service.class,
             BravoImpl.class,
-            // WFLY-3951
-            // TransactionServices1.class,
-            // TransactionServices2.class,
+             TransactionServices1.class,
+             TransactionServices2.class,
         };
         return ShrinkWrap.create(WebArchive.class).addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addClasses(classes)
@@ -84,7 +82,6 @@ public class AdditionalServiceTest {
     }
 
     @Test
-    @Ignore("WFLY-3951")
     public void testOverridingService() {
         TransactionServices transactionServices = manager.getServices().get(TransactionServices.class);
         Assert.assertNotNull(transactionServices);

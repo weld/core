@@ -25,7 +25,6 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.tests.category.Integration;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -45,7 +44,6 @@ public class SingletonStartupTest {
     }
 
     @Test
-    @Ignore("WFLY-4438")
     public void testSingletonStartupCount(Foo foo) {
         int count = 10;
         for (int i = 0; foo.getSomeValue() && i < count; i++) {

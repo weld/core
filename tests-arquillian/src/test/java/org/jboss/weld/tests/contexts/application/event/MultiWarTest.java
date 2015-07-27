@@ -30,7 +30,6 @@ import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.tests.category.Integration;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -43,7 +42,6 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Arquillian.class)
 @Category(Integration.class)
-@Ignore("WFLY-3334 - this test is ignored until a fixed version of WildFly 10 is generally available")
 public class MultiWarTest {
 
     @Deployment
