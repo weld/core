@@ -104,7 +104,6 @@ import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.ejb.EjbDescriptors;
 import org.jboss.weld.ejb.InternalEjbDescriptor;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
-import org.jboss.weld.el.Namespace;
 import org.jboss.weld.el.WeldELResolver;
 import org.jboss.weld.el.WeldExpressionFactory;
 import org.jboss.weld.event.EventImpl;
@@ -227,7 +226,6 @@ public class BeanManagerImpl implements WeldManager, Serializable {
     private final transient TypeSafeInterceptorResolver interceptorResolver;
     private final transient NameBasedResolver nameBasedResolver;
     private final transient ELResolver weldELResolver;
-    private transient Namespace rootNamespace;
 
     /*
      * Lenient instances do not perform event type checking - this is required for firing container lifecycle events.
@@ -1105,14 +1103,6 @@ public class BeanManagerImpl implements WeldManager, Serializable {
 
     public List<ObserverMethod<?>> getObservers() {
         return observers;
-    }
-
-    public Namespace getRootNamespace() {
-        // TODO I don't like this lazy init
-        if (rootNamespace == null) {
-            rootNamespace = new Namespace(createDynamicAccessibleIterable(Transform.NAMESPACE));
-        }
-        return rootNamespace;
     }
 
     @Override
