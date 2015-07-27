@@ -1,0 +1,3 @@
+grant codeBase "file://${basedir}/target/dependency/weld-se-shaded.jar" {
+    permission java.security.AllPermission;
+};
