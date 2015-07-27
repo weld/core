@@ -38,7 +38,7 @@
     <dependencyManagement>
 
         <dependencies>
-            <!-- wrong version defined transitively, so the correct is hardcoded 
+            <!-- wrong version defined transitively, so the correct is hardcoded
                 here -->
             <dependency>
                 <groupId>org.eclipse.equinox</groupId>
@@ -98,6 +98,12 @@
                             <include>images/*.png</include>
                         </includes>
                     </imageResource>
+                    <cssResource>
+                        <directory>${project.basedir}/src/main/style/css</directory>
+                        <includes>
+                            <include>css/*.css</include>
+                        </includes>
+                    </cssResource>
                     <formats>
                         <format>
                             <formatName>pdf</formatName>
@@ -106,12 +112,12 @@
                         </format>
                         <format>
                             <formatName>html</formatName>
-                            <stylesheetResource>classpath:/xslt/org/jboss/xhtml.xsl</stylesheetResource>
+                            <stylesheetResource>file:${project.basedir}/src/main/style/xslt/org/jboss/weld/xhtml.xsl</stylesheetResource>
                             <finalName>index.html</finalName>
                         </format>
                         <format>
                             <formatName>html_single</formatName>
-                            <stylesheetResource>classpath:/xslt/org/jboss/xhtml-single.xsl</stylesheetResource>
+                            <stylesheetResource>file:${project.basedir}/src/main/style/xslt/org/jboss/weld/xhtml-single.xsl</stylesheetResource>
                             <finalName>index.html</finalName>
                         </format>
                     </formats>
