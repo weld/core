@@ -169,9 +169,11 @@ public enum ConfigurationKey {
     PROBE_EMBED_INFO_SNIPPET("org.jboss.weld.probe.embedInfoSnippet", true),
 
     /**
-     * If set to <code>true</code>, the attributes should be fetched lazily from the backing store for some contexts (e.g. attributes of an HTTP session for a session context).
+     * If set to <code>true</code>, the attributes should be fetched lazily from the backing store for some contexts (e.g. attributes of an HTTP session for a
+     * session context).
      */
-    CONTEXT_ATTRIBUTE_LAZY_FETCH("org.jboss.weld.context.attributes.lazyFetch", true),
+    @Description("If set to <code>true</code>, the attributes should be fetched lazily from the backing store for some contexts (e.g. attributes of an HTTP session for a session context).")
+    CONTEXT_ATTRIBUTES_LAZY_FETCH("org.jboss.weld.context.attributes.lazyFetch", true),
 
     ;
 

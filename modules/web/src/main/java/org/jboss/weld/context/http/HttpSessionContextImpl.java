@@ -43,7 +43,7 @@ public class HttpSessionContextImpl extends AbstractBoundContext<HttpServletRequ
         }
         // We always associate a new bean store to avoid possible leaks (security threats)
         setBeanStore(new LazySessionBeanStore(request, namingScheme, getServiceRegistry().getRequired(WeldConfiguration.class).getBooleanProperty(
-                ConfigurationKey.CONTEXT_ATTRIBUTE_LAZY_FETCH)));
+                ConfigurationKey.CONTEXT_ATTRIBUTES_LAZY_FETCH)));
         checkBeanIdentifierIndexConsistency(request);
         return true;
     }
