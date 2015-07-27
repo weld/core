@@ -60,8 +60,8 @@ public abstract class AbstractWeldELResolver extends ELResolver {
             ElLogger.LOG.propertyLookup(propertyString);
             Namespace namespace = null;
             if (base == null) {
-                if (beanManager.getRootNamespace().contains(propertyString)) {
-                    Object value = beanManager.getRootNamespace().get(propertyString);
+                if (getRootNamespace().contains(propertyString)) {
+                    Object value = getRootNamespace().get(propertyString);
                     context.setPropertyResolved(true);
                     ElLogger.LOG.propertyResolved(propertyString, value);
                     return value;
@@ -141,5 +141,7 @@ public abstract class AbstractWeldELResolver extends ELResolver {
     @Override
     public void setValue(ELContext context, Object base, Object property, Object value) {
     }
+
+    protected abstract Namespace getRootNamespace();
 }
 
