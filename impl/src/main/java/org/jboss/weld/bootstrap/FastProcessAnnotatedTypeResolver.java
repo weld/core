@@ -139,14 +139,13 @@ public class FastProcessAnnotatedTypeResolver extends AbstractBootstrapService {
                 if (typeParameter instanceof Class<?>) {
                     this.observers.put(observer, new ExactTypePredicate(Reflections.getRawType(typeParameter)));
                 } else if (typeParameter instanceof ParameterizedType) {
-                    // void observe(ProcessAnnotatedType<Iterable<?>> event)
-                    ParameterizedType parameterizedType = (ParameterizedType) typeParameter;
-                    for (Type t : parameterizedType.getActualTypeArguments()) {
-                        if (!Reflections.isUnboundedTypeVariable(t) && !Reflections.isUnboundedWildcard(t)) {
-                            return; // skip - this observer would never be invoked per spec
-                        }
-                        this.observers.put(observer, new ExactTypePredicate(Reflections.getRawType(typeParameter)));
-                    }
+                    /*
+                     * The event type always has the form of ProcessAnnotatedType<X> where X is a raw type.
+                     * Therefore, no event will ever match an observer with type ProcessAnnotatedType<Foo<Y>> no matter
+                     * what Y is. This would be because primarily because parameterized are invariant. Event for an exact match
+                     * of the raw type, Foo raw event type is not assignable to Foo<?> parameterized type according to CDI assignability rules.
+                     */
+                    return;
                 } else if (typeParameter instanceof WildcardType) {
                     // void observe(ProcessAnnotatedType<?> event)
                     WildcardType wildCard = (WildcardType) typeParameter;
@@ -180,7 +179,7 @@ public class FastProcessAnnotatedTypeResolver extends AbstractBootstrapService {
             if (ProcessAnnotatedType.class.equals(parameterizedType.getRawType())) {
                 Type argument = parameterizedType.getActualTypeArguments()[0];
                 if (argument instanceof Class<?>) {
-                    this.observers.put(observer, new AssignableToPredicate(Reflections.getRawType(argument)));
+                    this.observers.put(observer, new ExactTypePredicate(Reflections.getRawType(argument)));
                 } else {
                     throw new UnsupportedObserverMethodException(observer);
                 }
