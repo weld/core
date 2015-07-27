@@ -37,24 +37,7 @@ public class WeldResourceLoader implements ResourceLoader {
     public Class<?> classForName(String name) {
 
         try {
-            Class<?> clazz = getClassLoader().loadClass(name);
-            // if the class relies on optional dependencies that are not present
-            // then a CNFE can be thrown later in the deployment process when the
-            // Introspector is inspecting the class. We call getMethods, getFields
-            // and getConstructors now over the whole type hierarchy to force
-            // these errors to occur early.
-            // NOTE it is still possible for a CNFE to be thrown at runtime if
-            // a class has methods that refer to classes that are not present in
-            // their bytecode, this only checks for classes that form part of the
-            // class schema that are not present
-            Class<?> obj = clazz;
-            while (obj != null && obj != Object.class) {
-                obj.getDeclaredConstructors();
-                obj.getDeclaredFields();
-                obj.getDeclaredMethods();
-                obj = obj.getSuperclass();
-            }
-            return clazz;
+            return getClassLoader().loadClass(name);
         } catch (ClassNotFoundException e) {
             throw new ResourceLoadingException(e);
         } catch (LinkageError e) {
