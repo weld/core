@@ -484,12 +484,14 @@ public interface ResourceLoader extends Service {
 }
 -----------------------------------------------------
 
+[[annotationDiscovery]]
 ==== AnnotationDiscovery
 
 The optional `AnnotationDiscovery` service has been deprecated and is
 not used by Weld since Weld 2.2. Integrators are encouraged to implement
 `ClassFileServices` instead.
 
+[[classFileServices]]
 ==== ClassFileServices
 
 Integrators with bytecode-scanning capabilities may implement an
@@ -931,17 +933,12 @@ order to satisfy Weld's dependencies:
 * The definition of a _bean defining annotation_ was altered in CDI 1.2.
 See the http://cdi-spec.org[specification] for more information.
 * A new
-http://docs.jboss.org/weld/javadoc/2.2/weld-spi/org/jboss/weld/manager/api/WeldInjectionTargetBuilder.html[`WeldInjectionTargetBuilder`]
+http://docs.jboss.org/weld/javadoc/2.2/weld-spi/org/jboss/weld/manager/api/WeldInjectionTargetBuilder.html[WeldInjectionTargetBuilder]
 SPI was added. The SPI allows an integrator to obtain a customized
 `InjectionTarget` implementation using the builder pattern.
-* link:#annotationDiscovery[The AnnotationDiscovery service] was
-deprecated in favor of link:#classFileServices[ClassFileServices] .
-*
-http://docs.jboss.org/weld/javadoc/2.2/weld-spi/org/jboss/weld/bootstrap/api/CDI11Bootstrap.html#startContainer(java.lang.String, org.jboss.weld.bootstrap.api.Environment, org.jboss.weld.bootstrap.spi.Deployment)[`CDIBootstrap.startContainer()`]
-method, which allows a container identifier to be passed as a parameter,
-was added.
-* The contract of the
-http://docs.jboss.org/weld/javadoc/2.2/weld-spi/org/jboss/weld/ejb/api/SessionObjectReference.html#getBusinessObject(java.lang.Class)[`SessionObjectReference.getBusinessObject()`] method was altered. Weld may now call
+* link:#annotationDiscovery[The AnnotationDiscovery service] was deprecated in favor of link:#classFileServices[ClassFileServices].
+* http://docs.jboss.org/weld/javadoc/2.2/weld-spi/org/jboss/weld/bootstrap/api/CDI11Bootstrap.html#startContainer%28java.lang.String,%20org.jboss.weld.bootstrap.api.Environment,%20org.jboss.weld.bootstrap.spi.Deployment%29[CDIBootstrap.startContainer()] method, which allows a container identifier to be passed as a parameter, was added.
+* The contract of the http://docs.jboss.org/weld/javadoc/2.2/weld-spi/org/jboss/weld/ejb/api/SessionObjectReference.html#getBusinessObject%28java.lang.Class%29[SessionObjectReference.getBusinessObject()] method was altered. Weld may now call
 this method passing in a remote view of a session bean.
 * The link:#cdiProvider[CDI provider implementation] was reimplemented
 and is no longer compatible with the previous version.
