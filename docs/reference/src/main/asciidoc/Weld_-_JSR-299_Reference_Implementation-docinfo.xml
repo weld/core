@@ -38,6 +38,10 @@ CDI: Contexts and Dependency Injection for the Java EE platform
       <contrib>Weld Lead</contrib>
    </author>
    <author>
+      <firstname>Martin</firstname>
+      <surname>Kouba</surname>
+   </author>
+   <author>
       <firstname>Dan</firstname>
       <surname>Allen</surname>
 <!--      <affiliation>-->
