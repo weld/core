@@ -529,10 +529,17 @@ public class Weld implements ContainerInstanceFactory {
     }
 
     /**
-     * Bootstraps a Weld SE container with the current {@link #containerId}.
+     * Bootstraps a new Weld SE container with the current {@link #containerId}.
+     * <p/>
+     * The container must be shut down properly when an application is stopped. Applications are encouraged to use the try-with-resources statement or invoke
+     * {@link WeldContainer#shutdown()} explicitly.
+     * <p/>
+     * However, a shutdown hook is also registered during initialization so that all running containers are shut down automatically when a program exits or VM
+     * is terminated. This means that it's not necessary to implement the shutdown logic in a class where a main method is used to start the container.
      *
      * @return the Weld container
-     * @see #setDiscoveryEnabled(boolean)
+     * @see #enableDiscovery()
+     * @see WeldContainer#shutdown()
      */
     public WeldContainer initialize() {
         // If also building a synthetic bean archive the check for beans.xml is not necessary
