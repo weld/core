@@ -209,6 +209,8 @@ public class WeldContainer extends AbstractCDI<Object> implements AutoCloseable,
 
     /**
      * Shutdown the container.
+     *
+     * @see Weld#initialize()
      */
     public synchronized void shutdown() {
         if (isRunning()) {
