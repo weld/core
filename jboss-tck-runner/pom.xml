@@ -431,12 +431,8 @@
                     <artifactId>container-se-managed</artifactId>
                 </dependency>
                 <dependency>
-                    <groupId>org.jboss.spec.javax.interceptor</groupId>
-                    <artifactId>jboss-interceptors-api_1.2_spec</artifactId>
-                </dependency>
-                <dependency>
                     <groupId>org.jboss.weld.se</groupId>
-                    <artifactId>weld-se-core</artifactId>
+                    <artifactId>weld-se-shaded</artifactId>
                 </dependency>
             </dependencies>
 
@@ -465,7 +461,7 @@
                                     <overWriteReleases>true</overWriteReleases>
                                     <outputDirectory>${project.build.outputDirectory}</outputDirectory>
                                     <includeGroupIds>
-                                        org.jboss.weld,javax.enterprise,javax.inject,org.jboss.spec.javax.interceptor,org.glassfish,org.jboss.classfilewriter,org.jboss.logging
+                                        org.jboss.weld.se
                                     </includeGroupIds>
                                 </configuration>
                             </execution>
