@@ -33,6 +33,7 @@ import javax.enterprise.inject.spi.Interceptor;
 
 import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.bean.ManagedBean;
+import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
 import org.jboss.weld.context.DependentContext;
 import org.jboss.weld.context.SerializableContextualInstanceImpl;
 import org.jboss.weld.context.WeldCreationalContext;
@@ -79,7 +80,7 @@ public class DependentContextImpl implements DependentContext {
     protected <T> void addDependentInstance(T instance, Contextual<T> contextual, WeldCreationalContext<T> creationalContext) {
         // by this we are making sure that the dependent instance has no transitive dependency with @PreDestroy / disposal method
         if (creationalContext.getDependentInstances().isEmpty()) {
-            if (contextual instanceof ManagedBean<?> && ! isInterceptorOrDecorator(contextual)) {
+            if (contextual instanceof ManagedBean<?> && !isInterceptorOrDecorator(contextual)) {
                 ManagedBean<?> managedBean = (ManagedBean<?>) contextual;
                 if (managedBean.getProducer() instanceof BasicInjectionTarget<?>) {
                     BasicInjectionTarget<?> injectionTarget = (BasicInjectionTarget<?>) managedBean.getProducer();
@@ -100,6 +101,10 @@ public class DependentContextImpl implements DependentContext {
                         return;
                     }
                 }
+            }
+            if (isOptimizableBuiltInBean(contextual)) {
+                // Most built-in dependent beans do not have to be stored
+                return;
             }
         }
 
@@ -127,5 +132,13 @@ public class DependentContextImpl implements DependentContext {
     @Override
     public void destroy(Contextual<?> contextual) {
         throw new UnsupportedOperationException();
+    }
+
+    private boolean isOptimizableBuiltInBean(Contextual<?> contextual) {
+        if (contextual instanceof AbstractBuiltInBean<?>) {
+            AbstractBuiltInBean<?> abstractBuiltInBean = (AbstractBuiltInBean<?>) contextual;
+            return abstractBuiltInBean.isDependentContextOptimizationAllowed();
+        }
+        return false;
     }
 }

@@ -66,4 +66,9 @@ public class InstanceBean extends AbstractFacadeBean<Instance<?>> {
         return INSTANCE_TYPE;
     }
 
+    @Override
+    public boolean isDependentContextOptimizationAllowed() {
+        return false;
+    }
+
 }

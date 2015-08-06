@@ -94,6 +94,11 @@ public abstract class AbstractBuiltInBean<T> extends RIBean<T> {
         return type;
     }
 
+    public boolean isDependentContextOptimizationAllowed() {
+        // By default, all dependent built-in beans do not have to be stored in a CreationalContext
+        return Dependent.class.equals(getScope());
+    }
+
     protected static class BuiltInBeanAttributes<T> extends ImmutableBeanAttributes<T> {
 
         private static final Set<Annotation> DEFAULT_QUALIFIERS = Arrays2.asSet(DefaultLiteral.INSTANCE, AnyLiteral.INSTANCE);
