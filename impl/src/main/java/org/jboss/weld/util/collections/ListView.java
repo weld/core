@@ -22,8 +22,7 @@ import java.util.List;
 import java.util.ListIterator;
 
 /**
- * Provides a view of type List<VIEW> for a List<SOURCE> where the conversion between view and source is handled by a provided
- * {@link ViewProvider} implementation. Changes to the view list are reflected within the source list and vice versa.
+ * Provides a view of type List<VIEW> for a List<SOURCE>. Changes to the view list are reflected within the source list and vice versa.
  *
  * @author Jozef Hartinger
  *
@@ -34,11 +33,9 @@ public abstract class ListView<SOURCE, VIEW> extends AbstractList<VIEW> {
 
     protected abstract List<SOURCE> getDelegate();
 
-    protected abstract ViewProvider<SOURCE, VIEW> getViewProvider();
-
     @Override
     public VIEW get(int index) {
-        return getViewProvider().toView(getDelegate().get(index));
+        return toView(getDelegate().get(index));
     }
 
     @Override
@@ -47,23 +44,23 @@ public abstract class ListView<SOURCE, VIEW> extends AbstractList<VIEW> {
     }
 
     @Override
-    public boolean add(VIEW e) {
-        return getDelegate().add(getViewProvider().fromView(e));
+    public boolean add(VIEW element) {
+        return getDelegate().add(createSource(element));
     }
 
     @Override
     public VIEW set(int index, VIEW element) {
-        return getViewProvider().toView(getDelegate().set(index, getViewProvider().fromView(element)));
+        return toView(getDelegate().set(index, createSource(element)));
     }
 
     @Override
     public void add(int index, VIEW element) {
-        getDelegate().add(index, getViewProvider().fromView(element));
+        getDelegate().add(index, createSource(element));
     }
 
     @Override
     public VIEW remove(int index) {
-        return getViewProvider().toView(getDelegate().remove(index));
+        return toView(getDelegate().remove(index));
     }
 
     @Override
@@ -86,8 +83,25 @@ public abstract class ListView<SOURCE, VIEW> extends AbstractList<VIEW> {
         return new ListViewIterator(getDelegate().listIterator(index));
     }
 
-    private class ListViewIterator implements ListIterator<VIEW> {
-        private ListIterator<SOURCE> delegate;
+    /**
+     * Provides a view representation of a source object.
+     *
+     * @param source
+     * @return a view representation
+     */
+    protected abstract VIEW toView(SOURCE source);
+
+    /**
+     * Creates a new source object based on a given view.
+     *
+     * @param view
+     * @return a new source object
+     */
+    protected abstract SOURCE createSource(VIEW view);
+
+    protected class ListViewIterator implements ListIterator<VIEW> {
+
+        protected final ListIterator<SOURCE> delegate;
 
         public ListViewIterator(ListIterator<SOURCE> delegate) {
             this.delegate = delegate;
@@ -100,7 +114,7 @@ public abstract class ListView<SOURCE, VIEW> extends AbstractList<VIEW> {
 
         @Override
         public VIEW next() {
-            return getViewProvider().toView(delegate.next());
+            return ListView.this.toView(delegate.next());
         }
 
         @Override
@@ -110,7 +124,7 @@ public abstract class ListView<SOURCE, VIEW> extends AbstractList<VIEW> {
 
         @Override
         public VIEW previous() {
-            return getViewProvider().toView(delegate.previous());
+            return ListView.this.toView(delegate.previous());
         }
 
         @Override
@@ -130,12 +144,12 @@ public abstract class ListView<SOURCE, VIEW> extends AbstractList<VIEW> {
 
         @Override
         public void set(VIEW e) {
-            delegate.set(getViewProvider().fromView(e));
+            delegate.set(ListView.this.createSource(e));
         }
 
         @Override
         public void add(VIEW e) {
-            delegate.add(getViewProvider().fromView(e));
+            delegate.add(ListView.this.createSource(e));
         }
     }
 }
