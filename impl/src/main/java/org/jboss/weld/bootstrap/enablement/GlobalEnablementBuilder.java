@@ -26,7 +26,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -42,12 +41,9 @@ import org.jboss.weld.logging.MessageCallback;
 import org.jboss.weld.logging.ValidatorLogger;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
-import org.jboss.weld.util.Preconditions;
 import org.jboss.weld.util.collections.ImmutableList;
 import org.jboss.weld.util.collections.ImmutableMap;
 import org.jboss.weld.util.collections.ImmutableSet;
-import org.jboss.weld.util.collections.ListView;
-import org.jboss.weld.util.collections.ViewProvider;
 
 /**
  * This service gathers globally enabled interceptors, decorators and alternatives and builds a list of each.
@@ -56,80 +52,6 @@ import org.jboss.weld.util.collections.ViewProvider;
  *
  */
 public class GlobalEnablementBuilder extends AbstractBootstrapService {
-
-    private static class Item implements Comparable<Item> {
-
-        private final Class<?> javaClass;
-
-        private final Integer priority;
-
-        private Item(Class<?> javaClass) {
-            this(javaClass, null);
-        }
-
-        private Item(Class<?> javaClass, Integer priority) {
-            Preconditions.checkArgumentNotNull(javaClass, "javaClass");
-            this.javaClass = javaClass;
-            this.priority = priority;
-        }
-
-        @Override
-        public int compareTo(Item o) {
-            if (priority.equals(o.priority)) {
-                /*
-                 * The spec does not specify what happens if two records have the same priority. Instead of giving random results, we compare the records based
-                 * on their class name lexicographically.
-                 */
-                return javaClass.getName().compareTo(o.javaClass.getName());
-            }
-            return priority - o.priority;
-        }
-
-        @Override
-        public int hashCode() {
-            return javaClass.hashCode();
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj) {
-                return true;
-            }
-            if (obj instanceof Item) {
-                Item that = (Item) obj;
-                return Objects.equals(javaClass, that.javaClass);
-            }
-            return false;
-        }
-
-        @Override
-        public String toString() {
-            return "[Class=" + javaClass + ", priority=" + priority + "]";
-        }
-    }
-
-    private static class ItemViewProvider implements ViewProvider<Item, Class<?>> {
-
-        private static ItemViewProvider ITEM_VIEW_PROVIDER = new ItemViewProvider();
-
-        @Override
-        public Class<?> toView(Item item) {
-            return item.javaClass;
-        }
-
-        @Override
-        public Item fromView(Class<?> javaClass) {
-            return new Item(javaClass);
-        }
-    }
-
-    private abstract static class AbstractEnablementListView extends ListView<Item, Class<?>> {
-
-        @Override
-        protected ViewProvider<Item, Class<?>> getViewProvider() {
-            return ItemViewProvider.ITEM_VIEW_PROVIDER;
-        }
-    }
 
     private final List<Item> alternatives = Collections.synchronizedList(new ArrayList<Item>());
     private final List<Item> interceptors = Collections.synchronizedList(new ArrayList<Item>());
@@ -159,7 +81,7 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
 
     public List<Class<?>> getAlternativeList() {
         initialize();
-        return new AbstractEnablementListView() {
+        return new EnablementListView() {
             @Override
             protected List<Item> getDelegate() {
                 return alternatives;
@@ -169,7 +91,7 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
 
     public List<Class<?>> getInterceptorList() {
         initialize();
-        return new AbstractEnablementListView() {
+        return new EnablementListView() {
             @Override
             protected List<Item> getDelegate() {
                 return interceptors;
@@ -179,7 +101,7 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
 
     public List<Class<?>> getDecoratorList() {
         initialize();
-        return new AbstractEnablementListView() {
+        return new EnablementListView() {
             @Override
             protected List<Item> getDelegate() {
                 return decorators;
@@ -204,7 +126,7 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
             Map<Class<?>, Integer> map = new HashMap<Class<?>, Integer>();
             for (ListIterator<Item> iterator = alternatives.listIterator(); iterator.hasNext();) {
                 Item item = iterator.next();
-                map.put(item.javaClass, iterator.previousIndex());
+                map.put(item.getJavaClass(), iterator.previousIndex());
             }
             cachedAlternativeMap = ImmutableMap.copyOf(map);
         }

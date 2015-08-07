@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
-import org.jboss.weld.util.collections.ViewProvider;
 import org.jboss.weld.util.collections.ListView;
 import org.junit.Test;
 
@@ -39,19 +38,15 @@ public class ListViewTest {
         }
 
         @Override
-        protected ViewProvider<Student, String> getViewProvider() {
-            return new ViewProvider<Student, String>() {
-                @Override
-                public String toView(Student from) {
-                    return from.getName();
-                }
-
-                @Override
-                public Student fromView(String to) {
-                    return new Student(to, -1);
-                }
-            };
+        protected String toView(Student source) {
+            return source.getName();
         }
+
+        @Override
+        protected Student createSource(String view) {
+            return new Student(view, -1);
+        }
+
     };
 
     @Test
@@ -102,18 +97,22 @@ public class ListViewTest {
         list = new ArrayList<Student>();
         list.add(new Student("Foo", 1));
         list.add(new Student("Bar", 2));
-        ListIterator<String> i = view.listIterator();
-        assertTrue(i.hasNext());
-        assertFalse(i.hasPrevious());
-        assertEquals("Foo", i.next());
-        assertTrue(i.hasNext());
-        assertTrue(i.hasPrevious());
-        assertEquals("Bar", i.next());
-        assertFalse(i.hasNext());
-        assertTrue(i.hasPrevious());
-        assertEquals("Bar", i.previous());
-        assertEquals("Foo", i.previous());
-        i.remove();
+        ListIterator<String> listIterator = view.listIterator();
+        assertTrue(listIterator.hasNext());
+        assertFalse(listIterator.hasPrevious());
+        assertEquals("Foo", listIterator.next());
+        assertTrue(listIterator.hasNext());
+        assertTrue(listIterator.hasPrevious());
+        assertEquals("Bar", listIterator.next());
+        assertFalse(listIterator.hasNext());
+        assertTrue(listIterator.hasPrevious());
+        assertEquals("Bar", listIterator.previous());
+        assertEquals("Foo", listIterator.previous());
+        listIterator.remove();
         assertEquals(1, list.size());
+        listIterator.add("Baz");
+        assertEquals(2, list.size());
+        assertEquals("Baz", view.get(0));
     }
+
 }
