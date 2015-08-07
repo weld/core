@@ -94,7 +94,10 @@ abstract class EnablementListView extends ListView<Item, Class<?>> {
             priority = DEFAULT_PRIORITY;
         } else if (previous != null && next != null) {
             int gap = (next.getPriority() - previous.getPriority());
-            if (gap <= 1) {
+            if (gap == 0) {
+                // The items have the same priority
+                priority = next.getPriority();
+            } else if (gap == 1) {
                 // There is no gap - scale the priorities
                 for (Item item : getDelegate()) {
                     item.scalePriority();

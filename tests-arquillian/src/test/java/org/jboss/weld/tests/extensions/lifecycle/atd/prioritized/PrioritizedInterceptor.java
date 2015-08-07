@@ -14,10 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.tests.interceptors.extension;
+package org.jboss.weld.tests.extensions.lifecycle.atd.prioritized;
 
 import java.lang.annotation.Annotation;
-import java.util.Collections;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.InterceptionType;
@@ -26,35 +25,33 @@ import javax.enterprise.inject.spi.Prioritized;
 import javax.interceptor.InvocationContext;
 
 import org.jboss.weld.test.util.ActionSequence;
-import org.jboss.weld.tests.interceptors.extension.FooInterceptorBinding.FooInterceptorBindingLiteral;
 
-public class CustomPrioritizedInterceptor extends AbstractInterceptor<CustomPrioritizedInterceptor> implements PassivationCapable, Prioritized {
+public class PrioritizedInterceptor extends AbstractInterceptor<PrioritizedInterceptor> implements PassivationCapable, Prioritized {
 
     private final int priority;
 
-    public CustomPrioritizedInterceptor() {
-        this(1000);
-    }
+    private final Set<Annotation> bindings;
 
-    public CustomPrioritizedInterceptor(int priority) {
+    public PrioritizedInterceptor(int priority, Set<Annotation> bindings) {
         this.priority = priority;
+        this.bindings = bindings;
     }
 
     public Set<Annotation> getInterceptorBindings() {
-        return Collections.<Annotation> singleton(FooInterceptorBindingLiteral.INSTANCE);
+        return bindings;
     }
 
     public boolean intercepts(InterceptionType type) {
         return InterceptionType.AROUND_INVOKE.equals(type);
     }
 
-    public Object intercept(InterceptionType type, CustomPrioritizedInterceptor instance, InvocationContext ctx) throws Exception {
-        ActionSequence.addAction(CustomPrioritizedInterceptor.class.getName());
+    public Object intercept(InterceptionType type, PrioritizedInterceptor instance, InvocationContext ctx) throws Exception {
+        ActionSequence.addAction(getClass().getName());
         return ctx.proceed();
     }
 
     public Class<?> getBeanClass() {
-        return CustomPrioritizedInterceptor.class;
+        return getClass();
     }
 
     public String getId() {
@@ -65,4 +62,11 @@ public class CustomPrioritizedInterceptor extends AbstractInterceptor<CustomPrio
     public int getPriority() {
         return priority;
     }
+
+    @Override
+    protected PrioritizedInterceptor createInstance() {
+        return new PrioritizedInterceptor(priority, bindings);
+    }
+
+
 }

@@ -32,13 +32,15 @@ import java.util.regex.Pattern;
 /**
  * Simple data holder for sequence of actions identified with {@link String}.
  * <p>
- * Always call {@link #reset()} before your test code to remove previous sequences stored in static map!
+ * Always call {@link #reset()} before your test code to remove previous
+ * sequences stored in static map!
  *
  * @author Martin Kouba
  */
 public final class ActionSequence {
 
-    private static final Pattern VALID_NAME_PATTERN = Pattern.compile("[a-zA-Z0-9_.$\\-]+");
+    private static final Pattern VALID_NAME_PATTERN = Pattern
+            .compile("[a-zA-Z0-9_.$\\-]+");
 
     private static final TransformationUtils.Function<Class<?>, String> GET_SIMPLE_NAME = new TransformationUtils.Function<Class<?>, String>() {
         @Override
@@ -52,7 +54,8 @@ public final class ActionSequence {
     /**
      * Data - list of actions
      */
-    private List<String> data = Collections.synchronizedList(new ArrayList<String>());
+    private List<String> data = Collections
+            .synchronizedList(new ArrayList<String>());
 
     public ActionSequence() {
         super();
@@ -94,7 +97,8 @@ public final class ActionSequence {
 
     /**
      * @param actions
-     * @return <code>true</code> if sequence data contain all of the specified actions, <code>false</code> otherwise
+     * @return <code>true</code> if sequence data contain all of the specified
+     *         actions, <code>false</code> otherwise
      */
     public boolean containsAll(String... actions) {
         return getData().containsAll(Arrays.asList(actions));
@@ -102,7 +106,8 @@ public final class ActionSequence {
 
     /**
      * @param actions
-     * @return <code>true</code> if sequence data begins with the specified actions, <code>false</code> otherwise
+     * @return <code>true</code> if sequence data begins with the specified
+     *         actions, <code>false</code> otherwise
      */
     public boolean beginsWith(String... actions) {
 
@@ -118,7 +123,8 @@ public final class ActionSequence {
 
     /**
      * @param actions
-     * @return <code>true</code> if sequence data ends with the specified actions, <code>false</code> otherwise
+     * @return <code>true</code> if sequence data ends with the specified
+     *         actions, <code>false</code> otherwise
      */
     public boolean endsWith(String... actions) {
 
@@ -129,12 +135,14 @@ public final class ActionSequence {
             return false;
         }
 
-        return sequenceData.subList(sequenceData.size() - matchData.size(), sequenceData.size()).equals(matchData);
+        return sequenceData.subList(sequenceData.size() - matchData.size(),
+                sequenceData.size()).equals(matchData);
     }
 
     @Override
     public String toString() {
-        return String.format("ActionSequence [name=%s, data=%s]", name, getData());
+        return String.format("ActionSequence [name=%s, data=%s]", name,
+                getData());
     }
 
     /**
@@ -145,7 +153,7 @@ public final class ActionSequence {
             return "";
         }
         StringBuilder csv = new StringBuilder();
-        for (Iterator<String> iterator = data.iterator(); iterator.hasNext(); ) {
+        for (Iterator<String> iterator = data.iterator(); iterator.hasNext();) {
             String actionId = iterator.next();
             csv.append(actionId);
             if (iterator.hasNext()) {
@@ -156,20 +164,24 @@ public final class ActionSequence {
     }
 
     /**
-     * Assert that strings stored in this sequence equal (in order!) to the {@code expected} strings.
+     * Assert that strings stored in this sequence equal (in order!) to the
+     * {@code expected} strings.
      *
      * @param expected
      */
     public void assertDataEquals(List<String> expected) {
-        assertEquals(String.format("%s and expected sequence differ in size.", toString()), expected.size(), data.size());
+        assertEquals(String.format("%s and expected sequence differ in size.",
+                toString()), expected.size(), data.size());
         for (int i = 0; i < expected.size(); i++) {
-            assertEquals(data.get(i), expected.get(i),
-                    String.format("%s and expected sequence differ on the index %d.", toString(), i));
+            assertEquals(String.format(
+                    "%s and expected sequence differ on the index %d.",
+                    toString(), i), data.get(i), expected.get(i));
         }
     }
 
     /**
-     * Assert that strings stored in this sequence equal (in order!) to the {@code expected} strings.
+     * Assert that strings stored in this sequence equal (in order!) to the
+     * {@code expected} strings.
      *
      * @param expected
      */
@@ -178,29 +190,34 @@ public final class ActionSequence {
     }
 
     /**
-     * Assert that strings stored in this sequence equal (in order!) to the simple class names of the {@code expected} classes.
+     * Assert that strings stored in this sequence equal (in order!) to the
+     * simple class names of the {@code expected} classes.
      *
      * @param expected
      */
     public void assertDataEquals(Class<?>... expected) {
-        assertDataEquals(TransformationUtils.transform(GET_SIMPLE_NAME, expected));
+        assertDataEquals(TransformationUtils.transform(GET_SIMPLE_NAME,
+                expected));
     }
 
     /**
-     * Assert that this sequence contains all of the {@code expected} strings. Note that this only verifies that the
-     * {@code expected} strings are a SUBSET of the actual strings stored in this sequence.
+     * Assert that this sequence contains all of the {@code expected} strings.
+     * Note that this only verifies that the {@code expected} strings are a
+     * SUBSET of the actual strings stored in this sequence.
      *
      * @param expected
      */
     public void assertDataContainsAll(Collection<String> expected) {
         for (String s : expected) {
-            assertTrue(String.format("%s does not contain %s", toString(), s), data.contains(s));
+            assertTrue(String.format("%s does not contain %s", toString(), s),
+                    data.contains(s));
         }
     }
 
     /**
-     * Assert that this sequence contains all of the {@code expected} strings. Note that this only verifies that the
-     * {@code expected} strings are a SUBSET of the actual strings stored in this sequence.
+     * Assert that this sequence contains all of the {@code expected} strings.
+     * Note that this only verifies that the {@code expected} strings are a
+     * SUBSET of the actual strings stored in this sequence.
      *
      * @param expected
      */
@@ -209,13 +226,16 @@ public final class ActionSequence {
     }
 
     /**
-     * Assert that this sequence contains simple class names of all of the {@code expected} classes. Note that this only
-     * verifies that the {@code expected} classes are a SUBSET of the actual classes stored in this sequence.
+     * Assert that this sequence contains simple class names of all of the
+     * {@code expected} classes. Note that this only verifies that the
+     * {@code expected} classes are a SUBSET of the actual classes stored in
+     * this sequence.
      *
      * @param expected
      */
     public void assertDataContainsAll(Class<?>... expected) {
-        assertDataContainsAll(TransformationUtils.transform(GET_SIMPLE_NAME, expected));
+        assertDataContainsAll(TransformationUtils.transform(GET_SIMPLE_NAME,
+                expected));
     }
 
     // Static members
@@ -241,7 +261,8 @@ public final class ActionSequence {
      *
      * @param sequence
      * @param actionId
-     * @return <code>true</code> if a new sequence was added, <code>false</code> otherwise
+     * @return <code>true</code> if a new sequence was added, <code>false</code>
+     *         otherwise
      */
     public static boolean addAction(String sequenceName, String actionId) {
 
@@ -262,7 +283,8 @@ public final class ActionSequence {
      * Add actionId to default sequence.
      *
      * @param actionId
-     * @return <code>true</code> if a new sequence was added, <code>false</code> otherwise
+     * @return <code>true</code> if a new sequence was added, <code>false</code>
+     *         otherwise
      */
     public static boolean addAction(String actionId) {
         return addAction(DEFAULT_SEQUENCE, actionId);
@@ -277,7 +299,8 @@ public final class ActionSequence {
 
     /**
      * @param name
-     * @return specified sequence or <code>null</code> if no such sequence exists
+     * @return specified sequence or <code>null</code> if no such sequence
+     *         exists
      */
     public static ActionSequence getSequence(String sequenceName) {
         synchronized (sequences) {
@@ -286,7 +309,8 @@ public final class ActionSequence {
     }
 
     /**
-     * @return data of default sequence or <code>null</code> if no such sequence exists
+     * @return data of default sequence or <code>null</code> if no such sequence
+     *         exists
      */
     public static List<String> getSequenceData() {
         return getSequenceData(DEFAULT_SEQUENCE);
@@ -294,11 +318,13 @@ public final class ActionSequence {
 
     /**
      * @param sequenceName
-     * @return data of specified sequence or <code>null</code> if no such sequence exists
+     * @return data of specified sequence or <code>null</code> if no such
+     *         sequence exists
      */
     public static List<String> getSequenceData(String sequenceName) {
         synchronized (sequences) {
-            return sequences.containsKey(sequenceName) ? sequences.get(sequenceName).getData() : null;
+            return sequences.containsKey(sequenceName) ? sequences.get(
+                    sequenceName).getData() : null;
         }
     }
 
@@ -315,7 +341,8 @@ public final class ActionSequence {
      */
     public static int getSequenceSize(String sequenceName) {
         synchronized (sequences) {
-            return sequences.containsKey(sequenceName) ? sequences.get(sequenceName).getData().size() : 0;
+            return sequences.containsKey(sequenceName) ? sequences
+                    .get(sequenceName).getData().size() : 0;
         }
     }
 
@@ -342,10 +369,12 @@ public final class ActionSequence {
     }
 
     /**
-     * Assert that strings stored in this sequence equal (in order!) to the {@code expected} strings.
+     * Assert that strings stored in this sequence equal (in order!) to the
+     * {@code expected} strings.
      *
      * @param expected
-     * @throws IllegalStateException if there is no default sequence
+     * @throws IllegalStateException
+     *             if there is no default sequence
      */
     public static void assertSequenceDataEquals(List<String> expected) {
         checkDefaultSequenceExists();
@@ -353,10 +382,12 @@ public final class ActionSequence {
     }
 
     /**
-     * Assert that strings stored in this sequence equal (in order!) to the {@code expected} strings.
+     * Assert that strings stored in this sequence equal (in order!) to the
+     * {@code expected} strings.
      *
      * @param expected
-     * @throws IllegalStateException if there is no default sequence
+     * @throws IllegalStateException
+     *             if there is no default sequence
      */
     public static void assertSequenceDataEquals(String... expected) {
         checkDefaultSequenceExists();
@@ -364,10 +395,12 @@ public final class ActionSequence {
     }
 
     /**
-     * Assert that strings stored in the default sequence equal (in order!) to the simple class names of {@code expected}.
+     * Assert that strings stored in the default sequence equal (in order!) to
+     * the simple class names of {@code expected}.
      *
      * @param expected
-     * @throws IllegalStateException if there is no default sequence
+     * @throws IllegalStateException
+     *             if there is no default sequence
      */
     public static void assertSequenceDataEquals(Class<?>... expected) {
         checkDefaultSequenceExists();
@@ -375,11 +408,13 @@ public final class ActionSequence {
     }
 
     /**
-     * Assert that this sequence contains all of the {@code expected} strings. Note that this only verifies that the
-     * {@code expected} strings are a SUBSET of the actual strings stored in this sequence.
+     * Assert that this sequence contains all of the {@code expected} strings.
+     * Note that this only verifies that the {@code expected} strings are a
+     * SUBSET of the actual strings stored in this sequence.
      *
      * @param expected
-     * @throws IllegalStateException if there is no default sequence
+     * @throws IllegalStateException
+     *             if there is no default sequence
      */
     public static void assertSequenceDataContainsAll(Collection<String> expected) {
         checkDefaultSequenceExists();
@@ -387,11 +422,13 @@ public final class ActionSequence {
     }
 
     /**
-     * Assert that this sequence contains all of the {@code expected} strings. Note that this only verifies that the
-     * {@code expected} strings are a SUBSET of the actual strings stored in this sequence.
+     * Assert that this sequence contains all of the {@code expected} strings.
+     * Note that this only verifies that the {@code expected} strings are a
+     * SUBSET of the actual strings stored in this sequence.
      *
      * @param expected
-     * @throws IllegalStateException if there is no default sequence
+     * @throws IllegalStateException
+     *             if there is no default sequence
      */
     public static void assertSequenceDataContainsAll(String... expected) {
         checkDefaultSequenceExists();
@@ -399,11 +436,14 @@ public final class ActionSequence {
     }
 
     /**
-     * Assert that the default sequence contains simple class names of all of the {@code expected} classes. Note that this only
-     * verifies that the {@code expected} classes are a SUBSET of the actual classes stored in this sequence.
+     * Assert that the default sequence contains simple class names of all of
+     * the {@code expected} classes. Note that this only verifies that the
+     * {@code expected} classes are a SUBSET of the actual classes stored in
+     * this sequence.
      *
      * @param expected
-     * @throws IllegalStateException if there is no default sequence
+     * @throws IllegalStateException
+     *             if there is no default sequence
      */
     public static void assertSequenceDataContainsAll(Class<?>... expected) {
         checkDefaultSequenceExists();
@@ -412,13 +452,15 @@ public final class ActionSequence {
 
     private static void checkStringValue(String value) {
         if (!VALID_NAME_PATTERN.matcher(value).matches()) {
-            throw new IllegalArgumentException("Invalid name/id specified:" + value);
+            throw new IllegalArgumentException("Invalid name/id specified:"
+                    + value);
         }
     }
 
     private static void checkDefaultSequenceExists() {
         if (getSequence() == null) {
-            throw new IllegalStateException("There is no default sequence. You cannot assert anything about it.");
+            throw new IllegalStateException(
+                    "There is no default sequence. You cannot assert anything about it.");
         }
     }
 
@@ -429,8 +471,10 @@ public final class ActionSequence {
         }
 
         /**
-         * @param <F> the input type of this function
-         * @param <T> the output type of this function
+         * @param <F>
+         *            the input type of this function
+         * @param <T>
+         *            the output type of this function
          */
         public interface Function<F, T> {
             /**
@@ -440,11 +484,15 @@ public final class ActionSequence {
         }
 
         /**
-         * Returns a list that applies {@code function} to each element of {@code fromCollection}.
+         * Returns a list that applies {@code function} to each element of
+         * {@code fromCollection}.
          *
-         * @throws IllegalArgumentException in case of a null argument
+         * @throws IllegalArgumentException
+         *             in case of a null argument
          */
-        public static <F, T> List<T> transform(final Function<? super F, ? extends T> function, final Collection<F> fromCollection) {
+        public static <F, T> List<T> transform(
+                final Function<? super F, ? extends T> function,
+                final Collection<F> fromCollection) {
             checkNotNull(fromCollection);
             checkNotNull(function);
             List<T> result = new ArrayList<T>(fromCollection.size());
@@ -455,10 +503,13 @@ public final class ActionSequence {
         }
 
         /**
-         * Returns a list that applies {@code function} to each element of {@code inputElements}.
+         * Returns a list that applies {@code function} to each element of
+         * {@code inputElements}.
          */
         @SafeVarargs
-        public static <F, T> List<T> transform(final Function<? super F, ? extends T> function, final F... inputElements) {
+        public static <F, T> List<T> transform(
+                final Function<? super F, ? extends T> function,
+                final F... inputElements) {
             return transform(function, Arrays.asList(inputElements));
         }
 
