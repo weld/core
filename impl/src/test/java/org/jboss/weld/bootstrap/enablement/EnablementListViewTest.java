@@ -55,6 +55,10 @@ public class EnablementListViewTest {
         list.add(new Item(String.class, stringPriority));
         list.add(new Item(Double.class, doublePriority));
 
+        assertEquals(stringPriority, list.get(1).getOriginalPriority());
+        assertEquals(stringPriority, list.get(1).getPriority());
+        assertEquals(0, list.get(1).getNumberOfScaling());
+
         assertEquals(3, view.size());
         assertEquals(Integer.class, view.get(0));
         list.add(new Item(BigInteger.class, bigIntegerPriority));
@@ -71,6 +75,8 @@ public class EnablementListViewTest {
         // String, Integer, Double, Float, BigInteger, BigDecimal
         assertEquals(6, list.size());
         assertEquals(doublePriority * Item.ITEM_PRIORITY_SCALE_POWER, list.get(2).getPriority());
+        assertEquals(doublePriority, list.get(2).getOriginalPriority());
+        assertEquals(1, list.get(2).getNumberOfScaling());
         assertEquals(Float.class, view.get(3));
         assertEquals(floatPriority, list.get(3).getPriority());
 

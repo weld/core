@@ -32,17 +32,25 @@ class Item implements Comparable<Item> {
 
     private final Class<?> javaClass;
 
+    private final int originalPriority;
+
     private final AtomicInteger priority;
 
-    Item(Class<?> javaClass, Integer priority) {
+    Item(Class<?> javaClass, int priority) {
+        this(javaClass, priority, priority);
+    }
+
+    Item(Class<?> javaClass, int originalPriority, int priority) {
         Preconditions.checkArgumentNotNull(javaClass, "javaClass");
         Preconditions.checkArgumentNotNull(priority, "priority");
+        Preconditions.checkArgumentNotNull(originalPriority, "originalPriority");
         this.javaClass = javaClass;
         this.priority = new AtomicInteger(priority);
+        this.originalPriority = originalPriority;
     }
 
     void scalePriority() {
-        priority.getAndUpdate((p) -> p * Item.ITEM_PRIORITY_SCALE_POWER);
+        priority.getAndUpdate((p) -> p * ITEM_PRIORITY_SCALE_POWER);
     }
 
     Class<?> getJavaClass() {
@@ -53,14 +61,31 @@ class Item implements Comparable<Item> {
         return priority.get();
     }
 
+    int getOriginalPriority() {
+        return originalPriority;
+    }
+
+    int getNumberOfScaling() {
+        int current = priority.get();
+        if (current == originalPriority) {
+            return 0;
+        }
+        int scaling = 0;
+        do {
+            current = current / ITEM_PRIORITY_SCALE_POWER;
+            scaling++;
+        } while (current != originalPriority);
+        return scaling;
+    }
+
     @Override
     public int compareTo(Item o) {
         int p1 = priority.get();
         int p2 = o.priority.get();
         if (p1 == p2) {
             /*
-             * The spec does not specify what happens if two records have the same priority. Instead of giving random results, we compare the records based
-             * on their class name lexicographically.
+             * The spec does not specify what happens if two records have the same priority. Instead of giving random results, we compare the records based on
+             * their class name lexicographically.
              */
             return javaClass.getName().compareTo(o.javaClass.getName());
         }

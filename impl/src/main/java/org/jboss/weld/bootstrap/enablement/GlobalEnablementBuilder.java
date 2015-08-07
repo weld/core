@@ -19,6 +19,7 @@ package org.jboss.weld.bootstrap.enablement;
 import static org.jboss.weld.util.reflection.Reflections.cast;
 
 import java.lang.annotation.Annotation;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -64,7 +65,17 @@ public class GlobalEnablementBuilder extends AbstractBootstrapService {
     private void addItem(List<Item> list, Class<?> javaClass, int priority) {
         sorted = false;
         dirty = true;
-        list.add(new Item(javaClass, priority));
+        synchronized (list) {
+            int originalPriority = priority;
+            if (!list.isEmpty()) {
+                int scaling = list.get(0).getNumberOfScaling();
+                if (scaling > 0) {
+                    // We have to scale the priority if necessary
+                    priority *= new BigInteger("" + Item.ITEM_PRIORITY_SCALE_POWER).pow(scaling).intValue();
+                }
+            }
+            list.add(new Item(javaClass, originalPriority, priority));
+        }
     }
 
     public void addAlternative(Class<?> javaClass, int priority) {
