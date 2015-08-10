@@ -16,10 +16,10 @@
  */
 package org.jboss.weld.tests.extensions.lifecycle.atd.prioritized;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-import java.util.Arrays;
+import java.util.List;
 
 import javax.enterprise.inject.spi.Extension;
 
@@ -49,12 +49,32 @@ public class AfterTypeDiscoveryWithPrioritizedCustomBeanTest {
 
     @Test
     public void testFinalInterceptors(TestExtension extension, MonitoredService monitoredService) {
-        assertEquals(Arrays.asList(BravoInterceptor.class, AlphaInterceptor.class), extension.getInitialInterceptors());
+        assertTrue(extension.getInitialInterceptors().contains(BravoInterceptor.class));
+        assertTrue(extension.getInitialInterceptors().contains(AlphaInterceptor.class));
+        assertIndexLessThan(extension.getInitialInterceptors(), BravoInterceptor.class, AlphaInterceptor.class);
         assertNotNull(monitoredService);
         ActionSequence.reset();
         monitoredService.ping();
-        ActionSequence.assertSequenceDataEquals(PrioritizedInterceptor.class.getName(), CharlieInterceptor.class.getName(),
-                AlphaInterceptor.class.getName(), LegacyPrioritizedInterceptor.class.getName());
+        ActionSequence.assertSequenceDataContainsAll(PrioritizedInterceptor.class.getName(),
+                CharlieInterceptor.class.getName(), AlphaInterceptor.class.getName(),
+                LegacyPrioritizedInterceptor.class.getName());
+        List<String> data = ActionSequence.getSequenceData();
+        assertIndexLessThan(data, PrioritizedInterceptor.class.getName(), CharlieInterceptor.class.getName());
+        assertIndexLessThan(data, CharlieInterceptor.class.getName(), AlphaInterceptor.class.getName());
+        assertIndexLessThan(data, AlphaInterceptor.class.getName(), LegacyPrioritizedInterceptor.class.getName());
+    }
+
+    private <T> void assertIndexLessThan(List<T> list, T arg1, T arg2) {
+        assertTrue(getIndex(list, arg1) < getIndex(list, arg2));
+    }
+
+    private <T> int getIndex(List<T> list, T clazz) {
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).equals(clazz)) {
+                return i;
+            }
+        }
+        throw new AssertionError(clazz + " not in the list: " + list);
     }
 
 }
