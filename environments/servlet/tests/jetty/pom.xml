@@ -60,13 +60,7 @@
 
     </dependencies>
 
-    <properties>
-        <!-- This propery allows to use a different src dir for weld-se-coop profile -->
-        <test.src.dir>src/test/java</test.src.dir>
-    </properties>
-
     <build>
-        <testSourceDirectory>${test.src.dir}</testSourceDirectory>
         <defaultGoal>test</defaultGoal>
         <plugins>
             <plugin>
@@ -313,7 +307,28 @@
                                    </resources>
                                 </configuration>
                             </execution>
+                            <execution>
+                                <id>add-test-source</id>
+                                <phase>generate-test-sources</phase>
+                                <goals>
+                                    <goal>add-test-source</goal>
+                                </goals>
+                                <configuration>
+                                <sources>
+                                  <source>${test.src.dir}</source>
+                                </sources>
+                              </configuration>
+                            </execution>
                         </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <excludes>
+                                <exclude>%regex[.*servlet/test/(?!se).*]</exclude>
+                            </excludes>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>
