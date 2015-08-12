@@ -39,10 +39,10 @@ public interface WeldInjectionPoint<T, S> extends InjectionPoint, WeldAnnotated<
         private final WeldManager beanManager;
 
         public WeldInjectionPointSerializationProxy(WeldInjectionPoint<T, S> injectionPoint, WeldManager beanManager) {
+            this.beanManager = beanManager;
             this.declaringBeanId =
                     injectionPoint.getBean() == null ? null : getService(ContextualStore.class).putIfAbsent(injectionPoint.getBean());
             this.declaringClass = injectionPoint.getDeclaringType().getJavaClass();
-            this.beanManager = beanManager;
         }
 
         protected Bean<T> getDeclaringBean() {

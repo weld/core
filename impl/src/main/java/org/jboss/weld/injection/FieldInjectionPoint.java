@@ -75,9 +75,9 @@ public class FieldInjectionPoint<T, X> extends ForwardingWeldField<T, X> impleme
         this.declaringBean = declaringBean;
         this.injectionTargetClass = injectionTargetClass;
         this.field = field;
+        this.beanManager = manager;
         this.delegate = isAnnotationPresent(Inject.class) && isAnnotationPresent(Delegate.class) && declaringBean instanceof Decorator<?>;
         this.cacheable = !delegate && !InjectionPoint.class.isAssignableFrom(field.getJavaMember().getType()) && !Instance.class.isAssignableFrom(field.getJavaMember().getType());
-        this.beanManager = manager;
     }
 
     @Override
