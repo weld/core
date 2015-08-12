@@ -40,12 +40,8 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.descriptor.api.Descriptor;
-import org.jboss.weld.bootstrap.api.CDI11Bootstrap;
-import org.jboss.weld.bootstrap.spi.Deployment;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
-import org.jboss.weld.resources.ClassLoaderResourceLoader;
-import org.jboss.weld.resources.spi.ResourceLoader;
 
 public class WeldSEDeployableContainer implements DeployableContainer<WeldSEContainerConfiguration> {
 
@@ -75,14 +71,7 @@ public class WeldSEDeployableContainer implements DeployableContainer<WeldSECont
                 return Collections.enumeration(urls);
             }
         };
-        final ResourceLoader loader = new ClassLoaderResourceLoader(classLoader);
-
-        this.weld = new Weld() {
-            @Override
-            protected Deployment createDeployment(ResourceLoader resourceLoader, CDI11Bootstrap bootstrap) {
-                return super.createDeployment(loader, bootstrap);
-            }
-        };
+        this.weld = new Weld().setClassLoader(classLoader);
         final WeldContainer container = this.weld.initialize();
         beanManagerProducer.set(container.getBeanManager());
         return new ProtocolMetaData();

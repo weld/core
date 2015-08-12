@@ -30,31 +30,28 @@ import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.zip.ZipFile;
 
 import org.jboss.logging.Logger;
 import org.jboss.weld.bootstrap.api.Bootstrap;
-import org.jboss.weld.bootstrap.spi.BeanDiscoveryMode;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.environment.deployment.AbstractWeldDeployment;
 import org.jboss.weld.environment.deployment.WeldResourceLoader;
 import org.jboss.weld.environment.logging.CommonLogger;
 import org.jboss.weld.resources.spi.ResourceLoader;
+import org.jboss.weld.util.collections.ImmutableList;
 
 /**
  * Scans the classpath and tries to process all "META-INF/beans.xml" resources.
  *
  * @author Martin Kouba
  */
-public class DefaultBeanArchiveScanner implements BeanArchiveScanner {
+public class DefaultBeanArchiveScanner extends AbstractBeanArchiveScanner {
 
-    private static final Logger log = Logger.getLogger(DefaultBeanArchiveScanner.class);
+    private static final Logger logger = Logger.getLogger(DefaultBeanArchiveScanner.class);
 
     protected final ResourceLoader resourceLoader;
-
-    protected final Bootstrap bootstrap;
 
     /**
      *
@@ -62,30 +59,26 @@ public class DefaultBeanArchiveScanner implements BeanArchiveScanner {
      * @param bootstrap
      */
     public DefaultBeanArchiveScanner(ResourceLoader resourceLoader, Bootstrap bootstrap) {
+        super(bootstrap);
         this.resourceLoader = resourceLoader;
-        this.bootstrap = bootstrap;
     }
 
     @Override
-    public Map<URL, ScanResult> scan() {
-        final Map<URL, ScanResult> beansXmlMap = new HashMap<URL, ScanResult>();
+    public List<ScanResult> scan() {
+        ImmutableList.Builder<ScanResult> results = ImmutableList.builder();
         // META-INF/beans.xml
         final String[] resources = AbstractWeldDeployment.RESOURCES;
 
         // Find all beans.xml files
         for (String resourceName : resources) {
             for (URL beansXmlUrl : resourceLoader.getResources(resourceName)) {
-                final BeansXml beansXml = bootstrap.parse(beansXmlUrl);
+                final BeansXml beansXml = parseBeansXml(beansXmlUrl);
                 if (accept(beansXml)) {
-                    beansXmlMap.put(beansXmlUrl, new ScanResult(beansXml, getBeanArchiveReference(beansXmlUrl)));
+                    results.add(new ScanResult(beansXml, getBeanArchiveReference(beansXmlUrl)));
                 }
             }
         }
-        return beansXmlMap;
-    }
-
-    protected boolean accept(BeansXml beansXml) {
-        return !BeanDiscoveryMode.NONE.equals(beansXml.getBeanDiscoveryMode());
+        return results.build();
     }
 
     /**
@@ -118,10 +111,10 @@ public class DefaultBeanArchiveScanner implements BeanArchiveScanner {
             }
             return getBeanArchiveReferenceForJar(ref, url);
         } else {
-            log.warnv("Unable to adapt URL: {0}, using its external form instead", url);
+            logger.warnv("Unable to adapt URL: {0}, using its external form instead", url);
             ref = url.toExternalForm();
         }
-        log.debugv("Resolved bean archive reference: {0} for URL: {1}", ref, url);
+        logger.debugv("Resolved bean archive reference: {0} for URL: {1}", ref, url);
         return ref;
     }
 
@@ -167,7 +160,7 @@ public class DefaultBeanArchiveScanner implements BeanArchiveScanner {
                 CommonLogger.LOG.jnlpClassLoaderInvocationException(iacce);
             }
         }
-        log.warnv("Unable to adapt JAR file URL: {0}, using its external form instead", path);
+        logger.warnv("Unable to adapt JAR file URL: {0}, using its external form instead", path);
         return fallback.toExternalForm();
     }
 }

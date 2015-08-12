@@ -74,6 +74,7 @@ import org.jboss.weld.environment.ContainerInstanceFactory;
 import org.jboss.weld.environment.deployment.WeldBeanDeploymentArchive;
 import org.jboss.weld.environment.deployment.WeldDeployment;
 import org.jboss.weld.environment.deployment.WeldResourceLoader;
+import org.jboss.weld.environment.deployment.discovery.ClassPathBeanArchiveScanner;
 import org.jboss.weld.environment.deployment.discovery.DiscoveryStrategy;
 import org.jboss.weld.environment.deployment.discovery.DiscoveryStrategyFactory;
 import org.jboss.weld.environment.logging.CommonLogger;
@@ -548,7 +549,7 @@ public class Weld implements ContainerInstanceFactory {
         }
 
         final WeldBootstrap bootstrap = new WeldBootstrap();
-        final Deployment deployment = createDeployment(resourceLoader, bootstrap);
+        final Deployment deployment = createDeployment(bootstrap);
 
         final ExternalConfigurationBuilder configurationBuilder = new ExternalConfigurationBuilder()
         // weld-se uses CommonForkJoinPoolExecutorServices by default
@@ -627,7 +628,7 @@ public class Weld implements ContainerInstanceFactory {
      * @param resourceLoader
      * @param bootstrap
      */
-    protected Deployment createDeployment(ResourceLoader resourceLoader, CDI11Bootstrap bootstrap) {
+    protected Deployment createDeployment(CDI11Bootstrap bootstrap) {
 
         final Iterable<Metadata<Extension>> extensions = getExtensions(WeldResourceLoader.getClassLoader(), bootstrap);
         final TypeDiscoveryConfiguration typeDiscoveryConfiguration = bootstrap.startExtensions(extensions);
@@ -640,6 +641,9 @@ public class Weld implements ContainerInstanceFactory {
                     ImmutableSet.<Class<? extends Annotation>> builder().addAll(typeDiscoveryConfiguration.getKnownBeanDefiningAnnotations())
                     // Add ThreadScoped manually as Weld SE doesn't support implicit bean archives without beans.xml
                             .add(ThreadScoped.class).build());
+            if(Boolean.TRUE.equals(properties.get(ConfigurationKey.IMPLICIT_SCAN.get()))) {
+                strategy.setScanner(new ClassPathBeanArchiveScanner(bootstrap));
+            }
             beanArchives.addAll(strategy.performDiscovery());
             ClassFileServices classFileServices = strategy.getClassFileServices();
             if(classFileServices != null) {
@@ -797,7 +801,7 @@ public class Weld implements ContainerInstanceFactory {
         if (packDir != null && packDir.exists() && packDir.canRead()) {
             for (File file : packDir.listFiles()) {
                 if (file.isFile()) {
-                    if (Files.isUsable(file) && Files.isClass(file.getName())) {
+                    if (file.canRead() && Files.isClass(file.getName())) {
                         foundClasses.add(Files.filenameToClassname(packName + "." + file.getName()));
                     }
                 }

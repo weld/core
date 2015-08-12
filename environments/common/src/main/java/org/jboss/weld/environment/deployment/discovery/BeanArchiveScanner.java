@@ -16,8 +16,7 @@
  */
 package org.jboss.weld.environment.deployment.discovery;
 
-import java.net.URL;
-import java.util.Map;
+import java.util.List;
 
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.BeansXml;
@@ -58,6 +57,10 @@ public interface BeanArchiveScanner {
             return beanArchiveRef;
         }
 
+        /**
+         *
+         * @return the beans.xml representation or <code>null</code> in case of a candidate for an implicit bean archive with no beans.xml
+         */
         public BeansXml getBeansXml() {
             return beansXml;
         }
@@ -72,8 +75,7 @@ public interface BeanArchiveScanner {
         }
 
         /**
-         * The id should be consistent between multiple occurrences of the deployment. It's no-op if
-         * the reference does not contain the specified separator.
+         * The id should be consistent between multiple occurrences of the deployment. It's no-op if the reference does not contain the specified separator.
          *
          * @param separator
          * @return self
@@ -89,9 +91,9 @@ public interface BeanArchiveScanner {
     }
 
     /**
-     * Scans for bean archives identified by beans.xml files. The map must not contain multiple results with the same {@link ScanResult#beanArchiveRef}.
+     * Scans for bean archives.
      *
-     * @return the map of {@link ScanResult} representations mapped by url of the descriptor
+     * @return an immutable list of {@link BeanArchiveScanner.ScanResult}
      */
-    Map<URL, ScanResult> scan();
+    List<ScanResult> scan();
 }
