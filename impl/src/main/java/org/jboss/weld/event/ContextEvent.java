@@ -23,7 +23,7 @@ import javax.enterprise.context.Initialized;
 
 /**
  * General event payload for {@link Initialized} / {@link Destroyed} events. A more specific payload is necessary
- * for certain contexts (e.g. {@link javax.servlet.http.HttpServletRequest})
+ * for certain contexts.
  *
  * @author Jozef Hartinger
  *
