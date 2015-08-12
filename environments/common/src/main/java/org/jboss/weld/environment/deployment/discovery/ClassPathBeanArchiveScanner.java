@@ -111,7 +111,6 @@ public class ClassPathBeanArchiveScanner extends AbstractBeanArchiveScanner {
             logger.debugv(BEANS_XML_NOT_FOUND_MESSAGE, entryDirectory);
             File extensionFile = new File(entryDirectory, EXTENSION_FILE);
             if (!extensionFile.canRead()) {
-                // The absence of an extension file is enough
                 results.add(new ScanResult(null, entryDirectory.getPath()));
             }
         }
@@ -121,15 +120,15 @@ public class ClassPathBeanArchiveScanner extends AbstractBeanArchiveScanner {
         try (ZipFile zip = new ZipFile(entryFile)) {
             Enumeration<? extends ZipEntry> entries = zip.entries();
             BeansXml beansXml = null;
+            boolean extensionFound = false;
             while (entries.hasMoreElements()) {
                 ZipEntry zipEntry = entries.nextElement();
                 if (zipEntry.getName().equals(AbstractWeldDeployment.BEANS_XML)) {
                     logger.debugv(BEANS_XML_FOUND_MESSAGE, entryFile);
                     beansXml = parseBeansXml(new URL(PROCOTOL_JAR + ":" + entryFile.toURI().toURL().toExternalForm() + JAR_URL_SEPARATOR + zipEntry.getName()));
                 }
-                // No beans.xml found - check whether the bean archive contains an extension
                 if (zipEntry.getName().equals(EXTENSION_FILE)) {
-                    return;
+                    extensionFound = true;
                 }
             }
             if (beansXml != null) {
@@ -137,9 +136,11 @@ public class ClassPathBeanArchiveScanner extends AbstractBeanArchiveScanner {
                     results.add(new ScanResult(beansXml, entryFile.getPath()));
                 }
             } else {
-                logger.debugv(BEANS_XML_NOT_FOUND_MESSAGE, entryFile);
-                // This is possibly an implicit bean archive
-                results.add(new ScanResult(null, entryFile.getPath()));
+                // No beans.xml found - check whether the bean archive contains an extension
+                if (!extensionFound) {
+                    logger.debugv(BEANS_XML_NOT_FOUND_MESSAGE, entryFile);
+                    results.add(new ScanResult(null, entryFile.getPath()));
+                }
             }
         }
     }
