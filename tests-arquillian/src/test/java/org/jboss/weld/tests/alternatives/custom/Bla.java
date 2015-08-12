@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2010, Red Hat, Inc., and individual contributors
+ * Copyright 2015, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -14,20 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.util.collections;
+package org.jboss.weld.tests.alternatives.custom;
 
-/**
- * Provides a view representation (VIEW) of a source type (SOURCE). Also, creates a source object based on a given view. An
- * implementation of this interface is used by {@link ListView} and {@link SetView}.
- *
- * @author Jozef Hartinger
- *
- * @param <SOURCE>
- * @param <VIEW>
- */
-public interface ViewProvider<SOURCE, VIEW> {
+public interface Bla {
 
-    VIEW toView(SOURCE from);
+    int getId();
 
-    SOURCE fromView(VIEW to);
 }
