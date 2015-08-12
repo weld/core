@@ -57,7 +57,7 @@ public class MethodInjectionPoint<T, X> extends ForwardingWeldMethod<T, X> imple
 
         @Override
         public ParameterInjectionPoint<T, X> get(int index) {
-            return ParameterInjectionPoint.of(declaringBean(), delegate().get(index), null);
+            return ParameterInjectionPoint.of(declaringBean(), delegate().get(index), beanManager());
         }
 
         @Override

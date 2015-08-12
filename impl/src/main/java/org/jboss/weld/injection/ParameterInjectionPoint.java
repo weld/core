@@ -69,9 +69,9 @@ public class ParameterInjectionPoint<T, X> extends ForwardingWeldParameter<T, X>
     private ParameterInjectionPoint(Bean<?> declaringBean, WeldParameter<T, X> parameter, WeldManager beanManager) {
         this.declaringBean = declaringBean;
         this.parameter = parameter;
+        this.beanManager = beanManager;
         this.delegate = isAnnotationPresent(Delegate.class) && declaringBean instanceof Decorator<?>;
         this.cacheable = !delegate && !InjectionPoint.class.isAssignableFrom(parameter.getJavaClass()) && !Instance.class.isAssignableFrom(parameter.getJavaClass());
-        this.beanManager = beanManager;
     }
 
     @Override
