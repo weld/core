@@ -49,7 +49,7 @@ public class FileSystemBeanArchiveHandler implements BeanArchiveHandler {
 
         File file = new File(path);
 
-        if(!file.exists()) {
+        if(!file.canRead()) {
             return null;
         }
 

@@ -175,6 +175,12 @@ public enum ConfigurationKey {
     @Description("If set to <code>true</code>, the attributes should be fetched lazily from the backing store for some contexts (e.g. attributes of an HTTP session for a session context).")
     CONTEXT_ATTRIBUTES_LAZY_FETCH("org.jboss.weld.context.attributes.lazyFetch", true),
 
+    /**
+     * This configuration key is only applicable in Java SE. See also the CDI specification, section <b>15.1 Bean archive in Java SE</b>.
+     */
+    @Description("This configuration key is only applicable in Java SE. See also the CDI specification, section <a href=\"https://docs.jboss.org/cdi/spec/2.0.EDR1/cdi-spec.html#bootstrap-se\">15.1 Bean archive in Java SE</a>.")
+    IMPLICIT_SCAN("javax.enterprise.inject.scan.implicit", false),
+
     ;
 
     /**

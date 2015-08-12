@@ -128,4 +128,13 @@ public interface CommonLogger extends WeldEnvironmentLogger {
     @Message(id = 33, value = "Invalid bean archive scanning result - found multiple results with the same reference: {0}", format = Format.MESSAGE_FORMAT)
     IllegalStateException invalidScanningResult(Object beanArchiveRef);
 
+    @Message(id = 34, value = "Cannot scan class path entry: {0}", format = Format.MESSAGE_FORMAT)
+    IllegalStateException cannotScanClassPathEntry(Object entry, @Cause Throwable cause);
+
+    @Message(id = 35, value = "Class path entry does not exist or cannot be read: {0}", format = Format.MESSAGE_FORMAT)
+    IllegalStateException cannotReadClassPathEntry(Object entry);
+
+    @Message(id = 36, value = "Weld cannot read the java class path system property!", format = Format.MESSAGE_FORMAT)
+    IllegalStateException cannotReadJavaClassPathSystemProperty();
+
 }

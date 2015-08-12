@@ -113,4 +113,12 @@ public class WeldBeanDeploymentArchive extends AbstractWeldBeanDeploymentArchive
         return new WeldBeanDeploymentArchive(ManagerObjectFactory.FLAT_BEAN_DEPLOYMENT_ID, beanClasses, mergedBeansXml);
     }
 
+    /**
+     *
+     * @return <code>true</code> if there are no bean classes in this bean deployment archive, <code>false</code> otherwise
+     */
+    public boolean isEmpty() {
+        return beanClasses.isEmpty() && loadedBeanClasses.isEmpty();
+    }
+
 }
