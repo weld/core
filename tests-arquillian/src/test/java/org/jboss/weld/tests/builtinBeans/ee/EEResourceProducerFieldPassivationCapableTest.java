@@ -16,6 +16,15 @@
  */
 package org.jboss.weld.tests.builtinBeans.ee;
 
+import static org.jboss.weld.tests.builtinBeans.ee.Checker.checkEntityManager;
+import static org.jboss.weld.tests.builtinBeans.ee.Checker.checkEntityManagerFactory;
+import static org.jboss.weld.tests.builtinBeans.ee.Checker.checkRemoteEjb;
+import static org.jboss.weld.tests.builtinBeans.ee.Checker.checkUserTransaction;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.transaction.UserTransaction;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -25,18 +34,10 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.transaction.UserTransaction;
-
-import static org.jboss.weld.tests.builtinBeans.ee.Checker.checkEntityManager;
-import static org.jboss.weld.tests.builtinBeans.ee.Checker.checkEntityManagerFactory;
-import static org.jboss.weld.tests.builtinBeans.ee.Checker.checkRemoteEjb;
-import static org.jboss.weld.tests.builtinBeans.ee.Checker.checkUserTransaction;
 
 @Category(Integration.class)
 @RunWith(Arquillian.class)
@@ -53,6 +54,7 @@ public class EEResourceProducerFieldPassivationCapableTest {
     }
 
     @Test
+    @Ignore("WFLY-835")
     public void testResource(@Produced UserTransaction userTransaction) throws Throwable {
         UserTransaction userTransaction1 = Utils.deserialize(Utils.serialize(userTransaction));
         Assert.assertTrue(checkUserTransaction(userTransaction1));
