@@ -319,7 +319,9 @@ public class InterceptionModelInitializer<T> {
     }
 
     private List<InterceptorClassMetadata<?>> asInterceptorMetadata(List<Interceptor<?>> interceptors) {
-        return interceptors.stream().map(this.reader::getCdiInterceptorMetadata).collect(Collectors.toList());
+        // The eclipse compiler reports an error for the original code with method reference
+        // See also https://bugs.eclipse.org/bugs/show_bug.cgi?id=459145
+        return interceptors.stream().map((i) -> this.reader.getCdiInterceptorMetadata(i)).collect(Collectors.toList());
     }
 
     @Override
