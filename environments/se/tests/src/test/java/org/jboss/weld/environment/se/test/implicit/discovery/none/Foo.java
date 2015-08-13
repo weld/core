@@ -14,27 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.environment.se.test.implicit;
+package org.jboss.weld.environment.se.test.implicit.discovery.none;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.Priority;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Alternative;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
-@Priority(1000)
-@Alternative
-@ApplicationScoped
-public class Bar {
+@Dependent
+public class Foo {
 
-    private int val;
+    private Bar bar;
 
-    @PostConstruct
-    public void init() {
-        val = 1;
+    @Inject
+    public Foo(Bar bar) {
+        this.bar = bar;
     }
 
-    public int getVal() {
-        return val;
+    public int ping() {
+        return bar.getVal();
     }
 
 }

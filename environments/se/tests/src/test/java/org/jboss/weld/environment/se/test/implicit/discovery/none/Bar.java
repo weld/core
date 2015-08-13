@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.environment.se.test.implicit;
+package org.jboss.weld.environment.se.test.implicit.discovery.none;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Priority;

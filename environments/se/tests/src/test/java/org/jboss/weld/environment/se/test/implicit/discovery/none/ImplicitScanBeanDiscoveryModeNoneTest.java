@@ -14,15 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.environment.se.test.implicit;
+package org.jboss.weld.environment.se.test.implicit.discovery.none;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import org.jboss.arquillian.container.se.api.ClassPath;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.BeanDiscoveryMode;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.impl.BeansXml;
@@ -33,25 +35,23 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-public class ImplicitScanSmokeTest {
+public class ImplicitScanBeanDiscoveryModeNoneTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        final JavaArchive bda1 = ShrinkWrap.create(JavaArchive.class).addClasses(Foo.class, Bar.class)
-                .addAsManifestResource(new BeansXml(), "beans.xml");
-        final JavaArchive bda2 = ShrinkWrap.create(JavaArchive.class).addClasses(ImplicitScanSmokeTest.class, Baz.class);
+        final JavaArchive bda1 = ShrinkWrap.create(JavaArchive.class).addClasses(Foo.class).addAsManifestResource(new BeansXml(BeanDiscoveryMode.NONE),
+                "beans.xml");
+        final JavaArchive bda2 = ShrinkWrap.create(JavaArchive.class).addClasses(ImplicitScanBeanDiscoveryModeNoneTest.class, Bar.class);
         return ClassPath.builder().add(bda1).add(bda2).build();
     }
 
     @Test
     public void testDiscovery() {
         try (WeldContainer container = new Weld().property(ConfigurationKey.IMPLICIT_SCAN.get(), Boolean.TRUE).initialize()) {
-            Foo foo = container.select(Foo.class).get();
-            assertNotNull(foo);
-            assertEquals(1, foo.ping());
-            Baz baz = container.select(Baz.class).get();
-            assertNotNull(baz);
-            assertEquals(1, baz.ping());
+            assertTrue(container.select(Foo.class).isUnsatisfied());
+            Bar bar = container.select(Bar.class).get();
+            assertNotNull(bar);
+            assertEquals(1, bar.getVal());
         }
     }
 
