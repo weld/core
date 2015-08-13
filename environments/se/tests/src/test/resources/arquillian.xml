@@ -12,7 +12,8 @@
       <configuration>
          <property name="librariesPath">${libPath}</property>
          <property name="debug">false</property>
-         <property name="logLevel">FINE</property>
+         <property name="logLevel">INFO</property>
+         <!-- We can't delete deployment archives until https://github.com/tremes/arquillian-container-se/pull/8 is merged -->
          <property name="keepDeploymentArchives">true</property>
       </configuration>
    </container>
