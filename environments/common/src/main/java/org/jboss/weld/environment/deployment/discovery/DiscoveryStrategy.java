@@ -22,6 +22,7 @@ import org.jboss.weld.environment.deployment.WeldBeanDeploymentArchive;
 import org.jboss.weld.resources.spi.ClassFileServices;
 
 /**
+ * This construct is not thread-safe.
  *
  * @author Matej Briškár
  * @author Martin Kouba

@@ -22,6 +22,7 @@ import java.lang.annotation.Annotation;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.enterprise.context.NormalScope;
 import javax.enterprise.inject.Stereotype;
@@ -43,15 +44,20 @@ public class ReflectionDiscoveryStrategy extends AbstractDiscoveryStrategy {
 
     private final List<Class<? extends Annotation>> metaAnnotations;
 
+    private final AtomicBoolean annotatedDiscoveryProcessed;
+
     public ReflectionDiscoveryStrategy(ResourceLoader resourceLoader, Bootstrap bootstrap, Set<Class<? extends Annotation>> initialBeanDefiningAnnotations) {
         super(resourceLoader, bootstrap, initialBeanDefiningAnnotations);
         this.metaAnnotations = ImmutableList.of(Stereotype.class, NormalScope.class);
+        this.annotatedDiscoveryProcessed = new AtomicBoolean(false);
         registerHandler(new FileSystemBeanArchiveHandler());
     }
 
     @Override
     protected WeldBeanDeploymentArchive processAnnotatedDiscovery(BeanArchiveBuilder builder) {
-        CommonLogger.LOG.reflectionFallback();
+        if (annotatedDiscoveryProcessed.compareAndSet(false, true)) {
+            CommonLogger.LOG.reflectionFallback();
+        }
         Iterator<String> classIterator = builder.getClassIterator();
         while (classIterator.hasNext()) {
             String className = classIterator.next();
