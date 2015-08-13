@@ -35,6 +35,7 @@ import java.security.ProtectionDomain;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -72,6 +73,8 @@ import org.jboss.weld.util.bytecode.RuntimeMethodInformation;
 import org.jboss.weld.util.collections.ArraySet;
 import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.reflection.Reflections;
+
+import com.google.common.collect.ImmutableSet;
 
 /**
  * Main factory to produce proxy classes and instances for Weld beans. This
@@ -133,12 +136,15 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
     }
 
     static {
+        Set<ProxiedMethodFilter> filters = new HashSet<>();
+        filters.add(CommonProxiedMethodFilters.NON_STATIC);
+        filters.add(CommonProxiedMethodFilters.NON_FINAL);
+        filters.add(CommonProxiedMethodFilters.OBJECT_TO_STRING);
         GroovyMethodFilter groovy = new GroovyMethodFilter();
         if (groovy.isEnabled()) {
-            METHOD_FILTERS = Collections.<ProxiedMethodFilter>singleton(groovy);
-        } else {
-            METHOD_FILTERS = Collections.emptySet();
+            filters.add(groovy);
         }
+        METHOD_FILTERS = ImmutableSet.copyOf(filters);
     }
 
     /**
@@ -595,10 +601,7 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
 
             while (cls != null) {
                 for (Method method : AccessController.doPrivileged(new GetDeclaredMethodsAction(cls))) {
-                    if (!Modifier.isStatic(method.getModifiers()) &&
-                            !Modifier.isFinal(method.getModifiers()) &&
-                            (method.getDeclaringClass() != Object.class || method.getName().equals("toString")) &&
-                            isMethodAccepted(method)) {
+                    if (isMethodAccepted(method)) {
                         try {
                             MethodInformation methodInfo = new RuntimeMethodInformation(method);
                             ClassMethod classMethod = proxyClassType.addMethod(method);
@@ -615,7 +618,7 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
             }
             for (Class<?> c : additionalInterfaces) {
                 for (Method method : c.getMethods()) {
-                    if (!Modifier.isStatic(method.getModifiers()) && isMethodAccepted(method)) {
+                    if (isMethodAccepted(method)) {
                         try {
                             MethodInformation methodInfo = new RuntimeMethodInformation(method);
                             ClassMethod classMethod = proxyClassType.addMethod(method);
