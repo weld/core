@@ -23,9 +23,9 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.security.AccessController;
-import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -40,6 +40,7 @@ import org.jboss.weld.environment.deployment.AbstractWeldDeployment;
 import org.jboss.weld.environment.logging.CommonLogger;
 import org.jboss.weld.security.GetSystemPropertyAction;
 import org.jboss.weld.util.collections.ImmutableList;
+import org.jboss.weld.util.collections.ImmutableSet;
 
 /**
  * Scans all the class path entries. Implicit bean archives which don't contain a beans.xml file are also supported.
@@ -74,8 +75,8 @@ public class ClassPathBeanArchiveScanner extends AbstractBeanArchiveScanner {
             throw CommonLogger.LOG.cannotReadJavaClassPathSystemProperty();
         }
         ImmutableList.Builder<ScanResult> results = ImmutableList.builder();
-        String[] entries = javaClassPath.split(Pattern.quote(File.pathSeparator));
-        logger.debugv("Scanning class path entries: {0}", Arrays.toString(entries));
+        Set<String> entries = ImmutableSet.of(javaClassPath.split(Pattern.quote(File.pathSeparator)));
+        logger.debugv("Scanning class path entries: {0}", entries);
         for (String entry : entries) {
             if (entry == null || entry.isEmpty()) {
                 continue;
