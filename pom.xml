@@ -26,6 +26,9 @@
         <!-- Plugin version overrides -->
         <release.version>2.5</release.version>
         <scm.plugin.version>1.9.1</scm.plugin.version>
+        <!-- Suppress strict JavaDoc validation -->
+        <!-- http://blog.joda.org/2014/02/turning-off-doclint-in-jdk-8-javadoc.html -->
+        <javadoc.doclint>-Xdoclint:none</javadoc.doclint>
 
         <!-- Dependency versions. KEEP IN ALPHABETICAL ORDER-->
         <apache.httpclient.version>3.1</apache.httpclient.version>
@@ -567,6 +570,14 @@
                     <version>${scm.plugin.version}</version>
                 </plugin>
 
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <configuration>
+                        <keywords>true</keywords>
+                        <additionalparam>${javadoc.doclint}</additionalparam>
+                    </configuration>
+                </plugin>
             </plugins>
 
         </pluginManagement>
