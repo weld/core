@@ -34,7 +34,9 @@ import java.lang.reflect.WildcardType;
 import java.security.AccessController;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -457,6 +459,27 @@ public class Reflections {
             throw (Exception) cause;
         } else {
             throw new WeldException(cause);
+        }
+    }
+
+    public static Set<Class<?>> getInterfaceClosure(Class<?> clazz) {
+        Class<?>[] interfaces = clazz.getInterfaces();
+        if (interfaces.length == 0) {
+            return Collections.emptySet();
+        }
+        Set<Class<?>> result = new HashSet<>();
+        addInterfaces(clazz, result);
+        return result;
+    }
+
+    private static void addInterfaces(Class<?> clazz, Set<Class<?>> result) {
+        Class<?>[] interfaces = clazz.getInterfaces();
+        if (interfaces.length == 0) {
+            return;
+        }
+        Collections.addAll(result, interfaces);
+        for (Class<?> interfac : interfaces) {
+            addInterfaces(interfac, result);
         }
     }
 }
