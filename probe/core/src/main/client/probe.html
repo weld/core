@@ -170,7 +170,7 @@ ${head}
         data-template-name="beanArchive">
 
         <div class="breadcrumbs">
-            <i class="fa fa-lg fa-home"></i> / {{#link-to 'beanArchives'}}Bean Archives{{/link-to}} / {{#link-to 'beanArchive' id class='nav-link'}}Bean Archive{{/link-to}}
+            <i class="fa fa-lg fa-home"></i> / {{#link-to 'beanArchives'}}Bean Archives{{/link-to}} / {{#link-to 'beanArchive' id class='nav-link'}}Bean Archive {{idx}}{{/link-to}}
         </div>
 
         <h1>Bean Archive</h1>
@@ -385,7 +385,7 @@ ${head}
         data-template-name="beanDetail">
 
         <div class="breadcrumbs">
-            <i class="fa fa-lg fa-home"></i> / {{#link-to 'beanList'}}Beans{{/link-to}} / {{#link-to 'beanDetail' id}}Bean Detail{{/link-to}}
+            <i class="fa fa-lg fa-home"></i> / {{#link-to 'beanList'}}Beans{{/link-to}} / {{#link-to 'beanDetail' id}}{{abbr beanClass 30 suppressHtml=true}}{{/link-to}}
         </div>
 
         <h1>Bean Detail</h1>
@@ -611,10 +611,43 @@ ${head}
                         </div>
                     </div>
                     {{/if}}
+                    {{#if classInterceptorBindings}}
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Class-level Interceptor Bindings:</label>
+                        <div class="col-sm-10">
+                            {{#each classInterceptorBindings}}
+                            <p class="form-control-static">
+                            {{#if probeComponent}}<span class='probe-comp'>{{value}}</span> {{probe-comp}}{{else}}{{value}}{{/if}}
+                            </p>
+                            {{/each}}
+                        </div>
+                    </div>
+                    {{/if}}
+                    {{#if decorators}}
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Associated Decorators:</label>
+                        <div class="col-sm-10">
+                            {{#each decorators}}
+                                <p class="form-control-static"><span class="{{unbound kind}} boxed">{{kind}}</span> {{detail-icon}} {{#link-to 'beanDetail' id}}{{beanClass}}{{/link-to}}</p>
+                            {{/each}}
+                        </div>
+                    </div>
+                    {{/if}}
+                    {{#if associatedTo}}
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Associated To:</label>
+                        <div class="col-sm-10">
+                            {{#each associatedTo}}
+                                <p class="form-control-static"><span class="{{unbound kind}} boxed">{{kind}}</span> {{detail-icon}} {{#link-to 'beanDetail' id}}{{beanClass}}{{/link-to}}</p>
+                            {{/each}}
+                        </div>
+                    </div>
+                    {{/if}}
                 </form>
             </div>
         </div>
 
+        {{#if showDependencyGraph}}
         <h2>Dependency Graph</h2>
         <div>
             <label>
@@ -653,6 +686,9 @@ ${head}
                 </div>
             </div>
         </div>
+        {{else}}
+        <div class="alert alert-info" role="alert"><strong>Dependency graph not built!</strong> This component has neither dependencies nor dependents.</div>
+        {{/if}}
 
     </script>
 
@@ -761,7 +797,7 @@ ${head}
         data-template-name="observerDetail">
 
         <div class="breadcrumbs">
-            <i class="fa fa-lg fa-home"></i> / Events / {{#link-to 'observerList'}}Observer Methods{{/link-to}} / {{#link-to 'observerDetail' id}}Observer Method Detail{{/link-to}}
+            <i class="fa fa-lg fa-home"></i> / Events / {{#link-to 'observerList'}}Observer Methods{{/link-to}} / {{#link-to 'observerDetail' id}}{{at}}Observes {{abbr observedType 30 suppressHtml=true}}{{/link-to}}
         </div>
 
         <h1>Observer Method Detail</h1>
