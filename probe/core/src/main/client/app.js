@@ -215,6 +215,7 @@ Probe.BeanDetailRoute = Ember.Route.extend(Probe.ResetScroll, {
             function(data) {
                 data.bda = findBeanDeploymentArchive(appController.get('bdas'),
                     data['bdaId']);
+                data.showDependencyGraph = data.dependencies || data.dependents;
                 return data;
             }).fail(function(jqXHR, textStatus, errorThrown) {
             alert('Unable to get JSON data: ' + textStatus);

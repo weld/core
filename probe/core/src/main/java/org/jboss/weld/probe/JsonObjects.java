@@ -20,6 +20,7 @@ import static org.jboss.weld.probe.Strings.ACCESSIBLE_BDAS;
 import static org.jboss.weld.probe.Strings.ALTERNATIVES;
 import static org.jboss.weld.probe.Strings.ANNOTATED_METHOD;
 import static org.jboss.weld.probe.Strings.APPLICATION;
+import static org.jboss.weld.probe.Strings.ASSOCIATED_TO;
 import static org.jboss.weld.probe.Strings.AS_STRING;
 import static org.jboss.weld.probe.Strings.BDAS;
 import static org.jboss.weld.probe.Strings.BDA_ID;
@@ -30,6 +31,7 @@ import static org.jboss.weld.probe.Strings.BINDINGS;
 import static org.jboss.weld.probe.Strings.CHILDREN;
 import static org.jboss.weld.probe.Strings.CIDS;
 import static org.jboss.weld.probe.Strings.CLASS;
+import static org.jboss.weld.probe.Strings.CLASS_INTERCEPTOR_BINDINGS;
 import static org.jboss.weld.probe.Strings.CONFIGURATION;
 import static org.jboss.weld.probe.Strings.CONTAINER;
 import static org.jboss.weld.probe.Strings.CONTEXTS;
@@ -124,6 +126,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.jboss.weld.Container;
+import org.jboss.weld.bean.AbstractClassBean;
 import org.jboss.weld.bean.AbstractProducerBean;
 import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bean.builtin.AbstractBuiltInBean;
@@ -141,6 +144,7 @@ import org.jboss.weld.context.ManagedConversation;
 import org.jboss.weld.event.ObserverMethodImpl;
 import org.jboss.weld.injection.producer.ProducerFieldProducer;
 import org.jboss.weld.injection.producer.ProducerMethodProducer;
+import org.jboss.weld.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.probe.Components.BeanKind;
 import org.jboss.weld.probe.Components.Dependency;
@@ -263,8 +267,8 @@ final class JsonObjects {
                 // Unsupported property type
                 continue;
             }
-            configBuilder.add(Json.objectBuilder().add(NAME, key.get()).add(DEFAULT_VALUE, defaultValue.toString()).add(VALUE, value.toString())
-                    .add(DESCRIPTION, desc));
+            configBuilder.add(
+                    Json.objectBuilder().add(NAME, key.get()).add(DEFAULT_VALUE, defaultValue.toString()).add(VALUE, value.toString()).add(DESCRIPTION, desc));
         }
         deploymentBuilder.add(CONFIGURATION, configBuilder);
 
@@ -488,9 +492,59 @@ final class JsonObjects {
                 decoratedTypes.add(Formats.formatType(type, false));
             }
             beanBuilder.add(DECORATED_TYPES, decoratedTypes);
+            // ASSOCIATED TO BEANS
+            Set<Bean<?>> decoratedBeans = findDecoratedBeans(decorator, beanManager, probe);
+            if (!decoratedBeans.isEmpty()) {
+                JsonArrayBuilder decoratedBeansBuilder = Json.arrayBuilder();
+                for (Bean<?> decoratedBean : decoratedBeans) {
+                    decoratedBeansBuilder.add(createSimpleBeanJson(decoratedBean, probe));
+                }
+                beanBuilder.add(ASSOCIATED_TO, decoratedBeansBuilder);
+            }
+        }
+
+        if (bean instanceof AbstractClassBean) {
+            AbstractClassBean<?> abstractClassBean = (AbstractClassBean<?>) bean;
+            InterceptionModel interceptionModel = abstractClassBean.getInterceptors();
+            // CLASS-LEVEL BINDINGS
+            if (interceptionModel != null) {
+                Set<Annotation> classInterceptorBindings = interceptionModel.getClassInterceptorBindings();
+                if (!classInterceptorBindings.isEmpty()) {
+                    JsonArrayBuilder bindingsBuilder = Json.arrayBuilder();
+                    for (Annotation binding : Components.getSortedProbeComponetAnnotationCandidates(classInterceptorBindings)) {
+                        bindingsBuilder.add(Json.objectBuilder().add(VALUE, binding.toString()).add(PROBE_COMPONENT, Components.isProbeAnnotation(binding)));
+                    }
+                    beanBuilder.add(CLASS_INTERCEPTOR_BINDINGS, bindingsBuilder);
+                }
+            }
+            // ASSOCIATED DECORATORS
+            List<Decorator<?>> decorators = abstractClassBean.getDecorators();
+            if (!decorators.isEmpty()) {
+                JsonArrayBuilder decoratorsBuilder = Json.arrayBuilder();
+                for (Decorator<?> decorator : decorators) {
+                    decoratorsBuilder.add(createSimpleBeanJson(decorator, probe));
+                }
+                beanBuilder.add(DECORATORS, decoratorsBuilder);
+            }
         }
 
         return beanBuilder.build();
+    }
+
+    private static Set<Bean<?>> findDecoratedBeans(Decorator<?> decorator, BeanManagerImpl beanManager, Probe probe) {
+        Set<Bean<?>> beans = new HashSet<Bean<?>>();
+        for (Bean<?> bean : probe.getBeans()) {
+            List<?> decorators;
+            if (bean instanceof AbstractClassBean) {
+                decorators = ((AbstractClassBean<?>) bean).getDecorators();
+            } else {
+                decorators = beanManager.resolveDecorators(bean.getTypes(), bean.getQualifiers());
+            }
+            if (decorators.contains(decorator)) {
+                beans.add(bean);
+            }
+        }
+        return beans;
     }
 
     private static boolean isSelectedAlternative(ModuleEnablement enablement, Bean<?> bean) {
@@ -648,8 +702,8 @@ final class JsonObjects {
         for (Dependency dependent : Components.getDependents(bean, probe)) {
             // Workaround for built-in beans - these are identified by the set of types
             if (Components.isBuiltinBeanButNotExtension(dependent.getBean())) {
-                dependentsBuilder.add(createDependency(probe.getBean(Components.getBuiltinBeanId((AbstractBuiltInBean<?>) dependent.getBean())), dependent,
-                        probe));
+                dependentsBuilder
+                        .add(createDependency(probe.getBean(Components.getBuiltinBeanId((AbstractBuiltInBean<?>) dependent.getBean())), dependent, probe));
                 continue;
             }
             // Handle circular dependencies
