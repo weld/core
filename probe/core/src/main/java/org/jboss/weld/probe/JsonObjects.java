@@ -31,7 +31,6 @@ import static org.jboss.weld.probe.Strings.BINDINGS;
 import static org.jboss.weld.probe.Strings.CHILDREN;
 import static org.jboss.weld.probe.Strings.CIDS;
 import static org.jboss.weld.probe.Strings.CLASS;
-import static org.jboss.weld.probe.Strings.CLASS_INTERCEPTOR_BINDINGS;
 import static org.jboss.weld.probe.Strings.CONFIGURATION;
 import static org.jboss.weld.probe.Strings.CONTAINER;
 import static org.jboss.weld.probe.Strings.CONTEXTS;
@@ -143,7 +142,6 @@ import org.jboss.weld.context.ManagedConversation;
 import org.jboss.weld.event.ObserverMethodImpl;
 import org.jboss.weld.injection.producer.ProducerFieldProducer;
 import org.jboss.weld.injection.producer.ProducerMethodProducer;
-import org.jboss.weld.interceptor.spi.model.InterceptionModel;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.probe.Components.BeanKind;
 import org.jboss.weld.probe.Components.Dependency;
@@ -505,18 +503,6 @@ final class JsonObjects {
 
         if (bean instanceof AbstractClassBean) {
             AbstractClassBean<?> abstractClassBean = (AbstractClassBean<?>) bean;
-            InterceptionModel interceptionModel = abstractClassBean.getInterceptors();
-            // CLASS-LEVEL BINDINGS
-            if (interceptionModel != null) {
-                Set<Annotation> classInterceptorBindings = interceptionModel.getClassInterceptorBindings();
-                if (!classInterceptorBindings.isEmpty()) {
-                    JsonArrayBuilder bindingsBuilder = Json.arrayBuilder();
-                    for (Annotation binding : Components.getSortedProbeComponetAnnotationCandidates(classInterceptorBindings)) {
-                        bindingsBuilder.add(Json.objectBuilder().add(VALUE, binding.toString()).add(PROBE_COMPONENT, Components.isProbeAnnotation(binding)));
-                    }
-                    beanBuilder.add(CLASS_INTERCEPTOR_BINDINGS, bindingsBuilder);
-                }
-            }
             // ASSOCIATED DECORATORS
             List<Decorator<?>> decorators = abstractClassBean.getDecorators();
             if (!decorators.isEmpty()) {
