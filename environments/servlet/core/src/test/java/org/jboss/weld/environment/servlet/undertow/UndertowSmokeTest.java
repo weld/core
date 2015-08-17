@@ -16,6 +16,18 @@
  */
 package org.jboss.weld.environment.servlet.undertow;
 
+import static org.junit.Assert.assertTrue;
+
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
+import javax.servlet.ServletException;
+
+import org.jboss.weld.environment.Container;
+import org.jboss.weld.environment.servlet.Listener;
+import org.jboss.weld.environment.undertow.UndertowContainer;
+import org.junit.Test;
+
 import io.undertow.Handlers;
 import io.undertow.Undertow;
 import io.undertow.server.HttpHandler;
@@ -24,16 +36,6 @@ import io.undertow.server.handlers.resource.ClassPathResourceManager;
 import io.undertow.servlet.Servlets;
 import io.undertow.servlet.api.DeploymentInfo;
 import io.undertow.servlet.api.DeploymentManager;
-
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-
-import javax.servlet.ServletException;
-
-import junit.framework.Assert;
-
-import org.jboss.weld.environment.servlet.Listener;
-import org.junit.Test;
 
 /**
  * Smoke test for Undertow integration. More sophisticated tests should be added to a separate undertow test project.
@@ -55,7 +57,8 @@ public class UndertowSmokeTest {
                 .addServlet(Servlets.servlet(InjectedServlet.class).addMapping("/*").setLoadOnStartup(1))
                 .addListener(Servlets.listener(InjectedListener.class))
                 .addFilter(Servlets.filter(InjectedFilter.class))
-                .setEagerFilterInit(true);
+                .setEagerFilterInit(true)
+                .addInitParameter(Container.CONTEXT_PARAM_CONTAINER_CLASS, UndertowContainer.class.getName());
 
 
         DeploymentManager manager = Servlets.defaultContainer().addDeployment(servletBuilder);
@@ -67,7 +70,7 @@ public class UndertowSmokeTest {
         server.start();
 
         try {
-            Assert.assertTrue(SYNC.await(5, TimeUnit.SECONDS));
+            assertTrue(SYNC.await(5, TimeUnit.SECONDS));
         } finally {
             server.stop();
         }
