@@ -27,9 +27,6 @@ public class UndertowContainer implements Container {
 
     private static final String UDT_SERVLET_PREFIX = "io.undertow.servlet";
 
-    private UndertowContainer() {
-    }
-
     @Override
     public boolean touch(ResourceLoader resourceLoader, ContainerContext context) throws Exception {
         return context.getServletContext().getClass().getName().startsWith(UDT_SERVLET_PREFIX);
