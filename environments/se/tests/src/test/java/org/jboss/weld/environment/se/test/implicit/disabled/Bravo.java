@@ -14,23 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.environment.se.test.implicit.discovery.none;
+package org.jboss.weld.environment.se.test.implicit.disabled;
 
 import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 
 @Dependent
-public class Foo {
-
-    private Bar bar;
-
-    @Inject
-    public Foo(Bar bar) {
-        this.bar = bar;
-    }
+public class Bravo {
 
     public int ping() {
-        return bar.getVal();
+        return 1;
     }
 
 }

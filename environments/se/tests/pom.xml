@@ -8,7 +8,6 @@
       <relativePath>../pom.xml</relativePath>
    </parent>
    <modelVersion>4.0.0</modelVersion>
-   <groupId>org.jboss.weld.se</groupId>
    <artifactId>weld-se-tests</artifactId>
    <packaging>jar</packaging>
    <name>Weld SE Tests</name>
@@ -53,7 +52,7 @@
          <groupId>org.jboss.arquillian.container</groupId>
          <artifactId>container-se-managed</artifactId>
          <!-- Override temporarily - until the TCK switches to the new API -->
-         <version>1.0.0.Alpha3</version>
+         <version>1.0.0.Alpha4</version>
          <scope>test</scope>
       </dependency>
 

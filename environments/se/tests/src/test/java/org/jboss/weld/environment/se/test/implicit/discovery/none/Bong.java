@@ -16,25 +16,21 @@
  */
 package org.jboss.weld.environment.se.test.implicit.discovery.none;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.Priority;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Alternative;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
-@Priority(1000)
-@Alternative
-@ApplicationScoped
-public class Bar {
+@Dependent
+public class Bong {
 
-    private int val;
+    private Bang bar;
 
-    @PostConstruct
-    public void init() {
-        val = 1;
+    @Inject
+    public Bong(Bang bar) {
+        this.bar = bar;
     }
 
-    public int getVal() {
-        return val;
+    public int ping() {
+        return bar.getVal();
     }
 
 }

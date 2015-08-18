@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.weld.environment.se.test.implicit.discovery.none;
+package org.jboss.weld.environment.se.test.implicit.disabled;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -24,10 +24,9 @@ import org.jboss.arquillian.container.se.api.ClassPath;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.BeanDiscoveryMode;
+import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.shrinkwrap.impl.BeansXml;
 import org.jboss.weld.config.ConfigurationKey;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
@@ -35,22 +34,22 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-public class ImplicitScanBeanDiscoveryModeNoneTest {
+public class ImplicitScanDisabledTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        return ClassPath.builder()
-                .add(ShrinkWrap.create(JavaArchive.class).addClasses(Bong.class).addAsManifestResource(new BeansXml(BeanDiscoveryMode.NONE), "beans.xml"))
-                .add(ShrinkWrap.create(JavaArchive.class).addClasses(ImplicitScanBeanDiscoveryModeNoneTest.class, Bang.class)).build();
+        return ClassPath.builder().add(ShrinkWrap.create(BeanArchive.class).addClasses(ImplicitScanDisabledTest.class, Bravo.class))
+                .add(ShrinkWrap.create(JavaArchive.class).addClasses(Alpha.class)).build();
     }
 
     @Test
     public void testDiscovery() {
-        try (WeldContainer container = new Weld().property(ConfigurationKey.IMPLICIT_SCAN.get(), Boolean.TRUE).initialize()) {
-            assertTrue(container.select(Bong.class).isUnsatisfied());
-            Bang bang = container.select(Bang.class).get();
-            assertNotNull(bang);
-            assertEquals(1, bang.getVal());
+        try (WeldContainer container = new Weld().property(ConfigurationKey.IMPLICIT_SCAN.get(), Boolean.FALSE).initialize()) {
+            // Beans from an implicit bean archive with no beans.xml file are not registered
+            assertTrue(container.select(Alpha.class).isUnsatisfied());
+            Bravo bravo = container.select(Bravo.class).get();
+            assertNotNull(bravo);
+            assertEquals(1, bravo.ping());
         }
     }
 
