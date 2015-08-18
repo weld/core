@@ -94,6 +94,10 @@
                     <artifactId>jsf-api</artifactId>
                     <groupId>javax.faces</groupId>
                 </exclusion>
+                <exclusion>
+                    <artifactId>container-se-api</artifactId>
+                    <groupId>org.jboss.arquillian.container</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
 
@@ -110,6 +114,10 @@
                 <exclusion>
                     <artifactId>jsf-api</artifactId>
                     <groupId>javax.faces</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>container-se-api</artifactId>
+                    <groupId>org.jboss.arquillian.container</groupId>
                 </exclusion>
             </exclusions>
         </dependency>
