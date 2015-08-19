@@ -183,6 +183,12 @@ public enum ConfigurationKey {
     @Description("If set to <code>true</code>, the attributes should be fetched lazily from the backing store for some contexts (e.g. attributes of an HTTP session for a session context).")
     CONTEXT_ATTRIBUTES_LAZY_FETCH("org.jboss.weld.context.attributes.lazyFetch", true),
 
+    /**
+     * If set to <code>true</code> one or more MBean components may be registered so that it is possible to use JMX to access the Probe development tool data.
+     */
+    @Description("<strong>DEVELOPMENT MODE</strong> - if set to <code>true</code> one or more MBean components may be registered so that it is possible to use JMX to access the Probe development tool data.")
+    PROBE_JMX_SUPPORT("org.jboss.weld.probe.jmxSupport", false),
+
     ;
 
     /**

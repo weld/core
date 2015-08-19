@@ -318,6 +318,9 @@ final class JsonObjects {
      */
     static String createBeansJson(Page<Bean<?>> page, Probe probe, BeanManagerImpl beanManager, Representation representation) {
         JsonArrayBuilder beansBuilder = Json.arrayBuilder();
+        if (representation == null) {
+            representation = Representation.BASIC;
+        }
         for (Bean<?> bean : page.getData()) {
             switch (representation) {
                 case SIMPLE:
@@ -903,7 +906,7 @@ final class JsonObjects {
 
         builder.add(INSTANCES, inspectContext(scope, beanManager, probe));
 
-        if (ConversationScoped.class.equals(scope)) {
+        if (req != null && ConversationScoped.class.equals(scope)) {
             HttpSession session = req.getSession(false);
             if (session != null) {
                 // Get all available conversation ids

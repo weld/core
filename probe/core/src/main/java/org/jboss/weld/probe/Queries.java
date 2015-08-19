@@ -143,6 +143,14 @@ final class Queries {
 
     }
 
+    static <E, T extends Filters<E>> T initFilters(String filtersParam, T uninitializedFilters) {
+        if (filtersParam == null || filtersParam.trim().length() == 0) {
+            return null;
+        }
+        uninitializedFilters.initialize(filtersParam);
+        return uninitializedFilters;
+    }
+
     /**
      * @param <T>
      * @author Martin Kouba
@@ -165,7 +173,7 @@ final class Queries {
          *
          * @param filters
          */
-        void processFilters(String filters) {
+        void initialize(String filters) {
             String[] tokens = filters.trim().split(" ");
             for (String token : tokens) {
                 if (token.length() == 0) {
