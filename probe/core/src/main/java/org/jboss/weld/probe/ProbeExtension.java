@@ -17,6 +17,7 @@
 package org.jboss.weld.probe;
 
 import java.lang.annotation.Annotation;
+import java.lang.management.ManagementFactory;
 import java.lang.reflect.Type;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -32,9 +33,17 @@ import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
+import javax.enterprise.inject.spi.BeforeShutdown;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessBeanAttributes;
 import javax.interceptor.Interceptor;
+import javax.management.InstanceAlreadyExistsException;
+import javax.management.InstanceNotFoundException;
+import javax.management.MBeanRegistrationException;
+import javax.management.MBeanServer;
+import javax.management.MalformedObjectNameException;
+import javax.management.NotCompliantMBeanException;
+import javax.management.ObjectName;
 
 import org.jboss.weld.bean.builtin.BeanManagerProxy;
 import org.jboss.weld.config.ConfigurationKey;
@@ -102,11 +111,44 @@ public class ProbeExtension implements Extension {
     }
 
     public void afterDeploymentValidation(@Observes AfterDeploymentValidation event, BeanManager beanManager) {
-        probe.init(BeanManagerProxy.unwrap(beanManager));
+        BeanManagerImpl manager = BeanManagerProxy.unwrap(beanManager);
+        probe.init(manager);
+        if (isJMXSupportEnabled(manager)) {
+            try {
+                MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+                mbs.registerMBean(new ProbeDynamicMBean(new ProbeJsonData(probe, BeanManagerProxy.unwrap(beanManager)), ProbeJsonDataMXBean.class),
+                        constructProbeJsonDataMBeanName(manager));
+            } catch (MalformedObjectNameException | InstanceAlreadyExistsException | MBeanRegistrationException | NotCompliantMBeanException e) {
+                event.addDeploymentProblem(ProbeLogger.LOG.unableToRegisterMBean(ProbeJsonDataMXBean.class, manager.getContextId(), e));
+            }
+        }
+    }
+
+    public void beforeShutdown(@Observes BeforeShutdown event, BeanManager beanManager) {
+        BeanManagerImpl manager = BeanManagerProxy.unwrap(beanManager);
+        if (isJMXSupportEnabled(manager)) {
+            MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+            try {
+                ObjectName name = constructProbeJsonDataMBeanName(manager);
+                if (mbs.isRegistered(name)) {
+                    mbs.unregisterMBean(name);
+                }
+            } catch (MalformedObjectNameException | MBeanRegistrationException | InstanceNotFoundException e) {
+                throw ProbeLogger.LOG.unableToUnregisterMBean(ProbeJsonDataMXBean.class, manager.getContextId(), e);
+            }
+        }
     }
 
     Probe getProbe() {
         return probe;
+    }
+
+    private boolean isJMXSupportEnabled(BeanManagerImpl manager) {
+        return manager.getServices().get(WeldConfiguration.class).getBooleanProperty(ConfigurationKey.PROBE_JMX_SUPPORT);
+    }
+
+    private ObjectName constructProbeJsonDataMBeanName(BeanManagerImpl manager) throws MalformedObjectNameException {
+        return new ObjectName(Probe.class.getPackage().getName() + ":type=JsonData,context=" + manager.getContextId());
     }
 
     private <T> boolean isMonitored(Annotated annotated, BeanAttributes<T> beanAttributes, WeldManager weldManager) {
