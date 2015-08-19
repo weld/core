@@ -31,6 +31,7 @@ import static org.jboss.weld.probe.Strings.PAGE_SIZE;
 import static org.jboss.weld.probe.Strings.PARAM_TRANSIENT_DEPENDENCIES;
 import static org.jboss.weld.probe.Strings.PARAM_TRANSIENT_DEPENDENTS;
 import static org.jboss.weld.probe.Strings.PATH_META_INF_CLIENT;
+import static org.jboss.weld.probe.Strings.REMOVED_EVENTS;
 import static org.jboss.weld.probe.Strings.REMOVED_INVOCATIONS;
 import static org.jboss.weld.probe.Strings.REPRESENTATION;
 import static org.jboss.weld.probe.Strings.RESOURCE_PARAM_END;
@@ -92,13 +93,9 @@ enum Resource {
         @Override
         protected void handleGet(BeanManagerImpl beanManager, Probe probe, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp)
                 throws IOException {
-            Representation representation = Representation.from(req.getParameter(REPRESENTATION));
-            if (representation == null) {
-                representation = Representation.BASIC;
-            }
             resp.getWriter().append(
                     JsonObjects.createBeansJson(Queries.find(probe.getBeans(), getPage(req), getPageSize(req), initFilters(req, new BeanFilters(probe))),
-                            probe, beanManager, representation));
+                            probe, beanManager, Representation.from(req.getParameter(REPRESENTATION))));
         }
     }),
     /**
@@ -176,7 +173,7 @@ enum Resource {
         }
     }),
     /**
-     * A collection of inspectable contexts.
+     * A collection of contextual instances for the given inspectable context.
      */
     CONTEXT("/contexts/{[a-zA-Z_0]+}", new Handler() {
         @Override
@@ -240,7 +237,7 @@ enum Resource {
         @Override
         protected void handleDelete(BeanManagerImpl beanManager, Probe probe, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp)
                 throws IOException {
-            resp.getWriter().append(Json.objectBuilder().add("removedEvents", probe.clearEvents()).build());
+            resp.getWriter().append(Json.objectBuilder().add(REMOVED_EVENTS, probe.clearEvents()).build());
         }
     }),
     /**
@@ -455,12 +452,7 @@ enum Resource {
         }
 
         protected <E, T extends Filters<E>> T initFilters(HttpServletRequest req, T filters) {
-            String filtersParam = req.getParameter(FILTERS);
-            if (filtersParam == null || filtersParam.trim().length() == 0) {
-                return null;
-            }
-            filters.processFilters(filtersParam);
-            return filters;
+            return Queries.initFilters(req.getParameter(FILTERS), filters);
         }
 
         protected String getContentType() {

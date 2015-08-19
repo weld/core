@@ -88,4 +88,10 @@ public interface ProbeLogger extends BasicLogger {
     @Message(id = 13, value = "Probe filter is not able to operate - missing {0}", format = Format.MESSAGE_FORMAT)
     IllegalStateException probeFilterUnableToOperate(Class<?> component);
 
+    @Message(id = 14, value = "Cannot register a Probe MBean {0} for: {1}", format = Format.MESSAGE_FORMAT)
+    IllegalStateException unableToRegisterMBean(Object mbean, Object context, @Cause Throwable cause);
+
+    @Message(id = 15, value = "Cannot unregister a Probe MBean {0} for: {1}", format = Format.MESSAGE_FORMAT)
+    IllegalStateException unableToUnregisterMBean(Object mbean, Object context, @Cause Throwable cause);
+
 }
