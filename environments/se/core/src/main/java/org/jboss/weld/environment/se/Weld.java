@@ -550,7 +550,7 @@ public class Weld implements ContainerInstanceFactory {
         }
 
         final WeldBootstrap bootstrap = new WeldBootstrap();
-        final Deployment deployment = createDeployment(bootstrap);
+        final Deployment deployment = createDeployment(resourceLoader, bootstrap);
 
         final ExternalConfigurationBuilder configurationBuilder = new ExternalConfigurationBuilder()
                 // weld-se uses CommonForkJoinPoolExecutorServices by default
@@ -629,7 +629,7 @@ public class Weld implements ContainerInstanceFactory {
      * @param resourceLoader
      * @param bootstrap
      */
-    protected Deployment createDeployment(CDI11Bootstrap bootstrap) {
+    protected Deployment createDeployment(ResourceLoader resourceLoader, CDI11Bootstrap bootstrap) {
 
         final Iterable<Metadata<Extension>> extensions = getExtensions(WeldResourceLoader.getClassLoader(), bootstrap);
         final TypeDiscoveryConfiguration typeDiscoveryConfiguration = bootstrap.startExtensions(extensions);
