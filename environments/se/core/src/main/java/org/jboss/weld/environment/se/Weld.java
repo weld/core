@@ -543,8 +543,9 @@ public class Weld implements ContainerInstanceFactory {
      * @see WeldContainer#shutdown()
      */
     public WeldContainer initialize() {
-        // If also building a synthetic bean archive the check for beans.xml is not necessary
-        if (!isSyntheticBeanArchiveRequired() && resourceLoader.getResource(WeldDeployment.BEANS_XML) == null) {
+
+        // If also building a synthetic bean archive or the implicit scan is enabled, the check for beans.xml is not necessary
+        if (!isSyntheticBeanArchiveRequired() && !isImplicitScanEnabled() && resourceLoader.getResource(WeldDeployment.BEANS_XML) == null) {
             throw CommonLogger.LOG.missingBeansXml();
         }
 
@@ -552,7 +553,7 @@ public class Weld implements ContainerInstanceFactory {
         final Deployment deployment = createDeployment(bootstrap);
 
         final ExternalConfigurationBuilder configurationBuilder = new ExternalConfigurationBuilder()
-        // weld-se uses CommonForkJoinPoolExecutorServices by default
+                // weld-se uses CommonForkJoinPoolExecutorServices by default
                 .add(EXECUTOR_THREAD_POOL_TYPE.get(), COMMON.toString())
                 // weld-se uses relaxed construction by default
                 .add(ConfigurationKey.RELAXED_CONSTRUCTION.get(), true);
@@ -598,9 +599,9 @@ public class Weld implements ContainerInstanceFactory {
      * Set a {@link ClassLoader}. The given {@link ClassLoader} will be scanned automatically for bean archives if scanning is enabled.
      */
     public Weld setClassLoader(ClassLoader classLoader) {
-       Preconditions.checkNotNull(classLoader);
-       resourceLoader = new ClassLoaderResourceLoader(classLoader);
-       return this;
+        Preconditions.checkNotNull(classLoader);
+        resourceLoader = new ClassLoaderResourceLoader(classLoader);
+        return this;
     }
 
     /**
@@ -639,14 +640,14 @@ public class Weld implements ContainerInstanceFactory {
         if (discoveryEnabled) {
             DiscoveryStrategy strategy = DiscoveryStrategyFactory.create(resourceLoader, bootstrap,
                     ImmutableSet.<Class<? extends Annotation>> builder().addAll(typeDiscoveryConfiguration.getKnownBeanDefiningAnnotations())
-                    // Add ThreadScoped manually as Weld SE doesn't support implicit bean archives without beans.xml
+                            // Add ThreadScoped manually as Weld SE doesn't support implicit bean archives without beans.xml
                             .add(ThreadScoped.class).build());
-            if(Boolean.TRUE.equals(properties.get(ConfigurationKey.IMPLICIT_SCAN.get()))) {
+            if (isImplicitScanEnabled()) {
                 strategy.setScanner(new ClassPathBeanArchiveScanner(bootstrap));
             }
             beanArchives.addAll(strategy.performDiscovery());
             ClassFileServices classFileServices = strategy.getClassFileServices();
-            if(classFileServices != null) {
+            if (classFileServices != null) {
                 additionalServices.put(ClassFileServices.class, classFileServices);
             }
         }
@@ -709,6 +710,11 @@ public class Weld implements ContainerInstanceFactory {
         }
         CreationalContext<?> cc = manager.createCreationalContext(bean);
         return type.cast(manager.getReference(bean, type, cc));
+    }
+
+    private boolean isImplicitScanEnabled() {
+        return Boolean.TRUE.equals(properties.get(ConfigurationKey.IMPLICIT_SCAN.get()))
+                || Boolean.valueOf(System.getProperty(ConfigurationKey.IMPLICIT_SCAN.get()));
     }
 
     private boolean isSyntheticBeanArchiveRequired() {
