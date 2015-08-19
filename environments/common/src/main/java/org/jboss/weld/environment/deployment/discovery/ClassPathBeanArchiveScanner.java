@@ -23,7 +23,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.security.AccessController;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -119,26 +118,17 @@ public class ClassPathBeanArchiveScanner extends AbstractBeanArchiveScanner {
 
     private void scanJarFile(File entryFile, ImmutableList.Builder<ScanResult> results) throws IOException {
         try (ZipFile zip = new ZipFile(entryFile)) {
-            Enumeration<? extends ZipEntry> entries = zip.entries();
-            BeansXml beansXml = null;
-            boolean extensionFound = false;
-            while (entries.hasMoreElements()) {
-                ZipEntry zipEntry = entries.nextElement();
-                if (zipEntry.getName().equals(AbstractWeldDeployment.BEANS_XML)) {
-                    logger.debugv(BEANS_XML_FOUND_MESSAGE, entryFile);
-                    beansXml = parseBeansXml(new URL(PROCOTOL_JAR + ":" + entryFile.toURI().toURL().toExternalForm() + JAR_URL_SEPARATOR + zipEntry.getName()));
-                }
-                if (zipEntry.getName().equals(EXTENSION_FILE)) {
-                    extensionFound = true;
-                }
-            }
-            if (beansXml != null) {
+            ZipEntry beansXmlEntry = zip.getEntry(AbstractWeldDeployment.BEANS_XML);
+            if (beansXmlEntry != null) {
+                logger.debugv(BEANS_XML_FOUND_MESSAGE, entryFile);
+                BeansXml beansXml = parseBeansXml(
+                        new URL(PROCOTOL_JAR + ":" + entryFile.toURI().toURL().toExternalForm() + JAR_URL_SEPARATOR + beansXmlEntry.getName()));
                 if (accept(beansXml)) {
                     results.add(new ScanResult(beansXml, entryFile.getPath()));
                 }
             } else {
                 // No beans.xml found - check whether the bean archive contains an extension
-                if (!extensionFound) {
+                if (zip.getEntry(EXTENSION_FILE) == null) {
                     logger.debugv(BEANS_XML_NOT_FOUND_MESSAGE, entryFile);
                     results.add(new ScanResult(null, entryFile.getPath()));
                 }
