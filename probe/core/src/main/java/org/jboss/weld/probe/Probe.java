@@ -412,6 +412,10 @@ class Probe {
         return initTs.get() == 0 ? false : true;
     }
 
+    long getInitTs() {
+        return initTs.get();
+    }
+
     private void putBean(ContextualStore contextualStore, Bean<?> bean) {
         putBean(Components.getId(contextualStore.putIfAbsent(bean)), bean);
     }
