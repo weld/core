@@ -117,7 +117,7 @@ public class ProbeExtension implements Extension {
             try {
                 MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
                 mbs.registerMBean(new ProbeDynamicMBean(new ProbeJsonData(probe, BeanManagerProxy.unwrap(beanManager)), ProbeJsonDataMXBean.class),
-                        constructProbeJsonDataMBeanName(manager));
+                        constructProbeJsonDataMBeanName(manager, probe));
             } catch (MalformedObjectNameException | InstanceAlreadyExistsException | MBeanRegistrationException | NotCompliantMBeanException e) {
                 event.addDeploymentProblem(ProbeLogger.LOG.unableToRegisterMBean(ProbeJsonDataMXBean.class, manager.getContextId(), e));
             }
@@ -129,7 +129,7 @@ public class ProbeExtension implements Extension {
         if (isJMXSupportEnabled(manager)) {
             MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
             try {
-                ObjectName name = constructProbeJsonDataMBeanName(manager);
+                ObjectName name = constructProbeJsonDataMBeanName(manager, probe);
                 if (mbs.isRegistered(name)) {
                     mbs.unregisterMBean(name);
                 }
@@ -147,8 +147,9 @@ public class ProbeExtension implements Extension {
         return manager.getServices().get(WeldConfiguration.class).getBooleanProperty(ConfigurationKey.PROBE_JMX_SUPPORT);
     }
 
-    private ObjectName constructProbeJsonDataMBeanName(BeanManagerImpl manager) throws MalformedObjectNameException {
-        return new ObjectName(Probe.class.getPackage().getName() + ":type=JsonData,context=" + manager.getContextId());
+    private ObjectName constructProbeJsonDataMBeanName(BeanManagerImpl manager, Probe probe) throws MalformedObjectNameException {
+        return new ObjectName(
+                Probe.class.getPackage().getName() + ":type=JsonData,context=" + ObjectName.quote(manager.getContextId() + "_" + probe.getInitTs()));
     }
 
     private <T> boolean isMonitored(Annotated annotated, BeanAttributes<T> beanAttributes, WeldManager weldManager) {
