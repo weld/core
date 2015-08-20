@@ -100,6 +100,7 @@ public final class Strings {
     public static final String CLASS_INTERCEPTOR_BINDINGS = "classInterceptorBindings";
     public static final String ASSOCIATED_TO = "associatedTo";
     public static final String REMOVED_EVENTS = "removedEvents";
+    public static final String INIT_TS = "initTs";
 
     public static final String PAGE = "page";
     public static final String PAGE_SIZE = "pageSize";
