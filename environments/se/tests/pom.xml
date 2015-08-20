@@ -51,8 +51,6 @@
       <dependency>
          <groupId>org.jboss.arquillian.container</groupId>
          <artifactId>container-se-managed</artifactId>
-         <!-- Override temporarily - until the TCK switches to the new API -->
-         <version>1.0.0.Alpha4</version>
          <scope>test</scope>
       </dependency>
 
