@@ -19,6 +19,7 @@ package org.jboss.weld.test.util;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamClass;
@@ -44,7 +45,6 @@ import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.test.util.el.EL;
 import org.jboss.weld.util.collections.EnumerationList;
 import org.jboss.weld.util.reflection.Reflections;
-
 
 public class Utils {
 
@@ -98,18 +98,9 @@ public class Utils {
     }
 
     public static <T> T deserialize(byte[] bytes) throws IOException, ClassNotFoundException {
-        ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bytes)) {
-            @Override
-            protected Class<?> resolveClass(ObjectStreamClass desc) throws IOException, ClassNotFoundException {
-                try {
-                    return super.resolveClass(desc);
-                } catch (ClassNotFoundException e) {
-                    // if a weld-internal class is not available (JBoss AS 7) let's use the weld classloader to load them
-                    return BeanManagerImpl.class.getClassLoader().loadClass(desc.getName());
-                }
-            }
-        };
-        return Reflections.<T>cast(in.readObject());
+        try (TCCLObjectInputStream in = new TCCLObjectInputStream(new ByteArrayInputStream(bytes))) {
+            return Reflections.<T>cast(in.readObject());
+        }
     }
 
     public static boolean isExceptionInHierarchy(Throwable exception, Class<? extends Throwable> expectedException) {
@@ -170,7 +161,6 @@ public class Utils {
         return proxy instanceof ProxyObject;
     }
 
-
     public static <T extends Context> T getActiveContext(WeldManager beanManager, Class<T> type) {
         for (T context : beanManager.instance().select(type)) {
             if (context.isActive()) {
@@ -178,6 +168,30 @@ public class Utils {
             }
         }
         throw new ContextNotActiveException();
+    }
+
+    private static class TCCLObjectInputStream extends ObjectInputStream {
+
+        private final ClassLoader classLoader;
+
+        public TCCLObjectInputStream(InputStream in) throws IOException {
+            super(in);
+            this.classLoader = Thread.currentThread().getContextClassLoader();
+        }
+
+        @Override
+        protected Class<?> resolveClass(ObjectStreamClass desc) throws IOException, ClassNotFoundException {
+            try {
+                String name = desc.getName();
+                return Class.forName(name, false, classLoader);
+            } catch (ClassNotFoundException e) {
+                try {
+                    return super.resolveClass(desc);
+                } catch (ClassNotFoundException e1) {
+                    return BeanManagerImpl.class.getClassLoader().loadClass(desc.getName());
+                }
+            }
+        }
     }
 
 }
