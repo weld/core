@@ -108,6 +108,10 @@ Probe.ApplicationRoute = Ember.Route
                             }
                         });
                         controller.set('configuration', configuration);
+                        data.initTime = moment(data.initTs).fromNow();
+                        var qualifierStart = data.version.indexOf('(');
+                        data.versionShort = qualifierStart != -1 ? data.version
+                            .substring(0, qualifierStart) : data.version;
                         return data;
                     }).fail(function(jqXHR, textStatus, errorThrown) {
                     alert('Unable to get JSON data: ' + textStatus);
@@ -211,15 +215,17 @@ Probe.BeanDetailRoute = Ember.Route.extend(Probe.ResetScroll, {
         var appController = this.controllerFor('application');
         return $.getJSON(
             appController.get('restUrlBase') + 'beans/' + params.id
-                + '?transientDependencies=true&transientDependents=true').done(
-            function(data) {
-                data.bda = findBeanDeploymentArchive(appController.get('bdas'),
-                    data['bdaId']);
-                data.showDependencyGraph = data.dependencies || data.dependents;
-                return data;
-            }).fail(function(jqXHR, textStatus, errorThrown) {
-            alert('Unable to get JSON data: ' + textStatus);
-        });
+                + '?transientDependencies=true&transientDependents=true')
+            .done(
+                function(data) {
+                    data.bda = findBeanDeploymentArchive(appController
+                        .get('bdas'), data['bdaId']);
+                    data.showDependencyGraph = data.dependencies
+                        || data.dependents;
+                    return data;
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                alert('Unable to get JSON data: ' + textStatus);
+            });
     },
 });
 
@@ -960,17 +966,15 @@ Probe.DependencyGraph = Ember.View
                 return d.target.y;
             }).attr("marker-end", function(d) {
                 return "url(#" + d.type + ")";
-            }).style(
-                "stroke-dasharray",
-                function(d) {
-                    if (d.source.isDependent) {
-                        return "5,5";
-                    }
-                    if (d.target.isRoot) {
-                        // Circular dependency
-                        return "10,15";
-                    }
-                }).style("stroke", function(d) {
+            }).style("stroke-dasharray", function(d) {
+                if (d.source.isDependent) {
+                    return "5,5";
+                }
+                if (d.target.isRoot) {
+                    // Circular dependency
+                    return "10,15";
+                }
+            }).style("stroke", function(d) {
                 if (!d.source.isDependent && d.target.isRoot) {
                     // Circular dependency
                     return "red";

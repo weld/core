@@ -56,6 +56,7 @@ import static org.jboss.weld.probe.Strings.EVENT_INFO;
 import static org.jboss.weld.probe.Strings.ID;
 import static org.jboss.weld.probe.Strings.INFO;
 import static org.jboss.weld.probe.Strings.INFO_FETCHING_LAZILY;
+import static org.jboss.weld.probe.Strings.INIT_TS;
 import static org.jboss.weld.probe.Strings.INSTANCES;
 import static org.jboss.weld.probe.Strings.INTERCEPTED_BEAN;
 import static org.jboss.weld.probe.Strings.INTERCEPTORS;
@@ -175,6 +176,9 @@ final class JsonObjects {
 
         Map<BeanDeploymentArchive, BeanManagerImpl> beanDeploymentArchivesMap = Container.instance(beanManager).beanDeploymentArchives();
         JsonObjectBuilder deploymentBuilder = Json.objectBuilder();
+
+        // INIT TS
+        deploymentBuilder.add(INIT_TS, probe.getInitTs());
 
         // WELD VERSION
         deploymentBuilder.add(VERSION, Formats.version(null));
