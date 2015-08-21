@@ -76,6 +76,7 @@ import org.jboss.weld.environment.logging.CommonLogger;
 import org.jboss.weld.environment.se.contexts.ThreadScoped;
 import org.jboss.weld.environment.se.logging.WeldSELogger;
 import org.jboss.weld.environment.util.BeanArchives;
+import org.jboss.weld.environment.util.DevelopmentMode;
 import org.jboss.weld.environment.util.Files;
 import org.jboss.weld.manager.api.WeldManager;
 import org.jboss.weld.metadata.BeansXmlImpl;
@@ -151,6 +152,9 @@ import com.google.common.collect.Multimap;
 public class Weld implements ContainerInstanceFactory {
 
     public static final String ARCHIVE_ISOLATION_SYSTEM_PROPERTY = "org.jboss.weld.se.archive.isolation";
+
+    // This system property is used to activate the development mode
+    public static final String DEV_MODE_SYSTEM_PROPERTY = "org.jboss.weld.development";
 
     private static final String SYNTHETIC_LOCATION_PREFIX = "synthetic:";
 
@@ -692,6 +696,11 @@ public class Weld implements ContainerInstanceFactory {
                     + WeldSEBeanRegistrant.class.getName()));
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }
+
+        if(Boolean.valueOf(AccessController.doPrivileged(new GetSystemPropertyAction(DEV_MODE_SYSTEM_PROPERTY)))) {
+            // The development mode is enabled - register the Probe extension
+            result.add(new MetadataImpl<Extension>(DevelopmentMode.getProbeExtension(resourceLoader), "N/A"));
         }
         return result;
     }
