@@ -140,9 +140,6 @@ public interface WeldServletLogger extends WeldEnvironmentLogger {
     @Message(id = 1029, value = "org.jboss.weld.environment.servlet.Listener is in an inconsistent state - Weld Servlet cannot be shut down properly")
     void noServletLifecycleToDestroy();
 
-    @Message(id = 1030, value = "Unable to initialize the Probe component: {0}", format = Format.MESSAGE_FORMAT)
-    IllegalStateException unableToInitializeProbeComponent(Object component, @Cause Throwable cause);
+    // Messages with ids 1030 and 1031 were removed
 
-    @Message(id = 1031, value = "Development mode is enabled but the following Probe component is not found on the classpath: {0}", format = Format.MESSAGE_FORMAT)
-    IllegalStateException probeComponentNotFoundOnClasspath(Object component);
 }

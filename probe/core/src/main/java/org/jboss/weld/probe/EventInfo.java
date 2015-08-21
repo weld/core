@@ -23,7 +23,6 @@ import java.util.Set;
 
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.ObserverMethod;
-import javax.servlet.http.HttpServletRequest;
 
 /**
  *
@@ -61,7 +60,7 @@ class EventInfo {
         this.qualifiers = qualifiers;
         this.injectionPoint = injectionPoint;
         this.containerEvent = containerEvent;
-        this.eventString = initEventString(event, containerEvent);
+        this.eventString = event.toString();
         this.observers = observers;
         this.timestamp = timestamp;
     }
@@ -94,20 +93,4 @@ class EventInfo {
         return timestamp;
     }
 
-    /*
-     * Workaround for Undertow's ugly toString(). TODO: also check Tomcat/Jetty and consider removing this if appropriate
-     */
-    private String initEventString(Object event, boolean containerEvent) {
-        if (containerEvent && event instanceof HttpServletRequest) {
-            HttpServletRequest request = (HttpServletRequest) event;
-            StringBuilder builder = new StringBuilder();
-            builder.append(HttpServletRequest.class.getSimpleName());
-            builder.append(' ');
-            builder.append(request.getMethod());
-            builder.append(' ');
-            builder.append(request.getRequestURI());
-            return builder.toString();
-        }
-        return event.toString();
-    }
 }
