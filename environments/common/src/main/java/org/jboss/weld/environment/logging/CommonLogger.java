@@ -128,4 +128,12 @@ public interface CommonLogger extends WeldEnvironmentLogger {
     @Message(id = 33, value = "Invalid bean archive scanning result - found multiple results with the same reference: {0}", format = Format.MESSAGE_FORMAT)
     IllegalStateException invalidScanningResult(Object beanArchiveRef);
 
+    // Messages with ids 34, 35 and 36 will likely be added - assuming that CDI 2.0 "implicit scan" feature will be backported
+
+    @Message(id = 37, value = "Unable to initialize the Probe component: {0}", format = Format.MESSAGE_FORMAT)
+    IllegalStateException unableToInitializeProbeComponent(Object component, @Cause Throwable cause);
+
+    @Message(id = 38, value = "Development mode is enabled but the following Probe component is not found on the classpath: {0}", format = Format.MESSAGE_FORMAT)
+    IllegalStateException probeComponentNotFoundOnClasspath(Object component);
+
 }
