@@ -10,7 +10,9 @@ WARNING: Not all environments and containers may support the development mode an
 [[devmode-enable]]
 === How to enable the development mode
 
-Set the Servlet initialization parameter `org.jboss.weld.development` to `true`:
+==== Web application
+
+For a web application, set the Servlet initialization parameter `org.jboss.weld.development` to `true`:
 
 [source.XML, xml]
 -----------------------------------------------------------------------------------------------------------
@@ -26,17 +28,25 @@ xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/
 </web-app>
 -----------------------------------------------------------------------------------------------------------
 
-You should see the following log message when deploying your application:
-
------------------------------------------------------------------------------------------------------------
-=====================================
-
- Weld Development Mode: ENABLED
-
-=====================================
------------------------------------------------------------------------------------------------------------
-
 NOTE: An integrator is allowed to specify an alternative way of enabling the development mode.
+
+==== Weld SE
+
+For a Java SE application, set the system property `org.jboss.weld.development` to `true`:
+
+-----------------------------------------------------------------------------------------------------------
+java -cp myCoolApp.jar -Dorg.jboss.weld.development=true com.foo.MyMain
+-----------------------------------------------------------------------------------------------------------
+
+==== Is The Development Mode Enabled?
+
+You should see the following log message during initialization of your application:
+
+-----------------------------------------------------------------------------------------------------------
+=====================================
+ Weld Development Mode: ENABLED
+=====================================
+-----------------------------------------------------------------------------------------------------------
 
 [[devtools]]
 === Development Tools
@@ -44,8 +54,12 @@ NOTE: An integrator is allowed to specify an alternative way of enabling the dev
 [[probe]]
 ==== Probe
 
-This tool allows to inspect the application CDI components at runtime. See also the http://probe-weld.itos.redhat.com/weld-numberguess/weld-probe[demo application hosted on OpenShift]. Currently, this tool is only available in a web application. JSON data are available through the REST API. However, a default HTML client (single-page application) is also available at `{webappContextPath}/weld-probe`, e.g. `http://localhost:8080/weld-numberguess/weld-probe`.
+This tool allows to inspect the application CDI components at runtime. See also the http://probe-weld.itos.redhat.com/weld-numberguess/weld-probe[demo application hosted on OpenShift].
 
-Right now, the integration is provided for WildFly (unofficial patch), Tomcat and Jetty (Weld Servlet).
+JSON data are available through the REST API, eventually (if <<config-dev-mode,JMX support is enabled>>) through the MXBean of name `org.jboss.weld.probe:type=JsonData,context=ID` where ID should be replaced with an idenfitier of an application.
+
+However, a default UI - HTML client (single-page application) is only available in a web application at `{webappContextPath}/weld-probe`, e.g. `http://localhost:8080/weld-numberguess/weld-probe`.
+
+Right now, the integration is provided for WildFly (unofficial patch), Tomcat and Jetty (Weld Servlet) and Weld SE.
 
 TIP: There are some configuration properties which allow to tune or disable Probe features, e.g. to limit the set of components which will be monitored. See also <<config-dev-mode>>.
