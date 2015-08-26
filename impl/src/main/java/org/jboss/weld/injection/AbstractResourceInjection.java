@@ -21,6 +21,7 @@ import javax.enterprise.context.spi.CreationalContext;
 import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.injection.spi.ResourceReference;
 import org.jboss.weld.injection.spi.ResourceReferenceFactory;
+import org.jboss.weld.util.Preconditions;
 import org.jboss.weld.util.reflection.Reflections;
 
 /**
@@ -35,7 +36,7 @@ abstract class AbstractResourceInjection<T> implements ResourceInjection<T> {
     private final ResourceReferenceFactory<T> factory;
 
     AbstractResourceInjection(ResourceReferenceFactory<T> factory) {
-        super();
+        Preconditions.checkNotNull(factory);
         this.factory = factory;
     }
 
