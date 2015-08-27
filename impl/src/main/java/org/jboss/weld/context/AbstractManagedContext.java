@@ -16,6 +16,8 @@
  */
 package org.jboss.weld.context;
 
+import org.jboss.weld.logging.ContextLogger;
+
 /**
  *
  * @author Pete Muir
@@ -55,6 +57,11 @@ public abstract class AbstractManagedContext extends AbstractContext implements 
         if (!isValid()) {
             destroy();
         }
+        removeState();
+    }
+
+    protected void removeState() {
+        ContextLogger.LOG.tracev("State thread-local removed: {0}", this);
         state.remove();
     }
 
