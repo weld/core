@@ -35,13 +35,13 @@ import org.jboss.weld.probe.Resource.Representation;
  *
  * @author Martin Kouba
  */
-public class ProbeJsonData implements ProbeJsonDataMXBean {
+public class DefaultJsonDataProvider implements JsonDataProvider {
 
     private final Probe probe;
 
     private final BeanManagerImpl beanManager;
 
-    ProbeJsonData(Probe probe, BeanManagerImpl beanManager) {
+    DefaultJsonDataProvider(Probe probe, BeanManagerImpl beanManager) {
         this.probe = probe;
         this.beanManager = beanManager;
     }
