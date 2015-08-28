@@ -59,17 +59,15 @@ public class BeanMethods {
     }
 
     /**
-     * We need to employ different strategies when discovering a list of specific methods of a {@link Bean} (e.g. initializer
-     * methods, producer methods, lifecycle event callback listeners, etc.) An implementation of this interface knows how to
-     * establish a list of certain methods.
+     * We need to employ different strategies when discovering a list of specific methods of a {@link Bean} (e.g. initializer methods, producer methods,
+     * lifecycle event callback listeners, etc.) An implementation of this interface knows how to establish a list of certain methods.
      *
-     * The user of this implementation starts interaction by calling {@link #getAllMethods(EnhancedAnnotatedType)} which obtains
-     * a collection of all methods of a given kind. Afterwards, iterates over the class hierarchy of
-     * {@link AnnotatedType#getJavaClass()} from the most specific class to {@link Object}. For each class in the hierarchy it
-     * calls {@link #levelStart(Class)}. Then it calls {@link #processMethod(EnhancedAnnotatedMethod)} for each method out of
-     * the collection of all methods of the given kind (see above) which is declared by the current class (current level). Once
-     * all the methods declared by the current class are processed, {@link #levelFinish()} is called and the iteration may
-     * continue with a superclass of the current class (provided there is any).
+     * The user of this implementation starts interaction by calling {@link #getAllMethods(EnhancedAnnotatedType)} which obtains a collection of all methods of
+     * a given kind. Afterwards, iterates over the class hierarchy of {@link AnnotatedType#getJavaClass()} from the most specific class to {@link Object}. For
+     * each class in the hierarchy it calls {@link #levelStart(Class)}. Then it calls {@link #processMethod(EnhancedAnnotatedMethod)} for each method out of the
+     * collection of all methods of the given kind (see above) which is declared by the current class (current level). Once all the methods declared by the
+     * current class are processed, {@link #levelFinish()} is called and the iteration may continue with a superclass of the current class (provided there is
+     * any).
      *
      * Finally, {@link #create()} is called to obtain the result.
      *
@@ -81,26 +79,24 @@ public class BeanMethods {
     private interface MethodListBuilder<T, R> {
 
         /**
-         * Returns all methods of a given kind (e.g. all observer methods) of a given {@link EnhancedAnnotatedType}. This
-         * includes methods defined on classes upper in the class hierarchy. Overridden methods are not returned.
+         * Returns all methods of a given kind (e.g. all observer methods) of a given {@link EnhancedAnnotatedType}. This includes methods defined on classes
+         * upper in the class hierarchy. Overridden methods are not returned.
          */
         Collection<EnhancedAnnotatedMethod<?, ? super T>> getAllMethods(EnhancedAnnotatedType<T> type);
 
         /**
-         * This method is called before methods declared by a specific class in the class hierarchy are processed. Only classes
-         * declared by this specific class are processed until {@link #levelFinish()} is called.
+         * This method is called before methods declared by a specific class in the class hierarchy are processed. Only classes declared by this specific class
+         * are processed until {@link #levelFinish()} is called.
          */
         void levelStart(Class<? super T> clazz);
 
         /**
-         * Allows an implementation to process a method. By default the method would be added to the list of methods being
-         * built.
+         * Allows an implementation to process a method. By default the method would be added to the list of methods being built.
          */
         void processMethod(EnhancedAnnotatedMethod<?, ? super T> method);
 
         /**
-         * Indicates that processing of methods declared by a given class has ended. There are no more methods declared by the
-         * given class to be processed.
+         * Indicates that processing of methods declared by a given class has ended. There are no more methods declared by the given class to be processed.
          */
         void levelFinish();
 
@@ -116,9 +112,8 @@ public class BeanMethods {
      * Get all methods of a given kind using a given {@link MethodListBuilder}.
      */
     private static <T, R> R getMethods(EnhancedAnnotatedType<T> type, MethodListBuilder<T, R> builder) {
-        Collection<EnhancedAnnotatedMethod<?, ? super T>> methods = filterOutBridgeMethods(builder.getAllMethods(type));
-        for (Class<? super T> clazz = type.getJavaClass(); clazz != null && clazz != Object.class; clazz = clazz
-                .getSuperclass()) {
+        Collection<EnhancedAnnotatedMethod<?, ? super T>> methods = filterMethods(builder.getAllMethods(type));
+        for (Class<? super T> clazz = type.getJavaClass(); clazz != null && clazz != Object.class; clazz = clazz.getSuperclass()) {
             builder.levelStart(clazz);
             for (EnhancedAnnotatedMethod<?, ? super T> method : methods) {
                 if (method.getJavaMember().getDeclaringClass().equals(clazz)) {
@@ -131,13 +126,12 @@ public class BeanMethods {
     }
 
     /**
-     * For lifecycle event callback we need an ordered list. Lifecycle callback methods defined on the most specific class go
-     * first in the list. A given class in the class hierarchy may define at most one method.
+     * For lifecycle event callback we need an ordered list. Lifecycle callback methods defined on the most specific class go first in the list. A given class
+     * in the class hierarchy may define at most one method.
      *
      * @author Jozef Hartinger
      */
-    private abstract static class AbstractLifecycleEventCallbackMethodListBuilder<T> implements
-            MethodListBuilder<T, List<AnnotatedMethod<? super T>>> {
+    private abstract static class AbstractLifecycleEventCallbackMethodListBuilder<T> implements MethodListBuilder<T, List<AnnotatedMethod<? super T>>> {
 
         protected List<AnnotatedMethod<? super T>> result = new ArrayList<AnnotatedMethod<? super T>>();
         protected EnhancedAnnotatedMethod<?, ? super T> foundMethod = null;
@@ -186,8 +180,8 @@ public class BeanMethods {
     }
 
     /**
-     * For initializers we need to return a {@link List} of {@link Set}s of initializer methods (because a class may declare
-     * multiple initializers). The list is ordered the same way as for lifecycle event callbacks.
+     * For initializers we need to return a {@link List} of {@link Set}s of initializer methods (because a class may declare multiple initializers). The list is
+     * ordered the same way as for lifecycle event callbacks.
      *
      * @author Jozef Hartinger
      */
@@ -229,8 +223,7 @@ public class BeanMethods {
                     throw UtilLogger.LOG.initializerMethodIsGeneric(method, Formats.formatAsStackTraceElement(method.getJavaMember()));
                 }
                 if (!method.isStatic()) {
-                    currentLevel.add(InjectionPointFactory.instance().createMethodInjectionPoint(method, declaringBean,
-                            type.getJavaClass(), null, manager));
+                    currentLevel.add(InjectionPointFactory.instance().createMethodInjectionPoint(method, declaringBean, type.getJavaClass(), null, manager));
                 }
             }
         }
@@ -289,28 +282,32 @@ public class BeanMethods {
         });
     }
 
-    public static <T> List<Set<MethodInjectionPoint<?, ?>>> getInitializerMethods(Bean<?> declaringBean, EnhancedAnnotatedType<T> type, BeanManagerImpl manager) {
+    public static <T> List<Set<MethodInjectionPoint<?, ?>>> getInitializerMethods(Bean<?> declaringBean, EnhancedAnnotatedType<T> type,
+            BeanManagerImpl manager) {
         return getMethods(type, new InitializerMethodListBuilder<T>(type, declaringBean, manager));
     }
 
     public static <T> Collection<EnhancedAnnotatedMethod<?, ? super T>> getObserverMethods(final EnhancedAnnotatedType<T> type) {
-        return filterOutBridgeMethods(type.getEnhancedMethodsWithAnnotatedParameters(Observes.class));
+        return filterMethods(type.getEnhancedMethodsWithAnnotatedParameters(Observes.class));
     }
 
     public static <T> Collection<EnhancedAnnotatedMethod<?, ? super T>> getAsyncObserverMethods(final EnhancedAnnotatedType<T> type) {
-        return filterOutBridgeMethods(type.getEnhancedMethodsWithAnnotatedParameters(ObservesAsync.class));
+        return filterMethods(type.getEnhancedMethodsWithAnnotatedParameters(ObservesAsync.class));
     }
 
     /**
      * Oracle JDK 8 compiler (unlike prev versions) generates bridge methods which have method and parameter annotations copied from the original method.
      * However such methods should not become observers, producers, disposers, initializers and lifecycle callbacks.
      *
+     * Moreover, JDK8u60 propagates parameter annotations to the synthetic method generated for a lambda. Therefore, we should also ignore synthetic methods.
+     *
      * @param methods
-     * @return a collection view with bridge methods filtered out
+     * @return a collection with bridge and synthetic methods filtered out
      * @see http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6695379
+     * @see https://issues.jboss.org/browse/WELD-2019
      */
-    public static <T> Collection<EnhancedAnnotatedMethod<?, ? super T>> filterOutBridgeMethods(final Collection<EnhancedAnnotatedMethod<?, ? super T>> methods) {
-        return methods.stream().filter(m -> !m.getJavaMember().isBridge()).collect(Collectors.toList());
+    public static <T> Collection<EnhancedAnnotatedMethod<?, ? super T>> filterMethods(final Collection<EnhancedAnnotatedMethod<?, ? super T>> methods) {
+        return methods.stream().filter(m -> !m.getJavaMember().isBridge() && !m.getJavaMember().isSynthetic()).collect(Collectors.toList());
     }
 
     public static <T> List<Method> getInterceptorMethods(EnhancedAnnotatedType<T> type, final InterceptionType interceptionType, final boolean targetClass) {

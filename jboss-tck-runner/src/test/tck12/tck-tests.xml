@@ -87,6 +87,13 @@
 
             <!-- Issues in WildFly -->
 
+            <!-- WFLY-5197 -->
+            <class name="org.jboss.cdi.tck.interceptors.tests.contract.lifecycleCallback.LifecycleCallbackInterceptorTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
+
         </classes>
     </test>
 
