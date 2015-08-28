@@ -81,6 +81,8 @@ public class ProbeFilter implements Filter {
 
     private Probe probe;
 
+    private JsonDataProvider jsonDataProvider;
+
     private boolean skipMonitoring;
 
     @Override
@@ -101,6 +103,7 @@ public class ProbeFilter implements Filter {
         if (!probe.isInitialized()) {
             throw ProbeLogger.LOG.probeNotInitialized();
         }
+        jsonDataProvider = probeExtension.getJsonDataProvider();
 
         WeldConfiguration configuration = beanManager.getServices().get(WeldConfiguration.class);
 
@@ -166,8 +169,8 @@ public class ProbeFilter implements Filter {
     public void destroy() {
     }
 
-    private void embedInfoSnippet(HttpServletRequest req, HttpServletResponse resp, Invocation.Builder builder, FilterChain chain) throws IOException,
-            ServletException {
+    private void embedInfoSnippet(HttpServletRequest req, HttpServletResponse resp, Invocation.Builder builder, FilterChain chain)
+            throws IOException, ServletException {
         ResponseWrapper responseWrapper = new ResponseWrapper(resp);
         FilterAction.of(req, responseWrapper).doFilter(builder, probe, chain);
         String captured = responseWrapper.getOutput();
@@ -218,21 +221,25 @@ public class ProbeFilter implements Filter {
         // Note that we have to use in-line CSS
         StringBuilder builder = new StringBuilder();
         builder.append("<!-- The following snippet was automatically added by Weld, see the documentation to disable this functionality -->");
-        builder.append("<div id=\"weld-dev-mode-info\" style=\"position: fixed !important;bottom:0;left:0;width:100%;background-color:#f8f8f8;border:2px solid silver;padding:10px;border-radius:2px;margin:0px;font-size:14px;font-family:sans-serif;color:black;\">");
+        builder.append(
+                "<div id=\"weld-dev-mode-info\" style=\"position: fixed !important;bottom:0;left:0;width:100%;background-color:#f8f8f8;border:2px solid silver;padding:10px;border-radius:2px;margin:0px;font-size:14px;font-family:sans-serif;color:black;\">");
         builder.append("<img alt=\"Weld logo\" style=\"vertical-align: middle;border-width:0px;\" src=\"");
         builder.append(servletContext.getContextPath());
         builder.append(REST_URL_PATTERN_BASE + "/client/weld_icon_32x.png\">");
         builder.append("&nbsp; Running on Weld <span style=\"color:gray\">");
         builder.append(Formats.version(WeldBootstrap.class.getPackage().getSpecificationVersion(), null));
-        builder.append("</span>. The development mode is <span style=\"color:white;background-color:#d62728;padding:6px;border-radius:4px;font-size:12px;\">ENABLED</span>. Inspect your application with <a style=\"color:#337ab7;text-decoration:underline;\" href=\"");
+        builder.append(
+                "</span>. The development mode is <span style=\"color:white;background-color:#d62728;padding:6px;border-radius:4px;font-size:12px;\">ENABLED</span>. Inspect your application with <a style=\"color:#337ab7;text-decoration:underline;\" href=\"");
         builder.append(servletContext.getContextPath());
         builder.append(REST_URL_PATTERN_BASE);
         builder.append("\" target=\"_blank\">Probe Development Tool</a>.");
-        builder.append(" <button style=\"float:right;background-color:#f8f8f8;border:1px solid silver; color:gray;border-radius:4px;padding:4px 10px 4px 10px;margin-left:2em;font-weight: bold;\" onclick=\"document.getElementById('weld-dev-mode-info').style.display='none';\">x</button>");
+        builder.append(
+                " <button style=\"float:right;background-color:#f8f8f8;border:1px solid silver; color:gray;border-radius:4px;padding:4px 10px 4px 10px;margin-left:2em;font-weight: bold;\" onclick=\"document.getElementById('weld-dev-mode-info').style.display='none';\">x</button>");
         return builder.toString();
     }
 
-    private void processResourceRequest(HttpServletRequest req, HttpServletResponse resp, HttpMethod httpMethod, String[] resourcePathParts) throws IOException {
+    private void processResourceRequest(HttpServletRequest req, HttpServletResponse resp, HttpMethod httpMethod, String[] resourcePathParts)
+            throws IOException {
         Resource resource;
         if (resourcePathParts.length == 0) {
             resource = Resource.CLIENT_RESOURCE;
@@ -244,7 +251,7 @@ public class ProbeFilter implements Filter {
             }
         }
         ProbeLogger.LOG.resourceMatched(resource, req.getRequestURI());
-        resource.handle(beanManager, probe, httpMethod, resourcePathParts, req, resp);
+        resource.handle(httpMethod, jsonDataProvider, resourcePathParts, req, resp);
     }
 
     private Resource matchResource(String[] resourcePathParts) {
