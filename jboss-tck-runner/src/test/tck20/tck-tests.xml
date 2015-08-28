@@ -44,12 +44,6 @@
             </class>
 
             <!-- Issues in the TCK -->
-            <!-- CDI-437 -->
-            <class name="org.jboss.cdi.tck.tests.lookup.byname.ambiguous.broken.AmbiguousELNamesTest">
-                <methods>
-                    <exclude name=".*"/>
-                </methods>
-            </class>
 
             <!-- changes in Weld 3 which were not reflected in TCK yet -->
             <class name="org.jboss.cdi.tck.tests.event.fires.FireEventTest">
@@ -91,6 +85,13 @@
             <!-- Issues in Weld (the RI) -->
 
             <!-- Issues in WildFly -->
+
+            <!-- WFLY-5197 -->
+            <class name="org.jboss.cdi.tck.interceptors.tests.contract.lifecycleCallback.LifecycleCallbackInterceptorTest">
+                <methods>
+                    <exclude name=".*"/>
+                </methods>
+            </class>
 
         </classes>
     </test>
