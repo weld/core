@@ -31,8 +31,6 @@ import static org.jboss.weld.probe.Strings.PAGE_SIZE;
 import static org.jboss.weld.probe.Strings.PARAM_TRANSIENT_DEPENDENCIES;
 import static org.jboss.weld.probe.Strings.PARAM_TRANSIENT_DEPENDENTS;
 import static org.jboss.weld.probe.Strings.PATH_META_INF_CLIENT;
-import static org.jboss.weld.probe.Strings.REMOVED_EVENTS;
-import static org.jboss.weld.probe.Strings.REMOVED_INVOCATIONS;
 import static org.jboss.weld.probe.Strings.REPRESENTATION;
 import static org.jboss.weld.probe.Strings.RESOURCE_PARAM_END;
 import static org.jboss.weld.probe.Strings.RESOURCE_PARAM_START;
@@ -53,24 +51,16 @@ import static org.jboss.weld.probe.Strings.TEXT_JAVASCRIPT;
 import static org.jboss.weld.probe.Strings.TEXT_PLAIN;
 
 import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.ObserverMethod;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.jboss.weld.manager.BeanManagerImpl;
-import org.jboss.weld.probe.Queries.BeanFilters;
-import org.jboss.weld.probe.Queries.EventsFilters;
 import org.jboss.weld.probe.Queries.Filters;
-import org.jboss.weld.probe.Queries.InvocationsFilters;
-import org.jboss.weld.probe.Queries.ObserverFilters;
 
 /**
- * Enum of resources.
+ * REST API resources.
  *
  * @author Martin Kouba
  */
@@ -81,171 +71,108 @@ enum Resource {
      */
     DEPLOYMENT("/deployment", new Handler() {
         @Override
-        protected void handleGet(BeanManagerImpl beanManager, Probe probe, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp)
-                throws IOException {
-            resp.getWriter().append(JsonObjects.createDeploymentJson(beanManager, probe));
+        protected void get(JsonDataProvider jsonDataProvider, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp) throws IOException {
+            append(resp, jsonDataProvider.receiveDeployment());
         }
-    }),
-    /**
-     * A collection of beans.
-     */
+    }), /**
+         * A collection of beans.
+         */
     BEANS("/beans", new Handler() {
         @Override
-        protected void handleGet(BeanManagerImpl beanManager, Probe probe, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp)
-                throws IOException {
-            resp.getWriter().append(
-                    JsonObjects.createBeansJson(Queries.find(probe.getBeans(), getPage(req), getPageSize(req), initFilters(req, new BeanFilters(probe))),
-                            probe, beanManager, Representation.from(req.getParameter(REPRESENTATION))));
+        protected void get(JsonDataProvider jsonDataProvider, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp) throws IOException {
+            append(resp, jsonDataProvider.receiveBeans(getPage(req), getPageSize(req), req.getParameter(FILTERS), req.getParameter(REPRESENTATION)));
         }
-    }),
-    /**
-     * A single bean detail.
-     */
+    }), /**
+         * A single bean detail.
+         */
     BEAN("/beans/{.+}", new Handler() {
         @Override
-        protected void handleGet(BeanManagerImpl beanManager, Probe probe, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp)
-                throws IOException {
-            Bean<?> bean = probe.getBean(resourcePathParts[1]);
-            if (bean != null) {
-                resp.getWriter().append(
-                        JsonObjects.createFullBeanJson(bean, Boolean.valueOf(req.getParameter(PARAM_TRANSIENT_DEPENDENCIES)),
-                                Boolean.valueOf(req.getParameter(PARAM_TRANSIENT_DEPENDENTS)), beanManager, probe));
-            } else {
-                resp.sendError(HttpServletResponse.SC_NOT_FOUND);
-            }
+        protected void get(JsonDataProvider jsonDataProvider, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp) throws IOException {
+            appendFound(resp, jsonDataProvider.receiveBean(resourcePathParts[1], Boolean.valueOf(req.getParameter(PARAM_TRANSIENT_DEPENDENCIES)),
+                    Boolean.valueOf(req.getParameter(PARAM_TRANSIENT_DEPENDENTS))));
         }
-    }),
-    /**
-     * A contextual instance of a bean. This is only supported for a limited set of scopes.
-     */
+    }), /**
+         * A contextual instance of a bean. This is only supported for a limited set of scopes.
+         */
     BEAN_INSTANCE("/beans/{.+}/instance", new Handler() {
         @Override
-        protected void handleGet(BeanManagerImpl beanManager, Probe probe, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp)
-                throws IOException {
-            Bean<?> bean = probe.getBean(resourcePathParts[1]);
-            if (bean != null && Components.isInspectableScope(bean.getScope())) {
-                Object instance = Components.findContextualInstance(bean, beanManager);
-                if (instance != null) {
-                    resp.getWriter().append(JsonObjects.createContextualInstanceJson(bean, instance, probe));
-                } else {
-                    resp.sendError(HttpServletResponse.SC_NOT_FOUND);
-                }
-            } else {
-                resp.sendError(HttpServletResponse.SC_NOT_FOUND);
-            }
+        protected void get(JsonDataProvider jsonDataProvider, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp) throws IOException {
+            appendFound(resp, jsonDataProvider.receiveBeanInstance(resourcePathParts[1]));
         }
-    }),
-    /**
-     * A collection of observers methods.
-     */
+    }), /**
+         * A collection of observers methods.
+         */
     OBSERVERS("/observers", new Handler() {
         @Override
-        protected void handleGet(BeanManagerImpl beanManager, Probe probe, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp)
-                throws IOException {
-            resp.getWriter().append(
-                    JsonObjects.createObserversJson(
-                            Queries.find(probe.getObservers(), getPage(req), getPageSize(req), initFilters(req, new ObserverFilters(probe))), probe));
+        protected void get(JsonDataProvider jsonDataProvider, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp) throws IOException {
+            append(resp, jsonDataProvider.receiveObservers(getPage(req), getPageSize(req), req.getParameter(FILTERS)));
         }
-    }),
-    /**
-     * A single observer.
-     */
+    }), /**
+         * A single observer.
+         */
     OBSERVER("/observers/{.+}", new Handler() {
         @Override
-        protected void handleGet(BeanManagerImpl beanManager, Probe probe, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp)
-                throws IOException {
-            ObserverMethod<?> observer = probe.getObserver(resourcePathParts[1]);
-            if (observer != null) {
-                resp.getWriter().append(JsonObjects.createFullObserverJson(observer, probe));
-            } else {
-                resp.sendError(HttpServletResponse.SC_NOT_FOUND);
-            }
+        protected void get(JsonDataProvider jsonDataProvider, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp) throws IOException {
+            appendFound(resp, jsonDataProvider.receiveObserver(resourcePathParts[1]));
         }
-    }),
-    /**
-     * A collection of inspectable contexts.
-     */
+    }), /**
+         * A collection of inspectable contexts.
+         */
     CONTEXTS("/contexts", new Handler() {
         @Override
-        protected void handleGet(BeanManagerImpl beanManager, Probe probe, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp)
-                throws IOException {
-            resp.getWriter().append(JsonObjects.createContextsJson(beanManager, probe).build());
+        protected void get(JsonDataProvider jsonDataProvider, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp) throws IOException {
+            append(resp, jsonDataProvider.receiveContexts());
         }
-    }),
-    /**
-     * A collection of contextual instances for the given inspectable context.
-     */
+    }), /**
+         * A collection of contextual instances for the given inspectable context.
+         */
     CONTEXT("/contexts/{[a-zA-Z_0]+}", new Handler() {
         @Override
-        protected void handleGet(BeanManagerImpl beanManager, Probe probe, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp)
-                throws IOException {
-            final String id = resourcePathParts[1];
-            final Class<? extends Annotation> scope = Components.INSPECTABLE_SCOPES.get(id);
-            if (scope != null) {
-                resp.getWriter().append(JsonObjects.createContextJson(id, scope, beanManager, probe, req).build());
-            } else {
-                resp.sendError(HttpServletResponse.SC_NOT_FOUND);
-            }
-
+        protected void get(JsonDataProvider jsonDataProvider, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp) throws IOException {
+            appendFound(resp, jsonDataProvider.receiveContext(resourcePathParts[1]));
         }
-    }),
-    /**
-     * A collection of invocation trees.
-     */
+    }), /**
+         * A collection of invocation trees.
+         */
     INVOCATIONS("/invocations", new Handler() {
         @Override
-        protected void handleGet(BeanManagerImpl beanManager, Probe probe, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp)
-                throws IOException {
-            resp.getWriter().append(
-                    JsonObjects.createInvocationsJson(
-                            Queries.find(probe.getInvocations(), getPage(req), getPageSize(req), initFilters(req, new InvocationsFilters(probe))), probe));
+        protected void get(JsonDataProvider jsonDataProvider, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp) throws IOException {
+            append(resp, jsonDataProvider.receiveInvocations(getPage(req), getPageSize(req), req.getParameter(FILTERS)));
         }
 
         @Override
-        protected void handleDelete(BeanManagerImpl beanManager, Probe probe, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp)
+        protected void delete(JsonDataProvider jsonDataProvider, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp)
                 throws IOException {
-            resp.getWriter().append(Json.objectBuilder().add(REMOVED_INVOCATIONS, probe.clearInvocations()).build());
+            append(resp, jsonDataProvider.clearInvocations());
         }
-    }),
-    /**
-     * A single invocation tree.
-     */
+    }), /**
+         * A single invocation tree.
+         */
     INVOCATION("/invocations/{.+}", new Handler() {
         @Override
-        protected void handleGet(BeanManagerImpl beanManager, Probe probe, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp)
-                throws IOException {
-            Invocation entryPoint = probe.getInvocation(resourcePathParts[1]);
-            if (entryPoint != null) {
-                resp.getWriter().append(JsonObjects.createFullInvocationJson(entryPoint, probe).build());
-            } else {
-                resp.sendError(HttpServletResponse.SC_NOT_FOUND);
-            }
+        protected void get(JsonDataProvider jsonDataProvider, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp) throws IOException {
+            appendFound(resp, jsonDataProvider.receiveInvocation(resourcePathParts[1]));
         }
-    }),
-    /**
-     * The event bus
-     */
+    }), /**
+         * The event bus
+         */
     EVENTS("/events", new Handler() {
         @Override
-        protected void handleGet(BeanManagerImpl beanManager, Probe probe, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp)
-                throws IOException {
-            resp.getWriter().append(
-                    JsonObjects.createEventsJson(Queries.find(probe.getEvents(), getPage(req), getPageSize(req), initFilters(req, new EventsFilters(probe))),
-                            probe));
+        protected void get(JsonDataProvider jsonDataProvider, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp) throws IOException {
+            append(resp, jsonDataProvider.receiveEvents(getPage(req), getPageSize(req), req.getParameter(FILTERS)));
         }
 
         @Override
-        protected void handleDelete(BeanManagerImpl beanManager, Probe probe, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp)
+        protected void delete(JsonDataProvider jsonDataProvider, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp)
                 throws IOException {
-            resp.getWriter().append(Json.objectBuilder().add(REMOVED_EVENTS, probe.clearEvents()).build());
+            append(resp, jsonDataProvider.clearEvents());
         }
-    }),
-    /**
-     * A default HTML client resource.
-     */
+    }), /**
+         * A default HTML client resource.
+         */
     CLIENT_RESOURCE("/client/{[a-zA-Z_0-9-]+\\.\\w+}", new Handler() {
         @Override
-        protected void handle(BeanManagerImpl beanManager, Probe probe, HttpMethod method, String[] resourcePathParts, HttpServletRequest req,
+        protected void handle(HttpMethod method, JsonDataProvider jsonDataProvider, String[] resourcePathParts, HttpServletRequest req,
                 HttpServletResponse resp) throws IOException {
 
             if (!HttpMethod.GET.equals(method)) {
@@ -276,7 +203,7 @@ enum Resource {
                 }
             }
         }
-    }), ;
+    }),;
 
     // --- Instance variables
 
@@ -289,9 +216,9 @@ enum Resource {
         this.handler = handler;
     }
 
-    protected void handle(BeanManagerImpl beanManager, Probe probe, HttpMethod method, String[] resourcePathParts, HttpServletRequest req,
-            HttpServletResponse resp) throws IOException {
-        handler.handle(beanManager, probe, method, resourcePathParts, req, resp);
+    protected void handle(HttpMethod method, JsonDataProvider jsonDataProvider, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp)
+            throws IOException {
+        handler.handle(method, jsonDataProvider, resourcePathParts, req, resp);
     }
 
     /**
@@ -384,45 +311,56 @@ enum Resource {
 
     abstract static class Handler {
 
-        protected void handle(BeanManagerImpl beanManager, Probe probe, HttpMethod method, String[] resourcePathParts, HttpServletRequest req,
+        protected void handle(HttpMethod method, JsonDataProvider jsonDataProvider, String[] resourcePathParts, HttpServletRequest req,
                 HttpServletResponse resp) throws IOException {
             setHeaders(resp, getContentType());
             switch (method) {
                 case GET:
-                    handleGet(beanManager, probe, resourcePathParts, req, resp);
+                    get(jsonDataProvider, resourcePathParts, req, resp);
                     break;
                 case POST:
-                    handlePost(beanManager, probe, resourcePathParts, req, resp);
+                    post(jsonDataProvider, resourcePathParts, req, resp);
                     break;
                 case DELETE:
-                    handleDelete(beanManager, probe, resourcePathParts, req, resp);
+                    delete(jsonDataProvider, resourcePathParts, req, resp);
                     break;
                 case OPTIONS:
-                    handleOptions(beanManager, probe, resourcePathParts, req, resp);
+                    options(jsonDataProvider, resourcePathParts, req, resp);
                     break;
                 default:
                     resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
             }
         }
 
-        protected void handleGet(BeanManagerImpl beanManager, Probe probe, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp)
+        protected void get(JsonDataProvider jsonDataProvider, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp) throws IOException {
+            resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+        }
+
+        protected void post(JsonDataProvider jsonDataProvider, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp)
                 throws IOException {
             resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
         }
 
-        protected void handlePost(BeanManagerImpl beanManager, Probe probe, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp)
+        protected void delete(JsonDataProvider jsonDataProvider, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp)
                 throws IOException {
             resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
         }
 
-        protected void handleDelete(BeanManagerImpl beanManager, Probe probe, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp)
-                throws IOException {
-            resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-        }
-
-        protected void handleOptions(BeanManagerImpl beanManager, Probe probe, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp)
+        protected void options(JsonDataProvider jsonDataProvider, String[] resourcePathParts, HttpServletRequest req, HttpServletResponse resp)
                 throws IOException {
             setCorsHeaders(resp);
+        }
+
+        protected void append(HttpServletResponse resp, String content) throws IOException {
+            resp.getWriter().append(content);
+        }
+
+        protected void appendFound(HttpServletResponse resp, String content) throws IOException {
+            if (content != null) {
+                resp.getWriter().append(content);
+            } else {
+                resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+            }
         }
 
         protected int getPage(HttpServletRequest req) {

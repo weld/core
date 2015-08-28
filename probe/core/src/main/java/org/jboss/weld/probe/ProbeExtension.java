@@ -69,6 +69,8 @@ public class ProbeExtension implements Extension {
 
     private final Probe probe;
 
+    private JsonDataProvider jsonDataProvider;
+
     private volatile Pattern invocationMonitorExcludePattern;
 
     public ProbeExtension() {
@@ -82,7 +84,8 @@ public class ProbeExtension implements Extension {
         event.addAnnotatedType(manager.createAnnotatedType(MonitoredComponent.class), MonitoredComponent.class.getName());
         event.addAnnotatedType(manager.createAnnotatedType(InvocationMonitor.class), InvocationMonitor.class.getName());
         String exclude = manager.getServices().get(WeldConfiguration.class).getStringProperty(ConfigurationKey.PROBE_INVOCATION_MONITOR_EXCLUDE_TYPE);
-        invocationMonitorExcludePattern = exclude.isEmpty() ? null : Pattern.compile(exclude);
+        this.invocationMonitorExcludePattern = exclude.isEmpty() ? null : Pattern.compile(exclude);
+        this.jsonDataProvider = new DefaultJsonDataProvider(probe, manager);
     }
 
     public <T> void processBeanAttributes(@Observes ProcessBeanAttributes<T> event, BeanManager beanManager) {
@@ -116,10 +119,10 @@ public class ProbeExtension implements Extension {
         if (isJMXSupportEnabled(manager)) {
             try {
                 MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-                mbs.registerMBean(new ProbeDynamicMBean(new ProbeJsonData(probe, BeanManagerProxy.unwrap(beanManager)), ProbeJsonDataMXBean.class),
+                mbs.registerMBean(new ProbeDynamicMBean(jsonDataProvider, JsonDataProvider.class),
                         constructProbeJsonDataMBeanName(manager, probe));
             } catch (MalformedObjectNameException | InstanceAlreadyExistsException | MBeanRegistrationException | NotCompliantMBeanException e) {
-                event.addDeploymentProblem(ProbeLogger.LOG.unableToRegisterMBean(ProbeJsonDataMXBean.class, manager.getContextId(), e));
+                event.addDeploymentProblem(ProbeLogger.LOG.unableToRegisterMBean(JsonDataProvider.class, manager.getContextId(), e));
             }
         }
     }
@@ -134,13 +137,17 @@ public class ProbeExtension implements Extension {
                     mbs.unregisterMBean(name);
                 }
             } catch (MalformedObjectNameException | MBeanRegistrationException | InstanceNotFoundException e) {
-                throw ProbeLogger.LOG.unableToUnregisterMBean(ProbeJsonDataMXBean.class, manager.getContextId(), e);
+                throw ProbeLogger.LOG.unableToUnregisterMBean(JsonDataProvider.class, manager.getContextId(), e);
             }
         }
     }
 
     Probe getProbe() {
         return probe;
+    }
+
+    JsonDataProvider getJsonDataProvider() {
+        return jsonDataProvider;
     }
 
     private boolean isJMXSupportEnabled(BeanManagerImpl manager) {

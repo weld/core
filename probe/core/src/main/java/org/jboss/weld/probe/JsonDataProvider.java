@@ -16,15 +16,19 @@
  */
 package org.jboss.weld.probe;
 
+import javax.management.MXBean;
+
 import org.jboss.weld.probe.ProbeDynamicMBean.Description;
 import org.jboss.weld.probe.ProbeDynamicMBean.ParamName;
 
 /**
- * This MXBean allows to access Probe JSON data via JMX.
+ * A component which loads JSON data for a specific {@link Resource}. This interface also represents a MXBean which allows to access Probe
+ * JSON data via JMX.
  *
  * @author Martin Kouba
  */
-public interface ProbeJsonDataMXBean {
+@MXBean
+public interface JsonDataProvider {
 
     /**
      *
