@@ -196,7 +196,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
     }
 
     protected <X> void createProducerMethods(AbstractClassBean<X> declaringBean, EnhancedAnnotatedType<X> type) {
-        for (EnhancedAnnotatedMethod<?, ? super X> method : BeanMethods.filterOutBridgeMethods(type.getDeclaredEnhancedMethods(Produces.class))) {
+        for (EnhancedAnnotatedMethod<?, ? super X> method : BeanMethods.filterMethods(type.getDeclaredEnhancedMethods(Produces.class))) {
             // create method for now
             // specialization and PBA processing is handled later
             createProducerMethod(declaringBean, method);
@@ -204,7 +204,7 @@ public class AbstractBeanDeployer<E extends BeanDeployerEnvironment> {
     }
 
     protected <X> void createDisposalMethods(AbstractClassBean<X> declaringBean, EnhancedAnnotatedType<X> annotatedClass) {
-        for (EnhancedAnnotatedMethod<?, ? super X> method : BeanMethods.filterOutBridgeMethods(annotatedClass
+        for (EnhancedAnnotatedMethod<?, ? super X> method : BeanMethods.filterMethods(annotatedClass
                 .getDeclaredEnhancedMethodsWithAnnotatedParameters(Disposes.class))) {
             DisposalMethod<? super X, ?> disposalBean = DisposalMethod.of(manager, method, declaringBean);
             getEnvironment().addDisposesMethod(disposalBean);

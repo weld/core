@@ -59,13 +59,13 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 public class BeanMethods {
 
     @SuppressWarnings("rawtypes")
-    private static final Predicate<EnhancedAnnotatedMethod> BRIDGE_METHOD_FILTER_PREDICATE = new Predicate<EnhancedAnnotatedMethod>() {
+    private static final Predicate<EnhancedAnnotatedMethod<?,?>> METHOD_FILTER_PREDICATE = new Predicate<EnhancedAnnotatedMethod<?,?>>() {
 
         @Override
         @SuppressWarnings("NP_PARAMETER_MUST_BE_NONNULL_BUT_MARKED_AS_NULLABLE")
-        public boolean apply(EnhancedAnnotatedMethod method) {
+        public boolean apply(EnhancedAnnotatedMethod<?,?> method) {
             Preconditions.checkArgumentNotNull(method, "method");
-            return !method.getJavaMember().isBridge();
+            return !method.getJavaMember().isBridge() && !method.getJavaMember().isSynthetic();
         }
     };
 
@@ -130,7 +130,7 @@ public class BeanMethods {
      * Get all methods of a given kind using a given {@link MethodListBuilder}.
      */
     private static <T, R> R getMethods(EnhancedAnnotatedType<T> type, MethodListBuilder<T, R> builder) {
-        Collection<EnhancedAnnotatedMethod<?, ? super T>> methods = filterOutBridgeMethods(builder.getAllMethods(type));
+        Collection<EnhancedAnnotatedMethod<?, ? super T>> methods = filterMethods(builder.getAllMethods(type));
         for (Class<? super T> clazz = type.getJavaClass(); clazz != null && clazz != Object.class; clazz = clazz
                 .getSuperclass()) {
             builder.levelStart(clazz);
@@ -308,19 +308,22 @@ public class BeanMethods {
     }
 
     public static <T> Collection<EnhancedAnnotatedMethod<?, ? super T>> getObserverMethods(final EnhancedAnnotatedType<T> type) {
-        return filterOutBridgeMethods(type.getEnhancedMethodsWithAnnotatedParameters(Observes.class));
+        return filterMethods(type.getEnhancedMethodsWithAnnotatedParameters(Observes.class));
     }
 
     /**
      * Oracle JDK 8 compiler (unlike prev versions) generates bridge methods which have method and parameter annotations copied from the original method.
      * However such methods should not become observers, producers, disposers, initializers and lifecycle callbacks.
      *
+     * Moreover, JDK8u60 propagates parameter annotations to the synthetic method generated for a lambda. Therefore, we should also ignore synthetic methods.
+     *
      * @param methods
-     * @return a collection view with bridge methods filtered out
+     * @return a collection view with bridge and synthetic methods filtered out
      * @see http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6695379
+     * @see https://issues.jboss.org/browse/WELD-2019
      */
-    public static <T> Collection<EnhancedAnnotatedMethod<?, ? super T>> filterOutBridgeMethods(final Collection<EnhancedAnnotatedMethod<?, ? super T>> methods) {
-        return Collections2.filter(methods, BRIDGE_METHOD_FILTER_PREDICATE);
+    public static <T> Collection<EnhancedAnnotatedMethod<?, ? super T>> filterMethods(final Collection<EnhancedAnnotatedMethod<?, ? super T>> methods) {
+        return Collections2.filter(methods, METHOD_FILTER_PREDICATE);
     }
 
     public static <T> List<Method> getInterceptorMethods(EnhancedAnnotatedType<T> type, final InterceptionType interceptionType, final boolean targetClass) {
