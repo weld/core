@@ -108,45 +108,11 @@
         <facelets.version>1.1.15</facelets.version>
         <tomcat.version>7.0.53</tomcat.version>
         <jetty.version>8.1.13.v20130916</jetty.version>
-        <!-- Override HTMLUnit version -->
-        <htmlunit.version>2.8</htmlunit.version>
         <wildfly.plugin.version>1.0.1.Final</wildfly.plugin.version>
         <glassfish.plugin.version>2.1</glassfish.plugin.version>
-
-        <!-- UEL Impl -->
         <uel.version>2.2</uel.version>
-        <!-- Testing deps -->
-        <selenium.java.client.version>1.0.1</selenium.java.client.version>
-        <ant.junit.version>1.6.2</ant.junit.version>
-        <ftest.version.discriminator />
-        <selenium.browser>*firefoxproxy</selenium.browser>
-        <selenium.browser.url>http://localhost:8080</selenium.browser.url>
-        <selenium.server.port>14444</selenium.server.port>
-        <selenium.server.host>localhost</selenium.server.host>
-        <selenium.speed>0</selenium.speed>
-        <selenium.timeout>30000</selenium.timeout>
-        <selenium.debug>false</selenium.debug>
-        <selenium.log.dir>${project.build.directory}/ftest-logs</selenium.log.dir>
-        <application.deploy.timeout>300</application.deploy.timeout>
-        <richfaces.selenium.version>1.5.1.Final</richfaces.selenium.version>
         <ftest.sources.directory>src/ftest/java</ftest.sources.directory>
         <ftest.resources.directory>src/ftest/resources</ftest.resources.directory>
-        <!-- richfaces-selenium -->
-        <browserSessionReuse>true</browserSessionReuse>
-        <context.host>localhost</context.host>
-        <context.root>http://${context.host}:8080/</context.root>
-        <context.path>/${project.build.finalName}/</context.path>
-        <context.deploy.path>${context.path}</context.deploy.path>
-        <jboss.master.configuration>${env.JBOSS_HOME}/server/all</jboss.master.configuration>
-        <deployable.location />
-        <deployable.type>war</deployable.type>
-        <method>*</method>
-        <selenium.maximize>false</selenium.maximize>
-        <selenium.timeout.ajax>15000</selenium.timeout.ajax>
-        <selenium.timeout.default>30000</selenium.timeout.default>
-        <selenium.timeout.gui>5000</selenium.timeout.gui>
-        <selenium.timeout.model>30000</selenium.timeout.model>
-
         <glassfish.home>${env.GLASSFISH_HOME}</glassfish.home>
     </properties>
 
@@ -184,12 +150,6 @@
             </dependency>
 
             <dependency>
-                <groupId>org.seleniumhq.selenium.client-drivers</groupId>
-                <artifactId>selenium-java-client-driver</artifactId>
-                <version>${selenium.java.client.version}</version>
-            </dependency>
-
-            <dependency>
                 <groupId>org.apache.tomcat</groupId>
                 <artifactId>catalina</artifactId>
                 <version>${tomcat.version}</version>
@@ -224,22 +184,6 @@
             </dependency>
 
             <dependency>
-                <groupId>org.jboss.arquillian.test</groupId>
-                <artifactId>arquillian-test-impl-base</artifactId>
-                <version>${arquillian.version}</version>
-                <classifier>tests</classifier>
-                <scope>test</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jboss.arquillian.graphene</groupId>
-                <artifactId>arquillian-graphene</artifactId>
-                <version>${arquillian.graphene.version}</version>
-                <type>pom</type>
-                <scope>test</scope>
-            </dependency>
-
-            <dependency>
                 <groupId>org.jboss.arquillian.graphene</groupId>
                 <artifactId>graphene-webdriver</artifactId>
                 <version>${arquillian.graphene.version}</version>
@@ -247,6 +191,13 @@
                 <scope>test</scope>
             </dependency>
 
+            <dependency>
+                <groupId>org.jboss.arquillian.extension</groupId>
+                <artifactId>arquillian-drone-webdriver-depchain</artifactId>
+                <version>${arquillian.drone.version}</version>
+                <type>pom</type>
+                <scope>test</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     
