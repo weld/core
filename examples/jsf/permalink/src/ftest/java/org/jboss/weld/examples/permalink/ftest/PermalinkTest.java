@@ -72,7 +72,7 @@ public class PermalinkTest {
     @Before
     public void openStartUrl() throws MalformedURLException {
         driver.navigate().to(new URL(contextPath.toString() + "home.jsf"));
-        waitModel(driver).until(element(VIEW_ENTRY_LINK).isPresent());
+        waitModel(driver).until().element(VIEW_ENTRY_LINK).is().present();
     }   
 
     @Test
@@ -104,6 +104,6 @@ public class PermalinkTest {
     }
 
     private boolean isTextOnPage(String text) {
-        return element(BODY).textContains(text).apply(driver);
+        return driver.findElement(BODY).getText().contains(text);
     }
 }

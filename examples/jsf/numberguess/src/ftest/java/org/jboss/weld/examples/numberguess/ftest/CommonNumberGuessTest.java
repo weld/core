@@ -16,20 +16,22 @@
  */
 package org.jboss.weld.examples.numberguess.ftest;
 
+import static org.jboss.arquillian.graphene.Graphene.guardHttp;
+import static org.jboss.arquillian.graphene.Graphene.waitModel;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.net.MalformedURLException;
 import java.net.URL;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.drone.api.annotation.Drone;
-import static org.jboss.arquillian.graphene.Graphene.waitModel;
-import static org.jboss.arquillian.graphene.Graphene.element;
-import static org.jboss.arquillian.graphene.Graphene.guardHttp;
+import org.jboss.arquillian.graphene.Graphene;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -72,7 +74,7 @@ public class CommonNumberGuessTest {
     @Before
     public void openStartUrl() throws MalformedURLException {
         driver.navigate().to(new URL(contextPath.toString() + "home.jsf"));
-        waitModel(driver).until(element(GUESS_FIELD).isPresent());
+        waitModel().until().element(GUESS_FIELD).is().present();
     }
 
     @After
@@ -92,9 +94,8 @@ public class CommonNumberGuessTest {
             if (i > 10) {
                 fail("Game should not be longer than 10 guesses");
             }
-
-            assertTrue("Expected smallest number on page", element(GUESS_SMALLEST).isPresent().apply(driver));
-            assertTrue("Expected biggest number on page", element(GUESS_BIGGEST).isPresent().apply(driver));
+            assertTrue("Expected smallest number on page", driver.findElement(GUESS_SMALLEST).isDisplayed());
+            assertTrue("Expected biggest number on page", driver.findElement(GUESS_BIGGEST).isDisplayed());
 
             min = Integer.parseInt(driver.findElement(GUESS_SMALLEST).getText());
             max = Integer.parseInt(driver.findElement(GUESS_BIGGEST).getText());
