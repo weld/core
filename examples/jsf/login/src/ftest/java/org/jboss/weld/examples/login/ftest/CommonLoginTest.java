@@ -16,23 +16,28 @@
  */
 package org.jboss.weld.examples.login.ftest;
 
+import static org.jboss.arquillian.graphene.Graphene.guardHttp;
+import static org.jboss.arquillian.graphene.Graphene.waitModel;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.net.MalformedURLException;
 import java.net.URL;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.drone.api.annotation.Drone;
-import static org.jboss.arquillian.graphene.Graphene.element;
-import static org.jboss.arquillian.graphene.Graphene.waitModel;
-import static org.jboss.arquillian.graphene.Graphene.guardHttp;
+import org.jboss.arquillian.graphene.condition.element.WebElementConditionFactory;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
 
 /**
  * Tests login examples in Weld
@@ -52,10 +57,13 @@ public class CommonLoginTest {
     private static final By PASSWORD_FIELD = By.id("loginForm:password");
     private static final By LOGIN_BUTTON = By.id("loginForm:login");
     private static final By LOGOUT_BUTTON = By.id("loginForm:logout");
-    
+
     @Drone
     WebDriver driver;
-    
+
+    @FindBy(id = "loginForm:logout")
+    WebElement logoutElement;
+
     @ArquillianResource
     private URL contextPath;
 
@@ -72,8 +80,8 @@ public class CommonLoginTest {
 
     @Test
     public void loginTest() {
-        waitModel(driver).until(element(USERNAME_FIELD).isPresent());
-        assertFalse("User should not be logged in!", element(LOGOUT_BUTTON).isPresent().apply(driver));
+        waitModel(driver).until().element(USERNAME_FIELD).is().present();
+        assertFalse("User should not be logged in!", new WebElementConditionFactory(logoutElement).isPresent().apply(driver));
 
         driver.findElement(USERNAME_FIELD).clear();
         driver.findElement(USERNAME_FIELD).sendKeys("demo");
@@ -82,13 +90,13 @@ public class CommonLoginTest {
         driver.findElement(PASSWORD_FIELD).sendKeys("demo");
 
         guardHttp(driver.findElement(LOGIN_BUTTON)).click();
-        assertTrue("User should be logged in!", element(LOGGED_IN).isPresent().apply(driver));
+        assertTrue("User should be logged in!", driver.findElement(LOGGED_IN).isDisplayed());
     }
 
     @Test
     public void logoutTest() {
-        waitModel(driver).until(element(USERNAME_FIELD).isPresent());
-        assertFalse("User should not be logged in!", element(LOGOUT_BUTTON).isPresent().apply(driver));
+        waitModel(driver).until().element(USERNAME_FIELD).is().present();
+        assertFalse("User should not be logged in!", new WebElementConditionFactory(logoutElement).isPresent().apply(driver));
 
         driver.findElement(USERNAME_FIELD).clear();
         driver.findElement(USERNAME_FIELD).sendKeys("demo");
@@ -97,9 +105,9 @@ public class CommonLoginTest {
         driver.findElement(PASSWORD_FIELD).sendKeys("demo");
 
         guardHttp(driver.findElement(LOGIN_BUTTON)).click();
-        assertTrue("User should be logged in!", element(LOGGED_IN).isPresent().apply(driver));
+        assertTrue("User should be logged in!", driver.findElement(LOGGED_IN).isDisplayed());
 
         guardHttp(driver.findElement(LOGOUT_BUTTON)).click();
-        assertTrue("User should not be logged in!", element(LOGGED_OUT).isPresent().apply(driver));
+        assertTrue("User should not be logged in!", driver.findElement(LOGGED_OUT).isDisplayed());
     }
 }

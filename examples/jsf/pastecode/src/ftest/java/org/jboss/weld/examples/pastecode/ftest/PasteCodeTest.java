@@ -24,8 +24,9 @@ import java.net.URL;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.drone.api.annotation.Drone;
-import static org.jboss.arquillian.graphene.Graphene.element;
 import static org.jboss.arquillian.graphene.Graphene.guardHttp;
+
+import org.jboss.arquillian.graphene.condition.element.WebElementConditionFactory;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.junit.InSequence;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -36,6 +37,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.Select;
 
 /**
@@ -67,10 +70,6 @@ public class PasteCodeTest {
     protected By NAME_INPUT = By.xpath("//input[contains(@id,'user')]");
     //resulting page after new post submitting
     protected By DOWNLOAD_LINK = By.xpath("//a[contains(text(),'DOWNLOAD')]");
-    protected By PUBLIC_TESTER_LINK = By.xpath("//div[contains(@class,'recentPaste')]/a[contains(text(),'PublicTester')]");
-    protected By PRIVATE_TESTER_LINK = By.xpath("//div[contains(@class,'recentPaste')]/a[contains(text(),'PrivateTester')]");
-    //TODO: change Plain text to JavaScript when it's possible to choose it during posting of code-fragment
-    protected By JS_TEXT = By.xpath("//span[contains(@class,'recentPasteLang')][contains(text(),'JavaScript')]");
     //recent posts test elements
     protected By CRAZYMAN_LINK = By.xpath("//a[contains(text(),'crazyman')][contains(@href,'24')]");
     //history page elements
@@ -78,13 +77,27 @@ public class PasteCodeTest {
     protected By DATE_SEARCH_INPUT = By.xpath("//input[contains(@name,'pasteDate')]");
     protected By CODE_SEARCH_INPUT = By.xpath("//textarea[contains(@name,'code')]");
     protected By SEARCH_BUTTON = By.xpath("//input[contains(@src,'img/search.png')]");
-    protected By ACTIVE_FIRST_PAGE_LINK = By.xpath("//span[contains(@class,'currentPage')][contains(text(),'1')]");
     protected By SECOND_PAGE_LINK = By.xpath("//a[contains(@class,'pagination')][contains(text(),'2')]");
     protected By THIRD_PAGE_LINK = By.xpath("//a[contains(@class,'pagination')][contains(text(),'3')]");
     protected By BODY = By.tagName("body");
     
     @Drone
     WebDriver driver;
+    
+    @FindBy(linkText = "DOWNLOAD")
+    WebElement downloadLink;
+
+    @FindBy(xpath = "//span[contains(@class,'recentPasteLang')][contains(text(),'JavaScript')]")
+    WebElement jsText;
+
+    @FindBy(xpath = "//div[contains(@class,'recentPaste')]/a[contains(text(),'PublicTester')]")
+    WebElement publicTesterLink;
+
+    @FindBy(xpath = "//div[contains(@class,'recentPaste')]/a[contains(text(),'PrivateTester')")
+    WebElement privateTesterLink;
+
+    @FindBy(xpath = "//span[contains(@class,'currentPage')][contains(text(),'1')]")
+    WebElement activeFirstPageLink;
     
     @ArquillianResource
     private URL contextPath;
@@ -126,12 +139,12 @@ public class PasteCodeTest {
 
         assertTrue("A page should contain text 'Posted by PublicTester just now'", isTextOnPage("Posted by PublicTester just now"));
         assertTrue("A page should contain pasted text", isTextOnPage(CODE_FRAGMENT_PART));
-        assertTrue("A page should contain element 'DOWNLOAD'", element(DOWNLOAD_LINK).isPresent().apply(driver));
+        assertTrue("A page should contain element 'DOWNLOAD'", new WebElementConditionFactory(downloadLink).isPresent().apply(driver));
         
         assertTrue("It should be able to download file from database", isDownloadWorking(driver, DOWNLOAD_LINK, CODE_FRAGMENT_PART));
 
-        assertTrue("A page should contain element 'Tester'", element(PUBLIC_TESTER_LINK).isPresent().apply(driver));
-        assertTrue("A page should contain element 'JavaScript'", element(JS_TEXT).isPresent().apply(driver));
+        assertTrue("A page should contain element 'Tester'", new WebElementConditionFactory(publicTesterLink).isPresent().apply(driver));
+        assertTrue("A page should contain element 'JavaScript'", new WebElementConditionFactory(jsText).isPresent().apply(driver));
     }
 
     @Test
@@ -151,8 +164,8 @@ public class PasteCodeTest {
         assertTrue("Location is not correct", isLocationCorrect(driver.getCurrentUrl(), true));
         assertTrue("A page should contain text 'Posted by PrivateTester just now'", isTextOnPage("Posted by PrivateTester just now"));
         assertTrue("A page should contain pasted text", isTextOnPage(CODE_FRAGMENT_PART));
-        assertTrue("A page should contain element 'DOWNLOAD'", element(DOWNLOAD_LINK).isPresent().apply(driver));
-        assertFalse("A page shouldn't contain element 'PrivateTester'", element(PRIVATE_TESTER_LINK).isPresent().apply(driver));
+        assertTrue("A page should contain element 'DOWNLOAD'", new WebElementConditionFactory(downloadLink).isPresent().apply(driver));
+        assertFalse("A page shouldn't contain element 'PrivateTester'", new WebElementConditionFactory(privateTesterLink).isPresent().apply(driver));
     }
 
     @Test
@@ -186,7 +199,7 @@ public class PasteCodeTest {
         assertTrue("A page should contain 'Posted by graham ...'", isTextOnPage("Posted by graham on 3 Feb 2009"));
         assertTrue("A page should contain 'Language: JavaScript'", isTextOnPage("Language: JavaScript"));
         assertTrue("A page should contain the code fragment found", isTextOnPage("var e = document.ge"));
-        assertFalse(element(ACTIVE_FIRST_PAGE_LINK).isPresent().apply(driver)); //assert that only one record was found
+        assertFalse(new WebElementConditionFactory(activeFirstPageLink).isPresent().apply(driver)); //assert that only one record was found
     }
 
     @Test
@@ -262,6 +275,6 @@ public class PasteCodeTest {
     protected String CODE_FRAGMENT_PART = CODE_FRAGMENT.substring(0, 30);
 
     private boolean isTextOnPage(String text) {
-        return element(BODY).textContains(text).apply(driver);
+        return driver.findElement(BODY).getText().contains(text);
     }
 }

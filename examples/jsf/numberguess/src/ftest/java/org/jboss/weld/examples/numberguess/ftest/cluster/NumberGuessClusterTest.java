@@ -186,9 +186,9 @@ public class NumberGuessClusterTest {
         else {
             nextState.setPreviousGuess(gameState.getGuess());
             assertEquals("Remaining guesses dosn't match", gameState.getRemainingGuesses() - 1, nextState.getRemainingGuesses());
-
-            boolean higher = Graphene.element(By.tagName("body")).textContains(HIGHER_MSG).apply(driver);
-            boolean lower = Graphene.element(By.tagName("body")).textContains(LOWER_MSG).apply(driver);
+            
+            boolean higher = driver.findElement(By.tagName("body")).getText().contains(HIGHER_MSG);
+            boolean lower = driver.findElement(By.tagName("body")).getText().contains(LOWER_MSG);
             
             assertEquals(lower, (nextState.getLargest() < gameState.getLargest()));
             if (gameState.getGuess() != 0) {

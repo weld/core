@@ -5,7 +5,7 @@
 
     <engine>
         <!-- Uncomment to export test archives for debug purposes -->
-        <!-- property name="deploymentExportPath">target/</property -->
+        <!--<property name="deploymentExportPath">target/</property>-->
     </engine>
 
     <!--defaultProtocol type="Servlet 3.0" /-->
