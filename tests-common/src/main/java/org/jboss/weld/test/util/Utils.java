@@ -58,7 +58,6 @@ public class Utils {
      * @param annotationTypes The annotations to match
      * @return True if match, false otherwise
      */
-    @SafeVarargs
     public static boolean annotationSetMatches(Set<? extends Annotation> annotations, Class<? extends Annotation>... annotationTypes) {
         List<Class<? extends Annotation>> annotationTypeList = new ArrayList<Class<? extends Annotation>>();
         annotationTypeList.addAll(Arrays.asList(annotationTypes));
