@@ -61,4 +61,27 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <profiles>
+       <profile>
+          <id>jdk6</id>
+          <activation>
+             <activeByDefault>false</activeByDefault>
+             <jdk>1.6</jdk>
+          </activation>
+          <build>
+             <plugins>
+                <plugin>
+                   <groupId>org.apache.maven.plugins</groupId>
+                   <artifactId>maven-surefire-plugin</artifactId>
+                   <configuration>
+                      <!-- Skip the tests - JSF 2.2 is not JDK6-compatible -->
+                      <skipTests>true</skipTests>
+                   </configuration>
+                </plugin>
+             </plugins>
+          </build>
+       </profile>
+    </profiles>
+
 </project>
