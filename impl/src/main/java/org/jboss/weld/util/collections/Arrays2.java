@@ -45,7 +45,6 @@ public class Arrays2 {
         return containsAll(array, values) && array.length == values.length;
     }
 
-    @SafeVarargs
     public static <T> Set<T> asSet(T... array) {
         Set<T> result = new HashSet<T>(array.length);
         Collections.addAll(result, array);

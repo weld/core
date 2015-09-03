@@ -23,13 +23,13 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Map;
-import java.util.Objects;
 
 import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.manager.BeanManagerImpl;
 
+import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableMap;
 
 /**
@@ -58,7 +58,7 @@ class VirtualMethodInjectionPoint<T, X> extends StaticMethodInjectionPoint<T, X>
             // the same method may be written to the map twice, but that is ok
             // lookupMethod is very slow
             Method delegate = getAnnotated().getJavaMember();
-            if (isPrivate(delegate) || (isPackagePrivate(delegate.getModifiers()) && !Objects.equals(delegate.getDeclaringClass().getPackage(), receiver.getClass().getPackage()))) {
+            if (isPrivate(delegate) || (isPackagePrivate(delegate.getModifiers()) && !Objects.equal(delegate.getDeclaringClass().getPackage(), receiver.getClass().getPackage()))) {
                 method = accessibleMethod; // overriding does not apply to private methods and package-private methods where the subclass is in a different package
             } else {
                 method = SecurityActions.lookupMethod(receiver.getClass(), delegate.getName(), delegate.getParameterTypes());
