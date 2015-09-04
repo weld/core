@@ -984,11 +984,9 @@ final class JsonObjects {
                     // Omit javax.enterprise.inject.Any
                     continue;
                 }
-                // Remove package from @Any
-                builder.add("@" + qualifier.annotationType().getSimpleName());
+                builder.add(simplifiedAnnotation(qualifier));
             } else if (Default.class.equals(qualifier.annotationType())) {
-                // Remove package from @Default
-                builder.add("@" + qualifier.annotationType().getSimpleName());
+                builder.add(simplifiedAnnotation(qualifier));
             } else {
                 builder.add(qualifier.toString());
             }
@@ -1069,6 +1067,10 @@ final class JsonObjects {
 
     private static String simplifiedScope(Class<? extends Annotation> scope) {
         return "@" + (Components.isBuiltinScope(scope) ? scope.getSimpleName() : scope.getName());
+    }
+
+    private static String simplifiedAnnotation(Annotation annotation) {
+        return "@" + annotation.annotationType().getSimpleName();
     }
 
     private static JsonObjectBuilder decorateProbeComponent(Class<?> clazz, JsonObjectBuilder builder) {
