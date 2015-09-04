@@ -24,6 +24,7 @@ import org.jboss.logging.annotations.LogMessage;
 import org.jboss.logging.annotations.Message;
 import org.jboss.logging.annotations.Message.Format;
 import org.jboss.logging.annotations.MessageLogger;
+import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.exceptions.IllegalStateException;
 
 /**
@@ -93,5 +94,8 @@ public interface ProbeLogger extends BasicLogger {
 
     @Message(id = 15, value = "Cannot unregister a Probe MBean {0} for: {1}", format = Format.MESSAGE_FORMAT)
     IllegalStateException unableToUnregisterMBean(Object mbean, Object context, @Cause Throwable cause);
+
+    @Message(id = 16, value = "Unable to parse query filters: {0}", format = Format.MESSAGE_FORMAT)
+    IllegalArgumentException unableToParseQueryFilter(Object filters);
 
 }
