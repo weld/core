@@ -1701,7 +1701,7 @@ function appendToFilters(filters, key, value) {
     if (filters.length > 0) {
         filters += ' ';
     }
-    filters += key + ':' + value;
+    filters += encodeURIComponent(key + ':' + '"' + value + '"');
     return filters;
 }
 

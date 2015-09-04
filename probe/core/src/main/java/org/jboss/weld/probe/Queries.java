@@ -34,10 +34,14 @@ import static org.jboss.weld.probe.Strings.SEARCH;
 import static org.jboss.weld.probe.Strings.STEREOTYPES;
 import static org.jboss.weld.probe.Strings.TX_PHASE;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.enterprise.event.Reception;
 import javax.enterprise.event.TransactionPhase;
@@ -55,7 +59,6 @@ import org.jboss.weld.probe.Components.BeanKind;
  */
 final class Queries {
 
-    // TODO change to higher value, low value for dev purpose only
     static final int DEFAULT_PAGE_SIZE = 50;
 
     private Queries() {
@@ -157,34 +160,82 @@ final class Queries {
      */
     abstract static class Filters<T> {
 
-        private static final String SEPARATOR = ":";
+        private static final char PAIR_SEPARATOR = ' ';
+
+        private static final char KEY_VALUE_SEPARATOR = ':';
+
+        private static final char VALUE_QUOTE = '"';
 
         protected static final String FILTER_ADDITIONAL_BDAS_MARKER = "probe-filterAdditionalBdas";
 
         protected final Probe probe;
+
+        static Map<String, String> parseFilters(String filters) {
+
+            List<String> pairs = new ArrayList<String>();
+            boolean inSeparator = false;
+            boolean inValueLiteral = false;
+            StringBuilder buffer = new StringBuilder();
+
+            for (int i = 0; i < filters.length(); i++) {
+                if (filters.charAt(i) == PAIR_SEPARATOR) {
+                    if (!inSeparator) {
+                        if (!inValueLiteral) {
+                            if (buffer.length() > 0) {
+                                pairs.add(buffer.toString());
+                                buffer = new StringBuilder();
+                            }
+                            inSeparator = true;
+                        } else {
+                            buffer.append(filters.charAt(i));
+                        }
+                    }
+                } else {
+                    if (filters.charAt(i) == VALUE_QUOTE && (i == 0 || filters.charAt(i - 1) == KEY_VALUE_SEPARATOR || i + 1 >= filters.length()
+                            || filters.charAt(i + 1) == PAIR_SEPARATOR)) {
+                        inValueLiteral = !inValueLiteral;
+                    }
+                    inSeparator = false;
+                    buffer.append(filters.charAt(i));
+                }
+            }
+
+            if (buffer.length() > 0) {
+                if (inValueLiteral) {
+                    throw ProbeLogger.LOG.unableToParseQueryFilter(filters);
+                }
+                pairs.add(buffer.toString());
+            }
+
+            Map<String, String> map = new HashMap<>();
+            for (String pair : pairs) {
+                if (pair.length() == 0) {
+                    continue;
+                }
+                int separator = pair.indexOf(KEY_VALUE_SEPARATOR);
+                if (separator == -1) {
+                    continue;
+                }
+                String key = pair.substring(0, separator);
+                String value = pair.substring(separator + 1, pair.length());
+                map.put(key, value.substring(1, value.length() - 1));
+            }
+            return map;
+        }
 
         public Filters(Probe probe) {
             this.probe = probe;
         }
 
         /**
-         * Input is a blank-separated list of key-value pairs. Keys and values are separated by {@value #SEPARATOR}. E.g.
-         * <code>beanClass:name scope:myScope</code>.
+         * Input is a blank-separated list of key-value pairs. Keys and values are separated by {@value #KEY_VALUE_SEPARATOR}. Values must be enclosed in
+         * quotation marks. E.g. <code>beanClass:"com.foo.Name" scope:"@MyScoped"</code>.
          *
          * @param filters
          */
         void initialize(String filters) {
-            String[] tokens = filters.trim().split(" ");
-            for (String token : tokens) {
-                if (token.length() == 0) {
-                    continue;
-                }
-                String[] parts = token.split(SEPARATOR);
-                if (parts.length != 2) {
-                    // Just ignore invalid tokens
-                    continue;
-                }
-                processFilter(parts[0], parts[1]);
+            for (Entry<String, String> entry : parseFilters(filters).entrySet()) {
+                processFilter(entry.getKey(), entry.getValue());
             }
         }
 
@@ -262,7 +313,12 @@ final class Queries {
          * @return true if the value's {@link Object#toString()} contains the filter
          */
         boolean containsIgnoreCase(String filter, Object value) {
-            return value.toString().toLowerCase().contains(filter.toLowerCase());
+            return value.toString().toLowerCase().contains(prepareFilter(filter).toLowerCase());
+        }
+
+        private String prepareFilter(String filter) {
+            // Expect simplified annotation representation, e.g. @Dependent
+            return filter.startsWith("@") ? filter.substring(1, filter.length()) : filter;
         }
 
     }
@@ -446,7 +502,7 @@ final class Queries {
 
         @Override
         public String toString() {
-            return String.format("InvocationsFilters [beanClass=%s, methodName=%s, search=%s]", beanClass, methodName, search);
+            return String.format("InvocationsFilters [beanClass=%s, methodName=%s, search=%s, description=%s]", beanClass, methodName, search, description);
         }
 
     }
