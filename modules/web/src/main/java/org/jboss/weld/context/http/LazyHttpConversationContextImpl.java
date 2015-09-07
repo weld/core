@@ -41,28 +41,24 @@ import org.jboss.weld.servlet.ConversationContextActivator;
  */
 public class LazyHttpConversationContextImpl extends HttpConversationContextImpl {
 
-    private final ThreadLocal<Consumer<HttpServletRequest>> initializationCallback;
+    private final ThreadLocal<Consumer<HttpServletRequest>> transientConversationInitializationCallback;
 
     private final ThreadLocal<Object> initialized;
 
     public LazyHttpConversationContextImpl(String contextId, BeanIdentifierIndex beanIdentifierIndex) {
         super(contextId, beanIdentifierIndex);
         this.initialized = new ThreadLocal<Object>();
-        this.initializationCallback = new ThreadLocal<>();
+        this.transientConversationInitializationCallback = new ThreadLocal<>();
     }
 
     /**
      *
-     * @param initializationCallback This callback will be executed during initialization
+     * @param transientConversationInitializationCallback This callback will be executed during initialization
      */
-    public void activate(Consumer<HttpServletRequest> initializationCallback) {
+    public void activateLazily(Consumer<HttpServletRequest> transientConversationInitializationCallback) {
         activate();
-        if (initializationCallback != null) {
-            this.initializationCallback.set(initializationCallback);
-        } else {
-            // For the case the deactivation was not performed properly
-            this.initializationCallback.set(null);
-        }
+        // Always set the callback - the deactivation might not be performed properly
+        this.transientConversationInitializationCallback.set(transientConversationInitializationCallback);
     }
 
     @Override
@@ -106,7 +102,7 @@ public class LazyHttpConversationContextImpl extends HttpConversationContextImpl
                 removeState();
             }
         } finally {
-            this.initializationCallback.set(null);
+            this.transientConversationInitializationCallback.set(null);
         }
     }
 
@@ -125,7 +121,7 @@ public class LazyHttpConversationContextImpl extends HttpConversationContextImpl
             String cid = ConversationContextActivator.determineConversationId(request, getParameterName());
             initialize(cid);
             if (cid == null) { // transient conversation
-                Consumer<HttpServletRequest> callback = initializationCallback.get();
+                Consumer<HttpServletRequest> callback = transientConversationInitializationCallback.get();
                 if (callback != null) {
                     callback.accept(request);
                 }
