@@ -108,7 +108,6 @@ Probe.ApplicationRoute = Ember.Route
                             }
                         });
                         controller.set('configuration', configuration);
-                        data.initTime = moment(data.initTs).fromNow();
                         var qualifierStart = data.version.indexOf('(');
                         data.versionShort = qualifierStart != -1 ? data.version
                             .substring(0, qualifierStart) : data.version;
@@ -564,25 +563,44 @@ Probe.OverviewRoute = Ember.Route.extend({
 
 // CONTROLLERS
 
-Probe.ApplicationController = Ember.ObjectController.extend({
-    restUrlBase : '${rest.url.base}',
-    beanKinds : [ 'MANAGED', 'SESSION', 'PRODUCER_METHOD', 'PRODUCER_FIELD',
-            'RESOURCE', 'SYNTHETIC', 'INTERCEPTOR', 'DECORATOR', 'EXTENSION',
-            'BUILT_IN' ],
-    beanKindsShort : [ 'MB', 'SB', 'PM', 'PF', 'RE', 'SY', 'IN', 'DE', 'EX',
-            'BI' ],
-    observerDeclaringBeanKinds : [ 'MANAGED', 'SESSION', 'EXTENSION',
-            'BUILT_IN' ],
-    eventKinds : [ 'APPLICATION', 'CONTAINER' ],
-    receptions : [ 'ALWAYS', 'IF_EXISTS' ],
-    txPhases : [ 'IN_PROGRESS', 'BEFORE_COMPLETION', 'AFTER_COMPLETION',
-            'AFTER_FAILURE', 'AFTER_SUCCESS' ],
-    additionalBdaSuffix : '.additionalClasses',
-    markerFilterAddBdas : "probe-filterAdditionalBdas",
-    bdas : null,
-    filterBdas : null,
-    configuration : null,
-});
+Probe.ApplicationController = Ember.ObjectController
+    .extend({
+        init : function() {
+            this._super();
+            this.startWatchingTime();
+        },
+        restUrlBase : '${rest.url.base}',
+        beanKinds : [ 'MANAGED', 'SESSION', 'PRODUCER_METHOD',
+                'PRODUCER_FIELD', 'RESOURCE', 'SYNTHETIC', 'INTERCEPTOR',
+                'DECORATOR', 'EXTENSION', 'BUILT_IN' ],
+        beanKindsShort : [ 'MB', 'SB', 'PM', 'PF', 'RE', 'SY', 'IN', 'DE',
+                'EX', 'BI' ],
+        observerDeclaringBeanKinds : [ 'MANAGED', 'SESSION', 'EXTENSION',
+                'BUILT_IN' ],
+        eventKinds : [ 'APPLICATION', 'CONTAINER' ],
+        receptions : [ 'ALWAYS', 'IF_EXISTS' ],
+        txPhases : [ 'IN_PROGRESS', 'BEFORE_COMPLETION', 'AFTER_COMPLETION',
+                'AFTER_FAILURE', 'AFTER_SUCCESS' ],
+        additionalBdaSuffix : '.additionalClasses',
+        markerFilterAddBdas : "probe-filterAdditionalBdas",
+        bdas : null,
+        filterBdas : null,
+        configuration : null,
+        initTime : function() {
+            return moment(this.get("content").initTs).format(
+                'YYYY-MM-DD HH:mm:ss');
+        }.property(),
+        initTimeFromNow : function() {
+            return moment(this.get("content").initTs).fromNow();
+        }.property("initTime"),
+        startWatchingTime : function() {
+            var self = this;
+            Ember.run.later(this, function() {
+                self.notifyPropertyChange("initTime");
+                self.startWatchingTime();
+            }, 5 * 1000 * 60);
+        }
+    });
 
 Probe.BeanArchivesController = Ember.ArrayController.extend({
     needs : [ 'application' ],
