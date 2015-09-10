@@ -96,9 +96,7 @@ public class LazyHttpConversationContextImpl extends HttpConversationContextImpl
                     this.initialized.set(null);
                 }
             } else {
-                // Only deactivate the context
-                super.setActive(false);
-                // Remove state threadlocal
+                // Only deactivate the context, i.e. remove state threadlocal
                 removeState();
             }
         } finally {

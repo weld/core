@@ -60,6 +60,10 @@ public abstract class AbstractManagedContext extends AbstractContext implements 
         removeState();
     }
 
+    /**
+     * The managed state should be always removed during deactivation. Note that there are some special cases where the context is not deactivated through
+     * {@link #deactivate()} method. E.g. {@link AbstractConversationContext#destroy(Object)}.
+     */
     protected void removeState() {
         ContextLogger.LOG.tracev("State thread-local removed: {0}", this);
         state.remove();
