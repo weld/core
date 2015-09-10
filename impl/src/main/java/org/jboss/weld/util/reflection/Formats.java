@@ -74,6 +74,9 @@ public class Formats {
     private static final String INIT_METHOD_NAME = "<init>";
 
     private static final String BUILD_PROPERTIES_FILE = "weld-build.properties";
+    private static final String BUILD_PROPERTIES_VERSION = "version";
+    private static final String BUILD_PROPERTIES_TIMESTAMP = "timestamp";
+
 
     private Formats() {
     }
@@ -485,32 +488,31 @@ public class Formats {
      * @return the formatted version
      */
     public static String version(@Deprecated Package pkg) {
-
         String version = null;
         String timestamp = null;
-
         // First try the weld-build.properties file
-        try (InputStream in = getBuildPropertiesResource()) {
-            if (in != null) {
-                Properties buildProperties = new Properties();
-                buildProperties.load(in);
-                version = buildProperties.getProperty("version");
-                timestamp = buildProperties.getProperty("timestamp");
-            }
-        } catch (IOException e) {
-            // No-op
+        Properties buildProperties = getBuildProperties();
+        if (buildProperties != null) {
+            version = buildProperties.getProperty(BUILD_PROPERTIES_VERSION);
+            timestamp = buildProperties.getProperty(BUILD_PROPERTIES_TIMESTAMP);
         }
-
         if (version == null) {
             // If needed use the manifest info
-            Package pack = WeldClassLoaderResourceLoader.class.getPackage();
-            if (pack == null) {
-                throw new IllegalArgumentException("Package can not be null");
-            }
-            version = pack.getSpecificationVersion();
-            timestamp = pack.getImplementationVersion();
+            version = getManifestImplementationVersion();
         }
         return version(version, timestamp);
+    }
+
+    /**
+     *
+     * @return a simple version string, i.e. no formatting is applied
+     */
+    public static String getSimpleVersion() {
+        Properties buildProperties = getBuildProperties();
+        if(buildProperties != null) {
+            buildProperties.getProperty(BUILD_PROPERTIES_VERSION);
+        }
+        return getManifestImplementationVersion();
     }
 
     @edu.umd.cs.findbugs.annotations.SuppressWarnings(value = "NP_NULL_ON_SOME_PATH_MIGHT_BE_INFEASIBLE", justification = "False positive.")
@@ -640,6 +642,26 @@ public class Formats {
         } else {
             return "[unknown]";
         }
+    }
+
+    private static Properties getBuildProperties() {
+        Properties buildProperties = null;
+        try (InputStream in = getBuildPropertiesResource()) {
+            if (in != null) {
+                buildProperties = new Properties();
+                buildProperties.load(in);
+            }
+        } catch (IOException ignored) {
+        }
+        return buildProperties;
+    }
+
+    private static String getManifestImplementationVersion() {
+        Package pack = WeldClassLoaderResourceLoader.class.getPackage();
+        if (pack == null) {
+            throw new IllegalArgumentException("Package can not be null");
+        }
+        return pack.getImplementationVersion();
     }
 
     private static InputStream getBuildPropertiesResource() {
