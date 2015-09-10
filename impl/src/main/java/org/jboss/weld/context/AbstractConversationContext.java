@@ -279,9 +279,7 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
                 setBeanStore(null);
                 // Clean up any expired/ended conversations
                 cleanUpConversationMap();
-                // Deactivate the context
-                super.setActive(false);
-                // Remove state threadlocal
+                // Deactivate the context, i.e. remove state threadlocal
                 removeState();
             }
         } else {
