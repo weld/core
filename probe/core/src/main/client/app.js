@@ -840,14 +840,6 @@ Ember.Handlebars.registerBoundHelper('at', function() {
     return '@';
 });
 
-Ember.Handlebars.registerBoundHelper('substr', function(text, limit) {
-    if (text.length > limit) {
-        return abbreviate(text, limit);
-    } else {
-        return text;
-    }
-});
-
 Ember.Handlebars.registerBoundHelper('eachLiAbbr', function(types, limit,
     options) {
     var ret = '<ul class="plain-list no-margin">';
@@ -2056,12 +2048,6 @@ function getRootNode(invocation, parent) {
     node.parent = null;
     node.children = [ transformInvocation(invocation, parent) ];
     return node;
-}
-
-function abbreviate(text, limit) {
-    var start = text.length - limit + 3;
-    var end = text.length;
-    return '...' + text.substring(start, end);
 }
 
 function isAdditionalBda(additionalBdaSuffix, bdaId) {

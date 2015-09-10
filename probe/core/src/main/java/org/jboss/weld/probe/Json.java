@@ -18,6 +18,7 @@ package org.jboss.weld.probe;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -42,8 +43,24 @@ final class Json {
     private static final String NAME_VAL_SEPARATOR = ":";
     private static final String ENTRY_SEPARATOR = ",";
 
+    private static final int CONTROL_CHAR_START = 0;
+    private static final int CONTROL_CHAR_END = 0x1f;
+
+    private static final Map<Character, String> REPLACEMENTS;
+
+    static {
+        REPLACEMENTS = new HashMap<>();
+        // control characters
+        for (int i = CONTROL_CHAR_START; i <= CONTROL_CHAR_END; i++) {
+            REPLACEMENTS.put((char) i, String.format("\\u%04x", i));
+        }
+        // quotation mark
+        REPLACEMENTS.put('"', "\\\"");
+        // reverse solidus
+        REPLACEMENTS.put('\\', "\\\\");
+    }
+
     private static final char CHAR_QUOTATION_MARK = '"';
-    private static final char CHAR_REVERSE_SOLIDUS = '\\';
 
     private Json() {
     }
@@ -204,7 +221,7 @@ final class Json {
             int idx = 0;
             for (ListIterator<Object> iterator = values.listIterator(); iterator.hasNext();) {
                 Object value = iterator.next();
-                if(isIgnored(value)) {
+                if (isIgnored(value)) {
                     continue;
                 }
                 if (++idx > 1) {
@@ -287,7 +304,7 @@ final class Json {
             int idx = 0;
             for (Iterator<Entry<String, Object>> iterator = properties.entrySet().iterator(); iterator.hasNext();) {
                 Entry<String, Object> entry = iterator.next();
-                if(isIgnored(entry.getValue())) {
+                if (isIgnored(entry.getValue())) {
                     continue;
                 }
                 if (++idx > 1) {
@@ -329,7 +346,7 @@ final class Json {
     }
 
     /**
-     * TODO control characters (U+0000 through U+001F)
+     * Escape quotation mark, reverse solidus and control characters (U+0000 through U+001F).
      *
      * @param value
      * @return escaped value
@@ -339,15 +356,11 @@ final class Json {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < value.length(); i++) {
             char c = value.charAt(i);
-            switch (c) {
-                case CHAR_REVERSE_SOLIDUS:
-                case CHAR_QUOTATION_MARK:
-                    builder.append(CHAR_REVERSE_SOLIDUS);
-                    builder.append(c);
-                    break;
-                default:
-                    builder.append(c);
-                    break;
+            String replacement = REPLACEMENTS.get(c);
+            if (replacement != null) {
+                builder.append(replacement);
+            } else {
+                builder.append(c);
             }
         }
         return builder.toString();
