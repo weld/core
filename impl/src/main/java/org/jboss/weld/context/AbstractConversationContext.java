@@ -328,38 +328,48 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
     public boolean destroy(S session) {
         // the context may be active
         // if it is, we need to re-attach the bean store once the other conversations are destroyed
-        BoundBeanStore beanStore = getBeanStore();
+        final BoundBeanStore beanStore = getBeanStore();
         final boolean active = isActive();
         if (beanStore != null) {
             beanStore.detach();
         }
-
         try {
-            if (getSessionAttributeFromSession(session, CONVERSATIONS_ATTRIBUTE_NAME) instanceof Map<?, ?>) {
-                // if there are conversations to destroy
-                Map<String, ManagedConversation> conversations = cast(getSessionAttributeFromSession(session, CONVERSATIONS_ATTRIBUTE_NAME));
-                // if the context is not active, let's activate it
-                setActive(true);
-
-                for (ManagedConversation conversation : conversations.values()) {
-                    String id = conversation.getId();
-                    if (!conversation.isTransient()) {
-                        // the currently associated conversation will be destroyed at the end of the current request
-                        conversation.end();
-                    }
-                    if (!isCurrentConversation(id)) {
-                        // a conversation that is not currently associated is destroyed immediately
-                        destroyConversation(session, id);
+            Object conversationMap = getSessionAttributeFromSession(session, CONVERSATIONS_ATTRIBUTE_NAME);
+            if (conversationMap instanceof Map) {
+                Map<String, ManagedConversation> conversations = cast(conversationMap);
+                synchronized (conversations) {
+                    if (!conversations.isEmpty()) {
+                        // There are some conversations to destroy
+                        setActive(true);
+                        if (beanStore == null) {
+                            // There is no request associated
+                            for (ManagedConversation conversation : conversations.values()) {
+                                destroyConversation(session, conversation.getId());
+                            }
+                        } else {
+                            for (ManagedConversation conversation : conversations.values()) {
+                                String id = conversation.getId();
+                                if (!conversation.isTransient()) {
+                                    // the currently associated conversation will be destroyed at the end of the current request
+                                    conversation.end();
+                                }
+                                if (!isCurrentConversation(id)) {
+                                    // a conversation that is not currently associated is destroyed immediately
+                                    destroyConversation(session, id);
+                                }
+                            }
+                        }
                     }
                 }
             }
             return true;
         } finally {
-            setBeanStore(beanStore);
             setActive(active);
             if (beanStore != null) {
-                getBeanStore().attach();
-            } else if (!isActive()){
+                setBeanStore(beanStore);
+                beanStore.attach();
+            } else if (!active) {
+                removeState();
                 cleanup();
             }
         }
