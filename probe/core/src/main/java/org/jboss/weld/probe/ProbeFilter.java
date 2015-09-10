@@ -36,7 +36,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
 import org.jboss.weld.bean.builtin.BeanManagerProxy;
-import org.jboss.weld.bootstrap.WeldBootstrap;
 import org.jboss.weld.config.ConfigurationKey;
 import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -227,7 +226,7 @@ public class ProbeFilter implements Filter {
         builder.append(servletContext.getContextPath());
         builder.append(REST_URL_PATTERN_BASE + "/client/weld_icon_32x.png\">");
         builder.append("&nbsp; Running on Weld <span style=\"color:gray\">");
-        builder.append(Formats.version(WeldBootstrap.class.getPackage().getSpecificationVersion(), null));
+        builder.append(Formats.getSimpleVersion());
         builder.append(
                 "</span>. The development mode is <span style=\"color:white;background-color:#d62728;padding:6px;border-radius:4px;font-size:12px;\">ENABLED</span>. Inspect your application with <a style=\"color:#337ab7;text-decoration:underline;\" href=\"");
         builder.append(servletContext.getContextPath());
