@@ -900,6 +900,7 @@ ${head}
                 <th>Bean Archive</th>
                 <th>Bean {{tip "Link to bean detail"}}</th>
                 <th>Instance {{tip "Link to contextual instance detail"}}</th>
+                <th>toString() {{tip "Limited portion of the value"}}</th>
             </tr>
             {{#with this as parentThis}}
             {{#each instances}}
@@ -909,10 +910,13 @@ ${head}
                 <td>{{#link-to 'beanDetail' id}}{{abbr beanClass 50}}{{/link-to}}</td>
                 <td>
                 {{#if parentThis.cid}}
-                {{#link-to 'contextInstance' id (query-params cid=parentThis.cid)}}{{asString}}{{/link-to}}
+                {{#link-to 'contextInstance' id (query-params cid=parentThis.cid)}}{{objectToString}}{{/link-to}}
                 {{else}}
-                {{#link-to 'contextInstance' id}}{{asString}}{{/link-to}}
+                {{#link-to 'contextInstance' id}}{{objectToString}}{{/link-to}}
                 {{/if}}
+                </td>
+                <td>
+                {{asString}}
                 </td>
             <tr>
             {{/each}}
@@ -1152,7 +1156,7 @@ ${head}
                 <th/>
                 <th>Kind {{view 'select' content=eventKinds value=kind prompt="-- ANY --" class="form-control"}}</th>
                 <th>
-                    Event {{tip "eventPayload.toString()"}}
+                    Event {{tip "Limited portion of the eventPayload.toString() value"}}
                     <form {{action "filter" on="submit"}}>
                         {{input value=eventInfo class="form-control" placeholder="Contains"}}
                     </form>

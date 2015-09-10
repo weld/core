@@ -51,15 +51,16 @@ public class JsonTest {
 
     @Test
     public void testABitMoreComplexStructure() {
-        JsonObjectBuilder builder = Json
-                .objectBuilder()
-                .add("items", Json.arrayBuilder().add(1).add(2))
-                .add("name", "Foo")
-                .add("parent",
-                        Json.objectBuilder(true).add("name", "Martin").add("age", 100).add("active", true)
-                                .add("children", Json.arrayBuilder(true).add(Json.objectBuilder())));
+        JsonObjectBuilder builder = Json.objectBuilder().add("items", Json.arrayBuilder().add(1).add(2)).add("name", "Foo").add("parent",
+                Json.objectBuilder(true).add("name", "Martin").add("age", 100).add("active", true).add("children",
+                        Json.arrayBuilder(true).add(Json.objectBuilder())));
         assertFalse(builder.isEmpty());
         assertEquals("{\"items\":[1,2],\"name\":\"Foo\",\"parent\":{\"name\":\"Martin\",\"age\":100,\"active\":true}}", builder.build());
+    }
+
+    @Test
+    public void testEscaping() {
+        assertEquals("{\"foo\":\"bar=\\\"baz\\u000a and \\u0009 F\\\"\"}", Json.objectBuilder().add("foo", "bar=\"baz\n and \t F\"").build());
     }
 
 }

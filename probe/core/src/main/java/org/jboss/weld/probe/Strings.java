@@ -59,6 +59,7 @@ public final class Strings {
     public static final String DEFAULT_VALUE = "defaultValue";
     public static final String PROPERTIES = "properties";
     public static final String INSTANCES = "instances";
+    public static final String OBJECT_TO_STRING = "objectToString";
     public static final String AS_STRING = "asString";
     public static final String REQUIRED_TYPE = "requiredType";
     public static final String METHOD_NAME = "methodName";
@@ -161,7 +162,20 @@ public final class Strings {
 
     static final String INFO_FETCHING_LAZILY = "Most likely lazy fetching - Instance.get()";
 
+    private static final int ABR_MIN_LIMIT = 4;
+    private static final String ABR_MARKER = "...";
+
     private Strings() {
+    }
+
+    static String abbreviate(String value, int limit) {
+        if (limit < ABR_MIN_LIMIT) {
+            throw new IllegalArgumentException("Minimum limit is 4");
+        }
+        if (value == null || value.length() <= limit) {
+            return value;
+        }
+        return value.substring(0, limit - ABR_MARKER.length()) + ABR_MARKER;
     }
 
 }
