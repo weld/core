@@ -66,6 +66,7 @@ import static org.jboss.weld.probe.Strings.LAST_PAGE;
 import static org.jboss.weld.probe.Strings.METHOD;
 import static org.jboss.weld.probe.Strings.METHOD_NAME;
 import static org.jboss.weld.probe.Strings.NAME;
+import static org.jboss.weld.probe.Strings.OBJECT_TO_STRING;
 import static org.jboss.weld.probe.Strings.OBSERVED_TYPE;
 import static org.jboss.weld.probe.Strings.OBSERVERS;
 import static org.jboss.weld.probe.Strings.PAGE;
@@ -161,6 +162,10 @@ import com.google.common.collect.Sets;
  * @author Martin Kouba
  */
 final class JsonObjects {
+
+    private static final int CONTEXTUAL_INSTANCE_TO_STRING_LIMIT = 100;
+
+    private static final int CONTEXTUAL_INSTANCE_PROPERTY_VALUE_LIMIT = 500;
 
     private JsonObjects() {
     }
@@ -878,8 +883,8 @@ final class JsonObjects {
                 } catch (InvocationTargetException e) {
                     value = toString(e);
                 }
-                propertiesBuilder
-                        .add(Json.objectBuilder().add(NAME, propertyDescriptor.getDisplayName()).add(VALUE, value != null ? value.toString() : "null"));
+                propertiesBuilder.add(Json.objectBuilder().add(NAME, propertyDescriptor.getDisplayName()).add(VALUE,
+                        value != null ? Strings.abbreviate(value.toString(), CONTEXTUAL_INSTANCE_PROPERTY_VALUE_LIMIT) : "null"));
             }
             builder.add(PROPERTIES, propertiesBuilder);
             return builder.build();
@@ -944,7 +949,8 @@ final class JsonObjects {
                 Object contextualInstance = context.get(bean);
                 if (contextualInstance != null) {
                     JsonObjectBuilder instanceBuilder = createSimpleBeanJson(bean, probe);
-                    instanceBuilder.add(AS_STRING, contextualInstance.toString());
+                    instanceBuilder.add(OBJECT_TO_STRING, contextualInstance.getClass().getName() + "@" + Integer.toHexString(contextualInstance.hashCode()));
+                    instanceBuilder.add(AS_STRING, Strings.abbreviate(contextualInstance.toString(), CONTEXTUAL_INSTANCE_TO_STRING_LIMIT));
                     builder.add(instanceBuilder);
                 }
             }
