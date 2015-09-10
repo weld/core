@@ -181,7 +181,7 @@ final class JsonObjects {
         deploymentBuilder.add(INIT_TS, probe.getInitTs());
 
         // WELD VERSION
-        deploymentBuilder.add(VERSION, Formats.version(null));
+        deploymentBuilder.add(VERSION, Formats.getSimpleVersion());
 
         // BEAN DEPLOYMENT ARCHIVES
         JsonArrayBuilder bdasBuilder = Json.arrayBuilder();
