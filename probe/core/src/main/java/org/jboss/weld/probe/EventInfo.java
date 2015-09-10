@@ -30,6 +30,8 @@ import javax.enterprise.inject.spi.ObserverMethod;
  */
 class EventInfo {
 
+    private static final int EVENT_INFO_STRING_LIMIT = 80;
+
     private final boolean containerEvent;
 
     private final Type type;
@@ -60,7 +62,7 @@ class EventInfo {
         this.qualifiers = qualifiers;
         this.injectionPoint = injectionPoint;
         this.containerEvent = containerEvent;
-        this.eventString = event.toString();
+        this.eventString = Strings.abbreviate(event.toString(), EVENT_INFO_STRING_LIMIT);
         this.observers = observers;
         this.timestamp = timestamp;
     }
