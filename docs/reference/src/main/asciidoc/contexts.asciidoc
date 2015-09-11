@@ -35,60 +35,99 @@ Weld provides a number of built in contexts, which are shown in <<_available_con
 [cols=",,,",options="header",]
 |=======================================================================
 |Scope {set:cellbgcolor:}|Qualifiers |Context |Notes
-|`@Dependent` |`@Default` |`DependentContext` |The dependent context is
-unbound and unmanaged
 
-|`@RequestScoped` |`@Unbound` |`RequestContext` |An unbound request
-context, useful for testing
+|`@Dependent`
+|`@Default`
+|`DependentContext`
+|The dependent context is unbound and unmanaged
 
-|`@RequestScoped` |`@Bound` |`RequestContext` |A request context bound
-to a manually propagated map, useful for testing or non-Servlet
-environments
 
-|`@Default` |`BoundRequestContext`
+|`@RequestScoped`
+|`@Unbound`
+|`RequestContext`
+|An unbound request context, useful for testing
 
-|`@RequestScoped` |`@Http` |`RequestContext` |A request context bound to
-a Servlet request, used for any Servlet based request context
 
-|`@Default` |`HttpRequestContext`
+|`@RequestScoped`
+|`@Bound`
 
-|`@RequestScoped` |`@Ejb` |`RequestContext` |A request context bound to
-a an interceptor's invocation context, used for EJB invocations outside
-of Servlet requests
+`@Default`
+|`RequestContext`
 
-|`@Default` |`EjbRequestContext`
+`BoundRequestContext`
+|A request context bound to a manually propagated map, useful for testing or non-Servlet environments
 
-|`@ConversationScoped` |`@Bound` |`ConversationContext` |A conversation
-context bound to two manually propagated maps (one which represents the
-request and one which represents the session), useful for testing or
-non-Servlet environments
 
-|`@Default` |`BoundConversationContext`
+|`@RequestScoped`
+|`@Http`
 
-|`@ConversationScoped` |`@Http` |`ConversationContext` |A conversation
-context bound to a Servlet request, used for any Servlet based
-conversation context
+`@Default`
+|`RequestContext`
 
-|`@Default` |`HttpConversationContext`
+`HttpRequestContext`
+|A request context bound to a Servlet request, used for any Servlet based request context
 
-|`@SessionScoped` |`@Bound` |`SessionContext` |A session context bound
-to a manually propagated map, useful for testing or non-Servlet
-environments
 
-|`@Default` |`BoundSessionContext`
+|`@RequestScoped`
+|`@Ejb`
 
-|`@SessionScoped` |`@Http` |`SessionContext` |A session context bound to
-a Servlet request, used for any Servlet based session context
+`@Default`
+|`RequestContext`
 
-|`@Default` |`HttpSessionContext`
+`EjbRequestContext`
+|A request context bound to a an interceptor's invocation context, used for EJB invocations outside of Servlet requests
 
-|`@ApplicationScoped` |`@Default` |`ApplicationContext` |An application
-context backed by an application scoped singleton, it is unmanaged and
-unbound but does offer an option to destroy all entries
 
-|`@SingletonScoped` |`@Default` |`SingletonContext` |A singleton context
-backed by an application scoped singleton, it is unmanaged and unbound
-but does offer an option to destroy all entries
+|`@ConversationScoped`
+|`@Bound`
+
+`@Default`
+|`ConversationContext`
+
+`BoundConversationContext`
+|A conversation context bound to two manually propagated maps (one which represents the request and one which represents the session), useful for testing or non-Servlet environments
+
+
+|`@ConversationScoped`
+|`@Http`
+
+`@Default`
+|`ConversationContext`
+
+`HttpConversationContext`
+|A conversation context bound to a Servlet request, used for any Servlet based conversation context
+
+
+|`@SessionScoped`
+|`@Bound`
+
+`@Default`
+|`SessionContext`
+
+`BoundSessionContext`
+|A session context bound to a manually propagated map, useful for testing or non-Servlet environments
+
+
+|`@SessionScoped`
+|`@Http`
+
+`@Default`
+|`SessionContext`
+
+`HttpSessionContext`
+|A session context bound to a Servlet request, used for any Servlet based session context
+
+
+|`@ApplicationScoped`
+|`@Default`
+|`ApplicationContext`
+|An application context backed by an application scoped singleton, it is unmanaged and unbound but does offer an option to destroy all entries
+
+
+|`@SingletonScoped`
+|`@Default`
+|`SingletonContext`
+|A singleton context backed by an application scoped singleton, it is unmanaged and unbound but does offer an option to destroy all entries
 |=======================================================================
 
 Unmanaged contexts offer little of interest in a discussion about
