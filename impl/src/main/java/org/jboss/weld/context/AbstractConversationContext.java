@@ -362,9 +362,9 @@ public abstract class AbstractConversationContext<R, S> extends AbstractBoundCon
             }
             return true;
         } finally {
+            setBeanStore(beanStore);
             setActive(active);
             if (beanStore != null) {
-                setBeanStore(beanStore);
                 beanStore.attach();
             } else if (!active) {
                 removeState();
