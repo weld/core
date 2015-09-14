@@ -301,3 +301,13 @@ a.probe-comp, i.probe-comp, span.probe-comp {
 p.version {
   padding-right: 10px;
 }
+
+code {
+  background-color: #efefef;
+  border: 1px solid #e2e2e2;
+  border-radius: 3px;
+  color: #333;
+  padding: 2px 4px;
+  white-space: nowrap;
+  font-family: sans-serif;
+}

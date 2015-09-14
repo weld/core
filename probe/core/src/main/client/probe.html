@@ -876,6 +876,11 @@ ${head}
 
         <h1>Context - {{scope}}</h1>
 
+        <div class="alert alert-info alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            Note that for HTTP session-related contexts (e.g. <code>{{at}}SessionScoped</code>) you can only see the bean instances from the current browser session.
+        </div>
+
         {{#if cids}}
         <div class="btn-line">
             <form class="form-inline">
