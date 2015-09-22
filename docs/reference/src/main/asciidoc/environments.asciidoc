@@ -170,7 +170,16 @@ The reason is that since Jetty 8 some internal classes are not visible from the 
   <Set name="contextPath">/weld-numberguess</Set>
   <Set name="war"><Property name="jetty.webapps" default="."/>/weld-numberguess.war</Set>
   <Call name="prependServerClass">
-    <Arg>-org.eclipse.jetty.server.handler.ContextHandler,-org.eclipse.jetty.servlet.FilterHolder,-org.eclipse.jetty.servlet.ServletContextHandler,-org.eclipse.jetty.servlet.ServletHolder</Arg>
+    <Arg>-org.eclipse.jetty.server.handler.ContextHandler</Arg>
+  </Call>
+  <Call name="prependServerClass">
+    <Arg>-org.eclipse.jetty.servlet.FilterHolder</Arg>
+  </Call>
+  <Call name="prependServerClass">
+    <Arg>-org.eclipse.jetty.servlet.ServletContextHandler</Arg>
+  </Call>
+  <Call name="prependServerClass">
+    <Arg>-org.eclipse.jetty.servlet.ServletHolder</Arg>
   </Call>
 </Configure>
 -------------------------------------------------------------
