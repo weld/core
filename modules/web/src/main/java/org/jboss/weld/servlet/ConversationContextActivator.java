@@ -48,7 +48,7 @@ public class ConversationContextActivator {
     private static final String CONVERSATION_PROPAGATION = "conversationPropagation";
     private static final String CONVERSATION_PROPAGATION_NONE = "none";
 
-    private static final String CONTEXT_ACTIVATED_IN_REQUEST = ConversationContextActivator.class.getName() + "CONTEXT_ACTIVATED_IN_REQUEST";
+    private static final String CONTEXT_ACTIVATED_IN_REQUEST = ConversationContextActivator.class.getName() + ".contextActivatedInRequest";
 
     private final BeanManagerImpl beanManager;
     private HttpConversationContext httpConversationContextCache;
