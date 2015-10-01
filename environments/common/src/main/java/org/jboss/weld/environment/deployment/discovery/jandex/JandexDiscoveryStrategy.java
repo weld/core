@@ -50,7 +50,7 @@ public class JandexDiscoveryStrategy extends AbstractDiscoveryStrategy {
 
     static final String INDEX_ATTRIBUTE_NAME = JandexDiscoveryStrategy.class.getPackage().getName() + ".index";
 
-    private static final int ANNOTATION= 0x00002000;
+    private static final int ANNOTATION = 0x00002000;
 
     private Set<DotName> beanDefiningAnnotations;
 
@@ -74,7 +74,9 @@ public class JandexDiscoveryStrategy extends AbstractDiscoveryStrategy {
         List<IndexView> indexes = new ArrayList<IndexView>();
         for (BeanArchiveBuilder builder : builders) {
             IndexView index = (IndexView) builder.getAttribute(INDEX_ATTRIBUTE_NAME);
-            indexes.add(index);
+            if (index != null) {
+                indexes.add(index);
+            }
         }
         cindex = CompositeIndex.create(indexes);
         beanDefiningAnnotations = buildBeanDefiningAnnotationSet(initialBeanDefiningAnnotations, cindex);
