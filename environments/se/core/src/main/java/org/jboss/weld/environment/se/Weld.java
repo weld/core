@@ -686,16 +686,21 @@ public class Weld implements ContainerInstanceFactory {
             result.addAll(extensions);
         }
         // Ensure that WeldSEBeanRegistrant is present
+        WeldSEBeanRegistrant weldSEBeanRegistrant = null;
         for (Metadata<Extension> metadata : result) {
             if (metadata.getValue().getClass().getName().equals(WeldSEBeanRegistrant.class.getName())) {
-                return result;
+                weldSEBeanRegistrant = (WeldSEBeanRegistrant) metadata.getValue();
+                break;
             }
         }
-        try {
-            result.add(new MetadataImpl<Extension>(SecurityActions.newInstance(WeldSEBeanRegistrant.class), SYNTHETIC_LOCATION_PREFIX
-                    + WeldSEBeanRegistrant.class.getName()));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+
+        if (weldSEBeanRegistrant == null) {
+            try {
+                weldSEBeanRegistrant = SecurityActions.newInstance(WeldSEBeanRegistrant.class);
+                result.add(new MetadataImpl<Extension>(weldSEBeanRegistrant, SYNTHETIC_LOCATION_PREFIX + WeldSEBeanRegistrant.class.getName()));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
 
         if(Boolean.valueOf(AccessController.doPrivileged(new GetSystemPropertyAction(DEV_MODE_SYSTEM_PROPERTY)))) {

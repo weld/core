@@ -1,0 +1,42 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>org.jboss.weld.se</groupId>
+   <artifactId>weld-se-parent</artifactId>
+   <name>Weld SE Parent</name>
+   <packaging>pom</packaging>
+
+   <parent>
+      <groupId>org.jboss.weld</groupId>
+      <artifactId>weld-core-parent</artifactId>
+      <relativePath>../../pom.xml</relativePath>
+      <version>2.3.1-SNAPSHOT</version>
+   </parent>
+
+   <modules>
+      <module>core</module>
+      <module>build</module>
+      <module>tests</module>
+   </modules>
+
+   <description>
+        Support for Java SE.
+    </description>
+
+   <properties>
+      <undertow.version>1.2.6.Final</undertow.version>
+   </properties>
+
+   <dependencyManagement>
+      <dependencies>
+
+         <dependency>
+            <groupId>io.undertow</groupId>
+            <artifactId>undertow-core</artifactId>
+            <version>${undertow.version}</version>
+         </dependency>
+
+      </dependencies>
+   </dependencyManagement>
+
+</project>
