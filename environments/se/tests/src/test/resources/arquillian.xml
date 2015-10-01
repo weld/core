@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<arquillian xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xmlns="http://jboss.org/schema/arquillian"
+   xsi:schemaLocation="http://jboss.org/schema/arquillian http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
+
+   <engine>
+      <!-- property name="deploymentExportPath">target/</property -->
+   </engine>
+
+   <container qualifier="weld-se" default="true">
+      <protocol type="simple-jmx" />
+      <configuration>
+         <property name="librariesPath">${libPath}</property>
+         <property name="debug">false</property>
+         <property name="logLevel">INFO</property>
+         <property name="keepDeploymentArchives">false</property>
+      </configuration>
+   </container>
+
+</arquillian>

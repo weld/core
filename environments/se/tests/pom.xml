@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <parent>
+      <artifactId>weld-se-parent</artifactId>
+      <groupId>org.jboss.weld.se</groupId>
+      <version>2.3.1-SNAPSHOT</version>
+      <relativePath>../pom.xml</relativePath>
+   </parent>
+   <modelVersion>4.0.0</modelVersion>
+   <artifactId>weld-se-tests</artifactId>
+   <packaging>jar</packaging>
+   <name>Weld SE Tests</name>
+   <description>Tests for Weld SE using Arquillian Container SE.</description>
+
+   <url>http://weld.cdi-spec.org</url>
+   <licenses>
+      <license>
+         <name>Apache License, Version 2.0</name>
+         <distribution>repo</distribution>
+         <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+      </license>
+   </licenses>
+
+   <dependencies>
+
+      <dependency>
+         <groupId>javax.enterprise</groupId>
+         <artifactId>cdi-api</artifactId>
+         <scope>test</scope>
+      </dependency>
+
+      <dependency>
+         <groupId>junit</groupId>
+         <artifactId>junit</artifactId>
+         <scope>test</scope>
+      </dependency>
+
+      <dependency>
+         <groupId>org.jboss.weld</groupId>
+         <artifactId>weld-core-test-common</artifactId>
+         <scope>test</scope>
+      </dependency>
+
+      <dependency>
+         <groupId>org.jboss.arquillian.junit</groupId>
+         <artifactId>arquillian-junit-container</artifactId>
+         <scope>test</scope>
+      </dependency>
+
+      <dependency>
+         <groupId>org.jboss.arquillian.container</groupId>
+         <artifactId>container-se-managed</artifactId>
+         <scope>test</scope>
+      </dependency>
+
+      <dependency>
+         <groupId>org.jboss.weld.se</groupId>
+         <artifactId>weld-se</artifactId>
+         <scope>test</scope>
+      </dependency>
+
+      <dependency>
+         <groupId>io.undertow</groupId>
+         <artifactId>undertow-core</artifactId>
+         <scope>test</scope>
+      </dependency>
+
+   </dependencies>
+
+   <build>
+      <plugins>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+               <execution>
+                  <id>copy-weld-dependencies</id>
+                  <phase>test-compile</phase>
+                  <goals>
+                     <goal>copy-dependencies</goal>
+                  </goals>
+                  <configuration>
+                     <stripVersion>true</stripVersion>
+                     <overWriteReleases>true</overWriteReleases>
+                     <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+                     <includeGroupIds>org.jboss.weld.se</includeGroupIds>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+               <systemPropertyVariables>
+                  <arquillian.launch>weld-se</arquillian.launch>
+                  <libPath>${project.build.outputDirectory}</libPath>
+               </systemPropertyVariables>
+            </configuration>
+         </plugin>
+      </plugins>
+   </build>
+
+</project>

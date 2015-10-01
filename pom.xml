@@ -33,6 +33,7 @@
         <arquillian.drone.version>2.0.0.Alpha5</arquillian.drone.version>
         <arquillian.graphene.version>2.1.0.Alpha2</arquillian.graphene.version>
         <arquillian.weld.version>1.0.0.CR9</arquillian.weld.version>
+        <arquillian.se.container.version>1.0.0.Alpha5</arquillian.se.container.version>
         <arquillian.tomcat.version>1.0.0.CR6</arquillian.tomcat.version>
         <arquillian.jetty.version>1.0.0.CR2</arquillian.jetty.version>
         <arquillian.glassfish.version>1.0.0.CR1</arquillian.glassfish.version>
@@ -264,6 +265,12 @@
                 <groupId>org.jboss.arquillian.container</groupId>
                 <artifactId>arquillian-glassfish-remote-3.1</artifactId>
                 <version>${arquillian.glassfish.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.arquillian.container</groupId>
+                <artifactId>container-se-managed</artifactId>
+                <version>${arquillian.se.container.version}</version>
             </dependency>
 
             <!-- WildFly -->
@@ -611,8 +618,7 @@
             </activation>
             <modules>
                 <module>environments/common</module>
-                <module>environments/se/core</module>
-                <module>environments/se/build</module>
+                <module>environments/se</module>
                 <module>environments/servlet</module>
             </modules>
         </profile>
