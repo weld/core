@@ -36,6 +36,7 @@ import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.exceptions.DefinitionException;
 import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.MethodInjectionPoint;
+import org.jboss.weld.injection.MethodInjectionPoint.MethodInjectionPointType;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.security.GetMethodAction;
 import org.jboss.weld.util.reflection.Reflections;
@@ -54,7 +55,7 @@ public abstract class ProducerMethodProducer<X, T> extends AbstractMemberProduce
 
     public ProducerMethodProducer(EnhancedAnnotatedMethod<T, ? super X> enhancedAnnotatedMethod, DisposalMethod<?, ?> disposalMethod) {
         super(enhancedAnnotatedMethod, disposalMethod);
-        this.method = InjectionPointFactory.instance().createMethodInjectionPoint(enhancedAnnotatedMethod, getBean(), enhancedAnnotatedMethod.getDeclaringType().getJavaClass(), null, getBeanManager());
+        this.method = InjectionPointFactory.instance().createMethodInjectionPoint(MethodInjectionPointType.PRODUCER, enhancedAnnotatedMethod, getBean(), enhancedAnnotatedMethod.getDeclaringType().getJavaClass(), null, getBeanManager());
         checkProducerMethod(enhancedAnnotatedMethod);
         checkDelegateInjectionPoints();
     }

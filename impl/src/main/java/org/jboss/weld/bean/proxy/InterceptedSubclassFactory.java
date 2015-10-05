@@ -304,7 +304,14 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
         bytecodeMethodResolver.getDeclaredMethod(method, methodInfo.getDeclaringClass(), methodInfo.getName(), methodInfo.getParameterTypes(), staticConstructor);
 
         if (addProceed) {
-            bytecodeMethodResolver.getDeclaredMethod(method, method.getClassFile().getName(), methodInfo.getName() + SUPER_DELEGATE_SUFFIX, methodInfo.getParameterTypes(), staticConstructor);
+            if (Modifier.isPrivate(method.getAccessFlags())) {
+                // If the original method is private we can't use WeldSubclass.method$$super() as proceed
+                bytecodeMethodResolver.getDeclaredMethod(method, methodInfo.getDeclaringClass(), methodInfo.getName(), methodInfo.getParameterTypes(),
+                        staticConstructor);
+            } else {
+                bytecodeMethodResolver.getDeclaredMethod(method, method.getClassFile().getName(), methodInfo.getName() + SUPER_DELEGATE_SUFFIX,
+                        methodInfo.getParameterTypes(), staticConstructor);
+            }
         } else {
             b.aconstNull();
         }
@@ -406,4 +413,5 @@ public class InterceptedSubclassFactory<T> extends ProxyFactory<T> {
     protected Class<? extends MethodHandler> getMethodHandlerType() {
         return CombinedInterceptorAndDecoratorStackMethodHandler.class;
     }
+
 }
