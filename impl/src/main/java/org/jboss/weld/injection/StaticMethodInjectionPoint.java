@@ -51,9 +51,9 @@ class StaticMethodInjectionPoint<T, X> extends MethodInjectionPoint<T, X> {
     private final AnnotatedMethod<X> annotatedMethod;
     final Method accessibleMethod;
 
-    StaticMethodInjectionPoint(EnhancedAnnotatedMethod<T, X> enhancedMethod, Bean<?> declaringBean, Class<?> declaringComponentClass,
+    StaticMethodInjectionPoint(MethodInjectionPointType methodInjectionPointType, EnhancedAnnotatedMethod<T, X> enhancedMethod, Bean<?> declaringBean, Class<?> declaringComponentClass,
             Set<Class<? extends Annotation>> specialParameterMarkers, InjectionPointFactory factory, BeanManagerImpl manager) {
-        super(enhancedMethod, declaringBean, declaringComponentClass, specialParameterMarkers != null, factory, manager);
+        super(methodInjectionPointType, enhancedMethod, declaringBean, declaringComponentClass, factory, manager);
         this.accessibleMethod = SecurityActions.getAccessibleCopyOfMethod(enhancedMethod.getJavaMember());
         this.annotatedMethod = enhancedMethod.slim();
         this.specialInjectionPointIndex = initSpecialInjectionPointIndex(enhancedMethod, specialParameterMarkers);

@@ -44,9 +44,10 @@ class VirtualMethodInjectionPoint<T, X> extends StaticMethodInjectionPoint<T, X>
 
     private volatile Map<Class<?>, Method> methods;
 
-    VirtualMethodInjectionPoint(EnhancedAnnotatedMethod<T, X> enhancedMethod, Bean<?> declaringBean, Class<?> declaringComponentClass,
-            Set<Class<? extends Annotation>> specialParameterMarkers, InjectionPointFactory factory, BeanManagerImpl manager) {
-        super(enhancedMethod, declaringBean, declaringComponentClass, specialParameterMarkers, factory, manager);
+    VirtualMethodInjectionPoint(MethodInjectionPointType methodInjectionPointType, EnhancedAnnotatedMethod<T, X> enhancedMethod, Bean<?> declaringBean,
+            Class<?> declaringComponentClass, Set<Class<? extends Annotation>> specialParameterMarkers, InjectionPointFactory factory,
+            BeanManagerImpl manager) {
+        super(methodInjectionPointType, enhancedMethod, declaringBean, declaringComponentClass, specialParameterMarkers, factory, manager);
         this.methods = Collections.<Class<?>, Method> singletonMap(getAnnotated().getJavaMember().getDeclaringClass(), accessibleMethod);
     }
 
@@ -58,8 +59,9 @@ class VirtualMethodInjectionPoint<T, X> extends StaticMethodInjectionPoint<T, X>
             // the same method may be written to the map twice, but that is ok
             // lookupMethod is very slow
             Method delegate = getAnnotated().getJavaMember();
-            if (isPrivate(delegate) || (isPackagePrivate(delegate.getModifiers()) && !Objects.equals(delegate.getDeclaringClass().getPackage(), receiver.getClass().getPackage()))) {
-                method = accessibleMethod; // overriding does not apply to private methods and package-private methods where the subclass is in a different package
+            if (MethodInjectionPointType.INITIALIZER.equals(type) && (isPrivate(delegate) || isPackagePrivate(delegate.getModifiers()) && !Objects.equals(delegate.getDeclaringClass().getPackage(), receiver.getClass().getPackage()))) {
+                // Initializer methods - overriding does not apply to private methods and package-private methods where the subclass is in a different package
+                method = accessibleMethod;
             } else {
                 method = SecurityActions.lookupMethod(receiver.getClass(), delegate.getName(), delegate.getParameterTypes());
                 SecurityActions.ensureAccessible(method);

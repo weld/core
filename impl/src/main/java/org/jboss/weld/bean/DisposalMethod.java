@@ -41,6 +41,7 @@ import org.jboss.weld.annotated.enhanced.MethodSignature;
 import org.jboss.weld.bootstrap.Validator;
 import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.MethodInjectionPoint;
+import org.jboss.weld.injection.MethodInjectionPoint.MethodInjectionPointType;
 import org.jboss.weld.injection.MethodInvocationStrategy;
 import org.jboss.weld.injection.ParameterInjectionPoint;
 import org.jboss.weld.literal.DefaultLiteral;
@@ -71,7 +72,8 @@ public class DisposalMethod<X, T> {
     }
 
     protected DisposalMethod(BeanManagerImpl beanManager, EnhancedAnnotatedMethod<T, ? super X> enhancedAnnotatedMethod, AbstractClassBean<X> declaringBean) {
-        this.disposalMethodInjectionPoint = InjectionPointFactory.instance().createMethodInjectionPoint(enhancedAnnotatedMethod, declaringBean, declaringBean.getBeanClass(), SPECIAL_PARAM_MARKERS, beanManager);
+        this.disposalMethodInjectionPoint = InjectionPointFactory.instance().createMethodInjectionPoint(MethodInjectionPointType.DISPOSER,
+                enhancedAnnotatedMethod, declaringBean, declaringBean.getBeanClass(), SPECIAL_PARAM_MARKERS, beanManager);
         this.beanManager = beanManager;
         this.declaringBean = declaringBean;
         EnhancedAnnotatedParameter<?, ? super X> enhancedDisposesParameter = getEnhancedDisposesParameter(enhancedAnnotatedMethod);

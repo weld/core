@@ -35,9 +35,12 @@ import org.jboss.weld.manager.BeanManagerImpl;
  */
 public abstract class MethodInjectionPoint<T, X> extends AbstractCallableInjectionPoint<T, X, Method> {
 
-    protected MethodInjectionPoint(EnhancedAnnotatedCallable<T, X, Method> callable, Bean<?> declaringBean, Class<?> declaringComponentClass,
-            boolean observerOrDisposer, InjectionPointFactory factory, BeanManagerImpl manager) {
-        super(callable, declaringBean, declaringComponentClass, observerOrDisposer, factory, manager);
+    protected MethodInjectionPointType type;
+
+    protected MethodInjectionPoint(MethodInjectionPointType methodInjectionPointType, EnhancedAnnotatedCallable<T, X, Method> callable, Bean<?> declaringBean, Class<?> declaringComponentClass,
+             InjectionPointFactory factory, BeanManagerImpl manager) {
+        super(callable, declaringBean, declaringComponentClass, MethodInjectionPointType.OBSERVER.equals(methodInjectionPointType) || MethodInjectionPointType.DISPOSER.equals(methodInjectionPointType), factory, manager);
+        this.type = methodInjectionPointType;
     }
 
     /**
@@ -56,4 +59,11 @@ public abstract class MethodInjectionPoint<T, X> extends AbstractCallableInjecti
 
     @Override
     public abstract AnnotatedMethod<X> getAnnotated();
+
+    public static enum MethodInjectionPointType {
+
+        INITIALIZER, PRODUCER, DISPOSER, OBSERVER;
+
+    }
+
 }
