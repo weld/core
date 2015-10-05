@@ -8,8 +8,6 @@
         <!--<property name="deploymentExportPath">target/</property>-->
     </engine>
 
-    <!--defaultProtocol type="Servlet 3.0" /-->
-
     <container qualifier="wildfly8" default="true">
         <configuration>
             <property name="serverConfig">standalone-full.xml</property>
@@ -19,4 +17,9 @@
             <property name="javaVmArguments">-Xms128m -Xmx768m -XX:MaxPermSize=256m ${jacoco.agent} ${additional.vm.args}</property>
         </configuration>
     </container>
+
+    <extension qualifier="webdriver">
+        <property name="browser">firefox</property>
+        <!--<property name="firefox_binary">/path/to/firefox/binary</property>-->
+    </extension>
 </arquillian>
