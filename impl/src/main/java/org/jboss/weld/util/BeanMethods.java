@@ -37,8 +37,9 @@ import javax.inject.Inject;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
-import org.jboss.weld.injection.MethodInjectionPoint;
 import org.jboss.weld.injection.InjectionPointFactory;
+import org.jboss.weld.injection.MethodInjectionPoint;
+import org.jboss.weld.injection.MethodInjectionPoint.MethodInjectionPointType;
 import org.jboss.weld.interceptor.reader.InterceptorMetadataUtils;
 import org.jboss.weld.interceptor.spi.model.InterceptionType;
 import org.jboss.weld.interceptor.util.InterceptionTypeRegistry;
@@ -243,7 +244,7 @@ public class BeanMethods {
                     throw UtilLogger.LOG.initializerMethodIsGeneric(method, type);
                 }
                 if (!method.isStatic()) {
-                    currentLevel.add(InjectionPointFactory.instance().createMethodInjectionPoint(method, declaringBean,
+                    currentLevel.add(InjectionPointFactory.instance().createMethodInjectionPoint(MethodInjectionPointType.INITIALIZER, method, declaringBean,
                             type.getJavaClass(), null, manager));
                 }
             }
