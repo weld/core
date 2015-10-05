@@ -16,7 +16,7 @@
 
     <modules>
         <module>core</module>
-        <module>integration-tests</module>
+        <module>tests</module>
     </modules>
 
     <properties>
