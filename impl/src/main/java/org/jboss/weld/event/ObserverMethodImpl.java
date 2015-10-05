@@ -49,6 +49,7 @@ import org.jboss.weld.context.CreationalContextImpl;
 import org.jboss.weld.experimental.Priority;
 import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.MethodInjectionPoint;
+import org.jboss.weld.injection.MethodInjectionPoint.MethodInjectionPointType;
 import org.jboss.weld.injection.MethodInvocationStrategy;
 import org.jboss.weld.injection.ParameterInjectionPoint;
 import org.jboss.weld.injection.attributes.SpecialParameterInjectionPoint;
@@ -191,7 +192,7 @@ public class ObserverMethodImpl<T, X> implements ObserverMethod<T> {
 
     protected MethodInjectionPoint<T, ? super X> initMethodInjectionPoint(EnhancedAnnotatedMethod<T, ? super X> observer, RIBean<X> declaringBean,
             BeanManagerImpl manager) {
-        return InjectionPointFactory.instance().createMethodInjectionPoint(observer, declaringBean, declaringBean.getBeanClass(), SPECIAL_PARAM_MARKERS, manager);
+        return InjectionPointFactory.instance().createMethodInjectionPoint(MethodInjectionPointType.OBSERVER, observer, declaringBean, declaringBean.getBeanClass(), SPECIAL_PARAM_MARKERS, manager);
     }
 
     public Set<WeldInjectionPointAttributes<?, ?>> getInjectionPoints() {

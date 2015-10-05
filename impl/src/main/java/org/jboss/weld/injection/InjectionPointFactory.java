@@ -37,6 +37,7 @@ import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedMethod;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedParameter;
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedType;
 import org.jboss.weld.annotated.slim.unbacked.UnbackedAnnotatedType;
+import org.jboss.weld.injection.MethodInjectionPoint.MethodInjectionPointType;
 import org.jboss.weld.injection.attributes.FieldInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.InferringFieldInjectionPointAttributes;
 import org.jboss.weld.injection.attributes.InferringParameterInjectionPointAttributes;
@@ -172,12 +173,12 @@ public class InjectionPointFactory {
         return new ConstructorInjectionPoint<T>(constructor, declaringBean, declaringComponentClass, this, manager);
     }
 
-    public <T, X> MethodInjectionPoint<T, X> createMethodInjectionPoint(EnhancedAnnotatedMethod<T, X> enhancedMethod, Bean<?> declaringBean,
+    public <T, X> MethodInjectionPoint<T, X> createMethodInjectionPoint(MethodInjectionPointType methodInjectionPointType, EnhancedAnnotatedMethod<T, X> enhancedMethod, Bean<?> declaringBean,
             Class<?> declaringComponentClass, Set<Class<? extends Annotation>> specialParameterMarkers, BeanManagerImpl manager) {
         if (enhancedMethod.isStatic()) {
-            return new StaticMethodInjectionPoint<T, X>(enhancedMethod, declaringBean, declaringComponentClass, specialParameterMarkers, this, manager);
+            return new StaticMethodInjectionPoint<T, X>(methodInjectionPointType, enhancedMethod, declaringBean, declaringComponentClass, specialParameterMarkers, this, manager);
         } else {
-            return new VirtualMethodInjectionPoint<T, X>(enhancedMethod, declaringBean, declaringComponentClass, specialParameterMarkers, this, manager);
+            return new VirtualMethodInjectionPoint<T, X>(methodInjectionPointType, enhancedMethod, declaringBean, declaringComponentClass, specialParameterMarkers, this, manager);
         }
     }
 
