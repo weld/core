@@ -9,7 +9,7 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jboss.weld.probe</groupId>
-    <artifactId>weld-probe-integration-tests</artifactId>
+    <artifactId>weld-probe-tests</artifactId>
     <version>3.0.0-SNAPSHOT</version>
 
     <properties>
@@ -18,49 +18,91 @@
     </properties>
 
     <dependencies>
+        
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
+        
         <dependency>
             <groupId>org.jboss.weld.probe</groupId>
             <artifactId>weld-probe-core</artifactId>
         </dependency>
+        
         <dependency>
             <groupId>org.jboss.weld</groupId>
             <artifactId>weld-core-test-common</artifactId>
         </dependency>
+        
         <dependency>
             <groupId>javax.enterprise</groupId>
             <artifactId>cdi-api</artifactId>
             <scope>provided</scope>
         </dependency>
+        
         <dependency>
             <groupId>org.jboss.spec.javax.ejb</groupId>
             <artifactId>jboss-ejb-api_3.2_spec</artifactId>
         </dependency>
+        
         <dependency>
             <groupId>org.jboss.arquillian.junit</groupId>
             <artifactId>arquillian-junit-container</artifactId>
         </dependency>
+        
         <dependency>
             <groupId>org.jboss.shrinkwrap</groupId>
             <artifactId>shrinkwrap-impl-base</artifactId>
         </dependency>
+        
         <dependency>
             <groupId>org.glassfish</groupId>
             <artifactId>javax.json</artifactId>
             <version>${json.version}</version>
             <scope>provided</scope>
         </dependency>
+        
         <dependency>
             <groupId>org.jboss.spec.javax.servlet</groupId>
             <artifactId>jboss-servlet-api_3.1_spec</artifactId>
         </dependency>
+        
         <dependency>
             <groupId>net.sourceforge.htmlunit</groupId>
             <artifactId>htmlunit</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.jboss.arquillian</groupId>
+            <artifactId>arquillian-bom</artifactId>
+            <version>${arquillian.version}</version>
+            <type>pom</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.arquillian.extension</groupId>
+            <artifactId>arquillian-drone-bom</artifactId>
+            <version>${arquillian.drone.version}</version>
+            <type>pom</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.arquillian.graphene</groupId>
+            <artifactId>graphene-webdriver</artifactId>
+            <version>${arquillian.graphene.version}</version>
+            <type>pom</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.arquillian.extension</groupId>
+            <artifactId>arquillian-drone-webdriver-depchain</artifactId>
+            <version>${arquillian.drone.version}</version>
+            <type>pom</type>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -190,6 +232,62 @@
                                 <exclude>**/ProbeSessionBeansTest.java</exclude>
                                 <exclude>**/ProbeDeploymentsTest.java</exclude>
                             </excludes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>ftest</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>add-ftest-source</id>
+                                <goals>
+                                    <goal>add-test-source</goal>
+                                </goals>
+                                <configuration>
+                                    <sources>
+                                        <source>src/ftest/java</source>
+                                    </sources>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>add-ftest-resource</id>
+                                <goals>
+                                    <goal>add-test-resource</goal>
+                                </goals>
+                                <configuration>
+                                    <resources>
+                                        <resource>
+                                            <directory>src/ftest/java</directory>
+                                            <targetPath>.</targetPath>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <systemProperties>
+                                <arquillian.xml>src/ftest/resources/arquillian-ftest.xml</arquillian.xml>
+                                <jacoco.agent>${jacoco.agent}</jacoco.agent>
+                                <additional.vm.args>${additional.vm.args}</additional.vm.args>
+                                <org.jboss.remoting-jmx.timeout>360</org.jboss.remoting-jmx.timeout>
+                            </systemProperties>
+                            <test>${test}</test>
+                            <parallel>none</parallel>
+                            <includes>
+                                <include>**/ftest/*Test.java</include>
+                            </includes>
                         </configuration>
                     </plugin>
                 </plugins>
