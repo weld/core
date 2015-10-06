@@ -575,8 +575,7 @@ Probe.ApplicationController = Ember.ObjectController
                 'DECORATOR', 'EXTENSION', 'BUILT_IN' ],
         beanKindsShort : [ 'MB', 'SB', 'PM', 'PF', 'RE', 'SY', 'IN', 'DE',
                 'EX', 'BI' ],
-        observerDeclaringBeanKinds : [ 'MANAGED', 'SESSION', 'EXTENSION',
-                'BUILT_IN' ],
+        observerDeclaringBeanKinds : [ 'MANAGED', 'SESSION', 'EXTENSION'],
         eventKinds : [ 'APPLICATION', 'CONTAINER' ],
         receptions : [ 'ALWAYS', 'IF_EXISTS' ],
         txPhases : [ 'IN_PROGRESS', 'BEFORE_COMPLETION', 'AFTER_COMPLETION',
@@ -727,7 +726,7 @@ Probe.BeanDetailController = Ember.ObjectController.extend({
 
 Probe.ObserverListController = Ember.ObjectController.extend({
     needs : [ 'application' ],
-    beanKinds : Ember.computed.alias('controllers.application.beanKinds'),
+    beanKinds : Ember.computed.alias('controllers.application.observerDeclaringBeanKinds'),
     filterBdas : Ember.computed.alias('controllers.application.filterBdas'),
     bda : Ember.computed.alias('controllers.application.markerFilterAddBdas'),
     receptions : Ember.computed.alias('controllers.application.receptions'),
