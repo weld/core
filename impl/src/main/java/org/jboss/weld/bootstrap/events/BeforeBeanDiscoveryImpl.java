@@ -99,7 +99,7 @@ public class BeforeBeanDiscoveryImpl extends AbstractAnnotatedTypeRegisteringEve
     @Override
     public void addAnnotatedType(AnnotatedType<?> source) {
         checkWithinObserverNotification();
-        // TODO: once this method is deprecated as part of CDI-83, log a warning then it is called
+        BootstrapLogger.LOG.deprecatedAddAnnotatedTypeMethodUsed(source.getJavaClass());
         addAnnotatedType(source, null);
     }
 
