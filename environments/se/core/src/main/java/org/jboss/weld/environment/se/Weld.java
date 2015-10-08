@@ -560,11 +560,28 @@ public class Weld implements ContainerInstanceFactory {
 
     /**
      * Set a {@link ClassLoader}. The given {@link ClassLoader} will be scanned automatically for bean archives if scanning is enabled.
+     *
+     * @param classLoader
+     * @return self
      */
     public Weld setClassLoader(ClassLoader classLoader) {
        Preconditions.checkNotNull(classLoader);
        resourceLoader = new ClassLoaderResourceLoader(classLoader);
        return this;
+    }
+
+    /**
+     * Set a {@link ResourceLoader} used to scan the application for bean archives. If you only want to use a specific {@link ClassLoader} for scanning, use
+     * {@link #setClassLoader(ClassLoader)} instead.
+     *
+     * @param resourceLoader
+     * @return self
+     * @see #isDiscoveryEnabled()
+     */
+    public Weld setResourceLoader(ResourceLoader resourceLoader) {
+        Preconditions.checkNotNull(resourceLoader);
+        this.resourceLoader = resourceLoader;
+        return this;
     }
 
     /**
