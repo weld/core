@@ -11,7 +11,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.security.AccessController;
 import java.util.Objects;
 import java.util.Set;
 
@@ -25,9 +24,6 @@ import org.jboss.weld.exceptions.InvalidObjectException;
 import org.jboss.weld.logging.BeanLogger;
 import org.jboss.weld.resources.ReflectionCache;
 import org.jboss.weld.resources.SharedObjectCache;
-import org.jboss.weld.security.GetDeclaredConstructorsAction;
-import org.jboss.weld.security.GetDeclaredFieldsAction;
-import org.jboss.weld.security.GetDeclaredMethodsAction;
 import org.jboss.weld.util.LazyValueHolder;
 import org.jboss.weld.util.Types;
 import org.jboss.weld.util.collections.ImmutableSet;
@@ -162,7 +158,7 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
     private class BackedAnnotatedConstructors extends EagerlyInitializedLazyValueHolder<Set<AnnotatedConstructor<X>>> {
         @Override
         protected Set<AnnotatedConstructor<X>> computeValue() {
-            Constructor<?>[] declaredConstructors = AccessController.doPrivileged(new GetDeclaredConstructorsAction(javaClass));
+            Constructor<?>[] declaredConstructors = SecurityActions.getDeclaredConstructors(javaClass);
             ImmutableSet.Builder<AnnotatedConstructor<X>> constructors = ImmutableSet.builder();
             for (Constructor<?> constructor : declaredConstructors) {
                 Constructor<X> c = Reflections.cast(constructor);
@@ -178,7 +174,7 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
             ImmutableSet.Builder<AnnotatedField<? super X>> fields = ImmutableSet.builder();
             Class<? super X> clazz = javaClass;
             while (clazz != Object.class && clazz != null) {
-                for (Field field : AccessController.doPrivileged(new GetDeclaredFieldsAction(clazz))) {
+                for (Field field : SecurityActions.getDeclaredFields(clazz)) {
                     fields.add(BackedAnnotatedField.of(field, BackedAnnotatedType.this, sharedObjectCache));
                 }
                 clazz = clazz.getSuperclass();
@@ -193,7 +189,7 @@ public class BackedAnnotatedType<X> extends BackedAnnotated implements SlimAnnot
             ImmutableSet.Builder<AnnotatedMethod<? super X>> methods = ImmutableSet.builder();
             Class<? super X> clazz = javaClass;
             while (clazz != Object.class && clazz != null) {
-                for (Method method : AccessController.doPrivileged(new GetDeclaredMethodsAction(clazz))) {
+                for (Method method : SecurityActions.getDeclaredMethods(clazz)) {
                     methods.add(BackedAnnotatedMethod.of(method, BackedAnnotatedType.this, sharedObjectCache));
                 }
                 clazz = clazz.getSuperclass();
