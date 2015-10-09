@@ -29,6 +29,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -47,7 +48,7 @@ public class DecoratorWithNonPassivationCapableDependenciesTest {
 
     @Deployment
     public static JavaArchive getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).decorate(VesselDecorator.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(DecoratorWithNonPassivationCapableDependenciesTest.class)).decorate(VesselDecorator.class)
                 .addClasses(Engine.class, Ferry.class, Vessel.class, VesselDecorator.class);
     }
 

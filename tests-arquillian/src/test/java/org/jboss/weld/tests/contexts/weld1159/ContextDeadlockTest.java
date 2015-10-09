@@ -33,6 +33,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.After;
 import org.junit.Test;
@@ -78,7 +79,9 @@ public class ContextDeadlockTest {
 
     @Deployment(testable = false)
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(WebArchive.class).addClasses(AbstractBean.class, ApplicationScopedFoo.class, ApplicationScopedBar.class, SessionScopedFoo.class, SessionScopedBar.class, TestServlet.class)
+        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(ContextDeadlockTest.class, Utils.ARCHIVE_TYPE.WAR))
+                .addClasses(AbstractBean.class, ApplicationScopedFoo.class, ApplicationScopedBar.class, SessionScopedFoo.class, SessionScopedBar.class,
+                        TestServlet.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
 

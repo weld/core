@@ -27,6 +27,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.test.util.ActionSequence;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -38,7 +39,7 @@ public class ExcludeClassInterceptorsTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).addPackage(ExcludeClassInterceptorsTest.class.getPackage()).addClass(ActionSequence.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ExcludeClassInterceptorsTest.class)).addPackage(ExcludeClassInterceptorsTest.class.getPackage()).addClass(ActionSequence.class);
     }
 
     @Test

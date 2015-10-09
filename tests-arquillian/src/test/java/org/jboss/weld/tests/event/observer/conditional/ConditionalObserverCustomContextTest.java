@@ -29,6 +29,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.test.util.ActionSequence;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -41,11 +42,11 @@ public class ConditionalObserverCustomContextTest {
     @Deployment
     public static WebArchive createTestArchive() {
         return ShrinkWrap
-                .create(WebArchive.class)
-                .addClasses(ConditionalObserver.class, CustomContext.class, CustomScoped.class, Miracle.class,
-                        CustomScopeExtension.class, ActionSequence.class)
-                .addAsServiceProvider(Extension.class, CustomScopeExtension.class)
-                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+                .create(WebArchive.class, Utils.getDeploymentNameAsHash(ConditionalObserverCustomContextTest.class, Utils.ARCHIVE_TYPE.WAR))
+                        .addClasses(ConditionalObserver.class, CustomContext.class, CustomScoped.class, Miracle.class,
+                                CustomScopeExtension.class, ActionSequence.class)
+                        .addAsServiceProvider(Extension.class, CustomScopeExtension.class)
+                        .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
 
     @Inject

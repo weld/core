@@ -26,6 +26,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.literal.NamedLiteral;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,7 +39,8 @@ public class ExperimentalProcessObserverMethodTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).addPackage(ExperimentalProcessObserverMethodTest.class.getPackage()).addAsServiceProvider(Extension.class, DummyExtension.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ExperimentalProcessObserverMethodTest.class)).addPackage(ExperimentalProcessObserverMethodTest.class.getPackage()).addAsServiceProvider(
+                Extension.class, DummyExtension.class);
     }
 
     @Test

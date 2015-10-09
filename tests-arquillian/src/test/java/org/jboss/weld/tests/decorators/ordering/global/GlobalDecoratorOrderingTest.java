@@ -27,13 +27,13 @@ import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.impl.BeansXml;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -48,7 +48,7 @@ public class GlobalDecoratorOrderingTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(EnterpriseArchive.class).addAsModule(getWebArchive()).addAsLibrary(getSharedLibrary());
+        return ShrinkWrap.create(EnterpriseArchive.class, Utils.getDeploymentNameAsHash(GlobalDecoratorOrderingTest.class, Utils.ARCHIVE_TYPE.EAR)).addAsModule(getWebArchive()).addAsLibrary(getSharedLibrary());
     }
 
     public static Archive<?> getWebArchive() {

@@ -33,6 +33,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.impl.BeansXml;
 import org.jboss.weld.test.util.annotated.ForwardingWeldAnnotated;
 import org.jboss.weld.test.util.annotated.ForwardingWeldClass;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -52,7 +53,7 @@ public class CustomWeldClassTest {
      */
     @Deployment
     public static WebArchive createWebArchive() {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "test.war");
+        WebArchive war = ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(CustomWeldClassTest.class, Utils.ARCHIVE_TYPE.WAR));
         war.addAsLibrary(createJavaArchive());
         war.addAsWebInfResource(EmptyAsset.INSTANCE, ArchivePaths.create("beans.xml"));
         return war;

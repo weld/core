@@ -34,6 +34,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.ejb.SessionBeanInterceptor;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -50,7 +51,7 @@ public class SessionBeanInterceptorTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).addPackage(SessionBeanInterceptorTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SessionBeanInterceptorTest.class)).addPackage(SessionBeanInterceptorTest.class.getPackage());
     }
 
     @Test

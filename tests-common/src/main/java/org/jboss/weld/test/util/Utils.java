@@ -26,6 +26,8 @@ import java.io.ObjectStreamClass;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.net.URL;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -47,6 +49,8 @@ import org.jboss.weld.util.collections.EnumerationList;
 import org.jboss.weld.util.reflection.Reflections;
 
 public class Utils {
+
+    public static final int MASK = 0xff;
 
     private Utils() {
     }
@@ -192,6 +196,49 @@ public class Utils {
                 }
             }
         }
+    }
+
+    public static String getDeploymentNameAsHash(Class<?> testClass, ARCHIVE_TYPE archiveType) {
+        String hexString = getHashOfTestClass(testClass.getName());
+        switch (archiveType) {
+            case JAR:
+                return hexString.toString() + ".jar";
+            case WAR:
+                return hexString.toString() + ".war";
+            case EAR:
+                return hexString.toString() + ".ear";
+            default:
+                break;
+        }
+        return null;
+    }
+
+    public static String getDeploymentNameAsHash(Class<?> testClass) {
+        return getDeploymentNameAsHash(testClass, ARCHIVE_TYPE.JAR);
+    }
+
+    public static String getHashOfTestClass(String testClassName) {
+        MessageDigest messageDigest = null;
+        try {
+            messageDigest = MessageDigest.getInstance("SHA-1");
+        } catch (NoSuchAlgorithmException e) {
+            return null;
+        }
+        messageDigest.update(testClassName.getBytes());
+        byte[] digest = messageDigest.digest();
+
+        StringBuilder hexString = new StringBuilder();
+        for (int i = 0; i < digest.length; i++) {
+            hexString.append(Integer.toHexString(MASK & digest[i]));
+        }
+        return hexString.toString();
+
+    }
+
+    public enum ARCHIVE_TYPE {
+        JAR,
+        WAR,
+        EAR
     }
 
 }

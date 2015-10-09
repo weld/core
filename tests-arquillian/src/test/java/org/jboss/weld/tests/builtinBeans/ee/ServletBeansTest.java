@@ -24,6 +24,7 @@ import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -40,7 +41,7 @@ public class ServletBeansTest {
     
     @Deployment(testable = false)
     public static WebArchive getDeployment() {
-        return ShrinkWrap.create(WebArchive.class, "servletBuiltinBeanTest.war").addClasses(Servlet.class, ServletBuiltinBeanInjectingBean.class)
+        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(ServletBeansTest.class, Utils.ARCHIVE_TYPE.WAR)).addClasses(Servlet.class, ServletBuiltinBeanInjectingBean.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
 

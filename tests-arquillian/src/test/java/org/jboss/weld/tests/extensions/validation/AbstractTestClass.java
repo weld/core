@@ -21,6 +21,7 @@ import javax.enterprise.inject.spi.Extension;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 
 /**
@@ -32,7 +33,7 @@ import org.junit.Test;
 public abstract class AbstractTestClass {
 
     public static Archive<?> getDeployment(Class<?> testClass, Class<? extends Extension> extensionClass) {
-        return ShrinkWrap.create(BeanArchive.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(AbstractTestClass.class))
                 .addClasses(AbstractTestClass.class, Telephone.class, testClass)
                 .addAsServiceProvider(Extension.class, extensionClass);
     }

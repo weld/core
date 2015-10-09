@@ -13,6 +13,7 @@ import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -40,7 +41,7 @@ public class Weld1262Test {
 	public static WebArchive createDeployment() {
 
 		return ShrinkWrap
-				.create(WebArchive.class, "test.war")
+				.create(WebArchive.class, Utils.getDeploymentNameAsHash(Weld1262Test.class, Utils.ARCHIVE_TYPE.WAR))
 				.addClasses(Crossroad.class,Guide.class)
 				.addAsWebResource(Weld1262Test.class.getPackage(), "crossroad.xhtml", "crossroad.xhtml")
 				.addAsWebResource(Weld1262Test.class.getPackage(), "road.xhtml", "road.xhtml")

@@ -34,7 +34,7 @@ import javax.inject.Inject;
 public class ScopeTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ScopeTest.class))
                 .addPackage(ScopeTest.class.getPackage())
                 .addClass(Utils.class);
     }

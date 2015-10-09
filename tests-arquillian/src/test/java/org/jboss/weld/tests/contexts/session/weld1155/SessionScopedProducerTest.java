@@ -33,6 +33,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.After;
 import org.junit.Test;
@@ -61,7 +62,7 @@ public class SessionScopedProducerTest {
 
     @Deployment(testable = false)
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(WebArchive.class).addClasses(Producer.class, Product.class, TestServlet.class, SessionScopedBean.class)
+        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(SessionScopedProducerTest.class, Utils.ARCHIVE_TYPE.WAR)).addClasses(Producer.class, Product.class, TestServlet.class, SessionScopedBean.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
 

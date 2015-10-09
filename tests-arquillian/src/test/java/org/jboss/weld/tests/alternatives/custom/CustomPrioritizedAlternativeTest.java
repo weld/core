@@ -29,6 +29,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -41,7 +42,7 @@ public class CustomPrioritizedAlternativeTest {
 
     @Deployment
     public static JavaArchive createTestArchive() {
-        return ShrinkWrap.create(BeanArchive.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(CustomPrioritizedAlternativeTest.class))
                 .addClasses(CustomPrioritizedAlternativeFoo.class, CustomPrioritizedAlternativeExtension.class, Bar.class, Bla.class, Foo.class)
                 .addAsServiceProvider(Extension.class, CustomPrioritizedAlternativeExtension.class);
     }

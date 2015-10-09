@@ -29,6 +29,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -47,7 +48,7 @@ public class AsyncServletTest {
 
     @Deployment(testable = false)
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(WebArchive.class, "async.war")
+        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(AsyncServletTest.class, Utils.ARCHIVE_TYPE.WAR))
                 .addClasses(Foo1Servlet.class, Foo2Servlet.class, Bike.class, AsynchronousTask.class, ConversationScopedBean.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addAsWebInfResource(AsyncServletTest.class.getPackage(), "web.xml", "web.xml");

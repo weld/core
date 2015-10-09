@@ -26,7 +26,7 @@ import org.junit.runner.RunWith;
 public class BeanManagerTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(BeanManagerTest.class))
                 .addPackage(BeanManagerTest.class.getPackage())
                 .addClass(Utils.class);
     }

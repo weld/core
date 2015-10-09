@@ -28,6 +28,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.util.reflection.Reflections;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,7 +43,7 @@ public class DisposerMethodThrowsExceptionTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).addClasses(Producer.class, Product.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(DisposerMethodThrowsExceptionTest.class)).addClasses(Producer.class, Product.class);
     }
 
     @Test

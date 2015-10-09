@@ -24,6 +24,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.impl.BeansXml;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -35,7 +36,7 @@ public class IncontainerTest {
 
     @Deployment
     public static WebArchive getDeployment() {
-        WebArchive war = ShrinkWrap.create(WebArchive.class).addClasses(Alpha.class, MarkerObtainer1.class, Foo.class, Marker.class)
+        WebArchive war = ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(IncontainerTest.class, Utils.ARCHIVE_TYPE.WAR)).addClasses(Alpha.class, MarkerObtainer1.class, Foo.class, Marker.class)
                 .addAsWebInfResource(new BeansXml().alternatives(Alpha.class), "beans.xml");
         JavaArchive bda1 = ShrinkWrap.create(JavaArchive.class).addClasses(Bravo.class, MarkerObtainer2.class, Bar.class)
                 .addAsManifestResource(new BeansXml().alternatives(Bravo.class), "beans.xml");

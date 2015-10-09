@@ -32,6 +32,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.test.util.ActionSequence;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -46,7 +47,7 @@ public class AfterTypeDiscoveryTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        return ShrinkWrap.create(BeanArchive.class).addPackage(AfterTypeDiscoveryObserver.class.getPackage())
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(AfterTypeDiscoveryTest.class)).addPackage(AfterTypeDiscoveryObserver.class.getPackage())
                 .addClass(ActionSequence.class).addAsServiceProvider(Extension.class, AfterTypeDiscoveryObserver.class);
     }
 

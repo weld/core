@@ -21,6 +21,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -30,7 +31,7 @@ import static org.junit.Assert.assertNotNull;
 public class ParserTest {
     @Deployment // changed to .war, from .jar
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(WebArchive.class)
+        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(ParserTest.class, Utils.ARCHIVE_TYPE.WAR))
                 .addPackage(ParserTest.class.getPackage())
                 .addAsWebInfResource(ParserTest.class.getPackage(), "beans.xml", "beans.xml");
     }

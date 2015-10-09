@@ -31,6 +31,7 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -41,7 +42,7 @@ public abstract class AbstractObserverNotificationTestSuperclass {
 
     @Deployment
     public static JavaArchive getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).addPackage(Giraffe.class.getPackage())
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(AbstractObserverNotificationTestSuperclass.class)).addPackage(Giraffe.class.getPackage())
                 .addAsServiceProvider(Extension.class, ObserverExtension.class);
     }
 

@@ -24,6 +24,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,7 +36,7 @@ import org.junit.runner.RunWith;
 public class SimpleAbstractDecoratorWithAbstractMethodAndInitializerMethodTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SimpleAbstractDecoratorWithAbstractMethodAndInitializerMethodTest.class))
                 .decorate(
                         FrameWithInitializerMethodInjectedDelegateAndAbstractMethod.class,
                         FrameWithFieldInjectedDelegate.class)

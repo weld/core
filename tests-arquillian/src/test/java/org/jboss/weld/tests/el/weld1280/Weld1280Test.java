@@ -10,6 +10,7 @@ import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -34,7 +35,7 @@ public class Weld1280Test {
     @Deployment(testable = false)
     public static WebArchive createDeployment() {
 
-        return ShrinkWrap.create(WebArchive.class, "test.war").addClasses(WeldTestPhaseListener.class, HelloBean.class)
+        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(Weld1280Test.class, Utils.ARCHIVE_TYPE.WAR)).addClasses(WeldTestPhaseListener.class, HelloBean.class)
                 .addAsWebResource(Weld1280Test.class.getPackage(), "index.xhtml", "index.xhtml")
                 .addAsWebInfResource(Weld1280Test.class.getPackage(), "web.xml", "web.xml")
                 .addAsWebInfResource(Weld1280Test.class.getPackage(), "faces-config.xml", "faces-config.xml")

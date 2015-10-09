@@ -63,7 +63,8 @@ import com.gargoylesoftware.htmlunit.WebClient;
 public class EnterpriseBeanLifecycleRemoteTest {
     @Deployment(testable = false)
     public static Archive<?> deploy() {
-        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "test.ear");
+        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, Utils.getDeploymentNameAsHash(EnterpriseBeanLifecycleRemoteTest.class,
+                Utils.ARCHIVE_TYPE.EAR));
         ear.addAsModule(ShrinkWrap.create(WebArchive.class, "test.war")
                 .addClass(RemoteClient.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml").setManifest(new StringAsset("Manifest-Version: 1.0\nClass-Path: test-archive.jar\n"))

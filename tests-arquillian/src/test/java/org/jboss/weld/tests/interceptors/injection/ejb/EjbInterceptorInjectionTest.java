@@ -23,6 +23,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -39,7 +40,7 @@ public class EjbInterceptorInjectionTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).addPackage(EjbInterceptorInjectionTest.class.getPackage())
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(EjbInterceptorInjectionTest.class)).addPackage(EjbInterceptorInjectionTest.class.getPackage())
                 .addAsManifestResource(EjbInterceptorInjectionTest.class.getPackage(), "ejb-jar.xml", "ejb-jar.xml");
     }
 

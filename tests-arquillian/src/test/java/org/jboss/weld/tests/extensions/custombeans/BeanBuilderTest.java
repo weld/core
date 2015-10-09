@@ -36,6 +36,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -51,7 +52,7 @@ public class BeanBuilderTest {
 
     @Deployment
     public static WebArchive createTestArchive() {
-        return ShrinkWrap.create(WebArchive.class).addPackage(BeanBuilderTest.class.getPackage())
+        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(BeanBuilderTest.class, Utils.ARCHIVE_TYPE.WAR)).addPackage(BeanBuilderTest.class.getPackage())
                 .addAsServiceProvider(Extension.class, BuilderExtension.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }

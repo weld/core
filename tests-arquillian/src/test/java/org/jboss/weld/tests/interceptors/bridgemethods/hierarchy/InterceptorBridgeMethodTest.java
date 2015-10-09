@@ -9,6 +9,7 @@ import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.weld.test.util.ActionSequence;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -22,7 +23,7 @@ public class InterceptorBridgeMethodTest {
 
     @Deployment
     public static JavaArchive createTestArchive() {
-        return ShrinkWrap.create(BeanArchive.class).intercept(MissileInterceptor.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InterceptorBridgeMethodTest.class)).intercept(MissileInterceptor.class)
                 .addPackage(InterceptorBridgeMethodTest.class.getPackage()).addClass(ActionSequence.class);
     }
 

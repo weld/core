@@ -19,7 +19,6 @@ package org.jboss.weld.tests.contexts.application.event;
 import javax.servlet.ServletContext;
 
 import junit.framework.Assert;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.Testable;
 import org.jboss.arquillian.junit.Arquillian;
@@ -29,6 +28,7 @@ import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -51,7 +51,7 @@ public class MultiWarTest {
         WebArchive war2 = ShrinkWrap.create(WebArchive.class, "test2.war").addClasses(MultiObserver2.class).addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
         JavaArchive ejb1 = ShrinkWrap.create(BeanArchive.class, "ejb1.jar").addClasses(MultiObserver3.class, TestEjb1.class);
         JavaArchive ejb2 = ShrinkWrap.create(BeanArchive.class, "ejb2.jar").addClasses(MultiObserver5.class, TestEjb2.class);
-        return ShrinkWrap.create(EnterpriseArchive.class)
+        return ShrinkWrap.create(EnterpriseArchive.class, Utils.getDeploymentNameAsHash(MultiWarTest.class, Utils.ARCHIVE_TYPE.EAR))
                 .addAsModules(war1, war2, ejb1, ejb2)
                 .addAsLibrary(lib);
     }

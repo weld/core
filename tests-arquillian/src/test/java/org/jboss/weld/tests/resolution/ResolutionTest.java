@@ -45,7 +45,7 @@ public class ResolutionTest
    @Deployment
    public static Archive<?> deploy()
    {
-      return ShrinkWrap.create(BeanArchive.class)
+      return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ResolutionTest.class))
          .addPackage(ResolutionTest.class.getPackage())
          .addClass(Utils.class);
    }

@@ -26,6 +26,7 @@ import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -46,7 +47,7 @@ public class AlternativeEEComponentTest {
         JavaArchive lib = ShrinkWrap.create(BeanArchive.class, "test.jar")
                 .addClasses(Foo.class);
 
-        return ShrinkWrap.create(WebArchive.class)
+        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(AlternativeEEComponentTest.class, Utils.ARCHIVE_TYPE.WAR))
                 .addAsLibrary(lib)
                 .addClasses(AlternativeHttpServletRequestProducer.class);
     }

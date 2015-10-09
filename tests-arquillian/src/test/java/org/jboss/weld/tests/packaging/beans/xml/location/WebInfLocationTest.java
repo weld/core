@@ -29,6 +29,6 @@ public class WebInfLocationTest extends AbstractBeansXmlLocationTest {
 
     @Deployment
     public static WebArchive getDeployment() {
-        return getBaseDeployment().addAsWebInfResource(getBeansXml(), "beans.xml");
+        return getBaseDeployment(WebInfLocationTest.class).addAsWebInfResource(getBeansXml(), "beans.xml");
     }
 }

@@ -32,6 +32,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -48,7 +49,7 @@ public class AlternativeMetadataTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        return ShrinkWrap.create(BeanArchive.class).addAsServiceProvider(Extension.class, ModifyingExtension.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(AlternativeMetadataTest.class)).addAsServiceProvider(Extension.class, ModifyingExtension.class)
                 .addPackage(Alpha.class.getPackage()).addClass(ForwardingAnnotatedType.class);
     }
 

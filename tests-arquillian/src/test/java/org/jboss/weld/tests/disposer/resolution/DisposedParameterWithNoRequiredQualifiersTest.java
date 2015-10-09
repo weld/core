@@ -21,6 +21,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -34,7 +35,7 @@ public class DisposedParameterWithNoRequiredQualifiersTest {
 
     @Deployment
     public static Archive<?> createTestDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).addClasses(Goal.class, GoalProducer.class, Lead.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(DisposedParameterWithNoRequiredQualifiersTest.class)).addClasses(Goal.class, GoalProducer.class, Lead.class);
     }
 
     @Test

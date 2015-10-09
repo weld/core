@@ -24,6 +24,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.config.ConfigurationKey;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.util.PropertiesBuilder;
 import org.junit.Test;
 
@@ -40,7 +41,7 @@ public abstract class DependentSessionBeanNotSharedTest {
 
     public static Archive<?> getDeployment(boolean optimizationEnabled) {
         return ShrinkWrap
-                .create(WebArchive.class)
+                .create(WebArchive.class, Utils.getDeploymentNameAsHash(DependentSessionBeanNotSharedTest.class, Utils.ARCHIVE_TYPE.WAR))
                 .addClasses(DependentSessionBeanNotSharedTest.class, StatefulService.class, Injection.class)
                 .addAsResource(
                         PropertiesBuilder.newBuilder()
