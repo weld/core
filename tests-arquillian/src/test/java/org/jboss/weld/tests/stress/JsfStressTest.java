@@ -30,6 +30,7 @@ import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Assert;
 import org.junit.Rule;
@@ -68,7 +69,7 @@ public class JsfStressTest {
 
     @Deployment(testable = false)
     public static WebArchive createDeployment() {
-        return ShrinkWrap.create(WebArchive.class, "test.war")
+        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(JsfStressTest.class, Utils.ARCHIVE_TYPE.WAR))
                 .addClasses(Game.class, Generator.class, MaxNumber.class, Random.class)
                 .addAsWebInfResource(JsfStressTest.class.getPackage(), "web.xml", "web.xml")
                 .addAsWebInfResource(JsfStressTest.class.getPackage(), "faces-config.xml", "faces-config.xml")

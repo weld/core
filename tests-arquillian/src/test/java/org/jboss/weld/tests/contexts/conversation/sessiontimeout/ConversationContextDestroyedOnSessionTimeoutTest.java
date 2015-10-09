@@ -29,6 +29,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.test.util.ActionSequence;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -56,7 +57,7 @@ public class ConversationContextDestroyedOnSessionTimeoutTest {
 
     @Deployment(testable = false)
     public static WebArchive createTestArchive() {
-        return ShrinkWrap.create(WebArchive.class).addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
+        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(ConversationContextDestroyedOnSessionTimeoutTest.class, Utils.ARCHIVE_TYPE.WAR)).addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addClasses(Foo.class, TestServlet.class, ActionSequence.class, SessionListener.class);
     }
 

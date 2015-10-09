@@ -35,6 +35,7 @@ import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.test.util.ActionSequence;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -52,7 +53,7 @@ public class PersistenceInjectionTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        return ShrinkWrap.create(WebArchive.class).addPackage(PersistenceInjectionTest.class.getPackage())
+        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(PersistenceInjectionTest.class, Utils.ARCHIVE_TYPE.WAR)).addPackage(PersistenceInjectionTest.class.getPackage())
                 .addClass(ActionSequence.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addAsResource(PERSISTENCE_XML, "META-INF/persistence.xml");

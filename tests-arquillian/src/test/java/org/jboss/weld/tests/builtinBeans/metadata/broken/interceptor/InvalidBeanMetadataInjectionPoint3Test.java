@@ -24,6 +24,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -33,7 +34,8 @@ public class InvalidBeanMetadataInjectionPoint3Test {
     @ShouldThrowException(DefinitionException.class)
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).addClasses(Frozen.class, Yoghurt.class, YoghurtInterceptor3.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(
+                org.jboss.weld.tests.builtinBeans.metadata.broken.decorator.InvalidBeanMetadataInjectionPoint3Test.class)).addClasses(Frozen.class, Yoghurt.class, YoghurtInterceptor3.class);
     }
 
     @Test

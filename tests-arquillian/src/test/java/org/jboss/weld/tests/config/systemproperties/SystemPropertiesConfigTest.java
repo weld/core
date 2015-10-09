@@ -32,6 +32,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.config.ConfigurationKey;
 import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.jboss.weld.tests.util.PropertiesBuilder;
 import org.jboss.weld.tests.util.SystemPropertiesLoader;
@@ -54,7 +55,7 @@ public class SystemPropertiesConfigTest {
 
     @Deployment(testable = false, order = 0, name = JAR_DEPLOYMENT)
     public static Archive<?> createSystemPropertiesLoaderArchive() {
-        JavaArchive testDeployment = ShrinkWrap.create(BeanArchive.class).addClasses(SystemPropertiesLoader.class, PropertiesBuilder.class);
+        JavaArchive testDeployment = ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SystemPropertiesConfigTest.class)).addClasses(SystemPropertiesLoader.class, PropertiesBuilder.class);
         PropertiesBuilder.newBuilder()
                 .set(ConfigurationKey.CONCURRENT_DEPLOYMENT.get(), "false")
                 .set(ConfigurationKey.INJECTABLE_REFERENCE_OPTIMIZATION.get(), "true").addAsSystemProperties(testDeployment);

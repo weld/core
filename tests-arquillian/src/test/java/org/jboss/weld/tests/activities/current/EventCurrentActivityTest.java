@@ -47,7 +47,7 @@ import org.junit.runner.RunWith;
 public class EventCurrentActivityTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(EventCurrentActivityTest.class))
                 .addPackage(EventCurrentActivityTest.class.getPackage())
                 .addClasses(Utils.class);
     }

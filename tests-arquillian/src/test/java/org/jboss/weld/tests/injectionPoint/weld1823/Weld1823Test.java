@@ -31,6 +31,7 @@ import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -41,12 +42,11 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Arquillian.class)
 @Category(Integration.class)
-//@Ignore("WELD-1823")
 public class Weld1823Test {
 
     @Deployment(testable = false)
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(WebArchive.class).addPackage(CDIBean.class.getPackage())
+        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(Weld1823Test.class, Utils.ARCHIVE_TYPE.WAR)).addPackage(CDIBean.class.getPackage())
                 .addAsWebInfResource(EmptyAsset.INSTANCE, ArchivePaths.create("beans.xml"));
     }
 

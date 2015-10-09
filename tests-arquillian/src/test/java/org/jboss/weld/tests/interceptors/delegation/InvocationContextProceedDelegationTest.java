@@ -25,7 +25,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.junit.Ignore;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -38,7 +38,7 @@ public class InvocationContextProceedDelegationTest {
 
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class).addClasses(Alpha.class, Bravo.class, DelegatingInterceptor.class,
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InvocationContextProceedDelegationTest.class)).addClasses(Alpha.class, Bravo.class, DelegatingInterceptor.class,
                 Intercepted.class);
     }
 

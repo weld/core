@@ -24,6 +24,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.specialization.weld1651.Fan;
 import org.jboss.weld.tests.specialization.weld1651.Music;
 import org.junit.Test;
@@ -37,7 +38,7 @@ public class GenericBeanSpecialization01Test {
     @Deployment
     @ShouldThrowException(DefinitionException.class)
     public static Archive<?> createArchive() {
-        return ShrinkWrap.create(BeanArchive.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(GenericBeanSpecialization01Test.class))
                 .addClasses(Fan.class, RockFan1.class, Music.class);
     }
 

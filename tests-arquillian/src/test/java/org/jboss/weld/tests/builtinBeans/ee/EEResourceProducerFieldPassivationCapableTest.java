@@ -44,7 +44,7 @@ import org.junit.runner.RunWith;
 public class EEResourceProducerFieldPassivationCapableTest {
     @Deployment // changed to .war, from .jar
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(WebArchive.class)
+        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(EEResourceProducerFieldPassivationCapableTest.class, Utils.ARCHIVE_TYPE.WAR))
                 .addPackage(EEResourceProducerFieldPassivationCapableTest.class.getPackage())
                 .addClass(Utils.class)
                 .addAsResource(

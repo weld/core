@@ -40,7 +40,7 @@ import org.junit.runner.RunWith;
 public class InjectionTargetTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class).addPackage(InjectionTargetTest.class.getPackage()).addClass(Utils.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InjectionTargetTest.class)).addPackage(InjectionTargetTest.class.getPackage()).addClass(Utils.class);
     }
 
     /*

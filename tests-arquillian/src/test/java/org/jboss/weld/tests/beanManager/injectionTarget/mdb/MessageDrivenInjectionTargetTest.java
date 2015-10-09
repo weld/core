@@ -36,6 +36,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.ejb.spi.BusinessInterfaceDescriptor;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -52,7 +53,7 @@ public class MessageDrivenInjectionTargetTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).addPackage(MessageDrivenInjectionTargetTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(MessageDrivenInjectionTargetTest.class)).addPackage(MessageDrivenInjectionTargetTest.class.getPackage());
     }
 
     @Test

@@ -49,7 +49,7 @@ import org.junit.runner.RunWith;
 public class BuiltInBeanPassivationCapableTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class).intercept(FooInterceptor.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(BuiltInBeanPassivationCapableTest.class)).intercept(FooInterceptor.class)
                 // WELD-1048
                  .decorate(AnimalDecorator.class)
                 .addPackage(BuiltInBeanPassivationCapableTest.class.getPackage())

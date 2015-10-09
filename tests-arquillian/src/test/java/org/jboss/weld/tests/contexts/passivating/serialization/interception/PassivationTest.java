@@ -39,7 +39,7 @@ public class PassivationTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(PassivationTest.class))
                 .intercept(FooInterceptor.class)
                 .decorate(FooDecorator.class)
                 .addPackage(PassivationTest.class.getPackage())

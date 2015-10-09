@@ -28,6 +28,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -39,7 +40,7 @@ public class NonProducibleInjectionTargetTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).addPackage(InjectionTargetDecorationTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(NonProducibleInjectionTargetTest.class)).addPackage(InjectionTargetDecorationTest.class.getPackage());
     }
 
     @Test

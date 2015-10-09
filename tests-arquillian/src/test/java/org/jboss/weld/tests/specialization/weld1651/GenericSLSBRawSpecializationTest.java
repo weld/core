@@ -25,6 +25,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -43,7 +44,7 @@ public class GenericSLSBRawSpecializationTest {
     @Deployment
     // SLSB does not contain type SLSB<T> so the deployment should not fail.
     public static Archive<?> createArchive() {
-        return ShrinkWrap.create(BeanArchive.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(GenericSLSBRawSpecializationTest.class))
                 .addClasses(GenericSLSBRawSpecializationTest.class, SLSB.class, SpecializingSLSB.class, LocalInterface.class);
     }
 

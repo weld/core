@@ -27,6 +27,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -42,7 +43,7 @@ public class WebServiceResourceTest {
 
     @Deployment
     public static Archive<?> createTestArchive() {
-        return ShrinkWrap.create(WebArchive.class)
+        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(WebServiceResourceTest.class, Utils.ARCHIVE_TYPE.WAR))
                 .addPackage(WebServiceResourceTest.class.getPackage())
                 .addAsWebInfResource(
                         WebServiceResourceTest.class.getPackage(),

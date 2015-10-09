@@ -27,6 +27,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,7 +37,7 @@ public class SpiAddedInterceptorBindingTest {
 
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class).intercept(QuickInterceptor.class).intercept(SlowInterceptor.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SpiAddedInterceptorBindingTest.class)).intercept(QuickInterceptor.class).intercept(SlowInterceptor.class)
                 .addPackage(SpiAddedInterceptorBindingTest.class.getPackage())
                 .addAsServiceProvider(Extension.class, QuickExtension.class);
     }

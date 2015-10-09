@@ -25,6 +25,7 @@ import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.jboss.weld.tests.util.Assert;
 import org.junit.Test;
@@ -45,7 +46,8 @@ public class EarSpecializationTest {
     public static Archive<?> getDeployment() {
         WebArchive war = ShrinkWrap.create(WebArchive.class, "test.war").addClasses(InjectedBean1.class, SpecializedFactory.class, VerifyingListener.class).addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
         JavaArchive lib = ShrinkWrap.create(BeanArchive.class).addClasses(Factory.class, FactoryEvent.class, Product.class, InjectedBean2.class, Assert.class);
-        return ShrinkWrap.create(EnterpriseArchive.class, "test.ear").addAsModule(war).addAsLibrary(lib);
+        return ShrinkWrap.create(EnterpriseArchive.class, Utils.getDeploymentNameAsHash(EarSpecializationTest.class, Utils.ARCHIVE_TYPE.EAR)).addAsModule(war).addAsLibrary(
+                lib);
     }
 
     @Test

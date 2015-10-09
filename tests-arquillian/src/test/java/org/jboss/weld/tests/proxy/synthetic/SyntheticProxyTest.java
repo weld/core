@@ -17,13 +17,12 @@
 package org.jboss.weld.tests.proxy.synthetic;
 
 import junit.framework.Assert;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.junit.Ignore;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -34,12 +33,11 @@ import org.junit.runner.RunWith;
  *
  */
 @RunWith(Arquillian.class)
-@Ignore("Ignore these tests for now until jboss-classfilewriter is available (WildFly 9.0.0.Final, 10.0.0.Alpha4)")
 public class SyntheticProxyTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).addPackage(SyntheticProxyTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SyntheticProxyTest.class)).addPackage(SyntheticProxyTest.class.getPackage());
     }
 
     @Test

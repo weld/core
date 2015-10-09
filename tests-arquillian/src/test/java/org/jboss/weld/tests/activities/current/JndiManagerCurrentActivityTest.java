@@ -47,7 +47,7 @@ import static org.junit.Assert.assertEquals;
 public class JndiManagerCurrentActivityTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(JndiManagerCurrentActivityTest.class))
                 .addPackage(JndiManagerCurrentActivityTest.class.getPackage())
                 .addClass(Utils.class);
     }

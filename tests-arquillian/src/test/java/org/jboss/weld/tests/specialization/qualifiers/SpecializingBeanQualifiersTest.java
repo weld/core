@@ -32,6 +32,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.literal.AnyLiteral;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -47,7 +48,8 @@ public class SpecializingBeanQualifiersTest {
 
     @Deployment
     public static Archive<?> createArchive() {
-        return ShrinkWrap.create(BeanArchive.class).addPackage(SpecializingBeanQualifiersTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SpecializingBeanQualifiersTest.class)).addPackage(
+                SpecializingBeanQualifiersTest.class.getPackage());
     }
 
     @Test

@@ -25,6 +25,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -39,7 +40,7 @@ public class ApplicationScopeEventTest {
     
     @Deployment
     public static WebArchive getDeployment() {
-        return ShrinkWrap.create(WebArchive.class).addClass(Observer1.class).addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(ApplicationScopeEventTest.class, Utils.ARCHIVE_TYPE.WAR)).addClass(Observer1.class).addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
     
     @Test

@@ -41,7 +41,7 @@ import java.lang.annotation.Annotation;
 public class InjectedManagerCurrentActivityTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InjectedManagerCurrentActivityTest.class))
                 .addPackage(InjectedManagerCurrentActivityTest.class.getPackage())
                 .addClass(Utils.class);
     }

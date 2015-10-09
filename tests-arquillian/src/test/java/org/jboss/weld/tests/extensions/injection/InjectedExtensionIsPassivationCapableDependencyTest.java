@@ -1,8 +1,6 @@
 package org.jboss.weld.tests.extensions.injection;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
 
 import java.io.NotSerializableException;
@@ -27,7 +25,7 @@ public class InjectedExtensionIsPassivationCapableDependencyTest {
 
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InjectedExtensionIsPassivationCapableDependencyTest.class))
             .addClass(Utils.class)
             .addPackage(InjectedExtensionIsPassivationCapableDependencyTest.class.getPackage())
             .addAsServiceProvider(Extension.class, MyExtension.class);

@@ -37,7 +37,7 @@ import java.lang.annotation.Annotation;
 public class NonNormalScopeTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(NonNormalScopeTest.class))
                 .addPackage(NonNormalScopeTest.class.getPackage())
                 .addClass(Utils.class);
     }

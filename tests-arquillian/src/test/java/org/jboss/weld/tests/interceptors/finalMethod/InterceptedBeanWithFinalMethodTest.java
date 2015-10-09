@@ -25,6 +25,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -36,7 +37,7 @@ public class InterceptedBeanWithFinalMethodTest {
 
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class).intercept(TopSecretInterceptor.class).addPackage(InterceptedBeanWithFinalMethodTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InterceptedBeanWithFinalMethodTest.class)).intercept(TopSecretInterceptor.class).addPackage(InterceptedBeanWithFinalMethodTest.class.getPackage());
     }
 
     // WELD-769

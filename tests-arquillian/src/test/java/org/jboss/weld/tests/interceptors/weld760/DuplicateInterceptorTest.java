@@ -7,7 +7,7 @@ import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -26,7 +26,7 @@ public class DuplicateInterceptorTest {
             .intercept(MyInterceptor.class)
             .addClasses(MyObject.class, MyManagedBean.class, MyInterceptor.class, MyInterceptorBinding.class, MyStereotype.class);
 
-        return ShrinkWrap.create(WebArchive.class)
+        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(DuplicateInterceptorTest.class, Utils.ARCHIVE_TYPE.WAR))
             .addAsLibraries(jar, beanArchive);
     }
 

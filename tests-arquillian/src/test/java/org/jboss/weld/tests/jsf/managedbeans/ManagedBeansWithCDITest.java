@@ -29,8 +29,8 @@ import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -45,12 +45,11 @@ import com.gargoylesoftware.htmlunit.WebClient;
  */
 @Category(Integration.class)
 @RunWith(Arquillian.class)
-@Ignore("WELD-1839")
 public class ManagedBeansWithCDITest {
 
     @Deployment(testable = false)
     public static Archive<?> deployment() {
-        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "test.ear");
+        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, Utils.getDeploymentNameAsHash(ManagedBeansWithCDITest.class, Utils.ARCHIVE_TYPE.EAR));
         ear.addAsModule(ShrinkWrap.create(WebArchive.class, "test.war")
                 .addAsWebResource(ManagedBeansWithCDITest.class.getPackage(), "index.xhtml", "index.xhtml")
                 .addAsWebResource(ManagedBeansWithCDITest.class.getPackage(), "timezones.xhtml", "timezones.xhtml")

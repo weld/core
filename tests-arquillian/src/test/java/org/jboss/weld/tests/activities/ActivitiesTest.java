@@ -60,7 +60,7 @@ import org.junit.runner.RunWith;
 public class ActivitiesTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ActivitiesTest.class))
                 .addPackage(ActivitiesTest.class.getPackage())
                 .addClass(Utils.class);
     }

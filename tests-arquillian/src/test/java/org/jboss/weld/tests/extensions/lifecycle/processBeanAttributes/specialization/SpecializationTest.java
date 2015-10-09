@@ -32,6 +32,7 @@ import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.literal.AnyLiteral;
 import org.jboss.weld.literal.NamedLiteral;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.util.BeanUtilities;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,7 +45,7 @@ public class SpecializationTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).addClasses(Foo.class, Bar.class, Baz.class, Alpha.class, Bravo.class, Charlie.class, VerifyingExtension.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SpecializationTest.class)).addClasses(Foo.class, Bar.class, Baz.class, Alpha.class, Bravo.class, Charlie.class, VerifyingExtension.class)
                 .addClass(BeanUtilities.class).addAsServiceProvider(Extension.class, VerifyingExtension.class);
     }
 

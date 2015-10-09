@@ -34,6 +34,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.literal.AnyLiteral;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -46,7 +47,7 @@ public class ProcessSyntheticAnnotatedTypeTest {
     @Deployment
     public static Archive<?> getDeployment() {
         return ShrinkWrap
-                .create(BeanArchive.class)
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(ProcessSyntheticAnnotatedTypeTest.class))
                 .addPackage(Juicy.class.getPackage())
                 .addAsServiceProvider(Extension.class, RegisteringExtension1.class, RegisteringExtension2.class,
                         ModifyingExtension.class, VerifyingExtension.class);

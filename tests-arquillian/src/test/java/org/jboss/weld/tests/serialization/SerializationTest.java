@@ -33,7 +33,7 @@ import java.io.Serializable;
 public class SerializationTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class).addPackage(SerializationTest.class.getPackage()).addClass(Utils.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SerializationTest.class)).addPackage(SerializationTest.class.getPackage()).addClass(Utils.class);
     }
 
     /*

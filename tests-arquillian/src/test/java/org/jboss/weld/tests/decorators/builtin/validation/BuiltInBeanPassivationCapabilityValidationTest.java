@@ -24,6 +24,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -39,7 +40,7 @@ public class BuiltInBeanPassivationCapabilityValidationTest {
     @Deployment
     @ShouldThrowException(DeploymentException.class)
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).decorate(ConversationDecorator.class).addPackage(BuiltInBeanPassivationCapabilityValidationTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(BuiltInBeanPassivationCapabilityValidationTest.class)).decorate(ConversationDecorator.class).addPackage(BuiltInBeanPassivationCapabilityValidationTest.class.getPackage());
     }
 
     @Test
