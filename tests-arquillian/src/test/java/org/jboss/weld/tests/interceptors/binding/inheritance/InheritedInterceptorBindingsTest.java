@@ -25,6 +25,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.interceptors.binding.inheritance.Interceptors.AlphaInterceptor;
 import org.jboss.weld.tests.interceptors.binding.inheritance.Interceptors.BravoInterceptor;
 import org.jboss.weld.tests.interceptors.binding.inheritance.Interceptors.CharlieInterceptor;
@@ -51,7 +52,7 @@ public class InheritedInterceptorBindingsTest {
     @Deployment
     public static JavaArchive getDeployment() {
         return ShrinkWrap
-                .create(BeanArchive.class)
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(InheritedInterceptorBindingsTest.class))
                 .intercept(AlphaInterceptor.class, BravoInterceptor.class, CharlieInterceptor.class, DeltaInterceptor.class,
                         EchoInterceptor.class).addPackage(InheritedInterceptorBindingsTest.class.getPackage());
     }

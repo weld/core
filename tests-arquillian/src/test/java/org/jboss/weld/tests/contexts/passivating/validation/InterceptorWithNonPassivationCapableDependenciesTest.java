@@ -27,6 +27,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -45,7 +46,7 @@ public class InterceptorWithNonPassivationCapableDependenciesTest {
 
     @Deployment
     public static JavaArchive getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).intercept(EnginePoweredInterceptor.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InterceptorWithNonPassivationCapableDependenciesTest.class)).intercept(EnginePoweredInterceptor.class)
                 .addClasses(Engine.class, EnginePowered.class, EnginePoweredInterceptor.class, Ferry.class, Vessel.class);
     }
 

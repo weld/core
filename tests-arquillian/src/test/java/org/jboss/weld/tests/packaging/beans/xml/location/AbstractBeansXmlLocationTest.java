@@ -25,6 +25,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.impl.BeansXml;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -34,8 +35,9 @@ public abstract class AbstractBeansXmlLocationTest {
     @Inject
     private InjectedBean bean;
 
-    public static WebArchive getBaseDeployment() {
-        return ShrinkWrap.create(WebArchive.class).addClasses(Foo.class, Bar.class, InjectedBean.class, AbstractBeansXmlLocationTest.class);
+    public static WebArchive getBaseDeployment(Class<?> testClass) {
+        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(testClass, Utils.ARCHIVE_TYPE.WAR))
+                .addClasses(Foo.class, Bar.class, InjectedBean.class, AbstractBeansXmlLocationTest.class);
     }
 
     public static Asset getBeansXml() {

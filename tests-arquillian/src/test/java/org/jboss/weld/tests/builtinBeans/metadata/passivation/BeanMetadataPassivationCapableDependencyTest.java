@@ -51,7 +51,7 @@ public class BeanMetadataPassivationCapableDependencyTest {
     @Deployment
     public static Archive<?> getDeployment() {
         return ShrinkWrap
-                .create(BeanArchive.class)
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(BeanMetadataPassivationCapableDependencyTest.class))
                 .intercept(FastInterceptor.class)
                 .decorate(VehicleDecorator.class)
                 .addPackage(BeanMetadataPassivationCapableDependencyTest.class.getPackage())

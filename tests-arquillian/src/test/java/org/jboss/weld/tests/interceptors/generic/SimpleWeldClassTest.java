@@ -36,6 +36,7 @@ import org.jboss.weld.metadata.TypeStore;
 import org.jboss.weld.resources.ClassTransformer;
 import org.jboss.weld.resources.ReflectionCacheFactory;
 import org.jboss.weld.resources.SharedObjectCache;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.util.Beans;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,7 +50,7 @@ public class SimpleWeldClassTest
    @Deployment
    public static Archive<?> deploy()
    {
-      return ShrinkWrap.create(BeanArchive.class)
+      return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SimpleWeldClassTest.class))
          .addPackage(SimpleWeldClassTest.class.getPackage());
    }
 

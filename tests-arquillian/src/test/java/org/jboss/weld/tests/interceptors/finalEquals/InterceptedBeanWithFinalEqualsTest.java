@@ -22,6 +22,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -35,7 +36,7 @@ import static junit.framework.Assert.assertEquals;
 public class InterceptedBeanWithFinalEqualsTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class).intercept(QuotingInterceptor.class).addPackage(InterceptedBeanWithFinalEqualsTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InterceptedBeanWithFinalEqualsTest.class)).intercept(QuotingInterceptor.class).addPackage(InterceptedBeanWithFinalEqualsTest.class.getPackage());
     }
 
     @Test

@@ -29,6 +29,7 @@ import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.weld.literal.AnyLiteral;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.veto.package1.Hippo;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,7 +45,7 @@ public class VetoTest {
 
     @Deployment
     public static JavaArchive getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).addPackages(true, Elephant.class.getPackage())
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(VetoTest.class)).addPackages(true, Elephant.class.getPackage())
                 .addAsServiceProvider(Extension.class, VerifyingExtension.class);
     }
 

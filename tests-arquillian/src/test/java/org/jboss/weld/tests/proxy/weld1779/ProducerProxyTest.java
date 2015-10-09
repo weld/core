@@ -30,6 +30,7 @@ import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -44,7 +45,7 @@ public class ProducerProxyTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).addPackage(ProducerProxyTest.class.getPackage())
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ProducerProxyTest.class)).addPackage(ProducerProxyTest.class.getPackage())
                 .addAsServiceProvider(Extension.class, CustomScopeExtension.class)
                 .addAsManifestResource(EmptyAsset.INSTANCE, ArchivePaths.create("org.jboss.weld.enableUnsafeProxies"));
     }

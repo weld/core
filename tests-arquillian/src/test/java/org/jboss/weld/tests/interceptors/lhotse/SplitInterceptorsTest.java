@@ -26,6 +26,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.impl.BeansXml;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.jboss.weld.tests.interceptors.lhotse.fst.TDAO;
 import org.jboss.weld.tests.interceptors.lhotse.fst.TxInterceptor;
@@ -44,7 +45,7 @@ import org.junit.runner.RunWith;
 public class SplitInterceptorsTest {
     @Deployment
     public static Archive<?> deploy() {
-        WebArchive web = ShrinkWrap.create(WebArchive.class).addPackage(SplitInterceptorsTest.class.getPackage());
+        WebArchive web = ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(SplitInterceptorsTest.class, Utils.ARCHIVE_TYPE.WAR)).addPackage(SplitInterceptorsTest.class.getPackage());
 
         BeanArchive fst = ShrinkWrap.create(BeanArchive.class).intercept(TxInterceptor.class);
         fst.addPackage(TDAO.class.getPackage());

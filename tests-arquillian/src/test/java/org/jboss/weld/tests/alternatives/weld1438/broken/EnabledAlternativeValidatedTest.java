@@ -24,14 +24,14 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.alternatives.weld1438.FilePrinter;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
- * 
  * Test that an enabled alternative is validated.
- * 
+ *
  * @author Matus Abaffy
  */
 @RunWith(Arquillian.class)
@@ -40,7 +40,8 @@ public class EnabledAlternativeValidatedTest {
     @ShouldThrowException(DeploymentException.class)
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).alternate(FilePrinter.class).addClass(FilePrinter.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(EnabledAlternativeValidatedTest.class)).alternate(FilePrinter.class).addClass(
+                FilePrinter.class);
     }
 
     @Test

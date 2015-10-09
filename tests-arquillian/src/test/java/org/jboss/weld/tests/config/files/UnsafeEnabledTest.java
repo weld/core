@@ -32,6 +32,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.config.ConfigurationKey;
 import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.jboss.weld.tests.util.PropertiesBuilder;
 import org.junit.Test;
@@ -54,7 +55,7 @@ public class UnsafeEnabledTest {
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addClasses(UnsafeEnabledTest.class, UnproxyableBean.class));
 
-        return ShrinkWrap.create(EnterpriseArchive.class).addAsModules(ejbJar, war1);
+        return ShrinkWrap.create(EnterpriseArchive.class, Utils.getDeploymentNameAsHash(UnsafeEnabledTest.class, Utils.ARCHIVE_TYPE.EAR)).addAsModules(ejbJar, war1);
     }
 
     @Inject

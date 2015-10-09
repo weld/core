@@ -42,7 +42,7 @@ import static org.junit.Assert.assertNull;
 public class ContextTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class).addPackage(ContextTest.class.getPackage()).addClass(Utils.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ContextTest.class)).addPackage(ContextTest.class.getPackage()).addClass(Utils.class);
     }
 
     @Inject

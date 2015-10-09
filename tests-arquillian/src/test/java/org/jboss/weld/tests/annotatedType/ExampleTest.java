@@ -34,6 +34,7 @@ import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 
+import org.jboss.weld.test.util.Utils;
 /**
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
@@ -42,7 +43,7 @@ import javax.inject.Inject;
 public class ExampleTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ExampleTest.class))
                 .addPackage(ExampleTest.class.getPackage());
     }
 

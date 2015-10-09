@@ -30,6 +30,7 @@ import org.jboss.weld.bootstrap.api.Service;
 import org.jboss.weld.config.ConfigurationKey;
 import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.EmbeddedContainer;
 import org.jboss.weld.tests.util.PropertiesBuilder;
 import org.junit.Test;
@@ -50,7 +51,7 @@ public class BootstrapAndExternalConfigurationConfigTest {
     @Deployment
     public static Archive<?> getDeployment() {
         return ShrinkWrap
-                .create(BeanArchive.class)
+                .create(BeanArchive.class, Utils.getDeploymentNameAsHash(BootstrapAndExternalConfigurationConfigTest.class))
                 .addAsResource(
                         PropertiesBuilder.newBuilder().set(ConfigurationKey.CONCURRENT_DEPLOYMENT.get(), "true").build(),
                         "weld.properties").addClasses(MyExternalConfiguration.class, MyBootstrapConfiguration.class)

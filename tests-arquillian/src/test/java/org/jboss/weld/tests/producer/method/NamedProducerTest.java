@@ -38,7 +38,7 @@ import java.util.Set;
 public class NamedProducerTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(NamedProducerTest.class))
                 .addPackage(NamedProducerTest.class.getPackage())
                 .addClass(Utils.class);
     }

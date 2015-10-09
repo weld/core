@@ -48,6 +48,7 @@ import org.jboss.arquillian.junit.InSequence;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -70,7 +71,7 @@ public class AccessibleMemberLeakTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).decorate(SimpleDecorator.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(AccessibleMemberLeakTest.class)).decorate(SimpleDecorator.class)
                 .addPackage(AccessibleMemberLeakTest.class.getPackage())
                 .addAsServiceProvider(Extension.class, SimpleExtension.class);
     }

@@ -37,7 +37,7 @@ import javax.inject.Inject;
 public class EnterpriseBeanDefinitionTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(EnterpriseBeanDefinitionTest.class))
                 .addPackage(EnterpriseBeanDefinitionTest.class.getPackage())
                 .addClass(Utils.class);
     }

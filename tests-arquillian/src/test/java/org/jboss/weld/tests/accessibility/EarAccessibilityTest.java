@@ -28,6 +28,7 @@ import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -53,7 +54,7 @@ public class EarAccessibilityTest {
                 War2Impl.class, War2Listener.class).addAsLibrary(library2);
 
         // setup the entire application
-        EnterpriseArchive ear = create(EnterpriseArchive.class).addAsModules(war1, war2)
+        EnterpriseArchive ear = create(EnterpriseArchive.class, Utils.getDeploymentNameAsHash(EarAccessibilityTest.class, Utils.ARCHIVE_TYPE.EAR)).addAsModules(war1, war2)
                 .addAsLibraries(sharedInterfaceBundle, sharedExtensionLibrary1, sharedExtensionLibrary2)
                 .addAsManifestResource(EarAccessibilityTest.class.getPackage(), "application.xml", "application.xml");
         return ear;

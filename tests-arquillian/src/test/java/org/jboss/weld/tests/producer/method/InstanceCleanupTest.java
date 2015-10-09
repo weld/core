@@ -23,7 +23,7 @@ public class InstanceCleanupTest {
 
     @Deployment
     public static Archive<?> deployment() {
-        return ShrinkWrap.create(BeanArchive.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InstanceCleanupTest.class))
                 .addPackage(InstanceCleanupTest.class.getPackage())
                 .addClass(Utils.class);
     }

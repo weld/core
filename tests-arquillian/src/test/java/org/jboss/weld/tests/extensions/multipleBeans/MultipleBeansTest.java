@@ -45,7 +45,7 @@ import org.junit.runner.RunWith;
 public class MultipleBeansTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(MultipleBeansTest.class))
                 .addPackage(MultipleBeansTest.class.getPackage())
                 .addPackage(TestAnnotatedTypeBuilder.class.getPackage())
                 .addClass(Utils.class)

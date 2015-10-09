@@ -25,6 +25,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -34,7 +35,7 @@ public class DifferentNamesOfSpecializedBeansTest {
     @ShouldThrowException(DefinitionException.class)
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).addPackage(DifferentNamesOfSpecializedBeansTest.class.getPackage()).addAsServiceProvider(Extension.class, ModifyingExtension.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(DifferentNamesOfSpecializedBeansTest.class)).addPackage(DifferentNamesOfSpecializedBeansTest.class.getPackage()).addAsServiceProvider(Extension.class, ModifyingExtension.class);
     }
 
     @Test

@@ -31,6 +31,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.impl.BeansXml;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -59,7 +60,7 @@ public class Specialization04Test {
     public static Archive<?> getDeployment() {
         JavaArchive jar = ShrinkWrap.create(BeanArchive.class).alternate(AlternativeSpecializedFactory.class)
                 .addClasses(Factory.class, AlternativeSpecializedFactory.class, Product.class, InjectedBean2.class, FactoryEvent.class);
-        return ShrinkWrap.create(WebArchive.class).addClass(InjectedBean1.class)
+        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(Specialization04Test.class, Utils.ARCHIVE_TYPE.WAR)).addClass(InjectedBean1.class)
                 .addAsWebInfResource(new BeansXml().alternatives(AlternativeSpecializedFactory.class), "beans.xml").addAsLibrary(jar);
     }
 

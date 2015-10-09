@@ -24,6 +24,6 @@ public class DispatchingWithConversationFilterTest extends AbstractDispatchingTe
 
     @Deployment(testable = false)
     public static Archive<?> getDeployment() {
-        return Deployments.deployment(MainServlet.class, true);
+        return Deployments.deployment(MainServlet.class, true, DispatchingWithConversationFilterTest.class);
     }
 }

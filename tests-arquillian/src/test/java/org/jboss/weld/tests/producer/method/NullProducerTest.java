@@ -29,7 +29,7 @@ import org.junit.runner.RunWith;
 public class NullProducerTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(NullProducerTest.class))
                 .addPackage(NullProducerTest.class.getPackage())
                 .addClass(Utils.class);
     }

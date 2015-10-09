@@ -34,7 +34,7 @@ import javax.inject.Inject;
 public class ExceptionHandlingTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ExceptionHandlingTest.class))
                 .addPackage(ExceptionHandlingTest.class.getPackage())
                 .addClass(Utils.class);
     }

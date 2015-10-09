@@ -35,6 +35,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.config.ConfigurationKey;
 import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.jboss.weld.tests.config.files.DummySessionBean;
 import org.jboss.weld.tests.util.PropertiesBuilder;
@@ -62,7 +63,7 @@ public class CombinedPropertiesFilesConfigTest {
     @Deployment(order = 1, name = WAR_DEPLOYMENT)
     public static Archive<?> createTestArchive() {
 
-        BeanArchive ejbJar = ShrinkWrap.create(BeanArchive.class);
+        BeanArchive ejbJar = ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(CombinedPropertiesFilesConfigTest.class));
         ejbJar.addClass(DummySessionBean.class).addAsResource(PropertiesBuilder.newBuilder()
                         .set(ConfigurationKey.CONCURRENT_DEPLOYMENT.get(), "false")
                         .set(ConfigurationKey.PRELOADER_THREAD_POOL_SIZE.get(), "5")
@@ -88,7 +89,7 @@ public class CombinedPropertiesFilesConfigTest {
                                 .build(),
                         "weld.properties");
 
-        return ShrinkWrap.create(EnterpriseArchive.class).addAsModules(ejbJar, war1, war2);
+        return ShrinkWrap.create(EnterpriseArchive.class, Utils.getDeploymentNameAsHash(CombinedPropertiesFilesConfigTest.class, Utils.ARCHIVE_TYPE.EAR)).addAsModules(ejbJar, war1, war2);
     }
 
     @Inject

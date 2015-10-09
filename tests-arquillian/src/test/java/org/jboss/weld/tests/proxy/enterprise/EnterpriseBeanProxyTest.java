@@ -32,7 +32,7 @@ import org.junit.runner.RunWith;
 public class EnterpriseBeanProxyTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
+        return ShrinkWrap.create(EnterpriseArchive.class, Utils.getDeploymentNameAsHash(EnterpriseBeanProxyTest.class, Utils.ARCHIVE_TYPE.EAR))
                 .addAsModule(
                         ShrinkWrap.create(JavaArchive.class)
                                 .addPackage(EnterpriseBeanProxyTest.class.getPackage())

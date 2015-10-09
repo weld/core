@@ -49,7 +49,7 @@ import java.util.Set;
 public class InstanceCurrentActivityTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InstanceCurrentActivityTest.class))
                 .addPackage(InstanceCurrentActivityTest.class.getPackage())
                 .addClass(Utils.class);
     }

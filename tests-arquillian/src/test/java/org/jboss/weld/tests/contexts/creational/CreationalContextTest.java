@@ -33,6 +33,7 @@ import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.context.WeldCreationalContext;
 import org.jboss.weld.context.api.ContextualInstance;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.util.reflection.Reflections;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,7 +43,8 @@ public class CreationalContextTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).addPackage(CreationalContextTest.class.getPackage());
+        return ShrinkWrap.create(BeanArchive.class,
+                Utils.getDeploymentNameAsHash(CreationalContextTest.class)).addPackage(CreationalContextTest.class.getPackage());
     }
 
     @Test

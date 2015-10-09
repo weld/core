@@ -25,6 +25,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -36,7 +37,7 @@ public class InterceptorBindingOverridingTest {
 
     @Deployment
     public static JavaArchive getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(InterceptorBindingOverridingTest.class))
                 .intercept(NegatingInterceptor.class, FastAgingInterceptor.class, SlowAgingInterceptor.class)
                 .addPackage(InterceptorBindingOverridingTest.class.getPackage());
     }

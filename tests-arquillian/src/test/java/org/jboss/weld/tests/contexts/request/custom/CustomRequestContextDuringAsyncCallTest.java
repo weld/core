@@ -32,6 +32,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.weld.context.ejb.EjbRequestContext;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.jboss.weld.tests.contexts.request.custom.CustomContextExtension.CustomRequestContext;
 import org.junit.Test;
@@ -51,7 +52,8 @@ public class CustomRequestContextDuringAsyncCallTest {
 
     @Deployment
     public static WebArchive createTestArchive() {
-        return ShrinkWrap.create(WebArchive.class).addPackage(CustomRequestContextDuringAsyncCallTest.class.getPackage())
+        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(CustomRequestContextDuringAsyncCallTest.class, Utils.ARCHIVE_TYPE.WAR)).addPackage(
+                CustomRequestContextDuringAsyncCallTest.class.getPackage())
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addAsServiceProvider(Extension.class, CustomContextExtension.class);
     }

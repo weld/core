@@ -33,7 +33,7 @@ import static org.junit.Assert.assertNull;
 public class SuperTypeTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SuperTypeTest.class))
                 .addPackage(SuperTypeTest.class.getPackage())
                 .addClass(Utils.class)
                 .addAsServiceProvider(Extension.class, CDIExtension.class);

@@ -22,6 +22,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Assert;
 import org.junit.Test;
@@ -33,7 +34,7 @@ import org.junit.runner.RunWith;
 public class ResourceTest {
     @Deployment // changed to .war, from .jar
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(WebArchive.class)
+        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(ResourceTest.class, Utils.ARCHIVE_TYPE.WAR))
                 .addClasses(ResourceTest.class, UTConsumer.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }

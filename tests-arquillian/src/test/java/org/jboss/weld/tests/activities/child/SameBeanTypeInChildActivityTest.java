@@ -23,6 +23,7 @@ import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.weld.literal.DefaultLiteral;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Broken;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -49,7 +50,7 @@ import java.util.Set;
 public class SameBeanTypeInChildActivityTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SameBeanTypeInChildActivityTest.class))
                 .addPackage(SameBeanTypeInChildActivityTest.class.getPackage());
     }
 

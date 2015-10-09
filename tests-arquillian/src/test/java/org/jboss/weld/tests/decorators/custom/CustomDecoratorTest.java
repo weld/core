@@ -37,7 +37,7 @@ public class CustomDecoratorTest {
 
     @Deployment
     public static Archive<?> deployment() {
-        return ShrinkWrap.create(BeanArchive.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(CustomDecoratorTest.class))
                 .decorate(CustomWindowFrame.class)
                 .addAsServiceProvider(Extension.class, CustomDecoratorDeploymentObserver.class)
                 .addPackage(CustomDecoratorTest.class.getPackage())

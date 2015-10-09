@@ -46,7 +46,7 @@ public class ReceiverBeanLifecycleTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).addPackage(ReceiverBeanLifecycleTest.class.getPackage()).addClass(Utils.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ReceiverBeanLifecycleTest.class)).addPackage(ReceiverBeanLifecycleTest.class.getPackage()).addClass(Utils.class);
     }
 
     @Test

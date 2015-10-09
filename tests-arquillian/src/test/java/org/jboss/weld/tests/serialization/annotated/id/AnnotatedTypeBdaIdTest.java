@@ -68,7 +68,7 @@ public class AnnotatedTypeBdaIdTest {
         JavaArchive jar1 = ShrinkWrap.create(BeanArchive.class).addClass(CarFactory1.class);
         JavaArchive jar2 = ShrinkWrap.create(BeanArchive.class).addClass(CarFactory2.class);
         JavaArchive nonBda = ShrinkWrap.create(JavaArchive.class).addClass(UnknownClass.class);
-        return ShrinkWrap.create(WebArchive.class).addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml").addClasses(Car.class, Utils.class).addAsLibraries(jar1, jar2, nonBda);
+        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(AnnotatedTypeBdaIdTest.class, Utils.ARCHIVE_TYPE.WAR)).addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml").addClasses(Car.class, Utils.class).addAsLibraries(jar1, jar2, nonBda);
     }
 
     @Test

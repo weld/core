@@ -36,6 +36,7 @@ import org.jboss.weld.bean.SessionBean;
 import org.jboss.weld.bean.interceptor.InterceptorBindingsAdapter;
 import org.jboss.weld.ejb.spi.InterceptorBindings;
 import org.jboss.weld.manager.BeanManagerImpl;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -43,7 +44,7 @@ import org.junit.runner.RunWith;
 public class EnterpriseBeanInterceptionTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(EnterpriseBeanInterceptionTest.class))
                 .intercept(Goalkeeper.class, Defender.class, Referee.class)
                 .addPackage(EnterpriseBeanInterceptionTest.class.getPackage());
     }

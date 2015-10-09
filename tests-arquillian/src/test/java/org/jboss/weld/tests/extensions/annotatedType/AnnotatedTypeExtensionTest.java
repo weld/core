@@ -49,7 +49,7 @@ import java.util.Set;
 public class AnnotatedTypeExtensionTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(AnnotatedTypeExtensionTest.class))
                 .addPackage(AnnotatedTypeExtensionTest.class.getPackage())
                 .addClass(Utils.class)
                 .addAsServiceProvider(Extension.class, AnnotatedTypeExtension.class);

@@ -31,6 +31,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -39,7 +40,6 @@ import org.junit.runner.RunWith;
  * of <code>beans.xml</code>. Note that the stereotype is not enabled in <code>beans.xml</code>.
  *
  * @author Jozef Hartinger
- *
  */
 @RunWith(Arquillian.class)
 public class EnabledClassWithAlternativeStereotypeTest {
@@ -52,7 +52,7 @@ public class EnabledClassWithAlternativeStereotypeTest {
 
     @Deployment
     public static Archive<?> getDeployment() {
-        return ShrinkWrap.create(BeanArchive.class).alternate(AlternativeBean.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(EnabledClassWithAlternativeStereotypeTest.class)).alternate(AlternativeBean.class)
                 .addPackage(EnabledClassWithAlternativeStereotypeTest.class.getPackage());
     }
 

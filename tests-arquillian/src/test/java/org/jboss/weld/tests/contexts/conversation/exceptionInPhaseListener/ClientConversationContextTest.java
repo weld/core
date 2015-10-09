@@ -45,6 +45,7 @@ import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -67,13 +68,9 @@ public class ClientConversationContextTest {
 
     public static final String CID_REQUEST_PARAMETER_NAME = "cid";
 
-    public static final String CID_HEADER_NAME = "org.jboss.jsr299.tck.cid";
-
-    public static final String LONG_RUNNING_HEADER_NAME = "org.jboss.jsr299.tck.longRunning";
-
     @Deployment(testable = false)
     public static WebArchive createDeployment() {
-        return ShrinkWrap.create(WebArchive.class, "test.war")
+        return ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(ClientConversationContextTest.class, Utils.ARCHIVE_TYPE.WAR))
                 .addClasses(ConversationTestPhaseListener.class, Cloud.class)
                 .addAsWebInfResource(ClientConversationContextTest.class.getPackage(), "web.xml", "web.xml")
                 .addAsWebInfResource(ClientConversationContextTest.class.getPackage(), "faces-config.xml", "faces-config.xml")

@@ -20,6 +20,7 @@ package org.jboss.weld.tests.proxy.instantiator;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.weld.test.util.Utils;
 
 /**
  * WELD-687.
@@ -28,8 +29,8 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
  */
 public class AbstractPerDeploymentInstantiator {
 
-    public static WebArchive getDeployment() {
-        WebArchive archive = ShrinkWrap.create(WebArchive.class);
+    public static WebArchive getDeployment(Class<?> testClass) {
+        WebArchive archive = ShrinkWrap.create(WebArchive.class, Utils.getDeploymentNameAsHash(testClass, Utils.ARCHIVE_TYPE.WAR));
         archive.addPackage(AbstractPerDeploymentInstantiator.class.getPackage());
         archive.addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
         return archive;

@@ -31,6 +31,7 @@ import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.weld.test.util.Utils;
 import org.jboss.weld.tests.category.Integration;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -62,7 +63,7 @@ public class ServletContextBeanTest {
         WebArchive war1 = ShrinkWrap.create(WebArchive.class, "foo.war").addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml").addClasses(FooServlet.class);
         WebArchive war2 = ShrinkWrap.create(WebArchive.class, "bar.war").addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml").addClasses(BarServlet.class);
         JavaArchive library = ShrinkWrap.create(JavaArchive.class).addClass(SharedBean.class);
-        return ShrinkWrap.create(EnterpriseArchive.class).addAsModules(war1, war2).addAsLibrary(library);
+        return ShrinkWrap.create(EnterpriseArchive.class, Utils.getDeploymentNameAsHash(ServletContextBeanTest.class, Utils.ARCHIVE_TYPE.EAR)).addAsModules(war1, war2).addAsLibrary(library);
     }
 
     @Test

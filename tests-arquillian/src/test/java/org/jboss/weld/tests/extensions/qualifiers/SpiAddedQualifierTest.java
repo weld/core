@@ -21,6 +21,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,7 +34,7 @@ import javax.inject.Inject;
 public class SpiAddedQualifierTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class).addPackage(SpiAddedQualifierTest.class.getPackage()).addAsServiceProvider(Extension.class, QuickExtension.class);
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(SpiAddedQualifierTest.class)).addPackage(SpiAddedQualifierTest.class.getPackage()).addAsServiceProvider(Extension.class, QuickExtension.class);
     }
 
     @Inject

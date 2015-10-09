@@ -36,7 +36,7 @@ import org.junit.runner.RunWith;
 public class ContextualReferenceTest {
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(ContextualReferenceTest.class))
                 .addPackage(ContextualReferenceTest.class.getPackage())
                 .addClass(Utils.class);
     }

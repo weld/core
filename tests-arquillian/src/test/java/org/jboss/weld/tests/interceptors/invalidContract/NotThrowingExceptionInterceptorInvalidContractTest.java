@@ -24,6 +24,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.BeanArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.weld.test.util.Utils;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,7 +46,7 @@ public class NotThrowingExceptionInterceptorInvalidContractTest {
     @ShouldThrowException(DefinitionException.class)
     @Deployment
     public static Archive<?> deploy() {
-        return ShrinkWrap.create(BeanArchive.class)
+        return ShrinkWrap.create(BeanArchive.class, Utils.getDeploymentNameAsHash(NotThrowingExceptionInterceptorInvalidContractTest.class))
                 .intercept(NotThrowingExceptionInterceptor.class)
                 .addClasses(Intercept.class, Service.class, ServiceImpl.class, NotThrowingExceptionInterceptor.class);
     }
