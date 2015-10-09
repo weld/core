@@ -16,6 +16,7 @@
  */
 package org.jboss.weld.tests.unit.util.reflection;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Constructor;
@@ -26,6 +27,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.util.TypeLiteral;
 
 import org.jboss.weld.security.GetDeclaredConstructorsAction;
 import org.jboss.weld.security.GetDeclaredMethodsAction;
@@ -48,6 +50,24 @@ public class FormatsTest {
         assertLineFound(findMethod(beanClass, "foo", Vanilla.class, BeanManager.class, List.class));
         // Constructors
         assertLineFound(findConstructor(beanClass, Vanilla.class));
+    }
+
+    @SuppressWarnings("serial")
+    @Test
+    public void testFormatWildcardType() {
+        assertEquals("List<?>", Formats.formatType(new TypeLiteral<List<?>>() {
+        }.getType()));
+        assertEquals("java.util.List<?>", Formats.formatType(new TypeLiteral<List<?>>() {
+        }.getType(), false));
+        assertEquals("List<? extends Number>", Formats.formatType(new TypeLiteral<List<? extends Number>>() {
+        }.getType()));
+        // We always use simple names for actual type arguments
+        assertEquals("java.util.List<? extends Number>", Formats.formatType(new TypeLiteral<List<? extends Number>>() {
+        }.getType(), false));
+        assertEquals("List<? super Number>", Formats.formatType(new TypeLiteral<List<? super Number>>() {
+        }.getType()));
+        assertEquals("java.util.List<? super Number>", Formats.formatType(new TypeLiteral<List<? super Number>>() {
+        }.getType(), false));
     }
 
     void assertLineFound(Member member) {
