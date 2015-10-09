@@ -26,6 +26,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.WildcardType;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -76,6 +77,10 @@ public class Formats {
     private static final String BUILD_PROPERTIES_FILE = "weld-build.properties";
     private static final String BUILD_PROPERTIES_VERSION = "version";
     private static final String BUILD_PROPERTIES_TIMESTAMP = "timestamp";
+
+    private static final String WILDCARD = "?";
+    private static final String WILDCARD_UPPER_BOUND = WILDCARD + " extends ";
+    private static final String WILDCARD_LOWER_BOUND = WILDCARD + " super ";
 
 
     private Formats() {
@@ -303,8 +308,17 @@ public class Formats {
         if (baseType instanceof ParameterizedType) {
             ParameterizedType parameterizedType = (ParameterizedType) baseType;
             return getClassName((Class<?>) parameterizedType.getRawType(), simpleNames) + formatActualTypeArguments(parameterizedType.getActualTypeArguments());
-        }
-        if (baseType instanceof GenericArrayType) {
+        } else if (baseType instanceof WildcardType) {
+            WildcardType wildcardType = (WildcardType) baseType;
+            Type[] upperBound = wildcardType.getUpperBounds();
+            Type[] lowerBound = wildcardType.getLowerBounds();
+            if(lowerBound.length == 0 && Reflections.isEmptyBoundArray(upperBound)) {
+                return WILDCARD;
+            } else if(lowerBound.length == 0) {
+                return WILDCARD_UPPER_BOUND + formatType(upperBound[0], simpleNames);
+            }
+            return WILDCARD_LOWER_BOUND + formatType(lowerBound[0], simpleNames);
+        } else if (baseType instanceof GenericArrayType) {
             GenericArrayType gat = (GenericArrayType) baseType;
             return formatType(gat.getGenericComponentType(), simpleNames) + SQUARE_BRACKETS;
         }

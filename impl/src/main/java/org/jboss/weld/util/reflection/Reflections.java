@@ -392,7 +392,7 @@ public class Reflections {
         return false;
     }
 
-    private static boolean isEmptyBoundArray(Type[] bounds) {
+    static boolean isEmptyBoundArray(Type[] bounds) {
         return bounds == null || bounds.length == 0 || (bounds.length == 1 && Object.class.equals(bounds[0]));
     }
 
