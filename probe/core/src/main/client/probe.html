@@ -352,8 +352,8 @@ ${head}
                 <td><span class="{{unbound kind}} boxed">{{unbound kind}}</span></td>
                 <td>{{abbr scope 30}}</td>
                 <td>
-                    {{#if isAlternative}}<i class="fa fa-check-square fa-lg" title="Selected alternative"></i>{{/if}}
                     {{#link-to 'beanDetail' id}}{{abbr beanClass 50}}{{/link-to}}
+                    {{#if isAlternative}}<i class="fa fa-check-square fa-lg" title="Selected alternative"></i>{{/if}}
                 </td>
                 <td>
                     {{eachLiAbbr types 50}}
@@ -763,6 +763,7 @@ ${head}
                 </td>
                 <td>
                     {{#link-to 'observerDetail' id}}{{abbr observedType 50}}{{/link-to}}
+                    {{#if description}}<i class="fa fa-lg fa-exclamation-triangle" title="{{unbound description}}"></i>{{/if}}
                 </td>
                 <td>
                     {{eachLiAbbr qualifiers 50}}
@@ -811,7 +812,7 @@ ${head}
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Observed Type:</label>
                          <div class="col-sm-10">
-                            <p class="form-control-static">{{observedType}}</p>
+                            <p class="form-control-static">{{observedType}} {{#if description}}<i class="fa fa-lg fa-exclamation-triangle" title="{{unbound description}}"></i>{{/if}}</p>
                         </div>
                     </div>
                     {{/if}}

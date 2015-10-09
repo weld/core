@@ -92,6 +92,7 @@ import static org.jboss.weld.probe.Strings.TYPE;
 import static org.jboss.weld.probe.Strings.TYPES;
 import static org.jboss.weld.probe.Strings.VALUE;
 import static org.jboss.weld.probe.Strings.VERSION;
+import static org.jboss.weld.probe.Strings.WARNING_UNRESTRICTED_PAT_OBSERVER;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -100,6 +101,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -122,6 +124,8 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.Decorator;
 import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.ObserverMethod;
+import javax.enterprise.inject.spi.ProcessAnnotatedType;
+import javax.enterprise.inject.spi.ProcessSyntheticAnnotatedType;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -141,6 +145,7 @@ import org.jboss.weld.config.Description;
 import org.jboss.weld.config.WeldConfiguration;
 import org.jboss.weld.context.AbstractConversationContext;
 import org.jboss.weld.context.ManagedConversation;
+import org.jboss.weld.event.ExtensionObserverMethodImpl;
 import org.jboss.weld.event.ObserverMethodImpl;
 import org.jboss.weld.injection.producer.ProducerFieldProducer;
 import org.jboss.weld.injection.producer.ProducerMethodProducer;
@@ -152,7 +157,9 @@ import org.jboss.weld.probe.Json.JsonObjectBuilder;
 import org.jboss.weld.probe.Queries.Page;
 import org.jboss.weld.probe.Resource.Representation;
 import org.jboss.weld.util.AnnotationApiAbstraction;
+import org.jboss.weld.util.collections.Arrays2;
 import org.jboss.weld.util.reflection.Formats;
+import org.jboss.weld.util.reflection.Reflections;
 
 import com.google.common.collect.Sets;
 
@@ -842,8 +849,32 @@ final class JsonObjects {
         if (observerMethod instanceof ObserverMethodImpl) {
             ObserverMethodImpl<?, ?> observerMethodImpl = (ObserverMethodImpl<?, ?>) observerMethod;
             observerBuilder.add(DECLARING_BEAN, createSimpleBeanJson(observerMethodImpl.getDeclaringBean(), probe));
+            if(isUnrestrictedProcessAnnotatedTypeObserver(observerMethodImpl)) {
+                observerBuilder.add(DESCRIPTION, WARNING_UNRESTRICTED_PAT_OBSERVER);
+            }
         }
         return observerBuilder;
+    }
+
+    private static boolean isUnrestrictedProcessAnnotatedTypeObserver(ObserverMethodImpl<?, ?> observerMethod) {
+        if (observerMethod instanceof ExtensionObserverMethodImpl) {
+            ExtensionObserverMethodImpl<?, ?> extensionObserverMethod = (ExtensionObserverMethodImpl<?, ?>) observerMethod;
+            Class<?> rawObserverType = Reflections.getRawType(extensionObserverMethod.getObservedType());
+            if ((rawObserverType.equals(ProcessAnnotatedType.class) || rawObserverType.equals(ProcessSyntheticAnnotatedType.class))
+                    && extensionObserverMethod.getRequiredAnnotations().isEmpty()) {
+                Type eventType = extensionObserverMethod.getObservedType();
+                Type[] typeArguments;
+                if (eventType instanceof ParameterizedType) {
+                    typeArguments = ((ParameterizedType) eventType).getActualTypeArguments();
+                } else {
+                    typeArguments = Arrays2.EMPTY_TYPE_ARRAY;
+                }
+                if (typeArguments.length == 0 || Reflections.isUnboundedWildcard(typeArguments[0]) || Reflections.isUnboundedTypeVariable(typeArguments[0])) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     static JsonObjectBuilder createSimpleObserverJson(ObserverMethod<?> observerMethod, Probe probe) {
